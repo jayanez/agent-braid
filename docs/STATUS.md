@@ -32,8 +32,11 @@ and acceptance gates open.
 [SPEC-052](../specs/052-claude-workflow-gate/spec.md) specifies a read-only
 integration gate for Claude Code dynamic workflows and
 [SPEC-053](../specs/053-claude-transcript-trace-adapter/spec.md) a transcript trace
-adapter blocked by a preregistered G0 experiment. Nothing is implemented,
-published or accepted; the ADR change remains a feature-local proposal.
+adapter blocked by a preregistered G0 experiment. SPEC-057 to SPEC-059 extend the
+milestone to orchestrator-style parallel agents (advisory ownership, pre-flight,
+checkpoint and recovery evidence; an opt-in guard gated by a staged G1; a
+sketched ledger and optional push gated by G2). Nothing is accepted or released; ADR changes remain
+feature-local proposals.
 
 The runtime executes allowlisted Git plumbing. Repository code, source-ref
 promotion and broader agent/provider adapters require additional contracts and

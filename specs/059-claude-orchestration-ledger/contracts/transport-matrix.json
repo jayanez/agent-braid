@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "agent-braid-delivery-transport-matrix/v0.2",
+  "status": "draft; documentation reading as of 2026-10-24 (Claude Code changelog read to 2.1.310); no host observation recorded; no transport selected; not an adoption",
+  "rule": "Every transport delivers only into the session that runs the delivering component. Agent Braid never writes to another session's socket and never messages as a session. The default strategy is Mailbox + Whisper (pull notice plus PreToolUse additionalContext to the affected agent in its own session, a SPEC-058 companion output). Megaphone (monitor or channel) and Doorbell (a script posting data only to the orchestrator's own session messaging socket) are opt-in, exist only in SPEC-059, and are enabled only when every gate listed for them holds. A transport is selectable only when a passing probe receipt (HV-L1 to HV-L6, launched by the orchestrating session after the founder authorized that probe) names the host version on which it passed.",
+  "surfaceIds": ["workflow-tracks", "linked-sessions", "agent-teams", "batch"],
+  "evidenceStatuses": ["documented", "inferred", "unconfirmed", "host-observed"],
+  "gates": {
+    "g1LateNoticeHarm": "The founder's G1 decision record cites recorded G1 observations of notices that were available (a pull digest or a receipt) but were read only after the overlapping change had landed or rework had occurred, with counts. Without such a record the Megaphone and the Doorbell stay disabled. The G1 protocol must define the late-notice-harm measure before its freeze (how an arm with earlier notice differs from the pull arm, the observation unit and a threshold); until it does, and without a citing record, the strategies stay disabled.",
+    "g2": "The founder has recorded adoption of a version of contracts/coordination-contract.md; G2 is decided after G1 and is opened only after gate GN passes.",
+    "adr": "A dedicated ADR and package inventory for the notification and ledger companion is adopted. The SPEC-058 guard ADR does not cover the recorder, monitor, channel or socket components.",
+    "doorbellAdrReframing": "The ADR reframes the rule 'Agent Braid never messages as a session' for the Doorbell: the script posts data only to the orchestrator's own session socket, as the operator's tooling and not as a session, labelled as data.",
+    "verifiedAfterG2": "For the Doorbell the transport is verified by a passing receipt pinned after G2 adoption."
+  },
+  "transports": [
+    {
+      "id": "pull",
+      "strategy": "mailbox",
+      "owner": "SPEC-057",
+      "mechanism": "The orchestrator or the human reads the hazard notice or ledger-inspect output. The host already wakes the orchestrator at the end of each turn of a linked session. Always available; no host feature required.",
+      "receiverSide": true,
+      "preview": false,
+      "settingsSelectable": false,
+      "gates": [],
+      "evidence": { "status": "documented", "receipt": null, "probes": [] },
+      "knownLimits": "Weakest on timeliness: a notice is seen only when someone reads it. This is the default and the fallback for every push failure.",
+      "selected": true
+    },
+    {
+      "id": "hook-additional-context",
+      "strategy": "whisper",
+      "owner": "SPEC-058",
+      "mechanism": "The Whisper: a PreToolUse hook of the SPEC-058 guard companion, running in the affected agent's own session, returns additionalContext for that session. SPEC-059's notification companion ships no hook; the receiver-side library of SPEC-059 may be called by that companion to include ledger-derived hazards.",
+      "receiverSide": true,
+      "preview": false,
+      "settingsSelectable": false,
+      "gates": ["SPEC-058 companion installed"],
+      "evidence": { "status": "documented", "receipt": null, "probes": ["HV-L1", "HV-L5"] },
+      "knownLimits": "Documented to inject context into the session in which the hook runs; reaching a different session (for example the orchestrator from a subagent hook) is not documented and is not assumed. Fires only on that session's own tool boundaries, so an idle session receives nothing. Plugin hooks inside subagents, workflow agents, batch units and teammates are inferred (SPEC-057 HV-6). Needs a companion: the main plugin ships no hooks (ADR 0024).",
+      "selected": false
+    },
+    {
+      "id": "session-socket-self",
+      "strategy": "doorbell",
+      "owner": "SPEC-059",
+      "mechanism": "The Doorbell: a script posts one JSON data line to the orchestrator's own session messaging socket (path exported by the host to that session's hooks and Bash commands). It never enumerates or connects to any other socket.",
+      "receiverSide": true,
+      "preview": false,
+      "settingsSelectable": true,
+      "gates": ["g1LateNoticeHarm", "g2", "adr", "doorbellAdrReframing", "verifiedAfterG2"],
+      "evidence": { "status": "unconfirmed", "receipt": null, "probes": ["HV-L2"] },
+      "knownLimits": "The socket and environment export are documented; the accepted line format, how the message is presented to the model and whether it is labelled as coming from the session itself are not documented. Sessions started with the bare or restricted options bind no socket. Messages cannot approve permissions or change configuration. This is the only candidate that can wake an idle session, which is why it is probed; it is not selected.",
+      "selected": false
+    },
+    {
+      "id": "monitor-stdout",
+      "strategy": "megaphone",
+      "owner": "SPEC-059",
+      "mechanism": "A companion monitor process tails the ledger and prints one line per bounded digest; each line is surfaced to the session that owns the monitor.",
+      "receiverSide": true,
+      "preview": true,
+      "settingsSelectable": true,
+      "gates": ["g1LateNoticeHarm", "g2", "adr"],
+      "evidence": { "status": "documented", "receipt": null, "probes": ["HV-L3"] },
+      "knownLimits": "Experimental manifest key. Interactive sessions only; stops when the owning subagent stops; not carried over when a session is backgrounded; monitors do not receive plugin options. Whether output reaches the model promptly is a probe question.",
+      "selected": false
+    },
+    {
+      "id": "channel",
+      "strategy": "megaphone",
+      "owner": "SPEC-059",
+      "mechanism": "A companion MCP server declaring the experimental channel capability emits channel notifications into the session that loaded it.",
+      "receiverSide": true,
+      "preview": true,
+      "settingsSelectable": true,
+      "gates": ["g1LateNoticeHarm", "g2", "adr"],
+      "evidence": { "status": "documented", "receipt": null, "probes": ["HV-L4"] },
+      "knownLimits": "Research preview. Loading is restricted to an allowlist or requires a development-only flag; organizations can disable it; not available on every provider; the host does not acknowledge delivery. Adds an MCP server to the companion, which must not widen the plugin MCP tool set.",
+      "selected": false
+    }
+  ],
+  "rejected": [
+    {
+      "id": "sender-side-cross-session-post",
+      "reason": "Writing to any session's socket other than the orchestrator's own (the Doorbell), or calling the host's session-messaging tools, from Agent Braid code would be messaging as a session, which is excluded by AGENTS.md, ADR 0021 and the founder's rule, and the cross-session socket line format is undocumented."
+    },
+    {
+      "id": "session-management-tools",
+      "reason": "The desktop session-management tool names are not in the public documentation read; Agent Braid never launches, messages, resumes or stops sessions."
+    },
+    {
+      "id": "mod-module-injection",
+      "reason": "In-process JavaScript modules are a large trust expansion and are out of scope for M4.6."
+    },
+    {
+      "id": "hook-in-main-plugin",
+      "reason": "Rejected by the founder (2026-10-24) for the main plugin; any hook-based transport lives in an opt-in companion."
+    },
+    {
+      "id": "post-tool-use-bash-observer-now",
+      "reason": "No PostToolUse Bash observer is specified now: the SPEC-057 checkpoint receipt covers the worktree surfaces, and the agent-teams case is decided with the ledger after probe HV-L7."
+    }
+  ],
+  "notCovered": ["Codex", "cloud sessions", "Remote Control and other-machine sessions", "VS Code extension", "Windows ledger support", "network filesystems", "non-Git workspaces"]
+}

@@ -1,0 +1,465 @@
+> Unpublished local draft payloads derived from `tasks.md` and `assurance.json` as they stand in this working tree. No remote issue, label, milestone, description or Project change was created, audited or applied, and none is authorized by this file. Source links target the eventual integrated `develop` branch and do not claim that these local files are already there. Refresh against the final candidate before any external use.
+
+# Unpublished issue drafts
+
+Milestone: M4.6 — Claude Code dynamic workflows (does not exist remotely; creation is forbidden in this delivery). One spec parent issue plus one issue per task; labels `spec` and `task`. Only the spec parent is marked Project review pending (draft flag only; tasks inherit it through the parent, the convention SPEC-052, SPEC-053 and SPEC-057 drafts use). Tasks marked `Founder:` are founder actions or decisions; tasks marked `Integrator:` touch files owned by another track; tasks marked `Candidate (unreleased, behind the G1 gate):` build the unreleased engineering candidate that G1 arm A3 needs and follow the SPEC-057 policy-profile schema increment and the founder's review disposition of the feature-local ADR proposal; tasks marked `Blocked by G1 gate GG and ADR adoption:` package, document for users, release or close and need a GG pass (with a GA pass) and the adopted ADR.
+
+## SPEC-058
+
+Proposed state: open. Parent: none. Milestone: M4.6 — Claude Code dynamic workflows. Labels: spec. Project review: pending (draft flag).
+
+<!-- agent-braid-spec-id: SPEC-058 -->
+
+Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+
+Requirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006, REQ-007, REQ-008, REQ-009, REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015, REQ-016.
+
+Issue state is a bounded tracking record, not a scientific or founder approval.
+
+## SPEC-058/T001
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T001 -->
+
+## Task
+
+Founder: answer, or record a deferral for, what the specification's "Evidence and unresolved questions" still lists as open after the decisions of 2026-10-24 (the drafting interpretations of the compiled profile mode as the lowest-precedence default, the Whisper delivery rule, the per-surface gate outcome and NotebookEdit as a coverage extension; `ask` semantics; the D versus B distinction and minimum host version per output; companion plugin name and distribution, which are decided after G1) as a separate decision record that also lists the 2026-10-24 decisions it relies on (settings precedence with the block floor, fail-open recorded, Mailbox + Whisper, deferred telemetry, staged G1 and the A3 candidate, unattributed-writer default, Article 13 classes, no Bash observer now, probe launch rule, two separate companions). Dependencies: none. Target files: a founder decision record whose location the founder chooses (not created by an agent). Acceptance: each remaining question has a recorded answer or a recorded deferral, and no approval of the specification, plan or tasks is inferred. Verification: `.venv-speckit/bin/python -m scripts.validate_spec_kit` still passes (structure only; a text check cannot verify a decision). Planned evidence: decision record path and SHA-256. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-006 SC-006 REQ-009 SC-009 REQ-015 SC-015
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T002
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T002 -->
+
+## Task
+
+Founder: review the feature-local ADR proposal (adr-proposal.md) that amends ADR 0024 for the guard companion plugin and the policy compiler outputs now and record a review disposition (proceed with the unreleased candidate, amend or reject); adopt, amend or reject it with the G1 outcome (decided 2026-10-24: review now, adopt with the G1 outcome). Adoption creates the canonical `docs/adr` file with the next free number at that time (not predicted here: a parallel branch already carries ADR 0030, so the number is the next free one at adoption), re-snapshots the affected current assurance records with fresh review, and needs an authority-impact review and independent review; none of that is done by an agent. Dependencies: none. Target files: a founder decision record; on adoption, a new file under `docs/adr/` created by the founder's process. Acceptance: the review disposition and, later, the adoption decision are recorded with the proposal's SHA-256 and no number is reserved before adoption; a review disposition is not adoption. Verification: `.venv-speckit/bin/python -m scripts.validate_spec_kit` still passes (structure only). Planned evidence: decision record path and SHA-256. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-015 SC-015 REQ-016 SC-016
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T003
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T003 -->
+
+## Task
+
+Integrator: reconcile the documents this track does not own: the SPEC-052 specification (the sentence that describes SPEC-057 as a possible future specification behind gate G2), plan, requirements checklist (CHK-003) and ADR proposal (rejected alternative 4, and a cross-note on its no-go list that hooks are reopened only for the SPEC-058 guard companion, through the separate feature-local ADR proposal, and not for the SPEC-059 components), program wording, the roadmap M4.6 lines, `docs/strategy/ECOSYSTEM.md`, the milestone description and the hypothesis index entries H-CW1 and H-CW2 (RESEARCH.md changes in a separate authority change), and record the cross-reference to specs/050 tasks T005, T006 and T011. Dependencies: T002 for any wording that depends on adoption. Target files: files owned by other tracks (not edited by the SPEC-058 track). Acceptance: each document is consistent with the clarifications, the no-go list is reopened explicitly and not silently overridden, and no claim of enforcement, safety or uniqueness appears. Verification: `.venv-speckit/bin/python -m scripts.validate_spec_kit` and a review. Planned evidence: review record path and SHA-256. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-015 SC-015
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T004
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T004 -->
+
+## Task
+
+Compare the G1 proposal and its inputs record (arms A3a and A3b run on the unreleased candidate, the optional native-controls-only arm AN of stage 2, the staging and the feasibility projection with its `inconclusive: denominator not reachable at this scale` rule, gates GA and GG and their order of evaluation, criteria CG0 to CG5, the release-wording sentence for a GG pass without AN, the output vocabulary, the three outputs and the rejected option) with REQ-005 to REQ-009, REQ-013 and REQ-016 of this specification, and report each inconsistency to the founder and the SPEC-057 track; edit neither document. Dependencies: none. Target files: a review note under `specs/058-claude-orchestration-guard/evidence/`. Acceptance: every threshold and arm that this specification restates is listed with the proposal's current value, and the limitation sentence in `contracts/release-decision.schema.json` is compared with the proposal's text (whitespace normalized); differences are reported, not resolved here; a changed frozen proposal supersedes this specification's restatement. Verification: `.venv-speckit/bin/python scripts/validate_claude_orchestration_g1_proposal.py` if present, and a review. Planned evidence: review note path and SHA-256. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-016 SC-016 REQ-008 SC-008
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T005
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T005 -->
+
+## Task
+
+Founder: authorize guard probe GP-1, which the orchestrating session then launches on a scratch repository with a throwaway settings-provided and a plugin-provided log-only hook: record, for crash, timeout, malformed JSON output and a non-blocking exit status, whether the tool call proceeded, whether the failure was visible anywhere and which exit status blocks, for a main session and a subagent. Dependencies: none (extends HV-6). Target files: a receipt under `specs/058-claude-orchestration-guard/evidence/` (GP-1); probe scripts stay outside the repository and are hashed in the receipt. Acceptance: the founder's authorization of this probe is recorded; the probe scripts were prepared by agents as log-only scripts; outcome per condition is pass, fail or unobserved with the Claude Code version, operating system, date and script hashes; counts and booleans only; no standing hook or setting left behind; EUR 0 additional spend. Verification: the receipt checker of T024 (planned). Planned evidence: receipt path and SHA-256. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-009 SC-009 REQ-014 SC-014
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T006
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T006 -->
+
+## Task
+
+Founder: authorize guard probe GP-2, which the orchestrating session then launches: in a throwaway hook emit `deny` and `ask` for a Write inside a workflow agent, a `/batch` unit, an in-process teammate, a split-pane teammate and a non-interactive session; record whether the call was cancelled, whether the reason reached the model, what `ask` does where no person is present, whether `additionalContext` from `TaskCreated` is shown to anyone, and that no `allow` or `defer` was emitted. Dependencies: HV-6 receipt recommended. Target files: a receipt under `specs/058-claude-orchestration-guard/evidence/` (GP-2). Acceptance: the founder's authorization of this probe is recorded; the probe scripts were prepared by agents as log-only scripts; outcome per surface is pass, fail or unobserved with version, operating system and date; counts and booleans only; no standing hook left behind; EUR 0 additional spend. Verification: the receipt checker of T024 (planned). Planned evidence: receipt path and SHA-256. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-005 SC-005 REQ-014 SC-014
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T007
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T007 -->
+
+## Task
+
+Founder: authorize guard probe GP-3, which the orchestrating session then launches: for each surface record how a hook locates an operator-owned profile and envelope outside the repository (environment, fixed user-level path, plugin data directory), which working directory and configuration root it sees in a Desktop worktree session and a dispatched session, and whether an agent can read or overwrite that location with Write, Edit and Bash. Dependencies: HV-6 and HV-10 receipts recommended. Target files: a receipt under `specs/058-claude-orchestration-guard/evidence/` (GP-3). Acceptance: the founder's authorization of this probe is recorded; the probe scripts were prepared by agents as log-only scripts; outcome per surface with version, operating system and date; booleans and counts only (no user paths); no standing setting left behind; EUR 0 additional spend. Verification: the receipt checker of T024 (planned). Planned evidence: receipt path and SHA-256. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-007 SC-007 REQ-014 SC-014
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T008
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T008 -->
+
+## Task
+
+Founder: authorize guard probe GP-4, which the orchestrating session then launches for an agent team: record whether a structured footprint marker line in a task description survives task creation intact for the model in use, whether `TaskCreated` fires with and without the task tools, whether exit status 2 rolls the creation back, and what the host does with an unmarked task. Dependencies: HV-7 receipt recommended. Target files: a receipt under `specs/058-claude-orchestration-guard/evidence/` (GP-4). Acceptance: the founder's authorization of this probe is recorded; the probe scripts were prepared by agents as log-only scripts; outcome per condition with the model identifier, version and date; booleans and counts only; no standing hook left behind; EUR 0 additional spend. Verification: the receipt checker of T024 (planned). Planned evidence: receipt path and SHA-256. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-011 SC-011 REQ-014 SC-014
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T009
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T009 -->
+
+## Task
+
+Founder: authorize guard probe GP-5, which the orchestrating session then launches: on a scratch repository record the exact permission rule and sandbox write-allowlist syntax and path semantics (relative, absolute, glob, worktree) accepted by the installed host, whether the sandbox write allowlist restricts writes or is additive to the default working-directory write access, whether `--settings` carries them to a dispatched session, and whether the combined settings stop an Edit, a Write, `sed -i` and a shell redirect outside the allowlist (extends HV-8). Dependencies: HV-8 receipt recommended. Target files: a receipt under `specs/058-claude-orchestration-guard/evidence/` (GP-5). Acceptance: the founder's authorization of this probe is recorded; the probe scripts were prepared by agents as log-only scripts; outcome per condition with version, operating system and date; booleans and counts only; no standing setting left behind; EUR 0 additional spend. Verification: the receipt checker of T024 (planned). Planned evidence: receipt path and SHA-256. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-002 SC-002 REQ-003 SC-003 REQ-014 SC-014
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T010
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T010 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Finalize the guard contracts from the drafts (decision, audit record, liveness attestation, release decision) with positive fixtures and a mutation set (an `allow`, a `defer`, a grant member, a content member, an unbounded string, a missing expiry, `observed` without a receipt, a non-pass release gate, a GG pass over a GA that did not pass, a singular surface id, `ask` for the `TaskCreated` event, a claimed surface without a per-surface pass, a character of the escaping exclusion set in a path (U+200E, U+200F, U+061C, U+200B, U+0085, U+2028, U+2029, U+FEFF, U+3164, a tag character, U+202E), a trailing line feed on every anchored string, a timestamp such as `tomorrow`, `NotebookEdit`, an audit record without `executionAuthorization` false, a Whisper that carries a sibling-written path as text, a claimed surface without the native-controls record and one whose `AN` did not run and that lacks the limitation sentence). Dependencies: SPEC-057 I-3 (policy-profile schema and settings resolver) merged; T006, T007. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `specs/058-claude-orchestration-guard/contracts/*.schema.json`; `tests/test_guard_contracts.py`; `tests/fixtures/guard/`. Acceptance: every schema is a valid draft 2020-12 document under the pinned `jsonschema`; each guard schema's `repositoryText` definition equals SPEC-057's byte for byte and no pattern ends with a bare end anchor; a notice built from a SPEC-057 hazard notice yields a valid Whisper context, a compiled profile validates against SPEC-057's policy-profile schema, and each refusal validates against SPEC-057's `command-error.schema.json`; each mutation is rejected with a stable diagnostic naming the rule, not the repository string; the conformance vectors, including the mode-resolution vectors, validate against the decision schema and the resolver. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_contracts` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path and hashes of schemas and fixtures with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-005 SC-005 REQ-008 SC-008 REQ-012 SC-012
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T011
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T011 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Implement the pure policy compiler from a declaration, a unit and a requested mode to a profile, reusing the SPEC-057 expansion and the single prefix-overlap function. Dependencies: T010; SPEC-057 T012 to T016 and T042 merged. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `agent_braid/guard_policy.py`; `tests/test_guard_policy_compiler.py`. Acceptance: deterministic byte-identical output; the profile validates against the SPEC-057 schema; partial envelopes are listed undecidable and refused in `block` without an exemption record; output C, main-plugin targets, `allow`, grants and content, a unit absent from the declaration and an input over the SPEC-057 bounds are refused with the code of `contracts/README.md` (`ERR-MALFORMED-INPUT` with a rule, or `ERR-OVER-BOUND`) from SPEC-057's `command-error.schema.json`, a nonzero exit and no profile; the rules that JSON Schema cannot express (the `audit` default, the ladder, the Bash coverage conditions, the digest, the partial-envelope refusal) are tested as compiler rules; `enforcementObserved` is false; writes only to explicit new private paths; no settings file is touched; no second spelling of path identity or overlap. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_policy_compiler` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path, output hashes and the overlap-equality table with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-001 SC-001
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T012
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T012 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Implement output D, the native settings document, with the denylist inversion handled explicitly. Dependencies: T011; T009. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `agent_braid/guard_policy.py` (output D section); `tests/test_guard_native_settings.py`. Acceptance: deny entries name other units' declared paths and the control paths; the sandbox write allowlist lists the unit envelope and is labelled unconfirmed (additive versus restrictive, HV-8 and GP-5) with no restriction or OS-level bound stated, and the document states that both lists are operator-supplied host configuration, not Agent Braid authority and not a grant; inexpressible paths are listed `unexpressible` and lower the stated coverage; Bash is `covered-where-verified` only with a bound HV-8 receipt that records the restriction; the output is not offered for a surface whose HV-8 failed or is unobserved; syntax is re-verified against the current host documentation; no enforcement or prevention wording. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_native_settings` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path, example outputs and the documentation-reading date with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-002 SC-002
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T013
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T013 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Implement output B, the paste-ready snippet renderer. Dependencies: T011; T012. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `agent_braid/guard_policy.py` (output B section); `tests/test_guard_settings_snippet.py`. Acceptance: the snippet equals the selected output's content under a coverage header (unit, host version, mode, boundary, date, not applied); no environment value, secret or home path; deterministic; never reads or writes a settings file. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_settings_snippet` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path and rendered fixtures with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-003 SC-003
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T014
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T014 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Implement the pure guard decision function and the modes ladder with scope resolution from the SPEC-057 resolver (most specific scope wins; a `block` at repository or user scope is a floor; the compiled profile mode is the lowest-precedence default; the source and any refused lowering are reported). Dependencies: T010; T011. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `agent_braid/guard_decision.py`; `tests/test_guard_decision_contract.py`; `tests/test_guard_modes.py`. Acceptance: every output is one of the four words; `allow`, `defer`, input rewriting and grant members are unreachable (exhaustive-finite over the conformance vectors plus a static scan); in-envelope is no-opinion; the decision table of the contracts README holds in every mode; absent mode is off; the compiler default is audit; the guard reports the scope a mode came from and any refused lowering (mode-resolution vectors MR-001 to MR-008); the `TaskCreated` event never yields `ask`; the guarded agent has no path to change the mode. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_decision_contract tests.test_guard_modes` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test paths and the vector table hash with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-005 SC-005 REQ-006 SC-006
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T015
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T015 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Implement control-path protection and the envelope digest check. Dependencies: T014; T007. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `agent_braid/guard_decision.py` (control-path section); `tests/test_guard_control_paths.py`. Acceptance: writes to protected control paths follow the mode ladder regardless of the envelope; the envelope is read from the operator-owned location only; a digest mismatch yields `tamper-suspected`, applies the mode decision, is recorded and degrades the attestation; the compiler refuses a profile that omits the control paths; the Bash limitation is stated in every output. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_control_paths` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path and negative-control results with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-007 SC-007
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T016
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T016 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Implement the liveness canary, counters and attestation states. Dependencies: T010; T014. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `agent_braid/guard_liveness.py`; `tests/test_guard_liveness.py`. Acceptance: `enforcementObserved` true only with an attestation naming version, surface and receipt inside its validity window; expired, missing, degraded or tamper-suspected states read advisory; counters hold counts only; a surface where hooks cannot be shown to fire reads `guard-not-covered`. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_liveness` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path and state-transition table with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-008 SC-008
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T017
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T017 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Implement the audited wrapper for fail-open handling and the content-free audit log. Dependencies: T014; T016; T005. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `agent_braid/guard_audit.py`; `tests/test_guard_fail_open.py`. Acceptance: crash, timeout, malformed input, unreadable profile, unverifiable envelope and over-bound input yield no-opinion, a recorded `guard-error` with a closed code, an error counter and a degraded attestation; no error becomes `allow` or a block-everything fallback; the record validates against the audit schema, carries no content, command, prompt or transcript path, is written outside the repository and excluded from Git; hook timeouts are explicit. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_fail_open` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path and seeded-failure results with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-009 SC-009 REQ-012 SC-012
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T018
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T018 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Implement the injection-safe context builder, the Whisper (template `pending-notice`) and the wording lint, with a test that the audit path has no telemetry emission and that the never-collect list of REQ-012 is a constant checked against any future telemetry vocabulary candidate. Dependencies: T014; SPEC-057 T019 (hazard-notice escaping) merged. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `agent_braid/guard_decision.py` (context section); `tests/test_guard_context_and_audit.py`. Acceptance: model-visible text comes from closed templates with escaped, bounded values in labelled data fields; adversarial fixtures (an instruction-like file name, a directive in a task subject, an oversized name) leave the instruction part byte-identical; a Whisper is built only from a validated, unexpired, bounded notice for the agent's unit, in `warn` and `block`, once per notice and agent, carries no recheck instruction and forwards no sibling-written path as text (unit ids, hazard kinds, a path count, 12-character path digests and at most 4 paths equal to the receiving unit's own declared paths; vectors GV-037 to GV-039), with an adversarial sibling file name asserted absent from the context; the lint rejects enforcement, prevention, safety and guarantee wording over emitted text and documents; the residual semantic prompt-injection risk is stated in the output documentation and is not claimed away. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_context_and_audit` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path and fixtures with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-012 SC-012
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T019
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T019 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Implement and test the hook resource bounds and the no-model-controlled-path rule. Dependencies: T014; T017. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `agent_braid/guard_hooks.py`; `tests/test_guard_bounds.py`. Acceptance: read-only, local, offline; no network, socket or process launch; inputs over the stated bounds are refused before decision; no tool-call field is passed as a path argument to any reader, CLI or MCP tool; a stated latency budget is measured and reported with the host version and never presented as a guarantee. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_bounds` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path, static-scan output and measured latency table with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-013 SC-013
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T020
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T020 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Implement the `TaskCreated` footprint check. Dependencies: T014; T008; HV-7 receipt. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `agent_braid/guard_hooks.py` (task section); `tests/test_guard_task_created.py`. Acceptance: a structured marker outside the creator's envelope or overlapping a sibling's declared write follows the mode ladder (exit status 2 in `block`); an unmarked task is no-opinion with an `unmarked-task` record; natural-language text is never parsed; task text is bounded and escaped; an undecidable footprint in `block` is `no-opinion` with `would-ask` and reads `guard-not-covered`; a model without the task tools yields `guard-not-covered`; the unmarked-task behavior is recorded as unconfirmed (HV-7). Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_task_created` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path and fixtures with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-011 SC-011
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T021
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T021 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Build the companion plugin source `agent-braid-guard` (working name): manifest, hook configuration (`PreToolUse` on Write and Edit, NotebookEdit only if accepted; `TaskCreated`), stdlib hook scripts, the pinned copy of the ownership module, inventory and verification, as a source tree that the founder can load as a local plugin directory, and record the commit that the G1 manifest hashes. No package, listing or publication is produced here. Dependencies: T014 to T020. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `integrations/agent-braid-guard/` (new, separate from `integrations/agent-braid/`); `scripts/build_guard_plugin.py`; `tests/test_guard_companion_package.py`. Acceptance: the source tree contains exactly the listed components and nothing else and nothing of the SPEC-059 recorder, monitor, channel or socket components; the pinned module copy equals the repository module by hash; the main plugin package is byte-identical to a build without the companion and the existing no-hooks assertions pass unchanged; an installed companion without an operator-owned profile is inert; mode absent is off. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_companion_package` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path, inventory and package hashes with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-004 SC-004 REQ-013 SC-013
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T022
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T022 -->
+
+## Task
+
+Blocked by G1 gate GG and ADR adoption: Implement the release gate in the companion package builder using the release decision record (the unreleased candidate does not use it). Dependencies: T021; T002; T027 for any real build. Also blocked by adoption of the ADR proposal (adr-proposal.md). Target files: `scripts/build_guard_plugin.py`; `tests/test_guard_release_gate.py`. Acceptance: the builder refuses without a record, with a non-pass GG, with a GA that is not `pass`, with a downgraded G1, with a mismatched G1 proposal hash or evaluated candidate commit, without the adopted ADR identity, without typed HV receipts for each claimed surface and version, without a per-surface pass for every claimed surface and output, without the native-controls record for a claimed surface (or, where AN did not run, without the verbatim limitation sentence), or without the commit of the merged SPEC-057 profile schema, each refusal being `ERR-MALFORMED-INPUT` with a rule, a nonzero exit and no package; it lists any surface below its G1 minimum or without observed liveness as `guard-not-covered`; the default package build is unaffected. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_release_gate` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path and refusal table with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-016 SC-016
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T023
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T023 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Implement the read-only guard report that correlates the audit record with a SPEC-057 receipt. Dependencies: T017; SPEC-057 T017, T018 and T042 merged. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `agent_braid/guard_policy.py` (report section); `agent_braid/cli.py` (additive subcommand `report-guard`, provisional); `tests/test_guard_bypass_report.py`. Acceptance: bypass classes `shell-write`, `unknown-route`, `control-path-write` and `denied-then-reappeared`; unattributed writes are `unknown` by default, neither bypass nor violation, and excluded only by a declared exemption rule that is named; a unit with no supplied source yields `not-observed`; a refused, unstable or unobservable snapshot, or an audit record or receipt over its input bound, is an error with a code from `command-error.schema.json` and no report, while an observed list over its reporting bound is truncated and recorded in a partial report and is never a refusal; the report states the coverage boundary, takes no action and writes only to an explicit new private path. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_bypass_report` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path and report fixtures with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-010 SC-010
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T024
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T024 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Finalize the guard coverage matrix, its checker and the probe receipt checker. Dependencies: T005 to T009 receipts or recorded unobserved outcomes. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `specs/058-claude-orchestration-guard/contracts/guard-surface-matrix.json`; `tests/test_guard_surface_matrix.py`. Acceptance: every surface-by-output cell has class, status, minimum version, preview label where applicable, evidence status and probes; the checker rejects a surface id outside `workflow-tracks`, `linked-sessions`, `agent-teams` and `batch`, a minimum host version that disagrees with SPEC-057's matrix for the same surface without the stated capability reason, a sandbox-allowlist cell that states a restriction or an OS-level bound without a receipt, a host-observed cell without a receipt, a missing class, a missing preview label for agent teams and agent view, a Bash-covered claim without an HV-8 receipt and any wording that says a surface is enforced; receipts reject content-like members and a missing version. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_surface_matrix` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path, matrix hash and receipt hashes with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-014 SC-014
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T025
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T025 -->
+
+## Task
+
+Candidate (unreleased, behind the G1 gate): Add the governance tests and the HAR.3 reconciliation note. Dependencies: T021; specs/050 T005, T006 and T011 status read. Also follows the founder's review disposition of the ADR proposal (T002; adoption waits for the G1 outcome). Target files: `tests/test_guard_governance.py`; `docs/tooling/CLAUDE_ORCHESTRATION_GUARD.md` (cross-reference section). Acceptance: no hook, mod, monitor, channel, skill or MCP tool in the main plugin; no launch, message, resume, stop, `claude` execution, grant or `allow` path; `executionAuthorization` false in every emitted object; the note states what is reused from T005, T006 and T011 and that no general hook-profile compiler or planner is built. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_governance` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: test path and note hash with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-015 SC-015
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T026
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T026 -->
+
+## Task
+
+Blocked by G1 gate GG and ADR adoption: Write the operator recipe: install, enable in audit, read the report, move to warn or block, revoke, the coverage boundary, fail-open and the tamper limits, with the claim-wording lint applied. Dependencies: T021; T023. Also blocked by adoption of the ADR proposal (adr-proposal.md). Target files: `docs/tooling/CLAUDE_ORCHESTRATION_GUARD.md`; `tests/test_guard_context_and_audit.py` (lint cases). Acceptance: the recipe names what is and is not covered per surface and output, states that hooks fail open and can be disabled, states that audit is the default when enabled, states the residual semantic prompt-injection risk and, where the G1 arm AN did not run, the verbatim limitation sentence about native controls, makes no prevention, safety, speed or uniqueness claim, and tells the operator that applying settings and installing the companion are their acts. Verification: `.venv-speckit/bin/python -m unittest tests.test_guard_context_and_audit` (planned; the file does not exist) plus `python3 scripts/validate_change.py --base develop --profile quick`; a structural pass is not a scientific result. Planned evidence: recipe path, hash and lint output with commands, exit status, hashes, environment and limits. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-004 SC-004 REQ-015 SC-015
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T027
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T027 -->
+
+## Task
+
+Blocked by G1 gate GG and ADR adoption: Founder: after the G1 report, record the release decision for the guard as a separate decision record conforming to `contracts/release-decision.schema.json`: the frozen G1 proposal hash, the commit of the candidate that G1 evaluated, the GG and GA outcomes (a GG `pass` requires a GA `pass`), the S2 decision, for each claimed surface whether the native-controls arm AN ran (a comparison receipt) or the verbatim limitation sentence, the identity of the adopted ADR, the claimed surfaces with host versions, a per-surface and per-output gate outcome of `pass` and typed receipts (path and digest), and the commit of the merged SPEC-057 profile schema. A `fail`, `inconclusive` or downgraded G1, or a GG over a GA that did not pass, closes SPEC-058 as not adopted and ships nothing; a `pass` permits release consideration only. Dependencies: SPEC-057 T033 to T036; T002. Also blocked by adoption of the ADR proposal (adr-proposal.md). Target files: a founder decision record (not created by an agent). Acceptance: the record validates against the schema and names only claimed surfaces the gate supports; no adoption, version number or publication is implied. Verification: the schema check of T010. Planned evidence: record path and SHA-256. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-016 SC-016
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-058/T028
+
+Proposed state: open. Parent: SPEC-058. Milestone: M4.6 — Claude Code dynamic workflows. Labels: task. Project review: inherited from the parent (no separate flag).
+
+<!-- agent-braid-task-id: SPEC-058/T028 -->
+
+## Task
+
+Blocked by G1 gate GG and ADR adoption: Independent technical review of the delivered compiler, guard, companion package (candidate and, if released, package) and recipe against this specification, and founder closure or a recorded disposition of each requirement. Dependencies: T021 to T027. Also blocked by adoption of the ADR proposal (adr-proposal.md). Target files: a review record and a founder decision record. Acceptance: each requirement has obtained evidence recorded in `assurance.json` or a recorded disposition; negative, inconclusive and not-adopted outcomes are valid reports; no speed, prevention or safety claim is made. Verification: `.venv-speckit/bin/python -m scripts.validate_spec_kit`. Planned evidence: review record path and SHA-256. Obtained: none.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/058-claude-orchestration-guard/assurance.json)
+- Trace: REQ-015 SC-015 REQ-016 SC-016
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.

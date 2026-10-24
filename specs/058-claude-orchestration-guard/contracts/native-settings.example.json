@@ -1,0 +1,22 @@
+{
+  "_status": "PROVISIONAL SHAPE, NOT EVIDENCE. Setting names follow the host documentation read on 2026-10-24 (permissions.deny; sandbox.filesystem.allowWrite) and must be re-verified against the then-current documentation and probe GP-5 before any release. Agent Braid does not apply this document; the operator supplies it. The permissions.deny rules and the sandbox allowlist are host configuration supplied by the operator; they are not Agent Braid authority and not a grant. Coverage: Write and Edit rules by path; Bash only where HV-8 is recorded for the surface and host version. The semantics of sandbox.filesystem.allowWrite are UNCONFIRMED: it may be additive to the default working-directory write access, in which case listing the envelope restricts nothing; no restriction and no operating-system bound is claimed until an HV-8 or GP-5 receipt records it.",
+  "_unit": "track-a",
+  "_sibling": "track-b writes src/util.py",
+  "_sandboxAllowlistSemantics": "unconfirmed: additive versus restrictive; relation to default working-directory writes (HV-8, GP-5)",
+  "permissions": {
+    "deny": [
+      "Edit(src/util.py)",
+      "Write(src/util.py)",
+      "Edit(.claude/settings.json)",
+      "Write(.claude/settings.json)"
+    ]
+  },
+  "sandbox": {
+    "filesystem": {
+      "allowWrite": [
+        "src/report.py",
+        "src/report_helpers.py"
+      ]
+    }
+  }
+}

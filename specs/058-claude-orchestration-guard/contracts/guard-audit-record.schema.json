@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/058-claude-orchestration-guard/contracts/guard-audit-record.schema.json",
+  "title": "Agent Braid guard audit record (draft, not adopted)",
+  "description": "One content-free record per guard evaluation or event, written to a private local path outside the repository. It carries an escaped bounded path and its digest, never file content, edit strings, command text, prompts, transcript paths or messages. Counts and decisions only. Repository-derived strings use SPEC-057's single escaping and bounding definition ($defs/repositoryText, reused byte for byte) and timestamps are patterns, so validation does not depend on a format checker or on a bare end anchor (the pinned Python validator lets a bare end anchor match before a final line feed). The record is an emitted object, so it carries executionAuthorization false.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "executionAuthorization",
+    "recordId",
+    "at",
+    "hostVersion",
+    "surface",
+    "unit",
+    "event",
+    "mode",
+    "scope",
+    "decision",
+    "reasonCode"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "agent-braid-guard-audit-record/v0.1"
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "recordId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+    },
+    "at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]{1,6})?Z(?!\\n)$",
+      "description": "UTC date-time, for example 2026-10-24T12:00:00Z; the shape is enforced by the pattern (calendar validity is a reader rule)."
+    },
+    "hostVersion": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,31}(?!\\n)$"
+    },
+    "surface": {
+      "enum": [
+        "workflow-tracks",
+        "linked-sessions",
+        "agent-teams",
+        "batch",
+        "unknown"
+      ]
+    },
+    "unit": {
+      "type": "string",
+      "pattern": "^(?:[A-Za-z0-9][A-Za-z0-9._-]{0,63}|unattributed)(?!\\n)$",
+      "description": "A declared unit id, or the SPEC-057 reserved sentinel unattributed for a writer that maps to no unit (an Article 13 unknown, never blamed)."
+    },
+    "event": {
+      "enum": [
+        "PreToolUse",
+        "TaskCreated",
+        "canary",
+        "guard-start"
+      ]
+    },
+    "toolName": {
+      "enum": [
+        "Write",
+        "Edit"
+      ],
+      "description": "Write and Edit are the founder-decided coverage. NotebookEdit is not representable; it would be added by a versioned schema change if the founder accepts the proposed extension."
+    },
+    "mode": {
+      "enum": [
+        "off",
+        "audit",
+        "warn",
+        "block"
+      ]
+    },
+    "scope": {
+      "enum": [
+        "conversation",
+        "repository",
+        "user",
+        "profile",
+        "default"
+      ]
+    },
+    "decision": {
+      "enum": [
+        "no-opinion",
+        "ask",
+        "deny",
+        "additionalContext"
+      ]
+    },
+    "wouldDecision": {
+      "enum": [
+        "would-deny",
+        "would-ask",
+        "would-warn",
+        "none"
+      ]
+    },
+    "reasonCode": {
+      "enum": [
+        "in-envelope",
+        "outside-envelope",
+        "control-path",
+        "undecidable-path",
+        "partial-envelope",
+        "tamper-suspected",
+        "unmarked-task",
+        "footprint-outside-envelope",
+        "footprint-overlaps-sibling",
+        "unattributed-writer",
+        "pending-notice",
+        "guard-error",
+        "mode-off",
+        "canary-observed"
+      ]
+    },
+    "errorCode": {
+      "enum": [
+        "profile-unreadable",
+        "envelope-unreadable",
+        "over-bound",
+        "malformed-input",
+        "timeout",
+        "internal"
+      ]
+    },
+    "path": {
+      "$ref": "#/$defs/repositoryText"
+    },
+    "pathSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?!\\n)$"
+    },
+    "envelopeSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?!\\n)$"
+    },
+    "counters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "eventsExpected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "eventsObserved": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timeouts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "noticesDelivered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "latencyMs": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "guardModeLoweringRefused": {
+      "type": "boolean"
+    }
+  },
+  "$defs": {
+    "repositoryText": {
+      "type": "string",
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u00ad\\u061c\\u115f-\\u1160\\u180e\\u200b-\\u200f\\u2028-\\u202e\\u2060-\\u206f\\u3164\\ufeff\\uffa0\\ufff9-\\ufffb\\U000e0000-\\U000e007f]*(?!\\n)$",
+      "description": "Reused byte for byte from SPEC-057 contracts/hazard-notice.schema.json $defs/repositoryText (REQ-008 of SPEC-057): the single definition of the escaping and bounding rule. A conformance test compares this definition with SPEC-057's."
+    }
+  }
+}

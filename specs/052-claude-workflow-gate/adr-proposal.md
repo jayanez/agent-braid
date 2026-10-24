@@ -32,7 +32,7 @@ Host approval of a workflow run, Desktop "Always" approval and auto mode are hos
 1. **Documentation-only recipe** (users paste the steps): lowest authority impact and a valid fallback, but unversioned, not tested with the package and easy to drift; kept as the fallback if the host cannot support the workflow (SPEC-052 REQ-013).
 2. **SubagentStop or WorktreeCreate hooks**: contradicts the no-hooks wording, fires on every subagent, is not scoped to a user's intent and is hard to bound; rejected. WorktreeRemove is documented as not firing for workflow agents, so hooks are also incomplete.
 3. **`agent.spawn` mod that denies or rewrites workflow agents**: would alter other plugins' and users' workflows; rejected as enforcement overreach.
-4. **Shipping a fan-out orchestrator**: replaces the user's orchestration, contradicts the ecosystem position, would require the specs/039 coordination contract and invites speed claims contradicted by recorded NO-GO results; rejected. A pre-flight partitioning proposal would be a separate future spec (SPEC-054) with its own ADR.
+4. **Shipping a fan-out orchestrator**: replaces the user's orchestration, contradicts the ecosystem position, would require the specs/039 coordination contract and invites speed claims contradicted by recorded NO-GO results; rejected. A pre-flight partitioning proposal would be a separate future spec (SPEC-057) with its own ADR.
 5. **Transcript-based hooks now**: depends on SPEC-053 and gate G0; deferred.
 
 ## Consequences

@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/057-claude-orchestration-advisory/contracts/recovery-report.schema.json",
+  "title": "Agent Braid recovery report (draft, not adopted)",
+  "description": "Read-only classification of what stopped, failed or orphaned units left behind. Information only: actionsTaken is always empty. Agent Braid never executes the host binary; the operator supplies the host's own agents JSON output. The report persists no session name, waitingFor text or working directory from that listing: only unit ids, closed enumerations, booleans, counts and an input digest. Unparseable or over-bound input is a refusal (command-error.schema.json), not a report; parseable input with missing or drifted fields yields unknown for the unit.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "executionAuthorization",
+    "actionsTaken",
+    "assurance",
+    "inputs",
+    "units",
+    "limits"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "agent-braid-recovery-report/v0.1"
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "actionsTaken": {
+      "const": []
+    },
+    "assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "compatibilityClass",
+        "notAGuarantee",
+        "observationContract"
+      ],
+      "properties": {
+        "compatibilityClass": {
+          "const": "0-heuristic"
+        },
+        "notAGuarantee": {
+          "const": true
+        },
+        "observationContract": {
+          "const": "Operator-supplied host session listing, committed or quiesced Git state and the declaration; undocumented interfaces are best-effort, labelled inferred and may fail soft; absent input is unknown."
+        }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agentsJson",
+        "git"
+      ],
+      "properties": {
+        "agentsJson": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "provided"
+          ],
+          "properties": {
+            "provided": {
+              "type": "boolean"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}(?!\\n)$"
+            },
+            "driftedFields": {
+              "type": "array",
+              "maxItems": 32,
+              "items": {
+                "type": "string",
+                "maxLength": 64,
+                "pattern": "^[A-Za-z0-9_.-]*(?!\\n)$"
+              }
+            }
+          }
+        },
+        "git": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "observed"
+          ],
+          "properties": {
+            "observed": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "units": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "classification",
+          "session"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+          },
+          "classification": {
+            "enum": [
+              "untouched",
+              "dirty",
+              "published",
+              "conflicting",
+              "unknown"
+            ]
+          },
+          "session": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "state",
+              "kind"
+            ],
+            "properties": {
+              "state": {
+                "enum": [
+                  "working",
+                  "blocked",
+                  "done",
+                  "failed",
+                  "stopped",
+                  "unknown"
+                ]
+              },
+              "kind": {
+                "enum": [
+                  "interactive",
+                  "background",
+                  "unknown"
+                ]
+              }
+            }
+          },
+          "liveSiblingOverlap": {
+            "type": "array",
+            "maxItems": 31,
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?!\\n)$"
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "agent-view-delete-discards-uncommitted-work",
+                "worktree-has-uncommitted-work",
+                "unpublished-commits"
+              ]
+            }
+          },
+          "bestEffort": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "interface",
+                "label",
+                "outcome"
+              ],
+              "properties": {
+                "interface": {
+                  "enum": [
+                    "agent-teams-task-directory",
+                    "team-configuration",
+                    "workflow-journal"
+                  ]
+                },
+                "label": {
+                  "const": "inferred"
+                },
+                "outcome": {
+                  "enum": [
+                    "read",
+                    "unreadable",
+                    "absent",
+                    "drifted"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "limits": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "string",
+        "maxLength": 256
+      }
+    }
+  }
+}

@@ -384,8 +384,11 @@ no extra environment or new runtime effect is admitted by this program.
 
 **Status:** Draft planning, adjacent to M4.5 and separate from its closure. The
 [M4.6 program](specs/052-claude-workflow-gate/program.md) contains
-[SPEC-052](specs/052-claude-workflow-gate/spec.md) and
-[SPEC-053](specs/053-claude-transcript-trace-adapter/spec.md). No remote milestone,
+[SPEC-052](specs/052-claude-workflow-gate/spec.md),
+[SPEC-053](specs/053-claude-transcript-trace-adapter/spec.md),
+[SPEC-057](specs/057-claude-orchestration-advisory/spec.md),
+[SPEC-058](specs/058-claude-orchestration-guard/spec.md) and
+[SPEC-059](specs/059-claude-orchestration-ledger/spec.md). No remote milestone,
 issue or Project record exists yet; publication requires a separate owner
 authorization. Extra cash spend is EUR 0.
 
@@ -394,6 +397,9 @@ integration point of Claude Code dynamic workflows. According to the vendor
 documentation, workflows parallelize and isolate agent work in worktrees but
 leave conflict detection and integration to the user. Agent Braid consumes those recorded results; it does not replace the
 orchestrator, ship a fan-out, merge branches, publish refs or issue grants.
+The milestone covers four Claude Code surfaces — dynamic-workflow tracks, linked
+sessions launched from another session, agent teams and `/batch` — across
+pre-flight, continuous checkpoints, recovery and integration.
 
 Deliverables:
 
@@ -404,8 +410,20 @@ Deliverables:
 - SPEC-053: a Claude subagent transcript to AIM trace adapter and a gate revision
   that reports read/write hazards, both blocked by the preregistered G0
   experiment;
-- a feature-local proposal to amend ADR 0024 for a Claude-only workflow
-  component; a canonical ADR is created only at founder adoption.
+- SPEC-057: an advisory core for orchestrator-style parallel agents: declared
+  ownership with pre-flight analysis, declared-versus-observed checkpoint
+  receipts, isolation and base audits, read-only recovery reports and pull
+  notices the orchestrator reads, plus the preregistered G1 experiment;
+- SPEC-058: an opt-in policy compiler and guard (native permissions and sandbox,
+  a separate `agent-braid-guard` companion plugin, or an exported settings
+  snippet; modes off, audit, warn and block, default audit), blocked by G1 and
+  an ADR amendment;
+- SPEC-059: a sketch (objective, limits, decisions and a draft coordination
+  contract) for a ledger and optional active push notifications across linked
+  sessions, blocked by G2;
+- feature-local proposals to amend ADR 0024 for a Claude-only workflow
+  component and for the companion guard; a canonical ADR is created only at
+  founder adoption.
 
 Gates:
 
@@ -419,13 +437,21 @@ Gates:
   commit-level gate only; an inconclusive G0 never passes.
 - **R1/R2:** plugin releases with fresh package checks, real-host receipts and
   separate founder release acceptance.
-- **G2 (optional):** pre-flight partitioning is a future route that needs the
-  coordination contract in the [AI tooling program](specs/039-ai-tooling-program/program.md)
-  and its own ADR.
+- **G1:** a preregistered experiment compares prompt partitioning (the vendor's
+  guidance, the host isolation flag and native permissions) with the advisory
+  core and, separately, the guard, staged and claimed per surface (a surface
+  without enough eligible runs is dropped, not extrapolated); it measures
+  conflicts prevented or caught earlier, parallelism retained, false blocks and
+  bypasses. SPEC-058 is not adopted without it.
+- **G2:** the coordination contract in the
+  [AI tooling program](specs/039-ai-tooling-program/program.md) (identity,
+  concurrency, idempotency and recovery) and its own ADR, required before the
+  SPEC-059 ledger or active push.
 
 Exit criteria:
 
-- real-host receipts for the gate and, if G0 passes, the adapter;
+- real-host receipts for the gate and, if G0 passes, the adapter; host probes
+  for every orchestration surface the advisory core claims;
 - refusal controls show no fan-out, grant, merge, ref publication or false
   success;
 - every attempt, unavailable field and negative or inconclusive outcome remains

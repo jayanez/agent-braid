@@ -25,7 +25,7 @@
     "HAR.1 — Braid Harness laboratory": "Provide a native Agent Braid mechanism to propose, probe and compose small task-local harness variants against an immutable base, first with deterministic fixtures and later through separately qualified Codex/Claude adapters. Draft planning; no due date, native acceptance or activation implied. Extra cash spend EUR 0.",
     "HAR.2 — Braid Harness evaluation and learning": "Determine separately whether harness refinement improves long-task continuity and agent coordination, then retain only scoped evidence-supported lessons and make explicit human or future automatic promotion decisions. Draft planning; no due date, native acceptance or activation implied. Extra cash spend EUR 0.",
     "HAR.3 — Braid Harness adaptation and integration": "Implement staged Braid Harness component profiles, skills/helpers/hooks, delegated orchestration, measured depth/width refinement, scoped curation, disabled automatic-policy software and opt-in lifecycle/product integration. Draft planning; native qualification, exact policy adoption and activation remain separate. EUR 0 extra spend.",
-    "M4.6 — Claude Code dynamic workflows": "Read-only Agent Braid integration gate for Claude Code dynamic workflows (SPEC-052) and a G0-gated transcript trace adapter (SPEC-053); planning only, no execution authority. Extra cash spend EUR 0."
+    "M4.6 — Claude Code dynamic workflows": "Read-only Agent Braid evidence for Claude Code dynamic workflows and orchestrator-style parallel agents: integration gate (SPEC-052), G0-gated transcript adapter (SPEC-053), advisory ownership/pre-flight/checkpoint/recovery core (SPEC-057), G1-gated opt-in guard (SPEC-058) and G2-gated ledger/push (SPEC-059); planning only, no execution authority. Extra cash spend EUR 0."
   },
   "closed_milestones": [
     "M0 — Operational foundations",
@@ -250,6 +250,18 @@
     },
     "054-plugin-surface-naming": {
       "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
+      "state": "open"
+    },
+    "057-claude-orchestration-advisory": {
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open"
+    },
+    "058-claude-orchestration-guard": {
+      "milestone": "M4.6 — Claude Code dynamic workflows",
+      "state": "open"
+    },
+    "059-claude-orchestration-ledger": {
+      "milestone": "M4.6 — Claude Code dynamic workflows",
       "state": "open"
     }
   },

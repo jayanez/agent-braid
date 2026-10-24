@@ -1,0 +1,507 @@
+{
+  "schemaVersion": "agent-braid-guard-conformance-vectors/v0.1",
+  "status": "draft; a finite table fixing the decision function's expected outputs so that tests can be written first; exhaustive-finite over this table only; not a proof for all inputs; not evidence for any requirement; the Whisper vectors GV-031 to GV-039 pin the path policy (no sibling-written path text; digests, counts and at most 4 own declared paths)",
+  "modes": [
+    "off",
+    "audit",
+    "warn",
+    "block"
+  ],
+  "forbiddenDecisionValues": [
+    "allow",
+    "defer"
+  ],
+  "vectors": [
+    {
+      "id": "GV-001",
+      "event": "PreToolUse",
+      "mode": "off",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "mode-off"
+    },
+    {
+      "id": "GV-002",
+      "event": "PreToolUse",
+      "mode": "off",
+      "pathSituation": "outside-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "mode-off"
+    },
+    {
+      "id": "GV-003",
+      "event": "PreToolUse",
+      "mode": "off",
+      "pathSituation": "control-path",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "mode-off"
+    },
+    {
+      "id": "GV-004",
+      "event": "PreToolUse",
+      "mode": "off",
+      "pathSituation": "undecidable-path",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "mode-off"
+    },
+    {
+      "id": "GV-005",
+      "event": "PreToolUse",
+      "mode": "audit",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "in-envelope",
+      "expectedWouldDecision": "none"
+    },
+    {
+      "id": "GV-006",
+      "event": "PreToolUse",
+      "mode": "audit",
+      "pathSituation": "outside-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "outside-envelope",
+      "expectedWouldDecision": "would-deny"
+    },
+    {
+      "id": "GV-007",
+      "event": "PreToolUse",
+      "mode": "audit",
+      "pathSituation": "control-path",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "control-path",
+      "expectedWouldDecision": "would-deny"
+    },
+    {
+      "id": "GV-008",
+      "event": "PreToolUse",
+      "mode": "audit",
+      "pathSituation": "undecidable-path",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "undecidable-path",
+      "expectedWouldDecision": "would-ask"
+    },
+    {
+      "id": "GV-009",
+      "event": "PreToolUse",
+      "mode": "warn",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "in-envelope",
+      "expectedWouldDecision": "none"
+    },
+    {
+      "id": "GV-010",
+      "event": "PreToolUse",
+      "mode": "warn",
+      "pathSituation": "outside-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "additionalContext",
+      "expectedReasonCode": "outside-envelope",
+      "expectedWouldDecision": "would-warn"
+    },
+    {
+      "id": "GV-011",
+      "event": "PreToolUse",
+      "mode": "warn",
+      "pathSituation": "control-path",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "additionalContext",
+      "expectedReasonCode": "control-path",
+      "expectedWouldDecision": "would-warn"
+    },
+    {
+      "id": "GV-012",
+      "event": "PreToolUse",
+      "mode": "warn",
+      "pathSituation": "undecidable-path",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "additionalContext",
+      "expectedReasonCode": "undecidable-path",
+      "expectedWouldDecision": "would-warn"
+    },
+    {
+      "id": "GV-013",
+      "event": "PreToolUse",
+      "mode": "block",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "in-envelope"
+    },
+    {
+      "id": "GV-014",
+      "event": "PreToolUse",
+      "mode": "block",
+      "pathSituation": "outside-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "deny",
+      "expectedReasonCode": "outside-envelope"
+    },
+    {
+      "id": "GV-015",
+      "event": "PreToolUse",
+      "mode": "block",
+      "pathSituation": "control-path",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "deny",
+      "expectedReasonCode": "control-path"
+    },
+    {
+      "id": "GV-016",
+      "event": "PreToolUse",
+      "mode": "block",
+      "pathSituation": "undecidable-path",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "ask",
+      "expectedReasonCode": "undecidable-path"
+    },
+    {
+      "id": "GV-017",
+      "event": "PreToolUse",
+      "mode": "warn",
+      "pathSituation": "outside-envelope",
+      "agentIdentity": "unmapped-agent",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "unattributed-writer",
+      "note": "Unmapped agent identity on a shared tree is unattributed: never blocked or blamed"
+    },
+    {
+      "id": "GV-018",
+      "event": "PreToolUse",
+      "mode": "block",
+      "pathSituation": "outside-envelope",
+      "agentIdentity": "unmapped-agent",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "unattributed-writer",
+      "note": "Same in block mode"
+    },
+    {
+      "id": "GV-019",
+      "event": "PreToolUse",
+      "mode": "block",
+      "pathSituation": "tamper-suspected",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "deny",
+      "expectedReasonCode": "tamper-suspected",
+      "note": "Envelope digest mismatch applies the mode decision to the triggering write"
+    },
+    {
+      "id": "GV-020",
+      "event": "PreToolUse",
+      "mode": "audit",
+      "pathSituation": "tamper-suspected",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "tamper-suspected",
+      "note": "Audit records would-deny",
+      "expectedWouldDecision": "would-deny"
+    },
+    {
+      "id": "GV-021",
+      "event": "PreToolUse",
+      "mode": "block",
+      "pathSituation": "guard-error",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "guard-error",
+      "note": "Internal error never denies and never allows; recorded and degrades attestation"
+    },
+    {
+      "id": "GV-022",
+      "event": "PreToolUse",
+      "mode": "block",
+      "pathSituation": "partial-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "ask",
+      "expectedReasonCode": "partial-envelope",
+      "note": "Entry the compiler listed undecidable"
+    },
+    {
+      "id": "GV-023",
+      "event": "TaskCreated",
+      "mode": "block",
+      "taskSituation": "footprint-outside-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "deny",
+      "expectedReasonCode": "footprint-outside-envelope"
+    },
+    {
+      "id": "GV-024",
+      "event": "TaskCreated",
+      "mode": "block",
+      "taskSituation": "footprint-overlaps-sibling",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "deny",
+      "expectedReasonCode": "footprint-overlaps-sibling"
+    },
+    {
+      "id": "GV-025",
+      "event": "TaskCreated",
+      "mode": "block",
+      "taskSituation": "unmarked-task",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "unmarked-task"
+    },
+    {
+      "id": "GV-026",
+      "event": "TaskCreated",
+      "mode": "warn",
+      "taskSituation": "footprint-outside-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "additionalContext",
+      "expectedReasonCode": "footprint-outside-envelope",
+      "expectedWouldDecision": "would-warn"
+    },
+    {
+      "id": "GV-027",
+      "event": "TaskCreated",
+      "mode": "audit",
+      "taskSituation": "footprint-outside-envelope",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "footprint-outside-envelope",
+      "expectedWouldDecision": "would-deny"
+    },
+    {
+      "id": "GV-028",
+      "event": "TaskCreated",
+      "mode": "off",
+      "taskSituation": "unmarked-task",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "mode-off"
+    },
+    {
+      "id": "GV-029",
+      "event": "TaskCreated",
+      "mode": "block",
+      "taskSituation": "undecidable-footprint",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "undecidable-path",
+      "expectedWouldDecision": "would-ask",
+      "note": "The host gives TaskCreated no ask: no-opinion, recorded; the surface reads guard-not-covered for this case (unconfirmed under HV-7)"
+    },
+    {
+      "id": "GV-030",
+      "event": "TaskCreated",
+      "mode": "warn",
+      "taskSituation": "undecidable-footprint",
+      "agentIdentity": "mapped-unit",
+      "expectedDecision": "additionalContext",
+      "expectedReasonCode": "undecidable-path",
+      "expectedWouldDecision": "would-warn",
+      "note": "Whether the host shows additionalContext from TaskCreated is unconfirmed (HV-7, GP-2); the matrix reads the cell as not covered until a receipt says otherwise"
+    },
+    {
+      "id": "GV-031",
+      "event": "PreToolUse",
+      "mode": "warn",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "noticeSituation": "valid-pending-notice",
+      "expectedDecision": "additionalContext",
+      "expectedReasonCode": "pending-notice",
+      "expectedWouldDecision": "would-warn",
+      "note": "Whisper: bounded escaped context from a validated pull notice; never a decision",
+      "expectedContextPathPolicy": "no-sibling-path-text: notice id, epoch, hazard kinds, unit ids, path count, path digests and at most 4 own declared paths"
+    },
+    {
+      "id": "GV-032",
+      "event": "PreToolUse",
+      "mode": "block",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "noticeSituation": "valid-pending-notice",
+      "expectedDecision": "additionalContext",
+      "expectedReasonCode": "pending-notice",
+      "expectedWouldDecision": "would-warn",
+      "note": "In block an in-envelope write is still not denied; the Whisper is context only",
+      "expectedContextPathPolicy": "no-sibling-path-text: notice id, epoch, hazard kinds, unit ids, path count, path digests and at most 4 own declared paths"
+    },
+    {
+      "id": "GV-033",
+      "event": "PreToolUse",
+      "mode": "audit",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "noticeSituation": "valid-pending-notice",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "in-envelope",
+      "expectedWouldDecision": "would-warn",
+      "note": "Audit changes nothing; the would-be Whisper is recorded"
+    },
+    {
+      "id": "GV-034",
+      "event": "PreToolUse",
+      "mode": "off",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "noticeSituation": "valid-pending-notice",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "mode-off"
+    },
+    {
+      "id": "GV-035",
+      "event": "PreToolUse",
+      "mode": "warn",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "noticeSituation": "expired-or-invalid-notice",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "in-envelope",
+      "expectedWouldDecision": "none",
+      "note": "An expired, other-unit or schema-invalid notice is not delivered"
+    },
+    {
+      "id": "GV-036",
+      "event": "PreToolUse",
+      "mode": "warn",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "noticeSituation": "already-delivered-notice",
+      "expectedDecision": "no-opinion",
+      "expectedReasonCode": "in-envelope",
+      "expectedWouldDecision": "none",
+      "note": "At most once per notice id and agent"
+    },
+    {
+      "id": "GV-037",
+      "event": "PreToolUse",
+      "mode": "warn",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "noticeSituation": "valid-notice-with-instruction-like-sibling-path",
+      "expectedDecision": "additionalContext",
+      "expectedReasonCode": "pending-notice",
+      "expectedWouldDecision": "would-warn",
+      "expectedContextPathPolicy": "digests-only",
+      "note": "A sibling wrote a file named like an instruction; the Whisper carries its 12-character digest and the path count, never the name. Escaping alone would have forwarded the text (semantic prompt injection is a residual risk that this rule bounds on the Whisper route and cannot remove from other routes)"
+    },
+    {
+      "id": "GV-038",
+      "event": "PreToolUse",
+      "mode": "block",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "noticeSituation": "valid-notice-naming-own-declared-path",
+      "expectedDecision": "additionalContext",
+      "expectedReasonCode": "pending-notice",
+      "expectedWouldDecision": "would-warn",
+      "expectedContextPathPolicy": "own-declared-path-allowed",
+      "note": "A path that exactly matches an entry of the receiving unit's own declared envelope may appear in ownDeclaredPaths (at most 4), because the operator wrote it"
+    },
+    {
+      "id": "GV-039",
+      "event": "PreToolUse",
+      "mode": "warn",
+      "pathSituation": "in-envelope",
+      "agentIdentity": "mapped-unit",
+      "noticeSituation": "valid-notice-with-over-4-own-paths",
+      "expectedDecision": "additionalContext",
+      "expectedReasonCode": "pending-notice",
+      "expectedWouldDecision": "would-warn",
+      "expectedContextPathPolicy": "own-declared-paths-capped-at-4",
+      "note": "More than 4 own declared paths: the rest are counted in pathCount, not listed"
+    }
+  ],
+  "modeResolutionVectors": [
+    {
+      "id": "MR-001",
+      "profileMode": "audit",
+      "settings": {},
+      "expectedEffectiveMode": "audit",
+      "expectedSource": "profile",
+      "expectedGuardModeLoweringRefused": false,
+      "note": "The profile mode is the lowest-precedence default"
+    },
+    {
+      "id": "MR-002",
+      "profileMode": null,
+      "settings": {},
+      "expectedEffectiveMode": "off",
+      "expectedSource": "default",
+      "expectedGuardModeLoweringRefused": false,
+      "note": "Absent in every source is off"
+    },
+    {
+      "id": "MR-003",
+      "profileMode": "audit",
+      "settings": {
+        "user": "warn"
+      },
+      "expectedEffectiveMode": "warn",
+      "expectedSource": "user",
+      "expectedGuardModeLoweringRefused": false
+    },
+    {
+      "id": "MR-004",
+      "profileMode": "audit",
+      "settings": {
+        "user": "warn",
+        "repository": "audit"
+      },
+      "expectedEffectiveMode": "audit",
+      "expectedSource": "repository",
+      "expectedGuardModeLoweringRefused": false,
+      "note": "The most specific scope wins when no block floor applies"
+    },
+    {
+      "id": "MR-005",
+      "profileMode": "audit",
+      "settings": {
+        "repository": "block",
+        "conversation": "off"
+      },
+      "expectedEffectiveMode": "block",
+      "expectedSource": "repository",
+      "expectedGuardModeLoweringRefused": true,
+      "note": "A block at repository scope is a floor a conversation cannot lower"
+    },
+    {
+      "id": "MR-006",
+      "profileMode": "warn",
+      "settings": {
+        "user": "block",
+        "conversation": "audit"
+      },
+      "expectedEffectiveMode": "block",
+      "expectedSource": "user",
+      "expectedGuardModeLoweringRefused": true,
+      "note": "A block at user scope is also a floor"
+    },
+    {
+      "id": "MR-007",
+      "profileMode": "block",
+      "settings": {
+        "conversation": "off"
+      },
+      "expectedEffectiveMode": "off",
+      "expectedSource": "conversation",
+      "expectedGuardModeLoweringRefused": false,
+      "note": "A profile block is a default, not a scope floor, so the operator can set off at a scope"
+    },
+    {
+      "id": "MR-008",
+      "profileMode": "audit",
+      "settings": {
+        "conversation": "block",
+        "repository": "warn"
+      },
+      "expectedEffectiveMode": "block",
+      "expectedSource": "conversation",
+      "expectedGuardModeLoweringRefused": false,
+      "note": "A conversation may raise the mode; the floor concerns lowering only"
+    }
+  ]
+}

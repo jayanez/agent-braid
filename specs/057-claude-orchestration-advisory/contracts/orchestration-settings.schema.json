@@ -1,0 +1,453 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/057-claude-orchestration-advisory/contracts/orchestration-settings.schema.json",
+  "title": "Agent Braid orchestration settings (draft, not adopted)",
+  "description": "Notification strategy and guard mode per scope, plus a versioned extension point. Precedence (decided 2026-10-24): the most specific scope wins (conversation over repository over user), except that a block set at repository or user scope is a floor that a more specific scope cannot lower. Settings are operator-owned and read only from the operator-owned locations defined per scope in contracts/README.md (user: a file in the per-user Agent Braid configuration directory, outside every repository; repository: a file outside every working tree of that repository, in the per-user configuration directory under a subdirectory named by the repository identity digest, never a tracked or untracked file inside a working tree; conversation: a document the operator supplies at invocation as an argument or on standard input, never read from the repository or from a model-writable path). A file that is a symlink, is inside a working tree or is writable by group or others is refused with ERR-UNOBSERVABLE-SOURCE. The block floor can come only from the repository and user locations; the conversation scope can raise the mode or leave it but cannot lower a floor. These locations are not protected against a writer with the operator's file permissions (including shell access): the floor is as strong as those permissions, which is stated in the claims. In SPEC-057 only the Mailbox (the pull notice that the orchestrator reads) is effective and nothing is enforced; the Whisper is a SPEC-058 companion output; the Megaphone and the Doorbell, and any push, are reserved for SPEC-059 and are not effective here. guardMode is carried so that SPEC-058 consumes one schema; SPEC-057 validates it and never enforces it. SPEC-059 extends this schema through the extensions member under its own versioned definition; SPEC-057 stores an extension without interpreting it and never treats it as effective.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "agent-braid-orchestration-settings/v0.1"
+    },
+    "conversation": {
+      "$ref": "#/$defs/scopeSettings"
+    },
+    "repository": {
+      "$ref": "#/$defs/scopeSettings"
+    },
+    "user": {
+      "$ref": "#/$defs/scopeSettings"
+    },
+    "extensions": {
+      "$ref": "#/$defs/extensions"
+    }
+  },
+  "$defs": {
+    "extensions": {
+      "type": "object",
+      "maxProperties": 8,
+      "description": "Versioned extension point. Keys name the owner specification (for example SPEC-059). SPEC-057 neither interprets nor enforces an entry; an unknown or newer extensionVersion is stored and reported as not interpreted, never as effective.",
+      "propertyNames": {
+        "pattern": "^SPEC-[0-9]{3}(?!\\n)$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/extensionEntry"
+      }
+    },
+    "extensionEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "extensionVersion",
+        "settings"
+      ],
+      "properties": {
+        "extensionVersion": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}(?!\\n)$",
+          "description": "Owner-defined version, for example agent-braid-push-settings/v0.1."
+        },
+        "settings": {
+          "type": "object",
+          "maxProperties": 32,
+          "propertyNames": {
+            "pattern": "^[A-Za-z][A-Za-z0-9]{0,63}(?!\\n)$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/extensionValue"
+          }
+        }
+      }
+    },
+    "extensionValue": {
+      "description": "A bounded scalar or a short list of bounded strings; no nested objects and no content.",
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u00ad\\u061c\\u115f-\\u1160\\u180e\\u200b-\\u200f\\u2028-\\u202e\\u2060-\\u206f\\u3164\\ufeff\\uffa0\\ufff9-\\ufffb\\U000e0000-\\U000e007f]*(?!\\n)$"
+        },
+        {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "maxLength": 64,
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u00ad\\u061c\\u115f-\\u1160\\u180e\\u200b-\\u200f\\u2028-\\u202e\\u2060-\\u206f\\u3164\\ufeff\\uffa0\\ufff9-\\ufffb\\U000e0000-\\U000e007f]*(?!\\n)$"
+          }
+        }
+      ]
+    },
+    "scopeSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "notificationMode": {
+          "enum": [
+            "pull",
+            "push"
+          ],
+          "description": "Coarse selector. push is recorded as reserved-for-SPEC-059 and is never effective here."
+        },
+        "notificationStrategy": {
+          "enum": [
+            "mailbox-whisper",
+            "megaphone",
+            "doorbell"
+          ],
+          "description": "Default mailbox-whisper (pull notice read by the orchestrator, plus PreToolUse additionalContext to the affected agent in its own session when the SPEC-058 companion is installed). megaphone (monitor or channels) and doorbell (a script posting data to the orchestrator's own session messaging socket) are opt-in, reserved for SPEC-059, and never effective in SPEC-057."
+        },
+        "guardMode": {
+          "enum": [
+            "off",
+            "audit",
+            "warn",
+            "block"
+          ],
+          "description": "Reserved for SPEC-058. Absent means off; the default when enabled is audit. A block at repository or user scope is a floor."
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "notificationMode"
+            ],
+            "properties": {
+              "notificationMode": {
+                "const": "push"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "notificationStrategy"
+            ],
+            "properties": {
+              "notificationStrategy": {
+                "enum": [
+                  "megaphone",
+                  "doorbell"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "notificationMode"
+            ],
+            "properties": {
+              "notificationMode": {
+                "const": "pull"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "notificationStrategy": {
+                "const": "mailbox-whisper"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "notificationStrategy"
+            ],
+            "properties": {
+              "notificationStrategy": {
+                "enum": [
+                  "megaphone",
+                  "doorbell"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "notificationMode"
+            ],
+            "properties": {
+              "notificationMode": {
+                "const": "push"
+              }
+            }
+          }
+        }
+      ],
+      "description": "Mode and strategy are coherent by rule: push requires a megaphone or doorbell strategy, and a megaphone or doorbell strategy requires push; pull allows only mailbox-whisper. A strategy given alone as mailbox-whisper means pull."
+    },
+    "resolvedSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "settingsSource",
+        "scopeSources",
+        "effectiveNotificationMode",
+        "effectiveDelivery",
+        "requestedNotificationMode",
+        "requestedNotificationStrategy",
+        "pushStatus",
+        "whisperStatus",
+        "resolvedFromScope",
+        "guardMode",
+        "guardModeFloor",
+        "guardModeLoweringRefused",
+        "extensions",
+        "enforcement"
+      ],
+      "properties": {
+        "settingsSource": {
+          "const": "operator-owned-location"
+        },
+        "effectiveNotificationMode": {
+          "const": "pull"
+        },
+        "effectiveDelivery": {
+          "const": "mailbox",
+          "description": "The only effective delivery in SPEC-057: a pull notice that the orchestrator reads."
+        },
+        "requestedNotificationMode": {
+          "enum": [
+            "pull",
+            "push"
+          ]
+        },
+        "requestedNotificationStrategy": {
+          "enum": [
+            "mailbox-whisper",
+            "megaphone",
+            "doorbell"
+          ]
+        },
+        "pushStatus": {
+          "enum": [
+            "not-requested",
+            "reserved-for-SPEC-059"
+          ]
+        },
+        "whisperStatus": {
+          "const": "companion-SPEC-058-not-enabled-here"
+        },
+        "resolvedFromScope": {
+          "enum": [
+            "conversation",
+            "repository",
+            "user",
+            "default"
+          ]
+        },
+        "guardMode": {
+          "enum": [
+            "off",
+            "audit",
+            "warn",
+            "block"
+          ]
+        },
+        "guardModeFloor": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "mode",
+                "scope"
+              ],
+              "properties": {
+                "mode": {
+                  "const": "block"
+                },
+                "scope": {
+                  "enum": [
+                    "repository",
+                    "user"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "guardModeLoweringRefused": {
+          "type": "boolean",
+          "description": "True when a more specific scope requested a mode below the floor and the floor was kept."
+        },
+        "extensions": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "owner",
+              "extensionVersion",
+              "status"
+            ],
+            "properties": {
+              "owner": {
+                "type": "string",
+                "pattern": "^SPEC-[0-9]{3}(?!\\n)$"
+              },
+              "extensionVersion": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "status": {
+                "const": "not-interpreted-by-SPEC-057"
+              }
+            }
+          }
+        },
+        "enforcement": {
+          "const": "none-in-SPEC-057"
+        },
+        "scopeSources": {
+          "type": "array",
+          "maxItems": 3,
+          "description": "Which operator-owned location each present scope was read from. A scope read from any other place is refused (ERR-UNOBSERVABLE-SOURCE), not resolved.",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "scope",
+                  "location"
+                ],
+                "properties": {
+                  "scope": {
+                    "const": "user"
+                  },
+                  "location": {
+                    "const": "user-config-directory"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "scope",
+                  "location"
+                ],
+                "properties": {
+                  "scope": {
+                    "const": "repository"
+                  },
+                  "location": {
+                    "const": "outside-working-tree-keyed-by-repository-digest"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "scope",
+                  "location"
+                ],
+                "properties": {
+                  "scope": {
+                    "const": "conversation"
+                  },
+                  "location": {
+                    "const": "operator-supplied-at-invocation"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "guardModeFloor": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "guardModeFloor"
+            ]
+          },
+          "then": {
+            "properties": {
+              "guardMode": {
+                "const": "block"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "requestedNotificationMode"
+            ],
+            "properties": {
+              "requestedNotificationMode": {
+                "const": "pull"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "pushStatus": {
+                "const": "not-requested"
+              },
+              "requestedNotificationStrategy": {
+                "const": "mailbox-whisper"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "requestedNotificationMode"
+            ],
+            "properties": {
+              "requestedNotificationMode": {
+                "const": "push"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "pushStatus": {
+                "const": "reserved-for-SPEC-059"
+              },
+              "requestedNotificationStrategy": {
+                "enum": [
+                  "megaphone",
+                  "doorbell"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

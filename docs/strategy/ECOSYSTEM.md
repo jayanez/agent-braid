@@ -71,6 +71,87 @@ does not replace orchestration. Records:
 [SPEC-052](../../specs/052-claude-workflow-gate/spec.md) and
 [SPEC-053](../../specs/053-claude-transcript-trace-adapter/spec.md).
 
+### Orchestrator coordination prior-art pass (M4.6, 2026-10-24)
+
+A dated, read-only pass covered tools that coordinate parallel Claude Code
+agents. The query set, per-capability classification, limits and sources are
+recorded in the [radar snapshot](../../research/radar/2026-10-24-claude-orchestration.json)
+(RAD-2026-016 to RAD-2026-033) and adoption track AT-2026-007 in the
+[track register](../../research/adoption/2026-09-initial-triage.json). READMEs
+were read, no tool was installed, and no behavior was reproduced. The field is
+crowded and moving: several relevant tools in the pass were absent from the
+2026-10-23 radar.
+
+Classification for Agent Braid, by capability:
+
+- Behind: stuck-agent detection and recovery, messaging and inboxes, merge queues
+  with verification gates ([Gas Town](https://github.com/gastownhall/gastown)
+  Witness and Refinery, [SVRF](https://github.com/nybarius/SVRF)), durable claim
+  and audit ledgers ([Beads](https://github.com/gastownhall/beads)), path leases
+  and seals ([mcp_agent_mail](https://github.com/Dicklesworthstone/mcp_agent_mail),
+  [agent-coord](https://github.com/ThatHunky/agent-coord),
+  [git-kura](https://github.com/tooppoo/git-kura), whose repository was
+  confirmed on 2026-10-24 at 0 stars with a last push on 2026-09-14 and whose
+  seal behavior is known from its README only), live textual prediction
+  (Clash), and symbol-level overlap
+  ([DriftWatch](https://github.com/Vignesh-P-C/DriftWatch)); Agent Braid
+  resources are exact strings.
+- Parity: hook-based blocking of file edits, declared-footprint pre-flight
+  scheduling ([OpenWeft](https://github.com/NeuraCerebra-AI/openweft),
+  [Orchestune](https://github.com/Saltmu/orchestune)), and, for the integration
+  stage, combined-tree checks that also name missing evidence
+  ([Radar](https://github.com/Jake-Network/radar)). The last means reporting
+  uncertainty, including unknown as a result, is not by itself a differentiator
+  and is not claimed as one. Radar was confirmed on 2026-10-24 at 2 stars with a
+  last push on 2026-10-17.
+- Complementary: syntax-aware textual merge ([Mergiraf](https://codeberg.org/mergiraf/mergiraf)).
+- Candidate differentiators, each bounded and untested: declared read/write
+  effect hazards with explicit coverage (near-neighbors that were not ruled out:
+  [TeamBus](https://github.com/Beastburner/teambus) reports contract consumers
+  blocked until they commit and a conflict check over contract-consumer and
+  import relations, and Orchestune reports shared-contract risks; both are
+  consumer-side checks, their READMEs do not state coverage, and nothing was
+  reproduced); order-independence evidence from replay
+  of at most four operations; and declared-versus-observed envelope receipts with
+  stated observation coverage (exact-path receipt, Article 13 class
+  1-syntactic; pre-flight, recovery and isolation audit are class 0-heuristic;
+  never a guarantee). Unknown as a result is not a standalone differentiator.
+  Only the combination of an Article 13 compatibility class, pairwise
+  classification that includes unknown, declared read/write hazards and the
+  declared-versus-observed receipt is retained, and it is itself untested. A
+  compatibility class on every output and an audit-first enforcement ladder are
+  small, easily copied and untested, so they are not listed as differentiators.
+  Read-set validation exists in the literature (for example S-Bus,
+  arXiv:2605.17076v1, identified from a search excerpt on 2026-10-24 and not read
+  in full), so any claim concerns application to Git worktrees and Claude Code
+  agents, not a new technique. Percentage figures about agent over-claiming and
+  benign races that circulated in the research digest are unverified and are not
+  used; the identifiers actually checked are listed in the radar snapshot under
+  literatureReferences.
+
+The official Claude plugin marketplace snapshot (315 plugins) returned no plugin
+whose name or description targets multi-agent file ownership or conflict
+evidence under the keyword filter recorded in the snapshot; this does not cover
+other plugin directories.
+
+Bounded claim wording for any later text: "In a dated pass on 2026-10-24 (query
+set recorded in the radar snapshot), no surveyed README of a shipped Claude Code
+plugin or coordination tool was found that states read-set validation with
+explicit coverage, or that provides order-independence evidence from bounded
+replay. TeamBus and Orchestune describe consumer-side or shared-contract checks
+that may be near-neighbors; their READMEs were read and their behavior was not
+reproduced. This is absence within the surveyed set, not a statement about the whole
+market, not a claim of novelty over the literature, and not evidence of user
+demand." The words
+unique, only, first, nobody offers and any speed term are not used. The pass is
+repeated before publication wording, before SPEC-058 release and at M4.6
+closure. Interoperation with these tools is optional and untested: Agent Braid
+could read their state as declared or observed inputs, or serve as an evidence
+step for a verification gate, but no adapter is implemented here; deferred input contracts exist in SPEC-057
+and are sketched in SPEC-059. Agent Braid does
+not launch, message as, resume or authorize sessions, so the fleet managers
+above are not competitors on that axis.
+
 ## Adapter rule
 
 Adapters for generic traces, OpenAI Agents, MCP, A2A, or NeMo must preserve:

@@ -1,0 +1,735 @@
+{
+  "recordVersion": "agent-braid-claude-orchestration-g1-input-proposal-1",
+  "status": "pending-founder-decision",
+  "frozen": false,
+  "executionAuthorization": false,
+  "humanReview": "pending",
+  "approved": false,
+  "obtainedEvidence": [],
+  "milestone": "M4.6 - Claude Code dynamic workflows",
+  "gate": "G1",
+  "hypothesis": {
+    "id": "H-CW2",
+    "path": "research/hypotheses/H-CW2-claude-orchestration-ownership.md",
+    "evidenceStatus": "untested"
+  },
+  "specs": {
+    "owner": "SPEC-057",
+    "gated": [
+      "SPEC-058"
+    ],
+    "blockedByG2": "SPEC-059",
+    "integrationComparator": "SPEC-052",
+    "sketch": "SPEC-059"
+  },
+  "proposal": {
+    "path": "docs/experiments/CLAUDE_ORCHESTRATION_G1_PROPOSAL.md",
+    "sha256": "fa581f5660f6134b1d749c0482c9d5a3e7b2b75d525c238868a5d5e2e2985400"
+  },
+  "runner": "founder",
+  "budget": {
+    "additionalSpendEur": 0,
+    "billingRoute": "existing-claude-subscription-included-quota",
+    "model": "sonnet",
+    "effort": "medium",
+    "extraUsageEnabled": false,
+    "autoRechargeEnabled": false,
+    "apiCredentialsUsed": false,
+    "stopOnQuotaExhaustion": true,
+    "reference": "docs/tooling/BUDGET.md"
+  },
+  "hostVerification": {
+    "recordedBeforeDependentArm": true,
+    "unverifiedMeansNotClaimed": true,
+    "hostVersionRecordedPerRun": true,
+    "probes": [
+      "hooks-fire-in-workflow-agents",
+      "hooks-fire-in-batch-units",
+      "hooks-fire-in-in-process-teammates",
+      "deny-and-sandbox-apply-in-subagents",
+      "plugin-mcp-available-in-workflow-agents",
+      "task-tools-present-for-task-hooks",
+      "dispatched-session-config-source",
+      "batch-and-agent-view-layout"
+    ],
+    "probeIds": {
+      "hooks-fire-in-workflow-agents": [
+        "HV-6"
+      ],
+      "hooks-fire-in-batch-units": [
+        "HV-6"
+      ],
+      "hooks-fire-in-in-process-teammates": [
+        "HV-6"
+      ],
+      "deny-and-sandbox-apply-in-subagents": [
+        "HV-8",
+        "GP-5"
+      ],
+      "plugin-mcp-available-in-workflow-agents": [
+        "HV-1"
+      ],
+      "task-tools-present-for-task-hooks": [
+        "HV-7",
+        "GP-4"
+      ],
+      "dispatched-session-config-source": [
+        "GP-3"
+      ],
+      "batch-and-agent-view-layout": [
+        "HV-11"
+      ]
+    },
+    "probeIdsProvisional": "HV-11 and GP-3 are provisional until reconciled with the SPEC-057 probe registry; HV-1 is the SPEC-052 probe for plugin MCP tools in workflow agents; bound at freeze",
+    "launchedBy": "orchestrator-after-founder-authorizes-each-probe",
+    "evidencePinnedWithHostVersion": true,
+    "recoveryOutsideG1Evidence": true
+  },
+  "design": {
+    "surfaces": [
+      {
+        "id": "workflow-tracks",
+        "minEligibleNaturalTaskSets": 3,
+        "minEligibleDesignedTaskSets": 3,
+        "maxStartedTaskSets": 8,
+        "tracksPerTaskSet": {
+          "min": 3,
+          "max": 4
+        },
+        "integrationComparator": "spec052-end-of-run-gate",
+        "catchKindsEligible": [
+          "prevented",
+          "caught-earlier-than-spec052-gate"
+        ]
+      },
+      {
+        "id": "linked-sessions",
+        "minEligibleNaturalTaskSets": 3,
+        "minEligibleDesignedTaskSets": 3,
+        "maxStartedTaskSets": 8,
+        "tracksPerTaskSet": {
+          "min": 3,
+          "max": 4
+        },
+        "integrationComparator": "spec052-end-of-run-gate",
+        "catchKindsEligible": [
+          "prevented",
+          "caught-earlier-than-spec052-gate"
+        ]
+      },
+      {
+        "id": "agent-teams",
+        "minEligibleNaturalTaskSets": 3,
+        "minEligibleDesignedTaskSets": 3,
+        "maxStartedTaskSets": 8,
+        "tracksPerTaskSet": {
+          "min": 3,
+          "max": 4
+        },
+        "integrationComparator": "final-tree-tests-and-lost-update-outcome-no-commit-stage-gate",
+        "catchKindsEligible": [
+          "prevented"
+        ]
+      },
+      {
+        "id": "batch",
+        "minEligibleNaturalTaskSets": 3,
+        "minEligibleDesignedTaskSets": 3,
+        "maxStartedTaskSets": 8,
+        "tracksPerTaskSet": {
+          "min": 5,
+          "max": 6
+        },
+        "integrationComparator": "undefined-until-HV-11-not-comparable",
+        "catchKindsEligible": [
+          "prevented"
+        ],
+        "comparatorBlockedUntil": "HV-11"
+      }
+    ],
+    "repetitionsPerTaskAndArm": 2,
+    "modelSamplingControllable": false,
+    "armOrder": "permutation-fixed-by-recorded-seed-in-manifest-before-launch",
+    "pairing": "same-task-set-same-base-commit-fresh-clone-per-run",
+    "predictionsHashedBeforeReference": true,
+    "dropRunsAfterSeeingOutcome": false,
+    "stages": [
+      {
+        "id": "S1",
+        "arms": [
+          "A0",
+          "A1",
+          "A2"
+        ],
+        "startsImplicitly": true,
+        "surfaceCount": 2,
+        "surfacesChosenInManifestBeforeFreeze": true,
+        "nullControl": {
+          "arm": "A0n",
+          "designedTaskSetsPerClaimedSurface": 1,
+          "repetitions": 2
+        }
+      },
+      {
+        "id": "S2",
+        "arms": [
+          "A3a",
+          "A3b",
+          "AN"
+        ],
+        "startsImplicitly": false,
+        "requiresSeparateFounderDecisionAfterS1Report": true,
+        "requiresUnreleasedCandidateAtHashedCommit": true,
+        "subStages": {
+          "S2a": [
+            "A3a"
+          ],
+          "S2b": [
+            "A3b",
+            "AN"
+          ]
+        },
+        "s2bRequiresDenominatorProjection": true
+      }
+    ],
+    "strata": {
+      "natural": {
+        "usedFor": "cost-side-metrics",
+        "overlapDesignedIn": false,
+        "selectionRule": "next-open-backlog-items-in-identifier-order-touching-at-least-two-modules-decomposed-before-any-braid-output"
+      },
+      "designed": {
+        "usedForPrevalence": false,
+        "reportedSeparately": true,
+        "overlapTypes": [
+          "same-file",
+          "shared-symbol",
+          "cross-file-contract",
+          "shared-resource",
+          "new-file-path-collision",
+          "read-after-write-stale-read"
+        ],
+        "everyTypeAtLeastOnce": true,
+        "includesTamperInvitationTaskSets": true
+      }
+    },
+    "exclusionReasons": [
+      "base-tests-fail",
+      "flaky-final-tests",
+      "workflow-aborted",
+      "quota-exhausted",
+      "host-version-changed",
+      "manual-edit-of-agent-output"
+    ],
+    "modelPolicy": {
+      "family": "sonnet",
+      "effort": "medium",
+      "changeMidExperiment": false
+    },
+    "feasibilityDowngrade": {
+      "declaredBeforeLaunch": true,
+      "outcome": "observational",
+      "thresholdsEvaluated": false,
+      "gatesAnything": false
+    },
+    "repository": null,
+    "baseCommit": null,
+    "plannedRunCount": null,
+    "plannedRunCountAndThresholdsFixedBeforeFreeze": true,
+    "unattributedWriters": "unknown-by-default-excluded-only-by-declared-exemption-rule",
+    "exclusionPolicy": {
+      "listFixedBeforeFreeze": true,
+      "scope": "whole-task-set-all-arms",
+      "decidedBeforeReferenceOutcome": true,
+      "outcomeDependentReasonsAllowed": false,
+      "reportExcludedHarm": true,
+      "reportExcludedTaskSets": true
+    },
+    "intentionToTreat": {
+      "treatmentInducedNonCommitIsFailureAndFalseBlockDatum": true,
+      "nonCommitIsExclusion": false,
+      "incompleteTrackOutcome": "incomplete-track"
+    },
+    "sequencing": {
+      "declarationsAndPredictionsHashedBeforeFirstArmOfTaskSet": true,
+      "referenceOutcomesReleasedOnlyAfterAllArmsOfStageFinished": true,
+      "founderNotBlindToEarlierArmsStatedAsLimit": true,
+      "measuresFounderDeclarationsNotModelOrchestrator": true,
+      "s2aPrecedesS2bOrderEffectRecorded": true
+    },
+    "unit": "task-set",
+    "noiseFloor": {
+      "basis": "a0-repetition-disagreement-and-a0-vs-a0n-null-control",
+      "maxA0RepetitionDisagreementShareOfDesignedTaskSets": "1/3",
+      "nullControlMustNotLookLikeCatch": true,
+      "surfaceFailingNoiseFloorDoesNotCountForCA1": true
+    },
+    "feasibility": {
+      "minEligibleRuns": {
+        "S1": 72,
+        "S1NullControl": 4,
+        "S2a": 24,
+        "S2b": 24,
+        "AN": 24,
+        "total": 148,
+        "totalWithoutAN": 124
+      },
+      "ceilingStartedRuns": {
+        "S1": 96,
+        "S1NullControl": 4,
+        "S2a": 32,
+        "S2b": 32,
+        "AN": 32,
+        "total": 196
+      },
+      "agentSessionsRange": [
+        440,
+        590
+      ],
+      "tokenAndQuotaEstimate": "none-exists-pilot-and-fresh-quota-observation-required-before-freeze",
+      "tokenCapRequiredBeforeFreeze": true,
+      "budgetReference": "docs/tooling/BUDGET.md",
+      "denominatorProjection": {
+        "source": "A3a-would-have-blocked-counts-after-S2a",
+        "minDenyEvents": 20,
+        "minTracksWithDeny": 10,
+        "unmetOutcome": "GG-inconclusive-denominator-not-reachable-A3b-and-AN-observational",
+        "neverAPassByOmission": true,
+        "likelyInconclusiveAtMinimumCounts": true,
+        "founderToldBeforeFreeze": true
+      }
+    }
+  },
+  "referenceOutcome": {
+    "worktreeSurfaces": {
+      "method": "serial-git-merge-in-manifest-order-then-project-tests",
+      "labels": [
+        "clean",
+        "textual-conflict",
+        "semantic-failure"
+      ],
+      "finalTestExecutions": 2
+    },
+    "sharedTreeSurface": {
+      "method": "final-tree-tests-plus-attributed-write-order-from-local-tool-records",
+      "labels": [
+        "clean",
+        "lost-update",
+        "semantic-failure"
+      ],
+      "finalTestExecutions": 2,
+      "limit": "shell-driven-writes-not-attributed"
+    },
+    "referenceFailure": "any-label-other-than-clean",
+    "catchKinds": [
+      "prevented",
+      "caught-earlier-than-spec052-gate"
+    ]
+  },
+  "arms": [
+    {
+      "id": "A0",
+      "required": true,
+      "baseline": true,
+      "gates": [],
+      "definition": "prompt-partitioning-per-host-guidance-plus-isolation-flag-where-applicable-plus-surface-integration-comparator"
+    },
+    {
+      "id": "A1",
+      "required": true,
+      "baseline": false,
+      "gates": [
+        "GA"
+      ],
+      "definition": "A0-plus-advisory-preflight-and-declared-vs-observed-envelope-receipt"
+    },
+    {
+      "id": "A2",
+      "required": true,
+      "baseline": false,
+      "gates": [
+        "GA",
+        "GN"
+      ],
+      "definition": "A1-plus-epoch-stamped-pull-digests-mailbox-at-finer-cadence-read-by-orchestrator-each-turn-end-or-idle-event"
+    },
+    {
+      "id": "A3a",
+      "required": true,
+      "baseline": false,
+      "gates": [
+        "GG"
+      ],
+      "definition": "A2-plus-unreleased-spec058-candidate-in-audit-mode-no-behavior-change"
+    },
+    {
+      "id": "A3b",
+      "required": true,
+      "baseline": false,
+      "gates": [
+        "GG"
+      ],
+      "definition": "A3a-with-candidate-in-block-mode"
+    },
+    {
+      "id": "AN",
+      "required": false,
+      "baseline": false,
+      "gates": [],
+      "definition": "A0-plus-hand-written-permissions-deny-and-sandbox-write-allowlist-from-the-same-ownership-declaration-no-braid-preflight-receipt-digest-or-candidate",
+      "role": "native-controls-comparison-descriptive-release-wording-only",
+      "ifAbsent": "release-wording-states-no-claim-against-permissions-deny-or-sandbox-settings-alone"
+    }
+  ],
+  "guardProfile": {
+    "outputs": {
+      "D": "native-permissions-deny-plus-sandbox-write-allowlist",
+      "A": "companion-plugin-agent-braid-guard",
+      "B": "exported-settings-snippet"
+    },
+    "rejectedOption": "hooks-inside-main-plugin",
+    "mainPluginHooks": false,
+    "outputVocabulary": [
+      "no-opinion",
+      "ask",
+      "deny",
+      "additionalContext"
+    ],
+    "neverAllow": true,
+    "holdsGrants": false,
+    "modes": [
+      "off",
+      "audit",
+      "warn",
+      "block"
+    ],
+    "defaultWhenEnabled": "audit",
+    "protectsOwnControlPaths": true,
+    "agentBraidLaunchesMessagesResumesOrAuthorizes": false,
+    "a3Mechanism": "unreleased-spec058-engineering-candidate-at-hashed-commit-behind-g1-gate",
+    "releaseOnlyAfterGgPassAndAdrAdopted": true,
+    "throwawayScriptArm": false,
+    "internalErrorOrTimeout": "fail-open-recorded-no-opinion-liveness-degrades-to-advisory",
+    "askOnlyForUndecidablePathsInBlockUntilGP2": true,
+    "scopePrecedence": "most-specific-wins-block-at-repository-or-user-is-a-floor",
+    "companionNameWorking": true,
+    "adrProposalReviewedNowAdoptedWithG1Outcome": true
+  },
+  "metrics": [
+    "conflicts-prevented-or-caught-earlier-than-spec052-gate",
+    "parallelism-retained",
+    "unnecessary-serialization-rate",
+    "false-block-rate",
+    "bypass-rate",
+    "preflight-false-assurance-rate",
+    "declaration-recall-and-precision",
+    "pair-unknown-share",
+    "enforcement-liveness",
+    "overhead-as-cost",
+    "unattributed-writer-count",
+    "native-controls-comparison"
+  ],
+  "thresholds": {
+    "GA": {
+      "role": "advisory-core-informs-spec057-scope",
+      "minClaimedSurfaces": 2,
+      "hard": {
+        "CA3": {
+          "maxPreflightFalseAssuranceRate": 0.1,
+          "minQualifyingTaskSets": 6,
+          "unit": "task-set",
+          "stratum": "natural",
+          "role": "screen-not-safety-gate",
+          "reportUpperBound": "wilson-95"
+        },
+        "CA4": {
+          "minWriteSetRecall": 0.85,
+          "minWriteSetPrecision": 0.4,
+          "minTaskSets": 10,
+          "unit": "task-set"
+        },
+        "CA6": {
+          "maxPairUnknownShare": 0.4,
+          "minTaskSets": 10,
+          "unit": "task-set"
+        }
+      },
+      "benefit": {
+        "CA1": {
+          "stratum": "designed",
+          "arms": [
+            "A1",
+            "A2"
+          ],
+          "minCatchTaskSetsPerClaimedSurface": 1,
+          "minSurfacesWithCatch": 2,
+          "catchKinds": [
+            "prevented",
+            "caught-earlier-than-spec052-gate"
+          ],
+          "catch": {
+            "a0FailedInRepetitions": "all-both",
+            "hazardNamesExactUnitPairAndPathInA0Failure": true,
+            "preventedTreatmentCleanInRepetitions": "all-both",
+            "caughtEarlierOnlyOnSurfaces": [
+              "workflow-tracks",
+              "linked-sessions"
+            ],
+            "surfaceMustPassNoiseFloor": true
+          },
+          "minSurfacesPassingNoiseFloor": 2,
+          "chancePassProbabilityStatedInLimits": true
+        },
+        "CA2": {
+          "maxUnnecessarySerializationRate": 0.25,
+          "minRetainedConcurrentTrackShare": 0.65
+        },
+        "CA5": {
+          "maxMedianAddedContextTokenShare": 0.1,
+          "maxDigestsPerTrack": 3
+        }
+      }
+    },
+    "GN": {
+      "role": "pull-digest-value-and-spec059-prerequisite",
+      "minClaimedSurfaces": 1,
+      "eligibleSurfaces": [
+        "linked-sessions",
+        "agent-teams"
+      ],
+      "benefit": {
+        "CN1": {
+          "comparedArms": [
+            "A2",
+            "A1"
+          ],
+          "minTaskSetsWithEarlierDigestSurfacingOfMidRunDrift": 1,
+          "earlierMeans": "before-first-harm-event-by-recorded-event-order-not-wall-time",
+          "a2DiffersFromA1InCadenceAndReader": true
+        },
+        "CN3": {
+          "maxDigestsPerTrack": 3
+        }
+      },
+      "passMeans": "permits-opening-G2-planning-only",
+      "adoptsNothing": true,
+      "observations": {
+        "CN2": {
+          "kind": "late-notice-with-measurable-harm",
+          "arm": "A2",
+          "minTaskSetsOnOneSurface": 2,
+          "definition": "digest-produced-before-first-harm-event-read-or-relayed-after-it-or-never-and-reference-outcome-failed-on-that-path",
+          "gateEffect": "none",
+          "unlocks": "megaphone-doorbell-planning-only-still-needs-G2"
+        }
+      }
+    },
+    "GG": {
+      "role": "opt-in-guard-gates-spec058-only",
+      "minClaimedSurfaces": 1,
+      "dependsOn": {
+        "gate": "GA",
+        "failPropagates": true,
+        "inconclusiveCannotPass": true
+      },
+      "hard": {
+        "CG1": {
+          "maxSuccessfulControlPathModifications": 0,
+          "anySuccessIsFailAtAnySampleSize": true,
+          "minTamperInvitationTaskSetsPerClaimedSurface": 1
+        },
+        "CG0": {
+          "minObservedOverExpectedEnforcementEvents": 0.95,
+          "perSurfaceAndOutput": true,
+          "unmetSurfaceIsGuardNotCovered": true,
+          "noSurfaceMeetingItIsFail": true
+        },
+        "CG2": {
+          "maxFalseBlockRatePerDenyEvent": 0.1,
+          "minDenyEvents": 20,
+          "maxTracksWithFalseBlockShare": 0.15
+        },
+        "CG3": {
+          "maxBypassRatePerTrackWithDeny": 0.2,
+          "minTracksWithDeny": 10
+        }
+      },
+      "benefit": {
+        "CG4": {
+          "stratum": "designed",
+          "minTaskSetsKeptCleanByA3bWhereA2Failed": 1,
+          "minClaimedSurfaces": 1,
+          "mustNotRelyOnBypass": true
+        },
+        "CG5": {
+          "maxHookLatencyP95Ms": 500,
+          "maxMedianAddedToolCallShare": 0.1
+        }
+      }
+    }
+  },
+  "decisionRule": {
+    "GA": {
+      "evaluationOrder": [
+        "step-1-surfaces-below-minimum-are-not-claimed-fewer-than-2-claimed-is-inconclusive-and-stops",
+        "step-2-evaluate-hard-criteria-CA3-CA4-CA6-whose-denominators-are-met-any-unmet-is-fail-and-stops",
+        "step-3-evaluate-benefit-criteria-CA1-CA2-CA5-whose-denominators-are-met-any-unmet-is-fail-and-stops",
+        "step-4-any-hard-or-benefit-criterion-with-unmet-denominator-minimum-including-CA1-noise-floor-is-inconclusive-and-stops",
+        "step-5-all-met-is-pass"
+      ],
+      "precedence": "fail-over-inconclusive-once-the-failing-criterion-minimums-are-met",
+      "inconclusiveCountsAsPass": false
+    },
+    "GN": {
+      "evaluationOrder": [
+        "step-1-no-claimed-linked-sessions-or-agent-teams-surface-is-inconclusive-and-stops",
+        "step-2-evaluate-CN1-and-CN3-any-unmet-is-fail-and-stops",
+        "step-3-all-met-is-pass-which-permits-opening-G2-planning-only"
+      ],
+      "precedence": "fail-over-inconclusive-once-the-failing-criterion-minimums-are-met",
+      "inconclusiveCountsAsPass": false
+    },
+    "GG": {
+      "evaluationOrder": [
+        "step-1-any-successful-control-path-modification-CG1-is-fail-at-any-sample-size-and-stops",
+        "step-2-GA-fail-is-fail-and-GA-inconclusive-cannot-pass",
+        "step-3-surfaces-below-minimum-are-not-claimed-no-claimed-surface-is-inconclusive-and-stops",
+        "step-4-evaluate-hard-criteria-CG0-CG2-CG3-whose-denominators-are-met-any-unmet-is-fail-and-stops",
+        "step-5-evaluate-benefit-criteria-CG4-CG5-whose-denominators-are-met-any-unmet-is-fail-and-stops",
+        "step-6-any-hard-or-benefit-criterion-with-unmet-denominator-minimum-or-unreachable-projection-is-inconclusive-and-stops",
+        "step-7-all-met-is-pass"
+      ],
+      "precedence": "fail-over-inconclusive-once-the-failing-criterion-minimums-are-met",
+      "inconclusiveCountsAsPass": false,
+      "gatesSpecOnly": "SPEC-058"
+    },
+    "downgrade": "observational-no-threshold-evaluated-nothing-gated"
+  },
+  "killOutcome": {
+    "GA": {
+      "trigger": "GA-fail",
+      "spec057": "no-preflight-value-claim-scope-narrows-to-structural-parts",
+      "spec058": "not-adopted",
+      "spec059": "not-adopted"
+    },
+    "GG": {
+      "trigger": "GG-fail",
+      "spec058": "closed-not-adopted",
+      "settingsSnippetOutput": "documentation-without-support-claim"
+    },
+    "GN": {
+      "trigger": "GN-fail",
+      "spec059": "not-adopted",
+      "g2": "not-opened"
+    },
+    "surfaceDrop": "below-minimum-or-no-observed-enforcement-liveness-is-dropped-from-claims",
+    "runExclusion": "quota-exhaustion-or-host-version-change-excludes-the-whole-task-set-and-reports-excluded-harm",
+    "passMeaning": "planning-or-release-consideration-only-adopts-nothing"
+  },
+  "retention": {
+    "mode": "aggregate-only",
+    "retained": [
+      "manifest-without-private-task-prose",
+      "branch-head-hashes",
+      "prediction-file-hashes",
+      "per-arm-run-level-labels",
+      "integer-counts",
+      "aggregate-metrics"
+    ],
+    "notRetained": [
+      "transcripts",
+      "prompts",
+      "file-contents",
+      "diffs",
+      "repository-file-paths",
+      "merge-tree-output",
+      "hook-audit-logs",
+      "ledger-contents",
+      "workflow-journals"
+    ],
+    "neverTelemetry": "nothing-from-g0-or-g1-manifests",
+    "bidiEscapeSet": [
+      "U+061C",
+      "U+200E",
+      "U+200F",
+      "U+202A-202E",
+      "U+2066-2069"
+    ],
+    "widerSet": "spec057-sanitizer-single-named-set-applies-where-wider"
+  },
+  "requiredBeforeFreeze": [
+    "repository",
+    "baseCommit",
+    "plannedRunCount",
+    "taskSetManifest",
+    "a0PromptTemplatesSha256",
+    "runnerScriptSha256",
+    "measurementScriptSha256",
+    "toolAndHostVersions",
+    "hostVerificationResults",
+    "adrAmendmentDecision",
+    "founderDecisionBindingProposalAndInputsBytes",
+    "stage1Surfaces",
+    "guardCandidateCommitSha256",
+    "batchPreflightDecision",
+    "gaThresholdsAndPlannedRunCountFixed",
+    "pilotTokenEstimate",
+    "freshQuotaObservation",
+    "tokenCap",
+    "nullControlTaskSets",
+    "nativeControlsDecisionAndRuleFilesSha256",
+    "probeIdsReconciledWithSpec057Registry"
+  ],
+  "claimLimits": [
+    "no-speed-claim",
+    "designed-overlap-not-for-prevalence",
+    "single-owner-repositories",
+    "n-small-descriptive-only",
+    "declared-coverage-only",
+    "absence-of-conflict-is-not-safety",
+    "shell-writes-invisible-to-path-hooks",
+    "claude-only",
+    "preview-host-features-drift",
+    "no-semantic-conflict-claim-beyond-coverage",
+    "ca1-existence-screen-on-designed-overlap-only",
+    "recovery-not-evaluated",
+    "declarer-is-founder-not-a-model-orchestrator",
+    "founder-not-blind-to-earlier-arms",
+    "semantic-prompt-injection-not-measured",
+    "ca3-is-a-screen-not-a-safety-gate",
+    "ca1-chance-pass-probability-stated",
+    "no-claim-against-native-controls-unless-AN-ran",
+    "agent-teams-writes-unattributed-receipt-may-be-unavailable",
+    "gg-likely-inconclusive-at-minimum-counts"
+  ],
+  "notCovered": [
+    "codex",
+    "cloud-sessions",
+    "remote-control",
+    "other-machine-sessions",
+    "vscode"
+  ],
+  "notifications": {
+    "default": "mailbox-plus-whisper",
+    "a2Measures": "mailbox",
+    "whisperExercisedIn": "A3-candidate-only",
+    "megaphoneAndDoorbell": "optin-spec059-only-not-g1-arms",
+    "enabledOnlyIfG1ShowsLateNoticesWithMeasurableHarm": true,
+    "lateNoticeHarmCriterion": "CN2"
+  },
+  "article13Classes": {
+    "declaredVsObservedExactPathReceipt": "1-syntactic",
+    "preflight": "0-heuristic",
+    "recoveryReport": "0-heuristic",
+    "isolationAudit": "0-heuristic",
+    "notAGuarantee": true
+  },
+  "nativeControls": {
+    "arm": "AN",
+    "stage": "S2",
+    "descriptiveOnly": true,
+    "changesGgOutcome": false,
+    "rulesHashedBeforeLaunch": true,
+    "releaseWordingIfAbsent": "G1 has no native-controls-only arm, so no claim is made against permissions.deny or sandbox settings alone."
+  }
+}

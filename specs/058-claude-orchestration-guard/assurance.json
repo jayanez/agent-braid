@@ -1,0 +1,428 @@
+{
+  "articles": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    6,
+    7,
+    12,
+    13,
+    14,
+    15,
+    19,
+    20,
+    21,
+    23,
+    25
+  ],
+  "assumptions": "Claude Code only; behavior of the four surfaces (workflow-tracks, linked-sessions, agent-teams, batch) and of hooks, permission rules and the sandbox is the host documentation as read on 2026-10-24 (changelog to 2.1.310) and is unconfirmed on a host until probes HV-6 to HV-8, HV-10 and GP-1 to GP-5 are recorded; the semantics of the sandbox write allowlist (additive versus restrictive) are unconfirmed; the presence of the task tools on the model in use is unconfirmed; hooks fail open and can be disabled; the SPEC-057 policy-profile schema, settings schema and ownership module are consumed unchanged and are not yet implemented; the G1 proposal is unfrozen and its thresholds are proposed values; the settings precedence (most specific scope wins, with a block floor) is a founder decision and the compiled profile mode as the lowest-precedence default is a drafting interpretation; the Whisper path policy (no sibling-written path text) and the refusal-code mapping are drafting interpretations, not founder-approved; the optional G1 arm AN may not run; the ADR proposal is reviewed now and adopted with the G1 outcome, is not adopted and no ADR number is reserved.",
+  "authority_snapshot": {
+    "commit": null,
+    "hashes": {
+      "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
+      "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "e98b19c465689190265ed410b9226d60d52f00a8abf95410f5aa0a567aa80fea",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
+      "docs/adr/0014-parallel-integration-contract.md": "2481e93cf1e392887f2ee74e39efec7dfee0a9c52340fccd491903fd4292f679",
+      "docs/adr/0015-real-repository-validation-profile.md": "43e05f6fa96b5b3a8a8a83ddc922d8bced11b89a3f88263760b83b358febde99",
+      "docs/adr/0016-post-root-public-provenance.md": "e3c001cc23b64db5362ed0274af21d1d5a42b27d2bff68654db51498fbfb142a",
+      "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+      "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
+      "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "c9e85fbab0c71445ca16d9aef7c33d17614abbf36588441ddf90b2b07fc1fd89",
+      "docs/adr/0022-attribution-correction-history-equivalence.md": "0d394b895af69374c7f6bdf441cc780ee67802c34f9b0380f8ed58b1c9a17eb1",
+      "docs/adr/0023-second-history-correction-equivalence.md": "4334fe23543dad038811b7819acbc24fbebab3c1858789816b1512e786b7a8eb",
+      "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
+      "docs/adr/0024-native-ai-plugins.md": "3a45d8a62cb241b01638a37f39fdc309cb0563941c0343fe58d9ab30c5c677ac",
+      "docs/adr/0025-local-technical-telemetry.md": "e2f9af4d0d0a118635677146ba0c96cbd82046b7943eca36eeabf041923601f7",
+      "docs/adr/0026-pure-owned-work-validation.md": "dc6a045316c37201767adba79ad59779cff4646c9d05e4a2306dfaec481e4ccd",
+      "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
+      "docs/adr/0028-closed-effectful-workload-simulation.md": "be8bb2fefc702a2d85b804f70141f68f25b68e45118d25b4f4fa0e99d62eca85",
+      "docs/adr/0030-native-plugin-surface-naming.md": "2bff8ce3fd5c2e183dca8000044ccd4d08980ec7e4a1b31d9af7a3a4b7f18c8e",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "991de0aba02d2f89cb5fd01af4d9842c0a15b1ee52fb692671e34a81a6b09ab2",
+      "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
+      "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
+      "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+      "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+      "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+      "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
+      "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "current"
+  },
+  "compatibility": "Additive and gated. No change to agent_braid/analysis.py, AIM 0.2.0-draft, the SPEC-052 gate, SPEC-057 schemas and commands, the plugin MCP tools, limits or grants, the existing five product skills or the main plugin package. New: one pure compiler module, two read-only CLI subcommands, the separate companion plugin agent-braid-guard (working name) and its builder, first as an unreleased engineering candidate behind the G1 gate and packaged or released only after G1 gate GG passes and the ADR is adopted. Any main-plugin change is out of scope.",
+  "domain": "Local Claude Code sessions on four documented parallel surfaces (workflow-tracks, linked-sessions, agent-teams, batch) in Git repositories, at the level of Write and Edit calls (NotebookEdit only if the founder accepts the proposed extension) and native permission and sandbox rules, for at most 32 units, on the outputs and surfaces that recorded probes support; not Codex, cloud or remote sessions, the VS Code extension, non-Git workspaces, Bash or MCP effects through hooks, or unattributed writers.",
+  "evidence_snapshot": {
+    "commit": null,
+    "mode": "current"
+  },
+  "execution_contract": "The compiler and report are read-only, local, offline and bounded and write only to explicit new private paths; a refusal is an error with a stable code and no result. The guard's only effects are a structured host decision and a private content-free audit record. No model invocation, network, socket, launch, message, resume, stop, grant, merge or promotion by any command or hook; no hook, mod, monitor, channel, skill or MCP tool is added to the main plugin; executionAuthorization is false in every emitted object; the guard never emits allow or defer; probes are launched by the orchestrating session only after the founder authorizes each one; no concurrent agent, push or remote issue is authorized; package build, release and adoption are blocked by G1 gate GG and ADR adoption.",
+  "human_review": "pending",
+  "hypotheses": "H-OR3 (untested; research H-CW2 part (c)): an opt-in guard, if released, has an acceptable false-block and bypass rate where hooks fire, with no successful tamper and observed liveness (G1 gate GG, which requires gate GA to pass). H-GD1 (untested): native permission deny rules and the sandbox write allowlist cover shell writes that hooks cannot, where they apply to subagents and teammates and the allowlist restricts rather than adds (HV-8, GP-5). H-GD2 (untested): audit-mode would-have-blocked records have a false-positive rate low enough to inform the choice of block. Falsification and inconclusive outcomes are valid.",
+  "observation_contract": "Operator-owned policy profile and envelope; operator-owned settings and notice locations; hook inputs as delivered by the host reduced to escaped bounded paths and digests; guard counters; SPEC-057 receipts at committed or quiesced snapshots; host behavior only through recorded probe receipts of counts and booleans with the Claude Code version. Absent, unreadable, unstable, busy or over-bound observations are unknown or advisory (or an error for a whole-command refusal) and never protected or clean.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "docs/development/SPEC_KIT.md",
+    "docs/theory/OPERATIONAL_SEMANTICS.md",
+    "docs/theory/CLAIM_DISCIPLINE.md",
+    "docs/architecture/AGENT_INTERACTION_METADATA.md",
+    "docs/architecture/PARALLEL_INTEGRATION.md",
+    "docs/adr/0014-parallel-integration-contract.md",
+    "docs/adr/0021-codex-claude-tooling-integration.md",
+    "docs/adr/0024-native-ai-plugins.md",
+    "docs/tooling/BUDGET.md",
+    "docs/experiments/PROTOCOL.md",
+    "docs/experiments/CLAUDE_ORCHESTRATION_G1_PROPOSAL.md",
+    "specs/023-recorded-trace-adapters/spec.md",
+    "specs/039-ai-tooling-program/program.md",
+    "specs/047-local-technical-telemetry/spec.md",
+    "specs/050-braid-harness-adaptation/spec.md",
+    "specs/050-braid-harness-adaptation/tasks.md",
+    "specs/052-claude-workflow-gate/spec.md",
+    "specs/052-claude-workflow-gate/adr-proposal.md",
+    "specs/053-claude-transcript-trace-adapter/spec.md",
+    "agent_braid/analysis.py",
+    "agent_braid/git_adapter.py",
+    "agent_braid/runtime_scheduler.py",
+    "agent_braid/plugin_mcp.py",
+    "tests/test_plugin_package.py",
+    "docs/experiments/claude-orchestration-g1-inputs.json",
+    "research/hypotheses/H-CW2-claude-orchestration-ownership.md",
+    "specs/057-claude-orchestration-advisory/spec.md",
+    "specs/057-claude-orchestration-advisory/contracts/policy-profile.schema.json",
+    "specs/057-claude-orchestration-advisory/contracts/orchestration-settings.schema.json",
+    "specs/057-claude-orchestration-advisory/contracts/ownership-declaration.schema.json",
+    "specs/057-claude-orchestration-advisory/contracts/surface-capability-matrix.json",
+    "research/radar/2026-10-24-claude-orchestration.json",
+    "docs/strategy/ECOSYSTEM.md",
+    "specs/057-claude-orchestration-advisory/contracts/hazard-notice.schema.json",
+    "specs/057-claude-orchestration-advisory/contracts/command-error.schema.json",
+    "specs/057-claude-orchestration-advisory/contracts/envelope-receipt.schema.json",
+    "specs/052-claude-workflow-gate/program.md",
+    "specs/058-claude-orchestration-guard/spec.md",
+    "specs/058-claude-orchestration-guard/validation-plan.md",
+    "specs/058-claude-orchestration-guard/plan.md",
+    "specs/058-claude-orchestration-guard/research.md",
+    "specs/058-claude-orchestration-guard/quickstart.md",
+    "specs/058-claude-orchestration-guard/tasks.md",
+    "specs/058-claude-orchestration-guard/issue-drafts.md",
+    "specs/058-claude-orchestration-guard/adr-proposal.md",
+    "specs/058-claude-orchestration-guard/checklists/requirements.md",
+    "specs/058-claude-orchestration-guard/contracts/README.md",
+    "specs/058-claude-orchestration-guard/contracts/guard-decision.schema.json",
+    "specs/058-claude-orchestration-guard/contracts/guard-audit-record.schema.json",
+    "specs/058-claude-orchestration-guard/contracts/liveness-attestation.schema.json",
+    "specs/058-claude-orchestration-guard/contracts/release-decision.schema.json",
+    "specs/058-claude-orchestration-guard/contracts/guard-conformance-vectors.json",
+    "specs/058-claude-orchestration-guard/contracts/guard-surface-matrix.json",
+    "specs/058-claude-orchestration-guard/contracts/native-settings.example.json"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "a SPEC-057 ownership declaration, a unit id, a requested mode and the set of requested outputs",
+          "id": "SC-001",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_policy_compiler.py (planned, not existing) and procedure_req_001; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T011.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_001",
+          "then": "it emits a profile that validates against SPEC-057's `policy-profile.schema.json`; the envelope is derived from the SPEC-057 expansion (exact repository-relative paths and create regions) and path identity and the prefix-overlap rule are reused from that module and not spelled a second time; the output is byte-identical for identical input; an envelope with any entry that did not expand exactly is marked partial, is compiled in `audit` or `warn` with the partial entries listed as undecidable, and is refused in `block` unless the operator supplies a stricter explicit exemption record; the compiler refuses a unit absent from the declaration, a declaration over the SPEC-057 bounds, a request for output C or any target inside the main plugin, and any member that would carry an `allow`, a grant or content, each refusal being an error with a code from SPEC-057's `command-error.schema.json` (`ERR-OVER-BOUND` for a declaration over the bounds, `ERR-MALFORMED-INPUT` with a rule from the command's closed list for the other cases, `ERR-OUTPUT-EXISTS` for an existing path; the mapping is in `contracts/README.md`), a nonzero exit and no profile (a refusal is never a result, while a partial envelope in `audit` or `warn` is a result listed as undecidable and not a refusal); the profile's `coverageBoundary.tools` names Write and Edit (NotebookEdit only if the founder accepts the proposed extension), `enforcementObserved` is false and `attestation` is absent; `failureBehavior` is present whenever a mode is enabled; `executionAuthorization` is false; the rules that JSON Schema cannot express are compiler and validator rules tested here and not implied by schema validation (the `audit` default when enforcement is enabled without a mode, that no mode skips the ladder, that `bash` is `covered-where-verified` only for the native-settings output alone with an HV-8 attestation, the partial-envelope refusal in `block`, and that the recorded envelope digest matches the envelope); and the compiler writes only to explicit new private paths, refuses existing paths and never touches a settings file",
+          "when": "the policy compiler (planned `agent_braid/guard_policy.py`) runs"
+        }
+      ],
+      "text": "Compile declared ownership to a policy profile deterministically"
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "a profile and the other units' declared paths",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_native_settings.py (planned, not existing) and procedure_req_002; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T009, T012.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_002",
+          "then": "the document contains a `permissions.deny` list and a `sandbox.filesystem` write allowlist in the host's documented settings shape (documentation reading of 2026-10-24; syntax re-verified against the then-current documentation before release); because ownership is an allowlist and `permissions.deny` is a denylist (deny wins over allow), the deny list enumerates the other units' declared write and create paths and the protected control paths and never claims to deny \"everything else\"; the sandbox write allowlist lists the unit's own envelope and is labelled in the document, the matrix and every report as **unconfirmed: whether it restricts subprocess writes or is additive to the default working-directory write access, and how it relates to default working-directory writes (HV-8, GP-5)**, so that no OS-level bound and no restriction is stated until a receipt records it; the document states that both lists are host configuration supplied by the operator and are not Agent Braid authority and not a grant; a path that cannot be expressed exactly is listed as `unexpressible` and lowers the stated coverage; the output carries the coverage boundary with `bash` equal to `covered-where-verified` only when an HV-8 receipt for that surface and host version is bound and records that the allowlist restricts, otherwise `not-covered`; the output states that it applies only where the operator supplies it and that on a shared tree it is not per teammate; and the output is not offered for a surface where HV-8 is a fail or unobserved",
+          "when": "output D is generated"
+        }
+      ],
+      "text": "Compile output D: native permissions and sandbox write allowlist"
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "a profile",
+          "id": "SC-003",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_settings_snippet.py (planned, not existing) and procedure_req_003; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T009, T013.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_003",
+          "then": "the result is text for the operator to paste by hand, with a header that names the unit, the host version read, the mode, the coverage boundary, the date and the statement that Agent Braid has not applied it; it contains exactly the content of the selected target (output D settings or output A plugin configuration) and no member beyond the profile; it contains no secrets, environment values or absolute home paths beyond the declared envelope; the renderer writes only to an explicit new private path or standard output and never reads or edits any user, project, local or managed settings file; and rendering is deterministic",
+          "when": "output B is rendered"
+        }
+      ],
+      "text": "Compile output B: a paste-ready settings snippet that is never applied"
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "the repository, the main Agent Braid plugin package and the planned companion plugin `agent-braid-guard`",
+          "id": "SC-004",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_companion_package.py (planned, not existing) and procedure_req_004; exact commands, hashes, failures and limits are recorded when it runs. Planned only; the candidate parts follow SPEC-057 I-3 and the ADR review disposition, while package build, release and adoption are blocked by G1 gate GG and ADR adoption; obtained evidence: none. Tasks: T021, T026.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_004",
+          "then": "the companion is a separate package with its own manifest, inventory and verification, containing exactly the guard hook configuration (`PreToolUse` with matcher for Write and Edit, extended to NotebookEdit only if the founder accepts that proposed extension, and `TaskCreated`), the stdlib-only hook scripts, a pinned copy of the pure ownership module checked against the repository hash, and documentation; it contains no skill, no MCP server, no mod, no monitor, no channel, no agent definition and no `SessionStart` hook; the main plugin package is byte-identical to a build without the companion and the existing no-hooks inventory assertions of `tests/test_plugin_package.py` stay unchanged and passing; the companion package is not built, listed or published by default and is built as a package only through the release gate of REQ-016; the unreleased engineering candidate that G1 arm A3 needs is the source tree of the companion at a recorded commit, loaded by the founder as an explicit local opt-in (for example a local plugin directory), and is never packaged, listed or published; the companion is a separate package from the SPEC-059 notification and ledger companion, and nothing in this package implements a recorder, monitor, channel or session-socket component; and installing the companion changes behavior only when an operator-owned profile resolves for the session (a profile without a `mode` member is `off`)",
+          "when": "the packages are built and inspected"
+        }
+      ],
+      "text": "Ship the guard only as a separate companion plugin whose installation is the opt-in"
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "the guard decision function and the finite table of its inputs in the conformance vectors (mode, path situation, agent identity situation, hook event)",
+          "id": "SC-005",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_decision_contract.py (planned, not existing) and procedure_req_005; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T006, T010, T014.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_005",
+          "then": "every output is exactly one of `no-opinion`, `ask`, `deny` or `additionalContext`; no code path emits `allow`, `defer`, an input rewrite, a continue flag or any grant member; `no-opinion` is a successful exit with no decision output; `deny` and `ask` are emitted through the host's documented structured decision with a reason chosen from a closed code list and never from repository text; `additionalContext` never carries a decision; the decision for an in-envelope path is `no-opinion`, never `allow`, except that a due Whisper (REQ-012) yields `additionalContext` with the reason `pending-notice`, which never carries a decision; for the `TaskCreated` event the decision is one of `no-opinion`, `deny` or `additionalContext` only, because the host gives that event no `ask` and no other decision channel (exit status 2 rolls the creation back), and an undecidable footprint in `block` is therefore `no-opinion` recorded with the reason `undecidable-path` and the would-decision `would-ask`, and the surface is reported `guard-not-covered` for that case rather than protected; the guard does not alter, suppress or reorder the decisions of other hooks (the host combines most-restrictive decisions and the guard's `no-opinion` leaves them untouched); and a static scan of the guard sources and emitted fixtures rejects the strings `allow` and `defer` as decision values",
+          "when": "the function and its wire adapter are exercised"
+        }
+      ],
+      "text": "Constrain the guard to a four-word vocabulary in which allow is unreachable"
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "resolved settings from the SPEC-057 resolver at conversation, repository and user scope and the compiled profile `mode`",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_modes.py (planned, not existing) and procedure_req_006; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T001, T014.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_006",
+          "then": "the decided precedence applies: the most specific scope wins (conversation over repository over user), except that a `block` set at repository or user scope is a floor that a conversation setting cannot lower, and the guard reports the floor and that lowering was refused; the settings are operator-owned (read only from operator-controlled locations, never from a model, a tool call or a file a guarded agent can write); the compiled profile `mode` is a second operator-owned source with the lowest precedence, a compile-time default that applies only when no scope sets a mode, so that the single decided rule governs and the operator can set `off` at a scope without deleting the profile; the guard reports the source that set the effective mode (`conversation`, `repository`, `user`, `profile` or `default`, the last meaning that no source set one and the mode is `off`); then `off` yields `no-opinion` with no record; `audit` yields `no-opinion` and records the decision it would have made (`would-deny`, `would-ask`, `would-warn`); `warn` yields `additionalContext` for an outside-envelope, undecidable or control-path write and `no-opinion` otherwise; `block` yields `deny` for an outside-envelope or control-path write, `ask` for an undecidable path (until probe GP-2 settles `ask`), and `no-opinion` for an in-envelope write; an absent mode in both sources is `off`; the default written by the compiler when enforcement is enabled without an explicit mode is `audit`; and a guarded agent has no path to raise, lower or clear the mode, because the settings it reads are operator-owned (REQ-007) and no tool, skill or hook argument changes them",
+          "when": "the guard resolves its effective mode"
+        }
+      ],
+      "text": "Implement the modes ladder and scopes with audit as the default when enabled"
+    },
+    {
+      "id": "REQ-007",
+      "scenarios": [
+        {
+          "given": "a profile with `protectedControlPaths` (the envelope and profile files, the audit record location, settings files at every scope, hook scripts and the companion plugin directory)",
+          "id": "SC-007",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_control_paths.py (planned, not existing) and procedure_req_007; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T007, T015.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_007",
+          "then": "a Write or Edit to a protected control path is `deny` in `block`, `additionalContext` in `warn` and recorded in `audit`, regardless of the unit's envelope; the envelope is read from an operator-owned location named by the profile and not from a path supplied by the tool call; the guard verifies the envelope digest recorded at compile time on each decision and, on a mismatch, reports `tamper-suspected`, applies the mode's decision to the triggering write, records the event and degrades the attestation to advisory (REQ-008); a conformant profile is refused by the compiler if it omits the control paths; and the specification states that a Write/Edit hook cannot stop a Bash write to a control path, so tamper protection against Bash exists only through output D where HV-8 records it",
+          "when": "the guard evaluates writes in each mode"
+        }
+      ],
+      "text": "Keep the envelope operator-owned and protect the control paths"
+    },
+    {
+      "id": "REQ-008",
+      "scenarios": [
+        {
+          "given": "a surface, a host version and a guard output",
+          "id": "SC-008",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_liveness.py (planned, not existing) and procedure_req_008; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T004, T010, T016.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_008",
+          "then": "`enforcementObserved` is true only with an attestation that names the host version, the surface and a receipt path and whose canary event was observed within its validity window; the attestation expires, and an expired, missing, degraded or tamper-suspected attestation reads `advisory`; the state vocabulary is `advisory`, `observed` and `degraded`; counters record only counts (events expected, events observed, errors, timeouts); a surface for which hooks cannot be shown to fire is reported `guard-not-covered` and never as protected; and every compiled output and report states the attestation state next to the coverage boundary",
+          "when": "a liveness canary and the expected-versus-observed hook counters are evaluated"
+        }
+      ],
+      "text": "Attest liveness and default to advisory"
+    },
+    {
+      "id": "REQ-009",
+      "scenarios": [
+        {
+          "given": "a hook that crashes, times out, receives malformed input, cannot read its profile, cannot verify the envelope, or runs where hooks are disabled by the user or by managed settings",
+          "id": "SC-009",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_fail_open.py (planned, not existing) and procedure_req_009; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T001, T005, T017.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_009",
+          "then": "the guard process exits through a single audited wrapper, treats an internal error as `no-opinion` (the host proceeds), records a `guard-error` with a closed error code, increments the error counter, and degrades the attestation; the specification states in the compiled output and the recipe that hooks fail open and can be disabled, so that enforcement is claimed only through the attestation; the guard never converts an error into `allow`; hook timeouts are set explicitly and bounded; and in `block` mode an unreadable profile or envelope does not deny every write (a deny without a reason the agent can act on is itself a failure mode) but is recorded and degrades to advisory. This fail-open-recorded behavior is a decided stance (2026-10-24), carried as data in the profile's `failureBehavior`; `ask` is used only for undecidable paths in `block` until probe GP-2 settles its behavior",
+          "when": "the guard and its report run"
+        }
+      ],
+      "text": "Handle fail-open explicitly and never hide it"
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "a guard audit record and a SPEC-057 envelope receipt for the same unit at a committed or quiesced checkpoint",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_bypass_report.py (planned, not existing) and procedure_req_010; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T023.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_010",
+          "then": "a change outside the envelope that the receipt observes and that no recorded guard decision explains is reported as `bypass-observed` with the classes `shell-write`, `unknown-route` and `control-path-write`; a denied or would-denied path that reappears in the receipt is reported as `denied-then-reappeared`; writes on a shared tree that cannot be attributed to a unit are `unknown` by default (the SPEC-057 `unattributedWriters`), are neither bypass nor violation and are excluded from the report only by an explicit declared exemption rule that the report names; a unit for which the receipt has no source or that is not a descendant of the declared base is `not-observed` (an Article 13 unknown, a result, never \"no bypass\"); a whole-report refusal (busy lock, unstable snapshot, unobservable source, over-bound or malformed input, existing output path) is an error with a code from `command-error.schema.json` (`ERR-OVER-BOUND` for an audit record or receipt over its input bound, refused before analysis), a nonzero exit and no report, while an observed list longer than its reporting bound (for example the bypass observations) is truncated and recorded in the report, which then is partial and never clean, and is not a refusal (SPEC-057 REQ-017); the report states the coverage boundary (Write and Edit calls, and NotebookEdit only if accepted; Bash through output D only where HV-8 is recorded; MCP effects and generated files not covered) and the Article 13 class (the correlation of exact paths is `1-syntactic`; the producer's class is a claim, not verified evidence, and `notAGuarantee` is always true); and the report is read-only, local and offline, takes no action and writes only to an explicit new private path",
+          "when": "the planned read-only report (`report-guard`; name provisional) runs"
+        }
+      ],
+      "text": "Record Bash bypass through the checkpoint receipt and state the coverage boundary"
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "the `TaskCreated` hook input in a session that has the task tools",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_task_created.py (planned, not existing) and procedure_req_011; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T008, T020.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_011",
+          "then": "a footprint outside that unit's envelope or overlapping a sibling's declared write is `deny` in `block` (exit status 2 rolls the creation back), recorded in `audit` and `additionalContext` in `warn` (whether the host shows `additionalContext` from `TaskCreated` to anyone is unconfirmed under HV-7 and GP-2, and the matrix reads the `warn` cell as not covered until a receipt says it is); a footprint that cannot be decided exactly (a partial envelope entry) is `no-opinion` recorded as `undecidable-path` with the would-decision `would-ask`, because the host gives `TaskCreated` no `ask`; a task without a marker is `no-opinion` with an `unmarked-task` record, because the guard never interprets natural-language task text, and what the host does with an unmarked task is unconfirmed (HV-7); task subject and description are untrusted, bounded and escaped and never reach an instruction field; on a model for which the task tools are absent the hook does not fire (a documented rule; the presence of the task tools on the model in use is unconfirmed, HV-7), and the guard reports `guard-not-covered` for the surface and model rather than protection; and whether a marker survives task creation across models is a probe (GP-4), not an assumption",
+          "when": "a task carries a structured footprint marker (a single line with a closed prefix and a bounded list of repository-relative paths) and the creator maps to a unit through `teammate_name` or `agent_id`"
+        }
+      ],
+      "text": "Check task creation in agent teams against the declared ownership"
+    },
+    {
+      "id": "REQ-012",
+      "scenarios": [
+        {
+          "given": "hook inputs that contain file content (Write), edit strings (Edit), shell commands, prompts, transcript paths and last assistant messages",
+          "id": "SC-012",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_context_and_audit.py (planned, not existing) and procedure_req_012; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T010, T017, T018.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_012",
+          "then": "model-visible text is assembled from a closed set of templates with repository-derived values (paths, unit and task names) placed only in labelled data fields after the SPEC-057 escaping rule, reused byte for byte (the `$defs/repositoryText` definition of `hazard-notice.schema.json`: Cc and C1 controls, Cf format characters including bidirectional and zero-width characters, U+2028, U+2029, tag characters and invisible fillers replaced by visible text, a 256-character bound and a pattern that rejects a final line feed; every guard schema carries that definition, timestamps are patterns and no schema depends on a format checker, and a conformance test compares the definitions); the Whisper (template `pending-notice`) is built only when the strategy resolved from the settings is `mailbox-whisper`, the mode is `warn` or `block`, and a pull notice that validates against SPEC-057's `hazard-notice.schema.json`, lies in an operator-owned location that no tool call names (at most 1 MiB), has not passed its `validUntil` and concerns the agent's unit exists; it carries only, in labelled data fields, the notice id, the epoch, the hazard kinds from the closed list, the unit ids, the number of hazard paths in the full notice, a 12-character SHA-256 digest of each hazard path (at most 8) and at most 4 escaped paths that equal an entry of the receiving unit's own declared envelope (written by the operator), so that a path written by a sibling or taken from the notice is never forwarded as text, and never a recheck instruction of its own, is delivered at most once per notice id and agent, and in `audit` is only recorded as `would-warn`; adversarial fixtures (a file named like an instruction, a task subject with directives, an oversized name, a notice with directive text in a path, a sibling-written file named like an instruction in a valid notice) leave the text schema-valid with the instruction part byte-identical and, for the Whisper, leave the sibling-written name out of the forwarded context altogether (conformance vectors GV-037 to GV-039); this establishes template integrity and the absence of the name from the Whisper, not that a model ignores text it sees on another route, which is the residual risk of the Known limits; the audit record (`contracts/guard-audit-record.schema.json`) carries only an id, timestamp, host version, surface, unit, hook event, tool name, decision, would-decision, mode, scope, reason code, escaped bounded path and its digest, envelope digest and counters; it never carries `content`, `old_string`, `new_string`, command text, prompt, transcript path or message; the record is written to a private local path outside the repository, excluded from Git, with no network or socket write; and no guard datum is collected or emitted as telemetry now: any later telemetry is an additive SPEC-047 vocabulary limited to the guard decision mix by mode (including would-have-blocked) and hook duration buckets, only after SPEC-047 and ADR 0025 are adopted and the guard has shipped, and it excludes by specification (with planned validator tests) paths and hashes, branch, ref and commit identifiers, prompts, messages and transcripts, free text, unit and pair identities, sub-day timestamps, exact durations, tokens and costs, exact model and host builds, per-user bypass and false-block counts, and anything from the G0 or G1 manifests",
+          "when": "the guard builds `additionalContext` (the warning and the Whisper), a deny or ask reason, or an audit record"
+        }
+      ],
+      "text": "Keep model-visible context injection-safe and the audit record free of content"
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "the hook scripts of the companion plugin",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_bounds.py (planned, not existing) and procedure_req_013; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T019, T021.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_013",
+          "then": "each invocation is read-only with respect to the repository, local and offline (no network or socket, no process launch of `claude`, `git` or the Agent Braid CLI or MCP), reads the profile and envelope only from the operator-owned location (at most 1 MiB, 512 paths per list, strings at most 256 characters, refusing larger input before decision) and, from the operator-owned settings, only the closed keys `guardMode` and `notificationStrategy`, never echoing or persisting any other settings value, decides by pure comparison using the pinned ownership module, writes only the audit record, and completes within the stated budget (the G1 proposal's p95 of 500 ms is the proposed criterion, not a measured result); no tool-call field (`file_path`, command, task text) is ever passed as a path argument to a checker, CLI, MCP tool or subprocess, so the hook cannot be used to read arbitrary worktrees outside the plugin MCP allowlist; the operator-owned notice location read for the Whisper is likewise fixed by the profile and bounded; a hook-invoked variant of the SPEC-057 receipt check is not provided; and over-bound input is a recorded `guard-error` with `no-opinion`, never a decision (inside the hook the host-facing outcome of an internal condition is fail-open and recorded; the whole-command refusal vocabulary of `command-error.schema.json` applies to the compiler and the report, not to the hook)",
+          "when": "they run and are statically inspected"
+        }
+      ],
+      "text": "Bound hook execution and forbid model-controlled path arguments to checkers"
+    },
+    {
+      "id": "REQ-014",
+      "scenarios": [
+        {
+          "given": "the four surfaces and the three outputs",
+          "id": "SC-014",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_surface_matrix.py (and probe receipts under evidence/) (planned, not existing) and procedure_req_014; exact commands, hashes, failures and limits are recorded when it runs. Planned only; the probes are launched by the orchestrating session after the founder authorizes each one, and the checker and matrix follow SPEC-057 I-3 as part of the unreleased candidate; obtained evidence: none. Tasks: T005, T006, T007, T008, T009, T024.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_014",
+          "then": "every surface-by-output cell records a capability, a status (`planned`, `not-offered`, `guard-not-covered`), the Article 13 class, the minimum host version (the later of the surface's first changelog entry and the capability's), a `preview` label where the host marks the surface experimental or a research preview, an evidence status (documented, inferred, unconfirmed or host-observed), and the probes it depends on; the surface ids are exactly `workflow-tracks`, `linked-sessions`, `agent-teams` and `batch`; a cell is host-observed only with a receipt path; the checker rejects a host-observed cell without a receipt, a cell without a class, a missing preview label for agent teams and agent view, a Bash-covered claim without an HV-8 receipt, a sandbox-allowlist cell that states a restriction or an OS-level bound without a receipt, a surface id outside the closed set and any wording that says a surface is enforced; and each probe records pass, fail or unobserved with the host version, operating system, surface and date as counts and booleans only (GP-1 fail-open behaviors of crash, timeout, malformed output and non-blocking status; GP-2 behavior of `deny` and `ask` inside subagents, teammates and non-interactive sessions, including whether the reason reaches the model and whether `additionalContext` from `TaskCreated` is shown; GP-3 how a hook locates the operator-owned profile on each surface and which working directory it reports; GP-4 whether a structured footprint marker survives task creation; GP-5 the permission rule and sandbox syntax and path semantics for the settings output, including whether the sandbox write allowlist restricts or is additive to default working-directory writes), with probe scripts prepared by agents as log-only scripts, kept outside the repository and hashed in the receipt, and the evidence pinned with the host version",
+          "when": "the guard coverage matrix (`contracts/guard-surface-matrix.json`) and its checker are reviewed and the guard probes GP-1 to GP-5 are launched by the orchestrating session on a scratch repository on the existing subscription after the founder authorizes each probe"
+        }
+      ],
+      "text": "Publish a per-surface guard coverage matrix and run the guard conformance probes"
+    },
+    {
+      "id": "REQ-015",
+      "scenarios": [
+        {
+          "given": "the repository authorities (ADR 0021, ADR 0024, AGENTS.md, Articles 12, 13 and 20), the feature-local ADR proposal and `specs/050-braid-harness-adaptation` tasks T005, T006 and T011",
+          "id": "SC-015",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_governance.py (planned, not existing) and procedure_req_015; exact commands, hashes, failures and limits are recorded when it runs. Planned only; implemented first as the unreleased engineering candidate behind the G1 gate (after SPEC-057 I-3 and the founder's ADR review disposition); obtained evidence: none. Tasks: T001, T002, T003, T025, T026, T028.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_015",
+          "then": "no main-plugin file gains a hook, mod, monitor, channel, skill or MCP tool; no code path launches, messages as, resumes, authorizes or stops a session, agent, team or batch or executes the `claude` binary; no member of any schema or output can carry a grant or an `allow`; every emitted object has `executionAuthorization` false; the guard and the compiler run only on the operator's explicit opt-in (installing the companion, applying the settings or pasting the snippet); the cross-reference to HAR.3 states that T005's per-host qualification matrix and T011's lifecycle are reused if and when they land, that T006's ownership-binding vocabulary is reused rather than a parallel one invented, that SPEC-057's `ownership-declaration.schema.json` is the canonical declaration schema (this compiler consumes it, an implementer of HAR.3 must consume the same one, and a second declaration schema is a defect to escalate to the founder; the dependency edges in specs/050 are not edited here), that this specification builds no general hook-profile compiler or orchestration planner beyond the ownership-to-profile compiler, and which HAR.3 contract it consumes or why it is independent; the feature-local ADR proposal states that it covers the guard companion only and not the SPEC-059 recorder, monitor, channel or session-socket components, which need their own ADR and package inventory; and the documentation and tracking consistency fixes (program wording, roadmap lines, the SPEC-052 specification, plan, checklist and ADR proposal, whose no-go list this proposal explicitly reopens for the companion only through a separate ADR proposal) are recorded for the integrator and not made by this track",
+          "when": "the deliverables of this specification are inspected and its tests run"
+        }
+      ],
+      "text": "Keep the governance boundary and reconcile with HAR.3 and the ADR"
+    },
+    {
+      "id": "REQ-016",
+      "scenarios": [
+        {
+          "given": "the companion-plugin package builder and the release process",
+          "id": "SC-016",
+          "obtained_evidence": [],
+          "planned_evidence": "tests/test_guard_release_gate.py (planned, not existing) and procedure_req_016; exact commands, hashes, failures and limits are recorded when it runs. Planned only; the package builder and release decision are blocked by G1 gate GG (with GA pass) and ADR adoption, and the unreleased candidate needs neither; obtained evidence: none. Tasks: T002, T004, T022, T027, T028.",
+          "test_file": "specs/058-claude-orchestration-guard/validation-plan.md",
+          "test_name": "procedure_req_016",
+          "then": "the builder refuses unless it is given a founder-recorded release decision that binds: the frozen G1 proposal hash; the commit of the unreleased candidate that G1 evaluated; a recorded GG outcome of `pass` with a recorded GA outcome of `pass` (a GG `pass` requires a GA `pass`; GA `fail`, `inconclusive` or `not-evaluated` refuses, as do GG `fail`, `inconclusive` and `not-evaluated`, and a downgraded G1); at least one claimed surface and output, each with its own recorded gate outcome of `pass` (a surface or output without it is not claimed and is listed `guard-not-covered`); for each claimed surface whether the optional native-controls-only arm `AN` of G1 ran, with a comparison receipt (path and digest) where it did and, where it did not, the proposal's sentence verbatim, \"G1 has no native-controls-only arm, so no claim is made against permissions.deny or sandbox settings alone.\", which the release wording must then carry (`AN` has no threshold and changes no gate outcome, so a GG pass shows value over hand-written `permissions.deny` and sandbox settings only on a surface where `AN` ran); the recorded S2 decision; the identity of the adopted ADR (adoption happens with the G1 outcome, not before); typed host receipts for each claimed surface and host version (HV-6 and HV-8 and, where `TaskCreated` is claimed, HV-7, each with a receipt path and digest); and the commit at which the SPEC-057 policy-profile schema was merged; a missing field or a mismatch refuses the build with `ERR-MALFORMED-INPUT` from `command-error.schema.json` (a rule naming the field), a nonzero exit and no package; the default package build and the main plugin are unaffected; a surface below its G1 minimum or without observed liveness is listed `guard-not-covered`; and a gate `pass` is recorded as permitting release consideration only and not as proof that the guard prevents conflicts. Building and running the unreleased candidate for G1 does not need this record, because it produces no package and no release",
+          "when": "a package build, listing or release is attempted"
+        }
+      ],
+      "text": "Refuse to package or release the guard before G1 and the ADR"
+    }
+  ],
+  "scientific_limits": "No acceptance evidence obtained and no host behavior observed. Hooks cannot see Bash, MCP-tool effects or generated files and fail open; native permissions may cover shell writes only where HV-8 records it and the sandbox allowlist semantics are unconfirmed (it may be additive and restrict nothing); a controlled agent may attempt to alter its own control paths, which G1 criterion CG1 measures; conservative ownership produces false blocks and costs parallelism; escaping does not neutralise semantic prompt injection, so a file name written by one unit can still address another agent on any route other than the bounded Whisper (a residual risk that G1 does not measure); G1 has a native-controls-only arm only if the optional stage 2 arm AN runs, so without it a GG pass says nothing about value over hand-written permissions.deny and sandbox settings; the dogfood datum is an anecdote and blocking through hooks is parity with existing tools; the cited literature is mostly single-author preprints on research harnesses and none measures Claude Code surfaces. Structural tests and the finite conformance table do not establish prevention or safety.",
+  "scope": "Specify the opt-in enforcement element of the Claude Code orchestration family for M4.6: a pure policy compiler from declared ownership to the SPEC-057 policy profile with three supported outputs (native host permissions.deny plus a sandbox write allowlist whose semantics are unconfirmed; the companion plugin agent-braid-guard (working name) with PreToolUse Write and Edit and TaskCreated hooks; an exported settings snippet), the rejection of hooks in the main plugin, a guard decision contract limited to no-opinion, ask, deny and additionalContext with allow unreachable, the modes ladder off, audit, warn and block with audit as the default when enabled and the decided settings precedence with a block floor, an operator-owned envelope with control-path protection, a liveness attestation that defaults to advisory, fail-open handling recorded, recorded Bash bypass, the Whisper (which forwards no sibling-written path text), injection-safe context reusing SPEC-057's escaping definition byte for byte and a content-free audit record, bounded hook execution, a per-surface coverage matrix with guard conformance probes GP-1 to GP-5, the governance boundary with the HAR.3 reconciliation and a release gate that records per surface whether the optional G1 native-controls-only arm ran; SPEC-058 is implemented first as an unreleased engineering candidate (behind the G1 gate) before G1 arm A3 can run, and adoption or release happens only after G1 gate GG passes and the ADR is adopted.",
+  "stage": "draft"
+}
