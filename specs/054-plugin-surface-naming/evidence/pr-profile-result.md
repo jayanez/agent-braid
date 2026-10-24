@@ -18,6 +18,11 @@ tests on process-group handling) when run in isolation. They did not fail within
 the full profile run on the candidate. They do not involve this change and are
 recorded as an environment-dependent pre-existing condition.
 
+GitHub CI on that commit then failed one test, `test_plugin_package.WorkflowPackagingTests.test_opt_in_is_marked_engineering_only_and_keeps_the_version`,
+which still pinned `0.1.0-alpha.3`; the local profile run did not report it
+(cause not investigated) and it was corrected to `0.1.0-alpha.4` in a follow-up commit, after which it passes
+locally. The profile result above is for the earlier commit, not the corrected one.
+
 Limits: the profile's deferred boundary gates (clean-room reproduction, evidence
 capture, human review, founder approval) were not executed. Passing the profile
 implies no owner release decision, native-host observation (T009), owner review
