@@ -16,7 +16,7 @@ from . import __version__
 from .plugin_registry import MigrationRequired, RegistryError, home_path, load
 from . import tooling_mcp as core
 
-SCHEMA = 'agent-braid-plugin/v0.1'
+SCHEMA = 'agent-braid-plugin/v0.2'
 
 
 class WorkspaceService(core.ToolingService):
@@ -42,6 +42,7 @@ class WorkspaceService(core.ToolingService):
     def capabilities(self):
         value = super().capabilities()
         value['resources'] = [self.external(uri) for uri in value['resources']]
+        value.pop('prompts', None)  # the plugin surface advertises no prompts (SPEC-054 REQ-003)
         return value
 
 
@@ -191,25 +192,11 @@ def create_server(router):
             raise
         return types.ReadResourceResult(contents=[types.TextResourceContents(uri=str(params.uri), mimeType=mime, text=value)])
 
-    async def list_prompts(_ctx, _params):
-        return types.ListPromptsResult(prompts=[types.Prompt(name=name, description=text)
-            for name, text in core._PROMPT_TEXT.items()])
-
-    async def get_prompt(_ctx, params):
-        text = core._PROMPT_TEXT.get(params.name)
-        if text is None:
-            raise core.ToolingError('Unknown plugin prompt')
-        core._bounded_input(params.arguments or {})
-        return types.GetPromptResult(description='Read-only workspace guidance', messages=[
-            types.PromptMessage(role='user', content=types.TextContent(
-                text='Select an explicitly registered workspaceId before calling a tool. ' + text))])
-
     return Server('agent-braid-plugin', version=__version__,
         instructions='First read plugin-status/workspaces. Run the packaged setup skill when setup is required. Every delegated tool requires an explicit registered workspaceId. Never infer roots or grant authority. Registry changes require reconnecting.',
         on_list_tools=list_tools, on_call_tool=call_tool,
         on_list_resources=list_resources, on_read_resource=read_resource,
-        on_list_resource_templates=list_resource_templates,
-        on_list_prompts=list_prompts, on_get_prompt=get_prompt)
+        on_list_resource_templates=list_resource_templates)
 
 
 async def serve(home=None, plugin_root=None):
