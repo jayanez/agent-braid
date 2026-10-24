@@ -1,0 +1,33 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline deterministic runner and containment qualification interface; native, host, containment-backend and independent-review gates pending",
+  "executedChecks": [
+    {
+      "command": "python3.13 -m unittest discover -s tests -p \"test_harness_*.py\"",
+      "exitCode": 0,
+      "moduleTests": 21,
+      "testsRun": 138,
+      "scope": "Focused offline run, Python 3.13. Manual mutation checks each made module tests fail: native expiry check removed (2), fixture-hash check disabled (2), group kill removed (1), exact-type simulated check loosened to isinstance (1), artifact-loss flag disabled (1), then restored."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45"
+  },
+  "outputs": {
+    "agent_braid/harness_lab.py": "823b057d157fb58a7b1ce76222b3aa88a51245cb40f6105ef4b3bb3959bafa3a",
+    "tests/test_harness_lab.py": "482dc7d219feb828b517726e84a242f90a15e3888de071953fbdeb757405dadd"
+  },
+  "limits": "Runner-owned Python fixture only, bound to manifest fixtureSha256, in one process group (empty env, private workdir, wall/CPU/file/output rlimits, group SIGKILL and settlement check, workdir removal accounted). Simulated containment confines nothing (no filesystem/network/credential enforcement) and is labelled so; fixtures are trusted owned code, not hostile. Native backends refuse without a hash-verified, unexpired qualification matching the manifest environment and declaring every effect class; no native backend, host, model or paid route exists here and the offline manifest profile cannot name one. The manifest profile caps maxChildProcesses at 0, so the fixture child is bounded by trusted runner FixtureLimits, not by a manifest grant. Same-UID compromise excluded.",
+  "method": "Actual offline unittest execution",
+  "outcome": "Owned fixtures run deterministically and are observed via T012; timeout interrupts and settles the group including grandchildren; clean exit without terminal, output flood, malformed/excess events and unsafe artifacts cannot become completed; unqualified/lookalike native backends refuse before any run; arguments are validated before any child starts.",
+  "pending": [
+    "Stable pr-profile result recorded in the pull request",
+    "T006/T007/T013-T015 consumers; T008 native containment qualification and all native/human/scientific/economic gates"
+  ],
+  "spec": "048-harness-variant-laboratory",
+  "task": "SPEC-048/T005"
+}
