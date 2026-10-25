@@ -199,6 +199,12 @@ Tool ids and permission rules are unchanged, and no aliases for the old skill na
 are provided. To roll back, reinstall `0.1.0-alpha.3` from tag
 `agent-braid--v0.1.0-alpha.3`; the registry and results are accepted unchanged.
 
+If a Git/tag marketplace was already added for a different source, run
+`claude plugin marketplace remove agent-braid` before adding the alpha.3 tag again;
+otherwise Claude refuses ("source doesn't match its extraKnownMarketplaces entry")
+and reinstalls alpha.4. Observed with Claude Code 2.1.292 on macOS; the Codex
+rollback has not been observed.
+
 ## Storage, updates and removal
 
 Both hosts share Agent Braid's registry and results outside plugin caches:
