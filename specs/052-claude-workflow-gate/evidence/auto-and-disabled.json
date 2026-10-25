@@ -1,0 +1,32 @@
+{
+  "task": "T031",
+  "recordedAt": "2026-10-25",
+  "claudeCode": {
+    "version": "2.1.292 (Claude Code)",
+    "platform": "macOS arm64"
+  },
+  "candidate": "same engineering candidate as native-gate-runs.json (clean clone at 9531bd21), --plugin-dir, scratch registry; installed plugin and user config untouched",
+  "autoMode": {
+    "method": "claude -p --permission-mode auto with the same narrow allowlist, two independent commits",
+    "observedStatus": "ok-certified",
+    "agentsUsed": 4,
+    "phases": "validate, analyze, baseline, finalize ok",
+    "permissionDenials": 0,
+    "envelopeComparison": "same status, phases and per-pair agreement (both-clean) as the default-mode run of the same sources",
+    "operatorAction": "none requested; executionAuthorization false",
+    "costUsd": 1.56
+  },
+  "disabledWorkflows": {
+    "method": "claude -p with a session-only settings file {\"disableWorkflows\": true} passed through --settings; no user or project settings changed",
+    "observed": "the session's tool list has no Workflow tool; the agent reported it unavailable and stopped, and the gate could not start",
+    "recordedAs": "unavailable (not failed, not clean)",
+    "limits": "the key name was taken from the task text and the tool disappearing is the observation; it is not verified against host documentation here, and a managed organization policy was not exercised",
+    "costUsd": 0.32
+  },
+  "unobserved": [
+    "a managed (organization) policy source",
+    "auto mode across the whole fixture matrix, only the independent pair was run",
+    "any prompt shown to a human in auto mode (headless run)"
+  ],
+  "tasksTicked": true
+}
