@@ -20,6 +20,7 @@
   <a href="docs/tooling/README.md"><img src="https://img.shields.io/badge/MCP-stdio%20server-1f6feb?logo=modelcontextprotocol&logoColor=white" alt="MCP stdio server"></a>
   <a href="docs/tooling/NATIVE_PLUGINS.md"><img src="https://img.shields.io/badge/Codex-native%20plugin-412991?logo=openai&logoColor=white" alt="Native plugin for Codex"></a>
   <a href="docs/tooling/NATIVE_PLUGINS.md"><img src="https://img.shields.io/badge/Claude%20Code-native%20plugin-D97757?logo=anthropic&logoColor=white" alt="Native plugin for Claude Code"></a>
+  <a href="https://github.com/jayanez/agent-braid/tags"><img src="https://img.shields.io/github/v/tag/jayanez/agent-braid?filter=agent-braid--v*&label=plugin" alt="Latest native plugin release tag"></a>
   <a href="docs/tooling/INSTALL.md"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux-lightgrey" alt="macOS and Linux"></a>
   <a href="docs/tooling/TELEMETRY.md"><img src="https://img.shields.io/badge/telemetry-off%20by%20default-success" alt="Telemetry off by default"></a>
 </p>
@@ -90,6 +91,16 @@ Use `--host claude` or `--host both` as needed, and add
 `--ref agent-braid--v0.1.0-alpha.4` to pin a release. Git and the selected host
 must already be installed. See [native installation and setup](docs/tooling/NATIVE_PLUGINS.md)
 for marketplace commands, repository selection and lifecycle operations.
+
+**Invoke the skills.** In Claude Code run `/agent-braid:analyze`, `/agent-braid:plan`,
+`/agent-braid:evidence`, `/agent-braid:execute`, `/agent-braid:recover` or
+`/agent-braid:setup`. In Codex select the same skills from the plugin (`$` or
+`/skills`); the app-server lists them as `agent-braid:<skill>`. The plugin publishes
+no MCP prompts; the portable server (`agent-braid tooling serve`) and the legacy
+global install keep their `agent-braid-*` names. The
+[alpha.4 acceptance record](specs/046-native-ai-plugins/release-acceptance-alpha4.md)
+covers a Claude Code update, a public-tag install and a Codex CLI install, removal and
+reinstall; interactive skill use and execution on Linux were not observed.
 
 ### Python installation (development and existing users)
 
