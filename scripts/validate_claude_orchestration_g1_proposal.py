@@ -24,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INPUT_PATH = "docs/experiments/claude-orchestration-g1-inputs.json"
 PROPOSAL_PATH = "docs/experiments/CLAUDE_ORCHESTRATION_G1_PROPOSAL.md"
 HYPOTHESIS_PATH = "research/hypotheses/H-CW2-claude-orchestration-ownership.md"
+SPEC058_PATH = "specs/058-claude-orchestration-guard/spec.md"
 RECORD_VERSION = "agent-braid-claude-orchestration-g1-input-proposal-1"
 
 REQUIRED_FIELDS = (
@@ -347,8 +348,33 @@ REQUIRED_PROPOSAL_PHRASES = (
 )
 FORBIDDEN_PROPOSAL_PHRASES = ("faster", "unique plugin", "speed-up", "guarantees",
                               "proves safe")
+# Sentences REQ-013 requires verbatim; compared with whitespace collapsed so a
+# re-wrapped line does not hide a removed or reworded sentence.
+REQUIRED_PROPOSAL_SENTENCES = (
+    "Stage 1 (S1) runs first and on two surfaces only.",
+    "The planned run count and every threshold are fixed before freezing.",
+    "The remaining surfaces run only after a separate founder decision",
+    "is never started implicitly",
+    "SPEC-058 must be implemented as an unreleased engineering candidate, behind the "
+    "G1 gate, before arm A3 can run.",
+    "Adoption or release happens only after GG passes and the guard ADR is adopted",
+    "The guard gate needs at least 1 claimed surface.",
+    "digests per track",
+)
 REQUIRED_HYPOTHESIS_PHRASES = ("H-CW2", "Falsification", "untested", "0.10", "0.85",
-                               "0.95")
+                               "0.95", "(a) Advisory", "(b) Pull digests",
+                               "(c) Opt-in guard", "CA1 to CA6", "CG0 to CG5",
+                               "unreleased SPEC-058 engineering candidate",
+                               "release only after GG passes and the ADR is adopted")
+REQUIRED_SPEC058_SENTENCES = (
+    "SPEC-058 must be implemented as an unreleased engineering candidate (behind the "
+    "G1 gate) before arm A3 can run; adoption or release happens only after G1 gate "
+    "GG passes and the ADR is adopted.",
+    "needs at least one claimed surface",
+    "inconclusive: denominator not reachable",
+    "stage 2 (A3a and A3b) starts only after the founder reads the stage 1 report and "
+    "records a separate decision",
+)
 
 
 class G1ProposalRejected(ValueError):
@@ -358,6 +384,10 @@ class G1ProposalRejected(ValueError):
 def require(condition: bool, reason: str) -> None:
     if not condition:
         raise G1ProposalRejected(reason)
+
+
+def _flat(text: str) -> str:
+    return " ".join(text.split())
 
 
 def sha(data: bytes) -> str:
@@ -533,14 +563,25 @@ def check_proposal_bytes(proposal: dict, data: bytes) -> None:
     text = data.decode("utf-8", "strict")
     missing = [phrase for phrase in REQUIRED_PROPOSAL_PHRASES if phrase not in text]
     require(not missing, "proposal text lacks: " + ", ".join(missing))
+    flat = _flat(text)
+    absent = [sentence for sentence in REQUIRED_PROPOSAL_SENTENCES if sentence not in flat]
+    require(not absent, "proposal text lacks sentence: " + "; ".join(absent))
     lowered = text.lower()
     banned = [p for p in FORBIDDEN_PROPOSAL_PHRASES if p in lowered]
     require(not banned, "proposal text uses forbidden wording: " + ", ".join(banned))
 
 
 def check_hypothesis_text(hypothesis: str) -> None:
-    missing = [p for p in REQUIRED_HYPOTHESIS_PHRASES if p not in hypothesis]
+    flat = _flat(hypothesis)
+    missing = [p for p in REQUIRED_HYPOTHESIS_PHRASES if p not in flat]
     require(not missing, "hypothesis record lacks: " + ", ".join(missing))
+
+
+def check_spec058_text(spec: str) -> None:
+    """SPEC-058 must keep the wording REQ-013 shares with the proposal."""
+    flat = _flat(spec)
+    missing = [s for s in REQUIRED_SPEC058_SENTENCES if s not in flat]
+    require(not missing, "SPEC-058 text lacks: " + "; ".join(missing))
 
 
 _DELETE = object()
@@ -759,6 +800,19 @@ def negative_controls(proposal: dict, proposal_bytes: bytes) -> list[str]:
     allow = deepcopy(proposal)
     allow["guardProfile"]["outputVocabulary"].append("allow")
     cases.append(("guard-can-allow", lambda: check_guard_and_host(allow)))
+    stages = deepcopy(proposal)
+    stages["design"]["stages"].pop()
+    cases.append(("stage-removed", lambda: check_design(stages)))
+    for index, metric in enumerate(REQUIRED_METRICS):
+        metrics = _mutated(proposal, ("metrics",), [m for m in proposal["metrics"]
+                                                     if m != metric])
+        cases.append(("metric-removed-" + metric, lambda m=metrics: check_design(m)))
+    for index, sentence in enumerate(REQUIRED_PROPOSAL_SENTENCES):
+        edited = " ".join(proposal_bytes.decode("utf-8").split()).replace(
+            sentence, "X").encode()
+        record = _mutated(proposal, ("proposal", "sha256"), sha(edited))
+        cases.append((f"proposal-sentence-removed-{index}",
+                      lambda r=record, b=edited: check_proposal_bytes(r, b)))
     cases.append(("changed-proposal-bytes",
                   lambda: check_proposal_bytes(proposal, proposal_bytes + b"\n ")))
     speed = proposal_bytes + b"\nThis makes runs faster.\n"
@@ -787,6 +841,7 @@ def validate_proposal(root: Path = ROOT) -> dict:
     proposal_bytes = (root / PROPOSAL_PATH).read_bytes()
     check_proposal_bytes(proposal, proposal_bytes)
     check_hypothesis_text((root / HYPOTHESIS_PATH).read_text(encoding="utf-8"))
+    check_spec058_text((root / SPEC058_PATH).read_text(encoding="utf-8"))
     controls = negative_controls(proposal, proposal_bytes)
     return {
         "recordVersion": "agent-braid-claude-orchestration-g1-structural-check-1",
