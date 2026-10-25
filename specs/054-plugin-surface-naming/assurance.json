@@ -307,7 +307,22 @@
         {
           "given": "a source-bound candidate installed natively at user scope",
           "id": "SC-009",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "claude plugin marketplace add/install/update against the local alpha.4 candidate in an isolated profile; launch plugin doctor; SDK MCP client; scripts/reproduce_native_plugin.py (patched copy outside the repo)",
+              "limits": "macOS arm64, Claude Code 2.1.292, local directory marketplace; interactive /agent-braid:analyze use, Codex, Linux and a published Git ref not observed in this record; the committed reproduce script failed on the removed prompts listing and was fixed afterwards (PR 717)",
+              "outcome": "Update alpha.3 to alpha.4 passed; registry and results bytes identical across update and rollback; skills analyze, plan, evidence, execute, recover, setup; MCP server without prompts; doctor verified 7818 files",
+              "path": "specs/054-plugin-surface-naming/evidence/native-claude-alpha4.json",
+              "sha256": "e411376784e60e15471fd991aff70e46da6dc401440ac3dea1dae86756fb1284"
+            },
+            {
+              "command": "codex plugin marketplace add/list, plugin add/list/remove (codex-cli 0.164.0, disposable HOME and CODEX_HOME); launch plugin doctor; codex mcp list; scripts/reproduce_native_plugin.py from develop with the native Codex binary (17 commands)",
+              "limits": "macOS arm64, local directory marketplace, no sign-in and no model session; the Codex app-server skills/list reported agent-braid:analyze and its siblings, but interactive skill invocation, Linux and a published Git ref were not observed; the npm codex.js launcher does not work under the script's restricted PATH",
+              "outcome": "Passed: six skills analyze, evidence, execute, plan, recover, setup listed as agent-braid:<skill>; MCP server agent-braid without prompts; install, remove and reinstall verified; registry and results bytes retained",
+              "path": "specs/054-plugin-surface-naming/evidence/native-codex-alpha4.json",
+              "sha256": "77a50077a15a3c0c5e68e592574ed97a5cca7b593ef246b59c1ac6a1a96e7903"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_009 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/054-plugin-surface-naming/validation-plan.md",
           "test_name": "procedure_009",

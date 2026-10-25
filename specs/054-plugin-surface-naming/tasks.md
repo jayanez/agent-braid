@@ -41,10 +41,10 @@ authorize concurrent agents.
   interface contract to plugin interface v0.2. Dependencies: T003, T004.
   Verification: procedure_008. Evidence: documentation diff and search record.
 
-- [ ] T009 (REQ-009 / SC-009; REQ-006 / SC-006): Observe the candidate natively in
+- [x] T009 (REQ-009 / SC-009; REQ-006 / SC-006): Observe the candidate natively in
   Codex and Claude Code user profiles, including update from alpha.3.
   Dependencies: T006, T008. Verification: procedure_009. Evidence: native
-  observation record with environment and limits. Blocked on owner-run sessions.
+  observation record with environment and limits: [Claude Code](evidence/native-claude-alpha4.md) and [Codex](evidence/native-codex-alpha4.md). Closed with bounded scope by owner decision of 2026-10-25: CLI and loader observation on macOS arm64 against a local directory marketplace; interactive skill invocation, sign-in, Linux and a published Git ref were not observed.
 
 - [x] T010 (all): Run `--profile pr` on the stable candidate, record results and
   request owner release decision. Dependencies: T002–T009. Evidence: profile
