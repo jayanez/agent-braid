@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "agent-braid-policy-profile/v0.1",
+  "executionAuthorization": false,
+  "unit": "unit-b",
+  "envelope": {
+    "writes": ["src/feature/b.py"]
+  },
+  "outputs": ["settings-snippet"],
+  "guardVocabulary": ["no-opinion", "ask", "deny", "additionalContext"],
+  "coverageBoundary": {
+    "tools": ["Write", "Edit"],
+    "bash": "not-covered",
+    "unattributed": "not-covered"
+  },
+  "enforcementObserved": false
+}

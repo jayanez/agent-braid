@@ -103,7 +103,7 @@
             "not-covered",
             "covered-where-verified"
           ],
-          "description": "covered-where-verified is valid only when outputs is exactly native-host-settings and an attestation names the HV-8 receipt."
+          "description": "Partial by design. not-covered is the only value any current document may carry: probe HV-8 has not run, so no receipt exists and covered-where-verified is representable but unattested. It is valid only when outputs is exactly native-host-settings and an attestation receipt names HV-8; even then it covers only what that receipt records on that host version and surface, never Bash in general."
         },
         "unattributed": {
           "const": "not-covered"
@@ -239,6 +239,13 @@
             "maxItems": 1,
             "items": {
               "const": "native-host-settings"
+            }
+          },
+          "attestation": {
+            "properties": {
+              "receipt": {
+                "pattern": "(?<![A-Za-z0-9])[Hh][Vv]-8(?![0-9])"
+              }
             }
           }
         }

@@ -333,7 +333,36 @@
         {
           "given": "a unit's declared ownership and a requested enforcement mode",
           "id": "SC-010",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_policy_profile -v",
+              "limits": "Schema-level and fixture-level checks only; HV-8 not run so Bash coverage is partial and unattested; validator-level rules are owned by SPEC-058 T011, T014 and T015; not a reviewer approval",
+              "outcome": "23 tests pass: examples valid, every schema-level mutation rejected, validator-level rules named and shown outside the schema",
+              "path": "tests/test_policy_profile.py",
+              "sha256": "8c2605752618d86a1e0bd7331636af804adac6f83e1b86617b8bedf500e5ecc6"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_policy_profile -v",
+              "limits": "Schema-level and fixture-level checks only; HV-8 not run so Bash coverage is partial and unattested; validator-level rules are owned by SPEC-058 T011, T014 and T015; not a reviewer approval",
+              "outcome": "Schema exercised by the mutation set above",
+              "path": "specs/057-claude-orchestration-advisory/contracts/policy-profile.schema.json",
+              "sha256": "86ecbe0423305a4d5dcd20267ce8c1e8e8e79a584161469b8b904719154dce81"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_policy_profile -v",
+              "limits": "Schema-level and fixture-level checks only; HV-8 not run so Bash coverage is partial and unattested; validator-level rules are owned by SPEC-058 T011, T014 and T015; not a reviewer approval",
+              "outcome": "Valid audit-mode example accepted by the schema",
+              "path": "specs/057-claude-orchestration-advisory/contracts/policy-profile.example.json",
+              "sha256": "53e257bd797750c198cbb384f9952d7672586d144bb5236445cc30dfc7f9fb33"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_policy_profile -v",
+              "limits": "Schema-level and fixture-level checks only; HV-8 not run so Bash coverage is partial and unattested; validator-level rules are owned by SPEC-058 T011, T014 and T015; not a reviewer approval",
+              "outcome": "Valid mode-absent example accepted by the schema",
+              "path": "specs/057-claude-orchestration-advisory/contracts/policy-profile.example-off.json",
+              "sha256": "d5fc2b5d20bb717a2032241ae68c1648c4849641cadc9e8df74f3d61d0a64467"
+            }
+          ],
           "planned_evidence": "tests/test_policy_profile.py (planned, not existing) and procedure_req_010; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T023.",
           "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
           "test_name": "procedure_req_010",

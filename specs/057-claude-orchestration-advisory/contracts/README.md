@@ -11,6 +11,8 @@ Status: draft design, not adopted or implemented interfaces, edited 2026-10-24 f
 | [orchestration-settings.schema.json](orchestration-settings.schema.json) | Notification strategy and guard mode per scope (most specific scope wins, with a `block` floor; operator-owned), the resolved form, and a versioned `extensions` member that SPEC-059 extends. Only the Mailbox (pull notice) is effective in SPEC-057. |
 | [command-error.schema.json](command-error.schema.json) | The one representation of a refusal: a stable error code from a closed list and no result object. |
 | [policy-profile.schema.json](policy-profile.schema.json) | Shared with SPEC-058: ownership compiled to one of three outputs, the modes ladder, the guard vocabulary (no `allow`), the coverage boundary and the enforcement attestation. |
+| [policy-profile.example.json](policy-profile.example.json) | A valid `audit` profile with two outputs and Bash `not-covered`. An example is not evidence. |
+| [policy-profile.example-off.json](policy-profile.example-off.json) | A valid minimal profile with the mode absent (meaning `off`). An example is not evidence. |
 | [recovery-report.schema.json](recovery-report.schema.json) | Read-only recovery and orphan report; `actionsTaken` is always empty. |
 | [surface-capability-matrix.json](surface-capability-matrix.json) | Surface by lifecycle matrix with class, owner, minimum host version, preview label and evidence status. Documentation readings until receipts exist. |
 | [interop-inputs.md](interop-inputs.md) | Deferred design for optional imports from other coordination tools. |

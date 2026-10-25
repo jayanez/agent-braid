@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "agent-braid-policy-profile/v0.1",
+  "executionAuthorization": false,
+  "unit": "unit-a",
+  "mode": "audit",
+  "envelope": {
+    "writes": ["src/feature/a.py"],
+    "creates": ["tests/test_feature_a.py"],
+    "protectedControlPaths": [".claude/settings.json", "policy-profile.json"]
+  },
+  "outputs": ["native-host-settings", "companion-plugin-hooks"],
+  "guardVocabulary": ["no-opinion", "ask", "deny", "additionalContext"],
+  "coverageBoundary": {
+    "tools": ["Write", "Edit"],
+    "bash": "not-covered",
+    "unattributed": "not-covered"
+  },
+  "enforcementObserved": false,
+  "failureBehavior": {
+    "onInternalError": "fail-open-recorded",
+    "askScope": "undecidable-paths-in-block-until-GP-2"
+  }
+}
