@@ -7,6 +7,7 @@ import importlib.util
 from tests import test_plugin_registry as registry_tests
 from agent_braid.plugin_mcp import PluginRouter
 from agent_braid.plugin_registry import RegistryStale, load, plan_setup, apply
+from tests.spec060_golden import golden, normalize
 
 
 class PluginRouterTests(unittest.TestCase):
@@ -330,13 +331,68 @@ class PluginSdkTests(unittest.IsolatedAsyncioTestCase):
                 with self.assertRaisesRegex(MCPError, 'Method not found'):
                     await client.list_prompts()
                 before = sorted(str(r.uri) for r in (await client.list_resources()).resources)
-                with self.assertRaisesRegex(MCPError, 'Method not found'):
-                    await client.get_prompt('agent-braid-analyze')
+                for prompt_name in ('agent-braid-analyze', 'analyze'):
+                    with self.assertRaisesRegex(MCPError, 'Method not found'):
+                        await client.get_prompt(prompt_name)
                 after = sorted(str(r.uri) for r in (await client.list_resources()).resources)
                 self.assertEqual(before, after)
-                capabilities = json.loads((await client.read_resource(f'agent-braid-plugin://{identifier}/capabilities')).contents[0].text)
-                self.assertNotIn('prompts', capabilities)
+                raw = (await client.read_resource(f'agent-braid-plugin://{identifier}/capabilities')).contents[0].text
+                capabilities = json.loads(raw)
+                for key in ('prompts', 'deprecatedPrompts', 'envelopeSchemaVersion'):
+                    self.assertNotIn(key, capabilities)
                 self.assertTrue(capabilities['resources'])
+                self.assertEqual(capabilities['schemaVersion'], 'agent-braid-tooling/v0.1')
+                self.assertEqual(raw.replace(identifier, 'wsgolden').encode('utf-8'), golden('plugin-capabilities.json'))
+
+
+class PluginAlpha4GoldenTests(unittest.TestCase):
+    """SPEC-060 REQ-004: the plugin surface is byte-identical to alpha.4 (goldens captured before the change)."""
+    NEW_KEYS = ('prompts', 'deprecatedPrompts', 'envelopeSchemaVersion')
+
+    def setUp(self):
+        import tempfile
+        from agent_braid import tooling_mcp as core
+        from agent_braid.plugin_mcp import WorkspaceService
+        self.temp = tempfile.TemporaryDirectory()
+        base = Path(self.temp.name)
+        (base / 's').mkdir()
+        (base / 'r').mkdir()
+        self.core = core
+        self.service = WorkspaceService('wsgolden', core.ToolingConfig(base / 's', base / 'r'))
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def test_capabilities_resource_bytes_equal_the_alpha4_golden(self):
+        produced = self.core._json_bytes(self.service.capabilities())
+        self.assertEqual(produced, golden('plugin-capabilities.json'))
+        value = json.loads(produced)
+        self.assertEqual(value['schemaVersion'], 'agent-braid-tooling/v0.1')
+        for key in self.NEW_KEYS:
+            self.assertNotIn(key, value)
+
+    def test_tool_envelope_equals_the_alpha4_golden(self):
+        from agent_braid.plugin_mcp import SCHEMA
+        sample = json.loads((Path(__file__).resolve().parents[1] / 'examples/analysis/file-edits.json').read_text())
+        envelope = self.service.invoke('analyze-work', {'kind': 'aim', 'request': sample}, threading.Event())
+        envelope = dict(envelope, schemaVersion=SCHEMA, workspaceId='wsgolden')
+        produced = normalize(self.core._json_bytes(envelope).decode('utf-8')).encode('utf-8')
+        self.assertEqual(produced, golden('plugin-analyze-work-envelope.json'))
+        self.assertEqual(envelope['schemaVersion'], 'agent-braid-plugin/v0.2')
+        self.assertEqual(envelope['provenance']['schemaVersion'], 'agent-braid-tooling/v0.1')
+
+    def test_negative_control_unstripped_core_capabilities_differ_from_the_golden(self):
+        shared = self.core.ToolingService.capabilities(self.service)
+        self.assertEqual(shared['schemaVersion'], 'agent-braid-tooling/v0.2')
+        for key in self.NEW_KEYS:
+            self.assertIn(key, shared)
+        shared['resources'] = [self.service.external(uri) for uri in shared['resources']]
+        self.assertNotEqual(self.core._json_bytes(shared), golden('plugin-capabilities.json'))
+
+    def test_negative_control_each_leaked_key_breaks_the_golden(self):
+        for key in self.NEW_KEYS:
+            leaked = dict(self.service.capabilities(), **{key: 'x'})
+            self.assertNotEqual(self.core._json_bytes(leaked), golden('plugin-capabilities.json'), key)
 
 
 class PluginPromptNegativeControlTests(unittest.TestCase):
