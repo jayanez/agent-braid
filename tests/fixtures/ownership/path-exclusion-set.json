@@ -1,0 +1,18 @@
+{
+  "control": "a\u0001b",
+  "delete-and-c1": "a\u007fb",
+  "c1-control": "a\u0085b",
+  "soft-hyphen": "a\u00adb",
+  "arabic-letter-mark": "a\u061cb",
+  "hangul-filler": "a\u115fb",
+  "mongolian-vowel-separator": "a\u180eb",
+  "zero-width": "a\u200bb",
+  "bidi-mark": "a\u202eb",
+  "line-separator": "a\u2028b",
+  "invisible-operator": "a\u2060b",
+  "hangul-filler-3164": "a\u3164b",
+  "byte-order-mark": "a\ufeffb",
+  "halfwidth-hangul-filler": "a\uffa0b",
+  "interlinear-annotation": "a\ufff9b",
+  "tag-character": "a\udb40\udc01b"
+}
