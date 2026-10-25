@@ -28,6 +28,7 @@ const MAX_RUNTIME_OPERATIONS = 4;
 const MIN_GIT = [2, 38];
 const SHA = /^[0-9a-f]{40}$/;
 const DIGEST = /^sha256:[0-9a-f]{64}$/;
+const BARE_HEX = /^[0-9a-f]{64}$/;
 const REF = /^[A-Za-z0-9][A-Za-z0-9._\/-]*$/;
 const REF_BAD = /(\.\.|\/\/|\.lock$|\/$|\.$)/;
 const WORKSPACE_ID = /^[0-9a-f]{32}$/;
@@ -723,8 +724,10 @@ function interpretAnalysis(result, state) {
   }
   const evidenceRefs = [];
   for (const ref of Array.isArray(result.evidenceRefs) ? result.evidenceRefs : []) {
-    if (!isObject(ref) || !DIGEST.test(ref.sha256 || "") || !Number.isInteger(ref.sizeBytes) || ref.sizeBytes < 0) return {"problem": "analysis evidence reference is malformed"};
-    evidenceRefs.push({"uri": clip(ref.uri, 512), "sha256": ref.sha256, "sizeBytes": ref.sizeBytes});
+    // The plugin reports an evidence reference digest as bare hexadecimal; the result contract is prefixed.
+    const refDigest = isObject(ref) && typeof ref.sha256 === "string" ? (BARE_HEX.test(ref.sha256) ? "sha256:" + ref.sha256 : ref.sha256) : "";
+    if (!DIGEST.test(refDigest) || !Number.isInteger(ref.sizeBytes) || ref.sizeBytes < 0) return {"problem": "analysis evidence reference is malformed"};
+    evidenceRefs.push({"uri": clip(ref.uri, 512), "sha256": refDigest, "sizeBytes": ref.sizeBytes});
   }
   if (evidenceRefs.length > 8) return {"problem": "analysis returned more than eight evidence references"};
   const changes = new Map();

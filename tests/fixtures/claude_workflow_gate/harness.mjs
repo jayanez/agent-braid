@@ -113,7 +113,8 @@ function referenceAnalyze(prompt) {
     message: '',
     analysisId: report.analysisId,
     inputDigest: report.inputDigest,
-    evidenceRefs: [],
+    evidenceRefs: scenario.evidenceRef === 'plugin-format'
+      ? [{ uri: 'agent-braid://evidence/fixture', sha256: 'd'.repeat(64), sizeBytes: 1234 }] : [],
     operations: report.operations.map((op) => ({ instanceId: op.instanceId, source: sources[op.instanceId], coverage: op.coverage.status })),
     interactions: report.interactions.map((i) => ({ left: i.left, right: i.right, classification: i.classification, sharedResources: i.sharedResources, coverage: i.evidence.coverage })),
     uncertainty: report.uncertainty,
