@@ -1,0 +1,56 @@
+{
+  "task": "T028",
+  "behavior": "HV-5",
+  "recordedAt": "2026-10-25",
+  "claudeCode": {
+    "version": "2.1.292 (Claude Code)",
+    "platform": "macOS arm64"
+  },
+  "outcome": "partial",
+  "outcomeReading": "fail for the full allowlist as designed (literal exact rules cannot cover every gate command); pass for fail-safe behavior and for subcommand-level rules with a trailing wildcard. Not a pass for R1 on the MCP path until the gate commands are made allowlist-compatible.",
+  "method": "claude -p, model sonnet, candidate by --plugin-dir, scratch analysis-only registry, installed plugin and user config untouched. The permission rules were generated from the gate's own hardened prefixes: 4 plugin tools plus 16 Bash rules (git subcommands with the full hardened prefix, mktemp -d, rm -rf --).",
+  "arms": {
+    "-p default permission mode": {
+      "gateStatus": "inconclusive",
+      "agentsUsed": 1,
+      "deniedBashCalls": 3,
+      "cause": "the validate agent grouped commands with shell variables, loops and pipes (G='env ...'; for ... done | wc -l), which no literal rule matches; one ungrouped for-each-ref command with the exact rule was also denied",
+      "effect": "validate ended inconclusive (replace refs could not be listed); analyze and baseline never ran; fail-safe, no unsafe effect",
+      "costUsd": 0.62
+    },
+    "-p --permission-mode auto": {
+      "gateStatus": "inconclusive",
+      "deniedBashCalls": 0,
+      "effect": "no permission denials; validate ok; analyze ended failed with 'analysis evidence reference is malformed' (a gate-side consistency check on the analyze-work result as returned by the agent); baseline and finalize never ran. Needs investigation under T030, it is not a permission result.",
+      "costUsd": 0.7
+    }
+  },
+  "hostRuleMatching": {
+    "exactRuleWithFullHardenedPrefix": "matched for 'version' and 'rev-parse --show-toplevel' (0 denials)",
+    "exactRuleWithQuotedFormatArgument": "did NOT match for for-each-ref --format='%(refname)' refs/replace/ (denied despite identical text)",
+    "trailingWildcardRule": "matched (same command, rule ending in *): the host can express a subcommand-level rule with a wildcard over the remaining arguments",
+    "compoundCommands": "commands grouped with shell variables, loops or pipes are not matched by literal rules",
+    "mktemp_and_rm_rules": "not exercised (baseline never ran); unobserved"
+  },
+  "consequencesForTheDesign": [
+    "The gate prompts must make each agent run every command as a single, ungrouped command; a grouped command defeats literal rules (gate-side change, to be specified before R1).",
+    "Exact literal rules are not enough for commands with quoted format arguments; the recipe must either use wildcard tails over the fixed prefix or change those commands (for example avoid quoted format strings). Wildcard tails widen what the rule permits to any arguments of that git subcommand with the hardened prefix.",
+    "R1 on the MCP path is blocked on this allowlist-compat finding; the baseline-narrowness question (REQ-016(b), rm -rf and mktemp rules) is still open.",
+    "Approval of the run is not Agent Braid authority: executionAuthorization was false in every observed result."
+  ],
+  "unobserved": [
+    "manual interactive prompts",
+    "accept-edits mode",
+    "per-agent permission separation",
+    "constrained-CLI fallback launcher rules (analyze-git, plan-git, verify-git, plugin workspaces) and analyze-claude-transcripts",
+    "mktemp and rm -rf rule matching",
+    "baseline and finalize phases under a narrow allowlist"
+  ],
+  "headlessLimit": "claude -p cannot show an interactive prompt: a non-allowed call is denied and listed in permission_denials, so prompts in manual, accept-edits and auto modes were not observed as prompts.",
+  "costUsdApprox": {
+    "default": 0.62,
+    "auto": 0.7,
+    "ruleMatchingMini": 0.78
+  },
+  "tasksTicked": false
+}
