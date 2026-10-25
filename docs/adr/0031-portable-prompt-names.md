@@ -1,9 +1,9 @@
 # ADR 0031: Portable MCP prompt names
 
-- **Status:** Proposed on 2026-10-25. The owner chose the direction (a new
-  versioned portable contract with unprefixed prompt names and bounded deprecated
-  aliases) on 2026-10-25; adoption of this record, implementation, native
-  observation and release remain separate owner decisions.
+- **Status:** Accepted on 2026-10-25 by the founder (conversation decision).
+  Adoption authorizes implementation tasks T002-T008 of SPEC-060 only; native
+  observation (T009), release (T010), tagging and any package publication remain
+  separate founder decisions.
 - **Date:** 2026-10-25
 - **Articles:** 0, 14-16, 19, 20, 23, 24
 - **Specification:** [SPEC-060](../../specs/060-portable-prompt-names/spec.md)
@@ -19,7 +19,7 @@ target of a future versioned contract. Claude Code lists a server's prompts as
 portable prompts display as `/agent-braid:agent-braid-analyze (MCP)`. Codex does not
 display MCP prompts. Prompt traffic is not measured by SPEC-047.
 
-## Decision proposal
+## Decision
 
 1. Publish `agent-braid-tooling/v0.2`, a versioned surface contract in which the
    portable server lists the prompts `analyze`, `plan` and `evidence` with the v0.1
@@ -42,7 +42,7 @@ display MCP prompts. Prompt traffic is not measured by SPEC-047.
    the owner.
 5. Change nothing in SPEC-047 (prompts are not counted, enums unchanged), in the
    receipt-owned legacy skills (SPEC-041/042) or in installed host configuration.
-6. Carry the change in the next Python package release (proposed `0.1.0a2`); no plugin
+6. Carry the change in the next Python package release (`0.1.0a2`); no plugin
    schema bump or plugin release is required.
 
 ## Alternatives and consequences
@@ -65,5 +65,5 @@ Public contract change: new portable surface contract v0.2 (additive names, reta
 aliases, two capabilities keys). Unchanged: tool names and schemas, envelope v0.1,
 resource URIs, plugin `agent-braid-plugin/v0.2`, registry v0.2, SPEC-047 v1,
 SPEC-040/041/042/046/054 accepted files and all frozen evidence. No constitutional
-amendment is proposed. The open decisions OD-1 to OD-8 are listed in the
+amendment is proposed. The decisions OD-1 to OD-8 (all decided) are recorded in the
 [plan](../../specs/060-portable-prompt-names/plan.md#human-review-and-unresolved-decisions).

@@ -2,8 +2,8 @@
 
 Stable task IDs. Completion requires obtained evidence; task completion does not
 imply native-host, release or founder acceptance. Parallelizable does not
-authorize concurrent agents. No task is started by the specification change:
-T002-T008 need ADR 0031 adoption and an explicit implementation authorization.
+authorize concurrent agents. No task is started by the specification change. ADR 0031 is Accepted and
+authorizes T002-T008 only; T009-T011 need separate owner decisions.
 
 - [ ] T001 (REQ-001 / SC-001; REQ-002 / SC-002; REQ-007 / SC-007): Owner review of
   the specification, the contract delta, ADR 0031 and the open decisions OD-1 to

@@ -3,9 +3,9 @@
 **Milestone:** M4.5 — AI tooling integrations for Codex and Claude Code
 
 **Status:** specification only; [ADR 0031](../../docs/adr/0031-portable-prompt-names.md)
-is Proposed; no implementation, release, tag or publication is authorized.
-The owner selected the direction on 2026-10-25 (see Owner decisions); this
-document makes it reviewable and records the decisions it still needs.
+is Accepted (2026-10-25) and authorizes implementation tasks T002-T008 only;
+native observation (T009), release (T010), tag and publication are not
+authorized. Nothing is implemented by this change.
 
 ## Purpose and scope
 
@@ -43,7 +43,7 @@ Reused and new sources are in [research.md](research.md).
 Constitution clause zero and Articles 14, 15, 16, 19, 20, 23 and 24;
 [GOVERNANCE.md](../../GOVERNANCE.md) (public API or schema change requires a
 migration note and versioning impact); ADR 0021, ADR 0024, accepted
-[ADR 0030](../../docs/adr/0030-native-plugin-surface-naming.md) and proposed
+[ADR 0030](../../docs/adr/0030-native-plugin-surface-naming.md) and accepted
 [ADR 0031](../../docs/adr/0031-portable-prompt-names.md); SPEC-040
 [interface](../040-portable-mcp-surface/contracts/interface.md); SPEC-054
 [naming policy](../054-plugin-surface-naming/contracts/naming-policy.md);
@@ -57,10 +57,14 @@ SPEC-047 [data contract](../047-local-technical-telemetry/data-contract.md).
 | D2 | v0.2 publishes the unprefixed prompt names `analyze`, `plan`, `evidence`. |
 | D3 | v0.2 also keeps the old `agent-braid-*` names as deprecated aliases for a bounded window. |
 
-These define the specification. They are not ADR adoption, implementation
-approval or release approval. The numeric window, the version-stamp scope and
-the other points marked OD in [plan.md](plan.md#human-review-and-unresolved-decisions)
-are proposals for the owner.
+| D4 | OD-1: scope B, version the surface only; `envelopeSchemaVersion` stays v0.1. |
+| D5 | OD-2/OD-4: window of 2 releases; aliases listed and marked deprecated; removal in v0.3 after an owner decision and a repository search; 180-day re-decision trigger. |
+| D6 | OD-3: carrier is Python package `0.1.0a2`; no plugin release and no plugin schema bump. |
+| D7 | OD-5: document not registering the portable server under key `agent-braid` next to the plugin, observe it in T009, no code change. |
+| D8 | ADR 0031 adopted and T002-T008 authorized; T009 observation and T010 release stay separate decisions. |
+
+OD-6 (SPEC-054 files untouched) and OD-7 (number 060) stand as recommended. See
+[plan.md](plan.md#human-review-and-unresolved-decisions).
 
 ## Requirements and acceptance scenarios
 
@@ -103,7 +107,7 @@ The contract version `agent-braid-tooling/v0.2` identifies the server surface
 schema, its `schemaVersion` stamp (`agent-braid-tooling/v0.1`), the tool output
 schemas, the provenance block and the resource URIs are unchanged. The capabilities
 resource reports both identifiers so a client can tell the surface from the envelope.
-(Alternative A, stamping v0.2 everywhere, is recorded as OD-1 with its effects.)
+(Alternative A, stamping v0.2 everywhere, was rejected under D4.)
 
 **SC-003:** Given a v0.2 server, when every tool is invoked and every resource is
 read, then envelopes, output schemas and provenance equal the v0.1 server's
@@ -164,7 +168,7 @@ Verification: [procedure_006](validation-plan.md); T008.
 ### REQ-007 — Window and removal criterion
 
 The window is the first release that carries v0.2 plus one more release (N = 2
-releases, an OD-2 proposal). Aliases are removed by a later contract version,
+releases, D5). Aliases are removed by a later contract version,
 `agent-braid-tooling/v0.3`, only when every criterion in the contract holds; the
 window never extends silently, and usage is not a criterion because prompt traffic
 is not measured.
@@ -179,7 +183,7 @@ Verification: [procedure_007](validation-plan.md); T011.
 ### REQ-008 — Release and versioning impact
 
 Name the carrier and the effects without authorizing a release: the Python package
-version and `serverInfo.version` (proposed `0.1.0a2`), the contract identifier, the
+version and `serverInfo.version` (`0.1.0a2`, D6), the contract identifier, the
 absence of a required plugin release or plugin schema change, and the release notes
 content (new names, alias window, removal contract, rollback).
 

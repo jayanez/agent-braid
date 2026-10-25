@@ -24,7 +24,7 @@ separate from execution: prompts stay read-only text with no grant path. Article
 23-24 forbid back-projecting accidental names as semantics. GOVERNANCE requires a
 migration note and versioning impact for a public API change; both are in the
 contract. The alias exception departs from the SPEC-054 policy (not a constitutional
-MUST); ADR 0031 records it for review. No constitutional amendment is proposed.
+MUST); ADR 0031 (Accepted) records it. No constitutional amendment is proposed.
 
 ## Research, assumptions and alternatives
 
@@ -71,7 +71,7 @@ package; no usage signal for prompts is available.
    paths are unchanged. Host configuration contains no prompt names (only server
    key, command and tool approvals of the form `mcp__<key>__*`), so previews and
    receipts are byte-identical; a test asserts that.
-8. **Release.** Python package `0.1.0a1` to a proposed `0.1.0a2` (OD-3), which sets
+8. **Release.** Python package `0.1.0a1` to `0.1.0a2` (OD-3), which sets
    `serverInfo.version`. The native plugin vendors the same wheel, so its next
    build embeds the code; the plugin's observable behavior is unchanged
    (REQ-004), so no plugin release, plugin schema bump or tag is required by this
@@ -105,28 +105,28 @@ departure from the SPEC-054 alias rule is explicit, bounded and owner-reviewable
 
 ## Human review and unresolved decisions
 
-Proposed by this specification; none is decided. Recommendation in brackets.
+Decided by the owner on 2026-10-25; the original recommendation is kept for traceability.
 
-- **OD-1 Version-stamp scope.** [Scope B: version the surface, keep the envelope
+- **OD-1 Version-stamp scope. DECIDED: scope B.** [Scope B: version the surface, keep the envelope
   stamp.] Scope A stamps v0.2 everywhere; it forces a plugin pin (or a visible
   plugin provenance change), edits to four test modules and a System One verifier
   re-check, for no change in envelope shape.
-- **OD-2 Window.** [N = 2 releases, then removal in v0.3, with the 180-day owner
+- **OD-2 Window. DECIDED: 2 releases, v0.3 removal, 180-day trigger.** [N = 2 releases, then removal in v0.3, with the 180-day owner
   decision trigger.] Alternatives: N = 1 (shorter), N = 3 (gentler).
-- **OD-3 Carrier version.** [Python package `0.1.0a2`; no plugin release required.]
-- **OD-4 Alias visibility.** [Listed, marked deprecated.] Alternative: answer
+- **OD-3 Carrier version. DECIDED: 0.1.0a2, no plugin release.** [Python package `0.1.0a2`; no plugin release required.]
+- **OD-4 Alias visibility. DECIDED: listed, marked deprecated.** [Listed, marked deprecated.] Alternative: answer
   aliases but hide them from `prompts/list` (fewer duplicates, weaker discovery).
-- **OD-5 Collision caveat.** [Document "do not register the portable server under
+- **OD-5 Collision caveat. DECIDED: document and observe in T009; no code change.** [Document "do not register the portable server under
   the key `agent-braid` next to the native plugin" and observe in T009.] Alternative:
   change the installer default key, which alters SPEC-042 and is out of scope here.
-- **OD-6 SPEC-054 pointer.** [Keep SPEC-054 files untouched; point from here.]
-- **OD-7 Numbering.** SPEC-060 was chosen instead of the free number 055 because
+- **OD-6 SPEC-054 pointer. DECIDED: files untouched.** [Keep SPEC-054 files untouched; point from here.]
+- **OD-7 Numbering. DECIDED: SPEC-060.** SPEC-060 was chosen instead of the free number 055 because
   the milestone index note records 055 and 056 as historical working numbers in the
   #683 commit message; reusing 055 would reintroduce that ambiguity. ADR 0031 is the
   next free ADR (0029 is held by an unmerged branch). The owner may renumber.
-- **OD-8 ADR adoption and implementation authority.** ADR 0031 stays Proposed;
-  adoption, implementation (T002-T008), observation (T009) and release (T010) are
-  separate owner decisions.
+- **OD-8 ADR adoption and implementation authority.** **DECIDED:** ADR 0031 is
+  Accepted and T002-T008 are authorized; observation (T009), release (T010),
+  tagging and publication remain separate owner decisions.
 
 Remote GitHub issues, milestones and Project items are not created. The local
 tracking source registers SPEC-060 and its tasks under the existing milestone #19;

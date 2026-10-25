@@ -276,10 +276,10 @@ The experimental `0.1.0-alpha.4` marketplace is published on `plugin-dist`,
 with the pinned tag [`agent-braid--v0.1.0-alpha.4`](https://github.com/jayanez/agent-braid/tree/agent-braid--v0.1.0-alpha.4).
 It removes the plugin MCP prompts and the redundant skill prefixes (SPEC-054).
 The portable MCP server keeps its prefixed prompt names for now; draft
-[SPEC-060](../specs/060-portable-prompt-names/spec.md) and proposed
+[SPEC-060](../specs/060-portable-prompt-names/spec.md) and accepted
 [ADR 0031](adr/0031-portable-prompt-names.md) specify unprefixed names with
-bounded deprecated aliases (`agent-braid-tooling/v0.2`), with no implementation
-or release authorized.
+bounded deprecated aliases (`agent-braid-tooling/v0.2`), with implementation T002-T008
+authorized and no release authorized.
 Native macOS observations (Claude Code update from alpha.3 and a public Git-tag
 install; Codex CLI install, remove and reinstall) are in the
 [alpha.4 acceptance record](../specs/046-native-ai-plugins/release-acceptance-alpha4.md);

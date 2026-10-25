@@ -1,6 +1,6 @@
 # Portable MCP contract `agent-braid-tooling/v0.2`: delta against v0.1
 
-Status: proposed contract for SPEC-060 (ADR 0031 Proposed). Key words SHALL,
+Status: contract for SPEC-060 (ADR 0031 Accepted 2026-10-25; implementation T002-T008 authorized, release not). Key words SHALL,
 SHOULD and MAY follow the Constitution. This document lists only what changes;
 everything else in the [SPEC-040 interface](../../040-portable-mcp-surface/contracts/interface.md)
 (transport, tools, envelope, resources, evidence chunks, cancellation, authority)
@@ -14,7 +14,7 @@ stays normative for v0.2 and is not repeated. Source labels refer to
 | Server surface contract | `agent-braid-tooling/v0.1` | `agent-braid-tooling/v0.2` | `schemaVersion` of the `agent-braid://capabilities` resource; this document |
 | Envelope schema | `agent-braid-tooling/v0.1` | `agent-braid-tooling/v0.1` (unchanged, recommended scope) | `schemaVersion` of every tool envelope; tool `outputSchema` const; `provenance.schemaVersion`; `envelopeSchemaVersion` of the capabilities resource |
 | Plugin envelope | `agent-braid-plugin/v0.2` | `agent-braid-plugin/v0.2` (unchanged) | plugin tool envelopes only |
-| Package and `serverInfo.version` | `0.1.0a1` | proposed `0.1.0a2` (OD-3) | wheel metadata, `serverInfo.version` |
+| Package and `serverInfo.version` | `0.1.0a1` | `0.1.0a2` (OD-3, decided) | wheel metadata, `serverInfo.version` |
 
 The recommended scope (call it scope B) versions the surface and keeps the
 envelope stamp. Scope A would stamp `agent-braid-tooling/v0.2` on every envelope,
