@@ -140,6 +140,43 @@ class InspectValidateTests(Workspace):
             with self.subTest(name=name):
                 self.refused("inspect", self.root / name, reason=reason)
 
+    def test_non_string_formats_refuse_with_json_and_no_traceback(self):
+        for declared in ([1], {}, 7, None):
+            path = self.put("format.json", {"format": declared})
+            for command in ("inspect", "validate"):
+                with self.subTest(declared=declared, command=command):
+                    self.refused(command, path, reason="unknown-format")
+            self.refused("compare", path, path, reason="unknown-format")
+
+    def test_reads_survive_short_reads(self):
+        path = self.put("manifest.json", make_manifest())
+        real, calls = os.read, []
+
+        def small(fd, count):
+            calls.append(count)
+            return real(fd, min(count, 100))
+        with patch.object(os, "read", small):
+            code, out = run("inspect", path)
+        self.assertEqual((code, out["kind"]), (0, "manifest"))
+        self.assertGreater(len(calls), 2)  # more than one chunk was needed
+        self.assertGreater(path.stat().st_size, 100)
+
+    def test_a_file_just_over_the_limit_is_too_large_even_when_read_in_chunks(self):
+        path = self.put("huge.json", b" " * (records.MAX_RECORD_BYTES + 1))
+        real = os.read
+        with patch.object(os, "read", lambda fd, count: real(fd, min(count, 4096))):
+            self.refused("inspect", path, reason="input-too-large")
+
+    def test_usage_errors_and_refusals_share_exit_code_two_but_differ_in_stream(self):
+        out, err = io.StringIO(), io.StringIO()
+        with redirect_stdout(out), redirect_stderr(err):
+            with self.assertRaises(SystemExit) as caught:
+                main(["harness", "inspect"])
+        self.assertEqual((caught.exception.code, out.getvalue()), (2, ""))
+        self.assertIn("usage:", err.getvalue())
+        code, refusal = run("inspect", self.root / "missing")
+        self.assertEqual((code, refusal["status"]), (2, "refused"))  # JSON on stdout, nothing on stderr
+
     def test_internal_bugs_are_not_hidden_as_refusals(self):
         path = self.put("manifest.json", make_manifest())
         with patch.object(cli, "decode", side_effect=RuntimeError("bug")):

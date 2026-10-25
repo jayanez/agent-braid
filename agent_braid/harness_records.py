@@ -16,6 +16,7 @@ import re
 from typing import Any
 
 from .harness_manifest import BINDING_NAMES, FORMAT as MANIFEST_FORMAT, ManifestError, parse_manifest
+from .harness_observation import TERMINALS
 from .harness_refinement import DECISION_FORMAT, MAX_PROBES, MAX_SCORE, UPSTREAM_REVISION
 from .system_one import InvalidDecision, canonical, digest, freeze, parse_json, thaw
 
@@ -27,6 +28,9 @@ FORMATS = {
     "comparison": "braid-harness-comparison/v0.1",
 }
 MAX_DIFFERENCES = 64
+# One row per scope (base, general, task, composed); abstained/rejected/not-probed scopes
+# still produce a row but never more than one per scope.
+MAX_ATTEMPTS = MAX_PROBES
 MAX_TEXT = 512
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}\Z")
@@ -36,7 +40,6 @@ _SCOPES = ("base", "general", "task", "composed")
 _ATTEMPT_STATUSES = frozenset({"scored", "unscored", "missing", "invalid", "failed",
                                "interrupted", "refused", "not-probed", "abstained", "rejected"})
 _DECISIONS = ("candidate", "keep-base", "inconclusive", "refused")
-_TERMINALS = ("completed", "failed", "interrupted", "refused")
 
 
 class RecordError(ValueError):
@@ -104,7 +107,7 @@ def _validate_decision(value: dict) -> None:
              and _ids(value["reasons"], 4) and _ids(value["losses"], 16)
              and _optional(value["chosenCandidateSha256"], _hash))
     attempts = value["attempts"]
-    _require(type(attempts) is list and len(attempts) <= MAX_PROBES + 2)
+    _require(type(attempts) is list and len(attempts) <= MAX_ATTEMPTS)
     for row in attempts:
         _validate_attempt(row)
     _require(len({a["id"] for a in attempts}) == len(attempts)
@@ -137,7 +140,7 @@ def _validate_status(value: dict) -> None:
     _require(_id(value["attemptId"]) and _hash(value["manifestSha256"])
              and value["phase"] in ("started", "checkpointed", "ended")
              and value["outcome"] in ("pending", "recorded", "unknown")
-             and value["state"] in (None, *_TERMINALS, "unobserved") and value["source"] in (None, "terminal", "recovery")
+             and value["state"] in (None, *TERMINALS, "unobserved") and value["source"] in (None, "terminal", "recovery")
              and _ids(value["completed"], 16) and _ids(value["pending"], 16)
              and _int(value["records"], 1, 1024))
     ended = value["phase"] == "ended"
@@ -152,7 +155,7 @@ def _scalar(value: Any) -> bool:
 
 def _validate_comparison(value: dict) -> None:
     _exact(value, {"format", "recordKind", "leftSha256", "rightSha256", "identical",
-                   "differences", "executionAuthorization"})
+                   "differences", "unlistedChange", "executionAuthorization"})
     rows = value["differences"]
     _require(value["executionAuthorization"] is False and value["recordKind"] in ("manifest", "decision", "attempt-status")
              and _hash(value["leftSha256"]) and _hash(value["rightSha256"])
@@ -163,6 +166,8 @@ def _validate_comparison(value: dict) -> None:
                  and _scalar(row["left"]) and _scalar(row["right"]) and row["left"] != row["right"])
     _require(value["identical"] == (value["leftSha256"] == value["rightSha256"]))
     _require(value["identical"] <= (rows == []))
+    # Differing records whose compared fields all match must say so; listed rows never do.
+    _require(value["unlistedChange"] is (not value["identical"] and rows == []))
 
 
 def _validate_manifest(value: dict) -> None:
@@ -226,8 +231,9 @@ def decode(raw: bytes) -> Record:
         raise RecordError("record-too-large" if exc.reason == "input-budget-exceeded"
                           else "invalid-json") from None
     declared = value.get("format") if type(value) is dict else None
+    _require(type(declared) is str, "unknown-format")
     if declared not in _KIND_OF:
-        family = _FAMILY.fullmatch(declared) if type(declared) is str else None
+        family = _FAMILY.fullmatch(declared)
         _require(family is not None and any(f.startswith(family.group(1) + "/") for f in _KIND_OF),
                  "unknown-format")
         raise RecordError("unsupported-version")
@@ -280,7 +286,8 @@ def compare(left: Record, right: Record) -> Record:
     return encode("comparison", {
         "format": FORMATS["comparison"], "recordKind": left.kind, "leftSha256": left.sha256,
         "rightSha256": right.sha256, "identical": left.sha256 == right.sha256,
-        "differences": rows, "executionAuthorization": False})
+        "differences": rows, "unlistedChange": left.sha256 != right.sha256 and not rows,
+        "executionAuthorization": False})
 
 
 def attempt_status_record(status: Any) -> Record:

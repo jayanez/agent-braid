@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Experimental `harness` command group for the offline laboratory.
 
-Exit codes: 0 success, 2 refusal (a single JSON object with ``status``, a fixed ``reason``
-code and ``executionAuthorization: false`` on stdout). Argument-usage errors use argparse's
-exit 2 with text on stderr. Anything else is an internal bug and is not converted into a
+Exit codes follow forecast_cli: 0 success, 2 refusal (a single JSON object with ``status``, a
+fixed ``reason`` code and ``executionAuthorization: false`` on stdout). Argument-usage errors
+also exit 2 (argparse) but print usage text on stderr and nothing on stdout; callers tell the
+two apart by the stream. Anything else is an internal bug and is not converted into a
 refusal. Only ``prepare`` has effects (one new private candidate directory); admission,
 reservation, dispatch and reconciliation stay with the separately reviewed operator contract.
 """
@@ -32,7 +33,7 @@ _LIMITS = {
                  "grants no promotion or execution"],
     "attempt-status": ["reports what the journal durably says; it never renews permission or "
                        "allows redispatch"],
-    "comparison": ["field-level difference only"],
+    "comparison": ["compares a fixed subset of fields (bindings, outcome, scores, losses); differing records with no listed row carry unlistedChange=true"],
 }
 
 
@@ -42,6 +43,16 @@ class CliRefusal(ValueError):
     def __init__(self, reason: str, extra: dict | None = None):
         self.reason, self.extra = reason, extra or {}
         super().__init__(reason)
+
+
+_COMMAND_HELP = {
+    "inspect": "show a record's identity, base/candidate diff, losses and limits (read-only)",
+    "validate": "strictly decode a record and optionally compare trusted identities (read-only)",
+    "prepare": "import one verified candidate into a new private directory (the only effect)",
+    "status": "report an attempt's durable journal state (read-only)",
+    "recover-inspect": "report what recovery an attempt needs without performing it (read-only)",
+    "compare": "field-level comparison of two records of the same kind (read-only)",
+}
 
 
 def add_parser(subparsers):
@@ -74,14 +85,6 @@ def add_parser(subparsers):
     compare_parser.add_argument("other", type=Path)
 
 
-_COMMAND_HELP = {
-    "inspect": "show a record's identity, base/candidate diff, losses and limits (read-only)",
-    "validate": "strictly decode a record and optionally compare trusted identities (read-only)",
-    "prepare": "import one verified candidate into a new private directory (the only effect)",
-    "status": "report an attempt's durable journal state (read-only)",
-    "recover-inspect": "report what recovery an attempt needs without performing it (read-only)",
-    "compare": "field-level comparison of two records of the same kind (read-only)",
-}
 
 
 def _hash(value: str) -> str:
@@ -99,7 +102,14 @@ def _read(path: Path) -> bytes:
     try:
         if not stat.S_ISREG(os.fstat(descriptor).st_mode):
             raise CliRefusal("input-unreadable")
-        data = os.read(descriptor, MAX_RECORD_BYTES + 1)
+        chunks, size = [], 0
+        while size <= MAX_RECORD_BYTES:  # a read may return fewer bytes than asked
+            chunk = os.read(descriptor, MAX_RECORD_BYTES + 1 - size)
+            if not chunk:
+                break
+            chunks.append(chunk)
+            size += len(chunk)
+        data = b"".join(chunks)
     except OSError:
         raise CliRefusal("input-unreadable") from None
     finally:

@@ -7,6 +7,7 @@ import unittest
 
 from agent_braid import harness_journal as journal
 from agent_braid import harness_records as records
+from agent_braid.harness_refinement import MAX_PROBES
 from agent_braid.system_one import canonical
 from tests.test_harness_manifest import make_manifest
 from tests.test_harness_refinement import Lab, done, make_policy, proposal
@@ -83,6 +84,11 @@ class CodecTests(unittest.TestCase):
         for raw in (None, "text", bytearray(b"{}"), 7):
             with self.assertRaises(records.RecordError):
                 records.decode(raw)
+
+    def test_unhashable_or_non_string_formats_refuse_instead_of_crashing(self):
+        for declared in ([1], {}, {"a": 1}, 7, 1.5, None, True, [[]]):
+            with self.subTest(declared=declared):
+                self.assertRefuses(canonical({"format": declared}), "unknown-format")
 
     def test_oversized_input_refuses_before_parsing(self):
         self.assertRefuses(b"{" + b" " * records.MAX_RECORD_BYTES + b"}", "record-too-large")
@@ -184,6 +190,29 @@ class ComparisonTests(unittest.TestCase):
             records.compare(records.encode("manifest", make_manifest()),
                             records.encode("decision", decision_wire()))
         self.assertEqual(caught.exception.reason, "kind-mismatch")
+
+    def test_differences_outside_the_compared_subset_are_flagged_not_hidden(self):
+        left = decision_wire()
+        right = deepcopy(left)
+        right["attempts"][0]["observationSha256"] = "d" * 64  # not in the compared subset
+        wire = records.compare(records.encode("decision", left),
+                               records.encode("decision", right)).to_dict()
+        self.assertFalse(wire["identical"])
+        self.assertEqual(wire["differences"], [])
+        self.assertTrue(wire["unlistedChange"])
+        same = records.compare(records.encode("decision", left), records.encode("decision", left)).to_dict()
+        self.assertFalse(same["unlistedChange"])
+        forged = deepcopy(wire)
+        forged["unlistedChange"] = False  # claims full coverage for differing records
+        with self.assertRaises(records.RecordError):
+            records.decode(canonical(forged))
+
+    def test_decision_attempt_bound_is_the_probe_budget(self):
+        wire = decision_wire()
+        self.assertEqual(records.MAX_ATTEMPTS, MAX_PROBES)  # base, general, task, composed: one row each
+        wire["attempts"] = wire["attempts"] * 2 + wire["attempts"][:1]
+        with self.assertRaises(records.RecordError):
+            records.encode("decision", wire)
 
     def test_comparison_record_is_strict(self):
         comparison = records.compare(records.encode("decision", decision_wire()),
