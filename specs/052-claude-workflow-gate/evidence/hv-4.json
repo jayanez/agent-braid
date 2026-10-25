@@ -1,0 +1,26 @@
+{
+  "task": "T027",
+  "behavior": "HV-4",
+  "recordedAt": "2026-10-25",
+  "claudeCode": {
+    "version": "2.1.292 (Claude Code)",
+    "platform": "macOS arm64"
+  },
+  "outcome": "partial",
+  "scope": "two-agent scratch workflow, stopped with TaskStop while agent-b was running, resumed with scriptPath and resumeFromRunId in the same session; no Agent Braid MCP involved",
+  "observed": {
+    "resume": "same runId; the journal and transcripts show agent-a ran once (cached on resume) and the stopped agent-b ran again",
+    "agentsRun": "3 agent transcripts: agent-a x1, agent-b x2",
+    "resumeResult": "workflow completed with both values"
+  },
+  "unobserved": [
+    "automatic restart of a genuinely stalled agent ('attempt 2 (stalled)'): a stall was not forced; the host's stall threshold is not documented here",
+    "whether a restarted gate analyze or finalize agent calls the MCP again, whether the admission lock refuses it, a duplicate prepare call",
+    "resume from a new session (the host documents same-session only)",
+    "what agentsUsed and the envelope report after a resume"
+  ],
+  "consequence": "Completed agents are cached on resume and a stopped agent reruns, so a gate resumed after a stop reruns only its unfinished phase. The duplicate-MCP-call question for analyze and finalize stays open and needs a forced-stall run of the real gate (T030/T031 area).",
+  "costUsd": 0.9,
+  "transcript": "hv-4-transcript.md",
+  "tasksTicked": false
+}
