@@ -350,4 +350,4 @@ class PluginPromptNegativeControlTests(unittest.TestCase):
         shared = core.ToolingService.capabilities(service)
         self.assertEqual(len(shared['prompts']), 3)  # the old v0.1 plugin behaviour: would fail the new assertion
         self.assertNotIn('prompts', service.capabilities())
-        self.assertEqual(len(core._PROMPTS), 3)  # portable server keeps its prompts
+        self.assertEqual(len(core._PROMPTS), 6)  # portable server keeps its prompts (3 canonical + 3 aliases)

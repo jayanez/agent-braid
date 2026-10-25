@@ -464,6 +464,9 @@ class ToolingService:
                 "resources": ["agent-braid://capabilities", "agent-braid://runs/{id}/status",
                               "agent-braid://runs/{id}/evidence/{artifact}"],
                 "prompts": [prompt.name for prompt in _PROMPTS if prompt.replaced_by is None],
+                "deprecatedPrompts": [{"name": prompt.name, "replacedBy": prompt.replaced_by,
+                                       "removedIn": _ALIAS_REMOVED_IN}
+                                      for prompt in _PROMPTS if prompt.replaced_by is not None],
                 "mode": "runtime-enabled" if self.config.runtime_enabled else "analysis-only",
                 "limits": {"inputBytes": MAX_FRAME_BYTES, "depth": MAX_INPUT_DEPTH,
                            "inlineResultBytes": INLINE_RESULT_BYTES,
@@ -578,17 +581,28 @@ _PROMPTS = (
     _Prompt("analyze", _ANALYZE_TEXT),
     _Prompt("plan", _PLAN_TEXT),
     _Prompt("evidence", _EVIDENCE_TEXT),
+    # Deprecated aliases of the v0.1 names; same text, listed after the canonical names (SPEC-060 section 4).
+    _Prompt("agent-braid-analyze", _ANALYZE_TEXT, "analyze"),
+    _Prompt("agent-braid-plan", _PLAN_TEXT, "plan"),
+    _Prompt("agent-braid-evidence", _EVIDENCE_TEXT, "evidence"),
 )
+_ALIAS_REMOVED_IN = "agent-braid-tooling/v0.3"
+_PROMPT_GET_DESCRIPTION = "Read-only bounded workflow guidance"
 
 
 def _prompt_listing() -> list[tuple[str, str]]:
-    return [(prompt.name, prompt.text) for prompt in _PROMPTS]
+    return [(prompt.name, prompt.text if prompt.replaced_by is None else
+             f"[Deprecated alias of `{prompt.replaced_by}`; removed in {_ALIAS_REMOVED_IN}] {prompt.text}")
+            for prompt in _PROMPTS]
 
 
 def _prompt_get(name: str) -> tuple[str, str]:
     for prompt in _PROMPTS:
         if prompt.name == name:
-            return "Read-only bounded workflow guidance", prompt.text
+            if prompt.replaced_by is None:
+                return _PROMPT_GET_DESCRIPTION, prompt.text
+            return (f"Deprecated alias of `{prompt.replaced_by}`; removed in {_ALIAS_REMOVED_IN}. "
+                    f"{_PROMPT_GET_DESCRIPTION}", prompt.text)
     raise ToolingError("Unknown prompt")
 
 

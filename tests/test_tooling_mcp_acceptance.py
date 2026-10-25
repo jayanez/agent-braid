@@ -398,8 +398,10 @@ class MpcAcceptance(unittest.TestCase):
         with self.assertRaises(ToolingError):
             self.service.read_resource("agent-braid://runs/nope/evidence/nope")
         from agent_braid.tooling_mcp import _PROMPTS
-        text = {prompt.name: prompt.text for prompt in _PROMPTS}
+        text = {prompt.name: prompt.text for prompt in _PROMPTS if prompt.replaced_by is None}
         self.assertEqual(set(text), {"analyze", "plan", "evidence"})
+        self.assertEqual({prompt.name for prompt in _PROMPTS if prompt.replaced_by is not None},
+                         {"agent-braid-analyze", "agent-braid-plan", "agent-braid-evidence"})
         self.assertIn("do not infer execution authority", text["analyze"].lower())
         self.assertIn("never request or create a grant", text["plan"].lower())
         self.assertFalse(any(name in self.service.tools for name in ("grant", "read-file", "execute", "recover")))

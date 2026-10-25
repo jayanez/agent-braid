@@ -501,7 +501,7 @@ class SdkClientIntegrationTests(unittest.IsolatedAsyncioTestCase):
                 resource = await client.read_resource("agent-braid://capabilities")
                 self.assertIn("analysis-only", resource.contents[0].text)
                 prompts = await client.list_prompts()
-                self.assertEqual([p.name for p in prompts.prompts], ["analyze", "plan", "evidence"])
+                self.assertEqual([p.name for p in prompts.prompts], CANONICAL_PROMPTS + ALIAS_PROMPTS)
                 prompt = await client.get_prompt("evidence")
                 self.assertIn("SHA-256", prompt.messages[0].content.text)
 
@@ -524,6 +524,74 @@ def assert_canonical_prompts(testcase, listing, get):
         got_description, text = get(name)
         testcase.assertEqual(got_description, "Read-only bounded workflow guidance")
         testcase.assertEqual(text.encode("utf-8"), PROMPT_TEXT_V01[name].encode("utf-8"))
+
+
+ALIAS_PROMPTS = ["agent-braid-analyze", "agent-braid-plan", "agent-braid-evidence"]
+REPLACED_BY = dict(zip(ALIAS_PROMPTS, CANONICAL_PROMPTS))
+
+
+def alias_marker(canonical):
+    return f"[Deprecated alias of `{canonical}`; removed in agent-braid-tooling/v0.3] "
+
+
+def assert_alias_surface(testcase, listing, get, capabilities):
+    """Shared check for procedure_002; the negative controls below must make it fail."""
+    testcase.assertEqual([name for name, _description in listing], CANONICAL_PROMPTS + ALIAS_PROMPTS)
+    for name, description in listing[3:]:
+        canonical = REPLACED_BY[name]
+        testcase.assertEqual(description, alias_marker(canonical) + PROMPT_TEXT_V01[canonical])
+        got_description, text = get(name)
+        testcase.assertEqual(
+            got_description,
+            f"Deprecated alias of `{canonical}`; removed in agent-braid-tooling/v0.3. "
+            "Read-only bounded workflow guidance")
+        testcase.assertEqual(text.encode("utf-8"), PROMPT_TEXT_V01[canonical].encode("utf-8"))
+    testcase.assertEqual(capabilities["prompts"], CANONICAL_PROMPTS)
+    testcase.assertEqual(capabilities["deprecatedPrompts"], [
+        {"name": name, "replacedBy": REPLACED_BY[name], "removedIn": "agent-braid-tooling/v0.3"}
+        for name in ALIAS_PROMPTS])
+
+
+class PromptAliasTests(unittest.TestCase):
+    def _surface(self):
+        from agent_braid import tooling_mcp
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            (base / "source").mkdir()
+            (base / "results").mkdir()
+            service = ToolingService(ToolingConfig(base / "source", base / "results"))
+            capabilities = service.capabilities()
+        return tooling_mcp._prompt_listing(), tooling_mcp._prompt_get, capabilities
+
+    def test_aliases_are_listed_after_canonical_names_marked_and_equal_in_text(self):
+        assert_alias_surface(self, *self._surface())
+
+    def test_alias_text_is_byte_equal_to_its_canonical_text(self):
+        from agent_braid import tooling_mcp
+        for alias, canonical in REPLACED_BY.items():
+            self.assertEqual(tooling_mcp._prompt_get(alias)[1].encode("utf-8"),
+                             tooling_mcp._prompt_get(canonical)[1].encode("utf-8"))
+
+    def test_negative_control_unmarked_alias_fails(self):
+        from agent_braid import tooling_mcp
+        unmarked = tuple(
+            tooling_mcp._Prompt(p.name, p.text, None) if p.name == "agent-braid-plan" else p
+            for p in tooling_mcp._PROMPTS)
+        with patch.object(tooling_mcp, "_PROMPTS", unmarked):
+            with self.assertRaises(AssertionError):
+                assert_alias_surface(self, *self._surface())
+
+    def test_negative_control_alias_listed_under_prompts_fails(self):
+        listing, get, capabilities = self._surface()
+        broken = dict(capabilities, prompts=CANONICAL_PROMPTS + ["agent-braid-analyze"])
+        with self.assertRaises(AssertionError):
+            assert_alias_surface(self, listing, get, broken)
+
+    def test_negative_control_missing_deprecated_entries_fail(self):
+        listing, get, capabilities = self._surface()
+        broken = {k: v for k, v in capabilities.items() if k != "deprecatedPrompts"}
+        with self.assertRaises(KeyError):
+            assert_alias_surface(self, listing, get, broken)
 
 
 class PromptRegistryTests(unittest.TestCase):
@@ -582,6 +650,18 @@ class SdkPromptNameTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(got.messages[0].role, "user")
                     self.assertEqual(got.messages[0].content.text.encode("utf-8"),
                                      PROMPT_TEXT_V01[prompt.name].encode("utf-8"))
+                self.assertEqual(names, CANONICAL_PROMPTS + ALIAS_PROMPTS)
+                for prompt in listed.prompts[3:]:
+                    canonical = REPLACED_BY[prompt.name]
+                    self.assertEqual(prompt.description, alias_marker(canonical) + PROMPT_TEXT_V01[canonical])
+                    got = await client.get_prompt(prompt.name)
+                    self.assertEqual(got.description, f"Deprecated alias of `{canonical}`; removed in "
+                                     "agent-braid-tooling/v0.3. Read-only bounded workflow guidance")
+                    self.assertEqual(got.messages[0].content.text.encode("utf-8"),
+                                     PROMPT_TEXT_V01[canonical].encode("utf-8"))
+                capabilities = json.loads((await client.read_resource("agent-braid://capabilities")).contents[0].text)
+                self.assertEqual(capabilities["prompts"], CANONICAL_PROMPTS)
+                self.assertEqual([row["name"] for row in capabilities["deprecatedPrompts"]], ALIAS_PROMPTS)
                 with self.assertRaises(MCPError):
                     await client.get_prompt("no-such-prompt")
                 with self.assertRaises(MCPError):
