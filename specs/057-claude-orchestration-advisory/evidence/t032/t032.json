@@ -19,7 +19,8 @@
     "Whitespace-normalised pinning of the staging, fixed-before-freeze, unreleased-candidate, adoption-or-release-after-GG, GG-one-claimed-surface and digests-per-track sentences of the proposal.",
     "check_spec058_text pins the SPEC-058 wording of the unreleased-candidate sentence, the GG claimed-surface rule, the denominator-not-reachable outcome and the separate stage 2 decision.",
     "H-CW2 check pins parts (a), (b), (c), CA1 to CA6, CG0 to CG5 and the unreleased-candidate wording.",
-    "New negative controls: stage removed, each required metric removed, each required proposal sentence removed."
+    "New negative controls: stage removed, each required metric removed, each required proposal sentence removed.",
+    "Review pass before the PR: unused loop index removed; the digests-per-track pin lengthened to the metric 9 sentence so the two other mentions cannot mask its removal."
   ],
   "findings": [
     {
@@ -57,8 +58,8 @@
     "docs/experiments/CLAUDE_ORCHESTRATION_G1_PROPOSAL.md": "fa581f5660f6134b1d749c0482c9d5a3e7b2b75d525c238868a5d5e2e2985400",
     "docs/experiments/claude-orchestration-g1-inputs.json": "5793690674b64b910549da646398e3fa151deb4632b62f71d6050f6805a4ca2a",
     "research/hypotheses/H-CW2-claude-orchestration-ownership.md": "7b151c6f24dbebd485de25939ec6e5e1d12ae06b55f1d3161e848c28c2ba654a",
-    "scripts/validate_claude_orchestration_g1_proposal.py": "7a129150e9202f7951ce76a1cd73768014b217f1ce489b55959916f6405960a4",
-    "tests/test_claude_orchestration_g1_proposal.py": "e507c747c2fee50154aa2854783c27201760dd0b82d8eb8ea449ffb3d55f15ae"
+    "scripts/validate_claude_orchestration_g1_proposal.py": "13e0dc24bee5e72a3b532fb79f82eb24ee70b3e16e17c6aad966e7b35a863c3a",
+    "tests/test_claude_orchestration_g1_proposal.py": "5bf62a4c94df7e1efe6fefc2be2f637c4e4dda85cdeaf3de68cc3e937d02f5e3"
   },
   "limits": [
     "Structural and byte checks only; no G1 result, run, freeze, approval or review exists.",

@@ -359,7 +359,7 @@ REQUIRED_PROPOSAL_SENTENCES = (
     "G1 gate, before arm A3 can run.",
     "Adoption or release happens only after GG passes and the guard ADR is adopted",
     "The guard gate needs at least 1 claimed surface.",
-    "digests per track",
+    "digests per track, hook latency p50 and p95, added tool calls",
 )
 REQUIRED_HYPOTHESIS_PHRASES = ("H-CW2", "Falsification", "untested", "0.10", "0.85",
                                "0.95", "(a) Advisory", "(b) Pull digests",
@@ -803,7 +803,7 @@ def negative_controls(proposal: dict, proposal_bytes: bytes) -> list[str]:
     stages = deepcopy(proposal)
     stages["design"]["stages"].pop()
     cases.append(("stage-removed", lambda: check_design(stages)))
-    for index, metric in enumerate(REQUIRED_METRICS):
+    for metric in REQUIRED_METRICS:
         metrics = _mutated(proposal, ("metrics",), [m for m in proposal["metrics"]
                                                      if m != metric])
         cases.append(("metric-removed-" + metric, lambda m=metrics: check_design(m)))

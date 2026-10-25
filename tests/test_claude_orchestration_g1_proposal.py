@@ -20,9 +20,10 @@ from unittest import mock
 from scripts import validate_claude_orchestration_g1_proposal as validator
 from scripts.validate_claude_orchestration_g1_proposal import (
     FORBIDDEN_PROPOSAL_PHRASES, HYPOTHESIS_PATH, INPUT_PATH, PROPOSAL_PATH,
-    REQUIRED_FIELDS, ROOT, SPEC058_PATH, G1ProposalRejected, check_authority_and_budget, check_design,
-    check_guard_and_host, check_hypothesis_text, check_proposal_bytes,
-    check_required_fields, check_spec058_text, check_thresholds, negative_controls, validate_proposal,
+    REQUIRED_FIELDS, ROOT, SPEC058_PATH, G1ProposalRejected, check_authority_and_budget,
+    check_design, check_guard_and_host, check_hypothesis_text, check_proposal_bytes,
+    check_required_fields, check_spec058_text, check_thresholds, negative_controls,
+    validate_proposal,
 )
 
 
