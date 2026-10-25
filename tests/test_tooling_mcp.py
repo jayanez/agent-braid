@@ -35,6 +35,8 @@ from agent_braid.tooling_mcp import (
 )
 
 
+from tests.spec060_golden import golden, normalize
+
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLE = json.loads((ROOT / "examples/analysis/file-edits.json").read_text())
 
@@ -501,10 +503,309 @@ class SdkClientIntegrationTests(unittest.IsolatedAsyncioTestCase):
                 resource = await client.read_resource("agent-braid://capabilities")
                 self.assertIn("analysis-only", resource.contents[0].text)
                 prompts = await client.list_prompts()
-                self.assertEqual({p.name for p in prompts.prompts},
-                                 {"agent-braid-analyze", "agent-braid-plan", "agent-braid-evidence"})
-                prompt = await client.get_prompt("agent-braid-evidence")
+                self.assertEqual([p.name for p in prompts.prompts], CANONICAL_PROMPTS + ALIAS_PROMPTS)
+                prompt = await client.get_prompt("evidence")
                 self.assertIn("SHA-256", prompt.messages[0].content.text)
+
+
+# SPEC-060 contract agent-braid-tooling/v0.2: the v0.1 prompt texts, reproduced byte for byte.
+PROMPT_TEXT_V01 = {
+    "analyze": "Analyze the supplied bounded AIM or Git work request. Explain conflicts, conditions, unknown coverage, evidence and limits. Do not infer execution authority.",
+    "plan": "Use Agent Braid analysis and preparation to inspect dependencies and the exact bounded plan. Explain what requires existing operator authorization. Never request or create a grant through a tool.",
+    "evidence": "Retrieve only the referenced owned evidence. Reconstruct bytes from the manifest and chunk chain, verify every chunk and the complete SHA-256 and length before parsing or comparison.",
+}
+CANONICAL_PROMPTS = ["analyze", "plan", "evidence"]
+
+
+def assert_canonical_prompts(testcase, listing, get):
+    """Shared check for procedure_001; the negative controls below must make it fail."""
+    names = [name for name, _description in listing]
+    testcase.assertEqual(names[:3], CANONICAL_PROMPTS)
+    for name, description in listing[:3]:
+        testcase.assertEqual(description, PROMPT_TEXT_V01[name])
+        got_description, text = get(name)
+        testcase.assertEqual(got_description, "Read-only bounded workflow guidance")
+        testcase.assertEqual(text.encode("utf-8"), PROMPT_TEXT_V01[name].encode("utf-8"))
+
+
+ALIAS_PROMPTS = ["agent-braid-analyze", "agent-braid-plan", "agent-braid-evidence"]
+REPLACED_BY = dict(zip(ALIAS_PROMPTS, CANONICAL_PROMPTS))
+
+
+def alias_marker(canonical):
+    return f"[Deprecated alias of `{canonical}`; removed in agent-braid-tooling/v0.3] "
+
+
+def assert_alias_surface(testcase, listing, get, capabilities):
+    """Shared check for procedure_002; the negative controls below must make it fail."""
+    testcase.assertEqual([name for name, _description in listing], CANONICAL_PROMPTS + ALIAS_PROMPTS)
+    for name, description in listing[3:]:
+        canonical = REPLACED_BY[name]
+        testcase.assertEqual(description, alias_marker(canonical) + PROMPT_TEXT_V01[canonical])
+        got_description, text = get(name)
+        testcase.assertEqual(
+            got_description,
+            f"Deprecated alias of `{canonical}`; removed in agent-braid-tooling/v0.3. "
+            "Read-only bounded workflow guidance")
+        testcase.assertEqual(text.encode("utf-8"), PROMPT_TEXT_V01[canonical].encode("utf-8"))
+    testcase.assertEqual(capabilities["prompts"], CANONICAL_PROMPTS)
+    testcase.assertEqual(capabilities["deprecatedPrompts"], [
+        {"name": name, "replacedBy": REPLACED_BY[name], "removedIn": "agent-braid-tooling/v0.3"}
+        for name in ALIAS_PROMPTS])
+
+
+class PromptAliasTests(unittest.TestCase):
+    def _surface(self):
+        from agent_braid import tooling_mcp
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            (base / "source").mkdir()
+            (base / "results").mkdir()
+            service = ToolingService(ToolingConfig(base / "source", base / "results"))
+            capabilities = service.capabilities()
+        return tooling_mcp._prompt_listing(), tooling_mcp._prompt_get, capabilities
+
+    def test_aliases_are_listed_after_canonical_names_marked_and_equal_in_text(self):
+        assert_alias_surface(self, *self._surface())
+
+    def test_alias_text_is_byte_equal_to_its_canonical_text(self):
+        from agent_braid import tooling_mcp
+        for alias, canonical in REPLACED_BY.items():
+            self.assertEqual(tooling_mcp._prompt_get(alias)[1].encode("utf-8"),
+                             tooling_mcp._prompt_get(canonical)[1].encode("utf-8"))
+
+    def test_negative_control_unmarked_alias_fails(self):
+        from agent_braid import tooling_mcp
+        unmarked = tuple(
+            tooling_mcp._Prompt(p.name, p.text, None) if p.name == "agent-braid-plan" else p
+            for p in tooling_mcp._PROMPTS)
+        with patch.object(tooling_mcp, "_PROMPTS", unmarked):
+            with self.assertRaises(AssertionError):
+                assert_alias_surface(self, *self._surface())
+
+    def test_negative_control_alias_listed_under_prompts_fails(self):
+        listing, get, capabilities = self._surface()
+        broken = dict(capabilities, prompts=CANONICAL_PROMPTS + ["agent-braid-analyze"])
+        with self.assertRaises(AssertionError):
+            assert_alias_surface(self, listing, get, broken)
+
+    def test_negative_control_missing_deprecated_entries_fail(self):
+        listing, get, capabilities = self._surface()
+        broken = {k: v for k, v in capabilities.items() if k != "deprecatedPrompts"}
+        with self.assertRaises(KeyError):
+            assert_alias_surface(self, listing, get, broken)
+
+
+class SurfaceVersionTests(unittest.TestCase):
+    """SPEC-060 scope B: the surface is v0.2 while envelopes, schemas and provenance stay v0.1."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        base = Path(self.temp.name)
+        (base / "source").mkdir()
+        (base / "results").mkdir()
+        self.service = ToolingService(ToolingConfig(base / "source", base / "results"))
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def test_capabilities_report_surface_v02_and_envelope_v01(self):
+        capabilities = self.service.capabilities()
+        self.assertEqual(capabilities["schemaVersion"], "agent-braid-tooling/v0.2")
+        self.assertEqual(capabilities["envelopeSchemaVersion"], "agent-braid-tooling/v0.1")
+        v01 = json.loads(golden("core-capabilities-v01.json"))
+        for key in ("tools", "resources", "mode", "limits"):
+            self.assertEqual(capabilities[key], v01[key], key)
+        self.assertEqual(set(capabilities) - set(v01), {"envelopeSchemaVersion", "deprecatedPrompts"})
+        self.assertEqual(set(v01) - set(capabilities), set())
+
+    def test_envelopes_for_identical_inputs_are_byte_equal_to_the_v01_goldens(self):
+        from agent_braid.tooling_mcp import _json_bytes
+        for operation, arguments in (("analyze-work", {"kind": "aim", "request": SAMPLE}),
+                                     ("analyze", {"request": SAMPLE})):
+            envelope = self.service.invoke(operation, arguments, threading.Event())
+            self.assertEqual(envelope["schemaVersion"], "agent-braid-tooling/v0.1")
+            self.assertEqual(envelope["provenance"]["schemaVersion"], "agent-braid-tooling/v0.1")
+            produced = normalize(_json_bytes(envelope).decode("utf-8")).encode("utf-8")
+            self.assertEqual(produced, golden(f"core-{operation}-envelope.json"), operation)
+
+    def test_output_schemas_keep_the_v01_const(self):
+        import types as pytypes
+        from agent_braid.tooling_mcp import _tool_definitions
+
+        class Tool:
+            def __init__(self, **kwargs):
+                self.__dict__.update(kwargs)
+        types = pytypes.SimpleNamespace(Tool=Tool, ToolAnnotations=lambda **kw: kw)
+        definitions = _tool_definitions(self.service, types)
+        self.assertTrue(definitions)
+        for definition in definitions:
+            const = definition.outputSchema["properties"]["schemaVersion"]
+            self.assertEqual(const, {"const": "agent-braid-tooling/v0.1"}, definition.name)
+
+    def test_negative_control_v02_stamp_on_an_envelope_is_detected(self):
+        from agent_braid.tooling_mcp import _json_bytes
+        envelope = self.service.invoke("analyze", {"request": SAMPLE}, threading.Event())
+        stamped = dict(envelope, schemaVersion="agent-braid-tooling/v0.2")
+        produced = normalize(_json_bytes(stamped).decode("utf-8")).encode("utf-8")
+        self.assertNotEqual(produced, golden("core-analyze-envelope.json"))
+        with self.assertRaises(AssertionError):
+            self.assertEqual(stamped["schemaVersion"], "agent-braid-tooling/v0.1")
+
+    def test_negative_control_golden_comparison_detects_a_changed_byte(self):
+        from agent_braid.tooling_mcp import _json_bytes
+        envelope = self.service.invoke("analyze", {"request": SAMPLE}, threading.Event())
+        tampered = dict(envelope, summary=str(envelope.get("summary")) + "!")
+        produced = normalize(_json_bytes(tampered).decode("utf-8")).encode("utf-8")
+        self.assertNotEqual(produced, golden("core-analyze-envelope.json"))
+
+
+class PromptRegistryTests(unittest.TestCase):
+    def test_canonical_prompts_are_byte_equal_to_the_v01_texts(self):
+        from agent_braid import tooling_mcp
+        assert_canonical_prompts(self, tooling_mcp._prompt_listing(), tooling_mcp._prompt_get)
+
+    def test_unknown_prompt_name_is_refused(self):
+        from agent_braid import tooling_mcp
+        for name in ("", "Analyze", "analyze ", "agent-braid-unknown", "execute"):
+            with self.assertRaises(ToolingError):
+                tooling_mcp._prompt_get(name)
+
+    def test_negative_control_changed_canonical_text_fails(self):
+        from agent_braid import tooling_mcp
+        changed = tuple(
+            tooling_mcp._Prompt(p.name, p.text + " ", p.replaced_by) if p.name == "plan" else p
+            for p in tooling_mcp._PROMPTS)
+        with patch.object(tooling_mcp, "_PROMPTS", changed):
+            with self.assertRaises(AssertionError):
+                assert_canonical_prompts(self, tooling_mcp._prompt_listing(), tooling_mcp._prompt_get)
+
+    def test_negative_control_missing_canonical_name_fails(self):
+        from agent_braid import tooling_mcp
+        reduced = tuple(p for p in tooling_mcp._PROMPTS if p.name != "evidence")
+        with patch.object(tooling_mcp, "_PROMPTS", reduced):
+            with self.assertRaises(AssertionError):
+                assert_canonical_prompts(self, tooling_mcp._prompt_listing(), tooling_mcp._prompt_get)
+
+    def test_surface_constant_is_v02_and_registry_has_no_duplicate_names(self):
+        from agent_braid import tooling_mcp
+        self.assertEqual(tooling_mcp.SURFACE_VERSION, "agent-braid-tooling/v0.2")
+        names = [p.name for p in tooling_mcp._PROMPTS]
+        self.assertEqual(len(names), len(set(names)))
+
+
+@unittest.skipUnless(importlib.util.find_spec("mcp"), "optional tooling extra (mcp==2.3.0) is not installed")
+class SdkPromptNameTests(unittest.IsolatedAsyncioTestCase):
+    asyncSetUp = SdkClientIntegrationTests.asyncSetUp
+    asyncTearDown = SdkClientIntegrationTests.asyncTearDown
+    _client = SdkClientIntegrationTests._client
+
+    async def test_sdk_client_lists_and_gets_canonical_prompts(self):
+        from mcp.shared.exceptions import MCPError
+        for mode in ("auto", "legacy"):
+            async with await self._client(mode) as client:
+                listed = await client.list_prompts()
+                names = [p.name for p in listed.prompts]
+                self.assertEqual(names[:3], CANONICAL_PROMPTS)
+                for prompt in listed.prompts[:3]:
+                    self.assertEqual(prompt.description, PROMPT_TEXT_V01[prompt.name])
+                    self.assertFalse(prompt.arguments)
+                    got = await client.get_prompt(prompt.name)
+                    self.assertEqual(got.description, "Read-only bounded workflow guidance")
+                    self.assertEqual(len(got.messages), 1)
+                    self.assertEqual(got.messages[0].role, "user")
+                    self.assertEqual(got.messages[0].content.text.encode("utf-8"),
+                                     PROMPT_TEXT_V01[prompt.name].encode("utf-8"))
+                self.assertEqual(names, CANONICAL_PROMPTS + ALIAS_PROMPTS)
+                for prompt in listed.prompts[3:]:
+                    canonical = REPLACED_BY[prompt.name]
+                    self.assertEqual(prompt.description, alias_marker(canonical) + PROMPT_TEXT_V01[canonical])
+                    got = await client.get_prompt(prompt.name)
+                    self.assertEqual(got.description, f"Deprecated alias of `{canonical}`; removed in "
+                                     "agent-braid-tooling/v0.3. Read-only bounded workflow guidance")
+                    self.assertEqual(got.messages[0].content.text.encode("utf-8"),
+                                     PROMPT_TEXT_V01[canonical].encode("utf-8"))
+                capabilities = json.loads((await client.read_resource("agent-braid://capabilities")).contents[0].text)
+                self.assertEqual(capabilities["prompts"], CANONICAL_PROMPTS)
+                self.assertEqual([row["name"] for row in capabilities["deprecatedPrompts"]], ALIAS_PROMPTS)
+                with self.assertRaises(MCPError):
+                    await client.get_prompt("no-such-prompt")
+                with self.assertRaises(MCPError):
+                    await client.get_prompt("analyze", {"filler": "x" * (16 * 1024 + 1)})
+                self.assertEqual([p.name for p in (await client.list_prompts()).prompts], names)
+
+
+class PromptRegressionBoundaryTests(unittest.TestCase):
+    """SPEC-060 procedure_005: prompt names reach neither the installer, host preview nor telemetry."""
+
+    def test_telemetry_enum_and_batch_version_are_unchanged(self):
+        from agent_braid import tooling_telemetry
+        self.assertEqual(tooling_telemetry.SCHEMA, "agent-braid-local-telemetry-batch/v1")
+        self.assertEqual(tooling_telemetry.OPERATIONS["mcp"],
+                         ("analyze-work", "analyze", "prepare", "status", "execute", "recover", "verify", "other"))
+        self.assertEqual(tooling_telemetry.OPERATIONS["cli"], ("analyze", "analyze-git"))
+
+    def test_installer_and_host_modules_do_not_reference_the_prompt_registry(self):
+        for module in ("tooling_install.py", "tooling_hosts.py", "tooling_assets.py"):
+            source = (ROOT / "agent_braid" / module).read_text(encoding="utf-8")
+            for token in ("_PROMPTS", "_prompt_get", "_prompt_listing", "deprecatedPrompts", "SURFACE_VERSION"):
+                self.assertNotIn(token, source, f"{module} references {token}")
+
+    def test_host_configuration_preview_is_deterministic_and_prompt_free(self):
+        from agent_braid.tooling_install import Selection, plan
+        for host in ("codex", "claude"):
+            with tempfile.TemporaryDirectory() as temp:
+                root = Path(temp).resolve()
+                (root / "source").mkdir()
+                (root / "results").mkdir()
+                selection = Selection(host=host, scope="user", source_root=root / "source",
+                                      result_root=root / "results", home=root / "home",
+                                      destination=root / "dest")
+                first = json.dumps(plan(selection, source_checkout=True).preview(), sort_keys=True)
+                second = json.dumps(plan(selection, source_checkout=True).preview(), sort_keys=True)
+                self.assertEqual(first, second)
+                preview = json.loads(first)
+                self.assertEqual(preview["serverName"], "agent-braid")
+                self.assertEqual(preview["enabledTools"], ["analyze-work", "analyze", "prepare"])
+                self.assertNotIn("prompts", first)
+                self.assertNotIn("deprecated", first)
+                self.assertNotIn("v0.2", first)
+
+
+@unittest.skipUnless(importlib.util.find_spec("mcp"), "optional tooling extra (mcp==2.3.0) is not installed")
+class PromptTelemetryTests(unittest.IsolatedAsyncioTestCase):
+    async def test_listing_and_getting_every_prompt_records_nothing_with_telemetry_local(self):
+        from mcp import Client
+        from mcp.client.stdio import StdioServerParameters
+        from agent_braid import tooling_telemetry as telemetry
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary).resolve()
+            source, results = base / "source", base / "results"
+            source.mkdir()
+            results.mkdir()
+            directory = base / "home/.local/share/agent-braid/telemetry"
+            script = ("from pathlib import Path; from unittest.mock import patch; import sys; "
+                      "from agent_braid.tooling_mcp import main; selected=Path(sys.argv[1]); "
+                      "context=patch.object(Path,'home',return_value=selected); context.start(); "
+                      "raise SystemExit(main(sys.argv[2:]))")
+            parameters = StdioServerParameters(
+                command=sys.executable,
+                args=["-c", script, str(base / "home"), "--source-root", str(source),
+                      "--result-parent", str(results), "--telemetry", "local"], cwd=str(ROOT))
+            async with Client(parameters, mode="auto") as client:
+                before = telemetry.Store(directory).report()["rows"]
+                listed = await client.list_prompts()
+                self.assertEqual(len(listed.prompts), 6)
+                for prompt in listed.prompts:
+                    await client.get_prompt(prompt.name)
+                await client.read_resource("agent-braid://capabilities")
+                self.assertEqual(telemetry.Store(directory).report()["rows"], before)
+                self.assertEqual(before, [])
+                # Positive control: the same server does count a real tool call, so the empty store above is meaningful.
+                response = await client.call_tool("analyze-work", {"kind": "aim", "request": SAMPLE})
+                self.assertEqual(response.structured_content["status"], "ok")
+                self.assertTrue(telemetry.Store(directory).report()["rows"])
+
 
 if __name__ == "__main__":
     unittest.main()

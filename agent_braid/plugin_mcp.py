@@ -43,7 +43,11 @@ class WorkspaceService(core.ToolingService):
     def capabilities(self):
         value = super().capabilities()
         value['resources'] = [self.external(uri) for uri in value['resources']]
-        value.pop('prompts', None)  # the plugin surface advertises no prompts (SPEC-054 REQ-003)
+        # The plugin surface advertises no prompts (SPEC-054 REQ-003) and keeps its alpha.4 bytes (SPEC-060 REQ-004):
+        # the portable surface's v0.2 identifiers never reach the plugin resource.
+        for key in ('prompts', 'deprecatedPrompts', 'envelopeSchemaVersion'):
+            value.pop(key, None)
+        value['schemaVersion'] = core.SCHEMA_VERSION
         return value
 
 
