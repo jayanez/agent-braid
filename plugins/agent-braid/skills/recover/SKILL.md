@@ -1,5 +1,5 @@
 ---
-name: agent-braid-recover
+name: recover
 description: Use when inspecting an interrupted owned run and deciding whether existing authority permits bounded recovery.
 license: CC-BY-SA-4.0
 ---

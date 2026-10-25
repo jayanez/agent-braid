@@ -1,5 +1,5 @@
 ---
-name: agent-braid-evidence
+name: evidence
 description: Use when explaining or exporting a bounded Agent Braid result with its provenance, uncertainty, and observation limits.
 license: CC-BY-SA-4.0
 ---

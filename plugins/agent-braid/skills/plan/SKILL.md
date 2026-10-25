@@ -1,5 +1,5 @@
 ---
-name: agent-braid-plan
+name: plan
 description: Use when preparing an advisory order for bounded work and explaining constraints or missing operator authority.
 license: CC-BY-SA-4.0
 ---
@@ -12,7 +12,7 @@ instruction never creates an operator grant.
 ## Prepare
 
 1. Confirm the exact immutable request, configured source/result roots, allowed
-   operation set and relevant base identities. Run `agent-braid-analyze` first
+   operation set and relevant base identities. Run `analyze` first
    when the request needs interaction or conflict context.
 2. Use the configured MCP `prepare` tool with its declared request, run
    directory and optional mode. Use a CLI route only when the installed

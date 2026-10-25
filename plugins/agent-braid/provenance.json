@@ -41,8 +41,8 @@
     ]
   },
   "correspondingSource": {
-    "path": "sources/agent-braid-0.1.0-alpha.3-source.tar.gz",
-    "sha256": "60ca57b10c03718749c3f5ac7bdb1296bae84bd1b86a1d8655bb9158dcfc1502"
+    "path": "sources/agent-braid-0.1.0-alpha.4-source.tar.gz",
+    "sha256": "6909c2197fcb0021a8c4db740fb42316cb0d39097dca5122ed9015b22bd96268"
   },
   "dependencies": {
     "linux-x86_64": [
@@ -655,8 +655,50 @@
     }
   },
   "schema": "agent-braid-plugin-provenance/v1",
-  "sourceCommit": "a778b424a484eba0bbaeb58435816f355eae0cb9",
+  "skillNaming": {
+    "policy": "SPEC-054",
+    "skills": [
+      {
+        "canonicalName": "agent-braid-analyze",
+        "canonicalSha256": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31",
+        "packagedName": "analyze",
+        "packagedSha256": "dba04d007dc4f2b8ae4aa7b226566c2ad8a7f3b5a0c876fb79f381d7be38b490"
+      },
+      {
+        "canonicalName": "agent-braid-plan",
+        "canonicalSha256": "90970a2d5930400dcb5344389c28ab18236086a5dd194379ea2f329f37e4cfb3",
+        "packagedName": "plan",
+        "packagedSha256": "0d0009806e4f3e89bab2db30d28c384085d3297e4f61c49a8afd9ac534f8e16b"
+      },
+      {
+        "canonicalName": "agent-braid-execute",
+        "canonicalSha256": "d2f2a4598ab498663bd9854ee9cfa854a77ee64167adca39adeced33bd0b5f43",
+        "packagedName": "execute",
+        "packagedSha256": "733050c4db5cafc8639aa7569d1961b3384c17ba86ec3861e3772c5aabf5bb17"
+      },
+      {
+        "canonicalName": "agent-braid-recover",
+        "canonicalSha256": "0d2d02c291514c6c09a456791bf1521fa12719efe8ada608e3566b422586e27f",
+        "packagedName": "recover",
+        "packagedSha256": "88b340a74a6458fe03599010efac1b181771fd76e40218ed1d49a84016e65355"
+      },
+      {
+        "canonicalName": "agent-braid-evidence",
+        "canonicalSha256": "3618f553971f85b51fb90e465b30a6423e2cb52dfcbfecdea4c320429771cba1",
+        "packagedName": "evidence",
+        "packagedSha256": "b582bea80119e83fb902cda57d5a698c001621975af9e1dcf994488623eb7c41"
+      }
+    ],
+    "substitutions": {
+      "agent-braid-analyze": "analyze",
+      "agent-braid-evidence": "evidence",
+      "agent-braid-execute": "execute",
+      "agent-braid-plan": "plan",
+      "agent-braid-recover": "recover"
+    }
+  },
+  "sourceCommit": "8e2c3759e6bd809e907654895b103bf8b151db50",
   "sourceDirty": false,
-  "version": "0.1.0-alpha.3",
-  "wheelSha256": "0f7a29d1c1ef24b96792851cf8537050ad348c8ace76fe3e279bd6cdf224bf92"
+  "version": "0.1.0-alpha.4",
+  "wheelSha256": "a263eaec94445302ddd215cf1ed24f736af78b76b933eebaff7c951e229de51a"
 }

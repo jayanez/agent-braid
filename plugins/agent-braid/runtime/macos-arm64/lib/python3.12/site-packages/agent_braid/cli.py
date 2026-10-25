@@ -88,6 +88,8 @@ def main(argv: list[str] | None = None) -> int:
     add_plugin_parser(subparsers)
     from .forecast_cli import add_parser as add_forecast_parser
     add_forecast_parser(subparsers)
+    from .harness_cli import add_parser as add_harness_parser
+    add_harness_parser(subparsers)
     decision_parser = subparsers.add_parser("system-one", help="opt-in offline synthetic decision diagnostics")
     decision_commands = decision_parser.add_subparsers(dest="decision_command", required=True)
     decision_commands.add_parser("capabilities", help="list local immutable reference capabilities")
@@ -187,6 +189,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "forecast":
         from .forecast_cli import run
         return run(args)
+    if args.command == "harness":
+        from .harness_cli import run as run_harness
+        return run_harness(args)
     if args.command == "system-one":
         from .system_one_cli import run
         return run(args)

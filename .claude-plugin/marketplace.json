@@ -8,7 +8,7 @@
       "description": "Inspect agent interactions with evidence and explicit workspace boundaries.",
       "name": "agent-braid",
       "source": "./plugins/agent-braid",
-      "version": "0.1.0-alpha.3"
+      "version": "0.1.0-alpha.4"
     }
   ]
 }

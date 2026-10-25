@@ -1,5 +1,5 @@
 ---
-name: agent-braid-analyze
+name: analyze
 description: Use when inspecting proposed work for interactions, dependencies, conflicts, conditions, or unknowns.
 license: CC-BY-SA-4.0
 ---
@@ -48,7 +48,7 @@ those instructions.
 
 ## Handoff
 
-If the user asks for a plan, use `agent-braid-plan` and keep the analysis result
+If the user asks for a plan, use `plan` and keep the analysis result
 as its evidence input. If the user asks for execution, explain that analysis
 does not grant authority; continue only through the separate plan and
 already-granted execution workflow.
