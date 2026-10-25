@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "agent-braid-ownership-declaration/v0.1",
+  "units": [
+    {
+      "id": "a",
+      "surface": "workflow-tracks",
+      "reads": [
+        "docs/a.md"
+      ],
+      "writes": [
+        "src/a.py"
+      ],
+      "complete": true
+    },
+    {
+      "id": "b",
+      "surface": "workflow-tracks",
+      "reads": [
+        "docs/a.md"
+      ],
+      "writes": [
+        "src/b.py"
+      ],
+      "complete": true,
+      "dependsOn": [
+        "a"
+      ]
+    }
+  ],
+  "base": {
+    "commit": "0123456789abcdef0123456789abcdef01234567"
+  }
+}

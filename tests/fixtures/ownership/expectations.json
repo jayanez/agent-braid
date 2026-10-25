@@ -1,0 +1,135 @@
+{
+  "invalid": {
+    "unknown-member": {
+      "code": "unknown-member",
+      "schemaRejects": true
+    },
+    "unknown-unit-member": {
+      "code": "unknown-member",
+      "schemaRejects": true
+    },
+    "content-bearing-member": {
+      "code": "unknown-member",
+      "schemaRejects": true
+    },
+    "missing-surface": {
+      "code": "missing-member",
+      "schemaRejects": true
+    },
+    "surface-outside-vocabulary": {
+      "code": "unknown-surface",
+      "schemaRejects": true
+    },
+    "reserved-unit-id": {
+      "code": "reserved-unit-id",
+      "schemaRejects": true
+    },
+    "duplicate-unit-id": {
+      "code": "duplicate-unit-id",
+      "schemaRejects": false
+    },
+    "one-unit": {
+      "code": "too-few-units",
+      "schemaRejects": true
+    },
+    "complete-without-base": {
+      "code": "complete-without-base",
+      "schemaRejects": true
+    },
+    "base-dotdot": {
+      "code": "bad-format",
+      "schemaRejects": true
+    },
+    "base-double-slash": {
+      "code": "bad-format",
+      "schemaRejects": true
+    },
+    "base-empty": {
+      "code": "missing-member",
+      "schemaRejects": true
+    },
+    "imported-from-without-imported": {
+      "code": "imported-from-mismatch",
+      "schemaRejects": true
+    },
+    "imported-without-imported-from": {
+      "code": "imported-from-mismatch",
+      "schemaRejects": true
+    },
+    "imported-from-without-provenance": {
+      "code": "imported-from-mismatch",
+      "schemaRejects": true
+    },
+    "exemption-empty-paths": {
+      "code": "too-few-items",
+      "schemaRejects": true
+    },
+    "exemption-missing-rule-id": {
+      "code": "missing-member",
+      "schemaRejects": true
+    },
+    "exemption-unknown-writer": {
+      "code": "unknown-writer",
+      "schemaRejects": true
+    },
+    "exemption-path-undeclared": {
+      "code": "exemption-path-undeclared",
+      "schemaRejects": false
+    },
+    "exemption-duplicate-rule-id": {
+      "code": "duplicate-rule-id",
+      "schemaRejects": false
+    },
+    "critical-read-not-in-reads": {
+      "code": "critical-read-not-read",
+      "schemaRejects": false
+    },
+    "dependency-unknown-unit": {
+      "code": "unknown-dependency",
+      "schemaRejects": false
+    },
+    "dependency-on-self": {
+      "code": "self-dependency",
+      "schemaRejects": false
+    },
+    "path-trailing-line-feed": {
+      "code": "forbidden-character",
+      "schemaRejects": true
+    },
+    "empty-path": {
+      "code": "empty-string",
+      "schemaRejects": true
+    },
+    "duplicate-path": {
+      "code": "duplicate-path",
+      "schemaRejects": true
+    },
+    "wrong-type-complete": {
+      "code": "wrong-type",
+      "schemaRejects": true
+    },
+    "unknown-resource-class": {
+      "code": "unknown-resource-class",
+      "schemaRejects": true
+    },
+    "bad-schema-version": {
+      "code": "bad-schema-version",
+      "schemaRejects": true
+    },
+    "unknown-provenance": {
+      "code": "unknown-provenance",
+      "schemaRejects": true
+    },
+    "top-level-array": {
+      "code": "wrong-type",
+      "schemaRejects": true
+    }
+  },
+  "valid": [
+    "all-surfaces.json",
+    "complete-with-base.json",
+    "exemption.json",
+    "imported.json",
+    "minimal.json"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "agent-braid-ownership-declaration/v0.1",
+  "units": [
+    {
+      "id": "a",
+      "reads": [],
+      "writes": []
+    },
+    {
+      "id": "b",
+      "surface": "workflow-tracks",
+      "reads": [
+        "docs/a.md"
+      ],
+      "writes": [
+        "src/b.py"
+      ]
+    }
+  ]
+}
