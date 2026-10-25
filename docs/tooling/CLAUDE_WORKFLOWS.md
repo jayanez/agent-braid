@@ -148,18 +148,27 @@ tools when any registration has runtime enabled. The gate therefore:
   any rule matching `git`) is **insufficient**: it also matches `update-ref`,
   `config`, `checkout`, `branch` and every other subcommand. Permit only:
   - the plugin tools `workspaces`, `analyze-work`, `analyze` and `prepare`;
-  - one rule per permitted Git subcommand, each with the full hardened prefix:
-    `version`, `rev-parse --show-toplevel`, `rev-parse --path-format=absolute
-    --git-common-dir`, `rev-list -n 1 --end-of-options <rev>`, `cat-file -e`,
-    `merge-base --is-ancestor`, `for-each-ref`, `count-objects -v`,
-    `hash-object --stdin`, and for the baseline `init --bare --template=` and
-    `merge-tree --write-tree` against the scratch directory only;
-  - the exact scratch creation command `mktemp -d "${TMPDIR:-/tmp}/braid-gate.XXXXXXXX"`;
-  - the exact cleanup command `rm -rf -- "<path>"` where `<path>` is a directory
-    named `braid-gate.` plus eight alphanumeric characters directly under
-    `TMPDIR` (or `/tmp`). The agent checks that pattern before removal and reports
-    `removed`, `failed` or `refused`; a scratch that was not removed is a stated
-    limit and the run can reach at most `ok-analyzed`, never `ok-certified`.
+  - one rule per permitted Git subcommand: the full hardened prefix followed by the
+    subcommand and a trailing `*` for its remaining arguments (host observation, HV-5:
+    exact rules do not match commands with quoted arguments; a trailing wildcard
+    matches). The subcommands are `version`, `rev-parse`, `rev-list`, `cat-file`,
+    `merge-base`, `for-each-ref`, `count-objects`, `hash-object`, and for the
+    baseline `init` and `merge-tree` with the scratch environment prefix. The
+    wildcard allows any arguments of that subcommand under the fixed prefix; the
+    prefix itself stays fixed and read-only commands stay the only ones named;
+  - the scratch creation command `mktemp -d /tmp/braid-gate.*`;
+  - the cleanup command `rm -rf -- /tmp/braid-gate.*`. The host also needs the
+    scratch parent as an allowed directory (for example `--add-dir /tmp`, HV-5
+    follow-up): without it the host refuses the removal, the gate reports
+    `refused` or `failed`, and a scratch that was not removed is a stated limit that
+    caps the run at `ok-analyzed`, never `ok-certified`. The agent checks that the
+    path has the form `/tmp/braid-gate.` plus eight alphanumeric characters
+    before removal, and the script accepts only a scratch path of that form.
+
+Every agent runs each command as its own separate Bash call: no shell variables,
+command substitution, loops or grouping (the host refuses brace expansion and
+cannot match such commands with a rule). Pipes between two allowed commands are
+matched per command.
 
 This is a known deviation from "read-only Git": the baseline writes only that
 temporary directory, never the repository, and `merge-tree --write-tree` writes

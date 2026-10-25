@@ -127,17 +127,19 @@ function referenceBaseline(prompt) {
   const spec = JSON.parse(line(prompt, 'BASELINE_JSON'));
   const version = versionOf(sh(line(prompt, 'VERSION')).out);
   const supported = supportsMergeTree(version);
-  const setup = [line(prompt, 'SETUP_1'), line(prompt, 'SETUP_2'), line(prompt, 'SETUP_3')].join('\n');
-  const made = sh(setup + '\nprintf "%s\\n%s\\n" "$GATE_TMP" "$GATE_ALT"');
-  const [tmp, alt] = made.out.split('\n');
-  const env = { GATE_TMP: tmp, GATE_ALT: alt };
+  const tmp = sh(line(prompt, 'SETUP_1')).out.trim();
+  const common = sh(line(prompt, 'SETUP_2')).out.trim();
+  const alt = common + '/objects';
+  const place = (text) => fill(text, { '<SCRATCH>': tmp, '<ALT>': alt });
+  sh(place(line(prompt, 'SETUP_3')));
+  const env = {};
   const digest = (name) => sh(line(prompt, name)).out.trim() || null;
   const refsBefore = digest('STATE_REFS');
   const objectsBefore = digest('STATE_OBJECTS');
   const pairs = [];
   const trees = {};
   const mergeTree = (left, right) => {
-    const command = fill(line(prompt, 'MERGE_TREE_TEMPLATE'), { '<BASE>': spec.base, '<LEFT>': left, '<RIGHT>': right });
+    const command = place(fill(line(prompt, 'MERGE_TREE_TEMPLATE'), { '<BASE>': spec.base, '<LEFT>': left, '<RIGHT>': right }));
     const done = sh(command, repo, env);
     const parts = done.out.split('\0');
     if (done.rc === 0) return { result: 'clean', tree: parts[0], paths: [], message: '' };
@@ -168,12 +170,12 @@ function referenceBaseline(prompt) {
   }
   const refsAfter = digest('STATE_REFS');
   const objectsAfter = digest('STATE_OBJECTS');
-  const gitDir = sh(line(prompt, 'SCRATCH_GITDIR'), repo, env);
+  const gitDir = sh(place(line(prompt, 'SCRATCH_GITDIR')), repo, env);
   const scratchGitDir = gitDir.rc === 0 ? gitDir.out.trim() : null;
   let cleanup = 'refused';
-  if (sh(fill(line(prompt, 'CLEANUP_GUARD'), { '<SCRATCH>': tmp })).out.trim() === 'ok') {
+  if (/^\/tmp\/braid-gate\.[A-Za-z0-9]{8}$/.test(tmp)) {
     sh(fill(line(prompt, 'CLEANUP_REMOVE'), { '<SCRATCH>': tmp }));
-    cleanup = sh('test ! -e "' + tmp + '"').rc === 0 ? 'removed' : 'failed';
+    cleanup = sh('test ! -e ' + tmp).rc === 0 ? 'removed' : 'failed';
   }
   return {
     hardened: true, gitVersion: version, mergeTreeSupported: supported,

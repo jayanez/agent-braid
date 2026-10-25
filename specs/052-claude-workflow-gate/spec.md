@@ -218,8 +218,8 @@ decisions, not acceptance or approval.
 - **Constrained Bash (the single definition; SPEC-053 uses it unchanged):** a
   host permission rule set in force for the session that allows only (i) the
   fixed hardened read-only Git command templates, the exact baseline scratch
-  commands (`mktemp -d "${TMPDIR:-/tmp}/braid-gate.XXXXXXXX"` and `rm -rf --` of
-  one `braid-gate.XXXXXXXX` path under `TMPDIR`) and (ii) explicit launcher subcommands
+  commands (`mktemp -d /tmp/braid-gate.XXXXXXXX` and `rm -rf --` of
+  one `/tmp/braid-gate.XXXXXXXX` path; amended 2026-10-25, see Amendments) and (ii) explicit launcher subcommands
   from a closed list, with no rule matching the launcher binary as a whole,
   `grant-policy-run`, `execute-policy-run`, `recover-policy-run` or any other
   subcommand, because the launcher also exposes grant and execute subcommands.
@@ -257,3 +257,25 @@ decisions, not acceptance or approval.
 ## Evidence and open questions
 
 Obtained evidence: none; human review pending. The planning questions (minimum number of sources, branch names, object-store quarantine, explicit workspace, CLI fallback, model policy, packaging before ADR adoption and the release number) were answered as planning decisions in the Clarifications above; they are not approvals. What remains open: host verification HV-1 to HV-5 (REQ-013), including the permission allowlist syntax (REQ-016), whether a plugin workflow resolves by name from nested `workflow()` and the effect of host restarts of stalled agents (HV-4); whether `git merge-tree --write-tree` accepts a tree-ish as a branch argument for the chained derivation of `expectedFinalTree` (a scratch test reported by the PR #671 review accepted a tree-ish and a commit with `--merge-base` on Git 2.54.0, Apple Git-157; that is not retained evidence, and the minimum Git version for the chained fold is still unstated, to be recorded by T005 and T011); whether the Git hardening template (REQ-006) can disable every configured merge driver and filter; ADR 0024 amendment adoption; the release number and any publication; and real multi-worktree observation (Article 19). Record feasibility failure, null and inconclusive outcomes as valid reports.
+
+## Amendments
+
+### 2026-10-25: allowlist-compatible commands (HV-5 finding)
+
+Host verification HV-5 (`evidence/hv-5.json`) showed that exact permission rules do
+not match commands with quoted arguments, that grouped commands, shell variables,
+command substitution and brace expansion are refused or unmatchable, and that the
+host refuses `rm` outside the working directory unless the parent is an allowed
+directory. REQ-016(b) is amended accordingly, with no change to its intent
+(the agents' tool surface is restricted by the host allowlist, not by prompts):
+
+- Each agent runs every command as its own Bash call with literal arguments; the
+  scratch directory is `mktemp -d /tmp/braid-gate.XXXXXXXX`, its printed path is
+  substituted literally, and the script accepts only a scratch path of the form
+  `/tmp/braid-gate.` plus eight alphanumeric characters (or its `/private` form).
+- Permission rules name each permitted Git subcommand under the fixed hardened
+  prefix with a trailing wildcard for its arguments. This is wider than literal
+  rules but does not widen the prefix or the set of subcommands.
+- Removal of the scratch directory needs the host to allow `/tmp` as an additional
+  directory; otherwise the cleanup is reported `refused` or `failed` and the run
+  stops at `ok-analyzed` (a stated limit), never `ok-certified`.

@@ -260,7 +260,7 @@ section; do not retype it from memory):
 
 Scratch (the only writes; temp directory outside the repository):
 
-- create: `mktemp -d "${TMPDIR:-/tmp}/braid-gate.XXXXXXXX"` (exact command)
+- create: `mktemp -d /tmp/braid-gate.XXXXXXXX (amended 2026-10-25)` (exact command)
 - remove: `rm -rf -- "<path>"` where `<path>` is `braid-gate.` + 8 alphanumerics directly under `TMPDIR` (or `/tmp`); the agent checks the pattern first
 
 A host that cannot express the last two narrowly makes the baseline phase
@@ -516,7 +516,7 @@ yes/no, plus the host's verbatim message when it rejected the rule):
 1. Exact plugin tool allow for `workspaces`, `analyze-work`, `analyze`, `prepare`.
 2. Deny / absence for `execute`, `recover`, `verify`, `status`.
 3. Subcommand-level Git rules with the full hardened prefix (not a bare `git` rule).
-4. The exact `mktemp -d "${TMPDIR:-/tmp}/braid-gate.XXXXXXXX"` rule.
+4. The exact `mktemp -d /tmp/braid-gate.XXXXXXXX (amended 2026-10-25)` rule.
 5. The `rm -rf -- "<path>"` rule narrowed to a `braid-gate.XXXXXXXX` path under `TMPDIR`.
 6. Constrained-CLI fallback list (§4.2): the three launcher subcommands and the
    exact no-argument `plugin workspaces` rule, and the absence of any rule matching
