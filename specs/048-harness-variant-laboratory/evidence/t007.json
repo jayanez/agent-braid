@@ -1,0 +1,42 @@
+{
+  "task": "SPEC-048/T007",
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline durable-attempt journal engineering controls; native, host, utility and independent-review gates pending",
+  "executionAuthorization": false,
+  "executedChecks": [
+    {
+      "command": "python3.13 -m unittest discover -s tests -p \"test_harness*.py\" -v",
+      "exitCode": 0,
+      "moduleTests": 27,
+      "testsRun": 170,
+      "scope": "Focused offline run. Real-process controls (a driver subprocess SIGKILLs itself, exit -9 asserted): after the start marker, after a checkpoint, after the fixture child ran, after the terminal record, and while the fixture child is still running (child group then killed). Torn-write controls kill the driver after the temp record is written and before the rename that publishes it, for the start, a checkpoint and the end record. Review follow-up: publication is atomic (fsynced temp name then rename under the lock; leftover temp files ignored by readers, counted against the entry budget, swept by the next locked write); a damaged published record still refuses. Manual mutation checks (each failed tests before restoring): reconcile writing completed, admission-consumed check removed, manifest-drift check removed, unreconciled-attempt check removed, admission-window check removed, permissionRenewed true, temp sweep removed, temp-file ignore removed. A transient ENOENT on concurrent .lock creation (APFS) was fixed with a bounded retry."
+    }
+  ],
+  "inputs": {
+    "agent_braid/harness_journal.py": "b1c1e598ca28a5f01043bbf5c261f4a84d658e644e4ad077e6c86e67c6dc52f9",
+    "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+    "agent_braid/harness_lab.py": "deea7a023b7e9b132d63a6192986cae2933bb79939f30d97263bbcb106bc3ec5",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
+    "tests/test_harness_journal.py": "dd18c649d2938a05a082de6ca9ee999dfd4ce46ac3e7aa0f1cc71d7c87645647"
+  },
+  "outcome": "A start marker is durably written before dispatch and consumes its reservation; interruption at any boundary leaves an open attempt that reconciles only to interrupted/unknown (never completed, even when the fixture child finished); a terminal record copies the observed state; reservations cannot be reused or renewed and a next attempt needs reconciliation plus a fresh reservation; manifest or fixture drift, torn/foreign/tampered/oversized records, unsafe roots and held locks refuse with fixed reason codes; zero duplicate fixture effects were observed across kills.",
+  "limits": "Single-host, single-UID: hashes are not signatures and a same-UID actor rewriting a whole chain is excluded; durability depends on the filesystem honouring fsync (not tested against power loss); only the simulated backend was exercised, so effects are the fixture's own writes, not confined; no host, model, network, native containment, utility or independent-review claim; reservation shape is checked but its issuance trust stays with harness_admission; the journal records the observation hash, not the observation, so retention/purge of observations remains T012; no CLI codec (T015). The journal reuses underscore-private helpers of harness_admission/harness_observation (documented coupling); promoting them to public names was deferred because it would change input hashes pinned by earlier evidence files.",
+  "pending": [
+    "T008+ native/human/scientific/economic gates",
+    "Stable pr-profile result recorded in the pull request",
+    "Independent review"
+  ],
+  "killBoundaries": [
+    "before start (nothing published, reservation not consumed)",
+    "torn start (killed before publish: no attempt, reservation reusable)",
+    "after start",
+    "torn checkpoint (killed before publish: start durable, reconciles interrupted)",
+    "after checkpoint",
+    "fixture child running",
+    "after run, before finish",
+    "torn end (killed before publish after the run: reconciles interrupted/unknown, never completed)",
+    "after terminal (reports completed from the durable terminal record)"
+  ]
+}
