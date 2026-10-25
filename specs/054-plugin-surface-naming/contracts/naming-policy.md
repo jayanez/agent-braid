@@ -1,6 +1,6 @@
 # Native plugin surface naming policy v1
 
-Status: draft contract for SPEC-054. Key words SHALL, SHOULD and MAY follow the
+Status: contract v1 for SPEC-054 (ADR 0030 accepted; pending owner review T001). Key words SHALL, SHOULD and MAY follow the
 Constitution. Source labels refer to [research.md](../research.md): **N** normative
 source, **C** convention, **O** observed host behavior, **D** owner decision.
 
