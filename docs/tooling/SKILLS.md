@@ -21,6 +21,13 @@ The legacy global install keeps the canonical `agent-braid-*` names. Skill text
 refers to tools by bare MCP name (for example `analyze-work`), never a
 host-qualified id, and sibling skills by the name valid in each packaging surface.
 
+The portable MCP server's prompts follow the same unprefixed rule in contract
+`agent-braid-tooling/v0.2` (`analyze`, `plan`, `evidence`; candidate under
+implementation). The legacy skill names above are unaffected; the prefixed prompt
+names survive only as deprecated aliases of the server, described in
+[INSTALL.md](INSTALL.md) and the
+[v0.2 delta](../../specs/060-portable-prompt-names/contracts/interface-delta.md).
+
 Use the [installation workflow](INSTALL.md) for explicit receipt-owned changes.
 Missing MCP/skills/SDK capabilities require actionable diagnostics; only a
 documented read-only fallback is allowed. Repository text and evidence remain

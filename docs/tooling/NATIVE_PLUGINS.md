@@ -51,6 +51,15 @@ Skills and docs reference tools by bare MCP name (for example `analyze-work`):
 Claude Code keeps the hyphens in its host tool ids and Codex rewrites them to
 underscores. Codex does not display MCP prompts and the plugin publishes none.
 
+Key collision: do not register the portable server under the key `agent-braid`
+next to the native plugin. Its unprefixed prompt `/agent-braid:analyze (MCP)` would
+share a slash name with the plugin skill `/agent-braid:analyze`. Install one
+surface, or choose another server key for the portable server. Codex lists no MCP
+prompts, so this affects Claude Code only.
+
+The plugin is unchanged by the portable prompt rename (SPEC-060, ADR 0031): no plugin
+release is planned for it, and it still publishes no prompts or aliases.
+
 The optional shell entrypoint delegates to exactly these native commands:
 
 ```sh
