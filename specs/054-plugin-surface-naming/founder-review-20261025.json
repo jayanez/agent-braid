@@ -1,0 +1,31 @@
+{
+  "schema": "agent-braid-bounded-founder-review-v1",
+  "spec": "SPEC-054",
+  "reviewedCommit": "36c30b1f5f19b4131093ca0989a6cac0eb904359",
+  "evidenceCommit": "36c30b1f5f19b4131093ca0989a6cac0eb904359",
+  "decisionDate": "2026-10-25",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "github": "jayanez",
+    "role": "founder"
+  },
+  "decision": "accepted",
+  "scope": "Native plugin surface naming policy (contracts/naming-policy.md), its research record (research.md) and ADR 0030 as implemented in plugin 0.1.0-alpha.4 candidate sources: plugin id, marketplace and MCP server key unchanged; MCP tool names and resource schemes unchanged; no MCP prompts from the plugin server (agent-braid-plugin/v0.2); unprefixed plugin skills; portable agent-braid-tooling/v0.1 frozen; SPEC-047 telemetry contract unchanged.",
+  "ownerResponse": {
+    "source": "direct interactive reply in this task (AskUserQuestion)",
+    "question": "T001 — Revisión de la política de nombres: ¿qué decides?",
+    "answer": "Aceptar con sus límites (Recomendada)",
+    "packetCommit": "22460b3e",
+    "packetPath": "specs/054-plugin-surface-naming/review-packet.md"
+  },
+  "notAccepted": [
+    "release, tag or plugin-dist publication of 0.1.0-alpha.4 (decided separately)",
+    "interactive Codex or Claude Code skill invocation, sign-in, Linux and published Git ref observations",
+    "the Codex qualified skill name beyond what the Codex app-server skills/list output showed",
+    "a future agent-braid-tooling/v0.2 with unprefixed prompt names",
+    "title metadata for tools or server",
+    "SPEC-046 T016-T019 delivery",
+    "scientific validity, independent validation or M4.5 closure"
+  ],
+  "limits": "Acceptance binds the frozen authority commit only; later changes to authorities need a new review. The review packet note about draft wording was resolved afterwards by the alignment PR. Source quotes in research.md were not re-checked against live external pages. Acceptance is distinct from integration, release and remote closure."
+}
