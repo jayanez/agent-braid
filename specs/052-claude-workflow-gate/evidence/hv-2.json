@@ -1,0 +1,23 @@
+{
+  "task": "T025",
+  "behavior": "HV-2",
+  "recordedAt": "2026-10-25",
+  "claudeCode": {
+    "version": "2.1.292 (Claude Code)",
+    "platform": "macOS arm64"
+  },
+  "outcome": "pass",
+  "scope": "a scratch plugin (not Agent Braid) loaded with --plugin-dir, one agent definition, used as agentType from an inline workflow",
+  "observed": {
+    "namespacedName": "agentType 'hv2probe:probe-agent' resolved and ran; the agent replied with its instructed word",
+    "bareName": "agentType 'probe-agent' failed: agent type not found (only namespaced plugin agents are listed)"
+  },
+  "consequence": "A future gate agent shipped by the plugin must be addressed as <plugin>:<agent>. The gate ships no plugin agent, so R1 does not depend on this.",
+  "unobserved": [
+    "agent definitions with restricted tools or MCP servers declared in frontmatter",
+    "plugin installed (not --plugin-dir)"
+  ],
+  "costUsd": 0.29,
+  "transcript": "hv-2-transcript.md",
+  "tasksTicked": false
+}
