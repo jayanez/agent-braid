@@ -1214,34 +1214,44 @@ class RegisteredRootTests(GateCase):
 class ScratchContractTests(GateCase):
     """The shared scratch contract: fixed template, guarded removal, reported cleanup, attested environment."""
 
-    SETUP = 'GATE_TMP="$(mktemp -d "${TMPDIR:-/tmp}/braid-gate.XXXXXXXX")"'
+    SETUP = "mktemp -d /tmp/braid-gate.XXXXXXXX"
 
     def baseline_prompt(self, **scenario) -> str:
         record = self.gate(["ind1", "ind2"], **scenario)
         return next(call["prompt"] for call in record["calls"] if call["label"] == "baseline")
 
-    def test_prompts_name_only_the_fixed_scratch_template_and_one_guarded_removal(self) -> None:
+    def test_prompts_name_only_the_fixed_scratch_template_and_one_removal(self) -> None:
         record = self.gate(["ind1", "ind2"])
         every = "\n".join(call["prompt"] for call in record["calls"])
-        self.assertEqual(every.count('mktemp -d "${TMPDIR:-/tmp}/braid-gate.XXXXXXXX"'), 1)
+        self.assertEqual(every.count("mktemp -d /tmp/braid-gate.XXXXXXXX"), 1)
         self.assertNotIn("mktemp", "\n".join(c["prompt"] for c in record["calls"] if c["label"] != "baseline"))
         self.assertIn(f"SETUP_1: {self.SETUP}", every)
         removals = [line for line in every.splitlines() if re.search(r"\brm -rf\b", line)]
         self.assertEqual(len(removals), 2, removals)
-        self.assertIn('CLEANUP_REMOVE: rm -rf -- "<SCRATCH>"', removals)
-        self.assertNotRegex(every, r"rm -rf -- \"\$")
+        self.assertIn("CLEANUP_REMOVE: rm -rf -- <SCRATCH>", removals)
         for line in every.splitlines():
             if line.startswith(("MERGE_TREE_TEMPLATE:", "SCRATCH_GITDIR:")) or re.search(r"git [^\n]*merge-tree", line):
-                self.assertIn('GIT_DIR="${GATE_TMP:?}/gitdir"', line)
-                self.assertIn('GIT_ALTERNATE_OBJECT_DIRECTORIES="${GATE_ALT:?}"', line)
+                self.assertIn('GIT_DIR="<SCRATCH>/gitdir"', line)
+                self.assertIn('GIT_ALTERNATE_OBJECT_DIRECTORIES="<ALT>"', line)
+
+    def test_command_templates_use_no_shell_variables_or_substitution(self) -> None:
+        # Hosts refuse brace expansion and cannot match variable assignments or command substitution
+        # with a permission rule (HV-5), so every command template is a literal command line.
+        record = self.gate(["ind1", "ind2"])
+        for call in record["calls"]:
+            for line in call["prompt"].splitlines():
+                if re.match(r"^[A-Z_0-9]+: (env |git |mktemp |rm )", line):
+                    template = line.split(": ", 1)[1]
+                    self.assertNotIn("${", template, line[:80])
+                    self.assertNotIn("$(", template, line[:80])
+                    self.assertNotRegex(template, r"GATE_TMP|GATE_ALT|TMPDIR", line[:80])
 
     def test_a_normal_run_removes_its_scratch_directory(self) -> None:
-        for suffix in ("", "/"):
-            with self.subTest(trailing_slash=bool(suffix)), tempfile.TemporaryDirectory() as parent:
-                envelope = self.gate(["ind1", "ind2"], tmpdir=parent + suffix)["envelope"]
-                self.assertEqual(envelope["status"], "ok-certified")
-                self.assertEqual(list(Path(parent).iterdir()), [])
-                self.assertNotIn("stated limit", envelope["phases"][2]["detail"])
+        before = set(Path("/tmp").glob("braid-gate.*"))
+        envelope = self.gate(["ind1", "ind2"])["envelope"]
+        self.assertEqual(envelope["status"], "ok-certified")
+        self.assertEqual(set(Path("/tmp").glob("braid-gate.*")) - before, set())
+        self.assertNotIn("stated limit", envelope["phases"][2]["detail"])
 
     def test_a_scratch_directory_that_was_not_removed_is_a_stated_limit_and_never_certified(self) -> None:
         for cleanup in ("failed", "refused", "surprise"):
@@ -1252,44 +1262,6 @@ class ScratchContractTests(GateCase):
                 self.assertEqual(envelope["phases"][2]["status"], "ok")
                 self.assertIn("stated limit: the scratch directory was not removed", envelope["phases"][2]["detail"])
 
-    def test_the_removal_guard_accepts_only_the_exact_scratch_shape(self) -> None:
-        prompt = self.baseline_prompt()
-        guard = re.search(r"^CLEANUP_GUARD: (.*)$", prompt, re.M).group(1)
-        with tempfile.TemporaryDirectory() as parent:
-            base = Path(parent)
-            (base / "braid-gate.AbC12345").mkdir()
-            (base / "braid-gate.AbC1234").mkdir()
-            (base / "braid-gate.AbC123456").mkdir()
-            (base / "braid-gate.AbC-1234").mkdir()
-            (base / "x").mkdir()
-            (base / "x" / "braid-gate.AbC12345").mkdir()
-            (base / "braid-gate.AbC1234x").mkdir()
-            other = tempfile.TemporaryDirectory()
-            self.addCleanup(other.cleanup)
-            (Path(other.name) / "braid-gate.AbC12345").mkdir()
-            expectations = {
-                f"{parent}/braid-gate.AbC12345": "ok",
-                f"{parent}//braid-gate.AbC12345": "ok",
-                f"{parent}/braid-gate.AbC1234": "refused",
-                f"{parent}/braid-gate.AbC123456": "refused",
-                f"{parent}/braid-gate.AbC-1234": "refused",
-                f"{parent}/braid-gate.ZZZZZZZZ": "refused",
-                f"{parent}/x/braid-gate.AbC12345": "refused",
-                f"{parent}/../{base.name}/braid-gate.AbC12345": "refused",
-                f"{other.name}/braid-gate.AbC12345": "refused",
-                f"{parent}": "refused",
-                "/": "refused",
-                "": "refused",
-            }
-            for tmpdir in (parent, parent + "/"):
-                for path, expected in expectations.items():
-                    with self.subTest(tmpdir=tmpdir[-1], path=path):
-                        done = subprocess.run(["sh", "-c", guard.replace("<SCRATCH>", path)], capture_output=True, text=True,
-                                              env={"PATH": "/usr/bin:/bin", "TMPDIR": tmpdir})
-                        self.assertEqual(done.stdout.strip(), expected)
-            # Control: the guard never removes; every directory above still exists.
-            self.assertTrue((base / "braid-gate.AbC12345").is_dir())
-
     def test_a_merge_environment_that_is_not_the_scratch_directory_is_unavailable(self) -> None:
         real_git_dir = str(self.corpus.repo / ".git")
         patches = {
@@ -1298,6 +1270,8 @@ class ScratchContractTests(GateCase):
             "other scratch": {"scratchGitDir": "/var/tmp/braid-gate.ZZZZZZZZ/gitdir"},
             "missing scratch": {"scratchPath": None},
             "scratch outside the template": {"scratchPath": "/var/tmp/other.AbC12345"},
+            "scratch under another parent": {"scratchPath": "/var/tmp/braid-gate.AAAAAAAA",
+                                             "scratchGitDir": "/var/tmp/braid-gate.AAAAAAAA/gitdir"},
             "dot segment": {"scratchPath": "/tmp/./braid-gate.AAAAAAAA",
                             "scratchGitDir": "/tmp/./braid-gate.AAAAAAAA/gitdir"},
             "parent segment": {"scratchPath": "/tmp/../etc/braid-gate.AAAAAAAA",
