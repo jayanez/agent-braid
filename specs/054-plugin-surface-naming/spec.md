@@ -2,9 +2,10 @@
 
 **Milestone:** M4.5 — AI tooling integrations for Codex and Claude Code
 
-**Status:** draft specification; owner selected the policy options on 2026-10-24.
-No implementation, release, tag or `plugin-dist` publication is authorized by this
-record.
+**Status:** specification; ADR 0030 accepted 2026-10-24; implementation tracks
+T002-T008 and T010 delivered (see [tasks.md](tasks.md)); T001 owner review and T009
+native observation pending; no release, tag or `plugin-dist` publication
+authorized.
 
 ## Purpose and scope
 
@@ -33,7 +34,7 @@ Sources and their classification are in [research.md](research.md).
 
 Constitution clause zero and Articles 14, 15, 16, 19, 20, 23 and 24;
 [GOVERNANCE.md](../../GOVERNANCE.md) (public API or schema change requires a
-migration note and versioning impact); ADR 0021, ADR 0024 and proposed
+migration note and versioning impact); ADR 0021, ADR 0024 and accepted
 [ADR 0030](../../docs/adr/0030-native-plugin-surface-naming.md); SPEC-040
 [interface](../040-portable-mcp-surface/contracts/interface.md); SPEC-046
 [interface](../046-native-ai-plugins/contracts/interface.md); SPEC-047
