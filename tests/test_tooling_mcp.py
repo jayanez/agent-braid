@@ -35,6 +35,8 @@ from agent_braid.tooling_mcp import (
 )
 
 
+from tests.spec060_golden import golden, normalize
+
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLE = json.loads((ROOT / "examples/analysis/file-edits.json").read_text())
 
@@ -592,6 +594,70 @@ class PromptAliasTests(unittest.TestCase):
         broken = {k: v for k, v in capabilities.items() if k != "deprecatedPrompts"}
         with self.assertRaises(KeyError):
             assert_alias_surface(self, listing, get, broken)
+
+
+class SurfaceVersionTests(unittest.TestCase):
+    """SPEC-060 scope B: the surface is v0.2 while envelopes, schemas and provenance stay v0.1."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        base = Path(self.temp.name)
+        (base / "source").mkdir()
+        (base / "results").mkdir()
+        self.service = ToolingService(ToolingConfig(base / "source", base / "results"))
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def test_capabilities_report_surface_v02_and_envelope_v01(self):
+        capabilities = self.service.capabilities()
+        self.assertEqual(capabilities["schemaVersion"], "agent-braid-tooling/v0.2")
+        self.assertEqual(capabilities["envelopeSchemaVersion"], "agent-braid-tooling/v0.1")
+        v01 = json.loads(golden("core-capabilities-v01.json"))
+        for key in ("tools", "resources", "mode", "limits"):
+            self.assertEqual(capabilities[key], v01[key], key)
+        self.assertEqual(set(capabilities) - set(v01), {"envelopeSchemaVersion", "deprecatedPrompts"})
+        self.assertEqual(set(v01) - set(capabilities), set())
+
+    def test_envelopes_for_identical_inputs_are_byte_equal_to_the_v01_goldens(self):
+        from agent_braid.tooling_mcp import _json_bytes
+        for operation, arguments in (("analyze-work", {"kind": "aim", "request": SAMPLE}),
+                                     ("analyze", {"request": SAMPLE})):
+            envelope = self.service.invoke(operation, arguments, threading.Event())
+            self.assertEqual(envelope["schemaVersion"], "agent-braid-tooling/v0.1")
+            self.assertEqual(envelope["provenance"]["schemaVersion"], "agent-braid-tooling/v0.1")
+            produced = normalize(_json_bytes(envelope).decode("utf-8")).encode("utf-8")
+            self.assertEqual(produced, golden(f"core-{operation}-envelope.json"), operation)
+
+    def test_output_schemas_keep_the_v01_const(self):
+        import types as pytypes
+        from agent_braid.tooling_mcp import _tool_definitions
+
+        class Tool:
+            def __init__(self, **kwargs):
+                self.__dict__.update(kwargs)
+        types = pytypes.SimpleNamespace(Tool=Tool, ToolAnnotations=lambda **kw: kw)
+        definitions = _tool_definitions(self.service, types)
+        self.assertTrue(definitions)
+        for definition in definitions:
+            const = definition.outputSchema["properties"]["schemaVersion"]
+            self.assertEqual(const, {"const": "agent-braid-tooling/v0.1"}, definition.name)
+
+    def test_negative_control_v02_stamp_on_an_envelope_is_detected(self):
+        from agent_braid.tooling_mcp import _json_bytes
+        envelope = self.service.invoke("analyze", {"request": SAMPLE}, threading.Event())
+        stamped = dict(envelope, schemaVersion="agent-braid-tooling/v0.2")
+        produced = normalize(_json_bytes(stamped).decode("utf-8")).encode("utf-8")
+        self.assertNotEqual(produced, golden("core-analyze-envelope.json"))
+        with self.assertRaises(AssertionError):
+            self.assertEqual(stamped["schemaVersion"], "agent-braid-tooling/v0.1")
+
+    def test_negative_control_golden_comparison_detects_a_changed_byte(self):
+        from agent_braid.tooling_mcp import _json_bytes
+        envelope = self.service.invoke("analyze", {"request": SAMPLE}, threading.Event())
+        tampered = dict(envelope, summary=str(envelope.get("summary")) + "!")
+        produced = normalize(_json_bytes(tampered).decode("utf-8")).encode("utf-8")
+        self.assertNotEqual(produced, golden("core-analyze-envelope.json"))
 
 
 class PromptRegistryTests(unittest.TestCase):

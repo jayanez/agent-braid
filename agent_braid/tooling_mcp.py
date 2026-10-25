@@ -460,7 +460,8 @@ class ToolingService:
                 "mediaType": artifact.media_type}
 
     def capabilities(self) -> dict[str, Any]:
-        return {"schemaVersion": SCHEMA_VERSION, "tools": list(self.tools),
+        return {"schemaVersion": SURFACE_VERSION, "envelopeSchemaVersion": SCHEMA_VERSION,
+                "tools": list(self.tools),
                 "resources": ["agent-braid://capabilities", "agent-braid://runs/{id}/status",
                               "agent-braid://runs/{id}/evidence/{artifact}"],
                 "prompts": [prompt.name for prompt in _PROMPTS if prompt.replaced_by is None],
