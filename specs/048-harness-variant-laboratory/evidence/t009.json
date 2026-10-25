@@ -1,0 +1,36 @@
+{
+  "task": "SPEC-048/T009",
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed; stacked on the T015 branch",
+  "disposition": "Completed for deterministic offline adversarial integration and baseline controls; native, host, utility and independent-review gates pending",
+  "executionAuthorization": false,
+  "executedChecks": [
+    {
+      "command": "python3.13 -m unittest discover -s tests -p \"test_harness*.py\" -v",
+      "exitCode": 0,
+      "moduleTests": 12,
+      "testsRun": 262,
+      "scope": "Focused offline run; tests/test_harness_integration.py adds 28 tests that drive real admission, import, journal, fixture child, observation, oracle and selection for a task-continuity and a coordination fixture. Manual mutation checks (each failed tests before restoring): reservation-reuse check removed from the journal, fixture workspace cleanup removed from the runner, unobserved-on-loss rule removed from observation, refused-base branch removed from refinement, secret redaction and its post-scan removed from observation, output/source collision check removed from the importer, line-quoting removed from context rendering."
+    }
+  ],
+  "inputs": {
+    "tests/test_harness_integration.py": "86516ce39ffe3e21505a39d40e349f1f4cf41f4d2709d0a4806b4c6bf752cfea",
+    "specs/048-harness-variant-laboratory/evidence/engineering/t009-controls.md": "10f41f06fb7d30d361d859c982965b75c7b07d468f3a116726c4dc0bd835d1c9",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_surface.py": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
+    "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+    "agent_braid/harness_journal.py": "b1c1e598ca28a5f01043bbf5c261f4a84d658e644e4ad077e6c86e67c6dc52f9",
+    "agent_braid/harness_lab.py": "deea7a023b7e9b132d63a6192986cae2933bb79939f30d97263bbcb106bc3ec5",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "agent_braid/harness_refinement.py": "74c342c7a7bd4175e19d3132fe628a81cb9cf81d1e83a6af8f81225c048474dd",
+    "agent_braid/harness_context.py": "026a29c21b3d52afad4c8fb1f11730fd410d8f17d5d437cecfaf409732dd657e",
+    "agent_braid/harness_records.py": "837a5521d10ab9dbbaf2b84b5b3838d0aaac5402a30bf514c60c2ae52bb4906d",
+    "agent_braid/harness_cli.py": "1e86d2b52dbe9ed9fc61156bd203fe352e897127f7f8424b13c1b7e01ef823a9"
+  },
+  "outcome": "Resume guidance beats the restart baseline (200,000 vs 1,000,000; handed-off steps redone 2 vs 0) and ownership guidance beats the shared-file baseline (250,000 vs 1,000,000); equal-behaviour and injected guidance keep the base; protected/escaping proposals never reach a probe; tampered or unlisted candidate bytes, aliased/nested/symlinked/colliding roots, destination, reservation, admission and attempt-id reuse and an open attempt are refused with no container or reservation reuse; missing terminal, sequence gap, escaping path, unobserved base/candidate and expired evidence never become a result; a timed-out fixture and its grandchild process are settled and every workspace is removed; the four-attempt ledger shows 12 journal records, 4 spent reservations and states completed/failed/unobserved/interrupted. Decisions round-trip through the record codec and `harness inspect`.",
+  "limits": "Deterministic engineering evidence only, not native qualification: SimulatedContainment confines nothing, no host/model/provider/network/paid route was used, fixtures and oracles are test code, scores are synthetic and single-host/single-UID. Hostile same-UID interference is excluded. See evidence/engineering/t009-controls.md.",
+  "pending": [
+    "T008/T013/T014 native adapters and qualification",
+    "T010 packaging, review and the stable pr-profile result recorded in the pull request",
+    "Independent review"
+  ]
+}
