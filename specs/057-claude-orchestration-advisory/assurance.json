@@ -246,7 +246,22 @@
         {
           "given": "the four surface ids (`workflow-tracks`, `linked-sessions`, `agent-teams`, `batch`) and the lifecycle points pre-flight, continuous checkpoint, recovery and integration",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_orchestration_matrix -v",
+              "limits": "Documentation-consistency check of the seed matrix and 20 mutated copies only; no host observation, no receipt checker (T011), no cross-family version comparison (T044); not a reviewer approval",
+              "outcome": "Seed matrix passes; every mutation is rejected with its named finding",
+              "path": "tests/test_orchestration_matrix.py",
+              "sha256": "3110c1a834b5ed1d98e691309c126fcd38a6d7b81ec3b79e7eae3b639cabf7bf"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_orchestration_matrix -v",
+              "limits": "Checker module only; the matrix it reads is unedited",
+              "outcome": "Checker module exercised by the test above",
+              "path": "tests/orchestration_matrix_checker.py",
+              "sha256": "fa3db69332d22c8da54312acfdb9e45be089b5a0004eff3c0937db0fef88dc19"
+            }
+          ],
           "planned_evidence": "tests/test_orchestration_matrix.py (planned, not existing) and procedure_req_006; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T011, T024, T044.",
           "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
           "test_name": "procedure_req_006",
