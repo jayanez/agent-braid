@@ -87,7 +87,7 @@ curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install
 ```
 
 Use `--host claude` or `--host both` as needed, and add
-`--ref agent-braid--v0.1.0-alpha.3` to pin a release. Git and the selected host
+`--ref agent-braid--v0.1.0-alpha.4` to pin a release. Git and the selected host
 must already be installed. See [native installation and setup](docs/tooling/NATIVE_PLUGINS.md)
 for marketplace commands, repository selection and lifecycle operations.
 

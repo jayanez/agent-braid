@@ -1,0 +1,48 @@
+{
+ "schema": "agent-braid-plugin-release-acceptance/v1",
+ "task": "SPEC-046 release record for 0.1.0-alpha.4 (SPEC-054)",
+ "publishedOn": "2026-10-25",
+ "publishedDistribution": "ac2c49825c963bf7daf3fd0851f28d9651580efa",
+ "previousDistribution": "8ed7838a9b12c2dc1684a5e7c1e7cada7543c663",
+ "publishedTag": "agent-braid--v0.1.0-alpha.4",
+ "tagObject": "00f34c51cd746b459684e9146b7700d832c27b50",
+ "sourceCommit": "8e2c3759e6bd809e907654895b103bf8b151db50",
+ "package": {
+  "version": "0.1.0-alpha.4",
+  "files": 7834,
+  "fileBytes": 392767422,
+  "inventorySha256": "956fe4e155d1834899b68a5555f7fb425f2c589c1938cb0b1c50ccb95d95d11b",
+  "provenanceSha256": "f1565500fe87b70a543d6bdcfcf8752d45e1d868140f374f75bea440b5a541aa",
+  "sourceArchive": "sources/agent-braid-0.1.0-alpha.4-source.tar.gz",
+  "sourceArchiveSha256": "6909c2197fcb0021a8c4db740fb42316cb0d39097dca5122ed9015b22bd96268"
+ },
+ "platform": {
+  "os": "macOS arm64",
+  "hosts": [
+   "Claude Code 2.1.292",
+   "codex-cli 0.164.0 (native binary)"
+  ]
+ },
+ "observations": [
+  "Release build from a clean clone of develop 8e2c3759 (sourceDirty false) with Python 3.12.13; bundled doctor verified 7834 files",
+  "SDK client against the bundled launcher: no prompts capability, list_prompts 'Method not found', schemaVersion agent-braid-plugin/v0.2, tools plugin-status, workspaces, analyze-work, analyze, prepare",
+  "Packaged skills exactly analyze, evidence, execute, plan, recover, setup; no agent-braid-<skill> token in skills, manifests or README",
+  "scripts/reproduce_native_plugin.py native-mac with Claude Code and the Codex native binary: 28 commands passed",
+  "Isolated Claude Code update 0.1.0-alpha.3 to 0.1.0-alpha.4 from a local directory marketplace: registry and results sha256 unchanged; doctor verified with an .in_use marker; claude mcp list Connected",
+  "Fresh public clone of the published tag is byte-identical to the build output (excluding .git and the root README) and doctor verified",
+  "Public Git-tag install of 0.1.0-alpha.4 in an isolated Claude Code profile: installed, six unprefixed skills, doctor verified 7834 files, telemetry off",
+  "Candidate-stage records: evidence/native-claude-alpha4.json and evidence/native-codex-alpha4.json (specs/054-plugin-surface-naming); the Codex app-server skills/list reported agent-braid:analyze and its siblings"
+ ],
+ "notObserved": [
+  "Interactive skill use in Claude Code or Codex, and Codex sign-in",
+  "Linux x86_64 execution (built, not run)",
+  "Codex plugin update across versions",
+  "Telemetry and migration journeys (v0.2 registry needs no migration)"
+ ],
+ "limits": [
+  "Agent-operated engineering checks on macOS arm64; not a human usability rating, official directory approval or scientific acceptance",
+  "Update from alpha.3 used a local directory marketplace; the published-tag install was a fresh install, not an update",
+  "claude plugin marketplace remove also uninstalls the plugin; rolling back requires adding the alpha.3 tag and installing again"
+ ],
+ "verification": "Hashes, tag object and byte equality were derived from a fresh public clone of the tag on 2026-10-25."
+}
