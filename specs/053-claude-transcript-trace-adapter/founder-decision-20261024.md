@@ -8,6 +8,10 @@ create authority beyond them, and task T001 stays open until the founder produce
 the binding record. The state of every decision is in the table of
 [budget-and-source-decision.md](budget-and-source-decision.md).
 
+**Revision 3 (2026-10-25):** the founder renewed the section 1 declaration in chat
+against the bytes of section 1a below (see there). Revision 2's stale notice no
+longer applies to those bytes; it applies again to any later change of them.
+
 **Revision 2 (2026-10-24, same day):** review changed the bound bytes of the
 proposal and the inputs file, added a third bound file (the decision vectors) and
 edited the draft decision record, so section 1 below is **superseded**: it applied
@@ -55,6 +59,30 @@ Bytes (SHA-256) the declaration applied to, revision 1:
 
 Review changed the bound files, so this declaration is stale and must be renewed
 against the new bytes (computed at renewal); it is never silently carried over.
+
+## 1a. Renewal of the section 1 declaration (revision 3, 2026-10-25)
+
+The founder confirmed in the delivery session, on 2026-10-25, the same
+declaration as section 1, unchanged: G0 on the existing subscription with
+**EUR 0 additional spend**, and local reading of the founder's own subagent
+transcripts as measurement input (integer counts only, nothing copied into the
+project repository or published). The founder confirmed it against these bytes on
+`develop` at commit `22460b3e` (after the C3 redefinition of preregistration
+revision 3, PR #694):
+
+| File | SHA-256 |
+|---|---|
+| `specs/053-claude-transcript-trace-adapter/budget-and-source-decision.md` | `32d1af7ef1482c5383864b19422a1e1ec86ea27ab836c2c73ab3976d31c18c08` |
+| `docs/experiments/CLAUDE_WORKFLOW_INTEGRATION_PROPOSAL.md` | `ad3d7a0e4e767d8c5bcdee61b5a51a783d1ea89a73ab28b17925341e263945ef` |
+| `docs/experiments/claude-workflow-g0-inputs.json` | `0efe3130117d2bb79e0da3ed4b901273aff84306a1e5b2b74d25481893e837a3` |
+| `docs/experiments/claude-workflow-g0-decision-vectors.json` | `2631f43e7bfe1633393974238422670ed309cfdacf8a784c73d28cf0dacbcfc1` |
+
+This is an agent-recorded transcription of the chat confirmation, not a
+signature. A later change of any of the four files makes it stale again. It does
+not freeze the preregistration, and it does not replace the founder's manual
+declaration that extra usage and auto-recharge are off, nor each run's host
+approval. This record authorizes no workflow run by a coding agent.
+`executionAuthorization` remains `false`. Task T001 stays open.
 
 ## 2. SPEC-052 planning amendments — approved
 
