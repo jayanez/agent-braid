@@ -137,7 +137,7 @@ def _validate_status(value: dict) -> None:
     _require(_id(value["attemptId"]) and _hash(value["manifestSha256"])
              and value["phase"] in ("started", "checkpointed", "ended")
              and value["outcome"] in ("pending", "recorded", "unknown")
-             and value["state"] in (None, *_TERMINALS) and value["source"] in (None, "terminal", "recovery")
+             and value["state"] in (None, *_TERMINALS, "unobserved") and value["source"] in (None, "terminal", "recovery")
              and _ids(value["completed"], 16) and _ids(value["pending"], 16)
              and _int(value["records"], 1, 1024))
     ended = value["phase"] == "ended"

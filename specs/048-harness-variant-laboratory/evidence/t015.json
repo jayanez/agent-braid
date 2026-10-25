@@ -8,13 +8,13 @@
       "command": "python3.13 -m unittest discover -s tests -p \"test_harness*.py\" -v",
       "exitCode": 0,
       "moduleTests": 11,
-      "testsRun": 233,
-      "scope": "Focused offline run: 15 record-codec tests and 18 CLI tests (real filesystem, real journal and import calls through the registered `harness` command). Manual mutation checks (each failed tests before restoring): O_NOFOLLOW removed from input reads, canonical-bytes check removed from decode, trusted-hash comparison removed from validate, recovery action forced to none, decision/chosen consistency check removed, mixed-kind comparison allowed, binding-not-applicable check removed."
+      "testsRun": 234,
+      "scope": "Focused offline run: 16 record-codec tests and 18 CLI tests (real filesystem, real journal and import calls through the registered `harness` command). Manual mutation checks (each failed tests before restoring): O_NOFOLLOW removed from input reads, canonical-bytes check removed from decode, trusted-hash comparison removed from validate, recovery action forced to none, decision/chosen consistency check removed, mixed-kind comparison allowed, binding-not-applicable check removed. Review-found defect fixed before merge: a journal terminal state `unobserved` was refused by the attempt-status codec (test added)."
     }
   ],
   "inputs": {
     "agent_braid/harness_cli.py": "1e86d2b52dbe9ed9fc61156bd203fe352e897127f7f8424b13c1b7e01ef823a9",
-    "agent_braid/harness_records.py": "acb0c79038b7fa6e7469bd3f39f29af018fa3654d475f2ef2e08af1d1d4c769d",
+    "agent_braid/harness_records.py": "837a5521d10ab9dbbaf2b84b5b3838d0aaac5402a30bf514c60c2ae52bb4906d",
     "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
     "agent_braid/harness_journal.py": "b1c1e598ca28a5f01043bbf5c261f4a84d658e644e4ad077e6c86e67c6dc52f9",
     "agent_braid/harness_surface.py": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
@@ -22,7 +22,7 @@
     "agent_braid/cli.py": "74b9cc09fa55f1335f42db319a25f42dd95774061736762224b6fa146301e44d",
     "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
     "tests/test_harness_cli.py": "533bf0f70469672fb0fc8acd1200e8c49fdb1af2b358fab256c254d9d9501d94",
-    "tests/test_harness_records.py": "9e242c78a80bcf4d8e58fd80d142b11f4fc61b4e09cbf1c5f2e649260c85dde2"
+    "tests/test_harness_records.py": "02e0cfc94ae4fc627a4d1b6749771eadf0d1e6fd419dd9545217c66b160409ee"
   },
   "outcome": "Six entry points (inspect, validate, prepare, status, recover-inspect, compare) under one `harness` subparser; exit 0 ok, 2 refusal with a single JSON object carrying a fixed reason code and executionAuthorization false; unexpected internal errors are not converted into refusals. Four versioned strict codecs (manifest, decision, attempt-status, comparison) accept only exact canonical bytes, so records round-trip byte for byte; unknown formats, future versions, extra/missing fields, non-canonical spellings, oversized input and authority-granting flags refuse. inspect shows base/candidate file diff, evidence losses and profile limits without effects; prepare is the only effect (one new private candidate directory via the existing importer); status/recover-inspect read the journal without writing and point at reconciliation without performing it. A test proves the top-level help differs from the pre-change help only by the harness entry.",
   "limits": "Offline, single-host library calls. validate without --sha256 proves shape only (reported as authenticity=unverified); a hash match proves byte identity, not source rights or containment. The CLI performs no admission, reservation, dispatch or reconciliation: those stay with the separately reviewed operator contract (not part of this task). Observation and proposal records have no CLI codec yet (only manifest, decision, attempt-status, comparison). Input file reads are bounded and refuse symlinks/specials but are not protected against a hostile same-UID actor swapping files. --now defaults to the system clock when omitted; trusted-clock supply is the operator's job. No host, model, provider, native containment or utility claim.",

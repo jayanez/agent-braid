@@ -123,6 +123,10 @@ class CodecTests(unittest.TestCase):
         wire = {"format": records.FORMATS["attempt-status"], **status_wire(), "phase": "paused"}
         self.assertRefuses(canonical(wire), "invalid-record")
 
+    def test_unobserved_terminal_state_is_a_valid_status(self):
+        wire = {"format": records.FORMATS["attempt-status"], **status_wire(), "state": "unobserved"}
+        self.assertEqual(records.decode(canonical(wire)).to_dict()["state"], "unobserved")
+
     def test_manifest_codec_reuses_the_manifest_validator(self):
         wire = make_manifest()
         wire["host"]["requested"]["model"] = "gpt-x"  # native request: outside the offline profile
