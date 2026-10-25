@@ -735,5 +735,77 @@ class SdkPromptNameTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual([p.name for p in (await client.list_prompts()).prompts], names)
 
 
+class PromptRegressionBoundaryTests(unittest.TestCase):
+    """SPEC-060 procedure_005: prompt names reach neither the installer, host preview nor telemetry."""
+
+    def test_telemetry_enum_and_batch_version_are_unchanged(self):
+        from agent_braid import tooling_telemetry
+        self.assertEqual(tooling_telemetry.SCHEMA, "agent-braid-local-telemetry-batch/v1")
+        self.assertEqual(tooling_telemetry.OPERATIONS["mcp"],
+                         ("analyze-work", "analyze", "prepare", "status", "execute", "recover", "verify", "other"))
+        self.assertEqual(tooling_telemetry.OPERATIONS["cli"], ("analyze", "analyze-git"))
+
+    def test_installer_and_host_modules_do_not_reference_the_prompt_registry(self):
+        for module in ("tooling_install.py", "tooling_hosts.py", "tooling_assets.py"):
+            source = (ROOT / "agent_braid" / module).read_text(encoding="utf-8")
+            for token in ("_PROMPTS", "_prompt_get", "_prompt_listing", "deprecatedPrompts", "SURFACE_VERSION"):
+                self.assertNotIn(token, source, f"{module} references {token}")
+
+    def test_host_configuration_preview_is_deterministic_and_prompt_free(self):
+        from agent_braid.tooling_install import Selection, plan
+        for host in ("codex", "claude"):
+            with tempfile.TemporaryDirectory() as temp:
+                root = Path(temp).resolve()
+                (root / "source").mkdir()
+                (root / "results").mkdir()
+                selection = Selection(host=host, scope="user", source_root=root / "source",
+                                      result_root=root / "results", home=root / "home",
+                                      destination=root / "dest")
+                first = json.dumps(plan(selection, source_checkout=True).preview(), sort_keys=True)
+                second = json.dumps(plan(selection, source_checkout=True).preview(), sort_keys=True)
+                self.assertEqual(first, second)
+                preview = json.loads(first)
+                self.assertEqual(preview["serverName"], "agent-braid")
+                self.assertEqual(preview["enabledTools"], ["analyze-work", "analyze", "prepare"])
+                self.assertNotIn("prompts", first)
+                self.assertNotIn("deprecated", first)
+                self.assertNotIn("v0.2", first)
+
+
+@unittest.skipUnless(importlib.util.find_spec("mcp"), "optional tooling extra (mcp==2.3.0) is not installed")
+class PromptTelemetryTests(unittest.IsolatedAsyncioTestCase):
+    async def test_listing_and_getting_every_prompt_records_nothing_with_telemetry_local(self):
+        from mcp import Client
+        from mcp.client.stdio import StdioServerParameters
+        from agent_braid import tooling_telemetry as telemetry
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary).resolve()
+            source, results = base / "source", base / "results"
+            source.mkdir()
+            results.mkdir()
+            directory = base / "home/.local/share/agent-braid/telemetry"
+            script = ("from pathlib import Path; from unittest.mock import patch; import sys; "
+                      "from agent_braid.tooling_mcp import main; selected=Path(sys.argv[1]); "
+                      "context=patch.object(Path,'home',return_value=selected); context.start(); "
+                      "raise SystemExit(main(sys.argv[2:]))")
+            parameters = StdioServerParameters(
+                command=sys.executable,
+                args=["-c", script, str(base / "home"), "--source-root", str(source),
+                      "--result-parent", str(results), "--telemetry", "local"], cwd=str(ROOT))
+            async with Client(parameters, mode="auto") as client:
+                before = telemetry.Store(directory).report()["rows"]
+                listed = await client.list_prompts()
+                self.assertEqual(len(listed.prompts), 6)
+                for prompt in listed.prompts:
+                    await client.get_prompt(prompt.name)
+                await client.read_resource("agent-braid://capabilities")
+                self.assertEqual(telemetry.Store(directory).report()["rows"], before)
+                self.assertEqual(before, [])
+                # Positive control: the same server does count a real tool call, so the empty store above is meaningful.
+                response = await client.call_tool("analyze-work", {"kind": "aim", "request": SAMPLE})
+                self.assertEqual(response.structured_content["status"], "ok")
+                self.assertTrue(telemetry.Store(directory).report()["rows"])
+
+
 if __name__ == "__main__":
     unittest.main()
