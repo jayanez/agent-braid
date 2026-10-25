@@ -1,0 +1,85 @@
+{
+  "alsoReadNotPinned": {
+    "specs/057-claude-orchestration-advisory/spec.md": "86d1694635dce1567160bd262aa8a93c70cebbed2e57f0f92288b1ec9f49c4b0",
+    "specs/058-claude-orchestration-guard/spec.md": "7b3dfc590ea9dc86fdd4e9731751be293fb627a199425b755f5fe82cbc3e3163"
+  },
+  "base": "ee76a504d5556490e086320cfa4b8945be6e4fe7",
+  "checkerOutput": {
+    "executionAuthorization": false,
+    "frozen": false,
+    "inputsSha256": "5793690674b64b910549da646398e3fa151deb4632b62f71d6050f6805a4ca2a",
+    "limits": "Structural and byte checks only; no workflow, session, team, batch, transcript, Git or network operation was performed and no G1 result exists.",
+    "negativeControlsRejected": 140,
+    "proposalSha256": "fa581f5660f6134b1d749c0482c9d5a3e7b2b75d525c238868a5d5e2e2985400",
+    "recordVersion": "agent-braid-claude-orchestration-g1-structural-check-1",
+    "status": "proposal-structure-valid"
+  },
+  "environment": "fresh independent full clone of public develop plus restore_public_spec_history.py; Python 3.13 venv; macOS arm64",
+  "extensions": [
+    "Whitespace-normalised pinning of the staging, fixed-before-freeze, unreleased-candidate, adoption-or-release-after-GG, GG-one-claimed-surface and digests-per-track sentences of the proposal.",
+    "check_spec058_text pins the SPEC-058 wording of the unreleased-candidate sentence, the GG claimed-surface rule, the denominator-not-reachable outcome and the separate stage 2 decision.",
+    "H-CW2 check pins parts (a), (b), (c), CA1 to CA6, CG0 to CG5 and the unreleased-candidate wording.",
+    "New negative controls: stage removed, each required metric removed, each required proposal sentence removed.",
+    "Review pass before the PR: unused loop index removed; the digests-per-track pin lengthened to the metric 9 sentence so the two other mentions cannot mask its removal."
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "kind": "gap-fixed",
+      "text": "The checker pinned only the three-word phrase 'unreleased engineering candidate'; the clauses 'behind the G1 gate, before arm A3 can run' and 'Adoption or release happens only after GG passes and the guard ADR is adopted' could be removed without rejection. Now pinned, with controls."
+    },
+    {
+      "id": "F2",
+      "kind": "gap-fixed",
+      "text": "No negative control existed for a removed stage, a removed metric or a removed required sentence (REQ-013 failure cases). Added."
+    },
+    {
+      "id": "F3",
+      "kind": "gap-fixed",
+      "text": "The H-CW2 and SPEC-058 records were only partly pinned (three thresholds in H-CW2; nothing from SPEC-058). Parts (a) to (c) and the SPEC-058 sentences are now pinned."
+    },
+    {
+      "id": "F4",
+      "kind": "wording-note",
+      "text": "REQ-013 lists 'notification volume' among the primary metrics; the proposal states it as 'digests per track' under metric 9 (overhead as cost) and CN3/CA5, and the inputs record carries it as 'overhead-as-cost'. The substance is covered; the literal term is not. Not edited (proposal is unfrozen but outside this task); the founder may want the literal term before the freeze."
+    },
+    {
+      "id": "F5",
+      "kind": "consistency-ok",
+      "text": "No inconsistency found between the proposal, REQ-013, H-CW2 (a, b, c) and SPEC-058 on arms A0 to A3b and AN, staging, the unreleased-candidate sentence, gates GA/GN/GG and evaluation order, GG needing one claimed surface, EUR 0 and downgrade, host version per run, and the thresholds 0.10, 0.85, 0.25, 0.95, 0.20, 500 ms, 20 deny events and 10 tracks."
+    },
+    {
+      "id": "F6",
+      "kind": "residual-limit",
+      "text": "H-CW2 numeric thresholds beyond 0.10, 0.85 and 0.95 (for example 0.25 and 0.20) and SPEC-058 numbers are not pinned by value against the inputs record; a consistent edit of both sides would pass. Structure and byte binding only."
+    }
+  ],
+  "inputs": {
+    "docs/experiments/CLAUDE_ORCHESTRATION_G1_PROPOSAL.md": "fa581f5660f6134b1d749c0482c9d5a3e7b2b75d525c238868a5d5e2e2985400",
+    "docs/experiments/claude-orchestration-g1-inputs.json": "5793690674b64b910549da646398e3fa151deb4632b62f71d6050f6805a4ca2a",
+    "research/hypotheses/H-CW2-claude-orchestration-ownership.md": "7b151c6f24dbebd485de25939ec6e5e1d12ae06b55f1d3161e848c28c2ba654a",
+    "scripts/validate_claude_orchestration_g1_proposal.py": "13e0dc24bee5e72a3b532fb79f82eb24ee70b3e16e17c6aad966e7b35a863c3a",
+    "tests/test_claude_orchestration_g1_proposal.py": "5bf62a4c94df7e1efe6fefc2be2f637c4e4dda85cdeaf3de68cc3e937d02f5e3"
+  },
+  "limits": [
+    "Structural and byte checks only; no G1 result, run, freeze, approval or review exists.",
+    "Human review pending; nothing here is approved."
+  ],
+  "pendingFounderBoundaries": [
+    "T033 freeze (frozen stays false)",
+    "T043 batch pre-flight decision",
+    "host probes HV-6 to HV-13 unobserved",
+    "S2 decision after the stage 1 report"
+  ],
+  "requirements": [
+    "REQ-013"
+  ],
+  "scenarios": [
+    "SC-013"
+  ],
+  "task": "T032",
+  "tests": {
+    "command": ".venv-speckit/bin/python -m unittest tests.test_claude_orchestration_g1_proposal -v",
+    "result": "22 tests OK"
+  }
+}

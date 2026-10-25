@@ -426,7 +426,15 @@
         {
           "given": "the G1 proposal at `docs/experiments/CLAUDE_ORCHESTRATION_G1_PROPOSAL.md` with its inputs record, written alongside this specification and not yet frozen",
           "id": "SC-013",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_claude_orchestration_g1_proposal -v; .venv-speckit/bin/python scripts/validate_claude_orchestration_g1_proposal.py",
+              "limits": "Structural and byte checks of the unfrozen G1 proposal only (T032). No freeze (T033), run, G1 result, probe, review or approval; findings F4 and F6 open. Inputs are spec-owned files only.",
+              "outcome": "22 tests OK; checker reports proposal-structure-valid with 140 negative controls rejected.",
+              "path": "specs/057-claude-orchestration-advisory/evidence/t032/t032.json",
+              "sha256": "7f5c72dbd1858a5fcf401baf2ff996884b0622b95eb32eefe287433c01c5f274"
+            }
+          ],
           "planned_evidence": "tests/test_claude_orchestration_g1_proposal.py and scripts/validate_claude_orchestration_g1_proposal.py (both drafted by the G1 track; reviewed and extended under T032) and procedure_req_013; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T032, T033, T034, T035, T036, T043.",
           "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
           "test_name": "procedure_req_013",

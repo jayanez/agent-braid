@@ -20,9 +20,10 @@ from unittest import mock
 from scripts import validate_claude_orchestration_g1_proposal as validator
 from scripts.validate_claude_orchestration_g1_proposal import (
     FORBIDDEN_PROPOSAL_PHRASES, HYPOTHESIS_PATH, INPUT_PATH, PROPOSAL_PATH,
-    REQUIRED_FIELDS, ROOT, G1ProposalRejected, check_authority_and_budget, check_design,
-    check_guard_and_host, check_hypothesis_text, check_proposal_bytes,
-    check_required_fields, check_thresholds, negative_controls, validate_proposal,
+    REQUIRED_FIELDS, ROOT, SPEC058_PATH, G1ProposalRejected, check_authority_and_budget,
+    check_design, check_guard_and_host, check_hypothesis_text, check_proposal_bytes,
+    check_required_fields, check_spec058_text, check_thresholds, negative_controls,
+    validate_proposal,
 )
 
 
@@ -377,6 +378,46 @@ class ClaudeOrchestrationG1ProposalTests(unittest.TestCase):
         with self.assertRaisesRegex(G1ProposalRejected, "hypothesis record lacks"):
             check_hypothesis_text(hypothesis.replace("0.95", "0.50"))
 
+    def test_unreleased_candidate_and_staging_sentences_are_pinned_everywhere(self) -> None:
+        flat = " ".join(self.proposal_bytes.decode("utf-8").split())
+        for sentence in validator.REQUIRED_PROPOSAL_SENTENCES:
+            edited = flat.replace(sentence, "X").encode()
+            changed = set_path(self.proposal, ("proposal", "sha256"),
+                               hashlib.sha256(edited).hexdigest())
+            with self.subTest(sentence=sentence), self.assertRaisesRegex(
+                    G1ProposalRejected, "proposal text lacks"):
+                check_proposal_bytes(changed, edited)
+        # A re-wrapped but otherwise identical file is not a change of wording.
+        rewrapped = flat.replace(". ", ".\n").encode()
+        check_proposal_bytes(set_path(self.proposal, ("proposal", "sha256"),
+                                      hashlib.sha256(rewrapped).hexdigest()), rewrapped)
+        spec = (ROOT / SPEC058_PATH).read_text()
+        check_spec058_text(spec)
+        for sentence in validator.REQUIRED_SPEC058_SENTENCES:
+            with self.subTest(spec058=sentence), self.assertRaisesRegex(
+                    G1ProposalRejected, "SPEC-058 text lacks"):
+                check_spec058_text(" ".join(spec.split()).replace(sentence, "X"))
+        hypothesis = (ROOT / HYPOTHESIS_PATH).read_text()
+        for part in ("(a) Advisory", "(b) Pull digests", "(c) Opt-in guard"):
+            with self.subTest(part=part), self.assertRaisesRegex(
+                    G1ProposalRejected, "hypothesis record lacks"):
+                check_hypothesis_text(hypothesis.replace(part, "X"))
+
+    def test_removing_a_metric_or_a_stage_is_rejected(self) -> None:
+        for metric in validator.REQUIRED_METRICS:
+            changed = set_path(self.proposal, ("metrics",),
+                               [m for m in self.proposal["metrics"] if m != metric])
+            with self.subTest(metric=metric), self.assertRaisesRegex(
+                    G1ProposalRejected, "required metric removed"):
+                check_design(changed)
+        for index in (0, 1):
+            stages = self.proposal["design"]["stages"]
+            changed = set_path(self.proposal, ("design", "stages"),
+                               [s for i, s in enumerate(stages) if i != index])
+            with self.subTest(stage=index), self.assertRaisesRegex(
+                    G1ProposalRejected, "stage rule changed"):
+                check_design(changed)
+
     def test_ca1_ca3_units_and_chance_numbers_are_stated(self) -> None:
         text = self.proposal_bytes.decode("utf-8")
         ca1 = self.proposal["thresholds"]["GA"]["benefit"]["CA1"]
@@ -495,7 +536,7 @@ class ClaudeOrchestrationG1ProposalTests(unittest.TestCase):
 
     def _registered_copy(self, directory: str) -> Path:
         root = Path(directory)
-        for relative in (INPUT_PATH, PROPOSAL_PATH, HYPOTHESIS_PATH):
+        for relative in (INPUT_PATH, PROPOSAL_PATH, HYPOTHESIS_PATH, SPEC058_PATH):
             (root / relative).parent.mkdir(parents=True, exist_ok=True)
             (root / relative).write_bytes((ROOT / relative).read_bytes())
         return root
@@ -529,6 +570,11 @@ class ClaudeOrchestrationG1ProposalTests(unittest.TestCase):
             hypothesis = (ROOT / HYPOTHESIS_PATH).read_text()
             (root / HYPOTHESIS_PATH).write_text(hypothesis.replace("untested", "supported"))
             yield "hypothesis-text", root
+        with tempfile.TemporaryDirectory() as directory:
+            root = self._registered_copy(directory)
+            spec = (ROOT / SPEC058_PATH).read_text()
+            (root / SPEC058_PATH).write_text(spec.replace("unreleased engineering candidate", "X"))
+            yield "spec058-text", root
 
     def test_validate_proposal_runs_every_check_against_the_given_root(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -612,7 +658,9 @@ class ClaudeOrchestrationG1ProposalTests(unittest.TestCase):
                      "projection-unmet-passes", "projection-minimum-lowered",
                      "token-cap-optional", "run-count-understated",
                      "native-controls-removed", "native-controls-gate-guard",
-                     "native-absence-wording-dropped"):
+                     "native-absence-wording-dropped", "stage-removed",
+                     "metric-removed-enforcement-liveness",
+                     "proposal-sentence-removed-4", "proposal-sentence-removed-5"):
             self.assertIn(name, rejected)
 
 
