@@ -1,0 +1,260 @@
+{
+  "task": "T030",
+  "recordedAt": "2026-10-25",
+  "claudeCode": {
+    "version": "2.1.292 (Claude Code)",
+    "platform": "macOS arm64"
+  },
+  "candidate": "engineering candidate built from a clean clone at 9531bd21 (develop 75db0903 plus the one-command-per-call prompt fix of PR #736), loaded with --plugin-dir, scratch registries, installed plugin and user config untouched",
+  "permissions": "headless -p, model sonnet, 4 plugin tools plus wildcard-tail Bash rules generated from the gate's own hardened prefixes and --add-dir /tmp",
+  "fixture": "known-answer corpus from tests/claude_workflow_gate_helpers.build_corpus plus generated n-operation branches",
+  "runs": {
+    "ind-pair": {
+      "operations": 2,
+      "expectedStatus": "ok-certified",
+      "observedStatus": "ok-certified",
+      "note": "last of four attempts; earlier attempts ended refused (MCP connection failure cached by the host) or inconclusive (allowlist rule gaps); see findings",
+      "costUsd": 1.24
+    },
+    "four-independent": {
+      "operations": 4,
+      "observedStatus": "ok-certified",
+      "pairs": [
+        {
+          "left": "n4x1",
+          "right": "n4x2",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n4x1",
+          "right": "n4x3",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n4x1",
+          "right": "n4x4",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n4x2",
+          "right": "n4x3",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n4x2",
+          "right": "n4x4",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n4x3",
+          "right": "n4x4",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        }
+      ],
+      "agreement": {
+        "both-clean": 6
+      },
+      "replay": "certified",
+      "prepare": "prepared",
+      "costUsd": 1.53
+    },
+    "five-ops": {
+      "operations": 5,
+      "observedStatus": "ok-analyzed",
+      "pairs": [
+        {
+          "left": "n5x1",
+          "right": "n5x2",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n5x1",
+          "right": "n5x3",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n5x1",
+          "right": "n5x4",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n5x1",
+          "right": "n5x5",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n5x2",
+          "right": "n5x3",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n5x2",
+          "right": "n5x4",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n5x2",
+          "right": "n5x5",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n5x3",
+          "right": "n5x4",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n5x3",
+          "right": "n5x5",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        },
+        {
+          "left": "n5x4",
+          "right": "n5x5",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        }
+      ],
+      "agreement": {
+        "both-clean": 10
+      },
+      "replay": "skipped",
+      "prepare": "not-prepared",
+      "limit": "replay and prepare skipped above four operations, stated",
+      "costUsd": 1.44
+    },
+    "conflicting-same-line": {
+      "operations": 2,
+      "observedStatus": "hazards-found",
+      "pairs": [
+        {
+          "left": "sameA",
+          "right": "sameB",
+          "gateBaseline": "conflicted",
+          "directMergeTree": "conflicted"
+        }
+      ],
+      "agreement": {
+        "both-conflicting": 1
+      },
+      "costUsd": 1.23
+    },
+    "disjoint-hunks-same-file": {
+      "operations": 2,
+      "observedStatus": "hazards-found",
+      "pairs": [
+        {
+          "left": "hunkA",
+          "right": "hunkB",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        }
+      ],
+      "agreement": {
+        "analyzer-stricter": 1
+      },
+      "note": "analyzer-stricter: file-level analysis flags what merge-tree merges cleanly (documented coarseness, not a counterexample)",
+      "costUsd": 1.24
+    },
+    "deletion": {
+      "operations": 2,
+      "observedStatus": "hazards-found",
+      "pairs": [
+        {
+          "left": "del",
+          "right": "ind1",
+          "gateBaseline": "clean",
+          "directMergeTree": "clean"
+        }
+      ],
+      "agreement": {
+        "analyzer-unknown": 1
+      },
+      "unknownEffects": 1,
+      "costUsd": 1.23
+    },
+    "equal-to-base": {
+      "operations": 2,
+      "observedStatus": "refused",
+      "refusal": "source-equals-base",
+      "agentsUsed": 1,
+      "costUsd": 0.53
+    },
+    "runtime-enabled-registration": {
+      "observedStatus": "refused",
+      "refusal": "unsafe-tool-surface",
+      "visibleToolNamed": "mcp__plugin_agent-braid_agent-braid__execute",
+      "agentsUsed": 1,
+      "costUsd": 0.53,
+      "note": "refused by the visible-tool check after one agent; the registry-level runtime-enabled-workspace rule path was not the one that fired"
+    },
+    "hardening-sentinels": {
+      "operations": 2,
+      "observedStatus": "ok-certified",
+      "costUsd": 1.25,
+      "sentinels": [
+        "hooks (core.hooksPath)",
+        "fsmonitor",
+        "merge driver",
+        "clean and smudge filters via info/attributes"
+      ],
+      "result": "gate completed; gate templates run by hand under the same fixed prefix against the sentinel repository fired 0 sentinels",
+      "hostNoise": "63 sentinel firings occurred during the native run, and 7 in a tool-less control session in the same directory: these come from Claude Code itself, so the native run cannot isolate the gate's own commands; the isolation rests on the by-hand template run and the existing unit tests"
+    },
+    "stop-and-resume": {
+      "observedStatus": "ok-certified",
+      "runIdAcrossStopAndResume": "unchanged",
+      "agentTranscripts": 5,
+      "reran": "only the baseline phase that was stopped",
+      "mcpCalls": {
+        "workspaces": 1,
+        "analyze-work": 1,
+        "analyze": 1,
+        "prepare": 1
+      },
+      "duplicateMcpCall": false,
+      "duplicatePrepare": false,
+      "costUsd": 1.27,
+      "unobserved": [
+        "a genuine host restart of a stalled agent",
+        "the admission lock refusing a second caller"
+      ]
+    }
+  },
+  "invariants": "refs, object counts, worktree list, working-tree status and unreachable-object count were identical before and after every run in the main matrix (snapshots in the session scratch)",
+  "perPairVsDirectMergeTree": "every baseline pair of every run that produced a baseline equals a direct git merge-tree --write-tree run on the same base and commits",
+  "transcriptCheck": "no grant, execute, recover, verify or status call by any gate agent in the matrix runs and the stop-and-resume run; the runtime-enabled run refused before analysis",
+  "findingsFixedByThisTask": [
+    "evidence reference digest format (PR #728)",
+    "allowlist-incompatible commands (PR #734)",
+    "agents appending '; echo rc=$?' (PR #736)"
+  ],
+  "findingsNotFixed": [
+    "the host caches a failed plugin MCP connection for about 15 minutes per plugin path; a failed first load needs a new path or a wait",
+    "a rule set needs the repository path in the -C prefix and must include rev-list and merge-base for that prefix; the recipe lists subcommands but not this per-repository dependency",
+    "Claude Code itself runs git in the working repository and fires configured sentinels, which masks gate-only isolation in native runs"
+  ],
+  "unobserved": [
+    "manual interactive prompts and accept-edits mode",
+    "organization-disabled workflows (T031)",
+    "auto-mode session for the whole matrix (T031)",
+    "hostile inherited GIT_* variables in a native session",
+    "uncommitted work in a worktree"
+  ],
+  "totalCostUsdApprox": 11.49,
+  "tasksTicked": false
+}
