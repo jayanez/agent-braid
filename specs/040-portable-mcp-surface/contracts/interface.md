@@ -4,6 +4,10 @@
 Implementation and API adoption remain pending. Legacy runtime contracts retain
 their own versions; this envelope does not change their interpretation.
 
+Pointer: the prompt names and the capabilities `prompts` key are amended by
+[SPEC-060 `agent-braid-tooling/v0.2`](../../060-portable-prompt-names/contracts/interface-delta.md);
+this v0.1 text is otherwise unchanged.
+
 ## Transport and capabilities
 
 Optional Python extra `tooling`, initial pin `mcp==2.3.0`. The new server delegates
