@@ -134,7 +134,7 @@ lists every current assignment.
 | Research | [M2 — Confluence lab and scheduler](https://github.com/jayanez/agent-braid/milestone/4) | Closed internally. Bounded replay and finite observations do not establish general confluence. |
 | Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
 | Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | Founder accepted bounded alpha engineering and evaluation as complete on 2026-10-09, with negative utility. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Historical SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
-| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Candidate-bound local paired procedures, package checks and technical controls passed within their stated domains. The combined source inventory is 92/120 tasks checked, 28 open, with three historically closed parents, the closed SPEC-054 parent and five open spec parents; SPEC-039/040/042 retain their recorded bounded acceptance. Native-host acceptance, human interpretation, remaining founder decisions and milestone closure remain open. |
+| Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Candidate-bound local paired procedures, package checks and technical controls passed within their stated domains. The combined source inventory is 92/131 tasks checked, 39 open, with three historically closed parents, the closed SPEC-054 parent and six open spec parents (draft SPEC-060 adds the portable prompt names contract); SPEC-039/040/042 retain their recorded bounded acceptance. Native-host acceptance, human interpretation, remaining founder decisions and milestone closure remain open. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
 | Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | **Open.** Synthetic-only T002/T004 software is complete; zero real pairs are admitted. T001/T007/T003/T005 and #180 remain open for source admission, protocol, real-feed adaptation, experiment and review. |
@@ -275,6 +275,11 @@ registers its skills automatically and guides you through selecting repositories
 The experimental `0.1.0-alpha.4` marketplace is published on `plugin-dist`,
 with the pinned tag [`agent-braid--v0.1.0-alpha.4`](https://github.com/jayanez/agent-braid/tree/agent-braid--v0.1.0-alpha.4).
 It removes the plugin MCP prompts and the redundant skill prefixes (SPEC-054).
+The portable MCP server keeps its prefixed prompt names for now; draft
+[SPEC-060](../specs/060-portable-prompt-names/spec.md) and accepted
+[ADR 0031](adr/0031-portable-prompt-names.md) specify unprefixed names with
+bounded deprecated aliases (`agent-braid-tooling/v0.2`), with implementation T002-T008
+authorized and no release authorized.
 Native macOS observations (Claude Code update from alpha.3 and a public Git-tag
 install; Codex CLI install, remove and reinstall) are in the
 [alpha.4 acceptance record](../specs/046-native-ai-plugins/release-acceptance-alpha4.md);

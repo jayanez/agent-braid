@@ -16,9 +16,9 @@ G0-gated transcript trace adapter; [SPEC-057](../../specs/057-claude-orchestrati
 coordination, an opt-in guard and a ledger for orchestrator-style parallel
 agents. All are draft planning; the current plugin ships no workflow or hook.
 
-**Current integration — 2026-10-20:** the combined M4.5 source portfolio has nine
-specs and 120 tasks (92 checked, 28 open), three historically closed parents, the closed SPEC-054 parent and
-five open parents. [Telemetry SPEC-047](../../specs/047-local-technical-telemetry/spec.md)
+**Current integration — 2026-10-20:** the combined M4.5 source portfolio has ten
+specs and 131 tasks (92 checked, 39 open), three historically closed parents, the closed SPEC-054 parent and
+six open parents (draft SPEC-060 specifies the portable prompt names). [Telemetry SPEC-047](../../specs/047-local-technical-telemetry/spec.md)
 is default-off. Its [existing Luna review and integration provenance](../../specs/047-local-technical-telemetry/integration-review.md)
 are distinct from human/architectural acceptance and native admission. Pilot
 **NO-GO**; SPEC-044/T017 and T018 and SPEC-047/T010 remain open; historical

@@ -2,13 +2,13 @@
   "schema": "agent-braid-m45-local-alignment/v1",
   "milestone": 19,
   "sourceCounts": {
-    "specs": 9,
-    "tasks": 120,
+    "specs": 10,
+    "tasks": 131,
     "tasksChecked": 92,
-    "tasksUnchecked": 28,
+    "tasksUnchecked": 39,
     "parentsClosed": 4,
-    "parentsOpen": 5,
-    "totalRecords": 129
+    "parentsOpen": 6,
+    "totalRecords": 141
   },
   "specs": [
     {
@@ -64,6 +64,12 @@
       "role": "Plugin surface naming",
       "path": "specs/054-plugin-surface-naming",
       "scope": "Draft naming policy for native plugin surfaces; no implementation, release or telemetry contract change."
+    },
+    {
+      "id": "SPEC-060",
+      "role": "Portable prompt names",
+      "path": "specs/060-portable-prompt-names",
+      "scope": "Draft agent-braid-tooling/v0.2 prompt names with bounded deprecated aliases; no implementation, release, plugin or telemetry contract change."
     }
   ],
   "dependencies": [
@@ -125,6 +131,16 @@
     {
       "predecessor": "SPEC-046",
       "successor": "SPEC-054",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-040",
+      "successor": "SPEC-060",
+      "kind": "technical"
+    },
+    {
+      "predecessor": "SPEC-054",
+      "successor": "SPEC-060",
       "kind": "technical"
     },
     {
