@@ -1,0 +1,34 @@
+{
+  "task": "SPEC-048/T015",
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline experimental CLI and record codecs; native, host, utility and independent-review gates pending",
+  "executionAuthorization": false,
+  "executedChecks": [
+    {
+      "command": "python3.13 -m unittest discover -s tests -p \"test_harness*.py\" -v",
+      "exitCode": 0,
+      "moduleTests": 11,
+      "testsRun": 241,
+      "scope": "Focused offline run: record-codec and CLI tests (real filesystem, real journal and import calls through the registered `harness` command). Manual mutation checks (each failed tests before restoring): O_NOFOLLOW removed from input reads, canonical-bytes check removed from decode, trusted-hash comparison removed from validate, recovery action forced to none, decision/chosen consistency check removed, mixed-kind comparison allowed, binding-not-applicable check removed. Review-found defect fixed before merge: a journal terminal state `unobserved` was refused by the attempt-status codec (test added). Second review round: non-string/unhashable `format` values (list, dict, number, null) now refuse with unknown-format through decode and the CLI instead of raising TypeError; input reads loop until EOF or the limit so a short read cannot truncate (tests with a chunking os.read); compare now carries unlistedChange=true when records differ only outside the compared subset; usage-error vs refusal exit-2 convention (matches forecast_cli) documented and pinned; shared TERMINALS constant reused. Mutations killed: read loop, format type check, unlistedChange."
+    }
+  ],
+  "inputs": {
+    "agent_braid/harness_cli.py": "e948dd4540afc2183b839da3113836c8807b46e83fb9cbd02edbb15334d181ed",
+    "agent_braid/harness_records.py": "5c5515141174108b243b217660ed3b5d95abd038414d71a3d105d28606b71034",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_journal.py": "b1c1e598ca28a5f01043bbf5c261f4a84d658e644e4ad077e6c86e67c6dc52f9",
+    "agent_braid/harness_surface.py": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
+    "agent_braid/harness_refinement.py": "74c342c7a7bd4175e19d3132fe628a81cb9cf81d1e83a6af8f81225c048474dd",
+    "agent_braid/cli.py": "74b9cc09fa55f1335f42db319a25f42dd95774061736762224b6fa146301e44d",
+    "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
+    "tests/test_harness_cli.py": "1f40ca578ac10474bc2788c1873359d31afed6257bbfcc9853782d3c4076c7f0",
+    "tests/test_harness_records.py": "e432f0faab79a6bc0572740e52b39d1db8539d964ff3fbeb6a961d86206e2e70"
+  },
+  "outcome": "Six entry points (inspect, validate, prepare, status, recover-inspect, compare) under one `harness` subparser; exit 0 ok, 2 refusal with a single JSON object carrying a fixed reason code and executionAuthorization false; unexpected internal errors are not converted into refusals. Four versioned strict codecs (manifest, decision, attempt-status, comparison) accept only exact canonical bytes, so records round-trip byte for byte; unknown formats, future versions, extra/missing fields, non-canonical spellings, oversized input and authority-granting flags refuse. inspect shows base/candidate file diff, evidence losses and profile limits without effects; prepare is the only effect (one new private candidate directory via the existing importer); status/recover-inspect read the journal without writing and point at reconciliation without performing it. A test proves the top-level help differs from the pre-change help only by the harness entry.",
+  "limits": "Offline, single-host library calls. validate without --sha256 proves shape only (reported as authenticity=unverified); a hash match proves byte identity, not source rights or containment. The CLI performs no admission, reservation, dispatch or reconciliation: those stay with the separately reviewed operator contract (not part of this task). Observation and proposal records have no CLI codec yet (only manifest, decision, attempt-status, comparison). Input file reads are bounded and refuse symlinks/specials but are not protected against a hostile same-UID actor swapping files. --now defaults to the system clock when omitted; trusted-clock supply is the operator's job. No host, model, provider, native containment or utility claim.",
+  "pending": [
+    "T008+ native/human/scientific/economic gates",
+    "Stable pr-profile result recorded in the pull request",
+    "Independent review"
+  ]
+}
