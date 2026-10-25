@@ -13,14 +13,27 @@ The schema in ``specs/057-claude-orchestration-advisory/contracts`` stays the
 published contract. The structural rules below mirror it (a test compares the
 patterns and bounds byte for byte); the rules the schema cannot express are
 validator rules and are named in ``_check_cross_references``.
+
+Expansion (``expand_declaration``) turns a validated declaration into exact
+repository-relative paths and prefix regions against a caller-supplied base
+tree, and degrades to partial coverage whenever an entry cannot be expanded
+exactly. ``to_aim`` maps the result to AIM ``0.2.0-draft`` records in the
+declared channel for the unchanged analyzer, and ``build_preflight`` states the
+constraints and unknowns in a closed vocabulary.
 """
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
+import bisect
+import hashlib
 import json
 import re
-from pathlib import Path
-from typing import Any, NamedTuple
+from pathlib import Path, PurePosixPath
+from typing import Any, Mapping, NamedTuple
+import unicodedata
+
+from .path_overlap import paths_overlap
 
 SCHEMA_VERSION = "agent-braid-ownership-declaration/v0.1"
 SURFACES = ("workflow-tracks", "linked-sessions", "agent-teams", "batch")
@@ -425,3 +438,556 @@ def load_declaration_file(path: str | Path) -> dict[str, Any]:
     except OSError:
         raise DeclarationRefused((Diagnostic("unreadable-input", ""),)) from None
     return load_declaration(raw)
+
+
+# --- Path identity and expansion ------------------------------------------------
+
+PREFLIGHT_VERSION = "agent-braid-ownership-preflight/v0.1"
+MAX_SYMLINK_HOPS = 8
+MAX_GLOB_WILDCARDS = 4
+MAX_MATCH_WORK = 5_000_000
+WRITE_CATEGORIES = ("writes", "creates", "deletes", "sharedResources")
+READ_CATEGORIES = ("reads", "criticalReads")
+CATEGORIES = READ_CATEGORIES + WRITE_CATEGORIES
+EFFECT_KIND = {
+    "reads": "read",
+    "criticalReads": "read",
+    "writes": "write",
+    "creates": "write",
+    "deletes": "delete",
+    "sharedResources": "write",
+}
+
+# Why an entry could not be expanded exactly. A unit with any of these is partial.
+PARTIAL_REASONS = (
+    "absolute-without-root",
+    "base-tree-unavailable",
+    "directory-region",
+    "empty-expansion",
+    "expansion-bound",
+    "missing-base-assertion",
+    "outside-repository",
+    "pattern-region",
+    "pattern-too-complex",
+    "prefix-region",
+    "shared-resource-without-path",
+    "symlink-unresolved",
+    "whole-repository",
+)
+
+_GLOB_CHARS = frozenset("*?[")
+_DRIVE = re.compile(r"^[A-Za-z]:/")
+
+
+@dataclass(frozen=True)
+class BaseTree:
+    """What the base commit holds: regular-file paths and symlink targets.
+
+    Paths are repository-relative with ``/`` separators. The caller (a CLI layer
+    reading Git, or a test) supplies it; this module never touches a repository.
+    """
+
+    files: frozenset[str]
+    symlinks: Mapping[str, str] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        directories: set[str] = set()
+        for path in (*self.files, *self.symlinks):
+            parts = path.split("/")
+            directories.update("/".join(parts[:i]) for i in range(1, len(parts)))
+        object.__setattr__(self, "_directories", frozenset(directories))
+        object.__setattr__(self, "_sorted", tuple(sorted(self.files)))
+
+    def is_directory(self, path: str) -> bool:
+        return path in self._directories  # type: ignore[attr-defined]
+
+    def under(self, prefix: str) -> list[str]:
+        ordered = self._sorted  # type: ignore[attr-defined]
+        low = bisect.bisect_left(ordered, prefix + "/")
+        high = bisect.bisect_left(ordered, prefix + "0")
+        return list(ordered[low:high])
+
+
+def _nfc(text: str) -> str:
+    return unicodedata.normalize("NFC", text).replace("\\", "/")
+
+
+def fold(path: str) -> str:
+    """Case-and-composition fold used to detect aliases on case-insensitive filesystems."""
+    return unicodedata.normalize("NFC", path).casefold()
+
+
+def normalize_path(raw: str, repo_root: str | None = None, symlinks: Mapping[str, str] | frozenset = frozenset()) -> tuple[str | None, str | None]:
+    """One normalization rule: returns ``(path, None)`` or ``(None, reason)``.
+
+    Applies Unicode NFC, ``\\`` to ``/``, ``./`` and ``a/../a`` collapsing and
+    absolute-to-relative conversion. A path that leaves the repository, an
+    absolute path without a root, or a ``..`` that follows a symlink cannot be
+    resolved and is reported with a reason (partial coverage), never guessed.
+    """
+    text = _nfc(raw)
+    if text.startswith("/") or _DRIVE.match(text):
+        if repo_root is None:
+            return None, "absolute-without-root"
+        try:
+            text = PurePosixPath(text).relative_to(PurePosixPath(_nfc(repo_root))).as_posix()
+        except ValueError:
+            return None, "outside-repository"
+    parts: list[str] = []
+    for segment in text.split("/"):
+        if segment in ("", "."):
+            continue
+        if segment == "..":
+            if not parts:
+                return None, "outside-repository"
+            if "/".join(parts) in symlinks:
+                return None, "symlink-unresolved"
+            parts.pop()
+        else:
+            parts.append(segment)
+    return "/".join(parts), None
+
+
+def _resolve_symlinks(path: str, tree: BaseTree) -> tuple[str | None, str | None]:
+    hops = 0
+    while True:
+        parts = path.split("/")
+        for i in range(1, len(parts) + 1):
+            prefix = "/".join(parts[:i])
+            if prefix in tree.symlinks:
+                hops += 1
+                if hops > MAX_SYMLINK_HOPS:
+                    return None, "symlink-unresolved"
+                parent = "/".join(parts[: i - 1])
+                target = _nfc(tree.symlinks[prefix])
+                if target.startswith("/") or _DRIVE.match(target):
+                    return None, "symlink-unresolved"
+                joined, problem = normalize_path(f"{parent}/{target}" if parent else target)
+                if joined is None:
+                    return None, "symlink-unresolved"
+                rest = "/".join(parts[i:])
+                path = f"{joined}/{rest}" if rest and joined else (rest or joined)
+                break
+        else:
+            return path, None
+
+
+def _glob_regex(pattern: str) -> re.Pattern[str] | None:
+    if pattern.count("**") > MAX_GLOB_WILDCARDS:
+        return None
+    out: list[str] = []
+    i = 0
+    while i < len(pattern):
+        char = pattern[i]
+        if char == "*":
+            if pattern[i : i + 2] == "**":
+                i += 2
+                if pattern[i : i + 1] == "/":
+                    i += 1
+                    out.append("(?:[^/]+/)*")
+                else:
+                    out.append(".*")
+                continue
+            out.append("[^/]*")
+        elif char == "?":
+            out.append("[^/]")
+        elif char == "[":
+            end = pattern.find("]", i + 2)
+            if end == -1:
+                out.append(re.escape(char))
+            else:
+                body = pattern[i + 1 : end]
+                body = "^" + body[1:] if body.startswith("!") else body
+                out.append("[" + body.replace("\\", "\\\\") + "]")
+                i = end
+        else:
+            out.append(re.escape(char))
+        i += 1
+    try:
+        return re.compile("".join(out) + r"\Z")
+    except re.error:
+        return None
+
+
+@dataclass
+class _Entries:
+    exact: dict[str, set[str]] = field(default_factory=lambda: {c: set() for c in CATEGORIES})
+    regions: dict[str, set[str]] = field(default_factory=lambda: {c: set() for c in CATEGORIES})
+    reasons: set[str] = field(default_factory=set)
+
+
+def _expand_entry(raw: str, category: str, tree: BaseTree, repo_root: str | None,
+                  out: _Entries, work: list[int]) -> None:
+    trailing = _nfc(raw).endswith("/")
+    path, problem = normalize_path(raw, repo_root, tree.symlinks)
+    if path is None:
+        out.reasons.add(problem or "symlink-unresolved")
+        return
+    if path == "":
+        out.reasons.add("whole-repository")
+        return
+    write_like = category in WRITE_CATEGORIES
+    if any(c in _GLOB_CHARS for c in path):
+        _expand_pattern(path, category, tree, out, work, write_like)
+        return
+    path, problem = _resolve_symlinks(path, tree)
+    if path is None:
+        out.reasons.add(problem or "symlink-unresolved")
+        return
+    if tree.is_directory(path):
+        members = tree.under(path)
+        if len(members) > MAX_PATHS:
+            out.reasons.add("expansion-bound")
+            out.regions[category].add(path)
+            return
+        out.exact[category].update(members)
+        if write_like:
+            out.regions[category].add(path)
+            out.reasons.add("directory-region")
+    elif trailing:
+        out.regions[category].add(path)
+        out.reasons.add("prefix-region")
+    else:
+        out.exact[category].add(path)
+
+
+def _expand_pattern(pattern: str, category: str, tree: BaseTree, out: _Entries,
+                    work: list[int], write_like: bool) -> None:
+    first = min(pattern.index(c) for c in _GLOB_CHARS if c in pattern)
+    prefix = pattern[:first].rpartition("/")[0]
+    regex = _glob_regex(pattern)
+    if regex is None:
+        out.reasons.add("pattern-too-complex")
+        matches: list[str] = []
+    elif work[0] + len(tree.files) > MAX_MATCH_WORK:
+        out.reasons.add("expansion-bound")
+        matches = []
+    else:
+        work[0] += len(tree.files)
+        matches = [p for p in tree._sorted if regex.match(p)]  # type: ignore[attr-defined]
+        if len(matches) > MAX_PATHS:
+            out.reasons.add("expansion-bound")
+            matches = []
+    out.exact[category].update(matches)
+    if not matches and "expansion-bound" not in out.reasons:
+        out.reasons.add("empty-expansion")
+    if write_like or not matches:
+        if prefix:
+            out.regions[category].add(prefix)
+        else:
+            out.reasons.add("whole-repository")
+        if write_like:
+            out.reasons.add("pattern-region")
+
+
+@dataclass(frozen=True)
+class UnitExpansion:
+    id: str
+    dependencies: tuple[str, ...]
+    declared_complete: bool
+    exact: Mapping[str, tuple[str, ...]]
+    regions: Mapping[str, tuple[str, ...]]
+    reasons: tuple[str, ...]
+    shared_classes_without_path: int
+    empty_reads: bool
+    undeclared_shared: tuple[str, ...]
+
+    @property
+    def coverage(self) -> str:
+        return "complete" if self.declared_complete and not self.reasons else "partial"
+
+
+@dataclass(frozen=True)
+class Expansion:
+    base: Mapping[str, str]
+    pinned_commit: str | None
+    units: tuple[UnitExpansion, ...]
+    case_aliases: tuple[tuple[str, ...], ...]
+    constraints: tuple[Mapping[str, Any], ...]
+    effects: Mapping[str, tuple[tuple[str, str], ...]]
+
+
+_SHARED_CONVENTIONS = (
+    re.compile(r"(^|/)(package-lock\.json|yarn\.lock|pnpm-lock\.yaml|poetry\.lock|uv\.lock|Cargo\.lock|Gemfile\.lock|go\.sum|composer\.lock)$"),
+    re.compile(r"(^|/)(index\.(ts|tsx|js|jsx|mjs)|__init__\.py)$"),
+    re.compile(r"(^|/)(generated|dist|build)/|\.(generated|gen|g)\.|_pb2(_grpc)?\.py$"),
+    re.compile(r"(^|/)(\.prettierrc[^/]*|\.eslintrc[^/]*|\.editorconfig|rustfmt\.toml|\.clang-format)$"),
+)
+
+
+def _region_resource(prefix: str) -> str:
+    return prefix + "/**"
+
+
+def expand_declaration(declaration: Any, tree: BaseTree | None, *, repo_root: str | None = None,
+                       pinned_commit: str | None = None) -> Expansion:
+    """Expand a declaration to exact paths and prefix regions with explicit partial coverage.
+
+    Raises ``DeclarationRefused`` when the declaration is invalid. Coverage is
+    complete for a unit only when the unit claims completeness, a base is
+    asserted, a base tree was supplied and every entry expanded exactly.
+    """
+    diagnostics = validate_declaration(declaration)
+    if diagnostics:
+        raise DeclarationRefused(diagnostics)
+    base = declaration.get("base")
+    known_tree = tree is not None
+    tree = tree if tree is not None else BaseTree(frozenset())
+    work = [0]
+    expanded: list[tuple[dict[str, Any], _Entries, int, bool, tuple[str, ...]]] = []
+    for unit in declaration["units"]:
+        entries = _Entries()
+        for category in (*READ_CATEGORIES, "writes", "creates", "deletes"):
+            for raw in unit.get(category, ()):
+                _expand_entry(raw, category, tree, repo_root, entries, work)
+        shared_without_path = 0
+        for resource in unit.get("sharedResources", ()):
+            if "path" in resource:
+                _expand_entry(resource["path"], "sharedResources", tree, repo_root, entries, work)
+            else:
+                shared_without_path += 1
+        if shared_without_path:
+            entries.reasons.add("shared-resource-without-path")
+        if not base:
+            entries.reasons.add("missing-base-assertion")
+        if not known_tree:
+            entries.reasons.add("base-tree-unavailable")
+        declared_shared = entries.exact["sharedResources"]
+        touched = (entries.exact["writes"] | entries.exact["creates"] | entries.exact["deletes"])
+        undeclared = tuple(sorted(
+            p for p in touched
+            if any(rule.search(p) for rule in _SHARED_CONVENTIONS) and p not in declared_shared
+        ))
+        expanded.append((unit, entries, shared_without_path, not unit.get("reads"), undeclared))
+
+    # Case and composition aliases are one resource: every spelling maps to the smallest.
+    spellings: dict[str, dict[str, set[str]]] = {}
+    for unit, entries, *_ in expanded:
+        for table in (entries.exact, entries.regions):
+            for paths in table.values():
+                for path in paths:
+                    spellings.setdefault(fold(path), {}).setdefault(path, set()).add(unit["id"])
+    canonical = {p: min(group) for group in spellings.values() for p in group}
+    aliases = tuple(sorted(
+        tuple(sorted({u for ids in group.values() for u in ids}))
+        for group in spellings.values() if len(group) > 1
+    ))
+
+    units: list[UnitExpansion] = []
+    for unit, entries, shared_without_path, empty_reads, undeclared in expanded:
+        units.append(UnitExpansion(
+            id=unit["id"],
+            dependencies=tuple(sorted(unit.get("dependsOn", ()))),
+            declared_complete=unit.get("complete") is True,
+            exact={c: tuple(sorted({canonical[p] for p in entries.exact[c]})) for c in CATEGORIES},
+            regions={c: tuple(sorted({canonical[p] for p in entries.regions[c]})) for c in CATEGORIES},
+            reasons=tuple(sorted(entries.reasons)),
+            shared_classes_without_path=shared_without_path,
+            empty_reads=empty_reads,
+            undeclared_shared=tuple(sorted({canonical.get(p, p) for p in undeclared})),
+        ))
+    effects, constraints = _relations(units, aliases)
+    return Expansion(
+        base=dict(base or {}),
+        pinned_commit=pinned_commit,
+        units=tuple(units),
+        case_aliases=aliases,
+        constraints=tuple(constraints),
+        effects=effects,
+    )
+
+
+def _relations(units: list[UnitExpansion], aliases: tuple[tuple[str, ...], ...]):
+    """Declared effects per unit, plus markers where one unit's path sits inside another's region.
+
+    The analyzer compares resources by exact string, so containment between a
+    region and a path (or between two regions) is made visible by giving both
+    units an effect on the container's region resource. The containment test is
+    the shared ``paths_overlap`` rule; nothing here spells it a second time.
+    """
+    effects: dict[str, set[tuple[str, str]]] = {u.id: set() for u in units}
+    items: list[tuple[str, str, str, str, bool]] = []  # folded key, path, unit, category, is_region
+    for unit in units:
+        for category in CATEGORIES:
+            kind = EFFECT_KIND[category]
+            for path in unit.exact[category]:
+                effects[unit.id].add((kind, path))
+                items.append((fold(path), path, unit.id, category, False))
+            for prefix in unit.regions[category]:
+                effects[unit.id].add((kind, _region_resource(prefix)))
+                items.append((fold(prefix), prefix, unit.id, category, True))
+    items.sort()
+    keys = [item[0] for item in items]
+    constraints: list[dict[str, Any]] = []
+    seen: set[tuple[str, tuple[str, ...]]] = set()
+
+    def note(code: str, first: str, second: str) -> None:
+        key = (code, tuple(sorted((first, second))))
+        if key not in seen:
+            seen.add(key)
+            constraints.append({"code": code, "units": list(key[1])})
+
+    def related(index: int, other: int) -> None:
+        key, path, unit, category, region = items[index]
+        key2, path2, unit2, category2, region2 = items[other]
+        if unit == unit2 or not paths_overlap(key, key2):
+            return
+        write_like = category in WRITE_CATEGORIES or category2 in WRITE_CATEGORIES
+        if not write_like:
+            return
+        if category == "criticalReads" and category2 in WRITE_CATEGORIES:
+            note("critical-read-hazard", unit, unit2)
+        if category2 == "criticalReads" and category in WRITE_CATEGORIES:
+            note("critical-read-hazard", unit2, unit)
+        if "creates" in (category, category2):
+            note("create-overlap", unit, unit2)
+        if category == category2 == "sharedResources":
+            note("shared-resource-declared", unit, unit2)
+        if key != key2 or region or region2:
+            container = _region_resource(path if len(key) <= len(key2) else path2)
+            effects[unit].add((EFFECT_KIND[category], container))
+            effects[unit2].add((EFFECT_KIND[category2], container))
+
+    # Every overlapping pair is visited once: from the earlier of two equal keys,
+    # or from the container to each key inside it (sorted order keeps both contiguous).
+    for index, key in enumerate(keys):
+        other = index + 1
+        while other < len(keys) and keys[other] == key:
+            related(index, other)
+            other += 1
+        for inside in range(bisect.bisect_left(keys, key + "/"), bisect.bisect_left(keys, key + "0")):
+            related(index, inside)
+    for group in aliases:
+        for first_index, first in enumerate(group):
+            for second in group[first_index + 1:]:
+                note("case-alias-merged", first, second)
+    for unit in units:
+        for dependency in unit.dependencies:
+            note("dependency-declared", unit.id, dependency)
+    frozen = {identifier: tuple(sorted(pairs)) for identifier, pairs in effects.items()}
+    return frozen, sorted(constraints, key=lambda c: (c["code"], c["units"]))
+
+
+# --- AIM mapping ----------------------------------------------------------------
+
+
+def _sha256(value: Any) -> str:
+    data = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
+    return "sha256:" + hashlib.sha256(data).hexdigest()
+
+
+DEFINITION_ID = "agent-braid-ownership-declaration"
+
+
+def to_aim(expansion: Expansion) -> list[dict[str, Any]]:
+    """AIM ``0.2.0-draft`` operation records carrying the declared channel only."""
+    records = []
+    for unit in expansion.units:
+        declared = [{"kind": kind, "resource": resource} for kind, resource in expansion.effects[unit.id]]
+        records.append({
+            "aimVersion": "0.2.0-draft",
+            "instanceId": unit.id,
+            "attemptId": f"{unit.id}-declared",
+            "definition": {"id": DEFINITION_ID, "digest": _sha256(DEFINITION_ID)},
+            "inputDigest": _sha256({"unit": unit.id, "exact": unit.exact, "regions": unit.regions}),
+            "dependencies": list(unit.dependencies),
+            "readVersions": {},
+            "effects": {
+                "declared": declared,
+                "inferred": [],
+                "observed": [],
+                "coverage": {
+                    "status": unit.coverage,
+                    "domain": "declared-repository-paths",
+                    "method": "ownership-declaration-expansion",
+                },
+            },
+            "evidence": [{"kind": "declaration", "label": "declared-only"}],
+        })
+    return records
+
+
+# --- Pre-flight evidence and closed vocabulary -----------------------------------
+
+CLASS_LABEL = "0-heuristic"
+EVIDENCE_LABEL = "declared-only"
+UNKNOWN_CODES = (
+    "declaration-not-marked-complete",
+    "empty-read-set",
+    "missing-base-assertion",
+    "partial-coverage",
+    "shared-resource-without-path",
+    "undeclared-shared-resource",
+)
+CONSTRAINT_CODES = (
+    "case-alias-merged",
+    "create-overlap",
+    "critical-read-hazard",
+    "dependency-declared",
+    "shared-resource-declared",
+)
+STATEMENTS = (
+    "Disjoint declared file sets are not evidence of a clean merge; integration evidence remains the SPEC-052 gate.",
+    "This result is declared-only: its quality is bounded by the declaration, and a read that was not declared is not detected.",
+    "This evidence is advisory and carries no authorization of any kind.",
+)
+
+_FORBIDDEN = re.compile(
+    r"\b(start(s|ed|ing)?|begin(s)?|launch\w*|run(s|ning)?|schedul\w*|dispatch\w*|spawn\w*|approv\w*"
+    r"|recommend\w*|authori[sz]e[sd]?|permit(s|ted)?|proceed\w*|go ahead|safe to|ok to|okay to|ready to"
+    r"|green[- ]?light\w*|fan[- ]?out|(can|may|should|could) be parallel\w*)\b",
+    re.IGNORECASE,
+)
+
+
+def lint_text(text: str) -> list[str]:
+    """Terms that start, schedule, approve or recommend parallel execution (empty means clean)."""
+    return sorted({match.group(0).lower() for match in _FORBIDDEN.finditer(text)})
+
+
+def vocabulary() -> tuple[str, ...]:
+    """Every fixed string the pre-flight can emit outside paths and unit identifiers."""
+    return (
+        PREFLIGHT_VERSION,
+        CLASS_LABEL,
+        EVIDENCE_LABEL,
+        *UNKNOWN_CODES,
+        *CONSTRAINT_CODES,
+        *PARTIAL_REASONS,
+        *STATEMENTS,
+    )
+
+
+def build_preflight(expansion: Expansion) -> dict[str, Any]:
+    """The pre-flight evidence block: coverage, constraints, unknowns and fixed statements."""
+    unknowns: list[dict[str, Any]] = []
+    for unit in expansion.units:
+        if not unit.declared_complete:
+            unknowns.append({"code": "declaration-not-marked-complete", "unit": unit.id})
+        if unit.reasons:
+            unknowns.append({"code": "partial-coverage", "unit": unit.id, "reasons": list(unit.reasons)})
+        if unit.empty_reads:
+            unknowns.append({"code": "empty-read-set", "unit": unit.id})
+        if unit.shared_classes_without_path:
+            unknowns.append({"code": "shared-resource-without-path", "unit": unit.id})
+        if unit.undeclared_shared:
+            unknowns.append({"code": "undeclared-shared-resource", "unit": unit.id,
+                             "count": len(unit.undeclared_shared)})
+    if not expansion.base:
+        unknowns.append({"code": "missing-base-assertion"})
+    return {
+        "preflightVersion": PREFLIGHT_VERSION,
+        "class": CLASS_LABEL,
+        "label": EVIDENCE_LABEL,
+        "base": {**expansion.base, **({"pinnedCommit": expansion.pinned_commit} if expansion.pinned_commit else {})},
+        "coverage": [
+            {"unit": unit.id, "status": unit.coverage,
+             "exactPaths": sum(len(v) for v in unit.exact.values()),
+             "regions": sum(len(v) for v in unit.regions.values())}
+            for unit in expansion.units
+        ],
+        "constraints": list(expansion.constraints),
+        "unknowns": unknowns,
+        "statements": list(STATEMENTS),
+        "executionAuthorization": False,
+    }

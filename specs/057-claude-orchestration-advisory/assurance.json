@@ -172,7 +172,7 @@
               "outcome": "36 tests passed: schema valid under draft 2020-12; example and valid fixtures accepted; every invalid fixture refused with a stable code; one-past-bound cases refused.",
               "limits": "Offline synthetic fixtures; exact-entry coverage for critical reads and exemption paths until T014; no host or review claim.",
               "path": "specs/057-claude-orchestration-advisory/evidence/t012-t013.json",
-              "sha256": "c979e2cc458f66c7e05612613467a0341aadc5a2e1185bbc342026bafd20fb23"
+              "sha256": "3dcae9e90af8ba05e5e0a904264f777ec847a7d606f947097d4615ac8a0e443b"
             }
           ],
           "planned_evidence": "tests/test_ownership_declaration.py (T012/T013 offline controls obtained in evidence/t012-t013.json) with fixtures under tests/fixtures/ownership/ (planned) and procedure_req_001; exact commands, hashes, failures and limits are recorded when it runs. Obtained: offline T012/T013 controls only; host, G1 and review evidence: none. Tasks: T012, T013.",
@@ -190,8 +190,16 @@
         {
           "given": "a declaration with literal paths, directories and glob patterns and a pinned base tree",
           "id": "SC-002",
-          "obtained_evidence": [],
-          "planned_evidence": "tests/test_ownership_expansion.py (planned, not existing) and procedure_req_002; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T014, T015.",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_ownership_expansion tests.test_orchestration_bounds -v",
+              "outcome": "Negative controls (glob, directory, two creators, create prefix, case, Unicode, symlink, absolute spelling, bounds) yield conflicting or unknown, never an independent candidate; the shared overlap helper equals the pre-extraction rule on a generated pair table.",
+              "limits": "Offline synthetic fixtures and a temporary Git repository; case aliases are always merged.",
+              "path": "specs/057-claude-orchestration-advisory/evidence/t014-t016.json",
+              "sha256": "c2d14f481573b41f7134db759f6df68447c1a62a8057005bd8e1593fb34bbee3"
+            }
+          ],
+          "planned_evidence": "tests/test_ownership_expansion.py (planned, not existing) and procedure_req_002; exact commands, hashes, failures and limits are recorded when it runs. Obtained: offline T014/T015 expansion controls only; host, G1 and review evidence: none. Tasks: T014, T015.",
           "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
           "test_name": "procedure_req_002",
           "then": "literal paths and patterns that match files at the pinned base become exact repository-relative paths under one normalization rule (separator, `./`, `..`, absolute to repository-relative, Unicode NFC, case-fold collision detection for case-insensitive filesystems, and symlinks that resolve inside the repository or are refused); `creates` entries are carried as exact paths or as prefix regions; every pattern or region that cannot be expanded exactly is reported with partial coverage, so any pair that involves it is classified `unknown` or `conflicting` and never as an independent candidate; two units that create the same path, or a create prefix that overlaps another unit's path, are reported as conflicting; and the prefix-overlap rule is the semantics of `agent_braid/runtime_scheduler._overlap`, moved once into a neutral helper that both the expansion module and the scheduler import, with the scheduler's current behavior pinned by its existing tests, so that no second spelling of the rule exists",
@@ -206,8 +214,16 @@
         {
           "given": "expanded declarations for 2 to 32 units",
           "id": "SC-003",
-          "obtained_evidence": [],
-          "planned_evidence": "tests/test_ownership_preflight.py (planned, not existing) and procedure_req_003; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T015, T016.",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_ownership_preflight -v",
+              "outcome": "AIM mapping, expand-ownership command, class table over 12 fixtures, closed vocabulary and wording lint (fails 13 seeded phrases), analyzer output pinned by digest.",
+              "limits": "Offline; the plugin MCP comparison depends on HV-1 and is not run; recipe and skill text lint belongs to T026.",
+              "path": "specs/057-claude-orchestration-advisory/evidence/t014-t016.json",
+              "sha256": "c2d14f481573b41f7134db759f6df68447c1a62a8057005bd8e1593fb34bbee3"
+            }
+          ],
+          "planned_evidence": "tests/test_ownership_preflight.py (planned, not existing) and procedure_req_003; exact commands, hashes, failures and limits are recorded when it runs. Obtained: offline T015/T016 controls only; MCP comparison, recipe text lint and host evidence: none. Tasks: T015, T016.",
           "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
           "test_name": "procedure_req_003",
           "then": "the expansion emits AIM `0.2.0-draft` operation records in the declared channel and the existing analyzer is reused unchanged (no new analyzer, `agent_braid/analysis.py` untouched); every pair keeps the existing classes independent candidate, ordered, conflicting or unknown with its coverage; a result involving partial coverage is never an independent candidate; the envelope states evidence, constraints and unknowns in a closed vocabulary and never wording that starts, schedules, approves or recommends parallel execution (a wording lint over emitted text and over the recipe and skill text rejects such terms); the class is `0-heuristic` and the label is `declared-only`; the envelope states that disjoint file sets do not imply a clean merge and that integration evidence remains SPEC-052; empty read sets and undeclared shared-resource conventions (lockfiles, barrel files, generated outputs, formatters) are reported as constraints and unknowns; and `executionAuthorization` is false",
@@ -451,7 +467,7 @@
               "outcome": "Declaration-side bounds (1 MiB, 32 units, 512 paths, 256 characters, 16 exemption rules, 31 dependencies, 64 shared resources) enforced at the bound and refused one past it; the validator imports no network, socket or process helper and opens files read-only.",
               "limits": "Partial: declaration input only. Command refusals, output paths, Git bounds and telemetry exclusions belong to T018, T025, T040 to T042.",
               "path": "specs/057-claude-orchestration-advisory/evidence/t012-t013.json",
-              "sha256": "c979e2cc458f66c7e05612613467a0341aadc5a2e1185bbc342026bafd20fb23"
+              "sha256": "3dcae9e90af8ba05e5e0a904264f777ec847a7d606f947097d4615ac8a0e443b"
             }
           ],
           "planned_evidence": "tests/test_orchestration_bounds.py (T013 declaration-side controls obtained in evidence/t012-t013.json) and procedure_req_017; exact commands, hashes, failures and limits are recorded when it runs. Obtained: T013 declaration-side bounds only; the remaining tasks are pending. Tasks: T013, T018, T025, T040, T041, T042.",
