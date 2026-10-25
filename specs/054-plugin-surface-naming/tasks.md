@@ -4,10 +4,10 @@ Stable task IDs. Completion requires obtained evidence; task completion does not
 imply native-host, release or founder acceptance. Parallelizable does not
 authorize concurrent agents.
 
-- [ ] T001 (REQ-001 / SC-001): Review the naming policy and research record.
+- [x] T001 (REQ-001 / SC-001): Review the naming policy and research record.
   Dependencies: none. Files: `contracts/naming-policy.md`, `research.md`,
   `docs/adr/0030-native-plugin-surface-naming.md`. Verification: procedure_001.
-  Evidence: owner review record and ADR decision.
+  Evidence: [owner review record](founder-review-20261025.json) (accepted 2026-10-25, bound to frozen commit 36c30b1f) and ADR 0030 decision.
 
 - [x] T002 (REQ-002 / SC-002): Add a package check that pins plugin, marketplace,
   server-key and tool names. Dependencies: T001. Files:

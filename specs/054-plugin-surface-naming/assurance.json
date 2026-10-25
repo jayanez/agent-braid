@@ -11,7 +11,7 @@
   ],
   "assumptions": "Host behavior matches cited documentation and source revisions of 2026-10-24; users invoke skills; alpha users accept renamed invocations announced in release notes.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "36c30b1f5f19b4131093ca0989a6cac0eb904359",
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -86,16 +86,16 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Plugin MCP schema agent-braid-plugin/v0.1 to v0.2 (prompts removed) and renamed plugin skills in 0.1.0-alpha.4; unchanged plugin id, server key, tool names, resource schemes, registry v0.2, agent-braid-tooling/v0.1, SPEC-041/042 legacy installs and SPEC-047 v1 telemetry.",
   "domain": "Agent Braid native plugin 0.1.0-alpha.3 and its planned 0.1.0-alpha.4 package on Codex and Claude Code; portable and legacy surfaces only as unchanged regression boundaries.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "36c30b1f5f19b4131093ca0989a6cac0eb904359",
+    "mode": "historical"
   },
   "execution_contract": "No execution path, grant, effect or runtime authority changes; analysis-only fixtures suffice; native sessions are owner-run.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "Not applicable: engineering specification without empirical hypothesis.",
   "observation_contract": "Built package manifests, skill inventory and SDK client listings in owned fixtures; native host listings recorded separately with environment and limits.",
   "references": [
@@ -333,6 +333,7 @@
       "text": "Native host observation: Observe the candidate in real Codex and Claude Code user profiles before release."
     }
   ],
+  "review_record": "specs/054-plugin-surface-naming/founder-review-20261025.json",
   "scientific_limits": "Engineering naming policy; no scientific claim. Documentation and source reading are not native observation; structural checks are not owner approval.",
   "scope": "Naming policy for native plugin surfaces in Codex and Claude Code: plugin id, marketplace, MCP server key and identity, tools, prompts, resources and skills, with alpha migration and telemetry impact. Specification only.",
   "stage": "draft"
