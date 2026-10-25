@@ -1,0 +1,68 @@
+{
+  "schema": "agent-braid-native-observation/v1",
+  "task": "SPEC-054 T009b",
+  "observedOn": "2026-10-25",
+  "candidateCommit": "268a8179f4b7fe68bb18722d6bb122c309e29aa0",
+  "candidateSourceDirty": false,
+  "scriptCommit": "15d4ca63fcfe7236298f699f47666eb89ce54aa2",
+  "versions": {
+    "candidate": "0.1.0-alpha.4",
+    "registrySchema": "agent-braid-plugin-registry/v0.2",
+    "pluginInterface": "agent-braid-plugin/v0.2"
+  },
+  "environment": {
+    "os": "macOS 27.0.1 arm64",
+    "codex": "codex-cli 0.164.0 (npm @openai/codex, integrity sha512-TWj7UGyPRe3Pj/A3ddNAxs1te3a/W/xAd+J0LHrrFTmsSfahGMOLF/vn88D3QCIgAT3B1rm1y/Z3NYE0rx6cZQ==)",
+    "codexBinarySha256": "d8990e3ee7acfbc26f91265b12a1a83f0fee40d0e0f8f1f40a37d4ec21f499cf",
+    "node": "v22.20.0",
+    "bundledPython": "CPython 3.12.15",
+    "profile": "disposable HOME, CODEX_HOME and AGENT_BRAID_HOME under a private temporary directory; no sign-in, credentials, model or provider session"
+  },
+  "package": {
+    "inventorySha256": "12c9ab896a9d223e17b0ee52764e87ca54f7fdf5686cad7ee56e4c779ef4d6c5",
+    "provenanceSha256": "2a123a466cc48743655b15064e2203cfb6154b1bbecb17e93eca8ef0d8763e0a",
+    "inventoryEntries": 7818,
+    "marketplace": "local directory (.agents/plugins/marketplace.json, name agent-braid)"
+  },
+  "commands": [
+    {"step": 1, "command": "codex plugin marketplace add LOCAL_DIST_OUT; marketplace list --json", "outcome": "passed", "detail": "sourceType local, name agent-braid"},
+    {"step": 2, "command": "codex plugin list --available --json", "outcome": "passed", "detail": "fields: pluginId, name, marketplaceName, version 0.1.0-alpha.4, installed, enabled, source, installPolicy AVAILABLE, authPolicy ON_USE; no skills, MCP, prompts or displayName"},
+    {"step": 3, "command": "codex plugin add agent-braid@agent-braid; codex plugin list --json", "outcome": "passed", "detail": "installed and enabled; cache plugins/cache/agent-braid/agent-braid/0.1.0-alpha.4"},
+    {"step": 4, "command": "inspect installed root", "outcome": "passed", "detail": "skills analyze, evidence, execute, plan, recover, setup; no agent-braid-* match in skills, .mcp.json, mcp.json or plugin.json; server key agent-braid; plugin.json version 0.1.0-alpha.4, displayName Agent Braid"},
+    {"step": 5, "command": "installed launch plugin doctor --plugin-root ROOT", "outcome": "passed", "detail": "package verified, 7818 files, version 0.1.0-alpha.4; status setup-required before setup and configured after"},
+    {"step": 6, "command": "codex mcp list --json and codex mcp list", "outcome": "passed", "detail": "one server named agent-braid (no plugin prefix), stdio, launch plugin serve, env PLUGIN_ROOT and PLUGIN_DATA, auth_status unsupported; empty list after removal"},
+    {"step": 7, "command": "plugin setup preview then apply for one disposable repository; result file written", "outcome": "passed", "detail": "registry agent-braid-plugin-registry/v0.2, telemetry off"},
+    {"step": 8, "command": "codex plugin remove; codex plugin add (reinstall)", "outcome": "passed", "detail": "cache directory emptied and plugin list empty after removal; reinstall verified by doctor"},
+    {"step": 9, "command": "scripts/reproduce_native_plugin.py from a fresh clone of develop 15d4ca63, bundled Python, native-mac, Codex only", "outcome": "passed", "detail": "17 commands; skills/list via the Codex app server returned six skills named agent-braid:analyze, :evidence, :execute, :plan, :recover, :setup; one MCP server agent-braid, serverInfo agent-braid-plugin, tools plugin-status, workspaces, analyze-work, analyze, prepare, no prompts capability; state retained after uninstall"}
+  ],
+  "hashes": {
+    "registryJsonSha256AcrossRemoveAndReinstall": "b106f0d7181405914603fe73cb1308f727f010f55e417d69972c4637d4b9a395",
+    "resultsFileSha256AcrossRemoveAndReinstall": "e8134843fbf95687477b4a6b7a00a1bef1deb01e0c311bcb1d869410f82ed09c",
+    "reproduceRecordSha256": "b20ff6565c5de3512715eaee69e0a90e2717493b630a7904abeb101410f256da"
+  },
+  "outcomes": {
+    "marketplaceAddAndList": "passed",
+    "pluginAddRemoveReinstall": "passed",
+    "installedSkills": "analyze, evidence, execute, plan, recover, setup; no agent-braid-* directory",
+    "mcpServerKey": "agent-braid",
+    "doctor": "passed",
+    "stateRetainedAfterRemove": "passed",
+    "reproduceNativePlugin": "passed",
+    "qualifiedSkillName": "observed in the Codex app-server skills/list JSON as agent-braid:analyze (and :evidence, :execute, :plan, :recover, :setup); interactive invocation not observed",
+    "promptsAbsent": "passed"
+  },
+  "findings": [
+    "codex plugin list --json does not expose skills, MCP servers, prompts or the interface displayName; only the version and policies. The skill names come from the app-server skills/list call inside the reproduction script.",
+    "codex mcp list shows the plugin server as agent-braid, without a plugin prefix.",
+    "The reproduction script restricts PATH to git, sh, uname and dirname, so the npm launcher codex.js fails (env: node: No such file or directory). The run passed with the native binary from the same npm package (@openai/codex-darwin-arm64) as --codex-executable. The script was not modified.",
+    "Two early observation mistakes were mine, not the plugin's: a hand-made AGENT_BRAID_HOME with mode 755 was refused by doctor (Owned plugin state must be private to its user), and a hand-made registry.json was refused (Unknown registry schema). State created by plugin setup passed."
+  ],
+  "limits": [
+    "Interactive Codex skill use and sign-in were not performed; the interactive invocation name is not observed, only the skills/list name",
+    "Linux was not observed",
+    "The marketplace is a local directory, not a published Git ref",
+    "No model or provider session was started; nothing was pushed to plugin-dist or tagged remotely",
+    "Candidate was built from 268a8179, not the current develop commit; the release build must be redone before any publication",
+    "Agent-operated engineering observations; not a human usability rating or official approval"
+  ]
+}
