@@ -1,0 +1,37 @@
+{
+  "task": "SPEC-057/T014+T015+T016",
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for offline path identity, expansion, AIM mapping, the expand-ownership command, the closed vocabulary and its lints; host, G1, native and independent-review gates pending",
+  "executionAuthorization": false,
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_ownership_expansion tests.test_ownership_preflight tests.test_orchestration_bounds -v",
+      "exitCode": 0,
+      "testsRun": 75,
+      "scope": "Negative controls (glob versus path, directory versus file, two creators, create prefix overlap, case-only names, composed versus decomposed Unicode, symlinked directory and file, symlink leaving the repository / loop / absolute, absolute versus relative spellings, empty glob, whole-repository entry, complexity and work bounds) each yield conflicting or unknown with partial coverage where applicable and never an independent candidate; a generated pair table of 256 path pairs shows the shared overlap helper equals the pre-extraction rule and the scheduler imports the same function; class table over 12 declaration fixtures matches the analyzer; no independent candidate has a partial unit; every emitted code is in the closed vocabulary; the wording lint passes every fixed and analyzer string and fails 13 seeded phrases; the analyzer output for a non-ownership input hashes to a pinned digest; the expand-ownership command runs against a real temporary Git repository (symlink alias resolved, repository left unchanged, no file content in output) and refuses malformed, over-bound, unobservable and base-mismatch input with the command-error object."
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_m4_alpha_scheduler tests.test_m4_alpha_policy tests.test_analysis",
+      "exitCode": 0,
+      "testsRun": 47,
+      "scope": "Existing scheduler, policy and analyzer tests pass unchanged after the overlap helper extraction."
+    }
+  ],
+  "inputs": {
+    "agent_braid/ownership.py": "cacf5ec12dd1c4b1127b60027d86f136af2f6357f99ce06a66d3633eeae632f8",
+    "agent_braid/ownership_cli.py": "32ecafdd5e34aebd7b2fd4469849d02898583261d8917da92ec965c6c8e36968",
+    "tests/test_ownership_expansion.py": "673dd74f352194e4583301c175326263129738057cbfd86ee0daf91fa89448f5",
+    "tests/test_ownership_preflight.py": "8f13a1e2b58507c047d784d80b77ff9a80aa785803931791a79a2df108c8fb56",
+    "tests/test_orchestration_bounds.py": "cd6be6c35a715af250cc6999d5ed65cdd0cea6eee43331b9843981cf98f619b7",
+    "specs/057-claude-orchestration-advisory/contracts/ownership-declaration.schema.json": "f6ad2a4e61bacc583d8a3b493011e688b620865870ec12aa872074c319fb6ea9",
+    "specs/057-claude-orchestration-advisory/contracts/command-error.schema.json": "4dd5b6e5ce669bffaa929de22396fe017e7496e5d977c352e3c78d019d3299c5"
+  },
+  "outcome": "Expansion maps declarations to exact paths and prefix regions under one normalization rule with partial coverage for anything not exactly expandable; the single prefix-overlap rule lives in one neutral helper imported by the scheduler and the ownership module; the pre-flight block carries class 0-heuristic, label declared-only, constraints, unknowns, the disjoint-is-not-merge-clean statement and executionAuthorization false; agent_braid/analysis.py is untouched.",
+  "limits": "Offline synthetic fixtures and one temporary Git repository. Containment between a region and a path is surfaced to the unchanged analyzer as an effect on the container's region resource (the analyzer compares resources by exact string). Critical-read and exemption coverage remain exact-entry checks. Case aliasing is always treated as one resource, which can over-report conflicts on case-sensitive filesystems. The checkpoint comparison (T017) will import the same helper but is not implemented here. The neutral helper, cli.py and runtime_scheduler.py are shared files and deliberately not listed as inputs. No host, Claude Code, G1, speed, safety or independent-review claim. A delete effect is read by the unchanged analyzer as an effect needing adapter semantics, so a pair involving a declared deletion is never an independent candidate.",
+  "pending": [
+    "T017 onward",
+    "Host probes and G1",
+    "Stable pr-profile result recorded in the pull request",
+    "Human review of the draft specification"
+  ]
+}

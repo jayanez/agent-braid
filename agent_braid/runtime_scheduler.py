@@ -16,6 +16,7 @@ import time
 
 from .analysis import _canonical, _digest
 from . import git_runtime as runtime
+from .path_overlap import paths_overlap as _overlap
 
 VERSION = '0.1.0-alpha'
 EXECUTION = 'isolated-preparation-serial-publication-v1'
@@ -43,10 +44,6 @@ class _Cancellation:
 
     def is_set(self):
         return self.internal.is_set() or (self.external is not None and self.external.is_set())
-
-
-def _overlap(left: str, right: str) -> bool:
-    return left == right or left.startswith(right + '/') or right.startswith(left + '/')
 
 
 def _geometry(manifest: dict) -> tuple[list[list[str]], list[dict]]:

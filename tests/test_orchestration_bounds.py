@@ -128,6 +128,35 @@ class BoundTests(unittest.TestCase):
             self.assertEqual(caught.exception.diagnostics[0].code, "input-too-large")
 
 
+class ExpansionBoundTests(unittest.TestCase):
+    def test_maximal_declaration_expands_within_bounds(self):
+        import time
+
+        files = frozenset(f"d{u}/f{i}.py" for u in range(ownership.MAX_UNITS) for i in range(ownership.MAX_PATHS))
+        tree = ownership.BaseTree(files)
+        units = []
+        for u in range(ownership.MAX_UNITS):
+            unit = _unit(f"u{u}", reads=[f"d{u}/f{i}.py" for i in range(ownership.MAX_PATHS)],
+                         writes=[f"d{u}/f{i}.py" for i in range(ownership.MAX_PATHS)], creates=[f"n{u}/"])
+            unit["complete"] = False
+            units.append(unit)
+        started = time.monotonic()
+        expansion = ownership.expand_declaration(
+            {"schemaVersion": ownership.SCHEMA_VERSION, "base": {"ref": "develop"}, "units": units}, tree)
+        records = ownership.to_aim(expansion)
+        self.assertLess(time.monotonic() - started, 30)
+        self.assertEqual(len(records), ownership.MAX_UNITS)
+        self.assertLessEqual(max(len(u.exact["writes"]) for u in expansion.units), ownership.MAX_PATHS)
+
+    def test_pattern_work_is_bounded(self):
+        tree = ownership.BaseTree(frozenset(f"d/f{i}.py" for i in range(12000)))
+        units = [_unit("a", writes=[f"d/*{i}.x" for i in range(ownership.MAX_PATHS)]), _unit("b")]
+        expansion = ownership.expand_declaration(
+            {"schemaVersion": ownership.SCHEMA_VERSION, "base": {"ref": "develop"}, "units": units}, tree)
+        self.assertIn("expansion-bound", expansion.units[0].reasons)
+        self.assertEqual(expansion.units[0].coverage, "partial")
+
+
 class PurityTests(unittest.TestCase):
     def _imports(self) -> set[str]:
         tree = ast.parse(MODULE.read_text(encoding="utf-8"))
@@ -136,7 +165,9 @@ class PurityTests(unittest.TestCase):
             if isinstance(node, ast.Import):
                 names.update(alias.name.split(".")[0] for alias in node.names)
             elif isinstance(node, ast.ImportFrom):
-                self.assertEqual(node.level, 0, "no relative imports: the module is self-contained")
+                if node.level:
+                    self.assertEqual((node.level, node.module), (1, "path_overlap"), "only the neutral overlap helper")
+                    continue
                 names.add((node.module or "").split(".")[0])
         return names
 
@@ -147,6 +178,12 @@ class PurityTests(unittest.TestCase):
 
     def test_module_imports_no_network_socket_or_process_helper(self):
         self.assertEqual(self._imports() & FORBIDDEN_IMPORTS, set())
+
+    def test_overlap_helper_is_pure_and_standard_library_only(self):
+        tree = ast.parse((MODULE.parent / "path_overlap.py").read_text(encoding="utf-8"))
+        imports = {a.name for n in ast.walk(tree) if isinstance(n, ast.Import) for a in n.names}
+        froms = {n.module for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)}
+        self.assertEqual(imports | froms, {"__future__"})
 
     def test_module_calls_no_process_or_dynamic_execution_primitive(self):
         tree = ast.parse(MODULE.read_text(encoding="utf-8"))
