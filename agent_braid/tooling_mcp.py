@@ -26,7 +26,8 @@ from . import analysis, git_adapter, mcp_runtime
 from . import git_replay, git_runtime, runtime_policy, runtime_scheduler
 from .git_process import GitInfrastructureFailure
 
-SCHEMA_VERSION = "agent-braid-tooling/v0.1"
+SCHEMA_VERSION = "agent-braid-tooling/v0.1"  # envelope, output schema and provenance stamp (SPEC-060 scope B)
+SURFACE_VERSION = "agent-braid-tooling/v0.2"  # server surface contract: capabilities and prompt names
 MAX_FRAME_BYTES = 1024 * 1024
 MAX_INPUT_DEPTH = 32
 MAX_OPERATIONS = 32
@@ -462,7 +463,7 @@ class ToolingService:
         return {"schemaVersion": SCHEMA_VERSION, "tools": list(self.tools),
                 "resources": ["agent-braid://capabilities", "agent-braid://runs/{id}/status",
                               "agent-braid://runs/{id}/evidence/{artifact}"],
-                "prompts": ["agent-braid-analyze", "agent-braid-plan", "agent-braid-evidence"],
+                "prompts": [prompt.name for prompt in _PROMPTS if prompt.replaced_by is None],
                 "mode": "runtime-enabled" if self.config.runtime_enabled else "analysis-only",
                 "limits": {"inputBytes": MAX_FRAME_BYTES, "depth": MAX_INPUT_DEPTH,
                            "inlineResultBytes": INLINE_RESULT_BYTES,
@@ -561,11 +562,34 @@ class ToolingService:
         return artifact
 
 
-_PROMPT_TEXT = {
-    "agent-braid-analyze": "Analyze the supplied bounded AIM or Git work request. Explain conflicts, conditions, unknown coverage, evidence and limits. Do not infer execution authority.",
-    "agent-braid-plan": "Use Agent Braid analysis and preparation to inspect dependencies and the exact bounded plan. Explain what requires existing operator authorization. Never request or create a grant through a tool.",
-    "agent-braid-evidence": "Retrieve only the referenced owned evidence. Reconstruct bytes from the manifest and chunk chain, verify every chunk and the complete SHA-256 and length before parsing or comparison.",
-}
+@dataclass(frozen=True)
+class _Prompt:
+    name: str
+    text: str
+    replaced_by: str | None = None  # set only for a deprecated alias
+
+
+_ANALYZE_TEXT = "Analyze the supplied bounded AIM or Git work request. Explain conflicts, conditions, unknown coverage, evidence and limits. Do not infer execution authority."
+_PLAN_TEXT = "Use Agent Braid analysis and preparation to inspect dependencies and the exact bounded plan. Explain what requires existing operator authorization. Never request or create a grant through a tool."
+_EVIDENCE_TEXT = "Retrieve only the referenced owned evidence. Reconstruct bytes from the manifest and chunk chain, verify every chunk and the complete SHA-256 and length before parsing or comparison."
+
+# One ordered registry: both prompt handlers derive from it, so texts cannot drift.
+_PROMPTS = (
+    _Prompt("analyze", _ANALYZE_TEXT),
+    _Prompt("plan", _PLAN_TEXT),
+    _Prompt("evidence", _EVIDENCE_TEXT),
+)
+
+
+def _prompt_listing() -> list[tuple[str, str]]:
+    return [(prompt.name, prompt.text) for prompt in _PROMPTS]
+
+
+def _prompt_get(name: str) -> tuple[str, str]:
+    for prompt in _PROMPTS:
+        if prompt.name == name:
+            return "Read-only bounded workflow guidance", prompt.text
+    raise ToolingError("Unknown prompt")
 
 
 def _tool_definitions(service: ToolingService, types: Any) -> list[Any]:
@@ -680,17 +704,16 @@ def create_server(config: ToolingConfig) -> Any:
                                                                                mimeType=mime, text=value)])
 
     async def list_prompts(_ctx: Any, _params: Any) -> Any:
-        prompts = [types.Prompt(name=name, description=text) for name, text in _PROMPT_TEXT.items()]
+        prompts = [types.Prompt(name=name, description=description)
+                   for name, description in _prompt_listing()]
         return types.ListPromptsResult(prompts=prompts)
 
     async def get_prompt(_ctx: Any, params: Any) -> Any:
-        text = _PROMPT_TEXT.get(params.name)
-        if text is None:
-            raise ToolingError("Unknown prompt")
+        description, text = _prompt_get(params.name)
         arguments = params.arguments or {}
         if len(_json_bytes(arguments)) > 16 * 1024:
             raise ToolingError("Prompt arguments exceed the bounded limit")
-        return types.GetPromptResult(description="Read-only bounded workflow guidance",
+        return types.GetPromptResult(description=description,
             messages=[types.PromptMessage(role="user", content=types.TextContent(text=text))])
 
     return Server("agent-braid-tooling", version=__version__,

@@ -501,10 +501,93 @@ class SdkClientIntegrationTests(unittest.IsolatedAsyncioTestCase):
                 resource = await client.read_resource("agent-braid://capabilities")
                 self.assertIn("analysis-only", resource.contents[0].text)
                 prompts = await client.list_prompts()
-                self.assertEqual({p.name for p in prompts.prompts},
-                                 {"agent-braid-analyze", "agent-braid-plan", "agent-braid-evidence"})
-                prompt = await client.get_prompt("agent-braid-evidence")
+                self.assertEqual([p.name for p in prompts.prompts], ["analyze", "plan", "evidence"])
+                prompt = await client.get_prompt("evidence")
                 self.assertIn("SHA-256", prompt.messages[0].content.text)
+
+
+# SPEC-060 contract agent-braid-tooling/v0.2: the v0.1 prompt texts, reproduced byte for byte.
+PROMPT_TEXT_V01 = {
+    "analyze": "Analyze the supplied bounded AIM or Git work request. Explain conflicts, conditions, unknown coverage, evidence and limits. Do not infer execution authority.",
+    "plan": "Use Agent Braid analysis and preparation to inspect dependencies and the exact bounded plan. Explain what requires existing operator authorization. Never request or create a grant through a tool.",
+    "evidence": "Retrieve only the referenced owned evidence. Reconstruct bytes from the manifest and chunk chain, verify every chunk and the complete SHA-256 and length before parsing or comparison.",
+}
+CANONICAL_PROMPTS = ["analyze", "plan", "evidence"]
+
+
+def assert_canonical_prompts(testcase, listing, get):
+    """Shared check for procedure_001; the negative controls below must make it fail."""
+    names = [name for name, _description in listing]
+    testcase.assertEqual(names[:3], CANONICAL_PROMPTS)
+    for name, description in listing[:3]:
+        testcase.assertEqual(description, PROMPT_TEXT_V01[name])
+        got_description, text = get(name)
+        testcase.assertEqual(got_description, "Read-only bounded workflow guidance")
+        testcase.assertEqual(text.encode("utf-8"), PROMPT_TEXT_V01[name].encode("utf-8"))
+
+
+class PromptRegistryTests(unittest.TestCase):
+    def test_canonical_prompts_are_byte_equal_to_the_v01_texts(self):
+        from agent_braid import tooling_mcp
+        assert_canonical_prompts(self, tooling_mcp._prompt_listing(), tooling_mcp._prompt_get)
+
+    def test_unknown_prompt_name_is_refused(self):
+        from agent_braid import tooling_mcp
+        for name in ("", "Analyze", "analyze ", "agent-braid-unknown", "execute"):
+            with self.assertRaises(ToolingError):
+                tooling_mcp._prompt_get(name)
+
+    def test_negative_control_changed_canonical_text_fails(self):
+        from agent_braid import tooling_mcp
+        changed = tuple(
+            tooling_mcp._Prompt(p.name, p.text + " ", p.replaced_by) if p.name == "plan" else p
+            for p in tooling_mcp._PROMPTS)
+        with patch.object(tooling_mcp, "_PROMPTS", changed):
+            with self.assertRaises(AssertionError):
+                assert_canonical_prompts(self, tooling_mcp._prompt_listing(), tooling_mcp._prompt_get)
+
+    def test_negative_control_missing_canonical_name_fails(self):
+        from agent_braid import tooling_mcp
+        reduced = tuple(p for p in tooling_mcp._PROMPTS if p.name != "evidence")
+        with patch.object(tooling_mcp, "_PROMPTS", reduced):
+            with self.assertRaises(AssertionError):
+                assert_canonical_prompts(self, tooling_mcp._prompt_listing(), tooling_mcp._prompt_get)
+
+    def test_surface_constant_is_v02_and_registry_has_no_duplicate_names(self):
+        from agent_braid import tooling_mcp
+        self.assertEqual(tooling_mcp.SURFACE_VERSION, "agent-braid-tooling/v0.2")
+        names = [p.name for p in tooling_mcp._PROMPTS]
+        self.assertEqual(len(names), len(set(names)))
+
+
+@unittest.skipUnless(importlib.util.find_spec("mcp"), "optional tooling extra (mcp==2.3.0) is not installed")
+class SdkPromptNameTests(unittest.IsolatedAsyncioTestCase):
+    asyncSetUp = SdkClientIntegrationTests.asyncSetUp
+    asyncTearDown = SdkClientIntegrationTests.asyncTearDown
+    _client = SdkClientIntegrationTests._client
+
+    async def test_sdk_client_lists_and_gets_canonical_prompts(self):
+        from mcp.shared.exceptions import MCPError
+        for mode in ("auto", "legacy"):
+            async with await self._client(mode) as client:
+                listed = await client.list_prompts()
+                names = [p.name for p in listed.prompts]
+                self.assertEqual(names[:3], CANONICAL_PROMPTS)
+                for prompt in listed.prompts[:3]:
+                    self.assertEqual(prompt.description, PROMPT_TEXT_V01[prompt.name])
+                    self.assertFalse(prompt.arguments)
+                    got = await client.get_prompt(prompt.name)
+                    self.assertEqual(got.description, "Read-only bounded workflow guidance")
+                    self.assertEqual(len(got.messages), 1)
+                    self.assertEqual(got.messages[0].role, "user")
+                    self.assertEqual(got.messages[0].content.text.encode("utf-8"),
+                                     PROMPT_TEXT_V01[prompt.name].encode("utf-8"))
+                with self.assertRaises(MCPError):
+                    await client.get_prompt("no-such-prompt")
+                with self.assertRaises(MCPError):
+                    await client.get_prompt("analyze", {"filler": "x" * (16 * 1024 + 1)})
+                self.assertEqual([p.name for p in (await client.list_prompts()).prompts], names)
+
 
 if __name__ == "__main__":
     unittest.main()
