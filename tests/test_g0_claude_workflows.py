@@ -431,6 +431,65 @@ def passing_runs():
     ]
 
 
+class RealDeidentifiedWriteFixtureTests(unittest.TestCase):
+    """The Edit/Write attribution path on a de-identified real subagent transcript.
+
+    The fixture keeps the record layout, tool names, call ordering and error flags of
+    one local subagent transcript; every path is a placeholder under /wt, and prompts,
+    commands, contents and outputs are gone. Its raw counts match the original
+    transcript exactly (checked once, locally). Git is a temporary repository.
+    """
+
+    FIXTURE = Path(__file__).resolve().parent / "fixtures" / "g0_probe" / "real_deidentified_writes.jsonl"
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        tmp = Path(self._tmp.name)
+        self.repo = tmp / "repo"
+        self.repo.mkdir()
+        run_git(self.repo, "init", "-q", "-b", "main")
+        for name in ("f11", "f12", "f13", "bash-only-a"):
+            (self.repo / name).write_text("base\n", encoding="utf-8")
+        run_git(self.repo, "add", "-A")
+        run_git(self.repo, "commit", "-q", "-m", "base")
+        self.base = run_git(self.repo, "rev-parse", "HEAD")
+        self.wt = tmp / "wt"
+        run_git(self.repo, "worktree", "add", "-q", "-b", "a1", str(self.wt), self.base)
+        # Written through Write/Edit in the transcript: f11-f16, f19, f20.
+        for name in ("f11", "f12", "f13", "f14", "f15", "f16"):
+            (self.wt / name).write_text("agent\n", encoding="utf-8")
+        (self.wt / "f16").unlink()                      # written, then not a change
+        (self.wt / "f16-never").write_text("x\n", encoding="utf-8")
+        (self.wt / "bash-only-a").write_text("sed\n", encoding="utf-8")
+        (self.wt / "bash-only-b").write_text("gen\n", encoding="utf-8")
+        run_git(self.wt, "add", "-A")
+        run_git(self.wt, "commit", "-q", "-m", "agent")
+
+    def test_real_layout_counts_and_attribution(self):
+        lines = self.FIXTURE.read_text(encoding="utf-8").splitlines()
+        changed = [probe.changed_paths(str(self.repo), self.base, str(self.wt))]
+        out = probe.probe([("/wt", lines)], changed)
+        agent = out["agents"][0]
+        self.assertEqual((agent["total_calls"], agent["read"], agent["write"], agent["bash"]),
+                         (66, 18, 14, 34))
+        self.assertEqual((agent["failed_or_unpaired_calls"], agent["failed_write_calls"],
+                          agent["outside_worktree"]), (2, 0, 0))
+        # Changed: f11-f15 (attributed), f16-never, bash-only-a, bash-only-b (unattributed).
+        self.assertEqual((agent["changed_files"], agent["attributed_changed_files"]), (8, 5))
+        self.assertTrue(all_ints(out))
+        self.assertNotIn("f1", json.dumps(out))
+
+    def test_fixture_carries_no_content_or_real_path(self):
+        text = self.FIXTURE.read_text(encoding="utf-8")
+        for line in text.splitlines():
+            record = json.loads(line)
+            for block in record["message"]["content"]:
+                self.assertLessEqual(set(block), {"type", "id", "name", "input", "tool_use_id", "is_error"})
+                for value in (block.get("input") or {}).values():
+                    self.assertRegex(value, r"^(/wt/f\d+|/outside/f\d+|rel/f\d+|x)$")
+
+
 class DecisionVectorTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
