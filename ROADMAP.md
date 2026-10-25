@@ -321,7 +321,7 @@ close M4.5 or satisfy its pending registered native/human evaluation.
 M4. The original six-spec portfolio, its two evaluation follow-ups, the 19 native-plugin
 tasks, ten telemetry tasks and ten draft SPEC-054 naming tasks now total 120
 obligations across nine source specs: 92 checked and 28 open, with three
-historically closed and six open parents.
+historically closed parents, the closed SPEC-054 parent and five open parents.
 These are source states, not a remote issue readback.
 SPEC-039/040/042 retain their recorded bounded acceptance; remote issue state is
 tracked separately. Candidate-bound local technical procedures and
