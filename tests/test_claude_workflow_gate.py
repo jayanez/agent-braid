@@ -543,6 +543,13 @@ class FullRunTests(GateCase):
         self.assertEqual(list(self.results.iterdir()), [], "no run directory may be allocated")
         self.assertEqual(envelope["prepare"]["batch"]["order"], ["ind1", "ind2"])
 
+    def test_plugin_format_evidence_reference_is_accepted_and_prefixed(self) -> None:
+        record = self.gate(["ind1", "ind2"], evidenceRef="plugin-format")
+        envelope = record["envelope"]
+        self.assertEqual(envelope["status"], "ok-certified")
+        self.assertEqual(envelope["analysis"]["evidenceRefs"],
+                         [{"uri": "agent-braid://evidence/fixture", "sha256": "sha256:" + "d" * 64, "sizeBytes": 1234}])
+
     def test_four_independent_operations_derive_the_chained_expected_tree(self) -> None:
         with tempfile.TemporaryDirectory() as parent:
             corpus = h.build_corpus(Path(parent))
