@@ -20,6 +20,19 @@ import sys
 
 
 
+async def assert_prompts_absent(client):
+    """agent-braid-plugin/v0.2 (SPEC-054) advertises no prompts capability."""
+    from mcp.shared.exceptions import MCPError
+    assert client.server_capabilities.prompts is None, 'server still advertises prompts'
+    try:
+        await client.list_prompts()
+    except MCPError as error:
+        assert 'Method not found' in str(error), error
+    else:
+        raise AssertionError('list_prompts succeeded without a prompts capability')
+    return 'absent'
+
+
 async def codex_inventory(executable, env, cwd, *, timeout_seconds=120):
     """Inspect actual host loading without starting a thread or model turn."""
     process = await asyncio.create_subprocess_exec(str(executable), 'app-server', '--stdio',
@@ -165,7 +178,7 @@ def run(args):
                 bad = await client.call_tool('analyze-work', {'workspaceId': 'unknown'})
                 assert bad.structured_content['status'] == 'refused'
                 observations.append({'mode': mode, 'tools': names, 'twoWorkspaceAnalysis': 'passed',
-                                     'unknownWorkspaceRefused': True, 'prompts': len((await client.list_prompts()).prompts)})
+                                     'unknownWorkspaceRefused': True, 'promptsCapability': await assert_prompts_absent(client)})
         async def session(identifier):
             params = StdioServerParameters(command=str(launch), args=['plugin', 'serve'], env=env, cwd=str(state))
             async with Client(params) as client:
