@@ -5,7 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import unittest
 
-from mcp.shared.exceptions import MCPError
+HAVE_MCP = importlib.util.find_spec('mcp') is not None
 
 SCRIPT = Path(__file__).resolve().parents[1] / 'scripts' / 'reproduce_native_plugin.py'
 spec = importlib.util.spec_from_file_location('reproduce_native_plugin', SCRIPT)
@@ -24,8 +24,10 @@ class StubClient:
         return SimpleNamespace(prompts=[])
 
 
+@unittest.skipUnless(HAVE_MCP, 'optional mcp==2.3.0 SDK is unavailable')
 class PromptsAbsentTests(unittest.TestCase):
     def test_absent_capability_with_method_not_found_passes(self):
+        from mcp.shared.exceptions import MCPError
         client = StubClient(None, MCPError(-32601, 'Method not found'))
         self.assertEqual(asyncio.run(script.assert_prompts_absent(client)), 'absent')
 
@@ -38,6 +40,7 @@ class PromptsAbsentTests(unittest.TestCase):
             asyncio.run(script.assert_prompts_absent(StubClient(None)))
 
     def test_other_errors_fail(self):
+        from mcp.shared.exceptions import MCPError
         with self.assertRaises(AssertionError):
             asyncio.run(script.assert_prompts_absent(StubClient(None, MCPError(-32603, 'boom'))))
 
