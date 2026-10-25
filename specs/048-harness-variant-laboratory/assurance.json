@@ -62,7 +62,7 @@
       "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
       "docs/adr/0028-closed-effectful-workload-simulation.md": "be8bb2fefc702a2d85b804f70141f68f25b68e45118d25b4f4fa0e99d62eca85",
       "docs/adr/0030-native-plugin-surface-naming.md": "2bff8ce3fd5c2e183dca8000044ccd4d08980ec7e4a1b31d9af7a3a4b7f18c8e",
-      "docs/adr/0031-portable-prompt-names.md": "9887740e4fa06807377fc5e7cfcfbbc02df0845141056ea6db6ce6a995ea4859",
+      "docs/adr/0031-portable-prompt-names.md": "2e2ccf4e3d3b82cfb3e375d790104b9bb79f7f503041f11e60738e546d670d8e",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
