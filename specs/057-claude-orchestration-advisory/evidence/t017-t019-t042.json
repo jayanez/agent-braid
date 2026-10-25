@@ -1,0 +1,32 @@
+{
+  "task": "SPEC-057/T017+T018+T019+T042",
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline checkpoint comparison, the check-ownership command, the hazard notice builder and reader and the command-error contract; host, G1, native and independent-review gates pending",
+  "executionAuthorization": false,
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_ownership_receipt tests.test_hazard_notice tests.test_orchestration_bounds -v",
+      "exitCode": 0,
+      "testsRun": 80,
+      "scope": "Pure comparison: undeclared writes, sibling-area writes, declared writes not observed, unknown for deleted, renamed, binary, symlink, submodule and unsupported, case-folded matching, not-observed with the two closed reasons, unattributed writers unknown by default and excluded only by a named declared exemption rule, shared tree attributing nothing, 64 versus 65 changed paths and 512 versus 513 per-unit paths truncated with a recorded total, hostile names escaped; every output validated by the receipt schema. check-ownership run against temporary Git repositories (worktrees, commits, shared tree, untracked, symlink and binary files): a worktree changing between the two observations, a busy index lock, an unobservable or foreign source, an existing or symlinked output path, an output inside the repository, a missing base and over-bound input are refused with a code from command-error.schema.json, exit status 2, no result object and no file; the receipt is created with mode 0600 and carries no file content. Hazard notice: built from a receipt and from a pre-flight block; instruction fields byte-identical across seven adversarial strings and every text-exclusion sample; each exclusion class and a trailing line feed rejected by the schema unless escaped; validUntil shape, unique units, closed members; the reader rejects expired, superseded, stale-epoch and impossible-date notices and agrees with the schema on mutations; the repository-text pattern is byte-identical in the hazard and receipt schemas."
+    }
+  ],
+  "inputs": {
+    "agent_braid/ownership.py": "7c3c074cd3fe11d59df4993d57ad68b2df67ad5f63a308089395036da14bba07",
+    "agent_braid/ownership_cli.py": "1953919715917aaf3ea3e4be5e1f71abc1a2792fd25aeca7c9199805312fa5ae",
+    "tests/test_ownership_receipt.py": "96dcfc2d8379d8a70ada0668819f883dbff4b1200a153414fe03191fa26dafe8",
+    "tests/test_hazard_notice.py": "11cd0007949de648c79ba92a51c24d567174198967daab55d07d016828a5ca10",
+    "tests/test_orchestration_bounds.py": "d65ee110f4ed6f62adc99101ce36388da034377241a9a9eb38e18aa648e8600d",
+    "specs/057-claude-orchestration-advisory/contracts/envelope-receipt.schema.json": "a3d20890f215b9bc4e35ed783b1d6154ac840a4246bdd9135973c3f97302a829",
+    "specs/057-claude-orchestration-advisory/contracts/hazard-notice.schema.json": "ed03e2de1fffe96ed7933504a664fdaae8cb02d31e6ed9ad04192acd1624e04f",
+    "specs/057-claude-orchestration-advisory/contracts/command-error.schema.json": "4dd5b6e5ce669bffaa929de22396fe017e7496e5d977c352e3c78d019d3299c5"
+  },
+  "outcome": "check-ownership observes committed or quiesced sources twice through the bounded Git helpers in-process, refuses every unstable, busy, unobservable, over-bound, malformed or existing-output condition with a closed error code and writes a receipt only to a new private file; the comparison never attributes an unattributed writer to a unit and never reports not-observed, unknown or a truncation as clean; the hazard notice carries an epoch, expiry and supersede link and only escaped, bounded repository strings in labelled data fields.",
+  "limits": "Offline synthetic fixtures and temporary Git repositories. Class 1-syntactic: exact paths at the snapshot, no reads, no hunk or semantic effects. A busy lock is detected as a Git index.lock in a source worktree; other writers are caught only if they change the snapshot between the two observations. The notice builder and reader are library functions (no command emits a notice yet). The receipt truncations bound was raised from 64 to 192 entries so that 32 units with every list cut still validate. Hazard kinds derived from a pre-flight block are a fixed mapping; write-write conflicts remain the analyzer's. agent_braid/cli.py gains one dispatch condition and is deliberately not an input. No host, Claude Code, G1, speed, safety or independent-review claim.",
+  "pending": [
+    "T020 and T021 (audit-isolation, report-recovery)",
+    "Host probes and G1",
+    "Stable pr-profile result recorded in the pull request",
+    "Human review of the draft specification"
+  ]
+}

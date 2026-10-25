@@ -8,14 +8,14 @@
     {
       "command": ".venv-speckit/bin/python -m unittest tests.test_ownership_declaration tests.test_orchestration_bounds -v",
       "exitCode": 0,
-      "testsRun": 39,
-      "scope": "Draft 2020-12 schema check; contract example and 5 valid fixtures accepted by schema and validator; 31 invalid fixtures refused with their stable codes (25 also rejected by the schema, 6 validator-only rules); 16 text-exclusion-set samples refused also before a line feed; one-past-each-bound cases (units, paths per list, string length, exemption rules, dependencies, shared resources, 1 MiB input); AST checks that ownership.py imports only the standard library and no network, socket or process helper and opens files only for reading. Re-run and input hashes refreshed on the T014 to T016 branch after ownership.py and test_orchestration_bounds.py gained expansion and pre-flight code; the T012/T013 controls are unchanged and still pass."
+      "testsRun": 43,
+      "scope": "Draft 2020-12 schema check; contract example and 5 valid fixtures accepted by schema and validator; 31 invalid fixtures refused with their stable codes (25 also rejected by the schema, 6 validator-only rules); 16 text-exclusion-set samples refused also before a line feed; one-past-each-bound cases (units, paths per list, string length, exemption rules, dependencies, shared resources, 1 MiB input); AST checks that ownership.py imports only the standard library and no network, socket or process helper and opens files only for reading. Re-run and input hashes refreshed on the T014 to T016 branch after ownership.py and test_orchestration_bounds.py gained expansion and pre-flight code; the T012/T013 controls are unchanged and still pass. Refreshed 2026-10-25 for SPEC-057 T017, T018, T019 and T042: agent_braid/ownership.py, agent_braid/ownership_cli.py and tests/test_orchestration_bounds.py gained code and tests, so these tests were re-run (43 tests, exit 0) and the input hashes updated; no earlier finding changed."
     }
   ],
   "inputs": {
-    "agent_braid/ownership.py": "cacf5ec12dd1c4b1127b60027d86f136af2f6357f99ce06a66d3633eeae632f8",
+    "agent_braid/ownership.py": "7c3c074cd3fe11d59df4993d57ad68b2df67ad5f63a308089395036da14bba07",
     "tests/test_ownership_declaration.py": "546bf4fc3bb50b149a7a6a817fdbf09df6568aa89d4cc3df2361aad0045972bb",
-    "tests/test_orchestration_bounds.py": "cd6be6c35a715af250cc6999d5ed65cdd0cea6eee43331b9843981cf98f619b7",
+    "tests/test_orchestration_bounds.py": "d65ee110f4ed6f62adc99101ce36388da034377241a9a9eb38e18aa648e8600d",
     "specs/057-claude-orchestration-advisory/contracts/ownership-declaration.schema.json": "f6ad2a4e61bacc583d8a3b493011e688b620865870ec12aa872074c319fb6ea9",
     "specs/057-claude-orchestration-advisory/contracts/ownership-declaration.example.json": "cef33d28ac3af74548bfbf72fd56044a393a74bb519c2c9504dba4385b9ee802",
     "tests/fixtures/ownership/expectations.json": "ef37e953bc3dcb52740a04e38bed47a35f440a904c518cd6f0b5583ed876b604",
