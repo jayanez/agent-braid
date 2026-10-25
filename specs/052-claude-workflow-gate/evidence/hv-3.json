@@ -1,0 +1,27 @@
+{
+  "behavior": "HV-3",
+  "recordedAt": "2026-10-25",
+  "claudeCode": {
+    "version": "2.1.292 (Claude Code)",
+    "platform": "macOS arm64"
+  },
+  "outcome": "pass",
+  "scope": "name resolution and one-level nested execution of the plugin workflow; refusal path only",
+  "candidate": "engineering candidate loaded with --plugin-dir; AGENT_BRAID_HOME on a scratch analysis-only registry; installed plugin and user config untouched",
+  "observed": {
+    "nestedCall": "workflow('agent-braid:braid-gate', args) from an inline outer workflow resolved the plugin workflow by its namespaced name and ran it as a child",
+    "resultSchemaVersionPresent": true,
+    "childStatus": "refused",
+    "refusalRule": "too-few-sources",
+    "agentsUsed": "null/0 (refused before any agent)",
+    "bareNameFallback": "not needed (namespaced name resolved first)"
+  },
+  "unobserved": [
+    "nested run with valid sources and agents (needs the Bash allowlist, HV-5)",
+    "nesting depth greater than one (the host documents one level only)",
+    "resolution when the plugin is installed instead of loaded with --plugin-dir"
+  ],
+  "costUsd": 0.36,
+  "transcript": "hv-3-transcript.md",
+  "tasksTicked": false
+}
