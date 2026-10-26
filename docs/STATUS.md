@@ -28,15 +28,20 @@ and acceptance gates open.
 | **Owned-work evaluation closure** (SPEC-051 T004) | [#676](https://github.com/jayanez/agent-braid/pull/676) | Compatibility and profile evidence for the pure contracts; remote closure, real sources and review remain pending. |
 | **Plugin reconnect-required refusal** (SPEC-046 T016–T019) | [#679](https://github.com/jayanez/agent-braid/pull/679), [#682](https://github.com/jayanez/agent-braid/pull/682), [#696](https://github.com/jayanez/agent-braid/pull/696), [#691](https://github.com/jayanez/agent-braid/pull/691) | A typed `reconnect-required` refusal, effective-configuration reconnect detection with path-free digests in `plugin-status`, documentation of multi-session registry changes, and the owner decision that router-level refusals stay uncounted in local telemetry (no contract change). T016–T019 are closed as engineering and documentary closures; the installed-procedure reruns remain pending. #691 stops two telemetry concurrency tests failing on a loaded runner. |
 
-**Draft planning — [M4.6 Claude Code dynamic workflows](../ROADMAP.md#m46--claude-code-dynamic-workflows):**
+**In progress, nothing released — [M4.6 Claude Code dynamic workflows](../ROADMAP.md#m46--claude-code-dynamic-workflows):**
 [SPEC-052](../specs/052-claude-workflow-gate/spec.md) specifies a read-only
-integration gate for Claude Code dynamic workflows and
-[SPEC-053](../specs/053-claude-transcript-trace-adapter/spec.md) a transcript trace
-adapter blocked by a preregistered G0 experiment. SPEC-057 to SPEC-059 extend the
+integration gate for Claude Code dynamic workflows; the engineering candidate has
+host verification HV-1 to HV-5 and native runs T030 and T031 recorded on Claude Code
+2.1.292 (evidence under `specs/052-claude-workflow-gate/evidence/`, disposition in
+`hv-disposition.md`), and the founder accepted the wildcard allowlist trade-off for
+the MCP path on 2026-10-25; ADR 0029 is a Proposed draft awaiting adoption, and the
+release (R1) is a separate founder decision.
+[SPEC-053](../specs/053-claude-transcript-trace-adapter/spec.md) is a transcript trace
+adapter blocked by a preregistered G0 experiment (revision 3, not frozen). SPEC-057 to SPEC-059 extend the
 milestone to orchestrator-style parallel agents (advisory ownership, pre-flight,
 checkpoint and recovery evidence; an opt-in guard gated by a staged G1; a
-sketched ledger and optional push gated by G2). Nothing is accepted or released; ADR changes remain
-feature-local proposals.
+sketched ledger and optional push gated by G2). Nothing is released; ADR changes remain
+proposals until the founder adopts them.
 
 The runtime executes allowlisted Git plumbing. Repository code, source-ref
 promotion and broader agent/provider adapters require additional contracts and
