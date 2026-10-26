@@ -173,7 +173,7 @@
               "limits": "Offline synthetic fixtures; exact-entry coverage for critical reads and exemption paths until T014; no host or review claim.",
               "outcome": "36 tests passed: schema valid under draft 2020-12; example and valid fixtures accepted; every invalid fixture refused with a stable code; one-past-bound cases refused.",
               "path": "specs/057-claude-orchestration-advisory/evidence/t012-t013.json",
-              "sha256": "f03a2528e894042a1c477562d385bcbe45102d963e04ab7af986b9e7cd6fa2ff"
+              "sha256": "a02659cf3e88e5729e4bff3a8b100a5a2cb1601b15b0bf7985e890d56e4d2004"
             }
           ],
           "planned_evidence": "tests/test_ownership_declaration.py (T012/T013 offline controls obtained in evidence/t012-t013.json) with fixtures under tests/fixtures/ownership/ (planned) and procedure_req_001; exact commands, hashes, failures and limits are recorded when it runs. Obtained: offline T012/T013 controls only; host, G1 and review evidence: none. Tasks: T012, T013.",
@@ -197,7 +197,7 @@
               "limits": "Offline synthetic fixtures and a temporary Git repository; case aliases are always merged.",
               "outcome": "Negative controls (glob, directory, two creators, create prefix, case, Unicode, symlink, absolute spelling, bounds) yield conflicting or unknown, never an independent candidate; the shared overlap helper equals the pre-extraction rule on a generated pair table.",
               "path": "specs/057-claude-orchestration-advisory/evidence/t014-t016.json",
-              "sha256": "ca9d53e027a499c51c8a35a2baf2896a9f045de558b83701b24a4af90296132e"
+              "sha256": "3dc549c9d980148deb5a6ef02b42b15991af495d7ee88155c8057aba3a501b76"
             }
           ],
           "planned_evidence": "tests/test_ownership_expansion.py (planned, not existing) and procedure_req_002; exact commands, hashes, failures and limits are recorded when it runs. Obtained: offline T014/T015 expansion controls only; host, G1 and review evidence: none. Tasks: T014, T015.",
@@ -221,7 +221,7 @@
               "limits": "Offline; the plugin MCP comparison depends on HV-1 and is not run; recipe and skill text lint belongs to T026.",
               "outcome": "AIM mapping, expand-ownership command, class table over 12 fixtures, closed vocabulary and wording lint (fails 13 seeded phrases), analyzer output pinned by digest.",
               "path": "specs/057-claude-orchestration-advisory/evidence/t014-t016.json",
-              "sha256": "ca9d53e027a499c51c8a35a2baf2896a9f045de558b83701b24a4af90296132e"
+              "sha256": "3dc549c9d980148deb5a6ef02b42b15991af495d7ee88155c8057aba3a501b76"
             }
           ],
           "planned_evidence": "tests/test_ownership_preflight.py (planned, not existing) and procedure_req_003; exact commands, hashes, failures and limits are recorded when it runs. Obtained: offline T015/T016 controls only; MCP comparison, recipe text lint and host evidence: none. Tasks: T015, T016.",
@@ -245,7 +245,7 @@
               "outcome": "Pure comparison and the check-ownership command against temporary Git repositories: per-unit undeclared, sibling-area, declared-not-observed and unknown entries; unattributed writers unknown and excluded only by a named declared rule; shared tree attributing nothing; 65 changed paths truncated with a recorded total and no refusal; not-observed with two closed reasons; every output validated by the receipt schema.",
               "limits": "Offline synthetic fixtures; class 1-syntactic exact paths at the snapshot; a busy lock is an index.lock in a source worktree; no host or review claim.",
               "path": "specs/057-claude-orchestration-advisory/evidence/t017-t019-t042.json",
-              "sha256": "c7b86891b2f7d61fe40b587bebfb0fbe80e34cc54353aa16aeb1e3278382a688"
+              "sha256": "7ef7650fc840b2fbb1180dd64892be7c2ab118990ba4ec90e4d0ef6c0b27ee7d"
             }
           ],
           "planned_evidence": "tests/test_ownership_receipt.py (planned, not existing) and procedure_req_004; exact commands, hashes, failures and limits are recorded when it runs. Obtained: offline T017, T018 and T042 controls only; host, G1 and review evidence: none. Tasks: T017, T018, T042.",
@@ -263,8 +263,16 @@
         {
           "given": "the orchestrator's repository, the documented Claude Code settings files and, optionally, the text of a user's workflow script",
           "id": "SC-005",
-          "obtained_evidence": [],
-          "planned_evidence": "tests/test_isolation_audit.py (planned, not existing) and procedure_req_005; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T020.",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_isolation_audit tests.test_recovery_report tests.test_orchestration_bounds -v",
+              "outcome": "Layout, local HEAD against the origin default, closed settings keys, session counts and the agent() option lint are observations with a source and unknown when unreadable; a seeded env value, token, hook command, session name, waiting text and directory appear in no output or log; no verdict wording; only git is launched.",
+              "limits": "Offline synthetic fixtures; HV-9 and HV-10 pending, so the effective base a unit uses is not observed; the lint is a text heuristic; no host or review claim.",
+              "path": "specs/057-claude-orchestration-advisory/evidence/t020-t021.json",
+              "sha256": "5a9abf61afe6ea16d2a71a903b9d804fb85dd71f81a149f5e91808b8afff95ca"
+            }
+          ],
+          "planned_evidence": "tests/test_isolation_audit.py and procedure_req_005; exact commands, hashes, failures and limits are recorded when it runs. Obtained: offline T020 controls only; host, G1 and review evidence: none. Tasks: T020.",
           "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
           "test_name": "procedure_req_005",
           "then": "it reports as observations and not as verdicts whether units share a working tree (current directory versus repository root versus `git worktree list`, and session working directories read from supplied `claude agents --json` output, reported as booleans and counts and never as stored paths); the configured `worktree.baseRef` (a read-only read of documented settings files, unreadable meaning unknown) compared with the local HEAD and the origin default branch, so a unit that branches from the origin default cannot silently miss unpushed orchestrator commits; and, for a supplied workflow script text, whether `agent()` calls lack the `isolation: \"worktree\"` option, labelled `inferred` because the option list is documented only in the host's bundled authoring guidance; every observation names its source and is `unknown` when unreadable. The audit reads only a closed key list from settings files (`worktree.baseRef` and `worktree.bgIsolation`), never outputs or persists any other settings value (an `env` value, a token, a hook command), and persists session `name`, `waitingFor` and `cwd` from the supplied listing in no output (they are used in memory to compute the booleans and counts only). The class is `0-heuristic`",
@@ -310,8 +318,16 @@
         {
           "given": "the output of `claude agents --json` (with or without `--all`) saved to a file or supplied on standard input, and the Git state of the units' worktrees",
           "id": "SC-007",
-          "obtained_evidence": [],
-          "planned_evidence": "tests/test_recovery_report.py (planned, not existing) and procedure_req_007; exact commands, hashes, failures and limits are recorded when it runs. Planned only; obtained evidence: none. Tasks: T021.",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_isolation_audit tests.test_recovery_report tests.test_orchestration_bounds -v",
+              "outcome": "Untouched, dirty, published, conflicting and unknown units from Git evidence, live sibling overlap, the agent-view delete warning datum, field drift naming the field, unparseable and over-bound listings refused without a report, no session text or directory persisted, only git launched; the report validates against recovery-report.schema.json.",
+              "limits": "Offline synthetic fixtures; HV-9 and HV-12 pending, so the listing is read in its documented shape and the task-directory and journal branches are not implemented; no host or review claim.",
+              "path": "specs/057-claude-orchestration-advisory/evidence/t020-t021.json",
+              "sha256": "5a9abf61afe6ea16d2a71a903b9d804fb85dd71f81a149f5e91808b8afff95ca"
+            }
+          ],
+          "planned_evidence": "tests/test_recovery_report.py and procedure_req_007; exact commands, hashes, failures and limits are recorded when it runs. Obtained: offline T021 controls only; host, G1 and review evidence: none. Tasks: T021.",
           "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
           "test_name": "procedure_req_007",
           "then": "it classifies each unit as untouched, dirty, published, conflicting or unknown from the observed Git state against the declared claim, lists overlap with units that are still live, and never reclaims, resumes, deletes, messages, restarts or launches anything; Agent Braid never executes the `claude` binary (the operator supplies the input); input that is not parseable JSON or exceeds the bound is a refusal (an error, REQ-017), while input that parses but has a missing, renamed or unknown field or value yields a per-unit `unknown` naming the field; interfaces without a documented stable form (the agent-teams task directory, workflow journals) are best-effort, labelled `inferred` and fail soft; a unit with uncommitted work in a worktree that the host's agent-view delete would discard is listed as a warning datum; and the report persists no session `name`, `waitingFor`, `cwd` or other free text from the listing (only the unit id, the closed state and kind enumerations, booleans, counts and an input digest). The class is `0-heuristic`",
@@ -332,7 +348,7 @@
               "outcome": "Notice built from a receipt and from a pre-flight block; instruction fields byte-identical across adversarial strings and every text-exclusion sample; the schema rejects each exclusion class and a trailing line feed unless escaped, a malformed validUntil and duplicate units; the reader rejects expired, superseded, stale and impossible-date notices.",
               "limits": "Library builder and reader only: no command emits a notice and no rendering by SPEC-058 or SPEC-059 exists; offline synthetic fixtures; no host or review claim.",
               "path": "specs/057-claude-orchestration-advisory/evidence/t017-t019-t042.json",
-              "sha256": "c7b86891b2f7d61fe40b587bebfb0fbe80e34cc54353aa16aeb1e3278382a688"
+              "sha256": "7ef7650fc840b2fbb1180dd64892be7c2ab118990ba4ec90e4d0ef6c0b27ee7d"
             }
           ],
           "planned_evidence": "tests/test_hazard_notice.py (planned, not existing) and procedure_req_008; exact commands, hashes, failures and limits are recorded when it runs. Obtained: offline T019 controls only; host, G1 and review evidence: none. Tasks: T019.",
@@ -529,17 +545,24 @@
               "limits": "Partial: declaration input only. Command refusals, output paths, Git bounds and telemetry exclusions belong to T018, T025, T040 to T042.",
               "outcome": "Declaration-side bounds (1 MiB, 32 units, 512 paths, 256 characters, 16 exemption rules, 31 dependencies, 64 shared resources) enforced at the bound and refused one past it; the validator imports no network, socket or process helper and opens files read-only.",
               "path": "specs/057-claude-orchestration-advisory/evidence/t012-t013.json",
-              "sha256": "f03a2528e894042a1c477562d385bcbe45102d963e04ab7af986b9e7cd6fa2ff"
+              "sha256": "a02659cf3e88e5729e4bff3a8b100a5a2cb1601b15b0bf7985e890d56e4d2004"
             },
             {
-                "command": ".venv-speckit/bin/python -m unittest tests.test_ownership_receipt tests.test_hazard_notice tests.test_orchestration_bounds -v",
-                "outcome": "Refusal matrix over expand-ownership and check-ownership: busy lock, unstable snapshot, unobservable source, over-bound, malformed input and existing output path each end with a closed error code, exit status 2, no result object and no written file; a seeded refusal emitted as a receipt fails the receipt schema; reporting bounds at and one past each limit; the receipt is created new, private and without file content.",
-                "limits": "Offline synthetic fixtures and temporary Git repositories; telemetry exclusions (T040, T041) and the remaining commands (T020, T021, T025) are not covered; no host or review claim.",
-                "path": "specs/057-claude-orchestration-advisory/evidence/t017-t019-t042.json",
-                "sha256": "c7b86891b2f7d61fe40b587bebfb0fbe80e34cc54353aa16aeb1e3278382a688"
-              }
+              "command": ".venv-speckit/bin/python -m unittest tests.test_ownership_receipt tests.test_hazard_notice tests.test_orchestration_bounds -v",
+              "outcome": "Refusal matrix over expand-ownership and check-ownership: busy lock, unstable snapshot, unobservable source, over-bound, malformed input and existing output path each end with a closed error code, exit status 2, no result object and no written file; a seeded refusal emitted as a receipt fails the receipt schema; reporting bounds at and one past each limit; the receipt is created new, private and without file content.",
+              "limits": "Offline synthetic fixtures and temporary Git repositories; telemetry exclusions (T040, T041) and the remaining commands (T020, T021, T025) are not covered; no host or review claim.",
+              "path": "specs/057-claude-orchestration-advisory/evidence/t017-t019-t042.json",
+              "sha256": "7ef7650fc840b2fbb1180dd64892be7c2ab118990ba4ec90e4d0ef6c0b27ee7d"
+            },
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_isolation_audit tests.test_recovery_report tests.test_orchestration_bounds -v",
+              "outcome": "Refusal contract of audit-isolation and report-recovery: unparseable, duplicate-key, non-list, over-bound (256 sessions, 1 MiB) and unreadable listings, a bad settings scope and an unreadable script end with a closed error code, exit status 2 and no result; bounds at and one past each limit; no network, no host binary, no write; session names, waiting text, directories and settings values outside the closed key list are in no output.",
+              "limits": "Offline synthetic fixtures; telemetry exclusions (T040, T041) and T025 are not covered; no host or review claim.",
+              "path": "specs/057-claude-orchestration-advisory/evidence/t020-t021.json",
+              "sha256": "5a9abf61afe6ea16d2a71a903b9d804fb85dd71f81a149f5e91808b8afff95ca"
+            }
           ],
-          "planned_evidence": "tests/test_orchestration_bounds.py (T013 declaration-side controls obtained in evidence/t012-t013.json) and procedure_req_017; exact commands, hashes, failures and limits are recorded when it runs. Obtained: T013 declaration-side bounds and the T018 and T042 refusal contract of expand-ownership and check-ownership; T020, T021, T025, T040 and T041 are pending. Tasks: T013, T018, T025, T040, T041, T042.",
+          "planned_evidence": "tests/test_orchestration_bounds.py (T013 declaration-side controls obtained in evidence/t012-t013.json) and procedure_req_017; exact commands, hashes, failures and limits are recorded when it runs. Obtained: T013 declaration-side bounds and the T018, T020, T021 and T042 refusal contract of the four commands; T025, T040 and T041 are pending. Tasks: T013, T018, T025, T040, T041, T042.",
           "test_file": "specs/057-claude-orchestration-advisory/validation-plan.md",
           "test_name": "procedure_req_017",
           "then": "all new commands are read-only, local and offline (no network and no socket); the commands refuse over-limit input before analysis (declaration at most 1 MiB, at most 32 units, at most 512 paths per unit, strings at most 256 characters, `claude agents --json` input at most 1 MiB, Git observation within the existing bounded Git helpers); the commands never write into the repository or the registry; the commands write results only to explicit new private paths and refuse existing paths; the commands store paths and hashes only (no file content, command text, prompts, transcripts, session names or settings values outside the closed key list); one rule governs every refusal: a busy lock, an unstable snapshot (a worktree that changes between the two Git observations), an unobservable source, an over-bound or malformed input and an existing output path end the command with a stable error code from a closed list (`command-error.schema.json`), a nonzero exit status and no result object, so that a refusal cannot appear as a receipt, a pre-flight verdict or a report and cannot be read as clean or independent, while `unknown`, `not-observed` and a recorded truncation inside a produced result are Article 13 outcomes of the observation contract and are also never clean (an observed list longer than its reporting bound is truncated and recorded, which is a result and not a refusal); and nothing is collected by telemetry now: the exclusion list below is part of this specification, and a later SPEC-047 vocabulary may add only the aggregate families named in task T041 after SPEC-047 and ADR 0025 are adopted and the producing feature ships",

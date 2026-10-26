@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""``expand-ownership`` and ``check-ownership`` (SPEC-057).
+"""``expand-ownership``, ``check-ownership``, ``audit-isolation`` and ``report-recovery`` (SPEC-057).
 
 Read-only, local and offline. ``expand-ownership`` turns a declaration into AIM
 records and the pre-flight evidence block; its only repository observation is the
@@ -10,6 +10,12 @@ receipt to an explicit new private file. Both use the bounded Git helpers of the
 Git adapter in-process, never the plugin MCP. A refusal prints the command-error
 object, writes diagnostic codes (never repository text) to standard error, exits 2
 and writes no result.
+
+``audit-isolation`` and ``report-recovery`` print their result to standard output
+and never launch the host binary: the operator supplies the host's session
+listing from a file or standard input. They read Git with the same bounded
+helpers, keep settings, session names, waiting text and working directories in
+memory only, and output booleans, counts and closed enumerations.
 """
 
 from __future__ import annotations
@@ -23,7 +29,7 @@ import sys
 import tempfile
 
 from .analysis import analyze
-from .git_adapter import InvalidGitAnalysis, _git, _is_ancestor, _repo_root, _resolve, _text
+from .git_adapter import InvalidGitAnalysis, _git, _git_result, _is_ancestor, _repo_root, _resolve, _text
 from .git_process import (
     GitCommandBudget, GitCommandLimitExceeded, GitInfrastructureFailure, GitOutputLimitExceeded,
     GitScratchLimitExceeded,
@@ -31,6 +37,8 @@ from .git_process import (
 from . import ownership
 
 HELP = "expand an ownership declaration into AIM records and pre-flight evidence (read-only)"
+AUDIT_HELP = "state isolation and base configuration observations (read-only)"
+RECOVERY_HELP = "classify what stopped units left behind from a session listing and Git state (read-only)"
 CHECK_HELP = "compare a declaration with committed or quiesced Git state and write a receipt (read-only)"
 MAX_SYMLINK_TARGETS = 256
 MAX_SOURCES = ownership.MAX_UNITS
@@ -58,6 +66,19 @@ def add_parser(subparsers):
                        help="a shared working tree: its changes are attributed to no unit")
     check.add_argument("--checkpoint", default="", help="checkpoint label recorded in the receipt")
     check.add_argument("--output", type=Path, required=True, help="new private file for the receipt; must not exist")
+    audit = subparsers.add_parser("audit-isolation", help=AUDIT_HELP)
+    audit.add_argument("--repository", type=Path, default=Path("."), help="repository to observe (default: current directory)")
+    audit.add_argument("--settings", action="append", default=[], metavar="SCOPE=PATH",
+                       help="a settings file of scope user, project or local; only worktree.baseRef and "
+                            "worktree.bgIsolation are read")
+    audit.add_argument("--agents-json", type=Path, help="host session listing as JSON; '-' reads standard input")
+    audit.add_argument("--script", type=Path, help="workflow script text for the agent() isolation-option lint")
+    recovery = subparsers.add_parser("report-recovery", help=RECOVERY_HELP)
+    recovery.add_argument("input", type=Path, help="ownership declaration JSON (with a base)")
+    recovery.add_argument("--repository", type=Path, required=True, help="repository holding the declared base")
+    recovery.add_argument("--source", action="append", default=[], metavar="UNIT=worktree:PATH|UNIT=commit:REV",
+                          help="the worktree or commit a unit left behind; a unit without one is unknown")
+    recovery.add_argument("--agents-json", type=Path, help="host session listing as JSON; '-' reads standard input")
 
 
 class _Refusal(Exception):
@@ -241,7 +262,8 @@ def _observe_once(where: Path, base: str, tip: str, worktree: bool, env: dict,
 
 
 def _observe_source(root: Path, base: str, kind: str, target: str, unit_id: str | None, env: dict,
-                    budget: GitCommandBudget, roots: list[Path]) -> ownership.Observation | str:
+                    budget: GitCommandBudget, roots: list[Path],
+                    found: dict | None = None) -> ownership.Observation | str:
     """Two Git observations of one source; any difference, or a writer's lock, is a refusal."""
     worktree = kind == "worktree"
     try:
@@ -253,6 +275,8 @@ def _observe_source(root: Path, base: str, kind: str, target: str, unit_id: str 
             tip = _resolve(where, "HEAD", env, budget)
         else:
             where, tip = root, _resolve(root, target, env, budget)
+        if found is not None:
+            found.update(where=where, tip=tip)
         if not _is_ancestor(where, base, tip, env, budget):
             return "not-a-descendant-of-base"
         if worktree and _busy(where, env, budget):
@@ -315,8 +339,169 @@ def _check(args) -> int:
     return 0
 
 
+# --- audit-isolation and report-recovery -------------------------------------------
+
+
+def _read_bounded(path: Path | None, limit: int, *, stdin: bool = False) -> bytes | None:
+    """At most ``limit + 1`` bytes of a file (or standard input for ``-``); ``None`` when unreadable."""
+    try:
+        if stdin and str(path) == "-":
+            return sys.stdin.buffer.read(limit + 1)
+        with open(path, "rb") as handle:
+            return handle.read(limit + 1)
+    except (OSError, ValueError):
+        return None
+
+
+def _listing(path: Path | None) -> ownership.AgentsListing | None:
+    if path is None:
+        return None
+    raw = _read_bounded(path, ownership.MAX_AGENTS_BYTES, stdin=True)
+    if raw is None:
+        raise _Refusal("ERR-UNOBSERVABLE-SOURCE", "agents-json")
+    try:
+        return ownership.parse_agents_listing(raw)
+    except ownership.ListingRefused as exc:
+        raise _Refusal(exc.code, exc.rule) from None
+
+
+def _context(temp: str, commands: int = 64) -> tuple[dict, GitCommandBudget]:
+    return _environment(), GitCommandBudget(temp_root=Path(temp), wall_seconds=60, max_commands=commands)
+
+
+def _git_facts(repository: Path, env: dict, budget: GitCommandBudget):
+    """Git facts for the audit, or ``None`` when the repository cannot be observed."""
+    try:
+        root = _repo_root(repository, env=env, budget=budget)
+        entries = [Path(os.fsdecode(item)[len("worktree "):])
+                   for item in _git(root, "worktree", "list", "--porcelain", "-z", env=env, budget=budget).split(b"\0")
+                   if item.startswith(b"worktree ")]
+        paths = [os.path.realpath(entry) for entry in entries]
+        main = paths[0] if paths else os.path.realpath(root)
+        try:
+            here = os.path.realpath(_repo_root(Path.cwd(), env=env, budget=budget))
+        except InvalidGitAnalysis:
+            here = None
+        location = ("outside-repository" if here not in paths else
+                    "main-worktree" if here == main else "linked-worktree")
+        ahead = None
+        default = _git_result(root, "symbolic-ref", "-q", "refs/remotes/origin/HEAD", env=env, budget=budget,
+                              allow_failure=True)
+        if default.returncode == 0:
+            count = _git_result(root, "rev-list", "--count", f"{_text(default.stdout, 'origin default')}..HEAD",
+                                env=env, budget=budget, allow_failure=True)
+            ahead = int(_text(count.stdout, "count")) if count.returncode == 0 else None
+        return ownership.GitFacts(len(paths), location, ahead), main, paths[1:]
+    except (InvalidGitAnalysis, GitInfrastructureFailure, UnicodeDecodeError, ValueError):
+        return None, None, ()
+
+
+def _settings(values: list[str]) -> dict[str, dict[str, str] | None]:
+    found: dict[str, dict[str, str] | None] = {}
+    for value in values:
+        scope, _, location = value.partition("=")
+        if scope not in ownership.SETTINGS_SCOPES or not location or scope in found:
+            raise _Refusal("ERR-MALFORMED-INPUT", "bad-settings")
+        found[scope] = ownership.read_settings(_read_bounded(Path(location), ownership.MAX_SETTINGS_BYTES))
+    return found
+
+
+def _audit(args) -> int:
+    script = None
+    if args.script is not None:
+        raw = _read_bounded(args.script, ownership.MAX_SCRIPT_BYTES)
+        if raw is None:
+            raise _Refusal("ERR-UNOBSERVABLE-SOURCE", "script")
+        if len(raw) > ownership.MAX_SCRIPT_BYTES:
+            raise _Refusal("ERR-OVER-BOUND", "script-too-large")
+        script = raw.decode("utf-8", "replace")
+    settings, listing = _settings(args.settings), _listing(args.agents_json)
+    if listing is not None:  # compare real paths, as the worktree list does
+        listing = listing._replace(sessions=tuple(
+            s._replace(cwd=os.path.realpath(s.cwd)) if s.cwd else s for s in listing.sessions))
+    with tempfile.TemporaryDirectory(prefix="ownership-") as temp:
+        env, budget = _context(temp)
+        git, main, linked = _git_facts(args.repository, env, budget)
+    print(json.dumps(ownership.build_isolation_audit(git=git, settings=settings, listing=listing, main_root=main,
+                                                      linked=linked, script=script), sort_keys=True, indent=2))
+    return 0
+
+
+_REASONS = {"ERR-BUSY": "busy", "ERR-UNSTABLE-SNAPSHOT": "unstable", "ERR-OVER-BOUND": "over-bound"}
+
+
+def _evidence(root: Path, base: str, kind: str, target: str, unit_id: str, env: dict,
+              budget: GitCommandBudget) -> tuple[ownership.UnitEvidence, str | None]:
+    """Git evidence of one unit and the real path of its worktree; a source that cannot be observed is unknown."""
+    worktree = kind == "worktree"
+    seen: dict = {}
+    try:
+        observed = _observe_source(root, base, kind, target, unit_id, env, budget, [], seen)
+    except _Refusal as exc:
+        return ownership.UnitEvidence(None, _REASONS.get(exc.code, "unobservable")), None
+    if isinstance(observed, str):
+        return ownership.UnitEvidence(None, observed), None
+    try:
+        where, tip = seen["where"], seen["tip"]
+        uncommitted = worktree and bool(_git(where, "status", "--porcelain=v1", "-z", "--untracked-files=all",
+                                              env=env, budget=budget))
+        ahead = tip != base
+        published = ahead and bool(_git(where, "for-each-ref", "--count=1", "--contains", tip,
+                                         "--format=%(refname)", "refs/remotes", env=env, budget=budget).strip())
+    except (InvalidGitAnalysis, GitInfrastructureFailure, OSError, ValueError) as exc:
+        reason = "over-bound" if _git_refusal(exc, "git-observation").code == "ERR-OVER-BOUND" else "unobservable"
+        return ownership.UnitEvidence(None, reason), None
+    return ownership.UnitEvidence(observed, None, uncommitted, ahead, published, worktree), \
+        os.path.realpath(where) if worktree else None
+
+
+def _match_sessions(listing: ownership.AgentsListing | None, places: dict[str, str]) -> dict[str, ownership.Session]:
+    """Sessions whose working directory is a unit's worktree; several that disagree leave the state unknown."""
+    if listing is None:
+        return {}
+    matched: dict[str, ownership.Session] = {}
+    for unit_id, place in places.items():
+        here = [s for s in listing.sessions if s.cwd and os.path.realpath(s.cwd) == place]
+        if len(here) == 1:
+            matched[unit_id] = here[0]
+        elif here:
+            states, kinds = {s.state for s in here}, {s.kind for s in here}
+            matched[unit_id] = ownership.Session(
+                place, states.pop() if len(states) == 1 else "unknown", kinds.pop() if len(kinds) == 1 else "unknown",
+                tuple(sorted({name for s in here for name in s.drift})))
+    return matched
+
+
+def _recover(args) -> int:
+    declaration = _load(args.input)
+    if not declaration.get("base"):
+        raise _Refusal("ERR-MALFORMED-INPUT", "missing-base")
+    sources = _parse_sources(args.source, declaration)
+    listing = _listing(args.agents_json)
+    with tempfile.TemporaryDirectory(prefix="ownership-") as temp:
+        _, commit, root = _read_tree(args.repository, declaration["base"], Path(temp))
+        env, budget = _context(temp, 1024)
+        evidence, places = {}, {}
+        for unit in declaration["units"]:
+            name = unit["id"]
+            if name not in sources:
+                evidence[name] = ownership.UnitEvidence(None, "no-source-supplied")
+                continue
+            kind, target = sources[name]
+            evidence[name], place = _evidence(Path(root), commit, kind, target, name, env, budget)
+            if place:
+                places[name] = place
+    print(json.dumps(ownership.build_recovery_report(declaration, evidence, listing, _match_sessions(listing, places)),
+                     sort_keys=True, indent=2))
+    return 0
+
+
 def run(args) -> int:
     try:
+        if args.command == "audit-isolation":
+            return _audit(args)
+        if args.command == "report-recovery":
+            return _recover(args)
         return _check(args) if args.command == "check-ownership" else _expand(args)
     except _Refusal as exc:
         return _refusal(exc)

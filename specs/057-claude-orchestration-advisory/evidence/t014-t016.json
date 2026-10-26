@@ -18,11 +18,11 @@
     }
   ],
   "inputs": {
-    "agent_braid/ownership.py": "7c3c074cd3fe11d59df4993d57ad68b2df67ad5f63a308089395036da14bba07",
-    "agent_braid/ownership_cli.py": "1953919715917aaf3ea3e4be5e1f71abc1a2792fd25aeca7c9199805312fa5ae",
+    "agent_braid/ownership.py": "d68e8f0deb14123762d5fff7bb7641edb22cdf405b74e901dbfde1a1bf57d8b2",
+    "agent_braid/ownership_cli.py": "f577ff3c3e7eaf574144e6c78dad4bab3aa357b7edf5983ac457ed31ee24a23d",
     "tests/test_ownership_expansion.py": "673dd74f352194e4583301c175326263129738057cbfd86ee0daf91fa89448f5",
     "tests/test_ownership_preflight.py": "8f13a1e2b58507c047d784d80b77ff9a80aa785803931791a79a2df108c8fb56",
-    "tests/test_orchestration_bounds.py": "d65ee110f4ed6f62adc99101ce36388da034377241a9a9eb38e18aa648e8600d",
+    "tests/test_orchestration_bounds.py": "535e36d79a55dfda712ff55256052d395f63d896bd15fd6476dc9b3a0a2cfb1f",
     "specs/057-claude-orchestration-advisory/contracts/ownership-declaration.schema.json": "f6ad2a4e61bacc583d8a3b493011e688b620865870ec12aa872074c319fb6ea9",
     "specs/057-claude-orchestration-advisory/contracts/command-error.schema.json": "4dd5b6e5ce669bffaa929de22396fe017e7496e5d977c352e3c78d019d3299c5"
   },

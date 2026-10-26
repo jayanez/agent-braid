@@ -13,9 +13,9 @@
     }
   ],
   "inputs": {
-    "agent_braid/ownership.py": "7c3c074cd3fe11d59df4993d57ad68b2df67ad5f63a308089395036da14bba07",
+    "agent_braid/ownership.py": "d68e8f0deb14123762d5fff7bb7641edb22cdf405b74e901dbfde1a1bf57d8b2",
     "tests/test_ownership_declaration.py": "546bf4fc3bb50b149a7a6a817fdbf09df6568aa89d4cc3df2361aad0045972bb",
-    "tests/test_orchestration_bounds.py": "d65ee110f4ed6f62adc99101ce36388da034377241a9a9eb38e18aa648e8600d",
+    "tests/test_orchestration_bounds.py": "535e36d79a55dfda712ff55256052d395f63d896bd15fd6476dc9b3a0a2cfb1f",
     "specs/057-claude-orchestration-advisory/contracts/ownership-declaration.schema.json": "f6ad2a4e61bacc583d8a3b493011e688b620865870ec12aa872074c319fb6ea9",
     "specs/057-claude-orchestration-advisory/contracts/ownership-declaration.example.json": "cef33d28ac3af74548bfbf72fd56044a393a74bb519c2c9504dba4385b9ee802",
     "tests/fixtures/ownership/expectations.json": "ef37e953bc3dcb52740a04e38bed47a35f440a904c518cd6f0b5583ed876b604",
