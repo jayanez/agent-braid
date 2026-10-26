@@ -270,7 +270,7 @@
     },
     "truncations": {
       "type": "array",
-      "maxItems": 64,
+      "maxItems": 192,
       "description": "Lists that were cut to their bound. Empty means nothing was cut. A receipt with an entry here is partial: it is never clean.",
       "items": {
         "type": "object",
