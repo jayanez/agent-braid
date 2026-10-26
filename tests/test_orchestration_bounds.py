@@ -8,8 +8,11 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from unittest import mock
 
-from agent_braid import ownership
+from agent_braid import ownership, ownership_cli
+from tests.test_ownership_receipt import ERROR, GitFixture, git, observed, receipt_for
+from tests.test_ownership_receipt import declaration as receipt_declaration
 
 MODULE = Path(ownership.__file__)
 FORBIDDEN_IMPORTS = {
@@ -155,6 +158,102 @@ class ExpansionBoundTests(unittest.TestCase):
             {"schemaVersion": ownership.SCHEMA_VERSION, "base": {"ref": "develop"}, "units": units}, tree)
         self.assertIn("expansion-bound", expansion.units[0].reasons)
         self.assertEqual(expansion.units[0].coverage, "partial")
+
+
+class ReceiptBoundTests(unittest.TestCase):
+    def test_reporting_bounds_at_and_one_past(self):
+        for count, cut in ((ownership.RECEIPT_LIST_BOUND, False), (ownership.RECEIPT_LIST_BOUND + 1, True)):
+            with self.subTest(per_unit=count):
+                receipt = receipt_for(receipt_declaration(), {
+                    "a": observed(*[("write", f"s/{i:04}") for i in range(count)]), "b": observed()})
+                self.assertEqual(bool(receipt["truncations"]), cut)
+        for count, cut in ((ownership.UNATTRIBUTED_BOUND, False), (ownership.UNATTRIBUTED_BOUND + 1, True)):
+            with self.subTest(unattributed=count):
+                receipt = receipt_for(receipt_declaration(), {}, observed(*[("write", f"s/{i:04}") for i in range(count)]))
+                self.assertEqual(bool(receipt["truncations"]), cut)
+                self.assertEqual(len(receipt["unattributedWriters"]), min(count, ownership.UNATTRIBUTED_BOUND))
+
+
+class RefusalMatrixTests(unittest.TestCase):
+    """Every refusal condition against the commands it applies to: code, exit 2, no result, no file."""
+
+    RESULT_MEMBERS = {"records", "preflight", "analysis", "units", "snapshot", "hazards", "unattributedWriters"}
+
+    def setUp(self):
+        self.fx = GitFixture(self)
+        self.garbage = self.fx.dir / "garbage.json"
+        self.garbage.write_text("{not json")
+        self.huge = self.fx.dir / "huge.json"
+        self.huge.write_bytes(b" " * (ownership.MAX_DECLARATION_BYTES + 1))
+        self.many = self.fx.dir / "many.json"
+        self.many.write_text(json.dumps({
+            "schemaVersion": ownership.SCHEMA_VERSION,
+            "units": [{"id": f"u{i}", "surface": "batch", "reads": [], "writes": []} for i in range(33)]}))
+
+    def expect(self, argv, code, unit_id=None):
+        status, out, _ = self.fx.run(*argv)
+        self.assertEqual(status, 2, argv)
+        error = json.loads(out)
+        self.assertEqual(list(ERROR.iter_errors(error)), [], out)
+        self.assertEqual(error["errorCode"], code)
+        self.assertEqual(error.get("unitId"), unit_id)
+        self.assertFalse(error["resultProduced"])
+        self.assertEqual(self.RESULT_MEMBERS & set(error), set())
+        self.assertEqual(list(self.fx.out.iterdir()), [])
+
+    def check_argv(self, declaration, *extra, output="r.json"):
+        return ["check-ownership", str(declaration), "--repository", str(self.fx.repo),
+                "--output", str(self.fx.out / output), *extra]
+
+    def test_conditions_shared_by_both_commands(self):
+        repository = ["--repository", str(self.fx.repo)]
+        for command, tail in (("expand-ownership", []), ("check-ownership", ["--output", str(self.fx.out / "r.json")])):
+            base = [command]
+            cases = (
+                ("malformed json", self.garbage, "ERR-MALFORMED-INPUT"),
+                ("over-bound size", self.huge, "ERR-OVER-BOUND"),
+                ("over-bound units", self.many, "ERR-OVER-BOUND"),
+                ("unreadable input", self.fx.dir / "absent.json", "ERR-UNOBSERVABLE-SOURCE"),
+            )
+            for label, path, code in cases:
+                with self.subTest(command=command, condition=label):
+                    self.expect([*base, str(path), *repository, *tail], code)
+            with self.subTest(command=command, condition="unobservable base repository"):
+                self.expect([*base, str(self.fx.declaration()), "--repository", str(self.fx.dir / "nowhere"), *tail],
+                            "ERR-UNOBSERVABLE-SOURCE")
+
+    def test_conditions_of_check_ownership(self):
+        fx = self.fx
+        decl = fx.declaration()
+        self.expect(self.check_argv(decl, "--source", f"a=worktree:{fx.dir / 'nowhere'}"), "ERR-UNOBSERVABLE-SOURCE", "a")
+        wa = fx.worktree("ua")
+        lock = Path(git(wa, "rev-parse", "--absolute-git-dir")) / "index.lock"
+        lock.write_text("")
+        self.expect(self.check_argv(decl, "--source", f"a=worktree:{wa}"), "ERR-BUSY", "a")
+        lock.unlink()
+        original = ownership_cli._observe_once
+        calls = []
+
+        def drifting(*args, **kwargs):
+            result = original(*args, **kwargs)
+            calls.append(1)
+            if len(calls) == 1:
+                fx.write(wa, "src/a.py", "moved\n")
+            return result
+
+        with mock.patch.object(ownership_cli, "_observe_once", drifting):
+            self.expect(self.check_argv(decl, "--source", f"a=worktree:{wa}"), "ERR-UNSTABLE-SNAPSHOT", "a")
+        (fx.out / "r.json").write_text("kept")
+        status, out, _ = fx.run(*self.check_argv(decl))
+        self.assertEqual((status, json.loads(out)["errorCode"]), (2, "ERR-OUTPUT-EXISTS"))
+        self.assertEqual((fx.out / "r.json").read_text(), "kept")
+
+    def test_a_refusal_is_not_a_result_and_a_result_is_not_a_refusal(self):
+        fx = self.fx
+        status, out, _, target = fx.check(fx.declaration())
+        self.assertEqual(status, 0)
+        self.assertTrue(list(ERROR.iter_errors(json.loads(target.read_text()))))
+        self.assertTrue(list(ERROR.iter_errors(json.loads(out))))
 
 
 class PurityTests(unittest.TestCase):
