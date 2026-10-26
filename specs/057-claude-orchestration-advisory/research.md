@@ -16,14 +16,20 @@ An eleven-agent research pass and a counterfactual coverage plan were run on 202
 
 ## Quantitative literature claims and their status
 
-The figures below came from the digest of the research pass, not from a source read by a human or a tool in this track. They are listed so that nothing is quoted from memory; none is relied upon as evidence, and the specification states no number from the first two rows.
+The first two figures below came from the digest of the research pass; on 2026-10-25 each was traced to an arXiv abstract (record: `evidence/prior-art-pass.md`). The rows after the MERGEGYM row are the bibliography of T002 (identifier, listed version, date read, what was read). They are listed so that nothing is quoted from memory; none is relied upon as evidence, and the specification states no number from the first two rows.
 
 | Claim | Source as recorded | Status |
 |---|---|---|
-| Agent self-reports over-claim shared resources (a range of tens of percent) | A single-author preprint; arXiv identifier, version and date read not recorded | Unverified; the number was removed from the specification; T002 records or drops it |
-| Most races blocked by a freshness guard are benign (a range above 90 percent) | A preprint; identifier, version and date read not recorded | Unverified; the number was removed from the specification; T002 records or drops it |
+| Agent self-reports over-claim shared resources (a range of tens of percent) | arXiv:2605.17076 (S-Bus), v2 listed; the v2 abstract reports over-claiming of shard usage by 32 percent (LLM judge) to 49 percent (human annotator), single author; abstract read 2026-10-25 (record: `evidence/prior-art-pass.md`) | Verified against the v2 abstract as a figure about that paper's shard workload, not about coding agents; not in the version read on 2026-10-24; stays out of the specification |
+| Most races blocked by a freshness guard are benign (a range above 90 percent) | arXiv:2609.29522v1 (Stale Does Not Mean Unsafe); the abstract reports that freshness-based guards block 92 to 95 percent of benign races in a simulator with small local models; abstract read 2026-10-25 | Verified against the abstract with a corrected meaning (share of benign races blocked, not share of blocked races that are benign); infrastructure state races, not Git worktrees; stays out of the specification |
 | Textual merge conflicts despite disjoint authored file sets (MERGEGYM) | arXiv 2610.04779v1, read by a reviewer on the review date: 79 of 167 textual conflicts (47.3 percent) have disjoint authored file sets, on a stratified set of 715 pull request pairs | Read once; the sample is stratified, so the share is not a prevalence in real repositories; used only as the reason the base audit and the SPEC-052 gate stay necessary |
-| STORM, Atomix, S-Bus, MPAC, Claim Plane, CooperBench | Cited by short name for the technique (read-set validation, ownership claims) | Identifiers, versions and dates read are not recorded; T002 adds a bibliography table (identifier, version, date read, what was read) before any publication wording |
+| S-Bus | arXiv:2605.17076, v2 listed (v1 read 2026-10-24) | read 2026-10-25: abstract of v2 | read-set reconstruction exists in the literature; see the over-claim row above for that figure |
+| CooperBench | arXiv:2601.13295, v2 listed (v1 read 2026-10-24) | read 2026-10-25: abstract of v2 | cited as a benchmark only; no figure used |
+| Atomix | arXiv:2602.14849, v2 | read 2026-10-25: abstract of v2 | runtime read and effect recording with transactional settlement; prior art for the technique |
+| MPAC | arXiv:2604.09744, v1 | read 2026-10-25: abstract of v1 | intent declaration and optimistic concurrency in a coordination protocol; its benchmark figure was not read in full and is not used |
+| Claim Plane (design) | arXiv:2607.21909, v1 | read 2026-10-25: abstract of v1 | pre-write admission over declared change intents; prior art for ownership claims |
+| Claim Plane (study) | arXiv:2608.00947, v1 | read 2026-10-25: abstract of v1 | 46 of 90 dynamic runs failed closed on undeclared scope; used only as a warning that fail-closed has costs |
+| STORM | not identified | read 2026-10-25: nothing; four arXiv queries returned no match | unresolved: named in `spec.md` and `research.md` without an identifier; the owner of the text identifies it or drops the name; T002 stays open until then |
 
 ## Weak claims from the critical review and how this specification treats them
 

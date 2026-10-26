@@ -45,6 +45,29 @@ route and authentication, and the trusted supervisor observer must supply
 fresh account, included-quota and paid-usage facts. See
 [REGISTRATION.md](REGISTRATION.md) and [SUPERVISOR.md](SUPERVISOR.md).
 
+## Portable server prompts
+
+Portable server prompts (SPEC-060, ADR 0031; candidate under implementation, no
+release exists yet): the surface contract `agent-braid-tooling/v0.2` names the
+three MCP prompts `analyze`, `plan` and `evidence`; the host adds its own server
+key as a prefix. Tool envelopes stay `agent-braid-tooling/v0.1`. The former names
+`agent-braid-analyze`, `agent-braid-plan` and `agent-braid-evidence` remain as
+DEPRECATED aliases with identical text for two releases and are removed only in
+`agent-braid-tooling/v0.3`, after an owner decision and a repository search; if
+the second release has not shipped within 180 days of the first, the owner records
+a new decision. See the
+[v0.2 delta](../../specs/060-portable-prompt-names/contracts/interface-delta.md)
+and [ADR 0031](../adr/0031-portable-prompt-names.md).
+
+Claude Code lists server prompts as `/<server key>:<prompt> (MCP)`; during the
+alias window it shows both sets. Codex lists no MCP prompts before or after.
+
+Key collision: do not register the portable server under the key `agent-braid`
+next to the native plugin. Its unprefixed prompt `/agent-braid:analyze (MCP)` would
+share a slash name with the plugin skill `/agent-braid:analyze`. Install one
+surface, or choose another server key for the portable server. Codex lists no MCP
+prompts, so this affects Claude Code only.
+
 ## CLI command profiles
 
 The preparation profiles use the documented command surfaces reviewed on
