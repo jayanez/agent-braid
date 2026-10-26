@@ -1,0 +1,132 @@
+{"message": {"content": [{"id": "t0", "input": {"file_path": "/wt/f0"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t0", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t1", "input": {"file_path": "/wt/f1"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t1", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t2", "input": {"file_path": "/wt/f2"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t2", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t3", "input": {"file_path": "/wt/f3"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t3", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t4", "input": {"file_path": "/wt/f4"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t4", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t5", "input": {"file_path": "/wt/f5"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t5", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t6", "input": {"file_path": "/wt/f6"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t6", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t7", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"id": "t8", "input": {"file_path": "/wt/f7"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t7", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"tool_use_id": "t8", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t9", "input": {"file_path": "/wt/f8"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t9", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t10", "input": {"file_path": "/wt/f9"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t10", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t11", "input": {"file_path": "/wt/f10"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t11", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t12", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t12", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t13", "input": {"file_path": "/wt/f11"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t13", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t14", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t14", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t15", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t15", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t16", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t16", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t17", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t17", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t18", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"id": "t19", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t18", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"is_error": true, "tool_use_id": "t19", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t20", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t20", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t21", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"id": "t22", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t21", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t22", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t23", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t23", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t24", "input": {"file_path": "/wt/f12"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t24", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t25", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t25", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t26", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t26", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t27", "input": {"file_path": "/wt/f13"}, "name": "Write", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t27", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t28", "input": {"file_path": "/wt/f14"}, "name": "Write", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t28", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t29", "input": {"file_path": "/wt/f15"}, "name": "Write", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t29", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t30", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t30", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t31", "input": {"file_path": "/wt/f15"}, "name": "Edit", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t31", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t32", "input": {"file_path": "/wt/f16"}, "name": "Write", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t32", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t33", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t33", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t34", "input": {"file_path": "/wt/f16"}, "name": "Edit", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t34", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t35", "input": {"file_path": "/wt/f16"}, "name": "Edit", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t35", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t36", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t36", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t37", "input": {"file_path": "/wt/f11"}, "name": "Edit", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t37", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t38", "input": {"file_path": "/wt/f11"}, "name": "Edit", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t38", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t39", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t39", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t40", "input": {"file_path": "/wt/f16"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t40", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t41", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t41", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t42", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t42", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t43", "input": {"file_path": "/wt/f17"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t43", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t44", "input": {"file_path": "/wt/f15"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t44", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t45", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t45", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t46", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t46", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t47", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t47", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t48", "input": {"file_path": "/wt/f18"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t48", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t49", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": true, "tool_use_id": "t49", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t50", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t50", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t51", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t51", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t52", "input": {"file_path": "/wt/f19"}, "name": "Read", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t52", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t53", "input": {"file_path": "/wt/f19"}, "name": "Edit", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t53", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t54", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t54", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t55", "input": {"file_path": "/wt/f19"}, "name": "Edit", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t55", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t56", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t56", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t57", "input": {"file_path": "/wt/f19"}, "name": "Edit", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t57", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t58", "input": {"file_path": "/wt/f12"}, "name": "Edit", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t58", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t59", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t59", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t60", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t60", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t61", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t61", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t62", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t62", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t63", "input": {"file_path": "/wt/f20"}, "name": "Write", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"tool_use_id": "t63", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t64", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t64", "type": "tool_result"}]}, "type": "user"}
+{"message": {"content": [{"id": "t65", "input": {"command": "x"}, "name": "Bash", "type": "tool_use"}]}, "type": "assistant"}
+{"message": {"content": [{"is_error": false, "tool_use_id": "t65", "type": "tool_result"}]}, "type": "user"}
