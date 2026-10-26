@@ -1,14 +1,17 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Claude Code workflows: the braid-gate recipe (SPEC-052)
 
-**Status: unreleased, optional, Claude-only and unverified on a host.** The
+**Status: unreleased, optional and Claude-only; observed on one host version.** The
 `braid-gate` workflow is specified in [SPEC-052](../../specs/052-claude-workflow-gate/spec.md)
 and is not part of any published plugin version. Until the ADR 0024 amendment in
 the feature-local [ADR proposal](../../specs/052-claude-workflow-gate/adr-proposal.md)
 is adopted, a build that includes it is an engineering artifact only. No Claude
-Code version has been observed with it: every host behavior below is marked
-**unverified**, and this page records no compatible version. Obtained evidence:
-none. Nothing here is a release, an approval or a compatibility claim.
+Code version 2.1.292 (macOS arm64) was used for the host verification and the
+native runs summarized in [Host verification status](#host-verification-status);
+the evidence files are under
+[`specs/052-claude-workflow-gate/evidence/`](../../specs/052-claude-workflow-gate/evidence/).
+Nothing here is a release, an approval or a compatibility claim: those are
+separate founder decisions.
 
 ## What this is
 
@@ -55,16 +58,17 @@ drafts: [arguments and result schemas](../../specs/052-claude-workflow-gate/cont
 
 ## Ending your workflow with the gate
 
-Two ways, both **unverified** on a host (HV-3):
+Two ways. The nested call was observed to resolve and run (HV-3, one level, 2.1.292);
+the direct slash path was not observed:
 
 - **Direct.** After your workflow finishes, invoke `/agent-braid:braid-gate` with
   the arguments above. How the host passes structured arguments on the slash path
-  is unverified.
+  was not observed.
 - **Nested.** Call the gate as the last step of your own workflow script.
   Illustrative sketch, not a tested example:
 
   ```js
-  // Unverified: name resolution of a plugin workflow from workflow() is HV-3.
+  // Observed in HV-3 (2.1.292): the namespaced name resolves and runs one level deep.
   const gate = await workflow('agent-braid:braid-gate', {
     base: 'main',
     sources: ['agent/a', 'agent/b'],
@@ -115,8 +119,8 @@ moved or deleted reference makes the run `inconclusive`.
 - By design, no edits, merges, refs, branches, pushes, hooks, grants or
   execution, and no network access. Merge results are ephemeral and never
   applied. This is intended behavior enforced by the script's checks, the agent
-  prompts and the host permission allowlist below; the allowlist is unverified on
-  any host (HV-5) and the script cannot observe it.
+  prompts and the host permission allowlist below; the script cannot observe the
+  allowlist, and the allowlist behavior was observed only partly (HV-5).
 - Release number, the ADR 0024 amendment and founder release acceptance are all
   pending, and the host outcomes of HV-1 to HV-5 are a separate task. Nothing here
   is a release decision. The workflow ships only in an engineering build made with
@@ -175,7 +179,11 @@ temporary directory, never the repository, and `merge-tree --write-tree` writes
 objects into the scratch alternate, not into the repository. If the host cannot
 express the last two rules narrowly, the baseline phase is unavailable (a recorded
 no-go), not unhardened. Whether the host matches at subcommand level is part of
-HV-5 and is unverified.
+HV-5: exact rules did not match commands with quoted arguments, a trailing
+wildcard did, and the host refuses `rm` outside the working directory unless the
+parent is an allowed directory (`--add-dir /tmp`). The founder accepted this
+trade-off for the MCP path on 2026-10-25
+([decision](../../specs/052-claude-workflow-gate/founder-decision-20261025.md)).
 
 On the constrained-CLI fallback, used only if MCP tools are not visible to workflow
 agents (HV-1), the rule set may in addition allow only these explicit launcher
@@ -184,22 +192,31 @@ no further arguments. It must never match the launcher binary as a whole,
 `grant-policy-run`, `execute-policy-run`, `recover-policy-run` or any other
 subcommand. If the host cannot express this, the fallback is a recorded no-go
 (or refuses with `mcp-unavailable`). Whether the host can express any of these
-rules is unverified (HV-5). The refusal rule runs after the validate agent has
+rules was not observed (HV-5). The refusal rule runs after the validate agent has
 already run, so for that one agent the allowlist is the only control.
 
 ## Host verification status
 
-All outcomes are **unverified**; no Claude Code version has been observed.
-Workflows were introduced in Claude Code v2.1.154 and the documentation read
-during planning described v2.1.309; neither is an observation of this gate.
+Recorded on Claude Code 2.1.292 (macOS arm64), engineering candidate loaded with
+`--plugin-dir`, installed plugin and user configuration untouched. Workflows were
+introduced in v2.1.154; the planning documentation described v2.1.309. These are
+observations of this gate on one host version, not compatibility claims.
 
-| Id | Behavior | Status | Version |
+| Id | Behavior | Outcome | Evidence |
 | --- | --- | --- | --- |
-| HV-1 | Plugin MCP tools usable inside workflow agents; exact tool names visible | unverified | none observed |
-| HV-2 | Plugin agent definitions as `agentType` (the gate ships none) | unverified | none observed |
-| HV-3 | Plugin workflow called by name from nested `workflow()`; direct slash path | unverified | none observed |
-| HV-4 | Resume after interruption: which agents rerun, no duplicate MCP caller or prepare | unverified | none observed |
-| HV-5 | Per-run approval, auto-mode prompts and the permission allowlist above | unverified | none observed |
+| HV-1 | Plugin MCP tools usable inside workflow agents; exact tool names visible | pass (analysis-only registration); `execute`, `recover`, `verify`, `status` not visible; runtime-enabled registration not run | `hv-1.json` |
+| HV-2 | Plugin agent definitions as `agentType` (the gate ships none) | pass with the namespaced name only (`<plugin>:<agent>`) | `hv-2.json` |
+| HV-3 | Plugin workflow called by name from nested `workflow()`; direct slash path | nested call pass (one level); slash path not observed | `hv-3.json` |
+| HV-4 | Resume after interruption: which agents rerun, no duplicate MCP caller or prepare | partial: completed agents are reused, the stopped phase reruns, no duplicate `analyze-work` or `prepare`; a genuine stalled-agent restart and the admission lock not observed | `hv-4.json`, `native-gate-runs.json` |
+| HV-5 | Per-run approval, auto-mode prompts and the permission allowlist above | partial: allowlist findings above; interactive prompts, accept-edits mode, per-agent separation and the launcher fallback rules not observed | `hv-5.json` |
+| T030 | Native runs over a known-answer fixture matrix | ok-certified, ok-analyzed, hazards-found, refusals as designed; every baseline pair equals a direct `git merge-tree`; refs and objects unchanged | `native-gate-runs.json` |
+| T031 | Auto mode; workflows disabled | auto mode: same envelope, no denials; workflows disabled by a session-only setting: the gate cannot start (unavailable) | `auto-and-disabled.json` |
+
+The disposition of these outcomes is in
+[`hv-disposition.md`](../../specs/052-claude-workflow-gate/evidence/hv-disposition.md).
+Not observed anywhere: manual interactive prompts, a managed organization policy,
+uncommitted work in a worktree and hostile inherited `GIT_*` variables in a native
+session.
 
 Workflows can be disabled by user setting or organization policy; then the gate
 cannot start and the result is unavailable, not clean.
