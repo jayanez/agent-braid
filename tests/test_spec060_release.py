@@ -15,7 +15,6 @@ import importlib.util
 import io
 import json
 from pathlib import Path
-import re
 import sys
 import tempfile
 import tomllib
@@ -219,7 +218,7 @@ class MigrationAndRollbackTests(unittest.TestCase):
     def test_upgrade_and_rollback_leave_host_configuration_and_receipt_byte_identical(self):
         for selection in self.selections:
             with self.subTest(host=selection.host):
-                # Written by the v0.1 installer (installer sources are unchanged by SPEC-060).
+                # Installer sources are byte-identical to the v0.1 package (SPEC-060 changes none).
                 self.assertEqual("applied", self.install(selection)["status"])
                 written = self.snapshot(selection)
                 config = selection.paths()[0]
@@ -245,7 +244,7 @@ class MigrationAndRollbackTests(unittest.TestCase):
             self.install(selection)
             for path in (config, receipt):
                 text = path.read_text()
-                for name in CANONICAL + ALIASES[:0]:
+                for name in CANONICAL:
                     self.assertNotRegex(text, rf"[\"']{name}[\"']")
                 self.assertNotIn("deprecatedPrompts", text)
 

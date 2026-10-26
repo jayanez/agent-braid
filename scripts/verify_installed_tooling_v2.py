@@ -25,8 +25,6 @@ assert _SPEC.loader is not None
 _SPEC.loader.exec_module(base)
 
 CANDIDATE_VERSION = "0.1.0a2"
-CANONICAL_PROMPTS = ("analyze", "plan", "evidence")
-DEPRECATED_ALIASES = ("agent-braid-analyze", "agent-braid-plan", "agent-braid-evidence")
 ProbeError = base.ProbeError
 
 _V01_PROMPT_BLOCK = '''        prompts=await client.list_prompts(); prompt_names=sorted(row.name for row in prompts.prompts)
