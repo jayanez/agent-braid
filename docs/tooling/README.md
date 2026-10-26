@@ -17,7 +17,7 @@ coordination, an opt-in guard and a ledger for orchestrator-style parallel
 agents. All are draft planning; the current plugin ships no workflow or hook.
 
 **Current integration — 2026-10-20:** the combined M4.5 source portfolio has ten
-specs and 131 tasks (92 checked, 39 open), three historically closed parents, the closed SPEC-054 parent and
+specs and 131 tasks (99 checked, 32 open), three historically closed parents, the closed SPEC-054 parent and
 six open parents (draft SPEC-060 specifies the portable prompt names). [Telemetry SPEC-047](../../specs/047-local-technical-telemetry/spec.md)
 is default-off. Its [existing Luna review and integration provenance](../../specs/047-local-technical-telemetry/integration-review.md)
 are distinct from human/architectural acceptance and native admission. Pilot
@@ -117,6 +117,7 @@ for the required observations and support boundaries.
 | Lifecycle | Isolated reusable package, explicit user/project configuration, doctor, update and uninstall | [SPEC-042](../../specs/042-ai-tooling-packaging/spec.md) · [Lifecycle contract](../../specs/042-ai-tooling-packaging/contracts/lifecycle.md) |
 | Developer journey | Chat explanations, interaction graph and offline Markdown/SVG/HTML evidence exports | [SPEC-043](../../specs/043-ai-tooling-journey/spec.md) · [Presentation contract](../../specs/043-ai-tooling-journey/contracts/presentation.md) |
 | Evaluation | Actual host receipts, controls, complete costs and CLI/MCP/MCP-plus-skills comparison | [SPEC-044](../../specs/044-ai-tooling-evaluation/spec.md) · [Prospective protocol](../../specs/044-ai-tooling-evaluation/evaluation-protocol.md) |
+| Installed verifiers | Which offline installed-package verifier applies to portable contract v0.1 and v0.2 | [Installed-package verifiers](INSTALLED_VERIFIERS.md) |
 
 The proposed interface defaults to analysis. Runtime activation requires explicit
 configuration and the existing operator grant policy. Grant issuance stays outside

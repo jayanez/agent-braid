@@ -12,18 +12,18 @@ authorizes T002-T008 only; T009-T011 need separate owner decisions.
   Verification: procedure_001 (review part). Evidence: owner review record and the
   ADR decision.
 
-- [ ] T002 (REQ-001 / SC-001): Add the surface-version constant, the ordered
+- [x] T002 (REQ-001 / SC-001): Add the surface-version constant, the ordered
   prompt registry and the canonical prompts with byte-equal text. Tests first.
   Dependencies: T001. Files: `agent_braid/tooling_mcp.py`, `tests/test_tooling_mcp.py`.
   Verification: procedure_001. Evidence: SDK client test output with negative controls.
 
-- [ ] T003 (REQ-002 / SC-002): Publish the three deprecated aliases with the
+- [x] T003 (REQ-002 / SC-002): Publish the three deprecated aliases with the
   deprecation marking, list order and `deprecatedPrompts` capabilities entries.
   Dependencies: T002. Files: `agent_braid/tooling_mcp.py`, `tests/test_tooling_mcp.py`.
   Verification: procedure_002. Evidence: SDK client test output; alias-in-`prompts`
   and unmarked-alias negative controls.
 
-- [ ] T004 (REQ-003 / SC-003; REQ-005 / SC-005): Keep the envelope stamp, output
+- [x] T004 (REQ-003 / SC-003; REQ-005 / SC-005): Keep the envelope stamp, output
   schemas and provenance at v0.1 (or apply the OD-1 decision), report both
   identifiers in capabilities, enumerate every pinned v0.1 occurrence by search and
   change only prompt and capabilities assertions. Dependencies: T002. Files:
@@ -31,20 +31,20 @@ authorizes T002-T008 only; T009-T011 need separate owner decisions.
   tests. Verification: procedure_003, procedure_005. Evidence: byte comparison of
   v0.1 and v0.2 envelopes on identical inputs, search record, test output.
 
-- [ ] T005 (REQ-004 / SC-004): Strip the new capabilities keys in the plugin
+- [x] T005 (REQ-004 / SC-004): Strip the new capabilities keys in the plugin
   facade, restore its capabilities `schemaVersion`, and add a golden alpha.4 byte
   comparison for the plugin resource and envelopes. Dependencies: T002, T003.
   Files: `agent_braid/plugin_mcp.py`, `tests/test_plugin_mcp.py`. Verification:
   procedure_004. Evidence: plugin SDK client test output.
 
-- [ ] T006 (REQ-005 / SC-005): Regression-check telemetry (prompts uncounted, enum
+- [x] T006 (REQ-005 / SC-005): Regression-check telemetry (prompts uncounted, enum
   and batch/store versions unchanged), the legacy receipt install, the host
   configuration preview and the System One verifier. Dependencies: T003, T004.
   Files: existing telemetry, install, hosts and System One tests. Verification:
   procedure_005. Evidence: unchanged test results and a byte-equal configuration
   preview.
 
-- [ ] T007 (REQ-009 / SC-009): Update English documentation: new names primary,
+- [x] T007 (REQ-009 / SC-009): Update English documentation: new names primary,
   aliases deprecated, the contract link, the removal criterion, the key-collision
   caveat and the forward pointer from the SPEC-054 policy row. Dependencies: T003,
   T004. Files: `docs/tooling/HOSTS.md`, `docs/tooling/INSTALL.md`,
@@ -52,7 +52,7 @@ authorizes T002-T008 only; T009-T011 need separate owner decisions.
   `specs/040-portable-mcp-surface/contracts/interface.md` (pointer only).
   Verification: procedure_009. Evidence: documentation diff and search record.
 
-- [ ] T008 (REQ-006 / SC-006; REQ-008 / SC-008): Prepare release readiness:
+- [x] T008 (REQ-006 / SC-006; REQ-008 / SC-008): Prepare release readiness:
   package version per OD-3, release notes (new names, aliases, removal contract,
   rollback), migration and rollback fixtures that reinstall the earlier package
   against a v0.1-written host configuration. Dependencies: T002-T007. Verification:
