@@ -36,7 +36,7 @@ Host approval of a workflow run, Desktop "Always" approval and auto mode are hos
 1. **Documentation-only recipe** (users paste the steps): lowest authority impact and a valid fallback, but unversioned, not tested with the package and easy to drift. It is the outcome on rejection and the fallback if the host cannot support the workflow (SPEC-052 REQ-013).
 2. **SubagentStop or WorktreeCreate hooks**: contradicts the no-hooks wording, fires on every subagent, is not scoped to a user's intent and is hard to bound; WorktreeRemove is documented as not firing for workflow agents, so hooks are also incomplete. Rejected.
 3. **`agent.spawn` mod that denies or rewrites workflow agents**: would alter other plugins' and users' workflows. Rejected as enforcement overreach.
-4. **Shipping a fan-out orchestrator**: replaces the user's orchestration, would require the specs/039 coordination contract and invites speed claims contradicted by recorded NO-GO results. Rejected; a pre-flight partitioning proposal would be a separate future spec (SPEC-054) with its own ADR.
+4. **Shipping a fan-out orchestrator**: replaces the user's orchestration, would require the specs/039 coordination contract and invites speed claims contradicted by recorded NO-GO results. Rejected; a pre-flight partitioning proposal would be a separate future spec (SPEC-057) with its own ADR.
 5. **Transcript-based hooks now**: depends on SPEC-053 and gate G0; deferred.
 
 ## Consequences
@@ -54,7 +54,7 @@ Host approval of a workflow run, Desktop "Always" approval and auto mode are hos
 
 ## Validation
 
-- `python -m scripts.validate_spec_kit` and the change-aware validators pass, with the authority delta reviewed in `specs/052-claude-workflow-gate/authority-impact-review.json`.
+- `python -m scripts.validate_spec_kit` and the change-aware validators pass, with the authority delta reviewed in an authority impact review that SPEC-052 T035 creates at adoption.
 - Package tests assert the inventory, the Claude-only scope, the byte-identical skills and the absence of hooks, mods and agent definitions.
 - Host behaviors HV-1..HV-5 are observed per SPEC-052 before any compatibility claim; the decision is revisited if a required behavior fails or the host workflow API changes shape.
 - Rejection keeps the documentation recipe only and closes R1 as no-go.
@@ -62,6 +62,6 @@ Host approval of a workflow run, Desktop "Always" approval and auto mode are hos
 ## References
 
 - [SPEC-052 ADR proposal](../../specs/052-claude-workflow-gate/adr-proposal.md), [spec](../../specs/052-claude-workflow-gate/spec.md), [tasks](../../specs/052-claude-workflow-gate/tasks.md)
-- [Authority impact review](../../specs/052-claude-workflow-gate/authority-impact-review.json), [decision record template](../../specs/052-claude-workflow-gate/architecture-decision-20261024.md)
+- The authority impact review and the architecture decision record are created at adoption by SPEC-052 T034 and T035; they do not exist yet.
 - [Host evidence](../../specs/052-claude-workflow-gate/evidence/hv-disposition.md)
 - ADR 0014, 0019, 0020, 0021, 0024 (native AI plugins)
