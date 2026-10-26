@@ -38,11 +38,14 @@ _V02_PROMPT_BLOCK = '''        prompts=await client.list_prompts(); listed_promp
         for row in listed_prompts:
             marked=(row.description or "").startswith("[Deprecated alias of")
             if marked!=row.name.startswith("agent-braid-"): raise RuntimeError("deprecation marking")
+            if marked and "agent-braid-tooling/v0.3" not in row.description: raise RuntimeError("removal contract")
         prompt=await client.get_prompt("evidence")
         if "SHA-256" not in prompt.messages[0].content.text: raise RuntimeError("prompt content")
         alias=await client.get_prompt("agent-braid-evidence")
         if alias.messages[0].content.text!=prompt.messages[0].content.text: raise RuntimeError("alias text")
         if not (alias.description or "").startswith("Deprecated alias of"): raise RuntimeError("alias description")
+        deprecated=json.loads(capability.contents[0].text).get("deprecatedPrompts") if capability.contents[0].text.lstrip().startswith("{") else None
+        if not deprecated or sorted(row["name"] for row in deprecated)!=sorted(["agent-braid-analyze","agent-braid-plan","agent-braid-evidence"]): raise RuntimeError("deprecatedPrompts")
 '''
 
 _V01_SDK_PROBE_CODE = base._sdk_probe_code
@@ -75,7 +78,7 @@ def candidate_metadata(path: Path, expected_sha: str) -> dict[str, str]:
     return {"sha256": digest, "distribution": metadata["Name"], "version": metadata["Version"]}
 
 
-def sdk_probe_code(*args, **kwargs) -> str:
+def _sdk_probe_code(*args, **kwargs) -> str:
     """The v0.1 child program with only the prompt roster block replaced."""
     code = _V01_SDK_PROBE_CODE(*args, **kwargs)
     if _V01_PROMPT_BLOCK not in code:
@@ -83,9 +86,8 @@ def sdk_probe_code(*args, **kwargs) -> str:
     return code.replace(_V01_PROMPT_BLOCK, _V02_PROMPT_BLOCK, 1)
 
 
-_sdk_probe_code = sdk_probe_code
 base.candidate_metadata = candidate_metadata
-base._sdk_probe_code = sdk_probe_code
+base._sdk_probe_code = _sdk_probe_code
 
 
 def main(argv: list[str] | None = None) -> int:

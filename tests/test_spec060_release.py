@@ -81,7 +81,10 @@ class FakePromptClient:
         return types.SimpleNamespace(resources=[types.SimpleNamespace(uri="agent-braid://capabilities")])
 
     async def read_resource(self, _uri):
-        return types.SimpleNamespace(contents=[types.SimpleNamespace(text="analysis-only")])
+        capabilities = {"mode": "analysis-only", "prompts": CANONICAL,
+                        "deprecatedPrompts": [{"name": n, "replacedBy": n.removeprefix("agent-braid-"),
+                                               "removedIn": "agent-braid-tooling/v0.3"} for n in ALIASES]}
+        return types.SimpleNamespace(contents=[types.SimpleNamespace(text=json.dumps(capabilities))])
 
     async def list_prompts(self):
         return types.SimpleNamespace(prompts=[types.SimpleNamespace(name=n, description=d)
@@ -157,6 +160,20 @@ class InstalledVerifierV2Tests(unittest.TestCase):
                     patch.object(tooling_mcp, "_PROMPTS", registry):
                 with self.assertRaises(RuntimeError):
                     run_probe(v02, Path(temporary))
+
+    def test_v2_rejects_missing_deprecated_prompts_capability_and_missing_removal_contract(self):
+        async def bare(_self, _uri):
+            return types.SimpleNamespace(contents=[types.SimpleNamespace(text="analysis-only")])
+
+        with tempfile.TemporaryDirectory() as temporary, \
+                patch.object(FakePromptClient, "read_resource", bare), self.assertRaisesRegex(RuntimeError, "deprecatedPrompts"):
+            run_probe(v02, Path(temporary))
+        listing = tooling_mcp._prompt_listing()
+        stripped = [(n, d.replace("agent-braid-tooling/v0.3", "later")) for n, d in listing]
+        with tempfile.TemporaryDirectory() as temporary, \
+                patch.object(tooling_mcp, "_prompt_listing", return_value=stripped), \
+                self.assertRaisesRegex(RuntimeError, "removal contract"):
+            run_probe(v02, Path(temporary))
 
     def test_old_verifier_logic_rejects_v02_and_accepts_the_earlier_roster(self):
         with tempfile.TemporaryDirectory() as temporary, self.assertRaisesRegex(RuntimeError, "prompt roster"):

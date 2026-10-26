@@ -21,7 +21,7 @@ things only: the pinned candidate version (`0.1.0a2`) and the prompt block of th
 generated SDK probe. If the v0.1 probe text ever changes, the adapter refuses to
 guess and stops. Offline install, relay, bounds and the receipt layout are
 inherited, so the receipt schema string is still
-`agent-braid-installed-tooling-probe/v1`.
+`agent-braid-installed-tooling-probe/v1`. A receipt does not record the contract; tell them apart by the candidate version (`0.1.0a1` or `0.1.0a2`) and by `promptCount` (3 or 6). The v0.2 probe also requires the removal contract text in alias descriptions and the three `deprecatedPrompts` entries in the capabilities resource.
 
 Both checks are structural. They do not observe a native host, and a passing run is
 not an owner release decision.
