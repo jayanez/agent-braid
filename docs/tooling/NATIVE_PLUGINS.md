@@ -51,11 +51,15 @@ Skills and docs reference tools by bare MCP name (for example `analyze-work`):
 Claude Code keeps the hyphens in its host tool ids and Codex rewrites them to
 underscores. Codex does not display MCP prompts and the plugin publishes none.
 
-Key collision: do not register the portable server under the key `agent-braid`
-next to the native plugin. Its unprefixed prompt `/agent-braid:analyze (MCP)` would
-share a slash name with the plugin skill `/agent-braid:analyze`. Install one
-surface, or choose another server key for the portable server. Codex lists no MCP
-prompts, so this affects Claude Code only.
+Key collision: if the portable server is registered under the key `agent-braid` next to
+the native plugin, Claude Code's slash menu shows its prompt `/agent-braid:analyze (MCP)` and
+the plugin skill `/agent-braid:analyze` with the same slash text. They remain two distinct
+entries, told apart by the `(MCP)` suffix, the `*` marker and the description, with no
+conflict warning and nothing breaks. Under a distinct key such as `portable-braid` the
+prompts appear as `/portable-braid:analyze (MCP)` and the texts differ, so prefer a distinct
+key (owner captures, see the SPEC-060
+[interactive result](../../specs/060-portable-prompt-names/evidence/interactive-slash-result.md)).
+Codex lists no MCP prompts, so this affects Claude Code only.
 
 The plugin is unchanged by the portable prompt rename (SPEC-060, ADR 0031): no plugin
 release is planned for it, and it still publishes no prompts or aliases.

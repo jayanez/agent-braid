@@ -38,8 +38,8 @@ python3 -m venv /absolute/private/tooling-environment
 /absolute/private/tooling-environment/bin/agent-braid tooling --help
 ```
 
-Portable server prompts (SPEC-060, ADR 0031; candidate under implementation, no
-release exists yet): the surface contract `agent-braid-tooling/v0.2` names the
+Portable server prompts (SPEC-060, ADR 0031; implemented; package `0.1.0a2` is a
+candidate, publication pending): the surface contract `agent-braid-tooling/v0.2` names the
 three MCP prompts `analyze`, `plan` and `evidence`; the host adds its own server
 key as a prefix. Tool envelopes stay `agent-braid-tooling/v0.1`. The former names
 `agent-braid-analyze`, `agent-braid-plan` and `agent-braid-evidence` remain as
@@ -50,16 +50,20 @@ a new decision. See the
 [v0.2 delta](../../specs/060-portable-prompt-names/contracts/interface-delta.md)
 and [ADR 0031](../adr/0031-portable-prompt-names.md).
 
-The candidate carrier version is `0.1.0a2`; no plugin release accompanies it,
+The candidate carrier version is `0.1.0a2` (publication pending); no plugin release accompanies it,
 because the plugin publishes no prompts. Updating needs no host configuration
 edit: update the package and reconnect the host. To roll back, reinstall the
 earlier package; it lists only the prefixed names.
 
-Key collision: do not register the portable server under the key `agent-braid`
-next to the native plugin. Its unprefixed prompt `/agent-braid:analyze (MCP)` would
-share a slash name with the plugin skill `/agent-braid:analyze`. Install one
-surface, or choose another server key for the portable server. Codex lists no MCP
-prompts, so this affects Claude Code only.
+Key collision: if the portable server is registered under the key `agent-braid` next to
+the native plugin, Claude Code's slash menu shows its prompt `/agent-braid:analyze (MCP)` and
+the plugin skill `/agent-braid:analyze` with the same slash text. They remain two distinct
+entries, told apart by the `(MCP)` suffix, the `*` marker and the description, with no
+conflict warning and nothing breaks. Under a distinct key such as `portable-braid` the
+prompts appear as `/portable-braid:analyze (MCP)` and the texts differ, so prefer a distinct
+key (owner captures, see the SPEC-060
+[interactive result](../../specs/060-portable-prompt-names/evidence/interactive-slash-result.md)).
+Codex lists no MCP prompts, so this affects Claude Code only.
 
 These example paths are placeholders. Select existing canonical source and
 private result directories outside each other. The default catalog contains
