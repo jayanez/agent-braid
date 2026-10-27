@@ -1,0 +1,42 @@
+{
+  "task": "SPEC-057/T025, T040 and the governance part of T028",
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the governance static tests (T025) and the never-collect validator tests (T040); T028 is partial, its recipe pointer waits for T026; host probes, G1, native and independent-review gates pending",
+  "executionAuthorization": false,
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_orchestration_governance -v",
+      "exitCode": 0,
+      "testsRun": 20,
+      "scope": "Six source rules (runtime or grant import, socket, MCP tool, direct process launch, host binary, compiler or planner) pass on the three deliverables and fail on a seeded violating snippet each, with exactly that rule; the four commands are named only by cli.py, ownership_cli.py and ownership.py and only the dispatcher and the implementation import the deliverables; every contract schema that names executionAuthorization pins it to the constant false, four loose seeded schemas fail, and contract examples, a pre-flight and a receipt emitted from fixtures authorize nothing; the plugin source holds no hook, mod, agent, monitor, channel or orchestration skill and tests/test_plugin_package.py keeps its no-component assertions; no deliverable is or defines a hook-profile compiler or orchestration planner and the HAR.3 cross-reference names T005, T006 and T011, what is reused and what is independent."
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_orchestration_bounds -v",
+      "exitCode": 0,
+      "testsRun": 43,
+      "scope": "Existing T013, T018 and T042 bounds tests unchanged, plus the never-collect section: a validator over ten categories matches each by member name and, where a value has a shape, by that shape; a seeded member fails for every category, a seeded value shape fails under a neutral member for six, and nesting and spelling do not hide one; a counts-only aggregate with closed vocabulary passes; receipts and pre-flights are flagged as not telemetry-bound; no command module mentions telemetry, no command has a telemetry option, loading the command modules in a fresh interpreter loads no telemetry module; the SPEC-047 modules name nothing of this specification; the specification directory and tests/fixtures/ownership hold no telemetry record."
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_plugin_package -v",
+      "exitCode": 0,
+      "testsRun": 32,
+      "scope": "Unchanged package inventory assertions of SPEC-052 and the plugin package; one test skipped by its own condition."
+    }
+  ],
+  "inputs": {
+    "agent_braid/ownership.py": "2fed2759ec5798385bcee8e0c7f09907325ef9e971d481247570dfe5f3423f41",
+    "agent_braid/ownership_cli.py": "f577ff3c3e7eaf574144e6c78dad4bab3aa357b7edf5983ac457ed31ee24a23d",
+    "agent_braid/path_overlap.py": "8345e726e7e35fd98213937cec6e65f60f93712d6755817a333ba38d15ef4342",
+    "tests/test_orchestration_governance.py": "5cc5fe83a85cbef41f06a39bd7348ea326519febf1f69dad304051ea743f94ca",
+    "tests/test_orchestration_bounds.py": "e131726e5eb1a624137da743b11bd6c84b54da0c09ad7dc57e506cfec216fced",
+    "specs/057-claude-orchestration-advisory/plan.md": "2a936be4a6c69a14081e70c9faa9b1669ca80b001e53ed0797e3c8fcf4d223db"
+  },
+  "outcome": "The deliverables of the specification import only the analyzer, the bounded Git helpers and each other; use no socket, direct process launch or host binary; add no MCP tool, hook, mod, agent, monitor, channel, orchestration skill, compiler or planner; and every schema and emitted object pins executionAuthorization to false. Nothing about these commands is collected by telemetry: the validator rejects every never-collect category on a seeded fixture, the command modules do not load or mention a telemetry module, and the SPEC-047 vocabulary and files are untouched.",
+  "limits": "Static and offline: source rules are AST checks of the three deliverable modules, so a behavior reached only through an imported helper such as the Git helpers is not inspected beyond the allowlist of imports. The never-collect validator is test code matched by member name and a few value shapes; it is not a production filter, because nothing collects yet, and a telemetry-bound record with an unlisted member name is outside it. The hook, mod, agent, monitor and channel check covers the plugin source tree integrations/agent-braid, not an installed package. T028 stays unchecked: the pointer from the recipe cannot exist before T026. Class 1-syntactic.",
+  "pending": [
+    "T028 recipe pointer (waits for T026)",
+    "Host probes HV-9, HV-10 and HV-12 and G1",
+    "Stable pr-profile result recorded in the pull request",
+    "Human review of the draft specification"
+  ]
+}

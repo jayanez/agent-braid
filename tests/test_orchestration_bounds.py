@@ -3,15 +3,18 @@
 
 from __future__ import annotations
 
+import argparse
 import ast
 import json
 from pathlib import Path
+import re
+import subprocess
 import sys
 import unittest
 from unittest import mock
 
-from agent_braid import ownership, ownership_cli
-from tests.test_ownership_receipt import ERROR, GitFixture, git, observed, receipt_for
+from agent_braid import ownership, ownership_cli, tooling_telemetry
+from tests.test_ownership_receipt import BASE, ERROR, GitFixture, TREE, git, observed, receipt_for
 from tests.test_ownership_receipt import declaration as receipt_declaration
 
 MODULE = Path(ownership.__file__)
@@ -336,6 +339,271 @@ class PurityTests(unittest.TestCase):
         source = MODULE.read_text(encoding="utf-8")
         for token in (".write(", "write_text", "write_bytes", ".unlink(", ".mkdir(", "os.remove"):
             self.assertNotIn(token, source)
+
+
+# --- Never-collect exclusion (T040, REQ-017) ---
+#
+# Nothing is collected by telemetry now. The validator below is the exclusion of the specification: it
+# rejects any record bound for telemetry that carries a member from the never-collect list. Each category
+# is matched by member name (normalized) and, where a value has a recognizable shape, by that shape.
+
+ROOT = Path(__file__).resolve().parents[1]
+SPEC = ROOT / "specs/057-claude-orchestration-advisory"
+HASH_VALUE = re.compile(r"^(sha256:)?[0-9a-f]{40,64}$")
+SCHEMA_ID = re.compile(r"^[a-z][a-z0-9.-]*/v\d+$")
+INSTANT_VALUE = re.compile(r"^\d{4}-\d\d-\d\d[T ]\d\d:\d\d")
+NEVER_COLLECT = {
+    "paths-and-hashes": {
+        "keys": {"path", "paths", "file", "files", "filename", "directory", "cwd", "digest", "hash", "sha256",
+                 "checksum"},
+        "value": lambda v: isinstance(v, str) and (
+            (("/" in v or "\\" in v) and not SCHEMA_ID.match(v)) or bool(HASH_VALUE.match(v))),
+    },
+    "refs-and-commits": {
+        "keys": {"branch", "ref", "refs", "baseref", "commit", "commits", "revision", "rev", "tag"},
+        "value": lambda v: isinstance(v, str) and (v.startswith("refs/") or bool(re.fullmatch(r"[0-9a-f]{40}", v))),
+    },
+    "prompts-messages-transcripts": {
+        "keys": {"prompt", "prompts", "message", "messages", "transcript", "transcripts", "conversation", "content",
+                 "body", "reply", "instruction"},
+    },
+    "free-text": {
+        "keys": {"text", "note", "notes", "comment", "description", "reason", "summary", "detail", "details",
+                 "title"},
+        "value": lambda v: isinstance(v, str) and (len(v) > 64 or bool(re.search(r"\s", v))),
+    },
+    "unit-and-pair-identities": {
+        "keys": {"unit", "units", "unitid", "unitids", "pair", "pairs", "pairid", "unita", "unitb"},
+        "value": lambda v: isinstance(v, str) and bool(re.fullmatch(r"unit:\S+|[\w-]+\|[\w-]+", v)),
+    },
+    "sub-day-timestamps": {
+        "keys": {"timestamp", "ts", "epoch", "epochms"},
+        "value": lambda v: isinstance(v, str) and bool(INSTANT_VALUE.match(v)),
+    },
+    "durations-tokens-and-costs": {
+        "keys": {"duration", "durationms", "durationseconds", "elapsed", "elapsedms", "latency", "latencyms", "tokens",
+                 "inputtokens", "outputtokens", "totaltokens", "tokencount", "cost", "costeur", "costusd", "price",
+                 "spend"},
+    },
+    "exact-model-and-host-builds": {
+        "keys": {"model", "modelid", "modelname", "hostversion", "hostbuild", "claudeversion", "build", "buildid"},
+        "value": lambda v: isinstance(v, str) and bool(re.match(r"^claude-(opus|sonnet|haiku|fable)-\d", v)),
+    },
+    "bypass-and-false-block-counts": {
+        "key_parts": ("bypass", "falseblock"),
+    },
+    "g0-and-g1-manifests": {
+        "key_prefixes": ("g0", "g1"),
+        "key_parts": ("manifest",),
+    },
+}
+
+
+def _normal(key: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", key.lower())
+
+
+def never_collect_violations(record) -> set[str]:
+    """Never-collect categories a telemetry-bound record carries, at any depth."""
+    found: set[str] = set()
+
+    def visit(value) -> None:
+        if isinstance(value, dict):
+            for key, item in value.items():
+                name = _normal(str(key))
+                found.update(category for category, rule in NEVER_COLLECT.items()
+                             if name in rule.get("keys", ())
+                             or name.startswith(rule.get("key_prefixes", ()))
+                             or any(part in name for part in rule.get("key_parts", ())))
+                visit(item)
+        elif isinstance(value, list):
+            for item in value:
+                visit(item)
+        else:
+            found.update(category for category, rule in NEVER_COLLECT.items()
+                         if "value" in rule and rule["value"](value))
+
+    visit(record)
+    return found
+
+
+def _identifiers(source: str) -> list[str]:
+    """Names, attributes, imports, keyword names and non-docstring strings of a module."""
+    tree = ast.parse(source)
+    docstrings = {id(n.body[0].value) for n in ast.walk(tree)
+                  if isinstance(n, (ast.Module, ast.FunctionDef, ast.ClassDef)) and n.body
+                  and isinstance(n.body[0], ast.Expr) and isinstance(n.body[0].value, ast.Constant)}
+    out: list[str] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name):
+            out.append(node.id)
+        elif isinstance(node, ast.Attribute):
+            out.append(node.attr)
+        elif isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+            out.append(node.name)
+        elif isinstance(node, ast.arg):
+            out.append(node.arg)
+        elif isinstance(node, ast.keyword) and node.arg:
+            out.append(node.arg)
+        elif isinstance(node, ast.alias):
+            out.append(node.name)
+        elif isinstance(node, ast.ImportFrom):
+            out.append(node.module or "")
+        elif isinstance(node, ast.Constant) and isinstance(node.value, str) and id(node) not in docstrings:
+            out.append(node.value)
+    return out
+
+
+def telemetry_mentions(source: str) -> list[str]:
+    return [name for name in _identifiers(source) if "telemetry" in name.lower()]
+
+
+COMMAND_NAMES = ("expand-ownership", "check-ownership", "audit-isolation", "report-recovery")
+COMMAND_MODULES = ("ownership.py", "ownership_cli.py", "path_overlap.py")
+CLEAN_AGGREGATE = {"schema": "agent-braid-local-telemetry-batch/v1", "family": "A", "day": "2026-10-27",
+                   "verdict": "clean", "count": 3, "durationBucket": "le-100ms", "mode": "warn", "calls": 12}
+KEY_FIXTURES = {
+    "paths-and-hashes": {"path": "src/a.py"},
+    "refs-and-commits": {"branch": "feature"},
+    "prompts-messages-transcripts": {"prompt": "x"},
+    "free-text": {"note": "x"},
+    "unit-and-pair-identities": {"unitId": "a"},
+    "sub-day-timestamps": {"timestamp": 1790000000},
+    "durations-tokens-and-costs": {"durationMs": 14},
+    "exact-model-and-host-builds": {"model": "x"},
+    "bypass-and-false-block-counts": {"perUserBypassCount": 2},
+    "g0-and-g1-manifests": {"g1Manifest": "x"},
+}
+VALUE_FIXTURES = {
+    "paths-and-hashes": ("src/a.py", "sha256:" + "a" * 64, "a" * 40),
+    "refs-and-commits": ("refs/heads/feature", "b" * 40),
+    "free-text": ("fix the parser please", "n" * 65),
+    "unit-and-pair-identities": ("unit:a", "a|b"),
+    "sub-day-timestamps": ("2026-10-27T10:15:00Z", "2026-10-27 10:15"),
+    "exact-model-and-host-builds": ("claude-sonnet-5-5",),
+}
+
+
+class NeverCollectValidatorTests(unittest.TestCase):
+    def test_the_categories_are_the_ten_of_the_specification(self):
+        self.assertEqual(set(NEVER_COLLECT), set(KEY_FIXTURES))
+        self.assertEqual(len(NEVER_COLLECT), 10)
+
+    def test_a_seeded_member_of_each_category_fails(self):
+        for category, record in KEY_FIXTURES.items():
+            self.assertIn(category, never_collect_violations(record), category)
+
+    def test_a_seeded_value_shape_of_each_category_fails_under_a_neutral_member(self):
+        for category, values in VALUE_FIXTURES.items():
+            for value in values:
+                self.assertIn(category, never_collect_violations({"k": value}), f"{category}: {value}")
+
+    def test_a_seeded_member_fails_at_any_depth_and_under_any_spelling(self):
+        for record in ({"a": [{"b": {"g1_manifest": 1}}]}, {"x": {"Falseblock-count": 1}}, {"TOKENS": 5},
+                       {"a": [["refs/heads/x"]]}, {"cost_eur": 1.5}):
+            self.assertTrue(never_collect_violations(record), record)
+
+    def test_each_seeded_record_reports_only_its_own_category_where_the_member_is_exclusive(self):
+        for category in ("prompts-messages-transcripts", "durations-tokens-and-costs", "exact-model-and-host-builds",
+                         "bypass-and-false-block-counts", "g0-and-g1-manifests"):
+            self.assertEqual(never_collect_violations(KEY_FIXTURES[category]), {category}, category)
+
+    def test_counts_only_aggregate_with_closed_vocabulary_passes(self):
+        self.assertEqual(never_collect_violations(CLEAN_AGGREGATE), set())
+        self.assertEqual(never_collect_violations({"day": "2026-10-27", "bucket": "gt-10000ms", "count": 0}), set())
+        self.assertEqual(never_collect_violations({"durationBucket": "le-1ms", "tokenBucket": "le-1k"}), set())
+
+    def test_a_number_is_not_an_instant_but_a_time_member_is(self):
+        self.assertEqual(never_collect_violations({"count": 1790000000}), set())
+        self.assertEqual(never_collect_violations({"epochMs": 1790000000000}), {"sub-day-timestamps"})
+
+    def test_whatever_the_commands_emit_is_not_telemetry_bound(self):
+        decl = receipt_declaration()
+        receipt = receipt_for(decl, {"a": observed(("M", "src/b.py")), "b": observed()})
+        expansion = ownership.expand_declaration(decl, TREE, repo_root="/repo", pinned_commit=BASE)
+        for label, emitted in (("receipt", receipt), ("preflight", ownership.build_preflight(expansion))):
+            self.assertTrue(never_collect_violations(emitted), label)
+
+    def test_a_seeded_record_made_of_command_output_fails_every_category_it_carries(self):
+        record = dict(CLEAN_AGGREGATE, units=["a", "b"], pair="a|b", at="2026-10-27T10:15:00Z",
+                      durationMs=14, model="claude-sonnet-5-5", path="src/a.py", branch="main")
+        self.assertEqual(never_collect_violations(record), {
+            "unit-and-pair-identities", "sub-day-timestamps", "durations-tokens-and-costs",
+            "exact-model-and-host-builds", "paths-and-hashes", "refs-and-commits"})
+
+
+class NoTelemetryEmissionTests(unittest.TestCase):
+    def test_no_command_module_mentions_telemetry(self):
+        for name in COMMAND_MODULES:
+            source = (ROOT / "agent_braid" / name).read_text(encoding="utf-8")
+            self.assertEqual(telemetry_mentions(source), [], name)
+
+    def test_a_seeded_emitter_is_caught(self):
+        for source in ("from .tooling_telemetry import record\n", "import agent_braid.forecast_telemetry\n",
+                       "emit(telemetry=True)\n", "def report_telemetry():\n    pass\n",
+                       "parser.add_argument('--telemetry')\n", "def f(telemetry_mode):\n    pass\n"):
+            self.assertTrue(telemetry_mentions(source), source)
+        self.assertEqual(telemetry_mentions('"""telemetry is deferred."""\nx = 1\n'), [])
+
+    def test_no_command_has_a_telemetry_option(self):
+        parser = argparse.ArgumentParser()
+        subparsers = parser.add_subparsers()
+        ownership_cli.add_parser(subparsers)
+        self.assertEqual(set(subparsers.choices), set(COMMAND_NAMES))
+        for name, command in subparsers.choices.items():
+            options = [o for action in command._actions for o in action.option_strings]
+            self.assertTrue(options, name)
+            self.assertFalse([o for o in options if "telemetry" in o], name)
+
+    def test_loading_the_commands_loads_no_telemetry_module(self):
+        code = ("import sys\nsys.path.insert(0, sys.argv[1])\n"
+                "import agent_braid.ownership_cli, agent_braid.ownership\n"
+                "print([m for m in sorted(sys.modules) if 'telemetry' in m])")
+        result = subprocess.run([sys.executable, "-I", "-c", code, str(ROOT)], capture_output=True, text=True,
+                                timeout=60)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "[]")
+
+
+class VocabularyAndRepositoryTests(unittest.TestCase):
+    def test_the_spec_047_vocabulary_names_nothing_of_this_specification(self):
+        vocabulary = [*tooling_telemetry.CATEGORIES, *tooling_telemetry.OUTCOMES,
+                      *(op for ops in tooling_telemetry.OPERATIONS.values() for op in ops),
+                      *(value for values in tooling_telemetry.BUCKETS.values() for value in values),
+                      *tooling_telemetry.OPERATIONS, *tooling_telemetry.BUCKETS]
+        self.assertTrue(vocabulary)
+        for text in vocabulary:
+            for token in (*COMMAND_NAMES, "ownership", "orchestration", "isolation", "recovery", "preflight",
+                          "hazard", "receipt"):
+                self.assertNotIn(token, text)
+
+    def test_no_telemetry_module_names_a_command_of_this_specification(self):
+        for name in ("tooling_telemetry.py", "tooling_telemetry_cli.py", "forecast_telemetry.py"):
+            source = (ROOT / "agent_braid" / name).read_text(encoding="utf-8")
+            for command in COMMAND_NAMES:
+                self.assertNotIn(command, source, name)
+
+    def test_repository_holds_no_telemetry_record_from_these_commands(self):
+        records = [*SPEC.rglob("*.json"), *(ROOT / "tests/fixtures/ownership").rglob("*.json")]
+        self.assertTrue(records)
+        for path in records:
+            text = path.read_text(encoding="utf-8")
+            self.assertNotIn("agent-braid-local-telemetry", text, path.name)
+            data = json.loads(text)
+            self.assertFalse(self._telemetry_members(data), path.name)
+
+    @staticmethod
+    def _telemetry_members(value) -> list[str]:
+        if isinstance(value, dict):
+            return [k for k in value if _normal(str(k)).startswith("telemetry")] + [
+                m for item in value.values() for m in VocabularyAndRepositoryTests._telemetry_members(item)]
+        if isinstance(value, list):
+            return [m for item in value for m in VocabularyAndRepositoryTests._telemetry_members(item)]
+        return []
+
+    def test_a_seeded_record_in_the_repository_would_be_found(self):
+        seeded = {"a": [{"telemetryBatch": {"count": 1}}]}
+        self.assertEqual(self._telemetry_members(seeded), ["telemetryBatch"])
 
 
 if __name__ == "__main__":
