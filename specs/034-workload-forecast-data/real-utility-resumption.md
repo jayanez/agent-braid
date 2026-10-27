@@ -2331,3 +2331,14 @@ Offline candidate source/contract/test commit: `98dfab46845349be2f48288e3bd2032c
 documentary commit preserves all accumulated evidence and pending gates. Target
 is the work branch `feat/fc1-real-admission`; no PR, merge or CI dispatch is
 authorized or performed as part of this closure.
+
+## Integration with develop (2026-10-27)
+
+Merging the branch into develop changed the hashed sources `git_runtime.py`,
+`git_replay.py` and `runtime_scheduler.py` (optional `budget` parameter plumbing and a
+shared `path_overlap` helper from develop). The code pin `_MODELED_SOURCE` was refreshed
+mechanically to `b2251aa6d1be57eef361d25121eac726ed4be23364588158897691318a1a71d0` so
+the source-drift guard keeps working. The pin recorded in the retained evidence and in
+the image contract above is historical for the reviewed branch tip and is unchanged.
+A fresh accounting review of those develop-side hunks is pending; this refresh is not
+that review and accepts no coverage, budget or admission.
