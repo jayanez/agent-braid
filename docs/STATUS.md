@@ -284,8 +284,8 @@ The portable MCP server in `develop` implements unprefixed prompt names with bou
 deprecated aliases (`agent-braid-tooling/v0.2`, package `0.1.0a2`):
 [SPEC-060](../specs/060-portable-prompt-names/spec.md) is implemented and was accepted on
 2026-10-27 under accepted [ADR 0031](adr/0031-portable-prompt-names.md). Package `0.1.0a2`
-is a candidate; its publication as GitHub pre-release `v0.1.0-alpha.2` is pending the owner's
-decision. An owner-provided capture of the Claude Code slash menu is recorded in the
+was published on 2026-10-27 as GitHub pre-release `v0.1.0-alpha.2` (wheel, sdist and
+SHA256SUMS; no PyPI; see the [release record](../specs/060-portable-prompt-names/evidence/release-0.1.0a2.md)). An owner-provided capture of the Claude Code slash menu is recorded in the
 [interactive menu result](../specs/060-portable-prompt-names/evidence/interactive-slash-result.md):
 with the portable server under the key `agent-braid` beside the plugin, skill and prompt share
 the same slash text but appear as distinct entries (the prompt carries an `(MCP)` suffix); under
