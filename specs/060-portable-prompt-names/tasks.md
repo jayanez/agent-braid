@@ -5,11 +5,11 @@ imply native-host, release or founder acceptance. Parallelizable does not
 authorize concurrent agents. No task is started by the specification change. ADR 0031 is Accepted and
 authorizes T002-T008 only; T009-T011 need separate owner decisions.
 
-- [ ] T001 (REQ-001 / SC-001; REQ-002 / SC-002; REQ-007 / SC-007): Owner review of
+- [x] T001 (REQ-001 / SC-001; REQ-002 / SC-002; REQ-007 / SC-007): Owner review of
   the specification, the contract delta, ADR 0031 and the open decisions OD-1 to
   OD-8, including the alias exception. Dependencies: none. Files:
   `contracts/interface-delta.md`, `plan.md`, `docs/adr/0031-portable-prompt-names.md`.
-  Verification: procedure_001 (review part). Evidence: owner review record and the
+  Verification: procedure_001 (review part). Evidence: [owner review record](founder-review-20261027.json) (accepted 2026-10-27, bound to frozen commit f9329134) and the
   ADR decision.
 
 - [x] T002 (REQ-001 / SC-001): Add the surface-version constant, the ordered
@@ -59,11 +59,10 @@ authorizes T002-T008 only; T009-T011 need separate owner decisions.
   procedure_006, procedure_008. Evidence: update/rollback fixture record and the
   release-readiness record stating that nothing was released.
 
-- [ ] T009 (REQ-010 / SC-010): Observe the candidate natively in a Claude Code
+- [x] T009 (REQ-010 / SC-010): Observe the candidate natively in a Claude Code
   profile, alone and next to the native plugin, and record that Codex lists no
   prompts. Dependencies: T008. Verification: procedure_010. Evidence: native
-  observation record with environment, versions and limits (owner-run or
-  separately authorized).
+  observation record with environment, versions and limits: [native observation 0.1.0a2](evidence/native-observation-0.1.0a2.md). Closed with bounded scope by owner decision of 2026-10-27: CLI and loader observation in disposable profiles on macOS arm64; interactive slash-menu use, sign-in or model session, Linux and the key-collision menu display were not observed.
 
 - [x] T010 (REQ-008 / SC-008; REQ-011 / SC-011): Run `--profile pr` on the stable
   candidate, verify that no frozen path changed, record results and request the
