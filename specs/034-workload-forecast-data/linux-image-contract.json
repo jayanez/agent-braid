@@ -1,0 +1,4723 @@
+{
+  "version": "agent-braid-fc1-linux-image-contract-v1",
+  "date": "2026-10-18",
+  "status": "technical-candidate-unbuilt-unadmitted",
+  "architecture": "aarch64",
+  "scope": "One local Linux VM; one system manager; one admission procedure; no forecasting model in the admission image.",
+  "host": {
+    "kernelMinimum": "6.12",
+    "systemdVersion": "261.3",
+    "cpus": 1,
+    "memoryBytes": 4294967296,
+    "scratchBytes": 21474836480,
+    "requiredFeatures": [
+      "unified cgroup v2 with cpu,memory,pids controllers",
+      "cgroup.freeze and cgroup.kill",
+      "pidfd_open and poll",
+      "waitid WNOWAIT",
+      "readable root procfs stat/cgroup/mountinfo/exe",
+      "dm-verity SHA256",
+      "tmpfs noswap",
+      "local filesystem flock with read-only FD"
+    ],
+    "installedManagerSha256": null,
+    "systemctlSha256": null,
+    "dmsetupSha256": null,
+    "capacityAdmitted": false,
+    "operatorExecutableSha256": null,
+    "aggregateContainment": {
+      "cpuPercent": 100,
+      "memoryBytes": 3221225472,
+      "tasks": 96,
+      "swapBytes": 0,
+      "operatorMemoryBytes": 536870912,
+      "operatorTasks": 16,
+      "workerMemoryBytes": 2147483648,
+      "workerTasks": 64,
+      "status": "rendered and readback-enforced in candidate; not natively qualified"
+    },
+    "operatorArtifactRequirement": "Profile v7 pins isolated operator Python ELF and separate immutable admission.py SHA. Source bootstrap v2 requires an independently accredited absolute whole-scope watchdog; manager/issuer/entry binaries and lifecycle accounting remain missing. Both immutable acceptance flags stay false.",
+    "kernelCandidateVersion": "6.12.113",
+    "candidateDmsetupSha256": "554e3526e1683a710be0c8aa89ea52be72e2cc5a96c7029d07a80de7827554f2"
+  },
+  "image": {
+    "format": "raw GPT; one read-only ext4 root-arm64 partition and matching root-arm64-verity partition; no separate usr/home/var partitions",
+    "rawMaximumBytes": 536870912,
+    "rootFilesystemMaximumBytes": 503316480,
+    "verityAndPartitionReserveBytes": 33554432,
+    "pythonVersion": "3.13.11",
+    "gitVersion": "2.56.0",
+    "gitArtifactRequirement": "One exact locally supplied audited Linux aarch64 Git build, copied as a regular ELF at /opt/agent-braid/bin/git with its matching read-only helpers and dynamic libraries. No mutable symlink/tag or download fallback.",
+    "gitSha256": null,
+    "pythonArtifactSha256": null,
+    "imageSha256": null,
+    "rootHash": null,
+    "filesystemDependenciesLockSha256": null,
+    "contains": [
+      "/opt/agent-braid/source with the exact source inventory",
+      "/opt/agent-braid/bin/python3 (pinned ELF) with -I -S /opt/agent-braid/source/scripts/fc1_admission_worker.py",
+      "/opt/agent-braid/bin/git and matching read-only Git helpers/libraries",
+      "/opt/agent-braid/fc1/recipe.json canonical v2 image-independent recipe",
+      "/opt/agent-braid/inputs/repository with closed loose SHA1 object closure for the three registered commits",
+      "/work /scratch /prior/verify mount targets; /operator.sock and /exec-gate.sock mount targets"
+    ],
+    "sourceRepositoryRules": [
+      "exact IMAGE_GIT_CONFIG bytes",
+      "shallow boundary at the registered base",
+      "no alternates, grafts, replace refs, worktree config, commondir, packs or hooks",
+      "only the registered commit/tree/blob closure; no unregistered refs or working checkout",
+      "HEAD -> refs/heads/admission-base -> exact BASE; no other heads/tags; objects/info empty"
+    ],
+    "environment": [
+      "Python isolated launcher (-I), fixed source location",
+      "no optional forecasting dependencies or models",
+      "no credentials, prompts, host inventories, telemetry payloads or provider configuration",
+      "network unavailable; root read-only; only quota-bound phase scratch writable"
+    ],
+    "built": false
+  },
+  "recipe": {
+    "version": "agent-braid-admission-worker-v2",
+    "path": "/opt/agent-braid/fc1/recipe.json",
+    "fields": [
+      "version",
+      "sourceDigest",
+      "gitSha256",
+      "request"
+    ],
+    "mustNotContain": [
+      "profileIdentity",
+      "imageSha256",
+      "rootHash",
+      "managerSha256",
+      "grants",
+      "executionAuthorization"
+    ],
+    "expectedFinalTree": "a9fba0b46b332981f1097035ee0b71c21ad100be",
+    "requestSource": "immutableRecipeMetadata.request in the existing t005-resumption-accounting.json record",
+    "recipeSha256": null,
+    "remainingBytes": "Await the final source digest and actual audited Linux Git artifact SHA; no dummy pins or purported executable recipe."
+  },
+  "identityOrder": [
+    "freeze source and the exact Linux executable/dependency artifacts",
+    "serialize recipe independently of image and hash its bytes",
+    "construct the read-only image including that recipe; compute verity root and whole raw-image SHA",
+    "construct the external LinuxAdmissionProfile v5 from actual recipe/image/manager/operator pins and explicit phase limits",
+    "operator delivers external profileConfig on the authenticated channel; worker verifies fixed recipe bytes and profile identity"
+  ],
+  "qualification": {
+    "nativeReadbackRequired": true,
+    "nativeExecuted": false,
+    "launchAuthorization": false,
+    "blockedBy": [
+      "Linux executable/dependency artifacts and hashes not supplied",
+      "image not built or identified",
+      "host capacity/kernel/manager/mount/watchdog/native child lifecycle not qualified",
+      "owner-specific authorization for the two concrete native controls pending",
+      "Aggregate/operator quotas and whole-flow cleanup not natively qualified; operator launcher artifact remains missing. Git descendant/helper exec census and cap must be closed before an operational budget is accepted.",
+      "Probe source/object/loader, independent translated-program pins and placement/accounting not supplied or qualified",
+      "Source-level dedicated launcher/root-broker handoff implemented; actual external bootstrap/manager binding, filter identity/inheritance and closure unqualified. Profile v7 refuses qualify."
+    ],
+    "operatorReadback": {
+      "maximumQualifications": 5,
+      "maximumLooseCompressedBytesPerQualification": 134217728,
+      "maximumLooseDecompressedBytesPerQualification": 134217728,
+      "maximumRootToolLaunches": 15,
+      "rootToolTimeoutSeconds": 1,
+      "metrics": [
+        "qualification/phase wall ns",
+        "verifier process CPU ns",
+        "reaped operator-child CPU ns during qualification",
+        "shared instrumented bytes including child probes and tool stdout",
+        "attempted/admitted/launched/finished root tool ledger"
+      ],
+      "scope": "Candidate checks actual operator cgroup placement/executable and aggregate 1 CPU/3GiB/96 task, worker2GiB/64, operator512MiB/16 quotas. These are proposed abort caps, not capacity evidence. Peak RSS and unreaped child CPU remain unknown. External OS/deadline-anchor work is outside the aggregate cgroup and must remain visible in whole-flow accounting.",
+      "allCostsInsideExistingPhaseWallCeilings": true,
+      "noAutomaticIncrease": true,
+      "maximumInstrumentedReadBytesPerPhase": 2147483648,
+      "binaryVerification": "Git is hashed once per frozen qualification; each live child must match its inode/device under the same immutable root. Child probes share the phase read budget.",
+      "toolExecution": "Exact pinned tool bytes copied into sealed anonymous memfd and executed via retained FD; host interpreter/libraries and native acceptance remain separately pinned/qualified.",
+      "operatorInstrumentedReadBytesPerPhase": 1073741824,
+      "rootActorInstrumentedReadBytesPerPhase": 1073741824,
+      "rootActorBootstrapChargedToPrepare": true,
+      "rootActorCosts": "Separate process CPU/read phase metrics and terminal reap receipt; no free bootstrap, startup exec allowance or extension of existing phase/whole deadline.",
+      "overlapPolicy": "Root actor process CPU is cumulative across phase snapshots and overlaps terminal reaped-child CPU: never sum those views or snapshots. Readback/closure wall is contained in phase/whole wall. Peak RSS, unreaped child CPU and uninstrumented/residual work are not established by these counters."
+    },
+    "gitDescendantCoverage": {
+      "status": "reader-and-reconciliation-implemented-not-native-qualified",
+      "module": "agent_braid/forecast_exec_census.py",
+      "kernelInterface": "aarch64 bpf syscall 280; only MAP_LOOKUP_ELEM, OBJ_GET, OBJ_GET_INFO_BY_FD; no load, map mutation or attach",
+      "programAuthority": "External independently reviewed SHA256 manifest of exact translated fork/exec/exit programs, tied to profile.census_sha256; never accept an observed hash as its own authority",
+      "objects": "Three ARRAY maps cfg32/state32/events48; capacity65536; three pinned raw tracepoint links/programs sched_process_fork/exec/exit",
+      "data": "Only numeric sequence, monotonic time, aggregate/task cgroup IDs, pid/tgid/kind. No argv/environment/path/prompt fields. Fork record semantics must identify whose PID is emitted; no ancestry inference from it.",
+      "closure": "Require frozen or empty worker, no in-flight records, same allocation/written counters before/after read, no loss/recursion misses/config drift. Known Git/tool/worker execs consume one event each; repeated execs of same PID count again. Closed phases cannot be reclassified or lend helper reserves. Unknown execs retained as auxiliary-or-unclassified, never silently dropped.",
+      "limits": {
+        "maximumEvents": 65536,
+        "recordBytes": 48,
+        "eventPayloadBytes": 3145728,
+        "maximumTranslatedProgramBytesEach": 65536,
+        "auxiliaryAbortCapPerPhase": "same numeric count as current phase Git-request cap; an explicit risk choice, not measured need",
+        "serialAuxiliaryAbortCap": 3843,
+        "parallelAuxiliaryAbortCap": 6662,
+        "serialTotalExecAbortCap": 7704,
+        "parallelTotalExecAbortCap": 13342,
+        "rootTools": 15,
+        "workerEntries": 3
+      },
+      "costScope": "Kernel allocations/journal Python memory must fit operator512MiB and aggregate3GiB; syscall reads charge the existing shared2GiB phase read cap and all CPU/wall consumes existing deadlines. Kernel metadata/allocator overhead unknown; payload size is not RSS or quota proof.",
+      "hardQuotaEnforced": false,
+      "criticalStop": "A post-exec trace cannot prevent an over-budget exec. Profile v4 fixes execAdmissionEnforced=false; NativeBoundary.qualify refuses before any native read or tool call until that missing capability has a reviewed implementation. No native-control budget can be accepted from this journal alone.",
+      "nextMechanism": "Root-owned pre-exec mediation, e.g. seccomp user notification for execve/execveat with inherited non-relaxable filter, exact architecture handling, independent filter/listener identity, phase-specific admission ledger and fail-closed listener death. Separate implementation/review/native qualification required; no callback chosen by client/model.",
+      "automaticFallback": false,
+      "probeSource": "research/native/fc1_exec_census.bpf.c",
+      "probeStatus": "AGPL source supplied; non-GPL-only helper flags checked against Linux6.12; uncompiled/unloaded/unattached, no object/translated-program hash"
+    }
+  },
+  "budget": {
+    "serialGitRequests": 3843,
+    "parallelGitRequests": 6662,
+    "serialAbortSeconds": 1140,
+    "parallelAbortSeconds": 1890,
+    "serialRetainedScratchBytes": 713326592,
+    "parallelRetainedScratchBytes": 1384415232,
+    "status": "unchanged proposed abort policies; pre-exec quota/filter source implemented but unbound and disabled; partial static artifacts do not establish fit, execution cost or operative admission",
+    "operativeAccepted": false
+  },
+  "gates": {
+    "T001": "pending",
+    "T005": "pending",
+    "T008": "pending",
+    "T009": "pending",
+    "sourceCapture": "pending",
+    "model": "pending",
+    "pilotHoldout": "pending",
+    "humanInterpretation": "pending",
+    "founderAdoption": "pending"
+  },
+  "references": [
+    "https://github.com/systemd/systemd/releases/tag/v261.3",
+    "https://www.freedesktop.org/software/systemd/man/latest/systemd.exec.html#RootHash=",
+    "https://docs.python.org/3.13/library/os.html#os.WNOWAIT",
+    "https://man7.org/linux/man-pages/man5/proc_pid_stat.5.html"
+  ],
+  "sourceAcquisition": {
+    "status": "Static selected-ELF dependency names reduced to libudev.so.1; exact systemd261.3 manager and full runtime/authority/trust/build closure remain missing or unaccepted",
+    "observedDate": "2026-10-18 Europe/Madrid",
+    "metadataOnly": false,
+    "systemd": {
+      "version": "261.3",
+      "repository": "https://github.com/systemd/systemd",
+      "tagObject": "6bb176a27fc5c95248e191520b717d082f49f14c",
+      "commit": "3255daee1572366b74fe92f002a3d60ecbb27103",
+      "githubReportsSignatureValid": true,
+      "signatureVerifiedLocally": false,
+      "binarySha256": null,
+      "note": "stable mirror tag lookup404 retained as diagnostic; tag exists in canonical systemd/systemd. Newer release was not substituted.",
+      "releaseAssetInspection": {
+        "url": "https://github.com/systemd/systemd/releases/tag/v261.3",
+        "attachedAssets": 0,
+        "sha256": "886ce3a20f269ee33f25acf0894e84aaa0832f019ea830d1c5fafa36f80d9641",
+        "globalBinaryAbsenceProven": false,
+        "fallbackVersionSelected": false
+      }
+    },
+    "git": {
+      "version": "2.56.0",
+      "repository": "https://github.com/git/git",
+      "tagObject": "2478544319491bbd2a42cc57a83e3d2f4730a280",
+      "commit": "a018953688f1b10bddf91bff8747068f5f4746a4",
+      "githubReportsSignatureValid": true,
+      "signatureVerifiedLocally": false,
+      "binarySha256": null,
+      "securityAndBuildReview": "pending; selecting a source version does not approve a binary",
+      "candidateBinarySha256": "1182d6374f4657c910811458aaf32e1183e845143fddcbb13e70f85d47ee678c",
+      "candidateAccepted": false,
+      "candidatePackage": "git-core-2.56.0-1.fc45.aarch64",
+      "candidateSignedRpmSha256": "e2663c3c6464306cd5450201e42402b94409ace0faefdf86c24b0bec636391de",
+      "candidateAuthentication": "RSA signed immutable RPM header plus selected ELF SHA256 bindings; not whole-payload verification or accepted publisher trust"
+    },
+    "python": {
+      "version": "3.13.11",
+      "archive": "https://www.python.org/ftp/python/3.13.11/Python-3.13.11.tar.xz",
+      "sigstore": "https://www.python.org/ftp/python/3.13.11/Python-3.13.11.tar.xz.sigstore",
+      "advertisedArchiveSha256": "16ede7bb7cdbfa895d11b0642fa0e523f291e6487194d53cf6d3b338c3a17ea2",
+      "sigstoreMetadataSha256": "e8b4431b75fcb9909975a3da70e7edfd6410b9ad0dc70c8830d6f4be20b1fd5c",
+      "archiveRead": false,
+      "signatureVerifiedLocally": false,
+      "binarySha256": null,
+      "candidateBinarySha256": "6d0e9a0717a0c2a15d6fb281cb2e5cecc7a824462fa5e4987995c35cb534f5d1",
+      "candidateAccepted": false
+    },
+    "kernel": {
+      "version": "6.12.113",
+      "archive": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.113.tar.xz",
+      "advertisedArchiveSha256": "e09b6727e5c521253f0d41694900b9c38fb7604db7d35238a8197aa9f7de2428",
+      "releaseMetadataSha256": "b378bb61bade71c7692e6c2a1bbf3d135626fbd33a55f876aac19670c58c1c40",
+      "checksumMetadataSha256": "edde3289c6e5a8eed1ae3dcdb84fd93c9196c22196a53a895b8243f24ec8ed0b",
+      "releaseDate": "2026-10-15",
+      "archiveRead": false,
+      "signatureVerifiedLocally": false,
+      "kernelImageSha256": null,
+      "candidatePackage": "linux-image-6.12.113+deb13-cloud-arm64-unsigned_6.12.113-1_arm64.deb",
+      "candidateArchiveSha256": "6091e46d2213408671a70cadd43d2e6a51db0d8965c70577ad779e6073ef5f75",
+      "candidateKernelImageSha256": "922795269a84ddb746fa7943c490c20a21903d976ac8d33a46f1c16ea142b92b",
+      "candidateConfigSha256": "902f270f2638c8d669780292448cde0c415b3030d63e119bb22678afd12f8e23",
+      "candidateAccepted": false,
+      "candidateAuthentication": "Debian-security InRelease signature mathematics and signed index/archive binding checked; key policy separate",
+      "moduleRequirements": "BLK_DEV_DM, DM_VERITY and BLK_DEV_LOOP are modules; matching package paths hashed, not loaded; kmod/initramfs dependency closure pending"
+    },
+    "route": [
+      "Prefer one existing operator-selected audited local aarch64 bundle. No global disk/registry inventory or automatic download.",
+      "Operator independently authenticates release/package signatures against approved keys/identities and retains provenance, exact dependency/ELF interpreter closure, compiler/config/source identity and build receipt. Published digest alone is not authentication.",
+      "Provide a canonical fc1-linux-artifacts-v1 manifest with exact paths/bytes/SHA256/kinds and kernel,manager,systemctl,dmsetup,git,python,operator,operatorLauncher,censusObject bindings; pin manifest and provenance SHA independently.",
+      "Run explicit offline inspect_bundle only against that approved directory. It checks regular no-follow files, stable SHA/size and ELF64 little-endian aarch64 or BPF object headers. It does not import/run binaries or establish dependency closure.",
+      "Separately review loader/interpreter/library resolution, helper closure, source authenticity, kernel features/config, licenses/security, immutable operator code and filter/probe source-to-object mapping. No ldd or native probe is used here.",
+      "The owner separately authorized the bounded static-only downloads recorded below. No complete approved bundle exists; remaining acquisition beyond that scope or any Linux build/export/image construction needs its own specific authority. No automatic version/architecture fallback or build.",
+      "After an actually reviewed bundle exists, use measured file sizes/build identity to serialize recipe, construct and hash the verity image only under separate authorization. The raw512MiB/root480MiB ceiling still requires filesystem/verity-fit evidence."
+    ],
+    "stillMissing": [
+      "Exact systemd261.3 manager/systemctl and matching libudev.so.1 exporting LIBUDEV_183; upstream v261.3 release has zero attached assets, not proof of global absence",
+      "Qualified immutable admission.py, issuer/manager adapter and independent whole-scope absolute watchdog with issuer-death revocation and retained cgroup.kill/empty readback; callbacks and relative RuntimeMaxSec do not accredit this",
+      "Issuer/watchdog lifecycle CPU, memory/tasks, I/O and storage charged inside the original whole-flow boundary with no free residency; actual implementation/bindings not supplied",
+      "Complete loader/path/GLIBC_PRIVATE ABI, NSS/SASL/OpenSSL dynamic module/non-ELF runtime and source/build/host-versus-image lock",
+      "Key certification, publisher trust, revocation/expiry and historical/current freshness acceptance; header/selected-file mathematics is narrower",
+      "Probe/compiler/header/translated-program identities, host boot/module/initramfs readiness and image/verity/fit evidence; no build or native qualification performed"
+    ],
+    "inspector": "agent_braid/forecast_linux_artifacts.py",
+    "inspectionActuallyRunOnLinuxBundle": false,
+    "downloadsOfArchivesOrBinaries": 52,
+    "builds": 0,
+    "downloadCountBoundary": "52 retained package archives /50 distinct packages /62,625,382bytes, including unsigned/signed duplicate Git and PCRE2 archives. Metadata/key/source/receipt files separate; not an image or runtime allocation."
+  },
+  "preExecBarrier": {
+    "version": "fc1-exec-gate-v1",
+    "profileVersion": 7,
+    "module": "agent_braid/forecast_exec_gate.py",
+    "status": "launcher-root-actor-source-wired-not-deployed-or-native-qualified",
+    "filter": "aarch64 execve/execveat -> USER_NOTIF; foreign ABI -> kill; seccomp/prctl -> EPERM after installation to prevent filter shadowing",
+    "policy": "quota-only CONTINUE; no tracee argv/path/payload memory used as security authority; semantic grants remain independent",
+    "writeAhead": "consume per-phase token before CONTINUE; failed/ambiguous/stale continuation consumes token without refund or retry; after quota exhaustion close every owned listener and require independent whole-flow watchdog cleanup",
+    "identity": "broker owns CLOEXEC duplicate, returns only opaque token; caller cannot swap retained FD through API. Actual filter provenance/exclusive listener handoff/launcher identity require independent native binding; callback chosen by operator is not itself proof",
+    "phase": "shared lifecycle lock covers recv/reserve/continue; frozen/quiescent transition rejects pending notifications and updates epochs. Public ledger advancement rejects broker-owned state; no future reserve borrowing or deadline extension",
+    "caps": "per phase: 2*Git-request cap+3 root-tool execs, plus separately reserved worker start only prepare/verify/terminal; max65536 consumed records; previous total7704/13342 policy unchanged",
+    "nativeInstallerInvoked": false,
+    "execAdmissionEnforced": false,
+    "qualifierStillRefuses": true,
+    "remaining": [
+      "Exact systemd261.3 manager/systemctl and matching libudev.so.1 exporting LIBUDEV_183; upstream v261.3 release has zero attached assets, not proof of global absence",
+      "Qualified immutable admission.py, issuer/manager adapter and independent whole-scope absolute watchdog with issuer-death revocation and retained cgroup.kill/empty readback; callbacks and relative RuntimeMaxSec do not accredit this",
+      "Issuer/watchdog lifecycle CPU, memory/tasks, I/O and storage charged inside the original whole-flow boundary with no free residency; actual implementation/bindings not supplied",
+      "Complete loader/path/GLIBC_PRIVATE ABI, NSS/SASL/OpenSSL dynamic module/non-ELF runtime and source/build/host-versus-image lock",
+      "Key certification, publisher trust, revocation/expiry and historical/current freshness acceptance; header/selected-file mathematics is narrower",
+      "Probe/compiler/header/translated-program identities, host boot/module/initramfs readiness and image/verity/fit evidence; no build or native qualification performed"
+    ],
+    "launcherModule": "agent_braid/forecast_launcher.py",
+    "bootstrapSupervisionAccepted": false
+  },
+  "partialLinuxBundleAudit": {
+    "version": "fc1-static-debian-candidates-v1",
+    "date": "2026-10-18 Europe/Madrid",
+    "status": "partial-static-candidates-not-complete-or-admitted-bundle",
+    "downloadedBytes": 3117352,
+    "sourceAuthenticityAccepted": false,
+    "dependencyClosureAccepted": false,
+    "executions": 0,
+    "packages": [
+      {
+        "package": "python3.13-minimal",
+        "version": "3.13.11-1",
+        "architecture": "arm64",
+        "url": "https://snapshot.debian.org/file/473a5853bcb6d12ca2aeb4e3c99692d768db91a1",
+        "archivePath": "/private/tmp/fc1-linux-bundle-audit-20261018/473a5853bcb6d12ca2aeb4e3c99692d768db91a1.deb",
+        "snapshotSha1": "473a5853bcb6d12ca2aeb4e3c99692d768db91a1",
+        "archiveSha256": "991490ca746d3e71526f014922fbf5f4482717226b3b7e750ae9a515d324ebde",
+        "archiveBytes": 2064528,
+        "regularFileBytes": 6877256,
+        "elfFiles": [
+          {
+            "path": "usr/bin/python3.13",
+            "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/python3.13-minimal/usr/bin/python3.13",
+            "bytes": 6805112,
+            "sha256": "6d0e9a0717a0c2a15d6fb281cb2e5cecc7a824462fa5e4987995c35cb534f5d1",
+            "elf": {
+              "interpreter": "/lib/ld-linux-aarch64.so.1",
+              "needed": [
+                "libm.so.6",
+                "libz.so.1",
+                "libexpat.so.1",
+                "libc.so.6",
+                "ld-linux-aarch64.so.1"
+              ],
+              "searchPaths": [],
+              "loaderResolutionVerified": false
+            }
+          }
+        ],
+        "symlinksNotExtracted": [],
+        "signatureVerifiedLocally": false,
+        "executed": false
+      },
+      {
+        "package": "libpython3.13-minimal",
+        "version": "3.13.11-1",
+        "architecture": "arm64",
+        "url": "https://snapshot.debian.org/file/9ea5648504d88f4d4a9932db4b50dff5d8b5207f",
+        "archivePath": "/private/tmp/fc1-linux-bundle-audit-20261018/9ea5648504d88f4d4a9932db4b50dff5d8b5207f.deb",
+        "snapshotSha1": "9ea5648504d88f4d4a9932db4b50dff5d8b5207f",
+        "archiveSha256": "c8a1614ee29a2a59019fd1ac1a4e743577810d08d48e175a1f81301d66e03ad8",
+        "archiveBytes": 858796,
+        "regularFileBytes": 5404716,
+        "elfFiles": [
+          {
+            "path": "usr/lib/python3.13/lib-dynload/_hashlib.cpython-313-aarch64-linux-gnu.so",
+            "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-minimal/usr/lib/python3.13/lib-dynload/_hashlib.cpython-313-aarch64-linux-gnu.so",
+            "bytes": 71880,
+            "sha256": "6c1ccea020158b833ba75c7677f1e5a806b01774e2595181e0555543984e6535",
+            "elf": {
+              "interpreter": null,
+              "needed": [
+                "libcrypto.so.3",
+                "libc.so.6",
+                "ld-linux-aarch64.so.1"
+              ],
+              "searchPaths": [],
+              "loaderResolutionVerified": false
+            }
+          },
+          {
+            "path": "usr/lib/python3.13/lib-dynload/_ssl.cpython-313-aarch64-linux-gnu.so",
+            "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-minimal/usr/lib/python3.13/lib-dynload/_ssl.cpython-313-aarch64-linux-gnu.so",
+            "bytes": 235624,
+            "sha256": "12264be9d1ebc70521847c9398c60523f49b366d19ecd0761aab3b40c90421ca",
+            "elf": {
+              "interpreter": null,
+              "needed": [
+                "libssl.so.3",
+                "libcrypto.so.3",
+                "libc.so.6"
+              ],
+              "searchPaths": [],
+              "loaderResolutionVerified": false
+            }
+          }
+        ],
+        "symlinksNotExtracted": [
+          {
+            "path": "./usr/lib/python3.13/_sysconfigdata__aarch64-linux-gnu.py",
+            "target": "_sysconfigdata__linux_aarch64-linux-gnu.py"
+          },
+          {
+            "path": "./usr/lib/python3.13/sitecustomize.py",
+            "target": "/etc/python3.13/sitecustomize.py"
+          }
+        ],
+        "signatureVerifiedLocally": false,
+        "executed": false
+      },
+      {
+        "package": "dmsetup",
+        "version": "2:1.02.205-2",
+        "architecture": "arm64",
+        "url": "https://snapshot.debian.org/file/63ec630316cf70c5d1ed3dd5e3ba92de92b6b3f4",
+        "archivePath": "/private/tmp/fc1-linux-bundle-audit-20261018/63ec630316cf70c5d1ed3dd5e3ba92de92b6b3f4.deb",
+        "snapshotSha1": "63ec630316cf70c5d1ed3dd5e3ba92de92b6b3f4",
+        "archiveSha256": "f802c1ec2d6f45a6544f09c5da72f9688e06208d12bb76ac9b25f2cfa8033306",
+        "archiveBytes": 76072,
+        "regularFileBytes": 259299,
+        "elfFiles": [
+          {
+            "path": "usr/sbin/dmsetup",
+            "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/dmsetup/usr/sbin/dmsetup",
+            "bytes": 198792,
+            "sha256": "554e3526e1683a710be0c8aa89ea52be72e2cc5a96c7029d07a80de7827554f2",
+            "elf": {
+              "interpreter": "/lib/ld-linux-aarch64.so.1",
+              "needed": [
+                "libdevmapper.so.1.02.1",
+                "libc.so.6",
+                "ld-linux-aarch64.so.1"
+              ],
+              "searchPaths": [],
+              "loaderResolutionVerified": false
+            }
+          }
+        ],
+        "symlinksNotExtracted": [
+          {
+            "path": "./usr/sbin/dmstats",
+            "target": "dmsetup"
+          }
+        ],
+        "signatureVerifiedLocally": false,
+        "executed": false
+      },
+      {
+        "package": "libdevmapper1.02.1",
+        "version": "2:1.02.205-2",
+        "architecture": "arm64",
+        "url": "https://snapshot.debian.org/file/dc1478f8e44f4dc3e464dab29bd7431a82286752",
+        "archivePath": "/private/tmp/fc1-linux-bundle-audit-20261018/dc1478f8e44f4dc3e464dab29bd7431a82286752.deb",
+        "snapshotSha1": "dc1478f8e44f4dc3e464dab29bd7431a82286752",
+        "archiveSha256": "4d783b235eb9857ec96fabd0f161a84426706d079ec82ef5a91cbbf9dd644904",
+        "archiveBytes": 117956,
+        "regularFileBytes": 545617,
+        "elfFiles": [
+          {
+            "path": "usr/lib/aarch64-linux-gnu/libdevmapper.so.1.02.1",
+            "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libdevmapper1.02.1/usr/lib/aarch64-linux-gnu/libdevmapper.so.1.02.1",
+            "bytes": 534752,
+            "sha256": "e325d106cea04cf789fa0f2c39de479fc61ce6cd510b712497ab756312e04f46",
+            "elf": {
+              "interpreter": null,
+              "needed": [
+                "libselinux.so.1",
+                "libudev.so.1",
+                "libm.so.6",
+                "libc.so.6",
+                "ld-linux-aarch64.so.1"
+              ],
+              "searchPaths": [],
+              "loaderResolutionVerified": false
+            }
+          }
+        ],
+        "symlinksNotExtracted": [],
+        "signatureVerifiedLocally": false,
+        "executed": false
+      }
+    ],
+    "recordSha256": "34a9a9ebd493b06fb815ad026698528d119b9790527b901f6deb730c090c2d19",
+    "selectedElfBytes": 7846160,
+    "unresolvedNeeded": [
+      "ld-linux-aarch64.so.1",
+      "libc.so.6",
+      "libcrypto.so.3",
+      "libexpat.so.1",
+      "libm.so.6",
+      "libselinux.so.1",
+      "libssl.so.3",
+      "libudev.so.1",
+      "libz.so.1"
+    ],
+    "missingRoles": [
+      "kernel image",
+      "Git2.56.0",
+      "systemd261.3 manager/systemctl and matching libudev",
+      "complete Python runtime including ctypes/libffi and dependency closure",
+      "immutable operator launcher and root broker integration",
+      "compiled reviewed census object and independent translated-program pins"
+    ],
+    "packageSignatureAcceptance": "not verified; Snapshot SHA1 locators matched and SHA256 of actual archives/ELFs computed, but published location/digest is not accepted provenance",
+    "exactPackageRoute": "Queried Snapshot source-version indices had no match for fixed Git2.56.0/systemd261.3. This is a bounded route observation, not proof of global artifact absence. No substitute versions selected.",
+    "pluginCoordination": "Plugins confirms no existing audited aarch64 Linux operator/probe bundle; its Linux x86_64/Python3.12.15 package and emulated controls are unsuitable and not substituted.",
+    "observationBoundary": "Historical initial four-package inspection; superseded for current dependency/authentication status by authenticatedDependencyContinuation, without rewriting its retained observations."
+  },
+  "authenticatedDependencyContinuation": {
+    "version": "fc1-historical-package-chain-v1",
+    "status": "partial-authenticated-historical-bytes-not-accepted-bundle",
+    "packages": [
+      {
+        "package": "python3.13-minimal",
+        "version": "3.13.11-1",
+        "architecture": "arm64",
+        "sha256": "991490ca746d3e71526f014922fbf5f4482717226b3b7e750ae9a515d324ebde",
+        "bytes": 2064528,
+        "url": "https://snapshot.debian.org/file/473a5853bcb6d12ca2aeb4e3c99692d768db91a1",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libpython3.13-minimal",
+        "version": "3.13.11-1",
+        "architecture": "arm64",
+        "sha256": "c8a1614ee29a2a59019fd1ac1a4e743577810d08d48e175a1f81301d66e03ad8",
+        "bytes": 858796,
+        "url": "https://snapshot.debian.org/file/9ea5648504d88f4d4a9932db4b50dff5d8b5207f",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "dmsetup",
+        "version": "2:1.02.205-2",
+        "architecture": "arm64",
+        "sha256": "f802c1ec2d6f45a6544f09c5da72f9688e06208d12bb76ac9b25f2cfa8033306",
+        "bytes": 76072,
+        "url": "https://snapshot.debian.org/file/63ec630316cf70c5d1ed3dd5e3ba92de92b6b3f4",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libdevmapper1.02.1",
+        "version": "2:1.02.205-2",
+        "architecture": "arm64",
+        "sha256": "4d783b235eb9857ec96fabd0f161a84426706d079ec82ef5a91cbbf9dd644904",
+        "bytes": 117956,
+        "url": "https://snapshot.debian.org/file/dc1478f8e44f4dc3e464dab29bd7431a82286752",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libpython3.13-stdlib",
+        "version": "3.13.11-1",
+        "architecture": "arm64",
+        "sha256": "fdd5b4eaa5bd81f1d68a38e02ad6dbcd378cfd58f6c4211e3cdb3589e34ea3a7",
+        "bytes": 1902468,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/p/python3.13/libpython3.13-stdlib_3.13.11-1_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libc6",
+        "version": "2.42-5",
+        "architecture": "arm64",
+        "sha256": "5659692a634d8906a222b879c1cbe3b4a1d5f4ae3d6646265ebde48331da7a63",
+        "bytes": 1465796,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/g/glibc/libc6_2.42-5_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "zlib1g",
+        "version": "1:1.3.dfsg+really1.3.1-1+b1",
+        "architecture": "arm64",
+        "sha256": "209aa5cf671e97b9eb0410844fa6df4cae2e75b0c72e7802ab6c8ece13e6ddef",
+        "bytes": 85116,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/z/zlib/zlib1g_1.3.dfsg+really1.3.1-1+b1_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libexpat1",
+        "version": "2.7.3-1",
+        "architecture": "arm64",
+        "sha256": "01e3fa4d1e767341baeb6873230584f877bb63c0182b793df94d17bb0741d1f1",
+        "bytes": 96480,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/e/expat/libexpat1_2.7.3-1_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libssl3t64",
+        "version": "3.5.4-1",
+        "architecture": "arm64",
+        "sha256": "87de05f374c8e37bd82209a785ab04b2afb85bc621b9e2067f11a2bb80118af4",
+        "bytes": 2724688,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/o/openssl/libssl3t64_3.5.4-1_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libffi8",
+        "version": "3.5.2-2",
+        "architecture": "arm64",
+        "sha256": "24f1577596a1e2e227e1ce2607b3ffdace56092cd34184be9748b8fc6f757401",
+        "bytes": 21504,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/libf/libffi/libffi8_3.5.2-2_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libbz2-1.0",
+        "version": "1.0.8-6",
+        "architecture": "arm64",
+        "sha256": "3537fe4fc577a60c8a9568873cd577db7ebc135eb8bb1825f18caf8972d9d2f2",
+        "bytes": 37772,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/b/bzip2/libbz2-1.0_1.0.8-6_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "liblzma5",
+        "version": "5.8.1-2",
+        "architecture": "arm64",
+        "sha256": "29f6deb7205da65baab098e2b9d842ce02114fb824ca53db3408988e2213dea4",
+        "bytes": 302048,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/x/xz-utils/liblzma5_5.8.1-2_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libncursesw6",
+        "version": "6.5+20251123-1",
+        "architecture": "arm64",
+        "sha256": "366cb528e71b09c149ec98f144f06a644370bcb1e37e52a78f66c767a1dcd86a",
+        "bytes": 124860,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/n/ncurses/libncursesw6_6.5+20251123-1_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libreadline8t64",
+        "version": "8.3-3",
+        "architecture": "arm64",
+        "sha256": "c7df5aa0ca474f446cc4796e99eeb2d15ffeda75ad46b63631fe3e7d03ca8783",
+        "bytes": 168632,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/r/readline/libreadline8t64_8.3-3_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libsqlite3-0",
+        "version": "3.46.1-8",
+        "architecture": "arm64",
+        "sha256": "cbcd695815561d1775240877b024075376b8d8137bd00559e80e66398f4ed2e4",
+        "bytes": 883652,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/s/sqlite3/libsqlite3-0_3.46.1-8_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libuuid1",
+        "version": "2.41.2-4",
+        "architecture": "arm64",
+        "sha256": "6bdee17360566ed73a34e85759fe86aae91b93c229f4760aee92cc36ad556ea4",
+        "bytes": 37808,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/u/util-linux/libuuid1_2.41.2-4_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libdb5.3t64",
+        "version": "5.3.28+dfsg2-11",
+        "architecture": "arm64",
+        "sha256": "1b7de9d58af4382a038e972d3bd12ab146218842358052f754980a6796e49860",
+        "bytes": 625608,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/d/db5.3/libdb5.3t64_5.3.28+dfsg2-11_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libgdbm6t64",
+        "version": "1.26-1",
+        "architecture": "arm64",
+        "sha256": "b3778dcf236f1a772fcbc2bb6e3f57cc033f92d644c5dfc52278944ba9909b1d",
+        "bytes": 77472,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/g/gdbm/libgdbm6t64_1.26-1_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libgdbm-compat4t64",
+        "version": "1.26-1",
+        "architecture": "arm64",
+        "sha256": "9e08dd9a13c14803030e35a7693048f85cd998e23b9a2b373623e7e9341076a7",
+        "bytes": 52812,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/g/gdbm/libgdbm-compat4t64_1.26-1_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libtinfo6",
+        "version": "6.5+20251123-1",
+        "architecture": "arm64",
+        "sha256": "422338bbc18f03f418f4ad3a09d1c1cb26ae21017a95aedbb0b6aea4cdc3b03c",
+        "bytes": 345260,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/n/ncurses/libtinfo6_6.5+20251123-1_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libselinux1",
+        "version": "3.9-4+b1",
+        "architecture": "arm64",
+        "sha256": "14a6426287f035426835199c9a9d37b8bff887458b2f5e6c5246dc151ebc53d4",
+        "bytes": 80772,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/libs/libselinux/libselinux1_3.9-4+b1_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libpcre2-8-0",
+        "version": "10.46-1",
+        "architecture": "arm64",
+        "sha256": "3e40d38986220ac972a332ed780f22c97af1e0590d1e50e4020e732623173ff6",
+        "bytes": 262028,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/p/pcre2/libpcre2-8-0_10.46-1_arm64.deb",
+        "indexBindingVerified": true
+      },
+      {
+        "package": "libzstd1",
+        "version": "1.5.7+dfsg-2",
+        "architecture": "arm64",
+        "sha256": "c73a4975827d8bb8c3dc9840698c84165f388e41f36260764ac5cc6b925be884",
+        "bytes": 260052,
+        "url": "https://snapshot.debian.org/archive/debian/20251207T022820Z/pool/main/libz/libzstd/libzstd1_1.5.7+dfsg-2_arm64.deb",
+        "indexBindingVerified": true
+      }
+    ],
+    "packageCount": 23,
+    "compressedArchiveBytes": 12672180,
+    "actualElfFiles": 104,
+    "selectedElfBytes": 32485088,
+    "unprovidedNeededNames": [
+      "libudev.so.1"
+    ],
+    "signatures": [
+      {
+        "name": "python",
+        "key": "archive-key-13.asc",
+        "inReleaseSha256": "e9b82db6ddc42bb0710b661ab509609ca3c2920235df465c9caa4fee59e3a3f5",
+        "keyFileSha256": "6f1d277429dd7ffedcc6f8688a7ad9a458859b1139ffa026d1eeaadcbffb0da7",
+        "verifiedSigners": [
+          "B8E5F13176D2A7A75220028078DBA3BC47EF2265"
+        ],
+        "signatureValid": true,
+        "keyPolicyAccepted": false,
+        "revocationExpiryEvaluated": false,
+        "currentFreshnessAccepted": false,
+        "executionAuthorization": false,
+        "index": {
+          "path": "main/binary-arm64/Packages.xz",
+          "sha256": "3a449018a5cbd7e0634c7d533c8eac0c479caa11a8792305d2f858692a63cc91",
+          "bytes": 10155780
+        },
+        "releaseDate": [
+          "Date: Sun, 07 Dec 2025 02:11:23 UTC",
+          "Valid-Until: Sun, 14 Dec 2025 02:11:23 UTC"
+        ]
+      },
+      {
+        "name": "dmsetup",
+        "key": "archive-key-12.asc",
+        "inReleaseSha256": "77861b3c6d2feaca31359bdf44dbc38f43152e2079615f1b492eb330d464bc35",
+        "keyFileSha256": "c2a9a16fde95e037bafd0fa6b7e31f41b4ff1e85851de5558f19a2a2f0e955e2",
+        "verifiedSigners": [
+          "4CB50190207B4758A3F73A796ED0E7B82643E131"
+        ],
+        "signatureValid": true,
+        "keyPolicyAccepted": false,
+        "revocationExpiryEvaluated": false,
+        "currentFreshnessAccepted": false,
+        "executionAuthorization": false,
+        "index": {
+          "path": "main/binary-arm64/Packages.xz",
+          "sha256": "20d9e4dbd80fa4ab330d487541f495d7df8a9c26324486c6c96b8ba364106567",
+          "bytes": 10051012
+        },
+        "releaseDate": [
+          "Date: Mon, 05 May 2025 20:15:41 UTC",
+          "Valid-Until: Mon, 12 May 2025 20:15:41 UTC"
+        ]
+      }
+    ],
+    "receipts": [
+      {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/auth/metadata-receipt.json",
+        "sha256": "d7e420a2604d6d5ae62d7b30a2772fab18a6415a2d841f60f5f6462bca962027",
+        "bytes": 912
+      },
+      {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/auth/signature-verification.json",
+        "sha256": "aa05c2c932c53c341a883792fa0894d65a933c324c385d20a11f4393bc8ecd1c",
+        "bytes": 1606
+      },
+      {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/auth/package-chain-verification.json",
+        "sha256": "5ce9b5cc09b1bde28d3c1f8fc9f34323cc1d75cfadd6fa3877ee0347b4d1e3c9",
+        "bytes": 3004
+      },
+      {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/dependency-inspection.json",
+        "sha256": "a9458f93f85ad96fa3011b29fa55eaaa2e3e3ad8a883d4db3c5cc9f7c19c236c",
+        "bytes": 75302
+      },
+      {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/zstd-inspection.json",
+        "sha256": "b4831b8898973bb1fe06f24e05d6fae2feff6f858e37798b3bae361cc9c6a434",
+        "bytes": 1273
+      },
+      {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/soname-inspection.json",
+        "sha256": "84afa568b6dc963e655bd22cffafbfd6e43d84f8b46a8b71f53edfc8c62dfb4a",
+        "bytes": 62729
+      }
+    ],
+    "verificationModule": "agent_braid/forecast_bundle_auth.py",
+    "signatureScope": "Mathematical signature validity with externally supplied exact key-file SHA and full signer fingerprints; not OpenPGP certifications or trust policy acceptance.",
+    "keyPolicyAccepted": false,
+    "revocationExpiryEvaluated": false,
+    "currentFreshnessAccepted": false,
+    "dependencyClosureAccepted": false,
+    "loaderResolutionVerified": false,
+    "imageFitEstablished": false,
+    "nonElfRuntimeClosureAccepted": false,
+    "sourceBuildLockAccepted": false,
+    "executions": 0,
+    "builds": 0,
+    "activation": false,
+    "executionAuthorization": false
+  },
+  "externalBootstrapArtifactContinuation": {
+    "sourceDigest": "3a4ae051c1ddb2b0d395d56369f85c3538a9fd9a84a412ee38f273af08b8b207",
+    "bootstrap": {
+      "module": "agent_braid/forecast_bootstrap.py",
+      "status": "source-only; no issuer, backend or native bootstrap started",
+      "authority": "Root-only private SO_PEERCRED channel, pinned issuer ELF/start identity and retained prior escrow history; producer receipt or caller callback cannot authorize adoption",
+      "ordering": "Anchor then operator; write-ahead consumed permissions, independent loaded-unit/manager identity and original absolute watchdog before start intent",
+      "existingPrepareExecSlotsConsumed": 2,
+      "additionalExecAllowance": 0,
+      "deadlineReset": false,
+      "instrumentedReadResetOnAdoption": false
+    },
+    "proposedElfProviders": {
+      "version": "fc1-proposed-elf-provider-table-v1",
+      "retainedInspectedElfFiles": 115,
+      "proposedSelectedElfFiles": 114,
+      "proposedSelectedElfBytes": 45798872,
+      "selection": "Keep prior pcre2 bytes as history; table proposes the exact PCRE2 10.47 aarch64 provider recorded in Git buildroot71634011. No installation, accepted lock, fixed core-version or architecture change.",
+      "missingNeededNames": [
+        "libcrypto.so.4",
+        "libcurl.so.4",
+        "libssl.so.4",
+        "libudev.so.1"
+      ],
+      "missingRequiredVersions": [
+        {
+          "consumer": "usr/lib/aarch64-linux-gnu/libdevmapper.so.1.02.1",
+          "library": "libudev.so.1",
+          "missingVersions": [
+            "LIBUDEV_183"
+          ]
+        },
+        {
+          "consumer": "usr/libexec/git-core/git-http-push",
+          "library": "libexpat.so.1",
+          "missingVersions": [
+            "LIBEXPAT_1.0.0"
+          ]
+        },
+        {
+          "consumer": "usr/libexec/git-core/git-imap-send",
+          "library": "libssl.so.4",
+          "missingVersions": [
+            "OPENSSL_4.0.0"
+          ]
+        },
+        {
+          "consumer": "usr/libexec/git-core/git-imap-send",
+          "library": "libcrypto.so.4",
+          "missingVersions": [
+            "OPENSSL_4.0.0"
+          ]
+        }
+      ],
+      "ambiguousSonameProviders": {},
+      "loaderResolutionVerified": false,
+      "dependencyClosureAccepted": false,
+      "artifactExecutions": 0,
+      "files": [
+        {
+          "path": "usr/bin/python3.13",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/python3.13-minimal/usr/bin/python3.13",
+          "bytes": 6805112,
+          "sha256": "6d0e9a0717a0c2a15d6fb281cb2e5cecc7a824462fa5e4987995c35cb534f5d1",
+          "package": "python3.13-minimal",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "libm.so.6",
+              "libz.so.1",
+              "libexpat.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libz.so.1": [
+                "ZLIB_1.2.0"
+              ],
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libm.so.6": [
+                "GLIBC_2.38",
+                "GLIBC_2.35",
+                "GLIBC_2.29",
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.28",
+                "GLIBC_2.25",
+                "GLIBC_2.38",
+                "GLIBC_2.26",
+                "GLIBC_2.27",
+                "GLIBC_2.33",
+                "GLIBC_2.32",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_hashlib.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-minimal/usr/lib/python3.13/lib-dynload/_hashlib.cpython-313-aarch64-linux-gnu.so",
+          "bytes": 71880,
+          "sha256": "6c1ccea020158b833ba75c7677f1e5a806b01774e2595181e0555543984e6535",
+          "package": "libpython3.13-minimal",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libcrypto.so.3",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ],
+              "libcrypto.so.3": [
+                "OPENSSL_3.4.0",
+                "OPENSSL_3.0.0"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_ssl.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-minimal/usr/lib/python3.13/lib-dynload/_ssl.cpython-313-aarch64-linux-gnu.so",
+          "bytes": 235624,
+          "sha256": "12264be9d1ebc70521847c9398c60523f49b366d19ecd0761aab3b40c90421ca",
+          "package": "libpython3.13-minimal",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libssl.so.3",
+              "libcrypto.so.3",
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ],
+              "libcrypto.so.3": [
+                "OPENSSL_3.3.0",
+                "OPENSSL_3.0.0"
+              ],
+              "libssl.so.3": [
+                "OPENSSL_3.3.0",
+                "OPENSSL_3.0.0"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/sbin/dmsetup",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/dmsetup/usr/sbin/dmsetup",
+          "bytes": 198792,
+          "sha256": "554e3526e1683a710be0c8aa89ea52be72e2cc5a96c7029d07a80de7827554f2",
+          "package": "dmsetup",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "libdevmapper.so.1.02.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libdevmapper.so.1.02.1": [
+                "DM_1_02_131",
+                "DM_1_02_197",
+                "DM_1_02_103",
+                "DM_1_02_97",
+                "DM_1_02_107",
+                "DM_1_02_106",
+                "DM_1_02_181",
+                "DM_1_02_129",
+                "DM_1_02_105",
+                "DM_1_02_104",
+                "DM_1_02_138",
+                "Base"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.34",
+                "GLIBC_2.38",
+                "GLIBC_2.33",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libdevmapper.so.1.02.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libdevmapper1.02.1/usr/lib/aarch64-linux-gnu/libdevmapper.so.1.02.1",
+          "bytes": 534752,
+          "sha256": "e325d106cea04cf789fa0f2c39de479fc61ce6cd510b712497ab756312e04f46",
+          "package": "libdevmapper1.02.1",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libselinux.so.1",
+              "libudev.so.1",
+              "libm.so.6",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libdevmapper.so.1.02.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libselinux.so.1": [
+                "LIBSELINUX_1.0"
+              ],
+              "libm.so.6": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.28",
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.22",
+                "GLIBC_2.17"
+              ],
+              "libudev.so.1": [
+                "LIBUDEV_183"
+              ]
+            },
+            "providedVersions": [
+              "libdevmapper.so.1.02.1",
+              "Base",
+              "DM_1_02_97",
+              "DM_1_02_98",
+              "DM_1_02_99",
+              "DM_1_02_100",
+              "DM_1_02_101",
+              "DM_1_02_103",
+              "DM_1_02_104",
+              "DM_1_02_105",
+              "DM_1_02_106",
+              "DM_1_02_107",
+              "DM_1_02_110",
+              "DM_1_02_113",
+              "DM_1_02_124",
+              "DM_1_02_128",
+              "DM_1_02_129",
+              "DM_1_02_131",
+              "DM_1_02_133",
+              "DM_1_02_135",
+              "DM_1_02_138",
+              "DM_1_02_141",
+              "DM_1_02_147",
+              "DM_1_02_172",
+              "DM_1_02_181",
+              "DM_1_02_197",
+              "DM_1_02_202"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_asyncio.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_asyncio.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "d7b56c17c5d7e27be86a34a26c038d87d56b288017810541d330f57ef05dd4cf",
+          "bytes": 73032,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {},
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_bz2.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_bz2.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "4cc79fd06c3fb83b4b08f76887519a4208c1632218e6939b09012ba4ecab0a2d",
+          "bytes": 68768,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libbz2.so.1.0",
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_codecs_cn.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_codecs_cn.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "86cd9132697aed9171a3772e78a58d435eeb5ab7a61d0b62f3ae25ccfbaf371c",
+          "bytes": 199136,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_codecs_hk.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_codecs_hk.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "a2d48d0a726f6996e5f856df6a3987dfb207666a8a69d28f2113e50293eb28e1",
+          "bytes": 199144,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_codecs_iso2022.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_codecs_iso2022.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "20655ce1f6d44eaee74f26aeefdf894d01a5dc5918df0b3999f47102172e7dc6",
+          "bytes": 68000,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_codecs_jp.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_codecs_jp.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "12520a6618480a761a1bc57e0ad9825a5c3340f26c34da862a46245b88476a94",
+          "bytes": 330384,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_codecs_kr.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_codecs_kr.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "5c2b5275b7e4970a990c258456c1c0699fb8c69acaf18cb33daf442a11ce4c1c",
+          "bytes": 199112,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_codecs_tw.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_codecs_tw.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "f81cf6e325cfc8e45ed132da062b77ad9879272bf2041ce52624bf3f657605c3",
+          "bytes": 133552,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_contextvars.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_contextvars.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "8ae93a23c73a960377689352f76ba4bf5b3c747c71ba1ebfc77e05e7d643793b",
+          "bytes": 67624,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {},
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_ctypes.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_ctypes.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "b55bb0e1e2ee9f01155f367e8ac1adde2735a9c369a1c2c2bcdb54e40e22fe66",
+          "bytes": 141792,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libffi.so.8",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libffi.so.8": [
+                "LIBFFI_CLOSURE_8.0",
+                "LIBFFI_BASE_8.0"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_ctypes_test.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_ctypes_test.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "1ddacee861d55d369231353db0fab69b2343d10fb5c7dc5ccfb0913da5b5a332",
+          "bytes": 68000,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libm.so.6",
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libm.so.6": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_curses.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_curses.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "b99cfe25690b394e41e4a67910ada5a9f456fa298cfff5b005650e8f6097c6d2",
+          "bytes": 140656,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libncursesw.so.6",
+              "libtinfo.so.6",
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ],
+              "libtinfo.so.6": [
+                "NCURSES6_TINFO_5.7.20081102",
+                "NCURSES6_TINFO_5.0.19991023"
+              ],
+              "libncursesw.so.6": [
+                "NCURSESW6_5.8.20110226",
+                "NCURSESW6_5.7.20081102",
+                "NCURSESW6_6.1.20171230",
+                "NCURSESW6_5.6.20061217",
+                "NCURSESW6_5.3.20021019",
+                "NCURSESW6_5.1.20000708"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_curses_panel.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_curses_panel.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "7f20401061b191f37af74105476ff667ead594325ff12fb4d64442cc239076c7",
+          "bytes": 68976,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libpanelw.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libpanelw.so.6": [
+                "NCURSESW6_5.1.20000708"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_dbm.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_dbm.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "9abf9ac3a63f8f043d18c1cf55d16263ebdc1856655aaf100de1cbf497dffccc",
+          "bytes": 68704,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libdb-5.3.so",
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ],
+              "libdb-5.3.so": [
+                "DB5_3"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_decimal.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_decimal.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "adf5698ef1eaea8535e8704d58aca51205b6c6ba3e9d8e4ce5a2ea6fc5e62e51",
+          "bytes": 338768,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_interpchannels.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_interpchannels.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "6c2ab4017ff36e2153fb267cb966a784de25cf0f464931aa1020d2e351855428",
+          "bytes": 69808,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_interpqueues.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_interpqueues.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "ca8f0f4b69a356678ab2415dbe1b5cfd947467414eb83b49c49c31a2152145d8",
+          "bytes": 68752,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_interpreters.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_interpreters.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "e324ceda7faf0d8e919e8c390e1fbd2a9b54a416503d527b7c3f0565b8828073",
+          "bytes": 69456,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_lsprof.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_lsprof.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "587cea235c8f7b52d12ee5efabf8770c4bef8fa254bedb5702dcac5f5b6c37c1",
+          "bytes": 68880,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_lzma.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_lzma.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "d38f01f5c35614d1c0c73f3162b934b96339f86d896b551c5c467251bdc0dfe2",
+          "bytes": 69416,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "liblzma.so.5",
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "liblzma.so.5": [
+                "XZ_5.0"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_multibytecodec.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_multibytecodec.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "4d4daa597d6d4bc0dac09a958705f3bc10e6e86fb808325b0963c8938f7a5461",
+          "bytes": 70672,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_multiprocessing.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_multiprocessing.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "0216758282e644f8403ef8d7ef6788dbff897eca799cfe0d5826eeef7467800e",
+          "bytes": 69056,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_posixshmem.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_posixshmem.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "b79efd386e444e03a1f8ae7eeb1278c7767fafefab3da9c032dbc7e7d416adf8",
+          "bytes": 67968,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_queue.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_queue.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "08b00570910d43fb095056cc23260a0aaadade44c5e37f5f12f2b89a888a3203",
+          "bytes": 68712,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_sqlite3.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_sqlite3.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "c425eaee63b9062e58d0e9cfe8cf51cbd19416bd1c5c0143fa98bb2efef69421",
+          "bytes": 140208,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libsqlite3.so.0",
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_testbuffer.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_testbuffer.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "c2085839075b108fc33ab60c883a81c33ef7718ce81ca1cd219cc486d3ddb699",
+          "bytes": 70384,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_testcapi.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_testcapi.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "4f5a29ad3a34d6906e88f78115fdb5505c9b6a8fd50d5b965d2dc53d29fcae0c",
+          "bytes": 365464,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_testclinic.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_testclinic.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "6cfb30dbff44d02e9dc574a43acf43300603a501b14349953c7212dc255cb85a",
+          "bytes": 143504,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_testclinic_limited.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_testclinic_limited.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "3c300c3e628fae3eae540b82f92ac1378f1923e97f9ffe561b76603e49ee7be8",
+          "bytes": 67768,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {},
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_testexternalinspection.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_testexternalinspection.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "0c78e5e350d481559a76cfc55bedfd0169a751d9d56effa74fdd6514e4f36d7b",
+          "bytes": 67912,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_testimportmultiple.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_testimportmultiple.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "c25d797fb9839d4c6f9f055b91868566d2185360e04426923d43055a69683c7b",
+          "bytes": 67736,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {},
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_testinternalcapi.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_testinternalcapi.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "889a346342c9520ed0bc7aa4e17a5d0fcb92c59d06125fb70708940eb391e8e3",
+          "bytes": 138416,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_testlimitedcapi.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_testlimitedcapi.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "0a2f050ad53b041159f5bdfaa3b520b4911e6f78ad2b0ff1ddb8809b7c22ae25",
+          "bytes": 211552,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_testmultiphase.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_testmultiphase.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "11cb3632368cd23051b26cd336c44368adf6afcd3b9e2c7890d82d0815836322",
+          "bytes": 72024,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {},
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_testsinglephase.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_testsinglephase.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "f657ebe0e9935432ae21fdbd20d5356ac4c0d248405ae05004216e15b9839f34",
+          "bytes": 68912,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {},
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_uuid.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_uuid.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "113bd78cc01acc08731150cacd5c66e05cb7d45c81cf96451b34e737b933b283",
+          "bytes": 67800,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libuuid.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libuuid.so.1": [
+                "UUID_2.20"
+              ],
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_xxtestfuzz.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_xxtestfuzz.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "fe56149c882c96986c5f20480b7efda10d71856b3084f10e3dd10367a50173f1",
+          "bytes": 68032,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/_zoneinfo.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/_zoneinfo.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "446033eeb4ed5a17fdcdce2095a26ea2d9dda2cffb17262a455ec5752b3716ef",
+          "bytes": 69432,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/mmap.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/mmap.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "48bd6bd4c3b0b0f8e6c03834e85cbc8a4ed5a890c7ab91e9448ae045c3ffe754",
+          "bytes": 69296,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/readline.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/readline.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "3efa139b12223b31ed241f34ebb9ef4459211df16ee4937e022a8140e08c6247",
+          "bytes": 69176,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libreadline.so.8",
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/resource.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/resource.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "88602e3f066def33663d4d65fe48491dc82205918441223d4d726eabccd6e80a",
+          "bytes": 68448,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/termios.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/termios.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "12d5b038d32c9111c7e880e85f9ad8a2f122ca9bc7e435d417213a96bf29374b",
+          "bytes": 72336,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.42",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/xxlimited.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/xxlimited.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "59689bbd4c5c7e9f7491235380cddb99caba026b8789e3884e19634f062af8b6",
+          "bytes": 68240,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {},
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/xxlimited_35.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/xxlimited_35.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "0d436fef161aa626edfa52165b0fdf8d7b158a994454a17d482f94fc04c98f13",
+          "bytes": 68152,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {},
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/python3.13/lib-dynload/xxsubtype.cpython-313-aarch64-linux-gnu.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libpython3.13-stdlib/usr/lib/python3.13/lib-dynload/xxsubtype.cpython-313-aarch64-linux-gnu.so",
+          "sha256": "5a232cda1c7c87e3b660567dde5f6811e4c06e5d892677b7c3b6b06c732186ee",
+          "bytes": 69088,
+          "package": "libpython3.13-stdlib",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/gconv/ANSI_X3.110.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/gconv/ANSI_X3.110.so",
+          "sha256": "78cc09fe091b5153a176a82c2457a6c25418f49c92b1a86eaa1602b0f9104242",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17",
+                "GLIBC_PRIVATE"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/gconv/CP1252.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/gconv/CP1252.so",
+          "sha256": "e346bcf773ce422d0193645036878e12ed58fc21b4a13e97f2c431e17f741981",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17",
+                "GLIBC_PRIVATE"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/gconv/ISO8859-1.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/gconv/ISO8859-1.so",
+          "sha256": "e67d8b8beddf8e152d89fe8ba95c1544fbdd3fecd9d9a4d6daf29a4fab05d636",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17",
+                "GLIBC_PRIVATE"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/gconv/ISO8859-15.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/gconv/ISO8859-15.so",
+          "sha256": "3277f4533facb184c41b5f1d96d106316c1e2ffcbe0ef5f314fd3af24b6d84d7",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17",
+                "GLIBC_PRIVATE"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/gconv/UNICODE.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/gconv/UNICODE.so",
+          "sha256": "3661f88fd484e3e116c40eceb792451307c4aa5ceb4da9710c30f18638a72e97",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17",
+                "GLIBC_PRIVATE"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/gconv/UTF-16.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/gconv/UTF-16.so",
+          "sha256": "1262d63b72d497fec2e7c705b188e2232564106e12653c8f4801c3bafef4bd8c",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17",
+                "GLIBC_PRIVATE"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/gconv/UTF-32.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/gconv/UTF-32.so",
+          "sha256": "de82575be33f8c91973ad3b7a52253705644a4e23ee1ebf418d0d86e05f66077",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17",
+                "GLIBC_PRIVATE"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/gconv/UTF-7.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/gconv/UTF-7.so",
+          "sha256": "08a4424d6b9fdc1afce78a08eb8afe7e759484d2d5a134bb8964424708375945",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17",
+                "GLIBC_PRIVATE"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1",
+          "sha256": "51e6067dc95c4ff5339bbaa4fdaa095b6326b50117e1a5618640c9860a92d383",
+          "bytes": 200648,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [],
+            "searchPaths": [],
+            "soname": "ld-linux-aarch64.so.1",
+            "requiredVersions": {},
+            "providedVersions": [
+              "ld-linux-aarch64.so.1",
+              "GLIBC_2.17",
+              "GLIBC_2.34",
+              "GLIBC_2.35",
+              "GLIBC_PRIVATE"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libBrokenLocale.so.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libBrokenLocale.so.1",
+          "sha256": "88085aad86207bb42b98120278e0df6b3e395e46aa5268e4d976666be660f288",
+          "bytes": 67736,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libBrokenLocale.so.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libBrokenLocale.so.1",
+              "GLIBC_2.17"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libanl.so.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libanl.so.1",
+          "sha256": "b0c06ec05b1aa07bdc581cd15dad58264959fde0629cf8ec776f55c4b7a8f20a",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": "libanl.so.1",
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libanl.so.1",
+              "GLIBC_2.17"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libc.so.6",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libc.so.6",
+          "sha256": "7df8bb5267b38f068bc8c049db402cf773504e926aa530c72bc8348ec6da8d40",
+          "bytes": 1913296,
+          "package": "libc6",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libc.so.6",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.35",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libc.so.6",
+              "GLIBC_2.17",
+              "GLIBC_2.18",
+              "GLIBC_2.22",
+              "GLIBC_2.23",
+              "GLIBC_2.24",
+              "GLIBC_2.25",
+              "GLIBC_2.26",
+              "GLIBC_2.27",
+              "GLIBC_2.28",
+              "GLIBC_2.29",
+              "GLIBC_2.30",
+              "GLIBC_2.31",
+              "GLIBC_2.32",
+              "GLIBC_2.33",
+              "GLIBC_2.34",
+              "GLIBC_2.35",
+              "GLIBC_2.36",
+              "GLIBC_2.38",
+              "GLIBC_2.39",
+              "GLIBC_2.41",
+              "GLIBC_2.42",
+              "GLIBC_ABI_DT_RELR",
+              "GLIBC_PRIVATE"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libc_malloc_debug.so.0",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libc_malloc_debug.so.0",
+          "sha256": "8b4ef5a3e4307a9067aa3f88f6b8eaed87bf15ae9f44afa8cdd6acacaea1204a",
+          "bytes": 70152,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libc_malloc_debug.so.0",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17",
+                "GLIBC_PRIVATE"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.32",
+                "GLIBC_2.30",
+                "GLIBC_2.34",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libc_malloc_debug.so.0",
+              "GLIBC_2.17",
+              "GLIBC_2.33"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libdl.so.2",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libdl.so.2",
+          "sha256": "1ef0450a337621e2658d08a0e87454fa54f5ce06aaeaec98c0f55ef0f56ee45b",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": "libdl.so.2",
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libdl.so.2",
+              "GLIBC_2.17"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libm.so.6",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libm.so.6",
+          "sha256": "e1624a7d786d8acb582e68ac18744d9bf4670afb9fe48a5038ce556528e136ae",
+          "bytes": 657568,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libm.so.6",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libm.so.6",
+              "GLIBC_2.17",
+              "GLIBC_2.18",
+              "GLIBC_2.23",
+              "GLIBC_2.24",
+              "GLIBC_2.25",
+              "GLIBC_2.27",
+              "GLIBC_2.28",
+              "GLIBC_2.29",
+              "GLIBC_2.31",
+              "GLIBC_2.32",
+              "GLIBC_2.35",
+              "GLIBC_2.38",
+              "GLIBC_2.39",
+              "GLIBC_2.40",
+              "GLIBC_2.41",
+              "GLIBC_2.42"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libmemusage.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libmemusage.so",
+          "sha256": "3a3826d14b90703f8713982e1544300f0e1fc5fc42e1ab805e095028ccafde05",
+          "bytes": 67736,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libmemusage.so",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.34",
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libmvec.so.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libmvec.so.1",
+          "sha256": "f033aa576024e90a373166cf00c31f3e51e08de30d263e183a6c11dbf4222ed6",
+          "bytes": 264344,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libm.so.6",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libmvec.so.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17"
+              ],
+              "libm.so.6": [
+                "GLIBC_2.32",
+                "GLIBC_2.41",
+                "GLIBC_2.35",
+                "GLIBC_2.27",
+                "GLIBC_2.29",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libmvec.so.1",
+              "GLIBC_2.38",
+              "GLIBC_2.39",
+              "GLIBC_2.40",
+              "GLIBC_2.41",
+              "GLIBC_2.42"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libnsl.so.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libnsl.so.1",
+          "sha256": "6dfed0160f0cbd3f2a78dbfc92351b54b18483214ba72a316dfc595344ac5269",
+          "bytes": 133272,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libnsl.so.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.28",
+                "GLIBC_2.38",
+                "GLIBC_2.33",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libnsl.so.1",
+              "GLIBC_2.17",
+              "GLIBC_PRIVATE"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libnss_compat.so.2",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libnss_compat.so.2",
+          "sha256": "764a38c4e47d76d2113869ec96211e3cef4f436fb0e46ab8338aa009c7e09148",
+          "bytes": 68128,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libnss_compat.so.2",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libnss_compat.so.2",
+              "GLIBC_PRIVATE"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libnss_dns.so.2",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libnss_dns.so.2",
+          "sha256": "ca0402db592d8fe498c26766cc33851ad84657be4369bbc1a0a3bacb4f113e12",
+          "bytes": 67592,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": "libnss_dns.so.2",
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libnss_dns.so.2",
+              "GLIBC_PRIVATE"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libnss_files.so.2",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libnss_files.so.2",
+          "sha256": "10dffdd4019bd292d754c3c5d558cf72d00d0db23f29b231913d5c2985d31d06",
+          "bytes": 67592,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": "libnss_files.so.2",
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libnss_files.so.2",
+              "GLIBC_PRIVATE"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libnss_hesiod.so.2",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libnss_hesiod.so.2",
+          "sha256": "95879e0ed77fbab7b19c65a8bca556f26baa788c4e94532c35ad88b500eee48d",
+          "bytes": 67736,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libresolv.so.2",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libnss_hesiod.so.2",
+            "requiredVersions": {
+              "libresolv.so.2": [
+                "GLIBC_2.17"
+              ],
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.38",
+                "GLIBC_2.34",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libnss_hesiod.so.2",
+              "GLIBC_PRIVATE"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libpcprofile.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libpcprofile.so",
+          "sha256": "0fd3448b6e6478c721eba247e1c6af25e1c09bf84246367f95fa6136532d9f28",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libpcprofile.so",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libpthread.so.0",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libpthread.so.0",
+          "sha256": "90326a5d4cb6e9fcf8801e48b902514bb1fe804305b480a1ca550f90d8fd6141",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": "libpthread.so.0",
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libpthread.so.0",
+              "GLIBC_2.17",
+              "GLIBC_2.18",
+              "GLIBC_2.28",
+              "GLIBC_2.30",
+              "GLIBC_2.31"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libresolv.so.2",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libresolv.so.2",
+          "sha256": "f7ca403233aea01116f36959d7e43603a5203d60ab7adb9e5efee9542ba69840",
+          "bytes": 67952,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libresolv.so.2",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.34",
+                "GLIBC_PRIVATE",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libresolv.so.2",
+              "GLIBC_2.17",
+              "GLIBC_PRIVATE"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/librt.so.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/librt.so.1",
+          "sha256": "57636c9dcf8282484625af5b9ad2100fcf412bc675b6aa7fe4cea0666d4e473b",
+          "bytes": 67736,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "librt.so.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_PRIVATE"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17",
+                "GLIBC_PRIVATE"
+              ]
+            },
+            "providedVersions": [
+              "librt.so.1",
+              "GLIBC_2.17"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libthread_db.so.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libthread_db.so.1",
+          "sha256": "e9354fd6e1451758d81ce887ec16db5509124de2f92c4ea4829b3946c7e191ec",
+          "bytes": 68256,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libthread_db.so.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libthread_db.so.1",
+              "GLIBC_2.17"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libutil.so.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libc6/usr/lib/aarch64-linux-gnu/libutil.so.1",
+          "sha256": "4aa9dcf50e00631261c6b945dee97b158160ef31631b8c333212929233812fbd",
+          "bytes": 67664,
+          "package": "libc6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": "libutil.so.1",
+            "requiredVersions": {
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libutil.so.1",
+              "GLIBC_2.17"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libz.so.1.3.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/zlib1g/usr/lib/aarch64-linux-gnu/libz.so.1.3.1",
+          "sha256": "6fe00acadf8119ff245855e5dcc7f26c6c0ffaf4bfa2baa88feab58f23727d65",
+          "bytes": 133600,
+          "package": "zlib1g",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libz.so.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libz.so.1",
+              "ZLIB_1.2.0",
+              "ZLIB_1.2.0.2",
+              "ZLIB_1.2.0.8",
+              "ZLIB_1.2.2",
+              "ZLIB_1.2.2.3",
+              "ZLIB_1.2.2.4",
+              "ZLIB_1.2.3.3",
+              "ZLIB_1.2.3.4",
+              "ZLIB_1.2.3.5",
+              "ZLIB_1.2.5.1",
+              "ZLIB_1.2.5.2",
+              "ZLIB_1.2.7.1",
+              "ZLIB_1.2.9",
+              "ZLIB_1.2.12"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libexpat.so.1.11.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libexpat1/usr/lib/aarch64-linux-gnu/libexpat.so.1.11.1",
+          "sha256": "32ead0f75f4c7790495ce71016d8c6d5a42a483c4bc5018bc20044d926b09a2a",
+          "bytes": 198792,
+          "package": "libexpat1",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libexpat.so.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.36",
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libexpatw.so.1.11.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libexpat1/usr/lib/aarch64-linux-gnu/libexpatw.so.1.11.1",
+          "sha256": "efa97072cf93870c8fb7f367d94344e9f8f705f10b134a7d8130e1f9c22e2a9e",
+          "bytes": 198784,
+          "package": "libexpat1",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libexpatw.so.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.36",
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/engines-3/afalg.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libssl3t64/usr/lib/aarch64-linux-gnu/engines-3/afalg.so",
+          "sha256": "bbac2ad463e8af17cc6e9f479a2d34b7e32d6c8c32ab7cb4f695b2bebfef37b1",
+          "bytes": 67880,
+          "package": "libssl3t64",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libcrypto.so.3",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libcrypto.so.3": [
+                "OPENSSL_3.0.0"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/engines-3/loader_attic.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libssl3t64/usr/lib/aarch64-linux-gnu/engines-3/loader_attic.so",
+          "sha256": "43cbf949e1f1c6b42f5e36de0f6f5e6ec0b0b6f3d7359f2eeffd37f70b99f9b8",
+          "bytes": 68144,
+          "package": "libssl3t64",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libcrypto.so.3",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.33",
+                "GLIBC_2.17"
+              ],
+              "libcrypto.so.3": [
+                "OPENSSL_3.0.3",
+                "OPENSSL_3.2.0",
+                "OPENSSL_3.0.0"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libcrypto.so.3",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libssl3t64/usr/lib/aarch64-linux-gnu/libcrypto.so.3",
+          "sha256": "05703644a21db541f5a402a17ad6e3e115ad65e5239e1a111fb7c6c9bd1c24e0",
+          "bytes": 6106344,
+          "package": "libssl3t64",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libz.so.1",
+              "libzstd.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libcrypto.so.3",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.38",
+                "GLIBC_2.25",
+                "GLIBC_2.33",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libcrypto.so.3",
+              "OPENSSL_3.0.0",
+              "OPENSSL_3.0.3",
+              "OPENSSL_3.0.8",
+              "OPENSSL_3.0.9",
+              "OPENSSL_3.1.0",
+              "OPENSSL_3.2.0",
+              "OPENSSL_3.3.0",
+              "OPENSSL_3.4.0",
+              "OPENSSL_3.5.0"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libssl.so.3",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libssl3t64/usr/lib/aarch64-linux-gnu/libssl.so.3",
+          "sha256": "6c5f15cc72a8c62d76b60346382c62b55f2c8a18d58ac09a4f73ff2b11cef58f",
+          "bytes": 1195960,
+          "package": "libssl3t64",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libcrypto.so.3",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libssl.so.3",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.38",
+                "GLIBC_2.33",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ],
+              "libcrypto.so.3": [
+                "OPENSSL_3.3.0",
+                "OPENSSL_3.0.3",
+                "OPENSSL_3.4.0",
+                "OPENSSL_3.2.0",
+                "OPENSSL_3.0.0"
+              ]
+            },
+            "providedVersions": [
+              "libssl.so.3",
+              "OPENSSL_3.0.0",
+              "OPENSSL_3.2.0",
+              "OPENSSL_3.3.0",
+              "OPENSSL_3.4.0",
+              "OPENSSL_3.5.0"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libffi.so.8.2.0",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libffi8/usr/lib/aarch64-linux-gnu/libffi.so.8.2.0",
+          "sha256": "395decba1f56d1322c4b22d974c3e8bc662c70ca27f72384f70a67b9ee17f9e9",
+          "bytes": 68088,
+          "package": "libffi8",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libffi.so.8",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.27",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libffi.so.8",
+              "LIBFFI_BASE_8.0",
+              "LIBFFI_BASE_8.1",
+              "LIBFFI_COMPLEX_8.0",
+              "LIBFFI_CLOSURE_8.0",
+              "LIBFFI_GO_CLOSURE_8.0"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libbz2.so.1.0.4",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libbz2-1.0/usr/lib/aarch64-linux-gnu/libbz2.so.1.0.4",
+          "sha256": "810fa9b02adc39be4a7542bde79f1da0575e9bbdf8fc3c27deeb1ee97f59fe46",
+          "bytes": 70584,
+          "package": "libbz2-1.0",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libbz2.so.1.0",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/liblzma.so.5.8.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/liblzma5/usr/lib/aarch64-linux-gnu/liblzma.so.5.8.1",
+          "sha256": "5e84a5d0d78d1a0342f49ae41567e20f0a5fd5b8d5f6ee267f46285642176fcb",
+          "bytes": 198664,
+          "package": "liblzma5",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "liblzma.so.5",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.32",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "liblzma.so.5",
+              "XZ_5.0",
+              "XZ_5.2",
+              "XZ_5.1.2alpha",
+              "XZ_5.2.2",
+              "XZ_5.4",
+              "XZ_5.6.0",
+              "XZ_5.8"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libformw.so.6.5",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libncursesw6/usr/lib/aarch64-linux-gnu/libformw.so.6.5",
+          "sha256": "58cde7eeafb0c533c1caad3a56e545c67d4c4a25735d1a5d0ec6c6446f5fc7e5",
+          "bytes": 134336,
+          "package": "libncursesw6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libncursesw.so.6",
+              "libtinfo.so.6",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libformw.so.6",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libtinfo.so.6": [
+                "NCURSES6_TINFO_5.0.19991023",
+                "NCURSES6_TINFO_5.7.20081102"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ],
+              "libncursesw.so.6": [
+                "NCURSESW6_5.5.20051010",
+                "NCURSESW6_5.3.20021019",
+                "NCURSESW6_5.1.20000708"
+              ]
+            },
+            "providedVersions": [
+              "libformw.so.6",
+              "NCURSES6_TIC_5.0.19991023",
+              "NCURSES6_TIC_5.1.20000708",
+              "NCURSES6_TIC_5.5.20051010",
+              "NCURSES6_TIC_5.7.20081102",
+              "NCURSES6_TIC_5.9.20150530",
+              "NCURSES6_TIC_6.1.20171230",
+              "NCURSES6_TINFO_5.0.19991023",
+              "NCURSES6_TINFO_5.1.20000708",
+              "NCURSES6_TINFO_5.2.20001021",
+              "NCURSES6_TINFO_5.3.20021019",
+              "NCURSES6_TINFO_5.4.20040208",
+              "NCURSES6_TINFO_5.5.20051010",
+              "NCURSES6_TINFO_5.6.20061217",
+              "NCURSES6_TINFO_5.7.20081102",
+              "NCURSES6_TINFO_5.8.20110226",
+              "NCURSES6_TINFO_5.9.20150530",
+              "NCURSES6_TINFO_6.1.20171230",
+              "NCURSES6_TINFO_6.2.20200212",
+              "NCURSES6_TINFO_6.2.20211010",
+              "NCURSES6_TINFO_6.5.20240427",
+              "NCURSESW6_5.1.20000708",
+              "NCURSESW6_5.3.20021019",
+              "NCURSESW6_5.4.20040208",
+              "NCURSESW6_5.5.20051010",
+              "NCURSESW6_5.6.20061217",
+              "NCURSESW6_5.7.20081102",
+              "NCURSESW6_5.8.20110226",
+              "NCURSESW6_5.9.20150530",
+              "NCURSESW6_6.1.20171230",
+              "NCURSESW6_6.2.20200212"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libmenuw.so.6.5",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libncursesw6/usr/lib/aarch64-linux-gnu/libmenuw.so.6.5",
+          "sha256": "a989fb63ef2ed6f2514a5f5c19b383f6c65c90f18519981c53e34eb6aae3e4a7",
+          "bytes": 67968,
+          "package": "libncursesw6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libncursesw.so.6",
+              "libtinfo.so.6",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libmenuw.so.6",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libtinfo.so.6": [
+                "NCURSES6_TINFO_5.7.20081102",
+                "NCURSES6_TINFO_5.0.19991023"
+              ],
+              "libncursesw.so.6": [
+                "NCURSESW6_5.1.20000708"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libmenuw.so.6",
+              "NCURSES6_TIC_5.0.19991023",
+              "NCURSES6_TIC_5.1.20000708",
+              "NCURSES6_TIC_5.5.20051010",
+              "NCURSES6_TIC_5.7.20081102",
+              "NCURSES6_TIC_5.9.20150530",
+              "NCURSES6_TIC_6.1.20171230",
+              "NCURSES6_TINFO_5.0.19991023",
+              "NCURSES6_TINFO_5.1.20000708",
+              "NCURSES6_TINFO_5.2.20001021",
+              "NCURSES6_TINFO_5.3.20021019",
+              "NCURSES6_TINFO_5.4.20040208",
+              "NCURSES6_TINFO_5.5.20051010",
+              "NCURSES6_TINFO_5.6.20061217",
+              "NCURSES6_TINFO_5.7.20081102",
+              "NCURSES6_TINFO_5.8.20110226",
+              "NCURSES6_TINFO_5.9.20150530",
+              "NCURSES6_TINFO_6.1.20171230",
+              "NCURSES6_TINFO_6.2.20200212",
+              "NCURSES6_TINFO_6.2.20211010",
+              "NCURSES6_TINFO_6.5.20240427",
+              "NCURSESW6_5.1.20000708",
+              "NCURSESW6_5.3.20021019",
+              "NCURSESW6_5.4.20040208",
+              "NCURSESW6_5.5.20051010",
+              "NCURSESW6_5.6.20061217",
+              "NCURSESW6_5.7.20081102",
+              "NCURSESW6_5.8.20110226",
+              "NCURSESW6_5.9.20150530",
+              "NCURSESW6_6.1.20171230",
+              "NCURSESW6_6.2.20200212"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libncursesw.so.6.5",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libncursesw6/usr/lib/aarch64-linux-gnu/libncursesw.so.6.5",
+          "sha256": "3b22fbd22a271d63a6b275a9fe52fb14a3b9b829d608828ad1d7a27f76538310",
+          "bytes": 264128,
+          "package": "libncursesw6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libtinfo.so.6",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libncursesw.so.6",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libtinfo.so.6": [
+                "NCURSES6_TINFO_5.9.20150530",
+                "NCURSES6_TINFO_5.5.20051010",
+                "NCURSES6_TINFO_5.1.20000708",
+                "NCURSES6_TINFO_5.2.20001021",
+                "NCURSES6_TINFO_5.6.20061217",
+                "NCURSES6_TINFO_5.7.20081102",
+                "NCURSES6_TINFO_5.8.20110226",
+                "NCURSES6_TINFO_5.4.20040208",
+                "NCURSES6_TINFO_5.0.19991023",
+                "NCURSES6_TINFO_6.2.20211010"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.34",
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libncursesw.so.6",
+              "NCURSES6_TIC_5.0.19991023",
+              "NCURSES6_TIC_5.1.20000708",
+              "NCURSES6_TIC_5.5.20051010",
+              "NCURSES6_TIC_5.7.20081102",
+              "NCURSES6_TIC_5.9.20150530",
+              "NCURSES6_TIC_6.1.20171230",
+              "NCURSES6_TINFO_5.0.19991023",
+              "NCURSES6_TINFO_5.1.20000708",
+              "NCURSES6_TINFO_5.2.20001021",
+              "NCURSES6_TINFO_5.3.20021019",
+              "NCURSES6_TINFO_5.4.20040208",
+              "NCURSES6_TINFO_5.5.20051010",
+              "NCURSES6_TINFO_5.6.20061217",
+              "NCURSES6_TINFO_5.7.20081102",
+              "NCURSES6_TINFO_5.8.20110226",
+              "NCURSES6_TINFO_5.9.20150530",
+              "NCURSES6_TINFO_6.1.20171230",
+              "NCURSES6_TINFO_6.2.20200212",
+              "NCURSES6_TINFO_6.2.20211010",
+              "NCURSES6_TINFO_6.5.20240427",
+              "NCURSESW6_5.1.20000708",
+              "NCURSESW6_5.3.20021019",
+              "NCURSESW6_5.4.20040208",
+              "NCURSESW6_5.5.20051010",
+              "NCURSESW6_5.6.20061217",
+              "NCURSESW6_5.7.20081102",
+              "NCURSESW6_5.8.20110226",
+              "NCURSESW6_5.9.20150530",
+              "NCURSESW6_6.1.20171230",
+              "NCURSESW6_6.2.20200212"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libpanelw.so.6.5",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libncursesw6/usr/lib/aarch64-linux-gnu/libpanelw.so.6.5",
+          "sha256": "baaa30ee19d6740f9fce2cac8170114a5d6224b4e8230af0dd4509fe17b31c71",
+          "bytes": 67608,
+          "package": "libncursesw6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libncursesw.so.6",
+              "libtinfo.so.6",
+              "libc.so.6"
+            ],
+            "searchPaths": [],
+            "soname": "libpanelw.so.6",
+            "requiredVersions": {
+              "libncursesw.so.6": [
+                "NCURSESW6_5.8.20110226",
+                "NCURSESW6_5.1.20000708"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.17"
+              ],
+              "libtinfo.so.6": [
+                "NCURSES6_TINFO_5.0.19991023",
+                "NCURSES6_TINFO_5.7.20081102"
+              ]
+            },
+            "providedVersions": [
+              "libpanelw.so.6",
+              "NCURSES6_TIC_5.0.19991023",
+              "NCURSES6_TIC_5.1.20000708",
+              "NCURSES6_TIC_5.5.20051010",
+              "NCURSES6_TIC_5.7.20081102",
+              "NCURSES6_TIC_5.9.20150530",
+              "NCURSES6_TIC_6.1.20171230",
+              "NCURSES6_TINFO_5.0.19991023",
+              "NCURSES6_TINFO_5.1.20000708",
+              "NCURSES6_TINFO_5.2.20001021",
+              "NCURSES6_TINFO_5.3.20021019",
+              "NCURSES6_TINFO_5.4.20040208",
+              "NCURSES6_TINFO_5.5.20051010",
+              "NCURSES6_TINFO_5.6.20061217",
+              "NCURSES6_TINFO_5.7.20081102",
+              "NCURSES6_TINFO_5.8.20110226",
+              "NCURSES6_TINFO_5.9.20150530",
+              "NCURSES6_TINFO_6.1.20171230",
+              "NCURSES6_TINFO_6.2.20200212",
+              "NCURSES6_TINFO_6.2.20211010",
+              "NCURSES6_TINFO_6.5.20240427",
+              "NCURSESW6_5.1.20000708",
+              "NCURSESW6_5.3.20021019",
+              "NCURSESW6_5.4.20040208",
+              "NCURSESW6_5.5.20051010",
+              "NCURSESW6_5.6.20061217",
+              "NCURSESW6_5.7.20081102",
+              "NCURSESW6_5.8.20110226",
+              "NCURSESW6_5.9.20150530",
+              "NCURSESW6_6.1.20171230",
+              "NCURSESW6_6.2.20200212"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libhistory.so.8.3",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libreadline8t64/usr/lib/aarch64-linux-gnu/libhistory.so.8.3",
+          "sha256": "0ae392330eb9e4f2d4d8ee71045013ad0f86d2a465359fccf9eccc8bddce8761",
+          "bytes": 68152,
+          "package": "libreadline8t64",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libhistory.so.8",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.38",
+                "GLIBC_2.33",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libreadline.so.8.3",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libreadline8t64/usr/lib/aarch64-linux-gnu/libreadline.so.8.3",
+          "sha256": "8f384ceb6d7e9a896858b01b8401c6b750a22659f2c7885986675094ef6e8228",
+          "bytes": 420448,
+          "package": "libreadline8t64",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libtinfo.so.6",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libreadline.so.8",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libtinfo.so.6": [
+                "NCURSES6_TINFO_5.0.19991023"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.38",
+                "GLIBC_2.33",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libsqlite3.so.0.8.6",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libsqlite3-0/usr/lib/aarch64-linux-gnu/libsqlite3.so.0.8.6",
+          "sha256": "593c09b6fce5a62a2e7ebf98de670acd7bca7141390b5cc7543d210de7d914d8",
+          "bytes": 1723288,
+          "package": "libsqlite3-0",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libm.so.6",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libsqlite3.so.0",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libm.so.6": [
+                "GLIBC_2.38",
+                "GLIBC_2.29",
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.28",
+                "GLIBC_2.33",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libuuid.so.1.3.0",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libuuid1/usr/lib/aarch64-linux-gnu/libuuid.so.1.3.0",
+          "sha256": "02085d80cf74846bcc0d8f00e2ca9a195147443edcf427502e7d89defddddb07",
+          "bytes": 67736,
+          "package": "libuuid1",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libuuid.so.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.33",
+                "GLIBC_2.25",
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libuuid.so.1",
+              "UUID_1.0",
+              "UUID_2.20",
+              "UUID_2.31",
+              "UUID_2.36",
+              "UUID_2.40",
+              "UUID_2.41",
+              "UUIDD_PRIVATE"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libdb-5.3.so",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libdb5.3t64/usr/lib/aarch64-linux-gnu/libdb-5.3.so",
+          "sha256": "a87c2f96626431fbdb43825e6b2a7accdb4ce5664b14ff5f0e666813afb17a08",
+          "bytes": 1783072,
+          "package": "libdb5.3t64",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libdb-5.3.so",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.33",
+                "GLIBC_2.34",
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libdb-5.3.so",
+              "DB5_3"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libgdbm.so.6.0.0",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libgdbm6t64/usr/lib/aarch64-linux-gnu/libgdbm.so.6.0.0",
+          "sha256": "876ee16f8b1ab1f851da19daf3339cd2192187d159c23c645faf2b3c2df960e1",
+          "bytes": 133216,
+          "package": "libgdbm6t64",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libgdbm.so.6",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.33",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libgdbm_compat.so.4.0.0",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libgdbm-compat4t64/usr/lib/aarch64-linux-gnu/libgdbm_compat.so.4.0.0",
+          "sha256": "02e1df2486dce370ae3c222fd88d7e0cb7a0c7214fa3fc5f272745563416bb98",
+          "bytes": 67440,
+          "package": "libgdbm-compat4t64",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libgdbm.so.6",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libgdbm_compat.so.4",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.33",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libtic.so.6.5",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libtinfo6/usr/lib/aarch64-linux-gnu/libtic.so.6.5",
+          "sha256": "ce1131e72e8f05e21296b7b6cbfb10a5e44b0cd02db571722e405f5fadad7c7b",
+          "bytes": 67688,
+          "package": "libtinfo6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libtinfo.so.6",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libtic.so.6",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libtinfo.so.6": [
+                "NCURSES6_TINFO_6.2.20200212",
+                "NCURSES6_TINFO_6.1.20171230",
+                "NCURSES6_TINFO_5.9.20150530",
+                "NCURSES6_TINFO_5.6.20061217",
+                "NCURSES6_TIC_6.1.20171230",
+                "NCURSES6_TINFO_5.2.20001021",
+                "NCURSES6_TINFO_5.7.20081102",
+                "NCURSES6_TINFO_5.1.20000708",
+                "NCURSES6_TINFO_5.0.19991023",
+                "NCURSES6_TINFO_6.2.20211010"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libtic.so.6",
+              "NCURSES6_TIC_5.0.19991023",
+              "NCURSES6_TIC_5.1.20000708",
+              "NCURSES6_TIC_5.5.20051010",
+              "NCURSES6_TIC_5.7.20081102",
+              "NCURSES6_TIC_5.9.20150530",
+              "NCURSES6_TIC_6.1.20171230",
+              "NCURSES6_TINFO_5.0.19991023",
+              "NCURSES6_TINFO_5.1.20000708",
+              "NCURSES6_TINFO_5.2.20001021",
+              "NCURSES6_TINFO_5.3.20021019",
+              "NCURSES6_TINFO_5.4.20040208",
+              "NCURSES6_TINFO_5.5.20051010",
+              "NCURSES6_TINFO_5.6.20061217",
+              "NCURSES6_TINFO_5.7.20081102",
+              "NCURSES6_TINFO_5.8.20110226",
+              "NCURSES6_TINFO_5.9.20150530",
+              "NCURSES6_TINFO_6.1.20171230",
+              "NCURSES6_TINFO_6.2.20200212",
+              "NCURSES6_TINFO_6.2.20211010",
+              "NCURSES6_TINFO_6.5.20240427",
+              "NCURSESW6_5.1.20000708",
+              "NCURSESW6_5.3.20021019",
+              "NCURSESW6_5.4.20040208",
+              "NCURSESW6_5.5.20051010",
+              "NCURSESW6_5.6.20061217",
+              "NCURSESW6_5.7.20081102",
+              "NCURSESW6_5.8.20110226",
+              "NCURSESW6_5.9.20150530",
+              "NCURSESW6_6.1.20171230",
+              "NCURSESW6_6.2.20200212"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libtinfo.so.6.5",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libtinfo6/usr/lib/aarch64-linux-gnu/libtinfo.so.6.5",
+          "sha256": "c5d31ccc1493d8d84c7bd684f9fcc8326ed084ad610426e06ce101e62dfd56f3",
+          "bytes": 265504,
+          "package": "libtinfo6",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libtinfo.so.6",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.38",
+                "GLIBC_2.33",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libtinfo.so.6",
+              "NCURSES6_TIC_5.0.19991023",
+              "NCURSES6_TIC_5.1.20000708",
+              "NCURSES6_TIC_5.5.20051010",
+              "NCURSES6_TIC_5.7.20081102",
+              "NCURSES6_TIC_5.9.20150530",
+              "NCURSES6_TIC_6.1.20171230",
+              "NCURSES6_TINFO_5.0.19991023",
+              "NCURSES6_TINFO_5.1.20000708",
+              "NCURSES6_TINFO_5.2.20001021",
+              "NCURSES6_TINFO_5.3.20021019",
+              "NCURSES6_TINFO_5.4.20040208",
+              "NCURSES6_TINFO_5.5.20051010",
+              "NCURSES6_TINFO_5.6.20061217",
+              "NCURSES6_TINFO_5.7.20081102",
+              "NCURSES6_TINFO_5.8.20110226",
+              "NCURSES6_TINFO_5.9.20150530",
+              "NCURSES6_TINFO_6.1.20171230",
+              "NCURSES6_TINFO_6.2.20200212",
+              "NCURSES6_TINFO_6.2.20211010",
+              "NCURSES6_TINFO_6.5.20240427",
+              "NCURSESW6_5.1.20000708",
+              "NCURSESW6_5.3.20021019",
+              "NCURSESW6_5.4.20040208",
+              "NCURSESW6_5.5.20051010",
+              "NCURSESW6_5.6.20061217",
+              "NCURSESW6_5.7.20081102",
+              "NCURSESW6_5.8.20110226",
+              "NCURSESW6_5.9.20150530",
+              "NCURSESW6_6.1.20171230",
+              "NCURSESW6_6.2.20200212"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libselinux.so.1",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libselinux1/usr/lib/aarch64-linux-gnu/libselinux.so.1",
+          "sha256": "33c13223fc074a5a08b6236a2c168bb77c4389ecb37202d11165b42477b2f196",
+          "bytes": 198880,
+          "package": "libselinux1",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libpcre2-8.so.0",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libselinux.so.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.28",
+                "GLIBC_2.23",
+                "GLIBC_2.33",
+                "GLIBC_2.26",
+                "GLIBC_2.30",
+                "GLIBC_2.38",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libselinux.so.1",
+              "LIBSELINUX_1.0",
+              "LIBSELINUX_3.4",
+              "LIBSELINUX_3.5",
+              "LIBSELINUX_3.8",
+              "LIBSELINUX_3.9"
+            ],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/lib/aarch64-linux-gnu/libzstd.so.1.5.7",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/libzstd1/usr/lib/aarch64-linux-gnu/libzstd.so.1.5.7",
+          "sha256": "3e3773119ea06708e5bcdf098ed69c52d941d9327964047dc2b33f0eb1feee8f",
+          "bytes": 723048,
+          "package": "libzstd1",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libzstd.so.1",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          }
+        },
+        {
+          "path": "usr/bin/git",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/git-core/usr/bin/git",
+          "bytes": 4651416,
+          "sha256": "1182d6374f4657c910811458aaf32e1183e845143fddcbb13e70f85d47ee678c",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "libpcre2-8.so.0",
+              "libz.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libz.so.1": [
+                "ZLIB_1.2.0",
+                "ZLIB_1.2.2"
+              ],
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libpcre2-8.so.0": [
+                "PCRE2_10.47"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.28",
+                "GLIBC_2.25",
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.32",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          },
+          "package": "git-core"
+        },
+        {
+          "path": "usr/bin/git-shell",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/git-core/usr/bin/git-shell",
+          "bytes": 947456,
+          "sha256": "cd29aa61c8266002f8838320ac7c287646b945848b20e456a76eadc6a59542c5",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "libz.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libz.so.1": [
+                "ZLIB_1.2.0"
+              ],
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.28",
+                "GLIBC_2.25",
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.32",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          },
+          "package": "git-core"
+        },
+        {
+          "path": "usr/bin/scalar",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/git-core/usr/bin/scalar",
+          "bytes": 1013904,
+          "sha256": "b8d67f6c62cfc58692ad43bce22ac4e4464050ed8f0decb0b086a60da6d2766e",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "libz.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libz.so.1": [
+                "ZLIB_1.2.0"
+              ],
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.28",
+                "GLIBC_2.25",
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.32",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          },
+          "package": "git-core"
+        },
+        {
+          "path": "usr/libexec/git-core/git-http-backend",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/git-core/usr/libexec/git-core/git-http-backend",
+          "bytes": 1013920,
+          "sha256": "f987aa987ea37a3671dc8fd373d89fb68cce1a37cbc75fe348086009c973b91d",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "libz.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libz.so.1": [
+                "ZLIB_1.2.0"
+              ],
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.28",
+                "GLIBC_2.25",
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.32",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          },
+          "package": "git-core"
+        },
+        {
+          "path": "usr/libexec/git-core/git-http-fetch",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/git-core/usr/libexec/git-core/git-http-fetch",
+          "bytes": 1082168,
+          "sha256": "0cadf24e6ac0886987ae2aa1d96189d2069995ef0b8904a95f5a3df1b92bd448",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "libcurl.so.4",
+              "libz.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libz.so.1": [
+                "ZLIB_1.2.0"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.28",
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.25",
+                "GLIBC_2.32",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          },
+          "package": "git-core"
+        },
+        {
+          "path": "usr/libexec/git-core/git-http-push",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/git-core/usr/libexec/git-core/git-http-push",
+          "bytes": 1419328,
+          "sha256": "7ddac35c9b2d1413b8f358fd305e88cd27d8aae81a5f9aaccc7b01144c02dc0e",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "libcurl.so.4",
+              "libexpat.so.1",
+              "libpcre2-8.so.0",
+              "libz.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libpcre2-8.so.0": [
+                "PCRE2_10.47"
+              ],
+              "libexpat.so.1": [
+                "LIBEXPAT_1.0.0"
+              ],
+              "libz.so.1": [
+                "ZLIB_1.2.0"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.28",
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.25",
+                "GLIBC_2.32",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          },
+          "package": "git-core"
+        },
+        {
+          "path": "usr/libexec/git-core/git-imap-send",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/git-core/usr/libexec/git-core/git-imap-send",
+          "bytes": 1081664,
+          "sha256": "108b8b072e618d325c188dfa2c3397fc4b7a678a8a31630832ce307d9ad2be5f",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "libcurl.so.4",
+              "libssl.so.4",
+              "libcrypto.so.4",
+              "libz.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libssl.so.4": [
+                "OPENSSL_4.0.0"
+              ],
+              "libz.so.1": [
+                "ZLIB_1.2.0"
+              ],
+              "libcrypto.so.4": [
+                "OPENSSL_4.0.0"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.28",
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.25",
+                "GLIBC_2.32",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          },
+          "package": "git-core"
+        },
+        {
+          "path": "usr/libexec/git-core/git-remote-http",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/git-core/usr/libexec/git-core/git-remote-http",
+          "bytes": 1082848,
+          "sha256": "73f9542d424ff302873064b71f6d75f9f909b6a858469d55b51e3b2b2c3dc98c",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "libcurl.so.4",
+              "libz.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libz.so.1": [
+                "ZLIB_1.2.0"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.28",
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.25",
+                "GLIBC_2.32",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          },
+          "package": "git-core"
+        },
+        {
+          "path": "usr/libexec/git-core/git-sh-i18n--envsubst",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/git-core/usr/libexec/git-core/git-sh-i18n--envsubst",
+          "bytes": 947664,
+          "sha256": "8258a1b04fc061a08d53e1426f524a622f4268970570d32f7376b9682b84fb52",
+          "elf": {
+            "interpreter": "/lib/ld-linux-aarch64.so.1",
+            "needed": [
+              "libz.so.1",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": null,
+            "requiredVersions": {
+              "libz.so.1": [
+                "ZLIB_1.2.0"
+              ],
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.28",
+                "GLIBC_2.25",
+                "GLIBC_2.33",
+                "GLIBC_2.38",
+                "GLIBC_2.32",
+                "GLIBC_2.34",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [],
+            "loaderResolutionVerified": false
+          },
+          "package": "git-core"
+        },
+        {
+          "path": "usr/lib64/libpcre2-8.so.0.15.0",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/pcre2/usr/lib64/libpcre2-8.so.0.15.0",
+          "bytes": 662552,
+          "sha256": "7f08df34d1ea74a79d32def854357b6466187acc8e4659beeb427e553bf1c4a3",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libpcre2-8.so.0",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libpcre2-8.so.0",
+              "PCRE2_10.47"
+            ],
+            "loaderResolutionVerified": false
+          },
+          "package": "pcre2"
+        },
+        {
+          "path": "usr/lib64/libpcre2-posix.so.3.0.7",
+          "localPath": "/private/tmp/fc1-linux-bundle-audit-20261018/elf/pcre2/usr/lib64/libpcre2-posix.so.3.0.7",
+          "bytes": 68816,
+          "sha256": "de96b4ad2d1e7e07e59721f3fcec49b8dae7a56d05025faf823d33e6e63af8fe",
+          "elf": {
+            "interpreter": null,
+            "needed": [
+              "libpcre2-8.so.0",
+              "libc.so.6",
+              "ld-linux-aarch64.so.1"
+            ],
+            "searchPaths": [],
+            "soname": "libpcre2-posix.so.3",
+            "requiredVersions": {
+              "ld-linux-aarch64.so.1": [
+                "GLIBC_2.17"
+              ],
+              "libpcre2-8.so.0": [
+                "PCRE2_10.47"
+              ],
+              "libc.so.6": [
+                "GLIBC_ABI_DT_RELR",
+                "GLIBC_2.17"
+              ]
+            },
+            "providedVersions": [
+              "libpcre2-posix.so.3",
+              "PCRE2_10.47"
+            ],
+            "loaderResolutionVerified": false
+          },
+          "package": "pcre2"
+        }
+      ]
+    },
+    "receipts": {
+      "kernel-inspection.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/kernel-inspection.json",
+        "sha256": "4ce48dfafa19d1c9a4c366b3981809c5c74041c2e946905b896725ae089f42e8",
+        "bytes": 306977
+      },
+      "auth/kernel-signature-verification.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/auth/kernel-signature-verification.json",
+        "sha256": "2b596f91e44924b359e22423d25164247d0f88fd4393b5ff2a1314792c0d3076",
+        "bytes": 1116
+      },
+      "rpm-elf-inspection.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/rpm-elf-inspection.json",
+        "sha256": "3595d5ea317435bafd204752003b3a427ae8afc7a59841653f4e7e8915132512",
+        "bytes": 16592
+      },
+      "rpm-selected-file-authentication.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/rpm-selected-file-authentication.json",
+        "sha256": "9e6d3d0eab606a1aa30aebf30bea53936d865f6f65db8ba32871ab500e5378fc",
+        "bytes": 5244
+      },
+      "proposed-elf-provider-table.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/proposed-elf-provider-table.json",
+        "sha256": "ba9daa9f241c107ae8d59e06e06fe2b0f8049aed389b02f93f311bf979df74f6",
+        "bytes": 112279
+      },
+      "auth/rsa-shared-code-regression.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/auth/rsa-shared-code-regression.json",
+        "sha256": "e40e35f8143614847963f07635520e630ebce7fa2cdb308620eab65d6355faa2",
+        "bytes": 547
+      }
+    },
+    "authenticationBoundary": "Debian signed metadata binds candidate archives; Fedora signed headers bind 11 selected ELF hashes. Signature mathematics does not accept keys/publisher/freshness or whole RPM payload.",
+    "acceptedBundle": false,
+    "operationalBudgetClosed": false,
+    "nativeQualification": false
+  },
+  "currentContinuation": "ephemeralSupervisorAndBuildContinuation",
+  "dependencyAndAbsoluteBootstrapContinuation": {
+    "sourceDigest": "af9299430b9bd2704d18df14b44373d381643f2776d4a8e2833547c226bef89d",
+    "profileVersion": 7,
+    "bootstrapContractVersion": "fc1-external-bootstrap-v2",
+    "bootstrap": {
+      "implementation": "Both immutable acceptance flags checked before provider/authority/start operations. Watchdog readbacks bind origin, scope, original deadlines and plan digest, arming no later than first reservation and unchanged thereafter. Check before/after each manager start. Anchor and operator share the existing aggregate slice; operator BindsTo/After anchor.",
+      "cleanup": "One attempt on failure after any admitted start, including second reservation failure. Request retains time/nonce/plan/scope/closeBy; readback must echo all typed bindings and be post-request and within original deadline. Unknown/late/populated cleanup remains unconfirmed; no retry/refund.",
+      "independenceLimitation": "Readback callbacks cannot cancel a blocked manager call. Native implementation must keep external watchdog independent and prove issuer-exit revocation. No callback declaration or valid transcript substitutes for that gate.",
+      "startupEntries": 2,
+      "additionalExecAllowance": 0,
+      "newStartupUnits": 0,
+      "bootstrapSupervisionAccepted": false,
+      "execAdmissionEnforced": false
+    },
+    "providerTableSummary": {
+      "version": "fc1-proposed-elf-provider-table-v4",
+      "retainedInspectedElfFiles": 186,
+      "proposedSelectedElfFiles": 168,
+      "proposedSelectedElfBytes": 66121512,
+      "newSignedPackages": 24,
+      "newPackageArchiveBytes": 9216448,
+      "newSelectedElfFiles": 71,
+      "selection": "Proposed exact Git buildroot providers, including matched glibc2.44 and its loader for GLIBC_2.43. Prior files retained as history; no installation, accepted lock, core-version or architecture change. Symbol-name compatibility does not accept GLIBC_PRIVATE ABI, paths, NSS/plugin/dlopen or runtime closure.",
+      "missingNeededNames": [
+        "libudev.so.1"
+      ],
+      "missingRequiredVersions": [
+        {
+          "consumer": "usr/lib/aarch64-linux-gnu/libdevmapper.so.1.02.1",
+          "library": "libudev.so.1",
+          "missingVersions": [
+            "LIBUDEV_183"
+          ]
+        },
+        {
+          "consumer": "usr/lib64/libfido2.so.1.17.0",
+          "library": "libudev.so.1",
+          "missingVersions": [
+            "LIBUDEV_183"
+          ]
+        }
+      ],
+      "ambiguousSonameProviders": {},
+      "loaderResolutionVerified": false,
+      "dependencyClosureAccepted": false,
+      "artifactExecutions": 0
+    },
+    "abortPolicies": {
+      "serial": {
+        "gitRequests": 3843,
+        "wallSeconds": 1140,
+        "retainedStorageBytes": 713326592,
+        "wholeCancellationOffsetSeconds": 1139,
+        "wholeClosureOffsetSeconds": 1140,
+        "cleanupReserveSecondsWithinExistingWall": 1,
+        "minimumCost": null,
+        "ownerAccepted": false,
+        "completionGuaranteed": false
+      },
+      "parallel": {
+        "gitRequests": 6662,
+        "wallSeconds": 1890,
+        "retainedStorageBytes": 1384415232,
+        "wholeCancellationOffsetSeconds": 1889,
+        "wholeClosureOffsetSeconds": 1890,
+        "cleanupReserveSecondsWithinExistingWall": 1,
+        "minimumCost": null,
+        "ownerAccepted": false,
+        "completionGuaranteed": false
+      }
+    },
+    "receipts": {
+      "remaining-buildroot-dependencies.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/remaining-buildroot-dependencies.json",
+        "bytes": 5554,
+        "sha256": "310e19328346cc2e10400bf0e76906f76b646f8fabb9e3d2ae6076def44ea699"
+      },
+      "git-buildroot-package-roster.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/git-buildroot-package-roster.json",
+        "bytes": 374982,
+        "sha256": "aa16f7c0dbb5eb4271b6a777872f2bd969f3ea663f29afbf94067c2c07f227be"
+      },
+      "remaining-rpm-authentication.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/remaining-rpm-authentication.json",
+        "bytes": 15305,
+        "sha256": "4ec9090d3efcab9882133044670ea8f6ea30a9f6d3155cd59e7f5c6d34c77a4e"
+      },
+      "transitive-rpm-authentication.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/transitive-rpm-authentication.json",
+        "bytes": 55207,
+        "sha256": "395eb2888882449d49da5479e4b44e7287c1f7b13458257cbdee7dd5ea5a7010"
+      },
+      "final-wave-rpm-authentication.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/final-wave-rpm-authentication.json",
+        "bytes": 19265,
+        "sha256": "e947bfbd7ae33b74795318adf0e07428ea0af1e28c098848572132456200725f"
+      },
+      "glibc-event-rpm-authentication.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/glibc-event-rpm-authentication.json",
+        "bytes": 32156,
+        "sha256": "41b1e5d9b2f2d58ba0ff2223959719d5f884c91a4f64e70b3131ae0448ec814e"
+      },
+      "crypt-rpm-authentication.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/crypt-rpm-authentication.json",
+        "bytes": 2924,
+        "sha256": "7785920f4113fbf13f152c9a36a75d533f7cdab4346ba91681eed849bded0421"
+      },
+      "closed-static-provider-table.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/closed-static-provider-table.json",
+        "bytes": 170467,
+        "sha256": "8f263e1936aa12d7ee077efc30caa34e7cef188829fb218104e16689c0ec3176"
+      },
+      "systemd2613-upstream-release.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/systemd2613-upstream-release.json",
+        "bytes": 2168,
+        "sha256": "886ce3a20f269ee33f25acf0894e84aaa0832f019ea830d1c5fafa36f80d9641"
+      },
+      "systemd2613-deadline-source-review.json": {
+        "path": "/private/tmp/fc1-linux-bundle-audit-20261018/systemd2613-deadline-source-review.json",
+        "bytes": 920,
+        "sha256": "26d33fbe35fd0353766eb2fb953647c65561473093650d5708c700386ce0142c"
+      }
+    },
+    "acceptedBundle": false,
+    "operationalBudgetClosed": false,
+    "nativeQualification": false,
+    "executionAuthorization": false
+  },
+  "ephemeralSupervisorAndBuildContinuation": {
+    "sourceDigest": "b30e1279b6bc11c658754a3cc432c21f970cea9757d5b0a7eced650dc515ad8e",
+    "sourceFiles": 33,
+    "profileVersion": 8,
+    "bootstrapContractVersion": "fc1-external-bootstrap-v3",
+    "operationalBudgetClosed": false,
+    "acceptedBundle": false,
+    "nativeQualification": false,
+    "actualProfileAdmitted": false,
+    "executionAuthorization": false,
+    "record": {
+      "path": "evidence/t005-resumption-accounting.json",
+      "key": "ephemeralSupervisorAndBuildContinuation"
+    },
+    "currentUnitTemplateRejected": true,
+    "preparationStopped": "manager-job-graph-and-terminal-exec-budget"
+  },
+  "v9RedesignDisposition": {
+    "record": "ephemeralSupervisorAndBuildContinuation.v9Redesign.modprobeBarrierDesignContinuation in evidence/t005-resumption-accounting.json",
+    "sourceDigest": "1856d90528c49fd8acd88911144b4bec0f6bbcef4ffc81d66693bb7c054e4b8a",
+    "status": "Offline denial-barrier design proposed, unimplemented/unqualified; source pin and quotas unchanged; current dependency-requiring candidate remains NO-GO",
+    "profileVersionEmitted": null,
+    "currentV8RefusalPreserved": true,
+    "operationalBudgetClosed": false,
+    "executionAuthorization": false
+  },
+  "v9DependencyBuildPolicy": {
+    "version": "fc1-dependency-build-policy-v1",
+    "components": {
+      "cryptsetup": {
+        "version": "2.8.8",
+        "commit": "f1dbcce190719c9e177e8fbaf3df0b908f87d920",
+        "sourceArchiveSha256": "569481f396d228fc7e02ce9565799340b326210f420b8945f3e4fc795acda669",
+        "sourceArchiveBytes": 12171571,
+        "configure": [
+          "--with-crypto_backend=kernel",
+          "--disable-udev",
+          "--disable-external-tokens",
+          "--disable-ssh-token",
+          "--disable-internal-argon2",
+          "--disable-libargon2"
+        ],
+        "macros": {
+          "USE_UDEV": null,
+          "USE_EXTERNAL_TOKENS": null,
+          "ENABLE_AF_ALG": "1",
+          "USE_INTERNAL_ARGON2": "0",
+          "HAVE_ARGON2_H": null
+        }
+      },
+      "libdevmapper": {
+        "sourceVersion": "lvm2-2.03.31",
+        "libraryVersion": "1.02.205",
+        "commit": "3a6e221c569eb253fa38a772b15e53b5de65b5d1",
+        "sourceArchiveSha256": "b6034560504ae26aeb5d0d5cb148fb2714cbfb4d6a193aa9bb9ce623c754d63c",
+        "sourceArchiveBytes": 2877517,
+        "configure": [
+          "--disable-dmfilemapd",
+          "--disable-udev_sync",
+          "--disable-udev_rules",
+          "--without-udev"
+        ],
+        "macros": {
+          "DMFILEMAPD": null,
+          "UDEV_SYNC_SUPPORT": null
+        }
+      }
+    },
+    "cryptoBackendSource": "lib/crypto_backend/crypto_kernel.c",
+    "kernel": {
+      "version": "6.12.113",
+      "commit": "7fdb7c1824a1f9979d648d7ae28ac446bcee9c6e",
+      "config": {
+        "CONFIG_MODULES": "n",
+        "CONFIG_UEVENT_HELPER": "n",
+        "CONFIG_STATIC_USERMODEHELPER": "y",
+        "CONFIG_STATIC_USERMODEHELPER_PATH": "\"\"",
+        "CONFIG_DEVTMPFS": "y",
+        "CONFIG_DEVTMPFS_MOUNT": "y",
+        "CONFIG_BLK_DEV_LOOP": "y",
+        "CONFIG_BLK_DEV_DM": "y",
+        "CONFIG_DM_VERITY": "y",
+        "CONFIG_EXT4_FS": "y",
+        "CONFIG_CRYPTO_SHA256": "y",
+        "CONFIG_CRYPTO_USER_API_HASH": "y"
+      }
+    },
+    "dmsetupUse": "root broker only: table --target verity /dev/block/<bound-device>; no --exec",
+    "hostRequirements": [
+      "required dm-verity/loop/ext4/SHA256/AF_ALG features built in",
+      "no kernel modules and immutable empty static usermode-helper path",
+      "immutable host excludes udev daemon, activatable units and executable rules; udevadm ELF and every systemd-udevd alias/copy excluded by independent filesystem census",
+      "kernel/host/readback identities verified by independent retained bootstrap"
+    ],
+    "sourceBuildCorrespondenceVerified": false,
+    "dependencyClosureAccepted": false,
+    "hostActivationClosed": false,
+    "buildExecutionAuthorized": false,
+    "nativeQualification": false,
+    "executionAuthorization": false
+  }
+}
