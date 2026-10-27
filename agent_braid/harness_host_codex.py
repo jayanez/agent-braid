@@ -28,7 +28,7 @@ from typing import Any
 from .harness_lab import MAX_WALL_SECONDS
 from .harness_manifest import HarnessManifest
 from .harness_observation import (
-    MAX_ARTIFACT_BYTES, MAX_ARTIFACTS, MAX_EVENTS, MAX_SEQ, ExportInventory, ObservationError,
+    MAX_ARTIFACT_BYTES, MAX_ARTIFACTS, MAX_EVENTS, ExportInventory, ObservationError,
     Observation, _is_relative, observe)
 from .system_one import InvalidDecision, canonical, parse_json
 
@@ -49,7 +49,7 @@ _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}\Z")
 _BUILD = re.compile(r"codex-cli [0-9]+\.[0-9]+\.[0-9]+(?:[-+][A-Za-z0-9.]{1,32})?\Z")
 _DISCOVERY_KEYS = {"build", "model", "route", "auth", "provider"}
-_VERDICTS = ("pass", "fail", "inconclusive")
+PROVIDERS = frozenset({"openai"})  # the only provider behind the subscription route
 
 
 class CodexHostError(ValueError):
@@ -174,8 +174,11 @@ class HostDiscovery:
 
 def parse_discovery(raw: Any, *, now: int) -> HostDiscovery:
     """Parse a host-reported discovery record; malformed or unknown fields refuse."""
-    _require(type(raw) is dict and set(raw) == _DISCOVERY_KEYS, "invalid-discovery")
+    _require(type(raw) is dict and set(raw) - {"observedAt"} == _DISCOVERY_KEYS
+             and _DISCOVERY_KEYS <= set(raw), "invalid-discovery")
     _require(_int(now, 0, 1 << 40), "invalid-time")
+    observed = raw.get("observedAt", now)  # the host's own observation time, else supervisor now
+    _require(_int(observed, 0, 1 << 40), "invalid-discovery")
     build = raw["build"]
     _require(build is None or (type(build) is str and _BUILD.fullmatch(build) is not None),
              "invalid-discovery")
@@ -184,7 +187,7 @@ def parse_discovery(raw: Any, *, now: int) -> HostDiscovery:
                  "invalid-discovery")
     _require(raw["route"] in (None, "subscription", "api"), "invalid-discovery")
     _require(raw["auth"] in (None, "existing-login", "api-key"), "invalid-discovery")
-    return HostDiscovery(build, raw["model"], raw["route"], raw["auth"], raw["provider"], now)
+    return HostDiscovery(build, raw["model"], raw["route"], raw["auth"], raw["provider"], observed)
 
 
 def verify_discovery(spec: CodexLaunch, discovery: HostDiscovery, *, now: int) -> None:
@@ -194,6 +197,7 @@ def verify_discovery(spec: CodexLaunch, discovery: HostDiscovery, *, now: int) -
     _require(discovery.auth != "api-key" and discovery.route != "api", "paid-fallback-refused")
     _require(discovery.route == ROUTE and discovery.auth == AUTH, "route-unobserved")
     _require(discovery.build == spec.build and discovery.model == spec.model, "discovery-drift")
+    _require(discovery.provider in PROVIDERS, "provider-not-allowed")
 
 
 # --- host interface and doubles -----------------------------------------------------
@@ -229,11 +233,13 @@ class HostSession:
 
 
 class CodexHost:
-    """Interface: a Codex host. Subclass kind is ``native``; only the double runs."""
-
-    kind = "native"
+    """Interface: a Codex host. Only the exact scripted double runs."""
 
     def discover(self) -> Any:
+        raise NotImplementedError
+
+    def post_discover(self) -> Any:
+        """Re-observe build/model/route/auth after the run for the route-drift check."""
         raise NotImplementedError
 
     def open(self, spec: CodexLaunch, inputs: Mapping[str, bytes]) -> HostSession:
@@ -244,6 +250,9 @@ class NativeCodexHost(CodexHost):
     """Placeholder for real dispatch: refuses until T008 qualifies it separately."""
 
     def discover(self) -> Any:
+        raise CodexHostError("native-dispatch-unqualified")
+
+    def post_discover(self) -> Any:
         raise CodexHostError("native-dispatch-unqualified")
 
     def open(self, spec: CodexLaunch, inputs: Mapping[str, bytes]) -> HostSession:
@@ -273,7 +282,7 @@ class Script:
 
 class _ScriptedSession(HostSession):
     def __init__(self, script: Script):
-        self._s, self._reads, self._cancelled, self._closed = script, 0, False, False
+        self._s, self._reads, self._cancelled = script, 0, False
         self._children, self._hung = script.children, False
 
     def read(self, size: int) -> bytes | None:
@@ -310,14 +319,11 @@ class _ScriptedSession(HostSession):
         return dict(self._s.files)
 
     def close(self) -> bool:
-        self._closed = True
         return True
 
 
 class ScriptedCodexHost(CodexHost):
     """The only runnable host: replays a ``Script``; no process, network or credential."""
-
-    kind = "double"
 
     def __init__(self, script: Script):
         self._script, self.opened = script, 0
@@ -399,7 +405,7 @@ class _Normalizer:
             self._bad()
 
     def _item(self, item: Any) -> None:
-        kind = item.get("type") if type(item) is dict else None
+        kind = item.get("type") if type(item) is dict and type(item.get("type")) is str else None
         if kind in _IGNORED_ITEMS:
             self.ignored += 1
         elif kind == "agent_message" and type(item.get("text")) is str:
@@ -417,7 +423,8 @@ class _Normalizer:
             self._emit("effect", effect="network")
         elif kind == "file_change" and type(item.get("changes")) is list and item["changes"]:
             for change in item["changes"]:
-                effect = _CHANGE_EFFECT.get(change.get("kind")) if type(change) is dict else None
+                effect = (_CHANGE_EFFECT.get(change.get("kind"))
+                          if type(change) is dict and type(change.get("kind")) is str else None)
                 path = change.get("path") if type(change) is dict else None
                 if effect is None or type(path) is not str:
                     self._bad()
@@ -465,10 +472,10 @@ def _stream(session: HostSession, limits: HostLimits, cancel: CancelToken,
         if cancel.is_set():
             out.cancelled = True
             break
-        if session.elapsed() >= limits.wall_seconds:
-            out.timed_out = True
-            break
         try:
+            if session.elapsed() >= limits.wall_seconds:
+                out.timed_out = True
+                break
             chunk = session.read(READ_SIZE)
         except Exception:  # untrusted host: surface a fixed reason only
             norm.errors.append("transport-error")
@@ -598,8 +605,9 @@ def _handoff(verifier: OutcomeVerifier | None, observation: Observation, settled
                                                   observation.sha256, dict(after)))
     except Exception:
         return "inconclusive"
-    return {"pass": "verified", "fail": "rejected"}.get(verdict, "inconclusive") \
-        if verdict in _VERDICTS else "inconclusive"
+    if type(verdict) is not str:
+        return "inconclusive"
+    return {"pass": "verified", "fail": "rejected"}.get(verdict, "inconclusive")
 
 
 def run_codex(spec: CodexLaunch, host: CodexHost, *, manifest: HarnessManifest,
@@ -611,7 +619,6 @@ def run_codex(spec: CodexLaunch, host: CodexHost, *, manifest: HarnessManifest,
     _require(isinstance(spec, CodexLaunch) and isinstance(manifest, HarnessManifest))
     # Exact type: no subclass, native host or caller-set ``kind`` can ride the double path.
     if type(host) is not ScriptedCodexHost:
-        _require(not NATIVE_DISPATCH_QUALIFIED, "native-dispatch-unqualified")
         raise CodexHostError("native-dispatch-unqualified")
     limits = limits or HostLimits()
     cancel = cancel or CancelToken()
@@ -666,8 +673,9 @@ def run_codex(spec: CodexLaunch, host: CodexHost, *, manifest: HarnessManifest,
             norm.errors.append("exit-contradicts-completion")
         try:
             post = parse_discovery(host.post_discover(), now=now)
-            if (post.build, post.model, post.route, post.auth) != (
-                    discovery.build, discovery.model, discovery.route, discovery.auth):
+            if (post.build, post.model, post.route, post.auth, post.provider) != (
+                    discovery.build, discovery.model, discovery.route, discovery.auth,
+                    discovery.provider):
                 norm.errors.append("route-drift")
         except Exception:
             norm.errors.append("route-drift")

@@ -147,6 +147,42 @@ class DiscoveryTests(unittest.TestCase):
             d = codex.parse_discovery({**GOOD, **over}, now=NOW)
             refusal(self, lambda: codex.verify_discovery(launch(), d, now=NOW), "discovery-drift")
 
+    def test_provider_outside_allow_list_refuses(self):
+        for over in ({"provider": "other"}, {"provider": None}):
+            d = codex.parse_discovery({**GOOD, **over}, now=NOW)
+            refusal(self, lambda: codex.verify_discovery(launch(), d, now=NOW), "provider-not-allowed")
+
+    def test_host_reported_observation_time_makes_run_staleness_real(self):
+        stale = {**GOOD, "observedAt": NOW - 301}
+        refusal(self, lambda: run(host(discovery=stale)), "discovery-stale")
+        self.assertEqual(terminal(run(host(discovery={**GOOD, "observedAt": NOW - 300}))), "completed")
+        refusal(self, lambda: codex.parse_discovery({**GOOD, "observedAt": "x"}, now=NOW),
+                "invalid-discovery")
+
+    def test_provider_drift_after_run_forbids_completion(self):
+        result = run(host(post_discovery={**GOOD, "provider": "other"}))
+        self.assertIn("route-drift", result.observation.to_dict()["loss"]["transportErrors"])
+
+    def test_non_string_item_and_change_kinds_do_not_crash(self):
+        result = run(host(stream(line(type="item.completed", item={"type": []}),
+                                 line(type="item.completed", item={"type": "file_change", "changes": [
+                                     {"path": "a.txt", "kind": []}, {"path": "b.txt", "kind": {}}]}),
+                                 line(type="item.completed", item={"type": {}}))))
+        self.assertNotEqual(terminal(result), "completed")
+
+    def test_raising_elapsed_is_a_fixed_transport_error(self):
+        class Bad(codex._ScriptedSession):
+            def elapsed(self):
+                raise RuntimeError("secret detail")
+        h = host()
+        h.open = lambda spec, inputs: Bad(h._script)
+        result = run(h)
+        self.assertIn("transport-error", result.observation.to_dict()["loss"]["transportErrors"])
+        self.assertNotEqual(terminal(result), "completed")
+
+    def test_unimplemented_post_discover_is_not_silently_native(self):
+        refusal(self, lambda: codex.NativeCodexHost().post_discover(), "native-dispatch-unqualified")
+
     def test_malformed_discovery_refuses(self):
         for raw in (None, [], {**GOOD, "extra": 1}, {k: v for k, v in GOOD.items() if k != "model"},
                     {**GOOD, "build": "v1"}, {**GOOD, "route": "free"}, {**GOOD, "auth": "oauth"},
