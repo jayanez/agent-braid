@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-27",
+  "recordedBy": "agent-recorded delta; no independent reviewer model, human review pending",
+  "scope": "Authority delta of adding the Proposed ADR 0029 file and a cross-reference link in ADR 0024; no adoption, no release",
+  "disposition": "No blockers found by the script; adoption remains the founder's decision (SPEC-052 T033)",
+  "authorityDelta": {
+    "added": {
+      "docs/adr/0029-claude-dynamic-workflows.md": "16b5fa3f4a4dd029f6041a3dc07ed5dcf16cc8e57d96577ba72dedec295801cd"
+    },
+    "changed": {
+      "docs/adr/0024-native-ai-plugins.md": {
+        "before": "3a45d8a62cb241b01638a37f39fdc309cb0563941c0343fe58d9ab30c5c677ac",
+        "after": "ca2fd4a76294aff60ab2a5861ae110262032bc133b011a2043e91b16884845e5"
+      }
+    },
+    "removed": []
+  },
+  "refreshedCurrentAssuranceRecords": [
+    "specs/047-local-technical-telemetry/assurance.json",
+    "specs/048-harness-variant-laboratory/assurance.json",
+    "specs/051-owned-work-evaluation/assurance.json",
+    "specs/052-claude-workflow-gate/assurance.json",
+    "specs/053-claude-transcript-trace-adapter/assurance.json",
+    "specs/057-claude-orchestration-advisory/assurance.json",
+    "specs/058-claude-orchestration-guard/assurance.json",
+    "specs/059-claude-orchestration-ledger/assurance.json",
+    "specs/060-portable-prompt-names/assurance.json"
+  ],
+  "transition": "Refreshed only pending current inventories; human review stays pending everywhere; no historical binding was rewritten. ADR 0029 status is Proposed and no canonical number is reserved by adoption: the number 0029 is held by this draft until the founder adopts, amends or rejects it."
+}
