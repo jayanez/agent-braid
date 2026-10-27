@@ -1,0 +1,41 @@
+{
+  "task": "SPEC-049/T001",
+  "sourceBaseline": "61b5c39cf6a499d7e7249af01df43b4f4f36981a",
+  "candidateBinding": "Current source/input hashes at the stated head; no frozen implementation commit claimed",
+  "inputs": {
+    "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+    "tests/test_m4_alpha_scheduler.py": "03966aac4af6dc9f4d99400aa0daf26bdb76711b8a50ce30d93ee60982f3ba52",
+    "tests/test_tooling_sessions.py": "17c80f57da18f7f0fc0d945a024496bbdd767d3e9555023248a769d38894fe33",
+    "tests/test_git_adapter.py": "f27408f851d23c78460bfc52b3ebc024ef58acde1c0d0f649dc9512d78b4c067",
+    "specs/028-system-one-core/decision-delivery/handoffs/DDP-T08.md": "fe7268efae5a539bff6435ba7575e2ee421437ff7e66943b337fc25437b46a6f",
+    "specs/028-system-one-core/decision-delivery/handoffs/coordinator.md": "827b0ddafbb98f970426205307c39131161013ce85fcf6553501bd4974479bbd",
+    "tests/test_git_runtime.py": "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47",
+    "research/owned_work_coverage.py": "f398f0fc42e182ecf2b8e207d35a263a063d64650c84a8f6a23b699422ddf120",
+    "tests/test_owned_work_coverage.py": "0dcfc9b60143ff137d8cd2bfb7fe204e50ceb585dfff887271022ee0ec92e417",
+    "tests/test_system_one_verified_components.py": "01abcb850572c3ad0f85beccaf7d437367fa388f681f0b77d55be24c98c32dcf",
+    "tests/test_system_one_verified_consumers.py": "d88c6dcb8f49a31023431258662cf82f3c848f1a92c3384ca0e74f430997493c",
+    "specs/049-harness-evaluation-learning/spec.md": "00d3b0f30560ea6bc439df62db0d905ba94a7da98c5352ac29536b7db13de831",
+    "specs/049-harness-evaluation-learning/tasks.md": "026654b6501a494b3a3248342e12def9a4362ac813f09597b6f181428756aaa0"
+  },
+  "outputs": {
+    "specs/049-harness-evaluation-learning/corpus.md": "3eb251830ec9bf620cd9ca53af0c6aac926600fd59f87c66acdd897398b3f35a",
+    "specs/049-harness-evaluation-learning/validation-plan.md": "0c6f35fcd8d7c10a8b208133b962b37d8b7c8994eaefbcec378cb62a1956429f",
+    "specs/049-harness-evaluation-learning/source-registration.md": "500be2f53b1a82616333bd8febd68fc9ba290515314a035a60e4f15a524157f4",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "d84740636423c3709248c523e0ffcbc438a5bc2af182e492f72e063d866344c9"
+  },
+  "method": "Read-only inspection and byte hashing of repository anchors; registration documents and a non-frozen T002 draft section written by an orchestrated derived track",
+  "outcome": "Anchors unchanged from pinned kickoff hashes; rights ledger, lineage groups and observed-versus-planned yield registered. T001 acceptance and all of T002 remain pending a founder decision.",
+  "executedChecks": [
+    {
+      "command": "blob-id lookup and sha256 over the 11 registered source files (inline Python)",
+      "exitCode": 0,
+      "scope": "Blob IDs and SHA-256 equal the values pinned in source-registration.md; 7 named test symbols located by line"
+    },
+    {
+      "command": ".venv-speckit/bin/python scripts/validate_spec_kit.py",
+      "exitCode": 1,
+      "scope": "Failed with: public repository contains unreachable objects (fsck on the shared object store of this isolated worktree); not a finding about the edited documents and not re-run to green"
+    }
+  ],
+  "limits": "Manual registration only. No HAR test, fixture, native session, dispatch or economic measurement executed or obtained. No anchor test rerun. Synthetic labels throughout; no native source admitted; no user-intervention history exists. The D-section of evaluation-protocol.md is a draft proposal, not frozen. Spec Kit validator did not pass in this worktree for an environmental reason."
+}
