@@ -9,6 +9,8 @@ domain, source, host, tool set and policy match exactly, and whose evidence is n
 stale, expired, contradicted nor revoked. Lesson text is untrusted inert data; the
 screen below is a conservative denylist and is not a semantic-safety guarantee.
 
+Decoding proves shape and internal consistency, never authenticity: the human decision
+record is a self-asserted document a consumer must compare against a trusted registry.
 The store is persistent: every operation returns a new store, so a prior store value is
 a rollback point. Time is a caller-supplied integer tick; nothing here reads a clock,
 file, host or model. ``executionAuthorization`` is always false.
@@ -28,9 +30,10 @@ from .system_one import InvalidDecision, canonical, digest, freeze, parse_json, 
 ENTRY_FORMAT = "braid-harness-experience-entry/v0.1"
 STORE_FORMAT = "braid-harness-experience-store/v0.1"
 DECISION_FORMAT = "braid-harness-experience-decision/v0.1"
-MAX_ENTRIES = 256
+MAX_ENTRIES = 128  # keeps a worst-case store under parse_json's 1 MiB limit
 MAX_EVIDENCE = 16
 MAX_HISTORY = 64
+_TERMINAL_HEADROOM = 4  # ordinary events stop early so revoke/rollback/expire always fit
 MAX_CUE = 160
 MAX_LESSON = 512
 MAX_TICK = 1 << 40
@@ -46,11 +49,12 @@ _TRANSITIONS = {
     "validated": (("quarantined",), "validated"),
     "activated": (("validated",), "active"),
     "rolled-back": (("active",), "validated"),
-    "revoked": (("proposed", "quarantined", "validated", "active"), "revoked"),
+    "revoked": (("quarantined", "validated", "active"), "revoked"),
     "expired": (("quarantined", "validated", "active"), "expired"),
     "revalidated": (("validated", "active"), None),
     "evidence-added": (("quarantined", "validated", "active"), None),
 }
+_REASONED = frozenset({"activated", "rolled-back", "revoked", "expired"})
 _FORBIDDEN_CHARS = frozenset("`<>{}[]$\\|;")
 _POISON = tuple(re.compile(p, re.IGNORECASE) for p in (
     r"\b(ignore|disregard|override|forget|bypass|skip)\b",
@@ -99,8 +103,7 @@ def _exact(value: Any, keys: set[str], reason: str = "invalid-entry") -> None:
 
 def screen_text(text: Any, limit: int) -> str:
     """Return ``text`` when it is plain bounded descriptive prose; refuse otherwise."""
-    _require(type(text) is str and 0 < len(text.encode("utf-8", "surrogatepass")) <= limit,
-             "invalid-text")
+    _require(type(text) is str and 0 < len(text) <= limit and text.isascii(), "invalid-text")
     _require(text == text.strip() and unicodedata.normalize("NFKC", text) == text
              and all(unicodedata.category(c)[0] not in "CZ" or c == " " for c in text)
              and not _FORBIDDEN_CHARS.intersection(text), "invalid-text")
@@ -126,7 +129,7 @@ def _check_decision(decision: Any, entry: Mapping, *, exact: bool) -> None:
     _require(decision["entryId"] == entry["id"] and decision["contentSha256"] == digest(_content(entry)),
              "decision-entry-mismatch")
     covered = decision["evidenceSha256s"]
-    _require(type(covered) is list and covered == sorted(set(covered)) and all(map(_hash, covered)),
+    _require(type(covered) is list and all(map(_hash, covered)) and covered == sorted(set(covered)),
              "invalid-decision")
     current = {row["sha256"] for row in entry["evidence"]}
     _require(set(covered) == current if exact else set(covered) <= current, "decision-evidence-mismatch")
@@ -161,11 +164,13 @@ def _validate_entry(d: Any) -> None:
     state, last = None, 0
     for index, event in enumerate(history):
         _exact(event, {"seq", "event", "from", "to", "at", "reason"})
-        previous, result = _TRANSITIONS.get(event["event"], ((), None))
+        known = type(event.get("event")) is str and event["event"] in _TRANSITIONS
+        previous, result = _TRANSITIONS[event["event"]] if known else ((), None)
         result = result or state
         _require(event["seq"] == index and state in previous and event["from"] == state
                  and event["to"] == result and _tick(event["at"]) and event["at"] >= last
-                 and _optional(event["reason"], _id), "invalid-history")
+                 and _optional(event["reason"], _id)
+                 and (event["reason"] is not None or event["event"] not in _REASONED), "invalid-history")
         state, last = result, event["at"]
     _require(state == d["state"] and prov["generatedAt"] <= history[0]["at"]
              and all(row["observedAt"] <= last for row in rows), "invalid-history")
@@ -176,7 +181,8 @@ def _validate_entry(d: Any) -> None:
     if state == "active":
         _check_decision(d["activation"], d, exact=False)
         activated = [e for e in history if e["event"] == "activated"][-1]
-        _require(d["activation"]["decidedAt"] == activated["at"], "invalid-activation")
+        _require(d["activation"]["decidedAt"] == activated["at"]
+                 and activated["reason"] == digest(d["activation"]), "invalid-activation")
 
 
 @dataclass(frozen=True)
@@ -209,6 +215,13 @@ class Entry:
         return thaw(self.data)
 
 
+def _plain(value: Any) -> Any:
+    try:
+        return thaw(value)
+    except RecursionError:
+        raise ExperienceError("invalid-entry") from None
+
+
 def _entry(d: dict) -> Entry:
     try:
         canonical(d)
@@ -233,13 +246,14 @@ class QueryResult:
 _PROPOSAL_KEYS = {"id", "kind", "cue", "lesson", "applicability", "provenance", "evidence",
                   "expiresAt", "revalidateAfter"}
 _CONTEXT_KEYS = {"taskStartedAt", "domain", "sourceSha256", "host", "toolSetSha256", "policySha256"}
-_MISMATCH = (("domain", "domain", "domain-mismatch"), ("sourceSha256", "sourceSha256", "source-mismatch"),
-             ("host", "host", "host-mismatch"), ("toolSetSha256", "toolSetSha256", "tool-mismatch"),
-             ("policySha256", "policySha256", "policy-mismatch"))
+_MISMATCH = (("domain", "domain-mismatch"), ("sourceSha256", "source-mismatch"),
+             ("host", "host-mismatch"), ("toolSetSha256", "tool-mismatch"),
+             ("policySha256", "policy-mismatch"))
 
 
 def _event(d: dict, name: str, at: int, reason: str | None = None) -> None:
     _require(_tick(at) and at >= d["history"][-1]["at"], "time-regression")
+    _require(name in _REASONED or len(d["history"]) < MAX_HISTORY - _TERMINAL_HEADROOM, "history-full")
     state = d["state"]
     result = _TRANSITIONS[name][1] or state
     d["history"].append({"seq": len(d["history"]), "event": name, "from": state, "to": result,
@@ -264,6 +278,9 @@ class ExperienceStore:
     """Immutable, id-sorted collection of entries; every operation returns a new store."""
 
     def __init__(self, entries: tuple[Entry, ...] = ()):
+        _require(type(entries) is tuple and all(type(e) is Entry for e in entries), "invalid-store")
+        for entry in entries:
+            _validate_entry(entry.to_dict())
         _require(len(entries) <= MAX_ENTRIES and [e.id for e in entries] == sorted({e.id for e in entries}),
                  "invalid-store")
         self._entries = tuple(entries)
@@ -291,6 +308,8 @@ class ExperienceStore:
         if mutate is not None:
             mutate(d)
         _event(d, event, at, reason)
+        if d["state"] != "active":
+            d["activation"] = None
         return self._with(_entry(d))
 
     # --- automatic generation ------------------------------------------------------
@@ -298,12 +317,11 @@ class ExperienceStore:
     def add(self, proposal: Any, at: int) -> "ExperienceStore":
         """Quarantine a generated lesson; proposals cannot carry state, history or activation."""
         _exact(proposal, _PROPOSAL_KEYS)
-        _require(len(self._entries) < MAX_ENTRIES and all(e.id != proposal["id"] for e in self._entries),
-                 "duplicate-entry")
-        d = thaw(proposal) | {"format": ENTRY_FORMAT, "state": "proposed", "validatedAt": None,
-                              "activation": None, "history": [], "executionAuthorization": False}
-        _require(type(proposal["evidence"]) is list, "invalid-entry")
-        _require(_tick(at), "invalid-entry")
+        _require(len(self._entries) < MAX_ENTRIES, "store-full")
+        _require(all(e.id != proposal["id"] for e in self._entries), "duplicate-entry")
+        d = _plain(proposal) | {"format": ENTRY_FORMAT, "state": "proposed", "validatedAt": None,
+                              "activation": None, "executionAuthorization": False}
+        _require(type(proposal["evidence"]) is list and _tick(at), "invalid-entry")
         d["history"] = [{"seq": 0, "event": "generated", "from": None, "to": "proposed", "at": at,
                          "reason": None}]
         _event(d, "screened", at)
@@ -329,9 +347,8 @@ class ExperienceStore:
                  "validation-not-independent")
 
     def add_evidence(self, entry_id: str, row: Any, at: int) -> "ExperienceStore":
-        def mutate(d):
-            d["evidence"].append(thaw(row))
-        return self._change(entry_id, at, "evidence-added", mutate=mutate)
+        return self._change(entry_id, at, "evidence-added",
+                            mutate=lambda d: d["evidence"].append(_plain(row)))
 
     # --- governed activation -------------------------------------------------------
 
@@ -341,17 +358,21 @@ class ExperienceStore:
         _require(entry.state == "validated", "invalid-transition")
         d = entry.to_dict()
         _require(not _contradicted(d), "contradicted")
-        _require(not _stale(d, at) and not _expired(d, at), "stale-revalidation")
-        _check_decision(thaw(decision), d, exact=True)
-        _require(thaw(decision)["decidedAt"] == at, "decision-time-mismatch")
-        return self._change(entry_id, at, "activated", mutate=lambda e: e.update(activation=thaw(decision)))
+        _require(not _expired(d, at), "expired")
+        _require(not _stale(d, at), "stale-revalidation")
+        _require(_tick(at), "invalid-entry")
+        decision = _plain(decision)
+        _check_decision(decision, d, exact=True)
+        _require(decision["decidedAt"] == at, "decision-time-mismatch")
+        return self._change(entry_id, at, "activated", reason=digest(decision),
+                            mutate=lambda e: e.update(activation=decision))
 
     def rollback(self, entry_id: str, at: int, reason: str) -> "ExperienceStore":
         """Withdraw an active entry back to ``validated``; history keeps the activation."""
-        return self._change(entry_id, at, "rolled-back", reason, lambda d: d.update(activation=None))
+        return self._change(entry_id, at, "rolled-back", reason)
 
     def revoke(self, entry_id: str, at: int, reason: str) -> "ExperienceStore":
-        return self._change(entry_id, at, "revoked", reason, lambda d: d.update(activation=None))
+        return self._change(entry_id, at, "revoked", reason)
 
     def revoke_evidence(self, evidence_sha256: str, at: int, reason: str) -> "ExperienceStore":
         """Revoke every live entry that relies on this evidence as support."""
@@ -366,11 +387,11 @@ class ExperienceStore:
 
     def sweep(self, now: int) -> "ExperienceStore":
         """Move entries past ``expiresAt`` to the terminal expired state."""
+        _require(_tick(now), "invalid-entry")
         store = self
         for entry in self._entries:
-            if entry.state not in TERMINAL and entry.state != "proposed" and _expired(entry.data, now):
-                store = store._change(entry.id, now, "expired", "expired",
-                                      lambda d: d.update(activation=None))
+            if entry.state not in TERMINAL and _expired(entry.data, now):
+                store = store._change(entry.id, now, "expired", "expired")
         return store
 
     # --- online read ---------------------------------------------------------------
@@ -399,16 +420,14 @@ class ExperienceStore:
             return d["state"]
         if d["state"] != "active":
             return "not-active"
-        if max(r["observedAt"] for r in d["evidence"]) >= start or d["activation"]["decidedAt"] >= start \
-                or d["validatedAt"] >= start:
+        if d["history"][-1]["at"] >= start:  # any recorded change at or after the task start
             return "future-state"
         if _expired(d, start):
             return "expired"
         if _stale(d, start):
             return "stale-revalidation"
-        for field, key, reason in _MISMATCH:
-            expected = d["applicability"][field]
-            if expected != context[key]:
+        for field, reason in _MISMATCH:
+            if d["applicability"][field] != context[field]:
                 return reason
         return "contradicted" if _contradicted(d) else None
 
