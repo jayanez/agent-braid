@@ -1,0 +1,28 @@
+{
+  "task": "SPEC-057/T022",
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline orchestration-settings validator and scope resolver; host probes HV-9, HV-10 and HV-12, G1, native and independent-review gates pending",
+  "executionAuthorization": false,
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_orchestration_settings -v",
+      "exitCode": 0,
+      "testsRun": 38,
+      "scope": "Validator agrees with orchestration-settings.schema.json on 23 documents; the resolved record validates against $defs/resolvedSettings; effective delivery is the Mailbox for all 125 combinations of five notification choices across three scopes; most specific scope wins; defaults; push, megaphone and doorbell requests recorded as reserved-for-SPEC-059 with no push; contradictory mode and strategy pairs, unknown values, scopes and members rejected; a document may carry only its own scope; block at repository or user is a floor that no value at any other scope lowers (exhaustive over guard values), with the floor scope and the refused lowering recorded; a floor offered at conversation scope is not a floor; extensions stored and reported not-interpreted-by-SPEC-057 and never changing an effective value, and an extension-only scope does not decide the resolution; extension and file bounds at and one past; sources refused with ERR-UNOBSERVABLE-SOURCE: a symlink, a symlink into a tracked file, a tracked file inside a working tree, a config directory inside a working tree or linked worktree, group- or world-writable files, a directory or FIFO, a repository directory that escapes the configuration directory; malformed and over-bound sources refused with their codes and no file content echoed; AST check that ownership.py imports no socket, network or process helper; resolution with socket and subprocess patched to fail.",
+      "relatedChecks": ".venv-speckit/bin/python -m unittest of tests.test_ownership_declaration, test_ownership_expansion, test_ownership_preflight, test_ownership_receipt, test_hazard_notice, test_isolation_audit, test_recovery_report and test_orchestration_bounds was re-run with the suite above (239 tests, exit 0) because ownership.py changed, and the input hashes of evidence t012-t013, t014-t016, t017-t019-t042 and t020-t021 were refreshed."
+    }
+  ],
+  "inputs": {
+    "agent_braid/ownership.py": "2fed2759ec5798385bcee8e0c7f09907325ef9e971d481247570dfe5f3423f41",
+    "tests/test_orchestration_settings.py": "ac337cc75527ca6d3b51f1b11123e79832de626d28e9ce9cdaf7184c63d1e6b8",
+    "specs/057-claude-orchestration-advisory/contracts/orchestration-settings.schema.json": "568eed4271c60b722b1c9eff1907a7156c39332aa1ab127b3c87e0fe41502b27",
+    "specs/057-claude-orchestration-advisory/contracts/README.md": "2387d1e53faf4d25ecb100838b753462abab7ba6135f5972ad31456aa223f622"
+  },
+  "outcome": "The resolver validates one settings document per scope, reads user and repository files only from the fixed operator-owned locations and refuses every other source, and resolves them so that the effective delivery is always the Mailbox, a push request is only recorded, a block floor at repository or user scope holds the guard mode at block, and extensions are stored without interpretation.",
+  "limits": "Offline synthetic fixtures and temporary Git repositories on one POSIX host. Class 1-syntactic. The caller supplies the working-tree roots and the configuration directory: no CLI subcommand reads these settings yet, so the Git observation of working trees is not wired. The floor is as strong as the file permissions of the operator-owned files; the permissions of the directories above them are not checked, and a writer with the operator's own permissions can change them. guardMode is validated and never enforced. No host, Claude Code, G1 or independent-review claim.",
+  "pending": [
+    "Host probes HV-9, HV-10 and HV-12 and G1",
+    "Stable pr-profile result recorded in the pull request",
+    "Human review of the draft specification"
+  ]
+}

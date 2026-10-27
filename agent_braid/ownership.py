@@ -28,7 +28,9 @@ refusal, and ``notice_from_receipt`` / ``notice_from_preflight`` /
 ``parse_agents_listing`` reads the host session listing an operator supplies,
 ``build_isolation_audit`` states configuration observations and
 ``build_recovery_report`` classifies what stopped units left behind (T020, T021).
-Observation itself (Git) belongs to the CLI layer; this module stays pure.
+``validate_settings``, ``resolve_settings`` and ``read_operator_file`` own the orchestration settings schema
+and scope resolver (T022); the only file the module reads is an operator-owned settings file, with ``os`` and
+``stat`` alone. Observation itself (Git) belongs to the CLI layer; this module stays pure.
 """
 
 from __future__ import annotations
@@ -40,6 +42,7 @@ import hashlib
 import json
 import os
 import re
+import stat
 from pathlib import Path, PurePosixPath
 from typing import Any, Collection, Mapping, NamedTuple
 import unicodedata
@@ -1805,3 +1808,268 @@ def build_recovery_report(declaration: Mapping[str, Any], evidence: Mapping[str,
         "units": units,
         "limits": list(RECOVERY_LIMITS),
     }
+
+
+# --- Orchestration settings (T022) ------------------------------------------------
+
+SETTINGS_VERSION = "agent-braid-orchestration-settings/v0.1"
+ORCHESTRATION_SCOPES = ("conversation", "repository", "user")  # most specific first
+NOTIFICATION_MODES = ("pull", "push")
+NOTIFICATION_STRATEGIES = ("mailbox-whisper", "megaphone", "doorbell")
+PUSH_STRATEGIES = ("megaphone", "doorbell")
+GUARD_MODES = ("off", "audit", "warn", "block")
+SCOPE_LOCATIONS = {
+    "user": "user-config-directory",
+    "repository": "outside-working-tree-keyed-by-repository-digest",
+    "conversation": "operator-supplied-at-invocation",
+}
+SETTINGS_FILE = "orchestration-settings.json"
+REPOSITORY_SETTINGS_DIRECTORY = "repositories"
+MAX_EXTENSION_OWNERS = 8
+MAX_EXTENSION_SETTINGS = 32
+MAX_EXTENSION_LIST = 16
+MAX_EXTENSION_ITEM = 64
+
+_OWNER = re.compile(r"^SPEC-[0-9]{3}(?!\n)$")
+_EXTENSION_VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}(?!\n)$")
+_EXTENSION_KEY = re.compile(r"^[A-Za-z][A-Za-z0-9]{0,63}(?!\n)$")
+_REPOSITORY_DIGEST = re.compile(r"^[0-9a-f]{64}(?!\n)$")
+_EFFECTIVE_MEMBERS = ("notificationMode", "notificationStrategy", "guardMode")
+_SCOPE_MEMBERS = frozenset({*_EFFECTIVE_MEMBERS, "extensions"})
+
+
+class SettingsRefused(Exception):
+    """Settings were refused: ``code`` is a command-error code and ``diagnostics`` hold schema member names only."""
+
+    def __init__(self, code: str, diagnostics: tuple[Diagnostic, ...] = ()):
+        self.code = code
+        self.diagnostics = diagnostics
+        super().__init__(code)
+
+
+def _check_extensions(value: Any, where: str, out: _Collector) -> None:
+    if not isinstance(value, dict):
+        out.add("wrong-type", where)
+        return
+    if len(value) > MAX_EXTENSION_OWNERS:
+        out.add("too-many-extensions", where)
+        return
+    for owner, entry in value.items():
+        if _OWNER.search(owner) is None:
+            out.add("bad-extension-owner", where)
+            continue
+        here = f"{where}.{owner}"
+        item = _members(entry, here, out, frozenset({"extensionVersion", "settings"}), ("extensionVersion", "settings"))
+        if item is None:
+            continue
+        if "extensionVersion" in item:
+            _string(item["extensionVersion"], _join(here, "extensionVersion"), out, _EXTENSION_VERSION)
+        if "settings" in item:
+            _check_extension_settings(item["settings"], _join(here, "settings"), out)
+
+
+def _check_extension_settings(value: Any, where: str, out: _Collector) -> None:
+    if not isinstance(value, dict):
+        out.add("wrong-type", where)
+    elif len(value) > MAX_EXTENSION_SETTINGS:
+        out.add("too-many-settings", where)
+    else:
+        for key, item in value.items():
+            if _EXTENSION_KEY.search(key) is None:
+                out.add("bad-extension-key", where)
+                continue
+            here = f"{where}.{key}"
+            if isinstance(item, list):
+                if len(item) > MAX_EXTENSION_LIST:
+                    out.add("too-many-items", here)
+                for index, element in enumerate(item[:MAX_EXTENSION_LIST]):
+                    if _string(element, f"{here}[{index}]", out, _REPOSITORY_TEXT) and len(element) > MAX_EXTENSION_ITEM:
+                        out.add("string-too-long", f"{here}[{index}]")
+            elif isinstance(item, str):
+                _string(item, here, out, _REPOSITORY_TEXT)
+            elif item is not None and (isinstance(item, dict) or not isinstance(item, (bool, int, float))):
+                out.add("wrong-type", here)
+
+
+def _check_scope(scope: str, value: Any, out: _Collector) -> None:
+    data = _members(value, scope, out, _SCOPE_MEMBERS, ())
+    if data is None:
+        return
+    mode, strategy = data.get("notificationMode"), data.get("notificationStrategy")
+    if "notificationMode" in data and mode not in NOTIFICATION_MODES:
+        out.add("unknown-value", _join(scope, "notificationMode"))
+    if "notificationStrategy" in data and strategy not in NOTIFICATION_STRATEGIES:
+        out.add("unknown-value", _join(scope, "notificationStrategy"))
+    if "guardMode" in data and data["guardMode"] not in GUARD_MODES:
+        out.add("unknown-value", _join(scope, "guardMode"))
+    if mode in (None, *NOTIFICATION_MODES) and strategy in (None, *NOTIFICATION_STRATEGIES) and (
+        (mode == "push" and strategy not in PUSH_STRATEGIES)
+        or (mode == "pull" and strategy not in (None, "mailbox-whisper"))
+        or (strategy in PUSH_STRATEGIES and mode != "push")
+    ):
+        out.add("contradictory-notification", scope)
+    if "extensions" in data:
+        _check_extensions(data["extensions"], _join(scope, "extensions"), out)
+
+
+def validate_settings(data: Any) -> tuple[Diagnostic, ...]:
+    """Structural and coherence rules of orchestration-settings.schema.json, without a validator library."""
+    out = _Collector()
+    top = _members(data, "", out, frozenset({"schemaVersion", *ORCHESTRATION_SCOPES, "extensions"}), ("schemaVersion",))
+    if top is None:
+        return out.result()
+    if "schemaVersion" in top and top["schemaVersion"] != SETTINGS_VERSION:
+        out.add("bad-constant", "schemaVersion")
+    for scope in ORCHESTRATION_SCOPES:
+        if scope in top:
+            _check_scope(scope, top[scope], out)
+    if "extensions" in top:
+        _check_extensions(top["extensions"], "extensions", out)
+    return out.result()
+
+
+def parse_settings(raw: bytes | str, scope: str) -> dict[str, Any]:
+    """Load one settings document and refuse it unless it is valid and names only the scope of its location."""
+    if scope not in ORCHESTRATION_SCOPES:
+        raise ValueError("unknown scope")
+    data = raw.encode("utf-8", "surrogatepass") if isinstance(raw, str) else raw
+    if len(data) > MAX_SETTINGS_BYTES:
+        raise SettingsRefused("ERR-OVER-BOUND")
+    try:
+        document = json.loads(data.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys,
+                              parse_constant=_reject_constant)
+    except (UnicodeDecodeError, ValueError, RecursionError):
+        raise SettingsRefused("ERR-MALFORMED-INPUT", (Diagnostic("unparseable", ""),)) from None
+    diagnostics = validate_settings(document)
+    if not diagnostics:
+        diagnostics = tuple(Diagnostic("scope-not-from-this-location", other)
+                            for other in ORCHESTRATION_SCOPES if other != scope and other in document)
+    if diagnostics:
+        raise SettingsRefused("ERR-MALFORMED-INPUT", diagnostics)
+    return document
+
+
+def operator_location(scope: str, config_dir: str | os.PathLike, repository_digest: str | None = None) -> Path:
+    """The one operator-owned file for ``user`` or ``repository`` scope (the conversation scope has no file)."""
+    base = Path(config_dir)
+    if scope == "user":
+        return base / SETTINGS_FILE
+    if scope == "repository" and repository_digest is not None and _REPOSITORY_DIGEST.search(repository_digest):
+        return base / REPOSITORY_SETTINGS_DIRECTORY / repository_digest / SETTINGS_FILE
+    raise ValueError("no operator-owned file for this scope")
+
+
+def _inside(path: str, roots: Collection[str]) -> bool:
+    return any(path == root or path.startswith(root.rstrip(os.sep) + os.sep) for root in roots)
+
+
+def read_operator_file(scope: str, config_dir: str | os.PathLike, repository_digest: str | None,
+                       working_trees: Collection[str | os.PathLike]) -> dict[str, Any] | None:
+    """Read the operator-owned file of ``user`` or ``repository`` scope; ``None`` when it does not exist.
+
+    Refused with ``ERR-UNOBSERVABLE-SOURCE``: a symlink, anything that is not a regular file, a file writable by
+    group or others, and a file inside any working tree (tracked or not) of the repository.
+    """
+    path = operator_location(scope, config_dir, repository_digest)
+    try:
+        if os.path.islink(path):
+            raise SettingsRefused("ERR-UNOBSERVABLE-SOURCE", (Diagnostic("symlink", scope),))
+        descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0))
+    except FileNotFoundError:
+        return None
+    except OSError:
+        raise SettingsRefused("ERR-UNOBSERVABLE-SOURCE", (Diagnostic("unreadable", scope),)) from None
+    try:
+        info = os.fstat(descriptor)
+        reasons = []
+        if not stat.S_ISREG(info.st_mode):
+            reasons.append("not-a-regular-file")
+        if info.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
+            reasons.append("writable-by-group-or-others")
+        real = os.path.realpath(path)
+        expected = os.path.realpath(Path(config_dir))
+        if not _inside(real, [expected]):
+            reasons.append("outside-config-directory")
+        if _inside(real, [os.path.realpath(root) for root in working_trees]):
+            reasons.append("inside-working-tree")
+        if reasons:
+            raise SettingsRefused("ERR-UNOBSERVABLE-SOURCE", tuple(Diagnostic(reason, scope) for reason in reasons))
+        with os.fdopen(descriptor, "rb", closefd=False) as handle:
+            raw = handle.read(MAX_SETTINGS_BYTES + 1)
+    finally:
+        os.close(descriptor)
+    return parse_settings(raw, scope)
+
+
+def resolve_settings(documents: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
+    """Resolve already-read scope documents into the ``resolvedSettings`` record.
+
+    ``documents`` maps a scope to a document read from that scope's operator-owned location. The most specific
+    scope wins; a ``block`` at repository or user scope is a floor that no scope lowers; push requests are only
+    recorded; extensions are stored without interpretation.
+    """
+    if any(scope not in ORCHESTRATION_SCOPES for scope in documents):
+        raise SettingsRefused("ERR-MALFORMED-INPUT", (Diagnostic("unknown-scope", ""),))
+    for scope, document in documents.items():
+        diagnostics = validate_settings(document)
+        if diagnostics:
+            raise SettingsRefused("ERR-MALFORMED-INPUT", diagnostics)
+        if any(other in document for other in ORCHESTRATION_SCOPES if other != scope):
+            raise SettingsRefused("ERR-MALFORMED-INPUT", (Diagnostic("scope-not-from-this-location", scope),))
+    present = [(scope, documents[scope].get(scope, {})) for scope in ORCHESTRATION_SCOPES if scope in documents]
+
+    def first(*members: str) -> tuple[str, Mapping[str, Any]] | None:
+        return next(((s, v) for s, v in present if any(m in v for m in members)), None)
+
+    mode, strategy = "pull", "mailbox-whisper"
+    notification = first("notificationMode", "notificationStrategy")
+    if notification is not None:
+        requested_mode = notification[1].get("notificationMode")
+        strategy = notification[1].get("notificationStrategy") or strategy
+        mode = requested_mode or ("push" if strategy in PUSH_STRATEGIES else "pull")
+    requested = first("guardMode")
+    guard = requested[1]["guardMode"] if requested else "off"
+    floor_scope = next((s for s in ("repository", "user") if s in documents
+                        and documents[s].get(s, {}).get("guardMode") == "block"), None)
+    floor = {"mode": "block", "scope": floor_scope} if floor_scope else None
+    refused = floor is not None and guard != "block"
+    if floor is not None:
+        guard = "block"
+    owners: dict[tuple[str, str], None] = {}
+    for scope, document in documents.items():
+        for entries in (document.get("extensions", {}), document.get(scope, {}).get("extensions", {})):
+            owners.update(((owner, entry["extensionVersion"]), None) for owner, entry in entries.items())
+    if len(owners) > MAX_EXTENSION_OWNERS:
+        raise SettingsRefused("ERR-OVER-BOUND", (Diagnostic("too-many-extensions", "extensions"),))
+    deciding = next((s for s, v in present if any(m in v for m in _EFFECTIVE_MEMBERS)), None)
+    return {
+        "settingsSource": "operator-owned-location",
+        "scopeSources": [{"scope": s, "location": SCOPE_LOCATIONS[s]} for s in ORCHESTRATION_SCOPES if s in documents],
+        "effectiveNotificationMode": "pull",
+        "effectiveDelivery": "mailbox",
+        "requestedNotificationMode": mode,
+        "requestedNotificationStrategy": strategy,
+        "pushStatus": "reserved-for-SPEC-059" if mode == "push" else "not-requested",
+        "whisperStatus": "companion-SPEC-058-not-enabled-here",
+        "resolvedFromScope": deciding or "default",
+        "guardMode": guard,
+        "guardModeFloor": floor,
+        "guardModeLoweringRefused": refused,
+        "extensions": [{"owner": o, "extensionVersion": v, "status": "not-interpreted-by-SPEC-057"} for o, v in owners],
+        "enforcement": "none-in-SPEC-057",
+    }
+
+
+def load_settings(*, config_dir: str | os.PathLike, repository_digest: str | None,
+                  working_trees: Collection[str | os.PathLike], conversation: bytes | str | None = None) -> dict[str, Any]:
+    """Read the three scopes from their operator-owned sources and resolve them."""
+    documents: dict[str, Mapping[str, Any]] = {}
+    for scope in ("user", "repository"):
+        if scope == "repository" and repository_digest is None:
+            continue
+        document = read_operator_file(scope, config_dir, repository_digest, working_trees)
+        if document is not None:
+            documents[scope] = document
+    if conversation is not None:
+        documents["conversation"] = parse_settings(conversation, "conversation")
+    return resolve_settings(documents)

@@ -18,7 +18,7 @@
     }
   ],
   "inputs": {
-    "agent_braid/ownership.py": "d68e8f0deb14123762d5fff7bb7641edb22cdf405b74e901dbfde1a1bf57d8b2",
+    "agent_braid/ownership.py": "2fed2759ec5798385bcee8e0c7f09907325ef9e971d481247570dfe5f3423f41",
     "agent_braid/ownership_cli.py": "f577ff3c3e7eaf574144e6c78dad4bab3aa357b7edf5983ac457ed31ee24a23d",
     "tests/test_ownership_expansion.py": "673dd74f352194e4583301c175326263129738057cbfd86ee0daf91fa89448f5",
     "tests/test_ownership_preflight.py": "8f13a1e2b58507c047d784d80b77ff9a80aa785803931791a79a2df108c8fb56",
