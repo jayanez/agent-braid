@@ -1,0 +1,347 @@
+{
+  "schema": "agent-braid-native-observation/v1",
+  "task": "SPEC-060 T009 (evidence only; T009 is not ticked)",
+  "observedOn": "2026-10-27",
+  "commit": "06d0313df1c4d836edb77059fe69203542c91e86",
+  "sourceDirty": false,
+  "versions": {
+    "package": "0.1.0a2",
+    "portableSurfaceContract": "agent-braid-tooling/v0.2",
+    "envelopeSchema": "agent-braid-tooling/v0.1",
+    "nativePluginObserved": "0.1.0-alpha.4 (existing local marketplace build, SPEC-054 evidence hashes)"
+  },
+  "environment": {
+    "os": "macOS 27.0.1 (26A434) arm64",
+    "claudeCode": "2.1.292 (/opt/homebrew/bin/claude)",
+    "codex": "codex-cli 0.164.0 (npm, node v22.20.0)",
+    "uv": "0.11.26",
+    "buildPython": "CPython 3.12.13 (uv venv with build 1.6.1)",
+    "installedPython": "CPython 3.13.11 (Homebrew), mcp==2.3.0",
+    "profiles": "disposable HOME, CLAUDE_CONFIG_DIR / CODEX_HOME and AGENT_BRAID_HOME under a private directory outside any repository; no login, no model or provider session; nothing pushed, tagged or published"
+  },
+  "candidate": {
+    "wheel": "agent_braid-0.1.0a2-py3-none-any.whl",
+    "wheelSha256": "bd282e618078920b0577f0f68eb9bf95f8b5494f4b432ab2fc409a7d94632f16",
+    "builtFrom": "clean clone of develop, python -m build --wheel (isolated build, downloads setuptools only)",
+    "extra": "tooling (mcp==2.3.0)",
+    "nativePluginInventorySha256": "12c9ab896a9d223e17b0ee52764e87ca54f7fdf5686cad7ee56e4c779ef4d6c5",
+    "nativePluginProvenanceSha256": "2a123a466cc48743655b15064e2203cfb6154b1bbecb17e93eca8ef0d8763e0a"
+  },
+  "sdkClient": {
+    "serverInfo": {
+      "description": null,
+      "icons": null,
+      "name": "agent-braid-tooling",
+      "title": null,
+      "version": "0.1.0a2",
+      "website_url": null
+    },
+    "capabilities": {
+      "prompts": {
+        "list_changed": false
+      },
+      "resources": {
+        "list_changed": false,
+        "subscribe": false
+      },
+      "tools": {
+        "list_changed": false
+      }
+    },
+    "promptOrder": [
+      "analyze",
+      "plan",
+      "evidence",
+      "agent-braid-analyze",
+      "agent-braid-plan",
+      "agent-braid-evidence"
+    ],
+    "deprecatedMarked": [
+      "agent-braid-analyze",
+      "agent-braid-plan",
+      "agent-braid-evidence"
+    ],
+    "getPromptDescriptions": {
+      "agent-braid-analyze": "Deprecated alias of `analyze`; removed in agent-braid-tooling/v0.3. Read-only bounded workflow guidance",
+      "agent-braid-evidence": "Deprecated alias of `evidence`; removed in agent-braid-tooling/v0.3. Read-only bounded workflow guidance",
+      "agent-braid-plan": "Deprecated alias of `plan`; removed in agent-braid-tooling/v0.3. Read-only bounded workflow guidance",
+      "analyze": "Read-only bounded workflow guidance",
+      "evidence": "Read-only bounded workflow guidance",
+      "plan": "Read-only bounded workflow guidance"
+    },
+    "aliasTextIdenticalToCanonical": {
+      "analyze": true,
+      "evidence": true,
+      "plan": true
+    },
+    "unknownPrompt": "MCPError: Unknown prompt",
+    "tools": [
+      "analyze-work",
+      "analyze",
+      "prepare"
+    ],
+    "resources": [
+      "agent-braid://capabilities"
+    ],
+    "capabilitiesResource": {
+      "schemaVersion": "agent-braid-tooling/v0.2",
+      "envelopeSchemaVersion": "agent-braid-tooling/v0.1",
+      "prompts": [
+        "analyze",
+        "plan",
+        "evidence"
+      ],
+      "deprecatedPrompts": [
+        {
+          "name": "agent-braid-analyze",
+          "removedIn": "agent-braid-tooling/v0.3",
+          "replacedBy": "analyze"
+        },
+        {
+          "name": "agent-braid-plan",
+          "removedIn": "agent-braid-tooling/v0.3",
+          "replacedBy": "plan"
+        },
+        {
+          "name": "agent-braid-evidence",
+          "removedIn": "agent-braid-tooling/v0.3",
+          "replacedBy": "evidence"
+        }
+      ]
+    }
+  },
+  "claudeCode": {
+    "method": "claude mcp add/list/get, claude plugin install/list/details, and the system init record of `claude -p --output-format stream-json --verbose /cost` (a local slash command: num_turns 0, no model call, apiKeySource none) read for slash_commands, mcp_servers, tools and skills",
+    "portableAlone_key_portable-braid": {
+      "mcp_servers": [
+        {
+          "name": "portable-braid",
+          "status": "connected",
+          "source": "user"
+        }
+      ],
+      "slash_commands_agent_braid_related": [
+        "mcp__portable-braid__analyze",
+        "mcp__portable-braid__plan",
+        "mcp__portable-braid__evidence",
+        "mcp__portable-braid__agent-braid-analyze",
+        "mcp__portable-braid__agent-braid-plan",
+        "mcp__portable-braid__agent-braid-evidence"
+      ],
+      "tools_agent_braid": [
+        "mcp__portable-braid__analyze",
+        "mcp__portable-braid__analyze-work",
+        "mcp__portable-braid__prepare"
+      ],
+      "skills_agent_braid": [],
+      "slash_command_count": 55,
+      "duplicate_slash_names": []
+    },
+    "nativeAlone": {
+      "mcp_servers": [
+        {
+          "name": "plugin:agent-braid:agent-braid",
+          "status": "failed",
+          "source": "plugin"
+        }
+      ],
+      "slash_commands_agent_braid_related": [
+        "agent-braid:analyze",
+        "agent-braid:evidence",
+        "agent-braid:execute",
+        "agent-braid:plan",
+        "agent-braid:recover",
+        "agent-braid:setup"
+      ],
+      "tools_agent_braid": [],
+      "skills_agent_braid": [
+        "agent-braid:analyze",
+        "agent-braid:evidence",
+        "agent-braid:execute",
+        "agent-braid:plan",
+        "agent-braid:recover",
+        "agent-braid:setup"
+      ],
+      "slash_command_count": 55,
+      "duplicate_slash_names": []
+    },
+    "nativePlusPortableDistinctKey_portable-braid": {
+      "mcp_servers": [
+        {
+          "name": "plugin:agent-braid:agent-braid",
+          "status": "failed",
+          "source": "plugin"
+        },
+        {
+          "name": "portable-braid",
+          "status": "connected",
+          "source": "user"
+        }
+      ],
+      "slash_commands_agent_braid_related": [
+        "agent-braid:analyze",
+        "agent-braid:evidence",
+        "agent-braid:execute",
+        "agent-braid:plan",
+        "agent-braid:recover",
+        "agent-braid:setup",
+        "mcp__portable-braid__analyze",
+        "mcp__portable-braid__plan",
+        "mcp__portable-braid__evidence",
+        "mcp__portable-braid__agent-braid-analyze",
+        "mcp__portable-braid__agent-braid-plan",
+        "mcp__portable-braid__agent-braid-evidence"
+      ],
+      "tools_agent_braid": [
+        "mcp__portable-braid__analyze",
+        "mcp__portable-braid__analyze-work",
+        "mcp__portable-braid__prepare"
+      ],
+      "skills_agent_braid": [
+        "agent-braid:analyze",
+        "agent-braid:evidence",
+        "agent-braid:execute",
+        "agent-braid:plan",
+        "agent-braid:recover",
+        "agent-braid:setup"
+      ],
+      "slash_command_count": 61,
+      "duplicate_slash_names": []
+    },
+    "nativePlusPortableCollisionKey_agent-braid": {
+      "mcp_servers": [
+        {
+          "name": "plugin:agent-braid:agent-braid",
+          "status": "failed",
+          "source": "plugin"
+        },
+        {
+          "name": "agent-braid",
+          "status": "connected",
+          "source": "user"
+        }
+      ],
+      "slash_commands_agent_braid_related": [
+        "agent-braid:analyze",
+        "agent-braid:evidence",
+        "agent-braid:execute",
+        "agent-braid:plan",
+        "agent-braid:recover",
+        "agent-braid:setup",
+        "mcp__agent-braid__analyze",
+        "mcp__agent-braid__plan",
+        "mcp__agent-braid__evidence",
+        "mcp__agent-braid__agent-braid-analyze",
+        "mcp__agent-braid__agent-braid-plan",
+        "mcp__agent-braid__agent-braid-evidence"
+      ],
+      "tools_agent_braid": [
+        "mcp__agent-braid__analyze",
+        "mcp__agent-braid__analyze-work",
+        "mcp__agent-braid__prepare"
+      ],
+      "skills_agent_braid": [
+        "agent-braid:analyze",
+        "agent-braid:evidence",
+        "agent-braid:execute",
+        "agent-braid:plan",
+        "agent-braid:recover",
+        "agent-braid:setup"
+      ],
+      "slash_command_count": 61,
+      "duplicate_slash_names": []
+    },
+    "mcpListInteractiveCli": {
+      "portableAlone": "portable-braid: Connected",
+      "native": "plugin:agent-braid:agent-braid: Connected (after plugin setup in the disposable AGENT_BRAID_HOME; Failed before setup)",
+      "nativePlusDistinctKey": "plugin:agent-braid:agent-braid and portable-braid both Connected",
+      "nativePlusKeyAgentBraid": "plugin:agent-braid:agent-braid and agent-braid both Connected"
+    },
+    "pluginDetails": "agent-braid 0.1.0-alpha.4: Skills (6) analyze, evidence, execute, plan, recover, setup; MCP servers (1) agent-braid; no prompts listed"
+  },
+  "codex": {
+    "mcpListJson": "one server portable-braid, stdio, auth_status unsupported; codex mcp has only list, get, add, remove, login, logout (no prompt command)",
+    "appServerMcpServerStatusList": {
+      "serverInfo": {
+        "name": "agent-braid-tooling",
+        "title": null,
+        "version": "0.1.0a2",
+        "description": null,
+        "icons": null,
+        "websiteUrl": null
+      },
+      "serverCapabilitiesAdvertisedByServer": {
+        "prompts": {
+          "listChanged": false
+        },
+        "resources": {
+          "subscribe": false,
+          "listChanged": false
+        },
+        "tools": {
+          "listChanged": false
+        }
+      },
+      "toolsListed": [
+        "analyze-work",
+        "analyze",
+        "prepare"
+      ],
+      "resourcesListed": [
+        "agent-braid://capabilities"
+      ],
+      "entryKeys": [
+        "authStatus",
+        "httpOrigin",
+        "name",
+        "pluginId",
+        "resourceTemplates",
+        "resources",
+        "runtimeStatus",
+        "serverCapabilities",
+        "serverInfo",
+        "toolListMeta",
+        "tools",
+        "toolsError"
+      ],
+      "promptsField": "absent"
+    },
+    "appServerClientRequestMethods": "106 methods in the generated ClientRequest schema; MCP related: config/mcpServer/reload, mcpServer/oauth/login, mcpServer/resource/read, mcpServer/tool/call, mcpServerStatus/list; none named prompt*",
+    "conclusion": "Codex 0.164.0 exposes the server's tools and resources but offers no way to list or get MCP prompts"
+  },
+  "installedVerifiers": {
+    "v2": {
+      "script": "scripts/verify_installed_tooling_v2.py",
+      "scriptSha256": "4799d7dc59012757bd8339809c684141d330d9f6952457eeb09781b554fc3cca",
+      "target": "macos-arm64",
+      "status": "passed",
+      "python": "3.13.11",
+      "packageCount": 28,
+      "receiptSha256": "b9438037471dd99002b8cfb1de6cee960f695efd517ff970a4e2569bf43ff656",
+      "sdkModes": [
+        "auto",
+        "legacy"
+      ],
+      "grantIssued": false,
+      "runtimeDispatched": false,
+      "providerSessionStarted": false
+    },
+    "v1": {
+      "script": "scripts/verify_installed_tooling.py",
+      "scriptSha256": "e88e030718c87fb080f091e7179636e02d416b48a85e2353a00928eecf1ce431",
+      "status": "blocked",
+      "reason": "candidate distribution identity mismatch",
+      "exit": 2
+    },
+    "wheelhouse": "28 locked wheels from docs/tooling/reproducibility/mcp-2.3.0-cp313-macos-arm64.lock.txt fetched with pip download --require-hashes; the verifier checked the roster and digests against the manifest"
+  },
+  "limits": [
+    "Interactive slash-menu rendering was not observed; the slash-command registry in the init record was read instead",
+    "No Claude Code login and no model session; no prompt was invoked through a model",
+    "No sign-in to Codex and no Codex model session; Codex plugin was not installed for this task",
+    "Linux not observed",
+    "Native plugin alpha.4 build reused from the SPEC-054 observation (hashes match); not rebuilt",
+    "Claude Code print mode reported the native plugin MCP server as failed while claude mcp list reported it Connected; cause not determined",
+    "Not an owner release decision; nothing published or tagged"
+  ]
+}
