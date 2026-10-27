@@ -286,7 +286,15 @@
         {
           "given": "the release-readiness record",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "review of release-readiness.md and release-notes-0.1.0a2.md",
+              "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "Versions, changed and unchanged surfaces, migration and rollback, plugin impact and the no-release statement are recorded; pr-profile-result.md records 3 pre-existing failures, so T010 is open",
+              "path": "specs/060-portable-prompt-names/evidence/release-readiness.md",
+              "sha256": "f60f9c0f15498c2e7b1f435f64dcfffc8d4d7cf0cc200aa8984365ec595f2098"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_008 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/060-portable-prompt-names/validation-plan.md",
           "test_name": "procedure_008",
@@ -334,7 +342,15 @@
         {
           "given": "the final change set",
           "id": "SC-011",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "changed-path list against the frozen path list",
+              "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "Empty intersection (18 files listed in the record)",
+              "path": "specs/060-portable-prompt-names/evidence/pr-profile-result.md",
+              "sha256": "20ef5365355bf678a1e9e6ef51ceca2f91e4d6311ea9b4f6c77b885aeb54ea2c"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_011 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/060-portable-prompt-names/validation-plan.md",
           "test_name": "procedure_011",
