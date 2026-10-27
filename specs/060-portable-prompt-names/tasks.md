@@ -65,7 +65,7 @@ authorizes T002-T008 only; T009-T011 need separate owner decisions.
   observation record with environment, versions and limits (owner-run or
   separately authorized).
 
-- [ ] T010 (REQ-008 / SC-008; REQ-011 / SC-011): Run `--profile pr` on the stable
+- [x] T010 (REQ-008 / SC-008; REQ-011 / SC-011): Run `--profile pr` on the stable
   candidate, verify that no frozen path changed, record results and request the
   owner release decision. Dependencies: T002-T009. Verification: procedure_008,
   procedure_011. Evidence: profile receipt and path comparison. Release,

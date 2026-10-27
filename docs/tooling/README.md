@@ -17,7 +17,7 @@ coordination, an opt-in guard and a ledger for orchestrator-style parallel
 agents. All are draft planning; the current plugin ships no workflow or hook.
 
 **Current integration — 2026-10-20:** the combined M4.5 source portfolio has ten
-specs and 131 tasks (99 checked, 32 open), three historically closed parents, the closed SPEC-054 parent and
+specs and 131 tasks (100 checked, 31 open), three historically closed parents, the closed SPEC-054 parent and
 six open parents (draft SPEC-060 specifies the portable prompt names). [Telemetry SPEC-047](../../specs/047-local-technical-telemetry/spec.md)
 is default-off. Its [existing Luna review and integration provenance](../../specs/047-local-technical-telemetry/integration-review.md)
 are distinct from human/architectural acceptance and native admission. Pilot

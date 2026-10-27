@@ -1,8 +1,13 @@
 # SPEC-060 T010 pr-profile result
 
-**Outcome: the profile did NOT pass as a whole.** It stopped at `full-tests` with
-exit 1 because three tests that also fail on clean `develop` failed. All other
-selected checks and the other 2966 tests passed. T010 is therefore left unticked.
+**Outcome: the profile exited 1 at `full-tests`.** Three tests that also fail on
+clean `develop` failed (pre-existing, see below). The remaining 2966 tests and the
+checks that ran before `full-tests` passed. Stages ordered after `full-tests` were
+not run locally. The owner decided to tick T010 on this basis, anticipating the
+three pre-existing failures; this is not a clean profile pass. GitHub CI jobs
+(complete Python suite, fast invariants, governance, Spec Kit structure and render,
+tracking, validate) were green on the head before this record and are re-checked on
+the final head.
 
 Candidate: branch `spec060-i3-release-prep` at commit `3f39128a` (merge of develop
 `965883ae` included), observed 2026-10-27 on macOS arm64, CPython 3.13.11 in an
@@ -64,6 +69,4 @@ passed on the head before this record; the final head is checked again after thi
 commit. Whether CI installs the optional SDK was not checked here.
 
 Limits: not a native-host observation (T009), not owner review (T001), not a
-release decision, not clean-room reproduction or founder approval. T010 stays
-unticked until the owner accepts the three pre-existing failures as out of scope
-or they are fixed on develop.
+release decision, not clean-room reproduction or founder approval. T010 is ticked by owner decision despite the profile exit 1 above.

@@ -291,7 +291,7 @@
             {
               "command": "review of release-readiness.md and release-notes-0.1.0a2.md",
               "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
-              "outcome": "Versions, changed and unchanged surfaces, migration and rollback, plugin impact and the no-release statement are recorded; pr-profile-result.md records 3 pre-existing failures, so T010 is open",
+              "outcome": "Versions, changed and unchanged surfaces, migration and rollback, plugin impact and the no-release statement are recorded; pr-profile-result.md records exit 1 at full-tests from 3 pre-existing failures; T010 ticked by owner decision",
               "path": "specs/060-portable-prompt-names/evidence/release-readiness.md",
               "sha256": "f60f9c0f15498c2e7b1f435f64dcfffc8d4d7cf0cc200aa8984365ec595f2098"
             }
@@ -349,7 +349,7 @@
               "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
               "outcome": "Empty intersection (18 files listed in the record)",
               "path": "specs/060-portable-prompt-names/evidence/pr-profile-result.md",
-              "sha256": "20ef5365355bf678a1e9e6ef51ceca2f91e4d6311ea9b4f6c77b885aeb54ea2c"
+              "sha256": "970706e6bb5d7f90ed579fc4a1e07887b288e83da87bd1897b5347cf4b53b6c6"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_011 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
