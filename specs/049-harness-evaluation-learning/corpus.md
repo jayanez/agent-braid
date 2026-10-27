@@ -76,12 +76,11 @@ definitions derived from one group count as one independent unit for inference.
 
 ### Expected yield
 
-Observed: 4 candidate lineage groups, 7 test anchors, 2 handoff documents, 0
-executable HAR cases, 0 native sources, 0 recorded interventions. Planned: up to 16
-constructed case definitions (target four per family) that add inferential value
-only if they introduce new disjoint lineages; constructing more variants of L1
-increases case count, not independent units. Native yield is unknown and produces a
-feasibility result, never a substitute from synthetic outcomes.
+Observed and planned counts are tabulated in
+[source-registration.md](source-registration.md) ("Observed versus planned
+yield"). Constructing more variants of L1 increases case count, not independent
+units. Native yield is unknown and produces a feasibility result, never a
+substitute from synthetic outcomes.
 
 ### Exclusions registered at this step
 

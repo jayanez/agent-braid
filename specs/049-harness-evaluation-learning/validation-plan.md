@@ -87,10 +87,11 @@ Run `python3 scripts/validate_change.py --base develop --profile quick` after im
 These describe what the T001 evidence and any later corpus validator must show.
 Only the checks listed under "Obtained for T001" were run; the rest are planned.
 
-Obtained for T001 (see `evidence/t001.json` for commands and exits): recomputed
-Git blob IDs and SHA-256 values of the 11 registered source files against the
-pinned values, confirmed the seven named test anchors by symbol and line, and ran
-`scripts/validate_spec_kit.py` for structure. No unit test of an anchor was rerun.
+Obtained for T001: see `evidence/t001.json` for commands, exits and limits. The
+source-hash and anchor recomputation exited 0; `scripts/validate_spec_kit.py`
+exited 1 (unreachable objects in the shared object store of the isolated
+worktree) and has not been re-run to green, so T001 acceptance stays pending. No
+unit test of an anchor was rerun.
 
 Planned positive controls: every registered case has a source path, hash, lineage
 group, `synthetic`/`native` label, rights basis and expected oracle; the observed

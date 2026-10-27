@@ -1,9 +1,12 @@
 # HAR.2 source registration — kickoff inventory
 
 Status: inspected source inventory and proposed engineering sampling design;
-`049/T001` acceptance remains pending. No HAR fixture was created or executed by
-this registration; no native source was collected or admitted. Trace:
-SPEC-049/T001, REQ-001/SC-001 and REQ-003/SC-003. Observed on 2026-10-21.
+`049/T001` acceptance remains pending (founder decision; Spec Kit validator not
+green in the isolated worktree, see `evidence/t001.json`). The current-head
+readback is in "T001 re-registration at the current head (2026-10-27)" below. No
+HAR fixture was created or executed by this registration; no native source was
+collected or admitted. Trace: SPEC-049/T001, REQ-001/SC-001 and REQ-003/SC-003.
+Observed on 2026-10-21.
 
 ## Source identity and rights boundary
 

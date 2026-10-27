@@ -18,13 +18,13 @@
     "specs/049-harness-evaluation-learning/tasks.md": "026654b6501a494b3a3248342e12def9a4362ac813f09597b6f181428756aaa0"
   },
   "outputs": {
-    "specs/049-harness-evaluation-learning/corpus.md": "3eb251830ec9bf620cd9ca53af0c6aac926600fd59f87c66acdd897398b3f35a",
-    "specs/049-harness-evaluation-learning/validation-plan.md": "0c6f35fcd8d7c10a8b208133b962b37d8b7c8994eaefbcec378cb62a1956429f",
-    "specs/049-harness-evaluation-learning/source-registration.md": "500be2f53b1a82616333bd8febd68fc9ba290515314a035a60e4f15a524157f4",
-    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "d84740636423c3709248c523e0ffcbc438a5bc2af182e492f72e063d866344c9"
+    "specs/049-harness-evaluation-learning/corpus.md": "1a400003c2bc7ad2b5a44a33421f47c55cbc78a1db458e377d5a6cc0f61b979a",
+    "specs/049-harness-evaluation-learning/validation-plan.md": "f52ac685e75a65ef9eaa8feb1c7b08c63b9354362048d6f6d450e1b76141f329",
+    "specs/049-harness-evaluation-learning/source-registration.md": "0a9704a7a5a8209cfdde5f6d97a2cea677625464265794559a63e72ba0dd97ef",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "f3e63f40aa5eabb182d8584e72d05e2b25f11fe0ebbb10ef4f5a6dcaeafdcb84"
   },
   "method": "Read-only inspection and byte hashing of repository anchors; registration documents and a non-frozen T002 draft section written by an orchestrated derived track",
-  "outcome": "Anchors unchanged from pinned kickoff hashes; rights ledger, lineage groups and observed-versus-planned yield registered. T001 acceptance and all of T002 remain pending a founder decision.",
+  "outcome": "Anchors unchanged from pinned kickoff hashes; rights ledger, lineage groups and observed-versus-planned yield registered. T001 acceptance (tasks.md checkbox left unchecked) and all of T002 remain pending a founder decision; the Spec Kit validator has not passed.",
   "executedChecks": [
     {
       "command": "blob-id lookup and sha256 over the 11 registered source files (inline Python)",

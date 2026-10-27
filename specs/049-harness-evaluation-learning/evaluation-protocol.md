@@ -141,7 +141,10 @@ accepted, changed or rejected, derived from the registered yield in
 - Reference calculation for a paired, zero-discordance noninferiority claim at one
   sided 5% on an exact binomial bound: need n >= ln(0.05)/ln(1 - delta). For
   delta = 0.20, n >= 14; delta = 0.15, n >= 19; delta = 0.10, n >= 29 independent
-  paired units per axis and stratum. (Arithmetic: ln 0.05 = -2.996; ln 0.80 =
+  paired units per axis and stratum. These are minimums under zero observed
+  discordant failures; any observed failure requires recomputing with the exact
+  binomial bound and raises n, so the table is reference arithmetic, not a fixed
+  gate. (Arithmetic: ln 0.05 = -2.996; ln 0.80 =
   -0.223, ln 0.85 = -0.163, ln 0.90 = -0.105.)
 - With at most 4 independent lineages the smallest requirement (14) is not met.
   Proposal: the current cohort is DESCRIPTIVE ONLY. Up to 16 constructed case
@@ -182,5 +185,5 @@ inconclusive, infeasible; none requires fabricating native results.
 ### D7. Founder decisions requested
 
 Accept or amend: lineage-based split and L4 holdout; counterbalancing method;
-margins in D4 and the n >= 14/19/29 table; annotator count; numeric time/quota
+margins in D4 and the n >= 14/19/29 minimums (zero-failure case only, see D3); annotator count; numeric time/quota
 caps after an observed quota reading; whether the cohort stays descriptive.
