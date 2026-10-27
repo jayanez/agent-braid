@@ -25,6 +25,9 @@ constraints and unknowns in a closed vocabulary.
 a committed or quiesced checkpoint, ``command_error`` is the one shape of a
 refusal, and ``notice_from_receipt`` / ``notice_from_preflight`` /
 ``read_notice`` build and read the hazard notice (data, never an instruction).
+``parse_agents_listing`` reads the host session listing an operator supplies,
+``build_isolation_audit`` states configuration observations and
+``build_recovery_report`` classifies what stopped units left behind (T020, T021).
 Observation itself (Git) belongs to the CLI layer; this module stays pure.
 """
 
@@ -35,6 +38,7 @@ import bisect
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
+import os
 import re
 from pathlib import Path, PurePosixPath
 from typing import Any, Collection, Mapping, NamedTuple
@@ -1464,3 +1468,340 @@ def read_notice(data: Any, *, now: datetime, current_epoch: str | None = None,
         if refused:
             raise NoticeRefused((Diagnostic(code, where),))
     return data
+
+
+# --- Host session listing (T020, T021) --------------------------------------------
+
+# Documented field names of the host's agents listing. HV-9 (the observed shape) is pending: only the
+# fields used here are read, and everything else is ignored, never echoed.
+AGENTS_FIELDS = ("cwd", "kind", "startedAt", "id", "state", "pid", "status", "waitingFor", "sessionId", "name")
+SESSION_STATES = ("working", "blocked", "done", "failed", "stopped")
+SESSION_KINDS = ("interactive", "background")
+LIVE_STATES = ("working", "blocked")
+MAX_AGENTS_BYTES = 1024 * 1024
+MAX_SESSIONS = 256
+
+
+class ListingRefused(Exception):
+    """The listing is unparseable or over bound; ``code`` is a command-error code, ``rule`` a short name."""
+
+    def __init__(self, code: str, rule: str):
+        self.code, self.rule = code, rule
+        super().__init__(code)
+
+
+class Session(NamedTuple):
+    """The only parts of a listed session that are used. ``cwd`` is for in-memory matching and is never output."""
+
+    cwd: str | None
+    state: str
+    kind: str
+    drift: tuple[str, ...] = ()
+
+
+class AgentsListing(NamedTuple):
+    sessions: tuple[Session, ...]
+    digest: str
+    drifted: tuple[str, ...]
+
+
+def parse_agents_listing(raw: bytes) -> AgentsListing:
+    """Parse ``claude agents --json`` output the operator supplied.
+
+    Over-bound or unparseable input, and a top level that is not a list of objects, are refusals. A session
+    with a missing or unexpected ``cwd``, ``state`` or ``kind`` keeps ``unknown`` for it and names the
+    field from the closed list above; no value is guessed.
+    """
+    if len(raw) > MAX_AGENTS_BYTES:
+        raise ListingRefused("ERR-OVER-BOUND", "input-too-large")
+    try:
+        data = json.loads(raw.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys, parse_constant=_reject_constant)
+    except (UnicodeDecodeError, ValueError, RecursionError):
+        raise ListingRefused("ERR-MALFORMED-INPUT", "not-json") from None
+    if not isinstance(data, list) or not all(isinstance(item, dict) for item in data):
+        raise ListingRefused("ERR-MALFORMED-INPUT", "not-a-list-of-objects")
+    if len(data) > MAX_SESSIONS:
+        raise ListingRefused("ERR-OVER-BOUND", "too-many-sessions")
+    sessions = []
+    for item in data:
+        cwd = item.get("cwd")
+        state, kind = item.get("state"), item.get("kind")
+        drift = tuple(name for name, ok in (
+            ("cwd", isinstance(cwd, str) and bool(cwd)),
+            ("kind", kind in SESSION_KINDS),
+            ("state", state in SESSION_STATES),
+        ) if not ok)
+        sessions.append(Session(cwd if "cwd" not in drift else None,
+                                state if "state" not in drift else "unknown",
+                                kind if "kind" not in drift else "unknown", drift))
+    drifted = tuple(sorted({name for session in sessions for name in session.drift}))
+    return AgentsListing(tuple(sessions), "sha256:" + hashlib.sha256(raw).hexdigest(), drifted)
+
+
+# --- Isolation and base audit (T020) ----------------------------------------------
+
+AUDIT_VERSION = "agent-braid-isolation-audit/v0.1"
+SETTINGS_KEYS = ("worktree.baseRef", "worktree.bgIsolation")
+SETTINGS_SCOPES = ("user", "project", "local")
+MAX_SETTINGS_BYTES = 1024 * 1024
+MAX_SCRIPT_BYTES = 1024 * 1024
+MAX_CALL_SPAN = 64 * 1024
+UNRECOGNISED = "unrecognised-value"
+SETTING_VALUES = {"worktree.baseRef": ("head",), "worktree.bgIsolation": ("none",)}
+_AGENT_CALL = re.compile(r"\bagent\s*\(")
+_ISOLATION_OPTION = re.compile(r"""\bisolation\s*:\s*["']worktree["']""")
+AUDIT_ASSURANCE: Mapping[str, Any] = {
+    "compatibilityClass": CLASS_LABEL,
+    "notAGuarantee": True,
+    "observationContract": (
+        "Git worktree and branch state of the named repository, a closed key list of operator-supplied settings "
+        "files, the counts of an operator-supplied host session listing and the text of an operator-supplied "
+        "script; every observation names its source and an unreadable one is unknown."
+    ),
+}
+AUDIT_LIMITS = (
+    "Observations only: no output is a verdict about a configuration, and absence of a finding is not a finding.",
+    "Only worktree.baseRef and worktree.bgIsolation are read from a settings file; no other value is read or output.",
+    "The agent() isolation lint is a text heuristic over the supplied script and never proves isolation.",
+    "The shape of the host session listing is the documented one; the host probe that records it is pending.",
+)
+
+
+def read_settings(raw: bytes | None) -> dict[str, str] | None:
+    """The closed key list of one settings file as ``{key: value | "unset" | UNRECOGNISED}``; ``None`` is unreadable.
+
+    No other member of the file is kept, so an ``env`` value, a token or a hook command cannot reach any output.
+    """
+    if raw is None or len(raw) > MAX_SETTINGS_BYTES:
+        return None
+    try:
+        data = json.loads(raw.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys, parse_constant=_reject_constant)
+    except (UnicodeDecodeError, ValueError, RecursionError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    group = data.get("worktree")
+    found: dict[str, str] = {}
+    for key in SETTINGS_KEYS:
+        value = group.get(key.split(".", 1)[1]) if isinstance(group, dict) else None
+        found[key] = ("unset" if value is None else
+                      value if value in SETTING_VALUES[key] else UNRECOGNISED)
+    return found
+
+
+def _call_span(text: str, start: int) -> tuple[str, set[int]] | None:
+    """One call's text from just after its opening parenthesis and the offsets inside string literals, or ``None``
+    when unbalanced or too long."""
+    depth, quote, index, end = 1, "", start, min(len(text), start + MAX_CALL_SPAN)
+    inside: set[int] = set()
+    while index < end:
+        char = text[index]
+        if quote:
+            inside.add(index - start)
+            if char == "\\":
+                index += 1
+                inside.add(index - start)
+            elif char == quote:
+                quote = ""
+        elif char in "\"'`":
+            quote = char
+        elif char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+            if depth == 0:
+                return text[start:index], inside
+        index += 1
+    return None
+
+
+def lint_agent_isolation(script: str) -> dict[str, int]:
+    """Count ``agent(`` calls that carry no ``isolation: "worktree"`` option outside a string literal (a text
+    heuristic, labelled inferred)."""
+    calls = without = unparsed = 0
+    for match in _AGENT_CALL.finditer(script):
+        calls += 1
+        found = _call_span(script, match.end())
+        if found is None:
+            unparsed += 1
+        elif not any(m.start() not in found[1] for m in _ISOLATION_OPTION.finditer(found[0])):
+            without += 1
+    return {"agentCalls": calls, "callsWithoutWorktreeIsolation": without, "unparsedCalls": unparsed}
+
+
+class GitFacts(NamedTuple):
+    """Counts and booleans from Git; ``head_ahead`` is ``None`` when no origin default branch is known."""
+
+    worktrees: int
+    cwd_location: str
+    head_ahead: int | None
+
+
+CWD_LOCATIONS = ("main-worktree", "linked-worktree", "outside-repository")
+
+
+def _observation(name: str, source: str, outcome: str, **data: Any) -> dict[str, Any]:
+    return {"observation": name, "source": source, "outcome": outcome, **data}
+
+
+def _session_counts(listing: AgentsListing, main_root: str | None, linked: Collection[str]) -> dict[str, Any]:
+    directories = [os.path.normpath(s.cwd) for s in listing.sessions if s.cwd]
+    per_directory = {d: directories.count(d) for d in set(directories)}
+    return {
+        "sessions": len(listing.sessions),
+        "sessionsWithoutDirectory": len(listing.sessions) - len(directories),
+        "distinctDirectories": len(per_directory),
+        "sessionsSharingADirectory": sum(n for n in per_directory.values() if n > 1),
+        "sessionsInRepositoryRoot": per_directory.get(main_root, 0) if main_root else "unknown",
+        "sessionsInLinkedWorktrees": sum(per_directory.get(path, 0) for path in linked) if main_root else "unknown",
+    }
+
+
+def build_isolation_audit(*, git: GitFacts | None, settings: Mapping[str, Mapping[str, str] | None],
+                          listing: AgentsListing | None, main_root: str | None, linked: Collection[str],
+                          script: str | None) -> dict[str, Any]:
+    """Configuration observations; each one names its source and nothing is worded as a verdict."""
+    items: list[dict[str, Any]] = []
+    if git is None:
+        items.append(_observation("working-tree-layout", "git-worktree-list", "unknown"))
+        items.append(_observation("local-head-against-origin-default", "git", "unknown"))
+    else:
+        items.append(_observation("working-tree-layout", "git-worktree-list", "observed",
+                                  worktrees=git.worktrees, currentDirectory=git.cwd_location))
+        items.append(
+            _observation("local-head-against-origin-default", "git", "unknown") if git.head_ahead is None else
+            _observation("local-head-against-origin-default", "git", "observed", commitsAhead=git.head_ahead,
+                         originDefaultMissesLocalCommits=git.head_ahead > 0))
+    if listing is None:
+        items.append(_observation("session-working-directories", "agents-json", "unknown"))
+    else:
+        items.append(_observation("session-working-directories", "agents-json", "observed",
+                                  **_session_counts(listing, main_root, linked),
+                                  unreadableFields=list(listing.drifted)))
+    if not settings:
+        items.extend(_observation(f"setting:{key}", "settings-file", "unknown") for key in SETTINGS_KEYS)
+    for scope, values in settings.items():
+        for key in SETTINGS_KEYS:
+            source = f"settings-file:{scope}"
+            items.append(_observation(f"setting:{key}", source, "unknown") if values is None else
+                         _observation(f"setting:{key}", source, "observed", value=values[key]))
+    if script is not None:
+        items.append(_observation("agent-isolation-option", "script-text", "observed", label="inferred",
+                                  **lint_agent_isolation(script)))
+    return {
+        "schemaVersion": AUDIT_VERSION,
+        "executionAuthorization": False,
+        "assurance": dict(AUDIT_ASSURANCE),
+        "observations": items,
+        "limits": list(AUDIT_LIMITS),
+    }
+
+
+# --- Recovery and orphan report (T021) --------------------------------------------
+
+RECOVERY_VERSION = "agent-braid-recovery-report/v0.1"
+CLASSIFICATIONS = ("untouched", "dirty", "published", "conflicting", "unknown")
+UNKNOWN_UNIT_REASONS = (
+    "no-source-supplied", "not-a-descendant-of-base", "unobservable", "unstable", "busy", "over-bound", "field-drift",
+)
+RECOVERY_ASSURANCE: Mapping[str, Any] = {
+    "compatibilityClass": CLASS_LABEL,
+    "notAGuarantee": True,
+    "observationContract": (
+        "Operator-supplied host session listing, committed or quiesced Git state and the declaration; "
+        "undocumented interfaces are best-effort, labelled inferred and may fail soft; absent input is unknown."
+    ),
+}
+RECOVERY_LIMITS = (
+    "Information only: nothing is reclaimed, resumed, deleted, messaged or restarted.",
+    "A unit is untouched only on Git evidence; a unit without a Git source is unknown.",
+    "Unpublished commits and uncommitted work are both classified dirty; published means a remote-tracking ref holds the tip.",
+    "The agent-teams task directory and the workflow journal are not read: the probe HV-12 that would allow it is pending.",
+    "The shape of the host session listing is the documented one; the host probe HV-9 that records it is pending.",
+)
+
+
+class UnitEvidence(NamedTuple):
+    """Git evidence for one unit; ``observation`` is ``None`` when ``reason`` says why it is unknown."""
+
+    observation: Observation | None
+    reason: str | None = None
+    uncommitted: bool = False
+    ahead: bool = False
+    published: bool = False
+    worktree: bool = False
+
+
+def _ancestors(path: str) -> list[str]:
+    parts = path.split("/")
+    return ["/".join(parts[:n]) for n in range(1, len(parts))]
+
+
+def changes_overlap(left: Collection[str], right: Collection[str]) -> bool:
+    """Whether two sets of changed paths overlap under ``paths_overlap``'s rule (equal or one contains the other).
+
+    Indexed by ancestor so that the cost is linear in the path counts, not quadratic.
+    """
+    a, b = {fold(p) for p in left}, {fold(p) for p in right}
+    return bool(a & b) or any(x in b for p in a for x in _ancestors(p)) or any(x in a for p in b for x in _ancestors(p))
+
+
+def _classify(evidence: UnitEvidence, overlapping: bool) -> str:
+    if evidence.observation is None:
+        return "unknown"
+    if overlapping:
+        return "conflicting"
+    if evidence.uncommitted or (evidence.ahead and not evidence.published):
+        return "dirty"
+    return "published" if evidence.ahead else "untouched"
+
+
+def build_recovery_report(declaration: Mapping[str, Any], evidence: Mapping[str, UnitEvidence],
+                          listing: AgentsListing | None, sessions: Mapping[str, Session]) -> dict[str, Any]:
+    """Classify each declared unit from Git evidence; the listing only supplies closed state and kind values.
+
+    ``sessions`` holds the session matched to a unit in memory; a unit with no entry has an unknown session.
+    """
+    names = [unit["id"] for unit in declaration["units"]]
+    paths = {name: [c.path for c in evidence[name].observation.changes]
+             for name in names if evidence[name].observation is not None}
+    overlaps = {name: sorted(other for other in paths if other != name and paths[name] and paths[other]
+                             and changes_overlap(paths[name], paths[other])) for name in paths}
+    units = []
+    for name in names:
+        item, matched = evidence[name], sessions.get(name)
+        state, kind = (matched.state, matched.kind) if matched else ("unknown", "unknown")
+        entry: dict[str, Any] = {"id": name, "session": {"state": state, "kind": kind}}
+        if item.observation is None:
+            entry["classification"], entry["unknownReason"] = "unknown", item.reason
+        elif matched is not None and matched.drift:
+            entry["classification"], entry["unknownReason"] = "unknown", "field-drift"
+            entry["unknownFields"] = list(matched.drift)
+        else:
+            entry["classification"] = _classify(item, bool(overlaps[name]))
+            live = [other for other in overlaps[name] if (sessions.get(other) or Session(None, "unknown", "unknown")).state in LIVE_STATES]
+            if live:
+                entry["liveSiblingOverlap"] = live
+            warnings = []
+            if item.uncommitted:
+                warnings.append("worktree-has-uncommitted-work")
+                if item.worktree and matched is not None:
+                    warnings.append("agent-view-delete-discards-uncommitted-work")
+            if item.ahead and not item.published:
+                warnings.append("unpublished-commits")
+            if warnings:
+                entry["warnings"] = warnings
+        units.append(entry)
+    agents: dict[str, Any] = {"provided": listing is not None}
+    if listing is not None:
+        agents.update({"sha256": listing.digest, "sessionCount": len(listing.sessions),
+                       "driftedFields": list(listing.drifted)})
+    return {
+        "schemaVersion": RECOVERY_VERSION,
+        "executionAuthorization": False,
+        "actionsTaken": [],
+        "assurance": dict(RECOVERY_ASSURANCE),
+        "inputs": {"agentsJson": agents, "git": {"observed": any(e.observation is not None for e in evidence.values())}},
+        "units": units,
+        "limits": list(RECOVERY_LIMITS),
+    }

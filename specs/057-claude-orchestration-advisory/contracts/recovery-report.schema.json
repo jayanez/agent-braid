@@ -74,6 +74,11 @@
                 "maxLength": 64,
                 "pattern": "^[A-Za-z0-9_.-]*(?!\\n)$"
               }
+            },
+            "sessionCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 256
             }
           }
         },
@@ -192,8 +197,31 @@
                 }
               }
             }
+          },
+          "unknownReason": {
+            "enum": [
+              "no-source-supplied",
+              "not-a-descendant-of-base",
+              "unobservable",
+              "unstable",
+              "busy",
+              "over-bound",
+              "field-drift"
+            ]
+          },
+          "unknownFields": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "enum": [
+                "cwd",
+                "kind",
+                "state"
+              ]
+            }
           }
-        }
+        },
+        "description": "classification dirty covers uncommitted work and commits no remote-tracking ref holds; unknown carries unknownReason (and unknownFields for field-drift)."
       }
     },
     "limits": {

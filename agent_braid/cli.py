@@ -194,7 +194,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "harness":
         from .harness_cli import run as run_harness
         return run_harness(args)
-    if args.command in {"expand-ownership", "check-ownership"}:
+    if args.command in {"expand-ownership", "check-ownership", "audit-isolation", "report-recovery"}:
         from .ownership_cli import run as run_ownership
         return run_ownership(args)
     if args.command == "system-one":
