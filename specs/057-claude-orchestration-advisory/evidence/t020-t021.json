@@ -13,7 +13,7 @@
     }
   ],
   "inputs": {
-    "agent_braid/ownership.py": "d68e8f0deb14123762d5fff7bb7641edb22cdf405b74e901dbfde1a1bf57d8b2",
+    "agent_braid/ownership.py": "2fed2759ec5798385bcee8e0c7f09907325ef9e971d481247570dfe5f3423f41",
     "agent_braid/ownership_cli.py": "f577ff3c3e7eaf574144e6c78dad4bab3aa357b7edf5983ac457ed31ee24a23d",
     "tests/test_isolation_audit.py": "538a6836285718bc6a1e1f44f11d92ce7c73992127bc015a516be2dd131c68d0",
     "tests/test_recovery_report.py": "9afd65eb7256650d95395fc7c648bdf427b14f526e7ebae2395376440e14007d",
