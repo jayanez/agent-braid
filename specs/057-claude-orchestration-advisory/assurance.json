@@ -54,11 +54,12 @@
       "docs/adr/0022-attribution-correction-history-equivalence.md": "0d394b895af69374c7f6bdf441cc780ee67802c34f9b0380f8ed58b1c9a17eb1",
       "docs/adr/0023-second-history-correction-equivalence.md": "4334fe23543dad038811b7819acbc24fbebab3c1858789816b1512e786b7a8eb",
       "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
-      "docs/adr/0024-native-ai-plugins.md": "3a45d8a62cb241b01638a37f39fdc309cb0563941c0343fe58d9ab30c5c677ac",
+      "docs/adr/0024-native-ai-plugins.md": "ca2fd4a76294aff60ab2a5861ae110262032bc133b011a2043e91b16884845e5",
       "docs/adr/0025-local-technical-telemetry.md": "e2f9af4d0d0a118635677146ba0c96cbd82046b7943eca36eeabf041923601f7",
       "docs/adr/0026-pure-owned-work-validation.md": "dc6a045316c37201767adba79ad59779cff4646c9d05e4a2306dfaec481e4ccd",
       "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
       "docs/adr/0028-closed-effectful-workload-simulation.md": "be8bb2fefc702a2d85b804f70141f68f25b68e45118d25b4f4fa0e99d62eca85",
+      "docs/adr/0029-claude-dynamic-workflows.md": "16b5fa3f4a4dd029f6041a3dc07ed5dcf16cc8e57d96577ba72dedec295801cd",
       "docs/adr/0030-native-plugin-surface-naming.md": "2bff8ce3fd5c2e183dca8000044ccd4d08980ec7e4a1b31d9af7a3a4b7f18c8e",
       "docs/adr/0031-portable-prompt-names.md": "2e2ccf4e3d3b82cfb3e375d790104b9bb79f7f503041f11e60738e546d670d8e",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
@@ -242,8 +243,8 @@
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m unittest tests.test_ownership_receipt tests.test_hazard_notice tests.test_orchestration_bounds -v",
-              "outcome": "Pure comparison and the check-ownership command against temporary Git repositories: per-unit undeclared, sibling-area, declared-not-observed and unknown entries; unattributed writers unknown and excluded only by a named declared rule; shared tree attributing nothing; 65 changed paths truncated with a recorded total and no refusal; not-observed with two closed reasons; every output validated by the receipt schema.",
               "limits": "Offline synthetic fixtures; class 1-syntactic exact paths at the snapshot; a busy lock is an index.lock in a source worktree; no host or review claim.",
+              "outcome": "Pure comparison and the check-ownership command against temporary Git repositories: per-unit undeclared, sibling-area, declared-not-observed and unknown entries; unattributed writers unknown and excluded only by a named declared rule; shared tree attributing nothing; 65 changed paths truncated with a recorded total and no refusal; not-observed with two closed reasons; every output validated by the receipt schema.",
               "path": "specs/057-claude-orchestration-advisory/evidence/t017-t019-t042.json",
               "sha256": "7ef7650fc840b2fbb1180dd64892be7c2ab118990ba4ec90e4d0ef6c0b27ee7d"
             }
@@ -345,8 +346,8 @@
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m unittest tests.test_ownership_receipt tests.test_hazard_notice tests.test_orchestration_bounds -v",
-              "outcome": "Notice built from a receipt and from a pre-flight block; instruction fields byte-identical across adversarial strings and every text-exclusion sample; the schema rejects each exclusion class and a trailing line feed unless escaped, a malformed validUntil and duplicate units; the reader rejects expired, superseded, stale and impossible-date notices.",
               "limits": "Library builder and reader only: no command emits a notice and no rendering by SPEC-058 or SPEC-059 exists; offline synthetic fixtures; no host or review claim.",
+              "outcome": "Notice built from a receipt and from a pre-flight block; instruction fields byte-identical across adversarial strings and every text-exclusion sample; the schema rejects each exclusion class and a trailing line feed unless escaped, a malformed validUntil and duplicate units; the reader rejects expired, superseded, stale and impossible-date notices.",
               "path": "specs/057-claude-orchestration-advisory/evidence/t017-t019-t042.json",
               "sha256": "7ef7650fc840b2fbb1180dd64892be7c2ab118990ba4ec90e4d0ef6c0b27ee7d"
             }
@@ -502,8 +503,8 @@
           "obtained_evidence": [
             {
               "command": "read-only delta pass of 2026-10-25: gh api GET repository metadata and search, arXiv query API by identifier and terms, official marketplace manifest filter",
-              "outcome": "26 query ids recorded with dates; 22 GitHub repositories re-verified as existing (git-kura and Radar included); 8 arXiv abstracts read with identifier, listed version and date; the two figures removed from the specification traced to abstracts; STORM not identified; ten unread names surfaced.",
               "limits": "Abstract and metadata depth only; no README re-read, no peer-reviewed index, commercial products and other plugin directories not re-read; T002 not complete and left unchecked (STORM); the claim-wording test of T027 does not exist yet.",
+              "outcome": "26 query ids recorded with dates; 22 GitHub repositories re-verified as existing (git-kura and Radar included); 8 arXiv abstracts read with identifier, listed version and date; the two figures removed from the specification traced to abstracts; STORM not identified; ten unread names surfaced.",
               "path": "specs/057-claude-orchestration-advisory/evidence/prior-art-pass.md",
               "sha256": "9c822483b621d09e2d527105a4c7d452b94b613743bed0d05eb9f736a560f10d"
             }
