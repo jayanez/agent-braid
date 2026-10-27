@@ -1,0 +1,43 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline deterministic quarantined-experience store; native, human-promotion, scientific-utility and independent-review gates pending",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_experience",
+      "exitCode": 0,
+      "scope": "Focused module run, Python 3.13.",
+      "testsRun": 54
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13.",
+      "testsRun": 324
+    },
+    {
+      "command": "manual mutation checks (scratch script, not committed)",
+      "exitCode": 0,
+      "scope": "Each of 15 guards was removed one at a time and the module tests failed every time: human-actor check, approved-decision check, temporal prefix, exact scope, contradiction, poison screen, ASCII-only text, revoked exclusion, terminal-entry refusal, history headroom for terminal events, store re-validation of direct Entry values, activation digest binding, stale/expired exclusion and activation refusal, validator independence, supporting-evidence revocation. Two initial survivors (evidence-tick boundary, history digest) led to added tests and were then killed."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/049-harness-evaluation-learning/contracts/interface.md": "0a3eb971b4baa9463c7039b15966ab7a8f108e60c707a8acd046861c1fe4412f",
+    "specs/049-harness-evaluation-learning/promotion-policy.md": "c0e417131c61f103cb7387dd4232b051ec7c2dd65d9f0e3df479c06d7c3aaf92",
+    "specs/049-harness-evaluation-learning/spec.md": "00d3b0f30560ea6bc439df62db0d905ba94a7da98c5352ac29536b7db13de831"
+  },
+  "limits": "Pure offline engineering controls on synthetic entries. No host, model, file, clock or network access; time is a caller-supplied integer tick. The human decision is a self-asserted record: decoding proves shape and internal consistency, not authenticity, and the activating actor is not verified against any registry (that belongs to T013). The poison screen is a conservative ASCII-only denylist, not a semantic-safety guarantee, and also refuses some legitimate wording such as 'never' or 'policy'. Validation records are checked for independence but not retained, and rollback or revoke drops the decision document (the history keeps its digest). Temporal eligibility is conservative: any recorded change at or after a task start hides the entry from that task. Revoking evidence revokes entries citing it as support; contrary evidence is preserved and excludes the entry but its own revocation is not modelled. No utility, transfer or cost claim is made. Pre-PR reviews (code-review, code-review-and-quality, code-simplification) were run by Claude subagents and are not independent Luna review.",
+  "method": "Actual offline unittest execution",
+  "outcome": "Quarantined lessons cannot become active or be served without an approved, candidate-bound human decision; queries exclude future-state, cross-domain, source/host/tool/policy-mismatched, stale, expired, contradicted, rolled-back and revoked entries with fixed reason codes; poisoned text is refused before storage and again on decode.",
+  "outputs": {
+    "agent_braid/harness_experience.py": "92afe433d6d93984bfae35274644ed1bdafa0e57ff344c30808ae219ed64a057",
+    "tests/test_harness_experience.py": "1af74040c560991bc0c6fb315ffdb5f65b074f55ea18fc9c8c273f27d1f0f448"
+  },
+  "pending": [
+    "Stable pr-profile result recorded in the pull request",
+    "T013 promotion transaction and registry; T007/T008/T009 consumers; all native/human/scientific/economic gates"
+  ],
+  "spec": "049-harness-evaluation-learning",
+  "task": "SPEC-049/T006"
+}
