@@ -11,7 +11,7 @@
   ],
   "assumptions": "Host behavior matches the SPEC-054 research of 2026-10-24; portable-server users exist under the installer default key; an alias window counted in releases is acceptable for an alpha package; prompt use is not measurable.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "f9329134911ca2d8d4f33b230db9224f7a88463b",
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -88,16 +88,16 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "New portable surface contract agent-braid-tooling/v0.2 (additive names, retained deprecated aliases, capabilities keys envelopeSchemaVersion and deprecatedPrompts); unchanged under the recommended scope: envelope schema v0.1, tool names, resource URIs, agent-braid-plugin/v0.2, registry v0.2, SPEC-047 v1, SPEC-041/042 installs and frozen evidence. Aliases are removed by a later v0.3.",
   "domain": "Agent Braid portable MCP server (agent-braid tooling serve, package 0.1.0a1) and its prompt and capabilities surface; the native plugin, telemetry, legacy skills and host configuration only as unchanged regression boundaries.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "f9329134911ca2d8d4f33b230db9224f7a88463b",
+    "mode": "historical"
   },
   "execution_contract": "No execution path, grant, effect or runtime authority changes; prompts remain read-only text; analysis-only fixtures suffice; native sessions are owner-run.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "Not applicable: engineering specification without empirical hypothesis.",
   "observation_contract": "SDK client listings of prompts and capabilities in owned fixtures, byte comparison of envelopes against the v0.1 candidate, plugin goldens; native host listings recorded separately with environment and limits.",
   "references": [
@@ -362,6 +362,7 @@
       "text": "Frozen evidence untouched: No frozen historical evidence, closed receipt, accepted review or SPEC-040/046/054 artifact is rewritten. The prompt names inside them remain true for their candidates."
     }
   ],
+  "review_record": "specs/060-portable-prompt-names/founder-review-20261027.json",
   "scientific_limits": "Engineering naming and versioning contract; no scientific claim. Planned procedures are not obtained evidence; documentation and source reading are not native observation; structural checks are not owner approval.",
   "scope": "Portable MCP server contract agent-braid-tooling/v0.2: unprefixed prompt names analyze, plan, evidence with bounded deprecated agent-braid-* aliases, version-stamp scope, plugin/telemetry/legacy/host impact, migration, rollback, removal criterion and release impact. Specification only.",
   "stage": "draft"

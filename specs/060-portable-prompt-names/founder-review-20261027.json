@@ -1,0 +1,36 @@
+{
+  "schema": "agent-braid-bounded-founder-review-v1",
+  "spec": "SPEC-060",
+  "reviewedCommit": "f9329134911ca2d8d4f33b230db9224f7a88463b",
+  "evidenceCommit": "f9329134911ca2d8d4f33b230db9224f7a88463b",
+  "decisionDate": "2026-10-27",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "github": "jayanez",
+    "role": "founder"
+  },
+  "decision": "accepted",
+  "scope": "Portable MCP prompt names contract (contracts/interface-delta.md), ADR 0031, the specification and plan, and decisions OD-1 to OD-8 including the bounded deprecated-alias exception, as implemented in the portable server surface agent-braid-tooling/v0.2 (package 0.1.0a2 candidate sources): canonical prompts analyze, plan and evidence; deprecated agent-braid-* aliases retained until agent-braid-tooling/v0.3; envelope schema agent-braid-tooling/v0.1, tool names, resource URIs, plugin facade, plugin id and server key unchanged. T009 closed with bounded scope: CLI and loader observation in disposable profiles on macOS arm64 (evidence/native-observation-0.1.0a2.md).",
+  "ownerResponse": {
+    "source": "direct reply in chat in the owning task of 2026-10-27",
+    "question": "SPEC-060 T001 review packet: verdict on the contract delta and ADR 0031",
+    "answer": "Aceptar (no changes requested)",
+    "packetCommit": "3c746b73f40d15bc4cb426084fbd2d27435d968a",
+    "packetPath": "specs/060-portable-prompt-names/review-packet.md"
+  },
+  "t009Decision": {
+    "answer": "T009 closed with bounded scope",
+    "evidencePath": "specs/060-portable-prompt-names/evidence/native-observation-0.1.0a2.md",
+    "evidenceCommit": "2e81692acf719b6511ddfeb1d9f4dc0b846c453a"
+  },
+  "notAccepted": [
+    "release, tag, build for distribution or publication of package 0.1.0a2, or a rebuild of the native plugin (T010 release decision is separate)",
+    "T011 alias removal under agent-braid-tooling/v0.3 or any extension of the alias window",
+    "interactive slash-menu use of the prompts, sign-in or model session, and Linux observations",
+    "how the Claude Code slash menu displays a portable prompt next to the native plugin under the key agent-braid (key-collision display not observed)",
+    "Codex plugin install for this candidate; Codex listing no MCP prompts rests on the cited status and the app-server listing only",
+    "any change to tool names, envelopes, resource URIs, the plugin, the installer default key or SPEC-054 files",
+    "scientific validity, independent validation or M4.5 closure"
+  ],
+  "limits": "Acceptance binds the frozen authority and evidence commit only; later changes to the contract or ADR 0031 need a new review. Observation evidence is bounded to CLI and loader listings in disposable profiles on macOS arm64 and is not an owner session in a real profile. Acceptance is distinct from integration, release and remote closure."
+}
