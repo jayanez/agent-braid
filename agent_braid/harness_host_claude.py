@@ -13,6 +13,8 @@ manifest; one host's qualification can never admit the other. The profile
 manifest is still offline-only, so native dispatch stays refused until a separate
 T008 decision. Results are evidence, never authorization; no process, network or
 paid route is started here, and an observed non-subscription key source is refused.
+Small bounds and the qualification shape deliberately mirror ``harness_lab`` but raise
+``ClaudeHostError``; nothing is shared with another host adapter.
 """
 from __future__ import annotations
 
@@ -24,7 +26,7 @@ import threading
 from typing import Any
 
 from .harness_context import ContextPackage
-from .harness_lab import ENFORCED_EFFECTS
+from .harness_lab import ENFORCED_EFFECTS, MAX_WALL_SECONDS
 from .harness_manifest import HarnessManifest
 from .harness_observation import (
     MAX_EVENTS, MAX_FIELD_BYTES, ExportInventory, Observation, ObservationError, observe)
@@ -34,17 +36,20 @@ HOST = "claude"
 QUALIFICATION_FORMAT = "braid-harness-host-qualification/v0.1"
 PERMISSION_MODES = ("default", "plan")  # never acceptEdits/bypassPermissions/dontAsk
 ALLOWED_TOOLS = ("Glob", "Grep", "Read")  # read-only; mutation needs its own decision
+DENIED_TOOLS = ("Bash", "Edit", "MultiEdit", "NotebookEdit", "Task", "WebFetch", "WebSearch", "Write")
 MAX_TURNS = 8
 MAX_PROMPT_BYTES = 131_072
-MAX_WALL_SECONDS = 60
 # Fixture-level assumption about ``init.apiKeySource``; anything else is a possible
 # paid route and is refused until T008 observes the real values.
 SUBSCRIPTION_KEY_SOURCES = frozenset({"none", "oauth"})
+# Typed policy for the future T008 native launcher; the double ignores it. HOME-derived
+# configuration stays reachable for authentication, so the launcher must contain it.
 ENV_ALLOW = ("HOME", "PATH")  # existing authentication lives under HOME
 ENV_DENY = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL",
             "CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_VERTEX")
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _SESSION = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\Z")
+RESERVED_EVENTS = 8  # terminal plus every error kind _terminal can add
 _MODEL = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}\Z")
 _VERSION = re.compile(r"(\d{1,4})\.(\d{1,4})\.(\d{1,4})(?: \(Claude Code\))?\Z")
 
@@ -135,20 +140,24 @@ class LaunchPlan:
     """Typed argv and environment policy; building it never starts anything."""
 
     argv: tuple[str, ...]
+    prompt_sha256: str
     env_allow: tuple[str, ...] = ENV_ALLOW
     env_deny: tuple[str, ...] = ENV_DENY
-    prompt_sha256: str = ""
 
 
 def build_plan(request: ClaudeRequest, prompt: bytes) -> LaunchPlan:
     argv = ["claude", "-p", "--output-format", "stream-json", "--verbose",
             "--session-id", request.session_id, "--permission-mode", request.permission_mode,
-            "--max-turns", str(request.max_turns)]
+            "--max-turns", str(request.max_turns),
+            # isolation: only the listed built-in tools, no settings/hooks, no MCP servers
+            "--tools", ",".join(request.allowed_tools),
+            "--disallowedTools", ",".join(DENIED_TOOLS),
+            "--setting-sources", "", "--strict-mcp-config"]
     if request.allowed_tools:
         argv += ["--allowedTools", ",".join(request.allowed_tools)]
     if request.model is not None:
         argv += ["--model", request.model]
-    return LaunchPlan(tuple(argv), prompt_sha256=sha256(prompt).hexdigest())
+    return LaunchPlan(tuple(argv), sha256(prompt).hexdigest())
 
 
 # --- transports ---------------------------------------------------------------------
@@ -230,8 +239,9 @@ def verify_host_qualification(raw: bytes, *, expected_sha256: str) -> HostQualif
     """Strictly parse a Claude-only qualification against a trusted external hash.
 
     A record naming any other host is refused as ``host-mismatch``: one host cannot
-    qualify the other. Matching hashes prove byte identity; the evidence behind it
-    is judged by the T008 decision records, not here.
+    qualify the other. The trusted hash is of the canonical record, so only canonical
+    input can match; it proves identity, while the evidence behind it is judged by the
+    T008 decision records, not here.
     """
     _require(type(expected_sha256) is str and _HASH.fullmatch(expected_sha256) is not None,
              "invalid-expected-hash")
@@ -271,6 +281,8 @@ def _check_transport(transport: Any, manifest: HarnessManifest, qualification: A
 class _Stream:
     events: list = field(default_factory=list)
     errors: list = field(default_factory=list)
+    secrets: tuple = ()
+    init_seen: bool = False
     session: str | None = None
     version: str | None = None
     model: str | None = None
@@ -278,14 +290,22 @@ class _Stream:
     result: dict | None = None
 
     def add(self, kind: str, **fields: Any) -> None:
-        if len(self.events) >= MAX_EVENTS - 1:  # keep room for the final terminal
+        if len(self.events) >= MAX_EVENTS - RESERVED_EVENTS:
             if "event-overflow" not in self.errors:
                 self.errors.append("event-overflow")
             return
-        self.events.append({"seq": len(self.events), "kind": kind, **fields})
+        self.append(kind, **fields)
+
+    def append(self, kind: str, **fields: Any) -> None:
+        """Terminal and error events use the slots ``add`` never fills."""
+        if len(self.events) < MAX_EVENTS:
+            self.events.append({"seq": len(self.events), "kind": kind, **fields})
 
     def text(self, value: Any) -> str:
-        data = str(value).encode("utf-8", "replace")
+        data = str(value)
+        for secret in self.secrets:  # redact before slicing so no secret prefix survives
+            data = data.replace(secret, "[redacted]")
+        data = data.encode("utf-8", "replace")
         if len(data) > MAX_FIELD_BYTES:
             self.errors.append("field-truncated")
             data = data[:MAX_FIELD_BYTES]
@@ -307,8 +327,21 @@ def _blocks(stream: _Stream, message: Any) -> None:
             stream.errors.append("malformed-line")
 
 
-def _read_stream(stdout: bytes) -> _Stream:
-    stream = _Stream()
+def _clean(stream: _Stream, value: Any, pattern: re.Pattern, code: str | None = None) -> str | None:
+    """Keep an untrusted init string only when it is well-formed and secret-free."""
+    if type(value) is str and pattern.fullmatch(value) is not None \
+            and not any(secret in value for secret in stream.secrets):
+        return value
+    if code is not None:  # version and key source already surface as drift/route events
+        stream.errors.append(code)
+    return None
+
+
+_KEY_SOURCE = re.compile(r"[A-Za-z0-9_.:-]{1,64}\Z")
+
+
+def _read_stream(stdout: bytes, secrets: tuple = ()) -> _Stream:
+    stream = _Stream(secrets=secrets)
     for line in stdout.split(b"\n"):
         if not line:
             continue
@@ -319,13 +352,15 @@ def _read_stream(stdout: bytes) -> _Stream:
             continue
         kind = event.get("type") if type(event) is dict else None
         if kind == "system" and event.get("subtype") == "init":
-            if stream.session is not None:
+            if stream.init_seen:
                 stream.errors.append("duplicate-init")
                 continue
-            stream.session = event.get("session_id")
-            stream.version = event.get("claude_code_version")
-            stream.model = event.get("model")
-            stream.key_source = event.get("apiKeySource")
+            stream.init_seen = True
+            session = event.get("session_id")
+            stream.session = session if type(session) is str else None
+            stream.version = _clean(stream, event.get("claude_code_version"), _VERSION)
+            stream.model = _clean(stream, event.get("model"), _MODEL, "model-invalid")
+            stream.key_source = _clean(stream, event.get("apiKeySource"), _KEY_SOURCE)
             stream.add("start")
         elif kind == "assistant":
             _blocks(stream, event.get("message"))
@@ -343,28 +378,39 @@ def _read_stream(stdout: bytes) -> _Stream:
 
 def _terminal(stream: _Stream, run: HostRun, request: ClaudeRequest, discovered: str) -> str | None:
     """Choose the terminal state; completion needs every consistency check to pass."""
-    if run.cancelled or run.timed_out:
-        return "interrupted"
     result = stream.result
+    unsafe = bool(type(result) is dict and result.get("permission_denials"))
+    unverified = stream.init_seen and stream.key_source not in SUBSCRIPTION_KEY_SOURCES
+    if run.cancelled or run.timed_out:
+        if unsafe or unverified:  # refusal outranks interruption
+            if unsafe:
+                stream.append("error", text="permission-denied")
+            if unverified:
+                stream.append("error", text="route-unverified")
+            return "refused"
+        return "interrupted"
     if result is None:
         stream.errors.append("missing-result")
         return "failed" if run.exit_code else None
     state = "completed" if result.get("subtype") == "success" and result.get("is_error") is False \
         else "failed"
-    if result.get("permission_denials"):
-        stream.add("error", text="permission-denied")
+    if unsafe:
+        stream.append("error", text="permission-denied")
         state = "refused"
     if stream.session != request.session_id or result.get("session_id") != request.session_id:
-        stream.add("error", text="session-mismatch")
+        stream.append("error", text="session-mismatch")
         state = "failed" if state == "completed" else state
     if stream.version != discovered:
-        stream.add("error", text="version-drift")
+        stream.append("error", text="version-drift")
+        state = "failed" if state == "completed" else state
+    if request.model is not None and stream.model != request.model:
+        stream.append("error", text="model-drift")
         state = "failed" if state == "completed" else state
     if stream.key_source not in SUBSCRIPTION_KEY_SOURCES:
-        stream.add("error", text="route-unverified")
+        stream.append("error", text="route-unverified")
         state = "refused"
     if state == "completed" and run.exit_code != 0:
-        stream.add("error", text="exit-mismatch")
+        stream.append("error", text="exit-mismatch")
         state = "failed"
     return state
 
@@ -430,10 +476,10 @@ def run_claude(manifest: HarnessManifest, context: ContextPackage, *, transport:
     except Exception:  # untrusted transport: fixed reason only
         raise ClaudeHostError("transport-failed") from None
     _require(isinstance(run, HostRun) and type(run.stdout) is bytes, "invalid-transport-result")
-    stream = _read_stream(run.stdout[:limits.max_output_bytes])
+    stream = _read_stream(run.stdout[:limits.max_output_bytes], inventory.secrets)
     state = _terminal(stream, run, request, discovered)
     if state is not None:
-        stream.add("terminal", state=state)
+        stream.append("terminal", state=state)
     if run.output_truncated or len(run.stdout) > limits.max_output_bytes:
         stream.errors.append("output-truncated")
     if not run.settled:

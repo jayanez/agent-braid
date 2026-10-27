@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Claude host adapter controls with deterministic doubles; no native dispatch or qualification."""
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, replace
 from hashlib import sha256
 import threading
 import unittest
@@ -130,6 +130,11 @@ class ClaudeHostTests(unittest.TestCase):
         for forbidden in ("--resume", "--continue", "--dangerously-skip-permissions", "bypassPermissions"):
             self.assertNotIn(forbidden, argv)
         self.assertEqual(plan.prompt_sha256, sha256(prompt).hexdigest())
+        # isolation: restricted tool set, denied mutators, no settings sources, no MCP
+        self.assertEqual(argv[argv.index("--tools") + 1], "Grep,Read")
+        self.assertIn("Bash", argv[argv.index("--disallowedTools") + 1].split(","))
+        self.assertEqual(argv[argv.index("--setting-sources") + 1], "")
+        self.assertIn("--strict-mcp-config", argv)
         self.assertIn(b"owned note", prompt)
 
     def test_environment_policy_keeps_existing_auth_and_denies_paid_routes(self):
@@ -215,6 +220,30 @@ class ClaudeHostTests(unittest.TestCase):
         stub = NativeStub()
         self.refuses("native-host-unqualified", transport=stub, qualification=qualify(qualification_wire()))
 
+    def test_qualified_native_path_is_labelled_host_and_still_checks_the_stream(self):
+        manifest, context = make_manifest_and_context()
+        data = manifest.to_dict()
+        data["host"]["kind"] = "claude"
+        claude_manifest = replace(manifest, data=data)
+
+        class Native(hc.ClaudeTransport):
+            def version(self):
+                return VERSION
+
+            def run(self, plan, prompt, limits, cancel):
+                return hc.HostRun(b"\n".join(canonical(dict(e)) for e in GOOD), 0)
+
+        args = dict(transport=Native(), request=hc.ClaudeRequest(SESSION), compatibility=WINDOW,
+                    attempt_id="attempt-1", inventory=make_inventory(), now=NOW, retention_seconds=60,
+                    qualification=qualify(qualification_wire()))
+        outcome = hc.run_claude(claude_manifest, context, **args)
+        self.assertEqual((outcome.transport, outcome.observation.to_dict()["source"]), ("native", "host"))
+        self.assertEqual(self.state(outcome), "completed")
+        with self.assertRaises(hc.ClaudeHostError) as cm:  # qualification does not bind a different environment
+            hc.run_claude(claude_manifest, context, **{**args, "qualification": qualify(
+                qualification_wire(environmentSha256="b" * 64))})
+        self.assertEqual(cm.exception.reason, "native-host-unqualified")
+
     def test_other_host_qualification_cannot_qualify_claude(self):
         with self.assertRaises(hc.ClaudeHostError) as cm:
             qualify(qualification_wire(host="codex"))
@@ -237,6 +266,10 @@ class ClaudeHostTests(unittest.TestCase):
         with self.assertRaises(hc.ClaudeHostError):
             hc.verify_host_qualification(good, expected_sha256="nothex")
         self.assertEqual(hc.verify_host_qualification(good, expected_sha256=digest).sha256, digest)
+        spaced = b" " + good  # parses identically but is not the canonical record that was hashed
+        with self.assertRaises(hc.ClaudeHostError) as cm:
+            hc.verify_host_qualification(spaced, expected_sha256=sha256(spaced).hexdigest())
+        self.assertEqual(cm.exception.reason, "qualification-drift")
 
     def test_stale_or_foreign_qualification_is_not_enough(self):
         self.refuses("native-host-unqualified", transport=NativeStub(),
@@ -250,8 +283,10 @@ class ClaudeHostTests(unittest.TestCase):
                  {"type": "item.completed", "item": {"type": "agent_message", "text": "done"}},
                  {"type": "turn.completed"})
         outcome = run(lines)
-        self.assertNotEqual(self.state(outcome), "completed")
-        self.assertIn("unknown-event-type", outcome.observation.to_dict()["loss"]["transportErrors"])
+        self.assertEqual(self.state(outcome), "unobserved")
+        loss = outcome.observation.to_dict()["loss"]
+        self.assertIn("unknown-event-type", loss["transportErrors"])
+        self.assertEqual(loss["terminalEvents"], 0)
 
     # --- version handling ---
 
@@ -279,7 +314,11 @@ class ClaudeHostTests(unittest.TestCase):
         outcome = run((init(claude_code_version="2.9.9 (Claude Code)"), result()))
         self.assertEqual(self.state(outcome), "failed")
         outcome = run((result(),))
-        self.assertNotEqual(self.state(outcome), "completed")
+        self.assertEqual(self.state(outcome), "refused")
+        outcome = run((init(claude_code_version=["2.1.0"]), result()))
+        self.assertEqual(self.state(outcome), "failed")
+        self.assertIsNone(outcome.host_version)
+        self.assertIn("version-drift", [e.get("text") for e in outcome.observation.to_dict()["events"]])
 
     # --- terminals ---
 
@@ -295,6 +334,32 @@ class ClaudeHostTests(unittest.TestCase):
             outcome = run((init(apiKeySource=source), result()))
             self.assertEqual(self.state(outcome), "refused", source)
         self.assertEqual(self.state(run((init(apiKeySource="oauth"), result()))), "completed")
+
+    def test_non_string_key_source_is_refused_without_a_raw_exception(self):
+        for source in (["none"], {"a": 1}, 3, True):
+            outcome = run((init(apiKeySource=source), result()))
+            self.assertEqual(self.state(outcome), "refused", source)
+            self.assertIn("route-unverified", [e.get("text") for e in outcome.observation.to_dict()["events"]])
+
+    def test_interrupted_run_with_paid_route_or_denial_is_refused(self):
+        for lines in ((init(apiKeySource="ANTHROPIC_API_KEY"),),
+                      (init(), result(permission_denials=[{"tool_name": "Bash"}]))):
+            outcome = run(lines, double=hc.ClaudeHostDouble(lines, cancel_mid_run=True))
+            self.assertTrue(outcome.cancelled)
+            self.assertEqual(self.state(outcome), "refused")
+        self.assertEqual(self.state(run(double=hc.ClaudeHostDouble((), cancel_mid_run=True))), "interrupted")
+
+    def test_init_model_is_validated_redacted_and_pinned(self):
+        for model in ({"a": 1}, 7, "x" * 500, "bad model", SECRET):
+            outcome = run((init(model=model), result()))
+            self.assertIsNone(outcome.host_model)
+            self.assertIsNone(outcome.to_dict()["hostModel"])
+            self.assertIn("model-invalid", outcome.observation.to_dict()["loss"]["transportErrors"])
+        pinned = hc.ClaudeRequest(SESSION, model="claude-test")
+        self.assertEqual(self.state(run(request=pinned)), "completed")
+        drift = run((init(model="other-model"), result()), request=pinned)
+        self.assertEqual(self.state(drift), "failed")
+        self.assertEqual(drift.observation.to_dict()["events"][-2]["text"], "model-drift")
 
     def test_session_mismatch_blocks_completion(self):
         other = "223e4567-e89b-42d3-a456-426614174000"
@@ -362,11 +427,26 @@ class ClaudeHostTests(unittest.TestCase):
     def test_event_flood_and_oversize_fields_are_counted_not_trusted(self):
         flood = (init(), *[assistant({"type": "text", "text": "x"})] * 400, result())
         outcome = run(flood, limits=hc.HostLimits(max_output_bytes=1_048_576))
-        self.assertIn("event-overflow", outcome.observation.to_dict()["loss"]["transportErrors"])
-        self.assertNotEqual(self.state(outcome), "completed")
+        data = outcome.observation.to_dict()
+        self.assertIn("event-overflow", data["loss"]["transportErrors"])
+        self.assertEqual(self.state(outcome), "unobserved")
+        self.assertEqual(data["loss"]["terminalEvents"], 1)  # the reserved slot held
+        self.assertEqual(data["events"][-1], {"seq": len(data["events"]) - 1, "kind": "terminal",
+                                              "state": "completed"})
         big = run((init(), assistant({"type": "text", "text": "y" * 9000}), result()))
         self.assertIn("field-truncated", big.observation.to_dict()["loss"]["transportErrors"])
-        self.assertNotEqual(self.state(big), "completed")
+        self.assertEqual(self.state(big), "unobserved")
+
+    def test_secret_straddling_the_field_boundary_leaves_no_prefix(self):
+        text = "a" * (obs.MAX_FIELD_BYTES - 5) + SECRET
+        outcome = run((init(), assistant({"type": "text", "text": text}), result()))
+        self.assertNotIn(SECRET[:6], repr(outcome.observation.to_dict()))
+        self.assertIn("field-truncated", outcome.observation.to_dict()["loss"]["transportErrors"])
+
+    def test_null_session_init_followed_by_another_init_is_a_duplicate(self):
+        outcome = run((init(session_id=None), init(apiKeySource="ANTHROPIC_API_KEY"), result()))
+        self.assertIn("duplicate-init", outcome.observation.to_dict()["loss"]["transportErrors"])
+        self.assertEqual(self.state(outcome), "unobserved")
 
     def test_transport_failures_are_sanitized(self):
         double = hc.ClaudeHostDouble(GOOD)
