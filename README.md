@@ -203,7 +203,7 @@ command's required artifacts, destinations and acknowledgements.
 | `tooling` | Experimental portable local AI tooling surface. |
 
 The analyzer/runtime contract is `0.1.0-alpha`; AIM and certificate contracts
-are `0.2.0-draft`; the package version is `0.1.0a1`. The public CLI does not
+are `0.2.0-draft`; the package version is `0.1.0a2`. The public CLI does not
 expose source-ref promotion, arbitrary repository code execution, or provider
 calls through the owned runtime.
 

@@ -127,7 +127,15 @@
         {
           "given": "a v0.2 server and an SDK client",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_tooling_mcp tests.test_tooling_mcp_acceptance tests.test_plugin_mcp",
+              "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "Pass with negative controls (PR #752); re-run after merge: part of 253 tests OK",
+              "path": "specs/060-portable-prompt-names/evidence/implementation-result.md",
+              "sha256": "ffabb72ab15ef6f4674bdfbd7e4954e08dfc9cac2b46237ee5729b54a9565ef8"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_001 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/060-portable-prompt-names/validation-plan.md",
           "test_name": "procedure_001",
@@ -143,7 +151,15 @@
         {
           "given": "a v0.2 server",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_tooling_mcp tests.test_tooling_mcp_acceptance tests.test_plugin_mcp",
+              "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "Pass; unmarked-alias and alias-in-prompts negative controls fail as required",
+              "path": "specs/060-portable-prompt-names/evidence/implementation-result.md",
+              "sha256": "ffabb72ab15ef6f4674bdfbd7e4954e08dfc9cac2b46237ee5729b54a9565ef8"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_002 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/060-portable-prompt-names/validation-plan.md",
           "test_name": "procedure_002",
@@ -159,7 +175,15 @@
         {
           "given": "a v0.2 server",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_tooling_mcp tests.test_tooling_mcp_acceptance tests.test_plugin_mcp",
+              "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "Pass; v0.1 and v0.2 envelopes byte-equal after normalization",
+              "path": "specs/060-portable-prompt-names/evidence/implementation-result.md",
+              "sha256": "ffabb72ab15ef6f4674bdfbd7e4954e08dfc9cac2b46237ee5729b54a9565ef8"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_003 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/060-portable-prompt-names/validation-plan.md",
           "test_name": "procedure_003",
@@ -175,7 +199,15 @@
         {
           "given": "a plugin connection with two registered workspaces",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_plugin_mcp",
+              "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "Pass; plugin capabilities and envelope equal alpha.4 goldens",
+              "path": "specs/060-portable-prompt-names/evidence/implementation-result.md",
+              "sha256": "ffabb72ab15ef6f4674bdfbd7e4954e08dfc9cac2b46237ee5729b54a9565ef8"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_004 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/060-portable-prompt-names/validation-plan.md",
           "test_name": "procedure_004",
@@ -191,7 +223,15 @@
         {
           "given": "the existing suites for telemetry, legacy install, host configuration, the plugin and the System One verifier",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_tooling_telemetry tests.test_tooling_install tests.test_tooling_hosts tests.test_installed_tooling",
+              "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "Pass; prompts uncounted, preview byte-equal",
+              "path": "specs/060-portable-prompt-names/evidence/implementation-result.md",
+              "sha256": "ffabb72ab15ef6f4674bdfbd7e4954e08dfc9cac2b46237ee5729b54a9565ef8"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_005 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/060-portable-prompt-names/validation-plan.md",
           "test_name": "procedure_005",
@@ -207,7 +247,15 @@
         {
           "given": "a host configuration written by the v0.1 installer",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec060_release",
+              "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "13 tests OK; config and receipt bytes identical across upgrade and rollback; earlier roster passes the unchanged v0.1 verifier probe",
+              "path": "specs/060-portable-prompt-names/evidence/release-readiness.md",
+              "sha256": "f60f9c0f15498c2e7b1f435f64dcfffc8d4d7cf0cc200aa8984365ec595f2098"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_006 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/060-portable-prompt-names/validation-plan.md",
           "test_name": "procedure_006",
@@ -239,7 +287,15 @@
         {
           "given": "the release-readiness record",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "review of release-readiness.md and release-notes-0.1.0a2.md",
+              "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "Versions, changed and unchanged surfaces, migration and rollback, plugin impact and the no-release statement are recorded; pr-profile-result.md records exit 1 at full-tests from 3 pre-existing failures; T010 ticked by owner decision",
+              "path": "specs/060-portable-prompt-names/evidence/release-readiness.md",
+              "sha256": "f60f9c0f15498c2e7b1f435f64dcfffc8d4d7cf0cc200aa8984365ec595f2098"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_008 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/060-portable-prompt-names/validation-plan.md",
           "test_name": "procedure_008",
@@ -287,7 +343,15 @@
         {
           "given": "the final change set",
           "id": "SC-011",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "changed-path list against the frozen path list",
+              "limits": "Fixture and SDK-client evidence on macOS arm64 only; no native Codex or Claude Code observation (T009), no owner review (T001), no release or publication",
+              "outcome": "Empty intersection (18 files listed in the record)",
+              "path": "specs/060-portable-prompt-names/evidence/pr-profile-result.md",
+              "sha256": "970706e6bb5d7f90ed579fc4a1e07887b288e83da87bd1897b5347cf4b53b6c6"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_011 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/060-portable-prompt-names/validation-plan.md",
           "test_name": "procedure_011",
