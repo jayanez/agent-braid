@@ -1,0 +1,106 @@
+{
+  "schema": "agent-braid-native-observation/v1",
+  "task": "SPEC-060 T009 addendum (evidence only; no task ticked)",
+  "observedOn": "2026-10-27",
+  "extends": "native-observation-0.1.0a2.json",
+  "commit": "9f2fa184e1e3b2491f5a66b015906e7e7318d5e9",
+  "frozenEvidenceCommit": "f9329134911ca2d8d4f33b230db9224f7a88463b",
+  "environment": {
+    "host": "macOS 27.0.1 arm64",
+    "claudeCode": "2.1.292",
+    "docker": "Docker Desktop 29.9.2 (aarch64)",
+    "uv": "0.11.26",
+    "buildPython": "CPython 3.12.13",
+    "profiles": "disposable HOME, CLAUDE_CONFIG_DIR and AGENT_BRAID_HOME (mode 700) outside any repository, emptied environment; no login, no model or provider session; nothing pushed, tagged, uploaded or published"
+  },
+  "partA": {
+    "question": "plugin MCP server shows failed in the claude -p stream-json init record while claude mcp list shows Connected",
+    "plugin": {
+      "version": "0.1.0-alpha.4",
+      "source": "public tag agent-braid--v0.1.0-alpha.4 cloned locally and added as a directory marketplace",
+      "tagCommit": "ac2c49825c963bf7daf3fd0851f28d9651580efa",
+      "inventorySha256": "956fe4e155d1834899b68a5555f7fb425f2c589c1938cb0b1c50ccb95d95d11b",
+      "provenanceSha256": "f1565500fe87b70a543d6bdcfcf8752d45e1d868140f374f75bea440b5a541aa",
+      "note": "differs from the unpublished local build of the SPEC-054 record (inventory 12c9ab89..., provenance 2a123a46...), which no longer exists"
+    },
+    "causeStatus": "reproduced",
+    "cause": "Claude Code keeps a failure cache at <CLAUDE_CONFIG_DIR>/mcp-needs-auth-cache.json keyed by server name; after a failed connection, claude -p makes no connection attempt for about 15 minutes and reports failed in the init record; claude mcp list runs its own health check, reports Connected and does not clear the entry",
+    "seedingFailures": [
+      "plugin refused: Owned plugin state must be private to its user (AGENT_BRAID_HOME mode 755)",
+      "plugin refused: Use a canonical path without symlinks or traversal (HOME containing '..' components)"
+    ],
+    "cacheWindow": {"honoredAtMinutes": 14, "ignoredAtMinutes": 16, "exactConstantRead": false},
+    "runs": [
+      {"case": "clean cache, correct home (8 runs, two profiles; one with an empty registry)", "attempted": true, "initStatus": "connected", "connectMs": "348-472"},
+      {"case": "AGENT_BRAID_HOME mode 755", "attempted": true, "initStatus": "failed", "writesCacheEntry": true},
+      {"case": "correct home with cache entry present", "attempted": false, "initStatus": "failed"},
+      {"case": "claude mcp list with cache entry present", "result": "Connected", "entryCleared": false},
+      {"case": "cache file deleted", "attempted": true, "initStatus": "connected"},
+      {"case": "entry aged 16 minutes", "attempted": true, "initStatus": "connected", "entryCleared": true},
+      {"case": "entry aged 14 minutes", "attempted": false, "initStatus": "failed"}
+    ],
+    "hypothesesRuledOut": {
+      "lazyStartInPrintMode": "every clean-cache print run attempted and completed the connection before init was written",
+      "timeout": "budget 30000 ms; connections took 348-472 ms",
+      "missingSetup": "a clean mode-700 home without a registry connected",
+      "handshakeRace": "no failed run among clean-cache runs; failed runs had no handshake (cache hit) or a stderr refusal"
+    },
+    "limits": [
+      "the original SPEC-060 profile was not preserved: attributing its failed status to this cache is inference",
+      "only Claude Code 2.1.292 observed",
+      "exact cache window constant not read from source"
+    ],
+    "documentChange": "none: INSTALL.md and NATIVE_PLUGINS.md make no print-mode status claim"
+  },
+  "partB": {
+    "statement": "Linux inside a Docker Desktop container on an Apple-silicon Mac; not x86_64 CI hardware",
+    "image": "python:3.13.11-slim",
+    "mounts": "read-only input directory and scratch output directory only; no real home mounted",
+    "candidateWheel": {
+      "file": "agent_braid-0.1.0a2-py3-none-any.whl",
+      "builtFrom": "develop 9f2fa184e1e3b2491f5a66b015906e7e7318d5e9, uv venv CPython 3.12.13, python -m build --wheel",
+      "sha256": "d1aeb657d8c7c1bc2edfe3e0f5202bdace45c7120444f2419746b447f4cd7589",
+      "t009Sha256": "bd282e618078920b0577f0f68eb9bf95f8b5494f4b432ab2fc409a7d94632f16",
+      "reproduced": false,
+      "rebuilds": {
+        "develop 9f2fa184": "d1aeb657d8c7c1bc2edfe3e0f5202bdace45c7120444f2419746b447f4cd7589",
+        "06d0313d (T009 commit), first build": "ff7f2bb68c397656e0c5dd94b7746800f6a518358c5b7474436e3a9b4814a9de",
+        "06d0313d, second build same tree": "0d067f2dfb2662c428b1ec280c5b913e991410e9c939ac23c018eb3d1155f155",
+        "06d0313d with SOURCE_DATE_EPOCH=commit time": "ec1c536ed0f5f78aef1a157b7442ae7d393b5edcd1d040deab2a6e211fd0857b",
+        "develop 9f2fa184 with SOURCE_DATE_EPOCH=commit time": "e3e2837f2f303c8484797286cb707651af26ad42f0bc609cba15d0fd4fe6d7b2"
+      },
+      "reproducibilityNote": "the two 06d0313d builds have identical RECORD (member hashes); archive timestamps differ per build; the T009 wheel is gone so no content comparison; determinism under SOURCE_DATE_EPOCH not re-tested"
+    },
+    "verifier": {
+      "script": "scripts/verify_installed_tooling_v2.py",
+      "sha256": "4799d7dc59012757bd8339809c684141d330d9f6952457eeb09781b554fc3cca",
+      "v1ScriptSha256Unchanged": "e88e030718c87fb080f091e7179636e02d416b48a85e2353a00928eecf1ce431",
+      "lock": "docs/tooling/reproducibility/mcp-2.3.0-cp313-linux-amd64.lock.txt",
+      "lockSha256": "1cdfb069424b11fccf882c84ca597019bedc8bd9b3ca10c12082c6b4d34cc0fe",
+      "manifestSha256": "a3df2591a7c39f50b5454c014ca851c824006b09cbfc054a88e2fc5cf84ee2a1"
+    },
+    "runs": [
+      {"platform": "linux/arm64", "uname": "aarch64", "result": "blocked", "reason": "running interpreter does not match the selected target", "note": "expected; the verifier supports linux-amd64 and macos-arm64 only"},
+      {"platform": "linux/amd64 (emulated by Docker Desktop on arm64)", "uname": "x86_64", "firstAttempt": {"result": "blocked", "reason": "wheelhouse roster mismatch", "cause": "plain pip download selected cryptography manylinux_2_34 instead of the manifest's manylinux2014 wheel"}, "result": "passed", "target": "linux-amd64", "packageCount": 28, "python": "3.13.11", "receiptSchema": "agent-braid-installed-tooling-probe/v1", "receiptSha256": "2f5398fdc500f520636c2853b7290b196d7882f9d0197b230f77d6095d8f9716", "pipConstraint": "--platform manylinux2014_x86_64 --python-version 3.13 --implementation cp --abi cp313 --abi abi3 --abi none"}
+    ],
+    "grantIssued": false,
+    "runtimeDispatched": false,
+    "providerSessionStarted": false,
+    "limits": [
+      "not x86_64 hardware or CI",
+      "single glibc baseline (Debian trixie)",
+      "no native plugin, Claude Code or Codex observation on Linux"
+    ]
+  },
+  "partC": {
+    "status": "pending-owner-result",
+    "guide": "interactive-slash-guide.md",
+    "headlessChecks": "guide steps 1-3 run in a disposable profile: public alpha.4 tag install, plugin setup, claude mcp add agent-braid; both servers Connected; init registry holds six agent-braid:* skills and six mcp__agent-braid__* prompts",
+    "collisionWarningInInstallDocs": "neither confirmed nor refuted"
+  },
+  "notDone": [
+    "interactive slash menu observation (owner)",
+    "x86_64 hardware or CI Linux observation",
+    "Codex observation (not installed)"
+  ]
+}
