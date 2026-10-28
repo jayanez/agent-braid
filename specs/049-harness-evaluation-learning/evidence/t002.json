@@ -14,7 +14,18 @@
   },
   "method": "Founder accepted the D1-D6 draft as-is; the orchestrator rewrote the draft section as the frozen protocol without changing any value, recorded each D7 item and hashed the result",
   "outcome": "Protocol frozen 2026-10-28. Numeric time/quota caps and useful-improvement thresholds remain explicitly deferred; current cohort descriptive only. Unblocks SPEC-049/T011 and T012.",
-  "executedChecks": [],
+  "executedChecks": [
+    {
+      "command": "fresh-validate.sh <worktree> quick (clean clone of commit 98e29240, scripts/validate_change.py --base develop --profile quick)",
+      "exitCode": 0,
+      "scope": "Selected executable validation passed; deferred boundary gates unexecuted"
+    },
+    {
+      "command": "python3 scripts/validate_change.py --base develop --profile quick (worktree)",
+      "exitCode": 1,
+      "scope": "Fails only at publication: public repository contains unreachable objects (shared object store across worktrees); environmental"
+    }
+  ],
   "executionAuthorization": false,
   "limits": "Manual decision record, not a unit-test substitute. No native session, dispatch, quota reading or evaluated outcome exists. Freezing admits no native cohort (T004) and authorizes no paid route or promotion."
 }
