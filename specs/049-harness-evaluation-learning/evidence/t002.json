@@ -1,0 +1,20 @@
+{
+  "task": "SPEC-049/T002",
+  "sourceBaseline": "731bef17972dbaa4babce22cf06cf16d60ba3d92",
+  "candidateBinding": "Frozen protocol bytes bound by SHA-256 below and in the decision record",
+  "inputs": {
+    "specs/049-harness-evaluation-learning/spec.md": "00d3b0f30560ea6bc439df62db0d905ba94a7da98c5352ac29536b7db13de831",
+    "specs/049-harness-evaluation-learning/corpus.md": "1a400003c2bc7ad2b5a44a33421f47c55cbc78a1db458e377d5a6cc0f61b979a",
+    "specs/049-harness-evaluation-learning/source-registration.md": "0a9704a7a5a8209cfdde5f6d97a2cea677625464265794559a63e72ba0dd97ef",
+    "specs/049-harness-evaluation-learning/validation-plan.md": "f52ac685e75a65ef9eaa8feb1c7b08c63b9354362048d6f6d450e1b76141f329"
+  },
+  "outputs": {
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "b25d038dd99376d4c4c50641a12b40ff59dd0aa9348392e05cfaed34fb58a19b",
+    "specs/049-harness-evaluation-learning/evidence/registration/t002-founder-freeze-20261028.json": "c2d420ffe1159ec115a8ab1adfccce44710f496fd15254f8c0e255cabaedd8c1"
+  },
+  "method": "Founder accepted the D1-D6 draft as-is; the orchestrator rewrote the draft section as the frozen protocol without changing any value, recorded each D7 item and hashed the result",
+  "outcome": "Protocol frozen 2026-10-28. Numeric time/quota caps and useful-improvement thresholds remain explicitly deferred; current cohort descriptive only. Unblocks SPEC-049/T011 and T012.",
+  "executedChecks": [],
+  "executionAuthorization": false,
+  "limits": "Manual decision record, not a unit-test substitute. No native session, dispatch, quota reading or evaluated outcome exists. Freezing admits no native cohort (T004) and authorizes no paid route or promotion."
+}

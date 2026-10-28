@@ -1,9 +1,12 @@
 # Prospective two-axis evaluation protocol
 
-Status: registration design, not a frozen empirical protocol or experiment result.
-T002 must freeze the exact candidate/source roster, numeric budget, sample size,
-quality/effect gates, noninferiority margins and analysis before evaluated outcomes.
-T004 additionally admits each native cohort. No calibration/training is required.
+Status: frozen by founder decision on 2026-10-28 (T002); see
+[evidence/registration/t002-founder-freeze-20261028.json](evidence/registration/t002-founder-freeze-20261028.json).
+The frozen values are in "Frozen protocol (T002)" below. Freezing is not an
+experiment result and admits no native execution: T004 still admits each native
+cohort separately. Numeric time/quota caps and useful-improvement thresholds stay
+open until an observed native quota reading and a measured baseline exist. No
+calibration/training is required.
 
 ## Questions and comparators
 
@@ -100,19 +103,25 @@ Publish per-axis/per-cohort verdicts supported/unsupported/inconclusive/infeasib
 source limits and full costs. Independent Luna review when authorized and human/
 founder acceptance remain separate from protocol completion and software tests.
 
-## Draft for founder freeze (T002) — not frozen
+## Frozen protocol (T002)
 
-Status: DRAFT PROPOSAL ONLY. Nothing in this section is frozen, decided, approved
-or binding. `049/T002` remains pending; it needs an actual founder decision record
-before any evaluated native outcome. Every value below is a proposal to be
-accepted, changed or rejected, derived from the registered yield in
-[corpus.md](corpus.md) and [source-registration.md](source-registration.md).
+Status: FROZEN on 2026-10-28. The founder accepted D1–D6 below without changes
+(decision record:
+[evidence/registration/t002-founder-freeze-20261028.json](evidence/registration/t002-founder-freeze-20261028.json)).
+Values were derived from the registered yield in [corpus.md](corpus.md) and
+[source-registration.md](source-registration.md). Explicitly still open, not
+decided by this freeze: numeric per-unit wall-time and token/quota caps and the
+total unit cap (D2), which need an observed native quota reading; and
+useful-improvement thresholds (D4), which need a measured baseline. The current
+cohort is descriptive only (D3). The freeze authorizes no native execution, paid
+route or promotion; any change to a frozen value requires a new founder decision
+record before evaluated outcomes.
 
 ### D1. Task-family split and temporal library order
 
 - Split by lineage group, not by family name. Registered groups: L1 (S01/S06,
   covering C01, C02, C03), L2 (S02, C01), L3 (S03, C02, relation to L1 unresolved)
-  and L4 (S04/S05, C04). Proposal: L4 as the held-out family only if a derived task
+  and L4 (S04/S05, C04). Frozen: L4 as the held-out family only if a derived task
   qualifies; otherwise hold out whole lineages. L1 is never split.
 - Unresolved lineage (L3) stays unassigned until resolved; it is not used to
   inflate either partition.
@@ -129,7 +138,7 @@ accepted, changed or rejected, derived from the registered yield in
   for all arms; any violation excludes that profile from promotion.
 - Coverage: a profile is compared only on the same registered unit set; refusals,
   failures and ungraded units stay in the denominator.
-- Budget (proposal): additional cash EUR 0 (already operational); a per-unit
+- Budget: additional cash EUR 0 (already operational); a per-unit
   wall-time and token/quota cap and a total unit cap are to be set by the founder
   from an observed native quota reading. No numeric time or token cap is proposed
   here because no native quota observation exists.
@@ -147,12 +156,12 @@ accepted, changed or rejected, derived from the registered yield in
   gate. (Arithmetic: ln 0.05 = -2.996; ln 0.80 =
   -0.223, ln 0.85 = -0.163, ln 0.90 = -0.105.)
 - With at most 4 independent lineages the smallest requirement (14) is not met.
-  Proposal: the current cohort is DESCRIPTIVE ONLY. Up to 16 constructed case
+  Frozen: the current cohort is DESCRIPTIVE ONLY. Up to 16 constructed case
   definitions add repeated measurements within lineage, not independent units.
   Inferential noninferiority needs new disjoint lineages or permissioned native
   sources first; if native yield stays unknown, record a feasibility result.
 
-### D4. Noninferiority and improvement margins (proposal)
+### D4. Noninferiority and improvement margins
 
 - Correctness and recovery: noninferiority margin delta = 0.15 absolute on correct
   completion proportion, assessed only when n meets D3; otherwise report
@@ -182,8 +191,17 @@ discovery of lineage leakage, or any need for extra cash. Open attempts and
 cleanup effects are retained. Predetermined report paths: supported, unsupported,
 inconclusive, infeasible; none requires fabricating native results.
 
-### D7. Founder decisions requested
+### D7. Founder decisions (recorded 2026-10-28)
 
-Accept or amend: lineage-based split and L4 holdout; counterbalancing method;
-margins in D4 and the n >= 14/19/29 minimums (zero-failure case only, see D3); annotator count; numeric time/quota
-caps after an observed quota reading; whether the cohort stays descriptive.
+Each is listed separately in the decision record:
+
+- Accepted: lineage-based split, L4 holdout (else whole-lineage holdout), L1 never
+  split, L3 unassigned until resolved.
+- Accepted: fixed temporal order for arm D and Latin-square counterbalancing for A–C.
+- Accepted: D4 margins (0.15 correctness/recovery, 0.10 coordination precision and
+  recall, zero false safe admissions) and the D3 minimums n >= 14/19/29 (zero-failure
+  case only).
+- Accepted: at least two blind annotators per held-out unit when human labels are used.
+- Deferred: numeric time/quota caps and the total unit cap, until an observed native
+  quota reading; useful-improvement thresholds, until a measured baseline.
+- Accepted: the current cohort stays descriptive only.
