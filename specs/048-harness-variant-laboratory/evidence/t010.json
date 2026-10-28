@@ -1,0 +1,103 @@
+{
+  "task": "SPEC-048/T010",
+  "candidateBinding": "origin/develop fc1bf9b5996120c82d9c0213bd9385dbd030dcf2; agent_braid/*.py and tests/* unchanged by this packet",
+  "disposition": "Offline candidate packaged with explicit native gaps; T010 left unchecked: model review obtained, finding F1 open, no human review",
+  "executionAuthorization": false,
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\" -v",
+      "exitCode": 0,
+      "testsRun": 370,
+      "skipped": 0,
+      "scope": "All 14 harness test files, deterministic doubles and SimulatedContainment only"
+    },
+    {
+      "command": ".venv-speckit/bin/python scripts/validate_change.py --base origin/develop --profile quick",
+      "exitCode": 1,
+      "scope": "In the worktree: fails at the publication gate (public repository contains unreachable objects; shared object store). Environmental; earlier gates passed. Authoritative quick/pr results come from a full independent clone and are recorded in the pull request."
+    }
+  ],
+  "inputs": {
+    "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+    "agent_braid/harness_cli.py": "e948dd4540afc2183b839da3113836c8807b46e83fb9cbd02edbb15334d181ed",
+    "agent_braid/harness_context.py": "026a29c21b3d52afad4c8fb1f11730fd410d8f17d5d437cecfaf409732dd657e",
+    "agent_braid/harness_host_claude.py": "9798cec28e0b12e7cc9a31056b145169bcc217f67a894cbcda930d12e856b795",
+    "agent_braid/harness_host_codex.py": "648b8ab68125d412ee54254e492061f5f88faeaa5ee5ac92e4dccc5d556309b0",
+    "agent_braid/harness_journal.py": "b1c1e598ca28a5f01043bbf5c261f4a84d658e644e4ad077e6c86e67c6dc52f9",
+    "agent_braid/harness_lab.py": "deea7a023b7e9b132d63a6192986cae2933bb79939f30d97263bbcb106bc3ec5",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "agent_braid/harness_records.py": "5c5515141174108b243b217660ed3b5d95abd038414d71a3d105d28606b71034",
+    "agent_braid/harness_refinement.py": "74c342c7a7bd4175e19d3132fe628a81cb9cf81d1e83a6af8f81225c048474dd",
+    "agent_braid/harness_surface.py": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
+    "tests/test_harness_admission.py": "2d528a4a76cadbc3fb0e3faeba77b58f1472f40aabb813e97958ce284a53f832",
+    "tests/test_harness_cli.py": "1f40ca578ac10474bc2788c1873359d31afed6257bbfcc9853782d3c4076c7f0",
+    "tests/test_harness_context.py": "6b0284637a81a868ce436b540abb789a7c39b49e701a3a74c14092a6ce24f4bd",
+    "tests/test_harness_foundations.py": "8e97f53196047e8ea84a1fd7b358e5690a55c87b6a327667e93cdf3266b66926",
+    "tests/test_harness_host_claude.py": "3e97211cbe66ffb12ea70106a87bb118ea78d28e3624fc661b1aa6ff90e216d9",
+    "tests/test_harness_host_codex.py": "a3dfe91229e5180dcce3fe322792c70509405a035eb9936964df18bcdfff3a16",
+    "tests/test_harness_integration.py": "df485558aa2616f561657c2c75b89c58fe8e4ffa5008069384a2134cb10d25e5",
+    "tests/test_harness_journal.py": "dd18c649d2938a05a082de6ca9ee999dfd4ce46ac3e7aa0f1cc71d7c87645647",
+    "tests/test_harness_lab.py": "e6ee85001fcbdaca3a64b86b11fb4c2c21afeb260cdf7751f840a7cade3582e0",
+    "tests/test_harness_manifest.py": "1ceb49f412d0fcc51c2519a089de0d62f0ef9ce075b3dfdd00c86e93fff186c2",
+    "tests/test_harness_observation.py": "77201c56698e129d2c377517487a7bad08063c81b06d42a2c0c7c5eed8cbaefc",
+    "tests/test_harness_records.py": "e432f0faab79a6bc0572740e52b39d1db8539d964ff3fbeb6a961d86206e2e70",
+    "tests/test_harness_refinement.py": "0c6c14adfaa59c4d500e6c8c80c655247d2a8dcc12d961eb79992fe29d5300cb",
+    "tests/test_harness_surface.py": "4b2a3d06195e2e6f57191dfd2721b559ab04f3319fc41d4e749a20267a83ec77"
+  },
+  "outcome": "Packet at evidence/engineering/t010-candidate-packet.md binds the exact candidate commit, 12 module and 14 test hashes, commands and counts, native blockers and the independent model review (no dispatch path found; F1 open).",
+  "limits": "No native, host, model, provider, network or utility evidence. A software packet neither adopts the ADR nor activates the capability. Review was a model reviewer, not human; F1 (lab runner labels a run native under an offline manifest) is unresolved and needs a code follow-up outside this task's file scope. Quick/pr results from a full independent clone are recorded in the pull request, not here. Manifest child/network limits are declared, not enforced.",
+  "pending": [
+    "SPEC-048 T008 native qualification (Codex and Claude separately)",
+    "SPEC-049 T004 native admission",
+    "Resolve or disposition review finding F1",
+    "Human or founder review if required",
+    "Stable pr-profile result recorded in the pull request"
+  ],
+  "independentReview": {
+    "kind": "model reviewer (fresh context, read-only); not human",
+    "target": "fc1bf9b5996120c82d9c0213bd9385dbd030dcf2",
+    "testsRun": 370,
+    "verdict": "no real host/native dispatch path; one should-fix",
+    "findings": [
+      {
+        "id": "F1",
+        "where": "agent_braid/harness_lab.py:315-324",
+        "status": "open",
+        "summary": "_check_backend accepts kind=native with self-hashed Qualification without checking manifest host kind or maxNativeSessions; test_harness_lab.py:251-256 asserts it"
+      },
+      {
+        "id": "N1",
+        "where": "harness_manifest.py:234-248",
+        "status": "open limit",
+        "summary": "hand-built manifest not re-checked against its hash"
+      },
+      {
+        "id": "N2",
+        "status": "limit",
+        "summary": "two tests lock F1/N1 as intended; label plumbing only"
+      },
+      {
+        "id": "N3",
+        "where": "harness_lab.py:181-185",
+        "status": "open limit",
+        "summary": "maxChildProcesses/maxNetworkConnections declared, not enforced by SimulatedContainment"
+      },
+      {
+        "id": "N4",
+        "where": "tasks.md T013",
+        "status": "flagged to orchestrator",
+        "summary": "T013 says obtained: none though t013.json exists"
+      }
+    ],
+    "notChecked": [
+      "refinement/records/context/observation logic",
+      "rest of admission",
+      "CLI exit semantics",
+      "full test bodies",
+      "evidence hash recomputation",
+      "real concurrency",
+      "Linux"
+    ]
+  }
+}
