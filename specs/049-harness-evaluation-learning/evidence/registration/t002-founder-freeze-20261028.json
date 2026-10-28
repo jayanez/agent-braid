@@ -1,0 +1,48 @@
+{
+  "recordVersion": "spec049-t002-founder-freeze-v1",
+  "task": "SPEC-049/T002",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-10-28",
+  "reviewedDraftCommit": "731bef17972dbaa4babce22cf06cf16d60ba3d92",
+  "reviewedDraftProtocolSha256": "f3e63f40aa5eabb182d8584e72d05e2b25f11fe0ebbb10ef4f5a6dcaeafdcb84",
+  "frozenProtocolPath": "specs/049-harness-evaluation-learning/evaluation-protocol.md",
+  "frozenProtocolSha256": "b25d038dd99376d4c4c50641a12b40ff59dd0aa9348392e05cfaed34fb58a19b",
+  "decisionChannel": "Founder answer in the orchestrator Claude Code session, to the question whether to accept the D1-D6 draft as-is (descriptive cohort, 0.15 margin, two blind annotators, numeric caps pending a native quota reading)",
+  "ownerStatement": "Acepto tal cual (Recommended)",
+  "decisions": [
+    {
+      "item": "D1 task-family split and temporal order",
+      "decision": "accepted-as-drafted",
+      "detail": "Lineage-based split; L4 held out only if a derived task qualifies, otherwise whole lineages; L1 never split; L3 unassigned until resolved; fixed arm-D order, Latin-square counterbalancing for A-C"
+    },
+    {
+      "item": "D2 matched safety, coverage and budgets",
+      "decision": "accepted-as-drafted-with-caps-deferred",
+      "detail": "Matched model/effort/host/tools/source/route; identical hard gates; full denominators; additional cash EUR 0. Per-unit wall-time, token/quota and total unit caps deferred until an observed native quota reading"
+    },
+    {
+      "item": "D3 sample size",
+      "decision": "accepted-as-drafted",
+      "detail": "n >= 14/19/29 for delta 0.20/0.15/0.10 in the zero-failure case only; current cohort descriptive only"
+    },
+    {
+      "item": "D4 margins",
+      "decision": "accepted-as-drafted-with-thresholds-deferred",
+      "detail": "0.15 correctness/recovery; zero false safe admissions; 0.10 coordination precision and recall per class; useful-improvement thresholds deferred until a measured baseline; no tuning on holdout outcomes"
+    },
+    {
+      "item": "D5 annotation rules",
+      "decision": "accepted-as-drafted",
+      "detail": "Rubric and oracle/human/proxy labels frozen before ranking; at least two blind annotators per held-out unit when human labels are used; actual adjudication records"
+    },
+    {
+      "item": "D6 stop conditions",
+      "decision": "accepted-as-drafted",
+      "detail": "Stop and record on containment, route/quota, drift, exhaustion, authority, leakage or cash triggers; four predetermined report paths"
+    }
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Freezes the evaluation protocol only. Admits no native cohort (SPEC-049/T004, SPEC-048/T008), authorizes no paid route, execution or promotion, and records no experiment outcome. Any change to a frozen value needs a new founder decision record before evaluated outcomes."
+}
