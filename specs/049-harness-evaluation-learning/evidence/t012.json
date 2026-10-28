@@ -1,0 +1,50 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline deterministic cost-reconciliation and per-arm utility calculator; native cost observation, economic acceptance, scientific-utility and independent-review gates pending",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_costs",
+      "exitCode": 0,
+      "scope": "Focused module run, Python 3.13.11.",
+      "testsRun": 40
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13.11.",
+      "testsRun": 466
+    },
+    {
+      "command": "manual mutation checks (scratch script, not committed)",
+      "exitCode": 0,
+      "scope": "Each of 26 guards was replaced one at a time and the module tests failed every time: no-observation-is-unknown, missing-measure-is-unknown, full versus partial shared attribution, unallocated exclusion from the point estimate, unit-conversion overflow, bool-as-int refusal, reservation reuse, refused-attempt reservation exemption, journal overrun boundary, unallocated journal unreconciled, cleanup-phase accounting, attempts without cost entries, EUR 0 cash cap, correct-requires-completed, observation binding, duplicate unit/arm attempt, reservation executionAuthorization, non-negative reserved journal, Reservation type, two-target shared minimum, refused attempts outside the started denominator, peak (max) aggregation, reservation set in the ledger hash, shared-target order in the ledger hash, total target-reference cap, string unit/arm refusal. A first pass left two survivors (reservation executionAuthorization, reservation set in the ledger hash) and a third (target-reference cap) after review fixes; tests were added and each was then killed."
+    },
+    {
+      "command": "worst-case timing probe at the declared bounds (scratch script, not committed)",
+      "exitCode": 0,
+      "scope": "1024 reserved attempts, 4096 entries with 65,536 attempt references, four arms: 0.65 s on the development host."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/049-harness-evaluation-learning/contracts/interface.md": "0a3eb971b4baa9463c7039b15966ab7a8f108e60c707a8acd046861c1fe4412f",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "b25d038dd99376d4c4c50641a12b40ff59dd0aa9348392e05cfaed34fb58a19b",
+    "specs/049-harness-evaluation-learning/spec.md": "00d3b0f30560ea6bc439df62db0d905ba94a7da98c5352ac29536b7db13de831"
+  },
+  "limits": "Pure offline engineering controls on synthetic ledgers and synthetic SPEC-048 reservation receipts. No host, model, paid route, file, clock or network access, and no native cost, quota or invoice was observed: every value in the tests is a deterministic double. Evidence hashes on observed measurements are checked for shape only; binding them to real invoices, quota readings or SPEC-048 observations is the caller's responsibility. Shared-cost rules are limited to equal split and unallocated; per-arm sensitivity bounds cover allocation and unknowns only, not measurement error. A missing phase is not detectable beyond the listed phases without entries, the cleanup requirement for reserved attempts and the attempts-without-cost check. A journal overrun is judged per attempt under the declared allocation, not against the combined reservations. Numeric time/quota caps are deferred per the T002 D2 founder decision and none is applied; additional cash is capped at EUR 0. An unblocked report is not an economic or utility acceptance. Pre-PR reviews (code-review, code-review-and-quality, code-simplification) were run by Claude subagents and are not independent Luna review.",
+  "method": "Actual offline unittest execution",
+  "outcome": "Reservations reconcile against setup, context, proposal, probe, retry, selection, reflection, verification, recovery, review and cleanup costs; unknown or missing measurements stay unknown (never zero) with known lower bounds; shared costs carry explicit equal/unallocated rules and lower/point/upper sensitivity bounds; quota and cash are separate dimensions with exact unit conversion; every registered unit, refusal, failure and ungraded attempt stays in the per-arm denominators; unknown cash, any observed additional cash, open or missing reservations, journal overruns, unaccounted cleanup and attempts without cost entries block an economic claim with fixed reason codes.",
+  "outputs": {
+    "agent_braid/harness_costs.py": "d60212a1922500bdc6a2275ff7dbdcf421e3f9258a7ba0931a8727c25f985f5e",
+    "tests/test_harness_costs.py": "01d3d15b4118ad0985b8239709bc799578f744c2e8d36cd544584dca53f1c8b0"
+  },
+  "pending": [
+    "Stable pr-profile result recorded in the pull request",
+    "T003 evaluation consumer; native cost and quota observations (SPEC-048 T008); economic acceptance and all native/human/scientific gates"
+  ],
+  "spec": "049-harness-evaluation-learning",
+  "task": "SPEC-049/T012"
+}
