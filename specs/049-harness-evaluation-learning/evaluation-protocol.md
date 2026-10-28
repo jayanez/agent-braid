@@ -99,3 +99,91 @@ incident stops; model self-assessment cannot be its only acceptance signal.
 Publish per-axis/per-cohort verdicts supported/unsupported/inconclusive/infeasible,
 source limits and full costs. Independent Luna review when authorized and human/
 founder acceptance remain separate from protocol completion and software tests.
+
+## Draft for founder freeze (T002) — not frozen
+
+Status: DRAFT PROPOSAL ONLY. Nothing in this section is frozen, decided, approved
+or binding. `049/T002` remains pending; it needs an actual founder decision record
+before any evaluated native outcome. Every value below is a proposal to be
+accepted, changed or rejected, derived from the registered yield in
+[corpus.md](corpus.md) and [source-registration.md](source-registration.md).
+
+### D1. Task-family split and temporal library order
+
+- Split by lineage group, not by family name. Registered groups: L1 (S01/S06,
+  covering C01, C02, C03), L2 (S02, C01), L3 (S03, C02, relation to L1 unresolved)
+  and L4 (S04/S05, C04). Proposal: L4 as the held-out family only if a derived task
+  qualifies; otherwise hold out whole lineages. L1 is never split.
+- Unresolved lineage (L3) stays unassigned until resolved; it is not used to
+  inflate either partition.
+- Temporal order for arm D: a fixed case sequence set once, ordered by lineage
+  construction order, libraries starting empty and independent per comparator and
+  cohort; a task sees only strictly earlier eligible entries. Order for A/B/C is
+  counterbalanced within family using a fixed Latin-square rotation recorded
+  before any outcome.
+
+### D2. Matched safety, coverage and budgets
+
+- Match requested model, effort, host, tools, source state and observable route
+  across A–D. Hard gates (declared effects, authority, containment) are identical
+  for all arms; any violation excludes that profile from promotion.
+- Coverage: a profile is compared only on the same registered unit set; refusals,
+  failures and ungraded units stay in the denominator.
+- Budget (proposal): additional cash EUR 0 (already operational); a per-unit
+  wall-time and token/quota cap and a total unit cap are to be set by the founder
+  from an observed native quota reading. No numeric time or token cap is proposed
+  here because no native quota observation exists.
+
+### D3. Sample size derived from registered yield
+
+- Observed independent lineages: 4 (3 if L3 merges into L1). Observed native
+  yield: 0.
+- Reference calculation for a paired, zero-discordance noninferiority claim at one
+  sided 5% on an exact binomial bound: need n >= ln(0.05)/ln(1 - delta). For
+  delta = 0.20, n >= 14; delta = 0.15, n >= 19; delta = 0.10, n >= 29 independent
+  paired units per axis and stratum. These are minimums under zero observed
+  discordant failures; any observed failure requires recomputing with the exact
+  binomial bound and raises n, so the table is reference arithmetic, not a fixed
+  gate. (Arithmetic: ln 0.05 = -2.996; ln 0.80 =
+  -0.223, ln 0.85 = -0.163, ln 0.90 = -0.105.)
+- With at most 4 independent lineages the smallest requirement (14) is not met.
+  Proposal: the current cohort is DESCRIPTIVE ONLY. Up to 16 constructed case
+  definitions add repeated measurements within lineage, not independent units.
+  Inferential noninferiority needs new disjoint lineages or permissioned native
+  sources first; if native yield stays unknown, record a feasibility result.
+
+### D4. Noninferiority and improvement margins (proposal)
+
+- Correctness and recovery: noninferiority margin delta = 0.15 absolute on correct
+  completion proportion, assessed only when n meets D3; otherwise report
+  counts and the exact interval without a verdict.
+- Coordination: false safe admissions must be 0 in every evaluated unit (hard
+  gate, no margin); precision/recall margin delta = 0.10 each per known conflict
+  class, undefined (not 100%) when a denominator is zero.
+- Useful-improvement thresholds (interventions, rework, parallelism recovered) are
+  left for the founder; none is proposed without a measured baseline.
+- Margins must not be tuned on holdout outcomes.
+
+### D5. Annotation rules
+
+- Rubric and oracle/human/proxy distinctions frozen before any ranking; hidden
+  grader material outside the improver/solver context.
+- At least two blind annotators per held-out unit when human labels are used;
+  disagreement resolved by an actual adjudication record, never an invented
+  consensus; missing labels counted and bounded by sensitivity analysis.
+- Deterministic oracles (serial/effect reference) are labeled as oracles, human
+  rubric scores as human, model scores as proxies.
+
+### D6. Stop conditions
+
+Stop and record on lost containment, stale or lost route/quota observation,
+source/policy drift, resource exhaustion, invariant or authority violation,
+discovery of lineage leakage, or any need for extra cash. Open attempts and
+cleanup effects are retained. Predetermined report paths: supported, unsupported,
+inconclusive, infeasible; none requires fabricating native results.
+
+### D7. Founder decisions requested
+
+Accept or amend: lineage-based split and L4 holdout; counterbalancing method;
+margins in D4 and the n >= 14/19/29 minimums (zero-failure case only, see D3); annotator count; numeric time/quota
+caps after an observed quota reading; whether the cohort stays descriptive.

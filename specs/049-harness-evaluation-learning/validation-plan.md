@@ -81,3 +81,25 @@ Given a valid human decision, stale profile or interrupted profile update exists
 ## Candidate checks
 
 Run `python3 scripts/validate_change.py --base develop --profile quick` after implementation increments and `--profile pr` once stable, with the isolated configured interpreter. Feature-specific frozen-candidate evidence and human review remain separate.
+
+## T001 registration checks (prospective, 2026-10-27)
+
+These describe what the T001 evidence and any later corpus validator must show.
+Only the checks listed under "Obtained for T001" were run; the rest are planned.
+
+Obtained for T001: see `evidence/t001.json` for commands, exits and limits. The
+source-hash and anchor recomputation exited 0; `scripts/validate_spec_kit.py`
+exited 1 (unreachable objects in the shared object store of the isolated
+worktree) and has not been re-run to green, so T001 acceptance stays pending. No
+unit test of an anchor was rerun.
+
+Planned positive controls: every registered case has a source path, hash, lineage
+group, `synthetic`/`native` label, rights basis and expected oracle; the observed
+and planned yield columns reconcile with the inventory.
+
+Planned negative controls: a corpus that places one lineage group in both
+discovery and holdout is refused; an anchor whose hash differs from the pin is
+refused as drift; a case labelled `native` without a permission receipt is refused;
+an unresolved lineage cannot be assigned a partition; a recorded intervention
+history without a source record is refused; zero native yield yields a feasibility
+result and not a synthetic substitution.

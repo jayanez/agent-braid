@@ -1,9 +1,12 @@
 # HAR.2 source registration — kickoff inventory
 
 Status: inspected source inventory and proposed engineering sampling design;
-`049/T001` acceptance remains pending. No HAR fixture was created or executed by
-this registration; no native source was collected or admitted. Trace:
-SPEC-049/T001, REQ-001/SC-001 and REQ-003/SC-003. Observed on 2026-10-21.
+`049/T001` acceptance remains pending (founder decision; Spec Kit validator not
+green in the isolated worktree, see `evidence/t001.json`). The current-head
+readback is in "T001 re-registration at the current head (2026-10-27)" below. No
+HAR fixture was created or executed by this registration; no native source was
+collected or admitted. Trace: SPEC-049/T001, REQ-001/SC-001 and REQ-003/SC-003.
+Observed on 2026-10-21.
 
 ## Source identity and rights boundary
 
@@ -147,3 +150,45 @@ prepare-cap controls are relevant engineering references. Their native wording
 refers to existing local Git replay/preparation, not native Codex/Claude sessions.
 No test was rerun or result imported by this inventory; current System One, FC.1,
 telemetry and plugin acceptance remain independent.
+
+## T001 re-registration at the current head (2026-10-27)
+
+Status: inspection readback only. It supplements, and does not rebind, the
+kickoff inventory above. Trace: SPEC-049/T001, REQ-001/SC-001, REQ-003/SC-003.
+
+The anchors were re-read at repository head
+`61b5c39cf6a499d7e7249af01df43b4f4f36981a` (`develop` after PR #775). Git blob
+IDs and file SHA-256 values for S00–S06 and N01–N04 were recomputed from the
+working-tree bytes and are byte-identical to the table above; the seven named test
+methods still exist at the recorded line ranges (S01 63, 73, 191, 270, 303; S02 573;
+S03 79). No inspected source drifted, so the kickoff identities remain the pinned
+anchors. No test was rerun and no result is imported.
+
+### Source-rights ledger (before any real collection)
+
+| Source class | Members | Rights basis recorded | Status for collection |
+|---|---|---|---|
+| Repository tests and fixtures | S01–S03, S06, N01–N04 | `AGPL-3.0-only` SPDX notices in the files; owner-controlled repository | Admitted only as the basis for owned synthetic derivations; preserve notices and modification history. No outcome or behavior data. |
+| Repository specification handoffs | S04, S05 | `CC-BY-SA-4.0` mapping via S00 and repository governance | Admitted only as the basis for an owned synthetic packaging task; they describe a need, not an observation. |
+| Native repository tasks | none | No permission receipt exists | Not admitted. Requires per-source owner permission, privacy/secret inventory, reproducible initial state and an independent outcome definition (`049/T004`, `048/T008`). |
+| Third-party benchmarks, datasets, provider transcripts, personal task material | none | None | Not admitted; no rights basis. |
+| User intervention history | none | No record exists | Not available. Historical correction frequency and minutes are unknown and must not be reconstructed or estimated from these tests. |
+
+This ledger is a registration of rights as read from repository notices and the
+owner's stated authorization for this repository work. It is not an independent
+ownership or license audit.
+
+### Observed versus planned yield
+
+| Quantity | Observed (inspected) | Planned (not yet obtained) |
+|---|---|---|
+| Direct case-source files | 5 (S01–S05) plus helper S06 | none added by this track |
+| Named test-method anchors | 7 across S01, S02, S03 | additional anchors only if a future inventory finds them |
+| Handoff documents | 2 (S04, S05) | none |
+| Candidate lineage groups | 4 (L1, L2, L3, L4 in corpus.md); L3 may merge into L1 | disjoint lineages after construction; count unknown |
+| Executable HAR case definitions | 0 | up to 16 proposed in this registration, not created |
+| Registered/evaluated comparison units | 0 | not yet defined |
+| Native sources, sessions, ratings, observed interventions | 0 | unknown until a permission review exists |
+
+Observed counts are inspection counts of existing files. They are not independent
+cases, trials or evidence of agent behavior. Planned figures are design targets only.
