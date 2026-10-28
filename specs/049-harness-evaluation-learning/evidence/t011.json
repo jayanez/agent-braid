@@ -1,0 +1,47 @@
+{
+  "candidateBinding": "Current source/input hashes on base 39162266 (T002 freeze merged); no frozen implementation commit claimed",
+  "disposition": "Completed for the offline deterministic verifier and adjudication records; native, human-annotation, scientific-utility and independent-review gates pending",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_verification",
+      "exitCode": 0,
+      "scope": "Focused module run, Python 3.13.11.",
+      "testsRun": 42
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13.11.",
+      "testsRun": 468
+    },
+    {
+      "command": "manual mutation checks (scratch script, not committed)",
+      "exitCode": 0,
+      "scope": "24 guards were removed one at a time and the module tests failed every time: blind-annotator, rubric drift, adjudicator independence at creation and at use, duplicate annotator, multiple adjudications, two-annotator minimum, disagreement detection, adjudication completeness, label and commitment binding, exact observed-write commitment, outputs only on completion, uncommitted-output refusal, unit-derived holdout seal, deterministic-oracle exact type, record shape, case-insensitive and key-scanning leak check, label cap, provenance check, abstention exclusion from adjudication, oracle not-used status, proxy countsAsCorrectness. One initial survivor (the proxy label flag) led to an added assertion and was then killed."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_host_codex.py": "648b8ab68125d412ee54254e492061f5f88faeaa5ee5ac92e4dccc5d556309b0",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/049-harness-evaluation-learning/contracts/interface.md": "0a3eb971b4baa9463c7039b15966ab7a8f108e60c707a8acd046861c1fe4412f",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "b25d038dd99376d4c4c50641a12b40ff59dd0aa9348392e05cfaed34fb58a19b",
+    "specs/049-harness-evaluation-learning/spec.md": "00d3b0f30560ea6bc439df62db0d905ba94a7da98c5352ac29536b7db13de831",
+    "specs/049-harness-evaluation-learning/validation-plan.md": "f52ac685e75a65ef9eaa8feb1c7b08c63b9354362048d6f6d450e1b76141f329",
+    "tests/test_harness_observation.py": "77201c56698e129d2c377517487a7bad08063c81b06d42a2c0c7c5eed8cbaefc"
+  },
+  "limits": "Pure offline engineering controls on synthetic units with deterministic doubles. No host, model, native session, paid route, file, clock or network access; time is a caller-supplied integer tick. Oracles are exact-type fixture-correctness and serial-reference checks reusing the SPEC-048 OutcomeVerifier/VerifierRequest handoff; the serial oracle compares created/modified files only, not deletions. Records bind data by digest and consumers check exact shape, but human, proxy and adjudication records are self-asserted: authenticity of annotator, adjudicator or model identity and actual blinding are not verified. The leak check refuses held-out grader bytes and identity hashes (any case) in context keys and values only; encoded, paraphrased or summarized material is not detected, and material shorter than 16 bytes is matched only as a whole key or value. No human annotation was performed and no agreement statistic is computed; no utility, cohort or cost claim is made. Pre-PR reviews (code-review, code-review-and-quality, code-simplification) were run by Claude subagents and are not independent Luna review.",
+  "method": "Actual offline unittest execution",
+  "outcome": "Only committed outputs equal to the observed writes are graded; candidate-supplied acceptance files do not change oracle verdicts; oracle, blinded human and proxy results are kept in separate sections with no blended verdict; human disagreement stays unresolved without a complete independent adjudication record; abstentions, insufficient annotators, failed attempts and inconclusive oracles are recorded as missing labels; held-out records and held-out grader material are refused before selection or solver context.",
+  "outputs": {
+    "agent_braid/harness_verification.py": "fe8fd34a4d87d4247e8cc696a5f4ef288853c3dbf3daa52d2a7bdf41eadfb3fd",
+    "tests/test_harness_verification.py": "5cc5b820bf713c1f2df4574c95fa6ff0d9da01a3c725e9669ef5f90d29cee5b0"
+  },
+  "pending": [
+    "Stable pr-profile result recorded in the pull request",
+    "T003 evaluation consumer; actual blinded human annotation and adjudication for any human-labelled cohort; all native/human/scientific/economic gates"
+  ],
+  "spec": "049-harness-evaluation-learning",
+  "task": "SPEC-049/T011"
+}
