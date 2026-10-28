@@ -1,0 +1,55 @@
+{
+  "blockers": [
+    "0 executable HAR case definitions and 0 registered comparison units (source-registration.md, observed versus planned yield)",
+    "No frozen case roster or discovery/holdout assignment: the T002 founder freeze fixed rules D1-D6 only (summarized in D7)",
+    "No frozen arm identities: no A/B/C candidate hashes and no matched profile hash registered",
+    "No real proposer for the arm-C refinement round: only injected test doubles exist",
+    "Native cohort pending on SPEC-049/T004 and SPEC-048/T008"
+  ],
+  "candidateBinding": "Repository head ab2db0c45ab70c3689e39226897a5ddf2932126a; input hashes below",
+  "disposition": "Deterministic cohort infeasible, recorded on the predetermined report path (protocol D6). No cohort run and no outcome reported. Native cohort pending. Task stays open.",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -c \"from agent_braid.harness_evaluation import register, EvaluationError; register([], lineages={}, families={}, strata={}, candidates={}, refinement=None, profile_sha256='0'*64, cohort='synthetic')\" (wrapped to catch EvaluationError)",
+      "exitCode": 0,
+      "observed": "refused invalid-registration",
+      "scope": "Confirms that the T003 evaluator cannot register a cohort with zero units. Python 3.13.11."
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "Regression check of the unchanged harness modules; no library code changed. Python 3.13.11.",
+      "testsRun": 551
+    }
+  ],
+  "executionAuthorization": false,
+  "founderInputsRequired": [
+    "A frozen case roster drawn from registered lineages L1-L4. Each case needs lineage, task family, stratum, holdout partition, rubric and deterministic oracle, following D1 (L1 never split, L3 unassigned until resolved, L4 held out only if a derived task qualifies)",
+    "A/B/C arm identities: exact candidate hashes, the matched profile hash, and arm C taken from a recorded refinement round with a real proposer; both inputs supplied in a founder decision record before any outcome is evaluated"
+  ],
+  "inputs": {
+    "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+    "agent_braid/harness_experience.py": "92afe433d6d93984bfae35274644ed1bdafa0e57ff344c30808ae219ed64a057",
+    "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
+    "agent_braid/harness_refinement.py": "74c342c7a7bd4175e19d3132fe628a81cb9cf81d1e83a6af8f81225c048474dd",
+    "specs/049-harness-evaluation-learning/corpus.md": "1a400003c2bc7ad2b5a44a33421f47c55cbc78a1db458e377d5a6cc0f61b979a",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "b25d038dd99376d4c4c50641a12b40ff59dd0aa9348392e05cfaed34fb58a19b",
+    "specs/049-harness-evaluation-learning/evidence/registration/t002-founder-freeze-20261028.json": "c2d420ffe1159ec115a8ab1adfccce44710f496fd15254f8c0e255cabaedd8c1",
+    "specs/049-harness-evaluation-learning/source-registration.md": "0a9704a7a5a8209cfdde5f6d97a2cea677625464265794559a63e72ba0dd97ef"
+  },
+  "limits": "Offline inspection and refusal check only. No fixture, host, model, native session, paid route or human annotation was used, and no endpoint, cost or outcome number was produced. Fixed fixtures do not read guidance, so A/B/C fixture output would be identical by construction; it was not produced and is not a result. Arm D is infeasible for the same reasons. No inferential, economic or promotion claim is made. The pre-PR reviews were run by Claude subagents and are not independent Luna review.",
+  "method": "Inspection of the pinned registration and protocol inputs plus actual offline execution of the T003 registration refusal",
+  "nativeAdmission": false,
+  "outcome": "infeasible",
+  "outputs": {
+    "specs/049-harness-evaluation-learning/evaluation-report.md": "a5e7fcbed268bb9da3a6254a896a48526901c1042097054ff6778ec5cb7d5e68"
+  },
+  "pending": [
+    "Founder roster and arm-identity decision record",
+    "Deterministic cohort run after that record",
+    "Native cohort (SPEC-049/T004, SPEC-048/T008)",
+    "Stable pr-profile result recorded in the pull request"
+  ],
+  "spec": "049-harness-evaluation-learning",
+  "task": "SPEC-049/T005"
+}
