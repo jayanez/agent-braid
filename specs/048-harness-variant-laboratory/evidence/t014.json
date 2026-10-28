@@ -1,0 +1,37 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline Claude host adapter engineering controls with deterministic doubles; native Claude dispatch, T008 qualification, Codex adapter and independent review pending",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_host_claude -v",
+      "exitCode": 0,
+      "moduleTests": 36,
+      "scope": "Focused offline run with scripted host doubles. Manual mutation checks: allowing bypassPermissions/acceptEdits/dontAsk modes and disabling the key-source route check each failed tests before restoring.",
+      "testsRun": 36
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules in this worktree including the new module",
+      "testsRun": 306
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_context.py": "026a29c21b3d52afad4c8fb1f11730fd410d8f17d5d437cecfaf409732dd657e",
+    "agent_braid/harness_host_claude.py": "9798cec28e0b12e7cc9a31056b145169bcc217f67a894cbcda930d12e856b795",
+    "agent_braid/harness_lab.py": "deea7a023b7e9b132d63a6192986cae2933bb79939f30d97263bbcb106bc3ec5",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
+    "tests/test_harness_host_claude.py": "3e97211cbe66ffb12ea70106a87bb118ea78d28e3624fc661b1aa6ff90e216d9"
+  },
+  "limits": "Doubles replay fixed stream-json shaped lines authored here; no real claude binary, process, network or model was run, so the CLI flags, event shapes (init/assistant/result, permission_denials, apiKeySource values) and version format are unverified assumptions awaiting T008 observation. Any non-double transport refuses (native-host-unqualified); the offline-only manifest profile cannot name host kind claude, so even a valid Claude qualification does not admit dispatch. A Claude qualification parser exists but no qualification was obtained or judged. Subscription-route detection is a conservative allow-list, not an observed route or quota. Permission policy is read-only tools in default/plan mode only. No shared base module with the Codex adapter; one host never qualifies the other.",
+  "outcome": "Typed Claude request (fresh session id, permission mode, read-only tool allow-list, model, turn bound), launch plan with auth-preserving environment and denied paid-route variables, strict version parsing with a caller-supplied compatibility window, stream-json normalization into hash-bound T012 observations, cancellation before launch and mid-run, timeout/unsettled-child/truncation/malformed-line loss accounting, and refusal of permission denials, unverified routes, session or version drift and exit mismatches; completion is never fabricated.",
+  "pending": [
+    "T008 native Claude qualification and any real dispatch",
+    "T013 Codex adapter (separate track) and both-host acceptance",
+    "Independent review; stable pr-profile result recorded in the pull request"
+  ],
+  "task": "SPEC-048/T014"
+}
