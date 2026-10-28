@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Offline laboratory runner controls; no host, native or containment acceptance."""
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, replace
 from hashlib import sha256
 import glob
 import os
@@ -40,12 +40,24 @@ def make_inventory() -> obs.ExportInventory:
     return obs.verify_inventory(canonical(wire), expected_sha256=sha256(canonical(wire)).hexdigest())
 
 
-def run(fixture: bytes = COMPLETE, **over) -> lab.LabResult:
+def run(fixture: bytes = COMPLETE, manifest=None, **over) -> lab.LabResult:
     args = dict(backend=lab.SimulatedContainment(), attempt_id="attempt-1",
                 inventory=make_inventory(), now=NOW, retention_seconds=60,
                 limits=lab.FixtureLimits(wall_seconds=3))
     args.update(over)
-    return lab.run_fixture(manifest_for(fixture), fixture, **args)
+    return lab.run_fixture(manifest or manifest_for(fixture), fixture, **args)
+
+
+def native_manifest(host: str = "native-x", sessions: object = 1, fixture: bytes = COMPLETE):
+    """A hand-built manifest declaring a native host; ``parse_manifest`` never yields one."""
+    manifest = manifest_for(fixture)
+    data = manifest.to_dict()
+    data["host"]["kind"] = host
+    if sessions is None:
+        del data["limits"]["maxNativeSessions"]
+    else:
+        data["limits"]["maxNativeSessions"] = sessions
+    return replace(manifest, data=data)
 
 
 def terminal(result: lab.LabResult) -> str:
@@ -248,9 +260,26 @@ class ContainmentTests(unittest.TestCase):
         with self.assertRaisesRegex(lab.LabError, "^containment-unqualified$"):
             run(backend=backend)
 
+    def test_qualified_native_backend_refuses_an_offline_manifest(self):
+        # Parsed-manifest path (F1); the next test isolates each clause.
+        backend = FakeNative(qualification())
+        with self.assertRaisesRegex(lab.LabError, "^containment-unqualified$"):
+            run(backend=backend)
+        self.assertEqual(backend.calls, 0)
+
+    def test_native_backend_requires_matching_host_kind_and_native_sessions(self):
+        for manifest in (native_manifest(host="offline"), native_manifest(sessions=0), native_manifest(sessions=None),
+                         native_manifest(sessions=True), native_manifest(sessions="1")):
+            backend = FakeNative(qualification())
+            with self.subTest(host=manifest.data["host"]["kind"],
+                              sessions=manifest.data["limits"].get("maxNativeSessions")), \
+                    self.assertRaisesRegex(lab.LabError, "^containment-unqualified$"):
+                run(backend=backend, manifest=manifest)
+            self.assertEqual(backend.calls, 0)
+
     def test_qualified_native_backend_is_labelled_native_and_host_sourced(self):
         backend = FakeNative(qualification())
-        result = run(backend=backend)
+        result = run(backend=backend, manifest=native_manifest())
         self.assertEqual((backend.calls, result.containment), (1, "native"))
         self.assertEqual(result.observation.to_dict()["source"], "host")
         self.assertFalse(result.executionAuthorization)
@@ -259,7 +288,7 @@ class ContainmentTests(unittest.TestCase):
         before = set(glob.glob(WORKDIR_GLOB))
         for failure in (RuntimeError("boom"), OSError("disk"), "not a ChildResult"):
             with self.subTest(failure=repr(failure)), self.assertRaises(lab.LabError):
-                run(backend=FakeNative(qualification(), failure))
+                run(backend=FakeNative(qualification(), failure), manifest=native_manifest())
         self.assertEqual(set(glob.glob(WORKDIR_GLOB)), before)
 
     def test_qualification_verification_is_strict_and_hash_bound(self):
