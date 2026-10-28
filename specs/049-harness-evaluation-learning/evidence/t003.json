@@ -1,0 +1,51 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline deterministic three-arm evaluation with full-denominator and cost reporting; native cohorts, the remaining endpoints, inferential acceptance and independent-review gates pending",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_evaluation",
+      "exitCode": 0,
+      "scope": "Focused module run, Python 3.13.11.",
+      "testsRun": 43
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13.11.",
+      "testsRun": 551
+    },
+    {
+      "command": "manual mutation checks (scratch script, not committed)",
+      "exitCode": 0,
+      "scope": "40 guards replaced one at a time; the module tests failed for every one: lineage-independence and D3-minimum gates, missing pairs counted as worse, ungraded cells as missing pairs, required and unresolved optional human sections, cross-provenance disagreement, unobserved as ungraded, holdout-only units, arm candidate binding, attempt binding, verdict commitment/unit/candidate/terminal binding, rubric and oracle-identity checks, oracle verdict following its labels, section shape, string arm, refused attempts outside started, missing outcomes in the sensitivity bound, B distinct from A, refinement base and arm-C binding, refinement decision must select or keep the base, refinement bytes and authorization, outward lower interval rounding, duplicate cell and reused commitment, row-count bound, registration type, bytes, protocol and unit list, Latin-square rotation and its family key, cost outcome mapping, unit-count bound. Two earlier survivors were provably equivalent and are not counted: tail < alpha versus <= (for worse < n every tail numerator carries a factor 17, so it never equals 20^(n-1)) and the x == n interval shortcut."
+    },
+    {
+      "command": "worst-case timing probe at the declared bounds (scratch script, not committed)",
+      "exitCode": 0,
+      "scope": "256 units x 3 arms in one stratum (768 rows) with exact intervals and an assessed noninferiority test: 0.32 s on the development host."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_costs.py": "d60212a1922500bdc6a2275ff7dbdcf421e3f9258a7ba0931a8727c25f985f5e",
+    "agent_braid/harness_refinement.py": "74c342c7a7bd4175e19d3132fe628a81cb9cf81d1e83a6af8f81225c048474dd",
+    "agent_braid/harness_verification.py": "fe8fd34a4d87d4247e8cc696a5f4ef288853c3dbf3daa52d2a7bdf41eadfb3fd",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/049-harness-evaluation-learning/contracts/interface.md": "0a3eb971b4baa9463c7039b15966ab7a8f108e60c707a8acd046861c1fe4412f",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "b25d038dd99376d4c4c50641a12b40ff59dd0aa9348392e05cfaed34fb58a19b",
+    "specs/049-harness-evaluation-learning/spec.md": "00d3b0f30560ea6bc439df62db0d905ba94a7da98c5352ac29536b7db13de831"
+  },
+  "limits": "Pure offline engineering controls on deterministic doubles: synthetic fixture units, T011 records produced by the real T011 functions from synthetic observations, a SPEC-048 refinement round run with injected proposer/prober doubles and synthetic T012 ledgers. No host, model, native session, paid route, file, clock or network access; no native or human outcome was observed. Verdict records are checked for binding, rubric and oracle identity but not re-graded, so outcome integrity rests on the T011 records' provenance. Lineage, task-family and stratum labels and the matched profile hash are caller-declared: lineages are not tied to the corpus registry and no row's run manifest is compared with the profile, so D2 matching and D3 independence are only as good as those declarations. Only the correctness endpoint is computed; interventions, rework, interrupted recovery, conflict precision/recall, false safe admissions and useful parallelism are listed as pending (T005). Noninferiority is assessed only at n >= 19 distinct-lineage paired units per stratum with missing pairs counted as worse; the current registered cohort (at most 4 lineages) therefore stays descriptive only, as frozen in D3. Intervals are exact two-sided 95% Clopper-Pearson bounds rounded outward to micros. Numeric time/quota caps and improvement thresholds are deferred per T002 D2/D4 and none is applied; additional cash stays capped at EUR 0 through T012. A report is not an acceptance or promotion. Pre-PR reviews (code-review, code-review-and-quality, code-simplification) were run by Claude subagents and are not independent Luna review.",
+  "method": "Actual offline unittest execution",
+  "outcome": "A registration freezes held-out units with lineage, task family and stratum, one matched profile hash, arms A static base, B checkpoint/context guidance (distinct from A) and C the candidate a contrastive refinement round selected or the explicitly kept base (inconclusive or refused rounds refused; no experience library), the frozen D3/D4 constants and a Latin-square order within each family. Evaluation reads bound T011 commitment and unit-verdict records and reports every registered unit x arm cell as correct, incorrect, ungraded, not-completed or not-attempted; failures, refusals, unobserved and ungraded attempts stay in the full registered denominator with a started-attempt rate and missing-outcome sensitivity bounds; proxy scores never count as correctness. Strata are reported separately with exact intervals and paired B-vs-A and C-vs-A counts; below the D3 minimum or with repeated lineages the comparison is descriptive only, with no verdict. Costs are reconciled through T012 over the same attempts and outcomes, and its economic blockers are carried into the report.",
+  "outputs": {
+    "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+    "tests/test_harness_evaluation.py": "0d9be2568839288deea7b6065e10e2bcae42336f2e568b63e6006eb64f283948"
+  },
+  "pending": [
+    "Stable pr-profile result recorded in the pull request",
+    "T005 deterministic and native cohorts, remaining endpoints, T004 native admission; T013 promotion registry consumer; independent review and all native/human/scientific gates"
+  ],
+  "spec": "049-harness-evaluation-learning",
+  "task": "SPEC-049/T003"
+}
