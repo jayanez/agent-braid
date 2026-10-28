@@ -11,8 +11,10 @@ limits and settles the child but does not confine filesystem, network or
 credentials) and its label is carried on every result. Any other backend is
 ``native`` and refuses unless it carries an independently hash-verified
 ``Qualification`` that matches the manifest environment and enforces every effect
-class. A result is evidence, never authorization: ``executionAuthorization`` stays
-false and nothing here launches a host, model or paid route.
+class, under a non-offline host and a manifest allowing native sessions; every
+parsed offline manifest therefore refuses it. Binding a backend to a specific host
+is left to T008. A result is evidence, never authorization: ``executionAuthorization``
+stays false and nothing here launches a host, model or paid route.
 """
 from __future__ import annotations
 
@@ -319,6 +321,8 @@ def _check_backend(backend: Any, manifest: HarnessManifest, now: int) -> str:
              "invalid-backend")
     qualification = backend.qualification
     _require(isinstance(qualification, Qualification)
+             and manifest.data["host"]["kind"] != "offline"
+             and _int(manifest.data["limits"].get("maxNativeSessions"), 1, 1 << 40)
              and qualification.environment_sha256 == manifest.data["environment"]["sha256"]
              and now < qualification.expires_at, "containment-unqualified")
     return "native"
