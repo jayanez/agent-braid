@@ -1,0 +1,37 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline Codex host adapter engineering controls over deterministic doubles; native Codex dispatch stays refused pending a separately obtained T008 qualification; host, native and independent-review gates pending",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_host_codex",
+      "exitCode": 0,
+      "moduleTests": 64,
+      "scope": "Focused offline run over the scripted Codex double. Manual mutation checks (native isinstance bypass, paid-env refusal removed, api-key discovery refusal removed, exit/completion contradiction removed, verifier-handoff gate removed, discovery freshness bypass, verifier hash binding removed) each failed the module before restoring.",
+      "testsRun": 64
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules in this worktree, including the new Codex module.",
+      "testsRun": 334
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_host_codex.py": "648b8ab68125d412ee54254e492061f5f88faeaa5ee5ac92e4dccc5d556309b0",
+    "agent_braid/harness_lab.py": "deea7a023b7e9b132d63a6192986cae2933bb79939f30d97263bbcb106bc3ec5",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
+    "tests/test_harness_host_codex.py": "a3dfe91229e5180dcce3fe322792c70509405a035eb9936964df18bcdfff3a16"
+  },
+  "limits": "Deterministic scripted double only: no process, network, credential, real Codex binary or paid route was exercised. Codex flags and JSONL event shapes follow the documented codex exec --json surface and are unverified against a native build. Native refusal is an in-process exact-type check plus a constant (NATIVE_DISPATCH_QUALIFIED = False), not OS containment; same-UID code could bypass it. Timeout uses a virtual clock supplied by the double; real wall-clock and process-group settlement are the T005 backend concern and are not re-proved here. Results are labelled source fixture / host double, never host. No cost is observed (cashMicros stays unknown). The manifest host profile remains offline-only, so the launch record carries Codex build/model/route itself rather than extending the manifest. Hashes are not signatures.",
+  "outcome": "Typed hash-bound launch refusing paid-capable environment, unlisted environment, sandboxes outside the allow-list and malformed fields; fresh strictly parsed build/model/route/auth discovery refusing stale, drifted, unobserved, api-route and api-key authentication; Codex JSONL normalized into T012 events with unknown shapes, bad paths, partial lines, overflow and oversize output counted as loss; cancellation, wall timeout, unkillable children, exit/completion contradiction and post-run route drift forbid a completed terminal; verifier handoff requires the manifest-bound independent verifier and never treats a host claim as verified; any non-double host, subclass or forged kind refuses with native-dispatch-unqualified.",
+  "pending": [
+    "T008 native Codex qualification (separate record) before any real dispatch",
+    "T005 real-process settlement evidence for a native backend",
+    "Stable pr-profile result recorded in the pull request",
+    "Separate independent review"
+  ],
+  "task": "SPEC-048/T013"
+}
