@@ -1,0 +1,46 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Completed for the offline reversible task-local profile registry and human promotion transaction; no profile was promoted, and native activation, actual human promotion decisions (T007), the automatic-policy assessment (T008) and independent review remain pending",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_promotion -v",
+      "exitCode": 0,
+      "scope": "Focused module run, Python 3.13.11.",
+      "testsRun": 25
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13.11.",
+      "testsRun": 576
+    },
+    {
+      "command": "manual mutation checks (scratch script, not committed)",
+      "exitCode": 0,
+      "scope": "Each of 36 guards was replaced one at a time and the module tests failed every time: automatic promotion flag, human-only actor, cohort match, regression coverage, unknown and non-zero safety counts, profile digest, candidate/registration/no-candidate bindings, begin and commit freshness, save journal-prefix check, O_NOFOLLOW, regular-file check, revoked-prior skipping, revoked-evidence begin refusal, rollback-target check at begin and at commit, scope, pending, approval, withdrawn decision, duplicate record, pending revocation abort, decision hash, orphan decisions, canonical bytes, journal order and seq type, decision time, already-revoked, hand-built decision validation, resolve cohort, reason and journal bounds."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/049-harness-evaluation-learning/contracts/interface.md": "0a3eb971b4baa9463c7039b15966ab7a8f108e60c707a8acd046861c1fe4412f",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "b25d038dd99376d4c4c50641a12b40ff59dd0aa9348392e05cfaed34fb58a19b",
+    "specs/049-harness-evaluation-learning/promotion-policy.md": "c0e417131c61f103cb7387dd4232b051ec7c2dd65d9f0e3df479c06d7c3aaf92",
+    "specs/049-harness-evaluation-learning/spec.md": "00d3b0f30560ea6bc439df62db0d905ba94a7da98c5352ac29536b7db13de831",
+    "tests/test_harness_evaluation.py": "0d9be2568839288deea7b6065e10e2bcae42336f2e568b63e6006eb64f283948"
+  },
+  "limits": "Pure offline engineering controls. Evaluation inputs are real T003 registrations and reports built from deterministic synthetic doubles (fixture oracles, synthetic observations and refinement rounds); the native-cohort case is the same synthetic double registered as native and is not native evidence. No host, model, paid route, network or clock is used; file persistence is exercised only in temporary directories. Human actors, profile identity (source/host/model/tool/policy), declared effects, safety counts and extra evidence are self-asserted inputs: records prove binding, not authenticity, and the caller must check them against trusted records. Unsafe-admission, authority and effect-violation counts are caller-supplied because T003 still lists false-safe admissions and other endpoints as pending; an unknown count blocks approval. Approval may carry the remaining T003 pending endpoints as recorded limits. Journal events carry a reason but no per-event actor. Locking is POSIX fcntl and the lock file is left beside the registry. An active profile is advisory configuration, never a grant; no automatic promotion policy exists or is enabled. Pre-PR reviews (code-review, code-review-and-quality, code-simplification) were run by Claude subagents and are not independent Luna review.",
+  "method": "Actual offline unittest execution",
+  "outcome": "Human-only approved/rejected/pending decisions bind the exact T003 arm-C candidate, task-local scope, cohort and declared effects, source/host/model/tool/policy identity, registration/evaluation/cost-report and extra evidence hashes, per-stratum C-vs-A regression verdicts and rollback target; approval refuses automatic actors, cohort mismatch (synthetic evidence cannot approve a native profile), missing regression coverage and any unknown or non-zero unsafe-admission, authority or effect violation. The registry derives state by replaying an append-only journal: two-step begin/commit activation, stale identity refused on begin/commit and reported on read, interrupted transactions keep the prior profile until abort, rollback restores the newest usable prior profile and withdraws the rolled-back decision, evidence revocation withdraws citing decisions, commit refuses a changed rollback target, and atomic locked saves refuse lost updates.",
+  "outputs": {
+    "agent_braid/harness_promotion.py": "9b8a1dfd2ef37a439da96f588203e1b3e0248065c89615fa8ec5f363c98fa781",
+    "tests/test_harness_promotion.py": "86490d9735131ef726cf14a4f853406d93ed4f9c04723b2b65baf5195f108f51"
+  },
+  "pending": [
+    "Stable pr-profile result recorded in the pull request",
+    "T007 actual human promotion or no-go decisions with native evidence; T008 automatic-policy assessment; T009 CLI integration; independent review and all native/human/scientific gates"
+  ],
+  "spec": "049-harness-evaluation-learning",
+  "task": "SPEC-049/T013"
+}
