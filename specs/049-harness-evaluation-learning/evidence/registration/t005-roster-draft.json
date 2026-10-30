@@ -1,0 +1,269 @@
+{
+  "recordVersion": "spec049-t005-roster-draft-v1",
+  "task": "SPEC-049/T005",
+  "status": "draft-for-founder-freeze-not-frozen",
+  "draftedAt": "2026-10-30",
+  "candidateBinding": "Repository head 0a002d0f8cef32cdf6ff5863ffec9e5bb2848bc6; input hashes below",
+  "inputs": {
+    "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_refinement.py": "74c342c7a7bd4175e19d3132fe628a81cb9cf81d1e83a6af8f81225c048474dd",
+    "agent_braid/harness_verification.py": "fe8fd34a4d87d4247e8cc696a5f4ef288853c3dbf3daa52d2a7bdf41eadfb3fd",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/028-system-one-core/decision-delivery/handoffs/DDP-T08.md": "fe7268efae5a539bff6435ba7575e2ee421437ff7e66943b337fc25437b46a6f",
+    "specs/028-system-one-core/decision-delivery/handoffs/coordinator.md": "827b0ddafbb98f970426205307c39131161013ce85fcf6553501bd4974479bbd",
+    "specs/049-harness-evaluation-learning/corpus.md": "1a400003c2bc7ad2b5a44a33421f47c55cbc78a1db458e377d5a6cc0f61b979a",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "b25d038dd99376d4c4c50641a12b40ff59dd0aa9348392e05cfaed34fb58a19b",
+    "specs/049-harness-evaluation-learning/evaluation-report.md": "a5e7fcbed268bb9da3a6254a896a48526901c1042097054ff6778ec5cb7d5e68",
+    "specs/049-harness-evaluation-learning/evidence/registration/t002-founder-freeze-20261028.json": "c2d420ffe1159ec115a8ab1adfccce44710f496fd15254f8c0e255cabaedd8c1",
+    "specs/049-harness-evaluation-learning/evidence/t001.json": "9fa6a223c7cbdd3425e33397800fa9251043d661e391bc1115ac28f5e0f07d98",
+    "specs/049-harness-evaluation-learning/evidence/t005.json": "0bf8db87e43116f2f03e34718c3d88592f39c8208d4a9b4769bd1eef3edc9d5d",
+    "specs/049-harness-evaluation-learning/source-registration.md": "0a9704a7a5a8209cfdde5f6d97a2cea677625464265794559a63e72ba0dd97ef",
+    "tests/test_git_adapter.py": "f27408f851d23c78460bfc52b3ebc024ef58acde1c0d0f649dc9512d78b4c067",
+    "tests/test_git_runtime.py": "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47",
+    "tests/test_m4_alpha_scheduler.py": "03966aac4af6dc9f4d99400aa0daf26bdb76711b8a50ce30d93ee60982f3ba52",
+    "tests/test_tooling_sessions.py": "17c80f57da18f7f0fc0d945a024496bbdd767d3e9555023248a769d38894fe33"
+  },
+  "outputs": {
+    "specs/049-harness-evaluation-learning/case-roster.md": "e5b8b2426715e87bded56c810510ea897a3db31b327b028c505a3c43b74ed651"
+  },
+  "method": "Inspection of registered lineages and anchors, re-hashing of anchor bytes, execution of the 7 anchor tests as a regression check, and hash computation of proposed arm bytes and profile record with repository code (system_one.digest, harness_refinement._candidate_hash, harness_evaluation._order)",
+  "roster": [
+    {
+      "id": "L1-C03-a",
+      "lineage": "L1",
+      "family": "C03",
+      "stratum": "coordination",
+      "source": "tests/test_m4_alpha_scheduler.py::RuntimeSchedulerTests.test_real_overlap_isolated_resources_and_serial_effect_agreement",
+      "anchorRuns": true,
+      "harCaseExecutable": false,
+      "partition": {
+        "fallbackToday": "holdout",
+        "ifL4Qualifies": "discovery"
+      }
+    },
+    {
+      "id": "L1-C03-b",
+      "lineage": "L1",
+      "family": "C03",
+      "stratum": "coordination",
+      "source": "tests/test_m4_alpha_scheduler.py::RuntimeSchedulerTests.test_dependencies_serialize_waves_and_reversed_order_is_safe",
+      "anchorRuns": true,
+      "harCaseExecutable": false,
+      "partition": {
+        "fallbackToday": "holdout",
+        "ifL4Qualifies": "discovery"
+      }
+    },
+    {
+      "id": "L1-C02-a",
+      "lineage": "L1",
+      "family": "C02",
+      "stratum": "coordination",
+      "source": "tests/test_m4_alpha_scheduler.py::RuntimeSchedulerTests.test_changed_footprints_limits_and_stale_inputs_never_start_workers",
+      "anchorRuns": true,
+      "harCaseExecutable": false,
+      "partition": {
+        "fallbackToday": "holdout",
+        "ifL4Qualifies": "discovery"
+      }
+    },
+    {
+      "id": "L1-C03-c",
+      "lineage": "L1",
+      "family": "C03",
+      "stratum": "coordination",
+      "source": "tests/test_m4_alpha_scheduler.py::RuntimeSchedulerTests.test_new_recovery_grant_preserves_worker_journal_without_rerun",
+      "anchorRuns": true,
+      "harCaseExecutable": false,
+      "partition": {
+        "fallbackToday": "holdout",
+        "ifL4Qualifies": "discovery"
+      }
+    },
+    {
+      "id": "L1-C01-a",
+      "lineage": "L1",
+      "family": "C01",
+      "stratum": "continuity",
+      "source": "tests/test_m4_alpha_scheduler.py::RuntimeSchedulerTests.test_fresh_process_kill_preserves_prefix_and_resume_does_not_rerun_workers",
+      "anchorRuns": true,
+      "harCaseExecutable": false,
+      "partition": {
+        "fallbackToday": "holdout",
+        "ifL4Qualifies": "discovery"
+      }
+    },
+    {
+      "id": "L2-C01-a",
+      "lineage": "L2",
+      "family": "C01",
+      "stratum": "continuity",
+      "source": "tests/test_tooling_sessions.py::ToolingSessionTests.test_candidate_drift_after_dispatch_is_retained_as_interrupted",
+      "anchorRuns": true,
+      "harCaseExecutable": false,
+      "partition": {
+        "fallbackToday": "discovery",
+        "ifL4Qualifies": "discovery"
+      }
+    },
+    {
+      "id": "L3-C02-a",
+      "lineage": "L3",
+      "family": "C02",
+      "stratum": "coordination",
+      "source": "tests/test_git_adapter.py::GitAdapterTests.test_overlap_dependency_delete_binary_and_uncertainty_are_conservative",
+      "anchorRuns": true,
+      "harCaseExecutable": false,
+      "partition": {
+        "fallbackToday": "unassigned",
+        "ifL4Qualifies": "unassigned"
+      }
+    },
+    {
+      "id": "L4-C04-a",
+      "lineage": "L4",
+      "family": "C04",
+      "stratum": "continuity",
+      "source": "specs/028-system-one-core/decision-delivery/handoffs/DDP-T08.md + coordinator.md (derived packaging task not constructed)",
+      "anchorRuns": null,
+      "harCaseExecutable": false,
+      "partition": {
+        "fallbackToday": "not-in-roster",
+        "ifL4Qualifies": "holdout"
+      }
+    }
+  ],
+  "arms": {
+    "A": {
+      "role": "static-base",
+      "inventory": [],
+      "candidateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "status": "computed-proposal"
+    },
+    "B": {
+      "role": "checkpoint-guidance",
+      "files": [
+        {
+          "path": "guidance/checkpoint.md",
+          "sha256": "dc3324a6529df71d66945e9999f4ba0f3df754b9b4a84338b9a87d2cce3ebf80",
+          "sizeBytes": 493,
+          "text": "# Checkpoint and context guidance\n\n- Before each step that changes files, record a checkpoint naming the step, its inputs and the source revision.\n- After an interruption, read the latest checkpoint and resume at the first step it does not mark complete. Do not repeat completed steps.\n- If the source revision or a declared input changed since the checkpoint, stop and report the drift instead of continuing.\n- Keep a short handoff note listing done steps, pending steps and open conditions.\n"
+        }
+      ],
+      "candidateSha256": "4bc36ca01e403f9312a74c7658fb77cea88465fc993875a540eff8974fa36516",
+      "status": "computed-proposal"
+    },
+    "C": {
+      "role": "contrastive-refinement",
+      "candidateSha256": null,
+      "status": "founder-input",
+      "requires": [
+        "real proposer (only injected test doubles exist)",
+        "harness manifest with base inventory A and allowedComponentPaths including guidance/checkpoint.md",
+        "frozen selection policy (marginMicros, maxProbes <= 4) bound to that manifest",
+        "prober scoring discovery cases with an independent verifier"
+      ]
+    }
+  },
+  "matchedProfile": {
+    "record": {
+      "cohort": "synthetic",
+      "host": {
+        "kind": "offline",
+        "requested": {
+          "model": null,
+          "effort": null,
+          "route": "offline"
+        }
+      },
+      "containment": "simulated",
+      "tools": [],
+      "sourceInputs": {
+        "specs/028-system-one-core/decision-delivery/handoffs/DDP-T08.md": "fe7268efae5a539bff6435ba7575e2ee421437ff7e66943b337fc25437b46a6f",
+        "specs/028-system-one-core/decision-delivery/handoffs/coordinator.md": "827b0ddafbb98f970426205307c39131161013ce85fcf6553501bd4974479bbd",
+        "tests/test_git_adapter.py": "f27408f851d23c78460bfc52b3ebc024ef58acde1c0d0f649dc9512d78b4c067",
+        "tests/test_git_runtime.py": "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47",
+        "tests/test_m4_alpha_scheduler.py": "03966aac4af6dc9f4d99400aa0daf26bdb76711b8a50ce30d93ee60982f3ba52",
+        "tests/test_tooling_sessions.py": "17c80f57da18f7f0fc0d945a024496bbdd767d3e9555023248a769d38894fe33"
+      },
+      "limitsSha256": "a3975840317e821a15d1b738a9abe043d7d9ef4872f7a4dce19da4797e1dbb3c"
+    },
+    "sha256": "2f42b12d6c9777826922632fedccb5e51761646cca81a40aa79c3c978aa92ba4",
+    "status": "computed-proposal"
+  },
+  "order": {
+    "latinSquarePreview": {
+      "fallbackL1Holdout": {
+        "L1-C01-a": [
+          "A",
+          "B",
+          "C"
+        ],
+        "L1-C02-a": [
+          "A",
+          "B",
+          "C"
+        ],
+        "L1-C03-a": [
+          "A",
+          "B",
+          "C"
+        ],
+        "L1-C03-b": [
+          "B",
+          "C",
+          "A"
+        ],
+        "L1-C03-c": [
+          "C",
+          "A",
+          "B"
+        ]
+      },
+      "ifL4Qualifies": {
+        "L4-C04-a": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    },
+    "armDSequence": [
+      "L1-C03-a",
+      "L1-C03-b",
+      "L1-C02-a",
+      "L1-C03-c",
+      "L1-C01-a",
+      "L2-C01-a",
+      "L4-C04-a"
+    ],
+    "armDConditional": {
+      "L4-C04-a": "only if constructed"
+    }
+  },
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_m4_alpha_scheduler.RuntimeSchedulerTests.test_real_overlap_isolated_resources_and_serial_effect_agreement tests.test_m4_alpha_scheduler.RuntimeSchedulerTests.test_dependencies_serialize_waves_and_reversed_order_is_safe tests.test_m4_alpha_scheduler.RuntimeSchedulerTests.test_changed_footprints_limits_and_stale_inputs_never_start_workers tests.test_m4_alpha_scheduler.RuntimeSchedulerTests.test_new_recovery_grant_preserves_worker_journal_without_rerun tests.test_m4_alpha_scheduler.RuntimeSchedulerTests.test_fresh_process_kill_preserves_prefix_and_resume_does_not_rerun_workers tests.test_tooling_sessions.ToolingSessionTests.test_candidate_drift_after_dispatch_is_retained_as_interrupted tests.test_git_adapter.GitAdapterTests.test_overlap_dependency_delete_binary_and_uncertainty_are_conservative",
+      "exitCode": 0,
+      "testsRun": 7,
+      "scope": "Regression check that the registered anchor fixtures still run; not an HAR outcome. Python 3.13.11."
+    },
+    {
+      "command": "PYTHONPATH=. .venv-speckit/bin/python -c \"import json;from hashlib import sha256;from agent_braid.system_one import digest,thaw;from agent_braid.harness_manifest import DEFAULT_LIMITS;d=json.load(open('specs/049-harness-evaluation-learning/evidence/registration/t005-roster-draft.json'));a=d['arms']['A'];f=d['arms']['B']['files'][0];t=f['text'].encode();p=d['matchedProfile'];print(digest(a['inventory'])==a['candidateSha256'],digest([{'path':f['path'],'sha256':sha256(t).hexdigest(),'sizeBytes':len(t)}])==d['arms']['B']['candidateSha256'],digest(p['record'])==p['sha256'],digest(thaw(DEFAULT_LIMITS))==p['record']['limitsSha256'],all(sha256(open(k,'rb').read()).hexdigest()==v for k,v in p['record']['sourceInputs'].items()))\"",
+      "exitCode": 0,
+      "observed": "True True True True True",
+      "scope": "Recomputes the A, B and profile hashes, the limits digest and the source-input hashes from this record"
+    }
+  ],
+  "founderInputsRequired": [
+    "Accept, change or defer R1-R13 (including R10a) in case-roster.md in a founder decision record",
+    "Arm C: a recorded refinement round with a real proposer, its manifest, policy and probe budget (R8)",
+    "Constructed Unit per assigned case (task input, rubric, deterministic oracle, unit hash) before freeze (R11)"
+  ],
+  "feasibility": "Deterministic cohort would still give A = B = C by construction: fixtures do not read guidance, arm C has no real proposer, and the fallback holdout is one lineage. Smallest deterministic double proposed as a follow-up description only.",
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Draft proposal only. Freezes nothing, runs no cohort, reports no outcome; cohort stays descriptive only (D3). A and B hashes bind proposed bytes, not committed files. register and evaluate were not called with this roster. Pre-PR reviews by Claude subagents are not independent Luna review."
+}
