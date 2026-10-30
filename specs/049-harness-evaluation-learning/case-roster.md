@@ -1,18 +1,21 @@
 # HAR.2 T005 case roster and arm identities
 
-Status: **Draft for founder freeze — not frozen.** Drafted 2026-10-30 at
-`develop` `0a002d0f8cef32cdf6ff5863ffec9e5bb2848bc6`. Trace: SPEC-049/T005.
-Machine-readable draft with input hashes and commands:
+Status: **FROZEN by founder decision on 2026-10-30**, with R3 and R8 deferred
+and R10a resolved to option (a); see
+[evidence/registration/t005-roster-founder-freeze-20261030.json](evidence/registration/t005-roster-founder-freeze-20261030.json).
+Drafted 2026-10-30 at `develop` `0a002d0f8cef32cdf6ff5863ffec9e5bb2848bc6`
+(reviewed in #791). Trace: SPEC-049/T005. Machine-readable draft with input
+hashes and commands:
 [evidence/registration/t005-roster-draft.json](evidence/registration/t005-roster-draft.json).
 
-This draft answers the two founder inputs that
+This roster answers the two founder inputs that
 [evaluation-report.md](evaluation-report.md) and
 [evidence/t005.json](evidence/t005.json) list as blocking the deterministic
-cohort: a case roster and the A/B/C arm identities. It is a proposal only. It
-freezes nothing, runs no cohort and reports no outcome. The cohort stays
-descriptive only (protocol D3) and `executionAuthorization` stays false. A freeze
-needs a founder decision record, as T002 had
-([t002-founder-freeze-20261028.json](evidence/registration/t002-founder-freeze-20261028.json)).
+cohort: a case roster and the A/B/C arm identities. Freezing it runs no cohort
+and reports no outcome. Arm C stays deferred (R8), so the cohort remains
+infeasible as recorded until a real proposer exists. The cohort stays descriptive
+only (protocol D3) and `executionAuthorization` stays false. Any change to a
+frozen value needs a new founder decision record before evaluated outcomes.
 
 ## 1. Case roster
 
@@ -142,7 +145,11 @@ until arm C exists (R10).
 
 ## 4. Decisions for the founder
 
-Accept, change or defer each item separately. Recommendations are in brackets.
+Recorded 2026-10-30: the founder accepted every bracketed recommendation below.
+R3 and R8 (arm C) are deferred, R10a takes option (a) with within-lineage
+retrievals reported separately, and R13 is accepted with authorization to
+implement the guidance-observable double as a separate offline task. Each
+decision is listed in the freeze record.
 
 - **R1 Case set.** The 7 anchor-derived cases above, plus L4-C04-a as a
   placeholder that counts only if constructed. No other case. [accept]

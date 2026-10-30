@@ -1,0 +1,91 @@
+{
+  "recordVersion": "spec049-t005-roster-founder-freeze-v1",
+  "task": "SPEC-049/T005",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-10-30",
+  "reviewedDraftCommit": "dd3a8196",
+  "reviewedDraftPullRequest": 791,
+  "reviewedDraftRosterSha256": "e5b8b2426715e87bded56c810510ea897a3db31b327b028c505a3c43b74ed651",
+  "draftEvidencePath": "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-draft.json",
+  "draftEvidenceSha256": "5056b3bbfafa4a667350ac823861a14d28ea232d5b901ea7bc93574dc721ff43",
+  "frozenRosterPath": "specs/049-harness-evaluation-learning/case-roster.md",
+  "frozenRosterSha256": "6a1e55f896fb77a1bbc42dc402eef1abc5d3f56e7a4b1dbcfd152c8c93e6a4e0",
+  "decisionChannel": "Founder answer in the orchestrator Claude Code session to the question of what to decide on R1-R13 of the T005 roster draft; the selected option accepted R1-R7, R9-R12 and R13 as a follow-up, deferred R3 and R8, chose R10a option (a), and asked to freeze with a decision record as in T002 and to open the guidance-observable double track",
+  "ownerStatement": "Acepto la recomendación (Recommended)",
+  "decisions": [
+    {
+      "item": "R1 case set",
+      "decision": "accepted-as-drafted",
+      "detail": "7 anchor-derived cases; L4-C04-a placeholder counts only if constructed"
+    },
+    {
+      "item": "R2 partition",
+      "decision": "accepted-as-drafted",
+      "detail": "L4 holdout if L4-C04-a qualifies before any outcome; otherwise fallback L1 holdout, L2 discovery (applies today)"
+    },
+    {
+      "item": "R3 L3",
+      "decision": "deferred",
+      "detail": "L3-C02-a stays unassigned until S03/S06 fixture provenance is compared"
+    },
+    {
+      "item": "R4 strata",
+      "decision": "accepted-as-drafted",
+      "detail": "Continuity C01/C04, coordination C02/C03; one synthetic-offline cohort, native kept separate"
+    },
+    {
+      "item": "R5 arm A",
+      "decision": "accepted-as-drafted",
+      "detail": "Empty guidance inventory, candidate 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "item": "R6 arm B",
+      "decision": "accepted-as-drafted",
+      "detail": "guidance/checkpoint.md exact draft bytes, candidate 4bc36ca01e403f9312a74c7658fb77cea88465fc993875a540eff8974fa36516"
+    },
+    {
+      "item": "R7 matched profile",
+      "decision": "accepted-as-drafted",
+      "detail": "Offline synthetic profile 2f42b12d6c9777826922632fedccb5e51761646cca81a40aa79c3c978aa92ba4; a native cohort needs its own profile"
+    },
+    {
+      "item": "R8 arm C",
+      "decision": "deferred",
+      "detail": "Option (a): defer until a real proposer exists through SPEC-049/T004 and SPEC-048/T008; the deterministic cohort stays infeasible"
+    },
+    {
+      "item": "R9 A-C order",
+      "decision": "accepted-as-drafted",
+      "detail": "Latin-square rotation as register computes it; singleton families unrotated, recorded as a descriptive limit"
+    },
+    {
+      "item": "R10 arm D order",
+      "decision": "accepted-as-drafted",
+      "detail": "Fixed sequence in registration order taken as construction order; conditional on arm C and T006"
+    },
+    {
+      "item": "R10a arm D eligibility",
+      "decision": "option-a",
+      "detail": "Every strictly earlier assigned case is eligible; within-lineage retrievals reported separately; no tuning on holdout outcomes"
+    },
+    {
+      "item": "R11 unit construction",
+      "decision": "accepted-as-drafted",
+      "detail": "Construction (not execution) of a Unit per assigned case authorized; unit hashes to be added to a freeze record before any outcome"
+    },
+    {
+      "item": "R12 scope reaffirmed",
+      "decision": "accepted-as-drafted",
+      "detail": "Descriptive only (D3); execution, native admission and promotion stay false; D2 caps and D4 thresholds stay deferred"
+    },
+    {
+      "item": "R13 guidance-observable double",
+      "decision": "accepted-with-implementation-authorized",
+      "detail": "Implement the deterministic guidance-reading solver as an offline synthetic-control positive control, excluded from every D4 verdict, as a separate derived task"
+    }
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Freezes the T005 case roster and arm A/B identities only. Arm C is deferred, so no cohort is runnable and none is run; records no outcome. Admits no native cohort, paid route, execution or promotion. Any change to a frozen value needs a new founder decision record before evaluated outcomes."
+}
