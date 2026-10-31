@@ -72,17 +72,18 @@ ADR 0033 accepted (T003); T030–T033 need per-probe owner authorization.
   `Origin` checks, headers, body limits, route table. Files:
   `agent_braid/view_serve.py`, `tests/test_view_serve.py`. Dependencies: T015.
   Verification: procedure_004.
-- [ ] T017 (REQ-004 / SC-004; REQ-006 / SC-006): SSE with `Last-Event-ID`,
-  `/snapshot`, replay mode, `view_tail.py` bounded polling. Dependencies: T016,
-  T020. Verification: procedure_004, procedure_006.
+- [ ] T017 (REQ-004 / SC-004; REQ-006 / SC-006; REQ-007 / SC-007): SSE with
+  `Last-Event-ID`, `/snapshot`, replay mode, `view_tail.py` bounded polling,
+  `--record`/`--record-effort` writing capped at 50 000 events. Dependencies: T016,
+  T020. Verification: procedure_004, procedure_006, procedure_007.
 - [ ] T018 (REQ-005 / SC-005): `view_otlp.py` OTLP HTTP/JSON logs and metrics,
   allowlist, salting, `shape-unpinned`. Files: `agent_braid/view_otlp.py`,
   `tests/test_view_otlp.py`, `tests/fixtures/view/otlp/`. Dependencies: T015.
   Verification: procedure_005.
 - [ ] T019 (REQ-005 / SC-005; REQ-007 / SC-007): `view_hooks.py` Claude HTTP
   hooks and Codex notify or hook shim; dropped-attribute names inventory;
-  ephemeral effort handling and `--record`/`--record-effort` writing. Dependencies:
-  T015. Verification: procedure_005, procedure_007.
+  ephemeral effort handling. Dependencies: T015. Verification: procedure_005,
+  procedure_007.
 
 ## Model, export and frames
 
@@ -95,8 +96,8 @@ ADR 0033 accepted (T003); T030–T033 need per-probe owner authorization.
   from a recorded or replay file (`--from`) with SPEC-043 destination rules. Files: `agent_braid/view_export.py`,
   `tests/test_view_export.py`. Dependencies: T020. Verification: procedure_007,
   procedure_008.
-- [ ] T022 (REQ-009 / SC-009): Effort evidence pack: arms, baseline, selection
-  notes, pairwise comparisons in the harness row shape. Dependencies: T021, T027.
+- [ ] T022 (REQ-009 / SC-009): Effort evidence pack: `--arm`, `--arm-note`,
+  `--baseline`, pairwise comparisons in the harness comparison shape. Dependencies: T021, T027.
   Verification: procedure_009.
 - [ ] T027 (REQ-011 / SC-011): `view_render.py` ASCII, braille, SVG and RGBA
   frames; `/frame.svg` and `/frame.txt`. Files: `agent_braid/view_render.py`,
@@ -105,7 +106,8 @@ ADR 0033 accepted (T003); T030–T033 need per-probe owner authorization.
 ## Web viewer
 
 - [ ] T023 (REQ-010 / SC-010; REQ-013 / SC-013): Vendor Three.js r182 prebuilt
-  modules and OrbitControls with `manifest.json`; add `LICENSES/three-MIT.txt`, the
+  modules (`three.module.js`, `three.core.js`) and OrbitControls with
+  `manifest.json`; add `LICENSES/three-MIT.txt`, the
   LICENSE paragraph and the THIRD_PARTY section. Dependencies: T003. Files:
   `integrations/agent-braid-view/web/vendor/**`, `LICENSE`, `LICENSES/`,
   `docs/development/THIRD_PARTY.md`. Verification: procedure_010.

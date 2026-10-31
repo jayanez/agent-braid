@@ -56,7 +56,8 @@ web code is vendored under this decision.
 `tests/test_view_web_bundle.py` checks the vendored files by manifest hash only
 (upstream files legitimately contain namespace URIs and links in comments), checks
 first-party files for remote URLs, `eval` and `new Function`, checks that no import,
-`src`, `href` or fetch targets a remote origin, and checks the CSP. Because
+`src`, `href` or fetch in first-party files or the import map targets a remote
+origin, and checks the CSP, which also blocks remote loads at runtime. Because
 `OrbitControls.js` imports the bare specifier `three`, `index.html` carries one
 inline import map allowed by its SHA-256 in the CSP; the vendored files stay
 unmodified. A version update is a reviewed change with a new manifest.

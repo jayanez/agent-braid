@@ -30,7 +30,8 @@ agent_braid/
 integrations/agent-braid-view/
   README.md
   web/index.html, web/loom.js, web/braid-scene.js, web/table.js, web/style.css
-  web/vendor/three/three.module.js, web/vendor/three/addons/controls/OrbitControls.js
+  web/vendor/three/three.module.js, web/vendor/three/three.core.js,
+  web/vendor/three/addons/controls/OrbitControls.js
   web/vendor/manifest.json
 examples/view/loom-replay.jsonl
 docs/tooling/VIEWER.md
@@ -94,8 +95,8 @@ owner-run.
    reusing SPEC-043 destination rules.
 9. **CLI.** `agent-braid view serve [--replay FILE] [--watch DIR ...] [--port N]
    [--surface web|mod|tui|mcp-app] [--record FILE [--record-effort]]`,
-   `view export --from FILE --to PATH [--include-effort --arm NAME=FILE ...
-   --baseline NAME]`, `view validate FILE`, `view env --host claude|codex`.
+   `view export --from FILE --to PATH [--include-effort --baseline NAME
+   --arm NAME=FILE ... --arm-note NAME=TEXT ...]`, `view validate FILE`, `view env --host claude|codex`.
 10. **Validation rule.** `Rule("activity-viewer", (agent_braid/view_*.py,
     tests/test_view_*.py, tests/fixtures/view/**, integrations/agent-braid-view/**,
     examples/view/**, docs/tooling/VIEWER.md), ("full-tests",), True, boundary=...)`.
@@ -113,7 +114,7 @@ changes. `cli.py` gains the `view` registration only.
 | REQ-004 | SC-004 | `tests/test_view_serve.py` | procedure_004 |
 | REQ-005 | SC-005 | `tests/test_view_otlp.py`, `tests/test_view_hooks.py` | procedure_005 |
 | REQ-006 | SC-006 | `tests/test_view_store.py`, `tests/test_view_serve.py` | procedure_006 |
-| REQ-007 | SC-007 | `tests/test_view_hooks.py`, `tests/test_view_export.py` | procedure_007 |
+| REQ-007 | SC-007 | `tests/test_view_serve.py`, `tests/test_view_export.py` | procedure_007 |
 | REQ-008 | SC-008 | `tests/test_view_export.py` | procedure_008 |
 | REQ-009 | SC-009 | `tests/test_view_export.py` | procedure_009 |
 | REQ-010 | SC-010 | `tests/test_view_model.py`, `tests/test_view_web_bundle.py` | procedure_010 |

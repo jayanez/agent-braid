@@ -310,16 +310,16 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
-Title: [SPEC-061 T017] SSE with Last-Event-ID, /snapshot, replay mode, view_tail.py bounded polling. Dependencies: T016, T020...
+Title: [SPEC-061 T017] SSE with Last-Event-ID, /snapshot, replay mode, view_tail.py bounded polling, --record/--record-effort...
 
 <!-- agent-braid-task-id: SPEC-061/T017 -->
 
 ## Task
 
-SSE with `Last-Event-ID`, `/snapshot`, replay mode, `view_tail.py` bounded polling. Dependencies: T016, T020. Verification: procedure_004, procedure_006.
+SSE with `Last-Event-ID`, `/snapshot`, replay mode, `view_tail.py` bounded polling, `--record`/`--record-effort` writing capped at 50 000 events. Dependencies: T016, T020. Verification: procedure_004, procedure_006, procedure_007.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)
-- Trace: REQ-004 / SC-004; REQ-006 / SC-006
+- Trace: REQ-004 / SC-004; REQ-006 / SC-006; REQ-007 / SC-007
 - State basis: Source checkbox in tasks.md.
 
 Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
@@ -352,7 +352,7 @@ Title: [SPEC-061 T019] view_hooks.py Claude HTTP hooks and Codex notify or hook 
 
 ## Task
 
-`view_hooks.py` Claude HTTP hooks and Codex notify or hook shim; dropped-attribute names inventory; ephemeral effort handling and `--record`/`--record-effort` writing. Dependencies: T015. Verification: procedure_005, procedure_007.
+`view_hooks.py` Claude HTTP hooks and Codex notify or hook shim; dropped-attribute names inventory; ephemeral effort handling. Dependencies: T015. Verification: procedure_005, procedure_007.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)
 - Trace: REQ-005 / SC-005; REQ-007 / SC-007
@@ -400,13 +400,13 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
-Title: [SPEC-061 T022] Effort evidence pack: arms, baseline, selection notes, pairwise comparisons in the harness row shape....
+Title: [SPEC-061 T022] Effort evidence pack: --arm, --arm-note, --baseline, pairwise comparisons in the harness comparison sh...
 
 <!-- agent-braid-task-id: SPEC-061/T022 -->
 
 ## Task
 
-Effort evidence pack: arms, baseline, selection notes, pairwise comparisons in the harness row shape. Dependencies: T021, T027. Verification: procedure_009.
+Effort evidence pack: `--arm`, `--arm-note`, `--baseline`, pairwise comparisons in the harness comparison shape. Dependencies: T021, T027. Verification: procedure_009.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)
 - Trace: REQ-009 / SC-009
@@ -436,13 +436,13 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
-Title: [SPEC-061 T023] Vendor Three.js r182 prebuilt modules and OrbitControls with manifest.json; add LICENSES/three-MIT.txt...
+Title: [SPEC-061 T023] Vendor Three.js r182 prebuilt modules (three.module.js, three.core.js) and OrbitControls with manifest...
 
 <!-- agent-braid-task-id: SPEC-061/T023 -->
 
 ## Task
 
-Vendor Three.js r182 prebuilt modules and OrbitControls with `manifest.json`; add `LICENSES/three-MIT.txt`, the LICENSE paragraph and the THIRD_PARTY section. Dependencies: T003. Files: `integrations/agent-braid-view/web/vendor/**`, `LICENSE`, `LICENSES/`, `docs/development/THIRD_PARTY.md`. Verification: procedure_010.
+Vendor Three.js r182 prebuilt modules (`three.module.js`, `three.core.js`) and OrbitControls with `manifest.json`; add `LICENSES/three-MIT.txt`, the LICENSE paragraph and the THIRD_PARTY section. Dependencies: T003. Files: `integrations/agent-braid-view/web/vendor/**`, `LICENSE`, `LICENSES/`, `docs/development/THIRD_PARTY.md`. Verification: procedure_010.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)
 - Trace: REQ-010 / SC-010; REQ-013 / SC-013

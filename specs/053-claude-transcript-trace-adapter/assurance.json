@@ -59,7 +59,7 @@
       "docs/adr/0030-native-plugin-surface-naming.md": "2bff8ce3fd5c2e183dca8000044ccd4d08980ec7e4a1b31d9af7a3a4b7f18c8e",
       "docs/adr/0031-portable-prompt-names.md": "2e2ccf4e3d3b82cfb3e375d790104b9bb79f7f503041f11e60738e546d670d8e",
       "docs/adr/0032-activity-viewer-companion.md": "a00800d3e39a957ba0b4990abe031601ccb7cb11dc44da964164ddb2c308684e",
-      "docs/adr/0033-vendored-threejs-mit-boundary.md": "57a609547f541c472e1e65fb5067cba641fd530e0655846bbe31801bd9ed0985",
+      "docs/adr/0033-vendored-threejs-mit-boundary.md": "ac8598757e8a43ecab2c4bc21f6fadf87cc2cb568ef29d3e05662b634fa852ba",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",

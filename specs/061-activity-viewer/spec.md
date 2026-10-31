@@ -79,8 +79,10 @@ closed list, a relative monotonic time `at` (`relMs`, `basis`), a `source`
 (`adapter`, `evidenceRef`, `host`), an `assurance` block
 (`compatibilityClass`, `notAGuarantee: true`) and `executionAuthorization`
 fixed to `false`. `compatibilityClass` is the Article 13 class declared by the
-analysis fact an event carries and is `null` for events that carry no analysis
-result (strands, effort, gaps, session). The closed kinds are `session.origin`,
+per-pair analysis fact an event carries (crossings and gate results) and is `null`
+for events that carry no per-pair analysis result (`analysis.report`, strands,
+effort, gaps, session). Source identifiers such as `sha256:` analysis and plan
+digests are carried verbatim. The closed kinds are `session.origin`,
 `analysis.report`, `strand.open`, `strand.update`, `strand.close`,
 `crossing.classified`, `wave.planned`, `wave.started`, `wave.finished`,
 `grant.issued`, `grant.consumed`, `grant.expired`, `grant.refused`,
@@ -94,8 +96,9 @@ in [contracts/](contracts/).
 **SC-001:** Given the schema and a corpus of valid and seeded invalid events, when
 each line is validated, then valid lines pass and every line with an unknown kind,
 a missing or non-false `executionAuthorization`, a crossing without an integer
-class, an effort event with a class, a status outside its source enum, an
-`evidenceRef` path that is absolute or contains `..`, a non-increasing `seq`,
+class, an effort event with a class, a status or phase outside its source enum,
+an `evidenceRef` path that is absolute, has a drive prefix or contains `..`,
+`notAGuarantee` false, a non-increasing `seq`,
 duplicate JSON members, a non-finite number or an oversized line is refused with a
 stable reason and no partial acceptance.
 
@@ -150,7 +153,8 @@ Responses carry the contract's Content Security Policy with no remote origins. T
 server exposes no route that executes, schedules, grants, writes to a repository
 or changes host configuration. Limits: 256 strands, 4 096 crossings, 64 waves,
 1 024 grants, 8 concurrent subscribers; OTLP bodies at most 1 MiB and hook bodies
-at most 256 KiB.
+at most 256 KiB. Input beyond a per-kind cap (for example a report with more than
+4 096 pairs) is not stored and is announced by a `stream-truncated` gap.
 
 **SC-004:** Given a running server, when requests are sent with each refused
 condition, when a ninth subscriber connects, and when the route table is listed,
@@ -206,7 +210,8 @@ Effort data (tokens, cost, durations) lives in process memory, is labeled
 SPEC-047 telemetry store or to a repository. `serve` writes nothing unless the user
 passes `--record FILE`, which writes the loom stream to a new private file outside
 repositories (destination rules of REQ-008); effort events are recorded only with
-the additional flag `--record-effort`.
+the additional flag `--record-effort`. A recording stops at 50 000 events and ends
+with a `stream-truncated` gap, so every recording stays replayable and exportable.
 
 **SC-007:** Given a session with effort samples, when the server stops after runs
 without `--record`, with `--record` and with `--record --record-effort`, then the
@@ -233,23 +238,25 @@ Verification: [procedure_008](validation-plan.md#procedure_008); T021.
 
 ### REQ-009 — Comparative effort evidence pack
 
-With `--include-effort` and two or more `--arm NAME=FILE` recordings made with
-`--record-effort`, export adds per-strand and per-phase effort, a summary and a
+With `--include-effort`, a `--baseline NAME` and two or more `--arm NAME=FILE`
+recordings made with `--record-effort`, each with an `--arm-note NAME=TEXT`
+selection note, export adds per-strand and per-phase effort, a summary and a
 static HTML/SVG rendering without scripts or remote resources. Comparisons are
-pairwise between a named baseline arm and each other arm. The pack records how each
-arm was selected, states that arms are unmatched unless the owner records a
-matching, and compares only fields present in both arms. Comparison rows use the
-row shape of `agent-braid harness compare` (`field`, `left`, `right`), with
-`identical` and `unlistedChange` at comparison level. Every figure is labeled
+pairwise between the baseline arm and each other arm. The pack records how each
+arm was selected and states that arms are unmatched unless the owner records a
+matching. Each comparison uses the shape of `agent-braid harness compare`: a
+`differences` list of `{field, left, right}` rows, where a field absent from one
+arm appears as `null` on that side and never as zero, and comparison-level
+`identical` and `unlistedChange`. Every figure is labeled
 `host-estimate` and `empirical` and carries no compatibility class; the pack
 states that it is not a speedup, saving or causal claim. Registering the pack as
 a Braid Harness record kind is a HAR decision outside VIS.1. The contract is in
 [contracts/effort-evidence-pack.md](contracts/effort-evidence-pack.md).
 
 **SC-009:** Given three recorded arms, when the pack is exported with one baseline,
-then it holds two pairwise comparisons in the harness row shape, every figure
-carries its labels and no class, fields missing from an arm are listed and not
-zero-filled, the arm selection notes and the unmatched statement are present, the
+then it holds two pairwise comparisons in the harness comparison shape, every
+figure carries its labels and no class, fields missing from an arm appear as
+`null` and never as zero, the arm selection notes and the unmatched statement are present, the
 HTML contains no script element and no remote URL, and the summary contains the
 non-claim statement.
 
@@ -275,13 +282,14 @@ version with a hash manifest; first-party files reference no remote origin and t
 bundle performs no remote load. A text table view of the same model is available
 without WebGL.
 
-**SC-010:** Given the example loom file, when the viewer model is built and the
+**SC-010:** Given `contracts/loom-event.example.jsonl`, when the viewer model is built and the
 bundle is checked, then every rendered element has exactly one source event, every
 event of a rendered kind has an element or a table row, no non-independent pair is
 drawn as a swap, the vendored files match the manifest hashes, first-party files
 contain no remote URL, `eval(` or `new Function`, no import, `src`, `href` or fetch
-targets a remote origin, the CSP allows only `'self'` plus the hash of the single
-import map, and the table view lists the same facts.
+in first-party files or the import map targets a remote origin, the CSP allows
+only `'self'` plus the hash of the single import map, and the table view lists the
+same facts.
 
 Verification: [procedure_010](validation-plan.md#procedure_010); T023–T026.
 
@@ -305,7 +313,7 @@ Verification: [procedure_011](validation-plan.md#procedure_011); T027, T028.
 
 `agent-braid view` offers `serve` (with `--replay`, `--watch`, `--port`,
 `--surface`, `--record` and `--record-effort`), `export` (with `--from`, `--to`,
-`--include-effort`, `--arm` and `--baseline`), `validate` and `env`. `view env --host
+`--include-effort`, `--arm`, `--arm-note` and `--baseline`), `validate` and `env`. `view env --host
 claude|codex` prints the configuration a user may paste (OpenTelemetry endpoint,
 HTTP hook entries, `[otel]` TOML) and writes nothing.
 

@@ -223,8 +223,8 @@
    "key": "SPEC-061/T017",
    "kind": "task",
    "parent": "SPEC-061",
-   "title": "[SPEC-061 T017] SSE with Last-Event-ID, /snapshot, replay mode, view_tail.py bounded polling. Dependencies: T016, T020...",
-   "body": "<!-- agent-braid-task-id: SPEC-061/T017 -->\n\n## Task\n\nSSE with `Last-Event-ID`, `/snapshot`, replay mode, `view_tail.py` bounded polling. Dependencies: T016, T020. Verification: procedure_004, procedure_006.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-004 / SC-004; REQ-006 / SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "title": "[SPEC-061 T017] SSE with Last-Event-ID, /snapshot, replay mode, view_tail.py bounded polling, --record/--record-effort...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T017 -->\n\n## Task\n\nSSE with `Last-Event-ID`, `/snapshot`, replay mode, `view_tail.py` bounded polling, `--record`/`--record-effort` writing capped at 50 000 events. Dependencies: T016, T020. Verification: procedure_004, procedure_006, procedure_007.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-004 / SC-004; REQ-006 / SC-006; REQ-007 / SC-007\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
    "milestone": "VIS.1 — Activity viewer",
    "state": "open"
   },
@@ -242,7 +242,7 @@
    "kind": "task",
    "parent": "SPEC-061",
    "title": "[SPEC-061 T019] view_hooks.py Claude HTTP hooks and Codex notify or hook shim; dropped-attribute names inventory; ephe...",
-   "body": "<!-- agent-braid-task-id: SPEC-061/T019 -->\n\n## Task\n\n`view_hooks.py` Claude HTTP hooks and Codex notify or hook shim; dropped-attribute names inventory; ephemeral effort handling and `--record`/`--record-effort` writing. Dependencies: T015. Verification: procedure_005, procedure_007.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-005 / SC-005; REQ-007 / SC-007\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T019 -->\n\n## Task\n\n`view_hooks.py` Claude HTTP hooks and Codex notify or hook shim; dropped-attribute names inventory; ephemeral effort handling. Dependencies: T015. Verification: procedure_005, procedure_007.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-005 / SC-005; REQ-007 / SC-007\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
    "milestone": "VIS.1 — Activity viewer",
    "state": "open"
   },
@@ -268,8 +268,8 @@
    "key": "SPEC-061/T022",
    "kind": "task",
    "parent": "SPEC-061",
-   "title": "[SPEC-061 T022] Effort evidence pack: arms, baseline, selection notes, pairwise comparisons in the harness row shape....",
-   "body": "<!-- agent-braid-task-id: SPEC-061/T022 -->\n\n## Task\n\nEffort evidence pack: arms, baseline, selection notes, pairwise comparisons in the harness row shape. Dependencies: T021, T027. Verification: procedure_009.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-009 / SC-009\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "title": "[SPEC-061 T022] Effort evidence pack: --arm, --arm-note, --baseline, pairwise comparisons in the harness comparison sh...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T022 -->\n\n## Task\n\nEffort evidence pack: `--arm`, `--arm-note`, `--baseline`, pairwise comparisons in the harness comparison shape. Dependencies: T021, T027. Verification: procedure_009.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-009 / SC-009\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
    "milestone": "VIS.1 — Activity viewer",
    "state": "open"
   },
@@ -286,8 +286,8 @@
    "key": "SPEC-061/T023",
    "kind": "task",
    "parent": "SPEC-061",
-   "title": "[SPEC-061 T023] Vendor Three.js r182 prebuilt modules and OrbitControls with manifest.json; add LICENSES/three-MIT.txt...",
-   "body": "<!-- agent-braid-task-id: SPEC-061/T023 -->\n\n## Task\n\nVendor Three.js r182 prebuilt modules and OrbitControls with `manifest.json`; add `LICENSES/three-MIT.txt`, the LICENSE paragraph and the THIRD_PARTY section. Dependencies: T003. Files: `integrations/agent-braid-view/web/vendor/**`, `LICENSE`, `LICENSES/`, `docs/development/THIRD_PARTY.md`. Verification: procedure_010.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-010 / SC-010; REQ-013 / SC-013\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "title": "[SPEC-061 T023] Vendor Three.js r182 prebuilt modules (three.module.js, three.core.js) and OrbitControls with manifest...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T023 -->\n\n## Task\n\nVendor Three.js r182 prebuilt modules (`three.module.js`, `three.core.js`) and OrbitControls with `manifest.json`; add `LICENSES/three-MIT.txt`, the LICENSE paragraph and the THIRD_PARTY section. Dependencies: T003. Files: `integrations/agent-braid-view/web/vendor/**`, `LICENSE`, `LICENSES/`, `docs/development/THIRD_PARTY.md`. Verification: procedure_010.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-010 / SC-010; REQ-013 / SC-013\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
    "milestone": "VIS.1 — Activity viewer",
    "state": "open"
   },

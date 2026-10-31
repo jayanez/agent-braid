@@ -43,7 +43,8 @@ or host-native view. It binds VIS.1 and every later VIS surface.
 | Malformed JSON, duplicate members, non-finite number, schema violation | 400 | none |
 | Body over its limit | 413 | none |
 | Content type other than `application/json` (ingest) | 415 | none |
-| Ninth subscriber or per-kind cap reached | 503 | none (cap overflow also emits a gap) |
+| Ninth subscriber | 503 | none |
+| Per-kind cap reached on ingest | 503 | input beyond the cap is not stored; one `stream-truncated` gap |
 
 A wrong token returns 404 so the route space is not revealed.
 
@@ -104,8 +105,9 @@ Rules:
 
 - Static bundle with vendored Three.js (ADR 0033) and a hash manifest; first-party
   files contain no remote URL, no `eval`, no `Function` constructor and no inline
-  script other than the hashed import map; no import, `src`, `href` or fetch
-  targets a remote origin.
+  script other than the hashed import map; no import, `src`, `href` or fetch in
+  first-party files or the import map targets a remote origin. Vendored files are
+  checked by manifest hash only; runtime remote loads are also blocked by the CSP.
 - Text from events is inserted as text nodes, never as HTML.
 - Terminal frames escape control characters as in SPEC-043.
 - A table view presents the same facts without WebGL; colour is never the only

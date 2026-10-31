@@ -10,8 +10,10 @@ stay separate from automated checks.
 Validate `contracts/loom-event.example.jsonl` and an owned corpus with
 `view_loom.validate_event` and, as parity check, with the JSON schema. Negative
 controls: unknown kind; `executionAuthorization` true or missing; crossing without
-an integer class; effort event with a class; a gate status outside the SPEC-052
-enum; an `evidenceRef` path that is absolute, has a drive prefix or contains `..`;
+an integer class; effort or `analysis.report` event with a class; a gate status or
+phase name outside the SPEC-052 enums; an evidence coverage value outside
+`complete`, `partial`, `unknown`; an identifier that is neither a short ID nor a
+`sha256:` digest; an `evidenceRef` path that is absolute, has a drive prefix or contains `..`;
 `notAGuarantee` false; repeated or decreasing `seq`; duplicate members; `NaN`; a
 16 KiB + 1 line; a file with 50 001 events. Each is refused with a stable reason;
 no prefix of a refused stream is accepted as complete.
@@ -74,10 +76,11 @@ tests.test_view_serve -v`.
 
 With a temporary `HOME` and telemetry store, run a session with effort samples
 three times: without `--record`, with `--record FILE`, and with `--record FILE
---record-effort`. Snapshot the file system before and after. Assert no file
+--record-effort`; then feed 50 001 events to a recording and assert it stops at
+50 000 with a `stream-truncated` gap and stays replayable. Snapshot the file system before and after. Assert no file
 changes in the first run, only the named file in the others, effort events only in
 the third (labeled `host-estimate`), and identical telemetry store bytes. Command:
-`python3 -m unittest tests.test_view_hooks tests.test_view_export -v`.
+`python3 -m unittest tests.test_view_serve tests.test_view_export -v`.
 
 ## procedure_008
 
@@ -89,10 +92,11 @@ refused destinations with nonzero exit. Command:
 
 ## procedure_009
 
-Export a pack with three recorded arms and one baseline. Assert two pairwise
-comparisons whose rows carry only `field`, `left` and `right`, with `identical` and
-`unlistedChange` at comparison level; every effort figure carries `host-estimate`
-and `empirical` and no class; missing fields are listed and not zero-filled;
+Export a pack with three recorded arms, one baseline and arm notes. Assert two
+pairwise comparisons whose `differences` rows carry only `field`, `left` and
+`right`, with `identical` and `unlistedChange` at comparison level; every effort
+figure carries `host-estimate` and `empirical` and no class; fields absent from an
+arm are `null` and never zero;
 selection notes and the unmatched statement are present; `index.html` and
 `braid.svg` contain no `<script` and no `http:` or `https:` URL; `summary.md`
 contains the non-claim statement verbatim. Command:
@@ -100,14 +104,14 @@ contains the non-claim statement verbatim. Command:
 
 ## procedure_010
 
-Build the model from the example stream; assert a bijection between rendered
+Build the model from `contracts/loom-event.example.jsonl`; assert a bijection between rendered
 elements and source events of rendered kinds, that only `independent-candidate`
 pairs become swaps, that non-adjacent pairs become bridges, that classes are
 categorical labels, and that the table view lists the same facts. Check the
 bundle: vendored files match `manifest.json` hashes (vendored content is checked by
 hash only); first-party files contain no remote URL, `eval(`, `new Function` or
-inline script other than the import map; no import, `src`, `href` or fetch targets
-a remote origin; the served CSP allows only `'self'` and the import-map hash.
+inline script other than the import map; no import, `src`, `href` or fetch in
+first-party files or the import map targets a remote origin; the served CSP allows only `'self'` and the import-map hash.
 Command: `python3 -m unittest tests.test_view_model tests.test_view_web_bundle -v`.
 Manual check, recorded separately: open the replay in a browser and confirm that
 selecting each element shows its event and `evidenceRef`, with no CSP violation

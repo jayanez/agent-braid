@@ -56,7 +56,7 @@
       "docs/adr/0030-native-plugin-surface-naming.md": "2bff8ce3fd5c2e183dca8000044ccd4d08980ec7e4a1b31d9af7a3a4b7f18c8e",
       "docs/adr/0031-portable-prompt-names.md": "2e2ccf4e3d3b82cfb3e375d790104b9bb79f7f503041f11e60738e546d670d8e",
       "docs/adr/0032-activity-viewer-companion.md": "a00800d3e39a957ba0b4990abe031601ccb7cb11dc44da964164ddb2c308684e",
-      "docs/adr/0033-vendored-threejs-mit-boundary.md": "57a609547f541c472e1e65fb5067cba641fd530e0655846bbe31801bd9ed0985",
+      "docs/adr/0033-vendored-threejs-mit-boundary.md": "ac8598757e8a43ecab2c4bc21f6fadf87cc2cb568ef29d3e05662b634fa852ba",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -134,11 +134,11 @@
           "planned_evidence": "Candidate-bound procedure_001 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_001",
-          "then": "valid lines pass and every line with an unknown kind, a missing or non-false `executionAuthorization`, a crossing without an integer class, an effort event with a class, a status outside its source enum, an `evidenceRef` path that is absolute or contains `..`, a non-increasing `seq`, duplicate JSON members, a non-finite number or an oversized line is refused with a stable reason and no partial acceptance.",
+          "then": "valid lines pass and every line with an unknown kind, a missing or non-false `executionAuthorization`, a crossing without an integer class, an effort event with a class, a status or phase outside its source enum, an `evidenceRef` path that is absolute, has a drive prefix or contains `..`, `notAGuarantee` false, a non-increasing `seq`, duplicate JSON members, a non-finite number or an oversized line is refused with a stable reason and no partial acceptance.",
           "when": "each line is validated"
         }
       ],
-      "text": "Versioned event contract: Every event is one JSON object per line with `schemaVersion` `agent-braid-loom/v0.1`, a strictly increasing integer `seq`, a `kind` from a closed list, a relative monotonic time `at` (`relMs`, `basis`), a `source` (`adapter`, `evidenceRef`, `host`), an `assurance` block (`compatibilityClass`, `notAGuarantee: true`) and `executionAuthorization` fixed to `false`. `compatibilityClass` is the Article 13 class declared by the analysis fact an event carries and is `null` for events that carry no analysis result (strands, effort, gaps, session). The closed kinds are `session.origin`, `analysis.report`, `strand.open`, `strand.update`, `strand.close`, `crossing.classified`, `wave.planned`, `wave.started`, `wave.finished`, `grant.issued`, `grant.consumed`, `grant.expired`, `grant.refused`, `hazard.noticed`, `gate.phase`, `gate.result`, `runtime.phase`, `effort.sample` and `observation.gap`. Status and mode values are copied verbatim from their source contracts. Lines are at most 16 KiB. A file or POST body with more than 50 000 events is refused; the live in-memory ring instead evicts old events and announces each evicted range (REQ-006). The schema and an illustrative example are in [contracts/](contracts/)."
+      "text": "Versioned event contract: Every event is one JSON object per line with `schemaVersion` `agent-braid-loom/v0.1`, a strictly increasing integer `seq`, a `kind` from a closed list, a relative monotonic time `at` (`relMs`, `basis`), a `source` (`adapter`, `evidenceRef`, `host`), an `assurance` block (`compatibilityClass`, `notAGuarantee: true`) and `executionAuthorization` fixed to `false`. `compatibilityClass` is the Article 13 class declared by the per-pair analysis fact an event carries (crossings and gate results) and is `null` for events that carry no per-pair analysis result (`analysis.report`, strands, effort, gaps, session). Source identifiers such as `sha256:` analysis and plan digests are carried verbatim. The closed kinds are `session.origin`, `analysis.report`, `strand.open`, `strand.update`, `strand.close`, `crossing.classified`, `wave.planned`, `wave.started`, `wave.finished`, `grant.issued`, `grant.consumed`, `grant.expired`, `grant.refused`, `hazard.noticed`, `gate.phase`, `gate.result`, `runtime.phase`, `effort.sample` and `observation.gap`. Status and mode values are copied verbatim from their source contracts. Lines are at most 16 KiB. A file or POST body with more than 50 000 events is refused; the live in-memory ring instead evicts old events and announces each evicted range (REQ-006). The schema and an illustrative example are in [contracts/](contracts/)."
     },
     {
       "id": "REQ-002",
@@ -186,7 +186,7 @@
           "when": "requests are sent with each refused condition, when a ninth subscriber connects, and when the route table is listed"
         }
       ],
-      "text": "Loopback server boundary: `agent-braid view serve` binds only to `127.0.0.1` (or `::1`), prints a random per-session token and serves every route under that token. Requests with a non-loopback `Host` or `Origin`, a wrong token, an oversized body, a wrong content type, duplicate JSON members or non-finite numbers are refused with the statuses in the [UI, security and privacy contract](contracts/ui-security-privacy.md#refusal-statuses). Responses carry the contract's Content Security Policy with no remote origins. The server exposes no route that executes, schedules, grants, writes to a repository or changes host configuration. Limits: 256 strands, 4 096 crossings, 64 waves, 1 024 grants, 8 concurrent subscribers; OTLP bodies at most 1 MiB and hook bodies at most 256 KiB."
+      "text": "Loopback server boundary: `agent-braid view serve` binds only to `127.0.0.1` (or `::1`), prints a random per-session token and serves every route under that token. Requests with a non-loopback `Host` or `Origin`, a wrong token, an oversized body, a wrong content type, duplicate JSON members or non-finite numbers are refused with the statuses in the [UI, security and privacy contract](contracts/ui-security-privacy.md#refusal-statuses). Responses carry the contract's Content Security Policy with no remote origins. The server exposes no route that executes, schedules, grants, writes to a repository or changes host configuration. Limits: 256 strands, 4 096 crossings, 64 waves, 1 024 grants, 8 concurrent subscribers; OTLP bodies at most 1 MiB and hook bodies at most 256 KiB. Input beyond a per-kind cap (for example a report with more than 4 096 pairs) is not stored and is announced by a `stream-truncated` gap."
     },
     {
       "id": "REQ-005",
@@ -234,7 +234,7 @@
           "when": "the server stops after runs without `--record`, with `--record` and with `--record --record-effort`"
         }
       ],
-      "text": "Ephemeral effort and explicit recording: Effort data (tokens, cost, durations) lives in process memory, is labeled `basis: host-estimate`, uses relative monotonic time and is never written to the SPEC-047 telemetry store or to a repository. `serve` writes nothing unless the user passes `--record FILE`, which writes the loom stream to a new private file outside repositories (destination rules of REQ-008); effort events are recorded only with the additional flag `--record-effort`."
+      "text": "Ephemeral effort and explicit recording: Effort data (tokens, cost, durations) lives in process memory, is labeled `basis: host-estimate`, uses relative monotonic time and is never written to the SPEC-047 telemetry store or to a repository. `serve` writes nothing unless the user passes `--record FILE`, which writes the loom stream to a new private file outside repositories (destination rules of REQ-008); effort events are recorded only with the additional flag `--record-effort`. A recording stops at 50 000 events and ends with a `stream-truncated` gap, so every recording stays replayable and exportable."
     },
     {
       "id": "REQ-008",
@@ -262,23 +262,23 @@
           "planned_evidence": "Candidate-bound procedure_009 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_009",
-          "then": "it holds two pairwise comparisons in the harness row shape, every figure carries its labels and no class, fields missing from an arm are listed and not zero-filled, the arm selection notes and the unmatched statement are present, the HTML contains no script element and no remote URL, and the summary contains the non-claim statement.",
+          "then": "it holds two pairwise comparisons in the harness comparison shape, every figure carries its labels and no class, fields missing from an arm appear as `null` and never as zero, the arm selection notes and the unmatched statement are present, the HTML contains no script element and no remote URL, and the summary contains the non-claim statement.",
           "when": "the pack is exported with one baseline"
         }
       ],
-      "text": "Comparative effort evidence pack: With `--include-effort` and two or more `--arm NAME=FILE` recordings made with `--record-effort`, export adds per-strand and per-phase effort, a summary and a static HTML/SVG rendering without scripts or remote resources. Comparisons are pairwise between a named baseline arm and each other arm. The pack records how each arm was selected, states that arms are unmatched unless the owner records a matching, and compares only fields present in both arms. Comparison rows use the row shape of `agent-braid harness compare` (`field`, `left`, `right`), with `identical` and `unlistedChange` at comparison level. Every figure is labeled `host-estimate` and `empirical` and carries no compatibility class; the pack states that it is not a speedup, saving or causal claim. Registering the pack as a Braid Harness record kind is a HAR decision outside VIS.1. The contract is in [contracts/effort-evidence-pack.md](contracts/effort-evidence-pack.md)."
+      "text": "Comparative effort evidence pack: With `--include-effort`, a `--baseline NAME` and two or more `--arm NAME=FILE` recordings made with `--record-effort`, each with an `--arm-note NAME=TEXT` selection note, export adds per-strand and per-phase effort, a summary and a static HTML/SVG rendering without scripts or remote resources. Comparisons are pairwise between the baseline arm and each other arm. The pack records how each arm was selected and states that arms are unmatched unless the owner records a matching. Each comparison uses the shape of `agent-braid harness compare`: a `differences` list of `{field, left, right}` rows, where a field absent from one arm appears as `null` on that side and never as zero, and comparison-level `identical` and `unlistedChange`. Every figure is labeled `host-estimate` and `empirical` and carries no compatibility class; the pack states that it is not a speedup, saving or causal claim. Registering the pack as a Braid Harness record kind is a HAR decision outside VIS.1. The contract is in [contracts/effort-evidence-pack.md](contracts/effort-evidence-pack.md)."
     },
     {
       "id": "REQ-010",
       "scenarios": [
         {
-          "given": "the example loom file",
+          "given": "`contracts/loom-event.example.jsonl`",
           "id": "SC-010",
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure_010 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_010",
-          "then": "every rendered element has exactly one source event, every event of a rendered kind has an element or a table row, no non-independent pair is drawn as a swap, the vendored files match the manifest hashes, first-party files contain no remote URL, `eval(` or `new Function`, no import, `src`, `href` or fetch targets a remote origin, the CSP allows only `'self'` plus the hash of the single import map, and the table view lists the same facts.",
+          "then": "every rendered element has exactly one source event, every event of a rendered kind has an element or a table row, no non-independent pair is drawn as a swap, the vendored files match the manifest hashes, first-party files contain no remote URL, `eval(` or `new Function`, no import, `src`, `href` or fetch in first-party files or the import map targets a remote origin, the CSP allows only `'self'` plus the hash of the single import map, and the table view lists the same facts.",
           "when": "the viewer model is built and the bundle is checked"
         }
       ],
@@ -314,7 +314,7 @@
           "when": "it runs with valid, invalid and missing arguments"
         }
       ],
-      "text": "Command line and host configuration guidance: `agent-braid view` offers `serve` (with `--replay`, `--watch`, `--port`, `--surface`, `--record` and `--record-effort`), `export` (with `--from`, `--to`, `--include-effort`, `--arm` and `--baseline`), `validate` and `env`. `view env --host claude|codex` prints the configuration a user may paste (OpenTelemetry endpoint, HTTP hook entries, `[otel]` TOML) and writes nothing."
+      "text": "Command line and host configuration guidance: `agent-braid view` offers `serve` (with `--replay`, `--watch`, `--port`, `--surface`, `--record` and `--record-effort`), `export` (with `--from`, `--to`, `--include-effort`, `--arm`, `--arm-note` and `--baseline`), `validate` and `env`. `view env --host claude|codex` prints the configuration a user may paste (OpenTelemetry endpoint, HTTP hook entries, `[otel]` TOML) and writes nothing."
     },
     {
       "id": "REQ-013",
