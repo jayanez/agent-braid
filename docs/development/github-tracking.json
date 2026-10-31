@@ -12,8 +12,8 @@
     "PUB.1 — Public research preview": "Public publication and cutover verification.",
     "GOV.1 — Governance and adoption": "Governance and adoption work spanning release milestones.",
     "ADP.1 — Recorded-trace adapters": "Read-only recorded trace import and bounded adapter spikes; adoption and runtime authorization remain separate. Closed 2026-10-31 by founder decision; human review remains pending.",
-    "LAB.1 — Effectful workload lab": "Bounded simulated non-Git effectful workloads and conservative analysis; no real external execution.",
-    "RES.1 — Formal interaction research": "Contextual and trace-safety obligations, restricted proof review and comparator feasibility; separate from M4 runtime.",
+    "LAB.1 — Effectful workload lab": "Bounded simulated non-Git effectful workloads and conservative analysis; no real external execution. Closed 2026-10-31 by founder decision (engineering closure of T005-T008, PR #797); scientific review remains pending.",
+    "RES.1 — Formal interaction research": "Contextual and trace-safety obligations, restricted proof review and comparator feasibility; separate from M4 runtime. Closed 2026-10-31 by founder decision (T007 engineering closure with frozen candidate and proof review packet, PR #795); independent proof review remains pending.",
     "S1.0 — Decision contracts": "Typed boolean/choice/score synthetic engineering exists; proposed verified-plan extraction is separately tracked. Core tests are not semantic-model acceptance, calibrated reliability or activation. Evidence/resumption index: docs/system-one/README.md. Closed as deferred 2026-10-31 by founder decision; remaining work moved to the Deferred milestone.",
     "S1.1 — Decision evaluation": "Bounded source-taxonomy, negative-transfer and deterministic verification studies are indexed with their populations, failures and costs. T025 integration engineering is closed on reused T024 fixtures; independent/human acceptance remains pending. Original representative/human/calibration gates stay pending; no general accuracy claim. Index: docs/system-one/README.md. Closed as deferred 2026-10-31 by founder decision; remaining work moved to the Deferred milestone.",
     "S1.2 — Native decision model": "Isolated neural software and bounded EN/ES taxonomy training/comparison/resident-runtime evidence exist, including negative transfer and cold-start limits. Broader rights, common architecture evaluation, human workflow acceptance and promotion remain pending. Index: docs/system-one/README.md. Closed as deferred 2026-10-31 by founder decision; remaining work moved to the Deferred milestone.",
@@ -41,7 +41,9 @@
     "S1.1 — Decision evaluation",
     "S1.2 — Native decision model",
     "S1.3 — Advisory integration",
-    "S1.4 — Product capabilities and promotion"
+    "S1.4 — Product capabilities and promotion",
+    "LAB.1 — Effectful workload lab",
+    "RES.1 — Formal interaction research"
   ],
   "specs": {
     "001-certificate-verifier-pilot": {
@@ -138,11 +140,11 @@
     },
     "024-effectful-workload-lab": {
       "milestone": "LAB.1 — Effectful workload lab",
-      "state": "open"
+      "state": "closed"
     },
     "025-contextual-proof-obligations": {
       "milestone": "RES.1 — Formal interaction research",
-      "state": "open"
+      "state": "closed"
     },
     "026-adoption-evidence-program": {
       "milestone": "GOV.1 — Governance and adoption",
@@ -285,8 +287,6 @@
     "SPEC-011",
     "SPEC-011/T008",
     "SPEC-019",
-    "SPEC-024",
-    "SPEC-025",
     "SPEC-026",
     "SPEC-028",
     "SPEC-029",
@@ -333,7 +333,8 @@
     "FC.2 — Local forecasting capabilities": 20,
     "HAR.1 — Braid Harness laboratory": 21,
     "HAR.2 — Braid Harness evaluation and learning": 22,
-    "HAR.3 — Braid Harness adaptation and integration": 23
+    "HAR.3 — Braid Harness adaptation and integration": 23,
+    "Deferred": 24
   },
   "task_cancellations": {
     "SPEC-045/T007": {
