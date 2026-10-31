@@ -53,17 +53,17 @@ is recorded in assurance.json; human/empirical gates remain pending.
 
 ## Documentary reconciliation of research and proposed delivery — 2026-10-20
 
-These additive canonical identities retain the existing study/DDP aliases. Checked entries mean only their stated bounded historical lot; original research, human, model and product gates remain open. The evidence register is a documentary source snapshot, not new implementation or independent reproduction. See docs/system-one/README.md and task-map.json. No task launches agents or authorizes a study.
+These additive canonical identities retain the existing study/DDP aliases. Checked entries mean only their stated bounded historical lot; original research, human, model and product gates remain open. The evidence register is a documentary source snapshot, not new implementation or independent reproduction. See docs/system-one/README.md and task-map.json. No task launches agents or authorizes a study. Checked entries below that cite PR #655 (commit a6329c82) and the documentary corpus PRs #594, #608, #609, #610 cover the bounded engineering lot only; human, Claude, scientific, admission, calibration, promotion, activation, product-publication and host-adoption gates stay pending ([pending gates](../../docs/system-one/addenda/v1-publication-closure-20261021/pending-gates.md)). `docs/system-one/task-map.json` and the `*-corpus-status.md` files are frozen documentary snapshots: their "open; not started", planned file names and "checkboxes unchanged" wording predate these ticks and are not rewritten. No issue or milestone is closed.
 
 - [x] T009 (REQ-002 REQ-003 REQ-006 / SC-002 SC-003 SC-006): Measure complete native-workflow chain and retain the bounded negative utility result.
   Source research task T009; eight history-derived episodes, all six arms and failed/inconclusive outcomes retained. Evidence: docs/system-one/evidence-register.json S1-NATIVE-WORKFLOWS. No native workflow acceptance, neural speedup or successful task execution claim; T008 remains open.
 
-- [ ] T010 (REQ-002 / SC-002): Extract bounded observed-effect acquisition (alias DDP-T03; proposed, not started).
+- [x] T010 (REQ-002 / SC-002): Extract bounded observed-effect acquisition (alias DDP-T03; delivered, bounded engineering lot).
   Dependencies: SPEC-028/T009. Owner: agent-B.
-  Targets: agent_braid/system_one_verified_acquisition.py, tests/test_system_one_verified_acquisition.py. Verification planned: .venv-speckit/bin/python -m unittest tests.test_system_one_verified_acquisition -v.
-  Criterion and negatives: docs/system-one/task-map.json alias DDP-T03; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.
+  Delivered at: `agent_braid/system_one_verified_acquisition.py`, `tests/test_system_one_verified_acquisition.py` (as planned).
+  Evidence: [T03 receipt and component join](../../docs/system-one/addenda/t03-and-component-join-20261020/README.md); task-map alias DDP-T03.
 
-- [ ] T011 (REQ-004 REQ-005 REQ-006 / SC-004 SC-005 SC-006): Bind extracted decisions to read-only preparation consumers (alias DDP-T06; proposed, not started).
+- [x] T011 (REQ-004 REQ-005 REQ-006 / SC-004 SC-005 SC-006): Bind extracted decisions to read-only preparation consumers (alias DDP-T06; delivered, bounded engineering lot).
   Dependencies: SPEC-028/T011, T025 completed engineering receipt checked by coordinator. Owner: agent-B.
-  Targets: agent_braid/system_one_verified_consumer.py, tests/test_system_one_verified_consumer.py, tests/test_system_one_verified_stdio.py. Verification planned: .venv-speckit/bin/python -m unittest tests.test_system_one_verified_consumer tests.test_system_one_verified_stdio -v.
-  Criterion and negatives: docs/system-one/task-map.json alias DDP-T06; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.
+  Delivered at: `agent_braid/system_one_verified_consumers.py`, `tests/test_system_one_verified_consumers.py`, `tests/test_system_one_verified_stdio.py`, plus `system_one_verified_mcp.py` and `system_one_verified_tooling.py` from the same lot. The planned name `system_one_verified_consumer.py` was intentionally not used.
+  Evidence: [T06 Core final](../../docs/system-one/addenda/t06-core-final-20261020/README.md), [T06 transport final](../../docs/system-one/addenda/t06-transport-final-20261020/README.md), [T06 corpus status](t06-core-corpus-status.md); task-map alias DDP-T06. The tick covers the controlled-consumer engineering lot only, not total T06 acceptance; the explicit numeric envelope and enforcement mode that task-map requires before closure are not claimed here and remain pending.

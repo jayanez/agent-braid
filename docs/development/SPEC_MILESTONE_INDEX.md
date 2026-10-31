@@ -39,12 +39,12 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 | [SPEC-025: contextual-proof-obligations](../../specs/025-contextual-proof-obligations/spec.md) | [RES.1 — Formal interaction research](https://github.com/jayanez/agent-braid/milestone/12) |
 | [SPEC-026: adoption-evidence-program](../../specs/026-adoption-evidence-program/spec.md) | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) |
 | [SPEC-027: runtime-refinement-contracts](../../specs/027-runtime-refinement-contracts/spec.md) | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) |
-| [SPEC-028: system-one-core](../../specs/028-system-one-core/spec.md) | [S1.0 — Decision contracts](https://github.com/jayanez/agent-braid/milestone/13) |
-| [SPEC-029: system-one-evaluation](../../specs/029-system-one-evaluation/spec.md) | [S1.1 — Decision evaluation](https://github.com/jayanez/agent-braid/milestone/14) |
-| [SPEC-030: system-one-model](../../specs/030-system-one-model/spec.md) | [S1.2 — Native decision model](https://github.com/jayanez/agent-braid/milestone/15) |
-| [SPEC-031: system-one-integration](../../specs/031-system-one-integration/spec.md) | [S1.3 — Advisory integration](https://github.com/jayanez/agent-braid/milestone/16) |
-| [SPEC-032: system-one-product](../../specs/032-system-one-product/spec.md) | [S1.4 — Product capabilities and promotion](https://github.com/jayanez/agent-braid/milestone/17) |
-| [SPEC-033: system-one-promotion](../../specs/033-system-one-promotion/spec.md) | [S1.4 — Product capabilities and promotion](https://github.com/jayanez/agent-braid/milestone/17) |
+| [SPEC-028: system-one-core](../../specs/028-system-one-core/spec.md) | Deferred (milestone number is registered when created) |
+| [SPEC-029: system-one-evaluation](../../specs/029-system-one-evaluation/spec.md) | Deferred (milestone number is registered when created) |
+| [SPEC-030: system-one-model](../../specs/030-system-one-model/spec.md) | Deferred (milestone number is registered when created) |
+| [SPEC-031: system-one-integration](../../specs/031-system-one-integration/spec.md) | Deferred (milestone number is registered when created) |
+| [SPEC-032: system-one-product](../../specs/032-system-one-product/spec.md) | Deferred (milestone number is registered when created) |
+| [SPEC-033: system-one-promotion](../../specs/033-system-one-promotion/spec.md) | Deferred (milestone number is registered when created) |
 | [SPEC-034: workload-forecast-data](../../specs/034-workload-forecast-data/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
 | [SPEC-035: chronos2-forecast-adapter](../../specs/035-chronos2-forecast-adapter/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
 | [SPEC-036: forecast-parallelism-experiment](../../specs/036-forecast-parallelism-experiment/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
@@ -121,3 +121,5 @@ tracking do not create remote records or execution authority.
 ## System One research and delivery traceability
 
 [System One evidence/resumption corpus](../system-one/README.md) reconciles SPEC-028–033 and S1.0–S1.4, including negative results and unfinished T025. Task closure remains distinct from scientific, human, founder and activation gates.
+
+On 2026-10-31 the founder closed S1.0–S1.4 as deferred and parked SPEC-028–033 in the `Deferred` milestone, and closed ADP.1 and FC.2 with human review pending; see the [founder decisions](FOUNDER_DECISIONS_20261031.md).
