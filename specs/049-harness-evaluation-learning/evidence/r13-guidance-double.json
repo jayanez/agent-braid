@@ -1,0 +1,334 @@
+{
+  "recordVersion": "spec049-t005-r13-guidance-double-v1",
+  "task": "SPEC-049/T005 R13",
+  "label": "synthetic-control",
+  "status": "engineering positive control implemented; not an HAR outcome",
+  "frozenRoster": {
+    "path": "specs/049-harness-evaluation-learning/case-roster.md",
+    "sha256": "6a1e55f896fb77a1bbc42dc402eef1abc5d3f56e7a4b1dbcfd152c8c93e6a4e0",
+    "freezeRecord": "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-founder-freeze-20261030.json"
+  },
+  "authorization": "Founder accepted R13 and authorized implementing the guidance-observable double in t005-roster-founder-freeze-20261030.json (merged to develop as 6f4870ea, jayanez/agent-braid#792); frozen case-roster.md SHA-256 6a1e55f896fb77a1bbc42dc402eef1abc5d3f56e7a4b1dbcfd152c8c93e6a4e0. Arm bytes are read from t005-roster-draft.json only after checking its SHA-256 against the freeze record draftEvidenceSha256 (5056b3bb…)",
+  "scope": "Widened beyond the case-roster section 5 sketch (two C01 cases, one resume switch) at the orchestrator's request to cover at least one continuity and one coordination case: two exact arm-B directive lines map to two switches (resume-from-checkpoint, stop-on-drift) over the six assigned roster cases; L3-C02-a stays unassigned (R3). Each directive is also tested alone.",
+  "candidateBinding": "Source/input hashes below; no frozen implementation commit claimed",
+  "inputs": {
+    "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+    "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "agent_braid/harness_refinement.py": "74c342c7a7bd4175e19d3132fe628a81cb9cf81d1e83a6af8f81225c048474dd",
+    "agent_braid/harness_verification.py": "fe8fd34a4d87d4247e8cc696a5f4ef288853c3dbf3daa52d2a7bdf41eadfb3fd",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/049-harness-evaluation-learning/case-roster.md": "6a1e55f896fb77a1bbc42dc402eef1abc5d3f56e7a4b1dbcfd152c8c93e6a4e0",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "b25d038dd99376d4c4c50641a12b40ff59dd0aa9348392e05cfaed34fb58a19b",
+    "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-draft.json": "5056b3bbfafa4a667350ac823861a14d28ea232d5b901ea7bc93574dc721ff43",
+    "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-founder-freeze-20261030.json": "499fe88d8bda05a500dcef2cb07e55429aad3ff59c5a0f2aefe2e9f9887741ff",
+    "tests/test_harness_evaluation.py": "0d9be2568839288deea7b6065e10e2bcae42336f2e568b63e6006eb64f283948",
+    "tests/test_harness_lab.py": "a68bd933c8b3ceb3bcdfd9189401f00213a39105870cdcc374fda7e5e73ae084"
+  },
+  "outputs": {
+    "tests/harness_guidance_double.py": "12090b191da647019f6e73b6e538797767af383c4f94bf86be4bf20fa0dd21fa",
+    "tests/test_harness_guidance_double.py": "635daf92756dd8ab85fedb5471c078a128d6b09e0edf90181d164b62d2c7a464"
+  },
+  "control": {
+    "sha256": "4121338c1175c7c0f6b64741915c324ba90aaa4c6ae6896f480fbd1eac8fbd49",
+    "format": "braid-harness-guidance-double/v0.1",
+    "guidancePath": "guidance/checkpoint.md",
+    "grammar": {
+      "- After an interruption, read the latest checkpoint and resume at the first step it does not mark complete. Do not repeat completed steps.": "resume-from-checkpoint",
+      "- If the source revision or a declared input changed since the checkpoint, stop and report the drift instead of continuing.": "stop-on-drift"
+    },
+    "defaults": {
+      "resume-from-checkpoint": false,
+      "stop-on-drift": false
+    },
+    "cases": {
+      "L1-C01-a": {
+        "stratum": "continuity",
+        "steps": [
+          "s1",
+          "s2",
+          "s3",
+          "s4"
+        ],
+        "checkpoint": 2,
+        "drift": false
+      },
+      "L2-C01-a": {
+        "stratum": "continuity",
+        "steps": [
+          "s1",
+          "s2",
+          "s3"
+        ],
+        "checkpoint": 1,
+        "drift": true
+      },
+      "L1-C02-a": {
+        "stratum": "coordination",
+        "steps": [
+          "w1",
+          "w2"
+        ],
+        "checkpoint": 0,
+        "drift": true
+      },
+      "L1-C03-a": {
+        "stratum": "coordination",
+        "steps": [
+          "w1",
+          "w2"
+        ],
+        "checkpoint": null,
+        "drift": false
+      },
+      "L1-C03-b": {
+        "stratum": "coordination",
+        "steps": [
+          "w1",
+          "w2",
+          "w3"
+        ],
+        "checkpoint": null,
+        "drift": false
+      },
+      "L1-C03-c": {
+        "stratum": "coordination",
+        "steps": [
+          "w1",
+          "w2"
+        ],
+        "checkpoint": 1,
+        "drift": false
+      }
+    },
+    "armCandidates": {
+      "A": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "B": "4bc36ca01e403f9312a74c7658fb77cea88465fc993875a540eff8974fa36516"
+    },
+    "armBFileSha256": "dc3324a6529df71d66945e9999f4ba0f3df754b9b4a84338b9a87d2cce3ebf80"
+  },
+  "placement": "tests/harness_guidance_double.py, a test-support module beside the repository's other owned fixtures (tests/forecast_helpers.py). harness_evaluation does not import it and was not modified.",
+  "method": "Actual offline unittest execution plus recomputation of every cell below with the committed double",
+  "aVersusB": [
+    {
+      "caseId": "L1-C01-a",
+      "stratum": "continuity",
+      "A": {
+        "recordSha256": "519b68a6c3a6bf400134c7fd87ad18a1c922c67ce859476d3593747e54323052",
+        "switches": [],
+        "terminal": "completed",
+        "executed": [
+          "s1",
+          "s2",
+          "s3",
+          "s4"
+        ],
+        "repeated": [
+          "s1",
+          "s2"
+        ]
+      },
+      "B": {
+        "recordSha256": "62baf0f16bb0ca4e1ad508f403004d7d797d7c8bdd7f4c02ba03ddd5929ea3ec",
+        "switches": [
+          "resume-from-checkpoint",
+          "stop-on-drift"
+        ],
+        "terminal": "completed",
+        "executed": [
+          "s3",
+          "s4"
+        ],
+        "repeated": []
+      },
+      "aEqualsB": false
+    },
+    {
+      "caseId": "L2-C01-a",
+      "stratum": "continuity",
+      "A": {
+        "recordSha256": "cadd28c68dd95dc7b0ca7549767b20b73da6c64fed2f4372b8e5b7a3b82e92bb",
+        "switches": [],
+        "terminal": "completed",
+        "executed": [
+          "s1",
+          "s2",
+          "s3"
+        ],
+        "repeated": [
+          "s1"
+        ]
+      },
+      "B": {
+        "recordSha256": "53c8d4eced12bfab6763a36186bae110fb9fb825f151bde93f52660d7345da9d",
+        "switches": [
+          "resume-from-checkpoint",
+          "stop-on-drift"
+        ],
+        "terminal": "interrupted",
+        "executed": [],
+        "repeated": []
+      },
+      "aEqualsB": false
+    },
+    {
+      "caseId": "L1-C02-a",
+      "stratum": "coordination",
+      "A": {
+        "recordSha256": "cd4eb8de22f62f58dbd05b59a3bfef85519ed8edb2337c89b238f1d8e3c032aa",
+        "switches": [],
+        "terminal": "completed",
+        "executed": [
+          "w1",
+          "w2"
+        ],
+        "repeated": []
+      },
+      "B": {
+        "recordSha256": "530c7ad0d44dbd4110e0198a199c6d7349848b6b4409e088dd21fae648f9b2d1",
+        "switches": [
+          "resume-from-checkpoint",
+          "stop-on-drift"
+        ],
+        "terminal": "interrupted",
+        "executed": [],
+        "repeated": []
+      },
+      "aEqualsB": false
+    },
+    {
+      "caseId": "L1-C03-a",
+      "stratum": "coordination",
+      "A": {
+        "recordSha256": "d7ea862b0f41dd962120318d1ecfa1649da0ec7cf4bdc8507791112cd1c7e64a",
+        "switches": [],
+        "terminal": "completed",
+        "executed": [
+          "w1",
+          "w2"
+        ],
+        "repeated": []
+      },
+      "B": {
+        "recordSha256": "de57e8e24f8185dbe342cf00cd1e37c73ec0a4ec3da1824c0f8c175ef435e797",
+        "switches": [
+          "resume-from-checkpoint",
+          "stop-on-drift"
+        ],
+        "terminal": "completed",
+        "executed": [
+          "w1",
+          "w2"
+        ],
+        "repeated": []
+      },
+      "aEqualsB": true
+    },
+    {
+      "caseId": "L1-C03-b",
+      "stratum": "coordination",
+      "A": {
+        "recordSha256": "9b784d9f92f55e0f388818caabefb12be5f0b5f8d0647ccc9eccbd1516ac3332",
+        "switches": [],
+        "terminal": "completed",
+        "executed": [
+          "w1",
+          "w2",
+          "w3"
+        ],
+        "repeated": []
+      },
+      "B": {
+        "recordSha256": "ab2e90293550261e18ce48dce2c9058e91d4d1946831fcf9bfbd9ac761a98cca",
+        "switches": [
+          "resume-from-checkpoint",
+          "stop-on-drift"
+        ],
+        "terminal": "completed",
+        "executed": [
+          "w1",
+          "w2",
+          "w3"
+        ],
+        "repeated": []
+      },
+      "aEqualsB": true
+    },
+    {
+      "caseId": "L1-C03-c",
+      "stratum": "coordination",
+      "A": {
+        "recordSha256": "537f8b4ff4283297ac181aad7a4cd5de1dc5187e712e6cb4b6445f390c1a22d6",
+        "switches": [],
+        "terminal": "completed",
+        "executed": [
+          "w1",
+          "w2"
+        ],
+        "repeated": [
+          "w1"
+        ]
+      },
+      "B": {
+        "recordSha256": "868fd0653958ad9436da5a3d6c08e5ce66c10c9ce1836ec8acec23e3d7852221",
+        "switches": [
+          "resume-from-checkpoint",
+          "stop-on-drift"
+        ],
+        "terminal": "completed",
+        "executed": [
+          "w2"
+        ],
+        "repeated": []
+      },
+      "aEqualsB": false
+    }
+  ],
+  "observed": {
+    "differingCases": [
+      "L1-C01-a",
+      "L1-C02-a",
+      "L1-C03-c",
+      "L2-C01-a"
+    ],
+    "identicalCases": [
+      "L1-C03-a",
+      "L1-C03-b"
+    ],
+    "predictedDifferingCases": [
+      "L1-C01-a",
+      "L1-C02-a",
+      "L1-C03-c",
+      "L2-C01-a"
+    ],
+    "matchesPrediction": true,
+    "withoutDouble": "With the A or B guidance bytes seeded into its workdir, the harness_lab simulated-containment path running a fixture that does not read them gives identical events, terminal and artifacts for A and B on every predicted-differing case. The lab never injects guidance into behaviour; the fixture is guidance-blind by construction (it replays the double's arm-A events), so this shows the existing path cannot make guidance observable, not that a real anchor fixture ignores guidance.",
+    "negativeControls": "A reworded directive file and an empty guidance/checkpoint.md (an empty perturbation of A) give behaviour identical to A on every case",
+    "refusals": "roster-drift (draft arm bytes not bound by the freeze record), control-drift (grammar, cases or applying code changed after import), guidance-hash-mismatch (B bytes declared as A; tampered B bytes declared as B), path-not-allowed, invalid-guidance, unknown-case",
+    "verdictExclusion": "register refuses cohort 'synthetic-control' (invalid-registration); evaluate refuses double records as rows, also when repackaged as VerificationRecord (invalid-row); every record carries verdictEligible false and executionAuthorization false"
+  },
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_guidance_double -v",
+      "exitCode": 0,
+      "testsRun": 21,
+      "scope": "Focused module run, Python 3.13.11."
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "testsRun": 597,
+      "scope": "All harness modules, Python 3.13.11."
+    },
+    {
+      "command": "PYTHONPATH=. .venv-speckit/bin/python <scratch generator, not committed> (recomputes control hash, arm hashes and aVersusB from tests/harness_guidance_double.py)",
+      "exitCode": 0,
+      "scope": "Produced the control and aVersusB sections of this record"
+    }
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "verdictEligible": false,
+  "limits": "Synthetic-control positive control only. It shows that guidance can reach a solver and make arms A and B distinguishable; it does not show that any guidance is better, is not native evidence and is excluded from every D4 verdict and method claim. The scenarios are owned abstractions of the anchor tests (step lists, checkpoint and drift flags), not executions of the anchors, and the A/B difference is produced by a frozen mapping written for this control. No arm C exists (R8 deferred) and no A/B/C comparison was made. Unmet section 5 acceptance: no HAR Unit, oracle verdict, denominator or cost was produced, so end-to-end propagation through T011/T012/T003 is not shown. The double reads a fixed GUIDANCE_PATH rather than a manifest's allowedComponentPaths, so a candidate with any other component is refused rather than partially read, and reads arm-A/B bytes from the roster draft that the freeze record binds by hash. No host, model, network, clock or paid route was used. Pre-PR reviews were run by Claude subagents and are not independent Luna review."
+}
