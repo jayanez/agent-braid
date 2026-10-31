@@ -1,0 +1,109 @@
+{
+  "candidateBinding": "Current source/input hashes on base 99919eddae66034298931eceda13dd9cf2b4efb7; no frozen implementation commit claimed",
+  "decisionRecords": {
+    "d2Caps": {
+      "parsedCaps": "unit 1800 s, session <= 10 % of 5-hour window, cohort <= 15 % of weekly window, <= 16 units, weekly stop above 80 %, EUR 0 additional cash",
+      "path": "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json",
+      "sha256": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
+      "source": "origin/develop 99919edd (PR #793); SHA-256 verified equal to the hash bound here"
+    },
+    "founderReview": {
+      "parsedDecisions": {
+        "claude": "qualification-authorized",
+        "codex": "not-qualified: not installed"
+      },
+      "path": "specs/048-harness-variant-laboratory/evidence/founder-review-20261031.json",
+      "sha256": "38bedbba82de5c219f3c0a3f6c8f2e3a0309824abeea536862bdc20e3ab4eddc",
+      "source": "origin/develop 99919edd (PR #793); SHA-256 verified equal to the hash bound here"
+    }
+  },
+  "disposition": "Open: native Claude qualification infeasible with the existing adapters. The native gate passed (both founder records on origin/develop at 99919edd), but no native session was opened because containment cannot be verified first: no Claude containment qualification exists and the adapters cannot dispatch a contained native session (see nativeFeasibility). Offline host-profile gate implemented and tested. Codex stays refused.",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_hosts -v",
+      "exitCode": 0,
+      "scope": "Deterministic decision/caps records, quota observations and Claude qualification records authored in the test. Manual mutation checks: disabling the extra-usage admission or settlement check, the weekly stop, the per-host verdict check, the completed-unit requirement or the containment expiry check each failed tests before restoring.",
+      "testsRun": 28
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules in this worktree including the new module",
+      "testsRun": 604
+    },
+    {
+      "command": "tests.test_harness_hosts.RepositoryRecordTests (parse the committed founder records with their bound SHA-256)",
+      "exitCode": 0,
+      "scope": "Real record bytes on develop parse: Claude authorized, Codex not-qualified: not installed, caps exactly the D2 values"
+    },
+    {
+      "command": "git fetch origin; git cat-file -e origin/develop:<each founder record>",
+      "exitCode": 0,
+      "scope": "Native gate: absent at 2026-10-31T07:44Z and 07:54Z (origin/develop 6f4870ea); present after PR #793 (99919edd), checked at 08:55Z."
+    },
+    {
+      "command": "HostQualificationRun on the committed records with the 08:55Z get_usage reading; admit_unit with no containment qualification record",
+      "exitCode": 1,
+      "scope": "Gate run before any native session: Codex refused 'not-qualified: not installed'; Claude admission refused 'invalid-qualification' at the containment check (all D2 quota checks passed on that reading: 5-hour 89 % + 10 % session reserve = 99 %, weekly 49 %, extra usage off). No session launched."
+    }
+  ],
+  "executionAuthorization": false,
+  "hostObservation": {
+    "claude": "/opt/homebrew/bin/claude 2.1.292 (Claude Code)",
+    "codex": "absent (command -v codex: not found)",
+    "quotaConsumedByNativeQualification": "none: no native session opened. The rise between readings (5-hour 46 -> 89 %, weekly 43 -> 49 %) is the account's other concurrent sessions, including this offline work and its reviews, not T008 native units.",
+    "quotaReadings": [
+      {
+        "extraUsageEnabled": false,
+        "fiveHourPercent": 46,
+        "fiveHourResetsAt": "2026-10-31T11:59:59.853Z",
+        "observedAt": "2026-10-31T07:49Z",
+        "plan": "Max",
+        "source": "Claude Desktop get_usage, read-only",
+        "weeklyAllModelsPercent": 43,
+        "weeklyFablePercent": 10,
+        "weeklyResetsAt": "2026-11-02T19:59:59.853Z"
+      },
+      {
+        "extraUsageEnabled": false,
+        "fiveHourPercent": 89,
+        "fiveHourResetsAt": "2026-10-31T12:00:00.040Z",
+        "gateObservationSha256": "adbbb147703121ec2a8aab130dcd59ce34b8af0e0a865148828b7f12d3cd1eda",
+        "observedAt": "2026-10-31T08:55Z",
+        "plan": "Max",
+        "source": "Claude Desktop get_usage, read-only",
+        "weeklyAllModelsPercent": 49,
+        "weeklyFablePercent": 13,
+        "weeklyResetsAt": "2026-11-02T20:00:00.040Z"
+      }
+    ]
+  },
+  "inputs": {
+    "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+    "agent_braid/harness_host_claude.py": "9798cec28e0b12e7cc9a31056b145169bcc217f67a894cbcda930d12e856b795",
+    "agent_braid/harness_hosts.py": "c62480020499bd34d33a6012e71846f0646b1ecd320816356c5505b1c2266104",
+    "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
+    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
+    "specs/048-harness-variant-laboratory/evidence/founder-review-20261031.json": "38bedbba82de5c219f3c0a3f6c8f2e3a0309824abeea536862bdc20e3ab4eddc",
+    "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
+    "tests/test_harness_hosts.py": "a98ed9b5b1824c497abac262c9a99bc4de0443af9e7d06158f3415f25bc33be5"
+  },
+  "limits": [
+    "Quota readings are integer percentages of plan windows; sub-point consumption is invisible and caps are enforced at one-point granularity. Per-unit token counts are not observed.",
+    "The weekly cost of a unit is unknown before it runs. Admission reserves the largest weekly delta seen so far in the cohort, which is zero for the first unit, so a first-unit overshoot of the cohort or 80 % stop is detected at settlement, not prevented.",
+    "Freshness bound of 300 s is an implementation choice; the D2 record says only 'stale'.",
+    "One HostQualificationRun is one cohort. Unit and cohort caps are not persisted across runs; the trusted caller must not restart a cohort to reset them.",
+    "ProfileDecision, D2Caps and QuotaObservation are trusted in-process inputs; the run checks their types and host, not that they came from parse_profile_decisions / parse_d2_caps or a real get_usage reading.",
+    "A qualified verdict needs one completed unit within caps and no integrity stop; it says nothing about utility, and never about the other host.",
+    "Route is supplied by the caller as 'subscription' when get_usage reports plan status ok; get_usage exposes no route field."
+  ],
+  "nativeFeasibility": "Infeasible now with the existing adapters. harness_host_claude.run_claude refuses any non-double transport unless the manifest names host kind 'claude', but harness_manifest parses only the offline profile; no native ClaudeTransport subclass exists; harness_lab offers only simulated containment; and no Claude HostQualification with enforced credential/filesystem/network/process effects has been issued from evidence. The founder authorization requires containment verified before every native session and the brief allows only the containment the adapters already verify, so a native session would have to bypass the adapters or rely on a self-authored qualification record (synthetic evidence). Neither was done.",
+  "outcome": "agent_braid/harness_hosts.py: hash-bound parsing of the founder T008 record into independent per-host decisions (Codex not-qualified: not installed; a host without its own decision stays refused) and of the D2 record into exact caps; strict quota observations bound by SHA-256; a serial one-host cohort that, before every unit, requires a fresh, non-regressing reading, refuses on extra usage, non-subscription route, window reset or imminent reset, weekly stop, cohort cap and five-hour headroom, and verifies the Claude containment qualification (reusing harness_host_claude.verify_host_qualification) for environment and expiry through the unit deadline; settlement records deltas, wall time and the first breach and latches a stop. Partial qualification never implies both-host acceptance.",
+  "pending": [
+    "A native Claude transport, a non-offline manifest profile and an enforced-effect Claude containment backend whose qualification is obtained from evidence, before any native T008 unit",
+    "Native Claude qualification units with before/after get_usage readings under HostQualificationRun",
+    "Codex profile review before closing HAR.1 (founder decision: not qualified, not installed)"
+  ],
+  "task": "SPEC-048/T008"
+}
