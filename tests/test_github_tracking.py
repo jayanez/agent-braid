@@ -55,12 +55,11 @@ class TrackingTests(unittest.TestCase):
                     self.assertEqual(expected[field], item[field])
         open_tasks = {item["key"] for item in desired
                       if item["state"] == "open" and item["kind"] == "task"}
-        required_open = {
-            "SPEC-009/T009", "SPEC-011/T008",
-            "SPEC-019/T001", "SPEC-019/T003",
-            "SPEC-019/T005", "SPEC-019/T007",
-        }
-        self.assertTrue(required_open <= open_tasks)
+        self.assertIn("SPEC-009/T009", open_tasks)
+        # M3.5 tasks close only through owner-adopted cancellations, never as completed.
+        for key in ("SPEC-019/T001", "SPEC-019/T003", "SPEC-019/T005", "SPEC-019/T007"):
+            self.assertNotIn(key, open_tasks)
+            self.assertIn(key, config["task_cancellations"])
         self.assertNotIn("SPEC-002/T006", open_tasks)
         self.assertIn("SPEC-002/T006", config["task_state_overrides"])
         self.assertNotIn("SPEC-019/T002", open_tasks)
