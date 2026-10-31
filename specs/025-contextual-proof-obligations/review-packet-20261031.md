@@ -73,6 +73,15 @@ superseded for T007 by `tasks.md` and this packet.
 4. Any proof-tool adoption (ADR gate; not proposed here).
 5. Any independent external reproduction (current runs share host, team and environment).
 
+## Real-use evidence (2026-10-31)
+
+No observations. Searched `~/.local/share/agent-braid/{evidence,coordination,identity,telemetry}`,
+`~/.local/state/agent-braid` and `~/Library/Application Support/AgentBraid` for
+SPEC-025/contextual-proof material: the only matches are unrelated SPEC-041 test
+logs. The `agent-braid` CLI was not on PATH, so the telemetry database report,
+`~/.claude/projects` (SPEC-053) and `~/.codex/sessions` were not queried. The proof
+obligations are about abstract finite carriers; no real-use receipt informs them.
+
 ## Scientific limits
 
 Finite evidence only; matching listed continuations is not universal equivalence.
