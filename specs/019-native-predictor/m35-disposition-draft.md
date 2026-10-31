@@ -1,11 +1,10 @@
-# M3.5 (SPEC-019) cancellation-or-deferral decision draft
+# M3.5 (SPEC-019) owner disposition: cancelled as infeasible
 
-**Status: DRAFT for founder decision. UNSIGNED. No decision is adopted, inferred or
-recorded by this file.** Nothing here edits a task checkbox, closes an issue, or
-changes `docs/development/github-tracking.json`, `STATUS.md`, `ROADMAP.md` or
-`SPEC_MILESTONE_INDEX.md`; tracking owners apply an adopted option only after the
-decision fields below are signed. Evidence below supports only its stated domain: a
-bounded, owner-only source screen. It does not show that no suitable source exists.
+**Status: owner decision recorded 2026-10-31 (Option A, cancel as infeasible, with explicit reopen criteria). Pending PR review and integration.**
+
+On 2026-10-31 the owner (founder, jayanez) answered in the coordinator chat: "Cancelar por inviables" (cancel as infeasible), and chose a "Deferred" milestone for parking blocked work. The coordinator session relayed this answer to the drafting session by cross-session message. This is integrator-recorded provenance, not cryptographic authentication, and nothing beyond the quoted answer is inferred.
+
+This file edits no task checkbox and no tracking file; the tracking owner applies the result after merge. Evidence below supports only its stated domain: a bounded, owner-only source screen. It does not show that no suitable source exists.
 
 Modeled on [SPEC-034 T005](../034-workload-forecast-data/t005-disposition.md) and
 [SPEC-045 T007](../045-local-forecasting-capabilities/t007-disposition.md), whose
@@ -69,7 +68,7 @@ Tracking changes this would imply (to be done by the tracking owner, not here):
 - Dependency statements stay unchanged and unsatisfied; closure of an issue is not
   predecessor acceptance.
 
-## Option B: defer with explicit reopen criteria
+## Option B (not selected): defer; its criteria become the reopen conditions
 
 Tasks stay open and unchanged. The signed text adds a dated review point and the
 criteria below. Criteria 1 to 4 come from existing re-entry conditions
@@ -107,13 +106,21 @@ Tracking changes this would imply:
 | Milestone 9 closure | Possible after separate scope decision | Blocked indefinitely |
 | New authority needed | Signed record, hash-bound entries | Signed criteria only |
 
-## Decision fields (UNSIGNED)
+## Adopted decision (2026-10-31)
 
-- Selected option (A cancel / B defer / other): `______` **UNSIGNED**
-- If B: review date `______`, sunset date or "none" `______` **UNSIGNED**
-- If B: reopen criteria adopted as drafted / amended text `______` **UNSIGNED**
-- Parent #180 and milestone 9 disposition (separate): `______` **UNSIGNED**
-- Founder name: `______`  Date: `______`  Signature/instruction reference: `______` **UNSIGNED**
+- Selected option: **A, cancel as infeasible**. Option B (defer) was not selected as the
+  disposition; its reopen criteria are kept below as the explicit reopen conditions.
+- Adopted text: the Option A statements above apply, including supersession of
+  [software-completion.md:44](software-completion.md) for T001, T003, T005 and T007 only.
+- Reopen criteria (explicit): criteria 1 to 5 of Option B. Criterion 5 is a new
+  proposed governance condition, adopted here only by the cancellation instruction; the
+  founder may amend it on PR review. Reopening needs a new reviewed task and decision;
+  the cancelled attempt is not inherited.
+- Parent #180 and milestone 9: not decided by the quoted answer. The coordinator asked
+  the tracking owner to close them after merge; the founder confirms this on PR review.
+- Hash-bound records: `evidence/t001-...`, `t003-...`, `t005-...`, `t007-owner-disposition-2026-10-31.json`
+  in this directory (`agent-braid-task-cancellation-v1`).
+- Founder instruction reference: "Cancelar por inviables", coordinator chat, 2026-10-31.
 
-A signed record is integrator-recorded provenance, not cryptographic authentication,
-as in the cited precedents.
+This record is integrator-recorded provenance, not cryptographic authentication, as
+in the cited precedents.

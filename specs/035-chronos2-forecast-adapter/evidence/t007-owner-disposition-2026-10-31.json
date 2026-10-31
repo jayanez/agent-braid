@@ -1,0 +1,16 @@
+{
+  "version": "agent-braid-task-cancellation-v1",
+  "taskId": "SPEC-035/T007",
+  "decision": "adopted",
+  "disposition": "cancelled-partial-infeasible",
+  "stateReason": "not_planned",
+  "criterionCompleted": false,
+  "taskLineSha256": "5c10d4652e7b344f92d15e932b7527dbe43c159dfb1a0e28db82334b147c7131",
+  "sourceReference": "Owner (founder jayanez) decision of 2026-10-31, answered in the coordinator chat: \"Cancelar por inviables\" (cancel as infeasible); relayed to the drafting session by the coordinator session in a cross-session message. Integrator-recorded provenance, not independently authenticated; the founder reviews it again in the PR.",
+  "reason": "FC.1 cancelled as infeasible by owner decision (route (a) in specs/034-workload-forecast-data/fc1-milestone-disposition-draft.md) after SPEC-034 T005 cancellation left source, resource and experiment gates unmet. Original criterion unchecked; dependencies unsatisfied; no forecasting utility, source, model or promotion accepted.",
+  "decisionDocument": "specs/034-workload-forecast-data/fc1-milestone-disposition-draft.md",
+  "parentAndMilestoneClosureAuthorized": false,
+  "dependenciesSatisfied": false,
+  "executionAuthorization": false,
+  "newExecutionOrPackageAuthorized": false
+}

@@ -1,9 +1,10 @@
-# FC.1 milestone-level disposition decision draft (SPEC-034 to SPEC-037)
+# FC.1 milestone-level owner disposition: route (a), cancelled as infeasible (SPEC-034 to SPEC-037)
 
-**Status: DRAFT for founder decision. UNSIGNED. No decision is adopted, inferred or
-recorded by this file.** It edits no task checkbox, closes no issue and changes no
-tracking file (`github-tracking.json`, `STATUS.md`, `ROADMAP.md`,
-`SPEC_MILESTONE_INDEX.md`); the tracking owner applies a signed route afterwards.
+**Status: owner decision recorded 2026-10-31, route (a). Pending PR review and integration.**
+
+On 2026-10-31 the owner (founder, jayanez) answered in the coordinator chat: "Cancelar por inviables" (cancel as infeasible), and chose a "Deferred" milestone for parking blocked work. The coordinator session relayed this answer to the drafting session by cross-session message. This is integrator-recorded provenance, not cryptographic authentication, and nothing beyond the quoted answer is inferred.
+
+This file edits no task checkbox and no tracking file (`github-tracking.json`, `STATUS.md`, `ROADMAP.md`, `SPEC_MILESTONE_INDEX.md`); the tracking owner applies it after merge.
 Modeled on [t005-disposition.md](t005-disposition.md) and the
 [SPEC-045 T007 disposition](../045-local-forecasting-capabilities/t007-disposition.md).
 
@@ -99,7 +100,7 @@ audit (034/T007), real Chronos-2 conformance and cost (035/T008, separate approv
 provisioning and compute), the frozen registration (036/T001), and per-run operator
 authority for the holdout (036/T007). None is authorized by this draft.
 
-## Issue map (every FC.1 issue)
+## Issue map (every FC.1 issue; route (b) column kept for the record, not selected)
 
 Legend. Route (a): **DONE-A** completed on an infeasible/no-go basis, **CANCEL**
 cancelled `not_planned`, **OPEN** stays open pending separate decision, **KEEP**
@@ -162,15 +163,30 @@ parents and milestone stay open until the separate scope decision. Route (b):
 decision record lifting the T005 prohibition, a `task_cancellations` change for
 #340, new source and privacy review packet, no other change.
 
-## Decision fields (UNSIGNED)
+## Adopted decision (2026-10-31)
 
-- Route (a close infeasible / b reopen T005 / other): `______` **UNSIGNED**
-- Answers to Q1 to Q4: `______` **UNSIGNED**
-- If (b): explicit lifting of the 2026-10-16 prohibition on new executions and
-  packages, named bounds and source set: `______` **UNSIGNED**
-- Parents #335/#344/#353/#363 and milestone 18: `______` **UNSIGNED**
-- Founder name: `______`  Date: `______`  Signature/instruction reference: `______` **UNSIGNED**
+- Route: **(a), cancel and exit as infeasible**. Route (b) was not selected.
+- Q1 to Q4: not answered separately by the quoted answer. The issue map above is applied
+  as drafted (Q1 exit basis for the five exit rows, Q2 design reviews cancelled, Q3
+  synthetic software unchanged, Q4 parents handled below). The founder may amend any of
+  these on PR review.
+- Infeasibility exit and no-go record: this document is the recorded pre-launch
+  infeasibility exit (036/T001, T008, T009) and the 037 no-go (037/T007, T008): no
+  admissible source window, no admitted local resource profile (034/T005 cancelled), no
+  executed holdout. Learned/forecast traffic stays shadow/off; SPEC-021 G4 NO-GO and M4
+  interpretation are unchanged. No forecasting utility, source, model or promotion is accepted.
+- Tracking mechanism: the repo supports only the hash-bound cancellation record
+  (`not_planned`, criterion unchecked). The five exit rows (#354, #361, #362, #370, #371)
+  therefore also get cancellation records stating their basis; no result artifact exists.
+  Whether to use an evidence-backed completed override instead is the tracking owner's
+  and founder's call on PR review.
+- Parents #335/#344/#353/#363 and milestone 18: not decided by the quoted answer. The
+  coordinator asked the tracking owner to close them after merge; the founder confirms on
+  PR review. The "Deferred" milestone choice is recorded only as relayed; no issue is
+  moved by this document.
+- Hash-bound records: 26 files `tNNN-owner-disposition-2026-10-31.json` under
+  `specs/034..037/evidence/` (`agent-braid-task-cancellation-v1`).
+- Founder instruction reference: "Cancelar por inviables", coordinator chat, 2026-10-31.
 
-Integrator-recorded provenance only, not cryptographic authentication, as in the
-cited precedents. No evidence here accepts forecasting utility, a source, a model
-or a promotion.
+This record is integrator-recorded provenance, not cryptographic authentication, as in
+the cited precedents.
