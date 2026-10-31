@@ -1,0 +1,16 @@
+{
+  "version": "agent-braid-task-cancellation-v1",
+  "taskId": "SPEC-019/T001",
+  "decision": "adopted",
+  "disposition": "cancelled-partial-infeasible",
+  "stateReason": "not_planned",
+  "criterionCompleted": false,
+  "taskLineSha256": "6672866934da56c5a684e8d5e4f442a3e81c4f5ab4dd73e20c8ee0d6acd247eb",
+  "sourceReference": "Owner (founder jayanez) decision of 2026-10-31, answered in the coordinator chat: \"Cancelar por inviables\" (cancel as infeasible); relayed to the drafting session by the coordinator session in a cross-session message. Integrator-recorded provenance, not independently authenticated; the founder reviews it again in the PR.",
+  "reason": "Synthetic software delivered; the real-workload experiment phase is cancelled as infeasible by owner decision (zero eligible families or admitted pairs in the bounded review). Original criterion unchecked; dependencies unsatisfied; no real source, fit or result exists or is claimed. Explicit reopen criteria are in specs/019-native-predictor/m35-disposition-draft.md.",
+  "decisionDocument": "specs/019-native-predictor/m35-disposition-draft.md",
+  "parentAndMilestoneClosureAuthorized": false,
+  "dependenciesSatisfied": false,
+  "executionAuthorization": false,
+  "newExecutionOrPackageAuthorized": false
+}
