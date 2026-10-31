@@ -7,10 +7,10 @@
     "M1 — Observable interaction analyzer": "Read-only analyzer and internal closure.",
     "M2 — Confluence lab and scheduler": "Confluence laboratory; bounded Git patch replay and advisory preparation planning, closed internally.",
     "M3 — Braid semantics": "Braid structure; bounded structured exchange closed internally.",
-    "M3.5 — Native proposal predictor": "Synthetic software complete: offline trainer/inference, adapter/evaluator controls and deterministic verifier boundary (PRs #463/#473). Only the deferred real-workload experiment remains: T007/#188 source admission, T001/#181 preregistration/annotation, T003/#183 real fit/evaluation and T005/#185 evidence/human review/founder decision. Zero eligible families or admitted real pairs; thresholds unchanged. Parent #180 and milestone 9 remain open.",
+    "M3.5 — Native proposal predictor": "Synthetic software complete: offline trainer/inference, adapter/evaluator controls and deterministic verifier boundary (PRs #463/#473). Only the deferred real-workload experiment remains: T007/#188 source admission, T001/#181 preregistration/annotation, T003/#183 real fit/evaluation and T005/#185 evidence/human review/founder decision. Zero eligible families or admitted real pairs; thresholds unchanged. Closed 2026-10-31 by owner decision \"Cancelar por inviables\": the four open tasks are cancelled as infeasible (specs/019-native-predictor/m35-disposition-draft.md), with reopen criteria; parked follow-up is tracked in Deferred.",
     "M4 — Agent Braid runtime": "Founder-accepted bounded local runtime alpha and completed evaluation with negative utility; historical G4 NO-GO on useful speedup and deferred capabilities preserved.",
     "PUB.1 — Public research preview": "Public publication and cutover verification.",
-    "GOV.1 — Governance and adoption": "Governance and adoption work spanning release milestones.",
+    "GOV.1 — Governance and adoption": "Governance and adoption work spanning release milestones. Closed 2026-10-31 by owner decision \"Cerrar con revisión pendiente\": SPEC-011 T008 is an engineering closure with human review of the draft registry pending; SPEC-026 tasks are complete.",
     "ADP.1 — Recorded-trace adapters": "Read-only recorded trace import and bounded adapter spikes; adoption and runtime authorization remain separate. Closed 2026-10-31 by founder decision; human review remains pending.",
     "LAB.1 — Effectful workload lab": "Bounded simulated non-Git effectful workloads and conservative analysis; no real external execution. Closed 2026-10-31 by founder decision (engineering closure of T005-T008, PR #797); scientific review remains pending.",
     "RES.1 — Formal interaction research": "Contextual and trace-safety obligations, restricted proof review and comparator feasibility; separate from M4 runtime. Closed 2026-10-31 by founder decision (T007 engineering closure with frozen candidate and proof review packet, PR #795); independent proof review remains pending.",
@@ -19,7 +19,7 @@
     "S1.2 — Native decision model": "Isolated neural software and bounded EN/ES taxonomy training/comparison/resident-runtime evidence exist, including negative transfer and cold-start limits. Broader rights, common architecture evaluation, human workflow acceptance and promotion remain pending. Index: docs/system-one/README.md. Closed as deferred 2026-10-31 by founder decision; remaining work moved to the Deferred milestone.",
     "S1.3 — Advisory integration": "Synthetic advisory adapters and bounded native preparation/transport studies exist; native workflow utility target was not met. Versioned EOF integration and reusable acquisition/consumer proposals are tracked separately; no grants or activation implied. Index: docs/system-one/README.md. Closed as deferred 2026-10-31 by founder decision; remaining work moved to the Deferred milestone.",
     "S1.4 — Product capabilities and promotion": "Selected schema compiler, metadata router and hooks have engineering evidence; catalogue/export/batching branches remain independently selected/deferred. Shadow, drift, rollback, human/founder per-capability promotion and activation remain pending. Index: docs/system-one/README.md. Closed as deferred 2026-10-31 by founder decision; remaining work moved to the Deferred milestone.",
-    "FC.1 — Forecast-guided parallelism experiment": "Permissioned workload telemetry, optional local Chronos-2, prospective forecasting/complete-cost parallelism experiment and separately governed shadow/promotion. Negative or infeasible outcomes are valid; no new execution domain or M4 closure.",
+    "FC.1 — Forecast-guided parallelism experiment": "Permissioned workload telemetry, optional local Chronos-2, prospective forecasting/complete-cost parallelism experiment and separately governed shadow/promotion. Negative or infeasible outcomes are valid; no new execution domain or M4 closure. Closed 2026-10-31 by owner decision \"Cancelar por inviables\": the 26 open SPEC-034 to SPEC-037 tasks are cancelled as infeasible (specs/034-workload-forecast-data/fc1-milestone-disposition-draft.md), with reopen criteria.",
     "M4.5 — AI tooling integrations for Codex and Claude Code": "Adjacent to bounded-complete M4; historical G4 NO-GO and negative utility preserved. The combined source portfolio has 10 specs and 131 tasks (102 checked, 29 open), with 3 historically closed parents, the closed SPEC-054 parent and 6 open parents (SPEC-060 adds the draft portable prompt names contract and its 11 tasks); source counts do not assert remote issue closure. SPEC-039/040/042 retain bounded accepted scopes and SPEC-044/T004 retains its historical bounded closure. SPEC-046 owns native plugins and its 19 tasks (T016–T019 are an unpublished stale-registry defect fix); external candidacy approvals remain pending. SPEC-047 adds default-off local aggregate telemetry. Existing Luna review is bound to b2cf477fe9f9; integration adaptations and resulting candidate have separate review/validation. Pilot NO-GO; T017/T018/T010, native observations, ADR adoption, human/founder acceptance and M4.5 closure remain open. Closed 2026-10-31 by founder decision (specs/044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md, PR #799); remaining native-evaluation, submission and alias work moved to the Deferred milestone.",
     "FC.2 — Local forecasting capabilities": "Local default-off API/CLI/MCP forecasting, synthetic engineering/reproduction and separately approved actual Chronos CPU conformance; no real workload utility or promotion implied. Closed 2026-10-31 by founder decision; human review remains pending.",
     "HAR.1 — Braid Harness laboratory": "Provide a native Agent Braid mechanism to propose, probe and compose small task-local harness variants against an immutable base, first with deterministic fixtures and later through separately qualified Codex/Claude adapters. Draft planning; no due date, native acceptance or activation implied. Extra cash spend EUR 0.",
@@ -44,7 +44,10 @@
     "S1.4 — Product capabilities and promotion",
     "LAB.1 — Effectful workload lab",
     "RES.1 — Formal interaction research",
-    "M4.5 — AI tooling integrations for Codex and Claude Code"
+    "M4.5 — AI tooling integrations for Codex and Claude Code",
+    "M3.5 — Native proposal predictor",
+    "GOV.1 — Governance and adoption",
+    "FC.1 — Forecast-guided parallelism experiment"
   ],
   "specs": {
     "001-certificate-verifier-pilot": {
@@ -89,7 +92,7 @@
     },
     "011-adoption-pathline": {
       "milestone": "GOV.1 — Governance and adoption",
-      "state": "open"
+      "state": "closed"
     },
     "012-m2-git-replay-planner": {
       "milestone": "M2 — Confluence lab and scheduler",
@@ -121,7 +124,7 @@
     },
     "019-native-predictor": {
       "milestone": "M3.5 — Native proposal predictor",
-      "state": "open"
+      "state": "closed"
     },
     "020-m4-local-git-runtime": {
       "milestone": "M4 — Agent Braid runtime",
@@ -149,7 +152,7 @@
     },
     "026-adoption-evidence-program": {
       "milestone": "GOV.1 — Governance and adoption",
-      "state": "open"
+      "state": "closed"
     },
     "027-runtime-refinement-contracts": {
       "milestone": "M4 — Agent Braid runtime",
@@ -181,19 +184,19 @@
     },
     "034-workload-forecast-data": {
       "milestone": "FC.1 — Forecast-guided parallelism experiment",
-      "state": "open"
+      "state": "closed"
     },
     "035-chronos2-forecast-adapter": {
       "milestone": "FC.1 — Forecast-guided parallelism experiment",
-      "state": "open"
+      "state": "closed"
     },
     "036-forecast-parallelism-experiment": {
       "milestone": "FC.1 — Forecast-guided parallelism experiment",
-      "state": "open"
+      "state": "closed"
     },
     "037-forecast-advisory-integration": {
       "milestone": "FC.1 — Forecast-guided parallelism experiment",
-      "state": "open"
+      "state": "closed"
     },
     "038-m4-real-workload-closure": {
       "milestone": "M4 — Agent Braid runtime",
@@ -285,20 +288,12 @@
     "SPEC-002/T006": "Owner closure decision of 2026-10-31 (docs/development/FOUNDER_DECISIONS_20261031.md): the milestone closes with this task accepted while the human strategy review and separate founder decisions remain pending (human_review: pending). Closing the issue records no review or approval."
   },
   "project_review_pending": [
-    "SPEC-011",
-    "SPEC-011/T008",
-    "SPEC-019",
-    "SPEC-026",
     "SPEC-028",
     "SPEC-029",
     "SPEC-030",
     "SPEC-031",
     "SPEC-032",
     "SPEC-033",
-    "SPEC-034",
-    "SPEC-035",
-    "SPEC-036",
-    "SPEC-037",
     "SPEC-041",
     "SPEC-043",
     "SPEC-044",
@@ -343,6 +338,126 @@
     "SPEC-034/T005": {
       "decision": "specs/034-workload-forecast-data/evidence/t005-owner-disposition-2026-10-16.json",
       "sha256": "3bc77b87db23653a3dd3136146743400e9d73403a7e8c49f7695d0fc697ee909"
+    },
+    "SPEC-019/T001": {
+      "decision": "specs/019-native-predictor/evidence/t001-owner-disposition-2026-10-31.json",
+      "sha256": "c86bdff5c698e669d0ddc91556288a0b987716d00e7d700d961e5eb683b4cb87"
+    },
+    "SPEC-019/T003": {
+      "decision": "specs/019-native-predictor/evidence/t003-owner-disposition-2026-10-31.json",
+      "sha256": "15a0de0ffb10a4faef7ac50fae9859316f88b624345dd7838a72e6fe4005ddb6"
+    },
+    "SPEC-019/T005": {
+      "decision": "specs/019-native-predictor/evidence/t005-owner-disposition-2026-10-31.json",
+      "sha256": "6ba0c17248a1ff8fd400e424a4d2b4a5901acef9961617890ae4ada0f4642ab7"
+    },
+    "SPEC-019/T007": {
+      "decision": "specs/019-native-predictor/evidence/t007-owner-disposition-2026-10-31.json",
+      "sha256": "1fbbdc141099a92ea97fedf8e740cced0d89de88dba7516a3cdd82206673123d"
+    },
+    "SPEC-034/T001": {
+      "decision": "specs/034-workload-forecast-data/evidence/t001-owner-disposition-2026-10-31.json",
+      "sha256": "a8e395093e48e9a12f51ae1d38bb678153867c5e47772dfae9c5d6299703ac16"
+    },
+    "SPEC-034/T003": {
+      "decision": "specs/034-workload-forecast-data/evidence/t003-owner-disposition-2026-10-31.json",
+      "sha256": "e53162fa4e0e6b9cae45660343025a45102a6e5b145e7f868255601857618a21"
+    },
+    "SPEC-034/T006": {
+      "decision": "specs/034-workload-forecast-data/evidence/t006-owner-disposition-2026-10-31.json",
+      "sha256": "d6aa3e17c8fd30cf065854105fafb9d1ee66b53cedb3923415632e24a6e65bec"
+    },
+    "SPEC-034/T007": {
+      "decision": "specs/034-workload-forecast-data/evidence/t007-owner-disposition-2026-10-31.json",
+      "sha256": "6a91734a96ce040053e66399f53e5642a6cab26cd08ab5b26f50fac5de716f11"
+    },
+    "SPEC-034/T008": {
+      "decision": "specs/034-workload-forecast-data/evidence/t008-owner-disposition-2026-10-31.json",
+      "sha256": "f60fb68b69f5eb72965f68dc90b26a21627f368a95f05a3399eedc59abf3c879"
+    },
+    "SPEC-035/T001": {
+      "decision": "specs/035-chronos2-forecast-adapter/evidence/t001-owner-disposition-2026-10-31.json",
+      "sha256": "1a69867ea1ad7156792babd8364a15c213b1be19a190f06d11c0e954effbdb05"
+    },
+    "SPEC-035/T006": {
+      "decision": "specs/035-chronos2-forecast-adapter/evidence/t006-owner-disposition-2026-10-31.json",
+      "sha256": "fc6351ad971c305002c13551b00e778ec439522a776e62a31ae0eb1999cf5a54"
+    },
+    "SPEC-035/T007": {
+      "decision": "specs/035-chronos2-forecast-adapter/evidence/t007-owner-disposition-2026-10-31.json",
+      "sha256": "a9ee4604026e5d7dacca3bd3942523744c90659fa1f2464b3d0d0e98921da9fd"
+    },
+    "SPEC-035/T008": {
+      "decision": "specs/035-chronos2-forecast-adapter/evidence/t008-owner-disposition-2026-10-31.json",
+      "sha256": "5e1e5e3cbb3b568529c8667413cbf85afd6c456149fe870b4c29311b1ddafedb"
+    },
+    "SPEC-036/T001": {
+      "decision": "specs/036-forecast-parallelism-experiment/evidence/t001-owner-disposition-2026-10-31.json",
+      "sha256": "921f0b2c27ec4b4541172633951d159f7e983c10034fa8f7429c360a5697a84e"
+    },
+    "SPEC-036/T002": {
+      "decision": "specs/036-forecast-parallelism-experiment/evidence/t002-owner-disposition-2026-10-31.json",
+      "sha256": "2d3fc8e15cd6c2012a925ff8c8d70ff067763aba1f9f5fbf5b142f15a84d614d"
+    },
+    "SPEC-036/T003": {
+      "decision": "specs/036-forecast-parallelism-experiment/evidence/t003-owner-disposition-2026-10-31.json",
+      "sha256": "71d69ccc38a84034e9d37abb712e71fdd3107706a03a1d950ddb946510de0a02"
+    },
+    "SPEC-036/T004": {
+      "decision": "specs/036-forecast-parallelism-experiment/evidence/t004-owner-disposition-2026-10-31.json",
+      "sha256": "b5f80896f6249efe8f5b4cbc1aca45fe9e0682aed836cdc4fff78c6805c9debb"
+    },
+    "SPEC-036/T005": {
+      "decision": "specs/036-forecast-parallelism-experiment/evidence/t005-owner-disposition-2026-10-31.json",
+      "sha256": "7ff82d7effbaab6a72fd035d0a46310e38c2657fc5b162804960453a85618a89"
+    },
+    "SPEC-036/T006": {
+      "decision": "specs/036-forecast-parallelism-experiment/evidence/t006-owner-disposition-2026-10-31.json",
+      "sha256": "2902200e3120dfb868092bd914bdae914b5c7c7a92dbc14bfee6930ede7fba7c"
+    },
+    "SPEC-036/T007": {
+      "decision": "specs/036-forecast-parallelism-experiment/evidence/t007-owner-disposition-2026-10-31.json",
+      "sha256": "f85362e7bf00e09953348bbbea5b9780cb9a547b72ec66462992b32232325277"
+    },
+    "SPEC-036/T008": {
+      "decision": "specs/036-forecast-parallelism-experiment/evidence/t008-owner-disposition-2026-10-31.json",
+      "sha256": "f8edc729792c8ea5bcaed4737dd970267e923480e34e530a8f0ad954a3f450fb"
+    },
+    "SPEC-036/T009": {
+      "decision": "specs/036-forecast-parallelism-experiment/evidence/t009-owner-disposition-2026-10-31.json",
+      "sha256": "dc4cd3eb6480c1927900f71d96d373c37ebffb3f6e5e0cd0029dfbf782ea06e6"
+    },
+    "SPEC-037/T001": {
+      "decision": "specs/037-forecast-advisory-integration/evidence/t001-owner-disposition-2026-10-31.json",
+      "sha256": "2b7ae87bca39182dfa01b822922418d296a47960527c64d0056a260f0d8ded00"
+    },
+    "SPEC-037/T002": {
+      "decision": "specs/037-forecast-advisory-integration/evidence/t002-owner-disposition-2026-10-31.json",
+      "sha256": "d2c90a2d49db2ae2c91002c2571637d35d105200230818c2cb2ba3013f9ab279"
+    },
+    "SPEC-037/T003": {
+      "decision": "specs/037-forecast-advisory-integration/evidence/t003-owner-disposition-2026-10-31.json",
+      "sha256": "33e0278ef8e31f6f42b01bf4f8ad26bd4d317ca6ba7bb873abbe7ace56618c95"
+    },
+    "SPEC-037/T004": {
+      "decision": "specs/037-forecast-advisory-integration/evidence/t004-owner-disposition-2026-10-31.json",
+      "sha256": "6de9c9cc848ab1c6b46d4fbbde63efb8f79bdfd125246e17298f6c761b839799"
+    },
+    "SPEC-037/T005": {
+      "decision": "specs/037-forecast-advisory-integration/evidence/t005-owner-disposition-2026-10-31.json",
+      "sha256": "fcfbec98bdb3f14d9454d17b073109094e1fddc63eca1661bf0baddcd4559d38"
+    },
+    "SPEC-037/T006": {
+      "decision": "specs/037-forecast-advisory-integration/evidence/t006-owner-disposition-2026-10-31.json",
+      "sha256": "0996dbac620a8d7353fd50d9286c0a4e342fca1da0522eb00e0e495288bb60f7"
+    },
+    "SPEC-037/T007": {
+      "decision": "specs/037-forecast-advisory-integration/evidence/t007-owner-disposition-2026-10-31.json",
+      "sha256": "94ececbfe83c82bd26ff42310a9139ef46e316ce8127f5af099b9d6246c4db6e"
+    },
+    "SPEC-037/T008": {
+      "decision": "specs/037-forecast-advisory-integration/evidence/t008-owner-disposition-2026-10-31.json",
+      "sha256": "535fdc07ec5968cf5dbfa9f32351d074428b40441f1789464a5d8c62ac360d0c"
     }
   }
 }

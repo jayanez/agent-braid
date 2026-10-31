@@ -1,8 +1,9 @@
 # SPEC-011 T008 — proportional validation and human review packet
 
 **Prepared:** 2026-10-31 against `develop` at `6f4870ea8a885f3bf5c1e4e563a9a3759886d9aa`.
-**Status:** preparation only. `assurance.json` keeps `human_review: pending`; T008
-stays unchecked in `tasks.md`. Nothing here records, implies or infers a review
+**Status:** preparation only. `assurance.json` keeps `human_review: pending`. On
+2026-10-31 the owner closed T008 as an engineering closure with human review
+pending ("Cerrar con revisión pendiente"); the review itself is still open. Nothing here records, implies or infers a review
 decision, an adoption or a stage transition. CI and this packet cannot approve the
 registry.
 
