@@ -103,6 +103,10 @@ recorded human scientific review.
 
 ## Claims withheld
 
+Real-use evidence: no real-world claim is made, so no real-use receipt is
+attached; the local Agent Braid sources named by the owner's standing
+instruction of 2026-10-31 were not queried for this packet (no observations).
+
 No contextual equivalence, runtime safety, safe parallelism, real workload or
 service correctness, real exactly-once delivery, probability or real-retry
 statement, and no AIM certificate. `terminal-projection-match` is never
