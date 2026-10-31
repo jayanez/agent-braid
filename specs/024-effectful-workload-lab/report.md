@@ -109,28 +109,13 @@ statement, and no AIM certificate. `terminal-projection-match` is never
 full-result, trace or effect equivalence. No real refinement or independent
 validation has been performed; the checklist lists what such work would need.
 
-## Task dependency loop and closure options (owner decision)
+## Task dependency loop and its resolution
 
-Spec dependencies and status text form a loop: T007 depends on T006 and T008
-(`tasks.md`), while T006 and T008 each state that closure awaits the scientific
-review in T007 (T008 also lists the T007 packet as including its results).
-T007 cannot be closed before T006/T008, and neither can close before T007's
-review. Scientific review is also, by SC-007, a pending human step that may
-not be inferred. Options for the owner (none is applied by this packet):
-
-- **A. Engineering closure first (T005 precedent, #689).** After an independent
-  engineering review on a clean clone, the owner authorizes closing T006 and
-  T008 as engineering closures; T007 is then closed once the packet is accepted
-  as complete; scientific review stays pending and is recorded separately.
-- **B. Joint closure.** One owner decision closes T006, T007 and T008 together
-  when the packet is accepted; scientific review is pending without gating any
-  task.
-- **C. Re-word the edges.** Replace "closure awaits T007 review" in T006/T008
-  with "scientific review recorded in T007 (pending)" and define T007 done as
-  "packet submitted, reproduced and review requested".
-- **D. Keep all open** until a human scientific review is recorded.
-
-Recommendation, not a decision: A, because it is the accepted precedent, keeps
-the engineering and scientific gates separate and needs no spec edit; the
-independent engineering review for it has not been done by this packet (the
-reproduction here was made by the authoring session).
+T007 depends on T006 and T008 (`tasks.md`), while T006 and T008 each stated
+that closure awaits the scientific review in T007, which SC-007 keeps a
+pending human step. The owner decided on 2026-10-31 (relayed by the
+coordinating session): "Cerrar con revisión pendiente", an engineering closure
+of T006, T007 and T008 following the T005 precedent (#689). Scientific review
+stays pending and gates no task; this packet does not record or infer it.
+Options considered before the decision: engineering closure first (A, chosen
+in effect), joint closure, re-wording the edges, or keeping all open.

@@ -1,8 +1,8 @@
 # SPEC-024 validation scenarios
 
 T001 is done (ADR 0028); T002–T004 are done after independent review; the
-tests and CLI commands below run against the current branch. T005–T008 remain
-open: the SC-007 packet is submitted for review (scientific review pending); the SC-008 experiment (re-registered
+tests and CLI commands below run against the current branch. T005–T008 are
+done as engineering closures (owner decision of 2026-10-31); the SC-007 packet is submitted and scientific review stays pending; the SC-008 experiment (re-registered
 incremental-cost criterion) ran once on 2026-10-24 (`evidence/comparison-20261024.json`). Passing commands are local
 software checks, not scientific acceptance.
 
