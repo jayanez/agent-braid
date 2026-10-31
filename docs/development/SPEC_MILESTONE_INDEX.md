@@ -67,7 +67,7 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 
 | [SPEC-060: portable-prompt-names](../../specs/060-portable-prompt-names/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
 
-The current source inventory has 58 active specs across 24 declared milestone identities; SPEC-051 extends FC.2/#20; M4.6 (SPEC-052, SPEC-053 and SPEC-057 to SPEC-059) is in progress (SPEC-052 host verification and native gate runs recorded; nothing released) and its local tracking entries create no remote milestone, issue or Project record until a separately authorized publication; HAR.1/HAR.2/HAR.3 are draft planning additions with separate scoped publication receipts. SPEC-045 remains FC.2/#20; SPEC-046, SPEC-047, SPEC-054 and draft SPEC-060 extend M4.5/#19. For M4.5: ten source specs, 131 task obligations (102 checked, 29 unchecked), 3 historically closed parents, 1 closed SPEC-054 parent and 6 open parents: 141 desired records. Historical evidence retains its original validation boundary; [current M4.5 alignment](../tooling/M45_ALIGNMENT.md) and [integration provenance](../../specs/047-local-technical-telemetry/integration-review.md) distinguish source review, current integration and pending acceptance.
+The current source inventory has 59 active specs across 26 declared milestone identities; SPEC-051 extends FC.2/#20; M4.6 (SPEC-052, SPEC-053 and SPEC-057 to SPEC-059) is in progress (SPEC-052 host verification and native gate runs recorded; nothing released) and its local tracking entries create no remote milestone, issue or Project record until a separately authorized publication; HAR.1/HAR.2/HAR.3 are draft planning additions with separate scoped publication receipts; VIS.1 (SPEC-061) is a draft planning addition whose milestone and issues are created only after merge through the reviewed tracking reconciliation. SPEC-045 remains FC.2/#20; SPEC-046, SPEC-047, SPEC-054 and draft SPEC-060 extend M4.5/#19. For M4.5: ten source specs, 131 task obligations (102 checked, 29 unchecked), 3 historically closed parents, 1 closed SPEC-054 parent and 6 open parents: 141 desired records. Historical evidence retains its original validation boundary; [current M4.5 alignment](../tooling/M45_ALIGNMENT.md) and [integration provenance](../../specs/047-local-technical-telemetry/integration-review.md) distinguish source review, current integration and pending acceptance.
 Frozen publication receipts, assurance/evidence records, founder decisions and
 dated audits retain their captured titles and counts. Resolve those historical
 names through the tracking crosswalk; do not rewrite their bound contents.
@@ -100,6 +100,19 @@ repository use SPEC-057 to SPEC-059. Historical commit messages are not rewritte
 
 [Program and gates](../../specs/048-harness-variant-laboratory/program.md). Planning
 and tracking do not admit native execution or automatic promotion.
+
+
+## Proposed activity viewer program
+
+| Spec | Proposed milestone |
+|---|---|
+| [SPEC-061: activity-viewer](../../specs/061-activity-viewer/spec.md) | VIS.1 — Activity viewer (not yet published) |
+
+VIS is an independent track: VIS.1 (SPEC-061) is specified; VIS.2 (Claude Code
+mod pane), VIS.3 (Codex MCP App and terminal UI) and VIS.4 (other hosts) are
+planned in the [derived tracks](../../specs/061-activity-viewer/tracks.md) and get
+their own specs and milestones when started. The track never gates the core,
+M4.x or HAR, and planning creates no execution authority.
 
 
 ## Proposed Claude Code workflow program

@@ -118,6 +118,7 @@ for the required observations and support boundaries.
 | Developer journey | Chat explanations, interaction graph and offline Markdown/SVG/HTML evidence exports | [SPEC-043](../../specs/043-ai-tooling-journey/spec.md) · [Presentation contract](../../specs/043-ai-tooling-journey/contracts/presentation.md) |
 | Evaluation | Actual host receipts, controls, complete costs and CLI/MCP/MCP-plus-skills comparison | [SPEC-044](../../specs/044-ai-tooling-evaluation/spec.md) · [Prospective protocol](../../specs/044-ai-tooling-evaluation/evaluation-protocol.md) |
 | Installed verifiers | Which offline installed-package verifier applies to portable contract v0.1 and v0.2 | [Installed-package verifiers](INSTALLED_VERIFIERS.md) |
+| Activity viewer (VIS.1, draft) | Read-only loopback viewer of agents and coordination decisions, live and replay | [SPEC-061](../../specs/061-activity-viewer/spec.md) · [UI, security and privacy contract](../../specs/061-activity-viewer/contracts/ui-security-privacy.md) |
 
 The proposed interface defaults to analysis. Runtime activation requires explicit
 configuration and the existing operator grant policy. Grant issuance stays outside
@@ -145,7 +146,8 @@ Cursor, VS Code/GitHub Copilot, OpenCode and pi are deferred. The
 [program's five future routes](../../specs/039-ai-tooling-program/program.md#five-future-routes)
 also cover AI applications/orchestration, expanded execution, coordination across
 tools and embedded visual interaction. Each route needs its own selected scope,
-contracts, observations and acceptance decisions.
+contracts, observations and acceptance decisions. Embedded visual interaction is
+specified as track VIS ([SPEC-061](../../specs/061-activity-viewer/spec.md)).
 
 The experimental [registration-v4 accounting route](REGISTRATION.md) supports
 the owner-selected estimated subscription convention, with actual allocation

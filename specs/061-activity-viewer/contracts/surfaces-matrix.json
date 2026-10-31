@@ -1,0 +1,179 @@
+{
+  "schemaVersion": "agent-braid-view-surfaces/v0.1",
+  "statusValues": [
+    "planned",
+    "hv-pending",
+    "verified",
+    "unobserved"
+  ],
+  "surfaces": [
+    "web",
+    "mod",
+    "tui",
+    "mcp-app"
+  ],
+  "implementedInVIS1": [
+    "web"
+  ],
+  "rule": "A status changes to verified or unobserved only from a host-verification receipt in specs/061-activity-viewer/evidence/.",
+  "rows": [
+    {
+      "host": "claude-code",
+      "client": "desktop",
+      "surface": "web",
+      "dataSources": [
+        "otlp-logs",
+        "otlp-metrics",
+        "claude-hook",
+        "artifacts"
+      ],
+      "status": "hv-pending",
+      "track": "VIS.1",
+      "note": "Loopback viewer in the desktop browser pane; T032."
+    },
+    {
+      "host": "claude-code",
+      "client": "terminal",
+      "surface": "web",
+      "dataSources": [
+        "otlp-logs",
+        "otlp-metrics",
+        "claude-hook",
+        "artifacts"
+      ],
+      "status": "hv-pending",
+      "track": "VIS.1",
+      "note": "Any local browser; OpenTelemetry names verified by T030."
+    },
+    {
+      "host": "claude-code",
+      "client": "desktop",
+      "surface": "mod",
+      "dataSources": [
+        "mod-events",
+        "artifacts"
+      ],
+      "status": "planned",
+      "track": "VIS.2",
+      "note": "Mod pane with Svg frames."
+    },
+    {
+      "host": "claude-code",
+      "client": "terminal",
+      "surface": "mod",
+      "dataSources": [
+        "mod-events",
+        "artifacts"
+      ],
+      "status": "planned",
+      "track": "VIS.2",
+      "note": "Mod pane with kitty graphics Image or Raster fallback."
+    },
+    {
+      "host": "claude-code",
+      "client": "vscode",
+      "surface": "web",
+      "dataSources": [
+        "otlp-logs",
+        "artifacts"
+      ],
+      "status": "planned",
+      "track": "VIS.4",
+      "note": "Browser only until observed."
+    },
+    {
+      "host": "codex",
+      "client": "cli",
+      "surface": "web",
+      "dataSources": [
+        "otlp-logs",
+        "codex-notify",
+        "codex-hook",
+        "artifacts"
+      ],
+      "status": "hv-pending",
+      "track": "VIS.1",
+      "note": "OpenTelemetry [otel] shape verified by T031."
+    },
+    {
+      "host": "codex",
+      "client": "cli",
+      "surface": "tui",
+      "dataSources": [
+        "artifacts",
+        "codex-rollout"
+      ],
+      "status": "planned",
+      "track": "VIS.3",
+      "note": "Curses terminal UI."
+    },
+    {
+      "host": "codex",
+      "client": "desktop",
+      "surface": "mcp-app",
+      "dataSources": [
+        "artifacts",
+        "otlp-logs"
+      ],
+      "status": "hv-pending",
+      "track": "VIS.3",
+      "note": "MCP Apps rendering depends on the build; T033 may record unobserved."
+    },
+    {
+      "host": "codex",
+      "client": "ide",
+      "surface": "web",
+      "dataSources": [
+        "otlp-logs",
+        "artifacts"
+      ],
+      "status": "planned",
+      "track": "VIS.4",
+      "note": ""
+    },
+    {
+      "host": "cursor",
+      "client": "any",
+      "surface": "web",
+      "dataSources": [
+        "artifacts"
+      ],
+      "status": "planned",
+      "track": "VIS.4",
+      "note": "MCP, OpenTelemetry or hooks to be researched in SPEC-064."
+    },
+    {
+      "host": "opencode",
+      "client": "any",
+      "surface": "web",
+      "dataSources": [
+        "artifacts"
+      ],
+      "status": "planned",
+      "track": "VIS.4",
+      "note": "MCP, OpenTelemetry or hooks to be researched in SPEC-064."
+    },
+    {
+      "host": "pi",
+      "client": "any",
+      "surface": "web",
+      "dataSources": [
+        "artifacts"
+      ],
+      "status": "planned",
+      "track": "VIS.4",
+      "note": "MCP, OpenTelemetry or hooks to be researched in SPEC-064."
+    },
+    {
+      "host": "vscode-generic",
+      "client": "any",
+      "surface": "web",
+      "dataSources": [
+        "artifacts"
+      ],
+      "status": "planned",
+      "track": "VIS.4",
+      "note": "MCP, OpenTelemetry or hooks to be researched in SPEC-064."
+    }
+  ]
+}

@@ -1,0 +1,412 @@
+{
+ "schema": "agent-braid-unpublished-tracking-drafts/v1",
+ "milestone": null,
+ "milestoneTitle": "VIS.1 — Activity viewer",
+ "milestoneNumber": null,
+ "milestoneState": "not created; the number is assigned by the reviewed apply after merge",
+ "publication": "Owner authorized creation on 2026-10-31 only through the reviewed sync_github_tracking audit/apply path from a clean develop checkout after merge; nothing is published by this file.",
+ "scope": "SPEC-061 only (track VIS.1). VIS.2-VIS.4 get records only when their specifications exist.",
+ "labels": [
+  "spec",
+  "task"
+ ],
+ "newRecordKeys": [
+  "SPEC-061",
+  "SPEC-061/T001",
+  "SPEC-061/T002",
+  "SPEC-061/T003",
+  "SPEC-061/T004",
+  "SPEC-061/T005",
+  "SPEC-061/T006",
+  "SPEC-061/T007",
+  "SPEC-061/T008",
+  "SPEC-061/T009",
+  "SPEC-061/T010",
+  "SPEC-061/T011",
+  "SPEC-061/T012",
+  "SPEC-061/T013",
+  "SPEC-061/T014",
+  "SPEC-061/T015",
+  "SPEC-061/T016",
+  "SPEC-061/T017",
+  "SPEC-061/T018",
+  "SPEC-061/T019",
+  "SPEC-061/T020",
+  "SPEC-061/T021",
+  "SPEC-061/T022",
+  "SPEC-061/T027",
+  "SPEC-061/T023",
+  "SPEC-061/T024",
+  "SPEC-061/T025",
+  "SPEC-061/T026",
+  "SPEC-061/T028",
+  "SPEC-061/T029",
+  "SPEC-061/T030",
+  "SPEC-061/T031",
+  "SPEC-061/T032",
+  "SPEC-061/T033",
+  "SPEC-061/T034",
+  "SPEC-061/T035",
+  "SPEC-061/T036",
+  "SPEC-061/T037"
+ ],
+ "projectReviewPendingDraft": [
+  "SPEC-061"
+ ],
+ "projectReviewPendingNote": "Spec parent only; tasks inherit review through the parent. docs/development/github-tracking.json lists SPEC-061 in project_review_pending.",
+ "sourceCounts": {
+  "specs": 1,
+  "tasks": 37,
+  "tasksChecked": 0,
+  "tasksUnchecked": 37,
+  "parentsClosed": 0,
+  "parentsOpen": 1,
+  "totalRecords": 38
+ },
+ "sourceState": "all tasks unchecked in tasks.md; obtained_evidence empty; human review pending; nothing frozen, run or approved",
+ "milestoneDescriptionDraft": "specs/061-activity-viewer/milestone-description-draft.md",
+ "records": [
+  {
+   "key": "SPEC-061",
+   "kind": "spec",
+   "parent": null,
+   "title": "[SPEC-061] SPEC-061: Read-only local activity and concurrency viewer",
+   "body": "<!-- agent-braid-spec-id: SPEC-061 -->\n\nSource: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n\nRequirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006, REQ-007, REQ-008, REQ-009, REQ-010, REQ-011, REQ-012, REQ-013, REQ-014, REQ-015.\n\nIssue state is a bounded tracking record, not a scientific or founder approval.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T001",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T001] Owner review of the specification, plan, contracts and open decisions OD-3 to OD-6. Dependencies: T008...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T001 -->\n\n## Task\n\nOwner review of the specification, plan, contracts and open decisions OD-3 to OD-6. Dependencies: T008. Files: `spec.md`, `plan.md`, `contracts/`. Evidence: review record in this directory.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: all REQ\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T002",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T002] Decide ADR 0032 (activity viewer companion). Dependencies: none. Files: docs/adr/0032-activity-viewer-...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T002 -->\n\n## Task\n\nDecide ADR 0032 (activity viewer companion). Dependencies: none. Files: `docs/adr/0032-activity-viewer-companion.md`. Evidence: ADR status change merged.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-004, REQ-013\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T003",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T003] Founder decision on ADR 0033 (vendored Three.js, MIT boundary). Dependencies: none. Files: docs/adr/00...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T003 -->\n\n## Task\n\nFounder decision on ADR 0033 (vendored Three.js, MIT boundary). Dependencies: none. Files: `docs/adr/0033-vendored-threejs-mit-boundary.md`. Evidence: ADR status change merged.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-010, REQ-013\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T004",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T004] Add the VIS track to ROADMAP, STATUS, the milestone index, the AI tooling program, GitHub tracking sou...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T004 -->\n\n## Task\n\nAdd the VIS track to ROADMAP, STATUS, the milestone index, the AI tooling program, GitHub tracking source and validation profile notes. Dependencies: none. Files: `ROADMAP.md`, `docs/STATUS.md`, `docs/development/SPEC_MILESTONE_INDEX.md`, `specs/039-ai-tooling-program/program.md`, `docs/development/github-tracking.json`, `docs/development/GITHUB_TRACKING.md`, `docs/tooling/README.md`. Verification: `python3 scripts/sync_github_tracking.py source`. Evidence: merged change and source output.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-015\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T005",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T005] After merge to develop, publish VIS.1 tracking: audit, review, apply --confirm-repository jayanez/agen...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T005 -->\n\n## Task\n\nAfter merge to `develop`, publish VIS.1 tracking: `audit`, review, `apply --confirm-repository jayanez/agent-braid --plan-sha256 <digest>`, record the milestone number, re-audit to zero operations, set the parent issue to Review pending in Project 6. Dependencies: T004 merged. Evidence: audit and apply outputs, milestone number in `github-tracking.json`.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-015\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T006",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T006] Record derived tracks VIS.2–VIS.4 with scope, sources, gates and open questions. Dependencies: none. F...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T006 -->\n\n## Task\n\nRecord derived tracks VIS.2–VIS.4 with scope, sources, gates and open questions. Dependencies: none. Files: `tracks.md`. Evidence: owner review in T001.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-011\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T007",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T007] Review the host-verification runbook. Dependencies: none. Files: host-verification-runbook.md. Evidenc...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T007 -->\n\n## Task\n\nReview the host-verification runbook. Dependencies: none. Files: `host-verification-runbook.md`. Evidence: owner review in T001.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-014\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T008",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T008] Freeze the specification candidate with python3 -m scripts.validate_spec_kit freeze specs/061-activity...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T008 -->\n\n## Task\n\nFreeze the specification candidate with `python3 -m scripts.validate_spec_kit freeze specs/061-activity-viewer`. Dependencies: T004, T006, T007. Evidence: historical snapshot in `assurance.json`.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: See the parent issue and assurance record.\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T009",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T009] Keep STATUS, ROADMAP, the milestone index, tracking source and Project 6 current at each VIS.1 closure...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T009 -->\n\n## Task\n\nKeep STATUS, ROADMAP, the milestone index, tracking source and Project 6 current at each VIS.1 closure. Dependencies: T005. Evidence: audit with zero operations after each closure.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-015\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T010",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T010] view_loom.py: constants, limits, strict JSON, validate_event, canonical bytes; schema parity test. Tes...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T010 -->\n\n## Task\n\n`view_loom.py`: constants, limits, strict JSON, `validate_event`, canonical bytes; schema parity test. Tests first. Files: `agent_braid/view_loom.py`, `tests/test_view_loom.py`, `tests/fixtures/view/loom/`. Verification: procedure_001.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-001 / SC-001\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T011",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T011] activity-viewer rule in scripts/validate_change.py, test in tests/test_validation_profiles.py, paragra...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T011 -->\n\n## Task\n\n`activity-viewer` rule in `scripts/validate_change.py`, test in `tests/test_validation_profiles.py`, paragraph in `docs/development/VALIDATION_PROFILES.md`. Verification: procedure_013.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-013 / SC-013\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T012",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T012] Adapters for analysis reports, Git replay plans, scheduler preparations, grants and runtime state. Fil...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T012 -->\n\n## Task\n\nAdapters for analysis reports, Git replay plans, scheduler preparations, grants and runtime state. Files: `agent_braid/view_adapters.py`, `tests/test_view_adapters.py`, `tests/fixtures/view/artifacts/`. Dependencies: T010. Verification: procedure_002.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-002 / SC-002\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T013",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T013] Adapters for ownership notices and receipts (JSON only), workflow-gate results and absence cases. Depe...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T013 -->\n\n## Task\n\nAdapters for ownership notices and receipts (JSON only), workflow-gate results and absence cases. Dependencies: T012. Verification: procedure_002, procedure_003.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-002 / SC-002; REQ-003 / SC-003\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T014",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T014] Host stream adapters (claude -p stream-json, codex exec --json) and the example replay examples/view/l...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T014 -->\n\n## Task\n\nHost stream adapters (`claude -p` stream-json, `codex exec --json`) and the example replay `examples/view/loom-replay.jsonl` generated from owned fixtures. Dependencies: T012. Verification: procedure_002.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-002 / SC-002\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T015",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T015] view_store.py ring, seq, caps, eviction gaps, bounded subscriber queues. Files: agent_braid/view_store...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T015 -->\n\n## Task\n\n`view_store.py` ring, seq, caps, eviction gaps, bounded subscriber queues. Files: `agent_braid/view_store.py`, `tests/test_view_store.py`. Dependencies: T010. Verification: procedure_006.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-006 / SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T016",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T016] view_serve.py loopback bind, token, Host and Origin checks, headers, body limits, route table. Files:...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T016 -->\n\n## Task\n\n`view_serve.py` loopback bind, token, `Host` and `Origin` checks, headers, body limits, route table. Files: `agent_braid/view_serve.py`, `tests/test_view_serve.py`. Dependencies: T015. Verification: procedure_004.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-004 / SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T017",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T017] SSE with Last-Event-ID, /snapshot, replay mode, view_tail.py bounded polling. Dependencies: T016, T020...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T017 -->\n\n## Task\n\nSSE with `Last-Event-ID`, `/snapshot`, replay mode, `view_tail.py` bounded polling. Dependencies: T016, T020. Verification: procedure_004, procedure_006.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-004 / SC-004; REQ-006 / SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T018",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T018] view_otlp.py OTLP HTTP/JSON logs and metrics, allowlist, salting, shape-unpinned. Files: agent_braid/v...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T018 -->\n\n## Task\n\n`view_otlp.py` OTLP HTTP/JSON logs and metrics, allowlist, salting, `shape-unpinned`. Files: `agent_braid/view_otlp.py`, `tests/test_view_otlp.py`, `tests/fixtures/view/otlp/`. Dependencies: T015. Verification: procedure_005.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-005 / SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T019",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T019] view_hooks.py Claude HTTP hooks and Codex notify or hook shim; dropped-attribute names inventory; ephe...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T019 -->\n\n## Task\n\n`view_hooks.py` Claude HTTP hooks and Codex notify or hook shim; dropped-attribute names inventory; ephemeral effort handling and `--record`/`--record-effort` writing. Dependencies: T015. Verification: procedure_005, procedure_007.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-005 / SC-005; REQ-007 / SC-007\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T020",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T020] view_model.py pure model: lanes, adjacent swap decomposition, relMs axis with gap compression, waves,...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T020 -->\n\n## Task\n\n`view_model.py` pure model: lanes, adjacent swap decomposition, `relMs` axis with gap compression, waves, serial fallback, counters. Files: `agent_braid/view_model.py`, `tests/test_view_model.py`. Dependencies: T010. Verification: procedure_003, procedure_010.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-003 / SC-003; REQ-010 / SC-010\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T021",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T021] view_export.py minimal export from a recorded or replay file (--from) with SPEC-043 destination rules....",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T021 -->\n\n## Task\n\n`view_export.py` minimal export from a recorded or replay file (`--from`) with SPEC-043 destination rules. Files: `agent_braid/view_export.py`, `tests/test_view_export.py`. Dependencies: T020. Verification: procedure_007, procedure_008.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-007 / SC-007; REQ-008 / SC-008\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T022",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T022] Effort evidence pack: arms, baseline, selection notes, pairwise comparisons in the harness row shape....",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T022 -->\n\n## Task\n\nEffort evidence pack: arms, baseline, selection notes, pairwise comparisons in the harness row shape. Dependencies: T021, T027. Verification: procedure_009.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-009 / SC-009\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T027",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T027] view_render.py ASCII, braille, SVG and RGBA frames; /frame.svg and /frame.txt. Files: agent_braid/view...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T027 -->\n\n## Task\n\n`view_render.py` ASCII, braille, SVG and RGBA frames; `/frame.svg` and `/frame.txt`. Files: `agent_braid/view_render.py`, `tests/test_view_render.py`. Dependencies: T020. Verification: procedure_011.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-011 / SC-011\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T023",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T023] Vendor Three.js r182 prebuilt modules and OrbitControls with manifest.json; add LICENSES/three-MIT.txt...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T023 -->\n\n## Task\n\nVendor Three.js r182 prebuilt modules and OrbitControls with `manifest.json`; add `LICENSES/three-MIT.txt`, the LICENSE paragraph and the THIRD_PARTY section. Dependencies: T003. Files: `integrations/agent-braid-view/web/vendor/**`, `LICENSE`, `LICENSES/`, `docs/development/THIRD_PARTY.md`. Verification: procedure_010.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-010 / SC-010; REQ-013 / SC-013\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T024",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T024] Web bundle: scene, playback, table view, hashed import map and CSP. Files: integrations/agent-braid-vi...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T024 -->\n\n## Task\n\nWeb bundle: scene, playback, table view, hashed import map and CSP. Files: `integrations/agent-braid-view/web/*`. Dependencies: T023, T020. Verification: procedure_010.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-010 / SC-010\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T025",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T025] Evidence panel, legend with \"not a guarantee\", Article 19 counters. Dependencies: T024. Verification:...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T025 -->\n\n## Task\n\nEvidence panel, legend with \"not a guarantee\", Article 19 counters. Dependencies: T024. Verification: procedure_010.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-010 / SC-010\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T026",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T026] tests/test_view_web_bundle.py (hashes, no remote URL, no eval, CSP). Dependencies: T024. Verification:...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T026 -->\n\n## Task\n\n`tests/test_view_web_bundle.py` (hashes, no remote URL, no `eval`, CSP). Dependencies: T024. Verification: procedure_010.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-010 / SC-010\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T028",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T028] view_cli.py with serve, export, validate, env, --surface; registration in agent_braid/cli.py. Files: a...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T028 -->\n\n## Task\n\n`view_cli.py` with `serve`, `export`, `validate`, `env`, `--surface`; registration in `agent_braid/cli.py`. Files: `agent_braid/view_cli.py`, `agent_braid/cli.py`, `tests/test_view_cli.py`. Dependencies: T016, T021. Verification: procedure_011, procedure_012.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-011 / SC-011; REQ-012 / SC-012\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T029",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T029] Boundary tests (tests/test_view_boundaries.py) and regression run of governance, plugin package and va...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T029 -->\n\n## Task\n\nBoundary tests (`tests/test_view_boundaries.py`) and regression run of governance, plugin package and validation profiles. Dependencies: T028. Verification: procedure_013.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-013 / SC-013\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T030",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T030] Claude Code OpenTelemetry attribute names",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T030 -->\n\n## Task\n\nClaude Code OpenTelemetry attribute names.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-014 / SC-014\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T031",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T031] Codex [otel] export shape",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T031 -->\n\n## Task\n\nCodex `[otel]` export shape.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-014 / SC-014\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T032",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T032] Claude desktop browser pane loads the viewer",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T032 -->\n\n## Task\n\nClaude desktop browser pane loads the viewer.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-014 / SC-014\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T033",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T033] Codex Desktop MCP Apps rendering (unobserved valid)",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T033 -->\n\n## Task\n\nCodex Desktop MCP Apps rendering (`unobserved` valid).\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-014 / SC-014\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T034",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T034] docs/tooling/VIEWER.md, integrations/agent-braid-view/README.md, tooling index. Dependencies: T028. Ve...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T034 -->\n\n## Task\n\n`docs/tooling/VIEWER.md`, `integrations/agent-braid-view/README.md`, tooling index. Dependencies: T028. Verification: procedure_015.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-015 / SC-015\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T035",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T035] Owner-run comprehension observation. Dependencies: T034. Verification: procedure_hvis1",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T035 -->\n\n## Task\n\nOwner-run comprehension observation. Dependencies: T034. Verification: procedure_hvis1.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: optional, H-VIS1\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T036",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T036] Pre-PR reviews (code review, quality, simplification), validate_change --profile pr on the stable cand...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T036 -->\n\n## Task\n\nPre-PR reviews (code review, quality, simplification), `validate_change --profile pr` on the stable candidate, `/speckit-converge`. Dependencies: T010–T029, T034.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: See the parent issue and assurance record.\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-061/T037",
+   "kind": "task",
+   "parent": "SPEC-061",
+   "title": "[SPEC-061 T037] Record obtained evidence in assurance.json, freeze, owner review of VIS.1 closure. Dependencies: T036",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T037 -->\n\n## Task\n\nRecord obtained evidence in `assurance.json`, freeze, owner review of VIS.1 closure. Dependencies: T036.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: See the parent issue and assurance record.\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "VIS.1 — Activity viewer",
+   "state": "open"
+  }
+ ]
+}
