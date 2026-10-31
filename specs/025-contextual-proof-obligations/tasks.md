@@ -1,9 +1,9 @@
 # SPEC-025 tasks
 
 T001-T006 are technically complete within the bounded delivery recorded in
-`evidence/technical-delivery.json`. T007 remains pending final stable PR validation,
-candidate freeze and specific independent proof review. Checkmarks describe technical
-protocol delivery, never scientific proof acceptance or human/founder approval.
+`evidence/technical-delivery.json`. T007 is closed as an engineering closure only
+(owner decision of 2026-10-31); the specific independent proof review remains
+pending and deferred. Checkmarks describe technical protocol delivery, never scientific proof acceptance or human/founder approval.
 Finite validation, feasibility and proof review retain separate outputs; negative
 or inconclusive findings may complete their documented protocol.
 
@@ -37,11 +37,12 @@ or inconclusive findings may complete their documented protocol.
   - Targets: feature CoAgent feasibility report mapped to `AT-2026-005-coagent-comparator`; no change to adopted disposition without review.
   - Commands: planned CoAgentFeasibilityReview; read primary pinned sources/artifact/license metadata, no automatic third-party execution.
   - Evidence: immutable refs, availability/license matrix, state/effect/observation/execution mapping, gaps and abstention; executable comparator requires a separate authorized isolated protocol.
-- [ ] T007 (REQ-006/SC-007): Reproduce bounded results and submit source-bound proof review packet
+- [x] T007 (REQ-006/SC-007): Reproduce bounded results and submit source-bound proof review packet
   - Dependencies: T003, T004, T005, T006.
   - Targets: feature reproduction/report/review packet and assurance; `research/proofs/` status records.
   - Commands: planned clean-clone repetition, quick and stable PR profiles; snapshot/freeze clean candidate; specific independent proof review.
   - Evidence: raw finite results and exact commands, separate proof reviewer findings/status, unresolved gaps, scientific limits and explicit human/founder status; no theorem until warranted.
+  - Status: done (engineering closure only), independent proof review **pending/deferred**. The owner decided on 2026-10-31 («Cerrar con revisión pendiente») to close the agent-doable part with the review pending; no reviewer is named, no review exists and no proof is accepted. Obtained: frozen candidate `6f4870ea`, bounded results reproduced (21 tests; 32/86/30/24 mapping; byte-identical continuations) and a source-bound packet in [review-packet-20261031.md](review-packet-20261031.md) with [evidence/current-finite-receipt-20261031.json](evidence/current-finite-receipt-20261031.json). Reopen criterion for the review: a founder-named independent proof reviewer.
 
 ## Obtained technical evidence and pending gates
 
@@ -50,7 +51,7 @@ or inconclusive findings may complete their documented protocol.
 - SC-004: pinned manifest/expected controls retain omitted premises, raw chronology and inconclusive coverage.
 - SC-005: independent finite oracle checks 32 orders and exchange relations; Luna technical mapping review has no remaining actionable finding. Specific proof acceptance is pending.
 - SC-006: CoAgent primary-source feasibility assessment records unavailable executable rights/revision and semantic mismatch, without third-party execution.
-- SC-007: no-tool/handwritten-first assessment and internal clean clone packet obtained; final stable PR profile, candidate freeze and specific independent proof review remain pending.
+- SC-007: no-tool/handwritten-first assessment and internal clean clone packet obtained; the candidate is frozen in `review-packet-20261031.md`; the specific independent proof review remains pending and deferred.
 
 Exact paths, SHA-256 bindings, executed command outputs and scenario/test mapping
 are in `evidence/technical-delivery.json` and `evidence/internal-clean-clone.json`.
@@ -65,6 +66,6 @@ See [current technical status](current-status-20261021.md) and its source-bound
 finite receipt for the existing Unicode fix, 21 passing focused tests and current
 continuation/mapping checks. Historical profiles and freeze already exist within
 their named candidate boundary; they do not cover the later additive delivery.
-T007 remains unchecked pending its specific independent proof review and the
-current delivery's separately coordinated validation/packaging gates. Human
-scientific and founder acceptance remain pending.
+T007 is checked as an engineering closure only (owner decision of 2026-10-31);
+its specific independent proof review stays pending and deferred until a founder
+names a reviewer. Human scientific and founder acceptance remain pending.
