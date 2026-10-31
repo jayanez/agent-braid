@@ -278,6 +278,10 @@
     "060-portable-prompt-names": {
       "milestone": "Deferred",
       "state": "open"
+    },
+    "065-native-claude-containment": {
+      "milestone": "HAR.1 — Braid Harness laboratory",
+      "state": "open"
     }
   },
   "task_state_overrides": {
