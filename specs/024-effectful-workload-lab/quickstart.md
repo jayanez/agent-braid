@@ -2,7 +2,7 @@
 
 T001 is done (ADR 0028); T002–T004 are done after independent review; the
 tests and CLI commands below run against the current branch. T005–T008 remain
-open: SC-007 is still planned; the SC-008 experiment (re-registered
+open: the SC-007 packet is submitted for review (scientific review pending); the SC-008 experiment (re-registered
 incremental-cost criterion) ran once on 2026-10-24 (`evidence/comparison-20261024.json`). Passing commands are local
 software checks, not scientific acceptance.
 
@@ -51,9 +51,13 @@ complete cost accounting.
 
 ## SC-007 scoped report and review packet
 
-Planned (T007) test `WorkloadReportTests.test_negative_and_inconclusive_completion`: negative
-and capped findings are valid results; review pending, complete provenance,
-executionAuthorization false.
+Test `WorkloadReportTests.test_negative_and_inconclusive_completion` in
+`tests/test_effectful_workload_report.py`: capped runs of every frozen fixture
+are `inconclusive` and replay-verified, negative and capped findings are valid
+results; review pending, complete provenance, executionAuthorization false.
+`test_packet_keeps_review_pending_and_covers_the_refinement_topics` checks the
+review packet ([report](report.md), [checklist](refinement-checklist.md),
+[reproduction record](reproduction-record.md)).
 
 ## Commands
 
@@ -65,7 +69,7 @@ print `status: rejected` with a reason such as `symlink-path`, `output-exists`,
 `not-regular-file`, `too-large`, `invalid-json` or `invalid-request`.
 
 ```sh
-python3 -m unittest tests.test_effectful_workload_model tests.test_effectful_workload_contracts tests.test_effectful_workload_lab tests.test_effectful_workload_controls tests.test_effectful_workload_comparison -v
+python3 -m unittest tests.test_effectful_workload_model tests.test_effectful_workload_contracts tests.test_effectful_workload_lab tests.test_effectful_workload_controls tests.test_effectful_workload_comparison tests.test_effectful_workload_report -v
 WORK="$(cd "$(mktemp -d)" && pwd -P)"
 python3 -c 'import json, sys; [open(sys.argv[1] + "/" + f["id"] + ".request.json", "x").write(json.dumps(f["request"])) for f in json.load(open("examples/workload-lab/manifest.json"))["fixtures"]]' "$WORK"
 for request in "$WORK"/*.request.json; do python3 -m research.workload_lab explore "$request" --output "${request%.request.json}.report.json" && python3 -m research.workload_lab verify "${request%.request.json}.report.json"; done
