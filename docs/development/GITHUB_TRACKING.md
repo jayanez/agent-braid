@@ -194,3 +194,18 @@ The local telemetry delivery prepares one SPEC-047 parent and T001–T010, plus 
 After separately authorized review/integration, scope the audit to milestone 19 and allowlist only the exact missing new records: SPEC-047, SPEC-047/T001 through SPEC-047/T010, SPEC-044/T017 and SPEC-044/T018. Confirm actual inventory first; the allowlist must omit IDs that already exist. Preserve the digest-bound audit/apply/readback procedure and require no pending scoped operations after eventual publication. Private Project verification stays separate. No audit/apply or remote write is authorized by these drafts.
 
 The [exact milestone #19 description draft](../../specs/047-local-technical-telemetry/milestone-description-draft.md) is local and unpublished. Existing synchronizer title/state/issue audit does not cover description drift; eventual publication needs its own reviewed guarded update and readback, without broadening the current no-write scope.
+
+## VIS.1 activity viewer extension
+
+SPEC-061 declares the new track milestone `VIS.1 — Activity viewer`, one open
+parent and T001–T039 in the source inventory, and adds SPEC-061 to Project
+**Review pending**. Nothing is published by the specification change. After merge
+to `develop`, from a clean checkout of `develop`, scope the audit to the new
+milestone, review the plan (one milestone, one parent, 39 task issues and their
+sub-issue links), apply it with the reviewed digest, record the assigned number in
+`milestone_numbers`, and re-audit until no operation remains. Then set the parent
+to **Review pending** in [Project 6](https://github.com/users/jayanez/projects/6)
+and check the *Specs and tasks*, *By milestone* and *By status* views. VIS.1a and
+VIS.1b are deliveries inside this one milestone (the tracking source assigns one
+milestone per specification). VIS.2–VIS.4
+get milestones only when their specifications exist.
