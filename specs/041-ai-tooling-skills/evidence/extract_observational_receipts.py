@@ -17,7 +17,9 @@ import argparse
 import hashlib
 import json
 import re
+import subprocess
 import sys
+from datetime import datetime, timezone
 from collections import defaultdict
 from pathlib import Path
 
@@ -27,6 +29,7 @@ MCP_RE = re.compile(r"^mcp__(?:plugin_)?agent[-_]braid_agent[-_]braid__(.+)$|^mc
 SKILL_RE = re.compile(r"^agent-braid(?::|-)(?:agent-braid-)?(" + "|".join(SKILLS) + r")$")
 LISTING_RE = re.compile(r"^- agent-braid:(?:agent-braid-)?(" + "|".join(SKILLS) + r")\b", re.M)
 VERSION_RE = re.compile(r"/agent-braid/agent-braid/([0-9][^/\s]*)/skills/")
+CODEX_LISTING_RE = re.compile(r"agent-braid:(?:agent-braid-)?(" + "|".join(SKILLS) + r")\b")
 ENUM_RE = re.compile(r"^[A-Za-z0-9_.:/-]{1,64}$")
 BASE_DIR = "Base directory for this skill:"
 
@@ -122,6 +125,7 @@ def scan_claude(root: Path) -> dict:
     journeys: dict[str, list] = defaultdict(list)
     seen_use: set[str] = set()
     seen_listed: set[tuple[str, str]] = set()
+    seen_meta: set[str] = set()
     files = sessions_with_hits = 0
     discovery_mcp = set()
     for path in sorted(root.rglob("*.jsonl")) if root.is_dir() else []:
@@ -156,7 +160,7 @@ def scan_claude(root: Path) -> dict:
                 btype = block.get("type")
                 if btype == "tool_use":
                     name, uid = block.get("name", ""), block.get("id")
-                    if uid in seen_use:
+                    if not uid or uid in seen_use:
                         continue
                     skill = None
                     if name == "Skill":
@@ -180,8 +184,8 @@ def scan_claude(root: Path) -> dict:
                         outcome, version = classify_result(block)
                         mcp[cname].add(cts, session, version, outcome)
                     journeys[short_hash(session)].append((cts, f"{ckind}:{cname}", outcome))
-            if kind == "user" and rec.get("isMeta") and rec.get("sourceToolUseID"):
-                body = "".join(b.get("text", "") for b in content if isinstance(b, dict))
+            if kind == "user" and rec.get("isMeta") and rec.get("sourceToolUseID") not in seen_meta | {None}:
+                body = text_of(content)
                 if body.startswith(BASE_DIR):
                     first_line, _, rest = body.partition("\n")
                     version = VERSION_RE.search(first_line)
@@ -189,6 +193,7 @@ def scan_claude(root: Path) -> dict:
                     name = skill.group(1) if skill else None
                     name = name[len("agent-braid-"):] if name and name.startswith("agent-braid-") else name
                     if name in SKILLS:
+                        seen_meta.add(rec["sourceToolUseID"])
                         digest = hashlib.sha256(rest.encode()).hexdigest()
                         loaded[name].add(ts, session, version.group(1) if version else None,
                                          "loaded", digest)
@@ -220,7 +225,6 @@ def scan_claude(root: Path) -> dict:
 
 def scan_codex(root: Path) -> dict:
     listed = defaultdict(Tally)
-    use = 0
     files = hits = 0
     for path in sorted(root.rglob("*.jsonl")) if root.is_dir() else []:
         files += 1
@@ -233,16 +237,13 @@ def scan_codex(root: Path) -> dict:
             blob = json.dumps(payload) if isinstance(payload, dict) else ""
             found = VERSION_RE.search(blob)
             version = found.group(1) if found else version
-            if "agent-braid:" not in blob:
+            if "agent-braid:" not in blob or payload.get("role") not in ("developer", "system"):
                 continue
             ts = rec.get("timestamp")
-            for name in set(re.findall(r"agent-braid:(?:agent-braid-)?(" + "|".join(SKILLS) + r")\b", blob)):
+            for name in set(CODEX_LISTING_RE.findall(blob)):
                 if name not in names:
                     names.add(name)
                     pending_listing.append((name, ts))
-            if isinstance(payload, dict) and re.search(r"agent[-_]braid", str(payload.get("name", ""))) \
-                    and payload.get("type") in ("function_call", "mcp_tool_call"):
-                use += 1
         for name, ts in pending_listing:
             listed[name].add(ts, session, version, "listed")
         hits += bool(names)
@@ -252,11 +253,59 @@ def scan_codex(root: Path) -> dict:
         "sessionFilesListingAgentBraidSkills": hits,
         "c1Discovery": {"skillsListedInContext": {s: listed[s].render() for s in SKILLS}},
         "c2InstructionsLoaded": "not-observed",
-        "c3ObservedUse": {"state": "not-observed", "toolCallsMatched": use},
+        "c3ObservedUse": {"state": "not-observed"},
     }
 
 
-def build(claude_root: Path, codex_root: Path) -> tuple[dict, dict]:
+def _tree_counts(path: Path) -> dict:
+    if not path.exists():
+        return {"state": "absent"}
+    stamps, unreadable = [], 0
+    for item in path.rglob("*"):
+        try:
+            if item.is_file():
+                stamps.append(item.stat().st_mtime)
+        except OSError:
+            unreadable += 1
+    iso = lambda t: datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m-%d")
+    return {"state": "present", "files": len(stamps), "unreadable": unreadable, "modifiedFirst": iso(min(stamps)) if stamps else None,
+            "modifiedLast": iso(max(stamps)) if stamps else None}
+
+
+def scan_local_stores(home: Path) -> dict:
+    """Numeric summaries of the other real-use sources; paths, names and contents are never kept."""
+    share, state = home / ".local/share/agent-braid", home / ".local/state/agent-braid"
+    support = home / "Library/Application Support/AgentBraid"
+    out: dict = {"telemetry": {"state": "unavailable"}}
+    try:
+        report = json.loads(subprocess.run(
+            [sys.executable, "-m", "agent_braid", "telemetry", "report", "--format", "json"],
+            capture_output=True, text=True, timeout=60, check=True).stdout)
+        calls: dict[str, dict] = {}
+        for row in report.get("rows", []):
+            if row.get("metric") == "calls":
+                cell = calls.setdefault(f'{row["surface"]}:{row["operation"]}:{row["outcome"]}',
+                                        {"count": 0, "firstDay": row["day"], "lastDay": row["day"]})
+                cell["count"] += row["count"]
+                cell["firstDay"], cell["lastDay"] = min(cell["firstDay"], row["day"]), max(cell["lastDay"], row["day"])
+        out["telemetry"] = {"state": "observed" if calls else "no-observations", "retentionDays": report.get("retentionDays"),
+                            "calls": dict(sorted(calls.items())),
+                            "coverage": "daily aggregates; portable MCP tools and CLI analyze/analyze-git only; no skill-level data"}
+    except (OSError, ValueError, subprocess.SubprocessError):
+        pass
+    for name, path in (("evidenceStore", share / "evidence"), ("coordinationStore", share / "coordination"),
+                       ("identityStore", share / "identity"), ("runtimeState", state),
+                       ("pluginResults", support / "results")):
+        out[name] = _tree_counts(path)
+    try:
+        registry = json.loads((support / "registry.json").read_text())
+        out["pluginWorkspaceRegistry"] = {"state": "present", "configuredWorkspaces": len(registry.get("workspaces", []))}
+    except (OSError, ValueError, AttributeError):
+        out["pluginWorkspaceRegistry"] = {"state": "absent"}
+    return out
+
+
+def build(claude_root: Path, codex_root: Path, home: Path | None = None) -> tuple[dict, dict]:
     claude = scan_claude(claude_root)
     journeys = claude.pop("_journeys")
     ordered = []
@@ -270,9 +319,10 @@ def build(claude_root: Path, codex_root: Path) -> tuple[dict, dict]:
         "privacy": "derived names, timestamps, counts, versions, outcomes, content digests and "
                    "12-hex session hashes only; no prompts, inputs, assistant text, paths or project names",
         "extractorSha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-        "scan": {"claudeCodeRoot": "~/.claude/projects", "codexRoot": "~/.codex/sessions"},
+        "scan": {"claudeCodeRoot": "~/.claude/projects", "codexRoot": "~/.codex/sessions",
+                 "policy": "docs/development/REAL_USE_EVIDENCE.md"},
     }
-    receipts = {**base, "hosts": [claude, scan_codex(codex_root)]}
+    receipts = {**base, "hosts": [claude, scan_codex(codex_root)], "localStores": scan_local_stores(home or Path.home())}
     journey = {**base, "host": "claude-code", "journeys": ordered}
     return receipts, journey
 

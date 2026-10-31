@@ -56,8 +56,11 @@ class ObservationalReceiptTests(unittest.TestCase):
         (root / "claude" / "proj").mkdir(parents=True)
         with (root / "claude" / "proj" / "a.jsonl").open("w") as handle:
             handle.write("\n".join(json.dumps(r) for r in _transcript()) + "\nnot json\n")
+        # a resumed copy repeats history: calls, loads and listings must still count once
+        (root / "claude" / "proj" / "b.jsonl").write_text(
+            "\n".join(json.dumps(r) for r in _transcript()) + "\n")
         (root / "codex").mkdir()
-        return extract.build(root / "claude", root / "codex")
+        return extract.build(root / "claude", root / "codex", root / "home")
 
     def test_levels_outcomes_and_versions(self):
         receipts, journey = self._build()
@@ -65,6 +68,8 @@ class ObservationalReceiptTests(unittest.TestCase):
         self.assertEqual(claude["c1Discovery"]["skillsListedInContext"]["plan"]["state"], "observed")
         self.assertEqual(claude["c1Discovery"]["skillsListedInContext"]["execute"]["state"], "not-observed")
         loaded = claude["c2InstructionsLoaded"]["analyze"]
+        self.assertEqual(loaded["count"], 1)
+        self.assertEqual(claude["c1Discovery"]["skillsListedInContext"]["plan"]["sessions"], 1)
         self.assertEqual(loaded["versions"], {"0.1.0-alpha.4": 1})
         self.assertEqual(len(next(iter(loaded["loadedContentSha256"]))), 64)
         used = claude["c3ObservedUse"]
@@ -85,8 +90,10 @@ class ObservationalReceiptTests(unittest.TestCase):
         self.assertNotIn("/home/x", dump)
 
     def test_missing_roots_yield_not_observed(self):
-        receipts, _ = extract.build(Path("/nonexistent/a"), Path("/nonexistent/b"))
+        receipts, _ = extract.build(Path("/nonexistent/a"), Path("/nonexistent/b"), Path("/nonexistent/h"))
         self.assertEqual(receipts["hosts"][0]["transcriptFilesScanned"], 0)
+        self.assertEqual(receipts["localStores"]["evidenceStore"], {"state": "absent"})
+        self.assertEqual(receipts["localStores"]["pluginWorkspaceRegistry"], {"state": "absent"})
         self.assertEqual(receipts["hosts"][1]["c3ObservedUse"]["state"], "not-observed")
 
 

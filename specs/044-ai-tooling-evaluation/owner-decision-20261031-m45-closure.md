@@ -58,10 +58,10 @@ Each level carries `observed` or `not-observed`; absent evidence is never succes
 - It does not establish an effective-inventory completeness claim, host-process
   identity, model identity, registration, clean-room reproduction, consent, human
   evaluation or founder acceptance of the frozen candidate.
-- Counts are conservative: tool calls are deduplicated by tool-use id (resumed
+- Counts are conservative: tool calls and skill loads are deduplicated by tool-use id (resumed
   sessions repeat history) and counted only when a result was recorded, so they are
   lower than raw text matches of the skill or tool names.
-- Codex: skills were listed in context in 8 sessions; no Codex skill or MCP use is
+- Codex: skills appear in system/developer context in 8 sessions; no Codex skill or MCP use is
   observed.
 
 ## Receipts
@@ -73,28 +73,46 @@ Each level carries `observed` or `not-observed`; absent evidence is never succes
 | `tests/test_observational_receipts.py` | synthetic controls: levels, outcomes, deduplication, no private content emitted |
 
 Summary (Claude Code, scan on 2026-10-31, 2,880 transcript files, 622 with Agent Braid
-events): all six skills listed in context in 188 sessions; instructions loaded and
+events): all six skills listed in context in 188 sessions; instructions loaded (deduplicated by tool-use id) and
 skill invoked for `analyze` (3), `plan` (4), `setup` (4); `execute`, `recover`,
 `evidence` never loaded or used. MCP calls with results: `workspaces` 27,
 `analyze-work` 24 (18 ok, 6 refused), `plugin-status` 20, `analyze` 7 (6 ok, 1
 refused), `prepare` 6; first seen 2026-10-17, last 2026-10-27. Codex: six skills listed
 in context in 8 sessions; no use.
 
+## Sources consulted
+
+Per the owner's standing instruction of 2026-10-31 and `docs/development/REAL_USE_EVIDENCE.md`
+(coordinator policy, same date), every source below was queried read-only; the
+receipt records numbers only (`localStores` in the SPEC-041 receipt).
+
+| Source | Result |
+|---|---|
+| Claude Code transcripts | observations, above |
+| Codex sessions | skills listed in context only; no use |
+| Local technical telemetry (SPEC-047, 30-day window) | 19 daily-aggregate calls: MCP `analyze-work` 3 ok / 8 refused, `analyze` 1 refused, `execute` 1 refused (2026-10-16, no skill involved); CLI `analyze` 2 ok, `analyze-git` 2 ok / 2 refused. No skill-level data, so it cannot cover C1/C2 |
+| Evidence, coordination and identity stores | present (133,998 / 15 / 1 files; modified 2025-12-05 to 2026-10-17); development evidence from earlier tracks, not examined as usage; 2 unreadable files |
+| Runtime state | 3 files (2026-10-14 to 2026-10-15), not usage observations |
+| Plugin workspace registry and results | 3 configured workspaces; 0 result files |
+
+The MCP `execute` refusal is an observed refusal at the tool level only; it does not
+cover SPEC-041 T004, which concerns the `execute` skill.
+
 ## Task mapping
 
-Ticked only where the receipts cover the task:
+Ticked only where the receipts cover the task. An independent review found T001 and T003 not covered; they are Deferred below:
 
 | Task | Result | Receipt coverage and limits |
 |---|---|---|
-| SPEC-041 T001 | **Ticked** | Five skills plus `setup` listed in context in Claude Code (188 sessions) and Codex (8). Format/identity compliance is the earlier technical clause T011 |
-| SPEC-041 T002 | **Ticked** | `analyze`: C1, C2 (3 loads, digests, alpha.3/.4), C3 (3 invocations; MCP `analyze-work`/`analyze` with ok and refused outcomes) |
-| SPEC-041 T003 | **Ticked** | `plan`: C1, C2 (4 loads, alpha.3/.4), C3 (4 invocations; `prepare` 6 ok). The skill use and the `prepare` calls occur in different sessions; no single-session pair is claimed |
+| SPEC-041 T002 | **Ticked** | `analyze`: C1, C2 (3 loads with digests, alpha.3/.4), C3 (3 invocations; MCP `analyze-work`/`analyze` with ok and refused outcomes). The explanation-quality clauses are content this class cannot observe and are not evidenced |
 | SPEC-047 T010 | **Ticked** | Owner acceptance disposition, as relayed by the coordinator; not derived from receipts |
 
 Deferred (not covered):
 
 | Task | Why not covered | Reopen criteria |
 |---|---|---|
+| SPEC-041 T001 | only discovery observed: five skills (plus `setup`) listed in context in Claude Code (188 sessions) and Codex (8), but `execute`, `recover`, `evidence` never loaded and listing versions unreadable | all five skills loaded at recorded versions, per `procedure_portable_bundle` |
+| SPEC-041 T003 `plan` | skill loaded and invoked (4), but no `prepare` after it in the same session and no way to observe the order/missing-authority disclosure | one session with `plan` skill, `prepare`, and the disclosed order and missing authority |
 | SPEC-041 T004 `execute` | skill never loaded or used | C1–C3 receipts for `execute` on a granted exact batch, with a refusal counterpart for a wrong/expired grant |
 | SPEC-041 T005 `recover` | never loaded or used | C1–C3 receipts for an interrupted or mismatched run, with a refusal counterpart |
 | SPEC-041 T006 `evidence` | never loaded or used | C1–C3 receipts for verified, failed and inconclusive records |
