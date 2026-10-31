@@ -56,11 +56,13 @@ class TrackingTests(unittest.TestCase):
         open_tasks = {item["key"] for item in desired
                       if item["state"] == "open" and item["kind"] == "task"}
         required_open = {
-            "SPEC-002/T006", "SPEC-009/T009", "SPEC-011/T008",
+            "SPEC-009/T009", "SPEC-011/T008",
             "SPEC-019/T001", "SPEC-019/T003",
             "SPEC-019/T005", "SPEC-019/T007",
         }
         self.assertTrue(required_open <= open_tasks)
+        self.assertNotIn("SPEC-002/T006", open_tasks)
+        self.assertIn("SPEC-002/T006", config["task_state_overrides"])
         self.assertNotIn("SPEC-019/T002", open_tasks)
         self.assertNotIn("SPEC-019/T004", open_tasks)
         self.assertEqual("closed", next(item["state"] for item in desired
@@ -72,7 +74,7 @@ class TrackingTests(unittest.TestCase):
         # remote closure still requires the reviewed guarded tracking apply.
         self.assertIn("M4 — Agent Braid runtime", config["closed_milestones"])
         self.assertEqual({key for key, task in source_tasks.items() if task["state"] == "open"}, open_tasks)
-        self.assertEqual({"SPEC-004/T005"}, set(config["task_state_overrides"]))
+        self.assertEqual({"SPEC-002/T006", "SPEC-004/T005"}, set(config["task_state_overrides"]))
 
     def test_plan_is_empty_for_matching_relationships(self):
         config = {"milestones": {"M0": "description"}, "closed_milestones": []}
