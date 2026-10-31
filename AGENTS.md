@@ -24,6 +24,12 @@ separate boundary gates and are never implied by a passing profile. Install
 dependencies only in isolated environments. Separate executed checks from pending
 human, interactive or externally blocked checks.
 
+When a task, verification or approval packet needs real (non-synthetic) evidence,
+first query every local Agent Braid telemetry, state and host-transcript source listed
+in `docs/development/REAL_USE_EVIDENCE.md`. This covers every repository where Agent
+Braid is configured. Commit only derived, redacted receipts, or state explicitly that
+no observations were found. These receipts inform approvals; they never grant them.
+
 <!-- context7 -->
 Use Context7 MCP to fetch current documentation whenever the user asks about a library, framework, SDK, API, CLI tool, or cloud service -- even well-known ones like React, Next.js, Prisma, Express, Tailwind, Django, or Spring Boot. This includes API syntax, configuration, version migration, library-specific debugging, setup instructions, and CLI tool usage. Use even when you think you know the answer -- your training data may not reflect recent changes. Prefer this over web search for library docs.
 
