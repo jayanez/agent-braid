@@ -568,3 +568,26 @@ mechanism and lifecycle phase. Native containment/source/host qualification,
 complete costs, architectural adoption and per-capability acceptance remain
 explicit gates. Existing runtime, plugin, forecasting, System 1 and telemetry
 acceptance does not transfer. Upstream names identify source provenance only.
+
+## VIS — Activity viewer
+
+[SPEC-061](specs/061-activity-viewer/spec.md) specifies VIS.1 — Activity viewer: an
+opt-in, read-only companion that turns Agent Braid artifacts and allowlisted Claude
+Code and Codex telemetry into the `agent-braid-loom/v0.1` event stream and renders
+it as a braid in a local Three.js viewer, live and as replay. Crossings show only
+computed classifications with their compatibility class; counters show conflicts
+flagged, planned wave width (advisory, not verified safe), hazards and observation
+gaps, never speedup. Effort data stays in memory unless the user records a session
+explicitly; export is minimal by default and an opt-in effort pack labels every
+figure as a host estimate. The server binds to loopback only.
+
+| Track | Scope | State |
+|---|---|---|
+| VIS.1 | contract, adapters, loopback server, live ingest, replay, web viewer, export (SPEC-061, 37 tasks) | Draft specification; ADR 0032 and ADR 0033 proposed |
+| VIS.2 | Claude Code mod pane and hook automation (SPEC-062) | Planned |
+| VIS.3 | Codex MCP App and terminal UI (SPEC-063) | Planned |
+| VIS.4 | Cursor, OpenCode, Pi and other hosts (SPEC-064) | Planned |
+
+Gates: ADR 0032 (companion boundary), ADR 0033 (vendored Three.js, founder),
+owner-run host verification receipts and owner review. The track is independent
+of the core, M4.x and HAR and gates none of them. Extra cash spend EUR 0.

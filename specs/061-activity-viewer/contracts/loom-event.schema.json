@@ -1,0 +1,1253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/specs/061-activity-viewer/contracts/loom-event.schema.json",
+  "title": "agent-braid-loom/v0.1 event (draft contract, not adopted)",
+  "description": "One line of a Loom event stream (JSON Lines, at most 16 KiB per line, seq strictly increasing). A file or POST body holding more than 50000 events is refused; the live in-memory ring instead evicts the oldest events and announces each evicted range with a ring-evicted gap. Planned contract of SPEC-061; no implementation exists. Every event is read-only: executionAuthorization is the constant false. compatibilityClass is the Article 13 class (0 heuristic to 5 Yang-Baxter) declared by the analysis fact the event carries, or null when the event carries no per-pair analysis result (analysis.report, strands, effort, gaps, session); it is never a guarantee and never a safety ordering. Status and mode enums are copied verbatim from their source contracts. Effort figures are host estimates kept in memory. Duplicate JSON members and non-finite numbers are refused before schema validation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "seq",
+    "kind",
+    "at",
+    "source",
+    "assurance",
+    "executionAuthorization",
+    "data"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "agent-braid-loom/v0.1"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "kind": {
+      "enum": [
+        "session.origin",
+        "analysis.report",
+        "strand.open",
+        "strand.update",
+        "strand.close",
+        "crossing.classified",
+        "wave.planned",
+        "wave.started",
+        "wave.finished",
+        "grant.issued",
+        "grant.consumed",
+        "grant.expired",
+        "grant.refused",
+        "hazard.noticed",
+        "gate.phase",
+        "gate.result",
+        "runtime.phase",
+        "effort.sample",
+        "observation.gap"
+      ]
+    },
+    "at": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relMs",
+        "basis"
+      ],
+      "properties": {
+        "relMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "basis": {
+          "enum": [
+            "viewer-monotonic",
+            "artifact-relative",
+            "sequence-only"
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adapter",
+        "evidenceRef",
+        "host"
+      ],
+      "properties": {
+        "adapter": {
+          "enum": [
+            "analysis-report",
+            "git-replay-plan",
+            "scheduler-preparation",
+            "runtime-grant",
+            "runtime-state",
+            "ownership-notice",
+            "ownership-receipt",
+            "workflow-gate",
+            "host-stream",
+            "otlp-logs",
+            "otlp-metrics",
+            "claude-hook",
+            "codex-notify",
+            "codex-hook",
+            "viewer"
+          ]
+        },
+        "evidenceRef": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "sha256"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "maxLength": 512,
+                  "pattern": "^(?![A-Za-z]:)(?!(?:.*/)?\\.\\.(?:/|$))[^/\\\\\\u0000-\\u001f][^\\\\\\u0000-\\u001f]*$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          ]
+        },
+        "host": {
+          "enum": [
+            "braid",
+            "claude",
+            "codex",
+            "other"
+          ]
+        }
+      }
+    },
+    "assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "compatibilityClass",
+        "notAGuarantee"
+      ],
+      "properties": {
+        "compatibilityClass": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "notAGuarantee": {
+          "const": true
+        }
+      }
+    },
+    "executionAuthorization": {
+      "const": false
+    },
+    "data": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "session.origin"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "hosts",
+              "limits"
+            ],
+            "properties": {
+              "mode": {
+                "enum": [
+                  "live",
+                  "replay"
+                ]
+              },
+              "hosts": {
+                "type": "array",
+                "maxItems": 8,
+                "items": {
+                  "enum": [
+                    "braid",
+                    "claude",
+                    "codex",
+                    "other"
+                  ]
+                }
+              },
+              "limits": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "strands",
+                  "crossings",
+                  "waves",
+                  "grants",
+                  "events"
+                ],
+                "properties": {
+                  "strands": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "crossings": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "waves": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "grants": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "events": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "analysis.report"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "reportId",
+              "operationCount",
+              "pairCount",
+              "summary",
+              "uncertainty",
+              "limits"
+            ],
+            "properties": {
+              "reportId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "operationCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4096
+              },
+              "summary": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "independentCandidate",
+                  "ordered",
+                  "conflicting",
+                  "unknown"
+                ],
+                "properties": {
+                  "independentCandidate": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "ordered": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "conflicting": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "unknown": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "uncertainty": {
+                "type": "array",
+                "maxItems": 64,
+                "items": {
+                  "type": "string",
+                  "maxLength": 256
+                }
+              },
+              "limits": {
+                "type": "array",
+                "maxItems": 64,
+                "items": {
+                  "type": "string",
+                  "maxLength": 256
+                }
+              },
+              "pairCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 8386560
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "strand.open"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "strandId",
+              "host",
+              "role",
+              "label",
+              "parentStrandId"
+            ],
+            "properties": {
+              "strandId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "host": {
+                "enum": [
+                  "braid",
+                  "claude",
+                  "codex",
+                  "other"
+                ]
+              },
+              "role": {
+                "enum": [
+                  "agent",
+                  "subagent",
+                  "operation",
+                  "worker",
+                  "unit"
+                ]
+              },
+              "label": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "parentStrandId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "strand.update"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "strandId",
+              "state",
+              "toolName"
+            ],
+            "properties": {
+              "strandId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "state": {
+                "enum": [
+                  "running",
+                  "waiting",
+                  "idle"
+                ]
+              },
+              "toolName": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "strand.close"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "strandId",
+              "outcome"
+            ],
+            "properties": {
+              "strandId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "outcome": {
+                "enum": [
+                  "ok",
+                  "failed",
+                  "cancelled",
+                  "unknown"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "crossing.classified"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "reportId",
+              "left",
+              "right",
+              "classification",
+              "sharedResources",
+              "reasons",
+              "constraints",
+              "evidence"
+            ],
+            "properties": {
+              "reportId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "left": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "right": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "classification": {
+                "enum": [
+                  "ordered",
+                  "conflicting",
+                  "unknown",
+                  "independent-candidate"
+                ]
+              },
+              "sharedResources": {
+                "type": "array",
+                "maxItems": 64,
+                "items": {
+                  "type": "string",
+                  "maxLength": 256
+                }
+              },
+              "reasons": {
+                "type": "array",
+                "maxItems": 32,
+                "items": {
+                  "type": "string",
+                  "maxLength": 256
+                }
+              },
+              "constraints": {
+                "type": "array",
+                "maxItems": 32,
+                "items": {
+                  "type": "string",
+                  "maxLength": 256
+                }
+              },
+              "evidence": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "method",
+                  "coverage",
+                  "ruleSet"
+                ],
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "coverage": {
+                    "type": "array",
+                    "maxItems": 3,
+                    "items": {
+                      "enum": [
+                        "complete",
+                        "partial",
+                        "unknown"
+                      ]
+                    }
+                  },
+                  "ruleSet": {
+                    "type": "string",
+                    "maxLength": 256
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "wave.planned"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "planId",
+              "mode",
+              "waves",
+              "serialSlots"
+            ],
+            "properties": {
+              "planId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "mode": {
+                "enum": [
+                  "candidate-preparation-waves",
+                  "serial-fallback",
+                  "manual-review"
+                ]
+              },
+              "waves": {
+                "type": "array",
+                "maxItems": 64,
+                "items": {
+                  "type": "array",
+                  "maxItems": 256,
+                  "items": {
+                    "type": "string",
+                    "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+                  }
+                }
+              },
+              "serialSlots": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4096
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "wave.started"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "planId",
+              "wave",
+              "strands"
+            ],
+            "properties": {
+              "planId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "wave": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 63
+              },
+              "strands": {
+                "type": "array",
+                "maxItems": 256,
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "wave.finished"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "planId",
+              "wave",
+              "strands"
+            ],
+            "properties": {
+              "planId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "wave": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 63
+              },
+              "strands": {
+                "type": "array",
+                "maxItems": 256,
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "grant.issued"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "grantId",
+              "scope",
+              "derived"
+            ],
+            "properties": {
+              "grantId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "scope": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "derived": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "grant.consumed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "grantId",
+              "scope",
+              "derived"
+            ],
+            "properties": {
+              "grantId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "scope": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "derived": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "grant.expired"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "grantId",
+              "scope",
+              "derived"
+            ],
+            "properties": {
+              "grantId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "scope": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "derived": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "grant.refused"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "grantId",
+              "scope",
+              "derived"
+            ],
+            "properties": {
+              "grantId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "scope": {
+                "type": "string",
+                "maxLength": 256
+              },
+              "derived": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "hazard.noticed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "strandId",
+              "hazardKind",
+              "stage"
+            ],
+            "properties": {
+              "strandId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "hazardKind": {
+                "enum": [
+                  "read-write",
+                  "write-write",
+                  "create-collision",
+                  "undeclared-write",
+                  "sibling-area-write",
+                  "partial-coverage",
+                  "shared-resource",
+                  "base-mismatch",
+                  "not-observed",
+                  "unattributed-writer"
+                ]
+              },
+              "stage": {
+                "enum": [
+                  "preflight",
+                  "receipt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "gate.phase"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "gateId",
+              "phase",
+              "status"
+            ],
+            "properties": {
+              "gateId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "phase": {
+                "enum": [
+                  "validate",
+                  "analyze",
+                  "baseline",
+                  "finalize",
+                  "report"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "ok",
+                  "skipped",
+                  "refused",
+                  "busy",
+                  "failed",
+                  "inconclusive",
+                  "not-run"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "gate.result"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "gateId",
+              "status",
+              "operationCount"
+            ],
+            "properties": {
+              "gateId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "status": {
+                "enum": [
+                  "refused",
+                  "busy",
+                  "inconclusive",
+                  "hazards-found",
+                  "ok-analyzed",
+                  "ok-certified"
+                ]
+              },
+              "operationCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4096
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "runtime.phase"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "runId",
+              "phase"
+            ],
+            "properties": {
+              "runId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "phase": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "effort.sample"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "strandId",
+              "basis",
+              "model",
+              "inputTokens",
+              "outputTokens",
+              "cacheTokens",
+              "costUsd",
+              "durationMs"
+            ],
+            "properties": {
+              "strandId": {
+                "type": "string",
+                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+              },
+              "basis": {
+                "const": "host-estimate"
+              },
+              "model": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "inputTokens": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000000000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "outputTokens": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000000000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cacheTokens": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000000000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "costUsd": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1000000.0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "durationMs": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000000000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "observation.gap"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "reason",
+              "strandId",
+              "fromSeq",
+              "toSeq"
+            ],
+            "properties": {
+              "reason": {
+                "enum": [
+                  "subagent-usage-unattributed",
+                  "stream-truncated",
+                  "shape-unpinned",
+                  "ring-evicted",
+                  "host-unverified",
+                  "not-observed"
+                ]
+              },
+              "strandId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fromSeq": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "toSeq": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "crossing.classified"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "assurance": {
+            "properties": {
+              "compatibilityClass": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "effort.sample",
+              "strand.open",
+              "strand.update",
+              "strand.close",
+              "observation.gap",
+              "session.origin",
+              "analysis.report"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "assurance": {
+            "properties": {
+              "compatibilityClass": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

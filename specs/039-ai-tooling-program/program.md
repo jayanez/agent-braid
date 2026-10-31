@@ -102,6 +102,14 @@ merge and final closure retain their applicable decisions.
 These are documented options. They add no v1 tasks, compatibility claims or
 execution authority. No provider ranking is asserted.
 
+The embedded visual interaction route is now specified as track VIS:
+[SPEC-061](../061-activity-viewer/spec.md) (VIS.1, draft) provides the required
+[UI, security and privacy contract](../061-activity-viewer/contracts/ui-security-privacy.md)
+and a loopback web viewer; MCP Apps and host-native views follow in VIS.2–VIS.4
+after host verification. The additional development environments route is
+reflected in the viewer's [surfaces matrix](../061-activity-viewer/contracts/surfaces-matrix.json)
+only as planned rows.
+
 ## Current local telemetry extension — 2026-10-16
 
 The current portfolio has eight specs: the original 039–044, [046 native plugins](../046-native-ai-plugins/spec.md) and [047 telemetry](../047-local-technical-telemetry/spec.md). SPEC-047 consumes the existing 040/042 interfaces and owns default-off local numeric aggregation, bounded SQLite retention and manual exchange. It must be validated before a future new-candidate pilot; it does not depend on completing native evaluation. [The global matrix](../../docs/tooling/M45_ALIGNMENT.md) separates technical dependencies, observations, review and acceptance, including M1/M2/M4 and SPEC-034–037/045.
