@@ -28,6 +28,23 @@ useful, preserving provenance and applicable notices while fitting Agent Braid's
 contracts. Original English documentation and the absence of upstream branding
 do not require clean-room reimplementation of valuable software mechanisms.
 
+## Guiding Principles
+
+Reliability and precision come first. Lower token use is an expected
+consequence of these principles, not a goal, and is claimed only when measured
+per accepted, verified change (SPEC-049 costs and cohort evaluation).
+
+1. **Less rework.** Bounded tasks, exclusive file ownership and explicit
+   contracts prevent failed iterations, conflicts and redone changes.
+2. **Fail early.** Deterministic refusals stop invalid work before an agent
+   spends effort exploring it.
+3. **Deterministic code over model reasoning.** Validators, ownership checks,
+   parsers and merge analysis do the work a model would otherwise reason out.
+4. **Curated context.** Specs, tasks and hashed evidence carry state so each
+   session does not rediscover it from the repository.
+5. **Evidence-based learning.** Profiles promoted on evidence keep strategies
+   that worked and retire those that failed.
+
 ## Key Assumptions to Validate
 
 - [ ] Small harness edits improve at least one outcome without degrading the
