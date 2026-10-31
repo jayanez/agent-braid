@@ -106,6 +106,21 @@ Tracking changes this would imply:
 | Milestone 9 closure | Possible after separate scope decision | Blocked indefinitely |
 | New authority needed | Signed record, hash-bound entries | Signed criteria only |
 
+## Real-use evidence check (2026-10-31)
+
+Per the owner's standing instruction (policy `docs/development/REAL_USE_EVIDENCE.md`, coordinator branch `docs/real-use-evidence-policy`, not yet in this tree), local sources were queried read-only before merge. Derived receipt only; no content, paths of private material or identities are committed. A receipt informs this decision; it grants nothing.
+
+| Source | Observation |
+| --- | --- |
+| `~/.local/share/agent-braid/telemetry/metrics.sqlite3` | 66 aggregate cells over 3 days (2026-10-16, 10-24, 10-27): CLI/MCP calls of `analyze`, `analyze-git`, `analyze-work`, `execute`, with outcome, duration and classification buckets. Tables `batches`, `pending`, `losses` are empty. No workload series, resource counters, session/pair journals or forecast cells. (`agent-braid telemetry` CLI not runnable in this worktree under system Python 3.9; the file was read read-only with sqlite.) |
+| `~/.local/share/agent-braid/evidence/{fc1,fc2}` | Engineering receipts (PR integration, CI logs, tracking audits, synthetic resource-cache and offline-profile repair, shadow/report PR logs, FC.2 selected-flow audits). No admitted source window or real workload series. |
+| `~/.local/share/agent-braid/{coordination,identity,evidence/m45,...}` | M4.5 coordination and evidence, an account HMAC key; unrelated to a workload or forecast source. |
+| `~/.local/state/agent-braid/forecast` | A locally cached Chronos checkpoint and a worker lease from the FC.2 synthetic conformance; no captured series. |
+| `~/Library/Application Support/AgentBraid` | Plugin registry (3 workspaces) and result directories; no workload data. |
+| `~/.claude/projects/**/*.jsonl` (2880 files), `~/.codex/sessions` (844 files) | Development transcripts. Keyword hits for forecast terms are discussions of building these specs, not captured workloads. No M3.5 shared-base session/pair feed and no SPEC-034 prospective window. Not mined for content. |
+
+Result: no observation contradicts "no data path". No admitted or consented source window, no admitted resource profile and no eligible families or pairs were found. Limits: transcript content was not exhaustively read, and a transcript is not an authoring-boundary feed with rights, notice and completeness. If a source is later found, reopen under the criteria above.
+
 ## Adopted decision (2026-10-31)
 
 - Selected option: **A, cancel as infeasible**. Option B (defer) was not selected as the
