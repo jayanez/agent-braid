@@ -31,8 +31,8 @@ inconclusive, not as completion. Only an explicit owner decision can change that
 | Task / issue | Definition | Unmet precondition (evidence) |
 | --- | --- | --- |
 | T007 / #188 source admission | [tasks.md:39](tasks.md) | Zero eligible families and pairs in the bounded owner-only review ([tasks.md:50](tasks.md), [software-completion.md:41](software-completion.md)); participant rights/notice, immutable feed, completeness and pair yield not established ([spec.md:83](spec.md), [tasks.md:45](tasks.md)); five distinct eligible families required ([software-completion.md:41](software-completion.md)); no capture window authorized. |
-| T001 / #181 preregistration and annotation | [tasks.md:18](tasks.md) | Needs a consented source and eligible pair yield ([tasks.md:22-23](tasks.md)); protocol is a pending candidate ([workload-protocol.md:41](workload-protocol.md), [workload-protocol.md:88](workload-protocol.md)); no viable cohort, no frozen protocol, no named reviewers/adjudicator, no registered 14-day window ([software-completion.md:42](software-completion.md)). Depends on T007 for the cohort. |
-| T003 / #183 real fit and evaluation | [tasks.md:75](tasks.md) | Depends on T001; no eligible labels, real model or sealed holdout; needs 1 train + 1 calibration + 3 holdout families, at least 100 known labels, holdout at least 20 positive and 20 negative ([software-completion.md:43](software-completion.md), [workload-protocol.md:133](workload-protocol.md)). |
+| T001 / #181 preregistration and annotation | [tasks.md:18](tasks.md) | Needs a consented source and eligible pair yield ([tasks.md:22-23](tasks.md)); protocol is a pending candidate ([workload-protocol.md:1-11](workload-protocol.md); it also requires stopping before annotation if the split is infeasible, [workload-protocol.md:41](workload-protocol.md), [workload-protocol.md:88](workload-protocol.md)); no viable cohort, no frozen protocol, no named reviewers/adjudicator, no registered 14-day window ([software-completion.md:42](software-completion.md)). Depends on T007 for the cohort. |
+| T003 / #183 real fit and evaluation | [tasks.md:75](tasks.md) | Depends on T001; no eligible labels, real model or sealed holdout; needs 1 train + 1 calibration + 3 holdout families, at least 100 known labels, holdout at least 20 positive and 20 negative ([software-completion.md:43](software-completion.md), [workload-protocol.md:126-133](workload-protocol.md)). |
 | T005 / #185 evidence and final decision | [tasks.md:79](tasks.md) | No valid real experiment to reproduce or review; human scientific review and founder decision on an actual result missing ([software-completion.md:44](software-completion.md)). A null or negative real result would be acceptable; none exists. |
 
 Dependency chain: T007 -> T001 -> T003 -> T005. None has an independent path; no
@@ -72,8 +72,9 @@ Tracking changes this would imply (to be done by the tracking owner, not here):
 ## Option B: defer with explicit reopen criteria
 
 Tasks stay open and unchanged. The signed text adds a dated review point and the
-criteria below, all taken from existing re-entry conditions
-([software-completion.md:41-44](software-completion.md)). Nothing here is new
+criteria below. Criteria 1 to 4 come from existing re-entry conditions
+([software-completion.md:41-44](software-completion.md), notice clause from
+[spec.md:83](spec.md)); criterion 5 is a NEW proposed governance condition. Nothing here is new
 science; the founder may tighten but should not loosen thresholds.
 
 Proposed reopen criteria (all required before any work resumes):
@@ -93,7 +94,8 @@ Tracking changes this would imply:
   and the review date (tracking owner's call).
 - Because the tasks stay open, M3.5 never reaches closure by itself; the stalled
   milestone remains visible. Founder should accept that cost or set a sunset date
-  after which Option A applies automatically (blank field below).
+  at which the founder must re-decide; reaching it changes nothing by itself, and
+  Option A would still need its own signed record, hash entries and readback.
 
 ## Comparison
 
@@ -101,7 +103,7 @@ Tracking changes this would imply:
 | --- | --- | --- |
 | Open issues after | #180 parent only (until scope decision) | #180, #181, #183, #185, #188 |
 | Reversible | Yes, by a new reviewed task/decision; cancelled attempt is not inherited | Yes, trivially |
-| Honest about data | Records infeasibility now | Keeps a standing, possibly unreachable gate |
+| What tracking shows | Cancelled/partial, infeasibility recorded | Open, with stated reopen criteria and review date |
 | Milestone 9 closure | Possible after separate scope decision | Blocked indefinitely |
 | New authority needed | Signed record, hash-bound entries | Signed criteria only |
 

@@ -12,15 +12,14 @@ Modeled on [t005-disposition.md](t005-disposition.md) and the
 Milestone 18 (FC.1) holds issues #335 to #371 (37). Read from GitHub on 2026-10-31:
 7 closed (#337, #339, #346, #347, #348, #349 completed synthetic software; #340
 closed `not_planned`), and 30 open: 4 parents (#335, #344, #353, #363) plus 26
-original tasks. (The coordinating brief said 29; this count includes all four
-parents, so re-check at signing.)
+original tasks. This count includes all four parents; re-check at signing.
 
 SPEC-034 T005 (#340) is cancelled-partial/infeasible by owner decision of
 2026-10-16 ([t005-disposition.md](t005-disposition.md)). Its original criterion
 stays unchecked ([tasks.md:25](tasks.md)) and every dependent stays unsatisfied.
 The one approved native control failed under the unchanged 256 Git-request limit and
 actual complete native bounds are unknown ([t005-disposition.md](t005-disposition.md),
-[resource-cache-controls-2026-10-15.md](resource-cache-controls-2026-10-15.md)).
+[t005-disposition.md](t005-disposition.md) lines 7-9).
 
 Direct dependents of T005: 034/T006 ([tasks.md:32](tasks.md)), 035/T006
 ([tasks 035:31](../035-chronos2-forecast-adapter/tasks.md)), 037/T003
@@ -41,11 +40,13 @@ Exit clauses already in the specs:
 - 037/T007 accepts "explicit no-go/defer" instead of positive utility
   ([tasks 037:36](../037-forecast-advisory-integration/tasks.md));
   research completion with an infeasible result can be recorded while promotion stays
-  no-go ([promotion-proposal.md:23](../037-forecast-advisory-integration/promotion-proposal.md)).
+  no-go ([promotion-proposal.md:23](../037-forecast-advisory-integration/promotion-proposal.md)),
+  but implementation and founder-gate tasks are not to be closed without their
+  actual evidence ([promotion-proposal.md:25](../037-forecast-advisory-integration/promotion-proposal.md)).
 - 034/T007: absent usable data is infeasible, not permission to widen the workload
   domain ([tasks.md:38](tasks.md)).
 
-## Route (a): close as infeasible
+## Route (a): cancel and exit as infeasible
 
 Mechanism: signed pre-launch infeasibility record (036/T001 exit, then 036/T008 and
 T009 on that outcome), then 037/T007 no-go and 037/T008 founder no-go; remaining
@@ -89,10 +90,10 @@ review below comes first. SPEC-034 T001 would need
    independently supported complete native bound (the 256-request failure shows the
    old bound was inadequate), and a technical review. The offline correction from
    [t005-disposition.md](t005-disposition.md) is engineering evidence only.
-7. Per [adr-proposal.md](adr-proposal.md): confirm whether amending T005's acceptance
-   text needs an ADR under GOVERNANCE.md (not verified in this draft).
+7. Confirm whether amending T005's acceptance text needs an ADR under
+   [GOVERNANCE.md](../../GOVERNANCE.md) (not verified in this draft).
 
-Even after T001 and T005, FC.1 still needs: capture hooks (034/T003) with a separate
+Even after T001 and T005, FC.1 still needs at least (see the issue map for the full chain): capture hooks (034/T003) with a separate
 source-window/operator approval, an approved prospective window (034/T006), yield
 audit (034/T007), real Chronos-2 conformance and cost (035/T008, separate approved
 provisioning and compute), the frozen registration (036/T001), and per-run operator
@@ -117,7 +118,7 @@ unchanged. Route (b): **REOPEN**, **NEXT** (first actionable review), **WAIT**
 | #342 | 034/T007 | open | CANCEL | WAIT (T006) |
 | #343 | 034/T008 | open | CANCEL | WAIT (T007) |
 | #344 | 035 parent | open | OPEN (Q4) | OPEN |
-| #345 | 035/T001 | open | CANCEL (Q2) | NEXT (needs only 034/T001) |
+| #345 | 035/T001 | open | CANCEL (Q2) | NEXT (needs 034/T001 plus model/dependency/budget review) |
 | #346 | 035/T002 | closed | KEEP | KEEP |
 | #347 | 035/T003 | closed | KEEP | KEEP |
 | #348 | 035/T004 | closed | KEEP | KEEP |
@@ -126,7 +127,7 @@ unchanged. Route (b): **REOPEN**, **NEXT** (first actionable review), **WAIT**
 | #351 | 035/T007 | open | CANCEL | WAIT (T006) |
 | #352 | 035/T008 | open | CANCEL | WAIT (T007 plus approved compute) |
 | #353 | 036 parent | open | OPEN (Q4) | OPEN |
-| #354 | 036/T001 | open | DONE-A: infeasibility record (Q1) | WAIT (034/T007, 035/T001) |
+| #354 | 036/T001 | open | DONE-A: infeasibility record (Q1) | WAIT (034/T007, 035/T001, exact source/compute review) |
 | #355 | 036/T002 | open | CANCEL | WAIT (T001) |
 | #356 | 036/T003 | open | CANCEL (offline engineering evidence retained, unchecked) | WAIT (T002, 035/T007) |
 | #357 | 036/T004 | open | CANCEL | WAIT (T002, 037/T003) |
@@ -149,6 +150,7 @@ Counts, route (a) if signed as drafted: 7 closed unchanged (six completed, #340
 cancelled), 5 completed on an infeasible/no-go basis (#354, #361, #362, #370, #371;
 original acceptance wording stays visible per the precedents), 21 cancelled, 4 parents
 open. 7 + 5 + 21 + 4 = 37. Recount at signing.
+Note: #361 was closed once before and shows as reopened; confirm its history at signing.
 Route (b): no issue changes state except #340 reopen/replace; all others remain as
 now, in dependency order.
 
