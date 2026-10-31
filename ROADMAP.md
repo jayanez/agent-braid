@@ -575,17 +575,20 @@ acceptance does not transfer. Upstream names identify source provenance only.
 opt-in, read-only companion that turns Agent Braid artifacts and allowlisted Claude
 Code and Codex telemetry into the `agent-braid-loom/v0.1` event stream and renders
 it as a braid in a local Three.js viewer, live and as replay. Crossings show only
-computed classifications with their compatibility class; counters show conflicts
-flagged, planned wave width (advisory, not verified safe), hazards and observation
-gaps, never speedup. Effort data stays in memory unless the user records a session
+computed classifications with their compatibility class, and replayed or
+host-reported events are marked unverified; counters show conflicts flagged,
+planned wave width (advisory plan, not a runtime measurement), hazards and
+observation gaps, never speedup. Claim level: inspiration (Article 17); the braid
+picture is a representation, not a formal or theorem claim. Effort data stays in memory unless the user records a session
 explicitly; export is minimal by default and an opt-in effort pack labels every
-figure as a host estimate. The server binds to loopback only.
+figure as a host estimate. The server binds to loopback only, takes no part in
+host decisions and writes no host configuration.
 
 | Track | Scope | State |
 |---|---|---|
-| VIS.1 | contract, adapters, loopback server, live ingest, replay, web viewer, export (SPEC-061, 37 tasks) | Draft specification; ADR 0032 and ADR 0033 proposed |
-| VIS.2 | Claude Code mod pane and hook automation (SPEC-062) | Planned |
-| VIS.3 | Codex MCP App and terminal UI (SPEC-063) | Planned |
+| VIS.1 | VIS.1a coordination slice (probes and census first, contract, adapters, loopback server, `--watch`, replay, Claude hooks, web viewer), go/no-go checkpoint, then VIS.1b (OTLP, recording, export, effort pack, frames) (SPEC-061, 39 tasks) | Draft specification; ADR 0032 and ADR 0033 proposed |
+| VIS.2 | Claude Code mod pane (SPEC-062) | Planned |
+| VIS.3 | Codex hooks and `notify`, Codex MCP App and terminal UI (SPEC-063) | Planned |
 | VIS.4 | Cursor, OpenCode, Pi and other hosts (SPEC-064) | Planned |
 
 Gates: ADR 0032 (companion boundary), ADR 0033 (vendored Three.js, founder),

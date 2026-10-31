@@ -24,9 +24,12 @@ agent-braid view export --from with-braid.loom.jsonl --to ~/agent-braid-exports/
 agent-braid view export --from with-braid.loom.jsonl --to ~/agent-braid-exports/pack-1 \
   --include-effort --baseline without-braid \
   --arm without-braid=without-braid.loom.jsonl --arm with-braid=with-braid.loom.jsonl \
+  --arm-note "without-braid=task A at commit X, run first" \
   --arm-note "with-braid=same task and commit, run after the baseline"
 ```
 
-The server binds to loopback only and prints a URL with a per-session token. It is
-read-only, keeps effort data in memory and writes a file only when `--record` names
-one.
+The server binds to loopback only and prints a one-time URL that the browser
+exchanges for a session cookie; host exporters use a separate ingest token read
+from an owner-only file. It is read-only, keeps effort data in memory and writes a
+file only when `--record` names one. Configure host exporters only while the
+viewer runs.

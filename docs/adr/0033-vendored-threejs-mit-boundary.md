@@ -20,19 +20,27 @@ boundary change; ADR 0012 is the precedent for MIT material.
 If accepted, vendor exactly these prebuilt ES module files from the npm package
 `three` at a pinned version (proposed r182, `0.182.0`), unmodified:
 
-- `build/three.module.js` (and its `three.core.js` dependency if the pinned
-  version splits it)
+- `build/three.module.js`
+- `build/three.core.js` (imported by `three.module.js` in r182)
 - `examples/jsm/controls/OrbitControls.js`
-- optional post-processing addons only if a bound visual needs them
+
+Any other file, including post-processing addons, needs an amendment of this
+decision.
 
 They live under `integrations/agent-braid-view/web/vendor/three/` with the
 upstream `LICENSE` file. `integrations/agent-braid-view/web/vendor/manifest.json`
 records package name, version, tarball URL, tarball SHA-512 integrity, and the
 SHA-256 of every vendored file. The license text is added as
 `LICENSES/three-MIT.txt`; `LICENSE` gains a paragraph naming the directory as
-MIT-covered third-party material; `docs/development/THIRD_PARTY.md` gains a
-section. Updates repeat the manifest and require review; no other third-party
-web code is vendored under this decision.
+MIT-covered third-party material; `NOTICE`, the license markers in
+`scripts/validate_repository.py` and `docs/development/THIRD_PARTY.md` gain
+entries, as for ADR 0012. An owner-run provenance receipt records that the
+registry integrity of the pinned tarball matches the manifest and that the
+extracted files match the vendored bytes; a hash test alone cannot detect a change
+that edits both a file and the manifest. Updates repeat the manifest and the
+receipt and require review; no other third-party web code is vendored under this
+decision, and inlining these files elsewhere (for example in an MCP App) needs an
+amendment.
 
 ## Alternatives considered
 
@@ -49,7 +57,8 @@ web code is vendored under this decision.
   manual review.
 - Compatibility: the license map gains one MIT directory; AGPL and CC-BY-SA
   boundaries are unchanged.
-- Security: hash manifest test, no remote load, no `eval` in first-party code, CSP restricted to self plus one import-map hash.
+- Security: hash manifest test plus a provenance receipt, no remote load, no
+  `eval` in first-party code, CSP restricted to self plus one import-map hash.
 
 ## Validation
 

@@ -198,12 +198,14 @@ The [exact milestone #19 description draft](../../specs/047-local-technical-tele
 ## VIS.1 activity viewer extension
 
 SPEC-061 declares the new track milestone `VIS.1 — Activity viewer`, one open
-parent and T001–T037 in the source inventory, and adds SPEC-061 to Project
+parent and T001–T039 in the source inventory, and adds SPEC-061 to Project
 **Review pending**. Nothing is published by the specification change. After merge
 to `develop`, from a clean checkout of `develop`, scope the audit to the new
-milestone, review the plan (one milestone, one parent, 37 task issues and their
+milestone, review the plan (one milestone, one parent, 39 task issues and their
 sub-issue links), apply it with the reviewed digest, record the assigned number in
 `milestone_numbers`, and re-audit until no operation remains. Then set the parent
 to **Review pending** in [Project 6](https://github.com/users/jayanez/projects/6)
-and check the *Specs and tasks*, *By milestone* and *By status* views. VIS.2–VIS.4
+and check the *Specs and tasks*, *By milestone* and *By status* views. VIS.1a and
+VIS.1b are deliveries inside this one milestone (the tracking source assigns one
+milestone per specification). VIS.2–VIS.4
 get milestones only when their specifications exist.

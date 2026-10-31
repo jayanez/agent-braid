@@ -109,7 +109,7 @@ and tracking do not admit native execution or automatic promotion.
 | [SPEC-061: activity-viewer](../../specs/061-activity-viewer/spec.md) | VIS.1 — Activity viewer (not yet published) |
 
 VIS is an independent track: VIS.1 (SPEC-061) is specified; VIS.2 (Claude Code
-mod pane), VIS.3 (Codex MCP App and terminal UI) and VIS.4 (other hosts) are
+mod pane), VIS.3 (Codex hooks and `notify`, MCP App and terminal UI) and VIS.4 (other hosts) are
 planned in the [derived tracks](../../specs/061-activity-viewer/tracks.md) and get
 their own specs and milestones when started. The track never gates the core,
 M4.x or HAR, and planning creates no execution authority.

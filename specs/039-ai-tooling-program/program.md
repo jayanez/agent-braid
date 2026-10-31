@@ -106,7 +106,8 @@ The embedded visual interaction route is now specified as track VIS:
 [SPEC-061](../061-activity-viewer/spec.md) (VIS.1, draft) provides the required
 [UI, security and privacy contract](../061-activity-viewer/contracts/ui-security-privacy.md)
 and a loopback web viewer; MCP Apps and host-native views follow in VIS.2–VIS.4
-after host verification. The additional development environments route is
+after host verification, each with its own boundary review where it adds a route,
+an origin or a credential. The additional development environments route is
 reflected in the viewer's [surfaces matrix](../061-activity-viewer/contracts/surfaces-matrix.json)
 only as planned rows.
 

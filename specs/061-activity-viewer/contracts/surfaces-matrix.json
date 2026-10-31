@@ -4,6 +4,7 @@
     "planned",
     "hv-pending",
     "verified",
+    "not-matching",
     "unobserved"
   ],
   "surfaces": [
@@ -15,7 +16,7 @@
   "implementedInVIS1": [
     "web"
   ],
-  "rule": "A status changes to verified or unobserved only from a host-verification receipt in specs/061-activity-viewer/evidence/.",
+  "rule": "A status changes to verified, not-matching or unobserved only from a host-verification receipt in specs/061-activity-viewer/evidence/.",
   "rows": [
     {
       "host": "claude-code",
@@ -87,13 +88,12 @@
       "surface": "web",
       "dataSources": [
         "otlp-logs",
-        "codex-notify",
-        "codex-hook",
+        "otlp-metrics",
         "artifacts"
       ],
       "status": "hv-pending",
       "track": "VIS.1",
-      "note": "OpenTelemetry [otel] shape verified by T031."
+      "note": "OpenTelemetry [otel] shape verified by T031. Codex notify and hooks are VIS.3."
     },
     {
       "host": "codex",
@@ -101,7 +101,9 @@
       "surface": "tui",
       "dataSources": [
         "artifacts",
-        "codex-rollout"
+        "codex-rollout",
+        "codex-notify",
+        "codex-hook"
       ],
       "status": "planned",
       "track": "VIS.3",

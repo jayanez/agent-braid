@@ -75,7 +75,8 @@
       "required": [
         "adapter",
         "evidenceRef",
-        "host"
+        "host",
+        "verification"
       ],
       "properties": {
         "adapter": {
@@ -113,7 +114,7 @@
                 "path": {
                   "type": "string",
                   "maxLength": 512,
-                  "pattern": "^(?![A-Za-z]:)(?!(?:.*/)?\\.\\.(?:/|$))[^/\\\\\\u0000-\\u001f][^\\\\\\u0000-\\u001f]*$"
+                  "pattern": "^(?![A-Za-z]:)(?!(?:.*/)?\\.\\.(?:/|$))[^/\\\\\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069][^\\\\\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069]*$"
                 },
                 "sha256": {
                   "type": "string",
@@ -129,6 +130,13 @@
             "claude",
             "codex",
             "other"
+          ]
+        },
+        "verification": {
+          "enum": [
+            "rehashed",
+            "unverified",
+            "derived"
           ]
         }
       }
@@ -302,18 +310,20 @@
               },
               "uncertainty": {
                 "type": "array",
-                "maxItems": 64,
+                "maxItems": 16,
                 "items": {
                   "type": "string",
-                  "maxLength": 256
+                  "maxLength": 256,
+                  "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069]*$"
                 }
               },
               "limits": {
                 "type": "array",
-                "maxItems": 64,
+                "maxItems": 16,
                 "items": {
                   "type": "string",
-                  "maxLength": 256
+                  "maxLength": 256,
+                  "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069]*$"
                 }
               },
               "pairCount": {
@@ -370,7 +380,8 @@
               },
               "label": {
                 "type": "string",
-                "maxLength": 256
+                "maxLength": 256,
+                "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069]*$"
               },
               "parentStrandId": {
                 "anyOf": [
@@ -422,7 +433,8 @@
                 "anyOf": [
                   {
                     "type": "string",
-                    "maxLength": 256
+                    "maxLength": 256,
+                    "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069]*$"
                   },
                   {
                     "type": "null"
@@ -515,26 +527,29 @@
               },
               "sharedResources": {
                 "type": "array",
-                "maxItems": 64,
+                "maxItems": 16,
                 "items": {
                   "type": "string",
-                  "maxLength": 256
+                  "maxLength": 256,
+                  "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069]*$"
                 }
               },
               "reasons": {
                 "type": "array",
-                "maxItems": 32,
+                "maxItems": 8,
                 "items": {
                   "type": "string",
-                  "maxLength": 256
+                  "maxLength": 256,
+                  "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069]*$"
                 }
               },
               "constraints": {
                 "type": "array",
-                "maxItems": 32,
+                "maxItems": 8,
                 "items": {
                   "type": "string",
-                  "maxLength": 256
+                  "maxLength": 256,
+                  "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069]*$"
                 }
               },
               "evidence": {
@@ -548,7 +563,8 @@
                 "properties": {
                   "method": {
                     "type": "string",
-                    "maxLength": 256
+                    "maxLength": 256,
+                    "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069]*$"
                   },
                   "coverage": {
                     "type": "array",
@@ -563,7 +579,8 @@
                   },
                   "ruleSet": {
                     "type": "string",
-                    "maxLength": 256
+                    "maxLength": 256,
+                    "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069]*$"
                   }
                 }
               }
@@ -639,12 +656,12 @@
             "type": "object",
             "additionalProperties": false,
             "required": [
-              "planId",
+              "scheduleId",
               "wave",
               "strands"
             ],
             "properties": {
-              "planId": {
+              "scheduleId": {
                 "type": "string",
                 "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
               },
@@ -680,12 +697,12 @@
             "type": "object",
             "additionalProperties": false,
             "required": [
-              "planId",
+              "scheduleId",
               "wave",
               "strands"
             ],
             "properties": {
-              "planId": {
+              "scheduleId": {
                 "type": "string",
                 "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
               },
@@ -722,7 +739,7 @@
             "additionalProperties": false,
             "required": [
               "grantId",
-              "scope",
+              "action",
               "derived"
             ],
             "properties": {
@@ -730,9 +747,12 @@
                 "type": "string",
                 "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
               },
-              "scope": {
-                "type": "string",
-                "maxLength": 256
+              "action": {
+                "enum": [
+                  "execute",
+                  "resume",
+                  "abort"
+                ]
               },
               "derived": {
                 "type": "boolean"
@@ -757,7 +777,7 @@
             "additionalProperties": false,
             "required": [
               "grantId",
-              "scope",
+              "action",
               "derived"
             ],
             "properties": {
@@ -765,9 +785,12 @@
                 "type": "string",
                 "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
               },
-              "scope": {
-                "type": "string",
-                "maxLength": 256
+              "action": {
+                "enum": [
+                  "execute",
+                  "resume",
+                  "abort"
+                ]
               },
               "derived": {
                 "type": "boolean"
@@ -792,7 +815,7 @@
             "additionalProperties": false,
             "required": [
               "grantId",
-              "scope",
+              "action",
               "derived"
             ],
             "properties": {
@@ -800,9 +823,12 @@
                 "type": "string",
                 "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
               },
-              "scope": {
-                "type": "string",
-                "maxLength": 256
+              "action": {
+                "enum": [
+                  "execute",
+                  "resume",
+                  "abort"
+                ]
               },
               "derived": {
                 "type": "boolean"
@@ -827,7 +853,7 @@
             "additionalProperties": false,
             "required": [
               "grantId",
-              "scope",
+              "action",
               "derived"
             ],
             "properties": {
@@ -835,9 +861,12 @@
                 "type": "string",
                 "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
               },
-              "scope": {
-                "type": "string",
-                "maxLength": 256
+              "action": {
+                "enum": [
+                  "execute",
+                  "resume",
+                  "abort"
+                ]
               },
               "derived": {
                 "type": "boolean"
@@ -861,21 +890,18 @@
             "type": "object",
             "additionalProperties": false,
             "required": [
-              "strandId",
+              "units",
               "hazardKind",
               "stage"
             ],
             "properties": {
-              "strandId": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+              "units": {
+                "type": "array",
+                "maxItems": 128,
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+                }
               },
               "hazardKind": {
                 "enum": [
@@ -1007,17 +1033,23 @@
             "type": "object",
             "additionalProperties": false,
             "required": [
-              "runId",
+              "manifestDigest",
               "phase"
             ],
             "properties": {
-              "runId": {
+              "manifestDigest": {
                 "type": "string",
                 "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
               },
               "phase": {
-                "type": "string",
-                "pattern": "^(?:sha256:[0-9a-f]{64}|[A-Za-z0-9][A-Za-z0-9_.:-]{0,63})$"
+                "enum": [
+                  "initializing",
+                  "ready",
+                  "applying",
+                  "completed",
+                  "aborting",
+                  "aborted"
+                ]
               }
             }
           }
@@ -1043,7 +1075,10 @@
               "model",
               "inputTokens",
               "outputTokens",
-              "cacheTokens",
+              "cacheReadTokens",
+              "cacheCreationTokens",
+              "cachedInputTokens",
+              "reasoningTokens",
               "costUsd",
               "durationMs"
             ],
@@ -1059,7 +1094,8 @@
                 "anyOf": [
                   {
                     "type": "string",
-                    "maxLength": 256
+                    "maxLength": 256,
+                    "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u202a-\\u202e\\u2066-\\u2069]*$"
                   },
                   {
                     "type": "null"
@@ -1090,7 +1126,43 @@
                   }
                 ]
               },
-              "cacheTokens": {
+              "cacheReadTokens": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000000000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cacheCreationTokens": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000000000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cachedInputTokens": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000000000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reasoningTokens": {
                 "anyOf": [
                   {
                     "type": "integer",
@@ -1156,6 +1228,7 @@
                   "subagent-usage-unattributed",
                   "stream-truncated",
                   "shape-unpinned",
+                  "source-unsupported",
                   "ring-evicted",
                   "host-unverified",
                   "not-observed"
@@ -1225,14 +1298,44 @@
       "if": {
         "properties": {
           "kind": {
+            "const": "gate.result"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "assurance": {
+            "properties": {
+              "compatibilityClass": {
+                "const": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
             "enum": [
-              "effort.sample",
+              "session.origin",
+              "analysis.report",
               "strand.open",
               "strand.update",
               "strand.close",
-              "observation.gap",
-              "session.origin",
-              "analysis.report"
+              "wave.planned",
+              "wave.started",
+              "wave.finished",
+              "grant.issued",
+              "grant.consumed",
+              "grant.expired",
+              "grant.refused",
+              "hazard.noticed",
+              "gate.phase",
+              "runtime.phase",
+              "effort.sample",
+              "observation.gap"
             ]
           }
         }

@@ -13,7 +13,7 @@ reading, not observation; REQ-014 tasks record observations separately.
 | Operator grants with `issuedAt` and `expiresAt`, consumption and the refusal `operator grant expired or invalid` | `agent_braid/runtime_policy.py` (`prepare_policy_run`, `issue_operator_grant`) | `grant.issued` and `grant.consumed` from artifacts; `grant.expired` derived (`derived: true`) when a recorded grant's `expiresAt` has passed without consumption; `grant.refused` only from a recorded refusal envelope |
 | Runtime phases in `state.json` | `agent_braid/git_runtime.py` (`prepare_run`) | `runtime.phase` |
 | Pre-flight notices, receipts and hazard kinds | SPEC-057 outputs of `agent_braid/ownership.py` | `hazard.noticed`; read as JSON only |
-| Workflow-gate phases and results (status enums copied verbatim) | SPEC-052 `braid-gate-result.schema.json`, `evidence/native-gate-runs.json` | `gate.phase`, `gate.result`, crossings |
+| Workflow-gate phases and results (status enums copied verbatim; gate pairs carry no per-pair evidence block and the report class is `0-heuristic`) | SPEC-052 `braid-gate-result.schema.json`, `evidence/native-gate-runs.json` | `gate.phase`, `gate.result` (class 0); no crossings |
 | Host stream usage | `agent_braid/tooling_host_events.py` (`parse_host_events`), `tooling_incremental_usage.py` | `effort.sample`, `observation.gap` |
 | Static presentation, escaping and export destination rules | `agent_braid/tooling_present.py` (`render_graph_ascii`, `_svg_graph`, `write_exports`) | frames, export |
 | Field-level comparison row shape | `agent_braid/harness_records.py` (`compare`) | effort pack comparison |
@@ -36,9 +36,9 @@ fails closed for unknown paths; the core has no runtime dependency.
 | Class badge on each crossing | `compatibilityClass` | categorical label and glyph per class (0 heuristic … 5 Yang–Baxter); never brightness or opacity; legend says "not a guarantee" |
 | Bridge over intermediate lanes | a classified pair whose strands are not adjacent | intermediate strands are visibly not crossed; lanes are reordered to keep classified pairs adjacent where possible |
 | Arc between host planes | cross-host pair | Claude, Braid and Codex planes |
-| Translucent slab and grey serial ghost | `wave.planned` and the serial fallback | planned wave width against serial slots (advisory plan, not verified safe) |
-| Ring gate | grant or workflow gate | colour by result |
-| Cone | `hazard.noticed` | anchored at its unit strand |
+| Translucent slab | `wave.planned` | planned wave members, labeled "advisory plan, not a runtime measurement"; no serial ratio is drawn |
+| Ring gate | grant or workflow gate | colour and shape by result; unverified results carry the unverified marker |
+| Cone | `hazard.noticed` | anchored at every unit strand it names |
 | Tube radius and moving particles | effort samples | logarithmic radius, `host-estimate` |
 | Broken strand with grey stub | `observation.gap` | absence is visible |
 
@@ -58,21 +58,28 @@ hazards, and host stream fixtures) and rendered them with Three.js 0.182.0.
 1. The closed kind list was sufficient for every artifact family tried.
 2. The adapters needed only public functions plus JSON reading of ownership outputs.
 3. The swap/no-swap encoding made conflicts readable without text.
-4. The serial ghost made "4 operations → 1 planned wave (serial 4)" legible.
+4. A serial ghost lane next to planned waves read as a speedup ratio; VIS.1 drops
+   it and labels waves as an advisory plan.
 5. Gaps found during the spike, to resolve in VIS.1: the time axis used `seq`
    instead of `relMs`; swaps between non-adjacent lanes crossed other strands
    (reorder lanes and draw bridges, never implicit crossings); opacity by class
    suggested a safety ordering (use categorical badges); wave height used final
    lane positions; Three.js came from a CDN; there was no live ingest.
 
-## Host surfaces (documentation, 2026-10-31)
+## Host surfaces (documentation, 2026-10-31, unverified)
+
+Every statement below is documentation reading, not observation. The surfaces
+matrix keeps these hosts `hv-pending` until a receipt exists.
 
 - **Claude Code**: OpenTelemetry export over OTLP HTTP/JSON with token, cost and
-  agent identifiers (`claude_code.api_request` events); hooks may POST over HTTP
-  (`SubagentStart`, `SubagentStop`, `PreToolUse`, `PostToolUse` and others, without
-  tokens); mods (early access) can open a pane with SVG on desktop and kitty
-  graphics images on terminals (VIS.2); the desktop browser pane shows loopback
-  pages.
+  agent identifiers (`claude_code.api_request` events), with exporter headers
+  configurable; hooks may POST over HTTP (`SubagentStart`, `SubagentStop`,
+  `PreToolUse`, `PostToolUse` and others, without tokens), and the response body
+  of an HTTP hook is read like a command hook's output, so decision events can
+  approve, deny or rewrite tool calls (VIS.1 therefore accepts observational events
+  only and answers with empty bodies); mods (early access) can open a pane with SVG
+  on desktop and kitty graphics images on terminals (VIS.2); the desktop browser
+  pane is documented to show loopback pages (T032).
 - **Codex**: OpenTelemetry `[otel]` export (`codex.turn.token_usage`), command
   hooks and `notify` (`agent-turn-complete`), rollout JSONL with cumulative token
   counts, the app-server JSON-RPC (`thread/tokenUsage/updated`); no side-panel
@@ -91,7 +98,12 @@ hazards, and host stream fixtures) and rendered them with Three.js 0.182.0.
 |---|---|
 | Mod or hooks inside the plugin package | Rejected: ADR 0024/0029 and plugin package tests. |
 | Hosted dashboard or remote collector | Rejected: privacy, upload and account requirements. |
+| No custom viewer: export OpenTelemetry from Agent Braid and use existing backends (Jaeger, Grafana, GenAI views) | Rejected for coordination facts: hosts export logs and metrics, not spans, and generic backends cannot show classified pairs, categorical classes, unverified markers or the evidence panel. Acknowledged as adequate for generic token and cost views, which are not this viewer's differentiator. |
+| One VIS.1 release with all parts | Replaced by VIS.1a and VIS.1b with a go/no-go checkpoint (owner decision 2026-10-31 after the counterfactual review). |
 | Replay-only first release | Rejected by the owner (D3): live ingest from VIS.1. |
+| Accept loom lines posted by other local processes in VIS.1 | Rejected: forged events would render as computed facts; a mod route is specified with its own credential in SPEC-062. |
+| Codex `notify` and hook shim in VIS.1 | Moved to VIS.3: both run a command, so they need a shim that VIS.1 does not specify. |
+| One token in the URL for every route | Rejected: agents inherit exporter configuration and could read the viewer; read and ingest credentials are separate and no credential stays in a URL. |
 | npm toolchain and bundler | Rejected: no Node in CI; vendored prebuilt ES modules with a hash manifest instead. |
 | Persisting effort | Rejected (D4): ephemeral; explicit export only. |
 | Registering the pack as a harness record kind | Deferred to HAR; VIS.1 reuses the comparison row shape. |
@@ -100,9 +112,11 @@ hazards, and host stream fixtures) and rendered them with Three.js 0.182.0.
 
 Session dashboards for Claude Code and Codex exist (for example claude-view,
 agent-mission-control, a `mission-control` mod, agentviz, ccusage). They show
-sessions, cost and tool calls. None of the tools reviewed on 2026-10-31 shows the
-coordination layer: classified pairs, planned waves, grants, hazards and the
-evidence behind them. That is the gap this viewer addresses.
+sessions, cost and tool calls. Survey on 2026-10-31: web searches during the
+planning session (query strings were not recorded) and the project pages listed
+under Sources. None of the tools found shows the coordination layer (classified pairs,
+planned waves, grants, hazards and the evidence behind them). The survey was not
+exhaustive; the statement covers only the tools found.
 
 ## Sources
 
