@@ -64,7 +64,7 @@
       "title": "[SPEC-047] SPEC-047: Local technical telemetry",
       "body": "<!-- agent-braid-spec-id: SPEC-047 -->\n\nSource: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/047-local-technical-telemetry/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/047-local-technical-telemetry/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/047-local-technical-telemetry/assurance.json)\n\nRequirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006, REQ-007, REQ-008.\n\nIssue state is a bounded tracking record, not a scientific or founder approval.\n",
       "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
-      "state": "open"
+      "state": "closed"
     },
     {
       "key": "SPEC-047/T001",

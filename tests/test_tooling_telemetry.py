@@ -616,8 +616,10 @@ print('preserved')
         from scripts.sync_github_tracking import source_inventory
         root = Path(__file__).resolve().parents[1]
         config, inventory = source_inventory(root, root / 'docs/development/github-tracking.json')
-        selected = [x for x in inventory if x['milestone'] == config['specs']['047-local-technical-telemetry']['milestone']]
         alignment = json.loads((root / 'specs/047-local-technical-telemetry/alignment.json').read_text())
+        # M4.5 work may be parked in Deferred, so select by the aligned spec set, not the current milestone.
+        aligned = {x['id'] for x in alignment['specs']}
+        selected = [x for x in inventory if x['key'].split('/')[0] in aligned]
         tasks = [x for x in selected if x['kind'] == 'task']
         self.assertEqual(alignment['sourceCounts']['tasks'], len(tasks))
         self.assertEqual(alignment['sourceCounts']['tasksChecked'], sum(x['state']=='closed' for x in tasks))
