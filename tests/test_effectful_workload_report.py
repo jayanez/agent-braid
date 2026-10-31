@@ -36,6 +36,10 @@ class WorkloadReportTests(unittest.TestCase):
                 replay = verify(report)
                 self.assertEqual((replay["status"], replay["verdict"]), ("verified", "inconclusive"))
                 self.assertIs(replay["executionAuthorization"], False)
+        lost = next(f for f in fixtures() if f["id"] == "lost-update")
+        negative = explore(copy.deepcopy(lost["request"]))
+        self.assertEqual(negative["comparison"]["verdict"], "divergent")
+        self.assertEqual(verify(negative)["status"], "verified")
         evidence = json.loads((SPEC / "evidence/comparison-20261024.json").read_text())
         for field in ("contextualEquivalence", "runtimeSafety"):
             self.assertEqual(evidence[field], "unknown")
@@ -48,12 +52,15 @@ class WorkloadReportTests(unittest.TestCase):
             self.assertTrue((SPEC / name).is_file(), name)
         report = " ".join((SPEC / "report.md").read_text().split())
         for phrase in ("Scientific review: pending", "executionAuthorization: false",
-                       "no real refinement", "independent validation"):
+                       "no real refinement or independent validation"):
             self.assertIn(phrase, report)
         checklist = (SPEC / "refinement-checklist.md").read_text()
         for topic in CHECKLIST_TOPICS:
             self.assertIn(f"## {topic}", checklist)
-        self.assertIn("Scientific review: pending", (SPEC / "reproduction-record.md").read_text())
+        for name in ("refinement-checklist.md", "reproduction-record.md"):
+            text = (SPEC / name).read_text()
+            self.assertIn("Scientific review: pending", text)
+            self.assertIn("executionAuthorization: false", text)
 
 
 if __name__ == "__main__":

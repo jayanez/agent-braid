@@ -7,8 +7,8 @@ authorization and refinement (Article 6). Nothing here authorizes real
 execution (`executionAuthorization: false`), and no real refinement or
 independent validation is claimed.
 
-Each topic gives what the lab models, what it can and cannot show, what a real
-adapter must provide and the evidence form expected.
+Each topic gives what the lab models, what a real adapter must provide and
+the evidence form expected.
 
 ## Rights
 
@@ -36,13 +36,13 @@ adapter must provide and the evidence form expected.
 
 ## Return values
 
-- Lab model: Per-instance results are captured and retained. Successful matching terminal values with differing returns are labelled with the `results` mismatch dimension and never promoted (`h2-shared-additions`).
+- Lab model: Per-instance results are captured and retained. Successful matching terminal values with differing returns are labelled with the `results` mismatch dimension and never promoted beyond a terminal-value candidate (`h2-shared-additions`).
 - Required of a real adapter: Decide which return values consumers rely on and compare them, not only terminal state; show returns are deterministic or model their branches.
 - Evidence: Consumer dependency list on returns; return-inclusive comparison per adapter; no equivalence claim from terminal values alone.
 
 ## Failure after effect
 
-- Lab model: An `external-action` branch can append an event and then error; the effect is never rolled back, the pending suffix is retained and the comparison is `inconclusive` even if projections match (`write-skew`, partial-failure traces).
+- Lab model: An `external-action` branch can append an event and then error; the effect is never rolled back, the pending suffix is retained and the comparison is `inconclusive` even if projections match (a model capability covered by the unit tests `test_send_then_error_retains_effect` and `test_error_and_send_then_error_preserve_prior_effects`; no frozen corpus fixture exercises it).
 - Required of a real adapter: Enumerate the real failure points after each externally visible effect and their recovery, including partial application and unknown outcomes (timeouts).
 - Evidence: Failure-point inventory; recovery or compensation semantics; evidence that unknown outcomes are treated as unknown, not as success or failure.
 

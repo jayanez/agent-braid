@@ -37,16 +37,17 @@ repetitions per method and fixture, rotating order, full-stage cost accounting.
 ### Controls (T005, evidence `controls-20261022.json`)
 
 All 17 fixtures: complete coverage, authored controls pass (`pass` 17). Each
-named control demonstrates its failure or modeled prevention, and caps turn a
-control run `inconclusive` for all 17 fixtures (SC-007 test).
+named control demonstrates its failure or modeled prevention, and capped runs of all
+17 fixtures are `inconclusive` and replay-verified (SC-007 test); a capped
+control cannot pass (`WorkloadControlsTests`).
 
 | Family | Fixtures | Finite findings (all complete) |
 | --- | --- | --- |
 | lost update | `lost-update` | divergent: state and results differ across orders |
-| write skew | `write-skew` | inconclusive: a blocked or failing path stops comparison; state, versions, results, outcome differ |
+| write skew | `write-skew` | inconclusive: a blocked path (false guard) stops comparison; state, versions, results, outcome differ |
 | stale configuration read | `configuration-stale-read` | divergent: state and results |
 | duplicate / idempotent events | `duplicate-events`, `idempotent-events` | terminal projection matches; events (and results) differ and stay explicit |
-| alias / hidden effect | `alias-hidden-effects` | projection matches; operation `b` has a missing declaration, so independence is not supported |
+| alias / hidden effect | `alias-hidden-effects` | projection matches (`results` differ); operation `b` has a missing declaration, so independence is not supported |
 | disjoint positive | `disjoint-positive` | projection matches, no mismatch dimension |
 
 ### Comparison (T006, evidence `comparison-20261024.json`)
@@ -81,9 +82,10 @@ upper bound 1,510 ppm over 200 pooled samples, margin 50,000 ppm. Assessment:
    experiment was run four times in a disposable copy (all positive; no
    evidence retained), so the outcome was observed before the official run;
    protocol v2 was not changed after those runs. A run under the system
-   CPython 3.9.6 (below the 3.12 floor) was discarded, and the script was
-   re-executed to shrink the evidence format; only the final capture is
-   retained.
+   CPython 3.9.6 (below the 3.12 floor; positive, 3 recovered, 0 false
+   candidates) was discarded, and the script was re-executed to shrink the
+   evidence format (each time positive, same counts); only the final capture
+   is retained.
 5. One retained capture is one run. The clean-clone re-execution of
    2026-10-31 (reproduction record) reproduced every deterministic field and
    again assessed `positive` (median 1,259 ppm, upper bound 1,613 ppm); it is
@@ -91,6 +93,13 @@ upper bound 1,510 ppm over 200 pooled samples, margin 50,000 ppm. Assessment:
 6. A usable positive result means only: on 17 hand-authored synthetic fixtures
    the lab recovered 3 candidates with no false candidate at small cost. It is
    not a utility, generality, safe-parallelism or commutation claim.
+
+## Remaining T007 items
+
+Not done by this packet: the `assurance.json` update, the `quick`/`pr` profile
+runs on the final candidate (results are in the PR, not here), the "snapshot
+then freeze clean candidate" step, and any independent reproduction or
+recorded human scientific review.
 
 ## Claims withheld
 

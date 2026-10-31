@@ -1,7 +1,6 @@
 # SPEC-024 clean-clone reproduction record (T007)
 
-Scientific review: pending. Reproduction by the authoring session (Claude
-Sonnet 5.5), not an independent party; it is software-reproduction evidence
+Scientific review: pending. Reproduction by the authoring session, not an independent party; it is software-reproduction evidence
 only. `executionAuthorization: false` in every output below.
 
 ## Setup

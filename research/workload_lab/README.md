@@ -24,9 +24,10 @@ Semantics: [SEMANTICS.md](SEMANTICS.md) and
 
 ## Use
 
-Requires CPython 3.12 or newer. Two tests also need `jsonschema`; use the
-project's `.venv-speckit` (a bare interpreter reports those two as import
-errors, not as failures of the lab).
+Requires CPython 3.12 or newer. `tests.test_effectful_workload_contracts` and one schema test in
+`tests.test_effectful_workload_lab` also need `jsonschema`; use the project's
+`.venv-speckit` (a bare interpreter reports them as import errors, not as lab
+failures).
 
 ```sh
 python3 -m research.workload_lab explore request.json --output /absolute/new-report.json
