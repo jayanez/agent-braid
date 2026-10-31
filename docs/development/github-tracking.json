@@ -9,7 +9,7 @@
     "M3 — Braid semantics": "Braid structure; bounded structured exchange closed internally.",
     "M3.5 — Native proposal predictor": "Synthetic software complete: offline trainer/inference, adapter/evaluator controls and deterministic verifier boundary (PRs #463/#473). Only the deferred real-workload experiment remains: T007/#188 source admission, T001/#181 preregistration/annotation, T003/#183 real fit/evaluation and T005/#185 evidence/human review/founder decision. Zero eligible families or admitted real pairs; thresholds unchanged. Closed 2026-10-31 by owner decision \"Cancelar por inviables\": the four open tasks are cancelled as infeasible (specs/019-native-predictor/m35-disposition-draft.md), with reopen criteria; parked follow-up is tracked in Deferred.",
     "M4 — Agent Braid runtime": "Founder-accepted bounded local runtime alpha and completed evaluation with negative utility; historical G4 NO-GO on useful speedup and deferred capabilities preserved.",
-    "PUB.1 — Public research preview": "Public publication and cutover verification.",
+    "PUB.1 — Public research preview": "Public publication and cutover verification. Closed 2026-10-31 by owner ratification of the seven T009 cutover obligations (docs/development/FOUNDER_DECISIONS_20261031.md).",
     "GOV.1 — Governance and adoption": "Governance and adoption work spanning release milestones. Closed 2026-10-31 by owner decision \"Cerrar con revisión pendiente\": SPEC-011 T008 is an engineering closure with human review of the draft registry pending; SPEC-026 tasks are complete.",
     "ADP.1 — Recorded-trace adapters": "Read-only recorded trace import and bounded adapter spikes; adoption and runtime authorization remain separate. Closed 2026-10-31 by founder decision; human review remains pending.",
     "LAB.1 — Effectful workload lab": "Bounded simulated non-Git effectful workloads and conservative analysis; no real external execution. Closed 2026-10-31 by founder decision (engineering closure of T005-T008, PR #797); scientific review remains pending.",
@@ -47,7 +47,8 @@
     "M4.5 — AI tooling integrations for Codex and Claude Code",
     "M3.5 — Native proposal predictor",
     "GOV.1 — Governance and adoption",
-    "FC.1 — Forecast-guided parallelism experiment"
+    "FC.1 — Forecast-guided parallelism experiment",
+    "PUB.1 — Public research preview"
   ],
   "specs": {
     "001-certificate-verifier-pilot": {
@@ -84,7 +85,7 @@
     },
     "009-public-research-preview": {
       "milestone": "PUB.1 — Public research preview",
-      "state": "open"
+      "state": "closed"
     },
     "010-risk-validation": {
       "milestone": "GOV.1 — Governance and adoption",
@@ -285,7 +286,8 @@
   },
   "task_state_overrides": {
     "SPEC-004/T005": "The frozen M0 task checkbox predates closure. Same-commit Codex and Claude reports are bound by specs/004-m0-closure/founder-review.json, which separately approves M0 closure; the published historical task file remains unchanged.",
-    "SPEC-002/T006": "Owner closure decision of 2026-10-31 (docs/development/FOUNDER_DECISIONS_20261031.md): the milestone closes with this task accepted while the human strategy review and separate founder decisions remain pending (human_review: pending). Closing the issue records no review or approval."
+    "SPEC-002/T006": "Owner closure decision of 2026-10-31 (docs/development/FOUNDER_DECISIONS_20261031.md): the milestone closes with this task accepted while the human strategy review and separate founder decisions remain pending (human_review: pending). Closing the issue records no review or approval.",
+    "SPEC-009/T009": "Owner ratification of 2026-10-31 (docs/development/FOUNDER_DECISIONS_20261031.md, PUB.1 ratification): the seven cutover obligations are ratified as the intended and authorized T009 execution, covering public root 9b84467d; independent validation remains pending."
   },
   "project_review_pending": [
     "SPEC-028",
