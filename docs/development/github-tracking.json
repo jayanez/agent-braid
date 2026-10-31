@@ -11,21 +11,22 @@
     "M4 — Agent Braid runtime": "Founder-accepted bounded local runtime alpha and completed evaluation with negative utility; historical G4 NO-GO on useful speedup and deferred capabilities preserved.",
     "PUB.1 — Public research preview": "Public publication and cutover verification.",
     "GOV.1 — Governance and adoption": "Governance and adoption work spanning release milestones.",
-    "ADP.1 — Recorded-trace adapters": "Read-only recorded trace import and bounded adapter spikes; adoption and runtime authorization remain separate.",
+    "ADP.1 — Recorded-trace adapters": "Read-only recorded trace import and bounded adapter spikes; adoption and runtime authorization remain separate. Closed 2026-10-31 by founder decision; human review remains pending.",
     "LAB.1 — Effectful workload lab": "Bounded simulated non-Git effectful workloads and conservative analysis; no real external execution.",
     "RES.1 — Formal interaction research": "Contextual and trace-safety obligations, restricted proof review and comparator feasibility; separate from M4 runtime.",
-    "S1.0 — Decision contracts": "Typed boolean/choice/score synthetic engineering exists; proposed verified-plan extraction is separately tracked. Core tests are not semantic-model acceptance, calibrated reliability or activation. Evidence/resumption index: docs/system-one/README.md.",
-    "S1.1 — Decision evaluation": "Bounded source-taxonomy, negative-transfer and deterministic verification studies are indexed with their populations, failures and costs. T025 integration engineering is closed on reused T024 fixtures; independent/human acceptance remains pending. Original representative/human/calibration gates stay pending; no general accuracy claim. Index: docs/system-one/README.md.",
-    "S1.2 — Native decision model": "Isolated neural software and bounded EN/ES taxonomy training/comparison/resident-runtime evidence exist, including negative transfer and cold-start limits. Broader rights, common architecture evaluation, human workflow acceptance and promotion remain pending. Index: docs/system-one/README.md.",
-    "S1.3 — Advisory integration": "Synthetic advisory adapters and bounded native preparation/transport studies exist; native workflow utility target was not met. Versioned EOF integration and reusable acquisition/consumer proposals are tracked separately; no grants or activation implied. Index: docs/system-one/README.md.",
-    "S1.4 — Product capabilities and promotion": "Selected schema compiler, metadata router and hooks have engineering evidence; catalogue/export/batching branches remain independently selected/deferred. Shadow, drift, rollback, human/founder per-capability promotion and activation remain pending. Index: docs/system-one/README.md.",
+    "S1.0 — Decision contracts": "Typed boolean/choice/score synthetic engineering exists; proposed verified-plan extraction is separately tracked. Core tests are not semantic-model acceptance, calibrated reliability or activation. Evidence/resumption index: docs/system-one/README.md. Closed as deferred 2026-10-31 by founder decision; remaining work moved to the Deferred milestone.",
+    "S1.1 — Decision evaluation": "Bounded source-taxonomy, negative-transfer and deterministic verification studies are indexed with their populations, failures and costs. T025 integration engineering is closed on reused T024 fixtures; independent/human acceptance remains pending. Original representative/human/calibration gates stay pending; no general accuracy claim. Index: docs/system-one/README.md. Closed as deferred 2026-10-31 by founder decision; remaining work moved to the Deferred milestone.",
+    "S1.2 — Native decision model": "Isolated neural software and bounded EN/ES taxonomy training/comparison/resident-runtime evidence exist, including negative transfer and cold-start limits. Broader rights, common architecture evaluation, human workflow acceptance and promotion remain pending. Index: docs/system-one/README.md. Closed as deferred 2026-10-31 by founder decision; remaining work moved to the Deferred milestone.",
+    "S1.3 — Advisory integration": "Synthetic advisory adapters and bounded native preparation/transport studies exist; native workflow utility target was not met. Versioned EOF integration and reusable acquisition/consumer proposals are tracked separately; no grants or activation implied. Index: docs/system-one/README.md. Closed as deferred 2026-10-31 by founder decision; remaining work moved to the Deferred milestone.",
+    "S1.4 — Product capabilities and promotion": "Selected schema compiler, metadata router and hooks have engineering evidence; catalogue/export/batching branches remain independently selected/deferred. Shadow, drift, rollback, human/founder per-capability promotion and activation remain pending. Index: docs/system-one/README.md. Closed as deferred 2026-10-31 by founder decision; remaining work moved to the Deferred milestone.",
     "FC.1 — Forecast-guided parallelism experiment": "Permissioned workload telemetry, optional local Chronos-2, prospective forecasting/complete-cost parallelism experiment and separately governed shadow/promotion. Negative or infeasible outcomes are valid; no new execution domain or M4 closure.",
     "M4.5 — AI tooling integrations for Codex and Claude Code": "Adjacent to bounded-complete M4; historical G4 NO-GO and negative utility preserved. The combined source portfolio has 10 specs and 131 tasks (102 checked, 29 open), with 3 historically closed parents, the closed SPEC-054 parent and 6 open parents (SPEC-060 adds the draft portable prompt names contract and its 11 tasks); source counts do not assert remote issue closure. SPEC-039/040/042 retain bounded accepted scopes and SPEC-044/T004 retains its historical bounded closure. SPEC-046 owns native plugins and its 19 tasks (T016–T019 are an unpublished stale-registry defect fix); external candidacy approvals remain pending. SPEC-047 adds default-off local aggregate telemetry. Existing Luna review is bound to b2cf477fe9f9; integration adaptations and resulting candidate have separate review/validation. Pilot NO-GO; T017/T018/T010, native observations, ADR adoption, human/founder acceptance and M4.5 closure remain open.",
-    "FC.2 — Local forecasting capabilities": "Local default-off API/CLI/MCP forecasting, synthetic engineering/reproduction and separately approved actual Chronos CPU conformance; no real workload utility or promotion implied.",
+    "FC.2 — Local forecasting capabilities": "Local default-off API/CLI/MCP forecasting, synthetic engineering/reproduction and separately approved actual Chronos CPU conformance; no real workload utility or promotion implied. Closed 2026-10-31 by founder decision; human review remains pending.",
     "HAR.1 — Braid Harness laboratory": "Provide a native Agent Braid mechanism to propose, probe and compose small task-local harness variants against an immutable base, first with deterministic fixtures and later through separately qualified Codex/Claude adapters. Draft planning; no due date, native acceptance or activation implied. Extra cash spend EUR 0.",
     "HAR.2 — Braid Harness evaluation and learning": "Determine separately whether harness refinement improves long-task continuity and agent coordination, then retain only scoped evidence-supported lessons and make explicit human or future automatic promotion decisions. Draft planning; no due date, native acceptance or activation implied. Extra cash spend EUR 0.",
     "HAR.3 — Braid Harness adaptation and integration": "Implement staged Braid Harness component profiles, skills/helpers/hooks, delegated orchestration, measured depth/width refinement, scoped curation, disabled automatic-policy software and opt-in lifecycle/product integration. Draft planning; native qualification, exact policy adoption and activation remain separate. EUR 0 extra spend.",
-    "M4.6 — Claude Code dynamic workflows": "Read-only Agent Braid evidence for Claude Code dynamic workflows and orchestrator-style parallel agents: integration gate (SPEC-052), G0-gated transcript adapter (SPEC-053), advisory ownership/pre-flight/checkpoint/recovery core (SPEC-057), G1-gated opt-in guard (SPEC-058) and G2-gated ledger/push (SPEC-059); planning only, no execution authority. Extra cash spend EUR 0."
+    "M4.6 — Claude Code dynamic workflows": "Read-only Agent Braid evidence for Claude Code dynamic workflows and orchestrator-style parallel agents: integration gate (SPEC-052), G0-gated transcript adapter (SPEC-053), advisory ownership/pre-flight/checkpoint/recovery core (SPEC-057), G1-gated opt-in guard (SPEC-058) and G2-gated ledger/push (SPEC-059); planning only, no execution authority. Extra cash spend EUR 0.",
+    "Deferred": "Work parked by the founder on 2026-10-31 until its reopen criteria hold: SPEC-029 T001 source permissions granted and admitted real groups greater than zero. Parent issues stay open; nothing here is accepted, cancelled or authorized. See docs/development/FOUNDER_DECISIONS_20261031.md."
   },
   "closed_milestones": [
     "M0 — Operational foundations",
@@ -33,7 +34,14 @@
     "M1 — Observable interaction analyzer",
     "M2 — Confluence lab and scheduler",
     "M3 — Braid semantics",
-    "M4 — Agent Braid runtime"
+    "M4 — Agent Braid runtime",
+    "ADP.1 — Recorded-trace adapters",
+    "FC.2 — Local forecasting capabilities",
+    "S1.0 — Decision contracts",
+    "S1.1 — Decision evaluation",
+    "S1.2 — Native decision model",
+    "S1.3 — Advisory integration",
+    "S1.4 — Product capabilities and promotion"
   ],
   "specs": {
     "001-certificate-verifier-pilot": {
@@ -42,7 +50,7 @@
     },
     "002-open-tooling-strategy": {
       "milestone": "M0.5 — Open strategy and preview preparation",
-      "state": "open"
+      "state": "closed"
     },
     "003-read-only-analyzer": {
       "milestone": "M1 — Observable interaction analyzer",
@@ -126,7 +134,7 @@
     },
     "023-recorded-trace-adapters": {
       "milestone": "ADP.1 — Recorded-trace adapters",
-      "state": "open"
+      "state": "closed"
     },
     "024-effectful-workload-lab": {
       "milestone": "LAB.1 — Effectful workload lab",
@@ -145,27 +153,27 @@
       "state": "closed"
     },
     "028-system-one-core": {
-      "milestone": "S1.0 — Decision contracts",
+      "milestone": "Deferred",
       "state": "open"
     },
     "029-system-one-evaluation": {
-      "milestone": "S1.1 — Decision evaluation",
+      "milestone": "Deferred",
       "state": "open"
     },
     "030-system-one-model": {
-      "milestone": "S1.2 — Native decision model",
+      "milestone": "Deferred",
       "state": "open"
     },
     "031-system-one-integration": {
-      "milestone": "S1.3 — Advisory integration",
+      "milestone": "Deferred",
       "state": "open"
     },
     "032-system-one-product": {
-      "milestone": "S1.4 — Product capabilities and promotion",
+      "milestone": "Deferred",
       "state": "open"
     },
     "033-system-one-promotion": {
-      "milestone": "S1.4 — Product capabilities and promotion",
+      "milestone": "Deferred",
       "state": "open"
     },
     "034-workload-forecast-data": {
@@ -214,7 +222,7 @@
     },
     "045-local-forecasting-capabilities": {
       "milestone": "FC.2 — Local forecasting capabilities",
-      "state": "open"
+      "state": "closed"
     },
     "046-native-ai-plugins": {
       "milestone": "M4.5 — AI tooling integrations for Codex and Claude Code",
@@ -238,7 +246,7 @@
     },
     "051-owned-work-evaluation": {
       "milestone": "FC.2 — Local forecasting capabilities",
-      "state": "open"
+      "state": "closed"
     },
     "052-claude-workflow-gate": {
       "milestone": "M4.6 — Claude Code dynamic workflows",
@@ -270,15 +278,13 @@
     }
   },
   "task_state_overrides": {
-    "SPEC-004/T005": "The frozen M0 task checkbox predates closure. Same-commit Codex and Claude reports are bound by specs/004-m0-closure/founder-review.json, which separately approves M0 closure; the published historical task file remains unchanged."
+    "SPEC-004/T005": "The frozen M0 task checkbox predates closure. Same-commit Codex and Claude reports are bound by specs/004-m0-closure/founder-review.json, which separately approves M0 closure; the published historical task file remains unchanged.",
+    "SPEC-002/T006": "Owner closure decision of 2026-10-31 (docs/development/FOUNDER_DECISIONS_20261031.md): the milestone closes with this task accepted while the human strategy review and separate founder decisions remain pending (human_review: pending). Closing the issue records no review or approval."
   },
   "project_review_pending": [
-    "SPEC-002",
-    "SPEC-002/T006",
     "SPEC-011",
     "SPEC-011/T008",
     "SPEC-019",
-    "SPEC-023",
     "SPEC-024",
     "SPEC-025",
     "SPEC-026",
@@ -297,7 +303,6 @@
     "SPEC-044",
     "SPEC-044/T017",
     "SPEC-044/T018",
-    "SPEC-045",
     "SPEC-046",
     "SPEC-047",
     "SPEC-047/T010",
