@@ -4,8 +4,9 @@ Status: frozen by founder decision on 2026-10-28 (T002); see
 [evidence/registration/t002-founder-freeze-20261028.json](evidence/registration/t002-founder-freeze-20261028.json).
 The frozen values are in "Frozen protocol (T002)" below. Freezing is not an
 experiment result and admits no native execution: T004 still admits each native
-cohort separately. Numeric time/quota caps and useful-improvement thresholds stay
-open until an observed native quota reading and a measured baseline exist. No
+cohort separately. The D2 numeric caps were set by a second founder decision on
+2026-10-31 from an observed quota reading ([evidence/registration/d2-caps-founder-decision-20261031.json](evidence/registration/d2-caps-founder-decision-20261031.json)).
+Useful-improvement thresholds stay open until a measured baseline exists. No
 calibration/training is required.
 
 ## Questions and comparators
@@ -115,7 +116,8 @@ total unit cap (D2), which need an observed native quota reading; and
 useful-improvement thresholds (D4), which need a measured baseline. The current
 cohort is descriptive only (D3). The freeze authorizes no native execution, paid
 route or promotion; any change to a frozen value requires a new founder decision
-record before evaluated outcomes.
+record before evaluated outcomes. The D2 caps were later set by founder decision
+on 2026-10-31 (see D2 below); that decision admits no native cohort either.
 
 ### D1. Task-family split and temporal library order
 
@@ -138,10 +140,20 @@ record before evaluated outcomes.
   for all arms; any violation excludes that profile from promotion.
 - Coverage: a profile is compared only on the same registered unit set; refusals,
   failures and ungraded units stay in the denominator.
-- Budget: additional cash EUR 0 (already operational); a per-unit
-  wall-time and token/quota cap and a total unit cap are to be set by the founder
-  from an observed native quota reading. No numeric time or token cap is proposed
-  here because no native quota observation exists.
+- Budget: additional cash EUR 0 (already operational). Numeric caps set by
+  founder decision on 2026-10-31 ([evidence/registration/d2-caps-founder-decision-20261031.json](evidence/registration/d2-caps-founder-decision-20261031.json)) from an observed
+  Claude Code plan reading (Max; 5-hour window 31 %, weekly 41 %, extra usage
+  disabled):
+  - per-unit wall time at most 30 minutes; a unit that hits it is recorded as
+    interrupted and stays in the denominator;
+  - each native session at most 10 % of the 5-hour plan window;
+  - the whole native cohort at most 15 % of the weekly all-models window;
+  - at most 16 native units in total;
+  - stop before the next unit if the weekly window exceeds 80 %, if extra usage
+    becomes enabled, or if the quota reading is unavailable or stale.
+  The caps were chosen to favour reliability and precision: lower caps would
+  truncate long tasks and widen descriptive intervals. They bound quota only and
+  admit no cohort; SPEC-049/T004 still admits each native cohort.
 
 ### D3. Sample size derived from registered yield
 
@@ -202,6 +214,6 @@ Each is listed separately in the decision record:
   recall, zero false safe admissions) and the D3 minimums n >= 14/19/29 (zero-failure
   case only).
 - Accepted: at least two blind annotators per held-out unit when human labels are used.
-- Deferred: numeric time/quota caps and the total unit cap, until an observed native
-  quota reading; useful-improvement thresholds, until a measured baseline.
+- Deferred at freeze, set 2026-10-31: numeric time/quota caps and the total unit cap
+  (see D2). Still deferred: useful-improvement thresholds, until a measured baseline.
 - Accepted: the current cohort stays descriptive only.
