@@ -136,7 +136,7 @@
     "executable": "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/bin/python3.13",
     "isolatedEnvironment": "Environment reused from sibling worktree; not independently provisioned.",
     "platform": "macOS-27.0.1-arm64-arm-64bit",
-    "python": "3.9.6",
+    "python": "3.13.11",
     "sameHost": true,
     "sameMaintainingTeam": true
   },
@@ -147,13 +147,17 @@
   "independentExternalReproduction": false,
   "limits": [
     "Finite contextual/mapping and existing Unicode regression only; no universal correspondence or theorem acceptance.",
-    "Run in a linked worktree with a shared Git object store, same host/team; not independent external reproduction. The pr profile is recorded separately (fresh-validation receipt)."
+    "Run in a linked worktree with a shared Git object store, same host/team; not independent external reproduction. The stable pr profile result is recorded only in the pull request description.",
+    "Check outputs are not retained; only their SHA-256 and sizes are. argv paths under /private/tmp are session scratch locations and need not exist for a reviewer."
   ],
   "mappingTotals": {
     "adjacentChecks": 30,
+    "excludedRejected": 4,
     "farChecks": 24,
     "involutiveChecks": 86,
-    "orders": 32
+    "mismatches": 0,
+    "orders": 32,
+    "status": "finite-mapping-match"
   },
   "outputs": {
     "anchored-mapping.json": {

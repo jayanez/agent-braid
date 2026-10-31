@@ -6,7 +6,7 @@ Contacting external reviewers is not authorized by this packet.
 
 ## Owner decision (2026-10-31, recorded verbatim)
 
-The repository owner (jayanez) decided on RES.1: «Cerrar con revisión pendiente».
+The repository owner (jayanez) decided on RES.1: «Cerrar con revisión pendiente» ("Close with review pending").
 Effect: RES.1 closes with the specific independent proof review **pending**. That
 review moves to a "Deferred" milestone; reopen criterion: a founder-named
 independent proof reviewer. Tracking changes are applied by the coordinating
@@ -22,8 +22,10 @@ and no scientific or founder approval of the candidate.
   (`git diff` over the bound source paths is empty; recorded in the receipt).
 - Obtained checks, exact argv, stdout/stderr and SHA-256 bindings of every packet
   file are in [the 2026-10-31 receipt](evidence/current-finite-receipt-20261031.json).
-  The stable `pr` profile result for the packet commit is recorded in the pull
-  request that adds this file.
+  The stable `pr` profile result (run on a fresh clone of the packet commit) is
+  recorded only in the description of the pull request that adds this file. The
+  checks above ran in a linked worktree, not a new clean clone; the clean-clone
+  repetition remains the historical `evidence/internal-clean-clone.json`.
 
 ## Obtained finite results (candidate `6f4870ea`)
 
@@ -33,7 +35,7 @@ and no scientific or founder approval of the candidate.
   `executionAuthorization` false, `proofAccepted` false.
 - Independent anchored oracle: 32 orders, 86 involutive, 30 adjacent and 24 far
   checks, no mismatch; four excluded inputs refused (`a2b2820f…7e67`).
-- Reproduction: `python3 -m unittest tests.test_contextual_lab`, then
+- Reproduction (Python 3.13 environment; exact argv in the receipt): `python3 -m unittest tests.test_contextual_lab tests.test_system_one_context.SystemOneContextTests.test_lone_surrogate_ids_and_values_refuse_domain_error`, then
   `python3 -m research.contextual_lab check|verify examples/contextual-lab/manifest.json`
   and `python3 scripts/crosscheck_contextual_proof_mapping.py --manifest examples/contextual-lab/anchored-manifest.json`
   with canonical (non-symlink) output paths such as `/private/tmp/...` on macOS.
@@ -44,7 +46,7 @@ Review these exact bytes (hashes in the receipt `sourceBindings`):
 
 1. `research/proofs/contextual-candidates/anchored-candidate.md` — candidate
    statements, obligations and excluded-model boundaries.
-2. `premise-inventory.json`, `proof-tool-assessment.md` (no-tool/handwritten first).
+2. `specs/025-contextual-proof-obligations/premise-inventory.json`, `specs/025-contextual-proof-obligations/proof-tool-assessment.md` (no-tool/handwritten first).
 3. `research/contextual_lab/checker.py`, `scripts/crosscheck_contextual_proof_mapping.py`,
    `examples/contextual-lab/*`, `agent_braid/structured_exchange.py`, `research/lab/model.py`.
 4. Historical technical reviews (Luna) and receipts: `evidence/luna-*.json`,
@@ -56,6 +58,12 @@ carriers; bounded executable correspondence for insertion/sorting/hashes/residua
 logical-result scope; exchange conventions and flattened observations; excluded
 models (delete, nested, nondeterministic). LLM technical review and finite source
 checks do not satisfy this gate.
+
+## Historical status files
+
+`assurance.json` and `evidence/technical-delivery.json` (bound in the receipt) keep
+their "T007 pending" wording as of candidate `6f4870ea`; they are historical and
+superseded for T007 by `tasks.md` and this packet.
 
 ## Decisions still pending (founder / human)
 
