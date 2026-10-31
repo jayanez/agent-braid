@@ -54,3 +54,7 @@ Prospective targets: `agent_braid/tooling_present.py (new); agent_braid/cli.py; 
 
 
 2026-10-10 autonomous procedure update: obtained receipts `evidence/sc-*.json` retain actual paired controls, commands, source/input identities and limits. Earlier partial observations above are historical and have not been rebound. See `docs/tooling/AUTONOMOUS_COMPLETION.md` for remaining interventions.
+
+## Amendment 2026-10-31: observational native receipts (owner decision)
+
+By the owner's answer "Sí y cerrar el resto" ([record](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)), this plan also accepts the evidence class *observational native receipt*: derived, redacted receipts from the owner's real host sessions, mapped to the three levels of `native-observation-contract-v1` (C1 discovery, C2 instructions loaded, C3 observed use). Receipts: [`evidence/observational-journeys-20261031.json`](evidence/observational-journeys-20261031.json) (ordered per-session skill/tool sequences) and the SPEC-041 receipts. The class is not preregistered, is not tied to a frozen candidate unless the plugin version is read from the transcript, and has no refusal counterpart unless one was observed. It does not replace the preregistered procedures above, which stay the route for any deferred task. A task is satisfied by this class only where its receipts cover the task's levels; otherwise it is Deferred with the reopen criteria in the record.
