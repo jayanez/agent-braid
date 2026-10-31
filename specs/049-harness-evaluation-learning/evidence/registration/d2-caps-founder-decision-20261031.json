@@ -1,0 +1,57 @@
+{
+  "recordVersion": "spec049-d2-caps-founder-decision-v1",
+  "task": "SPEC-049/T002 (D2 deferred values)",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-10-31",
+  "baseCommit": "6f4870ea8a885f3bf5c1e4e563a9a3759886d9aa",
+  "decisionChannel": "Founder answers in the orchestrator Claude Code session. Asked whether higher or more conservative caps serve reliability and precision, the founder was told lower caps truncate long tasks (counted as interrupted in the denominator) and widen descriptive intervals, then chose the recommended caps",
+  "ownerStatement": "Fijar recomendados (Recommended)",
+  "founderPriority": "Quiero que prime la fiabilidad y la precisión",
+  "quotaObservation": {
+    "observedAt": "2026-10-31T07:40Z",
+    "source": "Claude Desktop get_usage (plan limits as shown in the app usage card), read-only",
+    "host": {
+      "claude": "/opt/homebrew/bin/claude 2.1.292 (Claude Code)",
+      "codex": "absent (command -v codex: not found)"
+    },
+    "plan": "Max",
+    "windows": {
+      "5-hour": {
+        "percentUsed": 31,
+        "resetsAt": "2026-10-31T12:00:00Z"
+      },
+      "weekly-all-models": {
+        "percentUsed": 41,
+        "resetsAt": "2026-11-02T20:00:00Z"
+      },
+      "weekly-Fable": {
+        "percentUsed": 8,
+        "resetsAt": "2026-11-02T20:00:00Z"
+      }
+    },
+    "extraUsage": {
+      "enabled": false
+    }
+  },
+  "caps": {
+    "perUnitWallTimeMinutes": 30,
+    "perSessionMaxPercentOf5HourWindow": 10,
+    "cohortMaxPercentOfWeeklyAllModels": 15,
+    "maxNativeUnits": 16,
+    "stopConditions": [
+      "weekly all-models window above 80 % before the next unit",
+      "extra usage enabled",
+      "quota reading unavailable or stale"
+    ]
+  },
+  "additionalCashEur": 0,
+  "frozenProtocolPath": "specs/049-harness-evaluation-learning/evaluation-protocol.md",
+  "updatedProtocolSha256": "379d2b86dcd78a0c346c2e29bba579d62b8426a293d3f3d2b2a653360605f0dc",
+  "stillDeferred": [
+    "D4 useful-improvement thresholds, until a measured baseline"
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Sets quota and time bounds only. Admits no native cohort (SPEC-049/T004 still required) and records no outcome. The observation is a plan-level reading of the Claude Code subscription; per-unit token counts are not observed. Any change needs a new founder decision record before evaluated outcomes."
+}

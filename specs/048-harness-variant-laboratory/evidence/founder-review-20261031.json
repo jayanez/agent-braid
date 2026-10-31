@@ -1,0 +1,72 @@
+{
+  "recordVersion": "spec048-founder-review-v1",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-10-31",
+  "baseCommit": "6f4870ea8a885f3bf5c1e4e563a9a3759886d9aa",
+  "decisionChannel": "Founder answers in the orchestrator Claude Code session to questions built from the merged T010 packet and a read-only host and quota probe",
+  "decisions": [
+    {
+      "task": "SPEC-048/T010",
+      "item": "Human review of the laboratory candidate packet",
+      "ownerStatement": "Revisado tal cual (Recommended)",
+      "decision": "reviewed-accepted",
+      "reviewedPacket": "specs/048-harness-variant-laboratory/evidence/engineering/t010-candidate-packet.md",
+      "reviewedPacketSha256": "ebca52b5c0e91e8db8d91a27f817bfe06398fae45e0a36d4031216049765c17c",
+      "packetCandidate": "fc1bf9b5996120c82d9c0213bd9385dbd030dcf2",
+      "driftSinceCandidate": "Only agent_braid/harness_lab.py and tests/test_harness_lab.py changed among the packet's inputs: the F1 fix merged in #782 (1dd898f5)",
+      "findings": {
+        "F1": "resolved by #782",
+        "N1": "accepted as a declared limit",
+        "N2": "accepted as a declared limit"
+      },
+      "detail": "Human review obtained. Native blockers remain pending (T008, SPEC-049/T004). The review neither adopts the ADR nor activates the capability."
+    },
+    {
+      "task": "SPEC-048/T008",
+      "item": "Claude profile qualification",
+      "ownerStatement": "Autorizar calificación (Recommended)",
+      "decision": "qualification-authorized",
+      "detail": "Authorizes implementing and executing T008 qualification for the Claude profile only: EUR 0 additional cash, the D2 caps of SPEC-049 (d2-caps-founder-decision-20261031.json), containment verified before every native session. Does not admit the SPEC-049/T004 pilot and does not qualify Codex."
+    },
+    {
+      "task": "SPEC-048/T008",
+      "item": "Codex profile qualification",
+      "ownerStatement": "Registralo como no calificado y anota que lo tenemos que revisar antes de considerar cerrado este milestone",
+      "decision": "not-qualified",
+      "detail": "Codex CLI is not installed on the founder's host, so no route or quota can be observed. The profile stays refused, independently of the Claude profile. Must be reviewed again before the HAR.1 milestone is considered closed."
+    }
+  ],
+  "hostObservation": {
+    "observedAt": "2026-10-31T07:40Z",
+    "source": "Claude Desktop get_usage (plan limits as shown in the app usage card), read-only",
+    "host": {
+      "claude": "/opt/homebrew/bin/claude 2.1.292 (Claude Code)",
+      "codex": "absent (command -v codex: not found)"
+    },
+    "plan": "Max",
+    "windows": {
+      "5-hour": {
+        "percentUsed": 31,
+        "resetsAt": "2026-10-31T12:00:00Z"
+      },
+      "weekly-all-models": {
+        "percentUsed": 41,
+        "resetsAt": "2026-11-02T20:00:00Z"
+      },
+      "weekly-Fable": {
+        "percentUsed": 8,
+        "resetsAt": "2026-11-02T20:00:00Z"
+      }
+    },
+    "extraUsage": {
+      "enabled": false
+    }
+  },
+  "milestoneReviewRequired": [
+    "Codex profile (SPEC-048/T008) before closing HAR.1"
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records founder decisions only. No native session was opened for this record. T008 qualification evidence must be obtained separately within the authorized bounds; partial host qualification never implies both-host acceptance."
+}
