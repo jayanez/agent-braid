@@ -24,7 +24,7 @@ from .analysis import _canonical, _digest
 from .git_adapter import analyze_git_with_provenance
 from .git_process import GitCommandBudget, GitCommandFailure
 from .utility_budget_observer import observe_git_budget
-from .git_runtime_process import run_owned_git
+from .forecast_git_launch import run_owned_git
 from .git_replay import (
     OID, _patches, _sanitized_environment, _supported_operations,
     _mark_unsupported_binary_patches, _topological_orders, _validate_request,
@@ -313,9 +313,11 @@ def _read_record(path: Path) -> dict:
 
 
 @contextmanager
-def _lock(root: Path, *, create: bool = True):
+def _lock(root: Path, *, create: bool = True, read_only: bool = False):
     _require(root.is_dir() and not root.is_symlink(), "missing or unsafe run directory")
-    fd = os.open(root / "coordinator.lock", os.O_RDWR | (os.O_CREAT if create else 0) | os.O_NOFOLLOW, 0o600)
+    _require(not read_only or not create, "read-only lock cannot create an artifact")
+    fd = os.open(root / "coordinator.lock", (os.O_RDONLY if read_only else os.O_RDWR)
+                 | (os.O_CREAT if create else 0) | os.O_NOFOLLOW, 0o600)
     try:
         _require(stat.S_ISREG(os.fstat(fd).st_mode), "invalid coordinator lock")
         try:
@@ -593,7 +595,7 @@ def verify_run(request: object, run_directory: str | Path) -> dict:
         root = Path(manifest["runDirectory"])
         # Existing lock must exist: verifier never creates an artifact in the run.
         _require((root / "coordinator.lock").is_file(), "missing coordinator lock")
-        with _lock(root, create=False):
+        with _lock(root, create=False, read_only=True):
             _storage(root)
             env = _environment(temp / "verify-home")
             initial = _read_record(root / "state.json")

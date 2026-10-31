@@ -19,8 +19,8 @@ from .git_process import (
     GitCommandBudget,
     GitCommandFailure,
     GitInfrastructureFailure,
-    run_git,
 )
+from .forecast_git_launch import run_git
 
 
 EVIDENCE_VERSION = "0.1.0-alpha"

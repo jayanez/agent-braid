@@ -1,2 +1,4 @@
 # Preserve hash-bound raw test output, including runner whitespace.
 specs/046-local-technical-telemetry/evidence/*.log -whitespace
+# Patch context lines legitimately end in whitespace; keep bytes exact.
+research/native/fc1-systemd-2613.patch -whitespace

@@ -10,7 +10,8 @@ from pathlib import Path
 import subprocess
 
 from .analysis import InvalidAnalysis, analyze, _canonical, _digest
-from .git_process import GitCommandBudget, GitCommandFailure, run_git
+from .git_process import GitCommandBudget, GitCommandFailure
+from .forecast_git_launch import run_git, require_scoped_budget
 
 
 REQUEST_VERSION = "0.1.0-alpha"
@@ -29,6 +30,7 @@ def _require(condition: bool, message: str) -> None:
 def _git_result(cwd: Path, *args: str, env: dict[str, str] | None = None,
                 budget: GitCommandBudget | None = None,
                 allow_failure: bool = False):
+    require_scoped_budget(budget)
     if budget is not None:
         try:
             return run_git(cwd, args, env=env or os.environ.copy(), budget=budget,

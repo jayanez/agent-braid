@@ -1,0 +1,402 @@
+--- /dev/null
++++ b/src/basic/fc1-systemd-gate.c
+@@ -0,0 +1,75 @@
++// SPDX-License-Identifier: AGPL-3.0-only
++/* Source only. Never compiled/loaded/started by the repository's Python imports.
++ * PID1 and executor use separate CLOEXEC channels to the same private escrow.
++ * No channel FD is serialized or passed among params->fds to the target.
++ */
++#ifndef _GNU_SOURCE
++#define _GNU_SOURCE
++#endif
++#include "fc1-systemd-gate.h"
++#include <sys/socket.h>
++#include <sys/un.h>
++#include <sys/time.h>
++#include <time.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <errno.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#define FC1_MAGIC UINT32_C(0x31434641)
++struct request { uint32_t magic, version, site, reserved; char unit[96], invocation[33], pad[7]; };
++struct reply { uint32_t magic, version, site, allowed; uint64_t ticket, deadline; };
++_Static_assert(sizeof(struct request)==152, "FC1 request ABI");
++_Static_assert(sizeof(struct reply)==32, "FC1 reply ABI");
++static const char *suffixes[]={"-supervisor.service",".service","-operator.service",
++                              "-prepare.service","-verify.service","-terminal.service"};
++static int hex(const char *s, size_t n) {
++    if(!s) return 0;
++    for(size_t i=0;i<n;i++) if(!s[i] || !strchr("0123456789abcdef",s[i])) return 0;
++    return 1;
++}
++int fc1_unit_role(const char *unit) {
++    if(!unit || strnlen(unit,96)>=96 || strncmp(unit,"fc1",3) || !hex(unit+3,64)) return -1;
++    for(int i=0;i<6;i++) if(!strcmp(unit+67,suffixes[i])) return i;
++    return -1;
++}
++int fc1_gate_open(const char *unit) {
++    struct sockaddr_un address={.sun_family=AF_UNIX};
++    struct ucred cred; socklen_t size=sizeof cred;
++    if(fc1_unit_role(unit)<0) return -EINVAL;
++    int n=snprintf(address.sun_path,sizeof address.sun_path,"/run/fc1/%.64s/manager-gate.sock",unit+3);
++    if(n<0 || (size_t)n>=sizeof address.sun_path) return -E2BIG;
++    int fd=socket(AF_UNIX,SOCK_SEQPACKET|SOCK_CLOEXEC,0);
++    if(fd<0) return -errno;
++    struct timeval timeout={.tv_sec=1};
++    if(setsockopt(fd,SOL_SOCKET,SO_RCVTIMEO,&timeout,sizeof timeout)<0 ||
++       setsockopt(fd,SOL_SOCKET,SO_SNDTIMEO,&timeout,sizeof timeout)<0 ||
++       connect(fd,(struct sockaddr*)&address,sizeof address)<0 ||
++       getsockopt(fd,SOL_SOCKET,SO_PEERCRED,&cred,&size)<0 ||
++       size!=sizeof cred || cred.uid!=0 || cred.pid<=1) {
++        int error=errno?errno:EPERM;close(fd);return -error;
++    }
++    return fd;
++}
++int fc1_gate_authorize(int fd,unsigned site,const char *unit,const char *invocation) {
++    struct request q={.magic=FC1_MAGIC,.version=1,.site=site};
++    struct reply r={}; struct timespec now;
++    if(fd<0 || site>1 || fc1_unit_role(unit)<0 || !invocation ||
++       strnlen(invocation,33)!=32 || !hex(invocation,32)) return -EPERM;
++    int flags=fcntl(fd,F_GETFD);
++    if(flags<0 || !(flags&FD_CLOEXEC)) return -EPERM;
++    memcpy(q.unit,unit,strlen(unit));memcpy(q.invocation,invocation,32);
++    /* SO_PASSCRED at the receiver supplies this sender's CURRENT credentials,
++     * including a target UID change; creator SO_PEERCRED is not that identity. */
++    if(send(fd,&q,sizeof q,MSG_NOSIGNAL)!=(ssize_t)sizeof q) return -EIO;
++    struct iovec iov={.iov_base=&r,.iov_len=sizeof r};
++    struct msghdr message={.msg_iov=&iov,.msg_iovlen=1};
++    if(recvmsg(fd,&message,0)!=(ssize_t)sizeof r || message.msg_flags&(MSG_TRUNC|MSG_CTRUNC)) return -EIO;
++    if(clock_gettime(CLOCK_MONOTONIC,&now)<0) return -errno;
++    uint64_t ns=(uint64_t)now.tv_sec*UINT64_C(1000000000)+(uint64_t)now.tv_nsec;
++    if(r.magic!=FC1_MAGIC || r.version!=1 || r.site!=site || r.allowed!=1 || ns>=r.deadline) return -EPERM;
++    return 0;
++}
+--- /dev/null
++++ b/src/basic/fc1-systemd-gate.h
+@@ -0,0 +1,7 @@
++// SPDX-License-Identifier: AGPL-3.0-only
++/* Private source-only hooks. Included only in the separately built FC1 image. */
++#pragma once
++
++int fc1_unit_role(const char *unit);
++int fc1_gate_open(const char *unit);
++int fc1_gate_authorize(int fd, unsigned site, const char *unit, const char *invocation);
+--- a/src/basic/meson.build
++++ b/src/basic/meson.build
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: LGPL-2.1-or-later
+ 
+ basic_sources = files(
++        'fc1-systemd-gate.c',
+         'MurmurHash2.c',
+         'af-list.c',
+         'alloc-util.c',
+--- a/src/basic/process-util.c
++++ b/src/basic/process-util.c
+@@ -1,4 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1-or-later */
++
++#include "fc1-systemd-gate.h"
+ 
+ #include <linux/oom.h>
+ #include <pthread.h>
+@@ -2012,13 +2014,24 @@
+ 
+ DEFINE_TRIVIAL_CLEANUP_FUNC_FULL(posix_spawnattr_t*, posix_spawnattr_destroy, NULL);
+ 
+-int posix_spawn_wrapper(
++static int posix_spawn_wrapper_internal(
+                 const char *path,
+                 char * const *argv,
+                 char * const *envp,
+                 const char *cgroup,
+-                PidRef *ret_pidref) {
+-
++                PidRef *ret_pidref, int gate_fd, const char *unit, const char *invocation) {
++
++        bool strict = gate_fd >= 0;
++        /* No ungated wrapper may enter this private subtree. */
++        if (!strict && cgroup && startswith(cgroup, "/fc1")) return -EPERM;
++        if (strict) {
++                int role = fc1_unit_role(unit);
++                char expected[256];
++                if (role < 0 || !cgroup) return -EPERM;
++                xsprintf(expected, "/%.67s.slice/%.67s%s/%s", unit, unit,
++                         role < 3 ? "-root.slice" : "-workers.slice", unit);
++                if (!streq(cgroup, expected)) return -EPERM;
++        }
+         short flags = POSIX_SPAWN_SETSIGMASK;
+         posix_spawnattr_t attr;
+         sigset_t mask;
+@@ -2051,6 +2064,8 @@
+         static bool have_clone_into_cgroup = true; /* kernel 5.7+ */
+         _cleanup_close_ int cgroup_fd = -EBADF;
+ 
++        if (strict && !have_clone_into_cgroup) return -EOPNOTSUPP;
++
+         if (cgroup && have_clone_into_cgroup) {
+                 _cleanup_free_ char *resolved_cgroup = NULL;
+ 
+@@ -2065,7 +2080,7 @@
+                 r = posix_spawnattr_setcgroup_np(&attr, cgroup_fd);
+                 if (r == 0)
+                         flags |= POSIX_SPAWN_SETCGROUP;
+-                else if (r != ENOSYS)
++                else if (strict || r != ENOSYS)
+                         return -r;
+                 /* If libc lacks posix_spawnattr_setcgroup_np we silently skip POSIX_SPAWN_SETCGROUP — the
+                  * caller will then need to attach the child to the cgroup themselves. */
+@@ -2080,7 +2095,14 @@
+ 
+         _cleanup_close_ int pidfd = -EBADF;
+ 
++        if (strict) {
++                if (!FLAGS_SET(flags, POSIX_SPAWN_SETCGROUP)) return -EPERM;
++                r = fc1_gate_authorize(gate_fd, 0, unit, invocation);
++                if (r < 0) return r;
++        }
+         r = pidfd_spawn(&pidfd, path, NULL, &attr, argv, envp);
++        /* An admitted attempt may never retry without CLONE_INTO_CGROUP. */
++        if (strict && r != 0) return -r;
+         if (ERRNO_IS_NOT_SUPPORTED(r) && FLAGS_SET(flags, POSIX_SPAWN_SETCGROUP) && cg_is_threaded(cgroup) > 0)
+                 return -EUCLEAN; /* clone3() could also return EOPNOTSUPP if the target cgroup is in threaded mode,
+                                     turn that into something recognizable */
+@@ -2126,6 +2148,18 @@
+         return 0; /* We did not use CLONE_INTO_CGROUP so return 0, the caller will have to move the child */
+ }
+ 
++int posix_spawn_wrapper(const char *path, char *const *argv, char *const *envp,
++                        const char *cgroup, PidRef *ret_pidref) {
++        return posix_spawn_wrapper_internal(path, argv, envp, cgroup, ret_pidref, -EBADF, NULL, NULL);
++}
++
++int posix_spawn_wrapper_fc1(const char *path, char *const *argv, char *const *envp,
++                            const char *cgroup, PidRef *ret_pidref, int gate_fd,
++                            const char *unit, const char *invocation) {
++        if (fc1_unit_role(unit)>=0 && gate_fd<0) return -EPERM;
++        return posix_spawn_wrapper_internal(path, argv, envp, cgroup, ret_pidref, gate_fd, unit, invocation);
++}
++
+ int proc_dir_open(DIR **ret) {
+         DIR *d;
+ 
+--- a/src/basic/process-util.h
++++ b/src/basic/process-util.h
+@@ -247,6 +247,10 @@
+                 const char *cgroup,
+                 PidRef *ret_pidref);
+ 
++int posix_spawn_wrapper_fc1(const char *path, char *const *argv, char *const *envp,
++                            const char *cgroup, PidRef *ret_pidref, int gate_fd,
++                            const char *unit, const char *invocation);
++
+ int proc_dir_open(DIR **ret);
+ int proc_dir_read(DIR *d, pid_t *ret);
+ int proc_dir_read_pidref(DIR *d, PidRef *ret);
+--- a/src/core/exec-invoke.c
++++ b/src/core/exec-invoke.c
+@@ -1,4 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1-or-later */
++
++#include "fc1-systemd-policy.h"
+ 
+ #include <grp.h>
+ #include <linux/securebits.h>
+@@ -3973,6 +3975,7 @@
+ 
+         NamespaceParameters parameters = {
+                 .runtime_scope = params->runtime_scope,
++                .fc1_scope = fc1_unit_role(params->unit_id)>=0,
+ 
+                 .rootfs = rootfs,
+                 .root_image_options = context->root_image_options,
+@@ -5194,6 +5197,15 @@
+         assert(cgroup_context);
+         assert(exit_status);
+ 
++        bool fc1_scope = fc1_unit_role(params->unit_id)>=0;
++        _cleanup_close_ int fc1_gate_fd = -EBADF;
++        r = fc1_context_check(context, params, command);
++        if (r < 0) { *exit_status=EXIT_EXEC; return r; }
++        if (fc1_scope) {
++                fc1_gate_fd = fc1_gate_open(params->unit_id);
++                if (fc1_gate_fd < 0) { *exit_status=EXIT_EXEC; return fc1_gate_fd; }
++        }
++
+         LOG_CONTEXT_PUSH_EXEC(context, params);
+ 
+         /* Explicitly test for CVE-2021-4034 inspired invocations */
+@@ -5269,6 +5281,10 @@
+                 *exit_status = EXIT_MEMORY;
+                 return log_oom();
+         }
++
++        /* Private CLOEXEC channel, deliberately outside params->fds/flag_fds. */
++        r = add_shifted_fd(&keep_fds, &n_keep_fds, &fc1_gate_fd);
++        if (r < 0) { *exit_status=EXIT_FDS; return r; }
+ 
+         r = add_shifted_fd(&keep_fds, &n_keep_fds, &params->exec_fd);
+         if (r < 0) {
+@@ -5349,7 +5365,14 @@
+                 return log_error_errno(errno, "Failed to update environment: %m");
+         }
+ 
+-        if (exec_context_get_effective_private_users(context, params) == PRIVATE_USERS_MANAGED)
++        if (fc1_scope) {
++                /* Validated canonical decimal IDs; no NSS/user/group database. */
++                uid = (uid_t) strtoul(context->user, NULL, 10);
++                gid = (gid_t) strtoul(context->group, NULL, 10);
++                username = context->user;
++                /* ngids=0 alone does not clear the inherited group list. */
++                if (setgroups(0, NULL) < 0) { *exit_status=EXIT_GROUP; return -errno; }
++        } else if (exec_context_get_effective_private_users(context, params) == PRIVATE_USERS_MANAGED)
+                 log_debug("Running with a managed user namespace, not initializing UIDs/GIDs.");
+         else if (context->dynamic_user && runtime->dynamic_creds) {
+                 _cleanup_strv_free_ char **suggested_paths = NULL;
+@@ -5439,7 +5462,7 @@
+ 
+         if (exec_context_get_effective_private_users(context, params) != PRIVATE_USERS_MANAGED) {
+                 /* Initialize user supplementary groups and get SupplementaryGroups= ones */
+-                ngids = get_supplementary_groups(context, username, gid, &gids);
++                ngids = fc1_scope ? 0 : get_supplementary_groups(context, username, gid, &gids);
+                 if (ngids < 0) {
+                         *exit_status = EXIT_GROUP;
+                         return log_error_errno(ngids, "Failed to determine supplementary groups: %m");
+@@ -6711,7 +6734,15 @@
+          * have O_CLOEXEC set, and the execve() below will thus automatically close them. In fact, for
+          * exec_fd this is pretty much the whole raison d'etre. */
+ 
+-        r = fexecve_or_execve(executable_fd, executable, final_argv, accum_env);
++        if (fc1_scope) {
++                r = fc1_gate_authorize(fc1_gate_fd, 1, params->unit_id, params->invocation_id_string);
++                if (r >= 0) {
++                        /* Exactly one exec syscall, no path/script/ENOSYS fallback. */
++                        (void) execveat(executable_fd, "", final_argv, accum_env, AT_EMPTY_PATH);
++                        r = -errno;
++                }
++        } else
++                r = fexecve_or_execve(executable_fd, executable, final_argv, accum_env);
+ 
+         /* The execve() failed, let's undo the marking as hot */
+         (void) exec_fd_mark_hot(context, params, /* hot= */ false, /* reterr_exit_status= */ NULL);
+--- a/src/core/execute.c
++++ b/src/core/execute.c
+@@ -1,4 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1-or-later */
++
++#include "fc1-systemd-policy.h"
+ 
+ #include <fcntl.h>
+ #include <poll.h>
+@@ -488,6 +490,9 @@
+         assert(!params->files_env); /* We fill this field, ensure it comes NULL-initialized to us */
+         assert(ret);
+ 
++        r = fc1_context_check(context, params, command);
++        if (r < 0) return r;
++
+         LOG_CONTEXT_PUSH_UNIT(unit);
+ 
+         r = exec_context_load_environment(unit, context, &params->files_env);
+@@ -567,6 +572,12 @@
+         _cleanup_(pidref_done) PidRef pidref = PIDREF_NULL;
+         dual_timestamp start_timestamp;
+ 
++        _cleanup_close_ int fc1_gate_fd = -EBADF;
++        if (fc1_unit_role(params->unit_id)>=0) {
++                fc1_gate_fd = fc1_gate_open(params->unit_id);
++                if (fc1_gate_fd < 0) return fc1_gate_fd;
++        }
++
+         /* Restore the original ambient capability set the manager was started with to pass it to
+          * sd-executor. */
+         r = capability_ambient_set_apply(unit->manager->saved_ambient_set, /* also_inherit= */ false);
+@@ -578,7 +589,7 @@
+         dual_timestamp_now(&start_timestamp);
+ 
+         /* The executor binary is pinned, to avoid compatibility problems during upgrades. */
+-        r = posix_spawn_wrapper(
++        r = posix_spawn_wrapper_fc1(
+                         FORMAT_PROC_FD_PATH(unit->manager->executor_fd),
+                         STRV_MAKE(unit->manager->executor_path,
+                                   "--deserialize", serialization_fd_number,
+@@ -586,7 +597,7 @@
+                                   "--log-target", log_target_to_string(manager_get_executor_log_target(unit->manager))),
+                         environ,
+                         cgtarget,
+-                        &pidref);
++                        &pidref, fc1_gate_fd, params->unit_id, params->invocation_id_string);
+ 
+         /* Drop the ambient set again, so no processes other than sd-executore spawned from the manager inherit it. */
+         (void) capability_ambient_set_apply(0, /* also_inherit= */ false);
+--- /dev/null
++++ b/src/core/fc1-systemd-policy.h
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: AGPL-3.0-only
++/* Private FC.1 policy. Not a generic systemd admission interface. */
++#pragma once
++#include "execute.h"
++#include "fc1-systemd-gate.h"
++#include <errno.h>
++#include <stdlib.h>
++#include <string.h>
++
++static inline bool fc1_numeric_identity(const char *s) {
++        if (!s || !*s) return false;
++        for (const char *p=s; *p; p++) if (*p<'0' || *p>'9') return false;
++        if (strlen(s)>5 || (s[0]=='0' && s[1])) return false;
++        unsigned long n=strtoul(s,NULL,10);
++        return n==0 || (n>=61000 && n<=64999);
++}
++static inline int fc1_context_check(const ExecContext *c, const ExecParameters *p,
++                                    const ExecCommand *command) {
++        if (fc1_unit_role(p->unit_id)<0) return 0;
++        /* FC.1 resolves numeric credentials directly in exec_invoke, clears
++         * inherited groups, and never requests a login/home database record. */
++        if (p->runtime_scope!=RUNTIME_SCOPE_SYSTEM ||
++            !fc1_numeric_identity(c->user) || !fc1_numeric_identity(c->group) ||
++            c->supplementary_groups || c->pam_name || c->dynamic_user ||
++            c->private_bpf!=PRIVATE_BPF_NO || c->private_users!=PRIVATE_USERS_NO ||
++            c->user_namespace_path || c->network_namespace_path || c->ipc_namespace_path ||
++            c->private_pids!=PRIVATE_PIDS_NO || c->syscall_filter || c->syscall_archs ||
++            c->address_families || c->restrict_filesystems || c->log_namespace ||
++            c->working_directory_home || c->set_login_environment != 0 ||
++            p->shall_confirm_spawn || (p->flags & EXEC_IS_CONTROL) || command->flags)
++                return -EPERM;
++        int role = fc1_unit_role(p->unit_id);
++        if (strcmp(c->user, c->group) ||
++            ((role < 3) != !strcmp(c->user, "0"))) return -EPERM;
++        return 0;
++}
+--- a/src/core/namespace.c
++++ b/src/core/namespace.c
+@@ -2600,6 +2600,14 @@
+ 
+         /* Make the whole image read-only if we can determine that we only access it in a read-only fashion. */
+         bool ro = namespace_read_only(p);
++        if (p->fc1_scope) {
++                if (!ro || p->private_users != PRIVATE_USERS_NO || p->private_bpf != PRIVATE_BPF_NO)
++                        return -EPERM;
++                /* No fsck/growfs/udev-partition or userspace verity helper jobs. */
++                dissect_image_flags &= ~(DISSECT_IMAGE_FSCK | DISSECT_IMAGE_GROWFS |
++                        DISSECT_IMAGE_ADD_PARTITION_DEVICES | DISSECT_IMAGE_PIN_PARTITION_DEVICES |
++                        DISSECT_IMAGE_ALLOW_USERSPACE_VERITY | DISSECT_IMAGE_VERITY_SHARE);
++        }
+         if (ro) {
+                 dissect_image_flags |= DISSECT_IMAGE_READ_ONLY;
+                 mstack_flags |= MSTACK_RDONLY;
+--- a/src/core/namespace.h
++++ b/src/core/namespace.h
+@@ -145,6 +145,7 @@
+ 
+ typedef struct NamespaceParameters {
+         RuntimeScope runtime_scope;
++        bool fc1_scope;
+ 
+         const PinnedResource *rootfs;
+         const MountOptions *root_image_options;
