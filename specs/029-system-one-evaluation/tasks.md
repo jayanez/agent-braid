@@ -51,7 +51,7 @@ for human review, scientific interpretation, explicit source rights or promotion
 
 ## Documentary reconciliation of research and proposed delivery — 2026-10-20
 
-These additive canonical identities retain the existing study/DDP aliases. Checked entries mean only their stated bounded historical lot; original research, human, model and product gates remain open. The evidence register is a documentary source snapshot, not new implementation or independent reproduction. See docs/system-one/README.md and task-map.json. No task launches agents or authorizes a study.
+These additive canonical identities retain the existing study/DDP aliases. Checked entries mean only their stated bounded historical lot; original research, human, model and product gates remain open. The evidence register is a documentary source snapshot, not new implementation or independent reproduction. See docs/system-one/README.md and task-map.json. No task launches agents or authorizes a study. Checked entries below that cite PR #655 (commit a6329c82) and the documentary corpus PRs #594, #608, #609, #610 cover the bounded engineering lot only; human, Claude, scientific, admission, calibration, promotion, activation, product-publication and host-adoption gates stay pending ([pending gates](../../docs/system-one/addenda/v1-publication-closure-20261021/pending-gates.md)). `docs/system-one/task-map.json` and the `*-corpus-status.md` files are frozen documentary snapshots: their "open; not started", planned file names and "checkboxes unchanged" wording predate these ticks and are not rewritten. No issue or milestone is closed.
 
 - [x] T010 (REQ-003 REQ-005 REQ-006 / SC-003 SC-005 SC-006): Record the separately registered
   Bounded historical delivery only. Exact source title/checkbox and obtained evidence are retained in docs/system-one/source-documents.json and evidence-register.json; original T001-T009 gates remain pending. No model/product/source/human acceptance is implied.
@@ -101,12 +101,12 @@ These additive canonical identities retain the existing study/DDP aliases. Check
 - [x] T025 (REQ-003 REQ-005 REQ-006 / SC-003 SC-005 SC-006): Record the bounded S1-T025 lot and its actual completion boundary.
   Existing study alias retained; sources, tests, protocols, candidate/partition/failure/cost bindings and obtained status: docs/system-one/evidence-register.json record S1-T025. Criterion: complete registered lot and source-bound software/evidence receipts, including negatives; not a required positive hypothesis. Latest T025 engineering receipt: docs/system-one/addenda/t025-final-20261020.md; no unchecked source/human/activation gate is completed by this entry.
 
-- [ ] T026 (REQ-005 / SC-005): Extract EOF IR and controlled interpretation (alias DDP-T02; proposed, not started).
+- [x] T026 (REQ-005 / SC-005): Extract EOF IR and controlled interpretation (alias DDP-T02; delivered, bounded engineering lot).
   Dependencies: SPEC-028/T009. Owner: agent-A.
-  Targets: agent_braid/system_one_verified_ir.py, tests/test_system_one_verified_ir.py. Verification planned: .venv-speckit/bin/python -m unittest tests.test_system_one_verified_ir -v.
-  Criterion and negatives: docs/system-one/task-map.json alias DDP-T02; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.
+  Delivered at: `agent_braid/system_one_verified_ir.py`, `tests/test_system_one_verified_ir.py` (as planned).
+  Evidence: [T02 receipt and serial pin](../../docs/system-one/addenda/t02-and-serial-pin-20261020/README.md); task-map alias DDP-T02.
 
-- [ ] T027 (REQ-005 REQ-006 / SC-005 SC-006): Verify integrated compatibility and adversarial boundaries (alias DDP-T07; proposed, not started).
+- [x] T027 (REQ-005 REQ-006 / SC-005 SC-006): Verify integrated compatibility and adversarial boundaries (alias DDP-T07; delivered, bounded engineering lot).
   Dependencies: SPEC-031/T011. Owner: agent-C / later Luna reviewer.
-  Targets: tests/test_system_one_verified_compatibility.py, specs/029-system-one-evaluation/evidence/decision-delivery/software-validation.json. Verification planned: .venv-speckit/bin/python -m unittest tests.test_system_one_verified_compatibility -v.
-  Criterion and negatives: docs/system-one/task-map.json alias DDP-T07; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.
+  Delivered at: `tests/test_system_one_verified_compatibility.py`. The planned `specs/029-system-one-evaluation/evidence/decision-delivery/software-validation.json` was intentionally not created; the validation record lives in the T07 supplement and its bound receipts.
+  Evidence: [T07 final supplement](../../docs/system-one/addenda/t07-final-20261020/README.md), [T07 corpus status](t07-corpus-status.md); task-map alias DDP-T07.

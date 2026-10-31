@@ -56,19 +56,19 @@ founder acceptance remains separate.
 
 ## Documentary reconciliation of research and proposed delivery — 2026-10-20
 
-These additive canonical identities retain the existing study/DDP aliases. Checked entries mean only their stated bounded historical lot; original research, human, model and product gates remain open. The evidence register is a documentary source snapshot, not new implementation or independent reproduction. See docs/system-one/README.md and task-map.json. No task launches agents or authorizes a study.
+These additive canonical identities retain the existing study/DDP aliases. Checked entries mean only their stated bounded historical lot; original research, human, model and product gates remain open. The evidence register is a documentary source snapshot, not new implementation or independent reproduction. See docs/system-one/README.md and task-map.json. No task launches agents or authorizes a study. Checked entries below that cite PR #655 (commit a6329c82) and the documentary corpus PRs #594, #608, #609, #610 cover the bounded engineering lot only; human, Claude, scientific, admission, calibration, promotion, activation, product-publication and host-adoption gates stay pending ([pending gates](../../docs/system-one/addenda/v1-publication-closure-20261021/pending-gates.md)). `docs/system-one/task-map.json` and the `*-corpus-status.md` files are frozen documentary snapshots: their "open; not started", planned file names and "checkboxes unchanged" wording predate these ticks and are not rewritten. No issue or milestone is closed.
 
 - [ ] T009 (REQ-001 REQ-002 / SC-001 SC-002): Freeze additive contracts and migration map (alias DDP-T01; enabled and assigned documentarily to coordinator; no execution started).
   Dependencies: T025 completed engineering receipt checked by coordinator. Owner: coordinator.
   Targets: specs/028-system-one-core/contracts/verified-plan-v1.md, specs/031-system-one-integration/contracts/verified-plan-consumer-v1.md, specs/029-system-one-evaluation/verified-plan-conformance.md. Verification planned: Document/contract review only; no runtime command required before implementation.
   Criterion and negatives: docs/system-one/task-map.json alias DDP-T01; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.
 
-- [ ] T010 (REQ-005 / SC-005): Implement static domain verifier registry (alias DDP-T04; proposed, not started).
+- [x] T010 (REQ-005 / SC-005): Implement static domain verifier registry (alias DDP-T04; delivered, bounded engineering lot).
   Dependencies: SPEC-028/T009. Owner: agent-C.
-  Targets: agent_braid/system_one_verified_registry.py, tests/test_system_one_verified_registry.py. Verification planned: .venv-speckit/bin/python -m unittest tests.test_system_one_verified_registry -v.
-  Criterion and negatives: docs/system-one/task-map.json alias DDP-T04; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.
+  Delivered at: `agent_braid/system_one_verified_registry.py`, `tests/test_system_one_verified_registry.py` (as planned).
+  Evidence: [component receipt](../../docs/system-one/addenda/t04-component-20261020/README.md), [serial production pin](../../docs/system-one/addenda/t02-and-serial-pin-20261020/README.md); task-map alias DDP-T04.
 
-- [ ] T011 (REQ-003 REQ-004 / SC-003 SC-004): Deliver deterministic verified-plan selection (alias DDP-T05; proposed, not started).
+- [x] T011 (REQ-003 REQ-004 / SC-003 SC-004): Deliver deterministic verified-plan selection (alias DDP-T05; delivered, bounded engineering lot).
   Dependencies: SPEC-029/T026, SPEC-031/T010, SPEC-028/T010. Owner: agent-A.
-  Targets: agent_braid/system_one_verified_decision.py, tests/test_system_one_verified_decision.py. Verification planned: .venv-speckit/bin/python -m unittest tests.test_system_one_verified_decision -v.
-  Criterion and negatives: docs/system-one/task-map.json alias DDP-T05; no obtained implementation evidence. Preserve no-authority and separate decision/prepare-budget boundaries.
+  Delivered at: `agent_braid/system_one_verified_selection.py`, `tests/test_system_one_verified_selection.py`. The planned names `system_one_verified_decision.py` / `test_system_one_verified_decision.py` were intentionally not used; the module is named for selection.
+  Evidence: [T05 final package](../../docs/system-one/addenda/t05-final-package-20261020/README.md), [T05 profiles](../../docs/system-one/addenda/t05-profiles-final-20261020/README.md); task-map alias DDP-T05.
