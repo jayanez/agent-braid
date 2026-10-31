@@ -1,0 +1,200 @@
+{
+  "candidate": "6f4870ea8a885f3bf5c1e4e563a9a3759886d9aa",
+  "capturedAt": "2026-10-31T09:22:07.816660+00:00",
+  "checks": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "6f4870ea8a885f3bf5c1e4e563a9a3759886d9aa\n"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        ".venv-speckit/bin/python",
+        "-m",
+        "unittest",
+        "tests.test_contextual_lab",
+        "tests.test_system_one_context.SystemOneContextTests.test_lone_surrogate_ids_and_values_refuse_domain_error",
+        "-v"
+      ],
+      "exitCode": 0,
+      "stderrSha256": "c46bf48d1491f1103c30bbf13f19d8f6b3f73c7333b8b9c6c53c87cdc693345b",
+      "stderrTail": "----------------------------------------------------------------------\nRan 21 tests in 0.682s\n\nOK",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        ".venv-speckit/bin/python",
+        "-m",
+        "research.contextual_lab",
+        "check",
+        "examples/contextual-lab/manifest.json",
+        "--output",
+        "/private/tmp/claude-502/-Users-juanyanez-Repos-Personal-agent-braid--claude-worktrees-sharp-spence-ea67f8/287b7e75-4e08-427c-8121-0bad118e9d1e/scratchpad/out/continuations-1.json"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\"status\": \"written\", \"verdict\": \"divergent\", \"executionAuthorization\": false}\n"
+    },
+    {
+      "argv": [
+        ".venv-speckit/bin/python",
+        "-m",
+        "research.contextual_lab",
+        "verify",
+        "/private/tmp/claude-502/-Users-juanyanez-Repos-Personal-agent-braid--claude-worktrees-sharp-spence-ea67f8/287b7e75-4e08-427c-8121-0bad118e9d1e/scratchpad/out/continuations-1.json"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\"executionAuthorization\": false, \"proofAccepted\": false, \"status\": \"verified\", \"verdict\": \"divergent\"}\n"
+    },
+    {
+      "argv": [
+        ".venv-speckit/bin/python",
+        "-m",
+        "research.contextual_lab",
+        "check",
+        "examples/contextual-lab/manifest.json",
+        "--output",
+        "/private/tmp/claude-502/-Users-juanyanez-Repos-Personal-agent-braid--claude-worktrees-sharp-spence-ea67f8/287b7e75-4e08-427c-8121-0bad118e9d1e/scratchpad/out/continuations-2.json"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\"status\": \"written\", \"verdict\": \"divergent\", \"executionAuthorization\": false}\n"
+    },
+    {
+      "argv": [
+        ".venv-speckit/bin/python",
+        "-m",
+        "research.contextual_lab",
+        "verify",
+        "/private/tmp/claude-502/-Users-juanyanez-Repos-Personal-agent-braid--claude-worktrees-sharp-spence-ea67f8/287b7e75-4e08-427c-8121-0bad118e9d1e/scratchpad/out/continuations-2.json"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\"executionAuthorization\": false, \"proofAccepted\": false, \"status\": \"verified\", \"verdict\": \"divergent\"}\n"
+    },
+    {
+      "argv": [
+        ".venv-speckit/bin/python",
+        "scripts/crosscheck_contextual_proof_mapping.py",
+        "--manifest",
+        "examples/contextual-lab/anchored-manifest.json",
+        "--output",
+        "/private/tmp/claude-502/-Users-juanyanez-Repos-Personal-agent-braid--claude-worktrees-sharp-spence-ea67f8/287b7e75-4e08-427c-8121-0bad118e9d1e/scratchpad/out/anchored-mapping.json"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "a6329c828011d1468fed3dfa4e98f5a8531167e2",
+        "HEAD",
+        "--",
+        "research/contextual_lab",
+        "scripts/crosscheck_contextual_proof_mapping.py",
+        "examples/contextual-lab",
+        "tests/test_contextual_lab.py",
+        "agent_braid/structured_exchange.py",
+        "research/lab/model.py",
+        "research/proofs/contextual-candidates"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "continuationBytesEqual": true,
+  "environment": {
+    "executable": "/opt/homebrew/Cellar/python@3.13/3.13.11/Frameworks/Python.framework/Versions/3.13/bin/python3.13",
+    "isolatedEnvironment": "Environment reused from sibling worktree; not independently provisioned.",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "python": "3.13.11",
+    "sameHost": true,
+    "sameMaintainingTeam": true
+  },
+  "executionAuthorization": false,
+  "format": "contextual-current-finite-receipt-v2",
+  "founderApproval": "pending",
+  "humanReview": "pending",
+  "independentExternalReproduction": false,
+  "limits": [
+    "Finite contextual/mapping and existing Unicode regression only; no universal correspondence or theorem acceptance.",
+    "Run in a linked worktree with a shared Git object store, same host/team; not independent external reproduction. The stable pr profile result is recorded only in the pull request description.",
+    "Check outputs are not retained; only their SHA-256 and sizes are. argv paths under /private/tmp are session scratch locations and need not exist for a reviewer."
+  ],
+  "mappingTotals": {
+    "adjacentChecks": 30,
+    "excludedRejected": 4,
+    "farChecks": 24,
+    "involutiveChecks": 86,
+    "mismatches": 0,
+    "orders": 32,
+    "status": "finite-mapping-match"
+  },
+  "outputs": {
+    "anchored-mapping.json": {
+      "bytes": 2460,
+      "sha256": "a2b2820ffb05ec52c8ace30a4af3650ec950cac58083abfdca82c5b491857e67"
+    },
+    "continuations-1.json": {
+      "bytes": 14914,
+      "sha256": "58b6862c65bc9e273f233423e1d7cd698140b508ef9ad8433c498f70b6b17f7f"
+    },
+    "continuations-2.json": {
+      "bytes": 14914,
+      "sha256": "58b6862c65bc9e273f233423e1d7cd698140b508ef9ad8433c498f70b6b17f7f"
+    }
+  },
+  "proofAccepted": false,
+  "sourceBindings": {
+    "agent_braid/structured_exchange.py": "f43079b348c78e9e1a994492fb14754e1771533771e009b1186ff54bb3efa396",
+    "examples/contextual-lab/anchored-manifest.json": "e169a8be3c0da6b67c53af31a9d1effb45e19adfe7abf29638675dd5b3ff368a",
+    "examples/contextual-lab/expected.json": "0d55121d29fe57f640927bc29b31dbe3cbcafac93447c584f4f8e730b96d0f46",
+    "examples/contextual-lab/manifest.json": "5b55897bc6eeb6359bab6940aedb144b3103e80ef390a28439e7f9aff34f7c60",
+    "research/contextual_lab/checker.py": "56c63276cd7c9036a4447cd4443bfeb307ba231a5cf34d5b0945a5fe98ea0c73",
+    "research/lab/model.py": "f39040b5476d663f6e7384e65d00073b084df6c8958b38bff45e4d6b19da010f",
+    "research/proofs/contextual-candidates/anchored-candidate.md": "f7b3eb0fc553ff12a49f9a35a993261351210f8e9a7ef80d29a36e83a0b65816",
+    "scripts/crosscheck_contextual_proof_mapping.py": "642a387eb5d20f977de85e6b30b9410a8a21c0f931036c0c52332335e0ef57f2",
+    "specs/025-contextual-proof-obligations/assurance.json": "bf2e4863cc750e330f9acdf68e8c4a97598731e2e5472c813c68b61e106c2ec5",
+    "specs/025-contextual-proof-obligations/current-status-20261021.md": "0aa1990e6708486505e578f345e45315d2daa4adda66097ca5d86a304fc40047",
+    "specs/025-contextual-proof-obligations/evidence/candidate-profiles.json": "1946dba226c4b491d101bfac0cbcf32abf4bf61bfde76b820c0c683e342bd744",
+    "specs/025-contextual-proof-obligations/evidence/current-finite-receipt-20261021.json": "fc2d499d25520a1c15f3c2a34eac30d286c8f4c981feddcd6fdd6b0bf7ee3c61",
+    "specs/025-contextual-proof-obligations/evidence/internal-clean-clone.json": "44863c9da73361e3d0e92da652fb9caa79f50851050bef0a98f9d490079f0329",
+    "specs/025-contextual-proof-obligations/evidence/luna-checker-mapping.json": "350168b3653912b7dfcd8aec50c319f1b28e6190357b425e5eaafd37daeb1b01",
+    "specs/025-contextual-proof-obligations/evidence/luna-mathematical-inspection.json": "b4f9f14dc4a086f5bbcda9057243cae6efd3041ea12370f51c88622c436d52d8",
+    "specs/025-contextual-proof-obligations/evidence/packet-review-20261021.json": "3699964d0114c668e6d5a13f4b39041d28fbac9ba972ea4f659dbf0f4940268c",
+    "specs/025-contextual-proof-obligations/evidence/technical-delivery.json": "753ae8d7696017f453744a0bd0006071191e3347547c2504c8d9c135e730820a",
+    "specs/025-contextual-proof-obligations/premise-inventory.json": "25c9a7ab8594c03d7bb865607d660cb5c42b8251d6d8f287ddec173e518af979",
+    "specs/025-contextual-proof-obligations/proof-tool-assessment.md": "d8c2ca1fc8712353683ce14322ebbc8532a944c0779e5748824fff03d172f6fe",
+    "specs/025-contextual-proof-obligations/tasks.md": "c6e52bbca7c7d2ec3d73ea9261eaca44311766ad688603e474ee66ef878d7530"
+  },
+  "specificIndependentProofReview": "pending"
+}
