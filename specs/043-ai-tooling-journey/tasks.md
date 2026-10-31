@@ -5,6 +5,7 @@ Stable task IDs are implementation obligations. Check only after the paired proc
 - [ ] T001 (REQ-001/SC-001): Provide a reproducible owned synthetic journey from install/discovery through analysis/plan/grant refusal/execute/verify/recovery/export.
   Dependencies: none; consumed contract review. Targets: `docs/tooling/JOURNEY.md; examples/tooling; full fixture workflow`.
   Verification and planned evidence: `validation-plan.md::procedure_full_journey`; `evidence/sc-001.json` with actual commands and negative controls. Obtained: none.
+  Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): no execute, recover or export step observed. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
 
 - [x] T002 (REQ-002/SC-002): Explain decisions with input identity, conflicts/dependencies, conditional premises, unknowns, assurance and observation limits.
   Dependencies: T001. Targets: `tooling_present.py chat summary; classification fidelity controls`.
@@ -13,6 +14,7 @@ Stable task IDs are implementation obligations. Check only after the paired proc
 - [ ] T003 (REQ-003/SC-003): Explain advisory order and exact missing authority before opt-in execution.
   Dependencies: T001. Targets: `plan/permission journey explanation; missing-grant fixtures`.
   Verification and planned evidence: `validation-plan.md::procedure_authority_journey`; `evidence/sc-003.json` with actual commands and negative controls. Obtained: none.
+  Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): no receipt of the advisory-order and missing-authority explanation. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
 
 - [x] T004 (REQ-004/SC-004): Display actual private-result/verifier state and interruption/recovery outcomes with evidence links.
   Dependencies: T001. Targets: `result/recovery explanation; verifier-state controls`.
@@ -33,14 +35,17 @@ Stable task IDs are implementation obligations. Check only after the paired proc
 - [ ] T008 (REQ-008/SC-008): Provide clear onboarding, diagnostics, raw-evidence access and unsupported-rendering explanations in both hosts.
   Dependencies: T001–T005. Targets: `docs/tooling onboarding/diagnostics; unsupported render fallback`.
   Verification and planned evidence: `validation-plan.md::procedure_onboarding_fallback`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: none.
+  Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): onboarding observed in one host only; no diagnostics, raw-evidence or rendering fallback receipts. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
 
 - [ ] T009 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile implementation evidence and run repository quick/PR gates.
   Dependencies: T001–T008. Targets: this spec's assurance.json, validation receipts and bounded candidate.
   Verification and planned evidence: run the explicit quick and stable PR profiles; bind actual results without implying actual-host observation, clean-room reproduction or approval.
+  Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): depends on T001-T008. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
 
 - [ ] T010 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Freeze the bounded candidate, review findings and record the required human decision.
   Dependencies: T009 and feature-specific observation gates. Targets: frozen assurance, review record and SPEC-044 decision packet.
   Verification and planned evidence: candidate/evidence hashes, independent technical findings and actual decision; source validation and hashes are not approval.
+  Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): depends on T001-T008. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
 
 ## Separately verifiable technical clauses — owner-approved split
 

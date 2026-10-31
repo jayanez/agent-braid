@@ -1,0 +1,460 @@
+{
+  "evidenceClass": "observational-native-receipt",
+  "extractorSha256": "738e116808102b69a597c0854b8e12d6f3202874d28a8b3362a8094bcca478ee",
+  "hosts": [
+    {
+      "c1Discovery": {
+        "mcpServerInstructionsDelivered": {
+          "firstSeen": "2026-10-17T08:11:32.791Z",
+          "lastSeen": "2026-10-31T09:31:56.887Z",
+          "sessions": 184,
+          "state": "observed"
+        },
+        "skillsListedInContext": {
+          "analyze": {
+            "count": 188,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-10-31T09:31:50.778Z",
+            "outcomes": {},
+            "sessions": 188,
+            "state": "observed",
+            "versions": "unavailable"
+          },
+          "evidence": {
+            "count": 188,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-10-31T09:31:50.778Z",
+            "outcomes": {},
+            "sessions": 188,
+            "state": "observed",
+            "versions": "unavailable"
+          },
+          "execute": {
+            "count": 188,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-10-31T09:31:50.778Z",
+            "outcomes": {},
+            "sessions": 188,
+            "state": "observed",
+            "versions": "unavailable"
+          },
+          "plan": {
+            "count": 188,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-10-31T09:31:50.778Z",
+            "outcomes": {},
+            "sessions": 188,
+            "state": "observed",
+            "versions": "unavailable"
+          },
+          "recover": {
+            "count": 188,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-10-31T09:31:50.778Z",
+            "outcomes": {},
+            "sessions": 188,
+            "state": "observed",
+            "versions": "unavailable"
+          },
+          "setup": {
+            "count": 188,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-10-31T09:31:50.778Z",
+            "outcomes": {},
+            "sessions": 188,
+            "state": "observed",
+            "versions": "unavailable"
+          }
+        }
+      },
+      "c2InstructionsLoaded": {
+        "analyze": {
+          "count": 3,
+          "firstSeen": "2026-10-24T22:02:02.362Z",
+          "lastSeen": "2026-10-27T22:42:07.484Z",
+          "loadedContentSha256": {
+            "befc7cba981b541fd089ad1bf95b86d80c10c209e624c1e95e7abd98f22f9646": 1,
+            "f7c703abbd1349026a02460f4af07747ea13a27338c90fac2013938ba5dfe2af": 2
+          },
+          "outcomes": {
+            "loaded": 3
+          },
+          "sessions": 3,
+          "state": "observed",
+          "versions": {
+            "0.1.0-alpha.3": 1,
+            "0.1.0-alpha.4": 2
+          }
+        },
+        "evidence": {
+          "count": 0,
+          "state": "not-observed"
+        },
+        "execute": {
+          "count": 0,
+          "state": "not-observed"
+        },
+        "plan": {
+          "count": 4,
+          "firstSeen": "2026-10-24T05:59:51.145Z",
+          "lastSeen": "2026-10-27T22:44:32.732Z",
+          "loadedContentSha256": {
+            "715b9b4094df3416fa6ba4f01aaf8a11c5892a34138969c0f89262b646d20274": 1,
+            "ac552c45dd9470deb5c0ef0e09ad4845aa8e1b7c2561273935878f9dbef5eab2": 2,
+            "ea2052ce05cf8c5e841ef9f939f1f1b5d2b24b8b95604a14cf5f09dc1324ebeb": 1
+          },
+          "outcomes": {
+            "loaded": 4
+          },
+          "sessions": 4,
+          "state": "observed",
+          "versions": {
+            "0.1.0-alpha.3": 2,
+            "0.1.0-alpha.4": 2
+          }
+        },
+        "recover": {
+          "count": 0,
+          "state": "not-observed"
+        },
+        "setup": {
+          "count": 4,
+          "firstSeen": "2026-10-23T17:18:42.202Z",
+          "lastSeen": "2026-10-24T05:43:01.051Z",
+          "loadedContentSha256": {
+            "35c7f465cf301b8f5bd9c8ea0aaa47b1bd8f45efa4d53df060c55ab811fe78a1": 1,
+            "36ee4f1b25e20a5f5f8cfe92482dece8d9f43293c28b8460c730d1e762c72155": 1,
+            "471993d7357dfe5d0b40239f1bc6e61bc6755ac3bb6c8838802171a21fb9844f": 1,
+            "c115c13b1c585e8f1bb9081711ff9bef8454c476716890c6335189819460e4f1": 1
+          },
+          "outcomes": {
+            "loaded": 4
+          },
+          "sessions": 4,
+          "state": "observed",
+          "versions": {
+            "0.1.0-alpha.2": 1,
+            "0.1.0-alpha.3": 3
+          }
+        }
+      },
+      "c3ObservedUse": {
+        "mcpTools": {
+          "analyze": {
+            "count": 7,
+            "firstSeen": "2026-10-25T10:38:17.608Z",
+            "lastSeen": "2026-10-27T22:44:01.773Z",
+            "outcomes": {
+              "ok": 6,
+              "refused": 1
+            },
+            "sessions": 7,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 7
+            }
+          },
+          "analyze-work": {
+            "count": 24,
+            "firstSeen": "2026-10-17T09:02:49.407Z",
+            "lastSeen": "2026-10-27T22:39:40.020Z",
+            "outcomes": {
+              "ok": 18,
+              "refused": 6
+            },
+            "sessions": 19,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 23
+            }
+          },
+          "plugin-status": {
+            "count": 20,
+            "firstSeen": "2026-10-17T08:53:47.237Z",
+            "lastSeen": "2026-10-27T22:42:13.944Z",
+            "outcomes": {
+              "ok": 20
+            },
+            "sessions": 14,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 20
+            }
+          },
+          "prepare": {
+            "count": 6,
+            "firstSeen": "2026-10-25T10:38:29.112Z",
+            "lastSeen": "2026-10-25T13:34:42.188Z",
+            "outcomes": {
+              "ok": 6
+            },
+            "sessions": 6,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 6
+            }
+          },
+          "workspaces": {
+            "count": 27,
+            "firstSeen": "2026-10-17T08:57:26.739Z",
+            "lastSeen": "2026-10-27T22:47:14.484Z",
+            "outcomes": {
+              "ok": 27
+            },
+            "sessions": 27,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 27
+            }
+          }
+        },
+        "skills": {
+          "analyze": {
+            "count": 3,
+            "firstSeen": "2026-10-24T22:02:02.284Z",
+            "lastSeen": "2026-10-27T22:42:07.438Z",
+            "outcomes": {
+              "invoked": 3
+            },
+            "sessions": 3,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 2
+            }
+          },
+          "evidence": {
+            "count": 0,
+            "state": "not-observed"
+          },
+          "execute": {
+            "count": 0,
+            "state": "not-observed"
+          },
+          "plan": {
+            "count": 4,
+            "firstSeen": "2026-10-24T05:59:51.066Z",
+            "lastSeen": "2026-10-27T22:44:32.601Z",
+            "outcomes": {
+              "invoked": 4
+            },
+            "sessions": 4,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 2,
+              "0.1.0-alpha.4": 2
+            }
+          },
+          "recover": {
+            "count": 0,
+            "state": "not-observed"
+          },
+          "setup": {
+            "count": 4,
+            "firstSeen": "2026-10-23T17:18:42.130Z",
+            "lastSeen": "2026-10-24T05:43:01.005Z",
+            "outcomes": {
+              "invoked": 4
+            },
+            "sessions": 4,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.2": 1,
+              "0.1.0-alpha.3": 3
+            }
+          }
+        }
+      },
+      "host": "claude-code",
+      "transcriptFilesScanned": 2881,
+      "transcriptFilesWithAgentBraidEvents": 623
+    },
+    {
+      "c1Discovery": {
+        "skillsListedInContext": {
+          "analyze": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "evidence": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "execute": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "plan": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "recover": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "setup": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          }
+        }
+      },
+      "c2InstructionsLoaded": "not-observed",
+      "c3ObservedUse": {
+        "state": "not-observed"
+      },
+      "host": "codex",
+      "sessionFilesListingAgentBraidSkills": 8,
+      "sessionFilesScanned": 8
+    }
+  ],
+  "localStores": {
+    "coordinationStore": {
+      "files": 15,
+      "modifiedFirst": "2026-10-14",
+      "modifiedLast": "2026-10-14",
+      "state": "present",
+      "unreadable": 0
+    },
+    "evidenceStore": {
+      "files": 133998,
+      "modifiedFirst": "2025-12-05",
+      "modifiedLast": "2026-10-17",
+      "state": "present",
+      "unreadable": 2
+    },
+    "identityStore": {
+      "files": 1,
+      "modifiedFirst": "2026-10-13",
+      "modifiedLast": "2026-10-13",
+      "state": "present",
+      "unreadable": 0
+    },
+    "pluginResults": {
+      "files": 0,
+      "modifiedFirst": null,
+      "modifiedLast": null,
+      "state": "present",
+      "unreadable": 0
+    },
+    "pluginWorkspaceRegistry": {
+      "configuredWorkspaces": 3,
+      "state": "present"
+    },
+    "runtimeState": {
+      "files": 3,
+      "modifiedFirst": "2026-10-14",
+      "modifiedLast": "2026-10-15",
+      "state": "present",
+      "unreadable": 0
+    },
+    "telemetry": {
+      "calls": {
+        "cli:analyze-git:ok": {
+          "count": 2,
+          "firstDay": "2026-10-24",
+          "lastDay": "2026-10-24"
+        },
+        "cli:analyze-git:refused": {
+          "count": 2,
+          "firstDay": "2026-10-24",
+          "lastDay": "2026-10-24"
+        },
+        "cli:analyze:ok": {
+          "count": 2,
+          "firstDay": "2026-10-16",
+          "lastDay": "2026-10-16"
+        },
+        "mcp:analyze-work:ok": {
+          "count": 3,
+          "firstDay": "2026-10-24",
+          "lastDay": "2026-10-27"
+        },
+        "mcp:analyze-work:refused": {
+          "count": 8,
+          "firstDay": "2026-10-24",
+          "lastDay": "2026-10-27"
+        },
+        "mcp:analyze:refused": {
+          "count": 1,
+          "firstDay": "2026-10-27",
+          "lastDay": "2026-10-27"
+        },
+        "mcp:execute:refused": {
+          "count": 1,
+          "firstDay": "2026-10-16",
+          "lastDay": "2026-10-16"
+        }
+      },
+      "coverage": "daily aggregates; portable MCP tools and CLI analyze/analyze-git only; no skill-level data",
+      "retentionDays": 30,
+      "state": "observed"
+    }
+  },
+  "privacy": "derived names, timestamps, counts, versions, outcomes, content digests and 12-hex session hashes only; no prompts, inputs, assistant text, paths or project names",
+  "scan": {
+    "claudeCodeRoot": "~/.claude/projects",
+    "codexRoot": "~/.codex/sessions",
+    "policy": "docs/development/REAL_USE_EVIDENCE.md"
+  },
+  "schema": "agent-braid-observational-native-receipts/v1"
+}

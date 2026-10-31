@@ -626,7 +626,7 @@ print('preserved')
         self.assertEqual(states['SPEC-044/T004'], 'closed')
         self.assertEqual(states['SPEC-044/T017'], 'open')
         self.assertEqual(states['SPEC-044/T018'], 'open')
-        self.assertEqual(states['SPEC-047/T010'], 'open')
+        self.assertEqual(states['SPEC-047/T010'], 'closed')
         graph = {}
         for edge in alignment['dependencies']:
             if edge['kind'] == 'technical':
