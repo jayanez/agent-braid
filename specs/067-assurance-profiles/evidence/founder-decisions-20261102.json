@@ -1,0 +1,91 @@
+{
+  "recordVersion": "spec067-founder-decisions-v1",
+  "task": "SPEC-067/T001",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-02",
+  "baseCommit": "191582df17efbf8ee769d4e43e5c3988a0aa6d1e",
+  "decisionChannel": "Founder answers to interactive questions in the orchestrator chat, 2026-11-02; each ownerStatement is the option label chosen",
+  "decisionOrder": ["Q1", "Q2", "Q3", "Q4", "Q5", "Q6"],
+  "decisions": [
+    {
+      "id": "Q1",
+      "item": "Default depth and mode per checkpoint, default profiles and the no-profile baseline",
+      "ownerStatement": "R2 código / R1 docs (Recommended)",
+      "decision": {
+        "pre-pr-review": {"code": "R2", "docsOnly": "R1"},
+        "pre-commit": "quick",
+        "ci": "requires green",
+        "merge": "requires green",
+        "shipProfiles": ["lite", "standard", "strict"],
+        "defaultProfile": "standard",
+        "baseline": "the currently undocumented practice becomes the documented baseline"
+      },
+      "detail": "The quick profile remains the pre-commit mode. Profiles are named presets; the exact per-profile tables are defined in T002 and cannot lower a REQ-003 floor."
+    },
+    {
+      "id": "Q2",
+      "item": "Which checkpoints admit standing-authorization",
+      "ownerStatement": "Solo merge, 30 días (Recommended)",
+      "decision": {
+        "admittingCheckpoints": ["merge"],
+        "conditions": ["green CI", "receipts present", "no open review threads"],
+        "neverAdmitted": ["release", "founder decisions", "grants", "native execution", "auto-promotion"]
+      },
+      "detail": "The never-admitted set is the REQ-003 floors, always human-only."
+    },
+    {
+      "id": "Q3",
+      "item": "Maximum expiry horizon and expiry scope",
+      "ownerStatement": "Solo merge, 30 días (Recommended)",
+      "decision": {
+        "maxHorizonDays": 30,
+        "expiryScope": "per authorization"
+      },
+      "detail": "Same founder answer as Q2; one option covered Q2 and Q3."
+    },
+    {
+      "id": "Q4",
+      "item": "Who may issue standing authorizations and the form of the verbatim statement",
+      "ownerStatement": "Propuesta conservadora (Recommended)",
+      "decision": {
+        "issuers": ["founder only"],
+        "statementForm": "verbatim founder statement stored in a hashed JSON record"
+      },
+      "detail": "No delegate. One option covered Q4, Q5 and Q6."
+    },
+    {
+      "id": "Q5",
+      "item": "Risk classifier rules and thresholds",
+      "ownerStatement": "Propuesta conservadora (Recommended)",
+      "decision": {
+        "sensitivePaths": "validate_change sensitive classification raises pre-pr-review to R3",
+        "sizeThresholdChangedLines": 400,
+        "sizeRule": "a diff over 400 changed lines raises to R3",
+        "sharedFiles": [
+          "docs/STATUS.md",
+          "ROADMAP.md",
+          "docs/development/SPEC_MILESTONE_INDEX.md",
+          "agent_braid/cli.py",
+          "agent_braid/ownership.py",
+          "docs/development/github-tracking.json"
+        ],
+        "sharedFileRule": "a diff touching any shared file raises to R3",
+        "direction": "raise-only"
+      },
+      "detail": "The classifier can only raise depth or mode, never lower either."
+    },
+    {
+      "id": "Q6",
+      "item": "Depth semantics beyond the review ladder",
+      "ownerStatement": "Propuesta conservadora (Recommended)",
+      "decision": {
+        "v0.1": "depth applies only to pre-pr-review",
+        "otherFamilies": "deferred"
+      },
+      "detail": "Other checkpoint families (for example plan-tasks, ci) get their own depth definitions only through a later decision."
+    }
+  ],
+  "stillOpen": [],
+  "executionAuthorization": false,
+  "limits": "Records founder choices for SPEC-067 only. Nothing here implements a profile, issues a standing authorization, or authorizes any execution, merge or release; the REQ-003 floors stay human-only. Owner statements are the option labels chosen in the 2026-11-02 interactive questions. Per-profile tables, exact receipts and the compiled artifact are defined by T002 to T006. Any change needs a new founder decision record."
+}
