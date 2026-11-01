@@ -226,7 +226,7 @@
     },
     "044-ai-tooling-evaluation": {
       "milestone": "Deferred",
-      "state": "open"
+      "state": "closed"
     },
     "045-local-forecasting-capabilities": {
       "milestone": "FC.2 — Local forecasting capabilities",
@@ -303,9 +303,6 @@
     "SPEC-033",
     "SPEC-041",
     "SPEC-043",
-    "SPEC-044",
-    "SPEC-044/T017",
-    "SPEC-044/T018",
     "SPEC-046",
     "SPEC-048",
     "SPEC-049",
@@ -467,6 +464,46 @@
     "SPEC-037/T008": {
       "decision": "specs/037-forecast-advisory-integration/evidence/t008-owner-disposition-2026-10-31.json",
       "sha256": "535fdc07ec5968cf5dbfa9f32351d074428b40441f1789464a5d8c62ac360d0c"
+    },
+    "SPEC-044/T001": {
+      "decision": "specs/044-ai-tooling-evaluation/evidence/t001-owner-disposition-2026-11-01.json",
+      "sha256": "6940673dfd3c220f40bdfd1be76a23f71f0223c670c1fe1a88501203b44b0f2a"
+    },
+    "SPEC-044/T002": {
+      "decision": "specs/044-ai-tooling-evaluation/evidence/t002-owner-disposition-2026-11-01.json",
+      "sha256": "170d02089b22a35440041649359b39748ca7102440a4f2e9c6f48bbf1821f3b0"
+    },
+    "SPEC-044/T005": {
+      "decision": "specs/044-ai-tooling-evaluation/evidence/t005-owner-disposition-2026-11-01.json",
+      "sha256": "5ec66988993d92872a7f603795c297f3aa002badc0bff8b3983b64830745c482"
+    },
+    "SPEC-044/T006": {
+      "decision": "specs/044-ai-tooling-evaluation/evidence/t006-owner-disposition-2026-11-01.json",
+      "sha256": "6942d6a1f62e27e9c94b94dc779fe98e09142f5d9abeae8c6c6efb68d21bb21d"
+    },
+    "SPEC-044/T007": {
+      "decision": "specs/044-ai-tooling-evaluation/evidence/t007-owner-disposition-2026-11-01.json",
+      "sha256": "e3a588931cfb654e02192fe7bfbc6a0431ebb1585b6eedcdab56ba69a6fd2db0"
+    },
+    "SPEC-044/T008": {
+      "decision": "specs/044-ai-tooling-evaluation/evidence/t008-owner-disposition-2026-11-01.json",
+      "sha256": "2e8e14e16097057581b99e8d567a987aa9e6392524995d4225d76f9a93c5cf94"
+    },
+    "SPEC-044/T009": {
+      "decision": "specs/044-ai-tooling-evaluation/evidence/t009-owner-disposition-2026-11-01.json",
+      "sha256": "30f941ce131237ab882eb2f95f26defa5d676c67b5157c0d6faf7750ba02246b"
+    },
+    "SPEC-044/T010": {
+      "decision": "specs/044-ai-tooling-evaluation/evidence/t010-owner-disposition-2026-11-01.json",
+      "sha256": "bd75b8466517945cf09e9c249e468157ba62542bf3f10f8c3bb8aaa89e1683fc"
+    },
+    "SPEC-044/T017": {
+      "decision": "specs/044-ai-tooling-evaluation/evidence/t017-owner-disposition-2026-11-01.json",
+      "sha256": "23c47906df215f8cac0f71615056625f2fc0514f20ee02fce862bc2c7eb5ea86"
+    },
+    "SPEC-044/T018": {
+      "decision": "specs/044-ai-tooling-evaluation/evidence/t018-owner-disposition-2026-11-01.json",
+      "sha256": "3159d364fdbd1e44335bbc2fe93e63a38b7c2ef415a243cb64c2dc599bed6227"
     }
   }
 }
