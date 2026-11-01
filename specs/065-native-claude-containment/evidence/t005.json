@@ -1,0 +1,80 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Engineering completed at unit level for the macOS containment backend; it qualifies nothing. Qualification needs T006, T007, T008, the T009 live attempt and human issuance (T010).",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_containment_macos -v",
+      "exitCode": 0,
+      "scope": "Focused module run, Python 3.13.11 on macOS 27.0.1; the darwin-only real sandbox-exec compile test ran (not skipped); three repeated runs all OK.",
+      "testsRun": 43
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13.11.",
+      "testsRun": 685
+    },
+    {
+      "command": "/usr/bin/sandbox-exec -p <candidate profiles> ... (scratch experiments)",
+      "exitCode": 0,
+      "scope": "Design-time experiments in a scratch directory as the developer account with the pinned Python interpreter as target, not with claude and not as qualification evidence: deny-default plus narrowed system reads runs the interpreter; dyld aborts (134) unless file-read-data on / is allowed; the narrowed /System subpaths suffice; without a sysctl rule sysctl reads are denied; remote tcp localhost:PORT admits 127.0.0.1 and ::1 on that port, denies other loopback ports, public IPs and UDP; /System/Volumes/Data reads are denied while params under /private/var stay writable; sandbox-exec exits 65 on a profile compile error and 71 on a denied exec; setrlimit(RLIMIT_AS) to 4 GiB is refused on macOS 27.0.1."
+    },
+    {
+      "command": "pre-PR reviews: code-review, code-review-and-quality + code-simplification, security review",
+      "exitCode": 0,
+      "scope": "Run by Claude subagents (not independent review). Applied: kill/settle/sweep in a finally on every exit path with fixed reasons (supervisor-failed, workspace-unavailable, launch-failed) and evidence; fail-closed process accounting (process-accounting-failed) with ctypes signatures, truncation retry and (pid, start time) identities; out-of-band preamble failure pipe instead of exit 125; sysctl-read removed; /System narrowed with an explicit /System/Volumes/Data deny; remote tcp and a ::1 listener; flock against concurrent runs (dedicated-user-busy); executable ancestor write check; candidate must be a private direct child of run_root; write roots disjoint from the interpreter root, minimum interpreter-root depth; component hashes of harness_lab and harness_host_claude and the supervisor interpreter in the environment hash; ECH refusal, handshake deadline and tunnel bound in the proxy; run_probe and invalid-launch refusals recorded; mechanism checks before the candidate check; HostRun replaces a private result type; split policy checks, helper extraction and test simplifications."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_host_claude.py": "9798cec28e0b12e7cc9a31056b145169bcc217f67a894cbcda930d12e856b795",
+    "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/065-native-claude-containment/contracts/containment-qualification.md": "8dda4230c0281c595d803529363a6bd5e34251adade65369a0797193902715ce",
+    "specs/065-native-claude-containment/contracts/native-profile.md": "1605e001c27da1b746c273d5b54a2807c203c1e1decc5cad9449fd96f2d7d3b9",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json": "9aa51097b838c255ca92ecfb6f93a9fcea373d31c8a73ea6d45e635ae45e692e",
+    "specs/065-native-claude-containment/plan.md": "208b30b8f4f10689c3c278486911dbb5cbc2c7d99b6d353abb1af463deef19d0",
+    "specs/065-native-claude-containment/research.md": "638b4bdb70048aa7711ecb2b2027e7a5acbcd9e39378ad8fcd38347a4f44264b",
+    "specs/065-native-claude-containment/spec.md": "908cbd093c5172bf82262881ca854ec80cfa96498037c29ad9bc2de1c6162251",
+    "specs/065-native-claude-containment/tasks.md": "05519d9f6d3d12ee5e206f175916c7d2c0d45745a2f72aae7d184b0287d89d02"
+  },
+  "limits": {
+    "cpuSeconds": 1800,
+    "descendants": 16,
+    "enforcement": "CPU, file size, core, open files and per-user processes by rlimit before sandbox entry; wall, output and memory by the supervisor watchdog (50 ms poll, resident bytes)",
+    "fileSizeBytes": 67108864,
+    "memoryBytes": 4294967296,
+    "openFiles": 256,
+    "wallSeconds": 1800
+  },
+  "method": "Actual offline unittest execution on the founder's macOS 27.0.1 (build 26A434, arm64) machine, Python 3.13.11, plus bounded sandbox-exec compile checks and scratch-directory profile experiments; no dedicated account, no claude execution, no live probe",
+  "negativeControls": {
+    "ENV_DENY variable in parent environment": "env-deny-present for each ENV_DENY name",
+    "OS build or CLI version outside window": "os-unsupported for 27.1, 26.4.1, malformed build or product; cli-version-unsupported for any pinned version other than 2.1.292; executable-drift or executable-unavailable for a changed, symlinked or swappable executable",
+    "fallback to simulated": "SimulatedContainment.run patched to fail in every refusal test; Popen patched to fail proves no child starts",
+    "mechanism absent": "mechanism-unavailable (not darwin, missing binary, not root-owned, group/other writable)",
+    "mechanism binary hash changed": "mechanism-drift",
+    "policy render/compile failure": "invalid-policy at construction; profile-compile-failed on sandbox-exec exit 65, timeout or workspace error; self-check-allowed when the unlisted exec is not denied",
+    "qualification for another backend or environment": "qualification-backend-mismatch, qualification-environment-mismatch, host-mismatch, qualification-drift at construction; environment-drift and qualification-expired before every run",
+    "self-check returns allowed": "self-check-allowed for FS-01, NET-01, CRED-01, PROC-01; self-check-failed for NET-06 denied, inconclusive or crashing probes; self-check-unavailable without a runner"
+  },
+  "openForProbesAndFounder": [
+    "NC-5 says the dedicated user's own keychain; the profile denies every mach-lookup, so keychain services are unreachable. Either the login works from CLAUDE_CONFIG_DIR alone or an enumerated mach-lookup set must be decided after CRED probes; fails closed until then.",
+    "The root directory entry / is readable (listing), required by dyld; recorded residual.",
+    "Pinned executables must sit below directories no other account can write; the Homebrew Cellar and Caskroom are group-writable (admin), so the qualified install location is an operator setup step.",
+    "Claude helpers, OAuth refresh endpoints, sysctl or mach needs, and which CLAUDE_CONFIG_DIR paths are session state (to be purged between runs, NC-7) are probe-observed and need a new decision record before they enter the policy.",
+    "The probe runner is trusted T007 code; binding it to probe_catalog_sha256 is the runner's job.",
+    "Residual risks: same-UID supervisor and child (a sandbox escape compromises the supervisor and proxy); deprecated sandbox-exec semantics; memory watchdog sampling window and resident-size accounting; no total disk quota beyond per-file size; exfiltration through the allowed API host; pid races in the sweep."
+  ],
+  "outcome": "New agent_braid/harness_containment_macos.py: MacOSContainment (kind native, backend id macos-dedicated-user-sandbox-exec) implements ContainmentBackend with a fixture entry point run, a T007 probe entry point run_probe and a contained launcher launch for T006, all built from one ContainmentPolicy. The policy renders a deterministic deny-default SBPL profile per entry (exec allow-list; reads limited to pinned executables, narrowed system library paths and the root directory entry dyld opens; metadata only on ancestors; writes only in the CANDIDATE and TMPDIR params plus the dedicated CLAUDE_CONFIG_DIR for launch; explicit deny of /System/Volumes/Data; network only TCP to the loopback proxy port; no sysctl, mach-lookup, ipc or inbound rules), a child environment built from scratch, the NC-8 rlimits and an environment hash over every native-profile.md input (OS product/build/arch, mechanism path and hash, account and uid, both profile hashes, Claude path/hash/version, helpers, interpreter, supervisor interpreter, credential method, config dir, run root, endpoints, proxy port, enforcing component hashes, limits, probe catalog hash). EgressProxy holds the port on 127.0.0.1 and ::1 and admits CONNECT only to api.anthropic.com:443 (plus probe-observed refresh endpoints) when the single TLS SNI equals the CONNECT host, refusing ECH hellos, with a handshake deadline and a tunnel wall bound. Before every run the backend takes an exclusive flock on run_root, verifies both trusted records (backend id, shared environment, expiry), the OS window 27.0.x, ENV_DENY absence, the dedicated account (uid equals the supervisor's), sandbox-exec ownership and pinned hash, pinned executables (regular, not symlinked, no group/other write on the file or any ancestor), workspace ownership and modes, the recomputed environment hash, a private candidate directly below run_root, a real sandbox-exec compile check that must report the exec of /usr/bin/false as denied, and the NC-11 subset FS-01, NET-01, CRED-01, PROC-01, NET-06 through the injected probe runner. Supervision applies RLIMIT_CPU, FSIZE, CORE, NOFILE and NPROC (baseline + 1 + 16) in a preamble that reports failure over a close-on-exec pipe, watches wall, cancel, output and memory (resident bytes of new dedicated-user processes, since macOS 27 refuses RLIMIT_AS below the current address space), and always kills, settles the group and sweeps new dedicated-user processes keyed by (pid, start time); an escape leaves the run unsettled. Every refusal and every run is appended to run_evidence with the qualification hashes and check results.",
+  "outputs": {
+    "agent_braid/harness_containment_macos.py": "ed4d9eb89982103cb254e188763c489b03f7aea45feca62e0912c8d51528d0ea",
+    "tests/test_harness_containment_macos.py": "453ec4e624780177edecb6187a39647b968ba3e5cfe52be8613d0bcd7c858573"
+  },
+  "pending": [
+    "Stable quick and pr validation results recorded in the pull request",
+    "T006 transport integration, T007 probe catalog and runner, T008 independent review, T009 live qualification attempt, T010 human issuance; founder decision on the keychain/mach-lookup question before T009"
+  ],
+  "spec": "065-native-claude-containment",
+  "task": "SPEC-065/T005"
+}
