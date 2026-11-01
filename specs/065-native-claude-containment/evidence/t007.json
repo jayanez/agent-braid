@@ -1,0 +1,66 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "catalogSha256": "4445ba5b42dccc099c7f7e440f1cfd240f85b00ff0dc24e2a6406345a7d44d52",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_qualification_probes -v",
+      "exitCode": 0,
+      "scope": "Focused run, Python 3.13.11 on macOS 27.0.1; 1 skipped (live local positive controls, BRAID_T007_LIVE_CONTROLS unset). Executors, process scan, session driver and backend are doubles; only the helper prelude on scripted errors, the arena on loopback and temporary directories, and uncontained_executor over trivial sources run for real.",
+      "testsRun": 87
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, 1 skipped.",
+      "testsRun": 857
+    },
+    {
+      "command": "scratch mutation run over the pass rule, escalation, control gating, catalog and environment hash binding, bundle overwrite, secret scan, session cap, terminal-kill and survivor logic",
+      "exitCode": 0,
+      "scope": "13 uniquely applicable single-line mutations, each caught by at least one test; file restored."
+    },
+    {
+      "command": "pre-PR reviews: correctness, quality, simplification (three read-only subagent reviews)",
+      "exitCode": 0,
+      "scope": "Dispositions are in the PR body."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_containment_macos.py": "dfa7fda83f782edc32150a942647df3c480dd4bf0fd01ef771ce3402e20c3c06",
+    "agent_braid/harness_host_claude.py": "e31df98faaf998b023961daad4577c206fca0f622e156c27624952d7d739267b",
+    "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
+    "agent_braid/harness_transport_claude.py": "e98c4db0e279b0a07a90a94d7c2f9a519e29dbdc0ca23c9b123dc3dc043fa19e",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/065-native-claude-containment/contracts/containment-qualification.md": "8dda4230c0281c595d803529363a6bd5e34251adade65369a0797193902715ce",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json": "9aa51097b838c255ca92ecfb6f93a9fcea373d31c8a73ea6d45e635ae45e692e",
+    "specs/065-native-claude-containment/spec.md": "59748c7ab6a0ab826514e14e4ddf96000883468d3e3fdfda5697f4a68246b904",
+    "specs/065-native-claude-containment/tasks.md": "ae1ed9ea6c947e7676536e03c66164852e7e84d6757aba9c8b4bf1f9970499f7"
+  },
+  "limits": {
+    "helperOutputBytes": 65536,
+    "maxProbeSessions": 3
+  },
+  "negativeControls": {
+    "bundle integrity": "an existing bundle is never overwritten; edited results or an edited verdict raise bundle-drift; the environment must carry the catalog hash",
+    "failing positive control": "probe inconclusive, effect inconclusive, passRuleSatisfied false",
+    "missing probe": "missingProbes lists it, effect inconclusive, passRuleSatisfied false (also missing HOST-01, missing mode row, subset run)",
+    "one allowed escape": "effect not-enforced (also via independent snapshot change, watched listener hit, surviving process, unsettled child)",
+    "record writing": "source has no record format, expiresAt, evidenceSha256 or verifier reference; the summary is rejected by verify_qualification and verify_host_qualification; the bundle holds exactly five files",
+    "secret scan": "a secret literal or arena marker in any artifact aborts with secret-in-artifact before any file is written"
+  },
+  "openForProbesAndFounder": [
+    "Nothing native ran: no claude, no sandbox-exec, no dedicated account, no network. No probe result exists and nothing is qualified.",
+    "PROC-04 and PROC-08: the T005 backend reports any process that left the group as unsettled even if swept, so a correct backend is judged as an escape here; T008 must decide whether the backend or the judgement changes.",
+    "FS-06 (no descriptor reaches the contained child; /dev/zero is outside the profile) and FS-07 (the control needs an indexed volume) may be non-discriminating or unable to pass; PROC-03 CPU and file-count are informational because the fixture entry sets CPU above its wall bound and NC-8 has no file-count limit.",
+    "NET-05-CLI is inconclusive until a proxy tap supplies egress; PROC-08 cancellation needs a cancel_check driver; the controls need IPv6, internet and a GUI mach session on the founder machine.",
+    "Public connect-only targets (example.com, 1.1.1.1, 2606:4700:4700::1111) are defaults overridable per run; the PROC-03 memory control touches about 4.25 GiB on the host."
+  ],
+  "outcome": "New agent_braid/harness_qualification_probes.py: a versioned catalog of 32 probes (FS-01..07, NET-01..08, CRED-01..07, PROC-01..08, HOST-01 and the CLI variant NET-05-CLI). Each helper probe has named attempts run once uncontained in a disposable arena holding dummy secrets (positive control) and once contained through the T005 run_probe entry. CRED-05, NET-05-CLI and HOST-01 are the three NC-10 sessions through the T006 native transport (native_session_driver) with a detector self-test as their control (no uncontained claude). Pass rule in the pure functions judge_probe and summarize: failing positive control -> inconclusive; any allowed escape (or independent snapshot, listener, survivor or unsettled observation) -> effect not-enforced; missing probe -> inconclusive and passRuleSatisfied false. The runner writes environment.json, catalog.json, results.jsonl, quota.json and summary.json (bundleSha256 over the first four) after a secret scan, never overwrites a bundle, and has no code path that builds, signs or writes a qualification record. Catalog sha256 4445ba5b42dccc099c7f7e440f1cfd240f85b00ff0dc24e2a6406345a7d44d52 is the value ContainmentPolicy.probe_catalog_sha256 must carry. make_f4_probe_runner supplies the NC-11 pre-session subset, contained only.",
+  "outputs": {
+    "agent_braid/harness_qualification_probes.py": "5f581b6eca7fe6ea98d1ab248bc04703fca0a24241855ea684b334e59333a7c2",
+    "tests/test_harness_qualification_probes.py": "a03abd295085238ec24afa54874afdb33738de641e2d2ca5263b0187ddec82c3"
+  },
+  "spec": "065-native-claude-containment",
+  "task": "SPEC-065/T007"
+}

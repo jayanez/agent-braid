@@ -55,19 +55,24 @@ per-probe owner authorization but no ADR, and run first.
 
 ## VIS.1a — Probes before code (owner-run)
 
-- [ ] T030 (REQ-014 / SC-014): Claude Code probe with a throwaway standard-library
+- [x] T030 (REQ-014 / SC-014): Claude Code probe with a throwaway standard-library
   listener and no Loom code: record the names (never values) of the OTLP HTTP/JSON
   attributes the installed version emits, and whether empty-bodied HTTP hook
   responses, and a stopped listener, leave tool calls unaffected. Dependencies:
   none. Evidence: `evidence/hv-t030-<date>.json`. A path that does not match is
-  removed from VIS.1 and marked `not-matching`.
+  removed from VIS.1 and marked `not-matching`. Done 2026-11-01:
+  `evidence/hv-t030-20261101.json` (OTLP verified; no agent or parent-agent id in
+  OpenTelemetry, so attribution uses hook `agent_id`; no HTTP `SessionStart` hook).
 - [ ] T031 (REQ-014 / SC-014): Codex probe: record the names emitted by the
   `[otel]` export of the installed version with the same throwaway listener.
   Dependencies: none. Evidence: `evidence/hv-t031-<date>.json`. A path that does
-  not match is removed from VIS.1 and marked `not-matching`.
-- [ ] T032 (REQ-014 / SC-014): Claude desktop browser pane loads a static loopback
+  not match is removed from VIS.1 and marked `not-matching`. Partial 2026-11-01:
+  `evidence/hv-t031-20261101.json` (logs and traces verified; token-usage names
+  unobserved, Codex usage limit until 2026-11-23); rerun before closing.
+- [x] T032 (REQ-014 / SC-014): Claude desktop browser pane loads a static loopback
   fixture page served with the contract headers, without CSP violation or outbound
-  request. Dependencies: none. Evidence: `evidence/hv-t032-<date>.json`.
+  request. Dependencies: none. Evidence: `evidence/hv-t032-<date>.json`. Done
+  2026-11-01: `evidence/hv-t032-20261101.json`.
 - [ ] T033 (REQ-014 / SC-014): Codex Desktop MCP Apps rendering with a minimal
   fixture without Agent Braid data (`unobserved` valid). Dependencies: none.
   Evidence: `evidence/hv-t033-<date>.json`.
