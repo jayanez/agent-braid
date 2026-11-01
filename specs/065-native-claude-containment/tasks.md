@@ -50,7 +50,7 @@ shared object store fails the portable-root check).
   offline manifest carrying native keys; native manifest with offline host.
   Evidence: `evidence/t003.json` (candidate, commands, test counts, goldens hash).
 
-- [ ] T004 (REQ-003 / SC-003): Quota gate over a timestamped plan-usage reading
+- [x] T004 (REQ-003 / SC-003): Quota gate over a timestamped plan-usage reading
   and the F3 caps. Pure function; reads no network; source and per-session
   check per NC-6; cohort state (units used, cohort weekly use) is a
   caller-supplied input owned by SPEC-049 and its absence refuses.
@@ -59,8 +59,10 @@ shared object store fails the portable-root check).
   stale, missing, unparseable, future-dated reading; weekly > 80 %; extra usage
   enabled; per-session check (NC-6) failing; cohort > 15 % weekly; unit count
   > 16; cohort state absent. Evidence: `evidence/t004.json`.
+  Obtained: `evidence/t004.json` (#858, cad7824f; pure gate at unit level, no
+  quota source read and no session launched; T006 wires it into the transport).
 
-- [ ] T005 (REQ-004 / SC-004; REQ-005 / SC-005; REQ-006 / SC-006; REQ-007 / SC-007; REQ-008 / SC-008): macOS containment backend implementing
+- [x] T005 (REQ-004 / SC-004; REQ-005 / SC-005; REQ-006 / SC-006; REQ-007 / SC-007; REQ-008 / SC-008): macOS containment backend implementing
   `ContainmentBackend`: one policy object from the T001 decisions rendering the
   NC-2 isolation profile (deny-default for files, network and process
   execution), minimal environment with `HOME`, `CLAUDE_CONFIG_DIR`
@@ -78,6 +80,10 @@ shared object store fails the portable-root check).
   returns allowed; OS build or CLI version outside window; `ENV_DENY` variable
   in parent environment; qualification for another backend or environment.
   Evidence: `evidence/t005.json`.
+  Obtained: `evidence/t005.json` (#856, 9a52b4a7; unit-level engineering only,
+  it qualifies nothing). Landed ahead of T002 and T003: the ADR (T002) must
+  still be accepted before any native session, and the backend refuses to run
+  without the verified qualification records that only T009/T010 can issue.
 
 - [ ] T006 (REQ-002 / SC-002): Native `ClaudeTransport` (`kind = "native"`):
   `version()` and `run()` through the T005 launcher; quota gate (T004) and
