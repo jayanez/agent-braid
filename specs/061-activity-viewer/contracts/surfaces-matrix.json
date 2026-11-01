@@ -28,9 +28,9 @@
         "claude-hook",
         "artifacts"
       ],
-      "status": "hv-pending",
+      "status": "verified",
       "track": "VIS.1",
-      "note": "Loopback viewer in the desktop browser pane; T032."
+      "note": "Loopback fixture loaded in the desktop browser pane under the contract CSP with WebGL2 and no outbound request (evidence/hv-t032-20261101.json). The real viewer is opened again at T035."
     },
     {
       "host": "claude-code",
@@ -42,9 +42,9 @@
         "claude-hook",
         "artifacts"
       ],
-      "status": "hv-pending",
+      "status": "verified",
       "track": "VIS.1",
-      "note": "Any local browser; OpenTelemetry names verified by T030."
+      "note": "OTLP HTTP/JSON names verified for 2.1.292 (evidence/hv-t030-20261101.json). No agent or parent-agent id in OpenTelemetry: subagent attribution comes from hook agent_id. No HTTP SessionStart hook delivered."
     },
     {
       "host": "claude-code",
@@ -93,7 +93,7 @@
       ],
       "status": "hv-pending",
       "track": "VIS.1",
-      "note": "OpenTelemetry [otel] shape verified by T031. Codex notify and hooks are VIS.3."
+      "note": "[otel] logs and traces verified as HTTP/JSON with authorization; token-usage names unobserved because no turn completed (evidence/hv-t031-20261101.json, partial). Codex notify and hooks are VIS.3."
     },
     {
       "host": "codex",
