@@ -287,6 +287,10 @@
     "061-activity-viewer": {
       "milestone": "VIS.1 — Activity viewer",
       "state": "open"
+    },
+    "065-native-claude-containment": {
+      "milestone": "HAR.1 — Braid Harness laboratory",
+      "state": "open"
     }
   },
   "task_state_overrides": {
