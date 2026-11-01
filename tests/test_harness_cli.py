@@ -2,6 +2,7 @@
 """Experimental laboratory CLI controls: inspection is effect-free, refusals are stable."""
 from contextlib import redirect_stderr, redirect_stdout
 from copy import deepcopy
+from hashlib import sha256
 import io
 import json
 import os
@@ -13,12 +14,14 @@ from unittest.mock import patch
 
 from agent_braid import harness_cli as cli
 from agent_braid import harness_journal as journal
+from agent_braid import harness_promotion as promotion
 from agent_braid import harness_records as records
 from agent_braid.cli import main
 from agent_braid.system_one import canonical
 from tests.test_harness_journal import NOW, reservation_for
 from tests.test_harness_lab import manifest_for
 from tests.test_harness_manifest import make_manifest
+from tests.test_harness_promotion import IDENTITY, SCOPE, decide, evaluated
 from tests.test_harness_records import decision_wire
 from tests import test_harness_surface
 
@@ -308,6 +311,249 @@ class JournalViewTests(Workspace):
         self.assertEqual((code, out["status"], out["reason"]), (2, "refused", reason), out)
 
 
+class CapabilitiesTests(Workspace):
+    def test_capabilities_are_experimental_effect_free_and_await_t007(self):
+        before = self.tree()
+        code, out = run("capabilities")
+        self.assertEqual((code, out["status"]), (0, "ok"))
+        self.assertIs(out["executionAuthorization"], False)
+        self.assertIs(out["experimental"], True)
+        self.assertIs(out["automaticPromotion"], False)
+        self.assertIn("SPEC-049 T007", out["ordinaryUseActivation"])
+        self.assertEqual(sorted(out["commands"]), sorted(cli.COMMANDS))
+        effects = {name: c["effect"] for name, c in out["commands"].items()}
+        self.assertEqual({n for n, e in effects.items() if e != "none"}, {"prepare"})
+        self.assertEqual(out["pluginOrMcpSurface"], "none")
+        self.assertEqual(out["globalHostInstructions"], "untouched")
+        self.assertEqual(self.tree(), before)
+
+
+def active_registry() -> promotion.ProfileRegistry:
+    approved = decide()
+    return (promotion.ProfileRegistry.empty(SCOPE).record(decide(decision="rejected", at=5), 5)
+            .begin(approved, current=IDENTITY, at=20).commit(current=IDENTITY, at=21))
+
+
+class RegistryStatusTests(Workspace):
+    def test_status_reports_active_profile_and_audit_without_effects(self):
+        registry = active_registry()
+        path = self.put("registry.json", registry.to_bytes())
+        before = self.tree()
+        code, out = run("registry-status", path)
+        self.assertEqual((code, out["status"]), (0, "ok"), out)
+        self.assertIs(out["executionAuthorization"], False)
+        self.assertIs(out["automaticPromotion"], False)
+        self.assertEqual(out["sha256"], registry.sha256)
+        self.assertEqual(out["scope"], SCOPE)
+        self.assertEqual(out["active"]["decisionSha256"], decide().sha256)
+        self.assertEqual(out["active"]["profile"]["cohort"], "synthetic")
+        self.assertIsNone(out["pending"])
+        self.assertEqual(out["journal"], {"entries": 3, "lastEvent": "committed", "lastAt": 21})
+        self.assertEqual(sorted(d["decision"] for d in out["decisions"]), ["approved", "rejected"])
+        self.assertEqual(out["revokedEvidence"], [])
+        self.assertEqual(self.tree(), before)
+
+    def test_decision_rows_report_the_decided_cohort(self):
+        rejected = decide(cohort="native", profile_cohort="synthetic", decision="rejected")
+        registry = promotion.ProfileRegistry.empty(SCOPE).record(rejected, 5)
+        code, out = run("registry-status", self.put("registry.json", registry.to_bytes()))
+        self.assertEqual(code, 0, out)
+        self.assertEqual(out["decisions"][0]["cohort"], "native")
+
+    def test_empty_registry_has_no_active_profile(self):
+        path = self.put("registry.json", promotion.ProfileRegistry.empty(SCOPE).to_bytes())
+        code, out = run("registry-status", path)
+        self.assertEqual(code, 0, out)
+        self.assertIsNone(out["active"])
+        self.assertEqual(out["journal"], {"entries": 0, "lastEvent": None, "lastAt": None})
+
+    def test_revoked_evidence_withdraws_the_active_profile(self):
+        evidence = sha256(b"review").hexdigest()
+        approved = decide(evidence=[evidence])
+        registry = (promotion.ProfileRegistry.empty(SCOPE).begin(approved, current=IDENTITY, at=20)
+                    .commit(current=IDENTITY, at=21)
+                    .revoke_evidence(evidence, at=22, reason="review-withdrawn"))
+        code, out = run("registry-status", self.put("registry.json", registry.to_bytes()))
+        self.assertEqual(code, 0, out)
+        self.assertIsNone(out["active"])
+        self.assertEqual(out["revokedEvidence"], [evidence])
+        self.assertEqual(out["journal"]["lastEvent"], "evidence-revoked")
+
+    def test_invalid_registries_refuse(self):
+        raw = active_registry().to_bytes()
+        self.refused("registry-status", self.put("a.json", raw + b" "), reason="non-canonical")
+        self.refused("registry-status", self.put("b.json", b"{"), reason="invalid-json")
+        self.refused("registry-status", self.put("c.json", raw.replace(b'"rejected"', b'"pending"')),
+                     reason="decision-hash-mismatch")
+        self.refused("registry-status", self.put("d.json", b" " * (records.MAX_RECORD_BYTES + 1)),
+                     reason="input-too-large")
+        link = self.root / "link.json"
+        link.symlink_to(self.put("e.json", raw))
+        self.refused("registry-status", link, reason="input-unreadable")
+        self.refused("registry-status", self.root, reason="input-unreadable")
+
+
+class EvaluationSummaryTests(Workspace):
+    def test_summary_reports_strata_and_bindings_without_effects(self):
+        _, report = evaluated()
+        path = self.put("report.json", report.canonical_bytes)
+        before = self.tree()
+        code, out = run("evaluation-summary", path)
+        self.assertEqual((code, out["status"]), (0, "ok"), out)
+        self.assertIs(out["executionAuthorization"], False)
+        data = report.to_dict()
+        self.assertEqual(out["sha256"], report.sha256)
+        self.assertEqual(out["authenticity"], "unverified")
+        self.assertEqual(out["registrationSha256"], data["registrationSha256"])
+        self.assertEqual(out["costReportSha256"], data["costReportSha256"])
+        self.assertEqual(out["pendingEndpoints"], data["pendingEndpoints"])
+        self.assertEqual(out["rows"], len(data["rows"]))
+        stratum = next(iter(data["strata"]))
+        summary = out["strata"][stratum]
+        self.assertEqual(summary["arms"]["A"]["outcomes"], data["strata"][stratum]["arms"]["A"]["outcomes"])
+        self.assertEqual(summary["comparisons"]["C-vs-A"]["noninferiority"],
+                         data["strata"][stratum]["comparisons"]["C-vs-A"]["noninferiority"])
+        self.assertNotIn("interval", summary["arms"]["A"])
+        self.assertTrue(any("not re-derived" in limit for limit in out["limits"]))
+        self.assertEqual(self.tree(), before)
+
+    def test_trusted_hash_is_compared(self):
+        _, report = evaluated()
+        path = self.put("report.json", report.canonical_bytes)
+        code, out = run("evaluation-summary", path, "--sha256", report.sha256)
+        self.assertEqual((code, out["authenticity"]), (0, "hash-matched"))
+        self.refused("evaluation-summary", path, "--sha256", "0" * 64, reason="record-drift")
+        self.refused("evaluation-summary", path, "--sha256", "abc", reason="invalid-hash")
+        self.refused("evaluation-summary", self.root / "absent", "--sha256", "abc",
+                     reason="invalid-hash")
+        self.refused("evaluation-summary", self.put("bad.json", b"{"), "--sha256", report.sha256,
+                     reason="record-drift")
+
+    def test_malformed_reports_refuse(self):
+        data = evaluated()[1].to_dict()
+        self.refused("evaluation-summary", self.put("a.json", canonical(data) + b"\n"),
+                     reason="non-canonical")
+        self.refused("evaluation-summary", self.put("b.json", b"[1,"), reason="invalid-json")
+        for name, change in (("format", {"format": "other/v0"}),
+                             ("authority", {"executionAuthorization": True}),
+                             ("strata", {"strata": []}),
+                             ("stratum", {"strata": {"s": {"units": 1}}}),
+                             ("rows", {"rows": {}}),
+                             ("cohort", {"cohort": "other"}),
+                             ("hash", {"registrationSha256": "x"}),
+                             ("count", {"strata": {"s": {**next(iter(data["strata"].values())),
+                                                         "units": "many"}}})):
+            self.refused("evaluation-summary", self.put(f"{name}.json", canonical({**data, **change})),
+                         reason="invalid-evaluation")
+        missing = {k: v for k, v in data.items() if k != "costReportSha256"}
+        self.refused("evaluation-summary", self.put("missing.json", canonical(missing)),
+                     reason="invalid-evaluation")
+
+
+class EvidenceInventoryTests(Workspace):
+    def spec(self, files=None, tasks="- [x] T001 (REQ-001): Done.\n- [ ] T002 (REQ-002): Open.\n"):
+        spec = self.root / "specs" / "099-demo"
+        (spec / "evidence" / "registration").mkdir(parents=True)
+        (spec / "tasks.md").write_text(tasks)
+        for name, data in (files or {"t001.json": {"task": "T001", "executionAuthorization": False},
+                                     "registration/freeze.json": {"x": 1}}).items():
+            (spec / "evidence" / name).write_bytes(data if isinstance(data, bytes) else canonical(data))
+        return spec
+
+    def test_inventory_lists_files_and_task_evidence_without_effects(self):
+        spec = self.spec()
+        before = self.tree()
+        code, out = run("evidence", spec)
+        self.assertEqual((code, out["status"]), (0, "ok"), out)
+        self.assertIs(out["executionAuthorization"], False)
+        paths = [f["path"] for f in out["files"]]
+        self.assertEqual(paths, ["registration/freeze.json", "t001.json"])
+        t001 = out["files"][1]
+        self.assertEqual(t001["sha256"], sha256((spec / "evidence/t001.json").read_bytes()).hexdigest())
+        self.assertEqual((t001["task"], t001["executionAuthorization"]), ("T001", False))
+        self.assertEqual(out["tasks"], [{"id": "T001", "checked": True, "evidence": True},
+                                        {"id": "T002", "checked": False, "evidence": False}])
+        self.assertEqual(out["anomalies"], [])
+        self.assertEqual(self.tree(), before)
+
+    def test_anomalies_flag_claimed_authority_and_unevidenced_checked_tasks(self):
+        spec = self.spec({"t002.json": {"executionAuthorization": True}, "notes.json": b"not json"},
+                         tasks="- [x] T001 (R): a, unlike - [x] T009 mid-line\n- [ ] T002 (R): b\n")
+        code, out = run("evidence", spec)
+        self.assertEqual(code, 0, out)
+        self.assertEqual(out["anomalies"], [{"kind": "checked-without-evidence", "subject": "T001"},
+                                            {"kind": "claims-execution-authorization",
+                                             "subject": "t002.json"}])
+        notes = next(f for f in out["files"] if f["path"] == "notes.json")
+        self.assertIs(notes["jsonObject"], False)
+
+    def test_real_spec_directory_inventory(self):
+        spec = Path(__file__).resolve().parents[1] / "specs" / "049-harness-evaluation-learning"
+        code, out = run("evidence", spec)
+        self.assertEqual(code, 0, out)
+        self.assertIn("t013.json", [f["path"] for f in out["files"]])
+        self.assertIn({"id": "T013", "checked": True, "evidence": True}, out["tasks"])
+
+    def test_unsafe_or_oversized_inputs_refuse(self):
+        self.refused("evidence", self.root / "absent", reason="input-unreadable")
+        spec = self.spec()
+        self.refused("evidence", spec / "tasks.md", reason="input-unreadable")
+        link = self.root / "link-spec"
+        link.symlink_to(spec)
+        self.refused("evidence", link, reason="input-unreadable")
+        (spec / "evidence" / "escape.json").symlink_to(spec / "tasks.md")
+        self.refused("evidence", spec, reason="input-unreadable")
+        (spec / "evidence" / "escape.json").unlink()
+        (spec / "evidence" / "big.json").write_bytes(b" " * (records.MAX_RECORD_BYTES + 1))
+        self.refused("evidence", spec, reason="input-too-large")
+        (spec / "evidence" / "big.json").unlink()
+        for index in range(cli.MAX_EVIDENCE_FILES):
+            (spec / "evidence" / f"f{index}.json").write_bytes(b"{}")
+        self.refused("evidence", spec, reason="too-many-entries")
+
+    def test_depth_and_directory_entry_bounds(self):
+        spec = self.spec()
+        (spec / "evidence" / "a" / "b" / "c").mkdir(parents=True)
+        (spec / "evidence" / "a" / "b" / "c" / "x.json").write_bytes(b"{}")
+        code, out = run("evidence", spec)
+        self.assertEqual(code, 0, out)
+        self.assertIn("a/b/c/x.json", [f["path"] for f in out["files"]])
+        (spec / "evidence" / "a" / "b" / "c" / "d").mkdir()
+        self.refused("evidence", spec, reason="too-deep")
+        (spec / "evidence" / "a" / "b" / "c" / "d").rmdir()
+        for index in range(cli.MAX_EVIDENCE_ENTRIES):
+            (spec / "evidence" / "a" / f"empty{index}").mkdir()
+        self.refused("evidence", spec, reason="too-many-entries")
+
+    def test_special_files_and_non_object_json(self):
+        spec = self.spec({"list.json": b"[1]"})
+        code, out = run("evidence", spec)
+        self.assertEqual((code, out["files"][0]["jsonObject"]), (0, False))
+        os.mkfifo(spec / "evidence" / "pipe.json")
+        self.refused("evidence", spec, reason="input-unreadable")
+
+    def test_spec_directory_name_is_resolved(self):
+        spec = self.spec()
+        old = os.getcwd()
+        os.chdir(spec)
+        self.addCleanup(os.chdir, old)
+        code, out = run("evidence", ".")
+        self.assertEqual((code, out["specDirectory"]), (0, "099-demo"))
+
+    def test_missing_evidence_directory_or_tasks_refuses(self):
+        spec = self.spec()
+        (spec / "tasks.md").write_bytes(b"\xff")
+        self.refused("evidence", spec, reason="invalid-tasks")
+        (spec / "tasks.md").unlink()
+        self.refused("evidence", spec, reason="input-unreadable")
+        (spec / "evidence" / "registration" / "freeze.json").unlink()
+        (spec / "evidence" / "registration").rmdir()
+        (spec / "evidence" / "t001.json").unlink()
+        (spec / "evidence").rmdir()
+        (spec / "tasks.md").write_text("- [ ] T001 (R): a\n")
+        self.refused("evidence", spec, reason="input-unreadable")
+
+
 class ExistingCliTests(unittest.TestCase):
     def test_only_the_harness_entry_is_added_to_top_level_help(self):
         out = io.StringIO()
@@ -325,12 +571,14 @@ class ExistingCliTests(unittest.TestCase):
         self.assertEqual(" ".join(stripped.split()), without)
         self.assertIn("harness", with_harness)
 
-    def test_harness_help_lists_exactly_the_six_entry_points(self):
+    def test_harness_help_lists_exactly_the_ten_entry_points(self):
         out = io.StringIO()
         with redirect_stdout(out), self.assertRaises(SystemExit):
             main(["harness", "--help"])
         commands = re.search(r"\{([a-z,-]+)\}", out.getvalue()).group(1).split(",")
-        self.assertEqual(commands, ["inspect", "validate", "prepare", "status", "recover-inspect", "compare"])
+        self.assertEqual(commands, ["inspect", "validate", "prepare", "status", "recover-inspect",
+                                    "compare", "capabilities", "registry-status",
+                                    "evaluation-summary", "evidence"])
 
     def test_a_pre_existing_command_still_dispatches(self):
         out = io.StringIO()

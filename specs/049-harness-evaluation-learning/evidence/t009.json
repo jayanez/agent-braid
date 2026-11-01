@@ -1,0 +1,55 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "contractReview": "The SPEC-049 contract (contracts/interface.md) is a draft with no accepted public API; spec.md states public interface names are proposals until versioned and reviewed. No separate contract-review procedure beyond that is defined, so this task implements only read-only views over the shapes the T003/T013 modules already emit, and the pre-PR reviews below are not a contract acceptance.",
+  "disposition": "Engineering completed for the experimental read-only advisory CLI views (capabilities, registry-status, evaluation-summary, evidence); ordinary-use activation awaits SPEC-049 T007 human decisions, so everything stays experimental; no plugin or MCP surface was built",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_cli -v",
+      "exitCode": 0,
+      "scope": "Focused module run, Python 3.13.11.",
+      "testsRun": 39
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13.11.",
+      "testsRun": 614
+    },
+    {
+      "command": "python -m agent_braid harness capabilities | registry-status registry.json | evaluation-summary report.json | evidence specs/049-harness-evaluation-learning | evidence specs/048-harness-variant-laboratory | registry-status report.json",
+      "exitCode": 0,
+      "scope": "Smoke runs from a temporary directory holding a real T013 registry and T003 report built from the deterministic test doubles: the first five exit 0, the mismatched registry input exits 2 (invalid-registry); the directory listing was unchanged afterwards."
+    },
+    {
+      "command": "pre-PR reviews: code-review, code-review-and-quality, code-simplification, security-review",
+      "exitCode": 0,
+      "scope": "Run by Claude subagents (not independent Luna review). Applied: descriptor-based evidence walk (security TOCTOU finding), per-file hashing, distinct too-deep code, decided cohort in decision rows, trusted-hash check before parsing, identity-hash/cohort/count checks, jsonObject flag, resolved spec name, invalid-tasks/depth/FIFO tests and simplifications."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+    "agent_braid/harness_records.py": "5c5515141174108b243b217660ed3b5d95abd038414d71a3d105d28606b71034",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/049-harness-evaluation-learning/contracts/interface.md": "0a3eb971b4baa9463c7039b15966ab7a8f108e60c707a8acd046861c1fe4412f",
+    "specs/049-harness-evaluation-learning/spec.md": "00d3b0f30560ea6bc439df62db0d905ba94a7da98c5352ac29536b7db13de831",
+    "specs/049-harness-evaluation-learning/tasks.md": "dd57ad96ab9f4095ccddfe2f0d24a701d03020db91b876c32ab167784f4d2414",
+    "tests/test_harness_evaluation.py": "0d9be2568839288deea7b6065e10e2bcae42336f2e568b63e6006eb64f283948",
+    "tests/test_harness_promotion.py": "86490d9735131ef726cf14a4f853406d93ed4f9c04723b2b65baf5195f108f51"
+  },
+  "limits": "Offline, read-only views. Registries and reports are self-asserted: records prove binding, not authenticity; an evaluation report is not re-derived from a registration, verdict records or costs because the CLI has no codec for those inputs. registry-status does not resolve a profile against a current identity. The evidence inventory hashes bytes and matches task evidence only by evidence/<task>.json; contents, claims and checkbox state are not verified. Synthetic test doubles only; no host, model, network or native activation. ProfileRegistry gained read-only active and revoked properties so the CLI does not re-implement journal replay. Pre-PR reviews were Claude subagents, not independent review.",
+  "method": "Actual offline unittest execution and command smoke runs in a temporary directory",
+  "outcome": "Four read-only harness subcommands print bounded JSON with executionAuthorization false and refuse invalid, unverifiable, unreadable or oversized input with exit 2 and a fixed reason. capabilities lists every harness command and its effect (only prepare has one), automaticPromotion false, no plugin/MCP surface and untouched global host instructions. registry-status decodes a T013 registry with ProfileRegistry.from_bytes (canonical bytes, journal replay, decision hashes) and reports active/pending/previous/revoked state and the audit trail. evaluation-summary checks a trusted --sha256 against the raw bytes first, then canonical JSON, the T003 report format, cohort, identity hashes, summary keys and counts, and summarizes strata and comparisons. evidence walks a spec's evidence/ tree by directory descriptor (no symlinks or special files, 256 files, 1,024 entries, three nested levels, 1 MiB per file) and cross-references tasks.md checkboxes, flagging checked tasks without evidence and files claiming executionAuthorization true.",
+  "outputs": {
+    "agent_braid/harness_cli.py": "1a923177390fc77f058e7bda8b94db8dadeeb96f61e5589dea69f6a5f68f47db",
+    "agent_braid/harness_promotion.py": "659207a11e93e23cf9d677cbbb11c1eeaa9a125d15246e65efdb3b9a40206325",
+    "docs/tooling/HARNESSING.md": "577b40a7d0cc79ff534e968fe03de72df382a80b0e6b8c4b97434dad6217079c",
+    "tests/test_harness_cli.py": "00a9c4bc4376699e6d8a7a62bcfe308d228c6db13f3f8efbbf7416d20d39d065"
+  },
+  "pending": [
+    "Stable pr-profile result recorded in the pull request",
+    "SPEC-049 T007 human promotion or no-go decisions before any ordinary-use activation; any plugin/MCP extension needs its own versioned contract and review; independent review and all native/human/scientific gates"
+  ],
+  "spec": "049-harness-evaluation-learning",
+  "task": "SPEC-049/T009"
+}

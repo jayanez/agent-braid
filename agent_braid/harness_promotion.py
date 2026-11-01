@@ -358,8 +358,16 @@ class ProfileRegistry:
         return self._journal
 
     @property
+    def active(self) -> str | None:
+        return self._state.active
+
+    @property
     def pending(self) -> str | None:
         return self._state.pending
+
+    @property
+    def revoked(self) -> frozenset[str]:
+        return self._state.revoked
 
     @property
     def previous(self) -> tuple[str, ...]:
