@@ -336,7 +336,8 @@
     "HAR.1 — Braid Harness laboratory": 21,
     "HAR.2 — Braid Harness evaluation and learning": 22,
     "HAR.3 — Braid Harness adaptation and integration": 23,
-    "Deferred": 24
+    "Deferred": 24,
+    "VIS.1 — Activity viewer": 25
   },
   "task_cancellations": {
     "SPEC-045/T007": {
