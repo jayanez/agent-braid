@@ -4,8 +4,8 @@
   "sourceCounts": {
     "specs": 10,
     "tasks": 131,
-    "tasksChecked": 114,
-    "tasksUnchecked": 19,
+    "tasksChecked": 118,
+    "tasksUnchecked": 15,
     "parentsClosed": 5,
     "parentsOpen": 5,
     "totalRecords": 141
@@ -27,7 +27,7 @@
       "id": "SPEC-041",
       "role": "Skills",
       "path": "specs/041-ai-tooling-skills",
-      "scope": "Five skills unchanged; no telemetry activation/collection; native loading/use still pending."
+      "scope": "Five skills unchanged; no telemetry activation/collection; T002 ticked 2026-10-31 and T003, T004, T005, T007 ticked 2026-11-01 on observational real-use receipts; T001, T006, T008 partly observed and Deferred."
     },
     {
       "id": "SPEC-042",
