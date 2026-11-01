@@ -76,13 +76,14 @@ per-probe owner authorization but no ADR, and run first.
 - [ ] T033 (REQ-014 / SC-014): Codex Desktop MCP Apps rendering with a minimal
   fixture without Agent Braid data (`unobserved` valid). Dependencies: none.
   Evidence: `evidence/hv-t033-<date>.json`.
-- [ ] T038 (REQ-002, REQ-006): Artifact census: count the owner's sessions and run
+- [x] T038 (REQ-002, REQ-006): Artifact census: count the owner's sessions and run
   directories of the last four weeks that contain analysis reports, plans,
   scheduler preparations, grants, ownership notices or receipts, or gate results
   (counts and artifact kinds only, no content). Dependencies: none. Evidence:
   `evidence/census-<date>.json` compared with the OD-8 threshold (at least 5
   sessions or run directories with at least one coordination artifact, and at
-  least 3 of the 6 kinds overall).
+  least 3 of the 6 kinds overall). Done 2026-11-01: `evidence/census-20261101.json` (met:
+  48 sessions, 11 outside synthetic corpora, 5 of 6 kinds; no grants).
 
 ## VIS.1a — Coordination slice
 
