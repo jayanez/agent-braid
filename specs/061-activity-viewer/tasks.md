@@ -82,8 +82,9 @@ per-probe owner authorization but no ADR, and run first.
   (counts and artifact kinds only, no content). Dependencies: none. Evidence:
   `evidence/census-<date>.json` compared with the OD-8 threshold (at least 5
   sessions or run directories with at least one coordination artifact, and at
-  least 3 of the 6 kinds overall). Done 2026-11-01: `evidence/census-20261101.json` (met:
-  48 sessions, 11 outside synthetic corpora, 5 of 6 kinds; no grants).
+  least 3 of the 6 kinds overall). Done 2026-11-01:
+  `evidence/census-20261101.json` (met: 48 sessions, 11 outside synthetic
+  corpora, mostly self-development; 5 of 6 kinds; no grants).
 
 ## VIS.1a — Coordination slice
 

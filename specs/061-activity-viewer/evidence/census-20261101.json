@@ -6,7 +6,8 @@
   ],
   "recordedAt": "2026-11-01",
   "authorization": "Owner authorized the census on 2026-11-01 (owner's answer, verbatim: \"Sí, ahora (Recommended)\").",
-  "window": "last 28 days (2026-10-04 to 2026-11-01) by file modification time",
+  "operator": "agent, on the owner's machine under the owner's authorization; the owner reviews this record",
+  "window": "28 x 24 hours before the scan on 2026-11-01 (from the evening of 2026-10-04), by file modification time",
   "sources": {
     "claude-session": "Claude Code transcripts of all local projects, a session and its subagent transcripts counted once",
     "codex-session": "Codex rollout files",
@@ -47,7 +48,7 @@
       }
     },
     "nonSynthetic": {
-      "description": "owner sessions outside those corpora, mostly Agent Braid development worktrees",
+      "description": "owner sessions outside those corpora: 6 in Agent Braid development worktrees, 5 elsewhere (Codex workspaces, another repository, a temporary directory)",
       "units": 11,
       "unitsPerKind": {
         "analysis-report": 7,
@@ -83,5 +84,6 @@
     "Detection is heuristic: results of shell commands that ran the CLI indirectly, or tool outputs truncated by the host, can be missed; the first scanner pass missed gate notifications and m4_alpha tools and was corrected before this record.",
     "File modification time approximates activity; a session touched in the window but started earlier counts.",
     "The census script is a throwaway (sha256 613a95c844703580c2968fa8ed971fc1ae59774ec1c8ffefd2a5da131d566f5d), not committed; the hash identifies the bytes used only and is not repository-verifiable."
-  ]
+  ],
+  "unitDefinition": "a unit is one session (with its subagent transcripts) or one run directory; per-kind counts are units containing at least one artifact of that kind, so kinds can overlap and do not sum to the unit count"
 }

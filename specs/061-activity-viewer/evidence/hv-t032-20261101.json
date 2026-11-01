@@ -8,7 +8,7 @@
     "name": "claude-code",
     "client": "Claude desktop app, browser pane",
     "opener": "owner, by hand (owner's answer, verbatim: \"Ya la abrí\"); no agent drove the pane",
-    "version": "4.4212.0 (2026-10-29), as shown by the owner in Claude > About Claude on 2026-11-01; the app was not updated between the probe and the reading"
+    "version": "4.4212.0 (2026-10-29), as shown by the owner in Claude > About Claude on 2026-11-01; the app was not updated between the probe and the reading, per the owner"
   },
   "os": {
     "name": "macOS",

@@ -14,9 +14,13 @@ event, while the ingest path itself delivers data, narrows the allowlist and is
 pinned through the reviewed change of the task that implements that path; it does
 not change the matrix row. The receipt outcome and the matrix status follow the
 ingest paths: only a `not-matching` transport or ingest path sets the row
-`not-matching` and removes that path from VIS.1, and a probe that observes no
-data for its expected outcome records `unobserved` and leaves the row
-`hv-pending`.
+`not-matching` and removes that path from VIS.1. A probe that observes no data
+for its expected outcome records `unobserved`: if it will be rerun (for example
+after a usage limit) the row stays `hv-pending` and the task stays open; a final
+`unobserved` sets the row `unobserved`. For surface probes without an ingest path
+(T032, T033) the receipt outcome follows the surface's load and render checks,
+and any other check left `unobserved` is recorded in the receipt and the matrix
+note.
 
 These probes run before any viewer code exists. They use a throwaway
 standard-library listener on loopback that records only the names of the fields it
