@@ -76,7 +76,7 @@ class Machine:
             account=ACCOUNT, run_root=f"{self.root}/run", config_dir=f"{self.root}/config",
             claude=self.claude, claude_sha256=digest(self.claude), claude_version=mac.CLAUDE_VERSION,
             interpreter=INTERPRETER, interpreter_sha256=digest(INTERPRETER),
-            interpreter_root=os.path.commonpath([INTERPRETER, os.path.realpath(sys.base_prefix)]),
+            interpreter_root=os.path.dirname(INTERPRETER),
             sandbox_exec_sha256=digest(self.sandbox), proxy_port=free_port(),
             probe_catalog_sha256="c" * 64)
         self.policy = mac.ContainmentPolicy(**(values | policy))
@@ -125,12 +125,18 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
     """Stub every Darwin fact; ``processes`` stubs the per-user process listing.
 
     The parent environment is cleared of ``ENV_DENY`` names (a developer shell may
-    carry them), then ``env`` is applied. The ancestor-writability check only looks
-    inside the temporary tree, since a developer interpreter may sit below a
-    group-writable directory (``/opt/homebrew/Cellar``); it is tested on its own.
+    carry them), then ``env`` is applied. The full executable trust check applies to
+    the fixtures in the temporary tree; the developer's interpreter (group-writable
+    below ``/opt/homebrew/Cellar`` or ``/opt/hostedtoolcache``) keeps only its hash pin.
     """
     uid = os.getuid() if uid is None else uid
-    shared_ancestor = mac._shared_ancestor
+    trusted_file = mac._trusted_file
+
+    def trusted(path, expected, missing, drift):
+        if path.startswith(machine.root + "/"):
+            return trusted_file(path, expected, missing, drift)
+        if mac._file_sha256(path) != expected:
+            raise lab.LabError(drift)
 
     def getpwnam(name):
         if name != ACCOUNT:
@@ -148,7 +154,7 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
             "_MECHANISM_UID": os.getuid() if mechanism_uid is None else mechanism_uid,
             "_user_processes": processes or (lambda uid: BASELINE),
             "_resident_bytes": lambda processes: 0,
-            "_shared_ancestor": lambda path: shared_ancestor(path) if path.startswith(machine.root) else None,
+            "_trusted_file": trusted,
         }
         for name, value in patches.items():
             stack.enter_context(mock.patch.object(mac, name, value))

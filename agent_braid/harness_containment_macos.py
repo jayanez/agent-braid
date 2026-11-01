@@ -484,6 +484,10 @@ class EgressProxy:
     def close(self) -> None:
         servers, self._servers = self._servers, []
         for server in servers:
+            try:
+                server.shutdown(socket.SHUT_RDWR)  # Linux: close alone leaves accept() listening
+            except OSError:
+                pass
             server.close()
 
     def _accept(self, server: socket.socket) -> None:
