@@ -8,8 +8,9 @@ decisions below in the planning session of 2026-10-31. They are recorded here fo
 review and become accepted only through owner review T001; no separate approval
 record exists yet. [ADR 0032](../../docs/adr/0032-activity-viewer-companion.md)
 (companion boundary) and [ADR 0033](../../docs/adr/0033-vendored-threejs-mit-boundary.md)
-(vendored third-party code) are Proposed. Nothing is implemented by this change. Implementation tasks start
-only after ADR 0032 is accepted; vendoring tasks also need ADR 0033.
+(vendored third-party code, Three.js pinned at r186) were accepted on 2026-11-01,
+so the ADR gates for implementation and vendoring are met. Nothing is implemented
+by this change.
 
 ## Purpose and scope
 
@@ -83,7 +84,7 @@ Constitution clause zero and Articles 6, 11, 13, 14, 17, 18, 19, 20, 21, 22 and
 [GOVERNANCE.md](../../GOVERNANCE.md) (license boundary, public contract change);
 [claim discipline](../../docs/theory/CLAIM_DISCIPLINE.md); ADR 0012, ADR 0021,
 ADR 0024 and ADR 0029 (no hooks, mods, monitors, agents or channels in the plugin
-package); proposed ADR 0032 and ADR 0033; SPEC-039
+package); ADR 0032 and ADR 0033 (accepted 2026-11-01); SPEC-039
 [program](../039-ai-tooling-program/program.md) route "Embedded visual
 interaction"; SPEC-043 presentation layer; SPEC-047
 [data contract](../047-local-technical-telemetry/data-contract.md) and

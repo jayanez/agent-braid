@@ -1,6 +1,6 @@
 # ADR 0032: Read-only local activity viewer as an opt-in companion
 
-- **Status:** proposed
+- **Status:** accepted by explicit owner decision on 2026-11-01 (owner's answer, verbatim: "Aceptar ambas, r186")
 - **Date:** 2026-10-31
 - **Deciders:** Juan Antonio Yáñez García (owner)
 - **Constitutional articles:** 0, 6, 11, 13, 14, 17, 18, 19, 20, 21, 22, 24

@@ -87,7 +87,7 @@ matrix keeps these hosts `hv-pending` until a receipt exists.
 - **Other hosts**: Cursor, OpenCode, Pi and VS Code converge on MCP, OpenTelemetry
   and their own hooks or JSONL; the loopback viewer and an MCP App cover most of
   them (VIS.4).
-- **Three.js**: MIT; r182 recommends `WebGPURenderer` with a WebGL2 fallback.
+- **Three.js**: MIT; since r182 the manual recommends `WebGPURenderer` with a WebGL2 fallback.
   VIS.1 uses the WebGL2 renderer for broad support; WebGPU is a later option.
 - **OpenTelemetry GenAI semantic conventions** are in Development; used as
   vocabulary only.
