@@ -10,6 +10,7 @@ v0.1 lines written by earlier versions stay readable.
 """
 from __future__ import annotations
 
+import atexit
 from collections import Counter
 from datetime import date, timedelta
 import hashlib
@@ -36,7 +37,6 @@ DECISION_POINT = 'DP-1'
 # or manifest is refused, so recorded episodes always name the reviewed reference.
 EXPECTED_BACKEND_ID = 'stdlib-rule-fixture-v1'
 EXPECTED_MANIFEST_DIGEST = '49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca'
-WORKER_LOCK_WAIT = 0.05  # seconds the off-request worker waits for a busy store
 BUDGET_NANOSECONDS = 50_000_000
 MAX_FILE_BYTES = 4 * 1024 * 1024
 MAX_REPORT_BYTES = 1024 * 1024  # artifact-backed reports above this are not observed
@@ -64,6 +64,8 @@ SALT_FILE = 'salt.key'
 SALT_BYTES = 32
 SALT_DOMAIN = b'agent-braid-s1-repo\0'
 SALT_TEMPORARY = SALT_FILE + '.tmp'
+WORKER_LOCK_WAIT = 0.05  # seconds the off-request worker waits for a busy store
+_POLL_SECONDS = 0.002
 _OWN_FILES = frozenset({'store.lock', SALT_FILE, SALT_TEMPORARY})
 
 # Exact, versioned mapping of agent_braid/analysis.py `_interaction` reason sentences
@@ -506,7 +508,7 @@ def _store_root(*, create: bool) -> Path | None:
 
 
 def _listing(root: Path) -> tuple[list[Path], list[Path]]:
-    """Day files and unrelated entries; the lock and salt are the store's own and listed in neither."""
+    """Day files and unrelated entries; the store's own files (`_OWN_FILES`) are listed in neither."""
     days, others = [], []
     for entry in sorted(root.iterdir()):
         if entry.name not in _OWN_FILES:
@@ -553,7 +555,7 @@ class _Lock:
                 except BlockingIOError:
                     if time.monotonic() >= deadline:
                         raise StoreRefused('busy') from None
-                    time.sleep(0.002)
+                    time.sleep(_POLL_SECONDS)
         except BaseException:
             os.close(self.descriptor)
             raise
@@ -593,12 +595,17 @@ def append(episode: dict) -> None:
         raise StoreRefused('unavailable') from exc
 
 
+def _private_file(info) -> bool:
+    """A regular, single-link file owned by this user with no group or other bits."""
+    return (stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and not info.st_mode & 0o077
+            and info.st_uid == os.getuid())
+
+
 def _read_secret(path: Path) -> bytes:
     descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     try:
         info = os.fstat(descriptor)
-        _need(stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and not info.st_mode & 0o077
-              and info.st_uid == os.getuid() and info.st_size == SALT_BYTES, 'unsafe System One salt')
+        _need(_private_file(info) and info.st_size == SALT_BYTES, 'unsafe System One salt')
         secret = os.read(descriptor, SALT_BYTES + 1)
     finally:
         os.close(descriptor)
@@ -624,8 +631,7 @@ def _secret() -> bytes | None:
                 # A torn secret (killed mid-write) is our own regular private file of the
                 # wrong size: replace it under the lock. Anything else stays refused.
                 info = os.lstat(path)
-                _need(stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and not info.st_mode & 0o077
-                      and info.st_uid == os.getuid() and info.st_size != SALT_BYTES, 'unsafe System One salt')
+                _need(_private_file(info) and info.st_size != SALT_BYTES, 'unsafe System One salt')
                 path.unlink()
             # Publish atomically: a complete, synced temporary file is linked into place.
             temporary = _safe(root / SALT_TEMPORARY)
@@ -701,7 +707,6 @@ def submit(operation: str, kind: str, source, request=None, repository: str | No
         with _worker_guard:
             if _worker is None or not _worker.is_alive():
                 if _worker is None:
-                    import atexit
                     atexit.register(flush, 1.0)  # give a queued episode a moment at shutdown
                 _worker = threading.Thread(target=_work, name='system-one-shadow', daemon=True)
                 _worker.start()
@@ -713,12 +718,12 @@ def submit(operation: str, kind: str, source, request=None, repository: str | No
 
 
 def flush(timeout: float = 5.0) -> bool:
-    """Wait until submitted work is done (tests); False when the timeout passed first."""
+    """Wait until submitted work is done (tests, shutdown); False when the timeout passed first."""
     deadline = time.monotonic() + timeout
     while _jobs.unfinished_tasks:
         if time.monotonic() >= deadline:
             return False
-        time.sleep(0.002)
+        time.sleep(_POLL_SECONDS)
     return True
 
 

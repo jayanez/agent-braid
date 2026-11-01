@@ -449,6 +449,9 @@ class FeatureTests(Base):
         ('git://0123abcd/src/a.py', 'src'), ('git-unsupported://0123abcd/docs/a.md?operation=x', 'docs'),
         ('repo://agent-braid/README.md', 'docs'), ('https://example.invalid/api/v1', 'other'),
         ('src/a.py#L10', 'src'), ('./src//a.py', 'src'),
+        ('pkg/run_test.py', 'test'), ('bin/run_test', 'other'), ('requirements.txt', 'config'),
+        ('ci/requirements-dev.in', 'config'), ('notes/readme.txt', 'docs'),
+        ('src/regenerate_cache.py', 'src'), ('src/foo.generated.ts', 'generated'),
     ]
 
     def test_classification_rule_table(self):
@@ -685,6 +688,26 @@ class StoreTests(Base):
         patch.stopall()
         self.assertEqual(shadow.default_directory(), Path.home() / '.local/share/agent-braid/system-one')
         self.assertEqual(shadow.display_location(), '~/.local/share/agent-braid/system-one')
+
+
+    def test_torn_salt_is_replaced_with_a_complete_secret(self):
+        first = shadow._secret()
+        self.assertEqual(len(first), shadow.SALT_BYTES)
+        path = shadow.default_directory() / shadow.SALT_FILE
+        path.write_bytes(first[:7])
+        second = shadow._secret()
+        self.assertEqual(len(second), shadow.SALT_BYTES)
+        self.assertEqual(path.read_bytes(), second)
+        self.assertFalse((shadow.default_directory() / shadow.SALT_TEMPORARY).exists())
+
+    def test_purge_leaves_a_foreign_salt_directory_in_place(self):
+        shadow._secret()
+        path = shadow.default_directory() / shadow.SALT_FILE
+        path.unlink()
+        path.mkdir()
+        result = shadow.purge()
+        self.assertIn(shadow.SALT_FILE, result['leftover'])
+        self.assertTrue(path.is_dir())
 
 
 class WorkerTests(Base):
@@ -946,44 +969,3 @@ class RegistryTests(Base):
 if __name__ == '__main__':
     unittest.main()
 
-
-class SaltRecoveryTests(unittest.TestCase):
-    """A torn salt is replaced; foreign entries survive purge; `*_test` needs an extension."""
-
-    def setUp(self):
-        self.home = tempfile.TemporaryDirectory()
-        self.addCleanup(self.home.cleanup)
-        patcher = patch.object(shadow, 'default_directory',
-                               return_value=Path(self.home.name).resolve() / 'store')
-        patcher.start()
-        self.addCleanup(patcher.stop)
-
-    def test_torn_salt_is_replaced_with_a_complete_secret(self):
-        first = shadow._secret()
-        self.assertEqual(len(first), shadow.SALT_BYTES)
-        path = shadow.default_directory() / shadow.SALT_FILE
-        path.write_bytes(first[:7])
-        second = shadow._secret()
-        self.assertEqual(len(second), shadow.SALT_BYTES)
-        self.assertEqual(path.read_bytes(), second)
-        self.assertFalse((shadow.default_directory() / shadow.SALT_TEMPORARY).exists())
-
-    def test_purge_leaves_a_foreign_salt_directory_in_place(self):
-        shadow._secret()
-        path = shadow.default_directory() / shadow.SALT_FILE
-        path.unlink()
-        path.mkdir()
-        result = shadow.purge()
-        self.assertIn(shadow.SALT_FILE, result['leftover'])
-        self.assertTrue(path.is_dir())
-
-    def test_test_suffix_requires_an_extension(self):
-        self.assertEqual(shadow.classify('pkg/run_test.py'), 'test')
-        self.assertNotEqual(shadow.classify('bin/run_test'), 'test')
-
-    def test_manifests_and_generated_words_are_classified_by_whole_name(self):
-        self.assertEqual(shadow.classify('requirements.txt'), 'config')
-        self.assertEqual(shadow.classify('ci/requirements-dev.in'), 'config')
-        self.assertEqual(shadow.classify('notes/readme.txt'), 'docs')
-        self.assertEqual(shadow.classify('src/regenerate_cache.py'), 'src')
-        self.assertEqual(shadow.classify('src/foo.generated.ts'), 'generated')
