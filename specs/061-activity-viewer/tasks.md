@@ -61,8 +61,7 @@ per-probe owner authorization but no ADR, and run first.
   responses, and a stopped listener, leave tool calls unaffected. Dependencies:
   none. Evidence: `evidence/hv-t030-<date>.json`. A path that does not match is
   removed from VIS.1 and marked `not-matching`. Done 2026-11-01:
-  `evidence/hv-t030-20261101.json` (OTLP verified; no agent or parent-agent id in
-  OpenTelemetry, so attribution uses hook `agent_id`; no HTTP `SessionStart` hook).
+  `evidence/hv-t030-20261101.json` (verified; two field-level checks not matching).
 - [ ] T031 (REQ-014 / SC-014): Codex probe: record the names emitted by the
   `[otel]` export of the installed version with the same throwaway listener.
   Dependencies: none. Evidence: `evidence/hv-t031-<date>.json`. A path that does
@@ -72,7 +71,8 @@ per-probe owner authorization but no ADR, and run first.
 - [x] T032 (REQ-014 / SC-014): Claude desktop browser pane loads a static loopback
   fixture page served with the contract headers, without CSP violation or outbound
   request. Dependencies: none. Evidence: `evidence/hv-t032-<date>.json`. Done
-  2026-11-01: `evidence/hv-t032-20261101.json`.
+  2026-11-01: `evidence/hv-t032-20261101.json` (console errors unobserved;
+  rechecked at T035).
 - [ ] T033 (REQ-014 / SC-014): Codex Desktop MCP Apps rendering with a minimal
   fixture without Agent Braid data (`unobserved` valid). Dependencies: none.
   Evidence: `evidence/hv-t033-<date>.json`.
@@ -114,6 +114,8 @@ per-probe owner authorization but no ADR, and run first.
   `Sec-Fetch-Site` checks, headers, body, connection and timeout limits, access
   logging off, route table. Files: `agent_braid/view_serve.py`,
   `tests/test_view_serve.py`. Dependencies: T015. Verification: procedure_004.
+  The OTLP allowlist drops the names each probe receipt lists in
+  `findingsForAllowlist`.
 - [ ] T017 (REQ-004 / SC-004; REQ-006 / SC-006): SSE with `Last-Event-ID`,
   `/snapshot`, replay mode with `unverified` marking, `view_tail.py` bounded
   `--watch` polling without following symbolic links. Files:
@@ -124,7 +126,9 @@ per-probe owner authorization but no ADR, and run first.
   hooks with empty responses and refusal of decision events; dropped-attribute
   names inventory. Files: `agent_braid/view_hooks.py`, `tests/test_view_hooks.py`,
   `tests/fixtures/view/hooks/` (built from the T030 receipt). Dependencies: T016,
-  T030 (`verified`). Verification: procedure_005.
+  T030 (`verified`). Verification: procedure_005. Per the T030 receipt, attribute
+  subagents from hook `agent_id` (OpenTelemetry has none), do not depend on an HTTP
+  `SessionStart`, and re-pin the `ui-security-privacy.md` allowlist in this change.
 - [ ] T020 (REQ-003 / SC-003; REQ-010 / SC-010): `view_model.py` pure model:
   lanes, adjacent swap decomposition, `relMs` axis with gap compression, waves,
   verification markers, counters. Files: `agent_braid/view_model.py`,

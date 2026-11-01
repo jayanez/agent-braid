@@ -30,7 +30,7 @@
       ],
       "status": "verified",
       "track": "VIS.1",
-      "note": "Loopback fixture loaded in the desktop browser pane under the contract CSP with WebGL2 and no outbound request (evidence/hv-t032-20261101.json). The real viewer is opened again at T035."
+      "note": "Loopback fixture loaded in the desktop browser pane under the contract CSP with WebGL2 and no outbound request; console errors unobserved; ingest from the desktop client not probed (evidence/hv-t032-20261101.json). The real viewer is opened again at T035."
     },
     {
       "host": "claude-code",
@@ -44,7 +44,7 @@
       ],
       "status": "verified",
       "track": "VIS.1",
-      "note": "OTLP HTTP/JSON names verified for 2.1.292 (evidence/hv-t030-20261101.json). No agent or parent-agent id in OpenTelemetry: subagent attribution comes from hook agent_id. No HTTP SessionStart hook delivered."
+      "note": "OTLP HTTP/JSON and HTTP hook ingest verified for 2.1.292 under claude -p only; interactive terminal not probed (evidence/hv-t030-20261101.json). No agent or parent-agent id in OpenTelemetry (attribution from hook agent_id); no HTTP SessionStart hook."
     },
     {
       "host": "claude-code",

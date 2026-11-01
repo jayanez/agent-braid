@@ -22,28 +22,12 @@ written only after T035 records keep for the track. Until then each probe receip
 (T030–T033) adds its findings to the matching section below, so the later
 specification starts from observed host behavior.
 
-## Probe findings (2026-11-01)
+## Probe findings for VIS.1 (2026-11-01)
 
-From `evidence/hv-t030-20261101.json`, `hv-t031-20261101.json` (partial) and
-`hv-t032-20261101.json`. They bind VIS.1 implementation (T016, T019) and the later
-specifications; the exact allowlists are pinned there through reviewed changes.
-
-- Claude Code 2.1.292 OpenTelemetry has no `agent_id` or `parent_agent_id`; only
-  `agent.name`, `agent_type`, `agent.source` and `query_source`. Per-subagent
-  strands come from hook `agent_id` and `agent_type` (`SubagentStart`,
-  `SubagentStop`, `PostToolUse` inside a subagent).
-- No HTTP `SessionStart` hook was delivered under `claude -p`; a strand opens on
-  the first event received. Empty hook responses and a stopped listener left the
-  session unaffected.
-- Both hosts emit privacy-relevant names (`prompt`, `prompt_text`, `response`,
-  `user.email`, account and organization ids; Codex also `host.name`,
-  `error.message`) and Claude hook payloads carry content and paths
-  (`tool_input.*`, `tool_response.stdout`, `last_assistant_message`, `cwd`,
-  `transcript_path`). Allowlists drop all of them.
-- Codex `[otel]` logs and traces arrive as HTTP/JSON with the authorization header;
-  token-usage names are still unobserved (T031 rerun after 2026-11-23).
-- The desktop browser pane loaded the loopback fixture under the contract CSP with
-  WebGL2 and no outbound request (VIS.2 can start from the browser surface).
+From `evidence/hv-t030-20261101.json` and `hv-t032-20261101.json`; they bind T016
+and T019. Subagent attribution comes from hook `agent_id`, not OpenTelemetry; no
+HTTP `SessionStart` arrived under `claude -p`, so a strand opens on the first
+event; the allowlists drop the names each receipt lists in `findingsForAllowlist`.
 
 ## VIS.2 — Claude Code mod pane (SPEC-062)
 
@@ -59,6 +43,9 @@ specifications; the exact allowlists are pinned there through reviewed changes.
 - Host configuration stays printed by `view env` for the user to paste; the viewer
   never writes host configuration. Any installer would need an amended contract
   and its own ADR.
+- T032 (2026-11-01): the loopback viewer loads in the desktop browser pane, so the
+  browser surface is a fallback while the mod pane is unprobed; this meets the
+  T032 part of the VIS.2 entry gate.
 - Open questions: mod API stability (early access), frame rate budget, shared
   memory on macOS, `claude plugin validate` and `claude plugin test` coverage.
 
@@ -74,6 +61,9 @@ specifications; the exact allowlists are pinned there through reviewed changes.
   (cumulative `token_count` to deltas); transcripts as observations without a
   compatibility class, with `shape-unpinned` until SPEC-053 pins their shape.
 - `view_tui.py` curses UI: scrub, crossing filter, effort toggle, quit.
+- T031 (2026-11-01, unobserved): Codex `[otel]` logs and traces arrive as
+  HTTP/JSON with the authorization header; token-usage names are unobserved until
+  a rerun after 2026-11-23.
 - Open questions: MCP Apps support per Codex build; app-server multi-client use
   alongside a live TUI.
 
