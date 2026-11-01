@@ -36,6 +36,8 @@ shared object store fails the portable-root check).
   `docs/adr/<next>-native-claude-laboratory-containment.md` (separate PR by the
   owner of shared files). Verification: ADR status Accepted with founder
   approval. Evidence: ADR and its PR.
+  Progress: [ADR 0035](../../docs/adr/0035-native-claude-laboratory-containment.md)
+  proposed (#893, 5e050fff); stays open until the founder accepts it.
 
 ## Implementation
 
@@ -89,7 +91,7 @@ shared object store fails the portable-root check).
   still be accepted before any native session, and the backend refuses to run
   without the verified qualification records that only T009/T010 can issue.
 
-- [ ] T006 (REQ-002 / SC-002): Native `ClaudeTransport` (`kind = "native"`):
+- [x] T006 (REQ-002 / SC-002): Native `ClaudeTransport` (`kind = "native"`):
   `version()` and `run()` through the T005 launcher; quota gate (T004) and
   F4 check (NC-11) before launch; no retry and no alternative route;
   `run_claude` stream checks reused. Includes the known changes K1–K4 of
@@ -109,6 +111,10 @@ shared object store fails the portable-root check).
   qualification with an unqualified or missing backend; executable hash differs
   from the pin; `PATH` shadowing of `claude`; version drift; quota stop;
   cancellation before launch; second attempt after failure. Evidence: `evidence/t006.json`.
+  Obtained: `evidence/t006.json` (#892, 83d2d306) and `evidence/t006-live-output.json`
+  (#894, 2e417962; T005 `launch` gains the `on_output` hook, so the transport accepts
+  the real backend). Unit level with a fake launcher only: nothing native runs and
+  nothing is qualified; launches still refuse without T009/T010 records.
 
 ## Qualification
 
