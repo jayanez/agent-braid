@@ -39,7 +39,7 @@ shared object store fails the portable-root check).
 
 ## Implementation
 
-- [ ] T003 (REQ-001 / SC-001): Native `native-claude-laboratory` manifest
+- [x] T003 (REQ-001 / SC-001): Native `native-claude-laboratory` manifest
   profile beside the unchanged offline profile. Write offline goldens first
   (every committed offline manifest and test manifest: bytes, digest, view,
   refusal reason) and prove them unchanged. Dependencies: T001 (NC-4, NC-8,
@@ -49,6 +49,10 @@ shared object store fails the portable-root check).
   `subscription`; host other than `claude`; `executionAuthorization: true`;
   offline manifest carrying native keys; native manifest with offline host.
   Evidence: `evidence/t003.json` (candidate, commands, test counts, goldens hash).
+  Obtained: `evidence/t003.json` (#862, 25128665; manifest validation only,
+  offline goldens unchanged; nothing native runs). Hash comparisons of the
+  native containment and host pins against trusted qualification values are
+  carried by T006 (K2). SPEC-048 snapshots frozen at 530a5f39.
 
 - [x] T004 (REQ-003 / SC-003): Quota gate over a timestamped plan-usage reading
   and the F3 caps. Pure function; reads no network; source and per-session
