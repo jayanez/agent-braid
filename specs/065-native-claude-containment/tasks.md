@@ -118,7 +118,7 @@ shared object store fails the portable-root check).
 
 ## Qualification
 
-- [ ] T007 (REQ-009 / SC-009; REQ-010 / SC-010; REQ-005 / SC-005; REQ-006 / SC-006; REQ-007 / SC-007; REQ-008 / SC-008): Versioned probe catalog and runner
+- [x] T007 (REQ-009 / SC-009; REQ-010 / SC-010; REQ-005 / SC-005; REQ-006 / SC-006; REQ-007 / SC-007; REQ-008 / SC-008): Versioned probe catalog and runner
   per [contracts/containment-qualification.md](contracts/containment-qualification.md).
   Adversarial escapes run from inside the contained child, each with an
   uncontained positive control in a disposable directory with dummy secrets:
@@ -144,6 +144,12 @@ shared object store fails the portable-root check).
   skipped in unit runs. Negative controls: probe with failing positive control →
   `inconclusive`; one `allowed` escape → effect `not-enforced`; missing probe →
   profile not qualified. Evidence: `evidence/t007.json`, catalog hash.
+  Obtained: `evidence/t007.json` (#896, e0559555; 32-probe catalog with its SHA-256,
+  bundle writer with secret scan and no record-writing path; unit level only,
+  live positive controls opt-in and never run in CI; nothing native ran).
+  Open for T008: PROC-04/PROC-08 judge a swept group-leaver as an escape;
+  FS-06/FS-07 controls may not discriminate; NET-05-CLI stays inconclusive
+  without a proxy egress tap; PROC-08 cancel half needs a cancel driver.
 
 - [ ] T008 (REQ-010 / SC-010): Independent security review of the probe catalog
   and backend policy before the first live attempt: missing escape classes,
