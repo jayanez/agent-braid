@@ -12,5 +12,10 @@
 - [x] T006 (REQ-006/SC-042): add immutable seeded tracks for the five current radar
   signals without rewriting historical radar snapshots.
 - [x] T007: add negative and positive tests, repository integration and quickstart.
-- [ ] T008: run proportional validation and obtain human review of the draft
+- [x] T008: run proportional validation and obtain human review of the draft
   registry; no adoption decision is inferred by CI.
+  - Status: done (engineering closure only) by the owner decision of 2026-10-31,
+    "Cerrar con revisión pendiente" (close with review pending). Proportional
+    validation is recorded in [t008-review-packet.md](t008-review-packet.md).
+    Human review of the draft registry remains pending (`human_review: pending`);
+    no review, adoption decision or stage transition is recorded or inferred.

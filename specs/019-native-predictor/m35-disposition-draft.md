@@ -1,0 +1,141 @@
+# M3.5 (SPEC-019) owner disposition: cancelled as infeasible
+
+**Status: owner decision recorded 2026-10-31 (Option A, cancel as infeasible, with explicit reopen criteria). Pending PR review and integration.**
+
+On 2026-10-31 the owner (founder, jayanez) answered in the coordinator chat: "Cancelar por inviables" (cancel as infeasible), and chose a "Deferred" milestone for parking blocked work. The coordinator session relayed this answer to the drafting session by cross-session message. This is integrator-recorded provenance, not cryptographic authentication, and nothing beyond the quoted answer is inferred.
+
+This file edits no task checkbox and no tracking file; the tracking owner applies the result after merge. Evidence below supports only its stated domain: a bounded, owner-only source screen. It does not show that no suitable source exists.
+
+Modeled on [SPEC-034 T005](../034-workload-forecast-data/t005-disposition.md) and
+[SPEC-045 T007](../045-local-forecasting-capabilities/t007-disposition.md), whose
+hash-bound `task_cancellations` entries are in
+[github-tracking.json](../../docs/development/github-tracking.json) (section
+`task_cancellations`).
+
+## Why a decision is needed
+
+Synthetic software is complete (T002, T004, T006, T008, T009, T010 closed; issues #182,
+#184, #186, #187, #222, #223). Four phases of one deferred real-workload experiment
+remain open: T007/#188, T001/#181, T003/#183, T005/#185, under parent #180 and
+milestone 9. The bounded review found zero eligible families and zero admitted pairs
+([spec.md:69](spec.md), [source-audit.md:41](source-audit.md),
+[source-audit.md:104](source-audit.md), [source-audit.md:128](source-audit.md)).
+The repo states current infeasibility alone cannot close #180 or milestone 9
+([software-completion.md:44](software-completion.md)), and
+[source-audit.md:202](source-audit.md) requires reporting feasibility as
+inconclusive, not as completion. Only an explicit owner decision can change that.
+
+## Open tasks and unmet preconditions
+
+| Task / issue | Definition | Unmet precondition (evidence) |
+| --- | --- | --- |
+| T007 / #188 source admission | [tasks.md:39](tasks.md) | Zero eligible families and pairs in the bounded owner-only review ([tasks.md:50](tasks.md), [software-completion.md:41](software-completion.md)); participant rights/notice, immutable feed, completeness and pair yield not established ([spec.md:83](spec.md), [tasks.md:45](tasks.md)); five distinct eligible families required ([software-completion.md:41](software-completion.md)); no capture window authorized. |
+| T001 / #181 preregistration and annotation | [tasks.md:18](tasks.md) | Needs a consented source and eligible pair yield ([tasks.md:22-23](tasks.md)); protocol is a pending candidate ([workload-protocol.md:1-11](workload-protocol.md); it also requires stopping before annotation if the split is infeasible, [workload-protocol.md:41](workload-protocol.md), [workload-protocol.md:88](workload-protocol.md)); no viable cohort, no frozen protocol, no named reviewers/adjudicator, no registered 14-day window ([software-completion.md:42](software-completion.md)). Depends on T007 for the cohort. |
+| T003 / #183 real fit and evaluation | [tasks.md:75](tasks.md) | Depends on T001; no eligible labels, real model or sealed holdout; needs 1 train + 1 calibration + 3 holdout families, at least 100 known labels, holdout at least 20 positive and 20 negative ([software-completion.md:43](software-completion.md), [workload-protocol.md:126-133](workload-protocol.md)). |
+| T005 / #185 evidence and final decision | [tasks.md:79](tasks.md) | No valid real experiment to reproduce or review; human scientific review and founder decision on an actual result missing ([software-completion.md:44](software-completion.md)). A null or negative real result would be acceptable; none exists. |
+
+Dependency chain: T007 -> T001 -> T003 -> T005. None has an independent path; no
+precondition is expected to become true without new source rights, new participants
+or a new reviewed protocol (all outside current authorization).
+
+## Option A: cancel as infeasible
+
+Owner-adopted cancelled-partial/infeasible disposition, GitHub
+`state_reason=not_planned`, same mechanism as SPEC-045/T007 and SPEC-034/T005.
+
+Statements the signed text would need to carry (founder to confirm each):
+- Synthetic software evidence stays valid for its stated scope; no real source
+  window, pair, label, fit or held-out result exists, and none is claimed.
+- The bounded result (zero eligible families) is not a proof that no source exists;
+  this is a discretionary stop, not a universal impossibility finding.
+- It explicitly supersedes the sentence at
+  [software-completion.md:44](software-completion.md) for these four tasks only.
+- No replacement task, retry, discovery broadening, capture, label or training is
+  authorized. Thresholds and exclusions are not relaxed.
+- M4, System One, forecasting, model promotion and confirmatory cohorts stay out of
+  scope, as in [software-completion.md](software-completion.md).
+
+Tracking changes this would imply (to be done by the tracking owner, not here):
+- Unchecked original checkboxes for T001, T003, T005, T007 stay unchecked.
+- A decision record JSON plus `task_cancellations` entries for `SPEC-019/T001`,
+  `SPEC-019/T003`, `SPEC-019/T005`, `SPEC-019/T007` with the decision hash, then
+  the reviewed synchronizer plan.
+- #181, #183, #185, #188 close with `state_reason=not_planned`; state basis
+  annotation shows cancelled/partial, not completed.
+- Counts after readback: 6 completed + 4 cancelled/partial of 10 tasks.
+- Parent #180 and milestone 9 stay open until a separate scope decision (precedent:
+  #335/milestone 18, #510/milestone 20). Milestone description would need updating.
+- Dependency statements stay unchanged and unsatisfied; closure of an issue is not
+  predecessor acceptance.
+
+## Option B (not selected): defer; its criteria become the reopen conditions
+
+Tasks stay open and unchanged. The signed text adds a dated review point and the
+criteria below. Criteria 1 to 4 come from existing re-entry conditions
+([software-completion.md:41-44](software-completion.md), notice clause from
+[spec.md:83](spec.md)); criterion 5 is a NEW proposed governance condition. Nothing here is new
+science; the founder may tighten but should not loosen thresholds.
+
+Proposed reopen criteria (all required before any work resumes):
+1. Source-specific allowlist, rights/privacy and authoring-boundary review for a
+   named source set, with participant notice where third parties are involved.
+2. Five genuinely distinct eligible families demonstrated by a prospective journal
+   feed with ledger/seals and human completeness audit.
+3. Finalized and reviewed protocol: lineage/duplicate encoding, resolution
+   vocabulary, blinded rendering, timing/bin rules; two named independent
+   reviewers and an adjudicator.
+4. A 14-day UTC midnight-start window registered at least 24h before start.
+5. Founder (not another actor) names the reopen trigger and an owner.
+
+Tracking changes this would imply:
+- No GitHub state change; #180, #181, #183, #185, #188 and milestone 9 stay open.
+- Milestone 9 description and `STATUS.md`/`ROADMAP.md` could add a "deferred" note
+  and the review date (tracking owner's call).
+- Because the tasks stay open, M3.5 never reaches closure by itself; the stalled
+  milestone remains visible. Founder should accept that cost or set a sunset date
+  at which the founder must re-decide; reaching it changes nothing by itself, and
+  Option A would still need its own signed record, hash entries and readback.
+
+## Comparison
+
+| | A: cancel | B: defer |
+| --- | --- | --- |
+| Open issues after | #180 parent only (until scope decision) | #180, #181, #183, #185, #188 |
+| Reversible | Yes, by a new reviewed task/decision; cancelled attempt is not inherited | Yes, trivially |
+| What tracking shows | Cancelled/partial, infeasibility recorded | Open, with stated reopen criteria and review date |
+| Milestone 9 closure | Possible after separate scope decision | Blocked indefinitely |
+| New authority needed | Signed record, hash-bound entries | Signed criteria only |
+
+## Real-use evidence check (2026-10-31)
+
+Per the owner's standing instruction (policy `docs/development/REAL_USE_EVIDENCE.md`, coordinator branch `docs/real-use-evidence-policy`, not yet in this tree), local sources were queried read-only before merge. Derived receipt only; no content, paths of private material or identities are committed. A receipt informs this decision; it grants nothing.
+
+| Source | Observation |
+| --- | --- |
+| `~/.local/share/agent-braid/telemetry/metrics.sqlite3` | 66 aggregate cells over 3 days (2026-10-16, 10-24, 10-27): CLI/MCP calls of `analyze`, `analyze-git`, `analyze-work`, `execute`, with outcome, duration and classification buckets. Tables `batches`, `pending`, `losses` are empty. No workload series, resource counters, session/pair journals or forecast cells. (`agent-braid telemetry` CLI not runnable in this worktree under system Python 3.9; the file was read read-only with sqlite.) |
+| `~/.local/share/agent-braid/evidence/{fc1,fc2}` | Engineering receipts (PR integration, CI logs, tracking audits, synthetic resource-cache and offline-profile repair, shadow/report PR logs, FC.2 selected-flow audits). No admitted source window or real workload series. |
+| `~/.local/share/agent-braid/{coordination,identity,evidence/m45,...}` | M4.5 coordination and evidence, an account HMAC key; unrelated to a workload or forecast source. |
+| `~/.local/state/agent-braid/forecast` | A locally cached Chronos checkpoint and a worker lease from the FC.2 synthetic conformance; no captured series. |
+| `~/Library/Application Support/AgentBraid` | Plugin registry (3 workspaces) and result directories; no workload data. |
+| `~/.claude/projects/**/*.jsonl` (2880 files), `~/.codex/sessions` (844 files) | Development transcripts. Keyword hits for forecast terms are discussions of building these specs, not captured workloads. No M3.5 shared-base session/pair feed and no SPEC-034 prospective window. Not mined for content. |
+
+Result: no observation contradicts "no data path". No admitted or consented source window, no admitted resource profile and no eligible families or pairs were found. Limits: transcript content was not exhaustively read, and a transcript is not an authoring-boundary feed with rights, notice and completeness. If a source is later found, reopen under the criteria above.
+
+## Adopted decision (2026-10-31)
+
+- Selected option: **A, cancel as infeasible**. Option B (defer) was not selected as the
+  disposition; its reopen criteria are kept below as the explicit reopen conditions.
+- Adopted text: the Option A statements above apply, including supersession of
+  [software-completion.md:44](software-completion.md) for T001, T003, T005 and T007 only.
+- Reopen criteria (explicit): criteria 1 to 5 of Option B. Criterion 5 is a new
+  proposed governance condition, adopted here only by the cancellation instruction; the
+  founder may amend it on PR review. Reopening needs a new reviewed task and decision;
+  the cancelled attempt is not inherited.
+- Parent #180 and milestone 9: not decided by the quoted answer. The coordinator asked
+  the tracking owner to close them after merge; the founder confirms this on PR review.
+- Hash-bound records: `evidence/t001-...`, `t003-...`, `t005-...`, `t007-owner-disposition-2026-10-31.json`
+  in this directory (`agent-braid-task-cancellation-v1`).
+- Founder instruction reference: "Cancelar por inviables", coordinator chat, 2026-10-31.
+
+This record is integrator-recorded provenance, not cryptographic authentication, as
+in the cited precedents.
