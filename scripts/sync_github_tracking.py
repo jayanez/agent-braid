@@ -20,6 +20,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "docs/development/github-tracking.json"
+TASK_KEY = re.compile(r"^SPEC-\d{3}/T\d{3}$")
 TASK_LINE = re.compile(r"^- \[([ x])\] (T\d{3})(?: \(([^)]+)\))?: (.*)$")
 MARKER = re.compile(r"<!-- agent-braid-(?:spec|task)-id: ([^ ]+) -->")
 TRACE_FALLBACK = "- Trace: See the parent issue and assurance record."
@@ -111,6 +112,12 @@ def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dic
         raise ValueError("a spec names an undeclared milestone")
     if not set(config["closed_milestones"]) <= set(config["milestones"]):
         raise ValueError("a closed milestone is undeclared")
+    milestone_overrides = config.get("task_milestone_overrides", {})
+    for key, name in milestone_overrides.items():
+        if not TASK_KEY.fullmatch(key):
+            raise ValueError(f"task milestone override key must be SPEC-NNN/Txxx: {key!r}")
+        if name not in config["milestones"]:
+            raise ValueError(f"task milestone override {key} names an unregistered milestone: {name!r}")
     base = f"https://github.com/{config['repository']}/blob/develop/"
     desired: list[dict] = []
     task_keys: set[str] = set()
@@ -156,6 +163,8 @@ def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dic
             task_text = " ".join([start] + continuation)
             key = f"{spec_id}/{task_id}"
             task_keys.add(key)
+            if milestone_overrides.get(key) == metadata["milestone"]:
+                raise ValueError(f"task milestone override {key} equals its spec milestone; remove it")
             cancellation = cancellations.get(key)
             if cancellation and (checked == "x" or key in config["task_state_overrides"]):
                 raise ValueError(f"cancellation cannot overlap completed task: {key}")
@@ -177,7 +186,8 @@ def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dic
                 "key": key, "kind": "task", "parent": spec_id,
                 "title": f"[{spec_id} {task_id}] {short}",
                 "body": f"<!-- agent-braid-task-id: {key} -->\n\n## Task\n\n{task_text}\n\n- Source: {common}\n- Trace: {refs or 'See the parent issue and assurance record.'}\n- State basis: {note}\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
-                "milestone": metadata["milestone"], "state": "closed" if closed else "open",
+                "milestone": milestone_overrides.get(key, metadata["milestone"]),
+                "state": "closed" if closed else "open",
                 "task_text": task_text,
                 **({"state_reason": "not_planned"} if cancellation else {}),
             })
@@ -186,6 +196,9 @@ def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dic
     unknown_overrides = set(config["task_state_overrides"]) - task_keys
     if unknown_overrides:
         raise ValueError(f"unknown task overrides: {sorted(unknown_overrides)}")
+    unknown_milestone_overrides = set(milestone_overrides) - task_keys
+    if unknown_milestone_overrides:
+        raise ValueError(f"task milestone override names unknown tasks: {sorted(unknown_milestone_overrides)}")
     if set(cancellations) - task_keys:
         raise ValueError("unknown cancelled task")
     if any(not reason.strip() for reason in config["task_state_overrides"].values()):
@@ -326,8 +339,8 @@ def build_plan(config: dict, desired: list[dict], milestones: dict,
                         operation.update(trace_from=actual_traces[0], trace_to=expected_trace.group())
                     operations.append(operation)
         if item["parent"]:
-            parent = issues.get(item["parent"])
-            if parent is None or issue is None or issue["id"] not in extra["children"].get(item["parent"], set()):
+            parent_known = item["parent"] in issues or item["parent"] in extra.get("external_parents", ())
+            if not parent_known or issue is None or issue["id"] not in extra["children"].get(item["parent"], set()):
                 operations.append({"action": "link_subissue", "key": key, "parent": item["parent"]})
         if issue is None and item["state"] == "closed":
             operations.append({"action": "set_state", "key": key, "from": "open", "to": "closed",
@@ -383,8 +396,14 @@ def milestone_plan(config: dict, desired: list[dict], milestones: dict,
     }
     scoped_desired = selected
     scoped_issues = {key: issues[key] for key in selected_keys if key in issues}
+    # A task overridden into this milestone keeps its parent in another one: that
+    # parent is outside the scope but must exist remotely for the link check.
+    external_parents = {item["parent"] for item in selected
+                        if item["parent"] and item["parent"] not in selected_keys and item["parent"] in issues}
     scoped_extra = {
-        "children": {key: value for key, value in extra.get("children", {}).items() if key in selected_keys},
+        "children": {key: value for key, value in extra.get("children", {}).items()
+                     if key in selected_keys or key in external_parents},
+        "external_parents": external_parents,
         "unmarked_titles": extra.get("unmarked_titles", set()),
     }
     scoped_milestones = {title: milestone for title, milestone in milestones.items()

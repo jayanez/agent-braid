@@ -521,6 +521,18 @@ def _entries(root: Path) -> list[Path]:
     return [_safe(entry) for entry in _listing(root)[0]]
 
 
+def _unlink_own(path: Path) -> bool:
+    """Remove a file or planted link at `path`; True when something was removed.
+
+    unlink never follows a link, so a planted link is removed, not its target. A
+    directory or other entry is not ours to remove and stays in place.
+    """
+    if path.is_symlink() or path.is_file():
+        path.unlink()
+        return True
+    return False
+
+
 def _retained(name: str, current: date) -> bool:
     """Older dates expire; future-dated files (clock skew) are kept, never deleted."""
     try:
@@ -834,17 +846,13 @@ def purge() -> dict:
     try:
         with _Lock(root) as lock:
             days, others = _listing(root)
-            salt = root / SALT_FILE
-            salted = salt.is_symlink() or salt.is_file()
-            if not salted and salt.exists():
-                others = [*others, salt]  # not ours to remove (for example a directory)
             for entry in days:
                 _safe(entry).unlink()
-            if salted:
-                salt.unlink()  # unlink never follows a link, so a planted link is removed, not its target
-            temporary = root / SALT_TEMPORARY
-            if temporary.is_symlink() or temporary.is_file():
-                temporary.unlink()
+            salt = root / SALT_FILE
+            salted = _unlink_own(salt)
+            if not salted and salt.exists():
+                others = [*others, salt]  # not ours to remove (for example a directory)
+            _unlink_own(root / SALT_TEMPORARY)
             lock.path.unlink()
     except OSError:
         raise StoreRefused('unavailable') from None

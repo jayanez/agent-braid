@@ -105,6 +105,19 @@ class ValidationProfileTests(unittest.TestCase):
                 if domain == "contextual-finite-checker":
                     self.assertIn("scientific-controls", plan.commands)
 
+    def test_system_one_shadow_paths_route_to_the_system_one_core_rule(self):
+        for path in ("agent_braid/system_one_shadow.py", "agent_braid/system_one_cli.py",
+                     "tests/test_system_one_shadow.py", "tests/test_system_one_shadow_boundaries.py",
+                     "tests/test_system_one_cli.py"):
+            with self.subTest(path=path):
+                plan = validation.build_plan([path], "quick")
+                self.assertEqual(plan.impact.domains, ("system-one-core",))
+                self.assertEqual(plan.effective_profile, "sensitive")
+                self.assertIn("full-tests", plan.commands)
+                self.assertFalse(plan.impact.unknown_paths)
+                self.assertFalse(plan.impact.spec_kit_integration)
+                self.assertTrue(any("shadow" in boundary for boundary in plan.impact.boundaries))
+
     def test_classification_is_deterministic_and_unknown_paths_fail_closed(self):
         first = validation.classify(["README.md", "new-area/input.bin", "README.md"])
         second = validation.classify(["new-area/input.bin", "README.md"])

@@ -48,13 +48,18 @@ specifications unless a SPEC-066 requirement amends them.
   `RESUMPTION` merged in #860; milestone #26 created on GitHub and registered,
   SPEC-066 added to `project_review_pending`, STATUS and `GITHUB_TRACKING.md`
   updated by the tracking-sync change; `source` reports 13 review-pending records.
-- [ ] T003: Support a task-level milestone override in the tracking source so the
+- [x] T003: Support a task-level milestone override in the tracking source so the
   absorbed SPEC-029, SPEC-031 and SPEC-033 tasks can move to S1.5 while their
   parent specs stay in Deferred. Tests first. Dependencies: T002. Files:
   `scripts/sync_github_tracking.py`, `docs/development/github-tracking.json`,
   `docs/development/GITHUB_TRACKING.md`, `tests/test_github_tracking.py`.
   Verification: `python3 -m unittest tests.test_github_tracking -v` and
   `python3 scripts/sync_github_tracking.py source`. Evidence: merged change.
+  Evidence (2026-11-01): `task_milestone_overrides` with validation and scoped-audit
+  support, the 15 R6 moves to S1.5 and 45 closed System One tasks pinned to their
+  historical S1.0–S1.4 milestones (owner default, plan approval in
+  `owner-review-20261101.md`); `TaskMilestoneOverrideTests` in
+  `tests/test_github_tracking.py`.
 - [ ] T004: After merge to `develop`, publish S1.5 tracking: `audit` scoped with
   `--new-record-key` for exactly the missing SPEC-066 records, review, `apply
   --confirm-repository jayanez/agent-braid --plan-sha256 <digest>`, move the 15
@@ -90,7 +95,7 @@ specifications unless a SPEC-066 requirement amends them.
   without the compiled constant. Files: `agent_braid/system_one_shadow.py`,
   `tests/test_system_one_shadow.py`. Dependencies: T010. Verification:
   procedure_008.
-- [ ] T013 (REQ-004 / SC-003): `EpisodeStore`: telemetry-equivalent path safety,
+- [x] T013 (REQ-004 / SC-003): `EpisodeStore`: telemetry-equivalent path safety,
   private files, 4 MiB day cap, 30-date retention on access, non-blocking lock,
   unknown-file refusal, in-memory refusal counters, and a parity test against the
   telemetry path checker. Negative controls: symlink at each level, repository
@@ -98,7 +103,9 @@ specifications unless a SPEC-066 requirement amends them.
   lock, unknown file, full disk. Files: `agent_braid/system_one_shadow.py`,
   `tests/test_system_one_shadow_store.py`. Dependencies: T011. Verification:
   procedure_003.
-  Status 2026-11-01: Partly implemented: store with path safety, cap, retention, lock and refusal counters; the full negative-control matrix and telemetry-parity test are pending.
+  Evidence (2026-11-01): negative-control matrix and telemetry path-checker parity in
+  `tests/test_system_one_shadow_store.py`; parity found no gap. Own-file unlink logic
+  in purge is factored into `_unlink_own`.
 - [x] T014 (REQ-002 / SC-001, SC-003): Observer, budget and wiring:
   `ToolingConfig.system_one`, `ShadowObserver` with the 50 ms stage checks and
   exception containment, lazy call from `ToolingService.invoke` after the
@@ -126,15 +133,17 @@ specifications unless a SPEC-066 requirement amends them.
   Files: `agent_braid/system_one_shadow.py`, `agent_braid/system_one_cli.py`,
   `agent_braid/cli.py`, `tests/test_system_one_shadow_store.py`,
   `tests/test_system_one_cli.py`. Dependencies: T013 (T001 waived for implementation by the 2026-11-01 owner plan approval; required before T032). Verification: procedure_004.
-- [ ] T018 (REQ-006 / procedure_007): `--telemetry {off,local}` on every
+- [x] T018 (REQ-006 / procedure_007): `--telemetry {off,local}` on every
   `system-one` subcommand, the `observe` wrapper in `cli.py`, the `system-one` CLI
   operation in `OPERATIONS`, LIMITS and `docs/tooling/TELEMETRY.md` text, and a test
   that no metric other than the new operation cell appears. Files:
   `agent_braid/cli.py`, `agent_braid/tooling_telemetry.py`,
   `docs/tooling/TELEMETRY.md`, `tests/test_tooling_telemetry.py`,
   `tests/test_system_one_cli.py`. Dependencies: T017. Verification: procedure_007.
-  Status 2026-11-01: Partly implemented: `--telemetry`, `observe` wrapper and the `system-one` CLI operation; `docs/tooling/TELEMETRY.md` and the no-other-metric test are pending.
-- [ ] T019 (REQ-002, REQ-003 / SC-001): Boundary and validation-profile
+  Evidence (2026-11-01): every subcommand accepts `--telemetry`; `docs/tooling/TELEMETRY.md`
+  documents the `system-one` operation; the no-other-metric test is in
+  `tests/test_system_one_cli.py`.
+- [x] T019 (REQ-002, REQ-003 / SC-001): Boundary and validation-profile
   checks: `off` never imports the shadow module (subprocess `sys.modules` check),
   the shadow module imports no network module and no model library, no new
   `executionAuthorization: true`, and the planner routes every touched path to the
@@ -143,13 +152,19 @@ specifications unless a SPEC-066 requirement amends them.
   `tests/test_system_one_shadow_boundaries.py`,
   `docs/development/VALIDATION_PROFILES.md`. Dependencies: T014. Verification:
   procedure_001, `python3 scripts/validate_change.py --base develop --profile quick`.
-  Status 2026-11-01: Pending.
-- [ ] T020 (all REQ): User documentation: `docs/tooling/SYSTEM_ONE_SHADOW.md`
+  Evidence (2026-11-01): `tests/test_system_one_shadow_boundaries.py` (off-mode import
+  probe over `cli`, `plugin_mcp` and `tooling_mcp`, no network or model import, no
+  `executionAuthorization: true`, empty dependencies) and the routing test in
+  `tests/test_validation_profiles.py`; `plugin_mcp` now imports the shadow module only
+  in `plugin-status`.
+- [x] T020 (all REQ): User documentation: `docs/tooling/SYSTEM_ONE_SHADOW.md`
   (what is recorded, what is never recorded, how to enable, report, purge, non-claims
   and limits including the filesystem-stall limit), plus updates to
   `docs/tooling/PLUGIN_PRIVACY.md` and `docs/tooling/INSTALL.md`. Dependencies: T017,
   T018. Evidence: merged documents and a docs link check.
-  Status 2026-11-01: Pending; README and the plugin setup skill carry interim text.
+  Evidence (2026-11-01): `docs/tooling/SYSTEM_ONE_SHADOW.md` and cross-references in
+  `PLUGIN_PRIVACY.md` and `INSTALL.md`. README and the plugin setup skill still carry
+  interim text.
 - [ ] T021 (REQ-002 / SC-003): Overhead measurement: median and p95 of the shadow
   step for 2, 12 and 32 operations on the owner machine, with and without a warm
   store, reported as a measurement receipt (not a gate) with the 50 ms budget as
@@ -185,6 +200,9 @@ specifications unless a SPEC-066 requirement amends them.
 
 - [ ] T031: Pre-PR reviews (code review, quality, simplification),
   `validate_change --profile pr` on the stable candidate, `/speckit-converge`.
+  Converge input (2026-11-01): the code also records an episode for a report-bearing
+  `analyze` result (`OPERATIONS` includes `analyze`), while REQ-003 names only
+  `analyze-work`; the user guide follows the code. Align the spec or the code.
   Dependencies: T010–T021.
 - [ ] T032: Record obtained evidence in `assurance.json`, freeze, and owner review
   of the S1.5a closure, with the decision whether S1.5b starts. Dependencies: T030,

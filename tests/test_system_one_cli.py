@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from agent_braid import system_one_shadow, tooling_telemetry
 from agent_braid.cli import main
 from agent_braid.system_one import STRICT_POLICY, canonical
 from tests.test_system_one_core import fixture
@@ -60,6 +61,36 @@ class SystemOneCliTests(unittest.TestCase):
                     status, response = self.invoke("system-one", "decide", str(path))
                     self.assertEqual(status, 2)
                     self.assertEqual(set(response), {"error"})
+
+    def test_every_subcommand_accepts_telemetry_and_records_only_the_system_one_cell(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            source = root / "input.json"
+            source.write_bytes(canonical(fixture()))
+            metrics = root / "metrics"
+            with patch.object(tooling_telemetry, "default_directory", return_value=metrics), \
+                    patch.object(system_one_shadow, "default_directory", return_value=root / "store"):
+                for command in (("capabilities",), ("decide", str(source)), ("report", "--format", "json"),
+                                ("purge", "--yes")):
+                    for position in ("group", "subcommand"):
+                        arguments = ("system-one", "--telemetry", "local", *command) if position == "group" \
+                            else ("system-one", *command, "--telemetry", "local")
+                        with self.subTest(arguments=arguments):
+                            stream = StringIO()
+                            with redirect_stdout(stream):
+                                self.assertIn(main(list(arguments)), (0, 1))
+            rows = tooling_telemetry.Store(metrics).report()["rows"]
+        self.assertTrue(rows)
+        self.assertEqual({(row["surface"], row["operation"]) for row in rows}, {("cli", "system-one")})
+        self.assertEqual({row["metric"] for row in rows} - {"calls", "duration"}, set())
+        self.assertEqual(sum(row["count"] for row in rows if row["metric"] == "calls"), 8)
+
+    def test_system_one_without_telemetry_creates_no_metrics(self):
+        with tempfile.TemporaryDirectory() as directory:
+            metrics = Path(directory) / "metrics"
+            with patch.object(tooling_telemetry, "default_directory", return_value=metrics):
+                self.invoke("system-one", "capabilities")
+            self.assertFalse(metrics.exists())
 
     def test_legacy_help_does_not_load_decision_command(self):
         with patch("agent_braid.system_one_cli.run", side_effect=AssertionError("decision dispatched")):
