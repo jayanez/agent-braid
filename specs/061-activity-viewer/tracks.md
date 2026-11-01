@@ -22,6 +22,29 @@ written only after T035 records keep for the track. Until then each probe receip
 (T030–T033) adds its findings to the matching section below, so the later
 specification starts from observed host behavior.
 
+## Probe findings (2026-11-01)
+
+From `evidence/hv-t030-20261101.json`, `hv-t031-20261101.json` (partial) and
+`hv-t032-20261101.json`. They bind VIS.1 implementation (T016, T019) and the later
+specifications; the exact allowlists are pinned there through reviewed changes.
+
+- Claude Code 2.1.292 OpenTelemetry has no `agent_id` or `parent_agent_id`; only
+  `agent.name`, `agent_type`, `agent.source` and `query_source`. Per-subagent
+  strands come from hook `agent_id` and `agent_type` (`SubagentStart`,
+  `SubagentStop`, `PostToolUse` inside a subagent).
+- No HTTP `SessionStart` hook was delivered under `claude -p`; a strand opens on
+  the first event received. Empty hook responses and a stopped listener left the
+  session unaffected.
+- Both hosts emit privacy-relevant names (`prompt`, `prompt_text`, `response`,
+  `user.email`, account and organization ids; Codex also `host.name`,
+  `error.message`) and Claude hook payloads carry content and paths
+  (`tool_input.*`, `tool_response.stdout`, `last_assistant_message`, `cwd`,
+  `transcript_path`). Allowlists drop all of them.
+- Codex `[otel]` logs and traces arrive as HTTP/JSON with the authorization header;
+  token-usage names are still unobserved (T031 rerun after 2026-11-23).
+- The desktop browser pane loaded the loopback fixture under the contract CSP with
+  WebGL2 and no outbound request (VIS.2 can start from the browser surface).
+
 ## VIS.2 — Claude Code mod pane (SPEC-062)
 
 - Companion mod in `integrations/agent-braid-view/claude-mod/`, outside the plugin

@@ -1,0 +1,354 @@
+{
+  "schemaVersion": "agent-braid-host-verification/v0.1",
+  "task": "T030",
+  "requirement": "REQ-014",
+  "scenario": "SC-014",
+  "recordedAt": "2026-11-01",
+  "authorization": "Owner authorized the probes in this conversation on 2026-11-01 (owner's answer, verbatim: \"Ok lanza las sondas\").",
+  "host": {
+    "name": "claude-code",
+    "version": "2.1.292 (Claude Code)",
+    "client": "terminal, non-interactive (claude -p)",
+    "model": "haiku alias"
+  },
+  "os": {
+    "name": "macOS",
+    "version": "27.0.1",
+    "build": "26A434",
+    "arch": "arm64"
+  },
+  "steps": [
+    "Start a throwaway standard-library listener on 127.0.0.1 with a random bearer token; it records names only and answers every request with an empty 200.",
+    "Run one claude -p session with CLAUDE_CODE_ENABLE_TELEMETRY=1, OTEL_LOGS_EXPORTER=otlp, OTEL_METRICS_EXPORTER=otlp, OTEL_EXPORTER_OTLP_PROTOCOL=http/json, OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:<port>, OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer <token>, and a throwaway --settings file with HTTP hooks (SessionStart, SessionEnd, SubagentStart, SubagentStop, PostToolUse; header Authorization: Bearer $PROBE_TOKEN via allowedEnvVars; timeout 5).",
+    "Prompt: launch one general-purpose subagent that runs `echo probe-ok` and reports it; allowed tools Task and Bash(echo:*).",
+    "Stop the listener and rerun the same session (run 2)."
+  ],
+  "command": "claude -p \"Use the Task tool to launch one general-purpose subagent whose only job is to run the Bash command: echo probe-ok — and report its output. Then reply with exactly the subagent's reported output.\" --settings <throwaway-settings.json> --allowedTools \"Task\" \"Bash(echo:*)\" --model haiku",
+  "expected": "OTLP JSON with token, cost, model, agent and parent-agent identifiers; tool calls unaffected by empty hook responses or a stopped listener.",
+  "observed": {
+    "runs": {
+      "listenerUp": {
+        "exitCode": 0,
+        "output": "probe-ok"
+      },
+      "listenerStopped": {
+        "exitCode": 0,
+        "output": "probe-ok",
+        "stderr": "one line: the SessionEnd HTTP hook failed with ECONNREFUSED; no other hook error reported"
+      }
+    },
+    "requestsRecorded": 21,
+    "otlpLogs": {
+      "contentType": [
+        "application/json"
+      ],
+      "contentEncoding": [
+        "identity"
+      ],
+      "authorizationHeaderMatched": true,
+      "attributes": [
+        "additional_context_chars",
+        "agent.name",
+        "agent.source",
+        "agent_path_count",
+        "agent_type",
+        "cache_creation_tokens",
+        "cache_read_tokens",
+        "client_request_id",
+        "command_path_count",
+        "cost_usd",
+        "cost_usd_micros",
+        "decision",
+        "duration_ms",
+        "enabled_via",
+        "error_code",
+        "event.name",
+        "event.sequence",
+        "event.timestamp",
+        "final_model",
+        "has_hooks",
+        "has_mcp",
+        "hook_event",
+        "hook_name",
+        "hook_source",
+        "hook_type",
+        "host.arch",
+        "host_owned_mcp",
+        "initial_user_message_chars",
+        "input_tokens",
+        "is_async",
+        "is_built_in",
+        "is_plugin",
+        "managed_only",
+        "managed_settings.helper.applied",
+        "managed_settings.helper.state",
+        "managed_settings.source_behavior",
+        "managed_settings.sources",
+        "managed_settings.trigger",
+        "marketplace.name",
+        "message.uuid",
+        "model",
+        "model_swapped",
+        "num_blocking",
+        "num_cancelled",
+        "num_hooks",
+        "num_non_blocking_error",
+        "num_outputs_persisted",
+        "num_success",
+        "organization.id",
+        "os.type",
+        "os.version",
+        "output_tokens",
+        "plugin.name",
+        "plugin.scope",
+        "plugin.version",
+        "plugin_id_hash",
+        "prompt",
+        "prompt.id",
+        "prompt_length",
+        "prompt_text",
+        "query_source",
+        "request_id",
+        "response",
+        "response_length",
+        "safe_mode",
+        "server_scope",
+        "service.name",
+        "service.version",
+        "session.id",
+        "skill_path_count",
+        "source",
+        "speed",
+        "status",
+        "stdout_chars",
+        "success",
+        "system_message_chars",
+        "terminal.type",
+        "tool_input_size_bytes",
+        "tool_name",
+        "tool_result_size_bytes",
+        "tool_source",
+        "tool_use_id",
+        "total_duration_ms",
+        "total_tokens",
+        "total_tool_uses",
+        "transport_type",
+        "ttft_ms",
+        "user.account_id",
+        "user.account_uuid",
+        "user.email",
+        "user.id"
+      ],
+      "eventNames": [
+        "api_request",
+        "assistant_response",
+        "hook_execution_complete",
+        "hook_execution_start",
+        "hook_registered",
+        "managed_settings_resolved",
+        "mcp_server_connection",
+        "plugin_loaded",
+        "subagent_completed",
+        "tool_decision",
+        "tool_result",
+        "user_prompt"
+      ],
+      "scopeNames": [
+        "com.anthropic.claude_code.events"
+      ]
+    },
+    "otlpMetrics": {
+      "contentType": [
+        "application/json"
+      ],
+      "contentEncoding": [
+        "identity"
+      ],
+      "authorizationHeaderMatched": true,
+      "attributes": [
+        "agent.name",
+        "host.arch",
+        "model",
+        "organization.id",
+        "os.type",
+        "os.version",
+        "query_source",
+        "service.name",
+        "service.version",
+        "session.id",
+        "start_type",
+        "terminal.type",
+        "type",
+        "user.account_id",
+        "user.account_uuid",
+        "user.email",
+        "user.id"
+      ],
+      "metricNames": [
+        "claude_code.active_time.total",
+        "claude_code.cost.usage",
+        "claude_code.session.count",
+        "claude_code.token.usage"
+      ],
+      "scopeNames": [
+        "com.anthropic.claude_code"
+      ]
+    },
+    "hooks": {
+      "contentType": [
+        "application/json"
+      ],
+      "authorizationHeaderMatched": true,
+      "eventsReceived": [
+        "PostToolUse",
+        "SessionEnd",
+        "SubagentStart",
+        "SubagentStop"
+      ],
+      "eventsNotReceived": [
+        "SessionStart"
+      ],
+      "payloadFieldNames": {
+        "PostToolUse": [
+          "agent_id",
+          "agent_type",
+          "cwd",
+          "duration_ms",
+          "hook_event_name",
+          "permission_mode",
+          "prompt_id",
+          "scratchpad_dir",
+          "session_id",
+          "tool_input",
+          "tool_input.command",
+          "tool_input.description",
+          "tool_input.prompt",
+          "tool_name",
+          "tool_response",
+          "tool_response.agentId",
+          "tool_response.canReadOutputFile",
+          "tool_response.description",
+          "tool_response.interrupted",
+          "tool_response.isAsync",
+          "tool_response.isImage",
+          "tool_response.noOutputExpected",
+          "tool_response.outputFile",
+          "tool_response.prompt",
+          "tool_response.resolvedModel",
+          "tool_response.status",
+          "tool_response.stderr",
+          "tool_response.stdout",
+          "tool_use_id",
+          "transcript_path"
+        ],
+        "SessionEnd": [
+          "cwd",
+          "hook_event_name",
+          "prompt_id",
+          "reason",
+          "scratchpad_dir",
+          "session_id",
+          "transcript_path"
+        ],
+        "SubagentStart": [
+          "agent_id",
+          "agent_type",
+          "cwd",
+          "hook_event_name",
+          "prompt_id",
+          "scratchpad_dir",
+          "session_id",
+          "transcript_path"
+        ],
+        "SubagentStop": [
+          "agent_id",
+          "agent_transcript_path",
+          "agent_type",
+          "background_tasks",
+          "background_tasks[].agent_type",
+          "background_tasks[].description",
+          "background_tasks[].id",
+          "background_tasks[].status",
+          "background_tasks[].type",
+          "cwd",
+          "hook_event_name",
+          "last_assistant_message",
+          "permission_mode",
+          "prompt_id",
+          "scratchpad_dir",
+          "session_crons",
+          "session_id",
+          "stop_hook_active",
+          "transcript_path"
+        ]
+      }
+    }
+  },
+  "checks": [
+    {
+      "check": "OTLP logs and metrics arrive as uncompressed JSON over HTTP with the configured authorization header",
+      "outcome": "verified"
+    },
+    {
+      "check": "OTLP carries token, cost, model, session and prompt identifiers",
+      "outcome": "verified",
+      "names": [
+        "input_tokens",
+        "output_tokens",
+        "cache_read_tokens",
+        "cache_creation_tokens",
+        "cost_usd",
+        "model",
+        "duration_ms",
+        "session.id",
+        "prompt.id",
+        "tool_name",
+        "tool_use_id",
+        "decision",
+        "claude_code.token.usage",
+        "claude_code.cost.usage"
+      ]
+    },
+    {
+      "check": "OTLP carries agent and parent-agent identifiers",
+      "outcome": "not-matching",
+      "detail": "No agent_id or parent_agent_id attribute was emitted; only agent.name, agent_type, agent.source and query_source. Per-subagent attribution must come from hook payloads (agent_id, agent_type on SubagentStart, SubagentStop and PostToolUse inside a subagent), not from OpenTelemetry."
+    },
+    {
+      "check": "Empty-bodied HTTP hook responses leave the tool call and the subagent unaffected",
+      "outcome": "verified"
+    },
+    {
+      "check": "A stopped listener leaves the session unaffected",
+      "outcome": "verified"
+    },
+    {
+      "check": "SessionStart HTTP hook is delivered",
+      "outcome": "not-matching",
+      "detail": "No SessionStart request reached the listener in run 1; the viewer cannot rely on an HTTP SessionStart hook and must open a strand from the first event it receives."
+    }
+  ],
+  "findingsForAllowlist": [
+    "Privacy-relevant names are emitted even with OTEL_LOG_USER_PROMPTS unset: prompt, prompt_text, response, user.email, user.id, user.account_id, user.account_uuid, organization.id. The OTLP allowlist must drop them.",
+    "Hook payloads carry content and paths: tool_input.command, tool_input.prompt, tool_response.stdout, tool_response.stderr, tool_response.prompt, last_assistant_message, cwd, transcript_path, agent_transcript_path, scratchpad_dir. The hook adapter must drop them.",
+    "Pinning the exact allowlist is a reviewed change at implementation (T016, T019); this receipt does not change plan.md."
+  ],
+  "outcome": "verified-with-mismatches",
+  "matrixRows": [
+    {
+      "host": "claude-code",
+      "client": "terminal",
+      "surface": "web",
+      "status": "verified"
+    }
+  ],
+  "limits": [
+    "One machine, one account, one installed version; names can change between host versions.",
+    "Names only: the throwaway listener recorded field and attribute names, never values; whether privacy-relevant values were redacted by the host was not checked.",
+    "The throwaway listener (sha256 74f85b3b383c0ff1f607f9b7eea347f36227904a5a842ba0eedd178b2c19c0d8) is not committed, per the runbook.",
+    "Non-interactive claude -p only; the interactive terminal and desktop clients were not probed for OpenTelemetry or hooks.",
+    "Hooks were passed with --settings rather than a user-level settings profile; the effect on hook delivery is not assumed to differ but was not compared.",
+    "Single session per run; event ordering, batching intervals and rate limits were not measured.",
+    "The SessionStart absence was observed once under claude -p and may depend on the client mode."
+  ]
+}

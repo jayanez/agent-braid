@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "agent-braid-host-verification/v0.1",
+  "task": "T032",
+  "requirement": "REQ-014",
+  "scenario": "SC-014",
+  "recordedAt": "2026-11-01",
+  "authorization": "Owner authorized the probes in this conversation on 2026-11-01 (owner's answer, verbatim: \"Ok lanza las sondas\").",
+  "host": {
+    "name": "claude-code",
+    "client": "Claude desktop app, browser pane",
+    "opener": "owner, by hand (owner's answer, verbatim: \"Ya la abrí\"); no agent drove the pane"
+  },
+  "os": {
+    "name": "macOS",
+    "version": "27.0.1",
+    "build": "26A434",
+    "arch": "arm64"
+  },
+  "fixture": {
+    "files": {
+      "index.html": "078b7a2e9f8caa11c869a13def4596c944053172e7cb4956fc2ffd7b4fc60c79",
+      "main.js": "dd21827962ca717c9f4c1420e5889a74c58d778544be66908c3cab73033ca9af",
+      "probe.js": "66f2e326b46630c967cbf8462cca2233ed844c407f1df198d843739600ab43bf",
+      "csp.txt": "50b749cbc1466bc4372e7b9230260c0926d97c0ccaf329d5212c45bab2d5b44c"
+    },
+    "headers": {
+      "Content-Security-Policy": "default-src 'self'; script-src 'self' 'sha256-8y6PVtTfK0X3QYYEAbRsC1vFY/6zhtY9rU3BE2PGUug='; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; require-trusted-types-for 'script'",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "no-referrer",
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cache-Control": "no-store"
+    },
+    "content": "One inline import map (allowed by its sha256), one module script that imports through the map, a 64x64 WebGL2 canvas, one deliberate innerHTML assignment to test Trusted Types; no Agent Braid data."
+  },
+  "steps": [
+    "Serve the fixture from the throwaway listener on 127.0.0.1 with the contract headers.",
+    "The owner opens http://127.0.0.1:<port>/fixture/index.html in the Claude desktop browser pane.",
+    "After 2 s the page posts a self-report of booleans and counts to the same origin."
+  ],
+  "expected": "The page loads with no CSP violation, no console error and no outbound request; WebGL2 available.",
+  "observed": {
+    "selfReport": {
+      "moduleImportMapWorked": true,
+      "webgl2": true,
+      "trustedTypesApi": true,
+      "htmlSinkBlocked": true,
+      "violationsOtherThanTrustedTypes": 0,
+      "trustedTypesViolations": 1,
+      "nonSelfResourceRequests": 0,
+      "resourceRequests": 2,
+      "userAgentHasElectron": false
+    }
+  },
+  "checks": [
+    {
+      "check": "Module script and inline import map load under the contract CSP",
+      "outcome": "verified"
+    },
+    {
+      "check": "WebGL2 context available",
+      "outcome": "verified"
+    },
+    {
+      "check": "No CSP violation other than the deliberate Trusted Types test; the HTML sink is blocked",
+      "outcome": "verified",
+      "detail": "1 require-trusted-types-for violation from the deliberate innerHTML test; 0 others."
+    },
+    {
+      "check": "No request outside the page origin",
+      "outcome": "verified",
+      "detail": "2 resource entries, both same-origin."
+    },
+    {
+      "check": "No console error",
+      "outcome": "unobserved",
+      "detail": "The page counts CSP violations only; console errors were not read because no agent reads the pane."
+    }
+  ],
+  "outcome": "verified",
+  "matrixRows": [
+    {
+      "host": "claude-code",
+      "client": "desktop",
+      "surface": "web",
+      "status": "verified"
+    }
+  ],
+  "limits": [
+    "The self-report is produced by the fixture's own script; a host-level request outside the page's Performance API (for example a browser prefetch) would not be counted.",
+    "The user agent did not contain 'Electron'; that the page ran in the Claude desktop browser pane rests on the owner's statement.",
+    "Fixture only: the real viewer bundle (Three.js r186) is opened again at the T035 checkpoint.",
+    "One desktop app version on one machine; the app version was not recorded by the page."
+  ]
+}

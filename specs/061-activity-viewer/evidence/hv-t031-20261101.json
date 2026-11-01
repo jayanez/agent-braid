@@ -1,0 +1,225 @@
+{
+  "schemaVersion": "agent-braid-host-verification/v0.1",
+  "task": "T031",
+  "requirement": "REQ-014",
+  "scenario": "SC-014",
+  "recordedAt": "2026-11-01",
+  "authorization": "Owner authorized the probes in this conversation on 2026-11-01 (owner's answer, verbatim: \"Ok lanza las sondas\").",
+  "host": {
+    "name": "codex",
+    "version": "codex-cli 0.166.0-alpha.5.1 (bundled with the ChatGPT desktop app)",
+    "client": "cli (codex exec)",
+    "auth": "ChatGPT account"
+  },
+  "os": {
+    "name": "macOS",
+    "version": "27.0.1",
+    "build": "26A434",
+    "arch": "arm64"
+  },
+  "steps": [
+    "Start the throwaway listener on 127.0.0.1 with a random bearer token.",
+    "Run one codex exec turn with per-run -c overrides for otel.exporter, otel.metrics_exporter and otel.trace_exporter, each {otlp-http={endpoint=\"http://127.0.0.1:<port>/v1/<signal>\",protocol=\"json\",headers={Authorization=\"Bearer <token>\"}}}; stdin closed.",
+    "Retry once with -m gpt-5.6-luna after the configured default model was refused for the account."
+  ],
+  "command": "codex exec --skip-git-repo-check --ephemeral -s read-only [-m gpt-5.6-luna -c model_reasoning_effort=low] -c otel.exporter=<...> -c otel.metrics_exporter=<...> -c otel.trace_exporter=<...> \"Run the shell command: echo probe-ok — then reply with exactly its output.\" < /dev/null",
+  "expected": "Token usage per turn in the [otel] export; pin the exact names.",
+  "observed": {
+    "turnCompleted": false,
+    "turnBlockedBy": "Account usage limit reached; the CLI reported that the limit resets on 2026-11-23.",
+    "requestsRecorded": 5,
+    "otlpLogs": {
+      "contentType": [
+        "application/json"
+      ],
+      "contentEncoding": [
+        "identity"
+      ],
+      "authorizationHeaderMatched": true,
+      "attributes": [
+        "app.version",
+        "approval_policy",
+        "attempt",
+        "auth.connection_reused",
+        "auth.env_codex_api_key_enabled",
+        "auth.env_codex_api_key_present",
+        "auth.env_openai_api_key_present",
+        "auth.env_refresh_token_url_override_present",
+        "auth.header_attached",
+        "auth.header_name",
+        "auth.mode",
+        "auth.retry_after_unauthorized",
+        "auth_mode",
+        "conversation.id",
+        "duration_ms",
+        "endpoint",
+        "env",
+        "error.message",
+        "event.kind",
+        "event.name",
+        "event.timestamp",
+        "host.name",
+        "http.response.status_code",
+        "mcp_servers",
+        "model",
+        "originator",
+        "prompt",
+        "prompt_length",
+        "provider_name",
+        "reasoning_effort",
+        "reasoning_summary",
+        "sandbox_policy",
+        "service.name",
+        "service.version",
+        "slug",
+        "startup.phase",
+        "startup.status",
+        "success",
+        "telemetry.sdk.language",
+        "telemetry.sdk.name",
+        "telemetry.sdk.version",
+        "terminal.type",
+        "user.account_id",
+        "user.email"
+      ],
+      "eventNames": [
+        "codex.api_request",
+        "codex.conversation_starts",
+        "codex.sse_event",
+        "codex.startup_phase",
+        "codex.user_prompt",
+        "codex.websocket_connect",
+        "codex.websocket_request"
+      ],
+      "scopeNames": [
+        "codex_otel.log_only"
+      ]
+    },
+    "otlpTraces": {
+      "contentType": [
+        "application/json"
+      ],
+      "contentEncoding": [
+        "identity"
+      ],
+      "authorizationHeaderMatched": true,
+      "attributes": [
+        "allow_provider_model_fallback",
+        "api.path",
+        "app_server.api_version",
+        "app_server.client_name",
+        "app_server.client_version",
+        "app_server.connection_id",
+        "attempt",
+        "auth.env_codex_api_key_enabled",
+        "auth.env_codex_api_key_present",
+        "auth.env_openai_api_key_present",
+        "auth.env_refresh_token_url_override_present",
+        "auth.header_attached",
+        "auth.header_name",
+        "auth.mode",
+        "build_mode",
+        "busy_ns",
+        "code.file.path",
+        "code.line.number",
+        "code.module.name",
+        "duration_ms",
+        "endpoint",
+        "env",
+        "environment_count",
+        "environment_id",
+        "event.name",
+        "http.method",
+        "http.request.method",
+        "http.response.status_code",
+        "idle_ns",
+        "item_count",
+        "key",
+        "level",
+        "max_total",
+        "model",
+        "model.provided",
+        "non_blocking",
+        "phase",
+        "plugins_enabled",
+        "provider",
+        "refresh_strategy",
+        "remote",
+        "remote_plugin_enabled",
+        "root_count",
+        "rpc.method",
+        "rpc.request_id",
+        "rpc.system",
+        "rpc.transport",
+        "sandboxed",
+        "server.address",
+        "server.port",
+        "server_name",
+        "service.name",
+        "service.version",
+        "session_init.ephemeral",
+        "session_init.required_mcp_server_count",
+        "success",
+        "target",
+        "telemetry.sdk.language",
+        "telemetry.sdk.name",
+        "telemetry.sdk.version",
+        "thread.id",
+        "thread.name",
+        "thread_start.experimental_raw_events",
+        "turn.id",
+        "turn_id"
+      ],
+      "eventNames": [
+        "codex.api_request"
+      ],
+      "scopeNames": [
+        "codex_exec"
+      ]
+    },
+    "otlpMetrics": "no request received"
+  },
+  "checks": [
+    {
+      "check": "[otel] exports logs and traces as uncompressed JSON over HTTP with the configured authorization header",
+      "outcome": "verified"
+    },
+    {
+      "check": "Identifiers for conversation and turn are present",
+      "outcome": "verified",
+      "names": [
+        "conversation.id",
+        "turn.id",
+        "turn_id",
+        "thread.id",
+        "model",
+        "duration_ms"
+      ]
+    },
+    {
+      "check": "Token usage per turn (names)",
+      "outcome": "unobserved",
+      "detail": "No turn completed and no metrics request arrived, so no token-usage name was observed."
+    }
+  ],
+  "findingsForAllowlist": [
+    "Privacy-relevant names are emitted: prompt, user.email, user.account_id, host.name, error.message. The allowlist must drop them."
+  ],
+  "outcome": "partial",
+  "matrixRows": [
+    {
+      "host": "codex",
+      "client": "cli",
+      "surface": "web",
+      "status": "hv-pending",
+      "reason": "token-usage names unobserved; rerun after the usage limit resets"
+    }
+  ],
+  "limits": [
+    "One machine, one account, one installed version; names can change between host versions.",
+    "Names only: the throwaway listener recorded field and attribute names, never values; whether privacy-relevant values were redacted by the host was not checked.",
+    "The throwaway listener (sha256 74f85b3b383c0ff1f607f9b7eea347f36227904a5a842ba0eedd178b2c19c0d8) is not committed, per the runbook.",
+    "No completed turn: the receipt covers export transport and the names emitted up to the refused request only.",
+    "Metrics export was configured but produced no request in this run; that is not evidence that metrics are absent after a completed turn."
+  ]
+}
