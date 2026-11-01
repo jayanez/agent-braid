@@ -36,6 +36,7 @@ DECISION_POINT = 'DP-1'
 # or manifest is refused, so recorded episodes always name the reviewed reference.
 EXPECTED_BACKEND_ID = 'stdlib-rule-fixture-v1'
 EXPECTED_MANIFEST_DIGEST = '49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca'
+WORKER_LOCK_WAIT = 0.05  # seconds the off-request worker waits for a busy store
 BUDGET_NANOSECONDS = 50_000_000
 MAX_FILE_BYTES = 4 * 1024 * 1024
 MAX_REPORT_BYTES = 1024 * 1024  # artifact-backed reports above this are not observed
@@ -161,6 +162,12 @@ SOURCE_EXTENSIONS = frozenset({'.py', '.js', '.ts', '.tsx', '.jsx', '.go', '.rs'
                                '.cpp', '.cs', '.rb', '.php', '.swift', '.m', '.scala', '.sh'})
 
 
+# `generated` as a whole word of the stem (foo.generated.ts, generated_ids.py), not a substring.
+_GENERATED_NAME = re.compile(r'(^|[._-])generated([._-]|$)')
+# Dependency manifests that use a documentation extension.
+_MANIFEST_NAME = re.compile(r'^(requirements|constraints)([._-][\w.-]*)?\.(txt|in)$')
+
+
 def _segments(resource: str) -> list[str] | None:
     """Path segments of a resource, or None for a non-path resource.
 
@@ -188,11 +195,13 @@ def classify(resource: str) -> str:
     stem, extension = os.path.splitext(name)
     if name in LOCKFILES:
         return 'lockfile'
-    if GENERATED_SEGMENTS.intersection(directories) or '.min.' in name or 'generated' in name:
+    if GENERATED_SEGMENTS.intersection(directories) or '.min.' in name or _GENERATED_NAME.search(stem):
         return 'generated'
     if (TEST_SEGMENTS.intersection(directories) or name.startswith('test_') or (extension and stem.endswith('_test'))
             or '.test.' in name or '.spec.' in name):
         return 'test'
+    if _MANIFEST_NAME.match(name):
+        return 'config'
     if extension in DOC_EXTENSIONS or 'docs' in directories:
         return 'docs'
     if extension in CONFIG_EXTENSIONS or name.startswith('.'):
@@ -520,21 +529,31 @@ def _retained(name: str, current: date) -> bool:
 
 
 class _Lock:
-    """Non-blocking exclusive flock on the store's lock file."""
+    """Exclusive flock on the store's lock file, never blocking for long.
 
-    def __init__(self, root: Path):
+    The worker (`wait`) retries for a few milliseconds so that concurrent processes
+    do not silently drop salts or episodes; interactive callers refuse at once.
+    """
+
+    def __init__(self, root: Path, *, wait: float = 0.0):
         self.path = _safe(root / 'store.lock')
         self.descriptor = None
+        self.wait = wait
 
     def __enter__(self):
         import fcntl
         self.descriptor = os.open(self.path, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
         try:
             _safe(self.path)
-            try:
-                fcntl.flock(self.descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except BlockingIOError:
-                raise StoreRefused('busy') from None
+            deadline = time.monotonic() + self.wait
+            while True:
+                try:
+                    fcntl.flock(self.descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    break
+                except BlockingIOError:
+                    if time.monotonic() >= deadline:
+                        raise StoreRefused('busy') from None
+                    time.sleep(0.002)
         except BaseException:
             os.close(self.descriptor)
             raise
@@ -552,7 +571,7 @@ def append(episode: dict) -> None:
         line = _canonical(episode)
         _need(hasattr(os, 'O_NOFOLLOW'), 'secure store opening is unsupported')
         root = _store_root(create=True)
-        with _Lock(root):
+        with _Lock(root, wait=WORKER_LOCK_WAIT):
             for entry in _entries(root):
                 if not _retained(entry.name, current):
                     entry.unlink()
@@ -595,7 +614,7 @@ def _secret() -> bytes | None:
     try:
         _need(hasattr(os, 'O_NOFOLLOW'), 'secure store opening is unsupported')
         root = _store_root(create=True)
-        with _Lock(root):
+        with _Lock(root, wait=WORKER_LOCK_WAIT):
             path = _safe(root / SALT_FILE)
             try:
                 return _read_secret(path)
@@ -681,6 +700,9 @@ def submit(operation: str, kind: str, source, request=None, repository: str | No
             return
         with _worker_guard:
             if _worker is None or not _worker.is_alive():
+                if _worker is None:
+                    import atexit
+                    atexit.register(flush, 1.0)  # give a queued episode a moment at shutdown
                 _worker = threading.Thread(target=_work, name='system-one-shadow', daemon=True)
                 _worker.start()
         _jobs.put_nowait((operation, kind, source, request, repository))

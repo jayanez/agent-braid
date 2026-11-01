@@ -111,9 +111,9 @@ not count towards `sameParentDirCount` or `topDirOverlap`.
 | Order | Class | Rule |
 |---|---|---|
 | 1 | `lockfile` | Basename exactly one of `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `poetry.lock`, `uv.lock`, `Pipfile.lock`, `Cargo.lock`, `go.sum`, `Gemfile.lock`, `composer.lock` (case-insensitive) |
-| 2 | `generated` | A directory segment in `dist`, `build`, `out`, `target`, `node_modules`, `__pycache__`, `generated`; or the basename contains `.min.` or `generated` |
+| 2 | `generated` | A directory segment in `dist`, `build`, `out`, `target`, `node_modules`, `__pycache__`, `generated`; or the basename contains `.min.`, or its stem has `generated` as a whole word delimited by start, end, `.`, `_` or `-` (`foo.generated.ts`, not `regenerate.py`) |
 | 3 | `test` | A directory segment in `test`, `tests`, `__tests__`, `spec`; or the basename matches `test_*`, `*_test.*` (the stem ends in `_test`), `*.test.*` or `*.spec.*` |
-| 4 | `docs` | Extension `.md`, `.rst`, `.txt`, `.adoc`; or a directory segment `docs` |
+| 4 | `docs` | Extension `.md`, `.rst`, `.txt`, `.adoc`; or a directory segment `docs`. Exception checked first: `requirements*.txt|.in` and `constraints*.txt|.in` dependency manifests are `config` |
 | 5 | `config` | Extension `.json`, `.yaml`, `.yml`, `.toml`, `.ini`, `.cfg`, `.conf`, `.env`; or a dotfile basename (starts with `.`) |
 | 6 | `src` | Extension `.py`, `.js`, `.ts`, `.tsx`, `.jsx`, `.go`, `.rs`, `.java`, `.kt`, `.c`, `.h`, `.cpp`, `.cs`, `.rb`, `.php`, `.swift`, `.m`, `.scala`, `.sh` |
 | 7 | `other` | Anything else, including every non-path resource |

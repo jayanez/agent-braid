@@ -980,3 +980,10 @@ class SaltRecoveryTests(unittest.TestCase):
     def test_test_suffix_requires_an_extension(self):
         self.assertEqual(shadow.classify('pkg/run_test.py'), 'test')
         self.assertNotEqual(shadow.classify('bin/run_test'), 'test')
+
+    def test_manifests_and_generated_words_are_classified_by_whole_name(self):
+        self.assertEqual(shadow.classify('requirements.txt'), 'config')
+        self.assertEqual(shadow.classify('ci/requirements-dev.in'), 'config')
+        self.assertEqual(shadow.classify('notes/readme.txt'), 'docs')
+        self.assertEqual(shadow.classify('src/regenerate_cache.py'), 'src')
+        self.assertEqual(shadow.classify('src/foo.generated.ts'), 'generated')

@@ -54,7 +54,7 @@ unmapped sentence yields a `skipped` / `unmapped-reason` episode with no pairs; 
 episode with one extra string field, one unknown reason code, one value outside the
 effect-kind set, a negative count, `NaN`, a duplicate member, a missing field, or
 `executionAuthorization` true is refused with a stable reason.
-Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k "test_episode_conforms_and_holds_no_input_string or test_every_reason_sentence_in_the_analyzer_is_mapped or test_unmapped_reason_is_skipped_with_no_pairs or test_pairs_are_capped_deterministically_in_report_order or test_validator_rejects_strings_outside_the_closed_vocabularies"`.
+Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k "test_episode_conforms_and_holds_no_input_string or test_every_reason_sentence_the_analyzer_emits_is_mapped or test_unmapped_reason_is_skipped_with_no_pairs or test_pairs_are_capped_deterministically_in_report_order or test_validator_rejects_strings_outside_the_closed_vocabularies"`.
 
 ## procedure_003
 

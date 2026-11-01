@@ -129,7 +129,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure_005 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
-          "test_name": "test_absent_and_off_keep_registry_bytes_and_digest",
+          "test_name": "RegistryTests.test_absent_and_off_keep_registry_bytes_and_digest",
           "then": "bytes and configuration_digest equal the pre-SPEC-066 values",
           "when": "it is saved and digested"
         }
@@ -145,7 +145,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure_001 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
-          "test_name": "test_git_analyze_work_prepare_and_analyze_are_byte_identical",
+          "test_name": "ParityTests.test_git_analyze_work_prepare_and_analyze_are_byte_identical",
           "then": "envelopes are byte-identical",
           "when": "each tool is invoked with the same input"
         },
@@ -155,7 +155,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure_003 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
-          "test_name": "test_busy_lock_refuses_without_waiting",
+          "test_name": "StoreTests.test_busy_lock_refuses_without_waiting",
           "then": "the result is unchanged and the refusal is only counted in memory",
           "when": "analyze-work runs in shadow mode"
         }
@@ -171,7 +171,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure_002 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
-          "test_name": "test_episode_conforms_and_holds_no_input_string",
+          "test_name": "EpisodeTests.test_episode_conforms_and_holds_no_input_string",
           "then": "it validates and contains none of the sentinels",
           "when": "an episode is recorded"
         }
@@ -187,7 +187,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Covered by procedure_003 (store refusals).",
           "test_file": "tests/test_system_one_shadow.py",
-          "test_name": "test_symlinked_store_directory_is_refused",
+          "test_name": "StoreTests.test_symlinked_store_directory_is_refused",
           "then": "the store refuses and nothing is written",
           "when": "an episode is appended"
         }
@@ -203,7 +203,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure_004 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
-          "test_name": "test_report_counts_match_seeded_episodes",
+          "test_name": "ReportTests.test_report_counts_match_seeded_episodes",
           "then": "counts match the seeded episodes",
           "when": "system-one report runs"
         }
@@ -219,7 +219,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure_007 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
-          "test_name": "test_command_telemetry_is_opt_in_and_aggregate_only",
+          "test_name": "ReportTests.test_command_telemetry_is_opt_in_and_aggregate_only",
           "then": "one CLI system-one aggregate is recorded and nothing else",
           "when": "system-one report runs"
         }
@@ -235,7 +235,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure_008 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
-          "test_name": "test_identity_mismatch_is_refused_and_still_valid",
+          "test_name": "EpisodeTests.test_identity_mismatch_is_refused_and_still_valid",
           "then": "the episode is refused with identity-mismatch",
           "when": "analyze-work runs in shadow mode"
         }
@@ -251,7 +251,7 @@
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure_009 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
-          "test_name": "test_plugin_status_reports_configured_and_active_mode_after_reconnect",
+          "test_name": "RegistryTests.test_plugin_status_reports_configured_and_active_mode_after_reconnect",
           "then": "configured and active modes differ until reconnect and no episode data appears",
           "when": "plugin-status is read before and after reconnect"
         }
