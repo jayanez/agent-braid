@@ -1,0 +1,100 @@
+{
+  "candidateBinding": "Branch based on develop 530a5f395b19f1bb9519b4846186e201cf4a02aa; current input/output hashes below; no frozen implementation commit claimed",
+  "disposition": "Engineering completed for manifest validation only: the closed native-claude-laboratory profile parses beside the unchanged offline-foundations profile. Nothing native runs; no qualification, grant, quota reading, containment or transport is provided or implied",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_manifest -v",
+      "exitCode": 0,
+      "scope": "Focused module run, Python 3.13.11.",
+      "testsRun": 22
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13.11.",
+      "testsRun": 731
+    },
+    {
+      "command": "pre-PR reviews: code-review, code-review-and-quality, code-simplification",
+      "exitCode": 0,
+      "scope": "Run by three Claude subagents (not independent review). Applied: non-string profile no longer raises TypeError and the native profile on an offline shape keeps its old reason (native path only for the exact native key set plus profile), goldens extended to 65 cases and cross-checked against the pre-change parser, exact reason per host negative control, network-cap provenance comment, provenance header wording, helper ordering. Not applied (outside exclusive files or deferred): gate comparisons and stale wording in harness_lab/host_claude/cli/admission, native named bindings, merging the two host validators."
+    }
+  ],
+  "executionAuthorization": false,
+  "goldens": {
+    "cases": 65,
+    "computedWith": "pre-change parser at 530a5f395b19f1bb9519b4846186e201cf4a02aa, loaded from git show and compared case by case with the new parser (all equal)",
+    "corpus": "tests/test_harness_manifest.py offline_corpus(): make_manifest (canonical and indented), every top-level key missing, native and hidden extra keys, true format/profile/executionAuthorization, profile spellings, non-string profile/format, the native profile name on an offline shape, every limit raised, native host values on offline, and nine multi-fault manifests",
+    "outcomesSha256": "17ff237893c23585fefdd16fca875d8d9e5fc6b582041015504ec33186e68772",
+    "recheckedEqual": true
+  },
+  "inputs": {
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/065-native-claude-containment/contracts/native-profile.md": "1605e001c27da1b746c273d5b54a2807c203c1e1decc5cad9449fd96f2d7d3b9",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json": "9aa51097b838c255ca92ecfb6f93a9fcea373d31c8a73ea6d45e635ae45e692e",
+    "specs/065-native-claude-containment/spec.md": "908cbd093c5172bf82262881ca854ec80cfa96498037c29ad9bc2de1c6162251",
+    "specs/065-native-claude-containment/tasks.md": "05519d9f6d3d12ee5e206f175916c7d2c0d45745a2f72aae7d184b0287d89d02"
+  },
+  "limits": {
+    "nativeCaps": {
+      "cashCurrency": "EUR",
+      "maxAdditionalCashMicros": 0,
+      "maxAdmissionSeconds": 300,
+      "maxAutomaticRetries": 0,
+      "maxCandidateBytes": 262144,
+      "maxChildProcesses": 16,
+      "maxContextBytes": 131072,
+      "maxContextEntries": 16,
+      "maxFileBytes": 32768,
+      "maxFiles": 32,
+      "maxJournalBytes": 8388608,
+      "maxManifestBytes": 1048576,
+      "maxModelSessions": 1,
+      "maxNativeSessions": 1,
+      "maxNetworkConnections": 8,
+      "maxPathDepth": 4,
+      "maxStageOutputBytes": 65536
+    },
+    "notManifestLimits": "Wall 30 min, CPU 30 min, memory 4 GB, file size 64 MB, 256 open files (NC-8) and the NC-10 probe budget are host/backend run limits owned by T005/T006/T007, not manifest fields",
+    "sources": {
+      "maxAdditionalCashMicros": "0 (F2)",
+      "maxAutomaticRetries": "0",
+      "maxChildProcesses": "16 descendants (NC-8); minimum 1",
+      "maxModelSessions": "1",
+      "maxNativeSessions": "1 per manifest (F3 one session per unit)",
+      "maxNetworkConnections": "8 concurrent connections through the NC-1 loopback proxy; fixed here by T003 as the contract requires, a ceiling a manifest may only tighten; enforcement is T005/T006 work and the value is not yet probe-validated",
+      "others": "unchanged from DEFAULT_LIMITS"
+    }
+  },
+  "method": "Test-first offline unittest execution: offline goldens computed with the unchanged parser and committed before the native validator was written; native schema and negative controls added red, then implemented green",
+  "negativeControls": {
+    "any limit above cap": "invalid-budget",
+    "build other than 2.1.292": "unsupported-profile",
+    "executionAuthorization true": "unsupported-profile",
+    "host other than claude": "unsupported-profile",
+    "native field missing (containment or hostQualificationSha256)": "invalid-manifest",
+    "native manifest with offline host": "unsupported-profile",
+    "native manifest with offline limits": "invalid-budget",
+    "native session/model/child/network limit 0": "invalid-budget",
+    "observed value in manifest": "unsupported-profile",
+    "offline manifest carrying native keys": "invalid-manifest",
+    "offline-shaped manifest with native profile": "unsupported-profile (unchanged offline reason)",
+    "route other than subscription": "unsupported-profile",
+    "unknown native field": "invalid-manifest"
+  },
+  "outcome": "parse_manifest takes the native path only for a dict whose key set is exactly the native key set and whose profile is native-claude-laboratory; every other input follows the unchanged offline path (key set, format, profile, ...), so offline refusals and their order are identical. The native profile requires host kind claude, build exactly 2.1.292 (NC-4), a 64-hex executableSha256, route subscription, model/effort identifier or null, observed all null, containment {backend, qualificationSha256}, hostQualificationSha256, executionAuthorization false, and limits within NATIVE_LIMITS. The two native-only keys are bound by the complete manifest SHA-256; BINDING_NAMES and offline bindings are unchanged.",
+  "outputs": {
+    "agent_braid/harness_manifest.py": "6624d79de56e702062ba02cefb5cab3d6ec7a58b310c3520d7bdbe024df7fe61",
+    "tests/test_harness_manifest.py": "99198cd8f1b5de7d120d30c832c5138e4f54a3462dec0e7b1fadd51f6ad01027"
+  },
+  "pending": [
+    "Clean-clone quick and pr profile results recorded in the pull request",
+    "Trust boundary (code-review finding, out of T003 file scope): a native manifest now parses, removing the parser-level refusal that made harness_lab._check_backend and harness_host_claude._check_transport unreachable for native manifests. Those gates compare only environment.sha256 and expiry; comparing containment.qualificationSha256, hostQualificationSha256, host.executableSha256 and host.build with trusted qualification/transport values is T005/T006 (A9/K2) work. Today the ClaudeTransport base refuses, no native backend exists and no qualification is issued",
+    "Stale offline-only wording outside T003 files: harness_lab.py:14-15, harness_host_claude.py:12-14, harness_cli.py:60 inspect text, harness_admission.py:14",
+    "containment and hostQualificationSha256 are bound by the complete manifest SHA-256 only, not by named bindings (adding names would change offline bindings); add native-only names in T005/T006 if named pins are needed",
+    "Goldens cover make_manifest and its variants; other harness test modules build manifests from make_manifest and are protected by their own suites passing",
+    "maxNetworkConnections value open to revision after T007/T009 probes"
+  ],
+  "spec": "065-native-claude-containment",
+  "task": "SPEC-065/T003"
+}

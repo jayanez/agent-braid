@@ -3,10 +3,10 @@
 **Track:** VIS.1 — Activity viewer (independent track; never a gate of the core,
 of M4.x or of HAR)
 
-**Status:** draft specification. The owner requested the direction and the
-decisions below in the planning session of 2026-10-31. They are recorded here for
-review and become accepted only through owner review T001; no separate approval
-record exists yet. [ADR 0032](../../docs/adr/0032-activity-viewer-companion.md)
+**Status:** draft specification, accepted by owner review T001 on 2026-11-01
+([review record](owner-review-20261101.json), frozen candidate `530a5f39`). The
+decisions below were requested in the planning session of 2026-10-31 and accepted
+in that review. [ADR 0032](../../docs/adr/0032-activity-viewer-companion.md)
 (companion boundary) and [ADR 0033](../../docs/adr/0033-vendored-threejs-mit-boundary.md)
 (vendored third-party code, Three.js pinned at r186) were accepted on 2026-11-01,
 so the ADR gates for implementation and vendoring are met. Nothing is implemented
@@ -96,6 +96,8 @@ deviation is listed in the
 [deviation table](contracts/ui-security-privacy.md#deviations-from-the-never-collect-list).
 
 ## Owner decisions requested (pending T001)
+
+Accepted without changes in T001 on 2026-11-01.
 
 | ID | Decision requested on 2026-10-31 |
 |---|---|

@@ -605,12 +605,13 @@ host decisions and writes no host configuration.
 
 | Track | Scope | State |
 |---|---|---|
-| VIS.1 | VIS.1a coordination slice (probes and census first, contract, adapters, loopback server, `--watch`, replay, Claude hooks, web viewer), go/no-go checkpoint, then VIS.1b (OTLP, recording, export, effort pack, frames) (SPEC-061, 39 tasks) | Draft specification; ADR 0032 and ADR 0033 accepted 2026-11-01; milestone #25 published |
+| VIS.1 | VIS.1a coordination slice (probes and census first, contract, adapters, loopback server, `--watch`, replay, Claude hooks, web viewer), go/no-go checkpoint, then VIS.1b (OTLP, recording, export, effort pack, frames) (SPEC-061, 39 tasks) | Specification accepted (T001, 2026-11-01); ADR 0032 and ADR 0033 accepted; milestone #25 published; checkpoint T035 by 2027-01-31 |
 | VIS.2 | Claude Code mod pane (SPEC-062) | Planned |
 | VIS.3 | Codex hooks and `notify`, Codex MCP App and terminal UI (SPEC-063) | Planned |
 | VIS.4 | Cursor, OpenCode, Pi and other hosts (SPEC-064) | Planned |
 
 Gates: ADR 0032 (companion boundary) and ADR 0033 (vendored Three.js r186,
-founder), both accepted 2026-11-01; owner-run host verification receipts and
-owner review remain. The track is independent
+founder) and owner review T001, all accepted 2026-11-01; owner-run host
+verification receipts and the T035 checkpoint (by 2027-01-31) remain. VIS.2–VIS.4
+get specifications and milestones only after T035 records keep. The track is independent
 of the core, M4.x and HAR and gates none of them. Extra cash spend EUR 0.

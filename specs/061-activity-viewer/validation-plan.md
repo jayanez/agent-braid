@@ -203,7 +203,9 @@ Owner-run before T012. Count, for the owner's sessions and run directories of th
 last four weeks, those that contain each coordination artifact kind (analysis
 report, plan, scheduler preparation, grant, ownership notice or receipt, gate
 result). Record counts and kinds only, no content or paths, in
-`evidence/census-<date>.json`, with the OD-8 threshold and whether it was met. A
+`evidence/census-<date>.json`, with the OD-8 threshold (at least 5 sessions or run
+directories with at least one coordination artifact, and at least 3 of the 6
+kinds overall) and whether it was met. A
 result below the threshold is reported at T035 and may re-scope VIS.1 to replay of
 curated artifacts.
 
