@@ -165,6 +165,10 @@ def build_episode(report: dict, operation: str, kind: str, *, clock=None, now=No
     operation_count = _count(summary['operationCount'], 1, 64)
     pair_count = _count(summary['pairCount'], 0, 2016)
     analyzer = {'version': report['analyzer']['version'], 'ruleSet': report['analyzer']['ruleSet']}
+    # Complete per-class counts survive the pair cap, so DP-1 shares cover every pair.
+    counts = {name: _count(summary['classifications'][name], 0, 2016) for name in CLASSIFICATIONS}
+    if sum(counts.values()) != pair_count:
+        raise ValueError('report classifications do not sum to the pair count')
     interactions = report['interactions']
     pairs = []
     mapped = True
@@ -193,6 +197,7 @@ def build_episode(report: dict, operation: str, kind: str, *, clock=None, now=No
             'analyzer': analyzer,
             'operationCount': operation_count,
             'pairCount': pair_count,
+            'classificationCounts': counts,
             'pairsRecorded': len(pairs),
             'pairs': pairs,
             'systemOne': {'status': status, 'reason': reason,
@@ -222,7 +227,8 @@ def validate_episode(value) -> dict:
     """Enforce the v0.1 contract, including the never-present rule for free strings."""
     _need(type(value) is dict and set(value) == {
         'schemaVersion', 'episodeId', 'day', 'surface', 'operation', 'analysisKind', 'analyzer',
-        'operationCount', 'pairCount', 'pairsRecorded', 'pairs', 'systemOne', 'executionAuthorization'})
+        'operationCount', 'pairCount', 'classificationCounts', 'pairsRecorded', 'pairs', 'systemOne',
+        'executionAuthorization'})
     _need(value['schemaVersion'] == SCHEMA and value['surface'] == 'mcp')
     _need(type(value['episodeId']) is str and _UUID4.fullmatch(value['episodeId']))
     _need(type(value['day']) is str and _DAY.fullmatch(value['day']))
@@ -237,6 +243,9 @@ def validate_episode(value) -> dict:
           and all(type(v) is str and _IDENT.fullmatch(v) for v in analyzer.values()))
     _need(_int(value['operationCount'], 1, 64) and _int(value['pairCount'], 0, 2016))
     _need(_int(value['pairsRecorded'], 0, MAX_PAIRS) and value['executionAuthorization'] is False)
+    counts = value['classificationCounts']
+    _need(type(counts) is dict and set(counts) == set(CLASSIFICATIONS)
+          and all(_int(c, 0, 2016) for c in counts.values()) and sum(counts.values()) == value['pairCount'])
     pairs = value['pairs']
     _need(type(pairs) is list and len(pairs) == value['pairsRecorded'] <= value['pairCount'])
     for pair in pairs:
@@ -408,28 +417,33 @@ def report(directory: Path | None = None, *, current: date | None = None) -> dic
                 invalid += 1
                 continue
             bucket = days.setdefault(day, {'day': day, 'episodes': 0, 'operations': {},
-                                           'system2': {}, 'systemOne': {}})
+                                           'system2': {}, 'systemOne': {}, 'allPairs': {}})
             bucket['episodes'] += 1
             for table, key in ((bucket['operations'], episode['operation']),
                                (bucket['systemOne'], episode['systemOne']['status'])):
                 table[key] = table.get(key, 0) + 1
             for pair in episode['pairs']:
                 bucket['system2'][pair['system2']] = bucket['system2'].get(pair['system2'], 0) + 1
-    totals = {'episodes': 0, 'operations': {}, 'system2': {}, 'systemOne': {}}
+            for name, count in episode['classificationCounts'].items():
+                if count:
+                    bucket['allPairs'][name] = bucket['allPairs'].get(name, 0) + count
+    totals = {'episodes': 0, 'operations': {}, 'system2': {}, 'systemOne': {}, 'allPairs': {}}
     for bucket in days.values():
         totals['episodes'] += bucket['episodes']
-        for name in ('operations', 'system2', 'systemOne'):
+        for name in ('operations', 'system2', 'systemOne', 'allPairs'):
             for key, count in bucket[name].items():
                 totals[name][key] = totals[name].get(key, 0) + count
     recorded = sum(totals['system2'].values())
-    unknown = totals['system2'].get('unknown', 0)
+    analysed = sum(totals['allPairs'].values())
+    unknown = totals['allPairs'].get('unknown', 0)
     return {'schema': REPORT_SCHEMA,
             'retentionDays': RETENTION_DAYS,
             'days': [days[key] for key in sorted(days)],
             'totals': totals,
             'pairsRecorded': recorded,
+            'pairsAnalysed': analysed,
             'unknownPairs': unknown,
-            'unknownShare': round(unknown / recorded, 6) if recorded else None,
+            'unknownShare': round(unknown / analysed, 6) if analysed else None,
             'invalidLines': invalid,
             'refusalsThisProcess': refusal_counts(),
             'limits': list(REPORT_LIMITS),
@@ -438,7 +452,8 @@ def report(directory: Path | None = None, *, current: date | None = None) -> dic
 
 def render_report(value: dict) -> str:
     lines = [f"System One shadow report ({value['schema']})",
-             f"Episodes: {value['totals']['episodes']}  Pairs recorded: {value['pairsRecorded']}",
+             f"Episodes: {value['totals']['episodes']}  Pairs analysed: {value['pairsAnalysed']}"
+             f"  Pairs recorded: {value['pairsRecorded']}",
              'Unknown-pair share (DP-1 opportunity): '
              + ('none recorded' if value['unknownShare'] is None
                 else f"{value['unknownShare']:.1%} ({value['unknownPairs']} pairs)")]

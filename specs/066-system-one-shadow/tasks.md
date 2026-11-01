@@ -8,8 +8,16 @@ SPEC-066 is delivered in stages inside one milestone, `S1.5 — System One shado
 activation`. **S1.5a** (T010–T032) is specified to implementation level. **S1.5b–e**
 (T101–T403) are outline tasks, **blocked** until T032 records that S1.5a is complete
 and the owner reviews the stage's own plan; they exist so the absorbed deferred
-issues have a home and nothing is silently dropped. Implementation tasks need the
-owner review in T001. Tests come first in every implementation task.
+issues have a home and nothing is silently dropped. Tests come first in every
+implementation task.
+
+**Implementation authorization (2026-11-01).** The owner approved a plan whose first
+product step is S1.5a ([founder decisions](../../docs/development/FOUNDER_DECISIONS_20261101.md)),
+so S1.5a implementation landed with this specification. That approval is not the
+specification review: T001 stays open and is required before S1.5a closes (T032).
+Checked S1.5a tasks below cite `tests/test_system_one_shadow.py` (one module instead
+of the separate test files named in each task); unchecked ones remain open, partly
+implemented where noted.
 
 Existing deferred issues absorbed by this milestone, with the SPEC-066 task that
 carries each one forward, are listed in [issue-drafts.md](issue-drafts.md) and
@@ -52,7 +60,7 @@ specifications unless a SPEC-066 requirement amends them.
 
 ## S1.5a — Shadow mode
 
-- [ ] T010 (REQ-003 / SC-002): Reason table and episode builder: pure functions that
+- [x] T010 (REQ-003 / SC-002): Reason table and episode builder: pure functions that
   turn a System 2 report plus the operation name and analysis kind into an
   episode object, with the exact sentence-to-code table, the 64-pair cap, `effectKinds` as `null` (the report carries no
   kinds) and the `unmapped-reason` skip. Include the drift test that scans the analyzer's reason
@@ -60,14 +68,14 @@ specifications unless a SPEC-066 requirement amends them.
   `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow.py`,
   `tests/fixtures/system_one_shadow/`. Dependencies: T001. Verification:
   procedure_002.
-- [ ] T011 (REQ-003 / SC-002): Episode validator and privacy test: closed
+- [x] T011 (REQ-003 / SC-002): Episode validator and privacy test: closed
   vocabularies, key sets, bounds, canonical bytes, duplicate members, and a seeded
   test with hostile instance IDs, resource names, paths and prompts proving none of
   them appears in the serialized episode; negative controls inject one extra
   string, an unknown reason code and a mislabelled field. Files:
   `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow.py`.
   Dependencies: T010. Verification: procedure_002.
-- [ ] T012 (REQ-007 / procedure_008): Pinned identity: compiled backend ID and
+- [x] T012 (REQ-007 / procedure_008): Pinned identity: compiled backend ID and
   manifest digest, comparison with the installed identity, `identity-mismatch`
   refusal, and the constant `abstained` / `calibration-absent` answer of the
   reference backend. A test fails when the installed manifest digest changes
@@ -82,7 +90,8 @@ specifications unless a SPEC-066 requirement amends them.
   lock, unknown file, full disk. Files: `agent_braid/system_one_shadow.py`,
   `tests/test_system_one_shadow_store.py`. Dependencies: T011. Verification:
   procedure_003.
-- [ ] T014 (REQ-002 / SC-001, SC-003): Observer, budget and wiring:
+  Status 2026-11-01: Partly implemented: store with path safety, cap, retention, lock and refusal counters; the full negative-control matrix and telemetry-parity test are pending.
+- [x] T014 (REQ-002 / SC-001, SC-003): Observer, budget and wiring:
   `ToolingConfig.system_one`, `ShadowObserver` with the 50 ms stage checks and
   exception containment, lazy call from `ToolingService.invoke` after the
   envelope, and the byte-parity test between `off` and `shadow` for every tool with
@@ -91,19 +100,19 @@ specifications unless a SPEC-066 requirement amends them.
   it. Files: `agent_braid/system_one_shadow.py`, `agent_braid/tooling_mcp.py`,
   `tests/test_system_one_shadow_parity.py`. Dependencies: T012, T013. Verification:
   procedure_001, procedure_003.
-- [ ] T015 (REQ-001 / SC-005): Consent: registry `systemOne` member (decode,
+- [x] T015 (REQ-001 / SC-005): Consent: registry `systemOne` member (decode,
   `plan_setup`, digest only when `shadow`), `plugin setup --system-one`, router
   pass-through to `ToolingConfig`, reconnect-required behaviour, and the digest and
   bytes equality test for absent and `off`. Files:
   `agent_braid/plugin_registry.py`, `agent_braid/plugin_cli.py`,
   `agent_braid/plugin_mcp.py`, `tests/test_system_one_shadow_consent.py`,
   `tests/test_plugin_registry.py`. Dependencies: T014. Verification: procedure_005.
-- [ ] T016 (REQ-008 / procedure_009): `plugin-status` `systemOne` block with
+- [x] T016 (REQ-008 / procedure_009): `plugin-status` `systemOne` block with
   configured and active mode, store state and retention; no directory creation, no
   episode bodies; existing status tests updated. Files:
   `agent_braid/plugin_mcp.py`, `tests/test_system_one_shadow_consent.py`,
   `tests/test_plugin_mcp.py`. Dependencies: T015. Verification: procedure_009.
-- [ ] T017 (REQ-005 / SC-004): `system-one report` (text and
+- [x] T017 (REQ-005 / SC-004): `system-one report` (text and
   `agent-braid-s1-report/v0.1` JSON) and `purge` with confirmation or `--yes`, over
   the strict validator, with invalid lines counted and no episode body printed.
   Files: `agent_braid/system_one_shadow.py`, `agent_braid/system_one_cli.py`,
@@ -116,6 +125,7 @@ specifications unless a SPEC-066 requirement amends them.
   `agent_braid/cli.py`, `agent_braid/tooling_telemetry.py`,
   `docs/tooling/TELEMETRY.md`, `tests/test_tooling_telemetry.py`,
   `tests/test_system_one_cli.py`. Dependencies: T017. Verification: procedure_007.
+  Status 2026-11-01: Partly implemented: `--telemetry`, `observe` wrapper and the `system-one` CLI operation; `docs/tooling/TELEMETRY.md` and the no-other-metric test are pending.
 - [ ] T019 (REQ-002, REQ-003 / SC-001): Boundary and validation-profile
   checks: `off` never imports the shadow module (subprocess `sys.modules` check),
   the shadow module imports no network module and no model library, no new
@@ -125,16 +135,19 @@ specifications unless a SPEC-066 requirement amends them.
   `tests/test_system_one_shadow_boundaries.py`,
   `docs/development/VALIDATION_PROFILES.md`. Dependencies: T014. Verification:
   procedure_001, `python3 scripts/validate_change.py --base develop --profile quick`.
+  Status 2026-11-01: Pending.
 - [ ] T020 (all REQ): User documentation: `docs/tooling/SYSTEM_ONE_SHADOW.md`
   (what is recorded, what is never recorded, how to enable, report, purge, non-claims
   and limits including the filesystem-stall limit), plus updates to
   `docs/tooling/PLUGIN_PRIVACY.md` and `docs/tooling/INSTALL.md`. Dependencies: T017,
   T018. Evidence: merged documents and a docs link check.
+  Status 2026-11-01: Pending; README and the plugin setup skill carry interim text.
 - [ ] T021 (REQ-002 / SC-003): Overhead measurement: median and p95 of the shadow
   step for 2, 12 and 32 operations on the owner machine, with and without a warm
   store, reported as a measurement receipt (not a gate) with the 50 ms budget as
   reference. Dependencies: T014. Evidence:
   `evidence/overhead-<date>.json`.
+  Status 2026-11-01: Pending.
 
 ## S1.5a — Owner-run check
 

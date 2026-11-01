@@ -42,9 +42,11 @@ whether to serialize. Their ground truth arrives later as an observed outcome.
 This specification turns System One into a measured, owner-consented, local
 subsystem in stages:
 
-1. **S1.5a (this delivery): shadow mode.** For every successful `analyze` and
-   `analyze-work` call, record one System One decision episode next to the
-   unchanged System 2 result, without changing any output.
+1. **S1.5a (this delivery): shadow mode.** For every successful `analyze-work`
+   call, record one System One decision episode next to the unchanged System 2
+   result, without changing any output. The runtime `analyze` tool returns
+   evidence and an advisory plan without the interaction report, so it yields no
+   episode in v0.1.
 2. **S1.5b: owned corpus.** Admit the owner's own episodes and real-use sources
    as a permissioned corpus, and join episodes with later observed outcomes.
 3. **S1.5c: reference-grade contracts.** Adopt the strongest Laya/Jev decision
@@ -106,15 +108,18 @@ to the envelope in `off` mode for the same input. This covers `analyze`,
 - Shadow work stays within a fixed budget of 50 ms of wall time per call; over
   budget, the episode is recorded as `skipped`.
 
-**REQ-003 Episode contract.** Each successful `analyze` or `analyze-work` call in
+**REQ-003 Episode contract.** Each successful `analyze-work` call (AIM or Git) in
 `shadow` mode appends at most one episode that conforms to
 [agent-braid-s1-episode/v0.1](contracts/episode-v0.1.md). Episodes contain only
 derived structural features:
-- the System 2 classification, reason codes and constraints
+- the System 2 classification, reason codes (including `read-version`) and
+  constraints
 - coverage statuses
-- per-side effect-kind sets
-- shared-resource counts
-- dependency and read-version flags
+- shared-resource counts and a dependency flag
+- complete per-class pair counts, so shares cover pairs beyond the 64-pair cap
+
+Per-side effect kinds are not in the System 2 report, so v0.1 records them as
+`null`.
 
 They contain no resource names, paths, identifiers, digests of content or text.
 
@@ -125,13 +130,20 @@ They contain no resource names, paths, identifiers, digests of content or text.
 - It is bounded: at most 4 MiB per day file, at most 64 pairs per episode, and 30
   UTC dates retained on access.
 - A busy, unsafe or full store refuses the episode and counts the refusal in
-  memory. It never blocks or fails the caller.
+  memory. It never blocks or fails the caller. Refusals and internal errors
+  before storage exist only as these in-memory counts.
+- The 50 ms budget is a work budget checked between stages; it bounds the
+  episode computation, not a filesystem write.
 
 **REQ-005 Usage report.**
 - `agent-braid system-one report` prints the retained episode counts per day,
   operation, System 2 classification and System One status. It also prints the
   share of System 2 `unknown` pairs, which is the DP-1 opportunity.
-- `--format json` emits `agent-braid-s1-report/v0.1`.
+- `--format json` emits `agent-braid-s1-report/v0.1`: per-day and total counts
+  of episodes, operations, recorded System 2 classes, all analysed pairs per
+  class and System One statuses, plus `pairsRecorded`, `pairsAnalysed`,
+  `unknownPairs`, `unknownShare` (over all analysed pairs), `invalidLines`,
+  this process's refusal counts, limits and `executionAuthorization: false`.
 - `agent-braid system-one purge` deletes the store after confirmation, or with
   `--yes`.
 - The report reads only the store and never prints episode bodies.
@@ -150,8 +162,8 @@ They contain no resource names, paths, identifiers, digests of content or text.
   `identity-mismatch`. The output is still unaffected.
 
 **REQ-008 Plugin status.** `plugin-status` reports
-`systemOne: {configuredMode, activeMode, store, episodeRetentionDays: 30}`. It
-never reports episode contents.
+`systemOne: {configuredMode, activeMode, store: {location, present},
+episodeRetentionDays: 30}`. It never reports episode contents.
 
 ## Requirements — S1.5b–e (outline; need their own plan review)
 
@@ -215,6 +227,12 @@ S1.5a tests H-S1.
 - SC-006: A real owner session in `shadow` mode produces at least one episode,
   recorded as a redacted receipt under `docs/development/REAL_USE_EVIDENCE.md`
   rules. This is a pending owner-run check, not implied by tests.
+- SC-007: `system-one --telemetry local` records a CLI `system-one` aggregate
+  and nothing else (REQ-006).
+- SC-008: A changed backend manifest digest yields `refused` /
+  `identity-mismatch` episodes and unchanged envelopes (REQ-007).
+- SC-009: `plugin-status` shows the configured and active modes and the store
+  presence, and no episode data (REQ-008).
 
 ## References
 

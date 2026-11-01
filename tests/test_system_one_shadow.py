@@ -235,7 +235,9 @@ class EpisodeTests(Base):
 
     def report_with(self, reasons, constraints=('requires-execution-contract-before-parallelism',), count=1):
         report = {'analyzer': {'name': 'agent-braid', 'version': '0.1.0-alpha', 'ruleSet': 'exact-resource-footprints-v1'},
-                  'summary': {'operationCount': 2, 'pairCount': count},
+                  'summary': {'operationCount': 2, 'pairCount': count,
+                              'classifications': {'independent-candidate': count, 'ordered': 0,
+                                                  'conflicting': 0, 'unknown': 0}},
                   'interactions': [{'left': 'a', 'right': 'b', 'classification': 'independent-candidate',
                                     'sharedResources': ['r'], 'reasons': list(reasons),
                                     'constraints': list(constraints),
@@ -265,6 +267,13 @@ class EpisodeTests(Base):
                                        'analyze-work', 'aim')
         shadow.validate_episode(episode)
         self.assertEqual((episode['pairCount'], episode['pairsRecorded'], len(episode['pairs'])), (100, 64, 64))
+        self.assertEqual(episode['classificationCounts']['independent-candidate'], 100)
+
+    def test_classification_counts_must_sum_to_pair_count(self):
+        report = self.report_with(['Complete exact-resource footprints are disjoint.'])
+        report['summary']['classifications']['unknown'] = 1
+        with self.assertRaises(ValueError):
+            shadow.build_episode(report, 'analyze-work', 'aim')
 
     def test_identity_mismatch_is_refused_and_still_valid(self):
         with patch.object(shadow, 'EXPECTED_MANIFEST_DIGEST', '0' * 64):
@@ -407,7 +416,8 @@ class ReportTests(Base):
         self.assertEqual(value['totals']['operations'], {'analyze-work': 4})
         self.assertEqual(value['totals']['system2'], {'independent-candidate': 2, 'unknown': 2})
         self.assertEqual(value['totals']['systemOne'], {'abstained': 4})
-        self.assertEqual((value['pairsRecorded'], value['unknownPairs'], value['unknownShare']), (4, 2, 0.5))
+        self.assertEqual((value['pairsRecorded'], value['pairsAnalysed'], value['unknownPairs'],
+                          value['unknownShare']), (4, 4, 2, 0.5))
         day, = value['days']
         self.assertEqual(day['episodes'], 4)
         self.assertNotIn(SENTINEL, json.dumps(value))

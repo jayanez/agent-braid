@@ -2,8 +2,8 @@
 
 One episode is a single JSON object on one line (UTF-8, canonical: sorted keys,
 no insignificant whitespace, no NaN or infinity, no duplicate members). It is
-written by the S1.5a shadow observer after a successful `analyze` or
-`analyze-work` call. It never reaches an MCP envelope.
+written by the S1.5a shadow observer after a successful `analyze-work` call
+(`analyze` is reserved: its runtime result carries no interaction report). It never reaches an MCP envelope.
 
 ## Top level
 
@@ -15,9 +15,10 @@ written by the S1.5a shadow observer after a successful `analyze` or
 | `surface` | string | `mcp` |
 | `operation` | string | `analyze` or `analyze-work` |
 | `analysisKind` | string | `aim` or `git` |
-| `analyzer` | object | `{version, ruleSet}`, copied from the report's `analyzer` without `name` |
-| `operationCount` | integer | 1–64, from the report summary |
+| `analyzer` | object | `{version, ruleSet}`, copied from the report's `analyzer` without `name`; each matches `^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$` |
+| `operationCount` | integer | 1–64, from the report summary (the MCP adapter currently admits at most 32) |
 | `pairCount` | integer | 0–2016 |
+| `classificationCounts` | object | Exactly the four System 2 classes as keys, integer counts from the report summary; they sum to `pairCount` |
 | `pairsRecorded` | integer | 0–64; pairs beyond 64 are dropped deterministically in report order |
 | `pairs` | array | `pairsRecorded` pair objects |
 | `systemOne` | object | See below |
@@ -36,7 +37,7 @@ vocabularies.
 | `constraints` | array of strings | Copied from the report's closed constraint vocabulary |
 | `coverage` | array of strings | Sorted subset of `complete`, `partial`, `unknown` |
 | `sharedResourceCount` | integer | 0–4096 |
-| `effectKinds` | object | `{left: [...], right: [...]}`. Sorted subsets of the analyzer's effect kinds. In the AIM path, effect kinds come from the operation records; when they are not derivable (Git path), the value is `null` |
+| `effectKinds` | null or object | Always `null` in v0.1: the System 2 report carries no per-operation effect kinds. Reserved shape `{left: [...], right: [...]}` with sorted subsets of `read`, `write`, `call`, `transform`, `emit`, `delete`, `deploy`, `unknown` |
 | `dependency` | boolean | Whether the pair is ordered by an explicit dependency path |
 | `observedOutcome` | null | Always `null` in v0.1; filled only by the S1.5b observer in a separate joined record |
 
@@ -49,12 +50,12 @@ reason `unmapped-reason`; the observer never stores free text.
 | Field | Type | Rule |
 |---|---|---|
 | `status` | string | `answered`, `abstained`, `refused` or `skipped` |
-| `reason` | string or null | Closed set: `calibration-absent`, `identity-mismatch`, `budget-exceeded`, `unmapped-reason`, `store-unavailable`, `internal-error`, or `null` |
+| `reason` | string or null | Closed set: `calibration-absent`, `identity-mismatch`, `budget-exceeded`, `unmapped-reason`, `internal-error`, or `null`. `store-unavailable` is reserved: refused stores and errors before storage never produce a stored episode and are counted in memory only |
 | `backendId` | string | For example `stdlib-rule-fixture-v1` |
 | `manifestDigest` | string | 64 lowercase hex characters |
 | `decisionPoint` | string | `DP-1` |
 | `answers` | array or null | `null` unless `status` is `answered`; otherwise one item per recorded pair: `{choice, probabilities}` over `likely-independent`, `likely-conflicting`, `undetermined` |
-| `elapsedMicros` | integer | 0–50,000; System One time only |
+| `elapsedMicros` | integer | 0–50,000; System One answer time only, clamped to 50,000; a `budget-exceeded` episode still records it |
 
 ## Never present
 

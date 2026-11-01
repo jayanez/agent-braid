@@ -1,11 +1,11 @@
 # SPEC-066 validation procedures
 
 Each procedure records the command, candidate commit and artifact hashes,
-environment, expected and actual outcome, negative controls and limits. None has
-been run; this specification change only plans them. The owner-run real-use check
-stays separate from automated checks. Procedures 001–006 map to SC-001–SC-006;
-procedures 007–009 cover requirements that have no success criterion in the
-specification (REQ-006, REQ-008 and REQ-007).
+environment, expected and actual outcome, negative controls and limits. The
+automated procedures run as the named tests in `tests/test_system_one_shadow.py`;
+their candidate-bound records are added when the candidate is frozen. The
+owner-run real-use check stays separate from automated checks. Procedures 001–009
+map to SC-001–SC-009.
 
 | Procedure | Covers | Kind |
 |---|---|---|
@@ -15,9 +15,9 @@ specification (REQ-006, REQ-008 and REQ-007).
 | procedure_004 | SC-004, REQ-005 | automated |
 | procedure_005 | SC-005, REQ-001 | automated |
 | procedure_006 | SC-006 | owner-run |
-| procedure_007 | REQ-006 | automated |
-| procedure_008 | REQ-007 | automated |
-| procedure_009 | REQ-008 | automated |
+| procedure_007 | REQ-006 / SC-007 | automated |
+| procedure_008 | REQ-007 / SC-008 | automated |
+| procedure_009 | REQ-008 / SC-009 | automated |
 
 ## procedure_001
 
@@ -120,7 +120,7 @@ tests.test_plugin_registry -v`.
 Owner-run. On the owner machine, with the candidate package installed, run
 `plugin setup --system-one shadow` (preview, then `--apply` with the printed digest),
 reconnect the MCP, confirm `plugin-status` shows `activeMode: shadow`, and work
-normally with at least one `analyze` or `analyze-work` call that has two or more
+normally with at least one `analyze-work` call that has two or more
 operations. Then run `agent-braid system-one report --format json`. Query every
 source listed in `docs/development/REAL_USE_EVIDENCE.md`. Commit a derived receipt
 with sources consulted, window, episode count, pair count, class and status counts,
