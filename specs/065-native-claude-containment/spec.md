@@ -3,8 +3,8 @@
 **Track:** HAR (unblocks SPEC-048/T008 for the Claude profile, then SPEC-049/T004)
 
 **Status:** draft; implementation in progress. T003 (native manifest profile),
-T004 (quota gate), T005 (macOS containment backend) and T006 (native
-transport) are implemented at unit level; ADR 0035 (T002) is proposed, not
+T004 (quota gate), T005 (macOS containment backend), T006 (native
+transport) and T007 (probe catalog and runner) are implemented at unit level; ADR 0035 (T002) is proposed, not
 accepted; nothing is qualified or authorized. The founder decided every security choice (NC-1 to NC-11) and F5 is
 bound, in the [founder decision record](evidence/founder-decisions-20261031.json)
 (T001, 2026-10-31). The decisions authorize no execution, qualification or
