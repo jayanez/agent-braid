@@ -227,6 +227,9 @@ class ClaudeHostTests(unittest.TestCase):
         claude_manifest = replace(manifest, data=data)
 
         class Native(hc.ClaudeTransport):
+            def verify_containment(self, manifest, qualification, now):
+                pass  # the K2 hook; the real check is covered by test_harness_transport_claude
+
             def version(self):
                 return VERSION
 
@@ -243,6 +246,27 @@ class ClaudeHostTests(unittest.TestCase):
             hc.run_claude(claude_manifest, context, **{**args, "qualification": qualify(
                 qualification_wire(environmentSha256="b" * 64))})
         self.assertEqual(cm.exception.reason, "native-host-unqualified")
+
+    def test_qualified_native_transport_without_containment_check_is_refused(self):
+        manifest, context = make_manifest_and_context()
+        data = manifest.to_dict()
+        data["host"]["kind"] = "claude"
+        stub = NativeStub()  # inherits the refusing K2 default; any call would fail the test
+        with self.assertRaises(hc.ClaudeHostError) as cm:
+            hc.run_claude(replace(manifest, data=data), context, transport=stub,
+                          request=hc.ClaudeRequest(SESSION), compatibility=WINDOW,
+                          attempt_id="attempt-1", inventory=make_inventory(), now=NOW,
+                          retention_seconds=60, qualification=qualify(qualification_wire()))
+        self.assertEqual(cm.exception.reason, "native-host-unqualified")
+
+    def test_native_wall_bound_is_wider_but_shared_and_double_bounds_are_unchanged(self):
+        self.assertEqual(hc.NATIVE_MAX_WALL_SECONDS, 1800)
+        self.assertEqual(hc.MAX_WALL_SECONDS, 60)
+        hc.HostLimits(wall_seconds=1800)
+        with self.assertRaises(hc.ClaudeHostError):
+            hc.HostLimits(wall_seconds=1801)
+        self.assertEqual(self.state(run(limits=hc.HostLimits(wall_seconds=60))), "completed")
+        self.refuses("invalid-limits", limits=hc.HostLimits(wall_seconds=61))
 
     def test_other_host_qualification_cannot_qualify_claude(self):
         with self.assertRaises(hc.ClaudeHostError) as cm:
