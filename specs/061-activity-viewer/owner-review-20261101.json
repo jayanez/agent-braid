@@ -1,0 +1,29 @@
+{
+  "schema": "agent-braid-bounded-founder-review-v1",
+  "spec": "SPEC-061",
+  "reviewedCommit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
+  "evidenceCommit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
+  "decisionDate": "2026-11-01",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "github": "jayanez",
+    "role": "owner and founder"
+  },
+  "decision": "accepted",
+  "scope": "SPEC-061 T001 owner review of the activity viewer specification (VIS.1): spec.md with requirements REQ-001 to REQ-015, the requested decisions D1–D6 as amended by the 2026-10-31 adversarial and counterfactual reviews, the UI, security and privacy contract and its never-collect deviation table, the loom event schema, the effort evidence pack contract, the surfaces matrix, plan.md with deliveries VIS.1a and VIS.1b and the T035 go/no-go checkpoint, tasks.md, validation-plan.md, tracks.md (T006) and host-verification-runbook.md (T007). Decisions: D1–D6 confirmed; OD-3 keep the command agent-braid view and the working name Loom, public name decided before VIS.1 release notes; OD-5 WebGL2 only; OD-6 OS-assigned port with optional --port; OD-7 the six never-collect deviations accepted as listed; OD-8 checkpoint T035 by 2027-01-31 and census threshold of at least 5 sessions or run directories of the last four weeks with at least one coordination artifact and at least 3 of the 6 artifact kinds overall. Milestones: VIS.1 (#25) is the only implementation milestone; SPEC-062 to SPEC-064 and their milestones are written only after T035 records keep for the track, and probe receipts T030–T033 add their findings to tracks.md meanwhile.",
+  "ownerResponse": {
+    "source": "direct replies in chat in the owning task of 2026-11-01, given on the packet as prepared at commit bcae79cd; that commit was squash-merged unchanged as 530a5f39 (PR #859), which is the frozen candidate",
+    "question": "SPEC-061 T001 review packet: confirm D1–D6, T006 and T007 and the recommendations for OD-3, OD-5, OD-6, OD-7 and OD-8; then whether to write SPEC-062 to SPEC-064 and their milestones now or after T035",
+    "answer": "Aceptar todo. / OK, lo hacemos así como indicas. Me parece bien. Adelante con todo",
+    "packetCommit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
+    "packetPath": "specs/061-activity-viewer/review-packet.md"
+  },
+  "notAccepted": [
+    "implementation of any task, host verification receipts or probe results (T030–T033)",
+    "the VIS.1b scope, which depends on the T035 checkpoint decision",
+    "VIS.2–VIS.4 specifications, milestones or surfaces",
+    "any claim that the braid shortens locating hazards (Q-VIS1 remains an open question)",
+    "scientific validity, release or publication of any package"
+  ],
+  "limits": "Acceptance binds the frozen authority and evidence commit only; later changes to the specification, the contracts or the open decisions need a new review. ADR 0032 and ADR 0033 were accepted separately on 2026-11-01. Acceptance is distinct from implementation, integration and release."
+}

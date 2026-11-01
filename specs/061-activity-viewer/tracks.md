@@ -17,6 +17,11 @@ adds a route, an origin or a credential needs its own boundary review.
 | VIS.3 | SPEC-063 (planned) | Codex hooks and `notify`, Codex MCP App and a terminal UI | T035 records keep for VIS.3; T031 and T033 receipts |
 | VIS.4 | SPEC-064 (planned) | other hosts (Cursor, OpenCode, Pi, VS Code) | T035 records keep for VIS.4; per-host research |
 
+Decided in T001 (2026-11-01): SPEC-062 to SPEC-064 and their milestones are
+written only after T035 records keep for the track. Until then each probe receipt
+(T030–T033) adds its findings to the matching section below, so the later
+specification starts from observed host behavior.
+
 ## VIS.2 — Claude Code mod pane (SPEC-062)
 
 - Companion mod in `integrations/agent-braid-view/claude-mod/`, outside the plugin

@@ -103,7 +103,7 @@
     "mode": "historical"
   },
   "execution_contract": "Read-only. No route, command or control executes, schedules, grants, retries, cancels or writes to repositories, registries, run directories or host configuration; executionAuthorization is the constant false; hook routes accept only observational events and answer with empty bodies, so the viewer takes no part in host decisions; network use is limited to a loopback server with separate read and ingest credentials; effort data stays in memory; files are written only to an explicit --record file (effort only with --record-effort) and explicit export destinations, created exclusively with owner-only permissions.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "None. Q-VIS1 is an open question, not a hypothesis: does seeing the braid shorten the time an operator needs to locate a hazard or conflicting pair compared with reading the JSON receipt? It has no falsification condition, supports no claim and is not a requirement; an optional owner-run descriptive observation may be recorded, and null or inconclusive results are valid.",
   "observation_contract": "Owned fixtures and recorded host payloads; byte comparison of adapter outputs against source artifacts; HTTP requests against a loopback test server; file-system snapshots for persistence checks; host behavior only through owner-run receipts recorded separately with environment and limits.",
   "references": [
@@ -368,6 +368,7 @@
       "text": "Documentation: English documentation (`docs/tooling/VIEWER.md`, tooling index, track pages) describes installation, privacy, limits, host configuration, export and the non-claims, and links the contract."
     }
   ],
+  "review_record": "specs/061-activity-viewer/owner-review-20261101.json",
   "scientific_limits": "Engineering specification. Claim level inspiration (Article 17): the braid picture is a structural analogy (Article 18) used as a representation of computed classifications, not a braid-theoretic result; no braid relation or simplification is applied, and a drawn swap or wave is not permission to interleave (Article 6). Replayed and host-reported events are unverified. Effort figures are empirical host estimates without a compatibility class, and support no speedup, cost-saving or causal claim. Q-VIS1 is an open question; an optional owner-run observation would be small, unblinded and descriptive. The viewer holds several never-collect categories outside telemetry, listed as deviations for owner review. Structural checks are not owner approval.",
   "scope": "VIS.1 read-only, loopback-only activity viewer companion: event contract agent-braid-loom/v0.1, artifact adapters, OTLP/JSON ingest for Claude Code and Codex, observational Claude Code HTTP hooks, in-memory store, Server-Sent Events, replay, Three.js web viewer, pure frames, minimal export and opt-in comparative effort evidence pack. Specification only; VIS.2-VIS.4 are derived tracks.",
   "stage": "draft"

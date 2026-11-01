@@ -165,12 +165,12 @@ allowed only when bound to an event or removed.
 |---|---|---|---|
 | OD-1 | Accept ADR 0032 (companion boundary) | Accepted 2026-11-01 | Owner |
 | OD-2 | Accept ADR 0033 (vendored Three.js MIT boundary) | Accepted 2026-11-01, pinned r186 (`0.186.0`) | Founder |
-| OD-3 | Public name: keep "Loom" as working name; command `agent-braid view` | Keep command; decide name before VIS.1 release notes | Owner |
+| OD-3 | Public name: keep "Loom" as working name; command `agent-braid view` | Decided 2026-11-01 (T001): keep command; decide name before VIS.1 release notes | Owner |
 | OD-4 | Q-VIS1 observation | Resolved 2026-10-31: descriptive observation at the T035 checkpoint after VIS.1a | Owner |
-| OD-5 | Renderer: WebGL2 now, WebGPU later | WebGL2 | Owner |
-| OD-6 | Default port: OS-assigned | OS-assigned, `--port` optional | Owner |
-| OD-8 | Checkpoint date and census threshold for T035 and T038 | Set in T001; if the date passes without a VIS.1a slice, VIS.1 closes as Deferred | Owner |
-| OD-7 | Accept the never-collect deviations (exact effort in `--record-effort` recordings, salted identifiers, relative paths and hashes) | Accept as listed in the deviation table | Owner |
+| OD-5 | Renderer: WebGL2 now, WebGPU later | Decided 2026-11-01 (T001): WebGL2 | Owner |
+| OD-6 | Default port: OS-assigned | Decided 2026-11-01 (T001): OS-assigned, `--port` optional | Owner |
+| OD-8 | Checkpoint date and census threshold for T035 and T038 | Decided 2026-11-01 (T001): checkpoint by 2027-01-31; census threshold at least 5 sessions or run directories of the last four weeks with at least one coordination artifact and at least 3 of the 6 artifact kinds overall; if the date passes without a VIS.1a slice, VIS.1 closes as Deferred | Owner |
+| OD-7 | Accept the never-collect deviations (exact effort in `--record-effort` recordings, salted identifiers, relative paths and hashes) | Decided 2026-11-01 (T001): accepted as listed in the deviation table | Owner |
 
 Implementation tasks start after OD-1; T023 and T025 also need OD-2. Probes
 T030–T033 and the census T038 need per-probe owner authorization only. VIS.1b
