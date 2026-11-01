@@ -28,7 +28,7 @@ shared object store fails the portable-root check).
   F5 bound, NC-1 to NC-11 decided, none left open; authorizes no execution,
   qualification or native session).
 
-- [ ] T002 (REQ-004 / SC-004; REQ-009 / SC-009): ADR for native Claude
+- [x] T002 (REQ-004 / SC-004; REQ-009 / SC-009): ADR for native Claude
   laboratory containment, drafted from plan.md "Proposed shared-file changes"
   and accepted by the founder before any native session. States the mechanism
   (NC-2), STRICT policy, human issuance, residual risks, and that ADR 0019's
@@ -37,7 +37,11 @@ shared object store fails the portable-root check).
   owner of shared files). Verification: ADR status Accepted with founder
   approval. Evidence: ADR and its PR.
   Progress: [ADR 0035](../../docs/adr/0035-native-claude-laboratory-containment.md)
-  proposed (#893, 5e050fff); stays open until the founder accepts it.
+  proposed (#893, 5e050fff).
+  Obtained: ADR 0035 accepted 2026-11-02 by the founder (answer "Aceptar tal
+  cual (Recommended)"; PRs #893 and the acceptance PR of this change).
+  Acceptance authorizes no native session, probe, qualification or execution:
+  T009 still needs T008 and a separate founder go; issuance stays NC-9.
 
 ## Implementation
 

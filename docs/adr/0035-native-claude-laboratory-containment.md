@@ -1,8 +1,13 @@
 # ADR 0035: Native Claude laboratory containment
 
-- **Status:** Proposed. Not accepted: founder acceptance is a separate act and must precede any native session.
+- **Status:** Accepted 2026-11-02 by the founder (answer "Aceptar tal cual (Recommended)"
+  to "ADR 0035 (contención nativa de Claude, propuesta en #893): ¿la aceptas? Es
+  requisito para T009 ... Aceptarla no autoriza todavía ninguna sesión nativa.").
+  Acceptance authorizes no native session, probe, qualification or execution:
+  T009 still needs T008 and a separate founder go, and qualification records are
+  issued only by the founder (NC-9, item 6).
 - **Date:** 2026-11-01
-- **Deciders:** Juan Antonio Yáñez García (founder); decision pending
+- **Deciders:** Juan Antonio Yáñez García (founder); accepted 2026-11-02
 - **Constitutional articles:** 0, 4–7, 12–15, 19, 20, 24
 - **Specification:** [SPEC-065](../../specs/065-native-claude-containment/spec.md) (track HAR.1), task T002
 
