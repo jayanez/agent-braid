@@ -15,7 +15,7 @@
   ],
   "assumptions": "Hosts keep exporting OTLP HTTP/JSON and posting hooks as documented on 2026-10-31 (unverified until host verification); empty-bodied HTTP hook responses are non-blocking (unverified until T030); the Claude desktop browser pane loads loopback pages (unverified until T032); the viewer runs on the same machine as the hosts; ADR 0032 and ADR 0033 are decided before implementation.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -94,13 +94,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "New contract agent-braid-loom/v0.1, new effort pack contract agent-braid-loom-effort-pack/v0.1, new surfaces matrix agent-braid-view-surfaces/v0.1 and new optional command group agent-braid view. No change to existing contracts, the plugin package, the portable MCP surface, the SPEC-047 telemetry store or frozen evidence. Vendored Three.js adds an MIT directory under ADR 0033.",
   "domain": "Local machine, loopback interface, Agent Braid artifacts of the current contracts (analysis, Git replay plan, scheduler preparations, runtime grants and state, SPEC-057 ownership outputs as JSON, SPEC-052 gate phases and results, allowlisted usage fields of host stream events) and Claude Code and Codex telemetry shapes recorded in fixtures. Not covered: transcripts, Codex hooks and notify, cloud sessions, IDE extensions, other hosts.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
+    "mode": "historical"
   },
   "execution_contract": "Read-only. No route, command or control executes, schedules, grants, retries, cancels or writes to repositories, registries, run directories or host configuration; executionAuthorization is the constant false; hook routes accept only observational events and answer with empty bodies, so the viewer takes no part in host decisions; network use is limited to a loopback server with separate read and ingest credentials; effort data stays in memory; files are written only to an explicit --record file (effort only with --record-effort) and explicit export destinations, created exclusively with owner-only permissions.",
   "human_review": "pending",
