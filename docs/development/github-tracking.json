@@ -291,6 +291,10 @@
     "065-native-claude-containment": {
       "milestone": "HAR.1 — Braid Harness laboratory",
       "state": "open"
+    },
+    "067-assurance-profiles": {
+      "milestone": "HAR.3 — Braid Harness adaptation and integration",
+      "state": "open"
     }
   },
   "task_state_overrides": {
