@@ -64,6 +64,7 @@
       "docs/adr/0031-portable-prompt-names.md": "2e2ccf4e3d3b82cfb3e375d790104b9bb79f7f503041f11e60738e546d670d8e",
       "docs/adr/0032-activity-viewer-companion.md": "75c41ed41b9ffa886df423dffb47ff2fd110f4a7fe639d54ee6b82b3148a5b06",
       "docs/adr/0033-vendored-threejs-mit-boundary.md": "65591eb05ec807cc1cf02f0dfadbd735affae109f9a590920bc9b92763d52fc4",
+      "docs/adr/0034-system-one-shadow-advisory-boundary.md": "83de00082099fbefad0f2603aae8020270b157e731aae613f412586d33c086eb",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
