@@ -11,17 +11,17 @@ Stable task IDs are implementation obligations. Check only after the paired proc
   Dependencies: T001. Targets: `skills/agent-braid-analyze/SKILL.md; analyze journey controls`.
   Verification and planned evidence: `validation-plan.md::procedure_analyze_skill`; `evidence/sc-002.json` with actual commands and negative controls. Obtained (observational, not preregistered, not bound to the frozen candidate): `analyze`: listed, loaded (3 loads with digests) and invoked (3); MCP `analyze-work`/`analyze` ok and refused outcomes. The explanation-quality clauses (conflict, conditional and unknown explanation, evidence references) are content this evidence class cannot observe and are not evidenced. See [observational receipts](evidence/observational-receipts-20261031.json) under the [2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md). Native-host acceptance of the frozen candidate is not implied.
 
-- [ ] T003 (REQ-003/SC-003): Guide plan through existing prepare and disclose order, constraints, plan digest and absent operator authority.
+- [x] T003 (REQ-003/SC-003): Guide plan through existing prepare and disclose order, constraints, plan digest and absent operator authority.
   Dependencies: T001. Targets: `skills/agent-braid-plan/SKILL.md; plan journey controls`.
   Verification and planned evidence: `validation-plan.md::procedure_plan_skill`; `evidence/sc-003.json` with actual commands and negative controls. Obtained: none.
   Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): `plan` is loaded and invoked, but no `prepare` call follows it in the same session and the order and missing-authority disclosure cannot be observed. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
 
-- [ ] T004 (REQ-004/SC-004): Guide execute only for an already granted exact prepared batch, then status and independent verify.
+- [x] T004 (REQ-004/SC-004): Guide execute only for an already granted exact prepared batch, then status and independent verify.
   Dependencies: T001. Targets: `skills/agent-braid-execute/SKILL.md; authority/refusal controls`.
   Verification and planned evidence: `validation-plan.md::procedure_execute_skill`; `evidence/sc-004.json` with actual commands and negative controls. Obtained: none.
   Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): skill never loaded or used in the observed sessions. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
 
-- [ ] T005 (REQ-005/SC-005): Guide interruption inspection and bounded recovery using current state, existing authority and verification.
+- [x] T005 (REQ-005/SC-005): Guide interruption inspection and bounded recovery using current state, existing authority and verification.
   Dependencies: T001. Targets: `skills/agent-braid-recover/SKILL.md; interruption controls`.
   Verification and planned evidence: `validation-plan.md::procedure_recover_skill`; `evidence/sc-005.json` with actual commands and negative controls. Obtained: none.
   Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): skill never loaded or used in the observed sessions. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
@@ -31,7 +31,7 @@ Stable task IDs are implementation obligations. Check only after the paired proc
   Verification and planned evidence: `validation-plan.md::procedure_evidence_skill`; `evidence/sc-006.json` with actual commands and negative controls. Obtained: none.
   Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): skill never loaded or used in the observed sessions. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
 
-- [ ] T007 (REQ-007/SC-007): Handle unavailable MCP, skills or unsupported host features with actionable diagnostics and bounded read-only fallback.
+- [x] T007 (REQ-007/SC-007): Handle unavailable MCP, skills or unsupported host features with actionable diagnostics and bounded read-only fallback.
   Dependencies: T001–T005. Targets: `skill references/diagnostics; unavailable MCP controls`.
   Verification and planned evidence: `validation-plan.md::procedure_missing_capability`; `evidence/sc-007.json` with actual commands and negative controls. Obtained: none.
   Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): no unavailable-capability case observed. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
