@@ -1,4 +1,4 @@
-# ADR 0034: Native Claude laboratory containment
+# ADR 0035: Native Claude laboratory containment
 
 - **Status:** Proposed. Not accepted: founder acceptance is a separate act and must precede any native session.
 - **Date:** 2026-11-01
