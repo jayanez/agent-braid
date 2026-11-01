@@ -93,6 +93,15 @@ class TaskMilestoneOverrideTests(unittest.TestCase):
         _, scoped_a, _, _ = milestone_plan(config, desired, milestones, issues, extra, 1)
         self.assertEqual({"SPEC-001", "SPEC-001/T002"}, {item["key"] for item in scoped_a})
 
+    def test_scoped_plan_refuses_an_unpublished_out_of_scope_parent(self):
+        config, desired = self.inventory()
+        config["milestone_numbers"] = {"A": 1, "B": 2}
+        milestones = {"A": {"number": 1, "state": "open", "title": "A"},
+                      "B": {"number": 2, "state": "open", "title": "B"}}
+        with self.assertRaisesRegex(ValueError, "parent SPEC-001 .* is not published"):
+            milestone_plan(config, desired, milestones, {}, {"children": {}, "unmarked_titles": set()}, 2,
+                           {"SPEC-001/T001"})
+
 
 class TrackingTests(unittest.TestCase):
     def test_committed_task_milestone_overrides(self):

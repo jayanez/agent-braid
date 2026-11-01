@@ -20,7 +20,6 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "docs/development/github-tracking.json"
-TASK_KEY = re.compile(r"^SPEC-\d{3}/T\d{3}$")
 TASK_LINE = re.compile(r"^- \[([ x])\] (T\d{3})(?: \(([^)]+)\))?: (.*)$")
 MARKER = re.compile(r"<!-- agent-braid-(?:spec|task)-id: ([^ ]+) -->")
 TRACE_FALLBACK = "- Trace: See the parent issue and assurance record."
@@ -114,8 +113,6 @@ def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dic
         raise ValueError("a closed milestone is undeclared")
     milestone_overrides = config.get("task_milestone_overrides", {})
     for key, name in milestone_overrides.items():
-        if not TASK_KEY.fullmatch(key):
-            raise ValueError(f"task milestone override key must be SPEC-NNN/Txxx: {key!r}")
         if name not in config["milestones"]:
             raise ValueError(f"task milestone override {key} names an unregistered milestone: {name!r}")
     base = f"https://github.com/{config['repository']}/blob/develop/"
@@ -399,7 +396,11 @@ def milestone_plan(config: dict, desired: list[dict], milestones: dict,
     # A task overridden into this milestone keeps its parent in another one: that
     # parent is outside the scope but must exist remotely for the link check.
     external_parents = {item["parent"] for item in selected
-                        if item["parent"] and item["parent"] not in selected_keys and item["parent"] in issues}
+                        if item["parent"] and item["parent"] not in selected_keys}
+    unpublished = sorted(external_parents - set(issues))
+    if unpublished:
+        raise ValueError(f"parent {unpublished[0]} of a task in milestone #{milestone_number} is not published; "
+                         "publish its own milestone first")
     scoped_extra = {
         "children": {key: value for key, value in extra.get("children", {}).items()
                      if key in selected_keys or key in external_parents},

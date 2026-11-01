@@ -156,7 +156,7 @@ specifications unless a SPEC-066 requirement amends them.
   probe over `cli`, `plugin_mcp` and `tooling_mcp`, no network or model import, no
   `executionAuthorization: true`, empty dependencies) and the routing test in
   `tests/test_validation_profiles.py`; `plugin_mcp` now imports the shadow module only
-  in `plugin-status`.
+  in `plugin-status`, which still loads it in `off` mode to report the store location.
 - [x] T020 (all REQ): User documentation: `docs/tooling/SYSTEM_ONE_SHADOW.md`
   (what is recorded, what is never recorded, how to enable, report, purge, non-claims
   and limits including the filesystem-stall limit), plus updates to

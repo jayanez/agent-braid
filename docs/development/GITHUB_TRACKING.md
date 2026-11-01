@@ -254,6 +254,10 @@ other tracks. So move exactly the 15 issues with `gh issue edit <number> --miles
 'S1.5 — System One shadow activation'` and read each back, then run the scoped audit
 for #26 (with `--new-record-key` for any SPEC-066 record not yet published) and for
 #24, review each plan, apply it with its reviewed digest, and re-audit both until no
-operation remains. Deferred keeps its reopen condition: SPEC-029
+operation remains. Publish the SPEC-066 records into #26 before this change merges,
+or only after the manual move, because the scoped #26 audit fails closed in between.
+The synchronizer does not audit milestone descriptions, so update the #26 and #24
+descriptions to the source text by hand (`gh api -X PATCH .../milestones/<number>`)
+and read them back. Deferred keeps its reopen condition: SPEC-029
 T001 source permissions granted and admitted real groups greater than zero
 (third-party sources), or SPEC-066 REQ-101 admission (the owner's own sources).

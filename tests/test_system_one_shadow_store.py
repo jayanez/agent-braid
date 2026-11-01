@@ -248,14 +248,14 @@ class TelemetryParityTests(Matrix):
         for level in range(3):
             store, _ = self.nested_store(level)
             self.both_refuse(store, directory=True)
-            self.both_refuse(store / 'episodes-2026-11-01.jsonl')
+            self.both_refuse(store / f'episodes-{shadow.today().isoformat()}.jsonl')
 
     def test_symlinked_file_is_refused_by_both(self):
         self.private_store()
         victim = self.base / 'victim'
         victim.write_bytes(b'')
         victim.chmod(0o600)
-        link = self.store / 'episodes-2026-11-01.jsonl'
+        link = self.store / f'episodes-{shadow.today().isoformat()}.jsonl'
         link.symlink_to(victim)
         self.both_refuse(link)
 
@@ -305,6 +305,30 @@ class TelemetryParityTests(Matrix):
             shadow._safe(self.store, directory=True)
         self.assertIn('telemetry', str(telemetry.exception))
         self.assertEqual(str(system_one.exception), str(telemetry.exception).replace('telemetry', 'System One store'))
+
+
+class UnlinkOwnTests(Base):
+    """Purge removes planted links at the salt paths without following them."""
+
+    def test_purge_removes_a_dangling_link_planted_at_the_salt(self):
+        shadow._secret()
+        path = shadow.default_directory() / shadow.SALT_FILE
+        path.unlink()
+        path.symlink_to(path.parent / 'missing-target')
+        result = shadow.purge()
+        self.assertFalse(path.is_symlink())
+        self.assertNotIn(shadow.SALT_FILE, result.get('leftover', []))
+
+    def test_purge_removes_a_link_without_touching_its_target(self):
+        shadow._secret()
+        path = shadow.default_directory() / shadow.SALT_FILE
+        target = self.base / 'target'
+        target.write_bytes(b'kept')
+        path.unlink()
+        path.symlink_to(target)
+        shadow.purge()
+        self.assertFalse(path.is_symlink())
+        self.assertEqual(target.read_bytes(), b'kept')
 
 
 if __name__ == '__main__':

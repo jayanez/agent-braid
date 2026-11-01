@@ -59,6 +59,7 @@ class ShadowBoundaryTests(unittest.TestCase):
     def test_probe_detects_the_module_when_shadow_is_on(self):
         probe = OFF_PROBE.replace("mcp.ToolingConfig(base / \"source\", base / \"results\")",
                                   "mcp.ToolingConfig(base / \"source\", base / \"results\", system_one=\"shadow\")")
+        self.assertNotEqual(probe, OFF_PROBE)  # the substitution must take effect
         with tempfile.TemporaryDirectory() as home:
             completed = subprocess.run([sys.executable, "-c", probe, str(ROOT / "examples/analysis/file-edits.json")],
                                        cwd=ROOT, check=True, capture_output=True, text=True, timeout=60,
