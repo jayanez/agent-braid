@@ -50,7 +50,7 @@ reason `unmapped-reason`; the observer never stores free text.
 | Field | Type | Rule |
 |---|---|---|
 | `status` | string | `answered`, `abstained`, `refused` or `skipped` |
-| `reason` | string or null | Closed set: `calibration-absent`, `identity-mismatch`, `budget-exceeded`, `unmapped-reason`, `internal-error`, or `null`. `store-unavailable` is reserved: refused stores and errors before storage never produce a stored episode and are counted in memory only |
+| `reason` | string or null | Closed set: `calibration-absent`, `identity-mismatch`, `budget-exceeded`, `unmapped-reason`, `internal-error`, or `null`. `store-unavailable` is reserved: refused stores, a busy worker (`busy`), oversized artifact-backed reports (`oversize-report`) and errors before storage never produce a stored episode and are counted in memory only |
 | `backendId` | string | For example `stdlib-rule-fixture-v1` |
 | `manifestDigest` | string | 64 lowercase hex characters |
 | `decisionPoint` | string | `DP-1` |

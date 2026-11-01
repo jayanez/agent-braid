@@ -34,12 +34,12 @@ documentation be updated as part of it.
 
   SPEC-030 and SPEC-032 stay in `Deferred`. Their parent issues stay open.
 - **Advisory boundary.** [ADR 0034](../adr/0034-system-one-shadow-advisory-boundary.md)
-  is accepted on the strength of this answer. Confidence never grants authority,
+  is accepted through the owner's approval of the plan that defined it. Confidence never grants authority,
   and `executionAuthorization` stays false.
 - **Laya and Jev.** Their strongest capabilities are adopted as
   SPEC-066 S1.5c–d requirements. Laya and the open replicas run locally. Jev is a
   hosted paid service that receives the decision state, so it stays excluded
   until a separate owner decision on egress, consent and cost.
-- **Not decided here, still pending:** human review of SPEC-066; the owner-run
+- **Not decided here, still pending:** human review of SPEC-066 (T001); the owner-run
   real-use check (SC-006); scientific, calibration, promotion and activation
   gates; and any `advise` mode.

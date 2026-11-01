@@ -70,6 +70,7 @@ class Base(unittest.TestCase):
         self.addCleanup(patcher.stop)
         with shadow._refusal_lock:
             shadow._refusals.clear()
+        self.addCleanup(shadow.flush)  # no worker job outlives the store it writes to
 
     def service(self, mode='shadow', **kwargs):
         return ToolingService(ToolingConfig(self.source, self.results, system_one=mode, **kwargs))
@@ -81,7 +82,9 @@ class Base(unittest.TestCase):
         return lines
 
     def invoke(self, service, request, kind='aim'):
-        return service.invoke('analyze-work', {'kind': kind, 'request': request}, threading.Event())
+        envelope = service.invoke('analyze-work', {'kind': kind, 'request': request}, threading.Event())
+        self.assertTrue(shadow.flush(), 'shadow worker did not finish')
+        return envelope
 
 
 class ConfigTests(Base):
@@ -98,7 +101,9 @@ class ParityTests(Base):
     def envelope_bytes(self, mode, call):
         with patch.object(tooling_mcp, 'uuid', counter_uuid()):
             service = self.service(mode)
-            return json.dumps(call(service), sort_keys=True).encode()
+            value = json.dumps(call(service), sort_keys=True).encode()
+            self.assertTrue(shadow.flush())
+            return value
 
     def test_analyze_work_aim_is_byte_identical_and_records_one_episode(self):
         call = lambda s: self.invoke(s, SAMPLE)
@@ -198,9 +203,15 @@ class ParityTests(Base):
         with patch.object(shadow, 'build_episode', side_effect=RuntimeError('boom')):
             actual = self.envelope_bytes('shadow', lambda s: self.invoke(s, SAMPLE))
         self.assertEqual(expected, actual)
-        with patch.object(shadow, 'observe', side_effect=KeyboardInterrupt):
-            self.assertEqual(self.envelope_bytes('shadow', lambda s: self.invoke(s, SAMPLE)), expected)
         self.assertEqual(shadow.refusal_counts().get('internal-error'), 1)
+        with patch.object(shadow, 'submit', side_effect=RuntimeError('boom')):
+            self.assertEqual(self.envelope_bytes('shadow', lambda s: self.invoke(s, SAMPLE)), expected)
+
+    def test_interrupts_are_not_swallowed_by_the_shadow_guard(self):
+        with patch.object(shadow, 'submit', side_effect=KeyboardInterrupt):
+            with self.assertRaises(KeyboardInterrupt):
+                self.invoke(self.service(), SAMPLE)
+        self.assertEqual(self.invoke(self.service('off'), SAMPLE)['status'], 'ok')
 
 
 class EpisodeTests(Base):
@@ -254,13 +265,37 @@ class EpisodeTests(Base):
             self.report_with(['Complete exact-resource footprints are disjoint.'], ['made-up']), 'analyze-work', 'aim')
         self.assertEqual(unknown_constraint['systemOne']['reason'], 'unmapped-reason')
 
-    def test_every_reason_sentence_in_the_analyzer_is_mapped(self):
-        import re
-        source = (ROOT / 'agent_braid/analysis.py').read_text()
-        body = source[source.index('def _interaction'):source.index('def analyze(')]
-        sentences = set(re.findall(r'"([A-Z][^"]*\.)"', body))
-        self.assertTrue(sentences)
-        self.assertEqual(sentences - set(shadow.REASON_TABLE), set())
+    def test_every_reason_sentence_the_analyzer_emits_is_mapped(self):
+        from agent_braid import analysis
+
+        def operation(name, effects, coverage='complete', reads=None):
+            return {'instanceId': name, 'readVersions': reads or {},
+                    'effects': {'declared': [{'kind': k, 'resource': r} for k, r in effects],
+                                'inferred': [], 'observed': [], 'coverage': {'status': coverage}}}
+
+        def interaction(left, right, ordered=False):
+            ancestors = {left['instanceId']: set(), right['instanceId']: set()}
+            if ordered:
+                ancestors[right['instanceId']].add(left['instanceId'])
+            return analysis._interaction(left, right, ancestors)
+
+        cases = {
+            'dependency-order': interaction(operation('a', [('read', 'r')]), operation('b', [('read', 'r')]), True),
+            'shared-write': interaction(operation('a', [('write', 'r')]), operation('b', [('read', 'r')])),
+            'partial-coverage': interaction(operation('a', [('read', 'x')], 'partial'), operation('b', [('read', 'y')])),
+            'external-effect': interaction(operation('a', [('call', 'x')]), operation('b', [('read', 'y')])),
+            'disjoint': interaction(operation('a', [('read', 'x')]), operation('b', [('read', 'y')])),
+            'shared-read-only': interaction(operation('a', [('read', 'r')]), operation('b', [('read', 'r')])),
+            'read-version': interaction(operation('a', [('read', 'x')], reads={'x': 'v1'}), operation('b', [('read', 'y')])),
+        }
+        emitted = set()
+        for expected, item in cases.items():
+            pair = shadow._pair(item)
+            self.assertIsNotNone(pair, expected)
+            self.assertIn(expected, pair['reasonCodes'])
+            emitted.update(item['reasons'])
+        self.assertEqual(emitted, set(shadow.REASON_TABLE))
+        self.assertEqual(set(cases), set(shadow.REASON_CODES))
 
     def test_pairs_are_capped_deterministically_in_report_order(self):
         episode = shadow.build_episode(self.report_with(['Complete exact-resource footprints are disjoint.'], count=100),
@@ -333,14 +368,13 @@ class StoreTests(Base):
     """SC-003: refusals leave the caller's result and budget untouched."""
 
     def assert_refused_without_effect(self, reason):
-        expected = json.dumps(self.invoke(self.service('off'), SAMPLE), sort_keys=True)
         counts = shadow.refusal_counts().get(reason, 0)
         with patch.object(tooling_mcp, 'uuid', counter_uuid()):
-            first = json.dumps(self.invoke(self.service(), SAMPLE), sort_keys=True)
+            on = json.dumps(self.invoke(self.service(), SAMPLE), sort_keys=True)
         with patch.object(tooling_mcp, 'uuid', counter_uuid()):
-            second = json.dumps(self.invoke(self.service('off'), SAMPLE), sort_keys=True)
-        self.assertEqual(first, second)
-        self.assertEqual(json.loads(expected)['status'], 'ok')
+            off = json.dumps(self.invoke(self.service('off'), SAMPLE), sort_keys=True)
+        self.assertEqual(on, off)
+        self.assertEqual(json.loads(off)['status'], 'ok')
         self.assertEqual(shadow.refusal_counts().get(reason, 0), counts + 1)
 
     def test_symlinked_store_directory_is_refused(self):
@@ -376,12 +410,56 @@ class StoreTests(Base):
         self.assert_refused_without_effect('busy')
         self.assertEqual(self.episodes(), [])
 
-    def test_unknown_auxiliary_file_makes_the_store_unsafe(self):
+    def test_unrelated_files_do_not_disable_the_store(self):
         self.store.mkdir(mode=0o700)
-        stray = self.store / 'notes.txt'
-        stray.write_text('x')
-        stray.chmod(0o600)
-        self.assert_refused_without_effect('unavailable')
+        (self.store / '.DS_Store').write_bytes(b'x')
+        self.invoke(self.service(), SAMPLE)
+        self.assertEqual(len(self.episodes()), 1)
+        self.assertEqual(shadow.report()['totals']['episodes'], 1)
+        self.assertTrue(shadow.store_present())
+        self.assertEqual(shadow.refusal_counts(), {})
+        result = shadow.purge()
+        self.assertEqual((result['status'], result['leftover']), ('purged', ['.DS_Store']))
+        self.assertEqual([p.name for p in self.store.iterdir()], ['.DS_Store'])
+
+    def test_future_dated_day_files_are_kept(self):
+        self.store.mkdir(mode=0o700)
+        future = self.store / 'episodes-2999-01-01.jsonl'
+        future.write_bytes(b'')
+        future.chmod(0o600)
+        self.assertTrue(shadow._retained(future.name, shadow.today()))
+        self.assertFalse(shadow._retained('episodes-2020-01-01.jsonl', shadow.today()))
+        self.invoke(self.service(), SAMPLE)
+        self.assertTrue(future.exists())
+
+    def test_purge_refuses_cleanly_while_the_store_is_locked(self):
+        self.invoke(self.service(), SAMPLE)
+        descriptor = os.open(self.store / 'store.lock', os.O_RDWR)
+        self.addCleanup(os.close, descriptor)
+        fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        with self.assertRaises(shadow.StoreRefused) as caught:
+            shadow.purge()
+        self.assertEqual(str(caught.exception), 'busy')
+        stderr = StringIO()
+        with redirect_stdout(StringIO()), patch('sys.stderr', stderr):
+            code = main(['system-one', 'purge', '--yes'])
+        self.assertEqual(code, 2)
+        self.assertIn('retry', stderr.getvalue())
+        self.assertNotIn(str(self.store), stderr.getvalue())
+        self.assertEqual(len(self.episodes()), 1)
+        fcntl.flock(descriptor, fcntl.LOCK_UN)
+        self.assertEqual(shadow.purge()['status'], 'purged')
+        self.assertFalse(self.store.exists())
+
+    def test_cli_wording_names_the_system_one_store_not_telemetry(self):
+        self.store.mkdir(mode=0o750)
+        self.store.chmod(0o750)
+        stderr = StringIO()
+        with redirect_stdout(StringIO()), patch('sys.stderr', stderr):
+            code = main(['system-one', 'report'])
+        self.assertEqual(code, 2)
+        self.assertIn('System One store', stderr.getvalue())
+        self.assertNotIn('telemetry', stderr.getvalue())
 
     def test_files_are_private_and_old_dates_are_not_retained(self):
         self.invoke(self.service(), SAMPLE)
@@ -398,6 +476,78 @@ class StoreTests(Base):
     def test_default_store_location_is_fixed_under_home(self):
         patch.stopall()
         self.assertEqual(shadow.default_directory(), Path.home() / '.local/share/agent-braid/system-one')
+        self.assertEqual(shadow.display_location(), '~/.local/share/agent-braid/system-one')
+
+
+class WorkerTests(Base):
+    """C1: the work leaves the request path, never holds the router lock, and is bounded."""
+
+    def gated(self):
+        entered, release = threading.Event(), threading.Event()
+        real = shadow.build_episode
+        threads = []
+        def build(*args, **kwargs):
+            threads.append(threading.current_thread())
+            entered.set()
+            self.assertTrue(release.wait(5))
+            return real(*args, **kwargs)
+        self.addCleanup(release.set)
+        return entered, release, threads, patch.object(shadow, 'build_episode', build)
+
+    def test_router_returns_before_the_episode_is_built_and_releases_admission(self):
+        home = self.base / 'home'
+        repo = self.base / 'repo'
+        repo.mkdir()
+        subprocess.run(['git', '-C', str(repo), 'init', '-q'], check=True)
+        preview = plan_setup(home, [repo], system_one='shadow')
+        apply(home, preview, preview['previewDigest'])
+        router = PluginRouter(home)
+        identifier = next(iter(router.services))
+        entered, release, threads, gate = self.gated()
+        with gate:
+            envelope = router.invoke('analyze-work', {'workspaceId': identifier, 'kind': 'aim',
+                                                      'request': SAMPLE}, threading.Event())
+            self.assertEqual(envelope['status'], 'ok')
+            self.assertTrue(entered.wait(5))
+            self.assertFalse(router.admission.locked())
+            self.assertEqual(self.episodes(), [])
+            release.set()
+            self.assertTrue(shadow.flush())
+        self.assertNotIn(threading.current_thread(), threads)
+        self.assertEqual(len(self.episodes()), 1)
+
+    def test_busy_worker_drops_new_reports_without_changing_envelopes(self):
+        entered, release, _, gate = self.gated()
+        service = self.service()
+        with gate:
+            first = service.invoke('analyze-work', {'kind': 'aim', 'request': SAMPLE}, threading.Event())
+            self.assertTrue(entered.wait(5))
+            for _ in range(3):  # one waits in the single slot, the rest are dropped
+                again = service.invoke('analyze-work', {'kind': 'aim', 'request': SAMPLE}, threading.Event())
+                self.assertEqual(again['status'], 'ok')
+            self.assertEqual(shadow.refusal_counts().get('busy'), 2)
+            release.set()
+            self.assertTrue(shadow.flush())
+        self.assertEqual(first['status'], 'ok')
+        self.assertEqual(len(self.episodes()), 2)
+
+    def test_oversize_artifact_backed_report_is_counted_and_not_decoded(self):
+        with patch.object(tooling_mcp, 'INLINE_RESULT_BYTES', 100), \
+                patch.object(shadow, 'MAX_REPORT_BYTES', 10), \
+                patch.object(shadow.json, 'loads', side_effect=AssertionError('decoded')):
+            envelope = self.invoke(self.service(), sentinel_request())
+        self.assertEqual(envelope['result']['type'], 'evidence-artifact-reference')
+        self.assertEqual(shadow.refusal_counts(), {'oversize-report': 1})
+        self.assertEqual(self.episodes(), [])
+
+    def test_decode_time_counts_against_the_budget(self):
+        ticks = itertools.count(0, 30_000_000)
+        with patch.object(shadow.time, 'monotonic_ns', lambda: next(ticks)):
+            shadow.observe('analyze-work', 'aim', json.dumps({'report': EpisodeTests.report_with(
+                None, ['Complete exact-resource footprints are disjoint.'])}).encode())
+        episode, = self.episodes()
+        self.assertEqual((episode['systemOne']['status'], episode['systemOne']['reason']),
+                         ('skipped', 'budget-exceeded'))
 
 
 class ReportTests(Base):
@@ -479,6 +629,25 @@ class ReportTests(Base):
         self.assertEqual({(r['surface'], r['operation'], r['outcome']) for r in rows}, {('cli', 'system-one', 'ok')})
         self.assertIn('system-one', tooling_telemetry.OPERATIONS['cli'])
 
+    def test_command_telemetry_outcome_mapping(self):
+        from argparse import Namespace
+        from agent_braid.cli import _outcome
+        system_one = lambda command: Namespace(command='system-one', decision_command=command)
+        table = [(system_one('report'), 0, 'ok'), (system_one('decide'), 0, 'ok'),
+                 (system_one('decide'), 1, 'ok'),  # abstain or defer is a valid answer
+                 (system_one('decide'), 2, 'refused'), (system_one('purge'), 1, 'refused'),
+                 (system_one('purge'), 2, 'refused'), (system_one('report'), 3, 'error'),
+                 (Namespace(command='analyze'), 1, 'error'), (Namespace(command='analyze'), 2, 'refused')]
+        for args, code, outcome in table:
+            self.assertEqual(_outcome(args, code), outcome, (args, code))
+        telemetry_store = self.base / 'telemetry'
+        self.seed()
+        with patch.object(tooling_telemetry, 'default_directory', return_value=telemetry_store), \
+                redirect_stdout(StringIO()), patch('builtins.input', return_value='n'):
+            self.assertEqual(main(['system-one', '--telemetry', 'local', 'purge']), 1)
+            rows = tooling_telemetry.Store().report()['rows']
+        self.assertEqual({r['outcome'] for r in rows}, {'refused'})
+
 
 class RegistryTests(Base):
     def setUp(self):
@@ -508,6 +677,12 @@ class RegistryTests(Base):
         self.assertEqual((self.home / 'registry.json').read_bytes(), before)
         self.assertEqual(configuration_digest(load(self.home)), base_digest)
         self.assertTrue(any('System One mode: off' in effect for effect in preview['effects']))
+
+    def test_shadow_consent_warns_that_earlier_plugin_versions_refuse_the_registry(self):
+        preview, _ = self.set_mode('shadow')
+        self.assertTrue(any('Earlier plugin versions refuse' in effect for effect in preview['effects']))
+        preview, _ = self.set_mode('off')
+        self.assertFalse(any('Earlier plugin versions refuse' in effect for effect in preview['effects']))
 
     def test_unknown_consent_is_refused(self):
         from agent_braid.plugin_registry import RegistryError

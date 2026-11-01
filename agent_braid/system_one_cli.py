@@ -65,6 +65,11 @@ def _store_command(args) -> int:
                 return 1
         print(json.dumps(shadow.purge(), sort_keys=True))
         return 0
+    except shadow.StoreRefused as exc:
+        print("system-one refused: " + ("the store is in use by another process; retry shortly"
+                                        if str(exc) == "busy" else "the store is unavailable"), file=sys.stderr)
+        return 2
     except (OSError, ValueError) as exc:
-        print(f"system-one refused: {exc}", file=sys.stderr)
+        # strerror carries no path; ValueError messages are System One wording without paths.
+        print(f"system-one refused: {exc.strerror if isinstance(exc, OSError) else exc}", file=sys.stderr)
         return 2

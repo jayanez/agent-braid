@@ -251,6 +251,8 @@ def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bo
     if system_one is not None or 'systemOne' in value:
         effects.append(f"Plugin MCP System One mode: {value.get('systemOne', 'off')}; applies after reconnect, "
                        'shadow records closed-vocabulary episodes locally and changes no output; no upload')
+    if value.get('systemOne') == 'shadow':
+        effects.append('Earlier plugin versions refuse a registry that records System One shadow consent')
     preview = {'schema': 'agent-braid-plugin-setup/v0.2', 'home': str(selected),
                'beforeSha256': _hash(before), 'migratedFrom': migrated, 'registry': value,
                'effects': effects, 'reconnectRequired': before != _bytes(value)}

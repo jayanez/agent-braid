@@ -1,9 +1,9 @@
 # ADR 0034: System One shadow mode and advisory boundary
 
-- **Status:** accepted
+- **Status:** accepted, by the owner's approval on 2026-11-01 of the plan that specified this boundary ([founder decisions](../development/FOUNDER_DECISIONS_20261101.md)). The review of SPEC-066 (T001) remains pending.
 - **Date:** 2026-11-01
 - **Deciders:** Juan Antonio Yáñez García (owner)
-- **Constitutional articles:** 0, 6, 13, 17, 20, 21, 22, 24
+- **Constitutional articles:** 0, 6, 13, 20, 21, 22, 24
 - **Specification:** [SPEC-066](../../specs/066-system-one-shadow/spec.md) (track S1.5)
 - **Episode contract:** [agent-braid-s1-episode/v0.1](../../specs/066-system-one-shadow/contracts/episode-v0.1.md)
 
@@ -42,7 +42,7 @@ evidence. Article 20 separates analysis from execution.
    implemented by SPEC-066 S1.5a.
 2. **Shadow never changes outputs.** In `shadow`, System One runs after the real
    output is fixed and its result goes only to the episode store. A shadow
-   failure, refusal or timeout leaves the output byte-identical to `off`, proved
+   failure, refusal or timeout leaves the output byte-identical to `off`, checked
    by a byte-parity test over every wired decision point.
 3. **Episodes are local, private and structural-only.** Episodes follow
    `agent-braid-s1-episode/v0.1`: no content, paths or identifiers, local files,
@@ -58,8 +58,9 @@ evidence. Article 20 separates analysis from execution.
    most it reorders or annotates, and the full set remains available.
 6. **Pinned identity with drift demotion.** Every episode records backend
    identifier, model-manifest digest and analyzer rule set. A different identity,
-   or mixed identities in one batch, records `refused` (`identity-mismatch`) and
-   demotes the decision point to `off` until a new calibration is pinned.
+   or mixed identities in one batch is refused. S1.5a records `refused`
+   (`identity-mismatch`); the demotion of the decision point to `off` until a new
+   calibration is pinned is S1.5c (SPEC-066 REQ-203).
    Floating aliases (for example `jev-latest`) are never accepted as identity.
 7. **Abstention and declared confidence.** Responses carry the tri-state
    `passed | abstained | unevaluated`, the echoed threshold, and two named
@@ -79,8 +80,11 @@ evidence. Article 20 separates analysis from execution.
     never imported by the core, with no automatic downloads. It is compared with
     the rule backend and the SPEC-019 linear model at a common risk budget; a
     NO-GO is a valid result.
-11. **Claim level (Article 17):** inspiration. Adopting upstream capabilities
-    carries no claim of upstream-reported accuracy for Agent Braid.
+11. **Claim level** (labels of
+    [claim discipline](../theory/CLAIM_DISCIPLINE.md)): engineering, plus the
+    hypothesis H-S1 of SPEC-066. Upstream capabilities are adopted as design
+    inspiration; this carries no claim that upstream-reported accuracy transfers to
+    Agent Braid.
 
 ## Alternatives considered
 

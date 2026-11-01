@@ -15,7 +15,7 @@ The decision it led to: [founder decisions 2026-11-01](../../docs/development/FO
 | About 4,360 lines of `agent_braid/system_one*.py` and `mcp_advice.py` are on `develop` with no product callers; the only entry point is the opt-in `agent-braid system-one` command over synthetic fixtures; `analyze_with_advice`, `verify_candidates_with_advice` and `select_ready_rank_hint` have no source callers | Wiring is the missing piece; S1.5a adds the first caller, in shadow only |
 | `BACKEND_ID = "stdlib-rule-fixture-v1"`, calibration is the constant `absent`, the strict policy always abstains | The S1.5a answer is a constant abstention; a real answer needs S1.5c–d |
 | Telemetry cannot observe System One; real-use sources show zero System One invocations against 44 product calls (CLI `analyze` 4, `analyze-git` 8; MCP `analyze-work` 24, `analyze` 2, `execute` 2, `prepare` 2) | Use needs its own observation channel: the episode store, separate from the aggregate-only telemetry |
-| 21 Codex-run studies ended as engineering, mostly negative scientifically; SPEC-029 T009 never ran; every study keeps `humanAcceptance: pending` | No prior result supports H-S1; S1.5a claims nothing |
+| 21 studies, mostly run by the Codex coordinator, ended as engineering and mostly negative scientifically; SPEC-029 T009 never ran; every study keeps `humanAcceptance: pending` | No prior result supports H-S1; S1.5a claims nothing |
 | The reopen condition depends on RF-T03, RF-T04 and RF-T05, which have no owner; SPEC-029 required two blind human reviewers, which a one-person project cannot supply | REQ-101 admits owned sources; REQ-103 replaces the two-reviewer rubric with observed outcomes plus a sampled adjudication, reported as a limitation |
 | README and RESUMPTION are stale (open milestones, local Codex checkouts) | T002 refreshes them |
 
@@ -68,44 +68,42 @@ corpus instead of trusting shipped confidence. They are not Agent Braid results.
 
 ## Notes on the specification and contract
 
-Found while planning. These are defects or ambiguities for the specification owner
-to resolve at T001; the plan states the choice it takes meanwhile.
+Found while planning. Each note is marked with its state after the specification and
+contract were updated on 2026-11-01; the owner still confirms the whole at T001.
 
-1. **Effect kinds are not in the report.** The spec says the episode is built from
-   the System 2 report, and the contract says `effectKinds` come from operation
-   records in the AIM path. The report lists resources only, so the plan records
-   `null` for both kinds. The contract should either say `null` until the builder
-   reads the request, or name the request as an input.
-2. **Dropped pairs bias the DP-1 share.** Pairs beyond 64 are dropped in report order.
-   From 12 operations, pairs are dropped, and the episode keeps no count of the
-   dropped classifications, so the DP-1 opportunity share cannot be computed over all
-   pairs. Suggested fix: add `classificationCounts` (from the report summary) to the
-   episode, or keep `unknown` pairs first. Until then the report states the share over
-   recorded pairs and says so.
-3. **`store-unavailable` cannot be recorded in the store.** An episode that cannot be
-   stored cannot carry its own refusal. The plan treats it, and `internal-error`
-   raised before a write, as in-memory counters only. The contract should say which
-   reasons can appear in a stored episode.
-4. **No success criterion for REQ-006, REQ-007 and REQ-008.** The plan adds
-   procedures 007–009. Consider SC-007 to SC-009.
-5. **The report has no contract.** `agent-braid-s1-report/v0.1` is named in REQ-005
-   but not defined. The plan proposes a shape in design item 9; a
-   `contracts/report-v0.1.md` would settle it.
-6. **REQ-003 lists a read-version flag** that the pair object does not have. The
-   read-version fact is carried by the `read-version` reason code. The REQ text or
-   the contract should align.
-7. **SC-003 says "timing within budget".** Python cannot pre-empt a blocking write,
-   so the budget is a work budget checked between stages. The plan words the
-   procedure that way and keeps the overhead as a measurement.
+1. **Effect kinds are not in the report.** The report lists resources only, so the
+   episode records `effectKinds` as `null` for both kinds. *Resolved in spec/contract
+   (2026-11-01):* the contract makes `effectKinds` always `null` in v0.1 and reserves the
+   shape; reading kinds from the request records stays a possible S1.5b addition.
+2. **Dropped pairs bias the DP-1 share.** Pairs beyond 64 are dropped in report order,
+   so a share over recorded pairs would be biased. *Resolved in spec/contract
+   (2026-11-01):* the episode carries `classificationCounts` from the report summary, and
+   the report computes `unknownShare` over all analysed pairs (`pairsAnalysed`), not only
+   the recorded ones.
+3. **`store-unavailable` cannot be recorded in the store.** *Resolved in spec/contract
+   (2026-11-01):* the contract marks the reason as reserved; refusals and errors before
+   storage exist only as in-memory counts.
+4. **No success criterion for REQ-006, REQ-007 and REQ-008.** *Resolved in spec
+   (2026-11-01):* SC-007 to SC-009 cover them; procedures 007–009 map to them.
+5. **The report has no contract.** *Open:* REQ-005 now lists the report fields, but
+   there is no `contracts/report-v0.1.md`; a contract file would settle the exact shape.
+6. **REQ-003 lists a read-version flag** that the pair object does not have.
+   *Resolved in spec (2026-11-01):* REQ-003 now names `read-version` as a reason code.
+7. **SC-003 says "timing within budget".** Python cannot pre-empt a blocking write.
+   *Resolved in spec (2026-11-01):* REQ-004 states that the 50 ms budget is a work
+   budget checked between stages and does not bound a filesystem write. SC-003 keeps its
+   short wording.
 8. **Contract bounds exceed the reachable range.** `operationCount` up to 64 and
-   `pairCount` up to 2016 are core limits; the MCP adapter admits 32 operations
-   and 496 pairs. Harmless, but the contract could state the surface bound.
-9. **`plugin-status.systemOne.store` has no defined value.** The plan uses
-   `absent`, `present` or `unsafe` and never a path.
+   `pairCount` up to 2016 are core limits; the MCP adapter admits 32 operations and 496
+   pairs. *Open:* the contract notes the adapter limit of 32 for `operationCount` only;
+   the 496-pair surface bound is not stated. Harmless.
+9. **`plugin-status.systemOne.store` had no defined value.** *Resolved in spec
+   (2026-11-01):* REQ-008 defines `store: {location, present}`; `location` shows the
+   default path and `present` is a boolean.
 10. **Existing issue numbers.** The brief for this track listed #322, #323, #324, #326
-    and #328 for SPEC-033 T002, T003, T004, T006 and T008. Reading the issues
-    shows those numbers are T001, T002, T003, T005 and T007. The correct numbers are
-    #323, #324, #325, #327 and #329. The drafts use the corrected numbers.
+    and #328 for SPEC-033 T002, T003, T004, T006 and T008. Reading the issues shows those
+    numbers are T001, T002, T003, T005 and T007. The correct numbers are #323, #324,
+    #325, #327 and #329. *Resolved (2026-11-01):* the drafts use the corrected numbers.
 
 ## Alternatives and non-claims
 

@@ -8,17 +8,20 @@ closed-vocabulary values: no resource names, identifiers, digests of input or te
 """
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta, timezone
+from collections import Counter
+from datetime import date, timedelta
 import json
 import os
 from pathlib import Path
+import queue
 import re
 import stat
 import threading
 import time
 import uuid
 
-from .tooling_telemetry import _path  # shared canonical, private, no-symlink path rules
+# Shared canonical JSON, UTC day and private no-symlink path rules.
+from .tooling_telemetry import _canonical, _path, today
 
 SCHEMA = 'agent-braid-s1-episode/v0.1'
 REPORT_SCHEMA = 'agent-braid-s1-report/v0.1'
@@ -29,6 +32,7 @@ EXPECTED_BACKEND_ID = 'stdlib-rule-fixture-v1'
 EXPECTED_MANIFEST_DIGEST = '49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca'
 BUDGET_NANOSECONDS = 50_000_000
 MAX_FILE_BYTES = 4 * 1024 * 1024
+MAX_REPORT_BYTES = 1024 * 1024  # artifact-backed reports above this are not observed
 MAX_PAIRS = 64
 RETENTION_DAYS = 30
 
@@ -63,9 +67,8 @@ _DAY = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 _HEX64 = re.compile(r'^[0-9a-f]{64}$')
 _IDENT = re.compile(r'^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$')
 _FILE = re.compile(r'^episodes-(\d{4}-\d{2}-\d{2})\.jsonl$')
-_CLOCK = time.monotonic_ns  # replaced in tests
 
-_refusals = {}
+_refusals = Counter()
 _refusal_lock = threading.Lock()
 
 
@@ -75,7 +78,7 @@ class StoreRefused(ValueError):
 
 def _note_refusal(reason: str) -> None:
     with _refusal_lock:
-        _refusals[reason] = _refusals.get(reason, 0) + 1
+        _refusals[reason] += 1
 
 
 def refusal_counts() -> dict:
@@ -84,17 +87,26 @@ def refusal_counts() -> dict:
         return dict(_refusals)
 
 
-def today() -> date:
-    return datetime.now(timezone.utc).date()
-
-
 def default_directory() -> Path:
     """Fixed user-local location, independent of repository and host configuration."""
     return Path.home() / '.local' / 'share' / 'agent-braid' / 'system-one'
 
 
-def _canonical(value) -> bytes:
-    return (json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False) + '\n').encode('utf-8')
+def display_location() -> str:
+    """The store location with the home directory shown as `~`, so no user name is exposed."""
+    directory = default_directory()
+    try:
+        return '~/' + directory.relative_to(Path.home()).as_posix()
+    except ValueError:
+        return str(directory)
+
+
+def _safe(path: Path, *, directory=False) -> Path:
+    """The shared path rules, with their errors worded for this store."""
+    try:
+        return _path(path, directory=directory)
+    except ValueError as exc:
+        raise ValueError(str(exc).replace('telemetry', 'System One store')) from None
 
 
 # --- System One identity and answer ------------------------------------------
@@ -107,24 +119,21 @@ def _system_one_answer() -> dict:
     """
     from types import SimpleNamespace
     from . import system_one, system_one_policy
-    backend_id = system_one.BACKEND_ID
-    manifest_digest = system_one.digest(system_one.MODEL_MANIFEST)
-    if backend_id != EXPECTED_BACKEND_ID or manifest_digest != EXPECTED_MANIFEST_DIGEST:
-        return {'status': 'refused', 'reason': 'identity-mismatch',
-                'backendId': backend_id, 'manifestDigest': manifest_digest}
+    answer = {'backendId': system_one.BACKEND_ID,
+              'manifestDigest': system_one.digest(system_one.MODEL_MANIFEST)}
+    if (answer['backendId'], answer['manifestDigest']) != (EXPECTED_BACKEND_ID, EXPECTED_MANIFEST_DIGEST):
+        return dict(answer, status='refused', reason='identity-mismatch')
     outcome, reasons = system_one_policy.outcome(
         SimpleNamespace(envelope={'policyId': system_one.STRICT_POLICY}))
     if outcome == 'abstain' and reasons == ['calibration-absent']:
-        return {'status': 'abstained', 'reason': 'calibration-absent',
-                'backendId': backend_id, 'manifestDigest': manifest_digest}
-    return {'status': 'skipped', 'reason': 'internal-error',
-            'backendId': backend_id, 'manifestDigest': manifest_digest}
+        return dict(answer, status='abstained', reason='calibration-absent')
+    return dict(answer, status='skipped', reason='internal-error')
 
 
 # --- Episode construction -----------------------------------------------------
 
 def _count(value, low, high) -> int:
-    if type(value) is not int or not low <= value <= high:
+    if not _int(value, low, high):
         raise ValueError('report count outside the episode contract')
     return value
 
@@ -157,10 +166,14 @@ def _pair(item: dict) -> dict | None:
             'observedOutcome': None}
 
 
-def build_episode(report: dict, operation: str, kind: str, *, clock=None, now=None) -> dict:
-    """Derive one contract-conformant episode from a System 2 report (never stores input)."""
-    clock = clock or _CLOCK
-    started = clock()
+def build_episode(report: dict, operation: str, kind: str, *, clock=None, started=None) -> dict:
+    """Derive one contract-conformant episode from a System 2 report (never stores input).
+
+    `started` lets the caller count work done before this call (artifact decoding)
+    against the same 50 ms budget.
+    """
+    clock = clock or time.monotonic_ns
+    started = clock() if started is None else started
     summary = report['summary']
     operation_count = _count(summary['operationCount'], 1, 64)
     pair_count = _count(summary['pairCount'], 0, 2016)
@@ -171,26 +184,26 @@ def build_episode(report: dict, operation: str, kind: str, *, clock=None, now=No
         raise ValueError('report classifications do not sum to the pair count')
     interactions = report['interactions']
     pairs = []
-    mapped = True
     for item in interactions:
         pair = _pair(item)
         if pair is None:
-            mapped = False
+            pairs, mapped = [], False
             break
         pairs.append(pair)
+    else:
+        mapped = True
     system_one_started = clock()
     answer = _system_one_answer()
     elapsed_micros = max(0, (clock() - system_one_started) // 1000)
     status, reason = answer['status'], answer['reason']
     if not mapped:
-        pairs = []
         status, reason = 'skipped', 'unmapped-reason'
     pairs = pairs[:MAX_PAIRS]
     if clock() - started > BUDGET_NANOSECONDS and status != 'refused':
         status, reason = 'skipped', 'budget-exceeded'
     return {'schemaVersion': SCHEMA,
             'episodeId': str(uuid.uuid4()),
-            'day': (now or today()).isoformat(),
+            'day': today().isoformat(),
             'surface': 'mcp',
             'operation': operation,
             'analysisKind': kind,
@@ -203,7 +216,7 @@ def build_episode(report: dict, operation: str, kind: str, *, clock=None, now=No
             'systemOne': {'status': status, 'reason': reason,
                           'backendId': answer['backendId'], 'manifestDigest': answer['manifestDigest'],
                           'decisionPoint': DECISION_POINT, 'answers': None,
-                          'elapsedMicros': min(int(elapsed_micros), 50_000)},
+                          'elapsedMicros': min(elapsed_micros, 50_000)},
             'executionAuthorization': False}
 
 
@@ -285,94 +298,164 @@ def validate_episode(value) -> dict:
 
 # --- Private store ------------------------------------------------------------
 
-def _store_root(directory: Path | None, *, create: bool) -> Path | None:
-    root = _path(directory if directory is not None else default_directory(), directory=True)
+def _store_root(*, create: bool) -> Path | None:
+    root = _safe(default_directory(), directory=True)
     if not root.exists():
         if not create:
             return None
         root.mkdir(parents=True, mode=0o700, exist_ok=True)
-        _path(root, directory=True)
+        _safe(root, directory=True)
     return root
 
 
-def _entries(root: Path) -> list[Path]:
-    """Only lock and day files are allowed; anything else makes the store unsafe."""
-    files = []
+def _listing(root: Path) -> tuple[list[Path], list[Path]]:
+    """Day files and unrelated entries; the lock is the store's own and listed in neither."""
+    days, others = [], []
     for entry in sorted(root.iterdir()):
-        if entry.name == 'store.lock':
-            continue
-        _need(_FILE.fullmatch(entry.name), 'unknown System One store file')
-        files.append(_path(entry))
-    return files
+        if entry.name != 'store.lock':
+            (days if _FILE.fullmatch(entry.name) else others).append(entry)
+    return days, others
+
+
+def _entries(root: Path) -> list[Path]:
+    """The store's day files; unrelated files (for example .DS_Store) are ignored."""
+    return [_safe(entry) for entry in _listing(root)[0]]
 
 
 def _retained(name: str, current: date) -> bool:
+    """Older dates expire; future-dated files (clock skew) are kept, never deleted."""
     try:
         parsed = date.fromisoformat(_FILE.fullmatch(name).group(1))
     except ValueError:
         return False
-    return current - timedelta(days=RETENTION_DAYS - 1) <= parsed <= current
+    return parsed >= current - timedelta(days=RETENTION_DAYS - 1)
 
 
-def append(episode: dict, directory: Path | None = None, *, current: date | None = None) -> None:
+class _Lock:
+    """Non-blocking exclusive flock on the store's lock file."""
+
+    def __init__(self, root: Path):
+        self.path = _safe(root / 'store.lock')
+        self.descriptor = None
+
+    def __enter__(self):
+        import fcntl
+        self.descriptor = os.open(self.path, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+        try:
+            _safe(self.path)
+            try:
+                fcntl.flock(self.descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                raise StoreRefused('busy') from None
+        except BaseException:
+            os.close(self.descriptor)
+            raise
+        return self
+
+    def __exit__(self, *exc):
+        os.close(self.descriptor)
+
+
+def append(episode: dict) -> None:
     """Append one validated episode; raise StoreRefused when the store cannot take it safely."""
-    current = current or today()
+    current = today()
     try:
         validate_episode(episode)
         line = _canonical(episode)
         _need(hasattr(os, 'O_NOFOLLOW'), 'secure store opening is unsupported')
-        import fcntl
-        root = _store_root(directory, create=True)
-        lock_path = _path(root / 'store.lock')
-        lock = os.open(lock_path, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
-        try:
-            _path(lock_path)
-            try:
-                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except BlockingIOError:
-                raise StoreRefused('busy') from None
+        root = _store_root(create=True)
+        with _Lock(root):
             for entry in _entries(root):
                 if not _retained(entry.name, current):
                     entry.unlink()
-            target = _path(root / f"episodes-{episode['day']}.jsonl")
-            size = target.stat().st_size if target.exists() else 0
-            if size + len(line) > MAX_FILE_BYTES:
-                raise StoreRefused('oversize')
+            target = _safe(root / f"episodes-{episode['day']}.jsonl")
             descriptor = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_APPEND | os.O_NOFOLLOW, 0o600)
             try:
                 info = os.fstat(descriptor)
                 _need(stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and not info.st_mode & 0o077
                       and info.st_uid == os.getuid(), 'unsafe System One day file')
-                _need(info.st_size + len(line) <= MAX_FILE_BYTES, 'oversize')
+                if info.st_size + len(line) > MAX_FILE_BYTES:
+                    raise StoreRefused('oversize')
                 written = os.write(descriptor, line)
                 _need(written == len(line), 'short write')
             finally:
                 os.close(descriptor)
-        finally:
-            os.close(lock)
     except StoreRefused:
         raise
     except (OSError, ValueError, ImportError) as exc:
         raise StoreRefused('unavailable') from exc
 
 
-def observe(operation: str, kind: str, report, *, directory: Path | None = None,
-            clock=None, now=None) -> None:
-    """Record one episode for a successful analysis; never raises, never alters the report."""
+def observe(operation: str, kind: str, source) -> None:
+    """Record one episode for a successful analysis; never raises, never alters the report.
+
+    `source` is the report dict, or the encoded evidence artifact that holds it.
+    """
+    started = time.monotonic_ns()  # the 50 ms budget covers decoding as well as building
     try:
-        episode = build_episode(report, operation, kind, clock=clock, now=now)
-        append(episode, directory, current=now)
+        if type(source) is bytes:
+            source = json.loads(source)
+            source = source.get('report') if type(source) is dict else None
+            if type(source) is not dict:
+                return
+        append(build_episode(source, operation, kind, started=started))
     except StoreRefused as exc:
         _note_refusal(str(exc))
-    except BaseException:
+    except Exception:
         _note_refusal('internal-error')
 
 
-def store_present(directory: Path | None = None) -> bool:
+# --- Off-request worker ----------------------------------------------------------
+# Episode building and the store write run on one daemon thread so they never add
+# latency to a request or run while the plugin router's admission lock is held.
+
+_jobs: queue.Queue = queue.Queue(maxsize=1)
+_worker = None
+_worker_guard = threading.Lock()
+
+
+def _work() -> None:
+    while True:
+        job = _jobs.get()
+        try:
+            observe(*job)
+        finally:
+            _jobs.task_done()
+
+
+def submit(operation: str, kind: str, source) -> None:
+    """Hand a final report (dict) or its evidence artifact (bytes) to the worker; never blocks or raises."""
+    global _worker
+    try:
+        if type(source) is bytes and len(source) > MAX_REPORT_BYTES:
+            _note_refusal('oversize-report')
+            return
+        with _worker_guard:
+            if _worker is None or not _worker.is_alive():
+                _worker = threading.Thread(target=_work, name='system-one-shadow', daemon=True)
+                _worker.start()
+        _jobs.put_nowait((operation, kind, source))
+    except queue.Full:
+        _note_refusal('busy')
+    except Exception:
+        _note_refusal('internal-error')
+
+
+def flush(timeout: float = 5.0) -> bool:
+    """Wait until submitted work is done (tests); False when the timeout passed first."""
+    deadline = time.monotonic() + timeout
+    while _jobs.unfinished_tasks:
+        if time.monotonic() >= deadline:
+            return False
+        time.sleep(0.002)
+    return True
+
+
+def store_present() -> bool:
     """True when the store holds episode files; reads only, creates nothing."""
     try:
-        root = _store_root(directory, create=False)
-        return root is not None and any(_FILE.fullmatch(p.name) for p in root.iterdir())
+        root = _store_root(create=False)
+        return root is not None and bool(_listing(root)[0])
     except (OSError, ValueError):
         return False
 
@@ -398,12 +481,12 @@ def _read_file(path: Path) -> bytes:
         os.close(descriptor)
 
 
-def report(directory: Path | None = None, *, current: date | None = None) -> dict:
+def report() -> dict:
     """Aggregate retained episodes; reads the store only and creates nothing."""
-    current = current or today()
+    current = today()
     days = {}
     invalid = 0
-    root = _store_root(directory, create=False)
+    root = _store_root(create=False)
     for entry in (_entries(root) if root is not None else []):
         if not _retained(entry.name, current):
             continue
@@ -416,30 +499,30 @@ def report(directory: Path | None = None, *, current: date | None = None) -> dic
             except (ValueError, RecursionError, UnicodeError):
                 invalid += 1
                 continue
-            bucket = days.setdefault(day, {'day': day, 'episodes': 0, 'operations': {},
-                                           'system2': {}, 'systemOne': {}, 'allPairs': {}})
+            bucket = days.setdefault(day, {'day': day, 'episodes': 0, 'operations': Counter(),
+                                           'system2': Counter(), 'systemOne': Counter(),
+                                           'allPairs': Counter()})
             bucket['episodes'] += 1
-            for table, key in ((bucket['operations'], episode['operation']),
-                               (bucket['systemOne'], episode['systemOne']['status'])):
-                table[key] = table.get(key, 0) + 1
-            for pair in episode['pairs']:
-                bucket['system2'][pair['system2']] = bucket['system2'].get(pair['system2'], 0) + 1
-            for name, count in episode['classificationCounts'].items():
-                if count:
-                    bucket['allPairs'][name] = bucket['allPairs'].get(name, 0) + count
-    totals = {'episodes': 0, 'operations': {}, 'system2': {}, 'systemOne': {}, 'allPairs': {}}
+            bucket['operations'][episode['operation']] += 1
+            bucket['systemOne'][episode['systemOne']['status']] += 1
+            bucket['system2'].update(pair['system2'] for pair in episode['pairs'])
+            bucket['allPairs'].update({name: count for name, count in episode['classificationCounts'].items()
+                                       if count})
+    totals = {'episodes': 0, 'operations': Counter(), 'system2': Counter(),
+              'systemOne': Counter(), 'allPairs': Counter()}
     for bucket in days.values():
         totals['episodes'] += bucket['episodes']
         for name in ('operations', 'system2', 'systemOne', 'allPairs'):
-            for key, count in bucket[name].items():
-                totals[name][key] = totals[name].get(key, 0) + count
+            totals[name].update(bucket[name])
     recorded = sum(totals['system2'].values())
     analysed = sum(totals['allPairs'].values())
-    unknown = totals['allPairs'].get('unknown', 0)
+    unknown = totals['allPairs']['unknown']
+    plain = lambda bucket: {key: dict(value) if isinstance(value, Counter) else value
+                            for key, value in bucket.items()}
     return {'schema': REPORT_SCHEMA,
             'retentionDays': RETENTION_DAYS,
-            'days': [days[key] for key in sorted(days)],
-            'totals': totals,
+            'days': [plain(days[key]) for key in sorted(days)],
+            'totals': plain(totals),
             'pairsRecorded': recorded,
             'pairsAnalysed': analysed,
             'unknownPairs': unknown,
@@ -466,15 +549,22 @@ def render_report(value: dict) -> str:
     return '\n'.join(lines)
 
 
-def purge(directory: Path | None = None) -> dict:
-    """Delete the store's own files and, when empty, its directory."""
-    root = _store_root(directory, create=False)
+def purge() -> dict:
+    """Delete the store's lock and day files, then the directory when nothing else is in it."""
+    root = _store_root(create=False)
     if root is None:
         return {'status': 'empty', 'externalCopies': 'not-removed'}
-    removed = 0
-    for entry in sorted(root.iterdir()):
-        _need(entry.name == 'store.lock' or _FILE.fullmatch(entry.name), 'unknown System One store file')
-        _path(entry).unlink()
-        removed += 1
-    root.rmdir()
-    return {'status': 'purged', 'filesRemoved': removed, 'externalCopies': 'not-removed'}
+    try:
+        with _Lock(root) as lock:
+            days, others = _listing(root)
+            for entry in days:
+                _safe(entry).unlink()
+            lock.path.unlink()
+    except OSError:
+        raise StoreRefused('unavailable') from None
+    result = {'status': 'purged', 'filesRemoved': len(days) + 1, 'externalCopies': 'not-removed'}
+    if others:
+        result['leftover'] = [entry.name for entry in others]
+    else:
+        root.rmdir()
+    return result

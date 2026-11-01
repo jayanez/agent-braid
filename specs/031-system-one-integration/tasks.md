@@ -1,6 +1,6 @@
 # SPEC-031: Tasks
 
-> Note (2026-11-01): SPEC-066 (draft) absorbs the open task T008 (S1.5a/b). See [SPEC-066](../066-system-one-shadow/spec.md). No checkbox below is changed by this note.
+> Note (2026-11-01): SPEC-066 (draft) absorbs the open task T008 (S1.5d: carried by SPEC-066 T303). See [SPEC-066](../066-system-one-shadow/spec.md). No checkbox below is changed by this note.
 
 Implementation and research acceptance tasks; every checkbox starts pending.
 IDs are stable inside the spec. Cross-spec dependencies use SPEC-nnn/Tnnn.

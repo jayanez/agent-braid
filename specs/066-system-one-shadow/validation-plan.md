@@ -33,7 +33,7 @@ after the shadow call for the same service (the observer did not mutate the
 envelope, the arguments or the report). Negative controls: an observer that edits
 the envelope fails; an observer that raises still returns the unchanged envelope;
 a refused, cancelled or error envelope produces no episode.
-Command: `python3 -m unittest tests.test_system_one_shadow_parity -v`.
+Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k "test_analyze_work_aim_is_byte_identical_and_records_one_episode or test_git_analyze_work_prepare_and_analyze_are_byte_identical or test_refused_and_unsupported_calls_record_nothing or test_shadow_failure_never_raises_or_alters_the_envelope"`.
 
 ## procedure_002
 
@@ -53,7 +53,7 @@ unmapped sentence yields a `skipped` / `unmapped-reason` episode with no pairs; 
 episode with one extra string field, one unknown reason code, one value outside the
 effect-kind set, a negative count, `NaN`, a duplicate member, a missing field, or
 `executionAuthorization` true is refused with a stable reason.
-Command: `python3 -m unittest tests.test_system_one_shadow -v`.
+Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k "test_episode_conforms_and_holds_no_input_string or test_every_reason_sentence_in_the_analyzer_is_mapped or test_unmapped_reason_is_skipped_with_no_pairs or test_pairs_are_capped_deterministically_in_report_order or test_validator_rejects_strings_outside_the_closed_vocabularies"`.
 
 ## procedure_003
 
@@ -73,8 +73,7 @@ passes 50 ms before serialization, the episode is the minimal `skipped` /
 `budget-exceeded` form. Concurrency: four threads appending at once yield only
 whole, valid lines. Parity: the same hostile layouts are refused by the telemetry
 path checker for the same reasons.
-Command: `python3 -m unittest tests.test_system_one_shadow_store
-tests.test_system_one_shadow_parity -v`.
+Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k "test_busy_lock_refuses_without_waiting or test_symlinked_store_directory_is_refused or test_oversize_day_file_refuses_without_growing or test_files_are_private_and_old_dates_are_not_retained or test_budget_exceeded_is_skipped_and_elapsed_is_bounded"`.
 
 Limit: the budget is checked between stages and cannot interrupt a blocking
 filesystem call. A stalled disk is not simulated; the measured overhead (T021) is the
@@ -86,16 +85,16 @@ Seed a store with episodes of known composition across three UTC dates, both
 operations, all four System 2 classes and all four System One statuses, including one
 invalid line and one pair-capped episode. Run `system-one report` in text and in
 `--format json`. Assert the JSON validates as `agent-braid-s1-report/v0.1`, the
-counts per day, operation, class and status equal the seeds, the DP-1 opportunity
-share equals the seeded `unknown` pairs over recorded pairs, `invalidLines` is 1, and
-no output line contains an episode body or any field name of the pair object.
+counts per day, operation, class and status equal the seeds, and
+`pairsRecorded`, `pairsAnalysed` (summed from `classificationCounts`, so it includes pairs
+beyond the 64-pair cap), `unknownPairs` and `unknownShare` equal the seeded values, with
+`unknownShare` taken over all analysed pairs, `invalidLines` is 1, and no output line contains an episode body or any field name of the pair object.
 Report on an absent store prints zero counts and creates no file or directory.
 `purge` without a terminal and without `--yes` refuses and deletes nothing; with
 `--yes` it removes the episode files and the lock and leaves an unknown file in place
 with a message. Negative controls: an unsafe store is refused by the report with the
 same path rules; an episode that fails the validator is counted, never printed.
-Command: `python3 -m unittest tests.test_system_one_shadow_store
-tests.test_system_one_cli -v`.
+Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k "test_report_counts_match_seeded_episodes or test_cli_report_json_text_and_absent_store or test_invalid_lines_are_counted_not_printed or test_purge_requires_confirmation_unless_yes"`.
 
 ## procedure_005
 
@@ -112,8 +111,7 @@ not `off`/`shadow` is refused as malformed. Telemetry consent does not change sh
 mode and vice versa. Negative control: a registry written with the member absent
 from the key-set check fails the old strict decode, which is the documented
 downgrade behaviour.
-Command: `python3 -m unittest tests.test_system_one_shadow_consent
-tests.test_plugin_registry -v`.
+Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k "test_absent_and_off_keep_registry_bytes_and_digest or test_unknown_consent_is_refused or test_setup_cli_previews_and_applies_system_one_consent_alone"`.
 
 ## procedure_006
 
@@ -142,7 +140,7 @@ telemetry store is not created. Assert `OPERATIONS['cli']` equals the old tuple 
 `'system-one'`, that the batch schema and every other constant are unchanged, and
 that the LIMITS text names the operation. Negative control: an imported batch that
 carries `system-one` under the `mcp` surface is refused.
-Command: `python3 -m unittest tests.test_tooling_telemetry tests.test_system_one_cli -v`.
+Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k test_command_telemetry_is_opt_in_and_aggregate_only`.
 
 ## procedure_008
 
@@ -153,15 +151,16 @@ the envelope is unchanged. With the real identity, assert `abstained` /
 `calibration-absent` with `answers: null` and a `manifestDigest` of 64 lowercase hex
 characters. Negative control: a floating alias as backend ID is not accepted by the
 validator. The test fails if the manifest changes without the constant.
-Command: `python3 -m unittest tests.test_system_one_shadow -v`.
+Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k test_identity_mismatch_is_refused_and_still_valid`.
 
 ## procedure_009
 
 Status. Call `plugin-status` in each state: absent registry, `off`, `shadow` configured
 but not yet reconnected (configured `shadow`, active `off`), and active `shadow` with
-no store, a present store and an unsafe store. Assert the `systemOne` block has
-exactly `configuredMode`, `activeMode`, `store` and `episodeRetentionDays: 30`, the
-store value is `absent`, `present` or `unsafe`, no call creates the directory or file,
-and the output contains no episode content, path or counter. Negative control: a
-status call against a store holding a hostile-text episode prints none of it.
-Command: `python3 -m unittest tests.test_system_one_shadow_consent tests.test_plugin_mcp -v`.
+no store and with a store holding episode files. Assert the `systemOne` block has
+exactly `configuredMode`, `activeMode`, `store` and `episodeRetentionDays: 30`, `store`
+is `{location, present}` with `location` showing the default store path and `present` a
+boolean, no call creates the directory or file, and the output contains no episode
+content or counter. Negative control: a status call against a store holding a
+hostile-text episode prints none of it.
+Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k test_plugin_status_reports_configured_and_active_mode_after_reconnect`.

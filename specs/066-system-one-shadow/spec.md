@@ -64,7 +64,7 @@ subsystem in stages:
 Only S1.5a is specified to implementation level here. S1.5b–e carry outline
 requirements; each needs its own plan and task review before implementation.
 
-Claim level (Article 17): engineering and hypothesis. H-S1 is a registered
+Claim level (labels of [claim discipline](../../docs/theory/CLAIM_DISCIPLINE.md)): engineering and hypothesis. H-S1 is a registered
 hypothesis (below); nothing in S1.5a supports it or any utility claim.
 
 Exclusions:
@@ -103,7 +103,10 @@ reference rule backend, that answer is an abstention.
 **REQ-002 Output parity.** In `shadow` mode, every MCP envelope is byte-identical
 to the envelope in `off` mode for the same input. This covers `analyze`,
 `analyze-work`, `prepare` and all runtime tools.
-- Shadow work runs after the envelope is built.
+- Shadow work runs after the envelope is built. The request path only hands the
+  report to one background worker with a single-slot queue and never waits for
+  it; when the worker is busy, the report is dropped and counted (`busy`).
+  Artifact-backed reports above 1 MiB are not decoded (`oversize-report`).
 - Shadow work never raises into the caller.
 - Shadow work stays within a fixed budget of 50 ms of wall time per call; over
   budget, the episode is recorded as `skipped`.

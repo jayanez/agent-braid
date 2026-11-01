@@ -66,7 +66,7 @@ specifications unless a SPEC-066 requirement amends them.
   kinds) and the `unmapped-reason` skip. Include the drift test that scans the analyzer's reason
   sentences and fails if one is missing from the table. Tests first. Files:
   `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow.py`,
-  `tests/fixtures/system_one_shadow/`. Dependencies: T001. Verification:
+  `tests/fixtures/system_one_shadow/`. Dependencies: T001 (T001 waived for implementation by the 2026-11-01 owner plan approval; required before T032). Verification:
   procedure_002.
 - [x] T011 (REQ-003 / SC-002): Episode validator and privacy test: closed
   vocabularies, key sets, bounds, canonical bytes, duplicate members, and a seeded
@@ -98,7 +98,7 @@ specifications unless a SPEC-066 requirement amends them.
   fixed UUID and clock. Negative controls: an observer that raises, a store that
   refuses, an over-budget clock, an input that mutates if the observer writes to
   it. Files: `agent_braid/system_one_shadow.py`, `agent_braid/tooling_mcp.py`,
-  `tests/test_system_one_shadow_parity.py`. Dependencies: T012, T013. Verification:
+  `tests/test_system_one_shadow_parity.py`. Dependencies: T012, T013 (T001 waived for implementation by the 2026-11-01 owner plan approval; required before T032). Verification:
   procedure_001, procedure_003.
 - [x] T015 (REQ-001 / SC-005): Consent: registry `systemOne` member (decode,
   `plan_setup`, digest only when `shadow`), `plugin setup --system-one`, router
@@ -117,7 +117,7 @@ specifications unless a SPEC-066 requirement amends them.
   the strict validator, with invalid lines counted and no episode body printed.
   Files: `agent_braid/system_one_shadow.py`, `agent_braid/system_one_cli.py`,
   `agent_braid/cli.py`, `tests/test_system_one_shadow_store.py`,
-  `tests/test_system_one_cli.py`. Dependencies: T013. Verification: procedure_004.
+  `tests/test_system_one_cli.py`. Dependencies: T013 (T001 waived for implementation by the 2026-11-01 owner plan approval; required before T032). Verification: procedure_004.
 - [ ] T018 (REQ-006 / procedure_007): `--telemetry {off,local}` on every
   `system-one` subcommand, the `observe` wrapper in `cli.py`, the `system-one` CLI
   operation in `OPERATIONS`, LIMITS and `docs/tooling/TELEMETRY.md` text, and a test

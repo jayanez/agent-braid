@@ -39,11 +39,11 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 | [SPEC-025: contextual-proof-obligations](../../specs/025-contextual-proof-obligations/spec.md) | [RES.1 — Formal interaction research](https://github.com/jayanez/agent-braid/milestone/12) |
 | [SPEC-026: adoption-evidence-program](../../specs/026-adoption-evidence-program/spec.md) | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) |
 | [SPEC-027: runtime-refinement-contracts](../../specs/027-runtime-refinement-contracts/spec.md) | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) |
-| [SPEC-028: system-one-core](../../specs/028-system-one-core/spec.md) | Deferred #24; parts absorbed by SPEC-066 |
+| [SPEC-028: system-one-core](../../specs/028-system-one-core/spec.md) | Deferred #24 |
 | [SPEC-029: system-one-evaluation](../../specs/029-system-one-evaluation/spec.md) | Deferred #24; parts absorbed by SPEC-066 |
-| [SPEC-030: system-one-model](../../specs/030-system-one-model/spec.md) | Deferred #24; parts absorbed by SPEC-066 |
+| [SPEC-030: system-one-model](../../specs/030-system-one-model/spec.md) | Deferred #24; comparison covered by SPEC-066 S1.5d |
 | [SPEC-031: system-one-integration](../../specs/031-system-one-integration/spec.md) | Deferred #24; parts absorbed by SPEC-066 |
-| [SPEC-032: system-one-product](../../specs/032-system-one-product/spec.md) | Deferred #24; parts absorbed by SPEC-066 |
+| [SPEC-032: system-one-product](../../specs/032-system-one-product/spec.md) | Deferred #24 |
 | [SPEC-033: system-one-promotion](../../specs/033-system-one-promotion/spec.md) | Deferred #24; parts absorbed by SPEC-066 |
 | [SPEC-066: system-one-shadow](../../specs/066-system-one-shadow/spec.md) | S1.5 — System One shadow activation (milestone number is registered when created) |
 | [SPEC-034: workload-forecast-data](../../specs/034-workload-forecast-data/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |

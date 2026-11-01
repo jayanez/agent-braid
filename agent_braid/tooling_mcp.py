@@ -279,22 +279,27 @@ class ToolingService:
         return envelope
 
     def _shadow(self, name: str, args: Any, envelope: dict[str, Any]) -> None:
-        """SPEC-066 shadow episode after the envelope is final; reads it, never changes it."""
+        """SPEC-066: hand the final report to the off-request worker; never changes the envelope.
+
+        Only the report (or the encoded artifact holding it) is extracted here; decoding,
+        building and the store write all happen on the worker thread.
+        """
         try:
             if name not in {"analyze", "analyze-work"} or envelope.get("status") != "ok":
                 return
-            result = envelope.get("result")
-            if type(result) is dict and result.get("type") == "evidence-artifact-reference":
+            source = envelope.get("result")
+            if type(source) is dict and source.get("type") == "evidence-artifact-reference":
                 with self.lock:
-                    artifact = self.artifacts.get(result.get("artifactId"))
-                result = json.loads(artifact.data) if artifact is not None else None
-            report = result.get("report") if type(result) is dict else None
-            if type(report) is not dict:
-                return  # e.g. the Git replay `analyze` result carries no System 2 interaction report
+                    artifact = self.artifacts.get(source.get("artifactId"))
+                source = artifact.data if artifact is not None else None
+            elif type(source) is dict:
+                source = source.get("report")  # the Git replay `analyze` result carries none
+            if type(source) not in {dict, bytes}:
+                return
             kind = args.get("kind", "aim") if name == "analyze-work" else "aim"
             from . import system_one_shadow
-            system_one_shadow.observe(name, kind, report)
-        except BaseException:
+            system_one_shadow.submit(name, kind, source)
+        except Exception:
             pass
 
     def _invoke_measured(self, name: str, args: Any, cancelled: threading.Event) -> dict[str, Any]:

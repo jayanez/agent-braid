@@ -204,20 +204,25 @@ def main(argv: list[str] | None = None) -> int:
     if args.command in {"expand-ownership", "check-ownership", "audit-isolation", "report-recovery"}:
         from .ownership_cli import run as run_ownership
         return run_ownership(args)
-    if args.command == "system-one":
+    if args.command == "system-one" or (args.command in {"analyze", "analyze-git"} and args.telemetry == "local"):
         from .tooling_telemetry import observe
-        from .system_one_cli import run
-        with observe(args.telemetry, "cli", "system-one") as observation:
-            result = run(args)
-            observation.outcome = "ok" if result == 0 else "refused" if result == 2 else "error"
-            return result
-    if args.command in {"analyze", "analyze-git"} and args.telemetry == "local":
-        from .tooling_telemetry import observe
-        with observe("local", "cli", args.command) as observation:
-            result = _run_command(args, observation)
-            observation.outcome = "ok" if result == 0 else "refused" if result == 2 else "error"
+        with observe(args.telemetry, "cli", args.command) as observation:
+            if args.command == "system-one":
+                from .system_one_cli import run
+                result = run(args)
+            else:
+                result = _run_command(args, observation)
+            observation.outcome = _outcome(args, result)
             return result
     return _run_command(args)
+
+
+def _outcome(args, result: int) -> str:
+    """Telemetry outcome: System One `decide` abstain/defer (exit 1) is a valid answer."""
+    if result == 0 or (result == 1 and getattr(args, "decision_command", None) == "decide"):
+        return "ok"
+    # A cancelled purge (exit 1) declined to act; exit 2 is a refusal.
+    return "refused" if result == 2 or getattr(args, "decision_command", None) == "purge" else "error"
 
 
 def _run_command(args, observation=None) -> int:

@@ -531,7 +531,7 @@ or observed use. The new track **S1.5** ([SPEC-066](specs/066-system-one-shadow/
 [ADR 0034](docs/adr/0034-system-one-shadow-advisory-boundary.md); draft, human review
 pending, milestone to be created) resumes the deferred work in stages:
 
-- **S1.5a** opt-in shadow recording of one episode per `analyze`/`analyze-work`
+- **S1.5a** opt-in shadow recording of one episode per successful `analyze-work`
   call, with outputs unchanged (the only stage specified to implementation level);
 - **S1.5b** owned corpus and observed-outcome labels;
 - **S1.5c** reference-grade decision contracts without a model;

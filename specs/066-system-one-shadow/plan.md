@@ -55,7 +55,7 @@ is deferred until S1.5b adds the outcome join, which needs a second file kind.
 | 0 | Hypotheses, analogy and evidence separated | H-S1 is a registered hypothesis; S1.5a produces only descriptive usage counts and tests nothing |
 | 6 | Interaction properties drive scheduling | System One never reorders, filters or schedules in S1.5a; `unknown` stays `unknown` and serialized |
 | 13 | Compatibility class on every analysis result; confidence is not a guarantee | the episode copies the System 2 class only as a closed vocabulary; the backend answer is `abstained` and carries no confidence |
-| 17 | Claim level stated | engineering and hypothesis; ADR 0034 records inspiration for the upstream capabilities |
+| 17 | Yang–Baxter claim levels | not applicable: no Yang–Baxter claim is made. Claim labels follow [claim discipline](../../docs/theory/CLAIM_DISCIPLINE.md): engineering and hypothesis (H-S1); ADR 0034 records design inspiration for the upstream capabilities |
 | 18 | Analogy is a hypothesis generator | no neuroscience or "System 1" claim; the name denotes a fast bounded decision path |
 | 20 | Analysis and execution separate | `executionAuthorization` is the constant `false` in the episode and in the report; no execution path is added |
 | 21, 22 | Practical value; mathematics not ornamental | the DP-1 opportunity share is the only utility figure; no accuracy or speed claim |
@@ -136,6 +136,8 @@ Alternatives rejected:
      channels, as `analysis._effect_map` does) is deferred to S1.5b, and only if the
      DP-1 analysis shows the feature is needed; it would touch caller input and so
      needs its own privacy test.
+   - `classificationCounts` are copied from the report summary and sum to `pairCount`, so
+     shares cover the pairs beyond the 64-pair cap.
    - `observedOutcome` is the constant `null`.
 4. **Reason table.** Reason sentences map to codes by exact string equality. The
    sentences are taken from `agent_braid/analysis.py::_interaction`:
@@ -191,12 +193,14 @@ Alternatives rejected:
    the arguments or the report.
 9. **Report and purge.** `report` reads the store with the same safety rules and the
    strict validator, skips and counts invalid lines, and never prints an episode
-   body. Proposed JSON shape of `agent-braid-s1-report/v0.1`: `schema`,
-   `retentionDays`, `days` (day, episodes, bytes), `totals` (episodes, pairs,
-   `pairsRecorded`), `byOperation`, `bySystem2`, `bySystemOneStatus`, `byReason`,
-   `dp1Opportunity` (`unknownPairs`, `recordedPairs`, `share`, `null` when there are no
-   recorded pairs), `invalidLines`, `limits` and `executionAuthorization: false`. The
-   text format prints the same figures. `purge` deletes the episode files and the lock
+   body. JSON shape of `agent-braid-s1-report/v0.1` (spec REQ-005): `schema`,
+   `retentionDays`, `days` and `totals` (episodes, operations, recorded System 2
+   classes, all analysed pairs per class from `classificationCounts`, System One
+   statuses), `pairsRecorded`, `pairsAnalysed`, `unknownPairs`, `unknownShare`,
+   `invalidLines`, this process's refusal counts, `limits` and
+   `executionAuthorization: false`. `unknownShare` is `unknownPairs / pairsAnalysed`
+   over all analysed pairs, not only the recorded ones, and is `null` when no pair was
+   analysed. The text format prints the same figures. `purge` deletes the episode files and the lock
    after a prompt, or with `--yes`; without a terminal it refuses unless `--yes` is
    given; it leaves unknown files alone and says so.
 10. **CLI and telemetry.** The `system-one` parser gets a shared parent parser with
@@ -210,8 +214,8 @@ Alternatives rejected:
     the telemetry schema changes.
 11. **plugin-status.** `PluginRouter.status` adds
     `systemOne: {configuredMode, activeMode, store, episodeRetentionDays: 30}`.
-    `store` is one of `absent`, `present` or `unsafe`; the call never creates the
-    directory and never reads episode bodies. `activeMode` is the connection snapshot,
+    `store` is `{location, present}`: `location` shows the default path and `present`
+    is a boolean; the call never creates the directory and never reads episode bodies. `activeMode` is the connection snapshot,
     like telemetry.
 12. **Validation profile.** `scripts/validate_change.py` already routes
     `agent_braid/system_one*.py`, `agent_braid/cli.py` and `tests/test_system_one*.py`
@@ -233,13 +237,14 @@ and the `--telemetry` option are additive.
 | REQ-003 | SC-002 | `tests/test_system_one_shadow.py` | procedure_002 |
 | REQ-004 | SC-003 | `tests/test_system_one_shadow_store.py` | procedure_003 |
 | REQ-005 | SC-004 | `tests/test_system_one_shadow_store.py`, `tests/test_system_one_cli.py` | procedure_004 |
-| REQ-006 | (none in the spec) | `tests/test_tooling_telemetry.py`, `tests/test_system_one_cli.py` | procedure_007 |
-| REQ-007 | (none in the spec) | `tests/test_system_one_shadow.py` | procedure_008 |
-| REQ-008 | (none in the spec) | `tests/test_system_one_shadow_consent.py`, `tests/test_plugin_mcp.py` | procedure_009 |
+| REQ-006 | SC-007 | `tests/test_tooling_telemetry.py`, `tests/test_system_one_cli.py` | procedure_007 |
+| REQ-007 | SC-008 | `tests/test_system_one_shadow.py` | procedure_008 |
+| REQ-008 | SC-009 | `tests/test_system_one_shadow_consent.py`, `tests/test_plugin_mcp.py` | procedure_009 |
 | REQ-002, REQ-003 | SC-006 | owner-run receipt | procedure_006 |
 
-REQ-006, REQ-007 and REQ-008 have no success criterion in the spec. The plan adds
-procedures 007–009 so they are tested anyway; the gap is reported for the spec.
+REQ-006, REQ-007 and REQ-008 have SC-007 to SC-009 in the spec; procedures 007–009
+cover them. Delivered tests so far live in one module, `tests/test_system_one_shadow.py`;
+the other module names in this table are targets for the pending tasks.
 Negative controls are listed per procedure in [validation-plan.md](validation-plan.md).
 `assurance.json` holds planned evidence only until implementation.
 
@@ -264,7 +269,7 @@ conflict and a verify result (REQ-102). The label rubric is amended so observed
 outcomes are primary and an owner-adjudicated random sample measures label noise
 (REQ-103). Feasibility gate: the number of labelled DP-1 pairs, by class, is shown
 before any fit. If the yield is too low the track stays in shadow collection; the
-population is not widened after labels are seen. It absorbs SPEC-029 T001–T003, T005
+population is not widened after labels are seen. It absorbs SPEC-029 T001–T003
 and T008.
 
 **S1.5c — reference-grade contracts.** Tri-state abstention with an echoed
@@ -281,7 +286,7 @@ automatic download, fitted and calibrated on the S1.5b corpus (REQ-301). Compare
 with the rule backend and the SPEC-019 linear model at a common risk budget, with the
 cost boundary stated up front. A candidate needs its own ADR for dependency and
 licence. A NO-GO verdict on H-S1 is a valid and recorded outcome. It absorbs SPEC-029
-T007 and T009 and SPEC-031 T008.
+T005, T007 and T009 and SPEC-031 T008.
 
 **S1.5e — go/no-go.** Per decision point, an owner decision on recorded shadow
 evidence moves `shadow` to `advise`, with an immutable promotion registry and an
@@ -292,12 +297,12 @@ atomic rollback to `off` (REQ-401). It absorbs SPEC-033 T002, T003, T006 and T00
 
 | ID | Decision | Recommendation | Owner |
 |---|---|---|---|
-| OD-1 | Accept SPEC-066, this plan and the episode contract (T001) | Accept after the spec notes in [research.md](research.md) are resolved | Owner |
+| OD-1 | Accept SPEC-066, this plan and the episode contract (T001) | Accept; the spec notes in [research.md](research.md) are resolved in the spec and contract or still open as marked there | Owner |
 | OD-2 | Reuse the telemetry path checker versus copying it | Reuse with a parity test; extract a shared helper later if a third store appears | Owner |
 | OD-3 | Report JSON shape and `plugin-status.systemOne.store` representation | Adopt the shapes in design items 9 and 11 | Owner |
 | OD-4 | Synchronous shadow call versus a background thread | Synchronous, bounded; state the filesystem-stall limit | Owner |
-| OD-5 | Move issues between milestones one by one | Extend the tracking source with a task-level milestone override (T004) | Owner |
-| OD-6 | Minimum duration and workload of the SC-006 real session | One normal working session with at least one `analyze` call that has two or more operations | Owner |
+| OD-5 | Move issues between milestones one by one | Extend the tracking source with a task-level milestone override (T003) | Owner |
+| OD-6 | Minimum duration and workload of the SC-006 real session | One normal working session with at least one `analyze-work` call that has two or more operations | Owner |
 | OD-7 | Instrument CLI `analyze` and `analyze-git` as well | Not in S1.5a; revisit after the first report | Owner |
 | OD-8 | A `--system-one {off,shadow}` option on the standalone `tooling_mcp` entry point | Accept, mirroring `--telemetry`; the plugin registry stays the consent path for the packaged plugin | Owner |
 

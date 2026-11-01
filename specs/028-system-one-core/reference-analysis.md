@@ -237,8 +237,8 @@ own versioned source/evidence; proposed gains are hypotheses only.
 Status: source survey for SPEC-066 and ADR 0034. Nothing below was run, downloaded
 or reproduced here. Every number is **upstream-reported** (project READMEs,
 documentation, blog posts and third-party design notes), not reproduced by Agent
-Braid. Only the Laya release tag, its commit and the file hashes in
-`reference-sources.json` were verified directly.
+Braid. Only the Laya release tag, its commit and the Laya, GBrain and SynapsCLI
+file hashes were verified directly; they match `reference-sources.json`.
 
 ### Laya v0.4.19
 

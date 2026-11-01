@@ -14,7 +14,7 @@ Title: [SPEC-066] SPEC-066: System One shadow activation and reference-grade dec
 
 Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 
-Requirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006, REQ-007, REQ-008, REQ-101, REQ-102, REQ-103, REQ-201, REQ-202, REQ-203, REQ-204, REQ-205, REQ-206, REQ-301, REQ-401.
+Requirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006, REQ-007, REQ-008.
 
 Issue state is a bounded tracking record, not a scientific or founder approval.
 
@@ -110,7 +110,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-066/T010
 
-Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-066 T010] Reason table and episode builder: pure functions that turn a System 2 report plus the operation name a...
 
@@ -118,7 +118,7 @@ Title: [SPEC-066 T010] Reason table and episode builder: pure functions that tur
 
 ## Task
 
-Reason table and episode builder: pure functions that turn a System 2 report plus the operation name and analysis kind into an episode object, with the exact sentence-to-code table, the 64-pair cap, `effectKinds` as `null` (the report carries no kinds) and the `unmapped-reason` skip. Include the drift test that scans the analyzer's reason sentences and fails if one is missing from the table. Tests first. Files: `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow.py`, `tests/fixtures/system_one_shadow/`. Dependencies: T001. Verification: procedure_002.
+Reason table and episode builder: pure functions that turn a System 2 report plus the operation name and analysis kind into an episode object, with the exact sentence-to-code table, the 64-pair cap, `effectKinds` as `null` (the report carries no kinds) and the `unmapped-reason` skip. Include the drift test that scans the analyzer's reason sentences and fails if one is missing from the table. Tests first. Files: `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow.py`, `tests/fixtures/system_one_shadow/`. Dependencies: T001 (T001 waived for implementation by the 2026-11-01 owner plan approval; required before T032). Verification: procedure_002.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-003 / SC-002
@@ -128,7 +128,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-066/T011
 
-Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-066 T011] Episode validator and privacy test: closed vocabularies, key sets, bounds, canonical bytes, duplicate...
 
@@ -146,7 +146,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-066/T012
 
-Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-066 T012] Pinned identity: compiled backend ID and manifest digest, comparison with the installed identity, iden...
 
@@ -172,7 +172,7 @@ Title: [SPEC-066 T013] EpisodeStore: telemetry-equivalent path safety, private f
 
 ## Task
 
-`EpisodeStore`: telemetry-equivalent path safety, private files, 4 MiB day cap, 30-date retention on access, non-blocking lock, unknown-file refusal, in-memory refusal counters, and a parity test against the telemetry path checker. Negative controls: symlink at each level, repository ancestor, group-readable file, extra hard link, foreign owner, oversize, busy lock, unknown file, full disk. Files: `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow_store.py`. Dependencies: T011. Verification: procedure_003.
+`EpisodeStore`: telemetry-equivalent path safety, private files, 4 MiB day cap, 30-date retention on access, non-blocking lock, unknown-file refusal, in-memory refusal counters, and a parity test against the telemetry path checker. Negative controls: symlink at each level, repository ancestor, group-readable file, extra hard link, foreign owner, oversize, busy lock, unknown file, full disk. Files: `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow_store.py`. Dependencies: T011. Verification: procedure_003. Status 2026-11-01: Partly implemented: store with path safety, cap, retention, lock and refusal counters; the full negative-control matrix and telemetry-parity test are pending.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-004 / SC-003
@@ -182,7 +182,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-066/T014
 
-Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-066 T014] Observer, budget and wiring: ToolingConfig.system_one, ShadowObserver with the 50 ms stage checks and...
 
@@ -190,7 +190,7 @@ Title: [SPEC-066 T014] Observer, budget and wiring: ToolingConfig.system_one, Sh
 
 ## Task
 
-Observer, budget and wiring: `ToolingConfig.system_one`, `ShadowObserver` with the 50 ms stage checks and exception containment, lazy call from `ToolingService.invoke` after the envelope, and the byte-parity test between `off` and `shadow` for every tool with fixed UUID and clock. Negative controls: an observer that raises, a store that refuses, an over-budget clock, an input that mutates if the observer writes to it. Files: `agent_braid/system_one_shadow.py`, `agent_braid/tooling_mcp.py`, `tests/test_system_one_shadow_parity.py`. Dependencies: T012, T013. Verification: procedure_001, procedure_003.
+Observer, budget and wiring: `ToolingConfig.system_one`, `ShadowObserver` with the 50 ms stage checks and exception containment, lazy call from `ToolingService.invoke` after the envelope, and the byte-parity test between `off` and `shadow` for every tool with fixed UUID and clock. Negative controls: an observer that raises, a store that refuses, an over-budget clock, an input that mutates if the observer writes to it. Files: `agent_braid/system_one_shadow.py`, `agent_braid/tooling_mcp.py`, `tests/test_system_one_shadow_parity.py`. Dependencies: T012, T013 (T001 waived for implementation by the 2026-11-01 owner plan approval; required before T032). Verification: procedure_001, procedure_003.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-002 / SC-001, SC-003
@@ -200,7 +200,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-066/T015
 
-Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-066 T015] Consent: registry systemOne member (decode, plan_setup, digest only when shadow), plugin setup --syste...
 
@@ -218,7 +218,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-066/T016
 
-Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-066 T016] plugin-status systemOne block with configured and active mode, store state and retention; no directory...
 
@@ -236,7 +236,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-066/T017
 
-Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-066 T017] system-one report (text and agent-braid-s1-report/v0.1 JSON) and purge with confirmation or --yes, ove...
 
@@ -244,7 +244,7 @@ Title: [SPEC-066 T017] system-one report (text and agent-braid-s1-report/v0.1 JS
 
 ## Task
 
-`system-one report` (text and `agent-braid-s1-report/v0.1` JSON) and `purge` with confirmation or `--yes`, over the strict validator, with invalid lines counted and no episode body printed. Files: `agent_braid/system_one_shadow.py`, `agent_braid/system_one_cli.py`, `agent_braid/cli.py`, `tests/test_system_one_shadow_store.py`, `tests/test_system_one_cli.py`. Dependencies: T013. Verification: procedure_004.
+`system-one report` (text and `agent-braid-s1-report/v0.1` JSON) and `purge` with confirmation or `--yes`, over the strict validator, with invalid lines counted and no episode body printed. Files: `agent_braid/system_one_shadow.py`, `agent_braid/system_one_cli.py`, `agent_braid/cli.py`, `tests/test_system_one_shadow_store.py`, `tests/test_system_one_cli.py`. Dependencies: T013 (T001 waived for implementation by the 2026-11-01 owner plan approval; required before T032). Verification: procedure_004.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-005 / SC-004
@@ -262,7 +262,7 @@ Title: [SPEC-066 T018] --telemetry {off,local} on every system-one subcommand, t
 
 ## Task
 
-`--telemetry {off,local}` on every `system-one` subcommand, the `observe` wrapper in `cli.py`, the `system-one` CLI operation in `OPERATIONS`, LIMITS and `docs/tooling/TELEMETRY.md` text, and a test that no metric other than the new operation cell appears. Files: `agent_braid/cli.py`, `agent_braid/tooling_telemetry.py`, `docs/tooling/TELEMETRY.md`, `tests/test_tooling_telemetry.py`, `tests/test_system_one_cli.py`. Dependencies: T017. Verification: procedure_007.
+`--telemetry {off,local}` on every `system-one` subcommand, the `observe` wrapper in `cli.py`, the `system-one` CLI operation in `OPERATIONS`, LIMITS and `docs/tooling/TELEMETRY.md` text, and a test that no metric other than the new operation cell appears. Files: `agent_braid/cli.py`, `agent_braid/tooling_telemetry.py`, `docs/tooling/TELEMETRY.md`, `tests/test_tooling_telemetry.py`, `tests/test_system_one_cli.py`. Dependencies: T017. Verification: procedure_007. Status 2026-11-01: Partly implemented: `--telemetry`, `observe` wrapper and the `system-one` CLI operation; `docs/tooling/TELEMETRY.md` and the no-other-metric test are pending.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-006 / procedure_007
@@ -280,7 +280,7 @@ Title: [SPEC-066 T019] Boundary and validation-profile checks: off never imports
 
 ## Task
 
-Boundary and validation-profile checks: `off` never imports the shadow module (subprocess `sys.modules` check), the shadow module imports no network module and no model library, no new `executionAuthorization: true`, and the planner routes every touched path to the expected rule; update the `system-one-core` boundary text. Files: `scripts/validate_change.py`, `tests/test_validation_profiles.py`, `tests/test_system_one_shadow_boundaries.py`, `docs/development/VALIDATION_PROFILES.md`. Dependencies: T014. Verification: procedure_001, `python3 scripts/validate_change.py --base develop --profile quick`.
+Boundary and validation-profile checks: `off` never imports the shadow module (subprocess `sys.modules` check), the shadow module imports no network module and no model library, no new `executionAuthorization: true`, and the planner routes every touched path to the expected rule; update the `system-one-core` boundary text. Files: `scripts/validate_change.py`, `tests/test_validation_profiles.py`, `tests/test_system_one_shadow_boundaries.py`, `docs/development/VALIDATION_PROFILES.md`. Dependencies: T014. Verification: procedure_001, `python3 scripts/validate_change.py --base develop --profile quick`. Status 2026-11-01: Pending.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-002, REQ-003 / SC-001
@@ -298,7 +298,7 @@ Title: [SPEC-066 T020] User documentation: docs/tooling/SYSTEM_ONE_SHADOW.md (wh
 
 ## Task
 
-User documentation: `docs/tooling/SYSTEM_ONE_SHADOW.md` (what is recorded, what is never recorded, how to enable, report, purge, non-claims and limits including the filesystem-stall limit), plus updates to `docs/tooling/PLUGIN_PRIVACY.md` and `docs/tooling/INSTALL.md`. Dependencies: T017, T018. Evidence: merged documents and a docs link check.
+User documentation: `docs/tooling/SYSTEM_ONE_SHADOW.md` (what is recorded, what is never recorded, how to enable, report, purge, non-claims and limits including the filesystem-stall limit), plus updates to `docs/tooling/PLUGIN_PRIVACY.md` and `docs/tooling/INSTALL.md`. Dependencies: T017, T018. Evidence: merged documents and a docs link check. Status 2026-11-01: Pending; README and the plugin setup skill carry interim text.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: all REQ
@@ -316,7 +316,7 @@ Title: [SPEC-066 T021] Overhead measurement: median and p95 of the shadow step f
 
 ## Task
 
-Overhead measurement: median and p95 of the shadow step for 2, 12 and 32 operations on the owner machine, with and without a warm store, reported as a measurement receipt (not a gate) with the 50 ms budget as reference. Dependencies: T014. Evidence: `evidence/overhead-<date>.json`.
+Overhead measurement: median and p95 of the shadow step for 2, 12 and 32 operations on the owner machine, with and without a warm store, reported as a measurement receipt (not a gate) with the 50 ms budget as reference. Dependencies: T014. Evidence: `evidence/overhead-<date>.json`. Status 2026-11-01: Pending.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-002 / SC-003
@@ -454,7 +454,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
-Title: [SPEC-066 T105] Owner adjudication of the random label sample. Dependencies: T103, T104. Evidence: owner record.
+Title: [SPEC-066 T105] Owner adjudication of the random label sample. Dependencies: T103, T104. Evidence: owner record
 
 <!-- agent-braid-task-id: SPEC-066/T105 -->
 
