@@ -212,4 +212,6 @@ get milestones only when their specifications exist.
 
 Published 2026-11-01: milestone #25 (registered by PR #808), parent SPEC-061 as
 issue #810 in **Review pending**, and 39 task issues linked as its sub-issues; the
-scoped re-audit planned no operations.
+scoped re-audit planned no operations. After the T001 owner review was accepted on
+2026-11-01, SPEC-061 left `project_review_pending` and the parent moved to **Todo**,
+as for SPEC-060.
