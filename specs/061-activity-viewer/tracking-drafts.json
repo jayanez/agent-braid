@@ -59,8 +59,8 @@
  "sourceCounts": {
   "specs": 1,
   "tasks": 39,
-  "tasksChecked": 0,
-  "tasksUnchecked": 39,
+  "tasksChecked": 2,
+  "tasksUnchecked": 37,
   "parentsClosed": 0,
   "parentsOpen": 1,
   "totalRecords": 40
@@ -93,7 +93,7 @@
    "title": "[SPEC-061 T002] Decide ADR 0032 (activity viewer companion). Dependencies: none. Files: docs/adr/0032-activity-viewer-...",
    "body": "<!-- agent-braid-task-id: SPEC-061/T002 -->\n\n## Task\n\nDecide ADR 0032 (activity viewer companion). Dependencies: none. Files: `docs/adr/0032-activity-viewer-companion.md`. Evidence: ADR status change merged.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-004, REQ-013\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
    "milestone": "VIS.1 — Activity viewer",
-   "state": "open"
+   "state": "closed"
   },
   {
    "key": "SPEC-061/T003",
@@ -102,7 +102,7 @@
    "title": "[SPEC-061 T003] Founder decision on ADR 0033 (vendored Three.js, MIT boundary). Dependencies: none. Files: docs/adr/00...",
    "body": "<!-- agent-braid-task-id: SPEC-061/T003 -->\n\n## Task\n\nFounder decision on ADR 0033 (vendored Three.js, MIT boundary). Dependencies: none. Files: `docs/adr/0033-vendored-threejs-mit-boundary.md`. Evidence: ADR status change merged.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-010, REQ-013\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
    "milestone": "VIS.1 — Activity viewer",
-   "state": "open"
+   "state": "closed"
   },
   {
    "key": "SPEC-061/T004",
@@ -297,8 +297,8 @@
    "key": "SPEC-061/T023",
    "kind": "task",
    "parent": "SPEC-061",
-   "title": "[SPEC-061 T023] Vendor Three.js r182 prebuilt modules (three.module.js, three.core.js) and OrbitControls with manifest...",
-   "body": "<!-- agent-braid-task-id: SPEC-061/T023 -->\n\n## Task\n\nVendor Three.js r182 prebuilt modules (`three.module.js`, `three.core.js`) and OrbitControls with `manifest.json`; add `LICENSES/three-MIT.txt`, the LICENSE paragraph, the NOTICE entry, the license marker in `scripts/validate_repository.py` and the THIRD_PARTY section; record an owner-run provenance receipt comparing the registry integrity of the pinned tarball with the vendored bytes. Dependencies: T003. Files: `integrations/agent-braid-view/web/vendor/**`, `LICENSE`, `LICENSES/`, `NOTICE`, `scripts/validate_repository.py`, `docs/development/THIRD_PARTY.md`, `specs/061-activity-viewer/evidence/`. Verification: procedure_010.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-010 / SC-010; REQ-013 / SC-013\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "title": "[SPEC-061 T023] Vendor Three.js r186 prebuilt modules (three.module.js, three.core.js) and OrbitControls with manifest...",
+   "body": "<!-- agent-braid-task-id: SPEC-061/T023 -->\n\n## Task\n\nVendor Three.js r186 prebuilt modules (`three.module.js`, `three.core.js`) and OrbitControls with `manifest.json`; add `LICENSES/three-MIT.txt`, the LICENSE paragraph, the NOTICE entry, the license marker in `scripts/validate_repository.py` and the THIRD_PARTY section; record an owner-run provenance receipt comparing the registry integrity of the pinned tarball with the vendored bytes. Dependencies: T003. Files: `integrations/agent-braid-view/web/vendor/**`, `LICENSE`, `LICENSES/`, `NOTICE`, `scripts/validate_repository.py`, `docs/development/THIRD_PARTY.md`, `specs/061-activity-viewer/evidence/`. Verification: procedure_010.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)\n- Trace: REQ-010 / SC-010; REQ-013 / SC-013\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
    "milestone": "VIS.1 — Activity viewer",
    "state": "open"
   },

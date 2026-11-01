@@ -1,0 +1,619 @@
+{
+  "evidenceClass": "observational-native-receipt",
+  "extractorSha256": "738e116808102b69a597c0854b8e12d6f3202874d28a8b3362a8094bcca478ee",
+  "hosts": [
+    {
+      "c1Discovery": {
+        "mcpServerInstructionsDelivered": {
+          "firstSeen": "2026-10-17T08:11:32.791Z",
+          "lastSeen": "2026-11-01T09:45:52.737Z",
+          "sessions": 192,
+          "state": "observed"
+        },
+        "skillsListedInContext": {
+          "analyze": {
+            "count": 196,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-11-01T09:45:48.938Z",
+            "outcomes": {},
+            "sessions": 196,
+            "state": "observed",
+            "versions": "unavailable"
+          },
+          "evidence": {
+            "count": 196,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-11-01T09:45:48.938Z",
+            "outcomes": {},
+            "sessions": 196,
+            "state": "observed",
+            "versions": "unavailable"
+          },
+          "execute": {
+            "count": 196,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-11-01T09:45:48.938Z",
+            "outcomes": {},
+            "sessions": 196,
+            "state": "observed",
+            "versions": "unavailable"
+          },
+          "plan": {
+            "count": 196,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-11-01T09:45:48.938Z",
+            "outcomes": {},
+            "sessions": 196,
+            "state": "observed",
+            "versions": "unavailable"
+          },
+          "recover": {
+            "count": 196,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-11-01T09:45:48.938Z",
+            "outcomes": {},
+            "sessions": 196,
+            "state": "observed",
+            "versions": "unavailable"
+          },
+          "setup": {
+            "count": 196,
+            "firstSeen": "2026-10-17T08:11:32.791Z",
+            "lastSeen": "2026-11-01T09:45:48.938Z",
+            "outcomes": {},
+            "sessions": 196,
+            "state": "observed",
+            "versions": "unavailable"
+          }
+        }
+      },
+      "c2InstructionsLoaded": {
+        "analyze": {
+          "count": 4,
+          "firstSeen": "2026-10-24T22:02:02.362Z",
+          "lastSeen": "2026-11-01T08:33:36.317Z",
+          "loadedContentSha256": {
+            "befc7cba981b541fd089ad1bf95b86d80c10c209e624c1e95e7abd98f22f9646": 1,
+            "d16ec99ef0d9433a77d1932584e6c8e88121d52055d2a600f0e6718475cc3ef6": 1,
+            "f7c703abbd1349026a02460f4af07747ea13a27338c90fac2013938ba5dfe2af": 2
+          },
+          "outcomes": {
+            "loaded": 4
+          },
+          "sessions": 4,
+          "state": "observed",
+          "versions": {
+            "0.1.0-alpha.3": 1,
+            "0.1.0-alpha.4": 3
+          }
+        },
+        "evidence": {
+          "count": 1,
+          "firstSeen": "2026-11-01T09:32:15.172Z",
+          "lastSeen": "2026-11-01T09:32:15.172Z",
+          "loadedContentSha256": {
+            "63a0930788a1ef2767720f8476bad4f938ffe521076acb05235f7eb750fc5871": 1
+          },
+          "outcomes": {
+            "loaded": 1
+          },
+          "sessions": 1,
+          "state": "observed",
+          "versions": {
+            "0.1.0-alpha.4": 1
+          }
+        },
+        "execute": {
+          "count": 2,
+          "firstSeen": "2026-11-01T01:27:53.553Z",
+          "lastSeen": "2026-11-01T08:50:19.611Z",
+          "loadedContentSha256": {
+            "9ef8d7939e71e9bfe936326e5f45bcfef3f1b9851fe8eb528f3d494384044051": 1,
+            "b5da47c1b5fa20fec06d486a9e46bfd60e3da474aa2857ae615c6f19f7dfcccc": 1
+          },
+          "outcomes": {
+            "loaded": 2
+          },
+          "sessions": 2,
+          "state": "observed",
+          "versions": {
+            "0.1.0-alpha.4": 2
+          }
+        },
+        "plan": {
+          "count": 5,
+          "firstSeen": "2026-10-24T05:59:51.145Z",
+          "lastSeen": "2026-11-01T08:33:46.290Z",
+          "loadedContentSha256": {
+            "4b23e11ac7dd4dc3608573f9a659e1fcf0ee87385c538b0097861c6e37513183": 1,
+            "715b9b4094df3416fa6ba4f01aaf8a11c5892a34138969c0f89262b646d20274": 1,
+            "ac552c45dd9470deb5c0ef0e09ad4845aa8e1b7c2561273935878f9dbef5eab2": 2,
+            "ea2052ce05cf8c5e841ef9f939f1f1b5d2b24b8b95604a14cf5f09dc1324ebeb": 1
+          },
+          "outcomes": {
+            "loaded": 5
+          },
+          "sessions": 5,
+          "state": "observed",
+          "versions": {
+            "0.1.0-alpha.3": 2,
+            "0.1.0-alpha.4": 3
+          }
+        },
+        "recover": {
+          "count": 1,
+          "firstSeen": "2026-11-01T09:01:56.953Z",
+          "lastSeen": "2026-11-01T09:01:56.953Z",
+          "loadedContentSha256": {
+            "18eae2566b1206198f8d37823ba80d818424fd6aabb82ebba27bb661216cb86c": 1
+          },
+          "outcomes": {
+            "loaded": 1
+          },
+          "sessions": 1,
+          "state": "observed",
+          "versions": {
+            "0.1.0-alpha.4": 1
+          }
+        },
+        "setup": {
+          "count": 5,
+          "firstSeen": "2026-10-23T17:18:42.202Z",
+          "lastSeen": "2026-11-01T01:26:54.906Z",
+          "loadedContentSha256": {
+            "35c7f465cf301b8f5bd9c8ea0aaa47b1bd8f45efa4d53df060c55ab811fe78a1": 1,
+            "36ee4f1b25e20a5f5f8cfe92482dece8d9f43293c28b8460c730d1e762c72155": 1,
+            "471993d7357dfe5d0b40239f1bc6e61bc6755ac3bb6c8838802171a21fb9844f": 1,
+            "78173b047d0bc2880dddfc17f7b13d09b0388f1cd245579026941015ea7c2bd5": 1,
+            "c115c13b1c585e8f1bb9081711ff9bef8454c476716890c6335189819460e4f1": 1
+          },
+          "outcomes": {
+            "loaded": 5
+          },
+          "sessions": 5,
+          "state": "observed",
+          "versions": {
+            "0.1.0-alpha.2": 1,
+            "0.1.0-alpha.3": 3,
+            "0.1.0-alpha.4": 1
+          }
+        }
+      },
+      "c3ObservedUse": {
+        "mcpTools": {
+          "analyze": {
+            "count": 7,
+            "firstSeen": "2026-10-25T10:38:17.608Z",
+            "lastSeen": "2026-10-27T22:44:01.773Z",
+            "outcomes": {
+              "ok": 6,
+              "refused": 1
+            },
+            "sessions": 7,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 7
+            }
+          },
+          "analyze-work": {
+            "count": 27,
+            "firstSeen": "2026-10-17T09:02:49.407Z",
+            "lastSeen": "2026-11-01T09:33:59.716Z",
+            "outcomes": {
+              "ok": 20,
+              "refused": 7
+            },
+            "sessions": 21,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 26
+            }
+          },
+          "execute": {
+            "count": 3,
+            "firstSeen": "2026-11-01T08:51:23.719Z",
+            "lastSeen": "2026-11-01T09:01:07.927Z",
+            "outcomes": {
+              "ok": 1,
+              "refused": 2
+            },
+            "sessions": 1,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 3
+            }
+          },
+          "plugin-status": {
+            "count": 25,
+            "firstSeen": "2026-10-17T08:53:47.237Z",
+            "lastSeen": "2026-11-01T08:50:12.838Z",
+            "outcomes": {
+              "ok": 25
+            },
+            "sessions": 16,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 25
+            }
+          },
+          "prepare": {
+            "count": 7,
+            "firstSeen": "2026-10-25T10:38:29.112Z",
+            "lastSeen": "2026-11-01T08:33:52.683Z",
+            "outcomes": {
+              "ok": 7
+            },
+            "sessions": 7,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 7
+            }
+          },
+          "recover": {
+            "count": 2,
+            "firstSeen": "2026-11-01T09:03:08.443Z",
+            "lastSeen": "2026-11-01T09:30:29.377Z",
+            "outcomes": {
+              "ok": 1,
+              "refused": 1
+            },
+            "sessions": 1,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 2
+            }
+          },
+          "status": {
+            "count": 3,
+            "firstSeen": "2026-11-01T08:56:07.234Z",
+            "lastSeen": "2026-11-01T09:28:36.227Z",
+            "outcomes": {
+              "ok": 3
+            },
+            "sessions": 1,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 3
+            }
+          },
+          "verify": {
+            "count": 4,
+            "firstSeen": "2026-11-01T08:57:07.700Z",
+            "lastSeen": "2026-11-01T09:31:48.899Z",
+            "outcomes": {
+              "ok": 2,
+              "refused": 2
+            },
+            "sessions": 1,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 3
+            }
+          },
+          "workspaces": {
+            "count": 29,
+            "firstSeen": "2026-10-17T08:57:26.739Z",
+            "lastSeen": "2026-11-01T01:32:11.291Z",
+            "outcomes": {
+              "ok": 29
+            },
+            "sessions": 28,
+            "state": "observed",
+            "versions": {
+              "0.1.0a1": 29
+            }
+          }
+        },
+        "skills": {
+          "analyze": {
+            "count": 4,
+            "firstSeen": "2026-10-24T22:02:02.284Z",
+            "lastSeen": "2026-11-01T08:33:36.254Z",
+            "outcomes": {
+              "invoked": 4
+            },
+            "sessions": 4,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 3
+            }
+          },
+          "evidence": {
+            "count": 1,
+            "firstSeen": "2026-11-01T09:32:15.124Z",
+            "lastSeen": "2026-11-01T09:32:15.124Z",
+            "outcomes": {
+              "invoked": 1
+            },
+            "sessions": 1,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "execute": {
+            "count": 2,
+            "firstSeen": "2026-11-01T01:27:53.517Z",
+            "lastSeen": "2026-11-01T08:50:19.570Z",
+            "outcomes": {
+              "invoked": 2
+            },
+            "sessions": 2,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.4": 2
+            }
+          },
+          "plan": {
+            "count": 5,
+            "firstSeen": "2026-10-24T05:59:51.066Z",
+            "lastSeen": "2026-11-01T08:33:46.252Z",
+            "outcomes": {
+              "invoked": 5
+            },
+            "sessions": 5,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 2,
+              "0.1.0-alpha.4": 3
+            }
+          },
+          "recover": {
+            "count": 1,
+            "firstSeen": "2026-11-01T09:01:56.881Z",
+            "lastSeen": "2026-11-01T09:01:56.881Z",
+            "outcomes": {
+              "invoked": 1
+            },
+            "sessions": 1,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "setup": {
+            "count": 5,
+            "firstSeen": "2026-10-23T17:18:42.130Z",
+            "lastSeen": "2026-11-01T01:26:54.865Z",
+            "outcomes": {
+              "invoked": 5
+            },
+            "sessions": 5,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.2": 1,
+              "0.1.0-alpha.3": 3,
+              "0.1.0-alpha.4": 1
+            }
+          }
+        }
+      },
+      "host": "claude-code",
+      "transcriptFilesScanned": 2929,
+      "transcriptFilesWithAgentBraidEvents": 670
+    },
+    {
+      "c1Discovery": {
+        "skillsListedInContext": {
+          "analyze": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "evidence": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "execute": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "plan": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "recover": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          },
+          "setup": {
+            "count": 8,
+            "firstSeen": "2026-10-24T05:55:50.009Z",
+            "lastSeen": "2026-10-31T07:27:58.959Z",
+            "outcomes": {
+              "listed": 8
+            },
+            "sessions": 8,
+            "state": "observed",
+            "versions": {
+              "0.1.0-alpha.3": 1,
+              "0.1.0-alpha.4": 1
+            }
+          }
+        }
+      },
+      "c2InstructionsLoaded": "not-observed",
+      "c3ObservedUse": {
+        "state": "not-observed"
+      },
+      "host": "codex",
+      "sessionFilesListingAgentBraidSkills": 8,
+      "sessionFilesScanned": 8
+    }
+  ],
+  "localStores": {
+    "coordinationStore": {
+      "files": 15,
+      "modifiedFirst": "2026-10-14",
+      "modifiedLast": "2026-10-14",
+      "state": "present",
+      "unreadable": 0
+    },
+    "evidenceStore": {
+      "files": 133998,
+      "modifiedFirst": "2025-12-05",
+      "modifiedLast": "2026-10-17",
+      "state": "present",
+      "unreadable": 2
+    },
+    "identityStore": {
+      "files": 1,
+      "modifiedFirst": "2026-10-13",
+      "modifiedLast": "2026-10-13",
+      "state": "present",
+      "unreadable": 0
+    },
+    "pluginResults": {
+      "files": 36,
+      "modifiedFirst": "2026-11-01",
+      "modifiedLast": "2026-11-01",
+      "state": "present",
+      "unreadable": 0
+    },
+    "pluginWorkspaceRegistry": {
+      "configuredWorkspaces": 4,
+      "state": "present"
+    },
+    "runtimeState": {
+      "files": 3,
+      "modifiedFirst": "2026-10-14",
+      "modifiedLast": "2026-10-15",
+      "state": "present",
+      "unreadable": 0
+    },
+    "telemetry": {
+      "calls": {
+        "cli:analyze-git:ok": {
+          "count": 2,
+          "firstDay": "2026-10-24",
+          "lastDay": "2026-10-24"
+        },
+        "cli:analyze-git:refused": {
+          "count": 2,
+          "firstDay": "2026-10-24",
+          "lastDay": "2026-10-24"
+        },
+        "cli:analyze:ok": {
+          "count": 2,
+          "firstDay": "2026-10-16",
+          "lastDay": "2026-10-16"
+        },
+        "mcp:analyze-work:ok": {
+          "count": 5,
+          "firstDay": "2026-10-24",
+          "lastDay": "2026-11-01"
+        },
+        "mcp:analyze-work:refused": {
+          "count": 9,
+          "firstDay": "2026-10-24",
+          "lastDay": "2026-11-01"
+        },
+        "mcp:analyze:refused": {
+          "count": 1,
+          "firstDay": "2026-10-27",
+          "lastDay": "2026-10-27"
+        },
+        "mcp:execute:ok": {
+          "count": 1,
+          "firstDay": "2026-11-01",
+          "lastDay": "2026-11-01"
+        },
+        "mcp:execute:refused": {
+          "count": 3,
+          "firstDay": "2026-10-16",
+          "lastDay": "2026-11-01"
+        },
+        "mcp:prepare:ok": {
+          "count": 1,
+          "firstDay": "2026-11-01",
+          "lastDay": "2026-11-01"
+        },
+        "mcp:recover:ok": {
+          "count": 1,
+          "firstDay": "2026-11-01",
+          "lastDay": "2026-11-01"
+        },
+        "mcp:recover:refused": {
+          "count": 1,
+          "firstDay": "2026-11-01",
+          "lastDay": "2026-11-01"
+        },
+        "mcp:status:ok": {
+          "count": 3,
+          "firstDay": "2026-11-01",
+          "lastDay": "2026-11-01"
+        },
+        "mcp:verify:ok": {
+          "count": 2,
+          "firstDay": "2026-11-01",
+          "lastDay": "2026-11-01"
+        },
+        "mcp:verify:refused": {
+          "count": 1,
+          "firstDay": "2026-11-01",
+          "lastDay": "2026-11-01"
+        }
+      },
+      "coverage": "daily aggregates; portable MCP tools and CLI analyze/analyze-git only; no skill-level data",
+      "retentionDays": 30,
+      "state": "observed"
+    }
+  },
+  "privacy": "derived names, timestamps, counts, versions, outcomes, content digests and 12-hex session hashes only; no prompts, inputs, assistant text, paths or project names",
+  "scan": {
+    "claudeCodeRoot": "~/.claude/projects",
+    "codexRoot": "~/.codex/sessions",
+    "policy": "docs/development/REAL_USE_EVIDENCE.md"
+  },
+  "schema": "agent-braid-observational-native-receipts/v1"
+}

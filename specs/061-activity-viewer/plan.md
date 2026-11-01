@@ -4,7 +4,7 @@
 
 - Python 3.12+, standard library only (`http.server.ThreadingHTTPServer`,
   `json`, `hmac`, `secrets`, `queue`, `threading`, `time.monotonic_ns`).
-- Static web bundle (HTML, ES modules, CSS) with vendored Three.js r182 prebuilt
+- Static web bundle (HTML, ES modules, CSS) with vendored Three.js r186 prebuilt
   modules and `OrbitControls`, loaded through an import map. No Node, npm or
   bundler in the repository or CI.
 - Tests: `unittest`, owned fixtures under `tests/fixtures/view/`.
@@ -163,8 +163,8 @@ allowed only when bound to an event or removed.
 
 | ID | Decision | Recommendation | Owner |
 |---|---|---|---|
-| OD-1 | Accept ADR 0032 (companion boundary) | Accept | Owner |
-| OD-2 | Accept ADR 0033 (vendored Three.js MIT boundary, pinned r182) | Accept | Founder |
+| OD-1 | Accept ADR 0032 (companion boundary) | Accepted 2026-11-01 | Owner |
+| OD-2 | Accept ADR 0033 (vendored Three.js MIT boundary) | Accepted 2026-11-01, pinned r186 (`0.186.0`) | Founder |
 | OD-3 | Public name: keep "Loom" as working name; command `agent-braid view` | Keep command; decide name before VIS.1 release notes | Owner |
 | OD-4 | Q-VIS1 observation | Resolved 2026-10-31: descriptive observation at the T035 checkpoint after VIS.1a | Owner |
 | OD-5 | Renderer: WebGL2 now, WebGPU later | WebGL2 | Owner |

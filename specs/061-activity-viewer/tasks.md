@@ -18,10 +18,10 @@ per-probe owner authorization but no ADR, and run first.
   `contracts/`. Evidence: review record in this directory that also records the
   requested decisions D1–D6, the never-collect deviations (OD-7), the census
   threshold and the checkpoint date (OD-8).
-- [ ] T002 (REQ-004, REQ-013): Decide ADR 0032 (activity viewer companion).
+- [x] T002 (REQ-004, REQ-013): Decide ADR 0032 (activity viewer companion).
   Dependencies: none. Files: `docs/adr/0032-activity-viewer-companion.md`.
   Evidence: ADR status change merged.
-- [ ] T003 (REQ-010, REQ-013): Founder decision on ADR 0033 (vendored Three.js,
+- [x] T003 (REQ-010, REQ-013): Founder decision on ADR 0033 (vendored Three.js,
   MIT boundary). Dependencies: none. Files:
   `docs/adr/0033-vendored-threejs-mit-boundary.md`. Evidence: ADR status change merged.
 - [ ] T004 (REQ-015): Add the VIS track to ROADMAP, STATUS, the milestone index,
@@ -125,7 +125,7 @@ per-probe owner authorization but no ADR, and run first.
   markers, playback controls and CSP. Files:
   `integrations/agent-braid-view/web/*`. Dependencies: T020, T017.
   Verification: procedure_010.
-- [ ] T023 (REQ-010 / SC-010; REQ-013 / SC-013): Vendor Three.js r182 prebuilt
+- [ ] T023 (REQ-010 / SC-010; REQ-013 / SC-013): Vendor Three.js r186 prebuilt
   modules (`three.module.js`, `three.core.js`) and OrbitControls with
   `manifest.json`; add `LICENSES/three-MIT.txt`, the LICENSE paragraph, the NOTICE
   entry, the license marker in `scripts/validate_repository.py` and the

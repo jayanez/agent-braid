@@ -1,0 +1,804 @@
+{
+  "evidenceClass": "observational-native-receipt",
+  "extractorSha256": "738e116808102b69a597c0854b8e12d6f3202874d28a8b3362a8094bcca478ee",
+  "host": "claude-code",
+  "journeys": [
+    {
+      "events": [
+        {
+          "at": "2026-10-25T10:58:40.592Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        }
+      ],
+      "session": "015d7c194bbb"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T10:43:02.772Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:44:03.339Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:45:51.482Z",
+          "item": "mcp:analyze",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:46:15.445Z",
+          "item": "mcp:prepare",
+          "outcome": "ok"
+        }
+      ],
+      "session": "03e96af412a0"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-17T08:59:38.228Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-17T08:59:38.250Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-17T09:02:49.407Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-17T09:02:53.279Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        }
+      ],
+      "session": "0fb6e17f04d3"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-23T17:20:23.909Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T05:30:32.548Z",
+          "item": "skill:setup",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-10-24T05:30:37.655Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T05:32:15.868Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        }
+      ],
+      "session": "1ee80ff02b8e"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T10:59:39.432Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        }
+      ],
+      "session": "229b226c9621"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-17T08:53:47.237Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-17T08:57:26.738Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-17T08:57:26.739Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        }
+      ],
+      "session": "49580bffb15f"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T10:56:28.647Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:56:54.026Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        }
+      ],
+      "session": "4aefc68aef4d"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T11:00:41.164Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        }
+      ],
+      "session": "5a185649cc0d"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T10:36:34.289Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:37:13.899Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:38:17.608Z",
+          "item": "mcp:analyze",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:38:29.112Z",
+          "item": "mcp:prepare",
+          "outcome": "ok"
+        }
+      ],
+      "session": "74282fc35b02"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T13:32:17.695Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T13:33:05.765Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T13:34:32.780Z",
+          "item": "mcp:analyze",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T13:34:42.188Z",
+          "item": "mcp:prepare",
+          "outcome": "ok"
+        }
+      ],
+      "session": "7ef858c378d4"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-27T22:16:22.981Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-27T22:47:14.484Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        }
+      ],
+      "session": "88f4a7b9a77a"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T10:47:24.630Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:48:29.803Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        }
+      ],
+      "session": "8a8d58904538"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-24T21:04:02.762Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T21:04:02.824Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T21:04:06.933Z",
+          "item": "mcp:analyze-work",
+          "outcome": "refused"
+        }
+      ],
+      "session": "8b5586dc0fb9"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-24T22:01:55.384Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T22:01:55.389Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T22:02:02.284Z",
+          "item": "skill:analyze",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-10-24T22:03:03.628Z",
+          "item": "mcp:analyze-work",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-10-24T22:03:39.721Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T22:03:48.876Z",
+          "item": "skill:plan",
+          "outcome": "invoked"
+        }
+      ],
+      "session": "93a5ea48c7db"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T10:39:40.834Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:40:19.501Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:41:21.529Z",
+          "item": "mcp:analyze",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:41:30.221Z",
+          "item": "mcp:prepare",
+          "outcome": "ok"
+        }
+      ],
+      "session": "9696fddbbfb3"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T10:51:30.221Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:51:54.659Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        }
+      ],
+      "session": "9f3122ab355b"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-23T17:18:09.213Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-23T17:18:42.130Z",
+          "item": "skill:setup",
+          "outcome": "invoked"
+        }
+      ],
+      "session": "a13bc3027c3b"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-24T05:43:01.005Z",
+          "item": "skill:setup",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-10-24T05:43:12.937Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T12:18:03.553Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        }
+      ],
+      "session": "a226aae2e7e4"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-27T22:38:29.472Z",
+          "item": "skill:analyze",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-10-27T22:38:32.510Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-27T22:38:36.642Z",
+          "item": "mcp:analyze-work",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-10-27T22:39:40.020Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-27T22:39:42.019Z",
+          "item": "skill:plan",
+          "outcome": "invoked"
+        }
+      ],
+      "session": "a5374d1a26cc"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-24T05:59:51.066Z",
+          "item": "skill:plan",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-10-24T05:59:54.417Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T05:59:54.423Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T06:00:31.210Z",
+          "item": "mcp:analyze-work",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-10-24T06:00:53.713Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T06:24:43.786Z",
+          "item": "mcp:analyze-work",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-10-24T06:24:50.001Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T11:46:44.565Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T11:48:09.262Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T11:51:09.233Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        }
+      ],
+      "session": "a83c39b0244e"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T11:02:40.840Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T11:03:20.797Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        }
+      ],
+      "session": "aca826c86d9a"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-11-01T01:26:50.045Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T01:26:50.077Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T01:26:54.865Z",
+          "item": "skill:setup",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T01:27:53.517Z",
+          "item": "skill:execute",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T01:31:39.473Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T01:32:11.291Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T01:32:28.590Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T01:33:48.171Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T08:33:36.254Z",
+          "item": "skill:analyze",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T08:33:42.693Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T08:33:46.252Z",
+          "item": "skill:plan",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T08:33:52.683Z",
+          "item": "mcp:prepare",
+          "outcome": "ok"
+        }
+      ],
+      "session": "ad5e6e3b4b96"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T07:26:31.436Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        }
+      ],
+      "session": "b0240c39cc51"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T11:08:39.053Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T11:09:18.694Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T11:10:24.226Z",
+          "item": "mcp:analyze",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T11:10:32.977Z",
+          "item": "mcp:prepare",
+          "outcome": "ok"
+        }
+      ],
+      "session": "b5d0064da4d7"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-11-01T08:50:12.838Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T08:50:19.570Z",
+          "item": "skill:execute",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T08:51:23.719Z",
+          "item": "mcp:execute",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-11-01T08:54:53.545Z",
+          "item": "mcp:execute",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T08:56:07.234Z",
+          "item": "mcp:status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T08:57:07.700Z",
+          "item": "mcp:verify",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-11-01T08:58:37.646Z",
+          "item": "mcp:verify",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-11-01T08:59:48.722Z",
+          "item": "mcp:verify",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:01:07.927Z",
+          "item": "mcp:execute",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-11-01T09:01:56.881Z",
+          "item": "skill:recover",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T09:03:08.443Z",
+          "item": "mcp:recover",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-11-01T09:09:52.280Z",
+          "item": "mcp:status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:28:36.227Z",
+          "item": "mcp:status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:30:29.377Z",
+          "item": "mcp:recover",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:31:48.899Z",
+          "item": "mcp:verify",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:32:15.124Z",
+          "item": "skill:evidence",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T09:33:50.375Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:33:59.716Z",
+          "item": "mcp:analyze-work",
+          "outcome": "refused"
+        }
+      ],
+      "session": "c265b8060198"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-23T18:17:18.056Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        }
+      ],
+      "session": "c6d215022f99"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T07:29:04.654Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T07:29:38.426Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        }
+      ],
+      "session": "d6cb39fd8528"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T10:53:42.185Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T10:54:21.226Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        }
+      ],
+      "session": "e090f2d3350d"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-27T22:13:27.067Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-27T22:13:27.106Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-27T22:14:03.268Z",
+          "item": "mcp:analyze-work",
+          "outcome": "refused"
+        }
+      ],
+      "session": "e4bed0dcca60"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-27T22:42:07.438Z",
+          "item": "skill:analyze",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-10-27T22:42:13.944Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-27T22:44:01.773Z",
+          "item": "mcp:analyze",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-10-27T22:44:32.601Z",
+          "item": "skill:plan",
+          "outcome": "invoked"
+        }
+      ],
+      "session": "f179e88981a7"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-25T11:04:48.182Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T11:05:26.956Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T11:06:31.102Z",
+          "item": "mcp:analyze",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-25T11:06:39.709Z",
+          "item": "mcp:prepare",
+          "outcome": "ok"
+        }
+      ],
+      "session": "f31a189a1cdb"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-23T19:05:22.614Z",
+          "item": "skill:setup",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-10-24T05:29:08.867Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        }
+      ],
+      "session": "f7b18efcaa6e"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-10-24T21:50:48.279Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T21:50:48.312Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-10-24T21:50:52.865Z",
+          "item": "mcp:analyze-work",
+          "outcome": "ok"
+        }
+      ],
+      "session": "fbd0e4e2447b"
+    }
+  ],
+  "privacy": "derived names, timestamps, counts, versions, outcomes, content digests and 12-hex session hashes only; no prompts, inputs, assistant text, paths or project names",
+  "scan": {
+    "claudeCodeRoot": "~/.claude/projects",
+    "codexRoot": "~/.codex/sessions",
+    "policy": "docs/development/REAL_USE_EVIDENCE.md"
+  },
+  "schema": "agent-braid-observational-native-receipts/v1"
+}
