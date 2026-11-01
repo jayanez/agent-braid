@@ -3,8 +3,11 @@
 
 Nothing here runs the real ``claude`` binary or a real sandbox: the launcher is a Python
 object that replays scripted stdout chunks, and the "executable" is a temporary file whose
-hash is pinned. The macOS backend is never constructed.
+hash is pinned. The macOS backend is never constructed: ``MacLaunchSignature`` borrows only
+its real ``launch`` entry point and replaces the supervision below it with the same fake.
 """
+import contextlib
+import inspect
 from dataclasses import replace
 from datetime import datetime, timezone
 from hashlib import sha256
@@ -16,6 +19,7 @@ import threading
 import unittest
 from unittest import mock
 
+from agent_braid import harness_containment_macos as mac
 from agent_braid import harness_context as ctx
 from agent_braid import harness_host_claude as hc
 from agent_braid import harness_lab as lab
@@ -92,6 +96,31 @@ class FakeLauncher(lab.ContainmentBackend):
     @property
     def run_calls(self):
         return [c for c in self.calls if c["argv"][1:] != ("--version",)]
+
+
+class MacLaunchSignature(mac.MacOSContainment):
+    """The real ``MacOSContainment.launch`` (validation, signature, hook plumbing) over a fake
+    supervisor: no policy file, sandbox, account or process is involved."""
+
+    def __init__(self, fake):  # deliberately skips the real constructor
+        self.fake = fake
+        self.policy, self.qualification, self.host_qualification = (
+            fake.policy, fake.qualification, fake.host_qualification)
+        self.run_evidence = []
+
+    def close(self):
+        pass
+
+    def _exclusive(self, entry):
+        return contextlib.nullcontext()
+
+    def _pre_session(self, entry, workdir, *, probes):
+        return {}, "candidate", 0
+
+    def _spawn(self, entry, target, evidence, *, candidate, uid, wall, cpu, max_output, cancel, stdin,
+               on_output=None):
+        return self.fake.launch(tuple(target), stdin, cwd=candidate, wall_seconds=wall,
+                                max_output_bytes=max_output, cancel=cancel, on_output=on_output)
 
 
 def make_launcher_without_hook(policy, qualification, host_qualification):
@@ -352,6 +381,20 @@ class NativeTransportTests(unittest.TestCase):
         outcome = self.go(transport=fx.transport(backend=silent))
         self.assertEqual(self.state(outcome), "refused")
         self.assertNotIn("message", self.kinds(outcome))
+
+    def test_the_real_macos_launch_signature_is_accepted_and_a_streamed_bad_init_stops_the_group(self):
+        for label, chunks, state in (
+                ("API key source", good_chunks(apiKeySource="ANTHROPIC_API_KEY"), "refused"),
+                ("subscription", good_chunks(), "completed")):
+            with self.subTest(label):
+                fx = Fixture(self, chunks=chunks)
+                backend = MacLaunchSignature(fx.launcher)
+                self.assertIn("on_output", inspect.signature(mac.MacOSContainment.launch).parameters)
+                outcome = self.go(fx=fx, transport=fx.transport(backend=backend))  # no live-init-unsupported
+                self.assertEqual(self.state(outcome), state)
+                self.assertEqual(fx.launcher.killed, state == "refused")
+                if state == "refused":
+                    self.assertNotIn("message", self.kinds(outcome))
 
     # --- executable pin, PATH, version ---
 

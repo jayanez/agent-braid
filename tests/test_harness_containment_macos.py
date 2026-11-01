@@ -21,6 +21,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 from types import SimpleNamespace
 import unittest
 from unittest import mock
@@ -681,6 +682,113 @@ class SupervisedRunTests(unittest.TestCase):
             run = backend.launch((self.machine.claude,), b"", cwd=self.machine.candidate(), wall_seconds=20,
                                  max_output_bytes=10, cancel=cancel)
         self.assertEqual((run.cancelled, run.exit_code, run.settled), (True, None, True))
+
+
+class LiveOutputTests(unittest.TestCase):
+    """T006 K1: ``launch(on_output=...)`` streams stdout while the child runs."""
+
+    def setUp(self):
+        self.machine = Machine(self)
+        self.backend = make_backend(self.machine)
+        self.addCleanup(self.backend.close)
+
+    def claude(self, body: str) -> mac.MacOSContainment:
+        write_exec(self.machine.claude, f"#!{INTERPRETER} -IS\nimport sys, time\n{body}")
+        self.machine.repin(claude_sha256=digest(self.machine.claude))
+        backend = make_backend(self.machine)
+        self.addCleanup(backend.close)
+        return backend
+
+    def launch(self, backend, *, on_output, max_output=4096, wall=20, cancel=None):
+        with host(self.machine):
+            return backend.launch((self.machine.claude,), b"", cwd=self.machine.candidate(),
+                                  wall_seconds=wall, max_output_bytes=max_output,
+                                  cancel=cancel or threading.Event(), on_output=on_output)
+
+    def test_chunks_arrive_in_order_complete_and_while_the_child_runs(self):
+        backend = self.claude("for part in (b'one|', b'two|', b'three'):\n"
+                              "    sys.stdout.buffer.write(part); sys.stdout.buffer.flush(); time.sleep(0.6)\n")
+        chunks = []
+        run = self.launch(backend, on_output=chunks.append)
+        self.assertEqual(b"".join(chunks), b"one|two|three")
+        self.assertGreaterEqual(len(chunks), 2)  # streamed, not delivered once at the end
+        self.assertTrue(all(chunks))
+        self.assertEqual((run.stdout, run.exit_code, run.settled), (b"one|two|three", 0, True))
+
+    def test_the_tail_written_just_before_exit_is_still_delivered_once(self):
+        backend = self.claude("sys.stdout.write('x' * 5000)\n")
+        chunks = []
+        run = self.launch(backend, on_output=chunks.append, max_output=8192)
+        self.assertEqual(b"".join(chunks), b"x" * 5000)
+        self.assertEqual(run.stdout, b"x" * 5000)
+
+    def test_nothing_past_max_output_bytes_is_delivered(self):
+        backend = self.claude("sys.stdout.write('y' * 100000)\nsys.stdout.flush()\ntime.sleep(30)\n")
+        chunks = []
+        run = self.launch(backend, on_output=chunks.append, max_output=64)
+        delivered = b"".join(chunks)
+        self.assertLessEqual(len(delivered), 64)
+        self.assertEqual(delivered, run.stdout[:len(delivered)])
+        self.assertEqual((run.output_truncated, run.settled, len(run.stdout)), (True, True, 64))
+
+    def test_a_callback_that_sets_cancel_kills_and_settles_the_group(self):
+        backend = self.claude("sys.stdout.write('init\\n'); sys.stdout.flush(); time.sleep(30)\n")
+        cancel = threading.Event()
+        started = time.monotonic()
+        run = self.launch(backend, on_output=lambda chunk: cancel.set(), cancel=cancel)
+        self.assertLess(time.monotonic() - started, 10)
+        self.assertEqual((run.cancelled, run.exit_code, run.settled), (True, None, True))
+        self.assertEqual(run.stdout, b"init\n")
+        self.assertEqual(self.machine.leftovers(), [])
+
+    def test_no_chunk_is_delivered_after_the_callback_requested_the_stop(self):
+        backend = self.claude("sys.stdout.write('z' * 300000)\nsys.stdout.flush()\ntime.sleep(30)\n")
+        cancel, chunks = threading.Event(), []
+
+        def first(chunk):
+            chunks.append(chunk)
+            cancel.set()
+
+        run = self.launch(backend, on_output=first, max_output=1_000_000, cancel=cancel)
+        self.assertEqual((len(chunks), run.cancelled, run.settled), (1, True, True))
+
+    def test_a_raising_callback_still_settles_and_refuses_with_a_fixed_reason(self):
+        backend = self.claude("sys.stdout.write('init\\n'); sys.stdout.flush(); time.sleep(30)\n")
+
+        def boom(chunk):
+            raise RuntimeError("secret detail")
+
+        started = time.monotonic()
+        with self.assertRaises(lab.LabError) as caught:
+            self.launch(backend, on_output=boom)
+        self.assertLess(time.monotonic() - started, 10)
+        self.assertEqual(caught.exception.reason, "output-callback-failed")
+        evidence = backend.run_evidence[-1]
+        self.assertEqual((evidence["refused"], evidence["settled"]), ("output-callback-failed", True))
+        self.assertEqual(self.machine.leftovers(), [])
+
+    def test_a_callback_failing_on_the_final_tail_refuses_too(self):
+        backend = self.claude("sys.stdout.write('quick')\n")
+
+        def boom(chunk):
+            raise RuntimeError("late")
+
+        with self.assertRaises(lab.LabError) as caught:
+            self.launch(backend, on_output=boom)
+        self.assertEqual(caught.exception.reason, "output-callback-failed")
+
+    def test_without_a_callback_the_result_is_identical(self):
+        backend = self.claude("sys.stdout.write('same')\n")
+        plain = self.launch(backend, on_output=None)
+        streamed = self.launch(backend, on_output=lambda chunk: None)
+        self.assertEqual(plain, streamed)
+        self.assertEqual(plain.stdout, b"same")
+
+    def test_a_non_callable_hook_is_an_invalid_launch(self):
+        with host(self.machine), self.assertRaises(lab.LabError) as caught:
+            self.backend.launch((self.machine.claude,), b"", cwd=self.machine.candidate(), wall_seconds=5,
+                                max_output_bytes=10, cancel=threading.Event(), on_output="not callable")
+        self.assertEqual(caught.exception.reason, "invalid-launch")
 
 
 class CompileCheckTests(unittest.TestCase):
