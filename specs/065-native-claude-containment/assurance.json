@@ -13,7 +13,7 @@
     20,
     24
   ],
-  "assumptions": "Single-operator founder macOS machine (observed macOS 27.0.1 build 26A434); Claude Code 2.1.292 at /opt/homebrew/bin/claude; subscription (Max) route with extra usage disabled; F5 STRICT isolation to be bound into a founder record by T001; same-UID processes outside the sandbox are not hostile during a run; open security choices NC-1 to NC-10 are decided by the founder before dependent tasks.",
+  "assumptions": "Single-operator founder macOS machine (observed macOS 27.0.1 build 26A434); Claude Code 2.1.292 at /opt/homebrew/bin/claude; subscription (Max) route with extra usage disabled; F5 STRICT isolation bound and NC-1 to NC-11 decided in specs/065-native-claude-containment/evidence/founder-decisions-20261031.json (T001); same-UID processes outside the sandbox are not hostile during a run; values to be observed by probe are fixed only in a reviewed T009 evidence bundle.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -135,7 +135,8 @@
     "specs/065-native-claude-containment/quickstart.md",
     "specs/065-native-claude-containment/analysis.md",
     "specs/065-native-claude-containment/contracts/native-profile.md",
-    "specs/065-native-claude-containment/contracts/containment-qualification.md"
+    "specs/065-native-claude-containment/contracts/containment-qualification.md",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json"
   ],
   "requirements": [
     {

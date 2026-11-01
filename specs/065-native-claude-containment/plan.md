@@ -35,7 +35,7 @@ unavoidable is handled the same way:
 | K1 | `harness_host_claude.py` or the T006 launcher | live `init` parsing; kill the group when `apiKeySource` is outside the subscription set, before any `assistant`/`result` event is accepted | `run_claude` parses stdout only after `transport.run` returns, so a paid route would otherwise run to completion (F2) |
 | K2 | `harness_host_claude.py` | native transport refuses unless its backend passes the verified-containment check of `_check_backend` (same environment hash) | `_check_transport` never inspects a backend; a host qualification alone would pass |
 | K3 | `harness_host_claude.py` | native-only session wall bound ≤ F3 30 min (value NC-8) | `HostLimits` is capped by the shared `MAX_WALL_SECONDS = 60`; the shared constant and Codex stay unchanged |
-| K4 | `harness_host_claude.py` | `ENV_ALLOW` for the native launcher gains the variables NC-5/NC-7 require (`CLAUDE_CONFIG_DIR`, `TMPDIR`, NC-5 b token variable if chosen); `argv[0]` becomes the absolute pinned executable path, hash-checked at every launch | today `ENV_ALLOW = ("HOME", "PATH")` and `argv[0]` is a bare `claude` resolved through `PATH` |
+| K4 | `harness_host_claude.py` | `ENV_ALLOW` for the native launcher gains the variables NC-5/NC-7 require (`CLAUDE_CONFIG_DIR`, `TMPDIR`; NC-5 chose the dedicated user's own login, so no token variable); `argv[0]` becomes the absolute pinned executable path, hash-checked at every launch | today `ENV_ALLOW = ("HOME", "PATH")` and `argv[0]` is a bare `claude` resolved through `PATH` |
 | K5 | `harness_host_claude.py` | only if CRED-05 observes it: `SUBSCRIPTION_KEY_SOURCES` change backed by the probe record | the set is a fixture assumption |
 
 Quota readings and the qualification hash are recorded in a run-evidence record
@@ -142,8 +142,8 @@ Not made by this feature; listed for the orchestrator and founder:
   approval, because every `specs/` directory needs a mapping for validation to
   pass: `specs["065-native-claude-containment"]` in "HAR.1 — Braid Harness
   laboratory", state `open`. Still proposed: `project_review_pending` += `SPEC-065`.
-- `ROADMAP.md`, `docs/STATUS.md` — one line each: SPEC-065 specified, blocked on
-  NC-1 to NC-11.
+- `ROADMAP.md`, `docs/STATUS.md` — one line each: SPEC-065 specified; founder
+  decisions NC-1 to NC-11 recorded (T001); next T002 ADR.
 - `specs/048-harness-variant-laboratory/tasks.md` T008 — add dependency on
   SPEC-065 T010 for the Claude profile (by the T008 owner).
 - `specs/049-harness-evaluation-learning/tasks.md` T004 — dependency chain note
@@ -153,5 +153,7 @@ Not made by this feature; listed for the orchestrator and founder:
 
 ## Human review and unresolved decisions
 
-Pending: founder decisions NC-1 to NC-11 and the F5 binding (T001); human review
-of this specification; ADR acceptance before any native session.
+Decided: NC-1 to NC-11 and the F5 binding, in
+[evidence/founder-decisions-20261031.json](evidence/founder-decisions-20261031.json)
+(T001). Pending: human review of this specification; ADR acceptance (T002)
+before any native session.

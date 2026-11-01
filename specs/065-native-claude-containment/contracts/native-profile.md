@@ -1,7 +1,8 @@
 # Contract: native Claude manifest profile (proposal)
 
-Status: proposal for review. Names and values marked *founder* depend on the
-open items in [spec.md](../spec.md). Nothing here changes
+Status: proposal for review. Names and values marked *founder* come from the
+founder decisions in [spec.md](../spec.md), recorded in
+[founder-decisions-20261031.json](../evidence/founder-decisions-20261031.json). Nothing here changes
 `braid-harness-manifest/v0.1` for the offline profile.
 
 ## Profiles
@@ -27,8 +28,8 @@ beside the offline one.
 | Field | Native rule |
 |---|---|
 | `host.kind` | exactly `claude` |
-| `host.executableSha256` | 64-hex SHA-256 of the resolved CLI executable (NC-4) |
-| `host.build` | exact version string inside the supported window (NC-4), checked by a version validator in `harness_manifest.py` (importing `parse_version` from `harness_host_claude` would be circular) |
+| `host.executableSha256` | 64-hex SHA-256 of the resolved CLI executable, pinned at qualification (NC-4) |
+| `host.build` | exactly `2.1.292` (NC-4: exact version, no window), checked by a version validator in `harness_manifest.py` (importing `parse_version` from `harness_host_claude` would be circular) |
 | `host.requested` | `{"model": <id or null>, "effort": <id or null>, "route": "subscription"}` |
 | `host.observed` | all null in the manifest; observations live in run evidence, never in the manifest |
 | `containment` (new key, native only) | `{"backend": <id>, "qualificationSha256": <hex>}`; the qualification itself is verified separately |
@@ -50,21 +51,21 @@ Same keys as `DEFAULT_LIMITS`. Values are *founder* (F3, NC-8, NC-10):
 |---|---|
 | `maxNativeSessions` | 1 per manifest (one session per unit) |
 | `maxModelSessions` | 1 |
-| `maxChildProcesses` | NC-8 |
-| `maxNetworkConnections` | NC-1 (bounded, non-zero only for the allowed endpoints) |
+| `maxChildProcesses` | 16 descendants (NC-8) |
+| `maxNetworkConnections` | NC-1: bounded, non-zero only for the loopback proxy to `api.anthropic.com:443` and the probe-observed OAuth refresh endpoints; value fixed in T003 |
 | `maxAdditionalCashMicros` | 0 (F2) |
 | `maxAutomaticRetries` | 0 |
 | others (including `maxAdmissionSeconds`, which bounds admission freshness) | unchanged from offline |
 
 Every value above its maximum is refused as `invalid-budget`. Session wall time
 is not a manifest limit: it is the host run limit (`HostLimits.wall_seconds`),
-today capped by `harness_lab.MAX_WALL_SECONDS = 60`. A native-only bound up to
-the F3 30-minute unit cap is a separate reviewed change (T006).
+today capped by `harness_lab.MAX_WALL_SECONDS = 60`. A native-only bound of
+30 minutes (NC-8, equal to the F3 unit cap) is a separate reviewed change (T006).
 
 ## Environment hash inputs
 
 The environment SHA-256 is the canonical digest of: OS product version and
-build, architecture, isolation mechanism identity and binary hash (NC-2),
+build, architecture, isolation mechanism identity and binary hash (NC-2: dedicated user plus `sandbox-exec`),
 profile/policy bytes, Claude executable hash and version, credential method
 identifier (never a secret), network allow-list and enforcing component hash,
 limit values and probe catalog version. Any change produces a new hash, which

@@ -1,0 +1,158 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T001",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-10-31",
+  "baseCommit": "62ff6f445d95b9b7c75011c1568ab78abf0d6141",
+  "decisionChannel": "Founder answers to interactive questions in the SPEC-065 Claude Code session, 2026-10-31",
+  "decisionOrder": ["NC-2", "NC-3", "NC-4", "NC-1", "NC-5", "NC-7", "NC-8", "NC-6", "NC-9", "NC-11", "NC-10"],
+  "bindings": [
+    {
+      "id": "F5",
+      "item": "STRICT isolation for native Claude laboratory sessions",
+      "ownerStatement": "STRICT: writes only inside the candidate directory; network denied except the Anthropic API; credential in a dedicated CLAUDE_CONFIG_DIR; process and CPU limits; anything that cannot be enforced is recorded not-qualified",
+      "decision": "bound",
+      "detail": "Previously an orchestrator brief only (spec.md F5). Now a repository founder record. NC-1, NC-5 and NC-7 below fix the exact endpoints, credential location and the write locations beyond the candidate directory that the CLI itself needs; any effect the chosen mechanism cannot enforce leaves the profile not-qualified."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "NC-1",
+      "item": "Allowed network endpoints and enforcement",
+      "option": "b",
+      "ownerStatement": "api.anthropic.com:443 plus the OAuth token-refresh endpoints (exact names to be observed by probe), enforced by a loopback proxy that checks SNI/CONNECT host; telemetry and update endpoints denied",
+      "decision": {
+        "allowedEndpoints": ["api.anthropic.com:443", "OAuth token-refresh endpoints, exact host names to be observed by probe and fixed in the probe bundle"],
+        "enforcement": "loopback forward proxy as the only allowed egress, checking TLS SNI and CONNECT host against the list",
+        "denied": ["telemetry", "error reporting", "update endpoints", "every other host"]
+      },
+      "detail": "The proxy is a trusted component and is part of the environment hash and the qualification (NET-05). Refresh endpoint names observed by probe must be listed in the evidence bundle before issuance."
+    },
+    {
+      "id": "NC-2",
+      "item": "Isolation mechanism",
+      "option": "b",
+      "ownerStatement": "Dedicated macOS user account plus sandbox-exec",
+      "decision": {
+        "mechanism": "dedicated macOS user account (UID separation for credentials, files and per-user process counts) plus sandbox-exec (SBPL profile)"
+      },
+      "detail": "sandbox-exec is deprecated by Apple; refusal on any failure applies. Account creation is an operator act outside code."
+    },
+    {
+      "id": "NC-3",
+      "item": "Supported macOS versions",
+      "option": "b",
+      "ownerStatement": "macOS 27.0.x series, with the self-check re-run on each build",
+      "decision": {
+        "window": "macOS 27.0.x",
+        "rule": "the self-check is re-run on each build; a build outside 27.0.x refuses"
+      }
+    },
+    {
+      "id": "NC-4",
+      "item": "Supported Claude Code versions and update policy",
+      "option": "a",
+      "ownerStatement": "Exact Claude Code 2.1.292 plus pinned executable SHA-256; auto-update disabled for the laboratory configuration",
+      "decision": {
+        "version": "2.1.292",
+        "executableSha256": "pinned at qualification time and re-checked at every launch",
+        "autoUpdate": "disabled for the laboratory configuration"
+      },
+      "detail": "Any other version or hash refuses until re-qualified (see NC-9)."
+    },
+    {
+      "id": "NC-5",
+      "item": "Credential isolation without copying secrets",
+      "option": "c",
+      "ownerStatement": "The dedicated user's own login (its own CLAUDE_CONFIG_DIR and keychain); no secret copied",
+      "decision": {
+        "method": "dedicated-user-own-login",
+        "configDir": "the dedicated user's own CLAUDE_CONFIG_DIR",
+        "keychain": "the dedicated user's own keychain",
+        "secretCopy": "none"
+      },
+      "detail": "The login is performed by the operator as the dedicated user through the CLI's own flow. Evidence records the method identifier and the observed apiKeySource, never a secret value. Option (d), reuse of the operator's login, stays refused."
+    },
+    {
+      "id": "NC-6",
+      "item": "Quota reading source, freshness and per-session check",
+      "option": "a",
+      "ownerStatement": "Claude Desktop usage card read by the orchestrator session immediately before and after each session; freshness 5 minutes; start only if the 5-hour window is below 90 %; stop the cohort if a post-reading shows more than 10 % used by one session",
+      "decision": {
+        "source": "Claude Desktop usage card, read by the orchestrator session",
+        "readings": "immediately before and immediately after each native session",
+        "freshnessMinutes": 5,
+        "startRule": "start only if the 5-hour window pre-reading is below 90 % used",
+        "stopRule": "stop the cohort if a post-reading shows more than 10 % of the 5-hour window used by one session"
+      },
+      "detail": "Adds to the F3 stop conditions; it does not replace them."
+    },
+    {
+      "id": "NC-7",
+      "item": "Filesystem write and read sets",
+      "option": "writes: dedicated-user variant of (c); reads: (i)",
+      "ownerStatement": "Writes = candidate directory + per-run TMPDIR + the dedicated user's config directory, with session state purged after each run and the credential kept; reads = candidate, config, Claude binary and system libraries",
+      "decision": {
+        "writeSet": ["candidate directory", "per-run TMPDIR", "the dedicated user's CLAUDE_CONFIG_DIR"],
+        "betweenRuns": "session state in the configuration directory is purged after each run; the credential is kept",
+        "readSet": ["candidate directory", "the dedicated user's CLAUDE_CONFIG_DIR", "the Claude executable", "system libraries"]
+      },
+      "detail": "Compatible with NC-5 (a persistent configuration directory holds the login). The source checkout is not readable. Which configuration paths are session state and which are credential is to be observed by probe and fixed in the bundle."
+    },
+    {
+      "id": "NC-8",
+      "item": "Process and CPU limits and executable allow-list",
+      "ownerStatement": "Wall 30 min, CPU 30 min, memory 4 GB, file size 64 MB, 256 open files, 16 descendants; executables = the Claude binary plus probe-observed helpers",
+      "decision": {
+        "wallSeconds": 1800,
+        "cpuSeconds": 1800,
+        "memoryBytes": 4294967296,
+        "fileSizeBytes": 67108864,
+        "openFiles": 256,
+        "descendants": 16,
+        "executables": ["the pinned Claude executable", "helpers observed by probe and listed in the evidence bundle"]
+      },
+      "detail": "The 30-minute wall bound is the native-only bound of plan item K3 (not the shared MAX_WALL_SECONDS). The descendant limit relies on the dedicated user of NC-2."
+    },
+    {
+      "id": "NC-9",
+      "item": "Issuer, validity and re-qualification triggers",
+      "ownerStatement": "Issuer is the founder only; expiresAt 30 days; early re-qualification on any change of OS build, Claude version or hash, profile bytes, probe catalog, proxy or credential method",
+      "decision": {
+        "issuer": "founder only",
+        "expiresAfterDays": 30,
+        "requalificationTriggers": ["OS build", "Claude Code version or executable hash", "profile or policy bytes", "probe catalog", "proxy", "credential method"]
+      }
+    },
+    {
+      "id": "NC-10",
+      "item": "Live probe budget",
+      "option": "b",
+      "ownerStatement": "Separate small cap for live qualification probes: up to 3 minimal claude -p sessions per attempt (Haiku, low effort), each at most 2 % of the 5-hour window; separate from the D2 cohort caps",
+      "decision": {
+        "maxLiveSessionsPerAttempt": 3,
+        "model": "Haiku",
+        "effort": "low",
+        "perSessionMaxPercentOf5HourWindow": 2,
+        "relationToD2": "separate from the SPEC-049 D2 cohort caps"
+      },
+      "detail": "The NC-6 source and freshness apply to probe sessions too; a probe session above 2 % stops the attempt."
+    },
+    {
+      "id": "NC-11",
+      "item": "What satisfies F4 (containment verified before every native session)",
+      "option": "b",
+      "ownerStatement": "Before every session, recompute the environment hash, verify both records, and run the contained subset FS-01, NET-01, CRED-01, PROC-01, NET-06",
+      "decision": {
+        "steps": ["recompute the environment hash", "verify the containment and Claude host records", "run the contained probe subset"],
+        "probeSubset": ["FS-01", "NET-01", "CRED-01", "PROC-01", "NET-06"]
+      },
+      "detail": "Any mismatch or non-denial refuses the session and is appended to the run evidence."
+    }
+  ],
+  "stillOpen": [],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records founder security choices only. No native session, probe or account setup was performed for this record, and nothing here qualifies the Claude profile, issues a qualification record, accepts the T002 ADR, completes SPEC-048/T008 or admits SPEC-049/T004. Owner statements record the option each answer selected, as given in the SPEC-065 session. Values marked 'to be observed by probe' are fixed only in a T009 evidence bundle reviewed by the issuer. Any change needs a new founder decision record."
+}
