@@ -215,3 +215,20 @@ issue #810 in **Review pending**, and 39 task issues linked as its sub-issues; t
 scoped re-audit planned no operations. After the T001 owner review was accepted on
 2026-11-01, SPEC-061 left `project_review_pending` and the parent moved to **Todo**,
 as for SPEC-060.
+
+## S1.5 System One shadow activation
+
+SPEC-066 declares the track milestone `S1.5 — System One shadow activation`, one
+open parent and its task inventory, and adds SPEC-066 to Project **Review pending**.
+The milestone was created on GitHub on 2026-11-01 as #26 and registered in
+`milestone_numbers`. After the registering change merges to `develop`, from a clean
+checkout of `develop`, scope the audit to #26 with `--new-record-key` for SPEC-066
+and each missing `SPEC-066/Txxx`, review the plan (one parent, its task issues and
+sub-issue links, and closed states for completed tasks), apply it with the
+reviewed digest, and re-audit until no operation remains. Then set the parent to
+**Review pending** in [Project 6](https://github.com/users/jayanez/projects/6).
+
+Fifteen deferred SPEC-029, SPEC-031 and SPEC-033 task issues move to #26 only after
+the task-level milestone override (SPEC-066 T003) exists; until then they stay in
+Deferred #24 and the Deferred description keeps naming them as planned moves.
+
