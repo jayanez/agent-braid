@@ -209,3 +209,7 @@ and check the *Specs and tasks*, *By milestone* and *By status* views. VIS.1a an
 VIS.1b are deliveries inside this one milestone (the tracking source assigns one
 milestone per specification). VIS.2–VIS.4
 get milestones only when their specifications exist.
+
+Published 2026-11-01: milestone #25 (registered by PR #808), parent SPEC-061 as
+issue #810 in **Review pending**, and 39 task issues linked as its sub-issues; the
+scoped re-audit planned no operations.

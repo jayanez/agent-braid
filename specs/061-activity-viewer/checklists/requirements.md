@@ -9,6 +9,6 @@
 - [x] Requested owner decisions recorded as pending T001; open decisions and never-collect deviations listed.
 - [x] Derived tracks VIS.2–VIS.4 recorded, none discarded.
 - [ ] Owner review (T001) — pending.
-- [ ] ADR 0032 and ADR 0033 decisions — pending.
+- [x] ADR 0032 and ADR 0033 decisions — accepted 2026-11-01 (Three.js pinned at r186).
 
 A checked item records that the artifact contains the element; it is not approval.

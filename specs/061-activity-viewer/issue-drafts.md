@@ -38,7 +38,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-061/T002
 
-Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-061 T002] Decide ADR 0032 (activity viewer companion). Dependencies: none. Files: docs/adr/0032-activity-viewer-...
 
@@ -56,7 +56,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-061/T003
 
-Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-061 T003] Founder decision on ADR 0033 (vendored Three.js, MIT boundary). Dependencies: none. Files: docs/adr/00...
 
@@ -454,13 +454,13 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
-Title: [SPEC-061 T023] Vendor Three.js r182 prebuilt modules (three.module.js, three.core.js) and OrbitControls with manifest...
+Title: [SPEC-061 T023] Vendor Three.js r186 prebuilt modules (three.module.js, three.core.js) and OrbitControls with manifest...
 
 <!-- agent-braid-task-id: SPEC-061/T023 -->
 
 ## Task
 
-Vendor Three.js r182 prebuilt modules (`three.module.js`, `three.core.js`) and OrbitControls with `manifest.json`; add `LICENSES/three-MIT.txt`, the LICENSE paragraph, the NOTICE entry, the license marker in `scripts/validate_repository.py` and the THIRD_PARTY section; record an owner-run provenance receipt comparing the registry integrity of the pinned tarball with the vendored bytes. Dependencies: T003. Files: `integrations/agent-braid-view/web/vendor/**`, `LICENSE`, `LICENSES/`, `NOTICE`, `scripts/validate_repository.py`, `docs/development/THIRD_PARTY.md`, `specs/061-activity-viewer/evidence/`. Verification: procedure_010.
+Vendor Three.js r186 prebuilt modules (`three.module.js`, `three.core.js`) and OrbitControls with `manifest.json`; add `LICENSES/three-MIT.txt`, the LICENSE paragraph, the NOTICE entry, the license marker in `scripts/validate_repository.py` and the THIRD_PARTY section; record an owner-run provenance receipt comparing the registry integrity of the pinned tarball with the vendored bytes. Dependencies: T003. Files: `integrations/agent-braid-view/web/vendor/**`, `LICENSE`, `LICENSES/`, `NOTICE`, `scripts/validate_repository.py`, `docs/development/THIRD_PARTY.md`, `specs/061-activity-viewer/evidence/`. Verification: procedure_010.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)
 - Trace: REQ-010 / SC-010; REQ-013 / SC-013

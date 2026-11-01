@@ -1,6 +1,6 @@
 # ADR 0033: MIT boundary for vendored Three.js
 
-- **Status:** proposed
+- **Status:** accepted by explicit founder decision on 2026-11-01 (founder's answer, verbatim: "Aceptar ambas, r186"), with the pin moved from the proposed r182 to r186
 - **Date:** 2026-10-31
 - **Deciders:** Juan Antonio Yáñez García (founder)
 - **Constitutional articles:** 21
@@ -17,11 +17,11 @@ boundary change; ADR 0012 is the precedent for MIT material.
 
 ## Decision
 
-If accepted, vendor exactly these prebuilt ES module files from the npm package
-`three` at a pinned version (proposed r182, `0.182.0`), unmodified:
+Vendor exactly these prebuilt ES module files from the npm package `three` at
+the pinned version r186 (`0.186.0`, published 2026-09-08), unmodified:
 
 - `build/three.module.js`
-- `build/three.core.js` (imported by `three.module.js` in r182)
+- `build/three.core.js` (imported by `three.module.js` in r186)
 - `examples/jsm/controls/OrbitControls.js`
 
 Any other file, including post-processing addons, needs an amendment of this
@@ -53,7 +53,7 @@ amendment.
 ## Consequences
 
 - Positive: reproducible, offline viewer with a reviewable byte boundary.
-- Negative: about 1–2 MB of third-party JavaScript in the repository; updates need
+- Negative: about 2.2 MB of third-party JavaScript (the three files at r186) in the repository; updates need
   manual review.
 - Compatibility: the license map gains one MIT directory; AGPL and CC-BY-SA
   boundaries are unchanged.
