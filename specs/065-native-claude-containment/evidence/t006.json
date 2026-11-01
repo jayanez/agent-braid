@@ -1,0 +1,80 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Engineering completed at unit level for the native ClaudeTransport (procedure_002, fake launcher only). It qualifies nothing: no real claude, no real sandbox launch, no quota source read and no native session ran. The real MacOSContainment.launch has no on_output hook yet, so the transport refuses it (live-init-unsupported) until T005 gains that hook.",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_transport_claude tests.test_harness_host_claude -v",
+      "exitCode": 0,
+      "scope": "Focused run, Python 3.13.11 on macOS 27.0.1; 27 transport tests plus 38 host tests, no skips (the transport tests use only a Python fake launcher and temporary files).",
+      "testsRun": 65
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13.11.",
+      "testsRun": 760
+    },
+    {
+      "command": "scratch mutation run: 14 single-line mutations of agent_braid/harness_transport_claude.py (subscription check, kill request, single attempt, hash pin, quota stop, executable/build/host-qualification/containment-qualification manifest comparisons, ENV_DENY check, pinned argv[0], version pin, _check_backend, post-hoc stdout feed), each followed by the transport module",
+      "exitCode": 0,
+      "scope": "All 14 mutations were caught by at least one test; the file was restored after the run.",
+      "testsRun": 14
+    },
+    {
+      "command": "pre-PR reviews: correctness, quality, simplification (self-review of the diff)",
+      "exitCode": 0,
+      "scope": "Run by the implementing Claude agent, not an independent review. Applied: run evidence carries the qualification, host qualification and executable hashes; test fixture cleanups (manifest setters, shutil cleanup, unused imports, a dead branch). Rejected: a retry-after-quota-stop path (the attempt is consumed on purpose), a timeout wrapper around the relay thread (the launcher owns wall time)."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_containment_macos.py": "d9bd8bf9932df47db48d60926868dbc423af84f3b19a6e75f9a8975b86feb2eb",
+    "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
+    "agent_braid/harness_manifest.py": "6624d79de56e702062ba02cefb5cab3d6ec7a58b310c3520d7bdbe024df7fe61",
+    "agent_braid/harness_quota.py": "7fc5a4b710e1b0627f4535194aff1a922f6d6e1545e92237b64d8a1f253808bb",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json": "9aa51097b838c255ca92ecfb6f93a9fcea373d31c8a73ea6d45e635ae45e692e",
+    "specs/065-native-claude-containment/plan.md": "208b30b8f4f10689c3c278486911dbb5cbc2c7d99b6d353abb1af463deef19d0",
+    "specs/065-native-claude-containment/spec.md": "583b7a044ba35195be247be0ddecdadfe6ad6f1074df913ffdae0c7f0955f4ff",
+    "specs/065-native-claude-containment/tasks.md": "a1496f2dc0c3637cda447c8d8d302a249c1eb8f923371a0a8d5d8c93a2abb3db",
+    "specs/065-native-claude-containment/validation-plan.md": "4c6ae131acced865e49510ab08cdfb4c9d8b519f7ad130ae38fd79d7b7f67736"
+  },
+  "limits": {
+    "nativeMaxWallSeconds": 1800,
+    "sharedMaxWallSeconds": 60,
+    "versionProbeWallSeconds": 10,
+    "versionProbeMaxOutputBytes": 4096,
+    "maxInitLineBytes": 65536,
+    "attemptsPerTransport": 1
+  },
+  "method": "Actual offline unittest execution with a fake contained launcher and a temporary file as the pinned executable; no claude, no sandbox-exec, no dedicated account, no quota source, no network",
+  "negativeControls": {
+    "API-key variables present": "env-deny-present for each ENV_DENY name, before any launch (including the version probe)",
+    "cancellation before launch": "cancelled-before-launch; the launcher is never called",
+    "executable hash differs from pin": "executable-drift at the version probe, again at the run launch after a swap; executable-unavailable when missing, symlinked or relative",
+    "host qualification with an unqualified or missing backend": "containment-unqualified (backend record expired or for another environment); invalid-backend (missing, simulated or record-less backend); live-init-unsupported (launcher without on_output); qualification-mismatch when the passed host record is not the backend's verified record",
+    "manifest declarations versus trusted values": "qualification-mismatch for containment.qualificationSha256, hostQualificationSha256 and containment.backend; executable-mismatch for host.executableSha256; build-mismatch for host.build",
+    "no, expired, drifted or Codex qualification": "native-host-unqualified for missing, expired, other-environment and non-qualification input; host-mismatch when parsing a Codex record",
+    "non-subscription apiKeySource": "group kill requested at the init line (one chunk, line by line and split mid-line; launcher honouring or ignoring the kill); stdout cut at the init line so no assistant or result event is accepted; terminal refused; assistant or result before init or an oversized first line gives init-missing",
+    "PATH shadowing of claude": "every launch argv[0] equals the pinned absolute path, never the shadow copy placed first on PATH",
+    "quota stop": "quota-stop with the T004 reason in run evidence for weekly above 80 %, extra usage, stale and missing readings, unit cap and probe cap; the session is never launched",
+    "second attempt after failure": "attempt-exhausted after a launcher refusal (F4 reason surfaced, e.g. self-check-allowed) and after a success; exactly one session launch",
+    "version drift": "version-drift when the probe reports another build; invalid-version for malformed output; the init build differing from the probe fails the run"
+  },
+  "outcome": "New agent_braid/harness_transport_claude.py: NativeClaudeTransport (kind native) launches only through the backend's launch entry point. verify_containment (K2, called from run_claude through the new ClaudeTransport hook, default refusing) runs harness_lab._check_backend and compares the manifest's containment.qualificationSha256, containment.backend, hostQualificationSha256, host.executableSha256 and host.build with the backend's verified records and pinned policy. version() launches the pinned executable with --version and enforces the exact NC-4 build. run() refuses a second attempt, a tampered plan and ENV_DENY variables, calls the T004 gate (cohort or probe mode, fresh NC-6 reading, injected clock) and records the decision with the qualification and executable hashes in run_evidence, re-checks the executable hash, rewrites argv[0] to the absolute pinned path with NATIVE_ENV_ALLOW (K4), and streams stdout to an init watcher (K1) that requests the kill on a non-subscription apiKeySource or on assistant/result before init and cuts the output at the init line. harness_host_claude.py: HostLimits and the native label allow wall seconds up to NATIVE_MAX_WALL_SECONDS (1800, K3) while run_claude keeps the shared 60-second bound for the double; the ClaudeTransport.verify_containment hook (K2) is called by _check_transport after the existing checks.",
+  "outputs": {
+    "agent_braid/harness_host_claude.py": "e31df98faaf998b023961daad4577c206fca0f622e156c27624952d7d739267b",
+    "agent_braid/harness_transport_claude.py": "e98c4db0e279b0a07a90a94d7c2f9a519e29dbdc0ca23c9b123dc3dc043fa19e",
+    "tests/test_harness_host_claude.py": "39f2c63de12b052730721fdc7d0c71dff04aa9d33f7023338a39a7bcf5ee11be",
+    "tests/test_harness_transport_claude.py": "55b8235c84759d91eb3c9d9b7978f83ec8ea8aa67c46dff453601df280c69292"
+  },
+  "pending": [
+    "Stable quick and pr validation results recorded in the pull request",
+    "T005 follow-up: MacOSContainment.launch needs an on_output(bytes) callback polled from _watch so the init watcher sees stdout while the child runs; until then the transport refuses the real backend (live-init-unsupported)",
+    "harness_host_claude.py is hashed into the T005 environment hash (component hashes), so any future qualification must be issued against this source; no qualification exists yet",
+    "Post-session quota settlement (settle or settle_probe with the post-reading) is the orchestrator's step and is not wired here",
+    "T007 probe runner and HOST-01/CRED-05 through this transport, T008 independent review, T009 live attempt, T010 human issuance; ADR acceptance (T002) before any native session"
+  ],
+  "spec": "065-native-claude-containment",
+  "task": "SPEC-065/T006"
+}

@@ -38,6 +38,9 @@ PERMISSION_MODES = ("default", "plan")  # never acceptEdits/bypassPermissions/do
 ALLOWED_TOOLS = ("Glob", "Grep", "Read")  # read-only; mutation needs its own decision
 DENIED_TOOLS = ("Bash", "Edit", "MultiEdit", "NotebookEdit", "Task", "WebFetch", "WebSearch", "Write")
 MAX_TURNS = 8
+# K3: native sessions may run up to the NC-8 wall (F3, 30 minutes); fixtures, the double
+# and every other host keep the shared ``MAX_WALL_SECONDS`` bound.
+NATIVE_MAX_WALL_SECONDS = 1800
 MAX_PROMPT_BYTES = 131_072
 # Fixture-level assumption about ``init.apiKeySource``; anything else is a possible
 # paid route and is refused until T008 observes the real values.
@@ -125,13 +128,13 @@ class ClaudeRequest:
 
 @dataclass(frozen=True)
 class HostLimits:
-    """Trusted wall-clock and output bounds for one host run."""
+    """Trusted wall-clock and output bounds; ``run_claude`` applies the double's tighter wall."""
 
     wall_seconds: int = 10
     max_output_bytes: int = 65_536
 
     def __post_init__(self) -> None:
-        _require(_int(self.wall_seconds, 1, MAX_WALL_SECONDS)
+        _require(_int(self.wall_seconds, 1, NATIVE_MAX_WALL_SECONDS)
                  and _int(self.max_output_bytes, 1, 1_048_576), "invalid-limits")
 
 
@@ -186,6 +189,13 @@ class ClaudeTransport:
     def run(self, plan: LaunchPlan, prompt: bytes, limits: HostLimits,
             cancel: threading.Event) -> HostRun:
         raise NotImplementedError
+
+    def verify_containment(self, manifest: HarnessManifest, qualification: Any, now: int) -> None:
+        """K2: raise ``ClaudeHostError`` unless the transport's backend is verified.
+
+        A native transport must override this; the default refuses.
+        """
+        raise ClaudeHostError("native-host-unqualified")
 
 
 class ClaudeHostDouble(ClaudeTransport):
@@ -271,6 +281,7 @@ def _check_transport(transport: Any, manifest: HarnessManifest, qualification: A
              and manifest.data["host"]["kind"] == HOST
              and qualification.environment_sha256 == manifest.data["environment"]["sha256"]
              and now < qualification.expires_at, "native-host-unqualified")
+    transport.verify_containment(manifest, qualification, now)
     return "native"
 
 
@@ -456,6 +467,7 @@ def run_claude(manifest: HarnessManifest, context: ContextPackage, *, transport:
              and isinstance(compatibility, CompatibilityWindow)
              and isinstance(cancel, threading.Event))
     label = _check_transport(transport, manifest, qualification, now)
+    _require(label == "native" or limits.wall_seconds <= MAX_WALL_SECONDS, "invalid-limits")
     prompt = context.render().encode("utf-8")
     _require(0 < len(prompt) <= MAX_PROMPT_BYTES, "invalid-context")
     plan = build_plan(request, prompt)
