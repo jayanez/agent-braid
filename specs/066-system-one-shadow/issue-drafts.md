@@ -745,4 +745,3 @@ Read-only check on 2026-11-01 with `gh issue view N --json number,title,state,mi
 Correction to the requested list: the brief named #322, #323, #324, #326 and #328 for SPEC-033 T002, T003, T004, T006 and T008. Those issues are T001, T002, T003, T005 and T007. The matching issues are #323, #324, #325, #327 and #329, used above. #322 (T001, promotion criteria review), #326 (T005, rollback implementation) and #328 (T007, closure packet) stay in Deferred because the founder decision of 2026-11-01 lists only SPEC-033 T002, T003, T004, T006 and T008 as absorbed; the owner can add them at T001.
 
 Stay in Deferred: the parents SPEC-028 to SPEC-033, SPEC-031 T001-T007, SPEC-030 and SPEC-032 tasks, SPEC-033 T001, T005 and T007, and every other open S1 issue.
-
