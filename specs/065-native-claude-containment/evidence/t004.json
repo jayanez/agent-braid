@@ -1,0 +1,73 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Engineering completed for the pure quota gate (procedure_003, unit level). No quota source was read, no native session ran and nothing was launched; T006 wires the gate into the native transport.",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_quota -v",
+      "exitCode": 0,
+      "scope": "Focused module run, Python 3.13.11.",
+      "testsRun": 37
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13.11.",
+      "testsRun": 679
+    },
+    {
+      "command": "pre-PR reviews: code-review, code-review-and-quality, code-simplification",
+      "exitCode": 0,
+      "scope": "Run by Claude subagents (not independent review); the quality review applied 17 mutations to a scratch copy and all were caught. Applied: settle refuses a post-reading not strictly after the pre-reading and a pre-to-post span above MAX_READING_SPAN (30-minute F3/NC-8 session plus two freshness intervals); settle and settle_probe stop on reading-level stop conditions shown by the post-reading; strict UTC instant pattern (date-only, week-date, basic-format and offset stamps refuse instead of raising); executionAuthorization not settable by the constructor; reasons name the rule, not its number; an invalid probe count is a refusal like invalid cohort state; ast-based purity test; caps and rule text bound to both founder records; closure callbacks typed and return no reason."
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "379d2b86dcd78a0c346c2e29bba579d62b8426a293d3f3d2b2a653360605f0dc",
+    "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json": "9aa51097b838c255ca92ecfb6f93a9fcea373d31c8a73ea6d45e635ae45e692e",
+    "specs/065-native-claude-containment/plan.md": "208b30b8f4f10689c3c278486911dbb5cbc2c7d99b6d353abb1af463deef19d0",
+    "specs/065-native-claude-containment/spec.md": "908cbd093c5172bf82262881ca854ec80cfa96498037c29ad9bc2de1c6162251",
+    "specs/065-native-claude-containment/tasks.md": "05519d9f6d3d12ee5e206f175916c7d2c0d45745a2f72aae7d184b0287d89d02",
+    "specs/065-native-claude-containment/validation-plan.md": "4c6ae131acced865e49510ab08cdfb4c9d8b519f7ad130ae38fd79d7b7f67736"
+  },
+  "limits": "Pure function over caller-supplied readings, clock and cohort state: it proves only that the gate decides correctly on its inputs, not that the orchestrator read the usage card, read it at the stated time or copied it faithfully; readings are self-asserted. Per-session use is attributed from plan-level percentages (integer, as shown by the usage card), so another consumer of the same plan during a session is charged to it, and sub-percent use is invisible. A window reset between readings, a post-reading not after the pre-reading, or a span above MAX_READING_SPAN stops rather than estimating. Cohort state (units used, cohort weekly percent) is owned and stored by SPEC-049; settle reports the updated state but does not persist it. Live-probe caps (NC-10) are kept separate from the D2 cohort caps; the reading-level stops (weekly above 80 %, extra usage, 5-hour at or above 90 %) apply to both. Rule values that the founder records give only in prose (80 %, 90 %, 10 %) are bound by text match. Synthetic readings only; no host, model, network, quota source or native activation. Pre-PR reviews were Claude subagents, not independent review.",
+  "limitsApplied": {
+    "cohortMaxPercentOfWeekly": 15,
+    "fiveHourStartBelowPercent": 90,
+    "freshnessMinutes": 5,
+    "maxNativeUnits": 16,
+    "maxReadingSpanMinutes": 40,
+    "probeMaxPercentOfFiveHour": 2,
+    "probeMaxSessionsPerAttempt": 3,
+    "sessionMaxPercentOfFiveHour": 10,
+    "sessionWallMinutes": 30,
+    "weeklyStopAbovePercent": 80
+  },
+  "method": "Actual offline unittest execution",
+  "negativeControls": {
+    "cohort above 15 % weekly": ["admit: cohort-weekly-cap-reached", "settle: cohort-above-weekly-cap"],
+    "cohort state absent": "cohort-state-absent",
+    "extra usage enabled": "extra-usage-enabled",
+    "five-hour window at or above 90 % at start": "five-hour-at-start-limit",
+    "future-dated reading": "future-dated-pre-reading / future-dated-post-reading",
+    "live probe above 2 % of the 5-hour window": "probe-above-five-hour-cap",
+    "live probe session count at 3": "probe-session-cap-reached",
+    "missing reading": "missing-pre-reading / missing-post-reading",
+    "per-session post-reading above 10 % (NC-6)": "session-above-five-hour-cap",
+    "stale reading (older than 5 minutes)": "stale-pre-reading / stale-post-reading",
+    "unit count at 16": "unit-cap-reached",
+    "unparseable reading": "unparseable-reading",
+    "weekly above 80 %": "weekly-above-stop"
+  },
+  "outcome": "agent_braid/harness_quota.py provides admit and settle for D2 cohort units and admit_probe and settle_probe for NC-10 live probes. Each takes the NC-6 usage-card reading(s) as {source, observedAt, fiveHourPercent, weeklyPercent, extraUsageEnabled} and a timezone-aware clock, and returns a frozen QuotaDecision with proceed, a fixed reason, an immutable evidence mapping (readings, deltas, cohort state after the unit) and executionAuthorization false. A fresh pre-reading within every cap proceeds with reason within-caps; every T004 negative control refuses with its own fixed reason.",
+  "outputs": {
+    "agent_braid/harness_quota.py": "7fc5a4b710e1b0627f4535194aff1a922f6d6e1545e92237b64d8a1f253808bb",
+    "tests/test_harness_quota.py": "243620a0b47f00815827a8efa0ccde25a95b812169530ff5d251720d522714b6"
+  },
+  "pending": [
+    "Clean-clone pr-profile result recorded in the pull request",
+    "T006 wiring of the gate into the native ClaudeTransport and run evidence; SPEC-049 ownership of cohort state; independent review and all native, human and qualification gates (T009/T010)"
+  ],
+  "spec": "065-native-claude-containment",
+  "task": "SPEC-065/T004"
+}
