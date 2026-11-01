@@ -97,6 +97,7 @@ _PATH = re.compile(r"(?:/[A-Za-z0-9._@+-]+)+\Z")  # no quotes, spaces or escapes
 _ENDPOINT = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+:443\Z")
 _RESERVED = ("run-", "compile-", ".")  # run_root entries the backend owns
 _POLL_SECONDS = 0.05
+_STREAM_CHUNK_BYTES = 65_536  # per read, so a large output bound never allocates a large buffer
 
 
 def _under(path: str, root: str) -> bool:
@@ -591,6 +592,43 @@ _PREAMBLE = (
 ProbeRunner = Callable[[str, "MacOSContainment"], str]
 
 
+class _OutputStream:
+    """Incremental reader of the child's stdout file for the live ``on_output`` hook.
+
+    Each byte is handed to the callback once, in order, and never past ``limit``. The first
+    callback exception is recorded in ``state`` and ends all further delivery, so the
+    supervisor can kill and settle before refusing.
+    """
+
+    def __init__(self, path: str, limit: int, callback: Callable[[bytes], None],
+                 cancel: threading.Event | None):
+        self._path, self._limit, self._callback, self._cancel = path, limit, callback, cancel
+        self._reader = None
+        self._delivered = 0
+
+    def pump(self, state: dict) -> None:
+        """Deliver what was written since the last call in bounded chunks; none after a cancel."""
+        while not (state.get("callbackFailed") or (self._cancel is not None and self._cancel.is_set())):
+            try:
+                if self._reader is None:
+                    self._reader = open(self._path, "rb")
+                chunk = self._reader.read(min(self._limit - self._delivered, _STREAM_CHUNK_BYTES))
+            except OSError:
+                state["callbackFailed"] = True
+                return
+            if not chunk:
+                return
+            self._delivered += len(chunk)
+            try:
+                self._callback(chunk)
+            except Exception:
+                state["callbackFailed"] = True
+
+    def close(self) -> None:
+        if self._reader is not None:
+            self._reader.close()
+
+
 class MacOSContainment(ContainmentBackend):
     """Native backend; refuses with a fixed reason whenever any check fails.
 
@@ -788,15 +826,21 @@ class MacOSContainment(ContainmentBackend):
         return ChildResult(run.stdout, run.exit_code, run.timed_out, run.output_truncated, run.settled)
 
     def launch(self, argv: tuple[str, ...], stdin: bytes, *, cwd: Path | str, wall_seconds: int,
-               max_output_bytes: int, cancel: threading.Event) -> HostRun:
+               max_output_bytes: int, cancel: threading.Event,
+               on_output: Callable[[bytes], None] | None = None) -> HostRun:
         """Contained launcher for the native transport (T006): pinned Claude executable only.
 
         The argument list beyond ``argv[0]`` is the transport's (T006) responsibility.
+        ``on_output`` receives each newly written stdout chunk, in order and once per byte,
+        never past ``max_output_bytes``, while the child runs; it may set ``cancel`` to stop
+        the group. A callback that raises kills and settles the group, then refuses with
+        ``output-callback-failed``.
         """
         if not (type(argv) is tuple and len(argv) >= 1 and argv[0] == self.policy.claude
                 and all(type(a) is str and "\0" not in a for a in argv)
                 and type(stdin) is bytes and len(stdin) <= MAX_LAUNCH_STDIN_BYTES
                 and isinstance(cancel, threading.Event)
+                and (on_output is None or callable(on_output))
                 and type(wall_seconds) is int and 1 <= wall_seconds <= LIMITS["wallSeconds"]
                 and type(max_output_bytes) is int and 1 <= max_output_bytes <= MAX_LAUNCH_OUTPUT_BYTES):
             self._refuse("launch", "invalid-launch")
@@ -804,18 +848,19 @@ class MacOSContainment(ContainmentBackend):
             evidence, candidate, uid = self._pre_session("launch", cwd, probes=True)
             return self._spawn("launch", list(argv), evidence, candidate=candidate, uid=uid,
                                wall=wall_seconds, cpu=LIMITS["cpuSeconds"], max_output=max_output_bytes,
-                               cancel=cancel, stdin=stdin)
+                               cancel=cancel, stdin=stdin, on_output=on_output)
 
     # -- supervision ----------------------------------------------------------------------
 
     def _spawn(self, entry: str, target: list[str], evidence: dict, *, candidate: str, uid: int,
                wall: int, cpu: int, max_output: int, cancel: threading.Event | None,
-               stdin: bytes) -> HostRun:
+               stdin: bytes, on_output: Callable[[bytes], None] | None = None) -> HostRun:
         """Supervise one contained child; whatever happens it is killed, settled and recorded."""
         record = dict(evidence)
         try:
             return self._supervise(entry, target, record, candidate=candidate, uid=uid, wall=wall,
-                                   cpu=cpu, max_output=max_output, cancel=cancel, stdin=stdin)
+                                   cpu=cpu, max_output=max_output, cancel=cancel, stdin=stdin,
+                                   on_output=on_output)
         except LabError as exc:
             record["refused"] = exc.reason
             raise
@@ -827,7 +872,7 @@ class MacOSContainment(ContainmentBackend):
 
     def _supervise(self, entry: str, target: list[str], record: dict, *, candidate: str, uid: int,
                    wall: int, cpu: int, max_output: int, cancel: threading.Event | None,
-                   stdin: bytes) -> HostRun:
+                   stdin: bytes, on_output: Callable[[bytes], None] | None = None) -> HostRun:
         policy = self.policy
         try:
             run_dir = tempfile.mkdtemp(prefix="run-", dir=policy.run_root)
@@ -838,6 +883,7 @@ class MacOSContainment(ContainmentBackend):
         state: dict = {"timedOut": False, "cancelled": False, "outputTruncated": False,
                        "limitExceeded": None}
         out_path = f"{run_dir}/stdout"
+        live = _OutputStream(out_path, max_output, on_output, cancel) if on_output is not None else None
         try:
             try:
                 tmpdir = f"{run_dir}/tmp"
@@ -866,7 +912,8 @@ class MacOSContainment(ContainmentBackend):
                 finally:
                     os.close(status_w)
                 self._watch(child, state, uid=uid, baseline=baseline, out_path=out_path,
-                            deadline=time.monotonic() + wall, max_output=max_output, cancel=cancel)
+                            deadline=time.monotonic() + wall, max_output=max_output, cancel=cancel,
+                            live=live)
         finally:
             sweep_error = None
             if child is not None:
@@ -879,6 +926,11 @@ class MacOSContainment(ContainmentBackend):
                     state["escapedProcesses"] = self._sweep(uid, baseline)
                 except LabError as exc:  # cleanup still runs; the run stays unsettled
                     sweep_error = exc
+            if live is not None:
+                if not (state["timedOut"] or state["cancelled"] or state["outputTruncated"]
+                        or state["limitExceeded"]):
+                    live.pump(state)  # natural exit: deliver the tail written since the last poll
+                live.close()
             preamble_failed = False
             if status is not None:
                 os.set_blocking(status, False)
@@ -900,15 +952,21 @@ class MacOSContainment(ContainmentBackend):
             record.update(state, exitCode=exit_code, settled=settled)
         if sweep_error is not None:
             raise sweep_error
+        _require(not state.get("callbackFailed"), "output-callback-failed")
         _require(not preamble_failed, "rlimit-unenforceable")
         truncated = state["outputTruncated"] or len(data) > max_output
         record["outputTruncated"] = truncated
         return HostRun(data[:max_output], exit_code, state["timedOut"], state["cancelled"], truncated, settled)
 
     def _watch(self, child: subprocess.Popen, state: dict, *, uid: int, baseline: set[tuple[int, int]],
-               out_path: str, deadline: float, max_output: int, cancel: threading.Event | None) -> None:
+               out_path: str, deadline: float, max_output: int, cancel: threading.Event | None,
+               live: "_OutputStream | None" = None) -> None:
         """Poll until exit or the first wall, cancel, output or memory stop; records which."""
         while child.poll() is None:
+            if live is not None:
+                live.pump(state)
+            if state.get("callbackFailed"):
+                return
             if time.monotonic() >= deadline:
                 state["timedOut"] = True
             elif cancel is not None and cancel.is_set():

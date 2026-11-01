@@ -1,0 +1,73 @@
+{
+  "candidateBinding": "Current source/input hashes; no frozen implementation commit claimed",
+  "disposition": "Engineering completed at unit level for the T005/T006 follow-up: MacOSContainment.launch gains on_output. It qualifies nothing: no real claude, no real sandbox-exec launch, no dedicated account, no quota source and no native session ran; supervised tests use a Python pass-through stand-in for sandbox-exec and Python scripts as the pinned executable, as the T005 tests do.",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_containment_macos tests.test_harness_transport_claude -v",
+      "exitCode": 0,
+      "scope": "Focused run, Python 3.13.11 on macOS 27.0.1; 9 new LiveOutputTests plus 1 new transport integration test; 80 tests in total.",
+      "testsRun": 80
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13.11.",
+      "testsRun": 770
+    },
+    {
+      "command": "scratch mutation run: 5 single-line mutations of agent_braid/harness_containment_macos.py (unbounded read past max_output_bytes, no pump in _watch, no tail pump at natural exit, callback failure not recorded, callback failure swallowed), each followed by tests.test_harness_containment_macos.LiveOutputTests",
+      "exitCode": 0,
+      "scope": "Every mutation was caught by at least one test; the file was restored after the run.",
+      "testsRun": 5
+    },
+    {
+      "command": "pre-PR reviews: correctness, quality, simplification (self-review of the diff)",
+      "exitCode": 0,
+      "scope": "Applied: bounded 64 KiB reads in a loop (no buffer sized by max_output_bytes), no delivery after the callback requested the stop. Rejected: none.",
+      "testsRun": null
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
+    "agent_braid/harness_transport_claude.py": "e98c4db0e279b0a07a90a94d7c2f9a519e29dbdc0ca23c9b123dc3dc043fa19e",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json": "9aa51097b838c255ca92ecfb6f93a9fcea373d31c8a73ea6d45e635ae45e692e",
+    "specs/065-native-claude-containment/evidence/t005.json": "4025505ba8adc9ac2113252ddf7f16633ceec42fdb102bbb8ffae1fd8be679db",
+    "specs/065-native-claude-containment/evidence/t006.json": "f0fe922d7bd2b0c0cd2310aeba3e64a9e0edab31bfd052f75c68e97deeca0fea",
+    "specs/065-native-claude-containment/plan.md": "208b30b8f4f10689c3c278486911dbb5cbc2c7d99b6d353abb1af463deef19d0",
+    "specs/065-native-claude-containment/spec.md": "92ce65392a9e745a7d7231f13d57582d39129f90046c7929b9e65c92405a0f29",
+    "specs/065-native-claude-containment/tasks.md": "a05a90755421fc8695f2e3050c3b76bbe6c05bbdff68991a09361315cf99068e",
+    "specs/065-native-claude-containment/validation-plan.md": "4c6ae131acced865e49510ab08cdfb4c9d8b519f7ad130ae38fd79d7b7f67736"
+  },
+  "limits": {
+    "callbackFailureReason": "output-callback-failed",
+    "maxOutputBytes": "at most min(max_output_bytes, the launch output bound) delivered",
+    "nativeExecution": "none",
+    "streamChunkBytes": 65536
+  },
+  "method": "Actual offline unittest execution: real MacOSContainment supervision with a pass-through sandbox-exec stand-in and Python-script executables (Linux-portable machinery), plus the real MacOSContainment.launch entry point over the T006 fake launcher in the transport test; no claude, no sandbox-exec, no dedicated account, no network",
+  "negativeControls": {
+    "callback raises": "group killed and settled, run refused with output-callback-failed, evidence refused and settled; also for a failure on the final tail",
+    "callback sets cancel": "group killed and settled promptly (cancelled, exit None, settled, no leftovers); no chunk after the stop request",
+    "chunks in order, complete, streamed during the run": "concatenation equals HostRun.stdout; at least two chunks for a slowly writing child",
+    "max_output_bytes": "never more than the bound delivered, equal to the prefix of HostRun.stdout; output_truncated and settled",
+    "non-callable hook": "invalid-launch",
+    "on_output=None": "HostRun identical to the same run with a callback",
+    "tail written just before exit": "delivered exactly once",
+    "transport integration": "NativeClaudeTransport accepts MacOSContainment.launch's signature (no live-init-unsupported); a streamed non-subscription init kills the group before any later event is accepted; a subscription init completes"
+  },
+  "outcome": "MacOSContainment.launch(..., on_output=None) streams new stdout bytes from the run's stdout file to the callback from _watch (each byte once, in order, never past max_output_bytes) and delivers the tail at a natural exit. A cancel set by the callback stops the group through the existing path. A callback exception ends delivery, kills and settles the group, then refuses with the fixed reason output-callback-failed (fail closed, T005 refusal style: LabError recorded in run_evidence). run and run_probe are unchanged.",
+  "outputs": {
+    "agent_braid/harness_containment_macos.py": "dfa7fda83f782edc32150a942647df3c480dd4bf0fd01ef771ce3402e20c3c06",
+    "tests/test_harness_containment_macos.py": "e9a79201aa02153d68888fdd99161d71e118a75f1be4d56dc93f1bddc0cb01d3",
+    "tests/test_harness_transport_claude.py": "40a3af4571ee06c1fca9a3b2aa54b941cfbf7a5bac963b7c7f7d992d76739b97"
+  },
+  "pending": [
+    "Stable quick and pr validation results recorded in the pull request",
+    "evidence/t006.json still states the transport refuses the real backend; this change removes that limitation and the orchestrator may reconcile tasks.md and assurance.json",
+    "harness_containment_macos.py changed, so any future qualification must be issued against this source; no qualification exists yet",
+    "T007 probe runner, T008 independent review, T009 live attempt, T010 human issuance; ADR acceptance (T002) before any native session"
+  ],
+  "spec": "065-native-claude-containment",
+  "task": "SPEC-065/T005-T006 live output"
+}
