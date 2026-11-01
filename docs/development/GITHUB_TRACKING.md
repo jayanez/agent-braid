@@ -231,4 +231,3 @@ reviewed digest, and re-audit until no operation remains. Then set the parent to
 Fifteen deferred SPEC-029, SPEC-031 and SPEC-033 task issues move to #26 only after
 the task-level milestone override (SPEC-066 T003) exists; until then they stay in
 Deferred #24 and the Deferred description keeps naming them as planned moves.
-
