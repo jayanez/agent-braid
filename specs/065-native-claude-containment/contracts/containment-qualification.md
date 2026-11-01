@@ -9,7 +9,7 @@ human issuance step; it adds no code authority to issue.
 | Role | Does | Never does |
 |---|---|---|
 | Probe runner (code) | runs the versioned catalog, writes the evidence bundle | writes or signs a qualification record |
-| Issuer (founder or named human, NC-9) | reviews the bundle, writes both records, publishes their hashes out of band | issues with any failing, missing or inconclusive probe |
+| Issuer (founder only, NC-9) | reviews the bundle, writes both records, publishes their hashes out of band | issues with any failing, missing or inconclusive probe |
 | Runtime (code) | `verify_qualification`, `verify_host_qualification`, `_check_backend`, `_check_transport`, pre-session self-checks | accepts a hash read from the record or the manifest as trusted |
 
 ## Evidence bundle
@@ -49,7 +49,7 @@ control makes the probe `inconclusive`.
 | NET-02 | network | TCP to a literal IPv4 and IPv6 address |
 | NET-03 | network | UDP and DNS-based exfiltration |
 | NET-04 | network | non-allowed loopback port and local Unix-domain socket |
-| NET-05 | network | bypass of the enforcing proxy (direct egress, wrong SNI/CONNECT host) when NC-1 uses one |
+| NET-05 | network | bypass of the enforcing loopback proxy chosen by NC-1 (direct egress, wrong SNI/CONNECT host) |
 | NET-06 | network | allowed endpoint reachable (functional control) |
 | NET-07 | network | raw socket and ICMP |
 | NET-08 | network | XPC or Unix-domain socket of a network-capable system daemon |
@@ -68,7 +68,7 @@ control makes the probe `inconclusive`.
 | PROC-06 | process | spawn outside the group via `open`/LaunchServices, `osascript`/AppleEvents, XPC or `launchctl submit` |
 | PROC-07 | process | signal, `ptrace` or `task_for_pid` against another same-user process |
 | PROC-08 | process | settlement at timeout and at cancellation: no survivor |
-| HOST-01 | all | one read-only `claude -p` session completes under the policy (functional control; uses quota, NC-10) |
+| HOST-01 | all | one read-only `claude -p` session completes under the policy (functional control; uses quota within the NC-10 probe cap) |
 
 Positive controls never touch operator credentials: dummy secrets live in a
 disposable home, and the CRED-02 control uses a disposable keychain file, not
@@ -77,7 +77,9 @@ the operator's login keychain.
 Escape probes for filesystem, network and process use a small owned helper
 executed by the backend's fixture entry point, so most probes need no model turn.
 Probes that depend on CLI behavior (NET-05 via the CLI, CRED-05, HOST-01) need a
-live session and count against the budget fixed by NC-10.
+live session and count against the NC-10 probe cap: at most 3 minimal
+`claude -p` sessions per attempt (Haiku, low effort), each at most 2 % of the
+5-hour window, separate from the D2 cohort caps.
 
 ## Pass rule
 
@@ -99,14 +101,16 @@ Claude host (`braid-harness-host-qualification/v0.1`, unchanged):
 "expiresAt", "evidenceSha256"}`.
 
 Both records bind the same `environmentSha256` and the same bundle hash.
-`expiresAt` and the re-qualification triggers are NC-9. The trusted expected
+NC-9: `expiresAt` is 30 days after issuance; any change of OS build, Claude
+Code version or hash, profile bytes, probe catalog, proxy or credential method
+forces re-qualification before expiry. The trusted expected
 hashes are supplied to the runtime from the issuer's decision record, not read
 from the records or the manifest.
 
 ## Pre-session check (every native session, F4)
 
-What satisfies F4 is founder item NC-11. Proposal for that decision: re-compute
-the environment hash, verify both records, and run a short contained subset
-(FS-01, NET-01, CRED-01, PROC-01 and NET-06). Whatever NC-11 decides, any
-mismatch or non-denial refuses the session, and the result is appended to the
+NC-11 (decided 2026-10-31): before every native session, re-compute the
+environment hash, verify both records, and run the contained subset FS-01,
+NET-01, CRED-01, PROC-01 and NET-06. Any mismatch or non-denial refuses the
+session, and the result is appended to the
 run evidence.

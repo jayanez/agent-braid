@@ -3,8 +3,10 @@
 Stable task IDs. Completion requires obtained evidence. A passing unit test is
 not containment evidence; only the probe bundle and the human issuance record
 are. Dependencies are ordering facts; they do not authorize concurrent agents.
-No task is started by the specification change. Every task after T001 is
-blocked until the founder decisions it names are recorded.
+No task is started by the specification change. T001 recorded every founder
+decision (NC-1 to NC-11) and the F5 binding in
+[evidence/founder-decisions-20261031.json](evidence/founder-decisions-20261031.json);
+later tasks remain bound by their other dependencies.
 
 Common verification for code tasks: tests first, then
 `.venv-speckit/bin/python -m unittest <module> -v`, then
@@ -14,7 +16,7 @@ shared object store fails the portable-root check).
 
 ## Decisions
 
-- [ ] T001 (REQ-004 / SC-004; REQ-005 / SC-005; REQ-006 / SC-006; REQ-007 / SC-007; REQ-008 / SC-008; REQ-003 / SC-003): Founder decision record. Bind F5 (STRICT)
+- [x] T001 (REQ-004 / SC-004; REQ-005 / SC-005; REQ-006 / SC-006; REQ-007 / SC-007; REQ-008 / SC-008; REQ-003 / SC-003): Founder decision record. Bind F5 (STRICT)
   into a repository record and decide NC-1 to NC-11, or record any item left open
   with the tasks it keeps blocked. Dependencies: none. Files:
   `specs/065-native-claude-containment/evidence/founder-decisions-<date>.json`;
@@ -22,6 +24,9 @@ shared object store fails the portable-root check).
   a link). Verification: record present, every NC item has a decision or an
   explicit "open" with blocked tasks; `validate_spec_kit` passes. Evidence: the
   record. Negative control: a task citing an undecided NC item stays blocked.
+  Obtained: `evidence/founder-decisions-20261031.json` (founder, 2026-10-31;
+  F5 bound, NC-1 to NC-11 decided, none left open; authorizes no execution,
+  qualification or native session).
 
 - [ ] T002 (REQ-004 / SC-004; REQ-009 / SC-009): ADR for native Claude
   laboratory containment, drafted from plan.md "Proposed shared-file changes"

@@ -3,9 +3,10 @@
 **Track:** HAR (unblocks SPEC-048/T008 for the Claude profile, then SPEC-049/T004)
 
 **Status:** specification only, draft. Nothing is implemented or authorized by
-this change. Every security choice that belongs to the founder is left open as a
-`[NEEDS CLARIFICATION]` item (NC-1 to NC-11). No task that depends on an open
-item may start before a founder decision record closes it.
+this change. The founder decided every security choice (NC-1 to NC-11) and F5 is
+bound, in the [founder decision record](evidence/founder-decisions-20261031.json)
+(T001, 2026-10-31). The decisions authorize no execution, qualification or
+native session.
 
 ## Purpose and scope
 
@@ -87,10 +88,11 @@ records above.
 | F2 | EUR 0 additional cash; no paid fallback | founder-review-20261031.json |
 | F3 | D2 caps: 30 min per unit, ≤10 % of the 5-hour window per session, ≤15 % of weekly all-models per cohort, ≤16 native units; stop when weekly > 80 %, extra usage enabled, or quota reading unavailable or stale | d2-caps-founder-decision-20261031.json |
 | F4 | Containment verified before every native session | founder-review-20261031.json |
-| F5 | STRICT isolation as stated above; unenforceable effects are recorded not-qualified | orchestrator brief, 2026-10-31 (to be bound into a founder record by T001) |
+| F5 | STRICT isolation as stated above; unenforceable effects are recorded not-qualified | [founder-decisions-20261031.json](evidence/founder-decisions-20261031.json) (T001; first stated in the orchestrator brief, 2026-10-31) |
 
-F5 currently exists only as an orchestrator brief; T001 must bind it into a
-repository founder record before any dependent task uses it.
+T001 bound F5 into a repository founder record; NC-1, NC-5 and NC-7 fix the
+exact endpoints, credential location and the write locations beyond the
+candidate directory that the CLI itself needs.
 
 ## Requirements and acceptance scenarios
 
@@ -269,14 +271,16 @@ or SPEC-049 checkbox, or imply Codex qualification.
   and the hand-off packet lists the issued records, their hashes and the open
   T008 acceptance items.
 
-## Open founder decisions `[NEEDS CLARIFICATION]`
+## Founder decisions NC-1 to NC-11
 
-Each item lists options and risks. None is decided here. The recommended order
-of decision is NC-2, NC-3, NC-4, NC-1, NC-5, NC-7, NC-8, NC-6, NC-9, NC-11, NC-10,
+Each item was decided by the founder on 2026-10-31 in the
+[founder decision record](evidence/founder-decisions-20261031.json) (T001). The
+options and risks offered are kept as history. The decisions were taken in the
+recommended order NC-2, NC-3, NC-4, NC-1, NC-5, NC-7, NC-8, NC-6, NC-9, NC-11, NC-10,
 because the mechanism fixes what the policy can express.
 
-- **NC-1 `[NEEDS CLARIFICATION]` Exact allowed network endpoints and how they
-  are enforced.** macOS sandbox profiles filter by IP address and port, not by
+- **NC-1 Exact allowed network endpoints and how they
+  are enforced.** Decided (founder, 2026-10-31): option (b): `api.anthropic.com:443` plus the OAuth token-refresh endpoints (exact names to be observed by probe), enforced by a loopback proxy that checks the TLS SNI/CONNECT host; telemetry, error-reporting and update endpoints denied. ([record](evidence/founder-decisions-20261031.json)) History: macOS sandbox profiles filter by IP address and port, not by
   host name ([research.md](research.md) R6). Options:
   (a) `api.anthropic.com:443` only, enforced by a loopback forward proxy that is
   the only allowed egress and checks TLS SNI/CONNECT host against the list;
@@ -291,7 +295,7 @@ because the mechanism fixes what the policy can express.
   `DISABLE_NONESSENTIAL_TRAFFIC`-style settings and auto-update are forced off
   (recommended with (a)/(b), unverified until probed).
 
-- **NC-2 `[NEEDS CLARIFICATION]` Isolation mechanism.** `sandbox-exec` and SBPL
+- **NC-2 Isolation mechanism.** Decided (founder, 2026-10-31): option (b): a dedicated macOS user account plus `sandbox-exec`. ([record](evidence/founder-decisions-20261031.json)) History: `sandbox-exec` and SBPL
   are deprecated by Apple yet present on this machine and already used by
   `system_one_verified_stdio.py` for a network deny. Options:
   (a) accept `sandbox-exec` with a pinned binary hash, OS-build window and
@@ -307,14 +311,14 @@ because the mechanism fixes what the policy can express.
   credential login; (c) and (d) cost setup time, disk and memory, and (d) is no
   longer "macOS native". Refusal-on-failure applies to every option.
 
-- **NC-3 `[NEEDS CLARIFICATION]` Supported macOS versions.** Options:
+- **NC-3 Supported macOS versions.** Decided (founder, 2026-10-31): option (b): the macOS 27.0.x series, with the self-check re-run on each build. ([record](evidence/founder-decisions-20261031.json)) History: Options:
   (a) exactly the observed build (macOS 27.0.1, build 26A434) and nothing else;
   (b) the 27.0.x series, re-running the self-check on each build;
   (c) a wider window. Risk: wider windows trust untested sandbox behavior; the
   narrowest window refuses after every OS update until re-qualified.
 
-- **NC-4 `[NEEDS CLARIFICATION]` Supported Claude Code versions and update
-  policy.** Observed `2.1.292 (Claude Code)` at `/opt/homebrew/bin/claude`.
+- **NC-4 Supported Claude Code versions and update
+  policy.** Decided (founder, 2026-10-31): option (a): exactly Claude Code 2.1.292 with a pinned executable SHA-256; auto-update disabled for the laboratory configuration. ([record](evidence/founder-decisions-20261031.json)) History: Observed `2.1.292 (Claude Code)` at `/opt/homebrew/bin/claude`.
   Options: (a) exact version and executable SHA-256, auto-update disabled for
   the laboratory configuration; (b) a half-open `CompatibilityWindow`
   `[2.1.292, 2.2.0)` with the executable hash bound per qualification; (c) a
@@ -322,7 +326,7 @@ because the mechanism fixes what the policy can express.
   (b)/(c) let behavior that probes never saw (new tools, new network calls,
   new credential paths) run under an old qualification.
 
-- **NC-5 `[NEEDS CLARIFICATION]` Credential isolation without copying secrets.**
+- **NC-5 Credential isolation without copying secrets.** Decided (founder, 2026-10-31): option (c): the dedicated user's own login, with its own `CLAUDE_CONFIG_DIR` and keychain; no secret is copied. ([record](evidence/founder-decisions-20261031.json)) History:
   Options: (a) log in once inside the dedicated `CLAUDE_CONFIG_DIR` with the
   CLI's own login flow, leaving the token where the CLI stores it for that
   directory (location to be observed by probe; may be the login Keychain);
@@ -339,7 +343,7 @@ because the mechanism fixes what the policy can express.
   option (a) login, so (a) needs a persistent configuration directory or a
   separate persistent credential location.
 
-- **NC-6 `[NEEDS CLARIFICATION]` Quota reading source and freshness.** The
+- **NC-6 Quota reading source and freshness.** Decided (founder, 2026-10-31): option (a): the Claude Desktop usage card read by the orchestrator session immediately before and after each session; freshness 5 minutes; a session starts only if the 5-hour window is below 90 % used; the cohort stops if a post-reading shows more than 10 % of the 5-hour window used by one session. ([record](evidence/founder-decisions-20261031.json)) History: The
   founder records used the Claude Desktop usage card (read-only). Options:
   (a) the desktop app usage reading taken by the orchestrator session
   immediately before and after each session; (b) a manual reading by the
@@ -352,7 +356,7 @@ because the mechanism fixes what the policy can express.
   sandbox; (b) is slow and error-prone; (c) may not exist or may itself use the
   network; a loose freshness bound lets two sessions overlap one reading.
 
-- **NC-7 `[NEEDS CLARIFICATION]` Filesystem write and read sets.** STRICT says
+- **NC-7 Filesystem write and read sets.** Decided (founder, 2026-10-31): writes = candidate directory + per-run `TMPDIR` + the dedicated user's configuration directory, with session state purged after each run and the credential kept; reads = option (i): candidate directory, configuration directory, the Claude executable and system libraries. ([record](evidence/founder-decisions-20261031.json)) History: STRICT says
   writes only inside the candidate directory, but the CLI also writes session
   state under its configuration directory and temporary files. Options for
   writes: (a) candidate directory only, configuration directory read-only (the
@@ -365,8 +369,8 @@ because the mechanism fixes what the policy can express.
   state leak between runs and between arms; (ii) exposes repository content not
   in the context package. Interaction with NC-5: see the note there.
 
-- **NC-8 `[NEEDS CLARIFICATION]` Process and CPU limits and the executable
-  allow-list.** Values for session wall time (at most the F3 30-minute unit
+- **NC-8 Process and CPU limits and the executable
+  allow-list.** Decided (founder, 2026-10-31): wall 30 min, CPU 30 min, memory 4 GB, file size 64 MB, 256 open files, 16 descendants; executables = the Claude binary plus helpers observed by probe. ([record](evidence/founder-decisions-20261031.json)) History: Values for session wall time (at most the F3 30-minute unit
   cap; today the shared host bound is 60 s, see analysis A2), CPU seconds, address space or memory, file size,
   open files and descendants, and which executables may run (the Claude binary
   and any helper the allowed read-only tools need, such as a bundled search
@@ -375,23 +379,23 @@ because the mechanism fixes what the policy can express.
   tight limits truncate long tasks, which the D2 decision already counts as
   interrupted; loose limits weaken the process effect.
 
-- **NC-9 `[NEEDS CLARIFICATION]` Issuer, validity and re-qualification
-  triggers.** Who may issue (founder only, or a named reviewer), the
+- **NC-9 Issuer, validity and re-qualification
+  triggers.** Decided (founder, 2026-10-31): issuer is the founder only; `expiresAt` 30 days; early re-qualification on any change of OS build, Claude Code version or hash, profile bytes, probe catalog, proxy or credential method. ([record](evidence/founder-decisions-20261031.json)) History: Who may issue (founder only, or a named reviewer), the
   `expiresAt` horizon (for example 7, 30 or 90 days), and which changes force
   re-qualification before expiry (OS build, Claude Code version or hash,
   profile bytes, probe catalog, proxy, credential method). Risk: long validity
   with weak triggers lets drift run under an old record; short validity costs
   repeated probe sessions within the D2 caps.
 
-- **NC-11 `[NEEDS CLARIFICATION]` What satisfies F4 ("containment verified
-  before every native session").** Options: (a) recompute the environment hash
+- **NC-11 What satisfies F4 ("containment verified
+  before every native session").** Decided (founder, 2026-10-31): option (b): before every session, recompute the environment hash, verify both records and run the contained subset FS-01, NET-01, CRED-01, PROC-01 and NET-06. ([record](evidence/founder-decisions-20261031.json)) History: Options: (a) recompute the environment hash
   and verify both records only; (b) (a) plus a short contained probe subset per
   session (the contract proposes FS-01, NET-01, CRED-01, PROC-01 and NET-06);
   (c) the full catalog before every session. Risks: (a) misses drift the hash
   does not cover (for example a changed system daemon); (b) checks only a sample;
   (c) costs time per session and, for live probes, quota.
 
-- **NC-10 `[NEEDS CLARIFICATION]` Live probe budget.** Credential, network and
+- **NC-10 Live probe budget.** Decided (founder, 2026-10-31): option (b): a separate small cap for live qualification probes, up to 3 minimal `claude -p` sessions per attempt (Haiku, low effort), each at most 2 % of the 5-hour window, separate from the D2 cohort caps. ([record](evidence/founder-decisions-20261031.json)) History: Credential, network and
   route probes need at least one real authenticated `claude -p` session.
   Options: (a) count qualification sessions inside the D2 caps; (b) a separate,
   smaller cap for qualification only; (c) only probes that need no model turn,
@@ -422,6 +426,9 @@ because the mechanism fixes what the policy can express.
 
 ## Evidence and unresolved questions
 
-Obtained evidence: none. Planned evidence per scenario is in
-[assurance.json](assurance.json). Open: NC-1 to NC-11, and binding F5 into a
-founder record (T001). Human review is pending.
+Obtained evidence: none for any scenario. Planned evidence per scenario is in
+[assurance.json](assurance.json). Decided: NC-1 to NC-11 and the F5 binding
+([founder decision record](evidence/founder-decisions-20261031.json), T001).
+Open: values to be observed by probe (OAuth refresh host names, helper
+executables, configuration paths that are session state) are fixed only in the
+T009 evidence bundle. Human review of this specification is pending.
