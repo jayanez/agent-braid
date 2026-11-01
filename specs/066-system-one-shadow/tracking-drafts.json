@@ -1,0 +1,581 @@
+{
+ "schema": "agent-braid-unpublished-tracking-drafts/v1",
+ "milestone": null,
+ "milestoneTitle": "S1.5 \u2014 System One shadow activation",
+ "milestoneNumber": null,
+ "milestoneState": "not created; the number is assigned by the reviewed apply after merge",
+ "publication": "Drafts only. Creation requires owner authorization and the reviewed sync_github_tracking audit/apply path from a clean develop checkout after merge; nothing is published by this file. Moving existing issues needs the task-level milestone override of SPEC-066/T003.",
+ "scope": "SPEC-066 only (track S1.5). Existing issues listed under existingIssuesToMove keep their own keys and parents; only their milestone changes.",
+ "labels": [
+  "spec",
+  "task"
+ ],
+ "newRecordKeys": [
+  "SPEC-066",
+  "SPEC-066/T001",
+  "SPEC-066/T002",
+  "SPEC-066/T003",
+  "SPEC-066/T004",
+  "SPEC-066/T005",
+  "SPEC-066/T010",
+  "SPEC-066/T011",
+  "SPEC-066/T012",
+  "SPEC-066/T013",
+  "SPEC-066/T014",
+  "SPEC-066/T015",
+  "SPEC-066/T016",
+  "SPEC-066/T017",
+  "SPEC-066/T018",
+  "SPEC-066/T019",
+  "SPEC-066/T020",
+  "SPEC-066/T021",
+  "SPEC-066/T030",
+  "SPEC-066/T031",
+  "SPEC-066/T032",
+  "SPEC-066/T101",
+  "SPEC-066/T102",
+  "SPEC-066/T103",
+  "SPEC-066/T104",
+  "SPEC-066/T105",
+  "SPEC-066/T201",
+  "SPEC-066/T202",
+  "SPEC-066/T203",
+  "SPEC-066/T204",
+  "SPEC-066/T205",
+  "SPEC-066/T206",
+  "SPEC-066/T301",
+  "SPEC-066/T302",
+  "SPEC-066/T303",
+  "SPEC-066/T401",
+  "SPEC-066/T402",
+  "SPEC-066/T403"
+ ],
+ "projectReviewPendingDraft": [
+  "SPEC-066"
+ ],
+ "projectReviewPendingNote": "Spec parent only; tasks inherit review through the parent. docs/development/github-tracking.json lists SPEC-066 in project_review_pending.",
+ "sourceCounts": {
+  "specs": 1,
+  "tasks": 37,
+  "tasksChecked": 0,
+  "tasksUnchecked": 37,
+  "parentsClosed": 0,
+  "parentsOpen": 1,
+  "totalRecords": 38,
+  "existingIssuesToMove": 15
+ },
+ "sourceState": "all tasks unchecked in tasks.md; obtained_evidence empty; human review pending; nothing frozen, run or approved; T101-T403 are blocked outline tasks",
+ "milestoneDescriptionDraft": "specs/066-system-one-shadow/milestone-description-draft.md",
+ "deferredMilestoneUpdate": "Reopen condition and moved-issue note in milestone-description-draft.md; applied by the same reviewed update.",
+ "existingIssuesToMove": [
+  {
+   "number": 285,
+   "key": "SPEC-029/T001",
+   "title": "[SPEC-029 T001] Review source permissions, sampling frame and prospective yield",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T101"
+  },
+  {
+   "number": 286,
+   "key": "SPEC-029/T002",
+   "title": "[SPEC-029 T002] Freeze label rubric, two-reviewer adjudication and missing-label policy",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T103"
+  },
+  {
+   "number": 287,
+   "key": "SPEC-029/T003",
+   "title": "[SPEC-029 T003] Implement group split and near-duplicate contamination audit",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T104"
+  },
+  {
+   "number": 288,
+   "key": "SPEC-029/T004",
+   "title": "[SPEC-029 T004] Build deterministic adversarial conformance and sensitivity suites",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T205"
+  },
+  {
+   "number": 289,
+   "key": "SPEC-029/T005",
+   "title": "[SPEC-029 T005] Freeze candidate roster, resource budgets and paired evaluation plan",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T302"
+  },
+  {
+   "number": 290,
+   "key": "SPEC-029/T006",
+   "title": "[SPEC-029 T006] Implement metrics and calibration/threshold split enforcement",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T201"
+  },
+  {
+   "number": 291,
+   "key": "SPEC-029/T007",
+   "title": "[SPEC-029 T007] Implement common baseline runners and complete cost accounting",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T302"
+  },
+  {
+   "number": 292,
+   "key": "SPEC-029/T008",
+   "title": "[SPEC-029 T008] Review pre-fit feasibility and seal untouched test manifest",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T104"
+  },
+  {
+   "number": 293,
+   "key": "SPEC-029/T009",
+   "title": "[SPEC-029 T009] Execute registered comparison or document infeasibility and null results",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T303"
+  },
+  {
+   "number": 311,
+   "key": "SPEC-031/T008",
+   "title": "[SPEC-031 T008] Capture integration parity and shadow utility results",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T303"
+  },
+  {
+   "number": 323,
+   "key": "SPEC-033/T002",
+   "title": "[SPEC-033 T002] Implement shadow-only trace capture and retention controls",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T401"
+  },
+  {
+   "number": 324,
+   "key": "SPEC-033/T003",
+   "title": "[SPEC-033 T003] Implement immutable artifact/capability promotion registry",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T401"
+  },
+  {
+   "number": 325,
+   "key": "SPEC-033/T004",
+   "title": "[SPEC-033 T004] Implement domain drift checks and label-aware monitoring",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T203"
+  },
+  {
+   "number": 327,
+   "key": "SPEC-033/T006",
+   "title": "[SPEC-033 T006] Run paired shadow pilot with complete chain costs",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T402"
+  },
+  {
+   "number": 329,
+   "key": "SPEC-033/T008",
+   "title": "[SPEC-033 T008] Record founder per-capability go/no-go and reconcile tracking",
+   "currentMilestone": "Deferred",
+   "targetMilestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open",
+   "carriedBy": "SPEC-066/T403"
+  }
+ ],
+ "existingIssueNumberCorrections": [
+  {
+   "requested": "#322 as SPEC-033 T002",
+   "actual": "#322 is SPEC-033 T001; SPEC-033 T002 is #323"
+  },
+  {
+   "requested": "#323 as SPEC-033 T003",
+   "actual": "#323 is SPEC-033 T002; SPEC-033 T003 is #324"
+  },
+  {
+   "requested": "#324 as SPEC-033 T004",
+   "actual": "#324 is SPEC-033 T003; SPEC-033 T004 is #325"
+  },
+  {
+   "requested": "#326 as SPEC-033 T006",
+   "actual": "#326 is SPEC-033 T005; SPEC-033 T006 is #327"
+  },
+  {
+   "requested": "#328 as SPEC-033 T008",
+   "actual": "#328 is SPEC-033 T007; SPEC-033 T008 is #329"
+  }
+ ],
+ "recordsStayInDeferred": [
+  "SPEC-028",
+  "SPEC-029",
+  "SPEC-030",
+  "SPEC-031",
+  "SPEC-032",
+  "SPEC-033 parents and every other open S1 issue, including SPEC-033 T001 (#322), T005 (#326), T007 (#328), SPEC-031 T001-T007 and SPEC-030/032 tasks"
+ ],
+ "records": [
+  {
+   "key": "SPEC-066",
+   "kind": "spec",
+   "parent": null,
+   "title": "[SPEC-066] SPEC-066: System One shadow activation and reference-grade decisions",
+   "body": "<!-- agent-braid-spec-id: SPEC-066 -->\n\nSource: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n\nRequirements: REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006, REQ-007, REQ-008, REQ-101, REQ-102, REQ-103, REQ-201, REQ-202, REQ-203, REQ-204, REQ-205, REQ-206, REQ-301, REQ-401.\n\nIssue state is a bounded tracking record, not a scientific or founder approval.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T001",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T001] Owner review of the specification, plan, episode contract and open decisions OD-1 to OD-8, including t...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T001 -->\n\n## Task\n\nOwner review of the specification, plan, episode contract and open decisions OD-1 to OD-8, including the specification notes recorded in `research.md`. Dependencies: T005. Files: `spec.md`, `plan.md`, `contracts/`. Evidence: review record in this directory that also records the decisions taken on OD-1 to OD-8 and the SC-006 session definition.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: all REQ\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T002",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T002] Add the S1.5 track to ROADMAP, STATUS, the milestone index, docs/system-one/README.md and RESUMPTION,...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T002 -->\n\n## Task\n\nAdd the S1.5 track to ROADMAP, STATUS, the milestone index, `docs/system-one/README.md` and `RESUMPTION`, the GitHub tracking source (`specs` entry, milestone, `project_review_pending`) and `GITHUB_TRACKING.md`. Dependencies: none. Files: `ROADMAP.md`, `docs/STATUS.md`, `docs/development/SPEC_MILESTONE_INDEX.md`, `docs/system-one/README.md`, `docs/development/github-tracking.json`, `docs/development/GITHUB_TRACKING.md`. Verification: `python3 scripts/sync_github_tracking.py source`. Evidence: merged change and source output.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: See the parent issue and assurance record.\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T003",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T003] Support a task-level milestone override in the tracking source so the absorbed SPEC-029, SPEC-031 and...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T003 -->\n\n## Task\n\nSupport a task-level milestone override in the tracking source so the absorbed SPEC-029, SPEC-031 and SPEC-033 tasks can move to S1.5 while their parent specs stay in Deferred. Tests first. Dependencies: T002. Files: `scripts/sync_github_tracking.py`, `docs/development/github-tracking.json`, `docs/development/GITHUB_TRACKING.md`, `tests/test_github_tracking.py`. Verification: `python3 -m unittest tests.test_github_tracking -v` and `python3 scripts/sync_github_tracking.py source`. Evidence: merged change.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: See the parent issue and assurance record.\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T004",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T004] After merge to develop, publish S1.5 tracking: audit scoped with --new-record-key for exactly the miss...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T004 -->\n\n## Task\n\nAfter merge to `develop`, publish S1.5 tracking: `audit` scoped with `--new-record-key` for exactly the missing SPEC-066 records, review, `apply --confirm-repository jayanez/agent-braid --plan-sha256 <digest>`, move the 15 absorbed issues from Deferred, record the milestone number, re-audit to zero operations, set the parent to Review pending in Project 6, and update the Deferred milestone description and the reopen condition. Dependencies: T002, T003 merged. Evidence: audit and apply outputs, milestone number in `github-tracking.json`.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: See the parent issue and assurance record.\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T005",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T005] Freeze the specification candidate with python3 -m scripts.validate_spec_kit freeze specs/066-system-o...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T005 -->\n\n## Task\n\nFreeze the specification candidate with `python3 -m scripts.validate_spec_kit freeze specs/066-system-one-shadow`. Dependencies: T002. Evidence: historical snapshot in `assurance.json`.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: See the parent issue and assurance record.\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T010",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T010] Reason table and episode builder: pure functions that turn a System 2 report plus the operation name a...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T010 -->\n\n## Task\n\nReason table and episode builder: pure functions that turn a System 2 report plus the operation name and analysis kind into an episode object, with the exact sentence-to-code table, the 64-pair cap, `effectKinds` as `null` (the report carries no kinds) and the `unmapped-reason` skip. Include the drift test that scans the analyzer's reason sentences and fails if one is missing from the table. Tests first. Files: `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow.py`, `tests/fixtures/system_one_shadow/`. Dependencies: T001. Verification: procedure_002.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-003 / SC-002\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T011",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T011] Episode validator and privacy test: closed vocabularies, key sets, bounds, canonical bytes, duplicate...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T011 -->\n\n## Task\n\nEpisode validator and privacy test: closed vocabularies, key sets, bounds, canonical bytes, duplicate members, and a seeded test with hostile instance IDs, resource names, paths and prompts proving none of them appears in the serialized episode; negative controls inject one extra string, an unknown reason code and a mislabelled field. Files: `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow.py`. Dependencies: T010. Verification: procedure_002.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-003 / SC-002\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T012",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T012] Pinned identity: compiled backend ID and manifest digest, comparison with the installed identity, iden...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T012 -->\n\n## Task\n\nPinned identity: compiled backend ID and manifest digest, comparison with the installed identity, `identity-mismatch` refusal, and the constant `abstained` / `calibration-absent` answer of the reference backend. A test fails when the installed manifest digest changes without the compiled constant. Files: `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow.py`. Dependencies: T010. Verification: procedure_008.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-007 / procedure_008\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T013",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T013] EpisodeStore: telemetry-equivalent path safety, private files, 4 MiB day cap, 30-date retention on acc...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T013 -->\n\n## Task\n\n`EpisodeStore`: telemetry-equivalent path safety, private files, 4 MiB day cap, 30-date retention on access, non-blocking lock, unknown-file refusal, in-memory refusal counters, and a parity test against the telemetry path checker. Negative controls: symlink at each level, repository ancestor, group-readable file, extra hard link, foreign owner, oversize, busy lock, unknown file, full disk. Files: `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow_store.py`. Dependencies: T011. Verification: procedure_003.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-004 / SC-003\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T014",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T014] Observer, budget and wiring: ToolingConfig.system_one, ShadowObserver with the 50 ms stage checks and...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T014 -->\n\n## Task\n\nObserver, budget and wiring: `ToolingConfig.system_one`, `ShadowObserver` with the 50 ms stage checks and exception containment, lazy call from `ToolingService.invoke` after the envelope, and the byte-parity test between `off` and `shadow` for every tool with fixed UUID and clock. Negative controls: an observer that raises, a store that refuses, an over-budget clock, an input that mutates if the observer writes to it. Files: `agent_braid/system_one_shadow.py`, `agent_braid/tooling_mcp.py`, `tests/test_system_one_shadow_parity.py`. Dependencies: T012, T013. Verification: procedure_001, procedure_003.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-002 / SC-001, SC-003\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T015",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T015] Consent: registry systemOne member (decode, plan_setup, digest only when shadow), plugin setup --syste...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T015 -->\n\n## Task\n\nConsent: registry `systemOne` member (decode, `plan_setup`, digest only when `shadow`), `plugin setup --system-one`, router pass-through to `ToolingConfig`, reconnect-required behaviour, and the digest and bytes equality test for absent and `off`. Files: `agent_braid/plugin_registry.py`, `agent_braid/plugin_cli.py`, `agent_braid/plugin_mcp.py`, `tests/test_system_one_shadow_consent.py`, `tests/test_plugin_registry.py`. Dependencies: T014. Verification: procedure_005.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-001 / SC-005\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T016",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T016] plugin-status systemOne block with configured and active mode, store state and retention; no directory...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T016 -->\n\n## Task\n\n`plugin-status` `systemOne` block with configured and active mode, store state and retention; no directory creation, no episode bodies; existing status tests updated. Files: `agent_braid/plugin_mcp.py`, `tests/test_system_one_shadow_consent.py`, `tests/test_plugin_mcp.py`. Dependencies: T015. Verification: procedure_009.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-008 / procedure_009\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T017",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T017] system-one report (text and agent-braid-s1-report/v0.1 JSON) and purge with confirmation or --yes, ove...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T017 -->\n\n## Task\n\n`system-one report` (text and `agent-braid-s1-report/v0.1` JSON) and `purge` with confirmation or `--yes`, over the strict validator, with invalid lines counted and no episode body printed. Files: `agent_braid/system_one_shadow.py`, `agent_braid/system_one_cli.py`, `agent_braid/cli.py`, `tests/test_system_one_shadow_store.py`, `tests/test_system_one_cli.py`. Dependencies: T013. Verification: procedure_004.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-005 / SC-004\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T018",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T018] --telemetry {off,local} on every system-one subcommand, the observe wrapper in cli.py, the system-one...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T018 -->\n\n## Task\n\n`--telemetry {off,local}` on every `system-one` subcommand, the `observe` wrapper in `cli.py`, the `system-one` CLI operation in `OPERATIONS`, LIMITS and `docs/tooling/TELEMETRY.md` text, and a test that no metric other than the new operation cell appears. Files: `agent_braid/cli.py`, `agent_braid/tooling_telemetry.py`, `docs/tooling/TELEMETRY.md`, `tests/test_tooling_telemetry.py`, `tests/test_system_one_cli.py`. Dependencies: T017. Verification: procedure_007.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-006 / procedure_007\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T019",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T019] Boundary and validation-profile checks: off never imports the shadow module (subprocess sys.modules ch...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T019 -->\n\n## Task\n\nBoundary and validation-profile checks: `off` never imports the shadow module (subprocess `sys.modules` check), the shadow module imports no network module and no model library, no new `executionAuthorization: true`, and the planner routes every touched path to the expected rule; update the `system-one-core` boundary text. Files: `scripts/validate_change.py`, `tests/test_validation_profiles.py`, `tests/test_system_one_shadow_boundaries.py`, `docs/development/VALIDATION_PROFILES.md`. Dependencies: T014. Verification: procedure_001, `python3 scripts/validate_change.py --base develop --profile quick`.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-002, REQ-003 / SC-001\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T020",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T020] User documentation: docs/tooling/SYSTEM_ONE_SHADOW.md (what is recorded, what is never recorded, how t...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T020 -->\n\n## Task\n\nUser documentation: `docs/tooling/SYSTEM_ONE_SHADOW.md` (what is recorded, what is never recorded, how to enable, report, purge, non-claims and limits including the filesystem-stall limit), plus updates to `docs/tooling/PLUGIN_PRIVACY.md` and `docs/tooling/INSTALL.md`. Dependencies: T017, T018. Evidence: merged documents and a docs link check.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: all REQ\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T021",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T021] Overhead measurement: median and p95 of the shadow step for 2, 12 and 32 operations on the owner machi...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T021 -->\n\n## Task\n\nOverhead measurement: median and p95 of the shadow step for 2, 12 and 32 operations on the owner machine, with and without a warm store, reported as a measurement receipt (not a gate) with the 50 ms budget as reference. Dependencies: T014. Evidence: `evidence/overhead-<date>.json`.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-002 / SC-003\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T030",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T030] Enable shadow on the owner machine with plugin setup --system-one shadow --apply, reconnect, work norm...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T030 -->\n\n## Task\n\nEnable `shadow` on the owner machine with `plugin setup --system-one shadow --apply`, reconnect, work normally with Agent Braid, then run `system-one report`. Commit a redacted receipt under the `docs/development/REAL_USE_EVIDENCE.md` rules: sources consulted, window, episode and pair counts, DP-1 opportunity share, plugin and package version, no identifiers. Zero episodes is a valid receipt and is reported as such. Dependencies: T014, T015, T017, T020. Evidence: `evidence/real-use-shadow-<date>.json`.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-002, REQ-003 / SC-006\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T031",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T031] Pre-PR reviews (code review, quality, simplification), validate_change --profile pr on the stable cand...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T031 -->\n\n## Task\n\nPre-PR reviews (code review, quality, simplification), `validate_change --profile pr` on the stable candidate, `/speckit-converge`. Dependencies: T010\u2013T021.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: See the parent issue and assurance record.\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T032",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T032] Record obtained evidence in assurance.json, freeze, and owner review of the S1.5a closure, with the de...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T032 -->\n\n## Task\n\nRecord obtained evidence in `assurance.json`, freeze, and owner review of the S1.5a closure, with the decision whether S1.5b starts. Dependencies: T030, T031.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: See the parent issue and assurance record.\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T101",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T101] Owner consent record that admits the owner's episodes and the SPEC-047, SPEC-053 and SPEC-059 real-use...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T101 -->\n\n## Task\n\nOwner consent record that admits the owner's episodes and the SPEC-047, SPEC-053 and SPEC-059 real-use sources as a permissioned corpus, reusing the SPEC-051 validator; third-party sources stay excluded. Carries forward SPEC-029 T001 (#285). Dependencies: T032. Evidence: owner record.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-101\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T102",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T102] Outcome observer that joins DP-1 episodes with a later runtime conflict, merge conflict or verify resu...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T102 -->\n\n## Task\n\nOutcome observer that joins DP-1 episodes with a later runtime conflict, merge conflict or verify result under a random join key; pairs without an outcome stay unlabelled. Dependencies: T101. Files: to be set by the S1.5b plan.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-102\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T103",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T103] Amended label rubric: observed outcomes primary, owner adjudication of a random sample for label noise...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T103 -->\n\n## Task\n\nAmended label rubric: observed outcomes primary, owner adjudication of a random sample for label noise, missing-label policy frozen before any fit. Carries forward SPEC-029 T002 (#286). Dependencies: T101.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-103\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T104",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T104] Build the owned corpus with group split, near-duplicate audit, class and size coverage shown before an...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T104 -->\n\n## Task\n\nBuild the owned corpus with group split, near-duplicate audit, class and size coverage shown before any fit, and the pre-fit feasibility review that seals the untouched test manifest. Carries forward SPEC-029 T003 (#287) and T008 (#292). Dependencies: T102, T103.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-101, REQ-102, REQ-103\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T105",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T105] Owner adjudication of the random label sample. Dependencies: T103, T104. Evidence: owner record.",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T105 -->\n\n## Task\n\nOwner adjudication of the random label sample. Dependencies: T103, T104. Evidence: owner record.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-103\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T201",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T201] Tri-state abstention, echoed threshold and per-bucket, risk-scaled thresholds fitted on a split disjoi...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T201 -->\n\n## Task\n\nTri-state abstention, echoed threshold and per-bucket, risk-scaled thresholds fitted on a split disjoint from evaluation; metrics and split enforcement. Carries forward SPEC-029 T006 (#290). Dependencies: T104.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-201\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T202",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T202] Two named confidence signals, normalized entropy and maximum probability, with stated formulas and no...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T202 -->\n\n## Task\n\nTwo named confidence signals, normalized entropy and maximum probability, with stated formulas and no accuracy wording. Dependencies: T201.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-202\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T203",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T203] Drift demotion to off on a different or mixed backend identity until a new calibration is pinned, plus...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T203 -->\n\n## Task\n\nDrift demotion to `off` on a different or mixed backend identity until a new calibration is pinned, plus domain-drift monitoring. Carries forward SPEC-033 T004 (#325). Dependencies: T201.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-203\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T204",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T204] Batched questions over one state, bounded batches, per-question failure isolation, parity with unbatch...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T204 -->\n\n## Task\n\nBatched questions over one state, bounded batches, per-question failure isolation, parity with unbatched evaluation. Dependencies: T201.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-204\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T205",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T205] Option-order invariance by rotation, equivariance tests and the adversarial conformance and sensitivit...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T205 -->\n\n## Task\n\nOption-order invariance by rotation, equivariance tests and the adversarial conformance and sensitivity suites. Carries forward SPEC-029 T004 (#288). Dependencies: T201.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-205\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T206",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T206] Evaluation gate in CI with minimum accuracy, maximum ECE, per-slice metrics and a tolerance against a...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T206 -->\n\n## Task\n\nEvaluation gate in CI with minimum accuracy, maximum ECE, per-slice metrics and a tolerance against a committed baseline. Dependencies: T201, T205.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-206\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T301",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T301] ADR and optional extra agent-braid[s1-local] for one candidate backend, never imported by the core, pi...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T301 -->\n\n## Task\n\nADR and optional extra `agent-braid[s1-local]` for one candidate backend, never imported by the core, pinned artifact path and digest, no automatic download, wheel and extra discovery checks. Dependencies: T206.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-301\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T302",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T302] Freeze the candidate roster, resource budgets and paired evaluation plan, and implement the common bas...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T302 -->\n\n## Task\n\nFreeze the candidate roster, resource budgets and paired evaluation plan, and implement the common baseline runners with complete cost accounting. Carries forward SPEC-029 T005 (#289) and T007 (#291). Dependencies: T301.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-301\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T303",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T303] Execute the registered comparison at a common risk budget, or document infeasibility, and record the H...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T303 -->\n\n## Task\n\nExecute the registered comparison at a common risk budget, or document infeasibility, and record the H-S1 verdict; a null or negative result is valid. Carries forward SPEC-029 T009 (#293) and SPEC-031 T008 (#311). Dependencies: T302.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-301\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T401",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T401] Immutable promotion registry, shadow trace capture and retention reuse, and atomic rollback to off. Ca...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T401 -->\n\n## Task\n\nImmutable promotion registry, shadow trace capture and retention reuse, and atomic rollback to `off`. Carries forward SPEC-033 T002 (#323) and T003 (#324). Dependencies: T303.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-401\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T402",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T402] Paired shadow pilot with complete chain costs on the owner's work. Carries forward SPEC-033 T006 (#327...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T402 -->\n\n## Task\n\nPaired shadow pilot with complete chain costs on the owner's work. Carries forward SPEC-033 T006 (#327). Dependencies: T401.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-401\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  },
+  {
+   "key": "SPEC-066/T403",
+   "kind": "task",
+   "parent": "SPEC-066",
+   "title": "[SPEC-066 T403] Owner go/no-go per decision point and tracking reconciliation; advise only on a recorded go. Carries f...",
+   "body": "<!-- agent-braid-task-id: SPEC-066/T403 -->\n\n## Task\n\nOwner go/no-go per decision point and tracking reconciliation; `advise` only on a recorded go. Carries forward SPEC-033 T008 (#329). Dependencies: T402.\n\n- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) \u00b7 [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) \u00b7 [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)\n- Trace: REQ-401\n- State basis: Source checkbox in tasks.md.\n\nPlanned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.\n",
+   "milestone": "S1.5 \u2014 System One shadow activation",
+   "state": "open"
+  }
+ ]
+}

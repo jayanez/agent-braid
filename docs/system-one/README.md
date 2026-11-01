@@ -1,5 +1,22 @@
 # System One: evidence, capability and resumption index
 
+## Current state (2026-11-01)
+
+This section supersedes older statements below. Sections after it are historical
+snapshots; their frozen evidence text is unchanged and describes the time it was
+written.
+
+- Milestones S1.0–S1.4 (GitHub #13–#17) were closed on 2026-10-31 by founder
+  decision as deferred; the remaining open System One issues sit in milestone
+  Deferred #24.
+- The code is merged in `develop` (via #655). The local Codex checkouts named in
+  older sections are historical and are not needed.
+- SPEC-051 and ADR 0026 are published in the repository.
+- The code has no product callers, no learned model and no observed use; see the
+  [completeness audit](addenda/completeness-audit-20261101/README.md).
+- Next work is [SPEC-066](../../specs/066-system-one-shadow/spec.md) (track S1.5,
+  draft) and [ADR 0034](../adr/0034-system-one-shadow-advisory-boundary.md).
+
 ## Latest RF-T01/RF-T02 documentary receipt (2026-10-21)
 
 [Final SPEC-051 local software evidence](addenda/spec051-rf01-rf02-final-20261021/README.md) preserves42 focused controls, corrected quick/PR2153 tests each (2130 passed,23 skipped), the failed first profiles and incomplete OS read, metadata repair, mutation limitations and pending gates. This is corpus publication only: canonical SPEC051/ADR0026/modules/tests remain unpublished in the coordinator's product candidate. Pure validation does not admit real sources, storage, observer, training, human/scientific approval or activation. Earlier proposal/receipt states remain dated history.

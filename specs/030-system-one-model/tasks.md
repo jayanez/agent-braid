@@ -1,5 +1,7 @@
 # SPEC-030: Tasks
 
+> Note (2026-11-01): SPEC-066 S1.5d covers the T008-equivalent comparison; the remaining SPEC-030 tasks stay Deferred (milestone #24). See [SPEC-066](../066-system-one-shadow/spec.md). No checkbox below is changed by this note.
+
 Implementation and research acceptance tasks; every checkbox starts pending.
 IDs are stable inside the spec. Cross-spec dependencies use SPEC-nnn/Tnnn.
 No task authorizes parallel agents, paid calls, data collection or live execution.

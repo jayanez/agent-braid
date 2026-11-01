@@ -231,3 +231,105 @@ not a complete line-by-line security audit of either repository. No upstream tes
 paid calls, training or GPU performance experiments were executed in this work.
 All public numbers above are upstream reports. Agent Braid findings come from its
 own versioned source/evidence; proposed gains are hypotheses only.
+
+## 2026-11-01 update
+
+Status: source survey for SPEC-066 and ADR 0034. Nothing below was run, downloaded
+or reproduced here. Every number is **upstream-reported** (project READMEs,
+documentation, blog posts and third-party design notes), not reproduced by Agent
+Braid. Only the Laya release tag, its commit and the file hashes in
+`reference-sources.json` were verified directly.
+
+### Laya v0.4.19
+
+Laya was inspected at v0.3.28 on 2026-10-05; v0.4.19 was released 2026-10-31
+(commit `55a19f7b7b56787e1a3e41063def9bb9a8737351`; a later tag, v0.4.20, appeared
+on 2026-11-01 and was not inspected). Apache-2.0.
+
+- **Checkpoints:** `laya` (ModernBERT-large, 421M parameters, 512-token context),
+  `laya-multilingual` (mmBERT-base, 322M) and `laya-typed-decisions` (421M).
+- **Routing:** a router with language and script detection, exposed as
+  `POST /v1/route`. A Jev-compatible `POST /v1/systemone` and
+  `/v1/systemone/batch` (at most 64 states).
+- **Confidence:** two signals, entropy confidence and `answer_confidence` (the
+  maximum probability), with per-(type, option band) temperatures. Refit reports
+  ECE 0.466 to 0.081 on held-out data. The multilingual checkpoint ships without
+  fitted temperatures.
+- **Abstention:** `min_confidence` with per-bucket thresholds (12 buckets plus a
+  default); tri-state `passed | abstained | unevaluated`; the threshold is
+  echoed; `fit_abstention_thresholds(target_error)`.
+- **Option layout:** option-order rotation (order-dependent answers 16.3% to
+  6.1%) and an opt-in parallel layout. `predict_shortlist` and
+  `predict_tournament` for many options; accuracy degrades past about 20 options
+  (Banking77 0.425). `predict_long` uses windows. `decide` and `decide_batch`;
+  hooks.
+- **Gate:** `laya-evals` CI gate (minimum accuracy, maximum ECE, per-slice
+  metrics, tolerance against a baseline).
+- **Stated limits:** near-chance zero-shot (0.362 against a 0.461 majority
+  baseline), negated cancellations, boolean-word label bias. CPU latency about 110
+  ms per question (421M) and about 48 ms (322M) on a 56-core host.
+
+### Jev (TypeSafe AI, hosted)
+
+Documentation: <https://docs.typesafe.ai>; announcement:
+<https://typesafe.ai/blog/introducing-system-one-models-and-jev>.
+
+- **API:** `POST /v1/systemone` with `{model, state, questions}` returning
+  `{model, answers, usage}`. Question identifiers are never sent to the model;
+  meaning lives in instructions and criteria.
+- **Answer types:** `noul` (P(yes)); `choice` with at most 255 options, with
+  probabilities and `confidence = (p_max - 1/n) / (1 - 1/n)`; `score` with 2 to 10
+  levels. Questions are evaluated in parallel against one state.
+- **Calibration and thresholds:** group-level calibration (RLCD); act-above and
+  ask-below thresholds scaled with risk.
+- **Versions:** alias `jev-latest` points to `jev-1.14.0` (2026-10-14);
+  `response.model` names the answering version; pin versioned identifiers after
+  tuning.
+- **Limits and price:** 64k tokens per request, 32k per question; $0.042 per
+  million input tokens.
+- **Documented failure modes:** literal instructions, no counting, arithmetic or
+  dates, weak indirection, large noisy state, adversarial state steering,
+  first-option bias.
+- **Third-party results:** GBrain reranking Recall@1 20.8% to 33.2% on 404
+  queries (it fixes judgment, not recall; a naive delete threshold kept nothing)
+  [design note](https://github.com/garrytan/gbrain/blob/922ba1a9d295d6a0d3bb6154ee40e3e95a964d20/docs/designs/SYSTEM_ONE_JEV_V1.md).
+  SynapsCLI tool-call guard 17 of 18 at about 361 ms mean, with a fail-open host
+  timeout flagged
+  [research note](https://github.com/haseebkhalid1507/synapscli/blob/f2632cef12266e50dfee2a9f72d87ff5465889e6/docs/research/2026-09-20-jev-decision-layer.md).
+
+### Open local replicas (reported, not inspected)
+
+- **Von:** Apache-2.0, 395M ModernBERT.
+- **kev:** Apache-2.0, LoRA plus pointer head on Qwen3.5 0.8B/4B/9B; speaks
+  `/v1/systemone`; 9B 0.822 against Jev 0.857 as reported by its authors.
+- **Rizzo Flow:** Apache-2.0, 4B and 1.7B on llama.cpp.
+- **SemIf (ex-OpenJev):** frozen Qwen3.5-4B logits.
+- **Nimble:** Qwen3.5-9B LoRA.
+- **NanoJev:** MIT, games only.
+- **Strands Decider:** already analyzed above.
+
+### Capability mapping for SPEC-066
+
+| Capability | Laya | Jev | Agent Braid today | SPEC-066 |
+|---|---|---|---|---|
+| Shadow evidence store | none | none | no episodes; telemetry is aggregate-only | Episode contract v0.1, S1.5a |
+| Pinned identity | checkpoint name | versioned ids; alias drifts | `BACKEND_ID` rule fixture, no digest | REQ-007, REQ-203 |
+| Tri-state abstention | `passed/abstained/unevaluated`, per-bucket thresholds | act-above and ask-below by risk | abstention absent | REQ-201 |
+| Declared confidence | entropy and max probability, per-band temperatures | `p_max` based, group calibration | rule score, uncalibrated | REQ-202 |
+| Batched questions | `/v1/systemone/batch` (at most 64), `decide_batch` | parallel questions on one state | one pair at a time | REQ-204 |
+| Option-order invariance | rotation, parallel layout | first-option bias documented | none | REQ-205 |
+| Evaluation gate | `laya-evals` | none | no committed baseline | REQ-206 |
+| Local learned backend | checkpoints under Apache-2.0 | hosted only | none | REQ-301, optional extra |
+| Hosted inference | none | `/v1/systemone`, paid | none | excluded pending owner egress, cost and consent decision |
+
+### Do not adopt
+
+- **Delete or skip by score.** The GBrain note found a naive delete threshold kept
+  nothing; the value was in reranking judgment. A score never removes an item.
+- **Confidence as authority.** Calibrated or not, confidence is a signal; Jev
+  documents adversarial state steering, so output is never a boundary
+  (`executionAuthorization` stays false).
+- **Learned act head.** No head that selects or triggers actions; advice only.
+- **Silent truncation.** `predict_long`-style windowing and over-limit states must
+  refuse or report the truncation, never drop content silently.
+- **Fail-open timeouts** (flagged in SynapsCLI) and floating model aliases.

@@ -743,7 +743,7 @@ class PromptRegressionBoundaryTests(unittest.TestCase):
         self.assertEqual(tooling_telemetry.SCHEMA, "agent-braid-local-telemetry-batch/v1")
         self.assertEqual(tooling_telemetry.OPERATIONS["mcp"],
                          ("analyze-work", "analyze", "prepare", "status", "execute", "recover", "verify", "other"))
-        self.assertEqual(tooling_telemetry.OPERATIONS["cli"], ("analyze", "analyze-git"))
+        self.assertEqual(tooling_telemetry.OPERATIONS["cli"], ("analyze", "analyze-git", "system-one"))
 
     def test_installer_and_host_modules_do_not_reference_the_prompt_registry(self):
         for module in ("tooling_install.py", "tooling_hosts.py", "tooling_assets.py"):

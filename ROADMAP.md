@@ -218,7 +218,7 @@ reproduction recorded. The software is not wired into the CLI and does not adapt
 real feeds; zero real pairs are admitted. T001/#181, T007/#188, T003/#183 and
 T005/#185 remain open, as do parent #180 and milestone 9. A score remains
 heuristic; the deterministic verifier alone supplies bounded exchange
-evidence. No external Laya/Jev service is integrated.
+evidence. No external Laya/Jev service is integrated; Jev is a hosted paid service and stays excluded until a separate owner decision on egress and cost (see the System 1 track below).
 
 ## M4 — Agent Braid runtime
 
@@ -520,10 +520,27 @@ The [System 1 planning program](specs/028-system-one-core/program.md) contains
 SPEC-028–033: typed advisory contracts, prospective evaluation, an own neural
 decision experiment, bounded integration, advanced product capabilities and
 separate promotion/rollback. The [reference analysis](specs/028-system-one-core/reference-analysis.md)
-compares Strands Decider and Laya without integrating either project. Five registered
-S1 milestones and 49 pending tasks complement existing tracks; they do not replace
-SPEC-019 or reopen SPEC-021's M4 utility NO-GO. Architecture, data, budgets and
-per-capability acceptance remain explicit review gates.
+compares Strands Decider and Laya without integrating either project. S1.0–S1.4
+were closed as deferred on 2026-10-31 and their open tasks sit in milestone
+Deferred #24; they do not replace SPEC-019 or reopen SPEC-021's M4 utility NO-GO.
+Architecture, data, budgets and per-capability acceptance remain explicit review gates.
+
+The [2026-11-01 completeness audit](docs/system-one/addenda/completeness-audit-20261101/README.md)
+found the code present on `develop` but without product callers, a learned model
+or observed use. The new track **S1.5** ([SPEC-066](specs/066-system-one-shadow/spec.md),
+[ADR 0034](docs/adr/0034-system-one-shadow-advisory-boundary.md); draft, human review
+pending, milestone to be created) resumes the deferred work in stages:
+
+- **S1.5a** opt-in shadow recording of one episode per `analyze`/`analyze-work`
+  call, with outputs unchanged (the only stage specified to implementation level);
+- **S1.5b** owned corpus and observed-outcome labels;
+- **S1.5c** reference-grade decision contracts without a model;
+- **S1.5d** an optional local learned backend, with Laya, Von and kev as local
+  candidates, compared at a common risk budget;
+- **S1.5e** go/no-go per decision point, with rollback to `off`.
+
+Jev is a hosted paid service and is excluded until a separate owner decision on
+egress and cost. No stage grants execution authority or implies a utility claim.
 
 ## FC.1 — Forecast-guided parallelism experiment
 

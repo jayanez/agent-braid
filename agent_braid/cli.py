@@ -97,6 +97,13 @@ def main(argv: list[str] | None = None) -> int:
     decision_commands.add_parser("capabilities", help="list local immutable reference capabilities")
     decide_parser = decision_commands.add_parser("decide", help="evaluate a bounded local synthetic request")
     decide_parser.add_argument("input", type=Path)
+    report_parser = decision_commands.add_parser("report", help="count retained System One shadow episodes")
+    report_parser.add_argument("--format", choices=("text", "json"), default="text")
+    purge_parser = decision_commands.add_parser("purge", help="delete the local System One shadow store")
+    purge_parser.add_argument("--yes", action="store_true", help="skip the confirmation prompt")
+    decision_parser.add_argument("--telemetry", choices=("off", "local"), default="off", help="explicit local numeric telemetry; default off")
+    for decision_command in decision_commands.choices.values():
+        decision_command.add_argument("--telemetry", choices=("off", "local"), default=argparse.SUPPRESS, help="same as the group option")
     analyze_parser = subparsers.add_parser("analyze", help="analyze AIM 0.2 records")
     analyze_parser.add_argument("input", type=Path)
     analyze_parser.add_argument("--format", choices=("json", "text"), default="json")
@@ -198,8 +205,12 @@ def main(argv: list[str] | None = None) -> int:
         from .ownership_cli import run as run_ownership
         return run_ownership(args)
     if args.command == "system-one":
+        from .tooling_telemetry import observe
         from .system_one_cli import run
-        return run(args)
+        with observe(args.telemetry, "cli", "system-one") as observation:
+            result = run(args)
+            observation.outcome = "ok" if result == 0 else "refused" if result == 2 else "error"
+            return result
     if args.command in {"analyze", "analyze-git"} and args.telemetry == "local":
         from .tooling_telemetry import observe
         with observe("local", "cli", args.command) as observation:

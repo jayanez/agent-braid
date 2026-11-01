@@ -238,11 +238,59 @@
           "sha256": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83"
         }
       ]
+    },
+    {
+      "name": "laya-v0.4.19",
+      "url": "https://github.com/NandhaKishorM/laya",
+      "commit": "55a19f7b7b56787e1a3e41063def9bb9a8737351",
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/NandhaKishorM/laya/blob/55a19f7b7b56787e1a3e41063def9bb9a8737351/LICENSE",
+          "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9"
+        },
+        {
+          "path": "README.md",
+          "url": "https://github.com/NandhaKishorM/laya/blob/55a19f7b7b56787e1a3e41063def9bb9a8737351/README.md",
+          "sha256": "5e28e2ee687ae8de10a11f0c34018406bb05414046aa678504c236bb746b6855"
+        },
+        {
+          "path": "pyproject.toml",
+          "url": "https://github.com/NandhaKishorM/laya/blob/55a19f7b7b56787e1a3e41063def9bb9a8737351/pyproject.toml",
+          "sha256": "35a0978ac150a9b2efada4271c39c9d453aae91fb77c912d0894328c0c8ca05d"
+        }
+      ]
+    },
+    {
+      "name": "gbrain-system-one-jev-design",
+      "url": "https://github.com/garrytan/gbrain",
+      "commit": "922ba1a9d295d6a0d3bb6154ee40e3e95a964d20",
+      "files": [
+        {
+          "path": "docs/designs/SYSTEM_ONE_JEV_V1.md",
+          "url": "https://github.com/garrytan/gbrain/blob/922ba1a9d295d6a0d3bb6154ee40e3e95a964d20/docs/designs/SYSTEM_ONE_JEV_V1.md",
+          "sha256": "a8743b1bffe4d3be8042139330bbe4482a48c83d920eda50993bba51ccbbaefa"
+        }
+      ]
+    },
+    {
+      "name": "synapscli-jev-decision-layer",
+      "url": "https://github.com/haseebkhalid1507/synapscli",
+      "commit": "f2632cef12266e50dfee2a9f72d87ff5465889e6",
+      "files": [
+        {
+          "path": "docs/research/2026-09-20-jev-decision-layer.md",
+          "url": "https://github.com/haseebkhalid1507/synapscli/blob/f2632cef12266e50dfee2a9f72d87ff5465889e6/docs/research/2026-09-20-jev-decision-layer.md",
+          "sha256": "e45d6d072e2dba7261610f3d4e416bb764398275a940ac50c9e4284340bd2678"
+        }
+      ]
     }
   ],
   "webReads": [
     "https://github.com/NandhaKishorM/laya",
-    "https://github.com/strands-labs/strands-decider"
+    "https://github.com/strands-labs/strands-decider",
+    "https://docs.typesafe.ai",
+    "https://typesafe.ai/blog/introducing-system-one-models-and-jev"
   ],
   "tooling": {
     "specKit": "1.0.7",

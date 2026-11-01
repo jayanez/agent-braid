@@ -1,5 +1,7 @@
 # SPEC-033: Tasks
 
+> Note (2026-11-01): SPEC-066 (draft) absorbs the open tasks T002, T003, T004, T006 and T008 (S1.5a/e). See [SPEC-066](../066-system-one-shadow/spec.md). No checkbox below is changed by this note.
+
 Implementation and research acceptance tasks; every checkbox starts pending.
 IDs are stable inside the spec. Cross-spec dependencies use SPEC-nnn/Tnnn.
 No task authorizes parallel agents, paid calls, data collection or live execution.
