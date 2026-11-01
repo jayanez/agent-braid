@@ -43,3 +43,15 @@ documentation be updated as part of it.
 - **Not decided here, still pending:** human review of SPEC-066 (T001); the owner-run
   real-use check (SC-006); scientific, calibration, promotion and activation
   gates; and any `advise` mode.
+
+## Later decisions the same day
+
+The owner reviewed SPEC-066 interactively; the verbatim answers are in the
+[owner review](../../specs/066-system-one-shadow/owner-review-20261101.md).
+
+| # | Scope | Recorded effect |
+|---|---|---|
+| 2 | Native-only System One | Agent Braid builds its own layer-1 decision system. The owner's words: "un sistema de decisión de capa 1 como ellos pero no que que los usemos por debajo"; "quiero un sistema 100% propio". Ruled out: external services (Jev or any other), third-party decision models or backends (Laya, Von, kev and similar) and pretrained encoders. Laya and Jev remain design references only. This supersedes the "excluded until a separate owner decision" wording above. |
+| 3 | ADR 0034 | "Aceptar enmendado": accepted with the native-only amendment. |
+| 4 | Training data | Labels come from real runs and from git-history replay of the registered plugin workspaces. Any other repository needs the owner's express approval. Episode v0.2 adds structural features and per-repo salted hashes; an S1.5d ablation decides whether the hashes stay. |
+| 5 | SC-006 | One week of normal work in shadow mode after merge, with the owner applying the commands; a redacted receipt is committed. |

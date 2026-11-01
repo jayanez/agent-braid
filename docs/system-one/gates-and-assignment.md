@@ -31,7 +31,7 @@ run by workflow under that coordinator. This note does not rewrite the snapshot
 above. Proposed gate coverage, all pending human review:
 
 - Source permission and admitted real groups (SPEC-029 T001): S1.5b, owned population only.
-- Human labels: S1.5b replaces blind two-reviewer labelling for the owned population with observed outcomes plus sampled owner adjudication (REQ-103).
-- Calibration and common evaluation: S1.5c/S1.5d.
+- Human labels: S1.5b replaces blind two-reviewer labelling for the owned population with observed outcomes (real runs and git-history replay) plus sampled owner adjudication (REQ-103).
+- Calibration and common evaluation: S1.5c/S1.5d (native model only; no third-party model, service or encoder, owner direction 2026-11-01).
 - Promotion: S1.5e, per decision point, with an owner go decision.
 - Activation and execution: not addressed; `executionAuthorization` stays false.

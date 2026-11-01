@@ -2,14 +2,18 @@
 """System One shadow observer (SPEC-066 S1.5a); advisory records, never output.
 
 After a successful System 2 analysis the observer derives one structural episode
-(`agent-braid-s1-episode/v0.1`) from the report and appends it to a private local
-store. It never changes a result, never raises into its caller, and records only
-closed-vocabulary values: no resource names, identifiers, digests of input or text.
+(`agent-braid-s1-episode/v0.2`) from the report and the already-validated request,
+and appends it to a private local store. It never changes a result, never raises
+into its caller, and records only closed-vocabulary values, counts and per-repo
+salted 16-hex pseudonyms: no resource names, identifiers, digests of input or text.
+v0.1 lines written by earlier versions stay readable.
 """
 from __future__ import annotations
 
 from collections import Counter
 from datetime import date, timedelta
+import hashlib
+import hmac
 import json
 import os
 from pathlib import Path
@@ -23,7 +27,9 @@ import uuid
 # Shared canonical JSON, UTC day and private no-symlink path rules.
 from .tooling_telemetry import _canonical, _path, today
 
-SCHEMA = 'agent-braid-s1-episode/v0.1'
+SCHEMA = 'agent-braid-s1-episode/v0.2'
+SCHEMA_V01 = 'agent-braid-s1-episode/v0.1'
+SCHEMAS = (SCHEMA_V01, SCHEMA)
 REPORT_SCHEMA = 'agent-braid-s1-report/v0.1'
 DECISION_POINT = 'DP-1'
 # Identity compiled into the shadow module (REQ-007). A different installed backend
@@ -49,6 +55,14 @@ STATUSES = ('answered', 'abstained', 'refused', 'skipped')
 REASONS = ('calibration-absent', 'identity-mismatch', 'budget-exceeded', 'unmapped-reason',
            'store-unavailable', 'internal-error')
 CHOICES = ('likely-independent', 'likely-conflicting', 'undetermined')
+RESOURCE_CLASSES = ('src', 'test', 'docs', 'config', 'lockfile', 'generated', 'other')
+MAX_DEPTH = 16
+MAX_COUNT = 4096
+MAX_HASHES = 32
+SALT_FILE = 'salt.key'
+SALT_BYTES = 32
+SALT_DOMAIN = b'agent-braid-s1-repo\0'
+_OWN_FILES = frozenset({'store.lock', SALT_FILE})
 
 # Exact, versioned mapping of agent_braid/analysis.py `_interaction` reason sentences
 # (rule set exact-resource-footprints-v1). An unmapped sentence is never stored.
@@ -65,6 +79,8 @@ REASON_TABLE = {
 _UUID4 = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$')
 _DAY = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 _HEX64 = re.compile(r'^[0-9a-f]{64}$')
+_HEX16 = re.compile(r'^[0-9a-f]{16}$')
+_URI = re.compile(r'^[A-Za-z][A-Za-z0-9+.-]*://')
 _IDENT = re.compile(r'^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$')
 _FILE = re.compile(r'^episodes-(\d{4}-\d{2}-\d{2})\.jsonl$')
 
@@ -130,6 +146,131 @@ def _system_one_answer() -> dict:
     return dict(answer, status='skipped', reason='internal-error')
 
 
+# --- Structural resource features ---------------------------------------------
+# Deterministic path rules (contract episode-v0.2). Resource strings are used only
+# here, in memory; the episode keeps classes, counts and salted 16-hex pseudonyms.
+
+LOCKFILES = frozenset({'package-lock.json', 'yarn.lock', 'pnpm-lock.yaml', 'poetry.lock', 'uv.lock',
+                       'pipfile.lock', 'cargo.lock', 'go.sum', 'gemfile.lock', 'composer.lock'})
+GENERATED_SEGMENTS = frozenset({'dist', 'build', 'out', 'target', 'node_modules', '__pycache__', 'generated'})
+TEST_SEGMENTS = frozenset({'test', 'tests', '__tests__', 'spec'})
+DOC_EXTENSIONS = frozenset({'.md', '.rst', '.txt', '.adoc'})
+CONFIG_EXTENSIONS = frozenset({'.json', '.yaml', '.yml', '.toml', '.ini', '.cfg', '.conf', '.env'})
+SOURCE_EXTENSIONS = frozenset({'.py', '.js', '.ts', '.tsx', '.jsx', '.go', '.rs', '.java', '.kt', '.c', '.h',
+                               '.cpp', '.cs', '.rb', '.php', '.swift', '.m', '.scala', '.sh'})
+
+
+def _segments(resource: str) -> list[str] | None:
+    """Path segments of a resource, or None for a non-path resource.
+
+    A `scheme://authority/` prefix is removed (so `git://<repo>/a/b.py` is `a/b.py`),
+    then any `?query` or `#fragment`; empty and `.` segments are dropped. A resource
+    whose remaining text has neither `/` nor `.` is not a path.
+    """
+    text = resource
+    match = _URI.match(text)
+    if match:
+        text = text[match.end():].partition('/')[2]
+    text = text.split('?', 1)[0].split('#', 1)[0]
+    if '/' not in text and '.' not in text:
+        return None
+    segments = [segment for segment in text.split('/') if segment not in ('', '.')]
+    return segments or None
+
+
+def classify(resource: str) -> str:
+    """One of RESOURCE_CLASSES by the first matching rule, in contract order."""
+    segments = _segments(resource)
+    if segments is None:
+        return 'other'
+    *directories, name = [segment.lower() for segment in segments]
+    stem, extension = os.path.splitext(name)
+    if name in LOCKFILES:
+        return 'lockfile'
+    if GENERATED_SEGMENTS.intersection(directories) or '.min.' in name or 'generated' in name:
+        return 'generated'
+    if (TEST_SEGMENTS.intersection(directories) or name.startswith('test_') or stem.endswith('_test')
+            or '.test.' in name or '.spec.' in name):
+        return 'test'
+    if extension in DOC_EXTENSIONS or 'docs' in directories:
+        return 'docs'
+    if extension in CONFIG_EXTENSIONS or name.startswith('.'):
+        return 'config'
+    if extension in SOURCE_EXTENSIONS:
+        return 'src'
+    return 'other'
+
+
+def _class_counts(resources) -> dict:
+    counts = Counter(classify(resource) for resource in resources)
+    return {name: min(counts[name], MAX_COUNT) for name in RESOURCE_CLASSES}
+
+
+def _parent(segments: list[str]) -> str:
+    return '/'.join(segments[:-1])
+
+
+def _repo_salt(secret: bytes | None, repository: str | None) -> bytes | None:
+    if secret is None or type(repository) is not str or not repository:
+        return None
+    return hmac.new(secret, SALT_DOMAIN + os.fsencode(repository), hashlib.sha256).digest()
+
+
+def _pseudonym(salt: bytes, resource: str) -> str:
+    return hmac.new(salt, resource.encode('utf-8', 'surrogatepass'), hashlib.sha256).hexdigest()[:16]
+
+
+def _hashes(salt: bytes, resources) -> list[str]:
+    return sorted({_pseudonym(salt, resource) for resource in resources})[:MAX_HASHES]
+
+
+def _aim_kinds(request) -> dict | None:
+    """Per-operation effect kinds from the validated AIM records, or None when unavailable."""
+    if request is None:
+        return None
+    from . import analysis
+    records, _ = analysis._records(request)
+    return {record['instanceId']: sorted({kind for kinds in analysis._effect_map(record).values()
+                                           for kind in kinds}) for record in records}
+
+
+# The Git adapter writes `git://` resources only with kind `write` and
+# `git-unsupported://` resources only with kind `unknown` (git_adapter._record), so the
+# report's resources fix each Git operation's kinds exactly without re-running Git.
+GIT_SCHEME_KINDS = (('git://', 'write'), ('git-unsupported://', 'unknown'))
+
+
+def _git_kinds(resources) -> list[str] | None:
+    kinds = set()
+    for resource in resources:
+        kind = next((k for prefix, k in GIT_SCHEME_KINDS if resource.startswith(prefix)), None)
+        if kind is None:
+            return None
+        kinds.add(kind)
+    return sorted(kinds)
+
+
+def _resource_features(item: dict, sides: dict, kinds: dict | None, salt: bytes | None) -> dict:
+    left, right = sides[item['left']], sides[item['right']]
+    shared = item['sharedResources']
+    split = {resource: _segments(resource) for resource in {*left, *right}}
+    paths = [segments for segments in split.values() if segments is not None]
+    parents = [Counter(_parent(split[r]) for r in side if split[r] is not None) for side in (left, right)]
+    same_parent = sum(count * parents[1][parent] for parent, count in parents[0].items())
+    tops = [{split[r][0] for r in side if split[r] is not None and len(split[r]) > 1} for side in (left, right)]
+    side_kinds = None
+    if kinds is not None and item['left'] in kinds and item['right'] in kinds:
+        side_kinds = {'left': kinds[item['left']], 'right': kinds[item['right']]}
+    return {'effectKinds': side_kinds,
+            'resourceClasses': {'left': _class_counts(left), 'right': _class_counts(right)},
+            'sharedResourceClasses': _class_counts(shared),
+            'maxDepth': min(max((len(segments) for segments in paths), default=0), MAX_DEPTH),
+            'sameParentDirCount': min(same_parent, MAX_COUNT),
+            'topDirOverlap': bool(tops[0] & tops[1]),
+            'resourceHashes': None if salt is None else {
+                'left': _hashes(salt, left), 'right': _hashes(salt, right), 'shared': _hashes(salt, shared)}}
+
+
 # --- Episode construction -----------------------------------------------------
 
 def _count(value, low, high) -> int:
@@ -158,17 +299,19 @@ def _pair(item: dict) -> dict | None:
             'reasonCodes': sorted(codes),
             'constraints': sorted(set(constraints)),
             'coverage': sorted(set(coverage)),
-            'sharedResourceCount': min(len(item['sharedResources']), 4096),
-            # The report's operations carry resources and coverage but no effect kinds,
-            # so per-side kinds are not derivable from it: recorded as null (contract).
+            'sharedResourceCount': min(len(item['sharedResources']), MAX_COUNT),
             'effectKinds': None,
             'dependency': 'dependency-order' in codes,
             'observedOutcome': None}
 
 
-def build_episode(report: dict, operation: str, kind: str, *, clock=None, started=None) -> dict:
-    """Derive one contract-conformant episode from a System 2 report (never stores input).
+def build_episode(report: dict, operation: str, kind: str, *, request=None, salt: bytes | None = None,
+                  clock=None, started=None) -> dict:
+    """Derive one contract-conformant v0.2 episode (never stores input).
 
+    `request` is the already-validated analysis request (AIM records give per-side
+    effect kinds; Git kinds come from the report's adapter resources). `salt` is the
+    per-repo key for resource pseudonyms; without it `resourceHashes` is null.
     `started` lets the caller count work done before this call (artifact decoding)
     against the same 50 ms budget.
     """
@@ -192,13 +335,21 @@ def build_episode(report: dict, operation: str, kind: str, *, clock=None, starte
         pairs.append(pair)
     else:
         mapped = True
+    if pairs:
+        pairs = pairs[:MAX_PAIRS]
+        sides = {entry['instanceId']: entry['resources'] for entry in report['operations']}
+        kinds = (_aim_kinds(request) if kind == 'aim'
+                 else {name: _git_kinds(resources) for name, resources in sides.items()})
+        if kinds is not None:
+            kinds = {name: value for name, value in kinds.items() if value is not None}
+        for pair, item in zip(pairs, interactions):
+            pair.update(_resource_features(item, sides, kinds, salt))
     system_one_started = clock()
     answer = _system_one_answer()
     elapsed_micros = max(0, (clock() - system_one_started) // 1000)
     status, reason = answer['status'], answer['reason']
     if not mapped:
         status, reason = 'skipped', 'unmapped-reason'
-    pairs = pairs[:MAX_PAIRS]
     if clock() - started > BUDGET_NANOSECONDS and status != 'refused':
         status, reason = 'skipped', 'budget-exceeded'
     return {'schemaVersion': SCHEMA,
@@ -236,13 +387,49 @@ def _strings(value, allowed) -> bool:
             and value == sorted(set(value)))
 
 
+V01_PAIR_FIELDS = frozenset({'system2', 'system2Determinate', 'reasonCodes', 'constraints', 'coverage',
+                             'sharedResourceCount', 'effectKinds', 'dependency', 'observedOutcome'})
+V02_PAIR_FIELDS = V01_PAIR_FIELDS | {'resourceClasses', 'sharedResourceClasses', 'maxDepth',
+                                     'sameParentDirCount', 'topDirOverlap', 'resourceHashes'}
+
+
+def _classes(value) -> bool:
+    return (type(value) is dict and set(value) == set(RESOURCE_CLASSES)
+            and all(_int(count, 0, MAX_COUNT) for count in value.values()))
+
+
+def _hash_list(value) -> bool:
+    return (type(value) is list and len(value) <= MAX_HASHES and value == sorted(set(value))
+            and all(type(h) is str and _HEX16.fullmatch(h) for h in value))
+
+
+def _validate_v02_pair(pair: dict) -> None:
+    sides = pair['resourceClasses']
+    _need(type(sides) is dict and set(sides) == {'left', 'right'} and all(map(_classes, sides.values())))
+    shared = pair['sharedResourceClasses']
+    _need(_classes(shared))
+    total, count = sum(shared.values()), pair['sharedResourceCount']
+    _need(total == count if count < MAX_COUNT else total >= MAX_COUNT)
+    _need(_int(pair['maxDepth'], 0, MAX_DEPTH) and _int(pair['sameParentDirCount'], 0, MAX_COUNT))
+    _need(type(pair['topDirOverlap']) is bool)
+    hashes = pair['resourceHashes']
+    _need(hashes is None or (type(hashes) is dict and set(hashes) == {'left', 'right', 'shared'}
+                             and all(map(_hash_list, hashes.values()))))
+
+
 def validate_episode(value) -> dict:
-    """Enforce the v0.1 contract, including the never-present rule for free strings."""
+    """Enforce the v0.2 (or legacy v0.1) contract, including the never-present rule.
+
+    The only free strings allowed are episodeId, day, backendId, manifestDigest and,
+    in v0.2, the 16-hex resource pseudonyms.
+    """
     _need(type(value) is dict and set(value) == {
         'schemaVersion', 'episodeId', 'day', 'surface', 'operation', 'analysisKind', 'analyzer',
         'operationCount', 'pairCount', 'classificationCounts', 'pairsRecorded', 'pairs', 'systemOne',
         'executionAuthorization'})
-    _need(value['schemaVersion'] == SCHEMA and value['surface'] == 'mcp')
+    _need(type(value['schemaVersion']) is str and value['schemaVersion'] in SCHEMAS)
+    _need(value['surface'] == 'mcp')
+    pair_fields = V02_PAIR_FIELDS if value['schemaVersion'] == SCHEMA else V01_PAIR_FIELDS
     _need(type(value['episodeId']) is str and _UUID4.fullmatch(value['episodeId']))
     _need(type(value['day']) is str and _DAY.fullmatch(value['day']))
     try:
@@ -262,9 +449,7 @@ def validate_episode(value) -> dict:
     pairs = value['pairs']
     _need(type(pairs) is list and len(pairs) == value['pairsRecorded'] <= value['pairCount'])
     for pair in pairs:
-        _need(type(pair) is dict and set(pair) == {
-            'system2', 'system2Determinate', 'reasonCodes', 'constraints', 'coverage',
-            'sharedResourceCount', 'effectKinds', 'dependency', 'observedOutcome'})
+        _need(type(pair) is dict and set(pair) == pair_fields)
         _need(type(pair['system2']) is str and pair['system2'] in CLASSIFICATIONS)
         _need(type(pair['system2Determinate']) is bool
               and pair['system2Determinate'] == (pair['system2'] != 'unknown'))
@@ -274,6 +459,8 @@ def validate_episode(value) -> dict:
         _need(kinds is None or (type(kinds) is dict and set(kinds) == {'left', 'right'}
               and all(_strings(side, EFFECT_KINDS) for side in kinds.values())))
         _need(type(pair['dependency']) is bool and pair['observedOutcome'] is None)
+        if pair_fields is V02_PAIR_FIELDS:
+            _validate_v02_pair(pair)
     one = value['systemOne']
     _need(type(one) is dict and set(one) == {
         'status', 'reason', 'backendId', 'manifestDigest', 'decisionPoint', 'answers', 'elapsedMicros'})
@@ -309,10 +496,10 @@ def _store_root(*, create: bool) -> Path | None:
 
 
 def _listing(root: Path) -> tuple[list[Path], list[Path]]:
-    """Day files and unrelated entries; the lock is the store's own and listed in neither."""
+    """Day files and unrelated entries; the lock and salt are the store's own and listed in neither."""
     days, others = [], []
     for entry in sorted(root.iterdir()):
-        if entry.name != 'store.lock':
+        if entry.name not in _OWN_FILES:
             (days if _FILE.fullmatch(entry.name) else others).append(entry)
     return days, others
 
@@ -386,10 +573,52 @@ def append(episode: dict) -> None:
         raise StoreRefused('unavailable') from exc
 
 
-def observe(operation: str, kind: str, source) -> None:
+def _read_secret(path: Path) -> bytes:
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    try:
+        info = os.fstat(descriptor)
+        _need(stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and not info.st_mode & 0o077
+              and info.st_uid == os.getuid() and info.st_size == SALT_BYTES, 'unsafe System One salt')
+        secret = os.read(descriptor, SALT_BYTES + 1)
+    finally:
+        os.close(descriptor)
+    _need(len(secret) == SALT_BYTES, 'unsafe System One salt')
+    return secret
+
+
+def _secret() -> bytes | None:
+    """The store's 32-byte local secret, created on first use; None when unavailable.
+
+    Never returned outside this module, logged or written anywhere but `salt.key`.
+    """
+    try:
+        _need(hasattr(os, 'O_NOFOLLOW'), 'secure store opening is unsupported')
+        root = _store_root(create=True)
+        with _Lock(root):
+            path = _safe(root / SALT_FILE)
+            try:
+                descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+            except FileExistsError:
+                return _read_secret(path)
+            try:
+                secret = os.urandom(SALT_BYTES)
+                _need(os.write(descriptor, secret) == SALT_BYTES, 'short write')
+            except BaseException:
+                os.close(descriptor)
+                path.unlink()
+                raise
+            os.close(descriptor)
+            return _read_secret(path)
+    except (OSError, ValueError, ImportError):
+        return None
+
+
+def observe(operation: str, kind: str, source, request=None, repository: str | None = None) -> None:
     """Record one episode for a successful analysis; never raises, never alters the report.
 
-    `source` is the report dict, or the encoded evidence artifact that holds it.
+    `source` is the report dict, or the encoded evidence artifact that holds it;
+    `request` is the validated request (read only); `repository` is the configured
+    source root, used only to derive the per-repo salt and never stored.
     """
     started = time.monotonic_ns()  # the 50 ms budget covers decoding as well as building
     try:
@@ -398,7 +627,8 @@ def observe(operation: str, kind: str, source) -> None:
             source = source.get('report') if type(source) is dict else None
             if type(source) is not dict:
                 return
-        append(build_episode(source, operation, kind, started=started))
+        salt = _repo_salt(_secret(), repository) if repository else None
+        append(build_episode(source, operation, kind, request=request, salt=salt, started=started))
     except StoreRefused as exc:
         _note_refusal(str(exc))
     except Exception:
@@ -423,8 +653,12 @@ def _work() -> None:
             _jobs.task_done()
 
 
-def submit(operation: str, kind: str, source) -> None:
-    """Hand a final report (dict) or its evidence artifact (bytes) to the worker; never blocks or raises."""
+def submit(operation: str, kind: str, source, request=None, repository: str | None = None) -> None:
+    """Hand a final report (dict) or its evidence artifact (bytes) to the worker; never blocks or raises.
+
+    `request` and `repository` are passed by reference only; all work on them happens
+    on the worker thread.
+    """
     global _worker
     try:
         if type(source) is bytes and len(source) > MAX_REPORT_BYTES:
@@ -434,7 +668,7 @@ def submit(operation: str, kind: str, source) -> None:
             if _worker is None or not _worker.is_alive():
                 _worker = threading.Thread(target=_work, name='system-one-shadow', daemon=True)
                 _worker.start()
-        _jobs.put_nowait((operation, kind, source))
+        _jobs.put_nowait((operation, kind, source, request, repository))
     except queue.Full:
         _note_refusal('busy')
     except Exception:
@@ -463,7 +697,7 @@ def store_present() -> bool:
 # --- Report and purge -----------------------------------------------------------
 
 REPORT_LIMITS = [
-    'Counts only; episode bodies are never printed.',
+    'Counts only; episode bodies and resource pseudonyms are never printed.',
     'DP-1 pairs only; no observed outcome is joined in S1.5a, so no accuracy or utility is measured.',
     'Thirty UTC dates retained on access; inactive files are not maintained by a daemon.',
     'Episodes skipped before storage (refused store, internal errors) are known only in this process.',
@@ -501,18 +735,19 @@ def report() -> dict:
                 continue
             bucket = days.setdefault(day, {'day': day, 'episodes': 0, 'operations': Counter(),
                                            'system2': Counter(), 'systemOne': Counter(),
-                                           'allPairs': Counter()})
+                                           'allPairs': Counter(), 'schemas': Counter()})
             bucket['episodes'] += 1
+            bucket['schemas'][episode['schemaVersion']] += 1
             bucket['operations'][episode['operation']] += 1
             bucket['systemOne'][episode['systemOne']['status']] += 1
             bucket['system2'].update(pair['system2'] for pair in episode['pairs'])
             bucket['allPairs'].update({name: count for name, count in episode['classificationCounts'].items()
                                        if count})
     totals = {'episodes': 0, 'operations': Counter(), 'system2': Counter(),
-              'systemOne': Counter(), 'allPairs': Counter()}
+              'systemOne': Counter(), 'allPairs': Counter(), 'schemas': Counter()}
     for bucket in days.values():
         totals['episodes'] += bucket['episodes']
-        for name in ('operations', 'system2', 'systemOne', 'allPairs'):
+        for name in ('operations', 'system2', 'systemOne', 'allPairs', 'schemas'):
             totals[name].update(bucket[name])
     recorded = sum(totals['system2'].values())
     analysed = sum(totals['allPairs'].values())
@@ -550,7 +785,7 @@ def render_report(value: dict) -> str:
 
 
 def purge() -> dict:
-    """Delete the store's lock and day files, then the directory when nothing else is in it."""
+    """Delete the store's day files, salt and lock, then the directory when nothing else is in it."""
     root = _store_root(create=False)
     if root is None:
         return {'status': 'empty', 'externalCopies': 'not-removed'}
@@ -559,10 +794,14 @@ def purge() -> dict:
             days, others = _listing(root)
             for entry in days:
                 _safe(entry).unlink()
+            salt = root / SALT_FILE
+            salted = salt.is_symlink() or salt.exists()
+            if salted:
+                salt.unlink()  # unlink never follows a link, so a planted link is removed, not its target
             lock.path.unlink()
     except OSError:
         raise StoreRefused('unavailable') from None
-    result = {'status': 'purged', 'filesRemoved': len(days) + 1, 'externalCopies': 'not-removed'}
+    result = {'status': 'purged', 'filesRemoved': len(days) + 1 + salted, 'externalCopies': 'not-removed'}
     if others:
         result['leftover'] = [entry.name for entry in others]
     else:

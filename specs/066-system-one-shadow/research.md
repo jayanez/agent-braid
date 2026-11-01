@@ -29,7 +29,7 @@ an observed outcome of the owner's own work.
 | Fact | Source | Use |
 |---|---|---|
 | Pair classification (`independent-candidate`, `ordered`, `conflicting`, `unknown`), `sharedResources`, `reasons`, `constraints`, `evidence.coverage`, `evidence.ruleSet`; report `analyzer` and `summary` | `agent_braid/analysis.py` (`analyze`, `_interaction`) | episode pair fields and the reason table |
-| The report lists per-operation resources but not effect kinds; kinds exist only in the request records (declared, inferred, observed channels) | `agent_braid/analysis.py` (`analyze`, `_effect_map`) | `effectKinds` is `null` in S1.5a; request-derived kinds are a possible S1.5b addition |
+| The report lists per-operation resources but not effect kinds; kinds exist only in the request records (declared, inferred, observed channels) | `agent_braid/analysis.py` (`analyze`, `_effect_map`) | `effectKinds` is `null` in v0.1; request-derived kinds ship in episode v0.2 (T022) |
 | Large results come back as an `evidence-artifact-reference`, and a Git replay `analyze` result has no interaction report | `agent_braid/tooling_mcp.py` (`_envelope`, `invoke`) | the observer resolves the retained artifact and treats a report-less result as a no-op |
 | The MCP adapter admits at most 32 operations, so at most 496 pairs per call | `agent_braid/tooling_mcp.py` (`MAX_OPERATIONS`, `_validate_operation_bounds`) | the 64-pair cap bites from 12 operations (66 pairs) |
 | `ToolingService.invoke` builds the envelope and, under telemetry, reads `result.get("report", result)` for `analyze` and `analyze-work` | `agent_braid/tooling_mcp.py` | wiring point and report access |
@@ -42,7 +42,13 @@ an observed outcome of the owner's own work.
 | Real-use sources and receipt rules | `docs/development/REAL_USE_EVIDENCE.md` | SC-006 |
 | Tracking is per spec, not per task: `github-tracking.json` assigns one milestone to each spec | `docs/development/github-tracking.json`, `scripts/sync_github_tracking.py` | T003 task-level override |
 
-## Laya and Jev: what is adopted and why
+## Laya and Jev: design references only
+
+Owner direction (2026-11-01, binding): Agent Braid builds its own, fully native layer-1
+decision system. Laya and Jev are design references only: their ideas are re-implemented
+by us, and nothing from them is used underneath (no service, no model, no backend, no
+pretrained encoder, no weights). The table below lists which ideas are re-implemented
+natively and why; "Adopt" means the idea, never the code or the model.
 
 Survey: [reference analysis, 2026-11-01 update](../028-system-one-core/reference-analysis.md).
 Boundary: [ADR 0034](../../docs/adr/0034-system-one-shadow-advisory-boundary.md).
@@ -56,15 +62,15 @@ Boundary: [ADR 0034](../../docs/adr/0034-system-one-shadow-advisory-boundary.md)
 | Batched questions over one state, bounded batches of states | Jev, Laya | Adopt in S1.5c with per-question isolation | REQ-204 |
 | Option-order rotation and equivariance reporting | Laya | Adopt in S1.5c; first-option bias is a documented Jev failure mode | REQ-205 |
 | CI evaluation gate with a committed baseline | Laya (`laya-evals`) | Adopt in S1.5c | REQ-206 |
-| Local checkpoints under Apache-2.0 (Laya, Von and other replicas) | Laya, Von | Candidates for an optional extra, compared with rules and the SPEC-019 linear model | REQ-301 |
-| Hosted inference | Jev | Excluded: the state leaves the machine and billing is per token; revisit only after an owner decision on egress, cost and consent | none |
+| Local checkpoints under Apache-2.0 (Laya, Von and other replicas) | Laya, Von | Not adopted: no third-party model, backend or pretrained encoder, ever. Replaced by a native stdlib model (calibrated logistic regression or boosted trees) trained on the owner's own work and compared with rules and the SPEC-019 linear model | REQ-301 |
+| Hosted inference | Jev | Excluded permanently: the state leaves the machine and billing is per token; no external service of any kind (owner direction 2026-11-01) | none |
 | Delete or skip by score | design notes on Jev use | Not adopted: a score never removes an item | ADR 0034 item 5 |
 | Learned act/defer head | Laya | Not adopted: its reported signal was weak | ADR 0034 item 7 |
 | Silent truncation, fail-open timeouts, floating aliases | Laya `predict_long`, SynapsCLI note | Not adopted: refuse or report | ADR 0034 |
 
 Upstream numbers (for example Laya refit ECE 0.466 to 0.081, zero-shot accuracy 0.362
 against a 0.461 majority baseline) are why S1.5d fits and calibrates on the owned
-corpus instead of trusting shipped confidence. They are not Agent Braid results.
+corpus instead of trusting any shipped confidence; no pretrained checkpoint is used. They are not Agent Braid results.
 
 ## Notes on the specification and contract
 
@@ -74,7 +80,8 @@ contract were updated on 2026-11-01; the owner still confirms the whole at T001.
 1. **Effect kinds are not in the report.** The report lists resources only, so the
    episode records `effectKinds` as `null` for both kinds. *Resolved in spec/contract
    (2026-11-01):* the contract makes `effectKinds` always `null` in v0.1 and reserves the
-   shape; reading kinds from the request records stays a possible S1.5b addition.
+   shape. The owner then decided (R11, R12) that episode v0.2 ships with S1.5a and
+   reads per-side kinds from the request records (T022).
 2. **Dropped pairs bias the DP-1 share.** Pairs beyond 64 are dropped in report order,
    so a share over recorded pairs would be biased. *Resolved in spec/contract
    (2026-11-01):* the episode carries `classificationCounts` from the report summary, and

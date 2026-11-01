@@ -5,7 +5,7 @@ environment, expected and actual outcome, negative controls and limits. The
 automated procedures run as the named tests in `tests/test_system_one_shadow.py`;
 their candidate-bound records are added when the candidate is frozen. The
 owner-run real-use check stays separate from automated checks. Procedures 001–009
-map to SC-001–SC-009.
+map to SC-001–SC-009; procedure_010 covers the episode v0.2 features and hashes (REQ-003, T022).
 
 | Procedure | Covers | Kind |
 |---|---|---|
@@ -18,6 +18,7 @@ map to SC-001–SC-009.
 | procedure_007 | REQ-006 / SC-007 | automated |
 | procedure_008 | REQ-007 / SC-008 | automated |
 | procedure_009 | REQ-008 / SC-009 | automated |
+| procedure_010 | REQ-003 (v0.2) / SC-002 | automated |
 
 ## procedure_001
 
@@ -164,3 +165,32 @@ boolean, no call creates the directory or file, and the output contains no episo
 content or counter. Negative control: a status call against a store holding a
 hostile-text episode prints none of it.
 Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k test_plugin_status_reports_configured_and_active_mode_after_reconnect`.
+
+## procedure_010
+
+Episode v0.2 features and salted hashes (contract
+[episode-v0.2.md](contracts/episode-v0.2.md); task T022). Validate v0.2 episodes built
+from owned fixtures with the v0.2 validator, and assert v0.1 episodes still validate
+and are counted by the report.
+- Structural features: fixtures covering each resource class (src, test, docs,
+  config, lockfile, generated), several path depths, equal and disjoint directory
+  overlap, and per-side effect kinds taken from the request. Assert the values equal
+  the seeded expectations and lie in the closed vocabularies of the contract.
+- No raw names: seed resource names, paths, repository names and prompts with
+  distinctive sentinel values, build and serialize the episode, and assert no sentinel
+  appears anywhere in the bytes, including the hash field. The hash field holds only
+  salted digests in the contract's fixed encoding.
+- Salt handling: the per-repo salt never appears in any episode, report or
+  `plugin-status` output; the same resource hashes equally within a repository and
+  differently across two repositories and across two salts; two fixtures differing in
+  one character hash differently.
+- Purge: `system-one purge --yes` removes the episode files, the lock and the salt
+  store; after purge a new salt is generated, so old and new hashes do not match. An
+  unknown file in the directory is left in place with a message, as in procedure_004.
+- Ablation readiness: the hash field is separable (an episode with the field removed
+  still validates), so the S1.5d ablation can run with and without it.
+Negative controls: an episode with a raw path in the hash field, a hash of the wrong
+length or alphabet, an unknown resource class, an extra string field, and a hash field
+present in a v0.1 episode are each refused with a stable reason. A store whose salt
+file has group-readable mode is refused with the path rules of procedure_003.
+Command: to be set when T022 lands; the tests live in `tests/test_system_one_shadow.py`.

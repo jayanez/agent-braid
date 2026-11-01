@@ -234,7 +234,10 @@ own versioned source/evidence; proposed gains are hypotheses only.
 
 ## 2026-11-01 update
 
-Status: source survey for SPEC-066 and ADR 0034. Nothing below was run, downloaded
+Status: source survey for SPEC-066 and ADR 0034, kept as **reference and
+landscape only**. Not adopted: any third-party model, backend, service or
+pretrained encoder (owner direction 2026-11-01). Laya and Jev are design
+references; Agent Braid re-implements the useful ideas natively. Nothing below was run, downloaded
 or reproduced here. Every number is **upstream-reported** (project READMEs,
 documentation, blog posts and third-party design notes), not reproduced by Agent
 Braid. Only the Laya release tag, its commit and the Laya, GBrain and SynapsCLI
@@ -297,7 +300,7 @@ Documentation: <https://docs.typesafe.ai>; announcement:
   timeout flagged
   [research note](https://github.com/haseebkhalid1507/synapscli/blob/f2632cef12266e50dfee2a9f72d87ff5465889e6/docs/research/2026-09-20-jev-decision-layer.md).
 
-### Open local replicas (reported, not inspected)
+### Open local replicas (reported, not inspected; landscape only, none adopted)
 
 - **Von:** Apache-2.0, 395M ModernBERT.
 - **kev:** Apache-2.0, LoRA plus pointer head on Qwen3.5 0.8B/4B/9B; speaks
@@ -308,7 +311,11 @@ Documentation: <https://docs.typesafe.ai>; announcement:
 - **NanoJev:** MIT, games only.
 - **Strands Decider:** already analyzed above.
 
-### Capability mapping for SPEC-066
+### Capability mapping for SPEC-066 (reference mapping; ideas are re-implemented natively)
+
+The Laya and Jev columns describe upstream behavior as design references. The
+SPEC-066 column is always a native Agent Braid requirement, never a use of the
+upstream project.
 
 | Capability | Laya | Jev | Agent Braid today | SPEC-066 |
 |---|---|---|---|---|
@@ -319,8 +326,8 @@ Documentation: <https://docs.typesafe.ai>; announcement:
 | Batched questions | `/v1/systemone/batch` (at most 64), `decide_batch` | parallel questions on one state | one pair at a time | REQ-204 |
 | Option-order invariance | rotation, parallel layout | first-option bias documented | none | REQ-205 |
 | Evaluation gate | `laya-evals` | none | no committed baseline | REQ-206 |
-| Local learned backend | checkpoints under Apache-2.0 | hosted only | none | REQ-301, optional extra |
-| Hosted inference | none | `/v1/systemone`, paid | none | excluded pending owner egress, cost and consent decision |
+| Learned model | checkpoints under Apache-2.0 (not used) | hosted only (not used) | none | REQ-301, native stdlib model trained on the owner's own work |
+| Hosted inference | none | `/v1/systemone`, paid | none | excluded permanently (owner direction 2026-11-01) |
 
 ### Do not adopt
 
@@ -333,3 +340,12 @@ Documentation: <https://docs.typesafe.ai>; announcement:
 - **Silent truncation.** `predict_long`-style windowing and over-limit states must
   refuse or report the truncation, never drop content silently.
 - **Fail-open timeouts** (flagged in SynapsCLI) and floating model aliases.
+
+### Not adopted
+
+Not adopted: any third-party model, backend, service or pretrained encoder (owner
+direction 2026-11-01). This covers Jev/TypeSafe or any hosted service; Laya, Von,
+kev, Rizzo Flow, SemIf, Nimble, NanoJev and Strands Decider as local backends; and
+generic pretrained encoders (ModernBERT, mmBERT, Qwen and the like). The
+upstream numbers above are upstream-reported context only and carry no claim
+about Agent Braid's own model.

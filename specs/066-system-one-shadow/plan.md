@@ -55,7 +55,7 @@ is deferred until S1.5b adds the outcome join, which needs a second file kind.
 | 0 | Hypotheses, analogy and evidence separated | H-S1 is a registered hypothesis; S1.5a produces only descriptive usage counts and tests nothing |
 | 6 | Interaction properties drive scheduling | System One never reorders, filters or schedules in S1.5a; `unknown` stays `unknown` and serialized |
 | 13 | Compatibility class on every analysis result; confidence is not a guarantee | the episode copies the System 2 class only as a closed vocabulary; the backend answer is `abstained` and carries no confidence |
-| 17 | Yang–Baxter claim levels | not applicable: no Yang–Baxter claim is made. Claim labels follow [claim discipline](../../docs/theory/CLAIM_DISCIPLINE.md): engineering and hypothesis (H-S1); ADR 0034 records design inspiration for the upstream capabilities |
+| 17 | Yang–Baxter claim levels | not applicable: no Yang–Baxter claim is made. Claim labels follow [claim discipline](../../docs/theory/CLAIM_DISCIPLINE.md): engineering and hypothesis (H-S1); ADR 0034 records Laya and Jev as design references only (no third-party model or service) |
 | 18 | Analogy is a hypothesis generator | no neuroscience or "System 1" claim; the name denotes a fast bounded decision path |
 | 20 | Analysis and execution separate | `executionAuthorization` is the constant `false` in the episode and in the report; no execution path is added |
 | 21, 22 | Practical value; mathematics not ornamental | the DP-1 opportunity share is the only utility figure; no accuracy or speed claim |
@@ -82,8 +82,10 @@ Alternatives rejected:
 
 - Store episodes inside the SPEC-047 SQLite telemetry store: breaks its aggregate-only
   boundary (ADR 0034 item 3).
-- Run the shadow in a background thread: the work is lost at process exit and adds a
-  race with the byte-parity test. A bounded synchronous call is simpler to prove.
+- Run the shadow as a bounded synchronous call: superseded by owner decision OD-4
+  (2026-11-01), which confirms a background single-slot worker that never blocks the
+  caller. The race with the byte-parity test is handled by the worker having no
+  access to the envelope (it receives a copy of the report only).
 - Call `DecisionRuntime.evaluate` per pair: the reference backend only looks up
   hand-written `ruleAnswers` and cannot answer real pairs; the strict policy abstains
   without calibration anyway. The observer records the pinned identity and the
@@ -103,7 +105,7 @@ Alternatives rejected:
    accepted alone, like `--telemetry`. An older plugin build refuses a registry that
    carries `systemOne`, the same fail-closed behaviour the v0.2 migration notes; the
    setup preview says so.
-2. **Wiring.** `ToolingService.invoke` keeps its telemetry branch, then, when
+2. **Wiring.** Per OD-4 the observer hands the finished report to one background worker with a single-slot queue and never waits (a busy worker drops and counts the report). `ToolingService.invoke` keeps its telemetry branch, then, when
    `config.system_one == "shadow"`, calls `shadow.observe(...)` with the finished
    envelope, the call name, the arguments and the config. The envelope object is
    returned unchanged. The call sits after the telemetry context closes, so the
@@ -136,6 +138,10 @@ Alternatives rejected:
      channels, as `analysis._effect_map` does) is deferred to S1.5b, and only if the
      DP-1 analysis shows the feature is needed; it would touch caller input and so
      needs its own privacy test.
+     Owner decision R11/R12 (2026-11-01) supersedes the deferral: episode v0.2
+     ([contract](contracts/episode-v0.2.md)) ships with S1.5a and adds per-side effect
+     kinds from the request, resource classes, path depth, directory overlap and a
+     separate per-repo salted hash field (task T022, REQ-003). v0.1 stays readable.
    - `classificationCounts` are copied from the report summary and sum to `pairCount`, so
      shares cover the pairs beyond the 64-pair cap.
    - `observedOutcome` is the constant `null`.
@@ -261,16 +267,19 @@ bounded, private, structural-only and purgeable.
 None of these starts before the S1.5a checkpoint (T031) and an owner review of the
 stage's own plan.
 
-**S1.5b — owned corpus.** An owner consent record admits the owner's episodes and the
-SPEC-047/053/059 real-use sources (REQ-101), reusing the SPEC-051 pure validator
-(ADR 0026). A separate outcome observer writes a joined record keyed by a random
-join key, not by any input digest, from three signals: a runtime conflict, a merge
-conflict and a verify result (REQ-102). The label rubric is amended so observed
-outcomes are primary and an owner-adjudicated random sample measures label noise
-(REQ-103). Feasibility gate: the number of labelled DP-1 pairs, by class, is shown
-before any fit. If the yield is too low the track stays in shadow collection; the
-population is not widened after labels are seen. It absorbs SPEC-029 T001–T003
-and T008.
+**S1.5b — owned corpus.** An owner consent record admits the owner's own work as the only
+training population (REQ-101), reusing the SPEC-051 pure validator (ADR 0026), restricted to
+plugin-registered workspaces; any future repository needs the owner's express approval. A
+separate outcome observer writes a joined record keyed by a random join key, not by any
+input digest, from real-run signals: a runtime conflict, a merge conflict, a verify result
+and the SPEC-059 ledger and SPEC-053 transcripts (REQ-102). A second label source is
+git-history replay (REQ-104): pairs of real branches or commits of the registered
+workspaces, the observed conflict from `git merge-tree`, reusing the SPEC-012 replay
+planner. The label rubric is amended so observed outcomes are primary and an
+owner-adjudicated random sample measures label noise (REQ-103). Feasibility gate: the
+number of labelled DP-1 pairs, by class and by source, is shown before any fit. If the
+yield is too low the track stays in shadow collection; the population is not widened
+after labels are seen. It absorbs SPEC-029 T001–T003 and T008.
 
 **S1.5c — reference-grade contracts.** Tri-state abstention with an echoed
 threshold and per-bucket, risk-scaled thresholds fitted on a split disjoint from
@@ -278,15 +287,23 @@ evaluation (REQ-201); two named signals, normalized entropy and maximum probabil
 (REQ-202); drift demotion to `off` (REQ-203); batched questions over one state with
 per-question isolation (REQ-204); option-order invariance by rotation with flip
 reporting (REQ-205); a CI evaluation gate with a committed baseline (REQ-206). It
-absorbs SPEC-029 T004 and T006 and SPEC-033 T004.
+absorbs SPEC-029 T004 and T006 and SPEC-033 T004. These are native re-implementations
+of ideas from the Laya and Jev design references.
 
-**S1.5d — local learned backend.** An optional extra `agent-braid[s1-local]`, never
-imported by the core, loaded only from a pinned path with a verified digest and no
-automatic download, fitted and calibrated on the S1.5b corpus (REQ-301). Compared
-with the rule backend and the SPEC-019 linear model at a common risk budget, with the
-cost boundary stated up front. A candidate needs its own ADR for dependency and
-licence. A NO-GO verdict on H-S1 is a valid and recorded outcome. It absorbs SPEC-029
-T005, T007 and T009 and SPEC-031 T008.
+**S1.5d — native learned model.** A native stdlib model module inside `agent_braid`
+(`dependencies = []` in `pyproject.toml`; no numpy, no extra): calibrated logistic
+regression or boosted trees over the structural features of episode v0.2
+([contract](contracts/episode-v0.2.md)), with our own architecture, training and weights,
+trained only on the S1.5b corpus (REQ-301). Temperature or isotonic calibration and
+abstention thresholds are fitted on a separate calibration split. An ablation runs with
+and without the per-repo salted resource hashes and keeps them only if they measurably
+improve precision without degrading calibration. The model is compared with the rule
+backend and the SPEC-019 linear model at a common risk budget, with the cost boundary
+stated up front. No third-party model, backend, service or pretrained encoder is used
+(owner direction 2026-11-01), so no dependency or licence ADR is needed. A NO-GO
+verdict on H-S1 is a valid and recorded outcome. It absorbs SPEC-029 T005 and T007,
+and SPEC-031 T008; SPEC-029 T009 and SPEC-030 T009/T013 (Laya reuse/comparison) are
+superseded by the native-only direction.
 
 **S1.5e — go/no-go.** Per decision point, an owner decision on recorded shadow
 evidence moves `shadow` to `advise`, with an immutable promotion registry and an
@@ -295,16 +312,20 @@ atomic rollback to `off` (REQ-401). It absorbs SPEC-033 T002, T003, T006 and T00
 
 ## Human review and unresolved decisions
 
-| ID | Decision | Recommendation | Owner |
-|---|---|---|---|
-| OD-1 | Accept SPEC-066, this plan and the episode contract (T001) | Accept; the spec notes in [research.md](research.md) are resolved in the spec and contract or still open as marked there | Owner |
-| OD-2 | Reuse the telemetry path checker versus copying it | Reuse with a parity test; extract a shared helper later if a third store appears | Owner |
-| OD-3 | Report JSON shape and `plugin-status.systemOne.store` representation | Adopt the shapes in design items 9 and 11 | Owner |
-| OD-4 | Synchronous shadow call versus a background thread | Synchronous, bounded; state the filesystem-stall limit | Owner |
-| OD-5 | Move issues between milestones one by one | Extend the tracking source with a task-level milestone override (T003) | Owner |
-| OD-6 | Minimum duration and workload of the SC-006 real session | One normal working session with at least one `analyze-work` call that has two or more operations | Owner |
-| OD-7 | Instrument CLI `analyze` and `analyze-git` as well | Not in S1.5a; revisit after the first report | Owner |
-| OD-8 | A `--system-one {off,shadow}` option on the standalone `tooling_mcp` entry point | Accept, mirroring `--telemetry`; the plugin registry stays the consent path for the packaged plugin | Owner |
+All decided by the owner on 2026-11-01
+([owner-review-20261101.md](owner-review-20261101.md)). OD-1 was accepted as R1; OD-2,
+OD-3 and OD-8 were accepted with it (the recommendations stand as written).
 
-Implementation tasks start after OD-1. S1.5b–e tasks stay blocked until their own
-review.
+| ID | Decision | Owner's choice |
+|---|---|---|
+| OD-1 | Accept SPEC-066, this plan and the episode contract (T001) | **Decided: accepted** (R1) |
+| OD-2 | Reuse the telemetry path checker versus copying it | **Decided:** reuse with a parity test; extract a shared helper later if a third store appears |
+| OD-3 | Report JSON shape and `plugin-status.systemOne.store` representation | **Decided:** the shapes in design items 9 and 11 |
+| OD-4 | Synchronous shadow call versus a background thread | **Decided: background single-slot worker** (R4); the request path never waits; a busy worker drops and counts the report |
+| OD-5 | Move issues between milestones one by one | **Decided: task-level milestone override in the tracking source** (T003, R6) |
+| OD-6 | Minimum duration and workload of the SC-006 real session | **Decided:** after merge, one week of normal work, the owner enables shadow with guidance (R13, R14); redacted receipt committed (R15) |
+| OD-7 | Instrument CLI `analyze` and `analyze-git` as well | **Decided: deferred until after the first report** (R5) |
+| OD-8 | A `--system-one {off,shadow}` option on the standalone `tooling_mcp` entry point | **Decided:** accepted, mirroring `--telemetry`; the plugin registry stays the consent path for the packaged plugin |
+
+Implementation of S1.5a tasks may start. S1.5b–e tasks stay blocked until their own
+plan review.

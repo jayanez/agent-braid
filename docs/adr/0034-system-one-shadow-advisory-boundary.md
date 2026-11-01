@@ -1,11 +1,11 @@
 # ADR 0034: System One shadow mode and advisory boundary
 
-- **Status:** accepted, by the owner's approval on 2026-11-01 of the plan that specified this boundary ([founder decisions](../development/FOUNDER_DECISIONS_20261101.md)). The review of SPEC-066 (T001) remains pending.
+- **Status:** accepted as amended by the owner on 2026-11-01 (see [founder decisions](../development/FOUNDER_DECISIONS_20261101.md), decisions 2-3): no external services and no third-party decision models, ever; the learned layer is native. The SPEC-066 scope review (T001) was accepted on the same date ([owner review](../../specs/066-system-one-shadow/owner-review-20261101.md)).
 - **Date:** 2026-11-01
 - **Deciders:** Juan Antonio Yáñez García (owner)
 - **Constitutional articles:** 0, 6, 13, 20, 21, 22, 24
 - **Specification:** [SPEC-066](../../specs/066-system-one-shadow/spec.md) (track S1.5)
-- **Episode contract:** [agent-braid-s1-episode/v0.1](../../specs/066-system-one-shadow/contracts/episode-v0.1.md)
+- **Episode contract:** [agent-braid-s1-episode/v0.1](../../specs/066-system-one-shadow/contracts/episode-v0.1.md), enriched by [v0.2](../../specs/066-system-one-shadow/contracts/episode-v0.2.md) (structural features and per-repo salted hashes; v0.1 stays readable)
 
 ## Context
 
@@ -71,19 +71,24 @@ evidence. Article 20 separates analysis from execution.
    `advise` only after an owner go decision on recorded shadow evidence, against
    the hypothesis and risk budget of SPEC-066, with atomic rollback to `off`. No
    automatic promotion, no learned act head.
-9. **Hosted backends excluded.** Jev (TypeSafe AI, hosted) sends state off the
-   machine and is billed per token. It is excluded until a separate owner
-   decision on egress, cost and consent defines a fail-closed timeout and a
-   budget cap. Its API shape may still inform a local-compatible interface.
-10. **Learned backends are optional extras.** A learned local backend (SPEC-066
-    REQ-301) ships only as an optional extra such as `agent-braid[s1-local]`,
-    never imported by the core, with no automatic downloads. It is compared with
-    the rule backend and the SPEC-019 linear model at a common risk budget; a
-    NO-GO is a valid result.
+9. **External services and third-party models excluded (owner direction
+   2026-11-01).** No external service (Jev/TypeSafe or any hosted service), no
+   third-party decision model or local backend (Laya, Von, kev, Rizzo, SemIf,
+   Nimble, NanoJev, Strands Decider) and no generic pretrained encoder
+   (ModernBERT, mmBERT, Qwen and the like) is ever used, under or beside System
+   One. Laya and Jev are design references only: their ideas are re-implemented by
+   us.
+10. **The learned layer is native.** The learned model (SPEC-066 REQ-301) is a
+    small native stdlib model inside `agent_braid` (calibrated logistic regression
+    or boosted trees over structural features) with our own architecture, training
+    and weights, trained only on the owner's own work (real runs and git-history
+    replay of plugin-registered workspaces). It has no downloads and no extra
+    dependency. It is compared with the rule backend and the SPEC-019 linear model
+    at a common risk budget; a NO-GO is a valid result.
 11. **Claim level** (labels of
     [claim discipline](../theory/CLAIM_DISCIPLINE.md)): engineering, plus the
-    hypothesis H-S1 of SPEC-066. Upstream capabilities are adopted as design
-    inspiration; this carries no claim that upstream-reported accuracy transfers to
+    hypothesis H-S1 of SPEC-066. Upstream capabilities are design references
+    only; this carries no claim that upstream-reported accuracy transfers to
     Agent Braid.
 
 ## Alternatives considered
@@ -96,8 +101,9 @@ evidence. Article 20 separates analysis from execution.
   third-party sources stay excluded.
 - **Wire `advise` immediately.** Rejected: no calibration, no pinned backend, no
   observed outcomes. It would let an uncalibrated signal influence outputs.
-- **Hosted Jev as the first backend.** Rejected for now: egress, cost, and
-  documented adversarial steering; revisit under item 9.
+- **Hosted Jev, or any third-party model, as a backend.** Rejected permanently
+  (item 9): egress, cost, documented adversarial steering, and the owner's
+  direction that the decision layer be fully native.
 - **Store episodes in the telemetry store.** Rejected: SPEC-047/057 boundaries.
 
 ## Consequences
@@ -127,6 +133,7 @@ shows no usable signal (retire path).
 
 - [SPEC-066](../../specs/066-system-one-shadow/spec.md)
 - [Episode contract v0.1](../../specs/066-system-one-shadow/contracts/episode-v0.1.md)
+- [Episode contract v0.2](../../specs/066-system-one-shadow/contracts/episode-v0.2.md)
 - [Reference analysis, 2026-11-01 update](../../specs/028-system-one-core/reference-analysis.md)
 - [Founder decisions 2026-11-01](../development/FOUNDER_DECISIONS_20261101.md)
 - [Completeness audit addendum](../system-one/addenda/completeness-audit-20261101/README.md)

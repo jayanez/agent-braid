@@ -13,8 +13,11 @@ implementation task.
 
 **Implementation authorization (2026-11-01).** The owner approved a plan whose first
 product step is S1.5a ([founder decisions](../../docs/development/FOUNDER_DECISIONS_20261101.md)),
-so S1.5a implementation landed with this specification. That approval is not the
-specification review: T001 stays open and is required before S1.5a closes (T032).
+so S1.5a implementation landed with this specification. The owner then reviewed and
+accepted the specification on 2026-11-01 (T001, evidence
+[owner-review-20261101.md](owner-review-20261101.md)) and set the native-only
+direction: no external service, third-party decision model or pretrained encoder, ever;
+Laya and Jev are design references only.
 Checked S1.5a tasks below cite `tests/test_system_one_shadow.py` (one module instead
 of the separate test files named in each task); unchecked ones remain open, partly
 implemented where noted.
@@ -27,11 +30,12 @@ specifications unless a SPEC-066 requirement amends them.
 
 ## Governance and tracking
 
-- [ ] T001 (all REQ): Owner review of the specification, plan, episode contract and
+- [x] T001 (all REQ): Owner review of the specification, plan, episode contract and
   open decisions OD-1 to OD-8, including the specification notes recorded in
   `research.md`. Dependencies: T005. Files: `spec.md`, `plan.md`, `contracts/`.
   Evidence: review record in this directory that also records the decisions taken
   on OD-1 to OD-8 and the SC-006 session definition.
+  Evidence (2026-11-01): `owner-review-20261101.md`.
 - [ ] T002: Add the S1.5 track to ROADMAP, STATUS, the milestone index,
   `docs/system-one/README.md` and `RESUMPTION`, the GitHub tracking source
   (`specs` entry, milestone, `project_review_pending`) and `GITHUB_TRACKING.md`.
@@ -149,6 +153,18 @@ specifications unless a SPEC-066 requirement amends them.
   `evidence/overhead-<date>.json`.
   Status 2026-11-01: Pending.
 
+- [x] T022 (REQ-003 / SC-002): Episode v0.2 enrichment: extend the builder, validator
+  and store to `agent-braid-s1-episode/v0.2` ([contract](contracts/episode-v0.2.md)):
+  resource classes (src/test/docs/config/lockfile/generated), path depth, directory
+  overlap, per-side effect kinds read from the validated request, and per-repo salted
+  resource hashes in a separate field; v0.1 episodes stay readable. Tests first,
+  including a seeded privacy test that no raw name or path appears and that the salt
+  never appears in an episode, and a purge test that removes the salt. Files:
+  `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow.py`,
+  `tests/fixtures/system_one_shadow/`. Dependencies: T011. Verification:
+  procedure_010 (see [validation-plan.md](validation-plan.md)).
+  Status 2026-11-01: Pending; the owner decided v0.2 ships with S1.5a (R11, R12).
+
 ## S1.5a — Owner-run check
 
 - [ ] T030 (REQ-002, REQ-003 / SC-006): Enable `shadow` on the owner machine with
@@ -171,9 +187,11 @@ specifications unless a SPEC-066 requirement amends them.
 
 ## S1.5b — Owned corpus (outline, blocked until T032)
 
-- [ ] T101 (REQ-101): Owner consent record that admits the owner's episodes and the
-  SPEC-047, SPEC-053 and SPEC-059 real-use sources as a permissioned corpus, reusing
-  the SPEC-051 validator; third-party sources stay excluded. Carries forward
+- [ ] T101 (REQ-101): Owner consent record that admits the owner's own work (episodes,
+  real runs, and the SPEC-047, SPEC-053 and SPEC-059 real-use sources) as the only
+  permissioned corpus, restricted to plugin-registered workspaces (other repositories
+  only on the owner's express approval), reusing the SPEC-051 validator; third-party
+  sources stay excluded. Carries forward
   SPEC-029 T001 (#285). Dependencies: T032. Evidence: owner record.
 - [ ] T102 (REQ-102): Outcome observer that joins DP-1 episodes with a later runtime
   conflict, merge conflict or verify result under a random join key; pairs without an
@@ -187,6 +205,14 @@ specifications unless a SPEC-066 requirement amends them.
   SPEC-029 T003 (#287) and T008 (#292). Dependencies: T102, T103.
 - [ ] T105 (REQ-103): Owner adjudication of the random label sample. Dependencies:
   T103, T104. Evidence: owner record.
+- [ ] T106 (REQ-104): Git-history replay labels: pair real branches or commits of the
+  owner's plugin-registered workspaces, obtain the observed conflict with
+  `git merge-tree`, reuse the SPEC-012 replay planner, and emit structural episodes
+  only (same privacy rules as REQ-003). A repository outside the registered
+  workspaces requires the owner's express approval first. Tests first; negative
+  controls: an unregistered repository, a pair without an observable outcome (stays
+  unlabelled), a merge-tree failure. Dependencies: T101, T022. Files: to be set by the
+  S1.5b plan.
 
 ## S1.5c — Reference-grade contracts (outline, blocked until T032)
 
@@ -207,19 +233,23 @@ specifications unless a SPEC-066 requirement amends them.
   per-slice metrics and a tolerance against a committed baseline. Dependencies:
   T201, T205.
 
-## S1.5d — Local learned backend (outline, blocked until T032)
+## S1.5d — Native learned model (outline, blocked until T032)
 
-- [ ] T301 (REQ-301): ADR and optional extra `agent-braid[s1-local]` for one
-  candidate backend, never imported by the core, pinned artifact path and digest, no
-  automatic download, wheel and extra discovery checks. Dependencies: T206.
-- [ ] T302 (REQ-301): Freeze the candidate roster, resource budgets and paired
-  evaluation plan, and implement the common baseline runners with complete cost
-  accounting. Carries forward SPEC-029 T005 (#289) and T007 (#291). Dependencies:
-  T301.
-- [ ] T303 (REQ-301): Execute the registered comparison at a common risk budget, or
-  document infeasibility, and record the H-S1 verdict; a null or negative result is
-  valid. Carries forward SPEC-029 T009 (#293) and SPEC-031 T008 (#311).
-  Dependencies: T302.
+- [ ] T301 (REQ-301): Native model module inside `agent_braid`, standard library only
+  (`dependencies = []`; no numpy, no extra, no download): calibrated logistic
+  regression or boosted trees over the episode v0.2 structural features, behind the
+  existing `Backend` protocol, with deterministic training, own weights and a pinned
+  manifest digest. Tests first. Dependencies: T206.
+- [ ] T302 (REQ-301): Calibration and abstention: temperature or isotonic scaling and
+  abstention thresholds fitted on a calibration split disjoint from training and
+  evaluation; freeze the resource budgets and the paired evaluation plan; implement
+  the common baseline runners (rule backend, SPEC-019 linear model) with complete cost
+  accounting. Carries forward SPEC-029 T005 (#289) and T007 (#291). Dependencies: T301.
+- [ ] T303 (REQ-301): Ablation with and without the per-repo salted resource hashes,
+  then the registered comparison at a common risk budget (or a documented
+  infeasibility). Keep the hashes only if they measurably improve precision without
+  degrading calibration. Record the H-S1 verdict; a null or negative result is valid.
+  Carries forward SPEC-029 T009 (#293) and SPEC-031 T008 (#311). Dependencies: T302.
 
 ## S1.5e — Go/no-go (outline, blocked until T032)
 

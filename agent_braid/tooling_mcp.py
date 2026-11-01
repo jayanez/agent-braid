@@ -281,8 +281,10 @@ class ToolingService:
     def _shadow(self, name: str, args: Any, envelope: dict[str, Any]) -> None:
         """SPEC-066: hand the final report to the off-request worker; never changes the envelope.
 
-        Only the report (or the encoded artifact holding it) is extracted here; decoding,
-        building and the store write all happen on the worker thread.
+        Only the report (or the encoded artifact holding it) is extracted here, and the
+        already-validated request and the configured source root are passed by
+        reference; decoding, feature derivation, salting and the store write all happen
+        on the worker thread.
         """
         try:
             if name not in {"analyze", "analyze-work"} or envelope.get("status") != "ok":
@@ -298,7 +300,7 @@ class ToolingService:
                 return
             kind = args.get("kind", "aim") if name == "analyze-work" else "aim"
             from . import system_one_shadow
-            system_one_shadow.submit(name, kind, source)
+            system_one_shadow.submit(name, kind, source, args.get("request"), str(self.config.source_root))
         except Exception:
             pass
 

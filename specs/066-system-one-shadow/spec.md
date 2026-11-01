@@ -7,6 +7,11 @@ program, SPEC-028–033; never a gate of the core, of M4.x, HAR or VIS)
 ("Shadow + datos propios") and asked to adopt the strongest capabilities of the
 Laya and Jev references; the decision is recorded in
 [founder decisions 2026-11-01](../../docs/development/FOUNDER_DECISIONS_20261101.md).
+The owner refined the direction on 2026-11-01 (binding): System One has its own,
+fully native layer-1 decision system, and Laya and Jev are design references
+only (see Exclusions). The owner accepted this scope, the H-S1 thresholds and the
+privacy design in
+[owner-review-20261101.md](owner-review-20261101.md).
 [ADR 0034](../../docs/adr/0034-system-one-shadow-advisory-boundary.md) records the
 advisory boundary. Human review of this specification stays pending.
 
@@ -53,10 +58,13 @@ subsystem in stages:
    semantics without a model: tri-state abstention, risk-scaled thresholds, two
    declared confidence signals, pinned identity with drift demotion, batched
    questions over one state, option-order invariance and an evaluation gate.
-4. **S1.5d: local learned backend.** Add an optional extra (Laya- or Von-class
-   encoder) behind the existing `Backend` protocol, fitted and calibrated on the
-   owned corpus, compared at a common risk budget with rules and SPEC-019's linear
-   model.
+4. **S1.5d: native learned model.** Add a small native model (calibrated
+   logistic regression or boosted trees, stdlib only) over structural features
+   behind the existing `Backend` protocol, with our own architecture, training and
+   weights. It is fitted on the owned corpus, calibrated with temperature or
+   isotonic scaling and abstention thresholds on a separate calibration split, and
+   compared at a common risk budget with rules and SPEC-019's linear model. It
+   includes an ablation of the per-repo salted resource hashes (REQ-003).
 5. **S1.5e: go/no-go per decision point.** Move from `shadow` to `advise` only
    where measured improvement and calibration are accepted by the owner, with
    atomic rollback to `off`.
@@ -70,8 +78,12 @@ hypothesis (below); nothing in S1.5a supports it or any utility claim.
 Exclusions:
 - No change to any analysis, preparation, scheduling or runtime result.
 - No new execution authority: `executionAuthorization` stays the constant false.
-- No network access and no remote service. The Jev transport adapter is
-  explicitly excluded until a separate owner decision on egress and cost.
+- No network access and no remote service.
+- No external services, third-party decision models, or pretrained encoders, ever
+  (owner direction 2026-11-01). This covers Jev/TypeSafe or any hosted service,
+  Laya, Von, kev, Rizzo, SemIf, Nimble, NanoJev and Strands Decider as local
+  backends, and generic pretrained encoders (ModernBERT, mmBERT, Qwen and the
+  like). Laya and Jev are design references only: ideas are re-implemented by us.
 - No content, paths, resource names, identifiers or prompts in episodes.
 - No change to the SPEC-047 telemetry store or its batch schema.
 - No change to the portable MCP envelope.
@@ -113,18 +125,23 @@ to the envelope in `off` mode for the same input. This covers `analyze`,
 
 **REQ-003 Episode contract.** Each successful `analyze-work` call (AIM or Git) in
 `shadow` mode appends at most one episode that conforms to
-[agent-braid-s1-episode/v0.1](contracts/episode-v0.1.md). Episodes contain only
-derived structural features:
+[agent-braid-s1-episode/v0.2](contracts/episode-v0.2.md); lines written as
+[v0.1](contracts/episode-v0.1.md) stay readable. Episodes contain only derived
+structural features:
 - the System 2 classification, reason codes (including `read-version`) and
   constraints
 - coverage statuses
 - shared-resource counts and a dependency flag
 - complete per-class pair counts, so shares cover pairs beyond the 64-pair cap
 
-Per-side effect kinds are not in the System 2 report, so v0.1 records them as
-`null`.
+v0.1 recorded per-side effect kinds as `null`. v0.2 enriches the episode with structural features: resource classes
+(src/test/docs/config/lockfile/generated), path depth, directory overlap and
+per-side effect kinds taken from the request (AIM) or from the Git adapter's resource schemes. It adds per-repo salted resource
+hashes in a separate field, used only by the S1.5d ablation (hashes are kept only
+if they measurably improve precision without degrading calibration).
 
-They contain no resource names, paths, identifiers, digests of content or text.
+Episodes contain no resource names, paths, identifiers, unsalted digests of
+content, or text.
 
 **REQ-004 Local private store.**
 - Episodes go to `~/.local/share/agent-braid/system-one/episodes-<UTC date>.jsonl`.
@@ -171,12 +188,24 @@ episodeRetentionDays: 30}`. It never reports episode contents.
 ## Requirements — S1.5b–e (outline; need their own plan review)
 
 - **REQ-101 Owned-source admission (S1.5b).** An owner consent record admits the
-  owner's own episodes and the SPEC-047/053/059 real-use sources. It closes
-  SPEC-029 T001 for the owned population only. It reuses the SPEC-051 pure
-  owned-work validator (ADR 0026). Third-party sources stay excluded.
+  owner's own work as the only training population: (1) real runs (execute and
+  verify results, real conflicts, the SPEC-059 ledger, SPEC-053 transcripts) and
+  (2) git-history replay (REQ-104). It closes SPEC-029 T001 for the owned
+  population only. It reuses the SPEC-051 pure owned-work validator (ADR 0026).
+  Third-party sources stay excluded. Admission is restricted to
+  plugin-registered workspaces; any future repository requires the owner's
+  express approval first.
 - **REQ-102 Outcome observer (S1.5b).** Join DP-1 episodes with the later observed
-  outcome: a runtime conflict, a merge conflict, or a verify pass or fail. Pairs
+  outcome from the sources of REQ-101: a runtime conflict, a merge conflict, a
+  verify pass or fail, or a replayed branch/commit outcome (REQ-104). Pairs
   without an observed outcome stay unlabelled, never imputed.
+- **REQ-104 Git-history replay labels (S1.5b).** Labels also come from replaying
+  the git history of the owner's repositories: pairs of real branches or commits
+  are taken from history, the observed conflict is obtained with
+  `git merge-tree`, and the SPEC-012 replay planner is reused. The replay is
+  restricted to plugin-registered workspaces; adding a repository requires the
+  owner's express approval. Replayed pairs yield structural episodes only, with
+  the same privacy rules as REQ-003.
 - **REQ-103 Amended label rubric (S1.5b).** Observed outcomes are primary labels.
   Owner adjudication of a random sample measures label noise. This replaces
   SPEC-029's two-blind-reviewer requirement for the owned population and is
@@ -201,16 +230,23 @@ episodeRetentionDays: 30}`. It never reports episode contents.
 - **REQ-206 Evaluation gate (S1.5c).** CI checks minimum accuracy, maximum ECE,
   per-slice metrics and tolerance against a committed baseline on the admitted
   corpus.
-- **REQ-301 Local learned backend (S1.5d).** An optional extra
-  `agent-braid[s1-local]`, never imported by the core, with fitted temperatures.
-  It is compared at a common risk budget with the rule backend and the SPEC-019
-  linear model. A NO-GO is a valid result.
+- **REQ-301 Native learned model (S1.5d).** A native model module inside
+  `agent_braid`, implemented with the standard library only (`pyproject.toml`
+  declares `dependencies = []`, so numpy is not available and is not introduced).
+  It is a small model (calibrated logistic regression or boosted trees) over
+  structural features, with our own architecture, training and weights, fitted on
+  the owned corpus. Temperature or isotonic calibration and abstention thresholds
+  are fitted on a separate calibration split. It includes an ablation with and
+  without the per-repo salted resource hashes, keeping the hashes only if they
+  measurably improve precision without degrading calibration. It is compared at a
+  common risk budget with the rule backend and the SPEC-019 linear model. A
+  NO-GO is a valid result.
 - **REQ-401 Promotion (S1.5e).** `advise` per decision point only after an owner
   go decision on recorded shadow evidence, with atomic rollback to `off`.
 
 ## Hypothesis
 
-**H-S1.** On the owner's DP-1 pairs that System 2 marks `unknown`, a calibrated
+**H-S1** (thresholds confirmed by the owner on 2026-11-01). On the owner's DP-1 pairs that System 2 marks `unknown`, a calibrated
 local System One backend can advise `likely-independent` with an observed false
 independence rate of at most 2% at a coverage of at least 30% of those pairs.
 Falsification: the S1.5d paired comparison does not reach both bounds at the
@@ -240,7 +276,8 @@ S1.5a tests H-S1.
 ## References
 
 - Laya (`NandhaKishorM/laya`, v0.4.19, Apache-2.0) and Jev (TypeSafe AI, hosted)
-  are summarized in
+  are design references only, summarized in
   [reference analysis](../028-system-one-core/reference-analysis.md). Neither is a
-  dependency of S1.5a.
+  dependency, backend or training source of any stage; their ideas are
+  re-implemented natively.
 - Earlier System One record: [system-one corpus](../../docs/system-one/README.md).

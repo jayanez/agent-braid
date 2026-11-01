@@ -1,11 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""SPEC-066 S1.5a: shadow episodes are derived, private, bounded and never change output."""
+"""SPEC-066 S1.5a: shadow episodes are derived, private, bounded and never change output.
+
+Episode schema v0.2 adds structural resource features and per-repo salted pseudonyms.
+"""
 from __future__ import annotations
 
 from contextlib import redirect_stdout
 from copy import deepcopy
 from io import StringIO
 import fcntl
+import hashlib
+import hmac
 import itertools
 import json
 import os
@@ -68,12 +73,18 @@ class Base(unittest.TestCase):
         patcher = patch.object(shadow, 'default_directory', return_value=self.store)
         patcher.start()
         self.addCleanup(patcher.stop)
+        home = patch.dict(os.environ, {'HOME': str(self.base / 'home-dir')})
+        home.start()
+        self.addCleanup(home.stop)
         with shadow._refusal_lock:
             shadow._refusals.clear()
         self.addCleanup(shadow.flush)  # no worker job outlives the store it writes to
 
-    def service(self, mode='shadow', **kwargs):
-        return ToolingService(ToolingConfig(self.source, self.results, system_one=mode, **kwargs))
+    def service(self, mode='shadow', source=None, **kwargs):
+        return ToolingService(ToolingConfig(source or self.source, self.results, system_one=mode, **kwargs))
+
+    def stored_bytes(self):
+        return b''.join(p.read_bytes() for p in sorted(self.store.glob('episodes-*.jsonl')))
 
     def episodes(self):
         lines = []
@@ -161,6 +172,13 @@ class ParityTests(Base):
         self.assertEqual(episode['analysisKind'], 'git')
         self.assertEqual(episode['operation'], 'analyze-work')
         shadow.validate_episode(episode)
+        pair, = episode['pairs']
+        # Git kinds come from the adapter's resource schemes: changed paths are writes.
+        self.assertEqual(pair['effectKinds'], {'left': ['write'], 'right': ['write']})
+        self.assertEqual(pair['resourceClasses']['left']['docs'], 1)
+        self.assertEqual((pair['maxDepth'], pair['sameParentDirCount'], pair['topDirOverlap']), (1, 1, False))
+        self.assertEqual(len(pair['resourceHashes']['left']), 1)
+        self.assertNotIn(b'a.txt', self.stored_bytes())
         before = len(self.episodes())
         runtime_request = {'gitRuntimeRequestVersion': __import__('agent_braid.git_runtime', fromlist=['VERSION']).VERSION,
                            'repository': str(self.source), 'baseRevision': request['baseRevision'],
@@ -219,10 +237,15 @@ class EpisodeTests(Base):
         service = self.service()
         self.invoke(service, sentinel_request())
         self.invoke(service, unknown_request())
-        stored = b''.join(p.read_bytes() for p in self.store.glob('episodes-*.jsonl'))
+        stored = self.stored_bytes()
         self.assertNotIn(SENTINEL.encode(), stored)
-        for forbidden in (b'repo://', b'secret', b'attempt', b'instance', b'sha256:'):
+        for forbidden in (b'repo://', b'secret', b'attempt', b'instance', b'sha256:', b'path-0',
+                          str(self.source).encode()):
             self.assertNotIn(forbidden, stored)
+        salt = (self.store / 'salt.key').read_bytes()
+        self.assertEqual(len(salt), 32)
+        self.assertNotIn(salt, stored)
+        self.assertNotIn(salt.hex().encode(), stored)
         first, second = self.episodes()
         for episode in (first, second):
             shadow.validate_episode(episode)
@@ -237,7 +260,14 @@ class EpisodeTests(Base):
         pair = first['pairs'][0]
         self.assertEqual((pair['system2'], pair['system2Determinate']), ('independent-candidate', True))
         self.assertEqual(pair['reasonCodes'], ['disjoint'])
-        self.assertIsNone(pair['effectKinds'])
+        self.assertEqual(first['schemaVersion'], 'agent-braid-s1-episode/v0.2')
+        self.assertEqual(pair['effectKinds'], {'left': ['write'], 'right': ['write']})
+        self.assertEqual(pair['resourceClasses']['left'], dict.fromkeys(shadow.RESOURCE_CLASSES, 0) | {'docs': 1})
+        self.assertEqual(pair['sharedResourceClasses'], dict.fromkeys(shadow.RESOURCE_CLASSES, 0))
+        self.assertEqual((pair['maxDepth'], pair['sameParentDirCount'], pair['topDirOverlap']), (2, 1, True))
+        hashes = pair['resourceHashes']
+        self.assertEqual((len(hashes['left']), len(hashes['right']), hashes['shared']), (1, 1, []))
+        self.assertNotEqual(hashes['left'], hashes['right'])
         pair = second['pairs'][0]
         self.assertEqual((pair['system2'], pair['system2Determinate']), ('unknown', False))
         self.assertEqual(pair['reasonCodes'], ['partial-coverage'])
@@ -246,6 +276,7 @@ class EpisodeTests(Base):
 
     def report_with(self, reasons, constraints=('requires-execution-contract-before-parallelism',), count=1):
         report = {'analyzer': {'name': 'agent-braid', 'version': '0.1.0-alpha', 'ruleSet': 'exact-resource-footprints-v1'},
+                  'operations': [{'instanceId': 'a', 'resources': ['r']}, {'instanceId': 'b', 'resources': ['r']}],
                   'summary': {'operationCount': 2, 'pairCount': count,
                               'classifications': {'independent-candidate': count, 'ordered': 0,
                                                   'conflicting': 0, 'unknown': 0}},
@@ -362,6 +393,181 @@ class EpisodeTests(Base):
                 shadow.validate_episode(mutated(change))
         ok = mutated(lambda v: v['pairs'][0].update(effectKinds={'left': ['read'], 'right': ['delete', 'write']}))
         shadow.validate_episode(ok)
+        hashed = mutated(lambda v: v['pairs'][0].update(resourceHashes={'left': ['0123456789abcdef'],
+                                                                        'right': [], 'shared': []}))
+        shadow.validate_episode(hashed)
+        legacy_pair = {k: v for k, v in good['pairs'][0].items() if k in shadow.V01_PAIR_FIELDS}
+        v02_cases = [
+            lambda v: v['pairs'][0].update(resourceHashes={'left': ['0123456789ABCDEF'], 'right': [], 'shared': []}),
+            lambda v: v['pairs'][0].update(resourceHashes={'left': ['0123456789abcdef0'], 'right': [], 'shared': []}),
+            lambda v: v['pairs'][0].update(resourceHashes={'left': ['src/secret.py'], 'right': [], 'shared': []}),
+            lambda v: v['pairs'][0].update(resourceHashes={'left': ['f' * 16, '0' * 16], 'right': [], 'shared': []}),
+            lambda v: v['pairs'][0].update(resourceHashes={'left': [f'{i:016x}' for i in range(33)],
+                                                           'right': [], 'shared': []}),
+            lambda v: v['pairs'][0].update(resourceHashes={'left': [], 'right': []}),
+            lambda v: v['pairs'][0]['resourceClasses']['left'].update(secret=1),
+            lambda v: v['pairs'][0]['resourceClasses']['left'].update(src=4097),
+            lambda v: v['pairs'][0]['sharedResourceClasses'].update(src=2),
+            lambda v: v['pairs'][0].update(maxDepth=17),
+            lambda v: v['pairs'][0].update(sameParentDirCount=-1),
+            lambda v: v['pairs'][0].update(topDirOverlap='yes'),
+            lambda v: v['pairs'].__setitem__(0, dict(legacy_pair)),
+            lambda v: v.update(schemaVersion='agent-braid-s1-episode/v0.3'),
+            lambda v: v.update(schemaVersion='agent-braid-s1-episode/v0.1'),  # v0.2 pairs under v0.1
+        ]
+        for index, change in enumerate(v02_cases):
+            with self.assertRaises(ValueError, msg=f'v0.2 case {index}'):
+                shadow.validate_episode(mutated(change))
+        legacy = mutated(lambda v: (v.update(schemaVersion='agent-braid-s1-episode/v0.1'),
+                                    v['pairs'].__setitem__(0, dict(legacy_pair))))
+        shadow.validate_episode(legacy)
+
+
+class FeatureTests(Base):
+    """Episode v0.2 structural features: deterministic path rules and salted pseudonyms."""
+
+    CLASS_TABLE = [
+        ('src/agent_braid/analysis.py', 'src'), ('lib/main.go', 'src'), ('App.TSX', 'src'),
+        ('scripts/run.sh', 'src'), ('include/x.h', 'src'),
+        ('tests/test_x.py', 'test'), ('pkg/foo_test.go', 'test'), ('web/button.test.tsx', 'test'),
+        ('web/button.spec.ts', 'test'), ('test_root.py', 'test'), ('__tests__/a.js', 'test'),
+        ('spec/model.rb', 'test'), ('tests/fixtures/data.json', 'test'),
+        ('README.md', 'docs'), ('docs/guide.html', 'docs'), ('notes.txt', 'docs'), ('a/b.rst', 'docs'),
+        ('book.adoc', 'docs'), ('docs/conf.py', 'docs'),
+        ('pyproject.toml', 'config'), ('.github/workflows/ci.yml', 'config'), ('.gitignore', 'config'),
+        ('.env', 'config'), ('setup.cfg', 'config'), ('app.conf', 'config'), ('x.ini', 'config'),
+        ('package-lock.json', 'lockfile'), ('web/yarn.lock', 'lockfile'), ('pnpm-lock.yaml', 'lockfile'),
+        ('poetry.lock', 'lockfile'), ('uv.lock', 'lockfile'), ('Pipfile.lock', 'lockfile'),
+        ('Cargo.lock', 'lockfile'), ('go.sum', 'lockfile'), ('Gemfile.lock', 'lockfile'),
+        ('composer.lock', 'lockfile'), ('node_modules/yarn.lock', 'lockfile'),
+        ('dist/app.js', 'generated'), ('build/out.txt', 'generated'), ('a/__pycache__/m.pyc', 'generated'),
+        ('vendor/jquery.min.js', 'generated'), ('api_generated.py', 'generated'),
+        ('target/debug/x.rs', 'generated'), ('node_modules/x/index.js', 'generated'),
+        ('out/x', 'generated'), ('tests/build/helper.py', 'generated'),
+        ('assets/logo.png', 'other'), ('Makefile.am', 'other'), ('db:users', 'other'), ('users', 'other'),
+        ('git://0123abcd/', 'other'), ('', 'other'),
+        ('git://0123abcd/src/a.py', 'src'), ('git-unsupported://0123abcd/docs/a.md?operation=x', 'docs'),
+        ('repo://agent-braid/README.md', 'docs'), ('https://example.invalid/api/v1', 'other'),
+        ('src/a.py#L10', 'src'), ('./src//a.py', 'src'),
+    ]
+
+    def test_classification_rule_table(self):
+        for resource, expected in self.CLASS_TABLE:
+            self.assertEqual(shadow.classify(resource), expected, resource)
+
+    def report(self, left, right, shared=None):
+        reason = 'Complete exact-resource footprints are disjoint.'
+        return {'analyzer': {'version': '0.1.0-alpha', 'ruleSet': 'exact-resource-footprints-v1'},
+                'operations': [{'instanceId': 'a', 'resources': sorted(left)},
+                               {'instanceId': 'b', 'resources': sorted(right)}],
+                'summary': {'operationCount': 2, 'pairCount': 1,
+                            'classifications': {'independent-candidate': 1, 'ordered': 0,
+                                                'conflicting': 0, 'unknown': 0}},
+                'interactions': [{'left': 'a', 'right': 'b', 'classification': 'independent-candidate',
+                                  'sharedResources': sorted(shared or []), 'reasons': [reason],
+                                  'constraints': ['requires-execution-contract-before-parallelism'],
+                                  'evidence': {'coverage': ['complete']}}]}
+
+    def test_depth_parent_and_top_directory_features(self):
+        left = ['src/a/x.py', 'src/a/y.py', 'docs/z.md', 'db:users']
+        right = ['src/a/w.py', 'src/b/c/d/e.py', 'README.md']
+        pair, = shadow.build_episode(self.report(left, right), 'analyze-work', 'aim')['pairs']
+        self.assertEqual(pair['maxDepth'], 5)
+        self.assertEqual(pair['sameParentDirCount'], 2)  # x.py and y.py each share src/a with w.py
+        self.assertTrue(pair['topDirOverlap'])
+        self.assertEqual(pair['resourceClasses']['left'], {'src': 2, 'test': 0, 'docs': 1, 'config': 0,
+                                                           'lockfile': 0, 'generated': 0, 'other': 1})
+        self.assertIsNone(pair['effectKinds'])  # no request handed off
+        self.assertIsNone(pair['resourceHashes'])  # no salt
+        pair, = shadow.build_episode(self.report(['a.py'], ['b.py']), 'analyze-work', 'aim')['pairs']
+        self.assertEqual((pair['maxDepth'], pair['sameParentDirCount'], pair['topDirOverlap']), (1, 1, False))
+        deep = '/'.join(['d'] * 40) + '/f.py'
+        pair, = shadow.build_episode(self.report([deep], ['x']), 'analyze-work', 'aim')['pairs']
+        self.assertEqual((pair['maxDepth'], pair['sameParentDirCount']), (16, 0))
+
+    def test_hashes_are_capped_sorted_and_cover_shared(self):
+        left = [f'src/f{i}.py' for i in range(50)] + ['shared.py']
+        report = self.report(left, ['shared.py'], ['shared.py'])
+        salt = shadow._repo_salt(b'k' * 32, '/repo')
+        pair, = shadow.build_episode(report, 'analyze-work', 'aim', salt=salt)['pairs']
+        shadow.validate_episode(shadow.build_episode(report, 'analyze-work', 'aim', salt=salt))
+        hashes = pair['resourceHashes']
+        self.assertEqual(len(hashes['left']), 32)
+        self.assertEqual(hashes['left'], sorted(hashes['left']))
+        self.assertEqual(hashes['shared'], hashes['right'])
+        self.assertEqual(pair['sharedResourceClasses']['src'], 1)
+        expected = hmac.new(salt, b'shared.py', hashlib.sha256).hexdigest()[:16]
+        self.assertEqual(hashes['shared'], [expected])
+        self.assertNotEqual(shadow._repo_salt(b'k' * 32, '/other'), salt)
+        self.assertIsNone(shadow._repo_salt(None, '/repo'))
+
+    def test_hashes_are_stable_within_a_repo_and_differ_across_source_roots(self):
+        other = self.base / 'other-source'
+        other.mkdir()
+        self.invoke(self.service(), sentinel_request())
+        self.invoke(self.service(), sentinel_request())
+        self.invoke(self.service(source=other), sentinel_request())
+        first, second, third = (e['pairs'][0]['resourceHashes'] for e in self.episodes())
+        self.assertEqual(first, second)
+        self.assertNotEqual(first['left'], third['left'])
+        self.assertNotEqual(first['right'], third['right'])
+        stored = self.stored_bytes()
+        for root in (self.source, other):
+            self.assertNotIn(str(root).encode(), stored)
+        self.assertEqual((self.store / 'salt.key').stat().st_mode & 0o777, 0o600)
+
+    def test_hashes_are_null_without_a_usable_salt(self):
+        shadow.observe('analyze-work', 'aim', EpisodeTests.report_with(
+            None, ['Complete exact-resource footprints are disjoint.']))
+        episode, = self.episodes()
+        self.assertIsNone(episode['pairs'][0]['resourceHashes'])
+        self.assertFalse((self.store / 'salt.key').exists())  # no repository, no salt created
+        self.store.chmod(0o700)
+        (self.store / 'salt.key').write_bytes(b'short')
+        (self.store / 'salt.key').chmod(0o600)
+        self.invoke(self.service(), sentinel_request())
+        episode = self.episodes()[-1]
+        shadow.validate_episode(episode)
+        self.assertIsNone(episode['pairs'][0]['resourceHashes'])
+        self.assertEqual(episode['pairs'][0]['effectKinds'], {'left': ['write'], 'right': ['write']})
+        (self.store / 'salt.key').unlink()
+        target = self.base / 'planted-salt'
+        target.write_bytes(b'x' * 32)
+        target.chmod(0o600)
+        (self.store / 'salt.key').symlink_to(target)
+        self.invoke(self.service(), sentinel_request())
+        self.assertIsNone(self.episodes()[-1]['pairs'][0]['resourceHashes'])
+        result = shadow.purge()
+        self.assertEqual(result['status'], 'purged')
+        self.assertTrue(target.exists(), 'purge removes the planted link, not its target')
+
+    def test_purge_removes_the_salt(self):
+        self.invoke(self.service(), sentinel_request())
+        self.assertTrue((self.store / 'salt.key').exists())
+        result = shadow.purge()
+        self.assertEqual((result['status'], result['filesRemoved']), ('purged', 3))
+        self.assertNotIn('leftover', result)
+        self.assertFalse(self.store.exists())
+
+    def test_report_reads_v01_and_v02_lines_and_prints_no_hashes(self):
+        self.invoke(self.service(), sentinel_request())
+        v02, = self.episodes()
+        legacy = deepcopy(v02)
+        legacy['schemaVersion'] = shadow.SCHEMA_V01
+        legacy['episodeId'] = '00000000-0000-4000-8000-000000000000'
+        legacy['pairs'] = [{k: v for k, v in pair.items() if k in shadow.V01_PAIR_FIELDS}
+                           for pair in legacy['pairs']]
+        for pair in legacy['pairs']:
+            pair['effectKinds'] = None
+        target = next(self.store.glob('episodes-*.jsonl'))
+        with open(target, 'ab') as stream:
+            stream.write(tooling_telemetry._canonical(legacy))
+        value = shadow.report()
+        self.assertEqual((value['totals']['episodes'], value['invalidLines']), (2, 0))
+        self.assertEqual(value['totals']['schemas'], {shadow.SCHEMA: 1, shadow.SCHEMA_V01: 1})
+        rendered = json.dumps(value) + shadow.render_report(value)
+        for digest in v02['pairs'][0]['resourceHashes']['left']:
+            self.assertNotIn(digest, rendered)
 
 
 class StoreTests(Base):

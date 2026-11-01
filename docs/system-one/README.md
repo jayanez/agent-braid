@@ -16,6 +16,10 @@ written.
   [completeness audit](addenda/completeness-audit-20261101/README.md).
 - Next work is [SPEC-066](../../specs/066-system-one-shadow/spec.md) (track S1.5,
   draft) and [ADR 0034](../adr/0034-system-one-shadow-advisory-boundary.md).
+- Direction (owner, 2026-11-01): the layer-1 decision system is 100% native. No
+  external service, third-party decision model or backend (Laya, Von, kev, Jev and
+  the like) and no pretrained encoder is used; Laya and Jev are design references
+  only. The learned model is small, stdlib-only, trained on the owner's own work.
 
 ## Latest RF-T01/RF-T02 documentary receipt (2026-10-21)
 

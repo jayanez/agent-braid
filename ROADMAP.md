@@ -218,7 +218,7 @@ reproduction recorded. The software is not wired into the CLI and does not adapt
 real feeds; zero real pairs are admitted. T001/#181, T007/#188, T003/#183 and
 T005/#185 remain open, as do parent #180 and milestone 9. A score remains
 heuristic; the deterministic verifier alone supplies bounded exchange
-evidence. No external Laya/Jev service is integrated; Jev is a hosted paid service and stays excluded until a separate owner decision on egress and cost (see the System 1 track below).
+evidence. No external service or third-party model is integrated, and none ever will be (owner direction 2026-11-01); Laya and Jev are design references only (see the System 1 track below).
 
 ## M4 — Agent Braid runtime
 
@@ -520,7 +520,7 @@ The [System 1 planning program](specs/028-system-one-core/program.md) contains
 SPEC-028–033: typed advisory contracts, prospective evaluation, an own neural
 decision experiment, bounded integration, advanced product capabilities and
 separate promotion/rollback. The [reference analysis](specs/028-system-one-core/reference-analysis.md)
-compares Strands Decider and Laya without integrating either project. S1.0–S1.4
+surveys Strands Decider and Laya as design references only, without integrating either project. S1.0–S1.4
 were closed as deferred on 2026-10-31 and their open tasks sit in milestone
 Deferred #24; they do not replace SPEC-019 or reopen SPEC-021's M4 utility NO-GO.
 Architecture, data, budgets and per-capability acceptance remain explicit review gates.
@@ -533,14 +533,16 @@ pending, milestone to be created) resumes the deferred work in stages:
 
 - **S1.5a** opt-in shadow recording of one episode per successful `analyze-work`
   call, with outputs unchanged (the only stage specified to implementation level);
-- **S1.5b** owned corpus and observed-outcome labels;
+- **S1.5b** owned corpus: observed-outcome labels from real runs and git-history replay labels from the owner's plugin-registered repositories;
 - **S1.5c** reference-grade decision contracts without a model;
-- **S1.5d** an optional local learned backend, with Laya, Von and kev as local
-  candidates, compared at a common risk budget;
+- **S1.5d** a native learned model (stdlib, our own architecture, training and
+  weights, no third-party model or encoder), with calibration and a salted-hash
+  ablation, compared at a common risk budget;
 - **S1.5e** go/no-go per decision point, with rollback to `off`.
 
-Jev is a hosted paid service and is excluded until a separate owner decision on
-egress and cost. No stage grants execution authority or implies a utility claim.
+The decision layer is 100% native (owner direction 2026-11-01): no external
+service, no third-party decision model or backend and no pretrained encoder;
+Laya and Jev are design references only. No stage grants execution authority or implies a utility claim.
 
 ## FC.1 — Forecast-guided parallelism experiment
 

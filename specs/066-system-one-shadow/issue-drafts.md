@@ -2,7 +2,7 @@
 
 # Unpublished issue drafts
 
-Milestone: S1.5 — System One shadow activation (created only by the reviewed apply after merge). One spec parent plus 37 task issues; labels `spec` and `task`. Only the parent is marked Project review pending. Owner decisions and owner-run checks: T001 (review), T030 (real-use session, SC-006), T105 (label adjudication), T403 (go/no-go). S1.5a implementation: T010-T021. Blocked outline tasks: T101-T403, not startable until T032.
+Milestone: S1.5 — System One shadow activation (created only by the reviewed apply after merge). One spec parent plus 39 task issues; labels `spec` and `task`. Only the parent is marked Project review pending. Owner decisions and owner-run checks: T001 (review, accepted 2026-11-01), T030 (real-use session, SC-006), T105 (label adjudication), T403 (go/no-go). S1.5a implementation: T010-T022. Blocked outline tasks: T101-T403, not startable until T032.
 
 ## SPEC-066
 
@@ -20,7 +20,7 @@ Issue state is a bounded tracking record, not a scientific or founder approval.
 
 ## SPEC-066/T001
 
-Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-066 T001] Owner review of the specification, plan, episode contract and open decisions OD-1 to OD-8, including t...
 
@@ -28,7 +28,7 @@ Title: [SPEC-066 T001] Owner review of the specification, plan, episode contract
 
 ## Task
 
-Owner review of the specification, plan, episode contract and open decisions OD-1 to OD-8, including the specification notes recorded in `research.md`. Dependencies: T005. Files: `spec.md`, `plan.md`, `contracts/`. Evidence: review record in this directory that also records the decisions taken on OD-1 to OD-8 and the SC-006 session definition.
+Owner review of the specification, plan, episode contract and open decisions OD-1 to OD-8, including the specification notes recorded in `research.md`. Dependencies: T005. Files: `spec.md`, `plan.md`, `contracts/`. Evidence: review record in this directory that also records the decisions taken on OD-1 to OD-8 and the SC-006 session definition. Evidence (2026-11-01): `owner-review-20261101.md`.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: all REQ
@@ -324,6 +324,24 @@ Overhead measurement: median and p95 of the shadow step for 2, 12 and 32 operati
 
 Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
 
+## SPEC-066/T022
+
+Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
+
+Title: [SPEC-066 T022] Episode v0.2 enrichment: extend the builder, validator and store to agent-braid-s1-episode/v0.2 ([cont...
+
+<!-- agent-braid-task-id: SPEC-066/T022 -->
+
+## Task
+
+Episode v0.2 enrichment: extend the builder, validator and store to `agent-braid-s1-episode/v0.2` ([contract](contracts/episode-v0.2.md)): resource classes (src/test/docs/config/lockfile/generated), path depth, directory overlap, per-side effect kinds read from the validated request, and per-repo salted resource hashes in a separate field; v0.1 episodes stay readable. Tests first, including a seeded privacy test that no raw name or path appears and that the salt never appears in an episode, and a purge test that removes the salt. Files: `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow.py`, `tests/fixtures/system_one_shadow/`. Dependencies: T011. Verification: procedure_010 (see [validation-plan.md](validation-plan.md)). Status 2026-11-01: Pending; the owner decided v0.2 ships with S1.5a (R11, R12).
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
+- Trace: REQ-003 / SC-002
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
 ## SPEC-066/T030
 
 Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
@@ -382,13 +400,13 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
-Title: [SPEC-066 T101] Owner consent record that admits the owner's episodes and the SPEC-047, SPEC-053 and SPEC-059 real-use...
+Title: [SPEC-066 T101] Owner consent record that admits the owner's own work (episodes, real runs, and the SPEC-047, SPEC-053...
 
 <!-- agent-braid-task-id: SPEC-066/T101 -->
 
 ## Task
 
-Owner consent record that admits the owner's episodes and the SPEC-047, SPEC-053 and SPEC-059 real-use sources as a permissioned corpus, reusing the SPEC-051 validator; third-party sources stay excluded. Carries forward SPEC-029 T001 (#285). Dependencies: T032. Evidence: owner record.
+Owner consent record that admits the owner's own work (episodes, real runs, and the SPEC-047, SPEC-053 and SPEC-059 real-use sources) as the only permissioned corpus, restricted to plugin-registered workspaces (other repositories only on the owner's express approval), reusing the SPEC-051 validator; third-party sources stay excluded. Carries forward SPEC-029 T001 (#285). Dependencies: T032. Evidence: owner record.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-101
@@ -464,6 +482,24 @@ Owner adjudication of the random label sample. Dependencies: T103, T104. Evidenc
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-103
+- State basis: Source checkbox in tasks.md.
+
+Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
+
+## SPEC-066/T106
+
+Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
+
+Title: [SPEC-066 T106] Git-history replay labels: pair real branches or commits of the owner's plugin-registered workspaces,...
+
+<!-- agent-braid-task-id: SPEC-066/T106 -->
+
+## Task
+
+Git-history replay labels: pair real branches or commits of the owner's plugin-registered workspaces, obtain the observed conflict with `git merge-tree`, reuse the SPEC-012 replay planner, and emit structural episodes only (same privacy rules as REQ-003). A repository outside the registered workspaces requires the owner's express approval first. Tests first; negative controls: an unregistered repository, a pair without an observable outcome (stays unlabelled), a merge-tree failure. Dependencies: T101, T022. Files: to be set by the S1.5b plan.
+
+- Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
+- Trace: REQ-104
 - State basis: Source checkbox in tasks.md.
 
 Planned and obtained evidence are separate in assurance.json. Closing this issue does not imply human review or scientific proof.
@@ -580,13 +616,13 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
-Title: [SPEC-066 T301] ADR and optional extra agent-braid[s1-local] for one candidate backend, never imported by the core, pi...
+Title: [SPEC-066 T301] Native model module inside agent_braid, standard library only (dependencies = []; no numpy, no extra,...
 
 <!-- agent-braid-task-id: SPEC-066/T301 -->
 
 ## Task
 
-ADR and optional extra `agent-braid[s1-local]` for one candidate backend, never imported by the core, pinned artifact path and digest, no automatic download, wheel and extra discovery checks. Dependencies: T206.
+Native model module inside `agent_braid`, standard library only (`dependencies = []`; no numpy, no extra, no download): calibrated logistic regression or boosted trees over the episode v0.2 structural features, behind the existing `Backend` protocol, with deterministic training, own weights and a pinned manifest digest. Tests first. Dependencies: T206.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-301
@@ -598,13 +634,13 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
-Title: [SPEC-066 T302] Freeze the candidate roster, resource budgets and paired evaluation plan, and implement the common bas...
+Title: [SPEC-066 T302] Calibration and abstention: temperature or isotonic scaling and abstention thresholds fitted on a cali...
 
 <!-- agent-braid-task-id: SPEC-066/T302 -->
 
 ## Task
 
-Freeze the candidate roster, resource budgets and paired evaluation plan, and implement the common baseline runners with complete cost accounting. Carries forward SPEC-029 T005 (#289) and T007 (#291). Dependencies: T301.
+Calibration and abstention: temperature or isotonic scaling and abstention thresholds fitted on a calibration split disjoint from training and evaluation; freeze the resource budgets and the paired evaluation plan; implement the common baseline runners (rule backend, SPEC-019 linear model) with complete cost accounting. Carries forward SPEC-029 T005 (#289) and T007 (#291). Dependencies: T301.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-301
@@ -616,13 +652,13 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 Proposed state: open. Parent: SPEC-066. Milestone: S1.5 — System One shadow activation. Labels: task. Project review: inherited from the parent (no separate flag).
 
-Title: [SPEC-066 T303] Execute the registered comparison at a common risk budget, or document infeasibility, and record the H...
+Title: [SPEC-066 T303] Ablation with and without the per-repo salted resource hashes, then the registered comparison at a com...
 
 <!-- agent-braid-task-id: SPEC-066/T303 -->
 
 ## Task
 
-Execute the registered comparison at a common risk budget, or document infeasibility, and record the H-S1 verdict; a null or negative result is valid. Carries forward SPEC-029 T009 (#293) and SPEC-031 T008 (#311). Dependencies: T302.
+Ablation with and without the per-repo salted resource hashes, then the registered comparison at a common risk budget (or a documented infeasibility). Keep the hashes only if they measurably improve precision without degrading calibration. Record the H-S1 verdict; a null or negative result is valid. Carries forward SPEC-029 T009 (#293) and SPEC-031 T008 (#311). Dependencies: T302.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/066-system-one-shadow/assurance.json)
 - Trace: REQ-301
