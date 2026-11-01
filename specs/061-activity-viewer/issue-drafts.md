@@ -20,7 +20,7 @@ Issue state is a bounded tracking record, not a scientific or founder approval.
 
 ## SPEC-061/T001
 
-Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-061 T001] Owner review of the specification, plan, contracts and open decisions OD-3 to OD-7. Dependencies: T008...
 
@@ -28,7 +28,7 @@ Title: [SPEC-061 T001] Owner review of the specification, plan, contracts and op
 
 ## Task
 
-Owner review of the specification, plan, contracts and open decisions OD-3 to OD-7. Dependencies: T008. Files: `spec.md`, `plan.md`, `contracts/`. Evidence: review record in this directory that also records the requested decisions D1–D6, the never-collect deviations (OD-7), the census threshold and the checkpoint date (OD-8).
+Owner review of the specification, plan, contracts and open decisions OD-3 to OD-7. Dependencies: T008. Files: `spec.md`, `plan.md`, `contracts/`. Evidence: review record in this directory that also records the requested decisions D1–D6, the never-collect deviations (OD-7), the census threshold and the checkpoint date (OD-8). Done 2026-11-01: [owner-review-20261101.json](owner-review-20261101.json).
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)
 - Trace: all REQ
@@ -74,7 +74,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-061/T004
 
-Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-061 T004] Add the VIS track to ROADMAP, STATUS, the milestone index, the AI tooling program, GitHub tracking sou...
 
@@ -92,7 +92,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-061/T005
 
-Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-061 T005] After merge to develop, publish VIS.1 tracking: audit, review, apply --confirm-repository jayanez/agen...
 
@@ -100,7 +100,7 @@ Title: [SPEC-061 T005] After merge to develop, publish VIS.1 tracking: audit, re
 
 ## Task
 
-After merge to `develop`, publish VIS.1 tracking: `audit`, review, `apply --confirm-repository jayanez/agent-braid --plan-sha256 <digest>`, record the milestone number, re-audit to zero operations, set the parent issue to Review pending in Project 6. Dependencies: T004 merged. Evidence: audit and apply outputs, milestone number in `github-tracking.json`.
+After merge to `develop`, publish VIS.1 tracking: `audit`, review, `apply --confirm-repository jayanez/agent-braid --plan-sha256 <digest>`, record the milestone number, re-audit to zero operations, set the parent issue to Review pending in Project 6. Dependencies: T004 merged. Evidence: audit and apply outputs, milestone number in `github-tracking.json`. Done 2026-11-01: milestone #25 (PR #808), parent #810 in Review pending, scoped re-audit with no operations.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)
 - Trace: REQ-015
@@ -110,7 +110,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-061/T006
 
-Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-061 T006] Record derived tracks VIS.2–VIS.4 with scope, sources, gates and open questions. Dependencies: none. F...
 
@@ -128,7 +128,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-061/T007
 
-Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-061 T007] Review the host-verification runbook. Dependencies: none. Files: host-verification-runbook.md. Evidenc...
 
@@ -146,7 +146,7 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 ## SPEC-061/T008
 
-Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
+Proposed state: closed. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
 Title: [SPEC-061 T008] Freeze the specification candidate with python3 -m scripts.validate_spec_kit freeze specs/061-activity...
 
@@ -262,7 +262,7 @@ Title: [SPEC-061 T038] Artifact census: count the owner's sessions and run direc
 
 ## Task
 
-Artifact census: count the owner's sessions and run directories of the last four weeks that contain analysis reports, plans, scheduler preparations, grants, ownership notices or receipts, or gate results (counts and artifact kinds only, no content). Dependencies: none. Evidence: `evidence/census-<date>.json` compared with the OD-8 threshold.
+Artifact census: count the owner's sessions and run directories of the last four weeks that contain analysis reports, plans, scheduler preparations, grants, ownership notices or receipts, or gate results (counts and artifact kinds only, no content). Dependencies: none. Evidence: `evidence/census-<date>.json` compared with the OD-8 threshold (at least 5 sessions or run directories with at least one coordination artifact, and at least 3 of the 6 kinds overall).
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)
 - Trace: REQ-002, REQ-006
@@ -562,13 +562,13 @@ Planned and obtained evidence are separate in assurance.json. Closing this issue
 
 Proposed state: open. Parent: SPEC-061. Milestone: VIS.1 — Activity viewer. Labels: task. Project review: inherited from the parent (no separate flag).
 
-Title: [SPEC-061 T035] Go/no-go checkpoint after the VIS.1a slice, by the OD-8 date: the owner opens the viewer on census or...
+Title: [SPEC-061 T035] Go/no-go checkpoint after the VIS.1a slice, by 2027-01-31 (OD-8): the owner opens the viewer on census...
 
 <!-- agent-braid-task-id: SPEC-061/T035 -->
 
 ## Task
 
-Go/no-go checkpoint after the VIS.1a slice, by the OD-8 date: the owner opens the viewer on census or real sessions, records a descriptive Q-VIS1 observation (procedure_hvis1) and the census result, and decides keep, re-scope or close as Deferred for VIS.1b and VIS.2–VIS.4. If the date passes without a slice, VIS.1 closes as Deferred. Dependencies: T029, T034, T038. Evidence: `evidence/checkpoint-<date>.md`.
+Go/no-go checkpoint after the VIS.1a slice, by 2027-01-31 (OD-8): the owner opens the viewer on census or real sessions, records a descriptive Q-VIS1 observation (procedure_hvis1) and the census result, and decides keep, re-scope or close as Deferred for VIS.1b and VIS.2–VIS.4. If the date passes without a slice, VIS.1 closes as Deferred. Dependencies: T029, T034, T038. Evidence: `evidence/checkpoint-<date>.md`.
 
 - Source: [spec.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/spec.md) · [tasks.md](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/tasks.md) · [assurance.json](https://github.com/jayanez/agent-braid/blob/develop/specs/061-activity-viewer/assurance.json)
 - Trace: REQ-015; Q-VIS1

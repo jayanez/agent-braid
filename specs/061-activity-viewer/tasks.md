@@ -13,11 +13,12 @@ per-probe owner authorization but no ADR, and run first.
 
 ## Governance and tracking
 
-- [ ] T001 (all REQ): Owner review of the specification, plan, contracts and open
+- [x] T001 (all REQ): Owner review of the specification, plan, contracts and open
   decisions OD-3 to OD-7. Dependencies: T008. Files: `spec.md`, `plan.md`,
   `contracts/`. Evidence: review record in this directory that also records the
   requested decisions D1–D6, the never-collect deviations (OD-7), the census
-  threshold and the checkpoint date (OD-8).
+  threshold and the checkpoint date (OD-8). Done 2026-11-01:
+  [owner-review-20261101.json](owner-review-20261101.json).
 - [x] T002 (REQ-004, REQ-013): Decide ADR 0032 (activity viewer companion).
   Dependencies: none. Files: `docs/adr/0032-activity-viewer-companion.md`.
   Evidence: ADR status change merged.
@@ -39,12 +40,12 @@ per-probe owner authorization but no ADR, and run first.
   apply outputs, milestone number in `github-tracking.json`. Done 2026-11-01:
   milestone #25 (PR #808), parent #810 in Review pending, scoped re-audit with no
   operations.
-- [ ] T006 (REQ-011): Record derived tracks VIS.2–VIS.4 with scope, sources,
+- [x] T006 (REQ-011): Record derived tracks VIS.2–VIS.4 with scope, sources,
   gates and open questions. Dependencies: none. Files: `tracks.md`. Evidence:
   owner review in T001.
-- [ ] T007 (REQ-014): Review the host-verification runbook. Dependencies: none.
+- [x] T007 (REQ-014): Review the host-verification runbook. Dependencies: none.
   Files: `host-verification-runbook.md`. Evidence: owner review in T001.
-- [ ] T008: Freeze the specification candidate with
+- [x] T008: Freeze the specification candidate with
   `python3 -m scripts.validate_spec_kit freeze specs/061-activity-viewer`.
   Dependencies: T004, T006, T007. Evidence: historical snapshot in `assurance.json`.
 - [ ] T009 (REQ-015): Keep STATUS, ROADMAP, the milestone index, tracking source
@@ -74,7 +75,9 @@ per-probe owner authorization but no ADR, and run first.
   directories of the last four weeks that contain analysis reports, plans,
   scheduler preparations, grants, ownership notices or receipts, or gate results
   (counts and artifact kinds only, no content). Dependencies: none. Evidence:
-  `evidence/census-<date>.json` compared with the OD-8 threshold.
+  `evidence/census-<date>.json` compared with the OD-8 threshold (at least 5
+  sessions or run directories with at least one coordination artifact, and at
+  least 3 of the 6 kinds overall).
 
 ## VIS.1a — Coordination slice
 
@@ -158,8 +161,8 @@ per-probe owner authorization but no ADR, and run first.
   `integrations/agent-braid-view/README.md`, tooling index and
   `tests/test_view_docs.py`; updated for VIS.1b at its closure. Dependencies:
   T028. Verification: procedure_015.
-- [ ] T035 (REQ-015; Q-VIS1): Go/no-go checkpoint after the VIS.1a slice, by the
-  OD-8 date: the owner opens the viewer on census or real sessions, records a
+- [ ] T035 (REQ-015; Q-VIS1): Go/no-go checkpoint after the VIS.1a slice, by
+  2027-01-31 (OD-8): the owner opens the viewer on census or real sessions, records a
   descriptive Q-VIS1 observation (procedure_hvis1) and the census result, and
   decides keep, re-scope or close as Deferred for VIS.1b and VIS.2–VIS.4. If the
   date passes without a slice, VIS.1 closes as Deferred. Dependencies: T029,
