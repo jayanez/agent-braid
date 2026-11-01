@@ -15,6 +15,7 @@ from urllib.parse import urlsplit
 from . import __version__
 from .plugin_registry import (MigrationRequired, RegistryError, RegistryStale, configuration_digest,
                               home_path, load)
+from . import system_one_shadow
 from . import tooling_mcp as core
 
 SCHEMA = 'agent-braid-plugin/v0.2'
@@ -59,13 +60,14 @@ class PluginRouter:
         self.baseline = self._current()
         self.baseline_digest = configuration_digest(self.baseline)
         self.snapshot = self.baseline or {'telemetry': 'off', 'workspaces': []}
+        self.system_one = self.snapshot.get('systemOne', 'off')
         self.services = {}
         for row in self.snapshot['workspaces']:
             config = core.ToolingConfig(Path(row['sourceRoot']), Path(row['resultRoot']),
                 grant_store=Path(row['grantStore']) if row['grantStore'] else None,
                 runtime_enabled=row['runtimeEnabled'],
                 worktree_roots=tuple(Path(p) for p in row['worktreeRoots']),
-                telemetry=self.snapshot['telemetry'])
+                telemetry=self.snapshot['telemetry'], system_one=self.system_one)
             self.services[row['workspaceId']] = WorkspaceService(row['workspaceId'], config)
         # One global admission lock bounds reservations across all workspace services.
         self.admission = threading.Lock()
@@ -87,6 +89,11 @@ class PluginRouter:
                 'telemetry': {'configuredMode': current['telemetry'] if current else 'off',
                               'activeMode': self.snapshot['telemetry'],
                               'retentionDays': 30, 'automaticUpload': False},
+                'systemOne': {'configuredMode': current.get('systemOne', 'off') if current else 'off',
+                              'activeMode': self.system_one,
+                              'store': {'location': system_one_shadow.display_location(),
+                                        'present': system_one_shadow.store_present()},
+                              'episodeRetentionDays': system_one_shadow.RETENTION_DAYS},
                 'gitAvailable': shutil.which('git') is not None,
                 'registryHome': str(self.home),
                 'bundledCli': str(self.plugin_root / 'launch') if self.plugin_root else None,

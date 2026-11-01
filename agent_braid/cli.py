@@ -97,6 +97,13 @@ def main(argv: list[str] | None = None) -> int:
     decision_commands.add_parser("capabilities", help="list local immutable reference capabilities")
     decide_parser = decision_commands.add_parser("decide", help="evaluate a bounded local synthetic request")
     decide_parser.add_argument("input", type=Path)
+    report_parser = decision_commands.add_parser("report", help="count retained System One shadow episodes")
+    report_parser.add_argument("--format", choices=("text", "json"), default="text")
+    purge_parser = decision_commands.add_parser("purge", help="delete the local System One shadow store")
+    purge_parser.add_argument("--yes", action="store_true", help="skip the confirmation prompt")
+    decision_parser.add_argument("--telemetry", choices=("off", "local"), default="off", help="explicit local numeric telemetry; default off")
+    for decision_command in decision_commands.choices.values():
+        decision_command.add_argument("--telemetry", choices=("off", "local"), default=argparse.SUPPRESS, help="same as the group option")
     analyze_parser = subparsers.add_parser("analyze", help="analyze AIM 0.2 records")
     analyze_parser.add_argument("input", type=Path)
     analyze_parser.add_argument("--format", choices=("json", "text"), default="json")
@@ -197,16 +204,25 @@ def main(argv: list[str] | None = None) -> int:
     if args.command in {"expand-ownership", "check-ownership", "audit-isolation", "report-recovery"}:
         from .ownership_cli import run as run_ownership
         return run_ownership(args)
-    if args.command == "system-one":
-        from .system_one_cli import run
-        return run(args)
-    if args.command in {"analyze", "analyze-git"} and args.telemetry == "local":
+    if args.command == "system-one" or (args.command in {"analyze", "analyze-git"} and args.telemetry == "local"):
         from .tooling_telemetry import observe
-        with observe("local", "cli", args.command) as observation:
-            result = _run_command(args, observation)
-            observation.outcome = "ok" if result == 0 else "refused" if result == 2 else "error"
+        with observe(args.telemetry, "cli", args.command) as observation:
+            if args.command == "system-one":
+                from .system_one_cli import run
+                result = run(args)
+            else:
+                result = _run_command(args, observation)
+            observation.outcome = _outcome(args, result)
             return result
     return _run_command(args)
+
+
+def _outcome(args, result: int) -> str:
+    """Telemetry outcome: System One `decide` abstain/defer (exit 1) is a valid answer."""
+    if result == 0 or (result == 1 and getattr(args, "decision_command", None) == "decide"):
+        return "ok"
+    # A cancelled purge (exit 1) declined to act; exit 2 is a refusal.
+    return "refused" if result == 2 or getattr(args, "decision_command", None) == "purge" else "error"
 
 
 def _run_command(args, observation=None) -> int:

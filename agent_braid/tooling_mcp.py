@@ -59,10 +59,13 @@ class ToolingConfig:
     runtime_enabled: bool = False
     worktree_roots: tuple[Path, ...] = ()
     telemetry: str = "off"
+    system_one: str = "off"
 
     def __post_init__(self) -> None:
         if self.telemetry not in {"off", "local"}:
             raise ToolingError("Telemetry mode must be off or local")
+        if self.system_one not in {"off", "shadow"}:
+            raise ToolingError("System One mode must be off or shadow")
         source = Path(self.source_root).expanduser().resolve(strict=True)
         results = Path(self.result_parent).expanduser().resolve(strict=True)
         if not source.is_dir() or not results.is_dir():
@@ -270,6 +273,38 @@ class ToolingService:
         return ("analyze-work", "analyze", "prepare")
 
     def invoke(self, name: str, args: Any, cancelled: threading.Event) -> dict[str, Any]:
+        envelope = self._invoke_measured(name, args, cancelled)
+        if self.config.system_one == "shadow":
+            self._shadow(name, args, envelope)
+        return envelope
+
+    def _shadow(self, name: str, args: Any, envelope: dict[str, Any]) -> None:
+        """SPEC-066: hand the final report to the off-request worker; never changes the envelope.
+
+        Only the report (or the encoded artifact holding it) is extracted here, and the
+        already-validated request and the configured source root are passed by
+        reference; decoding, feature derivation, salting and the store write all happen
+        on the worker thread.
+        """
+        try:
+            if name not in {"analyze", "analyze-work"} or envelope.get("status") != "ok":
+                return
+            source = envelope.get("result")
+            if type(source) is dict and source.get("type") == "evidence-artifact-reference":
+                with self.lock:
+                    artifact = self.artifacts.get(source.get("artifactId"))
+                source = artifact.data if artifact is not None else None
+            elif type(source) is dict:
+                source = source.get("report")  # the Git replay `analyze` result carries none
+            if type(source) not in {dict, bytes}:
+                return
+            kind = args.get("kind", "aim") if name == "analyze-work" else "aim"
+            from . import system_one_shadow
+            system_one_shadow.submit(name, kind, source, args.get("request"), str(self.config.source_root))
+        except Exception:
+            pass
+
+    def _invoke_measured(self, name: str, args: Any, cancelled: threading.Event) -> dict[str, Any]:
         if self.config.telemetry == "off":
             return self._invoke(name, args, cancelled)
         from .tooling_telemetry import OPERATIONS, OUTCOMES, observe
@@ -878,10 +913,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--enable-runtime", action="store_true")
     parser.add_argument("--worktree-root", action="append", default=[], type=Path)
     parser.add_argument("--telemetry", choices=("off", "local"), default="off")
+    parser.add_argument("--system-one", choices=("off", "shadow"), default="off")
     args = parser.parse_args(argv)
     try:
         config = ToolingConfig(args.source_root, args.result_parent, args.grant_store,
-                               args.enable_runtime, tuple(args.worktree_root), telemetry=args.telemetry)
+                               args.enable_runtime, tuple(args.worktree_root), telemetry=args.telemetry,
+                               system_one=args.system_one)
         asyncio.run(serve_stdio(config))
         return 0
     except (RuntimeError, ToolingError, OSError) as exc:

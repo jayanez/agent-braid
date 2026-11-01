@@ -197,10 +197,13 @@ command's required artifacts, destinations and acknowledgements.
 | `prepare-git-run`, `execute-git-run`, `recover-git-run`, `verify-git-run` | Prepare, explicitly authorize, recover or verify the bounded local Git runtime. |
 | `prepare-policy-run`, `verify-policy-plan`, `grant-policy-run`, `execute-policy-run`, `inspect-policy-run`, `recover-policy-run` | Prepare and reconstruct an operator policy, issue a digest-bound grant, then execute or inspect/recover the private result. |
 | `system-one capabilities`, `system-one decide` | Inspect or run opt-in offline synthetic decision diagnostics. |
+| `system-one report`, `system-one purge` | Count or delete the episodes recorded by the opt-in System One shadow mode (SPEC-066); both accept `--telemetry local`. |
 | `forecast capabilities`, `forecast predict`, `forecast advice`, `forecast inspect`, `forecast export`, `forecast serve-mcp` | Run opt-in local numeric forecasts and heuristic advice, or serve them over a read-only stdio MCP transport. |
 | `telemetry status`, `telemetry report`, `telemetry export`, `telemetry merge`, `telemetry purge` | Inspect, move or clear default-off local numeric telemetry. |
 | `plugin setup`, `plugin discover`, `plugin doctor`, `plugin workspaces`, `plugin serve` | Configure and diagnose the native user plugin and its workspace registry. |
 | `tooling` | Experimental portable local AI tooling surface. |
+
+System One shadow mode is off by default. After `plugin setup --system-one shadow` (or `python -m agent_braid.tooling_mcp --system-one shadow` for the standalone server) and a reconnect, each successful `analyze-work` call also appends one closed-vocabulary structural episode to `~/.local/share/agent-braid/system-one/`, with 30 UTC dates retained and no upload; the write runs on a background worker, off the request path, and is dropped when that worker is busy. Episodes include structural features (per-side effect kinds, resource classes and path-shape counts) and per-repository salted pseudonymous resource hashes; the salt and episodes stay on this machine and `system-one purge` removes both. Every MCP envelope stays byte-identical, the reference backend only abstains, and no execution authority changes.
 
 The analyzer/runtime contract is `0.1.0-alpha`; AIM and certificate contracts
 are `0.2.0-draft`; the package version is `0.1.0a2`. The public CLI does not

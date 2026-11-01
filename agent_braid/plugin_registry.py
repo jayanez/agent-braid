@@ -17,6 +17,7 @@ import threading
 SCHEMA = 'agent-braid-plugin-registry/v0.2'
 LEGACY_SCHEMA = 'agent-braid-plugin-registry/v0.1'
 TELEMETRY_MODES = ('off', 'local')
+SYSTEM_ONE_MODES = ('off', 'shadow')
 MAX_BYTES = 256 * 1024
 MAX_WORKSPACES = 64
 
@@ -142,11 +143,14 @@ def _decode(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
             if not migrate:
                 raise MigrationRequired('Registry v0.1 must be migrated with a plugin setup preview')
             value = {'schema': SCHEMA, 'telemetry': 'off', 'workspaces': value['workspaces']}
-        if (not isinstance(value, dict) or set(value) != {'schema', 'telemetry', 'workspaces'}
+        # `systemOne` is optional: absent means off, and setup never stores an explicit off.
+        if (not isinstance(value, dict) or not {'schema', 'telemetry', 'workspaces'} <= set(value) <= {'schema', 'telemetry', 'workspaces', 'systemOne'}
                 or value['schema'] != SCHEMA):
             raise RegistryError('Unknown registry schema')
         if not isinstance(value['telemetry'], str) or value['telemetry'] not in TELEMETRY_MODES:
             raise RegistryError('Unknown telemetry consent')
+        if 'systemOne' in value and (not isinstance(value['systemOne'], str) or value['systemOne'] not in SYSTEM_ONE_MODES):
+            raise RegistryError('Unknown System One consent')
         rows = value['workspaces']
         if not isinstance(rows, list) or len(rows) > MAX_WORKSPACES:
             raise RegistryError('Too many registered workspaces')
@@ -175,7 +179,10 @@ def configuration_digest(value: dict | None) -> str | None:
         return None
     rows = sorted((dict(row, worktreeRoots=sorted(row['worktreeRoots'])) for row in value['workspaces']),
                   key=lambda row: row['workspaceId'])
-    return _hash(_bytes({'telemetry': value['telemetry'], 'workspaces': rows}))
+    digested = {'telemetry': value['telemetry'], 'workspaces': rows}
+    if value.get('systemOne', 'off') != 'off':
+        digested['systemOne'] = value['systemOne']  # off and absent keep the pre-S1.5 digest
+    return _hash(_bytes(digested))
 
 
 def load(home: Path | None = None) -> dict:
@@ -197,7 +204,8 @@ def _repository(path: Path) -> Path | None:
 
 
 def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bool | None = None,
-               grant_store: Path | None = None, worktree_roots=(), telemetry: str | None = None) -> dict:
+               grant_store: Path | None = None, worktree_roots=(), telemetry: str | None = None,
+               system_one: str | None = None) -> dict:
     selected = home_path(home)
     before = _raw(selected)
     value = _decode(before, selected, migrate=True)
@@ -206,6 +214,13 @@ def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bo
         if telemetry not in TELEMETRY_MODES:
             raise RegistryError('Telemetry consent must be off or local')
         value['telemetry'] = telemetry
+    if system_one is not None:
+        if system_one not in SYSTEM_ONE_MODES:
+            raise RegistryError('System One consent must be off or shadow')
+        if system_one == 'off':
+            value.pop('systemOne', None)
+        else:
+            value['systemOne'] = system_one
     rows = {row['workspaceId']: row for row in value['workspaces']}
     for identifier in remove:
         if identifier not in rows:
@@ -233,6 +248,11 @@ def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bo
         effects.append('Migrate the registry from v0.1 to v0.2 without a v0.1 backup; earlier plugin versions refuse v0.2')
     effects.append(f"Plugin MCP telemetry consent: {value['telemetry']}; applies after reconnect, "
                    'local aggregates only, no upload; setup itself collects nothing')
+    if system_one is not None or 'systemOne' in value:
+        effects.append(f"Plugin MCP System One mode: {value.get('systemOne', 'off')}; applies after reconnect, "
+                       'shadow records closed-vocabulary episodes locally and changes no output; no upload')
+    if value.get('systemOne') == 'shadow':
+        effects.append('Earlier plugin versions refuse a registry that records System One shadow consent')
     preview = {'schema': 'agent-braid-plugin-setup/v0.2', 'home': str(selected),
                'beforeSha256': _hash(before), 'migratedFrom': migrated, 'registry': value,
                'effects': effects, 'reconnectRequired': before != _bytes(value)}
