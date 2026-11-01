@@ -8,7 +8,7 @@
     "name": "claude-code",
     "client": "Claude desktop app, browser pane",
     "opener": "owner, by hand (owner's answer, verbatim: \"Ya la abrí\"); no agent drove the pane",
-    "version": "not recorded"
+    "version": "4.4212.0 (2026-10-29), as shown by the owner in Claude > About Claude on 2026-11-01; the app was not updated between the probe and the reading"
   },
   "os": {
     "name": "macOS",
@@ -89,9 +89,9 @@
     "The self-report is produced by the fixture's own script; a host-level request outside the page's Performance API (for example a browser prefetch) would not be counted.",
     "The user agent did not contain 'Electron'; that the page ran in the Claude desktop browser pane rests on the owner's statement.",
     "Fixture only: the real viewer bundle (Three.js r186) is opened again at the T035 checkpoint.",
-    "One desktop app version on one machine; the app version was not recorded by the page.",
     "The fixture is not committed; its hashes identify the served bytes only.",
-    "This receipt covers the page loading only; ingest (OpenTelemetry, hooks) from the desktop client was not probed."
+    "This receipt covers the page loading only; ingest (OpenTelemetry, hooks) from the desktop client was not probed.",
+    "One desktop app version on one machine."
   ],
   "outcomeRationale": "Every check the page could observe passed; console errors were not read because no agent reads the pane, and are rechecked with the real viewer at T035."
 }

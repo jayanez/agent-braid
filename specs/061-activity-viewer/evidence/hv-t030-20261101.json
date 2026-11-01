@@ -352,7 +352,7 @@
     "Embedded hashes of the uncommitted throwaway listener and fixture identify the bytes used only; they are not repository-verifiable.",
     "Sorted name lists replace raw excerpts by design (names-only probe); no payload bytes were kept."
   ],
-  "outcomeRationale": "The three ingest paths (otlp-logs, otlp-metrics, claude-hook) work, so no path is removed from VIS.1 and the row is verified. The two not-matching checks are field-level expectations: OpenTelemetry has no agent or parent-agent id (attribution moves to hook agent_id) and no HTTP SessionStart hook arrived under claude -p (a strand opens on the first event). The contract allowlist in contracts/ui-security-privacy.md still names agent_id, parent_agent_id and SessionStart; it is re-pinned through the reviewed change at T016 and T019.",
+  "outcomeRationale": "The three ingest paths (otlp-logs, otlp-metrics, claude-hook) work, so under the runbook's path-level rule no path is removed from VIS.1 and the row is verified. The two not-matching checks are field-level expectations: OpenTelemetry has no agent or parent-agent id (attribution moves to hook agent_id) and no HTTP SessionStart hook arrived under claude -p (a strand opens on the first event). The contract allowlist in contracts/ui-security-privacy.md still names agent_id, parent_agent_id and SessionStart; it is re-pinned through the reviewed change at T016 and T019.",
   "pathOutcomes": {
     "otlp-logs": "verified",
     "otlp-metrics": "verified",
