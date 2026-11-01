@@ -319,7 +319,8 @@
     "SPEC-046",
     "SPEC-048",
     "SPEC-049",
-    "SPEC-050"
+    "SPEC-050",
+    "SPEC-066"
   ],
   "milestone_numbers": {
     "M0 — Operational foundations": 1,
@@ -346,7 +347,8 @@
     "HAR.2 — Braid Harness evaluation and learning": 22,
     "HAR.3 — Braid Harness adaptation and integration": 23,
     "Deferred": 24,
-    "VIS.1 — Activity viewer": 25
+    "VIS.1 — Activity viewer": 25,
+    "S1.5 — System One shadow activation": 26
   },
   "task_cancellations": {
     "SPEC-045/T007": {

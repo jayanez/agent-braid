@@ -45,7 +45,7 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 | [SPEC-031: system-one-integration](../../specs/031-system-one-integration/spec.md) | Deferred #24; parts absorbed by SPEC-066 |
 | [SPEC-032: system-one-product](../../specs/032-system-one-product/spec.md) | Deferred #24 |
 | [SPEC-033: system-one-promotion](../../specs/033-system-one-promotion/spec.md) | Deferred #24; parts absorbed by SPEC-066 |
-| [SPEC-066: system-one-shadow](../../specs/066-system-one-shadow/spec.md) | S1.5 — System One shadow activation (milestone number is registered when created) |
+| [SPEC-066: system-one-shadow](../../specs/066-system-one-shadow/spec.md) | S1.5 — System One shadow activation #26 |
 | [SPEC-034: workload-forecast-data](../../specs/034-workload-forecast-data/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
 | [SPEC-035: chronos2-forecast-adapter](../../specs/035-chronos2-forecast-adapter/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |
 | [SPEC-036: forecast-parallelism-experiment](../../specs/036-forecast-parallelism-experiment/spec.md) | [FC.1 — Forecast-guided parallelism experiment](https://github.com/jayanez/agent-braid/milestone/18) |

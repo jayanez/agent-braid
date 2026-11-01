@@ -36,7 +36,7 @@ specifications unless a SPEC-066 requirement amends them.
   Evidence: review record in this directory that also records the decisions taken
   on OD-1 to OD-8 and the SC-006 session definition.
   Evidence (2026-11-01): `owner-review-20261101.md`.
-- [ ] T002: Add the S1.5 track to ROADMAP, STATUS, the milestone index,
+- [x] T002: Add the S1.5 track to ROADMAP, STATUS, the milestone index,
   `docs/system-one/README.md` and `RESUMPTION`, the GitHub tracking source
   (`specs` entry, milestone, `project_review_pending`) and `GITHUB_TRACKING.md`.
   Dependencies: none. Files: `ROADMAP.md`, `docs/STATUS.md`,
@@ -44,6 +44,10 @@ specifications unless a SPEC-066 requirement amends them.
   `docs/development/github-tracking.json`, `docs/development/GITHUB_TRACKING.md`.
   Verification: `python3 scripts/sync_github_tracking.py source`. Evidence: merged
   change and source output.
+  Evidence (2026-11-01): ROADMAP, milestone index, `docs/system-one/README.md` and
+  `RESUMPTION` merged in #860; milestone #26 created on GitHub and registered,
+  SPEC-066 added to `project_review_pending`, STATUS and `GITHUB_TRACKING.md`
+  updated by the tracking-sync change; `source` reports 13 review-pending records.
 - [ ] T003: Support a task-level milestone override in the tracking source so the
   absorbed SPEC-029, SPEC-031 and SPEC-033 tasks can move to S1.5 while their
   parent specs stay in Deferred. Tests first. Dependencies: T002. Files:
@@ -163,7 +167,8 @@ specifications unless a SPEC-066 requirement amends them.
   `agent_braid/system_one_shadow.py`, `tests/test_system_one_shadow.py`,
   `tests/fixtures/system_one_shadow/`. Dependencies: T011. Verification:
   procedure_010 (see [validation-plan.md](validation-plan.md)).
-  Status 2026-11-01: Pending; the owner decided v0.2 ships with S1.5a (R11, R12).
+  Evidence (2026-11-01): merged in #860 (owner decisions R11, R12); v0.2 builder,
+  validator, salt and purge tests in `tests/test_system_one_shadow.py`.
 
 ## S1.5a — Owner-run check
 
