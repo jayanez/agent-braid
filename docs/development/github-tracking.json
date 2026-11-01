@@ -296,6 +296,10 @@
     "066-system-one-shadow": {
       "milestone": "S1.5 — System One shadow activation",
       "state": "open"
+    },
+    "067-assurance-profiles": {
+      "milestone": "HAR.3 — Braid Harness adaptation and integration",
+      "state": "open"
     }
   },
   "task_state_overrides": {
