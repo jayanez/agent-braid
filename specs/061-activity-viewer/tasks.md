@@ -24,7 +24,7 @@ per-probe owner authorization but no ADR, and run first.
 - [x] T003 (REQ-010, REQ-013): Founder decision on ADR 0033 (vendored Three.js,
   MIT boundary). Dependencies: none. Files:
   `docs/adr/0033-vendored-threejs-mit-boundary.md`. Evidence: ADR status change merged.
-- [ ] T004 (REQ-015): Add the VIS track to ROADMAP, STATUS, the milestone index,
+- [x] T004 (REQ-015): Add the VIS track to ROADMAP, STATUS, the milestone index,
   the AI tooling program, GitHub tracking source and validation profile notes.
   Dependencies: none. Files: `ROADMAP.md`, `docs/STATUS.md`,
   `docs/development/SPEC_MILESTONE_INDEX.md`,
@@ -32,11 +32,13 @@ per-probe owner authorization but no ADR, and run first.
   `docs/development/github-tracking.json`, `docs/development/GITHUB_TRACKING.md`,
   `docs/tooling/README.md`. Verification: `python3 scripts/sync_github_tracking.py
   source`. Evidence: merged change and source output.
-- [ ] T005 (REQ-015): After merge to `develop`, publish VIS.1 tracking: `audit`,
+- [x] T005 (REQ-015): After merge to `develop`, publish VIS.1 tracking: `audit`,
   review, `apply --confirm-repository jayanez/agent-braid --plan-sha256 <digest>`,
   record the milestone number, re-audit to zero operations, set the parent issue
   to Review pending in Project 6. Dependencies: T004 merged. Evidence: audit and
-  apply outputs, milestone number in `github-tracking.json`.
+  apply outputs, milestone number in `github-tracking.json`. Done 2026-11-01:
+  milestone #25 (PR #808), parent #810 in Review pending, scoped re-audit with no
+  operations.
 - [ ] T006 (REQ-011): Record derived tracks VIS.2–VIS.4 with scope, sources,
   gates and open questions. Dependencies: none. Files: `tracks.md`. Evidence:
   owner review in T001.
