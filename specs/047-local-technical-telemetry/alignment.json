@@ -4,10 +4,10 @@
   "sourceCounts": {
     "specs": 10,
     "tasks": 131,
-    "tasksChecked": 104,
-    "tasksUnchecked": 29,
-    "parentsClosed": 4,
-    "parentsOpen": 6,
+    "tasksChecked": 114,
+    "tasksUnchecked": 19,
+    "parentsClosed": 5,
+    "parentsOpen": 5,
     "totalRecords": 141
   },
   "specs": [
@@ -45,7 +45,7 @@
       "id": "SPEC-044",
       "role": "Evaluation",
       "path": "specs/044-ai-tooling-evaluation",
-      "scope": "Product metrics separate from receipts/native/cost; preserve T004; T017/T018 pending."
+      "scope": "Product metrics separate from receipts/native/cost; preserve T004; registered evaluation (T001, T002, T005-T010, T017, T018) cancelled by owner decision 2026-11-01."
     },
     {
       "id": "SPEC-046",

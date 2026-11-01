@@ -626,8 +626,8 @@ print('preserved')
         self.assertEqual({x['id'] for x in alignment['specs']}, {'SPEC-039','SPEC-040','SPEC-041','SPEC-042','SPEC-043','SPEC-044','SPEC-046','SPEC-047','SPEC-054','SPEC-060'})
         states = {x['key']:x['state'] for x in selected}
         self.assertEqual(states['SPEC-044/T004'], 'closed')
-        self.assertEqual(states['SPEC-044/T017'], 'open')
-        self.assertEqual(states['SPEC-044/T018'], 'open')
+        self.assertEqual(states['SPEC-044/T017'], 'closed')
+        self.assertEqual(states['SPEC-044/T018'], 'closed')
         self.assertEqual(states['SPEC-047/T010'], 'closed')
         graph = {}
         for edge in alignment['dependencies']:

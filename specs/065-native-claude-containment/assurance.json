@@ -1,0 +1,322 @@
+{
+  "articles": [
+    0,
+    4,
+    5,
+    6,
+    7,
+    12,
+    13,
+    14,
+    15,
+    19,
+    20,
+    24
+  ],
+  "assumptions": "Single-operator founder macOS machine (observed macOS 27.0.1 build 26A434); Claude Code 2.1.292 at /opt/homebrew/bin/claude; subscription (Max) route with extra usage disabled; F5 STRICT isolation bound and NC-1 to NC-11 decided in specs/065-native-claude-containment/evidence/founder-decisions-20261031.json (T001); same-UID processes outside the sandbox are not hostile during a run; values to be observed by probe are fixed only in a reviewed T009 evidence bundle.",
+  "authority_snapshot": {
+    "commit": null,
+    "hashes": {
+      "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
+      "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "e98b19c465689190265ed410b9226d60d52f00a8abf95410f5aa0a567aa80fea",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
+      "docs/adr/0014-parallel-integration-contract.md": "2481e93cf1e392887f2ee74e39efec7dfee0a9c52340fccd491903fd4292f679",
+      "docs/adr/0015-real-repository-validation-profile.md": "43e05f6fa96b5b3a8a8a83ddc922d8bced11b89a3f88263760b83b358febde99",
+      "docs/adr/0016-post-root-public-provenance.md": "e3c001cc23b64db5362ed0274af21d1d5a42b27d2bff68654db51498fbfb142a",
+      "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+      "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
+      "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "c9e85fbab0c71445ca16d9aef7c33d17614abbf36588441ddf90b2b07fc1fd89",
+      "docs/adr/0022-attribution-correction-history-equivalence.md": "0d394b895af69374c7f6bdf441cc780ee67802c34f9b0380f8ed58b1c9a17eb1",
+      "docs/adr/0023-second-history-correction-equivalence.md": "4334fe23543dad038811b7819acbc24fbebab3c1858789816b1512e786b7a8eb",
+      "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
+      "docs/adr/0024-native-ai-plugins.md": "ca2fd4a76294aff60ab2a5861ae110262032bc133b011a2043e91b16884845e5",
+      "docs/adr/0025-local-technical-telemetry.md": "e2f9af4d0d0a118635677146ba0c96cbd82046b7943eca36eeabf041923601f7",
+      "docs/adr/0026-pure-owned-work-validation.md": "dc6a045316c37201767adba79ad59779cff4646c9d05e4a2306dfaec481e4ccd",
+      "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
+      "docs/adr/0028-closed-effectful-workload-simulation.md": "be8bb2fefc702a2d85b804f70141f68f25b68e45118d25b4f4fa0e99d62eca85",
+      "docs/adr/0029-claude-dynamic-workflows.md": "16b5fa3f4a4dd029f6041a3dc07ed5dcf16cc8e57d96577ba72dedec295801cd",
+      "docs/adr/0030-native-plugin-surface-naming.md": "2bff8ce3fd5c2e183dca8000044ccd4d08980ec7e4a1b31d9af7a3a4b7f18c8e",
+      "docs/adr/0031-portable-prompt-names.md": "2e2ccf4e3d3b82cfb3e375d790104b9bb79f7f503041f11e60738e546d670d8e",
+      "docs/adr/0032-activity-viewer-companion.md": "64afb19937e808a5e4a658cb92b77313e89df6af177065328aafb6c6ef902ec3",
+      "docs/adr/0033-vendored-threejs-mit-boundary.md": "38b7d9d17eaf71ff999c2de7b47d42d6b4d53c5a359aa8e2291982b1823a910f",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "991de0aba02d2f89cb5fd01af4d9842c0a15b1ee52fb692671e34a81a6b09ab2",
+      "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
+      "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
+      "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+      "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+      "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+      "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
+      "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "current"
+  },
+  "compatibility": "Offline profile byte-compatible (bytes, digests, views, refusal reasons); qualification record formats unchanged; plugin, AIM, grants, telemetry, observation format and every SPEC-048/049 artifact unchanged; native profile is a new closed schema under the same manifest format.",
+  "domain": "Agent Braid harness laboratory native execution of one host (Claude Code CLI, read-only tools) on one macOS machine, under the SPEC-048 manifest, lab, host-adapter and qualification contracts.",
+  "evidence_snapshot": {
+    "commit": null,
+    "mode": "current"
+  },
+  "execution_contract": "Native runs only with a verified containment record and a verified Claude host record whose environment hash equals the native manifest's and that have not expired; pre-session self-checks and the quota gate pass before every session; refuse rather than degrade; no retry, no alternative or paid route; executionAuthorization stays false; issuance is a human act outside code.",
+  "human_review": "pending",
+  "hypotheses": "H1 (engineering, may fail): on the founder's macOS machine the NC-2 mechanism can enforce all four effects at STRICT level while Claude Code completes a read-only headless session.",
+  "observation_contract": "Probe bundle per qualification attempt: environment inputs and hash, versioned catalog and hash, per-probe results in uncontained-control and contained modes with independent before/after observations, pre/post quota readings, per-effect status; run evidence carries backend label, qualification hashes and pre-session self-check results. No secret value or raw provider transcript is exported.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "AGENTS.md",
+    "docs/development/SPEC_KIT.md",
+    "docs/development/VALIDATION_PROFILES.md",
+    "docs/theory/CLAIM_DISCIPLINE.md",
+    "docs/adr/0019-bounded-local-git-runtime.md",
+    "docs/adr/0021-codex-claude-tooling-integration.md",
+    "docs/adr/0027-braid-harness-offline-foundations.md",
+    "agent_braid/harness_manifest.py",
+    "agent_braid/harness_lab.py",
+    "agent_braid/harness_host_claude.py",
+    "agent_braid/system_one_verified_stdio.py",
+    "agent_braid/git_process.py",
+    "specs/048-harness-variant-laboratory/spec.md",
+    "specs/048-harness-variant-laboratory/tasks.md",
+    "specs/048-harness-variant-laboratory/contracts/offline-foundations.md",
+    "specs/048-harness-variant-laboratory/evidence/founder-review-20261031.json",
+    "specs/049-harness-evaluation-learning/tasks.md",
+    "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json",
+    "specs/065-native-claude-containment/spec.md",
+    "specs/065-native-claude-containment/plan.md",
+    "specs/065-native-claude-containment/research.md",
+    "specs/065-native-claude-containment/tasks.md",
+    "specs/065-native-claude-containment/validation-plan.md",
+    "specs/065-native-claude-containment/quickstart.md",
+    "specs/065-native-claude-containment/analysis.md",
+    "specs/065-native-claude-containment/contracts/native-profile.md",
+    "specs/065-native-claude-containment/contracts/containment-qualification.md",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "the committed offline manifests and the offline test corpus",
+          "id": "SC-001",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure_001 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
+          "test_file": "specs/065-native-claude-containment/validation-plan.md",
+          "test_name": "procedure_001",
+          "then": "the bytes, digests, views and refusal reasons equal the pre-change results; and given a native manifest with any field outside the closed native schema, any limit above the founder caps, route other than `subscription`, or host kind other than `claude`, when parsed, then it is refused with a fixed reason and no partial view.",
+          "when": "they are parsed by the extended parser"
+        }
+      ],
+      "text": "Native Claude manifest profile. A second, closed manifest profile for host kind `claude` is added beside `offline-foundations`. It binds the executable hash, the build, the requested model/effort and route `subscription`, the containment backend identity and non-zero native limits within the founder's caps. The offline profile is byte-compatible: every existing offline manifest parses to the same view and the same SHA-256, and every existing offline refusal is unchanged. The native profile never sets `executionAuthorization`."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "a native manifest, a verified host qualification and a contained launcher",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure_002 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
+          "test_file": "specs/065-native-claude-containment/validation-plan.md",
+          "test_name": "procedure_002",
+          "then": "the transport reports the discovered version, the run's stdout, exit, timeout, cancellation and settlement, the observation is labelled `host`, and `executionAuthorization` stays false; and given each of: no qualification, an expired or drifted one, a Codex qualification, `ANTHROPIC_API_KEY` in the parent environment, a non- subscription `apiKeySource`, a host qualification without a qualified backend, or an executable whose hash differs from the pin, when dispatched, then it refuses before launch, or for `apiKeySource` kills the process group at the `init` event before any `assistant` or `result` event is accepted, with a fixed reason, and starts no second attempt.",
+          "when": "one run is dispatched"
+        }
+      ],
+      "text": "Native ClaudeTransport. A native transport runs headless `claude -p` with the JSON event stream already planned by `build_plan` (`--output-format stream-json`), under the containment backend of REQ-004, with the environment allow/deny policy (`ENV_ALLOW`, `ENV_DENY`) enforced, not just declared, and the executable launched by absolute pinned path whose SHA-256 is re-checked at every launch. It passes `_check_transport` only with a verified Claude host qualification whose environment hash equals the native manifest's and that has not expired, and it refuses unless its own containment backend passes the same verified-containment check as `_check_backend` (today `_check_transport` never inspects a backend, so this is a required change, plan item K2). It keeps the subscription route; it has no paid fallback and never retries on a different route. Because `run_claude` parses output only after the run returns, the contained launcher reads the `init` event as it arrives and kills the process group as soon as `apiKeySource` is outside the subscription set (plan item K1), so a paid-route session cannot run to completion. A denied environment variable present or a missing containment qualification refuses before launch."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "quota readings",
+          "id": "SC-003",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure_003 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
+          "test_file": "specs/065-native-claude-containment/validation-plan.md",
+          "test_name": "procedure_003",
+          "then": "it starts only with a fresh pre-reading within the caps and records the post-reading and delta; and given a stale reading, an unavailable source, weekly use above 80 %, or extra usage enabled, when requested, then it refuses with a fixed reason and launches nothing.",
+          "when": "a session is requested"
+        }
+      ],
+      "text": "Quota observation around every session. Plan usage is read before and after each native session from the source fixed by NC-6. A session starts only if the pre-reading is fresh, every F3 stop condition is clear and the per-session check fixed by NC-6 passes (per-unit token counts are not observed, so how the 10 % per-session cap is checked is a founder choice); the post-reading and the delta are recorded in the run evidence. Cohort-level caps (15 % weekly, 16 units) need cohort state owned by SPEC-049; the gate takes that state as a caller-supplied input and refuses when it is absent. A missing, stale or unparseable reading is a stop, not a zero."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "a qualified backend on a supported machine",
+          "id": "SC-004",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure_004 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
+          "test_file": "specs/065-native-claude-containment/validation-plan.md",
+          "test_name": "procedure_004",
+          "then": "`_check_backend` returns `native`, the result carries the backend label, and the run evidence records the qualification hash and the pre-session self-check results; and given the mechanism removed or replaced, a profile compile failure, a failed self-check or an unsupported OS build, when a run is requested, then it refuses with a fixed reason and no child is started.",
+          "when": "an owned fixture runs"
+        }
+      ],
+      "text": "macOS containment backend. A native backend implements `ContainmentBackend` for the owned laboratory fixtures and provides the contained launcher used by REQ-002. Before every run it verifies its own qualification and runs the F4 pre-session check fixed by NC-11; it enforces all four `ENFORCED_EFFECTS` (`credential`, `filesystem`, `network`, `process`) at the STRICT level of REQ-005 to REQ-008. When any effect cannot be enforced on the current machine (mechanism missing, profile rejected, self-check failing, version outside the supported window), it refuses the run; it never degrades to a weaker mode, never falls back to `SimulatedContainment`, and never labels a weaker run `native`."
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "the contained child",
+          "id": "SC-005",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure_005 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
+          "test_file": "specs/065-native-claude-containment/validation-plan.md",
+          "test_name": "procedure_005",
+          "then": "each attempt fails with a recorded denial and an independent before/after scan shows no change outside the allowed write set.",
+          "when": "it attempts each write and read escape in the probe catalog (outside writes, symlink and hard-link targets outside, `..` traversal, case and normalization aliases, temp directories, reads of the operator's home and other repositories)"
+        }
+      ],
+      "text": "Filesystem effect (STRICT). The contained child can create, modify or delete files only inside the candidate directory and the additional locations fixed by NC-7. Reads outside the allowed read set fixed by NC-7 are denied. Path tricks (symlinks, hard links, `..`, case aliases, Unicode aliases, bind locations, `/tmp` and `$TMPDIR`), inherited file descriptors, FIFOs, device nodes and metadata indexes (Spotlight) do not widen either set."
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "the contained child",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure_006 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
+          "test_file": "specs/065-native-claude-containment/validation-plan.md",
+          "test_name": "procedure_006",
+          "then": "each fails with a recorded denial and the allowed endpoint remains reachable; one successful escape makes the network effect not-qualified.",
+          "when": "it attempts connections to a non-allowed public host, a literal IP, IPv6, UDP and DNS exfiltration, a non-allowed loopback port and a proxy-bypass variant"
+        }
+      ],
+      "text": "Network effect (STRICT). All network egress from the contained child is denied except to the endpoints fixed by NC-1, by the mechanism fixed by NC-1 and NC-2. DNS, raw sockets, ICMP, UDP, IPv6, local services, other loopback ports, and Unix-domain sockets or XPC services of network-capable daemons do not bypass the policy."
+    },
+    {
+      "id": "REQ-007",
+      "scenarios": [
+        {
+          "given": "the contained child",
+          "id": "SC-007",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure_007 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
+          "test_file": "specs/065-native-claude-containment/validation-plan.md",
+          "test_name": "procedure_007",
+          "then": "each fails with a recorded denial; a secret-scan of every produced artifact against the export inventory finds none.",
+          "when": "it attempts to read the operator's default Claude configuration, unrelated Keychain items, `~/.ssh` and agent sockets, Git credential helpers, cloud CLI configuration, browser profiles, the pasteboard, other processes' environments and inherited secret environment variables"
+        }
+      ],
+      "text": "Credential effect (STRICT). The child authenticates only through a dedicated `CLAUDE_CONFIG_DIR` set up by the method fixed by NC-5, without copying the operator's existing secrets into the repository, the evidence, the candidate directory or the run logs. No other credential (operator `~/.claude`, other Keychain items, SSH keys and SSH/GPG agent sockets, Git credentials, cloud CLIs, browser profiles, the pasteboard, other processes' environments, API-key environment variables) is readable by the child. Evidence records the credential method and the observed `apiKeySource`, never a secret value."
+    },
+    {
+      "id": "REQ-008",
+      "scenarios": [
+        {
+          "given": "the contained child",
+          "id": "SC-008",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure_008 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
+          "test_file": "specs/065-native-claude-containment/validation-plan.md",
+          "test_name": "procedure_008",
+          "then": "each is denied or terminated with a recorded reason and a post-run process scan finds no survivor.",
+          "when": "it attempts to execute a non-allowed binary, fork beyond the limit, exceed CPU, memory, open-file, file-size and file-count limits, `setsid`/double-fork to escape the group, spawn through `open`/LaunchServices/`osascript`/`launchctl`, signal or trace another same-user process, and register a launch agent, and when it is timed out or cancelled"
+        }
+      ],
+      "text": "Process effect (STRICT). The child runs in its own process group with the CPU, memory, file-size, open-file and descendant limits fixed by NC-8, may execute only the allow-listed executables fixed by NC-8, and is killed and confirmed settled at timeout, cancellation and exit. No descendant survives the run, escapes the process group, re-parents to `launchd`, is started outside the group through LaunchServices, AppleEvents, XPC or `launchctl`, registers a persistent agent, or signals, traces or inspects other same-user processes."
+    },
+    {
+      "id": "REQ-009",
+      "scenarios": [
+        {
+          "given": "a complete passing evidence bundle and a human issuance record",
+          "id": "SC-009",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure_009 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
+          "test_file": "specs/065-native-claude-containment/validation-plan.md",
+          "test_name": "procedure_009",
+          "then": "`verify_qualification` and `verify_host_qualification` accept them and a run proceeds; and given a record produced by the probe runner itself, a bundle with any failing or missing probe, an edited record, a different environment hash or an expired record, then verification or the issuance gate refuses.",
+          "when": "the runtime verifies the records with the trusted hashes"
+        }
+      ],
+      "text": "Evidence-based qualification; no self-qualification. A qualification procedure runs a fixed, versioned probe catalog against the exact backend, launcher, executable, OS build and configuration, and writes an evidence bundle with hashes, commands, exits, environment and limits. Code never issues a qualification. A founder or a human the founder names (NC-9) reviews the bundle and issues the containment record (`braid-harness-containment-qualification/v0.1`) and the Claude host record (`braid-harness-host-qualification/v0.1`) with `evidenceSha256` bound to that bundle and `expiresAt` fixed by NC-9. Runtime code only verifies the records against externally supplied trusted hashes. Any probe that does not pass, or any effect that cannot be enforced, yields a not-qualified decision record naming the failing effects (a decision record, not a qualification record: both qualification formats require all four effects and cannot express a partial result) and the whole profile stays refused."
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "the probe catalog",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure_010 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
+          "test_file": "specs/065-native-claude-containment/validation-plan.md",
+          "test_name": "procedure_010",
+          "then": "every escape is observed uncontained and denied contained; a probe whose positive control fails is reported inconclusive and blocks qualification.",
+          "when": "it is run once uncontained (positive controls in a disposable directory holding only dummy secrets created for the probe) and once contained"
+        }
+      ],
+      "text": "Adversarial controls are part of qualification. For each of the four effects the probe catalog contains escape attempts executed from inside the contained child (not only from the parent), each with a positive control showing the probe would detect the effect when uncontained. The catalog, its version and its hash are bound in the evidence bundle."
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "all SPEC-065 tasks complete",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure_011 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
+          "test_file": "specs/065-native-claude-containment/validation-plan.md",
+          "test_name": "procedure_011",
+          "then": "they are unchanged by this feature and the hand-off packet lists the issued records, their hashes and the open T008 acceptance items.",
+          "when": "the SPEC-048/T008 and SPEC-049/T004 records are inspected"
+        }
+      ],
+      "text": "Unblocking map. Completion of this specification's tasks provides inputs to SPEC-048/T008 for the Claude profile, and only then to SPEC-049/T004. It does not itself complete T008, admit any SPEC-049 pilot, change any SPEC-048 or SPEC-049 checkbox, or imply Codex qualification."
+    }
+  ],
+  "scientific_limits": "Engineering specification. Probe outcomes are empirical observations on one machine, OS build, CLI version and finite catalog, not a proof of isolation or a general sandbox guarantee. H1 may fail; a not-qualified or inconclusive result is a valid outcome. Unit tests with fakes prove refusal logic, not containment. Structural validation is not founder approval.",
+  "scope": "Specification only: native manifest profile for host claude, native ClaudeTransport over headless claude -p stream-json, macOS containment backend enforcing credential, filesystem, network and process effects at the founder's STRICT level, and an evidence-based qualification procedure with human issuance. Unblocks SPEC-048/T008 (Claude profile) then SPEC-049/T004; Codex excluded.",
+  "stage": "draft"
+}

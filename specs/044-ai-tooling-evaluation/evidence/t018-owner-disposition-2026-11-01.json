@@ -1,0 +1,16 @@
+{
+  "version": "agent-braid-task-cancellation-v1",
+  "taskId": "SPEC-044/T018",
+  "decision": "adopted",
+  "disposition": "cancelled-partial-infeasible",
+  "stateReason": "not_planned",
+  "criterionCompleted": false,
+  "taskLineSha256": "3912f2809430a9c572d511f11929b9d8a5211a0016ca32c2f50f200a37b30fee",
+  "sourceReference": "Owner (founder jayanez) decision of 2026-11-01, answered in the coordinator chat to the question on the SPEC-044 registered evaluation: \"Cancelar (Recommended)\" (cancel). Integrator-recorded provenance, not independently authenticated; the founder reviews it again in the PR.",
+  "reason": "The preregistered native evaluation (registered cohort, 108 attempts, Codex coverage and the observation-contract correction) is cancelled by owner decision after the telemetry pilot NO-GO and the M4.5 closure of 2026-10-31. Original criterion unchecked; no registration, attempt, comparison or acceptance exists or is claimed. Observational receipts remain bounded evidence only. Reopen criteria are in specs/044-ai-tooling-evaluation/owner-decision-20261101-cancellation.md.",
+  "decisionDocument": "specs/044-ai-tooling-evaluation/owner-decision-20261101-cancellation.md",
+  "parentAndMilestoneClosureAuthorized": true,
+  "dependenciesSatisfied": false,
+  "executionAuthorization": false,
+  "newExecutionOrPackageAuthorized": false
+}
