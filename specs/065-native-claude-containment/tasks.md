@@ -39,7 +39,7 @@ shared object store fails the portable-root check).
   Progress: [ADR 0035](../../docs/adr/0035-native-claude-laboratory-containment.md)
   proposed (#893, 5e050fff).
   Obtained: ADR 0035 accepted 2026-11-02 by the founder (answer "Aceptar tal
-  cual (Recommended)"; PRs #893 and the acceptance PR of this change).
+  cual (Recommended)"; PRs #893 and #941).
   Acceptance authorizes no native session, probe, qualification or execution:
   T009 still needs T008 and a separate founder go; issuance stays NC-9.
 
