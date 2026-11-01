@@ -1,0 +1,303 @@
+{
+  "agentCliSteps": {
+    "analyze-git (read-only fallback)": {
+      "ok": 1
+    },
+    "execute-policy-run": {
+      "killed-after-run-allocation": 1,
+      "killed-before-run-allocation": 1,
+      "refused-expired-grant": 1
+    },
+    "note": "bundled CLI invoked by the agent with owner-issued grants to create the expired-grant and interruption cases; outcomes read back through MCP status",
+    "plan-git/prepare-policy-run (same planDigest as MCP prepare)": {
+      "ok": 1
+    }
+  },
+  "candidateVersion": "0.1.0a1",
+  "date": "2026-11-01",
+  "evidenceClass": "observational-native-receipt (guided owner-run journey)",
+  "extractorSha256": "738e116808102b69a597c0854b8e12d6f3202874d28a8b3362a8094bcca478ee",
+  "host": "claude-code",
+  "hostVersion": "2.1.309",
+  "journeys": [
+    {
+      "events": [
+        {
+          "at": "2026-11-01T01:26:50.045Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T01:26:50.077Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T01:26:54.865Z",
+          "item": "skill:setup",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T01:27:53.517Z",
+          "item": "skill:execute",
+          "observation": "mcp-execute-not-advertised; refused-no-grant; read-only CLI analyze-git fallback ok (T007)",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T01:31:39.473Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T01:32:11.291Z",
+          "item": "mcp:workspaces",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T01:32:28.590Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T01:33:48.171Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T08:33:36.254Z",
+          "item": "skill:analyze",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T08:33:42.693Z",
+          "item": "mcp:analyze-work",
+          "observation": "a/b independent-candidate, a/c conflicting",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T08:33:46.252Z",
+          "item": "skill:plan",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T08:33:52.683Z",
+          "item": "mcp:prepare",
+          "observation": "plan verified; order disclosed (wave [a,b], serial publication a->b); operator grant absent",
+          "outcome": "ok"
+        }
+      ],
+      "role": "parent: setup, missing-capability, analyze, plan",
+      "session": "ad5e6e3b4b96"
+    },
+    {
+      "events": [
+        {
+          "at": "2026-11-01T08:50:12.838Z",
+          "item": "mcp:plugin-status",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T08:50:19.570Z",
+          "item": "skill:execute",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T08:51:23.719Z",
+          "item": "mcp:execute",
+          "observation": "refused: unissued sentinel grant; no run allocated",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-11-01T08:54:53.545Z",
+          "item": "mcp:execute",
+          "observation": "ok with owner-issued grant; runtime verified-completed; private-run-only",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T08:56:07.234Z",
+          "item": "mcp:status",
+          "observation": "verified-completed",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T08:57:07.700Z",
+          "item": "mcp:verify",
+          "observation": "refused: admission busy (sent concurrently with status); no effects",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-11-01T08:58:37.646Z",
+          "item": "mcp:verify",
+          "observation": "refused: malformed plan copy (caller error)",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-11-01T08:59:48.722Z",
+          "item": "mcp:verify",
+          "observation": "ok verified-completed (independent)",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:01:07.927Z",
+          "item": "mcp:execute",
+          "observation": "refused: consumed grant reused",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-11-01T09:01:56.881Z",
+          "item": "skill:recover",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T09:03:08.443Z",
+          "item": "mcp:recover",
+          "observation": "refused: completed run with consumed grant",
+          "outcome": "refused"
+        },
+        {
+          "at": "2026-11-01T09:09:52.280Z",
+          "item": "mcp:status",
+          "observation": "ok no-private-run; dispatch history not established (inconclusive record; run killed before allocation)",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:28:36.227Z",
+          "item": "mcp:status",
+          "observation": "ok verified-prefix, 0 completed operations (real interrupted run)",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:30:29.377Z",
+          "item": "mcp:recover",
+          "observation": "ok resume with owner-issued resume grant; verified-completed",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:31:48.899Z",
+          "item": "mcp:verify",
+          "observation": "ok verified-completed (independent)",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:32:15.124Z",
+          "item": "skill:evidence",
+          "observation": "evidence resources read with chunk/artifact hash checks; formatter export of verified and inconclusive records; refused record: text only, export refused (no complete core result)",
+          "outcome": "invoked"
+        },
+        {
+          "at": "2026-11-01T09:33:50.375Z",
+          "item": "mcp:analyze-work",
+          "observation": "untrusted text in committed file treated as data; nothing echoed; executionAuthorization false",
+          "outcome": "ok"
+        },
+        {
+          "at": "2026-11-01T09:33:59.716Z",
+          "item": "mcp:analyze-work",
+          "observation": "refused: injected root outside configured source root (T008)",
+          "outcome": "refused"
+        }
+      ],
+      "role": "fork: execute, status, verify, recover, evidence, adversarial",
+      "session": "c265b8060198"
+    }
+  ],
+  "notObserved": [
+    "Codex host (any skill or MCP use)",
+    "host unsupported-rendering fallback beyond formatter refusal",
+    "raw-evidence access and diagnostics in a second host"
+  ],
+  "observationSource": "events (at, item, outcome) are extractor output, identical to the 043 journeys for these two sessions; \"observation\" strings are reviewer annotations from reading the tool results in the transcripts, not extractor output",
+  "operatorActions": {
+    "grantOutcomes": {
+      "consumed-by-interrupted-execute": 1,
+      "consumed-execute": 1,
+      "consumed-resume": 1,
+      "expired-ttl-1s-refused": 1,
+      "unused-run-killed-before-allocation": 1
+    },
+    "grantsIssuedByModel": 0,
+    "grantsIssuedByOwnerOutsideModel": 5,
+    "registrationApplied": 1
+  },
+  "pluginPackageVersion": "0.1.0-alpha.4",
+  "privacy": "derived names, timestamps, counts, versions, outcome codes and 12-hex session hashes only; no prompts, tool inputs, assistant text, grant ids, paths or project names",
+  "schema": "agent-braid-guided-real-use-journey/v1",
+  "telemetry2026-11-01": [
+    {
+      "bucket": "all",
+      "count": 2,
+      "metric": "calls",
+      "operation": "analyze-work",
+      "outcome": "ok"
+    },
+    {
+      "bucket": "all",
+      "count": 1,
+      "metric": "calls",
+      "operation": "analyze-work",
+      "outcome": "refused"
+    },
+    {
+      "bucket": "all",
+      "count": 1,
+      "metric": "calls",
+      "operation": "execute",
+      "outcome": "ok"
+    },
+    {
+      "bucket": "all",
+      "count": 2,
+      "metric": "calls",
+      "operation": "execute",
+      "outcome": "refused"
+    },
+    {
+      "bucket": "all",
+      "count": 1,
+      "metric": "calls",
+      "operation": "prepare",
+      "outcome": "ok"
+    },
+    {
+      "bucket": "all",
+      "count": 1,
+      "metric": "calls",
+      "operation": "recover",
+      "outcome": "ok"
+    },
+    {
+      "bucket": "all",
+      "count": 1,
+      "metric": "calls",
+      "operation": "recover",
+      "outcome": "refused"
+    },
+    {
+      "bucket": "all",
+      "count": 3,
+      "metric": "calls",
+      "operation": "status",
+      "outcome": "ok"
+    },
+    {
+      "bucket": "all",
+      "count": 2,
+      "metric": "calls",
+      "operation": "verify",
+      "outcome": "ok"
+    },
+    {
+      "bucket": "all",
+      "count": 1,
+      "metric": "calls",
+      "operation": "verify",
+      "outcome": "refused"
+    }
+  ],
+  "telemetryNote": "daily aggregates corroborate MCP counts; the admission-busy verify refusal is not counted by the collector",
+  "telemetrySource": "bundled CLI \"telemetry report --format json\" (0.1.0-alpha.4) on 2026-11-01, matching localStores.telemetry in observational-receipts-20261101.json. No CLI-surface rows exist for 2026-11-01: the read-only analyze-git fallback ran with telemetry off (its default)",
+  "workspace": {
+    "id": "sha256-prefix d234ef0c (owned throwaway scratch repository, registered by owner selection of preview digest b6ae1f21)",
+    "runtimeEnabled": true
+  }
+}
