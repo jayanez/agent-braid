@@ -62,7 +62,8 @@ MAX_HASHES = 32
 SALT_FILE = 'salt.key'
 SALT_BYTES = 32
 SALT_DOMAIN = b'agent-braid-s1-repo\0'
-_OWN_FILES = frozenset({'store.lock', SALT_FILE})
+SALT_TEMPORARY = SALT_FILE + '.tmp'
+_OWN_FILES = frozenset({'store.lock', SALT_FILE, SALT_TEMPORARY})
 
 # Exact, versioned mapping of agent_braid/analysis.py `_interaction` reason sentences
 # (rule set exact-resource-footprints-v1). An unmapped sentence is never stored.
@@ -189,7 +190,7 @@ def classify(resource: str) -> str:
         return 'lockfile'
     if GENERATED_SEGMENTS.intersection(directories) or '.min.' in name or 'generated' in name:
         return 'generated'
-    if (TEST_SEGMENTS.intersection(directories) or name.startswith('test_') or stem.endswith('_test')
+    if (TEST_SEGMENTS.intersection(directories) or name.startswith('test_') or (extension and stem.endswith('_test'))
             or '.test.' in name or '.spec.' in name):
         return 'test'
     if extension in DOC_EXTENSIONS or 'docs' in directories:
@@ -597,19 +598,33 @@ def _secret() -> bytes | None:
         with _Lock(root):
             path = _safe(root / SALT_FILE)
             try:
-                descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
-            except FileExistsError:
                 return _read_secret(path)
-            try:
-                secret = os.urandom(SALT_BYTES)
-                _need(os.write(descriptor, secret) == SALT_BYTES, 'short write')
-            except BaseException:
-                os.close(descriptor)
+            except FileNotFoundError:
+                pass
+            except ValueError:
+                # A torn secret (killed mid-write) is our own regular private file of the
+                # wrong size: replace it under the lock. Anything else stays refused.
+                info = os.lstat(path)
+                _need(stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and not info.st_mode & 0o077
+                      and info.st_uid == os.getuid() and info.st_size != SALT_BYTES, 'unsafe System One salt')
                 path.unlink()
-                raise
-            os.close(descriptor)
+            # Publish atomically: a complete, synced temporary file is linked into place.
+            temporary = _safe(root / SALT_TEMPORARY)
+            if temporary.is_symlink() or temporary.exists():
+                temporary.unlink()
+            descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+            try:
+                _need(os.write(descriptor, os.urandom(SALT_BYTES)) == SALT_BYTES, 'short write')
+                os.fsync(descriptor)
+            finally:
+                os.close(descriptor)
+            try:
+                os.link(temporary, path)
+            finally:
+                temporary.unlink()
             return _read_secret(path)
     except (OSError, ValueError, ImportError):
+        _note_refusal('salt-unavailable')
         return None
 
 
@@ -792,12 +807,17 @@ def purge() -> dict:
     try:
         with _Lock(root) as lock:
             days, others = _listing(root)
+            salt = root / SALT_FILE
+            salted = salt.is_symlink() or salt.is_file()
+            if not salted and salt.exists():
+                others = [*others, salt]  # not ours to remove (for example a directory)
             for entry in days:
                 _safe(entry).unlink()
-            salt = root / SALT_FILE
-            salted = salt.is_symlink() or salt.exists()
             if salted:
                 salt.unlink()  # unlink never follows a link, so a planted link is removed, not its target
+            temporary = root / SALT_TEMPORARY
+            if temporary.is_symlink() or temporary.is_file():
+                temporary.unlink()
             lock.path.unlink()
     except OSError:
         raise StoreRefused('unavailable') from None

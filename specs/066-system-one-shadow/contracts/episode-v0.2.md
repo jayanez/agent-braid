@@ -134,13 +134,16 @@ no extension and matches rule 5 as a dotfile.
 
 1. **Secret.** The store directory holds `salt.key`, a file of 32 random bytes
    (`os.urandom`) with mode `0600`. The observer creates it on first use, under
-   the store lock, with `O_CREAT | O_EXCL | O_NOFOLLOW`. Every read applies the
+   the store lock: it writes and fsyncs `salt.key.tmp` (`O_CREAT | O_EXCL |
+   O_NOFOLLOW`) and links it into place, so a crash never publishes a partial
+   secret. A torn `salt.key` that is otherwise the store's own (regular, private,
+   owned, single link, wrong size) is replaced under the lock. Every read applies the
    same checks as the other store files: no symlink, a regular file with a
    single link, owned by the user, no group or other permission bits, and
    exactly 32 bytes. The store's filename rule recognizes it as the store's own,
    alongside `store.lock`, so it is neither a day file nor an unrelated
-   leftover. If it is unusable, busy, or the store refuses, no salt is
-   available.
+   leftover. If it is otherwise unusable, busy, or the store refuses, no salt is
+   available, hashes are `null`, and the process counts `salt-unavailable`.
 2. **Repo salt.** `repo_salt = HMAC-SHA256(secret, b"agent-braid-s1-repo\0" +
    fsencode(source_root))`. `source_root` is the resolved path string of the
    configured source root, handed off from `ToolingConfig`.

@@ -516,7 +516,7 @@ class FeatureTests(Base):
             self.assertNotIn(str(root).encode(), stored)
         self.assertEqual((self.store / 'salt.key').stat().st_mode & 0o777, 0o600)
 
-    def test_hashes_are_null_without_a_usable_salt(self):
+    def test_hashes_need_a_usable_salt_and_a_torn_salt_recovers(self):
         shadow.observe('analyze-work', 'aim', EpisodeTests.report_with(
             None, ['Complete exact-resource footprints are disjoint.']))
         episode, = self.episodes()
@@ -528,7 +528,9 @@ class FeatureTests(Base):
         self.invoke(self.service(), sentinel_request())
         episode = self.episodes()[-1]
         shadow.validate_episode(episode)
-        self.assertIsNone(episode['pairs'][0]['resourceHashes'])
+        # A torn (wrong-size) private salt is replaced, so pseudonyms resume.
+        self.assertIsNotNone(episode['pairs'][0]['resourceHashes'])
+        self.assertEqual(len((self.store / 'salt.key').read_bytes()), shadow.SALT_BYTES)
         self.assertEqual(episode['pairs'][0]['effectKinds'], {'left': ['write'], 'right': ['write']})
         (self.store / 'salt.key').unlink()
         target = self.base / 'planted-salt'
@@ -943,3 +945,38 @@ class RegistryTests(Base):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class SaltRecoveryTests(unittest.TestCase):
+    """A torn salt is replaced; foreign entries survive purge; `*_test` needs an extension."""
+
+    def setUp(self):
+        self.home = tempfile.TemporaryDirectory()
+        self.addCleanup(self.home.cleanup)
+        patcher = patch.object(shadow, 'default_directory',
+                               return_value=Path(self.home.name).resolve() / 'store')
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_torn_salt_is_replaced_with_a_complete_secret(self):
+        first = shadow._secret()
+        self.assertEqual(len(first), shadow.SALT_BYTES)
+        path = shadow.default_directory() / shadow.SALT_FILE
+        path.write_bytes(first[:7])
+        second = shadow._secret()
+        self.assertEqual(len(second), shadow.SALT_BYTES)
+        self.assertEqual(path.read_bytes(), second)
+        self.assertFalse((shadow.default_directory() / shadow.SALT_TEMPORARY).exists())
+
+    def test_purge_leaves_a_foreign_salt_directory_in_place(self):
+        shadow._secret()
+        path = shadow.default_directory() / shadow.SALT_FILE
+        path.unlink()
+        path.mkdir()
+        result = shadow.purge()
+        self.assertIn(shadow.SALT_FILE, result['leftover'])
+        self.assertTrue(path.is_dir())
+
+    def test_test_suffix_requires_an_extension(self):
+        self.assertEqual(shadow.classify('pkg/run_test.py'), 'test')
+        self.assertNotEqual(shadow.classify('bin/run_test'), 'test')
