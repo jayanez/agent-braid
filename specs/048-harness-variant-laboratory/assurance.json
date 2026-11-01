@@ -21,7 +21,7 @@
   ],
   "assumptions": "Owner-controlled sources and qualified local hosts only; immutable authorities and frozen policies; no provider permission, containment support or positive utility inferred.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -100,13 +100,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive opt-in offline foundations under ADR 0027; internal v0.1 records only. Existing AIM/runtime/plugin/telemetry/System 1/forecast contracts and historical evidence unchanged.",
   "domain": "Owned repository tasks, task-local guidance and selected context packaging; deterministic laboratory controls first. Arbitrary tools, scripts, hooks, policy rewrites and production source mutation are outside the initial editable surface.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
+    "mode": "historical"
   },
   "execution_contract": "ADR 0027 adopts only offline foundations T002\u2013T004: immutable identity verification, bounded positive-inventory import and externally issued operator-admission reservation. No launcher or issuance API; all executionAuthorization fields false. Runner, host, context packaging, observation/export and later feature acceptance remain pending; no existing grant or runtime language is widened.",
   "human_review": "pending",
