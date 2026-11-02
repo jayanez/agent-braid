@@ -94,10 +94,13 @@ shared object store fails the portable-root check).
 
 ## Evaluation and closure
 
-- [ ] T008 (REQ-010 / SC-010): Non-regression: with no profile, existing
+- [x] T008 (REQ-010 / SC-010): Non-regression: with no profile, existing
   `validate_change` and test results are unchanged. Dependencies: T002 to T007.
   Files: `evidence/t008.json`. Verification: procedure_010. Evidence: command
-  outputs bound to the candidate commit.
+  outputs bound to the candidate commit. Obtained: `evidence/t008.json` (plans
+  byte-identical for quick, pr and sensitive; 3762 common tests, 0 status
+  changes; 3772 tests before and 4382 after, all OK; process non-regression
+  only).
 
 - [x] T009 (REQ-009 / SC-009): Register the H1 evaluation in SPEC-049: arms
   (depths), outcomes (rework, regressions, cost, cycle time) on both axes,
