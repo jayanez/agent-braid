@@ -15,6 +15,13 @@ fit the contract yield a single `observation.gap` with reason `source-unsupporte
 instead of a guess. A crossing whose lists or text exceed the contract caps is not
 emitted; a `stream-truncated` gap with the same evidence reference takes its place. Any
 other cap overflow makes the whole artifact `source-unsupported`.
+Ownership notices and receipts are read as plain JSON: one `hazard.noticed` per hazard, each
+keeping every unit it names and none of the repository paths. A receipt is mapped field by
+field to the same hazard kinds, and a receipt that cut a list adds a `stream-truncated` gap.
+A hazard artifact with no hazard yields no event, so no event ever says "clean". A workflow
+gate result becomes one `gate.phase` per phase and one `gate.result` (class 0), never a
+crossing; a result without an analysis adds a `not-observed` gap. The result carries no
+identifier of its own, so the gate id is the SHA-256 of its bytes.
 Scheduler strand closes carry the outcome `ok` because the preparation evidence is only
 produced once every worker finished; the adapter rehashes the bytes but does not re-verify
 the evidence digest.
@@ -41,6 +48,9 @@ SUPPORTED_VERSIONS: dict[str, tuple[str, tuple[str, ...]]] = {
     "scheduler-preparation": ("runtimePreparationEvidenceVersion", ("0.1.0-alpha",)),
     "runtime-grant": ("runtimeOperatorGrantVersion", ("0.1.0-alpha",)),
     "runtime-state": ("gitRuntimeStateVersion", ("0.1.0-alpha",)),
+    "ownership-notice": ("schemaVersion", ("agent-braid-hazard-notice/v0.1",)),
+    "ownership-receipt": ("schemaVersion", ("agent-braid-ownership-receipt/v0.1",)),
+    "workflow-gate": ("schemaVersion", ("agent-braid-claude-gate-result/v0.1",)),
 }
 
 
@@ -254,6 +264,82 @@ def _runtime_state(state: dict[str, Any], source: _Source) -> list[dict[str, Any
     return [source.event("runtime.phase", {"manifestDigest": state["manifestDigest"], "phase": state["phase"]})]
 
 
+def _read_only(document: dict[str, Any]) -> None:
+    if document.get("executionAuthorization") is not False:
+        raise ValueError("a read-only artifact declares executionAuthorization false")
+
+
+def _hazard(source: _Source, kind: str, units: list[str], stage: str) -> dict[str, Any]:
+    return source.event("hazard.noticed", {"units": units, "hazardKind": kind, "stage": stage})
+
+
+# The notice names the command to rerun, and this module must not spell command names out
+# (SPEC-057 governance): its middle word is read instead, and only these two have a stage.
+_STAGE_BY_VERB = {"expand": "preflight", "check": "receipt"}
+
+
+def _notice_stage(recheck: str) -> str:
+    if not isinstance(recheck, str):
+        raise TypeError("recheck is text")
+    parts = recheck.split("-")
+    if len(parts) != 3 or parts[0] != "rerun" or parts[2] != "ownership" or parts[1] not in _STAGE_BY_VERB:
+        raise ValueError("unknown recheck")
+    return _STAGE_BY_VERB[parts[1]]
+
+
+def _notice(notice: dict[str, Any], source: _Source) -> list[dict[str, Any]]:
+    _read_only(notice)
+    stage = _notice_stage(notice["recheck"])
+    if not isinstance(notice["hazards"], list):
+        raise TypeError("hazards is a list")
+    events = [_hazard(source, item["kind"], item["units"], stage) for item in notice["hazards"]]
+    if any(item["data"].get("truncated") is True for item in notice["hazards"]):
+        events.append(source.gap("stream-truncated"))  # a hazard's path list was cut
+    return events
+
+
+def _receipt(receipt: dict[str, Any], source: _Source) -> list[dict[str, Any]]:
+    _read_only(receipt)
+    events = []
+    for unit in receipt["units"]:
+        name, observation, coverage = unit["id"], unit["observation"], unit["coverage"]
+        if observation not in ("observed", "not-observed") or coverage not in ("complete", "partial"):
+            raise ValueError("unknown observation or coverage")
+        if observation == "not-observed":
+            events.append(_hazard(source, "not-observed", [name], "receipt"))
+        elif coverage == "partial":
+            events.append(_hazard(source, "partial-coverage", [name], "receipt"))
+        if not isinstance(name, str) or not isinstance(unit.get("undeclaredWrites", []), list):
+            raise TypeError("unit id is text, undeclaredWrites a list")
+        if unit.get("undeclaredWrites"):
+            events.append(_hazard(source, "undeclared-write", [name], "receipt"))
+        if unit.get("siblingAreaWrites"):
+            owners = sorted({name, *(entry["ownerUnit"] for entry in unit["siblingAreaWrites"])})
+            events.append(_hazard(source, "sibling-area-write", owners, "receipt"))
+    if not isinstance(receipt["unattributedWriters"], list) or not isinstance(receipt["truncations"], list):
+        raise TypeError("writers and truncations are lists")
+    if receipt["unattributedWriters"]:
+        events.append(_hazard(source, "unattributed-writer", [], "receipt"))
+    if receipt["truncations"]:
+        events.append(source.gap("stream-truncated"))
+    return events
+
+
+def _gate(result: dict[str, Any], source: _Source) -> list[dict[str, Any]]:
+    _read_only(result)
+    if result["gate"] != "braid-gate" or result["assurance"]["compatibilityClass"] != "0-heuristic":
+        raise ValueError("not a heuristic braid-gate result")
+    gate_id = f"sha256:{source.evidence['sha256']}"
+    events = [source.event("gate.phase", {"gateId": gate_id, "phase": phase["name"], "status": phase["status"]})
+              for phase in result["phases"]]
+    events.append(source.event("gate.result", {
+        "gateId": gate_id, "status": result["status"], "operationCount": result["operationCount"],
+    }, compatibility_class=0))
+    if result["analysis"] is None:
+        events.append(source.gap("not-observed"))
+    return events
+
+
 def events_from_analysis(data: bytes, *, path: str, seq_start: int = 1) -> list[dict[str, Any]]:
     """`analysis.analyze()` report: one report event, one strand per operation, one crossing per pair."""
     return _run("analysis-report", data, path, seq_start, _analysis)
@@ -280,3 +366,18 @@ def events_from_grant(data: bytes, *, path: str, seq_start: int = 1, now: int | 
 def events_from_runtime_state(data: bytes, *, path: str, seq_start: int = 1) -> list[dict[str, Any]]:
     """Runtime `state.json`: its phase and manifest digest as one `runtime.phase`."""
     return _run("runtime-state", data, path, seq_start, _runtime_state)
+
+
+def events_from_hazard_notice(data: bytes, *, path: str, seq_start: int = 1) -> list[dict[str, Any]]:
+    """Ownership hazard notice (pre-flight or receipt): one `hazard.noticed` per hazard, every unit kept."""
+    return _run("ownership-notice", data, path, seq_start, _notice)
+
+
+def events_from_ownership_receipt(data: bytes, *, path: str, seq_start: int = 1) -> list[dict[str, Any]]:
+    """Ownership receipt: `hazard.noticed` for what it observed or could not, a gap if it cut a list."""
+    return _run("ownership-receipt", data, path, seq_start, _receipt)
+
+
+def events_from_gate_result(data: bytes, *, path: str, seq_start: int = 1) -> list[dict[str, Any]]:
+    """Workflow gate result: its phases and its status, never a crossing; no analysis is `not-observed`."""
+    return _run("workflow-gate", data, path, seq_start, _gate)
