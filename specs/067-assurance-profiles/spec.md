@@ -121,8 +121,11 @@ resolves to `approve-each`, never to `autonomous`.
 AI attribution in commits, PRs, work items or other published content) is a
 profile invariant applying to every publishing checkpoint (`pr-open`, `merge`,
 `release`, `post-merge`) that no source can disable. Scope precedence
-(conversation over repository over user, the profile as lowest source) and the
-refusal-and-recording of an attempted lowering follow the precedent of SPEC-058
+(conversation over repository over user, the profile as lowest source) applies to
+raising only: the conversation scope may only raise a depth or mode, lowering
+anything requires an operator profile file, and a conversation request to lower
+is refused with a recorded reason ([founder record](evidence/founder-decisions-20261102b.json), S1).
+The refusal-and-recording of an attempted lowering follows the precedent of SPEC-058
 REQ-006 / `ownership.resolve_settings`; the fixed per-checkpoint floors and the
 two-dimensional (mode, depth) resolution are this specification's own. Scope
 values are read from an operator-owned assurance settings source named by the
@@ -251,6 +254,18 @@ merge or release; the REQ-003 floors stay human-only.
 - **Q6 Depth beyond the review ladder.** Decided (same answer): in v0.1 depth
   applies only to `pre-pr-review`; other checkpoint families are deferred.
 
+Further decisions of 2026-11-02, recorded in the additive
+[founder record](evidence/founder-decisions-20261102b.json) (the first record is
+unchanged):
+
+- **S1 Conversation scope.** Decided ("Solo subir"): the conversation scope may
+  only raise depth or mode; lowering anything requires an operator profile file,
+  and a conversation lowering request is refused with a recorded reason.
+- **P1 Presets.** Decided ("Aprobar propuesta"): the presets `lite`, `standard`
+  and `strict` as implemented in `agent_braid/harness_assurance.py` (PRs #944
+  and #948) are approved as proposed.
+- **O1 to O3 H1 inputs.** Decided, see the H1 bullet below.
+
 ## Scientific boundaries and compatibility
 
 - **H1 (evaluation hypothesis, may fail):** higher pre-PR depths reduce
@@ -259,6 +274,15 @@ merge or release; the REQ-003 floors stay human-only.
   regression rate; optimization: cost and cycle time) through SPEC-049; arms,
   outcome definitions and stop rules are fixed before observation. A null,
   negative or inconclusive result is valid; no requirement needs H1 to be true.
+  Inputs decided by the founder on 2026-11-02 (founder record 20261102b): **O1**
+  comparisons only with at least 20 clusters per depth arm, and an improvement
+  counts if R2 or higher reduces the rework or regression rate by at least 25
+  percent relative to R1, otherwise the result is descriptive only; **O2** a
+  higher depth is worth it only if it meets O1 and the cost per accepted change
+  rises by at most 30 percent; **O3** the orchestrator proposes labels from
+  linked fix and revert PRs and the founder confirms each one with each item
+  explained, and depth is observational only (realized depth from receipts,
+  never assigned).
 - Receipts and a compiled profile describe recorded process, not review quality
   or code correctness (Articles 4, 13, 14). Review agents can be wrong and are
   correlated; a higher depth is more review, not a guarantee.
@@ -270,6 +294,6 @@ merge or release; the REQ-003 floors stay human-only.
 ## Evidence and unresolved questions
 
 Obtained evidence: none for any scenario. Planned evidence per scenario is in
-[assurance.json](assurance.json). Q1 to Q6 are decided (T001); the integration
+[assurance.json](assurance.json). Q1 to Q6, S1, P1 and O1 to O3 are decided (T001); the integration
 points in the plan are proposals for the owners of shared files. Human review
 pending.

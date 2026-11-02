@@ -1,0 +1,68 @@
+{
+  "recordVersion": "spec067-founder-decisions-v1",
+  "task": "SPEC-067/T001",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-02",
+  "baseCommit": "41be52c5e64b8b60337caef395107336dcf4cb03",
+  "decisionChannel": "Founder answers to interactive questions in the orchestrator chat, 2026-11-02, after founder-decisions-20261102.json (Q1 to Q6); each ownerStatement is the option label chosen. This record is additive and does not edit that one.",
+  "supplements": "specs/067-assurance-profiles/evidence/founder-decisions-20261102.json",
+  "decisionOrder": ["O1", "O2", "O3", "S1", "P1"],
+  "decisions": [
+    {
+      "id": "O1",
+      "item": "H1 minimum independent clusters per arm and margin on rework and regression rate (evidence/t009.json open item O1)",
+      "ownerStatement": "≥20 clusters/brazo, −25% (Recommended)",
+      "decision": {
+        "minimumClustersPerDepthArm": 20,
+        "comparisonRule": "comparisons only with at least 20 clusters per depth arm",
+        "improvementMargin": "improvement counts if R2+ reduces the rework or regression rate by at least 25 percent relative to R1",
+        "belowThreshold": "descriptive only"
+      },
+      "detail": "Applies per compared arm and stratum under the T009 strata rule. Clusters, not PR counts, are the sample size."
+    },
+    {
+      "id": "O2",
+      "item": "H1 acceptable total chain cost increase (evidence/t009.json open item O2)",
+      "ownerStatement": "Hasta +30% (Recommended)",
+      "decision": {
+        "maxCostPerAcceptedChangeIncrease": "30 percent",
+        "rule": "a higher depth is worth it only if it meets O1 and the cost per accepted change rises by at most 30 percent"
+      },
+      "detail": "Cost is the total chain cost registered in T009, not the review alone."
+    },
+    {
+      "id": "O3",
+      "item": "H1 raters, adjudication and depth assignment (evidence/t009.json open item O3)",
+      "ownerStatement": "Vale, la primera opción: Tú + observacional (Recommended)",
+      "decision": {
+        "labels": "the orchestrator proposes labels from linked fix and revert PRs and the founder confirms each one, with each item explained",
+        "depth": "observational only: realized depth read from receipts, never assigned"
+      },
+      "detail": "No deliberate depth assignment is authorized, so no non-observational arm exists. 'Tú' in the answer is the orchestrator."
+    },
+    {
+      "id": "S1",
+      "item": "Conversation scope in the scope precedence (REQ-003)",
+      "ownerStatement": "Solo subir (Recommended)",
+      "decision": {
+        "conversationScope": "may only raise depth or mode",
+        "lowering": "lowering anything requires an operator profile file",
+        "refusal": "a conversation lowering request is refused with a recorded reason"
+      },
+      "detail": "Conversation stays the highest-precedence scope for raising; it never lowers. The REQ-003 floors stay human-only at every scope."
+    },
+    {
+      "id": "P1",
+      "item": "Presets lite, standard and strict",
+      "ownerStatement": "Aprobar propuesta (Recommended)",
+      "decision": {
+        "presets": ["lite", "standard", "strict"],
+        "definition": "as implemented in agent_braid/harness_assurance.py by PRs #944 and #948, approved as proposed"
+      },
+      "detail": "Approval of the tables as proposed. Any later change to a preset needs a new founder record. The presets cannot lower a REQ-003 floor."
+    }
+  ],
+  "stillOpen": [],
+  "executionAuthorization": false,
+  "limits": "Records founder choices for SPEC-067 only. Nothing here implements a profile, runs the H1 evaluation, reads any outcome, issues a standing authorization, or authorizes any execution, merge or release; the REQ-003 floors stay human-only. The raise-only conversation scope is implemented by a separate code track. Owner statements are the option labels chosen in the 2026-11-02 interactive questions. Any change needs a new founder decision record."
+}
