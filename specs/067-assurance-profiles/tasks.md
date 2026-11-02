@@ -46,6 +46,13 @@ shared object store fails the portable-root check).
   agent-writable source; agent identity; in-place edit of a registered
   version. Evidence: `evidence/t003.json`. Obtained: `evidence/t003.json` (68 focused tests,
   925 harness tests; PR #948; process logic only, no review-quality or utility claim).
+  Amended: 2026-11-02, founder decision recorded in
+  `evidence/founder-decisions-20261102b.json`, answer "Solo subir (Recommended)":
+  the conversation scope may only raise depth or mode relative to the value
+  resolved from repository, user and profile; a lowering request is not applied
+  and is recorded as `conversation-lowering-refused` with its scope. Obtained:
+  `evidence/t003-conversation-raise-only.json` (74 focused tests, 959 harness
+  tests; process logic only).
 
 - [x] T004 (REQ-004 / SC-004): Deterministic raise-only risk classifier over a
   diff summary, reusing `validate_change.classify()` path sets and reporting the docs-only class. Pure; no network, clock or model call. Dependencies: T001 (Q5),

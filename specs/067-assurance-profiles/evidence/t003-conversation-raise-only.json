@@ -1,0 +1,38 @@
+{
+  "task": "SPEC-067/T003 amendment (conversation scope raise-only)",
+  "decisionRecord": "specs/067-assurance-profiles/evidence/founder-decisions-20261102b.json",
+  "founderAnswer": "Solo subir (Recommended)",
+  "candidateBinding": "Input hashes of the files below; branch har/067-conversation-raise-only before this evidence commit",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_assurance -v",
+      "exitCode": 0,
+      "testsRun": 74
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "testsRun": 959,
+      "scope": "1 skipped"
+    },
+    {
+      "command": "pre-PR reviews: correctness, quality, simplification (three read-only subagent reviews)",
+      "exitCode": 0,
+      "scope": "Dispositions are in the PR body."
+    }
+  ],
+  "negativeControls": [
+    "conversation lowering of mode and of depth is not applied and is recorded with scope and reason conversation-lowering-refused",
+    "conversation compared with the profile value when no operator scope sets it",
+    "conversation equal value changes nothing and is not refused",
+    "operator scopes keep repository over user over profile and may still lower",
+    "floor and no-attribution refusals from conversation keep their own reasons",
+    "refusal ordering across scopes"
+  ],
+  "inputs": {
+    "agent_braid/harness_assurance.py": "399e4a7af4c5f23f4dd1c1607ebc6b53ee86810e385f0493b0e97baab9a852e5",
+    "tests/test_harness_assurance.py": "f5d16087f59024b83361e3eb4f6d7a1515a57f8df81d0d291f6b8c5bec1fae36"
+  },
+  "executionAuthorization": false,
+  "limits": "Process logic only. Conversation scope stays unauthenticated input; a raise by mode order may select standing-authorization on merge, which still needs a valid standing authorization (T006). spec.md and plan.md text is amended by the docs track."
+}
