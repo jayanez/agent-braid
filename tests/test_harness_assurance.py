@@ -2,6 +2,8 @@
 """SPEC-067 assurance profiles: catalog, allowed modes, schema, floors; offline, no authority."""
 import copy
 import json
+import os
+import tempfile
 import unittest
 
 from agent_braid import harness_assurance as ha
@@ -304,6 +306,387 @@ class ParseTests(unittest.TestCase):
         with self.assertRaises(ha.AssuranceError) as ctx:
             ha.parse_profile(b"{}")
         self.assertEqual(ctx.exception.reason, "missing-key")
+
+
+class SettingsAndResolveTests(unittest.TestCase):
+    def doc(self, scope, checkpoints=None, **extra):
+        value = {"schema": ha.SETTINGS_FORMAT, "scope": scope}
+        if checkpoints is not None:
+            value["checkpoints"] = checkpoints
+        return {**value, **extra}
+
+    def row(self, resolved, checkpoint):
+        return next(r for r in resolved["checkpoints"] if r["checkpoint"] == checkpoint)
+
+    def test_no_documents_equals_the_profile_view(self):
+        resolved = ha.resolve(profile())
+        view = ha.profile_view(profile())
+        self.assertEqual(resolved["checkpoints"], view["checkpoints"])
+        self.assertEqual(resolved["refusedLowerings"], [])
+        self.assertEqual(resolved["scopeSources"], [])
+        self.assertIs(resolved["executionAuthorization"], False)
+        self.assertEqual(resolved["noAttribution"], {"checkpoints": list(ha.NO_ATTRIBUTION), "enforced": True})
+
+    def test_precedence_conversation_over_repository_over_user_over_profile(self):
+        docs = {
+            "user": self.doc("user", {"ci": {"mode": "approve-each"}, "pr-open": {"mode": "autonomous"},
+                                      "pre-pr-review": {"depth": "R0"}}),
+            "repository": self.doc("repository", {"ci": {"mode": "human-only"},
+                                                  "pre-pr-review": {"depth": "R3"}}),
+            "conversation": self.doc("conversation", {"ci": {"mode": "autonomous"}}),
+        }
+        resolved = ha.resolve(profile(), docs)
+        self.assertEqual(resolved["scopeSources"], ["conversation", "repository", "user"])
+        ci = self.row(resolved, "ci")
+        self.assertEqual((ci["mode"], ci["modeSource"]), ("autonomous", "conversation"))
+        pr_open = self.row(resolved, "pr-open")
+        self.assertEqual((pr_open["mode"], pr_open["modeSource"]), ("autonomous", "user"))
+        review = self.row(resolved, "pre-pr-review")
+        self.assertEqual((review["depth"], review["depthSource"]), ("R3", "repository"))
+        self.assertEqual((review["mode"], review["modeSource"]), ("notify", "profile"))
+        self.assertEqual(resolved["refusedLowerings"], [])
+
+    def test_lowering_each_floor_at_each_scope_is_refused_and_recorded(self):
+        for scope in ha.SCOPES:
+            for floor in ha.FLOORS:
+                for mode in ha.MODES:
+                    if mode == "human-only":
+                        continue
+                    resolved = ha.resolve(profile(), {scope: self.doc(scope, {floor: {"mode": mode}})})
+                    row = self.row(resolved, floor)
+                    self.assertEqual((row["mode"], row["modeSource"]), ("human-only", "profile"))
+                    self.assertEqual(resolved["refusedLowerings"], [
+                        {"checkpoint": floor, "dimension": "mode", "requested": mode, "scope": scope,
+                         "floor": "human-only", "reason": "floor-not-human-only"}])
+
+    def test_floor_holds_when_every_scope_tries_to_lower_it(self):
+        docs = {s: self.doc(s, {"release": {"mode": "autonomous"}}) for s in ha.SCOPES}
+        resolved = ha.resolve(profile(), docs)
+        self.assertEqual(self.row(resolved, "release")["mode"], "human-only")
+        self.assertEqual([r["scope"] for r in resolved["refusedLowerings"]], list(ha.SCOPES))
+
+    def test_human_only_for_a_floor_is_not_a_lowering(self):
+        resolved = ha.resolve(profile(), {"user": self.doc("user", {"release": {"mode": "human-only"}})})
+        self.assertEqual(resolved["refusedLowerings"], [])
+
+    def test_disabling_the_attribution_invariant_is_refused_at_each_scope(self):
+        for scope in ha.SCOPES:
+            resolved = ha.resolve(profile(), {scope: self.doc(scope, noAttribution=False)})
+            self.assertEqual(resolved["refusedLowerings"], [
+                {"checkpoint": None, "dimension": "noAttribution", "requested": False, "scope": scope,
+                 "floor": True, "reason": "attribution-invariant"}])
+            self.assertTrue(resolved["noAttribution"]["enforced"])
+            resolved = ha.resolve(profile(), {scope: self.doc(scope, noAttribution=True)})
+            self.assertEqual(resolved["refusedLowerings"], [])
+
+    def test_a_refused_lowering_does_not_stop_other_values_of_the_same_document(self):
+        doc = self.doc("conversation", {"release": {"mode": "notify"}, "ci": {"mode": "approve-each"}})
+        resolved = ha.resolve(profile(), {"conversation": doc})
+        self.assertEqual(self.row(resolved, "ci")["mode"], "approve-each")
+        self.assertEqual(self.row(resolved, "release")["mode"], "human-only")
+        self.assertEqual(len(resolved["refusedLowerings"]), 1)
+
+    def test_standing_authorization_through_a_scope_only_for_merge(self):
+        resolved = ha.resolve(profile("strict"), {"user": self.doc("user", {"merge": {"mode": "standing-authorization"}})})
+        self.assertEqual(self.row(resolved, "merge")["mode"], "standing-authorization")
+        for checkpoint, reason in (("pr-open", "mode-not-allowed"), ("harness-self-change", "mode-not-allowed")):
+            mode = "standing-authorization" if checkpoint == "pr-open" else "approve-each"
+            with self.assertRaises(ha.AssuranceError) as ctx:
+                ha.resolve(profile(), {"user": self.doc("user", {checkpoint: {"mode": mode}})})
+            self.assertEqual(ctx.exception.reason, reason)
+
+    def test_malformed_documents_are_refused_whole(self):
+        cases = [
+            ("scope-mismatch", {"user": self.doc("repository")}),
+            ("unknown-scope", {"team": self.doc("user")}),
+            ("unknown-scope", {"user": self.doc("team")}),
+            ("unknown-checkpoint", {"user": self.doc("user", {"deploy": {"mode": "notify"}})}),
+            ("unknown-mode", {"user": self.doc("user", {"ci": {"mode": "yolo"}})}),
+            ("unknown-mode", {"user": self.doc("user", {"release": {"mode": "yolo"}})}),
+            ("depth-not-allowed", {"user": self.doc("user", {"ci": {"depth": "R1"}})}),
+            ("unknown-depth", {"user": self.doc("user", {"pre-pr-review": {"depth": "R9"}})}),
+            ("unknown-key", {"user": self.doc("user", {"ci": {"extra": 1}})}),
+            ("unknown-key", {"user": self.doc("user", extra=1)}),
+            ("invalid-settings", {"user": self.doc("user", {"ci": {}})}),
+            ("invalid-settings", {"user": self.doc("user", noAttribution="no")}),
+            ("invalid-settings", {"user": "settings"}),
+            ("unsupported-schema", {"user": {"schema": "x", "scope": "user"}}),
+            ("missing-key", {"user": {"schema": ha.SETTINGS_FORMAT}}),
+        ]
+        for reason, docs in cases:
+            with self.assertRaises(ha.AssuranceError) as ctx:
+                ha.resolve(profile(), docs)
+            self.assertEqual(ctx.exception.reason, reason, docs)
+        with self.assertRaises(ha.AssuranceError):
+            ha.resolve({"not": "a profile"}, {})
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            ha.resolve(profile(), [])
+        self.assertEqual(ctx.exception.reason, "unknown-scope")
+
+    def test_resolution_is_deterministic_and_does_not_mutate_inputs(self):
+        docs = {"user": self.doc("user", {"ci": {"mode": "notify"}}),
+                "conversation": self.doc("conversation", {"release": {"mode": "notify"}})}
+        before = copy.deepcopy(docs)
+        first, second = ha.resolve(profile(), docs), ha.resolve(profile(), docs)
+        self.assertEqual(json.dumps(first, sort_keys=True), json.dumps(second, sort_keys=True))
+        self.assertEqual(docs, before)
+
+    def test_parse_settings_bytes(self):
+        self.assertEqual(ha.parse_settings(json.dumps(self.doc("user")).encode()), self.doc("user"))
+        for raw in (b"", b"x", b'{"a":1,"a":2}'):
+            with self.assertRaises(ha.AssuranceError) as ctx:
+                ha.parse_settings(raw)
+            self.assertEqual(ctx.exception.reason, "invalid-json")
+
+
+class OperatorFixture(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        root = os.path.realpath(self.tmp.name)
+        self.config = os.path.join(root, "config")
+        self.tree = os.path.join(root, "worktree")
+        for path in (self.config, self.tree):
+            os.mkdir(path, 0o700)
+        self.space = ha.OperatorSpace(self.config, (self.tree,))
+
+    def write(self, path, data, mode=0o600):
+        os.makedirs(os.path.dirname(path), mode=0o700, exist_ok=True)
+        with open(path, "wb") as handle:
+            handle.write(data)
+        os.chmod(path, mode)
+        return path
+
+
+class OperatorLoaderTests(OperatorFixture):
+    def settings_bytes(self, scope="user", **checkpoints):
+        return json.dumps({"schema": ha.SETTINGS_FORMAT, "scope": scope, "checkpoints": checkpoints}).encode()
+
+    def unobservable(self, call):
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            call()
+        self.assertEqual(ctx.exception.reason, "unobservable-source")
+
+    def test_missing_files_yield_nothing(self):
+        self.assertIsNone(ha.load_profile(self.space))
+        self.assertEqual(ha.load_scope_documents(self.space, repository_digest="a" * 64), {})
+        self.assertEqual(ha.load_journal(self.space).journal, ())
+
+    def test_loads_profile_and_all_three_scopes(self):
+        self.write(self.space.location(ha.PROFILE_FILE), json.dumps(profile()).encode())
+        self.write(self.space.location(ha.SETTINGS_FILE), self.settings_bytes("user", ci={"mode": "notify"}))
+        digest = "b" * 64
+        self.write(self.space.location(ha.SETTINGS_FILE, digest), self.settings_bytes("repository"))
+        self.assertEqual(ha.load_profile(self.space), profile())
+        documents = ha.load_scope_documents(self.space, repository_digest=digest,
+                                            conversation=self.settings_bytes("conversation"))
+        self.assertEqual(set(documents), {"user", "repository", "conversation"})
+        self.assertEqual(ha.resolve(profile(), documents)["scopeSources"], ["conversation", "repository", "user"])
+
+    def test_group_or_other_writable_file_is_refused(self):
+        path = self.write(self.space.location(ha.SETTINGS_FILE), self.settings_bytes(), 0o620)
+        self.unobservable(lambda: ha.load_scope_documents(self.space))
+        os.chmod(path, 0o602)
+        self.unobservable(lambda: ha.load_scope_documents(self.space))
+
+    def test_symlink_is_refused(self):
+        target = self.write(os.path.join(self.config, "elsewhere.json"), self.settings_bytes())
+        link = self.space.location(ha.SETTINGS_FILE)
+        os.makedirs(os.path.dirname(link))
+        os.symlink(target, link)
+        self.unobservable(lambda: ha.load_scope_documents(self.space))
+
+    def test_symlinked_directory_leaving_the_config_directory_is_refused(self):
+        outside = os.path.join(os.path.dirname(self.config), "outside")
+        self.write(os.path.join(outside, ha.SETTINGS_FILE), self.settings_bytes())
+        os.symlink(outside, os.path.join(self.config, ha.ASSURANCE_DIRECTORY))
+        self.unobservable(lambda: ha.load_scope_documents(self.space))
+
+    def test_file_inside_a_working_tree_is_refused(self):
+        inside = ha.OperatorSpace(self.config, (self.config,))
+        self.write(inside.location(ha.PROFILE_FILE), json.dumps(profile()).encode())
+        self.unobservable(lambda: ha.load_profile(inside))
+        agent_file = self.write(os.path.join(self.tree, "profile.json"), json.dumps(profile()).encode())
+        self.unobservable(lambda: ha.read_operator_file(agent_file, self.space))
+
+    def test_directory_and_oversize_are_refused(self):
+        os.makedirs(self.space.location(ha.SETTINGS_FILE))
+        self.unobservable(lambda: ha.load_scope_documents(self.space))
+        big = self.write(self.space.location(ha.JOURNAL_FILE), b" " * (ha.MAX_BYTES + 1))
+        self.unobservable(lambda: ha.read_operator_file(big, self.space))
+
+    def test_invalid_repository_digest_is_refused(self):
+        self.unobservable(lambda: ha.load_scope_documents(self.space, repository_digest="../x"))
+
+    def test_malformed_content_is_refused_with_its_own_reason(self):
+        self.write(self.space.location(ha.SETTINGS_FILE), b"{}")
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            ha.load_scope_documents(self.space)
+        self.assertEqual(ctx.exception.reason, "missing-key")
+
+
+class JournalTests(OperatorFixture):
+    HUMAN = ("human", "founder")
+
+    def change(self, at, kind="human", who="founder", source=None):
+        return ha.Change(kind, who, at, source)
+
+    def versioned(self, version, name="standard", **changes):
+        value = profile()
+        value["name"], value["version"] = name, version
+        for checkpoint, mode in changes.items():
+            value["checkpoints"][checkpoint.replace("_", "-")]["mode"] = mode
+        return value
+
+    def adopt(self, journal, value, at):
+        journal = journal.begin(value, self.change(at), self.space).journal
+        outcome = journal.commit(self.change(at + 1), self.space)
+        self.assertIsNone(outcome.refusal)
+        return outcome.journal
+
+    def test_human_change_is_versioned_and_the_previous_stays_restorable(self):
+        v1, v2 = self.versioned(1), self.versioned(2, ci="human-only")
+        journal = self.adopt(ha.ProfileJournal(), v1, 1)
+        self.assertEqual(journal.active_profile, v1)
+        journal = self.adopt(journal, v2, 3)
+        self.assertEqual(journal.active_profile, v2)
+        self.assertEqual(journal.previous, (ha.profile_digest(v1),))
+        restored = journal.rollback(self.change(5), self.space, reason="regression").journal
+        self.assertEqual(restored.active_profile, v1)
+        self.assertEqual(restored.journal[-1]["event"], "rolled-back")
+        emptied = restored.rollback(self.change(6), self.space, reason="again").journal
+        self.assertIsNone(emptied.active_profile)
+
+    def test_begin_alone_does_not_change_the_active_profile(self):
+        journal = self.adopt(ha.ProfileJournal(), self.versioned(1), 1)
+        pending = journal.begin(self.versioned(2), self.change(3), self.space).journal
+        self.assertEqual(pending.active_profile, self.versioned(1))
+        self.assertEqual(pending.pending, ha.profile_digest(self.versioned(2)))
+        aborted = pending.abort(self.change(4), self.space, reason="changed-mind").journal
+        self.assertEqual(aborted.active_profile, self.versioned(1))
+        self.assertIsNone(aborted.pending)
+
+    def test_agent_like_identities_are_refused_and_recorded(self):
+        base = self.adopt(ha.ProfileJournal(), self.versioned(1), 1)
+        for kind in ("agent", "model", "tool"):
+            outcome = base.begin(self.versioned(2), self.change(5, kind, "claude"), self.space)
+            self.assertEqual(outcome.refusal, "agent-identity")
+            self.assertEqual(outcome.journal.active, base.active)
+            self.assertIsNone(outcome.journal.pending)
+            last = outcome.journal.journal[-1]
+            self.assertEqual((last["event"], last["reason"], last["actor"]["kind"]), ("refused", "agent-identity", kind))
+
+    def test_agent_cannot_commit_abort_or_roll_back_its_own_pending_change(self):
+        base = self.adopt(ha.ProfileJournal(), self.versioned(1), 1)
+        pending = base.begin(self.versioned(2), self.change(3), self.space).journal
+        agent = self.change(4, "agent", "claude")
+        for outcome in (pending.commit(agent, self.space), pending.abort(agent, self.space, reason="x"),
+                        base.rollback(agent, self.space, reason="x")):
+            self.assertEqual(outcome.refusal, "agent-identity")
+        self.assertEqual(pending.commit(agent, self.space).journal.active, base.active)
+        self.assertEqual(pending.commit(agent, self.space).journal.pending, pending.pending)
+
+    def test_agent_writable_sources_are_refused_and_recorded(self):
+        sources = [os.path.join(self.tree, "profile.json"), os.path.join(os.path.dirname(self.config), "other.json"),
+                   os.path.join(self.config, "..", "worktree", "x.json")]
+        for source in sources:
+            outcome = ha.ProfileJournal().begin(self.versioned(1), self.change(1, source=source), self.space)
+            self.assertEqual(outcome.refusal, "agent-writable-source", source)
+            self.assertIsNone(outcome.journal.active)
+            self.assertEqual(outcome.journal.journal[-1]["event"], "refused")
+        owned = os.path.join(self.config, ha.ASSURANCE_DIRECTORY, "profile.json")
+        self.assertIsNone(ha.ProfileJournal().begin(self.versioned(1), self.change(1, source=owned), self.space).refusal)
+
+    def test_registered_version_cannot_be_edited_in_place_or_reregistered(self):
+        journal = self.adopt(ha.ProfileJournal(), self.versioned(1), 1)
+        for edited in (self.versioned(1, ci="human-only"), self.versioned(1)):
+            with self.assertRaises(ha.AssuranceError) as ctx:
+                journal.begin(edited, self.change(5), self.space)
+            self.assertEqual(ctx.exception.reason, "version-not-newer")
+        edited = json.loads(journal.to_bytes())
+        key = next(iter(edited["profiles"]))
+        edited["profiles"][key]["checkpoints"]["ci"]["mode"] = "human-only"
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            ha.ProfileJournal.from_bytes(ha.canonical(edited))
+        self.assertEqual(ctx.exception.reason, "profile-hash-mismatch")
+
+    def test_forged_journals_are_refused(self):
+        journal = self.adopt(ha.ProfileJournal(), self.versioned(1), 1)
+        for mutate in (
+            lambda d: d["journal"][1]["actor"].update(kind="agent"),
+            lambda d: d["journal"].pop(0),
+            lambda d: d["journal"][1].update(seq=7),
+            lambda d: d["journal"][1].update(at=0),
+            lambda d: d["journal"][0].update(subject="f" * 64),
+            lambda d: d["journal"][1].update(reason="x"),
+            lambda d: d["journal"].append(dict(d["journal"][1], seq=2, at=9)),
+            lambda d: d.update(profiles={}),
+        ):
+            forged = json.loads(journal.to_bytes())
+            mutate(forged)
+            with self.assertRaises(ha.AssuranceError):
+                ha.ProfileJournal.from_bytes(ha.canonical(forged))
+
+    def test_state_machine_refusals(self):
+        empty = ha.ProfileJournal()
+        for call, reason in (
+            (lambda: empty.commit(self.change(1), self.space), "no-transaction"),
+            (lambda: empty.abort(self.change(1), self.space, reason="x"), "no-transaction"),
+            (lambda: empty.rollback(self.change(1), self.space, reason="x"), "no-active-profile"),
+        ):
+            with self.assertRaises(ha.AssuranceError) as ctx:
+                call()
+            self.assertEqual(ctx.exception.reason, reason)
+        pending = empty.begin(self.versioned(1), self.change(1), self.space).journal
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            pending.begin(self.versioned(2), self.change(2), self.space)
+        self.assertEqual(ctx.exception.reason, "transaction-pending")
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            pending.commit(self.change(0), self.space)
+        self.assertEqual(ctx.exception.reason, "time-regression")
+        for bad, reason in ((ha.Change("human", "x", -1), "invalid-time"), (ha.Change("robot", "x", 1), "invalid-actor"),
+                            (ha.Change("human", "bad id", 1), "invalid-actor"), ("change", "invalid-actor")):
+            with self.assertRaises(ha.AssuranceError) as ctx:
+                empty.begin(self.versioned(1), bad, self.space)
+            self.assertEqual(ctx.exception.reason, reason)
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            self.adopt(empty, self.versioned(1), 1).rollback(self.change(5), self.space, reason="bad reason!")
+        self.assertEqual(ctx.exception.reason, "invalid-reason")
+        with self.assertRaises(ha.AssuranceError):
+            empty.begin({"not": "a profile"}, self.change(1), self.space)
+
+    def test_codec_round_trip_and_canonical_only(self):
+        journal = self.adopt(ha.ProfileJournal(), self.versioned(1), 1)
+        refused = journal.begin(self.versioned(2), self.change(5, "agent", "claude"), self.space).journal
+        decoded = ha.ProfileJournal.from_bytes(refused.to_bytes())
+        self.assertEqual((decoded.to_bytes(), decoded.sha256, decoded.active), (refused.to_bytes(), refused.sha256, refused.active))
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            ha.ProfileJournal.from_bytes(json.dumps(json.loads(refused.to_bytes()), indent=1).encode())
+        self.assertEqual(ctx.exception.reason, "non-canonical")
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            ha.ProfileJournal.from_bytes(b"[]")
+        self.assertIn(ctx.exception.reason, ("invalid-registry", "invalid-json"))
+
+    def test_save_and_load_and_concurrent_update(self):
+        first = self.adopt(ha.ProfileJournal(), self.versioned(1), 1)
+        ha.save_journal(self.space, first)
+        path = self.space.location(ha.JOURNAL_FILE)
+        self.assertEqual(os.stat(path).st_mode & 0o077, 0)
+        self.assertEqual(ha.load_journal(self.space).to_bytes(), first.to_bytes())
+        second = self.adopt(first, self.versioned(2), 3)
+        ha.save_journal(self.space, second)
+        self.assertEqual(ha.load_journal(self.space).active_profile, self.versioned(2))
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            ha.save_journal(self.space, first)
+        self.assertEqual(ctx.exception.reason, "concurrent-update")
+        with self.assertRaises(ha.AssuranceError):
+            ha.save_journal(self.space, "journal")
+
+    def test_resolve_from_the_journaled_active_profile(self):
+        journal = self.adopt(ha.ProfileJournal(), self.versioned(1), 1)
+        resolved = ha.resolve(journal.active_profile)
+        self.assertEqual(resolved["profile"]["digest"], journal.active)
+        self.assertIs(resolved["executionAuthorization"], False)
 
 
 if __name__ == "__main__":
