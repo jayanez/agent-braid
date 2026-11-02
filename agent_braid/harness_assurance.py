@@ -80,7 +80,7 @@ REASONS = (
     "agent-identity", "agent-writable-source", "invalid-time", "time-regression", "invalid-reason",
     "invalid-journal", "journal-full", "profile-hash-mismatch", "version-not-newer", "no-transaction",
     "transaction-pending", "no-active-profile", "invalid-registry", "non-canonical", "concurrent-update",
-    "journal-unavailable", "attribution-invariant",
+    "journal-unavailable", "attribution-invariant", "invalid-diff-summary",
 )
 
 MAX_RULES = 16

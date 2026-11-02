@@ -1,0 +1,38 @@
+{
+  "task": "SPEC-067/T004",
+  "candidateBinding": "Input hashes of the files below; branch har/067-t004-risk-classifier before this evidence commit",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_assurance_risk -v",
+      "exitCode": 0,
+      "testsRun": 28
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "testsRun": 953,
+      "scope": "1 skipped"
+    },
+    {
+      "command": "pre-PR reviews: correctness, quality, simplification (three read-only subagent reviews)",
+      "exitCode": 0,
+      "scope": "Dispositions are in the PR body."
+    }
+  ],
+  "negativeControls": [
+    "operator rule below the profile's own depth or mode is refused (invalid-risk-rule)",
+    "rule below the effective depth or mode leaves the configured value",
+    "operator rule id equal to a default rule name cannot replace the default",
+    "no-match diff leaves depth and mode",
+    "exactly 400 changed lines does not raise",
+    "repeated and reordered input is byte-identical",
+    "malformed paths, line counts, impact, resolved view and forged classification are refused with invalid-diff-summary"
+  ],
+  "inputs": {
+    "agent_braid/harness_assurance.py": "e07f6b364d27c1410b68f4d21227be3e88af5ba3b7e70f19bcd866147e0284a1",
+    "agent_braid/harness_assurance_risk.py": "863ffb8251dd0e9f519ca4e9feb1714ec4bfd016dc97642b066e2ed11c39b059",
+    "tests/test_harness_assurance_risk.py": "b088704f4ec9ad2986943e5d9419babb96bdf6bf46ef45a1777cc62a21483478"
+  },
+  "executionAuthorization": false,
+  "limits": "Process logic only; the sensitive classification is the caller-supplied validate_change.classify() impact (repository_impact needs a source checkout). Advisory; no review-quality or utility claim. Compiler and receipts are T005 onwards."
+}
