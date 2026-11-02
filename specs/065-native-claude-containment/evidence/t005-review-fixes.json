@@ -1,0 +1,50 @@
+{
+  "task": "SPEC-065/T005 (delta after T008)",
+  "disposition": "Engineering at unit level for the fix-in-T005 findings of evidence/probe-catalog-review.md; it qualifies nothing and authorizes nothing. Nothing native ran: no dedicated account, no claude, no live probe.",
+  "executionAuthorization": false,
+  "supersedes": "evidence/t005.json outputs hashes (backend d9bd8bf9... and tests 80ae35fb...) are historical; the current hashes are below.",
+  "outputs": {
+    "agent_braid/harness_containment_macos.py": "9f10ef9454301f2fdbd9a1aa78717bfae538890cef24a89c00585faa6bc0163d",
+    "tests/test_harness_containment_macos.py": "see git; the file is the evidence"
+  },
+  "previousBackendSha256": "dfa7fda83f782edc32150a942647df3c480dd4bf0fd01ef771ce3402e20c3c06",
+  "inputs": {
+    "specs/065-native-claude-containment/evidence/probe-catalog-review.md": "6c1f50b1bc4efdd2a7f7154d0780b78dcc111fb27d66d79156272fe6826bb222",
+    "agent_braid/harness_host_claude.py": "e31df98faaf998b023961daad4577c206fca0f622e156c27624952d7d739267b",
+    "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744"
+  },
+  "founderDecision": {
+    "date": "2026-11-02",
+    "text": "2 GB y 100.000 ficheros",
+    "channel": "relayed by the orchestrator in the track brief; not yet in founder-decisions-20261031.json",
+    "implementation": "LIMITS diskBytes = 2 GiB and diskFiles = 100000, measured every supervisor poll over the candidate directory plus the per-run TMPDIR (disk blocks, each inode once, every entry counts, links not followed, an unlistable or unsearchable directory counts as over); breach kills and settles the group, then refuses with disk-limit-exceeded. config_dir is not measured."
+  },
+  "findings": {
+    "RV-01": "Done. ProbeResult/ContainedHostRun and run_evidence carry escaped_processes (left the group), surviving_processes (alive after the final sweep iteration, including exhaustion) and escaped_descendants. settled stays strict. The T007 judgement change stays with T007.",
+    "RV-02": "Done. run_probe(..., cancel=threading.Event|None); result.cancelled; non-Event refused invalid-lab-request.",
+    "RV-03": "Done for the proxy side. EgressProxy.counters() (connections, allowed and allowed:<target>, denied and denied:<reason>, unexpectedDirect, upstreamFailed, bytesUp, bytesDown); per-run delta in result.egress and run_evidence[egress]. Kernel-denied direct attempts never reach the proxy and stay uncounted, as the review says. The verdict is T007's.",
+    "RV-16": "Done. dedicated-user-unsafe when the account is in admin/wheel (gid 80/0, primary or supplementary), is the console user, or its home is not an owned directory with no group/other bits. AccountFacts (gids, home mode) enter the environment hash via environment_sha256(..., account). Runbook: the dedicated home must be chmod 700 and the code location unreadable by that account (T009 runbook, not code).",
+    "RV-19": "Done, see founderDecision.",
+    "RV-20": "Partly. The subpath run_root metadata rule is replaced by literals for run_root and the new RUNDIR param (the run directory); candidate and TMPDIR stay covered by their subpath rule. Trimming SYSTEM_READ needs the T009 trace and is not done.",
+    "RV-22": "Done. Every ancestor and the executable itself must be owned by root or the dedicated user. Consequence: operator-owned installs (Homebrew) are refused, an operator setup step. The installed-in-root-owned-directory stronger form is a runbook item.",
+    "RV-23": "Done. After the exec-denied case the compile check runs an allow-listed command (fixture: interpreter on an empty program; launch: pinned claude --version) and requires exit 0, else self-check-failed. Risk: claude --version under the profile may fail until the profile has grown at T009; that is a real refusal, not a false one.",
+    "RV-29": "Done. A dead accept loop (outside close()) marks the proxy unhealthy; the next pre-session closes it and refuses proxy-unavailable, the following attempt restarts it. The SNI-as-defence-in-depth remark is in the EgressProxy docstring. ECH GREASE handling is unchanged.",
+    "RV-30": "Done. Run and compile directories are removed by _remove_tree, which clears BSD flags and directory modes and retries; cleanupFailed in the result and evidence; leftovers refuse the next run with workspace-leftovers. A child can therefore cause a persistent refusal until an operator removes the leftover.",
+    "RV-32": "Done as counters. A poll-based lineage (parent pid via proc_bsdinfo) splits leavers into escaped_descendants and unattributed (escaped - descendants); both are killed and both keep settled false.",
+    "RV-33": "Done for this edit: new hashes recorded here; the stale comment at harness_host_claude.py:47 is outside this track's files and stays for its owner.",
+    "RV-18": "Out of scope (deferred until T009 observes state paths).",
+    "RV-14": "Not done here (component hash list and runner binding); the T005 half (adding probes, transport and quota modules to the environment hash) remains open."
+  },
+  "newPublicSurface": {
+    "classes": ["RunAccounting", "ContainedHostRun(HostRun)", "ProbeResult(ChildResult)", "AccountFacts"],
+    "api": ["MacOSContainment.run_probe(..., cancel=None)", "EgressProxy.counters()", "EgressProxy.healthy", "environment_sha256(..., account=None)", "ContainmentPolicy.exec_probe(entry)", "LIMITS['diskBytes'|'diskFiles']"],
+    "reasons": ["dedicated-user-unsafe", "workspace-leftovers", "disk-limit-exceeded"],
+    "sbplParam": "RUNDIR is a new -D parameter; the profile bytes and so the environment hash change"
+  },
+  "executedChecks": [
+    {"command": ".venv-speckit/bin/python -m unittest tests.test_harness_containment_macos", "exitCode": 0, "testsRun": 85, "scope": "macOS 27 developer machine, Python 3.13; the darwin real sandbox-exec compile/exec test ran"},
+    {"command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"", "exitCode": 0, "scope": "all harness modules"}
+  ],
+  "assurance": "Any change to the backend source stales the environment hash and every recorded qualification input; existing t005.json/t006.json/t007.json hashes of this file are outdated. Reported to the orchestrator; not rewritten here.",
+  "preprReview": "Correctness, quality and simplification reviews by Claude subagents (not independent). Applied: unmeasurable entries count as over the disk limit; cleanup errors no longer mask the record; chmod does not follow links where supported; HOME created for the compile positive case; lineage guard; required tally; counters test waits for every key; root-skips; timer cleanup; line reflow. Rejected: scan on a slower interval (brief says every poll), refactoring the _tunnel refusal chain, merging result types."
+}

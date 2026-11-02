@@ -17,6 +17,7 @@ from pathlib import Path
 import shutil
 import socket
 import ssl
+import stat
 import subprocess
 import sys
 import tempfile
@@ -43,6 +44,7 @@ PASS_THROUGH = (f"#!{INTERPRETER} -IS\nimport os, sys\n"
 FAKE_CLAUDE = (f"#!{INTERPRETER} -IS\nimport os, sys\n"
                "print(' '.join(sorted(os.environ)))\nsys.stdout.write(sys.stdin.read())\n")
 BASELINE = {(1, 1)}
+ACCOUNT_FACTS = mac.AccountFacts(gids=(20,), home_mode=0o700)
 HAS_SANDBOX_EXEC = sys.platform == "darwin" and Path(mac.SANDBOX_EXEC).is_file()
 
 
@@ -68,8 +70,9 @@ class Machine:
     def __init__(self, test: unittest.TestCase, **policy):
         self.root = os.path.realpath(tempfile.mkdtemp(prefix="braid-t005-"))
         test.addCleanup(shutil.rmtree, self.root, True)
-        for name in ("run", "config", "bin"):
+        for name in ("run", "config", "bin", "home"):
             os.mkdir(f"{self.root}/{name}", 0o700)
+        self.home = f"{self.root}/home"
         os.chmod(f"{self.root}/bin", 0o755)
         self.claude = write_exec(f"{self.root}/bin/claude", FAKE_CLAUDE)
         self.sandbox = write_exec(f"{self.root}/bin/sandbox-exec", PASS_THROUGH)
@@ -87,7 +90,7 @@ class Machine:
 
     def environment(self, facts: mac.HostFacts = FACTS) -> str:
         with mock.patch.object(mac, "SANDBOX_EXEC", self.sandbox):
-            return mac.environment_sha256(self.policy, facts, os.getuid())
+            return mac.environment_sha256(self.policy, facts, os.getuid(), ACCOUNT_FACTS)
 
     def candidate(self) -> str:
         return tempfile.mkdtemp(prefix="cand-", dir=self.policy.run_root)
@@ -122,7 +125,8 @@ def make_backend(machine: Machine, *, runner=expected_probes, **record_args) -> 
 @contextmanager
 def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = None, darwin: bool = True,
          stub_compile_check: bool = True, processes=None, env: dict | None = None,
-         mechanism_uid: int | None = None):
+         mechanism_uid: int | None = None, gids: tuple[int, ...] = (20,), pw_gid: int = 20,
+         console: int = -1, home: str | None = None, parent=None):
     """Stub every Darwin fact; ``processes`` stubs the per-user process listing.
 
     The parent environment is cleared of ``ENV_DENY`` names (a developer shell may
@@ -142,7 +146,7 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
     def getpwnam(name):
         if name != ACCOUNT:
             raise KeyError(name)
-        return SimpleNamespace(pw_uid=uid)
+        return SimpleNamespace(pw_uid=uid, pw_gid=pw_gid, pw_dir=home or machine.home)
 
     with ExitStack() as stack:
         stack.enter_context(mock.patch.dict(os.environ))
@@ -154,7 +158,8 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
             "pwd": SimpleNamespace(getpwnam=getpwnam), "SANDBOX_EXEC": machine.sandbox,
             "_MECHANISM_UID": os.getuid() if mechanism_uid is None else mechanism_uid,
             "_user_processes": processes or (lambda uid: BASELINE),
-            "_resident_bytes": lambda processes: 0,
+            "_resident_bytes": lambda processes: 0, "_account_groups": lambda account, gid: gids,
+            "_console_uid": lambda: console, "_process_parent": parent or (lambda pid: None),
             "_trusted_file": trusted,
         }
         for name, value in patches.items():
@@ -184,6 +189,10 @@ class PolicyTests(unittest.TestCase):
                 allowed.add(f'(allow file-read* file-write* (subpath "{policy.config_dir}"))')
             self.assertEqual(writes, allowed)
             self.assertEqual(lines[-2], '(deny file-read* file-write* (subpath "/System/Volumes/Data"))')
+            # RV-20: metadata of run_root itself and this run's directory, never "all of run_root"
+            self.assertNotIn(f'(subpath "{policy.run_root}")', profile)
+            metadata = next(line for line in lines if line.startswith("(allow file-read-metadata"))
+            self.assertTrue(metadata.endswith(f'(literal "{policy.run_root}") (literal (param "RUNDIR")))'))
             for denied in ("mach-lookup", "sysctl", "network-bind", "network-inbound", "process-exec*)",
                            "ipc-", '(subpath "/System")', "remote ip", "remote udp"):
                 self.assertNotIn(denied, profile)
@@ -197,6 +206,18 @@ class PolicyTests(unittest.TestCase):
             with self.assertRaises(lab.LabError) as caught:
                 call()
             self.assertEqual(caught.exception.reason, "invalid-entry")
+
+    def test_exec_probe_is_an_allowed_executable_per_entry(self):
+        policy = Machine(self).policy
+        self.assertEqual(policy.exec_probe("fixture"), [policy.interpreter, "-I", "-S", "-c", "pass"])
+        self.assertEqual(policy.exec_probe("launch"), [policy.claude, "--version"])
+        for entry in mac.ENTRIES:
+            self.assertIn(policy.exec_probe(entry)[0], policy.executables(entry))
+        with self.assertRaises(lab.LabError):
+            policy.exec_probe("other")
+
+    def test_limits_carry_the_founder_disk_bounds(self):
+        self.assertEqual((mac.LIMITS["diskBytes"], mac.LIMITS["diskFiles"]), (2 * 1024**3, 100_000))
 
     def test_invalid_policies_refuse(self):
         machine = Machine(self)
@@ -250,6 +271,9 @@ class PolicyTests(unittest.TestCase):
         policy, root, uid = machine.policy, machine.root, os.getuid()
         base = machine.environment()
         self.assertEqual(base, machine.environment())
+
+        def digest_of(policy=policy, facts=FACTS, uid=uid, account=ACCOUNT_FACTS):
+            return mac.environment_sha256(policy, facts, uid, account)
         facts = [mac.HostFacts("27.0.2", "26A434", "arm64"), mac.HostFacts("27.0.1", "26A435", "arm64"),
                  mac.HostFacts("27.0.1", "26A434", "x86_64")]
         changes = [dict(sandbox_exec_sha256="1" * 64), dict(claude_sha256="2" * 64),
@@ -259,15 +283,29 @@ class PolicyTests(unittest.TestCase):
                    dict(helpers=((f"{root}/bin/claude-helper", "5" * 64),)),
                    dict(config_dir=f"{root}/config2"), dict(run_root=f"{root}/run2"),
                    dict(claude=f"{root}/bin/claude2")]
-        changed = {mac.environment_sha256(policy, f, uid) for f in facts}
-        changed.add(mac.environment_sha256(policy, FACTS, uid + 1))
-        changed |= {mac.environment_sha256(replace(policy, **c), FACTS, uid) for c in changes}
+        accounts = [mac.AccountFacts((20, 81), 0o700), mac.AccountFacts((20,), 0o750), None]
+        changed = {digest_of(facts=f) for f in facts}
+        changed.add(digest_of(uid=uid + 1))
+        changed |= {digest_of(policy=replace(policy, **c)) for c in changes}
+        changed |= {digest_of(account=a) for a in accounts}
         with mock.patch.object(mac, "_component_hashes", lambda: {"harness_lab.py": "0" * 64}):
-            changed.add(mac.environment_sha256(policy, FACTS, uid))
+            changed.add(digest_of())
         with mock.patch.object(mac, "LIMITS", mac.LIMITS | {"openFiles": 255}):
-            changed.add(mac.environment_sha256(policy, FACTS, uid))
-        self.assertEqual(len(changed), len(facts) + 1 + len(changes) + 2)
+            changed.add(digest_of())
+        with mock.patch.object(mac, "LIMITS", mac.LIMITS | {"diskFiles": 99_999}):
+            changed.add(digest_of())
+        self.assertEqual(len(changed), len(facts) + 1 + len(changes) + len(accounts) + 3)
         self.assertNotIn(base, changed)
+
+    def test_executable_ancestors_and_file_must_be_owned_by_root_or_the_dedicated_user(self):
+        machine = Machine(self)
+        self.assertIsNone(mac._shared_ancestor(machine.claude))
+        with mock.patch.object(mac.os, "geteuid", return_value=os.geteuid() + 1):  # a third account owns them
+            self.assertIsNotNone(mac._shared_ancestor(machine.claude))
+            with self.assertRaises(lab.LabError) as caught:
+                mac._trusted_file(machine.claude, machine.policy.claude_sha256, "executable-unavailable", "drift")
+        self.assertEqual(caught.exception.reason, "executable-unavailable")
+        mac._trusted_file(machine.claude, machine.policy.claude_sha256, "executable-unavailable", "drift")
 
     def test_shared_ancestor_refuses_swappable_paths(self):
         machine = Machine(self)
@@ -347,7 +385,7 @@ class RefusalTests(unittest.TestCase):
 
     def test_policy_compile_failure_and_allowed_exec(self):
         for code, reason in ((mac.EXIT_SANDBOX_COMPILE, "profile-compile-failed"), (1, "self-check-allowed"),
-                             (0, "self-check-allowed"), (134, "self-check-allowed")):
+                             (0, "self-check-allowed"), (134, "self-check-allowed")):  # denied case only
             with self.subTest(code), mock.patch.object(
                     mac.subprocess, "run", return_value=SimpleNamespace(returncode=code)):
                 self.refuse(reason, stub_compile_check=False)
@@ -356,12 +394,22 @@ class RefusalTests(unittest.TestCase):
             self.refuse("profile-compile-failed", stub_compile_check=False)
         with mock.patch.object(mac.tempfile, "mkdtemp", side_effect=PermissionError):
             self.refuse("profile-compile-failed", stub_compile_check=False)
-        # positive control: the exec-denied exit passes the mocked compile check
+        # RV-23: the listed command must also run; a profile that denied everything is refused
+        for code in (mac.EXIT_SANDBOX_EXEC_DENIED, 1, 134):
+            with self.subTest(allowed=code), mock.patch.object(
+                    mac.subprocess, "run", side_effect=[SimpleNamespace(returncode=mac.EXIT_SANDBOX_EXEC_DENIED),
+                                                        SimpleNamespace(returncode=code)]):
+                self.refuse("self-check-failed", stub_compile_check=False)
+        # positive control: denied then allowed passes the mocked compile check
         backend = make_backend(self.machine, runner=lambda probe, _b: "allowed")
-        with mock.patch.object(mac.subprocess, "run",
-                               return_value=SimpleNamespace(returncode=mac.EXIT_SANDBOX_EXEC_DENIED)):
+        with mock.patch.object(mac.subprocess, "run", side_effect=[
+                SimpleNamespace(returncode=mac.EXIT_SANDBOX_EXEC_DENIED), SimpleNamespace(returncode=0)]) as run:
             self.refuse("self-check-allowed", backend, stub_compile_check=False)
         self.assertEqual(backend.run_evidence[-1]["compileCheck"], "exec-denied")
+        deny_args, allow_args = (call.args[0] for call in run.call_args_list)
+        self.assertEqual(deny_args[deny_args.index("--") + 1:], [mac.COMPILE_PROBE])
+        self.assertEqual(allow_args[allow_args.index("--") + 1:], self.machine.policy.exec_probe("fixture"))
+        self.assertTrue(any(a.startswith("RUNDIR=") for a in allow_args))
 
     def test_self_check_returns_allowed_or_fails(self):
         def flip(target, outcome):
@@ -409,6 +457,83 @@ class RefusalTests(unittest.TestCase):
         self.refuse("dedicated-user-required", uid=os.getuid() + 1)
         self.machine.repin(account="nobody-here")
         self.refuse("dedicated-user-required")
+
+    def test_dedicated_account_must_be_unprivileged_not_the_console_user_with_a_private_home(self):
+        cases = {"admin group": dict(gids=(20, 80)), "wheel group": dict(gids=(0, 20)),
+                 "admin primary group": dict(pw_gid=80), "console user": dict(console=os.getuid()),
+                 "home not owned": dict(home="/")}
+        for name, args in cases.items():
+            with self.subTest(name):
+                self.refuse("dedicated-user-unsafe", **args)
+        for mode in (0o755, 0o710, 0o701):
+            with self.subTest(mode=oct(mode)):
+                os.chmod(self.machine.home, mode)
+                self.refuse("dedicated-user-unsafe")
+        os.chmod(self.machine.home, 0o700)
+        os.rmdir(self.machine.home)
+        os.symlink(self.machine.root, self.machine.home)  # a home that is a link
+        self.refuse("dedicated-user-unsafe")
+
+    def test_account_facts_fail_closed_when_the_system_cannot_say(self):
+        entry = SimpleNamespace(pw_gid=20, pw_dir=self.machine.home)
+        uid, real_lstat = os.getuid(), os.lstat
+
+        def not_owned(path, *args, **kwargs):
+            info = real_lstat(path, *args, **kwargs)
+            return SimpleNamespace(st_mode=info.st_mode, st_uid=info.st_uid + 1) if path == entry.pw_dir else info
+
+        with mock.patch.object(mac, "_account_groups", lambda account, gid: (20,)), \
+                mock.patch.object(mac, "_console_uid", lambda: -1):
+            self.assertEqual(mac._account_facts(ACCOUNT, entry, uid), ACCOUNT_FACTS)
+            for name in ("_account_groups", "_console_uid"):
+                with self.subTest(name), mock.patch.object(mac, name, side_effect=OSError), \
+                        self.assertRaises(lab.LabError) as caught:
+                    mac._account_facts(ACCOUNT, entry, uid)
+                self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
+            with self.subTest("owner"), mock.patch.object(mac.os, "lstat", not_owned), \
+                    self.assertRaises(lab.LabError) as caught:
+                mac._account_facts(ACCOUNT, entry, uid)
+            self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
+            entry.pw_dir = f"{self.machine.root}/missing"
+            with self.subTest("missing home"), self.assertRaises(lab.LabError):
+                mac._account_facts(ACCOUNT, entry, uid)
+
+    def test_leftover_run_directory_refuses_the_next_run(self):
+        for prefix in ("run-", "compile-"):
+            with self.subTest(prefix):
+                leftover = tempfile.mkdtemp(prefix=prefix, dir=self.machine.policy.run_root)
+                self.refuse("workspace-leftovers")
+                self.refuse("workspace-leftovers", entry="launch")
+                os.rmdir(leftover)
+        backend = make_backend(self.machine)
+        self.addCleanup(backend.close)
+        with host(self.machine):
+            backend.run(FIXTURE, self.workdir, lab.FixtureLimits(wall_seconds=5))
+
+    def test_a_dead_accept_loop_refuses_the_next_pre_session_then_recovers(self):
+        backend = make_backend(self.machine)
+        self.addCleanup(backend.close)
+        with host(self.machine):
+            backend.run(FIXTURE, self.workdir, lab.FixtureLimits(wall_seconds=5))
+            self.assertTrue(backend._proxy.running)
+            dying = mock.Mock(accept=mock.Mock(side_effect=OSError))
+            backend._proxy._servers.append(dying)
+            backend._proxy._accept(dying)
+            self.assertFalse(backend._proxy.healthy)
+            with self.assertRaises(lab.LabError) as caught:
+                backend.run(FIXTURE, self.workdir, lab.FixtureLimits(wall_seconds=5))
+            self.assertEqual(caught.exception.reason, "proxy-unavailable")
+            self.assertEqual(backend.run_evidence[-1]["refused"], "proxy-unavailable")
+            backend.run(FIXTURE, self.workdir, lab.FixtureLimits(wall_seconds=5))  # a fresh proxy
+        self.assertTrue(backend._proxy.healthy)
+
+    def test_run_probe_cancel_must_be_an_event(self):
+        backend = make_backend(self.machine)
+        self.addCleanup(backend.close)
+        for bad in (True, "stop", object()):
+            with self.subTest(bad), self.assertRaises(lab.LabError) as caught:
+                backend.run_probe(FIXTURE, self.workdir, lab.FixtureLimits(), cancel=bad)
+            self.assertEqual(caught.exception.reason, "invalid-lab-request")
 
     def test_unsafe_workspace(self):
         os.chmod(self.machine.policy.config_dir, 0o755)
@@ -639,8 +764,212 @@ class SupervisedRunTests(unittest.TestCase):
                 mock.patch.object(mac.os, "kill", side_effect=fake_kill) as kill_mock:
             result = self.backend.run(b"pass\n", Path(self.machine.candidate()), lab.FixtureLimits(wall_seconds=5))
         self.assertFalse(result.settled)
-        self.assertEqual(self.backend.run_evidence[-1]["escapedProcesses"], 1)
+        evidence = self.backend.run_evidence[-1]
+        self.assertEqual((evidence["escapedProcesses"], evidence["survivingProcesses"]), (1, 0))
+        self.assertEqual((result.escaped_processes, result.surviving_processes), (1, 0))
         kill_mock.assert_called_with(999_999, mac.signal.SIGKILL)
+
+    def leaver(self, *, killable: bool, parent: bool, source=b"import time\ntime.sleep(0.6)\n"):
+        """A process of the dedicated user that appears while the child runs and outlives the group."""
+        ghost, state = (999_999, 7), {"calls": 0, "dead": False}
+        spawned = []
+        real_popen = mac.subprocess.Popen
+
+        def popen(*args, **kwargs):
+            spawned.append(real_popen(*args, **kwargs))
+            return spawned[-1]
+
+        def processes(uid):
+            state["calls"] += 1
+            return BASELINE if state["calls"] == 1 or state["dead"] else BASELINE | {ghost}
+
+        def fake_kill(pid, sig):
+            state["dead"] = state["dead"] or killable
+
+        with host(self.machine, processes=processes,
+                  parent=lambda pid: spawned[0].pid if parent and pid == ghost[0] else None), \
+                mock.patch.object(mac.subprocess, "Popen", popen), mock.patch.object(mac.os, "kill", fake_kill):
+            return self.backend.run(source, Path(self.machine.candidate()), lab.FixtureLimits(wall_seconds=5))
+
+    def test_a_swept_leaver_is_counted_apart_from_a_survivor_and_attributed_to_the_child(self):
+        result = self.leaver(killable=True, parent=True)
+        self.assertEqual((result.escaped_processes, result.escaped_descendants, result.surviving_processes),
+                         (1, 1, 0))
+        self.assertFalse(result.settled)  # strict: a leaver taints the measurement
+        evidence = self.backend.run_evidence[-1]
+        self.assertEqual((evidence["escapedProcesses"], evidence["escapedDescendants"],
+                          evidence["unattributedProcesses"], evidence["survivingProcesses"]), (1, 1, 0, 0))
+
+    def test_a_leaver_never_seen_in_the_childs_tree_is_unattributed(self):
+        result = self.leaver(killable=True, parent=False)
+        self.assertEqual((result.escaped_processes, result.escaped_descendants, result.surviving_processes),
+                         (1, 0, 0))
+        self.assertEqual(self.backend.run_evidence[-1]["unattributedProcesses"], 1)
+
+    def test_a_survivor_that_resists_every_kill_is_reported_after_the_final_sweep(self):
+        result = self.leaver(killable=False, parent=True, source=b"pass\n")
+        self.assertEqual((result.escaped_processes, result.surviving_processes, result.settled), (1, 1, False))
+        self.assertEqual(self.backend.run_evidence[-1]["survivingProcesses"], 1)
+
+    def test_lineage_follows_grandchildren_whatever_the_listing_order(self):
+        lineage = mac._Lineage(100)
+        parents = {200: 100, 300: 200, 400: 1}
+        with mock.patch.object(mac, "_process_parent", parents.get):
+            lineage.observe({(300, 3), (200, 2), (400, 4)})
+        self.assertEqual(lineage.identities, {(200, 2), (300, 3)})
+
+    def test_results_extend_the_lab_and_host_results_additively(self):
+        with host(self.machine):
+            probe = self.backend.run(b"pass\n", Path(self.machine.candidate()), lab.FixtureLimits(wall_seconds=5))
+            launched = self.backend.launch((self.machine.claude,), b"", cwd=self.machine.candidate(),
+                                           wall_seconds=5, max_output_bytes=4096, cancel=threading.Event())
+        self.assertIsInstance(probe, lab.ChildResult)
+        self.assertIsInstance(launched, mac.HostRun)
+        self.assertEqual((probe.cancelled, probe.cleanup_failed, probe.escaped_processes, probe.egress),
+                         (False, False, 0, {}))
+        self.assertEqual((launched.cleanup_failed, launched.surviving_processes, launched.egress), (False, 0, {}))
+        self.assertEqual(self.backend.run_evidence[-1]["egress"], {})
+
+    def test_proxy_counter_delta_of_the_run_lands_in_the_result_and_the_evidence(self):
+        counts = iter([{"allowed": 1, "bytesUp": 10, "denied": 2}, {"allowed": 3, "bytesUp": 10, "denied": 2,
+                                                                   "allowed:api.anthropic.com:443": 2}])
+        with host(self.machine), mock.patch.object(self.backend._proxy, "counters", lambda: next(counts)):
+            result = self.backend.run_probe(b"pass\n", Path(self.machine.candidate()), lab.FixtureLimits())
+        expected = {"allowed": 2, "allowed:api.anthropic.com:443": 2}
+        self.assertEqual(result.egress, expected)
+        self.assertEqual(self.backend.run_evidence[-1]["egress"], expected)
+
+    def test_run_probe_cancel_stops_and_settles_the_group(self):
+        cancel = threading.Event()
+        timer = threading.Timer(0.5, cancel.set)
+        self.addCleanup(timer.cancel)
+        timer.start()
+        started = time.monotonic()
+        with host(self.machine):
+            result = self.backend.run_probe(b"import time\ntime.sleep(30)\n", Path(self.machine.candidate()),
+                                            lab.FixtureLimits(wall_seconds=20), cancel=cancel)
+        self.assertLess(time.monotonic() - started, 10)
+        self.assertEqual((result.cancelled, result.exit_code, result.timed_out, result.settled),
+                         (True, None, False, True))
+        self.assertTrue(self.backend.run_evidence[-1]["cancelled"])
+        self.assertEqual(self.machine.leftovers(), [])
+
+    def test_without_cancel_run_probe_is_unchanged(self):
+        with host(self.machine):
+            result = self.backend.run_probe(b"print('ok')\n", Path(self.machine.candidate()), lab.FixtureLimits())
+        self.assertEqual((result.stdout, result.exit_code, result.cancelled, result.settled), (b"ok\n", 0, False, True))
+
+    # -- RV-19: disk bounds ---------------------------------------------------------------
+
+    def limited(self, **limits) -> mac.MacOSContainment:
+        patcher = mock.patch.object(mac, "LIMITS", mac.LIMITS | limits)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        backend = make_backend(self.machine)  # the environment hash covers the limits
+        self.addCleanup(backend.close)
+        self.addCleanup(mac._remove_tree, self.machine.root)  # a hostile fixture may leave unreadable trees
+        return backend
+
+    def over_disk(self, backend, source: bytes):
+        with host(self.machine), self.assertRaises(lab.LabError) as caught:
+            backend.run_probe(source, Path(self.machine.candidate()), lab.FixtureLimits(wall_seconds=20))
+        self.assertEqual(caught.exception.reason, "disk-limit-exceeded")
+        record = backend.run_evidence[-1]
+        self.assertEqual((record["refused"], record["limitExceeded"], record["settled"]),
+                         ("disk-limit-exceeded", "disk", True))
+        self.assertEqual(self.machine.leftovers(), [])
+        return record
+
+    def test_too_many_files_in_the_candidate_kills_settles_and_refuses(self):
+        backend = self.limited(diskFiles=5)
+        started = time.monotonic()
+        record = self.over_disk(backend, b"import time\nfor i in range(20):\n    open(f'f{i}', 'w').write('x')\n"
+                                         b"time.sleep(30)\n")
+        self.assertLess(time.monotonic() - started, 10)
+        self.assertGreater(record["diskFiles"], 5)
+
+    def test_too_many_bytes_in_the_candidate_kills_settles_and_refuses(self):
+        backend = self.limited(diskBytes=1 << 20)
+        record = self.over_disk(backend, b"import time\nopen('big', 'wb').write(b'x' * (3 << 20))\ntime.sleep(30)\n")
+        self.assertGreater(record["diskBytes"], 1 << 20)
+
+    def test_the_per_run_tmpdir_counts_too(self):
+        backend = self.limited(diskBytes=1 << 20)
+        self.over_disk(backend, b"import os, time\nopen(os.environ['TMPDIR'] + '/big', 'wb').write(b'x' * (3 << 20))\n"
+                                b"time.sleep(30)\n")
+
+    def test_a_burst_written_just_before_a_natural_exit_is_still_caught(self):
+        backend = self.limited(diskFiles=5)
+        self.over_disk(backend, b"for i in range(20):\n    open(f'f{i}', 'w').write('x')\n")
+
+    @unittest.skipIf(os.geteuid() == 0, "root can list any directory")
+    def test_an_unlistable_directory_counts_as_over_the_limit(self):
+        backend = self.limited()
+        self.over_disk(backend, b"import os, time\nos.mkdir('hidden')\nopen('hidden/x', 'w').write('x')\n"
+                                b"os.chmod('hidden', 0)\ntime.sleep(30)\n")
+
+    @unittest.skipIf(os.geteuid() == 0, "root can search any directory")
+    def test_an_unsearchable_directory_counts_as_over_the_limit(self):
+        backend = self.limited()
+        self.over_disk(backend, b"import os, time\nos.mkdir('ro')\nopen('ro/x', 'w').write('x')\n"
+                                b"os.chmod('ro', 0o400)\ntime.sleep(30)\n")
+
+    def test_hard_links_count_once_and_symlinks_are_not_followed(self):
+        backend = self.limited(diskBytes=4 << 20)
+        outside = f"{self.machine.root}/outside"
+        os.mkdir(outside)
+        Path(f"{outside}/huge").write_bytes(b"x" * (6 << 20))
+        source = (b"import os\nopen('a', 'wb').write(b'x' * (3 << 20))\n"
+                  b"for i in range(5):\n    os.link('a', f'l{i}')\n"
+                  + f"os.symlink({outside!r}, 'to-outside')\n".encode())
+        with host(self.machine):
+            result = backend.run_probe(source, Path(self.machine.candidate()), lab.FixtureLimits(wall_seconds=10))
+        self.assertEqual((result.exit_code, result.settled), (0, True))
+        self.assertTrue(3 << 20 <= result.disk_bytes < 4 << 20)
+        self.assertEqual(result.disk_files, 8)  # a, five links, the symlink itself and TMPDIR/home
+
+    def test_the_default_bounds_leave_a_small_run_alone(self):
+        with host(self.machine):
+            result = self.backend.run_probe(b"open('x', 'w').write('y')\n", Path(self.machine.candidate()),
+                                            lab.FixtureLimits())
+        self.assertEqual((result.exit_code, result.disk_files), (0, 2))  # x and TMPDIR/home
+
+    # -- RV-30: cleanup -------------------------------------------------------------------
+
+    def test_remove_tree_undoes_what_the_child_set(self):
+        tree = f"{self.machine.root}/hostile"
+        for sub_dir in ("closed", "readonly", "nested/closed"):
+            os.makedirs(f"{tree}/{sub_dir}", exist_ok=True)
+            Path(f"{tree}/{sub_dir}/file").write_text("x")
+        os.chmod(f"{tree}/nested/closed", 0)
+        os.chmod(f"{tree}/closed", 0)
+        os.chmod(f"{tree}/readonly", 0o500)
+        if hasattr(os, "chflags"):
+            os.chflags(f"{tree}/readonly/file", stat.UF_IMMUTABLE)
+        self.assertTrue(mac._remove_tree(tree))
+        self.assertFalse(os.path.lexists(tree))
+        self.assertTrue(mac._remove_tree(tree))  # already gone
+
+    def test_remove_tree_reports_what_it_cannot_remove(self):
+        tree = f"{self.machine.root}/stuck"
+        os.mkdir(tree)
+        with mock.patch.object(mac.shutil, "rmtree", lambda path, onexc: onexc(os.rmdir, path, OSError())):
+            self.assertFalse(mac._remove_tree(tree))
+
+    def test_a_failed_cleanup_is_recorded_and_refuses_the_next_run(self):
+        with host(self.machine), mock.patch.object(mac, "_remove_tree", lambda path: False):
+            result = self.backend.run_probe(b"pass\n", Path(self.machine.candidate()), lab.FixtureLimits())
+        self.assertTrue(result.cleanup_failed)
+        self.assertTrue(self.backend.run_evidence[-1]["cleanupFailed"])
+        self.assertEqual(len(self.machine.leftovers()), 1)
+        with host(self.machine), self.assertRaises(lab.LabError) as caught:
+            self.backend.run_probe(b"pass\n", Path(self.machine.candidate()), lab.FixtureLimits())
+        self.assertEqual(caught.exception.reason, "workspace-leftovers")
+
+    def test_a_clean_run_records_no_cleanup_failure(self):
+        with host(self.machine):
+            self.backend.run_probe(b"pass\n", Path(self.machine.candidate()), lab.FixtureLimits())
+        self.assertFalse(self.backend.run_evidence[-1]["cleanupFailed"])
 
     def test_sweep_never_runs_as_another_user(self):
         for host_args in (dict(uid=os.getuid() + 1), dict()):
@@ -793,11 +1122,17 @@ class LiveOutputTests(unittest.TestCase):
 
 class CompileCheckTests(unittest.TestCase):
     @unittest.skipUnless(HAS_SANDBOX_EXEC, "macOS sandbox-exec unavailable")
-    def test_rendered_profiles_compile_and_deny_unlisted_exec(self):
-        machine = Machine(self)
+    def test_rendered_profiles_compile_deny_unlisted_exec_and_run_a_listed_one(self):
+        # /usr/bin/true stands in for the interpreter so no framework has to be readable
+        true = "/usr/bin/true"
+        machine = Machine(self, interpreter=true, interpreter_sha256=digest(true), interpreter_root=true)
         backend = make_backend(machine)
-        for entry in mac.ENTRIES:
-            backend._compile_check(entry)  # real sandbox-exec: must report exec denied
+        backend._compile_check("fixture")  # real sandbox-exec: exec of /usr/bin/false denied, true runs
+        probe_dir = tempfile.mkdtemp(prefix="compile-", dir=machine.policy.run_root)
+        self.addCleanup(shutil.rmtree, probe_dir, True)
+        # the launch profile compiles and denies the unlisted exec (the pinned claude is not run here)
+        self.assertEqual(backend._sandboxed("launch", probe_dir, [mac.COMPILE_PROBE], {}),
+                         mac.EXIT_SANDBOX_EXEC_DENIED)
         with mock.patch.object(mac.ContainmentPolicy, "render", lambda self, entry: b"(version 1)(deny default"), \
                 self.assertRaises(lab.LabError) as caught:
             backend._compile_check("fixture")
@@ -806,7 +1141,11 @@ class CompileCheckTests(unittest.TestCase):
                 self.assertRaises(lab.LabError) as caught:
             backend._compile_check("fixture")
         self.assertEqual(caught.exception.reason, "self-check-allowed")
-        self.assertEqual(machine.leftovers(), [])
+        with mock.patch.object(mac.ContainmentPolicy, "render", lambda self, entry: b"(version 1)(deny default)"), \
+                self.assertRaises(lab.LabError) as caught:  # a profile that denies everything is not a profile
+            backend._compile_check("fixture")
+        self.assertEqual(caught.exception.reason, "self-check-failed")
+        self.assertEqual(machine.leftovers(), [os.path.basename(probe_dir)])
 
 
 def client_hello(server_name: str | None) -> bytes:
@@ -881,6 +1220,107 @@ class ProxyTests(unittest.TestCase):
         client = self.connect_client(connect)  # silent client: handshake deadline closes it
         self.assertEqual(self.read_all(client), b"")
         connect.assert_not_called()
+
+    def counted(self, proxy, wanted: dict, timeout: float = 3.0) -> dict:
+        """The counters once they include ``wanted`` (the proxy thread updates them asynchronously)."""
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            counters = proxy.counters()
+            if all(counters.get(key) == value for key, value in wanted.items()):
+                break
+            time.sleep(0.01)
+        return proxy.counters()
+
+    def test_counters_tell_allowed_denied_and_direct_requests_apart(self):
+        connect = mock.Mock(side_effect=AssertionError("upstream contacted"))
+        proxy = mac.EgressProxy(0, ("api.anthropic.com:443",), connect=connect, timeout=2)
+        proxy.start()
+        self.addCleanup(proxy.close)
+        self.assertEqual(proxy.counters(), {})
+        requests = [b"CONNECT evil.example:443 HTTP/1.1\r\n\r\n", b"CONNECT api.anthropic.com:80 HTTP/1.1\r\n\r\n",
+                    b"CONNECT api.anthropic.com:443 FOO\r\n\r\n", b"GET http://api.anthropic.com/ HTTP/1.1\r\n\r\n",
+                    b"GET / HTTP/1.1\r\nHost: x\r\n\r\n", b"\x16\x03\x01garbage\r\n\r\n"]
+        for request in requests:
+            with socket.create_connection(("127.0.0.1", proxy.port), timeout=3) as client:
+                client.sendall(request)
+                self.read_all(client)
+        with socket.create_connection(("127.0.0.1", proxy.port), timeout=3) as client:  # evil SNI
+            client.sendall(b"CONNECT api.anthropic.com:443 HTTP/1.1\r\n\r\n" + client_hello("evil.example"))
+            self.read_all(client)
+        with socket.create_connection(("127.0.0.1", proxy.port), timeout=3) as client:  # hangs up early
+            client.sendall(b"CONNECT api.anthropic.com:4")
+            client.shutdown(socket.SHUT_WR)
+            self.read_all(client)
+        expected = {"connections": 8, "denied": 5, "unexpectedDirect": 3, "denied:target-not-allowed": 2,
+                    "denied:bad-request": 1, "denied:sni-mismatch": 1, "denied:incomplete": 1}
+        self.assertEqual(self.counted(proxy, expected), expected)
+        connect.assert_not_called()
+
+    def test_counters_record_the_tunnel_its_target_and_the_bytes_in_both_directions(self):
+        upstream_side, proxy_side = socket.socketpair()
+        self.addCleanup(upstream_side.close)
+        proxy = mac.EgressProxy(0, ("api.anthropic.com:443",), connect=mock.Mock(return_value=proxy_side), timeout=2)
+        proxy.start()
+        self.addCleanup(proxy.close)
+        hello = client_hello("api.anthropic.com")
+        with socket.create_connection(("127.0.0.1", proxy.port), timeout=3) as client:
+            client.sendall(b"CONNECT api.anthropic.com:443 HTTP/1.1\r\n\r\n" + hello + b"more")
+            self.assertTrue(client.recv(64).startswith(b"HTTP/1.1 200"))
+            upstream_side.settimeout(2)
+            received = b""
+            while len(received) < len(hello) + 4:
+                received += upstream_side.recv(65_536)
+            upstream_side.sendall(b"server-bytes")
+            self.assertEqual(client.recv(64), b"server-bytes")
+            client.sendall(b"again")
+            self.assertEqual(upstream_side.recv(16), b"again")
+        counters = self.counted(proxy, {"bytesUp": len(hello) + 4 + 5})
+        self.assertEqual(counters, {"connections": 1, "allowed": 1, "allowed:api.anthropic.com:443": 1,
+                                    "bytesUp": len(hello) + 4 + 5, "bytesDown": len(b"server-bytes")})
+
+    def test_a_failed_upstream_connect_is_counted_apart(self):
+        proxy = mac.EgressProxy(0, ("api.anthropic.com:443",), connect=mock.Mock(side_effect=OSError), timeout=2)
+        proxy.start()
+        self.addCleanup(proxy.close)
+        with socket.create_connection(("127.0.0.1", proxy.port), timeout=3) as client:
+            client.sendall(b"CONNECT api.anthropic.com:443 HTTP/1.1\r\n\r\n" + client_hello("api.anthropic.com"))
+            self.read_all(client)
+        counters = self.counted(proxy, {"upstreamFailed": 1})
+        self.assertEqual((counters["upstreamFailed"], counters.get("allowed", 0), counters.get("denied", 0)), (1, 0, 0))
+
+    def test_a_silent_client_is_a_counted_timeout_and_capacity_overflow_is_denied(self):
+        proxy = mac.EgressProxy(0, ("api.anthropic.com:443",), connect=mock.Mock(), timeout=0.3)
+        proxy.start()
+        self.addCleanup(proxy.close)
+        with socket.create_connection(("127.0.0.1", proxy.port), timeout=3) as client:
+            self.read_all(client)
+        self.assertEqual(self.counted(proxy, {"denied:timeout": 1})["denied"], 1)
+        proxy = mac.EgressProxy(0, ("api.anthropic.com:443",), connect=mock.Mock(), timeout=5)
+        proxy.start()
+        self.addCleanup(proxy.close)
+        held = [socket.create_connection(("127.0.0.1", proxy.port), timeout=3)
+                for _ in range(mac.EgressProxy.MAX_CONNECTIONS)]
+        self.addCleanup(lambda: [c.close() for c in held])
+        self.counted(proxy, {"connections": mac.EgressProxy.MAX_CONNECTIONS})
+        with socket.create_connection(("127.0.0.1", proxy.port), timeout=3) as client:
+            self.read_all(client)
+        counters = self.counted(proxy, {"denied:capacity": 1})
+        self.assertEqual((counters["denied"], counters["denied:capacity"]), (1, 1))
+
+    def test_the_accept_loop_dying_is_visible_but_closing_is_not_a_failure(self):
+        proxy = mac.EgressProxy(0, ("api.anthropic.com:443",), connect=mock.Mock(), timeout=1)
+        self.assertTrue(proxy.healthy)
+        dying = mock.Mock(accept=mock.Mock(side_effect=OSError))
+        proxy._servers.append(dying)  # a live listener whose accept fails
+        proxy._accept(dying)
+        self.assertFalse(proxy.healthy)
+        proxy._servers.clear()
+        proxy.start()  # a fresh start clears it
+        self.addCleanup(proxy.close)
+        self.assertTrue(proxy.healthy)
+        closed = mock.Mock(accept=mock.Mock(side_effect=OSError))
+        proxy._accept(closed)  # not a current listener (close() removed it): not a failure
+        self.assertTrue(proxy.healthy)
 
     def test_relays_allowed_endpoint_with_matching_sni(self):
         for family, address in ((socket.AF_INET, "127.0.0.1"), (socket.AF_INET6, "::1")):
