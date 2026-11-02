@@ -1,0 +1,203 @@
+{
+  "advisoryOrder": null,
+  "agentsUsed": 4,
+  "agreement": {
+    "counterexampleCount": 0,
+    "counts": {
+      "analyzer-stricter": 0,
+      "analyzer-unknown": 0,
+      "baseline-stricter": 0,
+      "baseline-unavailable": 0,
+      "both-clean": 1,
+      "both-conflicting": 0,
+      "not-comparable": 0
+    },
+    "pairs": [
+      {
+        "agreement": "both-clean",
+        "analyzer": "independent-candidate",
+        "baseline": "clean",
+        "counterexample": false,
+        "left": "ind1",
+        "right": "ind2"
+      }
+    ]
+  },
+  "analysis": {
+    "analysisId": "sha256:2d5ca2adad9d9289217afbf7dc59a3184ec721abd4599605c44728b0f5b416e6",
+    "evidenceRefs": [],
+    "inputDigest": "sha256:9146d9d83b0bc8326f43f5d80e2810d8fbebf408eb7dab6cb61a0da0d21452bc",
+    "interactions": [
+      {
+        "classification": "independent-candidate",
+        "coverage": [
+          "complete"
+        ],
+        "left": "ind1",
+        "right": "ind2",
+        "sharedResources": []
+      }
+    ],
+    "kind": "git",
+    "operation": "analyze-work",
+    "operations": [
+      {
+        "coverage": "complete",
+        "instanceId": "ind1",
+        "source": "e937a22538d4cd87d83ebc4357ba6d50fe9e600e"
+      },
+      {
+        "coverage": "complete",
+        "instanceId": "ind2",
+        "source": "c0dcad11bb32b506c4b65214a91ce3fa41aafa41"
+      }
+    ],
+    "uncertainty": [],
+    "unknownEffects": []
+  },
+  "assurance": {
+    "assumptions": [
+      "Sources are committed work and the base is an ancestor of every source.",
+      "The registered workspace repository root equals the repository the agents inspect.",
+      "Agent-reported command results match what the commands produced.",
+      "The host permission allowlist of REQ-016 is in force; it is recorded by host receipts, not verified by the script."
+    ],
+    "compatibilityClass": "0-heuristic",
+    "domain": "Committed Git work of at most 32 operations in one registered analysis-only workspace; replay and prepare only for 2 to 4 operations.",
+    "evidenceMethod": "Existing read-only analyzer report through plugin MCP analyze-work, git merge-tree --write-tree baseline in a temporary object directory, and replay evidence through plugin MCP analyze; commands are executed by agents and returned under strict schemas, not independently re-run by the script.",
+    "executionContract": "Read-only analysis and a non-allocating prepare step; no grant, execution, edit, ref write or applied merge; executionAuthorization is false.",
+    "notAGuarantee": true,
+    "observationContract": "Pinned base and source commit identifiers, analyzer coverage and interaction classes, per-pair merge-tree result, replay digests, prepare outcome and end-of-run reference re-resolution; absent observations are null and never mean clean.",
+    "property": "File-level interaction classes and pairwise merge-tree outcomes over committed work; not semantic commutation, hunk-level merge safety or order independence."
+  },
+  "baseline": {
+    "gitVersion": "2.54.0",
+    "hardening": "fixed-hardened-git-template",
+    "mergeBase": "explicit-base-commit",
+    "objectStore": "temporary-object-directory-with-repository-alternate",
+    "pairs": [
+      {
+        "conflictedPaths": [],
+        "left": "ind1",
+        "message": null,
+        "result": "clean",
+        "right": "ind2"
+      }
+    ],
+    "repositoryStateCheck": {
+      "objectCountUnchanged": "true",
+      "refsUnchanged": "true"
+    },
+    "status": "completed"
+  },
+  "executionAuthorization": false,
+  "gate": "braid-gate",
+  "limits": [
+    "File-level resources only; coarser than hunk merging; a read plus a write on one resource counts as conflicting.",
+    "Reads are not observed; read hazards are outside this gate.",
+    "Only committed work is observed; uncommitted work in any worktree is not observed.",
+    "Deletions, renames, binaries and symlinks are unknown effects with partial coverage.",
+    "Replay, preparation and the owned runtime are limited to four operations; analysis is limited to 32.",
+    "No speed, throughput or agent-count claim; parallel runtime speedup results are recorded NO-GO (SPEC-021 G4, SPEC-022, SPEC-038).",
+    "Host approval and auto mode are not authority; executionAuthorization is false; grants are issued by the operator outside the workflow.",
+    "An independent-candidate, clean or certified outcome is not a guarantee of semantic correctness, conflict freedom or order independence.",
+    "Command results are reported by agents under strict schemas; the script checks their shape and consistency but does not re-run them.",
+    "The host permission allowlist is not observable by the script; a refusal of runtime-enabled registrations and an agent-reported tool list are defensive checks, not enforcement."
+  ],
+  "operationCount": 2,
+  "phases": [
+    {
+      "agentUsed": true,
+      "detail": "base and sources pinned to full commit identifiers; uncommitted work is not observed",
+      "name": "validate",
+      "status": "ok"
+    },
+    {
+      "agentUsed": true,
+      "detail": "analysis over commit sources; the analyzer values are copied unchanged",
+      "name": "analyze",
+      "status": "ok"
+    },
+    {
+      "agentUsed": true,
+      "detail": "pairwise merge-tree completed in a temporary object directory",
+      "name": "baseline",
+      "status": "ok"
+    },
+    {
+      "agentUsed": true,
+      "detail": "references re-resolved unchanged",
+      "name": "finalize",
+      "status": "ok"
+    },
+    {
+      "agentUsed": false,
+      "detail": "envelope computed by the script",
+      "name": "report",
+      "status": "ok"
+    }
+  ],
+  "pinned": {
+    "base": "c193a5f4bc57704a7c75a2bbb05ee31cc6709c8f",
+    "pinnedInPhase": "validate",
+    "sources": [
+      {
+        "commit": "e937a22538d4cd87d83ebc4357ba6d50fe9e600e",
+        "input": "ind1"
+      },
+      {
+        "commit": "c0dcad11bb32b506c4b65214a91ce3fa41aafa41",
+        "input": "ind2"
+      }
+    ]
+  },
+  "prepare": {
+    "batch": {
+      "expectedFinalTree": "6249c6db976bac778d76dff4886f91754cf0f6a2",
+      "order": [
+        "ind1",
+        "ind2"
+      ],
+      "planDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "message": "order is the input order of sources, not a recommendation",
+    "mode": "serial",
+    "notPreparedReasons": [],
+    "status": "prepared"
+  },
+  "refusal": null,
+  "replay": {
+    "certificate": {
+      "advisoryPlanDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "evidenceDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "evidenceRef": null,
+      "result": "equivalent-observed"
+    },
+    "message": "certificate from analyze alone; independent consumer verification was not performed",
+    "skipReason": null,
+    "status": "certified"
+  },
+  "request": {
+    "base": "main",
+    "sources": [
+      "ind1",
+      "ind2"
+    ],
+    "workspaceId": "0123456789abcdef0123456789abcdef"
+  },
+  "schemaVersion": "agent-braid-claude-gate-result/v0.1",
+  "staleRefs": {
+    "checked": true,
+    "report": []
+  },
+  "status": "ok-certified",
+  "unobserved": [
+    "uncommitted-work",
+    "reads",
+    "transcripts",
+    "tool-calls",
+    "hunk-level-merge",
+    "semantic-effects",
+    "host-version"
+  ]
+}
