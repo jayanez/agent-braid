@@ -12,8 +12,11 @@
   the printed shell line) and names only observational hook events.
 
 Exit codes: 0 success; 1 the stream was read but is invalid; 2 usage error, refusal or unavailable
-resource. Nothing is created (no runtime directory, no token file) until every input was checked.
-The viewer never writes host configuration. This module imports no network code; the server modules
+resource. Nothing is left behind by a refusal: the runtime directory is created only after every
+input was checked and is removed again when the port cannot be bound; the ingest token file is
+removed when the server stops (Ctrl-C or SIGTERM). The web bundle is read from the source checkout
+(`integrations/agent-braid-view/web`), which the built package does not ship yet, so `serve` refuses
+elsewhere. The viewer never writes host configuration. This module imports no network code; the server modules
 are loaded only by the subcommands that need them.
 """
 from __future__ import annotations
@@ -25,6 +28,7 @@ import json
 import os
 import re
 import shlex
+import signal
 import sys
 from pathlib import Path
 from typing import Any, Callable
@@ -37,7 +41,8 @@ HOOK_TIMEOUT_SECONDS = 5
 BUNDLE_DIR = Path(__file__).resolve().parent.parent / "integrations" / "agent-braid-view" / "web"
 MAX_BUNDLE_FILE_BYTES = 8 * 1024 * 1024
 MAX_BUNDLE_FILES = 64
-_IMPORT_MAP = re.compile(rb'<script\s+type="importmap"\s*>(.*?)</script>', re.DOTALL)
+_IMPORT_MAP = re.compile(rb"<script\b[^>]*\btype\s*=\s*[\"']?importmap[\"']?[^>]*>(.*?)</script\s*>",
+                         re.DOTALL | re.IGNORECASE)
 
 
 class CliError(Exception):
@@ -49,10 +54,14 @@ class CliError(Exception):
         self.code = code
 
 
-def _port(text: str) -> int:
-    if not text.isascii() or not text.isdigit() or int(text) > 65535:
-        raise argparse.ArgumentTypeError("--port is a number between 0 and 65535")
+def _port(text: str, minimum: int = 0) -> int:
+    if not text.isascii() or not text.isdigit() or not minimum <= int(text) <= 65535:
+        raise argparse.ArgumentTypeError(f"--port is a number between {minimum} and 65535")
     return int(text)
+
+
+def _printed_port(text: str) -> int:
+    return _port(text, 1)  # `serve` may ask the OS for a port (0); `env` needs the one `serve` printed
 
 
 def add_parser(subparsers: Any) -> None:
@@ -71,7 +80,7 @@ def add_parser(subparsers: Any) -> None:
     validate.add_argument("file", type=Path)
     env = commands.add_parser("env", help="print host configuration; writes nothing")
     env.add_argument("--host", choices=HOSTS, required=True)
-    env.add_argument("--port", type=_port, help="the port printed by `view serve` (default: a placeholder)")
+    env.add_argument("--port", type=_printed_port, help="the port printed by `view serve` (default: a placeholder)")
     env.add_argument("--runtime-dir", type=Path, metavar="DIR", help="as for `serve`")
 
 
@@ -89,12 +98,23 @@ def _runtime_dir(args: argparse.Namespace) -> Path:
     return path
 
 
-def _ensure_private_directory(path: Path) -> None:
-    """Create the runtime directory (and missing parents) with mode 0700 before the server checks it."""
+def _ensure_private_directory(path: Path) -> list[Path]:
+    """Create the runtime directory (and missing parents) with mode 0700; return what was created."""
+    created = [candidate for candidate in reversed((path, *path.parents)) if not candidate.exists()]
     try:
         path.mkdir(parents=True, mode=0o700, exist_ok=True)
     except OSError as exc:
         raise CliError(f"view: runtime-dir: cannot create the runtime directory: {exc.strerror}") from exc
+    return created
+
+
+def _remove_created(created: list[Path]) -> None:
+    """Best effort: take back directories this run created (deepest first), leaving any that gained content."""
+    for directory in reversed(created):
+        try:
+            directory.rmdir()
+        except OSError:
+            return
 
 
 def load_bundle(directory: Path) -> tuple[dict[str, bytes], str | None]:
@@ -108,20 +128,20 @@ def load_bundle(directory: Path) -> tuple[dict[str, bytes], str | None]:
                 continue  # subdirectories (vendored code) and links are not served by the flat bundle
             if len(files) >= MAX_BUNDLE_FILES:
                 raise CliError("view: bundle: the web bundle has too many files")
-            descriptor = os.open(entry.path, os.O_RDONLY | os.O_NOFOLLOW)
-            try:
-                with os.fdopen(descriptor, "rb", closefd=False) as stream:
-                    content = stream.read(MAX_BUNDLE_FILE_BYTES + 1)
-            finally:
-                os.close(descriptor)
+            flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+            with os.fdopen(os.open(entry.path, flags), "rb") as stream:
+                content = stream.read(MAX_BUNDLE_FILE_BYTES + 1)
             if len(content) > MAX_BUNDLE_FILE_BYTES:
                 raise CliError(f"view: bundle: {entry.name} is larger than the bundle file bound")
             files[entry.name] = content
     except OSError as exc:
-        raise CliError(f"view: bundle: cannot read the web bundle: {exc.strerror}") from exc
+        raise CliError(f"view: bundle: cannot read the web bundle (`serve` runs from a source checkout): {exc.strerror}") from exc
     if "index.html" not in files:
         raise CliError("view: bundle: the web bundle has no index.html")
-    maps = _IMPORT_MAP.findall(files["index.html"])
+    index = files["index.html"]
+    maps = _IMPORT_MAP.findall(index)
+    if not maps and b"importmap" in index.lower():
+        raise CliError("view: bundle: index.html has an import map the viewer cannot hash for its policy")
     if len(maps) > 1:
         raise CliError("view: bundle: index.html carries more than one inline import map")
     digest = base64.b64encode(hashlib.sha256(maps[0]).digest()).decode("ascii") if maps else None
@@ -167,32 +187,58 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
     except TailError as exc:
         raise CliError(f"view serve: watch: {exc.detail}") from exc
     hooks = HookIngest(store)
-    _ensure_private_directory(runtime_dir)
+    created = _ensure_private_directory(runtime_dir)
     try:
         server = ViewServer(store, runtime_dir, port=args.port, bundle=bundle,
                             ingest_handlers={HOOK_PATH: hooks.handle}, names_inventory=hooks.dropped_names,
                             import_map_sha256=import_map_sha256)
     except ServeError as exc:
+        _remove_created(created)
         raise CliError(f"view serve: {exc}") from exc
     except OSError as exc:
+        _remove_created(created)
         raise CliError(f"view serve: cannot bind port {args.port}: {exc.strerror}") from exc
+    previous = _stop_on_sigterm()
     try:
         print(f"Agent Braid activity viewer (read-only), surface web, loopback only.\n"
               f"Open once in a browser: {server.open_url}\n"
               f"Ingest token file (owner-only): {server.token_path}", flush=True)
         if tail is not None:
             tail.start()
-        if on_ready is not None:
-            on_ready(server)
         try:
+            if on_ready is not None:
+                on_ready(server)
             server.serve_forever()
         except KeyboardInterrupt:
             pass
     finally:
+        if previous is not None:
+            signal.signal(signal.SIGTERM, previous)
         if tail is not None:
             tail.stop()
         server.server_close()
+        _remove_own_token(server)
     return 0
+
+
+def _stop_on_sigterm() -> Any:
+    """Make SIGTERM end `serve` like Ctrl-C; return the previous handler (None off the main thread)."""
+    def stop(signum: int, frame: Any) -> None:
+        raise KeyboardInterrupt
+
+    try:
+        return signal.signal(signal.SIGTERM, stop)
+    except ValueError:  # not the main thread (tests): the caller stops the server itself
+        return None
+
+
+def _remove_own_token(server: Any) -> None:
+    """Delete the token file when it still holds this server's token, so a stopped viewer leaves none."""
+    try:
+        if server.token_path.read_text() == server._ingest_token:
+            server.token_path.unlink()
+    except OSError:
+        pass
 
 
 # -- validate ------------------------------------------------------------------------------------
@@ -218,9 +264,9 @@ def _env(args: argparse.Namespace) -> int:
     if args.host != "claude":
         raise CliError(f"view env: host {args.host} is not available yet; OTLP ingest arrives with VIS.1b")
     from .view_hooks import OBSERVATIONAL_EVENTS
-    from .view_serve import HOOK_PATH
+    from .view_serve import HOOK_PATH, INGEST_TOKEN_NAME
     port = "<port>" if args.port is None else str(args.port)
-    token_file = _runtime_dir(args) / "view-ingest-token"
+    token_file = _runtime_dir(args) / INGEST_TOKEN_NAME
     hook = {"type": "http", "url": f"http://127.0.0.1:{port}{HOOK_PATH}",
             "headers": {"Authorization": f"Bearer ${TOKEN_ENV}"}, "allowedEnvVars": [TOKEN_ENV],
             "timeout": HOOK_TIMEOUT_SECONDS}

@@ -131,7 +131,7 @@ class ServeCase(TempCase):
 
 class ServeTests(ServeCase):
     def test_serves_the_bundle_replay_and_hooks_on_loopback(self):
-        server, result, _ = self.serve("--replay", str(LOOM / "valid-corpus.jsonl"))
+        server, result, _ = self.serve("--surface", "web", "--replay", str(LOOM / "valid-corpus.jsonl"))
         self.assertEqual(server.server_address[0], "127.0.0.1")
         self.assertEqual(server.token_path.parent, self.runtime)
         self.assertEqual(stat.S_IMODE(os.stat(self.runtime).st_mode), 0o700)
@@ -184,10 +184,6 @@ class ServeTests(ServeCase):
         server, _, _ = self.serve("--port", str(port))
         self.assertEqual(server.port, port)
 
-    def test_surface_web_is_the_default_and_accepted_explicitly(self):
-        server, _, _ = self.serve("--surface", "web")
-        self.assertEqual(server.server_address[0], "127.0.0.1")
-
     def test_import_map_in_index_html_is_allowed_by_the_policy_hash(self):
         (self.bundle / "index.html").write_text(
             '<!doctype html><script type="importmap">{"imports":{"three":"/web/three.js"}}</script>')
@@ -196,14 +192,53 @@ class ServeTests(ServeCase):
         self.assertEqual(status, 200)
         self.assertIn("'sha256-", headers["Content-Security-Policy"])
 
+    def test_import_map_variants_are_hashed(self):
+        for block in ("<SCRIPT TYPE='importmap'>{}</SCRIPT>", '<script defer type=importmap\n>{}</script >'):
+            with self.subTest(block=block):
+                (self.bundle / "index.html").write_text(f"<!doctype html>{block}")
+                server, _, _ = self.serve()
+                _, headers, _ = self.request(server, "GET", "/", self.cookie(server))
+                self.assertIn("'sha256-", headers["Content-Security-Policy"])
+
     def test_prints_the_open_url_and_token_path_once_at_start(self):
         server, result, thread = self.serve()
+        token = self.token(server)
         server.shutdown()
         thread.join(10)
         self.assertEqual(result["code"], 0)
         self.assertEqual(result["stdout"].count("/open?code="), 1)
         self.assertIn(str(server.token_path), result["stdout"])
-        self.assertNotIn(self.token(server), result["stdout"] + result["stderr"])
+        self.assertNotIn(token, result["stdout"] + result["stderr"])
+
+    def test_the_token_file_is_removed_when_the_server_stops(self):
+        server, _, thread = self.serve()
+        self.assertTrue(server.token_path.exists())
+        server.shutdown()
+        thread.join(10)
+        self.assertFalse(server.token_path.exists())
+
+    def test_a_token_file_replaced_by_another_server_is_left_alone(self):
+        server, _, thread = self.serve()
+        server.token_path.write_text("another-servers-token")
+        server.shutdown()
+        thread.join(10)
+        self.assertEqual(server.token_path.read_text(), "another-servers-token")
+
+    def test_sigterm_stops_the_server_cleanly_and_restores_the_handler(self):
+        import signal
+        args = parse("view", "serve", "--runtime-dir", str(self.runtime))
+        before = signal.getsignal(signal.SIGTERM)
+        seen = {}
+
+        def on_ready(server):
+            seen["token_path"] = server.token_path
+            os.kill(os.getpid(), signal.SIGTERM)
+
+        with contextlib.redirect_stdout(io.StringIO()):
+            code = view_cli.run(args, on_ready=on_ready)
+        self.assertEqual(code, 0)
+        self.assertFalse(seen["token_path"].exists())
+        self.assertEqual(signal.getsignal(signal.SIGTERM), before)
 
 
 class ServeRefusalTests(TempCase):
@@ -284,6 +319,24 @@ class ServeRefusalTests(TempCase):
         self.assertEqual((code, out), (2, ""))
         self.assertIn("cannot bind", err)
         self.assertNotIn("Traceback", err)
+        self.assert_no_side_effect()
+
+    def test_port_in_use_removes_the_parents_it_created(self):
+        deep = self.base / "a" / "b" / "run"
+        with socket.socket() as holder:
+            holder.bind(("127.0.0.1", 0))
+            holder.listen()
+            port = holder.getsockname()[1]
+            code, _, _ = invoke("view", "serve", "--port", str(port), "--runtime-dir", str(deep))
+        self.assertEqual(code, 2)
+        self.assertFalse((self.base / "a").exists())
+
+    def test_import_map_that_cannot_be_hashed_is_refused(self):
+        (self.bundle / "index.html").write_text("<!doctype html><!-- importmap --><script>1</script>")
+        code, _, err = invoke("view", "serve", "--runtime-dir", str(self.runtime))
+        self.assertEqual(code, 2)
+        self.assertIn("import map", err)
+        self.assert_no_side_effect()
 
     def test_relative_runtime_dir_is_refused(self):
         code, _, err = invoke("view", "serve", "--runtime-dir", "relative/run")
@@ -412,7 +465,7 @@ class EnvTests(TempCase):
         self.assertNotIn("0.0.0.0", out)
 
     def test_reads_the_token_from_its_file_and_prints_no_credential(self):
-        from agent_braid.view_serve import ViewServer
+        from agent_braid.view_serve import INGEST_TOKEN_NAME, ViewServer
         from agent_braid.view_store import LoomStore
         server = ViewServer(LoomStore(), self.runtime)
         self.addCleanup(server.server_close)
@@ -422,7 +475,7 @@ class EnvTests(TempCase):
         self.assertNotIn(token, out + err)
         self.assertNotIn(server._open_code, out + err)
         self.assertIn(str(server.token_path), out)
-        self.assertRegex(out, r"export AGENT_BRAID_VIEW_TOKEN=\"\$\(cat '?[^)]*view-ingest-token'?\)\"")
+        self.assertRegex(out, r"export AGENT_BRAID_VIEW_TOKEN=\"\$\(cat '?[^)]*" + INGEST_TOKEN_NAME + r"'?\)\"")
 
     def test_says_it_writes_nothing_and_to_use_user_level_settings(self):
         _, out, _ = self.env()
@@ -454,6 +507,11 @@ class EnvTests(TempCase):
         code, out, err = invoke("view", "env", "--host", "codex")
         self.assertEqual((code, out), (2, ""))
         self.assertIn("host codex is not available", err)
+
+    def test_port_zero_is_a_usage_error(self):
+        code, _, err = self.env("--port", "0")
+        self.assertEqual(code, 2)
+        self.assertIn("between 1 and 65535", err)
 
     def test_bad_port_is_a_usage_error(self):
         code, _, err = self.env("--port", "70000")
