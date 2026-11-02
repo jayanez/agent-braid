@@ -7,6 +7,8 @@ import tempfile
 import unittest
 
 from agent_braid import harness_assurance as ha
+from agent_braid import harness_assurance_risk as risk
+from scripts import validate_change as validation
 
 
 PINNED_STANDARD = "891ab76f56ed326354eef8500a076429892b0964a1ca06e59fd71677ab871033"
@@ -780,6 +782,172 @@ class JournalTests(OperatorFixture):
         resolved = ha.resolve(journal.active_profile)
         self.assertEqual(resolved["profile"]["digest"], journal.active)
         self.assertIs(resolved["executionAuthorization"], False)
+
+
+def classification(paths=("README.md",), lines=10, prof=None):
+    return risk.classify_risk(prof or profile(), list(paths), lines, validation.classify(paths))
+
+
+def compiled(prof=None, documents=None, paths=("README.md",), lines=10):
+    prof = prof or profile()
+    return ha.compile_artifact(prof, documents, classification(paths, lines, prof))
+
+
+def compile_refused(case, reason, *args):
+    with case.assertRaises(ha.AssuranceError) as ctx:
+        ha.compile_artifact(*args)
+    case.assertEqual(ctx.exception.reason, reason)
+    case.assertIn(reason, ha.REASONS)
+
+
+def verify_refused(case, reason, artifact, prof=None, documents=None, cls=None):
+    with case.assertRaises(ha.AssuranceError) as ctx:
+        ha.verify_artifact(artifact, prof or profile(), documents, cls or classification())
+    case.assertEqual(ctx.exception.reason, reason)
+    case.assertIn(reason, ha.REASONS)
+
+
+class ReviewLadderTests(unittest.TestCase):
+    def test_code_ladder_matches_the_contract_table(self):
+        names = {depth: ha.required_reviews(depth, False) for depth in ha.DEPTHS}
+        self.assertEqual(names["R0"], ())
+        self.assertEqual(names["R1"], ("code-review",))
+        self.assertEqual(names["R2"], ("code-review", "quality-review", "simplification-review"))
+        self.assertEqual(names["R3"], (*names["R2"], "adversarial-security-review"))
+        self.assertEqual(names["R4"], (*names["R3"], "independent-multi-agent-review"))
+        self.assertEqual(ha.MIN_INDEPENDENT_REVIEWERS, 2)
+
+    def test_docs_only_ladder_swaps_r1_and_r2_and_keeps_the_r3_r4_additions(self):
+        self.assertEqual(ha.required_reviews("R0", True), ())
+        self.assertEqual(ha.required_reviews("R1", True), ("accuracy-review",))
+        self.assertEqual(ha.required_reviews("R2", True),
+                         ("accuracy-review", "claim-discipline-review", "concision-review"))
+        self.assertEqual(ha.required_reviews("R3", True), (*ha.required_reviews("R2", True), "adversarial-security-review"))
+        self.assertEqual(ha.required_reviews("R4", True)[-2:],
+                         ("adversarial-security-review", "independent-multi-agent-review"))
+
+    def test_every_higher_depth_requires_a_superset(self):
+        for docs in (False, True):
+            for low, high in zip(ha.DEPTHS, ha.DEPTHS[1:]):
+                self.assertTrue(set(ha.required_reviews(low, docs)) <= set(ha.required_reviews(high, docs)))
+
+    def test_unknown_depth_or_flag_is_refused(self):
+        for depth, docs in (("R5", False), (None, False), ("R2", 1), ("R2", None)):
+            with self.assertRaises(ha.AssuranceError) as ctx:
+                ha.required_reviews(depth, docs)
+            self.assertEqual(ctx.exception.reason, "unknown-depth" if docs is False else "invalid-artifact")
+
+
+class CompileTests(unittest.TestCase):
+    def test_artifact_is_advisory_hashed_and_digested(self):
+        artifact = compiled()
+        self.assertEqual(artifact["schema"], ha.COMPILED_FORMAT)
+        self.assertIs(artifact["executionAuthorization"], False)
+        self.assertEqual(artifact["inputs"]["profile"], ha.profile_digest(profile()))
+        self.assertEqual(artifact["inputs"]["risk"], ha.digest(classification()))
+        self.assertEqual(artifact["inputs"]["scopes"], {})
+        body = {k: v for k, v in artifact.items() if k != "digest"}
+        self.assertEqual(artifact["digest"], ha.digest(body))
+        self.assertEqual(ha.verify_artifact(artifact, profile(), None, classification()), artifact)
+
+    def test_two_compilations_are_byte_identical(self):
+        self.assertEqual(ha.canonical(compiled()), ha.canonical(compiled()))
+        docs = {"repository": {"schema": ha.SETTINGS_FORMAT, "scope": "repository",
+                               "checkpoints": {"pre-pr-review": {"depth": "R1"}}}}
+        self.assertEqual(ha.canonical(compiled(documents=docs)), ha.canonical(compiled(documents=copy.deepcopy(docs))))
+
+    def test_review_table_follows_the_effective_depth_and_docs_class(self):
+        standard = compiled()
+        self.assertEqual(standard["reviews"], {
+            "checkpoint": "pre-pr-review", "depth": "R2", "docsOnly": True,
+            "required": ["accuracy-review", "claim-discipline-review", "concision-review"],
+            "minIndependentReviewers": 0})
+        code = compiled(paths=("agent_braid/forecast_model.py",))
+        self.assertEqual(code["reviews"]["depth"], "R3")
+        self.assertEqual(code["reviews"]["required"], [
+            "code-review", "quality-review", "simplification-review", "adversarial-security-review"])
+        self.assertFalse(code["reviews"]["docsOnly"])
+        self.assertEqual(next(r for r in code["checkpoints"] if r["checkpoint"] == "pre-pr-review")["depthSource"], "risk")
+
+    def test_scope_documents_change_inputs_and_result(self):
+        docs = {"repository": {"schema": ha.SETTINGS_FORMAT, "scope": "repository",
+                               "checkpoints": {"pre-pr-review": {"depth": "R4"}}}}
+        artifact = compiled(documents=docs)
+        self.assertEqual(artifact["reviews"]["depth"], "R4")
+        self.assertEqual(artifact["reviews"]["minIndependentReviewers"], 2)
+        self.assertEqual(list(artifact["inputs"]["scopes"]), ["repository"])
+        self.assertEqual(artifact["inputs"]["scopes"]["repository"], ha.digest(docs["repository"]))
+        self.assertNotEqual(artifact["digest"], compiled()["digest"])
+
+    def test_result_is_independent_of_the_inputs(self):
+        prof, cls = profile(), classification()
+        artifact = ha.compile_artifact(prof, None, cls)
+        artifact["checkpoints"][0]["mode"] = "human-only"
+        self.assertEqual(ha.compile_artifact(prof, None, cls)["checkpoints"][0]["mode"], "notify")
+        prof["name"] = "x"
+        self.assertEqual(artifact["profile"]["name"], "standard")
+
+    def test_invalid_inputs_are_refused_whole(self):
+        bad = profile()
+        bad["checkpoints"]["release"]["mode"] = "notify"
+        compile_refused(self, "floor-not-human-only", bad, None, classification())
+        compile_refused(self, "invalid-diff-summary", profile(), None, {"schema": "x"})
+        raised = classification()
+        raised["executionAuthorization"] = True
+        compile_refused(self, "invalid-diff-summary", profile(), None, raised)
+        compile_refused(self, "scope-mismatch", profile(), {"user": {
+            "schema": ha.SETTINGS_FORMAT, "scope": "repository"}}, classification())
+
+
+class VerifyArtifactTests(unittest.TestCase):
+    def test_execution_authorization_true_is_refused_even_with_a_recomputed_digest(self):
+        artifact = compiled()
+        artifact["executionAuthorization"] = True
+        verify_refused(self, "execution-authorization", artifact)
+        artifact["digest"] = ha.digest({k: v for k, v in artifact.items() if k != "digest"})
+        verify_refused(self, "execution-authorization", artifact)
+
+    def test_edit_without_digest_recompute_is_refused(self):
+        artifact = compiled()
+        artifact["checkpoints"][0]["mode"] = "autonomous"
+        verify_refused(self, "digest-mismatch", artifact)
+        artifact = compiled()
+        artifact["reviews"]["required"] = []
+        verify_refused(self, "digest-mismatch", artifact)
+
+    def test_recomputed_digest_over_edited_content_does_not_match_the_inputs(self):
+        artifact = compiled()
+        artifact["reviews"]["required"] = []
+        artifact["digest"] = ha.digest({k: v for k, v in artifact.items() if k != "digest"})
+        verify_refused(self, "input-hash-mismatch", artifact)
+
+    def test_other_inputs_are_refused(self):
+        artifact = compiled()
+        other = profile("strict")
+        verify_refused(self, "input-hash-mismatch", artifact, prof=other)
+        verify_refused(self, "input-hash-mismatch", artifact, cls=classification(("agent_braid/cli.py",)))
+        docs = {"user": {"schema": ha.SETTINGS_FORMAT, "scope": "user"}}
+        verify_refused(self, "input-hash-mismatch", artifact, documents=docs)
+
+    def test_non_json_values_are_refused_with_a_fixed_reason(self):
+        artifact = compiled()
+        artifact["risk"] = {1, 2}
+        verify_refused(self, "invalid-artifact", artifact)
+        artifact["risk"] = float("nan")
+        verify_refused(self, "invalid-artifact", artifact)
+
+    def test_malformed_artifacts_are_refused(self):
+        verify_refused(self, "invalid-artifact", "artifact")
+        verify_refused(self, "invalid-artifact", {})
+        artifact = compiled()
+        del artifact["inputs"]
+        verify_refused(self, "invalid-artifact", artifact)
+        artifact = compiled()
+        artifact["schema"] = "other"
+        verify_refused(self, "unsupported-schema", artifact)
+        artifact = compiled()
+        artifact["extra"] = 1
+        verify_refused(self, "invalid-artifact", artifact)
 
 
 if __name__ == "__main__":

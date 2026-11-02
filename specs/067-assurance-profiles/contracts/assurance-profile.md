@@ -42,17 +42,26 @@ operator-owned location; the agent can read it and cannot write it.
 
 ## Resolution
 
-Effective depth and mode per checkpoint: scope precedence following SPEC-058
-REQ-006 / `ownership.resolve_settings` (conversation over repository over user,
-profile as lowest source, scope values from an operator-owned assurance settings
-source); then raise-only risk escalation; then the REQ-003 floors last. Both
+Effective depth and mode per checkpoint: operator scope precedence following
+SPEC-058 REQ-006 / `ownership.resolve_settings` (repository over user, profile
+as lowest source, scope values from an operator-owned assurance settings
+source); the conversation scope is applied last and may only raise the value so
+resolved, a lower request is not applied and is recorded as
+`conversation-lowering-refused` (founder record
+[20261102b](../evidence/founder-decisions-20261102b.json), S1); then raise-only risk escalation; then the REQ-003 floors last. Both
 later steps only raise, so their order does not change the result. Output
 records the source of each value and every refused lowering.
 
 ## Compiled artifact (`braid-harness-assurance-compiled/v0.1`)
 
-Resolved view, input hashes, risk classification, `executionAuthorization: false`
-(any other value refused), digest.
+Resolved view (after risk raising), `inputs` (SHA-256 of the profile, of each
+scope document and of the risk classification), `risk` classification,
+`reviews` (checkpoint, effective depth, `docsOnly`, `required` review kinds,
+`minIndependentReviewers`), `executionAuthorization: false` (any other value
+refused with `execution-authorization`), `digest` over all other fields.
+Verification refuses an edit without digest recompute (`digest-mismatch`) and
+any content that differs from a fresh compilation of the inputs
+(`input-hash-mismatch`).
 
 ## Receipt (`braid-harness-gate-receipt/v0.1`)
 
@@ -76,6 +85,12 @@ orchestrator (REQ-007).
 | R2 | R1, quality, simplification | R1, claim discipline, concision |
 | R3 | R2, adversarial/security | as code |
 | R4 | R3, independent multi-agent review (at least two reviewers distinct from the author and each other) | as code |
+
+Review kinds: `code-review`, `quality-review`, `simplification-review`,
+`adversarial-security-review`, `independent-multi-agent-review`; docs-only
+`accuracy-review`, `claim-discipline-review`, `concision-review`. The ladder is
+cumulative per depth; for docs-only changes R3 and R4 add the same adversarial
+and independent reviews on top of the docs-only R2 set.
 
 ## Refusal reasons
 

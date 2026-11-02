@@ -63,12 +63,13 @@ shared object store fails the portable-root check).
   Obtained: `evidence/t004.json` (28 focused tests, 953 harness tests; process
   logic only, no review-quality or utility claim).
 
-- [ ] T005 (REQ-005 / SC-005; REQ-006 / SC-006): Compiler to the advisory artifact with input
+- [x] T005 (REQ-005 / SC-005; REQ-006 / SC-006): Compiler to the advisory artifact with input
   hashes and digest, plus the review-ladder required-review table.
   Dependencies: T002, T003, T004. Files: `agent_braid/harness_assurance.py`,
   `tests/test_harness_assurance.py`. Verification: procedure_006 (artifact
   part). Negative controls: `executionAuthorization: true`; digest mismatch.
-  Evidence: `evidence/t005.json`.
+  Evidence: `evidence/t005.json`. Obtained: `evidence/t005.json` (90 focused tests, 1079
+  harness tests; process logic only, no review-quality or utility claim).
 
 - [ ] T006 (REQ-002 / SC-002; REQ-005 / SC-005; REQ-007 / SC-007): Receipt
   builder and verifier, standing-authorization validation with fallback to
