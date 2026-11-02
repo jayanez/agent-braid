@@ -1,0 +1,68 @@
+{
+  "evidenceDigest": "sha256:247d509790d25eb7fd6660b284c7588687207ffc4c79c5bb3d2217c81207701b",
+  "executionContract": "isolated-preparation-serial-publication-v1",
+  "limits": [
+    "Observed preparation intervals are not a CPU parallelism guarantee.",
+    "Trees/effects are independently replayable; recorded timings are observations.",
+    "Trusted Git and owned scratch; no arbitrary code or hostile same-UID isolation."
+  ],
+  "manifestDigest": "sha256:09d8c11cfe37b49ff8fb8c7e8505eab79668eee91a9e6805700b11fd46da1af6",
+  "metrics": {
+    "capturedOutputBytes": 2519,
+    "childSystemCpuNs": 321041000,
+    "childUserCpuNs": 331049999,
+    "gitCommands": 57,
+    "processLifetimePeakChildRssBytes": 5980160,
+    "sampledPeakScratchBytes": 3371
+  },
+  "observedPeakWorkerIntervals": 2,
+  "runtimePreparationEvidenceVersion": "0.1.0-alpha",
+  "scheduleDigest": "sha256:4508a8697fcd2829076f3d9b8e40089ad8b6d1f7cacd185869257f2daaffbc72",
+  "wallNs": 1166227125,
+  "workers": [
+    {
+      "attemptId": "a-attempt",
+      "effects": [
+        {
+          "afterBlob": "78981922613b2afb6025042ff6bd878ac1994e85",
+          "afterMode": "100644",
+          "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+          "beforeMode": "100644",
+          "path": "a.txt",
+          "status": "M"
+        }
+      ],
+      "finishedNs": 1166081541,
+      "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+      "operationId": "a",
+      "outputTree": "b2cc846ba303ed8a3e9f7f5fdd027d799b9f18f6",
+      "patchDigest": "sha256:8c3977006118ad8a901a073b66d561e9d65ee62d82db5426b7d4b4b020609778",
+      "startedNs": 842894416,
+      "wave": 0,
+      "writableIndex": "worker-a/worker.git/index",
+      "writableRepository": "worker-a/worker.git"
+    },
+    {
+      "attemptId": "b-attempt",
+      "effects": [
+        {
+          "afterBlob": "61780798228d17af2d34fce4cfbdf35556832472",
+          "afterMode": "100644",
+          "beforeBlob": "df967b96a579e45a18b8251732d16804b2e56a55",
+          "beforeMode": "100644",
+          "path": "b.txt",
+          "status": "M"
+        }
+      ],
+      "finishedNs": 1105754333,
+      "inputTree": "562d3d0a571a697990fbf60a7db0338349836782",
+      "operationId": "b",
+      "outputTree": "10aa6b85847c2f4dfd5e43afaa74318191dbd403",
+      "patchDigest": "sha256:bd6ccd8802bc42f626b49e90c021e3f5f0b58cab90f66f7b56130c5fbb29cf7d",
+      "startedNs": 842831500,
+      "wave": 0,
+      "writableIndex": "worker-b/worker.git/index",
+      "writableRepository": "worker-b/worker.git"
+    }
+  ]
+}

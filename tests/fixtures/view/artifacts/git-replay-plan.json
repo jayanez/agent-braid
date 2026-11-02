@@ -1,0 +1,29 @@
+{
+  "conditions": [
+    "Fixed commit patches only; revalidate the same base and commit IDs before use.",
+    "Integration is serial; the plan is advisory preparation guidance."
+  ],
+  "evidenceDigest": "sha256:0e6262f9f886583024e84fa1d5b77f7d955c74c33845de4b74b16d2cd5496dbc",
+  "executionAuthorization": false,
+  "fallbackOrder": [
+    "a",
+    "b"
+  ],
+  "gitPlanVersion": "0.1.0-alpha",
+  "limits": [
+    "Fixed commit patches and the declared dependency graph only.",
+    "Tracked paths, modes and blob identities only; no project tests or semantic effects.",
+    "End-to-end Git execution is limited to 120 seconds, 512 commands, 16 MiB output and 64 MiB temporary data.",
+    "Finite observation does not authorize concurrency or establish task correctness."
+  ],
+  "mode": "candidate-preparation-waves",
+  "planDigest": "sha256:b15c511da2b989c5454dbfd63e97602e95a34c8cd2ca4fa3abfc62cd2b4bfb81",
+  "replayResult": "equivalent-observed",
+  "verificationStatus": "verified",
+  "waves": [
+    [
+      "a",
+      "b"
+    ]
+  ]
+}

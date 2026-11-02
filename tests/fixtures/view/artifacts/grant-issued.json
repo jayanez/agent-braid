@@ -1,0 +1,13 @@
+{
+  "action": "execute",
+  "expiresAt": 1793604293,
+  "grantDigest": "sha256:06c242592c5dd584a1ccf1e2cd165e4229dd5005ad68880e013c5df5550e2fbb",
+  "grantId": "c5070af2-3ef3-4681-85b5-736591e9b8de",
+  "issuedAt": 1793603993,
+  "manifestDigest": "sha256:0ceb5565c9a6d5f251239222fccf1611751391432456e9204f6f58565b1c0f97",
+  "planDigest": "sha256:c193ed0b12b79ad3e977bc3f9d2aa5816b0f534bde853b730f48576d0f4731e0",
+  "policyRevision": "parallel-owned-operator-grant-v1",
+  "runDirectory": "runs/example/result",
+  "runtimeOperatorGrantVersion": "0.1.0-alpha",
+  "state": "issued"
+}

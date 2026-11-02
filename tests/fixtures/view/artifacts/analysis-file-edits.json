@@ -1,0 +1,78 @@
+{
+  "analysisId": "sha256:216014b8a3c05cff6440665d9f13cc9da6524694286d0ada852ccc7dd875a366",
+  "analyzer": {
+    "name": "agent-braid",
+    "ruleSet": "exact-resource-footprints-v1",
+    "version": "0.1.0-alpha"
+  },
+  "executionAuthorization": false,
+  "inputDigest": "sha256:e9fa8e4484b86ef4852e8b1db4f98b4caffa186a32e85df720f0d84476f04b06",
+  "interactions": [
+    {
+      "classification": "independent-candidate",
+      "constraints": [
+        "requires-execution-contract-before-parallelism"
+      ],
+      "evidence": {
+        "assuranceClass": 1,
+        "coverage": [
+          "complete"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-readme",
+      "reasons": [
+        "Complete exact-resource footprints are disjoint."
+      ],
+      "right": "edit-roadmap",
+      "sharedResources": []
+    }
+  ],
+  "limits": [
+    "Resource identity is exact-string equality; aliases and semantic dependencies are not inferred.",
+    "A candidate establishes no concurrent-execution refinement, authorization, or task correctness.",
+    "The analyzer does not execute agents, tools, Git operations, or external effects."
+  ],
+  "operations": [
+    {
+      "attemptId": "edit-readme-1",
+      "coverage": {
+        "domain": "synthetic exact repository paths",
+        "method": "fixture declaration",
+        "status": "complete"
+      },
+      "dependencies": [],
+      "instanceId": "edit-readme",
+      "resources": [
+        "repo://agent-braid/README.md"
+      ]
+    },
+    {
+      "attemptId": "edit-roadmap-1",
+      "coverage": {
+        "domain": "synthetic exact repository paths",
+        "method": "fixture declaration",
+        "status": "complete"
+      },
+      "dependencies": [],
+      "instanceId": "edit-roadmap",
+      "resources": [
+        "repo://agent-braid/ROADMAP.md"
+      ]
+    }
+  ],
+  "reportVersion": "0.1.0-alpha",
+  "sourceKind": "aim",
+  "summary": {
+    "classifications": {
+      "conflicting": 0,
+      "independent-candidate": 1,
+      "ordered": 0,
+      "unknown": 0
+    },
+    "operationCount": 2,
+    "pairCount": 1
+  },
+  "uncertainty": []
+}
