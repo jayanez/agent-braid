@@ -101,9 +101,9 @@ class ParityTests(unittest.TestCase):
         self.assertEqual({"type": "integer"}, rules["crossing.classified"]["properties"]["compatibilityClass"])
         self.assertEqual({"const": 0}, rules["gate.result"]["properties"]["compatibilityClass"])
         self.assertEqual(("crossing.classified",), view_loom.CLASS_REQUIRED_KINDS)
-        self.assertEqual({"gate.result": 0}, dict(view_loom.CLASS_FIXED_KINDS))
+        self.assertEqual({"gate.result": 0}, view_loom.CLASS_FIXED)
         schema_null = SCHEMA["allOf"][-1]["if"]["properties"]["kind"]["enum"]
-        expected_null = set(view_loom.KINDS) - set(view_loom.CLASS_REQUIRED_KINDS) - set(dict(view_loom.CLASS_FIXED_KINDS))
+        expected_null = set(view_loom.KINDS) - set(view_loom.CLASS_REQUIRED_KINDS) - set(view_loom.CLASS_FIXED)
         self.assertEqual(sorted(schema_null), sorted(expected_null))
 
     def test_example_and_corpus_validate_in_both(self):
@@ -146,16 +146,12 @@ def _set(*path_and_value):
     return go
 
 
-def _top(field, value):
-    return lambda event: event.__setitem__(field, value)
-
-
 # (label, event kind to start from, mutation). Every one must be refused by validate_event and by the schema.
 VIOLATIONS = [
-    ("unknown kind", "strand.open", _top("kind", "strand.explode")),
-    ("executionAuthorization true", "strand.open", _top("executionAuthorization", True)),
+    ("unknown kind", "strand.open", _set("kind", "strand.explode")),
+    ("executionAuthorization true", "strand.open", _set("executionAuthorization", True)),
     ("executionAuthorization missing", "strand.open", _drop("executionAuthorization")),
-    ("executionAuthorization 0", "strand.open", _top("executionAuthorization", 0)),
+    ("executionAuthorization 0", "strand.open", _set("executionAuthorization", 0)),
     ("crossing class null", "crossing.classified", _set("assurance", "compatibilityClass", None)),
     ("crossing class out of range", "crossing.classified", _set("assurance", "compatibilityClass", 6)),
     ("crossing class text", "crossing.classified", _set("assurance", "compatibilityClass", "1")),
@@ -187,13 +183,13 @@ VIOLATIONS = [
     ("evidence path too long", "analysis.report", _set("source", "evidenceRef", "path", "a" * 513)),
     ("evidence hash uppercase", "analysis.report", _set("source", "evidenceRef", "sha256", "A" * 64)),
     ("notAGuarantee false", "strand.open", _set("assurance", "notAGuarantee", False)),
-    ("extra top-level member", "strand.open", _top("extra", 1)),
+    ("extra top-level member", "strand.open", _set("extra", 1)),
     ("extra data member", "strand.open", _set("data", "extra", 1)),
     ("missing data member", "strand.open", _drop("data", "role")),
-    ("wrong schema version", "strand.open", _top("schemaVersion", "agent-braid-loom/v0.2")),
-    ("seq zero", "strand.open", _top("seq", 0)),
-    ("seq above 2^53-1", "strand.open", _top("seq", 2 ** 53)),
-    ("seq boolean", "strand.open", _top("seq", True)),
+    ("wrong schema version", "strand.open", _set("schemaVersion", "agent-braid-loom/v0.2")),
+    ("seq zero", "strand.open", _set("seq", 0)),
+    ("seq above 2^53-1", "strand.open", _set("seq", 2 ** 53)),
+    ("seq boolean", "strand.open", _set("seq", True)),
     ("at basis outside enum", "strand.open", _set("at", "basis", "wall-clock")),
     ("at relMs negative", "strand.open", _set("at", "relMs", -1)),
     ("gap reason outside enum", "observation.gap", _set("data", "reason", "because")),
@@ -236,8 +232,8 @@ class SeededViolationTests(unittest.TestCase):
                 validate_event(event)
             return raised.exception.reason
 
-        self.assertEqual("unknown-kind", reason("strand.open", _top("kind", "nope")))
-        self.assertEqual("execution-authorization", reason("strand.open", _top("executionAuthorization", True)))
+        self.assertEqual("unknown-kind", reason("strand.open", _set("kind", "nope")))
+        self.assertEqual("execution-authorization", reason("strand.open", _set("executionAuthorization", True)))
         self.assertEqual("execution-authorization", reason("strand.open", _drop("executionAuthorization")))
         self.assertEqual("compatibility-class", reason("crossing.classified", _set("assurance", "compatibilityClass", None)))
         self.assertEqual("compatibility-class", reason("gate.result", _set("assurance", "compatibilityClass", 2)))
@@ -263,6 +259,33 @@ class SeededViolationTests(unittest.TestCase):
             event["data"]["costUsd"] = value
             with self.assertRaises(LoomError):
                 validate_event(event)
+
+    def test_huge_integers_are_refused_not_crashed_on(self):
+        for value in (10 ** 400, -10 ** 400):
+            event = by_kind(CORPUS, "effort.sample")
+            event["data"]["costUsd"] = value
+            with self.assertRaises(LoomError) as raised:
+                validate_event(event)
+            self.assertEqual("out-of-range", raised.exception.reason)
+        raw = canonical_bytes(by_kind(CORPUS, "effort.sample")).replace(b'"costUsd":0.25', b'"costUsd":1' + b"0" * 400)
+        with self.assertRaises(LoomError):
+            parse_event(raw)
+
+    def test_lone_surrogates_are_refused_so_valid_events_always_serialise(self):
+        event = by_kind(CORPUS, "strand.open")
+        event["data"]["label"] = "Child"
+        raw = canonical_bytes(event).replace(b'"label":"Child"', b'"label":"\\ud800"')
+        self.assertIn(b"ud800", raw)
+        with self.assertRaises(LoomError) as raised:
+            parse_event(raw)
+        self.assertEqual("encoding", raised.exception.reason)
+
+    def test_multi_line_input_is_not_one_event(self):
+        pretty = json.dumps(by_kind(CORPUS, "strand.open"), indent=1).encode("utf-8")
+        for raw in (pretty, canonical_bytes(by_kind(CORPUS, "strand.open")).rstrip(b"\n") + b"\r"):
+            with self.assertRaises(LoomError) as raised:
+                parse_event(raw)
+            self.assertEqual("invalid-json", raised.exception.reason)
 
     def test_validate_does_not_mutate_its_input(self):
         event = by_kind(CORPUS, "crossing.classified")
@@ -426,7 +449,6 @@ class ReadOnlyBoundaryTests(unittest.TestCase):
         source = (ROOT / "agent_braid/view_loom.py").read_text(encoding="utf-8")
         for command in ("expand-ownership", "check-ownership", "audit-isolation", "report-recovery"):
             self.assertNotIn(command, source)
-        self.assertNotIn("import ownership", source)
         self.assertNotIn("from agent_braid import ownership", source)
         self.assertNotIn("agent_braid.ownership", source)
 

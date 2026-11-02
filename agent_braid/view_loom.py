@@ -3,7 +3,9 @@
 
 One Loom event is one JSON line. This module implements the rules of
 specs/061-activity-viewer/contracts/loom-event.schema.json without a schema
-library; tests/test_view_loom.py keeps the two in sync. Every event is read-only:
+library; tests/test_view_loom.py keeps the two in sync. It is deliberately stricter
+than the schema in two places: integer fields refuse floats such as 1.0, and text
+that is not encodable as UTF-8 (lone surrogates) is refused. Every event is read-only:
 `executionAuthorization` is the constant false and nothing here can grant, run or
 schedule anything. A refused line carries a stable reason and a refused stream is
 refused as a whole, never as an accepted prefix.
@@ -97,7 +99,7 @@ EVENT_FIELDS = tuple(EVENT_SPEC)
 
 # The Article 13 class: required for a crossing, fixed for a gate result, null otherwise.
 CLASS_REQUIRED_KINDS = ("crossing.classified",)
-CLASS_FIXED_KINDS = (("gate.result", 0),)
+CLASS_FIXED = {"gate.result": 0}
 
 DATA_SPECS: dict[str, dict[str, Any]] = {
     "session.origin": {
@@ -209,7 +211,16 @@ class LoomError(ValueError):
 
 
 def _fail(reason: str, path: str, message: str) -> LoomError:
-    return LoomError(reason, f"{path}: {message}")
+    return LoomError(reason, f"{path or 'event'}: {message}")
+
+
+def _check_str(value: Any, path: str) -> None:
+    if not isinstance(value, str):
+        raise _fail("wrong-type", path, "expected text")
+    try:
+        value.encode("utf-8")
+    except UnicodeEncodeError:
+        raise _fail("encoding", path, "lone surrogate is not UTF-8") from None
 
 
 def _is_int(value: Any) -> bool:
@@ -218,14 +229,12 @@ def _is_int(value: Any) -> bool:
 
 def _check(spec: tuple, value: Any, path: str) -> None:
     tag = spec[0]
+    if tag in ("ident", "text", "evpath"):
+        _check_str(value, path)
     if tag == "ident":
-        if not isinstance(value, str):
-            raise _fail("wrong-type", path, "expected text")
         if not _IDENTIFIER.fullmatch(value):
             raise _fail("identifier", path, "neither a short ID nor a sha256: digest")
     elif tag == "text":
-        if not isinstance(value, str):
-            raise _fail("wrong-type", path, "expected text")
         if len(value) > TEXT_MAX_LENGTH or not _TEXT.fullmatch(value):
             raise _fail("free-text", path, "too long or holds a control or bidirectional character")
     elif tag == "enum":
@@ -245,7 +254,7 @@ def _check(spec: tuple, value: Any, path: str) -> None:
     elif tag == "number":
         if not _is_int(value) and type(value) is not float:
             raise _fail("wrong-type", path, "expected a number")
-        if not math.isfinite(value) or value < spec[1] or value > spec[2]:
+        if (type(value) is float and not math.isfinite(value)) or value < spec[1] or value > spec[2]:
             raise _fail("out-of-range", path, "number outside its bounds or not finite")
     elif tag == "null":
         if value is not None:
@@ -260,8 +269,6 @@ def _check(spec: tuple, value: Any, path: str) -> None:
     elif tag == "object":
         _check_object(spec[1], value, path)
     elif tag == "evpath":
-        if not isinstance(value, str):
-            raise _fail("wrong-type", path, "expected text")
         if len(value) > EVIDENCE_PATH_MAX_LENGTH or not _EVIDENCE_PATH.fullmatch(value):
             raise _fail("evidence-path", path, "not a relative path without '..', backslash or control characters")
     elif tag == "sha256":
@@ -290,7 +297,7 @@ def validate_event(event: Any) -> Any:
     """Return `event` when it follows the contract; raise LoomError otherwise."""
     if not isinstance(event, dict):
         raise LoomError("not-an-object", "an event is a JSON object")
-    if event.get("executionAuthorization", None) is not False:
+    if event.get("executionAuthorization") is not False:
         raise _fail("execution-authorization", "executionAuthorization", "must be present and false")
     if event.get("schemaVersion") != SCHEMA_VERSION:
         raise _fail("schema-version", "schemaVersion", f"must be {SCHEMA_VERSION}")
@@ -304,13 +311,12 @@ def validate_event(event: Any) -> Any:
 
 
 def _check_class(kind: str, value: Any) -> None:
-    fixed = dict(CLASS_FIXED_KINDS)
     if kind in CLASS_REQUIRED_KINDS:
         if value is None:
             raise _fail("compatibility-class", "assurance.compatibilityClass", f"{kind} carries an integer class 0 to 5")
-    elif kind in fixed:
-        if value != fixed[kind] or not _is_int(value):
-            raise _fail("compatibility-class", "assurance.compatibilityClass", f"{kind} carries class {fixed[kind]}")
+    elif kind in CLASS_FIXED:
+        if value != CLASS_FIXED[kind] or not _is_int(value):
+            raise _fail("compatibility-class", "assurance.compatibilityClass", f"{kind} carries class {CLASS_FIXED[kind]}")
     elif value is not None:
         raise _fail("compatibility-class", "assurance.compatibilityClass", f"{kind} carries no class")
 
@@ -345,6 +351,8 @@ def _decode(line: bytes | str) -> Any:
         line = line[:-1]
     if len(line) > MAX_LINE_BYTES:
         raise LoomError("line-too-long", f"a line is at most {MAX_LINE_BYTES} bytes")
+    if b"\n" in line or b"\r" in line:
+        raise LoomError("invalid-json", "an event is exactly one line")
     try:
         text = line.decode("utf-8")
     except UnicodeDecodeError as exc:
