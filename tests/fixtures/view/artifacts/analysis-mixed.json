@@ -1,0 +1,308 @@
+{
+  "analysisId": "sha256:afee7b034e4db3de803131a6d5b33cd10651085db0d6b7e95febeb38ab9d48cc",
+  "analyzer": {
+    "name": "agent-braid",
+    "ruleSet": "exact-resource-footprints-v1",
+    "version": "0.1.0-alpha"
+  },
+  "executionAuthorization": false,
+  "inputDigest": "sha256:97bdd1fa2b85bc3258e8aad3dbba7f48264a3f0a8a5b2788534589bf1c3f142c",
+  "interactions": [
+    {
+      "classification": "independent-candidate",
+      "constraints": [
+        "requires-execution-contract-before-parallelism"
+      ],
+      "evidence": {
+        "assuranceClass": 1,
+        "coverage": [
+          "complete"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-after-roadmap",
+      "reasons": [
+        "Complete exact-resource footprints are disjoint."
+      ],
+      "right": "edit-readme",
+      "sharedResources": []
+    },
+    {
+      "classification": "independent-candidate",
+      "constraints": [
+        "requires-execution-contract-before-parallelism"
+      ],
+      "evidence": {
+        "assuranceClass": 1,
+        "coverage": [
+          "complete"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-after-roadmap",
+      "reasons": [
+        "Complete exact-resource footprints are disjoint."
+      ],
+      "right": "edit-readme-again",
+      "sharedResources": []
+    },
+    {
+      "classification": "ordered",
+      "constraints": [
+        "preserve-dependency-order"
+      ],
+      "evidence": {
+        "assuranceClass": 0,
+        "coverage": [
+          "complete"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-after-roadmap",
+      "reasons": [
+        "An explicit dependency path orders the operations."
+      ],
+      "right": "edit-roadmap",
+      "sharedResources": []
+    },
+    {
+      "classification": "unknown",
+      "constraints": [
+        "serialize-unless-stronger-evidence"
+      ],
+      "evidence": {
+        "assuranceClass": 0,
+        "coverage": [
+          "complete",
+          "partial"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-after-roadmap",
+      "reasons": [
+        "At least one effect footprint is partial or unknown."
+      ],
+      "right": "run-unknown-script",
+      "sharedResources": []
+    },
+    {
+      "classification": "conflicting",
+      "constraints": [
+        "serialize-or-isolate"
+      ],
+      "evidence": {
+        "assuranceClass": 0,
+        "coverage": [
+          "complete"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-readme",
+      "reasons": [
+        "At least one exact shared resource has a write-like effect."
+      ],
+      "right": "edit-readme-again",
+      "sharedResources": [
+        "repo://agent-braid/README.md"
+      ]
+    },
+    {
+      "classification": "independent-candidate",
+      "constraints": [
+        "requires-execution-contract-before-parallelism"
+      ],
+      "evidence": {
+        "assuranceClass": 1,
+        "coverage": [
+          "complete"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-readme",
+      "reasons": [
+        "Complete exact-resource footprints are disjoint."
+      ],
+      "right": "edit-roadmap",
+      "sharedResources": []
+    },
+    {
+      "classification": "unknown",
+      "constraints": [
+        "serialize-unless-stronger-evidence"
+      ],
+      "evidence": {
+        "assuranceClass": 0,
+        "coverage": [
+          "complete",
+          "partial"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-readme",
+      "reasons": [
+        "At least one effect footprint is partial or unknown."
+      ],
+      "right": "run-unknown-script",
+      "sharedResources": []
+    },
+    {
+      "classification": "independent-candidate",
+      "constraints": [
+        "requires-execution-contract-before-parallelism"
+      ],
+      "evidence": {
+        "assuranceClass": 1,
+        "coverage": [
+          "complete"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-readme-again",
+      "reasons": [
+        "Complete exact-resource footprints are disjoint."
+      ],
+      "right": "edit-roadmap",
+      "sharedResources": []
+    },
+    {
+      "classification": "unknown",
+      "constraints": [
+        "serialize-unless-stronger-evidence"
+      ],
+      "evidence": {
+        "assuranceClass": 0,
+        "coverage": [
+          "complete",
+          "partial"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-readme-again",
+      "reasons": [
+        "At least one effect footprint is partial or unknown."
+      ],
+      "right": "run-unknown-script",
+      "sharedResources": []
+    },
+    {
+      "classification": "unknown",
+      "constraints": [
+        "serialize-unless-stronger-evidence"
+      ],
+      "evidence": {
+        "assuranceClass": 0,
+        "coverage": [
+          "complete",
+          "partial"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-roadmap",
+      "reasons": [
+        "At least one effect footprint is partial or unknown."
+      ],
+      "right": "run-unknown-script",
+      "sharedResources": []
+    }
+  ],
+  "limits": [
+    "Resource identity is exact-string equality; aliases and semantic dependencies are not inferred.",
+    "A candidate establishes no concurrent-execution refinement, authorization, or task correctness.",
+    "The analyzer does not execute agents, tools, Git operations, or external effects."
+  ],
+  "operations": [
+    {
+      "attemptId": "edit-after-roadmap-1",
+      "coverage": {
+        "domain": "synthetic exact repository paths",
+        "method": "fixture declaration",
+        "status": "complete"
+      },
+      "dependencies": [
+        "edit-roadmap"
+      ],
+      "instanceId": "edit-after-roadmap",
+      "resources": [
+        "repo://agent-braid/CHANGELOG.md"
+      ]
+    },
+    {
+      "attemptId": "edit-readme-1",
+      "coverage": {
+        "domain": "synthetic exact repository paths",
+        "method": "fixture declaration",
+        "status": "complete"
+      },
+      "dependencies": [],
+      "instanceId": "edit-readme",
+      "resources": [
+        "repo://agent-braid/README.md"
+      ]
+    },
+    {
+      "attemptId": "edit-readme-again-1",
+      "coverage": {
+        "domain": "synthetic exact repository paths",
+        "method": "fixture declaration",
+        "status": "complete"
+      },
+      "dependencies": [],
+      "instanceId": "edit-readme-again",
+      "resources": [
+        "repo://agent-braid/README.md"
+      ]
+    },
+    {
+      "attemptId": "edit-roadmap-1",
+      "coverage": {
+        "domain": "synthetic exact repository paths",
+        "method": "fixture declaration",
+        "status": "complete"
+      },
+      "dependencies": [],
+      "instanceId": "edit-roadmap",
+      "resources": [
+        "repo://agent-braid/ROADMAP.md"
+      ]
+    },
+    {
+      "attemptId": "run-unknown-script-1",
+      "coverage": {
+        "domain": "synthetic exact repository paths",
+        "method": "fixture declaration",
+        "status": "partial"
+      },
+      "dependencies": [],
+      "instanceId": "run-unknown-script",
+      "resources": [
+        "repo://agent-braid/scripts/run.sh"
+      ]
+    }
+  ],
+  "reportVersion": "0.1.0-alpha",
+  "sourceKind": "aim",
+  "summary": {
+    "classifications": {
+      "conflicting": 1,
+      "independent-candidate": 4,
+      "ordered": 1,
+      "unknown": 4
+    },
+    "operationCount": 5,
+    "pairCount": 10
+  },
+  "uncertainty": [
+    "At least one operation lacks complete effect coverage.",
+    "External or transforming effects require adapter-specific contracts."
+  ]
+}
