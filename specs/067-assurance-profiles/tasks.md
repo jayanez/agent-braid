@@ -28,12 +28,13 @@ shared object store fails the portable-root check).
 
 ## Implementation
 
-- [ ] T002 (REQ-001 / SC-001; REQ-003 / SC-003): Catalog, allowed-mode table,
+- [x] T002 (REQ-001 / SC-001; REQ-003 / SC-003): Catalog, allowed-mode table,
   schema and fixed refusal reasons; floor set. Tests first. Dependencies: T001
   (Q1, Q6). Files: `agent_braid/harness_assurance.py`,
   `tests/test_harness_assurance.py`. Verification: procedure_001. Negative
   controls: unknown or missing checkpoint, unknown depth, disallowed mode,
-  unknown key, `release` not `human-only`. Evidence: `evidence/t002.json`.
+  unknown key, `release` not `human-only`. Evidence: `evidence/t002.json`. Obtained: `evidence/t002.json` (35 focused tests,
+  892 harness tests; PR #944; process logic only, no review-quality or utility claim).
 
 - [ ] T003 (REQ-003 / SC-003; REQ-008 / SC-008): Resolver following the SPEC-058
   REQ-006 / `ownership.resolve_settings` precedence (recorded refused lowering),
