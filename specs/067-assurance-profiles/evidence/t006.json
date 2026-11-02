@@ -1,0 +1,26 @@
+{
+  "task": "SPEC-067/T006",
+  "decisionRecords": [
+    "specs/067-assurance-profiles/evidence/founder-decisions-20261102.json (Q2, Q3, Q4)"
+  ],
+  "candidateBinding": "Input hashes of the files below; branch har/067-t006-receipts before this evidence commit",
+  "executedChecks": [
+    {"command": ".venv-speckit/bin/python -m unittest tests.test_harness_assurance_receipts -v", "exitCode": 0, "testsRun": 43},
+    {"command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"", "exitCode": 0, "testsRun": 1146, "scope": "1 skipped"},
+    {"command": "pre-PR reviews: correctness, quality, simplification (read-only subagent reviews)", "exitCode": 0, "scope": "Dispositions are in the PR body."}
+  ],
+  "negativeControls": [
+    "standing authorization missing, expired, not yet valid, revoked, out of scope, non-permitted issuer, non-admitting checkpoint, missing verbatim statement, horizon over 30 days, each failing condition, edited or malformed record: all fall back to approve-each with a fixed reason, never autonomous",
+    "receipt edited without digest recompute, other head or base commit, other profile digest, depth below effective, command without exit code, other checkpoint",
+    "missing, incomplete or wrong-kind review per depth R0 to R4; R4 with fewer than two distinct independent reviewers or the author as reviewer",
+    "downgrade without recorded reason, reason without downgrade, standing approval claimed where the mode is not effective, fallback without human approval",
+    "self-consistent but malformed artifact refused as invalid-artifact"
+  ],
+  "inputs": {
+    "agent_braid/harness_assurance_receipts.py": "744daaa52c09e2ed04df5a9d867a81b9a653e74f0d5cfe1749100a60ee2efa70",
+    "tests/test_harness_assurance_receipts.py": "06067ce6b1bdadd1065a5cfecd3ed5448b3f8e98d5b2fc232b6af76ea0853d73",
+    "specs/067-assurance-profiles/contracts/assurance-profile.md": "01587640549aedc541a63b2d634211c7703ade7db17f6311c5ff1b920ba8c27c"
+  },
+  "executionAuthorization": false,
+  "limits": "Process logic only. Binding, not authenticity: issuer and the stored record are asserted by an operator-owned store; verify_receipt checks the form of a standing-authorization approval and does not resolve its reference; the receipt digest detects inconsistent edits only. No review-quality or utility claim. No standing authorization is issued by this task."
+}
