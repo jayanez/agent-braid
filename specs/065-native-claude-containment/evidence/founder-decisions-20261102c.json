@@ -1,0 +1,47 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/pre-T009 fixes of the delta security review (evidence/probe-catalog-delta-review.md)",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-02",
+  "baseCommit": "3bce7e58",
+  "decisionChannel": "Founder answers to interactive questions in the orchestrator chat, 2026-11-02, recorded verbatim by the derived closer track. Additive to founder-decisions-20261102.json and founder-decisions-20261102b.json.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261102.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261102b.json"
+  ],
+  "decisionOrder": [
+    "DRV-06",
+    "DRV-10"
+  ],
+  "decisions": [
+    {
+      "id": "DRV-06",
+      "item": "The 2 GiB / 100,000-file disk bound did not cover the dedicated user's config_dir (RV-19 follow-up)",
+      "ownerStatement": "Incluir config_dir (Recommended)",
+      "decision": {
+        "disposition": "fix-before-T009",
+        "maxTotalBytes": 2147483648,
+        "maxFileCount": 100000,
+        "enforcement": "the supervisor measures the candidate directory, the per-run TMPDIR and the dedicated user's config_dir together on each poll; the total includes what config_dir already holds",
+        "liveProbe": "opt-in live control only (BRAID_T007_LIVE_CONTROLS=1): LiveDiskBoundProbeTests creates the real 100,000+ entries in temporary directories and checks the guard; no sandbox, no claude, no network. It is not a catalog attempt and never runs in CI."
+      },
+      "detail": "Supersedes the 'config_dir is not measured' sentence of evidence/t005-review-fixes.json and the 'plus TMPDIR' wording of founder-decisions-20261102.json (RV-19). The bound stays a polled threshold (DRV-07 residual). No baseline is subtracted, so a config_dir that has grown refuses later runs (fail closed)."
+    },
+    {
+      "id": "DRV-10",
+      "item": "NC-11 pre-session subset runs under both the fixture and the launch-probe profiles with connect-level NET-01 attempts",
+      "ownerStatement": "Aceptar (Recommended)",
+      "decision": {
+        "disposition": "accepted-modification-of-NC-11",
+        "reading": "the five NC-11 probes (FS-01, NET-01, CRED-01, PROC-01, NET-06) run once per profile and must agree; NET-01 attempts a loopback listener, a public literal and, as tripwire, a name; a disagreement or non-denial refuses the session",
+        "strictness": "stricter than the NC-11 text; it cannot produce a pass that NC-11 would refuse"
+      },
+      "detail": "The make_f4_probe_runner launch_profile=False knob and runner_options overrides remain test-only and must not be used in T009 (quickstart.md)."
+    }
+  ],
+  "stillOpen": [],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records two founder decisions only. No native session or probe was run and nothing here qualifies the Claude profile, issues a qualification record or authorizes T009 or any execution. Any change needs a new founder decision record."
+}

@@ -1023,6 +1023,30 @@ class SupervisedRunTests(unittest.TestCase):
         self.over_disk(backend, b"import os, time\nopen(os.environ['TMPDIR'] + '/big', 'wb').write(b'x' * (3 << 20))\n"
                                 b"time.sleep(30)\n")
 
+    def test_the_dedicated_config_dir_counts_too(self):
+        # DRV-06 (founder decision 2026-11-02c): config_dir is read/write in `launch`, so it is measured
+        backend = self.limited(diskBytes=1 << 20)
+        config = self.machine.policy.config_dir
+        self.over_disk(backend, f"import time\nopen({config!r} + '/big', 'wb').write(b'x' * (3 << 20))\n"
+                                f"time.sleep(30)\n".encode())
+        self.assertEqual(os.listdir(config), ["big"])  # the supervisor never deletes the account's state
+
+    def test_candidate_tmpdir_and_config_dir_are_one_total(self):
+        backend = self.limited(diskFiles=7)
+        config = self.machine.policy.config_dir
+        for index in range(4):  # the account's earlier state counts: 4 files
+            Path(config, f"state-{index}").write_text("x")
+        # 3 in the candidate + TMPDIR/home + 4 in config_dir = 8 > 7, though each tree alone is under
+        record = self.over_disk(backend, b"for i in range(3):\n    open(f'c{i}', 'w').write('x')\n")
+        self.assertGreater(record["diskFiles"], 7)
+
+    def test_a_small_config_dir_leaves_a_run_alone(self):
+        Path(self.machine.policy.config_dir, ".credentials.json").write_text("{}")
+        with host(self.machine):
+            result = self.backend.run_probe(b"open('x', 'w').write('y')\n", Path(self.machine.candidate()),
+                                            lab.FixtureLimits())
+        self.assertEqual((result.exit_code, result.disk_files), (0, 3))  # x, TMPDIR/home and the credentials
+
     def test_a_burst_written_just_before_a_natural_exit_is_still_caught(self):
         backend = self.limited(diskFiles=5)
         self.over_disk(backend, b"for i in range(20):\n    open(f'f{i}', 'w').write('x')\n")
@@ -1058,6 +1082,20 @@ class SupervisedRunTests(unittest.TestCase):
             result = self.backend.run_probe(b"open('x', 'w').write('y')\n", Path(self.machine.candidate()),
                                             lab.FixtureLimits())
         self.assertEqual((result.exit_code, result.disk_files), (0, 2))  # x and TMPDIR/home
+
+    def test_the_environment_hash_covers_the_transport_and_the_quota_module(self):
+        # DRV-05: both change effective policy, so a recorded qualification must not survive an edit
+        hashes = mac._component_hashes()
+        here = Path(mac.__file__).parent
+        for name in ("harness_transport_claude.py", "harness_quota.py", "harness_host_claude.py",
+                     "harness_lab.py", "harness_containment_macos.py"):
+            self.assertEqual(hashes[name], sha256((here / name).read_bytes()).hexdigest(), name)
+        self.assertLessEqual({"harness_transport_claude.py", "harness_quota.py"}, set(hashes))
+        base = self.machine.environment()
+        for name in ("harness_transport_claude.py", "harness_quota.py"):
+            changed = dict(hashes, **{name: "0" * 64})
+            with mock.patch.object(mac, "_component_hashes", lambda changed=changed: changed):
+                self.assertNotEqual(self.machine.environment(), base, name)
 
     # -- RV-30: cleanup -------------------------------------------------------------------
 
@@ -1466,6 +1504,45 @@ class ProxyTests(unittest.TestCase):
                 upstream_side.sendall(b"server-bytes")
                 self.assertEqual(client.recv(64), b"server-bytes")
                 connect.assert_called_once_with(("api.anthropic.com", 443), timeout=2)
+
+
+@unittest.skipUnless(os.environ.get("BRAID_T007_LIVE_CONTROLS") == "1",
+                     "the live disk-bound probe runs only with BRAID_T007_LIVE_CONTROLS=1")
+class LiveDiskBoundProbeTests(unittest.TestCase):
+    """DRV-06: the real 100,000-entry bound over the real filesystem, config_dir included.
+
+    Local only (temporary directories, no sandbox, no claude, no network); it writes about 100,000
+    empty files, which is why CI never runs it.
+    """
+
+    def tree(self):
+        root = Path(tempfile.mkdtemp(prefix="braid-live-disk-"))
+        self.addCleanup(mac._remove_tree, str(root))
+        return [str(root / name) for name in ("candidate", "tmp", "config")]
+
+    def fill(self, directory: str, count: int) -> None:
+        os.mkdir(directory)
+        for index in range(count):
+            open(f"{directory}/f{index}", "wb").close()
+
+    def test_the_default_entry_bound_trips_on_config_dir_alone_and_on_the_three_trees_together(self):
+        candidate, tmpdir, config = self.tree()
+        self.assertEqual(mac.LIMITS["diskFiles"], 100_000)
+        self.fill(candidate, 40_000)
+        self.fill(tmpdir, 40_000)
+        os.mkdir(config)
+        guard = mac._DiskGuard((candidate, tmpdir, config))
+        self.assertFalse(guard.exceeded())  # 80,000 entries: under the bound
+        self.fill(f"{config}/sessions", 20_001)  # the account's own tree pushes the total over it
+        self.assertTrue(guard.exceeded())
+        self.assertGreater(guard.files, 100_000)
+
+    def test_a_config_dir_over_the_bound_by_itself_is_caught(self):
+        candidate, tmpdir, config = self.tree()
+        os.mkdir(candidate)
+        os.mkdir(tmpdir)
+        self.fill(config, 100_001)
+        self.assertTrue(mac._DiskGuard((candidate, tmpdir, config)).exceeded())
 
 
 if __name__ == "__main__":
