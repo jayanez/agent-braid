@@ -1,0 +1,207 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Loom activity viewer (in development): from agent activity to a read-only braid view",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "docs/assets/agent-braid-loom.html",
+    "legend": {
+      "entries": {
+        "external": {
+          "label": "Activity source"
+        },
+        "backend": {
+          "label": "Loom library (merged)"
+        },
+        "database": {
+          "label": "In-memory store"
+        },
+        "messagebus": {
+          "label": "Planned transport"
+        },
+        "frontend": {
+          "label": "Planned viewer"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "sources",
+      "label": "Activity sources"
+    },
+    {
+      "id": "library",
+      "label": "Loom library (merged in develop)"
+    },
+    {
+      "id": "planned",
+      "label": "Planned: VIS.1a / VIS.1b",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "collect",
+      "label": "Collect",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "normalize",
+      "label": "Validate + store",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "show",
+      "label": "Show (planned)",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "artifacts",
+    "adapters",
+    "validate",
+    "store",
+    "model",
+    "server",
+    "viewer"
+  ],
+  "nodes": [
+    {
+      "id": "artifacts",
+      "lane": "sources",
+      "col": 0,
+      "type": "external",
+      "label": "Agent Braid artifacts",
+      "sublabel": "reports, Git inputs"
+    },
+    {
+      "id": "hooks",
+      "lane": "sources",
+      "col": 1,
+      "type": "external",
+      "label": "Host telemetry",
+      "sublabel": "Claude Code hooks, OTLP, Codex",
+      "tag": "planned adapters"
+    },
+    {
+      "id": "adapters",
+      "lane": "library",
+      "col": 1,
+      "type": "backend",
+      "label": "Event adapters",
+      "sublabel": "view_adapters"
+    },
+    {
+      "id": "validate",
+      "lane": "library",
+      "col": 2,
+      "type": "backend",
+      "label": "Strict validator",
+      "sublabel": "agent-braid-loom/v0.1"
+    },
+    {
+      "id": "store",
+      "lane": "library",
+      "col": 3,
+      "type": "database",
+      "label": "Ring event store",
+      "sublabel": "seq, caps, eviction gaps"
+    },
+    {
+      "id": "model",
+      "lane": "library",
+      "col": 4,
+      "type": "backend",
+      "label": "Viewer model",
+      "sublabel": "lanes, swaps, counters"
+    },
+    {
+      "id": "server",
+      "lane": "planned",
+      "col": 4,
+      "type": "messagebus",
+      "label": "Loopback server",
+      "sublabel": "SSE, local only"
+    },
+    {
+      "id": "viewer",
+      "lane": "planned",
+      "col": 5,
+      "type": "frontend",
+      "label": "Three.js braid viewer",
+      "sublabel": "replay and live",
+      "tag": "not built yet"
+    }
+  ],
+  "edges": [
+    {
+      "id": "convert",
+      "from": "artifacts",
+      "to": "adapters",
+      "variant": "default"
+    },
+    {
+      "id": "stream",
+      "from": "hooks",
+      "to": "adapters",
+      "label": "planned",
+      "variant": "dashed"
+    },
+    {
+      "id": "check",
+      "from": "adapters",
+      "to": "validate",
+      "variant": "default"
+    },
+    {
+      "id": "keep",
+      "from": "validate",
+      "to": "store",
+      "variant": "default"
+    },
+    {
+      "id": "derive",
+      "from": "store",
+      "to": "model",
+      "variant": "emphasis"
+    },
+    {
+      "id": "serve",
+      "from": "model",
+      "to": "server",
+      "label": "planned",
+      "variant": "dashed"
+    },
+    {
+      "id": "render",
+      "from": "server",
+      "to": "viewer",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Boundary",
+      "items": [
+        "Read-only and loopback-only: no host decisions, no host config writes",
+        "Inspiration-level view; no speedup or utility claim"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Today",
+      "items": [
+        "Event contract, adapters, ring store and viewer model are merged as library code",
+        "No CLI, server or UI yet; VIS.1 go/no-go due by 2027-01-31"
+      ]
+    }
+  ]
+}

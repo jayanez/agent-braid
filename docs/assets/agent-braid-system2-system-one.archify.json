@@ -1,0 +1,275 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "How Agent Braid works: exact analysis, operator authority and the System One shadow path",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "legend": {
+      "entries": {
+        "external": {
+          "label": "Agent host"
+        },
+        "backend": {
+          "label": "Agent Braid step"
+        },
+        "security": {
+          "label": "Authority gate"
+        },
+        "database": {
+          "label": "Local private record"
+        },
+        "messagebus": {
+          "label": "Shadow observer"
+        },
+        "frontend": {
+          "label": "Owner report"
+        }
+      }
+    },
+    "output": "docs/assets/agent-braid-system2-system-one.html"
+  },
+  "lanes": [
+    {
+      "id": "host",
+      "label": "Agent host (Claude Code, Codex)"
+    },
+    {
+      "id": "s2",
+      "label": "System 2: exact analysis"
+    },
+    {
+      "id": "authority",
+      "label": "Operator authority",
+      "variant": "exception"
+    },
+    {
+      "id": "runtime",
+      "label": "Owned local Git runtime"
+    },
+    {
+      "id": "s1",
+      "label": "System One: opt-in shadow"
+    }
+  ],
+  "phases": [
+    {
+      "id": "advise",
+      "label": "Advise (no authority)",
+      "fromCol": 0,
+      "toCol": 2
+    },
+    {
+      "id": "authorize",
+      "label": "Authorize",
+      "fromCol": 3,
+      "toCol": 3,
+      "variant": "security"
+    },
+    {
+      "id": "run",
+      "label": "Execute + check",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "emphasis"
+    }
+  ],
+  "groups": [
+    {
+      "id": "shadow_side",
+      "label": "Records only; never changes a result or grants",
+      "lane": "s1",
+      "fromCol": 2,
+      "toCol": 5,
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "tasks",
+    "analyze",
+    "report",
+    "prepare",
+    "grant",
+    "execute",
+    "result"
+  ],
+  "nodes": [
+    {
+      "id": "tasks",
+      "lane": "host",
+      "col": 0,
+      "type": "external",
+      "label": "Agent tasks",
+      "sublabel": "AIM effects or Git commits"
+    },
+    {
+      "id": "analyze",
+      "lane": "s2",
+      "col": 1,
+      "type": "backend",
+      "label": "analyze-work",
+      "sublabel": "effect graph, Git replay"
+    },
+    {
+      "id": "report",
+      "lane": "s2",
+      "col": 2,
+      "type": "backend",
+      "label": "Advisory report",
+      "sublabel": "executionAuthorization: false",
+      "tag": "ordered / conflicting / unknown"
+    },
+    {
+      "id": "prepare",
+      "lane": "s2",
+      "col": 3,
+      "type": "backend",
+      "label": "prepare",
+      "sublabel": "verified plan digest"
+    },
+    {
+      "id": "grant",
+      "lane": "authority",
+      "col": 3,
+      "type": "security",
+      "label": "Operator grant",
+      "sublabel": "one use, exact digest",
+      "tag": "only path to execution"
+    },
+    {
+      "id": "execute",
+      "lane": "runtime",
+      "col": 4,
+      "type": "backend",
+      "label": "execute",
+      "sublabel": "isolated prep, serial publish"
+    },
+    {
+      "id": "result",
+      "lane": "runtime",
+      "col": 5,
+      "type": "database",
+      "label": "Private result repo",
+      "sublabel": "checkpoints + journal",
+      "tag": "verify / recover"
+    },
+    {
+      "id": "observer",
+      "lane": "s1",
+      "col": 2,
+      "type": "messagebus",
+      "label": "Shadow observer",
+      "sublabel": "after the envelope, off-request"
+    },
+    {
+      "id": "episode",
+      "lane": "s1",
+      "col": 3,
+      "type": "backend",
+      "label": "Structural episode",
+      "sublabel": "no names, paths or prompts"
+    },
+    {
+      "id": "store",
+      "lane": "s1",
+      "col": 4,
+      "type": "database",
+      "label": "Local private store",
+      "sublabel": "4 MiB/day, 30 days"
+    },
+    {
+      "id": "s1report",
+      "lane": "s1",
+      "col": 5,
+      "type": "frontend",
+      "label": "system-one report",
+      "sublabel": "counts only; purge"
+    }
+  ],
+  "edges": [
+    {
+      "id": "submit",
+      "from": "tasks",
+      "to": "analyze",
+      "label": "declare",
+      "variant": "default"
+    },
+    {
+      "id": "emit",
+      "from": "analyze",
+      "to": "report",
+      "variant": "default"
+    },
+    {
+      "id": "plan",
+      "from": "report",
+      "to": "prepare",
+      "label": "plan",
+      "variant": "default"
+    },
+    {
+      "id": "ask-grant",
+      "from": "prepare",
+      "to": "grant",
+      "label": "digest",
+      "variant": "security"
+    },
+    {
+      "id": "granted",
+      "from": "grant",
+      "to": "execute",
+      "label": "granted",
+      "variant": "emphasis"
+    },
+    {
+      "id": "publish",
+      "from": "execute",
+      "to": "result",
+      "variant": "emphasis"
+    },
+    {
+      "id": "observe",
+      "from": "report",
+      "to": "observer",
+      "label": "copy",
+      "variant": "dashed",
+      "role": "async"
+    },
+    {
+      "id": "derive",
+      "from": "observer",
+      "to": "episode",
+      "variant": "dashed"
+    },
+    {
+      "id": "append",
+      "from": "episode",
+      "to": "store",
+      "variant": "dashed"
+    },
+    {
+      "id": "count",
+      "from": "store",
+      "to": "s1report",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Authority boundary",
+      "items": [
+        "Reports and System One never authorize execution",
+        "Only a one-use operator grant on the exact plan digest runs work"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "System One today",
+      "items": [
+        "Off by default; shadow mode is opt-in and stays on the machine",
+        "Reference backend abstains: no learned model, no accuracy or calibration claim"
+      ]
+    }
+  ]
+}

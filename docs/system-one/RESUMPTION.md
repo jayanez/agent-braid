@@ -1,21 +1,32 @@
 # System One — agent resumption guide
 
-## Current state (2026-11-01)
+## Current state (2026-11-02)
 
 This section supersedes older statements below. Sections after it are historical
 snapshots; their frozen evidence text is unchanged and describes the time it was
 written.
 
+- Agent Braid now supports an opt-in System One decision layer in **shadow mode**
+  (track S1.5, [SPEC-066](../../specs/066-system-one-shadow/spec.md),
+  [ADR 0034](../adr/0034-system-one-shadow-advisory-boundary.md)). Stage S1.5a is
+  merged (#860, #940) and ships in native plugin `0.1.0-alpha.5` (#946, record #951).
+  With consent, each successful `analyze-work` call records one structural episode on
+  the machine; outputs stay byte-identical and the reference backend abstains. User
+  guide: [System One shadow mode](../tooling/SYSTEM_ONE_SHADOW.md).
+- There is still no learned model and no accuracy, calibration or promotion claim.
+  Hypothesis H-S1 (at most 2% false independence at 30% coverage or more) is untested.
+  Confidence never grants authority; `executionAuthorization` stays false.
+- The owner's one-week shadow session (T030, SC-006) started on 2026-11-02 on
+  `0.1.0-alpha.5`; its redacted receipt is due 2026-11-09. S1.5b–e (owned corpus,
+  reference-grade contracts, native learned model, go/no-go) stay outline until the
+  S1.5a closure review (T032).
 - Milestones S1.0–S1.4 (GitHub #13–#17) were closed on 2026-10-31 by founder
-  decision as deferred; the remaining open System One issues sit in milestone
+  decision as deferred. The 15 deferred SPEC-029, SPEC-031 and SPEC-033 task issues
+  that S1.5 carries forward now sit in milestone S1.5 #26; the rest stay in
   Deferred #24.
-- The code is merged in `develop` (via #655). The local Codex checkouts named in
-  older sections are historical and are not needed.
-- SPEC-051 and ADR 0026 are published in the repository.
-- The code has no product callers, no learned model and no observed use; see the
+- SPEC-051 and ADR 0026 are published in the repository. The earlier code had no
+  product callers or observed use before S1.5a; see the
   [completeness audit](addenda/completeness-audit-20261101/README.md).
-- Next work is [SPEC-066](../../specs/066-system-one-shadow/spec.md) (track S1.5,
-  draft) and [ADR 0034](../adr/0034-system-one-shadow-advisory-boundary.md).
 - Direction (owner, 2026-11-01): the layer-1 decision system is 100% native. No
   external service, third-party decision model or backend (Laya, Von, kev, Jev and
   the like) and no pretrained encoder is used; Laya and Jev are design references

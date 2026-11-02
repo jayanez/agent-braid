@@ -1,8 +1,9 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # System One shadow mode
 
-**Status:** SPEC-066 S1.5a candidate. Shadow mode is **off by default** and starts
-only after explicit consent. It measures how often the exact System 2 analyzer
+**Status:** SPEC-066 S1.5a, available in native plugin `0.1.0-alpha.5`
+([release record](../../specs/046-native-ai-plugins/release-acceptance-alpha5.md)).
+Shadow mode is **off by default** and starts only after explicit consent. It measures how often the exact System 2 analyzer
 cannot decide a pair of operations. It does not improve, change or gate any
 result. See [SPEC-066](../../specs/066-system-one-shadow/spec.md) and
 [ADR 0034](../adr/0034-system-one-shadow-advisory-boundary.md).
@@ -26,6 +27,10 @@ question (decision point DP-1, unknown-pair resolution).
   (an AIM analysis); a Git replay `analyze` result carries none and records nothing.
   Artifact-backed reports above 1 MiB are not decoded and record nothing.
 - Nothing is uploaded. There is no hosted service.
+
+Agent Braid supports this opt-in System One decision layer in shadow mode only.
+There is no learned model yet, no accuracy, calibration or promotion claim, and
+confidence never grants authority: `executionAuthorization` stays `false`.
 
 ## What is recorded
 
@@ -143,6 +148,9 @@ another process holds the store, the command refuses and you retry shortly.
 
 To stop recording, preview and apply `plugin setup --system-one off` the same way
 and reconnect. Turning it off keeps the store; run `purge` to delete it.
+
+Turn it off before reinstalling plugin `0.1.0-alpha.4` or earlier: those versions
+refuse a registry that records System One consent (`Unknown registry schema`).
 
 Both `system-one` store commands accept `--telemetry local`; see
 [TELEMETRY.md](TELEMETRY.md) for that contract.
