@@ -14,22 +14,22 @@
 <header class="top">
   <h1>Agent Braid activity viewer</h1>
   <p class="badges">
-    <span class="badge" id="connection" role="status" aria-live="polite">connecting</span>
+    <span class="badge" id="connection" role="status">connecting</span>
     <span class="badge">read-only</span>
-    <span class="badge">executionAuthorization: false</span>
+    <span class="badge" id="authorization">executionAuthorization: false</span>
   </p>
 </header>
-<p class="nonclaim" id="nonclaim">This view reports what was observed or declared. A rendered shape, label, counter or
+<p class="nonclaim">This view reports what was observed or declared. A rendered shape, label, counter or
 compatibility class is not a guarantee, not a safety ordering and not permission to run, schedule or interleave work.</p>
 <noscript><p class="notice">This viewer needs its own first-party JavaScript (no external code) to render the table.</p></noscript>
 <p class="notice" id="notice" hidden></p>
 <main class="layout">
-  <section class="main-col" aria-labelledby="table-title">
+  <section aria-labelledby="table-title">
     <h2 id="table-title">Events</h2>
     <section class="playback" aria-label="Playback controls">
       <button type="button" id="pb-start" title="Back to the first event">Start</button>
       <button type="button" id="pb-back" title="One event back">Step back</button>
-      <button type="button" id="pb-play" aria-pressed="false">Play</button>
+      <button type="button" id="pb-play" aria-pressed="false">Autoplay</button>
       <button type="button" id="pb-forward" title="One event forward">Step forward</button>
       <button type="button" id="pb-end" title="Show all events and follow new ones">End (live)</button>
       <label>Speed
@@ -43,7 +43,7 @@ compatibility class is not a guarantee, not a safety ordering and not permission
       <label class="grow">Position
         <input type="range" id="pb-range" min="0" max="0" value="0" step="1">
       </label>
-      <output id="pb-count">0 of 0</output>
+      <output id="pb-count" aria-live="off">0 of 0</output>
     </section>
     <p class="hint">Playback reveals events one at a time in model order. It does not replay real timing, and the
     counters and absence markers always cover every retained event, not the playback position.</p>
@@ -54,7 +54,7 @@ compatibility class is not a guarantee, not a safety ordering and not permission
       <label><input type="checkbox" id="filter-uncertain"> only unverified or uncertain</label>
     </section>
     <div class="table-wrap">
-      <table id="events">
+      <table>
         <caption class="sr">Events of the viewer model, in model order. Select a row to see its event and evidence.</caption>
         <thead>
           <tr>
@@ -73,7 +73,7 @@ compatibility class is not a guarantee, not a safety ordering and not permission
     </div>
     <p class="hint" id="table-empty" hidden>No events to show.</p>
   </section>
-  <aside class="side-col">
+  <aside>
     <section class="panel" id="evidence-panel" aria-labelledby="evidence-title" tabindex="-1">
       <h2 id="evidence-title">Evidence</h2>
       <div id="evidence" class="evidence"><p class="hint">Select an event to see its source event, class, verification and evidence reference.</p></div>
@@ -106,7 +106,7 @@ compatibility class is not a guarantee, not a safety ordering and not permission
       <h3>Marks</h3>
       <ul id="legend-marks" class="legend"></ul>
     </section>
-    <details class="panel" id="dropped">
+    <details class="panel">
       <summary>Dropped attribute names</summary>
       <p class="hint">Names only, never values. The viewer discards these host attributes before processing.</p>
       <ul id="dropped-list" class="plain"></ul>

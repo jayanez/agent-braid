@@ -54,7 +54,7 @@ const MARKS = {
   notime: ["no time", "The event states no time. It is placed after its predecessor, no time is invented."],
 };
 
-const ATTRS = /^(id|type|scope|title|role|tabindex|colspan|for|name|min|max|step|value|disabled|open|data-[a-z-]+|aria-[a-z-]+)$/;
+const ATTRS = /^(type|title|value|data-[a-z-]+|aria-[a-z-]+)$/;
 const STEP_MS = 700;
 
 const state = {
@@ -76,7 +76,6 @@ function h(tag, props, ...children) {
   for (const [key, value] of Object.entries(props || {})) {
     if (value === null || value === undefined || value === false) continue;
     if (key === "class") node.className = value;
-    else if (key === "text") node.textContent = String(value);
     else if (key === "on") for (const [name, fn] of Object.entries(value)) node.addEventListener(name, fn);
     else if (ATTRS.test(key)) node.setAttribute(key, value === true ? "" : String(value));
     else throw new Error("attribute not allowed: " + key);
@@ -115,7 +114,7 @@ function shapeOf(element) {
 
 function marksOf(element) {
   const marks = [];
-  if (element.unverified) marks.push("unverified");
+  if (element.unverified || !VERIFICATION[element.verification]) marks.push("unverified");
   if (element.uncertain) marks.push("uncertain");
   if (element.incompleteCoverage) marks.push("partial");
   if (element.absence) marks.push("absence");
@@ -157,18 +156,18 @@ function renderLegend() {
 
 // ---------------------------------------------------------------- data
 
-function elementsInOrder() {
-  if (!state.model) return [];
-  return [...state.model.elements].sort((a, b) => a.order - b.order || a.seq - b.seq);
-}
+let rowsCache = null;
 
 function rowsInOrder() {
   if (!state.model) return [];
+  if (rowsCache && rowsCache.model === state.model) return rowsCache.rows;
   const bySeq = new Map(state.model.elements.map((element) => [element.seq, element]));
-  return state.model.table
+  const rows = state.model.table
     .map((row) => ({ row, element: bySeq.get(row.seq) }))
     .filter((entry) => entry.element)
     .sort((a, b) => a.element.order - b.element.order || a.row.seq - b.row.seq);
+  rowsCache = { model: state.model, rows };
+  return rows;
 }
 
 function setNotice(text) {
@@ -177,7 +176,10 @@ function setNotice(text) {
   box.hidden = !text;
 }
 
+let snapshotRequest = 0;
+
 async function loadSnapshot() {
+  const request = ++snapshotRequest;
   let response;
   try {
     response = await fetch("/snapshot", { cache: "no-store", credentials: "same-origin" });
@@ -196,19 +198,29 @@ async function loadSnapshot() {
   let document_;
   try {
     document_ = await response.json();
+    if (!document_ || typeof document_.model !== "object" || document_.model === null) throw new Error("no model");
   } catch (error) {
     setNotice("The snapshot is not valid JSON.");
     return;
   }
+  if (request !== snapshotRequest) return; // a newer request supersedes this response
   setNotice("");
   const atEnd = state.cursor >= totalCount();
   state.model = document_.model;
+  const authorization = $("authorization");
+  authorization.textContent = "executionAuthorization: " + String(state.model.executionAuthorization);
+  authorization.className = state.model.executionAuthorization === false ? "badge" : "badge mark unverified";
   state.dropped = Array.isArray(document_.droppedAttributeNames) ? document_.droppedAttributeNames : [];
   state.cursor = atEnd ? totalCount() : Math.min(state.cursor, totalCount());
   if (state.selected !== null && !state.model.elements.some((element) => element.seq === state.selected)) {
     state.selected = null;
   }
-  renderAll();
+  try {
+    renderAll();
+  } catch (error) {
+    console.error(error);
+    setNotice("The snapshot does not match the model contract and could not be rendered.");
+  }
 }
 
 function totalCount() {
@@ -254,7 +266,8 @@ async function followEvents() {
         return;
       }
       if (!response.ok || !response.body) throw new Error("status " + response.status);
-      setConnection(state.lastId ? "live, last seq " + state.lastId : "live");
+      setConnection("live");
+      scheduleRefresh();
       delay = 1000;
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -269,7 +282,6 @@ async function followEvents() {
           buffer = buffer.slice(cut + 2);
           if (id !== null && /^[0-9]{1,16}$/.test(id)) state.lastId = id;
           if (data) {
-            setConnection("live, last seq " + state.lastId);
             scheduleRefresh();
           }
           cut = buffer.indexOf("\n\n");
@@ -349,7 +361,7 @@ function renderDropped() {
 function visibleRows() {
   return rowsInOrder().slice(0, state.cursor).filter(({ row, element }) => {
     if (state.filterKind && element.element !== state.filterKind) return false;
-    if (state.filterUncertain && !(row.unverified || row.uncertain)) return false;
+    if (state.filterUncertain && marksOf(element).length === 0) return false;
     return true;
   });
 }
@@ -358,6 +370,9 @@ function renderKindFilter() {
   const select = $("filter-kind");
   const kinds = [...new Set((state.model ? state.model.elements : []).map((element) => element.element))].sort();
   if (state.filterKind && !kinds.includes(state.filterKind)) state.filterKind = "";
+  const key = kinds.join("|");
+  if (select.dataset.kinds === key) return;
+  select.dataset.kinds = key;
   select.replaceChildren(h("option", { value: "" }, "all"),
     ...kinds.map((kind) => h("option", { value: kind }, kind)));
   select.value = state.filterKind;
@@ -366,37 +381,38 @@ function renderKindFilter() {
 function renderTable() {
   const rows = visibleRows();
   const last = state.cursor > 0 ? rowsInOrder()[state.cursor - 1] : null;
+  const active = document.activeElement;
+  const focusedSeq = active && active.dataset ? active.dataset.seq : null;
   fill("events-body", rows.map(({ row, element }) => {
     const [glyph, label] = shapeOf(element);
     const selected = state.selected === row.seq;
-    const verification = element.verification;
-    const tr = h("tr", {
-      "aria-selected": selected ? "true" : "false",
-      class: last && last.row.seq === row.seq ? "current" : "",
-    },
+    return h("tr", { class: (selected ? "selected " : "") + (last && last.row.seq === row.seq ? "current" : "") },
     h("td", null, h("button", {
       type: "button", class: "row-button", "aria-label": "Select event " + row.seq,
-      on: { click: () => select(row.seq, true) },
-    }, String(row.seq))),
+      "aria-pressed": selected ? "true" : "false", "data-seq": row.seq,
+      on: { click: () => select(row.seq) },
+    }, (selected ? "\u25B6 " : "") + row.seq)),
     h("td", null, timeText(element)),
     h("td", null, h("span", { class: "glyph", "aria-hidden": "true" }, glyph), label),
     h("td", null, String(row.subject === null || row.subject === undefined ? "" : row.subject)),
     h("td", null, row.status === null || row.status === undefined ? "—" : String(row.status)),
     h("td", null, classLabel(row.compatibilityClass)),
-    h("td", null, verificationNode(verification)),
+    h("td", null, verificationNode(element.verification)),
     h("td", null, marksOf(element).map(markNode)));
-    return tr;
   }));
+  if (focusedSeq !== null) {
+    const again = $("events-body").querySelector('[data-seq="' + CSS.escape(focusedSeq) + '"]');
+    if (again) again.focus({ preventScroll: true });
+  }
   $("table-empty").hidden = rows.length > 0;
   $("table-empty").textContent = state.model && totalCount() > 0 && rows.length === 0
     ? "No events at this position or filter." : "No events to show.";
 }
 
-function select(seq, focusPanel) {
+function select(seq) {
   state.selected = seq;
   renderTable();
   renderEvidence();
-  if (focusPanel) $("evidence-panel").focus({ preventScroll: false });
 }
 
 // ---------------------------------------------------------------- evidence
@@ -503,10 +519,10 @@ function renderPlayback() {
   range.max = String(total);
   range.value = String(state.cursor);
   $("pb-count").textContent = state.cursor + " of " + total;
+  range.setAttribute("aria-valuetext", state.cursor + " of " + total + " events");
   $("pb-back").disabled = state.cursor <= 0;
   $("pb-start").disabled = state.cursor <= 0;
   $("pb-forward").disabled = state.cursor >= total;
-  $("pb-play").textContent = state.playing ? "Pause" : "Play";
   $("pb-play").setAttribute("aria-pressed", state.playing ? "true" : "false");
 }
 
