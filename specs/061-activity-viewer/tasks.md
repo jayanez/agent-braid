@@ -88,29 +88,29 @@ per-probe owner authorization but no ADR, and run first.
 
 ## VIS.1a — Coordination slice
 
-- [ ] T010 (REQ-001 / SC-001): `view_loom.py`: constants, limits, strict JSON,
+- [x] T010 (REQ-001 / SC-001): `view_loom.py`: constants, limits, strict JSON,
   `validate_event`, canonical bytes; schema parity test. Tests first. Files:
   `agent_braid/view_loom.py`, `tests/test_view_loom.py`, `tests/fixtures/view/loom/`.
-  Verification: procedure_001.
-- [ ] T011 (REQ-013 / SC-013): `activity-viewer` rule in
+  Verification: procedure_001. Done 2026-11-02: PR #950.
+- [x] T011 (REQ-013 / SC-013): `activity-viewer` rule in
   `scripts/validate_change.py`, test in `tests/test_validation_profiles.py`,
   paragraph in `docs/development/VALIDATION_PROFILES.md`; assert that changes to
   the source modules and schemas the adapters read already escalate to the full
-  tests, and add their patterns to the rule if not. Verification: procedure_013.
-- [ ] T012 (REQ-002 / SC-002): Adapters for analysis reports first, then Git
+  tests, and add their patterns to the rule if not. Verification: procedure_013. Done 2026-11-02: PR #949.
+- [x] T012 (REQ-002 / SC-002): Adapters for analysis reports first, then Git
   replay plans, scheduler preparations, grants and runtime state, each with a table
   of supported source schema versions and a `source-unsupported` gap otherwise.
   Files: `agent_braid/view_adapters.py`, `tests/test_view_adapters.py`,
-  `tests/fixtures/view/artifacts/`. Dependencies: T010. Verification: procedure_002.
+  `tests/fixtures/view/artifacts/`. Dependencies: T010. Verification: procedure_002. Done 2026-11-02: PR #954.
 - [ ] T013 (REQ-002 / SC-002; REQ-003 / SC-003): Adapters for ownership notices
   and receipts (JSON only, every hazard unit kept), workflow-gate phases and
   results (no gate crossings), oversized pairs and absence cases. Files:
   `agent_braid/view_adapters.py`, `tests/test_view_adapters.py`,
   `tests/fixtures/view/artifacts/`. Dependencies: T012. Verification:
   procedure_002, procedure_003.
-- [ ] T015 (REQ-006 / SC-006): `view_store.py` ring, seq, caps, eviction gaps,
+- [x] T015 (REQ-006 / SC-006): `view_store.py` ring, seq, caps, eviction gaps,
   bounded subscriber queues. Files: `agent_braid/view_store.py`,
-  `tests/test_view_store.py`. Dependencies: T010. Verification: procedure_006.
+  `tests/test_view_store.py`. Dependencies: T010. Verification: procedure_006. Done 2026-11-02: PR #953.
 - [ ] T016 (REQ-004 / SC-004): `view_serve.py` loopback bind, one-time open code
   and read cookie, ingest token file and bearer check, `Host`, `Origin` and
   `Sec-Fetch-Site` checks, headers, body, connection and timeout limits, access
@@ -141,7 +141,7 @@ per-probe owner authorization but no ADR, and run first.
   markers, playback controls and CSP. Files:
   `integrations/agent-braid-view/web/*`. Dependencies: T020, T017.
   Verification: procedure_010.
-- [ ] T023 (REQ-010 / SC-010; REQ-013 / SC-013): Vendor Three.js r186 prebuilt
+- [x] T023 (REQ-010 / SC-010; REQ-013 / SC-013): Vendor Three.js r186 prebuilt
   modules (`three.module.js`, `three.core.js`) and OrbitControls with
   `manifest.json`; add `LICENSES/three-MIT.txt`, the LICENSE paragraph, the NOTICE
   entry, the license marker in `scripts/validate_repository.py` and the
@@ -150,7 +150,7 @@ per-probe owner authorization but no ADR, and run first.
   T003. Files: `integrations/agent-braid-view/web/vendor/**`, `LICENSE`,
   `LICENSES/`, `NOTICE`, `scripts/validate_repository.py`,
   `docs/development/THIRD_PARTY.md`, `specs/061-activity-viewer/evidence/`.
-  Verification: procedure_010.
+  Verification: procedure_010. Done 2026-11-02: PR #958. Receipt: `evidence/vendor-threejs-20261102.json`.
 - [ ] T025 (REQ-010 / SC-010): Three.js braid scene with the hashed import map,
   bound to the same model and evidence panel as the table view. Files:
   `integrations/agent-braid-view/web/*`. Dependencies: T023, T024. Verification:
