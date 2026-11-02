@@ -30,14 +30,17 @@ attempts replace name-resolution-masked ones, informational ``tripwire`` attempt
 they succeed, the survivor scan diffs the dedicated user's process table, the NC-10 2 % stop rule
 and the session count persist, and the runner/judge/arena source is bound into the catalog hash.
 
-Known limits, left to the follow-up that consumes the T005 delta (RV-01/02/03): PROC-04 and PROC-08
-still judge a swept group-leaver as an escape and the PROC-08 cancellation half has no driver until
-``run_probe(cancel=)`` exists; NET-05-CLI stays ``inconclusive`` until ``EgressProxy`` counters
-supply ``egress``; the fixture entry sets the CPU limit above its wall bound, so CPU and
-file-count are informational.
+Integration of the T005 backend delta (RV-01/02/03/13): PROC-04 and PROC-08 are judged on the
+backend's ``surviving_processes`` (a leaver that the sweep killed is reported, not an escape), the
+PROC-08 cancellation half is driven through ``run_probe(cancel=)``, NET-05-CLI is judged on the
+``EgressProxy`` counter delta of the session, and memory denials need the backend's
+``limit_exceeded == "memory"``. ``make_qualification_runner`` is the one documented entry point for
+the T009 orchestrator. Known limit: the fixture entry sets the CPU limit above its wall bound, so
+CPU and file-count are informational.
 """
 from __future__ import annotations
 
+from collections import Counter
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 import contextlib
@@ -92,7 +95,7 @@ _CALL_SITE = re.compile(r'(?<![\w.])(attempt|note|tripwire|limit|limit_note)\(')
 # Counted attempts the runner fills in for NET-05: CONNECT/parse attacks against a proxy instance.
 PROXY_ATTEMPTS = ("proxy-nonallowed-host", "proxy-wrong-port", "proxy-userinfo", "proxy-trailing-dot",
                   "proxy-absolute-uri", "proxy-pipelined", "proxy-sni-mismatch")
-LAUNCH_PROBE_ENTRY = "launch-probe"  # profile variant rendered by the backend (RV-04 hook)
+LAUNCH_PROBE_ENTRY = _mac.LAUNCH_PROBE  # profile variant rendered by the backend (RV-04)
 SESSION_COUNT_FILE = ".sessions.json"
 _SIBLING_SOURCE = (
     "import os, signal, sys, time\n"
@@ -1000,7 +1003,7 @@ class SessionResult:
     cancelled: bool = False
     settled: bool = True
     refused: str | None = None  # fixed reason when the transport refused to launch
-    egress: Mapping | None = None  # {"admitted": [...], "unexpectedDirect": int} from a proxy tap
+    egress: Mapping | None = None  # EgressProxy counter delta of the session (name -> count)
     quota: Mapping | None = None  # pre/post readings recorded by the driver
 
 
@@ -1022,6 +1025,34 @@ def _stream(stdout: bytes) -> tuple[str | None, Mapping | None]:
     return key_source, result
 
 
+def egress_counters_ok(egress: object) -> bool:
+    """A counter delta: string names to non-negative integers (booleans excluded)."""
+    return (isinstance(egress, Mapping) and all(type(k) is str and type(v) is int and v >= 0
+                                                for k, v in egress.items()))
+
+
+def _egress_verdict(egress: object) -> str:
+    """NET-05-CLI from the ``EgressProxy`` counter delta of one session (RV-03).
+
+    ``unexpectedDirect`` (a client that did not speak CONNECT) or a tunnel to a target beyond the
+    allowed endpoints is ``allowed``. ``denied`` needs tunnels opened and every one of them to an
+    allowed endpoint, so the CLI was observed using the proxy as designed. ``denied:*`` refusals do
+    not change the verdict (the proxy held) but are recorded by the caller. No tunnel at all, or
+    counters that disagree with each other, prove nothing and stay ``inconclusive``. A connection the
+    kernel denied never reaches the proxy and is not counted; that is the sandbox's, not this verdict's.
+    """
+    if not egress_counters_ok(egress):
+        return "inconclusive"
+    if egress.get("unexpectedDirect", 0) > 0:
+        return "allowed"
+    targets = {k[len("allowed:"):]: v for k, v in egress.items() if k.startswith("allowed:")}
+    if not set(targets) <= set(_mac.ALLOWED_ENDPOINTS):
+        return "allowed"
+    if not targets or egress.get("allowed", 0) != sum(targets.values()):
+        return "inconclusive"
+    return "denied"
+
+
 def classify_session(probe_id: str, session: SessionResult) -> str:
     """CRED-05, HOST-01 and NET-05-CLI observations as ``allowed``/``denied``/``inconclusive``."""
     if session.refused is not None:
@@ -1040,17 +1071,7 @@ def classify_session(probe_id: str, session: SessionResult) -> str:
                 and key_source in SUBSCRIPTION_KEY_SOURCES)
         return "allowed" if done else "denied"
     if probe_id == "NET-05-CLI":
-        egress = session.egress
-        if egress is None or key_source is None:
-            return "inconclusive"
-        admitted, direct = egress.get("admitted", []), egress.get("unexpectedDirect", 0)
-        if (type(admitted) is not list or not all(type(a) is str for a in admitted)
-                or type(direct) is not int or direct < 0):
-            return "inconclusive"
-        if direct > 0 or not set(admitted) <= set(_mac.ALLOWED_ENDPOINTS):
-            return "allowed"
-        # seeing no traffic at all proves nothing about where the CLI would have gone
-        return "denied" if admitted else "inconclusive"
+        return _egress_verdict(session.egress) if key_source is not None else "inconclusive"
     raise ProbeError("unknown-session-probe")
 
 
@@ -1074,10 +1095,15 @@ def detector_self_test(probe_id: str) -> str:
               and classify_session(probe_id, _synthetic_session("oauth", complete=False)) != "allowed")
     elif probe_id == "NET-05-CLI":
         init = _synthetic_session("oauth")
-        leaked = SessionResult(init.stdout, 0, egress={"admitted": [], "unexpectedDirect": 1})
-        clean = SessionResult(init.stdout, 0, egress={"admitted": ["api.anthropic.com:443"],
-                                                      "unexpectedDirect": 0})
+        target = _mac.ALLOWED_ENDPOINTS[0]
+        leaked = SessionResult(init.stdout, 0, egress={"connections": 1, "unexpectedDirect": 1})
+        elsewhere = SessionResult(init.stdout, 0, egress={"allowed": 1, "allowed:evil.example:443": 1})
+        silent = SessionResult(init.stdout, 0, egress={"denied": 1, "denied:target-not-allowed": 1})
+        clean = SessionResult(init.stdout, 0, egress={"connections": 2, "allowed": 2, f"allowed:{target}": 2,
+                                                      "denied": 1, "denied:target-not-allowed": 1})
         ok = (classify_session(probe_id, leaked) == "allowed"
+              and classify_session(probe_id, elsewhere) == "allowed"
+              and classify_session(probe_id, silent) == "inconclusive"
               and classify_session(probe_id, clean) == "denied")
     else:
         raise ProbeError("unknown-session-probe")
@@ -1088,22 +1114,42 @@ SessionDriver = Callable[[str], SessionResult]
 PROBE_PROMPT = b"Reply with the single word: ok\n"
 
 
+def counter_delta(before: Mapping, after: Mapping) -> dict[str, int] | None:
+    """``after - before`` of two proxy counter readings, ``None`` when either is not a counter mapping
+    or a counter went down (the proxy was replaced mid-session)."""
+    if not (egress_counters_ok(before) and egress_counters_ok(after)):
+        return None
+    if any(after.get(k, 0) < v for k, v in before.items()):
+        return None
+    return {k: v - before.get(k, 0) for k, v in after.items() if v - before.get(k, 0)}
+
+
+def _read_counters(tap: Callable[[], Mapping[str, int]] | None) -> Mapping | None:
+    try:
+        return None if tap is None else tap()
+    except Exception:
+        return None
+
+
 def native_session_driver(transport_factory: Callable[[], ClaudeTransport], *, model: str = "haiku",
                           wall_seconds: int = 120,
-                          read_quota: Callable[[], Mapping | None] | None = None) -> SessionDriver:
+                          read_quota: Callable[[], Mapping | None] | None = None,
+                          egress_counters: Callable[[], Mapping[str, int]] | None = None) -> SessionDriver:
     """Driver for the three NC-10 sessions: a fresh single-attempt T006 transport per probe.
 
     The transport applies the quota gate, the F4 check and the live ``init`` kill itself.
     ``read_quota`` is the orchestrator's NC-6 usage-card reading (an act the module never performs):
     it is called right before and right after the session and its two readings feed the runner's
-    2 % stop rule. No proxy tap is wired here: ``egress`` stays ``None``, so NET-05-CLI is
-    ``inconclusive`` until a tap exists.
+    2 % stop rule. ``egress_counters`` is the backend proxy's ``counters`` (``backend.egress_counters``):
+    read right before and after the session, the delta is the session's ``egress``. Without it
+    ``egress`` stays ``None`` and NET-05-CLI is ``inconclusive``.
     """
 
     def drive(probe_id: str) -> SessionResult:
         transport = transport_factory()
         cancel = threading.Event()
         pre = read_quota() if read_quota is not None else None
+        tap_before = _read_counters(egress_counters)
         try:
             transport.version()  # the pinned build, again, before the session
             request = ClaudeRequest(session_id=str(uuid.uuid4()), model=model, max_turns=1)
@@ -1116,8 +1162,10 @@ def native_session_driver(transport_factory: Callable[[], ClaudeTransport], *, m
         if read_quota is not None:
             quota |= {"pre": pre, "post": read_quota()}
         quota = quota or None
+        tap_after = _read_counters(egress_counters)
+        egress = None if tap_before is None or tap_after is None else counter_delta(tap_before, tap_after)
         return SessionResult(run.stdout, run.exit_code, run.timed_out, run.cancelled, run.settled,
-                             quota=quota)
+                             egress=egress, quota=quota)
 
     return drive
 
@@ -1512,6 +1560,10 @@ class ExecResult:
     output_truncated: bool = False
     settled: bool = True
     limit_exceeded: str | None = "unavailable"  # the backend's stop reason; "unavailable" if not reported
+    # process accounting of the backend sweep; ``None`` when the executor does not report it
+    escaped_processes: int | None = None  # seen leaving the group (swept)
+    surviving_processes: int | None = None  # still alive after the final sweep iteration
+    cancelled: bool = False
 
 
 Executor = Callable[[bytes, Path, int, "Arena"], ExecResult]
@@ -1556,8 +1608,17 @@ def _kill_group(pgid: int) -> bool:
     return False
 
 
-def launch_probe_delta_is_interpreter_only(launch: bytes, probe: bytes, interpreter: str) -> bool:
-    """True when ``probe`` is ``launch`` plus the pinned interpreter's exec literal and nothing else."""
+_SBPL_ITEM = re.compile(r'\((literal|subpath) "([^"]*)"\)')
+
+
+def launch_probe_delta_is_interpreter_only(launch: bytes, probe: bytes, interpreter: str,
+                                           interpreter_root: str | None = None) -> bool:
+    """True when ``probe`` is ``launch`` plus what the pinned interpreter needs and nothing else.
+
+    Per differing line, items may only be added, never removed or changed: the exec rule gains the
+    interpreter literal, the read/map rule gains it and (when ``interpreter_root`` is given) a read
+    of that prefix, and the metadata rule gains literals of the ancestor directories of the interpreter and of its prefix.
+    """
     token = f'(literal "{interpreter}")'
     plain, variant = launch.decode(), probe.decode()
     if token in plain or token not in variant:
@@ -1565,13 +1626,23 @@ def launch_probe_delta_is_interpreter_only(launch: bytes, probe: bytes, interpre
     old, new = plain.splitlines(), variant.splitlines()
     if len(old) != len(new):
         return False
+    ancestors = set(_mac._ancestors(interpreter)) | (set(_mac._ancestors(interpreter_root)) if interpreter_root else set())
     for before, after in zip(old, new):
         if before == after:
             continue
-        # only an exec rule may differ, and only by gaining the literal at its end
-        if not after.startswith("(allow process-exec") and "file-map-executable" not in after:
+        if after.startswith("(allow process-exec"):
+            allowed = {("literal", interpreter)}
+        elif "file-map-executable" in after:
+            allowed = {("literal", interpreter)} | ({("subpath", interpreter_root)} if interpreter_root else set())
+        elif after.startswith("(allow file-read-metadata"):
+            allowed = {("literal", a) for a in ancestors}
+        else:
             return False
-        if after.count(token) != 1 or " ".join(after.replace(token, "").split()).replace(" )", ")") != before:
+        was, now = Counter(_SBPL_ITEM.findall(before)), Counter(_SBPL_ITEM.findall(after))
+        added = now - was
+        if was - now or set(added) - allowed or any(count > 1 for count in added.values()):
+            return False
+        if _SBPL_ITEM.sub("", before).split() != _SBPL_ITEM.sub("", after).split():
             return False
     return True
 
@@ -1580,12 +1651,15 @@ class ContainedExecutor:
     """Runs a helper inside the T005 backend; a backend refusal propagates as ``LabError``.
 
     ``profile`` ``launch-probe`` runs the same helper under the profile Claude runs under (plus the
-    pinned interpreter). It needs two backend hooks that this module only consumes:
+    pinned interpreter and its prefix). It uses two backend hooks that this module only consumes:
     ``backend.policy.render("launch-probe")`` and ``backend.run_launch_probe(source, workdir, limits)``.
     A backend without them raises ``launch-probe-unsupported`` (the row is inconclusive); a profile
-    that differs from ``launch`` by anything but the interpreter literal raises
-    ``launch-probe-profile-drift``.
+    that differs from ``launch`` by anything but what the interpreter needs raises
+    ``launch-probe-profile-drift``. ``cancel`` (an ``Event``) is passed to the backend call: setting it
+    stops and settles the group (the PROC-08 cancellation half).
     """
+
+    accepts_cancel = True
 
     def __init__(self, backend: object, workdir_factory: Callable[[], Path], profile: str = "fixture"):
         _require(profile in ("fixture", LAUNCH_PROBE_ENTRY), "invalid-profile")
@@ -1602,13 +1676,14 @@ class ContainedExecutor:
         policy = getattr(self.backend, "policy", None)
         try:
             launch, probe = policy.render("launch"), policy.render(LAUNCH_PROBE_ENTRY)
-            interpreter = policy.interpreter
+            interpreter, root = policy.interpreter, policy.interpreter_root
         except Exception:
             raise LabError("launch-probe-unsupported") from None
-        if not launch_probe_delta_is_interpreter_only(launch, probe, interpreter):
+        if not launch_probe_delta_is_interpreter_only(launch, probe, interpreter, root):
             raise LabError("launch-probe-profile-drift")
 
-    def __call__(self, source: bytes, workdir: Path, wall_seconds: int, arena: Arena) -> ExecResult:
+    def __call__(self, source: bytes, workdir: Path, wall_seconds: int, arena: Arena, *,
+                 cancel: threading.Event | None = None) -> ExecResult:
         run = self.backend.run_probe
         if self.profile == LAUNCH_PROBE_ENTRY:
             run = getattr(self.backend, "run_launch_probe", None)
@@ -1616,9 +1691,12 @@ class ContainedExecutor:
                 raise LabError("launch-probe-unsupported")
             self._check_launch_profile()
         target, self._pending = self.workdir(), None
-        result = run(source, target, FixtureLimits(wall_seconds=wall_seconds))
+        result = run(source, target, FixtureLimits(wall_seconds=wall_seconds),
+                     **({} if cancel is None else {"cancel": cancel}))
         return ExecResult(result.stdout, result.exit_code, result.timed_out, result.output_truncated,
-                          result.settled, getattr(result, "limit_exceeded", "unavailable"))
+                          result.settled, getattr(result, "limit_exceeded", "unavailable"),
+                          getattr(result, "escaped_processes", None), getattr(result, "surviving_processes", None),
+                          getattr(result, "cancelled", False))
 
 
 def layout_from_policy(policy: object, workdir: Path | str | None) -> dict[str, str]:
@@ -1716,9 +1794,23 @@ def render_source(probe: Probe, arena: Arena) -> bytes:
     return (header + probe.source_template).encode()
 
 
+def swept_settled(result: ExecResult) -> bool:
+    """Whether the group is settled once a leaver that the backend sweep killed is not held against it.
+
+    The backend keeps ``settled`` strict (any leaver taints a production run). A survival probe
+    asks whether anything *survived* the kill, so it reads ``surviving_processes`` (RV-01); an
+    executor that does not report it falls back to the strict flag.
+    """
+    if result.surviving_processes is None:
+        return result.settled
+    return result.settled or (result.surviving_processes == 0 and (result.escaped_processes or 0) > 0)
+
+
 def _survival_state(probe: Probe, ran: bool, result: ExecResult, survivors: int) -> dict[str, str]:
-    """Survival probes: the helper only proves it ran; survival is judged by the process scan."""
-    if survivors > 0 or not result.settled:
+    """Survival probes: the helper only proves it ran; survival is judged by the backend's surviving
+    count and the independent process scan. A swept leaver is recorded, not an escape."""
+    surviving = result.surviving_processes
+    if survivors > 0 or (surviving or 0) > 0 or not swept_settled(result):
         state = "allowed"
     elif ran:
         state = "denied"
@@ -1871,7 +1963,6 @@ class QualificationProbeRunner:
                  process_scan: Callable[[str], list[int]] = scan_processes,
                  process_table: Callable[[], set] = own_process_table,
                  process_kill: Callable[[Sequence[int]], None] = kill_processes,
-                 cancel_check: Callable[[], Mapping] | None = None,
                  public: Mapping | None = None, spawn_sibling: bool = True,
                  arena_factory: Callable[..., Arena] = Arena, clock: Callable[[], float] = time.time,
                  layout: Callable[[Path | None], Mapping[str, str]] | None = None,
@@ -1883,7 +1974,7 @@ class QualificationProbeRunner:
         self.control, self.contained, self.launch_contained = control, contained, launch_contained
         self.arena_parent, self.proxy_address = Path(arena_parent), proxy_address
         self.sessions, self.process_scan, self.process_kill = sessions, process_scan, process_kill
-        self.process_table, self.cancel_check, self.layout = process_table, cancel_check, layout
+        self.process_table, self.layout = process_table, layout
         self.public = dict(DEFAULT_PUBLIC if public is None else public)
         self.spawn_sibling, self.arena_factory, self.clock = spawn_sibling, arena_factory, clock
         self.real_home = real_home  # opt in: the orchestrator passes home_directory()
@@ -1997,12 +2088,16 @@ class QualificationProbeRunner:
                 # a kill is a memory denial only when the backend says its memory watchdog fired
                 if not control and parsed.get(name) == "denied" and result.limit_exceeded != reason:
                     parsed[name] = "inconclusive"
+            row_settled = result.settled
             if probe.judge == "survivors":
                 tried = any(v in ("allowed", "denied") for v in parsed.values()) or (
                     bool(begun) and result.timed_out)
                 parsed = _survival_state(probe, tried, result, len(found))
+                row_settled = swept_settled(result)
+            cancel = {}
             if probe.id == "PROC-08":
-                parsed["cancel-settlement"] = self._cancel(control, parsed["outlive-timeout"])
+                parsed["cancel-settlement"], cancel = self._cancel(
+                    probe, executor, arena, control, parsed["outlive-timeout"])
             if probe.id == "NET-05":
                 parsed |= self.proxy_block(control=control, relay=getattr(arena, "relay", None),
                                            proxy_factory=self.proxy_factory)
@@ -2012,13 +2107,17 @@ class QualificationProbeRunner:
             adjacent = getattr(arena, "document", {}).get("adjacent")
             return self._row(
                 probe, mode, parsed, escalated=escalated, exitCode=result.exit_code,
-                timedOut=result.timed_out, settled=result.settled,
+                timedOut=result.timed_out, settled=row_settled,
                 outputTruncated=result.output_truncated, limitExceeded=result.limit_exceeded, wallSeconds=wall,
                 profile=None if control else ("fixture" if mode == "contained" else LAUNCH_PROBE_ENTRY),
                 errors=parse_error_codes(probe, result), refused=error,
                 independent={"changedOutside": changed[:MAX_CHANGED_PATHS], "changedCount": len(changed),
                              "listenerHits": {k: hits[k] for k in sorted(hits)}, "survivors": len(found),
                              "tripwires": tripped,
+                             **({"escapedProcesses": result.escaped_processes,
+                                 "survivingProcesses": result.surviving_processes}
+                                if probe.survivors and not control else {}),
+                             **cancel,
                              "processTable": "ok" if table_before is not None and table_after is not None
                              else ("unused" if not probe.survivors else "unavailable"),
                              "layout": "synthetic" if control else ("real" if adjacent else "none")},
@@ -2026,22 +2125,69 @@ class QualificationProbeRunner:
         finally:
             arena.close()
 
-    def _cancel(self, control: bool, timeout_state: str) -> str:
-        """PROC-08 cancellation half: a driver-supplied settlement check after a real cancel.
-        Its control is the timeout half's: a child that outlives a kill uncontained."""
+    CANCEL_AFTER_SECONDS = 1.0
+
+    def _cancel(self, probe: Probe, executor: Executor, arena: Arena, control: bool,
+                timeout_state: str) -> tuple[str, dict]:
+        """PROC-08 cancellation half (RV-02): the same helper runs again through the backend with a
+        ``cancel`` event that a watcher sets once the child is up. Denied needs the backend to report
+        ``cancelled`` and no survivor, from its own count and the independent scan and process diff.
+        The control is the timeout half's: a child that outlives a kill uncontained."""
         if control:
-            return timeout_state
-        if self.cancel_check is None:
-            return "inconclusive"
+            return timeout_state, {}
+        if not getattr(executor, "accepts_cancel", False):
+            return "inconclusive", {"cancel": "unsupported"}
+        cancel, stop = threading.Event(), threading.Event()
+        wall = probe.wall_seconds
+
+        def watch() -> None:
+            deadline = time.monotonic() + wall
+            while not stop.is_set() and time.monotonic() < deadline:
+                try:
+                    up = bool(self.process_scan(arena.nonce))
+                except Exception:
+                    up = False
+                if up:  # the helper is running: give it time to fork the leaver, then cancel
+                    stop.wait(min(self.CANCEL_AFTER_SECONDS, wall / 2))
+                    break
+                stop.wait(0.05)
+            cancel.set()
+
+        before = self._table()
+        watcher = threading.Thread(target=watch, daemon=True)
+        watcher.start()
+        error = None
         try:
-            outcome = self.cancel_check()
+            result = executor(render_source(probe, arena), arena.work, wall, arena, cancel=cancel)
+        except LabError as exc:
+            result, error = ExecResult(b"", None), exc.reason
         except Exception:
-            return "inconclusive"
-        if type(outcome) is not dict or type(outcome.get("survivors")) is not int:
-            return "inconclusive"
-        if outcome["survivors"] > 0 or outcome.get("settled") is False:
-            return "allowed"
-        return "denied" if outcome.get("cancelled") is True else "inconclusive"
+            result, error = ExecResult(b"", None), "executor-failed"
+        finally:
+            stop.set()
+            watcher.join(timeout=5)
+        found = set(self.process_scan(arena.nonce))
+        after = self._table()
+        scanned = set(found)
+        table_ok = before is not None and after is not None
+        if table_ok:
+            found |= {pid for pid, _ in after - before}
+        if found:
+            self.process_kill(sorted(found if self.kill_table_diff else scanned))
+        _, begun = parse_helper_output(probe, result)
+        surviving = result.surviving_processes or 0
+        if error is not None or not begun:
+            state = "inconclusive"
+        elif found or surviving > 0 or not swept_settled(result):
+            state = "allowed"
+        elif result.cancelled and table_ok:
+            state = "denied"
+        else:
+            state = "inconclusive"
+        return state, {"cancel": {"cancelled": result.cancelled, "survivors": len(found),
+                                  "survivingProcesses": result.surviving_processes,
+                                  "escapedProcesses": result.escaped_processes,
+                                  "settled": swept_settled(result), "refused": error}}
 
     # sessions: NC-10 cap, stop rule and persisted count ---------------------------------------
 
@@ -2097,7 +2243,9 @@ class QualificationProbeRunner:
                          wallSeconds=probe.wall_seconds, quotaStop=None if decision["proceed"] else decision["reason"],
                          independent={"apiKeySource": key_source if key_source in SUBSCRIPTION_KEY_SOURCES
                                       else ("other" if key_source else None),
-                                      "egressObserved": session.egress is not None})
+                                      "egressObserved": session.egress is not None,
+                                      "egress": dict(sorted(session.egress.items()))
+                                      if egress_counters_ok(session.egress) and probe.id == "NET-05-CLI" else None})
 
     # whole catalog ----------------------------------------------------------------------------
 
@@ -2292,3 +2440,51 @@ def make_f4_probe_runner(*, arena_parent: Path | str, workdir_factory: Callable[
         return "allowed" if "allowed" in outcomes and not probe.functional else "error"
 
     return run
+
+
+# --- one entry point for the live attempt -----------------------------------------------------
+
+
+def make_qualification_runner(
+        backend: _mac.MacOSContainment, *, arena_parent: Path | str, workdir_factory: Callable[[], Path],
+        transport_factory: Callable[[], ClaudeTransport] | None = None,
+        read_quota: Callable[[], Mapping | None] | None = None,
+        read_credentials: Callable[[], Sequence[str]] = lambda: (),
+        real_home: str | None = None, lan_ip: str | None = None, allowed_ip: str | None = None,
+        mach_names: Callable[[], Sequence[str]] = enumerate_mach_services,
+        public: Mapping | None = None, model: str = "haiku", session_wall_seconds: int = 120,
+        **runner_options) -> QualificationProbeRunner:
+    """The runner for the T009 live attempt, wired from one backend and the orchestrator's inputs.
+
+    Helper probes run uncontained (the positive control, in the disposable arena only), through
+    ``run_probe`` and through the ``launch-probe`` profile; session probes go through
+    ``transport_factory`` (a fresh T006 transport per probe) with the backend's egress counters as
+    the NET-05-CLI tap. Every optional input is fail-closed: what is left out makes the probes that
+    need it ``inconclusive`` (never a pass) and the attempt cannot qualify.
+
+    * ``transport_factory``: omitted, the three NC-10 session probes are refused (``session-driver-missing``).
+    * ``read_quota``: the orchestrator's NC-6 usage-card reading (an act this module never performs);
+      omitted, the first session stops the attempt (the 2 % rule needs a pre and a post reading).
+    * ``read_credentials``: the dedicated user's credential values (``credential_values(config_dir)``),
+      for the leak scan of the bundle; omitted, no credential literal is scanned.
+    * ``real_home``: the dedicated user's home (``home_directory()``) for the real-path attempts;
+      omitted, they stay in the arena and are not real-path evidence.
+    * ``lan_ip``: this host's LAN address (``None`` discovers it, ``""`` disables the attempts).
+    * ``allowed_ip``: the runner-resolved literal of the allowed host (``None`` resolves it).
+    * ``mach_names``: enumerates the launchd names for PROC-06 (default asks ``launchctl``).
+    * ``runner_options``: any other ``QualificationProbeRunner`` keyword (e.g. doubles in tests).
+
+    The backend policy must bind this catalog (``probe_catalog_sha256``); otherwise ``ProbeError``.
+    """
+    policy = getattr(backend, "policy", None)
+    _require(policy_binds_catalog(policy), "catalog-not-bound")
+    sessions = None if transport_factory is None else native_session_driver(
+        transport_factory, model=model, wall_seconds=session_wall_seconds, read_quota=read_quota,
+        egress_counters=backend.egress_counters)
+    options = dict(
+        control=uncontained_executor, contained=ContainedExecutor(backend, workdir_factory),
+        launch_contained=ContainedExecutor(backend, workdir_factory, LAUNCH_PROBE_ENTRY),
+        arena_parent=arena_parent, proxy_address=f"127.0.0.1:{policy.proxy_port}", sessions=sessions,
+        public=public, layout=lambda workdir: layout_from_policy(policy, workdir), real_home=real_home,
+        lan_ip=lan_ip, allowed_ip=allowed_ip, mach_names=mach_names, read_credentials=read_credentials)
+    return QualificationProbeRunner(**(options | runner_options))

@@ -14,7 +14,9 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+import re
 import shutil
+import signal
 import socket
 import ssl
 import stat
@@ -81,8 +83,7 @@ class Machine:
             claude=self.claude, claude_sha256=digest(self.claude), claude_version=mac.CLAUDE_VERSION,
             interpreter=INTERPRETER, interpreter_sha256=digest(INTERPRETER),
             interpreter_root=os.path.dirname(INTERPRETER),
-            sandbox_exec_sha256=digest(self.sandbox), proxy_port=free_port(),
-            probe_catalog_sha256="c" * 64)
+            sandbox_exec_sha256=digest(self.sandbox), proxy_port=free_port())
         self.policy = mac.ContainmentPolicy(**(values | policy))
 
     def repin(self, **change) -> None:
@@ -185,7 +186,7 @@ class PolicyTests(unittest.TestCase):
             writes = {line for line in lines if "file-write" in line and line.startswith("(allow")}
             allowed = {'(allow file-write-data (literal "/dev/null"))',
                        '(allow file-read* file-write* (subpath (param "CANDIDATE")) (subpath (param "TMPDIR")))'}
-            if entry == "launch":
+            if entry in ("launch", mac.LAUNCH_PROBE):
                 allowed.add(f'(allow file-read* file-write* (subpath "{policy.config_dir}"))')
             self.assertEqual(writes, allowed)
             self.assertEqual(lines[-2], '(deny file-read* file-write* (subpath "/System/Volumes/Data"))')
@@ -207,10 +208,51 @@ class PolicyTests(unittest.TestCase):
                 call()
             self.assertEqual(caught.exception.reason, "invalid-entry")
 
+    def test_launch_probe_is_launch_plus_exactly_the_interpreter_literal(self):
+        policy = Machine(self).policy
+        launch, probe = policy.render("launch").decode(), policy.render(mac.LAUNCH_PROBE).decode()
+        token = f'(literal "{policy.interpreter}")'
+        self.assertNotEqual(launch, probe)
+        old, new = launch.splitlines(), probe.splitlines()
+        self.assertEqual(len(old), len(new))
+        differing = [(a, b) for a, b in zip(old, new) if a != b]
+        # the exec rule, the read/map rule and the metadata rule; every added item is the interpreter,
+        # its prefix (the read the fixture entry also has) or one of their ancestor directories
+        kinds = ("(allow process-exec", "(allow file-read* file-map-executable", "(allow file-read-metadata")
+        self.assertEqual([after.startswith(kind) for (_, after), kind in zip(differing, kinds)], [True] * 3)
+        for before, after in differing:
+            rest = after
+            for item in re.findall(r'\((?:literal|subpath) "[^"]*"\)', after):
+                if item not in before:
+                    path = item.split('"')[1]
+                    self.assertTrue(policy.interpreter == path or mac._under(policy.interpreter, path), item)
+                    rest = rest.replace(" " + item, "", 1)
+            self.assertEqual(rest, before)
+        self.assertEqual(differing[0][1].count(token), 1)
+        self.assertIn(f'(subpath "{policy.interpreter_root}")', differing[1][1])
+        self.assertNotIn(f'(subpath "{policy.interpreter_root}")', launch)
+        self.assertNotIn(policy.interpreter, "".join(old))
+        self.assertEqual(policy.executables(mac.LAUNCH_PROBE), (*policy.executables("launch"), policy.interpreter))
+        self.assertEqual(policy.child_environment(mac.LAUNCH_PROBE, "/r/tmp"),
+                         policy.child_environment("launch", "/r/tmp"))
+        self.assertIn(mac.LAUNCH_PROBE, mac.ENTRIES)
+
+    def test_probe_catalog_hash_is_derived_from_the_probes_module_and_cannot_drift(self):
+        from agent_braid import harness_qualification_probes as probes
+        machine = Machine(self)
+        self.assertEqual(machine.policy.probe_catalog_sha256, probes.CATALOG_SHA256)
+        self.assertEqual(replace(machine.policy, probe_catalog_sha256=probes.CATALOG_SHA256).probe_catalog_sha256,
+                         probes.CATALOG_SHA256)
+        with self.assertRaises(lab.LabError) as caught:
+            replace(machine.policy, probe_catalog_sha256="4" * 64)
+        self.assertEqual(caught.exception.reason, "invalid-policy")
+        self.assertTrue(probes.policy_binds_catalog(machine.policy))
+
     def test_exec_probe_is_an_allowed_executable_per_entry(self):
         policy = Machine(self).policy
         self.assertEqual(policy.exec_probe("fixture"), [policy.interpreter, "-I", "-S", "-c", "pass"])
         self.assertEqual(policy.exec_probe("launch"), [policy.claude, "--version"])
+        self.assertEqual(policy.exec_probe(mac.LAUNCH_PROBE), [policy.claude, "--version"])
         for entry in mac.ENTRIES:
             self.assertIn(policy.exec_probe(entry)[0], policy.executables(entry))
         with self.assertRaises(lab.LabError):
@@ -277,7 +319,7 @@ class PolicyTests(unittest.TestCase):
         facts = [mac.HostFacts("27.0.2", "26A434", "arm64"), mac.HostFacts("27.0.1", "26A435", "arm64"),
                  mac.HostFacts("27.0.1", "26A434", "x86_64")]
         changes = [dict(sandbox_exec_sha256="1" * 64), dict(claude_sha256="2" * 64),
-                   dict(interpreter_sha256="3" * 64), dict(probe_catalog_sha256="4" * 64),
+                   dict(interpreter_sha256="3" * 64),
                    dict(proxy_port=policy.proxy_port + 1), dict(account="braid-lab2"),
                    dict(refresh_endpoints=("platform.claude.com:443",)),
                    dict(helpers=((f"{root}/bin/claude-helper", "5" * 64),)),
@@ -290,11 +332,13 @@ class PolicyTests(unittest.TestCase):
         changed |= {digest_of(account=a) for a in accounts}
         with mock.patch.object(mac, "_component_hashes", lambda: {"harness_lab.py": "0" * 64}):
             changed.add(digest_of())
+        with mock.patch.object(mac, "_probe_catalog_sha256", lambda: "4" * 64):
+            changed.add(digest_of(policy=replace(policy, probe_catalog_sha256="4" * 64)))
         with mock.patch.object(mac, "LIMITS", mac.LIMITS | {"openFiles": 255}):
             changed.add(digest_of())
         with mock.patch.object(mac, "LIMITS", mac.LIMITS | {"diskFiles": 99_999}):
             changed.add(digest_of())
-        self.assertEqual(len(changed), len(facts) + 1 + len(changes) + len(accounts) + 3)
+        self.assertEqual(len(changed), len(facts) + 1 + len(changes) + len(accounts) + 4)
         self.assertNotIn(base, changed)
 
     def test_executable_ancestors_and_file_must_be_owned_by_root_or_the_dedicated_user(self):
@@ -526,6 +570,32 @@ class RefusalTests(unittest.TestCase):
             self.assertEqual(backend.run_evidence[-1]["refused"], "proxy-unavailable")
             backend.run(FIXTURE, self.workdir, lab.FixtureLimits(wall_seconds=5))  # a fresh proxy
         self.assertTrue(backend._proxy.healthy)
+
+    def test_run_launch_probe_refuses_and_records_under_its_own_entry(self):
+        backend = make_backend(self.machine)
+        self.addCleanup(backend.close)
+        with host(self.machine, env={"ANTHROPIC_API_KEY": "x"}), \
+                mock.patch.object(mac.subprocess, "Popen", side_effect=AssertionError("child started")), \
+                self.assertRaises(lab.LabError) as caught:
+            backend.run_launch_probe(FIXTURE, self.workdir, lab.FixtureLimits(wall_seconds=2))
+        self.assertEqual(caught.exception.reason, "env-deny-present")
+        self.assertEqual(backend.run_evidence[-1]["entry"], mac.LAUNCH_PROBE)
+        self.assertEqual(backend.run_evidence[-1]["refused"], "env-deny-present")
+
+    def test_run_launch_probe_has_its_own_lock_and_validates_input(self):
+        fd = os.open(f"{self.machine.policy.run_root}/.lock", os.O_RDWR | os.O_CREAT, 0o600)
+        self.addCleanup(os.close, fd)
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        backend = make_backend(self.machine)
+        self.addCleanup(backend.close)
+        with host(self.machine), self.assertRaises(lab.LabError) as caught:
+            backend.run_launch_probe(FIXTURE, self.workdir, lab.FixtureLimits(wall_seconds=2))
+        self.assertEqual(caught.exception.reason, "dedicated-user-busy")
+        for bad in (dict(cancel=True), dict(source="text")):
+            with self.subTest(bad), self.assertRaises(lab.LabError) as caught:
+                backend.run_launch_probe(bad.get("source", FIXTURE), self.workdir, lab.FixtureLimits(),
+                                         cancel=bad.get("cancel"))
+            self.assertEqual(caught.exception.reason, "invalid-lab-request")
 
     def test_run_probe_cancel_must_be_an_event(self):
         backend = make_backend(self.machine)
@@ -853,6 +923,61 @@ class SupervisedRunTests(unittest.TestCase):
                          (True, None, False, True))
         self.assertTrue(self.backend.run_evidence[-1]["cancelled"])
         self.assertEqual(self.machine.leftovers(), [])
+
+    def test_run_launch_probe_runs_the_interpreter_under_the_launch_probe_profile(self):
+        runs = []
+        popen = subprocess.Popen
+
+        def spy(argv, *args, **kwargs):
+            runs.append(argv)
+            return popen(argv, *args, **kwargs)
+
+        calls = []
+
+        def runner(probe, backend):
+            calls.append(probe)
+            return dict(mac.F4_PROBES)[probe]
+
+        backend = make_backend(self.machine, runner=runner)
+        self.addCleanup(backend.close)
+        with host(self.machine), mock.patch.object(mac.subprocess, "Popen", spy):
+            result = backend.run_launch_probe(b"print('hi')\n", Path(self.machine.candidate()),
+                                              lab.FixtureLimits(wall_seconds=5))
+        self.assertEqual((result.stdout, result.exit_code, result.settled, result.limit_exceeded),
+                         (b"hi\n", 0, True, None))
+        self.assertEqual(calls, [])  # probes=False: no NC-11 subset, no recursion
+        profile = runs[0][runs[0].index("-p") + 1]
+        self.assertEqual(profile, self.machine.policy.render(mac.LAUNCH_PROBE).decode())
+        evidence = backend.run_evidence[-1]
+        self.assertEqual((evidence["entry"], evidence["probeRun"]), (mac.LAUNCH_PROBE, True))
+        self.assertEqual(self.machine.leftovers(), [])
+
+    def test_run_launch_probe_cancel_stops_and_settles_the_group(self):
+        cancel = threading.Event()
+        timer = threading.Timer(0.5, cancel.set)
+        self.addCleanup(timer.cancel)
+        timer.start()
+        with host(self.machine):
+            result = self.backend.run_launch_probe(b"import time\ntime.sleep(30)\n", Path(self.machine.candidate()),
+                                                   lab.FixtureLimits(wall_seconds=20), cancel=cancel)
+        self.assertEqual((result.cancelled, result.exit_code, result.settled), (True, None, True))
+
+    def test_limit_exceeded_is_propagated_to_the_results(self):
+        with host(self.machine), mock.patch.object(mac, "_resident_bytes", lambda processes: 5 << 30):
+            probe = self.backend.run_probe(b"import time\ntime.sleep(30)\n", Path(self.machine.candidate()),
+                                           lab.FixtureLimits(wall_seconds=10))
+            launch_probe = self.backend.run_launch_probe(b"import time\ntime.sleep(30)\n",
+                                                         Path(self.machine.candidate()),
+                                                         lab.FixtureLimits(wall_seconds=10))
+        self.assertEqual((probe.limit_exceeded, launch_probe.limit_exceeded), ("memory", "memory"))
+        with host(self.machine):
+            cpu = self.backend.run_probe(b"import os, signal\nos.kill(os.getpid(), signal.SIGXCPU)\n",
+                                         Path(self.machine.candidate()), lab.FixtureLimits(wall_seconds=10))
+            plain = self.backend.run_probe(b"pass\n", Path(self.machine.candidate()), lab.FixtureLimits())
+        self.assertEqual((cpu.limit_exceeded, cpu.exit_code), ("cpu", -signal.SIGXCPU))
+        self.assertIsNone(plain.limit_exceeded)
+        self.assertEqual([e.get("limitExceeded") for e in self.backend.run_evidence[-4:]],
+                         ["memory", "memory", "cpu", None])
 
     def test_without_cancel_run_probe_is_unchanged(self):
         with host(self.machine):
