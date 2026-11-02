@@ -1,0 +1,51 @@
+{
+  "spec": "SPEC-065",
+  "task": "T005/T007 integration after the T008 review fixes (#957 backend, #959 probes)",
+  "executionAuthorization": false,
+  "disposition": "Engineering at unit level. Nothing native ran: no dedicated account, no sandbox-exec, no claude, no live probe. No qualification record is written or authorized.",
+  "hashes": {
+    "backendSha256": {"old": "9f10ef9454301f2fdbd9a1aa78717bfae538890cef24a89c00585faa6bc0163d", "new": "6c7f90db7264351f2c018b7ab242a143649e6a5b6126fe0c648e5b06efbbcb80", "file": "agent_braid/harness_containment_macos.py"},
+    "probesSha256": {"old": "0991abd22c899df124839d844105f75de61d8e49925544fa91ab6ee94b06f09a", "new": "51e2d7eaf06f6a52d07f8c515f46802642d33e4f7660bf2c94126b62fb514002", "file": "agent_braid/harness_qualification_probes.py"},
+    "catalogSha256": {"old": "0b81569a4267759c5eeee472010d679d58c6afaf078952da4e473ecd2e315492", "new": "e8597c7fbe1749bc40c552996dbeed03a8a2e14f8990452823985f65f3d4b47a", "note": "The catalog document carries runnerSha256, so the runner edit moved it. ContainmentPolicy.probe_catalog_sha256 is now derived from the probes module (lazy import) and an explicit value must equal it, so it cannot drift."},
+    "profileSha256": {
+      "fixture": {"old": "5a8dac4da9cfc13e6ef62dcebab5ee4a32e4e1e81069f881e15e4e3d03b30d09", "new": "5a8dac4da9cfc13e6ef62dcebab5ee4a32e4e1e81069f881e15e4e3d03b30d09"},
+      "launch": {"old": "7a0468bc2c265f6511790f823b15d3692956ff92bbc1e3f18d68f0106dd62538", "new": "7a0468bc2c265f6511790f823b15d3692956ff92bbc1e3f18d68f0106dd62538"},
+      "launch-probe": {"old": null, "new": "b932ba64180f3f3b03e499c39ffb106848e880f3b56ce7d16103ba080423e817"}
+    },
+    "referenceEnvironmentSha256": {"old": "308fbb3a0700c545d5ce6d7df23e1c908f0b76c5327d8a093cf6a27e37cc2d5b", "new": "4deffae568373be73a2e1ef2f50a668e2d5695ebf0e5d8b84a922deee44ac1b2", "note": "Illustrative: a fixed synthetic policy (paths under /ref, pinned hashes 1..4, uid 501, macOS 27.0.1/26A434/arm64, supervisor path and hash stubbed). It shows that the environment hash moved (new profile entry, backend source, catalog); a real machine's hash must be recomputed by the issuer. Every earlier t005/t006/t007 input hash and any recorded qualification is stale."}
+  },
+  "findings": {
+    "backend": {
+      "launch-probe": "policy.render('launch-probe') in ENTRIES and the environment hash; MacOSContainment.run_launch_probe(source, workdir, limits, *, cancel=None) with probes=False under its own exclusive lock; unit tests of the delta.",
+      "limit_exceeded": "RunAccounting.limit_exceeded ('memory' watchdog, 'cpu' from SIGXCPU, else None) reaches ProbeResult and ContainedHostRun; a disk breach still refuses.",
+      "egress_counters": "MacOSContainment.egress_counters() exposes EgressProxy.counters() as the NET-05-CLI tap.",
+      "catalogBinding": "probe_catalog_sha256 defaults to the probes CATALOG_SHA256 (lazy import, no cycle); a different explicit value is invalid-policy."
+    },
+    "probes": {
+      "RV-01": "PROC-04/PROC-08 judged on the backend's surviving_processes (swept_settled); escaped-but-swept is recorded (escapedProcesses, survivingProcesses) and is not an escape; no accounting falls back to the strict flag.",
+      "RV-02": "PROC-08 cancel half runs the helper again through run_probe/run_launch_probe(cancel=) with a watcher that cancels once the child is up; denied needs begin marker, cancelled, no survivor and an available process table.",
+      "RV-03": "NET-05-CLI from the EgressProxy counter delta: unexpectedDirect or a non-allowed allowed:<target> is allowed; denied needs tunnels to allowed endpoints and consistent counts; no tunnel or refusals alone stay inconclusive; denied:* refusals are recorded, not decisive.",
+      "RV-13": "memory denials need limit_exceeded == 'memory' (now supplied by the backend).",
+      "factory": "make_qualification_runner(backend, ...) is the single entry point for read_quota, read_credentials, real_home, lan_ip, allowed_ip, mach_names, transport_factory; defaults fail closed.",
+      "f4": "make_f4_probe_runner returns the expected outcome for every NC-11 probe against the real policy and backend hooks (run_probe/run_launch_probe patched with doubles in tests)."
+    }
+  },
+  "deviationFromBrief": "launch-probe is launch plus the interpreter exec literal AND the read of interpreter_root and the metadata literals of the ancestor directories of the interpreter and its prefix, not the exec literal alone. Without the prefix read the interpreter cannot import its standard library under a deny-default profile and every contained-launch row would be inconclusive; the prefix read is the one the fixture profile already has. launch_probe_delta_is_interpreter_only enforces exactly this delta.",
+  "residuals": [
+    "PROC-08 cancel half: the begin marker is emitted before the helper's fork, so a failed fork or an early cancel could read denied without a leaver having existed (the same property the timeout half has). Fix needs a catalog edit: a marker after a successful fork.",
+    "The cancel watcher starts the cancel one second after the nonce is first seen in ps, bounded by wall; a slow start yields timed_out and an inconclusive row (fail closed, possibly flaky).",
+    "CPU attribution is SIGXCPU of the direct child only; LIMIT_ATTRIBUTION has no cpu entry, so cpu is informational.",
+    "RV-14 remainder: probes, transport and quota modules are not yet in the environment component hashes (the probes source is bound through the catalog hash only).",
+    "make_qualification_runner accepts arbitrary QualificationProbeRunner overrides; documented for tests only.",
+    "All sandbox behaviours remain hypotheses until T009."
+  ],
+  "rv22HomebrewAncestorRefusal": {
+    "rule": "Every ancestor directory and the executable itself must be owned by root or the dedicated user, and no ancestor may be group/other-writable.",
+    "operatorOwnedInstalls": "Homebrew (/opt/homebrew/Caskroom, /opt/homebrew/bin symlinks into Cellar, owned by the operator) and ~/.local/bin or ~/.claude/local under the operator's home are refused.",
+    "passingPaths": "A copy of the pinned claude binary installed by an administrator into a root-owned tree, e.g. /usr/local/libexec/braid/claude-2.1.292 (root:wheel, mode 755, parents root-owned and not group-writable), or into a directory owned by the dedicated account (e.g. its private home, mode 700). Prefer the root-owned form and keep the dedicated account unable to write it. The binary hash is pinned in the policy, so the copy must be byte-identical to the pinned 2.1.292 build."
+  },
+  "executedChecks": [
+    {"command": ".venv-speckit/bin/python -m unittest tests.test_harness_containment_macos tests.test_harness_qualification_probes", "exitCode": 0, "testsRun": 267, "skipped": 1},
+    {"command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"", "exitCode": 0, "testsRun": 1081, "skipped": 1}
+  ]
+}

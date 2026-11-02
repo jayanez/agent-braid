@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""SPEC-061 T016: loopback bind, credentials, request checks, headers, limits and the route table."""
+"""SPEC-061 T016, T017: loopback server checks, route table, event stream, snapshot and replay."""
 import contextlib
 import http.client
 import io
@@ -14,8 +14,9 @@ import time
 import unittest
 from pathlib import Path
 
-from agent_braid import view_serve
+from agent_braid import view_loom, view_serve, view_tail
 from agent_braid.view_serve import IngestRefusal, ServeError, ViewServer
+from agent_braid.view_model import build_model
 from agent_braid.view_store import LoomStore
 
 CONTRACT = Path(__file__).resolve().parents[1] / "specs/061-activity-viewer/contracts/ui-security-privacy.md"
@@ -623,6 +624,342 @@ class LoggingTests(ServerCase):
                 sock.sendall(b"GET / HTTP/1.0\r\nHost: x")  # abandoned mid-request
             time.sleep(0.1)
         self.assertEqual((out.getvalue(), err.getvalue()), ("", ""))
+
+
+CORPUS = Path(__file__).resolve().parent / "fixtures/view/loom/valid-corpus.jsonl"
+
+
+def corpus_events():
+    return view_serve.replay_events(CORPUS.read_bytes())
+
+
+def mark_unverified(events):
+    return [{**event, "source": {**event["source"], "verification": "unverified"}} for event in events]
+
+
+class Stream:
+    """A raw SSE client: parses event frames incrementally and keeps what it has not handed out."""
+
+    def __init__(self, sock):
+        self.sock = sock
+        self.buffer = b""
+        self.head_done = False
+        self.ready = []
+        self.blocks = []
+        self.closed = False
+
+    def __getattr__(self, name):
+        return getattr(self.sock, name)
+
+    def pump(self, limit):
+        """Read one chunk; False when the server closed the stream or nothing arrived within `limit`."""
+        self.sock.settimeout(limit)
+        try:
+            chunk = self.sock.recv(65536)
+        except socket.timeout:
+            return False
+        if not chunk:
+            self.closed = True
+            return False
+        self.buffer += chunk
+        if not self.head_done and b"\r\n\r\n" in self.buffer:
+            self.buffer = self.buffer.partition(b"\r\n\r\n")[2]
+            self.head_done = True
+        while self.head_done and b"\n\n" in self.buffer:
+            block, _, self.buffer = self.buffer.partition(b"\n\n")
+            if block.startswith(b"id: "):
+                self.blocks.append(block)
+                lines = block.split(b"\n")
+                self.ready.append((int(lines[0][4:]), json.loads(lines[1][6:])))
+        return True
+
+    def frames(self, count, limit=5.0):
+        deadline = time.monotonic() + limit
+        while len(self.ready) < count and time.monotonic() < deadline and self.pump(limit):
+            pass
+        if len(self.ready) < count:
+            raise AssertionError(f"expected {count} frames, got {len(self.ready)} (closed={self.closed})")
+        taken, self.ready = self.ready[:count], self.ready[count:]
+        return taken
+
+    def drain(self, limit=1.0):
+        """Everything that arrives until the stream closes or stays quiet for `limit` seconds."""
+        while self.pump(limit):
+            pass
+        taken, self.ready = self.ready, []
+        return taken
+
+
+class StreamCase(ServerCase):
+    """A server whose store holds the replayed corpus, with an SSE client."""
+    server_kwargs = {"heartbeat": 0.05}
+
+    def setUp(self):
+        super().setUp()
+        self.load()
+
+    def restart(self, **store_kwargs):
+        self.stop()
+        self.store = LoomStore(**store_kwargs)
+        self.start(**self.server_kwargs)
+        self.load()
+
+    def load(self):
+        self.assertEqual(view_serve.load_replay(self.store, CORPUS.read_bytes()), len(corpus_events()))
+        self.cookie_header = self.cookie()
+
+    def open_stream(self, last_event_id=None):
+        extra = "" if last_event_id is None else f"Last-Event-ID: {last_event_id}\r\n"
+        sock = socket.create_connection(("127.0.0.1", self.port), timeout=5)
+        self.addCleanup(sock.close)
+        sock.sendall((f"GET /events HTTP/1.0\r\nHost: 127.0.0.1:{self.port}\r\nCookie: {self.cookie_header}\r\n"
+                      f"{extra}\r\n").encode())
+        return Stream(sock)
+
+    def frames(self, stream, count, limit=5.0):
+        return stream.frames(count, limit)
+
+    def idle(self, stream, seconds=0.3):
+        """True when no event frame arrives within `seconds`."""
+        return not (stream.ready or (stream.pump(seconds) and stream.ready))
+
+
+class EventStreamTests(StreamCase):
+    def test_a_new_client_receives_every_retained_event_once_in_order_then_live_events(self):
+        sock = self.open_stream()
+        got = self.frames(sock, len(corpus_events()))
+        self.assertEqual([seq for seq, _ in got], list(range(1, len(corpus_events()) + 1)))
+        self.assertEqual([event for _, event in got], self.store.replay())
+        self.assertTrue(all(event["seq"] == seq for seq, event in got))
+        stored = self.store.append(dict(corpus_events()[2], seq=1))
+        (seq, event), = self.frames(sock, 1)
+        self.assertEqual((seq, event), (stored["seq"], stored))
+
+    def test_the_stream_response_is_an_event_stream_with_the_contract_headers(self):
+        sock = self.open_stream()
+        head = b""
+        while b"\r\n\r\n" not in head:
+            head += sock.recv(4096)
+        text = head.decode().lower()
+        self.assertTrue(text.startswith("http/1.0 200"))
+        for expected in ("content-type: text/event-stream", "cache-control: no-store", "x-content-type-options: nosniff",
+                         "content-security-policy:"):
+            self.assertIn(expected, text)
+
+    def test_resuming_with_last_event_id_neither_repeats_nor_skips(self):
+        first = self.open_stream()
+        read = self.frames(first, 10)
+        first.close()
+        last = read[-1][0]
+        self.store.append(dict(corpus_events()[2], seq=1))
+        head = self.store.stats()["headSeq"]
+        resumed = self.open_stream(last)
+        got = self.frames(resumed, head - last)
+        self.assertEqual([seq for seq, _ in read] + [seq for seq, _ in got], list(range(1, head + 1)))
+        self.assertTrue(self.idle(resumed))
+
+    def test_resuming_at_the_newest_event_waits_for_a_new_one(self):
+        sock = self.open_stream(self.store.stats()["headSeq"])
+        self.assertTrue(self.idle(sock))
+        stored = self.store.append(dict(corpus_events()[2], seq=1))
+        self.assertEqual([seq for seq, _ in self.frames(sock, 1)], [stored["seq"]])
+
+    def test_an_overflowed_ring_is_announced_by_a_ring_evicted_gap_and_resumes_from_it(self):
+        self.restart(max_events=10)
+        self.assertEqual(self.store.stats()["evicted"], len(corpus_events()) - 10)
+        got = self.frames(self.open_stream(), 11)
+        gap_id, gap = got[0]
+        self.assertEqual((gap["kind"], gap["data"]["reason"]), ("observation.gap", "ring-evicted"))
+        self.assertEqual((gap["data"]["fromSeq"], gap["data"]["toSeq"], gap_id), (1, 18, 18))
+        self.assertEqual([seq for seq, _ in got[1:]], list(range(19, 29)))
+        again = self.open_stream(gap_id)
+        self.assertEqual([seq for seq, _ in self.frames(again, 10)], list(range(19, 29)))
+
+    def test_a_resume_id_older_than_the_ring_gets_one_gap_for_the_evicted_range(self):
+        self.restart(max_events=10)
+        got = self.frames(self.open_stream(5), 11)
+        data = got[0][1]["data"]
+        self.assertEqual((data["reason"], data["fromSeq"], data["toSeq"]), ("ring-evicted", 6, 18))
+        self.assertEqual([seq for seq, _ in got[1:]], list(range(19, 29)))
+
+    def test_a_resume_id_the_store_has_not_reached_gets_the_full_retained_replay(self):
+        count = len(corpus_events())
+        for value in ("9999", str(10**30), "-1", "abc", "1.5", " ", "٣"):
+            with self.subTest(last_event_id=value):
+                got = self.frames(self.open_stream(value), count)
+                self.assertEqual([seq for seq, _ in got], list(range(1, count + 1)))
+
+    def test_every_frame_is_one_data_line_of_canonical_json(self):
+        stream = self.open_stream()
+        self.frames(stream, len(corpus_events()))
+        self.assertEqual(len(stream.blocks), len(corpus_events()))
+        for block in stream.blocks:
+            lines = block.split(b"\n")
+            self.assertEqual(len(lines), 2)
+            self.assertEqual(lines[1][6:] + b"\n", view_loom.canonical_bytes(json.loads(lines[1][6:])))
+
+    def test_heartbeats_continue_while_idle(self):
+        sock = self.open_stream(self.store.stats()["headSeq"])
+        deadline = time.monotonic() + 5
+        data = b""
+        while data.count(b": heartbeat") < 2 and time.monotonic() < deadline:
+            data += sock.recv(4096)
+        self.assertGreaterEqual(data.count(b": heartbeat"), 2)
+
+    def test_a_closed_client_frees_its_subscriber_slot(self):
+        sock = self.open_stream()
+        self.frames(sock, 1)
+        self.assertEqual(self.store.stats()["subscribers"], 1)
+        sock.close()
+        deadline = time.monotonic() + 5
+        while self.store.stats()["subscribers"] and time.monotonic() < deadline:
+            time.sleep(0.02)
+        self.assertEqual(self.store.stats()["subscribers"], 0)
+
+    def test_a_burst_beyond_the_subscriber_queue_loses_nothing_for_a_client_that_resumes(self):
+        self.restart(subscriber_queue=2)
+        sock = self.open_stream()
+        self.frames(sock, len(corpus_events()))
+        event = corpus_events()[2]
+        for _ in range(50):
+            self.store.append(dict(event, seq=1))
+        ids = [seq for seq, _ in sock.drain(2)]
+        last = ids[-1] if ids else len(corpus_events())
+        self.assertEqual(ids, list(range(len(corpus_events()) + 1, last + 1)))
+        head = self.store.stats()["headSeq"]
+        resumed = self.open_stream(last)
+        self.assertEqual([seq for seq, _ in self.frames(resumed, head - last)], list(range(last + 1, head + 1)))
+
+    def test_events_fed_by_a_watched_directory_reach_the_client(self):
+        root = Path(self.tmp.name) / "watched"
+        root.mkdir()
+        (root / "state.json").write_bytes(
+            (Path(__file__).resolve().parent / "fixtures/view/artifacts/runtime-state-ready.json").read_bytes())
+        sock = self.open_stream(self.store.stats()["headSeq"])
+        self.assertEqual(view_tail.ArtifactTail(self.store, [root]).poll_once(), 1)
+        ((seq, event),) = self.frames(sock, 1)
+        self.assertEqual((event["kind"], event["source"]["verification"]), ("runtime.phase", "rehashed"))
+
+    def test_shutdown_ends_open_streams(self):
+        sock = self.open_stream()
+        self.frames(sock, 1)
+        self.server._closing.set()
+        sock.settimeout(5)
+        closed = False
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline and not closed:
+            closed = sock.recv(65536) == b""
+        self.assertTrue(closed)
+
+
+class SnapshotTests(StreamCase):
+    def get(self, cookie=True):
+        return self.request("GET", "/snapshot", {"Cookie": self.cookie_header} if cookie else None)
+
+    def test_snapshot_is_the_model_of_the_retained_events(self):
+        status, response, body = self.get()
+        self.assertEqual(status, 200)
+        self.assertEqual(response.getheader("Content-Type"), "application/json")
+        document = json.loads(body)
+        self.assertEqual(document["model"], json.loads(json.dumps(build_model(self.store.replay()))))
+        self.assertEqual(document["model"]["eventCount"], len(corpus_events()))
+        self.assertIs(document["model"]["executionAuthorization"], False)
+        self.assertEqual(document["droppedAttributeNames"], [])
+
+    def test_snapshot_requires_the_read_cookie(self):
+        self.assertEqual(self.get(cookie=False)[0], 404)
+        self.assertEqual(self.request("GET", "/snapshot", {"Authorization": f"Bearer {self.token}"})[0], 404)
+
+    def test_snapshot_follows_new_events(self):
+        before = json.loads(self.get()[2])["model"]["eventCount"]
+        self.store.append(dict(corpus_events()[2], seq=1))
+        self.assertEqual(json.loads(self.get()[2])["model"]["eventCount"], before + 1)
+
+    def test_snapshot_after_eviction_leads_with_the_gap(self):
+        self.restart(max_events=10)
+        model = json.loads(self.get()[2])["model"]
+        self.assertEqual(model["eventCount"], 11)
+        recorded = sum(e["data"].get("reason") == "ring-evicted" for e in corpus_events()[-10:])
+        self.assertEqual(model["counters"]["gaps"]["byReason"]["ring-evicted"], recorded + 1)  # plus the derived gap
+
+    def test_names_inventory_is_sorted_bounded_and_text_safe(self):
+        names = ["zeta", "alpha", "alpha", "", "x" * 65, "bidi‮", "ctrl\x07", 7, "ok.name"]
+        names += [f"n{i:03d}" for i in range(300)]
+        self.stop()
+        self.start(names_inventory=lambda: names)
+        self.cookie_header = self.cookie()
+        listed = json.loads(self.get()[2])["droppedAttributeNames"]
+        self.assertEqual(len(listed), 256)
+        self.assertEqual(listed, sorted(listed))
+        for refused in ("", "x" * 65, "bidi‮", "ctrl\x07", 7):
+            self.assertNotIn(refused, listed)
+        self.assertEqual(listed[:3], ["alpha", "n000", "n001"])
+
+    def test_a_failing_snapshot_answers_500_with_no_body(self):
+        self.stop()
+        self.start(names_inventory=lambda: 1 / 0)
+        self.cookie_header = self.cookie()
+        status, _, body = self.get()
+        self.assertEqual((status, body), (500, b""))
+
+    def test_the_replay_model_equals_the_live_model_of_the_same_events(self):
+        live = LoomStore()
+        for event in mark_unverified(corpus_events()):
+            live.append(event)
+        self.assertEqual(build_model(live.replay()), build_model(self.store.replay()))
+        self.assertEqual(json.loads(self.get()[2])["model"], json.loads(json.dumps(build_model(live.replay()))))
+
+
+class ReplayTests(unittest.TestCase):
+    def test_every_replayed_event_is_unverified_whatever_the_file_says(self):
+        data = CORPUS.read_bytes()
+        original = {json.loads(line)["source"]["verification"] for line in data.splitlines()}
+        self.assertEqual(original, {"rehashed", "derived", "unverified"})
+        events = view_serve.replay_events(data)
+        self.assertEqual({event["source"]["verification"] for event in events}, {"unverified"})
+        store = LoomStore()
+        self.assertEqual(view_serve.load_replay(store, data), len(events))
+        self.assertEqual({e["source"]["verification"] for e in store.replay()}, {"unverified"})
+        self.assertEqual([e["kind"] for e in store.replay()], [e["kind"] for e in events])
+
+    def test_replayed_lanes_and_elements_carry_the_unverified_marker(self):
+        store = LoomStore()
+        view_serve.load_replay(store, CORPUS.read_bytes())
+        model = build_model(store.replay())
+        self.assertTrue(model["lanes"])
+        self.assertTrue(all(lane["unverified"] for lane in model["lanes"]))
+        self.assertTrue(all(element["unverified"] for element in model["elements"]))
+
+    def test_a_refused_stream_stores_nothing(self):
+        store = LoomStore()
+        for name in ("duplicate-key", "decreasing-seq", "duplicate-seq", "nan"):
+            with self.subTest(name=name), self.assertRaises(view_loom.LoomError):
+                view_serve.load_replay(store, (CORPUS.parent / f"{name}.jsonl").read_bytes())
+        self.assertEqual(store.stats()["headSeq"], 0)
+
+    def test_replay_file_reading_refuses_links_and_non_regular_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "recording.jsonl"
+            target.write_bytes(CORPUS.read_bytes())
+            self.assertEqual(view_serve.read_replay_file(target), CORPUS.read_bytes())
+            link = Path(tmp) / "link.jsonl"
+            link.symlink_to(target)
+            for refused in (link, Path(tmp), Path(tmp) / "missing.jsonl"):
+                with self.subTest(path=refused.name), self.assertRaises(ServeError) as caught:
+                    view_serve.read_replay_file(refused)
+                self.assertEqual(caught.exception.reason, "replay-file")
+
+    def test_replay_file_reading_bounds_the_size(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            big = Path(tmp) / "big.jsonl"
+            big.write_bytes(b"x" * 100)
+            original = view_serve.MAX_REPLAY_BYTES
+            view_serve.MAX_REPLAY_BYTES = 99
+            try:
+                with self.assertRaises(ServeError):
+                    view_serve.read_replay_file(big)
+            finally:
+                view_serve.MAX_REPLAY_BYTES = original
 
 
 class ContractTableTests(unittest.TestCase):

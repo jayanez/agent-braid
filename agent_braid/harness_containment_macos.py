@@ -93,7 +93,8 @@ SYSTEM_READ = ("/usr/lib", "/System/Library", "/System/Cryptexes", "/System/Volu
                "/private/var/db/dyld", "/Library/Apple")
 DENIED = ("/System/Volumes/Data",)
 COMPILE_PROBE = "/usr/bin/false"  # never allow-listed: its exec must be denied
-ENTRIES = ("fixture", "launch")
+LAUNCH_PROBE = "launch-probe"  # the launch profile plus the interpreter, for the T007 helper probes
+ENTRIES = ("fixture", "launch", LAUNCH_PROBE)
 MAX_LAUNCH_STDIN_BYTES = 1 << 20
 MAX_LAUNCH_OUTPUT_BYTES = 16 << 20
 EXIT_SANDBOX_COMPILE = 65
@@ -203,6 +204,15 @@ def _trusted_file(path: str, expected_sha256: str, missing: str, drift: str) -> 
 # --- policy ---------------------------------------------------------------------------
 
 
+def _probe_catalog_sha256() -> str:
+    """The catalog hash of the T007 runner, read from its module so the policy cannot drift from it.
+
+    Imported lazily: the probes module imports this one.
+    """
+    from .harness_qualification_probes import CATALOG_SHA256
+    return CATALOG_SHA256
+
+
 @dataclass(frozen=True)
 class ContainmentPolicy:
     """Trusted values from the founder decisions and the issuer's qualification pins.
@@ -223,11 +233,15 @@ class ContainmentPolicy:
     interpreter_root: str  # read-only prefix the interpreter needs
     sandbox_exec_sha256: str
     proxy_port: int
-    probe_catalog_sha256: str
+    probe_catalog_sha256: str | None = None  # derived from the probes module; an explicit value must match
     helpers: tuple[tuple[str, str], ...] = ()  # (path, sha256) observed by probe
     refresh_endpoints: tuple[str, ...] = ()  # OAuth refresh hosts observed by probe
 
     def __post_init__(self) -> None:
+        catalog = _probe_catalog_sha256()
+        if self.probe_catalog_sha256 is None:
+            object.__setattr__(self, "probe_catalog_sha256", catalog)
+        _require(self.probe_catalog_sha256 == catalog, "invalid-policy")
         _require(type(self.helpers) is tuple and type(self.refresh_endpoints) is tuple
                  and all(type(h) is tuple and len(h) == 2 for h in self.helpers), "invalid-policy")
         executables = [self.claude, self.interpreter, *(p for p, _ in self.helpers)]
@@ -262,7 +276,8 @@ class ContainmentPolicy:
         _require(entry in ENTRIES, "invalid-entry")
         if entry == "fixture":
             return (self.interpreter,)
-        return (self.claude, *(p for p, _ in self.helpers))
+        launch = (self.claude, *(p for p, _ in self.helpers))
+        return launch + (self.interpreter,) if entry == LAUNCH_PROBE else launch
 
     def exec_probe(self, entry: str) -> list[str]:
         """A command the profile of ``entry`` allows and that must succeed (the compile positive case)."""
@@ -272,9 +287,16 @@ class ContainmentPolicy:
         return [self.claude, "--version"]
 
     def render(self, entry: str) -> bytes:
-        """Deterministic SBPL; per-run paths arrive only as ``CANDIDATE``/``TMPDIR``/``RUNDIR`` params."""
+        """Deterministic SBPL; per-run paths arrive only as ``CANDIDATE``/``TMPDIR``/``RUNDIR`` params.
+
+        ``launch-probe`` is ``launch`` plus what the pinned interpreter needs to start and nothing
+        else: its exec (so read and map) literal, a read of ``interpreter_root`` (the standard library;
+        ``fixture`` grants the same) and the metadata of their ancestor directories. It lets the T007
+        helper probes run under the profile Claude runs under; ``harness_qualification_probes``
+        re-checks that this is the whole difference.
+        """
         execs = self.executables(entry)
-        reads = [*SYSTEM_READ, self.interpreter_root] if entry == "fixture" else list(SYSTEM_READ)
+        reads = list(SYSTEM_READ) + ([self.interpreter_root] if entry != "launch" else [])
         writes = [] if entry == "fixture" else [self.config_dir]
         metadata = sorted({a for p in [*execs, *reads, *writes, self.run_root] for a in _ancestors(p)}
                           - {"/"})
@@ -804,6 +826,8 @@ class RunAccounting:
     in the child's process tree during the run (polled, so a fast double fork between two
     polls is only counted as unattributed: ``escaped_processes - escaped_descendants``).
     ``egress`` is the proxy counter delta of the run (see ``EgressProxy``).
+    ``limit_exceeded`` is the resource stop reason of the run: ``memory`` (watchdog) or ``cpu``
+    (``SIGXCPU`` from the CPU rlimit), else ``None``. A disk breach refuses the run instead.
     """
 
     escaped_processes: int = 0
@@ -812,6 +836,7 @@ class RunAccounting:
     cleanup_failed: bool = False
     disk_bytes: int = 0
     disk_files: int = 0
+    limit_exceeded: str | None = None
     egress: dict = field(default_factory=dict, compare=False, hash=False)
 
 
@@ -907,9 +932,10 @@ def _counter_delta(before: dict[str, int], after: dict[str, int]) -> dict[str, i
 class MacOSContainment(ContainmentBackend):
     """Native backend; refuses with a fixed reason whenever any check fails.
 
-    The probe runner is trusted T007 code; binding it to ``probe_catalog_sha256`` is
-    the runner's job. ``run_probe`` lets it run probes contained without recursing
-    into the NC-11 subset.
+    The probe runner is trusted T007 code; the policy derives ``probe_catalog_sha256`` from
+    it, so the environment hash binds the catalog and the runner source. ``run_probe`` and
+    ``run_launch_probe`` (the ``launch-probe`` profile) let it run probes contained without
+    recursing into the NC-11 subset.
     """
 
     kind = "native"
@@ -938,6 +964,10 @@ class MacOSContainment(ContainmentBackend):
 
     def close(self) -> None:
         self._proxy.close()
+
+    def egress_counters(self) -> dict[str, int]:
+        """Totals of the backend's egress proxy (see ``EgressProxy.counters``); read-only."""
+        return self._proxy.counters()
 
     def _refuse(self, entry: str, reason: str) -> NoReturn:
         self.run_evidence.append({"entry": entry, "backend": BACKEND, "refused": reason})
@@ -1109,7 +1139,7 @@ class MacOSContainment(ContainmentBackend):
 
     def run(self, source: bytes, workdir: Path, limits: FixtureLimits) -> ProbeResult:
         """Owned fixture entry point, after the full NC-11 pre-session check."""
-        return self._fixture(source, workdir, limits, probes=True, cancel=None)
+        return self._fixture("fixture", source, workdir, limits, probes=True, cancel=None)
 
     def run_probe(self, source: bytes, workdir: Path, limits: FixtureLimits, *,
                   cancel: threading.Event | None = None) -> ProbeResult:
@@ -1118,20 +1148,29 @@ class MacOSContainment(ContainmentBackend):
         ``cancel`` is optional: setting it stops and settles the group, and the result says
         ``cancelled`` (the PROC-08 cancellation half).
         """
-        return self._fixture(source, workdir, limits, probes=False, cancel=cancel)
+        return self._fixture("fixture", source, workdir, limits, probes=False, cancel=cancel)
 
-    def _fixture(self, source: bytes, workdir: Path, limits: FixtureLimits, *, probes: bool,
+    def run_launch_probe(self, source: bytes, workdir: Path, limits: FixtureLimits, *,
+                         cancel: threading.Event | None = None) -> ProbeResult:
+        """``run_probe`` under the ``launch-probe`` profile: what Claude runs under plus the interpreter.
+
+        Same checks, no probe subset, its own exclusive run; the compile check runs the pinned
+        Claude ``--version`` like ``launch``. Only the T007 runner calls it.
+        """
+        return self._fixture(LAUNCH_PROBE, source, workdir, limits, probes=False, cancel=cancel)
+
+    def _fixture(self, entry: str, source: bytes, workdir: Path, limits: FixtureLimits, *, probes: bool,
                  cancel: threading.Event | None) -> ProbeResult:
         if (type(source) is not bytes or not isinstance(limits, FixtureLimits)
                 or not (cancel is None or isinstance(cancel, threading.Event))):
-            self._refuse("fixture", "invalid-lab-request")
+            self._refuse(entry, "invalid-lab-request")
         try:
             text = source.decode("utf-8")
         except UnicodeDecodeError:
-            self._refuse("fixture", "invalid-fixture")
-        with self._exclusive("fixture"):
-            evidence, candidate, uid = self._pre_session("fixture", workdir, probes=probes)
-            run = self._spawn("fixture", [self.policy.interpreter, "-I", "-S", "-c", text], evidence,
+            self._refuse(entry, "invalid-fixture")
+        with self._exclusive(entry):
+            evidence, candidate, uid = self._pre_session(entry, workdir, probes=probes)
+            run = self._spawn(entry, [self.policy.interpreter, "-I", "-S", "-c", text], evidence,
                               candidate=candidate, uid=uid, wall=limits.wall_seconds,
                               cpu=min(limits.wall_seconds + 1, LIMITS["cpuSeconds"]),
                               max_output=limits.max_output_bytes, cancel=cancel, stdin=b"")
@@ -1274,6 +1313,8 @@ class MacOSContainment(ContainmentBackend):
                 cleaned = False
             stopped = stopped_early or state["limitExceeded"]
             exit_code = None if child is None or stopped else child.returncode
+            if child is not None and not state["limitExceeded"] and child.returncode == -signal.SIGXCPU:
+                state["limitExceeded"] = "cpu"
             settled = bool(state.get("settled")) and state.get("escapedProcesses") == 0
             egress = _counter_delta(egress_before, self._proxy.counters())
             record.update(state, exitCode=exit_code, settled=settled, cleanupFailed=not cleaned,
@@ -1290,7 +1331,8 @@ class MacOSContainment(ContainmentBackend):
             escaped_processes=state.get("escapedProcesses", 0),
             escaped_descendants=state.get("escapedDescendants", 0),
             surviving_processes=state.get("survivingProcesses", 0), cleanup_failed=not cleaned,
-            disk_bytes=disk.bytes, disk_files=disk.files, egress=egress)
+            disk_bytes=disk.bytes, disk_files=disk.files, limit_exceeded=state["limitExceeded"],
+            egress=egress)
 
     def _watch(self, child: subprocess.Popen, state: dict, *, uid: int, baseline: set[tuple[int, int]],
                out_path: str, deadline: float, max_output: int, cancel: threading.Event | None,
