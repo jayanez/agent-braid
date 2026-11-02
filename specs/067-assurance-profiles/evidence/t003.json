@@ -1,0 +1,37 @@
+{
+  "task": "SPEC-067/T003",
+  "candidateBinding": "Input hashes of the files below; PR #948 head before this evidence commit was cd900a4ab06e59aab218a8c4324ff2361c2c4ecc",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_assurance -v",
+      "exitCode": 0,
+      "testsRun": 68
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "testsRun": 925,
+      "scope": "1 skipped"
+    },
+    {
+      "command": "pre-PR reviews: correctness, quality, simplification (three read-only subagent reviews)",
+      "exitCode": 0,
+      "scope": "Dispositions are in PR #948."
+    }
+  ],
+  "negativeControls": [
+    "lowering of each floor at each scope (conversation/repository/user)",
+    "disabling noAttribution at each scope",
+    "agent-writable or foreign operator source",
+    "agent identity (agent/model/tool)",
+    "in-place edit of a registered version",
+    "forged or re-registered journal",
+    "malformed settings documents"
+  ],
+  "inputs": {
+    "agent_braid/harness_assurance.py": "954845dbaea48b87660ab2c19fd3c80849ff27d1e46044b99af64fa68e7f1cc4",
+    "tests/test_harness_assurance.py": "e1c7c058d92e195efbe57e91e37b0f1f3cfead5381fb4212bca1142a491092bd"
+  },
+  "executionAuthorization": false,
+  "limits": "Process logic only; actor and source are caller-asserted, journal digest detects inconsistent edits only. Conversation scope is unauthenticated input per the SPEC-058 precedent. Risk escalation, compiler and receipts are T004 onwards."
+}

@@ -36,7 +36,7 @@ shared object store fails the portable-root check).
   unknown key, `release` not `human-only`. Evidence: `evidence/t002.json`. Obtained: `evidence/t002.json` (35 focused tests,
   892 harness tests; PR #944; process logic only, no review-quality or utility claim).
 
-- [ ] T003 (REQ-003 / SC-003; REQ-008 / SC-008): Resolver following the SPEC-058
+- [x] T003 (REQ-003 / SC-003; REQ-008 / SC-008): Resolver following the SPEC-058
   REQ-006 / `ownership.resolve_settings` precedence (recorded refused lowering),
   the REQ-003 floors, the no-attribution invariant, an operator-owned loader and
   an assurance-profile journal following the `harness_promotion` pattern (that
@@ -44,7 +44,8 @@ shared object store fails the portable-root check).
   `tests/test_harness_assurance.py`. Verification: procedure_003,
   procedure_008. Negative controls: lowering of each floor at each scope;
   agent-writable source; agent identity; in-place edit of a registered
-  version. Evidence: `evidence/t003.json`.
+  version. Evidence: `evidence/t003.json`. Obtained: `evidence/t003.json` (68 focused tests,
+  925 harness tests; PR #948; process logic only, no review-quality or utility claim).
 
 - [ ] T004 (REQ-004 / SC-004): Deterministic raise-only risk classifier over a
   diff summary, reusing `validate_change.classify()` path sets and reporting the docs-only class. Pure; no network, clock or model call. Dependencies: T001 (Q5),
