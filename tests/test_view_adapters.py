@@ -139,7 +139,7 @@ class UnsupportedSourceTests(unittest.TestCase):
         cases = {
             "empty": b"", "not json": b"{", "array": b"[]", "scalar": b"1",
             "duplicate member": b'{"gitRuntimeStateVersion":"0.1.0-alpha","gitRuntimeStateVersion":"x"}',
-            "nan": b'{"a":NaN}', "bad utf-8": b"\xff\xfe",
+            "nan": b'{"a":NaN}', "nesting": b"[" * 100000, "bad utf-8": b"\xff\xfe",
         }
         for family, (_, _, adapter, _) in FAMILIES.items():
             for label, data in cases.items():
@@ -353,6 +353,18 @@ class SchedulerTests(unittest.TestCase):
                          [(0, ["a"]), (1, ["b"])])
         self.assertLess(events.index(of_kind(events, "wave.finished")[0]), events.index(started[1]))
 
+    def test_impossible_or_missing_worker_timing_is_a_gap(self):
+        for label, change in (
+            ("backwards", lambda d: d["workers"][0].update(finishedNs=d["workers"][0]["startedNs"] - 1)),
+            ("zero length", lambda d: d["workers"][0].update(finishedNs=d["workers"][0]["startedNs"])),
+            ("negative", lambda d: d["workers"][0].update(startedNs=-1)),
+            ("no workers", lambda d: d.update(workers=[])),
+        ):
+            with self.subTest(label):
+                changed = deepcopy(self.evidence)
+                change(changed)
+                self.assertEqual(kinds(run("scheduler", dump(changed))), ["observation.gap"])
+
     def test_a_wave_number_outside_the_contract_is_a_gap(self):
         changed = deepcopy(self.evidence)
         changed["workers"][0]["wave"] = 64
@@ -454,8 +466,9 @@ class ReadArtifactTests(unittest.TestCase):
         (outside / "secret.json").write_bytes(b"{}")
         os.symlink(outside / "secret.json", self.root / "runs/link.json")
         os.symlink(outside, self.root / "dirlink")
+        os.symlink(self.root / "runs", self.root / "innerlink")
         (self.root / "big.json").write_bytes(b"0" * 33)
-        cases = ("../x.json", "runs/../../x.json", "/abs.json", "", "runs/link.json", "dirlink/secret.json",
+        cases = ("../x.json", "runs/../../x.json", "/abs.json", "", "runs/link.json", "dirlink/secret.json", "innerlink/a.json",
                  "missing.json", "runs", "big.json", "bad\x00name.json")
         for path in cases:
             with self.subTest(path), self.assertRaises(AdapterError):

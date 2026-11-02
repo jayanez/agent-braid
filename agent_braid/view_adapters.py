@@ -13,9 +13,11 @@ Each adapter has a table of the source schema versions it supports (SUPPORTED_VE
 Another version, bytes that are not one strict JSON object, or content that does not
 fit the contract yield a single `observation.gap` with reason `source-unsupported`
 instead of a guess. A crossing whose lists or text exceed the contract caps is not
-emitted; a `stream-truncated` gap with the same evidence reference takes its place.
-Scheduler strand closes carry the outcome `ok` because the preparation evidence only
-exists once every worker finished and verified.
+emitted; a `stream-truncated` gap with the same evidence reference takes its place. Any
+other cap overflow makes the whole artifact `source-unsupported`.
+Scheduler strand closes carry the outcome `ok` because the preparation evidence is only
+produced once every worker finished; the adapter rehashes the bytes but does not re-verify
+the evidence digest.
 """
 from __future__ import annotations
 
@@ -48,14 +50,22 @@ class AdapterError(ValueError):
 
 def read_artifact(root: str | Path, path: str, *, limit: int = MAX_ARTIFACT_BYTES) -> bytes:
     """Read one regular file under `root`: no `..`, no symbolic link, at most `limit` bytes."""
-    parts = path.split("/") if isinstance(path, str) else []
+    if not isinstance(path, str):
+        raise AdapterError("artifact path must be text")
+    parts = path.split("/")
     if not path or path.startswith("/") or ".." in parts or "\x00" in path:
         raise AdapterError("artifact path must be relative, without '..'")
     base = Path(root).resolve()
     try:
-        target = (base / path).parent.resolve() / parts[-1]
-        target.relative_to(base)
+        target = base
+        for part in parts:
+            target = target / part
+            if target.is_symlink():
+                raise AdapterError("artifact path crosses a symbolic link")
+        target.parent.resolve().relative_to(base)
         descriptor = os.open(target, os.O_RDONLY | os.O_NOFOLLOW | getattr(os, "O_NONBLOCK", 0))
+    except AdapterError:
+        raise
     except (OSError, ValueError) as exc:
         raise AdapterError("artifact is outside the root, a link, or unreadable") from exc
     try:
@@ -135,7 +145,7 @@ def _run(adapter: str, data: bytes, path: str, seq_start: int,
     fallback = source.gap("source-unsupported")  # also refuses an invalid evidence path up front
     try:
         events = build(_load(data, adapter), source)
-    except (ValueError, KeyError, TypeError):
+    except (ValueError, KeyError, TypeError, RecursionError):
         events = [fallback]
     return _number(events, seq_start)
 
@@ -196,12 +206,16 @@ _WAVE_STARTED, _STRAND_OPEN, _STRAND_CLOSE, _WAVE_FINISHED = range(4)
 
 def _scheduler(evidence: dict[str, Any], source: _Source) -> list[dict[str, Any]]:
     schedule_id = evidence["scheduleDigest"]
+    if not evidence["workers"]:
+        raise ValueError("a preparation records at least one worker")
     waves: dict[int, list[dict[str, Any]]] = {}
     timeline: list[tuple[int, int, int, str, dict[str, Any]]] = []
     for worker in evidence["workers"]:
         started, finished = worker["startedNs"], worker["finishedNs"]
         identifier = worker["operationId"]
-        _ms(started), _ms(finished)
+        _ms(started), _ms(finished)  # type check only
+        if not 0 <= started < finished:
+            raise ValueError("a worker starts before it finishes")
         waves.setdefault(worker["wave"], []).append(worker)
         number = worker["wave"]
         timeline.append((started, _STRAND_OPEN, number, "strand.open", {
