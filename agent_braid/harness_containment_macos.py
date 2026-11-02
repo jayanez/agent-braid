@@ -581,7 +581,6 @@ class EgressProxy:
         self._tunnel_seconds = tunnel_seconds
         self._slots = threading.BoundedSemaphore(self.MAX_CONNECTIONS)
         self._servers: list[socket.socket] = []
-        self._closing = False
         self._failed = False
         self._counts: Counter[str] = Counter()
         self._counts_lock = threading.Lock()
@@ -603,7 +602,7 @@ class EgressProxy:
             self._counts[key] += amount
 
     def start(self) -> None:
-        self._closing = self._failed = False
+        self._failed = False
         try:
             for family, host in ((socket.AF_INET, "127.0.0.1"), (socket.AF_INET6, "::1")):
                 server = socket.socket(family, socket.SOCK_STREAM)
@@ -620,7 +619,6 @@ class EgressProxy:
             threading.Thread(target=self._accept, args=(server,), daemon=True).start()
 
     def close(self) -> None:
-        self._closing = True
         servers, self._servers = self._servers, []
         for server in servers:
             try:
@@ -634,7 +632,7 @@ class EgressProxy:
             try:
                 client, _ = server.accept()
             except OSError:
-                if not self._closing:  # fail closed, but visible to the next pre-session check
+                if server in self._servers:  # not a close(); fail closed, but visible to the next pre-session check
                     self._failed = True
                 return
             self._add("connections")

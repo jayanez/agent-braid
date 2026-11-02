@@ -516,7 +516,9 @@ class RefusalTests(unittest.TestCase):
         with host(self.machine):
             backend.run(FIXTURE, self.workdir, lab.FixtureLimits(wall_seconds=5))
             self.assertTrue(backend._proxy.running)
-            backend._proxy._accept(mock.Mock(accept=mock.Mock(side_effect=OSError)))
+            dying = mock.Mock(accept=mock.Mock(side_effect=OSError))
+            backend._proxy._servers.append(dying)
+            backend._proxy._accept(dying)
             self.assertFalse(backend._proxy.healthy)
             with self.assertRaises(lab.LabError) as caught:
                 backend.run(FIXTURE, self.workdir, lab.FixtureLimits(wall_seconds=5))
@@ -1308,17 +1310,16 @@ class ProxyTests(unittest.TestCase):
     def test_the_accept_loop_dying_is_visible_but_closing_is_not_a_failure(self):
         proxy = mac.EgressProxy(0, ("api.anthropic.com:443",), connect=mock.Mock(), timeout=1)
         self.assertTrue(proxy.healthy)
-        proxy.start()
-        self.assertTrue(proxy.healthy)
-        proxy.close()
-        time.sleep(0.2)  # the accept threads wake with an error after close
-        self.assertTrue(proxy.healthy)
-        proxy.start()
-        self.addCleanup(proxy.close)
-        proxy._accept(mock.Mock(accept=mock.Mock(side_effect=OSError)))
+        dying = mock.Mock(accept=mock.Mock(side_effect=OSError))
+        proxy._servers.append(dying)  # a live listener whose accept fails
+        proxy._accept(dying)
         self.assertFalse(proxy.healthy)
-        proxy.close()
+        proxy._servers.clear()
         proxy.start()  # a fresh start clears it
+        self.addCleanup(proxy.close)
+        self.assertTrue(proxy.healthy)
+        closed = mock.Mock(accept=mock.Mock(side_effect=OSError))
+        proxy._accept(closed)  # not a current listener (close() removed it): not a failure
         self.assertTrue(proxy.healthy)
 
     def test_relays_allowed_endpoint_with_matching_sni(self):
