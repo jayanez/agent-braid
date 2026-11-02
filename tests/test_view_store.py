@@ -153,12 +153,27 @@ class EvictionTests(unittest.TestCase):
         for after in (7, 8, 11):
             self.assertEqual(gaps(store.replay(after_seq=after)), [])
         self.assertEqual(store.replay(after_seq=12), [])
-        self.assertEqual(store.replay(after_seq=500), [])
+
+    def test_resume_beyond_the_newest_event_is_refused_not_silently_skipped(self):
+        store = LoomStore()
+        fill(store, 5)
+        for call in (lambda: store.replay(after_seq=6), lambda: store.subscribe(after_seq=99)):
+            with self.assertRaises(StoreError) as raised:
+                call()
+            self.assertEqual(raised.exception.reason, "resume-ahead")
+        self.assertEqual(store.stats()["subscribers"], 0)
+
+    def test_append_returns_a_copy_that_cannot_corrupt_the_ring(self):
+        store = LoomStore()
+        stored = store.append(event())
+        stored["seq"] = 999
+        self.assertEqual([item["seq"] for item in store.replay()], [1])
 
     def test_no_gap_before_any_eviction(self):
         store = LoomStore(max_events=5)
         fill(store, 5)
         self.assertEqual([item["seq"] for item in store.replay()], [1, 2, 3, 4, 5])
+        self.assertEqual(gaps(store.replay()), [])
 
     def test_resume_delivers_each_retained_event_exactly_once_in_order(self):
         store = LoomStore(max_events=50)
@@ -285,6 +300,8 @@ class CapTests(unittest.TestCase):
             LoomStore(caps={"strands": 257})
         with self.assertRaises(ValueError):
             LoomStore(caps={"nonsense": 1})
+        with self.assertRaises(ValueError):
+            LoomStore(caps={"strands": "2"})
 
 
 class SubscriberTests(unittest.TestCase):
@@ -372,6 +389,7 @@ class SubscriberTests(unittest.TestCase):
         store = LoomStore(subscriber_queue=1, max_subscribers=1)
         store.subscribe()
         fill(store, 2)
+        self.assertEqual(store.stats()["subscribers"], 0)
         store.subscribe()
 
     def test_closed_subscriber_gets_nothing_and_raises(self):

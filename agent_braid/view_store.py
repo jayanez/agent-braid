@@ -7,10 +7,11 @@ Producers never block: an append takes a short lock, and a subscriber that falls
 behind is dropped rather than waited for.
 
 Behaviour in short:
-* `append` validates a copy of the event, assigns the next `seq` (1, 2, 3, ... whatever
-  `seq` the caller supplied), stores it, and evicts the oldest event past the ring bound.
-* Per-session caps (strands, crossings, waves, grants) refuse input beyond the cap: the
+* `append` validates a copy of the event, assigns the next `seq` (1, 2, 3, ...; any
+  `seq` the caller supplied is ignored), stores it, and evicts the oldest event past the ring bound.
+* Per-store caps (strands, crossings, waves, grants) refuse input beyond the cap: the
   event is not stored and one `stream-truncated` gap per exhausted cap is stored instead.
+  Entities are counted for the life of the store, so a reached cap stays reached.
 * Eviction is announced at read time: `replay` and subscribers receive one derived
   `ring-evicted` gap covering the range a client missed. Its `seq` is the last evicted
   `seq`, so a client that resumes from the gap's id neither repeats nor skips anything.
@@ -41,6 +42,7 @@ class StoreError(RuntimeError):
     def __init__(self, reason: str, detail: str) -> None:
         super().__init__(f"{reason}: {detail}")
         self.reason = reason
+        self.detail = detail
 
 
 class SubscriberDropped(Exception):
@@ -108,7 +110,7 @@ class LoomStore:
             raise ValueError("max_subscribers and subscriber_queue are at least 1")
         self._caps = dict(CAP_LIMITS)
         for name, value in (caps or {}).items():
-            if name not in CAP_LIMITS or not 1 <= value <= CAP_LIMITS[name]:
+            if name not in CAP_LIMITS or type(value) is not int or not 1 <= value <= CAP_LIMITS[name]:
                 raise ValueError(f"cap {name!r} is between 1 and its contract limit")
             self._caps[name] = value
         self._max_events = max_events
@@ -130,12 +132,12 @@ class LoomStore:
     def append(self, event: dict[str, Any]) -> dict[str, Any] | None:
         """Validate and store `event` under the next `seq`; return the stored event.
 
-        Returns None when a cap refused it (a `stream-truncated` gap is stored once per cap).
+        Returns a shallow copy (read-only by convention), or None when a cap refused it (a `stream-truncated` gap is stored once per cap).
         Raises LoomError for an invalid event; nothing is stored and no `seq` is consumed.
         The caller's dict is neither modified nor kept.
         """
-        candidate = deepcopy(event) if isinstance(event, dict) else event
-        validate_event(candidate)
+        validate_event(event)
+        candidate = deepcopy(event)
         with self._cond:
             cap = self._cap_check(candidate)
             if cap is not None:
@@ -144,7 +146,7 @@ class LoomStore:
                     self._announced.add(cap)
                     self._store(self._truncation_gap())
                 return None
-            return self._store(candidate)
+            return dict(self._store(candidate))
 
     # -- consumers -------------------------------------------------------------------------
 
@@ -157,6 +159,7 @@ class LoomStore:
         if limit is not None and (type(limit) is not int or limit < 1):
             raise ValueError("limit is a positive integer")
         with self._cond:
+            self._check_not_ahead(after_seq)
             items: list[dict[str, Any]] = []
             oldest = self._head - len(self._ring) + 1
             start = after_seq + 1
@@ -170,11 +173,13 @@ class LoomStore:
     def subscribe(self, after_seq: int | None = None) -> Subscriber:
         """Register a subscriber; with `after_seq` it first receives the retained backlog.
 
-        Raises StoreError('subscriber-limit') when the maximum is reached.
+        Raises StoreError('subscriber-limit') at the maximum, 'resume-ahead' for an unseen `after_seq`.
         """
         if after_seq is not None:
             _seq_arg(after_seq, "after_seq")
         with self._cond:
+            if after_seq is not None:
+                self._check_not_ahead(after_seq)
             if len(self._subscribers) >= self._max_subscribers:
                 raise StoreError("subscriber-limit", f"at most {self._max_subscribers} subscribers")
             subscriber = Subscriber(self, self._head if after_seq is None else after_seq, self._head)
@@ -207,6 +212,10 @@ class LoomStore:
                 self._release(subscriber, "too-slow")
         self._cond.notify_all()
         return event
+
+    def _check_not_ahead(self, after_seq: int) -> None:
+        if after_seq > self._head:
+            raise StoreError("resume-ahead", f"seq {after_seq} is beyond the newest event {self._head}")
 
     def _release(self, subscriber: Subscriber, state: str) -> None:
         if subscriber._state is None:
