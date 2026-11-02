@@ -15,7 +15,6 @@ from urllib.parse import urlsplit
 from . import __version__
 from .plugin_registry import (MigrationRequired, RegistryError, RegistryStale, configuration_digest,
                               home_path, load)
-from . import system_one_shadow
 from . import tooling_mcp as core
 
 SCHEMA = 'agent-braid-plugin/v0.2'
@@ -79,6 +78,7 @@ class PluginRouter:
             return None
 
     def status(self):
+        from . import system_one_shadow  # lazy: serving with System One off never loads it
         current = self._current()
         current_digest = configuration_digest(current)
         return {'schema': SCHEMA, 'version': __version__,

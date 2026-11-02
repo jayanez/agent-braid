@@ -55,3 +55,22 @@ a native-only direction instead. The owner then answered:
 Calibration, promotion to `advise`, and any S1.5b–e implementation still need
 their own plans and reviews. Answer R7 rules out pretrained encoders entirely.
 Using free-text task descriptions as features is therefore outside SPEC-066.
+
+## Coordinator plan approval (pending work after the S1.5a merge)
+
+On 2026-11-01, in a new coordinator session against `develop` d053755e, the owner
+answered "Approve plan" to the S1.5 plan with its stated defaults:
+
+- Wave 1 as four derived tracks with exclusive files: T003 (task-level milestone
+  override), T013 (store negative controls and telemetry parity, plus an
+  own-file unlink helper), T018 remainder with T019 (telemetry text and boundary
+  checks), and T020 (user documentation); then T021, T005, T031, T004, T030, T032.
+- Default 1: the SC-006 shadow week runs on a local, unpublished plugin candidate
+  built from `develop`, not on a new public release; rollback is reinstalling
+  `0.1.0-alpha.4`.
+- Default 2: T003 also pins the 45 closed SPEC-028, SPEC-029, SPEC-031, SPEC-032
+  and SPEC-033 task issues to their historical S1.0–S1.4 milestones, which
+  unblocks the scoped Deferred audit.
+
+This approves the order of work only. It grants no execution authority and is not
+a review of any result.

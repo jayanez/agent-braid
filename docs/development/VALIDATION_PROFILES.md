@@ -51,6 +51,14 @@ generated agent skills, `scripts/spec_kit.py`, the integration test and the pinn
 requirements. An unrelated README, analyzer or research-radar edit does not run
 that matrix.
 
+System One paths (`agent_braid/system_one*.py`, `agent_braid/cli.py`,
+`tests/test_system_one*.py` and the advice helpers) form the `system-one-core`
+domain. It covers the synthetic diagnostic contract and the opt-in local shadow
+module, `agent_braid/system_one_shadow.py`. Its boundary is that off never loads
+the shadow module, the shadow module uses no network or model library and keeps
+`executionAuthorization` false, and none of it establishes accuracy, calibration or
+promotion. `tests/test_system_one_shadow_boundaries.py` checks those properties.
+
 ## Evidence boundaries
 
 Milestone closure, release, public-repository cutover and refreshed scientific

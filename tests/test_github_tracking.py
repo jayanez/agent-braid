@@ -7,6 +7,8 @@ import hashlib
 import io
 import json
 import re
+import tempfile
+from pathlib import Path
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -17,7 +19,107 @@ from scripts.sync_github_tracking import (ROOT, apply_plan, build_plan, main,
                                           validate_milestone_numbers)
 
 
+S1_5 = "S1.5 — System One shadow activation"
+DEFERRED = "Deferred"
+OWNER_DECISION_R6 = ([f"SPEC-029/T00{n}" for n in range(1, 10)]
+                     + ["SPEC-031/T008", "SPEC-033/T002", "SPEC-033/T003",
+                        "SPEC-033/T004", "SPEC-033/T006", "SPEC-033/T008"])
+
+
+class TaskMilestoneOverrideTests(unittest.TestCase):
+    """The task-level milestone override: validation and desired-record effect."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        folder = self.root / "specs/001-example"
+        folder.mkdir(parents=True)
+        (folder / "spec.md").write_text("# Example\n")
+        (folder / "assurance.json").write_text('{"requirements": []}')
+        (folder / "tasks.md").write_text("- [ ] T001: First.\n- [ ] T002: Second.\n")
+        self.config = {"repository": "owner/repo", "project_url": "example",
+                       "milestones": {"A": "first", "B": "second"},
+                       "specs": {"001-example": {"milestone": "A", "state": "open"}},
+                       "closed_milestones": [], "task_state_overrides": {},
+                       "project_review_pending": [], "task_cancellations": {},
+                       "task_milestone_overrides": {"SPEC-001/T001": "B"}}
+        self.path = self.root / "config.json"
+
+    def inventory(self):
+        self.path.write_text(json.dumps(self.config))
+        return source_inventory(self.root, self.path)
+
+    def test_override_moves_only_the_named_task(self):
+        _, desired = self.inventory()
+        milestones = {item["key"]: item["milestone"] for item in desired}
+        self.assertEqual({"SPEC-001": "A", "SPEC-001/T001": "B", "SPEC-001/T002": "A"}, milestones)
+
+    def test_member_is_optional(self):
+        del self.config["task_milestone_overrides"]
+        _, desired = self.inventory()
+        self.assertEqual({"A"}, {item["milestone"] for item in desired})
+
+    def test_invalid_overrides_are_refused(self):
+        cases = {
+            "unknown task": {"SPEC-001/T009": "B"},
+            "unregistered milestone": {"SPEC-001/T001": "C"},
+            "equals the spec milestone": {"SPEC-001/T001": "A"},
+            "malformed key": {"SPEC-001": "B"},
+            "malformed task id": {"SPEC-001/T1": "B"},
+            "non-string milestone": {"SPEC-001/T001": 3},
+        }
+        for name, overrides in cases.items():
+            with self.subTest(name):
+                self.config["task_milestone_overrides"] = overrides
+                with self.assertRaisesRegex(ValueError, "task milestone override"):
+                    self.inventory()
+
+    def test_scoped_plan_selects_overridden_in_and_excludes_overridden_out(self):
+        config, desired = self.inventory()
+        config["milestone_numbers"] = {"A": 1, "B": 2}
+        milestones = {"A": {"number": 1, "state": "open", "title": "A"},
+                      "B": {"number": 2, "state": "open", "title": "B"}}
+        where = {"SPEC-001": 1, "SPEC-001/T001": 2, "SPEC-001/T002": 1}
+        issues = {item["key"]: {"number": 10 + i, "id": 100 + i, "title": item["title"],
+                                "body": item["body"], "state": "open",
+                                "milestone": {"number": where[item["key"]],
+                                              "title": "AB"[where[item["key"]] - 1]}}
+                  for i, item in enumerate(desired)}
+        extra = {"children": {"SPEC-001": {101, 102}}, "unmarked_titles": set()}
+        _, scoped_b, _, ops_b = milestone_plan(config, desired, milestones, issues, extra, 2)
+        self.assertEqual(["SPEC-001/T001"], [item["key"] for item in scoped_b])
+        self.assertEqual([], ops_b)
+        _, scoped_a, _, _ = milestone_plan(config, desired, milestones, issues, extra, 1)
+        self.assertEqual({"SPEC-001", "SPEC-001/T002"}, {item["key"] for item in scoped_a})
+
+    def test_scoped_plan_refuses_an_unpublished_out_of_scope_parent(self):
+        config, desired = self.inventory()
+        config["milestone_numbers"] = {"A": 1, "B": 2}
+        milestones = {"A": {"number": 1, "state": "open", "title": "A"},
+                      "B": {"number": 2, "state": "open", "title": "B"}}
+        with self.assertRaisesRegex(ValueError, "parent SPEC-001 .* is not published"):
+            milestone_plan(config, desired, milestones, {}, {"children": {}, "unmarked_titles": set()}, 2,
+                           {"SPEC-001/T001"})
+
+
 class TrackingTests(unittest.TestCase):
+    def test_committed_task_milestone_overrides(self):
+        config, desired = source_inventory()
+        overrides = config["task_milestone_overrides"]
+        by_key = {item["key"]: item for item in desired}
+        moved = {key for key, name in overrides.items() if name == S1_5}
+        self.assertEqual(set(OWNER_DECISION_R6), moved)
+        for key in moved:
+            self.assertEqual(S1_5, by_key[key]["milestone"])
+            self.assertEqual("open", by_key[key]["state"])
+        pinned = set(overrides) - moved
+        self.assertEqual(45, len(pinned))
+        for key in pinned:
+            self.assertEqual("closed", by_key[key]["state"])
+            self.assertIn(overrides[key], config["closed_milestones"])
+        self.assertTrue(all(name in config["milestones"] for name in overrides.values()))
+
     def test_committed_spec_inventory_is_complete(self):
         config, desired = source_inventory()
         folders = sorted(path for path in (ROOT / "specs").iterdir()
@@ -36,7 +138,8 @@ class TrackingTests(unittest.TestCase):
                 self.assertNotIn(key, source_tasks, f"duplicate source task: {key}")
                 source_tasks[key] = {
                     "parent": spec_id,
-                    "milestone": config["specs"][folder.name]["milestone"],
+                    "milestone": config.get("task_milestone_overrides", {}).get(
+                        key, config["specs"][folder.name]["milestone"]),
                     "state": "closed" if checked == "x" or key in config["task_state_overrides"] or key in config.get("task_cancellations", {}) else "open",
                 }
         keys = [item["key"] for item in desired]

@@ -139,7 +139,7 @@ RULES = (
         "agent_braid/_system_one_stage_manifest.py", "agent_braid/_advice_scope.py",
         "agent_braid/mcp_advice.py",
     ), ("full-tests",), True,
-        boundary="Synthetic diagnostic contract only; model/data/human acceptance and promotion remain separate"),
+        boundary="Synthetic diagnostic contract and the opt-in local shadow store only; model/data/human acceptance, accuracy or calibration claims and promotion remain separate"),
     Rule("contextual-finite-checker", (
         "research/contextual_lab/**", "examples/contextual-lab/**", "tests/test_contextual_lab.py",
         "research/proofs/**", "scripts/crosscheck_contextual_proof_mapping.py",

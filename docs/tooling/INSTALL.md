@@ -154,3 +154,13 @@ agent-braid tooling install --host claude --scope user \
 Choose one host and repeat its exact previewed arguments with `--apply --preview-digest DIGEST` only when installing intentionally. Preview binds mode, retention and no-upload policy; application records the mode and server arguments in its receipt. Neither step launches a host or creates metrics. `configure` can manage the server alone. `update --telemetry local` retains the explicit choice; a previewed `update --telemetry off` disables it for the next server launch. Omitting the option selects off. Restart an existing configured server separately when authorized. `doctor` distinguishes requested mode from statically configured mode without reading/creating telemetry or launching hosts.
 
 `uninstall` preserves local aggregates. Use `agent-braid telemetry purge` explicitly to clear them; exported copies/backups remain user-managed. The [telemetry guide](TELEMETRY.md) documents the exact private path, 30-day on-access retention, 10 MiB total bound, coverage, failures, report/export/merge/purge commands, batch deduplication and privacy limits. The [current alignment](M45_ALIGNMENT.md) separates historical acceptance from the changed candidate; installation commands documented here are not a claim of new installed/native observation.
+
+## System One shadow consent
+
+System One shadow mode is a separate default-off consent, never implied by
+telemetry consent. For the native plugin it is persisted with
+`plugin setup --system-one shadow`, previewed and applied with the shown digest,
+and takes effect after reconnect. For the standalone portable server it is
+`python -m agent_braid.tooling_mcp --system-one shadow`. The
+[System One shadow guide](SYSTEM_ONE_SHADOW.md) covers what is recorded, report,
+purge and limits; [plugin privacy](PLUGIN_PRIVACY.md) states the data boundary.

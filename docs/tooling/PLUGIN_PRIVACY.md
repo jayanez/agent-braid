@@ -5,7 +5,11 @@ Agent Braid's native plugin runs a local stdio MCP process. It has no hosted
 Agent Braid service, analytics, advertising, account or credential collection.
 Optional local technical telemetry ([TELEMETRY.md](TELEMETRY.md)) is off by
 default, records only daily numeric aggregates on this machine after explicit
-consent and is never sent anywhere automatically. The plugin does not install or invoke a model provider. Its host's
+consent and is never sent anywhere automatically. Optional System One shadow mode
+([SYSTEM_ONE_SHADOW.md](SYSTEM_ONE_SHADOW.md)) is also off by default and needs its
+own explicit consent; telemetry consent never implies it. It records only
+structural features and salted pseudonyms in a private local store, never names,
+paths, prompts or content, and uploads nothing. The plugin does not install or invoke a model provider. Its host's
 privacy policy and permissions continue to govern data the host supplies to a
 model or other tools.
 
