@@ -1,0 +1,577 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Agent Braid activity viewer: first-party table view of the Loom model.
+//
+// Read-only. It fetches /snapshot (the model built by the server) and follows /events
+// (Server-Sent Events, resumed with Last-Event-ID) only to learn that the model changed.
+// Every value from an event reaches the page as a text node: elements are built with
+// createElement and textContent, never from markup strings, which the Trusted Types
+// directive of the content security policy would refuse anyway. Nothing here sends data
+// anywhere except same-origin GET requests, and nothing is an authorization.
+
+const CLASS_LABELS = ["heuristic", "syntactic", "semantic", "transactional", "confluence", "Yang–Baxter"];
+
+const VERIFICATION = {
+  rehashed: ["✓", "rehashed", "An adapter read the artifact and this viewer session computed the hash."],
+  derived: ["≈", "derived", "Derived by the viewer from rehashed events."],
+  unverified: ["⚠", "unverified", "Replayed or host-reported. Nothing here was checked by this viewer."],
+};
+
+const CROSSING_SHAPES = {
+  "swap": ["⇄", "swap: independent candidate"],
+  "ordered-link": ["→", "ordered link"],
+  "conflict-knot": ["✕", "conflict knot"],
+  "unknown-link": ["?", "unknown link"],
+  "bridge": ["⌒", "bridge: passes over lanes, does not cross"],
+  "unplaced": ["·", "unplaced pair"],
+};
+
+const ELEMENT_SHAPES = {
+  "strand": ["│", "strand"],
+  "strand-state": ["│", "strand state"],
+  "strand-end": ["└", "strand end"],
+  "effort": ["Σ", "effort (host estimate)"],
+  "wave-plane": ["▤", "planned waves (advisory)"],
+  "wave-marker": ["▸", "wave marker"],
+  "hazard-cone": ["△", "hazard"],
+  "gap": ["▯", "observation gap"],
+  "runtime-phase": ["○", "runtime phase"],
+  "session": ["□", "session"],
+  "report": ["¶", "analysis report"],
+};
+
+const RING_SHAPES = {
+  "grant": ["◯", "grant"],
+  "workflow-phase": ["◎", "gate phase"],
+  "workflow-result": ["◉", "gate result"],
+};
+
+const MARKS = {
+  unverified: ["unverified", "Not checked by this viewer. Never counted as a verified fact."],
+  uncertain: ["uncertain", "Unknown classification or incomplete coverage. Not independent, not clean."],
+  partial: ["partial coverage", "Coverage is not complete: what is not listed is not shown to be absent."],
+  absence: ["not observed", "A hazard that was not observed or only partly observed. This is not evidence that none exists."],
+  gap: ["gap", "The viewer or a host did not observe this range."],
+  notime: ["no time", "The event states no time. It is placed after its predecessor, no time is invented."],
+};
+
+const ATTRS = /^(id|type|scope|title|role|tabindex|colspan|for|name|min|max|step|value|disabled|open|data-[a-z-]+|aria-[a-z-]+)$/;
+const STEP_MS = 700;
+
+const state = {
+  model: null,
+  dropped: [],
+  cursor: 0,
+  playing: false,
+  timer: null,
+  selected: null,
+  filterKind: "",
+  filterUncertain: false,
+  lastId: "",
+};
+
+// ---------------------------------------------------------------- DOM helpers
+
+function h(tag, props, ...children) {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(props || {})) {
+    if (value === null || value === undefined || value === false) continue;
+    if (key === "class") node.className = value;
+    else if (key === "text") node.textContent = String(value);
+    else if (key === "on") for (const [name, fn] of Object.entries(value)) node.addEventListener(name, fn);
+    else if (ATTRS.test(key)) node.setAttribute(key, value === true ? "" : String(value));
+    else throw new Error("attribute not allowed: " + key);
+  }
+  for (const child of children.flat()) {
+    if (child === null || child === undefined || child === false) continue;
+    node.append(child instanceof Node ? child : document.createTextNode(String(child)));
+  }
+  return node;
+}
+
+function $(id) {
+  return document.getElementById(id);
+}
+
+function fill(id, ...children) {
+  $(id).replaceChildren(...children.flat().filter((child) => child !== null && child !== undefined));
+}
+
+// ---------------------------------------------------------------- labels
+
+function classLabel(value) {
+  if (value === null || value === undefined) return "none (not a per-pair analysis result)";
+  const name = CLASS_LABELS[value];
+  return name === undefined ? "unrecognized class " + String(value) : "class " + value + " · " + name;
+}
+
+function shapeOf(element) {
+  if (element.element === "crossing") {
+    const [glyph, label] = CROSSING_SHAPES[element.drawAs] || ["?", "crossing"];
+    return [glyph, element.incompleteCoverage && element.isSwap ? label + " (partial coverage)" : label];
+  }
+  if (element.element === "gate-ring") return RING_SHAPES[element.ringKind] || ["◯", "gate"];
+  return ELEMENT_SHAPES[element.element] || ["·", element.element];
+}
+
+function marksOf(element) {
+  const marks = [];
+  if (element.unverified) marks.push("unverified");
+  if (element.uncertain) marks.push("uncertain");
+  if (element.incompleteCoverage) marks.push("partial");
+  if (element.absence) marks.push("absence");
+  if (element.element === "gap") marks.push("gap");
+  if (element.timeKnown === false) marks.push("notime");
+  return marks;
+}
+
+function markNode(key) {
+  const [label, meaning] = MARKS[key];
+  return h("span", { class: "mark " + key, title: meaning }, label);
+}
+
+function verificationNode(value) {
+  const entry = VERIFICATION[value];
+  if (!entry) return h("span", { class: "mark uncertain" }, "unrecognized: " + String(value));
+  return h("span", { class: "mark " + (value === "unverified" ? "unverified" : ""), title: entry[2] },
+    entry[0] + " " + entry[1]);
+}
+
+function timeText(element) {
+  if (!element.timeKnown) return "sequence only";
+  return String(element.relMs) + " ms";
+}
+
+// ---------------------------------------------------------------- legend (static tables above)
+
+function renderLegend() {
+  fill("legend-classes", CLASS_LABELS.map((name, index) => h("li", null, "class " + index + " · " + name)),
+    h("li", null, "no class: the event is not a per-pair analysis result"));
+  fill("legend-shapes",
+    Object.values(CROSSING_SHAPES).map(([glyph, label]) => h("li", null, h("span", { class: "glyph" }, glyph), label)),
+    Object.values(ELEMENT_SHAPES).map(([glyph, label]) => h("li", null, h("span", { class: "glyph" }, glyph), label)),
+    Object.values(RING_SHAPES).map(([glyph, label]) => h("li", null, h("span", { class: "glyph" }, glyph), label)));
+  fill("legend-verification", Object.values(VERIFICATION).map(([glyph, label, meaning]) =>
+    h("li", null, h("span", { class: "glyph" }, glyph), label + ": " + meaning)));
+  fill("legend-marks", Object.keys(MARKS).map((key) => h("li", null, markNode(key), " " + MARKS[key][1])));
+}
+
+// ---------------------------------------------------------------- data
+
+function elementsInOrder() {
+  if (!state.model) return [];
+  return [...state.model.elements].sort((a, b) => a.order - b.order || a.seq - b.seq);
+}
+
+function rowsInOrder() {
+  if (!state.model) return [];
+  const bySeq = new Map(state.model.elements.map((element) => [element.seq, element]));
+  return state.model.table
+    .map((row) => ({ row, element: bySeq.get(row.seq) }))
+    .filter((entry) => entry.element)
+    .sort((a, b) => a.element.order - b.element.order || a.row.seq - b.row.seq);
+}
+
+function setNotice(text) {
+  const box = $("notice");
+  box.textContent = text || "";
+  box.hidden = !text;
+}
+
+async function loadSnapshot() {
+  let response;
+  try {
+    response = await fetch("/snapshot", { cache: "no-store", credentials: "same-origin" });
+  } catch (error) {
+    setNotice("The viewer server cannot be reached.");
+    return;
+  }
+  if (response.status === 404) {
+    setNotice("This session is not open. Use the open link printed by the server; it works once.");
+    return;
+  }
+  if (!response.ok) {
+    setNotice("The snapshot could not be produced (status " + response.status + "). The last model stays on screen.");
+    return;
+  }
+  let document_;
+  try {
+    document_ = await response.json();
+  } catch (error) {
+    setNotice("The snapshot is not valid JSON.");
+    return;
+  }
+  setNotice("");
+  const atEnd = state.cursor >= totalCount();
+  state.model = document_.model;
+  state.dropped = Array.isArray(document_.droppedAttributeNames) ? document_.droppedAttributeNames : [];
+  state.cursor = atEnd ? totalCount() : Math.min(state.cursor, totalCount());
+  if (state.selected !== null && !state.model.elements.some((element) => element.seq === state.selected)) {
+    state.selected = null;
+  }
+  renderAll();
+}
+
+function totalCount() {
+  return state.model ? state.model.elements.length : 0;
+}
+
+// ---------------------------------------------------------------- server-sent events
+
+let refreshTimer = null;
+
+function scheduleRefresh() {
+  if (refreshTimer !== null) return;
+  refreshTimer = setTimeout(() => {
+    refreshTimer = null;
+    loadSnapshot();
+  }, 150);
+}
+
+function setConnection(text) {
+  $("connection").textContent = text;
+}
+
+function parseBlock(block) {
+  let id = null;
+  const data = [];
+  for (const line of block.split("\n")) {
+    if (line.startsWith(":")) continue;
+    if (line.startsWith("id:")) id = line.slice(3).trim();
+    else if (line.startsWith("data:")) data.push(line.slice(5).trimStart());
+  }
+  return { id, data: data.join("\n") };
+}
+
+async function followEvents() {
+  let delay = 1000;
+  for (;;) {
+    try {
+      const headers = { Accept: "text/event-stream" };
+      if (state.lastId) headers["Last-Event-ID"] = state.lastId;
+      const response = await fetch("/events", { headers, cache: "no-store", credentials: "same-origin" });
+      if (response.status === 404) {
+        setConnection("not open");
+        return;
+      }
+      if (!response.ok || !response.body) throw new Error("status " + response.status);
+      setConnection(state.lastId ? "live, last seq " + state.lastId : "live");
+      delay = 1000;
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, "\n");
+        let cut = buffer.indexOf("\n\n");
+        while (cut !== -1) {
+          const { id, data } = parseBlock(buffer.slice(0, cut));
+          buffer = buffer.slice(cut + 2);
+          if (id !== null && /^[0-9]{1,16}$/.test(id)) state.lastId = id;
+          if (data) {
+            setConnection("live, last seq " + state.lastId);
+            scheduleRefresh();
+          }
+          cut = buffer.indexOf("\n\n");
+        }
+      }
+    } catch (error) {
+      // fall through to the reconnect below
+    }
+    setConnection("reconnecting");
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    delay = Math.min(delay * 2, 15000);
+  }
+}
+
+// ---------------------------------------------------------------- counters
+
+function kv(list, label, value, sub) {
+  list.push(h("dt", { class: sub ? "sub" : "" }, label), h("dd", null, String(value)));
+}
+
+function renderCounters() {
+  const model = state.model;
+  if (!model) {
+    fill("counters");
+    fill("absence");
+    $("counters-scope").textContent = "";
+    return;
+  }
+  const c = model.counters;
+  $("counters-scope").textContent = "Counts over all " + model.eventCount +
+    " retained events. They are counts of observed or declared facts, never a speedup or a ratio against serial execution.";
+  const out = [];
+  kv(out, "conflicts flagged", c.conflictsFlagged);
+  kv(out, "ordered pairs", c.orderedPairs);
+  kv(out, "independent candidates (complete coverage)", c.independentCandidates);
+  kv(out, "unknown pairs", c.unknownPairs);
+  kv(out, "drawn as swap", c.swaps);
+  kv(out, "drawn as bridge", c.bridges);
+  kv(out, "planned wave width (maximum)", c.plannedWaveWidth.maxWidth === null ? "none planned" : c.plannedWaveWidth.maxWidth);
+  out.push(h("dd", { class: "full" }, c.plannedWaveWidth.label + " (" + c.plannedWaveWidth.plans + " plan(s))"));
+  kv(out, "hazards", c.hazards.total);
+  for (const [name, count] of Object.entries(c.hazards.byKind)) kv(out, name, count, true);
+  kv(out, "gaps", c.gaps.total);
+  for (const [name, count] of Object.entries(c.gaps.byReason)) if (count) kv(out, name, count, true);
+  kv(out, "gate phases", c.gates.phases);
+  kv(out, "gate results", c.gates.results);
+  kv(out, "grants", c.grants.total);
+  for (const name of ["issued", "consumed", "expired", "refused"]) kv(out, name, c.grants[name], true);
+  kv(out, "unverified elements", c.unverifiedElements);
+  fill("counters", out);
+
+  const a = c.absence;
+  const gone = [];
+  kv(gone, "unknown pairs", a.unknownPairs);
+  kv(gone, "independent with incomplete coverage", a.independentWithIncompleteCoverage);
+  kv(gone, "hazards not observed or partly observed", a.hazardsNotObserved);
+  kv(gone, "observation gaps", a.gaps);
+  kv(gone, "elements dropped by a cap", a.truncated);
+  for (const cut of model.truncated) kv(gone, "cap on " + cut.what + " (limit " + cut.limit + ")", cut.dropped + " dropped", true);
+  fill("absence", gone);
+}
+
+function renderLanes() {
+  const lanes = state.model ? state.model.lanes : [];
+  fill("lanes", lanes.map((lane) => h("li", null,
+    lane.label + " ",
+    h("span", { class: "hint" }, "(" + (lane.declared ? lane.host + " " + lane.role : "named by a crossing, not declared") + ") "),
+    lane.unverified ? markNode("unverified") : null)));
+}
+
+function renderDropped() {
+  fill("dropped-list", state.dropped.length ? state.dropped.map((name) => h("li", null, name)) : [h("li", null, "none recorded")]);
+}
+
+// ---------------------------------------------------------------- table
+
+function visibleRows() {
+  return rowsInOrder().slice(0, state.cursor).filter(({ row, element }) => {
+    if (state.filterKind && element.element !== state.filterKind) return false;
+    if (state.filterUncertain && !(row.unverified || row.uncertain)) return false;
+    return true;
+  });
+}
+
+function renderKindFilter() {
+  const select = $("filter-kind");
+  const kinds = [...new Set((state.model ? state.model.elements : []).map((element) => element.element))].sort();
+  if (state.filterKind && !kinds.includes(state.filterKind)) state.filterKind = "";
+  select.replaceChildren(h("option", { value: "" }, "all"),
+    ...kinds.map((kind) => h("option", { value: kind }, kind)));
+  select.value = state.filterKind;
+}
+
+function renderTable() {
+  const rows = visibleRows();
+  const last = state.cursor > 0 ? rowsInOrder()[state.cursor - 1] : null;
+  fill("events-body", rows.map(({ row, element }) => {
+    const [glyph, label] = shapeOf(element);
+    const selected = state.selected === row.seq;
+    const verification = element.verification;
+    const tr = h("tr", {
+      "aria-selected": selected ? "true" : "false",
+      class: last && last.row.seq === row.seq ? "current" : "",
+    },
+    h("td", null, h("button", {
+      type: "button", class: "row-button", "aria-label": "Select event " + row.seq,
+      on: { click: () => select(row.seq, true) },
+    }, String(row.seq))),
+    h("td", null, timeText(element)),
+    h("td", null, h("span", { class: "glyph", "aria-hidden": "true" }, glyph), label),
+    h("td", null, String(row.subject === null || row.subject === undefined ? "" : row.subject)),
+    h("td", null, row.status === null || row.status === undefined ? "—" : String(row.status)),
+    h("td", null, classLabel(row.compatibilityClass)),
+    h("td", null, verificationNode(verification)),
+    h("td", null, marksOf(element).map(markNode)));
+    return tr;
+  }));
+  $("table-empty").hidden = rows.length > 0;
+  $("table-empty").textContent = state.model && totalCount() > 0 && rows.length === 0
+    ? "No events at this position or filter." : "No events to show.";
+}
+
+function select(seq, focusPanel) {
+  state.selected = seq;
+  renderTable();
+  renderEvidence();
+  if (focusPanel) $("evidence-panel").focus({ preventScroll: false });
+}
+
+// ---------------------------------------------------------------- evidence
+
+function listOrNone(values, none) {
+  if (!Array.isArray(values) || values.length === 0) return h("span", null, none);
+  return h("ul", null, values.map((value) => h("li", null, String(value))));
+}
+
+function definitions(pairs) {
+  const nodes = [];
+  for (const [label, value] of pairs) nodes.push(h("dt", null, label), h("dd", null, value));
+  return h("dl", null, nodes);
+}
+
+function section(title, ...body) {
+  return h("section", { class: "evidence-section" }, h("h3", null, title), body);
+}
+
+function detailPairs(element) {
+  switch (element.element) {
+    case "crossing": {
+      const evidence = element.evidence || {};
+      const coverage = Array.isArray(evidence.coverage) ? evidence.coverage : [];
+      const report = element.report;
+      return [
+        ["classification", element.classification],
+        ["drawn as", shapeOf(element)[1]],
+        ["left strand", element.left],
+        ["right strand", element.right],
+        ["shared resources", listOrNone(element.sharedResources, "none recorded")],
+        ["evidence method", String(evidence.method)],
+        ["rule set", String(evidence.ruleSet)],
+        ["coverage", coverage.join(", ") + (element.incompleteCoverage
+          ? " (incomplete: resources not listed are not shown to be absent)" : "")],
+        ["reasons", listOrNone(element.reasons, "none recorded")],
+        ["constraints", listOrNone(element.constraints, "none recorded")],
+        ["lanes passed over", element.passesOverLanes.length ? element.passesOverLanes.join(", ") : "none"],
+        ["report uncertainty", report ? listOrNone(report.uncertainty, "none recorded") : "no report in the retained events"],
+        ["report limits", report ? listOrNone(report.limits, "none recorded") : "no report in the retained events"],
+      ];
+    }
+    case "hazard-cone":
+      return [["hazard", element.hazardKind], ["stage", element.stage], ["units", listOrNone(element.units, "none")],
+        ["not observed", element.absence ? "yes: absence of observation is not evidence that no hazard exists" : "no"]];
+    case "gap":
+      return [["reason", element.reason], ["strand", element.strandId === null ? "none" : element.strandId],
+        ["from seq", element.fromSeq === null ? "unknown" : element.fromSeq],
+        ["to seq", element.toSeq === null ? "unknown" : element.toSeq]];
+    case "wave-plane":
+      return [["plan", element.planId], ["mode", element.mode], ["label", element.label],
+        ["waves", listOrNone(element.waves.map((wave) => wave.width + " wide: " + wave.strands.join(", ")), "none")]];
+    case "wave-marker":
+      return [["schedule", element.scheduleId], ["wave", element.wave], ["phase", element.phase],
+        ["strands", listOrNone(element.strands, "none")]];
+    case "gate-ring":
+      return element.ringKind === "grant"
+        ? [["grant", element.grantId], ["action", element.action], ["state", element.state],
+          ["derived by the viewer", element.derived ? "yes" : "no"]]
+        : [["gate", element.gateId], ["status", element.gateStatus],
+          element.ringKind === "workflow-phase" ? ["phase", element.phase] : ["operation count", element.operationCount]];
+    case "effort":
+      return [["basis", element.effortBasis], ["known tokens (input + output)", element.knownTokens === null ? "unknown" : element.knownTokens]];
+    default:
+      return [];
+  }
+}
+
+function renderEvidence() {
+  const element = state.selected === null || !state.model
+    ? null : state.model.elements.find((candidate) => candidate.seq === state.selected);
+  if (!element) {
+    fill("evidence", h("p", { class: "hint" },
+      "Select an event to see its source event, class, verification and evidence reference."));
+    return;
+  }
+  const ref = element.evidenceRef;
+  const marks = marksOf(element);
+  fill("evidence",
+    h("p", null, h("strong", null, "Event " + element.seq + " · " + element.kind), " ", marks.map(markNode)),
+    section("Event", definitions([
+      ["element", element.element],
+      ["subject", String(element.subject === null || element.subject === undefined ? "" : element.subject)],
+      ["status", element.status === null || element.status === undefined ? "—" : String(element.status)],
+      ["host", element.host],
+      ["time", timeText(element) + " (" + element.basis + ")"],
+    ])),
+    section("Compatibility class", h("p", null, classLabel(element.compatibilityClass)),
+      h("p", { class: "hint" }, "A categorical label, not a guarantee and not a safety ordering.")),
+    section("Verification", h("p", null, verificationNode(element.verification)),
+      h("p", { class: "hint" }, (VERIFICATION[element.verification] || ["", "", ""])[2])),
+    section("Evidence reference", ref
+      ? definitions([["path", ref.path], ["sha256", ref.sha256]])
+      : h("p", null, "None: the event is host-reported or derived by the viewer, so there is no artifact to open.")),
+    detailPairs(element).length ? section("Details", definitions(detailPairs(element))) : null,
+    h("details", null, h("summary", null, "All model fields"), h("pre", null, JSON.stringify(element, null, 2))));
+}
+
+// ---------------------------------------------------------------- playback
+
+function renderPlayback() {
+  const total = totalCount();
+  const range = $("pb-range");
+  range.max = String(total);
+  range.value = String(state.cursor);
+  $("pb-count").textContent = state.cursor + " of " + total;
+  $("pb-back").disabled = state.cursor <= 0;
+  $("pb-start").disabled = state.cursor <= 0;
+  $("pb-forward").disabled = state.cursor >= total;
+  $("pb-play").textContent = state.playing ? "Pause" : "Play";
+  $("pb-play").setAttribute("aria-pressed", state.playing ? "true" : "false");
+}
+
+function setCursor(value) {
+  state.cursor = Math.max(0, Math.min(totalCount(), value));
+  renderTable();
+  renderPlayback();
+}
+
+function stopPlayback() {
+  state.playing = false;
+  if (state.timer !== null) clearTimeout(state.timer);
+  state.timer = null;
+}
+
+function tick() {
+  state.timer = null;
+  if (!state.playing) return;
+  if (state.cursor >= totalCount()) {
+    stopPlayback();
+    renderPlayback();
+    return;
+  }
+  setCursor(state.cursor + 1);
+  const speed = Number($("pb-speed").value) || 1;
+  state.timer = setTimeout(tick, STEP_MS / speed);
+}
+
+function togglePlay() {
+  if (state.playing) {
+    stopPlayback();
+  } else {
+    if (state.cursor >= totalCount()) state.cursor = 0;
+    state.playing = true;
+    state.timer = setTimeout(tick, 0);
+  }
+  renderTable();
+  renderPlayback();
+}
+
+function bindControls() {
+  $("pb-start").addEventListener("click", () => { stopPlayback(); setCursor(0); });
+  $("pb-back").addEventListener("click", () => { stopPlayback(); setCursor(state.cursor - 1); });
+  $("pb-forward").addEventListener("click", () => { stopPlayback(); setCursor(state.cursor + 1); });
+  $("pb-end").addEventListener("click", () => { stopPlayback(); setCursor(totalCount()); });
+  $("pb-play").addEventListener("click", togglePlay);
+  $("pb-range").addEventListener("input", (event) => { stopPlayback(); setCursor(Number(event.target.value)); });
+  $("filter-kind").addEventListener("change", (event) => { state.filterKind = event.target.value; renderTable(); });
+  $("filter-uncertain").addEventListener("change", (event) => { state.filterUncertain = event.target.checked; renderTable(); });
+}
+
+// ---------------------------------------------------------------- start
+
+function renderAll() {
+  renderKindFilter();
+  renderCounters();
+  renderLanes();
+  renderDropped();
+  renderTable();
+  renderEvidence();
+  renderPlayback();
+}
+
+renderLegend();
+bindControls();
+renderAll();
+loadSnapshot();
+followEvents();
