@@ -65,3 +65,25 @@ Original project tests retain their stated project license.
 No benchmark stack, bundled dataset, third-party runner patch, bypass launcher,
 upstream documentation/artwork or branding is imported. Other upstream assets
 have no rights or execution clearance from this bounded inventory.
+
+## Three.js (activity viewer)
+
+Pinned source: npm package `three` 0.186.0 (r186), tarball
+`https://registry.npmjs.org/three/-/three-0.186.0.tgz`, registry integrity
+`sha512-cr/fIM2ddMSVbYVgkfD4jLJv7Fh/8ZTjvo+7gQeSVGUZHxpx9FDwoL5iC7hUz/LiRA8wMbqfnb90xKfm1/HHkQ==`,
+Copyright © 2010-2026 three.js authors, MIT. The upstream license is retained in
+[`LICENSES/three-MIT.txt`](../../LICENSES/three-MIT.txt) and next to the files.
+Decision: [ADR 0033](../adr/0033-vendored-threejs-mit-boundary.md).
+
+Exactly three prebuilt ES module files are vendored, byte-identical to the
+tarball, under `integrations/agent-braid-view/web/vendor/three/`: `three.module.js`
+and `three.core.js` (from `build/`) and `addons/controls/OrbitControls.js` (from
+`examples/jsm/controls/`), plus `LICENSE`. `OrbitControls.js` keeps the bare
+specifier `three`, resolved by the import map that T025 adds to the viewer page. The
+SHA-256 of every file is in `integrations/agent-braid-view/web/vendor/manifest.json`;
+the provenance receipt
+[`specs/061-activity-viewer/evidence/vendor-threejs-20261102.json`](../../specs/061-activity-viewer/evidence/vendor-threejs-20261102.json)
+records that the tarball matches the registry integrity and that the vendored
+bytes equal the extracted files. Other upstream files, post-processing addons and
+other third-party web code are not vendored; updates repeat the manifest and the
+receipt and require review.

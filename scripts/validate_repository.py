@@ -66,6 +66,7 @@ REQUIRED_FILES = (
     "schemas/governance/public-export-manifest.schema.json",
     "LICENSES/Spec-Kit-MIT.txt",
     "LICENSES/python-skills-MIT.txt",
+    "LICENSES/three-MIT.txt",
     ".specify/memory/PROVENANCE.md",
     ".specify/memory/constitution.md",
     "reports/agent-braid-market-trends-2026.pptx",
@@ -309,11 +310,14 @@ def validate_licensing(failures: list[str]) -> None:
                 error(f"LICENSE missing path mapping: {marker}", failures)
     if "LICENSES/python-skills-MIT.txt" not in license_text:
         error("LICENSE missing vendored Python skills exception", failures)
+    if "LICENSES/three-MIT.txt" not in license_text:
+        error("LICENSE missing vendored Three.js exception", failures)
 
     canonical_markers = {
         "LICENSES/AGPL-3.0-only.txt": "GNU AFFERO GENERAL PUBLIC LICENSE",
         "LICENSES/CC-BY-SA-4.0.txt": "Attribution-ShareAlike 4.0 International",
         "LICENSES/python-skills-MIT.txt": "Copyright (c) 2025 Will McGinnis",
+        "LICENSES/three-MIT.txt": "Copyright © 2010-2026 three.js authors",
     }
     for relative, marker in canonical_markers.items():
         path = ROOT / relative
@@ -327,6 +331,8 @@ def validate_licensing(failures: list[str]) -> None:
             error("NOTICE must preserve the founder attribution", failures)
         if "Will McGinnis" not in notice:
             error("NOTICE must preserve the vendored Python skills attribution", failures)
+        if "three.js authors" not in notice:
+            error("NOTICE must preserve the vendored Three.js attribution", failures)
 
     for path in repository_files():
         if not path.is_file() or ".git" in path.parts or "LICENSES" in path.parts:
