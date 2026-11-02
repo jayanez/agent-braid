@@ -1268,9 +1268,12 @@ class JudgeProfileTests(unittest.TestCase):
 
 
 class LaunchProbeExecutorTests(unittest.TestCase):
-    LAUNCH = b'(allow process-exec (literal "/c/claude"))\n(allow file-read* (literal "/") (literal "/c/claude"))\n'
+    LAUNCH = (b'(allow process-exec (literal "/c/claude"))\n'
+              b'(allow file-read* file-map-executable (literal "/") (literal "/c/claude"))\n'
+              b'(allow file-write* (subpath "/w"))\n')
     PROBE = (b'(allow process-exec (literal "/c/claude") (literal "/c/python"))\n'
-             b'(allow file-read* (literal "/") (literal "/c/claude") (literal "/c/python"))\n')
+             b'(allow file-read* file-map-executable (literal "/") (literal "/c/claude") (literal "/c/python"))\n'
+             b'(allow file-write* (subpath "/w"))\n')
 
     def test_delta_must_be_exactly_the_interpreter_literal(self):
         delta = q.launch_probe_delta_is_interpreter_only
@@ -1279,6 +1282,8 @@ class LaunchProbeExecutorTests(unittest.TestCase):
         self.assertFalse(delta(self.LAUNCH, self.PROBE + b"(allow network*)\n", "/c/python"))
         self.assertFalse(delta(self.LAUNCH, self.PROBE.replace(b"(literal \"/\")", b"(subpath \"/\")"), "/c/python"))
         self.assertFalse(delta(self.PROBE, self.PROBE, "/c/python"))  # the launch profile already allows it
+        widened = self.PROBE.replace(b'(subpath "/w"))', b'(subpath "/w") (literal "/c/python"))')
+        self.assertFalse(delta(self.LAUNCH, widened, "/c/python"))  # a write rule gained the literal
 
     def backend(self, launch=LAUNCH, probe=PROBE, hook=True):
         calls = []
@@ -1419,13 +1424,23 @@ class ReviewRunnerTests(unittest.TestCase):
             return {(1, "t0")} if state["calls"] % 2 else {(1, "t0"), (9, "t1")}
 
         out, summary = self.run_all(world, process_table=table)
-        self.assertIn(9, world.killed)
+        self.assertNotIn(9, world.killed)  # unattributed processes are reported, never killed, by default
+        killing = World(self)
+        state["calls"] = 0
+        self.run_all(killing, process_table=table, kill_table_diff=True)
+        self.assertIn(9, killing.killed)
         self.assertEqual(summary["effects"]["process"]["status"], "not-enforced")
         proc02 = next(r for r in self.rows(out) if r["probe"] == "PROC-02" and r["mode"] == "contained")
         self.assertEqual(proc02["independent"]["survivors"], 1)
         self.assertEqual(proc02["independent"]["processTable"], "ok")
 
-    def test_unavailable_process_table_is_recorded_and_the_nonce_scan_still_decides(self):
+    def test_survival_needs_the_helper_to_have_actually_tried(self):
+        world = World(self)
+        world.contained["PROC-04"] = {"double-fork": "inconclusive"}
+        _, summary = self.run_all(world)
+        self.assertEqual(summary["probes"]["PROC-04"]["status"], "inconclusive")
+
+    def test_unavailable_process_table_cannot_pass_a_survivor_probe(self):
         world = World(self)
 
         def broken():
@@ -1434,7 +1449,8 @@ class ReviewRunnerTests(unittest.TestCase):
         out, summary = self.run_all(world, process_table=broken)
         proc02 = next(r for r in self.rows(out) if r["probe"] == "PROC-02" and r["mode"] == "contained")
         self.assertEqual(proc02["independent"]["processTable"], "unavailable")
-        self.assertTrue(summary["passRuleSatisfied"])
+        self.assertFalse(summary["passRuleSatisfied"])
+        self.assertEqual(summary["effects"]["process"]["status"], "inconclusive")
 
     def test_the_supervisor_environment_carries_a_dummy_only_while_the_contained_helper_runs(self):
         world = World(self)
@@ -1562,7 +1578,7 @@ class SessionStopRuleTests(unittest.TestCase):
         with self.assertRaises(Crash):
             world.runner(sessions=driver).run(out, environment=environment())
         counter = json.loads((out / q.SESSION_COUNT_FILE).read_text())
-        self.assertEqual(counter, {"sessionsStarted": 2})
+        self.assertEqual(counter, {"sessionsStarted": 2, "quotaStop": None})
         self.assertEqual(oct((out / q.SESSION_COUNT_FILE).stat().st_mode & 0o777), "0o600")
         retry = World(self)
         summary = retry.runner().run(out, environment=environment())
@@ -1581,6 +1597,16 @@ class SessionStopRuleTests(unittest.TestCase):
         with self.assertRaises(q.ProbeError) as raised:
             world.runner().run(out, environment=environment())
         self.assertEqual(raised.exception.reason, "bundle-exists")
+
+    def test_a_corrupt_counter_or_a_stored_stop_cannot_reopen_the_budget(self):
+        for content in ("not json", json.dumps({"sessionsStarted": "x"}), json.dumps([1]),
+                        json.dumps({"sessionsStarted": 1, "quotaStop": "probe-above-five-hour-cap"})):
+            world = World(self)
+            out = world.tmp / "bundle"
+            out.mkdir()
+            (out / q.SESSION_COUNT_FILE).write_text(content)
+            self.run_all(world, out=out)
+            self.assertEqual(world.session_calls, [], content)
 
     def test_a_stored_count_of_three_refuses_every_session(self):
         world = World(self)
@@ -1637,7 +1663,7 @@ class BundleHardeningTests(unittest.TestCase):
         self.assertEqual(values, ["tok-1234567890abcdef"])
         self.assertEqual(q.credential_values(world.tmp / "missing"), [])
         with self.assertRaises(q.ProbeError) as raised:
-            world.runner(credential_values=lambda: values).run(
+            world.runner(read_credentials=lambda: values).run(
                 world.tmp / "b", environment=environment(backend="tok-1234567890abcdef"))
         self.assertEqual(raised.exception.reason, "secret-in-artifact")
         self.assertNotIn("tok-1234567890abcdef", str(raised.exception))
@@ -1649,7 +1675,7 @@ class BundleHardeningTests(unittest.TestCase):
             raise OSError("denied")
 
         with self.assertRaises(q.ProbeError) as raised:
-            world.runner(credential_values=broken).run(world.tmp / "b", environment=environment())
+            world.runner(read_credentials=broken).run(world.tmp / "b", environment=environment())
         self.assertEqual(raised.exception.reason, "credential-scan-unavailable")
         self.assertFalse((world.tmp / "b" / "summary.json").exists())
 

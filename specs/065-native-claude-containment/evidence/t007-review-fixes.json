@@ -1,0 +1,51 @@
+{
+  "spec": "SPEC-065",
+  "task": "T007 (fixes for the T008 review, probe-catalog-review.md)",
+  "executionAuthorization": false,
+  "catalogSha256": {
+    "old": "4445ba5b42dccc099c7f7e440f1cfd240f85b00ff0dc24e2a6406345a7d44d52",
+    "new": "0b81569a4267759c5eeee472010d679d58c6afaf078952da4e473ecd2e315492",
+    "note": "The catalog document now carries runnerSha256 (the SHA-256 of agent_braid/harness_qualification_probes.py), so any edit to the runner, judge or arena changes the hash. ContainmentPolicy.probe_catalog_sha256 and the environment hash must be re-bound to the new value; make_f4_probe_runner now returns error unless the policy binds it."
+  },
+  "inputs": {
+    "agent_braid/harness_qualification_probes.py": "0991abd22c899df124839d844105f75de61d8e49925544fa91ab6ee94b06f09a",
+    "tests/test_harness_qualification_probes.py": "dd5f9ed23c27815a5a7bc6239ea0c733611cff9e5549b633623dec9715d32424",
+    "agent_braid/harness_containment_macos.py (read only, not edited)": "dfa7fda83f782edc32150a942647df3c480dd4bf0fd01ef771ce3402e20c3c06",
+    "agent_braid/harness_quota.py (settle_probe consumed)": "7fc5a4b710e1b0627f4535194aff1a922f6d6e1545e92237b64d8a1f253808bb"
+  },
+  "findings": {
+    "RV-04": "fixed on the probe side: contained-launch rows for every helper probe, judged with the fixture row (an escape in either is allowed); ContainedExecutor(profile=launch-probe) and a launch-profile delta check; NC-11 subset runs both profiles and refuses on disagreement. Needs the backend hook, see backendHooksNeeded.",
+    "RV-05": "fixed: gaierror is inconclusive except for the explicit DNS attempt; NET-01 uses a runner-owned loopback listener and a public literal (by-name is a tripwire); direct-allowed-host uses a runner-resolved literal; NET-04 adds a host LAN listener.",
+    "RV-06": "fixed: descriptor inventory (anything beyond 0-2 is a leak), /dev/ptmx and /dev/fd as counted attempts, /dev/tty and an in-candidate FIFO as notes.",
+    "RV-07": "fixed: Spotlight mach lookups replace mdfind as counted attempts; mdfind is a tripwire.",
+    "RV-08": "fixed: mach sweep over launchd names enumerated by the runner (names recorded in the rows), plus tccd, IOKit service, sysctl, proc_listpids, POSIX and SysV shared memory and semaphore attempts. Mach status mapping (1100 denied) and launchctl output shape remain hypotheses for T009.",
+    "RV-09": "fixed: adjacent decoys next to the real candidate, run dir, run root, config parent and sibling, interpreter root; own-tree hard link; real LaunchAgents path; data-volume, /var and /tmp aliases; rename/link out, copy/clone in, chmod, chflags, xattr. All planted paths are removed on close.",
+    "RV-10": "fixed: LAN listener, 0.0.0.0, v4-mapped, RFC 1918, link-local and multicast tripwires; proxy parsing block (non-allowed host, wrong port, userinfo, trailing dot, absolute URI, pipelined, SNI mismatch) against a live EgressProxy with a recording upstream, with a sanity request guarding the observation; the control runs it against the permissive relay.",
+    "RV-11": "fixed: signal 0 to the supervisor, ptrace attach to the sibling (counted), task_for_pid (tripwire).",
+    "RV-12": "fixed: (pid, start time) diff of the runner user's process table next to the nonce scan; unattributed new processes are reported and escalate but are not killed unless kill_table_diff is set; an unavailable table makes a survivor probe inconclusive.",
+    "RV-13": "partial by design: limitExceeded, outputTruncated and timedOut are recorded in the row, memory and memory-burst denials require limitExceeded == memory (unavailable means inconclusive), fast-burst allocation added. Needs ChildResult.limit_exceeded from the backend.",
+    "RV-14": "fixed: runnerSha256 in the catalog document; make_f4_probe_runner returns error unless the policy binds the catalog. Adding the other component files to the environment hash is T005.",
+    "RV-15": "fixed: pre/post readings through settle_probe after every session, stop above 2 % or on a missing/stale reading, stop and count persisted atomically in .sessions.json (corrupt file means budget spent) and merged into quota.json.",
+    "RV-24": "fixed: allow-listed environment document, token-shape and long-run scanning over all files, credential_values(config_dir) feeding the scan list through read_credentials.",
+    "RV-25": "fixed: a non-ENV_DENY dummy is set in the supervisor environment around every contained helper call.",
+    "RV-26": "fixed: tunnel/tls are denied only on an explicit 403.",
+    "RV-27": "fixed: _validate_catalog compares every call site with the declared attempts; raw-socket is a tripwire."
+  },
+  "backendHooksNeeded": {
+    "launch-probe profile": "ContainmentPolicy.render('launch-probe') identical to launch plus the interpreter exec literal, in ENTRIES and the environment hash; MacOSContainment.run_launch_probe(source, workdir, limits) with probes=False and its own exclusive lock; a backend unit test of the one-literal delta.",
+    "limit_exceeded": "ChildResult (or a superset) exposing the stop reason limitExceeded so memory denials can be attributed.",
+    "cancel": "run_probe(cancel=) for the PROC-08 cancellation driver (RV-02).",
+    "counters": "EgressProxy counters for NET-05-CLI (RV-03)."
+  },
+  "followUps": [
+    "Judge changes consuming RV-01 (separate escaped/surviving counts for PROC-04/PROC-08), RV-02 (cancel driver) and RV-03 (NET-05-CLI verdict from proxy counters) after the T005 delta lands.",
+    "Wire the orchestrator: read_quota, read_credentials, real_home, lan_ip, allowed_ip, mach_names for the live attempt.",
+    "Delta review of the new attempts before T009; controls for ptrace, task_for_pid, tccd and the Spotlight services are unverified."
+  ],
+  "executedChecks": [
+    {"command": ".venv-speckit/bin/python -m unittest tests.test_harness_qualification_probes -v", "exitCode": 0, "testsRun": 158, "scope": "1 skipped (live local positive controls). Executors, backend, process table, proxy block and session driver are doubles except the real EgressProxy on loopback with a refusing recorder."},
+    {"command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"", "exitCode": 0, "testsRun": 995, "scope": "All harness modules, 1 skipped."},
+    {"command": "BRAID_T007_LIVE_CONTROLS=1 unittest LiveControlTests (local, disposable arena, no sandbox, no claude, no network)", "exitCode": 0, "scope": "Every counted attempt of FS-01..06, CRED-01/03/04 and PROC-01 succeeds uncontained on macOS 27."}
+  ],
+  "limits": "Unit-level engineering evidence only. Nothing native ran, no qualification record exists or is produced, and the new attempts are unverified against a real sandbox until T009."
+}

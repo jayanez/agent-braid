@@ -1294,7 +1294,8 @@ class Arena:
         adjacent = self._adjacent(layout)
         own_dir = Path(real_home) if real_home else self.root / "own"
         own_dir.mkdir(exist_ok=True)
-        agents = self._plant_dir(str(own_dir / "Library")) and self._plant_dir(str(own_dir / "Library/LaunchAgents"))
+        self._plant_dir(str(own_dir / "Library"))
+        agents = self._plant_dir(str(own_dir / "Library/LaunchAgents"))
         own_file = self._plant(f"{own_dir}/.braid-own-{self.nonce}")
         var_alias = (f"/var/{outside.as_posix().removeprefix('/private/var/')}/new.txt"
                      if outside.as_posix().startswith("/private/var/") else "")
@@ -1561,11 +1562,18 @@ def launch_probe_delta_is_interpreter_only(launch: bytes, probe: bytes, interpre
     plain, variant = launch.decode(), probe.decode()
     if token in plain or token not in variant:
         return False
-
-    def lines(text: str) -> list[str]:
-        return [" ".join(line.replace(token, "").split()).replace(" )", ")") for line in text.splitlines()]
-
-    return lines(plain) == lines(variant)
+    old, new = plain.splitlines(), variant.splitlines()
+    if len(old) != len(new):
+        return False
+    for before, after in zip(old, new):
+        if before == after:
+            continue
+        # only an exec rule may differ, and only by gaining the literal at its end
+        if not after.startswith("(allow process-exec") and "file-map-executable" not in after:
+            return False
+        if after.count(token) != 1 or " ".join(after.replace(token, "").split()).replace(" )", ")") != before:
+            return False
+    return True
 
 
 class ContainedExecutor:
@@ -1683,7 +1691,7 @@ def parse_helper_output(probe: Probe, result: ExecResult) -> tuple[dict[str, str
             outcomes[name] = event["outcome"]
     killed = result.settled and not result.timed_out and (result.exit_code is None or result.exit_code < 0)
     for name in begun - set(outcomes):
-        if name in probe.terminal and killed:
+        if name in probe.terminal and name in LIMIT_ATTRIBUTION and killed:
             outcomes[name] = "denied"
     return outcomes, begun
 
@@ -1821,9 +1829,12 @@ def run_proxy_parsing(*, control: bool, relay: str | None, proxy_factory: Callab
         results = {}
         for name, (payload, kind) in cases.items():
             before = len(calls)
-            hello = client_hello("example.com") if kind == "sni" else None
-            first, closed = _exchange(address, payload, hello, timeout)
-            results[name] = classify_proxy_case(kind, first, closed, len(calls) - before)
+            try:  # one failing case must not erase an escape another case proved
+                hello = client_hello("example.com") if kind == "sni" else None
+                first, closed = _exchange(address, payload, hello, timeout)
+                results[name] = classify_proxy_case(kind, first, closed, len(calls) - before)
+            except Exception:
+                results[name] = "inconclusive"
         return results
     except Exception:
         return unknown
@@ -1864,22 +1875,22 @@ class QualificationProbeRunner:
                  public: Mapping | None = None, spawn_sibling: bool = True,
                  arena_factory: Callable[..., Arena] = Arena, clock: Callable[[], float] = time.time,
                  layout: Callable[[Path | None], Mapping[str, str]] | None = None,
-                 real_home: object = _AUTO, mach_names: Callable[[], Sequence[str]] = enumerate_mach_services,
+                 real_home: str | None = None, mach_names: Callable[[], Sequence[str]] = enumerate_mach_services,
                  allowed_ip: str | None = None, resolver: Callable[[str], str | None] = resolve_ipv4,
-                 lan_ip: str | None = None, credential_values: Callable[[], Sequence[str]] = lambda: (),
+                 lan_ip: str | None = None, read_credentials: Callable[[], Sequence[str]] = lambda: (),
                  proxy_factory: Callable[..., object] = _mac.EgressProxy,
-                 proxy_block: Callable[..., dict] = run_proxy_parsing):
+                 proxy_block: Callable[..., dict] = run_proxy_parsing, kill_table_diff: bool = False):
         self.control, self.contained, self.launch_contained = control, contained, launch_contained
         self.arena_parent, self.proxy_address = Path(arena_parent), proxy_address
         self.sessions, self.process_scan, self.process_kill = sessions, process_scan, process_kill
         self.process_table, self.cancel_check, self.layout = process_table, cancel_check, layout
         self.public = dict(DEFAULT_PUBLIC if public is None else public)
         self.spawn_sibling, self.arena_factory, self.clock = spawn_sibling, arena_factory, clock
-        self.real_home = home_directory() if real_home is _AUTO else real_home
+        self.real_home = real_home  # opt in: the orchestrator passes home_directory()
         self.mach_names, self.allowed_ip, self.resolver = mach_names, allowed_ip, resolver
         self.lan_ip = discover_lan_address() if lan_ip is None else (lan_ip or None)
-        self.credential_values, self.proxy_factory = credential_values, proxy_factory
-        self.proxy_block = proxy_block
+        self.read_credentials, self.proxy_factory = read_credentials, proxy_factory
+        self.proxy_block, self.kill_table_diff = proxy_block, kill_table_diff
         self.quota: list[dict] = []
         self.markers: list[str] = []
         self._session_count = 0
@@ -1970,19 +1981,26 @@ class QualificationProbeRunner:
             changed = arena.changed(before) if probe.snapshot else []
             hits = arena.hit_counts()
             found = list(self.process_scan(arena.nonce)) if probe.survivors else []
+            scanned = set(found)
             table_after = self._table() if probe.survivors else None
             if table_before is not None and table_after is not None:
                 found = sorted({*found, *(pid for pid, _ in table_after - table_before)})
+            table_ok = table_before is not None and table_after is not None
             if found:
-                self.process_kill(found)
+                self.process_kill(found if self.kill_table_diff else [p for p in found if p in scanned])
             parsed, begun = parse_helper_output(probe, result)
             tripped = [] if control else [n for n in probe.tripwires if parsed.get(n) == "allowed"]
+            if probe.survivors and not control and not table_ok:
+                # the cooperative nonce scan alone cannot show that a hostile survivor is caught
+                parsed = {n: ("inconclusive" if v == "denied" else v) for n, v in parsed.items()}
             for name, reason in LIMIT_ATTRIBUTION.items():
                 # a kill is a memory denial only when the backend says its memory watchdog fired
                 if not control and parsed.get(name) == "denied" and result.limit_exceeded != reason:
                     parsed[name] = "inconclusive"
             if probe.judge == "survivors":
-                parsed = _survival_state(probe, bool(parsed or begun), result, len(found))
+                tried = any(v in ("allowed", "denied") for v in parsed.values()) or (
+                    bool(begun) and result.timed_out)
+                parsed = _survival_state(probe, tried, result, len(found))
             if probe.id == "PROC-08":
                 parsed["cancel-settlement"] = self._cancel(control, parsed["outlive-timeout"])
             if probe.id == "NET-05":
@@ -2027,13 +2045,20 @@ class QualificationProbeRunner:
 
     # sessions: NC-10 cap, stop rule and persisted count ---------------------------------------
 
+    def _persist_counter(self) -> None:
+        if self._counter is None:
+            return
+        self._counter.parent.mkdir(parents=True, exist_ok=True)
+        os.chmod(self._counter.parent, 0o700)
+        temporary = self._counter.with_name(SESSION_COUNT_FILE + ".tmp")
+        temporary.write_text(json.dumps({"sessionsStarted": self._session_count,
+                                         "quotaStop": self._quota_stop}) + "\n")
+        os.chmod(temporary, 0o600)
+        os.replace(temporary, self._counter)
+
     def _reserve_session(self) -> None:
         self._session_count += 1
-        if self._counter is not None:
-            self._counter.parent.mkdir(parents=True, exist_ok=True)
-            os.chmod(self._counter.parent, 0o700)
-            self._counter.write_text(json.dumps({"sessionsStarted": self._session_count}) + "\n")
-            os.chmod(self._counter, 0o600)
+        self._persist_counter()
 
     def _settle_quota(self, session: SessionResult) -> dict:
         """The NC-10 stop rule: pre and post readings from the orchestrator, at most 2 % of the 5-hour
@@ -2063,6 +2088,7 @@ class QualificationProbeRunner:
         decision = self._settle_quota(session)
         if not decision["proceed"]:
             self._quota_stop = decision["reason"]
+            self._persist_counter()
         readings = json.loads(canonical(dict(session.quota))) if isinstance(session.quota, Mapping) else {}
         self.quota.append({"probe": probe.id, "quota": readings, "decision": decision})
         key_source, _ = _stream(session.stdout)
@@ -2077,15 +2103,21 @@ class QualificationProbeRunner:
 
     def _open_counter(self, out: Path) -> None:
         """Resume the persisted session count of an earlier, unfinished run into the same directory."""
-        _require(not out.exists() or (out.is_dir() and {p.name for p in out.iterdir()} <= {SESSION_COUNT_FILE}),
+        _require(not out.exists() or (out.is_dir() and {p.name for p in out.iterdir()} <= {SESSION_COUNT_FILE, SESSION_COUNT_FILE + ".tmp"}),
                  "bundle-exists")
         self._counter = out / SESSION_COUNT_FILE
-        try:
-            stored = json.loads(self._counter.read_text())["sessionsStarted"]
-        except (OSError, ValueError, KeyError, TypeError):
+        if not self._counter.exists():
             return
-        if type(stored) is int and stored >= 0:
-            self._session_count = max(self._session_count, stored)
+        try:
+            stored = json.loads(self._counter.read_text())
+            count, stop = stored["sessionsStarted"], stored.get("quotaStop")
+            _require(type(count) is int and count >= 0 and (stop is None or type(stop) is str))
+        except (OSError, ValueError, KeyError, TypeError, AttributeError, ProbeError):
+            # an unreadable counter must not reset the cap: assume the budget is spent
+            self._session_count, self._quota_stop = MAX_PROBE_SESSIONS, "session-counter-unreadable"
+            return
+        self._session_count = max(self._session_count, count)
+        self._quota_stop = self._quota_stop or stop
 
     def run(self, out_dir: Path | str, *, environment: Mapping, probes: Sequence[str] | None = None,
             secrets: Sequence[str] = ()) -> dict:
@@ -2093,13 +2125,13 @@ class QualificationProbeRunner:
         ids = list(BY_ID) if probes is None else list(probes)
         _require(all(i in BY_ID for i in ids) and len(ids) == len(set(ids)), "unknown-probe")
         env = _environment_document(environment)
+        try:  # before any session is spent; leaving it unwired scans no credential literals
+            credentials = [v for v in self.read_credentials() if type(v) is str]
+        except Exception:
+            raise ProbeError("credential-scan-unavailable") from None
         self._open_counter(Path(out_dir))
         started = self.clock()
         rows = [self._safe_mode(BY_ID[i], mode) for i in ids for mode in self.modes(BY_ID[i])]
-        try:
-            credentials = [v for v in self.credential_values() if type(v) is str]
-        except Exception:
-            raise ProbeError("credential-scan-unavailable") from None
         return write_bundle(out_dir, environment=env, rows=rows, quota=self.quota, summary=summarize(rows),
                             secrets=[*secrets, *self.markers, *credentials], started=started,
                             sessions_started=self._session_count)
@@ -2188,7 +2220,7 @@ def write_bundle(out_dir: Path | str, *, environment: Mapping, rows: Sequence[Ma
     qualification record among them and no function in this module that could produce one."""
     out = Path(out_dir)
     environment = _environment_document(environment)
-    _require(not out.exists() or (out.is_dir() and {p.name for p in out.iterdir()} <= {SESSION_COUNT_FILE}),
+    _require(not out.exists() or (out.is_dir() and {p.name for p in out.iterdir()} <= {SESSION_COUNT_FILE, SESSION_COUNT_FILE + ".tmp"}),
              "bundle-exists")
     texts = {
         "environment.json": canonical(dict(environment)).decode() + "\n",
@@ -2222,7 +2254,8 @@ def verify_bundle(out_dir: Path | str) -> str:
     hashes = {name: sha256((out / name).read_bytes()).hexdigest()
               for name in BUNDLE_FILES if name != "summary.json"}
     expected = sha256("".join(f"{n}:{hashes[n]}\n" for n in sorted(hashes)).encode()).hexdigest()
-    _require(summary.get("files") == hashes and summary.get("bundleSha256") == expected, "bundle-drift")
+    _require(summary.get("files") == hashes and summary.get("bundleSha256") == expected
+             and summary.get("catalogSha256") == CATALOG_SHA256, "bundle-drift")
     rows = [parse_json(line) for line in (out / "results.jsonl").read_bytes().split(b"\n") if line]
     derived = json.loads(canonical(summarize(rows)))
     _require(all(summary.get(k) == v for k, v in derived.items()), "bundle-drift")
