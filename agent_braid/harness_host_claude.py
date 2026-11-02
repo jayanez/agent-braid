@@ -43,9 +43,10 @@ MAX_TURNS = 8
 NATIVE_MAX_WALL_SECONDS = 1800
 MAX_PROMPT_BYTES = 131_072
 # Fixture-level assumption about ``init.apiKeySource``; anything else is a possible
-# paid route and is refused until T008 observes the real values.
+# paid route and is refused until the T009 probe sessions observe the real values (the
+# probe bundle records the label the CLI reported, DRV-14).
 SUBSCRIPTION_KEY_SOURCES = frozenset({"none", "oauth"})
-# Typed policy for the future T008 native launcher; the double ignores it. HOME-derived
+# Typed policy for the native launcher (T006 transport); the double ignores it. HOME-derived
 # configuration stays reachable for authentication, so the launcher must contain it.
 ENV_ALLOW = ("HOME", "PATH")  # existing authentication lives under HOME
 ENV_DENY = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL",
