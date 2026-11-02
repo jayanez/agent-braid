@@ -389,11 +389,12 @@ class SettingsAndResolveTests(unittest.TestCase):
     def test_standing_authorization_through_a_scope_only_for_merge(self):
         resolved = ha.resolve(profile("strict"), {"user": self.doc("user", {"merge": {"mode": "standing-authorization"}})})
         self.assertEqual(self.row(resolved, "merge")["mode"], "standing-authorization")
-        for checkpoint, reason in (("pr-open", "mode-not-allowed"), ("harness-self-change", "mode-not-allowed")):
-            mode = "standing-authorization" if checkpoint == "pr-open" else "approve-each"
-            with self.assertRaises(ha.AssuranceError) as ctx:
-                ha.resolve(profile(), {"user": self.doc("user", {checkpoint: {"mode": mode}})})
-            self.assertEqual(ctx.exception.reason, reason)
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            ha.resolve(profile(), {"user": self.doc("user", {"pr-open": {"mode": "standing-authorization"}})})
+        self.assertEqual(ctx.exception.reason, "mode-not-allowed")
+        resolved = ha.resolve(profile(), {"user": self.doc("user", {"harness-self-change": {"mode": "approve-each"}})})
+        self.assertEqual(self.row(resolved, "harness-self-change")["mode"], "human-only")
+        self.assertEqual(resolved["refusedLowerings"][0]["checkpoint"], "harness-self-change")
 
     def test_malformed_documents_are_refused_whole(self):
         cases = [
@@ -526,8 +527,6 @@ class OperatorLoaderTests(OperatorFixture):
 
 
 class JournalTests(OperatorFixture):
-    HUMAN = ("human", "founder")
-
     def change(self, at, kind="human", who="founder", source=None):
         return ha.Change(kind, who, at, source)
 
@@ -627,6 +626,29 @@ class JournalTests(OperatorFixture):
             with self.assertRaises(ha.AssuranceError):
                 ha.ProfileJournal.from_bytes(ha.canonical(forged))
 
+    def test_refusal_is_recorded_before_state_checks_and_has_its_own_cap(self):
+        agent = self.change(5, "agent", "claude")
+        empty = ha.ProfileJournal()
+        for outcome in (empty.commit(agent, self.space), empty.rollback(agent, self.space, reason="x"),
+                        empty.abort(agent, self.space, reason="x")):
+            self.assertEqual(outcome.refusal, "agent-identity")
+            self.assertEqual(outcome.journal.journal[-1]["subject"], None)
+        pending = empty.begin(self.versioned(1), self.change(1), self.space).journal
+        self.assertEqual(pending.begin(self.versioned(2), agent, self.space).refusal, "agent-identity")
+        flooded = empty
+        for i in range(ha.MAX_JOURNAL):
+            flooded = flooded.commit(self.change(5 + i, "agent", "claude"), self.space).journal
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            flooded.commit(self.change(9999, "agent", "claude"), self.space)
+        self.assertEqual(ctx.exception.reason, "journal-full")
+        self.assertIsNone(self.adopt(flooded, self.versioned(1), 9999).pending)
+
+    def test_group_writable_or_foreign_files_cannot_be_operator_input(self):
+        path = self.write(self.space.location(ha.PROFILE_FILE), json.dumps(profile()).encode(), 0o666)
+        with self.assertRaises(ha.AssuranceError):
+            ha.load_profile(self.space)
+        self.assertTrue(path)
+
     def test_state_machine_refusals(self):
         empty = ha.ProfileJournal()
         for call, reason in (
@@ -665,7 +687,10 @@ class JournalTests(OperatorFixture):
         self.assertEqual(ctx.exception.reason, "non-canonical")
         with self.assertRaises(ha.AssuranceError) as ctx:
             ha.ProfileJournal.from_bytes(b"[]")
-        self.assertIn(ctx.exception.reason, ("invalid-registry", "invalid-json"))
+        self.assertEqual(ctx.exception.reason, "invalid-json")
+        for raw in (b'{"format":1}', ha.canonical({"format": ha.JOURNAL_FORMAT, "profiles": [], "journal": []})):
+            with self.assertRaises(ha.AssuranceError):
+                ha.ProfileJournal.from_bytes(raw)
 
     def test_save_and_load_and_concurrent_update(self):
         first = self.adopt(ha.ProfileJournal(), self.versioned(1), 1)

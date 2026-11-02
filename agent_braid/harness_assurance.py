@@ -20,9 +20,12 @@ the attempt is recorded with its scope in ``refusedLowerings``. Scope documents 
 from operator-owned locations (``read_operator_file``: no symlink, regular file, not group/other-writable,
 inside the config directory, outside every working tree). ``ProfileJournal`` records profile changes as an
 append-only begin/commit/abort/rollback journal following the ``harness_promotion`` pattern (that module is
-not used): versions are immutable and strictly increasing per name, only a human actor from an operator-owned
-source may change anything, an agent identity or an agent-writable source is refused and the refusal is
-recorded, and the previous version stays restorable.
+not used): versions are immutable and strictly increasing per name, a change is applied only when its
+caller-declared actor is a human and its declared source file, if any, lies in the operator-owned directory and
+outside every working tree; otherwise it is refused and the refusal is recorded (before any state check), and
+the previous version stays restorable. Like ``harness_promotion`` this is binding, not authenticity: actor and
+source are asserted by the caller, ``source=None`` means no file source was declared, the source check is a
+location check, and the journal digest detects inconsistent edits only, not a recomputed journal.
 
 Nothing here executes, merges, releases or approves anything, reads a clock, host, network or model, and
 ``executionAuthorization`` is never true: a profile is operator-owned advisory configuration. Review depth
@@ -33,6 +36,7 @@ from __future__ import annotations
 from collections.abc import Collection, Mapping
 from dataclasses import dataclass
 import fcntl
+from hashlib import sha256
 import os
 from pathlib import Path
 import re
@@ -58,12 +62,13 @@ DEPTH_CHECKPOINT = "pre-pr-review"
 FLOORS = ("release", "clarification", "grant", "native-effect", "auto-promotion")  # REQ-003: human-only
 NO_ATTRIBUTION = ("pr-open", "merge", "release", "post-merge")  # REQ-003 invariant, true and not settable
 STANDING_CHECKPOINTS = ("merge",)  # Q2
+HUMAN_ONLY = (*FLOORS, "harness-self-change")  # allowed mode: human-only
 _NO_STANDING = tuple(mode for mode in MODES if mode != "standing-authorization")
 ALLOWED_MODES: Mapping[str, tuple[str, ...]] = MappingProxyType({
     **{checkpoint: _NO_STANDING for checkpoint in CHECKPOINTS},
     **{checkpoint: MODES for checkpoint in STANDING_CHECKPOINTS},
     # SPEC-050 / research R2: harness self-change (lesson/profile promotion) stays human-only.
-    **{checkpoint: ("human-only",) for checkpoint in (*FLOORS, "harness-self-change")},
+    **{checkpoint: ("human-only",) for checkpoint in HUMAN_ONLY},
 })
 
 REASONS = (
@@ -257,7 +262,7 @@ def _hash(value: Any) -> bool:
 def validate_settings(document: Any) -> dict[str, Any]:
     """Return an independent copy of a scope settings document, or raise ``AssuranceError``.
 
-    A floor checkpoint set to anything but ``human-only`` and ``noAttribution: false`` are well-formed
+    A human-only checkpoint (floors, ``harness-self-change``) set to anything but ``human-only`` and ``noAttribution: false`` are well-formed
     requests; ``resolve`` refuses and records them. Everything else malformed is refused here.
     """
     _require(type(document) is dict, "invalid-settings")
@@ -274,7 +279,7 @@ def validate_settings(document: Any) -> dict[str, Any]:
         if "mode" in entry:
             mode = entry["mode"]
             _require(type(mode) is str and mode in MODES, "unknown-mode")
-            _require(checkpoint in FLOORS or mode in ALLOWED_MODES[checkpoint], "mode-not-allowed")
+            _require(checkpoint in HUMAN_ONLY or mode in ALLOWED_MODES[checkpoint], "mode-not-allowed")
         if "depth" in entry:
             _require(checkpoint == DEPTH_CHECKPOINT, "depth-not-allowed")
             _require(type(entry["depth"]) is str and entry["depth"] in DEPTHS, "unknown-depth")
@@ -316,7 +321,7 @@ def resolve(profile: Any, documents: Mapping[str, Any] | None = None) -> dict[st
                 if dimension not in entry:
                     continue
                 value = entry[dimension]
-                if dimension == "mode" and row["checkpoint"] in FLOORS and value != "human-only":
+                if dimension == "mode" and row["checkpoint"] in HUMAN_ONLY and value != "human-only":
                     refused.append({"checkpoint": row["checkpoint"], "dimension": "mode", "requested": value,
                                     "scope": scope, "floor": "human-only", "reason": "floor-not-human-only"})
                 elif row[f"{dimension}Source"] == "profile":
@@ -370,12 +375,12 @@ def read_operator_file(path: str | os.PathLike, space: OperatorSpace) -> bytes |
     """Read an operator-owned file; ``None`` when it does not exist.
 
     Refused with ``unobservable-source``: a symlink, anything that is not a regular file, a file writable by
-    group or others, and a file outside the config directory or inside any working tree.
+    group or others, a file owned by another user, and a file outside the config directory or inside any working tree.
     """
     try:
         if os.path.islink(path):
             raise AssuranceError("unobservable-source")
-        descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0))
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     except FileNotFoundError:
         return None
     except OSError:
@@ -383,7 +388,7 @@ def read_operator_file(path: str | os.PathLike, space: OperatorSpace) -> bytes |
     try:
         info = os.fstat(descriptor)
         if (not stat.S_ISREG(info.st_mode) or info.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
-                or not space.owns(path)):
+                or info.st_uid != os.getuid() or not space.owns(path)):
             raise AssuranceError("unobservable-source")
         with os.fdopen(descriptor, "rb", closefd=False) as handle:
             raw = handle.read(MAX_BYTES + 1)
@@ -422,7 +427,7 @@ JOURNAL_FORMAT = "braid-harness-assurance-journal/v0.1"
 ACTOR_KINDS = ("human", "agent", "model", "tool")
 EVENTS = ("begun", "committed", "aborted", "rolled-back", "refused")
 REFUSALS = ("agent-identity", "agent-writable-source")
-MAX_JOURNAL = 256
+MAX_JOURNAL = 256  # accepted events; recorded refusals are bounded separately by the same number
 MAX_PROFILES = 64
 MAX_TICK = 1 << 40
 _REASONED = frozenset({"aborted", "rolled-back"})
@@ -452,6 +457,10 @@ class _State(NamedTuple):
     pending: str | None
 
 
+def _tick(value: Any) -> bool:
+    return type(value) is int and 0 <= value < MAX_TICK
+
+
 def _reason_ok(event: str, reason: Any) -> bool:
     if event == "refused":
         return reason in REFUSALS
@@ -467,7 +476,7 @@ def _replay(profiles: Mapping[str, Any], journal: list[Any]) -> _State:
     for index, entry in enumerate(journal):
         _require(type(entry) is dict and set(entry) == _EVENT_KEYS, "invalid-journal")
         event, subject, actor, at, reason = (entry[k] for k in ("event", "subject", "actor", "at", "reason"))
-        _require(entry["seq"] == index and type(at) is int and 0 <= at < MAX_TICK and at >= last, "invalid-journal")
+        _require(entry["seq"] == index and _tick(at) and at >= last, "invalid-journal")
         _require(event in EVENTS and (subject is None or _hash(subject)), "invalid-journal")
         _require(type(actor) is dict and set(actor) == {"kind", "id"} and actor["kind"] in ACTOR_KINDS
                  and _id(actor["id"]), "invalid-journal")
@@ -508,7 +517,7 @@ class ProfileJournal:
     def __init__(self, profiles: Mapping[str, Any] | None = None, journal: Any = None):
         profiles, journal = thaw(profiles or {}), thaw(journal or [])
         _require(type(profiles) is dict and len(profiles) <= MAX_PROFILES
-                 and type(journal) is list and len(journal) <= MAX_JOURNAL, "invalid-registry")
+                 and type(journal) is list and len(journal) <= 2 * MAX_JOURNAL, "invalid-registry")
         for key, profile in profiles.items():
             _require(_hash(key) and key == digest(validate_profile(profile)), "profile-hash-mismatch")
         self._state = _replay(profiles, journal)
@@ -536,8 +545,9 @@ class ProfileJournal:
 
     def _append(self, event: str, subject: str | None, change: Change, reason: str | None,
                 profile: Mapping[str, Any] | None = None) -> "ProfileJournal":
-        _require(len(self._journal) < MAX_JOURNAL, "journal-full")
-        _require(type(change.at) is int and 0 <= change.at < MAX_TICK, "invalid-time")
+        recorded = sum((e["event"] == "refused") == (event == "refused") for e in self._journal)
+        _require(recorded < MAX_JOURNAL, "journal-full")
+        _require(_tick(change.at), "invalid-time")
         _require(not self._journal or change.at >= self._journal[-1]["at"], "time-regression")
         entry = {"seq": len(self._journal), "event": event, "subject": subject,
                  "actor": {"kind": change.actor_kind, "id": change.actor_id}, "at": change.at, "reason": reason}
@@ -547,44 +557,48 @@ class ProfileJournal:
         return ProfileJournal(profiles, [*self._journal, entry])
 
     def _act(self, event: str, change: Change, space: OperatorSpace, *, reason: str | None = None,
-             profile: Mapping[str, Any] | None = None, subject: str | None = None) -> Outcome:
+             profile: Mapping[str, Any] | None = None, subject: str | None = None,
+             precondition: tuple[bool, str] = (True, "")) -> Outcome:
         _require(isinstance(change, Change) and type(change.actor_kind) is str and change.actor_kind in ACTOR_KINDS
                  and _id(change.actor_id), "invalid-actor")
         _require(_reason_ok(event, reason), "invalid-reason")
-        refusal = ("agent-identity" if change.actor_kind != "human"
-                   else "agent-writable-source" if change.source is not None and not space.owns(change.source)
-                   else None)
-        if refusal is not None:
+        refusal = None
+        if change.actor_kind != "human":
+            refusal = "agent-identity"
+        elif change.source is not None and not space.owns(change.source):
+            refusal = "agent-writable-source"
+        if refusal is not None:  # recorded before any state check, so a refused actor learns nothing about state
             return Outcome(self._append("refused", subject, change, refusal), refusal)
+        _require(*precondition)
         return Outcome(self._append(event, subject, change, reason, profile), None)
 
     def begin(self, profile: Any, change: Change, space: OperatorSpace) -> Outcome:
         """Start activating a new profile version; the active profile is unchanged until ``commit``."""
         profile = validate_profile(profile)
-        _require(self._state.pending is None, "transaction-pending")
-        return self._act("begun", change, space, profile=profile, subject=digest(profile))
+        return self._act("begun", change, space, profile=profile, subject=digest(profile),
+                         precondition=(self._state.pending is None, "transaction-pending"))
 
     def commit(self, change: Change, space: OperatorSpace) -> Outcome:
         """Make the pending version active; the former active version stays restorable."""
-        _require(self._state.pending is not None, "no-transaction")
-        return self._act("committed", change, space, subject=self._state.pending)
+        return self._act("committed", change, space, subject=self._state.pending,
+                         precondition=(self._state.pending is not None, "no-transaction"))
 
     def abort(self, change: Change, space: OperatorSpace, *, reason: str) -> Outcome:
         """Drop the pending version; the active profile is kept."""
-        _require(self._state.pending is not None, "no-transaction")
-        return self._act("aborted", change, space, reason=reason, subject=self._state.pending)
+        return self._act("aborted", change, space, reason=reason, subject=self._state.pending,
+                         precondition=(self._state.pending is not None, "no-transaction"))
 
     def rollback(self, change: Change, space: OperatorSpace, *, reason: str) -> Outcome:
         """Withdraw the active version and restore the newest earlier one."""
-        _require(self._state.active is not None, "no-active-profile")
-        return self._act("rolled-back", change, space, reason=reason, subject=self._state.active)
+        return self._act("rolled-back", change, space, reason=reason, subject=self._state.active,
+                         precondition=(self._state.active is not None, "no-active-profile"))
 
     def to_bytes(self) -> bytes:
         return canonical({"format": JOURNAL_FORMAT, "profiles": self._profiles, "journal": self._journal})
 
     @property
     def sha256(self) -> str:
-        return digest({"format": JOURNAL_FORMAT, "profiles": self._profiles, "journal": self._journal})
+        return sha256(self.to_bytes()).hexdigest()
 
     @classmethod
     def from_bytes(cls, raw: bytes) -> "ProfileJournal":
@@ -593,7 +607,8 @@ class ProfileJournal:
             value = parse_json(raw)
         except InvalidDecision:
             raise AssuranceError("invalid-json") from None
-        _require(set(value) == {"format", "profiles", "journal"} and value["format"] == JOURNAL_FORMAT,
+        _require(type(value) is dict and set(value) == {"format", "profiles", "journal"}
+                 and value["format"] == JOURNAL_FORMAT,
                  "invalid-registry")
         journal = cls(value["profiles"], value["journal"])
         _require(journal.to_bytes() == raw, "non-canonical")
@@ -607,7 +622,7 @@ def load_journal(space: OperatorSpace) -> ProfileJournal:
 
 
 def save_journal(space: OperatorSpace, journal: ProfileJournal) -> None:
-    """Atomically replace the journal file unless the stored journal is not a prefix of the new one."""
+    """Atomically replace the journal file; ``concurrent-update`` when the stored events are not a prefix of the new ones."""
     _require(type(journal) is ProfileJournal, "invalid-registry")
     path = space.location(JOURNAL_FILE)
     try:
