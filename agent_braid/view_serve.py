@@ -9,9 +9,18 @@ grants, schedules or writes anything.
 What lives here (SPEC-061 T016): the one-time open code exchanged for a read cookie, the ingest token
 file and bearer check, `Host`, `Origin` and `Sec-Fetch-Site` checks, the response headers, body,
 connection and timeout limits, strict JSON body parsing, and the route table with its refusals.
-What plugs in later: SSE events and `/snapshot` (T017), hook ingest (T019), OTLP ingest (T018),
-frames (T027) and the static bundle (T024). They register through `read_handlers`,
-`ingest_handlers` and `bundle`; a route with nothing registered answers 404.
+T017 adds Server-Sent Events on `/events` with `Last-Event-ID` resume, `/snapshot` (the viewer model
+of the retained events plus the dropped-attribute names inventory) and replay loading.
+What plugs in later: hook ingest (T019), OTLP ingest (T018), frames (T027) and the static bundle
+(T024). They register through `read_handlers`, `ingest_handlers`, `bundle` and `names_inventory`;
+a route with nothing registered answers 404.
+
+Event delivery: a client without `Last-Event-ID` receives every retained event (led by a
+`ring-evicted` gap when some were lost) and then live events. Each frame is `id: <seq>` plus one
+`data:` line of the canonical event JSON, so resuming from the last id repeats and skips nothing. The
+contract defines no status for a `Last-Event-ID` the store has not reached (for example after a
+server restart): it is answered with the full retained replay, as is an id that is not a number.
+A subscriber that fell behind is closed and resumes with its last id.
 """
 from __future__ import annotations
 
@@ -25,12 +34,15 @@ import socket
 import socketserver
 import stat
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Iterable, Mapping
 from urllib.parse import parse_qs
 
-from agent_braid.view_store import LoomStore, StoreError
+from agent_braid.view_loom import MAX_EVENTS, MAX_LINE_BYTES, MAX_SEQ, canonical_bytes, parse_stream
+from agent_braid.view_model import build_model
+from agent_braid.view_store import LoomStore, StoreError, SubscriberDropped
 
 LOOPBACK_HOSTS = ("127.0.0.1", "::1")
 MAX_CONNECTIONS = 32
@@ -43,6 +55,10 @@ INGEST_TOKEN_NAME = "view-ingest-token"
 COOKIE_NAME = "braid_view"
 HOOK_PATH = "/hook/claude"
 INGEST_STATUSES = (400, 403, 503)
+EVENT_POLL_SECONDS = 0.25
+MAX_INVENTORY_NAMES = 256
+MAX_INVENTORY_NAME_LENGTH = 64
+MAX_REPLAY_BYTES = MAX_EVENTS * (MAX_LINE_BYTES + 1)
 
 # (method, route, credential): the contract's route table. "/web/<file>" is any bundle file name.
 ROUTES: tuple[tuple[str, str, str], ...] = (
@@ -189,6 +205,40 @@ def _valid_bundle(bundle: Mapping[str, bytes] | None) -> dict[str, bytes]:
     return files
 
 
+def replay_events(data: bytes) -> list[dict[str, Any]]:
+    """Parse a recorded loom JSONL stream (all or nothing) with every event marked `unverified`."""
+    events = parse_stream(data)
+    for event in events:
+        event["source"]["verification"] = "unverified"  # the viewer never re-hashed a replayed event
+    return events
+
+
+def load_replay(store: LoomStore, data: bytes) -> int:
+    """Append a recorded stream to `store` as `unverified` events; return how many were stored."""
+    return sum(store.append(event) is not None for event in replay_events(data))
+
+
+def read_replay_file(path: str | os.PathLike[str]) -> bytes:
+    """Read a recorded stream: a regular file, not a symbolic link, within the stream size bound."""
+    try:
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | getattr(os, "O_NONBLOCK", 0))
+    except OSError as exc:
+        raise ServeError("replay-file", f"cannot open the replay file: {exc.strerror}") from exc
+    try:
+        info = os.fstat(descriptor)
+        if not stat.S_ISREG(info.st_mode) or info.st_size > MAX_REPLAY_BYTES:
+            raise ServeError("replay-file", "the replay file is a regular file within the stream size bound")
+        with os.fdopen(descriptor, "rb", closefd=False) as stream:
+            data = stream.read(MAX_REPLAY_BYTES + 1)
+    except OSError as exc:
+        raise ServeError("replay-file", f"cannot read the replay file: {exc.strerror}") from exc
+    finally:
+        os.close(descriptor)
+    if len(data) > MAX_REPLAY_BYTES:
+        raise ServeError("replay-file", "the replay file grew beyond the stream size bound")
+    return data
+
+
 class ViewServer(ThreadingHTTPServer):
     """Loopback-only HTTP server for the activity viewer. Call `serve_forever` to run it."""
 
@@ -199,6 +249,7 @@ class ViewServer(ThreadingHTTPServer):
                  bundle: Mapping[str, bytes] | None = None,
                  read_handlers: Mapping[str, Callable[[], tuple[bytes, str]]] | None = None,
                  ingest_handlers: Mapping[str, Callable[[Any], None]] | None = None,
+                 names_inventory: Callable[[], Iterable[str]] | None = None,
                  import_map_sha256: str | None = None,
                  max_connections: int = MAX_CONNECTIONS, socket_timeout: float = SOCKET_TIMEOUT,
                  heartbeat: float = HEARTBEAT_SECONDS) -> None:
@@ -212,6 +263,7 @@ class ViewServer(ThreadingHTTPServer):
         self.bundle = _valid_bundle(bundle)
         self.read_handlers = dict(read_handlers or {})
         self.ingest_handlers = dict(ingest_handlers or {})
+        self.names_inventory = names_inventory
         self.max_connections = max_connections
         self.socket_timeout = socket_timeout
         self.heartbeat = heartbeat
@@ -257,6 +309,15 @@ class ViewServer(ThreadingHTTPServer):
         return [("Content-Security-Policy", self._csp), ("X-Content-Type-Options", "nosniff"),
                 ("Referrer-Policy", "no-referrer"), ("Cache-Control", "no-store"),
                 ("Connection", "close")]
+
+    def snapshot(self) -> tuple[bytes, str]:
+        """`/snapshot`: the model of the retained events and the dropped-attribute names inventory."""
+        names = sorted({name for name in (self.names_inventory() if self.names_inventory else ())
+                        if isinstance(name, str) and 0 < len(name) <= MAX_INVENTORY_NAME_LENGTH
+                        and name.isprintable()})[:MAX_INVENTORY_NAMES]
+        document = {"droppedAttributeNames": names, "model": build_model(self.store.replay())}
+        body = json.dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
+        return body.encode("utf-8"), "application/json"
 
     # -- credentials -----------------------------------------------------------------------
 
@@ -445,15 +506,32 @@ class _Handler(BaseHTTPRequestHandler):
             suffix = os.path.splitext(name)[1]
             return self._send(200, content, _CONTENT_TYPES.get(suffix, "application/octet-stream"))
         reader = server.read_handlers.get(path)
+        if reader is None and path == "/snapshot":
+            reader = server.snapshot
         if reader is None:
             return self._send(404)
-        body, content_type = reader()
+        try:
+            body, content_type = reader()
+        except Exception:
+            return self._send(500)
         self._send(200, body, content_type)
 
+    def _resume_point(self) -> int:
+        """The seq after which to deliver; 0 (everything retained) when absent or not a usable number."""
+        raw = (self.headers.get("Last-Event-ID") or "").strip()
+        if raw.isascii() and raw.isdigit() and len(raw) <= 16 and int(raw) <= MAX_SEQ:
+            return int(raw)
+        return 0
+
     def _events(self) -> None:
-        # Skeleton: holds the subscriber slot and heartbeats; event delivery and Last-Event-ID are T017.
+        store = self.server.store
         try:
-            subscriber = self.server.store.subscribe()
+            try:
+                subscriber = store.subscribe(after_seq=self._resume_point())
+            except StoreError as exc:
+                if exc.reason != "resume-ahead":
+                    raise
+                subscriber = store.subscribe(after_seq=0)  # an id from before a restart: replay everything
         except StoreError:
             return self._send(503)
         try:
@@ -463,8 +541,19 @@ class _Handler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "text/event-stream")
             self.end_headers()
             self.wfile.write(b": connected\n\n")
-            while not self.server._closing.wait(self.server.heartbeat):
-                self.wfile.write(b": heartbeat\n\n")
+            last_write = time.monotonic()
+            while not self.server._closing.is_set():
+                try:
+                    item = subscriber.get(timeout=min(EVENT_POLL_SECONDS, self.server.heartbeat))
+                except SubscriberDropped:
+                    break  # too slow or closed: the client resumes with its last id
+                now = time.monotonic()
+                if item is not None:
+                    self.wfile.write(b"id: %d\ndata: %s\n\n" % (item["seq"], canonical_bytes(item).rstrip(b"\n")))
+                    last_write = now
+                elif now - last_write >= self.server.heartbeat:
+                    self.wfile.write(b": heartbeat\n\n")
+                    last_write = now
         except OSError:
             pass  # cannot be written: the subscriber is dropped
         finally:
@@ -506,4 +595,5 @@ class _Handler(BaseHTTPRequestHandler):
         self._send(200, b"{}", "application/json")
 
 
-__all__ = ["BodyError", "IngestRefusal", "ROUTES", "ServeError", "ViewServer", "parse_json_body"]
+__all__ = ["BodyError", "IngestRefusal", "ROUTES", "ServeError", "ViewServer", "load_replay", "parse_json_body",
+           "read_replay_file", "replay_events"]
