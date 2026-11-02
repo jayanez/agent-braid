@@ -1,0 +1,14 @@
+{
+  "agent_id": "agent-fixture-1",
+  "agent_type": "general-purpose",
+  "brand_new_attribute": "SENTINEL-new-value",
+  "brand_new_object": {
+    "inner_name": "SENTINEL-inner"
+  },
+  "cwd": "/SENTINEL/cwd",
+  "hook_event_name": "SubagentStart",
+  "prompt_id": "prompt-1",
+  "scratchpad_dir": "/SENTINEL/scratch",
+  "session_id": "session-fixture-1",
+  "transcript_path": "/SENTINEL/transcript.jsonl"
+}
