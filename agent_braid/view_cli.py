@@ -128,11 +128,6 @@ def load_bundle(directory: Path) -> tuple[dict[str, bytes], str | None]:
     return files, digest
 
 
-def _check_surface(surface: str) -> None:
-    if surface != "web":
-        raise CliError(f"view serve: surface {surface} is planned and not implemented; nothing was started")
-
-
 def run(args: argparse.Namespace, *, on_ready: Callable[[Any], None] | None = None) -> int:
     """Dispatch a parsed `view` command. `on_ready(server)` is called once `serve` is listening."""
     try:
@@ -149,7 +144,8 @@ def run(args: argparse.Namespace, *, on_ready: Callable[[Any], None] | None = No
 # -- serve ---------------------------------------------------------------------------------------
 
 def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> int:
-    _check_surface(args.surface)
+    if args.surface != "web":
+        raise CliError(f"view serve: surface {args.surface} is planned and not implemented; nothing was started")
     runtime_dir = _runtime_dir(args)
     from .view_hooks import HookIngest
     from .view_loom import LoomError
