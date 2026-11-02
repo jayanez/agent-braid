@@ -176,6 +176,7 @@ RULES = (
     Rule("activity-viewer", (
         "agent_braid/view_*.py", "tests/test_view_*.py", "tests/fixtures/view/**",
         "integrations/agent-braid-view/**", "examples/view/**", "docs/tooling/VIEWER.md",
+        # Reports the viewer adapters read: changes escalate to the full tests.
         "agent_braid/analysis.py", "agent_braid/git_replay.py",
     ), ("full-tests",), True,
         boundary="Read-only local visualization only; host verification, vendored-license adoption and release acceptance remain separate"),

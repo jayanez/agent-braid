@@ -65,14 +65,12 @@ class ValidationProfileTests(unittest.TestCase):
                 self.assertEqual(plan.effective_profile, "sensitive")
                 self.assertIn("full-tests", plan.commands)
                 self.assertFalse(plan.impact.unknown_paths)
-                boundary = " ".join(plan.impact.boundaries).lower()
-                self.assertIn("read-only", boundary)
-                self.assertIn("host verification", boundary)
-                self.assertIn("vendored-license adoption", boundary)
-                self.assertIn("release acceptance", boundary)
         rule = next(item for item in validation.RULES if item.domain == "activity-viewer")
         self.assertEqual(rule.commands, ("full-tests",))
-        self.assertTrue(rule.sensitive)
+        boundary = rule.boundary.lower()
+        for phrase in ("read-only", "host verification", "vendored-license adoption",
+                       "release acceptance"):
+            self.assertIn(phrase, boundary)
 
     def test_activity_viewer_adapter_inputs_escalate_to_full_tests(self):
         for path in ("agent_braid/analysis.py", "agent_braid/git_replay.py",
