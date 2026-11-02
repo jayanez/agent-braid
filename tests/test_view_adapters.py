@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""SPEC-061 T012: artifact adapters bound to evidence (procedure_002, first families)."""
+"""SPEC-061 T012, T013: artifact adapters bound to evidence (procedure_002, procedure_003)."""
 import ast
 from copy import deepcopy
 import hashlib
@@ -12,8 +12,9 @@ import unittest
 
 from agent_braid import analysis, view_adapters, view_loom
 from agent_braid.view_adapters import (
-    AdapterError, SUPPORTED_VERSIONS, events_from_analysis, events_from_git_plan, events_from_grant,
-    events_from_runtime_state, events_from_scheduler, read_artifact,
+    AdapterError, SUPPORTED_VERSIONS, events_from_analysis, events_from_gate_result, events_from_git_plan,
+    events_from_grant, events_from_hazard_notice, events_from_ownership_receipt, events_from_runtime_state,
+    events_from_scheduler, read_artifact,
 )
 from agent_braid.view_loom import canonical_bytes, validate_event
 
@@ -55,6 +56,10 @@ FAMILIES = {
     "grant": (events_from_grant, "grant-issued.json", "runtime-grant", "runtimeOperatorGrantVersion"),
     "state": (events_from_runtime_state, "runtime-state-completed.json", "runtime-state",
               "gitRuntimeStateVersion"),
+    "notice": (events_from_hazard_notice, "hazard-notice-receipt.json", "ownership-notice", "schemaVersion"),
+    "receipt": (events_from_ownership_receipt, "ownership-receipt-hazards.json", "ownership-receipt",
+                "schemaVersion"),
+    "gate": (events_from_gate_result, "gate-result-certified.json", "workflow-gate", "schemaVersion"),
 }
 PATH = "runs/example/artifact.json"
 
@@ -153,6 +158,9 @@ class UnsupportedSourceTests(unittest.TestCase):
             "scheduler": lambda d: d["workers"][0].update(startedNs="1"),
             "grant": lambda d: d.update(action="destroy"),
             "state": lambda d: d.update(phase="exploded"),
+            "notice": lambda d: d["hazards"][0].update(kind="mystery"),
+            "receipt": lambda d: d["units"][0].update(observation="maybe"),
+            "gate": lambda d: d["phases"][0].update(status="fine"),
         }
         for family, mutate in mutations.items():
             with self.subTest(family):
@@ -447,6 +455,232 @@ class RuntimeStateTests(unittest.TestCase):
         self.assertEqual(event["data"]["phase"], state["phase"])
         self.assertNotEqual(run("state", dump(dict(state, phase="aborted")))[0]["data"]["phase"],
                             event["data"]["phase"])
+
+
+def hazards(events):
+    return [(e["data"]["hazardKind"], e["data"]["units"], e["data"]["stage"])
+            for e in of_kind(events, "hazard.noticed")]
+
+
+class HazardNoticeTests(unittest.TestCase):
+    def test_every_hazard_and_every_unit_is_kept_in_order(self):
+        for name, stage in (("hazard-notice-receipt.json", "receipt"), ("hazard-notice-preflight.json", "preflight")):
+            with self.subTest(name):
+                notice = doc(name)
+                events = events_from_hazard_notice(raw(name), path=PATH)
+                self.assertEqual(kinds(events), ["hazard.noticed"] * len(notice["hazards"]))
+                self.assertEqual(hazards(events), [(h["kind"], h["units"], stage) for h in notice["hazards"]])
+                for event in events:
+                    self.assertIsNone(event["assurance"]["compatibilityClass"])
+                    self.assertEqual(event["at"]["basis"], "sequence-only")
+
+    def test_the_fixtures_have_the_shape_of_each_stage(self):
+        for name in ("hazard-notice-receipt.json", "hazard-notice-preflight.json"):
+            notice = doc(name)
+            self.assertEqual(notice["deliveredVia"], "pull")
+            self.assertTrue(notice["hazards"])
+        self.assertEqual(doc("hazard-notice-receipt.json")["recheck"].split("-")[1], "check")
+        self.assertEqual(doc("hazard-notice-preflight.json")["recheck"].split("-")[1], "expand")
+
+    def test_a_hazard_with_the_most_units_the_source_allows_keeps_all_of_them(self):
+        notice = doc("hazard-notice-receipt.json")
+        units = [f"unit-{n}" for n in range(32)]
+        notice["hazards"] = [dict(h, units=units) for h in notice["hazards"][:1]]
+        events = run("notice", dump(notice))
+        self.assertEqual(events[0]["data"]["units"], units)
+
+    def test_no_repository_path_or_notice_text_reaches_the_events(self):
+        text = json.dumps(run("notice")) + json.dumps(events_from_hazard_notice(
+            raw("hazard-notice-preflight.json"), path=PATH))
+        for forbidden in ("zz/new.py", "src/a.py", "loose.txt", "repository-derived", "validUntil", "noticeId"):
+            self.assertNotIn(forbidden, text)
+
+    def test_a_recheck_without_a_stage_or_with_authorization_is_a_gap(self):
+        notice = doc("hazard-notice-receipt.json")
+        for label, change in (
+            ("audit", lambda d: d.update(recheck="rerun-audit-isolation")),
+            ("recovery", lambda d: d.update(recheck="rerun-report-recovery")),
+            ("free text", lambda d: d.update(recheck="rerun-check-ownership now")),
+            ("not text", lambda d: d.update(recheck=3)),
+            ("authorized", lambda d: d.update(executionAuthorization=True)),
+            ("absent authorization", lambda d: d.pop("executionAuthorization")),
+        ):
+            with self.subTest(label):
+                changed = deepcopy(notice)
+                change(changed)
+                events = run("notice", dump(changed))
+                self.assertEqual(kinds(events), ["observation.gap"])
+                self.assertEqual(events[0]["data"]["reason"], "source-unsupported")
+
+    def test_a_hazard_beyond_the_event_caps_makes_the_artifact_unsupported_not_shortened(self):
+        notice = doc("hazard-notice-receipt.json")
+        notice["hazards"][0]["units"] = [f"u{n}" for n in range(129)]
+        self.assertEqual(kinds(run("notice", dump(notice))), ["observation.gap"])
+
+    def test_a_hazard_with_a_cut_path_list_adds_a_stream_truncated_gap(self):
+        notice = doc("hazard-notice-receipt.json")
+        notice["hazards"][1]["data"]["truncated"] = True
+        events = run("notice", dump(notice))
+        self.assertEqual(kinds(events), ["hazard.noticed"] * len(notice["hazards"]) + ["observation.gap"])
+        self.assertEqual(events[-1]["data"]["reason"], "stream-truncated")
+
+    def test_a_notice_with_no_hazard_yields_no_event_that_could_read_as_clean(self):
+        notice = dict(doc("hazard-notice-receipt.json"), hazards=[])
+        self.assertEqual(run("notice", dump(notice)), [])
+
+
+class OwnershipReceiptTests(unittest.TestCase):
+    def setUp(self):
+        self.receipt = doc("ownership-receipt-hazards.json")
+        self.events = run("receipt")
+
+    def test_each_finding_maps_to_its_hazard_kind_and_units(self):
+        self.assertEqual(hazards(self.events), [
+            ("partial-coverage", ["a"], "receipt"),
+            ("undeclared-write", ["a"], "receipt"),
+            ("sibling-area-write", ["a", "b"], "receipt"),
+            ("not-observed", ["c"], "receipt"),
+            ("unattributed-writer", [], "receipt"),
+        ])
+        for event in self.events:
+            self.assertIsNone(event["assurance"]["compatibilityClass"])
+
+    def test_the_receipt_hazards_equal_the_notice_built_from_the_same_receipt(self):
+        notice = events_from_hazard_notice(raw("hazard-notice-receipt.json"), path=PATH)
+        self.assertEqual(sorted(hazards(self.events), key=repr), sorted(hazards(notice), key=repr))
+
+    def test_a_fully_observed_receipt_without_findings_yields_nothing_that_reads_clean(self):
+        self.assertEqual(events_from_ownership_receipt(raw("ownership-receipt-clean.json"), path=PATH), [])
+
+    def test_not_observed_units_are_hazards_never_clean(self):
+        receipt = doc("ownership-receipt-clean.json")
+        receipt["units"][0].update(observation="not-observed", coverage="partial",
+                                   notObservedReason="no-source-supplied")
+        events = run("receipt", dump(receipt))
+        self.assertEqual(hazards(events), [("not-observed", [receipt["units"][0]["id"]], "receipt")])
+
+    def test_a_cut_list_adds_one_stream_truncated_gap_naming_the_receipt(self):
+        receipt = deepcopy(self.receipt)
+        receipt["truncations"] = [{"list": "unknown", "unitId": "a", "total": 900},
+                                  {"list": "unattributedWriters", "total": 70}]
+        events = run("receipt", dump(receipt))
+        self.assertEqual(kinds(events), ["hazard.noticed"] * 5 + ["observation.gap"])
+        self.assertEqual(events[-1]["data"]["reason"], "stream-truncated")
+        self.assertEqual(events[-1]["source"]["evidenceRef"]["sha256"], hashlib.sha256(dump(receipt)).hexdigest())
+        self.assertEqual([e["seq"] for e in events], list(range(1, 7)))
+
+    def test_a_clean_looking_receipt_that_was_cut_is_not_empty(self):
+        receipt = doc("ownership-receipt-clean.json")
+        receipt["truncations"] = [{"list": "unknown", "unitId": "a", "total": 3}]
+        self.assertEqual(kinds(run("receipt", dump(receipt))), ["observation.gap"])
+
+    def test_unknown_values_or_an_authorization_are_a_gap(self):
+        for label, change in (
+            ("coverage", lambda d: d["units"][0].update(coverage="mostly")),
+            ("authorized", lambda d: d.update(executionAuthorization=True)),
+            ("no units", lambda d: d.pop("units")),
+            ("writers", lambda d: d.update(unattributedWriters="x")),
+            ("bad unit id", lambda d: d["units"][0].update(id="not an id!")),
+        ):
+            with self.subTest(label):
+                changed = deepcopy(self.receipt)
+                change(changed)
+                events = run("receipt", dump(changed))
+                self.assertEqual([e["data"]["reason"] for e in events], ["source-unsupported"])
+
+    def test_no_path_or_digest_text_reaches_the_events(self):
+        text = json.dumps(self.events)
+        for forbidden in ("zz/new.py", "src/a.py", "loose.txt", "sha256:7"):
+            self.assertNotIn(forbidden, text)
+
+
+class GateResultTests(unittest.TestCase):
+    NAMES = ("gate-result-certified.json", "gate-result-hazards-found.json", "gate-result-refused.json")
+
+    def test_phases_and_status_equal_the_source_and_the_result_is_class_zero(self):
+        for name in self.NAMES:
+            with self.subTest(name):
+                result = doc(name)
+                events = events_from_gate_result(raw(name), path=PATH)
+                phases = of_kind(events, "gate.phase")
+                self.assertEqual([(e["data"]["phase"], e["data"]["status"]) for e in phases],
+                                 [(p["name"], p["status"]) for p in result["phases"]])
+                outcome = of_kind(events, "gate.result")
+                self.assertEqual(len(outcome), 1)
+                self.assertEqual(outcome[0]["data"]["status"], result["status"])
+                self.assertEqual(outcome[0]["data"]["operationCount"], result["operationCount"])
+                self.assertEqual(outcome[0]["assurance"]["compatibilityClass"], 0)
+                self.assertEqual({e["data"]["gateId"] for e in events if e["kind"].startswith("gate.")},
+                                 {"sha256:" + hashlib.sha256(raw(name)).hexdigest()})
+                for event in phases:
+                    self.assertIsNone(event["assurance"]["compatibilityClass"])
+
+    def test_the_fixtures_cover_the_gate_outcomes_the_producer_makes(self):
+        self.assertEqual([doc(name)["status"] for name in self.NAMES], ["ok-certified", "hazards-found", "refused"])
+        self.assertEqual([p["status"] for p in doc("gate-result-refused.json")["phases"]],
+                         ["refused", "not-run", "not-run", "not-run", "ok"])
+
+    def test_a_gate_result_never_yields_a_crossing_or_a_strand(self):
+        for name in self.NAMES:
+            with self.subTest(name):
+                events = events_from_gate_result(raw(name), path=PATH)
+                self.assertEqual(set(kinds(events)) - {"observation.gap"}, {"gate.phase", "gate.result"})
+        hazardous = doc("gate-result-hazards-found.json")
+        self.assertIn("conflicting", {p["classification"] for p in hazardous["analysis"]["interactions"]})
+
+    def test_every_status_keeps_its_value(self):
+        for status in ("refused", "busy", "inconclusive", "hazards-found", "ok-analyzed", "ok-certified"):
+            with self.subTest(status):
+                changed = dict(doc("gate-result-certified.json"), status=status)
+                self.assertEqual(of_kind(run("gate", dump(changed)), "gate.result")[0]["data"]["status"], status)
+
+    def test_a_result_without_an_analysis_adds_a_not_observed_gap(self):
+        refused = events_from_gate_result(raw("gate-result-refused.json"), path=PATH)
+        self.assertEqual(kinds(refused)[-2:], ["gate.result", "observation.gap"])
+        self.assertEqual(refused[-1]["data"], {"reason": "not-observed", "strandId": None,
+                                               "fromSeq": None, "toSeq": None})
+        self.assertNotIn("observation.gap", kinds(run("gate")))
+
+    def test_a_different_class_authorization_or_phase_is_a_gap(self):
+        base = doc("gate-result-certified.json")
+        for label, change in (
+            ("class", lambda d: d["assurance"].update(compatibilityClass="1-syntactic")),
+            ("authorized", lambda d: d.update(executionAuthorization=True)),
+            ("other gate", lambda d: d.update(gate="other-gate")),
+            ("phase", lambda d: d["phases"][1].update(name="improvise")),
+            ("status", lambda d: d.update(status="approved")),
+            ("operations", lambda d: d.update(operationCount=5000)),
+            ("no phases", lambda d: d.pop("phases")),
+        ):
+            with self.subTest(label):
+                changed = deepcopy(base)
+                change(changed)
+                events = run("gate", dump(changed))
+                self.assertEqual([e["data"]["reason"] for e in events], ["source-unsupported"])
+
+
+class AbsenceTests(unittest.TestCase):
+    """procedure_003 at the adapter level: absence is an event or a gap and never counts as clean."""
+
+    @staticmethod
+    def clean_count(events):
+        return sum(1 for event in events if event["kind"] == "crossing.classified"
+                   and event["data"]["classification"] == "independent-candidate")
+
+    def test_an_unknown_pair_and_partial_coverage_are_carried_not_counted_as_independent(self):
+        report = doc("analysis-mixed.json")
+        events = run("analysis", raw("analysis-mixed.json"))
+        crossings = of_kind(events, "crossing.classified")
+        self.assertTrue([e for e in crossings if e["data"]["classification"] == "unknown"])
+        self.assertEqual(self.clean_count(events), report["summary"]["classifications"]["independent-candidate"])
+        self.assertEqual(of_kind(events, "analysis.report")[0]["data"]["summary"]["unknown"],
+                         report["summary"]["classifications"]["unknown"])
+        partial = [e for e in crossings if "partial" in e["data"]["evidence"]["coverage"]]
+        self.assertTrue(all(e["data"]["classification"] != "independent-candidate" for e in partial))
+
+
+
+
 
 
 class ReadArtifactTests(unittest.TestCase):

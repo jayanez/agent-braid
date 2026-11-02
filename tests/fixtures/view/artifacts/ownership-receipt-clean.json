@@ -1,0 +1,40 @@
+{
+  "assurance": {
+    "assumptions": [
+      "The declaration was written against the stated base.",
+      "The observed worktrees were committed or quiescent for both Git observations.",
+      "Writers that cannot be attributed to a unit are unknown, not violations; on a shared working tree no change is attributed to any unit."
+    ],
+    "compatibilityClass": "1-syntactic",
+    "domain": "Committed or quiesced Git state of at most 32 units in one repository; file-level resources.",
+    "evidenceMethod": "Declaration validation and expansion, and the bounded read-only Git adapter run in-process by the bundled CLI over committed or quiesced worktrees; the plugin MCP is not used.",
+    "executionContract": "Read-only; no launch, message, resume, grant, edit, merge or write other than the explicit new output path; executionAuthorization is false.",
+    "notAGuarantee": true,
+    "observationContract": "Added and modified files are write effects; deletions, renames, binaries, symlinks and submodules are unknown; reads are never observed; Bash in flight, MCP effects and uncommitted work of active writers are not observed; absent observations are not-observed and never mean clean.",
+    "property": "Exact repository-relative path agreement between declared ownership and file-level Git effects at the named snapshot; not semantic commutation, hunk-level safety or order independence."
+  },
+  "executionAuthorization": false,
+  "exemptedPaths": [],
+  "limits": [
+    "A shared working tree was supplied: no change is attributed to any unit and no per-unit comparison is made for it."
+  ],
+  "schemaVersion": "agent-braid-ownership-receipt/v0.1",
+  "snapshot": {
+    "base": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "digest": "sha256:450bc97d663cad78602a877c6e9dbb38a2b88857ffa1b2e42a9b51cbaf5c3984"
+  },
+  "truncations": [],
+  "unattributedWriters": [],
+  "units": [
+    {
+      "coverage": "complete",
+      "id": "a",
+      "observation": "observed"
+    },
+    {
+      "coverage": "complete",
+      "id": "b",
+      "observation": "observed"
+    }
+  ]
+}
