@@ -41,8 +41,9 @@ No MUST conflict found. SHOULD deviation: none.
 1. **Catalog and schema.** Closed checkpoint catalog and allowed-mode table in
    one module; unknown keys refused; fixed refusal strings.
 2. **Resolver.** Scopes and floors per SPEC-058 REQ-006, with the REQ-003 floor
-   set and the no-attribution floor; output records source per value and refused
-   lowerings.
+   set and the no-attribution floor; the conversation scope may only raise
+   (founder record 20261102b, S1), lowering needs an operator profile file;
+   output records source per value and refused lowerings.
 3. **Risk classifier.** Pure function from a diff summary (paths, lines, shared
    files) and operator rules to a class and a raise-only adjustment; rules that
    would lower are refused at load.
@@ -89,5 +90,5 @@ Not made by this feature; for the orchestrator and founder:
 
 ## Human review and unresolved decisions
 
-Q1 to Q6 decided 2026-11-02 (T001, [record](evidence/founder-decisions-20261102.json)). Pending: human review of this specification; ADR
+Q1 to Q6 decided 2026-11-02 (T001, [record](evidence/founder-decisions-20261102.json)); S1 (conversation scope raise-only), P1 (presets approved) and the H1 inputs O1 to O3 decided the same day ([record](evidence/founder-decisions-20261102b.json)). Pending: human review of this specification; ADR
 acceptance (T010) before any profile is adopted.

@@ -98,9 +98,12 @@ shared object store fails the portable-root check).
   `evidence/t009.json` registers H1 (registered-not-run) under the frozen SPEC-049
   protocol: arms (realized depth R0 to R4), strata, two-axis outcomes (rework and
   regression; total chain cost and cycle time), labeling and stop rules; no data
-  observed, no run, no utility claim. Margins, minimum clusters and acceptable
-  cost stay open (O1 to O3) for founder records before any outcome is read.
-  SPEC-049 files unchanged.
+  observed, no run, no utility claim. Margins, minimum clusters, acceptable
+  cost and labeling (O1 to O3) were decided by the founder on 2026-11-02 in
+  `evidence/founder-decisions-20261102b.json` (at least 20 clusters per arm and
+  a 25 percent relative reduction; cost per accepted change up to +30 percent;
+  orchestrator-proposed labels confirmed by the founder, observational only);
+  `evidence/t009.json` is unchanged. SPEC-049 files unchanged.
 
 - [ ] T010 (REQ-003 / SC-003; REQ-008 / SC-008): ADR for assurance profiles and
   the standing-authorization record, drafted from plan.md "Proposed shared-file
