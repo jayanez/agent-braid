@@ -14,7 +14,7 @@ from urllib.parse import urlsplit
 
 from . import __version__
 from .plugin_registry import (MigrationRequired, RegistryError, RegistryStale, configuration_digest,
-                              home_path, load)
+                              home_path, inspect_registry, not_grown)
 from . import tooling_mcp as core
 
 SCHEMA = 'agent-braid-plugin/v0.2'
@@ -56,30 +56,42 @@ class PluginRouter:
         self.home = home_path(home)
         self.plugin_root = Path(plugin_root).resolve() if plugin_root else None
         # A v0.1 registry (baseline None) serves bootstrap status only until setup migrates it.
-        self.baseline = self._current()
+        # The registry is read tolerantly: stale worktree roots and unsafe workspace rows are quarantined
+        # individually, so one deleted worktree can never stop the other workspaces from serving.
+        found = self._inspect()
+        self.baseline = found['value'] if found else None
         self.baseline_digest = configuration_digest(self.baseline)
         self.snapshot = self.baseline or {'telemetry': 'off', 'workspaces': []}
         self.system_one = self.snapshot.get('systemOne', 'off')
         self.services = {}
+        self.unavailable = []
         for row in self.snapshot['workspaces']:
-            config = core.ToolingConfig(Path(row['sourceRoot']), Path(row['resultRoot']),
-                grant_store=Path(row['grantStore']) if row['grantStore'] else None,
-                runtime_enabled=row['runtimeEnabled'],
-                worktree_roots=tuple(Path(p) for p in row['worktreeRoots']),
-                telemetry=self.snapshot['telemetry'], system_one=self.system_one)
-            self.services[row['workspaceId']] = WorkspaceService(row['workspaceId'], config)
+            try:
+                config = core.ToolingConfig(Path(row['sourceRoot']), Path(row['resultRoot']),
+                    grant_store=Path(row['grantStore']) if row['grantStore'] else None,
+                    runtime_enabled=row['runtimeEnabled'],
+                    worktree_roots=tuple(Path(p) for p in row['worktreeRoots']),
+                    telemetry=self.snapshot['telemetry'], system_one=self.system_one)
+                self.services[row['workspaceId']] = WorkspaceService(row['workspaceId'], config)
+            except (core.ToolingError, OSError):  # e.g. the source repository was deleted: isolate this workspace
+                self.unavailable.append({'workspaceId': row['workspaceId'], 'reason': 'configuration rejected'})
         # One global admission lock bounds reservations across all workspace services.
         self.admission = threading.Lock()
 
-    def _current(self):
+    def _inspect(self):
         try:
-            return load(self.home)
+            return inspect_registry(self.home)
         except MigrationRequired:
             return None
 
+    def _current(self):
+        found = self._inspect()
+        return found['value'] if found else None
+
     def status(self):
         from . import system_one_shadow  # lazy: serving with System One off never loads it
-        current = self._current()
+        found = self._inspect()
+        current = found['value'] if found else None
         current_digest = configuration_digest(current)
         return {'schema': SCHEMA, 'version': __version__,
                 'status': ('migration-required' if current is None else
@@ -99,10 +111,17 @@ class PluginRouter:
                 'bundledCli': str(self.plugin_root / 'launch') if self.plugin_root else None,
                 'runtimeIncluded': bool(self.plugin_root and Path(sys.executable).resolve().is_relative_to(self.plugin_root)),
                 'workspaces': copy.deepcopy(self.snapshot['workspaces']),
+                # Path-free diagnostics of the registry as it is now: stale roots are inactive and excluded from
+                # the digest, unsafe rows are not served; plugin setup --prune-stale repairs both.
+                'staleWorktreeRoots': found['stale'] if found else [],
+                'unsafeWorkspaces': found['quarantined'] if found else [],
+                'unavailableWorkspaces': list(self.unavailable),
                 'executionAuthorization': False}
 
     def _require_current(self):
-        if configuration_digest(self._current()) != self.baseline_digest:
+        # A deleted worktree only shrinks authority, so the snapshot keeps serving; anything else reconnects.
+        current = self._current()
+        if configuration_digest(current) != self.baseline_digest and not not_grown(self.baseline, current):
             raise RegistryStale('Registry changed since this connection started: reconnect the MCP, '
                                 'then read plugin-status (code reconnect-required)')
 
