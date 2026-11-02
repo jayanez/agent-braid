@@ -1,0 +1,25 @@
+{
+  "task": "SPEC-067/T005",
+  "candidateBinding": "Input hashes of the files below; branch har/067-t005-compiler before this evidence commit",
+  "executedChecks": [
+    {"command": ".venv-speckit/bin/python -m unittest tests.test_harness_assurance -v", "exitCode": 0, "testsRun": 90},
+    {"command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"", "exitCode": 0, "testsRun": 1079, "scope": "1 skipped"},
+    {"command": "pre-PR reviews: correctness, quality, simplification (read-only subagent reviews)", "exitCode": 0, "scope": "Dispositions are in the PR body."}
+  ],
+  "negativeControls": [
+    "executionAuthorization true refused, also with a recomputed digest",
+    "edit without digest recompute refused (digest-mismatch)",
+    "recomputed digest over edited content refused (input-hash-mismatch)",
+    "other profile, scope document or risk classification refused",
+    "non-JSON values in an artifact refused with a fixed reason",
+    "two compilations byte-identical",
+    "review ladder R0..R4 cumulative, docs-only R1/R2 swap, unknown depth refused"
+  ],
+  "inputs": {
+    "agent_braid/harness_assurance.py": "79faccb35cd61eab5dea65c14bffa2f46fefe878fe9155f9fc3a6f153f028712",
+    "tests/test_harness_assurance.py": "2348d86feffcd12a45f06690eaa3f2e5baa19804b6511d50ffcf899b0a444696",
+    "specs/067-assurance-profiles/contracts/assurance-profile.md": "f5c68b7d906519d3a1902c88ddcc66ec505156278287e7ea9e1f4a0b60fb63ec"
+  },
+  "executionAuthorization": false,
+  "limits": "Process logic only. The artifact is advisory and grants nothing; no review-quality or utility claim. Contract aligned with raise-only conversation scope (founder-decisions-20261102b.json, S1)."
+}

@@ -51,6 +51,7 @@ from .system_one import MAX_BYTES, InvalidDecision, canonical, digest, parse_jso
 
 PROFILE_FORMAT = "braid-harness-assurance-profile/v0.1"
 VIEW_FORMAT = "braid-harness-assurance-view/v0.1"
+COMPILED_FORMAT = "braid-harness-assurance-compiled/v0.1"
 EXECUTION_AUTHORIZATION = False
 
 CHECKPOINTS = (
@@ -83,6 +84,7 @@ REASONS = (
     "invalid-journal", "journal-full", "profile-hash-mismatch", "version-not-newer", "no-transaction",
     "transaction-pending", "no-active-profile", "invalid-registry", "non-canonical", "concurrent-update",
     "journal-unavailable", "attribution-invariant", "invalid-diff-summary", "conversation-lowering-refused",
+    "invalid-artifact", "execution-authorization", "digest-mismatch", "input-hash-mismatch",
 )
 
 MAX_RULES = 16
@@ -353,6 +355,77 @@ def resolve(profile: Any, documents: Mapping[str, Any] | None = None) -> dict[st
         "refusedLowerings": refused,
         "executionAuthorization": EXECUTION_AUTHORIZATION,
     }
+
+
+# --- review ladder and compiled advisory artifact (REQ-005, REQ-006) --------------------
+
+CODE_LADDER = {  # contract review ladder: each depth adds to the one below
+    "R0": (), "R1": ("code-review",), "R2": ("quality-review", "simplification-review"),
+    "R3": ("adversarial-security-review",), "R4": ("independent-multi-agent-review",),
+}
+DOCS_LADDER = {**CODE_LADDER, "R1": ("accuracy-review",), "R2": ("claim-discipline-review", "concision-review")}
+# documentation-only: R1 and R2 are accuracy, claim discipline and concision; R3 and R4 add what they add for code
+INDEPENDENT_REVIEW = "independent-multi-agent-review"
+MIN_INDEPENDENT_REVIEWERS = 2  # distinct from the author and from each other, one receipt each
+_ARTIFACT_KEYS = frozenset({"schema", "profile", "scopeSources", "checkpoints", "noAttribution", "refusedLowerings",
+                            "executionAuthorization", "risk", "inputs", "reviews", "digest"})
+
+
+def required_reviews(depth: str, docs_only: bool) -> tuple[str, ...]:
+    """The reviews a ``pre-pr-review`` gate at ``depth`` requires; documentation-only changes swap R1 and R2."""
+    _require(type(docs_only) is bool, "invalid-artifact")
+    _require(type(depth) is str and depth in DEPTHS, "unknown-depth")
+    ladder = DOCS_LADDER if docs_only else CODE_LADDER
+    return tuple(name for level in DEPTHS[:DEPTHS.index(depth) + 1] for name in ladder[level])
+
+
+def _artifact_inputs(profile: Mapping[str, Any], documents: Mapping[str, Any], classification: Any) -> dict[str, Any]:
+    return {"profile": digest(profile), "scopes": {scope: digest(documents[scope]) for scope in SCOPES if scope in documents},
+            "risk": digest(classification)}
+
+
+def compile_artifact(profile: Any, documents: Mapping[str, Any] | None, classification: Any) -> dict[str, Any]:
+    """Compile profile, scope documents and risk classification into the advisory artifact (a fresh dict).
+
+    The artifact is the resolved and risk-raised view plus the SHA-256 of each input, the required-review table
+    for the effective ``pre-pr-review`` depth and a digest over all of it. It grants nothing:
+    ``executionAuthorization`` is false. Equal inputs yield byte-identical canonical output.
+    """
+    from .harness_assurance_risk import apply_risk  # deferred: the risk module imports this one
+    profile = validate_profile(profile)
+    documents = {} if documents is None else documents
+    view = apply_risk(resolve(profile, documents), classification)
+    row = next(r for r in view["checkpoints"] if r["checkpoint"] == DEPTH_CHECKPOINT)
+    docs_only = view["risk"]["docsOnly"]
+    required = required_reviews(row["depth"], docs_only)
+    body = {
+        **view,
+        "schema": COMPILED_FORMAT,
+        "inputs": _artifact_inputs(profile, documents, view["risk"]),
+        "reviews": {"checkpoint": DEPTH_CHECKPOINT, "depth": row["depth"], "docsOnly": docs_only,
+                    "required": list(required),
+                    "minIndependentReviewers": MIN_INDEPENDENT_REVIEWERS if INDEPENDENT_REVIEW in required else 0},
+    }
+    return {**body, "digest": digest(body)}
+
+
+def verify_artifact(artifact: Any, profile: Any, documents: Mapping[str, Any] | None, classification: Any) -> dict[str, Any]:
+    """Return the artifact when it is exactly what the inputs compile to; otherwise raise a fixed reason.
+
+    ``execution-authorization`` (anything but false) is refused first, then ``digest-mismatch`` (an edit without
+    recomputing the digest), then ``input-hash-mismatch`` (any content or input that differs from a fresh
+    compilation, including a recomputed digest over edited content).
+    """
+    _require(type(artifact) is dict and set(artifact) == _ARTIFACT_KEYS, "invalid-artifact")
+    _require(artifact["schema"] == COMPILED_FORMAT, "unsupported-schema")
+    _require(artifact["executionAuthorization"] is False, "execution-authorization")
+    try:
+        stored = digest({k: v for k, v in artifact.items() if k != "digest"})
+    except (TypeError, ValueError):
+        raise AssuranceError("invalid-artifact") from None
+    _require(artifact["digest"] == stored, "digest-mismatch")
+    _require(canonical(artifact) == canonical(compile_artifact(profile, documents, classification)), "input-hash-mismatch")
+    return artifact
 
 
 # --- operator-owned locations ---------------------------------------------------------
