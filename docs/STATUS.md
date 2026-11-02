@@ -270,7 +270,7 @@ The [local telemetry identity reconciliation](../specs/047-local-technical-telem
 | **Connect through stdio MCP** | Six bounded tools: `analyze`, `prepare`, `status`, `execute`, `recover`, `verify` | Configured source/result roots and the same local policy; grant issuance stays with the operator. |
 | **Prepare and inspect M3.5 proposals** | Synthetic trainer/inference, evaluator controls, hidden-proposal journals, session/pair accounting, filtered labs and aggregate seals | Software scope completed for T002/T004 on caller-declared synthetic inputs; **zero admitted real pairs**. Real-feed adaptation, source rights, protocol approval, capture, real fit and held-out evaluation remain gated. |
 | **Inspect local System 1 decisions** | Opt-in `system-one` diagnostics with a standard-library reference backend, plus a verified typed-plan selection core with Core, stdio and opt-in MCP SDK consumers | Synthetic requests and owned fixtures in a finite two-to-four-operation grammar; not wired into any product path (no callers, no telemetry operation, no observed use); no learned model, calibration, accepted utility or execution authority. SPEC-066 (draft) proposes opt-in shadow recording. |
-| **Use Agent Braid from Codex or Claude Code** | Native user plugins (`0.1.0-alpha.4`) with bundled runtime, skills, workspace registry and guided setup | Alpha.2 passed both native interactive journeys; alpha.3 was observed on macOS Claude Code only; alpha.4 on macOS Claude Code and, through the CLI and loader, Codex; M4.5 product support and acceptance remain open. |
+| **Use Agent Braid from Codex or Claude Code** | Native user plugins (`0.1.0-alpha.5`) with bundled runtime, skills, workspace registry and guided setup | Alpha.2 passed both native interactive journeys; alpha.3 was observed on macOS Claude Code only; alpha.4 on macOS Claude Code and, through the CLI and loader, Codex; alpha.5 (System One shadow mode) is published with engineering checks only; M4.5 product support and acceptance remain open. |
 | **Forecast local workloads** | Opt-in `forecast` predict/advice/inspect/export, optional Chronos-2 adapter and a read-only stdio MCP transport | Synthetic and frozen paired controls with episode-cluster uncertainty; advice is heuristic and grants no parallelism or utility claim. |
 | **Measure your own usage locally** | Default-off `telemetry` with a private bounded SQLite store and manual export/merge/purge | Numeric aggregates only, no automatic transmission; pilot remains **NO-GO**. |
 
@@ -279,9 +279,11 @@ The [local telemetry identity reconciliation](../specs/047-local-technical-telem
 The preferred installation route is the **native user plugin** for Codex or
 Claude Code on macOS arm64 and Linux x86_64. It includes Python and dependencies,
 registers its skills automatically and guides you through selecting repositories.
-The experimental `0.1.0-alpha.4` marketplace is published on `plugin-dist`,
-with the pinned tag [`agent-braid--v0.1.0-alpha.4`](https://github.com/jayanez/agent-braid/tree/agent-braid--v0.1.0-alpha.4).
-It removes the plugin MCP prompts and the redundant skill prefixes (SPEC-054).
+The experimental `0.1.0-alpha.5` marketplace is published on `plugin-dist`,
+with the pinned tag [`agent-braid--v0.1.0-alpha.5`](https://github.com/jayanez/agent-braid/tree/agent-braid--v0.1.0-alpha.5)
+([record](../specs/046-native-ai-plugins/release-acceptance-alpha5.md)). It adds opt-in
+System One shadow mode (SPEC-066); alpha.4 removed the plugin MCP prompts and the
+redundant skill prefixes (SPEC-054).
 The portable MCP server in `develop` implements unprefixed prompt names with bounded
 deprecated aliases (`agent-braid-tooling/v0.2`, package `0.1.0a2`):
 [SPEC-060](../specs/060-portable-prompt-names/spec.md) is implemented and was accepted on

@@ -10,7 +10,11 @@ consumer prerequisites. The Python installation remains available below.
 ## Published experimental marketplace
 
 The own GitHub marketplace is published on `plugin-dist`, with version
-`0.1.0-alpha.4` pinned by tag `agent-braid--v0.1.0-alpha.4` at
+`0.1.0-alpha.5` pinned by tag `agent-braid--v0.1.0-alpha.5` at
+`07e5973fe819591854e6df8bca169b5ec82eae05`; it adds opt-in System One shadow mode
+and its native host install has not yet been observed (see the
+[alpha.5 record](../../specs/046-native-ai-plugins/release-acceptance-alpha5.md)).
+The previous `0.1.0-alpha.4` is pinned by tag `agent-braid--v0.1.0-alpha.4` at
 `ac2c49825c963bf7daf3fd0851f28d9651580efa`. For alpha.4, native macOS arm64
 observations cover the isolated alpha.3 → alpha.4 update and a public Git-tag install
 with Claude Code 2.1.292, and a Codex CLI 0.164.0 install, remove and reinstall;
