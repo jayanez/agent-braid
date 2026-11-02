@@ -4,6 +4,16 @@ Status: experimental, read-only advisory views (SPEC-049 T009). Ordinary-use
 activation awaits the SPEC-049 T007 human promotion or no-go decisions. Nothing
 here is native, activates a profile, promotes a candidate or grants anything.
 
+![Braid Harness laboratory: admission, prepare, simulated fixture runner, hash-chained journal, observations, verifiers and an evaluation report; the native backend gate refuses until qualified and human promotion is not delivered](../assets/agent-braid-harness.svg)
+
+Track state (2026-11-02): HAR.1 (offline foundations, SPEC-048) has 14 of 15
+tasks done; native Codex and Claude adapters (T008) remain open. HAR.2
+(SPEC-049) has 8 of 13 tasks done; the native pilot, cohorts, human promotion
+decisions and per-axis publication remain open. Native Claude containment
+(SPEC-065, ADR 0035) is built through its probe catalog but not qualified or
+authorized. Assurance profiles (SPEC-067) have their catalog and schema merged.
+HAR.3 adaptation (SPEC-050) is planning only. Extra cash spend stays at EUR 0.
+
 The `agent-braid harness` command group (`python -m agent_braid harness ...`)
 exposes the offline Braid Harness laboratory. Every command prints one JSON
 object on stdout with `executionAuthorization: false`:

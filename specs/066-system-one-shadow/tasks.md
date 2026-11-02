@@ -204,7 +204,9 @@ specifications unless a SPEC-066 requirement amends them.
   Plan (owner, 2026-11-01): run on the published `0.1.0-alpha.5` plugin, not a local
   build; the owner runs setup with guidance (R14). Day 1 is the date `plugin-status`
   first shows `systemOne.activeMode=shadow`; the report is due 7 days later. Day 1:
-  pending.
+  2026-11-02 (plugin `0.1.0-alpha.5`, `plugin-status` read by the coordinator:
+  `systemOne.configuredMode` and `activeMode` both `shadow`, telemetry `local`, store
+  not yet present); report due 2026-11-09.
 
 ## S1.5a — Closure
 

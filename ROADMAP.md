@@ -528,8 +528,11 @@ Architecture, data, budgets and per-capability acceptance remain explicit review
 The [2026-11-01 completeness audit](docs/system-one/addenda/completeness-audit-20261101/README.md)
 found the code present on `develop` but without product callers, a learned model
 or observed use. The new track **S1.5** ([SPEC-066](specs/066-system-one-shadow/spec.md),
-[ADR 0034](docs/adr/0034-system-one-shadow-advisory-boundary.md); draft, human review
-pending, milestone to be created) resumes the deferred work in stages:
+[ADR 0034](docs/adr/0034-system-one-shadow-advisory-boundary.md); milestone #26,
+human review pending) resumes the deferred work in stages. S1.5a is merged and ships
+in plugin `0.1.0-alpha.5`, so Agent Braid now supports an opt-in System One decision
+layer in shadow mode; the owner's one-week shadow session runs 2026-11-02 to
+2026-11-09:
 
 - **S1.5a** opt-in shadow recording of one episode per successful `analyze-work`
   call, with outputs unchanged (the only stage specified to implementation level);
@@ -571,12 +574,15 @@ recorded above. Current GitHub tracking is shown in the [live M4 milestone](http
 
 ## HAR — Braid Harness
 
-[The Braid Harness program](specs/048-harness-variant-laboratory/program.md) has three
-proposed implementation milestones: HAR.1 — Braid Harness laboratory (SPEC-048,
-15 tasks), HAR.2 — Braid Harness evaluation and learning (SPEC-049, 13 tasks), and
-HAR.3 — Braid Harness adaptation and integration (SPEC-050, 12 tasks). The three
-draft specs contain 28 requirements/scenarios and 40 pending implementation/gate
-tasks. Both long-task continuity and precise, efficient coordination are primary
+[The Braid Harness program](specs/048-harness-variant-laboratory/program.md) runs in
+three milestones: HAR.1 — Braid Harness laboratory (#21, SPEC-048, 14 of 15 tasks
+done; native adapters T008 open), HAR.2 — Braid Harness evaluation and learning
+(#22, SPEC-049, 8 of 13 done), and HAR.3 — Braid Harness adaptation and integration
+(#23, SPEC-050, planning). Native Claude containment (SPEC-065, ADR 0035) is built
+through its probe catalog but not qualified; assurance profiles (SPEC-067) have
+their catalog and schema merged (state on 2026-11-02). Users get the experimental,
+offline `agent-braid harness` CLI described in [Harnessing](docs/tooling/HARNESSING.md);
+nothing is native, promoted or activated. Both long-task continuity and precise, efficient coordination are primary
 outcomes. Automatic isolated trials, initial human promotion, synthetic controls,
 advanced component/search capabilities and separately governed future automatic
 promotion are planned. Additional cash spend is capped at EUR 0.
@@ -605,7 +611,7 @@ host decisions and writes no host configuration.
 
 | Track | Scope | State |
 |---|---|---|
-| VIS.1 | VIS.1a coordination slice (probes and census first, contract, adapters, loopback server, `--watch`, replay, Claude hooks, web viewer), go/no-go checkpoint, then VIS.1b (OTLP, recording, export, effort pack, frames) (SPEC-061, 39 tasks) | Specification accepted (T001, 2026-11-01); ADR 0032 and ADR 0033 accepted; milestone #25 published; probes T030 and T032 verified, T031 unobserved, census T038 met, mostly self-development (2026-11-01); checkpoint T035 by 2027-01-31 |
+| VIS.1 (library merged 2026-11-02: event contract, adapters, ring store, viewer model; no CLI, server or UI yet) | VIS.1a coordination slice (probes and census first, contract, adapters, loopback server, `--watch`, replay, Claude hooks, web viewer), go/no-go checkpoint, then VIS.1b (OTLP, recording, export, effort pack, frames) (SPEC-061, 39 tasks) | Specification accepted (T001, 2026-11-01); ADR 0032 and ADR 0033 accepted; milestone #25 published; probes T030 and T032 verified, T031 unobserved, census T038 met, mostly self-development (2026-11-01); checkpoint T035 by 2027-01-31 |
 | VIS.2 | Claude Code mod pane (SPEC-062) | Planned |
 | VIS.3 | Codex hooks and `notify`, Codex MCP App and terminal UI (SPEC-063) | Planned |
 | VIS.4 | Cursor, OpenCode, Pi and other hosts (SPEC-064) | Planned |

@@ -1,0 +1,255 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Braid Harness laboratory (experimental, offline): from an admitted candidate to an evaluation report",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "docs/assets/agent-braid-harness.html",
+    "legend": {
+      "entries": {
+        "backend": {
+          "label": "Harness step"
+        },
+        "security": {
+          "label": "Authority gate"
+        },
+        "database": {
+          "label": "Private record"
+        },
+        "frontend": {
+          "label": "Report"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "operator",
+      "label": "Operator authority",
+      "variant": "exception"
+    },
+    {
+      "id": "lab",
+      "label": "Laboratory run (simulated containment)"
+    },
+    {
+      "id": "records",
+      "label": "Private records"
+    },
+    {
+      "id": "eval",
+      "label": "Evaluation"
+    }
+  ],
+  "phases": [
+    {
+      "id": "admit",
+      "label": "Admit",
+      "fromCol": 0,
+      "toCol": 1,
+      "variant": "security"
+    },
+    {
+      "id": "attempt",
+      "label": "Attempt",
+      "fromCol": 2,
+      "toCol": 3
+    },
+    {
+      "id": "judge",
+      "label": "Observe + evaluate",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "emphasis"
+    }
+  ],
+  "mainPath": [
+    "admission",
+    "import",
+    "context",
+    "runner",
+    "journal",
+    "observe",
+    "verify",
+    "report",
+    "promotion"
+  ],
+  "nodes": [
+    {
+      "id": "admission",
+      "lane": "operator",
+      "col": 0,
+      "type": "security",
+      "label": "Admission grant",
+      "sublabel": "single-use reservation"
+    },
+    {
+      "id": "import",
+      "lane": "lab",
+      "col": 1,
+      "type": "backend",
+      "label": "harness prepare",
+      "sublabel": "manifest + hash verify"
+    },
+    {
+      "id": "privatedir",
+      "lane": "records",
+      "col": 1,
+      "type": "database",
+      "label": "New private directory",
+      "tag": "the only effect"
+    },
+    {
+      "id": "context",
+      "lane": "lab",
+      "col": 2,
+      "type": "backend",
+      "label": "Context assembly",
+      "sublabel": "bounded inputs"
+    },
+    {
+      "id": "runner",
+      "lane": "lab",
+      "col": 3,
+      "type": "backend",
+      "label": "Fixture runner",
+      "sublabel": "deterministic",
+      "tag": "no native host"
+    },
+    {
+      "id": "native",
+      "lane": "operator",
+      "col": 3,
+      "type": "security",
+      "label": "Native backend gate",
+      "sublabel": "refuses until qualified",
+      "tag": "SPEC-065"
+    },
+    {
+      "id": "journal",
+      "lane": "records",
+      "col": 3,
+      "type": "database",
+      "label": "Attempt journal",
+      "sublabel": "hash-chained"
+    },
+    {
+      "id": "observe",
+      "lane": "records",
+      "col": 4,
+      "type": "database",
+      "label": "Observations",
+      "sublabel": "loss + privacy accounting"
+    },
+    {
+      "id": "verify",
+      "lane": "eval",
+      "col": 4,
+      "type": "backend",
+      "label": "Verifiers + cost",
+      "sublabel": "reconciled per attempt"
+    },
+    {
+      "id": "report",
+      "lane": "eval",
+      "col": 5,
+      "type": "frontend",
+      "label": "Evaluation report",
+      "sublabel": "evaluation-summary, compare"
+    },
+    {
+      "id": "promotion",
+      "lane": "operator",
+      "col": 5,
+      "type": "security",
+      "label": "Human promotion",
+      "sublabel": "profile registry",
+      "tag": "not delivered yet"
+    }
+  ],
+  "edges": [
+    {
+      "id": "admit",
+      "from": "admission",
+      "to": "import",
+      "label": "admit",
+      "variant": "security"
+    },
+    {
+      "id": "write",
+      "from": "import",
+      "to": "privatedir",
+      "variant": "default"
+    },
+    {
+      "id": "assemble",
+      "from": "import",
+      "to": "context",
+      "variant": "default"
+    },
+    {
+      "id": "run",
+      "from": "context",
+      "to": "runner",
+      "variant": "default"
+    },
+    {
+      "id": "gate",
+      "from": "native",
+      "to": "runner",
+      "label": "blocked",
+      "variant": "security",
+      "role": "error"
+    },
+    {
+      "id": "log",
+      "from": "runner",
+      "to": "journal",
+      "variant": "default"
+    },
+    {
+      "id": "record",
+      "from": "journal",
+      "to": "observe",
+      "variant": "default"
+    },
+    {
+      "id": "check",
+      "from": "observe",
+      "to": "verify",
+      "variant": "default"
+    },
+    {
+      "id": "summarize",
+      "from": "verify",
+      "to": "report",
+      "variant": "emphasis"
+    },
+    {
+      "id": "decide",
+      "from": "report",
+      "to": "promotion",
+      "label": "human decision",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "No authority from the lab",
+      "items": [
+        "The harness CLI is offline and read-only except prepare, which writes one new private directory",
+        "No verdict promotes or activates a profile; a human decision is required and not yet delivered"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Open work",
+      "items": [
+        "Native Claude containment (SPEC-065): built, not qualified or authorized",
+        "Assurance profiles (SPEC-067) and adaptation (HAR.3) are in progress or planned"
+      ]
+    }
+  ]
+}
