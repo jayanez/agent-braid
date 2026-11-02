@@ -102,22 +102,22 @@ per-probe owner authorization but no ADR, and run first.
   of supported source schema versions and a `source-unsupported` gap otherwise.
   Files: `agent_braid/view_adapters.py`, `tests/test_view_adapters.py`,
   `tests/fixtures/view/artifacts/`. Dependencies: T010. Verification: procedure_002. Done 2026-11-02: PR #954.
-- [ ] T013 (REQ-002 / SC-002; REQ-003 / SC-003): Adapters for ownership notices
+- [x] T013 (REQ-002 / SC-002; REQ-003 / SC-003): Adapters for ownership notices
   and receipts (JSON only, every hazard unit kept), workflow-gate phases and
   results (no gate crossings), oversized pairs and absence cases. Files:
   `agent_braid/view_adapters.py`, `tests/test_view_adapters.py`,
   `tests/fixtures/view/artifacts/`. Dependencies: T012. Verification:
-  procedure_002, procedure_003.
+  procedure_002, procedure_003. Done 2026-11-02: PR #963.
 - [x] T015 (REQ-006 / SC-006): `view_store.py` ring, seq, caps, eviction gaps,
   bounded subscriber queues. Files: `agent_braid/view_store.py`,
   `tests/test_view_store.py`. Dependencies: T010. Verification: procedure_006. Done 2026-11-02: PR #953.
-- [ ] T016 (REQ-004 / SC-004): `view_serve.py` loopback bind, one-time open code
+- [x] T016 (REQ-004 / SC-004): `view_serve.py` loopback bind, one-time open code
   and read cookie, ingest token file and bearer check, `Host`, `Origin` and
   `Sec-Fetch-Site` checks, headers, body, connection and timeout limits, access
   logging off, route table. Files: `agent_braid/view_serve.py`,
   `tests/test_view_serve.py`. Dependencies: T015. Verification: procedure_004.
   The OTLP allowlist drops the names each probe receipt lists in
-  `findingsForAllowlist`.
+  `findingsForAllowlist`. Done 2026-11-02: PR #965.
 - [ ] T017 (REQ-004 / SC-004; REQ-006 / SC-006): SSE with `Last-Event-ID`,
   `/snapshot`, replay mode with `unverified` marking, `view_tail.py` bounded
   `--watch` polling without following symbolic links. Files:
@@ -131,11 +131,11 @@ per-probe owner authorization but no ADR, and run first.
   T030 (`verified`). Verification: procedure_005. Per the T030 receipt, attribute
   subagents from hook `agent_id` (OpenTelemetry has none), do not depend on an HTTP
   `SessionStart`, and re-pin the `ui-security-privacy.md` allowlist in this change.
-- [ ] T020 (REQ-003 / SC-003; REQ-010 / SC-010): `view_model.py` pure model:
+- [x] T020 (REQ-003 / SC-003; REQ-010 / SC-010): `view_model.py` pure model:
   lanes, adjacent swap decomposition, `relMs` axis with gap compression, waves,
   verification markers, counters. Files: `agent_braid/view_model.py`,
   `tests/test_view_model.py`. Dependencies: T010. Verification: procedure_003,
-  procedure_010.
+  procedure_010. Done 2026-11-02: PR #961.
 - [ ] T024 (REQ-010 / SC-010): Web bundle without third-party code: table view,
   evidence panel, legend with "not a guarantee", Article 19 counters, unverified
   markers, playback controls and CSP. Files:
