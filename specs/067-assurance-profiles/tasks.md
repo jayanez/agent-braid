@@ -83,12 +83,14 @@ shared object store fails the portable-root check).
   `evidence/t006.json`. Obtained: `evidence/t006.json` (43 focused tests, 1146
   harness tests; process logic only, no review-quality or utility claim).
 
-- [ ] T007 (REQ-006 / SC-006): Deterministic generators for the track-brief
+- [x] T007 (REQ-006 / SC-006): Deterministic generators for the track-brief
   section and the PR "Pre-PR review" skeleton. Dependencies: T005, T006. Files:
   `agent_braid/harness_assurance_render.py`,
   `tests/test_harness_assurance_render.py`. Verification: procedure_006
   (generator part). Negative controls: nondeterministic output; section naming
-  a review the depth does not require. Evidence: `evidence/t007.json`.
+  a review the depth does not require. Evidence: `evidence/t007.json`. Obtained:
+  `evidence/t007.json` (19 focused tests, 1165 harness tests; process logic only,
+  no review-quality or utility claim).
 
 ## Evaluation and closure
 

@@ -1,0 +1,22 @@
+{
+  "task": "SPEC-067/T007",
+  "candidateBinding": "Input hashes of the files below; branch har/067-t007-render before this evidence commit",
+  "executedChecks": [
+    {"command": ".venv-speckit/bin/python -m unittest tests.test_harness_assurance_render -v", "exitCode": 0, "testsRun": 19},
+    {"command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"", "exitCode": 0, "testsRun": 1165, "scope": "1 skipped"},
+    {"command": "pre-PR reviews: correctness, quality, simplification (read-only subagent reviews)", "exitCode": 0, "scope": "Dispositions are in the PR body."}
+  ],
+  "negativeControls": [
+    "repeated and key-reordered renders byte-identical; golden PR block and golden brief",
+    "section and PR block name exactly the reviews the depth requires, at every depth for code and documentation-only changes, and never one it does not",
+    "executionAuthorization true refused, also with a recomputed digest; digest mismatch refused",
+    "resealed artifacts with missing, hostile or inconsistent values (profile, risk, checkpoints, refused lowerings, review table, minimum independent reviewers) refused with a fixed reason",
+    "free text with newline, control characters, Markdown syntax or over 200 characters refused"
+  ],
+  "inputs": {
+    "agent_braid/harness_assurance_render.py": "1683891bec8b4b4bf39055e45273f2f4c765de78ab3ea74a8ee1eb0f29a72e20",
+    "tests/test_harness_assurance_render.py": "2a5bf1ae0571de0510193bb9cf7e60ed4db03f95009039ff23bb0d50ab3f738a"
+  },
+  "executionAuthorization": false,
+  "limits": "Process logic only. The generators render a compiled artifact and cannot recompute its compilation: callers confirm it with verify_artifact. The text grants nothing. No review-quality or utility claim."
+}
