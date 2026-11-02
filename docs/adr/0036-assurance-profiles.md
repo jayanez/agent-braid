@@ -1,8 +1,18 @@
 # ADR 0036: Assurance profiles and the standing-authorization record
 
-- **Status:** Proposed. Founder acceptance is a separate act; until then no profile is adopted and no standing authorization may be issued.
+- **Status:** Accepted 2026-11-02 by the founder, in two answers recorded verbatim in
+  [founder-decisions-20261102c.json](../../specs/067-assurance-profiles/evidence/founder-decisions-20261102c.json):
+  (1) "Con respecto a la afiermación de "Siempre requieren una persona: release, tus
+  decisiones, grants, ejecución nativa, auto-promoción y cambios en el propio harness" Si es
+  así sí que voy a necesitar que me des muy masticadas las preguntas y criterios de toma de
+  decisión para aprobar o rechazar algo porque seguro que no tengo los conocimientos precisos
+  para hacer una evaluación de forma granular con toda la fiabilidad que se necesite. De forma
+  que me tienes que guiar muy bien de forma interactiva cuando llegue el momento de una
+  revisión por mi parte. Quiero que esto lo tengas muy claro a la hora de sellar el ADR";
+  (2) "Aceptar con el punto 12 (Recommended)". The artifact stays advisory and grants nothing;
+  acceptance adopts no profile by itself and issues no standing authorization.
 - **Date:** 2026-11-02
-- **Deciders:** Juan Antonio Yáñez García (founder), pending
+- **Deciders:** Juan Antonio Yáñez García (founder), accepted 2026-11-02
 - **Constitutional articles:** 0, 4, 5, 12–15, 19, 20, 24
 - **Specification:** [SPEC-067](../../specs/067-assurance-profiles/spec.md) (track HAR), task T010
 
@@ -14,7 +24,9 @@ but live in owner memory and session briefs. Only `quick`, `pr` and `sensitive`
 ([ADR 0011](0011-risk-based-validation-gates.md)) are documented. SPEC-067 makes these
 practices operator-owned, configurable and checkable. The founder decided Q1 to Q6 and
 S1, P1, O1 to O3 on 2026-11-02 ([record](../../specs/067-assurance-profiles/evidence/founder-decisions-20261102.json),
-[additive record](../../specs/067-assurance-profiles/evidence/founder-decisions-20261102b.json)).
+[additive record](../../specs/067-assurance-profiles/evidence/founder-decisions-20261102b.json));
+acceptance and decision 12 are in the
+[acceptance record](../../specs/067-assurance-profiles/evidence/founder-decisions-20261102c.json).
 "Review depth" here is unrelated to the compatibility "assurance level" of
 [ASSURANCE_LEVELS.md](../architecture/ASSURANCE_LEVELS.md).
 
@@ -77,6 +89,14 @@ S1, P1, O1 to O3 on 2026-11-02 ([record](../../specs/067-assurance-profiles/evid
     SPEC-057 settings schema is not extended. Hook or guard enforcement stays in SPEC-058.
     [ADR 0035](0035-native-claude-laboratory-containment.md) and its human-issued
     qualification record are a precedent for founder-only issuance.
+12. **Human decision support.** Every decision that requires a person (the floors and
+    `approve-each`) is presented as a guided interactive question containing: what is being
+    decided and why it is the founder's; what changes under each option, with concrete
+    examples; the risks and how to revert; approve/reject criteria as yes/no checks that the
+    orchestrator has already verified, with evidence; and a justified recommendation. If any
+    element is missing, the decision is not ready and is not presented. The founder is not
+    assumed to hold the expertise to evaluate a decision granularly, so the orchestrator
+    guides and the founder decides.
 
 ## Alternatives considered
 

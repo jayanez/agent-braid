@@ -1,0 +1,30 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T005-T007 integration (#966)",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-02",
+  "baseCommit": "658948d9125159e04757ec3f867a4a153b0722e5",
+  "decisionChannel": "Founder answer to an interactive question in the orchestrator chat, 2026-11-02, recorded verbatim by the derived docs-and-closer track. Additive to founder-decisions-20261102.json.",
+  "supplements": "specs/065-native-claude-containment/evidence/founder-decisions-20261102.json",
+  "decisionOrder": [
+    "LP-1"
+  ],
+  "decisions": [
+    {
+      "id": "LP-1",
+      "item": "launch-probe deviation from the brief, introduced in #966 (evidence/t005-t007-integration.json deviationFromBrief)",
+      "ownerStatement": "Aceptar (Recommended)",
+      "decision": {
+        "launchProbe": "launch + exec of the pinned interpreter + read of interpreter_root + metadata of their ancestor directories",
+        "launchProfile": "unchanged",
+        "verification": "a delta security review verifies the launch-probe delta before T009"
+      },
+      "detail": "Without the interpreter_root read the interpreter cannot import its standard library under a deny-default profile; the read is the one the fixture profile already has. launch_probe_delta_is_interpreter_only enforces exactly this delta."
+    }
+  ],
+  "stillOpen": [],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records acceptance of the launch-probe deviation only. No native session or probe was run, no code changed, and nothing here qualifies the Claude profile, authorizes T009 or any execution. The delta security review remains required before T009. Any change needs a new founder decision record."
+}
