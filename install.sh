@@ -11,6 +11,7 @@ usage() {
     printf '%s\n' 'Usage: sh install.sh [--host codex|claude|all] [--marketplace URL_OR_PATH] [--ref REF] [--dry-run]'
     printf '%s\n' '  all installs for every supported host found on PATH; both is a deprecated alias for codex + claude.'
 }
+skip() { printf 'Agent Braid installer: %s not found on PATH; skipping.\n' "$1" >&2; }
 refuse() { printf 'Agent Braid installer: %s\n' "$*" >&2; exit 2; }
 while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -60,10 +61,8 @@ case "$plugin_host" in
         plugin_do_codex=true
         plugin_do_claude=true ;;
     all)
-        if [ "$plugin_codex" = true ]; then plugin_do_codex=true
-        else printf '%s\n' 'Agent Braid installer: Codex not found on PATH; skipping.' >&2; fi
-        if [ "$plugin_claude" = true ]; then plugin_do_claude=true
-        else printf '%s\n' 'Agent Braid installer: Claude Code not found on PATH; skipping.' >&2; fi
+        if [ "$plugin_codex" = true ]; then plugin_do_codex=true; else skip Codex; fi
+        if [ "$plugin_claude" = true ]; then plugin_do_claude=true; else skip 'Claude Code'; fi
         [ "$plugin_do_codex:$plugin_do_claude" != false:false ] || refuse 'No supported host found; install Codex or Claude Code first, then rerun this command' ;;
 esac
 [ "$plugin_do_codex" = false ] || [ "$plugin_codex" = true ] || refuse 'Codex is unavailable'

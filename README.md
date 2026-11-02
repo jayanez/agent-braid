@@ -101,12 +101,15 @@ dependencies, registers its skills and guides you through selecting repositories
 nothing is registered without a preview and your explicit confirmation. Git and
 the selected host must already be installed.
 
-| Your platform | Host | Command |
-| --- | --- | --- |
-| macOS arm64, Linux x86_64 (glibc 2.28+) | Codex | `curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh \| sh -s -- --host codex` |
-| macOS arm64, Linux x86_64 (glibc 2.28+) | Claude Code | `… \| sh -s -- --host claude` |
-| macOS arm64, Linux x86_64 (glibc 2.28+) | Every host found on `PATH` | `… \| sh -s -- --host all` |
-| Any other platform (macOS x86_64, Linux arm64, WSL) | Codex or Claude Code | No bundled runtime yet: use the [Python fallback install](docs/tooling/INSTALL.md) (`agent-braid tooling install --host …`). |
+| Your platform | Install |
+| --- | --- |
+| macOS arm64, Linux x86_64 (glibc 2.28+) | Run the command below with `--host codex`, `--host claude`, or `--host all` (every host found on `PATH`). |
+| Any other platform (macOS x86_64, Linux arm64, WSL) | No bundled runtime yet: use the [Python fallback install](docs/tooling/INSTALL.md) (`agent-braid tooling install --host …`). |
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh \
+  | sh -s -- --host all
+```
 
 Add `--ref agent-braid--v0.1.0-alpha.5` to pin a release. `--host both` still
 works as a deprecated alias for `codex` + `claude`. See

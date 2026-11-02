@@ -52,14 +52,27 @@ class PluginInstallerTests(unittest.TestCase):
         self.assertNotIn('deprecated', result.stderr)
 
     def test_all_skips_an_absent_host_with_a_notice(self):
-        for present, absent in [('codex', 'Claude Code'), ('claude', 'Codex')]:
-            self.log.unlink(missing_ok=True)
-            self.host(present)
-            result = self.run_installer('--host', 'all')
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn(absent + ' not found on PATH; skipping', result.stderr)
-            self.assertEqual(len(self.log.read_text().splitlines()), 2 if present == 'codex' else 1)
-            (self.base / present).unlink()
+        for present, absent, expected in [
+                ('codex', 'Claude Code', ['codex plugin marketplace add', 'codex plugin add agent-braid@agent-braid']),
+                ('claude', 'Codex', ['claude plugin install agent-braid'])]:
+            with self.subTest(present=present):
+                self.log.unlink(missing_ok=True)
+                self.host(present)
+                result = self.run_installer('--host', 'all')
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn(absent + ' not found on PATH; skipping', result.stderr)
+                calls = self.log.read_text().splitlines()
+                self.assertEqual(len(calls), len(expected))
+                for call, prefix in zip(calls, expected):
+                    self.assertTrue(call.startswith(prefix), call)
+                (self.base / present).unlink()
+
+    def test_all_dry_run_notices_the_skip_and_executes_nothing(self):
+        self.host('codex')
+        result = self.run_installer('--host', 'all', '--dry-run')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('Claude Code not found on PATH; skipping', result.stderr)
+        self.assertFalse(self.log.exists())
 
     def test_all_refuses_when_no_host_is_found(self):
         result = self.run_installer('--host', 'all')
