@@ -118,6 +118,8 @@ shared object store fails the portable-root check).
   Dependencies: T001. Files: `docs/adr/<next>-assurance-profiles.md` (separate PR
   by the owner of shared files). Verification: ADR Accepted with founder
   approval. Evidence: ADR and its PR.
+  Progress: [ADR 0036](../../docs/adr/0036-assurance-profiles.md) proposed; stays
+  `[ ]` until founder acceptance.
 
 - [ ] T011 (all REQ / SC): Stable-candidate validation and review: `pr`
   profile, code review of T002 to T007, assurance obtained-evidence update,
