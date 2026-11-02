@@ -1,0 +1,50 @@
+{
+  "recordVersion": "spec067-founder-decisions-v1",
+  "task": "SPEC-067/T010",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-02",
+  "baseCommit": "658948d9125159e04757ec3f867a4a153b0722e5",
+  "decisionChannel": "Founder answers to interactive questions in the orchestrator chat, 2026-11-02, recorded verbatim by the derived docs-and-closer track. Additive to founder-decisions-20261102.json and founder-decisions-20261102b.json; does not edit them.",
+  "supplements": [
+    "specs/067-assurance-profiles/evidence/founder-decisions-20261102.json",
+    "specs/067-assurance-profiles/evidence/founder-decisions-20261102b.json"
+  ],
+  "decisionOrder": [
+    "HDS-1",
+    "ADR-0036"
+  ],
+  "decisions": [
+    {
+      "id": "HDS-1",
+      "item": "Human-only floors require guided decision support",
+      "ownerStatement": "Con respecto a la afiermación de \"Siempre requieren una persona: release, tus decisiones, grants, ejecución nativa, auto-promoción y cambios en el propio harness\" Si es así sí que voy a necesitar que me des muy masticadas las preguntas y criterios de toma de decisión para aprobar o rechazar algo porque seguro que no tengo los conocimientos precisos para hacer una evaluación de forma granular con toda la fiabilidad que se necesite. De forma que me tienes que guiar muy bien de forma interactiva cuando llegue el momento de una revisión por mi parte. Quiero que esto lo tengas muy claro a la hora de sellar el ADR",
+      "decision": {
+        "requirement": "guided, interactive, pre-digested questions and approve/reject criteria whenever a person must decide",
+        "appliesTo": [
+          "release",
+          "founder decisions",
+          "grants",
+          "native execution",
+          "auto-promotion",
+          "harness self-change",
+          "approve-each"
+        ]
+      },
+      "detail": "Recorded as ADR 0036 decision 12."
+    },
+    {
+      "id": "ADR-0036",
+      "item": "Accept ADR 0036 with decision 12 Human decision support",
+      "ownerStatement": "Aceptar con el punto 12 (Recommended)",
+      "decision": {
+        "status": "Accepted",
+        "date": "2026-11-02",
+        "decision12": "every decision requiring a person is a guided interactive question with: what is decided and why it is the founder's; what changes under each option with concrete examples; risks and how to revert; approve/reject criteria as yes/no checks already verified by the orchestrator with evidence; a justified recommendation. If any element is missing the decision is not ready and is not presented."
+      },
+      "detail": "ADR stays advisory and grants nothing. Acceptance adopts no profile by itself and issues no standing authorization."
+    }
+  ],
+  "stillOpen": [],
+  "executionAuthorization": false,
+  "limits": "Records the acceptance of ADR 0036 and decision 12 only. Nothing here adopts a profile, issues a standing authorization, runs the H1 evaluation, or authorizes any execution, merge or release; the REQ-003 floors stay human-only. Any change needs a new founder decision record."
+}
