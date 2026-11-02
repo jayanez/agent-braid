@@ -106,8 +106,10 @@ class World:
         self.killed, self.arenas, self.executed = [], [], []
         self.sessions = {"CRED-05": OAUTH_STREAM, "HOST-01": OAUTH_STREAM, "NET-05-CLI": OAUTH_STREAM}
         self.post = {"CRED-05": 11, "HOST-01": 11, "NET-05-CLI": 11}  # 5-hour percent after each session
-        self.egress = {"admitted": ["api.anthropic.com:443"], "unexpectedDirect": 0}
-        self.cancel = {"survivors": 0, "settled": True, "cancelled": True}
+        self.egress = {"connections": 2, "allowed": 2, "allowed:api.anthropic.com:443": 2}
+        self.cancel = {"survivors": 0, "settled": True, "cancelled": True, "escaped": 0}
+        self.accounting = {}  # (mode, probe id) -> (escaped, surviving) reported by the backend double
+        self.cancel_calls = []
         self.session_calls = []
 
     def probe_of(self, source: bytes):
@@ -122,10 +124,11 @@ class World:
         return arena
 
     def run(self, mode):
-        def execute(source, workdir, wall, arena):
+        def execute(source, workdir, wall, arena, *, cancel=None):
             probe = self.probe_of(source)
             self.mode, self.current = mode, probe.id
-            self.executed.append((mode, probe.id, wall))
+            if cancel is None:
+                self.executed.append((mode, probe.id, wall))
             error = self.raises.get((mode, probe.id))
             if error is not None:
                 raise error
@@ -139,11 +142,22 @@ class World:
             outcomes.pop("cancel-settlement", None)
             for name in q.PROXY_ATTEMPTS:
                 outcomes.pop(name, None)
+            if cancel is not None:  # the PROC-08 cancellation half: only the begin event, then a cancel
+                self.cancel_calls.append((mode, probe.id, cancel))
+                state = self.cancel
+                return q.ExecResult(canonical({"begin": "outlive-timeout"}) + b"\n", None,
+                                    settled=state["settled"], cancelled=state["cancelled"],
+                                    limit_exceeded=None, escaped_processes=state["escaped"],
+                                    surviving_processes=state["survivors"])
+            escaped, surviving = self.accounting.get((mode, probe.id), (0, 0))
             trips = b"".join(canonical({"attempt": n, "outcome": o, "errno": "NONE", "info": True, "trip": True})
                              + b"\n" for n, o in self.trips.get((mode, probe.id), {}).items())
-            return q.ExecResult(lines(outcomes) + trips, 0, settled=probe.id not in self.unsettled
-                                or mode == "uncontained-control",
-                                limit_exceeded=self.limit_exceeded.get(probe.id))
+            control = mode == "uncontained-control"
+            return q.ExecResult(lines(outcomes) + trips, 0, settled=probe.id not in self.unsettled or control,
+                                limit_exceeded=self.limit_exceeded.get(probe.id),
+                                escaped_processes=None if control else escaped,
+                                surviving_processes=None if control else surviving)
+        execute.accepts_cancel = True
         return execute
 
     def proxy_block(self, *, control, relay, proxy_factory):
@@ -168,7 +182,7 @@ class World:
                     launch_contained=self.run("contained-launch"),
                     arena_parent=self.tmp, proxy_address="127.0.0.1:45000", sessions=self.driver,
                     process_scan=self.scan, process_table=lambda: set(), process_kill=self.kill,
-                    cancel_check=lambda: dict(self.cancel), arena_factory=self.arena,
+                    arena_factory=self.arena,
                     clock=lambda: CLOCK, real_home=None, mach_names=lambda: ["com.apple.fake.service"],
                     allowed_ip="192.0.2.1", lan_ip="", proxy_block=self.proxy_block)
         args.update(over)
@@ -597,24 +611,113 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(row["refused"], "driver-failed")
         self.assertNotIn("secret", json.dumps(row))
 
-    def test_missing_cancel_check_blocks_proc_08(self):
+    def test_executor_that_cannot_cancel_blocks_proc_08(self):
         world = World(self)
-        _, summary = self.run_all_with(world, cancel_check=None)
+        plain = world.run("contained")
+        del plain.accepts_cancel
+        _, summary = self.run_all_with(world, contained=plain)
         self.assertEqual(summary["probes"]["PROC-08"]["status"], "inconclusive")
         self.assertEqual(summary["effects"]["process"]["status"], "inconclusive")
 
+    def test_cancel_half_is_driven_through_the_contained_executor_with_an_event(self):
+        world = World(self)
+        _, summary = self.run_all(world)
+        self.assertTrue(summary["passRuleSatisfied"])
+        self.assertEqual([(m, p) for m, p, _ in world.cancel_calls], [("contained", "PROC-08"), ("contained-launch", "PROC-08")])
+        self.assertIsInstance(world.cancel_calls[0][2], threading.Event)
+        self.assertTrue(world.cancel_calls[0][2].is_set())  # the watcher cancelled it
+        row = next(r for r in self.rows(world) if r["probe"] == "PROC-08" and r["mode"] == "contained")
+        self.assertEqual(row["attempts"]["cancel-settlement"], "denied")
+        self.assertEqual(row["independent"]["cancel"]["cancelled"], True)
+
+    def rows(self, world):
+        return [json.loads(t) for t in (world.tmp / "bundle" / "results.jsonl").read_text().splitlines()]
+
     def test_cancel_survivor_or_unsettled_cancel_is_an_escape(self):
-        for outcome in ({"survivors": 1, "settled": True, "cancelled": True},
-                        {"survivors": 0, "settled": False, "cancelled": True}):
+        for outcome in ({"survivors": 1, "settled": True, "cancelled": True, "escaped": 1},
+                        {"survivors": 0, "settled": False, "cancelled": True, "escaped": 0}):
             world = World(self)
             world.cancel = outcome
             _, summary = self.run_all_with(world)
             self.assertEqual(summary["effects"]["process"]["status"], "not-enforced", outcome)
-        for outcome in ({"survivors": 0, "settled": True, "cancelled": False}, {"settled": True}):
+        for outcome in ({"survivors": 0, "settled": True, "cancelled": False, "escaped": 0},):
             world = World(self)
             world.cancel = outcome
             _, summary = self.run_all_with(world)
             self.assertEqual(summary["effects"]["process"]["status"], "inconclusive", outcome)
+
+    def test_a_swept_leaver_in_the_cancel_half_is_not_an_escape_but_a_survivor_scan_hit_is(self):
+        world = World(self)
+        world.cancel = {"survivors": 0, "settled": False, "cancelled": True, "escaped": 2}
+        _, summary = self.run_all_with(world)
+        self.assertTrue(summary["passRuleSatisfied"])
+        world = World(self)
+        world.contained_survivors = 1  # the independent scan still sees a nonce process
+        _, summary = self.run_all_with(world)
+        self.assertEqual(summary["probes"]["PROC-08"]["status"], "allowed")
+
+    def test_cancel_half_needs_the_helper_to_have_begun_and_an_available_process_table(self):
+        world = World(self)
+        base = world.run("contained")
+
+        def quiet(source, workdir, wall, arena, *, cancel=None):
+            result = base(source, workdir, wall, arena, cancel=cancel)
+            return result if cancel is None else q.ExecResult(b"", None, cancelled=True, surviving_processes=0)
+        quiet.accepts_cancel = True
+        _, summary = self.run_all_with(world, contained=quiet)
+        self.assertEqual(summary["probes"]["PROC-08"]["status"], "inconclusive")
+        world = World(self)
+        _, summary = self.run_all_with(world, process_table=lambda: (_ for _ in ()).throw(OSError("ps")))
+        self.assertEqual(summary["probes"]["PROC-08"]["status"], "inconclusive")
+
+    def test_cancel_half_refusal_is_recorded_and_inconclusive(self):
+        world = World(self)
+        base = world.run("contained")
+
+        def refusing(source, workdir, wall, arena, *, cancel=None):
+            if cancel is not None:
+                raise lab.LabError("dedicated-user-busy")
+            return base(source, workdir, wall, arena)
+        refusing.accepts_cancel = True
+        out, summary = self.run_all_with(world, contained=refusing)
+        self.assertEqual(summary["probes"]["PROC-08"]["status"], "inconclusive")
+        row = next(r for r in self.rows(world) if r["probe"] == "PROC-08" and r["mode"] == "contained")
+        self.assertEqual(row["independent"]["cancel"]["refused"], "dedicated-user-busy")
+
+    def test_swept_group_leaver_is_not_an_escape_but_a_survivor_is(self):
+        """RV-01: PROC-04 and PROC-08 judge the backend's surviving count, not the strict settled flag."""
+        for pid in ("PROC-04", "PROC-08"):
+            world = World(self)
+            world.unsettled.add(pid)  # the strict flag is false whenever a leaver was seen
+            world.accounting[("contained", pid)] = (2, 0)
+            world.accounting[("contained-launch", pid)] = (1, 0)
+            out, summary = self.run_all(world)
+            self.assertEqual(summary["probes"][pid]["status"], "denied", pid)
+            self.assertTrue(summary["probes"][pid]["pass"], pid)
+            rows = [json.loads(t) for t in (out / "results.jsonl").read_text().splitlines()]
+            row = next(r for r in rows if r["probe"] == pid and r["mode"] == "contained")
+            self.assertEqual((row["independent"]["escapedProcesses"], row["independent"]["survivingProcesses"]),
+                             (2, 0))
+            self.assertTrue(row["settled"])
+            world = World(self)
+            world.unsettled.add(pid)
+            world.accounting[("contained-launch", pid)] = (2, 1)  # the sweep could not kill one
+            _, summary = self.run_all(world)
+            self.assertEqual(summary["probes"][pid]["status"], "allowed", pid)
+            self.assertEqual(summary["effects"]["process"]["status"], "not-enforced")
+
+    def test_unsettled_group_without_a_swept_leaver_is_still_an_escape(self):
+        world = World(self)
+        world.unsettled.add("PROC-04")
+        _, summary = self.run_all(world)  # the double reports (0 escaped, 0 surviving) yet unsettled
+        self.assertEqual(summary["probes"]["PROC-04"]["status"], "allowed")
+        self.assertFalse(q.swept_settled(q.ExecResult(b"", 0, settled=False)))  # no accounting: strict
+        self.assertTrue(q.swept_settled(q.ExecResult(b"", 0, settled=False, escaped_processes=1,
+                                                       surviving_processes=0)))
+        self.assertFalse(q.swept_settled(q.ExecResult(b"", 0, settled=False, escaped_processes=0,
+                                                        surviving_processes=0)))
+        self.assertFalse(q.swept_settled(q.ExecResult(b"", 0, settled=False, escaped_processes=3,
+                                                        surviving_processes=1)))
 
     def test_survival_probe_where_the_helper_never_ran_is_inconclusive_not_denied(self):
         world = World(self)
@@ -799,26 +902,30 @@ class SessionTests(unittest.TestCase):
                                  + b"\n" + canonical({"type": "result", "subtype": "error", "is_error": True}), 0)
         self.assertEqual(q.classify_session("HOST-01", failed), "denied")
 
-    def test_net_05_cli_needs_an_egress_observation(self):
+    def test_net_05_cli_is_judged_on_the_proxy_counters(self):
         base = self.session("oauth")
-        clean = replace(base, egress={"admitted": ["api.anthropic.com:443"], "unexpectedDirect": 0})
-        self.assertEqual(q.classify_session("NET-05-CLI", clean), "denied")
-        self.assertEqual(q.classify_session("NET-05-CLI", base), "inconclusive")
-        direct = replace(base, egress={"admitted": [], "unexpectedDirect": 2})
-        self.assertEqual(q.classify_session("NET-05-CLI", direct), "allowed")
-        other = replace(base, egress={"admitted": ["evil.example:443"], "unexpectedDirect": 0})
-        self.assertEqual(q.classify_session("NET-05-CLI", other), "allowed")
-        # no traffic seen at all proves nothing about the CLI; the old tautology is gone
-        self.assertEqual(q.classify_session("NET-05-CLI", replace(base, egress={"admitted": []})), "inconclusive")
-        self.assertEqual(q.classify_session("NET-05-CLI", replace(base, egress={"admitted": [],
-                                                                                 "unexpectedDirect": 0})),
-                         "inconclusive")
-        self.assertEqual(q.classify_session("NET-05-CLI", replace(base, egress={
-            "admitted": ["api.anthropic.com:443"]})), "denied")
-        self.assertEqual(q.classify_session("NET-05-CLI", replace(base, egress={
-            "admitted": ["api.anthropic.com:443"], "unexpectedDirect": -1})), "inconclusive")
-        text = replace(base, egress={"admitted": "api.anthropic.com:443", "unexpectedDirect": 0})
-        self.assertEqual(q.classify_session("NET-05-CLI", text), "inconclusive")
+        target = "api.anthropic.com:443"
+
+        def verdict(egress):
+            return q.classify_session("NET-05-CLI", replace(base, egress=egress))
+
+        clean = {"connections": 2, "allowed": 2, f"allowed:{target}": 2}
+        self.assertEqual(verdict(clean), "denied")
+        self.assertEqual(verdict(clean | {"denied": 1, "denied:target-not-allowed": 1}), "denied")
+        self.assertEqual(q.classify_session("NET-05-CLI", base), "inconclusive")  # no tap
+        self.assertEqual(verdict(clean | {"unexpectedDirect": 1}), "allowed")
+        self.assertEqual(verdict({"unexpectedDirect": 2}), "allowed")
+        self.assertEqual(verdict({"allowed": 1, "allowed:evil.example:443": 1}), "allowed")
+        # no tunnel at all, refusals alone, or counters that disagree prove nothing
+        self.assertEqual(verdict({}), "inconclusive")
+        self.assertEqual(verdict({"denied": 1, "denied:sni-mismatch": 1}), "inconclusive")
+        self.assertEqual(verdict({"allowed": 2, f"allowed:{target}": 1}), "inconclusive")
+        self.assertEqual(verdict({"allowed": 1}), "inconclusive")
+        # malformed counters
+        for bad in ({"allowed": -1}, {"allowed": True}, {"allowed": "1"}, {1: 1}, ["allowed"], "x"):
+            self.assertEqual(verdict(bad), "inconclusive", bad)
+        no_init = replace(self.session("oauth"), stdout=b"", egress=clean)
+        self.assertEqual(q.classify_session("NET-05-CLI", no_init), "inconclusive")
 
     def test_detector_self_test_is_allowed_for_every_session_probe(self):
         for pid in ("CRED-05", "HOST-01", "NET-05-CLI"):
@@ -879,6 +986,29 @@ class NativeSessionDriverTests(unittest.TestCase):
         self.assertEqual(result.stdout, OAUTH_STREAM)
         self.assertEqual(result.quota, {"admission": {"fiveHourPercent": 12}})
         self.assertIsNone(result.egress)
+
+    def test_driver_reports_the_counter_delta_of_the_session_as_egress(self):
+        readings = iter([{"connections": 5, "allowed": 4, "denied": 1, "denied:sni-mismatch": 1,
+                          "allowed:api.anthropic.com:443": 4},
+                         {"connections": 7, "allowed": 6, "denied": 1, "denied:sni-mismatch": 1,
+                          "allowed:api.anthropic.com:443": 6, "bytesUp": 9}])
+        driver = q.native_session_driver(FakeNativeTransport, egress_counters=lambda: next(readings))
+        result = driver("NET-05-CLI")
+        self.assertEqual(result.egress, {"connections": 2, "allowed": 2, "allowed:api.anthropic.com:443": 2,
+                                         "bytesUp": 9})
+        self.assertEqual(q.classify_session("NET-05-CLI", result), "denied")
+
+    def test_driver_without_a_usable_tap_reports_no_egress(self):
+        def broken():
+            raise OSError("proxy gone")
+
+        for tap in (None, broken):
+            self.assertIsNone(q.native_session_driver(FakeNativeTransport, egress_counters=tap)("HOST-01").egress)
+        replaced = iter([{"allowed": 4}, {"allowed": 1}])  # the counters went down: another proxy
+        result = q.native_session_driver(FakeNativeTransport, egress_counters=lambda: next(replaced))("HOST-01")
+        self.assertIsNone(result.egress)
+        self.assertEqual(q.counter_delta({"a": 1}, {"a": 1, "b": 2}), {"b": 2})
+        self.assertIsNone(q.counter_delta({"a": True}, {"a": 2}))
 
     def test_every_session_gets_a_fresh_single_attempt_transport(self):
         made = []
@@ -1290,6 +1420,7 @@ class LaunchProbeExecutorTests(unittest.TestCase):
 
         class Policy:
             interpreter = "/c/python"
+            interpreter_root = "/c"
 
             def render(self, entry):
                 return launch if entry == "launch" else probe
@@ -1919,6 +2050,156 @@ class ReviewF4Tests(unittest.TestCase):
         self.assertEqual(runner("FS-01", backend), "denied")
         self.assertEqual(seen[0]["config_dir"], "/c/cfg")
         self.assertEqual(seen[0]["candidate"], str(world.tmp))
+
+
+class BackendIntegrationTests(unittest.TestCase):
+    """The T005 backend delta consumed for real: its policy, result types and public hooks, with the
+    child execution replaced by doubles (no helper, sandbox or claude runs)."""
+
+    def machine(self):
+        from tests.test_harness_containment_macos import Machine, make_backend
+        machine = Machine(self)
+        backend = make_backend(machine)
+        self.addCleanup(backend.close)
+        return machine, backend
+
+    def test_the_real_policy_renders_a_launch_probe_profile_the_runner_accepts(self):
+        policy = self.machine()[0].policy
+        launch, probe = policy.render("launch"), policy.render(q.LAUNCH_PROBE_ENTRY)
+        delta = q.launch_probe_delta_is_interpreter_only
+        self.assertTrue(delta(launch, probe, policy.interpreter, policy.interpreter_root))
+        self.assertFalse(delta(launch, probe, policy.interpreter))  # the prefix read needs the root to be named
+        self.assertFalse(delta(launch, policy.render("fixture"), policy.interpreter, policy.interpreter_root))
+        widened = probe.decode().replace(f'(subpath "{policy.interpreter_root}")', '(subpath "/usr")')
+        self.assertFalse(delta(launch, widened.encode(), policy.interpreter, policy.interpreter_root))
+        self.assertEqual(q.LAUNCH_PROBE_ENTRY, mac.LAUNCH_PROBE)
+        self.assertTrue(q.policy_binds_catalog(policy))
+
+    def test_delta_checker_allows_only_interpreter_items_per_rule(self):
+        delta = q.launch_probe_delta_is_interpreter_only
+        launch = (b'(allow process-exec (literal "/c/claude"))\n'
+                  b'(allow file-read* file-map-executable (literal "/") (subpath "/s") (literal "/c/claude"))\n'
+                  b'(allow file-read-metadata (literal "/c") (literal "/"))\n')
+        probe = (b'(allow process-exec (literal "/c/claude") (literal "/i/bin/python"))\n'
+                 b'(allow file-read* file-map-executable (literal "/") (subpath "/s") (subpath "/i") '
+                 b'(literal "/c/claude") (literal "/i/bin/python"))\n'
+                 b'(allow file-read-metadata (literal "/c") (literal "/") (literal "/i") (literal "/i/bin"))\n')
+        self.assertTrue(delta(launch, probe, "/i/bin/python", "/i"))
+        # a metadata literal that is not an ancestor of the interpreter, a removed item, a doubled item
+        for bad in (probe.replace(b'(literal "/i/bin"))', b'(literal "/i/bin") (literal "/etc"))'),
+                    probe.replace(b'(literal "/c") (literal "/")', b'(literal "/")'),
+                    probe.replace(b'(literal "/i/bin/python"))\n(allow file-read*',
+                                  b'(literal "/i/bin/python") (literal "/i/bin/python"))\n(allow file-read*'),
+                    probe.replace(b'(allow process-exec (literal "/c/claude") (literal "/i/bin/python"))',
+                                  b'(allow process-exec (literal "/c/claude") (subpath "/i"))')):
+            self.assertFalse(delta(launch, bad, "/i/bin/python", "/i"))
+
+    def test_contained_executor_carries_backend_accounting_limit_and_cancel(self):
+        calls = []
+
+        class Backend:
+            def run_probe(self, source, workdir, limits, **kwargs):
+                calls.append(kwargs)
+                return mac.ProbeResult(b"out", None, False, False, False, cancelled=True, escaped_processes=2,
+                                       surviving_processes=1, limit_exceeded="memory")
+
+        executor = q.ContainedExecutor(Backend(), lambda: Path("/w"))
+        plain = executor(b"", Path("/w"), 1, None)
+        self.assertEqual((plain.limit_exceeded, plain.escaped_processes, plain.surviving_processes,
+                          plain.cancelled, plain.settled), ("memory", 2, 1, True, False))
+        event = threading.Event()
+        executor(b"", Path("/w"), 1, None, cancel=event)
+        self.assertEqual(calls, [{}, {"cancel": event}])
+        self.assertTrue(executor.accepts_cancel)
+
+    def test_a_backend_that_reports_nothing_leaves_accounting_unavailable(self):
+        backend = SimpleNamespace(run_probe=lambda *a, **k: lab.ChildResult(b"", 0, False, False, True))
+        result = q.ContainedExecutor(backend, lambda: Path("/w"))(b"", Path("/w"), 1, None)
+        self.assertEqual((result.limit_exceeded, result.escaped_processes, result.surviving_processes),
+                         ("unavailable", None, None))
+
+    def test_memory_denial_needs_the_backend_stop_reason(self):
+        """RV-13 end to end: a kill is a memory denial only when ProbeResult.limit_exceeded says memory."""
+        world = World(self)
+        world.limit_exceeded["PROC-03"] = None  # killed, but not by the memory watchdog
+        _, summary = self.run_world(world)
+        self.assertEqual(summary["probes"]["PROC-03"]["status"], "inconclusive")
+        world = World(self)
+        world.limit_exceeded["PROC-03"] = "memory"
+        _, summary = self.run_world(world)
+        self.assertEqual(summary["probes"]["PROC-03"]["status"], "denied")
+
+    def run_world(self, world):
+        out = world.tmp / "bundle"
+        return out, world.runner().run(out, environment=environment())
+
+    def test_f4_runner_works_against_the_real_backend_and_policy(self):
+        """The check no longer errors merely for a missing hook: every NC-11 probe runs on both profiles."""
+        machine, backend = self.machine()
+        world = World(self)
+        seen = []
+
+        def contained(entry):
+            def run(source, workdir, limits, **kwargs):
+                probe = world.probe_of(source)
+                seen.append((entry, probe.id))
+                outcome = "allowed" if probe.functional else "denied"
+                return mac.ProbeResult(lines({n: outcome for n in probe.counted}), 0, False, False, True)
+            return run
+
+        runner = q.make_f4_probe_runner(arena_parent=world.tmp, workdir_factory=lambda: world.tmp,
+                                        arena_factory=world.arena)
+        with mock.patch.object(backend, "run_probe", contained("fixture")), \
+                mock.patch.object(backend, "run_launch_probe", contained(q.LAUNCH_PROBE_ENTRY)):
+            observed = {probe: runner(probe, backend) for probe, _ in mac.F4_PROBES}
+        self.assertEqual(observed, dict(mac.F4_PROBES))
+        self.assertEqual(len(seen), 2 * len(mac.F4_PROBES))
+
+    def test_factory_wires_the_orchestrator_inputs_and_defaults_fail_closed(self):
+        machine, backend = self.machine()
+        world = World(self)
+        credentials, names = lambda: ["sk-dummy"], lambda: ["com.apple.fake.service"]
+        runner = q.make_qualification_runner(
+            backend, arena_parent=world.tmp, workdir_factory=lambda: world.tmp,
+            transport_factory=FakeNativeTransport, read_quota=lambda: reading(10, 10),
+            read_credentials=credentials, real_home="/home/dedicated", lan_ip="192.0.2.7",
+            allowed_ip="192.0.2.9", mach_names=names, arena_factory=world.arena)
+        self.assertEqual((runner.real_home, runner.lan_ip, runner.allowed_ip, runner.mach_names,
+                          runner.read_credentials), ("/home/dedicated", "192.0.2.7", "192.0.2.9", names,
+                                                     credentials))
+        self.assertEqual(runner.proxy_address, f"127.0.0.1:{machine.policy.proxy_port}")
+        self.assertIs(runner.control, q.uncontained_executor)
+        self.assertEqual((runner.contained.profile, runner.launch_contained.profile),
+                         ("fixture", q.LAUNCH_PROBE_ENTRY))
+        self.assertEqual(runner.layout(Path("/w"))["config_dir"], machine.policy.config_dir)
+        self.assertEqual(runner.sessions("CRED-05").refused, None)  # the driver reaches the transport
+        bare = q.make_qualification_runner(backend, arena_parent=world.tmp, workdir_factory=lambda: world.tmp,
+                                           lan_ip="")
+        self.assertIsNone(bare.sessions)
+        self.assertIsNone(bare.real_home)
+        self.assertEqual(bare.read_credentials(), ())
+        self.assertIsNone(bare.lan_ip)  # "" disables the LAN attempts
+        self.assertEqual(bare.run_mode(q.BY_ID["HOST-01"], "contained")["refused"], "session-driver-missing")
+
+    def test_factory_taps_the_backend_proxy_for_net_05_cli(self):
+        machine, backend = self.machine()
+        world = World(self)
+        readings = iter([{}, {"connections": 1, "allowed": 1, "allowed:api.anthropic.com:443": 1}])
+        with mock.patch.object(backend, "egress_counters", lambda: next(readings)):
+            runner = q.make_qualification_runner(
+                backend, arena_parent=world.tmp, workdir_factory=lambda: world.tmp,
+                transport_factory=FakeNativeTransport, lan_ip="", arena_factory=world.arena)
+            result = runner.sessions("NET-05-CLI")
+        self.assertEqual(q.classify_session("NET-05-CLI", result), "denied")
+        self.assertEqual(backend.egress_counters(), backend._proxy.counters())
+
+    def test_factory_refuses_a_policy_that_does_not_bind_this_catalog(self):
+        world = World(self)
+        for backend in (SimpleNamespace(policy=SimpleNamespace(probe_catalog_sha256="0" * 64, proxy_port=1)),
+                        SimpleNamespace()):
+            with self.assertRaises(q.ProbeError) as raised:
+                q.make_qualification_runner(backend, arena_parent=world.tmp, workdir_factory=lambda: world.tmp)
+            self.assertEqual(raised.exception.reason, "catalog-not-bound")
 
 
 if __name__ == "__main__":
