@@ -261,3 +261,10 @@ descriptions to the source text by hand (`gh api -X PATCH .../milestones/<number
 and read them back. Deferred keeps its reopen condition: SPEC-029
 T001 source permissions granted and admitted real groups greater than zero
 (third-party sources), or SPEC-066 REQ-101 admission (the owner's own sources).
+
+Published 2026-11-02: milestone #26 (registered by PR #897), parent SPEC-066 as
+issue #900 in **Review pending**, its task issues linked as sub-issues, and the 15
+absorbed issues moved from Deferred after PR #940; the scoped #26 re-audit planned no
+operation and both milestone descriptions match the source. The scoped Deferred #24
+audit still stops on `SPEC-041/T002`, a closed task sitting in M4.5; that belongs to
+the SPEC-041 owner, not S1.5.

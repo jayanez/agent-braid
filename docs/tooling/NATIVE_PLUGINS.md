@@ -220,6 +220,18 @@ and reinstalls alpha.4. Removing the marketplace also uninstalls the plugin, so
 add the alpha.3 tag and install again afterwards. Observed with Claude Code 2.1.292
 on macOS; the Codex rollback has not been observed.
 
+Version 0.1.0-alpha.5 (SPEC-066, ADR 0034) adds opt-in System One shadow mode: one
+structural decision episode is recorded beside each successful `analyze-work`
+result, outputs are unchanged, and nothing leaves the machine. It stays `off` until
+you preview and apply `plugin setup --system-one shadow` and reconnect; see
+[System One shadow mode](SYSTEM_ONE_SHADOW.md). Registered workspaces, results and
+telemetry consent are untouched, so no migration step is needed after updating from
+alpha.4. Rollback needs one step first: alpha.4 refuses a registry that carries the
+`systemOne` member, so preview and apply `plugin setup --system-one off` (which
+removes it) before reinstalling `0.1.0-alpha.4` from tag `agent-braid--v0.1.0-alpha.4`.
+The shadow store is not removed by that step; run `system-one purge` first if you
+want it gone.
+
 ## Storage, updates and removal
 
 Both hosts share Agent Braid's registry and results outside plugin caches:
