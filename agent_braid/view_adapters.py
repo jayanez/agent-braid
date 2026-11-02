@@ -292,7 +292,10 @@ def _notice(notice: dict[str, Any], source: _Source) -> list[dict[str, Any]]:
     stage = _notice_stage(notice["recheck"])
     if not isinstance(notice["hazards"], list):
         raise TypeError("hazards is a list")
-    return [_hazard(source, item["kind"], item["units"], stage) for item in notice["hazards"]]
+    events = [_hazard(source, item["kind"], item["units"], stage) for item in notice["hazards"]]
+    if any(item["data"].get("truncated") is True for item in notice["hazards"]):
+        events.append(source.gap("stream-truncated"))  # a hazard's path list was cut
+    return events
 
 
 def _receipt(receipt: dict[str, Any], source: _Source) -> list[dict[str, Any]]:
@@ -306,11 +309,15 @@ def _receipt(receipt: dict[str, Any], source: _Source) -> list[dict[str, Any]]:
             events.append(_hazard(source, "not-observed", [name], "receipt"))
         elif coverage == "partial":
             events.append(_hazard(source, "partial-coverage", [name], "receipt"))
+        if not isinstance(name, str) or not isinstance(unit.get("undeclaredWrites", []), list):
+            raise TypeError("unit id is text, undeclaredWrites a list")
         if unit.get("undeclaredWrites"):
             events.append(_hazard(source, "undeclared-write", [name], "receipt"))
         if unit.get("siblingAreaWrites"):
-            owners = {entry["ownerUnit"] for entry in unit["siblingAreaWrites"]}
-            events.append(_hazard(source, "sibling-area-write", sorted({name, *owners}), "receipt"))
+            owners = sorted({name, *(entry["ownerUnit"] for entry in unit["siblingAreaWrites"])})
+            events.append(_hazard(source, "sibling-area-write", owners, "receipt"))
+    if not isinstance(receipt["unattributedWriters"], list) or not isinstance(receipt["truncations"], list):
+        raise TypeError("writers and truncations are lists")
     if receipt["unattributedWriters"]:
         events.append(_hazard(source, "unattributed-writer", [], "receipt"))
     if receipt["truncations"]:

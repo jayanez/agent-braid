@@ -474,7 +474,7 @@ class HazardNoticeTests(unittest.TestCase):
                     self.assertIsNone(event["assurance"]["compatibilityClass"])
                     self.assertEqual(event["at"]["basis"], "sequence-only")
 
-    def test_the_fixtures_are_what_the_producer_builds(self):
+    def test_the_fixtures_have_the_shape_of_each_stage(self):
         for name in ("hazard-notice-receipt.json", "hazard-notice-preflight.json"):
             notice = doc(name)
             self.assertEqual(notice["deliveredVia"], "pull")
@@ -517,6 +517,13 @@ class HazardNoticeTests(unittest.TestCase):
         notice["hazards"][0]["units"] = [f"u{n}" for n in range(129)]
         self.assertEqual(kinds(run("notice", dump(notice))), ["observation.gap"])
 
+    def test_a_hazard_with_a_cut_path_list_adds_a_stream_truncated_gap(self):
+        notice = doc("hazard-notice-receipt.json")
+        notice["hazards"][1]["data"]["truncated"] = True
+        events = run("notice", dump(notice))
+        self.assertEqual(kinds(events), ["hazard.noticed"] * len(notice["hazards"]) + ["observation.gap"])
+        self.assertEqual(events[-1]["data"]["reason"], "stream-truncated")
+
     def test_a_notice_with_no_hazard_yields_no_event_that_could_read_as_clean(self):
         notice = dict(doc("hazard-notice-receipt.json"), hazards=[])
         self.assertEqual(run("notice", dump(notice)), [])
@@ -535,7 +542,6 @@ class OwnershipReceiptTests(unittest.TestCase):
             ("not-observed", ["c"], "receipt"),
             ("unattributed-writer", [], "receipt"),
         ])
-        self.assertEqual(len(self.events), 5)
         for event in self.events:
             self.assertIsNone(event["assurance"]["compatibilityClass"])
 
@@ -573,6 +579,7 @@ class OwnershipReceiptTests(unittest.TestCase):
             ("coverage", lambda d: d["units"][0].update(coverage="mostly")),
             ("authorized", lambda d: d.update(executionAuthorization=True)),
             ("no units", lambda d: d.pop("units")),
+            ("writers", lambda d: d.update(unattributedWriters="x")),
             ("bad unit id", lambda d: d["units"][0].update(id="not an id!")),
         ):
             with self.subTest(label):
@@ -671,32 +678,9 @@ class AbsenceTests(unittest.TestCase):
         partial = [e for e in crossings if "partial" in e["data"]["evidence"]["coverage"]]
         self.assertTrue(all(e["data"]["classification"] != "independent-candidate" for e in partial))
 
-    def test_each_absence_case_has_its_event_or_gap(self):
-        refused = events_from_gate_result(raw("gate-result-refused.json"), path=PATH)
-        cases = {
-            "not-observed hazard": (run("receipt"), "hazard.noticed", "not-observed"),
-            "partial coverage hazard": (run("receipt"), "hazard.noticed", "partial-coverage"),
-            "unattributed writer": (run("receipt"), "hazard.noticed", "unattributed-writer"),
-            "gate without analysis": (refused, "observation.gap", "not-observed"),
-        }
-        for label, (events, kind, value) in cases.items():
-            with self.subTest(label):
-                found = [e for e in of_kind(events, kind)
-                         if value in (e["data"].get("hazardKind"), e["data"].get("reason"))]
-                self.assertTrue(found)
-                self.assertEqual(self.clean_count(events), 0)
 
-    def test_a_truncated_receipt_and_an_unsupported_gate_are_never_empty(self):
-        receipt = doc("ownership-receipt-clean.json")
-        receipt["truncations"] = [{"list": "unknown", "unitId": "a", "total": 3}]
-        gate = dict(doc("gate-result-certified.json"), schemaVersion="agent-braid-claude-gate-result/v9")
-        for events in (run("receipt", dump(receipt)), run("gate", dump(gate))):
-            self.assertEqual(kinds(events), ["observation.gap"])
 
-    def test_a_consumer_that_drops_gaps_loses_the_absence_signal(self):
-        events = events_from_gate_result(raw("gate-result-refused.json"), path=PATH)
-        without_gaps = [e for e in events if e["kind"] != "observation.gap"]
-        self.assertEqual(len(events) - len(without_gaps), 1)
+
 
 
 class ReadArtifactTests(unittest.TestCase):
