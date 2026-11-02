@@ -83,7 +83,8 @@ RULES = (
     Rule("runtime-analysis", (
         "agent_braid/analysis.py", "agent_braid/cli.py", "agent_braid/__init__.py",
         "agent_braid/__main__.py", "tests/test_analysis.py",
-        "examples/analysis/file-edits.json", "scripts/run_software_benchmark.py",
+        "examples/analysis/file-edits.json", "examples/analysis/file-edits-conflict.json",
+        "scripts/run_software_benchmark.py",
     ), ("contracts", "analysis-tests")),
     Rule("runtime-git", (
         "agent_braid/git_adapter.py", "tests/test_git_adapter.py",

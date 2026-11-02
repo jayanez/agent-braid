@@ -73,8 +73,8 @@ The optional shell entrypoint delegates to exactly these native commands:
 ```sh
 curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh \
   -o agent-braid-install.sh
-sh agent-braid-install.sh --host both --dry-run
-sh agent-braid-install.sh --host both
+sh agent-braid-install.sh --host all --dry-run
+sh agent-braid-install.sh --host all
 ```
 
 For a direct pipe, choose the host explicitly (the pipe cannot answer a prompt):
@@ -84,12 +84,14 @@ curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install
   | sh -s -- --host codex
 ```
 
-Use `--host claude` or `--host both` as appropriate. A reviewed source commit can
+Use `--host claude` or `--host all` (every supported host found on `PATH`; absent
+hosts are skipped with a notice and none found is refused) as appropriate.
+`--host both` remains a deprecated alias for `codex` + `claude`. A reviewed source commit can
 replace `develop` in the download URL; `--ref TAG` pins the distribution ref.
 `--marketplace /absolute/local/catalog` supports an unpublished local candidate.
 The installer needs curl only for fetching this script and never downloads a
 Python environment, uses sudo, starts a provider session or modifies repository
-configuration. Both selected hosts are preflighted before the first mutation.
+configuration. Every selected host is preflighted before the first mutation.
 If a native manager fails after an earlier operation succeeds, inspect its
 output and rerun the same selection; native managers own idempotency.
 

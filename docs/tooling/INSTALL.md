@@ -9,6 +9,11 @@ from public distribution readiness.
 
 ## Python installation and legacy lifecycle
 
+This is the frozen fallback (`agent-braid tooling install`, no contract change)
+for platforms without the bundled native runtime (macOS x86_64, Linux arm64,
+WSL) and for source users. Prefer the native plugin route when your platform
+supports it.
+
 The source integration adds default-off local telemetry at these legacy
 portable MCP and analyzer CLI boundaries. It does not change the installed
 native plugin configuration or create consent for that product. The

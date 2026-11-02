@@ -31,8 +31,9 @@ def check():
         for operation in operations:
             validators["0.2.0-draft/agent-interaction-metadata.schema.json"].validate(operation)
         validate_aim_batch(operations)
-    report = analyze(loads((ROOT / "examples/analysis/file-edits.json").read_text()))
-    validators["0.1.0-alpha/analysis-report.schema.json"].validate(report)
+    for name in ("file-edits", "file-edits-conflict"):
+        report = analyze(loads((ROOT / f"examples/analysis/{name}.json").read_text()))
+        validators["0.1.0-alpha/analysis-report.schema.json"].validate(report)
     expected = {"exhaustive": (True, "verified"), "replay": (True, "verified"),
                 "proof-unverified": (True, "unverified"),
                 "duplicate-schedule": (False, "rejected"),
