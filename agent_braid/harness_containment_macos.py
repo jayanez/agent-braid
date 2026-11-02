@@ -22,7 +22,8 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
 * process: exec allow-list (NC-8), CPU, file-size, core, open-file and per-user process
   rlimits applied before the sandbox is entered, a supervisor watchdog for wall time,
   memory (macOS refuses ``RLIMIT_AS`` below the current address space), output and disk
-  (candidate plus per-run ``TMPDIR``: total bytes and entry count, ``disk-limit-exceeded``),
+  (candidate, per-run ``TMPDIR`` and ``config_dir`` together: total bytes and entry count,
+  ``disk-limit-exceeded``),
   and settlement of the group plus every new process of the dedicated user. A process that
   left the group is reported apart from one still alive after the final sweep.
 * run accounting: ``ProbeResult`` and ``ContainedHostRun`` extend the lab and host results
@@ -83,7 +84,8 @@ CLAUDE_VERSION = "2.1.292"  # NC-4
 ALLOWED_ENDPOINTS = ("api.anthropic.com:443",)  # NC-1; refresh hosts come from probe evidence
 # NC-8; memory and disk are enforced by the supervisor watchdog, the rest by rlimits.
 # diskBytes/diskFiles: founder decision 2026-11-02 ("2 GB y 100.000 ficheros"), measured over
-# the candidate directory plus the per-run TMPDIR (every entry counts, hard links once).
+# the candidate directory, the per-run TMPDIR and the dedicated user's config_dir together (founder
+# decision 2026-11-02c, DRV-06: every entry counts, hard links once).
 LIMITS = {"wallSeconds": 1800, "cpuSeconds": 1800, "memoryBytes": 4 << 30,
           "fileSizeBytes": 64 << 20, "openFiles": 256, "descendants": 16,
           "diskBytes": 2 << 30, "diskFiles": 100_000}
@@ -358,10 +360,18 @@ class AccountFacts:
     home_mode: int
 
 
+# Trusted code read by path (no import: the transport imports this module). The transport builds the
+# Claude argv and pins the build, the quota module gates every session (DRV-05).
+_COMPONENT_FILES = ("harness_transport_claude.py", "harness_quota.py")
+
+
 def _component_hashes() -> dict[str, str]:
-    """Trusted code the enforcement relies on: this backend, the lab and the host module."""
-    return {Path(m.__file__).name: sha256(Path(m.__file__).read_bytes()).hexdigest()
-            for m in (sys.modules[__name__], harness_lab, harness_host_claude)}
+    """Trusted code the enforcement relies on: this backend, the lab, the host module, the Claude
+    transport and the quota gate."""
+    hashes = {Path(m.__file__).name: sha256(Path(m.__file__).read_bytes()).hexdigest()
+              for m in (sys.modules[__name__], harness_lab, harness_host_claude)}
+    here = Path(__file__).resolve().parent
+    return hashes | {name: sha256((here / name).read_bytes()).hexdigest() for name in _COMPONENT_FILES}
 
 
 def environment_sha256(policy: ContainmentPolicy, facts: HostFacts, uid: int,
@@ -874,7 +884,8 @@ class _Lineage:
 
 
 class _DiskGuard:
-    """Total bytes (disk blocks, each inode once) and entry count of the run's writable trees.
+    """Total bytes (disk blocks, each inode once) and entry count of the run's writable trees:
+    the candidate, the per-run ``TMPDIR`` and the dedicated user's ``config_dir`` together.
 
     Symbolic links are not followed. A directory that cannot be listed counts as over the
     limit: the child cannot be allowed to hide data from the measurement.
@@ -1237,7 +1248,7 @@ class MacOSContainment(ContainmentBackend):
         state: dict = {"timedOut": False, "cancelled": False, "outputTruncated": False,
                        "limitExceeded": None}
         egress_before = self._proxy.counters()
-        disk = _DiskGuard((candidate, tmpdir))
+        disk = _DiskGuard((candidate, tmpdir, policy.config_dir))
         out_path = f"{run_dir}/stdout"
         live = _OutputStream(out_path, max_output, on_output, cancel) if on_output is not None else None
         try:
