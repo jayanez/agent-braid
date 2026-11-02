@@ -1,0 +1,508 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+"""The loopback activity-viewer server: credentials, request checks, limits and the route table.
+
+This module is the HTTP boundary of the read-only activity viewer. It follows
+specs/061-activity-viewer/contracts/ui-security-privacy.md; the refusal status table there is
+normative. It binds only 127.0.0.1 or ::1, writes no access log, and has no route that executes,
+grants, schedules or writes anything.
+
+What lives here (SPEC-061 T016): the one-time open code exchanged for a read cookie, the ingest token
+file and bearer check, `Host`, `Origin` and `Sec-Fetch-Site` checks, the response headers, body,
+connection and timeout limits, strict JSON body parsing, and the route table with its refusals.
+What plugs in later: SSE events and `/snapshot` (T017), hook ingest (T019), OTLP ingest (T018),
+frames (T027) and the static bundle (T024). They register through `read_handlers`,
+`ingest_handlers` and `bundle`; a route with nothing registered answers 404.
+"""
+from __future__ import annotations
+
+import base64
+import binascii
+import hmac
+import json
+import math
+import os
+import secrets
+import socket
+import socketserver
+import stat
+import threading
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from typing import Any, Callable, Mapping
+from urllib.parse import parse_qs
+
+from agent_braid.view_store import LoomStore, StoreError
+
+LOOPBACK_HOSTS = ("127.0.0.1", "::1")
+MAX_CONNECTIONS = 32
+SOCKET_TIMEOUT = 10.0
+HEARTBEAT_SECONDS = 15.0
+OTLP_BODY_LIMIT = 1024 * 1024
+HOOK_BODY_LIMIT = 256 * 1024
+MAX_JSON_DEPTH = 64
+INGEST_TOKEN_NAME = "view-ingest-token"
+COOKIE_NAME = "braid_view"
+HOOK_PATH = "/hook/claude"
+INGEST_STATUSES = (400, 403, 503)
+
+# (method, route, credential): the contract's route table. "/web/<file>" is any bundle file name.
+ROUTES: tuple[tuple[str, str, str], ...] = (
+    ("GET", "/open", "open code"),
+    ("GET", "/", "read cookie"),
+    ("GET", "/web/<file>", "read cookie"),
+    ("GET", "/events", "read cookie"),
+    ("GET", "/snapshot", "read cookie"),
+    ("GET", "/frame.svg", "read cookie"),
+    ("GET", "/frame.txt", "read cookie"),
+    ("POST", "/v1/logs", "ingest token"),
+    ("POST", "/v1/metrics", "ingest token"),
+    ("POST", HOOK_PATH, "ingest token"),
+)
+_BODY_LIMITS = {"/v1/logs": OTLP_BODY_LIMIT, "/v1/metrics": OTLP_BODY_LIMIT, HOOK_PATH: HOOK_BODY_LIMIT}
+_KIND = {"open code": "open", "read cookie": "read", "ingest token": "ingest"}
+_ROUTE_KIND = {route: _KIND[credential] for _, route, credential in ROUTES if "<" not in route}
+_CONTENT_TYPES = {
+    ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
+    ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+    ".json": "application/json", ".svg": "image/svg+xml", ".txt": "text/plain; charset=utf-8",
+}
+
+
+class ServeError(RuntimeError):
+    """The server could not be created; `reason` is a stable name."""
+
+    def __init__(self, reason: str, detail: str) -> None:
+        super().__init__(f"{reason}: {detail}")
+        self.reason = reason
+        self.detail = detail
+
+
+class IngestRefusal(Exception):
+    """An ingest handler refuses its input; the server answers `status` and stores nothing."""
+
+    def __init__(self, status: int) -> None:
+        if status not in INGEST_STATUSES:
+            raise ValueError(f"an ingest refusal is one of {INGEST_STATUSES}")
+        super().__init__(f"ingest refused with {status}")
+        self.status = status
+
+
+class BodyError(ValueError):
+    """A request body is not acceptable JSON; the server answers 400."""
+
+
+def _no_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise BodyError(f"duplicate member {key!r}")
+        result[key] = value
+    return result
+
+
+def _reject_constant(token: str) -> Any:
+    raise BodyError(f"non-finite number {token}")
+
+
+def _finite_float(token: str) -> float:
+    value = float(token)
+    if not math.isfinite(value):
+        raise BodyError(f"non-finite number {token}")
+    return value
+
+
+def _check_depth(data: bytes) -> None:
+    """Refuse nesting beyond MAX_JSON_DEPTH by scanning, so no parser recursion is reachable."""
+    depth = 0
+    in_string = escaped = False
+    for byte in data:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif byte == 0x5C:
+                escaped = True
+            elif byte == 0x22:
+                in_string = False
+        elif byte == 0x22:
+            in_string = True
+        elif byte in (0x5B, 0x7B):
+            depth += 1
+            if depth > MAX_JSON_DEPTH:
+                raise BodyError(f"nesting is deeper than {MAX_JSON_DEPTH}")
+        elif byte in (0x5D, 0x7D):
+            depth -= 1
+
+
+def parse_json_body(data: bytes) -> Any:
+    """Parse one JSON value, refusing duplicate members, non-finite numbers and excessive depth."""
+    _check_depth(data)
+    try:
+        return json.loads(data.decode("utf-8"), object_pairs_hook=_no_duplicates,
+                          parse_constant=_reject_constant, parse_float=_finite_float)
+    except BodyError:
+        raise
+    except (ValueError, RecursionError) as exc:
+        raise BodyError("body is not valid JSON") from exc
+
+
+def _write_ingest_token(runtime_dir: Path, token: str) -> Path:
+    """Replace `<runtime_dir>/view-ingest-token` with `token`, created exclusively, mode 0600."""
+    if not runtime_dir.is_absolute():
+        raise ServeError("runtime-dir", "the runtime directory is an absolute path")
+    try:
+        try:
+            os.mkdir(runtime_dir, 0o700)
+        except FileExistsError:
+            pass
+        directory = os.open(runtime_dir, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    except OSError as exc:
+        raise ServeError("runtime-dir", f"cannot open the runtime directory: {exc.strerror}") from exc
+    temporary = f".{INGEST_TOKEN_NAME}.{os.getpid()}.{secrets.token_hex(4)}"
+    try:
+        info = os.fstat(directory)
+        if info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) & 0o077:
+            raise ServeError("runtime-dir", "the runtime directory is owned by the user and private (0700)")
+        descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600,
+                             dir_fd=directory)
+        try:
+            os.fchmod(descriptor, 0o600)
+            os.write(descriptor, token.encode("ascii"))
+        finally:
+            os.close(descriptor)
+        os.replace(temporary, INGEST_TOKEN_NAME, src_dir_fd=directory, dst_dir_fd=directory)
+    except OSError as exc:
+        try:
+            os.unlink(temporary, dir_fd=directory)
+        except OSError:
+            pass
+        raise ServeError("token-file", f"cannot write the ingest token: {exc.strerror}") from exc
+    finally:
+        os.close(directory)
+    return runtime_dir / INGEST_TOKEN_NAME
+
+
+def _valid_bundle(bundle: Mapping[str, bytes] | None) -> dict[str, bytes]:
+    files = dict(bundle or {})
+    for name, content in files.items():
+        if (not name or "/" in name or "\\" in name or name.startswith(".")
+                or not isinstance(content, bytes)):
+            raise ServeError("bundle", f"{name!r} is not a plain file name with bytes content")
+    return files
+
+
+class ViewServer(ThreadingHTTPServer):
+    """Loopback-only HTTP server for the activity viewer. Call `serve_forever` to run it."""
+
+    daemon_threads = True
+
+    def __init__(self, store: LoomStore, runtime_dir: str | os.PathLike[str], *,
+                 host: str = "127.0.0.1", port: int = 0,
+                 bundle: Mapping[str, bytes] | None = None,
+                 read_handlers: Mapping[str, Callable[[], tuple[bytes, str]]] | None = None,
+                 ingest_handlers: Mapping[str, Callable[[Any], None]] | None = None,
+                 import_map_sha256: str | None = None,
+                 max_connections: int = MAX_CONNECTIONS, socket_timeout: float = SOCKET_TIMEOUT,
+                 heartbeat: float = HEARTBEAT_SECONDS) -> None:
+        if host not in LOOPBACK_HOSTS:
+            raise ServeError("bind-refused", "the viewer binds 127.0.0.1 or ::1 only")
+        if type(port) is not int or not 0 <= port <= 65535:
+            raise ServeError("bind-refused", "port is between 0 and 65535")
+        if max_connections < 1 or socket_timeout <= 0 or heartbeat <= 0:
+            raise ValueError("limits are positive")
+        self.store = store
+        self.bundle = _valid_bundle(bundle)
+        self.read_handlers = dict(read_handlers or {})
+        self.ingest_handlers = dict(ingest_handlers or {})
+        self.max_connections = max_connections
+        self.socket_timeout = socket_timeout
+        self.heartbeat = heartbeat
+        self._csp = self._policy(import_map_sha256)
+        self._lock = threading.Lock()
+        self._connections = 0
+        self._closing = threading.Event()
+        self._open_code: str | None = secrets.token_urlsafe(32)
+        self._read_token: str | None = None
+        self._ingest_token = secrets.token_urlsafe(32)
+        self.address_family = socket.AF_INET6 if host == "::1" else socket.AF_INET
+        super().__init__((host, port), _Handler)
+        self.port = self.server_address[1]
+        self._hosts = frozenset({f"127.0.0.1:{self.port}", f"[::1]:{self.port}", f"localhost:{self.port}"})
+        self._origins = frozenset(f"http://{name}" for name in self._hosts)
+        self.url_host = f"[::1]:{self.port}" if host == "::1" else f"127.0.0.1:{self.port}"
+        try:
+            self.token_path = _write_ingest_token(Path(runtime_dir), self._ingest_token)
+        except ServeError:
+            self.server_close()
+            raise
+
+    @staticmethod
+    def _policy(import_map_sha256: str | None) -> str:
+        script = "'self'"
+        if import_map_sha256 is not None:
+            try:
+                valid = len(base64.b64decode(import_map_sha256, validate=True)) == 32
+            except (binascii.Error, ValueError):
+                valid = False
+            if not valid:
+                raise ServeError("csp", "import_map_sha256 is the base64 of a SHA-256 digest")
+            script += f" 'sha256-{import_map_sha256}'"
+        return (f"default-src 'self'; script-src {script}; style-src 'self'; img-src 'self' data:; "
+                "connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; "
+                "require-trusted-types-for 'script'")
+
+    @property
+    def open_url(self) -> str:
+        """The URL printed once at start. It embeds the single-use open code; do not log it elsewhere."""
+        return f"http://{self.url_host}/open?code={self._open_code}"
+
+    def response_headers(self) -> list[tuple[str, str]]:
+        return [("Content-Security-Policy", self._csp), ("X-Content-Type-Options", "nosniff"),
+                ("Referrer-Policy", "no-referrer"), ("Cache-Control", "no-store"),
+                ("Connection", "close")]
+
+    # -- credentials -----------------------------------------------------------------------
+
+    @staticmethod
+    def _same(left: str | None, right: str | None) -> bool:
+        return left is not None and right is not None and hmac.compare_digest(
+            left.encode("utf-8"), right.encode("utf-8"))
+
+    def open_code_valid(self, code: str) -> bool:
+        with self._lock:
+            return self._same(code, self._open_code)
+
+    def exchange_open_code(self, code: str) -> str | None:
+        """Spend the open code; return the read cookie value, or None for any other code."""
+        with self._lock:
+            if not self._same(code, self._open_code):
+                return None
+            self._open_code = None
+            self._read_token = secrets.token_urlsafe(32)
+            return self._read_token
+
+    def read_cookie_valid(self, value: str) -> bool:
+        with self._lock:
+            return self._same(value, self._read_token)
+
+    def ingest_token_valid(self, value: str) -> bool:
+        return self._same(value, self._ingest_token)
+
+    # -- connections -----------------------------------------------------------------------
+
+    def server_bind(self) -> None:
+        socketserver.TCPServer.server_bind(self)  # skips HTTPServer's reverse-DNS lookup
+        self.server_name, self.server_port = self.server_address[:2]
+
+    def process_request(self, request: Any, client_address: Any) -> None:
+        with self._lock:
+            full = self._connections >= self.max_connections
+            if not full:
+                self._connections += 1
+        if full:
+            self._refuse_connection(request)
+        else:
+            super().process_request(request, client_address)
+
+    def process_request_thread(self, request: Any, client_address: Any) -> None:
+        try:
+            super().process_request_thread(request, client_address)
+        finally:
+            with self._lock:
+                self._connections -= 1
+
+    def _refuse_connection(self, request: socket.socket) -> None:
+        lines = ["HTTP/1.0 503 Service Unavailable", "Content-Length: 0"]
+        lines += [f"{name}: {value}" for name, value in self.response_headers()]
+        try:
+            request.settimeout(0.05)
+            request.sendall(("\r\n".join(lines) + "\r\n\r\n").encode("ascii"))
+            request.shutdown(socket.SHUT_WR)
+            request.recv(4096)  # drain so closing does not reset the connection under the answer
+        except OSError:
+            pass
+        self.shutdown_request(request)
+
+    def handle_error(self, request: Any, client_address: Any) -> None:
+        pass  # no traceback or log output: the viewer writes nothing to the console per request
+
+    def shutdown(self) -> None:
+        self._closing.set()
+        super().shutdown()
+
+    def server_close(self) -> None:
+        self._closing.set()
+        super().server_close()
+
+
+class _Handler(BaseHTTPRequestHandler):
+    protocol_version = "HTTP/1.0"  # one request per connection; no keep-alive holding a slot
+    server: ViewServer
+
+    def setup(self) -> None:
+        self.timeout = self.server.socket_timeout
+        super().setup()
+
+    def log_message(self, format: str, *args: Any) -> None:
+        pass  # access logging is off
+
+    def __getattr__(self, name: str) -> Any:
+        if name.startswith("do_"):
+            return lambda: self._dispatch(name[3:])
+        raise AttributeError(name)
+
+    def send_error(self, code: int, message: str | None = None, explain: str | None = None) -> None:
+        self._send(code)  # malformed request lines and headers: contract headers, empty body
+
+    def _send(self, status: int, body: bytes = b"", content_type: str | None = None,
+              extra: tuple[tuple[str, str], ...] = ()) -> None:
+        if getattr(self, "path", "").partition("?")[0] == HOOK_PATH:
+            body = b""  # every response on a hook route has an empty body
+        if self.request_version == "HTTP/0.9":
+            self.request_version = "HTTP/1.0"  # always answer with a status line and the contract headers
+        self.send_response_only(status)
+        for name, value in self.server.response_headers():
+            self.send_header(name, value)
+        for name, value in extra:
+            self.send_header(name, value)
+        if body and content_type:
+            self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        if body and self.command != "HEAD":
+            self.wfile.write(body)
+        self.close_connection = True
+
+    # -- request checks --------------------------------------------------------------------
+
+    def _loopback_request(self) -> bool:
+        server = self.server
+        origin = self.headers.get("Origin")
+        return (self.headers.get("Host") in server._hosts
+                and (origin is None or origin in server._origins)
+                and self.headers.get("Sec-Fetch-Site") != "cross-site")
+
+    def _read_authorized(self) -> bool:
+        for header in self.headers.get_all("Cookie", []):
+            for part in header.split(";"):
+                name, _, value = part.strip().partition("=")
+                if name == COOKIE_NAME and self.server.read_cookie_valid(value):
+                    return True
+        return False
+
+    def _ingest_authorized(self) -> bool:
+        scheme, _, token = (self.headers.get("Authorization") or "").partition(" ")
+        return scheme.lower() == "bearer" and self.server.ingest_token_valid(token.strip())
+
+    # -- routing ---------------------------------------------------------------------------
+
+    def _dispatch(self, method: str) -> None:
+        path, _, query = self.path.partition("?")
+        if not self._loopback_request():
+            return self._send(403)
+        if not path.startswith("/") or path.startswith("//"):
+            return self._send(404)
+        kind = _ROUTE_KIND.get(path)
+        if kind is None and path.startswith("/web/") and path[5:] in self.server.bundle:
+            kind = "read"
+        if kind is None:
+            return self._send(404)
+        if kind == "open":
+            return self._open(method, query)
+        if kind == "read":
+            if not self._read_authorized():
+                return self._send(404)
+            if method != "GET":
+                return self._send(405)
+            return self._read(path)
+        if not self._ingest_authorized():
+            return self._send(404)
+        if method != "POST":
+            return self._send(405)
+        self._ingest(path)
+
+    def _open(self, method: str, query: str) -> None:
+        codes = parse_qs(query, keep_blank_values=True).get("code", [])
+        if len(codes) != 1 or not self.server.open_code_valid(codes[0]):
+            return self._send(404)
+        if method != "GET":
+            return self._send(405)
+        token = self.server.exchange_open_code(codes[0])
+        if token is None:
+            return self._send(404)
+        self._send(303, extra=(("Location", "/"),
+                               ("Set-Cookie", f"{COOKIE_NAME}={token}; HttpOnly; SameSite=Strict; Path=/")))
+
+    def _read(self, path: str) -> None:
+        server = self.server
+        if path == "/events":
+            return self._events()
+        if path == "/" or path.startswith("/web/"):
+            name = "index.html" if path == "/" else path[5:]
+            content = server.bundle.get(name)
+            if content is None:
+                return self._send(404)
+            suffix = os.path.splitext(name)[1]
+            return self._send(200, content, _CONTENT_TYPES.get(suffix, "application/octet-stream"))
+        reader = server.read_handlers.get(path)
+        if reader is None:
+            return self._send(404)
+        body, content_type = reader()
+        self._send(200, body, content_type)
+
+    def _events(self) -> None:
+        # Skeleton: holds the subscriber slot and heartbeats; event delivery and Last-Event-ID are T017.
+        try:
+            subscriber = self.server.store.subscribe()
+        except StoreError:
+            return self._send(503)
+        try:
+            self.send_response_only(200)
+            for name, value in self.server.response_headers():
+                self.send_header(name, value)
+            self.send_header("Content-Type", "text/event-stream")
+            self.end_headers()
+            self.wfile.write(b": connected\n\n")
+            while not self.server._closing.wait(self.server.heartbeat):
+                self.wfile.write(b": heartbeat\n\n")
+        except OSError:
+            pass  # cannot be written: the subscriber is dropped
+        finally:
+            subscriber.close()
+            self.close_connection = True
+
+    def _ingest(self, path: str) -> None:
+        media = (self.headers.get("Content-Type") or "").partition(";")[0].strip().lower()
+        if media != "application/json" or (self.headers.get("Content-Encoding") or "identity").strip().lower() != "identity":
+            return self._send(415)
+        declared = self.headers.get("Content-Length")
+        if declared is None:
+            return self._send(411)
+        if not declared.isascii() or not declared.isdigit():
+            return self._send(400)
+        length = int(declared) if len(declared) < 12 else _BODY_LIMITS[path] + 1
+        if length > _BODY_LIMITS[path]:
+            return self._send(413)
+        try:
+            data = self.rfile.read(length)
+        except OSError:
+            self.close_connection = True  # timed out or reset: nothing was accepted
+            return
+        if len(data) != length:
+            return self._send(400)
+        try:
+            parsed = parse_json_body(data)
+        except BodyError:
+            return self._send(400)
+        handler = self.server.ingest_handlers.get(path)
+        if handler is None:
+            return self._send(404)
+        try:
+            handler(parsed)
+        except IngestRefusal as refusal:
+            return self._send(refusal.status)
+        except Exception:
+            return self._send(500)
+        self._send(200, b"{}" if path != HOOK_PATH else b"", "application/json")
+
+
+__all__ = ["BodyError", "IngestRefusal", "ROUTES", "ServeError", "ViewServer", "parse_json_body"]
