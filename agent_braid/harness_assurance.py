@@ -13,8 +13,10 @@ listing one as anything else is refused. Only ``merge`` admits ``standing-author
 ``PRESETS`` are the named profiles ``lite``, ``standard`` and ``strict``; Q1 fixes the names, the ``standard``
 default and R2 for code, while the other per-checkpoint values are this task's proposal, never below a floor.
 
-``resolve`` follows the SPEC-058 REQ-006 / ``ownership.resolve_settings`` precedence (conversation over
-repository over user, the profile as lowest source) per checkpoint and dimension (mode, depth). A scope value
+``resolve`` follows the SPEC-058 REQ-006 / ``ownership.resolve_settings`` precedence (repository over user, the
+profile as lowest source) per checkpoint and dimension (mode, depth); the conversation scope may only raise the
+value so resolved, and a lower request is not applied and is recorded as ``conversation-lowering-refused`` (its
+``floor`` field then holds the value the request may not go below). A scope value
 that would lower a REQ-003 floor, or disable the no-attribution invariant, is not applied: the floor holds and
 the attempt is recorded with its scope in ``refusedLowerings``. Scope documents and the profile are read only
 from operator-owned locations (``read_operator_file``: no symlink, regular file, not group/other-writable,
@@ -80,7 +82,7 @@ REASONS = (
     "agent-identity", "agent-writable-source", "invalid-time", "time-regression", "invalid-reason",
     "invalid-journal", "journal-full", "profile-hash-mismatch", "version-not-newer", "no-transaction",
     "transaction-pending", "no-active-profile", "invalid-registry", "non-canonical", "concurrent-update",
-    "journal-unavailable", "attribution-invariant", "invalid-diff-summary",
+    "journal-unavailable", "attribution-invariant", "invalid-diff-summary", "conversation-lowering-refused",
 )
 
 MAX_RULES = 16
@@ -298,9 +300,11 @@ def parse_settings(raw: bytes) -> dict[str, Any]:
 def resolve(profile: Any, documents: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Resolve the profile and already-read scope documents into the effective per-checkpoint view.
 
-    The most specific scope that sets a value wins (conversation over repository over user over the profile),
-    separately for each checkpoint's mode and for the ``pre-pr-review`` depth, and the source of every value is
-    recorded. A request to lower a floor or to disable the no-attribution invariant is never applied and is
+    The most specific operator scope that sets a value wins (repository over user over the profile), separately
+    for each checkpoint's mode and for the ``pre-pr-review`` depth, and the source of every value is recorded.
+    The conversation scope may only raise the value so resolved (founder decision 2026-11-02, "Solo subir"): a
+    lower request is not applied and is recorded with reason ``conversation-lowering-refused``; an equal one
+    changes nothing. A request to lower a floor or to disable the no-attribution invariant is never applied and is
     recorded in ``refusedLowerings`` with its scope, so the floors hold whatever the sources say. Risk
     escalation (T004) only raises and is applied after this step.
     """
@@ -314,21 +318,32 @@ def resolve(profile: Any, documents: Mapping[str, Any] | None = None) -> dict[st
             _require(checked[scope]["scope"] == scope, "scope-mismatch")
     rows = _checkpoint_rows(profile)
     refused: list[dict[str, Any]] = []
-    for scope, document in checked.items():  # most specific first: the first accepted value wins
+    for scope in ("repository", "user", "conversation"):  # operator scopes first: conversation only raises
+        document = checked.get(scope)
+        if document is None:
+            continue
         for row in rows:
             entry = document.get("checkpoints", {}).get(row["checkpoint"], {})
             for dimension in ("mode", "depth"):
                 if dimension not in entry:
                     continue
                 value = entry[dimension]
+                order = MODES if dimension == "mode" else DEPTHS
+                requested, current = order.index(value), order.index(row[dimension])
+                refusal = None
                 if dimension == "mode" and row["checkpoint"] in HUMAN_ONLY and value != "human-only":
-                    refused.append({"checkpoint": row["checkpoint"], "dimension": "mode", "requested": value,
-                                    "scope": scope, "floor": "human-only", "reason": "floor-not-human-only"})
-                elif row[f"{dimension}Source"] == "profile":
+                    refusal = ("human-only", "floor-not-human-only")
+                elif scope == "conversation" and requested < current:
+                    refusal = (row[dimension], "conversation-lowering-refused")
+                if refusal is not None:
+                    refused.append({"checkpoint": row["checkpoint"], "dimension": dimension, "requested": value,
+                                    "scope": scope, "floor": refusal[0], "reason": refusal[1]})
+                elif requested > current if scope == "conversation" else row[f"{dimension}Source"] == "profile":
                     row[dimension], row[f"{dimension}Source"] = value, scope
         if document.get("noAttribution", True) is not True:
             refused.append({"checkpoint": None, "dimension": "noAttribution", "requested": False, "scope": scope,
                             "floor": True, "reason": "attribution-invariant"})
+    refused.sort(key=lambda item: SCOPES.index(item["scope"]))  # stable: most specific scope first
     return {
         "schema": RESOLVED_FORMAT,
         "profile": {"name": profile["name"], "version": profile["version"], "digest": digest(profile)},

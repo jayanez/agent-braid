@@ -331,20 +331,88 @@ class SettingsAndResolveTests(unittest.TestCase):
         docs = {
             "user": self.doc("user", {"ci": {"mode": "approve-each"}, "pr-open": {"mode": "autonomous"},
                                       "pre-pr-review": {"depth": "R0"}}),
-            "repository": self.doc("repository", {"ci": {"mode": "human-only"},
+            "repository": self.doc("repository", {"ci": {"mode": "notify"},
                                                   "pre-pr-review": {"depth": "R3"}}),
-            "conversation": self.doc("conversation", {"ci": {"mode": "autonomous"}}),
+            "conversation": self.doc("conversation", {"ci": {"mode": "human-only"}}),
         }
         resolved = ha.resolve(profile(), docs)
         self.assertEqual(resolved["scopeSources"], ["conversation", "repository", "user"])
         ci = self.row(resolved, "ci")
-        self.assertEqual((ci["mode"], ci["modeSource"]), ("autonomous", "conversation"))
+        self.assertEqual((ci["mode"], ci["modeSource"]), ("human-only", "conversation"))
         pr_open = self.row(resolved, "pr-open")
         self.assertEqual((pr_open["mode"], pr_open["modeSource"]), ("autonomous", "user"))
         review = self.row(resolved, "pre-pr-review")
         self.assertEqual((review["depth"], review["depthSource"]), ("R3", "repository"))
         self.assertEqual((review["mode"], review["modeSource"]), ("notify", "profile"))
         self.assertEqual(resolved["refusedLowerings"], [])
+
+    def test_conversation_may_only_raise_depth_and_mode(self):
+        base = {"repository": self.doc("repository", {"ci": {"mode": "approve-each"}, "pre-pr-review": {"depth": "R3"}})}
+        lower = {"ci": {"mode": "autonomous"}, "pre-pr-review": {"depth": "R1", "mode": "autonomous"}}
+        resolved = ha.resolve(profile(), {**base, "conversation": self.doc("conversation", lower)})
+        ci, review = self.row(resolved, "ci"), self.row(resolved, "pre-pr-review")
+        self.assertEqual((ci["mode"], ci["modeSource"]), ("approve-each", "repository"))
+        self.assertEqual((review["depth"], review["depthSource"]), ("R3", "repository"))
+        self.assertEqual((review["mode"], review["modeSource"]), ("notify", "profile"))
+        self.assertEqual(resolved["refusedLowerings"], [
+            {"checkpoint": "pre-pr-review", "dimension": "mode", "requested": "autonomous", "scope": "conversation",
+             "floor": "notify", "reason": "conversation-lowering-refused"},
+            {"checkpoint": "pre-pr-review", "dimension": "depth", "requested": "R1", "scope": "conversation",
+             "floor": "R3", "reason": "conversation-lowering-refused"},
+            {"checkpoint": "ci", "dimension": "mode", "requested": "autonomous", "scope": "conversation",
+             "floor": "approve-each", "reason": "conversation-lowering-refused"}])
+        self.assertIn("conversation-lowering-refused", ha.REASONS)
+        raised = {"ci": {"mode": "human-only"}, "pre-pr-review": {"depth": "R4", "mode": "approve-each"}}
+        resolved = ha.resolve(profile(), {**base, "conversation": self.doc("conversation", raised)})
+        ci, review = self.row(resolved, "ci"), self.row(resolved, "pre-pr-review")
+        self.assertEqual((ci["mode"], ci["modeSource"]), ("human-only", "conversation"))
+        self.assertEqual((review["depth"], review["depthSource"]), ("R4", "conversation"))
+        self.assertEqual((review["mode"], review["modeSource"]), ("approve-each", "conversation"))
+        self.assertEqual(resolved["refusedLowerings"], [])
+
+    def test_conversation_equal_value_changes_nothing_and_is_not_refused(self):
+        docs = {"user": self.doc("user", {"ci": {"mode": "approve-each"}}),
+                "conversation": self.doc("conversation", {"ci": {"mode": "approve-each"}})}
+        resolved = ha.resolve(profile(), docs)
+        self.assertEqual((self.row(resolved, "ci")["mode"], self.row(resolved, "ci")["modeSource"]),
+                         ("approve-each", "user"))
+        self.assertEqual(resolved["refusedLowerings"], [])
+
+    def test_conversation_compares_with_the_profile_when_no_operator_scope_sets_it(self):
+        resolved = ha.resolve(profile("strict"), {"conversation": self.doc(
+            "conversation", {"pre-pr-review": {"depth": "R2"}, "ci": {"mode": "autonomous"}})})
+        self.assertEqual(self.row(resolved, "pre-pr-review")["depth"], "R3")
+        self.assertEqual(self.row(resolved, "ci")["mode"], "notify")
+        self.assertEqual([(r["checkpoint"], r["dimension"], r["requested"], r["floor"], r["reason"])
+                          for r in resolved["refusedLowerings"]], [
+            ("pre-pr-review", "depth", "R2", "R3", "conversation-lowering-refused"),
+            ("ci", "mode", "autonomous", "notify", "conversation-lowering-refused")])
+        self.assertEqual(self.row(resolved, "pre-pr-review")["depthSource"], "profile")
+        self.assertEqual(self.row(resolved, "ci")["modeSource"], "profile")
+
+    def test_operator_scopes_may_still_lower_the_profile_and_each_other(self):
+        docs = {"user": self.doc("user", {"ci": {"mode": "autonomous"}})}
+        ci = self.row(ha.resolve(profile("strict"), docs), "ci")
+        self.assertEqual((ci["mode"], ci["modeSource"]), ("autonomous", "user"))
+        docs["repository"] = self.doc("repository", {"ci": {"mode": "approve-each"}})
+        ci = self.row(ha.resolve(profile("strict"), docs), "ci")
+        self.assertEqual((ci["mode"], ci["modeSource"]), ("approve-each", "repository"))
+
+    def test_conversation_raise_cannot_leave_the_allowed_modes_and_attribution_stays_refused(self):
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            ha.resolve(profile(), {"conversation": self.doc("conversation", {"pr-open": {"mode": "standing-authorization"}})})
+        self.assertEqual(ctx.exception.reason, "mode-not-allowed")
+        docs = {"repository": self.doc("repository", {"release": {"mode": "notify"}}),
+                "user": self.doc("user", noAttribution=False),
+                "conversation": self.doc("conversation", {"ci": {"mode": "autonomous"}}, noAttribution=False)}
+        resolved = ha.resolve(profile(), docs)
+        self.assertEqual([(r["scope"], r["reason"]) for r in resolved["refusedLowerings"]], [
+            ("conversation", "conversation-lowering-refused"), ("conversation", "attribution-invariant"),
+            ("repository", "floor-not-human-only"), ("user", "attribution-invariant")])
+
+    def test_a_floor_request_from_conversation_keeps_the_floor_reason(self):
+        resolved = ha.resolve(profile(), {"conversation": self.doc("conversation", {"release": {"mode": "notify"}})})
+        self.assertEqual(resolved["refusedLowerings"][0]["reason"], "floor-not-human-only")
 
     def test_lowering_each_floor_at_each_scope_is_refused_and_recorded(self):
         for scope in ha.SCOPES:
