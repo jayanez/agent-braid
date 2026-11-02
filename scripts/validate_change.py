@@ -173,6 +173,13 @@ RULES = (
         "docs/tooling/CLAUDE_WORKFLOWS.md",
     ), ("full-tests",), True,
         boundary="Claude Code host verification of the workflow gate and release acceptance remain separate; the gate is analysis-only and unreleased"),
+    Rule("activity-viewer", (
+        "agent_braid/view_*.py", "tests/test_view_*.py", "tests/fixtures/view/**",
+        "integrations/agent-braid-view/**", "examples/view/**", "docs/tooling/VIEWER.md",
+        # Reports the viewer adapters read: changes escalate to the full tests.
+        "agent_braid/analysis.py", "agent_braid/git_replay.py",
+    ), ("full-tests",), True,
+        boundary="Read-only local visualization only; host verification, vendored-license adoption and release acceptance remain separate"),
     Rule("ai-tooling", (
         "agent_braid/cli.py", "agent_braid/tooling_*.py", "tests/test_tooling_*.py",
         "agent_braid/plugin_*.py", "tests/test_plugin_*.py", "install.sh",

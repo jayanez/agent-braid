@@ -59,6 +59,13 @@ the shadow module, the shadow module uses no network or model library and keeps
 `executionAuthorization` false, and none of it establishes accuracy, calibration or
 promotion. `tests/test_system_one_shadow_boundaries.py` checks those properties.
 
+Activity viewer paths (see the `activity-viewer` rule) form a sensitive domain and
+escalate to the full tests. The rule also lists `agent_braid/analysis.py` and
+`agent_braid/git_replay.py`, whose reports the viewer adapters read; the other
+adapter inputs already escalate through their own rules. Its boundary is
+read-only local visualization: host verification, vendored-license adoption and
+release acceptance remain separate.
+
 ## Evidence boundaries
 
 Milestone closure, release, public-repository cutover and refreshed scientific
