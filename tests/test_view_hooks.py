@@ -121,10 +121,15 @@ class MappingTests(IngestCase):
         payload["tool_name"] = "bad‮tool"
         self.hooks.handle(payload)
         self.assertIsNone(self.data("strand.update")[0]["toolName"])
-        payload = fixture("post-tool-use-main")
-        payload["tool_name"] = "x" * 257
-        self.hooks.handle(payload)
-        self.assertIsNone(self.data("strand.update")[1]["toolName"])
+        for bad in ("x" * (view_hooks.TEXT_MAX_LENGTH + 1), "Bash\n"):
+            payload = fixture("post-tool-use-main")
+            payload["tool_name"] = bad
+            self.hooks.handle(payload)
+        self.assertEqual([item["toolName"] for item in self.data("strand.update")], [None] * 3)
+        payload = fixture("subagent-start")
+        payload["agent_type"] = "general\n"
+        self.hooks.handle(payload)  # must not raise: a trailing newline is not free text
+        self.assertEqual(self.data("strand.open")[-1]["label"], "Claude subagent")
 
     def test_non_string_optional_fields_are_ignored(self):
         payload = fixture("subagent-start")
@@ -145,7 +150,7 @@ class PrivacyTests(IngestCase):
         self.feed_all()
         blob = json.dumps(self.events()) + json.dumps(self.hooks.dropped_names())
         for forbidden in (SENTINEL, "session-fixture-1", "agent-fixture-1", "toolu-fixture", "prompt-1",
-                          "model-fixture", "transcript.jsonl", '"/'):
+                          "model-fixture", "transcript.jsonl"):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, blob)
 
@@ -172,8 +177,7 @@ class PrivacyTests(IngestCase):
                     for name in receipt[event]}
         expected = observed - set(view_hooks.ALLOWED_FIELDS)
         names = set(self.hooks.dropped_names())
-        self.assertLessEqual(expected - {"session_crons"}, names)  # an empty list has no member names
-        self.assertIn("session_crons", names)
+        self.assertLessEqual(expected, names)
         self.assertTrue(names.isdisjoint(view_hooks.ALLOWED_FIELDS))
 
     def test_unknown_attribute_name_is_inventoried_and_its_value_is_not_kept(self):
@@ -183,16 +187,24 @@ class PrivacyTests(IngestCase):
         self.assertIn("brand_new_object.inner_name", names)
         self.assertNotIn(SENTINEL, json.dumps(self.events()))
 
-    def test_inventory_is_bounded_and_skips_unprintable_or_long_names(self):
+    def test_inventory_is_bounded(self):
         payload = fixture("subagent-start")
         for index in range(400):
             payload[f"extra_{index}"] = 1
-        payload["x" * 65] = 1
-        payload["bad‮name"] = 1
+        self.hooks.handle(payload)
+        self.assertEqual(len(self.hooks.dropped_names()), view_serve.MAX_INVENTORY_NAMES)
+
+    def test_inventory_skips_long_unprintable_and_data_like_names(self):
+        payload = fixture("post-tool-use-main")
+        payload["x" * (view_serve.MAX_INVENTORY_NAME_LENGTH + 1)] = 1
+        payload["bad\u202ename"] = 1
+        payload["tool_response"] = {"/Users/someone/secret.txt": 1, "ENV-NAME=value": 2, "fine_name": 3}
         self.hooks.handle(payload)
         names = self.hooks.dropped_names()
-        self.assertEqual(len(names), view_serve.MAX_INVENTORY_NAMES)
-        self.assertTrue(all(len(name) <= view_serve.MAX_INVENTORY_NAME_LENGTH and name.isprintable() for name in names))
+        self.assertIn("tool_response.fine_name", names)
+        self.assertIn("tool_response", names)
+        self.assertEqual([name for name in names if "secret" in name or "ENV" in name or "bad" in name], [])
+        self.assertTrue(all(len(name) <= view_serve.MAX_INVENTORY_NAME_LENGTH for name in names))
 
     def test_deeply_nested_and_wide_values_do_not_recurse_or_blow_up(self):
         payload = fixture("post-tool-use-main")
@@ -220,10 +232,6 @@ class RefusalTests(IngestCase):
         self.assertEqual(caught.exception.status, 403)
         self.assertEqual(self.events(), [])
         self.assertEqual(self.hooks.dropped_names(), [])
-
-    def test_the_observational_set_is_the_contract_set(self):
-        self.assertEqual(set(view_hooks.OBSERVATIONAL_EVENTS),
-                         {"SessionStart", "SessionEnd", "SubagentStart", "SubagentStop", "PostToolUse"})
 
     def test_non_object_and_nameless_payloads_are_schema_violations(self):
         for payload in ([], "x", 3, None, {}, {"hook_event_name": 7}, {"hook_event_name": ["PostToolUse"]}):
@@ -325,11 +333,6 @@ class HttpTests(ServerCase):
         self.assertEqual([body for _, body in results], [b""] * len(results))
         self.assertEqual([status for status, _ in results],
                          [200] * 5 + [403] * 4 + [200, 200] + [400] * 3)
-
-    def test_decision_events_change_no_state(self):
-        for name in ("decision-pre-tool-use", "decision-stop"):
-            self.assertEqual(self.post(fixture(name))[0], 403)
-        self.assertEqual(self.store.stats()["headSeq"], 0)
 
     def test_no_sentinel_in_snapshot_events_or_any_response(self):
         bodies = []

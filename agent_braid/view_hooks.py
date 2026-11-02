@@ -26,23 +26,25 @@ import re
 import secrets
 import threading
 import time
-from typing import Any, Callable
+from typing import Any, Callable, Iterator
 
 from agent_braid.view_loom import SCHEMA_VERSION, TEXT_MAX_LENGTH, TEXT_PATTERN
 from agent_braid.view_serve import IngestRefusal, MAX_INVENTORY_NAME_LENGTH, MAX_INVENTORY_NAMES
 from agent_braid.view_store import LoomStore
 
 OBSERVATIONAL_EVENTS = ("SessionStart", "SessionEnd", "SubagentStart", "SubagentStop", "PostToolUse")
-# The only payload names whose values are read. Pinned from the T030 receipt.
+# The only payload names whose values are read, pinned from the T030 receipt. `tool_use_id` is allowlisted
+# (its name is not inventoried as dropped) but no Loom field carries it, so it is not stored.
 ALLOWED_FIELDS = ("hook_event_name", "session_id", "agent_id", "agent_type", "tool_name", "tool_use_id")
 MAX_IDENTIFIER_LENGTH = 256
 _TEXT = re.compile(TEXT_PATTERN)
+_NAME_SEGMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")  # a schema-like name; a data-like key is not inventoried
 _MAX_NAME_WALK = 20_000  # payload nodes inspected for the inventory; the body limit is 256 KiB
 
 
 def _text(value: Any) -> str | None:
     """A kept free-text value, or None when absent, not a string, too long or carrying control characters."""
-    if isinstance(value, str) and 0 < len(value) <= TEXT_MAX_LENGTH and _TEXT.match(value):
+    if isinstance(value, str) and 0 < len(value) <= TEXT_MAX_LENGTH and _TEXT.fullmatch(value):
         return value
     return None
 
@@ -53,9 +55,8 @@ def _identifier(value: Any) -> str | None:
     return None
 
 
-def _field_names(payload: dict[str, Any]) -> list[str]:
-    """Dotted names of every member below the top level, lists as `name[]`; iterative, bounded."""
-    names: list[str] = []
+def _field_names(payload: dict[str, Any]) -> Iterator[str]:
+    """Dotted names of every member, lists as `name[]`; iterative, bounded. Data-like keys are skipped."""
     stack: list[tuple[str, Any]] = [("", payload)]
     walked = 0
     while stack and walked < _MAX_NAME_WALK:
@@ -65,11 +66,12 @@ def _field_names(payload: dict[str, Any]) -> list[str]:
             stack.extend((f"{prefix}[]", item) for item in node if isinstance(item, (dict, list)))
         elif isinstance(node, dict):
             for key, child in node.items():
+                if not _NAME_SEGMENT.fullmatch(key):
+                    continue
                 path = f"{prefix}.{key}" if prefix else key
-                names.append(path)
+                yield path
                 if isinstance(child, (dict, list)):
                     stack.append((path, child))
-    return names
 
 
 class HookIngest:
@@ -82,7 +84,7 @@ class HookIngest:
         self._origin = clock()
         self._salt = salt if salt is not None else secrets.token_bytes(32)
         self._lock = threading.Lock()
-        self._strands: dict[str, str] = {}  # strandId -> "open" | "closed"
+        self._strands: dict[str, str] = {}  # strandId -> "open" | "closed" | "refused" (store cap)
         self._children: dict[str, list[str]] = {}  # session strandId -> open subagent strandIds
         self._names: set[str] = set()
         self._gaps: set[str] = set()
@@ -106,19 +108,21 @@ class HookIngest:
             session = _identifier(payload.get("session_id"))
             agent = _identifier(payload.get("agent_id"))
             if session is None or (agent is None and event in ("SubagentStart", "SubagentStop")):
-                return self._gap(event)
+                self._gap(event)
+                return
             session_strand = self._hash("session", session)
             agent_strand = self._hash("agent", agent) if agent is not None else None
             if event == "SessionEnd":
-                return self._end_session(session_strand)
+                self._end_session(session_strand)
+                return
             if not self._ensure_session(session_strand):
-                return None
+                return
             if agent_strand is None:
                 target = session_strand
             else:
                 target = agent_strand
                 if not self._ensure_subagent(session_strand, agent_strand, _text(payload.get("agent_type"))):
-                    return None
+                    return
             if event == "SubagentStop":
                 self._close(agent_strand)
             elif event == "PostToolUse":
@@ -157,22 +161,20 @@ class HookIngest:
     def _open(self, strand: str, role: str, label: str, parent: str | None) -> bool:
         if strand in self._strands:
             return self._strands[strand] == "open"
-        if not self._append("strand.open", {"strandId": strand, "host": "claude", "role": role,
-                                            "label": label, "parentStrandId": parent}):
-            return False  # refused by a store cap: nothing further is stored for this strand
-        self._strands[strand] = "open"
-        return True
+        stored = self._append("strand.open", {"strandId": strand, "host": "claude", "role": role,
+                                              "label": label, "parentStrandId": parent})
+        self._strands[strand] = "open" if stored else "refused"  # a cap refusal: store nothing further
+        return stored
 
     def _ensure_session(self, session_strand: str) -> bool:
         return self._open(session_strand, "agent", "Claude session", None)
 
     def _ensure_subagent(self, session_strand: str, agent_strand: str, agent_type: str | None) -> bool:
         known = agent_strand in self._strands
-        if not self._open(agent_strand, "subagent", agent_type or "Claude subagent", session_strand):
-            return False
-        if not known:
+        opened = self._open(agent_strand, "subagent", agent_type or "Claude subagent", session_strand)
+        if opened and not known:
             self._children.setdefault(session_strand, []).append(agent_strand)
-        return True
+        return opened
 
     def _update(self, strand: str, tool_name: str | None) -> None:
         self._append("strand.update", {"strandId": strand, "state": "running", "toolName": tool_name})
