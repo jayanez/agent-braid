@@ -533,3 +533,18 @@ Suggested follow-up tracks (not started here): (1) T005 delta: RV-01, RV-02, RV-
 component hashes, RV-16, RV-20, RV-22, RV-23, RV-30, RV-32; (2) T007 delta: RV-04 to RV-15, RV-24 to RV-27,
 with a new catalog hash; (3) founder decisions: RV-17, RV-19, RV-21; (4) a delta review of whatever those
 tracks change, before T009.
+
+## Founder dispositions 2026-11-02
+
+The founder decided the three `needs-founder-decision` findings on 2026-11-02. The decisions are recorded
+verbatim in `evidence/founder-decisions-20261102.json` (`executionAuthorization` stays `false`; this is not a
+qualification and authorizes no native session).
+
+| Finding | Founder answer | Effect |
+|---|---|---|
+| RV-21 keychain and mach route | "Llavero propio, lista cerrada (Recommended)" | Only the dedicated lab user's own keychain and a closed list of mach services. T009 observes which services `claude` requests. Any new service needs a review and a decision record before it is added. The founder's personal keychain is never reachable (different user). |
+| RV-17 credential exfiltration | "Riesgo residual (Recommended)" | Accepted and documented residual: destination limited to Anthropic, the credential belongs to a revocable dedicated user, the candidate gets no founder secrets. Revisited at each 30-day requalification. |
+| RV-19 disk and file count | "2 GB y 100.000 ficheros (Recommended)" | The supervisor measures the candidate directory plus `TMPDIR` on each poll and kills the session above 2 GB total or 100,000 files. Implemented as a T005 fix. |
+
+The `fix-in-T005` and `fix-in-T007` findings are not closed by these decisions. They are being fixed in
+follow-up tracks, each followed by a delta review, before T009 starts.

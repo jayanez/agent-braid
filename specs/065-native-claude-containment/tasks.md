@@ -155,13 +155,18 @@ shared object store fails the portable-root check).
   FS-06/FS-07 controls may not discriminate; NET-05-CLI stays inconclusive
   without a proxy egress tap; PROC-08 cancel half needs a cancel driver.
 
-- [ ] T008 (REQ-010 / SC-010): Independent security review of the probe catalog
+- [x] T008 (REQ-010 / SC-010): Independent security review of the probe catalog
   and backend policy before the first live attempt: missing escape classes,
   weak positive controls, policy rules broader than the decisions. Findings are
   fixed in T005/T007 or recorded as residual risk. Dependencies: T005, T007.
   Files: `specs/065-native-claude-containment/evidence/probe-catalog-review.md`.
   Verification: review record with findings and dispositions. Evidence: the
   record. Note: a review is not a qualification.
+  Obtained: `evidence/probe-catalog-review.md` (#952; 34 findings, 0 critical,
+  4 high; static review, nothing native ran) plus the founder dispositions of
+  RV-17, RV-19 and RV-21 in `evidence/founder-decisions-20261102.json`
+  (2026-11-02; `executionAuthorization` false). The fix-in-T005 and fix-in-T007
+  findings are being fixed in follow-up tracks, with a delta review, before T009.
 
 - [ ] T009 (REQ-005 / SC-005; REQ-006 / SC-006; REQ-007 / SC-007; REQ-008 / SC-008; REQ-010 / SC-010; REQ-003 / SC-003): Qualification attempt on the
   founder's machine: run the full catalog in both modes for the decided

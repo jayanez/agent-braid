@@ -1,0 +1,57 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T008",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-02",
+  "baseCommit": "7574994981080bac05cf82e537b654c6bf9c744a",
+  "decisionChannel": "Founder answers to interactive questions in the orchestrator chat, 2026-11-02, recorded verbatim by the derived docs-and-closer track",
+  "reviewRecord": "specs/065-native-claude-containment/evidence/probe-catalog-review.md",
+  "decisionOrder": ["RV-21", "RV-17", "RV-19"],
+  "decisions": [
+    {
+      "id": "RV-21",
+      "item": "Keychain and mach-service route for the dedicated lab user (NC-5 open question)",
+      "ownerStatement": "Llavero propio, lista cerrada (Recommended)",
+      "decision": {
+        "keychain": "only the dedicated lab user's own keychain",
+        "machServices": "a closed list of mach services",
+        "observation": "T009 observes which services claude requests",
+        "additions": "any new service needs a review and a decision record before it is added to the profile",
+        "founderKeychain": "the founder's personal keychain is never reachable (different user)"
+      },
+      "detail": "Matches the RV-21 disposition: each profile addition needs a decision record, a catalog extension for the opened class (RV-08) and a delta review. If securityd is allowed, CRED-02 becomes a test against the dedicated user's login keychain content, and this is stated before it runs."
+    },
+    {
+      "id": "RV-17",
+      "item": "Credential readable by the child and exfiltration through the allowed API host",
+      "ownerStatement": "Riesgo residual (Recommended)",
+      "decision": {
+        "disposition": "accepted-residual",
+        "bounds": [
+          "destination limited to Anthropic",
+          "credential belongs to a revocable dedicated user",
+          "candidate gets no founder secrets"
+        ],
+        "revisit": "at each 30-day requalification"
+      },
+      "detail": "Documented as an explicit residual risk. Probes cannot show this and no catalog entry may claim it is covered."
+    },
+    {
+      "id": "RV-19",
+      "item": "Bound on total disk use and file count",
+      "ownerStatement": "2 GB y 100.000 ficheros (Recommended)",
+      "decision": {
+        "disposition": "fix-in-T005",
+        "maxTotalBytes": 2147483648,
+        "maxFileCount": 100000,
+        "enforcement": "supervisor measures the candidate directory plus TMPDIR on each poll and kills the session above 2 GB total or 100,000 files"
+      },
+      "detail": "New NC-8 values, implemented as a T005 fix in a follow-up track before T009. 2 GB is read as 2 x 1024^3 bytes unless the implementing track records a different convention."
+    }
+  ],
+  "stillOpen": [],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records founder decisions on the three needs-founder-decision findings of the SPEC-065 T008 review only. No native session, probe or account setup was performed, no code changed, and nothing here qualifies the Claude profile, issues a qualification record, authorizes T009, accepts the T002 ADR, completes SPEC-048/T008 or admits SPEC-049/T004. The fix-in-T005 and fix-in-T007 findings remain to be fixed in follow-up tracks and delta-reviewed before T009. Any change needs a new founder decision record."
+}
