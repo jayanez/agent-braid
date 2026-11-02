@@ -29,6 +29,7 @@ def add_parser(subparsers):
             command.add_argument('--worktree-root', type=Path, action='append', default=[])
         if name == 'setup':
             command.add_argument('--telemetry', choices=('off', 'local'), help='persist plugin MCP local telemetry consent; default off')
+            command.add_argument('--system-one', choices=('off', 'shadow'), help='persist plugin MCP System One shadow consent; default off')
         if name == 'legacy':
             command.add_argument('--host', choices=('codex', 'claude'), required=True)
             command.add_argument('--receipt', type=Path)
@@ -76,15 +77,16 @@ def run(args):
             output = registry.load(home)
         else:
             telemetry = getattr(args, 'telemetry', None)
-            if not (args.source_root or args.remove or telemetry):
-                raise registry.RegistryError('Select repositories first with discover or --source-root, or choose --telemetry')
+            system_one = getattr(args, 'system_one', None)
+            if not (args.source_root or args.remove or telemetry or system_one):
+                raise registry.RegistryError('Select repositories first with discover or --source-root, or choose --telemetry or --system-one')
             if args.grant_store and args.runtime is not True:
                 raise registry.RegistryError('--grant-store requires explicit --enable-runtime')
             if args.runtime is not None and len(args.source_root) != 1:
                 raise registry.RegistryError('Configure runtime for one explicit workspace at a time')
             preview = registry.plan_setup(home, args.source_root, remove=args.remove,
                 runtime=args.runtime, grant_store=args.grant_store, worktree_roots=args.worktree_root,
-                telemetry=telemetry)
+                telemetry=telemetry, system_one=system_one)
             output = registry.apply(home, preview, args.preview_digest) if args.apply else preview
         print(json.dumps(output, ensure_ascii=False, sort_keys=True, indent=2))
         return 0

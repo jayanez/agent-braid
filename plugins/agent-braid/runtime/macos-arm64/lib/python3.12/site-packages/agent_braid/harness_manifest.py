@@ -17,9 +17,14 @@
 # Adapted typed-view/identity scaffolding from harness2/core/spec.py:RunView
 # and harness2/core/runmark.py:fingerprint at
 # 1cfe254e8d25b15f37048c3730134686abe60335. Changes: original strict HAR schema,
-# immutable complete SHA-256 bindings, independent consumer checks and a finite
-# offline-only envelope; no upstream launcher, shortened hash or base sentinel.
-"""Pure immutable offline harness manifests; no filesystem or execution authority.
+# immutable complete SHA-256 bindings, independent consumer checks and finite
+# closed offline and native-declaration profiles; no upstream launcher,
+# shortened hash or base sentinel.
+"""Pure immutable harness manifests; no filesystem or execution authority.
+
+Two closed profiles share one format: ``offline-foundations`` and the SPEC-065
+``native-claude-laboratory`` profile for host ``claude``. A native manifest only
+declares a qualified run; it never authorizes or performs one.
 
 Inventory digests bind declared metadata. The importer must independently check
 the actual file bytes. Consumers reparse raw bytes with trusted expected hashes;
@@ -48,12 +53,23 @@ DEFAULT_LIMITS = freeze({
     "maxNetworkConnections": 0, "maxAdditionalCashMicros": 0,
     "maxAutomaticRetries": 0, "cashCurrency": "EUR",
 })
+NATIVE_PROFILE = "native-claude-laboratory"
+NATIVE_HOST = "claude"
+NATIVE_BUILD = "2.1.292"  # NC-4: exact version, no window
+# Native maxima: founder caps F2/F3 and NC-8 (16 descendants). NC-1 fixes endpoints,
+# not a count: 8 concurrent connections through the loopback proxy is the T003 choice
+# (one streamed request, keep-alive pool and OAuth refresh), revisable after probes.
+NATIVE_LIMITS = freeze(thaw(DEFAULT_LIMITS) | {
+    "maxNativeSessions": 1, "maxModelSessions": 1, "maxChildProcesses": 16,
+    "maxNetworkConnections": 8,
+})
 _TOP = {"format", "profile", "source", "base", "candidate", "task", "context",
         "host", "tools", "policy", "verifier", "normalizer", "environment",
         "envelopeSha256", "allowedComponentPaths", "effects", "limits",
         "executionAuthorization"}
 _SUBRECORDS = ("source", "base", "candidate", "task", "context", "host", "tools",
                "policy", "verifier", "normalizer", "environment")
+_NATIVE_TOP = _TOP | {"containment", "hostQualificationSha256"}
 BINDING_NAMES = frozenset((*_SUBRECORDS, "fixture", "envelope"))
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _COMMIT = re.compile(r"[0-9a-f]{40}\Z")
@@ -126,23 +142,58 @@ def _inventory(value: Any, limits: dict, *, source: bool = False) -> list[str]:
     return paths
 
 
-def _limits(value: Any, raw_size: int) -> None:
-    _keys(value, set(DEFAULT_LIMITS))
+def _limits(value: Any, raw_size: int, caps: Mapping[str, Any]) -> None:
+    _keys(value, set(caps))
     _require(value["cashCurrency"] == "EUR", "unsupported-profile")
-    for key, maximum in DEFAULT_LIMITS.items():
+    for key, maximum in caps.items():
         if key != "cashCurrency":
             _integer(value[key], maximum, minimum=0 if maximum == 0 else 1)
     _require(raw_size <= value["maxManifestBytes"], "input-budget-exceeded")
     _require(value["maxFileBytes"] <= value["maxCandidateBytes"], "invalid-budget")
 
 
-def _validate(value: dict, raw_size: int) -> None:
-    _keys(value, _TOP)
-    _require(value["format"] == FORMAT, "unsupported-version")
-    _require(value["profile"] == PROFILE and value["executionAuthorization"] is False,
+def _offline_host(host: Any) -> None:
+    _keys(host, {"kind", "executableSha256", "build", "requested", "observed"})
+    _require(host["kind"] == "offline" and host["executableSha256"] is None and
+             host["build"] is None, "unsupported-profile")
+    _keys(host["requested"], {"model", "effort", "route"})
+    _require(host["requested"] == {"model": None, "effort": None, "route": "offline"},
              "unsupported-profile")
+    _observed(host["observed"])
+
+
+def _native_host(host: Any) -> None:
+    _keys(host, {"kind", "executableSha256", "build", "requested", "observed"})
+    _require(host["kind"] == NATIVE_HOST and host["build"] == NATIVE_BUILD,
+             "unsupported-profile")
+    _hash(host["executableSha256"])
+    requested = host["requested"]
+    _keys(requested, {"model", "effort", "route"})
+    _require(requested["route"] == "subscription", "unsupported-profile")
+    for name in ("model", "effort"):
+        if requested[name] is not None:
+            _identifier(requested[name])
+    _observed(host["observed"])
+
+
+def _observed(value: Any) -> None:
+    # Observations belong to run evidence, never to the manifest.
+    _keys(value, {"provider", "model", "build", "route"})
+    _require(all(v is None for v in value.values()), "unsupported-profile")
+
+
+def _validate(value: dict, raw_size: int) -> None:
+    # Only an exact native shape leaves the offline path, so every other input
+    # keeps its offline refusal and order (SC-001).
+    native = (type(value) is dict and set(value) == _NATIVE_TOP and
+              value["profile"] == NATIVE_PROFILE)
+    if not native:
+        _keys(value, _TOP)
+    _require(value["format"] == FORMAT, "unsupported-version")
+    _require((native or value["profile"] == PROFILE) and
+             value["executionAuthorization"] is False, "unsupported-profile")
     limits = value["limits"]
-    _limits(limits, raw_size)
+    _limits(limits, raw_size, NATIVE_LIMITS if native else DEFAULT_LIMITS)
     source = value["source"]
     _keys(source, {"commit", "selectedInputs"})
     _require(type(source["commit"]) is str and _COMMIT.fullmatch(source["commit"]) is not None)
@@ -184,15 +235,15 @@ def _validate(value: dict, raw_size: int) -> None:
              len({p.casefold() for p in context_paths}) == len(context_paths),
              "duplicate-context")
     _require(context_bytes <= limits["maxContextBytes"], "context-budget-exceeded")
-    host = value["host"]
-    _keys(host, {"kind", "executableSha256", "build", "requested", "observed"})
-    _require(host["kind"] == "offline" and host["executableSha256"] is None and
-             host["build"] is None, "unsupported-profile")
-    _keys(host["requested"], {"model", "effort", "route"})
-    _require(host["requested"] == {"model": None, "effort": None, "route": "offline"},
-             "unsupported-profile")
-    _keys(host["observed"], {"provider", "model", "build", "route"})
-    _require(all(v is None for v in host["observed"].values()), "unsupported-profile")
+    if native:
+        _native_host(value["host"])
+        # Declared identities only; consumers compare them with trusted hashes.
+        _keys(value["containment"], {"backend", "qualificationSha256"})
+        _identifier(value["containment"]["backend"])
+        _hash(value["containment"]["qualificationSha256"])
+        _hash(value["hostQualificationSha256"])
+    else:
+        _offline_host(value["host"])
     tools = value["tools"]
     _require(type(tools) is list and len(tools) <= limits["maxFiles"])
     tool_ids = []
@@ -249,7 +300,7 @@ class HarnessManifest:
 
 
 def parse_manifest(raw: bytes) -> HarnessManifest:
-    """Parse strict bounded UTF-8 JSON and validate the finite offline profile."""
+    """Parse strict bounded UTF-8 JSON and validate one closed manifest profile."""
     try:
         value = parse_json(raw)
     except InvalidDecision as exc:

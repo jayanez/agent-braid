@@ -28,7 +28,7 @@ LOCK_WAIT_SECONDS = 0.25
 SQLITE_TIMEOUT_SECONDS = 0.25
 CATEGORIES = ('independent-candidate', 'ordered', 'conflicting', 'unknown')
 OPERATIONS = {
-    'cli': ('analyze', 'analyze-git'),
+    'cli': ('analyze', 'analyze-git', 'system-one'),
     'mcp': ('analyze-work', 'analyze', 'prepare', 'status', 'execute', 'recover', 'verify', 'other'),
 }
 OUTCOMES = ('ok', 'refused', 'error', 'cancelled', 'unknown')
@@ -40,7 +40,7 @@ BUCKETS = {
 }
 LIMITS = [
     'Daily aggregates only; no content, identity, event order or exact durations.',
-    'Coverage: portable MCP tool invocations and CLI analyze/analyze-git only; discovery, resources, prompts, legacy MCP and internal calls excluded.',
+    'Coverage: portable MCP tool invocations and CLI analyze/analyze-git/system-one only; discovery, resources, prompts, legacy MCP and internal calls excluded.',
     'Process death before finalization and collector losses in other/terminated processes are unknown.',
     'Known collector failures are in-memory in this process only; reports from a later CLI cannot recover them.',
     'Thirty UTC dates retained on access; inactive files are not maintained by a daemon.',

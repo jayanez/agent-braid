@@ -41,21 +41,21 @@
     ]
   },
   "correspondingSource": {
-    "path": "sources/agent-braid-0.1.0-alpha.4-source.tar.gz",
-    "sha256": "6909c2197fcb0021a8c4db740fb42316cb0d39097dca5122ed9015b22bd96268"
+    "path": "sources/agent-braid-0.1.0-alpha.5-source.tar.gz",
+    "sha256": "143b43d5999300ac8b6743c645622733ac3d168a360459f68de5dd971c9cd688"
   },
   "dependencies": {
     "linux-x86_64": [
       {
         "license": "AGPL-3.0-only",
         "licenseFiles": [
-          "agent_braid-0.1.0a1.dist-info/licenses/LICENSE",
-          "agent_braid-0.1.0a1.dist-info/licenses/NOTICE",
+          "agent_braid-0.1.0a2.dist-info/licenses/LICENSE",
+          "agent_braid-0.1.0a2.dist-info/licenses/NOTICE",
           "agent_braid/tooling_assets/licenses/AGPL-3.0-only.txt",
           "agent_braid/tooling_assets/licenses/CC-BY-SA-4.0.txt"
         ],
         "name": "agent-braid",
-        "version": "0.1.0a1"
+        "version": "0.1.0a2"
       },
       {
         "license": "MIT",
@@ -290,13 +290,13 @@
       {
         "license": "AGPL-3.0-only",
         "licenseFiles": [
-          "agent_braid-0.1.0a1.dist-info/licenses/LICENSE",
-          "agent_braid-0.1.0a1.dist-info/licenses/NOTICE",
+          "agent_braid-0.1.0a2.dist-info/licenses/LICENSE",
+          "agent_braid-0.1.0a2.dist-info/licenses/NOTICE",
           "agent_braid/tooling_assets/licenses/AGPL-3.0-only.txt",
           "agent_braid/tooling_assets/licenses/CC-BY-SA-4.0.txt"
         ],
         "name": "agent-braid",
-        "version": "0.1.0a1"
+        "version": "0.1.0a2"
       },
       {
         "license": "MIT",
@@ -697,8 +697,8 @@
       "agent-braid-recover": "recover"
     }
   },
-  "sourceCommit": "8e2c3759e6bd809e907654895b103bf8b151db50",
+  "sourceCommit": "88eccace1092f03cd012c8933472da42127c4085",
   "sourceDirty": false,
-  "version": "0.1.0-alpha.4",
-  "wheelSha256": "a263eaec94445302ddd215cf1ed24f736af78b76b933eebaff7c951e229de51a"
+  "version": "0.1.0-alpha.5",
+  "wheelSha256": "b8c1ce91464a5a3694ebbec00ec57120002074bc5ea62e2c9d3e0b119cb801d0"
 }
