@@ -156,7 +156,64 @@ class LanesAndSwapsTests(unittest.TestCase):
         self.assertIsNone(by_seq(build_model([strand(1, "a"), strand(2, "b"), crossing(3, "a", "b")]), 3)["report"])
 
 
+class LayoutAndKindsTests(unittest.TestCase):
+    def test_branching_pair_stays_non_adjacent(self):
+        events = [strand(1, "a"), strand(2, "b"), strand(3, "c"), strand(4, "d"),
+                  crossing(5, "a", "b"), crossing(6, "a", "c"), crossing(7, "a", "d")]
+        model = build_model(events)
+        self.assertEqual(by_seq(model, 7)["drawAs"], "bridge")
+        self.assertEqual(by_seq(model, 5)["drawAs"], "swap")
+
+    def test_pair_seen_before_its_strand_opens_still_gets_a_declared_lane(self):
+        model = build_model([crossing(1, "a", "b"), strand(2, "a"), strand(3, "b")])
+        self.assertTrue(all(lane["declared"] for lane in model["lanes"]))
+        self.assertEqual({lane["seq"] for lane in model["lanes"]}, {2, 3})
+
+    def test_every_event_kind_has_one_element_and_one_table_row(self):
+        wave = {"scheduleId": "sha256:" + "c" * 64, "wave": 0, "strands": ["a"]}
+        events = [
+            ev(1, "session.origin", {"mode": "replay", "hosts": ["braid"], "limits": {
+                "strands": 1, "crossings": 1, "waves": 1, "grants": 1, "events": 1}}),
+            ev(2, "analysis.report", {"reportId": REPORT, "operationCount": 0, "pairCount": 0,
+                                      "summary": {"independentCandidate": 0, "ordered": 0,
+                                                  "conflicting": 0, "unknown": 0},
+                                      "uncertainty": [], "limits": []}),
+            strand(3, "a"),
+            ev(4, "strand.update", {"strandId": "a", "state": "running", "toolName": None}),
+            ev(5, "strand.close", {"strandId": "a", "outcome": "ok"}),
+            strand(6, "b"), crossing(7, "a", "b"),
+            plan(8, [["a"]]), ev(9, "wave.started", wave), ev(10, "wave.finished", wave),
+            grant(11, "issued"), grant(12, "consumed"), grant(13, "expired"), grant(14, "refused"),
+            hazard(15, "read-write", ["a"]),
+            ev(16, "gate.phase", {"gateId": "g", "phase": "validate", "status": "ok"}),
+            ev(17, "gate.result", {"gateId": "g", "status": "ok-analyzed", "operationCount": 1}, cls=0),
+            ev(18, "runtime.phase", {"manifestDigest": "m1", "phase": "ready"}),
+            ev(19, "effort.sample", {"strandId": "a", "basis": "host-estimate", "model": None,
+                                     "inputTokens": 1, "outputTokens": None, "cacheReadTokens": None,
+                                     "cacheCreationTokens": None, "cachedInputTokens": None,
+                                     "reasoningTokens": None, "costUsd": None, "durationMs": None}),
+            gap(20, "not-observed"),
+        ]
+        self.assertEqual({e["kind"] for e in events}, set(view_loom.KINDS))
+        model = build_model(events)
+        self.assertEqual([(e["seq"], e["kind"]) for e in model["elements"]],
+                         [(e["seq"], e["kind"]) for e in events])
+        self.assertEqual([row["seq"] for row in model["table"]], [e["seq"] for e in events])
+        self.assertEqual([by_seq(model, s)["state"] for s in (11, 12, 13, 14)],
+                         ["issued", "consumed", "expired", "refused"])
+        self.assertEqual(by_seq(model, 16)["ringKind"], "workflow-phase")
+        self.assertEqual(by_seq(model, 17)["ringKind"], "workflow-result")
+        self.assertEqual(model["counters"]["gates"], {"phases": 1, "results": 1})
+
+
 class TimeAxisTests(unittest.TestCase):
+    def test_leading_sequence_only_events_invent_no_time_or_compression(self):
+        events = [strand(1, "a", ms=0, basis="sequence-only"), strand(2, "b", ms=100_000)]
+        axis = build_model(events)["axis"]
+        self.assertEqual(axis["compressions"], [])
+        self.assertEqual((axis["minMs"], axis["maxMs"], axis["spanMs"]), (100_000, 100_000, 0))
+        only = build_model([strand(1, "a", ms=0, basis="sequence-only")])["axis"]
+        self.assertEqual((only["minMs"], only["maxMs"], only["spanMs"]), (None, None, 0))
     def test_x_is_monotonic_in_relms_and_seq_breaks_ties(self):
         events = [strand(1, "a", ms=100), strand(2, "b", ms=100), strand(3, "c", ms=250)]
         model = build_model(events)
@@ -224,7 +281,12 @@ class WavesAndMarkersTests(unittest.TestCase):
         self.assertEqual(counters["plannedWaveWidth"], {
             "maxWidth": 3, "plans": 1,
             "label": "advisory plan, not a runtime measurement"})
-        self.assertFalse(any(word in key.lower() for key in counters
+        def keys(value):
+            if isinstance(value, dict):
+                for key, item in value.items():
+                    yield key
+                    yield from keys(item)
+        self.assertFalse(any(word in key.lower() for key in keys(counters)
                              for word in ("speedup", "ratio", "serial", "recovered", "avoided", "saved")))
 
     def test_wave_started_and_finished_are_markers_with_phase(self):
@@ -339,7 +401,7 @@ class EvidenceAndBijectionTests(unittest.TestCase):
             build_model([strand(2, "a"), strand(2, "b")])
         self.assertEqual(raised.exception.reason, "seq-order")
 
-    def test_model_is_json_serialisable_with_stable_key_order_not_required(self):
+    def test_model_is_json_serialisable_with_strict_floats(self):
         json.dumps(build_model(example_events()), allow_nan=False)
 
 
@@ -370,6 +432,7 @@ class AbsenceTests(unittest.TestCase):
         self.assertEqual(absence["independentWithIncompleteCoverage"], 2)
         self.assertEqual(absence["hazardsNotObserved"], 3)
         self.assertEqual(absence["gaps"], 7)
+        self.assertEqual(counters["swaps"], 0)  # incomplete-coverage swaps are not counted; a-c is a bridge
 
     def test_incomplete_coverage_independent_pair_is_marked_and_not_a_clean_swap(self):
         model = build_model(self.absence_events())
@@ -412,6 +475,8 @@ class CapTests(unittest.TestCase):
         self.assertEqual(element["segments"], [])
         self.assertEqual(model["counters"]["conflictsFlagged"], 1)
         self.assertEqual(model["counters"]["absence"]["truncated"], 2)
+        self.assertEqual([e["strandId"] for e in model["elements"] if e["element"] == "strand"],
+                         ["s0", "s1", "s2", "s3"])
 
     def test_crossing_cap_drops_elements_not_counts(self):
         events = [strand(1, "a"), strand(2, "b")]

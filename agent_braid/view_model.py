@@ -97,11 +97,14 @@ def _layout(order: list[str], pairs: list[tuple[str, str]]) -> list[str]:
 
 def _time_axis(events: list[dict[str, Any]], threshold: int, nominal: int) -> tuple[dict[int, dict], dict]:
     """Effective time, compressed position and tie-break order per event, plus the axis."""
+    timed = [e["at"]["relMs"] for e in events if e["at"]["basis"] != "sequence-only"]
     effective: dict[int, int] = {}
-    previous = 0
+    # A sequence-only event states no time; it takes its predecessor's position, and a leading
+    # one the first stated time, so no time is invented.
+    previous = timed[0] if timed else 0
     for event in events:
-        # A sequence-only event states no time; it takes its predecessor's position.
-        previous = previous if event["at"]["basis"] == "sequence-only" else event["at"]["relMs"]
+        if event["at"]["basis"] != "sequence-only":
+            previous = event["at"]["relMs"]
         effective[event["seq"]] = previous
     x_of: dict[int, int] = {}
     after_gap: set[int] = set()
@@ -122,7 +125,7 @@ def _time_axis(events: list[dict[str, Any]], threshold: int, nominal: int) -> tu
     ranked = sorted(effective, key=lambda seq: (effective[seq], seq))
     order = {seq: index for index, seq in enumerate(ranked)}
     bases = {event["at"]["basis"] for event in events}
-    times = list(effective.values())
+    times = [effective[e["seq"]] for e in events if e["at"]["basis"] != "sequence-only"]
     axis = {
         "basis": next(iter(bases)) if len(bases) == 1 else ("mixed" if bases else "sequence-only"),
         "gapThresholdMs": threshold,
@@ -357,6 +360,8 @@ def _counters(elements: list[dict[str, Any]]) -> dict[str, Any]:
     hazards = [e for e in elements if e["element"] == "hazard-cone"]
     widths = [wave["width"] for e in elements if e["element"] == "wave-plane" for wave in e["waves"]]
     gap_reasons = _gaps_by_reason(elements)
+    gap_total = sum(gap_reasons.values())
+    unknown = sum(1 for e in crossings if e["classification"] == "unknown")
     grants = {state: sum(1 for e in elements if e["element"] == "gate-ring"
                          and e["ringKind"] == "grant" and e["state"] == state)
               for state in ("issued", "consumed", "expired", "refused")}
@@ -364,24 +369,24 @@ def _counters(elements: list[dict[str, Any]]) -> dict[str, Any]:
         "conflictsFlagged": sum(1 for e in crossings if e["classification"] == "conflicting"),
         "orderedPairs": sum(1 for e in crossings if e["classification"] == "ordered"),
         "independentCandidates": sum(1 for e in independent if not e["incompleteCoverage"]),
-        "unknownPairs": sum(1 for e in crossings if e["classification"] == "unknown"),
-        "swaps": sum(1 for e in crossings if e["drawAs"] == "swap"),
+        "unknownPairs": unknown,
+        "swaps": sum(1 for e in crossings if e["drawAs"] == "swap" and not e["incompleteCoverage"]),
         "bridges": sum(1 for e in crossings if e["drawAs"] == "bridge"),
         "plannedWaveWidth": {"maxWidth": max(widths) if widths else None,
                              "plans": count("wave-plane"), "label": WAVE_LABEL},
         "hazards": {"total": len(hazards),
                     "byKind": {k: sum(1 for e in hazards if e["hazardKind"] == k)
                                for k in sorted({e["hazardKind"] for e in hazards})}},
-        "gaps": {"total": sum(gap_reasons.values()), "byReason": gap_reasons},
+        "gaps": {"total": gap_total, "byReason": gap_reasons},
         "gates": {"phases": count("gate-ring", ringKind="workflow-phase"),
                   "results": count("gate-ring", ringKind="workflow-result")},
         "grants": {"total": sum(grants.values()), **grants},
         "unverifiedElements": sum(1 for e in elements if e["unverified"]),
         "absence": {
-            "unknownPairs": sum(1 for e in crossings if e["classification"] == "unknown"),
+            "unknownPairs": unknown,
             "independentWithIncompleteCoverage": sum(1 for e in independent if e["incompleteCoverage"]),
             "hazardsNotObserved": sum(1 for e in hazards if e["absence"]),
-            "gaps": sum(gap_reasons.values()),
+            "gaps": gap_total,
             "truncated": 0,  # set by build_model once the caps are applied
         },
     }
@@ -442,7 +447,8 @@ def build_model(
     for event in events:
         data = event["data"]
         if event["kind"] == "strand.open":
-            first.setdefault(data["strandId"], {"event": event, "declared": True})
+            if not first.get(data["strandId"], {"declared": False})["declared"]:
+                first[data["strandId"]] = {"event": event, "declared": True}
         elif event["kind"] == "crossing.classified":
             for name in (data["left"], data["right"]):
                 first.setdefault(name, {"event": event, "declared": False})
