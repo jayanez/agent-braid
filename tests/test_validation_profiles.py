@@ -54,6 +54,40 @@ class ValidationProfileTests(unittest.TestCase):
         rule = next(item for item in validation.RULES if item.domain == "claude-workflow-gate")
         self.assertEqual(rule.commands, ("full-tests",))
 
+    def test_activity_viewer_has_named_sensitive_domain_with_read_only_boundary(self):
+        for path in ("agent_braid/view_loom.py", "tests/test_view_loom.py",
+                     "tests/fixtures/view/loom/event.json",
+                     "integrations/agent-braid-view/README.md", "examples/view/demo.json",
+                     "docs/tooling/VIEWER.md"):
+            with self.subTest(path=path):
+                plan = validation.build_plan([path], "quick")
+                self.assertIn("activity-viewer", plan.impact.domains)
+                self.assertEqual(plan.effective_profile, "sensitive")
+                self.assertIn("full-tests", plan.commands)
+                self.assertFalse(plan.impact.unknown_paths)
+                boundary = " ".join(plan.impact.boundaries).lower()
+                self.assertIn("read-only", boundary)
+                self.assertIn("host verification", boundary)
+                self.assertIn("vendored-license adoption", boundary)
+                self.assertIn("release acceptance", boundary)
+        rule = next(item for item in validation.RULES if item.domain == "activity-viewer")
+        self.assertEqual(rule.commands, ("full-tests",))
+        self.assertTrue(rule.sensitive)
+
+    def test_activity_viewer_adapter_inputs_escalate_to_full_tests(self):
+        for path in ("agent_braid/analysis.py", "agent_braid/git_replay.py",
+                     "agent_braid/runtime_scheduler.py", "agent_braid/runtime_policy.py",
+                     "agent_braid/git_runtime.py", "agent_braid/ownership.py",
+                     "agent_braid/ownership_cli.py", "schemas/0.3.0-experimental/example.schema.json",
+                     "specs/052-claude-workflow-gate/contracts/braid-gate-result.schema.json",
+                     "agent_braid/tooling_host_events.py",
+                     "agent_braid/tooling_incremental_usage.py"):
+            with self.subTest(path=path):
+                plan = validation.build_plan([path], "quick")
+                self.assertEqual(plan.effective_profile, "sensitive")
+                self.assertIn("full-tests", plan.commands)
+                self.assertFalse(plan.impact.unknown_paths)
+
     def test_forecasting_has_owned_sensitive_domain_and_separate_model_gates(self):
         for path in ('agent_braid/forecast_worker.py','tests/test_forecast_mcp.py','scripts/reproduce_forecast_cpu.py','docs/forecast/OPERATIONS.md'):
             plan=validation.build_plan([path],'quick')
@@ -149,15 +183,21 @@ class ValidationProfileTests(unittest.TestCase):
         self.assertNotIn("full-tests", editorial.commands)
         self.assertNotIn("spec-kit-integration", editorial.commands)
 
+        # The activity viewer reads analysis and replay reports, so these two
+        # modules escalate to the full tests alongside their own domains.
         runtime = validation.build_plan(["agent_braid/analysis.py"], "quick")
+        self.assertEqual(runtime.effective_profile, "sensitive")
+        self.assertIn("runtime-analysis", runtime.impact.domains)
+        self.assertIn("activity-viewer", runtime.impact.domains)
         self.assertIn("contracts", runtime.commands)
-        self.assertIn("analysis-tests", runtime.commands)
-        self.assertNotIn("git-adapter-tests", runtime.commands)
+        self.assertIn("full-tests", runtime.commands)
         self.assertNotIn("spec-kit-integration", runtime.commands)
 
         replay = validation.build_plan(["agent_braid/git_replay.py"], "quick")
-        self.assertEqual(replay.effective_profile, "quick")
-        self.assertIn("git-replay-tests", replay.commands)
+        self.assertEqual(replay.effective_profile, "sensitive")
+        self.assertIn("git-replay", replay.impact.domains)
+        self.assertIn("activity-viewer", replay.impact.domains)
+        self.assertIn("full-tests", replay.commands)
         self.assertIn("contracts", replay.commands)
 
         reduction = validation.build_plan(["agent_braid/git_partial_order.py"], "quick")

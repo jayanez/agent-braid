@@ -59,6 +59,17 @@ the shadow module, the shadow module uses no network or model library and keeps
 `executionAuthorization` false, and none of it establishes accuracy, calibration or
 promotion. `tests/test_system_one_shadow_boundaries.py` checks those properties.
 
+Activity viewer paths (`agent_braid/view_*.py`, `tests/test_view_*.py`,
+`tests/fixtures/view/**`, `integrations/agent-braid-view/**`, `examples/view/**` and
+`docs/tooling/VIEWER.md`) form the sensitive `activity-viewer` domain and escalate
+to the full tests. The rule also lists `agent_braid/analysis.py` and
+`agent_braid/git_replay.py`, whose reports the viewer adapters read, so changing
+them runs the full tests; the other adapter inputs (scheduler, policy, Git
+runtime, ownership, the SPEC-052 gate result schema and the host-event and
+incremental-usage modules) already escalated through their own rules. Its
+boundary is read-only local visualization: host verification, vendored-license
+adoption and release acceptance remain separate.
+
 ## Evidence boundaries
 
 Milestone closure, release, public-repository cutover and refreshed scientific
