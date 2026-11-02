@@ -1,0 +1,9 @@
+{
+  "cwd": "/SENTINEL/cwd",
+  "hook_event_name": "SessionEnd",
+  "prompt_id": "prompt-1",
+  "reason": "other",
+  "scratchpad_dir": "/SENTINEL/scratch",
+  "session_id": "session-fixture-1",
+  "transcript_path": "/SENTINEL/transcript.jsonl"
+}

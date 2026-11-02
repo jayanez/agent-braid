@@ -1,0 +1,22 @@
+{
+  "cwd": "/SENTINEL/cwd",
+  "duration_ms": 12,
+  "hook_event_name": "PostToolUse",
+  "permission_mode": "default",
+  "prompt_id": "prompt-1",
+  "scratchpad_dir": "/SENTINEL/scratch",
+  "session_id": "session-fixture-1",
+  "tool_input": {
+    "command": "echo SENTINEL-command",
+    "description": "SENTINEL-description"
+  },
+  "tool_name": "Bash",
+  "tool_response": {
+    "interrupted": false,
+    "isImage": false,
+    "stderr": "SENTINEL-stderr",
+    "stdout": "SENTINEL-stdout"
+  },
+  "tool_use_id": "toolu-fixture-1",
+  "transcript_path": "/SENTINEL/transcript.jsonl"
+}

@@ -1,0 +1,12 @@
+{
+  "cwd": "/SENTINEL/cwd",
+  "hook_event_name": "PermissionRequest",
+  "prompt_id": "prompt-1",
+  "scratchpad_dir": "/SENTINEL/scratch",
+  "session_id": "session-fixture-1",
+  "tool_input": {
+    "command": "echo SENTINEL-command"
+  },
+  "tool_name": "Bash",
+  "transcript_path": "/SENTINEL/transcript.jsonl"
+}

@@ -1,0 +1,14 @@
+{
+  "cwd": "/SENTINEL/cwd",
+  "hook_event_name": "PreToolUse",
+  "permission_mode": "default",
+  "prompt_id": "prompt-1",
+  "scratchpad_dir": "/SENTINEL/scratch",
+  "session_id": "session-fixture-1",
+  "tool_input": {
+    "command": "echo SENTINEL-command"
+  },
+  "tool_name": "Bash",
+  "tool_use_id": "toolu-fixture-3",
+  "transcript_path": "/SENTINEL/transcript.jsonl"
+}
