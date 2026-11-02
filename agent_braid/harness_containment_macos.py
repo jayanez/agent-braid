@@ -21,14 +21,21 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
   whether NC-5's login works without them is for the T007/T009 probes.
 * process: exec allow-list (NC-8), CPU, file-size, core, open-file and per-user process
   rlimits applied before the sandbox is entered, a supervisor watchdog for wall time,
-  memory (macOS refuses ``RLIMIT_AS`` below the current address space) and output, and
-  settlement of the group plus every new process of the dedicated user.
+  memory (macOS refuses ``RLIMIT_AS`` below the current address space), output and disk
+  (candidate plus per-run ``TMPDIR``: total bytes and entry count, ``disk-limit-exceeded``),
+  and settlement of the group plus every new process of the dedicated user. A process that
+  left the group is reported apart from one still alive after the final sweep.
+* run accounting: ``ProbeResult`` and ``ContainedHostRun`` extend the lab and host results
+  with the process counts, the cleanup outcome, the peak disk use and the proxy counters of
+  the run; the same values land in ``run_evidence``.
 
 Before every run the backend takes an exclusive lock on ``run_root`` and re-verifies both
-trusted qualification records, the OS window, the account, the mechanism and executable
-hashes, the recomputed environment hash, a profile compile check that must report the
-exec of ``/usr/bin/false`` as denied, and the NC-11 probe subset through the injected
-T007 probe runner. Any failure refuses with a fixed ``LabError`` reason before the child
+trusted qualification records, the OS window, the account (not privileged, not the console
+user, a private home), the mechanism and executable hashes, the recomputed environment
+hash, a profile compile check that must report the exec of ``/usr/bin/false`` as denied and
+an allow-listed command as run, no leftover backend directory from an earlier run, a proxy
+whose accept loop is alive, and the NC-11 probe subset through the injected T007 probe
+runner. Any failure refuses with a fixed ``LabError`` reason before the child
 starts and is appended to ``run_evidence``. It never degrades and never falls back to
 ``SimulatedContainment``. The observed Claude version is checked by the T006 transport;
 here the version is a pinned policy value. Whether the profile enforces each effect is
@@ -37,10 +44,11 @@ creates its workdir with ``tempfile``, so the supervisor's ``TMPDIR`` must be ``
 """
 from __future__ import annotations
 
+from collections import Counter
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 import ctypes
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field, fields
 import fcntl
 import hashlib
 from hashlib import sha256
@@ -73,9 +81,12 @@ SANDBOX_EXEC = "/usr/bin/sandbox-exec"
 CREDENTIAL_METHOD = "dedicated-user-own-login"  # NC-5
 CLAUDE_VERSION = "2.1.292"  # NC-4
 ALLOWED_ENDPOINTS = ("api.anthropic.com:443",)  # NC-1; refresh hosts come from probe evidence
-# NC-8; memory is enforced by the supervisor watchdog, the rest by rlimits.
+# NC-8; memory and disk are enforced by the supervisor watchdog, the rest by rlimits.
+# diskBytes/diskFiles: founder decision 2026-11-02 ("2 GB y 100.000 ficheros"), measured over
+# the candidate directory plus the per-run TMPDIR (every entry counts, hard links once).
 LIMITS = {"wallSeconds": 1800, "cpuSeconds": 1800, "memoryBytes": 4 << 30,
-          "fileSizeBytes": 64 << 20, "openFiles": 256, "descendants": 16}
+          "fileSizeBytes": 64 << 20, "openFiles": 256, "descendants": 16,
+          "diskBytes": 2 << 30, "diskFiles": 100_000}
 F4_PROBES = (("FS-01", "denied"), ("NET-01", "denied"), ("CRED-01", "denied"),
              ("PROC-01", "denied"), ("NET-06", "allowed"))  # NC-11
 SYSTEM_READ = ("/usr/lib", "/System/Library", "/System/Cryptexes", "/System/Volumes/Preboot/Cryptexes",
@@ -95,8 +106,11 @@ _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _ACCOUNT = re.compile(r"[a-z_][a-z0-9_-]{0,31}\Z")
 _PATH = re.compile(r"(?:/[A-Za-z0-9._@+-]+)+\Z")  # no quotes, spaces or escapes in SBPL
 _ENDPOINT = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+:443\Z")
-_RESERVED = ("run-", "compile-", ".")  # run_root entries the backend owns
+_OWNED = ("run-", "compile-")  # run_root directories the backend creates and removes
+_RESERVED = (*_OWNED, ".")  # run_root entries the backend owns
+_PRIVILEGED_GIDS = frozenset({0, 80})  # wheel, admin
 _POLL_SECONDS = 0.05
+_COMPILE_TIMEOUT_SECONDS = 20
 _STREAM_CHUNK_BYTES = 65_536  # per read, so a large output bound never allocates a large buffer
 
 
@@ -129,24 +143,59 @@ def _file_sha256(path: str) -> str | None:
 
 
 def _shared_ancestor(path: str) -> str | None:
-    """The first ancestor others may write (rename the file away), else ``None``.
+    """The first ancestor others may swap the file under, else ``None``.
 
-    Sticky root-owned ancestors (``/tmp``) are accepted: others cannot rename into them.
+    That is an ancestor others may write (rename the file away) or one owned by a third
+    account; only root and the effective (dedicated) user are trusted owners. Sticky
+    root-owned ancestors (``/tmp``) are accepted: others cannot rename into them.
     """
+    trusted = {0, os.geteuid()}
     for ancestor in _ancestors(path):
         try:
             info = os.lstat(ancestor)
         except OSError:
+            return ancestor
+        if info.st_uid not in trusted:
             return ancestor
         if info.st_mode & _SHARED_WRITE and not (info.st_mode & stat.S_ISVTX and info.st_uid == 0):
             return ancestor
     return None
 
 
+def _remove_tree(path: str) -> bool:
+    """Remove a directory the child could write, undoing the flags and modes it set.
+
+    A child may set ``uchg`` or take away directory permissions so plain removal fails;
+    this clears them as the owner and retries. ``True`` only when the path is gone.
+    """
+    def repair(target: str) -> bool:
+        try:
+            info = os.lstat(target)
+            if hasattr(os, "lchflags"):
+                os.lchflags(target, 0)
+            if stat.S_ISDIR(info.st_mode):
+                os.chmod(target, 0o700, follow_symlinks=os.chmod not in os.supports_follow_symlinks)
+        except OSError:
+            return False
+        return True
+
+    for _ in range(16):
+        failed: list[str] = []
+        shutil.rmtree(path, onexc=lambda _function, target, _error: failed.append(target))
+        if not os.path.lexists(path):
+            return True
+        # the entry that failed and the directory holding it (unlink needs write there)
+        targets = {t for f in failed for t in ((f, os.path.dirname(f)) if f != path else (f,))}
+        if not any([repair(t) for t in targets]):
+            break
+    return not os.path.lexists(path)
+
+
 def _trusted_file(path: str, expected_sha256: str, missing: str, drift: str) -> None:
-    """Regular, not a symlink, not writable by others along its path, hash as pinned."""
+    """Regular, not a symlink, owned by root or the dedicated user, not swappable along its path, hash as pinned."""
     info = _lstat(path, missing)
     _require(stat.S_ISREG(info.st_mode) and os.path.realpath(path) == path
+             and info.st_uid in (0, os.geteuid())
              and not info.st_mode & _SHARED_WRITE and _shared_ancestor(path) is None, missing)
     _require(_file_sha256(path) == expected_sha256, drift)
 
@@ -215,8 +264,15 @@ class ContainmentPolicy:
             return (self.interpreter,)
         return (self.claude, *(p for p, _ in self.helpers))
 
+    def exec_probe(self, entry: str) -> list[str]:
+        """A command the profile of ``entry`` allows and that must succeed (the compile positive case)."""
+        _require(entry in ENTRIES, "invalid-entry")
+        if entry == "fixture":
+            return [self.interpreter, "-I", "-S", "-c", "pass"]
+        return [self.claude, "--version"]
+
     def render(self, entry: str) -> bytes:
-        """Deterministic SBPL; per-run paths arrive only as ``CANDIDATE``/``TMPDIR`` params."""
+        """Deterministic SBPL; per-run paths arrive only as ``CANDIDATE``/``TMPDIR``/``RUNDIR`` params."""
         execs = self.executables(entry)
         reads = [*SYSTEM_READ, self.interpreter_root] if entry == "fixture" else list(SYSTEM_READ)
         writes = [] if entry == "fixture" else [self.config_dir]
@@ -238,7 +294,9 @@ class ContainmentPolicy:
             f"{literals('literal', execs)})",
             '(allow file-read* (literal "/dev/null") (literal "/dev/random") (literal "/dev/urandom"))',
             '(allow file-write-data (literal "/dev/null"))',
-            f"(allow file-read-metadata {literals('literal', metadata)} (subpath \"{self.run_root}\"))",
+            # metadata of run_root itself and of this run's directory only, not of its other entries
+            f"(allow file-read-metadata {literals('literal', metadata)} (literal \"{self.run_root}\") "
+            '(literal (param "RUNDIR")))',
             '(allow file-read* file-write* (subpath (param "CANDIDATE")) (subpath (param "TMPDIR")))',
         ]
         if writes:
@@ -270,21 +328,36 @@ class HostFacts:
     arch: str
 
 
+@dataclass(frozen=True)
+class AccountFacts:
+    """Observed facts that keep the dedicated account dedicated; part of the environment hash."""
+
+    gids: tuple[int, ...]
+    home_mode: int
+
+
 def _component_hashes() -> dict[str, str]:
     """Trusted code the enforcement relies on: this backend, the lab and the host module."""
     return {Path(m.__file__).name: sha256(Path(m.__file__).read_bytes()).hexdigest()
             for m in (sys.modules[__name__], harness_lab, harness_host_claude)}
 
 
-def environment_sha256(policy: ContainmentPolicy, facts: HostFacts, uid: int) -> str:
-    """Canonical digest of every environment-hash input of contracts/native-profile.md."""
+def environment_sha256(policy: ContainmentPolicy, facts: HostFacts, uid: int,
+                       account: AccountFacts | None = None) -> str:
+    """Canonical digest of every environment-hash input of contracts/native-profile.md.
+
+    ``account`` is what the backend observed for the dedicated user; a caller that omits it
+    computes a digest the backend will not match.
+    """
     supervisor = os.path.realpath(sys.executable)
     value = {
         "format": ENVIRONMENT_FORMAT,
         "os": asdict(facts),
         "mechanism": {"backend": BACKEND, "sandboxExec": SANDBOX_EXEC,
                       "sandboxExecSha256": policy.sandbox_exec_sha256,
-                      "account": policy.account, "uid": uid},
+                      "account": policy.account, "uid": uid,
+                      "accountFacts": None if account is None else
+                      {"gids": sorted(account.gids), "homeMode": account.home_mode}},
         "profiles": {entry: sha256(policy.render(entry)).hexdigest() for entry in ENTRIES},
         "claude": {"path": policy.claude, "sha256": policy.claude_sha256,
                    "version": policy.claude_version},
@@ -326,6 +399,28 @@ def _libsystem():
             getattr(lib, name).restype = ctypes.c_int
         _LIBSYSTEM = lib
     return _LIBSYSTEM
+
+
+def _account_groups(account: str, gid: int) -> tuple[int, ...]:
+    return tuple(sorted(set(os.getgrouplist(account, gid))))
+
+
+def _console_uid() -> int:
+    return os.stat("/dev/console").st_uid
+
+
+def _account_facts(account: str, entry, uid: int) -> AccountFacts:
+    """Refuse an account that is privileged, the console user or has an open home (RV-16)."""
+    try:
+        gids = _account_groups(account, entry.pw_gid)
+        console = _console_uid()
+        home = os.lstat(entry.pw_dir)
+    except OSError:
+        raise LabError("dedicated-user-unsafe") from None
+    _require(not _PRIVILEGED_GIDS & {entry.pw_gid, *gids} and uid != console
+             and stat.S_ISDIR(home.st_mode) and home.st_uid == uid and not home.st_mode & 0o077,
+             "dedicated-user-unsafe")
+    return AccountFacts(gids, stat.S_IMODE(home.st_mode))
 
 
 def _sysctl_string(name: str) -> str:
@@ -380,6 +475,12 @@ def _user_processes(uid: int) -> set[tuple[int, int]]:
         if pid > 0 and (info := _pidinfo(pid, _PROC_PIDTBSDINFO, _BSDINFO_WORDS)) is not None:
             out.add((pid, info[15] * 1_000_000 + info[16]))
     return out
+
+
+def _process_parent(pid: int) -> int | None:
+    """Parent pid (``pbi_ppid``, the low half of word 2), ``None`` when the process is gone."""
+    info = _pidinfo(pid, _PROC_PIDTBSDINFO, _BSDINFO_WORDS)
+    return None if info is None else info[2] & 0xFFFFFFFF
 
 
 def _resident_bytes(processes: set[tuple[int, int]]) -> int:
@@ -437,6 +538,15 @@ def client_hello_sni(record: bytes) -> str | None:
         return None
 
 
+class _Refused(Exception):
+    """A request the proxy turned away; ``direct`` marks a client not speaking CONNECT at all."""
+
+    def __init__(self, reason: str, *, direct: bool = False):
+        super().__init__(reason)
+        self.reason = reason
+        self.direct = direct
+
+
 class EgressProxy:
     """Loopback CONNECT proxy: listed ``host:443`` only, and only when SNI equals the host.
 
@@ -444,7 +554,17 @@ class EgressProxy:
     and ``::1`` (the profile's ``localhost`` covers both). It resolves names itself, so
     the child needs no DNS; plain HTTP, other methods and other hosts are refused. The
     request head and ClientHello must arrive within one handshake deadline and a tunnel
-    lives at most one session wall bound.
+    lives at most one session wall bound. The SNI check is defence in depth: the proxy
+    connects to the CONNECT host itself, so it only catches a client that disagrees with
+    its own request.
+
+    ``counters()`` returns thread-safe totals since construction: ``connections``,
+    ``allowed`` (tunnels opened, with ``allowed:<host:port>``), ``denied`` (CONNECT-speaking
+    requests refused, with ``denied:<reason>``), ``unexpectedDirect`` (connections whose
+    first request is not a CONNECT: a client treating the proxy as an origin server),
+    ``upstreamFailed`` and the relayed ``bytesUp``/``bytesDown``. A connection attempt the
+    kernel denies never reaches the proxy and is not counted. ``healthy`` turns false when
+    the accept loop dies outside ``close()``.
     """
 
     MAX_HEAD = 8192
@@ -461,12 +581,29 @@ class EgressProxy:
         self._tunnel_seconds = tunnel_seconds
         self._slots = threading.BoundedSemaphore(self.MAX_CONNECTIONS)
         self._servers: list[socket.socket] = []
+        self._closing = False
+        self._failed = False
+        self._counts: Counter[str] = Counter()
+        self._counts_lock = threading.Lock()
 
     @property
     def running(self) -> bool:
         return bool(self._servers)
 
+    @property
+    def healthy(self) -> bool:
+        return not self._failed
+
+    def counters(self) -> dict[str, int]:
+        with self._counts_lock:
+            return dict(self._counts)
+
+    def _add(self, key: str, amount: int = 1) -> None:
+        with self._counts_lock:
+            self._counts[key] += amount
+
     def start(self) -> None:
+        self._closing = self._failed = False
         try:
             for family, host in ((socket.AF_INET, "127.0.0.1"), (socket.AF_INET6, "::1")):
                 server = socket.socket(family, socket.SOCK_STREAM)
@@ -483,6 +620,7 @@ class EgressProxy:
             threading.Thread(target=self._accept, args=(server,), daemon=True).start()
 
     def close(self) -> None:
+        self._closing = True
         servers, self._servers = self._servers, []
         for server in servers:
             try:
@@ -496,8 +634,13 @@ class EgressProxy:
             try:
                 client, _ = server.accept()
             except OSError:
+                if not self._closing:  # fail closed, but visible to the next pre-session check
+                    self._failed = True
                 return
+            self._add("connections")
             if not self._slots.acquire(blocking=False):
+                self._add("denied")
+                self._add("denied:capacity")
                 client.close()
                 continue
             threading.Thread(target=self._serve, args=(client,), daemon=True).start()
@@ -506,6 +649,10 @@ class EgressProxy:
         try:
             with client:
                 self._tunnel(client, time.monotonic() + self._timeout)
+        except _Refused as refusal:
+            self._add("unexpectedDirect" if refusal.direct else "denied")
+            if not refusal.direct:
+                self._add(f"denied:{refusal.reason}")
         except (OSError, ValueError):
             pass
         finally:
@@ -515,43 +662,61 @@ class EgressProxy:
     def _recv(client: socket.socket, deadline: float, size: int) -> bytes:
         remaining = deadline - time.monotonic()
         if remaining <= 0:
-            raise TimeoutError
+            raise _Refused("timeout")
         client.settimeout(remaining)
-        return client.recv(size)
+        try:
+            return client.recv(size)
+        except TimeoutError:
+            raise _Refused("timeout") from None
 
     def _tunnel(self, client: socket.socket, deadline: float) -> None:
         buffer = b""
         while b"\r\n\r\n" not in buffer:
             chunk = self._recv(client, deadline, 4096)
-            if not chunk or len(buffer) + len(chunk) > self.MAX_HEAD:
-                return
+            if not chunk:
+                raise _Refused("incomplete")
+            if len(buffer) + len(chunk) > self.MAX_HEAD:
+                raise _Refused("head-too-large")
             buffer += chunk
         head, _, buffer = buffer.partition(b"\r\n\r\n")
         parts = head.split(b"\r\n", 1)[0].split(b" ")
         method, target, version = parts if len(parts) == 3 else (b"", b"", b"")
         host_port = target.decode("ascii", "replace").lower()
-        if method != b"CONNECT" or not version.startswith(b"HTTP/1.") or host_port not in self.endpoints:
+        refusal = (_Refused("not-connect", direct=True) if method != b"CONNECT"
+                   else _Refused("bad-request") if not version.startswith(b"HTTP/1.")
+                   else _Refused("target-not-allowed") if host_port not in self.endpoints else None)
+        if refusal is not None:
             client.sendall(b"HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n")
-            return
+            raise refusal
         client.sendall(b"HTTP/1.1 200 Connection Established\r\n\r\n")
         while len(buffer) < 5 or len(buffer) < 5 + int.from_bytes(buffer[3:5], "big"):
             if len(buffer) >= 5 and 5 + int.from_bytes(buffer[3:5], "big") > self.MAX_RECORD:
-                return
+                raise _Refused("hello-too-large")
             chunk = self._recv(client, deadline, 65_536)
             if not chunk:
-                return
+                raise _Refused("incomplete")
             buffer += chunk
         length = 5 + int.from_bytes(buffer[3:5], "big")
         hello, rest = buffer[:length], buffer[length:]
         host, port = host_port.rsplit(":", 1)
         if client_hello_sni(hello) != host:
+            raise _Refused("sni-mismatch")
+        try:
+            upstream = self._connect((host, int(port)), timeout=self._timeout)
+        except OSError:
+            self._add("upstreamFailed")
             return
-        with self._connect((host, int(port)), timeout=self._timeout) as upstream:
+        with upstream:
+            self._add("allowed")
+            self._add(f"allowed:{host_port}")
+            self._add("bytesUp", len(hello) + len(rest))
             upstream.sendall(hello + rest)
-            _relay(client, upstream, self._timeout, time.monotonic() + self._tunnel_seconds)
+            _relay(client, upstream, self._timeout, time.monotonic() + self._tunnel_seconds, self._add)
 
 
-def _relay(a: socket.socket, b: socket.socket, idle: float, deadline: float) -> None:
+def _relay(a: socket.socket, b: socket.socket, idle: float, deadline: float,
+           tally: Callable[[str, int], None]) -> None:
+    """Copy both ways until close, idle timeout or ``deadline``; ``tally`` sees the bytes first."""
     with selectors.DefaultSelector() as selector:
         selector.register(a, selectors.EVENT_READ, b)
         selector.register(b, selectors.EVENT_READ, a)
@@ -563,6 +728,7 @@ def _relay(a: socket.socket, b: socket.socket, idle: float, deadline: float) -> 
                 data = key.fileobj.recv(65_536)  # type: ignore[union-attr]
                 if not data:
                     return
+                tally("bytesUp" if key.fileobj is a else "bytesDown", len(data))
                 key.data.sendall(data)
 
 
@@ -627,6 +793,117 @@ class _OutputStream:
     def close(self) -> None:
         if self._reader is not None:
             self._reader.close()
+
+
+@dataclass(frozen=True, kw_only=True)
+class RunAccounting:
+    """What one supervised run measured, beyond the lab and host results (additive fields).
+
+    ``escaped_processes`` are new processes of the dedicated user seen after the group
+    settled, i.e. that left the group; the sweep kills them and ``settled`` stays strict.
+    ``surviving_processes`` are those still alive after the final sweep iteration: a judge
+    of "survives kill" uses this one. ``escaped_descendants`` are the leavers that were seen
+    in the child's process tree during the run (polled, so a fast double fork between two
+    polls is only counted as unattributed: ``escaped_processes - escaped_descendants``).
+    ``egress`` is the proxy counter delta of the run (see ``EgressProxy``).
+    """
+
+    escaped_processes: int = 0
+    escaped_descendants: int = 0
+    surviving_processes: int = 0
+    cleanup_failed: bool = False
+    disk_bytes: int = 0
+    disk_files: int = 0
+    egress: dict = field(default_factory=dict, compare=False, hash=False)
+
+
+@dataclass(frozen=True)
+class ContainedHostRun(RunAccounting, HostRun):
+    """``HostRun`` of ``launch`` plus the run accounting."""
+
+
+@dataclass(frozen=True)
+class ProbeResult(RunAccounting, ChildResult):
+    """``ChildResult`` of ``run``/``run_probe`` plus ``cancelled`` and the run accounting."""
+
+    cancelled: bool = False
+
+
+class _Lineage:
+    """Processes seen in the child's tree during the run, to tell leavers from bystanders."""
+
+    def __init__(self, root: int):
+        self._pids = {root}
+        self._parents: dict[tuple[int, int], int | None] = {}
+        self.identities: set[tuple[int, int]] = set()
+
+    def observe(self, processes: set[tuple[int, int]]) -> None:
+        for identity in processes - self._parents.keys():
+            self._parents[identity] = _process_parent(identity[0])
+        grew = True
+        while grew:
+            grew = False
+            for identity, parent in self._parents.items():
+                if identity not in self.identities and parent in self._pids:
+                    self.identities.add(identity)
+                    self._pids.add(identity[0])
+                    grew = True
+
+
+class _DiskGuard:
+    """Total bytes (disk blocks, each inode once) and entry count of the run's writable trees.
+
+    Symbolic links are not followed. A directory that cannot be listed counts as over the
+    limit: the child cannot be allowed to hide data from the measurement.
+    """
+
+    def __init__(self, roots: tuple[str, ...]):
+        self._roots = roots
+        self.bytes = self.files = 0
+
+    def exceeded(self) -> bool:
+        max_bytes, max_files = LIMITS["diskBytes"], LIMITS["diskFiles"]
+        inodes: set[tuple[int, int]] = set()
+        self.bytes = self.files = 0
+        pending = list(self._roots)
+        while pending:
+            try:
+                with os.scandir(pending.pop()) as listing:
+                    entries = list(listing)
+            except (FileNotFoundError, NotADirectoryError):
+                continue
+            except OSError:
+                return True
+            for entry in entries:
+                try:
+                    info = entry.stat(follow_symlinks=False)
+                except FileNotFoundError:
+                    continue
+                except OSError:
+                    return True  # listable but not searchable: unmeasurable
+                self.files += 1
+                if (info.st_dev, info.st_ino) not in inodes:
+                    inodes.add((info.st_dev, info.st_ino))
+                    self.bytes += info.st_blocks * 512
+                if stat.S_ISDIR(info.st_mode):
+                    pending.append(entry.path)
+            if self.bytes > max_bytes or self.files > max_files:
+                return True
+        return False
+
+
+def _resource_limit(uid: int, baseline: set[tuple[int, int]], lineage: _Lineage,
+                    disk: _DiskGuard) -> str | None:
+    """The first exceeded resource limit (``memory`` or ``disk``), else ``None``."""
+    processes = _user_processes(uid) - baseline
+    lineage.observe(processes)
+    if _resident_bytes(processes) > LIMITS["memoryBytes"]:
+        return "memory"
+    return "disk" if disk.exceeded() else None
+
+
+def _counter_delta(before: dict[str, int], after: dict[str, int]) -> dict[str, int]:
+    return {key: value - before.get(key, 0) for key, value in after.items() if value != before.get(key, 0)}
 
 
 class MacOSContainment(ContainmentBackend):
@@ -708,10 +985,13 @@ class MacOSContainment(ContainmentBackend):
         _require(_OS_SERIES.fullmatch(facts.product) is not None
                  and _BUILD.fullmatch(facts.build) is not None, "os-unsupported")
         try:
-            uid = pwd.getpwnam(policy.account).pw_uid
+            account = pwd.getpwnam(policy.account)
         except KeyError:
             raise LabError("dedicated-user-required") from None
+        uid = account.pw_uid
         _require(uid != 0 and os.getuid() == uid and os.geteuid() == uid, "dedicated-user-required")
+        account_facts = _account_facts(policy.account, account, uid)
+        evidence["account"] = {"gids": list(account_facts.gids), "homeMode": account_facts.home_mode}
         info = _lstat(SANDBOX_EXEC, "mechanism-unavailable")
         _require(stat.S_ISREG(info.st_mode) and info.st_uid == _MECHANISM_UID
                  and not info.st_mode & _SHARED_WRITE, "mechanism-unavailable")
@@ -725,7 +1005,7 @@ class MacOSContainment(ContainmentBackend):
             _require(stat.S_ISDIR(info.st_mode) and info.st_uid == uid
                      and os.path.realpath(directory) == directory and not info.st_mode & 0o077,
                      "workspace-unsafe")
-        environment = environment_sha256(policy, facts, uid)
+        environment = environment_sha256(policy, facts, uid, account_facts)
         evidence["environmentSha256"] = environment
         _require(environment == self.qualification.environment_sha256, "environment-drift")
         _require(self._clock() < min(self.qualification.expires_at, self.host_qualification.expires_at),
@@ -743,23 +1023,46 @@ class MacOSContainment(ContainmentBackend):
                  "workspace-unsafe")
         return resolved
 
+    def _sandboxed(self, entry: str, probe_dir: str, target: list[str], env: dict[str, str]) -> int:
+        """Exit code of ``target`` under the rendered profile, with every param set to ``probe_dir``."""
+        return subprocess.run(
+            [SANDBOX_EXEC, "-p", self.policy.render(entry).decode(), "-D", f"CANDIDATE={probe_dir}",
+             "-D", f"TMPDIR={probe_dir}", "-D", f"RUNDIR={probe_dir}", "--", *target],
+            env=env, cwd=probe_dir, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL, timeout=_COMPILE_TIMEOUT_SECONDS, check=False).returncode
+
+    def _leftovers(self) -> bool:
+        """A run or compile directory an earlier run could not remove (the child can make that so)."""
+        try:
+            return any(name.startswith(_OWNED) for name in os.listdir(self.policy.run_root))
+        except OSError:
+            raise LabError("workspace-unsafe") from None
+
     def _compile_check(self, entry: str) -> None:
-        """The exact profile must compile and must deny exec of a non-listed binary."""
+        """The exact profile must compile, deny a non-listed exec and run a listed one.
+
+        The positive case (RV-23) tells "denied by the profile" from "exec failed anyway": a
+        profile that denied everything would otherwise pass. ``launch`` runs the pinned
+        Claude executable with ``--version`` under the profile; ``fixture`` runs the
+        interpreter on an empty program.
+        """
         probe_dir = None
+        denied = allowed = None
         try:
             probe_dir = tempfile.mkdtemp(prefix="compile-", dir=self.policy.run_root)
-            code = subprocess.run(
-                [SANDBOX_EXEC, "-p", self.policy.render(entry).decode(), "-D", f"CANDIDATE={probe_dir}",
-                 "-D", f"TMPDIR={probe_dir}", "--", COMPILE_PROBE],
-                env={}, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL, timeout=10, check=False).returncode
+            os.mkdir(f"{probe_dir}/home", 0o700)  # the child environment's HOME
+            denied = self._sandboxed(entry, probe_dir, [COMPILE_PROBE], {})
+            if denied == EXIT_SANDBOX_EXEC_DENIED:
+                allowed = self._sandboxed(entry, probe_dir, self.policy.exec_probe(entry),
+                                          self.policy.child_environment(entry, probe_dir))
         except (OSError, subprocess.TimeoutExpired):
             raise LabError("profile-compile-failed") from None
         finally:
             if probe_dir is not None:
-                shutil.rmtree(probe_dir, ignore_errors=True)
-        _require(code != EXIT_SANDBOX_COMPILE, "profile-compile-failed")
-        _require(code == EXIT_SANDBOX_EXEC_DENIED, "self-check-allowed")
+                _remove_tree(probe_dir)  # a failure shows as a leftover at the next pre-session
+        _require(denied != EXIT_SANDBOX_COMPILE, "profile-compile-failed")
+        _require(denied == EXIT_SANDBOX_EXEC_DENIED, "self-check-allowed")
+        _require(allowed == 0, "self-check-failed")
 
     def _run_probes(self, evidence: dict) -> None:
         _require(self._probe_runner is not None, "self-check-unavailable")
@@ -784,6 +1087,10 @@ class MacOSContainment(ContainmentBackend):
         try:
             uid = self._check_mechanism(entry, evidence)
             candidate = self._candidate(workdir, uid)
+            _require(not self._leftovers(), "workspace-leftovers")
+            if self._proxy.running and not self._proxy.healthy:
+                self._proxy.close()  # the next attempt starts a fresh one
+                raise LabError("proxy-unavailable")
             if not self._proxy.running:
                 self._proxy.start()
             self._compile_check(entry)
@@ -802,16 +1109,23 @@ class MacOSContainment(ContainmentBackend):
 
     # -- entry points ---------------------------------------------------------------------
 
-    def run(self, source: bytes, workdir: Path, limits: FixtureLimits) -> ChildResult:
+    def run(self, source: bytes, workdir: Path, limits: FixtureLimits) -> ProbeResult:
         """Owned fixture entry point, after the full NC-11 pre-session check."""
-        return self._fixture(source, workdir, limits, probes=True)
+        return self._fixture(source, workdir, limits, probes=True, cancel=None)
 
-    def run_probe(self, source: bytes, workdir: Path, limits: FixtureLimits) -> ChildResult:
-        """Probe entry point for the T007 runner: same profile and checks, no probe subset."""
-        return self._fixture(source, workdir, limits, probes=False)
+    def run_probe(self, source: bytes, workdir: Path, limits: FixtureLimits, *,
+                  cancel: threading.Event | None = None) -> ProbeResult:
+        """Probe entry point for the T007 runner: same profile and checks, no probe subset.
 
-    def _fixture(self, source: bytes, workdir: Path, limits: FixtureLimits, *, probes: bool) -> ChildResult:
-        if type(source) is not bytes or not isinstance(limits, FixtureLimits):
+        ``cancel`` is optional: setting it stops and settles the group, and the result says
+        ``cancelled`` (the PROC-08 cancellation half).
+        """
+        return self._fixture(source, workdir, limits, probes=False, cancel=cancel)
+
+    def _fixture(self, source: bytes, workdir: Path, limits: FixtureLimits, *, probes: bool,
+                 cancel: threading.Event | None) -> ProbeResult:
+        if (type(source) is not bytes or not isinstance(limits, FixtureLimits)
+                or not (cancel is None or isinstance(cancel, threading.Event))):
             self._refuse("fixture", "invalid-lab-request")
         try:
             text = source.decode("utf-8")
@@ -822,12 +1136,14 @@ class MacOSContainment(ContainmentBackend):
             run = self._spawn("fixture", [self.policy.interpreter, "-I", "-S", "-c", text], evidence,
                               candidate=candidate, uid=uid, wall=limits.wall_seconds,
                               cpu=min(limits.wall_seconds + 1, LIMITS["cpuSeconds"]),
-                              max_output=limits.max_output_bytes, cancel=None, stdin=b"")
-        return ChildResult(run.stdout, run.exit_code, run.timed_out, run.output_truncated, run.settled)
+                              max_output=limits.max_output_bytes, cancel=cancel, stdin=b"")
+        return ProbeResult(run.stdout, run.exit_code, run.timed_out, run.output_truncated, run.settled,
+                           cancelled=run.cancelled,
+                           **{f.name: getattr(run, f.name) for f in fields(RunAccounting)})
 
     def launch(self, argv: tuple[str, ...], stdin: bytes, *, cwd: Path | str, wall_seconds: int,
                max_output_bytes: int, cancel: threading.Event,
-               on_output: Callable[[bytes], None] | None = None) -> HostRun:
+               on_output: Callable[[bytes], None] | None = None) -> ContainedHostRun:
         """Contained launcher for the native transport (T006): pinned Claude executable only.
 
         The argument list beyond ``argv[0]`` is the transport's (T006) responsibility.
@@ -854,7 +1170,7 @@ class MacOSContainment(ContainmentBackend):
 
     def _spawn(self, entry: str, target: list[str], evidence: dict, *, candidate: str, uid: int,
                wall: int, cpu: int, max_output: int, cancel: threading.Event | None,
-               stdin: bytes, on_output: Callable[[bytes], None] | None = None) -> HostRun:
+               stdin: bytes, on_output: Callable[[bytes], None] | None = None) -> ContainedHostRun:
         """Supervise one contained child; whatever happens it is killed, settled and recorded."""
         record = dict(evidence)
         try:
@@ -872,21 +1188,23 @@ class MacOSContainment(ContainmentBackend):
 
     def _supervise(self, entry: str, target: list[str], record: dict, *, candidate: str, uid: int,
                    wall: int, cpu: int, max_output: int, cancel: threading.Event | None,
-                   stdin: bytes, on_output: Callable[[bytes], None] | None = None) -> HostRun:
+                   stdin: bytes, on_output: Callable[[bytes], None] | None = None) -> ContainedHostRun:
         policy = self.policy
         try:
             run_dir = tempfile.mkdtemp(prefix="run-", dir=policy.run_root)
         except OSError:
             raise LabError("workspace-unavailable") from None
-        child = status = None
+        tmpdir = f"{run_dir}/tmp"
+        child = status = lineage = None
         baseline: set[tuple[int, int]] = set()
         state: dict = {"timedOut": False, "cancelled": False, "outputTruncated": False,
                        "limitExceeded": None}
+        egress_before = self._proxy.counters()
+        disk = _DiskGuard((candidate, tmpdir))
         out_path = f"{run_dir}/stdout"
         live = _OutputStream(out_path, max_output, on_output, cancel) if on_output is not None else None
         try:
             try:
-                tmpdir = f"{run_dir}/tmp"
                 os.mkdir(tmpdir, 0o700)
                 os.mkdir(f"{tmpdir}/home", 0o700)
                 with open(f"{run_dir}/stdin", "wb") as stream:
@@ -902,7 +1220,7 @@ class MacOSContainment(ContainmentBackend):
                 argv = [sys.executable, "-I", "-S", "-c", _PREAMBLE, str(cpu), str(LIMITS["fileSizeBytes"]),
                         str(LIMITS["openFiles"]), str(nproc), candidate, str(status_w), SANDBOX_EXEC,
                         "-p", policy.render(entry).decode(), "-D", f"CANDIDATE={candidate}",
-                        "-D", f"TMPDIR={tmpdir}", "--", *target]
+                        "-D", f"TMPDIR={tmpdir}", "-D", f"RUNDIR={run_dir}", "--", *target]
                 try:
                     child = subprocess.Popen(argv, cwd=run_dir, env=policy.child_environment(entry, tmpdir),
                                              stdin=source, stdout=sink, stderr=subprocess.DEVNULL,
@@ -911,9 +1229,10 @@ class MacOSContainment(ContainmentBackend):
                     raise LabError("launch-failed") from None
                 finally:
                     os.close(status_w)
+                lineage = _Lineage(child.pid)
                 self._watch(child, state, uid=uid, baseline=baseline, out_path=out_path,
                             deadline=time.monotonic() + wall, max_output=max_output, cancel=cancel,
-                            live=live)
+                            live=live, lineage=lineage, disk=disk)
         finally:
             sweep_error = None
             if child is not None:
@@ -923,12 +1242,17 @@ class MacOSContainment(ContainmentBackend):
                 state["settled"] = _settle(child.pid)
                 state["baselineProcesses"] = len(baseline)
                 try:
-                    state["escapedProcesses"] = self._sweep(uid, baseline)
+                    escaped, surviving = self._sweep(uid, baseline)
+                    descendants = len(escaped & (lineage.identities if lineage else set()))
+                    state.update(escapedProcesses=len(escaped), escapedDescendants=descendants,
+                                 unattributedProcesses=len(escaped) - descendants,
+                                 survivingProcesses=surviving)
                 except LabError as exc:  # cleanup still runs; the run stays unsettled
                     sweep_error = exc
+            stopped_early = (state["timedOut"] or state["cancelled"] or state["outputTruncated"]
+                             or state["limitExceeded"])
             if live is not None:
-                if not (state["timedOut"] or state["cancelled"] or state["outputTruncated"]
-                        or state["limitExceeded"]):
+                if not stopped_early:
                     live.pump(state)  # natural exit: deliver the tail written since the last poll
                 live.close()
             preamble_failed = False
@@ -944,24 +1268,36 @@ class MacOSContainment(ContainmentBackend):
                     data = stream.read(max_output + 1)
             except OSError:
                 data = b""
-            shutil.rmtree(run_dir, ignore_errors=True)
-            stopped = (state["timedOut"] or state["cancelled"] or state["outputTruncated"]
-                       or state["limitExceeded"])
+            if child is not None and not stopped_early and disk.exceeded():
+                state["limitExceeded"] = "disk"  # a burst written just before a natural exit
+            try:
+                cleaned = _remove_tree(run_dir)
+            except Exception:  # e.g. RecursionError on a hostile deep tree: record, do not mask
+                cleaned = False
+            stopped = stopped_early or state["limitExceeded"]
             exit_code = None if child is None or stopped else child.returncode
             settled = bool(state.get("settled")) and state.get("escapedProcesses") == 0
-            record.update(state, exitCode=exit_code, settled=settled)
+            egress = _counter_delta(egress_before, self._proxy.counters())
+            record.update(state, exitCode=exit_code, settled=settled, cleanupFailed=not cleaned,
+                          diskBytes=disk.bytes, diskFiles=disk.files, egress=egress)
         if sweep_error is not None:
             raise sweep_error
         _require(not state.get("callbackFailed"), "output-callback-failed")
+        _require(state["limitExceeded"] != "disk", "disk-limit-exceeded")
         _require(not preamble_failed, "rlimit-unenforceable")
         truncated = state["outputTruncated"] or len(data) > max_output
         record["outputTruncated"] = truncated
-        return HostRun(data[:max_output], exit_code, state["timedOut"], state["cancelled"], truncated, settled)
+        return ContainedHostRun(
+            data[:max_output], exit_code, state["timedOut"], state["cancelled"], truncated, settled,
+            escaped_processes=state.get("escapedProcesses", 0),
+            escaped_descendants=state.get("escapedDescendants", 0),
+            surviving_processes=state.get("survivingProcesses", 0), cleanup_failed=not cleaned,
+            disk_bytes=disk.bytes, disk_files=disk.files, egress=egress)
 
     def _watch(self, child: subprocess.Popen, state: dict, *, uid: int, baseline: set[tuple[int, int]],
                out_path: str, deadline: float, max_output: int, cancel: threading.Event | None,
-               live: "_OutputStream | None" = None) -> None:
-        """Poll until exit or the first wall, cancel, output or memory stop; records which."""
+               live: "_OutputStream | None", lineage: _Lineage, disk: _DiskGuard) -> None:
+        """Poll until exit or the first wall, cancel, output, memory or disk stop; records which."""
         while child.poll() is None:
             if live is not None:
                 live.pump(state)
@@ -973,18 +1309,19 @@ class MacOSContainment(ContainmentBackend):
                 state["cancelled"] = True
             elif os.path.getsize(out_path) > max_output:
                 state["outputTruncated"] = True
-            elif _resident_bytes(_user_processes(uid) - baseline) > LIMITS["memoryBytes"]:
-                state["limitExceeded"] = "memory"
+            elif (limit := _resource_limit(uid, baseline, lineage, disk)) is not None:
+                state["limitExceeded"] = limit
             else:
                 time.sleep(_POLL_SECONDS)
                 continue
             return
 
-    def _sweep(self, uid: int, baseline: set[tuple[int, int]]) -> int:
+    def _sweep(self, uid: int, baseline: set[tuple[int, int]]) -> tuple[set[tuple[int, int]], int]:
         """Kill every new process of the dedicated user left after the group settled.
 
-        Each one escaped the group, so any count above zero leaves the run unsettled even
-        when the kill succeeds. Only ever runs as the dedicated account.
+        Returns the processes seen leaving the group and how many were still alive after
+        the last kill round (a failed kill or an exhausted retry budget). Any leaver leaves
+        the run unsettled even when the kill succeeds. Only ever runs as the dedicated account.
         """
         try:
             account_uid = pwd.getpwnam(self.policy.account).pw_uid
@@ -995,7 +1332,7 @@ class MacOSContainment(ContainmentBackend):
         for _ in range(40):
             survivors = _user_processes(uid) - baseline
             if not survivors:
-                return len(escaped)
+                return escaped, 0
             escaped |= survivors
             for pid, _ in survivors:
                 try:
@@ -1003,4 +1340,4 @@ class MacOSContainment(ContainmentBackend):
                 except OSError:
                     pass
             time.sleep(_POLL_SECONDS)
-        return len(escaped)
+        return escaped, len(_user_processes(uid) - baseline)
