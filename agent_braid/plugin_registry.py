@@ -240,21 +240,28 @@ def configuration_digest(value: dict | None) -> str | None:
     return _hash(_bytes(digested))
 
 
-def not_grown(baseline: dict | None, current: dict | None) -> bool:
-    """True when `current` equals `baseline` except that worktree roots may only have been removed.
+def not_grown(baseline: dict | None, found: dict | None) -> bool:
+    """True when the inspected registry equals `baseline` except that registered worktree roots were deleted.
 
-    A connection keeps serving its snapshot after a worktree it registered is deleted (authority shrank);
-    any other change, including a root that was not in the snapshot, needs a reconnect.
+    `baseline` is an effective value; `found` is an `inspect_registry` result. A root may vanish from the
+    effective configuration only if it is still declared and now missing on disk (a deleted worktree).
+    Removing it from the declared list is a revocation, and any other change (including a root swapped for
+    a symlink, which quarantines its workspace) needs a reconnect.
     """
-    if baseline is None or current is None:
+    if baseline is None or found is None:
         return False
+    current = found['value']
     snapshot = {row['workspaceId']: row for row in baseline['workspaces']}
     if snapshot.keys() != {row['workspaceId'] for row in current['workspaces']}:
         return False
+    deleted: dict[str, set[str]] = {}
+    for entry in found['stale']:
+        deleted.setdefault(entry['workspaceId'], set()).add(found['declared'][entry['workspaceId']][entry['rootIndex']])
     relaxed = []
     for row in current['workspaces']:
         before = snapshot[row['workspaceId']]
-        if not set(row['worktreeRoots']) <= set(before['worktreeRoots']):
+        now, then = set(row['worktreeRoots']), set(before['worktreeRoots'])
+        if not now <= then or not then - now <= deleted.get(row['workspaceId'], set()):
             return False
         relaxed.append(dict(before, worktreeRoots=row['worktreeRoots']))
     return configuration_digest(dict(baseline, workspaces=relaxed)) == configuration_digest(current)
@@ -341,10 +348,14 @@ def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bo
     _decode(_bytes(value), selected)
     effects = ['Replace only the private workspace registry',
                'Create missing private result directories; never delete source/results']
-    kept_stale = sum(not Path(r).is_dir() for row in value['workspaces'] for r in row['worktreeRoots'])
+    kept_stale = sum(found['declared'][e['workspaceId']][e['rootIndex']] in rows[e['workspaceId']]['worktreeRoots']
+                     for e in found['stale'] if e['workspaceId'] in rows)
     if prune_stale and (found['stale'] or found['quarantined']):
-        effects.append(f"Prune {len(found['stale'])} stale worktree root(s) and drop {len(found['quarantined'])} "
-                       'unsafe workspace registration(s); sources, worktrees and results are untouched')
+        effects.append(f"Prune {len(found['stale'])} stale worktree root(s); sources, worktrees and results are untouched")
+        for entry in found['quarantined']:
+            effects.append(f"Drop unsafe workspace registration {entry['workspaceId'] or '(unidentified)'} "
+                           f"(row {entry['index']}): {entry['reason']}; its runtimeEnabled and grantStore "
+                           'configuration is removed and cannot be restored except from a backup')
     elif kept_stale:
         effects.append(f'Keep {kept_stale} stale (missing) worktree root(s) registered but inactive; '
                        'use --prune-stale to remove them')

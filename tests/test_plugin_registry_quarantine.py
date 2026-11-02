@@ -51,18 +51,21 @@ class RegistryQuarantineTests(unittest.TestCase):
         worktree.mkdir()
         self.assertEqual(configuration_digest(load(self.home)), with_root)
 
-    def test_not_grown_accepts_shrinking_roots_only(self):
+    def test_not_grown_accepts_only_roots_that_are_declared_and_missing(self):
         worktree = self.with_worktree()
-        full = load(self.home)
+        full = inspect_registry(self.home)
         shutil.rmtree(worktree)
-        shrunk = load(self.home)
-        self.assertTrue(not_grown(full, shrunk))
-        self.assertTrue(not_grown(full, full))
-        self.assertFalse(not_grown(shrunk, full))
-        self.assertFalse(not_grown(full, dict(full, telemetry='local')))
-        self.assertFalse(not_grown(full, dict(full, workspaces=[])))
+        shrunk = inspect_registry(self.home)
+        self.assertTrue(not_grown(full['value'], shrunk))
+        self.assertTrue(not_grown(full['value'], full))
+        self.assertFalse(not_grown(shrunk['value'], full))
+        self.assertFalse(not_grown(full['value'], None))
         self.assertFalse(not_grown(None, full))
-        self.assertFalse(not_grown(full, None))
+        self.assertFalse(not_grown(full['value'], dict(shrunk, value=dict(shrunk['value'], telemetry='local'))))
+        self.assertFalse(not_grown(full['value'], dict(shrunk, value=dict(shrunk['value'], workspaces=[]))))
+        # a root dropped from the declared list is a revocation, not a deletion
+        self.rewrite(lambda v: dict(v, workspaces=[dict(v['workspaces'][0], worktreeRoots=[])]))
+        self.assertFalse(not_grown(full['value'], inspect_registry(self.home)))
 
     def test_unsafe_worktree_root_quarantines_only_its_workspace(self):
         other = self.second_repo()
@@ -188,13 +191,18 @@ class RegistryQuarantineTests(unittest.TestCase):
     def test_setup_refuses_to_rewrite_unsafe_rows_without_prune_and_drops_them_with_it(self):
         other = self.second_repo()
         self.install([self.repo, other])
+        ids = {r['sourceRoot']: r['workspaceId'] for r in load(self.home)['workspaces']}
         self.rewrite(lambda v: dict(v, workspaces=[dict(v['workspaces'][0], worktreeRoots=[str(self.home / 'x')]),
                                                    v['workspaces'][1]]))
         with self.assertRaisesRegex(RegistryError, 'prune-stale'):
             plan_setup(self.home, [], telemetry='local')
         preview = plan_setup(self.home, [], telemetry='local', prune_stale=True)
         self.assertEqual(len(preview['registry']['workspaces']), 1)
-        self.assertTrue(any('unsafe' in effect.lower() for effect in preview['effects']))
+        dropped = [e for e in preview['effects'] if 'unsafe' in e.lower()]
+        self.assertEqual(len(dropped), 1)
+        self.assertIn(ids[str(self.repo)], dropped[0])
+        self.assertIn('backup', dropped[0])
+        self.assertIn('grantStore', dropped[0])
         apply(self.home, preview, preview['previewDigest'])
         self.assertEqual(inspect_registry(self.home)['quarantined'], [])
 

@@ -58,6 +58,30 @@ class RouterQuarantineTests(unittest.TestCase):
         self.assertTrue(status['reconnectRequired'])  # effective configuration differs from the snapshot
         self.assertEqual(self.analyze(router, identifier)['status'], 'ok')  # authority only shrank
 
+    def test_revoking_a_live_root_through_setup_requires_reconnect(self):
+        keep = self.base / 'keep'
+        revoked = self.base / 'revoked'
+        keep.mkdir()
+        revoked.mkdir()
+        identifier = self.register([keep, revoked])[0]['workspaceId']
+        router = PluginRouter(self.home)
+        self.assertEqual(self.analyze(router, identifier)['status'], 'ok')
+        self.register([keep])  # deliberate revocation of a live root
+        refused = self.analyze(router, identifier)
+        self.assertEqual(refused['status'], 'refused')
+        self.assertEqual(refused['result'], {'code': 'reconnect-required'})
+
+    def test_root_swapped_for_a_symlink_mid_session_is_refused(self):
+        worktree = self.base / 'agent-worktree'
+        worktree.mkdir()
+        identifier = self.register([worktree])[0]['workspaceId']
+        router = PluginRouter(self.home)
+        shutil.rmtree(worktree)
+        worktree.symlink_to(self.base, target_is_directory=True)
+        refused = self.analyze(router, identifier)
+        self.assertEqual(refused['status'], 'refused')
+        self.assertEqual(refused['result'], {'code': 'reconnect-required'})
+
     def test_reappearing_stale_root_requires_reconnect(self):
         worktree = self.base / 'agent-worktree'
         worktree.mkdir()

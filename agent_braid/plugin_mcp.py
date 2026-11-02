@@ -84,10 +84,6 @@ class PluginRouter:
         except MigrationRequired:
             return None
 
-    def _current(self):
-        found = self._inspect()
-        return found['value'] if found else None
-
     def status(self):
         from . import system_one_shadow  # lazy: serving with System One off never loads it
         found = self._inspect()
@@ -119,9 +115,11 @@ class PluginRouter:
                 'executionAuthorization': False}
 
     def _require_current(self):
-        # A deleted worktree only shrinks authority, so the snapshot keeps serving; anything else reconnects.
-        current = self._current()
-        if configuration_digest(current) != self.baseline_digest and not not_grown(self.baseline, current):
+        # A deleted registered worktree only shrinks authority, so the snapshot keeps serving; a revoked root
+        # or any other change reconnects.
+        found = self._inspect()
+        if (configuration_digest(found['value'] if found else None) != self.baseline_digest
+                and not not_grown(self.baseline, found)):
             raise RegistryStale('Registry changed since this connection started: reconnect the MCP, '
                                 'then read plugin-status (code reconnect-required)')
 
