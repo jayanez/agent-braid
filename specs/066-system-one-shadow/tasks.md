@@ -60,13 +60,19 @@ specifications unless a SPEC-066 requirement amends them.
   historical S1.0–S1.4 milestones (owner default, plan approval in
   `owner-review-20261101.md`); `TaskMilestoneOverrideTests` in
   `tests/test_github_tracking.py`.
-- [ ] T004: After merge to `develop`, publish S1.5 tracking: `audit` scoped with
+- [x] T004: After merge to `develop`, publish S1.5 tracking: `audit` scoped with
   `--new-record-key` for exactly the missing SPEC-066 records, review, `apply
   --confirm-repository jayanez/agent-braid --plan-sha256 <digest>`, move the 15
   absorbed issues from Deferred, record the milestone number, re-audit to zero
   operations, set the parent to Review pending in Project 6, and update the Deferred
   milestone description and the reopen condition. Dependencies: T002, T003 merged.
   Evidence: audit and apply outputs, milestone number in `github-tracking.json`.
+  Evidence (2026-11-02): milestone #26 registered (#897); scoped apply created the
+  parent #900 and 39 task issues with sub-issue links and closed the completed ones;
+  after #940 the 15 absorbed issues were moved to #26 with readback, the #26 and #24
+  descriptions were set to the source text and read back, and the scoped #26
+  re-audit planned no operation; #900 is in Review pending in Project 6. The scoped
+  #24 audit still stops on SPEC-041/T002 (closed in M4.5), outside S1.5.
 - [ ] T005: Freeze the specification candidate with
   `python3 -m scripts.validate_spec_kit freeze specs/066-system-one-shadow`.
   Dependencies: T002. Evidence: historical snapshot in `assurance.json`.
@@ -195,6 +201,10 @@ specifications unless a SPEC-066 requirement amends them.
   identifiers. Zero episodes is a valid receipt and is reported as such.
   Dependencies: T014, T015, T017, T020. Evidence:
   `evidence/real-use-shadow-<date>.json`.
+  Plan (owner, 2026-11-01): run on the published `0.1.0-alpha.5` plugin, not a local
+  build; the owner runs setup with guidance (R14). Day 1 is the date `plugin-status`
+  first shows `systemOne.activeMode=shadow`; the report is due 7 days later. Day 1:
+  pending.
 
 ## S1.5a — Closure
 

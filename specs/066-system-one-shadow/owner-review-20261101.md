@@ -74,3 +74,15 @@ answered "Approve plan" to the S1.5 plan with its stated defaults:
 
 This approves the order of work only. It grants no execution authority and is not
 a review of any result.
+
+## SC-006 plugin version and release authorization
+
+The owner then chose, through interactive prompts in the parent coordinator
+session on 2026-11-01, to run the SC-006 week on a public `0.1.0-alpha.5` release
+built from `develop` after the S1.5a completion merge, replacing default 1 above
+(local unpublished build), with day 1 set to the first `plugin-status` that shows
+`systemOne.activeMode=shadow`. In this coordinator session the owner answered
+"Yes, publish" to publishing `0.1.0-alpha.5` to `plugin-dist` with the tag
+`agent-braid--v0.1.0-alpha.5`, and "Yes, merge them" to squash-merging the S1.5
+PRs once each is green. These authorize the release and merges only; they review
+no result.
