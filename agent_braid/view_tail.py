@@ -11,6 +11,8 @@ specs/061-activity-viewer/contracts/ui-security-privacy.md:
   `stream-truncated` gap per bound is stored (again once the bound is met after having cleared);
 * a symbolic link, a non-regular file or a path that leaves its root is never read, and a
   symbolic link to a directory is never entered; such entries are skipped without an event;
+* a root inside another named root is not watched twice; an oversized file adds one gap while it
+  stays oversized; a grant's derived expiry is computed only when its file is read (a changed file);
 * a file is read again only when its `os.stat` signature changes, and its events are stored
   again only when its SHA-256 changed, so touching a file adds nothing.
 
@@ -20,6 +22,7 @@ system or reaches the network.
 from __future__ import annotations
 
 import hashlib
+from itertools import islice
 import os
 import stat
 import threading
@@ -88,7 +91,8 @@ class ArtifactTail:
                 raise TailError("root", f"cannot resolve the watched root: {exc}") from exc
             if not path.is_dir():
                 raise TailError("root", "a watched root is a directory")
-            if path not in resolved:
+            if not any(path == kept or kept in path.parents for kept in resolved):
+                resolved = [kept for kept in resolved if path not in kept.parents]
                 resolved.append(path)
         self._roots = resolved[:max_roots]
         self._roots_exceeded = len(resolved) > max_roots
@@ -117,6 +121,8 @@ class ArtifactTail:
                 key = (index, relative)
                 present.add(key)
                 if self._seen.get(key, (None, None))[0] == signature:
+                    if signature[1] > self._max_file_bytes:
+                        exceeded.add((index, relative, "size"))  # still over the bound: not reported again
                     continue
                 appended += self._ingest(index, root, relative, signature, exceeded)
             if budget[0] < 0:
@@ -137,7 +143,7 @@ class ArtifactTail:
             directory, prefix = stack.pop()
             try:
                 with os.scandir(directory) as entries:
-                    listing = sorted(entries, key=lambda entry: entry.name)
+                    listing = sorted(islice(entries, max(budget[0], 0) + 1), key=lambda entry: entry.name)
             except OSError:
                 continue
             subdirectories = []
@@ -177,9 +183,15 @@ class ArtifactTail:
         arguments = {"now": int(self._wall_clock())} if adapter is events_from_grant else {}
         try:
             events = adapter(data, path=relative, **arguments)
-        except (LoomError, ValueError, TypeError):
+        except (ValueError, TypeError):
             return 0  # a path the contract cannot name: nothing is stored for it
-        return sum(self._append(event) for event in events)
+        stored = 0
+        for event in events:
+            try:
+                stored += self._append(event)
+            except LoomError:
+                break  # an event the store refuses ends this file's events; the file is not retried
+        return stored
 
     def _append(self, event: dict[str, Any]) -> int:
         return 0 if self.store.append(event) is None else 1

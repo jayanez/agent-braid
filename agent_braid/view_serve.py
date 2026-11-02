@@ -227,7 +227,7 @@ def read_replay_file(path: str | os.PathLike[str]) -> bytes:
     try:
         info = os.fstat(descriptor)
         if not stat.S_ISREG(info.st_mode) or info.st_size > MAX_REPLAY_BYTES:
-            raise ServeError("replay-file", "the replay file is a regular file within the stream size bound")
+            raise ServeError("replay-file", "the replay file must be a regular file within the stream size bound")
         with os.fdopen(descriptor, "rb", closefd=False) as stream:
             data = stream.read(MAX_REPLAY_BYTES + 1)
     except OSError as exc:

@@ -297,6 +297,30 @@ class BoundTests(TailCase):
         self.assertEqual(kinds(self.store), ["observation.gap"])
         self.assertEqual(len(gaps(self.store)), 1)
 
+    def test_an_oversized_file_that_keeps_changing_adds_one_gap(self):
+        path = install(self.root, "state.json", "runtime-state-ready.json")
+        tail = self.tail(max_file_bytes=path.stat().st_size - 1)
+        tail.poll_once()
+        path.write_bytes(path.read_bytes() + b" ")
+        tail.poll_once()
+        path.write_bytes(path.read_bytes() + b" ")
+        tail.poll_once()
+        self.assertEqual(len(gaps(self.store)), 1)
+
+    def test_a_root_inside_another_root_is_not_watched_twice(self):
+        install(self.root, "sub/state.json", "runtime-state-ready.json")
+        self.assertEqual(self.tail(self.root / "sub", self.root).poll_once(), 1)
+        self.assertEqual(self.tail(self.root, self.root / "sub").poll_once(), 1)
+
+    def test_a_huge_directory_is_listed_only_up_to_the_bound(self):
+        for index in range(50):
+            (self.root / f"f{index:03d}").write_text("x")
+        tail = self.tail(max_entries=5)
+        with mock.patch.object(view_tail, "islice", wraps=view_tail.islice) as limited:
+            tail.poll_once()
+        self.assertEqual(limited.call_args[0][1], 6)
+        self.assertEqual(len(gaps(self.store)), 1)
+
     def test_a_file_at_the_size_bound_is_read(self):
         path = install(self.root, "state.json", "runtime-state-ready.json")
         self.assertEqual(self.tail(max_file_bytes=path.stat().st_size).poll_once(), 1)
