@@ -36,7 +36,12 @@ keys, no insignificant whitespace; digests are SHA-256 over those bytes.
 Fields: `id`, `checkpoint`, `repository`, `branchPattern`, `conditions` (closed
 set, for example `ciGreen`, `receiptsPresent`, `noOpenReviewThreads`),
 `issuedAt`, `expiresAt`, `issuer`, `ownerStatement` (verbatim, nonempty),
-`revokedAt` (nullable). Valid only if the checkpoint admits the mode (Q2), the
+`revokedAt` (nullable), plus a `digest` over the record (hashed JSON record). All
+three conditions are required; times are `YYYY-MM-DDTHH:MM:SSZ` and injected,
+never read from a clock. Anything not valid falls back to `approve-each` with a
+fixed reason (`missing`, `invalid-record`, `checkpoint-not-admitting`,
+`out-of-scope`, `issuer-not-permitted`, `statement-missing`, `horizon-exceeded`,
+`revoked`, `not-yet-valid`, `expired`, `condition-failed`). Valid only if the checkpoint admits the mode (Q2), the
 horizon is within Q3, and the issuer is permitted (Q4). Stored in an
 operator-owned location; the agent can read it and cannot write it.
 
@@ -66,11 +71,12 @@ any content that differs from a fresh compilation of the inputs
 ## Receipt (`braid-harness-gate-receipt/v0.1`)
 
 Fields: `checkpoint`, `depth`, `depthSource`, `mode`, `modeSource`, `baseCommit`,
-`headCommit`, `profileDigest`, `riskClass`, `reviews` (list of `kind`, `status`,
-`findingsApplied`, `findingsRejected` each with reason), `commands` (`argv`,
+`headCommit`, `profileDigest`, `riskClass`, `author`, `reviews` (list of `kind`,
+`reviewer`, `status` `completed|incomplete`, `findingsApplied`, `findingsRejected`
+each with reason; one entry per independent reviewer at R4), `commands` (`argv`,
 `exitCode`, `outputSha256`), `approvals` (human approval reference or standing
 authorization id), `fallbackReason` (nullable), `createdAt`, `digest`.
-Verification checks canonical form and digest, commit binding, profile binding,
+Verification takes the expected checkpoint and commits and checks canonical form and digest, commit binding, profile binding,
 depth not below the effective depth, every required review present, every
 command with an exit code, and that approvals match the mode. The digest detects
 inconsistent edits only; receipts live in an operator-owned store written by the

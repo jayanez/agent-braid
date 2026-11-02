@@ -71,7 +71,7 @@ shared object store fails the portable-root check).
   Evidence: `evidence/t005.json`. Obtained: `evidence/t005.json` (90 focused tests, 1079
   harness tests; process logic only, no review-quality or utility claim).
 
-- [ ] T006 (REQ-002 / SC-002; REQ-005 / SC-005; REQ-007 / SC-007): Receipt
+- [x] T006 (REQ-002 / SC-002; REQ-005 / SC-005; REQ-007 / SC-007): Receipt
   builder and verifier, standing-authorization validation with fallback to
   `approve-each`, required-review check per depth. Dependencies: T001 (Q2, Q3,
   Q4), T005. Files: `agent_braid/harness_assurance_receipts.py`,
@@ -80,7 +80,8 @@ shared object store fails the portable-root check).
   revoked, non-permitted issuer, non-admitting checkpoint, missing verbatim
   statement, failing condition; missing review;
   lower-depth or other-commit receipt; edit without digest recompute; command without exit code. Evidence:
-  `evidence/t006.json`.
+  `evidence/t006.json`. Obtained: `evidence/t006.json` (43 focused tests, 1146
+  harness tests; process logic only, no review-quality or utility claim).
 
 - [ ] T007 (REQ-006 / SC-006): Deterministic generators for the track-brief
   section and the PR "Pre-PR review" skeleton. Dependencies: T005, T006. Files:
