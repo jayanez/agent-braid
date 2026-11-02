@@ -85,13 +85,19 @@ shared object store fails the portable-root check).
   Files: `evidence/t008.json`. Verification: procedure_010. Evidence: command
   outputs bound to the candidate commit.
 
-- [ ] T009 (REQ-009 / SC-009): Register the H1 evaluation in SPEC-049: arms
+- [x] T009 (REQ-009 / SC-009): Register the H1 evaluation in SPEC-049: arms
   (depths), outcomes (rework, regressions, cost, cycle time) on both axes,
   stop rules, fixed before observation. Registration only; no run. Dependencies:
   T001; SPEC-049 registration procedure as existing. Files:
   `specs/067-assurance-profiles/evidence/t009.json` (and any SPEC-049 record by
   its owner). Verification: procedure_009. Negative control: post-hoc outcome
-  change refused. Evidence: the registration record.
+  change refused. Evidence: the registration record. Obtained:
+  `evidence/t009.json` registers H1 (registered-not-run) under the frozen SPEC-049
+  protocol: arms (realized depth R0 to R4), strata, two-axis outcomes (rework and
+  regression; total chain cost and cycle time), labeling and stop rules; no data
+  observed, no run, no utility claim. Margins, minimum clusters and acceptable
+  cost stay open (O1 to O3) for founder records before any outcome is read.
+  SPEC-049 files unchanged.
 
 - [ ] T010 (REQ-003 / SC-003; REQ-008 / SC-008): ADR for assurance profiles and
   the standing-authorization record, drafted from plan.md "Proposed shared-file

@@ -1,0 +1,103 @@
+{
+  "recordVersion": "spec067-h1-registration-v1",
+  "task": "SPEC-067/T009",
+  "registeredIn": "SPEC-049 evaluation procedure (evaluation-protocol.md, frozen by T002; unchanged by this record)",
+  "repository": "jayanez/agent-braid",
+  "registeredAt": "2026-11-02",
+  "baseCommit": "af560a31e6feb74c2ae00c778206fd29f4ff5607",
+  "inputHashes": {
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "379d2b86dcd78a0c346c2e29bba579d62b8426a293d3f3d2b2a653360605f0dc",
+    "specs/067-assurance-profiles/spec.md": "ed080242b323c91017d1cf2cf7f8e4263f3d30cbfed611da5496e2abce837d10",
+    "specs/067-assurance-profiles/evidence/founder-decisions-20261102.json": "b894a50e358a8af4188b3572a4c1ff91b94b01ab10d6f23c7523e8bf64151c99"
+  },
+  "status": "registered-not-run",
+  "hypothesis": {
+    "id": "H1",
+    "text": "Higher pre-PR review depths reduce post-merge rework and regressions relative to lower depths at a total chain cost the operator accepts.",
+    "mayFail": true,
+    "validResults": ["supported", "unsupported", "inconclusive", "infeasible"],
+    "note": "No requirement of SPEC-067 depends on H1 being true. Nothing in this record, a compiled profile or a receipt claims utility."
+  },
+  "fixedBeforeObservation": "Everything below, except the items listed under openItems, is fixed by this record. No outcome, arm assignment result or cost has been observed, collected or computed. Any change to arms, strata, outcome definitions, windows or stop rules after the first observation needs a new registration version recorded before the changed data is read; the earlier version and its data stay as registered and are reported with the change.",
+  "arms": {
+    "definition": "Realized pre-PR review depth of a merged PR, read from the head-bound gate receipts (SPEC-067 REQ-005/REQ-007). Depths are R0 to R4 as defined in spec.md. A PR without gate receipts has no registered depth and is excluded from the confirmatory comparison.",
+    "primaryContrast": "Adjacent depths inside one stratum (for example R1 versus R2 for code with no escalation; R2 versus R3 where the raise-only classifier does not decide the depth).",
+    "assignment": "Observational by default: depth is whatever the configured profile and the raise-only classifier produced. Any deliberate assignment of a depth above the profile default needs its own founder decision record; assignment never lowers a depth below a REQ-003 floor or below a classifier escalation.",
+    "knownConfounding": "The classifier raises depth for sensitive, large and shared-file diffs, so depth correlates with risk. Comparisons are therefore made inside strata and an unadjusted pooled contrast is not a registered result. Residual confounding (author, track, time, reviewer correlation) is reported as a limit."
+  },
+  "strata": [
+    "change kind: documentation-only versus code (the classifier's documentation-only report)",
+    "escalation: depth at profile default versus raised by the classifier (sensitive path, over 400 changed lines, shared file)",
+    "size band: at most 400 versus over 400 changed lines",
+    "host and model identity of the author and of the reviewers, as recorded on the receipts"
+  ],
+  "strataRule": "Strata with fewer than the founder-set minimum of independent clusters (open item O1) in either compared arm are reported descriptively with counts and are not compared. Sparse and empty strata are reported, not merged away after seeing outcomes.",
+  "unit": "One merged PR to develop that carries gate receipts. Several PRs from one track or one lineage of the same change are grouped as one cluster for uncertainty; clusters, not PR counts, are the sample size.",
+  "outcomes": {
+    "correctness": {
+      "rework": "A merged PR is reworked when, within the 14 days after its merge commit, a later PR to develop (a) reverts it in whole or part, or (b) is recorded in its title, body or linked issue as fixing, correcting or completing a defect in it, or (c) is classified by the rater as modifying lines the original PR introduced to repair a defect. Planned follow-up scope listed in the original PR is not rework.",
+      "regression": "A merged PR causes a regression when, within the same 14-day window, a previously passing validation, test or documented behavior fails on develop and is attributed to it by revert, bisection or the fixing PR's stated cause. A failure present before the merge is not a regression.",
+      "rates": "rework rate = reworked PRs / all registered merged PRs in the arm; regression rate = regressing PRs / all registered merged PRs in the arm. Denominators include every registered PR, including those with unknown or ungraded outcome; zero denominators are undefined, never 0 or 100 percent.",
+      "reviewFindings": "Findings raised during pre-PR review are process records, counted and reported separately; they are never a correctness outcome and never the numerator of rework or regression."
+    },
+    "optimization": {
+      "totalChainCost": "Everything the chain spends on a PR, not only the review: authoring, each pre-PR review at its depth, fixes after review, CI waiting and reruns, human review and decision time, and any post-merge rework attributed to the PR. Reported separately as subscription quota (percent of the plan windows via the harness_quota reading, a proxy), wall time, human minutes and additional cash (registered cap EUR 0; unknown cash stays unknown and blocks any positive economic claim).",
+      "cycleTime": "Time from PR open to merge, and from first commit to merge, with waits for human or CI reported apart from active time.",
+      "acceptedCost": "Whether a cost increase is acceptable is the operator's judgement and is fixed by a founder record before first observation (open item O2). Without it, no verdict of acceptable cost is possible."
+    },
+    "measurementLimits": "Quota percent is a plan-level proxy, not per-PR tokens or invoices. A receipt shows that a review ran, not that it was sound. Outcome labels are repository-history inferences, not ground-truth defect counts; undetected defects are missing, not absent."
+  },
+  "labeling": {
+    "rule": "Rework and regression labels are assigned from the written definitions above by a rater who is not shown the PR's review depth where the history allows it. Where human labels are used, at least two blind raters per unit as in SPEC-049 D5; disagreement is resolved by an adjudication record and missing labels are counted and bounded by sensitivity analysis. Deterministic evidence (revert commit, failing run) is labeled oracle, human judgement human, model judgement proxy.",
+    "windowCloses": "A PR enters the analysis only after its 14-day window has closed. Open windows are reported as pending, not as zero events."
+  },
+  "population": {
+    "confirmatory": "Merged PRs to develop with receipts created after the profile compiler (SPEC-067 T005 to T007) is merged and after the open items below are recorded.",
+    "exploratory": "Historical PRs without receipts may be described to size strata and check feasibility. They are labeled exploratory, carry no registered depth and support no verdict.",
+    "excluded": "Bookkeeping PRs of this evaluation, reverts caused by external events, and any PR whose receipts were produced after the outcome was known."
+  },
+  "analysis": {
+    "reporting": "Per stratum and per axis: counts, rates with exact or cluster-aware intervals chosen after registered yield justifies them, arms, denominators and missingness. Correctness and optimization are reported on separate axes; a mixed result supports a narrower depth rule or no-go and is never collapsed by a weighted average. Small strata remain descriptive.",
+    "supportedRequires": "Lower rework and regression rate at the higher depth beyond the founder-set margin in a stratum with enough independent clusters, AND total chain cost within the founder-set acceptance, AND no breached stop rule. Either axis alone supports at most a bounded claim for that stratum.",
+    "unsupportedOrInconclusive": "No rate difference, the opposite direction, an interval spanning the margin, or too few clusters are valid results and are reported as such. Infeasible (too few receipts or too rare events within the budget) is a valid result; the population is not widened after seeing outcomes to rescue it.",
+    "noTuning": "Margins, windows, strata and labels are not tuned on observed outcomes."
+  },
+  "stopRules": [
+    "Stop and record on any need for additional cash, paid API, overage or credit purchase (cap EUR 0).",
+    "Stop before the next batch if the plan quota reading is unavailable or stale, or a SPEC-049 D2 stop condition applies to any native review run used.",
+    "Stop and record if applying an arm would lower a depth below a REQ-003 floor or a classifier escalation, or would approve, merge or release without the owning human decision.",
+    "Stop and record on discovery that receipts do not bind to the head commit, that labels were produced knowing the outcome hypothesis, or that a registered definition was changed after observation.",
+    "Stop and record on loss of containment, on source or policy drift that changes what a depth means (SPEC-067 amended after registration), or on lineage leakage between compared clusters.",
+    "End the evaluation and report infeasible when, at the earliest registered review point, fewer than the founder-set minimum clusters exist in every stratum; do not extend the population to rescue a verdict.",
+    "Retain open attempts, cleanup effects, refused, malformed and ungraded units in the report."
+  ],
+  "openItems": [
+    {
+      "id": "O1",
+      "item": "Minimum independent clusters per arm and stratum, and the margin on rework and regression rate",
+      "needs": "A founder record after the first feasibility count of receipts, before any outcome is read. Until then every comparison is descriptive.",
+      "blocks": "any supported or unsupported verdict"
+    },
+    {
+      "id": "O2",
+      "item": "Acceptable total chain cost increase (quota percent, wall time, human minutes)",
+      "needs": "A founder record before first observation, as SPEC-049 D4 leaves useful-improvement thresholds to the founder.",
+      "blocks": "any verdict that cost is acceptable"
+    },
+    {
+      "id": "O3",
+      "item": "Rater and adjudicator identities, and whether any deliberate depth assignment is authorized",
+      "needs": "A founder record naming them or stating that the evaluation is observational only.",
+      "blocks": "labeling and any non-observational arm"
+    }
+  ],
+  "negativeControls": {
+    "postHocOutcomeChange": "Refused. A definition, window, stratum, arm or stop-rule change after the first observation is a new registration version recorded before the changed data is read; a report that uses a changed outcome under this registration is refused by review.",
+    "benefitClaimWithoutRecord": "Refused. A claim that higher depths help requires this record and a run that satisfies supportedRequires; a compiled profile, a passing receipt or a unit test is not that evidence."
+  },
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "runPerformed": false,
+  "claim": "none",
+  "limits": "Registration only. No data was observed, no PR was labeled, no cost was measured, no run was started and no depth change was made. Registers the design for SPEC-067 H1 under the frozen SPEC-049 procedure (evaluation-protocol.md unchanged). Does not authorize execution, merge, release, native admission or promotion, and does not show that any depth helps. Margins, minimum cluster counts and acceptable cost remain open until the founder records them."
+}
