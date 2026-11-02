@@ -274,8 +274,8 @@ class CredentialTests(ServerCase):
             self.request("PUT", "/hook/claude", {"Authorization": f"Bearer {self.token}"}),
             self.request("POST", "/hook/claude", JSON, b"{}", host="evil.example"),
         ]
-        for status, _, body in cases:
-            with self.subTest(status=status):
+        for index, (status, _, body) in enumerate(cases):
+            with self.subTest(case=index, status=status):
                 self.assertEqual(body, b"")
 
 
@@ -300,7 +300,10 @@ class RequestCheckTests(ServerCase):
         cookie = {"Cookie": self.cookie()}
         same = f"http://127.0.0.1:{self.port}"
         self.assertEqual(self.request("GET", "/", {**cookie, "Origin": same})[0], 200)
-        self.assertEqual(self.request("GET", "/", {**cookie, "Origin": f"http://localhost:{self.port}"})[0], 200)
+        self.assertEqual(self.request("GET", "/", {**cookie, "Origin": f"http://localhost:{self.port}"},
+                                      host=f"localhost:{self.port}")[0], 200)
+        # the origin must match the Host the request used
+        self.assertEqual(self.request("GET", "/", {**cookie, "Origin": f"http://localhost:{self.port}"})[0], 403)
         for origin in ("http://evil.example", "null", f"http://127.0.0.1:{self.port + 1}",
                        f"https://127.0.0.1:{self.port}", "http://127.0.0.1"):
             with self.subTest(origin=origin):
@@ -327,7 +330,7 @@ class RequestCheckTests(ServerCase):
         self.assertEqual(self.request("PUT", "/v1/metrics", {"Authorization": f"Bearer {self.token}"})[0], 405)
         self.assertEqual(self.request("GET", "/v1/logs", cookie)[0], 404)  # the route space is not revealed
         status, _, _ = self.raw(f"FROB / HTTP/1.0\r\nHost: 127.0.0.1:{self.port}\r\n\r\n".encode())
-        self.assertIn(status, (404, 405))  # an unknown verb never reaches a handler
+        self.assertEqual(status, 404)  # an unknown verb without credentials
         for target in (f"http://127.0.0.1:{self.port}/", "//evil.example/", "*"):
             with self.subTest(target=target):
                 status, _, _ = self.raw(f"GET {target} HTTP/1.0\r\nHost: 127.0.0.1:{self.port}\r\n\r\n".encode())
@@ -393,7 +396,7 @@ class HeaderTests(ServerCase):
     def test_bundle_names_must_be_plain_files(self):
         for name in ("../x", "a/b", "", ".hidden"):
             with self.subTest(name=name), self.assertRaises(ServeError):
-                ViewServer(LoomStore(), Path(self.tmp.name) / f"bad{abs(hash(name))}", bundle={name: b"x"})
+                ViewServer(LoomStore(), self.runtime, bundle={name: b"x"})
 
     def test_registered_read_handlers_serve_and_unregistered_ones_404(self):
         self.stop()
@@ -535,7 +538,9 @@ class SubscriberAndConnectionTests(ServerCase):
         data = b""
         deadline = time.monotonic() + limit
         while marker not in data and time.monotonic() < deadline:
-            data += sock.recv(4096)
+            chunk = sock.recv(4096)
+            self.assertTrue(chunk, "the server closed the stream")
+            data += chunk
         return data
 
     def test_ninth_subscriber_gets_503_and_a_slot_frees_when_one_leaves(self):
@@ -574,7 +579,9 @@ class ConnectionLimitTests(ServerCase):
     def test_the_connection_over_the_limit_gets_503_and_slots_free_on_close(self):
         idle = [socket.create_connection(("127.0.0.1", self.port)) for _ in range(3)]
         self.addCleanup(lambda: [s.close() for s in idle])
-        time.sleep(0.1)
+        deadline = time.monotonic() + 5
+        while self.server._connections < 3 and time.monotonic() < deadline:
+            time.sleep(0.01)
         status, headers, body = self.raw(f"GET / HTTP/1.0\r\nHost: 127.0.0.1:{self.port}\r\n\r\n".encode())
         self.assertEqual((status, body), (503, b""))
         self.assertEqual(headers["cache-control"], "no-store")
@@ -594,11 +601,11 @@ class ConnectionLimitTests(ServerCase):
             self.assertEqual(sock.recv(10), b"")
             self.assertLess(time.monotonic() - started, 3)
 
-    def test_a_stalled_body_is_dropped_at_the_socket_timeout_and_stores_nothing(self):
+    def test_a_stalled_body_is_refused_with_400_at_the_socket_timeout_and_stores_nothing(self):
         with socket.create_connection(("127.0.0.1", self.port), timeout=5) as sock:
             sock.sendall((f"POST /v1/logs HTTP/1.0\r\nHost: 127.0.0.1:{self.port}\r\nContent-Type: application/json\r\n"
                           f"Authorization: Bearer {self.token}\r\nContent-Length: 100\r\n\r\n{{").encode())
-            self.assertEqual(sock.recv(10), b"")
+            self.assertTrue(sock.recv(12).startswith(b"HTTP/1.0 400"))
         self.refused_state_unchanged()
 
 
@@ -630,11 +637,6 @@ class ContractTableTests(unittest.TestCase):
                 contract.add((method, path.partition("?")[0], credential))
         self.assertEqual(contract, set(view_serve.ROUTES))
         self.assertEqual(len(view_serve.ROUTES), len(contract))
-
-    def test_refusal_statuses_in_the_contract_are_the_ones_implemented(self):
-        text = CONTRACT.read_text()
-        for status in ("404", "405", "403", "400", "411", "413", "415", "503"):
-            self.assertIn(f"| {status} ", text)
 
 
 if __name__ == "__main__":

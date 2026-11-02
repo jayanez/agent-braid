@@ -16,7 +16,6 @@ frames (T027) and the static bundle (T024). They register through `read_handlers
 from __future__ import annotations
 
 import base64
-import binascii
 import hmac
 import json
 import math
@@ -141,7 +140,7 @@ def parse_json_body(data: bytes) -> Any:
                           parse_constant=_reject_constant, parse_float=_finite_float)
     except BodyError:
         raise
-    except (ValueError, RecursionError) as exc:
+    except ValueError as exc:
         raise BodyError("body is not valid JSON") from exc
 
 
@@ -227,7 +226,6 @@ class ViewServer(ThreadingHTTPServer):
         super().__init__((host, port), _Handler)
         self.port = self.server_address[1]
         self._hosts = frozenset({f"127.0.0.1:{self.port}", f"[::1]:{self.port}", f"localhost:{self.port}"})
-        self._origins = frozenset(f"http://{name}" for name in self._hosts)
         self.url_host = f"[::1]:{self.port}" if host == "::1" else f"127.0.0.1:{self.port}"
         try:
             self.token_path = _write_ingest_token(Path(runtime_dir), self._ingest_token)
@@ -241,7 +239,7 @@ class ViewServer(ThreadingHTTPServer):
         if import_map_sha256 is not None:
             try:
                 valid = len(base64.b64decode(import_map_sha256, validate=True)) == 32
-            except (binascii.Error, ValueError):
+            except ValueError:
                 valid = False
             if not valid:
                 raise ServeError("csp", "import_map_sha256 is the base64 of a SHA-256 digest")
@@ -300,8 +298,13 @@ class ViewServer(ThreadingHTTPServer):
                 self._connections += 1
         if full:
             self._refuse_connection(request)
-        else:
+            return
+        try:
             super().process_request(request, client_address)
+        except BaseException:
+            with self._lock:
+                self._connections -= 1  # the worker thread never started
+            raise
 
     def process_request_thread(self, request: Any, client_address: Any) -> None:
         try:
@@ -376,9 +379,9 @@ class _Handler(BaseHTTPRequestHandler):
 
     def _loopback_request(self) -> bool:
         server = self.server
-        origin = self.headers.get("Origin")
-        return (self.headers.get("Host") in server._hosts
-                and (origin is None or origin in server._origins)
+        host, origin = self.headers.get("Host"), self.headers.get("Origin")
+        return (host in server._hosts
+                and (origin is None or origin == f"http://{host}")
                 and self.headers.get("Sec-Fetch-Site") != "cross-site")
 
     def _read_authorized(self) -> bool:
@@ -399,8 +402,6 @@ class _Handler(BaseHTTPRequestHandler):
         path, _, query = self.path.partition("?")
         if not self._loopback_request():
             return self._send(403)
-        if not path.startswith("/") or path.startswith("//"):
-            return self._send(404)
         kind = _ROUTE_KIND.get(path)
         if kind is None and path.startswith("/web/") and path[5:] in self.server.bundle:
             kind = "read"
@@ -471,8 +472,12 @@ class _Handler(BaseHTTPRequestHandler):
             self.close_connection = True
 
     def _ingest(self, path: str) -> None:
+        handler = self.server.ingest_handlers.get(path)
+        if handler is None:
+            return self._send(404)  # nothing registered for this route yet
         media = (self.headers.get("Content-Type") or "").partition(";")[0].strip().lower()
-        if media != "application/json" or (self.headers.get("Content-Encoding") or "identity").strip().lower() != "identity":
+        encoding = (self.headers.get("Content-Encoding") or "identity").strip().lower()
+        if media != "application/json" or encoding != "identity":
             return self._send(415)
         declared = self.headers.get("Content-Length")
         if declared is None:
@@ -485,24 +490,20 @@ class _Handler(BaseHTTPRequestHandler):
         try:
             data = self.rfile.read(length)
         except OSError:
-            self.close_connection = True  # timed out or reset: nothing was accepted
-            return
+            return self._send(400)  # timed out or reset before the declared body arrived
         if len(data) != length:
             return self._send(400)
         try:
             parsed = parse_json_body(data)
         except BodyError:
             return self._send(400)
-        handler = self.server.ingest_handlers.get(path)
-        if handler is None:
-            return self._send(404)
         try:
             handler(parsed)
         except IngestRefusal as refusal:
             return self._send(refusal.status)
         except Exception:
             return self._send(500)
-        self._send(200, b"{}" if path != HOOK_PATH else b"", "application/json")
+        self._send(200, b"{}", "application/json")
 
 
 __all__ = ["BodyError", "IngestRefusal", "ROUTES", "ServeError", "ViewServer", "parse_json_body"]
