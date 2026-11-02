@@ -1,0 +1,38 @@
+{
+  "task": "SPEC-067/T002",
+  "candidateBinding": "Input hashes of the files below; PR #944 head before this evidence commit was 62954ea20f8c6bb9c1390ded1cec2545fc04a555",
+  "executedChecks": [
+    {
+      "command": ".venv-speckit/bin/python -m unittest tests.test_harness_assurance -v",
+      "exitCode": 0,
+      "testsRun": 35
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "testsRun": 892,
+      "scope": "1 skipped"
+    },
+    {
+      "command": "pre-PR reviews: correctness, quality, simplification (three read-only subagent reviews)",
+      "exitCode": 0,
+      "scope": "Dispositions are in PR #944."
+    }
+  ],
+  "negativeControls": [
+    "unknown checkpoint",
+    "missing checkpoint",
+    "unknown depth",
+    "depth on another checkpoint",
+    "disallowed mode for every pair",
+    "every floor not human-only (release included)",
+    "unknown keys",
+    "invalid risk rules and authorization ids"
+  ],
+  "inputs": {
+    "agent_braid/harness_assurance.py": "2498e9485656980ae4dbe8773ce81b413507ea2c416cb8121280ab2e0325a06e",
+    "tests/test_harness_assurance.py": "5e32347acff1d0817ceb30caf88e061724a5e87b178c59222bfff3a56ce4b690"
+  },
+  "executionAuthorization": false,
+  "limits": "Schema and catalog logic only. Preset values other than the Q1 names, standard default and R2 are this task's proposal. Raise-only validation of risk rules against configured values is T004."
+}
