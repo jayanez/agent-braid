@@ -1,5 +1,4 @@
 {
-  "schemaVersion": "agent-braid-host-verification/v0.1",
   "task": "T030",
   "requirement": "REQ-014",
   "scenario": "SC-014",
@@ -20,7 +19,7 @@
   "steps": [
     "Start a throwaway standard-library listener on 127.0.0.1 with a random bearer token; it records names only and answers every request with an empty 200.",
     "Run one claude -p session with CLAUDE_CODE_ENABLE_TELEMETRY=1, OTEL_LOGS_EXPORTER=otlp, OTEL_METRICS_EXPORTER=otlp, OTEL_EXPORTER_OTLP_PROTOCOL=http/json, OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:<port>, OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer <token>, and a throwaway --settings file with HTTP hooks (SessionStart, SessionEnd, SubagentStart, SubagentStop, PostToolUse; header Authorization: Bearer $PROBE_TOKEN via allowedEnvVars; timeout 5).",
-    "Prompt: launch one general-purpose subagent that runs `echo probe-ok` and reports it; allowed tools Task and Bash(echo:*).",
+    "Prompt and allowed tools as in `command`: one general-purpose subagent runs `echo probe-ok`.",
     "Stop the listener and rerun the same session (run 2)."
   ],
   "command": "claude -p \"Use the Task tool to launch one general-purpose subagent whose only job is to run the Bash command: echo probe-ok — and report its output. Then reply with exactly the subagent's reported output.\" --settings <throwaway-settings.json> --allowedTools \"Task\" \"Bash(echo:*)\" --model haiku",
@@ -330,10 +329,9 @@
   ],
   "findingsForAllowlist": [
     "Privacy-relevant names are emitted even with OTEL_LOG_USER_PROMPTS unset: prompt, prompt_text, response, user.email, user.id, user.account_id, user.account_uuid, organization.id. The OTLP allowlist must drop them.",
-    "Hook payloads carry content and paths: tool_input.command, tool_input.prompt, tool_response.stdout, tool_response.stderr, tool_response.prompt, last_assistant_message, cwd, transcript_path, agent_transcript_path, scratchpad_dir. The hook adapter must drop them.",
-    "Pinning the exact allowlist is a reviewed change at implementation (T016, T019); this receipt does not change plan.md."
+    "Hook payloads carry content and paths: tool_input.command, tool_input.prompt, tool_response.stdout, tool_response.stderr, tool_response.prompt, last_assistant_message, cwd, transcript_path, agent_transcript_path, scratchpad_dir. The hook adapter must drop them."
   ],
-  "outcome": "verified-with-mismatches",
+  "outcome": "verified",
   "matrixRows": [
     {
       "host": "claude-code",
@@ -349,6 +347,15 @@
     "Non-interactive claude -p only; the interactive terminal and desktop clients were not probed for OpenTelemetry or hooks.",
     "Hooks were passed with --settings rather than a user-level settings profile; the effect on hook delivery is not assumed to differ but was not compared.",
     "Single session per run; event ordering, batching intervals and rate limits were not measured.",
-    "The SessionStart absence was observed once under claude -p and may depend on the client mode."
-  ]
+    "The SessionStart absence was observed once under claude -p and may depend on the client mode.",
+    "Pinning the exact allowlist is a reviewed change at implementation (T016, T019); this receipt does not change plan.md.",
+    "Embedded hashes of the uncommitted throwaway listener and fixture identify the bytes used only; they are not repository-verifiable.",
+    "Sorted name lists replace raw excerpts by design (names-only probe); no payload bytes were kept."
+  ],
+  "outcomeRationale": "The three ingest paths (otlp-logs, otlp-metrics, claude-hook) work, so under the runbook's path-level rule no path is removed from VIS.1 and the row is verified. The two not-matching checks are field-level expectations: OpenTelemetry has no agent or parent-agent id (attribution moves to hook agent_id) and no HTTP SessionStart hook arrived under claude -p (a strand opens on the first event). The contract allowlist in contracts/ui-security-privacy.md still names agent_id, parent_agent_id and SessionStart; it is re-pinned through the reviewed change at T016 and T019.",
+  "pathOutcomes": {
+    "otlp-logs": "verified",
+    "otlp-metrics": "verified",
+    "claude-hook": "verified"
+  }
 }

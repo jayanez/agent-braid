@@ -1,5 +1,4 @@
 {
-  "schemaVersion": "agent-braid-host-verification/v0.1",
   "task": "T031",
   "requirement": "REQ-014",
   "scenario": "SC-014",
@@ -205,7 +204,7 @@
   "findingsForAllowlist": [
     "Privacy-relevant names are emitted: prompt, user.email, user.account_id, host.name, error.message. The allowlist must drop them."
   ],
-  "outcome": "partial",
+  "outcome": "unobserved",
   "matrixRows": [
     {
       "host": "codex",
@@ -220,6 +219,16 @@
     "Names only: the throwaway listener recorded field and attribute names, never values; whether privacy-relevant values were redacted by the host was not checked.",
     "The throwaway listener (sha256 74f85b3b383c0ff1f607f9b7eea347f36227904a5a842ba0eedd178b2c19c0d8) is not committed, per the runbook.",
     "No completed turn: the receipt covers export transport and the names emitted up to the refused request only.",
-    "Metrics export was configured but produced no request in this run; that is not evidence that metrics are absent after a completed turn."
-  ]
+    "Metrics export was configured but produced no request in this run; that is not evidence that metrics are absent after a completed turn.",
+    "The runbook asks for an [otel] block in a test profile; the probe used per-run -c overrides instead, leaving the user configuration untouched.",
+    "The configured default model was refused for the account and one retry used -m gpt-5.6-luna; both attempts hit the usage limit.",
+    "Embedded hashes of the uncommitted throwaway listener and fixture identify the bytes used only; they are not repository-verifiable.",
+    "Sorted name lists replace raw excerpts by design (names-only probe); no payload bytes were kept."
+  ],
+  "outcomeRationale": "Transport verified for logs and traces, but the expected outcome (token usage per turn) was not observed because no turn completed. The row stays hv-pending and T031 stays open until a rerun after 2026-11-23.",
+  "pathOutcomes": {
+    "otlp-logs": "verified",
+    "otlp-traces": "verified",
+    "otlp-metrics": "unobserved"
+  }
 }

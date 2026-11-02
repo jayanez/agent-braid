@@ -605,7 +605,7 @@ host decisions and writes no host configuration.
 
 | Track | Scope | State |
 |---|---|---|
-| VIS.1 | VIS.1a coordination slice (probes and census first, contract, adapters, loopback server, `--watch`, replay, Claude hooks, web viewer), go/no-go checkpoint, then VIS.1b (OTLP, recording, export, effort pack, frames) (SPEC-061, 39 tasks) | Specification accepted (T001, 2026-11-01); ADR 0032 and ADR 0033 accepted; milestone #25 published; probes T030 and T032 verified, T031 partial (2026-11-01); checkpoint T035 by 2027-01-31 |
+| VIS.1 | VIS.1a coordination slice (probes and census first, contract, adapters, loopback server, `--watch`, replay, Claude hooks, web viewer), go/no-go checkpoint, then VIS.1b (OTLP, recording, export, effort pack, frames) (SPEC-061, 39 tasks) | Specification accepted (T001, 2026-11-01); ADR 0032 and ADR 0033 accepted; milestone #25 published; probes T030 and T032 verified, T031 unobserved, census T038 met, mostly self-development (2026-11-01); checkpoint T035 by 2027-01-31 |
 | VIS.2 | Claude Code mod pane (SPEC-062) | Planned |
 | VIS.3 | Codex hooks and `notify`, Codex MCP App and terminal UI (SPEC-063) | Planned |
 | VIS.4 | Cursor, OpenCode, Pi and other hosts (SPEC-064) | Planned |

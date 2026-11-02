@@ -1,0 +1,89 @@
+{
+  "task": "T038",
+  "requirements": [
+    "REQ-002",
+    "REQ-006"
+  ],
+  "recordedAt": "2026-11-01",
+  "authorization": "Owner authorized the census on 2026-11-01 (owner's answer, verbatim: \"Sí, ahora (Recommended)\").",
+  "operator": "agent, on the owner's machine under the owner's authorization; the owner reviews this record",
+  "window": "28 x 24 hours before the scan on 2026-11-01 (from the evening of 2026-10-04), by file modification time",
+  "sources": {
+    "claude-session": "Claude Code transcripts of all local projects, a session and its subagent transcripts counted once",
+    "codex-session": "Codex rollout files",
+    "run-directory": "directories under the Agent Braid home with JSON files in the window"
+  },
+  "detection": "An artifact counts only when it appears in the result of a tool that runs Agent Braid (agent-braid or m4_alpha MCP tools, Workflow, or a shell command invoking the agent_braid CLI) or, for gate results, in a workflow completion notification; kinds are recognised by contract identifiers and required keys. Results of file reads and other shell commands are excluded, so source and fixture reading during development is not counted.",
+  "observed": {
+    "scanned": {
+      "claude-session": 826,
+      "codex-session": 8,
+      "run-directory": 3
+    },
+    "withCoordinationArtifact": {
+      "claude-session": 48,
+      "codex-session": 0,
+      "run-directory": 0
+    },
+    "unitsPerKind": {
+      "analysis-report": 20,
+      "plan": 11,
+      "scheduler-preparation": 5,
+      "grant": 0,
+      "ownership-notice-or-receipt": 1,
+      "gate-result": 19
+    }
+  },
+  "bySessionOrigin": {
+    "synthetic": {
+      "description": "throwaway fixture and probe corpora created for SPEC-052 gate runs, hardening and host verification",
+      "units": 37,
+      "unitsPerKind": {
+        "analysis-report": 13,
+        "plan": 6,
+        "scheduler-preparation": 0,
+        "grant": 0,
+        "ownership-notice-or-receipt": 0,
+        "gate-result": 18
+      }
+    },
+    "nonSynthetic": {
+      "description": "owner sessions outside those corpora: 6 in Agent Braid development worktrees, 5 elsewhere (Codex workspaces, another repository, a temporary directory)",
+      "units": 11,
+      "unitsPerKind": {
+        "analysis-report": 7,
+        "plan": 5,
+        "scheduler-preparation": 5,
+        "grant": 0,
+        "ownership-notice-or-receipt": 1,
+        "gate-result": 1
+      }
+    }
+  },
+  "threshold": {
+    "rule": "at least 5 sessions or run directories with at least one coordination artifact, and at least 3 of the 6 kinds overall (OD-8)",
+    "all": {
+      "units": 48,
+      "kinds": 5,
+      "met": true
+    },
+    "nonSynthetic": {
+      "units": 11,
+      "kinds": 5,
+      "met": true
+    }
+  },
+  "outcome": "met",
+  "notes": [
+    "No grant was observed in any session; grants appear only in fixtures and tests.",
+    "No Codex session and no Agent Braid home run directory contained a coordination artifact."
+  ],
+  "limits": [
+    "Counts and kinds only: no content, paths, session identifiers or project names were recorded.",
+    "Most non-synthetic sessions are development of Agent Braid itself, so the population exercising the tools is the project's own work, not independent adoption.",
+    "Detection is heuristic: results of shell commands that ran the CLI indirectly, or tool outputs truncated by the host, can be missed; the first scanner pass missed gate notifications and m4_alpha tools and was corrected before this record.",
+    "File modification time approximates activity; a session touched in the window but started earlier counts.",
+    "The census script is a throwaway (sha256 613a95c844703580c2968fa8ed971fc1ae59774ec1c8ffefd2a5da131d566f5d), not committed; the hash identifies the bytes used only and is not repository-verifiable."
+  ],
+  "unitDefinition": "a unit is one session (with its subagent transcripts) or one run directory; per-kind counts are units containing at least one artifact of that kind, so kinds can overlap and do not sum to the unit count"
+}

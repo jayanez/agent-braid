@@ -8,10 +8,23 @@ system, command or steps, expected outcome, observed outcome (`verified`,
 `not-matching`), raw excerpts with secrets and content removed, and
 limits. A receipt changes only the matching row of the surfaces matrix.
 
+Outcomes apply at two levels. Each check in a receipt records `verified`,
+`not-matching` or `unobserved`. A `not-matching` check on an expected field or
+event, while the ingest path itself delivers data, narrows the allowlist and is
+pinned through the reviewed change of the task that implements that path; it does
+not change the matrix row. The receipt outcome and the matrix status follow the
+ingest paths: only a `not-matching` transport or ingest path sets the row
+`not-matching` and removes that path from VIS.1. A probe that observes no data
+for its expected outcome records `unobserved`: if it will be rerun (for example
+after a usage limit) the row stays `hv-pending` and the task stays open; a final
+`unobserved` sets the row `unobserved`. For surface probes without an ingest path
+(T032, T033) the receipt outcome follows the surface's load and render checks,
+and any other check left `unobserved` is recorded in the receipt and the matrix
+note.
+
 These probes run before any viewer code exists. They use a throwaway
 standard-library listener on loopback that records only the names of the fields it
-receives and answers every request with an empty body; it is not committed. A
-probe whose outcome is `not-matching` removes that ingest path from VIS.1.
+receives and answers every request with an empty body; it is not committed.
 
 ## T030 — Claude Code OpenTelemetry attribute names and hook responses
 
