@@ -1,0 +1,1 @@
+{"assurance":{"compatibilityClass":null,"notAGuarantee":true},"at":{"basis":"sequence-only","relMs":0},"data":{"outcome":"ok","strandId":"op-a"},"executionAuthorization":false,"kind":"strand.close","schemaVersion":"agent-braid-loom/v0.1","seq":1,"seq":2,"source":{"adapter":"viewer","evidenceRef":null,"host":"braid","verification":"derived"}}
