@@ -1,0 +1,64 @@
+{
+  "spec": "SPEC-065",
+  "task": "Pre-T009 fixes of the delta security review (evidence/probe-catalog-delta-review.md)",
+  "executionAuthorization": false,
+  "disposition": "Engineering at unit level. Nothing native ran: no dedicated account, no sandbox-exec, no claude, no live probe session. No qualification record is written or authorized.",
+  "decisions": "specs/065-native-claude-containment/evidence/founder-decisions-20261102c.json",
+  "hashes": {
+    "backendSha256": {
+      "old": "6c7f90db7264351f2c018b7ab242a143649e6a5b6126fe0c648e5b06efbbcb80",
+      "new": "a9bc7f890cf91c7a3bdef8344279ec41ffaa334316507dd8161e80cad06bd91a",
+      "file": "agent_braid/harness_containment_macos.py"
+    },
+    "probesSha256": {
+      "old": "51e2d7eaf06f6a52d07f8c515f46802642d33e4f7660bf2c94126b62fb514002",
+      "new": "aaa55342feb916f24911cd8e287edefcca4b269612ff26915a7e5bb1dc389428",
+      "file": "agent_braid/harness_qualification_probes.py"
+    },
+    "catalogSha256": {
+      "old": "e8597c7fbe1749bc40c552996dbeed03a8a2e14f8990452823985f65f3d4b47a",
+      "new": "ce024c795d319e42c5cd068fa50c64d46fc92bb57d781c7f96b4bf2473a17ca1",
+      "note": "The catalog document carries runnerSha256, so any edit of the probes module moves it."
+    },
+    "profileSha256": {
+      "note": "Unchanged for fixture, launch and launch-probe (same synthetic policy as the reference below): 977cf264..., 1e97b991..., 3af5970f...",
+      "fixture": {"old": "977cf2640dfe238c6182a36f7ff414895288ce875b06300c0cc972996125845a", "new": "977cf2640dfe238c6182a36f7ff414895288ce875b06300c0cc972996125845a"},
+      "launch": {"old": "1e97b991296544eb427e3ae6894d4792ac52b0460a54c4234952d8558bad9b72", "new": "1e97b991296544eb427e3ae6894d4792ac52b0460a54c4234952d8558bad9b72"},
+      "launch-probe": {"old": "3af5970f59ac522d4c9ec519e295ff741be8cdf0efa54581bdf8dc3eea0f4510", "new": "3af5970f59ac522d4c9ec519e295ff741be8cdf0efa54581bdf8dc3eea0f4510"}
+    },
+    "componentHashes": {
+      "harness_host_claude.py": {"old": "e31df98faaf998b023961daad4577c206fca0f622e156c27624952d7d739267b", "new": "e409512d7b4d20bc5c38a28a2ee1cc31344832718f76ee2f067d25d610d1b9e1", "note": "comment-only edit (stale T008 sentence)"},
+      "harness_lab.py": {"old": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744", "new": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744"},
+      "harness_transport_claude.py": {"old": null, "new": "e98c4db0e279b0a07a90a94d7c2f9a519e29dbdc0ca23c9b123dc3dc043fa19e", "note": "newly bound (DRV-05)"},
+      "harness_quota.py": {"old": null, "new": "7fc5a4b710e1b0627f4535194aff1a922f6d6e1545e92237b64d8a1f253808bb", "note": "newly bound (DRV-05)"}
+    },
+    "referenceEnvironmentSha256": {
+      "old": "f8db290cca45d6cc0532b2a36815ed7619484a82c56b6856bedc06a78f8f5634",
+      "new": "1df0f002bc274fc45bba51db40359ccc59c9aa4fa2cfe9dbe888188b0c0e0b1f",
+      "note": "Illustrative, computed with one fixed synthetic policy for both trees (account braid-lab; run_root /ref/run; config_dir /ref/config; claude /ref/bin/claude; interpreter /ref/lib/python/bin/python under /ref/lib/python; pinned hashes 1,2,3 repeated; proxy port 45000; uid 501; macOS 27.0.1/26A434/arm64; account gids (20,) home mode 0700; supervisor path /ref/bin/supervisor and hash stubbed). It shows that the environment hash moved; a real machine's hash must be recomputed by the issuer. Every earlier t005/t006/t007 input hash and any recorded qualification is stale."
+    }
+  },
+  "findings": {
+    "DRV-01": {"status": "fixed", "where": "agent_braid/harness_qualification_probes.py native_session_driver (egress = run.egress, the backend's delta taken after its pre-session check; none or malformed gives None; an empty delta gives inconclusive); the egress_counters tap and counter_delta were removed", "tests": "NativeSessionDriverTests (run delta, pre-session tunnels, malformed), BackendIntegrationTests.test_factory_session_egress_is_the_run_delta_not_the_backend_total"},
+    "DRV-02": {"status": "fixed", "where": "make_qualification_runner resolves real_home (home_directory()) or refuses real-home-unavailable; QualificationProbeRunner demotes denied real-launch-agent and hardlink-own-tree to inconclusive without a real home (REAL_HOME_ATTEMPTS); rows record independent.realHome", "tests": "BackendIntegrationTests.test_factory_needs_a_real_home, PreT009FixTests.test_real_path_attempts_cannot_pass_without_a_real_home"},
+    "DRV-03": {"status": "fixed", "where": "read_credentials defaults to credential_values(policy.config_dir); credential_values now skips paths, URLs, host names, e-mail and sentences so the default scan cannot refuse a bundle for legitimate content", "tests": "test_factory_scans_the_config_dir_credentials_by_default, test_credential_scan_values_skip_paths_urls_and_host_names"},
+    "DRV-05": {"status": "fixed", "where": "agent_braid/harness_containment_macos.py _component_hashes reads harness_transport_claude.py and harness_quota.py by path", "tests": "test_the_environment_hash_covers_the_transport_and_the_quota_module"},
+    "DRV-06": {"status": "fixed (founder decision DRV-06)", "where": "_DiskGuard roots are (candidate, tmpdir, policy.config_dir)", "tests": "test_the_dedicated_config_dir_counts_too, test_candidate_tmpdir_and_config_dir_are_one_total, test_a_small_config_dir_leaves_a_run_alone, LiveDiskBoundProbeTests (opt-in)"},
+    "DRV-10": {"status": "accepted (founder decision DRV-10)", "where": "founder-decisions-20261102c.json; quickstart.md and ADR 0035 residuals"},
+    "DRV-12": {"status": "fixed (documentation)", "where": "quickstart.md operator preparation, ADR 0035 residual risks and implementation state, harness_host_claude.py comment"},
+    "DRV-14": {"status": "fixed", "where": "_key_source_label records the real label ([A-Za-z0-9._-]{1,32} and not secret-shaped), else other", "tests": "PreT009FixTests.test_the_real_api_key_source_label_stays_in_the_evidence"},
+    "DRV-16": {"status": "fixed (interim for RV-18)", "where": "config_dir_listing and config_dir_changes; native_session_driver read_config; row independent.configDir (counts, changed names, digests of added and modified entries; never contents); a cut listing gives counts only; FIFOs are not opened", "tests": "PreT009FixTests, NativeSessionDriverTests, test_factory_lists_the_config_dir_around_each_session_by_default"}
+  },
+  "residuals": [
+    "DRV-04, 07, 08, 09, 11, 13, 15 unchanged (residual by the review).",
+    "The default real_home is the runner's own home; the quickstart says to run only as the dedicated account because the arena plants decoys there.",
+    "The config_dir disk measure has no baseline: a config_dir that grew in earlier sessions counts in full and refuses later runs (fail closed).",
+    "config_dir_listing hashes at most 500 entries and records unreadable or special files as such; a missing config_dir is unavailable (None), not empty.",
+    "MacOSContainment.egress_counters stays as a public read-only accessor with no caller."
+  ],
+  "tests": {
+    "focused": "tests.test_harness_containment_macos, tests.test_harness_qualification_probes, tests.test_harness_transport_claude",
+    "discover": "python -m unittest discover -s tests -p 'test_harness*.py': 1188 tests OK, 3 skipped (opt-in live controls)",
+    "liveOptIn": "BRAID_T007_LIVE_CONTROLS=1 LiveDiskBoundProbeTests ran once locally (temporary directories only): OK"
+  }
+}

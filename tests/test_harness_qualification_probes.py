@@ -183,7 +183,7 @@ class World:
                     arena_parent=self.tmp, proxy_address="127.0.0.1:45000", sessions=self.driver,
                     process_scan=self.scan, process_table=lambda: set(), process_kill=self.kill,
                     arena_factory=self.arena,
-                    clock=lambda: CLOCK, real_home=None, mach_names=lambda: ["com.apple.fake.service"],
+                    clock=lambda: CLOCK, real_home="/home/world", mach_names=lambda: ["com.apple.fake.service"],
                     allowed_ip="192.0.2.1", lan_ip="", proxy_block=self.proxy_block)
         args.update(over)
         return q.QualificationProbeRunner(**args)
@@ -948,8 +948,8 @@ class SessionTests(unittest.TestCase):
 class FakeNativeTransport(hc.ClaudeTransport):
     kind = "native"
 
-    def __init__(self, stdout=OAUTH_STREAM, error=None, evidence=True):
-        self.stdout, self.error, self.calls = stdout, error, []
+    def __init__(self, stdout=OAUTH_STREAM, error=None, evidence=True, egress=None):
+        self.stdout, self.error, self.calls, self.egress = stdout, error, [], egress
         self.run_evidence = ([{"quota": {"fiveHourPercent": 12}, "executionAuthorization": False}]
                              if evidence else [])
 
@@ -961,7 +961,9 @@ class FakeNativeTransport(hc.ClaudeTransport):
         self.calls.append(("run", plan.argv, prompt, limits))
         if self.error:
             raise hc.ClaudeHostError(self.error)
-        return hc.HostRun(self.stdout, 0)
+        if self.egress is None:  # a run that carries no accounting (e.g. the route-unverified kill path)
+            return hc.HostRun(self.stdout, 0)
+        return mac.ContainedHostRun(self.stdout, 0, egress=self.egress)
 
 
 class NativeSessionDriverTests(unittest.TestCase):
@@ -987,28 +989,42 @@ class NativeSessionDriverTests(unittest.TestCase):
         self.assertEqual(result.quota, {"admission": {"fiveHourPercent": 12}})
         self.assertIsNone(result.egress)
 
-    def test_driver_reports_the_counter_delta_of_the_session_as_egress(self):
-        readings = iter([{"connections": 5, "allowed": 4, "denied": 1, "denied:sni-mismatch": 1,
-                          "allowed:api.anthropic.com:443": 4},
-                         {"connections": 7, "allowed": 6, "denied": 1, "denied:sni-mismatch": 1,
-                          "allowed:api.anthropic.com:443": 6, "bytesUp": 9}])
-        driver = q.native_session_driver(FakeNativeTransport, egress_counters=lambda: next(readings))
-        result = driver("NET-05-CLI")
-        self.assertEqual(result.egress, {"connections": 2, "allowed": 2, "allowed:api.anthropic.com:443": 2,
-                                         "bytesUp": 9})
+    def test_driver_reports_the_run_own_egress_delta_not_the_backend_totals(self):
+        own = {"connections": 2, "allowed": 2, "allowed:api.anthropic.com:443": 2, "bytesUp": 9}
+        result = q.native_session_driver(lambda: FakeNativeTransport(egress=own))("NET-05-CLI")
+        self.assertEqual(result.egress, own)
         self.assertEqual(q.classify_session("NET-05-CLI", result), "denied")
 
-    def test_driver_without_a_usable_tap_reports_no_egress(self):
-        def broken():
-            raise OSError("proxy gone")
+    def test_pre_session_tunnels_of_the_backend_do_not_count_as_cli_traffic(self):
+        # DRV-01: the NC-11 subset opens NET-06 tunnels to the allowed host before the CLI starts. The
+        # backend takes the run's delta after them, so a CLI that sent nothing has an empty delta.
+        silent = q.native_session_driver(lambda: FakeNativeTransport(egress={}))("NET-05-CLI")
+        self.assertEqual(silent.egress, {})
+        self.assertEqual(q.classify_session("NET-05-CLI", silent), "inconclusive")
+        unobserved = q.native_session_driver(FakeNativeTransport)("NET-05-CLI")  # no accounting at all
+        self.assertIsNone(unobserved.egress)
+        self.assertEqual(q.classify_session("NET-05-CLI", unobserved), "inconclusive")
 
-        for tap in (None, broken):
-            self.assertIsNone(q.native_session_driver(FakeNativeTransport, egress_counters=tap)("HOST-01").egress)
-        replaced = iter([{"allowed": 4}, {"allowed": 1}])  # the counters went down: another proxy
-        result = q.native_session_driver(FakeNativeTransport, egress_counters=lambda: next(replaced))("HOST-01")
-        self.assertIsNone(result.egress)
-        self.assertEqual(q.counter_delta({"a": 1}, {"a": 1, "b": 2}), {"b": 2})
-        self.assertIsNone(q.counter_delta({"a": True}, {"a": 2}))
+    def test_a_malformed_run_delta_is_not_an_observation(self):
+        for bad in ({"allowed": True}, {"allowed": -1}, {1: 1}, "allowed"):
+            with self.subTest(egress=bad):
+                self.assertIsNone(q.native_session_driver(lambda: FakeNativeTransport(egress=bad))("X").egress)
+
+    def test_driver_lists_config_dir_before_and_after_the_session(self):
+        listings = iter([{"entries": {"a.json": "1" * 64}, "truncated": False},
+                         {"entries": {"a.json": "2" * 64, "projects": "dir"}, "truncated": False}])
+        result = q.native_session_driver(FakeNativeTransport, read_config=lambda: next(listings))("HOST-01")
+        self.assertEqual((result.config["before"], result.config["after"]), (1, 2))
+        self.assertEqual((result.config["added"], result.config["removed"], result.config["modified"]),
+                         (["projects"], [], ["a.json"]))
+        self.assertEqual(result.config["digests"], {"a.json": "2" * 64, "projects": "dir"})  # changed ones only
+
+    def test_an_unreadable_config_dir_is_unavailable_not_empty(self):
+        def broken():
+            raise OSError("gone")
+
+        for reader in (None, broken, lambda: None):
+            self.assertIsNone(q.native_session_driver(FakeNativeTransport, read_config=reader)("HOST-01").config)
 
     def test_every_session_gets_a_fresh_single_attempt_transport(self):
         made = []
@@ -2176,22 +2192,60 @@ class BackendIntegrationTests(unittest.TestCase):
         bare = q.make_qualification_runner(backend, arena_parent=world.tmp, workdir_factory=lambda: world.tmp,
                                            lan_ip="")
         self.assertIsNone(bare.sessions)
-        self.assertIsNone(bare.real_home)
-        self.assertEqual(bare.read_credentials(), ())
+        self.assertEqual(bare.real_home, q.home_directory())  # DRV-02: the runner is the dedicated account
+        self.assertEqual(bare.read_credentials(), [])  # DRV-03: wired to config_dir, here empty
         self.assertIsNone(bare.lan_ip)  # "" disables the LAN attempts
         self.assertEqual(bare.run_mode(q.BY_ID["HOST-01"], "contained")["refused"], "session-driver-missing")
 
-    def test_factory_taps_the_backend_proxy_for_net_05_cli(self):
+    def test_factory_session_egress_is_the_run_delta_not_the_backend_total(self):
         machine, backend = self.machine()
         world = World(self)
-        readings = iter([{}, {"connections": 1, "allowed": 1, "allowed:api.anthropic.com:443": 1}])
-        with mock.patch.object(backend, "egress_counters", lambda: next(readings)):
+        # the backend proxy already carries the pre-session NET-06 tunnels; the CLI sent nothing
+        pre_session = {"connections": 4, "allowed": 4, "allowed:api.anthropic.com:443": 4}
+        with mock.patch.object(backend._proxy, "counters", lambda: pre_session):
             runner = q.make_qualification_runner(
                 backend, arena_parent=world.tmp, workdir_factory=lambda: world.tmp,
-                transport_factory=FakeNativeTransport, lan_ip="", arena_factory=world.arena)
+                transport_factory=lambda: FakeNativeTransport(egress={}), lan_ip="", arena_factory=world.arena)
             result = runner.sessions("NET-05-CLI")
-        self.assertEqual(q.classify_session("NET-05-CLI", result), "denied")
-        self.assertEqual(backend.egress_counters(), backend._proxy.counters())
+        self.assertEqual(q.classify_session("NET-05-CLI", result), "inconclusive")
+
+    def test_factory_needs_a_real_home(self):
+        machine, backend = self.machine()
+        world = World(self)
+        kwargs = dict(arena_parent=world.tmp, workdir_factory=lambda: world.tmp, lan_ip="")
+        with mock.patch.object(q, "home_directory", lambda: None):
+            with self.assertRaises(q.ProbeError) as raised:
+                q.make_qualification_runner(backend, **kwargs)
+        self.assertEqual(raised.exception.reason, "real-home-unavailable")
+        for bad in ("", "relative/home"):
+            with self.assertRaises(q.ProbeError):
+                q.make_qualification_runner(backend, real_home=bad, **kwargs)
+        self.assertEqual(q.make_qualification_runner(backend, real_home="/home/x", **kwargs).real_home, "/home/x")
+
+    def test_factory_scans_the_config_dir_credentials_by_default(self):
+        machine, backend = self.machine()
+        world = World(self)
+        Path(machine.policy.config_dir, ".credentials.json").write_text('{"token": "dummy-secret-value-123456"}')
+        runner = q.make_qualification_runner(backend, arena_parent=world.tmp, workdir_factory=lambda: world.tmp,
+                                             lan_ip="")
+        self.assertEqual(runner.read_credentials(), ["dummy-secret-value-123456"])
+
+    def test_factory_lists_the_config_dir_around_each_session_by_default(self):
+        machine, backend = self.machine()
+        world = World(self)
+        config = Path(machine.policy.config_dir)
+
+        class Writing(FakeNativeTransport):
+            def run(self, *args):
+                (config / "session-state.json").write_text("{}")
+                return super().run(*args)
+
+        runner = q.make_qualification_runner(
+            backend, arena_parent=world.tmp, workdir_factory=lambda: world.tmp, transport_factory=Writing,
+            lan_ip="", arena_factory=world.arena)
+        result = runner.sessions("HOST-01")
+        self.assertEqual((result.config["added"], result.config["removed"], result.config["modified"]),
+                         (["session-state.json"], [], []))
 
     def test_factory_refuses_a_policy_that_does_not_bind_this_catalog(self):
         world = World(self)
@@ -2200,6 +2254,127 @@ class BackendIntegrationTests(unittest.TestCase):
             with self.assertRaises(q.ProbeError) as raised:
                 q.make_qualification_runner(backend, arena_parent=world.tmp, workdir_factory=lambda: world.tmp)
             self.assertEqual(raised.exception.reason, "catalog-not-bound")
+
+
+class PreT009FixTests(unittest.TestCase):
+    """The pre-T009 fixes of the delta security review: DRV-02, DRV-14, DRV-16."""
+
+    def init_stream(self, source):
+        return canonical({"type": "system", "subtype": "init", "apiKeySource": source}) + b"\n"
+
+    def test_the_real_api_key_source_label_stays_in_the_evidence(self):
+        # DRV-14: T009 exists to observe the real values; a label is not a secret
+        for reported, recorded in (("oauth", "oauth"), ("none", "none"), ("ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY"),
+                                   ("claude.ai-subscription_2", "claude.ai-subscription_2"),
+                                   ("has space", "other"), ("a/b", "other"), ("x" * 33, "other"), ("", None)):
+            with self.subTest(reported=reported):
+                world = World(self)
+                world.sessions["CRED-05"] = self.init_stream(reported)
+                row = world.runner().run_mode(q.BY_ID["CRED-05"], "contained")
+                self.assertEqual(row["independent"]["apiKeySource"], recorded)
+
+    def test_a_label_in_the_bundle_cannot_trip_the_secret_scan(self):
+        world = World(self)
+        world.sessions["CRED-05"] = self.init_stream("x" * 33)
+        world.runner().run(world.tmp / "b", environment=environment())  # does not raise
+        self.assertTrue((world.tmp / "b" / "summary.json").exists())
+
+    def test_the_session_row_carries_the_config_dir_comparison(self):
+        world = World(self)
+        comparison = {"before": 1, "after": 2, "added": ["projects"], "removed": [], "modified": [],
+                      "digests": {"a.json": "2" * 64, "projects": "dir"}, "truncated": False}
+
+        def driver(probe_id):
+            return q.SessionResult(OAUTH_STREAM, 0, config=comparison,
+                                   quota={"pre": reading(60, 10), "post": reading(10, 11)})
+        row = world.runner(sessions=driver).run_mode(q.BY_ID["HOST-01"], "contained")
+        self.assertEqual(row["independent"]["configDir"], comparison)
+        world.runner(sessions=driver).run(world.tmp / "b", environment=environment())  # passes the scan
+        none = world.runner(sessions=lambda pid: q.SessionResult(OAUTH_STREAM, 0)).run_mode(
+            q.BY_ID["HOST-01"], "contained")
+        self.assertIsNone(none["independent"]["configDir"])
+
+    def test_config_dir_listing_has_names_and_digests_only(self):
+        tmp = Path(tempfile.mkdtemp(prefix="braid-cfg-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        (tmp / "projects").mkdir()
+        (tmp / "projects" / "s.jsonl").write_text("secret-contents-must-not-appear")
+        (tmp / ".credentials.json").write_text("tok")
+        (tmp / "link").symlink_to("/etc/hosts")
+        (tmp / ("n" * 60 + ".json")).write_text("x")
+        listing = q.config_dir_listing(tmp)
+        entries = listing["entries"]
+        self.assertFalse(listing["truncated"])
+        self.assertEqual(entries[".credentials.json"], hashlib.sha256(b"tok").hexdigest())
+        self.assertEqual(entries["projects"], "dir")
+        self.assertTrue(entries["link"].startswith("link:"))
+        self.assertIn("#" + hashlib.sha256(("n" * 60 + ".json").encode()).hexdigest(), entries)
+        self.assertNotIn("secret-contents-must-not-appear", json.dumps(listing))
+        self.assertNotIn(str(tmp), json.dumps(listing))
+        q.scan_for_secrets({"listing": json.dumps(listing)}, [])  # the long name was replaced by a digest
+
+    def test_config_dir_listing_is_bounded_and_unavailable_when_unreadable(self):
+        tmp = Path(tempfile.mkdtemp(prefix="braid-cfg-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        for index in range(5):
+            (tmp / f"f{index}").write_text("x")
+        limited = q.config_dir_listing(tmp, limit=3)
+        self.assertEqual((len(limited["entries"]), limited["truncated"]), (3, True))
+        self.assertIsNone(q.config_dir_listing(tmp / "missing"))
+        self.assertIsNone(q.config_dir_changes(None, limited))
+        self.assertIsNone(q.config_dir_changes({"entries": []}, limited))
+
+    def test_config_dir_changes_tells_added_removed_and_modified_apart(self):
+        before = {"entries": {"keep": "1" * 64, "gone": "2" * 64, "edit": "3" * 64}, "truncated": False}
+        after = {"entries": {"keep": "1" * 64, "new": "4" * 64, "edit": "5" * 64}, "truncated": True}
+        changes = q.config_dir_changes(before, after)
+        self.assertEqual((changes["added"], changes["removed"], changes["modified"], changes["truncated"]),
+                         ([], [], [], True))  # a cut listing gives counts only
+        after["truncated"] = False
+        changes = q.config_dir_changes(before, after)
+        self.assertEqual((changes["added"], changes["removed"], changes["modified"], changes["digests"]),
+                         (["new"], ["gone"], ["edit"], {"edit": "5" * 64, "new": "4" * 64}))
+
+    def test_special_files_and_links_in_config_dir_never_block_or_leak(self):
+        tmp = Path(tempfile.mkdtemp(prefix="braid-cfg-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        os.mkfifo(tmp / "pipe")
+        (tmp / "unreadable").write_text("x")
+        os.chmod(tmp / "unreadable", 0)
+        entries = q.config_dir_listing(tmp)["entries"]
+        self.assertEqual(entries["pipe"], "special")
+        if os.geteuid() != 0:
+            self.assertEqual(entries["unreadable"], "unreadable")
+
+    def test_a_secret_shaped_key_source_is_recorded_as_other(self):
+        self.assertEqual(q._key_source_label("sk-ant-api03-abcdef"), "other")
+
+    def test_credential_scan_values_skip_paths_urls_and_host_names(self):
+        tmp = Path(tempfile.mkdtemp(prefix="braid-cfg-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        (tmp / ".claude.json").write_text(json.dumps({
+            "path": "/Users/dedicated/project-dir", "url": "https://api.anthropic.com/v1",
+            "host": "api.anthropic.com", "mail": "someone@example.com", "text": "two words here ok",
+            "token": "tok-1234567890abcdef"}))
+        self.assertEqual(q.credential_values(tmp), ["tok-1234567890abcdef"])
+
+    def test_real_path_attempts_cannot_pass_without_a_real_home(self):
+        # DRV-02: inside the arena the contained attempt is denied only because the arena is outside the write set
+        for real_home, status in (("/home/world", "denied"), (None, "inconclusive")):
+            with self.subTest(real_home=real_home):
+                world = World(self)
+                for probe, attempt in (("PROC-05", "real-launch-agent"), ("FS-02", "hardlink-own-tree")):
+                    row = world.runner(real_home=real_home).run_mode(q.BY_ID[probe], "contained")
+                    self.assertEqual(row["attempts"][attempt], status)
+                    self.assertEqual(row["independent"]["realHome"], real_home is not None)
+                    other = [v for k, v in row["attempts"].items() if k != attempt]
+                    self.assertIn("denied", other)  # only the real-path attempts are demoted
+
+    def test_the_control_row_is_never_real_home_evidence(self):
+        world = World(self)
+        row = world.runner().run_mode(q.BY_ID["FS-02"], "uncontained-control")
+        self.assertFalse(row["independent"]["realHome"])
+        self.assertEqual(row["attempts"]["hardlink-own-tree"], "allowed")
 
 
 if __name__ == "__main__":
