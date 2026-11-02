@@ -118,12 +118,12 @@ per-probe owner authorization but no ADR, and run first.
   `tests/test_view_serve.py`. Dependencies: T015. Verification: procedure_004.
   The OTLP allowlist drops the names each probe receipt lists in
   `findingsForAllowlist`. Done 2026-11-02: PR #965.
-- [ ] T017 (REQ-004 / SC-004; REQ-006 / SC-006): SSE with `Last-Event-ID`,
+- [x] T017 (REQ-004 / SC-004; REQ-006 / SC-006): SSE with `Last-Event-ID`,
   `/snapshot`, replay mode with `unverified` marking, `view_tail.py` bounded
   `--watch` polling without following symbolic links. Files:
   `agent_braid/view_serve.py`, `agent_braid/view_tail.py`,
   `tests/test_view_serve.py`, `tests/test_view_tail.py`. Dependencies: T016,
-  T020. Verification: procedure_004, procedure_006.
+  T020. Verification: procedure_004, procedure_006. Done 2026-11-02: PR #969.
 - [ ] T019 (REQ-005 / SC-005): `view_hooks.py` observational Claude Code HTTP
   hooks with empty responses and refusal of decision events; dropped-attribute
   names inventory. Files: `agent_braid/view_hooks.py`, `tests/test_view_hooks.py`,
