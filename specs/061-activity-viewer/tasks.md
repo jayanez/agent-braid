@@ -124,13 +124,13 @@ per-probe owner authorization but no ADR, and run first.
   `agent_braid/view_serve.py`, `agent_braid/view_tail.py`,
   `tests/test_view_serve.py`, `tests/test_view_tail.py`. Dependencies: T016,
   T020. Verification: procedure_004, procedure_006. Done 2026-11-02: PR #969.
-- [ ] T019 (REQ-005 / SC-005): `view_hooks.py` observational Claude Code HTTP
+- [x] T019 (REQ-005 / SC-005): `view_hooks.py` observational Claude Code HTTP
   hooks with empty responses and refusal of decision events; dropped-attribute
   names inventory. Files: `agent_braid/view_hooks.py`, `tests/test_view_hooks.py`,
   `tests/fixtures/view/hooks/` (built from the T030 receipt). Dependencies: T016,
   T030 (`verified`). Verification: procedure_005. Per the T030 receipt, attribute
   subagents from hook `agent_id` (OpenTelemetry has none), do not depend on an HTTP
-  `SessionStart`, and re-pin the `ui-security-privacy.md` allowlist in this change.
+  `SessionStart`, and re-pin the `ui-security-privacy.md` allowlist in this change. Done 2026-11-02: PR #978.
 - [x] T020 (REQ-003 / SC-003; REQ-010 / SC-010): `view_model.py` pure model:
   lanes, adjacent swap decomposition, `relMs` axis with gap compression, waves,
   verification markers, counters. Files: `agent_braid/view_model.py`,
