@@ -15,7 +15,7 @@
   ],
   "assumptions": "Hosts keep exporting OTLP HTTP/JSON and posting hooks as documented on 2026-10-31 (unverified until host verification); empty-bodied HTTP hook responses are non-blocking (unverified until T030); the Claude desktop browser pane loads loopback pages (unverified until T032); the viewer runs on the same machine as the hosts; ADR 0032 and ADR 0033 are decided before implementation.",
   "authority_snapshot": {
-    "commit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
+    "commit": "b21c1c3b3d8f4ef5f7466433d18da927ecc6465f",
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -60,6 +60,8 @@
       "docs/adr/0031-portable-prompt-names.md": "2e2ccf4e3d3b82cfb3e375d790104b9bb79f7f503041f11e60738e546d670d8e",
       "docs/adr/0032-activity-viewer-companion.md": "75c41ed41b9ffa886df423dffb47ff2fd110f4a7fe639d54ee6b82b3148a5b06",
       "docs/adr/0033-vendored-threejs-mit-boundary.md": "65591eb05ec807cc1cf02f0dfadbd735affae109f9a590920bc9b92763d52fc4",
+      "docs/adr/0034-system-one-shadow-advisory-boundary.md": "83de00082099fbefad0f2603aae8020270b157e731aae613f412586d33c086eb",
+      "docs/adr/0035-native-claude-laboratory-containment.md": "eab193465ad4bad971893a779ef5a9709f206aac6a3a660b3f5ded4c60f8b147",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -99,7 +101,7 @@
   "compatibility": "New contract agent-braid-loom/v0.1, new effort pack contract agent-braid-loom-effort-pack/v0.1, new surfaces matrix agent-braid-view-surfaces/v0.1 and new optional command group agent-braid view. No change to existing contracts, the plugin package, the portable MCP surface, the SPEC-047 telemetry store or frozen evidence. Vendored Three.js adds an MIT directory under ADR 0033.",
   "domain": "Local machine, loopback interface, Agent Braid artifacts of the current contracts (analysis, Git replay plan, scheduler preparations, runtime grants and state, SPEC-057 ownership outputs as JSON, SPEC-052 gate phases and results, allowlisted usage fields of host stream events) and Claude Code and Codex telemetry shapes recorded in fixtures. Not covered: transcripts, Codex hooks and notify, cloud sessions, IDE extensions, other hosts.",
   "evidence_snapshot": {
-    "commit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
+    "commit": "b21c1c3b3d8f4ef5f7466433d18da927ecc6465f",
     "mode": "historical"
   },
   "execution_contract": "Read-only. No route, command or control executes, schedules, grants, retries, cancels or writes to repositories, registries, run directories or host configuration; executionAuthorization is the constant false; hook routes accept only observational events and answer with empty bodies, so the viewer takes no part in host decisions; network use is limited to a loopback server with separate read and ingest credentials; effort data stays in memory; files are written only to an explicit --record file (effort only with --record-effort) and explicit export destinations, created exclusively with owner-only permissions.",
@@ -149,7 +151,15 @@
         {
           "given": "the owned fixtures for each artifact family",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "owner-run throwaway census script over local Agent Braid telemetry, state and host transcripts (procedure_census, T038); see the receipt sources and detection",
+              "limits": "Counts and kinds only: no content, paths, session identifiers or project names were recorded. Most non-synthetic sessions are development of Agent Braid itself, so the population exercising the tools is the project's own work, not independent adoption. Detection is heuristic: results of shell commands that ran the CLI indirectly, or tool outputs truncated by the host, can be missed; the first scanner pass missed gate notifications and m4_alpha tools and was corrected before this record. File modification time approximates activity; a session touched in the window but started earlier counts. The census script is a throwaway (sha256 613a95c844703580c2968fa8ed971fc1ae59774ec1c8ffefd2a5da131d566f5d), not committed; the hash identifies the bytes used only and is not repository-verifiable.",
+              "outcome": "met: 48 sessions and 5 of 6 kinds overall, 11 sessions and 5 kinds outside the synthetic corpora, against the OD-8 threshold of at least 5 sessions and 3 of 6 kinds",
+              "path": "specs/061-activity-viewer/evidence/census-20261101.json",
+              "sha256": "1279b9f6a2bd8a6feeb4bc8a7c82a5886924b202c9afb0c6111fd01f66a1d653"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_002 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_002",
@@ -213,7 +223,15 @@
         {
           "given": "a replay file, a watched fixture directory and a live store fed by fixtures",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "owner-run throwaway census script over local Agent Braid telemetry, state and host transcripts (procedure_census, T038); see the receipt sources and detection",
+              "limits": "Counts and kinds only: no content, paths, session identifiers or project names were recorded. Most non-synthetic sessions are development of Agent Braid itself, so the population exercising the tools is the project's own work, not independent adoption. Detection is heuristic: results of shell commands that ran the CLI indirectly, or tool outputs truncated by the host, can be missed; the first scanner pass missed gate notifications and m4_alpha tools and was corrected before this record. File modification time approximates activity; a session touched in the window but started earlier counts. The census script is a throwaway (sha256 613a95c844703580c2968fa8ed971fc1ae59774ec1c8ffefd2a5da131d566f5d), not committed; the hash identifies the bytes used only and is not repository-verifiable.",
+              "outcome": "met: 48 sessions and 5 of 6 kinds overall, 11 sessions and 5 kinds outside the synthetic corpora, against the OD-8 threshold of at least 5 sessions and 3 of 6 kinds",
+              "path": "specs/061-activity-viewer/evidence/census-20261101.json",
+              "sha256": "1279b9f6a2bd8a6feeb4bc8a7c82a5886924b202c9afb0c6111fd01f66a1d653"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_006 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_006",
@@ -341,7 +359,29 @@
         {
           "given": "an owner-authorized probe per host",
           "id": "SC-014",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "claude -p \"Use the Task tool to launch one general-purpose subagent whose only job is to run the Bash command: echo probe-ok — and report its output. Then reply with exactly the subagent's reported output.\" --settings <throwaway-settings.json> --allowedTools \"Task\" \"Bash(echo:*)\" --model haiku",
+              "limits": "One machine, one account, one installed version; names can change between host versions. Names only: the throwaway listener recorded field and attribute names, never values; whether privacy-relevant values were redacted by the host was not checked. The throwaway listener (sha256 74f85b3b383c0ff1f607f9b7eea347f36227904a5a842ba0eedd178b2c19c0d8) is not committed, per the runbook. Non-interactive claude -p only; the interactive terminal and desktop clients were not probed for OpenTelemetry or hooks. Hooks were passed with --settings rather than a user-level settings profile; the effect on hook delivery is not assumed to differ but was not compared. Single session per run; event ordering, batching intervals and rate limits were not measured. The SessionStart absence was observed once under claude -p and may depend on the client mode. Pinning the exact allowlist is a reviewed change at implementation (T016, T019); this receipt does not change plan.md. Embedded hashes of the uncommitted throwaway listener and fixture identify the bytes used only; they are not repository-verifiable. Sorted name lists replace raw excerpts by design (names-only probe); no payload bytes were kept.",
+              "outcome": "verified: otlp-logs, otlp-metrics and claude-hook paths deliver data; two field-level checks are not-matching (no agent or parent-agent id in OpenTelemetry; no HTTP SessionStart hook under claude -p), narrowing the allowlist at T016/T019 without removing a path",
+              "path": "specs/061-activity-viewer/evidence/hv-t030-20261101.json",
+              "sha256": "01c4fc38e7321c4803ec1a85165673817ad0b948720161f5cc4a725d8cc26cd8"
+            },
+            {
+              "command": "codex exec --skip-git-repo-check --ephemeral -s read-only [-m gpt-5.6-luna -c model_reasoning_effort=low] -c otel.exporter=<...> -c otel.metrics_exporter=<...> -c otel.trace_exporter=<...> \"Run the shell command: echo probe-ok — then reply with exactly its output.\" < /dev/null",
+              "limits": "One machine, one account, one installed version; names can change between host versions. Names only: the throwaway listener recorded field and attribute names, never values; whether privacy-relevant values were redacted by the host was not checked. The throwaway listener (sha256 74f85b3b383c0ff1f607f9b7eea347f36227904a5a842ba0eedd178b2c19c0d8) is not committed, per the runbook. No completed turn: the receipt covers export transport and the names emitted up to the refused request only. Metrics export was configured but produced no request in this run; that is not evidence that metrics are absent after a completed turn. The runbook asks for an [otel] block in a test profile; the probe used per-run -c overrides instead, leaving the user configuration untouched. The configured default model was refused for the account and one retry used -m gpt-5.6-luna; both attempts hit the usage limit. Embedded hashes of the uncommitted throwaway listener and fixture identify the bytes used only; they are not repository-verifiable. Sorted name lists replace raw excerpts by design (names-only probe); no payload bytes were kept.",
+              "outcome": "unobserved: transport verified for logs and traces, token usage per turn not observed because no turn completed; rerun pending after 2026-11-23, row stays hv-pending",
+              "path": "specs/061-activity-viewer/evidence/hv-t031-20261101.json",
+              "sha256": "1df1669f0ce4c6672c22b5604b34bc3368bb785ec3cb385be3e8682cce11dc03"
+            },
+            {
+              "command": "owner-run load of a throwaway fixture page on loopback in the Claude desktop browser pane (4.4212.0 of 2026-10-29, per the owner); see the receipt steps",
+              "limits": "The self-report is produced by the fixture's own script; a host-level request outside the page's Performance API (for example a browser prefetch) would not be counted. The user agent did not contain 'Electron'; that the page ran in the Claude desktop browser pane rests on the owner's statement. Fixture only: the real viewer bundle (Three.js r186) is opened again at the T035 checkpoint. The fixture is not committed; its hashes identify the served bytes only. This receipt covers the page loading only; ingest (OpenTelemetry, hooks) from the desktop client was not probed. One desktop app version on one machine.",
+              "outcome": "verified: every check the page could observe passed; console errors unobserved",
+              "path": "specs/061-activity-viewer/evidence/hv-t032-20261101.json",
+              "sha256": "7e1eff5d9433ffb387abbc35bfdb14647b9a7777f2486e512a014ce0550749a0"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_014 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_014",
@@ -368,7 +408,7 @@
       "text": "Documentation: English documentation (`docs/tooling/VIEWER.md`, tooling index, track pages) describes installation, privacy, limits, host configuration, export and the non-claims, and links the contract."
     }
   ],
-  "review_record": "specs/061-activity-viewer/owner-review-20261101.json",
+  "review_record": "specs/061-activity-viewer/owner-review-probes-20261101.json",
   "scientific_limits": "Engineering specification. Claim level inspiration (Article 17): the braid picture is a structural analogy (Article 18) used as a representation of computed classifications, not a braid-theoretic result; no braid relation or simplification is applied, and a drawn swap or wave is not permission to interleave (Article 6). Replayed and host-reported events are unverified. Effort figures are empirical host estimates without a compatibility class, and support no speedup, cost-saving or causal claim. Q-VIS1 is an open question; an optional owner-run observation would be small, unblinded and descriptive. The viewer holds several never-collect categories outside telemetry, listed as deviations for owner review. Structural checks are not owner approval.",
   "scope": "VIS.1 read-only, loopback-only activity viewer companion: event contract agent-braid-loom/v0.1, artifact adapters, OTLP/JSON ingest for Claude Code and Codex, observational Claude Code HTTP hooks, in-memory store, Server-Sent Events, replay, Three.js web viewer, pure frames, minimal export and opt-in comparative effort evidence pack. Specification only; VIS.2-VIS.4 are derived tracks.",
   "stage": "draft"

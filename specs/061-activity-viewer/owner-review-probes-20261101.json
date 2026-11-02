@@ -1,0 +1,81 @@
+{
+  "schema": "agent-braid-bounded-founder-review-v1",
+  "spec": "SPEC-061",
+  "reviewedCommit": "b21c1c3b3d8f4ef5f7466433d18da927ecc6465f",
+  "evidenceCommit": "b21c1c3b3d8f4ef5f7466433d18da927ecc6465f",
+  "decisionDate": "2026-11-01",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "github": "jayanez",
+    "role": "owner and founder"
+  },
+  "decision": "accepted",
+  "scope": "SPEC-061 bounded owner review of the host probe results, limited to: (a) the runbook outcome amendment in specs/061-activity-viewer/host-verification-runbook.md as merged at the reviewed commit, which separates check-level outcomes from path-level outcomes and replaces the former single sentence that any not-matching probe removes its ingest path; (b) the probe receipts evidence/hv-t030-20261101.json (verified, with two field-level not-matching checks), evidence/hv-t031-20261101.json (unobserved, rerun pending), evidence/hv-t032-20261101.json (verified, Claude desktop 4.4212.0 of 2026-10-29 per the owner, console errors unobserved) and the artifact census evidence/census-20261101.json (T038, met: 48 sessions, 11 outside the synthetic corpora, 5 of 6 kinds); (c) deferring the re-pin of the contracts/ui-security-privacy.md allowlist to the reviewed changes of T016 and T019; (d) authorization to rerun T031 and to run T033 after the Codex usage limit resets on 2026-11-23. The rest of SPEC-061 remains under the T001 approval recorded in owner-review-20261101.json.",
+  "runbookAmendment": "Outcomes apply at two levels. Each check in a receipt records `verified`, `not-matching` or `unobserved`. A `not-matching` check on an expected field or event, while the ingest path itself delivers data, narrows the allowlist and is pinned through the reviewed change of the task that implements that path; it does not change the matrix row. The receipt outcome and the matrix status follow the ingest paths: only a `not-matching` transport or ingest path sets the row `not-matching` and removes that path from VIS.1. A probe that observes no data for its expected outcome records `unobserved`: if it will be rerun (for example after a usage limit) the row stays `hv-pending` and the task stays open; a final `unobserved` sets the row `unobserved`. For surface probes without an ingest path (T032, T033) the receipt outcome follows the surface's load and render checks, and any other check left `unobserved` is recorded in the receipt and the matrix note.",
+  "ownerResponse": {
+    "source": "direct replies in chat in the owning task of 2026-11-01 (selected options and one free-text statement), given on the probe receipts, the runbook amendment and the census as prepared before the reviewed commit; the reviewed commit is the squash merge of PR #942",
+    "answers": [
+      {
+        "topic": "runbook outcome approach",
+        "answer": "Enmendar runbook (Recommended)"
+      },
+      {
+        "topic": "allowlist re-pin timing",
+        "answer": "En T016/T019 (Recommended)"
+      },
+      {
+        "topic": "runbook amendment text",
+        "answer": "Apruebo (Recommended)"
+      },
+      {
+        "topic": "probe receipts",
+        "answer": "Apruebo (Recommended)"
+      },
+      {
+        "topic": "runbook completion",
+        "answer": "Completar texto (Recommended)"
+      },
+      {
+        "topic": "census T038",
+        "answer": "Sí, ahora (Recommended)"
+      },
+      {
+        "topic": "T031 rerun and T033",
+        "answer": "Autorizo tras el 23-11 (Recommended)"
+      },
+      {
+        "topic": "T032 app version",
+        "answer": "muestra la versión 4.4212.0 de 29 de octubre de 2026"
+      }
+    ],
+    "packetCommit": "b21c1c3b3d8f4ef5f7466433d18da927ecc6465f",
+    "packetPath": "specs/061-activity-viewer/host-verification-runbook.md"
+  },
+  "receipts": {
+    "evidence/hv-t030-20261101.json": {
+      "sha256": "01c4fc38e7321c4803ec1a85165673817ad0b948720161f5cc4a725d8cc26cd8",
+      "outcome": "verified"
+    },
+    "evidence/hv-t031-20261101.json": {
+      "sha256": "1df1669f0ce4c6672c22b5604b34bc3368bb785ec3cb385be3e8682cce11dc03",
+      "outcome": "unobserved"
+    },
+    "evidence/hv-t032-20261101.json": {
+      "sha256": "7e1eff5d9433ffb387abbc35bfdb14647b9a7777f2486e512a014ce0550749a0",
+      "outcome": "verified"
+    },
+    "evidence/census-20261101.json": {
+      "sha256": "1279b9f6a2bd8a6feeb4bc8a7c82a5886924b202c9afb0c6111fd01f66a1d653",
+      "outcome": "met"
+    }
+  },
+  "notAccepted": [
+    "any other SPEC-061 task, requirement or decision beyond the items in scope (the rest stays under the T001 approval)",
+    "editing the contracts/ui-security-privacy.md allowlist now; it is re-pinned through the reviewed changes of T016 and T019",
+    "a final matrix status for T031; the row stays hv-pending until the rerun after 2026-11-23",
+    "the T033 result, which is not yet run",
+    "any claim that the braid shortens locating hazards (Q-VIS1 remains an open question)",
+    "scientific validity, release or publication of any package"
+  ],
+  "limits": "Acceptance binds the reviewed commit only; later changes to the runbook, the receipts or the open decisions need a new review. Receipts record one machine, one account and one installed version each; the census counts the owner's mostly self-development sessions and is not independent adoption. The rerun and T033 authorization is conditional on the 2026-11-23 reset and does not cover other probes. Acceptance is distinct from implementation, integration and release."
+}
