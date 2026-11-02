@@ -89,5 +89,5 @@ Not made by this feature; for the orchestrator and founder:
 
 ## Human review and unresolved decisions
 
-Open: Q1 to Q6 (T001). Pending: human review of this specification; ADR
+Q1 to Q6 decided 2026-11-02 (T001, [record](evidence/founder-decisions-20261102.json)). Pending: human review of this specification; ADR
 acceptance (T010) before any profile is adopted.

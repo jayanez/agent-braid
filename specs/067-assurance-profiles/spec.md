@@ -3,8 +3,9 @@
 **Track:** HAR (parallel to the native chain; no dependency on SPEC-065)
 
 **Status:** specification only, draft. Nothing is implemented or authorized by
-this change. Founder choices are marked `[NEEDS CLARIFICATION]` (Q1 to Q6) and
-block the tasks that cite them.
+this change. The founder decided Q1 to Q6 on 2026-11-02 (see Clarifications and
+the [founder record](evidence/founder-decisions-20261102.json), T001); the
+decisions authorize no implementation or standing authorization.
 
 ## Purpose and scope
 
@@ -103,9 +104,7 @@ proceeds and the operator is told); `standing-authorization` (agent acts under a
 recorded human authorization); `approve-each` (a fresh human approval per
 action); `human-only` (the agent prepares, a human acts). A standing
 authorization record carries scope (checkpoint, repository, branch pattern),
-conditions, expiry, issuer, and the **verbatim owner statement**. Which
-checkpoints admit it, the maximum expiry and who may issue are `[NEEDS
-CLARIFICATION]` (Q2, Q3, Q4). An authorization that is missing, expired,
+conditions, expiry, issuer, and the **verbatim owner statement**. Only `merge` admits it (conditions: green CI, receipts present, no open review threads); the maximum horizon is 30 days with expiry per authorization; only the founder may issue, with the verbatim statement stored in a hashed JSON record (Q2, Q3, Q4, decided in the [founder record](evidence/founder-decisions-20261102.json)). An authorization that is missing, expired,
 revoked, out of scope, issued by a non-permitted issuer, for a checkpoint that
 does not admit the mode, without a verbatim statement, or whose conditions fail
 resolves to `approve-each`, never to `autonomous`.
@@ -137,9 +136,7 @@ profile; the SPEC-057 settings schema is not extended.
 **REQ-004 Raise-only risk escalation.** A deterministic classifier over a diff
 summary (changed paths, size, shared files) maps it to a risk class using
 operator-owned rules. The default rules reuse the `sensitive` path
-classification of `scripts/validate_change.py` (`classify()`, ADR 0011); size
-thresholds, the shared-file list and target depths are `[NEEDS CLARIFICATION]`
-Q5. It also reports whether the change is documentation-only. It can only
+classification of `scripts/validate_change.py` (`classify()`, ADR 0011); sensitive paths raise `pre-pr-review` to `R3`, as does a diff over 400 changed lines or one touching a shared file (`docs/STATUS.md`, `ROADMAP.md`, `docs/development/SPEC_MILESTONE_INDEX.md`, `agent_braid/cli.py`, `agent_braid/ownership.py`, `docs/development/github-tracking.json`) (Q5, decided in the [founder record](evidence/founder-decisions-20261102.json)). It also reports whether the change is documentation-only. It can only
 **raise** a checkpoint's depth or mode, never lower either. Equal input yields
 equal output, with no network, clock or model call.
 - **SC-004** Given a diff touching a sensitive path, when classified, then the
@@ -225,29 +222,34 @@ prose until Q1 defines default profiles.
 - **SC-010** Given no assurance profile, when `validate_change` and the
   existing tests run, then results equal the pre-change results.
 
-## Clarifications `[NEEDS CLARIFICATION]`
+## Clarifications
 
-Founder choices; none is decided here. Tasks citing an open item stay blocked.
+Decided by the founder on 2026-11-02 and recorded verbatim (as the option label
+chosen) in the [founder record](evidence/founder-decisions-20261102.json)
+(T001). The decisions authorize no implementation, standing authorization,
+merge or release; the REQ-003 floors stay human-only.
 
 - **Q1 Default depth and mode per checkpoint, and the no-profile baseline.**
-  `[NEEDS CLARIFICATION]` Proposed starting point (not decided): `pre-pr-review`
-  `R2` for code and `R1` for docs-only; `pre-commit` = `quick`; `ci` and `merge`
-  require green. Which default profiles ship (for example `lite`, `standard`,
-  `strict`), and whether the currently undocumented practices become the
-  documented baseline.
-- **Q2 Which checkpoints admit `standing-authorization`.** `[NEEDS
-  CLARIFICATION]` Proposed: `merge` (conditions: green CI, receipts present, no
-  open review threads) only; never the floors of REQ-003.
-- **Q3 Expiry.** `[NEEDS CLARIFICATION]` Maximum horizon (for example 7, 30 or
-  90 days) and whether expiry is per authorization or per repository.
-- **Q4 Who may issue.** `[NEEDS CLARIFICATION]` Founder only, or also a named
-  delegate, and the form the verbatim statement is stored in.
-- **Q5 Risk classifier rules.** `[NEEDS CLARIFICATION]` Size thresholds, the
-  shared-file list, and the depth or mode each rule raises to (path sets default
-  to the `validate_change` sensitive classification).
-- **Q6 Depth beyond the review ladder.** `[NEEDS CLARIFICATION]` v0.1 scopes
-  depth to `pre-pr-review`; whether other checkpoint families (for example
-  `plan-tasks`, `ci`) later get their own depth definitions.
+  Decided ("R2 código / R1 docs"): `pre-pr-review` is `R2` for code and `R1`
+  for docs-only; `pre-commit` = `quick`; `ci` and `merge` require green. Ship
+  profiles `lite`, `standard` and `strict` with `standard` as the default. The
+  currently undocumented practice becomes the documented baseline.
+- **Q2 Which checkpoints admit `standing-authorization`.** Decided ("Solo
+  merge, 30 días"): `merge` only, with conditions green CI, receipts present and
+  no open review threads. Never the REQ-003 floors: release, founder decisions,
+  grants, native execution and auto-promotion are always human-only.
+- **Q3 Expiry.** Decided (same answer): maximum horizon 30 days; expiry is per
+  authorization.
+- **Q4 Who may issue.** Decided ("Propuesta conservadora"): the founder only; the
+  verbatim statement is stored in a hashed JSON record.
+- **Q5 Risk classifier rules.** Decided (same answer): `validate_change`
+  sensitive paths raise `pre-pr-review` to `R3`; a diff over 400 changed lines
+  or touching a shared file (`docs/STATUS.md`, `ROADMAP.md`,
+  `docs/development/SPEC_MILESTONE_INDEX.md`, `agent_braid/cli.py`,
+  `agent_braid/ownership.py`, `docs/development/github-tracking.json`) raises to
+  `R3`. Raise-only.
+- **Q6 Depth beyond the review ladder.** Decided (same answer): in v0.1 depth
+  applies only to `pre-pr-review`; other checkpoint families are deferred.
 
 ## Scientific boundaries and compatibility
 
@@ -268,5 +270,6 @@ Founder choices; none is decided here. Tasks citing an open item stay blocked.
 ## Evidence and unresolved questions
 
 Obtained evidence: none for any scenario. Planned evidence per scenario is in
-[assurance.json](assurance.json). Open: Q1 to Q6; the integration points in the
-plan are proposals for the owners of shared files. Human review pending.
+[assurance.json](assurance.json). Q1 to Q6 are decided (T001); the integration
+points in the plan are proposals for the owners of shared files. Human review
+pending.

@@ -13,7 +13,7 @@ shared object store fails the portable-root check).
 
 ## Decisions
 
-- [ ] T001 (REQ-001 / SC-001; REQ-002 / SC-002; REQ-004 / SC-004): Founder
+- [x] T001 (REQ-001 / SC-001; REQ-002 / SC-002; REQ-004 / SC-004): Founder
   decision record for Q1 to Q6 (default depth per checkpoint and default profiles;
   checkpoints admitting `standing-authorization`; expiry; who may issue; risk
   rules and thresholds; depth semantics beyond the review ladder), or any item
@@ -22,7 +22,9 @@ shared object store fails the portable-root check).
   (replace each decided `[NEEDS CLARIFICATION]` with the decision and a link).
   Verification: every Q has a decision or an explicit "open" with blocked tasks;
   `validate_spec_kit` passes. Evidence: the record. Negative control: a task
-  citing an undecided Q stays blocked. Obtained: none.
+  citing an undecided Q stays blocked. Obtained: Q1 to Q6 decided by the founder on
+  2026-11-02 in `evidence/founder-decisions-20261102.json` (none left open;
+  authorizes no implementation, standing authorization, merge or release).
 
 ## Implementation
 
