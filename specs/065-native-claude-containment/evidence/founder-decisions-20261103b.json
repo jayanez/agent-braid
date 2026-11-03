@@ -1,0 +1,83 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T009 blockers: macOS series (NC-3), account rule (RV-16), quota reader (NC-6) and attempt records",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-03",
+  "baseCommit": "b1e8a7bf4e099073779436ef711d0e1a319f8fb1",
+  "decisionChannel": "Founder answers to interactive AskUserQuestion prompts in the HAR orchestrator session, 2026-11-03, recorded verbatim. Additive to founder-decisions-20261103.json, which stays as written.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261103.json"
+  ],
+  "decisionOrder": [
+    "NC-3-amended",
+    "RV-16-rule-change",
+    "NC-6-reader",
+    "T009-attempt-records"
+  ],
+  "decisions": [
+    {
+      "id": "NC-3-amended",
+      "item": "macOS versions the backend accepts (amends NC-3 of 2026-10-31)",
+      "question": "NC-3: ¿qué versiones de macOS acepta el backend?",
+      "ownerStatement": "Toda la serie 27.x",
+      "decision": {
+        "disposition": "amend-nc-3-to-27-series",
+        "reading": "The backend accepts any macOS 27.x[.y] (27\\.\\d{1,3}(\\.\\d{1,3})?) instead of 27.0.x only; the self-check is re-run per build and the environment hash binds the exact product version and build. The founder's machine runs 27.2, build 26B123."
+      }
+    },
+    {
+      "id": "RV-16-rule-change",
+      "item": "Account rule: the dedicated account versus the owner of /dev/console (RV-16)",
+      "question": "Para qué se usa todo este montaje? No termino de entenderlo muy bien. Explícamelo con ejemplos y vuelve a preguntarme",
+      "ownerStatement": "Cambiar la regla (Recommended)",
+      "history": "The first answer to the prompt about the console-user conflict asked for an explanation with examples; the orchestrator explained and asked again (ADR 0036 decision 12, human decision support), and the re-asked answer is the owner statement above.",
+      "decision": {
+        "disposition": "change-the-rule",
+        "reading": "The backend stops refusing the owner of /dev/console, because fast user switching makes the dedicated account that owner. It refuses instead: the founder/operator account (identified explicitly and compared by uid), any account in the privileged gids (admin, wheel; already refused) and any uid below 500 (system accounts). The intent is kept: the lab never runs as the founder's own daily account. It fails closed when the operator account is missing, unresolvable or equal to the lab account."
+      }
+    },
+    {
+      "id": "NC-6-reader",
+      "item": "Who reads the usage card and where (closes NC-6-reader of founder-decisions-20261103.json)",
+      "question": "¿aceptas que escribas tú las lecturas de cuota (auto-atestadas)?",
+      "ownerStatement": "Sí, claude.ai o móvil (Recommended)",
+      "earlierStatement": "OK sin problema. Adelante. Guíame bien entonces",
+      "decision": {
+        "disposition": "operator-attested-readings",
+        "reading": "The operator reads the usage percentage on claude.ai Usage or on the phone (same Claude account) and types it with the time or 'now', at most 5 minutes fresh. The readings are self-attested."
+      }
+    },
+    {
+      "id": "T009-attempt-records",
+      "item": "In-memory attempt-scoped qualification records built by the driver",
+      "question": "¿Aceptas los registros temporales en memoria (no son emisión, NC-9)?",
+      "ownerStatement": "Acepto (Recommended)",
+      "decision": {
+        "disposition": "accept-in-memory-attempt-records",
+        "reading": "The attempt-scoped records the backend constructor needs live in memory only; they are never written, never count as issuance, and T010 stays founder-only (NC-9)."
+      }
+    }
+  ],
+  "closes": [
+    {
+      "ref": "specs/065-native-claude-containment/evidence/founder-decisions-20261103.json#stillOpen/NC-6-reader",
+      "by": "NC-6-reader",
+      "note": "Decision made; the driver already takes operator-typed readings."
+    },
+    {
+      "ref": "specs/065-native-claude-containment/evidence/founder-decisions-20261103.json#stillOpen/NC-3-os-series",
+      "by": "NC-3-amended",
+      "note": "Decision made; backend and driver edit with security re-check in evidence/recheck-t009-unblock.md."
+    },
+    {
+      "ref": "specs/065-native-claude-containment/evidence/founder-decisions-20261103.json#stillOpen/console-user-conflict",
+      "by": "RV-16-rule-change",
+      "note": "Decision made; backend and driver edit with security re-check in evidence/recheck-t009-unblock.md."
+    }
+  ],
+  "stillOpen": [],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records four founder decisions only. executionAuthorization stays false and issuance stays T010 (NC-9, founder only). The earlier record is not rewritten; its stillOpen items are closed by reference above. No native session, probe, sudo command or account creation was run. The code edits that implement NC-3 and RV-16 need the re-check in evidence/recheck-t009-unblock.md before T009 may start. Any change needs a new founder decision record."
+}

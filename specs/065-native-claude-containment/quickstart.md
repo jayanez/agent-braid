@@ -36,8 +36,9 @@ Operator preparation for T009 (a checklist, not an authorization; it needs the f
 - **`interpreter_root`.** It is readable and map-executable inside the sandbox, so use a
   minimal prefix that holds only the interpreter and its standard library, never a
   repository or a home directory.
-- **Account hygiene the code cannot see.** The account check refuses admin/wheel, the
-  console user and a loose home. It does not see sudoers rules by name, ACL grants or
+- **Account hygiene the code cannot see.** The account check refuses admin/wheel, a system account
+  (uid below 500), the operator's own account (`--operator-account`, compared by uid; RV-16 as amended on
+  2026-11-03, the owner of `/dev/console` is no longer examined) and a loose home. It does not see sudoers rules by name, ACL grants or
   groups such as `_developer`; the operator verifies those.
 - **`config_dir`.** Use a dedicated, empty or small directory, never a home directory or a shared
   cache, and check its entry count and size before every attempt. The disk bound counts what is
@@ -63,30 +64,22 @@ Neither outcome is a failure of the procedure.
 ## Operator setup for T009
 
 This is the founder's runbook for the conditional go recorded in
-`evidence/founder-decisions-20261103.json`. It is a checklist, not an authorization:
+`evidence/founder-decisions-20261103.json`, as amended by `evidence/founder-decisions-20261103b.json`. It is a checklist, not an authorization:
 `executionAuthorization` stays `false`, issuance stays T010 (NC-9). The order is fixed:
 
-1. you run steps 0 to 8 (step 0 is a check; the rest use sudo, in your own session), only after the blockers below are resolved;
+1. you run steps 0 to 8 (step 0 is a check; the rest use sudo, in your own session), only after the orchestrator confirms the re-check of the 2026-11-03 decisions is a GO;
 2. you switch to the dedicated account and run steps 9 and 10 in its own login session (login, then the
    driver `--dry-run`);
 3. you send the dry-run output to the orchestrator, which verifies it as evidence;
 4. only after the orchestrator confirms, step 11 (the real attempt: at most 3 small Haiku sessions).
 
-> **Known blockers on this machine. Read before step 1.** The driver's pre-flight is reached only at
-> step 10, after the sudo steps and the Claude login, and two of its checks refuse on this machine for
-> reasons no command in this runbook can fix; each needs a founder decision, a backend edit and a new
-> security re-check:
->
-> - `os-supported`: the backend accepts the macOS 27.0.x series only (NC-3); this machine runs 27.2.
-> - `user-is-not-console-user`: the backend refuses the console user (RV-16), and the fast user
->   switching of step 9 makes `braidlab` the owner of `/dev/console` while its session is in front.
->
-> Do not start step 1 until the orchestrator has told you in writing that both are resolved (or that a
-> different way to run the account's session exists). Step 0 checks the first one.
->
-> Also open and not decided by this runbook: NC-6 says the orchestrator session reads the usage card,
-> but the driver takes the values you type (operator-attested), and where the card is read is yours to
-> decide (see `evidence/founder-decisions-20261103.json`, `stillOpen`).
+> **Founder decisions of 2026-11-03** (`evidence/founder-decisions-20261103b.json`): the backend accepts the whole
+> macOS 27.x series (NC-3); the dedicated account is no longer refused for owning `/dev/console`, and is
+> refused instead when it is the founder's own account, in admin or wheel, or a system account (RV-16, rule
+> change); you type the quota readings, taken on claude.ai Usage or on the phone (NC-6, self-attested). The
+> driver builds its attempt records in memory only; they are not issuance (NC-9). These decisions need the
+> re-check in `evidence/recheck-t009-unblock.md`, and the orchestrator confirms in writing that it is a GO
+> before you start step 1.
 
 Nothing native (`claude`, `sandbox-exec`, the network) runs before step 9 (the login). The sandbox and
 the sessions run only in step 11. If any command fails or prints something other than described, stop
@@ -110,7 +103,7 @@ CHECKOUT="$HOME/Repos/Personal/agent-braid"   # your checkout, only to export th
 **Step 0. Check the macOS series (no sudo).**
 
 ```sh
-sw_vers -productVersion        # must start with 27.0. ; anything else (27.2 here): STOP, see the blockers box
+sw_vers -productVersion        # must start with 27. (27.2 here is fine, NC-3); anything else: STOP
 ```
 
 **Step 1. Create the standard account and close its home.** `sysadminctl -addUser` without `-admin` makes a standard
@@ -242,8 +235,8 @@ account settings; deleting the account (teardown) removes its keychain.
 
 **Step 10. Dry run in the braidlab session.** Pre-flight only: no sandbox, no `claude`, no network. It
 prints a JSON verdict, `ready` or `refused` with the failed checks and a fix hint for each, and exits 0
-or 2. Paste the quoted values first (from the orchestrator and from step 8); the checks below stop you if
-one is wrong. The driver must run with the pinned interpreter and `-B -I`; any other Python is refused.
+or 2. Paste the quoted values first (from the orchestrator, from step 8, and your own account short name,
+which `id -un` prints in your own session); the checks below stop you if one is wrong. The driver must run with the pinned interpreter and `-B -I`; any other Python is refused.
 
 ```sh
 BRAID=/usr/local/libexec/braid
@@ -257,7 +250,9 @@ for h in "$CLAUDE_SHA256" "$PYTHON_SHA256" "$SANDBOX_EXEC_SHA256"; do
 done
 SHORT=${COMMIT:0:7}
 PYRUN=("$BRAID/python312/bin/python3.12" -B -I "$BRAID/repo-$SHORT/scripts/har_t009_attempt.py")
-ARGS=(--attempt t009-20261104
+OPERATOR_ACCOUNT='PASTE_YOUR_OWN_ACCOUNT_SHORT_NAME'   # your daily account; "id -un" in your own session
+printf %s "$OPERATOR_ACCOUNT" | grep -Eq '^[a-z_][a-z0-9_-]{0,31}$' || { echo "STOP: OPERATOR_ACCOUNT is not an account name"; false; }
+ARGS=(--attempt t009-20261104 --operator-account "$OPERATOR_ACCOUNT"
   --claude "$BRAID/claude-2.1.292" --claude-sha256 "$CLAUDE_SHA256"
   --interpreter "$BRAID/python312/bin/python3.12" --interpreter-sha256 "$PYTHON_SHA256"
   --interpreter-root "$BRAID/python312" --sandbox-exec-sha256 "$SANDBOX_EXEC_SHA256"
@@ -273,7 +268,7 @@ confirms in writing that the verdict is `ready` and matches the pins it recomput
 
 **Step 11. The real attempt (only after the orchestrator confirms).** The same command with
 `--founder-go` instead of `--dry-run`. If you closed the terminal after step 10, run its variable block
-(from `BRAID=` to the `ARGS=(...)` line) again first.
+(from `BRAID=` to the `ARGS=(...)` line, `OPERATOR_ACCOUNT` included) again first.
 
 ```sh
 "${PYRUN[@]}" "${ARGS[@]}" --founder-go
@@ -281,7 +276,7 @@ cp -R "$HOME/t009/out/t009-20261104" /Users/Shared/t009-bundle-20261104
 ```
 
 It asks you to type the attempt name, then, before and after each of at most three sessions, for the
-Claude Desktop usage card: 5-hour %, weekly %, whether extra usage is on, and the time you read the card.
+usage card (read on claude.ai Usage or on the phone, same Claude account): 5-hour %, weekly %, whether extra usage is on, and the time you read it.
 Answer `now` right after reading it (or type `HH:MM:SS`; `HH:MM` can collide with the next reading in the
 same minute). A typo is asked again up to three times. A reading older than five minutes, a missing one, a
 start at 90 % or more of the 5-hour window, or a session that used more than 2 points stops the attempt.

@@ -315,11 +315,14 @@ because the mechanism fixes what the policy can express.
   credential login; (c) and (d) cost setup time, disk and memory, and (d) is no
   longer "macOS native". Refusal-on-failure applies to every option.
 
-- **NC-3 Supported macOS versions.** Decided (founder, 2026-10-31): option (b): the macOS 27.0.x series, with the self-check re-run on each build. ([record](evidence/founder-decisions-20261031.json)) History: Options:
+- **NC-3 Supported macOS versions.** Amended (founder, 2026-11-03): the whole 27.x series (`27\.\d{1,3}(\.\d{1,3})?`), with the self-check re-run on each build; the environment hash still binds the exact product version and build. ([record](evidence/founder-decisions-20261103b.json)) Earlier decision (founder, 2026-10-31, kept as history): option (b): the macOS 27.0.x series, with the self-check re-run on each build. ([record](evidence/founder-decisions-20261031.json)) History: Options:
   (a) exactly the observed build (macOS 27.0.1, build 26A434) and nothing else;
   (b) the 27.0.x series, re-running the self-check on each build;
   (c) a wider window. Risk: wider windows trust untested sandbox behavior; the
   narrowest window refuses after every OS update until re-qualified.
+  RV-16 amendment (founder, 2026-11-03, same record): the dedicated account is no longer refused for owning
+  `/dev/console`. It is refused when it is the operator's own account (named explicitly and compared by uid),
+  in a privileged group (admin, wheel) or a system account (uid below 500).
 
 - **NC-4 Supported Claude Code versions and update
   policy.** Decided (founder, 2026-10-31): option (a): exactly Claude Code 2.1.292 with a pinned executable SHA-256; auto-update disabled for the laboratory configuration. ([record](evidence/founder-decisions-20261031.json)) History: Observed `2.1.292 (Claude Code)` at `/opt/homebrew/bin/claude`.

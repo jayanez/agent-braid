@@ -45,7 +45,7 @@ class FakeSystem(har.System):
         self.tree: dict[str, tuple] = {}
         self.hashes: dict[str, str] = {}
         self.user = "braidlab"
-        self.console = FOUNDER_UID
+        self.console = UID  # fast user switching: the lab account owns /dev/console
         self.gids = (20, 12)
         self.traversable: set[str] = set()
         self.homes = [FOUNDER_HOME]
@@ -73,7 +73,12 @@ class FakeSystem(har.System):
         table = {UID: SimpleNamespace(pw_name=self.user, pw_gid=20, pw_dir=HOME),
                  FOUNDER_UID: SimpleNamespace(pw_name="juanyanez", pw_gid=20, pw_dir=FOUNDER_HOME)}
         return table.get(uid)
-    def console_uid(self): return self.console
+    def passwd_by_name(self, name):
+        table = {"juanyanez": SimpleNamespace(pw_name="juanyanez", pw_uid=FOUNDER_UID, pw_gid=20, pw_dir=FOUNDER_HOME),
+                 "root": SimpleNamespace(pw_name="root", pw_uid=0, pw_gid=0, pw_dir="/var/root"),
+                 "_sys": SimpleNamespace(pw_name="_sys", pw_uid=499, pw_gid=20, pw_dir="/var/empty"),
+                 "braidlab": SimpleNamespace(pw_name="braidlab", pw_uid=UID, pw_gid=20, pw_dir=HOME)}
+        return table.get(name)
     def groups(self, name, gid): return self.gids
     def lstat(self, path):
         node = self.tree.get(path)
@@ -100,7 +105,7 @@ class FakeSystem(har.System):
     def writable(self, path): return path in self.writable_dirs
     def environ(self): return self.env
     def host_facts(self): return self.facts
-    def account_facts(self, account, entry, uid): return mac.AccountFacts((20,), 0o700)
+    def account_facts(self, account, entry, uid, operator_uid): return mac.AccountFacts((20,), 0o700)
 
 
 def good_machine() -> FakeSystem:
@@ -124,7 +129,7 @@ def arguments(**over) -> SimpleNamespace:
     value = dict(attempt="t009-test", account="braidlab", claude=CLAUDE, claude_sha256=CLAUDE_SHA,
                  interpreter=PY, interpreter_sha256=INTERP_SHA, interpreter_root=PY_ROOT,
                  sandbox_exec_sha256=SANDBOX_SHA, config_dir=f"{HOME}/cfg", run_root=f"{HOME}/run",
-                 arena_parent=f"{HOME}/arena", out_dir=f"{HOME}/out/t009-test", proxy_port=18080,
+                 operator_account="juanyanez", arena_parent=f"{HOME}/arena", out_dir=f"{HOME}/out/t009-test", proxy_port=18080,
                  dry_run=True, founder_go=False)
     value.update(over)
     return SimpleNamespace(**value)
@@ -162,9 +167,43 @@ class PreflightTests(unittest.TestCase):
         s = good_machine(); s.user = "someone"
         self.refused("user-is-dedicated-account", system=s)
 
-    def test_console_user_refuses(self):
+    def test_the_console_owner_is_not_examined_but_the_operator_account_is(self):
+        """RV-16 amended 2026-11-03: fast user switching makes the lab account own /dev/console."""
         s = good_machine(); s.console = UID
-        self.refused("user-is-not-console-user", system=s)
+        self.assertFalse(hasattr(s, "console_uid"))
+        report = self.run_preflight(s)
+        self.assertEqual(report["verdict"], "ready")
+        self.assertTrue(check(report, "user-is-not-operator-account")["ok"])
+        self.assertNotIn("user-is-not-console-user", [c["check"] for c in report["checks"]])
+        self.assertFalse(hasattr(har.System, "console_uid"))
+
+    def test_operator_account_refusals(self):
+        s = good_machine()
+        for name, over in {"the lab account itself": dict(operator_account="braidlab"),
+                           "unknown account": dict(operator_account="nobody-here"),
+                           "missing": dict(operator_account=None), "empty": dict(operator_account=""),
+                           "not an account name": dict(operator_account="Bad Name"),
+                           "root": dict(operator_account="root"),
+                           "system account": dict(operator_account="_sys")}.items():
+            with self.subTest(name):
+                report = self.refused("user-is-not-operator-account", system=s, **over)
+                self.assertNotIn("environment-hash", [c["check"] for c in report["checks"]])
+        s = good_machine()  # the lab account running with the operator's own uid
+        s.passwd_by_uid = lambda uid: SimpleNamespace(pw_name="braidlab", pw_gid=20, pw_dir=HOME)
+        s.ids = lambda: (FOUNDER_UID, FOUNDER_UID)
+        self.refused("user-is-not-operator-account", system=s)
+
+    def test_a_lab_account_below_uid_500_refuses(self):
+        s = good_machine()
+        s.ids = lambda: (499, 499)
+        s.passwd_by_uid = lambda uid: SimpleNamespace(pw_name="braidlab", pw_gid=20, pw_dir=HOME)
+        self.refused("user-is-not-operator-account", system=s)
+
+    def test_the_operator_home_is_checked_even_when_the_account_listing_misses_it(self):
+        s = good_machine(); s.homes = []; s.traversable = {FOUNDER_HOME}
+        self.refused("founder-home-unreadable", system=s)
+        s = good_machine(); s.homes = []
+        self.assertTrue(check(self.run_preflight(s), "founder-home-unreadable")["ok"])
 
     def test_admin_or_wheel_refuses(self):
         for gid in (80, 0):
@@ -178,13 +217,7 @@ class PreflightTests(unittest.TestCase):
     def test_any_other_local_home_traversable_refuses_and_no_homes_fails_closed(self):
         s = good_machine(); s.homes = [FOUNDER_HOME, "/Users/other"]; s.traversable = {"/Users/other"}
         self.refused("founder-home-unreadable", system=s)
-        s = good_machine(); s.homes = []
-        self.refused("founder-home-unreadable", system=s)
-
-    def test_console_owned_by_root_still_checks_the_founder_home(self):
-        s = good_machine(); s.console = 0; s.traversable = {FOUNDER_HOME}
-        self.refused("founder-home-unreadable", system=s)
-        s = good_machine(); s.console = 0
+        s = good_machine(); s.homes = []  # the operator's own home is still checked (see below)
         self.assertTrue(check(self.run_preflight(s), "founder-home-unreadable")["ok"])
 
     def test_supervisor_must_be_the_pinned_isolated_interpreter(self):
@@ -259,9 +292,15 @@ class PreflightTests(unittest.TestCase):
         self.refused("sandbox-exec-root-owned", system=s)
 
     def test_os_outside_the_supported_series_refuses(self):
-        s = good_machine(); s.facts = mac.HostFacts("27.2", "26B123", "arm64")
-        report = self.refused("os-supported", system=s)
-        self.assertIn("27.2", check(report, "os-supported")["detail"])
+        for product in ("26.4", "28.0", "270", "27"):
+            s = good_machine(); s.facts = mac.HostFacts(product, "26B123", "arm64")
+            report = self.refused("os-supported", system=s)
+            self.assertIn(product, check(report, "os-supported")["detail"])
+
+    def test_the_whole_27_series_is_supported(self):
+        for product, build in (("27.0.1", "26A434"), ("27.2", "26B123"), ("27.10.3", "26C7")):
+            s = good_machine(); s.facts = mac.HostFacts(product, build, "arm64")
+            self.assertTrue(check(self.run_preflight(s), "os-supported")["ok"], product)
 
     def test_config_dir_checks_refuse(self):
         s = good_machine()
@@ -334,15 +373,15 @@ class PreflightTests(unittest.TestCase):
         self.assertIn("chmod 700", check(report, "account-home-private")["detail"])
 
     def test_every_refusal_is_reported_together(self):
-        s = good_machine(); s.user = "x"; s.console = UID; s.gids = (80,)
-        report = self.run_preflight(s)
+        s = good_machine(); s.user = "x"; s.gids = (80,)
+        report = self.run_preflight(s, operator_account="nobody-here")
         self.assertGreaterEqual(len(report["failed"]), 3)
 
 
 class DryRunTests(unittest.TestCase):
     ARGV = ["--attempt", "t009-test", "--claude", CLAUDE, "--claude-sha256", CLAUDE_SHA,
             "--interpreter", PY, "--interpreter-sha256", INTERP_SHA, "--interpreter-root", PY_ROOT,
-            "--sandbox-exec-sha256", SANDBOX_SHA, "--config-dir", f"{HOME}/cfg", "--run-root", f"{HOME}/run",
+            "--sandbox-exec-sha256", SANDBOX_SHA, "--operator-account", "juanyanez", "--config-dir", f"{HOME}/cfg", "--run-root", f"{HOME}/run",
             "--arena-parent", f"{HOME}/arena", "--out-dir", f"{HOME}/out/t009-test", "--dry-run"]
 
     def run_main(self, system, argv=None):
@@ -374,6 +413,9 @@ class DryRunTests(unittest.TestCase):
         self.assertEqual((code, report["verdict"]), (2, "refused"))
         with self.assertRaises(SystemExit), mock.patch("sys.stderr", io.StringIO()):
             har.parser().parse_args(["--dry-run"])  # required inputs missing
+        without_operator = [a for a in self.ARGV if a not in ("--operator-account", "juanyanez")]
+        with self.assertRaises(SystemExit), mock.patch("sys.stderr", io.StringIO()):
+            har.parser().parse_args(without_operator)  # the operator account has no default
         without_out = self.ARGV[:self.ARGV.index("--out-dir")] + ["--dry-run"]
         with self.assertRaises(SystemExit), mock.patch("sys.stderr", io.StringIO()):
             har.parser().parse_args(without_out)  # --out-dir has no default inside the repository
@@ -514,6 +556,11 @@ class AttemptTests(unittest.TestCase):
             except har.AttemptRefused as exc:
                 return exc, calls, backend
         return result, calls, backend
+
+    def test_the_operator_account_reaches_the_backend(self):
+        result, calls, _ = self.call()
+        self.assertEqual(result["verdict"], "bundle-written")
+        self.assertEqual(calls["backend"][1]["operator_account"], "juanyanez")
 
     def test_refused_preflight_builds_nothing(self):
         s = good_machine(); s.user = "x"
