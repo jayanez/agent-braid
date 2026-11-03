@@ -29,6 +29,7 @@ SCHEMA = 'agent-braid-plugin/v0.2'
 REPORT_COPY_NAME = 'analysis.json'
 REPORT_COPY_DAYS = 30
 REPORT_COPY_MAX_BYTES = 64 * 1024 * 1024
+REPORT_COPY_MAX_COUNT = 1500  # each copy takes two of the watcher's 4,096 entries (view_tail.MAX_ENTRIES)
 _COPY_DIRECTORY = re.compile(r'^analysis-(\d{8}T\d{12})Z-[0-9a-f]{16}$')
 _COPY_TEMPORARY = '.analysis.tmp'  # not an artifact name: the watcher never reads a half-written copy
 _COPY_STAMP = '%Y%m%dT%H%M%S%f'
@@ -84,9 +85,7 @@ def _report_copies(root_fd):
         if match is None:
             continue
         try:
-            if not stat.S_ISDIR(os.stat(name, dir_fd=root_fd, follow_symlinks=False).st_mode):
-                continue
-            descriptor = os.open(name, _DIRECTORY, dir_fd=root_fd)
+            descriptor = os.open(name, _DIRECTORY, dir_fd=root_fd)  # O_DIRECTORY|O_NOFOLLOW: only real directories
         except OSError:
             continue
         try:
@@ -102,25 +101,29 @@ def _report_copies(root_fd):
     return sorted(found)
 
 
-def _prune_report_copies(root_fd, now, max_bytes, days):
-    """Remove report copies older than `days`, then the oldest until the total is within `max_bytes`."""
+def _prune_report_copies(root_fd, now, max_bytes, days, max_count=REPORT_COPY_MAX_COUNT, keep=None):
+    """Remove report copies older than `days`, then the oldest until within `max_bytes` and `max_count`.
+
+    The copy named `keep` (the one just written) is never removed.
+    """
     cutoff = (now - timedelta(days=days)).strftime(_COPY_STAMP)
-    copies = _report_copies(root_fd)
     kept = []
-    for stamp, name, size in copies:
-        if stamp < cutoff and _discard_copy(root_fd, name):
+    for stamp, name, size in _report_copies(root_fd):
+        if name != keep and stamp < cutoff and _discard_copy(root_fd, name):
             continue
         kept.append((stamp, name, size))
     total = sum(size for _stamp, _name, size in kept)
+    count = len(kept)
     for _stamp, name, size in kept:
-        if total <= max_bytes:
+        if total <= max_bytes and count <= max_count:
             break
-        if _discard_copy(root_fd, name):
+        if name != keep and _discard_copy(root_fd, name):
             total -= size
+            count -= 1
 
 
 def write_report_copy(result_root, registered_root, body, *, now=None, max_bytes=REPORT_COPY_MAX_BYTES,
-                      days=REPORT_COPY_DAYS):
+                      days=REPORT_COPY_DAYS, max_count=REPORT_COPY_MAX_COUNT):
     """Store `body` (the report bytes) as <result_root>/analysis-<utc stamp>-<random>/analysis.json, then prune.
 
     The directory is created 0700 and the file 0600 under a temporary name and renamed into place, so the file
@@ -138,7 +141,6 @@ def write_report_copy(result_root, registered_root, body, *, now=None, max_bytes
                 descriptor = os.open(_COPY_TEMPORARY, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600,
                                      dir_fd=directory_fd)
                 with os.fdopen(descriptor, 'wb') as stream:
-                    os.fchmod(descriptor, 0o600)
                     stream.write(body)
                     stream.flush()
                     os.fsync(descriptor)
@@ -149,7 +151,7 @@ def write_report_copy(result_root, registered_root, body, *, now=None, max_bytes
             _discard_copy(root_fd, name)
             raise
         try:
-            _prune_report_copies(root_fd, when, max_bytes, days)
+            _prune_report_copies(root_fd, when, max_bytes, days, max_count, keep=name)
         except OSError:
             pass  # retention is best effort: the new copy stays
     finally:
@@ -180,7 +182,8 @@ class WorkspaceService(core.ToolingService):
             result = envelope['result']
             if type(result) is dict and result.get('type') == 'evidence-artifact-reference':
                 with self.lock:
-                    result = json.loads(self.artifacts[result['artifactId']].data)
+                    data = self.artifacts[result['artifactId']].data
+                result = json.loads(data)
             report = result['report']
             if type(report) is not dict:
                 return

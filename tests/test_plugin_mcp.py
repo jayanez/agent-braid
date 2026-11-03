@@ -381,7 +381,10 @@ class PluginReportCopyTests(unittest.TestCase):
 
     def test_only_a_successful_analyze_work_writes_a_copy(self):
         self.start()
-        self.analyze('analyze')
+        ok = {'status': 'ok', 'result': {'report': {'a': 1}}}  # an ok `analyze` envelope: only the name gates a copy
+        with mock.patch.object(plugin_mcp.core.ToolingService, 'invoke', return_value=ok):
+            self.assertEqual(self.service.invoke('analyze', {}, threading.Event()), ok)
+        self.assertEqual(list(self.root.iterdir()), [])
         for result in (self.analyze(kind='unsupported'), self.analyze(request={}),
                        self.router.invoke('analyze-work', {'workspaceId': 'not-registered'}, threading.Event())):
             self.assertEqual(result['status'], 'refused')
@@ -404,6 +407,7 @@ class PluginReportCopyTests(unittest.TestCase):
             self.assertEqual(comparable(failed), comparable(baseline))
         self.assertEqual(len(self.copies()), 1)  # only the baseline call wrote one
 
+    @unittest.skipIf(hasattr(os, 'geteuid') and os.geteuid() == 0, 'root ignores directory permissions')
     def test_an_unwritable_result_root_does_not_fail_the_call(self):
         self.start()
         self.root.chmod(0o500)
@@ -506,6 +510,44 @@ class PluginReportCopyTests(unittest.TestCase):
         with mock.patch.object(plugin_mcp, '_prune_report_copies', side_effect=OSError):
             self.assertEqual(self.analyze()['status'], 'ok')
         self.assertEqual(len(self.copies()), 1)
+
+    def test_retention_caps_the_number_of_copies_and_never_removes_the_new_one(self):
+        self.assertEqual(plugin_mcp.REPORT_COPY_MAX_COUNT, 1500)
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        made = [self.make_copy(now - timedelta(hours=10 - n)) for n in range(5)]
+        self.write(self.root, now=now, max_count=3)
+        self.assertEqual([p.exists() for p in made], [False] * 3 + [True] * 2)
+        self.assertEqual(len(self.copies()), 3)  # the new copy is one of them
+
+    def test_an_oversized_new_copy_is_kept_when_it_alone_exceeds_the_cap(self):
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        old = self.make_copy(now - timedelta(hours=1))
+        self.write(self.root, b'x' * 100, now=now, max_bytes=10)
+        self.assertFalse(old.exists())
+        names = self.copies()
+        self.assertEqual(len(names), 1)
+        self.assertEqual((self.root / names[0] / 'analysis.json').read_bytes(), b'x' * 100)
+
+    def test_an_abandoned_temporary_only_directory_is_pruned_once_old(self):
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        stale = self.make_copy(now - timedelta(days=31))
+        (stale / 'analysis.json').rename(stale / '.analysis.tmp')
+        self.write(self.root, now=now)
+        self.assertFalse(stale.exists())
+
+    def test_concurrent_writes_each_leave_a_whole_copy(self):
+        self.start()
+        bodies = [json.dumps({'n': n}).encode() for n in range(8)]
+        threads = [threading.Thread(target=self.write, args=(self.root, body)) for body in bodies]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+        stored = sorted((self.root / name / 'analysis.json').read_bytes() for name in self.copies())
+        self.assertEqual(stored, sorted(bodies))
 
     def test_the_shadow_and_telemetry_paths_are_not_overridden(self):
         for name in ('_shadow', '_invoke_measured', '_invoke'):
