@@ -15,12 +15,12 @@
   ],
   "assumptions": "Hosts keep exporting OTLP HTTP/JSON and posting hooks as documented on 2026-10-31 (unverified until host verification); empty-bodied HTTP hook responses are non-blocking (unverified until T030); the Claude desktop browser pane loads loopback pages (unverified until T032); the viewer runs on the same machine as the hosts; ADR 0032 and ADR 0033 are decided before implementation.",
   "authority_snapshot": {
-    "commit": "b21c1c3b3d8f4ef5f7466433d18da927ecc6465f",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
-      "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+      "LICENSE": "de98edde0132e64db2b0c9cfbf2be1e503437a57fc212936195be4c46c1817be",
       "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
       "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
       "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
@@ -61,7 +61,8 @@
       "docs/adr/0032-activity-viewer-companion.md": "75c41ed41b9ffa886df423dffb47ff2fd110f4a7fe639d54ee6b82b3148a5b06",
       "docs/adr/0033-vendored-threejs-mit-boundary.md": "65591eb05ec807cc1cf02f0dfadbd735affae109f9a590920bc9b92763d52fc4",
       "docs/adr/0034-system-one-shadow-advisory-boundary.md": "83de00082099fbefad0f2603aae8020270b157e731aae613f412586d33c086eb",
-      "docs/adr/0035-native-claude-laboratory-containment.md": "eab193465ad4bad971893a779ef5a9709f206aac6a3a660b3f5ded4c60f8b147",
+      "docs/adr/0035-native-claude-laboratory-containment.md": "9db60ef1544e5218eb7fa7ba34315f48b33e464b761e07359fc5bfcd9bfaf0c5",
+      "docs/adr/0036-assurance-profiles.md": "9a7abf22920a9ba91cb61c5c48b905a1415182bc9434bcf884680ec41666b464",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -96,16 +97,16 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "New contract agent-braid-loom/v0.1, new effort pack contract agent-braid-loom-effort-pack/v0.1, new surfaces matrix agent-braid-view-surfaces/v0.1 and new optional command group agent-braid view. No change to existing contracts, the plugin package, the portable MCP surface, the SPEC-047 telemetry store or frozen evidence. Vendored Three.js adds an MIT directory under ADR 0033.",
   "domain": "Local machine, loopback interface, Agent Braid artifacts of the current contracts (analysis, Git replay plan, scheduler preparations, runtime grants and state, SPEC-057 ownership outputs as JSON, SPEC-052 gate phases and results, allowlisted usage fields of host stream events) and Claude Code and Codex telemetry shapes recorded in fixtures. Not covered: transcripts, Codex hooks and notify, cloud sessions, IDE extensions, other hosts.",
   "evidence_snapshot": {
-    "commit": "b21c1c3b3d8f4ef5f7466433d18da927ecc6465f",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "Read-only. No route, command or control executes, schedules, grants, retries, cancels or writes to repositories, registries, run directories or host configuration; executionAuthorization is the constant false; hook routes accept only observational events and answer with empty bodies, so the viewer takes no part in host decisions; network use is limited to a loopback server with separate read and ingest credentials; effort data stays in memory; files are written only to an explicit --record file (effort only with --record-effort) and explicit export destinations, created exclusively with owner-only permissions.",
-  "human_review": "approved",
+  "human_review": "pending",
   "hypotheses": "None. Q-VIS1 is an open question, not a hypothesis: does seeing the braid shorten the time an operator needs to locate a hazard or conflicting pair compared with reading the JSON receipt? It has no falsification condition, supports no claim and is not a requirement; an optional owner-run descriptive observation may be recorded, and null or inconclusive results are valid.",
   "observation_contract": "Owned fixtures and recorded host payloads; byte comparison of adapter outputs against source artifacts; HTTP requests against a loopback test server; file-system snapshots for persistence checks; host behavior only through owner-run receipts recorded separately with environment and limits.",
   "references": [
@@ -135,7 +136,15 @@
         {
           "given": "the schema and a corpus of valid and seeded invalid events",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally.",
+              "outcome": "local unit tests of tests.test_view_loom passed on owned fixtures in the VIS.1a run of 2026-11-03 (598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI)). Re-run of the full 16-module command at 34db87a2 after PR #1013: 676 tests OK, 5 skipped; the 598 above covers the view modules and test_plugin_mcp only (evidence/vis1a-fixes-tests-20261103.json).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-local-tests-20261103.json",
+              "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_001 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_001",
@@ -158,6 +167,13 @@
               "outcome": "met: 48 sessions and 5 of 6 kinds overall, 11 sessions and 5 kinds outside the synthetic corpora, against the OD-8 threshold of at least 5 sessions and 3 of 6 kinds",
               "path": "specs/061-activity-viewer/evidence/census-20261101.json",
               "sha256": "1279b9f6a2bd8a6feeb4bc8a7c82a5886924b202c9afb0c6111fd01f66a1d653"
+            },
+            {
+              "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally. Scope: the Claude Code and artifact adapters of VIS.1a; the host stream adapters and Codex shapes are VIS.1b. The census item above is independent evidence of the kinds of sessions that exist, not of adapter behaviour.",
+              "outcome": "local unit tests of tests.test_view_adapters, tests.test_view_tail passed on owned fixtures in the VIS.1a run of 2026-11-03 (598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI)). Re-run of the full 16-module command at 34db87a2 after PR #1013: 676 tests OK, 5 skipped; the 598 above covers the view modules and test_plugin_mcp only (evidence/vis1a-fixes-tests-20261103.json).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-local-tests-20261103.json",
+              "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_002 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -175,7 +191,15 @@
         {
           "given": "fixtures with each absence case",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally.",
+              "outcome": "local unit tests of tests.test_view_model, tests.test_view_store, tests.test_view_adapters passed on owned fixtures in the VIS.1a run of 2026-11-03 (598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI)). Re-run of the full 16-module command at 34db87a2 after PR #1013: 676 tests OK, 5 skipped; the 598 above covers the view modules and test_plugin_mcp only (evidence/vis1a-fixes-tests-20261103.json).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-local-tests-20261103.json",
+              "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_003 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_003",
@@ -191,7 +215,22 @@
         {
           "given": "a running server",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally.",
+              "outcome": "local unit tests of tests.test_view_serve passed on owned fixtures in the VIS.1a run of 2026-11-03 (598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI)). Re-run of the full 16-module command at 34db87a2 after PR #1013: 676 tests OK, 5 skipped; the 598 above covers the view modules and test_plugin_mcp only (evidence/vis1a-fixes-tests-20261103.json).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-local-tests-20261103.json",
+              "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4"
+            },
+            {
+              "command": "python -m unittest tests.test_view_serve tests.test_view_tail tests.test_view_docs; then python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They show that the two fixes behave as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035) and not an independent review. Names only: no cookie, token or open-code value is recorded. Not a browser test with two real viewers; the test sends both cookies to two in-process servers.",
+              "outcome": "closure finding 2 (F2, T046) closed by PR #1013: the per-instance session cookie name braid_view_<port>; tests tests.test_view_serve.CredentialTests.test_two_viewers_on_loopback_keep_separate_sessions, tests.test_view_serve.CredentialTests.test_open_code_is_exchanged_once_for_a_strict_http_only_cookie passed locally (150 tests of test_view_serve, test_view_tail and test_view_docs OK; full 16-module command 676 tests OK, 5 skipped).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-fixes-tests-20261103.json",
+              "sha256": "345368e15f1430b4d5796b62289b643c8201373fa58169e67bb3db1121a901eb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_004 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_004",
@@ -207,7 +246,15 @@
         {
           "given": "recorded payload fixtures for each host shape, including payloads carrying prompt text, tool output and unknown attributes",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally. Scope: only the Claude Code hook part of REQ-005; the OTLP part and the Codex shapes are VIS.1b (T014 to T023) and have no evidence here.",
+              "outcome": "local unit tests of tests.test_view_hooks passed on owned fixtures in the VIS.1a run of 2026-11-03 (598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI)). Re-run of the full 16-module command at 34db87a2 after PR #1013: 676 tests OK, 5 skipped; the 598 above covers the view modules and test_plugin_mcp only (evidence/vis1a-fixes-tests-20261103.json).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-local-tests-20261103.json",
+              "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_005 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_005",
@@ -230,6 +277,20 @@
               "outcome": "met: 48 sessions and 5 of 6 kinds overall, 11 sessions and 5 kinds outside the synthetic corpora, against the OD-8 threshold of at least 5 sessions and 3 of 6 kinds",
               "path": "specs/061-activity-viewer/evidence/census-20261101.json",
               "sha256": "1279b9f6a2bd8a6feeb4bc8a7c82a5886924b202c9afb0c6111fd01f66a1d653"
+            },
+            {
+              "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally. Scope: the cited modules cover watcher ingest, the CLI and the MCP surface; Last-Event-ID resume, exactly-once delivery and ring-overflow gaps are exercised by test_view_serve and test_view_store, which are cited under SC-004 and SC-003, not here.",
+              "outcome": "local unit tests of tests.test_view_tail, tests.test_view_cli, tests.test_plugin_mcp passed on owned fixtures in the VIS.1a run of 2026-11-03 (598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI)). Re-run of the full 16-module command at 34db87a2 after PR #1013: 676 tests OK, 5 skipped; the 598 above covers the view modules and test_plugin_mcp only (evidence/vis1a-fixes-tests-20261103.json).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-local-tests-20261103.json",
+              "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4"
+            },
+            {
+              "command": "python -m unittest tests.test_view_serve tests.test_view_tail tests.test_view_docs; then python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They show that the two fixes behave as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035) and not an independent review. Names only: no cookie, token or open-code value is recorded. A cap reached inside one directory still refuses by name order; the test uses a flat set of report directories on owned fixtures.",
+              "outcome": "closure finding 1 (F1, T045) closed by PR #1013: newest-first directory walk, so a reached store cap refuses the oldest report copies; tests tests.test_view_tail.BoundTests.test_when_a_store_cap_is_reached_the_newest_report_copies_win, tests.test_view_tail.IngestTests.test_nested_artifacts_get_a_root_relative_posix_evidence_path_with_newest_directory_first passed locally (150 tests of test_view_serve, test_view_tail and test_view_docs OK; full 16-module command 676 tests OK, 5 skipped).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-fixes-tests-20261103.json",
+              "sha256": "345368e15f1430b4d5796b62289b643c8201373fa58169e67bb3db1121a901eb"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_006 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -295,7 +356,15 @@
         {
           "given": "`contracts/loom-event.example.jsonl`",
           "id": "SC-010",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally.",
+              "outcome": "local unit tests of tests.test_view_web_bundle, tests.test_view_model passed on owned fixtures in the VIS.1a run of 2026-11-03 (598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI)). Re-run of the full 16-module command at 34db87a2 after PR #1013: 676 tests OK, 5 skipped; the 598 above covers the view modules and test_plugin_mcp only (evidence/vis1a-fixes-tests-20261103.json).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-local-tests-20261103.json",
+              "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_010 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_010",
@@ -311,7 +380,15 @@
         {
           "given": "the example model",
           "id": "SC-011",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally. Scope: only the CLI part of REQ-011 (serve, validate, env); the frame part and /frame.* are VIS.1b and have no evidence here.",
+              "outcome": "local unit tests of tests.test_view_cli passed on owned fixtures in the VIS.1a run of 2026-11-03 (598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI)). Re-run of the full 16-module command at 34db87a2 after PR #1013: 676 tests OK, 5 skipped; the 598 above covers the view modules and test_plugin_mcp only (evidence/vis1a-fixes-tests-20261103.json).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-local-tests-20261103.json",
+              "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_011 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_011",
@@ -327,7 +404,15 @@
         {
           "given": "each subcommand",
           "id": "SC-012",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally. Scope: the wheel part (a built wheel contains every bundle and vendored file with its manifest hash) was not exercised locally, because the wheel and sdist build tests were skipped; only CI runs it.",
+              "outcome": "local unit tests of tests.test_view_cli, tests.test_view_packaging passed on owned fixtures in the VIS.1a run of 2026-11-03 (598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI)). Re-run of the full 16-module command at 34db87a2 after PR #1013: 676 tests OK, 5 skipped; the 598 above covers the view modules and test_plugin_mcp only (evidence/vis1a-fixes-tests-20261103.json).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-local-tests-20261103.json",
+              "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_012 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_012",
@@ -343,7 +428,15 @@
         {
           "given": "the change set",
           "id": "SC-013",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally.",
+              "outcome": "local unit tests of tests.test_view_boundaries, tests.test_orchestration_governance, tests.test_plugin_package, tests.test_validation_profiles passed on owned fixtures in the VIS.1a run of 2026-11-03 (598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI)). Re-run of the full 16-module command at 34db87a2 after PR #1013: 676 tests OK, 5 skipped; the 598 above covers the view modules and test_plugin_mcp only (evidence/vis1a-fixes-tests-20261103.json).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-local-tests-20261103.json",
+              "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_013 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_013",
@@ -397,7 +490,15 @@
         {
           "given": "the documentation",
           "id": "SC-015",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+              "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally.",
+              "outcome": "local unit tests of tests.test_view_docs passed on owned fixtures in the VIS.1a run of 2026-11-03 (598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI)). Re-run of the full 16-module command at 34db87a2 after PR #1013: 676 tests OK, 5 skipped; the 598 above covers the view modules and test_plugin_mcp only (evidence/vis1a-fixes-tests-20261103.json).",
+              "path": "specs/061-activity-viewer/evidence/vis1a-local-tests-20261103.json",
+              "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_015 record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/061-activity-viewer/validation-plan.md",
           "test_name": "procedure_015",

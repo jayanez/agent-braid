@@ -215,13 +215,13 @@ per-probe owner authorization but no ADR, and run first.
   newest first and a store cap that is reached refuses the oldest copies (with its
   `stream-truncated` gap), never today's analysis. Files:
   `agent_braid/view_tail.py`, `tests/test_view_tail.py`. Dependencies: T040, T041.
-  Verification: procedure_006. Done 2026-11-03: closure-fixes PR.
+  Verification: procedure_006. Done 2026-11-03: #1013.
 - [x] T046 (REQ-004 / SC-004; closure finding 2): per-instance session cookie name
   `braid_view_<port>` (same `HttpOnly; SameSite=Strict; Path=/`), so two viewers on
   loopback no longer overwrite each other's session. Files:
   `agent_braid/view_serve.py`, `tests/test_view_serve.py`,
   `docs/tooling/VIEWER.md`, `specs/061-activity-viewer/contracts/ui-security-privacy.md`.
-  Dependencies: T017. Verification: procedure_004. Done 2026-11-03: closure-fixes PR.
+  Dependencies: T017. Verification: procedure_004. Done 2026-11-03: #1013.
 - [ ] T047 (closure review, VIS.1b follow-ups): findings 3 (hook strands never
   reopen after `SessionEnd`/`SubagentStop`; `_strands`/`_children` unbounded),
   4 (static bundle serves every non-dot file, not a manifest), 5 (slow-client
@@ -274,5 +274,10 @@ per-probe owner authorization but no ADR, and run first.
 - [ ] T036: Pre-PR reviews (code review, quality, simplification),
   `validate_change --profile pr` on the stable candidate, `/speckit-converge`, at
   the VIS.1a and VIS.1b closures. Dependencies: the delivery's tasks.
+  VIS.1a part complete 2026-11-03: closure review #1011 (code, quality and
+  simplification reviews), fixes #1013, and the pre-PR reviews and `pr` validation of
+  the evidence and freeze PRs. The box stays open until the VIS.1b closure.
 - [ ] T037: Record obtained evidence in `assurance.json`, freeze, owner review of
-  each delivery closure. Dependencies: T036.
+  each delivery closure. Dependencies: T036. VIS.1a: evidence recorded 2026-11-03
+  and review reset to pending; the freeze and the owner approval record follow in the
+  next PR, after this one is merged.
