@@ -1,0 +1,46 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T009 go and dedicated account (live qualification attempt preparation)",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-03",
+  "baseCommit": "3439249c8fb161c64ac50aa615e7ad61ba5235c5",
+  "decisionChannel": "Founder answers to interactive AskUserQuestion prompts in the HAR orchestrator session, 2026-11-03, recorded verbatim. Additive to founder-decisions-20261102.json, -20261102b.json and -20261102c.json.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261102.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261102b.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261102c.json"
+  ],
+  "decisionOrder": [
+    "T009-GO",
+    "T009-ACCOUNT"
+  ],
+  "decisions": [
+    {
+      "id": "T009-GO",
+      "item": "Go for T009, the first real attempt to run claude inside the containment (at most 3 small Haiku sessions, result kept whatever happens)",
+      "question": "Con esa explicación: ¿das el go a T009 (primera prueba real de la jaula con `claude`, ≤3 sesiones Haiku pequeñas, resultado guardado pase lo que pase)?",
+      "ownerStatement": "Go condicionado (Recommended)",
+      "history": "An earlier ask of the same question was answered \"No lo entiendo muy bien. Explícamelo de forma clara con ejemplos y vuelve a preguntarme\"; the orchestrator explained with examples and asked again (ADR 0036 decision 12, human decision support).",
+      "decision": {
+        "disposition": "conditional-go",
+        "reading": "The orchestrator prepares evidence and an operator checklist; the founder runs the sudo setup; the orchestrator verifies the setup with evidence (driver --dry-run); only then the founder launches the attempt in the dedicated account's own login session. Nothing native runs before those steps.",
+        "bounds": "NC-10: at most 3 Haiku low-effort sessions, each at most 2 % of the 5-hour window; NC-6 quota readings before and after each session; NC-1, NC-4, NC-5, NC-7, NC-8, NC-11, RV-17/19/21/22 and DRV-06/10 stay as recorded"
+      }
+    },
+    {
+      "id": "T009-ACCOUNT",
+      "item": "How the dedicated account is created and run",
+      "question": "La cuenta dedicada debe ser estándar (no admin), sin acceso a tu home, y el intento debe correr en SU propia sesión de login (no sudo -u). ¿Cómo la creamos?",
+      "ownerStatement": "Comando que te doy (Recommended)",
+      "decision": {
+        "disposition": "operator-runs-sysadminctl",
+        "reading": "The orchestrator gives sysadminctl commands; the founder runs them with sudo. The account is standard (not admin), has its own home, has no access to the founder's home, and the attempt runs in its own login session, not through sudo -u."
+      }
+    }
+  ],
+  "stillOpen": [],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records two founder decisions only. executionAuthorization stays false and issuance stays T010 (NC-9, founder only). No native session, probe, sudo command or account creation was run by the preparation of T009 (scripts/har_t009_attempt.py, quickstart.md). Any change needs a new founder decision record."
+}

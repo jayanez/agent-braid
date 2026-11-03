@@ -193,6 +193,18 @@ shared object store fails the portable-root check).
   Verification: procedure_005 to procedure_008 and procedure_010.
   Evidence: the bundle and its SHA-256. A not-qualified or inconclusive result
   completes this task as a valid negative outcome (H1 not supported).
+  Status 2026-11-03: the founder gave a conditional go
+  (`evidence/founder-decisions-20261103.json`: the orchestrator prepares evidence and
+  a checklist, the founder runs the sudo setup, the orchestrator verifies it, then the
+  founder launches the attempt in the dedicated account's own login session) and chose
+  the sysadminctl commands for the standard account. The re-check of the #988 lines is
+  `evidence/recheck-988-touched-lines.md` (GO, no fixes). The operator-run driver is
+  `scripts/har_t009_attempt.py` (`tests/test_har_t009_attempt.py`; `--dry-run` is
+  pre-flight only) and the runbook is quickstart.md "Operator setup for T009".
+  Nothing native has run; `executionAuthorization` stays false and issuance stays
+  T010. The driver's dry run on the founder's machine is expected to refuse on
+  `os-supported` (macOS 27.2, NC-3 allows 27.0.x) until a founder decision and a
+  re-checked backend edit say otherwise. This task stays unchecked.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes
