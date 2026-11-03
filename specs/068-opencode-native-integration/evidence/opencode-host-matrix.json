@@ -1,0 +1,425 @@
+{
+  "schema": "agent-braid-spec-evidence/v0.1-draft",
+  "spec": "SPEC-068",
+  "task": "T002",
+  "requirement": "REQ-002",
+  "scenario": "SC-002",
+  "procedure": "procedure_002",
+  "observedBy": "track",
+  "date": "2026-11-03",
+  "opencodeVersion": "2.1.4",
+  "opencodeBinary": "~/.opencode/bin/opencode (v2.1.4, channel latest)",
+  "platform": {
+    "os": "macOS (Darwin 27.2.0)",
+    "arch": "arm64",
+    "git": "2.54.0 (Apple Git-157)",
+    "python": "Xcode Python 3.9 used by the stub MCP server"
+  },
+  "isolation": {
+    "profile": "Per-profile temporary directory; HOME, XDG_CONFIG_HOME, XDG_DATA_HOME, XDG_CACHE_HOME and XDG_STATE_HOME all pointed into it; OPENCODE_DISABLE_AUTOUPDATE=1; a unique background-service port per profile (opencode service set port) because a real OpenCode desktop service listens on the default port.",
+    "checks": [
+      "opencode debug paths printed only temporary paths for home/config/data/cache/state before any other command",
+      "the spawned background service environment showed the temporary HOME and XDG_CONFIG_HOME",
+      "service logs and databases were written under the temporary data directory",
+      "all profile services and stub processes were stopped at the end; the desktop app's own service was not touched"
+    ],
+    "notRead": "The user's real ~/.config/opencode, ~/.local/share/opencode and OpenCode desktop data were neither read nor written. The host's system temp directory (reported by debug paths as 'tmp') is shared and was not inspected.",
+    "noModel": "No model provider was called, no credential entered, no account created; run, TUI and session prompts were not used."
+  },
+  "fixture": {
+    "description": "Local Git fixture, never published. Working repo -> bare repo; tags v0.0.1 (basic), v0.0.3 (attributes, symlink, dotfiles, CRLF), v0.0.4 (adds a 64 MiB file), v0.0.5 (removes it, edits index.js). Subdirectory plugins/agent-braid: package.json (name agent-braid, type module, private, exports '.' -> ./opencode/index.js, no dependencies), opencode/index.js (default export {id, setup(ctx)} calling the three transforms and a probe that appended JSON lines to $PROBE_FILE), launch (mode 100755, exec python3 stub_mcp.py), stub_mcp.py (stdio JSON-RPC: initialize, tools/list with tool 'ping', tools/call), skills/analyze/SKILL.md, crlf.txt, blob.bin, runtime/RECORD.",
+    "gitattributesRoot": "* -text\\nplugins/agent-braid/lf-in-repo.txt text eol=crlf\\nplugins/agent-braid/export-ignore.txt export-ignore\\nplugins/agent-braid/export-subst.txt export-subst",
+    "gitattributesSubdir": "sub-eol.txt text eol=crlf",
+    "probeNote": "The probe plugin wrote to a file and used timers; it is a measuring instrument, not the product entry (which must write nothing)."
+  },
+  "hostApiUsed": "Read-only host HTTP API through 'opencode api <operationId>' (mcp.list, skill.list, command.list, plugin.list, config.get, agent.list, permission.*), experimental.mcp.connect/disconnect, and opencode reload. API location is passed with --param 'location[directory]=...' (default is HOME).",
+  "rows": [
+    {
+      "id": "01-module-load",
+      "requirement": "R1",
+      "status": "observed",
+      "question": "Does a dependency-free ES module plugin (package.json type=module, exports['.']=opencode/index.js, no dependencies) load, and do ctx.mcp.transform, ctx.skill.transform and ctx.command.transform take effect?",
+      "method": "Fixture plugin installed with plugin add from a local bare Git repo, loaded by a disposable background service; a probe wrote JSON lines to a file; effects read through the host HTTP API (opencode api).",
+      "commands": [
+        "export HOME=$TMP/<p>/home XDG_CONFIG_HOME=$TMP/<p>/config XDG_DATA_HOME=$TMP/<p>/data XDG_CACHE_HOME=$TMP/<p>/cache XDG_STATE_HOME=$TMP/<p>/state OPENCODE_DISABLE_AUTOUPDATE=1; opencode service set port <unique-port>",
+        "opencode plugin add 'git+file://$TMP/fixture.git#v0.0.3::path:plugins/agent-braid'",
+        "opencode api mcp.list --param 'location[directory]=$TMP/<p>/proj'",
+        "opencode api skill.list --param 'location[directory]=$TMP/<p>/proj'",
+        "opencode api command.list --param 'location[directory]=$TMP/<p>/proj'",
+        "opencode api plugin.list --param 'location[directory]=$TMP/<p>/proj'"
+      ],
+      "observation": [
+        "Loaded with no @opencode/plugin import and no dependencies. Default export must be an object with an id and a setup (or effect) function: a plain function default export, or an object without id, fails with state.status=failed and message 'Plugin must export a default definition with an id and an effect or setup function.' (visible in plugin.list and the server log).",
+        "mcp.transform: editor has list/get/set/update/remove; editor.set('agent-braid', {type:'local', command:[<root>/launch,'plugin','serve','--plugin-root',<root>], codemode:false, protocol:'legacy'}) registered the server; the host spawned launch (executable bit used) and reached status connected with 1 tool.",
+        "The spawned stdio server received initialize with protocolVersion 2025-11-25 and clientInfo opencode 2.1.4 (capabilities elicitation, roots), then notifications/initialized, then tools/list.",
+        "skill.transform: editor has list/get/add/update/remove; an added skill id 'analyze' appeared in skill.list when no discovered skill had that id (see row 02 for the shadowing case).",
+        "command.transform: editor has only add; the two commands appeared in command.list (see row 07).",
+        "ctx keys seen: app, location, options, agent, aisdk, command, credential, event, experimental, generate, model, provider, integration, mcp, permission, plugin, reference, rpc, skill, storage, tool, vcs, websearch, worktree, session, shell. ctx.options was {}.",
+        "Transform callbacks may run more than once per load and unevenly (mcp once, skill and command up to twice in the same load; also again on reload), and their relative order differed between runs (mcp, command, skill in one run; skill, mcp, command in another). The entry must be idempotent and order independent."
+      ],
+      "limits": [
+        "Plain-object default export shape inferred from the host error message and from the working fixture; the @opencode/plugin Plugin.define helper was not installed or compared.",
+        "Only server features were exercised (features.server=true); no TUI plugin.",
+        "macOS arm64, OpenCode 2.1.4 only."
+      ]
+    },
+    {
+      "id": "02-transform-order-vs-skills",
+      "requirement": "R4",
+      "status": "contradicts-research",
+      "question": "Where do plugin-added skills sit in the precedence order, and can editor.get/list in the skill transform detect an existing (discovered) skill ID?",
+      "method": "Created skill id 'analyze' as SKILL.md in HOME/.claude/skills, HOME/.agents/skills, XDG_CONFIG_HOME/opencode/skills, project .claude/skills, .agents/skills and .opencode/skills (distinct description markers), plus single-source ids; the fixture plugin added its own 'analyze'; resolved result read from skill.list; a second run added an explicit skills config entry.",
+      "commands": [
+        "mk() { mkdir -p \"$1/$2\"; printf -- '---\\nname: %s\\ndescription: marker-%s\\n---\\nbody\\n' \"$2\" \"$3\" > \"$1/$2/SKILL.md\"; }  # for each location",
+        "opencode api skill.list --param 'location[directory]=$TMP/<p>/proj'",
+        "opencode.json: {\"skills\": {\"paths\": [\"$TMP/extra-skills\"]}}  (also tried a plain array)"
+      ],
+      "observation": [
+        "At transform time editor.list() returned only the built-in skills (opencode, report); editor.get('analyze') returned null even though discovered 'analyze' skills existed on disk. The transform therefore cannot detect a discovered skill ID.",
+        "editor.add of 'analyze' succeeded in the editor (get returned it afterwards) but the final skill.list showed the discovered skill, not the plugin's: discovered skills replace a plugin-added skill with the same id, silently.",
+        "Observed winners for the same id: the discovered set beat the plugin-added skill (one case, against all six discovered candidates); home .agents beat home .claude (id execute); project .opencode/skills beat the five other discovered candidates (id analyze); an explicit skills config entry beat all of them including project .opencode/skills. The full order built-in < plugin-added < home .claude < home .agents < XDG config skills < project .claude < project .agents < project .opencode < explicit entry is consistent with these observations but is NOT the research R4 order (R4 does not place project .claude/.agents), and the positions of XDG config skills versus project .claude/.agents were not compared. The explicit-entry result was seen live; its raw output was not saved to a file.",
+        "A call to ctx.skill.list() made later (3 s after setup, outside any transform) returned the resolved list including discovered skills with their paths, so a post-load check is possible; inside setup (before discovery) it returned only built-ins. Calling it inside a transform was not tried (re-entrancy risk).",
+        "Skills in an ancestor directory of the working directory (<proj>/sub/.claude/skills) were discovered for a location nested below it."
+      ],
+      "contradiction": "R4 consequence (and contract 'refusal in the transform to replace an existing skill ID') cannot work for discovered skills: the transform sees only built-in and plugin skills. Outcome is still the documented one (higher-precedence user skill wins without warning), so D2 and REQ-004/SC-004 (plugin doctor reports the collision) stand; only the in-entry detection claim must be reworded. Does not touch D3, D7, D8, D13 or the dependency-free entry.",
+      "limits": [
+        "Explicit skills entries tested as an absolute directory containing <id>/SKILL.md, not other forms.",
+        "Precedence between plugin-added skill and plugin-added skill from another plugin not tested.",
+        "macOS only; Linux discovery paths not observed."
+      ]
+    },
+    {
+      "id": "03-mcp-override",
+      "requirement": "R3",
+      "status": "observed",
+      "question": "Does editor.set('agent-braid', ...) override a user 'agent-braid' MCP entry in opencode.json, and can the entry detect it first?",
+      "method": "Added mcp.agent-braid (local, command that records USER_ENTRY and starts the stub) to the global opencode.json; fixture plugin logged editor.list()/editor.get('agent-braid') before and after set.",
+      "commands": [
+        "opencode.json: {\"mcp\": {\"agent-braid\": {\"type\": \"local\", \"command\": [\"/bin/sh\", \"-c\", \"echo USER_ENTRY >> $TMP/user-entry-ran.txt; exec python3 stub_mcp.py user-entry\"]}}, \"plugins\": [<source>]}",
+        "opencode api mcp.list --param 'location[directory]=$TMP/<p>/proj'",
+        "opencode api config.get --param 'location[directory]=$TMP/<p>/proj'"
+      ],
+      "observation": [
+        "Before the entry's set, editor.list() returned ['agent-braid'] and editor.get('agent-braid') returned the user entry (normalized: timeout:{} added; enabled:false is reported as disabled:true). The entry can detect it first.",
+        "editor.set overrode it: after set the editor value was the plugin's; the stub was started with the plugin argv, the user's USER_ENTRY marker file was never written, and mcp.list showed one 'agent-braid' server connected.",
+        "No warning or error accompanied the override.",
+        "config.get reports file contents normalized (mcp entries appear under mcp.servers), so a check for 'exactly the plugin value' must compare semantic fields (for example command[0] and --plugin-root), not whole-object equality."
+      ],
+      "limits": [
+        "Only a global-file user entry tested.",
+        "The refusal logic itself is not implemented here (observation only)."
+      ]
+    },
+    {
+      "id": "04-tool-approval-default-permissions",
+      "requirement": "R3/contract Host permissions",
+      "status": "observed",
+      "question": "What are the default permissions for plugin-registered MCP tools (agent-braid_*)?",
+      "method": "Read the effective per-agent permission rule sets from the host (agent.list) with no permission config; then with permission {'agent-braid_*':'ask','agent-braid_ping':'allow'} in opencode.json; tool ids from ctx.tool.list().",
+      "commands": [
+        "opencode api agent.list --param 'location[directory]=$TMP/<p>/proj'",
+        "opencode.json: {\"permission\": {\"agent-braid_*\": \"ask\", \"agent-braid_ping\": \"allow\"}}",
+        "opencode api permission.saved.list --param 'location[directory]=$TMP/<p>/proj'"
+      ],
+      "observation": [
+        "Default rule sets (agents build, general, plan, explore, hidden ones) start with action '*' resource '*' effect allow; the only ask rules are read of *.env and *.env.*; browser is denied; plan denies edit; explore denies '*' then allows a named set. No rule mentions MCP or agent-braid_*. Rule evaluation order (first or last match) was not observed.",
+        "The permission pattern that a user config can target is the tool id '<server>_<tool>' (for example agent-braid_ping, namespace agent-braid): a user permission config adds rules agent-braid_*:ask and agent-braid_ping:allow to every agent rule set, after the defaults.",
+        "permission.saved.list and permission.request.list were empty."
+      ],
+      "limits": [
+        "Rule sets read from the host API; whether a prompt appears at call time is row 04b (unobserved). Raw API output was read live and not saved to a file."
+      ]
+    },
+    {
+      "id": "04b-tool-approval-call-time",
+      "requirement": "R3",
+      "status": "unobserved",
+      "question": "Does the host actually prompt (or not) when a model calls agent-braid_* tools?",
+      "method": "Not attempted.",
+      "commands": [],
+      "observation": [
+        "A tool call needs a model turn; the brief forbids calling a model provider, entering credentials or creating accounts. Only the rule sets (row 04) were observed."
+      ],
+      "limits": [
+        "Needs an owner or operator native observation (SC-012 / procedure_012)."
+      ]
+    },
+    {
+      "id": "05-git-install-d3-gate",
+      "requirement": "R2 / D3",
+      "status": "observed",
+      "question": "D3 gate: does opencode plugin add from a Git source keep executable bits, exact bytes (including a CRLF file and .gitattributes handling) and size?",
+      "method": "Local bare repo $TMP/fixture.git (tags v0.0.1..v0.0.5) built from a working repo with a plugins/agent-braid subdirectory (package.json, opencode/index.js, executable launch, stub MCP server, crlf.txt stored CRLF, 200000-byte random blob.bin, runtime/RECORD stored CRLF, .hidden, a symlink, export-ignore and export-subst files, root and subdirectory .gitattributes). Installed with plugin add from a git+file:// URL with #<tag>::path:plugins/agent-braid into fresh disposable profiles; every installed file compared with cmp and stat against the fixture.",
+      "commands": [
+        "git clone --bare $TMP/fixture-src $TMP/fixture.git  # then git fetch --tags",
+        "opencode plugin add 'git+file://$TMP/fixture.git#v0.0.1::path:plugins/agent-braid'",
+        "opencode plugin add 'git+file://$TMP/fixture.git#v0.0.3::path:plugins/agent-braid'",
+        "GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.autocrlf GIT_CONFIG_VALUE_0=true opencode plugin add 'git+file://$TMP/fixture.git#v0.0.4::path:plugins/agent-braid'  # 64 MiB extra file",
+        "cmp <installed> <fixture>; stat -f '%Sp %z' <installed>/launch; xxd <installed>/crlf.txt"
+      ],
+      "observation": [
+        "A local bare repository works as a Git source (git+file://...); the D3 gate could be observed. The github: shortcut was not used (row 05b).",
+        "Install location is the cache, not the data directory: $XDG_CACHE_HOME/opencode/npm/git-<hash>/<epoch-ms>/node_modules/agent-braid/ (the ::path subdirectory content becomes the package root), with package.json and package-lock.json beside it ('resolved' records the commit SHA). The install runs through an npm-style resolver but offline against a local repo.",
+        "Executable bit preserved: launch installed as -rwxr-xr-x (100 bytes) and was executed by the host to start the MCP server.",
+        "Bytes preserved: blob.bin (200000 B), crlf.txt (CRLF, 20 B), runtime/RECORD (CRLF), launch, package.json, stub_mcp.py and index.js are identical (cmp) to the fixture; dotfiles (.hidden, subdirectory .gitattributes) were installed.",
+        "Size preserved: a 64 MiB extra file (67108864 B) installed identically (about 6 s); installed tree 65784 KiB. No size cap was reached up to that size.",
+        "Git attributes ARE honored by a checkout-style install: a file stored LF with a root .gitattributes rule 'text eol=crlf' (lf-in-repo.txt) and one covered by a subdirectory .gitattributes rule (sub-eol.txt) were installed with CRLF. export-ignore and export-subst were not applied (export-ignore.txt installed; export-subst.txt kept the literal $Format placeholder), so the install is a checkout, not git archive.",
+        "A repository-root '* -text' attribute kept every non-listed file byte-exact, and kept it even with core.autocrlf=true supplied through GIT_CONFIG_* (crlf.txt, runtime/RECORD, launch, blob.bin, big file identical). The root .gitattributes itself is outside the ::path subdirectory and was not installed.",
+        "Symlinks are NOT installed: a symlink (mode 120000) in the subdirectory was missing from the installed package.",
+        "Failure modes: unknown ref and missing ::path subdirectory both exit 1 with an empty NpmInstallFailedError and leave the configuration unchanged.",
+        "plugin add writes only the global configuration (key 'plugins', see rows 09 and 11); no project file was created."
+      ],
+      "verdict": "D3 gate passed for the observed host (executable bits, exact bytes including CRLF with a '* -text' root attribute, size to 64 MiB). Conditions suggested by the observation (the necessity of the attribute was not tested without it): no symlinks, and a root .gitattributes that disables text conversion (the existing plugin-dist already ships one).",
+      "limits": [
+        "Real plugin-dist and the github: transport were not fetched (no network downloads, no public repository created); the fixture imitates its shape, not its content or total size.",
+        "core.fileMode=false or a user filter driver in the Git global configuration was not tested.",
+        "Windows not observed.",
+        "package.json files/.npmignore filtering not tested; the artifact's package.json has no files field."
+      ]
+    },
+    {
+      "id": "05b-github-shortcut",
+      "requirement": "R2 / D3",
+      "status": "unobserved",
+      "question": "Does github:owner/repo#ref::path:subdir behave like the local Git source?",
+      "method": "Not attempted.",
+      "commands": [],
+      "observation": [
+        "Using github: needs a network download of the public repository, which the brief excludes (local fixture only). The ::path and #ref syntax are the same string form as the local git+file:// source that worked."
+      ],
+      "limits": [
+        "Owner or native observation must confirm the real github: install of the published plugin-dist tag."
+      ]
+    },
+    {
+      "id": "06-plugin-update-remove",
+      "requirement": "R2",
+      "status": "observed",
+      "question": "What do plugin list, check, update and remove do, and what is left behind?",
+      "method": "Disposable profile; installed a branch-pinned source (#main), pushed a new fixture commit, ran check/update/reload; installed a tag-pinned source and ran update/remove.",
+      "commands": [
+        "opencode plugin list",
+        "opencode plugin check",
+        "opencode plugin update",
+        "opencode plugin remove <source-string>",
+        "opencode plugin remove <plugin-id>",
+        "opencode reload"
+      ],
+      "observation": [
+        "plugin list prints ID, VERSION (short commit SHA) and SOURCE for plugins loaded by the running service; it prints 'No plugins found' when no service has loaded them yet (a freshly started or cold service), and loading after reload or first use is asynchronous (a list taken right after reload showed none, a few seconds later it showed the plugin).",
+        "plugin check reports '(current)' or '(update available)' per plugin; with a tag-pinned source it reported no updates ('No plugin updates available' from update).",
+        "plugin update on a branch-pinned source reinstalled the new commit into a NEW $XDG_CACHE_HOME/opencode/npm/git-<hash>/<new epoch>/ directory; the configuration string is unchanged; the old epoch directory remained on disk. The new version was active after opencode reload.",
+        "plugin remove requires the exact configuration source string; the plugin id and the package name ('agent-braid') both answer 'Plugin ... is not configured' with exit 0. Removing by source string deleted the entry from the global configuration (leaving 'plugins': []), left comments and the rest of the file untouched, and left the installed cache directory (node_modules/agent-braid) on disk. The running service kept the plugin until opencode reload, after which its skills, commands and MCP server disappeared.",
+        "plugin add on a jsonc-only global config edited opencode.jsonc in place, keeping // comments and trailing commas but reformatting the touched block; with both opencode.json and opencode.jsonc present it wrote to opencode.json (reformatted with 2-space indent) and left the jsonc file untouched."
+      ],
+      "limits": [
+        "Source of an update was a local bare repo.",
+        "Behaviour of plugin remove for npm sources not observed."
+      ]
+    },
+    {
+      "id": "07-command-listing",
+      "requirement": "R5",
+      "status": "observed",
+      "question": "Do plugin commands appear in the host command list, and in what name format?",
+      "method": "command.list from the host API.",
+      "commands": [
+        "opencode api command.list --param 'location[directory]=$TMP/<p>/proj'"
+      ],
+      "observation": [
+        "Plugin commands appear as entries {name, description} after the built-ins (init, review): agent-braid-setup and agent-braid-reconnect. Names are exactly as registered (no slash, no plugin prefix); a flat namespace shared with built-in and user commands. A plugin that throws in a transform loses its commands (row 10)."
+      ],
+      "limits": [
+        "Slash invocation and the execute callback were not run (needs a session prompt)."
+      ]
+    },
+    {
+      "id": "08-standalone",
+      "requirement": "R2",
+      "status": "observed",
+      "question": "What does --standalone do?",
+      "method": "Ran opencode api ... --standalone with the background service stopped, compared with the service path; also ran a long-lived private opencode serve.",
+      "commands": [
+        "opencode service stop; opencode api plugin.list --standalone",
+        "opencode api skill.list --standalone --param 'location[directory]=...'",
+        "opencode serve --port <port>; OPENCODE_PASSWORD=<server password> opencode api plugin.list --server http://127.0.0.1:<port>"
+      ],
+      "observation": [
+        "--standalone is listed for the root command, run, api and reload; debug config and mcp list reject it ('Unrecognized flag') and used the background service; plugin subcommands were not tried with it. With it opencode service status stayed 'stopped': no background service was started or used.",
+        "A one-shot api call under --standalone returns before the instance finishes loading: config.get and location.get worked, but plugin.list showed no plugin and skill.list/mcp.list/command.list were empty (not even built-in skills), so plugin effects cannot be observed that way.",
+        "The same plugin loaded normally in a long-lived private server (opencode serve --port): the first request returned no plugin, requests a few seconds later showed it active. First-request-before-load is host behaviour for any fresh instance.",
+        "Without --standalone the CLI starts or reuses the background service on the configured port (default 49374), which can collide with a running desktop app service; the observation profile set a unique port with opencode service set port."
+      ],
+      "limits": [
+        "Interactive TUI and run with --standalone were not used (they would need a model).",
+        "Server password for the private server was generated per run and is not recorded."
+      ]
+    },
+    {
+      "id": "09-config-paths",
+      "requirement": "R6",
+      "status": "observed",
+      "question": "Which configuration paths are read, how do opencode.json and opencode.jsonc interact, and how is XDG handled?",
+      "method": "Wrote one mcp entry per candidate file (and a same-named 'dup' entry in all six) with distinct commands; read config.get (sources) and the entry visible at transform time; opencode debug paths with XDG variables set, unset and relative.",
+      "commands": [
+        "opencode debug paths",
+        "(unset XDG_CONFIG_HOME; HOME=$TMP/<p>/home opencode debug paths)",
+        "(XDG_CONFIG_HOME=rel opencode debug paths)",
+        "opencode api config.get --param 'location[directory]=$TMP/<p>/proj'"
+      ],
+      "observation": [
+        "Global directory: $XDG_CONFIG_HOME/opencode if set, otherwise $HOME/.config/opencode (not ~/Library on macOS). A relative XDG_CONFIG_HOME is used as given (rel/opencode). Data, cache and state follow XDG_DATA_HOME, XDG_CACHE_HOME, XDG_STATE_HOME with ~/.local/share, ~/.cache, ~/.local/state defaults.",
+        "Files read, in load order: global opencode.json, global opencode.jsonc, project-root opencode.json, project-root opencode.jsonc, <root>/.opencode/opencode.json, <root>/.opencode/opencode.jsonc. All six existed together and all were read; json and jsonc are not mutually exclusive.",
+        "For the same mcp server name defined in all six, the last file in that order won (the .opencode/opencode.jsonc value). Different names from all six files were merged.",
+        "jsonc files with // and /* */ comments and trailing commas parsed without error. config.get reports each file as a 'document' source plus the directories as 'directory' sources.",
+        "Project files are taken at the Git root (and its .opencode): with the location set to <root>/sub/deep, opencode.json in sub/ and sub/deep/.opencode were not read; without a Git root the parent directory's opencode.json was found. Skills are discovered from ancestor directories (row 02).",
+        "Array merge across files (R6 'arrays are combined') was NOT confirmed; see limits. Server entries are written under key 'mcp'; the effective form is normalized (enabled:false reported as disabled:true)."
+      ],
+      "limits": [
+        "macOS arm64 only; Linux XDG handling not observed (row 09b).",
+        "Merge of arrays across files: a project-level 'plugins' array pointing at a different tag did not load next to the global one in the single attempt; not explored.",
+        "Project-scope native plugin entries not explored (D9: user-global only)."
+      ]
+    },
+    {
+      "id": "09b-config-paths-linux",
+      "requirement": "R6",
+      "status": "unobserved",
+      "question": "Same matrix on Linux.",
+      "method": "Not attempted.",
+      "commands": [],
+      "observation": [
+        "Only a macOS host was available to this track."
+      ],
+      "limits": [
+        "Needs a Linux run before any Linux claim in docs."
+      ]
+    },
+    {
+      "id": "10-warning-channel",
+      "requirement": "D13/contract Server collision",
+      "status": "observed",
+      "question": "Is there a write-free host-visible warning channel (log or notice API) for the entry?",
+      "method": "Listed the shape of every ctx member; called console.warn/error/log from setup; threw from a transform; checked server stdout, the log file, plugin.list and the lists.",
+      "commands": [
+        "probe: Object.keys(ctx[k]) for each k",
+        "console.warn('PROBE_CONSOLE_WARN'); console.error(...); console.log(...)",
+        "throw new Error('WARN-TEST') inside mcp.transform",
+        "opencode serve --print-logs"
+      ],
+      "observation": [
+        "No log, notice, toast, ui or warn member exists on the server plugin context (members listed in row 01; event has subscribe only; session has synthetic/prompt, which write to a session; storage get/set/remove/scan writes).",
+        "console.warn/error/log from setup reach the server process stdout/stderr (visible with opencode serve and --print-logs) but were not found in the log file under $XDG_DATA_HOME/opencode/log, and a background service has no visible terminal. They are not a user-visible warning.",
+        "Throwing inside a transform disables the whole plugin: plugin.list state failed ('Plugin disabled after mcp.transform failed. Check server logs for details.'), a WARN line in the log, and the plugin's skills and commands were gone. This is a failure channel, not a warning.",
+        "Load failures are host-visible through plugin.list state.error and the log (row 01)."
+      ],
+      "conclusion": "No documented-or-observed write-free warning channel for non-fatal conditions; the warning stays with plugin doctor and the setup command (contract wording 'if T002 finds a documented channel' resolves to: none found).",
+      "limits": [
+        "Server plugin only; a TUI plugin context (ctx.ui.toast in the documentation) was not exercised, it needs the interactive TUI."
+      ]
+    },
+    {
+      "id": "11-native-plugin-visible-in-config",
+      "requirement": "R6 / legacy profile",
+      "status": "observed",
+      "question": "How does an installed native plugin appear in configuration, so the legacy profile can detect native_plugin_shadowed?",
+      "method": "Read the global opencode.json after plugin add; config.get; plugin.list; tried the singular key.",
+      "commands": [
+        "opencode plugin add '<source>'; cat $XDG_CONFIG_HOME/opencode/opencode.json",
+        "opencode api plugin.list --param 'location[directory]=$TMP/<p>/proj'",
+        "opencode.json with key 'plugin' instead of 'plugins'"
+      ],
+      "observation": [
+        "plugin add writes the source string verbatim into an array under key 'plugins' (plural) in the global config (opencode.json, or opencode.jsonc when only that exists).",
+        "A hand-written singular key 'plugin' is also accepted and normalized to 'plugins' (plugin loaded as active), so detection must read both keys.",
+        "plugin.list (host API) and opencode plugin list show id (from the module's id), VERSION (commit SHA) and SOURCE (the same string) for loaded plugins; the id is chosen by the plugin, the package name by package.json.",
+        "The installed copy is visible on disk under $XDG_CACHE_HOME/opencode/npm/git-*/<epoch>/node_modules/<package name>/ with package.json."
+      ],
+      "limits": [
+        "The source string for the real plugin will be github:...; the detection key is the substring '::path:plugins/agent-braid' or the package name, to be decided by T007."
+      ]
+    },
+    {
+      "id": "12-codemode",
+      "requirement": "R3 / D7",
+      "status": "observed",
+      "question": "What is the codemode default and its effect on tool ids?",
+      "method": "ctx.tool.list() 3 s after setup with codemode:false and with codemode omitted.",
+      "commands": [
+        "editor.set('agent-braid', {..., codemode: false, protocol: 'legacy'})  # then without the two fields",
+        "ctx.tool.list()"
+      ],
+      "observation": [
+        "Tool registry entry for the stub tool: id 'agent-braid_ping', name 'ping', options.namespace 'agent-braid'.",
+        "With codemode omitted: options.codemode = true (default true; seen live, raw output not saved to a file). With codemode:false: options.codemode = false. The id was agent-braid_ping in both cases."
+      ],
+      "limits": [
+        "What the model sees under codemode true (wrapped or listed names) needs a model turn: row 12b."
+      ]
+    },
+    {
+      "id": "12b-codemode-model-facing-names",
+      "requirement": "D7",
+      "status": "unobserved",
+      "question": "How are tool names presented to the model with codemode true versus false?",
+      "method": "Not attempted.",
+      "commands": [],
+      "observation": [
+        "Needs a model call, which the brief forbids."
+      ],
+      "limits": [
+        "Native observation (SC-012)."
+      ]
+    },
+    {
+      "id": "13-reload-reconnect",
+      "requirement": "R5 / REQ-005",
+      "status": "observed",
+      "question": "(Extra) What host mechanisms restart an MCP server, relevant to the reconnect command?",
+      "method": "opencode reload; experimental.mcp.disconnect/connect over the host API; ctx.mcp shape.",
+      "commands": [
+        "opencode reload",
+        "opencode api experimental.mcp.disconnect --param server=agent-braid",
+        "opencode api experimental.mcp.connect --param server=agent-braid"
+      ],
+      "observation": [
+        "opencode reload ('Reload configuration') re-runs the plugin transforms and restarts the stdio MCP server (stub start count increased by one); a newly added plugin loads without restarting the service.",
+        "The host API has experimental.mcp.disconnect and experimental.mcp.connect; disconnect set status disabled and the process exited; connect started a new process (connected).",
+        "The server plugin context has mcp.reload (and skill.reload, command.reload, tool.reload...); its presence was recorded from key names only and the function was not called.",
+        "opencode mcp has list, add, auth, logout; no restart subcommand."
+      ],
+      "limits": [
+        "Reload and connect/disconnect are operator or host actions; nothing here argues for an automatic reload by the plugin (REQ-005 unchanged)."
+      ]
+    }
+  ],
+  "summary": {
+    "d3Gate": "pass-on-local-git-fixture (git+file://); github: transport pending row 05b",
+    "d3GateConditions": [
+      "no symlinks in the installed subdirectory",
+      "root .gitattributes disabling text conversion (plugin-dist already ships one). Hypothesis, not measured: no run without it was made, and the autocrlf=true run did not discriminate because the files were already CRLF-stored or covered by -text"
+    ],
+    "contradictions": [
+      {
+        "row": "02-transform-order-vs-skills",
+        "against": "R4 consequence / contract Skills 'never replace an existing skill ID' enforced in the transform",
+        "changesDecision": false,
+        "detail": "The skill transform cannot see discovered skill IDs, and discovered skills silently replace plugin-added skills with the same id. D2 and REQ-004 stand; detection is plugin doctor (and optionally a delayed ctx.skill.list check); wording in R4 and the contract needs to change."
+      }
+    ],
+    "extensions": [
+      "Default export must be {id, setup}; transforms re-run and order varies (row 01).",
+      "Editor value comparison needs semantic fields because the host normalizes entries (row 03).",
+      "plugin add key is 'plugins' (singular 'plugin' also accepted) (row 11).",
+      "Host restarts MCP with opencode reload; ctx.mcp.reload exists (row 13; R5 said no documented plugin API reloads).",
+      "No write-free warning channel (row 10)."
+    ],
+    "stopConditionsHit": []
+  },
+  "limits": [
+    "Single host version, single platform (macOS arm64).",
+    "Local Git source only; github: transport and the real plugin-dist content were not exercised.",
+    "No model-originated tool call; permission prompts and model-facing tool names unobserved.",
+    "Observation only; no product code was written and nothing here is a grant, approval or release."
+  ]
+}
