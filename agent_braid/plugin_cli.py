@@ -30,6 +30,7 @@ def add_parser(subparsers):
         if name == 'setup':
             command.add_argument('--telemetry', choices=('off', 'local'), help='persist plugin MCP local telemetry consent; default off')
             command.add_argument('--system-one', choices=('off', 'shadow'), help='persist plugin MCP System One shadow consent; default off')
+            command.add_argument('--prune-stale', action='store_true', help='preview removing missing worktree roots and dropping unsafe workspace registrations')
         if name == 'legacy':
             command.add_argument('--host', choices=('codex', 'claude'), required=True)
             command.add_argument('--receipt', type=Path)
@@ -74,19 +75,22 @@ def run(args):
         elif args.plugin_command == 'workspaces' and not (args.source_root or args.remove):
             if args.apply or args.preview_digest or args.runtime is not None or args.grant_store or args.worktree_root:
                 raise registry.RegistryError('Choose explicit source roots for configuration changes')
-            output = registry.load(home)
+            found = registry.inspect_registry(home)
+            output = dict(found['value'], **{key: found[source] for key, source in
+                          (('staleWorktreeRoots', 'stale'), ('unsafeWorkspaces', 'quarantined')) if found[source]})
         else:
             telemetry = getattr(args, 'telemetry', None)
             system_one = getattr(args, 'system_one', None)
-            if not (args.source_root or args.remove or telemetry or system_one):
-                raise registry.RegistryError('Select repositories first with discover or --source-root, or choose --telemetry or --system-one')
+            prune = getattr(args, 'prune_stale', False)
+            if not (args.source_root or args.remove or telemetry or system_one or prune):
+                raise registry.RegistryError('Select repositories first with discover or --source-root, or choose --telemetry, --system-one or --prune-stale')
             if args.grant_store and args.runtime is not True:
                 raise registry.RegistryError('--grant-store requires explicit --enable-runtime')
             if args.runtime is not None and len(args.source_root) != 1:
                 raise registry.RegistryError('Configure runtime for one explicit workspace at a time')
             preview = registry.plan_setup(home, args.source_root, remove=args.remove,
                 runtime=args.runtime, grant_store=args.grant_store, worktree_roots=args.worktree_root,
-                telemetry=telemetry, system_one=system_one)
+                telemetry=telemetry, system_one=system_one, prune_stale=prune)
             output = registry.apply(home, preview, args.preview_digest) if args.apply else preview
         print(json.dumps(output, ensure_ascii=False, sort_keys=True, indent=2))
         return 0

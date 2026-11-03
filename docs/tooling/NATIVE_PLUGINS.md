@@ -160,9 +160,49 @@ Local telemetry does not count these refusals (or any other plugin-router refusa
 Registration is not execution authority and the stale connection keeps its
 original immutable roots and grants until it is replaced.
 
-Scope: SPEC-046 T016–T019 are a bounded defect fix after the 2026-10-19 owner
+Scope: SPEC-046 T016–T019 and the registry quarantine below are a bounded defect fix after the 2026-10-19 owner
 disposition. They do not reopen T014/T015 candidacy, builds, size work or
 publication.
+
+### Deleted worktrees and unsafe registrations
+
+Worktree roots are often ephemeral (for example agent worktrees). The registry
+treats each row on its own so one stale entry never disables the plugin:
+
+- A registered worktree root that no longer exists is *stale*. It is reported by
+  `plugin doctor`, `plugin workspaces` and `plugin-status` as `staleWorktreeRoots`
+  (workspace id, root index and `reason: "missing"`, no paths), is not given to
+  the workspace service and is excluded from the configuration digest. If a
+  registered worktree is deleted while a connection is running, that connection
+  keeps serving, because a deleted root is still declared in the registry and
+  only removes reach. `plugin-status` can therefore show `reconnectRequired: true`
+  (the effective configuration differs from the snapshot) while calls still
+  succeed; reconnect to pick the change up. Removing a root from the registry
+  (for example `setup` with a different `--worktree-root` list), swapping it for
+  a symlink, or a stale root that reappears is not a deletion: delegated calls
+  refuse with `reconnect-required` until you reconnect.
+- A workspace whose row is genuinely unsafe (a worktree root that overlaps the
+  plugin state directory or is a symbolic link or not an absolute path, a
+  mismatched identity, an unknown shape) is quarantined: it is reported as
+  `unsafeWorkspaces` (row index, workspace id when well formed and a path-free
+  reason that names the root index) and is not served, while every other
+  workspace keeps working. Structural problems (unknown schema, duplicate keys or
+  workspace ids, a non-private or oversized file) still refuse the whole registry.
+- `plugin setup` refuses to register a worktree root that does not exist.
+  `plugin setup --prune-stale` previews (and, with `--apply --preview-digest`,
+  applies) removal of stale roots and of quarantined workspace registrations;
+  without it, setup keeps stale roots registered but inactive and refuses to
+  rewrite a registry that holds unsafe rows; the preview lists each dropped
+  workspace id and reason and warns that its `runtimeEnabled`/`grantStore`
+  configuration is removed and cannot be restored except from a backup.
+  `plugin doctor` and setup read the
+  registry tolerantly, so diagnosis and repair work in these states.
+- A registered workspace whose source repository was deleted still has a valid
+  row, but its service cannot start. It is isolated and reported as
+  `unavailableWorkspaces` (`workspaceId`, `reason: "configuration rejected"`)
+  while other workspaces keep serving. Repair it with
+  `plugin workspaces --remove WORKSPACE_ID` (preview, then apply the exact
+  digest), which unregisters it and preserves results.
 
 ## Optional Claude-only gate workflow (unreleased)
 
