@@ -136,7 +136,7 @@ per-probe owner authorization but no ADR, and run first.
   verification markers, counters. Files: `agent_braid/view_model.py`,
   `tests/test_view_model.py`. Dependencies: T010. Verification: procedure_003,
   procedure_010. Done 2026-11-02: PR #961.
-- [ ] T024 (REQ-010 / SC-010): Web bundle without third-party code: table view,
+- [x] T024 (REQ-010 / SC-010): Web bundle without third-party code: table view,
   evidence panel, legend with "not a guarantee", Article 19 counters, unverified
   markers, playback controls and CSP. Files:
   `integrations/agent-braid-view/web/*`. Dependencies: T020, T017.
@@ -155,10 +155,10 @@ per-probe owner authorization but no ADR, and run first.
   bound to the same model and evidence panel as the table view. Files:
   `integrations/agent-braid-view/web/*`. Dependencies: T023, T024. Verification:
   procedure_010.
-- [ ] T026 (REQ-010 / SC-010): `tests/test_view_web_bundle.py` (first-party: no
+- [x] T026 (REQ-010 / SC-010): `tests/test_view_web_bundle.py` (first-party: no
   remote URL, no `eval`, CSP, import map; vendored: manifest hashes once T023
   exists). Dependencies: T024. Verification: procedure_010.
-- [ ] T028 (REQ-011 / SC-011; REQ-012 / SC-012): `view_cli.py` with `serve`
+- [x] T028 (REQ-011 / SC-011; REQ-012 / SC-012): `view_cli.py` with `serve`
   (`--replay`, `--watch`, `--port`, `--surface`), `validate` and `env --host
   claude` (observational hooks); registration in `agent_braid/cli.py`. VIS.1b
   tasks add their own flags and tests. Files: `agent_braid/view_cli.py`,
