@@ -122,6 +122,16 @@ Verification: [procedure_013](validation-plan.md); T013.
 
 Engineering only. No new effect domain, grant issuance, provider launch, scientific claim, registered 108-slot amendment, historical acceptance or milestone closure. Official approval and public release remain separate founder/provider decisions.
 
+## Amendments after alpha.5 (plugin `0.1.0-alpha.6`, unpublished)
+
+Bounded additions that do not reopen T014/T015: (1) the package carries a seventh skill,
+`telemetry-audit` (SPEC-047 T012), so the five-skill and six-skill statements above describe the
+alpha.2–alpha.5 packages that were observed; (2) registry quarantine (T020) and the
+`unavailableWorkspaces` diagnostic; (3) `plugin-status` reports `pluginVersion`, the native
+plugin release read from the packaged manifest, beside `version`, which stays the Python package
+version (T021). The plugin version line (`0.1.0-alpha.N`) and the package version line (`0.1.0aN`)
+are independent. Publication of `0.1.0-alpha.6` is a separate owner decision.
+
 ## Evidence and unresolved questions
 
 Planned procedures are not obtained evidence. See validation-plan.md and assurance.json. Native host observations, Linux controls, directory eligibility, technical review and founder acceptance must identify their actual environment and outcome.

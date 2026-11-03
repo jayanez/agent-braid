@@ -194,6 +194,27 @@ class PluginRouterTests(unittest.TestCase):
         self.assertEqual(router.status()['workspaces'], before)
         self.assertEqual(len(router.services), 1)
 
+    def test_status_separates_package_version_from_plugin_version(self):
+        from agent_braid import __version__
+        self.install()
+        status = PluginRouter(self.home).status()
+        self.assertEqual(status['version'], __version__)
+        self.assertIsNone(status['pluginVersion'])  # no packaged plugin root, e.g. a source checkout
+        package = self.base / 'package'
+        package.mkdir()
+        (package / 'plugin.json').write_text(json.dumps({'name': 'agent-braid', 'version': '0.1.0-alpha.6'}))
+        status = PluginRouter(self.home, package).status()
+        self.assertEqual((status['version'], status['pluginVersion']), (__version__, '0.1.0-alpha.6'))
+
+    def test_plugin_version_is_null_for_a_missing_or_malformed_manifest(self):
+        self.install()
+        package = self.base / 'package'
+        package.mkdir()
+        self.assertIsNone(PluginRouter(self.home, package).status()['pluginVersion'])
+        for text in ('not json', '[]', json.dumps({'version': 6})):
+            (package / 'plugin.json').write_text(text)
+            self.assertIsNone(PluginRouter(self.home, package).status()['pluginVersion'], text)
+
     def test_snapshotted_telemetry_consent_reaches_every_workspace_and_requires_reconnect(self):
         self.install()
         router = PluginRouter(self.home)

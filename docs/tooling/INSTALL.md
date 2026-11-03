@@ -38,8 +38,8 @@ python3 -m venv /absolute/private/tooling-environment
 /absolute/private/tooling-environment/bin/agent-braid tooling --help
 ```
 
-Portable server prompts (SPEC-060, ADR 0031; implemented; package `0.1.0a2` is a
-candidate, publication pending): the surface contract `agent-braid-tooling/v0.2` names the
+Portable server prompts (SPEC-060, ADR 0031; implemented; package `0.1.0a2` is
+published): the surface contract `agent-braid-tooling/v0.2` names the
 three MCP prompts `analyze`, `plan` and `evidence`; the host adds its own server
 key as a prefix. Tool envelopes stay `agent-braid-tooling/v0.1`. The former names
 `agent-braid-analyze`, `agent-braid-plan` and `agent-braid-evidence` remain as
@@ -50,8 +50,11 @@ a new decision. See the
 [v0.2 delta](../../specs/060-portable-prompt-names/contracts/interface-delta.md)
 and [ADR 0031](../adr/0031-portable-prompt-names.md).
 
-The candidate carrier version is `0.1.0a2` (publication pending); no plugin release accompanies it,
-because the plugin publishes no prompts. Updating needs no host configuration
+The carrier version is Python package `0.1.0a2`, published on 2026-10-27 as GitHub
+pre-release `v0.1.0-alpha.2` (no PyPI; see the
+[release record](../../specs/060-portable-prompt-names/evidence/release-0.1.0a2.md)); no plugin release
+accompanied it, because the plugin publishes no prompts. The native plugin has its own version line
+(`0.1.0-alpha.6` in `develop`; see [Native AI plugins](NATIVE_PLUGINS.md)). Updating needs no host configuration
 edit: update the package and reconnect the host. To roll back, reinstall the
 earlier package; it lists only the prefixed names.
 

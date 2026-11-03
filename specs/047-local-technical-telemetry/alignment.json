@@ -3,12 +3,12 @@
   "milestone": 19,
   "sourceCounts": {
     "specs": 10,
-    "tasks": 134,
-    "tasksChecked": 121,
-    "tasksUnchecked": 15,
-    "parentsClosed": 5,
-    "parentsOpen": 5,
-    "totalRecords": 144
+    "tasks": 135,
+    "tasksChecked": 122,
+    "tasksUnchecked": 13,
+    "parentsClosed": 6,
+    "parentsOpen": 4,
+    "totalRecords": 145
   },
   "specs": [
     {
