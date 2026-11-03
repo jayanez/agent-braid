@@ -164,25 +164,48 @@ function timeText(element) {
 
 // ---------------------------------------------------------------- event sources
 
-// The page offers one checkbox per source of events, all checked by default. The model carries no adapter name and
-// no root, so the source is inferred from the two fields every element has from its event's source block: the
-// verification status and whether an evidence reference exists. Nothing is added to the event contract. The labels
-// name what is known about each group, not a guessed origin.
-//   rehashed or derived, with an evidence reference: read from an artifact root and re-hashed (all roots form one group)
-//   rehashed or derived, without one: produced by the viewer itself (for example a ring-eviction gap)
+// The page offers one checkbox per source of events, all checked by default. The event contract names no adapter and
+// no root, so the source is inferred from the fields every element has: the verification status, whether an evidence
+// reference exists and, for events read from a watched root, the model's `root` label. Nothing is added to the event
+// contract. The labels name what is known about each group, not a guessed origin.
+//   rehashed or derived, with an evidence reference and a root label: read from that watched root and re-hashed
+//   rehashed or derived, with an evidence reference, no root label: watched, root not named
+//   rehashed or derived, without a reference: produced by the viewer itself (for example a ring-eviction gap)
 //   anything else, with an evidence reference: unverified and referenced, as every event of a replay file is
 //   anything else, without one: unverified and unreferenced, as a host report (hook or telemetry ingest) is
+// A root label is "root N", numbered in the order the roots were started. It is never a path: the terminal lists the
+// roots, and a label of any other form is ignored here, so the event stays in the unlabelled watched group.
 const SOURCES = {
-  watched: ["Watched artifacts", "Events with an evidence reference that this session re-hashed. The model does not name the root, so all watched and discovered roots form one group."],
+  watched: ["Watched artifacts", "Events with an evidence reference that this session re-hashed and whose watched root the model does not name."],
   replay: ["Replay file", "Unverified events with an evidence reference, as every event loaded with --replay is. Never re-hashed by this session."],
   hook: ["Hook and telemetry ingest", "Unverified events with no evidence reference, as host reports are. Recorded host events in a replay file that have no artifact also appear here."],
   viewer: ["Derived by the viewer", "Events with no evidence reference that the viewer produced itself, such as gaps for evicted or truncated ranges."],
 };
 
+const ROOT_PREFIX = "watched:";
+const ROOT_LABEL = /^root ([1-9][0-9]?)$/;
+
 function sourceOf(element) {
   const referenced = Boolean(element.evidenceRef);
-  if (element.verification === "rehashed" || element.verification === "derived") return referenced ? "watched" : "viewer";
+  if (element.verification === "rehashed" || element.verification === "derived") {
+    if (!referenced) return "viewer";
+    return typeof element.root === "string" && ROOT_LABEL.test(element.root) ? ROOT_PREFIX + element.root : "watched";
+  }
   return referenced ? "replay" : "hook";
+}
+
+function sourceText(key) {
+  if (!key.startsWith(ROOT_PREFIX)) return SOURCES[key];
+  const label = key.slice(ROOT_PREFIX.length);
+  return [label, "Events with an evidence reference that this session re-hashed under " + label +
+    " of the watched roots, in start order. The path is not shown here; the terminal that started the viewer lists the roots."];
+}
+
+// The roots by number, then the unlabelled watched group, then the other sources in their fixed order.
+function sourceKeys(counts) {
+  const number = (key) => Number(ROOT_LABEL.exec(key.slice(ROOT_PREFIX.length))[1]);
+  const roots = Object.keys(counts).filter((key) => key.startsWith(ROOT_PREFIX)).sort((a, b) => number(a) - number(b));
+  return [...roots, ...Object.keys(SOURCES).filter((key) => counts[key])];
 }
 
 function isSourceShown(element) {
@@ -448,7 +471,7 @@ const sourceNodes = new Map();
 
 function renderSources() {
   const counts = sourceCounts();
-  const keys = Object.keys(SOURCES).filter((key) => counts[key]);
+  const keys = sourceKeys(counts);
   // A source that no longer has events has no checkbox, so it cannot stay hidden with no way to show it again.
   for (const key of [...state.hiddenSources]) if (!counts[key]) state.hiddenSources.delete(key);
   $("sources").hidden = keys.length === 0;
@@ -462,7 +485,8 @@ function renderSources() {
         on: { change: (event) => toggleSource(key, event.target.checked) } });
       const count = h("span", { class: "source-count" });
       sourceNodes.set(key, { input, count });
-      return h("label", { class: "source", title: SOURCES[key][1] }, input, " ", SOURCES[key][0], " ", count);
+      const [name, title] = sourceText(key);
+      return h("label", { class: "source", title }, input, " ", name, " ", count);
     }));
   }
   for (const key of keys) {

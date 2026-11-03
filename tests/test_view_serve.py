@@ -867,6 +867,20 @@ class SnapshotTests(StreamCase):
         self.assertIs(document["model"]["executionAuthorization"], False)
         self.assertEqual(document["droppedAttributeNames"], [])
 
+    def test_snapshot_labels_the_elements_with_the_root_the_watcher_read_them_from(self):
+        first, second = (Path(self.tmp.name) / name for name in ("one", "two"))
+        fixture = Path(__file__).resolve().parent / "fixtures/view/artifacts/runtime-state-ready.json"
+        for root in (first, second):
+            root.mkdir()
+            (root / "state.json").write_bytes(fixture.read_bytes())
+        self.assertEqual(view_tail.ArtifactTail(self.store, [first, second]).poll_once(), 2)
+        status, response, body = self.get()
+        self.assertEqual(status, 200)
+        elements = json.loads(body)["model"]["elements"]
+        self.assertEqual(sorted(e["root"] for e in elements if e["root"]), ["root 1", "root 2"])
+        self.assertEqual(sum(1 for e in elements if e["root"] is None), len(corpus_events()))
+        self.assertNotIn(self.tmp.name.encode(), body)
+
     def test_snapshot_requires_the_read_cookie(self):
         self.assertEqual(self.get(cookie=False)[0], 404)
         self.assertEqual(self.request("GET", "/snapshot", {"Authorization": f"Bearer {self.token}"})[0], 404)

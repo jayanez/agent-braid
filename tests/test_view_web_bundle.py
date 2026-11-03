@@ -816,9 +816,8 @@ SOURCE_LABELS = {
 }
 
 
-@unittest.skipIf(not shutil.which("node") and not os.environ.get("CI"), "node is needed to drive the page without a browser")
-class SourceCheckboxTests(unittest.TestCase):
-    """REQ-010 / SC-010 (amendment A1): per-source checkboxes drive loom.js under Node with a minimal DOM."""
+class NodePageCase(unittest.TestCase):
+    """Runs the real loom.js under Node with a minimal DOM and a stub scene; `self.model` is what /snapshot returns."""
 
     @classmethod
     def setUpClass(cls):
@@ -831,10 +830,6 @@ class SourceCheckboxTests(unittest.TestCase):
                            ("scene-hooks.mjs", SCENE_HOOKS), ("driver.mjs", PAGE_DRIVER)):
             (cls.root / name).write_text(text)
         cls.model = cls.mixed_model()
-        # Written out, not recomputed: the example plus three watched events turned into replayed (unverified,
-        # referenced) ones. seq 1 is a gap derived by the viewer; seq 18 to 21 are host reports with no artifact.
-        cls.by_source = {"viewer": [1], "replay": [2, 3, 4], "hook": [18, 19, 20, 21],
-                         "watched": [*range(5, 18), 22, 23, 24]}
 
     @classmethod
     def mixed_model(cls):
@@ -855,6 +850,19 @@ class SourceCheckboxTests(unittest.TestCase):
 
     def total(self):
         return len(self.model["elements"])
+
+
+@unittest.skipIf(not shutil.which("node") and not os.environ.get("CI"), "node is needed to drive the page without a browser")
+class SourceCheckboxTests(NodePageCase):
+    """REQ-010 / SC-010 (amendment A1): per-source checkboxes drive loom.js under Node with a minimal DOM."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # Written out, not recomputed: the example plus three watched events turned into replayed (unverified,
+        # referenced) ones. seq 1 is a gap derived by the viewer; seq 18 to 21 are host reports with no artifact.
+        cls.by_source = {"viewer": [1], "replay": [2, 3, 4], "hook": [18, 19, 20, 21],
+                         "watched": [*range(5, 18), 22, 23, 24]}
 
     def test_the_example_covers_every_source_and_each_element_has_exactly_one(self):
         self.assertEqual(set(self.by_source), set(SOURCE_LABELS))
@@ -946,6 +954,106 @@ class SourceCheckboxTests(unittest.TestCase):
             self.assertTrue(self.drive()[0]["sourcesHidden"])
         finally:
             self.model = original
+
+
+@unittest.skipIf(not shutil.which("node") and not os.environ.get("CI"), "node is needed to drive the page without a browser")
+class RootCheckboxTests(NodePageCase):
+    """REQ-010 / SC-010 (amendment A1, T044): one checkbox per watched root label, driven under Node."""
+
+    ROOT_1, ROOT_2, UNLABELLED = [*range(5, 11)], [*range(11, 18)], [22, 23, 24]
+    OTHERS = {"replay": [2, 3, 4], "hook": [18, 19, 20, 21], "viewer": [1]}
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        for element in cls.model["elements"]:
+            element["root"] = "root 1" if element["seq"] in cls.ROOT_1 else (
+                "root 2" if element["seq"] in cls.ROOT_2 else None)
+        for row in cls.model["table"]:
+            row["root"] = next((e["root"] for e in cls.model["elements"] if e["seq"] == row["seq"]), None)
+
+    def relabel(self, mapping):
+        """Replace the model's roots for the duration of one test: `mapping` is seq -> label."""
+        original = self.model
+        self.model = json.loads(json.dumps(original))
+        for element in self.model["elements"]:
+            element["root"] = mapping.get(element["seq"])
+        self.addCleanup(setattr, self, "model", original)
+
+    def test_one_checkbox_per_root_then_the_unlabelled_watched_group_then_the_other_sources(self):
+        first = self.drive()[0]
+        self.assertEqual(list(first["checkboxes"]),
+                         ["watched:root 1", "watched:root 2", "watched", "replay", "hook", "viewer"])
+        self.assertEqual(set(first["checkboxes"].values()), {True})
+        self.assertIn("root 1 (6 events)", first["labels"])
+        self.assertIn("root 2 (7 events)", first["labels"])
+        self.assertIn("Watched artifacts (3 events)", first["labels"])
+        self.assertIn("0 events hidden", first["status"])
+
+    def test_roots_are_ordered_by_number_not_by_text(self):
+        self.relabel({5: "root 10", 6: "root 2", 7: "root 1"})
+        self.assertEqual(list(self.drive()[0]["checkboxes"])[:3], ["watched:root 1", "watched:root 2", "watched:root 10"])
+
+    def test_unchecking_one_root_hides_only_its_events_in_the_table_and_the_scene(self):
+        baseline = self.drive()[0]
+        for key, hidden in (("watched:root 1", self.ROOT_1), ("watched:root 2", self.ROOT_2)):
+            with self.subTest(root=key):
+                after = self.drive([{"toggle": key, "shown": False}])[1]
+                everything = {e["seq"] for e in self.model["elements"]}
+                self.assertEqual(set(after["rows"]), everything - set(hidden))
+                self.assertEqual(set(after["scene"]["seqs"]), set(after["rows"]))
+                self.assertFalse(after["checkboxes"][key])
+                self.assertEqual(sum(1 for shown in after["checkboxes"].values() if not shown), 1)
+                self.assertIn(f"{len(hidden)} of {self.total()} retained events are hidden", after["status"])
+                self.assertIn(f"{len(hidden)} events from unchecked sources are hidden here and in the table",
+                              after["sceneNote"])
+                self.assertEqual(after["counters"], baseline["counters"], "counters keep covering hidden events")
+
+    def test_rechecking_a_root_restores_its_events(self):
+        first, hidden, back = self.drive([{"toggle": "watched:root 2", "shown": False},
+                                          {"toggle": "watched:root 2", "shown": True}])
+        self.assertNotEqual(hidden["rows"], first["rows"])
+        self.assertEqual(back["rows"], first["rows"])
+        self.assertIn("0 events hidden", back["status"])
+
+    def test_hiding_the_root_of_the_selected_event_clears_the_evidence_panel_and_another_root_keeps_it(self):
+        seq = self.ROOT_1[0]
+        selected, cleared = self.drive([{"select": seq}, {"toggle": "watched:root 1", "shown": False}])[1:]
+        self.assertIn(f"Event {seq}", selected["evidence"])
+        self.assertNotIn(f"Event {seq}", cleared["evidence"])
+        kept = self.drive([{"select": seq}, {"toggle": "watched:root 2", "shown": False}])[-1]
+        self.assertIn(f"Event {seq}", kept["evidence"])
+
+    def test_a_replay_event_is_never_given_a_root_checkbox_even_if_it_carries_a_label(self):
+        # Only rehashed or derived events with an evidence reference are watched artifacts.
+        self.relabel({2: "root 1", 18: "root 1", 1: "root 1"})
+        first = self.drive()[0]
+        self.assertEqual(list(first["checkboxes"]), ["watched", "replay", "hook", "viewer"])
+
+    def test_a_label_that_is_not_root_n_is_shown_nowhere_and_the_event_stays_in_the_watched_group(self):
+        self.relabel({5: "/Users/someone/work", 6: "<b>root 1</b>", 7: "root 9" + "9" * 40, 8: 7})
+        first = self.drive()[0]
+        self.assertEqual(list(first["checkboxes"]), ["watched", "replay", "hook", "viewer"])
+        self.assertIn(f"Watched artifacts ({len(self.ROOT_1) + len(self.ROOT_2) + len(self.UNLABELLED)} events)",
+                      first["labels"])
+        for private in ("/Users", "someone", "<b>"):
+            self.assertNotIn(private, first["labels"])
+
+    def test_a_model_without_roots_keeps_the_single_watched_checkbox(self):
+        self.relabel({})
+        first = self.drive()[0]
+        self.assertEqual(list(first["checkboxes"]), ["watched", "replay", "hook", "viewer"])
+        self.assertIn(f"Watched artifacts ({len(self.ROOT_1) + len(self.ROOT_2) + len(self.UNLABELLED)} events)",
+                      first["labels"])
+
+    def test_a_root_without_events_has_no_checkbox(self):
+        original = self.model
+        shrunk = json.loads(json.dumps(original))
+        shrunk["elements"] = [e for e in shrunk["elements"] if e["seq"] not in self.ROOT_1]
+        shrunk["table"] = [row for row in shrunk["table"] if row["seq"] not in self.ROOT_1]
+        self.model = shrunk
+        self.addCleanup(setattr, self, "model", original)
+        self.assertNotIn("watched:root 1", self.drive()[0]["checkboxes"])
 
 
 class ServedBundleTests(unittest.TestCase):

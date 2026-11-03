@@ -175,6 +175,114 @@ class IngestTests(TailCase):
         self.assertEqual(again["counters"]["unverifiedElements"], len(again["elements"]))
 
 
+class RootIdentityTests(TailCase):
+    """REQ-010 (amendment A1): a stable, non-path label per watched root, kept beside the events."""
+
+    def roots(self, count):
+        out = []
+        for index in range(count):
+            root = self.base / f"watched-{index}"
+            root.mkdir()
+            out.append(root)
+        return out
+
+    def labelled(self):
+        events, roots = view_tail.replay_with_roots(self.store)
+        return {event["seq"]: roots.get(event["seq"]) for event in events}
+
+    def test_labels_are_root_n_in_start_order_and_up_to_eight(self):
+        tail = self.tail(*self.roots(8))
+        self.assertEqual(tail.root_labels, [f"root {n}" for n in range(1, 9)])
+        self.assertEqual(view_tail.root_label(0), "root 1")
+
+    def test_a_repeated_or_nested_root_does_not_take_a_label_of_its_own(self):
+        first, second = self.roots(2)
+        (first / "inner").mkdir()
+        tail = self.tail(first, second, first, first / "inner")
+        self.assertEqual(tail.root_labels, ["root 1", "root 2"])
+
+    def test_the_same_artifact_name_in_two_roots_is_told_apart_by_label(self):
+        first, second = self.roots(2)
+        install(first, "state.json", "runtime-state-ready.json")
+        install(second, "state.json", "runtime-state-completed.json")
+        self.tail(first, second).poll_once()
+        labels = self.labelled()
+        events = self.store.replay()
+        self.assertEqual({event["source"]["evidenceRef"]["path"] for event in events}, {"state.json"})
+        self.assertEqual([labels[event["seq"]] for event in events], ["root 1", "root 2"])
+
+    def test_every_event_of_a_file_takes_that_roots_label_and_a_changed_file_keeps_it(self):
+        first, second = self.roots(2)
+        install(first, "state.json", "runtime-state-ready.json")
+        install(second, "analysis.json", "analysis-file-edits.json")
+        tail = self.tail(first, second)
+        tail.poll_once()
+        labels = self.labelled()
+        for event in self.store.replay():
+            self.assertEqual(labels[event["seq"]],
+                             "root 2" if event["source"]["adapter"] == "analysis-report" else "root 1")
+        install(second, "state.json", "runtime-state-ready.json")
+        install(first, "state.json", "runtime-state-completed.json")
+        tail.poll_once()
+        labels = self.labelled()
+        state_events = [e for e in self.store.replay() if e["source"]["adapter"] == "runtime-state"]
+        # the first scan stored root 1's file; the second scan reads root 1 (changed) before root 2 (new)
+        self.assertEqual([labels[e["seq"]] for e in state_events], ["root 1", "root 1", "root 2"])
+
+    def test_viewer_gaps_have_no_root(self):
+        (root,) = self.roots(1)
+        install(root, "state.json", "runtime-state-ready.json")
+        install(root, "a/state.json", "runtime-state-ready.json")
+        self.tail(root, max_entries=1).poll_once()
+        self.assertTrue(gaps(self.store))
+        labels = self.labelled()
+        for event in gaps(self.store):
+            self.assertIsNone(labels[event["seq"]])
+
+    def test_the_model_carries_the_label_and_never_a_path_or_a_user_name(self):
+        first, second = self.roots(2)
+        install(first, "state.json", "runtime-state-ready.json")
+        install(second, "analysis.json", "analysis-file-edits.json")
+        self.tail(first, second).poll_once()
+        events, roots = view_tail.replay_with_roots(self.store)
+        model = build_model(events, roots=roots)
+        self.assertEqual({e["root"] for e in model["elements"]}, {"root 1", "root 2"})
+        text = json.dumps(model)
+        for private in (str(self.base), self.tmp.name, os.path.expanduser("~")):
+            self.assertNotIn(private, text)
+
+    def test_the_registry_forgets_evicted_events_and_stays_bounded(self):
+        (root,) = self.roots(1)
+        self.store = LoomStore(max_events=3)
+        tail = self.tail(root)
+        base = json.loads((FIXTURES / "runtime-state-ready.json").read_text())
+        for number in range(8):
+            (root / "state.json").write_text(json.dumps({**base, "n": number}))
+            tail.poll_once()
+        stats = self.store.stats()
+        self.assertGreater(stats["evicted"], 0)
+        _, roots = view_tail.replay_with_roots(self.store)
+        self.assertTrue(roots)
+        self.assertLessEqual(len(roots), stats["count"])
+        self.assertTrue(all(seq >= stats["oldestSeq"] for seq in roots))
+
+    def test_a_store_without_a_watcher_has_no_labels(self):
+        self.assertEqual(view_tail.replay_with_roots(self.store), ([], {}))
+
+    def test_replay_with_roots_follows_after_seq(self):
+        (root,) = self.roots(1)
+        install(root, "state.json", "runtime-state-ready.json")
+        self.tail(root).poll_once()
+        events, roots = view_tail.replay_with_roots(self.store, 1)
+        self.assertEqual(events, [])
+        self.assertEqual(roots, {1: "root 1"})
+
+    def test_the_registry_belongs_to_its_store(self):
+        other = LoomStore()
+        self.assertIsNot(view_tail.root_labels_of(self.store), view_tail.root_labels_of(other))
+        self.assertIs(view_tail.root_labels_of(self.store), view_tail.root_labels_of(self.store))
+
+
 class SymbolicLinkTests(TailCase):
     def test_a_symlink_to_a_file_outside_the_root_under_a_known_name_is_not_read(self):
         install(self.outside, "secret.json", "runtime-state-ready.json")
