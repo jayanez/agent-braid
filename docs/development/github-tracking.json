@@ -415,7 +415,8 @@
     "HAR.3 — Braid Harness adaptation and integration": 23,
     "Deferred": 24,
     "VIS.1 — Activity viewer": 25,
-    "S1.5 — System One shadow activation": 26
+    "S1.5 — System One shadow activation": 26,
+    "M4.7 — AI tooling integration for OpenCode": 27
   },
   "task_cancellations": {
     "SPEC-045/T007": {
