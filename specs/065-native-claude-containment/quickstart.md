@@ -1,8 +1,9 @@
 # SPEC-065: Quickstart
 
 Implementation in progress: T003 to T008 are done at unit level, the pre-T009 fixes (#979) and the mini delta
-re-check (GO for engineering readiness, #985) are merged, and T009 awaits the founder go. The structural
-checks and the unit tests below apply now; the T009 preparation is a checklist, not an authorization.
+re-check (GO for engineering readiness, #985) are merged, and the founder gave a conditional go for T009
+(`evidence/founder-decisions-20261103.json`). Nothing native has run. The structural checks and the unit tests
+below apply now; the T009 preparation is a checklist, not an authorization.
 
 ```sh
 python3 -m scripts.validate_spec_kit
@@ -18,7 +19,7 @@ Unit level (deterministic; nothing native runs):
 ```sh
 .venv-speckit/bin/python -m unittest tests.test_harness_manifest tests.test_harness_quota \
   tests.test_harness_transport_claude tests.test_harness_containment_macos \
-  tests.test_harness_qualification_probes -v
+  tests.test_harness_qualification_probes tests.test_har_t009_attempt -v
 ```
 
 Expected: all deterministic refusal tests pass; the opt-in live controls
@@ -47,19 +48,17 @@ Operator preparation for T009 (a checklist, not an authorization; it needs the f
 - **Session.** Run the supervisor inside the dedicated user's own login session, not
   through `sudo -u` from the operator's session, and expect failed probe controls to be
   recorded as findings.
-- **Entry point.** Use `make_qualification_runner`: `real_home` is the account's home
-  (a runner without one is refused), the credential scan reads `config_dir`, and each
-  probe session records a before/after listing of `config_dir` (names and digests).
-  Do not pass `runner_options` that replace the executors or weaken the pre-session check, and
-  do not use `launch_profile=False` in `make_f4_probe_runner`. Run it only as the dedicated
-  account: the arena plants decoys in the home it resolves.
+- **Entry point.** `scripts/har_t009_attempt.py` is the only supported entry point: it builds the T005
+  backend, the T006 transport factory and `make_qualification_runner` itself (account home as `real_home`,
+  credential scan of `config_dir`, before/after listing of `config_dir`, launch profile on). Do not call the
+  runner by hand, pass `runner_options`, or use `launch_profile=False`. Run it only as the dedicated account:
+  the arena plants decoys in the home it resolves.
 - **Bundle.** Review it for local identifiers before committing it.
 
-Qualification attempt (T009, only after founder decisions and ADR acceptance):
-run the probe runner for the decided configuration, inspect
-`evidence/qualification/<attempt>/summary.json`, and hand the bundle to the
-issuer. Expected: either every effect `enforced` and HOST-01 complete, or a
-retained not-qualified bundle. Neither outcome is a failure of the procedure.
+Qualification attempt (T009, only after founder decisions and ADR acceptance): run the driver as described
+in "Operator setup for T009", inspect `evidence/qualification/<attempt>/summary.json`, and hand the bundle to
+the issuer. Expected: either every effect `enforced` and HOST-01 complete, or a retained not-qualified bundle.
+Neither outcome is a failure of the procedure.
 
 ## Operator setup for T009
 
@@ -67,30 +66,54 @@ This is the founder's runbook for the conditional go recorded in
 `evidence/founder-decisions-20261103.json`. It is a checklist, not an authorization:
 `executionAuthorization` stays `false`, issuance stays T010 (NC-9). The order is fixed:
 
-1. you run steps 1 to 8 (sudo, in your own session);
+1. you run steps 0 to 8 (step 0 is a check; the rest use sudo, in your own session), only after the blockers below are resolved;
 2. you switch to the dedicated account and run steps 9 and 10 in its own login session (login, then the
    driver `--dry-run`);
 3. you send the dry-run output to the orchestrator, which verifies it as evidence;
 4. only after the orchestrator confirms, step 11 (the real attempt: at most 3 small Haiku sessions).
 
+> **Known blockers on this machine. Read before step 1.** The driver's pre-flight is reached only at
+> step 10, after the sudo steps and the Claude login, and two of its checks refuse on this machine for
+> reasons no command in this runbook can fix; each needs a founder decision, a backend edit and a new
+> security re-check:
+>
+> - `os-supported`: the backend accepts the macOS 27.0.x series only (NC-3); this machine runs 27.2.
+> - `user-is-not-console-user`: the backend refuses the console user (RV-16), and the fast user
+>   switching of step 9 makes `braidlab` the owner of `/dev/console` while its session is in front.
+>
+> Do not start step 1 until the orchestrator has told you in writing that both are resolved (or that a
+> different way to run the account's session exists). Step 0 checks the first one.
+>
+> Also open and not decided by this runbook: NC-6 says the orchestrator session reads the usage card,
+> but the driver takes the values you type (operator-attested), and where the card is read is yours to
+> decide (see `evidence/founder-decisions-20261103.json`, `stillOpen`).
+
 Nothing native (`claude`, `sandbox-exec`, the network) runs before step 9 (the login). The sandbox and
 the sessions run only in step 11. If any command fails or prints something other than described, stop
-and tell the orchestrator; do not improvise. Replace `<COMMIT>` with the commit the orchestrator names
-(it must contain `scripts/har_t009_attempt.py`).
+and tell the orchestrator; do not improvise. `COMMIT` below is the full commit the orchestrator names (it
+must contain `scripts/har_t009_attempt.py`); replace the quoted `PASTE_...` text with it. A line that ends
+in `STOP` means: do not continue.
 
 Variables, in your own terminal (not root):
 
 ```sh
 ACCT=braidlab
 BRAID=/usr/local/libexec/braid
-COMMIT=<COMMIT>                       # full 40-character commit from the orchestrator
+COMMIT='PASTE_THE_40_CHARACTER_COMMIT_FROM_THE_ORCHESTRATOR'
+printf %s "$COMMIT" | grep -Eq '^[0-9a-f]{40}$' || { echo "STOP: COMMIT is not a 40-character hash"; false; }
 SHORT=${COMMIT:0:7}
 CLAUDE_SRC=/opt/homebrew/Caskroom/claude-code/2.1.292/claude
 PY_SRC="$HOME/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none"
 CHECKOUT="$HOME/Repos/Personal/agent-braid"   # your checkout, only to export the code at $COMMIT
 ```
 
-**Step 1. Create the standard account.** `sysadminctl -addUser` without `-admin` makes a standard
+**Step 0. Check the macOS series (no sudo).**
+
+```sh
+sw_vers -productVersion        # must start with 27.0. ; anything else (27.2 here): STOP, see the blockers box
+```
+
+**Step 1. Create the standard account and close its home.** `sysadminctl -addUser` without `-admin` makes a standard
 account with its own home. `-password -` makes it ask for the password on the terminal, so it never
 lands in your shell history. Pick a password you do not reuse.
 
@@ -98,8 +121,13 @@ lands in your shell history. Pick a password you do not reuse.
 sudo sysadminctl -addUser "$ACCT" -fullName "Braid Lab" -password -
 id "$ACCT"                                           # no group 80 (admin) and no group 0 (wheel)
 dseditgroup -o checkmember -m "$ACCT" admin          # must say "no"
-ls -ld /Users/"$ACCT"                                # a home exists, owned by braidlab
+test -d /Users/"$ACCT" || sudo createhomedir -c -u "$ACCT"   # only creates the home if it is missing
+sudo chown "$ACCT":staff /Users/"$ACCT" && sudo chmod 700 /Users/"$ACCT"
+stat -f '%Su %Sg %Lp' /Users/"$ACCT"                 # must print: braidlab staff 700
 ```
+
+The driver and the backend refuse an account home with any group or other permission bit
+(`account-home-private`); a new home is usually 750, so the `chmod 700` is required.
 
 Undo: `sudo sysadminctl -deleteUser "$ACCT"`, then `ls /Users` (if the home is still there,
 `sudo rm -r /Users/braidlab`).
@@ -121,7 +149,18 @@ refuse it. This copies the exact 2.1.292 binary; it does not run it.
 sudo install -o root -g wheel -m 755 "$CLAUDE_SRC" "$BRAID/claude-2.1.292"
 shasum -a 256 "$CLAUDE_SRC" "$BRAID/claude-2.1.292"  # the two hashes must be identical; keep it
 ls -l "$BRAID/claude-2.1.292"                        # -rwxr-xr-x root wheel
+for f in "$CLAUDE_SRC" "$BRAID/claude-2.1.292"; do
+  codesign --verify --strict --deep "$f" && echo "signature valid: $f"
+  codesign -dv --verbose=2 "$f" 2>&1 | grep -E '^(Authority|TeamIdentifier)='
+done
 ```
+
+Both files must print `signature valid` and the same `TeamIdentifier=Q6L2SF6YDW` with an
+`Authority=Developer ID Application: Anthropic PBC (Q6L2SF6YDW)` line. Anything else, or a failed
+verify: STOP; the copy is not the Anthropic build. Comparing the two hashes only shows the copy equals
+the source, so send the hash to the orchestrator, who checks it against a digest from an independent
+source (the published release checksum) and records it in the founder evidence **before step 9**,
+because step 9 runs this file outside the sandbox.
 
 Undo: `sudo rm "$BRAID/claude-2.1.292"`.
 
@@ -165,9 +204,10 @@ Undo: `chmod 750 "$HOME"` (the value you noted).
 
 **Step 7. Create the account's private working directories.** The empty `config_dir` (its own
 `CLAUDE_CONFIG_DIR`), the run root, the arena parent and the output directory, owned by braidlab, mode
-700, in its home. If `/Users/braidlab` does not exist yet, log in as braidlab once first.
+700, in its home. Step 1 created and closed the home; this guard stops if that did not happen.
 
 ```sh
+[ "$(stat -f '%Su %Lp' /Users/"$ACCT")" = "$ACCT 700" ] || { echo "STOP: step 1 (home mode 700) not done"; false; }
 for d in config run arena out; do
   sudo install -d -o "$ACCT" -g staff -m 700 "/Users/$ACCT/t009/$d"
 done
@@ -177,7 +217,7 @@ sudo ls -la "/Users/$ACCT/t009/config"                              # empty
 
 Undo: `sudo rm -r "/Users/$ACCT/t009"`.
 
-**Step 8. Record the pins.** You paste them into the driver command; the orchestrator recomputes
+**Step 8. Record the pins.** You paste the three hashes into step 10; the orchestrator recomputes
 them itself from the dry-run.
 
 ```sh
@@ -201,43 +241,56 @@ Undo: `claude auth logout` with the same `CLAUDE_CONFIG_DIR`, and revoke the ses
 account settings; deleting the account (teardown) removes its keychain.
 
 **Step 10. Dry run in the braidlab session.** Pre-flight only: no sandbox, no `claude`, no network. It
-prints a JSON verdict, `ready` or `refused` with the failed checks, and exits 0 or 2.
+prints a JSON verdict, `ready` or `refused` with the failed checks and a fix hint for each, and exits 0
+or 2. Paste the quoted values first (from the orchestrator and from step 8); the checks below stop you if
+one is wrong. The driver must run with the pinned interpreter and `-B -I`; any other Python is refused.
 
 ```sh
-BRAID=/usr/local/libexec/braid; SHORT=<SHORT>        # the same 7 characters as above
-"$BRAID/python312/bin/python3.12" -B -I "$BRAID/repo-$SHORT/scripts/har_t009_attempt.py" \
-  --attempt t009-20261104 \
-  --claude "$BRAID/claude-2.1.292" --claude-sha256 <CLAUDE_SHA256> \
-  --interpreter "$BRAID/python312/bin/python3.12" --interpreter-sha256 <PYTHON_SHA256> \
-  --interpreter-root "$BRAID/python312" --sandbox-exec-sha256 <SANDBOX_EXEC_SHA256> \
-  --config-dir "$HOME/t009/config" --run-root "$HOME/t009/run" \
-  --arena-parent "$HOME/t009/arena" --out-dir "$HOME/t009/out/t009-20261104" \
-  --dry-run | tee "$HOME/t009/dry-run.json"
+BRAID=/usr/local/libexec/braid
+COMMIT='PASTE_THE_40_CHARACTER_COMMIT_FROM_THE_ORCHESTRATOR'
+CLAUDE_SHA256='PASTE_64_HEX_FROM_STEP_8_CLAUDE'
+PYTHON_SHA256='PASTE_64_HEX_FROM_STEP_8_PYTHON'
+SANDBOX_EXEC_SHA256='PASTE_64_HEX_FROM_STEP_8_SANDBOX_EXEC'
+printf %s "$COMMIT" | grep -Eq '^[0-9a-f]{40}$' || { echo "STOP: COMMIT is not a 40-character hash"; false; }
+for h in "$CLAUDE_SHA256" "$PYTHON_SHA256" "$SANDBOX_EXEC_SHA256"; do
+  printf %s "$h" | grep -Eq '^[0-9a-f]{64}$' || { echo "STOP: a hash is not pasted correctly"; false; }
+done
+SHORT=${COMMIT:0:7}
+PYRUN=("$BRAID/python312/bin/python3.12" -B -I "$BRAID/repo-$SHORT/scripts/har_t009_attempt.py")
+ARGS=(--attempt t009-20261104
+  --claude "$BRAID/claude-2.1.292" --claude-sha256 "$CLAUDE_SHA256"
+  --interpreter "$BRAID/python312/bin/python3.12" --interpreter-sha256 "$PYTHON_SHA256"
+  --interpreter-root "$BRAID/python312" --sandbox-exec-sha256 "$SANDBOX_EXEC_SHA256"
+  --config-dir "$HOME/t009/config" --run-root "$HOME/t009/run"
+  --arena-parent "$HOME/t009/arena" --out-dir "$HOME/t009/out/t009-20261104")
+"${PYRUN[@]}" "${ARGS[@]}" --dry-run | tee "$HOME/t009/dry-run.json"
 cp "$HOME/t009/dry-run.json" /Users/Shared/t009-dry-run.json
 ```
 
 Tell the orchestrator that `/Users/Shared/t009-dry-run.json` exists. A `refused` verdict is not a
-failure of the procedure: it names what to fix. Two checks can refuse on this machine for reasons no
-command here can fix, and each needs a founder decision plus a code change and a new security re-check:
-`os-supported` (the backend accepts the macOS 27.0.x series only, NC-3; this machine runs 27.2) and
-`user-is-not-console-user` (the backend refuses the console user, and under fast user switching the
-account whose session is in front owns `/dev/console`). Do not continue to step 11 until the
-orchestrator confirms in writing that the verdict is `ready` and matches the pins it recomputed.
+failure of the procedure: it names what to fix. Do not continue to step 11 until the orchestrator
+confirms in writing that the verdict is `ready` and matches the pins it recomputed.
 
-**Step 11. The real attempt (only after the orchestrator confirms).** Same command without `--dry-run`
-and with `--founder-go`. It asks you to type the attempt name, then, before and after each of at most
-three sessions, for the Claude Desktop usage card: 5-hour %, weekly %, whether extra usage is on, and
-the time you read it (HH:MM). A reading older than five minutes, a missing one, a start at 90 % or more
-of the 5-hour window, or a session that used more than 2 points stops the attempt. Where the card is
-read (Claude Desktop in your own session, which means switching users, or another surface of the same
-account) is a founder decision the driver cannot check. It prints the bundle SHA-256 at the end
-whatever the outcome.
+**Step 11. The real attempt (only after the orchestrator confirms).** The same command with
+`--founder-go` instead of `--dry-run`. If you closed the terminal after step 10, run its variable block
+(from `BRAID=` to the `ARGS=(...)` line) again first.
 
 ```sh
-"$BRAID/python312/bin/python3.12" -B -I "$BRAID/repo-$SHORT/scripts/har_t009_attempt.py" \
-  <the same arguments as step 10, without --dry-run> --founder-go
+"${PYRUN[@]}" "${ARGS[@]}" --founder-go
 cp -R "$HOME/t009/out/t009-20261104" /Users/Shared/t009-bundle-20261104
 ```
+
+It asks you to type the attempt name, then, before and after each of at most three sessions, for the
+Claude Desktop usage card: 5-hour %, weekly %, whether extra usage is on, and the time you read the card.
+Answer `now` right after reading it (or type `HH:MM:SS`; `HH:MM` can collide with the next reading in the
+same minute). A typo is asked again up to three times. A reading older than five minutes, a missing one, a
+start at 90 % or more of the 5-hour window, or a session that used more than 2 points stops the attempt.
+The values are typed by you, so they are operator-attested. At the end it prints the bundle SHA-256.
+
+If it ends with a JSON `"verdict": "error"` instead, keep that output: it says how many sessions were
+spent (`quota.started`). The session counter stays in the output directory, so a re-run with the same
+`--out-dir` continues the budget of three sessions (a new attempt name does not reset it). Send the output
+to the orchestrator before trying again.
 
 Then, back in your own session, take ownership of the copy (`sudo chown -R "$USER"
 /Users/Shared/t009-bundle-20261104`), review the bundle for local identifiers and copy it to

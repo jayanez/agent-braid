@@ -203,8 +203,11 @@ shared object store fails the portable-root check).
   pre-flight only) and the runbook is quickstart.md "Operator setup for T009".
   Nothing native has run; `executionAuthorization` stays false and issuance stays
   T010. The driver's dry run on the founder's machine is expected to refuse on
-  `os-supported` (macOS 27.2, NC-3 allows 27.0.x) until a founder decision and a
-  re-checked backend edit say otherwise. This task stays unchecked.
+  `os-supported` (macOS 27.2, NC-3 allows 27.0.x) and, under fast user switching, on
+  `user-is-not-console-user` (RV-16) until founder decisions and re-checked backend edits
+  say otherwise; the runbook says so before step 1 and records both, with the NC-6 reader
+  (operator-attested in the driver), as still open in the founder record. This task
+  stays unchecked.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes

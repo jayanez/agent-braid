@@ -24,7 +24,7 @@
       "decision": {
         "disposition": "conditional-go",
         "reading": "The orchestrator prepares evidence and an operator checklist; the founder runs the sudo setup; the orchestrator verifies the setup with evidence (driver --dry-run); only then the founder launches the attempt in the dedicated account's own login session. Nothing native runs before those steps.",
-        "bounds": "NC-10: at most 3 Haiku low-effort sessions, each at most 2 % of the 5-hour window; NC-6 quota readings before and after each session; NC-1, NC-4, NC-5, NC-7, NC-8, NC-11, RV-17/19/21/22 and DRV-06/10 stay as recorded"
+        "bounds": "NC-10: at most 3 Haiku low-effort sessions, each at most 2 % of the 5-hour window; NC-6 quota readings before and after each session, taken by the operator from the usage card and typed into the driver (operator-attested; NC-6 as decided had the orchestrator session read the card, so this is a change still to be decided, see stillOpen); NC-1, NC-4, NC-5, NC-7, NC-8, NC-11, RV-17/19/21/22 and DRV-06/10 stay as recorded"
       }
     },
     {
@@ -38,7 +38,23 @@
       }
     }
   ],
-  "stillOpen": [],
+  "stillOpen": [
+    {
+      "id": "NC-6-reader",
+      "item": "Who reads the usage card and where",
+      "reading": "NC-6 was decided as the usage card read by the orchestrator session. The T009 driver takes values the operator types, so the freshness rule is self-attested. A founder decision and a code change are needed to move the reader, and the location of the card reader is a founder decision."
+    },
+    {
+      "id": "NC-3-os-series",
+      "item": "macOS series accepted by the backend",
+      "reading": "The backend accepts 27.0.x only (NC-3); the founder's machine runs 27.2, so the driver's os-supported check refuses. Needs a founder decision, a backend edit and a new security re-check."
+    },
+    {
+      "id": "console-user-conflict",
+      "item": "Dedicated account session versus the console-user refusal",
+      "reading": "The runbook uses fast user switching, which makes the dedicated account the owner of /dev/console, and the driver and backend refuse that (RV-16). Needs a founder decision (another way to run the session, or a changed rule) and a new security re-check."
+    }
+  ],
   "executionAuthorization": false,
   "nativeAdmission": false,
   "promotionAuthorization": false,

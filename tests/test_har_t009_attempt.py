@@ -5,6 +5,7 @@ Nothing native runs here: no sandbox-exec, no claude, no network, no sudo, no ac
 fake tree (``FakeSystem``); the backend, the runner and the transport are replaced where the driver
 would otherwise build them.
 """
+import contextlib
 from contextlib import redirect_stdout
 from datetime import datetime, timedelta, timezone
 import io
@@ -13,6 +14,8 @@ import os
 from pathlib import Path
 import stat
 import subprocess
+import sys
+import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest import mock
@@ -44,7 +47,11 @@ class FakeSystem(har.System):
         self.user = "braidlab"
         self.console = FOUNDER_UID
         self.gids = (20, 12)
-        self.founder_readable = False
+        self.traversable: set[str] = set()
+        self.homes = [FOUNDER_HOME]
+        self.unreadable: set[str] = set()
+        self.running = PY
+        self.isolated, self.no_bytecode = True, True
         self.env: dict[str, str] = {}
         self.facts = mac.HostFacts("27.0.1", "26A123", "arm64")
         self.links: dict[str, str] = {}
@@ -80,11 +87,16 @@ class FakeSystem(har.System):
         return sorted({p[len(prefix):].split("/")[0] for p in self.tree if p.startswith(prefix)}) \
             if path in self.tree else None
     def walk(self, path, limit):
+        if path in self.unreadable:
+            raise PermissionError(path)
         prefix = path.rstrip("/") + "/"
         found = [(p, self.lstat(p)) for p in sorted(self.tree) if p.startswith(prefix)]
         return None if len(found) > limit else found
     def sha256(self, path): return self.hashes.get(path)
-    def can_traverse(self, path): return self.founder_readable
+    def can_traverse(self, path): return path in self.traversable
+    def other_homes(self, account): return list(self.homes)
+    def supervisor(self): return self.running
+    def interpreter_flags(self): return self.isolated, self.no_bytecode
     def writable(self, path): return path in self.writable_dirs
     def environ(self): return self.env
     def host_facts(self): return self.facts
@@ -160,8 +172,40 @@ class PreflightTests(unittest.TestCase):
             self.refused("user-is-standard", system=s)
 
     def test_founder_home_readable_refuses(self):
-        s = good_machine(); s.founder_readable = True
+        s = good_machine(); s.traversable = {FOUNDER_HOME}
         self.refused("founder-home-unreadable", system=s)
+
+    def test_any_other_local_home_traversable_refuses_and_no_homes_fails_closed(self):
+        s = good_machine(); s.homes = [FOUNDER_HOME, "/Users/other"]; s.traversable = {"/Users/other"}
+        self.refused("founder-home-unreadable", system=s)
+        s = good_machine(); s.homes = []
+        self.refused("founder-home-unreadable", system=s)
+
+    def test_console_owned_by_root_still_checks_the_founder_home(self):
+        s = good_machine(); s.console = 0; s.traversable = {FOUNDER_HOME}
+        self.refused("founder-home-unreadable", system=s)
+        s = good_machine(); s.console = 0
+        self.assertTrue(check(self.run_preflight(s), "founder-home-unreadable")["ok"])
+
+    def test_supervisor_must_be_the_pinned_isolated_interpreter(self):
+        s = good_machine(); s.running = "/Users/braidlab/venv/bin/python3"
+        self.refused("supervisor-is-pinned-interpreter", system=s)
+        s = good_machine(); s.isolated = False
+        self.refused("supervisor-isolated-no-bytecode", system=s)
+        s = good_machine(); s.no_bytecode = False
+        self.refused("supervisor-isolated-no-bytecode", system=s)
+
+    def test_code_and_interpreter_root_ancestors_must_be_root_owned(self):
+        s = good_machine(); s.dir("/usr/local/libexec", 0o775, 0)
+        self.refused("repository-code-ancestors-root-owned", "interpreter-root-ancestors-root-owned", system=s)
+        s = good_machine(); s.dir(BRAID, 0o755, UID)
+        self.refused("repository-code-ancestors-root-owned", system=s)
+
+    def test_an_unlistable_directory_fails_the_tree_checks(self):
+        s = good_machine(); s.unreadable = {PY_ROOT}
+        self.refused("interpreter-root-tree-root-owned", system=s)
+        s = good_machine(); s.unreadable = {f"{HOME}/cfg"}
+        self.refused("config-dir-small", system=s)
 
     def test_account_home_loose_refuses(self):
         s = good_machine(); s.dir(HOME, 0o755, UID)
@@ -221,9 +265,13 @@ class PreflightTests(unittest.TestCase):
 
     def test_config_dir_checks_refuse(self):
         s = good_machine()
-        for i in range(70):
+        for i in range(65):  # MDRV-03: more than 64 entries is refused
             s.file(f"{HOME}/cfg/f{i}", 0o600, UID)
         self.refused("config-dir-small", system=s)
+        s = good_machine()
+        for i in range(64):
+            s.file(f"{HOME}/cfg/f{i}", 0o600, UID)
+        self.assertTrue(check(self.run_preflight(s), "config-dir-small")["ok"])
         s = good_machine(); s.file(f"{HOME}/cfg/big", 0o600, UID, size=5 << 20)
         self.refused("config-dir-small", system=s)
         s = good_machine(); s.tree[f"{HOME}/cfg/link"] = (stat.S_IFLNK, 0o777, UID, 1)
@@ -247,11 +295,29 @@ class PreflightTests(unittest.TestCase):
         self.refused("arena-parent", system=s)
 
     def test_output_directory_checks_refuse(self):
-        s = good_machine(); s.dir(f"{HOME}/out/t009-test", 0o700, UID)
+        out = f"{HOME}/out/t009-test"
+        s = good_machine(); s.dir(out, 0o700, UID); s.file(f"{out}/summary.json", 0o600, UID)
+        self.refused("out-dir", system=s)  # a finished or foreign bundle is never reused
+        s = good_machine(); s.dir(out, 0o755, UID); s.writable_dirs.add(out)
         self.refused("out-dir", system=s)
         s = good_machine(); s.writable_dirs.clear()
         self.refused("out-dir", system=s)
         self.refused("paths-disjoint", out_dir=f"{HOME}/cfg/out")
+
+    def test_an_output_directory_holding_only_the_session_counter_is_resumed(self):
+        out = f"{HOME}/out/t009-test"
+        s = good_machine(); s.dir(out, 0o700, UID); s.file(f"{out}/{q.SESSION_COUNT_FILE}", 0o600, UID)
+        s.writable_dirs.add(out)
+        report = self.run_preflight(s)
+        self.assertEqual(report["verdict"], "ready")
+        self.assertIn("resum", check(report, "out-dir")["detail"])
+
+    def test_output_directory_must_be_normalized_and_its_parent_unlinked(self):
+        self.refused("out-dir", out_dir=f"{HOME}/out/../cfg/x")
+        self.refused("out-dir", out_dir="relative/out")
+        s = good_machine(); s.dir(f"{HOME}/link", 0o700, UID); s.links[f"{HOME}/link"] = f"{HOME}/cfg"
+        s.writable_dirs.add(f"{HOME}/link")
+        self.refused("out-dir", "paths-disjoint", system=s, out_dir=f"{HOME}/link/x")
 
     def test_deny_variables_and_attempt_name_refuse(self):
         s = good_machine(); s.env = {hc.ENV_DENY[0]: "x"}
@@ -261,6 +327,11 @@ class PreflightTests(unittest.TestCase):
     def test_invalid_policy_refuses(self):
         self.refused("policy-valid", proxy_port=80)
         self.refused("policy-valid", interpreter_sha256=None)
+
+    def test_refusal_details_name_the_fix(self):
+        s = good_machine(); s.dir(HOME, 0o755, UID)
+        report = self.run_preflight(s)
+        self.assertIn("chmod 700", check(report, "account-home-private")["detail"])
 
     def test_every_refusal_is_reported_together(self):
         s = good_machine(); s.user = "x"; s.console = UID; s.gids = (80,)
@@ -303,6 +374,9 @@ class DryRunTests(unittest.TestCase):
         self.assertEqual((code, report["verdict"]), (2, "refused"))
         with self.assertRaises(SystemExit), mock.patch("sys.stderr", io.StringIO()):
             har.parser().parse_args(["--dry-run"])  # required inputs missing
+        without_out = self.ARGV[:self.ARGV.index("--out-dir")] + ["--dry-run"]
+        with self.assertRaises(SystemExit), mock.patch("sys.stderr", io.StringIO()):
+            har.parser().parse_args(without_out)  # --out-dir has no default inside the repository
 
 
 class UsageCardTests(unittest.TestCase):
@@ -329,18 +403,33 @@ class UsageCardTests(unittest.TestCase):
         reading = reader.read("before")
         self.assertEqual((reading["observedAt"], reading["extraUsageEnabled"]), ("2026-11-04T15:00:00Z", True))
 
-    def test_stale_future_malformed_and_missing_are_refused(self):
-        for answers in (["12", "30", "n", "14:54"],      # 6 minutes old
-                        ["12", "30", "n", "15:05"],      # future
-                        ["101", "30", "n", "now"],       # out of range
-                        ["abc", "30", "n", "now"],
-                        ["12", "30", "maybe", "now"],
-                        ["12", "30", "n", "25:00"],
-                        ["12", "30", "n", ""],
-                        ["12", "30"]):                   # input ends
+    def test_stale_future_and_unanswerable_readings_are_refused(self):
+        for answers in (["12", "30", "n", "14:54"],                    # 6 minutes old
+                        ["12", "30", "n", "15:05"],                    # future
+                        ["12", "30", "n", "14:54:30"],                 # stale, with seconds
+                        ["101", "102", "103"],                         # three bad percentages
+                        ["12", "30", "maybe", "perhaps", "x"],
+                        ["12", "30", "n", "25:00", "99:99", "soon"],
+                        ["12", "30", "n", "", "", ""],
+                        ["\u00b2", "\u00b3", "\u00b9"],             # superscript digits pass str.isdigit()
+                        ["12", "30"]):                                 # input ends
             reader, said = self.reader(answers)
             self.assertIsNone(reader.read("before"), answers)
             self.assertTrue(any("refused" in line for line in said))
+
+    def test_a_typo_is_asked_again_up_to_three_times_per_field(self):
+        reader, said = self.reader(["12.5", "12", "thirty", "30", "yes", "25:00", "14:58:30"])
+        self.assertEqual(reader.read("before"), {
+            "source": "claude-desktop-usage-card", "observedAt": "2026-11-04T14:58:30Z",
+            "fiveHourPercent": 12, "weeklyPercent": 30, "extraUsageEnabled": True})
+        self.assertGreaterEqual(sum("try again" in line for line in said), 3)
+        reader, _ = self.reader(["x", "y", "12", "30", "no", "now"])  # the third try is the last
+        self.assertEqual(reader.read("before")["fiveHourPercent"], 12)
+
+    def test_the_operator_is_told_where_the_card_is_and_how_fresh_it_must_be(self):
+        reader, said = self.reader(["1", "1", "n", "now"])
+        reader.read("before")
+        self.assertTrue(any("5 minutes" in line and "usage card" in line for line in said))
 
     def test_exactly_five_minutes_old_is_accepted_and_midnight_rolls_back(self):
         reader, _ = self.reader(["1", "1", "n", "14:55"])
@@ -348,6 +437,13 @@ class UsageCardTests(unittest.TestCase):
         just_after = datetime(2026, 11, 5, 0, 1, 0, tzinfo=timezone.utc)
         reader, _ = self.reader(["1", "1", "n", "23:58"], now=just_after)
         self.assertEqual(reader.read("x")["observedAt"], "2026-11-04T23:58:00Z")
+
+    def test_seconds_distinguish_a_pre_and_post_reading_in_the_same_minute(self):
+        reader, _ = self.reader(["1", "1", "n", "14:58:05"])
+        first = reader.read("x")
+        reader, _ = self.reader(["2", "1", "n", "14:58:50"])
+        second = reader.read("x")
+        self.assertLess(first["observedAt"], second["observedAt"])
 
     def test_local_time_zone_is_applied(self):
         plus_one = timezone(timedelta(hours=1))
@@ -379,15 +475,11 @@ class SessionQuotaTests(unittest.TestCase):
         self.assertIsNone(quota.read())
         self.assertIsNone(quota.read())
 
-    def test_more_than_two_points_warns_and_more_than_ten_stops_the_next_session(self):
-        quota, said = self.quota([self.reading(10), self.reading(14), self.reading(14), self.reading(30)])
+    def test_more_than_two_points_warns_and_the_runner_owns_the_stop(self):
+        quota, said = self.quota([self.reading(10), self.reading(14)])
         quota.next_pre(); quota.read(); quota.read()
         self.assertTrue(any("attempt stops" in line for line in said))
-        self.assertIsNone(quota.stopped)
-        quota.next_pre(); quota.read(); quota.read()
-        self.assertEqual(quota.stopped, "quota-hard-stop")
-        with self.assertRaises(RuntimeError):
-            quota.next_pre()
+        self.assertFalse(hasattr(quota, "stopped"))  # harness_quota stops the runner; no second rule here
 
 
 class AttemptTests(unittest.TestCase):
@@ -411,9 +503,10 @@ class AttemptTests(unittest.TestCase):
                                    and {"effects": "none", "executionAuthorization": False})
 
         with mock.patch.object(q, "make_qualification_runner", side_effect=make_runner), \
-                mock.patch.object(q, "make_f4_probe_runner", return_value="f4"), \
+                mock.patch.object(q, "make_f4_probe_runner", return_value="f4") as f4, \
                 mock.patch.object(q, "verify_bundle", return_value="e" * 64), \
                 mock.patch.object(har, "NativeClaudeTransport", side_effect=lambda *a, **k: ("transport", a, k)):
+            calls["f4"] = f4
             try:
                 result = har.run_attempt(args or arguments(dry_run=False, founder_go=True), system or good_machine(),
                                          ask=lambda _p: next(items), say=lambda _m: None,
@@ -427,13 +520,18 @@ class AttemptTests(unittest.TestCase):
         exc, calls, _ = self.call(system=s)
         self.assertIsInstance(exc, har.AttemptRefused)
         self.assertIn("user-is-dedicated-account", exc.reasons)
-        self.assertEqual(calls, {})
+        self.assertIn("braidlab", exc.details["user-is-dedicated-account"])
+        self.assertNotIn("runner", calls)
+        self.assertNotIn("backend", calls)
+        calls["f4"].assert_not_called()
 
     def test_the_founder_go_flag_and_the_typed_confirmation_are_required(self):
         exc, calls, _ = self.call(args=arguments(dry_run=False, founder_go=False))
-        self.assertEqual((exc.reasons, calls), (["founder-go-flag-missing"], {}))
+        self.assertEqual(exc.reasons, ["founder-go-flag-missing"])
+        self.assertNotIn("backend", calls)
         exc, calls, _ = self.call(answers=("yes",))
-        self.assertEqual((exc.reasons, calls), (["operator-cancelled"], {}))
+        self.assertEqual(exc.reasons, ["operator-cancelled"])
+        self.assertNotIn("backend", calls)
 
     def test_wiring_of_the_backend_runner_and_transport_factory(self):
         result, calls, backend = self.call()
@@ -447,7 +545,10 @@ class AttemptTests(unittest.TestCase):
         self.assertIs(be, backend)
         self.assertEqual(rkw["arena_parent"], f"{HOME}/arena")
         self.assertNotIn("runner_options", rkw)
-        self.assertNotIn("launch_profile", rkw)
+        f4_kwargs = calls["f4"].call_args.kwargs
+        self.assertEqual(f4_kwargs["arena_parent"], f"{HOME}/arena")
+        self.assertTrue(callable(f4_kwargs["workdir_factory"]))
+        self.assertNotIn("launch_profile", f4_kwargs)  # the launch profile stays on (quickstart.md)
         self.assertEqual(calls["environment"]["probeCatalogSha256"], q.CATALOG_SHA256)
         self.assertEqual(calls["environment"]["claudeVersion"], mac.CLAUDE_VERSION)
         backend.close.assert_called_once()
@@ -488,11 +589,133 @@ class AttemptTests(unittest.TestCase):
             second = captured["transport_factory"]()
             self.assertEqual(second.kwargs["quota"], ("probe", 1))
 
-    def test_nothing_is_written_by_the_driver_itself(self):
-        s = good_machine()
-        with mock.patch("builtins.open", side_effect=AssertionError("write")):
-            result, _, _ = self.call(system=s)
+    def failing_run(self, error, spent=0):
+        """Run the attempt with a runner that spends ``spent`` sessions, then raises ``error``."""
+        captured = {}
+
+        def make_runner(be, **kw):
+            captured.update(kw)
+
+            def run(out, environment):
+                for _ in range(spent):
+                    captured["transport_factory"]()
+                raise error
+            return SimpleNamespace(run=run)
+
+        answers = iter(["t009-test"] + ["10", "5", "n", "now"] * 3)
+        backend = mock.MagicMock()
+        with mock.patch.object(q, "make_qualification_runner", side_effect=make_runner), \
+                mock.patch.object(q, "make_f4_probe_runner", return_value="f4"), \
+                mock.patch.object(q, "verify_bundle", return_value="e" * 64), \
+                mock.patch.object(har, "NativeClaudeTransport", side_effect=lambda *a, **k: SimpleNamespace()), \
+                mock.patch.object(har.tempfile, "mkdtemp", side_effect=lambda **k: f"{HOME}/run/work-x"), \
+                mock.patch.object(mac, "_remove_tree") as remove:
+            with self.assertRaises(har.AttemptFailed) as caught:
+                har.run_attempt(arguments(dry_run=False, founder_go=True), good_machine(),
+                                ask=lambda _p: next(answers), say=lambda _m: None, now=lambda: NOW,
+                                backend_factory=lambda policy, **kw: backend)
+        backend.close.assert_called_once()
+        if spent:
+            remove.assert_called()
+        return caught.exception
+
+    def test_a_failure_after_sessions_were_spent_reports_how_many(self):
+        failure = self.failing_run(q.ProbeError("bundle-exists"), spent=2)
+        self.assertEqual((failure.sessions_started, failure.reason), (2, "ProbeError: bundle-exists"))
+        self.assertEqual(failure.out_dir, f"{HOME}/out/t009-test")
+        failure = self.failing_run(OSError("disk"), spent=0)
+        self.assertEqual((failure.sessions_started, failure.reason), (0, "OSError"))
+
+    def test_an_interrupt_is_reported_like_any_other_failure(self):
+        failure = self.failing_run(KeyboardInterrupt(), spent=1)
+        self.assertEqual((failure.sessions_started, failure.reason), (1, "KeyboardInterrupt"))
+
+    def test_main_prints_a_verdict_json_for_refusals_with_details_and_for_failures(self):
+        out = io.StringIO()
+        refusal = har.AttemptRefused(["out-dir"], {"out-dir": "exists"})
+        with mock.patch.object(har, "run_attempt", side_effect=refusal), redirect_stdout(out):
+            code = har.main(DryRunTests.ARGV[:-1] + ["--founder-go"], system=good_machine())
+        report = json.loads(out.getvalue())
+        self.assertEqual((code, report["verdict"], report["details"]), (2, "refused", {"out-dir": "exists"}))
+        out = io.StringIO()
+        failure = har.AttemptFailed("ProbeError: bundle-exists", 2, f"{HOME}/out/t009-test")
+        with mock.patch.object(har, "run_attempt", side_effect=failure), redirect_stdout(out):
+            code = har.main(DryRunTests.ARGV[:-1] + ["--founder-go"], system=good_machine())
+        report = json.loads(out.getvalue())
+        self.assertEqual((code, report["verdict"], report["quota"]["started"]), (2, "error", 2))
+        self.assertEqual(report["outDir"], f"{HOME}/out/t009-test")
+        self.assertFalse(report["executionAuthorization"])
+        self.assertIn("counter", report["next"])
+
+    def test_the_driver_writes_no_file_directory_or_temporary_path_in_a_double_run(self):
+        def forbidden(*_a, **_k):
+            raise AssertionError("write")
+
+        real_open, real_os_open = open, os.open
+
+        def guarded_open(file, mode="r", *a, **k):  # reads (hashing the interpreter) are fine
+            if set(mode) & set("wax+"):
+                raise AssertionError("write")
+            return real_open(file, mode, *a, **k)
+
+        def guarded_os_open(path, flags, *a, **k):
+            if flags & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND):
+                raise AssertionError("write")
+            return real_os_open(path, flags, *a, **k)
+
+        writers = [mock.patch("builtins.open", guarded_open), mock.patch.object(os, "open", guarded_os_open),
+                   mock.patch.object(Path, "write_text", forbidden), mock.patch.object(Path, "write_bytes", forbidden),
+                   mock.patch.object(Path, "mkdir", forbidden),
+                   mock.patch.object(os, "mkdir", forbidden), mock.patch.object(os, "makedirs", forbidden),
+                   mock.patch.object(os, "replace", forbidden), mock.patch.object(har.tempfile, "mkdtemp", forbidden),
+                   mock.patch("shutil.copy", forbidden), mock.patch("shutil.copytree", forbidden)]
+        with contextlib.ExitStack() as stack:
+            for writer in writers:
+                stack.enter_context(writer)
+            result, _, _ = self.call(system=good_machine())
         self.assertEqual(result["verdict"], "bundle-written")
+
+
+class SystemTests(unittest.TestCase):
+    """The real ``System`` reads, on throw-away temporary directories only."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+
+    def test_a_traverse_only_home_counts_as_traversable(self):
+        home = self.root / "home"
+        home.mkdir()
+        os.chmod(home, 0o100)  # x only (mode 711 for others behaves the same): a path under it opens
+        self.addCleanup(os.chmod, home, 0o700)
+        self.assertTrue(har.System().can_traverse(str(home)))
+        os.chmod(home, 0o000)
+        self.assertFalse(har.System().can_traverse(str(home)))
+
+    @unittest.skipIf(os.geteuid() == 0, "root reads everything")
+    def test_walk_raises_on_an_unlistable_subdirectory(self):
+        hidden = self.root / "a" / "hidden"
+        hidden.mkdir(parents=True)
+        (hidden / "f").write_text("x")
+        os.chmod(hidden, 0o000)
+        self.addCleanup(os.chmod, hidden, 0o700)
+        with self.assertRaises(OSError):
+            har.System().walk(str(self.root), 100)
+
+    def test_walk_lists_entries_and_stops_past_the_limit(self):
+        (self.root / "d").mkdir()
+        (self.root / "d" / "f").write_text("x")
+        system = har.System()
+        self.assertEqual(sorted(p for p, _ in system.walk(str(self.root), 10)),
+                         [str(self.root / "d"), str(self.root / "d" / "f")])
+        self.assertIsNone(system.walk(str(self.root), 1))
+
+    def test_the_supervisor_facts_come_from_the_running_interpreter(self):
+        system = har.System()
+        self.assertEqual(system.supervisor(), os.path.realpath(sys.executable))
+        self.assertEqual(system.interpreter_flags(), (bool(sys.flags.isolated), bool(sys.dont_write_bytecode)))
+        self.assertIsInstance(system.other_homes("braidlab"), list)
 
 
 if __name__ == "__main__":
