@@ -180,7 +180,7 @@
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_003",
           "then": "core report values equal the Codex/Claude results for the same input; unknown IDs, arbitrary roots and execution without an operator grant refuse.",
-          "when": "OpenCode starts the server and calls `workspaces` and `analyze-work` with explicit workspace IDs"
+          "when": "an MCP client starts the server with the command the OpenCode entry registers (stdio fixture; the real host under REQ-012) and calls `workspaces` and `analyze-work` with explicit workspace IDs"
         }
       ],
       "text": "Native plugin with MCP from the bundled runtime. Ship an OpenCode plugin package that registers the existing `agent-braid-plugin/v0.2` MCP server (`plugin serve`) through the bundled runtime launcher as a user-global `local` server with `codemode: false` and the default `legacy` protocol (D7 to D9), with no change to the server contract."

@@ -27,7 +27,9 @@ Commands run from the clean clone; `quick` means
   `agent-braid` MCP entry; tool approval prompts for plugin-registered MCP;
   `plugin add` from `github:…#<ref>::path:plugins/agent-braid` (executable bits,
   line endings, `.gitattributes`, size); `plugin list/update/remove`; command
-  listing; `--standalone`. Rows not observed stay `unobserved`. Gate: a Git-install
+  listing; `--standalone`; global and project configuration paths on macOS and
+  Linux (`XDG_CONFIG_HOME` handling, `opencode.json` versus `opencode.jsonc` when
+  both exist); host approval behaviour for plugin and legacy MCP tools. Rows not observed stay `unobserved`. Gate: a Git-install
   failure stops D3 and returns to the owner; any contradiction of research R1–R7
   returns the affected decision to the owner before T003–T007. Dependencies: T001.
   Files: `evidence/host-matrix.json`, `research.md` (status of each R item).
@@ -35,7 +37,7 @@ Commands run from the clean clone; `quick` means
   and limits per row. Negative controls: user configuration digest unchanged before
   and after; altered mode or bytes detected.
 
-- [ ] T003 (REQ-003 / SC-003; REQ-006 / SC-006): Write the OpenCode entry module
+- [ ] T003 (REQ-003 / SC-003, stdio part; the real host is T010): Write the OpenCode entry module
   per the surface contract: three transforms only, root from `import.meta.url`, no
   replacement of an existing skill ID or a foreign `agent-braid` server, no network,
   writes, child processes or event subscriptions. Tests first: a Python test parses
@@ -63,19 +65,22 @@ Commands run from the clean clone; `quick` means
   `collision`, `duplicate-guidance` and `server-collision` findings; output without
   `--host` unchanged. Add the `agent-braid-setup` and `agent-braid-reconnect`
   commands to the entry module; reconnect performs no reload. Tests first with
-  fixture skill trees and a fake registry. Dependencies: T003 (commands), none for
-  the scan (parallelizable with T003 for `agent_braid/plugin_opencode.py` only).
+  fixture skill trees and a fake registry. Dependencies: T003 (commands); T007's
+  JSONC scanner for reading explicit `skills` entries and the `agent-braid` server
+  entry (the directory scan has no dependency and may land first).
   Files: `agent_braid/plugin_opencode.py`, `agent_braid/plugin_cli.py`,
   `integrations/agent-braid/plugin/opencode/index.js`, `tests/test_plugin_opencode.py`.
   Verification: procedure_004, procedure_005, `quick`. Evidence: test output.
   Negative controls: shadowing `analyze` in `.opencode/skills`; prefixed legacy
   skills reported as collision; any grant path; automatic reload.
 
-- [ ] T006 (REQ-007 / SC-007): Add `opencode` to `install.sh --host` and to `--host
+- [ ] T006 (REQ-007 / SC-007; REQ-006 / SC-006, native install, update and remove commands): Add `opencode` to `install.sh --host` and to `--host
   all` (skipped with a notice when absent; `--host opencode` refuses when absent);
   `both` stays a deprecated alias for Codex and Claude only; README quick start
   gains the OpenCode row. Tests first with fake host executables. Dependencies: T004
-  (install string and tag layout). Parallelizable with T007 (disjoint files).
+  (install string and tag layout) and the merge of
+  [jayanez/agent-braid#983](https://github.com/jayanez/agent-braid/pull/983), which
+  introduces `--host all`. Parallelizable with T007 (disjoint files).
   Files: `install.sh`, `tests/test_plugin_installer.py`, `README.md`.
   Verification: procedure_007, `quick`. Evidence: test output. Negative controls:
   absent OpenCode under `--host opencode`; changed Codex or Claude command output;
@@ -85,10 +90,13 @@ Commands run from the clean clone; `quick` means
   legacy lifecycle per the legacy profile contract: per-host table in
   `tooling_install.py`, JSONC span scanner used only for `opencode`, paths, default
   server name per OD-10, refusal codes, `hosts.json` and `asset_provenance`; tooling
-  CLI `--host` choices. Include `plugin legacy` migration from an OpenCode receipt.
+  CLI `--host` choices. Include `plugin legacy` migration from an OpenCode receipt:
+  `plugin legacy --host` choices (`plugin_cli.py`) and the receipt directory in
+  `plugin_legacy.inventory`, which hard-codes the Codex and Claude paths today.
   Tests first on isolated destinations. Dependencies: T001 (T002 only for the
-  configuration-path rows). Parallelizable with T003–T006 (disjoint files). Files:
+  configuration-path rows). Parallelizable with T003, T004 and T006 (disjoint files); shares `plugin_cli.py` with T005, so T005 and T007 run in series. Files:
   `agent_braid/tooling_install.py`, `agent_braid/plugin_legacy.py`,
+  `agent_braid/plugin_cli.py`,
   `integrations/agent-braid/hosts.json`, tooling CLI module,
   `tests/test_tooling_install_opencode.py`. Verification: procedure_006,
   procedure_008, `quick`. Evidence: test output. Negative controls: comment or
@@ -113,7 +121,7 @@ Commands run from the clean clone; `quick` means
   repository documentation checks in `quick`. Evidence: documentation diff and a
   search record for unobserved claims.
 
-- [ ] T010 (REQ-012 / SC-012): Native observation in a clean OpenCode profile by
+- [ ] T010 (REQ-012 / SC-012; REQ-003 / SC-003 and REQ-006 / SC-006, real-host part): Native observation in a clean OpenCode profile by
   the owner or an operator: install from a candidate tag, skill and command listing,
   `agent-braid_analyze-work` on a registered workspace, reconnect, removal, on each
   available target platform. Unobserved items stay open. Dependencies: T009 and an

@@ -125,12 +125,13 @@ launcher as a user-global `local` server with `codemode: false` and the default
 `legacy` protocol (D7 to D9), with no change to the server contract.
 
 **SC-003:** Given a built OpenCode package and two registered analysis-only
-workspaces, when OpenCode starts the server and calls `workspaces` and
-`analyze-work` with explicit workspace IDs, then core report values equal the
+workspaces, when an MCP client starts the server with the command the OpenCode
+entry registers (stdio fixture; the real host under REQ-012) and calls
+`workspaces` and `analyze-work` with explicit workspace IDs, then core report values equal the
 Codex/Claude results for the same input; unknown IDs, arbitrary roots and
 execution without an operator grant refuse.
 
-Verification: [procedure_003](validation-plan.md); T003, T004.
+Verification: [procedure_003](validation-plan.md); T003, T004, T010.
 
 ### REQ-004 — Skills, commands and collision warning
 
@@ -167,7 +168,7 @@ tag and removed, then each step leaves the documented state; removal leaves user
 configuration outside owned entries intact; migration from a legacy receipt
 removes only owned entries.
 
-Verification: [procedure_006](validation-plan.md); T003, T007.
+Verification: [procedure_006](validation-plan.md); T006, T007, T010.
 
 ### REQ-007 — Shell installer
 

@@ -40,6 +40,11 @@ refuses with `ambiguous_configuration` and names both paths.
 - Skills: the canonical prefixed skills (`agent-braid-analyze`, …), as for the
   other legacy hosts.
 
+## Host permissions
+
+The profile writes no `permission` configuration for `<name>_*` tools; the
+host's approval rules apply, as recorded by T002.
+
 ## Editing rules
 
 - A JSONC span scanner accepts `//` and `/* */` comments and trailing commas,

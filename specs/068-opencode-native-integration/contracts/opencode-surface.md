@@ -36,7 +36,8 @@ editor.set("agent-braid", {
 
 - `root` is the plugin directory resolved from `import.meta.url`.
 - If an `agent-braid` server already exists and is not this exact value, the entry
-  does not replace it and records the collision for `plugin doctor`.
+  does not replace it; `plugin doctor --host opencode` reports it as
+  `server-collision` from the configuration files (the entry writes nothing).
 - Tool names are `agent-braid_<tool>`; tool set, schemas and results are those of
   `agent-braid-plugin/v0.2`, unchanged. The server publishes no prompts.
 
@@ -88,6 +89,12 @@ never restarts or reloads the server; the operator does, following
 Request `_meta` (including the OpenCode session identifier) is never read, stored,
 exported, logged or used for authorization. Envelopes and stores are byte-identical
 with and without it.
+
+## Host permissions
+
+The entry writes no `permission` configuration for `agent-braid_*` tools; the
+host's own approval rules and defaults apply. Their observed behaviour is a T002
+row. Documentation may describe how an operator sets them, never as a grant.
 
 ## Authority
 
