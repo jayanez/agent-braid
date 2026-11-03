@@ -458,7 +458,7 @@ console.log(JSON.stringify({
 TEAL, RED, AMBER = 0x2A9D8F, 0xD1495B, 0xE0A100
 
 
-@unittest.skipUnless(shutil.which("node"), "node is needed to build the scene without a browser")
+@unittest.skipIf(not shutil.which("node") and not os.environ.get("CI"), "node is needed to build the scene without a browser")
 class SceneBuildTests(unittest.TestCase):
     """The scene module's objects, built under Node from the real vendored Three.js and the example model."""
 

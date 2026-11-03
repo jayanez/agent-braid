@@ -155,6 +155,11 @@ class ArtifactTail:
         self._stop = threading.Event()
         self._thread: threading.Thread | None = None
 
+    @property
+    def roots(self) -> tuple[Path, ...]:
+        """The watched roots in label order: `roots[0]` is "root 1" on the page."""
+        return tuple(self._roots)
+
     # -- polling ---------------------------------------------------------------------------
 
     def poll_once(self) -> int:

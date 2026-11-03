@@ -230,7 +230,7 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
     from .view_loom import LoomError
     from .view_serve import HOOK_PATH, ServeError, ViewServer, load_replay, read_replay_file
     from .view_store import LoomStore
-    from .view_tail import MAX_ROOTS, ArtifactTail, TailError
+    from .view_tail import MAX_ROOTS, ArtifactTail, TailError, root_label
 
     bundle_dir = resolve_bundle_dir()
     bundle, import_map_sha256 = load_bundle(bundle_dir)
@@ -271,12 +271,13 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
         raise CliError(f"view serve: cannot bind port {args.port}: {exc.strerror}") from exc
     previous = _stop_on_sigterm()
     try:
-        lines = [f"Agent Braid activity viewer (read-only), surface web, loopback only.",
+        lines = ["Agent Braid activity viewer (read-only), surface web, loopback only.",
                  f"Open once in a browser: {server.open_url}",
                  f"Ingest token file (owner-only): {server.token_path}"]
-        if discovered:
-            lines.append("Watching result roots discovered from the plugin registry (read-only):")
-            lines.extend(f"  {root}" for root in discovered[:MAX_ROOTS])
+        if tail is not None:
+            source = "discovered from the plugin registry" if discovered else "given with --watch"
+            lines.append(f"Watching result roots {source} (read-only); the page shows only these labels:")
+            lines.extend(f"  {root_label(index)}: {root}" for index, root in enumerate(tail.roots))
         lines.extend(f"Discovery note: {note}" for note in notes)
         print("\n".join(lines), flush=True)
         if tail is not None:

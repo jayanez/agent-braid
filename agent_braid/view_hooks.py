@@ -42,15 +42,24 @@ _NAME_SEGMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")  # a schema-like name; a d
 _MAX_NAME_WALK = 20_000  # payload nodes inspected for the inventory; the body limit is 256 KiB
 
 
+def _encodable(value: str) -> bool:
+    """False for a string UTF-8 cannot encode (a lone surrogate): it is treated as absent, never an error."""
+    try:
+        value.encode("utf-8")
+    except UnicodeEncodeError:
+        return False
+    return True
+
+
 def _text(value: Any) -> str | None:
-    """A kept free-text value, or None when absent, not a string, too long or carrying control characters."""
-    if isinstance(value, str) and 0 < len(value) <= TEXT_MAX_LENGTH and _TEXT.fullmatch(value):
+    """A kept free-text value, or None when absent, not a string, too long, unencodable or carrying control characters."""
+    if isinstance(value, str) and 0 < len(value) <= TEXT_MAX_LENGTH and _TEXT.fullmatch(value) and _encodable(value):
         return value
     return None
 
 
 def _identifier(value: Any) -> str | None:
-    if isinstance(value, str) and 0 < len(value) <= MAX_IDENTIFIER_LENGTH:
+    if isinstance(value, str) and 0 < len(value) <= MAX_IDENTIFIER_LENGTH and _encodable(value):
         return value
     return None
 
