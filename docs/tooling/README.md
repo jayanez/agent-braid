@@ -103,7 +103,9 @@ execute an already granted bounded batch, recover an interruption and export
 the verified result with its evidence and limits.
 
 The first targets are **Codex local CLI and Claude Code local CLI** on macOS
-arm64 at recorded exact versions. Linux x86_64 is the initial package/protocol/core
+arm64 at recorded exact versions. [SPEC-068](../../specs/068-opencode-native-integration/spec.md)
+adds **OpenCode** as a third host (native plugin from `0.1.0-alpha.7` and a legacy
+profile); its real-host observation is pending. Linux x86_64 is the initial package/protocol/core
 reproduction target. See the [capability and host matrix](../../specs/039-ai-tooling-program/capability-matrix.md)
 for the required observations and support boundaries.
 
@@ -118,6 +120,7 @@ for the required observations and support boundaries.
 | Developer journey | Chat explanations, interaction graph and offline Markdown/SVG/HTML evidence exports | [SPEC-043](../../specs/043-ai-tooling-journey/spec.md) · [Presentation contract](../../specs/043-ai-tooling-journey/contracts/presentation.md) |
 | Evaluation | Actual host receipts, controls, complete costs and CLI/MCP/MCP-plus-skills comparison | [SPEC-044](../../specs/044-ai-tooling-evaluation/spec.md) · [Prospective protocol](../../specs/044-ai-tooling-evaluation/evaluation-protocol.md) |
 | Installed verifiers | Which offline installed-package verifier applies to portable contract v0.1 and v0.2 | [Installed-package verifiers](INSTALLED_VERIFIERS.md) |
+| OpenCode | Native plugin, legacy `tooling install --host opencode` profile and collision diagnosis for a third host | [SPEC-068](../../specs/068-opencode-native-integration/spec.md) · [Surface contract](../../specs/068-opencode-native-integration/contracts/opencode-surface.md) · [Legacy profile](../../specs/068-opencode-native-integration/contracts/opencode-legacy-profile.md) · [Native plugins](NATIVE_PLUGINS.md#opencode-available-from-010-alpha7) |
 | Activity viewer (VIS.1a) | Read-only loopback viewer of agents and coordination decisions, live and replay; Codex and OpenTelemetry ingest, recording and export are VIS.1b | [Viewer guide](VIEWER.md) · [SPEC-061](../../specs/061-activity-viewer/spec.md) · [UI, security and privacy contract](../../specs/061-activity-viewer/contracts/ui-security-privacy.md) |
 
 The proposed interface defaults to analysis. Runtime activation requires explicit

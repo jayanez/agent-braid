@@ -2,7 +2,7 @@
 # Installing Agent Braid
 
 Start with the [native plugin installation guide](NATIVE_PLUGINS.md) for
-user-scoped Codex and Claude Code plugins, bundled runtime, automatic skill
+user-scoped Codex and Claude Code plugins (and OpenCode from `0.1.0-alpha.7`), bundled runtime, automatic skill
 discovery, repository suggestions, setup, diagnostics, update and removal.
 It includes the optional curl installer and clearly separates local candidates
 from public distribution readiness.
@@ -11,8 +11,8 @@ from public distribution readiness.
 
 This is the frozen fallback (`agent-braid tooling install`, no contract change)
 for platforms without the bundled native runtime (macOS x86_64, Linux arm64,
-WSL) and for source users. Prefer the native plugin route when your platform
-supports it.
+WSL) and for source users, on every host (Codex, Claude Code and OpenCode). Prefer
+the native plugin route when your platform supports it.
 
 The source integration adds default-off local telemetry at these legacy
 portable MCP and analyzer CLI boundaries. It does not change the installed
@@ -143,6 +143,33 @@ under a private user-owned parent and an explicit evidence-reference selection.
 Exports keep complete sensitive evidence separate from sanitized human views.
 See [presentation](../ai-tooling-presentation.md) and
 [evaluation](EVALUATION.md) for the independent observation and acceptance gates.
+
+## OpenCode legacy profile
+
+`agent-braid tooling install --host opencode` adds OpenCode to the same
+receipt-owned lifecycle (SPEC-068; contract
+[opencode-legacy-profile](../../specs/068-opencode-native-integration/contracts/opencode-legacy-profile.md)).
+`preview`, `apply`, `update`, `uninstall` and `doctor` behave as for the other
+hosts, and the Codex and Claude profiles are unchanged. It writes the server entry
+to `mcp.<name>` (default `agent-braid`) as a local `python -m agent_braid tooling
+serve` command with `codemode: false`, and copies the prefixed `agent-braid-*`
+skills. It writes no `permission` configuration.
+
+| Scope | Configuration | Skills |
+|---|---|---|
+| `user` | `$XDG_CONFIG_HOME/opencode/opencode.jsonc` if it exists, else `opencode.json` there (`XDG_CONFIG_HOME` defaults to `~/.config`) | `$XDG_CONFIG_HOME/opencode/skills/` |
+| `project` | `<source-root>/opencode.jsonc` if it exists, else `opencode.json` | `<source-root>/.opencode/skills/` |
+
+Only the owned member is edited; comments, trailing commas and every other byte of
+the JSONC file are preserved. Preview refuses `ambiguous_configuration` when both
+`opencode.json` and `opencode.jsonc` exist in the scope, `invalid_configuration`
+for a file that does not parse, and an unowned `agent-braid` entry or skill is never
+overwritten (`unowned_collision`). Because the default key equals the native
+plugin's server name, the legacy entry shadows the plugin's server when both are
+configured; preview and `doctor` warn with `native_plugin_shadowed` (only when the plugin entry is in the configuration file the profile edits; `opencode plugin add` writes the global one), and `--name`
+selects another key. Behavior is checked by `tests/test_tooling_install_opencode.py`
+on isolated destinations. OpenCode reading these paths was observed on macOS arm64
+with OpenCode 2.1.4 only; Linux is unobserved.
 
 ## Local telemetry consent, update and removal
 

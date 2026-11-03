@@ -67,7 +67,7 @@ Commands run from the clean clone; `quick` means
   Codex/Claude file.
   Done: PR #1022; `tests/test_native_plugin_build.py` (D12 byte-identity test).
 
-- [ ] T005 (REQ-004 / SC-004; REQ-005 / SC-005): Add `plugin doctor --host opencode
+- [x] T005 (REQ-004 / SC-004; REQ-005 / SC-005): Add `plugin doctor --host opencode
   [--project <dir>]`: read-only scan of the documented discovery locations with
   `collision`, `duplicate-guidance` and `server-collision` findings; output without
   `--host` unchanged. Extend the existing doctor report rather than adding a
@@ -84,8 +84,9 @@ Commands run from the clean clone; `quick` means
   Verification: procedure_004, procedure_005, `quick`. Evidence: test output.
   Negative controls: shadowing `analyze` in `.opencode/skills`; prefixed legacy
   skills reported as collision; any grant path; automatic reload.
+  Done: PR #1023; `tests/test_plugin_opencode.py` (22 tests).
 
-- [ ] T006 (REQ-007 / SC-007; REQ-006 / SC-006, native install, update and remove commands): Add `opencode` to `install.sh --host` and to `--host
+- [x] T006 (REQ-007 / SC-007; REQ-006 / SC-006, native install, update and remove commands): Add `opencode` to `install.sh --host` and to `--host
   all` (skipped with a notice when absent; `--host opencode` refuses when absent);
   `both` stays a deprecated alias for Codex and Claude only; README quick start
   gains the OpenCode row. Tests first with fake host executables. Dependencies: T004
@@ -96,6 +97,7 @@ Commands run from the clean clone; `quick` means
   Verification: procedure_007, `quick`. Evidence: test output. Negative controls:
   absent OpenCode under `--host opencode`; changed Codex or Claude command output;
   sudo or Python invoked.
+  Done: this PR; `install.sh`, `tests/test_plugin_installer.py` (`OpenCodeInstallerTests`), README quick start.
 
 - [x] T007 (REQ-008 / SC-008; REQ-006 / SC-006): Add the `opencode` host to the
   legacy lifecycle per the legacy profile contract: per-host table in
@@ -117,7 +119,7 @@ Commands run from the clean clone; `quick` means
   Done: PR #1019; tests `tests/test_tooling_install_opencode.py` and
   `tests/test_tooling_install_golden.py`.
 
-- [ ] T008 (REQ-009 / SC-009; REQ-010 / SC-010): Regression: SPEC-046, 047, 054,
+- [x] T008 (REQ-009 / SC-009; REQ-010 / SC-010): Regression: SPEC-046, 047, 054,
   060 and 066 contracts unchanged; envelopes and stores byte-identical with and
   without an OpenCode `_meta` session identifier; no stored artifact contains it;
   SPEC-047 T011/T012 surfaces (router-owned measurement, closed `refusal-reason`
@@ -126,8 +128,9 @@ Commands run from the clean clone; `quick` means
   Codex/Claude artifacts compared per D12. Dependencies: T004–T007. Files:
   `tests/test_plugin_mcp.py` and existing contract tests. Verification:
   procedure_009, procedure_010, `quick`. Evidence: test output and artifact diff.
+  Done: this PR; `tests/test_plugin_mcp.py` (`PluginOpenCodeSessionIdentifierTests`) plus the unchanged SPEC-046/047/054/060/066 contract tests.
 
-- [ ] T009 (REQ-011 / SC-011): Update English documentation: README quick start,
+- [x] T009 (REQ-011 / SC-011): Update English documentation: README quick start,
   `docs/tooling/NATIVE_PLUGINS.md`, `INSTALL.md` (OpenCode legacy profile; route
   marked frozen fallback for all hosts), `SKILLS.md` (collisions and duplicate
   guidance), `HOSTS.md`, `PLUGIN_PRIVACY.md` (session identifier), `docs/tooling/README.md`,
@@ -136,6 +139,7 @@ Commands run from the clean clone; `quick` means
   fact. Dependencies: T008. Files: as listed. Verification: procedure_011,
   repository documentation checks in `quick`. Evidence: documentation diff and a
   search record for unobserved claims.
+  Done: this PR; README, `docs/tooling/{NATIVE_PLUGINS,INSTALL,SKILLS,HOSTS,PLUGIN_PRIVACY,README}.md`, `docs/development/SPEC_KIT.md`, SPEC-039 `program.md`; unobserved items marked in the text.
 
 - [ ] T010 (REQ-012 / SC-012; REQ-003 / SC-003 and REQ-006 / SC-006, real-host part): Native observation in a clean OpenCode profile by
   the owner or an operator: install from a candidate tag, skill and command listing,

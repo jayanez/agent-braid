@@ -8,7 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class PluginInstallerTests(unittest.TestCase):
+class InstallerCase(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
@@ -25,6 +25,8 @@ class PluginInstallerTests(unittest.TestCase):
         return subprocess.run(['/bin/sh', str(ROOT / 'install.sh'), *args], env=self.env,
                               capture_output=True, text=True, stdin=subprocess.DEVNULL)
 
+
+class PluginInstallerTests(InstallerCase):
     def test_no_host_refuses_without_installation(self):
         result = self.run_installer()
         self.assertEqual(result.returncode, 2)
@@ -48,8 +50,7 @@ class PluginInstallerTests(unittest.TestCase):
         calls = self.log.read_text()
         self.assertIn('codex plugin add agent-braid@agent-braid', calls)
         self.assertIn('claude plugin install agent-braid --marketplace /catalog --scope user', calls)
-        self.assertNotIn('skipping', result.stderr)
-        self.assertNotIn('deprecated', result.stderr)
+        self.assertEqual(result.stderr, 'Agent Braid installer: OpenCode not found on PATH; skipping.\n')
 
     def test_all_skips_an_absent_host_with_a_notice(self):
         for present, absent, expected in [
@@ -90,9 +91,9 @@ class PluginInstallerTests(unittest.TestCase):
     def test_usage_lists_all_and_not_both_as_a_choice(self):
         result = self.run_installer('--help')
         self.assertEqual(result.returncode, 0)
-        self.assertIn('[--host codex|claude|all]', result.stdout)
-        self.assertIn('both is a deprecated alias', result.stdout)
-        self.assertIn('Select codex, claude or all', self.run_installer('--host', 'nope').stderr)
+        self.assertIn('[--host codex|claude|opencode|all]', result.stdout)
+        self.assertIn('both is a deprecated alias for codex + claude only', result.stdout)
+        self.assertIn('Select codex, claude, opencode or all', self.run_installer('--host', 'nope').stderr)
 
     def test_missing_second_host_is_checked_before_any_mutation(self):
         self.host('codex')
@@ -128,4 +129,100 @@ class PluginInstallerTests(unittest.TestCase):
     def test_option_shaped_values_are_rejected_before_native_calls(self):
         self.host('codex')
         self.assertEqual(self.run_installer('--marketplace', '--help').returncode, 2)
+        self.assertFalse(self.log.exists())
+
+
+class OpenCodeInstallerTests(InstallerCase):
+    SOURCE = 'github:jayanez/agent-braid#plugin-dist::path:plugins/agent-braid'
+
+    def test_opencode_runs_one_native_plugin_add_with_the_default_ref(self):
+        self.host('opencode')
+        result = self.run_installer('--host', 'opencode')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.log.read_text().splitlines(), ['opencode plugin add ' + self.SOURCE])
+        self.assertNotIn('not found', result.stderr)
+
+    def test_opencode_ref_applies_with_default_and_explicit_marketplace(self):
+        self.host('opencode')
+        for options in [('--ref', 'agent-braid--v0.1.0-alpha.7',), ('--ref', 'agent-braid--v0.1.0-alpha.7', '--marketplace',
+                                                                      'https://github.com/jayanez/agent-braid.git')]:
+            self.log.unlink(missing_ok=True)
+            self.assertEqual(self.run_installer('--host', 'opencode', *options).returncode, 0)
+            self.assertEqual(self.log.read_text().strip(), 'opencode plugin add '
+                             'github:jayanez/agent-braid#agent-braid--v0.1.0-alpha.7::path:plugins/agent-braid')
+
+    def test_opencode_custom_marketplace_without_ref_has_no_ref(self):
+        self.host('opencode')
+        for marketplace, expected in [('/a catalog', 'git+file:///a catalog'),
+                                      ('https://github.com/acme/fork', 'github:acme/fork'),
+                                      ('https://example.test/x.git', 'git+https://example.test/x.git')]:
+            self.log.unlink(missing_ok=True)
+            self.assertEqual(self.run_installer('--host', 'opencode', '--marketplace', marketplace).returncode, 0)
+            self.assertEqual(self.log.read_text().strip(), 'opencode plugin add ' + expected + '::path:plugins/agent-braid')
+
+    def test_opencode_refuses_when_absent_without_any_call(self):
+        self.host('codex'); self.host('claude')
+        result = self.run_installer('--host', 'opencode')
+        self.assertEqual(result.returncode, 2)
+        self.assertIn('OpenCode is unavailable', result.stderr)
+        self.assertFalse(self.log.exists())
+
+    def test_opencode_dry_run_executes_nothing(self):
+        self.host('opencode')
+        result = self.run_installer('--host', 'opencode', '--dry-run')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('<opencode> <plugin> <add> <' + self.SOURCE + '>', result.stdout)
+        self.assertFalse(self.log.exists())
+
+    def test_all_adds_opencode_when_found_and_keeps_the_other_commands(self):
+        self.host('codex'); self.host('claude'); self.host('opencode')
+        result = self.run_installer('--host', 'all', '--marketplace', '/catalog')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.log.read_text().splitlines(), [
+            'codex plugin marketplace add /catalog',
+            'codex plugin add agent-braid@agent-braid',
+            'claude plugin install agent-braid --marketplace /catalog --scope user',
+            'opencode plugin add git+file:///catalog::path:plugins/agent-braid'])
+        self.assertEqual(result.stderr, '')
+
+    def test_all_skips_absent_opencode_with_a_notice(self):
+        self.host('codex')
+        result = self.run_installer('--host', 'all')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('OpenCode not found on PATH; skipping', result.stderr)
+        self.assertFalse(any(line.startswith('opencode') for line in self.log.read_text().splitlines()))
+
+    def test_all_with_only_opencode_installs_it_and_skips_the_others(self):
+        self.host('opencode')
+        result = self.run_installer('--host', 'all')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.log.read_text().splitlines(), ['opencode plugin add ' + self.SOURCE])
+        self.assertIn('Codex not found on PATH; skipping', result.stderr)
+        self.assertIn('Claude Code not found on PATH; skipping', result.stderr)
+
+    def test_both_never_touches_opencode(self):
+        self.host('codex'); self.host('claude'); self.host('opencode')
+        self.assertEqual(self.run_installer('--host', 'both').returncode, 0)
+        calls = self.log.read_text().splitlines()
+        self.assertEqual(len(calls), 3)
+        self.assertFalse(any(call.startswith('opencode') for call in calls))
+
+    def test_auto_selects_a_lone_opencode_and_ignores_it_next_to_codex(self):
+        self.host('opencode')
+        self.assertEqual(self.run_installer().returncode, 0)
+        self.assertEqual(self.log.read_text().strip(), 'opencode plugin add ' + self.SOURCE)
+        self.log.unlink()
+        self.host('codex')
+        self.assertEqual(self.run_installer().returncode, 0)
+        self.assertFalse(any(line.startswith('opencode') for line in self.log.read_text().splitlines()))
+        self.assertEqual(self.log.read_text().splitlines()[0], 'codex plugin marketplace add '
+                         'https://github.com/jayanez/agent-braid.git --ref plugin-dist')
+
+    def test_failed_native_manager_is_reported_and_nothing_else_is_invoked(self):
+        path = self.base / 'opencode'
+        path.write_text('#!/bin/sh\nexit 1\n')
+        path.chmod(0o755)
+        result = self.run_installer('--host', 'opencode')
+        self.assertEqual(result.returncode, 2)
+        self.assertIn('Native manager failed', result.stderr)
         self.assertFalse(self.log.exists())

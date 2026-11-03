@@ -102,6 +102,12 @@ merge and final closure retain their applicable decisions.
 These are documented options. They add no v1 tasks, compatibility claims or
 execution authority. No provider ranking is asserted.
 
+Additive note (2026-11-03): the OpenCode candidate of the first route is specified
+separately as [SPEC-068](../068-opencode-native-integration/spec.md) (native plugin
+and legacy profile). It adds nothing to the v1 tasks or acceptance of this program,
+changes none of its contracts and claims no OpenCode compatibility here; the
+frozen Python route stays the fallback for every host.
+
 The embedded visual interaction route is now specified as track VIS:
 [SPEC-061](../061-activity-viewer/spec.md) (VIS.1, draft) provides the required
 [UI, security and privacy contract](../061-activity-viewer/contracts/ui-security-privacy.md)
