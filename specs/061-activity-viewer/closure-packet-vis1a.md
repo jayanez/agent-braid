@@ -1,10 +1,14 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # SPEC-061 VIS.1a closure packet (2026-11-03)
 
-Status: **closure review done, owner approval pending.** Nothing here freezes the
-specification, changes `human_review`, `review_record`, `authority_snapshot` or
-`evidence_snapshot`, or approves anything. Engineering evidence is local unit tests;
-host verification and the owner's use of the viewer are separate.
+Status: **VIS.1a closed and frozen 2026-11-03.** The owner approved the closure
+(answer "Arreglar 1+2, luego cerrar (Recommended)"; record
+`owner-review-vis1a-closure-20261103.json`); closure findings 1 and 2 were fixed in #1013,
+the evidence was recorded in #1017 and the assurance record is frozen at 62a44fb7.
+VIS.1b go/no-go T035 is due by 2027-01-31 after real use; T047 holds the review
+follow-ups (findings 3 to 12). The text below is the packet as written for the review.
+Engineering evidence is local unit tests; host verification and the owner's use of the
+viewer are separate.
 
 ## What was delivered
 

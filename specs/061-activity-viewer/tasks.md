@@ -278,6 +278,6 @@ per-probe owner authorization but no ADR, and run first.
   simplification reviews), fixes #1013, and the pre-PR reviews and `pr` validation of
   the evidence and freeze PRs. The box stays open until the VIS.1b closure.
 - [ ] T037: Record obtained evidence in `assurance.json`, freeze, owner review of
-  each delivery closure. Dependencies: T036. VIS.1a: evidence recorded 2026-11-03
-  and review reset to pending; the freeze and the owner approval record follow in the
-  next PR, after this one is merged.
+  each delivery closure. Dependencies: T036. VIS.1a: done 2026-11-03 (#1017 evidence,
+  this PR freeze at 62a44fb7 and the owner closure approval, record
+  `owner-review-vis1a-closure-20261103.json`). The box stays open until the VIS.1b closure.
