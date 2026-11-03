@@ -96,37 +96,84 @@ rule as everything else: none of them can authorize execution on its own.
 
 ## 🚀 Quick start
 
-Install the **native user plugin** for your agent host. It bundles Python and its
-dependencies, registers its skills and guides you through selecting repositories;
-nothing is registered without a preview and your explicit confirmation. Git and
-the selected host must already be installed.
+Install the **native user plugin** for your agent host: it bundles its own
+runtime, registers its skills and guides you through selecting repositories.
+Git and the selected host (Claude Code or Codex) must already be installed.
 
-| Your platform | Install |
-| --- | --- |
-| macOS arm64, Linux x86_64 (glibc 2.28+) | Run the command below with `--host codex`, `--host claude`, or `--host all` (every host found on `PATH`). |
-| Any other platform (macOS x86_64, Linux arm64, WSL) | No bundled runtime yet: use the [Python fallback install](docs/tooling/INSTALL.md) (`agent-braid tooling install --host …`). |
+> **⚡ One command, every host on your PATH**
+>
+> For **macOS arm64** and **Linux x86_64 (glibc 2.28+)**, with the bundled
+> runtime: no Python needed. Other platforms (macOS x86_64, Linux arm64, WSL):
+> use the [Python fallback install](docs/tooling/INSTALL.md).
+>
+> ```sh
+> curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh | sh -s -- --host all
+> ```
+>
+> Add `--ref agent-braid--v0.1.0-alpha.6` to pin a release. (`--host both` is a
+> deprecated alias for `codex` + `claude`.)
+
+Prefer the host's own commands? The script runs exactly these
+([details](docs/tooling/NATIVE_PLUGINS.md)); they track the `plugin-dist` branch:
+
+**Claude Code**
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh \
-  | sh -s -- --host all
+claude plugin install agent-braid \
+  --marketplace 'https://github.com/jayanez/agent-braid.git#plugin-dist' --scope user
 ```
 
-Add `--ref agent-braid--v0.1.0-alpha.6` to pin a release. `--host both` still
-works as a deprecated alias for `codex` + `claude`. Git and the selected host
-must already be installed. See [native installation and setup](docs/tooling/NATIVE_PLUGINS.md)
-for marketplace commands, repository selection and lifecycle operations.
+**Codex**
 
-**Invoke the skills.** In Claude Code run `/agent-braid:analyze`, `/agent-braid:plan`,
-`/agent-braid:evidence`, `/agent-braid:execute`, `/agent-braid:recover` or
-`/agent-braid:setup`. In Codex select the same skills from the plugin (`$` or
-`/skills`); the app-server lists them as `agent-braid:<skill>`. The plugin publishes
-no MCP prompts; the portable server (`agent-braid tooling serve`) and the legacy
-global install keep their `agent-braid-*` names. The
+```sh
+codex plugin marketplace add https://github.com/jayanez/agent-braid.git --ref plugin-dist
+codex plugin add agent-braid@agent-braid
+```
+
+### Then, in three steps
+
+**1. Install.** Run the one-line installer, or the command for your host.
+
+**2. Set up.** In Claude Code run `/agent-braid:setup`; in Codex select the Agent
+Braid `setup` skill. Pick the repositories to register, review the preview and
+confirm. Nothing is registered without a preview and your explicit confirmation.
+After a registry change, reconnect MCP with the host's native reconnect or restart.
+
+**3. First check.** Ask for an analysis with `/agent-braid:analyze` (in Codex,
+select the skill with `$` or `/skills`). Each pair of tasks gets a verdict, using
+the same classifications as the CLI. Example CLI output for two tasks that edit different files:
+
+```text
+Operations: 2  Pairs: 1
+edit-readme / edit-roadmap: independent-candidate
+  - Complete exact-resource footprints are disjoint.
+  constraints: requires-execution-contract-before-parallelism
+Execution authorization: false
+```
+
+Two tasks that both write `README.md`:
+
+```text
+Operations: 2  Pairs: 1
+edit-readme / edit-readme-intro: conflicting
+  - At least one exact shared resource has a write-like effect.
+  constraints: serialize-or-isolate
+Execution authorization: false
+```
+
+`conflicting` means run them one after the other or in isolation; neither result
+executes anything. See [Reading an analysis](#reading-an-analysis) for all four
+outcomes. The other skills are `plan`, `evidence`, `execute`, `recover` and
+`telemetry-audit` (`/agent-braid:<skill>` in Claude Code).
+
+**Status of this install path.** The
 [alpha.4 acceptance record](specs/046-native-ai-plugins/release-acceptance-alpha4.md)
-covers a Claude Code update, a public-tag install and a Codex CLI install, removal and
-reinstall; interactive skill use and execution on Linux were not observed.
+covers a Claude Code update, a public-tag install and a Codex CLI install, removal
+and reinstall. Interactive skill use and Linux execution were not observed, and the alpha.6
+native install has not yet been observed.
 
-### Use the CLI directly (Python 3.12+)
+<details>
+<summary><strong>Use the CLI directly (Python 3.12+)</strong></summary>
 
 The plugin calls the same command-line core. Use it directly to script checks,
 inspect reports or contribute. Five steps, each building on the previous one;
@@ -202,6 +249,8 @@ local diagnostics are off by default: [telemetry](docs/tooling/TELEMETRY.md)
 [System One shadow mode](docs/tooling/SYSTEM_ONE_SHADOW.md)
 (`agent-braid system-one report`). Every other command is listed in
 [Command line](#-command-line).
+
+</details>
 
 <a id="from-analysis-to-a-verified-private-result"></a>
 
