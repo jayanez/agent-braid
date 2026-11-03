@@ -150,7 +150,8 @@ def run(args):
     if opencode_files:
         # SPEC-068: the OpenCode files are package bytes covered by the verified inventory.
         covered = json.loads((plugin / 'package-inventory.json').read_text())['files']
-        assert len(opencode_files) == 2 and all(name in covered for name in opencode_files), 'OpenCode files not inventoried'
+        assert len(opencode_files) == 2, 'OpenCode package is incomplete'
+        assert all(name in covered for name in opencode_files), 'OpenCode files not inventoried'
         assert json.loads((plugin / 'provenance.json').read_text())['hosts'] == ['codex', 'claude', 'opencode']
     selection = ['--source-root', roots[0], '--source-root', roots[1]]
     preview = json.loads(command([launch, 'plugin', 'setup', *selection]))

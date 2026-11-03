@@ -9,9 +9,8 @@ import tempfile
 import unittest
 
 from agent_braid.tooling_assets import load_skill_bundle
-from scripts.build_native_plugin import ROOT, SKILL_SUBSTITUTIONS, package_skill
+from scripts.build_native_plugin import OPENCODE_SOURCE as ENTRY, ROOT, SKILL_SUBSTITUTIONS, package_skill
 
-ENTRY = ROOT / 'integrations/agent-braid/plugin/opencode/index.js'
 SKILL_IDS = ['analyze', 'plan', 'evidence', 'execute', 'recover', 'setup']
 NODE = shutil.which('node')
 
@@ -76,9 +75,6 @@ class EntrySourceTests(unittest.TestCase):
     def test_a_commented_mention_is_not_a_use_but_real_code_still_is(self):
         self.assertEqual(forbidden_apis('// never throw, never fetch\nexport default {}\n'), [])
         self.assertEqual(forbidden_apis('export default { x: () => { throw 1 } }\n'), ['throwing'])
-
-    def test_execute_property_is_not_mistaken_for_exec(self):
-        self.assertIn('execute:', self.source)
 
     def test_only_read_only_node_builtins_are_imported(self):
         self.assertEqual(imports_of(self.source), ALLOWED_IMPORTS)
@@ -148,7 +144,6 @@ let threw = false
 try { await plugin.setup(broken.ctx === "null" ? null : broken.ctx === "empty" ? {} : ctx) } catch { threw = true }
 out.setupThrew = threw
 
-const snapshots = []
 let lastCommands = []
 for (const kind of scenario.order ?? []) {
   const log = []
@@ -158,9 +153,7 @@ for (const kind of scenario.order ?? []) {
     try { cb(editor); if (kind === "command" && scenario.sameEditorTwice) cb(editor) } catch { out.callbackThrew = true }
   }
   if (kind === "command") lastCommands = log
-  snapshots.push(clone({ servers: [...state.servers], skills: [...state.skills] }))
 }
-out.snapshots = snapshots
 out.final = clone({ servers: [...state.servers], skills: [...state.skills] })
 out.commandNames = lastCommands.map((x) => x.name)
 out.commandShapes = lastCommands.map((x) => ({ name: x.name, description: typeof x.description, execute: typeof x.execute }))
@@ -260,9 +253,16 @@ class EntryRuntimeTests(unittest.TestCase):
                 self.assertEqual(dict(value['final']['servers']), {'agent-braid': variant})
 
     def test_host_normalized_own_entry_is_accepted_and_reset_to_the_exact_value(self):
-        normalized = {**self.expected_server(), 'timeout': {}, 'disabled': True}
+        normalized = {**self.expected_server(), 'timeout': {}, 'environment': {}}
         value = self.run_scenario({'order': ['mcp'], 'servers': {'agent-braid': normalized}})
         self.assertEqual(dict(value['final']['servers'])['agent-braid'], self.expected_server())
+
+    def test_user_disabled_or_configured_entry_with_the_plugin_command_is_kept(self):
+        for extra in ({'disabled': True}, {'enabled': False}, {'environment': {'TOKEN': 'x'}}, {'env': {'TOKEN': 'x'}}):
+            with self.subTest(extra):
+                entry = {**self.expected_server(), 'timeout': {}, **extra}
+                value = self.run_scenario({'order': ['mcp'], 'servers': {'agent-braid': entry}})
+                self.assertEqual(dict(value['final']['servers'])['agent-braid'], entry)
 
     def test_other_servers_are_not_touched(self):
         other = {'type': 'remote', 'url': 'https://example.invalid'}

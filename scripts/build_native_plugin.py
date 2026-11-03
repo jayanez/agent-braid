@@ -54,7 +54,6 @@ def copy_tracked_workflows(source, destination):
 
 
 PLUGIN_NAME = 'agent-braid'
-HOSTS = ['codex', 'claude']
 
 
 def opencode_package_json():
@@ -65,13 +64,14 @@ def opencode_package_json():
 
 def copy_tracked_opencode_entry(destination):
     """Copy the one Git-tracked regular OpenCode entry source; anything else never ships."""
-    source = OPENCODE_SOURCE
-    tracked = subprocess.run(['git', 'ls-files', '--error-unmatch', '--', source.name], cwd=source.parent,
-                             capture_output=True).returncode == 0
-    if not tracked or source.is_symlink() or not source.is_file():
+    tracked = subprocess.run(['git', 'ls-files', '--error-unmatch', '--', OPENCODE_SOURCE.name],
+                             cwd=OPENCODE_SOURCE.parent, capture_output=True).returncode == 0
+    if not tracked or OPENCODE_SOURCE.is_symlink() or not OPENCODE_SOURCE.is_file():
         raise ValueError('The OpenCode entry source is not a tracked regular file')
     destination.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(source, destination)
+    shutil.copyfile(OPENCODE_SOURCE, destination)
+
+
 SKILL_SUBSTITUTIONS = {f'agent-braid-{x}': x for x in ('analyze', 'plan', 'evidence', 'execute', 'recover')}
 PACKAGED_SKILL_NAMES = frozenset(SKILL_SUBSTITUTIONS.values()) | {'setup', 'telemetry-audit'}
 NAME_PATTERN = re.compile(r'^[a-z0-9]+(-[a-z0-9]+)*$')
@@ -116,7 +116,8 @@ def check_package_names(staging, *, opencode=False):
     for filename in ('mcp.json', '.mcp.json'):
         require(list(load(plugin / filename).get('mcpServers', {})) == [PLUGIN_NAME], f'{filename} server key')
     manifest = plugin / 'package.json'
-    require(manifest.is_file() or not opencode, 'package.json is missing')
+    if opencode:
+        require(manifest.is_file(), 'package.json is missing')
     if manifest.is_file():
         package = load(manifest)
         require(package.get('name') == PLUGIN_NAME, 'package.json name')
@@ -352,7 +353,7 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
             'dependencyLockSha256': file_hash(ROOT / 'requirements-native-plugin.txt'), 'runtimes': runtime_provenance,
             'dependencies': package_licenses, 'canonicalSkills': bundle.inventory(),
             'skillNaming': {'policy': 'SPEC-054', 'substitutions': SKILL_SUBSTITUTIONS, 'skills': skill_provenance},
-            **({'hosts': [*HOSTS, 'opencode']} if include_opencode else {}),
+            **({'hosts': ['codex', 'claude', 'opencode']} if include_opencode else {}),
             'limits': ['Engineering package; no native conformance, publisher authentication or official approval implied']})
         if include_workflows:
             provenance_path = plugin / 'provenance.json'

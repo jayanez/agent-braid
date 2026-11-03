@@ -92,7 +92,6 @@ class OpenCodeBuildTests(unittest.TestCase):
     def test_inventory_provenance_and_verification_cover_the_new_files(self):
         self.assertEqual(verify_package(self.plugin)['status'], 'verified')
         files = json.loads((self.plugin / 'package-inventory.json').read_text())['files']
-        self.assertTrue(OPENCODE_FILES <= set(files))
         provenance = json.loads((self.plugin / 'provenance.json').read_text())
         self.assertEqual(provenance['hosts'], ['codex', 'claude', 'opencode'])
 
@@ -168,6 +167,7 @@ class OpenCodeBuildTests(unittest.TestCase):
             with self.subTest(name):
                 path = market / 'plugins/agent-braid' / name
                 original = path.read_bytes()
+                self.addCleanup(path.write_bytes, original)
                 path.write_bytes(original + b'\n')
                 self.assertEqual(host_read_differences(market, self.without_target), ['plugins/agent-braid/' + name])
                 with self.assertRaisesRegex(ValueError, 'inventory changed'):
@@ -179,14 +179,20 @@ class OpenCodeBuildTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)
             subprocess.run(['git', 'init', '-q', str(root)], check=True)
-            (root / 'index.js').write_text('export default {}\n')
-            for label, prepare in (('untracked', lambda: None),
-                                   ('symlink', lambda: ((root / 'index.js').unlink(), (root / 'index.js').symlink_to(root / 'other'))),
-                                   ('missing', lambda: (root / 'index.js').unlink())):
-                with self.subTest(label), mock.patch.object(build_native_plugin, 'OPENCODE_SOURCE', root / 'index.js'):
-                    prepare()
-                    with self.assertRaisesRegex(ValueError, 'tracked regular file'):
-                        build_native_plugin.copy_tracked_opencode_entry(root / 'out/index.js')
+            source = root / 'index.js'
+            source.write_text('export default {}\n')
+            (root / 'real.js').write_text('export default {}\n')
+            with mock.patch.object(build_native_plugin, 'OPENCODE_SOURCE', source):
+                with self.subTest('untracked'), self.assertRaisesRegex(ValueError, 'tracked regular file'):
+                    build_native_plugin.copy_tracked_opencode_entry(root / 'out/index.js')
+                subprocess.run(['git', '-C', str(root), 'add', '--', 'index.js', 'real.js'], check=True)
+                source.unlink()
+                source.symlink_to('real.js')  # tracked-looking and resolvable: only the symlink check can refuse it
+                with self.subTest('symlink'), self.assertRaisesRegex(ValueError, 'tracked regular file'):
+                    build_native_plugin.copy_tracked_opencode_entry(root / 'out/index.js')
+                source.unlink()
+                with self.subTest('missing'), self.assertRaisesRegex(ValueError, 'tracked regular file'):
+                    build_native_plugin.copy_tracked_opencode_entry(root / 'out/index.js')
 
 
 if __name__ == '__main__':

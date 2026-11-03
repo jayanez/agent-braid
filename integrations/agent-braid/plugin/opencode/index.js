@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Agent Braid OpenCode entry (SPEC-068, contract: opencode-surface.md).
-// Registers exactly three things and nothing else: the plugin MCP server, the six
+// Registers exactly three transforms and nothing else: the plugin MCP server, the six
 // packaged skills and two commands. No network, no writes, no child processes, no
 // hooks, no event subscriptions. Every registration is idempotent and skipped on
 // any problem, because a failure inside a transform disables the whole plugin and
@@ -45,10 +45,14 @@ function serverValue() {
   }
 }
 
-// The host normalizes stored entries, so compare only the semantic fields.
+// The host normalizes stored entries (it adds an empty timeout), so compare the semantic fields.
+// An entry the user disabled or gave an environment is theirs to keep: never reset it.
 function sameServer(existing, wanted) {
+  const environment = existing.environment ?? existing.env
   return (
-    !!existing &&
+    existing.disabled !== true &&
+    existing.enabled !== false &&
+    (environment == null || Object.keys(environment).length === 0) &&
     existing.type === wanted.type &&
     existing.codemode === wanted.codemode &&
     existing.protocol === wanted.protocol &&
@@ -90,18 +94,15 @@ function registerCommands(ctx, editor, seen) {
     editor.add({
       name: "agent-braid-setup",
       description: "Run the packaged Agent Braid setup skill",
-      execute: async (input) => {
-        await guard(() => send(input, `Follow this packaged Agent Braid setup skill.\n\n${readSkill("setup").content}`))
-      },
+      execute: (input) =>
+        guard(() => send(input, `Follow this packaged Agent Braid setup skill.\n\n${readSkill("setup").content}`)),
     }),
   )
   attempt(() =>
     editor.add({
       name: "agent-braid-reconnect",
       description: "Show the steps to restart the Agent Braid MCP server",
-      execute: async (input) => {
-        await guard(() => send(input, RECONNECT_TEXT))
-      },
+      execute: (input) => guard(() => send(input, RECONNECT_TEXT)),
     }),
   )
 }
