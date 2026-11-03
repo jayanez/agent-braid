@@ -122,7 +122,7 @@ Verification: [procedure_013](validation-plan.md); T013.
 
 Engineering only. No new effect domain, grant issuance, provider launch, scientific claim, registered 108-slot amendment, historical acceptance or milestone closure. Official approval and public release remain separate founder/provider decisions.
 
-## Amendments after alpha.5 (plugin `0.1.0-alpha.6`, unpublished)
+## Amendments after alpha.5 (plugin `0.1.0-alpha.6`, published 2026-11-03)
 
 Bounded additions that do not reopen T014/T015: (1) the package carries a seventh skill,
 `telemetry-audit` (SPEC-047 T012), so the five-skill and six-skill statements above describe the
@@ -130,7 +130,9 @@ alpha.2–alpha.5 packages that were observed; (2) registry quarantine (T020) an
 `unavailableWorkspaces` diagnostic; (3) `plugin-status` reports `pluginVersion`, the native
 plugin release read from the packaged manifest, beside `version`, which stays the Python package
 version (T021). The plugin version line (`0.1.0-alpha.N`) and the package version line (`0.1.0aN`)
-are independent. Publication of `0.1.0-alpha.6` is a separate owner decision.
+are independent. Publication of `0.1.0-alpha.6` was a separate owner decision, recorded in
+[owner-authorization-20261103.md](owner-authorization-20261103.md) and
+[release-acceptance-alpha6.md](release-acceptance-alpha6.md).
 
 ## Evidence and unresolved questions
 
