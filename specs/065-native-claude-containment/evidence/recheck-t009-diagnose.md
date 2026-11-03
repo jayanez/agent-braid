@@ -13,9 +13,9 @@ profile enforces anything (decided only by the T009 observation and the T010 hum
 | Date | 2026-11-04 |
 | Cause | T009 attempt 1 (`t009-20261104`) ended `ProbeError: secret-in-artifact` after the backend refused the first session; diagnosis in `t009-attempt1-diagnosis.md` |
 | Branch | `har/065-t009-diagnose`, base `origin/develop` (`38c0b268`) |
-| Scope | `agent_braid/harness_qualification_probes.py`: `ProbeError`, `_SECRET_SHAPES`, `_CODE_RUN`, `_allowed_run`, `_opaque_hits`, `_looks_secret`, `_scan_hits`, `_path_text`, `_leaf_findings`, `_locate`, `scan_for_secrets`, `bundle_safe_name`, `_credential_leaves`, `_is_candidate`, `credential_inventory`, `credential_values`, `credential_origins`, `write_bundle` (the `origins` input), `QualificationProbeRunner.run` (the labels) and the two row fields `machNames` and `changedOutside`. `scripts/har_t009_attempt.py`: `AttemptFailed`, `refusal_evidence`, `_scan_report`, `_workdirs`, `run_attempt` (inventory, runner input, error evidence), `self_check`, `run_self_check`, the `--self-check` option and the error verdict in `main` |
+| Scope | `agent_braid/harness_qualification_probes.py`: `ProbeError`, `_SECRET_SHAPES`, `_CODE_RUN`, `_allowed_run`, `_opaque_hits`, `_looks_secret`, `_scan_hits`, `_path_text`, `_leaf_findings`, `_locate`, `scan_for_secrets`, `bundle_safe_name`, `_credential_leaves`, `_is_candidate`, `credential_inventory`, `credential_values`, `write_bundle` (the `origins` input), `QualificationProbeRunner.run` (the labels) and the two row fields `machNames` and `changedOutside`. `scripts/har_t009_attempt.py`: `AttemptFailed`, `refusal_evidence`, `_scan_report`, `_workdirs`, `run_attempt` (inventory, runner input, error evidence), `self_check`, `run_self_check`, the `--self-check` option and the error verdict in `main` |
 | Not touched | `harness_containment_macos.py` (the backend, called through two existing methods), `harness_transport_claude.py`, `harness_quota.py`, `cli.py`, `ownership.py`, `docs/STATUS.md`, `ROADMAP.md`, `SPEC_MILESTONE_INDEX.md`, the probe catalog (every probe definition and helper source is byte-identical; only the module hash inside the catalog document moves) |
-| Reviewer | The implementing agent, as a self re-check. It is not independent: the pre-PR review of the track and the orchestrator's re-check are still required before the founder runs anything |
+| Reviewer | The implementing agent, as a self re-check. It is not independent: the three pre-PR reviews were done and their findings dispositioned in the PR description; the orchestrator's re-check is still owed before the founder runs anything |
 | Verdict | **GO** for both files, with the residuals below. Required fixes: none |
 | Hashes | The catalog document is identical apart from `runnerSha256`, but that field is the SHA-256 of the probes module, so `CATALOG_SHA256` moves: before `3e316cee01683ca1fbc96e7fd365e6dbdc51c7d4d711e41c0d7760b1d10b42b7`, after `f63b779c4517916eccf3a977586cbe66c06afef948085723d715efd4f9d9b478`; the environment hash moves with it. The earlier dry run, the installed code copy and the orchestrator's pins must be redone from the new commit. The earlier assumption that only a content change moves the hash does not hold |
 | Tests run | Python 3.12.13 (uv standalone), `-B`: `test_harness_qualification_probes`, `test_har_t009_attempt`, `test_harness_containment_macos`, `test_harness_transport_claude`, `test_harness_quota`, `test_harness_manifest`: TESTS_RUN. Nothing native ran |
@@ -126,7 +126,11 @@ Verdict: **GO**, residuals R2 to R4.
   `claude --version` is the one place where the pinned Claude executable runs in this mode; no F4 probe launches
   Claude itself, and the mode cannot exclude the compile check without changing the check it diagnoses.
 - **After a refusal** the F4 probes the check did not reach are run one by one through the backend's own probe
-  runner and marked `supplementary`; an exception or an unknown answer is `error`. The nested refusals come from
+  runner and marked `supplementary`; an exception or an unknown answer is `error`. After `self-check-allowed`
+  (a denied probe observed `allowed`, an escape) none is run: they are marked `not-run`, as the backend stops
+  at the first mismatch (pre-PR review, tested).
+- **Credential paths.** A key that is itself a candidate credential value prints as `<key>` in the `source`
+  path (pre-PR review F1, tested with a 32-character alphanumeric key). The nested refusals come from
   the backend's own `run_evidence`.
 - **R2.** `_exclusive` and `_pre_session` are underscore-named backend methods used from the driver. The
   drift test above is the guard; the alternative (a public backend method) is an edit to a file this task may
@@ -147,6 +151,6 @@ Verdict: **GO**, residuals R2 to R4.
 
 ## Residuals carried
 
-R1 (composed stop-reason allowance), R2 (private backend methods used by the driver), R3 (lock and proxy
+R1 (composed stop-reason allowance: lowercase words after the `session-refused-` prefix, 64 characters at most; the text comes from a `LabError` reason code chosen in the source, never from host or operator input, and the complete code set is spread over modules this task may not edit, so an exact list would drift; kept), R2 (private backend methods used by the driver), R3 (lock and proxy
 held during the self-check), R4 (stage inference), and from the earlier re-checks DRV-04, 07, 08, 09, 11, 13,
 15 and MDRV-01 to MDRV-04, unchanged.

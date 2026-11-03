@@ -219,7 +219,7 @@ shared object store fails the portable-root check).
   backend's pre-session check refused the first `claude --version` launch before anything was
   spawned (no `claude` session, no prompt, no usage consumed; the typed pre reading was not used),
   and the bundle was then blocked by the secret scan, so no bundle was written and no post reading
-  was asked. The scan refusal is reproduced offline: PROC-06 records the launchd service names, and
+  was asked. The scan refusal is reproduced offline with the names declared in the system launchd plists (not yet observed in a run; `launchctl print` was not run): PROC-06 records the launchd service names, and
   macOS 27 has system service names with a 48-character identifier
   (`com.apple.proactive.SuggestionRequest.ps_unstructured_reminder_interaction_suggestions`) that the
   long-run rule refuses; the runner's composed `session-refused-<reason>` codes of 24 or more characters

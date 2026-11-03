@@ -2546,14 +2546,13 @@ _SECRET_LIKE = re.compile(r"[A-Za-z0-9_+=.-]+")
 _PLAIN_NAME = re.compile(r"[a-z.-]+")
 
 
-def _credential_leaves(config_dir: Path | str) -> list[tuple[str, str, str]]:
-    """``(value, file, path)`` of every string leaf of the credential files; ``path`` uses plain field
-    names only (``<key>`` for any other key), so it can be printed."""
-    found: list[tuple[str, str, str]] = []
+def _credential_leaves(config_dir: Path | str) -> list[tuple[str, str, tuple]]:
+    """``(value, file, key parts)`` of every string leaf of the credential files."""
+    found: list[tuple[str, str, tuple]] = []
 
     def leaves(node: object, name: str, parts: tuple) -> None:
         if type(node) is str:
-            found.append((node, name, _path_text(parts, ())))
+            found.append((node, name, parts))
         elif isinstance(node, Mapping):
             for key, value in node.items():
                 leaves(value, name, (*parts, key))
@@ -2576,12 +2575,14 @@ def _is_candidate(value: str) -> bool:
 def credential_inventory(config_dir: Path | str) -> list[tuple[str, dict]]:
     """``(value, origin)`` of every candidate literal in the dedicated account's credential files, sorted
     by value. ``origin`` is ``{"file", "path"}`` with plain field names only (``<key>`` for any other
-    key), never a value: it lets a refusal that names ``credential#3`` be traced to a key."""
+    key, and for any key that is itself a candidate value), never a value: it lets a refusal that names
+    ``credential#3`` be traced to a key."""
+    leaves = [leaf for leaf in _credential_leaves(config_dir) if _is_candidate(leaf[0])]
+    candidates = sorted({value for value, _, _ in leaves})
     first: dict[str, dict] = {}
-    for value, name, path in _credential_leaves(config_dir):
-        if _is_candidate(value):
-            first.setdefault(value, {"file": name, "path": path})
-    return [(value, first[value]) for value in sorted(first)]
+    for value, name, parts in leaves:
+        first.setdefault(value, {"file": name, "path": _path_text(parts, candidates)})
+    return [(value, first[value]) for value in candidates]
 
 
 def credential_values(config_dir: Path | str) -> list[str]:
@@ -2591,11 +2592,6 @@ def credential_values(config_dir: Path | str) -> list[str]:
     (they would match anything).
     """
     return [value for value, _ in credential_inventory(config_dir)]
-
-
-def credential_origins(config_dir: Path | str) -> list[dict]:
-    """Where each ``credential_values`` entry comes from, in the same order (``credential_inventory``)."""
-    return [origin for _, origin in credential_inventory(config_dir)]
 
 
 def write_bundle(out_dir: Path | str, *, environment: Mapping, rows: Sequence[Mapping],

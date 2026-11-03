@@ -2618,8 +2618,9 @@ class RedactedScanReportTests(unittest.TestCase):
             "oauthAccount": {"billingType": "stripe_subscription"}, "ids": ["aaaaaaaa-1111-2222-3333-444444444444"],
             "projects": {"/Users/lab/dir": {"lastSessionId": "7b9d3c1e-0f2a-4b6c-8d4e-1a2b3c4d5e6f"}},
             "dup": "tok-1234567890abcdef"}))
-        values, origins = q.credential_values(tmp), q.credential_origins(tmp)
-        self.assertEqual(len(values), len(origins))
+        inventory = q.credential_inventory(tmp)
+        values, origins = [v for v, _ in inventory], [o for _, o in inventory]
+        self.assertEqual(values, q.credential_values(tmp))
         by_value = dict(zip(values, origins))
         self.assertEqual(by_value["tok-1234567890abcdef"], {"file": ".credentials.json", "path": "$.claudeAiOauth.accessToken"})
         self.assertEqual(by_value["stripe_subscription"], {"file": ".claude.json", "path": "$.oauthAccount.billingType"})
@@ -2627,7 +2628,18 @@ class RedactedScanReportTests(unittest.TestCase):
         self.assertEqual(by_value["7b9d3c1e-0f2a-4b6c-8d4e-1a2b3c4d5e6f"],
                          {"file": ".claude.json", "path": "$.projects.<key>.lastSessionId"})
         self.assertNotIn("/Users/lab", json.dumps(origins))
-        self.assertEqual(q.credential_origins(tmp / "missing"), [])
+        self.assertEqual(q.credential_inventory(tmp / "missing"), [])
+
+    def test_a_credential_valued_key_is_never_printed_in_an_origin_path(self):
+        tmp = Path(tempfile.mkdtemp(prefix="braid-cfg-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        key = "Zq8Xk2Lm9Pq4Rt7Vw1Yz3Ab5Cd6Ef8Gh"  # 32 characters, a plain-looking name that is also a value
+        (tmp / ".claude.json").write_text(json.dumps({"cache": {key: key}, "plain": {"hasLongName": "x1" * 10}}))
+        inventory = q.credential_inventory(tmp)
+        self.assertIn(key, [v for v, _ in inventory])
+        self.assertNotIn(key, json.dumps([o for _, o in inventory]))
+        self.assertEqual(dict(inventory)[key]["path"], "$.cache.<key>")
+        self.assertEqual(dict(inventory)["x1" * 10]["path"], "$.plain.hasLongName")
 
 if __name__ == "__main__":
     unittest.main()

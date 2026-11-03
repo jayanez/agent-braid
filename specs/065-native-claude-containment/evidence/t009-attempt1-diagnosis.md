@@ -67,7 +67,7 @@ modes `quota-stop`, the uncontained-control detector self-tests, and a credentia
 | `environment.json`, `catalog.json`, `summary.json` | none | no | fixed facts and 64-hex digests; the real catalog is part of every existing test bundle |
 | `egress` counter keys (NET-05-CLI only) | possible, host-derived | not reproduced | keys are the policy endpoints or fixed `denied:` codes; residual |
 
-### 3.1 Launchd service names (`machNames`): confirmed with real names
+### 3.1 Launchd service names (`machNames`): reproduced with the names declared in the system plists; not yet observed in a run
 
 `parse_launchd_names` keeps any reverse-DNS token of `launchctl print`, `_MACH_NAME` puts no bound on a
 segment, and the bundle then records up to 2000 names three times (once per mode). `_LONG_RUN` refuses

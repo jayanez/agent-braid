@@ -1002,25 +1002,37 @@ class SelfCheckTests(unittest.TestCase):
         self.assertEqual(f4["arena_parent"], f"{HOME}/arena")
         self.assertNotIn("launch_profile", f4)  # the launch-probe profile stays on, as in the real run
 
-    def test_a_refused_f4_probe_is_reported_and_the_probes_not_reached_are_run_and_marked(self):
+    def test_a_failed_f4_probe_is_reported_and_the_probes_not_reached_are_run_and_marked(self):
         check = F4_NET06_FAILED[:3]
-        check[2] = {"probe": "CRED-01", "expected": "denied", "observed": "allowed"}
-        backend = FakeBackend(check=check, raises=lab.LabError("self-check-allowed"),
+        check[2] = {"probe": "CRED-01", "expected": "denied", "observed": "error"}
+        backend = FakeBackend(check=check, raises=lab.LabError("self-check-failed"),
                               leftovers=[backend_record("launch-probe", "profile-compile-failed")])
         asked = []
         code, report, _ = self.run_check(backend, f4=lambda probe, be: asked.append(probe) or "error"
                                          if probe == "PROC-01" else asked.append(probe) or "allowed")
         self.assertEqual(code, 2)
         self.assertEqual((report["verdict"], report["refusal"], report["stage"], report["compileCheck"]),
-                         ("self-check-refused", "self-check-allowed", "f4-probes", "exec-denied"))
+                         ("self-check-refused", "self-check-failed", "f4-probes", "exec-denied"))
         self.assertEqual(report["preSessionCheck"], [
             *check, {"probe": "PROC-01", "expected": "denied", "observed": "error", "supplementary": True},
             {"probe": "NET-06", "expected": "allowed", "observed": "allowed", "supplementary": True}])
         self.assertEqual(asked, ["PROC-01", "NET-06"])
         self.assertEqual(report["backendRefusals"], [{"entry": "launch-probe", "refused": "profile-compile-failed"},
-                                                     {"entry": "launch", "refused": "self-check-allowed",
+                                                     {"entry": "launch", "refused": "self-check-failed",
                                                       "compileCheck": "exec-denied", "preSessionCheck": check}])
         self.assertFalse(report["executionAuthorization"])
+
+    def test_an_escape_stops_the_probes_like_the_backend_does_and_marks_the_rest_not_run(self):
+        check = F4_NET06_FAILED[:3]
+        check[2] = {"probe": "CRED-01", "expected": "denied", "observed": "allowed"}
+        backend = FakeBackend(check=check, raises=lab.LabError("self-check-allowed"))
+        asked = []
+        code, report, _ = self.run_check(backend, f4=lambda probe, be: asked.append(probe) or "allowed")
+        self.assertEqual((code, report["refusal"], report["stage"]), (2, "self-check-allowed", "f4-probes"))
+        self.assertEqual(asked, [])  # nothing more runs under a profile that has just leaked
+        self.assertEqual(report["preSessionCheck"], [
+            *check, {"probe": "PROC-01", "expected": "denied", "observed": "not-run", "supplementary": True},
+            {"probe": "NET-06", "expected": "allowed", "observed": "not-run", "supplementary": True}])
 
     def test_a_compile_check_refusal_has_no_compile_mark_and_runs_all_five_probes(self):
         backend = FakeBackend(raises=lab.LabError("self-check-failed"))
@@ -1091,6 +1103,12 @@ class SelfCheckTests(unittest.TestCase):
         self.assertIn('with self._exclusive("launch"):', source)
         self.assertIn('self._pre_session("launch", cwd, probes=True)', source)
         self.assertIn("F4_PROBES", inspect.getsource(mac.MacOSContainment._run_probes))
+
+    def test_the_record_keys_it_reads_are_the_ones_the_backend_writes(self):
+        import inspect
+        source = inspect.getsource(mac.MacOSContainment)
+        for key in ('"compileCheck"', '"preSessionCheck"', '"refused"'):
+            self.assertIn(key, source)
 
 if __name__ == "__main__":
     unittest.main()

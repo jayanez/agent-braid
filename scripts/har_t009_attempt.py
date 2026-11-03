@@ -762,7 +762,8 @@ def self_check(backend: object, workdir: Callable[[], Path], probe_runner: Calla
     These are the two calls ``MacOSContainment.launch`` makes before it spawns anything (the exclusive
     run, then ``_pre_session(..., probes=True)``); no session is started and no usage is read. After a
     refusal the F4 probes the check did not reach are run one by one (marked ``supplementary``) so the
-    whole picture comes out of one run; the backend's own record says what refused where.
+    whole picture comes out of one run, except after ``self-check-allowed`` (an escape), where they are
+    marked ``not-run``; the backend's own record says what refused where.
     """
     seen = len(getattr(backend, "run_evidence", []))
     refusal, evidence = None, {}
@@ -782,12 +783,16 @@ def self_check(backend: object, workdir: Callable[[], Path], probe_runner: Calla
             for probe, expected in _mac.F4_PROBES:
                 if probe in done:
                     continue
-                try:
-                    observed = probe_runner(probe, backend)
-                except Exception:
-                    observed = "error"
+                if refusal == "self-check-allowed":
+                    # the backend stops at the first escape; nothing more runs under a profile that leaked
+                    observed = "not-run"
+                else:
+                    try:
+                        observed = probe_runner(probe, backend)
+                    except Exception:
+                        observed = "error"
                 checks.append({"probe": probe, "expected": expected,
-                               "observed": observed if observed in ("allowed", "denied") else "error",
+                               "observed": observed if observed in ("allowed", "denied", "not-run") else "error",
                                "supplementary": True})
     return {"verdict": "self-check-ok" if refusal is None else "self-check-refused",
             "preSessionCheck": checks, "compileCheck": _code(evidence.get("compileCheck")),
