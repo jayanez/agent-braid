@@ -12,6 +12,10 @@ Contract (specs/061-activity-viewer/contracts/ui-security-privacy.md):
   other value is read, stored or echoed. The names (never the values) of every other field go to a bounded
   inventory for host verification.
 * The viewer never answers a decision: it returns nothing, and a refusal stores nothing.
+* A strand that was closed stays closed (REQ-003, T047): a later event that would continue it is not shown
+  as activity; one `shape-unpinned` gap naming the strand says so, so the silence never looks clean. A
+  repeated `SessionEnd` or `SubagentStop` is a no-op. At most `MAX_TRACKED_STRANDS` strands are tracked;
+  beyond that nothing new is opened and one `stream-truncated` gap says so.
 
 Mapping, from the host verification receipt (evidence/hv-t030-20261101.json): OpenTelemetry carries no
 agent id, so a subagent strand comes from the hook `agent_id`; no HTTP `SessionStart` was delivered under
@@ -28,8 +32,8 @@ import threading
 import time
 from typing import Any, Callable, Iterator
 
+from agent_braid.view_ingest import MAX_INVENTORY_NAME_LENGTH, MAX_INVENTORY_NAMES, IngestRefusal
 from agent_braid.view_loom import SCHEMA_VERSION, TEXT_MAX_LENGTH, TEXT_PATTERN
-from agent_braid.view_serve import IngestRefusal, MAX_INVENTORY_NAME_LENGTH, MAX_INVENTORY_NAMES
 from agent_braid.view_store import LoomStore
 
 OBSERVATIONAL_EVENTS = ("SessionStart", "SessionEnd", "SubagentStart", "SubagentStop", "PostToolUse")
@@ -37,6 +41,7 @@ OBSERVATIONAL_EVENTS = ("SessionStart", "SessionEnd", "SubagentStart", "Subagent
 # (its name is not inventoried as dropped) but no Loom field carries it, so it is not stored.
 ALLOWED_FIELDS = ("hook_event_name", "session_id", "agent_id", "agent_type", "tool_name", "tool_use_id")
 MAX_IDENTIFIER_LENGTH = 256
+MAX_TRACKED_STRANDS = 1024  # the store's own strand cap is 256; this bounds the ids remembered beyond it
 _TEXT = re.compile(TEXT_PATTERN)
 _NAME_SEGMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")  # a schema-like name; a data-like key is not inventoried
 _MAX_NAME_WALK = 20_000  # payload nodes inspected for the inventory; the body limit is 256 KiB
@@ -87,8 +92,11 @@ class HookIngest:
     """Turns observational Claude Code hook payloads into Loom strand events in `store`."""
 
     def __init__(self, store: LoomStore, *, clock: Callable[[], int] = time.monotonic_ns,
-                 salt: bytes | None = None) -> None:
+                 salt: bytes | None = None, max_strands: int = MAX_TRACKED_STRANDS) -> None:
+        if max_strands < 1:
+            raise ValueError("max_strands is at least 1")
         self.store = store
+        self._max_strands = max_strands
         self._clock = clock
         self._origin = clock()
         self._salt = salt if salt is not None else secrets.token_bytes(32)
@@ -96,7 +104,7 @@ class HookIngest:
         self._strands: dict[str, str] = {}  # strandId -> "open" | "closed" | "refused" (store cap)
         self._children: dict[str, list[str]] = {}  # session strandId -> open subagent strandIds
         self._names: set[str] = set()
-        self._gaps: set[str] = set()
+        self._gaps: set[str] = set()  # gaps already stored: an event name, a closed strand id or "tracking"
 
     def dropped_names(self) -> list[str]:
         """Names of the payload fields that were dropped, sorted; never their values."""
@@ -117,13 +125,15 @@ class HookIngest:
             session = _identifier(payload.get("session_id"))
             agent = _identifier(payload.get("agent_id"))
             if session is None or (agent is None and event in ("SubagentStart", "SubagentStop")):
-                self._gap(event)
+                self._gap(event, "shape-unpinned")
                 return
             session_strand = self._hash("session", session)
             agent_strand = self._hash("agent", agent) if agent is not None else None
             if event == "SessionEnd":
                 self._end_session(session_strand)
                 return
+            if event == "SubagentStop" and self._strands.get(agent_strand) == "closed":
+                return  # a repeated stop: already shown as closed
             if not self._ensure_session(session_strand):
                 return
             if agent_strand is None:
@@ -160,16 +170,21 @@ class HookIngest:
         }
         return self.store.append(event) is not None
 
-    def _gap(self, event: str) -> None:
-        """An observational event without the identifiers this mapping needs: one gap per event name."""
-        if event not in self._gaps:
-            self._gaps.add(event)
-            self._append("observation.gap", {"reason": "shape-unpinned", "strandId": None,
-                                             "fromSeq": None, "toSeq": None})
+    def _gap(self, key: str, reason: str, strand: str | None = None) -> None:
+        """One gap per `key` (an event name, a closed strand id or "tracking"), so a flood stores one."""
+        if key not in self._gaps:
+            self._gaps.add(key)
+            self._append("observation.gap", {"reason": reason, "strandId": strand, "fromSeq": None, "toSeq": None})
 
     def _open(self, strand: str, role: str, label: str, parent: str | None) -> bool:
-        if strand in self._strands:
-            return self._strands[strand] == "open"
+        state = self._strands.get(strand)
+        if state == "closed":
+            self._gap(strand, "shape-unpinned", strand)  # an event for a strand already shown as closed
+        if state is not None:
+            return state == "open"
+        if len(self._strands) >= self._max_strands:
+            self._gap("tracking", "stream-truncated")  # too many ids remembered: nothing new is opened
+            return False
         stored = self._append("strand.open", {"strandId": strand, "host": "claude", "role": role,
                                               "label": label, "parentStrandId": parent})
         self._strands[strand] = "open" if stored else "refused"  # a cap refusal: store nothing further
@@ -194,6 +209,8 @@ class HookIngest:
             self._append("strand.close", {"strandId": strand, "outcome": "unknown"})
 
     def _end_session(self, session_strand: str) -> None:
+        if self._strands.get(session_strand) == "closed":
+            return  # a repeated end: already shown as closed
         if not self._ensure_session(session_strand):
             return
         for child in self._children.pop(session_strand, []):

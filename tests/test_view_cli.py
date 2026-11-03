@@ -3,7 +3,6 @@
 import argparse
 import contextlib
 import hashlib
-import http.client
 import io
 import json
 import os
@@ -17,10 +16,10 @@ import time
 import unittest
 from pathlib import Path
 from unittest import mock
-from urllib.parse import urlsplit
 
 from agent_braid import cli, plugin_registry, view_cli
 from agent_braid.view_hooks import OBSERVATIONAL_EVENTS
+from tests.view_http_helpers import http_request, read_cookie
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests/fixtures/view"
@@ -68,6 +67,8 @@ class TempCase(unittest.TestCase):
         (self.bundle / "index.html").write_text("<!doctype html><title>t</title>")
         (self.bundle / "loom.js").write_text("//js")
         (self.bundle / ".hidden").write_text("secret")
+        (self.bundle / "notes.txt").write_text("not a listed bundle file")
+        (self.bundle / "linked.js").symlink_to(self.bundle / "loom.js")
         (self.bundle / "vendor").mkdir()
         (self.bundle / "vendor" / "x.js").write_text("//vendor")
         patch = mock.patch.object(view_cli, "BUNDLE_DIR", self.bundle)
@@ -157,19 +158,11 @@ class ServeCase(TempCase):
 
     @staticmethod
     def request(server, method, path, headers=None, body=None):
-        connection = http.client.HTTPConnection("127.0.0.1", server.port, timeout=5)
-        try:
-            connection.request(method, path, body=body, headers=dict(headers or {}))
-            response = connection.getresponse()
-            return response.status, dict(response.getheaders()), response.read()
-        finally:
-            connection.close()
+        status, response, data = http_request(server.port, method, path, headers, body)
+        return status, dict(response.getheaders()), data
 
     def cookie(self, server):
-        target = urlsplit(server.open_url)
-        status, headers, _ = self.request(server, "GET", f"{target.path}?{target.query}")
-        self.assertEqual(status, 303)
-        return {"Cookie": headers["Set-Cookie"].split(";")[0]}
+        return {"Cookie": read_cookie(server.port, server.open_url)}
 
     def snapshot(self, server, cookie=None):
         status, _, body = self.request(server, "GET", "/snapshot", cookie or self.cookie(server))
@@ -193,6 +186,8 @@ class ServeTests(ServeCase):
         self.assertEqual(self.request(server, "GET", "/web/loom.js", cookie)[0], 200)
         self.assertEqual(self.request(server, "GET", "/web/vendor/x.js", cookie)[0], 404)
         self.assertEqual(self.request(server, "GET", "/web/.hidden", cookie)[0], 404)
+        self.assertEqual(self.request(server, "GET", "/web/notes.txt", cookie)[0], 404)  # present, not listed
+        self.assertEqual(self.request(server, "GET", "/web/linked.js", cookie)[0], 404)
         self.assertTrue(self.snapshot(server, cookie)["model"])
         replayed = server.store.replay()
         self.assertTrue(replayed)
@@ -565,6 +560,21 @@ class ServeRefusalTests(TempCase):
         self.assertEqual((code, out), (2, ""))
         self.assertIn("watch", err)
         self.assert_no_side_effect()
+
+    def test_only_the_listed_bundle_files_are_loaded(self):
+        files, _ = view_cli.load_bundle(self.bundle)
+        self.assertEqual(sorted(files), ["index.html", "loom.js"])  # listed and present; the rest is ignored
+
+    def test_a_listed_name_that_is_a_directory_or_link_is_not_loaded(self):
+        (self.bundle / "style.css").mkdir()
+        (self.bundle / "braid-scene.js").symlink_to(self.bundle / "loom.js")
+        files, _ = view_cli.load_bundle(self.bundle)
+        self.assertEqual(sorted(files), ["index.html", "loom.js"])
+
+    def test_the_list_names_exactly_the_files_of_the_source_bundle(self):
+        web = Path(view_cli.__file__).resolve().parent.parent / "integrations" / "agent-braid-view" / "web"
+        present = sorted(entry.name for entry in web.iterdir() if entry.is_file())
+        self.assertEqual(present, sorted(view_cli.BUNDLE_FILES))
 
     def test_missing_bundle_is_refused(self):
         with mock.patch.object(view_cli, "BUNDLE_DIR", self.base / "nowhere"):

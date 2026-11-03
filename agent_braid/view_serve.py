@@ -49,9 +49,11 @@ from typing import Any, Callable, Iterable, Mapping
 from urllib.parse import parse_qs
 
 from agent_braid.view_loom import MAX_EVENTS, MAX_LINE_BYTES, MAX_SEQ, canonical_bytes, parse_stream
+from agent_braid.view_ingest import INGEST_STATUSES, MAX_INVENTORY_NAME_LENGTH, MAX_INVENTORY_NAMES, IngestRefusal
 from agent_braid.view_model import build_model
+from agent_braid.view_paths import WEB_SOURCE_DIR, vendor_dir_of
+from agent_braid.view_roots import replay_with_roots
 from agent_braid.view_store import LoomStore, StoreError, SubscriberDropped
-from agent_braid.view_tail import replay_with_roots
 
 LOOPBACK_HOSTS = ("127.0.0.1", "::1")
 MAX_CONNECTIONS = 32
@@ -63,13 +65,11 @@ MAX_JSON_DEPTH = 64
 INGEST_TOKEN_NAME = "view-ingest-token"
 COOKIE_PREFIX = "braid_view"  # each server names its own cookie "<prefix>_<port>"
 HOOK_PATH = "/hook/claude"
-INGEST_STATUSES = (400, 403, 503)
 EVENT_POLL_SECONDS = 0.25
-MAX_INVENTORY_NAMES = 256
-MAX_INVENTORY_NAME_LENGTH = 64
+_MAX_REQUEST_LINE = 65537
 MAX_REPLAY_BYTES = MAX_EVENTS * (MAX_LINE_BYTES + 1)
 VENDOR_PREFIX = "/web/vendor/"
-VENDOR_DIR = Path(__file__).resolve().parent.parent / "integrations" / "agent-braid-view" / "web" / "vendor"
+VENDOR_DIR = vendor_dir_of(WEB_SOURCE_DIR)
 VENDOR_MANIFEST = "manifest.json"
 MAX_VENDOR_FILE_BYTES = 8 * 1024 * 1024
 MAX_VENDOR_MANIFEST_BYTES = 64 * 1024
@@ -106,16 +106,6 @@ class ServeError(RuntimeError):
         super().__init__(f"{reason}: {detail}")
         self.reason = reason
         self.detail = detail
-
-
-class IngestRefusal(Exception):
-    """An ingest handler refuses its input; the server answers `status` and stores nothing."""
-
-    def __init__(self, status: int) -> None:
-        if status not in INGEST_STATUSES:
-            raise ValueError(f"an ingest refusal is one of {INGEST_STATUSES}")
-        super().__init__(f"ingest refused with {status}")
-        self.status = status
 
 
 class BodyError(ValueError):
@@ -380,6 +370,11 @@ class ViewServer(ThreadingHTTPServer):
         """The URL printed once at start. It embeds the single-use open code; do not log it elsewhere."""
         return f"http://{self.url_host}/open?code={self._open_code}"
 
+    @property
+    def ingest_token(self) -> str:
+        """The bearer token of this run (the one written to `token_path`); never log it."""
+        return self._ingest_token
+
     def response_headers(self) -> list[tuple[str, str]]:
         return [("Content-Security-Policy", self._csp), ("X-Content-Type-Options", "nosniff"),
                 ("Referrer-Policy", "no-referrer"), ("Cache-Control", "no-store"),
@@ -484,6 +479,59 @@ class ViewServer(ThreadingHTTPServer):
         super().server_close()
 
 
+class _DeadlineReader:
+    """The request input stream with one deadline for the whole request, not one timeout per read.
+
+    Every socket read still times out at `timeout`, and no read may outlast the deadline `timeout` seconds
+    after the connection was accepted. A client that sends one byte at a time therefore cannot hold a
+    connection slot for longer than `timeout`. Running out of time raises TimeoutError, as a slow read does.
+    """
+
+    def __init__(self, stream: Any, connection: socket.socket, timeout: float) -> None:
+        self._stream = stream
+        self._connection = connection
+        self._timeout = timeout
+        self._deadline = time.monotonic() + timeout
+
+    def _one_receive(self, action: Callable[[], bytes]) -> bytes:
+        remaining = self._deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError("the request deadline passed")
+        self._connection.settimeout(min(self._timeout, remaining))
+        try:
+            return action()
+        finally:
+            self._connection.settimeout(self._timeout)  # writes (event stream) keep the per-operation timeout
+
+    def readline(self, limit: int = -1) -> bytes:
+        limit = _MAX_REQUEST_LINE if limit is None or limit < 0 else limit
+        line = bytearray()
+        while len(line) < limit:
+            buffered = self._one_receive(lambda: self._stream.peek(1))  # at most one receive
+            if not buffered:
+                break
+            window = buffered[:limit - len(line)]
+            end = window.find(b"\n")
+            take = len(window) if end < 0 else end + 1
+            line += self._stream.read(take)  # bytes already buffered: no further receive
+            if end >= 0:
+                break
+        return bytes(line)
+
+    def read(self, size: int = -1) -> bytes:
+        parts: list[bytes] = []
+        while size < 0 or size > 0:
+            chunk = self._one_receive(lambda: self._stream.read1(65536 if size < 0 else size))
+            if not chunk:
+                break
+            parts.append(chunk)
+            size -= len(chunk) if size > 0 else 0
+        return b"".join(parts)
+
+    def close(self) -> None:
+        self._stream.close()
+
+
 class _Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.0"  # one request per connection; no keep-alive holding a slot
     server: ViewServer
@@ -491,6 +539,7 @@ class _Handler(BaseHTTPRequestHandler):
     def setup(self) -> None:
         self.timeout = self.server.socket_timeout
         super().setup()
+        self.rfile = _DeadlineReader(self.rfile, self.connection, self.timeout)
 
     def log_message(self, format: str, *args: Any) -> None:
         pass  # access logging is off
@@ -688,5 +737,6 @@ class _Handler(BaseHTTPRequestHandler):
         self._send(200, b"{}", "application/json")
 
 
-__all__ = ["BodyError", "IngestRefusal", "ROUTES", "ServeError", "ViewServer", "load_replay", "parse_json_body",
-           "read_replay_file", "replay_events"]
+__all__ = ["BodyError", "INGEST_STATUSES", "IngestRefusal", "MAX_INVENTORY_NAME_LENGTH", "MAX_INVENTORY_NAMES",
+           "ROUTES", "ServeError", "ViewServer", "load_replay", "parse_json_body", "read_replay_file",
+           "replay_events"]

@@ -20,8 +20,8 @@ resource. Nothing is left behind by a refusal: the runtime directory is created 
 input was checked and is removed again when the port cannot be bound; the ingest token file is
 removed when the server stops (Ctrl-C or SIGTERM). The web bundle is read from the source checkout
 (`integrations/agent-braid-view/web`) when that directory exists, else from the installed package
-(`agent_braid/view_assets/web`, shipped by the build, T043); the vendored files are served from the
-`vendor` directory of the resolved bundle. The viewer never writes host configuration. This module
+(`agent_braid/view_assets/web`, shipped by the build, T043); only the files named in `BUNDLE_FILES` are
+served (T047), and the vendored files come from the `vendor` directory of the resolved bundle. The viewer never writes host configuration. This module
 imports no network code; the server modules are loaded only by the subcommands that need them.
 """
 from __future__ import annotations
@@ -39,14 +39,18 @@ import sys
 from pathlib import Path
 from typing import Any, Callable
 
+from .view_paths import WEB_PACKAGE_DIR, WEB_SOURCE_DIR, vendor_dir_of
+
 SURFACES = ("web", "mod", "tui", "mcp-app")
 HOSTS = ("claude", "codex")
 RUNTIME_DIR_NAME = "agent-braid-view"
 TOKEN_ENV = "AGENT_BRAID_VIEW_TOKEN"
 HOOK_TIMEOUT_SECONDS = 5
-BUNDLE_DIR = Path(__file__).resolve().parent.parent / "integrations" / "agent-braid-view" / "web"
+BUNDLE_DIR = WEB_SOURCE_DIR
+# The only first-party files `/web/<file>` may serve (contract: files listed in the bundle manifest). A new
+# file of the bundle is added here; a test pins the list to the files of the source bundle.
+BUNDLE_FILES = ("index.html", "style.css", "loom.js", "braid-scene.js")
 MAX_BUNDLE_FILE_BYTES = 8 * 1024 * 1024
-MAX_BUNDLE_FILES = 64
 _IMPORT_MAP = re.compile(rb"<script\b[^>]*\btype\s*=\s*[\"']?importmap[\"']?[^>]*>(.*?)</script\s*>",
                          re.DOTALL | re.IGNORECASE)
 
@@ -169,32 +173,33 @@ def resolve_bundle_dir() -> Path:
     The installed copy lives beneath the `agent_braid` package (`view_assets/web`, written by `build_support.py`).
     When neither has an `index.html` the source-checkout path is returned so `load_bundle` refuses it.
     """
-    installed = Path(__file__).resolve().parent / "view_assets" / "web"
-    for candidate in (BUNDLE_DIR, installed):
+    for candidate in (BUNDLE_DIR, WEB_PACKAGE_DIR):
         if (candidate / "index.html").is_file():
             return candidate
     return BUNDLE_DIR
 
 
 def load_bundle(directory: Path) -> tuple[dict[str, bytes], str | None]:
-    """The flat first-party bundle files and the SHA-256 (base64) of the single inline import map."""
+    """The listed first-party bundle files (`BUNDLE_FILES`) and the SHA-256 (base64) of the inline import map.
+
+    Any other file of the directory, a hidden file, a link or a subdirectory (vendored code) is not read.
+    """
     files: dict[str, bytes] = {}
-    try:
-        with os.scandir(directory) as scan:
-            entries = sorted(scan, key=lambda entry: entry.name)
-        for entry in entries:
-            if entry.name.startswith(".") or not entry.is_file(follow_symlinks=False):
-                continue  # subdirectories (vendored code) and links are not served by the flat bundle
-            if len(files) >= MAX_BUNDLE_FILES:
-                raise CliError("view: bundle: the web bundle has too many files")
-            flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
-            with os.fdopen(os.open(entry.path, flags), "rb") as stream:
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+    for name in BUNDLE_FILES:
+        path = directory / name
+        try:
+            if not stat.S_ISREG(os.lstat(path).st_mode):
+                continue
+            with os.fdopen(os.open(path, flags), "rb") as stream:
                 content = stream.read(MAX_BUNDLE_FILE_BYTES + 1)
-            if len(content) > MAX_BUNDLE_FILE_BYTES:
-                raise CliError(f"view: bundle: {entry.name} is larger than the bundle file bound")
-            files[entry.name] = content
-    except OSError as exc:
-        raise CliError(f"view: bundle: cannot read the web bundle: {exc.strerror}") from exc
+        except FileNotFoundError:
+            continue
+        except OSError as exc:
+            raise CliError(f"view: bundle: cannot read the web bundle: {exc.strerror}") from exc
+        if len(content) > MAX_BUNDLE_FILE_BYTES:
+            raise CliError(f"view: bundle: {name} is larger than the bundle file bound")
+        files[name] = content
     if "index.html" not in files:
         raise CliError("view: bundle: the web bundle has no index.html")
     index = files["index.html"]
@@ -227,42 +232,18 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
         raise CliError(f"view serve: surface {args.surface} is planned and not implemented; nothing was started")
     runtime_dir = _runtime_dir(args)
     from .view_hooks import HookIngest
-    from .view_loom import LoomError
-    from .view_serve import HOOK_PATH, ServeError, ViewServer, load_replay, read_replay_file
-    from .view_store import LoomStore
-    from .view_tail import MAX_ROOTS, ArtifactTail, TailError, root_label
+    from .view_serve import HOOK_PATH, ServeError, ViewServer
 
     bundle_dir = resolve_bundle_dir()
     bundle, import_map_sha256 = load_bundle(bundle_dir)
-    store = LoomStore()
-    try:
-        if args.replay is not None:
-            load_replay(store, read_replay_file(args.replay))
-    except LoomError as exc:
-        raise CliError(f"view serve: replay refused: {exc}", 1) from exc
-    except ServeError as exc:
-        raise CliError(f"view serve: {exc}") from exc
-    discovered: list[Path] = []
-    notes: list[str] = []
-    if not args.watch and not args.no_discover:
-        discovered, notes = discover_watch_roots()
-    roots = list(args.watch) or discovered
-    try:
-        tail = ArtifactTail(store, roots) if roots else None
-    except TailError as exc:
-        if args.watch:
-            raise CliError(f"view serve: watch: {exc.detail}") from exc
-        tail, discovered = None, []
-        notes.append(f"the discovered roots cannot be watched ({exc.detail})")
-    if len(discovered) > MAX_ROOTS:
-        notes.append(f"{len(discovered) - MAX_ROOTS} further result roots exceed the bound of {MAX_ROOTS} roots "
-                     "and are not watched")
+    store = _replayed_store(args)
+    tail, discovered, notes = _watcher(args, store)
     hooks = HookIngest(store)
     created = _ensure_private_directory(runtime_dir)
     try:
         server = ViewServer(store, runtime_dir, port=args.port, bundle=bundle,
                             ingest_handlers={HOOK_PATH: hooks.handle}, names_inventory=hooks.dropped_names,
-                            import_map_sha256=import_map_sha256, vendor_dir=bundle_dir / "vendor")
+                            import_map_sha256=import_map_sha256, vendor_dir=vendor_dir_of(bundle_dir))
     except ServeError as exc:
         _remove_created(created)
         raise CliError(f"view serve: {exc}") from exc
@@ -271,15 +252,7 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
         raise CliError(f"view serve: cannot bind port {args.port}: {exc.strerror}") from exc
     previous = _stop_on_sigterm()
     try:
-        lines = ["Agent Braid activity viewer (read-only), surface web, loopback only.",
-                 f"Open once in a browser: {server.open_url}",
-                 f"Ingest token file (owner-only): {server.token_path}"]
-        if tail is not None:
-            source = "discovered from the plugin registry" if discovered else "given with --watch"
-            lines.append(f"Watching result roots {source} (read-only); the page shows only these labels:")
-            lines.extend(f"  {root_label(index)}: {root}" for index, root in enumerate(tail.roots))
-        lines.extend(f"Discovery note: {note}" for note in notes)
-        print("\n".join(lines), flush=True)
+        print("\n".join(_banner(server, tail, discovered, notes)), flush=True)
         if tail is not None:
             tail.start()
         try:
@@ -298,6 +271,60 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
     return 0
 
 
+def _replayed_store(args: argparse.Namespace) -> Any:
+    """A store holding the `--replay` stream, if one was given; a refused stream is exit code 1."""
+    from .view_loom import LoomError
+    from .view_serve import ServeError, load_replay, read_replay_file
+    from .view_store import LoomStore
+
+    store = LoomStore()
+    try:
+        if args.replay is not None:
+            load_replay(store, read_replay_file(args.replay))
+    except LoomError as exc:
+        raise CliError(f"view serve: replay refused: {exc}", 1) from exc
+    except ServeError as exc:
+        raise CliError(f"view serve: {exc}") from exc
+    return store
+
+
+def _watcher(args: argparse.Namespace, store: Any) -> tuple[Any, list[Path], list[str]]:
+    """The artifact watcher for `--watch` or the discovered roots: `(tail or None, discovered roots, notes)`."""
+    from .view_tail import MAX_ROOTS, ArtifactTail, TailError
+
+    discovered: list[Path] = []
+    notes: list[str] = []
+    if not args.watch and not args.no_discover:
+        discovered, notes = discover_watch_roots()
+    roots = list(args.watch) or discovered
+    try:
+        tail = ArtifactTail(store, roots) if roots else None
+    except TailError as exc:
+        if args.watch:
+            raise CliError(f"view serve: watch: {exc.detail}") from exc
+        tail, discovered = None, []
+        notes.append(f"the discovered roots cannot be watched ({exc.detail})")
+    if len(discovered) > MAX_ROOTS:
+        notes.append(f"{len(discovered) - MAX_ROOTS} further result roots exceed the bound of {MAX_ROOTS} roots "
+                     "and are not watched")
+    return tail, discovered, notes
+
+
+def _banner(server: Any, tail: Any, discovered: list[Path], notes: list[str]) -> list[str]:
+    """The start text: the one-time URL, the token file and, when watching, the label to path mapping."""
+    from .view_roots import root_label
+
+    lines = ["Agent Braid activity viewer (read-only), surface web, loopback only.",
+             f"Open once in a browser: {server.open_url}",
+             f"Ingest token file (owner-only): {server.token_path}"]
+    if tail is not None:
+        source = "discovered from the plugin registry" if discovered else "given with --watch"
+        lines.append(f"Watching result roots {source} (read-only); the page shows only these labels:")
+        lines.extend(f"  {root_label(index)}: {root}" for index, root in enumerate(tail.roots))
+    lines.extend(f"Discovery note: {note}" for note in notes)
+    return lines
+
+
 def _stop_on_sigterm() -> Any:
     """Make SIGTERM end `serve` like Ctrl-C; return the previous handler (None off the main thread)."""
     def stop(signum: int, frame: Any) -> None:
@@ -312,7 +339,7 @@ def _stop_on_sigterm() -> Any:
 def _remove_own_token(server: Any) -> None:
     """Delete the token file when it still holds this server's token, so a stopped viewer leaves none."""
     try:
-        if server.token_path.read_text() == server._ingest_token:
+        if server.token_path.read_text() == server.ingest_token:
             server.token_path.unlink()
     except OSError:
         pass
