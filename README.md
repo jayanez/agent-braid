@@ -102,27 +102,28 @@ Git and the selected host (Claude Code or Codex) must already be installed.
 
 > **⚡ One command, every host on your PATH**
 >
+> For **macOS arm64** and **Linux x86_64 (glibc 2.28+)**, with the bundled
+> runtime: no Python needed. Other platforms (macOS x86_64, Linux arm64, WSL):
+> use the [Python fallback install](docs/tooling/INSTALL.md).
+>
 > ```sh
 > curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh | sh -s -- --host all
 > ```
 >
-> Works on **macOS arm64** and **Linux x86_64 (glibc 2.28+)** with the bundled
-> runtime: no Python needed. Add `--ref agent-braid--v0.1.0-alpha.6` to pin a
-> release. On any other platform (macOS x86_64, Linux arm64, WSL) use the
-> [Python fallback install](docs/tooling/INSTALL.md). `--host both` still works
-> as a deprecated alias for `codex` + `claude`.
+> Add `--ref agent-braid--v0.1.0-alpha.6` to pin a release. (`--host both` is a
+> deprecated alias for `codex` + `claude`.)
 
 Prefer the host's own commands? The script runs exactly these
-([details](docs/tooling/NATIVE_PLUGINS.md)):
+([details](docs/tooling/NATIVE_PLUGINS.md)); they track the `plugin-dist` branch:
 
-#### 🟠 Claude Code
+**Claude Code**
 
 ```sh
 claude plugin install agent-braid \
   --marketplace 'https://github.com/jayanez/agent-braid.git#plugin-dist' --scope user
 ```
 
-#### 🟣 Codex
+**Codex**
 
 ```sh
 codex plugin marketplace add https://github.com/jayanez/agent-braid.git --ref plugin-dist
@@ -131,15 +132,16 @@ codex plugin add agent-braid@agent-braid
 
 ### Then, in three steps
 
-**① Install.** One of the commands above.
+**1. Install.** Run the one-line installer, or the command for your host.
 
-**② Set up.** In Claude Code run `/agent-braid:setup`; in Codex select the Agent
+**2. Set up.** In Claude Code run `/agent-braid:setup`; in Codex select the Agent
 Braid `setup` skill. Pick the repositories to register, review the preview and
 confirm. Nothing is registered without a preview and your explicit confirmation.
+After a registry change, reconnect MCP with the host's native reconnect or restart.
 
-**③ First check.** Ask for an analysis with `/agent-braid:analyze` (in Codex,
-select the skill with `$` or `/skills`). Each pair of tasks gets a verdict, the
-same classification the CLI prints. Two tasks that edit different files:
+**3. First check.** Ask for an analysis with `/agent-braid:analyze` (in Codex,
+select the skill with `$` or `/skills`). Each pair of tasks gets a verdict, using
+the same classifications as the CLI. Example CLI output for two tasks that edit different files:
 
 ```text
 Operations: 2  Pairs: 1
@@ -161,13 +163,14 @@ Execution authorization: false
 
 `conflicting` means run them one after the other or in isolation; neither result
 executes anything. See [Reading an analysis](#reading-an-analysis) for all four
-outcomes. The other skills are `/agent-braid:plan`, `evidence`, `execute` and
-`recover`. The plugin publishes no MCP prompts.
+outcomes. The other skills are `plan`, `evidence`, `execute`, `recover` and
+`telemetry-audit` (`/agent-braid:<skill>` in Claude Code).
 
-**What has been observed.** The
+**Status of this install path.** The
 [alpha.4 acceptance record](specs/046-native-ai-plugins/release-acceptance-alpha4.md)
 covers a Claude Code update, a public-tag install and a Codex CLI install, removal
-and reinstall. Interactive skill use and Linux execution were not observed.
+and reinstall. Interactive skill use and Linux execution were not observed, and the alpha.6
+native install has not yet been observed.
 
 <details>
 <summary><strong>Use the CLI directly (Python 3.12+)</strong></summary>
