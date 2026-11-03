@@ -109,10 +109,15 @@ _SIBLING_SOURCE = (
 
 
 class ProbeError(ValueError):
-    """Sanitized refusal carrying a fixed reason code only."""
+    """Sanitized refusal carrying a fixed reason code only.
 
-    def __init__(self, reason: str = "invalid-probe-request"):
+    ``detail`` is an optional redacted diagnostic (the secret scan's findings: where and which rule,
+    never a value or any part of one); it is not part of ``str(error)``.
+    """
+
+    def __init__(self, reason: str = "invalid-probe-request", detail: Mapping | None = None):
         self.reason = reason
+        self.detail = detail
         super().__init__(reason)
 
 
@@ -2209,7 +2214,8 @@ class QualificationProbeRunner:
                 outputTruncated=result.output_truncated, limitExceeded=result.limit_exceeded, wallSeconds=wall,
                 profile=None if control else ("fixture" if mode == "contained" else LAUNCH_PROBE_ENTRY),
                 errors=parse_error_codes(probe, result), refused=error,
-                independent={"changedOutside": changed[:MAX_CHANGED_PATHS], "changedCount": len(changed),
+                independent={"changedOutside": [bundle_safe_name(path) for path in changed[:MAX_CHANGED_PATHS]],
+                             "changedCount": len(changed),
                              "listenerHits": {k: hits[k] for k in sorted(hits)}, "survivors": len(found),
                              "tripwires": tripped,
                              **({"escapedProcesses": result.escaped_processes,
@@ -2220,7 +2226,8 @@ class QualificationProbeRunner:
                              else ("unused" if not probe.survivors else "unavailable"),
                              "layout": "synthetic" if control else ("real" if adjacent else "none"),
                              "realHome": bool(self.real_home) and not control},
-                **({"machNames": arena.document["mach_names"]} if probe.id == "PROC-06" else {}))
+                **({"machNames": [bundle_safe_name(name) for name in arena.document["mach_names"]]}
+                   if probe.id == "PROC-06" else {}))
         finally:
             arena.close()
 
@@ -2380,9 +2387,11 @@ class QualificationProbeRunner:
         self._open_counter(Path(out_dir))
         started = self.clock()
         rows = [self._safe_mode(BY_ID[i], mode) for i in ids for mode in self.modes(BY_ID[i])]
+        origins = [*("caller" for _ in secrets), *("marker" for _ in self.markers),
+                   *(f"credential#{index}" for index in range(len(credentials)))]
         return write_bundle(out_dir, environment=env, rows=rows, quota=self.quota, summary=summarize(rows),
                             secrets=[*secrets, *self.markers, *credentials], started=started,
-                            sessions_started=self._session_count)
+                            sessions_started=self._session_count, origins=origins)
 
     def _safe_mode(self, probe: Probe, mode: str) -> dict:
         """One failing probe (arena, scan, IO) must not lose the bundle: it becomes inconclusive."""
@@ -2416,23 +2425,118 @@ def _environment_document(environment: Mapping) -> dict:
 
 
 _SECRET_SHAPES = (
-    re.compile(r"sk-ant-[A-Za-z0-9_-]{6,}"), re.compile(r"eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}"),
-    re.compile(r"-----BEGIN"), re.compile(r"gh[pousr]_[A-Za-z0-9]{20,}"), re.compile(r"AKIA[0-9A-Z]{16}"))
+    ("anthropic-api-key", re.compile(r"sk-ant-[A-Za-z0-9_-]{6,}")),
+    ("jwt", re.compile(r"eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}")),
+    ("pem-header", re.compile(r"-----BEGIN")),
+    ("github-token", re.compile(r"gh[pousr]_[A-Za-z0-9]{20,}")),
+    ("aws-access-key-id", re.compile(r"AKIA[0-9A-Z]{16}")))
 _LONG_RUN = re.compile(r"(?<![A-Za-z0-9+_=-])[A-Za-z0-9+_=-]{40,}(?![A-Za-z0-9+_=-])")
+# The stop reason the runner itself composes, ``session-refused-`` plus a fixed backend code, is lowercase
+# words joined by hyphens: readable vocabulary, not an opaque token, and a code of 24 characters makes it
+# 40. Only that exact prefix is allowed; digits, capitals and underscores are never part of it, so
+# base64, hex, mixed-case blobs and any other long hyphenated text stay refused.
+_CODE_RUN = re.compile(r"session-refused-[a-z]+(?:-[a-z]+)*\Z")
+MAX_CODE_RUN = 64
+MAX_FINDINGS = 20
+_FIELD_NAME = re.compile(r"[A-Za-z][A-Za-z0-9_]{0,31}\Z")
+
+
+def _allowed_run(run: str) -> bool:
+    """The bundle's own SHA-256 digests and the runner's own composed ``session-refused-<code>`` stop reasons."""
+    return _HASH.fullmatch(run) is not None or (
+        len(run) <= MAX_CODE_RUN and _CODE_RUN.fullmatch(run) is not None)
+
+
+def _opaque_hits(text: str) -> list[tuple[str, int]]:
+    """``(rule, length)`` for every token shape and long opaque run in ``text``; no value."""
+    hits = [(name, len(match.group())) for name, shape in _SECRET_SHAPES
+            if (match := shape.search(text)) is not None]
+    return hits + [("long-run", len(run)) for run in _LONG_RUN.findall(text) if not _allowed_run(run)]
 
 
 def _looks_secret(text: str) -> bool:
-    """Token shapes and long opaque runs; the bundle's own SHA-256 digests are the only long runs allowed."""
-    return (any(shape.search(text) for shape in _SECRET_SHAPES)
-            or any(_HASH.fullmatch(run) is None for run in _LONG_RUN.findall(text)))
+    """Token shapes and long opaque runs; the bundle's own digests and stop reasons are allowed."""
+    return bool(_opaque_hits(text))
 
 
-def scan_for_secrets(texts: Mapping[str, str], secrets: Sequence[str]) -> None:
-    """Refuse a bundle in which a listed secret literal or a credential-shaped string appears; names
-    no secret in the error."""
-    for text in texts.values():
-        if any(secret and secret in text for secret in secrets) or _looks_secret(text):
-            raise ProbeError("secret-in-artifact")
+def _scan_hits(text: str, secrets: Sequence[str], origins: Sequence[str]) -> list[tuple[str, int, str | None]]:
+    """``(rule, length, origin)`` of everything refusable in ``text``: listed literals first (the length
+    is the literal's, the origin names the list it came from), then shapes and long runs."""
+    hits = [("listed-literal", len(secret), origins[index] if index < len(origins) else "listed")
+            for index, secret in enumerate(secrets) if secret and secret in text]
+    return hits + [(rule, length, None) for rule, length in _opaque_hits(text)]
+
+
+def _path_text(parts: Sequence[object], secrets: Sequence[str]) -> str:
+    """A JSON path with field names only when they are plain and clean; any other key is ``<key>``."""
+    out = "$"
+    for part in parts:
+        if type(part) is int:
+            out += f"[{part}]"
+        elif _FIELD_NAME.fullmatch(part) and not _scan_hits(part, secrets, ()):
+            out += f".{part}"
+        else:
+            out += ".<key>"
+    return out
+
+
+def _leaf_findings(node: object, parts: tuple, secrets: Sequence[str], origins: Sequence[str]):
+    """``(path, rule, length, origin)`` per JSON string value or key that is refusable on its own."""
+    if type(node) is str:
+        for rule, length, origin in _scan_hits(node, secrets, origins):
+            yield _path_text(parts, secrets), rule, length, origin
+    elif isinstance(node, Mapping):
+        for key, value in node.items():
+            if type(key) is str:
+                for rule, length, origin in _scan_hits(key, secrets, origins):
+                    yield _path_text((*parts, key), secrets), rule, length, origin
+            yield from _leaf_findings(value, (*parts, key), secrets, origins)
+    elif isinstance(node, list):
+        for index, value in enumerate(node):
+            yield from _leaf_findings(value, (*parts, index), secrets, origins)
+
+
+def _locate(name: str, text: str, secrets: Sequence[str], origins: Sequence[str]) -> list[dict]:
+    """Where a refusable text is refusable: file, line, JSON path, rule, match length (and which list a
+    literal came from). Never the value or any part of it. A finding the line-by-line pass cannot place
+    (a literal spanning lines, say) is reported for the file alone."""
+    found = []
+    for number, line in enumerate(text.split("\n"), 1):
+        if not _scan_hits(line, secrets, origins):
+            continue
+        try:
+            document = json.loads(line)
+        except ValueError:
+            document = None
+        placed = list(_leaf_findings(document, (), secrets, origins)) if document is not None else []
+        for path, rule, length, origin in placed or [(None, *hit) for hit in _scan_hits(line, secrets, origins)]:
+            found.append({"file": name, "line": number, "path": path, "rule": rule, "length": length}
+                         | ({"origin": origin} if origin else {}))
+    return found or [{"file": name, "line": None, "path": None, "rule": rule, "length": length}
+                     | ({"origin": origin} if origin else {})
+                     for rule, length, origin in _scan_hits(text, secrets, origins)]
+
+
+def scan_for_secrets(texts: Mapping[str, str], secrets: Sequence[str], *, origins: Sequence[str] = ()) -> None:
+    """Refuse a bundle in which a listed secret literal or a credential-shaped string appears.
+
+    The error's reason stays ``secret-in-artifact``; its ``detail`` lists up to ``MAX_FINDINGS`` findings
+    (file, line, JSON path, rule, match length, origin of a listed literal) and the total. It names no
+    value and no part of one, so the operator can diagnose a refusal without the bundle leaking.
+    ``origins`` labels ``secrets`` one to one (for example ``credential#3``).
+    """
+    secrets = list(secrets)
+    findings = [finding for name, text in texts.items() if _scan_hits(text, secrets, origins)
+                for finding in _locate(name, text, secrets, origins)]
+    if findings:
+        raise ProbeError("secret-in-artifact", {"findings": findings[:MAX_FINDINGS], "total": len(findings)})
+
+
+def bundle_safe_name(text: str) -> str:
+    """A host-derived name as the bundle may carry it: itself, or ``#`` plus its SHA-256 when the scan
+    would refuse it (a launchd service name can hold a 48-character identifier). The digest still
+    identifies the name for anyone who has the host; the helper that tests the name is given the real one."""
+    return "#" + sha256(text.encode(errors="replace")).hexdigest() if _looks_secret(text) else text
 
 
 # Candidate credential literals: one opaque token. Paths, URLs, host names, e-mail addresses and
@@ -2442,36 +2546,61 @@ _SECRET_LIKE = re.compile(r"[A-Za-z0-9_+=.-]+")
 _PLAIN_NAME = re.compile(r"[a-z.-]+")
 
 
+def _credential_leaves(config_dir: Path | str) -> list[tuple[str, str, str]]:
+    """``(value, file, path)`` of every string leaf of the credential files; ``path`` uses plain field
+    names only (``<key>`` for any other key), so it can be printed."""
+    found: list[tuple[str, str, str]] = []
+
+    def leaves(node: object, name: str, parts: tuple) -> None:
+        if type(node) is str:
+            found.append((node, name, _path_text(parts, ())))
+        elif isinstance(node, Mapping):
+            for key, value in node.items():
+                leaves(value, name, (*parts, key))
+        elif isinstance(node, list):
+            for index, value in enumerate(node):
+                leaves(value, name, (*parts, index))
+
+    for name in (".credentials.json", ".claude.json"):
+        try:
+            leaves(json.loads((Path(config_dir) / name).read_text()), name, ())
+        except (OSError, ValueError):
+            continue
+    return found
+
+
+def _is_candidate(value: str) -> bool:
+    return len(value) >= 16 and _SECRET_LIKE.fullmatch(value) is not None and _PLAIN_NAME.fullmatch(value) is None
+
+
+def credential_inventory(config_dir: Path | str) -> list[tuple[str, dict]]:
+    """``(value, origin)`` of every candidate literal in the dedicated account's credential files, sorted
+    by value. ``origin`` is ``{"file", "path"}`` with plain field names only (``<key>`` for any other
+    key), never a value: it lets a refusal that names ``credential#3`` be traced to a key."""
+    first: dict[str, dict] = {}
+    for value, name, path in _credential_leaves(config_dir):
+        if _is_candidate(value):
+            first.setdefault(value, {"file": name, "path": path})
+    return [(value, first[value]) for value in sorted(first)]
+
+
 def credential_values(config_dir: Path | str) -> list[str]:
     """String values of the dedicated account's credential files, for the scan list only.
 
     Read as the account that owns them; never printed, logged or stored. Short values are skipped
     (they would match anything).
     """
-    found: list[str] = []
+    return [value for value, _ in credential_inventory(config_dir)]
 
-    def leaves(node: object) -> None:
-        if type(node) is str:
-            found.append(node)
-        elif isinstance(node, Mapping):
-            for value in node.values():
-                leaves(value)
-        elif isinstance(node, list):
-            for value in node:
-                leaves(value)
 
-    for name in (".credentials.json", ".claude.json"):
-        try:
-            leaves(json.loads((Path(config_dir) / name).read_text()))
-        except (OSError, ValueError):
-            continue
-    return sorted({value for value in found if len(value) >= 16 and _SECRET_LIKE.fullmatch(value)
-                   and not _PLAIN_NAME.fullmatch(value)})
+def credential_origins(config_dir: Path | str) -> list[dict]:
+    """Where each ``credential_values`` entry comes from, in the same order (``credential_inventory``)."""
+    return [origin for _, origin in credential_inventory(config_dir)]
 
 
 def write_bundle(out_dir: Path | str, *, environment: Mapping, rows: Sequence[Mapping],
                  quota: Sequence[Mapping], summary: Mapping, secrets: Sequence[str] = (),
-                 started: float = 0.0, sessions_started: int = 0) -> dict:
+                 started: float = 0.0, sessions_started: int = 0, origins: Sequence[str] = ()) -> dict:
     """Write the five evidence files into a new directory. Kept whatever the outcome; there is no
     qualification record among them and no function in this module that could produce one."""
     out = Path(out_dir)
@@ -2484,7 +2613,7 @@ def write_bundle(out_dir: Path | str, *, environment: Mapping, rows: Sequence[Ma
         "results.jsonl": "".join(canonical(dict(row)).decode() + "\n" for row in rows),
         "quota.json": canonical({"sessions": [dict(q) for q in quota],
                                  "sessionsStarted": sessions_started}).decode() + "\n"}
-    scan_for_secrets(texts, secrets)
+    scan_for_secrets(texts, secrets, origins=origins)
     hashes = {name: sha256(text.encode()).hexdigest() for name, text in texts.items()}
     bundle_sha = sha256("".join(f"{name}:{hashes[name]}\n" for name in sorted(hashes)).encode()).hexdigest()
     document = dict(summary) | {
@@ -2492,7 +2621,7 @@ def write_bundle(out_dir: Path | str, *, environment: Mapping, rows: Sequence[Ma
         "environmentSha256": environment["environmentSha256"], "files": hashes, "bundleSha256": bundle_sha,
         "startedAt": int(started), "executionAuthorization": False}
     texts["summary.json"] = canonical(document).decode() + "\n"
-    scan_for_secrets({"summary.json": texts["summary.json"]}, secrets)
+    scan_for_secrets({"summary.json": texts["summary.json"]}, secrets, origins=origins)
     out.mkdir(parents=True, exist_ok=True)
     os.chmod(out, 0o700)
     for name, text in texts.items():

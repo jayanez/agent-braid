@@ -779,5 +779,318 @@ class SystemTests(unittest.TestCase):
                              ["/Users/administrator", "/Users/juanyanez"])
 
 
+
+# --- attempt 1 of 2026-11-03: what the driver prints when the real run fails --------------------------------
+
+SECRET = "Zq4Xw9Kp2Vb7Nm5Rt8Hj3Lc6"
+
+
+def backend_record(entry="launch", refused="self-check-failed", **extra):
+    """A record as ``MacOSContainment`` leaves it in ``run_evidence`` (with fields the driver must not print)."""
+    return {"entry": entry, "backend": "macos-dedicated-user-sandbox-exec", "operator": {"account": "juanyanez", "uid": 501},
+            "account": {"gids": [20], "homeMode": 448}, "os": {"product": "27.0.1", "build": "26A123"},
+            "qualificationSha256": "f" * 64, "refused": refused} | extra
+
+
+F4_NET06_FAILED = [{"probe": "FS-01", "expected": "denied", "observed": "denied"},
+                   {"probe": "NET-01", "expected": "denied", "observed": "denied"},
+                   {"probe": "CRED-01", "expected": "denied", "observed": "denied"},
+                   {"probe": "PROC-01", "expected": "denied", "observed": "denied"},
+                   {"probe": "NET-06", "expected": "allowed", "observed": "error"}]
+
+
+class ErrorDiagnosisTests(unittest.TestCase):
+    """Step 5 and 2: a failed real run prints the redacted scan report and the backend's refusal evidence."""
+
+    def setUp(self):
+        patch = mock.patch.object(har, "ROOT", Path(REPO))
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    def failing_run(self, error, backend, inventory=()):
+        def make_runner(be, **kw):
+            return SimpleNamespace(run=lambda out, environment: (_ for _ in ()).throw(error))
+
+        answers = iter(["t009-test"])
+        with mock.patch.object(q, "make_qualification_runner", side_effect=make_runner), \
+                mock.patch.object(q, "make_f4_probe_runner", return_value="f4"), \
+                mock.patch.object(q, "credential_inventory", return_value=list(inventory)), \
+                mock.patch.object(har, "NativeClaudeTransport", side_effect=lambda *a, **k: SimpleNamespace()), \
+                mock.patch.object(mac, "_remove_tree"):
+            with self.assertRaises(har.AttemptFailed) as caught:
+                har.run_attempt(arguments(dry_run=False, founder_go=True), good_machine(),
+                                ask=lambda _p: next(answers), say=lambda _m: None, now=lambda: NOW,
+                                backend_factory=lambda policy, **kw: backend)
+        return caught.exception
+
+    def secret_refusal(self):
+        text = json.dumps({"probe": "PROC-06", "machNames": ["com.apple.ok.name", f"a.b.{SECRET}"]}) + "\n"
+        with self.assertRaises(q.ProbeError) as raised:
+            q.scan_for_secrets({"results.jsonl": text}, [SECRET], origins=["credential#1"])
+        return raised.exception
+
+    def test_the_failure_carries_the_scan_report_with_the_source_of_a_credential_literal(self):
+        backend = SimpleNamespace(close=lambda: None, run_evidence=[])
+        inventory = [("x" * 20, {"file": ".claude.json", "path": "$.a"}),
+                     (SECRET, {"file": ".claude.json", "path": "$.oauthAccount.billingType"})]
+        failure = self.failing_run(self.secret_refusal(), backend, inventory)
+        self.assertEqual(failure.reason, "ProbeError: secret-in-artifact")
+        self.assertEqual(failure.detail, {"total": 1, "findings": [
+            {"file": "results.jsonl", "line": 1, "path": "$.machNames[1]", "rule": "listed-literal",
+             "length": len(SECRET), "origin": "credential#1",
+             "source": {"file": ".claude.json", "path": "$.oauthAccount.billingType"}}]})
+        self.assertNotIn(SECRET, json.dumps(failure.detail))
+
+    def test_the_failure_carries_probe_ids_and_verdicts_and_nothing_else_of_the_backend_record(self):
+        records = [backend_record(), {"entry": "fixture", "os": {"product": "27"}},  # no refusal: dropped
+                   backend_record(refused="self-check-failed", compileCheck="exec-denied",
+                                  preSessionCheck=F4_NET06_FAILED),
+                   backend_record("launch-probe", "profile-compile-failed")]
+        failure = self.failing_run(q.ProbeError("bundle-exists"), SimpleNamespace(close=lambda: None, run_evidence=records))
+        self.assertIsNone(failure.detail)
+        self.assertEqual(failure.evidence, [
+            {"entry": "launch", "refused": "self-check-failed"},
+            {"entry": "launch", "refused": "self-check-failed", "compileCheck": "exec-denied",
+             "preSessionCheck": F4_NET06_FAILED},
+            {"entry": "launch-probe", "refused": "profile-compile-failed"}])
+        rendered = json.dumps(failure.evidence)
+        for private in ("juanyanez", "braidlab", "operator", "homeMode", "qualificationSha256", "26A123"):
+            self.assertNotIn(private, rendered)
+
+    def test_malformed_or_foreign_evidence_is_dropped_not_printed(self):
+        records = ["text", None, {"entry": "/Users/x", "refused": "has space"},
+                   {"entry": "launch", "refused": "ok-code", "preSessionCheck": [
+                       {"probe": "FS-01", "expected": "denied", "observed": "maybe"},
+                       {"probe": "../x", "expected": "denied", "observed": "denied"}, "row",
+                       {"probe": "NET-01", "expected": "denied", "observed": "allowed"}]}]
+        self.assertEqual(har.refusal_evidence(SimpleNamespace(run_evidence=records)), [
+            {"entry": "launch", "refused": "ok-code", "preSessionCheck": [
+                {"probe": "NET-01", "expected": "denied", "observed": "allowed"}]}])
+        self.assertEqual(har.refusal_evidence(SimpleNamespace(run_evidence=mock.MagicMock())), [])
+        self.assertEqual(har.refusal_evidence(SimpleNamespace()), [])
+        many = [backend_record(refused=f"reason-{i}") for i in range(30)]
+        self.assertEqual(len(har.refusal_evidence(SimpleNamespace(run_evidence=many))), har.MAX_EVIDENCE)
+
+    def test_main_prints_the_scan_report_and_the_evidence_in_the_error_verdict(self):
+        failure = har.AttemptFailed("ProbeError: secret-in-artifact", 1, f"{HOME}/out/t009-test",
+                                    {"total": 1, "findings": [{"file": "results.jsonl", "line": 3, "rule": "long-run"}]},
+                                    [{"entry": "launch", "refused": "self-check-failed"}])
+        out = io.StringIO()
+        with mock.patch.object(har, "run_attempt", side_effect=failure), redirect_stdout(out):
+            code = har.main(DryRunTests.ARGV[:-1] + ["--founder-go"], system=good_machine())
+        report = json.loads(out.getvalue())
+        self.assertEqual(code, 2)
+        self.assertEqual((report["verdict"], report["reason"], report["quota"], report["nativeRun"]),
+                         ("error", "ProbeError: secret-in-artifact", {"started": 1}, True))
+        self.assertEqual(report["scan"]["findings"][0]["rule"], "long-run")
+        self.assertEqual(report["preSessionEvidence"], [{"entry": "launch", "refused": "self-check-failed"}])
+        bare = har.AttemptFailed("OSError", 0, "x")
+        out = io.StringIO()
+        with mock.patch.object(har, "run_attempt", side_effect=bare), redirect_stdout(out):
+            har.main(DryRunTests.ARGV[:-1] + ["--founder-go"], system=good_machine())
+        self.assertNotIn("scan", json.loads(out.getvalue()))
+        self.assertNotIn("preSessionEvidence", json.loads(out.getvalue()))
+
+    def test_the_credential_literals_come_from_one_read_and_reach_the_runner(self):
+        captured = {}
+
+        def make_runner(be, **kw):
+            captured.update(kw)
+            return SimpleNamespace(run=lambda out, environment: {})
+
+        with mock.patch.object(q, "make_qualification_runner", side_effect=make_runner), \
+                mock.patch.object(q, "make_f4_probe_runner", return_value="f4"), \
+                mock.patch.object(q, "verify_bundle", return_value="e" * 64), \
+                mock.patch.object(q, "credential_inventory", return_value=[("v1" * 8, {"file": "f", "path": "$"})]), \
+                mock.patch.object(har, "NativeClaudeTransport", side_effect=lambda *a, **k: SimpleNamespace()), \
+                mock.patch.object(mac, "_remove_tree"):
+            har.run_attempt(arguments(dry_run=False, founder_go=True), good_machine(), ask=lambda _p: "t009-test",
+                            say=lambda _m: None, now=lambda: NOW, backend_factory=lambda policy, **kw: mock.MagicMock())
+        self.assertEqual(captured["read_credentials"](), ["v1" * 8])
+
+
+class FakeBackend:
+    """The two methods ``launch`` calls before it spawns, and the evidence list; nothing else is allowed."""
+
+    def __init__(self, *, check=None, raises=None, leftovers=()):
+        self.calls, self.run_evidence, self.closed = [], [], False
+        self._check, self._raises, self._leftovers = check, raises, list(leftovers)
+
+    @contextlib.contextmanager
+    def _exclusive(self, entry):
+        self.calls.append(("exclusive", entry))
+        yield
+
+    def _pre_session(self, entry, workdir, *, probes):
+        self.calls.append(("pre_session", entry, str(workdir), probes))
+        self.run_evidence.extend(self._leftovers)
+        if self._raises is not None:
+            if isinstance(self._raises, lab.LabError):
+                self.run_evidence.append(backend_record(entry, self._raises.reason,
+                                                        **({"compileCheck": "exec-denied"} if self._check else {}),
+                                                        **({"preSessionCheck": self._check} if self._check else {})))
+            raise self._raises
+        return {"entry": entry, "compileCheck": "exec-denied", "preSessionCheck": self._check}, str(workdir), 502
+
+    def launch(self, *a, **k):
+        raise AssertionError("the self-check never launches")
+
+    def close(self):
+        self.closed = True
+
+
+F4_OK = [{"probe": p, "expected": e, "observed": e} for p, e in mac.F4_PROBES]
+
+
+class SelfCheckTests(unittest.TestCase):
+    ARGV = DryRunTests.ARGV[:-1] + ["--self-check", "--founder-go"]
+
+    def setUp(self):
+        patch = mock.patch.object(har, "ROOT", Path(REPO))
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    def run_check(self, backend, *, f4=None, argv=None, system=None, expect_code=None):
+        built = {}
+        out = io.StringIO()
+
+        def backend_factory(policy, **kw):
+            built["backend"] = (policy, kw)
+            return backend
+
+        def never(*_a, **_k):
+            raise AssertionError("not part of the self-check")
+
+        probe = f4 or (lambda probe_id, be: dict(mac.F4_PROBES)[probe_id])
+        with mock.patch.object(q, "make_f4_probe_runner", return_value=probe) as f4_factory, \
+                mock.patch.object(q, "make_qualification_runner", side_effect=never), \
+                mock.patch.object(q, "verify_bundle", side_effect=never), \
+                mock.patch.object(har, "NativeClaudeTransport", side_effect=never), \
+                mock.patch.object(har, "UsageCardReader", side_effect=never), \
+                mock.patch.object(har, "SessionQuota", side_effect=never), \
+                mock.patch.object(har, "run_attempt", side_effect=never), \
+                mock.patch("builtins.input", side_effect=never), \
+                mock.patch.object(mac, "MacOSContainment", side_effect=backend_factory), \
+                mock.patch.object(har.tempfile, "mkdtemp", side_effect=lambda **k: f"{HOME}/run/work-x"), \
+                mock.patch.object(mac, "_remove_tree") as remove, redirect_stdout(out):
+            code = har.main(argv or self.ARGV, system=system or good_machine())
+        built["f4_factory"], built["removed"] = f4_factory, remove
+        return code, json.loads(out.getvalue()), built
+
+    def test_a_passing_check_prints_every_f4_verdict_and_authorizes_nothing(self):
+        backend = FakeBackend(check=F4_OK)
+        code, report, built = self.run_check(backend)
+        self.assertEqual(code, 0)
+        self.assertEqual(report, {
+            "verdict": "self-check-ok", "attempt": "t009-test", "preSessionCheck": F4_OK, "compileCheck": "exec-denied",
+            "refusal": None, "stage": None, "backendRefusals": [], "nativeRun": True, "sessionsStarted": 0,
+            "usageReadings": 0, "executionAuthorization": False})
+        self.assertEqual(backend.calls, [("exclusive", "launch"), ("pre_session", "launch", f"{HOME}/run/work-x", True)])
+        self.assertTrue(backend.closed)
+        built["removed"].assert_called_once_with(f"{HOME}/run/work-x")
+
+    def test_the_backend_is_built_like_the_real_run(self):
+        _, _, built = self.run_check(FakeBackend(check=F4_OK))
+        policy, kw = built["backend"]
+        self.assertEqual((policy.account, policy.claude, policy.proxy_port), ("braidlab", CLAUDE, 18080))
+        self.assertEqual(kw["operator_account"], "juanyanez")
+        self.assertTrue(callable(kw["probe_runner"]))
+        self.assertEqual(sorted(kw), sorted(["probe_runner", "clock", "operator_account", "qualification",
+                                             "qualification_sha256", "host_qualification",
+                                             "host_qualification_sha256"]))
+        f4 = built["f4_factory"].call_args.kwargs
+        self.assertEqual(f4["arena_parent"], f"{HOME}/arena")
+        self.assertNotIn("launch_profile", f4)  # the launch-probe profile stays on, as in the real run
+
+    def test_a_refused_f4_probe_is_reported_and_the_probes_not_reached_are_run_and_marked(self):
+        check = F4_NET06_FAILED[:3]
+        check[2] = {"probe": "CRED-01", "expected": "denied", "observed": "allowed"}
+        backend = FakeBackend(check=check, raises=lab.LabError("self-check-allowed"),
+                              leftovers=[backend_record("launch-probe", "profile-compile-failed")])
+        asked = []
+        code, report, _ = self.run_check(backend, f4=lambda probe, be: asked.append(probe) or "error"
+                                         if probe == "PROC-01" else asked.append(probe) or "allowed")
+        self.assertEqual(code, 2)
+        self.assertEqual((report["verdict"], report["refusal"], report["stage"], report["compileCheck"]),
+                         ("self-check-refused", "self-check-allowed", "f4-probes", "exec-denied"))
+        self.assertEqual(report["preSessionCheck"], [
+            *check, {"probe": "PROC-01", "expected": "denied", "observed": "error", "supplementary": True},
+            {"probe": "NET-06", "expected": "allowed", "observed": "allowed", "supplementary": True}])
+        self.assertEqual(asked, ["PROC-01", "NET-06"])
+        self.assertEqual(report["backendRefusals"], [{"entry": "launch-probe", "refused": "profile-compile-failed"},
+                                                     {"entry": "launch", "refused": "self-check-allowed",
+                                                      "compileCheck": "exec-denied", "preSessionCheck": check}])
+        self.assertFalse(report["executionAuthorization"])
+
+    def test_a_compile_check_refusal_has_no_compile_mark_and_runs_all_five_probes(self):
+        backend = FakeBackend(raises=lab.LabError("self-check-failed"))
+        code, report, _ = self.run_check(backend, f4=lambda probe, be: "error")
+        self.assertEqual((code, report["refusal"], report["stage"], report["compileCheck"]),
+                         (2, "self-check-failed", "compile-check", None))
+        self.assertEqual([c["probe"] for c in report["preSessionCheck"]], [p for p, _ in mac.F4_PROBES])
+        self.assertTrue(all(c["supplementary"] and c["observed"] == "error" for c in report["preSessionCheck"]))
+
+    def test_a_refusal_before_the_compile_check_names_that_stage(self):
+        report = self.run_check(FakeBackend(raises=lab.LabError("workspace-leftovers")))[1]
+        self.assertEqual((report["refusal"], report["stage"]), ("workspace-leftovers", "mechanism-or-workspace"))
+
+    def test_a_probe_runner_that_raises_or_answers_oddly_is_an_error_verdict(self):
+        def f4(probe, be):
+            if probe == "PROC-01":
+                raise RuntimeError(SECRET)
+            return "maybe"
+        backend = FakeBackend(check=F4_OK[:1], raises=lab.LabError("self-check-failed"))
+        report = self.run_check(backend, f4=f4)[1]
+        self.assertTrue(all(c["observed"] == "error" for c in report["preSessionCheck"][1:]))
+        self.assertNotIn(SECRET, json.dumps(report))
+
+    def test_an_unexpected_exception_is_a_verdict_not_a_traceback(self):
+        code, report, _ = self.run_check(FakeBackend(raises=RuntimeError("boom " + SECRET)))
+        # the backend wraps this into backend-failed itself; the driver does too if one slips through
+        self.assertEqual((code, report["refusal"], report["stage"]), (2, "backend-failed", "mechanism-or-workspace"))
+        self.assertNotIn(SECRET, json.dumps(report))
+        backend = FakeBackend(check=F4_OK)
+        backend._exclusive = mock.MagicMock(side_effect=OSError("disk"))
+        code, report, _ = self.run_check(backend)
+        self.assertEqual((code, report["verdict"], report["reason"]), (2, "error", "OSError"))
+        self.assertTrue(backend.closed)
+
+    def test_it_needs_the_founder_go_and_a_ready_preflight_and_builds_nothing_otherwise(self):
+        for argv, system, reasons in ((DryRunTests.ARGV[:-1] + ["--self-check"], good_machine(), ["founder-go-flag-missing"]),
+                                      (self.ARGV, self.bad_machine(), ["claude-sha256"])):
+            built = []
+            out = io.StringIO()
+            with mock.patch.object(mac, "MacOSContainment", side_effect=lambda *a, **k: built.append(1)), \
+                    mock.patch.object(q, "make_f4_probe_runner", side_effect=lambda **k: built.append(2)), \
+                    redirect_stdout(out):
+                code = har.main(argv, system=system)
+            report = json.loads(out.getvalue())
+            self.assertEqual((code, report["verdict"], report["reasons"], report["nativeRun"]), (2, "refused", reasons, False))
+            self.assertEqual(built, [])
+
+    @staticmethod
+    def bad_machine():
+        s = good_machine()
+        s.hashes[CLAUDE] = "d" * 64
+        return s
+
+    def test_self_check_and_dry_run_exclude_each_other(self):
+        with self.assertRaises(SystemExit), mock.patch("sys.stderr", io.StringIO()):
+            har.parser().parse_args(DryRunTests.ARGV + ["--self-check"])
+        args = har.parser().parse_args(DryRunTests.ARGV[:-1] + ["--self-check"])
+        self.assertEqual((args.self_check, args.dry_run, args.founder_go), (True, False, False))
+        self.assertFalse(har.parser().parse_args(DryRunTests.ARGV).self_check)
+
+    def test_the_two_backend_methods_it_calls_exist_with_the_shape_launch_uses(self):
+        import inspect
+        parameters = inspect.signature(mac.MacOSContainment._pre_session).parameters
+        self.assertEqual(list(parameters), ["self", "entry", "workdir", "probes"])
+        self.assertIs(parameters["probes"].kind, inspect.Parameter.KEYWORD_ONLY)
+        self.assertTrue(callable(mac.MacOSContainment._exclusive))
+        source = inspect.getsource(mac.MacOSContainment.launch)
+        self.assertIn('with self._exclusive("launch"):', source)
+        self.assertIn('self._pre_session("launch", cwd, probes=True)', source)
+        self.assertIn("F4_PROBES", inspect.getsource(mac.MacOSContainment._run_probes))
+
 if __name__ == "__main__":
     unittest.main()

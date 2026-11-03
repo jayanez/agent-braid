@@ -268,6 +268,36 @@ tell the orchestrator that `/Users/Shared/t009-dry-run.json` exists. A `refused`
 failure of the procedure: it names what to fix. Do not continue to step 11 until the orchestrator
 confirms in writing that the verdict is `ready` and matches the pins it recomputed.
 
+**Step 10b. Self-check (after the dry run, before step 11; added after attempt 1 of 2026-11-03).** The
+real run refuses a session when the backend's own pre-session check fails, and by then a session is
+counted. `--self-check` runs that check alone, built exactly like the real run, so a failure shows
+here and costs nothing. It needs `--founder-go` because it does run native things under the sandbox:
+the pinned `claude --version` (once for the launch profile and once per F4 probe under the
+`launch-probe` profile; no session, no prompt, no login, no network), the five F4 fixtures with the
+interpreter (FS-01, NET-01, CRED-01, PROC-01, NET-06), and, for NET-06 only, one TLS handshake with the
+allowed endpoint through the local proxy (no request, no credential). It reserves no session, asks for
+no usage reading and no typed name, and writes no counter and no bundle.
+
+```sh
+"${PYRUN[@]}" "${ARGS[@]}" --self-check --founder-go | tee "$HOME/t009/self-check.json"
+cp "$HOME/t009/self-check.json" /Users/Shared/t009-self-check.json
+```
+
+It prints a JSON verdict and exits 0 (`self-check-ok`) or 2. In `preSessionCheck` every F4 probe shows
+its `expected` and `observed` verdict (`allowed`, `denied` or `error`); `compileCheck` is
+`exec-denied` when the profile compiled, denied a non-listed exec and ran a listed one; `refusal` is the
+backend's fixed reason code and `stage` says where it stopped (`mechanism-or-workspace`,
+`compile-check` or `f4-probes`). After a refusal the probes the check did not reach are run one by
+one and marked `"supplementary": true`, and `backendRefusals` lists the refusals of the nested runs
+(entry `fixture`, `launch` or `launch-probe` and the fixed reason code). Nothing printed is a
+path, account name, hash or value. Tell the orchestrator that `/Users/Shared/t009-self-check.json`
+exists. Do not continue to step 11 unless the verdict is `self-check-ok` and the orchestrator
+confirms it in writing. A `self-check-refused` is a finding, not a failure of the procedure.
+
+After any change to the repository code, redo step 5 with the new commit (`repo-$SHORT` is the
+installed copy the pre-flight checks) and step 10 again: the code is part of the environment and
+catalog hashes, so an earlier dry run no longer matches.
+
 **Step 11. The real attempt (only after the orchestrator confirms).** The same command with
 `--founder-go` instead of `--dry-run`. If you closed the terminal after step 10, run its variable block
 (from `BRAID=` to the `ARGS=(...)` line, `OPERATOR_ACCOUNT` included) again first.
@@ -289,6 +319,34 @@ spent (`quota.started`). The session counter stays in the output directory, so a
 `--out-dir` continues the budget of three sessions (a new attempt name does not reset it). Send the output
 to the orchestrator before trying again.
 
+**If step 11 fails.** Keep the whole JSON, the console text above it and the output directory exactly as
+they are; do not delete, edit or move anything in the output directory (the session counter
+`.sessions.json` is the NC-10 budget), and do not run step 11 again before the orchestrator says so.
+The error verdict can carry these fields, none of which holds a secret or a value:
+
+- `reason`: the exception and its fixed reason code, for example `ProbeError: secret-in-artifact`.
+- `quota.started`: sessions counted; `nativeRun` is `true` because the helper probes run natively with
+  or without a session.
+- `scan` (a refused bundle only): `findings`, each with the `file` (`results.jsonl`, `quota.json`,
+  `environment.json`, `catalog.json` or `summary.json`), the `line`, the JSON `path` (for example
+  `$.machNames[17]`; `<key>` stands for a key that is not a plain field name), the `rule`
+  (`listed-literal`, `long-run`, `anthropic-api-key`, `jwt`, `pem-header`, `github-token` or
+  `aws-access-key-id`) and the match `length`. For a `listed-literal` the `origin` says which list it came
+  from (`caller`, `marker`, or `credential#N`) and, for a credential, `source` names the file and field of
+  the account's own config that holds it (for example `.claude.json`, `$.oauthAccount.billingType`). The
+  value is never printed. `total` counts every finding; at most 20 are listed. A refused bundle writes no
+  bundle file; only the counter stays.
+- `preSessionEvidence`: the backend's refusals (`entry`, fixed `refused` code, `compileCheck`, and the F4
+  probes' `expected`/`observed` verdicts), the same vocabulary as step 10b.
+
+The counter matters for the next run. After a session that the backend refused before launching
+anything, the counter holds `sessionsStarted: 1` and a `quotaStop` such as
+`session-refused-self-check-failed`, and a re-run with the same `--out-dir` resumes that stop: it
+would refuse every remaining session (`quota-stop`) and write a bundle with the three session probes
+inconclusive. Whether such a refused session still counts against the budget of three, and
+whether the counter may be archived into the evidence and restarted in a new `--out-dir`, is a decision
+of the founder with the orchestrator (NC-10); do not decide it by deleting the file.
+
 Then, back in your own session, take ownership of the copy (`sudo chown -R "$USER"
 /Users/Shared/t009-bundle-20261104`), review the bundle for local identifiers and copy it to
 `specs/065-native-claude-containment/evidence/qualification/<attempt>/`.
@@ -296,7 +354,7 @@ Then, back in your own session, take ownership of the copy (`sudo chown -R "$USE
 ### Teardown (after the bundle is copied)
 
 ```sh
-rm -r /Users/Shared/t009-bundle-20261104 /Users/Shared/t009-dry-run.json
+rm -r /Users/Shared/t009-bundle-20261104 /Users/Shared/t009-dry-run.json /Users/Shared/t009-self-check.json
 # log out of braidlab (Apple menu, Log Out) and revoke its Claude session in the account settings
 sudo sysadminctl -deleteUser "$ACCT"           # removes the account, its home and its keychain
 ls /Users                                      # braidlab gone (else: sudo rm -r /Users/braidlab)

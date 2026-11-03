@@ -212,6 +212,27 @@ shared object store fails the portable-root check).
   re-check by the orchestrator is required before the founder starts the runbook, and the
   dry run on the founder's machine is the next evidence. This task
   stays unchecked.
+  Attempt 1, 2026-11-03 (diagnosis: `evidence/t009-attempt1-diagnosis.md`; re-check of the fix:
+  `evidence/recheck-t009-diagnose.md`): the dry run was `ready`; the real run (attempt
+  `t009-20261104`) ended `ProbeError: secret-in-artifact` with one session counted
+  (`.sessions.json`: `sessionsStarted: 1`, `quotaStop: session-refused-self-check-failed`). The
+  backend's pre-session check refused the first `claude --version` launch before anything was
+  spawned (no `claude` session, no prompt, no usage consumed; the typed pre reading was not used),
+  and the bundle was then blocked by the secret scan, so no bundle was written and no post reading
+  was asked. The scan refusal is reproduced offline: PROC-06 records the launchd service names, and
+  macOS 27 has system service names with a 48-character identifier
+  (`com.apple.proactive.SuggestionRequest.ps_unstructured_reminder_interaction_suggestions`) that the
+  long-run rule refuses; the runner's composed `session-refused-<reason>` codes of 24 or more characters
+  are a second such channel (latent). Fixed in `harness_qualification_probes.py`: such names are
+  recorded as `#` plus their SHA-256 (the helper still sweeps the real name), the runner's composed
+  `session-refused-<code>` stop reasons are not opaque runs, and a refusal now carries a redacted report (file, line, JSON path, rule, match
+  length; never a value). `scripts/har_t009_attempt.py` prints that report and the backend's refusal
+  evidence in its error verdict and has `--self-check` (the backend's pre-session check alone, no
+  session). Why the self-check refused is not known: it is what `--self-check` shows (runbook step 10b).
+  The probes module edit moves the catalog and environment hashes (the catalog binds the module's
+  own bytes), so the dry run, the installed code copy (step 5) and the re-check by the orchestrator
+  are repeated. The counter of the output directory stops further sessions: its reset is a
+  founder decision (quickstart "If step 11 fails"). Nothing is qualified; `executionAuthorization` stays false.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes

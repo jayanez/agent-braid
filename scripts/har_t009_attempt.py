@@ -27,7 +27,19 @@ NC-10 2 % rule.
 
 A crash, Ctrl-C or write failure after sessions were spent ends in a JSON verdict with the number of sessions
 started. The session counter lives in ``--out-dir`` and the next run with the same ``--out-dir`` resumes it,
-so a new attempt name never resets the NC-10 budget.
+so a new attempt name never resets the NC-10 budget. That verdict also carries, when there is any, the
+redacted secret-scan report of a refused bundle (file, line, JSON path, rule, match length; never a value)
+and the backend's pre-session evidence (probe ids and verdicts, fixed reason codes) of the refusals it saw.
+
+``--self-check`` (with ``--founder-go``, after the same pre-flight) runs only the backend's pre-session check,
+built exactly like the real run: the same ``_pre_session("launch", ..., probes=True)`` that every launch makes
+before it spawns anything, under the same lock. It reserves no session, takes no usage reading, writes no
+counter and no bundle, starts no ``claude`` session and sends no prompt. It does execute, under the sandbox,
+what the check itself executes: the pinned ``claude --version`` (the compile check's positive case, and again
+once per F4 probe under the ``launch-probe`` profile), the five F4 fixtures with the interpreter, and the NET-06
+functional control (one TLS handshake with the allowed endpoint through the local proxy, no request, no
+credential). It prints each F4 probe's expected and observed verdict (also the ones after a refusal) and the
+compile check, so a refused self-check is diagnosable before a session is spent.
 """
 from __future__ import annotations
 
@@ -80,11 +92,17 @@ class AttemptRefused(Exception):
 
 
 class AttemptFailed(Exception):
-    """The attempt started and then failed; sessions may have been spent and are counted."""
+    """The attempt started and then failed; sessions may have been spent and are counted.
 
-    def __init__(self, reason: str, sessions_started: int, out_dir: str):
+    ``detail`` is the redacted secret-scan report when a bundle was refused (no value in it);
+    ``evidence`` lists the backend's refusals so far (probe ids, verdicts, fixed reason codes).
+    """
+
+    def __init__(self, reason: str, sessions_started: int, out_dir: str, detail: Mapping | None = None,
+                 evidence: list | None = None):
         super().__init__(reason)
         self.reason, self.sessions_started, self.out_dir = reason, sessions_started, out_dir
+        self.detail, self.evidence = detail, evidence or []
 
 
 # --- the host seam: every fact the pre-flight reads, replaceable by a double ---------------------
@@ -595,6 +613,77 @@ def attempt_records(environment_sha256: str, now: int) -> dict:
                 host_qualification=host, host_qualification_sha256=sha256(host).hexdigest())
 
 
+_CODE = re.compile(r"[A-Za-z0-9][A-Za-z0-9-]{0,47}\Z")
+_PRE_SESSION_VERDICTS = ("allowed", "denied", "error")
+MAX_EVIDENCE = 12
+_COMPILE_REFUSALS = frozenset(("profile-compile-failed", "self-check-allowed", "self-check-failed"))
+
+
+def _code(value: object) -> str | None:
+    """A fixed reason code or entry name (letters, digits, hyphens), or ``None``: nothing else is printed."""
+    return value if type(value) is str and _CODE.fullmatch(value) else None
+
+
+def _checks(value: object) -> list[dict]:
+    """The F4 ``preSessionCheck`` rows as probe id, expected and observed verdict; anything else is dropped."""
+    rows = []
+    for row in value if isinstance(value, list) else []:
+        if (isinstance(row, Mapping) and _code(row.get("probe")) and row.get("expected") in _PRE_SESSION_VERDICTS
+                and row.get("observed") in _PRE_SESSION_VERDICTS):
+            rows.append({"probe": row["probe"], "expected": row["expected"], "observed": row["observed"]})
+    return rows
+
+
+def refusal_evidence(backend: object, since: int = 0) -> list[dict]:
+    """What the backend recorded about its refusals, as the driver may print it: per record the entry
+    (``fixture``, ``launch``, ``launch-probe``), the fixed refusal reason, whether the compile check passed
+    and the F4 probes' ids and verdicts. No path, account, hash or other field of the record is copied."""
+    records = getattr(backend, "run_evidence", None)
+    found = []
+    for record in (records[since:] if isinstance(records, list) else []):
+        if not isinstance(record, Mapping):
+            continue
+        item = {name: _code(record.get(name)) for name in ("entry", "refused", "compileCheck")}
+        item = {name: value for name, value in item.items() if value}
+        checks = _checks(record.get("preSessionCheck"))
+        if checks:
+            item["preSessionCheck"] = checks
+        if ("refused" in item or "preSessionCheck" in item) and item not in found:
+            found.append(item)
+    return found[-MAX_EVIDENCE:]
+
+
+def _scan_report(detail: object, inventory: list[tuple[str, dict]]) -> dict | None:
+    """The secret scan's redacted findings, each credential one traced to its file and field name."""
+    if not isinstance(detail, Mapping) or not isinstance(detail.get("findings"), list):
+        return None
+    findings = []
+    for finding in detail["findings"]:
+        item = dict(finding)
+        origin = item.get("origin")
+        if isinstance(origin, str) and origin.startswith("credential#") and origin[11:].isdigit() \
+                and int(origin[11:]) < len(inventory):
+            item["source"] = dict(inventory[int(origin[11:])][1])
+        findings.append(item)
+    return {"findings": findings, "total": detail.get("total", len(findings))}
+
+
+def _workdirs(run_root: str) -> tuple[Callable[[], Path], Callable[[], None]]:
+    """A factory for private working directories directly below ``run_root`` and the removal of all of them."""
+    made: list[str] = []
+
+    def workdir() -> Path:
+        path = tempfile.mkdtemp(prefix="work-", dir=run_root)
+        made.append(path)
+        return Path(path)
+
+    def cleanup() -> None:
+        for path in made:
+            _mac._remove_tree(path)
+
+    return workdir, cleanup
+
+
 def run_attempt(args: argparse.Namespace, system: System, *, ask: Callable[[str], str] = input,
                 say: Callable[[str], None] = print, now: Callable[[], datetime] | None = None,
                 backend_factory=_mac.MacOSContainment) -> dict:
@@ -615,12 +704,9 @@ def run_attempt(args: argparse.Namespace, system: System, *, ask: Callable[[str]
     facts = report["observed"]["os"]
     reader = UsageCardReader(ask, say, clock, datetime.now().astimezone().tzinfo)
     quota = SessionQuota(reader, say)
-    work_dirs: list[str] = []
-
-    def workdir() -> Path:
-        path = tempfile.mkdtemp(prefix="work-", dir=args.run_root)
-        work_dirs.append(path)
-        return Path(path)
+    workdir, cleanup = _workdirs(args.run_root)
+    # the credential literals and where they come from, read once before anything native runs
+    inventory = _probes.credential_inventory(args.config_dir)
 
     probe_runner = _probes.make_f4_probe_runner(arena_parent=args.arena_parent, workdir_factory=workdir)
     backend = backend_factory(policy, probe_runner=probe_runner, clock=time.time,
@@ -635,7 +721,8 @@ def run_attempt(args: argparse.Namespace, system: System, *, ask: Callable[[str]
     try:
         runner = _probes.make_qualification_runner(
             backend, arena_parent=args.arena_parent, workdir_factory=workdir,
-            transport_factory=transport_factory, read_quota=quota.read)
+            transport_factory=transport_factory, read_quota=quota.read,
+            read_credentials=lambda: [value for value, _ in inventory])
         environment = {
             "environmentSha256": environment_sha, "probeCatalogSha256": _probes.CATALOG_SHA256,
             "backend": _mac.BACKEND, "osProduct": facts["product"], "osBuild": facts["build"],
@@ -647,13 +734,93 @@ def run_attempt(args: argparse.Namespace, system: System, *, ask: Callable[[str]
     except (Exception, KeyboardInterrupt) as exc:
         # sessions may be spent: say how many; the counter in out_dir keeps the NC-10 budget across a re-run
         reason = type(exc).__name__ + (f": {exc.reason}" if isinstance(getattr(exc, "reason", None), str) else "")
-        raise AttemptFailed(reason, quota.started, out_dir) from exc
+        raise AttemptFailed(reason, quota.started, out_dir, _scan_report(getattr(exc, "detail", None), inventory),
+                            refusal_evidence(backend)) from exc
     finally:
         backend.close()
-        for path in work_dirs:
-            _mac._remove_tree(path)
+        cleanup()
     return {"verdict": "bundle-written", "outDir": out_dir, "bundleSha256": bundle_sha,
             "sessionsStarted": quota.started, "summary": summary, "executionAuthorization": False}
+
+
+# --- self-check: the backend's pre-session check alone -----------------------------------------------------
+
+
+def _stage(refusal: str | None, evidence: Mapping) -> str | None:
+    """Where the check stopped, read from the record it left: after the compile check (the F4 probes), at the
+    compile check (its fixed reasons, no ``compileCheck`` mark) or before it (mechanism, account, workspace)."""
+    if refusal is None:
+        return None
+    if evidence.get("compileCheck"):
+        return "f4-probes"
+    return "compile-check" if refusal in _COMPILE_REFUSALS else "mechanism-or-workspace"
+
+
+def self_check(backend: object, workdir: Callable[[], Path], probe_runner: Callable[[str, object], str]) -> dict:
+    """Run the backend's pre-session check for the ``launch`` entry and nothing else.
+
+    These are the two calls ``MacOSContainment.launch`` makes before it spawns anything (the exclusive
+    run, then ``_pre_session(..., probes=True)``); no session is started and no usage is read. After a
+    refusal the F4 probes the check did not reach are run one by one (marked ``supplementary``) so the
+    whole picture comes out of one run; the backend's own record says what refused where.
+    """
+    seen = len(getattr(backend, "run_evidence", []))
+    refusal, evidence = None, {}
+    with backend._exclusive("launch"):  # the lock launch() takes
+        try:
+            evidence, _, _ = backend._pre_session("launch", workdir(), probes=True)
+        except LabError as exc:
+            refusal = exc.reason
+        except Exception:
+            refusal = "backend-failed"
+        if refusal is not None:
+            own = [r for r in backend.run_evidence[seen:] if r.get("entry") == "launch" and r.get("refused")]
+            evidence = own[-1] if own else {}
+        checks = _checks(evidence.get("preSessionCheck"))
+        if refusal is not None:
+            done = {c["probe"] for c in checks}
+            for probe, expected in _mac.F4_PROBES:
+                if probe in done:
+                    continue
+                try:
+                    observed = probe_runner(probe, backend)
+                except Exception:
+                    observed = "error"
+                checks.append({"probe": probe, "expected": expected,
+                               "observed": observed if observed in ("allowed", "denied") else "error",
+                               "supplementary": True})
+    return {"verdict": "self-check-ok" if refusal is None else "self-check-refused",
+            "preSessionCheck": checks, "compileCheck": _code(evidence.get("compileCheck")),
+            "refusal": _code(refusal), "stage": _stage(refusal, evidence),
+            "backendRefusals": [r for r in refusal_evidence(backend, seen) if "refused" in r],
+            "nativeRun": True, "sessionsStarted": 0, "usageReadings": 0, "executionAuthorization": False}
+
+
+def run_self_check(args: argparse.Namespace, system: System, *, backend_factory=None) -> dict:
+    """Pre-flight, then the backend built exactly as for the real run and ``self_check`` on it. Raises
+    ``AttemptRefused`` before anything native when a check fails or ``--founder-go`` is missing (the
+    check executes the pinned ``claude --version`` and the F4 fixtures under the sandbox)."""
+    report = preflight(args, system)
+    if report["verdict"] != "ready":
+        raise AttemptRefused(report["failed"], {c["check"]: c["detail"] for c in report["checks"] if not c["ok"]})
+    if not args.founder_go:
+        raise AttemptRefused(["founder-go-flag-missing"])
+    policy = _build_policy(args)
+    workdir, cleanup = _workdirs(args.run_root)
+    probe_runner = _probes.make_f4_probe_runner(arena_parent=args.arena_parent, workdir_factory=workdir)
+    backend = (backend_factory or _mac.MacOSContainment)(
+        policy, probe_runner=probe_runner, clock=time.time, operator_account=args.operator_account,
+        **attempt_records(report["observed"]["environmentSha256"], int(time.time())))
+    try:
+        return self_check(backend, workdir, probe_runner) | {"attempt": args.attempt}
+    except (Exception, KeyboardInterrupt) as exc:
+        reason = type(exc).__name__ + (f": {exc.reason}" if _code(getattr(exc, "reason", None)) else "")
+        return {"verdict": "error", "reason": reason, "attempt": args.attempt,
+                "backendRefusals": refusal_evidence(backend), "nativeRun": True, "sessionsStarted": 0,
+                "usageReadings": 0, "executionAuthorization": False}
+    finally:
+        backend.close()
+        cleanup()
 
 
 # --- command line -------------------------------------------------------------------------------------------
@@ -678,9 +845,15 @@ def parser() -> argparse.ArgumentParser:
                    help="bundle directory inside the account's home; a run that crashed after spending sessions "
                         "is resumed by passing the same --out-dir")
     p.add_argument("--proxy-port", type=int, default=DEFAULT_PROXY_PORT)
-    p.add_argument("--dry-run", action="store_true", help="pre-flight only; nothing native runs")
+    mode = p.add_mutually_exclusive_group()
+    mode.add_argument("--dry-run", action="store_true", help="pre-flight only; nothing native runs")
+    mode.add_argument("--self-check", action="store_true",
+                      help="after the pre-flight, run only the backend's pre-session check (compile check and the "
+                           "F4 probes) and print each verdict; no session, no usage reading, no bundle; needs "
+                           "--founder-go")
     p.add_argument("--founder-go", action="store_true",
-                   help="required for the real attempt, after the orchestrator confirmed the dry run")
+                   help="required for the real attempt and for --self-check, after the orchestrator confirmed "
+                        "the dry run")
     return p
 
 
@@ -692,20 +865,27 @@ def main(argv: list[str] | None = None, *, system: System | None = None) -> int:
         print(json.dumps(report, indent=2, sort_keys=True))
         return 0 if report["verdict"] == "ready" else 2
     try:
-        result = run_attempt(args, system)
+        result = run_self_check(args, system) if args.self_check else run_attempt(args, system)
     except AttemptRefused as exc:
         print(json.dumps({"verdict": "refused", "reasons": exc.reasons, "details": exc.details, "nativeRun": False,
                           "executionAuthorization": False}, indent=2, sort_keys=True))
         return 2
     except AttemptFailed as exc:
-        print(json.dumps({"verdict": "error", "reason": exc.reason, "quota": {"started": exc.sessions_started},
-                          "outDir": exc.out_dir, "nativeRun": exc.sessions_started > 0,
-                          "next": "keep this output; the session counter in outDir is kept, so re-run with the "
-                                  "same --out-dir (a new name would not reset the budget of 3 sessions); tell the "
-                                  "orchestrator before trying again",
-                          "executionAuthorization": False}, indent=2, sort_keys=True))
+        failure = {"verdict": "error", "reason": exc.reason, "quota": {"started": exc.sessions_started},
+                   "outDir": exc.out_dir, "nativeRun": True,  # the helper probes run natively, sessions or not
+                   "next": "keep this output; the session counter in outDir is kept, so re-run with the "
+                           "same --out-dir (a new name would not reset the budget of 3 sessions); tell the "
+                           "orchestrator before trying again",
+                   "executionAuthorization": False}
+        if exc.detail:
+            failure["scan"] = exc.detail  # where and by which rule the bundle was refused; no value
+        if exc.evidence:
+            failure["preSessionEvidence"] = exc.evidence  # probe ids and verdicts, fixed reason codes
+        print(json.dumps(failure, indent=2, sort_keys=True))
         return 2
     print(json.dumps(result, indent=2, sort_keys=True))
+    if args.self_check:
+        return 0 if result["verdict"] == "self-check-ok" else 2
     print(f"bundleSha256 {result['bundleSha256']}")
     return 0
 
