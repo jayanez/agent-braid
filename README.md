@@ -141,39 +141,13 @@ opencode plugin add 'github:jayanez/agent-braid#plugin-dist::path:plugins/agent-
 
 ### Then, in three steps
 
-**Set up once.** In Claude Code run `/agent-braid:setup`; in Codex select the Agent
-Braid `setup` skill; in OpenCode the plugin registers the
-`setup` skill and an `agent-braid-setup` command. Pick the repositories to
-register, review the preview and confirm: nothing is registered without both.
-After a registry change, reconnect MCP with the host's native reconnect or restart
-(OpenCode: `opencode reload`).
+Run `/agent-braid:setup` (it shows a preview and registers nothing until you
+confirm; after a registry change, reconnect MCP, or `opencode reload` in OpenCode),
+then `/agent-braid:analyze`. The blocks below show the equivalent CLI output from
+the same core.
 
-Then ask your agent to analyze work with `/agent-braid:analyze` (in Codex, select
-the skill with `$` or `/skills`; in OpenCode ask for the `analyze` skill, whose
-invocation form in a live session is unobserved). The steps below show the
-equivalent CLI output; they need the CLI from "Use the CLI directly" below
-(`agent-braid` is `.venv/bin/agent-braid` there) and, for steps 2 and 3, the
-tutorial fixture that defines `$DEMO_DIR`. The plugin calls the same core. The
-step 2 replay and the step 3 checks can be re-run independently; the step 1
-verdict follows from the footprints the tasks declare.
-
-**1. Which tasks collide?** Each pair of tasks gets a verdict, a reason and, when
-there is one, the shared resource. Two tasks that edit different files:
-
-```bash
-agent-braid analyze examples/analysis/file-edits.json --format text
-```
-
-```text
-Agent Braid analysis sha256:216014b8a3c05cff6440665d9f13cc9da6524694286d0ada852ccc7dd875a366
-Operations: 2  Pairs: 1
-edit-readme / edit-roadmap: independent-candidate
-  - Complete exact-resource footprints are disjoint.
-  constraints: requires-execution-contract-before-parallelism
-Execution authorization: false
-```
-
-Two tasks that both write `README.md`, with the JSON report's shared resource:
+**1. Which tasks collide?** Before anything runs. Two tasks that both write
+`README.md` are `conflicting`; two that edit different files are independent:
 
 ```bash
 agent-braid analyze examples/analysis/file-edits-conflict.json --format text
@@ -181,8 +155,6 @@ agent-braid analyze examples/analysis/file-edits-conflict.json --format json
 ```
 
 ```text
-Agent Braid analysis sha256:4f9e8796b5d9ee119355faea4b0e79ac9ef168dadbcc6118bc260fedc010cc92
-Operations: 2  Pairs: 1
 edit-readme / edit-readme-intro: conflicting
   - At least one exact shared resource has a write-like effect.
   constraints: serialize-or-isolate
@@ -190,13 +162,6 @@ Execution authorization: false
 ```
 
 ```text
-      "classification": "conflicting",
-      …
-      "left": "edit-readme",
-      "reasons": [
-        "At least one exact shared resource has a write-like effect."
-      ],
-      "right": "edit-readme-intro",
       "sharedResources": [
         "repo://agent-braid/README.md"
       ]
@@ -206,11 +171,9 @@ Execution authorization: false
 executes anything. See [Reading an analysis](#reading-an-analysis) for all four
 outcomes.
 
-**2. Does order matter? Replayed.** For two real Git commits, Agent Braid does not
-guess: it applies both admissible orders in isolation and compares the resulting
-trees. Create the two commits with the
-[owned Git tutorial fixture](examples/runtime/README.md#create-the-fixture)
-(`a.txt` and `b.txt`, one commit each), then:
+**2. Does order matter? Replayed, not guessed.** For two real Git commits, Agent
+Braid applies both admissible orders in isolation and compares the resulting trees
+(fixture: [owned Git tutorial](examples/runtime/README.md#create-the-fixture)):
 
 ```bash
 agent-braid analyze-git "$DEMO_DIR/analysis.json" --format text \
@@ -218,18 +181,6 @@ agent-braid analyze-git "$DEMO_DIR/analysis.json" --format text \
 agent-braid plan-git "$DEMO_DIR/analysis.json" \
   --evidence-output "$DEMO_DIR/replay.json" > "$DEMO_DIR/advisory.json"
 ```
-
-```text
-Agent Braid analysis sha256:40aa80c6ef34781523002fe678e126b189de69326fa9625947ce33bd9380e769
-Operations: 2  Pairs: 1
-a / b: independent-candidate
-  - Complete exact-resource footprints are disjoint.
-  constraints: requires-execution-contract-before-parallelism
-Execution authorization: false
-```
-
-The replay evidence in `replay.json` records both orders and the tree each produced
-(lines kept verbatim, `…` marks what was left out):
 
 ```text
   "result": "equivalent-observed",
@@ -256,9 +207,9 @@ The replay evidence in `replay.json` records both orders and the tree each produ
 Both orders gave the same tree. This covers tracked paths, modes and blobs for
 these two commits only; it does not run project tests.
 
-**3. Don't trust it, verify it.** `verify-git` rebuilds that replay from the
-repository itself, and `verify` re-checks a portable certificate, in both cases
-recomputing the result instead of reusing the producer's verdict:
+**3. Don't trust it, verify it.** `verify-git` rebuilds the replay from the
+repository and `verify` re-checks a portable certificate, recomputing the result
+instead of reusing the producer's verdict:
 
 ```bash
 agent-braid verify-git "$DEMO_DIR/replay.json" --repository "$DEMO_DIR/source"
@@ -267,31 +218,26 @@ agent-braid verify examples/contracts/0.2.0-draft/altered-artifact.json
 ```
 
 ```text
-{
-  "checkedClaim": {
-    "domain": "repository:sha256:e045dd1dc81772b29f4a0b620222056160611c66821fc3b4ab8edf92e50661cf:base:4a239f8c76dc54181a67de4fb033aca14770ca4c",
-    "method": "exhaustive-finite-replay",
-    "property": "tracked-tree-equivalence",
-    "result": "equivalent-observed",
     "schedulesChecked": 2
-  },
-  "reason": "all bounded Git schedules were independently replayed; no execution authorization",
+  …
   "status": "verified"
-}
-{
   "reason": "producer verdict mismatch",
   "status": "rejected"
-}
-{
   "reason": "artifact digest mismatch",
   "status": "rejected"
-}
 ```
 
 Verifying grants nothing. Execution needs a one-use operator grant bound to the
 exact plan digest, issued outside every agent tool, skill and command; the
 [owned Git tutorial](examples/runtime/README.md) runs it end to end, from the
 grant to a private result you can verify.
+
+*Codex: select the `setup` or `analyze` skill (with `$` or `/skills`); OpenCode
+registers the `setup` skill and an `agent-braid-setup` command, and the `analyze`
+invocation form in a live OpenCode session is unobserved. The CLI blocks need the
+install from "Use the CLI directly" below (`agent-braid` is `.venv/bin/agent-braid`
+there); steps 2 and 3 also need the tutorial fixture that defines `$DEMO_DIR`, and
+can be re-run independently.*
 
 **Status of this install path.** The
 [alpha.4 acceptance record](specs/046-native-ai-plugins/release-acceptance-alpha4.md)
