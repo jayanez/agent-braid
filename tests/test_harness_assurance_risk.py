@@ -198,6 +198,39 @@ class ApplyTests(unittest.TestCase):
             self.assertEqual(ctx.exception.reason, "invalid-diff-summary")
 
 
+class ClassificationConsistencyTests(unittest.TestCase):
+    """F2: the supplied classification must agree with itself, so docsOnly cannot lower the required reviews."""
+
+    def test_internally_inconsistent_classifications_are_refused(self):
+        resolved = view()
+        code = classify(["agent_braid/harness_lab.py"])
+        docs = classify(["README.md"])
+        rule = {"rule": "a", "raiseTo": "R2", "modeAtLeast": "notify"}
+        for bad in (dict(code, docsOnly=True),  # code diff claimed as docs-only while elevated... and unraised below
+                    dict(docs, riskClass="ordinary"), dict(docs, riskClass="elevated"),
+                    dict(docs, docsOnly=False),  # docs-only class without docsOnly
+                    dict(docs, paths=[], docsOnly=True),
+                    dict(docs, reasons=[rule]),  # reason without the matching raise values
+                    dict(docs, reasons=[rule], raiseDepthTo="R3", raiseModeTo="notify", riskClass="elevated"),
+                    dict(docs, reasons=[rule], raiseDepthTo="R2", raiseModeTo=None, riskClass="elevated"),
+                    dict(docs, raiseDepthTo="R3", riskClass="elevated"),
+                    dict(code, reasons=[dict(rule, rule="b"), rule], raiseDepthTo="R2", raiseModeTo="notify")):
+            with self.assertRaises(ha.AssuranceError) as ctx:
+                risk.apply_risk(resolved, bad)
+            self.assertEqual(ctx.exception.reason, "invalid-diff-summary")
+
+    def test_residual_a_self_consistent_docs_only_claim_is_not_recomputed_from_the_diff(self):
+        forged = dict(classify(["agent_braid/harness_lab.py"]), docsOnly=True, riskClass="docs-only", reasons=[],
+                      raiseDepthTo=None, raiseModeTo=None)
+        # residual: nothing here sees the diff, so only recomputing classify_risk from it can contradict this claim
+        self.assertTrue(ha.compile_artifact(ha.preset("standard"), None, forged)["reviews"]["docsOnly"])
+
+    def test_every_classifier_output_is_consistent(self):
+        for paths in (["README.md"], ["agent_braid/cli.py"], ["agent_braid/harness_lab.py", "README.md"], ["docs/x.md"]):
+            for lines in (0, 10, 500):
+                risk.apply_risk(view(), classify(paths, lines))
+
+
 class InputTests(unittest.TestCase):
     def test_invalid_summaries_are_refused_with_a_fixed_reason(self):
         profile = ha.preset("standard")

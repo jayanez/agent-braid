@@ -2,10 +2,13 @@
 
 **Track:** HAR (parallel to the native chain; no dependency on SPEC-065)
 
-**Status:** specification only, draft. Nothing is implemented or authorized by
-this change. The founder decided Q1 to Q6 on 2026-11-02 (see Clarifications and
-the [founder record](evidence/founder-decisions-20261102.json), T001); the
-decisions authorize no implementation or standing authorization.
+**Status:** draft; implementation in progress. T002 to T009 are implemented or
+registered at process-logic level (unit tests; `evidence/t002.json` to
+`evidence/t009.json`), ADR 0036 is accepted (2026-11-02) and T011 is open. No
+standing authorization is issued, no profile is adopted and no review-quality
+or utility claim is made. The founder decided Q1 to Q6 on 2026-11-02 (see
+Clarifications and the [founder record](evidence/founder-decisions-20261102.json),
+T001); the decisions authorize no standing authorization, merge or release.
 
 ## Purpose and scope
 
@@ -293,7 +296,8 @@ unchanged):
 
 ## Evidence and unresolved questions
 
-Obtained evidence: none for any scenario. Planned evidence per scenario is in
+Obtained evidence: unit-level records only (`evidence/t002.json` to `evidence/t009.json`); no
+review-quality, utility or adoption evidence for any scenario. Planned evidence per scenario is in
 [assurance.json](assurance.json). Q1 to Q6, S1, P1 and O1 to O3 are decided (T001); the integration
 points in the plan are proposals for the owners of shared files. Human review
 pending.
