@@ -96,18 +96,23 @@ rule as everything else: none of them can authorize execution on its own.
 
 ## 🚀 Quick start
 
-The easiest route is the **native user plugin** for Codex or Claude Code on macOS
-arm64 and Linux x86_64. It bundles Python and its dependencies, registers its
-skills and guides you through selecting repositories; nothing is registered
-without a preview and your explicit confirmation.
+Install the **native user plugin** for your agent host. It bundles Python and its
+dependencies, registers its skills and guides you through selecting repositories;
+nothing is registered without a preview and your explicit confirmation. Git and
+the selected host must already be installed.
+
+| Your platform | Install |
+| --- | --- |
+| macOS arm64, Linux x86_64 (glibc 2.28+) | Run the command below with `--host codex`, `--host claude`, or `--host all` (every host found on `PATH`). |
+| Any other platform (macOS x86_64, Linux arm64, WSL) | No bundled runtime yet: use the [Python fallback install](docs/tooling/INSTALL.md) (`agent-braid tooling install --host …`). |
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh \
-  | sh -s -- --host codex
+  | sh -s -- --host all
 ```
 
-Use `--host claude` or `--host both` as needed, and add
-`--ref agent-braid--v0.1.0-alpha.5` to pin a release. Git and the selected host
+Add `--ref agent-braid--v0.1.0-alpha.6` to pin a release. `--host both` still
+works as a deprecated alias for `codex` + `claude`. Git and the selected host
 must already be installed. See [native installation and setup](docs/tooling/NATIVE_PLUGINS.md)
 for marketplace commands, repository selection and lifecycle operations.
 
@@ -121,27 +126,26 @@ global install keep their `agent-braid-*` names. The
 covers a Claude Code update, a public-tag install and a Codex CLI install, removal and
 reinstall; interactive skill use and execution on Linux were not observed.
 
-### Python installation (development and existing users)
+### Use the CLI directly (Python 3.12+)
 
-Requires **Python 3.12+**. The analyzer and decision diagnostics use the Python
-standard library. Git analysis/replay and the owned runtime also require Git;
-private runtime execution is supported on Linux and macOS with POSIX file locking.
-Install from source in an isolated environment:
+The plugin calls the same command-line core. Use it directly to script checks,
+inspect reports or contribute. Five steps, each building on the previous one;
+none needs a model, an API key or network access beyond the clone.
+
+**1. Install and check.** A source install in an isolated environment.
 
 ```bash
-git clone https://github.com/jayanez/agent-braid.git
-cd agent-braid
-python3 -m venv .venv
-.venv/bin/python -m pip install --editable .
+git clone https://github.com/jayanez/agent-braid.git && cd agent-braid
+python3 -m venv .venv && .venv/bin/python -m pip install --editable .
+.venv/bin/agent-braid --help
 ```
 
-Analyze two included file-edit operations:
+**2. Can two agent tasks run in parallel?** Each task declares the files it
+writes. These two edit different files:
 
 ```bash
 .venv/bin/agent-braid analyze examples/analysis/file-edits.json --format text
 ```
-
-The relevant output is:
 
 ```text
 Operations: 2  Pairs: 1
@@ -151,21 +155,53 @@ edit-readme / edit-roadmap: independent-candidate
 Execution authorization: false
 ```
 
-Verify a finite replay certificate and explore the commands:
+**3. What does a collision look like?** Same two tasks, but both write `README.md`:
+
+```bash
+.venv/bin/agent-braid analyze examples/analysis/file-edits-conflict.json --format text
+```
+
+```text
+Operations: 2  Pairs: 1
+edit-readme / edit-readme-intro: conflicting
+  - At least one exact shared resource has a write-like effect.
+  constraints: serialize-or-isolate
+Execution authorization: false
+```
+
+`conflicting` tells you to run them one after the other or in isolation. Neither
+result executes anything; see [Reading an analysis](#reading-an-analysis) for all
+four outcomes.
+
+**4. Check evidence someone else produced.** A replay certificate records that
+every admissible order of a small set of changes was replayed and gave the same
+result. `verify` re-checks it without trusting the producer:
 
 ```bash
 .venv/bin/agent-braid verify examples/contracts/0.2.0-draft/replay.json
-.venv/bin/agent-braid --help
 ```
 
-The certificate reports `verified` for two checked schedules under its stated
-finite observation. Analysis and certificate verification grant no execution
-permission.
+```text
+{
+  "checkedClaim": { …, "result": "equivalent-observed", "schedulesChecked": 2 },
+  "reason": "finite model evidence checked; no execution authorization",
+  "status": "verified"
+}
+```
 
-**Next:** follow the [owned Git tutorial](examples/runtime/README.md) to create
-two independent commits, replay them, inspect a policy, issue an exact-digest
-grant and verify the resulting private tree. It needs no model, API key or
-development dependency.
+It holds only for the two orders it checked; it grants no execution permission.
+
+**5. Execute only what was verified.** The [owned Git tutorial](examples/runtime/README.md)
+creates two real commits, replays both orders, issues a one-use grant on the
+exact plan digest and publishes a private result you can verify.
+
+Requires Python 3.12+; Git analysis/replay and the owned runtime also need Git,
+and private execution runs on Linux and macOS with POSIX file locking. Optional
+local diagnostics are off by default: [telemetry](docs/tooling/TELEMETRY.md)
+(`agent-braid telemetry status`) and
+[System One shadow mode](docs/tooling/SYSTEM_ONE_SHADOW.md)
+(`agent-braid system-one report`). Every other command is listed in
+[Command line](#-command-line).
 
 <a id="from-analysis-to-a-verified-private-result"></a>
 
@@ -261,14 +297,16 @@ command's required artifacts, destinations and acknowledgements.
 | `system-one capabilities`, `system-one decide` | Inspect or run opt-in offline synthetic decision diagnostics. |
 | `system-one report`, `system-one purge` | Count or delete the episodes recorded by the opt-in System One shadow mode (SPEC-066); both accept `--telemetry local`. |
 | `forecast capabilities`, `forecast predict`, `forecast advice`, `forecast inspect`, `forecast export`, `forecast serve-mcp` | Run opt-in local numeric forecasts and heuristic advice, or serve them over a read-only stdio MCP transport. |
-| `telemetry status`, `telemetry report`, `telemetry export`, `telemetry merge`, `telemetry purge` | Inspect, move or clear default-off local numeric telemetry. |
-| `plugin setup`, `plugin discover`, `plugin doctor`, `plugin workspaces`, `plugin serve` | Configure and diagnose the native user plugin and its workspace registry. |
+| `telemetry status`, `telemetry report`, `telemetry export`, `telemetry merge`, `telemetry purge`, `telemetry audit-logs` | Inspect, move or clear default-off local numeric telemetry; `audit-logs` is a read-only comparison of the plugin's host MCP logs with the local store. |
+| `plugin setup` (including `--prune-stale`), `plugin discover`, `plugin doctor`, `plugin workspaces`, `plugin serve` | Configure and diagnose the native user plugin and its workspace registry; `--prune-stale` previews removing deleted worktree roots and unsafe registrations. |
 | `tooling` | Experimental portable local AI tooling surface. |
 
 System One shadow mode is off by default. After `plugin setup --system-one shadow` (or `python -m agent_braid.tooling_mcp --system-one shadow` for the standalone server) and a reconnect, each successful `analyze-work` call also appends one closed-vocabulary structural episode to `~/.local/share/agent-braid/system-one/`, with 30 UTC dates retained and no upload; the write runs on a background worker, off the request path, and is dropped when that worker is busy. Episodes include structural features (per-side effect kinds, resource classes and path-shape counts) and per-repository salted pseudonymous resource hashes; the salt and episodes stay on this machine and `system-one purge` removes both. Every MCP envelope stays byte-identical, the reference backend only abstains, and no execution authority changes.
 
 The analyzer/runtime contract is `0.1.0-alpha`; AIM and certificate contracts
-are `0.2.0-draft`; the package version is `0.1.0a2`. The public CLI does not
+are `0.2.0-draft`; the package version is `0.1.0a2`. The native plugin is versioned
+separately (latest published `0.1.0-alpha.6`, rollback target `0.1.0-alpha.5`); `plugin-status` reports
+the package as `version` and the plugin as `pluginVersion`. The public CLI does not
 expose source-ref promotion, arbitrary repository code execution, or provider
 calls through the owned runtime.
 

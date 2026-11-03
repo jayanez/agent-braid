@@ -15,6 +15,7 @@ from scripts.run_software_benchmark import run
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "examples/analysis/file-edits.json"
+CONFLICT_EXAMPLE = ROOT / "examples/analysis/file-edits-conflict.json"
 
 
 class AnalyzerTests(unittest.TestCase):
@@ -27,6 +28,12 @@ class AnalyzerTests(unittest.TestCase):
         self.assertFalse(report["executionAuthorization"])
         self.assertIn("requires-execution-contract-before-parallelism",
                       report["interactions"][0]["constraints"])
+
+    def test_shipped_conflict_example_serializes_a_shared_write(self):
+        report = analyze(json.loads(CONFLICT_EXAMPLE.read_text(encoding="utf-8")))
+        self.assertEqual(report["interactions"][0]["classification"], "conflicting")
+        self.assertIn("serialize-or-isolate", report["interactions"][0]["constraints"])
+        self.assertFalse(report["executionAuthorization"])
 
     def test_overlap_dependency_partial_and_external_are_conservative(self):
         value = self.input()

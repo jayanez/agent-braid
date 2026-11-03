@@ -8,6 +8,7 @@ import unittest
 from agent_braid import view_loom, view_model
 from agent_braid.view_loom import LoomError
 from agent_braid.view_model import build_model
+from agent_braid.view_tail import MAX_ROOTS, root_label
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "specs/061-activity-viewer/contracts/loom-event.example.jsonl"
@@ -525,6 +526,65 @@ class DeterminismTests(unittest.TestCase):
         model = build_model(events)
         events[1]["data"]["limits"].append("mutated")
         self.assertNotIn("mutated", json.dumps(model))
+
+
+class RootIdentityTests(unittest.TestCase):
+    """REQ-010 (amendment A1): each element can carry the non-path label of the watched root it came from."""
+
+    def events(self):
+        return [strand(1, "a"), strand(2, "b"), crossing(3, "a", "b"),
+                gap(4, "stream-truncated", ref=None, verification="derived")]
+
+    def test_without_roots_every_element_and_row_has_no_root(self):
+        model = build_model(self.events())
+        self.assertEqual({e["root"] for e in model["elements"]}, {None})
+        self.assertEqual({row["root"] for row in model["table"]}, {None})
+
+    def test_roots_label_the_elements_and_rows_of_their_seq_only(self):
+        model = build_model(self.events(), roots={1: "root 1", 3: "root 2"})
+        self.assertEqual([e["root"] for e in model["elements"]], ["root 1", None, "root 2", None])
+        self.assertEqual({row["seq"]: row["root"] for row in model["table"]},
+                         {1: "root 1", 2: None, 3: "root 2", 4: None})
+
+    def test_every_label_the_watcher_can_issue_is_accepted(self):
+        for index in range(MAX_ROOTS):
+            with self.subTest(index=index):
+                build_model(self.events(), roots={1: root_label(index)})
+
+    def test_a_seq_the_events_do_not_hold_is_ignored(self):
+        self.assertEqual(build_model(self.events(), roots={99: "root 1"}), build_model(self.events()))
+
+    def test_roots_change_nothing_but_the_root_fields(self):
+        def without_root(model):
+            model = json.loads(json.dumps(model))
+            for element in model["elements"] + model["table"]:
+                del element["root"]
+            return model
+
+        plain = build_model(self.events())
+        labelled = build_model(self.events(), roots={1: "root 1", 2: "root 2", 3: "root 3"})
+        self.assertNotEqual(plain, labelled)
+        self.assertEqual(without_root(plain), without_root(labelled))
+
+    def test_the_roots_argument_is_untouched(self):
+        roots = {1: "root 1"}
+        build_model(self.events(), roots=roots)
+        self.assertEqual(roots, {1: "root 1"})
+
+    def test_a_label_that_could_carry_a_path_or_a_name_is_refused(self):
+        for label in ("/Users/me/work", "C:\\work", "root", "root 0", "root 100", "root 1/x", "Root 1", "alice",
+                      "root 1\n", "", None, 1):
+            with self.subTest(label=label), self.assertRaises(ValueError):
+                build_model(self.events(), roots={1: label})
+
+    def test_a_seq_that_is_not_an_integer_is_refused(self):
+        for key in ("1", 1.0, True, None):
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                build_model(self.events(), roots={key: "root 1"})
+
+    def test_roots_must_be_a_mapping(self):
+        with self.assertRaises(ValueError):
+            build_model(self.events(), roots=[(1, "root 1")])
 
 
 class BoundaryTests(unittest.TestCase):

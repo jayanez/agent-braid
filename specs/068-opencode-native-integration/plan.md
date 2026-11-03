@@ -70,7 +70,9 @@ row; failure stops the dependent task and returns to the owner.
    `hosts: ["codex", "claude", "opencode"]`; inventory lists the new files. The
    SPEC-054 skill substitution is reused unchanged.
 3. **Collision diagnosis.** `plugin doctor --host opencode [--project]` scans the
-   documented locations (R4); without `--host`, output is unchanged.
+   documented locations (R4) and extends the alpha.6 doctor report
+   (`pluginVersion`, stale-root and workspace findings); without `--host`, output
+   is unchanged.
 4. **Installer.** `install.sh --host opencode` runs
    `opencode plugin add github:jayanez/agent-braid#<tag>::path:plugins/agent-braid`;
    `--host all` adds OpenCode when it is on `PATH`; `both` stays a deprecated
@@ -82,8 +84,8 @@ row; failure stops the dependent task and returns to the owner.
 6. **Telemetry, System One, session identifier.** No change; regression tests
    (REQ-009).
 7. **Release.** First carrier `0.1.0-alpha.7` (D11, amended). The plugin schema stays
-   `agent-braid-plugin/v0.2`; the Python package version follows the release
-   decision in T011.
+   `agent-braid-plugin/v0.2`; the Python package keeps its separate version line
+   (`0.1.0a2` at the `0.1.0-alpha.6` base); T011 decides whether it moves.
 8. **Documentation.** README quick start (OpenCode row), `docs/tooling/NATIVE_PLUGINS.md`,
    `INSTALL.md` (OpenCode legacy profile; route marked frozen fallback),
    `SKILLS.md`, `HOSTS.md`, `PLUGIN_PRIVACY.md`, `docs/tooling/README.md`,

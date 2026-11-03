@@ -136,7 +136,7 @@ per-probe owner authorization but no ADR, and run first.
   verification markers, counters. Files: `agent_braid/view_model.py`,
   `tests/test_view_model.py`. Dependencies: T010. Verification: procedure_003,
   procedure_010. Done 2026-11-02: PR #961.
-- [ ] T024 (REQ-010 / SC-010): Web bundle without third-party code: table view,
+- [x] T024 (REQ-010 / SC-010): Web bundle without third-party code: table view,
   evidence panel, legend with "not a guarantee", Article 19 counters, unverified
   markers, playback controls and CSP. Files:
   `integrations/agent-braid-view/web/*`. Dependencies: T020, T017.
@@ -151,33 +151,87 @@ per-probe owner authorization but no ADR, and run first.
   `LICENSES/`, `NOTICE`, `scripts/validate_repository.py`,
   `docs/development/THIRD_PARTY.md`, `specs/061-activity-viewer/evidence/`.
   Verification: procedure_010. Done 2026-11-02: PR #958. Receipt: `evidence/vendor-threejs-20261102.json`.
-- [ ] T025 (REQ-010 / SC-010): Three.js braid scene with the hashed import map,
+- [x] T025 (REQ-010 / SC-010): Three.js braid scene with the hashed import map,
   bound to the same model and evidence panel as the table view. Files:
   `integrations/agent-braid-view/web/*`. Dependencies: T023, T024. Verification:
   procedure_010.
-- [ ] T026 (REQ-010 / SC-010): `tests/test_view_web_bundle.py` (first-party: no
+- [x] T026 (REQ-010 / SC-010): `tests/test_view_web_bundle.py` (first-party: no
   remote URL, no `eval`, CSP, import map; vendored: manifest hashes once T023
   exists). Dependencies: T024. Verification: procedure_010.
-- [ ] T028 (REQ-011 / SC-011; REQ-012 / SC-012): `view_cli.py` with `serve`
+- [x] T028 (REQ-011 / SC-011; REQ-012 / SC-012): `view_cli.py` with `serve`
   (`--replay`, `--watch`, `--port`, `--surface`), `validate` and `env --host
   claude` (observational hooks); registration in `agent_braid/cli.py`. VIS.1b
   tasks add their own flags and tests. Files: `agent_braid/view_cli.py`,
   `agent_braid/cli.py`, `tests/test_view_cli.py`. Dependencies: T017, T019.
   Verification: procedure_011, procedure_012.
-- [ ] T029 (REQ-013 / SC-013): Boundary tests (`tests/test_view_boundaries.py`)
+- [x] T040 (REQ-006 / SC-006; amendment A2): the plugin keeps a private local
+  copy of each `analyze-work` report in the workspace result root (owner-only
+  permissions, never uploaded, retained 30 days, 64 MiB in total, oldest removed
+  first). Files: `agent_braid/plugin_mcp.py` (or the tooling module it delegates
+  to, plugin path only), `tests/test_plugin_mcp.py`. Dependencies: none.
+  Verification: procedure_006.
+- [x] T041 (REQ-006 / SC-006; amendment A1): `serve` discovers watch roots
+  read-only from the registered plugin workspaces' result roots when `--watch` is
+  absent; `--no-discover`. Files: `agent_braid/view_cli.py`,
+  `tests/test_view_cli.py`. Dependencies: T028. Verification: procedure_006.
+- [x] T042 (REQ-010 / SC-010; amendment A1): per-source checkboxes filtering the
+  scene and table with a hidden-events count. Files:
+  `integrations/agent-braid-view/web/*` (not `vendor/`),
+  `tests/test_view_web_bundle.py`. Dependencies: T025. Verification:
+  procedure_010. Done 2026-11-03 (#996) with all watched roots grouped under one
+  checkbox; one checkbox per root is T044.
+- [x] T043 (REQ-012 / SC-012; amendment A3): ship the web bundle and vendored
+  files in the built package and resolve them from the installed package. Files:
+  `build_support.py`, `pyproject.toml`, `agent_braid/view_cli.py` (bundle
+  lookup only), `tests/test_view_packaging.py`. Dependencies: T028, T041 (shared
+  `view_cli.py`). Verification: procedure_012. Done 2026-11-03: PR #1005.
+- [x] T044 (REQ-010 / SC-010; amendment A1): one checkbox per watched root: a
+  stable label per root that exposes no path, carried in the viewer model without
+  changing the loom event contract. Files: `agent_braid/view_tail.py`,
+  `agent_braid/view_model.py`, `integrations/agent-braid-view/web/loom.js`,
+  `tests/test_view_tail.py`, `tests/test_view_model.py`,
+  `tests/test_view_web_bundle.py`. Dependencies: T041, T042. Verification:
+  procedure_010. Done 2026-11-03: PR #1003; the start banner maps each `root N`
+  label to its path (VIS.1a closure PR).
+- [x] T029 (REQ-013 / SC-013): Boundary tests (`tests/test_view_boundaries.py`)
   and regression run of governance, plugin package and validation profiles; rerun
   at the VIS.1b closure. Dependencies: T010–T013, T015–T017, T019, T020,
-  T024, T026, T028. Verification: procedure_013.
-- [ ] T034 (REQ-015 / SC-015): `docs/tooling/VIEWER.md`,
+  T024, T026, T028, T040–T044. Verification: procedure_013. Done 2026-11-03:
+  VIS.1a closure PR.
+- [x] T034 (REQ-015 / SC-015): `docs/tooling/VIEWER.md`,
   `integrations/agent-braid-view/README.md`, tooling index and
   `tests/test_view_docs.py`; updated for VIS.1b at its closure. Dependencies:
-  T028. Verification: procedure_015.
+  T028, T041, T043. Verification: procedure_015. Done 2026-11-03: VIS.1a closure
+  PR.
 - [ ] T035 (REQ-015; Q-VIS1): Go/no-go checkpoint after the VIS.1a slice, by
   2027-01-31 (OD-8): the owner opens the viewer on census or real sessions, records a
   descriptive Q-VIS1 observation (procedure_hvis1) and the census result, and
   decides keep, re-scope or close as Deferred for VIS.1b and VIS.2–VIS.4. If the
   date passes without a slice, VIS.1 closes as Deferred. Dependencies: T029,
   T034, T038. Evidence: `evidence/checkpoint-<date>.md`.
+
+- [x] T045 (REQ-006 / SC-006; closure finding 1): the watcher walks directories
+  newest name first, so the plugin's `analysis-<UTC stamp>-<id>` report copies load
+  newest first and a store cap that is reached refuses the oldest copies (with its
+  `stream-truncated` gap), never today's analysis. Files:
+  `agent_braid/view_tail.py`, `tests/test_view_tail.py`. Dependencies: T040, T041.
+  Verification: procedure_006. Done 2026-11-03: #1013.
+- [x] T046 (REQ-004 / SC-004; closure finding 2): per-instance session cookie name
+  `braid_view_<port>` (same `HttpOnly; SameSite=Strict; Path=/`), so two viewers on
+  loopback no longer overwrite each other's session. Files:
+  `agent_braid/view_serve.py`, `tests/test_view_serve.py`,
+  `docs/tooling/VIEWER.md`, `specs/061-activity-viewer/contracts/ui-security-privacy.md`.
+  Dependencies: T017. Verification: procedure_004. Done 2026-11-03: #1013.
+- [ ] T047 (closure review, VIS.1b follow-ups): findings 3 (hook strands never
+  reopen after `SessionEnd`/`SubagentStop`; `_strands`/`_children` unbounded),
+  4 (static bundle serves every non-dot file, not a manifest), 5 (slow-client
+  timeout is per read), 7 (`IngestRefusal` and inventory limits live in
+  `view_serve`), 8 (root labels in a module-level registry), 9 (behaviour tests
+  for playback, SSE resume, evidence panel, scene fallback), 10 (simplifications:
+  `_serve` split, ingest-token property, bundle path derivation, duplicated
+  exception mapping and HTTP test helpers), 11 (copy pruning cost under lock,
+  discovery once at start), 12 (wheel and sdist tests skipped without Python 3.12+
+  and setuptools 68+). Source: `closure-packet-vis1a.md`. Dependencies: T036.
 
 ## VIS.1b — Effort, recording, export and frames
 
@@ -220,5 +274,10 @@ per-probe owner authorization but no ADR, and run first.
 - [ ] T036: Pre-PR reviews (code review, quality, simplification),
   `validate_change --profile pr` on the stable candidate, `/speckit-converge`, at
   the VIS.1a and VIS.1b closures. Dependencies: the delivery's tasks.
+  VIS.1a part complete 2026-11-03: closure review #1011 (code, quality and
+  simplification reviews), fixes #1013, and the pre-PR reviews and `pr` validation of
+  the evidence and freeze PRs. The box stays open until the VIS.1b closure.
 - [ ] T037: Record obtained evidence in `assurance.json`, freeze, owner review of
-  each delivery closure. Dependencies: T036.
+  each delivery closure. Dependencies: T036. VIS.1a: done 2026-11-03 (evidence #1017, which is the frozen
+  candidate 62a44fb7; the owner closure approval record
+  `owner-review-vis1a-closure-20261103.json` in the next PR). The box stays open until the VIS.1b closure.

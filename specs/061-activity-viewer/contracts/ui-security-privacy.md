@@ -29,8 +29,10 @@ its own boundary review where it widens a route, an origin or a credential (see
   session, with separate rights):
   - **Open code.** Printed once at start as `http://127.0.0.1:<port>/open?code=<c>`.
     The first valid request exchanges it for an `HttpOnly; SameSite=Strict; Path=/`
-    session cookie and answers `303` to `/`; the code is then invalid. The cookie
-    grants read routes only.
+    session cookie and answers `303` to `/`; the code is then invalid. The cookie is
+    named `braid_view_<port>` (the viewer's own port), because browsers share cookies
+    across loopback ports and two viewers must not overwrite each other's session.
+    The cookie grants read routes only.
   - **Ingest token.** Written at start to a new file created exclusively with
     owner-only permissions in a per-user runtime directory, replaced at each start,
     and sent by host exporters as `Authorization: Bearer <token>`. It grants ingest
@@ -194,6 +196,7 @@ public claim under [GOVERNANCE.md](../../../GOVERNANCE.md).
   script other than the hashed import map; no import, `src`, `href` or fetch in
   first-party files or the import map targets a remote origin. Vendored files are
   checked by manifest hash only; runtime remote loads are also blocked by the CSP.
+- `/web/vendor/<path>` serves a nested vendored file only when `web/vendor/manifest.json` lists it and its SHA-256 matches at request time, and refuses everything else (unlisted, mismatched, symbolic link, traversal) with the same headers; owner approval 2026-11-02 (T025): "Sí, solo lo del manifest (Recommended)".
 - Text from events is inserted as text nodes, never as HTML; the trusted-types
   directive makes the browser refuse HTML sinks.
 - Exported HTML and SVG escape every text and attribute value; exported

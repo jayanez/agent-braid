@@ -8,6 +8,7 @@
 <title>Agent Braid activity viewer</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="/web/style.css">
+<script type="importmap">{"imports":{"three":"/web/vendor/three/three.module.js","three/addons/controls/OrbitControls.js":"/web/vendor/three/addons/controls/OrbitControls.js"}}</script>
 <script type="module" src="/web/loom.js"></script>
 </head>
 <body>
@@ -24,6 +25,24 @@ compatibility class is not a guarantee, not a safety ordering and not permission
 <noscript><p class="notice">This viewer needs its own first-party JavaScript (no external code) to render the table.</p></noscript>
 <p class="notice" id="notice" hidden></p>
 <main class="layout">
+  <div class="main-column">
+  <fieldset class="sources" id="sources" hidden>
+    <legend>Event sources</legend>
+    <p class="hint">Unchecking a source hides its elements in the 3D scene and in the table. Hidden events are counted
+    below and stay in the counters, so a hidden source never looks like an absent one.</p>
+    <div class="source-list" id="source-list"></div>
+    <p class="source-status" id="source-status" role="status"></p>
+  </fieldset>
+  <section class="scene" id="scene-section" aria-labelledby="scene-title" hidden>
+    <h2 id="scene-title">Braid scene (3D)</h2>
+    <p class="hint">The same model, playback position and evidence panel as the table below. Drag to orbit, scroll to zoom,
+    click an element to select its event. Classes are categorical badges, not a guarantee, and no shape ranks one class as safer than another.
+    The table is the complete text alternative.</p>
+    <div class="scene-box" id="scene-box"></div>
+    <p class="scene-status" id="scene-hover" aria-live="off">Hover an element to see its event.</p>
+    <p class="hint" id="scene-note"></p>
+    <p class="scene-actions"><button type="button" id="scene-reset" title="Frame the whole scene again">Reset view</button></p>
+  </section>
   <section aria-labelledby="table-title">
     <h2 id="table-title">Events</h2>
     <section class="playback" aria-label="Playback controls">
@@ -73,6 +92,7 @@ compatibility class is not a guarantee, not a safety ordering and not permission
     </div>
     <p class="hint" id="table-empty" hidden>No events to show.</p>
   </section>
+  </div>
   <aside>
     <section class="panel" id="evidence-panel" aria-labelledby="evidence-title" tabindex="-1">
       <h2 id="evidence-title">Evidence</h2>
@@ -105,6 +125,10 @@ compatibility class is not a guarantee, not a safety ordering and not permission
       <ul id="legend-verification" class="legend"></ul>
       <h3>Marks</h3>
       <ul id="legend-marks" class="legend"></ul>
+      <div id="legend-scene-block" hidden>
+        <h3>3D scene</h3>
+        <ul id="legend-scene" class="legend"></ul>
+      </div>
     </section>
     <details class="panel">
       <summary>Dropped attribute names</summary>

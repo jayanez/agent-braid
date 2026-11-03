@@ -41,6 +41,59 @@ class PluginInstallerTests(unittest.TestCase):
         self.assertNotIn(' exec ', calls)
         self.assertNotIn(' -p ', calls)
 
+    def test_all_installs_every_host_found(self):
+        self.host('codex'); self.host('claude')
+        result = self.run_installer('--host', 'all', '--marketplace', '/catalog')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        calls = self.log.read_text()
+        self.assertIn('codex plugin add agent-braid@agent-braid', calls)
+        self.assertIn('claude plugin install agent-braid --marketplace /catalog --scope user', calls)
+        self.assertNotIn('skipping', result.stderr)
+        self.assertNotIn('deprecated', result.stderr)
+
+    def test_all_skips_an_absent_host_with_a_notice(self):
+        for present, absent, expected in [
+                ('codex', 'Claude Code', ['codex plugin marketplace add', 'codex plugin add agent-braid@agent-braid']),
+                ('claude', 'Codex', ['claude plugin install agent-braid'])]:
+            with self.subTest(present=present):
+                self.log.unlink(missing_ok=True)
+                self.host(present)
+                result = self.run_installer('--host', 'all')
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn(absent + ' not found on PATH; skipping', result.stderr)
+                calls = self.log.read_text().splitlines()
+                self.assertEqual(len(calls), len(expected))
+                for call, prefix in zip(calls, expected):
+                    self.assertTrue(call.startswith(prefix), call)
+                (self.base / present).unlink()
+
+    def test_all_dry_run_notices_the_skip_and_executes_nothing(self):
+        self.host('codex')
+        result = self.run_installer('--host', 'all', '--dry-run')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('Claude Code not found on PATH; skipping', result.stderr)
+        self.assertFalse(self.log.exists())
+
+    def test_all_refuses_when_no_host_is_found(self):
+        result = self.run_installer('--host', 'all')
+        self.assertEqual(result.returncode, 2)
+        self.assertIn('No supported host found', result.stderr)
+        self.assertFalse(self.log.exists())
+
+    def test_both_is_a_deprecated_alias_for_codex_and_claude(self):
+        self.host('codex'); self.host('claude')
+        result = self.run_installer('--host', 'both')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('--host both is deprecated; use --host all', result.stderr)
+        self.assertEqual(len(self.log.read_text().splitlines()), 3)
+
+    def test_usage_lists_all_and_not_both_as_a_choice(self):
+        result = self.run_installer('--help')
+        self.assertEqual(result.returncode, 0)
+        self.assertIn('[--host codex|claude|all]', result.stdout)
+        self.assertIn('both is a deprecated alias', result.stdout)
+        self.assertIn('Select codex, claude or all', self.run_installer('--host', 'nope').stderr)
+
     def test_missing_second_host_is_checked_before_any_mutation(self):
         self.host('codex')
         result = self.run_installer('--host', 'both')

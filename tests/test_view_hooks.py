@@ -82,6 +82,13 @@ class MappingTests(IngestCase):
         closes = self.data("strand.close")
         self.assertEqual(closes, [{"strandId": self.data("strand.open")[1]["strandId"], "outcome": "unknown"}])
 
+    def test_a_lone_surrogate_is_absent_not_an_error(self):
+        for field in ("session_id", "agent_id", "tool_name", "agent_type"):
+            with self.subTest(field):
+                payload = {**fixture("post-tool-use-subagent"), field: "\ud800"}
+                self.hooks.handle(payload)  # no exception: the server would otherwise answer 500
+        self.assertTrue(all(event["executionAuthorization"] is False for event in self.events()))
+
     def test_events_for_a_closed_strand_are_not_stored(self):
         self.hooks.handle(fixture("subagent-start"))
         self.hooks.handle(fixture("subagent-stop"))

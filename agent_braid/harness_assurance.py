@@ -332,6 +332,8 @@ def resolve(profile: Any, documents: Mapping[str, Any] | None = None) -> dict[st
                 value = entry[dimension]
                 order = MODES if dimension == "mode" else DEPTHS
                 requested, current = order.index(value), order.index(row[dimension])
+                # conversation: only a strict raise applies; operator scopes: only while the profile still holds
+                applies = requested > current if scope == "conversation" else row[f"{dimension}Source"] == "profile"
                 refusal = None
                 if dimension == "mode" and row["checkpoint"] in HUMAN_ONLY and value != "human-only":
                     refusal = ("human-only", "floor-not-human-only")
@@ -340,7 +342,7 @@ def resolve(profile: Any, documents: Mapping[str, Any] | None = None) -> dict[st
                 if refusal is not None:
                     refused.append({"checkpoint": row["checkpoint"], "dimension": dimension, "requested": value,
                                     "scope": scope, "floor": refusal[0], "reason": refusal[1]})
-                elif requested > current if scope == "conversation" else row[f"{dimension}Source"] == "profile":
+                elif applies:
                     row[dimension], row[f"{dimension}Source"] = value, scope
         if document.get("noAttribution", True) is not True:
             refused.append({"checkpoint": None, "dimension": "noAttribution", "requested": False, "scope": scope,
@@ -367,7 +369,7 @@ DOCS_LADDER = {**CODE_LADDER, "R1": ("accuracy-review",), "R2": ("claim-discipli
 # documentation-only: R1 and R2 are accuracy, claim discipline and concision; R3 and R4 add what they add for code
 INDEPENDENT_REVIEW = "independent-multi-agent-review"
 MIN_INDEPENDENT_REVIEWERS = 2  # distinct from the author and from each other, one receipt each
-_ARTIFACT_KEYS = frozenset({"schema", "profile", "scopeSources", "checkpoints", "noAttribution", "refusedLowerings",
+COMPILED_KEYS = frozenset({"schema", "profile", "scopeSources", "checkpoints", "noAttribution", "refusedLowerings",
                             "executionAuthorization", "risk", "inputs", "reviews", "digest"})
 
 
@@ -416,7 +418,7 @@ def verify_artifact(artifact: Any, profile: Any, documents: Mapping[str, Any] | 
     recomputing the digest), then ``input-hash-mismatch`` (any content or input that differs from a fresh
     compilation, including a recomputed digest over edited content).
     """
-    _require(type(artifact) is dict and set(artifact) == _ARTIFACT_KEYS, "invalid-artifact")
+    _require(type(artifact) is dict and set(artifact) == COMPILED_KEYS, "invalid-artifact")
     _require(artifact["schema"] == COMPILED_FORMAT, "unsupported-schema")
     _require(artifact["executionAuthorization"] is False, "execution-authorization")
     try:

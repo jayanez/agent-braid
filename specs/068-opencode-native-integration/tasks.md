@@ -64,7 +64,11 @@ Commands run from the clean clone; `quick` means
 - [ ] T005 (REQ-004 / SC-004; REQ-005 / SC-005): Add `plugin doctor --host opencode
   [--project <dir>]`: read-only scan of the documented discovery locations with
   `collision`, `duplicate-guidance` and `server-collision` findings; output without
-  `--host` unchanged. Add the `agent-braid-setup` and `agent-braid-reconnect`
+  `--host` unchanged. Extend the existing doctor report rather than adding a
+  parallel one: the OpenCode findings sit beside the `pluginVersion`,
+  `staleWorktreeRoots`, `unavailableWorkspaces` and `unsafeWorkspaces` fields
+  shipped in `0.1.0-alpha.6` (SPEC-046 T020), and stale roots keep using
+  `setup --prune-stale`. Add the `agent-braid-setup` and `agent-braid-reconnect`
   commands to the entry module; reconnect performs no reload. Tests first with
   fixture skill trees and a fake registry. Dependencies: T003 (commands); T007's
   JSONC scanner for reading explicit `skills` entries and the `agent-braid` server
@@ -108,6 +112,9 @@ Commands run from the clean clone; `quick` means
 - [ ] T008 (REQ-009 / SC-009; REQ-010 / SC-010): Regression: SPEC-046, 047, 054,
   060 and 066 contracts unchanged; envelopes and stores byte-identical with and
   without an OpenCode `_meta` session identifier; no stored artifact contains it;
+  SPEC-047 T011/T012 surfaces (router-owned measurement, closed `refusal-reason`
+  buckets, `lifecycle/serve-start`, batch schema v2, `telemetry audit-logs`)
+  record OpenCode calls with no new field or bucket;
   Codex/Claude artifacts compared per D12. Dependencies: T004–T007. Files:
   `tests/test_plugin_mcp.py` and existing contract tests. Verification:
   procedure_009, procedure_010, `quick`. Evidence: test output and artifact diff.
@@ -125,13 +132,22 @@ Commands run from the clean clone; `quick` means
 - [ ] T010 (REQ-012 / SC-012; REQ-003 / SC-003 and REQ-006 / SC-006, real-host part): Native observation in a clean OpenCode profile by
   the owner or an operator: install from a candidate tag, skill and command listing,
   `agent-braid_analyze-work` on a registered workspace, reconnect, removal, on each
-  available target platform. Unobserved items stay open. Dependencies: T009 and an
+  available target platform. Each candidate version is observed in a new OpenCode
+  session: reconnecting MCP in a running session does not switch it to a newly
+  installed plugin version (observed for Claude Code with `0.1.0-alpha.6`; the
+  OpenCode behaviour is a T002 row). Unobserved items stay open. Dependencies: T009 and an
   owner decision. Files: `evidence/native-observation.json`. Verification:
   procedure_012. Evidence: observation record with versions and limits.
 
 - [ ] T011 (REQ-001…REQ-012): Stable candidate: `--profile pr`, `validate_spec_kit
   freeze`, release notes for `0.1.0-alpha.7` (D11), and the owner's release
-  decision. Dependencies: T010. Verification: `--profile pr` output and frozen
+  decision. Base: published `0.1.0-alpha.6` (release PR #1006, record PR #1012,
+  tag `agent-braid--v0.1.0-alpha.6`), which stays the rollback target. Follow the
+  SPEC-046 alpha.6 records as template (`release-acceptance-alpha6.md`,
+  `evidence/release-alpha6.json`, `owner-authorization-20261103.md`) and move the
+  published pins in `README.md`, `docs/STATUS.md`, `docs/tooling/INSTALL.md` and
+  `docs/tooling/NATIVE_PLUGINS.md` to `0.1.0-alpha.7`. The Python package keeps
+  its own version line (`0.1.0a2` at alpha.6). Dependencies: T010. Verification: `--profile pr` output and frozen
   snapshots. Evidence: release-readiness record stating whether anything was
   released; tag, `plugin-dist` publication and remote tracking only on explicit
   authorization.

@@ -80,14 +80,13 @@ class IngestTests(TailCase):
         self.assertEqual(self.tail().poll_once(), 0)
         self.assertEqual(self.store.stats()["headSeq"], 0)
 
-    def test_nested_artifacts_get_a_root_relative_posix_evidence_path_in_sorted_order(self):
+    def test_nested_artifacts_get_a_root_relative_posix_evidence_path_with_newest_directory_first(self):
         install(self.root, "runs/b/state.json", "runtime-state-ready.json")
         install(self.root, "runs/a/state.json", "runtime-state-completed.json")
         install(self.root, "state.json", "runtime-state-ready.json")
         self.tail().poll_once()
         paths = [event["source"]["evidenceRef"]["path"] for event in self.store.replay()]
-        self.assertEqual(sorted(paths), sorted(["state.json", "runs/a/state.json", "runs/b/state.json"]))
-        self.assertEqual(paths, ["state.json", "runs/a/state.json", "runs/b/state.json"])
+        self.assertEqual(paths, ["state.json", "runs/b/state.json", "runs/a/state.json"])  # newest-named directory first
 
     def test_every_family_is_read_by_its_own_adapter(self):
         names = {
@@ -175,6 +174,111 @@ class IngestTests(TailCase):
         self.assertEqual(again["counters"]["unverifiedElements"], len(again["elements"]))
 
 
+class RootIdentityTests(TailCase):
+    """REQ-010 (amendment A1): a stable, non-path label per watched root, kept beside the events."""
+
+    def roots(self, count):
+        out = []
+        for index in range(count):
+            root = self.base / f"watched-{index}"
+            root.mkdir()
+            out.append(root)
+        return out
+
+    def labelled(self):
+        events, roots = view_tail.replay_with_roots(self.store)
+        return {event["seq"]: roots.get(event["seq"]) for event in events}
+
+    def test_labels_are_root_n_in_start_order_and_up_to_eight(self):
+        roots = self.roots(8)
+        for root in roots:
+            install(root, "state.json", "runtime-state-ready.json")
+        self.tail(*roots).poll_once()
+        self.assertEqual(sorted(set(self.labelled().values())), [f"root {n}" for n in range(1, 9)])
+        self.assertEqual(view_tail.root_label(0), "root 1")
+
+    def test_a_repeated_or_nested_root_does_not_take_a_label_of_its_own(self):
+        first, second = self.roots(2)
+        (first / "inner").mkdir()
+        install(first, "state.json", "runtime-state-ready.json")
+        install(second, "state.json", "runtime-state-completed.json")
+        self.tail(first, second, first, first / "inner").poll_once()
+        self.assertEqual(sorted(set(self.labelled().values())), ["root 1", "root 2"])
+
+    def test_the_same_artifact_name_in_two_roots_is_told_apart_by_label(self):
+        first, second = self.roots(2)
+        install(first, "state.json", "runtime-state-ready.json")
+        install(second, "state.json", "runtime-state-completed.json")
+        self.tail(first, second).poll_once()
+        labels = self.labelled()
+        events = self.store.replay()
+        self.assertEqual({event["source"]["evidenceRef"]["path"] for event in events}, {"state.json"})
+        self.assertEqual([labels[event["seq"]] for event in events], ["root 1", "root 2"])
+
+    def test_every_event_of_a_file_takes_that_roots_label_and_a_changed_file_keeps_it(self):
+        first, second = self.roots(2)
+        install(first, "state.json", "runtime-state-ready.json")
+        install(second, "analysis.json", "analysis-file-edits.json")
+        tail = self.tail(first, second)
+        tail.poll_once()
+        labels = self.labelled()
+        for event in self.store.replay():
+            self.assertEqual(labels[event["seq"]],
+                             "root 2" if event["source"]["adapter"] == "analysis-report" else "root 1")
+        install(second, "state.json", "runtime-state-ready.json")
+        install(first, "state.json", "runtime-state-completed.json")
+        tail.poll_once()
+        labels = self.labelled()
+        state_events = [e for e in self.store.replay() if e["source"]["adapter"] == "runtime-state"]
+        # the first scan stored root 1's file; the second scan reads root 1 (changed) before root 2 (new)
+        self.assertEqual([labels[e["seq"]] for e in state_events], ["root 1", "root 1", "root 2"])
+
+    def test_viewer_gaps_have_no_root(self):
+        (root,) = self.roots(1)
+        install(root, "state.json", "runtime-state-ready.json")
+        install(root, "a/state.json", "runtime-state-ready.json")
+        self.tail(root, max_entries=1).poll_once()
+        self.assertTrue(gaps(self.store))
+        labels = self.labelled()
+        for event in gaps(self.store):
+            self.assertIsNone(labels[event["seq"]])
+
+    def test_the_model_carries_the_label_and_never_a_path_or_a_user_name(self):
+        first, second = self.roots(2)
+        install(first, "state.json", "runtime-state-ready.json")
+        install(second, "analysis.json", "analysis-file-edits.json")
+        self.tail(first, second).poll_once()
+        events, roots = view_tail.replay_with_roots(self.store)
+        model = build_model(events, roots=roots)
+        self.assertEqual({e["root"] for e in model["elements"]}, {"root 1", "root 2"})
+        text = json.dumps(model)
+        for private in (str(self.base), self.tmp.name, os.path.expanduser("~")):
+            self.assertNotIn(private, text)
+
+    def test_the_registry_forgets_evicted_events_and_stays_bounded(self):
+        (root,) = self.roots(1)
+        self.store = LoomStore(max_events=3)
+        tail = self.tail(root)
+        base = json.loads((FIXTURES / "runtime-state-ready.json").read_text())
+        for number in range(8):
+            (root / "state.json").write_text(json.dumps({**base, "n": number}))
+            tail.poll_once()
+        stats = self.store.stats()
+        self.assertGreater(stats["evicted"], 0)
+        _, roots = view_tail.replay_with_roots(self.store)
+        self.assertTrue(roots)
+        self.assertLessEqual(len(roots), stats["count"])
+        self.assertTrue(all(seq >= stats["oldestSeq"] for seq in roots))
+
+    def test_a_store_without_a_watcher_has_no_labels(self):
+        self.assertEqual(view_tail.replay_with_roots(self.store), ([], {}))
+
+    def test_the_registry_belongs_to_its_store(self):
+        other = LoomStore()
+        self.assertIsNot(view_tail.root_labels_of(self.store), view_tail.root_labels_of(other))
+        self.assertIs(view_tail.root_labels_of(self.store), view_tail.root_labels_of(self.store))
+
+
 class SymbolicLinkTests(TailCase):
     def test_a_symlink_to_a_file_outside_the_root_under_a_known_name_is_not_read(self):
         install(self.outside, "secret.json", "runtime-state-ready.json")
@@ -236,6 +340,24 @@ class BoundTests(TailCase):
         self.assertEqual(len(gaps(self.store)), 1)
         tail.poll_once()
         self.assertEqual(len(gaps(self.store)), 1)
+
+    def test_when_a_store_cap_is_reached_the_newest_report_copies_win(self):
+        """Closure finding 1: copies load newest first, so a lifetime cap refuses the oldest, not today's."""
+        stamps = ["20261001T000000000000", "20261002T000000000000", "20261003T000000000000", "20261004T000000000000"]
+        base = json.loads((FIXTURES / "analysis-file-edits.json").read_text(encoding="utf-8"))
+        text = json.dumps(base)
+        for stamp in stamps:
+            report = json.loads(text.replace('"edit-readme"', f'"readme-{stamp}"')
+                                .replace('"edit-roadmap"', f'"roadmap-{stamp}"'))
+            report["analysisId"] = f"sha256:{hashlib.sha256(stamp.encode()).hexdigest()}"
+            target = self.root / f"analysis-{stamp}Z-0123456789abcdef" / "analysis.json"
+            target.parent.mkdir()
+            target.write_text(json.dumps(report), encoding="utf-8")
+        self.store = LoomStore(caps={"strands": 4})  # two strands per report: room for two reports
+        self.tail().poll_once()
+        strands = {event["data"]["strandId"] for event in self.store.replay() if event["kind"] == "strand.open"}
+        self.assertEqual(strands, {f"{name}-{stamp}" for stamp in stamps[2:] for name in ("readme", "roadmap")})
+        self.assertEqual(len(gaps(self.store)), 1)  # the refusal of the oldest is announced, not silent
 
     def test_eight_roots_are_within_the_bound(self):
         roots = []

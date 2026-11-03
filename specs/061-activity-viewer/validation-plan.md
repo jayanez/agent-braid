@@ -89,6 +89,12 @@ known artifact name and assert it is not read; assert every replayed event is
 `unverified`. Command: `python3 -m unittest tests.test_view_store
 tests.test_view_serve tests.test_view_tail -v`.
 
+Amendment A1/A2 (T040, T041): with a fixture registry and no `--watch`, assert the
+result roots are discovered read-only and `--no-discover` disables it; assert an
+`analyze-work` call writes one private report copy that the viewer reads; assert
+copies older than 30 days or beyond 64 MiB in total are removed oldest first.
+Command: `python3 -m unittest tests.test_view_cli tests.test_plugin_mcp -v`.
+
 ## procedure_007
 
 With a temporary `HOME` and telemetry store, run a session with effort samples
@@ -146,6 +152,10 @@ Manual check, recorded separately: open the replay in a browser and confirm that
 selecting each element shows its event and `evidenceRef`, with no CSP violation
 (screenshot plus notes; not a substitute for tests).
 
+Amendment A1 (T042): load the bundle with two sources, unselect one and assert its
+elements leave both views and the hidden count is shown. Command:
+`python3 -m unittest tests.test_view_web_bundle -v`.
+
 ## procedure_011
 
 Render ASCII, braille, SVG and RGBA frames twice from the example model; assert
@@ -162,12 +172,16 @@ read from its file by the printed shell snippet) and names no decision hook
 event. Command:
 `python3 -m unittest tests.test_view_cli -v`.
 
+Amendment A3 (T043): build a wheel, assert it contains every bundle and vendored
+file with its manifest hash, and that `serve` resolves the bundle from the
+installed package. Command: `python3 -m unittest tests.test_view_packaging -v`.
+
 ## procedure_013
 
 Run `python3 -m unittest tests.test_orchestration_governance tests.test_plugin_package
 tests.test_validation_profiles tests.test_view_boundaries -v` and
 `python3 scripts/validate_change.py --base develop --profile quick`. Assert the
-plugin package is unchanged, no socket, HTTP or `urllib` import exists outside
+plugin package changed only by the local report copy of A2/T040, no socket, HTTP or `urllib` import exists outside
 `view_serve.py`, every new viewer code, test, asset and documentation path has
 `activity-viewer` among its classifier matches (license files and evidence
 receipts keep their existing classification),

@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Agent Braid activity viewer: first-party table view of the Loom model.
+// Agent Braid activity viewer: first-party table view of the Loom model, plus the optional 3D scene.
+//
+// The table view, evidence panel, counters and playback work on their own. The Three.js scene
+// (braid-scene.js) is loaded afterwards with a dynamic import and only when WebGL2 exists; if it is
+// missing, refused or fails, the page says so and keeps the table. The scene is bound to this model,
+// this playback position and this evidence panel: it only calls `select` and reads `state`.
 //
 // Read-only. It fetches /snapshot (the model built by the server) and follows /events
 // (Server-Sent Events, resumed with Last-Event-ID) only to learn that the model changed.
@@ -54,6 +59,22 @@ const MARKS = {
   notime: ["no time", "The event states no time. It is placed after its predecessor, no time is invented."],
 };
 
+const SCENE_LEGEND = [
+  "Tube: one strand per agent or unit. Its colour is the host, never a status.",
+  "Two tubes exchanging lanes: an independent candidate pair. The swap is layout only and not a guarantee.",
+  "Arc over other lanes: an independent candidate pair between lanes that are not adjacent. It does not cross them.",
+  "Arrow: an ordered pair. Red knot between two stubs: a conflicting pair, never a swap.",
+  "Dashed pulsing link: an unknown pair. It is not independent and not clean.",
+  "Polygon badge on a crossing: the compatibility class. The sides are 3 plus the class number. Every badge looks the same otherwise: a class is a categorical label, not a guarantee and not a safety ordering.",
+  "Translucent slabs: planned waves, an advisory plan, not a runtime measurement. Framed slabs: runtime wave markers.",
+  "Thin ring: a grant. Thick ring: a workflow gate or gate phase. The sides and colour follow the state or result, and the label names it.",
+  "Cone with sparks: an observed hazard. Dashed pulsing wire cone: a hazard that was not observed. Absence of observation is not evidence that none exists.",
+  "Broken strand with a grey dashed stub: an observation gap. Pulsing ring on a crossing: partial coverage, so what is not listed is not shown to be absent.",
+  "Grey shapes: a value this viewer does not recognise (a pair classification, a gate state or a grant state). The label says unrecognized.",
+  "Amber wire octahedron: unverified. Replayed or host-reported, and not checked by this viewer.",
+  "Effort and tokens are not drawn in this release.",
+];
+
 const ATTRS = /^(type|title|value|data-[a-z-]+|aria-[a-z-]+)$/;
 const STEP_MS = 700;
 
@@ -66,6 +87,7 @@ const state = {
   selected: null,
   filterKind: "",
   filterUncertain: false,
+  hiddenSources: new Set(),
   lastId: "",
 };
 
@@ -140,6 +162,63 @@ function timeText(element) {
   return String(element.relMs) + " ms";
 }
 
+// ---------------------------------------------------------------- event sources
+
+// The page offers one checkbox per source of events, all checked by default. The event contract names no adapter and
+// no root, so the source is inferred from the fields every element has: the verification status, whether an evidence
+// reference exists and, for events read from a watched root, the model's `root` label. Nothing is added to the event
+// contract. The labels name what is known about each group, not a guessed origin.
+//   rehashed or derived, with an evidence reference and a root label: read from that watched root and re-hashed
+//   rehashed or derived, with an evidence reference, no root label: watched, root not named
+//   rehashed or derived, without a reference: produced by the viewer itself (for example a ring-eviction gap)
+//   anything else, with an evidence reference: unverified and referenced, as every event of a replay file is
+//   anything else, without one: unverified and unreferenced, as a host report (hook or telemetry ingest) is
+// A root label is "root N", numbered in the order the roots were started (a repeated or nested root takes no number).
+// It is never a path, and a label of any other form is ignored here, so the event stays in the unlabelled watched group.
+const SOURCES = {
+  watched: ["Watched artifacts", "Events with an evidence reference that this session re-hashed and whose watched root the model does not name."],
+  replay: ["Replay file", "Unverified events with an evidence reference, as every event loaded with --replay is. Never re-hashed by this session."],
+  hook: ["Hook and telemetry ingest", "Unverified events with no evidence reference, as host reports are. Recorded host events in a replay file that have no artifact also appear here."],
+  viewer: ["Derived by the viewer", "Events with no evidence reference that the viewer produced itself, such as gaps for evicted or truncated ranges."],
+};
+
+const ROOT_PREFIX = "watched:";
+const ROOT_LABEL = /^root ([1-9][0-9]?)$/;
+
+function sourceOf(element) {
+  const referenced = Boolean(element.evidenceRef);
+  if (element.verification === "rehashed" || element.verification === "derived") {
+    if (!referenced) return "viewer";
+    return typeof element.root === "string" && ROOT_LABEL.test(element.root) ? ROOT_PREFIX + element.root : "watched";
+  }
+  return referenced ? "replay" : "hook";
+}
+
+function sourceText(key) {
+  if (!key.startsWith(ROOT_PREFIX)) return SOURCES[key];
+  const label = key.slice(ROOT_PREFIX.length);
+  return [label, "Events with an evidence reference that this session re-hashed under " + label +
+    " of the watched roots, in start order. The path is not shown on this page."];
+}
+
+// The roots by number, then the unlabelled watched group, then the other sources in their fixed order.
+function sourceKeys(counts) {
+  const number = (key) => Number(ROOT_LABEL.exec(key.slice(ROOT_PREFIX.length))[1]);
+  const roots = Object.keys(counts).filter((key) => key.startsWith(ROOT_PREFIX)).sort((a, b) => number(a) - number(b));
+  return [...roots, ...Object.keys(SOURCES).filter((key) => counts[key])];
+}
+
+function isSourceShown(element) {
+  return !state.hiddenSources.has(sourceOf(element));
+}
+
+function hiddenText(hidden, total) {
+  return hidden === 0
+    ? "All sources are shown: 0 events hidden."
+    : hidden + " of " + total + " retained events are hidden because their source is unchecked. Hidden is not absent: " +
+      "the counters and the list of what is not shown as clean still include them.";
+}
+
 // ---------------------------------------------------------------- legend (static tables above)
 
 function renderLegend() {
@@ -152,18 +231,48 @@ function renderLegend() {
   fill("legend-verification", Object.values(VERIFICATION).map(([glyph, label, meaning]) =>
     h("li", null, h("span", { class: "glyph" }, glyph), label + ": " + meaning)));
   fill("legend-marks", Object.keys(MARKS).map((key) => h("li", null, markNode(key), " " + MARKS[key][1])));
+  fill("legend-scene", SCENE_LEGEND.map((text) => h("li", null, text)));
 }
 
 // ---------------------------------------------------------------- data
 
 let rowsCache = null;
+let elementsCache = null;
+
+// The model's elements by seq, built once per model.
+function elementOf(seq) {
+  if (!state.model) return undefined;
+  if (!elementsCache || elementsCache.model !== state.model) {
+    elementsCache = { model: state.model, bySeq: new Map(state.model.elements.map((element) => [element.seq, element])) };
+  }
+  return elementsCache.bySeq.get(seq);
+}
+
+let countsCache = null;
+
+// Events per source of the current model, counted once per model.
+function sourceCounts() {
+  if (!state.model) return {};
+  if (!countsCache || countsCache.model !== state.model) {
+    const counts = {};
+    for (const element of state.model.elements) counts[sourceOf(element)] = (counts[sourceOf(element)] || 0) + 1;
+    countsCache = { model: state.model, counts };
+  }
+  return countsCache.counts;
+}
+
+function hiddenCount() {
+  const counts = sourceCounts();
+  let total = 0;
+  for (const key of state.hiddenSources) total += counts[key] || 0;
+  return total;
+}
 
 function rowsInOrder() {
   if (!state.model) return [];
   if (rowsCache && rowsCache.model === state.model) return rowsCache.rows;
-  const bySeq = new Map(state.model.elements.map((element) => [element.seq, element]));
   const rows = state.model.table
-    .map((row) => ({ row, element: bySeq.get(row.seq) }))
+    .map((row) => ({ row, element: elementOf(row.seq) }))
     .filter((entry) => entry.element)
     .sort((a, b) => a.element.order - b.element.order || a.row.seq - b.row.seq);
   rowsCache = { model: state.model, rows };
@@ -356,10 +465,54 @@ function renderDropped() {
   fill("dropped-list", state.dropped.length ? state.dropped.map((name) => h("li", null, name)) : [h("li", null, "none recorded")]);
 }
 
+// ---------------------------------------------------------------- source checkboxes
+
+const sourceNodes = new Map();
+
+function renderSources() {
+  const counts = sourceCounts();
+  const keys = sourceKeys(counts);
+  // A source that no longer has events has no checkbox, so it cannot stay hidden with no way to show it again.
+  for (const key of [...state.hiddenSources]) if (!counts[key]) state.hiddenSources.delete(key);
+  $("sources").hidden = keys.length === 0;
+  const signature = keys.join("|");
+  if ($("source-list").dataset.keys !== signature) {
+    // Rebuilt only when the set of sources changes, so a live refresh never takes focus from a checkbox.
+    $("source-list").dataset.keys = signature;
+    sourceNodes.clear();
+    fill("source-list", keys.map((key) => {
+      const input = h("input", { type: "checkbox", "data-source": key,
+        on: { change: (event) => toggleSource(key, event.target.checked) } });
+      const count = h("span", { class: "source-count" });
+      sourceNodes.set(key, { input, count });
+      const [name, title] = sourceText(key);
+      return h("label", { class: "source", title }, input, " ", name, " ", count);
+    }));
+  }
+  for (const key of keys) {
+    const node = sourceNodes.get(key);
+    node.input.checked = !state.hiddenSources.has(key);
+    node.count.textContent = "(" + counts[key] + " events)";
+  }
+  $("source-status").textContent = hiddenText(hiddenCount(), totalCount());
+}
+
+function toggleSource(key, shown) {
+  if (shown) state.hiddenSources.delete(key);
+  else state.hiddenSources.add(key);
+  const selected = state.selected === null ? undefined : elementOf(state.selected);
+  if (selected && !isSourceShown(selected)) state.selected = null;
+  renderSources();
+  renderPlayback();
+  renderTable();
+  renderEvidence();
+}
+
 // ---------------------------------------------------------------- table
 
 function visibleRows() {
   return rowsInOrder().slice(0, state.cursor).filter(({ row, element }) => {
+    if (!isSourceShown(element)) return false;
     if (state.filterKind && element.element !== state.filterKind) return false;
     if (state.filterUncertain && marksOf(element).length === 0) return false;
     return true;
@@ -405,8 +558,11 @@ function renderTable() {
     if (again) again.focus({ preventScroll: true });
   }
   $("table-empty").hidden = rows.length > 0;
-  $("table-empty").textContent = state.model && totalCount() > 0 && rows.length === 0
-    ? "No events at this position or filter." : "No events to show.";
+  const hidden = hiddenCount();
+  $("table-empty").textContent = (state.model && totalCount() > 0 && rows.length === 0
+    ? "No events at this position or filter." : "No events to show.") +
+    (hidden ? " " + hiddenText(hidden, totalCount()) : "");
+  syncScene();
 }
 
 function select(seq) {
@@ -482,8 +638,7 @@ function detailPairs(element) {
 }
 
 function renderEvidence() {
-  const element = state.selected === null || !state.model
-    ? null : state.model.elements.find((candidate) => candidate.seq === state.selected);
+  const element = state.selected === null ? undefined : elementOf(state.selected);
   if (!element) {
     fill("evidence", h("p", { class: "hint" },
       "Select an event to see its source event, class, verification and evidence reference."));
@@ -518,8 +673,11 @@ function renderPlayback() {
   const range = $("pb-range");
   range.max = String(total);
   range.value = String(state.cursor);
-  $("pb-count").textContent = state.cursor + " of " + total;
-  range.setAttribute("aria-valuetext", state.cursor + " of " + total + " events");
+  // Stepping moves over every retained event; with a source unchecked, say how many of those up to here are drawn.
+  const shown = state.hiddenSources.size
+    ? " (" + rowsInOrder().slice(0, state.cursor).filter(({ element }) => isSourceShown(element)).length + " shown)" : "";
+  $("pb-count").textContent = state.cursor + " of " + total + shown;
+  range.setAttribute("aria-valuetext", state.cursor + " of " + total + " events" + shown);
   $("pb-back").disabled = state.cursor <= 0;
   $("pb-start").disabled = state.cursor <= 0;
   $("pb-forward").disabled = state.cursor >= total;
@@ -572,11 +730,118 @@ function bindControls() {
   $("pb-range").addEventListener("input", (event) => { stopPlayback(); setCursor(Number(event.target.value)); });
   $("filter-kind").addEventListener("change", (event) => { state.filterKind = event.target.value; renderTable(); });
   $("filter-uncertain").addEventListener("change", (event) => { state.filterUncertain = event.target.checked; renderTable(); });
+  $("scene-reset").addEventListener("click", () => { if (scene) scene.resetView(); });
+}
+
+// ---------------------------------------------------------------- 3D scene (optional)
+
+let scene = null;
+let sceneModel = null;
+let sceneCursor = -1;
+let sceneSelected = null;
+let sceneHidden = "";
+
+function showHover(seq) {
+  const element = seq === null ? undefined : elementOf(seq);
+  $("scene-hover").textContent = element
+    ? "Event " + element.seq + " · " + element.kind + " · " + String(element.subject === null || element.subject === undefined ? "" : element.subject) +
+      " · " + classLabel(element.compatibilityClass) + (marksOf(element).includes("unverified") ? " · unverified" : "")
+    : "Hover an element to see its event.";
+}
+
+function updateSceneNote() {
+  const info = scene.summary();
+  const parts = ["Showing " + info.drawn + " of " + info.visible + " events at this position in 3D."];
+  const hidden = hiddenCount();
+  if (hidden) parts.push(hidden + " events from unchecked sources are hidden here and in the table. They are not absent.");
+  const untimed = info.seqs.filter((seq) => { const element = elementOf(seq); return element && element.timeKnown === false; }).length;
+  if (untimed) parts.push(untimed + " of them state no time: the scene places them after their predecessor and invents no time.");
+  if (info.omitted.length) {
+    parts.push("Only in the table: " + info.omitted.map((item) => item.count + " (" + item.reason + ")").join("; ") + ".");
+  }
+  $("scene-note").textContent = parts.join(" ");
+}
+
+// Keeps the scene on the model, playback position and selection of the table. Cheap when nothing changed.
+function syncScene() {
+  if (!scene) return;
+  try {
+    applyScene();
+  } catch (error) {
+    console.error(error);
+    sceneUnavailable("it could not draw this model.");
+  }
+}
+
+function applyScene() {
+  const modelChanged = sceneModel !== state.model;
+  if (modelChanged) {
+    sceneModel = state.model;
+    scene.setModel(state.model);
+  }
+  const hidden = [...state.hiddenSources].sort().join("|");
+  if (modelChanged || sceneCursor !== state.cursor || sceneHidden !== hidden) {
+    sceneCursor = state.cursor;
+    sceneHidden = hidden;
+    // The scene shows only checked sources; the playback frontier still follows the position, not the filter.
+    const position = rowsInOrder().slice(0, state.cursor);
+    scene.setVisible(
+      position.filter(({ element }) => isSourceShown(element)).map(({ row }) => row.seq),
+      position.map(({ row }) => row.seq));
+    updateSceneNote();
+  }
+  if (modelChanged || sceneSelected !== state.selected) {
+    sceneSelected = state.selected;
+    scene.setSelected(state.selected);
+  }
+}
+
+function sceneUnavailable(reason) {
+  if (scene) {
+    try {
+      scene.dispose();
+    } catch (error) {
+      console.error(error);
+    }
+    scene = null;
+  }
+  $("scene-section").hidden = false;
+  $("scene-box").hidden = true;
+  $("scene-hover").hidden = true;
+  $("scene-reset").hidden = true;
+  $("legend-scene-block").hidden = true;
+  $("scene-note").textContent = "The 3D scene is not available: " + reason + " The table below shows the same events, counters and evidence.";
+}
+
+async function startScene() {
+  if (typeof WebGL2RenderingContext !== "function") {
+    sceneUnavailable("this browser has no WebGL2.");
+    return;
+  }
+  let module_;
+  try {
+    module_ = await import("/web/braid-scene.js");
+  } catch (error) {
+    console.error(error);
+    sceneUnavailable("its code could not be loaded or was refused.");
+    return;
+  }
+  $("scene-section").hidden = false; // the canvas needs a laid-out box to size itself
+  try {
+    scene = module_.createBraidScene($("scene-box"), { onSelect: select, onHover: showHover, onUnavailable: sceneUnavailable });
+  } catch (error) {
+    console.error(error);
+    sceneUnavailable("WebGL2 could not be started.");
+    return;
+  }
+  $("legend-scene-block").hidden = false;
+  syncScene();
 }
 
 // ---------------------------------------------------------------- start
 
 function renderAll() {
+  renderSources();
   renderKindFilter();
   renderCounters();
   renderLanes();
@@ -591,3 +856,4 @@ bindControls();
 renderAll();
 loadSnapshot();
 followEvents();
+startScene();

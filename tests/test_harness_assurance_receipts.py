@@ -87,9 +87,9 @@ def authorization(**kw):
     return rc.build_authorization(**fields)
 
 
-def evaluate(record, checkpoint="merge", repository=REPO, branch=BRANCH, now=NOW, met=None):
+def evaluate(record, checkpoint="merge", repository=REPO, branch=BRANCH, now=NOW, met=None, listed=("auth-1",)):
     return rc.evaluate_standing(record, checkpoint=checkpoint, repository=repository, branch=branch, now=now,
-                                conditions_met=ALL_MET if met is None else met)
+                                conditions_met=ALL_MET if met is None else met, listed=listed)
 
 
 class StandingAuthorizationTests(unittest.TestCase):
@@ -126,6 +126,12 @@ class StandingAuthorizationTests(unittest.TestCase):
         self.assert_fallback(evaluate(authorization(), repository="other/repo"), "out-of-scope")
         self.assert_fallback(evaluate(authorization(), branch="feature/x"), "out-of-scope")
         self.assert_fallback(evaluate(authorization(checkpoint="ci")), "out-of-scope")
+
+    def test_record_not_listed_in_the_profile_falls_back(self):
+        # F1: the profile's standingAuthorizations is the operator-owned allow-list; a valid record outside it is inert
+        for listed in ((), ("auth-2",), None):
+            self.assert_fallback(evaluate(authorization(), listed=listed), "out-of-scope")
+        self.assertEqual(evaluate(authorization(), listed=["auth-0", "auth-1"])["mode"], "standing-authorization")
 
     def test_non_permitted_issuer_falls_back(self):
         for issuer in ("orchestrator", "agent", "Founder", "founder "):
@@ -167,7 +173,7 @@ class StandingAuthorizationTests(unittest.TestCase):
     def test_revocation_at_the_evaluation_moment_counts_and_conditions_must_be_a_mapping(self):
         self.assert_fallback(evaluate(authorization(revoked_at=NOW)), "revoked")
         decision = rc.evaluate_standing(authorization(), checkpoint="merge", repository=REPO, branch=BRANCH,
-                                        now=NOW, conditions_met=None)
+                                        now=NOW, conditions_met=None, listed=("auth-1",))
         self.assert_fallback(decision, "condition-failed")
 
     def test_bad_time_or_checkpoint_argument_is_an_error(self):
@@ -290,6 +296,16 @@ class VerifyReceiptTests(unittest.TestCase):
         del broken["reviews"]["required"]  # self-consistent: digest recomputed
         broken["digest"] = ha.digest({k: v for k, v in broken.items() if k != "digest"})
         refused(self, "invalid-artifact", receipt(), art=broken)
+
+    def test_self_consistent_artifact_with_authorization_or_wrong_schema_is_refused(self):
+        good = receipt()
+        for change in ({"executionAuthorization": True}, {"schema": "x"}):
+            forged = {**{k: v for k, v in artifact().items() if k != "digest"}, **change}
+            forged["digest"] = ha.digest({k: v for k, v in forged.items() if k != "digest"})
+            with self.assertRaises(rc.ReceiptError) as ctx:
+                receipt(forged)
+            self.assertEqual(ctx.exception.reason, "invalid-artifact")
+            refused(self, "invalid-artifact", good, art=forged)
 
     def test_receipt_for_another_checkpoint_is_refused(self):
         refused(self, "checkpoint-mismatch", receipt(checkpoint="pre-commit", approvals=[]), checkpoint="pre-pr-review")
