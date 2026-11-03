@@ -19,7 +19,7 @@ Commands run from the clean clone; `quick` means
   no change to existing contracts). Evidence: owner review record bound to a frozen
   commit (`validate_spec_kit freeze`).
 
-- [ ] T002 (REQ-002 / SC-002): Observe the OpenCode host matrix in a disposable
+- [x] T002 (REQ-002 / SC-002): Observe the OpenCode host matrix in a disposable
   profile (`XDG_CONFIG_HOME` and `XDG_DATA_HOME` in temporary directories, never the
   user's configuration) for the installed version: dependency-free module load;
   order of plugin transforms versus discovered skills; override of a user
@@ -33,14 +33,18 @@ Commands run from the clean clone; `quick` means
   appears in configuration, so the legacy preview can detect it. Rows not observed stay `unobserved`. Gate: a Git-install
   failure stops D3 and returns to the owner; any contradiction of research R1–R7
   returns the affected decision to the owner before T003–T007. Dependencies: T001.
-  Files: `evidence/host-matrix.json`, `research.md` (status of each R item).
+  Files: `evidence/opencode-host-matrix.json`, `research.md` (status of each R item).
   Verification: procedure_002. Evidence: matrix with version, command, output digest
   and limits per row. Negative controls: user configuration digest unchanged before
   and after; altered mode or bytes detected.
+  Done 2026-11-03 on OpenCode 2.1.4 / macOS arm64: obtained evidence
+  `evidence/opencode-host-matrix.json`, findings in `research.md` (T002 findings).
+  Rows 04b, 05b (`github:` transport), 09b (Linux) and 12b stay `unobserved`.
 
-- [ ] T003 (REQ-003 / SC-003, stdio part; the real host is T010): Write the OpenCode entry module
+- [x] T003 (REQ-003 / SC-003, stdio part; the real host is T010): Write the OpenCode entry module
   per the surface contract: three transforms only, root from `import.meta.url`, no
-  replacement of an existing skill ID or a foreign `agent-braid` server, no network,
+  removal or update of a skill it can see, no replacement of a foreign `agent-braid` server
+  (semantic-field comparison), no throw, no network,
   writes, child processes or event subscriptions. Tests first: a Python test parses
   the source for forbidden APIs and checks the registered values; an MCP stdio
   fixture checks `workspaces` and `analyze-work` against the Codex/Claude results
@@ -49,8 +53,9 @@ Commands run from the clean clone; `quick` means
   Verification: procedure_003, `quick`. Evidence: test output with negative controls
   (unknown workspace ID, arbitrary root, execution without grant, forbidden API
   inserted into a copy of the source).
+  Done: PR #1022; `tests/test_opencode_entry.py`.
 
-- [ ] T004 (REQ-003 / SC-003; REQ-010 / SC-010): Extend the native build: write
+- [x] T004 (REQ-003 / SC-003; REQ-010 / SC-010): Extend the native build: write
   `package.json` (no dependencies), copy `opencode/index.js`, extend
   `check_package_names`, provenance (`hosts`) and inventory. Tests first: build
   fixture compares host-read Codex/Claude files with a build without the OpenCode
@@ -60,6 +65,7 @@ Commands run from the clean clone; `quick` means
   Verification: procedure_010, `quick`. Evidence: build record and diff. Negative
   controls: wrong `package.json` name, declared dependency, drift in a host-read
   Codex/Claude file.
+  Done: PR #1022; `tests/test_native_plugin_build.py` (D12 byte-identity test).
 
 - [ ] T005 (REQ-004 / SC-004; REQ-005 / SC-005): Add `plugin doctor --host opencode
   [--project <dir>]`: read-only scan of the documented discovery locations with
@@ -91,7 +97,7 @@ Commands run from the clean clone; `quick` means
   absent OpenCode under `--host opencode`; changed Codex or Claude command output;
   sudo or Python invoked.
 
-- [ ] T007 (REQ-008 / SC-008; REQ-006 / SC-006): Add the `opencode` host to the
+- [x] T007 (REQ-008 / SC-008; REQ-006 / SC-006): Add the `opencode` host to the
   legacy lifecycle per the legacy profile contract: per-host table in
   `tooling_install.py`, JSONC span scanner used only for `opencode`, paths, default
   server name `agent-braid` with the `native_plugin_shadowed` warning (D13), refusal codes, `hosts.json` and `asset_provenance`; tooling
@@ -108,6 +114,8 @@ Commands run from the clean clone; `quick` means
   foreign key changed; repeat apply writes; unowned entry overwritten;
   `ambiguous_configuration`; failed write without rollback; Codex/Claude preview,
   receipt or diagnostic bytes changed.
+  Done: PR #1019; tests `tests/test_tooling_install_opencode.py` and
+  `tests/test_tooling_install_golden.py`.
 
 - [ ] T008 (REQ-009 / SC-009; REQ-010 / SC-010): Regression: SPEC-046, 047, 054,
   060 and 066 contracts unchanged; envelopes and stores byte-identical with and

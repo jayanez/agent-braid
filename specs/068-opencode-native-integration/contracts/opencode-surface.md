@@ -23,6 +23,13 @@ The entry performs exactly three registrations and nothing else: no network, no
 file writes, no child processes other than the MCP server OpenCode starts, no
 hooks, no event subscriptions.
 
+Shape (T002 row 01): the default export is an object `{id, setup}`; a bare
+function or an object without `id` fails to load. `setup` registers the three
+transforms. The host may run the transforms more than once per load, unevenly and
+in varying order, so every registration is idempotent and order independent. An
+exception inside a transform disables the whole plugin (T002 row 10), so the entry
+never throws to report a collision.
+
 ### MCP server
 
 ```js
@@ -35,12 +42,19 @@ editor.set("agent-braid", {
 ```
 
 - `root` is the plugin directory resolved from `import.meta.url`.
-- If an `agent-braid` server already exists and is not this exact value, the entry
-  does not replace it (D13). The collision is reported by `plugin doctor --host
-  opencode` as `server-collision`, by the setup command, and by a host-visible
-  warning from the entry if T002 finds a documented channel that writes nothing
-  (for example a log or notice API). The fix is the operator's: `plugin legacy`
-  migration or an update of the foreign entry.
+- The entry sets the server only when no `agent-braid` entry exists or the existing
+  one is semantically equal on `type`, `command`, `codemode` and `protocol`; any
+  other existing entry, including a disabled one or one with an environment, is left
+  alone (D13). `editor.get("agent-braid")` returns the existing entry
+  before `set` (T002 row 03), so the check is implementable. The host normalizes
+  entries (for example adds `timeout`, reports `enabled:false` as `disabled:true`),
+  so "exactly this value" is decided on semantic fields (`command[0]` and
+  `--plugin-root`), never by whole-object equality. T002 row 10 found no
+  write-free host warning channel (no log, notice or toast member on the server plugin
+  context; `console` output reaches only the server process output), so the entry
+  emits no host warning. The collision is reported by `plugin doctor --host
+  opencode` as `server-collision` and by the setup command. The fix is the
+  operator's: `plugin legacy` migration or an update of the foreign entry.
 - Tool names are `agent-braid_<tool>`; tool set, schemas and results are those of
   `agent-braid-plugin/v0.2`, unchanged. The server publishes no prompts.
 
@@ -48,10 +62,16 @@ editor.set("agent-braid", {
 
 Six skills, IDs `analyze`, `plan`, `evidence`, `execute`, `recover`, `setup`, read
 from the packaged `skills/<id>/SKILL.md` produced by the SPEC-054 build
-substitution. No text is duplicated in JavaScript; the entry passes `path` and the
-file content.
+substitution. No text is duplicated in JavaScript; the entry passes `{path, content}` with
+the full `SKILL.md` content.
 
-- An existing skill with the same ID is never removed or updated by the entry.
+- The entry never removes or updates a skill it can see (a built-in or its own). It cannot see discovered skills: in the skill transform,
+  `editor.get` returns null for user or project skills, and a discovered skill with
+  the same ID silently wins over the plugin's skill; an explicit `skills`
+  configuration entry wins over all discovered skills (T002 row 02). User and
+  project collisions are therefore detected and reported by `plugin doctor --host
+  opencode` (`collision`), the detector of record for REQ-004 and SC-004, not by
+  the entry.
 - Skills issue no grant and request no host permission beyond calling the MCP tools.
 
 ### Commands
@@ -59,10 +79,11 @@ file content.
 | Command | Effect |
 |---|---|
 | `agent-braid-setup` | Prompts the current session with the packaged `setup` skill |
-| `agent-braid-reconnect` | Shows the operator steps to restart the `agent-braid` MCP server; performs no reload |
+| `agent-braid-reconnect` | Prompts the session (`ctx.session.prompt`) with the operator steps (`opencode reload` or restart) for the `agent-braid` MCP server, because no write-free display channel exists (T002 row 10); performs no reload |
 
 Command names keep the brand prefix because OpenCode commands share one flat
-namespace with the user's own commands; skills follow SPEC-054 (D2).
+namespace with the user's own commands; names are listed exactly as registered,
+with no plugin prefix (T002 row 07). The command `execute` and `session.prompt` shapes come from the OpenCode v2 documentation and stay unobserved until T010. Skills follow SPEC-054 (D2).
 
 ## Collision diagnosis
 
@@ -107,7 +128,11 @@ entry (ADR 0024).
 
 ## Negative controls
 
-- Entry replaces an existing skill ID or a foreign `agent-braid` server.
+- Entry removes or updates a skill ID it can see, or replaces a foreign
+  `agent-braid` server.
+- `plugin doctor --host opencode` misses a user or project skill with one of the six
+  IDs (the entry cannot detect it, T002 row 02).
+- Entry throws from a transform (disables the whole plugin, T002 row 10).
 - Entry performs network access, writes files or subscribes to events.
 - `package.json` declares dependencies.
 - Any stored artifact contains a `_meta` session identifier.

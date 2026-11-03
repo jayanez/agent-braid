@@ -84,8 +84,8 @@ entries. The later source wins for the same ID, without a warning.
    `recover` or `setup` in those locations is a collision (D2).
 
 **Decision.** Collision detection is a read-only scan by `plugin doctor --host
-opencode [--project <dir>]` over the documented locations, plus a refusal in the
-transform to replace an existing skill ID (see contract). The scan is deterministic
+opencode [--project <dir>]` over the documented locations, the detector of record
+(the entry cannot see discovered skills, T002 row 02; see contract). The scan is deterministic
 Python and unit-testable with fixture trees.
 
 **Limit.** Where plugin-added skills sit in that order is a REQ-002 row.
@@ -136,7 +136,48 @@ identifier and compares envelopes and stores byte for byte (REQ-009).
 
 ## Open items for T002
 
+Observed by T002; see "T002 findings" below.
+
 Rows to observe: dependency-free module load; transform order versus discovered
 skills; override of a user `agent-braid` MCP entry; tool approval prompts for
 plugin-registered MCP; Git install bytes, modes and size; `plugin update` and
 `plugin remove` behaviour; command listing; behaviour with `--standalone`.
+
+## T002 findings
+
+Observed on 2026-11-03 by a track in disposable profiles with OpenCode 2.1.4 on
+macOS arm64, using a local Git fixture (no network, no model call). Source of every
+statement: [`evidence/opencode-host-matrix.json`](evidence/opencode-host-matrix.json)
+(row ids in brackets). This section records observations; it changes no decision.
+The one contradiction is flagged; all other items confirm or extend the findings
+above.
+
+| Item | Row | Result |
+|---|---|---|
+| R1 dependency-free module loads | 01 | Observed on 2.1.4. The default export must be an object with `id` and `setup` (or `effect`); a bare function or a missing `id` fails to load. Transforms may run more than once per load, unevenly and in varying order, so the entry must be idempotent. |
+| R1 transform order vs discovered sources | 02 | See the contradiction below. |
+| R2 Git install keeps modes, bytes, size (D3 gate) | 05 | Observed pass on a local bare repository (`git+file://`; the real `github:` transport and plugin-dist content are not exercised, 05b): executable bit, CRLF and binary bytes, and a 64 MiB file are preserved. Git attributes are honored (checkout, not archive), so the artifact keeps its root `* -text`. Symlinks are not installed. `github:` itself was not fetched (05b). |
+| R2 update, remove, list | 06 | `remove` needs the exact source string and leaves the cache copy; `update` writes a new cache directory and keeps the old one; a running service needs `opencode reload`. |
+| R2 `--standalone` | 08 | Private server, no background service; a one-shot `api` call returns before plugins load. |
+| R3 override of a user `agent-braid` entry | 03 | `editor.set` silently overrides it, and `editor.get`/`list` show it first, so refusing is implementable. Compare semantic fields: the host normalizes entries. |
+| R3 codemode default | 12 | Default `true` confirmed; the tool id is `agent-braid_<tool>` either way. Model-facing names need a model turn (12b, unobserved). |
+| R3 approval prompts | 04 | Default rule sets contain `*` allow and no MCP-specific rule; a user permission rule can target the `<server>_<tool>` id. Prompts at call time are unobserved (04b). |
+| R4 skill precedence | 02 | Partly confirmed: the discovered set beat the plugin-added skill, project `.opencode` beat five other discovered sources, home `.agents` beat home `.claude`, an explicit entry beat all. Project `.claude`/`.agents` and XDG positions are not in R4 and were not compared pairwise. |
+| R5 commands | 07 | Flat names, exactly as registered. |
+| R5 reload | 13 | A host reload exists (`opencode reload`, `experimental.mcp.connect/disconnect`, and `ctx.mcp.reload` by key name). R5 says no documented plugin API reloads; the operator-run reconnect and REQ-005 are unchanged. |
+| R6 configuration files | 09, 11 | Six locations are read together; project files are taken at the Git root, not the working directory (global, project root, `.opencode`, each as `.json` then `.jsonc`); for a same-name key the `.opencode/opencode.jsonc` value won over the other five; array merging across files was NOT confirmed (one attempt: a project `plugins` entry did not load next to the global one), a tension with R6 left open; macOS global is `$XDG_CONFIG_HOME/opencode` or `~/.config/opencode`. `plugin add` writes the key `plugins` (singular `plugin` is also accepted). Linux unobserved (09b). |
+| R6 comments and trailing commas | 09 | The host parses both; `plugin add` keeps comments. |
+| R7 `_meta` session identifier | none | Not a T002 row; not observed (no model call). |
+| D13 warning channel | 10 | None: no log/notice member; `console` reaches server stdout only; throwing disables the plugin. |
+
+### Contradiction
+
+**R4 / contract Skills (row 02, `contradicts-research`).** The research says the
+transform refuses to replace an existing skill ID. In OpenCode 2.1.4 the skill
+transform sees only built-in and plugin skills: `editor.get("analyze")` returns
+nothing while a discovered `analyze` exists, and the discovered skill silently
+replaces the plugin one. D2 and SC-004 stand (the user skill wins; `plugin doctor`
+reports it), but the in-entry refusal is not a collision check. A later
+`ctx.skill.list()` sees the resolved list. The coordinator should reword R4 and the
+contract; no decision among D3, D7, D8, D13 or the dependency-free entry is
+affected.

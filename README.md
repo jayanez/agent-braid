@@ -108,7 +108,9 @@ OpenCode) must already be installed.
 > use the [Python fallback install](docs/tooling/INSTALL.md).
 >
 > ```sh
-> curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh | sh -s -- --host all
+> curl -fsSL \
+>   https://raw.githubusercontent.com/jayanez/agent-braid/develop/install.sh \
+>   | sh -s -- --host all
 > ```
 >
 > Add `--ref agent-braid--v0.1.0-alpha.6` to pin a release. `--host all` also

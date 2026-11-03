@@ -62,8 +62,8 @@ row; failure stops the dependent task and returns to the owner.
 ## Design and compatibility
 
 1. **Entry module** per [opencode-surface.md](contracts/opencode-surface.md): three
-   transforms, `import.meta.url` root, no replacement of existing IDs or a foreign
-   `agent-braid` server.
+   transforms, `import.meta.url` root, no removal or update of a visible skill, no
+   replacement of a foreign `agent-braid` server.
 2. **Build.** `assemble` writes `package.json` and copies `opencode/index.js` into
    the shared plugin directory; `check_package_names` also checks
    `package.json.name == "agent-braid"`; `provenance.json` gains
