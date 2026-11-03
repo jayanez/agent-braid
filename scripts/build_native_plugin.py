@@ -26,6 +26,7 @@ from agent_braid.tooling_assets import load_skill_bundle
 VERSION = '0.1.0-alpha.6'
 DISTRIBUTION_ATTRIBUTES = '* -text -filter -ident\n'
 WORKFLOWS_SOURCE = ROOT / 'integrations/agent-braid/plugin/workflows'
+OPENCODE_SOURCE = ROOT / 'integrations/agent-braid/plugin/opencode/index.js'
 ENGINEERING_MARKER = 'ENGINEERING-ONLY.json'
 ENGINEERING_MARKER_VALUE = {
     'schema': 'agent-braid-plugin-engineering-only/v1', 'component': 'workflows', 'releasable': False,
@@ -53,6 +54,24 @@ def copy_tracked_workflows(source, destination):
 
 
 PLUGIN_NAME = 'agent-braid'
+HOSTS = ['codex', 'claude']
+
+
+def opencode_package_json():
+    """The SPEC-068 package manifest, exactly: no dependencies, one dependency-free ES module."""
+    return {'name': PLUGIN_NAME, 'version': VERSION, 'type': 'module', 'private': True,
+            'license': 'AGPL-3.0-only', 'exports': {'.': './opencode/index.js'}}
+
+
+def copy_tracked_opencode_entry(destination):
+    """Copy the one Git-tracked regular OpenCode entry source; anything else never ships."""
+    source = OPENCODE_SOURCE
+    tracked = subprocess.run(['git', 'ls-files', '--error-unmatch', '--', source.name], cwd=source.parent,
+                             capture_output=True).returncode == 0
+    if not tracked or source.is_symlink() or not source.is_file():
+        raise ValueError('The OpenCode entry source is not a tracked regular file')
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(source, destination)
 SKILL_SUBSTITUTIONS = {f'agent-braid-{x}': x for x in ('analyze', 'plan', 'evidence', 'execute', 'recover')}
 PACKAGED_SKILL_NAMES = frozenset(SKILL_SUBSTITUTIONS.values()) | {'setup', 'telemetry-audit'}
 NAME_PATTERN = re.compile(r'^[a-z0-9]+(-[a-z0-9]+)*$')
@@ -73,10 +92,11 @@ def package_skill(content):
     return head + separator + rest
 
 
-def check_package_names(staging):
+def check_package_names(staging, *, opencode=False):
     """Fail unless every SPEC-054 packaged name matches the naming policy.
 
-    ``staging`` is the marketplace root holding ``plugins/agent-braid``."""
+    ``staging`` is the marketplace root holding ``plugins/agent-braid``. A ``package.json`` is
+    checked whenever present (SPEC-068) and required with ``opencode=True``."""
     staging = Path(staging)
     plugin = staging / 'plugins' / PLUGIN_NAME
 
@@ -95,6 +115,15 @@ def check_package_names(staging):
         require([x.get('name') for x in market.get('plugins', [])] == [PLUGIN_NAME], f'{path.name} entry name')
     for filename in ('mcp.json', '.mcp.json'):
         require(list(load(plugin / filename).get('mcpServers', {})) == [PLUGIN_NAME], f'{filename} server key')
+    manifest = plugin / 'package.json'
+    require(manifest.is_file() or not opencode, 'package.json is missing')
+    if manifest.is_file():
+        package = load(manifest)
+        require(package.get('name') == PLUGIN_NAME, 'package.json name')
+        require(not any(key.lower().endswith('dependencies') for key in package), 'package.json declares dependencies')
+        require(package == opencode_package_json(), 'package.json differs from the contract')
+        require((plugin / 'opencode/index.js').is_file(), 'opencode/index.js is missing')
+        require(not any(path.is_symlink() for path in plugin.rglob('*')), 'symlink in the plugin directory')
     skills = plugin / 'skills'
     directories = sorted(x.name for x in skills.iterdir() if x.is_dir())
     require(set(directories) == PACKAGED_SKILL_NAMES, f'skill directories {directories}')
@@ -195,7 +224,7 @@ def verify_engineering_marker(plugin):
         raise ValueError('Workflow component and engineering-only marker disagree')
 
 
-def assemble(output, cache, *, platforms=None, allow_dirty=False, include_workflows=False):
+def assemble(output, cache, *, platforms=None, allow_dirty=False, include_workflows=False, include_opencode=True):
     output = Path(output).resolve()
     if output.exists() or output.is_relative_to(ROOT):
         raise ValueError('Build into a new directory outside the source checkout')
@@ -270,6 +299,9 @@ def assemble(output, cache, *, platforms=None, allow_dirty=False, include_workfl
             # Pre-adoption guard: Claude-only component, opt-in, never a releasable identity.
             copy_tracked_workflows(WORKFLOWS_SOURCE, plugin / 'workflows')
             _json(plugin / ENGINEERING_MARKER, ENGINEERING_MARKER_VALUE)
+        if include_opencode:
+            copy_tracked_opencode_entry(plugin / 'opencode/index.js')
+            _json(plugin / 'package.json', opencode_package_json())
         launch = plugin / 'launch'
         launch.write_text('''#!/bin/sh
 set -eu
@@ -320,6 +352,7 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
             'dependencyLockSha256': file_hash(ROOT / 'requirements-native-plugin.txt'), 'runtimes': runtime_provenance,
             'dependencies': package_licenses, 'canonicalSkills': bundle.inventory(),
             'skillNaming': {'policy': 'SPEC-054', 'substitutions': SKILL_SUBSTITUTIONS, 'skills': skill_provenance},
+            **({'hosts': [*HOSTS, 'opencode']} if include_opencode else {}),
             'limits': ['Engineering package; no native conformance, publisher authentication or official approval implied']})
         if include_workflows:
             provenance_path = plugin / 'provenance.json'
@@ -340,7 +373,7 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
                     path = ROOT / relative
                     if path.is_file() and not path.is_symlink():
                         archive.add(path, arcname=relative, recursive=False)
-        check_package_names(staging)
+        check_package_names(staging, opencode=include_opencode)
         provenance_path = plugin / 'provenance.json'
         provenance = json.loads(provenance_path.read_text())
         source_archive = sources / f'agent-braid-{VERSION}-source.tar.gz'
