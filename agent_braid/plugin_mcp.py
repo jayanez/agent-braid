@@ -4,26 +4,189 @@ from __future__ import annotations
 
 import asyncio
 import copy
+from datetime import datetime, timedelta, timezone
 from importlib.metadata import version
 import json
+import os
 from pathlib import Path
+import re
+import secrets
 import shutil
+import stat
 import sys
 import threading
 from urllib.parse import urlsplit
 
 from . import __version__
-from .plugin_registry import (MigrationRequired, RegistryError, RegistryStale, configuration_digest,
+from .plugin_registry import (MigrationRequired, RegistryError, RegistryStale, _private, configuration_digest,
                               home_path, inspect_registry, not_grown)
 from . import tooling_mcp as core
 
 SCHEMA = 'agent-braid-plugin/v0.2'
 
+# SPEC-061 REQ-006 (amendment A2): the private local copy of each analyze-work report. One subdirectory per
+# report holds exactly `analysis.json`, the name the viewer's watcher reads.
+REPORT_COPY_NAME = 'analysis.json'
+REPORT_COPY_DAYS = 30
+REPORT_COPY_MAX_BYTES = 64 * 1024 * 1024
+_COPY_DIRECTORY = re.compile(r'^analysis-(\d{8}T\d{12})Z-[0-9a-f]{16}$')
+_COPY_TEMPORARY = '.analysis.tmp'  # not an artifact name: the watcher never reads a half-written copy
+_COPY_STAMP = '%Y%m%dT%H%M%S%f'
+_DIRECTORY = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+
+
+def _now():
+    return datetime.now(timezone.utc)
+
+
+def _open_private_root(root, registered):
+    """Open the registered result root without following links; refuse anything that is not private to the user."""
+    root, registered = Path(root), Path(registered)
+    if root != registered:
+        raise ValueError('Result root is not the registered one')
+    _private(root, directory=True)  # no link on the path, owned by the user, no group/other access
+    descriptor = os.open(root, _DIRECTORY)
+    try:
+        info = os.fstat(descriptor)
+        if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) & 0o077:
+            raise ValueError('Result root is not private')
+        return descriptor
+    except BaseException:
+        os.close(descriptor)
+        raise
+
+
+def _discard_copy(root_fd, name):
+    """Remove a report copy directory holding only the files this module creates; True when it is gone."""
+    try:
+        descriptor = os.open(name, _DIRECTORY, dir_fd=root_fd)
+    except OSError:
+        return False
+    try:
+        for entry in (REPORT_COPY_NAME, _COPY_TEMPORARY):
+            try:
+                os.unlink(entry, dir_fd=descriptor)
+            except FileNotFoundError:
+                pass
+        os.rmdir(name, dir_fd=root_fd)
+        return True
+    except OSError:
+        return False
+    finally:
+        os.close(descriptor)
+
+
+def _report_copies(root_fd):
+    """(stamp, name, size) of each report copy: a real directory of ours holding only our own file names."""
+    found = []
+    for name in os.listdir(root_fd):
+        match = _COPY_DIRECTORY.match(name)
+        if match is None:
+            continue
+        try:
+            if not stat.S_ISDIR(os.stat(name, dir_fd=root_fd, follow_symlinks=False).st_mode):
+                continue
+            descriptor = os.open(name, _DIRECTORY, dir_fd=root_fd)
+        except OSError:
+            continue
+        try:
+            entries = os.listdir(descriptor)
+            if not set(entries) <= {REPORT_COPY_NAME, _COPY_TEMPORARY}:
+                continue  # holds something that is not ours
+            size = sum(os.stat(entry, dir_fd=descriptor, follow_symlinks=False).st_size for entry in entries)
+        except OSError:
+            continue
+        finally:
+            os.close(descriptor)
+        found.append((match.group(1), name, size))
+    return sorted(found)
+
+
+def _prune_report_copies(root_fd, now, max_bytes, days):
+    """Remove report copies older than `days`, then the oldest until the total is within `max_bytes`."""
+    cutoff = (now - timedelta(days=days)).strftime(_COPY_STAMP)
+    copies = _report_copies(root_fd)
+    kept = []
+    for stamp, name, size in copies:
+        if stamp < cutoff and _discard_copy(root_fd, name):
+            continue
+        kept.append((stamp, name, size))
+    total = sum(size for _stamp, _name, size in kept)
+    for _stamp, name, size in kept:
+        if total <= max_bytes:
+            break
+        if _discard_copy(root_fd, name):
+            total -= size
+
+
+def write_report_copy(result_root, registered_root, body, *, now=None, max_bytes=REPORT_COPY_MAX_BYTES,
+                      days=REPORT_COPY_DAYS):
+    """Store `body` (the report bytes) as <result_root>/analysis-<utc stamp>-<random>/analysis.json, then prune.
+
+    The directory is created 0700 and the file 0600 under a temporary name and renamed into place, so the file
+    appears whole or not at all. Raises when the root is not the registered private directory (a link, another
+    owner, group or other access); callers treat any failure as "no copy" and say nothing about it.
+    """
+    when = (now or _now()).astimezone(timezone.utc)
+    root_fd = _open_private_root(result_root, registered_root)
+    try:
+        name = f'analysis-{when.strftime(_COPY_STAMP)}Z-{secrets.token_hex(8)}'
+        os.mkdir(name, 0o700, dir_fd=root_fd)
+        try:
+            directory_fd = os.open(name, _DIRECTORY, dir_fd=root_fd)
+            try:
+                descriptor = os.open(_COPY_TEMPORARY, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600,
+                                     dir_fd=directory_fd)
+                with os.fdopen(descriptor, 'wb') as stream:
+                    os.fchmod(descriptor, 0o600)
+                    stream.write(body)
+                    stream.flush()
+                    os.fsync(descriptor)
+                os.rename(_COPY_TEMPORARY, REPORT_COPY_NAME, src_dir_fd=directory_fd, dst_dir_fd=directory_fd)
+            finally:
+                os.close(directory_fd)
+        except BaseException:
+            _discard_copy(root_fd, name)
+            raise
+        try:
+            _prune_report_copies(root_fd, when, max_bytes, days)
+        except OSError:
+            pass  # retention is best effort: the new copy stays
+    finally:
+        os.close(root_fd)
+
 
 class WorkspaceService(core.ToolingService):
-    def __init__(self, identifier, config):
+    def __init__(self, identifier, config, registered_root=None):
         self.identifier = identifier
+        self.registered_root = registered_root
         super().__init__(config)
+
+    def invoke(self, name, args, cancelled):
+        envelope = super().invoke(name, args, cancelled)
+        if name == 'analyze-work' and envelope.get('status') == 'ok':
+            self._keep_report_copy(envelope)
+        return envelope
+
+    def _keep_report_copy(self, envelope):
+        """SPEC-061 REQ-006: keep a private local copy of the report for the viewer's watcher.
+
+        Local only, never uploaded. The envelope is already final here and is never changed; any failure means
+        no copy and records nothing (a path or request detail could be sensitive).
+        """
+        try:
+            if self.registered_root is None:
+                return
+            result = envelope['result']
+            if type(result) is dict and result.get('type') == 'evidence-artifact-reference':
+                with self.lock:
+                    result = json.loads(self.artifacts[result['artifactId']].data)
+            report = result['report']
+            if type(report) is not dict:
+                return
+            write_report_copy(self.config.result_parent, self.registered_root, core._json_bytes(report))
+        except Exception:
+            pass
 
     def _base_uri(self, run_id, artifact_id):
         return self.external(core.ToolingService._base_uri(run_id, artifact_id))
@@ -72,7 +235,7 @@ class PluginRouter:
                     runtime_enabled=row['runtimeEnabled'],
                     worktree_roots=tuple(Path(p) for p in row['worktreeRoots']),
                     telemetry=self.snapshot['telemetry'], system_one=self.system_one)
-                self.services[row['workspaceId']] = WorkspaceService(row['workspaceId'], config)
+                self.services[row['workspaceId']] = WorkspaceService(row['workspaceId'], config, Path(row['resultRoot']))
             except (core.ToolingError, OSError):  # e.g. the source repository was deleted: isolate this workspace
                 self.unavailable.append({'workspaceId': row['workspaceId'], 'reason': 'configuration rejected'})
         # One global admission lock bounds reservations across all workspace services.
