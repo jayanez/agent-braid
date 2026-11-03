@@ -163,11 +163,14 @@ class System:
         return os.access(path, os.X_OK)
 
     def other_homes(self, account: str) -> list[str]:
-        """Home directories of every local account other than ``account`` (uid >= 500), and the console user's.
+        """Home directories of every human local account other than ``account``, and the console user's.
 
-        Under fast user switching the console user can be ``account`` itself, which is then left out.
+        Human means ``500 <= uid < 2**31``: macOS reports ``nobody`` (uid -2, home ``/var/empty``) as
+        4294967294, which is no person's home. Under fast user switching the console user can be
+        ``account`` itself, which is then left out.
         """
-        homes = {entry.pw_dir for entry in pwd.getpwall() if entry.pw_uid >= 500 and entry.pw_name != account}
+        homes = {entry.pw_dir for entry in pwd.getpwall()
+                 if _mac._MIN_HUMAN_UID <= entry.pw_uid < 2**31 and entry.pw_name != account}
         try:
             console = pwd.getpwuid(os.stat("/dev/console").st_uid)
             if console.pw_uid != 0 and console.pw_name != account:
