@@ -11,10 +11,9 @@ Commands run from the clean clone; `quick` means
 `.venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick`.
 
 - [ ] T001 (REQ-001 / SC-001): Owner review of the specification, plan, research,
-  both contracts and ADR 0037, and decisions OD-9 (SC-010 measured on files Codex
-  and Claude Code read) and OD-10 (legacy OpenCode server name
-  `agent-braid-tooling`). Record the decisions, amend SC-010 if OD-9 is accepted,
-  and record which of T002–T009 are authorized. Dependencies: none. Files:
+  both contracts and ADR 0037. OD-9 and OD-10 are decided (D12, D13; SC-010
+  amended on 2026-11-03); record ADR adoption and which of T002–T009 are
+  authorized. Dependencies: none. Files:
   `spec.md`, `plan.md`, `contracts/`, `docs/adr/0037-opencode-native-plugin.md`,
   a new owner review record. Verification: procedure_001 (`speckit-analyze` report,
   no change to existing contracts). Evidence: owner review record bound to a frozen
@@ -29,7 +28,9 @@ Commands run from the clean clone; `quick` means
   line endings, `.gitattributes`, size); `plugin list/update/remove`; command
   listing; `--standalone`; global and project configuration paths on macOS and
   Linux (`XDG_CONFIG_HOME` handling, `opencode.json` versus `opencode.jsonc` when
-  both exist); host approval behaviour for plugin and legacy MCP tools. Rows not observed stay `unobserved`. Gate: a Git-install
+  both exist); host approval behaviour for plugin and legacy MCP tools; a write-free
+  host-visible warning channel for the entry (D13); how an installed native plugin
+  appears in configuration, so the legacy preview can detect it. Rows not observed stay `unobserved`. Gate: a Git-install
   failure stops D3 and returns to the owner; any contradiction of research R1–R7
   returns the affected decision to the owner before T003–T007. Dependencies: T001.
   Files: `evidence/host-matrix.json`, `research.md` (status of each R item).
@@ -53,7 +54,7 @@ Commands run from the clean clone; `quick` means
   `package.json` (no dependencies), copy `opencode/index.js`, extend
   `check_package_names`, provenance (`hosts`) and inventory. Tests first: build
   fixture compares host-read Codex/Claude files with a build without the OpenCode
-  target, per the OD-9 decision. Dependencies: T003. Files:
+  target, per D12. Dependencies: T003. Files:
   `scripts/build_native_plugin.py`, `scripts/reproduce_native_plugin.py` if the
   reproduction check lists files, `tests/test_native_plugin_build.py`.
   Verification: procedure_010, `quick`. Evidence: build record and diff. Negative
@@ -89,7 +90,7 @@ Commands run from the clean clone; `quick` means
 - [ ] T007 (REQ-008 / SC-008; REQ-006 / SC-006): Add the `opencode` host to the
   legacy lifecycle per the legacy profile contract: per-host table in
   `tooling_install.py`, JSONC span scanner used only for `opencode`, paths, default
-  server name per OD-10, refusal codes, `hosts.json` and `asset_provenance`; tooling
+  server name `agent-braid` with the `native_plugin_shadowed` warning (D13), refusal codes, `hosts.json` and `asset_provenance`; tooling
   CLI `--host` choices. Include `plugin legacy` migration from an OpenCode receipt:
   `plugin legacy --host` choices (`plugin_cli.py`) and the receipt directory in
   `plugin_legacy.inventory`, which hard-codes the Codex and Claude paths today.
@@ -107,7 +108,7 @@ Commands run from the clean clone; `quick` means
 - [ ] T008 (REQ-009 / SC-009; REQ-010 / SC-010): Regression: SPEC-046, 047, 054,
   060 and 066 contracts unchanged; envelopes and stores byte-identical with and
   without an OpenCode `_meta` session identifier; no stored artifact contains it;
-  Codex/Claude artifacts compared per OD-9. Dependencies: T004–T007. Files:
+  Codex/Claude artifacts compared per D12. Dependencies: T004–T007. Files:
   `tests/test_plugin_mcp.py` and existing contract tests. Verification:
   procedure_009, procedure_010, `quick`. Evidence: test output and artifact diff.
 

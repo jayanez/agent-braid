@@ -18,7 +18,7 @@ Commands use the isolated environment: `.venv-speckit/bin/python -m unittest …
 | procedure_007 | SC-007 | `tests/test_plugin_installer.py` | `--host opencode`, `all` and `--dry-run` commands as specified | absent OpenCode; Codex/Claude output changed |
 | procedure_008 | SC-008 | legacy lifecycle tests on isolated JSONC destination | owned entry only; comments and foreign bytes kept; idempotent | changed digest, unowned collision, failed write without rollback |
 | procedure_009 | SC-009 | MCP envelope and store inspection | envelopes byte-identical with and without `_meta` session ID | session ID present in any stored artifact |
-| procedure_010 | SC-010 | native build + inventory/provenance checks | OpenCode package emitted; Codex/Claude artifacts byte-identical | package-name check failure; artifact drift |
+| procedure_010 | SC-010 | native build + inventory/provenance checks | OpenCode package emitted; files Codex/Claude read byte-identical; inventory and provenance only gain entries (D12) | package-name check failure; artifact drift |
 | procedure_011 | SC-011 | documentation checks + manual review | consistent OpenCode docs; links resolve | unobserved behaviour claimed |
 | procedure_012 | SC-012 | `evidence/native-observation.json` (owner or operator) | install, skills, `analyze-work`, reconnect, removal recorded | inferred observation; missing version |
 

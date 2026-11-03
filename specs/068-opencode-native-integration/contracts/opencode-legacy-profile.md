@@ -31,11 +31,12 @@ refuses with `ambiguous_configuration` and names both paths.
 }
 ```
 
-- `<name>` defaults to `agent-braid-tooling` for this host only (OD-10), so the
-  legacy server never shares the native plugin's `agent-braid` key (SPEC-060 OD-5);
-  the `codex` and `claude` default stays `agent-braid`. Tools appear as
-  `agent-braid-tooling_<tool>` and prompts as `agent-braid-tooling:<prompt>`
-  commands (D10).
+- `<name>` defaults to `agent-braid`, as for the other hosts (D13). Tools appear
+  as `agent-braid_<tool>` and prompts as `agent-braid:<prompt>` commands (D10).
+  The same key as the native plugin means the legacy entry shadows the plugin's
+  server when both are configured; preview and `doctor` warn
+  (`native_plugin_shadowed`) when the OpenCode native plugin is also installed,
+  and apply proceeds only as previewed. `--name` selects another key.
 - `protocol` is omitted (host default `legacy`, D8).
 - Skills: the canonical prefixed skills (`agent-braid-analyze`, …), as for the
   other legacy hosts.

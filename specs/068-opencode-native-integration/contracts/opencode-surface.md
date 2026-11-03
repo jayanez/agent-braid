@@ -36,8 +36,11 @@ editor.set("agent-braid", {
 
 - `root` is the plugin directory resolved from `import.meta.url`.
 - If an `agent-braid` server already exists and is not this exact value, the entry
-  does not replace it; `plugin doctor --host opencode` reports it as
-  `server-collision` from the configuration files (the entry writes nothing).
+  does not replace it (D13). The collision is reported by `plugin doctor --host
+  opencode` as `server-collision`, by the setup command, and by a host-visible
+  warning from the entry if T002 finds a documented channel that writes nothing
+  (for example a log or notice API). The fix is the operator's: `plugin legacy`
+  migration or an update of the foreign entry.
 - Tool names are `agent-braid_<tool>`; tool set, schemas and results are those of
   `agent-braid-plugin/v0.2`, unchanged. The server publishes no prompts.
 
@@ -109,4 +112,4 @@ entry (ADR 0024).
 - `package.json` declares dependencies.
 - Any stored artifact contains a `_meta` session identifier.
 - Codex or Claude Code host-read files differ from a build without the OpenCode
-  target (see OD-9 for inventory and provenance).
+  target (inventory and provenance differ only by added entries, D12).

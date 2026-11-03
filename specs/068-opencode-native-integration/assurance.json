@@ -14,7 +14,7 @@
     24,
     25
   ],
-  "assumptions": "OpenCode 2.x as installed (2.1.4 CLI; 2.1.2 documentation consulted); plugin, MCP, skill and permission behaviour is unverified until REQ-002; Codex/Claude native plugins, the bundled runtime and the SPEC-042 lifecycle engine are reused; owner decisions D1 to D11 recorded (codemode false, legacy protocol, global plugin, portable server only through the legacy profile, version 0.1.0-alpha.6). Plan (2026-11-03): OpenCode facts in research.md R1-R7 are documented (OpenCode 2.1.2 docs), not observed; T002 observes them and contradictions return to the owner. Open plan decisions OD-9 (SC-010 measured on host-read files) and OD-10 (legacy OpenCode server name agent-braid-tooling) await owner review.",
+  "assumptions": "OpenCode 2.x as installed (2.1.4 CLI; 2.1.2 documentation consulted); plugin, MCP, skill and permission behaviour is unverified until REQ-002; Codex/Claude native plugins, the bundled runtime and the SPEC-042 lifecycle engine are reused; owner decisions D1 to D11 recorded (codemode false, legacy protocol, global plugin, portable server only through the legacy profile, version 0.1.0-alpha.6). Plan (2026-11-03): OpenCode facts in research.md R1-R7 are documented (OpenCode 2.1.2 docs), not observed; T002 observes them and contradictions return to the owner. Owner decisions D12 (OD-9: shared plugin directory; SC-010 measured on host-read files) and D13 (OD-10: legacy server name agent-braid with a collision warning) recorded 2026-11-03.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -291,7 +291,7 @@
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_010",
-          "then": "the OpenCode package, its inventory and provenance are emitted, package-name checks pass, and Codex/Claude artifacts are byte-identical to a build without the OpenCode target.",
+          "then": "the OpenCode package, its inventory and provenance are emitted, package-name checks pass, and every file Codex or Claude Code reads (manifests, `mcp.json`, `.mcp.json`, `launch`, `skills/`, `runtime/`) is byte-identical to a build without the OpenCode target; `package-inventory.json` and `provenance.json` differ only by added entries (D12).",
           "when": "the native build runs"
         }
       ],

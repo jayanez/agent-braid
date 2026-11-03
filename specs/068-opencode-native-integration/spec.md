@@ -3,7 +3,7 @@
 **Milestone:** M4.7 — AI tooling integration for OpenCode (proposed; not created)
 
 **Status:** specification only, draft. Nothing is implemented or authorized by
-this change. Owner decisions D1 to D11 of 2026-11-02 and 2026-11-03 are recorded
+this change. Owner decisions D1 to D13 of 2026-11-02 and 2026-11-03 are recorded
 under Clarifications; they authorize no implementation, release or remote tracking.
 
 ## Purpose and scope
@@ -88,6 +88,18 @@ OpenCode 2.1.2 documentation and the 2.1.4 CLI):
   `<server>:<prompt>` commands. The native plugin publishes no MCP prompts.
 - **D11 (OD-8)** The first package that includes OpenCode is
   `0.1.0-alpha.6`; the release itself remains a separate owner decision (T011).
+
+Owner decisions, 2026-11-03 (plan review):
+
+- **D12 (OD-9)** The OpenCode files share the `plugins/agent-braid/` directory
+  with Codex and Claude Code, so the runtime ships once. SC-010 measures
+  byte identity on the files those hosts read; inventory and provenance change
+  only by added entries.
+- **D13 (OD-10)** The legacy OpenCode server keeps the default name
+  `agent-braid`, as on the other hosts; no duplicate server is introduced. When a
+  foreign `agent-braid` entry shadows the native plugin, Agent Braid warns
+  (`plugin doctor`, setup and any write-free host-visible channel T002 finds);
+  resolving the collision is the operator's step (migrate or update).
 
 ## Requirements and acceptance scenarios
 
@@ -217,8 +229,10 @@ hosts, with package-name checks, provenance and inventory entries.
 
 **SC-010:** Given a clean source commit, when the native build runs, then the
 OpenCode package, its inventory and provenance are emitted, package-name checks
-pass, and Codex/Claude artifacts are byte-identical to a build without the
-OpenCode target.
+pass, and every file Codex or Claude Code reads (manifests, `mcp.json`,
+`.mcp.json`, `launch`, `skills/`, `runtime/`) is byte-identical to a build without
+the OpenCode target; `package-inventory.json` and `provenance.json` differ only by
+added entries (D12).
 
 Verification: [procedure_010](validation-plan.md); T004, T008.
 
@@ -260,8 +274,7 @@ every tool, skill, command and hook (ADR 0024).
 
 Planned evidence is in `assurance.json`; obtained evidence is empty. Open
 questions OD-4 to OD-8 were decided on 2026-11-03 (see Clarifications). Plan
-decisions OD-9 (how SC-010 measures Codex/Claude artifact identity) and OD-10
-(default legacy server name for OpenCode) are open in [plan.md](plan.md). New
+decisions OD-9 and OD-10 were decided on 2026-11-03 (D12, D13). New
 questions found by REQ-002 return to the owner.
 
 Native observation, human review and founder approval are separate gates; no

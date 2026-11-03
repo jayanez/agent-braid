@@ -40,7 +40,7 @@ frozen evidence of other specs.
 
 GOVERNANCE: public surface additions carry migration notes in release notes and
 docs. No MUST conflict found. One SHOULD-level departure is proposed for review:
-OD-9 narrows SC-010's "byte-identical artifacts" to host-read files. No
+D12 (OD-9) narrows SC-010's "byte-identical artifacts" to host-read files; the owner accepted it on 2026-11-03. No
 constitutional amendment is proposed.
 
 ## Research, assumptions and alternatives
@@ -77,7 +77,8 @@ row; failure stops the dependent task and returns to the owner.
    alias for Codex and Claude only.
 5. **Legacy profile** per [opencode-legacy-profile.md](contracts/opencode-legacy-profile.md):
    per-host table in `tooling_install.py`, JSONC scanner used only for `opencode`,
-   default server name `agent-braid-tooling` for this host (OD-10).
+   default server name `agent-braid`, as on the other hosts (D13), with a
+   collision warning.
 6. **Telemetry, System One, session identifier.** No change; regression tests
    (REQ-009).
 7. **Release.** First carrier `0.1.0-alpha.6` (D11). The plugin schema stays
@@ -105,18 +106,20 @@ through the clean clone. Negative controls are listed in both contracts.
 No effect, grant, execution path, analysis result or evidence boundary changes.
 The OpenCode binding is an adapter over the unchanged MCP contract; vendor-specific
 behaviour stays in the entry module and the legacy host table. Unobserved host
-behaviour is not claimed. OD-9 and OD-10 are explicit and owner-reviewable.
+behaviour is not claimed. D12 and D13 are recorded owner decisions.
 
 ## Human review and unresolved decisions
 
-- **OD-9 SC-010 measurement.** Recommendation: "byte-identical" applies to files
-  Codex and Claude Code read (manifests, `mcp.json`, `.mcp.json`, `launch`,
-  `skills/`, `runtime/`); `package-inventory.json` and `provenance.json` change
-  additively. Alternative: separate directory (rejected in R2). Requires an SC-010
-  wording change after owner approval.
-- **OD-10 Legacy server name for OpenCode.** Recommendation: default
-  `agent-braid-tooling`, so the native and legacy servers cannot collide.
-  Alternative: keep `agent-braid` and document the collision, as SPEC-060 OD-5 did.
+- **OD-9 SC-010 measurement. DECIDED (D12): shared directory.** Byte identity
+  applies to files Codex and Claude Code read (manifests, `mcp.json`, `.mcp.json`,
+  `launch`, `skills/`, `runtime/`); `package-inventory.json` and `provenance.json`
+  change only by added entries. SC-010 is amended accordingly.
+- **OD-10 Legacy server name for OpenCode. DECIDED (D13): `agent-braid`.** Same
+  default as the other hosts; no duplicate server. Coexistence (for example a
+  project `opencode.json` with a legacy entry committed by a teammate, or a
+  migration not yet completed) shadows the native plugin; Agent Braid warns and
+  the operator resolves it with `plugin legacy` or by updating. The recommendation
+  `agent-braid-tooling` was not selected.
 - **ADR 0037 adoption.** Proposed; adoption authorizes no implementation by itself.
 - T002 findings that contradict R1–R7 return to the owner before T003–T007.
 

@@ -3,16 +3,16 @@
 A checked item records that the artifact contains the element; it is not
 validation, approval or evidence that the host behaves as documented. Items
 marked with an analysis finding (A-n) stay open until the finding is resolved;
-A-2 to A-9 were resolved in the artifacts on 2026-11-03, A-1 waits for OD-9.
+A-1 to A-9 were resolved in the artifacts on 2026-11-03 (A-1 by owner decision D12).
 
 ## Requirement clarity
 
 - [x] CHK-001 Purpose, scope, exclusions and the SPEC-039 route are stated (`spec.md` §Purpose and scope).
 - [x] CHK-002 Owner decisions D1–D11 are recorded with dates (`spec.md` §Clarifications).
-- [ ] CHK-003 SC-010 agrees with the plan's shared-directory design. Pending OD-9 (`spec.md` REQ-010, `plan.md` §Human review; finding A-1).
+- [x] CHK-003 SC-010 agrees with the plan's shared-directory design. Decided D12 (`spec.md` REQ-010, `plan.md` §Human review; finding A-1).
 - [x] CHK-004 Surface contract does not both forbid file writes and require the entry to "record" collisions (`contracts/opencode-surface.md` §MCP server; finding A-2 resolved 2026-11-03).
 - [x] CHK-005 Host permission configuration for `agent-braid_*` and `agent-braid-tooling_*` tools is specified or explicitly excluded (both contracts; finding A-6).
-- [x] CHK-006 Default legacy server name and its collision rationale are stated (`contracts/opencode-legacy-profile.md` §Owned entry; OD-10 pending).
+- [x] CHK-006 Default legacy server name and its collision rationale are stated (`contracts/opencode-legacy-profile.md` §Owned entry; decided D13, `agent-braid` with a `native_plugin_shadowed` warning).
 
 ## Normative references
 

@@ -47,7 +47,7 @@ new owner decision (D3).
 `package-inventory.json` and `provenance.json`. "Byte-identical Codex/Claude
 artifacts" is therefore measured on the files those hosts read (their manifests,
 `mcp.json`, `.mcp.json`, `launch`, `skills/`, `runtime/`), while inventory and
-provenance change additively. Recorded as OD-9 for owner confirmation.
+provenance change additively. Accepted by the owner as D12 on 2026-11-03.
 
 **Limit.** Preservation of executable bits, bytes and size by the Git install is the
 D3 gate in T002.
