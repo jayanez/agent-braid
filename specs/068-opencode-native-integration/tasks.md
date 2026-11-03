@@ -112,6 +112,8 @@ Commands run from the clean clone; `quick` means
   foreign key changed; repeat apply writes; unowned entry overwritten;
   `ambiguous_configuration`; failed write without rollback; Codex/Claude preview,
   receipt or diagnostic bytes changed.
+  Done: PR #1019; tests `tests/test_tooling_install_opencode.py` and
+  `tests/test_tooling_install_golden.py`.
 
 - [ ] T008 (REQ-009 / SC-009; REQ-010 / SC-010): Regression: SPEC-046, 047, 054,
   060 and 066 contracts unchanged; envelopes and stores byte-identical with and
