@@ -9,6 +9,10 @@ sandbox, no ``claude`` and no network connection, and prints a JSON verdict. Wit
 builds the T005 backend, the T006 transport factory and the T007 runner (``make_qualification_runner``),
 runs the whole catalog (at most three small Haiku sessions, NC-10) and writes the evidence bundle.
 
+``--operator-account`` is required: the founder's own daily account, compared by uid with the account the
+driver runs as (RV-16, amended by the founder on 2026-11-03). The owner of ``/dev/console`` is no longer
+examined, because fast user switching makes the dedicated account that owner.
+
 Everything fails closed: any failed check refuses the attempt before anything native runs. The driver
 issues no qualification record. The backend constructor needs verified records bound to the environment
 hash, so the driver builds attempt-scoped ones in memory (``evidenceSha256`` all zeros, short expiry); they
@@ -16,8 +20,8 @@ are never written, are not issuable evidence and issuance stays T010 (NC-9, foun
 ``executionAuthorization`` is ``false`` in every output.
 
 NC-6 with the operator as reader (operator-attested: the values are typed, not read by the orchestrator
-session): before and after each session the driver asks on the terminal for the Claude Desktop usage card
-(5-hour %, weekly %, extra usage, reading time) and refuses a missing, malformed, future-dated or stale
+session): before and after each session the driver asks on the terminal for the usage card (claude.ai
+Usage or the phone) (5-hour %, weekly %, extra usage, reading time) and refuses a missing, malformed, future-dated or stale
 (> 5 min) reading; ``harness_quota`` applies the < 90 % start rule, the weekly and extra-usage stops and the
 NC-10 2 % rule.
 
@@ -107,9 +111,6 @@ class System:
         except KeyError:
             return None
 
-    def console_uid(self) -> int:
-        return os.stat("/dev/console").st_uid
-
     def groups(self, name: str, gid: int) -> tuple[int, ...]:
         return tuple(sorted(set(os.getgrouplist(name, gid))))
 
@@ -162,7 +163,10 @@ class System:
         return os.access(path, os.X_OK)
 
     def other_homes(self, account: str) -> list[str]:
-        """Home directories of every local account other than ``account`` (uid >= 500), and the console user's."""
+        """Home directories of every local account other than ``account`` (uid >= 500), and the console user's.
+
+        Under fast user switching the console user can be ``account`` itself, which is then left out.
+        """
         homes = {entry.pw_dir for entry in pwd.getpwall() if entry.pw_uid >= 500 and entry.pw_name != account}
         try:
             console = pwd.getpwuid(os.stat("/dev/console").st_uid)
@@ -181,8 +185,8 @@ class System:
     def host_facts(self):
         return _mac.host_facts()
 
-    def account_facts(self, account: str, entry, uid: int):
-        return _mac._account_facts(account, entry, uid)  # the backend's own account check
+    def account_facts(self, account: str, entry, uid: int, operator_uid: int):
+        return _mac._account_facts(account, entry, uid, operator_uid)  # the backend's own account check
 
     def supervisor(self) -> str:
         return os.path.realpath(sys.executable)
@@ -297,6 +301,17 @@ def _out_dir_check(system: System, out_dir: str) -> dict:
                        "(a finished bundle is never reused: pick a new --out-dir only if no session was spent)")
 
 
+_OPERATOR_WHY = {
+    "operator-account-unresolved": "the operator account is missing, not a valid account name, unknown to this "
+                                   "machine or a system account (uid < 500); pass the founder's own account "
+                                   "(--operator-account)",
+    "invalid-policy": "the operator account is the dedicated account itself; pass the founder's own account "
+                      "(--operator-account)",
+    "dedicated-user-unsafe": "the account is a system account (uid < 500) or has the operator's uid; the backend "
+                             "refuses this (RV-16)",
+}
+
+
 def preflight(args: argparse.Namespace, system: System) -> dict:
     """Every check, none skipped after a failure. Starts nothing native; reads the host only."""
     checks: list[dict] = []
@@ -309,20 +324,23 @@ def preflight(args: argparse.Namespace, system: System) -> dict:
     add(_check("environment-deny-variables", not present,
                "none present" if not present else f"present: {', '.join(present)}"))
 
-    # who runs this: the dedicated, standard, non-console account
+    # who runs this: the dedicated, standard account that is neither a system account nor the operator's own
+    # (RV-16 amended 2026-11-03: the console owner is not examined; fast user switching makes it this account)
     uid, euid = system.ids()
     entry = system.passwd_by_uid(uid)
     home = getattr(entry, "pw_dir", None)
     add(_check("user-is-dedicated-account", entry is not None and entry.pw_name == args.account
                and uid == euid and uid != 0,
                f"running as {getattr(entry, 'pw_name', 'unknown')!r}, expected {args.account!r}, uid==euid, not root"))
-    try:
-        console = system.console_uid()
-    except OSError:
-        console = None
-    ok = console is not None and uid != console
-    add(_check("user-is-not-console-user", ok, "the account is not the console user" if ok
-               else "the account owns /dev/console (or it is unreadable); the backend refuses this (RV-16)"))
+    name = args.operator_account if isinstance(getattr(args, "operator_account", None), str) else ""
+    operator = system.passwd_by_name(name) if _mac._ACCOUNT.fullmatch(name) is not None else None
+    operator_uid = getattr(operator, "pw_uid", None)
+    # the backend owns the rule (RV-16); the driver only words the refusal
+    reason = _mac._operator_refusal(args.account, uid, name, operator_uid)
+    why = _OPERATOR_WHY.get(reason, "") if reason else ""
+    add(_check("user-is-not-operator-account", reason is None,
+               why or f"the account is not the operator account {name!r}"))
+    operator_ok = reason is None
     try:
         gids = system.groups(args.account, entry.pw_gid) if entry is not None else ()
     except OSError:
@@ -334,7 +352,8 @@ def preflight(args: argparse.Namespace, system: System) -> dict:
         add(_private_dir(system, home, uid, "account-home-private"))
     else:
         add(_check("account-home-private", False, "account or home unknown"))
-    others = [h for h in system.other_homes(args.account) if h != home]
+    operator_home = getattr(operator, "pw_dir", None)
+    others = sorted({h for h in (*system.other_homes(args.account), operator_home) if h and h != home})
     open_homes = [h for h in others if system.can_traverse(h)]
     ok = bool(others) and not open_homes
     add(_check("founder-home-unreadable", ok,
@@ -350,7 +369,7 @@ def preflight(args: argparse.Namespace, system: System) -> dict:
         observed["os"] = {"product": facts.product, "build": facts.build, "arch": facts.arch}
         os_ok = (_mac._OS_SERIES.fullmatch(facts.product) is not None
                  and _mac._BUILD.fullmatch(facts.build) is not None)
-        add(_check("os-supported", os_ok, f"macOS {facts.product} ({facts.build}); NC-3 allows 27.0.x only"))
+        add(_check("os-supported", os_ok, f"macOS {facts.product} ({facts.build}); NC-3 allows the 27.x series only"))
     except LabError as exc:
         facts = None
         add(_check("os-supported", False, f"cannot read the OS facts: {exc.reason}"))
@@ -419,9 +438,9 @@ def preflight(args: argparse.Namespace, system: System) -> dict:
         add(_check("policy-valid", True, "ContainmentPolicy accepted"))
     except (LabError, TypeError, ValueError) as exc:
         add(_check("policy-valid", False, f"refused: {getattr(exc, 'reason', exc)}"))
-    if policy is not None and facts is not None and entry is not None:
+    if policy is not None and facts is not None and entry is not None and operator_ok:
         try:
-            account_facts = system.account_facts(args.account, entry, uid)
+            account_facts = system.account_facts(args.account, entry, uid, operator_uid)
             observed["environmentSha256"] = _mac.environment_sha256(policy, facts, uid, account_facts)
             add(_check("environment-hash", True, "computed"))
         except LabError as exc:
@@ -446,7 +465,9 @@ def _build_policy(args: argparse.Namespace) -> _mac.ContainmentPolicy:
 
 
 class UsageCardReader:
-    """Asks the operator for the Claude Desktop usage card; returns a ``harness_quota`` reading or ``None``.
+    """Asks the operator for the usage card (claude.ai Usage or the phone).
+
+    Returns a ``harness_quota`` reading or ``None``.
 
     Each field is asked up to ``READ_TRIES`` times, so a typo does not spend a session or end the attempt.
     ``None`` (missing, still malformed, future-dated or older than five minutes) is a refusal the quota module
@@ -477,7 +498,8 @@ class UsageCardReader:
         return {"y": True, "yes": True, "n": False, "no": False}.get(raw)
 
     def read(self, role: str) -> dict | None:
-        self._say(f"\n[NC-6] Read the Claude Desktop usage card (the 5-hour and weekly usage) now, {role} this session."
+        self._say(f"\n[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, "
+                  f"{role} this session."
                   " The reading must be no older than 5 minutes when you answer.")
         try:
             five_hour = self._field("  5-hour window used (0-100, as shown on the card): ", self._percent)
@@ -599,6 +621,7 @@ def run_attempt(args: argparse.Namespace, system: System, *, ask: Callable[[str]
 
     probe_runner = _probes.make_f4_probe_runner(arena_parent=args.arena_parent, workdir_factory=workdir)
     backend = backend_factory(policy, probe_runner=probe_runner, clock=time.time,
+                              operator_account=args.operator_account,
                               **attempt_records(environment_sha, int(time.time())))
 
     def transport_factory() -> NativeClaudeTransport:
@@ -637,6 +660,8 @@ def parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("--attempt", required=True, help="attempt label, e.g. t009-20261104")
     p.add_argument("--account", default=DEFAULT_ACCOUNT)
+    p.add_argument("--operator-account", required=True,
+                   help="the founder's own daily account (short name); the lab never runs as it (RV-16)")
     p.add_argument("--claude", required=True, help="pinned root-owned claude, absolute path")
     p.add_argument("--claude-sha256")
     p.add_argument("--interpreter", required=True)

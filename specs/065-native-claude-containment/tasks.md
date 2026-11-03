@@ -202,11 +202,15 @@ shared object store fails the portable-root check).
   `scripts/har_t009_attempt.py` (`tests/test_har_t009_attempt.py`; `--dry-run` is
   pre-flight only) and the runbook is quickstart.md "Operator setup for T009".
   Nothing native has run; `executionAuthorization` stays false and issuance stays
-  T010. The driver's dry run on the founder's machine is expected to refuse on
-  `os-supported` (macOS 27.2, NC-3 allows 27.0.x) and, under fast user switching, on
-  `user-is-not-console-user` (RV-16) until founder decisions and re-checked backend edits
-  say otherwise; the runbook says so before step 1 and records both, with the NC-6 reader
-  (operator-attested in the driver), as still open in the founder record. This task
+  T010. Blockers resolved by the founder on 2026-11-03
+  (`evidence/founder-decisions-20261103b.json`): NC-3 amended to the whole macOS 27.x
+  series, RV-16 changed (the console owner is no longer refused; the founder's own
+  account, privileged gids and uids below 500 are, through the driver's required
+  `--operator-account`), NC-6 readings typed by the operator from claude.ai Usage or the
+  phone (self-attested), and in-memory attempt records accepted (not issuance). The
+  backend and driver edits are re-checked in `evidence/recheck-t009-unblock.md`; a
+  re-check by the orchestrator is required before the founder starts the runbook, and the
+  dry run on the founder's machine is the next evidence. This task
   stays unchecked.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews

@@ -31,11 +31,11 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
   the run; the same values land in ``run_evidence``.
 
 Before every run the backend takes an exclusive lock on ``run_root`` and re-verifies both
-trusted qualification records, the OS window, the account (not privileged, not the console
-user, a private home), the mechanism and executable hashes, the recomputed environment
-hash, a profile compile check that must report the exec of ``/usr/bin/false`` as denied and
-an allow-listed command as run, no leftover backend directory from an earlier run, a proxy
-whose accept loop is alive, and the NC-11 probe subset through the injected T007 probe
+trusted qualification records, the OS window, the account (not privileged, not a system
+account, not the operator's own account, a private home), the mechanism and executable
+hashes, the recomputed environment hash, a profile compile check that must report the exec
+of ``/usr/bin/false`` as denied and an allow-listed command as run, no leftover backend directory
+from an earlier run, a proxy whose accept loop is alive, and the NC-11 probe subset through the injected T007 probe
 runner. Any failure refuses with a fixed ``LabError`` reason before the child
 starts and is appended to ``run_evidence``. It never degrades and never falls back to
 ``SimulatedContainment``. The observed Claude version is checked by the T006 transport;
@@ -103,7 +103,8 @@ EXIT_SANDBOX_COMPILE = 65
 EXIT_SANDBOX_EXEC_DENIED = 71
 _MECHANISM_UID = 0  # sandbox-exec must be root-owned
 _SHARED_WRITE = stat.S_IWGRP | stat.S_IWOTH
-_OS_SERIES = re.compile(r"27\.0(?:\.\d{1,3})?\Z")  # NC-3
+# NC-3, amended 2026-11-03: the whole 27.x series; ASCII digits, canonical (no leading zeros)
+_OS_SERIES = re.compile(r"27\.(?:0|[1-9][0-9]{0,2})(?:\.(?:0|[1-9][0-9]{0,2}))?\Z")
 _BUILD = re.compile(r"[0-9]{2}[A-Z][0-9]{1,5}[a-z]?\Z")
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _ACCOUNT = re.compile(r"[a-z_][a-z0-9_-]{0,31}\Z")
@@ -112,6 +113,7 @@ _ENDPOINT = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-
 _OWNED = ("run-", "compile-")  # run_root directories the backend creates and removes
 _RESERVED = (*_OWNED, ".")  # run_root entries the backend owns
 _PRIVILEGED_GIDS = frozenset({0, 80})  # wheel, admin
+_MIN_HUMAN_UID = 500  # below it: system accounts (RV-16, amended 2026-11-03)
 _POLL_SECONDS = 0.05
 _COMPILE_TIMEOUT_SECONDS = 20
 _STREAM_CHUNK_BYTES = 65_536  # per read, so a large output bound never allocates a large buffer
@@ -437,19 +439,30 @@ def _account_groups(account: str, gid: int) -> tuple[int, ...]:
     return tuple(sorted(set(os.getgrouplist(account, gid))))
 
 
-def _console_uid() -> int:
-    return os.stat("/dev/console").st_uid
+def _operator_refusal(account: str, uid: int, operator: str, operator_uid: int | None) -> str | None:
+    """The refusal reason for the RV-16 operator rule, or None. Shared by the backend and the T009 driver."""
+    if operator_uid is None or operator_uid < _MIN_HUMAN_UID:
+        return "operator-account-unresolved"
+    if operator == account:
+        return "invalid-policy"
+    if uid < _MIN_HUMAN_UID or uid == operator_uid:
+        return "dedicated-user-unsafe"
+    return None
 
 
-def _account_facts(account: str, entry, uid: int) -> AccountFacts:
-    """Refuse an account that is privileged, the console user or has an open home (RV-16)."""
+def _account_facts(account: str, entry, uid: int, operator_uid: int) -> AccountFacts:
+    """Refuse a privileged or system account, the operator's own, or one with an open home (RV-16).
+
+    RV-16 amended (founder, 2026-11-03): the owner of ``/dev/console`` is no longer refused, because
+    fast user switching makes the dedicated account the console owner. The lab must still never run
+    as the operator's daily account, so that account is named explicitly and compared by uid.
+    """
     try:
         gids = _account_groups(account, entry.pw_gid)
-        console = _console_uid()
         home = os.lstat(entry.pw_dir)
     except OSError:
         raise LabError("dedicated-user-unsafe") from None
-    _require(not _PRIVILEGED_GIDS & {entry.pw_gid, *gids} and uid != console
+    _require(not _PRIVILEGED_GIDS & {entry.pw_gid, *gids} and uid >= _MIN_HUMAN_UID and uid != operator_uid
              and stat.S_ISDIR(home.st_mode) and home.st_uid == uid and not home.st_mode & 0o077,
              "dedicated-user-unsafe")
     return AccountFacts(gids, stat.S_IMODE(home.st_mode))
@@ -953,9 +966,13 @@ class MacOSContainment(ContainmentBackend):
 
     def __init__(self, policy: ContainmentPolicy, *, qualification: bytes, qualification_sha256: str,
                  host_qualification: bytes, host_qualification_sha256: str,
-                 probe_runner: ProbeRunner | None, clock: Callable[[], float] = time.time):
+                 probe_runner: ProbeRunner | None, operator_account: str,
+                 clock: Callable[[], float] = time.time):
         _require(isinstance(policy, ContainmentPolicy), "invalid-policy")
+        _require(type(operator_account) is str and _ACCOUNT.fullmatch(operator_account) is not None
+                 and operator_account != policy.account, "invalid-policy")
         self.policy = policy
+        self.operator_account = operator_account  # the account the lab must never run as (RV-16)
         self.qualification: Qualification = verify_qualification(
             qualification, expected_sha256=qualification_sha256)
         try:
@@ -1029,7 +1046,13 @@ class MacOSContainment(ContainmentBackend):
             raise LabError("dedicated-user-required") from None
         uid = account.pw_uid
         _require(uid != 0 and os.getuid() == uid and os.geteuid() == uid, "dedicated-user-required")
-        account_facts = _account_facts(policy.account, account, uid)
+        try:
+            operator_uid = pwd.getpwnam(self.operator_account).pw_uid
+        except KeyError:
+            raise LabError("operator-account-unresolved") from None
+        _require(operator_uid >= _MIN_HUMAN_UID, "operator-account-unresolved")
+        evidence["operator"] = {"account": self.operator_account, "uid": operator_uid}
+        account_facts = _account_facts(policy.account, account, uid, operator_uid)
         evidence["account"] = {"gids": list(account_facts.gids), "homeMode": account_facts.home_mode}
         info = _lstat(SANDBOX_EXEC, "mechanism-unavailable")
         _require(stat.S_ISREG(info.st_mode) and info.st_uid == _MECHANISM_UID
