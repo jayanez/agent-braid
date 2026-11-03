@@ -1,0 +1,32 @@
+{
+  "command": "python -m unittest tests.test_view_serve tests.test_view_tail tests.test_view_docs; then the full VIS.1a command of vis1a-local-tests-20261103.json (tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles)",
+  "environment": "macOS, Python 3.13.11 venv without setuptools, local unittest only, run at commit 34db87a2697d93db9d32f57cd6a317aaca930261 (develop after PR #1013)",
+  "fixes": {
+    "F1": {
+      "change": "ArtifactTail._walk visits directories newest name first, so a store cap that is reached refuses the oldest report copies, with its stream-truncated gap, and never the newest",
+      "closureFinding": 1,
+      "requirement": "REQ-006",
+      "scenario": "SC-006",
+      "task": "T045",
+      "tests": [
+        "tests.test_view_tail.BoundTests.test_when_a_store_cap_is_reached_the_newest_report_copies_win",
+        "tests.test_view_tail.IngestTests.test_nested_artifacts_get_a_root_relative_posix_evidence_path_with_newest_directory_first"
+      ]
+    },
+    "F2": {
+      "change": "each viewer names its session cookie braid_view_<port> (still HttpOnly, SameSite=Strict, Path=/), so two viewers on loopback do not overwrite each other's session",
+      "closureFinding": 2,
+      "requirement": "REQ-004",
+      "scenario": "SC-004",
+      "task": "T046",
+      "tests": [
+        "tests.test_view_serve.CredentialTests.test_two_viewers_on_loopback_keep_separate_sessions",
+        "tests.test_view_serve.CredentialTests.test_open_code_is_exchanged_once_for_a_strict_http_only_cookie"
+      ]
+    }
+  },
+  "limits": "Local unit tests on one machine. They show that the two fixes behave as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), not a browser test with two real viewers, and not an independent review. The F1 test covers a store cap across a flat set of report directories; a cap reached inside one directory still refuses by name order. Names only: no cookie, token or open-code value is recorded.",
+  "outcome": "tests.test_view_serve, tests.test_view_tail and tests.test_view_docs: 150 tests OK. Full VIS.1a command after the fixes: 676 tests, OK, 5 skipped (wheel and sdist build tests that need Python 3.12+ with setuptools 68+, which CI runs). Closure findings 1 and 2 are closed; findings 3 to 12 remain open under T047.",
+  "recordedAt": "2026-11-03",
+  "task": "T037 (VIS.1a closure), receipt for PR #1013"
+}

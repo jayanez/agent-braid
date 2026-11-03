@@ -274,5 +274,7 @@ per-probe owner authorization but no ADR, and run first.
 - [ ] T036: Pre-PR reviews (code review, quality, simplification),
   `validate_change --profile pr` on the stable candidate, `/speckit-converge`, at
   the VIS.1a and VIS.1b closures. Dependencies: the delivery's tasks.
+  VIS.1a: done 2026-11-03 (#1011 closure review, #1013 fixes, this PR). The VIS.1b
+  closure remains open, so the box stays unticked until it is done.
 - [ ] T037: Record obtained evidence in `assurance.json`, freeze, owner review of
   each delivery closure. Dependencies: T036.
