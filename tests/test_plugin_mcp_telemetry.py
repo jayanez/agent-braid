@@ -195,15 +195,25 @@ class PluginTelemetryTests(unittest.TestCase):
 
     def test_serve_counts_a_start_only_once_the_server_exists(self):
         import asyncio
+        import sys
+        import types
         from agent_braid import plugin_mcp
         self.start()
-        with patch.object(plugin_mcp, 'create_server', side_effect=RuntimeError('sdk mismatch')):
-            with self.assertRaises(RuntimeError):
-                asyncio.run(plugin_mcp.serve(self.home))
-        self.assertFalse(self.store.exists())
-        with patch.object(plugin_mcp, 'create_server'), patch('mcp.server.stdio.stdio_server', side_effect=RuntimeError('stop')):
-            with self.assertRaises(RuntimeError):
-                asyncio.run(plugin_mcp.serve(self.home))
+
+        def stop(**_kwargs):
+            raise RuntimeError('stop')
+        # Stub the SDK modules serve() imports, so the wiring is checked even where `mcp` is not installed.
+        stdio = types.ModuleType('mcp.server.stdio')
+        stdio.stdio_server = stop
+        fakes = {'mcp': types.ModuleType('mcp'), 'mcp.server': types.ModuleType('mcp.server'), 'mcp.server.stdio': stdio}
+        with patch.dict(sys.modules, fakes):
+            with patch.object(plugin_mcp, 'create_server', side_effect=RuntimeError('sdk mismatch')):
+                with self.assertRaises(RuntimeError):
+                    asyncio.run(plugin_mcp.serve(self.home))
+            self.assertFalse(self.store.exists())
+            with patch.object(plugin_mcp, 'create_server'):
+                with self.assertRaises(RuntimeError):
+                    asyncio.run(plugin_mcp.serve(self.home))
         self.assertEqual(self.cells(), {('lifecycle', 'serve-start', 'ok', 'calls', 'all'): 1})
 
     def test_grant_store_overlap_is_unsafe_path_and_a_missing_one_is_grant_missing(self):
