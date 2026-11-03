@@ -151,7 +151,7 @@ per-probe owner authorization but no ADR, and run first.
   `LICENSES/`, `NOTICE`, `scripts/validate_repository.py`,
   `docs/development/THIRD_PARTY.md`, `specs/061-activity-viewer/evidence/`.
   Verification: procedure_010. Done 2026-11-02: PR #958. Receipt: `evidence/vendor-threejs-20261102.json`.
-- [ ] T025 (REQ-010 / SC-010): Three.js braid scene with the hashed import map,
+- [x] T025 (REQ-010 / SC-010): Three.js braid scene with the hashed import map,
   bound to the same model and evidence panel as the table view. Files:
   `integrations/agent-braid-view/web/*`. Dependencies: T023, T024. Verification:
   procedure_010.
