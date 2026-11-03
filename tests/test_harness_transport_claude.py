@@ -186,6 +186,23 @@ class Fixture:
             quota=quota, clock=lambda: CLOCK, environ={} if environ is None else environ)
 
 
+class InitWatchTests(unittest.TestCase):
+    def test_a_non_string_key_source_is_a_route_violation_not_an_error(self):
+        # F5: an unhashable apiKeySource must not escape feed() as a TypeError
+        for value in (["x"], {"a": 1}, 1, None, True):
+            stop = threading.Event()
+            watch = tc._InitWatch(stop)
+            line = canonical({"type": "system", "subtype": "init", "apiKeySource": value}) + b"\n"
+            watch.feed(line)
+            self.assertEqual((watch.violation, watch.done, stop.is_set()), ("route", True, True), value)
+
+    def test_subscription_key_sources_pass(self):
+        for value in sorted(hc.SUBSCRIPTION_KEY_SOURCES):
+            watch = tc._InitWatch(threading.Event())
+            watch.feed(canonical({"type": "system", "subtype": "init", "apiKeySource": value}) + b"\n")
+            self.assertEqual((watch.violation, watch.done), (None, True))
+
+
 class NativeTransportTests(unittest.TestCase):
     def setUp(self):
         self.fx = Fixture(self)

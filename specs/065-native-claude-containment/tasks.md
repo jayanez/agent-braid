@@ -166,17 +166,52 @@ shared object store fails the portable-root check).
   4 high; static review, nothing native ran) plus the founder dispositions of
   RV-17, RV-19 and RV-21 in `evidence/founder-decisions-20261102.json`
   (2026-11-02; `executionAuthorization` false). The fix-in-T005 and fix-in-T007
-  findings are being fixed in follow-up tracks, with a delta review, before T009.
+  findings were fixed in T005/T007 follow-ups (#957, #959, #966), reviewed again in
+  `evidence/probe-catalog-delta-review.md` (#975) and fixed in #979
+  (`evidence/pre-t009-fixes.json`; founder records `founder-decisions-20261102b.json`,
+  the launch-probe deviation, and `founder-decisions-20261102c.json`, DRV-06 and
+  DRV-10). The mini delta re-check `evidence/probe-catalog-delta-recheck.md` (#985) gave
+  GO for engineering readiness only, with residuals MDRV-01 to MDRV-04. No record is
+  issued and `executionAuthorization` stays false.
 
 - [ ] T009 (REQ-005 / SC-005; REQ-006 / SC-006; REQ-007 / SC-007; REQ-008 / SC-008; REQ-010 / SC-010; REQ-003 / SC-003): Qualification attempt on the
   founder's machine: run the full catalog in both modes for the decided
   configuration, including HOST-01 within the NC-10 budget with pre/post quota
   readings. Keep the bundle whatever the outcome. Dependencies: T002 accepted,
-  T006, T007, T008; founder go for the live session(s). Files:
+  T006, T007, T008; founder go for the live session(s). Preconditions from the
+  delta re-check (engineering readiness, not an authorization): any edit to the
+  backend, probes, transport or quota module moves the environment and catalog
+  hash and needs a new re-check of the touched lines before the attempt; carry
+  the residuals DRV-04, 07, 08, 09, 11, 13, 15 and MDRV-01 to MDRV-04 into the
+  bundle summary and the T010 decision. The HAR consolidation review touched
+  `_egress_verdict`, `classify_session`, the runner `endpoints` option and
+  `make_qualification_runner` in `harness_qualification_probes.py` (NET-05-CLI
+  judged against the policy endpoints) and `_InitWatch._line` in
+  `harness_transport_claude.py` (non-string `apiKeySource`); both need the
+  re-check of the touched lines. Files:
   `specs/065-native-claude-containment/evidence/qualification/<attempt>/`.
   Verification: procedure_005 to procedure_008 and procedure_010.
   Evidence: the bundle and its SHA-256. A not-qualified or inconclusive result
   completes this task as a valid negative outcome (H1 not supported).
+  Status 2026-11-03: the founder gave a conditional go
+  (`evidence/founder-decisions-20261103.json`: the orchestrator prepares evidence and
+  a checklist, the founder runs the sudo setup, the orchestrator verifies it, then the
+  founder launches the attempt in the dedicated account's own login session) and chose
+  the sysadminctl commands for the standard account. The re-check of the #988 lines is
+  `evidence/recheck-988-touched-lines.md` (GO, no fixes). The operator-run driver is
+  `scripts/har_t009_attempt.py` (`tests/test_har_t009_attempt.py`; `--dry-run` is
+  pre-flight only) and the runbook is quickstart.md "Operator setup for T009".
+  Nothing native has run; `executionAuthorization` stays false and issuance stays
+  T010. Blockers resolved by the founder on 2026-11-03
+  (`evidence/founder-decisions-20261103b.json`): NC-3 amended to the whole macOS 27.x
+  series, RV-16 changed (the console owner is no longer refused; the founder's own
+  account, privileged gids and uids below 500 are, through the driver's required
+  `--operator-account`), NC-6 readings typed by the operator from claude.ai Usage or the
+  phone (self-attested), and in-memory attempt records accepted (not issuance). The
+  backend and driver edits are re-checked in `evidence/recheck-t009-unblock.md`; a
+  re-check by the orchestrator is required before the founder starts the runbook, and the
+  dry run on the founder's machine is the next evidence. This task
+  stays unchecked.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes
@@ -188,7 +223,9 @@ shared object store fails the portable-root check).
   `_check_transport`/`_check_backend` against the native manifest. If CRED-05
   observed a subscription `apiKeySource` outside `SUBSCRIPTION_KEY_SOURCES`, the
   constant changes only in a separate reviewed edit citing the bundle, before
-  issuance; it is never widened without that record. Dependencies:
+  issuance; it is never widened without that record. The issuer also knows that the
+  environment hash omits `harness_manifest.py`, `harness_context.py`,
+  `harness_observation.py` and `system_one.py` (MDRV-04). Dependencies:
   T009. Files: `specs/065-native-claude-containment/evidence/qualification/issuance-<date>.json`;
   only for K5: `agent_braid/harness_host_claude.py`, `tests/test_harness_host_claude.py`.
   Verification: procedure_009. Negative controls: runner-produced record,

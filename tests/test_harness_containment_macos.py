@@ -37,6 +37,7 @@ from tests.test_harness_lab import make_inventory, native_manifest
 NOW = 1_800_000_000
 FACTS = mac.HostFacts("27.0.1", "26A434", "arm64")
 ACCOUNT = "braid-lab"
+OPERATOR = "founder-op"
 FIXTURE = b'import json\nopen("out.txt", "w").write("ok")\nprint(json.dumps({"seq": 0, "kind": "start"}))\n'
 INTERPRETER = os.path.realpath(sys.executable)
 # Stands in for sandbox-exec: drops its options and execs the target unchanged.
@@ -118,18 +119,20 @@ def expected_probes(probe: str, _backend) -> str:
     return dict(mac.F4_PROBES)[probe]
 
 
-def make_backend(machine: Machine, *, runner=expected_probes, **record_args) -> mac.MacOSContainment:
+def make_backend(machine: Machine, *, runner=expected_probes, operator: str = OPERATOR,
+                 **record_args) -> mac.MacOSContainment:
     return mac.MacOSContainment(machine.policy, probe_runner=runner, clock=lambda: NOW,
-                                **records(machine.environment(), **record_args))
+                                operator_account=operator, **records(machine.environment(), **record_args))
 
 
 @contextmanager
 def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = None, darwin: bool = True,
          stub_compile_check: bool = True, processes=None, env: dict | None = None,
          mechanism_uid: int | None = None, gids: tuple[int, ...] = (20,), pw_gid: int = 20,
-         console: int = -1, home: str | None = None, parent=None):
+         operator_uid: int | None = None, home: str | None = None, parent=None):
     """Stub every Darwin fact; ``processes`` stubs the per-user process listing.
 
+    Runs as the test runner's uid, which must be at least 500 (``_MIN_HUMAN_UID``, RV-16).
     The parent environment is cleared of ``ENV_DENY`` names (a developer shell may
     carry them), then ``env`` is applied. The full executable trust check applies to
     the fixtures in the temporary tree; the developer's interpreter (group-writable
@@ -145,6 +148,9 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
             raise lab.LabError(drift)
 
     def getpwnam(name):
+        if name == OPERATOR:  # a different, ordinary human account (uid >= 500)
+            return SimpleNamespace(pw_uid=max(os.getuid(), 500) + 1 if operator_uid is None else operator_uid,
+                                   pw_gid=20, pw_dir="/Users/founder-op")
         if name != ACCOUNT:
             raise KeyError(name)
         return SimpleNamespace(pw_uid=uid, pw_gid=pw_gid, pw_dir=home or machine.home)
@@ -160,7 +166,7 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
             "_MECHANISM_UID": os.getuid() if mechanism_uid is None else mechanism_uid,
             "_user_processes": processes or (lambda uid: BASELINE),
             "_resident_bytes": lambda processes: 0, "_account_groups": lambda account, gid: gids,
-            "_console_uid": lambda: console, "_process_parent": parent or (lambda pid: None),
+            "_process_parent": parent or (lambda pid: None),
             "_trusted_file": trusted,
         }
         for name, value in patches.items():
@@ -375,17 +381,25 @@ class ConstructionTests(unittest.TestCase):
         }
         for reason, change in cases.items():
             with self.subTest(reason), self.assertRaises(lab.LabError) as caught:
-                mac.MacOSContainment(machine.policy, probe_runner=expected_probes,
+                mac.MacOSContainment(machine.policy, probe_runner=expected_probes, operator_account=OPERATOR,
                                      **records(environment, **change))
             self.assertEqual(caught.exception.reason, reason)
         good = records(environment)
         for key in ("qualification_sha256", "host_qualification_sha256"):
             with self.subTest(key), self.assertRaises(lab.LabError) as caught:
-                mac.MacOSContainment(machine.policy, probe_runner=expected_probes, **(good | {key: "0" * 64}))
+                mac.MacOSContainment(machine.policy, probe_runner=expected_probes, operator_account=OPERATOR,
+                                     **(good | {key: "0" * 64}))
             self.assertEqual(caught.exception.reason, "qualification-drift")
         with self.assertRaises(lab.LabError) as caught:
-            mac.MacOSContainment(object(), probe_runner=expected_probes, **good)
+            mac.MacOSContainment(object(), probe_runner=expected_probes, operator_account=OPERATOR, **good)
         self.assertEqual(caught.exception.reason, "invalid-policy")
+        for operator in (ACCOUNT, "", "Bad Name", None, 501):  # the lab account itself, or not an account name
+            with self.subTest(operator=operator), self.assertRaises(lab.LabError) as caught:
+                mac.MacOSContainment(machine.policy, probe_runner=expected_probes, operator_account=operator,
+                                     **good)
+            self.assertEqual(caught.exception.reason, "invalid-policy")
+        with self.assertRaises(TypeError):  # the operator account is required, never defaulted
+            mac.MacOSContainment(machine.policy, probe_runner=expected_probes, **good)
 
 
 class RefusalTests(unittest.TestCase):
@@ -476,10 +490,27 @@ class RefusalTests(unittest.TestCase):
         self.refuse("self-check-unavailable", make_backend(self.machine, runner=None))
 
     def test_os_build_outside_window(self):
-        for facts in (mac.HostFacts("27.1", "26B1", "arm64"), mac.HostFacts("26.4.1", "25E1", "arm64"),
-                      mac.HostFacts("27.0.1", "garbage", "arm64"), mac.HostFacts("27.0.1.1", "26A434", "arm64")):
+        for facts in (mac.HostFacts("26.4.1", "25E1", "arm64"), mac.HostFacts("28.0", "27A1", "arm64"),
+                      mac.HostFacts("2.7", "26A1", "arm64"), mac.HostFacts("270", "26A1", "arm64"),
+                      mac.HostFacts("27", "26A1", "arm64"), mac.HostFacts("27.", "26A1", "arm64"),
+                      mac.HostFacts("27.1000", "26A1", "arm64"), mac.HostFacts("27.0.1000", "26A1", "arm64"),
+                      mac.HostFacts("27.0.1", "garbage", "arm64"), mac.HostFacts("27.0.1.1", "26A434", "arm64"),
+                      mac.HostFacts("27.2.3.4", "26B123", "arm64"), mac.HostFacts("27.x", "26B123", "arm64"),
+                      mac.HostFacts("27.\u0663", "26B123", "arm64"), mac.HostFacts("27.007", "26B123", "arm64"),
+                      mac.HostFacts("27.0.00", "26B123", "arm64"), mac.HostFacts("27.2\n", "26B123", "arm64")):
             with self.subTest(facts):
                 self.refuse("os-unsupported", facts=facts)
+
+    def test_the_whole_27_series_is_accepted_but_each_build_has_its_own_environment_hash(self):
+        """NC-3 (amended 2026-11-03): any 27.x[.y]; the self-check and the hash still bind each build."""
+        for product, build in (("27.0", "26A1"), ("27.0.2", "26A434"), ("27.2", "26B123"), ("27.10.3", "26C7"),
+                               ("27.999.999", "26Z99999z")):
+            facts = mac.HostFacts(product, build, "arm64")
+            with self.subTest(product):
+                self.assertIsNotNone(mac._OS_SERIES.fullmatch(product))
+                self.assertIsNotNone(mac._BUILD.fullmatch(build))
+                # past the OS window, so the refusal is the qualification pinned to another build
+                self.refuse("environment-drift", facts=facts)
 
     def test_executable_drift_and_symlink(self):
         Path(self.machine.claude).write_text("#!/bin/sh\n")
@@ -502,13 +533,15 @@ class RefusalTests(unittest.TestCase):
         self.machine.repin(account="nobody-here")
         self.refuse("dedicated-user-required")
 
-    def test_dedicated_account_must_be_unprivileged_not_the_console_user_with_a_private_home(self):
+    def test_dedicated_account_must_be_unprivileged_not_the_operator_with_a_private_home(self):
         cases = {"admin group": dict(gids=(20, 80)), "wheel group": dict(gids=(0, 20)),
-                 "admin primary group": dict(pw_gid=80), "console user": dict(console=os.getuid()),
-                 "home not owned": dict(home="/")}
+                 "admin primary group": dict(pw_gid=80), "home not owned": dict(home="/"),
+                 "operator account by uid": dict(operator_uid=os.getuid())}
         for name, args in cases.items():
             with self.subTest(name):
                 self.refuse("dedicated-user-unsafe", **args)
+        with self.subTest("system account"), mock.patch.object(mac, "_MIN_HUMAN_UID", os.getuid() + 1):
+            self.refuse("dedicated-user-unsafe", operator_uid=os.getuid() + 2)
         for mode in (0o755, 0o710, 0o701):
             with self.subTest(mode=oct(mode)):
                 os.chmod(self.machine.home, mode)
@@ -518,6 +551,35 @@ class RefusalTests(unittest.TestCase):
         os.symlink(self.machine.root, self.machine.home)  # a home that is a link
         self.refuse("dedicated-user-unsafe")
 
+    def test_console_owner_is_not_a_reason_to_refuse(self):
+        """RV-16 amended 2026-11-03: fast user switching makes the lab account the console owner."""
+        self.assertFalse(hasattr(mac, "_console_uid"))
+        with mock.patch.object(mac.os, "stat", side_effect=AssertionError("/dev/console must not be read")):
+            entry = SimpleNamespace(pw_gid=20, pw_dir=self.machine.home)
+            with mock.patch.object(mac, "_account_groups", lambda account, gid: (20,)):
+                self.assertEqual(mac._account_facts(ACCOUNT, entry, os.getuid(), os.getuid() + 1), ACCOUNT_FACTS)
+
+    def test_operator_account_must_resolve_to_a_human_account(self):
+        """Fail closed: an operator that is missing, unresolvable or a system account is no rule at all."""
+        backend = make_backend(self.machine, operator="no-such-operator")
+        self.refuse("operator-account-unresolved", backend)
+        self.refuse("operator-account-unresolved", operator_uid=0)
+        self.refuse("operator-account-unresolved", operator_uid=499)
+        self.refuse("operator-account-unresolved", operator_uid=-1)
+
+    def test_the_operator_used_for_the_decision_is_in_the_evidence(self):
+        backend = self.refuse("dedicated-user-unsafe", operator_uid=os.getuid())
+        self.assertEqual(backend.run_evidence[-1]["operator"], {"account": OPERATOR, "uid": os.getuid()})
+
+    def test_operator_refusal_is_one_pure_rule(self):
+        refusal = mac._operator_refusal
+        self.assertIsNone(refusal("braidlab", 502, "founder", 501))
+        self.assertEqual(refusal("braidlab", 502, "founder", None), "operator-account-unresolved")
+        self.assertEqual(refusal("braidlab", 502, "founder", 499), "operator-account-unresolved")
+        self.assertEqual(refusal("braidlab", 502, "braidlab", 501), "invalid-policy")
+        self.assertEqual(refusal("braidlab", 499, "founder", 501), "dedicated-user-unsafe")
+        self.assertEqual(refusal("braidlab", 501, "alias", 501), "dedicated-user-unsafe")
+
     def test_account_facts_fail_closed_when_the_system_cannot_say(self):
         entry = SimpleNamespace(pw_gid=20, pw_dir=self.machine.home)
         uid, real_lstat = os.getuid(), os.lstat
@@ -526,21 +588,27 @@ class RefusalTests(unittest.TestCase):
             info = real_lstat(path, *args, **kwargs)
             return SimpleNamespace(st_mode=info.st_mode, st_uid=info.st_uid + 1) if path == entry.pw_dir else info
 
-        with mock.patch.object(mac, "_account_groups", lambda account, gid: (20,)), \
-                mock.patch.object(mac, "_console_uid", lambda: -1):
-            self.assertEqual(mac._account_facts(ACCOUNT, entry, uid), ACCOUNT_FACTS)
-            for name in ("_account_groups", "_console_uid"):
-                with self.subTest(name), mock.patch.object(mac, name, side_effect=OSError), \
-                        self.assertRaises(lab.LabError) as caught:
-                    mac._account_facts(ACCOUNT, entry, uid)
-                self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
+        operator = uid + 1
+        with mock.patch.object(mac, "_account_groups", lambda account, gid: (20,)):
+            self.assertEqual(mac._account_facts(ACCOUNT, entry, uid, operator), ACCOUNT_FACTS)
+            with self.subTest("groups"), mock.patch.object(mac, "_account_groups", side_effect=OSError), \
+                    self.assertRaises(lab.LabError) as caught:
+                mac._account_facts(ACCOUNT, entry, uid, operator)
+            self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
+            with self.subTest("same uid as the operator"), self.assertRaises(lab.LabError) as caught:
+                mac._account_facts(ACCOUNT, entry, uid, uid)
+            self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
+            with self.subTest("system account"), mock.patch.object(mac, "_MIN_HUMAN_UID", uid + 1), \
+                    self.assertRaises(lab.LabError) as caught:
+                mac._account_facts(ACCOUNT, entry, uid, operator)
+            self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
             with self.subTest("owner"), mock.patch.object(mac.os, "lstat", not_owned), \
                     self.assertRaises(lab.LabError) as caught:
-                mac._account_facts(ACCOUNT, entry, uid)
+                mac._account_facts(ACCOUNT, entry, uid, operator)
             self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
             entry.pw_dir = f"{self.machine.root}/missing"
             with self.subTest("missing home"), self.assertRaises(lab.LabError):
-                mac._account_facts(ACCOUNT, entry, uid)
+                mac._account_facts(ACCOUNT, entry, uid, operator)
 
     def test_leftover_run_directory_refuses_the_next_run(self):
         for prefix in ("run-", "compile-"):

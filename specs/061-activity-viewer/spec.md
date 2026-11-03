@@ -108,6 +108,19 @@ Accepted without changes in T001 on 2026-11-01.
 | D5 | Track documentation (ROADMAP, STATUS, milestone index, program, GitHub tracking) is updated from the start. |
 | D6 | Tracking as independent track VIS.1–VIS.4, with GitHub milestone, issues and Project 6 entries created through the reviewed tracking reconciliation after merge. VIS.1 is one milestone with deliveries VIS.1a and VIS.1b and a go/no-go checkpoint between them (amended 2026-10-31). |
 
+## VIS.1a amendment (2026-11-03)
+
+Owner decisions after the T028 and T025 reviews, quoted verbatim:
+
+| ID | Decision |
+|---|---|
+| A1 | Watch sources (2026-11-02): "Descubrir solas (Recommended),Casillas en la web". The viewer discovers watch roots from the registered plugin workspaces' result roots (REQ-006) and the page offers multi-select source checkboxes (REQ-010). |
+| A2 | Data for discovery (2026-11-03): "Copia: 30 días y 64 MB (Recommended)". The registered result roots were empty because `analyze-work` returns its report inline; the plugin therefore keeps a private local copy of each report, retained 30 days and capped at 64 MiB (REQ-006, T040). This is plugin behaviour, not viewer code inside the plugin (D1 unchanged). |
+| A3 | Packaging (2026-11-03): "Sí, ahora en VIS.1a (Recommended)". The built package ships the web bundle and vendored files (REQ-012, T043). |
+| A4 | Watch names (2026-11-02): "Por nombre (Recommended)". `--watch` reads known artifact names only (REQ-006, unchanged). |
+
+This amendment extends REQ-006, REQ-010 and REQ-012 and adds T040–T043. The T001 approval and the historical snapshot at b21c1c3b do not cover it; it is reviewed at the VIS.1a closure (T037).
+
 ## Requirements and acceptance scenarios
 
 ### REQ-001 — Versioned event contract
@@ -267,7 +280,7 @@ named with `--watch` are polled with fixed bounds: at most 8 roots, 4 096 files,
 16 MiB read per file, known artifact names only, regular files opened without
 following symbolic links and resolving inside their root, every 500 ms. Replayed
 events and adapter events whose artifact cannot be re-hashed are marked
-`unverified` and rendered with a distinct unverified marker.
+`unverified` and rendered with a distinct unverified marker. Without `--watch`, `serve` discovers watch roots read-only from the `resultRoot` of each Agent Braid plugin workspace registered for the user (the registry is read, never written; `--no-discover` turns discovery off; discovered roots share the same bounds and are listed at start). The plugin keeps a private local copy of each `analyze-work` report in that workspace's result root, never uploaded, retained 30 days and capped at 64 MiB in total with the oldest copies removed first.
 
 **SC-006:** Given a replay file, a watched fixture directory and a live store fed
 by fixtures, when a client connects, disconnects and resumes with `Last-Event-ID`,
@@ -275,9 +288,9 @@ when the ring overflows, and when a watched root exceeds a bound, then the clien
 receives every retained event exactly once in `seq` order, receives a gap for
 evicted ranges, the exceeded bound yields a `stream-truncated` gap, a symbolic link
 in a watched root is not read, every replayed event is `unverified`, and the replay
-and live views of the same events produce identical viewer models.
+and live views of the same events produce identical viewer models. With no `--watch`, the registered result roots are discovered, a report copy written by the plugin appears in the viewer, and copies older than 30 days or beyond 64 MiB in total are removed oldest first.
 
-Verification: [procedure_006](validation-plan.md#procedure_006); T015, T017.
+Verification: [procedure_006](validation-plan.md#procedure_006); T015, T017, T040, T041.
 
 ### REQ-007 — Ephemeral effort and explicit recording
 
@@ -370,7 +383,7 @@ a layout choice and never a braid simplification. Three.js is vendored at a pinn
 version with a hash manifest; first-party files reference no remote origin and the
 bundle performs no remote load. If ADR 0033 is not accepted, the table view and
 SVG frames are the VIS.1 surface. A text table view of the same model is available
-without WebGL.
+without WebGL. The page offers one checkbox per event source (each watched root, the replay file and hook ingest), all selected by default; unselecting a source hides its elements in both the scene and the table and the page shows how many events are hidden, so a hidden source never looks like an absent one.
 
 **SC-010:** Given `contracts/loom-event.example.jsonl`, when the viewer model is built and the
 bundle is checked, then every rendered element has exactly one source event, every
@@ -380,9 +393,9 @@ contain no remote URL, `eval(` or `new Function`, no import, `src`, `href` or fe
 in first-party files or the import map targets a remote origin, the CSP names no
 remote origin and allows no inline script other than the hash of the single import
 map, unverified elements carry the unverified marker, and the table view lists the
-same facts.
+same facts. Unselecting a source hides its elements in both views and shows the hidden count.
 
-Verification: [procedure_010](validation-plan.md#procedure_010); T023–T026.
+Verification: [procedure_010](validation-plan.md#procedure_010); T023–T026, T042.
 
 ### REQ-011 — Configurable surfaces and pure frame rendering
 
@@ -410,25 +423,28 @@ user-level host settings (OpenTelemetry endpoint with an `Authorization` header
 read from the ingest-token file at shell start, observational HTTP hook entries for
 Claude Code, `[otel]` TOML for Codex) and writes nothing. The printed
 configuration never contains a credential value and is never meant for repository
-settings.
+settings. The built package includes the web bundle and the vendored files with their manifest, so `serve` works from an installed package.
 
 **SC-012:** Given each subcommand, when it runs with valid, invalid and missing
 arguments, then exit codes and messages are stable, `env` writes no file, and the
 printed configuration targets only the loopback endpoint, contains no credential
-value and names no decision hook event.
+value and names no decision hook event. A built wheel contains every bundle and vendored file with its manifest hash, and `serve` finds them from the installed package.
 
-Verification: [procedure_012](validation-plan.md#procedure_012); T028.
+Verification: [procedure_012](validation-plan.md#procedure_012); T028, T043.
 
 ### REQ-013 — Repository and governance boundaries
 
 Viewer code lives in `agent_braid/view_*.py` and `integrations/agent-braid-view/`.
-Network code exists only in `view_serve.py`. The plugin package and its tests are
-unchanged. A validation rule `activity-viewer` classifies the new paths. The
-vendored Three.js license is recorded in `LICENSE`, `LICENSES/` and
-`docs/development/THIRD_PARTY.md` under ADR 0033.
+Network code exists only in `view_serve.py`. The plugin package has one bounded
+change (amendment A2, T040): after each `analyze-work` it keeps a private local copy
+of the report, never uploaded, retained 30 days, 64 MiB and 1,500 copies. It gets no
+hooks, mods or monitors and no viewer code. A validation rule `activity-viewer`
+classifies the new paths. The vendored Three.js license is recorded in `LICENSE`,
+`LICENSES/` and `docs/development/THIRD_PARTY.md` under ADR 0033.
 
 **SC-013:** Given the change set, when governance, plugin package and validation
-profile tests run, then they pass unchanged except for the added rule and its test,
+profile tests run, then they pass unchanged except for the added rule and its test
+and the plugin's local report copy (A2, T040) with its tests,
 no socket or HTTP import appears outside `view_serve.py`, every new viewer code,
 test, asset and documentation path has `activity-viewer` among its classifier
 matches with no unknown path (license files and evidence receipts keep their

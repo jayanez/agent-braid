@@ -29,6 +29,7 @@ from .harness_assurance import (
 )
 
 RISK_FORMAT = "braid-harness-assurance-risk/v0.1"
+RISK_CLASSES = ("docs-only", "ordinary", "elevated")
 SIZE_THRESHOLD = 400  # Q5: a diff over 400 changed lines raises to R3
 SHARED_FILES = (  # Q5: a diff touching any of these raises to R3
     "docs/STATUS.md", "ROADMAP.md", "docs/development/SPEC_MILESTONE_INDEX.md", "agent_braid/cli.py",
@@ -133,9 +134,32 @@ def _check_classification(value: Any) -> None:
     _require(type(value["reasons"]) is list and all(
         type(r) is dict and set(r) == _REASON_KEYS and _id(r["rule"]) and r["raiseTo"] in DEPTHS
         and (r["modeAtLeast"] is None or r["modeAtLeast"] in MODES) for r in value["reasons"]), "invalid-diff-summary")
-    _require(value["riskClass"] in ("docs-only", "ordinary", "elevated") and type(value["docsOnly"]) is bool
+    _require(value["riskClass"] in RISK_CLASSES and type(value["docsOnly"]) is bool
              and _int(value["changedLines"], 0, MAX_LINES) and type(value["paths"]) is list
              and value["paths"] == _normalize(value["paths"]), "invalid-diff-summary")
+    _check_consistency(value)
+
+
+def _check_consistency(value: Mapping[str, Any]) -> None:
+    """The classification must agree with itself: ``docsOnly`` is the one field that lowers the required reviews.
+
+    Mirrors ``classify_risk``: reasons in canonical order, the raise values are the maxima over the reasons, the
+    risk class follows from them, and the fixed Q5 rules the paths and line count trigger are present. A
+    documentation-only claim needs paths and no ``sensitive-path`` reason. A forgery that stays consistent with its
+    own paths can only be caught by recomputing the classification from the diff.
+    """
+    reasons = value["reasons"]
+    keys = [(r["rule"], r["raiseTo"], r["modeAtLeast"] or "") for r in reasons]
+    names = {r["rule"] for r in reasons}
+    depth = max((r["raiseTo"] for r in reasons), key=DEPTHS.index, default=None)
+    mode = max((r["modeAtLeast"] for r in reasons if r["modeAtLeast"]), key=MODES.index, default=None)
+    docs_only = value["docsOnly"]
+    expected = "elevated" if depth is not None else "docs-only" if docs_only else "ordinary"
+    _require(keys == sorted(keys) and value["raiseDepthTo"] == depth and value["raiseModeTo"] == mode
+             and value["riskClass"] == expected, "invalid-diff-summary")
+    _require(not docs_only or (bool(value["paths"]) and "sensitive-path" not in names), "invalid-diff-summary")
+    _require(value["changedLines"] <= SIZE_THRESHOLD or "size-over-400" in names, "invalid-diff-summary")
+    _require(not any(path in SHARED_FILES for path in value["paths"]) or "shared-file" in names, "invalid-diff-summary")
 
 
 def apply_risk(resolved: Mapping[str, Any], classification: Any) -> dict[str, Any]:

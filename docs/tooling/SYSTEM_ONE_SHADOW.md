@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # System One shadow mode
 
-**Status:** SPEC-066 S1.5a, available in native plugin `0.1.0-alpha.5`
+**Status:** SPEC-066 S1.5a, available in native plugin `0.1.0-alpha.5` and later
 ([release record](../../specs/046-native-ai-plugins/release-acceptance-alpha5.md)).
 Shadow mode is **off by default** and starts only after explicit consent. It measures how often the exact System 2 analyzer
 cannot decide a pair of operations. It does not improve, change or gate any
