@@ -32,7 +32,7 @@ vendored Three.js r186 (ADR 0033). Pull requests in this track, oldest first
 | #1000 | docs | Ticks T040–T042, adds T044 |
 | #1003 | T044 | Per-root source identity and checkboxes |
 | #1005 | T043 | Web bundle and vendored files shipped in the built wheel |
-| this PR | T029, T034, T036, T037 prep | Boundary tests, viewer guide, root banner, closure review, evidence receipt |
+| #1011 | T029, T034, T036, T037 prep | Boundary tests, viewer guide, root banner, closure review, evidence receipt |
 
 Earlier VIS.1a work (contract, validation rule, adapters, store, vendored Three.js,
 model, ownership and gate adapters, server, replay, watch; PRs before #977) is
@@ -67,7 +67,7 @@ Three read-only Sonnet reviews ran over `git diff 3bce7e58..HEAD` for the viewer
 modules, `plugin_mcp.py`, the bundle, the tests and the guide: code correctness, quality,
 simplification. No high-severity defect was reported.
 
-Applied in this PR: hook payload strings that UTF-8 cannot encode (lone surrogates) are
+Applied in #1011: hook payload strings that UTF-8 cannot encode (lone surrogates) are
 treated as absent instead of causing a 500 (test added); a pointless f-string; a vacuous
 `sleep` assertion; one shared node-missing skip rule for the scene test; narrower
 exception and clearer name in a boundary test; the docs test now also requires a
@@ -83,8 +83,8 @@ requires restarting Claude Code (the ingest token is new at each start) and the 
    scan the newest N at start; or count live entities. Needs a design call. Medium.
 2. **Resolved by the closure-fixes PR (T046).** Two `view serve` instances share the cookie name `braid_view` on loopback, so the
    second overwrites the first's session. Fix: name the cookie per port. Medium.
-3. **Resolved by #1026 (design choice: a closed strand stays closed, later events leave a shape-unpinned gap; reopening is deferred until a resumed-session contract exists).** Hook strands never reopen after `SessionEnd` or `SubagentStop` and later events for
-   them are dropped without a gap; `_strands` and `_children` are unbounded. Needs a
+3. **Resolved by #1026 (design choice: a closed strand stays closed, later events leave a shape-unpinned gap; reopening is deferred until a resumed-session contract exists).** Before the fix, hook strands never reopened after `SessionEnd` or `SubagentStop` and later events for
+   them were dropped without a gap; `_strands` and `_children` are unbounded. Needs a
    decision on resumed sessions (REQ-003 absence rule). Low-medium.
 4. **Resolved by #1026.** The static bundle serves every non-dot regular file in `web/`, while the contract says
    files listed in a manifest. Fix: allowlist or first-party manifest. Low.
@@ -100,20 +100,20 @@ requires restarting Claude Code (the ingest token is new at each start) and the 
    provider passed to the server. Follow-up.
 9. **Resolved by #1025.** Web bundle tests rely on source-text assertions for playback, SSE resume, evidence
    panel and scene-failure fallback; extend the Node page driver with behaviour tests.
-10. **Resolved by #1025, #1026 and this PR.** Simplifications: `_serve` is long (split into replay, roots, banner); `server._ingest_token`
+10. **Resolved by #1025, #1026 and #1029.** Simplifications: `_serve` is long (split into replay, roots, banner); `server._ingest_token`
     is read by the CLI (expose a property); the bundle/vendor path is derived in three
     places; the same exception-to-code mapping is written twice in `plugin_mcp.py`;
     HTTP test helpers are duplicated in five test files; `_private` is imported across
     modules.
 11. **Resolved by #1025.** Report-copy pruning lists up to about 1,500 directories on every `analyze-work`
     while a lock is held; discovery runs once at start (restart after the first analysis).
-12. **Resolved by this PR (CI installs setuptools and sets `AGENT_BRAID_REQUIRE_BUILD_TESTS=1`).** The wheel and sdist build tests are skipped without Python 3.12+ and setuptools 68+;
+12. **Resolved by #1029 (CI installs setuptools and sets `AGENT_BRAID_REQUIRE_BUILD_TESTS=1`).** The wheel and sdist build tests are skipped without Python 3.12+ and setuptools 68+;
     CI is the evidence for SC-012's wheel claim.
 
 ## Converge pass (read-only consistency of spec, tasks, assurance and code)
 
 - `tasks.md`: every VIS.1a task is ticked except the closure tasks T035, T036 and T037
-  (T036 is done by this PR but is left for the orchestrator to tick after merge) and
+  (T036 was done by #1011 but is left for the orchestrator to tick after merge) and
   the VIS.1b tasks.
 - `spec.md` vs code: REQ-001 to REQ-006, REQ-010, REQ-012 to REQ-015 are implemented and
   have tests; REQ-007 to REQ-009 and REQ-011 (frames) are VIS.1b; REQ-005 has only its
