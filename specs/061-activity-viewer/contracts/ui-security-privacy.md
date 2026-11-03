@@ -56,7 +56,9 @@ its own boundary review where it widens a route, an origin or a credential (see
   such as `1e400`) and depth beyond 64, checked without recursion.
 - At most 8 Server-Sent Events subscribers (each receives a heartbeat every 15
   seconds and is dropped when it cannot be written), at most 32 concurrent
-  connections and a 10-second socket timeout.
+  connections and a 10-second socket timeout. The timeout also bounds the whole request: reading
+  the request line, headers and body stops at one 10-second deadline, so a client that sends one
+  byte at a time does not keep a connection slot.
 
 ### Refusal statuses
 
@@ -83,7 +85,7 @@ records whether the installed Claude Code treats these responses as non-blocking
 | Method | Route | Credential | Effect |
 |---|---|---|---|
 | GET | `/open?code=<c>` | open code | sets the read cookie, `303` to `/` |
-| GET | `/` and `/web/<file>` | read cookie | static bundle; only files listed in the bundle manifest |
+| GET | `/` and `/web/<file>` | read cookie | static bundle; only the first-party files the viewer lists (`BUNDLE_FILES`, pinned to the source bundle by a test); the vendored files by the vendor manifest below |
 | GET | `/events` | read cookie | SSE, resumes from `Last-Event-ID` |
 | GET | `/snapshot` | read cookie | current viewer model and the dropped-attribute names inventory |
 | GET | `/frame.svg`, `/frame.txt` | read cookie | pure frame rendering |
@@ -124,7 +126,11 @@ OTLP level (resource, scope, log record, metric data point and exemplar):
   `SessionEnd`, `SubagentStart`, `SubagentStop`, `PostToolUse` only), `agent_id`,
   `agent_type`, `session_id`, `tool_name`, `tool_use_id` (identifiers salted). Pinned from the
   T030 receipt. An HTTP `SessionStart` was not delivered under `claude -p`, so nothing
-  depends on it: a strand opens on the first event that mentions it. Every other payload
+  depends on it: a strand opens on the first event that mentions it. A strand that was
+  closed stays closed: an event that would continue it adds one `shape-unpinned` gap naming the
+  strand instead of activity, and a repeated `SessionEnd` or `SubagentStop` adds nothing. At most
+  1,024 strand identifiers are tracked; beyond that no new strand opens and one
+  `stream-truncated` gap says so. Every other payload
   name (for example `tool_input.*`, `tool_response.*`, `last_assistant_message`, `cwd`,
   `transcript_path`, `agent_transcript_path`, `scratchpad_dir`, prompt fields) is dropped and
   only its name enters the dropped-attribute inventory.

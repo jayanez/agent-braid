@@ -2,6 +2,8 @@
 """SPEC-061 T019: observational Claude Code hook ingest (procedure_005, hook part)."""
 import http.client
 import json
+import subprocess
+import sys
 import tempfile
 import threading
 import unittest
@@ -11,13 +13,13 @@ from agent_braid import view_hooks, view_serve
 from agent_braid.view_hooks import HookIngest
 from agent_braid.view_serve import IngestRefusal, ViewServer
 from agent_braid.view_store import LoomStore
+from tests.view_http_helpers import JSON, http_request, read_cookie
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests/fixtures/view/hooks"
 RECEIPT = ROOT / "specs/061-activity-viewer/evidence/hv-t030-20261101.json"
 CONTRACT = ROOT / "specs/061-activity-viewer/contracts/ui-security-privacy.md"
 SENTINEL = "SENTINEL"
-JSON = {"Content-Type": "application/json"}
 
 
 def fixture(name):
@@ -89,13 +91,54 @@ class MappingTests(IngestCase):
                 self.hooks.handle(payload)  # no exception: the server would otherwise answer 500
         self.assertTrue(all(event["executionAuthorization"] is False for event in self.events()))
 
-    def test_events_for_a_closed_strand_are_not_stored(self):
+    def test_an_event_for_a_closed_strand_is_not_shown_as_activity_and_leaves_one_gap(self):
         self.hooks.handle(fixture("subagent-start"))
         self.hooks.handle(fixture("subagent-stop"))
+        subagent = self.data("strand.open")[1]["strandId"]
         count = len(self.events())
         self.hooks.handle(fixture("post-tool-use-subagent"))
+        self.hooks.handle(fixture("post-tool-use-subagent"))
+        events = self.events()
+        self.assertEqual(len(events), count + 1)
+        self.assertEqual(kinds(events).count("strand.update"), 0)
+        self.assertEqual(events[-1]["kind"], "observation.gap")
+        self.assertEqual(events[-1]["data"], {"reason": "shape-unpinned", "strandId": subagent,
+                                              "fromSeq": None, "toSeq": None})
+
+    def test_a_repeated_stop_or_end_is_a_no_op(self):
+        self.hooks.handle(fixture("subagent-start"))
         self.hooks.handle(fixture("subagent-stop"))
+        self.hooks.handle(fixture("session-end"))
+        count = len(self.events())
+        self.hooks.handle(fixture("subagent-stop"))
+        self.hooks.handle(fixture("session-end"))
         self.assertEqual(len(self.events()), count)
+
+    def test_activity_after_the_session_ended_leaves_a_gap_naming_the_session(self):
+        self.hooks.handle(fixture("session-end"))
+        session = self.data("strand.open")[0]["strandId"]
+        self.hooks.handle(fixture("post-tool-use-main"))
+        gaps = self.data("observation.gap")
+        self.assertEqual([(gap["reason"], gap["strandId"]) for gap in gaps], [("shape-unpinned", session)])
+        self.assertEqual(self.data("strand.update"), [])
+
+    def test_strand_tracking_is_bounded_and_the_overflow_is_announced_once(self):
+        hooks = HookIngest(self.store, max_strands=3)
+        for index in range(10):
+            hooks.handle({**fixture("post-tool-use-main"), "session_id": f"session-{index}"})
+        self.assertEqual(kinds(self.events()).count("strand.open"), 3)
+        gaps = self.data("observation.gap")
+        self.assertEqual([gap["reason"] for gap in gaps], ["stream-truncated"])
+        hooks.handle({**fixture("post-tool-use-main"), "session_id": "session-0"})  # a tracked strand still works
+        self.assertEqual(kinds(self.events()).count("strand.update"), 4)
+
+    def test_loading_the_hook_ingest_does_not_load_the_network_modules(self):
+        code = ("import sys; sys.path.insert(0, sys.argv[1]); import agent_braid.view_hooks; "
+                "print(sorted(name for name in ('socket', 'socketserver', 'http.server', 'agent_braid.view_serve') "
+                "if name in sys.modules))")
+        result = subprocess.run([sys.executable, "-I", "-c", code, str(ROOT)], capture_output=True, text=True,
+                                check=True)
+        self.assertEqual(result.stdout.strip(), "[]")
 
     def test_session_end_closes_open_subagents_then_the_session(self):
         self.hooks.handle(fixture("subagent-start"))
@@ -290,14 +333,8 @@ class ServerCase(unittest.TestCase):
         thread.join(5)
 
     def request(self, method, path, headers=None, body=None):
-        headers = {"Host": f"127.0.0.1:{self.server.port}", **(headers or {})}
-        connection = http.client.HTTPConnection("127.0.0.1", self.server.port, timeout=5)
-        try:
-            connection.request(method, path, body=body, headers=headers)
-            response = connection.getresponse()
-            return response.status, response.read()
-        finally:
-            connection.close()
+        status, _, data = http_request(self.server.port, method, path, headers, body)
+        return status, data
 
     def post(self, payload):
         body = payload if isinstance(payload, bytes) else json.dumps(payload).encode()
@@ -306,15 +343,7 @@ class ServerCase(unittest.TestCase):
 
 class HttpTests(ServerCase):
     def cookie(self):
-        connection = http.client.HTTPConnection("127.0.0.1", self.server.port, timeout=5)
-        try:
-            connection.request("GET", self.server.open_url.split(str(self.server.port), 1)[1],
-                               headers={"Host": f"127.0.0.1:{self.server.port}"})
-            response = connection.getresponse()
-            response.read()
-            return response.getheader("Set-Cookie").split(";")[0]
-        finally:
-            connection.close()
+        return read_cookie(self.server.port, self.server.open_url)
 
     def stream(self, cookie):
         """The first retained events of `/events` as text (one `data:` line per stored event)."""
