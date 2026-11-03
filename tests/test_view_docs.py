@@ -178,6 +178,8 @@ class HostVerificationTests(unittest.TestCase):
                 key = (row["host"], row["client"], row["surface"])
                 with self.subTest(path.name, row=key):
                     self.assertEqual(matrix[key], row["status"])
+                if row["status"] == "verified":
+                    self.assertEqual(json.loads(text(path))["outcome"], "verified")
 
 
 if __name__ == "__main__":

@@ -195,7 +195,7 @@ class PluginTreeTests(unittest.TestCase):
 
 
 class ReportCopyTests(unittest.TestCase):
-    def test_a_report_copy_is_private_to_the_user_and_retention_is_bounded(self):
+    def test_a_report_copy_has_private_modes_and_the_documented_retention_constants(self):
         self.assertEqual((plugin_mcp.REPORT_COPY_DAYS, plugin_mcp.REPORT_COPY_MAX_BYTES,
                           plugin_mcp.REPORT_COPY_MAX_COUNT), (30, 64 * 1024 * 1024, 1500))
         with tempfile.TemporaryDirectory() as parent:
@@ -213,7 +213,7 @@ class ReportCopyTests(unittest.TestCase):
             root = Path(parent).resolve() / "results"
             root.mkdir()
             os.chmod(root, 0o755)
-            with self.assertRaises(Exception):
+            with self.assertRaises((ValueError, plugin_mcp.RegistryError)):
                 plugin_mcp.write_report_copy(root, root, b"{}")
             self.assertEqual(list(root.iterdir()), [])
 

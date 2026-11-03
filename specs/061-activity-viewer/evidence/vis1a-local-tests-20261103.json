@@ -1,0 +1,86 @@
+{
+  "command": "python -m unittest tests.test_view_loom tests.test_view_adapters tests.test_view_store tests.test_view_model tests.test_view_serve tests.test_view_tail tests.test_view_hooks tests.test_view_web_bundle tests.test_view_cli tests.test_view_packaging tests.test_view_boundaries tests.test_view_docs tests.test_plugin_mcp tests.test_orchestration_governance tests.test_plugin_package tests.test_validation_profiles",
+  "environment": "macOS, Python 3.13 venv without setuptools, Node available; local unittest only",
+  "limits": "Local unit tests on one machine. They back the engineering claim that the VIS.1a code behaves as specified on owned fixtures; they are not host verification, not an observation of the viewer on real sessions (procedure_hvis1, T035), and not an independent review. Source-text assertions in test_view_web_bundle are weaker than behaviour tests (closure finding). The wheel build test was skipped locally.",
+  "outcome": "598 tests of the VIS.1a modules and test_plugin_mcp: OK, 4 skipped (wheel and sdist build tests, which need Python 3.12+ with setuptools 68+, run in CI); governance, plugin package and validation profile suites OK (109 tests with the two new modules, 1 skipped)",
+  "recordedAt": "2026-11-03",
+  "scenarios": {
+    "SC-001": {
+      "modules": [
+        "tests.test_view_loom"
+      ],
+      "note": ""
+    },
+    "SC-002": {
+      "modules": [
+        "tests.test_view_adapters",
+        "tests.test_view_tail"
+      ],
+      "note": ""
+    },
+    "SC-003": {
+      "modules": [
+        "tests.test_view_model",
+        "tests.test_view_store",
+        "tests.test_view_adapters"
+      ],
+      "note": ""
+    },
+    "SC-004": {
+      "modules": [
+        "tests.test_view_serve"
+      ],
+      "note": ""
+    },
+    "SC-005": {
+      "modules": [
+        "tests.test_view_hooks"
+      ],
+      "note": "Only the Claude Code hook part; the OTLP part and the Codex shapes are VIS.1b."
+    },
+    "SC-006": {
+      "modules": [
+        "tests.test_view_tail",
+        "tests.test_view_cli",
+        "tests.test_plugin_mcp"
+      ],
+      "note": ""
+    },
+    "SC-010": {
+      "modules": [
+        "tests.test_view_web_bundle",
+        "tests.test_view_model"
+      ],
+      "note": ""
+    },
+    "SC-011": {
+      "modules": [
+        "tests.test_view_cli"
+      ],
+      "note": "Only the CLI part (serve, validate, env); frames and /frame.* are VIS.1b."
+    },
+    "SC-012": {
+      "modules": [
+        "tests.test_view_cli",
+        "tests.test_view_packaging"
+      ],
+      "note": ""
+    },
+    "SC-013": {
+      "modules": [
+        "tests.test_view_boundaries",
+        "tests.test_orchestration_governance",
+        "tests.test_plugin_package",
+        "tests.test_validation_profiles"
+      ],
+      "note": ""
+    },
+    "SC-015": {
+      "modules": [
+        "tests.test_view_docs"
+      ],
+      "note": ""
+    }
+  },
+  "task": "T037 prep (VIS.1a closure)"
+}

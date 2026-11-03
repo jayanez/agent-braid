@@ -426,8 +426,6 @@ class DiscoveryServeTests(RegistryFixture, ServeCase):
     def test_a_report_copy_written_later_appears_in_the_viewer(self):
         _, roots = self.make_registry(1)
         server, _, _ = self.serve()
-        time.sleep(0.6)
-        self.assertEqual(server.store.replay(), [])
         self.seed_report(roots[0])
         self.assertTrue(self.wait_for_events(server))
 

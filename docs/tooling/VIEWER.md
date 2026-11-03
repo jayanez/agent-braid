@@ -72,7 +72,7 @@ file is removed.
 | `--replay FILE` | Load a recorded loom JSONL stream (`agent-braid-loom/v0.1`) before serving. A stream that does not validate is refused with exit code 1 and nothing starts. Replayed events are shown as unverified. |
 | `--watch DIR` | Poll a directory for known artifacts (repeatable, at most 8 roots). Replaces automatic discovery. |
 | `--no-discover` | Without `--watch`, do not look for roots in the plugin registry. |
-| `--port N` | Loopback port, 1 to 65535. The default `0` lets the operating system choose one. |
+| `--port N` | Loopback port, 0 to 65535. The default `0` lets the operating system choose one. (`view env --port` takes 1 to 65535: the port `serve` printed.) |
 | `--runtime-dir DIR` | Absolute path of the private directory (mode 0700) for the ingest token. The default is `$XDG_RUNTIME_DIR/agent-braid-view`, else `~/.local/share/agent-braid-view`. |
 | `--surface S` | `web` is the only implemented surface. `mod`, `tui` and `mcp-app` report that they are planned and start nothing. |
 
@@ -126,7 +126,9 @@ Code settings (`~/.claude/settings.json`). **It writes nothing**, contains no cr
 (the token is read from its owner-only file by the printed `export` line) and names only
 the observational hook events above. Start `view serve` first and pass its port with
 `--port`; with the viewer stopped, another process on that port would receive the
-payloads. `--host codex` is accepted and reports that it is not available yet.
+payloads. The ingest token is new at every `serve` start but your shell reads it once, so after
+restarting the viewer restart Claude Code (or export the variable again), otherwise its hooks are refused
+without any visible symptom. `--host codex` is accepted and reports that it is not available yet.
 
 ### Exit codes
 

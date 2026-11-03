@@ -271,7 +271,7 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
         raise CliError(f"view serve: cannot bind port {args.port}: {exc.strerror}") from exc
     previous = _stop_on_sigterm()
     try:
-        lines = [f"Agent Braid activity viewer (read-only), surface web, loopback only.",
+        lines = ["Agent Braid activity viewer (read-only), surface web, loopback only.",
                  f"Open once in a browser: {server.open_url}",
                  f"Ingest token file (owner-only): {server.token_path}"]
         if tail is not None:
