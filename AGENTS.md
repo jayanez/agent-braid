@@ -16,9 +16,14 @@ review and founder approval. No command authorizes pushes, remote issue creation
 concurrent agents or autonomous delivery. Preserve unrelated user changes.
 
 Use the proportional validation workflow in
-`docs/development/VALIDATION_PROFILES.md`. During implementation run
-`python3 scripts/validate_change.py --base develop --profile quick`; the planner
-escalates sensitive or unknown paths. Run `--profile pr` once on a stable candidate.
+`docs/development/VALIDATION_PROFILES.md`. While iterating run targeted tests for
+the touched modules and `python3 -m scripts.validate_spec_kit`; run
+`python3 scripts/validate_change.py --base develop --profile quick` only when the
+touched paths do not escalate to the full suite, or when the author wants it. The
+CI `validate` aggregate on the PR head is the `pr`-profile evidence; run
+`--profile pr` locally only when CI cannot run it or for sensitive paths that
+`VALIDATION_PROFILES.md` says need a local candidate run. Never run two full suites
+at once on one machine.
 Clean-room reproduction, evidence capture, human review and founder approval remain
 separate boundary gates and are never implied by a passing profile. Install
 dependencies only in isolated environments. Separate executed checks from pending

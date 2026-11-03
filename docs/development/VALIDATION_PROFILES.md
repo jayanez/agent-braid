@@ -7,7 +7,10 @@ proof that a change is safe.
 
 ## Development loop
 
-Run after a coherent group of edits:
+While iterating, run targeted tests for the touched modules and
+`python3 -m scripts.validate_spec_kit`. Run the quick profile after a coherent
+group of edits only when the touched paths do not escalate to the full suite, or
+when the author wants it:
 
 ```sh
 python3 scripts/validate_change.py --base develop --profile quick
@@ -23,7 +26,12 @@ slower, not less safe.
 
 ## Stable pull-request candidate
 
-Run once after implementation has converged:
+The CI `validate` aggregate on the PR head (complete Python suite, governance,
+contracts and scientific controls, Spec Kit structure and rendering) is the
+`pr`-profile evidence. Do not repeat it locally by default. Run it locally, once
+and never alongside another full suite on the same machine, only when CI cannot
+run it (offline, CI outage, workflow not triggered) or for the sensitive paths
+below that need a local candidate run:
 
 ```sh
 python3 scripts/validate_change.py --base develop --profile pr
