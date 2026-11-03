@@ -1,10 +1,13 @@
 # SPEC-068: OpenCode native integration
 
-**Milestone:** M4.7 — AI tooling integration for OpenCode (proposed; not created)
+**Milestone:** M4.7 — AI tooling integration for OpenCode (GitHub milestone 27; parent issue #1032, task issues #1033–#1043)
 
-**Status:** specification only, draft. Nothing is implemented or authorized by
-this change. Owner decisions D1 to D13 of 2026-11-02 and 2026-11-03 are recorded
-under Clarifications; they authorize no implementation, release or remote tracking.
+**Status:** implemented on `develop` for T002–T009 (engineering checks only, see
+`tasks.md` and `evidence/engineering-checks-develop.json`); T001 (ADR adoption
+record), T010 (native observation) and T011 (release) are open. The plugin is not
+published: it first ships in `0.1.0-alpha.7`. Owner decisions D1 to D16 of
+2026-11-02 and 2026-11-03 are recorded under Clarifications; none of them is a
+native-host observation, a release or founder acceptance.
 
 ## Purpose and scope
 
@@ -54,7 +57,7 @@ A new ADR 0037 records the OpenCode surface (REQ-001).
 
 Owner decisions, 2026-11-02:
 
-- **D1** New SPEC-068 under proposed milestone M4.7; M4.5 is not reopened.
+- **D1** New SPEC-068 under milestone M4.7 (created as GitHub milestone 27); M4.5 is not reopened.
 - **D2** OpenCode skills keep the unprefixed product names (`analyze`, `plan`,
   `evidence`, `execute`, `recover`, `setup`) as in Codex and Claude Code. OpenCode
   does not namespace plugin skills and silently prefers the higher-precedence skill
@@ -101,6 +104,18 @@ Owner decisions, 2026-11-03 (plan review):
   foreign `agent-braid` entry shadows the native plugin, Agent Braid warns
   (`plugin doctor` and setup; T002 row 10 found no write-free host-visible channel);
   resolving the collision is the operator's step (migrate or update).
+
+Owner decisions, 2026-11-03 (release preparation):
+
+- **D14** ADR 0037 is adopted. The status change and the assurance hash lines land
+  with the release-preparation PR (#1030); until then the ADR on `develop` reads
+  Proposed.
+- **D15** The native observation (T010) runs in a disposable OpenCode profile, never
+  the owner's configuration.
+- **D16** Publishing `0.1.0-alpha.7` is conditional on a T010 record with no
+  contradiction, a green CI on the release-preparation PR and a final explicit owner
+  decision before any `plugin-dist` push or tag. Issue #699 moved to the Deferred
+  milestone.
 
 ## Requirements and acceptance scenarios
 
@@ -273,7 +288,10 @@ every tool, skill, command and hook (ADR 0024).
 
 ## Evidence and unresolved questions
 
-Planned evidence is in `assurance.json`; obtained evidence is empty. Open
+Planned and obtained evidence are separate fields in `assurance.json`. Obtained
+evidence is the T002 host matrix (SC-002) and the engineering test record
+`evidence/engineering-checks-develop.json` (SC-003 to SC-010: fake executables and
+fixtures, no native host); SC-001, SC-011 and SC-012 have none yet. Open
 questions OD-4 to OD-8 were decided on 2026-11-03 (see Clarifications). Plan
 decisions OD-9 and OD-10 were decided on 2026-11-03 (D12, D13). New
 questions found by REQ-002 return to the owner.

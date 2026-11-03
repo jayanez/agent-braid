@@ -122,7 +122,11 @@ behaviour is not claimed. D12 and D13 are recorded owner decisions.
   migration not yet completed) shadows the native plugin; Agent Braid warns and
   the operator resolves it with `plugin legacy` or by updating. The recommendation
   `agent-braid-tooling` was not selected.
-- **ADR 0037 adoption.** Proposed; adoption authorizes no implementation by itself.
+- **ADR 0037 adoption.** Adopted by the owner on 2026-11-03 (D14); the ADR text on
+  `develop` still reads Proposed until PR #1030 records the status. Adoption
+  authorizes no release by itself.
 - T002 findings that contradict R1–R7 return to the owner before T003–T007.
 
-Remote milestone M4.7, issues and Project items are not created.
+Remote tracking exists: GitHub milestone 27 (M4.7), parent issue #1032 and task
+issues #1033–#1043, registered in `docs/development/github-tracking.json`; issue
+state is a tracking record, not approval.

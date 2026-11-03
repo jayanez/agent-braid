@@ -169,7 +169,11 @@ plugin's server name, the legacy entry shadows the plugin's server when both are
 configured; preview and `doctor` warn with `native_plugin_shadowed` (only when the plugin entry is in the configuration file the profile edits; `opencode plugin add` writes the global one), and `--name`
 selects another key. Behavior is checked by `tests/test_tooling_install_opencode.py`
 on isolated destinations. OpenCode reading these paths was observed on macOS arm64
-with OpenCode 2.1.4 only; Linux is unobserved.
+with OpenCode 2.1.4 only; Linux is unobserved. OpenCode reads six configuration
+locations together (global, project root and `.opencode`, each as `.json` and
+`.jsonc`) and the profile edits only one of them, so a same-name entry in another
+file can override the profile's (T002 rows 09 and 11); `plugin doctor --host opencode`
+lists the files it read.
 
 ## Local telemetry consent, update and removal
 

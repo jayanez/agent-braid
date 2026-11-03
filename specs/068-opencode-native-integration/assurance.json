@@ -183,7 +183,15 @@
         {
           "given": "a built OpenCode package and two registered analysis-only workspaces",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_opencode_entry",
+              "limits": "Unit tests of the entry module with a synthetic host context. The MCP core results are the unchanged SPEC-046 tests (test_plugin_mcp); no stdio fixture drives the entry's registered command, and the real host starting the server is T010 (unobserved).",
+              "outcome": "OpenCode entry module (tests/test_opencode_entry.py, 22 tests): source parse finds none of the forbidden APIs and each forbidden API inserted into a copy is detected; registered values follow the contract; one server, six skills and two commands; repeated transforms are idempotent; a foreign agent-braid server and existing skills are never replaced, updated or removed; a broken host context never throws. Merged in PR #1022 (f7bdf78f).",
+              "path": "specs/068-opencode-native-integration/evidence/engineering-checks-develop.json",
+              "sha256": "eba500c22b11f76d524afcfdff8af1a47d3606c1aa31dc434565f7af3d821c80"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_003",
@@ -199,7 +207,15 @@
         {
           "given": "the installed plugin",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_plugin_opencode tests.test_opencode_entry",
+              "limits": "Fixture skill trees and a fake registry; the precedence order between some discovery locations was not compared on the host (T002 row 02). Live skill listing in a session is unobserved (T010).",
+              "outcome": "plugin doctor --host opencode reports collision, duplicate-guidance, server-collision and ambiguous-configuration on fixture trees; output without --host unchanged; the entry registers six skills and the setup and reconnect commands. Merged in PR #1023 (889f85cc), PR #1022 (f7bdf78f).",
+              "path": "specs/068-opencode-native-integration/evidence/engineering-checks-develop.json",
+              "sha256": "eba500c22b11f76d524afcfdff8af1a47d3606c1aa31dc434565f7af3d821c80"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_004",
@@ -215,7 +231,15 @@
         {
           "given": "a configured plugin",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_opencode_entry",
+              "limits": "Fixture only. reconnectRequired semantics are SPEC-046 and unchanged; reconnect in a live OpenCode session is unobserved (T010).",
+              "outcome": "agent-braid-reconnect prompts the session with the operator steps and performs no reload; no automatic reload path exists in the entry (source parse). Merged in PR #1022 (f7bdf78f), PR #1023 (889f85cc).",
+              "path": "specs/068-opencode-native-integration/evidence/engineering-checks-develop.json",
+              "sha256": "eba500c22b11f76d524afcfdff8af1a47d3606c1aa31dc434565f7af3d821c80"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_005",
@@ -231,7 +255,15 @@
         {
           "given": "a public tag",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_tooling_install_opencode tests.test_plugin_installer",
+              "limits": "Fake host executables and isolated destinations. Native add/update/remove was observed once in the T002 matrix (local Git source, OpenCode 2.1.4, macOS arm64); the published-plugin lifecycle is T010.",
+              "outcome": "Legacy lifecycle on isolated JSONC destinations (install, update, uninstall, plugin legacy migration from an OpenCode receipt) and install.sh --host opencode / all with fake executables leave documented state. Merged in PR #1019 (08b09e7b), PR #1027 (560c0687).",
+              "path": "specs/068-opencode-native-integration/evidence/engineering-checks-develop.json",
+              "sha256": "eba500c22b11f76d524afcfdff8af1a47d3606c1aa31dc434565f7af3d821c80"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_006",
@@ -247,7 +279,15 @@
         {
           "given": "fake host executables",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_plugin_installer",
+              "limits": "Fake executables. install.sh --host all and --host opencode fail at the OpenCode step against the real plugin-dist until 0.1.0-alpha.7 is published.",
+              "outcome": "install.sh accepts --host opencode and all (absent hosts skipped with a notice, none found refused, --host opencode refuses when absent), prints the specified commands under --dry-run, and leaves Codex/Claude command output unchanged. Merged in PR #1027 (560c0687).",
+              "path": "specs/068-opencode-native-integration/evidence/engineering-checks-develop.json",
+              "sha256": "eba500c22b11f76d524afcfdff8af1a47d3606c1aa31dc434565f7af3d821c80"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_007",
@@ -263,7 +303,15 @@
         {
           "given": "an isolated destination with a JSONC config containing comments and foreign servers",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_tooling_install_opencode tests.test_tooling_install_golden",
+              "limits": "Isolated destinations; no real OpenCode configuration touched. The profile was not exercised by a running OpenCode.",
+              "outcome": "The opencode legacy profile writes only the owned entry, keeps comments and foreign bytes, is idempotent, refuses ambiguous_configuration, unowned_collision and changed_digest, rolls back a failed write, and Codex/Claude previews and receipts stay byte-identical (golden test). Merged in PR #1019 (08b09e7b).",
+              "path": "specs/068-opencode-native-integration/evidence/engineering-checks-develop.json",
+              "sha256": "eba500c22b11f76d524afcfdff8af1a47d3606c1aa31dc434565f7af3d821c80"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_008",
@@ -279,7 +327,15 @@
         {
           "given": "telemetry `local` and System One `shadow`",
           "id": "SC-009",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_plugin_mcp",
+              "limits": "Synthetic _meta key; whether OpenCode 2.1.4 sends a session identifier is a T002 row. The SDK-gated test needs the optional pinned mcp SDK and skips without it (it skips in .venv-speckit).",
+              "outcome": "Envelopes, telemetry and stores are identical with and without the session identifier (SDK-gated test ran, no skip), the negative-control scan finds a stored identifier, and telemetry vocabularies and log-audit classes are unchanged (PluginOpenCodeSessionIdentifierTests, 3 tests); the rest of test_plugin_mcp (51 tests) passes. Merged in PR #1027 (560c0687).",
+              "path": "specs/068-opencode-native-integration/evidence/engineering-checks-develop.json",
+              "sha256": "eba500c22b11f76d524afcfdff8af1a47d3606c1aa31dc434565f7af3d821c80"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_009",
@@ -295,7 +351,15 @@
         {
           "given": "a clean source commit",
           "id": "SC-010",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_native_plugin_build",
+              "limits": "Build fixture on this machine; clean-clone reproduction and the published tag are T011.",
+              "outcome": "The native build emits the OpenCode package (package.json without dependencies, opencode/index.js), extends inventory and provenance, and the files Codex and Claude read are byte-identical to a build without the OpenCode target (D12); package-name, dependency and drift negative controls. Merged in PR #1022 (f7bdf78f).",
+              "path": "specs/068-opencode-native-integration/evidence/engineering-checks-develop.json",
+              "sha256": "eba500c22b11f76d524afcfdff8af1a47d3606c1aa31dc434565f7af3d821c80"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_010",

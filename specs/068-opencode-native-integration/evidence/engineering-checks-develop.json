@@ -1,0 +1,132 @@
+{
+  "schema": "spec-068-engineering-checks/1",
+  "scope": "Deterministic engineering tests of work merged on develop. Not native-host observation, release evidence, owner review or a compatibility claim.",
+  "develop_commit": "38c0b2687652a8e25362931937a98bd2ecdbe7b6",
+  "run_date": "2026-11-03",
+  "environment": "macOS arm64, CPython 3.13.11, python -m unittest <module>; fake opencode/codex/claude executables; no model provider. test_plugin_mcp ran in a scratch venv with the pinned mcp==2.3.0 SDK (requirements-native-plugin.txt, hash-checked) so its SDK-gated test did not skip; the other modules ran in .venv-speckit.",
+  "result": "All listed modules passed with no skips: 22 + 22 + 41 + 1 + 13 + 24 + 51 tests. CI on each merged PR is the pr-profile evidence for its head.",
+  "scenarios": {
+    "SC-003": {
+      "merged_in": "PR #1022 (f7bdf78f)",
+      "tests": [
+        {
+          "file": "tests/test_opencode_entry.py",
+          "sha256": "794ea67ffe7406b66cbb309f654dee6c5ea28dcaa4901e333b4f8007be6304dd",
+          "tests_run": 22
+        }
+      ],
+      "outcome": "OpenCode entry module (tests/test_opencode_entry.py, 22 tests): source parse finds none of the forbidden APIs and each forbidden API inserted into a copy is detected; registered values follow the contract; one server, six skills and two commands; repeated transforms are idempotent; a foreign agent-braid server and existing skills are never replaced, updated or removed; a broken host context never throws.",
+      "limits": "Unit tests of the entry module with a synthetic host context. The MCP core results are the unchanged SPEC-046 tests (test_plugin_mcp); no stdio fixture drives the entry's registered command, and the real host starting the server is T010 (unobserved)."
+    },
+    "SC-004": {
+      "merged_in": "PR #1023 (889f85cc), PR #1022 (f7bdf78f)",
+      "tests": [
+        {
+          "file": "tests/test_plugin_opencode.py",
+          "sha256": "c2abb64c319fff64df3c6a2a12fcbca85594c93e671b9a3926c9afbb4a582b43",
+          "tests_run": 22
+        },
+        {
+          "file": "tests/test_opencode_entry.py",
+          "sha256": "794ea67ffe7406b66cbb309f654dee6c5ea28dcaa4901e333b4f8007be6304dd",
+          "tests_run": 22
+        }
+      ],
+      "outcome": "plugin doctor --host opencode reports collision, duplicate-guidance, server-collision and ambiguous-configuration on fixture trees; output without --host unchanged; the entry registers six skills and the setup and reconnect commands.",
+      "limits": "Fixture skill trees and a fake registry; the precedence order between some discovery locations was not compared on the host (T002 row 02). Live skill listing in a session is unobserved (T010)."
+    },
+    "SC-005": {
+      "merged_in": "PR #1022 (f7bdf78f), PR #1023 (889f85cc)",
+      "tests": [
+        {
+          "file": "tests/test_opencode_entry.py",
+          "sha256": "794ea67ffe7406b66cbb309f654dee6c5ea28dcaa4901e333b4f8007be6304dd",
+          "tests_run": 22
+        },
+        {
+          "file": "tests/test_plugin_opencode.py",
+          "sha256": "c2abb64c319fff64df3c6a2a12fcbca85594c93e671b9a3926c9afbb4a582b43",
+          "tests_run": 22
+        }
+      ],
+      "outcome": "agent-braid-reconnect prompts the session with the operator steps and performs no reload; no automatic reload path exists in the entry (source parse).",
+      "limits": "Fixture only. reconnectRequired semantics are SPEC-046 and unchanged; reconnect in a live OpenCode session is unobserved (T010)."
+    },
+    "SC-006": {
+      "merged_in": "PR #1019 (08b09e7b), PR #1027 (560c0687)",
+      "tests": [
+        {
+          "file": "tests/test_tooling_install_opencode.py",
+          "sha256": "415ebfeb80d6bada1efba909666611e357d8d9fd91c1ae2cae9dbe5e3fc0b952",
+          "tests_run": 41
+        },
+        {
+          "file": "tests/test_plugin_installer.py",
+          "sha256": "504f82b025bede146e43fb10f7d7033850b8ff3048a5a061308f6122cbaa7518",
+          "tests_run": 24
+        }
+      ],
+      "outcome": "Legacy lifecycle on isolated JSONC destinations (install, update, uninstall, plugin legacy migration from an OpenCode receipt) and install.sh --host opencode / all with fake executables leave documented state.",
+      "limits": "Fake host executables and isolated destinations. Native add/update/remove was observed once in the T002 matrix (local Git source, OpenCode 2.1.4, macOS arm64); the published-plugin lifecycle is T010."
+    },
+    "SC-007": {
+      "merged_in": "PR #1027 (560c0687)",
+      "tests": [
+        {
+          "file": "tests/test_plugin_installer.py",
+          "sha256": "504f82b025bede146e43fb10f7d7033850b8ff3048a5a061308f6122cbaa7518",
+          "tests_run": 24
+        }
+      ],
+      "outcome": "install.sh accepts --host opencode and all (absent hosts skipped with a notice, none found refused, --host opencode refuses when absent), prints the specified commands under --dry-run, and leaves Codex/Claude command output unchanged.",
+      "limits": "Fake executables. install.sh --host all and --host opencode fail at the OpenCode step against the real plugin-dist until 0.1.0-alpha.7 is published."
+    },
+    "SC-008": {
+      "merged_in": "PR #1019 (08b09e7b)",
+      "tests": [
+        {
+          "file": "tests/test_tooling_install_opencode.py",
+          "sha256": "415ebfeb80d6bada1efba909666611e357d8d9fd91c1ae2cae9dbe5e3fc0b952",
+          "tests_run": 41
+        },
+        {
+          "file": "tests/test_tooling_install_golden.py",
+          "sha256": "c2eb394a11e8dd4b48c11a9f027624b632fdc368a00c7aa75cef7881c3065953",
+          "tests_run": 1
+        }
+      ],
+      "outcome": "The opencode legacy profile writes only the owned entry, keeps comments and foreign bytes, is idempotent, refuses ambiguous_configuration, unowned_collision and changed_digest, rolls back a failed write, and Codex/Claude previews and receipts stay byte-identical (golden test).",
+      "limits": "Isolated destinations; no real OpenCode configuration touched. The profile was not exercised by a running OpenCode."
+    },
+    "SC-009": {
+      "merged_in": "PR #1027 (560c0687)",
+      "tests": [
+        {
+          "file": "tests/test_plugin_mcp.py",
+          "sha256": "bb76452474bd3368fd99a4c76f68e0f55f59a6d7856e2f38ed844c4ad3f7c4ab",
+          "tests_run": 51
+        }
+      ],
+      "outcome": "Envelopes, telemetry and stores are identical with and without the session identifier (SDK-gated test ran, no skip), the negative-control scan finds a stored identifier, and telemetry vocabularies and log-audit classes are unchanged (PluginOpenCodeSessionIdentifierTests, 3 tests); the rest of test_plugin_mcp (51 tests) passes.",
+      "limits": "Synthetic _meta key; whether OpenCode 2.1.4 sends a session identifier is a T002 row. The SDK-gated test needs the optional pinned mcp SDK and skips without it (it skips in .venv-speckit)."
+    },
+    "SC-010": {
+      "merged_in": "PR #1022 (f7bdf78f)",
+      "tests": [
+        {
+          "file": "tests/test_native_plugin_build.py",
+          "sha256": "5f1fdf8ca392ef60d1eb2351b8f21703bb32c8d73c385efd3dd39e4fcb5792fa",
+          "tests_run": 13
+        }
+      ],
+      "outcome": "The native build emits the OpenCode package (package.json without dependencies, opencode/index.js), extends inventory and provenance, and the files Codex and Claude read are byte-identical to a build without the OpenCode target (D12); package-name, dependency and drift negative controls.",
+      "limits": "Build fixture on this machine; clean-clone reproduction and the published tag are T011."
+    }
+  },
+  "not_covered": [
+    "SC-001 (owner review record, T001)",
+    "SC-002 (see evidence/opencode-host-matrix.json)",
+    "SC-011 (documentation consistency review)",
+    "SC-012 (native observation, T010)"
+  ]
+}
