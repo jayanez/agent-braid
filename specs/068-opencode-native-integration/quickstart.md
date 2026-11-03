@@ -56,7 +56,7 @@ opencode plugin list
 opencode mcp list
 ```
 
-Expected: rows of `evidence/host-matrix.json` filled with version, command and
+Expected: rows of `evidence/opencode-host-matrix.json` filled with version, command and
 result, or `unobserved`. User configuration is never touched.
 
 ## Native observation (T010, owner or operator)

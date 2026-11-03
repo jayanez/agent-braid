@@ -52,8 +52,8 @@ host's approval rules apply, as recorded by T002.
   respects strings, and returns member spans; only the owned member's span is
   written. All other bytes, including comments and formatting, are preserved.
 - Creating `mcp` appends one member to the root object; removing the last owned
-  entry leaves an empty `mcp` object only if the profile created `mcp`, recorded in
-  the receipt.
+  entry removes `mcp` when the profile created it (recorded as `createdMcp` in the
+  receipt); an `mcp` object that already existed is kept, even if left empty.
 - Writes are atomic with directory sync, under the existing scope lock, with the
   existing preview digest and rollback.
 
