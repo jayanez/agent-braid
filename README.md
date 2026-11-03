@@ -98,8 +98,7 @@ rule as everything else: none of them can authorize execution on its own.
 
 Install the **native user plugin** for your agent host: it bundles its own
 runtime, registers its skills and guides you through selecting repositories.
-Git and the selected host (Claude Code, Codex or, in the planned `0.1.0-alpha.7`,
-OpenCode) must already be installed.
+Git and the selected host (Claude Code, Codex or OpenCode) must already be installed.
 
 > **⚡ One command, every host on your PATH**
 >
@@ -113,11 +112,9 @@ OpenCode) must already be installed.
 >   | sh -s -- --host all
 > ```
 >
-> Add `--ref agent-braid--v0.1.0-alpha.6` to pin a release. `--host all` also
+> Add `--ref agent-braid--v0.1.0-alpha.7` to pin a release. `--host all` also
 > includes OpenCode when `opencode` is on your PATH, and `--host opencode` installs
-> only that host; both need the unpublished `0.1.0-alpha.7` (see the OpenCode card
-> below) and fail at that last step until it ships. (`--host both`
-> is a deprecated alias for `codex` + `claude`.)
+> only that host. (`--host both` is a deprecated alias for `codex` + `claude`.)
 
 Prefer the host's own commands? The script runs exactly these
 ([details](docs/tooling/NATIVE_PLUGINS.md)); they track the `plugin-dist` branch:
@@ -136,7 +133,7 @@ codex plugin marketplace add https://github.com/jayanez/agent-braid.git --ref pl
 codex plugin add agent-braid@agent-braid
 ```
 
-**OpenCode** (available from `0.1.0-alpha.7`, planned and not yet published; not in `alpha.6`)
+**OpenCode** (from `0.1.0-alpha.7`)
 
 ```sh
 opencode plugin add 'github:jayanez/agent-braid#plugin-dist::path:plugins/agent-braid'
@@ -299,8 +296,8 @@ grant to a private result you can verify.
 **Status of this install path.** The
 [alpha.4 acceptance record](specs/046-native-ai-plugins/release-acceptance-alpha4.md)
 covers a Claude Code update, a public-tag install and a Codex CLI install, removal
-and reinstall. Interactive skill use and Linux execution were not observed, and the alpha.6
-native install and the OpenCode install have not yet been observed.
+and reinstall. Interactive skill use and Linux execution were not observed, and the alpha.7
+native installs, including the OpenCode install, have not yet been observed.
 
 <details>
 <summary><strong>Use the CLI directly (Python 3.12+)</strong></summary>
@@ -486,7 +483,7 @@ System One shadow mode is off by default. After `plugin setup --system-one shado
 
 The analyzer/runtime contract is `0.1.0-alpha`; AIM and certificate contracts
 are `0.2.0-draft`; the package version is `0.1.0a2`. The native plugin is versioned
-separately (latest published `0.1.0-alpha.6`, rollback target `0.1.0-alpha.5`); `plugin-status` reports
+separately (latest published `0.1.0-alpha.7`, rollback target `0.1.0-alpha.6`); `plugin-status` reports
 the package as `version` and the plugin as `pluginVersion`. The public CLI does not
 expose source-ref promotion, arbitrary repository code execution, or provider
 calls through the owned runtime.

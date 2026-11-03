@@ -10,7 +10,7 @@ separate owner decisions.
 Commands run from the clean clone; `quick` means
 `.venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick`.
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of the specification, plan, research,
+- [x] T001 (REQ-001 / SC-001): Owner review of the specification, plan, research,
   both contracts and ADR 0037. OD-9 and OD-10 are decided (D12, D13; SC-010
   amended on 2026-11-03); record ADR adoption and which of T002–T009 are
   authorized. Dependencies: none. Files:
@@ -18,6 +18,9 @@ Commands run from the clean clone; `quick` means
   a new owner review record. Verification: procedure_001 (`speckit-analyze` report,
   no change to existing contracts). Evidence: owner review record bound to a frozen
   commit (`validate_spec_kit freeze`).
+  Done: ADR 0037 accepted by the owner on 2026-11-03 (status recorded in the ADR by the
+  release-preparation PR for T011; assurance snapshot hashes for the ADR updated there).
+  The frozen commit binding stays with the T011 candidate freeze.
 
 - [x] T002 (REQ-002 / SC-002): Observe the OpenCode host matrix in a disposable
   profile (`XDG_CONFIG_HOME` and `XDG_DATA_HOME` in temporary directories, never the

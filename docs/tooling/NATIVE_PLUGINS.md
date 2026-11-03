@@ -2,24 +2,27 @@
 # Native AI plugins (SPEC-046)
 
 The native plugin is installed once **per user, per local host** and reused across
-repositories. Supported package targets are macOS arm64 and Linux x86_64 (glibc 2.28 or newer; no musl compatibility claim). Codex
-or Claude Code and Git must already be installed (OpenCode is planned for `0.1.0-alpha.7`, see
-[OpenCode](#opencode-available-from-010-alpha7)). The package includes CPython
+repositories. Supported package targets are macOS arm64 and Linux x86_64 (glibc 2.28 or newer; no musl compatibility claim). Codex,
+Claude Code or OpenCode (from `0.1.0-alpha.7`, see
+[OpenCode](#opencode-from-010-alpha7)) and Git must already be installed. The package includes CPython
 3.12.15 and hash-locked dependencies; Python, pip, uv, Node and Docker are not
 consumer prerequisites. The Python installation remains available below.
 
 ## Published experimental marketplace
 
 The own GitHub marketplace is published on `plugin-dist`, with version
-`0.1.0-alpha.6` pinned by tag `agent-braid--v0.1.0-alpha.6` at
-`78cc45a3f1c5dbc7b43e0ce5024fc5d1c5da053e`; it adds registry quarantine, the
-`telemetry-audit` skill and `pluginVersion` in `plugin-status`, and its native host
-install has not yet been observed (see the
+`0.1.0-alpha.7` pinned by tag `agent-braid--v0.1.0-alpha.7`; it adds the OpenCode
+native plugin (see the [OpenCode](#opencode-from-010-alpha7) section and the
+[alpha.7 readiness record](../../specs/068-opencode-native-integration/release-readiness-alpha7.md)),
+and its native host installs have not yet been observed.
+The previous `0.1.0-alpha.6` is pinned by tag `agent-braid--v0.1.0-alpha.6` at
+`78cc45a3f1c5dbc7b43e0ce5024fc5d1c5da053e` and is the rollback target; it adds registry
+quarantine, the `telemetry-audit` skill and `pluginVersion` in `plugin-status` (see the
 [alpha.6 record](../../specs/046-native-ai-plugins/release-acceptance-alpha6.md)).
 The Python package version (`0.1.0a2`) is a separate line from the plugin version
 (see the version update notes under local telemetry consent).
-The previous `0.1.0-alpha.5` is pinned by tag `agent-braid--v0.1.0-alpha.5` at
-`07e5973fe819591854e6df8bca169b5ec82eae05` and is the rollback target; it adds opt-in
+The earlier `0.1.0-alpha.5` is pinned by tag `agent-braid--v0.1.0-alpha.5` at
+`07e5973fe819591854e6df8bca169b5ec82eae05`; it adds opt-in
 System One shadow mode (see the
 [alpha.5 record](../../specs/046-native-ai-plugins/release-acceptance-alpha5.md)).
 The earlier `0.1.0-alpha.4` is pinned by tag `agent-braid--v0.1.0-alpha.4` at
@@ -107,12 +110,11 @@ configuration. Every selected host is preflighted before the first mutation.
 If a native manager fails after an earlier operation succeeds, inspect its
 output and rerun the same selection; native managers own idempotency.
 
-## OpenCode (available from 0.1.0-alpha.7)
+## OpenCode (from 0.1.0-alpha.7)
 
-**Status.** The OpenCode package is planned for `0.1.0-alpha.7`. It is not in the
-published `0.1.0-alpha.6`, and the current `plugin-dist` branch has no
-`package.json` for OpenCode yet, so the command below works only after that
-release. Everything here comes from the SPEC-068
+**Status.** The OpenCode package ships from `0.1.0-alpha.7`; `0.1.0-alpha.6` and
+earlier have no OpenCode `package.json`, so the command below needs alpha.7 or
+later. Everything here comes from the SPEC-068
 [surface contract](../../specs/068-opencode-native-integration/contracts/opencode-surface.md),
 its tests and one disposable-profile observation (T002). That observation used
 OpenCode 2.1.4 on macOS arm64 with a local Git source. A real-host run of the published plugin (T010), the `github:`
@@ -390,6 +392,48 @@ or the `telemetry-audit` skill, and it refuses a registry holding a deleted
 worktree root or an unsafe row, so run `plugin setup --prune-stale` (preview, then
 apply) first if `plugin doctor` reports either. Telemetry cells written by alpha.6
 stay in the store; see the compatibility note above for the older build's limits.
+
+Version 0.1.0-alpha.7 (SPEC-068, ADR 0037) adds OpenCode as a third native host and
+adds no registry migration. After alpha.6 it bundles:
+
+- **OpenCode native plugin**: one dependency-free ES module (`opencode/index.js`,
+  `package.json`) registers the `agent-braid` MCP server, the six skills `analyze`,
+  `plan`, `evidence`, `execute`, `recover` and `setup`, and the commands
+  `agent-braid-setup` and `agent-braid-reconnect`. Tool names, schemas and results
+  are unchanged (`agent-braid-plugin/v0.2`); it writes no `permission`
+  configuration and runs no hook ([OpenCode](#opencode-from-010-alpha7)).
+- **`plugin doctor --host opencode`**: read-only diagnosis of skill-id and server-key
+  collisions (`server-collision`, duplicate guidance, `opencode.json` next to
+  `opencode.jsonc`); without `--host` the output is unchanged
+  ([SKILLS.md](SKILLS.md#opencode-skill-collisions)).
+- **`install.sh --host opencode` and `--host all`**: `opencode` runs
+  `opencode plugin add` with a `github:` source (`--ref TAG` pins it); `--host all`
+  installs every supported host found on `PATH` and skips absent ones with a notice.
+  `--host both` stays `codex` + `claude`.
+- **Legacy profile**: `agent-braid tooling install --host opencode` writes a local
+  `tooling serve` entry and the prefixed `agent-braid-*` skills into
+  `opencode.json` or `opencode.jsonc` (comments and trailing commas preserved by the
+  standard-library `agent_braid.jsonc` reader). It shares the server key
+  `agent-braid` with the plugin and then shadows it, which preview and `doctor`
+  report as `native_plugin_shadowed`; use `--name` for another key
+  ([INSTALL.md](INSTALL.md#opencode-legacy-profile)).
+
+Migration notes: Codex and Claude Code installs need nothing beyond the update.
+If you tried the legacy OpenCode profile and now add the plugin, either remove the
+legacy entry or give it another key, and check `plugin doctor --host opencode`.
+Registered workspaces, results and telemetry consent are untouched.
+
+Known limits and unobserved: a real-host run of the published plugin (SPEC-068 T010
+interactive rows), the `github:` transport against `plugin-dist`, Linux, skill and
+command shapes in a live OpenCode session, and call-time approval prompts were not
+observed; the native host install of alpha.6 and alpha.7 in Claude Code and Codex
+is pending. OpenCode behaviour was observed with OpenCode 2.1.4 on macOS arm64 only,
+in a disposable profile.
+
+To roll back, reinstall `0.1.0-alpha.6` from tag `agent-braid--v0.1.0-alpha.6`
+(Claude Code, Codex), and for OpenCode remove the plugin with the exact source string
+from the configuration (`opencode plugin remove`), since alpha.6 has no OpenCode
+package. The registry and results are accepted unchanged by alpha.6.
 
 ## Storage, updates and removal
 

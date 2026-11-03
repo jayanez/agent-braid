@@ -384,7 +384,7 @@ class WorkflowPackagingTests(unittest.TestCase):
             self.assertEqual(json.loads((plugin / '.claude-plugin/plugin.json').read_text())['version'], VERSION)
             self.assertEqual(json.loads((plugin / 'plugin.json').read_text())['version'], VERSION)
             self.assertEqual(json.loads((plugin / 'package-inventory.json').read_text())['version'], VERSION)
-        self.assertEqual(VERSION, '0.1.0-alpha.6')
+        self.assertEqual(VERSION, '0.1.0-alpha.7')
 
     def test_plugin_status_reports_the_version_the_build_stamps(self):
         from agent_braid.plugin_mcp import PluginRouter
