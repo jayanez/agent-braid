@@ -18,6 +18,13 @@ specs/061-activity-viewer/contracts/ui-security-privacy.md:
 
 Events come from the artifact adapters, so they are `rehashed`. Nothing here writes to the file
 system or reaches the network.
+
+Root identity (REQ-010): the event contract names no root and `evidenceRef.path` stays relative to
+it. The watcher therefore gives each watched root a stable, non-path label ("root 1" to "root 8", in
+start order) and keeps it beside the store, per `seq`, in a `RootLabels` registry. `replay_with_roots`
+returns the retained events with the labels read in the same step, and `build_model(events, roots=...)`
+turns them into a per-element `root`. A label never contains a path or a user name. The labels are
+per store, so one store has one watcher: two watchers on one store would both start at "root 1".
 """
 from __future__ import annotations
 
@@ -27,6 +34,7 @@ import os
 import stat
 import threading
 import time
+import weakref
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
@@ -55,6 +63,50 @@ KNOWN_ARTIFACTS: Mapping[str, Adapter] = {
     "ownership-receipt.json": events_from_ownership_receipt,
     "gate-result.json": events_from_gate_result,
 }
+
+
+def root_label(index: int) -> str:
+    """The label of the watched root at zero-based position `index`: "root 1", "root 2", ..."""
+    return f"root {index + 1}"
+
+
+class RootLabels:
+    """Which watched root stored which `seq`, kept beside (never inside) the store's events."""
+
+    def __init__(self) -> None:
+        self.lock = threading.Lock()  # held by the watcher across append + record, and by readers
+        self._by_seq: dict[int, str] = {}
+
+    def record(self, seq: int, label: str) -> None:
+        self._by_seq[seq] = label
+
+    def prune(self, oldest_seq: int | None) -> None:
+        """Forget the events the store's ring has evicted (those older than `oldest_seq`)."""
+        for seq in [seq for seq in self._by_seq if oldest_seq is None or seq < oldest_seq]:
+            del self._by_seq[seq]
+
+    def copy(self) -> dict[int, str]:
+        return dict(self._by_seq)
+
+
+_REGISTRIES: "weakref.WeakKeyDictionary[LoomStore, RootLabels]" = weakref.WeakKeyDictionary()
+_REGISTRIES_LOCK = threading.Lock()
+
+
+def root_labels_of(store: LoomStore) -> RootLabels:
+    """The registry belonging to `store` (created empty on first use, released with the store)."""
+    with _REGISTRIES_LOCK:
+        registry = _REGISTRIES.get(store)
+        if registry is None:
+            registry = _REGISTRIES[store] = RootLabels()
+        return registry
+
+
+def replay_with_roots(store: LoomStore) -> tuple[list[dict[str, Any]], dict[int, str]]:
+    """`store.replay()` plus the `seq` -> root label map, read together so they agree."""
+    registry = root_labels_of(store)
+    with registry.lock:
+        return store.replay(), registry.copy()
 
 
 class TailError(ValueError):
@@ -95,6 +147,7 @@ class ArtifactTail:
                 resolved = [kept for kept in resolved if path not in kept.parents]
                 resolved.append(path)
         self._roots = resolved[:max_roots]
+        self._labels = root_labels_of(store)
         self._roots_exceeded = len(resolved) > max_roots
         self._seen: dict[tuple[int, str], tuple[tuple[int, ...], str | None]] = {}
         self._reported: set[Any] = set()
@@ -134,6 +187,8 @@ class ArtifactTail:
         for _ in exceeded - self._reported:
             appended += self._append(self._gap())
         self._reported = exceeded
+        with self._labels.lock:
+            self._labels.prune(self.store.stats()["oldestSeq"])
         return appended
 
     def _walk(self, root: Path, budget: list[int]):
@@ -186,15 +241,20 @@ class ArtifactTail:
         except (ValueError, TypeError):
             return 0  # a path the contract cannot name: nothing is stored for it
         stored = 0
+        label = root_label(index)
         for event in events:
             try:
-                stored += self._append(event)
+                stored += self._append(event, label)
             except LoomError:
                 break  # an event the store refuses ends this file's events; the file is not retried
         return stored
 
-    def _append(self, event: dict[str, Any]) -> int:
-        return 0 if self.store.append(event) is None else 1
+    def _append(self, event: dict[str, Any], label: str | None = None) -> int:
+        with self._labels.lock:  # store and label change together, so a reader never sees one without the other
+            stored = self.store.append(event)
+            if stored is not None and label is not None:
+                self._labels.record(stored["seq"], label)
+        return 0 if stored is None else 1
 
     def _gap(self) -> dict[str, Any]:
         return validate_event({
@@ -238,4 +298,5 @@ class ArtifactTail:
         self.stop()
 
 
-__all__ = ["ArtifactTail", "KNOWN_ARTIFACTS", "MAX_ENTRIES", "MAX_ROOTS", "POLL_SECONDS", "TailError"]
+__all__ = ["ArtifactTail", "KNOWN_ARTIFACTS", "MAX_ENTRIES", "MAX_ROOTS", "POLL_SECONDS", "RootLabels", "TailError",
+           "replay_with_roots", "root_label", "root_labels_of"]

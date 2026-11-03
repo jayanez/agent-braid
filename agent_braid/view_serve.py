@@ -51,6 +51,7 @@ from urllib.parse import parse_qs
 from agent_braid.view_loom import MAX_EVENTS, MAX_LINE_BYTES, MAX_SEQ, canonical_bytes, parse_stream
 from agent_braid.view_model import build_model
 from agent_braid.view_store import LoomStore, StoreError, SubscriberDropped
+from agent_braid.view_tail import replay_with_roots
 
 LOOPBACK_HOSTS = ("127.0.0.1", "::1")
 MAX_CONNECTIONS = 32
@@ -397,7 +398,8 @@ class ViewServer(ThreadingHTTPServer):
         names = sorted({name for name in (self.names_inventory() if self.names_inventory else ())
                         if isinstance(name, str) and 0 < len(name) <= MAX_INVENTORY_NAME_LENGTH
                         and name.isprintable()})[:MAX_INVENTORY_NAMES]
-        document = {"droppedAttributeNames": names, "model": build_model(self.store.replay())}
+        events, roots = replay_with_roots(self.store)  # the watcher's root labels, read together with the events
+        document = {"droppedAttributeNames": names, "model": build_model(events, roots=roots)}
         body = json.dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
         return body.encode("utf-8"), "application/json"
 
