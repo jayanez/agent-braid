@@ -19,15 +19,17 @@ Exit codes: 0 success; 1 the stream was read but is invalid; 2 usage error, refu
 resource. Nothing is left behind by a refusal: the runtime directory is created only after every
 input was checked and is removed again when the port cannot be bound; the ingest token file is
 removed when the server stops (Ctrl-C or SIGTERM). The web bundle is read from the source checkout
-(`integrations/agent-braid-view/web`), which the built package does not ship yet, so `serve` refuses
-elsewhere. The viewer never writes host configuration. This module imports no network code; the server modules
-are loaded only by the subcommands that need them.
+(`integrations/agent-braid-view/web`) when that directory exists, else from the installed package
+(`agent_braid/view_assets/web`, shipped by the build, T043); the vendored files are served from the
+`vendor` directory of the resolved bundle. The viewer never writes host configuration. This module
+imports no network code; the server modules are loaded only by the subcommands that need them.
 """
 from __future__ import annotations
 
 import argparse
 import base64
 import hashlib
+import importlib.resources
 import json
 import os
 import re
@@ -44,6 +46,7 @@ RUNTIME_DIR_NAME = "agent-braid-view"
 TOKEN_ENV = "AGENT_BRAID_VIEW_TOKEN"
 HOOK_TIMEOUT_SECONDS = 5
 BUNDLE_DIR = Path(__file__).resolve().parent.parent / "integrations" / "agent-braid-view" / "web"
+PACKAGE_BUNDLE = ("view_assets", "web")  # beneath the `agent_braid` package, written by `build_support.py`
 MAX_BUNDLE_FILE_BYTES = 8 * 1024 * 1024
 MAX_BUNDLE_FILES = 64
 _IMPORT_MAP = re.compile(rb"<script\b[^>]*\btype\s*=\s*[\"']?importmap[\"']?[^>]*>(.*?)</script\s*>",
@@ -162,6 +165,23 @@ def discover_watch_roots(home: Path | None = None) -> tuple[list[Path], list[str
     return roots, notes
 
 
+def resolve_bundle_dir() -> Path:
+    """The web bundle directory: the source checkout when present, else the installed package's copy.
+
+    When neither exists the source-checkout path is returned so `load_bundle` refuses it with the usual message.
+    """
+    if BUNDLE_DIR.is_dir():
+        return BUNDLE_DIR
+    try:
+        installed = importlib.resources.files("agent_braid").joinpath(*PACKAGE_BUNDLE)
+    except (ImportError, OSError, TypeError):
+        return BUNDLE_DIR
+    # Only a real directory can be scanned: a zip-style resource is not served by the flat bundle reader.
+    if isinstance(installed, Path) and installed.is_dir():
+        return installed
+    return BUNDLE_DIR
+
+
 def load_bundle(directory: Path) -> tuple[dict[str, bytes], str | None]:
     """The flat first-party bundle files and the SHA-256 (base64) of the single inline import map."""
     files: dict[str, bytes] = {}
@@ -180,7 +200,7 @@ def load_bundle(directory: Path) -> tuple[dict[str, bytes], str | None]:
                 raise CliError(f"view: bundle: {entry.name} is larger than the bundle file bound")
             files[entry.name] = content
     except OSError as exc:
-        raise CliError(f"view: bundle: cannot read the web bundle (`serve` runs from a source checkout): {exc.strerror}") from exc
+        raise CliError(f"view: bundle: cannot read the web bundle (neither the source checkout nor the installed package has it): {exc.strerror}") from exc
     if "index.html" not in files:
         raise CliError("view: bundle: the web bundle has no index.html")
     index = files["index.html"]
@@ -218,7 +238,8 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
     from .view_store import LoomStore
     from .view_tail import MAX_ROOTS, ArtifactTail, TailError
 
-    bundle, import_map_sha256 = load_bundle(BUNDLE_DIR)
+    bundle_dir = resolve_bundle_dir()
+    bundle, import_map_sha256 = load_bundle(bundle_dir)
     store = LoomStore()
     try:
         if args.replay is not None:
@@ -247,7 +268,7 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
     try:
         server = ViewServer(store, runtime_dir, port=args.port, bundle=bundle,
                             ingest_handlers={HOOK_PATH: hooks.handle}, names_inventory=hooks.dropped_names,
-                            import_map_sha256=import_map_sha256)
+                            import_map_sha256=import_map_sha256, vendor_dir=bundle_dir / "vendor")
     except ServeError as exc:
         _remove_created(created)
         raise CliError(f"view serve: {exc}") from exc
@@ -348,4 +369,4 @@ def _env(args: argparse.Namespace) -> int:
 
 
 __all__ = ["BUNDLE_DIR", "CliError", "SURFACES", "add_parser", "default_runtime_dir", "discover_watch_roots",
-           "load_bundle", "run"]
+           "load_bundle", "resolve_bundle_dir", "run"]

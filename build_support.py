@@ -5,6 +5,15 @@ from shutil import copyfile
 
 from setuptools.command.build_py import build_py
 
+# The first-party activity-viewer web bundle (SPEC-061 T043) with its vendored files, manifest and licence.
+VIEW_WEB_SOURCE = Path(__file__).resolve().parent / "integrations" / "agent-braid-view" / "web"
+
+
+def _view_web_files(source):
+    if not (source / "index.html").is_file():
+        raise FileNotFoundError(f"the activity viewer web bundle is missing: {source}")
+    return sorted(path for path in source.rglob("*") if path.is_file() and not path.is_symlink())
+
 
 class ToolingBuildPy(build_py):
     def _asset_mapping(self):
@@ -23,6 +32,9 @@ class ToolingBuildPy(build_py):
             mapping[str(destination / "licenses" / name)] = str(root / "LICENSES" / name)
         for name in ("NOTICE", "TRADEMARKS.md"):
             mapping[str(destination / name)] = str(root / name)
+        view = Path(self.build_lib) / "agent_braid" / "view_assets" / "web"
+        for path in _view_web_files(VIEW_WEB_SOURCE):
+            mapping[str(view / path.relative_to(VIEW_WEB_SOURCE))] = str(path)
         return mapping
 
     def run(self):
