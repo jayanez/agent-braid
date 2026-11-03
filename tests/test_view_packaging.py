@@ -65,6 +65,22 @@ def setuptools_available():
     return sys.version_info >= (3, 12) and int(__version__.split(".")[0]) >= 68
 
 
+REQUIRE_BUILD_ENV = "AGENT_BRAID_REQUIRE_BUILD_TESTS"
+BUILD_BACKEND_MISSING = ("the wheel and sdist build tests need Python 3.12+ and setuptools 68+ (the declared build "
+                         "backend): run `python -m pip install 'setuptools>=68'` to run them. Set "
+                         f"{REQUIRE_BUILD_ENV}=1 to fail instead of skip, as an environment that claims the wheel "
+                         "evidence (SC-012) must.")
+
+
+def require_build_backend():
+    """Skip the build tests when the backend is missing, or fail when the environment requires them to run."""
+    if setuptools_available():
+        return
+    if os.environ.get(REQUIRE_BUILD_ENV) == "1":
+        raise AssertionError(BUILD_BACKEND_MISSING)
+    raise unittest.SkipTest(BUILD_BACKEND_MISSING)
+
+
 # Runs in a clean interpreter whose only agent_braid is the extracted package under `argv[1]`.
 LOOKUP = """
 import json, sys
@@ -262,10 +278,10 @@ class ResolveBundleTests(unittest.TestCase):
         self.assertEqual(view_cli.resolve_bundle_dir(), WEB)
 
 
-@unittest.skipUnless(setuptools_available(), "the wheel build needs Python 3.12+ and setuptools 68+, the declared build backend")
 class WheelBuildTests(ExtractedPackageCase):
     @classmethod
     def setUpClass(cls):
+        require_build_backend()
         cls.tmp = tempfile.TemporaryDirectory()
         cls.addClassCleanup(cls.tmp.cleanup)
         work = Path(cls.tmp.name).resolve()
@@ -317,6 +333,30 @@ class WheelBuildTests(ExtractedPackageCase):
         with zipfile.ZipFile(self.wheel) as archive:
             archive.extractall(site)
         self.assert_resolves_and_serves(site)
+
+
+class BuildBackendGateTests(unittest.TestCase):
+    """The build tests skip without the backend unless the environment requires them (finding 12)."""
+
+    def test_a_missing_backend_skips_by_default_and_names_the_fix(self):
+        with mock.patch.dict(os.environ, {}, clear=False) as environment, \
+                mock.patch(f"{__name__}.setuptools_available", return_value=False):
+            environment.pop(REQUIRE_BUILD_ENV, None)
+            with self.assertRaises(unittest.SkipTest) as raised:
+                require_build_backend()
+        self.assertIn("setuptools>=68", str(raised.exception))
+        self.assertIn(REQUIRE_BUILD_ENV, str(raised.exception))
+
+    def test_a_missing_backend_fails_when_the_environment_requires_the_build_tests(self):
+        with mock.patch.dict(os.environ, {REQUIRE_BUILD_ENV: "1"}), \
+                mock.patch(f"{__name__}.setuptools_available", return_value=False):
+            with self.assertRaises(AssertionError):
+                require_build_backend()
+
+    def test_an_available_backend_neither_skips_nor_fails(self):
+        with mock.patch.dict(os.environ, {REQUIRE_BUILD_ENV: "1"}), \
+                mock.patch(f"{__name__}.setuptools_available", return_value=True):
+            require_build_backend()
 
 
 if __name__ == "__main__":
