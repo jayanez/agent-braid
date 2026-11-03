@@ -310,8 +310,7 @@
   "task_state_overrides": {
     "SPEC-004/T005": "The frozen M0 task checkbox predates closure. Same-commit Codex and Claude reports are bound by specs/004-m0-closure/founder-review.json, which separately approves M0 closure; the published historical task file remains unchanged.",
     "SPEC-002/T006": "Owner closure decision of 2026-10-31 (docs/development/FOUNDER_DECISIONS_20261031.md): the milestone closes with this task accepted while the human strategy review and separate founder decisions remain pending (human_review: pending). Closing the issue records no review or approval.",
-    "SPEC-009/T009": "Owner ratification of 2026-10-31 (docs/development/FOUNDER_DECISIONS_20261031.md, PUB.1 ratification): the seven cutover obligations are ratified as the intended and authorized T009 execution, covering public root 9b84467d; independent validation remains pending.",
-    "SPEC-068/T005": "Merged to develop in #1023 (plugin doctor --host opencode collision diagnosis); the tasks.md checkbox was not ticked in that change. Remove this override when the checkbox is ticked."
+    "SPEC-009/T009": "Owner ratification of 2026-10-31 (docs/development/FOUNDER_DECISIONS_20261031.md, PUB.1 ratification): the seven cutover obligations are ratified as the intended and authorized T009 execution, covering public root 9b84467d; independent validation remains pending."
   },
   "task_milestone_overrides": {
     "SPEC-029/T001": "S1.5 — System One shadow activation",
