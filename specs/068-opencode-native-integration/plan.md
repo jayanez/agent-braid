@@ -81,7 +81,7 @@ row; failure stops the dependent task and returns to the owner.
    collision warning.
 6. **Telemetry, System One, session identifier.** No change; regression tests
    (REQ-009).
-7. **Release.** First carrier `0.1.0-alpha.6` (D11). The plugin schema stays
+7. **Release.** First carrier `0.1.0-alpha.7` (D11, amended). The plugin schema stays
    `agent-braid-plugin/v0.2`; the Python package version follows the release
    decision in T011.
 8. **Documentation.** README quick start (OpenCode row), `docs/tooling/NATIVE_PLUGINS.md`,

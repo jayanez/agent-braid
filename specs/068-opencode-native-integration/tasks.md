@@ -130,7 +130,7 @@ Commands run from the clean clone; `quick` means
   procedure_012. Evidence: observation record with versions and limits.
 
 - [ ] T011 (REQ-001…REQ-012): Stable candidate: `--profile pr`, `validate_spec_kit
-  freeze`, release notes for `0.1.0-alpha.6` (D11), and the owner's release
+  freeze`, release notes for `0.1.0-alpha.7` (D11), and the owner's release
   decision. Dependencies: T010. Verification: `--profile pr` output and frozen
   snapshots. Evidence: release-readiness record stating whether anything was
   released; tag, `plugin-dist` publication and remote tracking only on explicit

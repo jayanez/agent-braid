@@ -14,7 +14,7 @@
     24,
     25
   ],
-  "assumptions": "OpenCode 2.x as installed (2.1.4 CLI; 2.1.2 documentation consulted); plugin, MCP, skill and permission behaviour is unverified until REQ-002; Codex/Claude native plugins, the bundled runtime and the SPEC-042 lifecycle engine are reused; owner decisions D1 to D11 recorded (codemode false, legacy protocol, global plugin, portable server only through the legacy profile, version 0.1.0-alpha.6). Plan (2026-11-03): OpenCode facts in research.md R1-R7 are documented (OpenCode 2.1.2 docs), not observed; T002 observes them and contradictions return to the owner. Owner decisions D12 (OD-9: shared plugin directory; SC-010 measured on host-read files) and D13 (OD-10: legacy server name agent-braid with a collision warning) recorded 2026-11-03.",
+  "assumptions": "OpenCode 2.x as installed (2.1.4 CLI; 2.1.2 documentation consulted); plugin, MCP, skill and permission behaviour is unverified until REQ-002; Codex/Claude native plugins, the bundled runtime and the SPEC-042 lifecycle engine are reused; owner decisions D1 to D11 recorded (codemode false, legacy protocol, global plugin, portable server only through the legacy profile, version 0.1.0-alpha.7, amended 2026-11-03 because 0.1.0-alpha.6 was published without OpenCode). Plan (2026-11-03): OpenCode facts in research.md R1-R7 are documented (OpenCode 2.1.2 docs), not observed; T002 observes them and contradictions return to the owner. Owner decisions D12 (OD-9: shared plugin directory; SC-010 measured on host-read files) and D13 (OD-10: legacy server name agent-braid with a collision warning) recorded 2026-11-03.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {

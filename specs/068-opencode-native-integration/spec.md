@@ -87,7 +87,8 @@ OpenCode 2.1.2 documentation and the 2.1.4 CLI):
   reach OpenCode only through the legacy profile, where OpenCode shows them as
   `<server>:<prompt>` commands. The native plugin publishes no MCP prompts.
 - **D11 (OD-8)** The first package that includes OpenCode is
-  `0.1.0-alpha.6`; the release itself remains a separate owner decision (T011).
+  `0.1.0-alpha.7` (amended 2026-11-03: `0.1.0-alpha.6` was published without
+  OpenCode); the release itself remains a separate owner decision (T011).
 
 Owner decisions, 2026-11-03 (plan review):
 
