@@ -1,0 +1,42 @@
+{
+  "schema": "agent-braid-bounded-founder-review-v1",
+  "spec": "SPEC-061",
+  "reviewedCommit": "62a44fb78a18a3de7a5eab7a1e5a1db930993dbf",
+  "evidenceCommit": "62a44fb78a18a3de7a5eab7a1e5a1db930993dbf",
+  "decisionDate": "2026-11-03",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "github": "jayanez",
+    "role": "owner and founder"
+  },
+  "decision": "accepted",
+  "scope": "SPEC-061 VIS.1a closure only: the closure packet specs/061-activity-viewer/closure-packet-vis1a.md and its closure review (PR #1011), the closure fixes for findings 1 and 2 (PR #1013), and the obtained evidence recorded in assurance.json for SC-001 to SC-006, SC-010 to SC-013 and SC-015 (Claude Code hook part only for SC-005) through the receipts evidence/vis1a-local-tests-20261103.json and evidence/vis1a-fixes-tests-20261103.json (PR #1017). The rest of SPEC-061 remains under the T001 approval recorded in owner-review-20261101.json and the probe review owner-review-probes-20261101.json.",
+  "ownerResponse": {
+    "source": "direct reply in chat on 2026-11-03 to the question of how to close VIS.1a, given after the closure packet listed findings 1 and 2 as fixes to decide before the owner opens the viewer on real sessions; the reviewed commit is the squash merge of PR #1017, which follows the merge of the fixes PR #1013; the answer was given before the evidence receipts of #1017 existed, so it approves the closure decision, not those receipts' content",
+    "answers": [
+      {
+        "topic": "¿Cómo cerramos VIS.1a?",
+        "answer": "Arreglar 1+2, luego cerrar (Recommended)"
+      }
+    ],
+    "packetPath": "specs/061-activity-viewer/closure-packet-vis1a.md"
+  },
+  "receipts": {
+    "evidence/vis1a-local-tests-20261103.json": {
+      "sha256": "e60b1dbe33a188565990b0e11b5eea8059c9baab06a8107e281ff883b679dbe4",
+      "outcome": "local unit tests passed"
+    },
+    "evidence/vis1a-fixes-tests-20261103.json": {
+      "sha256": "345368e15f1430b4d5796b62289b643c8201373fa58169e67bb3db1121a901eb",
+      "outcome": "local unit tests passed"
+    }
+  },
+  "notAccepted": [
+    "VIS.1b scope: REQ-007 to REQ-009, the frame part of REQ-011, OTLP ingest, Codex shapes and effort evidence",
+    "the T035 go/no-go for VIS.1b, due by 2027-01-31 after the owner opens the viewer on real sessions",
+    "closure findings 3 to 12, which stay open under T047",
+    "host verification of the viewer on real sessions (procedure_hvis1) and any claim that the braid shortens locating hazards (Q-VIS1 remains an open question)",
+    "release or publication of any package, and scientific validity"
+  ],
+  "limits": "Acceptance binds the reviewed commit only; later changes need a new review. The evidence is local unit tests on one machine on owned fixtures, with the wheel and sdist build tests skipped locally and run in CI. Acceptance is distinct from implementation, integration and release."
+}
