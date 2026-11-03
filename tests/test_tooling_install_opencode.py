@@ -359,9 +359,10 @@ class NativePluginTests(Base):
     SPEC = "github:jayanez/agent-braid#v0.1.0::path:plugins/agent-braid"
 
     def test_detection_is_conservative(self):
-        yes = ['{"plugin": ["%s"]}' % self.SPEC, '{"plugin": [["agent-braid@1.2.3", {}]]}', '{"plugin": ["agent-braid"]}',
+        yes = ['{"plugins": ["%s"]}' % self.SPEC, '{"plugins": [["%s", {}]], "plugin": ["x"]}' % self.SPEC,
+               '{"plugin": ["%s"]}' % self.SPEC, '{"plugin": [["agent-braid@1.2.3", {}]]}', '{"plugin": ["agent-braid"]}',
                '{"plugin": ["file:///opt/x/plugins/agent-braid",]} // c']
-        no = ['{}', '{"plugin": []}', '{"plugin": ["some-agent-braid-fork"]}', '{"plugin": "agent-braid"}',
+        no = ['{}', '{"plugin": []}', '{"plugin": ["some-agent-braid-fork"]}', '{"plugin": "agent-braid"}', '{"plugins": "agent-braid"}',
               '{"plugin": [1, null, {"a": "agent-braid"}]}', '{"mcp": {"agent-braid": {}}}']
         for text in yes:
             self.assertTrue(native_plugin_configured(text.encode()), text)

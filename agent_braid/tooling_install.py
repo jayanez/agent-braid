@@ -635,10 +635,12 @@ def native_plugin_configured(raw: bytes | None) -> bool:
     """True when the ``plugin`` array of an OpenCode configuration names the native plugin."""
     if raw is None:
         return False
-    plugins = _oc_load(raw)[2].get("plugin", [])
-    if not isinstance(plugins, list):
-        return False
-    specs = [item[0] if isinstance(item, list) and item else item for item in plugins]
+    parsed = _oc_load(raw)[2]
+    specs = []
+    for key in ("plugin", "plugins"):  # `opencode plugin add` writes "plugins" (T002, 2.1.4); "plugin" is accepted
+        values = parsed.get(key, [])
+        if isinstance(values, list):
+            specs += [item[0] if isinstance(item, list) and item else item for item in values]
     return any(isinstance(spec, str) and _is_native_plugin(spec) for spec in specs)
 
 
