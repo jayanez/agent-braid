@@ -87,6 +87,7 @@ const state = {
   selected: null,
   filterKind: "",
   filterUncertain: false,
+  hiddenSources: new Set(),
   lastId: "",
 };
 
@@ -161,6 +162,40 @@ function timeText(element) {
   return String(element.relMs) + " ms";
 }
 
+// ---------------------------------------------------------------- event sources
+
+// The page offers one checkbox per source of events, all checked by default. The model carries no adapter name and
+// no root, so the source is inferred from the two fields every element has from its event's source block: the
+// verification status and whether an evidence reference exists. Nothing is added to the event contract. The labels
+// name what is known about each group, not a guessed origin.
+//   rehashed or derived, with an evidence reference: read from an artifact root and re-hashed (all roots form one group)
+//   rehashed or derived, without one: produced by the viewer itself (for example a ring-eviction gap)
+//   anything else, with an evidence reference: unverified and referenced, as every event of a replay file is
+//   anything else, without one: unverified and unreferenced, as a host report (hook or telemetry ingest) is
+const SOURCES = {
+  watched: ["Watched artifacts", "Events with an evidence reference that this session re-hashed. The model does not name the root, so all watched and discovered roots form one group."],
+  replay: ["Replay file", "Unverified events with an evidence reference, as every event loaded with --replay is. Never re-hashed by this session."],
+  hook: ["Hook and telemetry ingest", "Unverified events with no evidence reference, as host reports are. Recorded host events in a replay file that have no artifact also appear here."],
+  viewer: ["Derived by the viewer", "Events with no evidence reference that the viewer produced itself, such as gaps for evicted or truncated ranges."],
+};
+
+function sourceOf(element) {
+  const referenced = Boolean(element.evidenceRef);
+  if (element.verification === "rehashed" || element.verification === "derived") return referenced ? "watched" : "viewer";
+  return referenced ? "replay" : "hook";
+}
+
+function isSourceShown(element) {
+  return !state.hiddenSources.has(sourceOf(element));
+}
+
+function hiddenText(hidden, total) {
+  return hidden === 0
+    ? "All sources are shown: 0 events hidden."
+    : hidden + " of " + total + " retained events are hidden because their source is unchecked. Hidden is not absent: " +
+      "the counters and the list of what is not shown as clean still include them.";
+}
+
 // ---------------------------------------------------------------- legend (static tables above)
 
 function renderLegend() {
@@ -188,6 +223,26 @@ function elementOf(seq) {
     elementsCache = { model: state.model, bySeq: new Map(state.model.elements.map((element) => [element.seq, element])) };
   }
   return elementsCache.bySeq.get(seq);
+}
+
+let countsCache = null;
+
+// Events per source of the current model, counted once per model.
+function sourceCounts() {
+  if (!state.model) return {};
+  if (!countsCache || countsCache.model !== state.model) {
+    const counts = {};
+    for (const element of state.model.elements) counts[sourceOf(element)] = (counts[sourceOf(element)] || 0) + 1;
+    countsCache = { model: state.model, counts };
+  }
+  return countsCache.counts;
+}
+
+function hiddenCount() {
+  const counts = sourceCounts();
+  let total = 0;
+  for (const key of state.hiddenSources) total += counts[key] || 0;
+  return total;
 }
 
 function rowsInOrder() {
@@ -387,10 +442,53 @@ function renderDropped() {
   fill("dropped-list", state.dropped.length ? state.dropped.map((name) => h("li", null, name)) : [h("li", null, "none recorded")]);
 }
 
+// ---------------------------------------------------------------- source checkboxes
+
+const sourceNodes = new Map();
+
+function renderSources() {
+  const counts = sourceCounts();
+  const keys = Object.keys(SOURCES).filter((key) => counts[key]);
+  // A source that no longer has events has no checkbox, so it cannot stay hidden with no way to show it again.
+  for (const key of [...state.hiddenSources]) if (!counts[key]) state.hiddenSources.delete(key);
+  $("sources").hidden = keys.length === 0;
+  const signature = keys.join("|");
+  if ($("source-list").dataset.keys !== signature) {
+    // Rebuilt only when the set of sources changes, so a live refresh never takes focus from a checkbox.
+    $("source-list").dataset.keys = signature;
+    sourceNodes.clear();
+    fill("source-list", keys.map((key) => {
+      const input = h("input", { type: "checkbox", "data-source": key,
+        on: { change: (event) => toggleSource(key, event.target.checked) } });
+      const count = h("span", { class: "source-count" });
+      sourceNodes.set(key, { input, count });
+      return h("label", { class: "source", title: SOURCES[key][1] }, input, " ", SOURCES[key][0], " ", count);
+    }));
+  }
+  for (const key of keys) {
+    const node = sourceNodes.get(key);
+    node.input.checked = !state.hiddenSources.has(key);
+    node.count.textContent = "(" + counts[key] + " events)";
+  }
+  $("source-status").textContent = hiddenText(hiddenCount(), totalCount());
+}
+
+function toggleSource(key, shown) {
+  if (shown) state.hiddenSources.delete(key);
+  else state.hiddenSources.add(key);
+  const selected = state.selected === null ? undefined : elementOf(state.selected);
+  if (selected && !isSourceShown(selected)) state.selected = null;
+  renderSources();
+  renderPlayback();
+  renderTable();
+  renderEvidence();
+}
+
 // ---------------------------------------------------------------- table
 
 function visibleRows() {
   return rowsInOrder().slice(0, state.cursor).filter(({ row, element }) => {
+    if (!isSourceShown(element)) return false;
     if (state.filterKind && element.element !== state.filterKind) return false;
     if (state.filterUncertain && marksOf(element).length === 0) return false;
     return true;
@@ -436,8 +534,10 @@ function renderTable() {
     if (again) again.focus({ preventScroll: true });
   }
   $("table-empty").hidden = rows.length > 0;
-  $("table-empty").textContent = state.model && totalCount() > 0 && rows.length === 0
-    ? "No events at this position or filter." : "No events to show.";
+  const hidden = hiddenCount();
+  $("table-empty").textContent = (state.model && totalCount() > 0 && rows.length === 0
+    ? "No events at this position or filter." : "No events to show.") +
+    (hidden ? " " + hiddenText(hidden, totalCount()) : "");
   syncScene();
 }
 
@@ -549,8 +649,11 @@ function renderPlayback() {
   const range = $("pb-range");
   range.max = String(total);
   range.value = String(state.cursor);
-  $("pb-count").textContent = state.cursor + " of " + total;
-  range.setAttribute("aria-valuetext", state.cursor + " of " + total + " events");
+  // Stepping moves over every retained event; with a source unchecked, say how many of those up to here are drawn.
+  const shown = state.hiddenSources.size
+    ? " (" + rowsInOrder().slice(0, state.cursor).filter(({ element }) => isSourceShown(element)).length + " shown)" : "";
+  $("pb-count").textContent = state.cursor + " of " + total + shown;
+  range.setAttribute("aria-valuetext", state.cursor + " of " + total + " events" + shown);
   $("pb-back").disabled = state.cursor <= 0;
   $("pb-start").disabled = state.cursor <= 0;
   $("pb-forward").disabled = state.cursor >= total;
@@ -612,6 +715,7 @@ let scene = null;
 let sceneModel = null;
 let sceneCursor = -1;
 let sceneSelected = null;
+let sceneHidden = "";
 
 function showHover(seq) {
   const element = seq === null ? undefined : elementOf(seq);
@@ -624,6 +728,8 @@ function showHover(seq) {
 function updateSceneNote() {
   const info = scene.summary();
   const parts = ["Showing " + info.drawn + " of " + info.visible + " events at this position in 3D."];
+  const hidden = hiddenCount();
+  if (hidden) parts.push(hidden + " events from unchecked sources are hidden here and in the table. They are not absent.");
   const untimed = info.seqs.filter((seq) => { const element = elementOf(seq); return element && element.timeKnown === false; }).length;
   if (untimed) parts.push(untimed + " of them state no time: the scene places them after their predecessor and invents no time.");
   if (info.omitted.length) {
@@ -649,9 +755,15 @@ function applyScene() {
     sceneModel = state.model;
     scene.setModel(state.model);
   }
-  if (modelChanged || sceneCursor !== state.cursor) {
+  const hidden = [...state.hiddenSources].sort().join("|");
+  if (modelChanged || sceneCursor !== state.cursor || sceneHidden !== hidden) {
     sceneCursor = state.cursor;
-    scene.setVisible(rowsInOrder().slice(0, state.cursor).map(({ row }) => row.seq));
+    sceneHidden = hidden;
+    // The scene shows only checked sources; the playback frontier still follows the position, not the filter.
+    const position = rowsInOrder().slice(0, state.cursor);
+    scene.setVisible(
+      position.filter(({ element }) => isSourceShown(element)).map(({ row }) => row.seq),
+      position.map(({ row }) => row.seq));
     updateSceneNote();
   }
   if (modelChanged || sceneSelected !== state.selected) {
@@ -705,6 +817,7 @@ async function startScene() {
 // ---------------------------------------------------------------- start
 
 function renderAll() {
+  renderSources();
   renderKindFilter();
   renderCounters();
   renderLanes();

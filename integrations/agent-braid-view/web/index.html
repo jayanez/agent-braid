@@ -26,6 +26,13 @@ compatibility class is not a guarantee, not a safety ordering and not permission
 <p class="notice" id="notice" hidden></p>
 <main class="layout">
   <div class="main-column">
+  <fieldset class="sources" id="sources" hidden>
+    <legend>Event sources</legend>
+    <p class="hint">Unchecking a source hides its elements in the 3D scene and in the table. Hidden events are counted
+    below and stay in the counters, so a hidden source never looks like an absent one.</p>
+    <div class="source-list" id="source-list"></div>
+    <p class="source-status" id="source-status" role="status"></p>
+  </fieldset>
   <section class="scene" id="scene-section" aria-labelledby="scene-title" hidden>
     <h2 id="scene-title">Braid scene (3D)</h2>
     <p class="hint">The same model, playback position and evidence panel as the table below. Drag to orbit, scroll to zoom,

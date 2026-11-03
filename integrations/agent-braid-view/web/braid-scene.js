@@ -632,6 +632,7 @@ export function createBraidScene(container, hooks = {}) {
   let model = null;
   let built = buildBraid(null);
   let visible = new Set();
+  let frontierSeqs = [];
   let selected = null;
   let frontier = -Infinity;
   let selection = null;
@@ -752,7 +753,7 @@ export function createBraidScene(container, hooks = {}) {
       const shown = visible.has(seq);
       for (const object of objects) object.visible = shown;
     }
-    frontier = frontierX(built, visible);
+    frontier = frontierX(built, frontierSeqs);
     clip.constant = Number.isFinite(frontier) ? frontier + CLIP_EPSILON : -1000;
     updateSelection();
     requestRender();
@@ -845,8 +846,11 @@ export function createBraidScene(container, hooks = {}) {
       model = next;
       rebuild();
     },
-    setVisible(seqs) {
+    // `seqs`: the events drawn. `position`: every event up to the playback position, drawn or hidden by the page's source
+    // selection, so a hidden source never shortens the strands that remain.
+    setVisible(seqs, position = seqs) {
       visible = new Set(seqs);
+      frontierSeqs = position;
       applyVisibility();
     },
     setSelected(seq) {

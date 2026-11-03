@@ -111,6 +111,13 @@ pre { margin: 4px 0 0; padding: 8px; max-height: 280px; overflow: auto; backgrou
 .lanes { font-size: 0.88rem; }
 .lanes li { margin: 2px 0; }
 .main-column { min-width: 0; }
+.sources { margin: 0 0 16px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+.sources legend { font-weight: 600; padding: 0 4px; }
+.source-list { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.source { display: inline-flex; align-items: center; gap: 4px; min-height: 36px; cursor: pointer; }
+.source input { width: 18px; height: 18px; margin: 0 4px 0 0; accent-color: var(--accent); }
+.source-count { color: var(--muted); font-size: 0.85rem; }
+.source-status { margin: 4px 0 0; font-size: 0.88rem; }
 .scene { margin-bottom: 16px; }
 .scene-box {
   position: relative; height: clamp(300px, 52vh, 540px); border: 1px solid var(--line); border-radius: 6px;

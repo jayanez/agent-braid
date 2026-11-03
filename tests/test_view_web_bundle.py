@@ -12,6 +12,7 @@ import base64
 import hashlib
 import http.client
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -396,12 +397,24 @@ class FirstPartyBundleTests(unittest.TestCase):
     def test_the_scene_is_bound_to_the_tables_selection_and_playback(self):
         text = read("loom.js")
         self.assertRegex(text, r"onSelect:\s*select\b")
-        self.assertIn("scene.setVisible(rowsInOrder().slice(0, state.cursor)", text)
+        self.assertIn("scene.setVisible(", text)
+        self.assertIn("rowsInOrder().slice(0, state.cursor)", text)
         self.assertIn("scene.setSelected(state.selected)", text)
         html = read("index.html")
         for identifier in ("scene-section", "scene-box", "scene-hover", "scene-note", "scene-reset", "legend-scene"):
             self.assertIn(f'id="{identifier}', html)
         self.assertIn("hidden", html[html.index('id="scene-section"'):html.index('id="scene-title"')])
+
+    def test_the_page_offers_source_checkboxes_that_filter_the_table_and_the_scene(self):
+        html, script, scene = read("index.html"), read("loom.js"), read("braid-scene.js")
+        for identifier in ("sources", "source-list", "source-status"):
+            self.assertIn(f'id="{identifier}', html)
+        self.assertIn("hidden", html[html.index('id="sources"'):html.index('id="source-list"')])
+        self.assertLess(html.index('id="sources"'), html.index('id="scene-section"'), "the sources sit above both views")
+        self.assertIn("never looks like an absent one", html)
+        self.assertRegex(scene, r"setVisible\(seqs, position = seqs\)")
+        self.assertRegex(scene, r"frontier = frontierX\(built, frontierSeqs\)")
+        self.assertNotRegex(script, r"localStorage|sessionStorage|document\.cookie", "the selection is never stored")
 
     def test_the_scene_legend_and_page_say_a_class_is_not_a_guarantee_and_no_effort_is_drawn(self):
         script = read("loom.js")
@@ -689,6 +702,250 @@ class SceneBuildTests(unittest.TestCase):
 
     def test_an_empty_model_builds_nothing(self):
         self.assertEqual(self.built["emptyParts"], {})
+
+
+DOM_STUB = """
+export class Node {}
+class Text extends Node {
+  constructor(data) { super(); this.data = data; }
+  get textContent() { return this.data; }
+}
+class Element extends Node {
+  constructor(tag) {
+    super();
+    Object.assign(this, { tag, children: [], attrs: {}, listeners: {}, dataset: {}, hidden: false, className: "", own: null });
+  }
+  append(...nodes) { this.children.push(...nodes); }
+  replaceChildren(...nodes) { this.children = [...nodes]; this.own = null; }
+  setAttribute(name, value) {
+    this.attrs[name] = value;
+    if (name.startsWith("data-")) this.dataset[name.slice(5)] = value;
+  }
+  addEventListener(name, fn) { (this.listeners[name] ||= []).push(fn); }
+  set textContent(value) { this.children = []; this.own = String(value); }
+  get textContent() { return this.own !== null ? this.own : this.children.map((child) => child.textContent).join(""); }
+  querySelector() { return null; }
+  focus() {}
+  descendants() { return this.children.flatMap((child) => (child instanceof Element ? [child, ...child.descendants()] : [])); }
+}
+const byId = new Map();
+globalThis.document = {
+  createElement: (tag) => new Element(tag),
+  createTextNode: (data) => new Text(data),
+  getElementById: (id) => { if (!byId.has(id)) byId.set(id, new Element("#" + id)); return byId.get(id); },
+  activeElement: null,
+  visibilityState: "visible",
+};
+globalThis.Node = Node;
+globalThis.CSS = { escape: String };
+globalThis.WebGL2RenderingContext = function WebGL2RenderingContext() {};
+export const find = (id) => document.getElementById(id);
+"""
+SCENE_STUB = """
+globalThis.sceneCalls = [];
+export function createBraidScene(container, handlers) {
+  let shown = [];
+  return {
+    setModel() {},
+    setVisible(seqs, position) { shown = [...seqs]; sceneCalls.push({ seqs: [...seqs], position: position === undefined ? null : [...position] }); },
+    setSelected() {},
+    resetView() {},
+    summary() { return { visible: shown.length, drawn: shown.length, seqs: shown, omitted: [] }; },
+    dispose() {},
+  };
+}
+"""
+SCENE_HOOKS = """
+export async function resolve(specifier, context, next) {
+  if (specifier === "/web/braid-scene.js") return { url: new URL("./scene-stub.mjs", import.meta.url).href, shortCircuit: true };
+  return next(specifier, context);
+}
+"""
+PAGE_DRIVER = """
+import { readFileSync } from "node:fs";
+import { register } from "node:module";
+import { find } from "./dom-stub.mjs";
+
+const { model, steps } = JSON.parse(readFileSync(process.argv[2], "utf8"));
+register("./scene-hooks.mjs", import.meta.url);
+globalThis.fetch = async (url) => {
+  if (url === "/snapshot") return { ok: true, status: 200, json: async () => ({ model, droppedAttributeNames: [] }) };
+  return new Promise(() => {}); // /events never answers: the model does not change
+};
+const settle = () => new Promise((resolve) => setTimeout(resolve, 30));
+await import("./loom.js");
+await settle();
+
+const observe = () => {
+  const checkboxes = find("source-list").descendants().filter((node) => node.attrs["data-source"]);
+  const calls = sceneCalls[sceneCalls.length - 1] || null;
+  return {
+    checkboxes: Object.fromEntries(checkboxes.map((node) => [node.attrs["data-source"], node.checked])),
+    labels: find("source-list").textContent,
+    sourcesHidden: find("sources").hidden,
+    status: find("source-status").textContent,
+    rows: find("events-body").children.map((row) => Number(row.descendants().find((node) => node.attrs["data-seq"]).attrs["data-seq"])),
+    emptyText: find("table-empty").textContent, emptyHidden: find("table-empty").hidden,
+    scene: calls, sceneNote: find("scene-note").textContent,
+    evidence: find("evidence").textContent, counters: find("counters").textContent,
+    playback: find("pb-count").textContent,
+  };
+};
+const results = [observe()];
+for (const step of steps) {
+  if (step.toggle) {
+    const box = find("source-list").descendants().find((node) => node.attrs["data-source"] === step.toggle);
+    box.checked = step.shown;
+    box.listeners.change[0]({ target: box });
+  } else if (step.select !== undefined) {
+    const button = find("events-body").descendants().find((node) => node.attrs["data-seq"] === String(step.select));
+    button.listeners.click[0]();
+  } else if (step.cursor !== undefined) {
+    find("pb-range").value = String(step.cursor);
+    find("pb-range").listeners.input[0]({ target: find("pb-range") });
+  }
+  await settle();
+  results.push(observe());
+}
+console.log(JSON.stringify(results));
+process.exit(0);
+"""
+SOURCE_LABELS = {
+    "watched": "Watched artifacts", "replay": "Replay file",
+    "hook": "Hook and telemetry ingest", "viewer": "Derived by the viewer",
+}
+
+
+@unittest.skipIf(not shutil.which("node") and not os.environ.get("CI"), "node is needed to drive the page without a browser")
+class SourceCheckboxTests(unittest.TestCase):
+    """REQ-010 / SC-010 (amendment A1): per-source checkboxes drive loom.js under Node with a minimal DOM."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.TemporaryDirectory()
+        cls.addClassCleanup(cls.tmp.cleanup)
+        cls.root = Path(cls.tmp.name)
+        (cls.root / "package.json").write_text('{"type": "module"}')
+        shutil.copyfile(WEB / "loom.js", cls.root / "loom.js")
+        for name, text in (("dom-stub.mjs", DOM_STUB), ("scene-stub.mjs", SCENE_STUB),
+                           ("scene-hooks.mjs", SCENE_HOOKS), ("driver.mjs", PAGE_DRIVER)):
+            (cls.root / name).write_text(text)
+        cls.model = cls.mixed_model()
+        # Written out, not recomputed: the example plus three watched events turned into replayed (unverified,
+        # referenced) ones. seq 1 is a gap derived by the viewer; seq 18 to 21 are host reports with no artifact.
+        cls.by_source = {"viewer": [1], "replay": [2, 3, 4], "hook": [18, 19, 20, 21],
+                         "watched": [*range(5, 18), 22, 23, 24]}
+
+    @classmethod
+    def mixed_model(cls):
+        """The example model with a replay file added: replayed events keep their reference and are unverified."""
+        model = json.loads(json.dumps(build_model(parse_stream(EXAMPLE.read_bytes()))))
+        watched = [e for e in model["elements"] if e["verification"] == "rehashed" and e["evidenceRef"]]
+        for element in watched[:3]:
+            element["verification"], element["unverified"] = "unverified", True
+        return model
+
+    def drive(self, steps=()):
+        path = self.root / "input.json"
+        path.write_text(json.dumps({"model": self.model, "steps": list(steps)}))
+        done = subprocess.run(["node", "driver.mjs", str(path)], cwd=self.root, capture_output=True, text=True, timeout=60)
+        if done.returncode != 0:
+            raise AssertionError(done.stderr)
+        return json.loads(done.stdout)
+
+    def total(self):
+        return len(self.model["elements"])
+
+    def test_the_example_covers_every_source_and_each_element_has_exactly_one(self):
+        self.assertEqual(set(self.by_source), set(SOURCE_LABELS))
+        self.assertEqual(sum(len(seqs) for seqs in self.by_source.values()), self.total())
+
+    def test_one_checkbox_per_source_present_all_checked_and_nothing_hidden_by_default(self):
+        first = self.drive()[0]
+        self.assertFalse(first["sourcesHidden"])
+        self.assertEqual(first["checkboxes"], dict.fromkeys(SOURCE_LABELS, True))
+        for key, label in SOURCE_LABELS.items():
+            self.assertIn(f"{label} ({len(self.by_source[key])} events)", first["labels"])
+        self.assertIn("0 events hidden", first["status"])
+        self.assertEqual(sorted(first["rows"]), sorted(e["seq"] for e in self.model["elements"]))
+        self.assertEqual(sorted(first["scene"]["seqs"]), sorted(first["rows"]))
+        self.assertNotIn("unchecked", first["sceneNote"])
+
+    def test_unchecking_a_source_hides_its_elements_in_the_table_and_the_scene_and_shows_the_count(self):
+        baseline = self.drive()[0]
+        for key in SOURCE_LABELS:
+            with self.subTest(source=key):
+                after = self.drive([{"toggle": key, "shown": False}])[1]
+                hidden = set(self.by_source[key])
+                self.assertTrue(hidden)
+                self.assertFalse(hidden & set(after["rows"]))
+                self.assertEqual(set(after["rows"]), {e["seq"] for e in self.model["elements"]} - hidden)
+                self.assertFalse(hidden & set(after["scene"]["seqs"]))
+                self.assertEqual(set(after["scene"]["seqs"]), set(after["rows"]))
+                self.assertFalse(after["checkboxes"][key])
+                self.assertTrue(all(value for name, value in after["checkboxes"].items() if name != key))
+                self.assertIn(f"{len(hidden)} of {self.total()} retained events are hidden", after["status"])
+                self.assertIn("Hidden is not absent", after["status"])
+                self.assertIn(f"{len(hidden)} events from unchecked sources are hidden here and in the table", after["sceneNote"])
+                self.assertEqual(after["counters"], baseline["counters"], "counters keep covering hidden events")
+
+    def test_the_scene_frontier_still_follows_the_playback_position_not_the_selection(self):
+        after = self.drive([{"toggle": "hook", "shown": False}])[1]
+        self.assertEqual(sorted(after["scene"]["position"]), sorted(e["seq"] for e in self.model["elements"]))
+        self.assertTrue(set(after["scene"]["seqs"]) < set(after["scene"]["position"]))
+
+    def test_rechecking_a_source_restores_its_elements_and_clears_the_count(self):
+        first, hidden, back = self.drive([{"toggle": "viewer", "shown": False}, {"toggle": "viewer", "shown": True}])
+        self.assertNotEqual(hidden["rows"], first["rows"])
+        self.assertEqual(back["rows"], first["rows"])
+        self.assertEqual(back["scene"]["seqs"], first["scene"]["seqs"])
+        self.assertIn("0 events hidden", back["status"])
+        self.assertNotIn("unchecked", back["sceneNote"])
+
+    def test_several_unchecked_sources_add_up_and_hiding_everything_is_stated_not_silent(self):
+        steps = [{"toggle": key, "shown": False} for key in SOURCE_LABELS]
+        last = self.drive(steps)[-1]
+        self.assertEqual(last["rows"], [])
+        self.assertEqual(last["scene"]["seqs"], [])
+        self.assertIn(f"{self.total()} of {self.total()} retained events are hidden", last["status"])
+        self.assertFalse(last["emptyHidden"])
+        self.assertIn("hidden", last["emptyText"])
+        self.assertFalse(last["sourcesHidden"], "the checkboxes stay so a source can be shown again")
+
+    def test_the_hidden_count_is_over_all_retained_events_while_the_table_follows_the_playback_position(self):
+        hidden = self.by_source["hook"]
+        late = self.drive([{"cursor": 3}, {"toggle": "hook", "shown": False}])[-1]
+        self.assertIn(f"{len(hidden)} of {self.total()} retained events are hidden", late["status"])
+
+    def test_the_playback_position_says_how_many_of_the_events_so_far_are_drawn(self):
+        first, hidden = self.drive([{"toggle": "hook", "shown": False}])
+        total = self.total()
+        self.assertEqual(first["playback"], f"{total} of {total}")
+        self.assertEqual(hidden["playback"], f"{total} of {total} ({total - len(self.by_source['hook'])} shown)")
+
+    def test_hiding_the_source_of_the_selected_event_clears_the_evidence_panel(self):
+        seq = self.by_source["hook"][0]
+        selected, cleared = self.drive([{"select": seq}, {"toggle": "hook", "shown": False}])[1:]
+        self.assertIn(f"Event {seq}", selected["evidence"])
+        self.assertNotIn(f"Event {seq}", cleared["evidence"])
+        self.assertIn("Select an event", cleared["evidence"])
+
+    def test_hiding_another_source_keeps_the_selection(self):
+        seq = self.by_source["watched"][0]
+        kept = self.drive([{"select": seq}, {"toggle": "hook", "shown": False}])[-1]
+        self.assertIn(f"Event {seq}", kept["evidence"])
+
+    def test_a_model_with_one_source_offers_one_checkbox_and_an_empty_model_offers_none(self):
+        original = self.model
+        kept = set(self.by_source["watched"])
+        self.model = dict(original, elements=[e for e in original["elements"] if e["seq"] in kept],
+                          table=[row for row in original["table"] if row["seq"] in kept])
+        try:
+            self.assertEqual(list(self.drive()[0]["checkboxes"]), ["watched"])
+            self.model = dict(original, elements=[], table=[], lanes=[])
+            self.assertTrue(self.drive()[0]["sourcesHidden"])
+        finally:
+            self.model = original
 
 
 class ServedBundleTests(unittest.TestCase):
