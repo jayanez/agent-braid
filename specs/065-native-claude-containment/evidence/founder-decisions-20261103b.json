@@ -4,7 +4,7 @@
   "repository": "jayanez/agent-braid",
   "recordedAt": "2026-11-03",
   "baseCommit": "b1e8a7bf4e099073779436ef711d0e1a319f8fb1",
-  "decisionChannel": "Founder answers to interactive AskUserQuestion prompts in the HAR orchestrator session, 2026-11-03, recorded verbatim. Additive to founder-decisions-20261103.json, which stays as written.",
+  "decisionChannel": "Founder answers to interactive AskUserQuestion prompts in the HAR orchestrator session, 2026-11-03, founder statements recorded verbatim; the wording of the RV-16 prompt is not preserved (see its questionNote). Additive to founder-decisions-20261103.json, which stays as written.",
   "supplements": [
     "specs/065-native-claude-containment/evidence/founder-decisions-20261103.json"
   ],
@@ -28,7 +28,8 @@
     {
       "id": "RV-16-rule-change",
       "item": "Account rule: the dedicated account versus the owner of /dev/console (RV-16)",
-      "question": "Para qué se usa todo este montaje? No termino de entenderlo muy bien. Explícamelo con ejemplos y vuelve a preguntarme",
+      "firstOwnerStatement": "Para qué se usa todo este montaje? No termino de entenderlo muy bien. Explícamelo con ejemplos y vuelve a preguntarme",
+      "questionNote": "The prompt asked how to resolve the console-user conflict (the lab account owns /dev/console under fast user switching). Its exact wording is not preserved in this record; the two founder statements are verbatim.",
       "ownerStatement": "Cambiar la regla (Recommended)",
       "history": "The first answer to the prompt about the console-user conflict asked for an explanation with examples; the orchestrator explained and asked again (ADR 0036 decision 12, human decision support), and the re-asked answer is the owner statement above.",
       "decision": {

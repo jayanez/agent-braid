@@ -132,6 +132,7 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
          operator_uid: int | None = None, home: str | None = None, parent=None):
     """Stub every Darwin fact; ``processes`` stubs the per-user process listing.
 
+    Runs as the test runner's uid, which must be at least 500 (``_MIN_HUMAN_UID``, RV-16).
     The parent environment is cleared of ``ENV_DENY`` names (a developer shell may
     carry them), then ``env`` is applied. The full executable trust check applies to
     the fixtures in the temporary tree; the developer's interpreter (group-writable
@@ -494,7 +495,9 @@ class RefusalTests(unittest.TestCase):
                       mac.HostFacts("27", "26A1", "arm64"), mac.HostFacts("27.", "26A1", "arm64"),
                       mac.HostFacts("27.1000", "26A1", "arm64"), mac.HostFacts("27.0.1000", "26A1", "arm64"),
                       mac.HostFacts("27.0.1", "garbage", "arm64"), mac.HostFacts("27.0.1.1", "26A434", "arm64"),
-                      mac.HostFacts("27.2.3.4", "26B123", "arm64"), mac.HostFacts("27.x", "26B123", "arm64")):
+                      mac.HostFacts("27.2.3.4", "26B123", "arm64"), mac.HostFacts("27.x", "26B123", "arm64"),
+                      mac.HostFacts("27.\u0663", "26B123", "arm64"), mac.HostFacts("27.007", "26B123", "arm64"),
+                      mac.HostFacts("27.0.00", "26B123", "arm64"), mac.HostFacts("27.2\n", "26B123", "arm64")):
             with self.subTest(facts):
                 self.refuse("os-unsupported", facts=facts)
 
@@ -505,6 +508,7 @@ class RefusalTests(unittest.TestCase):
             facts = mac.HostFacts(product, build, "arm64")
             with self.subTest(product):
                 self.assertIsNotNone(mac._OS_SERIES.fullmatch(product))
+                self.assertIsNotNone(mac._BUILD.fullmatch(build))
                 # past the OS window, so the refusal is the qualification pinned to another build
                 self.refuse("environment-drift", facts=facts)
 
@@ -562,6 +566,19 @@ class RefusalTests(unittest.TestCase):
         self.refuse("operator-account-unresolved", operator_uid=0)
         self.refuse("operator-account-unresolved", operator_uid=499)
         self.refuse("operator-account-unresolved", operator_uid=-1)
+
+    def test_the_operator_used_for_the_decision_is_in_the_evidence(self):
+        backend = self.refuse("dedicated-user-unsafe", operator_uid=os.getuid())
+        self.assertEqual(backend.run_evidence[-1]["operator"], {"account": OPERATOR, "uid": os.getuid()})
+
+    def test_operator_refusal_is_one_pure_rule(self):
+        refusal = mac._operator_refusal
+        self.assertIsNone(refusal("braidlab", 502, "founder", 501))
+        self.assertEqual(refusal("braidlab", 502, "founder", None), "operator-account-unresolved")
+        self.assertEqual(refusal("braidlab", 502, "founder", 499), "operator-account-unresolved")
+        self.assertEqual(refusal("braidlab", 502, "braidlab", 501), "invalid-policy")
+        self.assertEqual(refusal("braidlab", 499, "founder", 501), "dedicated-user-unsafe")
+        self.assertEqual(refusal("braidlab", 501, "alias", 501), "dedicated-user-unsafe")
 
     def test_account_facts_fail_closed_when_the_system_cannot_say(self):
         entry = SimpleNamespace(pw_gid=20, pw_dir=self.machine.home)

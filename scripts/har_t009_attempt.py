@@ -20,8 +20,8 @@ are never written, are not issuable evidence and issuance stays T010 (NC-9, foun
 ``executionAuthorization`` is ``false`` in every output.
 
 NC-6 with the operator as reader (operator-attested: the values are typed, not read by the orchestrator
-session): before and after each session the driver asks on the terminal for the usage card (claude.ai Usage or the phone)
-(5-hour %, weekly %, extra usage, reading time) and refuses a missing, malformed, future-dated or stale
+session): before and after each session the driver asks on the terminal for the usage card (claude.ai
+Usage or the phone) (5-hour %, weekly %, extra usage, reading time) and refuses a missing, malformed, future-dated or stale
 (> 5 min) reading; ``harness_quota`` applies the < 90 % start rule, the weekly and extra-usage stops and the
 NC-10 2 % rule.
 
@@ -301,6 +301,17 @@ def _out_dir_check(system: System, out_dir: str) -> dict:
                        "(a finished bundle is never reused: pick a new --out-dir only if no session was spent)")
 
 
+_OPERATOR_WHY = {
+    "operator-account-unresolved": "the operator account is missing, not a valid account name, unknown to this "
+                                   "machine or a system account (uid < 500); pass the founder's own account "
+                                   "(--operator-account)",
+    "invalid-policy": "the operator account is the dedicated account itself; pass the founder's own account "
+                      "(--operator-account)",
+    "dedicated-user-unsafe": "the account is a system account (uid < 500) or has the operator's uid; the backend "
+                             "refuses this (RV-16)",
+}
+
+
 def preflight(args: argparse.Namespace, system: System) -> dict:
     """Every check, none skipped after a failure. Starts nothing native; reads the host only."""
     checks: list[dict] = []
@@ -324,16 +335,12 @@ def preflight(args: argparse.Namespace, system: System) -> dict:
     name = args.operator_account if isinstance(getattr(args, "operator_account", None), str) else ""
     operator = system.passwd_by_name(name) if _mac._ACCOUNT.fullmatch(name) is not None else None
     operator_uid = getattr(operator, "pw_uid", None)
-    if operator_uid is None or operator_uid < _mac._MIN_HUMAN_UID or name == args.account:
-        why = ("the operator account is missing, not a valid account name, unknown to this machine, a system "
-               "account (uid < 500) or the dedicated account itself; pass the founder's own account "
-               "(--operator-account)")
-    elif uid >= _mac._MIN_HUMAN_UID and uid != operator_uid:
-        why = ""
-    else:
-        why = "the account is a system account (uid < 500) or has the operator's uid; the backend refuses this (RV-16)"
-    add(_check("user-is-not-operator-account", not why, why or f"the account is not the operator account {name!r}"))
-    operator_ok = not why
+    # the backend owns the rule (RV-16); the driver only words the refusal
+    reason = _mac._operator_refusal(args.account, uid, name, operator_uid)
+    why = _OPERATOR_WHY.get(reason, "") if reason else ""
+    add(_check("user-is-not-operator-account", reason is None,
+               why or f"the account is not the operator account {name!r}"))
+    operator_ok = reason is None
     try:
         gids = system.groups(args.account, entry.pw_gid) if entry is not None else ()
     except OSError:
@@ -458,7 +465,9 @@ def _build_policy(args: argparse.Namespace) -> _mac.ContainmentPolicy:
 
 
 class UsageCardReader:
-    """Asks the operator for the usage card (claude.ai Usage or the phone); returns a ``harness_quota`` reading or ``None``.
+    """Asks the operator for the usage card (claude.ai Usage or the phone).
+
+    Returns a ``harness_quota`` reading or ``None``.
 
     Each field is asked up to ``READ_TRIES`` times, so a typo does not spend a session or end the attempt.
     ``None`` (missing, still malformed, future-dated or older than five minutes) is a refusal the quota module
@@ -489,7 +498,8 @@ class UsageCardReader:
         return {"y": True, "yes": True, "n": False, "no": False}.get(raw)
 
     def read(self, role: str) -> dict | None:
-        self._say(f"\n[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, {role} this session."
+        self._say(f"\n[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, "
+                  f"{role} this session."
                   " The reading must be no older than 5 minutes when you answer.")
         try:
             five_hour = self._field("  5-hour window used (0-100, as shown on the card): ", self._percent)

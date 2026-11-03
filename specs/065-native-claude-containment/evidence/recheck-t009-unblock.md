@@ -22,7 +22,7 @@ readiness of the touched lines for the T009 attempt; it does not replace the fou
 
 Verdict: **GO**.
 
-- **Edit.** `_OS_SERIES` is `27\.\d{1,3}(?:\.\d{1,3})?\Z`, used with `fullmatch`. It accepts `27.0`, `27.0.1`,
+- **Edit.** `_OS_SERIES` is `27\.(?:0|[1-9][0-9]{0,2})(?:\.(?:0|[1-9][0-9]{0,2}))?\Z`, used with `fullmatch` (ASCII digits, no leading zeros, after the pre-PR review). It accepts `27.0`, `27.0.1`,
   `27.2`, `27.10.3`; it refuses `26.x`, `28.0`, `27`, `27.`, `270`, `2.7`, a fourth component, a component of
   four digits and trailing text. The build pattern is unchanged.
 - **What it guarantees.** The widening changes only which builds are allowed to be *qualified*, not which are
@@ -33,9 +33,8 @@ Verdict: **GO**.
   ("self-check re-run per build stays") holds.
 - **Residuals.** (1) Behavior of `sandbox-exec` on a 27.x minor that was never observed is not known in
   advance; the T009 bundle on the founder's 27.2 build is the first observation, and every later build needs its
-  own bundle. (2) `\d` in a Python `str` pattern also matches non-ASCII decimal digits. The value comes from
-  `sysctl` decoded as ASCII with replacement, so a non-ASCII digit cannot reach it; this was already true of the
-  old pattern and is unchanged.
+  own bundle. (2) The pattern uses `[0-9]` and refuses leading zeros, non-ASCII digits and a trailing newline
+  (tested), so the version string is canonical before it is hashed.
 
 ## Change 2: RV-16, the account rule
 
@@ -67,10 +66,10 @@ Verdict: **GO**.
   independently by `founder-home-unreadable` and by the profile.
 - **Residuals.** (1) The operator account is a caller-supplied value. A wrong but valid account name
   (another user instead of the founder) would defeat the "not the founder's own account" intent. It is
-  mitigated by the required flag, by the dry-run output that names the account, by the orchestrator's check of
+  mitigated by the required flag, by the dry-run output that names the account (the runbook now asks the founder to confirm it), by the orchestrator's check of
   it, and by `founder-home-unreadable`, which proves the lab cannot traverse the named home. (2) The operator
-  account is not recorded in `run_evidence` or the bundle, and is not part of the environment hash; a run
-  that named a different operator is not distinguishable afterwards. (3) Under fast user switching the
+  account name and uid are recorded in `run_evidence["operator"]` (after the pre-PR review; tested) but are not
+  part of the environment hash, which needs no change because the rule is a refusal input, not an environment fact. (3) Under fast user switching the
   founder's own session and processes stay alive while the lab account is in front; a non-root lab account
   cannot signal or read them, and this is the same exposure as any second local user. (4) The runbook still
   asks the operator to check what the code cannot see (sudoers rules, ACLs, groups such as `_developer`).

@@ -129,7 +129,8 @@ def arguments(**over) -> SimpleNamespace:
     value = dict(attempt="t009-test", account="braidlab", claude=CLAUDE, claude_sha256=CLAUDE_SHA,
                  interpreter=PY, interpreter_sha256=INTERP_SHA, interpreter_root=PY_ROOT,
                  sandbox_exec_sha256=SANDBOX_SHA, config_dir=f"{HOME}/cfg", run_root=f"{HOME}/run",
-                 operator_account="juanyanez", arena_parent=f"{HOME}/arena", out_dir=f"{HOME}/out/t009-test", proxy_port=18080,
+                 operator_account="juanyanez", arena_parent=f"{HOME}/arena", out_dir=f"{HOME}/out/t009-test",
+                 proxy_port=18080,
                  dry_run=True, founder_go=False)
     value.update(over)
     return SimpleNamespace(**value)
@@ -381,7 +382,8 @@ class PreflightTests(unittest.TestCase):
 class DryRunTests(unittest.TestCase):
     ARGV = ["--attempt", "t009-test", "--claude", CLAUDE, "--claude-sha256", CLAUDE_SHA,
             "--interpreter", PY, "--interpreter-sha256", INTERP_SHA, "--interpreter-root", PY_ROOT,
-            "--sandbox-exec-sha256", SANDBOX_SHA, "--operator-account", "juanyanez", "--config-dir", f"{HOME}/cfg", "--run-root", f"{HOME}/run",
+            "--sandbox-exec-sha256", SANDBOX_SHA, "--operator-account", "juanyanez",
+            "--config-dir", f"{HOME}/cfg", "--run-root", f"{HOME}/run",
             "--arena-parent", f"{HOME}/arena", "--out-dir", f"{HOME}/out/t009-test", "--dry-run"]
 
     def run_main(self, system, argv=None):

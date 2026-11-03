@@ -262,7 +262,9 @@ ARGS=(--attempt t009-20261104 --operator-account "$OPERATOR_ACCOUNT"
 cp "$HOME/t009/dry-run.json" /Users/Shared/t009-dry-run.json
 ```
 
-Tell the orchestrator that `/Users/Shared/t009-dry-run.json` exists. A `refused` verdict is not a
+Check that the verdict names your own daily account as the operator account (not another user's, and not
+the braidlab account): the code can only prove it differs from the lab account, not that it is yours. Then
+tell the orchestrator that `/Users/Shared/t009-dry-run.json` exists. A `refused` verdict is not a
 failure of the procedure: it names what to fix. Do not continue to step 11 until the orchestrator
 confirms in writing that the verdict is `ready` and matches the pins it recomputed.
 

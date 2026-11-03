@@ -34,8 +34,8 @@ Before every run the backend takes an exclusive lock on ``run_root`` and re-veri
 trusted qualification records, the OS window, the account (not privileged, not a system
 account, not the operator's own account, a private home), the mechanism and executable
 hashes, the recomputed environment hash, a profile compile check that must report the exec
-of ``/usr/bin/false`` as denied and an allow-listed command as run, no leftover backend directory from an earlier run, a proxy
-whose accept loop is alive, and the NC-11 probe subset through the injected T007 probe
+of ``/usr/bin/false`` as denied and an allow-listed command as run, no leftover backend directory
+from an earlier run, a proxy whose accept loop is alive, and the NC-11 probe subset through the injected T007 probe
 runner. Any failure refuses with a fixed ``LabError`` reason before the child
 starts and is appended to ``run_evidence``. It never degrades and never falls back to
 ``SimulatedContainment``. The observed Claude version is checked by the T006 transport;
@@ -103,7 +103,8 @@ EXIT_SANDBOX_COMPILE = 65
 EXIT_SANDBOX_EXEC_DENIED = 71
 _MECHANISM_UID = 0  # sandbox-exec must be root-owned
 _SHARED_WRITE = stat.S_IWGRP | stat.S_IWOTH
-_OS_SERIES = re.compile(r"27\.\d{1,3}(?:\.\d{1,3})?\Z")  # NC-3, amended 2026-11-03: the whole 27.x series
+# NC-3, amended 2026-11-03: the whole 27.x series; ASCII digits, canonical (no leading zeros)
+_OS_SERIES = re.compile(r"27\.(?:0|[1-9][0-9]{0,2})(?:\.(?:0|[1-9][0-9]{0,2}))?\Z")
 _BUILD = re.compile(r"[0-9]{2}[A-Z][0-9]{1,5}[a-z]?\Z")
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _ACCOUNT = re.compile(r"[a-z_][a-z0-9_-]{0,31}\Z")
@@ -436,6 +437,17 @@ def _libsystem():
 
 def _account_groups(account: str, gid: int) -> tuple[int, ...]:
     return tuple(sorted(set(os.getgrouplist(account, gid))))
+
+
+def _operator_refusal(account: str, uid: int, operator: str, operator_uid: int | None) -> str | None:
+    """The refusal reason for the RV-16 operator rule, or None. Shared by the backend and the T009 driver."""
+    if operator_uid is None or operator_uid < _MIN_HUMAN_UID:
+        return "operator-account-unresolved"
+    if operator == account:
+        return "invalid-policy"
+    if uid < _MIN_HUMAN_UID or uid == operator_uid:
+        return "dedicated-user-unsafe"
+    return None
 
 
 def _account_facts(account: str, entry, uid: int, operator_uid: int) -> AccountFacts:
@@ -1039,6 +1051,7 @@ class MacOSContainment(ContainmentBackend):
         except KeyError:
             raise LabError("operator-account-unresolved") from None
         _require(operator_uid >= _MIN_HUMAN_UID, "operator-account-unresolved")
+        evidence["operator"] = {"account": self.operator_account, "uid": operator_uid}
         account_facts = _account_facts(policy.account, account, uid, operator_uid)
         evidence["account"] = {"gids": list(account_facts.gids), "homeMode": account_facts.home_mode}
         info = _lstat(SANDBOX_EXEC, "mechanism-unavailable")

@@ -315,7 +315,7 @@ because the mechanism fixes what the policy can express.
   credential login; (c) and (d) cost setup time, disk and memory, and (d) is no
   longer "macOS native". Refusal-on-failure applies to every option.
 
-- **NC-3 Supported macOS versions.** Amended (founder, 2026-11-03): the whole 27.x series (`27\.\d{1,3}(\.\d{1,3})?`), with the self-check re-run on each build; the environment hash still binds the exact product version and build. ([record](evidence/founder-decisions-20261103b.json)) Earlier decision (founder, 2026-10-31, kept as history): option (b): the macOS 27.0.x series, with the self-check re-run on each build. ([record](evidence/founder-decisions-20261031.json)) History: Options:
+- **NC-3 Supported macOS versions.** Amended (founder, 2026-11-03): the whole 27.x series (`27\.(0|[1-9][0-9]{0,2})(\.(0|[1-9][0-9]{0,2}))?`: ASCII digits, no leading zeros), with the self-check re-run on each build; the environment hash still binds the exact product version and build. ([record](evidence/founder-decisions-20261103b.json)) Earlier decision (founder, 2026-10-31, kept as history): option (b): the macOS 27.0.x series, with the self-check re-run on each build. ([record](evidence/founder-decisions-20261031.json)) History: Options:
   (a) exactly the observed build (macOS 27.0.1, build 26A434) and nothing else;
   (b) the 27.0.x series, re-running the self-check on each build;
   (c) a wider window. Risk: wider windows trust untested sandbox behavior; the
@@ -350,7 +350,7 @@ because the mechanism fixes what the policy can express.
   option (a) login, so (a) needs a persistent configuration directory or a
   separate persistent credential location.
 
-- **NC-6 Quota reading source and freshness.** Decided (founder, 2026-10-31): option (a): the Claude Desktop usage card read by the orchestrator session immediately before and after each session; freshness 5 minutes; a session starts only if the 5-hour window is below 90 % used; the cohort stops if a post-reading shows more than 10 % of the 5-hour window used by one session. ([record](evidence/founder-decisions-20261031.json)) History: The
+- **NC-6 Quota reading source and freshness.** Amended (founder, 2026-11-03): the operator reads the usage percentage on claude.ai Usage or on the phone (same Claude account) and types it with the time or `now`, at most 5 minutes fresh (self-attested); the rest of the rule below (90 % start limit, 10 % per-session stop) is unchanged and the orchestrator no longer reads the Claude Desktop card. ([record](evidence/founder-decisions-20261103b.json)) Earlier decision follows as history. Decided (founder, 2026-10-31): option (a): the Claude Desktop usage card read by the orchestrator session immediately before and after each session; freshness 5 minutes; a session starts only if the 5-hour window is below 90 % used; the cohort stops if a post-reading shows more than 10 % of the 5-hour window used by one session. ([record](evidence/founder-decisions-20261031.json)) History: The
   founder records used the Claude Desktop usage card (read-only). Options:
   (a) the desktop app usage reading taken by the orchestrator session
   immediately before and after each session; (b) a manual reading by the

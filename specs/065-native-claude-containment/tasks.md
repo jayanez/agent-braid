@@ -210,7 +210,7 @@ shared object store fails the portable-root check).
   phone (self-attested), and in-memory attempt records accepted (not issuance). The
   backend and driver edits are re-checked in `evidence/recheck-t009-unblock.md`; a
   re-check by the orchestrator is required before the founder starts the runbook, and the
-  dry run on the founder's machine is the next evidence. Nothing native has run.
+  dry run on the founder's machine is the next evidence. This task
   stays unchecked.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
