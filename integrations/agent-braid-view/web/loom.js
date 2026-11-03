@@ -87,6 +87,7 @@ const state = {
   selected: null,
   filterKind: "",
   filterUncertain: false,
+  hiddenSources: new Set(),
   lastId: "",
 };
 
@@ -161,6 +162,51 @@ function timeText(element) {
   return String(element.relMs) + " ms";
 }
 
+// ---------------------------------------------------------------- event sources
+
+// The page offers one checkbox per source of events, all checked by default. The model carries no adapter name and
+// no root, so the source is derived from the two fields every element has from its event's source block: the
+// verification status and whether an evidence reference exists. Nothing is added to the event contract.
+//   rehashed or derived, with an evidence reference: read from a watched root by an adapter
+//   rehashed or derived, without one: produced by the viewer itself (for example a ring-eviction gap)
+//   anything else, with an evidence reference: a replay file (every replayed event is unverified)
+//   anything else, without one: a host report (hook or telemetry ingest)
+const SOURCES = {
+  watched: ["Watched artifacts", "Read from the watched or discovered artifact roots and re-hashed by this session. The model does not name the root, so all roots form one source."],
+  replay: ["Replay file", "Recorded events loaded with --replay. Never re-hashed by this session."],
+  hook: ["Hook and telemetry ingest", "Reported by a host with no artifact behind it. Recorded host events in a replay file without an artifact also appear here. Not checked by this viewer."],
+  viewer: ["Derived by the viewer", "Produced by this viewer itself, such as gaps for evicted or truncated ranges."],
+};
+
+function sourceOf(element) {
+  const referenced = Boolean(element.evidenceRef);
+  if (element.verification === "rehashed" || element.verification === "derived") return referenced ? "watched" : "viewer";
+  return referenced ? "replay" : "hook";
+}
+
+function countSources(elements) {
+  const counts = {};
+  for (const element of elements) counts[sourceOf(element)] = (counts[sourceOf(element)] || 0) + 1;
+  return counts;
+}
+
+function isSourceShown(element, hidden) {
+  return !hidden.has(sourceOf(element));
+}
+
+function hiddenEventCount(counts, hidden) {
+  let total = 0;
+  for (const key of hidden) total += counts[key] || 0;
+  return total;
+}
+
+function hiddenText(hidden, total) {
+  return hidden === 0
+    ? "All sources are shown: 0 events hidden."
+    : hidden + " of " + total + " retained events are hidden because their source is unchecked. Hidden is not absent: " +
+      "the counters and the list of what is not shown as clean still count them.";
+}
+
 // ---------------------------------------------------------------- legend (static tables above)
 
 function renderLegend() {
@@ -188,6 +234,21 @@ function elementOf(seq) {
     elementsCache = { model: state.model, bySeq: new Map(state.model.elements.map((element) => [element.seq, element])) };
   }
   return elementsCache.bySeq.get(seq);
+}
+
+let countsCache = null;
+
+// Events per source of the current model, counted once per model.
+function sourceCounts() {
+  if (!state.model) return {};
+  if (!countsCache || countsCache.model !== state.model) {
+    countsCache = { model: state.model, counts: countSources(state.model.elements) };
+  }
+  return countsCache.counts;
+}
+
+function hiddenCount() {
+  return hiddenEventCount(sourceCounts(), state.hiddenSources);
 }
 
 function rowsInOrder() {
@@ -387,10 +448,50 @@ function renderDropped() {
   fill("dropped-list", state.dropped.length ? state.dropped.map((name) => h("li", null, name)) : [h("li", null, "none recorded")]);
 }
 
+// ---------------------------------------------------------------- source checkboxes
+
+const sourceNodes = new Map();
+
+function renderSources() {
+  const counts = sourceCounts();
+  const keys = Object.keys(SOURCES).filter((key) => counts[key]);
+  $("sources").hidden = keys.length === 0;
+  const signature = keys.join("|");
+  if ($("source-list").dataset.keys !== signature) {
+    // Rebuilt only when the set of sources changes, so a live refresh never takes focus from a checkbox.
+    $("source-list").dataset.keys = signature;
+    sourceNodes.clear();
+    fill("source-list", keys.map((key) => {
+      const input = h("input", { type: "checkbox", "data-source": key,
+        on: { change: (event) => toggleSource(key, event.target.checked) } });
+      const count = h("span", { class: "source-count" });
+      sourceNodes.set(key, { input, count });
+      return h("label", { class: "source", title: SOURCES[key][1] }, input, " ", SOURCES[key][0], " ", count);
+    }));
+  }
+  for (const key of keys) {
+    const node = sourceNodes.get(key);
+    node.input.checked = !state.hiddenSources.has(key);
+    node.count.textContent = "(" + counts[key] + " events)";
+  }
+  $("source-status").textContent = hiddenText(hiddenCount(), totalCount());
+}
+
+function toggleSource(key, shown) {
+  if (shown) state.hiddenSources.delete(key);
+  else state.hiddenSources.add(key);
+  const selected = state.selected === null ? undefined : elementOf(state.selected);
+  if (selected && !isSourceShown(selected, state.hiddenSources)) state.selected = null;
+  renderSources();
+  renderTable();
+  renderEvidence();
+}
+
 // ---------------------------------------------------------------- table
 
 function visibleRows() {
   return rowsInOrder().slice(0, state.cursor).filter(({ row, element }) => {
+    if (!isSourceShown(element, state.hiddenSources)) return false;
     if (state.filterKind && element.element !== state.filterKind) return false;
     if (state.filterUncertain && marksOf(element).length === 0) return false;
     return true;
@@ -436,8 +537,10 @@ function renderTable() {
     if (again) again.focus({ preventScroll: true });
   }
   $("table-empty").hidden = rows.length > 0;
-  $("table-empty").textContent = state.model && totalCount() > 0 && rows.length === 0
-    ? "No events at this position or filter." : "No events to show.";
+  const hidden = hiddenCount();
+  $("table-empty").textContent = (state.model && totalCount() > 0 && rows.length === 0
+    ? "No events at this position or filter." : "No events to show.") +
+    (hidden ? " " + hiddenText(hidden, totalCount()) : "");
   syncScene();
 }
 
@@ -612,6 +715,7 @@ let scene = null;
 let sceneModel = null;
 let sceneCursor = -1;
 let sceneSelected = null;
+let sceneHidden = "";
 
 function showHover(seq) {
   const element = seq === null ? undefined : elementOf(seq);
@@ -624,6 +728,8 @@ function showHover(seq) {
 function updateSceneNote() {
   const info = scene.summary();
   const parts = ["Showing " + info.drawn + " of " + info.visible + " events at this position in 3D."];
+  const hidden = hiddenCount();
+  if (hidden) parts.push(hidden + " events from unchecked sources are hidden here and in the table. They are not absent.");
   const untimed = info.seqs.filter((seq) => { const element = elementOf(seq); return element && element.timeKnown === false; }).length;
   if (untimed) parts.push(untimed + " of them state no time: the scene places them after their predecessor and invents no time.");
   if (info.omitted.length) {
@@ -649,9 +755,15 @@ function applyScene() {
     sceneModel = state.model;
     scene.setModel(state.model);
   }
-  if (modelChanged || sceneCursor !== state.cursor) {
+  const hidden = [...state.hiddenSources].sort().join("|");
+  if (modelChanged || sceneCursor !== state.cursor || sceneHidden !== hidden) {
     sceneCursor = state.cursor;
-    scene.setVisible(rowsInOrder().slice(0, state.cursor).map(({ row }) => row.seq));
+    sceneHidden = hidden;
+    // The scene shows only checked sources; the playback frontier still follows the position, not the filter.
+    const position = rowsInOrder().slice(0, state.cursor);
+    scene.setVisible(
+      position.filter(({ element }) => isSourceShown(element, state.hiddenSources)).map(({ row }) => row.seq),
+      position.map(({ row }) => row.seq));
     updateSceneNote();
   }
   if (modelChanged || sceneSelected !== state.selected) {
@@ -705,6 +817,7 @@ async function startScene() {
 // ---------------------------------------------------------------- start
 
 function renderAll() {
+  renderSources();
   renderKindFilter();
   renderCounters();
   renderLanes();
