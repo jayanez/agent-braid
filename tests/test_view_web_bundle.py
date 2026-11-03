@@ -1,28 +1,37 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""SPEC-061 T026: static checks of the activity viewer web bundle (procedure_010, bundle part).
+"""SPEC-061 T026, T025: checks of the activity viewer web bundle (procedure_010, bundle and scene parts).
 
-First-party files (`index.html`, `loom.js`, `style.css`) are scanned for remote origins, code
-evaluation and HTML sinks; the real bundle is served by `ViewServer` to check the CSP and headers
-of contracts/ui-security-privacy.md; vendored files are checked by manifest hash only.
+First-party files (`index.html`, `loom.js`, `braid-scene.js`, `style.css`) are scanned for remote
+origins, code evaluation and HTML sinks; the real bundle is served by `ViewServer` to check the CSP,
+headers and the manifest-listed vendor files of contracts/ui-security-privacy.md; vendored files are
+checked by manifest hash only. The scene module is built under Node (when available) against the
+real vendored Three.js and the model of the example stream, to check the visual grammar and the
+bijection between drawn objects and source events without a browser.
 """
 import base64
 import hashlib
 import http.client
 import json
 import re
+import shutil
+import subprocess
 import tempfile
 import threading
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
 
+from agent_braid.view_loom import parse_stream
+from agent_braid.view_model import build_model
 from agent_braid.view_serve import ViewServer
 from agent_braid.view_store import LoomStore
 
 WEB = Path(__file__).resolve().parents[1] / "integrations/agent-braid-view/web"
 VENDOR = WEB / "vendor"
-FIRST_PARTY = ("index.html", "loom.js", "style.css")
+FIRST_PARTY = ("index.html", "loom.js", "braid-scene.js", "style.css")
+SCRIPTS = ("loom.js", "braid-scene.js")
 SERVED_PATHS = ("/", *(f"/web/{name}" for name in FIRST_PARTY))
+EXAMPLE = Path(__file__).resolve().parents[1] / "specs/061-activity-viewer/contracts/loom-event.example.jsonl"
 LEGEND_LITERAL = "not a guarantee"
 CONTRACT_HEADERS = {
     "x-content-type-options": "nosniff",
@@ -288,8 +297,15 @@ class FirstPartyBundleTests(unittest.TestCase):
             with self.subTest(name=name):
                 self.assertEqual(REMOTE_URL.findall(read(name)), [])
 
-    def test_the_script_has_no_evaluation_or_html_sink(self):
-        self.assertEqual(violations_in_script(read("loom.js")), [])
+    def test_the_scripts_have_no_evaluation_or_html_sink(self):
+        for name in SCRIPTS:
+            with self.subTest(name=name):
+                self.assertEqual(violations_in_script(read(name)), [])
+
+    def test_the_scene_module_sets_no_attribute_from_a_variable(self):
+        text = read("braid-scene.js")
+        self.assertEqual([m.group(0) for m in SET_ATTRIBUTE.finditer(text) if m.group(3) is not None], [])
+        self.assertNotRegex(text, r"\.style\.cssText|\.setAttribute\(\s*[\"']style")
 
     def test_the_stylesheet_loads_nothing_remote(self):
         self.assertEqual(violations_in_style(read("style.css")), [])
@@ -340,12 +356,314 @@ class FirstPartyBundleTests(unittest.TestCase):
             with self.subTest(target=target):
                 self.assertIn(target, listed)
 
-    def test_import_map_targets_are_served_by_the_view_server(self):
-        # ViewServer serves a flat {name: bytes} bundle at /web/<name>; a nested vendor path would answer 404.
-        # Wiring Three.js into the page therefore needs server support first (T024/T025), and fails here until then.
-        for target in import_map_targets(read("index.html")):
-            with self.subTest(target=target):
-                self.assertRegex(target, r"^/web/[^/]+$", "the ViewServer cannot serve nested bundle paths")
+    def test_the_page_declares_one_import_map_before_the_module_script(self):
+        html = read("index.html")
+        scan = PageScan(html)
+        self.assertEqual([kind for kind, _ in scan.inline_scripts], ["importmap"])
+        self.assertLess(html.index('type="importmap"'), html.index('type="module"'))
+        imports = json.loads(scan.inline_scripts[0][1])["imports"]
+        self.assertEqual(set(imports), {"three", "three/addons/controls/OrbitControls.js"})
+        self.assertEqual(json.loads(scan.inline_scripts[0][1]).keys(), {"imports"})  # no scopes, no integrity table
+
+    def test_every_bare_or_relative_import_of_the_scene_and_the_vendored_modules_resolves(self):
+        mapped = set(json.loads(PageScan(read("index.html")).inline_scripts[0][1])["imports"])
+        listed = set(manifest()["files"])
+        statement = re.compile(r"""(?:^|[\s;}])(?:import|export)\s[^'";]*?\bfrom\s*["']([^"']+)["']|(?:^|\s)import\s*["']([^"']+)["']""", re.M)
+        checked = 0
+        for owner, text in [("braid-scene.js", read("braid-scene.js"))] + [
+                (path, (VENDOR / path).read_text(encoding="utf-8")) for path in sorted(listed) if path.endswith(".js")]:
+            for match in statement.finditer(text):
+                specifier = match.group(1) or match.group(2)
+                checked += 1
+                with self.subTest(owner=owner, specifier=specifier):
+                    if specifier.startswith("."):
+                        self.assertNotEqual(owner, "braid-scene.js", "the scene module imports only through the import map")
+                        self.assertIn((Path(owner).parent / specifier).as_posix(), listed)
+                    else:
+                        self.assertIn(specifier, mapped)
+        self.assertGreaterEqual(checked, 3)
+
+    def test_the_scene_is_loaded_after_the_table_and_its_failure_keeps_the_table(self):
+        text = read("loom.js")
+        self.assertNotRegex(text, r"(?m)^\s*import\b[^(]", "loom.js must not import the scene statically")
+        self.assertIn('import("/web/braid-scene.js")', text)
+        self.assertIn("WebGL2RenderingContext", text)
+        self.assertRegex(text, r"try \{\s*module_ = await import\(")
+        self.assertRegex(text, r"function sceneUnavailable\(reason\)")
+        self.assertIn("The table below shows the same events", text)
+        self.assertLess(text.index("renderAll();\nloadSnapshot();"), text.index("startScene();\n", text.index("loadSnapshot();")))
+
+    def test_the_scene_is_bound_to_the_tables_selection_and_playback(self):
+        text = read("loom.js")
+        self.assertRegex(text, r"onSelect:\s*select\b")
+        self.assertIn("scene.setVisible(rowsInOrder().slice(0, state.cursor)", text)
+        self.assertIn("scene.setSelected(state.selected)", text)
+        html = read("index.html")
+        for identifier in ("scene-section", "scene-box", "scene-hover", "scene-note", "scene-reset", "legend-scene"):
+            self.assertIn(f'id="{identifier}', html)
+        self.assertIn("hidden", html[html.index('id="scene-section"'):html.index('id="scene-title"')])
+
+    def test_the_scene_legend_and_page_say_a_class_is_not_a_guarantee_and_no_effort_is_drawn(self):
+        script = read("loom.js")
+        legend = script[script.index("const SCENE_LEGEND"):script.index("const ATTRS")]
+        self.assertIn(LEGEND_LITERAL, legend)
+        self.assertIn("not a safety ordering", legend)
+        self.assertIn("advisory plan, not a runtime measurement", legend + read("braid-scene.js"))
+        self.assertIn("Effort and tokens are not drawn", legend)
+        self.assertIn(LEGEND_LITERAL, read("index.html")[read("index.html").index('id="scene-section"'):])
+
+    def test_the_scene_reads_no_effort_or_token_field(self):
+        text = read("braid-scene.js")
+        for field in ("knownTokens", "inputTokens", "outputTokens", "costUsd", "effortBasis", "cacheReadTokens"):
+            with self.subTest(field=field):
+                self.assertNotIn(field, text)
+
+
+SCENE_DRIVER = """
+import { readFileSync } from "node:fs";
+import { buildBraid, describeBraid, frontierX } from "./braid-scene.js";
+
+const model = JSON.parse(readFileSync(process.argv[2], "utf8"));
+const built = buildBraid(model, { labels: false });
+const objects = [];
+for (const [owner, list] of built.bySeq) {
+  for (const object of list) {
+    const material = object.material || {};
+    objects.push({
+      owner, part: object.userData.part, selectable: object.userData.seq === undefined ? null : object.userData.seq,
+      color: material.color ? material.color.getHex() : null, opacity: material.opacity === undefined ? null : material.opacity,
+      pulse: Boolean(material.userData && material.userData.pulse), sides: object.userData.sides === undefined ? null : object.userData.sides,
+    });
+  }
+}
+const seqs = model.elements.map((element) => element.seq);
+const empty = buildBraid(null);
+console.log(JSON.stringify({
+  description: describeBraid(built), objects,
+  frontier: { all: frontierX(built, seqs), none: String(frontierX(built, [])), first: frontierX(built, seqs.slice(0, 3)) },
+  xs: Object.fromEntries(built.xOf), emptyParts: describeBraid(empty).parts,
+}));
+"""
+TEAL, RED, AMBER = 0x2A9D8F, 0xD1495B, 0xE0A100
+
+
+@unittest.skipUnless(shutil.which("node"), "node is needed to build the scene without a browser")
+class SceneBuildTests(unittest.TestCase):
+    """The scene module's objects, built under Node from the real vendored Three.js and the example model."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.TemporaryDirectory()
+        cls.addClassCleanup(cls.tmp.cleanup)
+        root = Path(cls.tmp.name)
+        package = root / "node_modules" / "three"
+        for path in manifest()["files"]:
+            if path.endswith(".js"):
+                target = package / Path(path).relative_to("three")
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(VENDOR / path, target)
+        (package / "package.json").write_text(json.dumps(
+            {"name": "three", "type": "module", "exports": {".": "./three.module.js", "./addons/*": "./addons/*"}}))
+        (root / "package.json").write_text('{"type": "module"}')
+        shutil.copyfile(WEB / "braid-scene.js", root / "braid-scene.js")
+        (root / "driver.mjs").write_text(SCENE_DRIVER)
+        cls.root = root
+        cls.model = build_model(parse_stream(EXAMPLE.read_bytes()))
+        cls.built = cls.build(cls.model)
+
+    @classmethod
+    def build(cls, model):
+        path = cls.root / "model.json"
+        path.write_text(json.dumps(model))
+        done = subprocess.run(["node", "driver.mjs", str(path)], cwd=cls.root, capture_output=True, text=True, timeout=120)
+        if done.returncode != 0:
+            raise AssertionError(done.stderr)
+        return json.loads(done.stdout)
+
+    def elements(self, model=None):
+        return {element["seq"]: element for element in (model or self.model)["elements"]}
+
+    def parts(self, built=None):
+        return {int(seq): set(parts) for seq, parts in (built or self.built)["description"]["parts"].items()}
+
+    def objects_of(self, seq, built=None):
+        return [item for item in (built or self.built)["objects"] if item["owner"] == seq]
+
+    def expected_drawn(self, model=None):
+        model = model or self.model
+        lanes = {lane["strandId"] for lane in model["lanes"]}
+        drawn = set()
+        for element in model["elements"]:
+            kind = element["element"]
+            if kind == "crossing" and element["drawAs"] != "unplaced":
+                drawn.add(element["seq"])
+            elif kind == "strand" and element["strandId"] in lanes:
+                drawn.add(element["seq"])
+            elif kind in ("strand-state", "strand-end", "wave-plane", "wave-marker", "gate-ring") and (
+                    element["lanes"] or kind in ("wave-plane", "gate-ring")):
+                drawn.add(element["seq"])
+            elif kind == "gap" and element["strandId"] in lanes:
+                drawn.add(element["seq"])
+            elif kind == "hazard-cone" and any(unit in lanes for unit in element["units"]):
+                drawn.add(element["seq"])
+        return drawn
+
+    def test_every_drawn_object_belongs_to_one_source_event_and_only_event_kinds_that_are_drawn_appear(self):
+        elements = self.elements()
+        parts = self.parts()
+        self.assertTrue(set(parts) <= set(elements))
+        self.assertEqual(set(parts), self.expected_drawn())
+        drawn_kinds = {elements[seq]["element"] for seq in parts}
+        self.assertEqual(drawn_kinds, {"strand", "strand-end", "crossing", "wave-plane", "wave-marker", "gate-ring",
+                                        "hazard-cone", "gap"})
+        for item in self.built["objects"]:
+            self.assertIn(item["selectable"], (None, item["owner"]))  # a click selects the owner event, never another
+
+    def test_events_that_are_not_drawn_say_why_and_none_is_both_drawn_and_left_out(self):
+        notdrawn = {int(seq): reason for seq, reason in self.built["description"]["notDrawn"].items()}
+        self.assertFalse(set(notdrawn) & set(self.parts()))
+        every = set(self.elements())
+        self.assertEqual(every - set(self.parts()) - set(notdrawn), set())  # nothing silently vanishes
+        kinds = {self.elements()[seq]["element"] for seq in notdrawn}
+        self.assertEqual(kinds, {"session", "report", "effort"})
+        for reason in notdrawn.values():
+            self.assertIn("table", reason)
+
+    def test_effort_and_tokens_are_not_drawn(self):
+        effort = [seq for seq, element in self.elements().items() if element["element"] == "effort"]
+        self.assertTrue(effort)
+        for seq in effort:
+            self.assertNotIn(seq, self.parts())
+            self.assertIn("effort and tokens are not drawn", self.built["description"]["notDrawn"][str(seq)])
+        for item in self.built["objects"]:
+            self.assertNotIn("effort", item["part"])
+
+    def test_only_independent_candidate_pairs_become_swaps_and_non_adjacent_pairs_become_bridges(self):
+        crossings = [e for e in self.elements().values() if e["element"] == "crossing"]
+        self.assertGreaterEqual(len(crossings), 6)
+        for element in crossings:
+            seq, parts = element["seq"], self.parts()[element["seq"]]
+            with self.subTest(seq=seq, classification=element["classification"], drawAs=element["drawAs"]):
+                self.assertEqual("swap" in parts, element["classification"] == "independent-candidate" and element["drawAs"] == "swap")
+                self.assertEqual(any(part.startswith("bridge") for part in parts), element["drawAs"] == "bridge")
+                self.assertEqual("conflict-knot" in parts, element["classification"] == "conflicting" and element["drawAs"] != "bridge")
+                self.assertEqual("unknown-link" in parts, element["drawAs"] == "unknown-link")
+                self.assertEqual("ordered-link" in parts, element["drawAs"] == "ordered-link")
+        self.assertTrue(any(e["drawAs"] == "swap" for e in crossings) and any(e["drawAs"] == "bridge" for e in crossings))
+
+    def test_unknown_and_conflicting_pairs_are_never_coloured_as_independent_and_unknown_ones_pulse(self):
+        for element in self.elements().values():
+            if element["element"] != "crossing":
+                continue
+            drawn = [item for item in self.objects_of(element["seq"]) if item["part"] not in ("badge", "unverified-marker", "partial-halo")]
+            colors = {item["color"] for item in drawn}
+            with self.subTest(seq=element["seq"], classification=element["classification"]):
+                if element["classification"] == "unknown":
+                    self.assertNotIn(TEAL, colors)
+                    self.assertTrue(drawn and all(item["pulse"] for item in drawn), "unknown pairs are dashed and pulsing")
+                if element["classification"] == "conflicting":
+                    self.assertEqual(colors, {RED})
+                if element["classification"] == "independent-candidate":
+                    self.assertEqual(colors, {TEAL})
+                    self.assertFalse(any(item["pulse"] for item in drawn))
+
+    def test_class_badges_are_categorical_with_one_colour_and_one_opacity(self):
+        badges = [(seq, item) for seq in self.parts() for item in self.objects_of(seq) if item["part"] == "badge"]
+        crossings = {seq: e for seq, e in self.elements().items() if e["element"] == "crossing" and seq in self.parts()}
+        self.assertEqual({seq for seq, _ in badges}, set(crossings))
+        self.assertEqual(len(badges), len(crossings))
+        for seq, item in badges:
+            self.assertEqual(item["sides"], 3 + crossings[seq]["compatibilityClass"])
+        self.assertEqual(len({(item["color"], item["opacity"]) for _, item in badges}), 1, "no brightness or opacity per class")
+        self.assertGreater(len({item["sides"] for _, item in badges}), 1)  # more than one class is shown, by shape
+
+    def test_unverified_elements_carry_the_distinct_unverified_marker(self):
+        unverified = [seq for seq in self.parts() if self.elements()[seq]["unverified"]]
+        self.assertTrue(unverified)
+        for seq in unverified:
+            with self.subTest(seq=seq, kind=self.elements()[seq]["element"]):
+                self.assertIn("unverified-marker", self.parts()[seq])
+        crossings_and_gates = [seq for seq in self.parts() if self.elements()[seq]["element"] in ("crossing", "gate-ring")]
+        self.assertTrue(crossings_and_gates)
+
+    def test_a_verified_element_has_no_unverified_marker(self):
+        model = json.loads(json.dumps(self.model))
+        for element in model["elements"]:
+            element["unverified"] = False
+            element["verification"] = "rehashed"
+        built = self.build(model)
+        self.assertFalse(any(item["part"] == "unverified-marker" for item in built["objects"]))
+
+    def test_hazards_are_anchored_at_every_unit_they_name_and_not_observed_ones_are_dashed_and_pulsing(self):
+        lanes = {lane["strandId"] for lane in self.model["lanes"]}
+        hazards = [e for e in self.elements().values() if e["element"] == "hazard-cone"]
+        self.assertTrue(hazards)
+        for element in hazards:
+            cones = [item for item in self.objects_of(element["seq"]) if item["part"].startswith("hazard-cone")]
+            self.assertEqual(len(cones), len([unit for unit in element["units"] if unit in lanes]))
+            if element["absence"]:
+                self.assertTrue(all(item["part"] == "hazard-cone-unobserved" and item["pulse"] for item in cones))
+                self.assertFalse(any(item["part"] == "hazard-spark" for item in self.objects_of(element["seq"])))
+            else:
+                self.assertTrue(all(item["part"] == "hazard-cone" and not item["pulse"] for item in cones))
+
+    def test_gaps_break_the_strand_with_a_pulsing_stub_and_gates_have_rings(self):
+        for element in self.elements().values():
+            parts = self.parts().get(element["seq"], set())
+            if element["element"] == "gap":
+                self.assertTrue({"gap-stub", "gap-break"} <= parts)
+                self.assertTrue(all(i["pulse"] for i in self.objects_of(element["seq"]) if i["part"] == "gap-stub"))
+            if element["element"] == "gate-ring":
+                self.assertTrue(parts & {"grant-ring", "gate-result-ring", "gate-phase-ring"})
+            if element["element"] == "wave-plane":
+                self.assertIn("wave-slab", parts)
+            if element["element"] == "wave-marker":
+                self.assertIn("wave-frame-edges", parts)
+
+    def test_gate_and_grant_shapes_differ_by_result_and_state(self):
+        model = json.loads(json.dumps(self.model))
+        ring = next(e for e in model["elements"] if e["element"] == "gate-ring" and e["ringKind"] == "workflow-result")
+        statuses = ["refused", "busy", "inconclusive", "hazards-found", "ok-analyzed", "ok-certified"]
+        rings = []
+        for index, status in enumerate(statuses):
+            clone = dict(ring, seq=100 + index, gateStatus=status, status=status)
+            model["elements"].append(clone)
+        built = self.build(model)
+        for index, status in enumerate(statuses):
+            rings.append({(i["color"], i["part"]) for i in self.objects_of(100 + index, built) if i["part"] == "gate-result-ring"})
+        self.assertEqual(len({frozenset(item) for item in rings}), len(statuses), "each result has its own colour")
+
+    def test_the_playback_frontier_follows_the_last_visible_event(self):
+        frontier = self.built["frontier"]
+        xs = {int(seq): x for seq, x in self.built["xs"].items()}
+        self.assertEqual(frontier["none"], "-Infinity")
+        self.assertEqual(frontier["all"], max(xs.values()))
+        self.assertEqual(frontier["first"], max(xs[1], xs[2], xs[3]))
+        ordered = [xs[element["seq"]] for element in sorted(self.model["elements"], key=lambda e: e["order"])]
+        self.assertEqual(ordered, sorted(ordered), "the scene axis never runs against the model order")
+
+    def test_a_pair_without_a_placed_lane_is_left_to_the_table(self):
+        model = json.loads(json.dumps(self.model))
+        crossing = next(e for e in model["elements"] if e["element"] == "crossing")
+        model["elements"].append(dict(crossing, seq=99, drawAs="unplaced", segments=[], isSwap=False))
+        built = self.build(model)
+        self.assertNotIn(99, self.parts(built))
+        self.assertIn("table", built["description"]["notDrawn"]["99"])
+
+    def test_the_draw_cap_leaves_the_rest_to_the_table(self):
+        model = json.loads(json.dumps(self.model))
+        arrow = next(e for e in model["elements"] if e["element"] == "crossing" and e["drawAs"] == "swap")
+        arrow = dict(arrow, drawAs="ordered-link", classification="ordered", isSwap=False)
+        model["elements"] += [dict(arrow, seq=1000 + index) for index in range(2105)]
+        built = self.build(model)
+        extra = [seq for seq in self.parts(built) if seq >= 1000]
+        left_out = [int(seq) for seq in built["description"]["notDrawn"] if int(seq) >= 1000]
+        self.assertEqual(len(extra) + len(left_out), 2105)
+        self.assertGreater(len(left_out), 0)
+        self.assertTrue(all("draw cap" in built["description"]["notDrawn"][str(seq)] for seq in left_out))
+
+    def test_an_empty_model_builds_nothing(self):
+        self.assertEqual(self.built["emptyParts"], {})
 
 
 class ServedBundleTests(unittest.TestCase):
@@ -384,6 +702,27 @@ class ServedBundleTests(unittest.TestCase):
                 status, _, body = self.fetch(path, self.cookie)
                 name = "index.html" if path == "/" else path[5:]
                 self.assertEqual((status, body), (200, self.bundle[name]))
+
+    def test_every_vendored_file_and_import_map_target_is_served_with_the_manifest_bytes(self):
+        targets = import_map_targets(read("index.html"))
+        self.assertTrue(targets)
+        for path, digest in manifest()["files"].items():
+            with self.subTest(path=path):
+                status, response, body = self.fetch(f"/web/vendor/{path}", self.cookie)
+                self.assertEqual(status, 200)
+                self.assertEqual(hashlib.sha256(body).hexdigest(), digest)
+                self.assertEqual(body, (VENDOR / path).read_bytes())
+        for target in targets:
+            with self.subTest(target=target):
+                self.assertEqual(self.fetch(target, self.cookie)[0], 200)
+                self.assertEqual(self.fetch(target)[0], 404)  # a session is still required
+
+    def test_the_vendored_modules_are_served_as_javascript_under_the_page_policy(self):
+        for target in import_map_targets(read("index.html")):
+            with self.subTest(target=target):
+                _, response, _ = self.fetch(target, self.cookie)
+                self.assertTrue(response.getheader("Content-Type").startswith("text/javascript"))
+                self.assert_contract_policy(response.getheader("Content-Security-Policy"), self.map_hash)
 
     def assert_contract_policy(self, policy, map_hash):
         directives = {}
@@ -424,13 +763,19 @@ class ServedBundleTests(unittest.TestCase):
             ("GET", "/", None, None, 404),  # no session
             ("GET", "/web/loom.js", None, None, 404),
             ("GET", "/web/nope.js", self.cookie, None, 404),  # not in the bundle
-            ("GET", "/web/vendor/three/three.module.js", self.cookie, None, 404),
+            ("GET", "/web/vendor/manifest.json", self.cookie, None, 404),  # the manifest does not list itself
+            ("GET", "/web/vendor/three/unlisted.js", self.cookie, None, 404),
+            ("GET", "/web/vendor/three/../../index.html", self.cookie, None, 404),
+            ("GET", "/web/vendor/three/three.module.js", None, None, 404),  # no session
+            ("GET", "/web/vendor/three/three.module.js", self.cookie, "evil.example", 403),
+            ("POST", "/web/vendor/three/three.module.js", self.cookie, None, 405),
             ("GET", "/web/../index.html", self.cookie, None, 404),
             ("GET", "/web/manifest.json", self.cookie, None, 404),
             ("POST", "/", self.cookie, None, 405),
             ("GET", "/", self.cookie, "evil.example", 403),  # foreign Host
         )
-        cases = [("GET", path, self.cookie, None, 200) for path in SERVED_PATHS] + list(refusals)
+        vendored = [("GET", f"/web/vendor/{path}", self.cookie, None, 200) for path in manifest()["files"]]
+        cases = [("GET", path, self.cookie, None, 200) for path in SERVED_PATHS] + vendored + list(refusals)
         for method, path, cookie, host, expected in cases:
             with self.subTest(method=method, path=path, host=host, cookie=bool(cookie)):
                 status, response, _ = self.fetch(path, cookie, method, host)

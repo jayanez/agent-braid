@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Agent Braid activity viewer: first-party table view of the Loom model.
+// Agent Braid activity viewer: first-party table view of the Loom model, plus the optional 3D scene.
+//
+// The table view, evidence panel, counters and playback work on their own. The Three.js scene
+// (braid-scene.js) is loaded afterwards with a dynamic import and only when WebGL2 exists; if it is
+// missing, refused or fails, the page says so and keeps the table. The scene is bound to this model,
+// this playback position and this evidence panel: it only calls `select` and reads `state`.
 //
 // Read-only. It fetches /snapshot (the model built by the server) and follows /events
 // (Server-Sent Events, resumed with Last-Event-ID) only to learn that the model changed.
@@ -53,6 +58,21 @@ const MARKS = {
   gap: ["gap", "The viewer or a host did not observe this range."],
   notime: ["no time", "The event states no time. It is placed after its predecessor, no time is invented."],
 };
+
+const SCENE_LEGEND = [
+  "Tube: one strand per agent or unit. Its colour is the host, never a status.",
+  "Two tubes exchanging lanes: an independent candidate pair. The swap is layout only and not a guarantee.",
+  "Arc over other lanes: an independent candidate pair between lanes that are not adjacent. It does not cross them.",
+  "Arrow: an ordered pair. Red knot between two stubs: a conflicting pair, never a swap.",
+  "Dashed pulsing link: an unknown pair. It is not independent and not clean.",
+  "Polygon badge on a crossing: the compatibility class. The sides are 3 plus the class number. Every badge looks the same otherwise: a class is a categorical label, not a guarantee and not a safety ordering.",
+  "Translucent slabs: planned waves, an advisory plan, not a runtime measurement. Framed slabs: runtime wave markers.",
+  "Thin ring: a grant. Thick ring: a workflow gate or gate phase. The sides and colour follow the state or result, and the label names it.",
+  "Cone with sparks: an observed hazard. Dashed pulsing wire cone: a hazard that was not observed. Absence of observation is not evidence that none exists.",
+  "Broken strand with a grey dashed stub: an observation gap.",
+  "Amber wire octahedron: unverified. Replayed or host-reported, and not checked by this viewer.",
+  "Effort and tokens are not drawn in this release.",
+];
 
 const ATTRS = /^(type|title|value|data-[a-z-]+|aria-[a-z-]+)$/;
 const STEP_MS = 700;
@@ -152,6 +172,7 @@ function renderLegend() {
   fill("legend-verification", Object.values(VERIFICATION).map(([glyph, label, meaning]) =>
     h("li", null, h("span", { class: "glyph" }, glyph), label + ": " + meaning)));
   fill("legend-marks", Object.keys(MARKS).map((key) => h("li", null, markNode(key), " " + MARKS[key][1])));
+  fill("legend-scene", SCENE_LEGEND.map((text) => h("li", null, text)));
 }
 
 // ---------------------------------------------------------------- data
@@ -407,6 +428,7 @@ function renderTable() {
   $("table-empty").hidden = rows.length > 0;
   $("table-empty").textContent = state.model && totalCount() > 0 && rows.length === 0
     ? "No events at this position or filter." : "No events to show.";
+  syncScene();
 }
 
 function select(seq) {
@@ -572,6 +594,101 @@ function bindControls() {
   $("pb-range").addEventListener("input", (event) => { stopPlayback(); setCursor(Number(event.target.value)); });
   $("filter-kind").addEventListener("change", (event) => { state.filterKind = event.target.value; renderTable(); });
   $("filter-uncertain").addEventListener("change", (event) => { state.filterUncertain = event.target.checked; renderTable(); });
+  $("scene-reset").addEventListener("click", () => { if (scene) scene.resetView(); });
+}
+
+// ---------------------------------------------------------------- 3D scene (optional)
+
+let scene = null;
+let sceneModel = null;
+let sceneCursor = -1;
+let sceneSelected = null;
+let elementsCache = null;
+
+function elementOf(seq) {
+  if (!state.model) return undefined;
+  if (!elementsCache || elementsCache.model !== state.model) {
+    elementsCache = { model: state.model, bySeq: new Map(state.model.elements.map((element) => [element.seq, element])) };
+  }
+  return elementsCache.bySeq.get(seq);
+}
+
+function showHover(seq) {
+  const element = seq === null ? undefined : elementOf(seq);
+  $("scene-hover").textContent = element
+    ? "Event " + element.seq + " · " + element.kind + " · " + String(element.subject === null || element.subject === undefined ? "" : element.subject) +
+      " · " + classLabel(element.compatibilityClass) + (marksOf(element).includes("unverified") ? " · unverified" : "")
+    : "Hover an element to see its event.";
+}
+
+function updateSceneNote() {
+  const info = scene.summary();
+  const parts = ["Showing " + info.drawn + " of " + info.visible + " events at this position in 3D."];
+  if (info.omitted.length) {
+    parts.push("Only in the table: " + info.omitted.map((item) => item.count + " (" + item.reason + ")").join("; ") + ".");
+  }
+  $("scene-note").textContent = parts.join(" ");
+}
+
+// Keeps the scene on the model, playback position and selection of the table. Cheap when nothing changed.
+function syncScene() {
+  if (!scene) return;
+  const modelChanged = sceneModel !== state.model;
+  if (modelChanged) {
+    sceneModel = state.model;
+    scene.setModel(state.model);
+  }
+  if (modelChanged || sceneCursor !== state.cursor) {
+    sceneCursor = state.cursor;
+    scene.setVisible(rowsInOrder().slice(0, state.cursor).map(({ row }) => row.seq));
+    updateSceneNote();
+  }
+  if (modelChanged || sceneSelected !== state.selected) {
+    sceneSelected = state.selected;
+    scene.setSelected(state.selected);
+  }
+}
+
+function sceneUnavailable(reason) {
+  if (scene) {
+    try {
+      scene.dispose();
+    } catch (error) {
+      console.error(error);
+    }
+    scene = null;
+  }
+  $("scene-section").hidden = false;
+  $("scene-box").hidden = true;
+  $("scene-hover").hidden = true;
+  $("scene-reset").hidden = true;
+  $("legend-scene-block").hidden = true;
+  $("scene-note").textContent = "The 3D scene is not available: " + reason + " The table below shows the same events, counters and evidence.";
+}
+
+async function startScene() {
+  if (typeof WebGL2RenderingContext !== "function") {
+    sceneUnavailable("this browser has no WebGL2.");
+    return;
+  }
+  let module_;
+  try {
+    module_ = await import("/web/braid-scene.js");
+  } catch (error) {
+    console.error(error);
+    sceneUnavailable("its code could not be loaded or was refused.");
+    return;
+  }
+  $("scene-section").hidden = false; // the canvas needs a laid-out box to size itself
+  try {
+    scene = module_.createBraidScene($("scene-box"), { onSelect: select, onHover: showHover, onUnavailable: sceneUnavailable });
+  } catch (error) {
+    console.error(error);
+    sceneUnavailable("WebGL2 could not be started.");
+    return;
+  }
+  $("legend-scene-block").hidden = false;
+  syncScene();
 }
 
 // ---------------------------------------------------------------- start
@@ -591,3 +708,4 @@ bindControls();
 renderAll();
 loadSnapshot();
 followEvents();
+startScene();
