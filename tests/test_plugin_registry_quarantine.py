@@ -191,7 +191,7 @@ class RegistryQuarantineTests(unittest.TestCase):
     def test_setup_refuses_to_rewrite_unsafe_rows_without_prune_and_drops_them_with_it(self):
         other = self.second_repo()
         self.install([self.repo, other])
-        ids = {r['sourceRoot']: r['workspaceId'] for r in load(self.home)['workspaces']}
+        poisoned = load(self.home)['workspaces'][0]['workspaceId']  # rows are sorted by random-path ids
         self.rewrite(lambda v: dict(v, workspaces=[dict(v['workspaces'][0], worktreeRoots=[str(self.home / 'x')]),
                                                    v['workspaces'][1]]))
         with self.assertRaisesRegex(RegistryError, 'prune-stale'):
@@ -200,7 +200,7 @@ class RegistryQuarantineTests(unittest.TestCase):
         self.assertEqual(len(preview['registry']['workspaces']), 1)
         dropped = [e for e in preview['effects'] if 'unsafe' in e.lower()]
         self.assertEqual(len(dropped), 1)
-        self.assertIn(ids[str(self.repo)], dropped[0])
+        self.assertIn(poisoned, dropped[0])
         self.assertIn('backup', dropped[0])
         self.assertIn('grantStore', dropped[0])
         apply(self.home, preview, preview['previewDigest'])
