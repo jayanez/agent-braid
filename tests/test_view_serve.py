@@ -245,7 +245,7 @@ class CredentialTests(ServerCase):
 
     def test_two_viewers_on_loopback_keep_separate_sessions(self):
         """Closure finding 2: cookies are not isolated by port, so the cookie name carries the port."""
-        first_cookie, first_port = self.cookie(), self.port
+        first_cookie, first_port = self.cookie(), self.port  # self.request targets self.port
         self.start(ingest_handlers={})  # a second viewer on another port, same host name
         second_cookie, second_port = self.cookie(), self.port
         self.assertNotEqual(first_port, second_port)

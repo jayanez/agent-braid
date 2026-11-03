@@ -86,7 +86,6 @@ class IngestTests(TailCase):
         install(self.root, "state.json", "runtime-state-ready.json")
         self.tail().poll_once()
         paths = [event["source"]["evidenceRef"]["path"] for event in self.store.replay()]
-        self.assertEqual(sorted(paths), sorted(["state.json", "runs/a/state.json", "runs/b/state.json"]))
         self.assertEqual(paths, ["state.json", "runs/b/state.json", "runs/a/state.json"])  # newest-named directory first
 
     def test_every_family_is_read_by_its_own_adapter(self):
@@ -346,8 +345,9 @@ class BoundTests(TailCase):
         """Closure finding 1: copies load newest first, so a lifetime cap refuses the oldest, not today's."""
         stamps = ["20261001T000000000000", "20261002T000000000000", "20261003T000000000000", "20261004T000000000000"]
         base = json.loads((FIXTURES / "analysis-file-edits.json").read_text(encoding="utf-8"))
+        text = json.dumps(base)
         for stamp in stamps:
-            report = json.loads(json.dumps(base).replace('"edit-readme"', f'"readme-{stamp}"')
+            report = json.loads(text.replace('"edit-readme"', f'"readme-{stamp}"')
                                 .replace('"edit-roadmap"', f'"roadmap-{stamp}"'))
             report["analysisId"] = f"sha256:{hashlib.sha256(stamp.encode()).hexdigest()}"
             target = self.root / f"analysis-{stamp}Z-0123456789abcdef" / "analysis.json"

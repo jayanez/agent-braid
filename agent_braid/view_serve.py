@@ -61,7 +61,7 @@ OTLP_BODY_LIMIT = 1024 * 1024
 HOOK_BODY_LIMIT = 256 * 1024
 MAX_JSON_DEPTH = 64
 INGEST_TOKEN_NAME = "view-ingest-token"
-COOKIE_NAME = "braid_view"  # prefix: each server names its own cookie "<prefix>_<port>"
+COOKIE_PREFIX = "braid_view"  # each server names its own cookie "<prefix>_<port>"
 HOOK_PATH = "/hook/claude"
 INGEST_STATUSES = (400, 403, 503)
 EVENT_POLL_SECONDS = 0.25
@@ -351,7 +351,7 @@ class ViewServer(ThreadingHTTPServer):
         super().__init__((host, port), _Handler)
         self.port = self.server_address[1]
         # Cookies are not isolated by port: two viewers on loopback would overwrite each other's session.
-        self.cookie_name = f"{COOKIE_NAME}_{self.port}"
+        self.cookie_name = f"{COOKIE_PREFIX}_{self.port}"
         self._hosts = frozenset({f"127.0.0.1:{self.port}", f"[::1]:{self.port}", f"localhost:{self.port}"})
         self.url_host = f"[::1]:{self.port}" if host == "::1" else f"127.0.0.1:{self.port}"
         try:
@@ -579,8 +579,8 @@ class _Handler(BaseHTTPRequestHandler):
         token = self.server.exchange_open_code(codes[0])
         if token is None:
             return self._send(404)
-        self._send(303, extra=(("Location", "/"),
-                               ("Set-Cookie", f"{self.server.cookie_name}={token}; HttpOnly; SameSite=Strict; Path=/")))
+        cookie = f"{self.server.cookie_name}={token}; HttpOnly; SameSite=Strict; Path=/"
+        self._send(303, extra=(("Location", "/"), ("Set-Cookie", cookie)))
 
     def _read(self, path: str) -> None:
         server = self.server

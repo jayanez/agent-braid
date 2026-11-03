@@ -13,8 +13,7 @@ specs/061-activity-viewer/contracts/ui-security-privacy.md:
   symbolic link to a directory is never entered; such entries are skipped without an event;
 * a root inside another named root is not watched twice; an oversized file adds one gap while it
   stays oversized; a grant's derived expiry is computed only when its file is read (a changed file);
-* directories are walked newest name first (report copies are named by UTC stamp), because the
-  store's caps last for its whole life: when they are reached, the oldest copies are the ones refused;
+* directories are walked newest name first (see `_walk`), so a reached store cap refuses the oldest;
 * a file is read again only when its `os.stat` signature changes, and its events are stored
   again only when its SHA-256 changed, so touching a file adds nothing.
 
@@ -201,9 +200,10 @@ class ArtifactTail:
     def _walk(self, root: Path, budget: list[int]):
         """Yield (posix path relative to `root`, stat signature) of known files, bounded.
 
-        Files of one directory come in name order; directories come newest name first, so the plugin's
-        `analysis-<UTC stamp>-<id>` report copies are read newest first and a store cap that is reached
-        refuses the oldest copies (with its `stream-truncated` gap), never today's analysis."""
+        Directories come newest name first, so the plugin's `analysis-<UTC stamp>-<id>` report copies are
+        read newest first. The store's caps last for its whole life, so a cap that is reached refuses the
+        oldest copies (with its `stream-truncated` gap), never today's analysis. This holds while the entry
+        budget is not exhausted inside one directory (the 1,500-copy retention keeps it well below)."""
         stack: list[tuple[Path, str]] = [(root, "")]
         while stack:
             directory, prefix = stack.pop()

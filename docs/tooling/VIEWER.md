@@ -98,8 +98,8 @@ local copy of its report in the workspace's result root as `analysis-<utc stamp>
 for the viewer's watcher. Copies are private to the user (directories 0700, files 0600),
 never uploaded, removed after 30 days, and removed oldest first beyond 64 MiB or 1,500
 copies. The viewer reads copies newest first, so when a store limit is reached the oldest
-copies are the ones left out, and a `stream-truncated` gap says so. A failure to write a copy never changes the `analyze-work` result. See
-[plugin privacy](PLUGIN_PRIVACY.md).
+copies are the ones left out, and a `stream-truncated` gap says so. A failure to write a
+copy never changes the `analyze-work` result. See [plugin privacy](PLUGIN_PRIVACY.md).
 
 **Root labels.** The page never shows a path. Each watched root gets a stable label,
 `root 1` to `root 8`, in start order, and the start banner lists the mapping so you can
