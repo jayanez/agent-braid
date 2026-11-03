@@ -41,7 +41,7 @@ Commands run from the clean clone; `quick` means
   `evidence/opencode-host-matrix.json`, findings in `research.md` (T002 findings).
   Rows 04b, 05b (`github:` transport), 09b (Linux) and 12b stay `unobserved`.
 
-- [ ] T003 (REQ-003 / SC-003, stdio part; the real host is T010): Write the OpenCode entry module
+- [x] T003 (REQ-003 / SC-003, stdio part; the real host is T010): Write the OpenCode entry module
   per the surface contract: three transforms only, root from `import.meta.url`, no
   removal or update of a skill it can see, no replacement of a foreign `agent-braid` server
   (semantic-field comparison), no throw, no network,
@@ -53,8 +53,9 @@ Commands run from the clean clone; `quick` means
   Verification: procedure_003, `quick`. Evidence: test output with negative controls
   (unknown workspace ID, arbitrary root, execution without grant, forbidden API
   inserted into a copy of the source).
+  Done: PR #1022; `tests/test_opencode_entry.py`.
 
-- [ ] T004 (REQ-003 / SC-003; REQ-010 / SC-010): Extend the native build: write
+- [x] T004 (REQ-003 / SC-003; REQ-010 / SC-010): Extend the native build: write
   `package.json` (no dependencies), copy `opencode/index.js`, extend
   `check_package_names`, provenance (`hosts`) and inventory. Tests first: build
   fixture compares host-read Codex/Claude files with a build without the OpenCode
@@ -64,6 +65,7 @@ Commands run from the clean clone; `quick` means
   Verification: procedure_010, `quick`. Evidence: build record and diff. Negative
   controls: wrong `package.json` name, declared dependency, drift in a host-read
   Codex/Claude file.
+  Done: PR #1022; `tests/test_native_plugin_build.py` (D12 byte-identity test).
 
 - [ ] T005 (REQ-004 / SC-004; REQ-005 / SC-005): Add `plugin doctor --host opencode
   [--project <dir>]`: read-only scan of the documented discovery locations with

@@ -42,8 +42,10 @@ editor.set("agent-braid", {
 ```
 
 - `root` is the plugin directory resolved from `import.meta.url`.
-- If an `agent-braid` server already exists and is not this exact value, the entry
-  does not replace it (D13). `editor.get("agent-braid")` returns the existing entry
+- The entry sets the server only when no `agent-braid` entry exists or the existing
+  one is semantically equal on `type`, `command`, `codemode` and `protocol`; any
+  other existing entry, including a disabled one or one with an environment, is left
+  alone (D13). `editor.get("agent-braid")` returns the existing entry
   before `set` (T002 row 03), so the check is implementable. The host normalizes
   entries (for example adds `timeout`, reports `enabled:false` as `disabled:true`),
   so "exactly this value" is decided on semantic fields (`command[0]` and
@@ -60,8 +62,8 @@ editor.set("agent-braid", {
 
 Six skills, IDs `analyze`, `plan`, `evidence`, `execute`, `recover`, `setup`, read
 from the packaged `skills/<id>/SKILL.md` produced by the SPEC-054 build
-substitution. No text is duplicated in JavaScript; the entry passes `path` and the
-file content.
+substitution. No text is duplicated in JavaScript; the entry passes `{path, content}` with
+the full `SKILL.md` content.
 
 - The entry never removes or updates a skill it can see (a built-in or its own). It cannot see discovered skills: in the skill transform,
   `editor.get` returns null for user or project skills, and a discovered skill with
@@ -77,11 +79,11 @@ file content.
 | Command | Effect |
 |---|---|
 | `agent-braid-setup` | Prompts the current session with the packaged `setup` skill |
-| `agent-braid-reconnect` | Shows the operator steps to restart the `agent-braid` MCP server; performs no reload |
+| `agent-braid-reconnect` | Prompts the session (`ctx.session.prompt`) with the operator steps (`opencode reload` or restart) for the `agent-braid` MCP server, because no write-free display channel exists (T002 row 10); performs no reload |
 
 Command names keep the brand prefix because OpenCode commands share one flat
 namespace with the user's own commands; names are listed exactly as registered,
-with no plugin prefix (T002 row 07). Skills follow SPEC-054 (D2).
+with no plugin prefix (T002 row 07). The command `execute` and `session.prompt` shapes come from the OpenCode v2 documentation and stay unobserved until T010. Skills follow SPEC-054 (D2).
 
 ## Collision diagnosis
 
