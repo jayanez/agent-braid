@@ -1,10 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-only
+from datetime import datetime, timedelta, timezone
 import json
+import os
 from pathlib import Path
+import re
+import stat
 import threading
 import unittest
+from unittest import mock
 import importlib.util
 from tests import test_plugin_registry as registry_tests
+from agent_braid import plugin_mcp
 from agent_braid.plugin_mcp import PluginRouter
 from agent_braid.plugin_registry import RegistryStale, load, plan_setup, apply
 from tests.spec060_golden import golden, normalize
@@ -286,6 +292,264 @@ class PluginRouterTests(unittest.TestCase):
         self.assertEqual(status['workspaces'], [])
         self.assertEqual(router.services, {})
         self.assertEqual(status['telemetry']['activeMode'], 'off')
+
+
+class PluginReportCopyTests(unittest.TestCase):
+    """SPEC-061 T040 / REQ-006: a private local copy of each analyze-work report in the result root."""
+    setUp = registry_tests.PluginRegistryTests.setUp
+    install = registry_tests.PluginRegistryTests.install
+    NAME = re.compile(r'^analysis-\d{8}T\d{12}Z-[0-9a-f]{16}$')
+
+    def sample(self):
+        return json.loads((Path(__file__).resolve().parents[1] / 'examples/analysis/file-edits.json').read_text())
+
+    def start(self):
+        self.install()
+        self.router = PluginRouter(self.home)
+        row = load(self.home)['workspaces'][0]
+        self.identifier = row['workspaceId']
+        self.root = Path(row['resultRoot'])
+        self.service = self.router.services[self.identifier]
+
+    def analyze(self, name='analyze-work', **extra):
+        args = {'workspaceId': self.identifier, 'kind': 'aim', 'request': self.sample()}
+        args.update(extra)
+        return self.router.invoke(name, args, threading.Event())
+
+    def copies(self):
+        return sorted(p.name for p in self.root.iterdir() if self.NAME.match(p.name))
+
+    def make_copy(self, when, size=10, *, extra=None):
+        """A pre-existing copy named for `when` (datetime): a sparse analysis.json of `size` bytes."""
+        directory = self.root / ('analysis-' + when.strftime('%Y%m%dT%H%M%S') + f'{when.microsecond:06d}Z-' + os.urandom(8).hex())
+        directory.mkdir(mode=0o700)
+        with open(directory / 'analysis.json', 'wb') as stream:
+            stream.truncate(size)
+        for name in extra or ():
+            (directory / name).write_bytes(b'x')
+        return directory
+
+    def write(self, root, body=b'{}', registered=None, **kwargs):
+        return plugin_mcp.write_report_copy(root, registered if registered is not None else root, body, **kwargs)
+
+    def test_copy_has_the_report_body_private_modes_and_one_directory_per_report(self):
+        self.start()
+        envelope = self.analyze()
+        self.assertEqual(envelope['status'], 'ok')
+        first = self.copies()
+        self.assertEqual(len(first), 1)
+        directory = self.root / first[0]
+        self.assertEqual(sorted(p.name for p in directory.iterdir()), ['analysis.json'])
+        self.assertEqual(stat.S_IMODE(directory.stat().st_mode), 0o700)
+        self.assertEqual(stat.S_IMODE((directory / 'analysis.json').stat().st_mode), 0o600)
+        data = (directory / 'analysis.json').read_bytes()
+        self.assertEqual(json.loads(data), envelope['result']['report'])  # the report body, not the MCP envelope
+        self.assertEqual(self.analyze()['status'], 'ok')
+        second = self.copies()
+        self.assertEqual(len(second), 2)
+        self.assertTrue(set(first) <= set(second))
+        self.assertEqual(stat.S_IMODE(self.root.stat().st_mode), 0o700)
+
+    def test_stored_bytes_round_trip_through_the_viewer_adapter_and_the_watcher(self):
+        from agent_braid.view_adapters import events_from_analysis
+        from agent_braid.view_store import LoomStore
+        from agent_braid.view_tail import KNOWN_ARTIFACTS, ArtifactTail
+        self.start()
+        self.assertIn('analysis.json', KNOWN_ARTIFACTS)
+        self.analyze()
+        name = self.copies()[0]
+        data = (self.root / name / 'analysis.json').read_bytes()
+        events = events_from_analysis(data, path=f'{name}/analysis.json')
+        self.assertEqual(events[0]['kind'], 'analysis.report')
+        self.assertNotIn('source-unsupported', json.dumps(events))
+        self.assertEqual({e['source']['verification'] for e in events}, {'rehashed'})
+        store = LoomStore()
+        self.assertGreater(ArtifactTail(store, [self.root]).poll_once(), 0)  # walks the subdirectory
+        self.assertEqual(store.replay()[0]['kind'], 'analysis.report')
+
+    def test_a_report_held_as_an_evidence_artifact_is_copied_as_the_same_report_body(self):
+        from agent_braid import tooling_mcp as core
+        self.start()
+        with mock.patch.object(core, 'INLINE_RESULT_BYTES', 1):
+            envelope = self.analyze()
+        self.assertEqual(envelope['result']['type'], 'evidence-artifact-reference')
+        held = json.loads(self.service.artifacts[envelope['evidenceRefs'][0]['artifactId']].data)
+        name = self.copies()[0]
+        self.assertEqual(json.loads((self.root / name / 'analysis.json').read_bytes()), held['report'])
+
+    def test_only_a_successful_analyze_work_writes_a_copy(self):
+        self.start()
+        ok = {'status': 'ok', 'result': {'report': {'a': 1}}}  # an ok `analyze` envelope: only the name gates a copy
+        with mock.patch.object(plugin_mcp.core.ToolingService, 'invoke', return_value=ok):
+            self.assertEqual(self.service.invoke('analyze', {}, threading.Event()), ok)
+        self.assertEqual(list(self.root.iterdir()), [])
+        for result in (self.analyze(kind='unsupported'), self.analyze(request={}),
+                       self.router.invoke('analyze-work', {'workspaceId': 'not-registered'}, threading.Event())):
+            self.assertEqual(result['status'], 'refused')
+        self.assertEqual(list(self.root.iterdir()), [])
+
+    def test_a_copy_failure_neither_fails_nor_changes_the_response(self):
+        self.start()
+        baseline = self.analyze()
+
+        def comparable(envelope):
+            value = json.loads(json.dumps(envelope))
+            value['evidenceRefs'] = [{k: v for k, v in ref.items() if k not in {'artifactId', 'uri'}}
+                                     for ref in value['evidenceRefs']]
+            return value
+
+        for error in (OSError('/secret/path'), RuntimeError('/secret/path')):
+            with self.subTest(type(error).__name__), mock.patch.object(plugin_mcp, 'write_report_copy', side_effect=error):
+                failed = self.analyze()
+            self.assertNotIn('secret', json.dumps(failed))
+            self.assertEqual(comparable(failed), comparable(baseline))
+        self.assertEqual(len(self.copies()), 1)  # only the baseline call wrote one
+
+    @unittest.skipIf(hasattr(os, 'geteuid') and os.geteuid() == 0, 'root ignores directory permissions')
+    def test_an_unwritable_result_root_does_not_fail_the_call(self):
+        self.start()
+        self.root.chmod(0o500)
+        self.addCleanup(self.root.chmod, 0o700)
+        self.assertEqual(self.analyze()['status'], 'ok')
+        self.assertEqual(self.copies(), [])
+
+    def test_refuses_a_root_that_is_a_link_not_private_or_not_the_registered_one(self):
+        self.start()
+        elsewhere = self.base / 'elsewhere'
+        elsewhere.mkdir(mode=0o700)
+        link = self.base / 'link'
+        link.symlink_to(elsewhere)
+        loose = self.base / 'loose'
+        loose.mkdir()
+        loose.chmod(0o755)
+        missing = self.base / 'nope'
+        for label, root, registered in (('link', link, link), ('loose', loose, loose),
+                                        ('unregistered', elsewhere, self.root), ('missing', missing, missing)):
+            with self.subTest(label), self.assertRaises((OSError, ValueError)):
+                self.write(root, registered=registered)
+        self.assertEqual(list(elsewhere.iterdir()), [])
+        self.assertEqual(list(loose.iterdir()), [])
+        self.assertEqual(list(self.root.iterdir()), [])
+
+    def test_refuses_a_link_inside_the_path_of_the_root(self):
+        self.start()
+        real = self.base / 'real'
+        (real / 'results').mkdir(parents=True, mode=0o700)
+        real.chmod(0o700)
+        alias = self.base / 'alias'
+        alias.symlink_to(real)
+        with self.assertRaises((OSError, ValueError)):
+            self.write(alias / 'results')
+        self.assertEqual(list((real / 'results').iterdir()), [])
+
+    def test_the_name_is_unique_and_sortable_by_time(self):
+        self.start()
+        early = datetime(2026, 11, 3, 10, 0, 0, 5, tzinfo=timezone.utc)
+        late = datetime(2026, 11, 3, 10, 0, 0, 6, tzinfo=timezone.utc)
+        self.write(self.root, now=early)
+        self.write(self.root, now=late)
+        self.write(self.root, now=late)
+        names = self.copies()
+        self.assertEqual(len(names), 3)
+        self.assertEqual(names, sorted(names))
+        self.assertTrue(names[0].startswith('analysis-20261103T100000000005Z-'))
+
+    def test_a_failed_publish_leaves_no_visible_artifact(self):
+        self.start()
+        with mock.patch.object(plugin_mcp.os, 'rename', side_effect=OSError):
+            with self.assertRaises(OSError):
+                self.write(self.root)
+        self.assertEqual([p.name for p in self.root.rglob('analysis.json')], [])
+        self.assertEqual(list(self.root.iterdir()), [])
+
+    def test_retention_removes_copies_older_than_thirty_days_and_nothing_else(self):
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        old = self.make_copy(now - timedelta(days=30, seconds=1))
+        edge = self.make_copy(now - timedelta(days=30) + timedelta(seconds=1))
+        recent = self.make_copy(now - timedelta(days=1))
+        foreign = self.make_copy(now - timedelta(days=90), extra=['notes.txt'])  # holds a file that is not ours: kept
+        (self.root / 'notes.txt').write_text('keep')
+        (self.root / 'run-aaaa').mkdir()
+        (self.root / 'run-aaaa' / 'state.json').write_text('{}')
+        (self.root / 'analysis-old-but-not-a-copy').mkdir()
+        outside = self.base / 'outside'
+        outside.mkdir()
+        (outside / 'analysis.json').write_text('keep')
+        os.symlink(outside, self.root / ('analysis-20200101T000000000000Z-' + '0' * 16))
+        os.utime(self.root / 'notes.txt', (0, 0))
+        self.write(self.root, now=now)
+        self.assertFalse(old.exists())
+        self.assertTrue(edge.exists() and recent.exists() and foreign.exists())
+        self.assertEqual(sorted(p.name for p in self.root.iterdir() if not self.NAME.match(p.name)),
+                         ['analysis-old-but-not-a-copy', 'notes.txt', 'run-aaaa'])
+        self.assertEqual((outside / 'analysis.json').read_text(), 'keep')
+        self.assertEqual((self.root / 'run-aaaa' / 'state.json').read_text(), '{}')
+
+    def test_retention_caps_the_total_at_64_mib_removing_the_oldest_first(self):
+        self.assertEqual(plugin_mcp.REPORT_COPY_MAX_BYTES, 64 * 1024 * 1024)
+        self.assertEqual(plugin_mcp.REPORT_COPY_DAYS, 30)
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        mib = 1024 * 1024
+        made = [self.make_copy(now - timedelta(hours=10 - n), 10 * mib) for n in range(7)]  # 70 MiB in total
+        with open(self.root / 'big-unrelated.bin', 'wb') as stream:
+            stream.truncate(200 * mib)  # other files never count and are never touched
+        self.write(self.root, b'{}', now=now)
+        self.assertEqual([p.exists() for p in made], [False] + [True] * 6)
+        self.write(self.root, b'x' * (5 * mib), now=now)  # 60 MiB + 5 MiB + 2 bytes: the next oldest goes
+        self.assertEqual([p.exists() for p in made], [False, False] + [True] * 5)
+        self.assertTrue((self.root / 'big-unrelated.bin').exists())
+        total = sum((self.root / name / 'analysis.json').stat().st_size for name in self.copies())
+        self.assertLessEqual(total, 64 * mib)
+
+    def test_a_retention_failure_keeps_the_new_copy_and_the_response(self):
+        self.start()
+        with mock.patch.object(plugin_mcp, '_prune_report_copies', side_effect=OSError):
+            self.assertEqual(self.analyze()['status'], 'ok')
+        self.assertEqual(len(self.copies()), 1)
+
+    def test_retention_caps_the_number_of_copies_and_never_removes_the_new_one(self):
+        self.assertEqual(plugin_mcp.REPORT_COPY_MAX_COUNT, 1500)
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        made = [self.make_copy(now - timedelta(hours=10 - n)) for n in range(5)]
+        self.write(self.root, now=now, max_count=3)
+        self.assertEqual([p.exists() for p in made], [False] * 3 + [True] * 2)
+        self.assertEqual(len(self.copies()), 3)  # the new copy is one of them
+
+    def test_an_oversized_new_copy_is_kept_when_it_alone_exceeds_the_cap(self):
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        old = self.make_copy(now - timedelta(hours=1))
+        self.write(self.root, b'x' * 100, now=now, max_bytes=10)
+        self.assertFalse(old.exists())
+        names = self.copies()
+        self.assertEqual(len(names), 1)
+        self.assertEqual((self.root / names[0] / 'analysis.json').read_bytes(), b'x' * 100)
+
+    def test_an_abandoned_temporary_only_directory_is_pruned_once_old(self):
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        stale = self.make_copy(now - timedelta(days=31))
+        (stale / 'analysis.json').rename(stale / '.analysis.tmp')
+        self.write(self.root, now=now)
+        self.assertFalse(stale.exists())
+
+    def test_concurrent_writes_each_leave_a_whole_copy(self):
+        self.start()
+        bodies = [json.dumps({'n': n}).encode() for n in range(8)]
+        threads = [threading.Thread(target=self.write, args=(self.root, body)) for body in bodies]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+        stored = sorted((self.root / name / 'analysis.json').read_bytes() for name in self.copies())
+        self.assertEqual(stored, sorted(bodies))
+
+    def test_the_shadow_and_telemetry_paths_are_not_overridden(self):
+        for name in ('_shadow', '_invoke_measured', '_invoke'):
+            self.assertNotIn(name, plugin_mcp.WorkspaceService.__dict__)
 
 
 @unittest.skipUnless(importlib.util.find_spec("mcp"), "optional mcp==2.3.0 SDK is unavailable")
