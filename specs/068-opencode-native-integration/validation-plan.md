@@ -1,9 +1,13 @@
 # SPEC-068: Validation plan
 
-Procedures are planned, not run. Test targets are proposals refined by
-`speckit-plan`; unit procedures use fake `opencode`, `codex` and `claude`
-executables and never start a model provider. Native procedures run in a
-disposable OpenCode profile and never edit the user's configuration.
+Status on `develop` (2026-11-03): procedures 002–010 have deterministic or
+disposable-profile evidence, recorded in `evidence/opencode-host-matrix.json` and
+`evidence/engineering-checks-develop.json`; procedure_001 (owner review), 011
+(documentation review) and 012 (native observation, PR #1031) have none yet. Unit
+procedures use fake `opencode`, `codex` and `claude` executables and never start a
+model provider. Native procedures run in a disposable OpenCode profile and never
+edit the user's configuration. Passing unit procedures does not establish native
+behaviour; that is procedure_012.
 
 Commands use the isolated environment: `.venv-speckit/bin/python -m unittest …`.
 

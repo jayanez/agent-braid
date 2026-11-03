@@ -377,9 +377,11 @@ Exit criteria:
   are recorded against frozen candidate/evidence.
 
 M4.5 consumes accepted M4 contracts and leaves its historical G4 NO-GO and full
-closure gates in place. M3/M3.5 remain independent. Cursor, VS Code/GitHub Copilot,
-OpenCode and pi are deferred alongside four other documented expansion routes;
-no extra environment or new runtime effect is admitted by this program.
+closure gates in place. M3/M3.5 remain independent. Cursor, VS Code/GitHub Copilot
+and pi are deferred alongside four other documented expansion routes; OpenCode, the
+first of the additional environments, is specified separately as
+[M4.7](#m47--ai-tooling-integration-for-opencode) without reopening M4.5. No extra
+runtime effect is admitted by this program.
 
 ## M4.6 — Claude Code dynamic workflows
 
@@ -463,6 +465,30 @@ Exit criteria:
 The gate's current commit-level evidence is file-level and coarser than
 `git merge-tree`; its differentiation is a hypothesis under test, not a result.
 M4's historical G4 NO-GO on useful speedup remains in force.
+
+## M4.7 — AI tooling integration for OpenCode
+
+**Status:** Open
+([GitHub milestone 27](https://github.com/jayanez/agent-braid/milestone/27)).
+[SPEC-068](specs/068-opencode-native-integration/spec.md) is implemented on
+`develop` (tasks T002–T009; engineering checks plus one disposable-profile host matrix observed with a fixture plugin, no Agent Braid plugin observed in a host). It is adjacent to M4.5 and
+does not reopen or close it. Nothing is published: the OpenCode plugin first ships
+in `0.1.0-alpha.7`, whose release preparation (PR #1030) merges only at publication.
+The real-host observation (T010, PR #1031) and the publication decision (T011) are
+open and need separate owner decisions. Extra cash spend is EUR 0.
+
+**Objective:** make the native Agent Braid plugin available in OpenCode at parity
+with Codex and Claude Code: the bundled runtime registering the unchanged
+`agent-braid-plugin/v0.2` MCP server, the six product skills, setup and reconnect
+commands, `install.sh --host opencode` (and `all`), `plugin doctor --host opencode`
+for skill and server collisions, and a receipt-owned legacy `tooling install --host
+opencode` profile. No new authority: OpenCode permissions are host approvals, never
+Agent Braid grants, and grants stay outside every tool, skill and command.
+
+Exit criteria: a native observation of the published plugin in a disposable OpenCode
+profile (install, skills, `analyze-work`, reconnect, removal) with unobserved items
+left open; the publication decision of `0.1.0-alpha.7`; separate owner closure.
+Passing tests prove neither native behaviour nor owner approval.
 
 ## Parallel mathematical laboratory
 

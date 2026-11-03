@@ -2,10 +2,14 @@
 
 Stable task IDs. Completion requires obtained evidence; task completion does not
 imply native-host, release or founder acceptance. Parallelizable is a dependency
-property and does not authorize concurrent agents. No task is started by the
-specification change. ADR 0037 is Proposed; no implementation task is authorized
-until the owner adopts it and authorizes the tasks (T001). T010 and T011 need
-separate owner decisions.
+property and does not authorize concurrent agents. T002–T009 are done on `develop`
+(engineering evidence in `evidence/opencode-host-matrix.json` and
+`evidence/engineering-checks-develop.json`). Still open: T001 (the owner adopted
+ADR 0037 on 2026-11-03; PR #1030, draft, records the status, marks T001 and holds
+the alpha.7 release preparation), T010 (PR #1031, draft, holds the observation
+record and runbook; the owner runs the interactive rows) and T011 (publication of
+`0.1.0-alpha.7`, conditional on T010, a green CI and a final owner decision). GitHub:
+milestone 27, parent #1032, tasks #1033–#1043.
 
 Commands run from the clean clone; `quick` means
 `.venv-speckit/bin/python -m scripts.validate_change --base develop --profile quick`.
@@ -37,7 +41,7 @@ Commands run from the clean clone; `quick` means
   Verification: procedure_002. Evidence: matrix with version, command, output digest
   and limits per row. Negative controls: user configuration digest unchanged before
   and after; altered mode or bytes detected.
-  Done 2026-11-03 on OpenCode 2.1.4 / macOS arm64: obtained evidence
+  Done 2026-11-03 (PR #1018) on OpenCode 2.1.4 / macOS arm64: obtained evidence
   `evidence/opencode-host-matrix.json`, findings in `research.md` (T002 findings).
   Rows 04b, 05b (`github:` transport), 09b (Linux) and 12b stay `unobserved`.
 
@@ -53,7 +57,9 @@ Commands run from the clean clone; `quick` means
   Verification: procedure_003, `quick`. Evidence: test output with negative controls
   (unknown workspace ID, arbitrary root, execution without grant, forbidden API
   inserted into a copy of the source).
-  Done: PR #1022; `tests/test_opencode_entry.py`.
+  Done: PR #1022; `tests/test_opencode_entry.py`. The stdio-fixture comparison with the
+  Codex/Claude results was not delivered as a separate test: the MCP core is covered
+  by the unchanged SPEC-046 `tests/test_plugin_mcp.py`, and the real-host start is T010.
 
 - [x] T004 (REQ-003 / SC-003; REQ-010 / SC-010): Extend the native build: write
   `package.json` (no dependencies), copy `opencode/index.js`, extend
@@ -97,7 +103,11 @@ Commands run from the clean clone; `quick` means
   Verification: procedure_007, `quick`. Evidence: test output. Negative controls:
   absent OpenCode under `--host opencode`; changed Codex or Claude command output;
   sudo or Python invoked.
-  Done: this PR; `install.sh`, `tests/test_plugin_installer.py` (`OpenCodeInstallerTests`), README quick start.
+  Done: PR #1027; `install.sh`, `tests/test_plugin_installer.py` (`OpenCodeInstallerTests`), README quick start.
+  #1027 merged before publication, so `install.sh --host opencode` and `--host all`
+  with `opencode` on `PATH` fail at the OpenCode step against `plugin-dist` until
+  `0.1.0-alpha.7` is published; the README says so. Whether to gate that step is an
+  owner decision (T011).
 
 - [x] T007 (REQ-008 / SC-008; REQ-006 / SC-006): Add the `opencode` host to the
   legacy lifecycle per the legacy profile contract: per-host table in
@@ -128,7 +138,7 @@ Commands run from the clean clone; `quick` means
   Codex/Claude artifacts compared per D12. Dependencies: T004–T007. Files:
   `tests/test_plugin_mcp.py` and existing contract tests. Verification:
   procedure_009, procedure_010, `quick`. Evidence: test output and artifact diff.
-  Done: this PR; `tests/test_plugin_mcp.py` (`PluginOpenCodeSessionIdentifierTests`) plus the unchanged SPEC-046/047/054/060/066 contract tests.
+  Done: PR #1027; `tests/test_plugin_mcp.py` (`PluginOpenCodeSessionIdentifierTests`) plus the unchanged SPEC-046/047/054/060/066 contract tests.
 
 - [x] T009 (REQ-011 / SC-011): Update English documentation: README quick start,
   `docs/tooling/NATIVE_PLUGINS.md`, `INSTALL.md` (OpenCode legacy profile; route
@@ -139,7 +149,8 @@ Commands run from the clean clone; `quick` means
   fact. Dependencies: T008. Files: as listed. Verification: procedure_011,
   repository documentation checks in `quick`. Evidence: documentation diff and a
   search record for unobserved claims.
-  Done: this PR; README, `docs/tooling/{NATIVE_PLUGINS,INSTALL,SKILLS,HOSTS,PLUGIN_PRIVACY,README}.md`, `docs/development/SPEC_KIT.md`, SPEC-039 `program.md`; unobserved items marked in the text.
+  Done: PR #1027; README, `docs/tooling/{NATIVE_PLUGINS,INSTALL,SKILLS,HOSTS,PLUGIN_PRIVACY,README}.md`, `docs/development/SPEC_KIT.md`, SPEC-039 `program.md`; unobserved items marked in the text. A later consolidation pass added the M4.7
+  entries to `ROADMAP.md` and `docs/STATUS.md` and corrected the remaining "future route" wording.
 
 - [ ] T010 (REQ-012 / SC-012; REQ-003 / SC-003 and REQ-006 / SC-006, real-host part): Native observation in a clean OpenCode profile by
   the owner or an operator: install from a candidate tag, skill and command listing,
@@ -150,6 +161,9 @@ Commands run from the clean clone; `quick` means
   OpenCode behaviour is a T002 row). Unobserved items stay open. Dependencies: T009 and an
   owner decision. Files: `evidence/native-observation.json`. Verification:
   procedure_012. Evidence: observation record with versions and limits.
+  Open. Draft PR #1031 (`track/068-t010-observation`) holds
+  `evidence/native-observation.json` (rows observed so far) and `t010-runbook.md`;
+  the owner runs the interactive rows in a disposable profile (D15). Issue #1042.
 
 - [ ] T011 (REQ-001…REQ-012): Stable candidate: `--profile pr`, `validate_spec_kit
   freeze`, release notes for `0.1.0-alpha.7` (D11), and the owner's release
@@ -163,6 +177,10 @@ Commands run from the clean clone; `quick` means
   snapshots. Evidence: release-readiness record stating whether anything was
   released; tag, `plugin-dist` publication and remote tracking only on explicit
   authorization.
+  Open. The release preparation is draft PR #1030 (`release/068-alpha7-prep`:
+  version constant, notes, pins, `release-readiness-alpha7.md`); it merges only at
+  publication because the pins would then say "published". Conditions (D16): T010
+  without contradiction, green CI, final owner decision. Issue #1043.
 
 ## Limits
 

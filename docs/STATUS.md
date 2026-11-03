@@ -43,6 +43,16 @@ checkpoint and recovery evidence; an opt-in guard gated by a staged G1; a
 sketched ledger and optional push gated by G2). Nothing is released; ADR changes remain
 proposals until the founder adopts them.
 
+**Implemented on `develop`, not published — [M4.7 OpenCode integration](../ROADMAP.md#m47--ai-tooling-integration-for-opencode)
+([SPEC-068](../specs/068-opencode-native-integration/spec.md)):** the OpenCode native plugin
+entry and build target, `plugin doctor --host opencode` (skill and server collisions),
+`install.sh --host opencode` and `--host all`, and a legacy `tooling install --host opencode`
+profile are on `develop` (T002–T009, engineering checks and one disposable-profile
+host matrix only). They ship in plugin `0.1.0-alpha.7`, which is **not yet published**
+(the published pins stay at `0.1.0-alpha.6`); until then `install.sh --host all` with
+`opencode` on `PATH`, and `--host opencode`, fail at the OpenCode step. The native
+host observation (T010) and the publication decision (T011) are open.
+
 The runtime executes allowlisted Git plumbing. Repository code, source-ref
 promotion and broader agent/provider adapters require additional contracts and
 authority. The [runtime demo](../examples/runtime/README.md) gives you a complete
@@ -140,6 +150,7 @@ lists every current assignment.
 | Research | [M3 — Braid semantics](https://github.com/jayanez/agent-braid/milestone/5) | Closed internally for `anchored-sequence-v1`; no general braid or Yang–Baxter theorem is claimed. |
 | Runtime | [M4 — Agent Braid runtime](https://github.com/jayanez/agent-braid/milestone/6) | Founder accepted bounded alpha engineering and evaluation as complete on 2026-10-09, with negative utility. Current GitHub tracking is shown in the [live M4 milestone](https://github.com/jayanez/agent-braid/milestone/6). Historical SPEC-021 G4 remains **NO-GO** on useful speedup under its frozen evidence. |
 | Integration | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) | **Open.** Candidate-bound local paired procedures, package checks and technical controls passed within their stated domains. The combined source inventory is 122/135 tasks closed (including 10 cancelled SPEC-044 tasks), 13 open, with six closed spec parents (SPEC-039, SPEC-040, SPEC-042, SPEC-044, SPEC-047, SPEC-054) and four open (SPEC-041, SPEC-043, SPEC-046, SPEC-060); SPEC-039/040/042 retain their recorded bounded acceptance. Native-host acceptance, human interpretation, remaining founder decisions and milestone closure remain open. |
+| Integration | [M4.7 — AI tooling integration for OpenCode](https://github.com/jayanez/agent-braid/milestone/27) | **Open.** SPEC-068 is implemented on `develop` (T002–T009, deterministic tests and one disposable-profile host matrix); plugin `0.1.0-alpha.7` is not published. T001 (ADR adoption record), T010 (native observation) and T011 (publication) are open; M4.5 is not reopened. |
 | Publication | [PUB.1 — Public research preview](https://github.com/jayanez/agent-braid/milestone/7) | **Open.** The preview is public; historical publication authorization reconciliation remains separately tracked. |
 | Governance | [GOV.1 — Governance and adoption](https://github.com/jayanez/agent-braid/milestone/8) | **Open.** Governance and adoption evidence work continues; issue state does not confer human or founder approval. |
 | Research | [M3.5 — Native proposal predictor](https://github.com/jayanez/agent-braid/milestone/9) | **Open.** Synthetic-only T002/T004 software is complete; zero real pairs are admitted. T001/T007/T003/T005 and #180 remain open for source admission, protocol, real-feed adaptation, experiment and review. |

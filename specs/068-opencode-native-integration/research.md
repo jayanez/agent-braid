@@ -3,8 +3,11 @@
 Engineering research only. Sources are the OpenCode 2.1.2 documentation (Context7
 `/anomalyco/opencode/v2.1.2`, read on 2026-11-03), the OpenCode 2.1.4 CLI help
 observed during `speckit-clarify`, and the repository at the branch base. Every
-host fact below is documented, not observed; REQ-002 (T002) observes it in a
-disposable profile, and a contradiction returns the affected decision to the owner.
+host fact in R1–R7 is documented, not observed; REQ-002 (T002) observed it in a
+disposable profile on 2026-11-03 (see "T002 findings" below, one contradiction), and
+a contradiction returns the affected decision to the owner. The R-sections keep the
+pre-observation wording; the T002 findings table and the surface contract are
+authoritative where they differ.
 
 ## R1 — Plugin shape
 
@@ -63,8 +66,8 @@ D3 gate in T002.
 with `<root>` resolved from `import.meta.url`. D7, D8.
 
 **Limit.** Whether the user's own `agent-braid` entry in `opencode.json(c)` is
-overridden by the transform is a REQ-002 row; the contract forbids silent
-replacement (see R5).
+overridden by the transform was a REQ-002 row: it is overridden silently
+(T002 row 03), so the contract refuses to replace it (see R5).
 
 ## R4 — Skills discovery and precedence
 
@@ -88,7 +91,9 @@ opencode [--project <dir>]` over the documented locations, the detector of recor
 (the entry cannot see discovered skills, T002 row 02; see contract). The scan is deterministic
 Python and unit-testable with fixture trees.
 
-**Limit.** Where plugin-added skills sit in that order is a REQ-002 row.
+**Limit.** Where plugin-added skills sit in that order was a REQ-002 row: lowest of
+the observed sources, and the entry cannot see discovered skills (T002 row 02,
+contradiction below).
 
 ## R5 — Commands, setup and reconnection
 
@@ -97,8 +102,9 @@ prompt the session. No documented plugin API reloads an MCP server; `opencode mc
 exists as a CLI group.
 
 **Decision.** Two commands: `agent-braid-setup` (prompts the session with the
-packaged `setup` skill) and `agent-braid-reconnect` (prints the operator steps for
-restarting the MCP server; it performs no reload). `reconnect-required` semantics
+packaged `setup` skill) and `agent-braid-reconnect` (prompts the session with the
+operator steps for restarting the MCP server, because the host offers no write-free
+display channel (T002 row 10); it performs no reload). `reconnect-required` semantics
 are unchanged (REQ-005).
 
 **Alternative.** Automatic reload from the plugin on registry change: rejected by
