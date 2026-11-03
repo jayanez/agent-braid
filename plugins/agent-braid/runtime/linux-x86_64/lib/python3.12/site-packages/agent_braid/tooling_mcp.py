@@ -46,7 +46,18 @@ _UINT = re.compile(r"^(0|[1-9][0-9]*)$")
 
 
 class ToolingError(ValueError):
-    """A bounded, expected refusal at the adapter boundary."""
+    """A bounded, expected refusal at the adapter boundary.
+
+    `code` is a closed refusal bucket (the telemetry `refusal-reason` vocabulary) chosen at the raise
+    site, never derived from the message. Unclassified raise sites keep `other`.
+    """
+
+    code = "other"
+
+    def __init__(self, message: str = "", code: str | None = None):
+        super().__init__(message)
+        if code is not None:
+            self.code = code
 
 
 @dataclass(frozen=True)
@@ -69,29 +80,29 @@ class ToolingConfig:
         source = Path(self.source_root).expanduser().resolve(strict=True)
         results = Path(self.result_parent).expanduser().resolve(strict=True)
         if not source.is_dir() or not results.is_dir():
-            raise ToolingError("Configured source and result roots must be existing directories")
+            raise ToolingError("Configured source and result roots must be existing directories", code="registry-root-missing")
         if results == source or results.is_relative_to(source) or source.is_relative_to(results):
-            raise ToolingError("Configured source and result roots must be disjoint")
+            raise ToolingError("Configured source and result roots must be disjoint", code="registry-unsafe-path")
         roots = {source}
         for candidate in self.worktree_roots:
             resolved = Path(candidate).expanduser().resolve(strict=True)
             if not resolved.is_dir():
-                raise ToolingError("Configured worktree roots must be directories")
+                raise ToolingError("Configured worktree roots must be directories", code="registry-root-missing")
             roots.add(resolved)
         for read_root in roots:
             if _paths_overlap(results, read_root):
-                raise ToolingError("Configured result root must be disjoint from source and worktree roots")
+                raise ToolingError("Configured result root must be disjoint from source and worktree roots", code="registry-unsafe-path")
         grant = None
         if self.grant_store is not None:
             requested_grant = Path(self.grant_store).expanduser().absolute()
             if requested_grant.is_symlink():
-                raise ToolingError("Grant store cannot be a symbolic link")
+                raise ToolingError("Grant store cannot be a symbolic link", code="registry-unsafe-path")
             grant = requested_grant.resolve(strict=False)
             if (any(_paths_overlap(grant, read_root) for read_root in roots)
                     or _paths_overlap(grant, results)):
-                raise ToolingError("Grant store must be outside source and result roots")
+                raise ToolingError("Grant store must be outside source and result roots", code="registry-unsafe-path")
         if self.runtime_enabled and grant is None:
-            raise ToolingError("Runtime mode requires an operator-configured grant store")
+            raise ToolingError("Runtime mode requires an operator-configured grant store", code="grant-missing")
         object.__setattr__(self, "source_root", source)
         object.__setattr__(self, "result_parent", results)
         object.__setattr__(self, "grant_store", grant)
@@ -103,7 +114,7 @@ def _json_bytes(value: Any) -> bytes:
         return json.dumps(value, sort_keys=True, separators=(",", ":"),
                           ensure_ascii=False, allow_nan=False).encode("utf-8")
     except (TypeError, ValueError, RecursionError, UnicodeError) as exc:
-        raise ToolingError("Input is not bounded JSON data") from exc
+        raise ToolingError("Input is not bounded JSON data", code="arguments-invalid") from exc
 
 
 def _paths_overlap(left: Path, right: Path) -> bool:
@@ -113,24 +124,24 @@ def _paths_overlap(left: Path, right: Path) -> bool:
 
 def _check_depth(value: Any, depth: int = 0) -> None:
     if depth > MAX_INPUT_DEPTH:
-        raise ToolingError("Input exceeds the maximum nesting depth")
+        raise ToolingError("Input exceeds the maximum nesting depth", code="arguments-invalid")
     if isinstance(value, dict):
         for key, child in value.items():
             if not isinstance(key, str):
-                raise ToolingError("Object keys must be strings")
+                raise ToolingError("Object keys must be strings", code="arguments-invalid")
             _check_depth(child, depth + 1)
     elif isinstance(value, list):
         for child in value:
             _check_depth(child, depth + 1)
     elif isinstance(value, float) and not math.isfinite(value):
-        raise ToolingError("Non-finite numbers are not supported")
+        raise ToolingError("Non-finite numbers are not supported", code="arguments-invalid")
 
 
 def _bounded_input(value: Any) -> bytes:
     _check_depth(value)
     raw = _json_bytes(value)
     if len(raw) > MAX_FRAME_BYTES:
-        raise ToolingError("Input exceeds the 1 MiB adapter limit")
+        raise ToolingError("Input exceeds the 1 MiB adapter limit", code="arguments-invalid")
     return raw
 
 
@@ -148,7 +159,7 @@ def _operation_count(request: Any) -> int:
 def _validate_operation_bounds(request: Any) -> None:
     count = _operation_count(request)
     if count > MAX_OPERATIONS:
-        raise ToolingError("Request exceeds the 32-operation adapter limit")
+        raise ToolingError("Request exceeds the 32-operation adapter limit", code="arguments-invalid")
     values = request if isinstance(request, list) else (
         request.get("operations", []) if isinstance(request, dict) else [])
     for item in values:
@@ -156,7 +167,7 @@ def _validate_operation_bounds(request: Any) -> None:
             for key in ("instanceId", "attemptId"):
                 value = item.get(key)
                 if value is not None and len(str(value).encode("utf-8")) > MAX_IDENTIFIER_BYTES:
-                    raise ToolingError("Operation identifier exceeds 256 bytes")
+                    raise ToolingError("Operation identifier exceeds 256 bytes", code="arguments-invalid")
 
 
 def _digest_bytes(raw: bytes) -> str:
@@ -172,6 +183,18 @@ def _core_failure_types() -> tuple[type[BaseException], ...]:
             GitInfrastructureFailure, OSError, UnicodeError)
 
 
+_RUNTIME_TOOLS = frozenset({"status", "execute", "recover", "verify"})
+
+
+def _failure_code(exc: BaseException) -> str:
+    """Refusal bucket of a core failure, by exception type only (never by message)."""
+    if isinstance(exc, ToolingError):
+        return exc.code
+    if isinstance(exc, (analysis.InvalidAnalysis, git_adapter.InvalidGitAnalysis)):
+        return "arguments-invalid"
+    return "other"
+
+
 def _status_for_error(exc: BaseException) -> str:
     text = str(exc).lower()
     if "unavailable in the configured capability mode" in text:
@@ -184,7 +207,7 @@ def _status_for_error(exc: BaseException) -> str:
 
 def _validate_call_shape(name: str, args: Any) -> None:
     if not isinstance(args, dict):
-        raise ToolingError("Tool arguments must be an object")
+        raise ToolingError("Tool arguments must be an object", code="arguments-invalid")
     shapes = {
         "analyze-work": ({"kind", "request"}, {"kind", "request"}),
         "analyze": ({"request"}, {"request"}),
@@ -196,7 +219,7 @@ def _validate_call_shape(name: str, args: Any) -> None:
     }
     required, allowed = shapes.get(name, (set(), set()))
     if not required or not required <= set(args) or not set(args) <= allowed:
-        raise ToolingError("Tool arguments do not match the declared input schema")
+        raise ToolingError("Tool arguments do not match the declared input schema", code="arguments-invalid")
     _bounded_input(args)
 
 
@@ -272,8 +295,14 @@ class ToolingService:
             return ("analyze-work", "analyze", "prepare", "status", "execute", "recover", "verify")
         return ("analyze-work", "analyze", "prepare")
 
-    def invoke(self, name: str, args: Any, cancelled: threading.Event) -> dict[str, Any]:
-        envelope = self._invoke_measured(name, args, cancelled)
+    def invoke(self, name: str, args: Any, cancelled: threading.Event,
+               observation: Any = None) -> dict[str, Any]:
+        """Run one call. A caller that owns the measurement (the plugin router) passes its telemetry
+        `observation`; the service then only reports the refusal reason into it and never records."""
+        if observation is None:
+            envelope = self._invoke_measured(name, args, cancelled)
+        else:
+            envelope = self._invoke(name, args, cancelled, observation)
         if self.config.system_one == "shadow":
             self._shadow(name, args, envelope)
         return envelope
@@ -307,37 +336,37 @@ class ToolingService:
     def _invoke_measured(self, name: str, args: Any, cancelled: threading.Event) -> dict[str, Any]:
         if self.config.telemetry == "off":
             return self._invoke(name, args, cancelled)
-        from .tooling_telemetry import OPERATIONS, OUTCOMES, observe
-        operation = name if name in OPERATIONS["mcp"] else "other"
+        from .tooling_telemetry import mcp_operation, observe
+        operation = mcp_operation(name)
         with observe("local", "mcp", operation) as observation:
-            envelope = self._invoke(name, args, cancelled)
-            status = envelope["status"]
-            observation.outcome = ("cancelled" if cancelled.is_set() else
-                                   status if status in OUTCOMES else "unknown")
-            if operation in {"analyze-work", "analyze"}:
-                result = envelope.get("result")
-                if type(result) is dict:
-                    observation.summary(result.get("report", result))
+            envelope = self._invoke(name, args, cancelled, observation)
+            observation.complete(operation, envelope, cancelled)
             return envelope
 
-    def _invoke(self, name: str, args: Any, cancelled: threading.Event) -> dict[str, Any]:
+    def _refused(self, observation: Any, code: str, name: str, message: str, **kwargs: Any) -> dict[str, Any]:
+        if observation is not None:
+            observation.reason = code
+        return self._envelope(name, "refused", None, message, **kwargs)
+
+    def _invoke(self, name: str, args: Any, cancelled: threading.Event,
+                observation: Any = None) -> dict[str, Any]:
         if name not in self.tools:
-            return self._envelope(name, "refused", None,
-                                  "Tool is unavailable in the configured capability mode")
+            return self._refused(observation, "grant-missing" if name in _RUNTIME_TOOLS else "arguments-invalid",
+                                 name, "Tool is unavailable in the configured capability mode")
         try:
             _validate_call_shape(name, args)
             if name in {"analyze", "prepare"}:
                 _validate_operation_bounds(args["request"])
         except ToolingError as exc:
-            return self._envelope(name, "refused", None, self._safe_error(exc), input_value=args)
+            return self._refused(observation, exc.code, name, self._safe_error(exc), input_value=args)
         with self.lock:
             stored_bytes = sum(len(item.data) for item in self.artifacts.values())
             if self.active_calls >= MAX_ACTIVE_CALLS:
-                return self._envelope(name, "refused", None,
-                                      "Adapter concurrency limit is full; retry after an active call completes")
+                return self._refused(observation, "admission-busy", name,
+                                     "Adapter concurrency limit is full; retry after an active call completes")
             if (len(self.artifacts) >= MAX_INVENTORY_ARTIFACTS
                     or stored_bytes + self.reserved_bytes + MAX_ARTIFACT_BYTES > MAX_INVENTORY_BYTES):
-                return self._envelope(name, "refused", None,
+                return self._refused(observation, "inventory-full", name,
                     "Owned evidence inventory is full; inspect or restart this local server before another call")
             self.reserved_bytes += MAX_ARTIFACT_BYTES
             self.active_calls += 1
@@ -358,8 +387,9 @@ class ToolingService:
             return self._envelope(name, "ok", value, input_value=args,
                                   plan_override=plan if isinstance(plan, dict) else None)
         except _core_failure_types() as exc:
-            return self._envelope(name, _status_for_error(exc), None,
-                                  self._safe_error(exc), input_value=args)
+            if observation is not None:
+                observation.reason = _failure_code(exc)
+            return self._envelope(name, _status_for_error(exc), None, self._safe_error(exc), input_value=args)
         except Exception as exc:
             # Do not return host paths, request data, or tracebacks through MCP.
             return self._envelope(name, "error", None,
@@ -396,31 +426,31 @@ class ToolingService:
 
     def _analyze_work(self, args: Any) -> dict[str, Any]:
         if not isinstance(args, dict) or set(args) != {"kind", "request"}:
-            raise ToolingError("analyze-work requires exactly kind and request")
+            raise ToolingError("analyze-work requires exactly kind and request", code="arguments-invalid")
         kind, request = args["kind"], args["request"]
         _validate_operation_bounds(request)
         if kind == "aim":
             return {"report": analysis.analyze(request),
                     "provenance": {"source": "AIM input", "executionAuthorization": False}}
         if kind != "git":
-            raise ToolingError("Unsupported analysis kind")
+            raise ToolingError("Unsupported analysis kind", code="arguments-invalid")
         if not isinstance(request, dict) or set(request) != {
                 "gitAnalysisRequestVersion", "repository", "baseRevision", "operations"}:
-            raise ToolingError("Git analysis request shape is invalid")
+            raise ToolingError("Git analysis request shape is invalid", code="arguments-invalid")
         repository = Path(request["repository"]).expanduser().resolve(strict=True)
         if repository != self.config.source_root:
-            raise ToolingError("Git repository is outside the configured source root")
+            raise ToolingError("Git repository is outside the configured source root", code="arguments-invalid")
         roots = set(self.config.worktree_roots)
         for operation in request["operations"]:
             if not isinstance(operation, dict):
-                raise ToolingError("Git operations must be objects")
+                raise ToolingError("Git operations must be objects", code="arguments-invalid")
             source = operation.get("source")
             if not isinstance(source, dict):
-                raise ToolingError("Git operation source is invalid")
+                raise ToolingError("Git operation source is invalid", code="arguments-invalid")
             if source.get("kind") == "worktree":
                 candidate = Path(source.get("path", "")).expanduser().resolve(strict=True)
                 if candidate not in roots:
-                    raise ToolingError("Worktree is outside the operator-configured allowlist")
+                    raise ToolingError("Worktree is outside the operator-configured allowlist", code="arguments-invalid")
         report, provenance = git_adapter.analyze_git_with_provenance(request)
         return {"report": report, "provenance": provenance}
 

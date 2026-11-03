@@ -9,6 +9,11 @@ Vendored Python skills from wdm0006/python-skills include material copyright
 Will McGinnis, licensed under MIT. See LICENSES/python-skills-MIT.txt and
 .agents/skills/VENDORED-SKILLS.md for provenance and project adaptations.
 
+Vendored Three.js r186 (npm `three@0.186.0`) prebuilt modules under
+integrations/agent-braid-view/web/vendor/three/ include material copyright
+2010-2026 three.js authors, licensed under MIT. See LICENSES/three-MIT.txt and
+docs/development/THIRD_PARTY.md for provenance.
+
 Agent Braid was founded by Juan Antonio Yáñez García (@jayanez) as an open
 research and engineering project for algebraic concurrency control in
 autonomous AI-agent systems.

@@ -41,8 +41,8 @@
     ]
   },
   "correspondingSource": {
-    "path": "sources/agent-braid-0.1.0-alpha.5-source.tar.gz",
-    "sha256": "143b43d5999300ac8b6743c645622733ac3d168a360459f68de5dd971c9cd688"
+    "path": "sources/agent-braid-0.1.0-alpha.6-source.tar.gz",
+    "sha256": "3e02e10de56a5248ffbdfd26eb146bf404f0a99999f8b3e4ab4b75505fea47b1"
   },
   "dependencies": {
     "linux-x86_64": [
@@ -52,7 +52,8 @@
           "agent_braid-0.1.0a2.dist-info/licenses/LICENSE",
           "agent_braid-0.1.0a2.dist-info/licenses/NOTICE",
           "agent_braid/tooling_assets/licenses/AGPL-3.0-only.txt",
-          "agent_braid/tooling_assets/licenses/CC-BY-SA-4.0.txt"
+          "agent_braid/tooling_assets/licenses/CC-BY-SA-4.0.txt",
+          "agent_braid/view_assets/web/vendor/three/LICENSE"
         ],
         "name": "agent-braid",
         "version": "0.1.0a2"
@@ -293,7 +294,8 @@
           "agent_braid-0.1.0a2.dist-info/licenses/LICENSE",
           "agent_braid-0.1.0a2.dist-info/licenses/NOTICE",
           "agent_braid/tooling_assets/licenses/AGPL-3.0-only.txt",
-          "agent_braid/tooling_assets/licenses/CC-BY-SA-4.0.txt"
+          "agent_braid/tooling_assets/licenses/CC-BY-SA-4.0.txt",
+          "agent_braid/view_assets/web/vendor/three/LICENSE"
         ],
         "name": "agent-braid",
         "version": "0.1.0a2"
@@ -697,8 +699,8 @@
       "agent-braid-recover": "recover"
     }
   },
-  "sourceCommit": "88eccace1092f03cd012c8933472da42127c4085",
+  "sourceCommit": "ce40f2b6761aca3c2e4106b0ba7a26531214fe2a",
   "sourceDirty": false,
-  "version": "0.1.0-alpha.5",
-  "wheelSha256": "b8c1ce91464a5a3694ebbec00ec57120002074bc5ea62e2c9d3e0b119cb801d0"
+  "version": "0.1.0-alpha.6",
+  "wheelSha256": "749159a2ff891e4c2722ff5a23835ce74e21bcace482e4bd02f01717715d8f5d"
 }

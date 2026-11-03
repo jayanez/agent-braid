@@ -108,7 +108,8 @@ class _InitWatch:
             event = None  # malformed lines are classified by run_claude
         kind = event.get("type") if type(event) is dict else None
         if kind == "system" and event.get("subtype") == "init":
-            if event.get("apiKeySource") in SUBSCRIPTION_KEY_SOURCES:
+            source = event.get("apiKeySource")
+            if type(source) is str and source in SUBSCRIPTION_KEY_SOURCES:  # unhashable values are a route violation
                 self.done = True
             else:
                 self._reject("route", end)
