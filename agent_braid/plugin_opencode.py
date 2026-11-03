@@ -9,7 +9,7 @@ explicit ``skills`` config entries; within one kind a nearer directory is listed
 Skill directories are scanned in every ancestor up to the filesystem root, not only to the Git
 root (T010 row 14: the host loaded a skill above the Git root). Configuration files still stop
 at the Git root because no observation shows the host reading them above it.
-Ordering of ancestors below the project directory was not observed and is an assumption.
+The relative order of ancestor directories (root first, nearest last) was not observed and is an assumption.
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ def _chain(project: Path) -> list[Path]:
 
 
 def _skill_chain(project: Path) -> list[Path]:
-    """Directories from the filesystem root down to ``project``; the host does not stop at the Git root."""
+    """Root-first, nearest-last directories down to ``project`` (T010 row 14: no Git-root stop)."""
     return [*reversed(project.parents), project]
 
 

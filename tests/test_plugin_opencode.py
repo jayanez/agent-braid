@@ -27,6 +27,7 @@ def skill(directory, skill_id):
 
 class OpenCodeDoctorTests(unittest.TestCase):
     def setUp(self):
+        # Skill discovery walks to the filesystem root: real ancestors of the temp dir are unguarded.
         self._tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self._tmp.cleanup)
         self.base = Path(self._tmp.name).resolve()

@@ -92,7 +92,10 @@ reports, for each of the six IDs, every definition found in the documented
 discovery locations (`~/.claude/skills`, `~/.agents/skills`,
 `~/.config/opencode/skills`, and for `--project` the `.claude/skills`,
 `.agents/skills` and `.opencode/skills` directories from the directory up to the
-filesystem root, not stopping at the Git root (T010 row 14), plus explicit `skills` entries in the configuration files it can read).
+filesystem root, not stopping at the Git root (T010 row 14), plus explicit
+`skills` entries in the configuration files it can read; those configuration
+files are still read only from the Git root down to the directory, since no
+observation shows the host reading them above it).
 
 | Finding | Meaning |
 |---|---|
