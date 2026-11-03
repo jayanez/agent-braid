@@ -191,15 +191,20 @@ class RootIdentityTests(TailCase):
         return {event["seq"]: roots.get(event["seq"]) for event in events}
 
     def test_labels_are_root_n_in_start_order_and_up_to_eight(self):
-        tail = self.tail(*self.roots(8))
-        self.assertEqual(tail.root_labels, [f"root {n}" for n in range(1, 9)])
+        roots = self.roots(8)
+        for root in roots:
+            install(root, "state.json", "runtime-state-ready.json")
+        self.tail(*roots).poll_once()
+        self.assertEqual(sorted(set(self.labelled().values())), [f"root {n}" for n in range(1, 9)])
         self.assertEqual(view_tail.root_label(0), "root 1")
 
     def test_a_repeated_or_nested_root_does_not_take_a_label_of_its_own(self):
         first, second = self.roots(2)
         (first / "inner").mkdir()
-        tail = self.tail(first, second, first, first / "inner")
-        self.assertEqual(tail.root_labels, ["root 1", "root 2"])
+        install(first, "state.json", "runtime-state-ready.json")
+        install(second, "state.json", "runtime-state-completed.json")
+        self.tail(first, second, first, first / "inner").poll_once()
+        self.assertEqual(sorted(set(self.labelled().values())), ["root 1", "root 2"])
 
     def test_the_same_artifact_name_in_two_roots_is_told_apart_by_label(self):
         first, second = self.roots(2)
@@ -268,14 +273,6 @@ class RootIdentityTests(TailCase):
 
     def test_a_store_without_a_watcher_has_no_labels(self):
         self.assertEqual(view_tail.replay_with_roots(self.store), ([], {}))
-
-    def test_replay_with_roots_follows_after_seq(self):
-        (root,) = self.roots(1)
-        install(root, "state.json", "runtime-state-ready.json")
-        self.tail(root).poll_once()
-        events, roots = view_tail.replay_with_roots(self.store, 1)
-        self.assertEqual(events, [])
-        self.assertEqual(roots, {1: "root 1"})
 
     def test_the_registry_belongs_to_its_store(self):
         other = LoomStore()

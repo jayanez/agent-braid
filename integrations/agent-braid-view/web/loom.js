@@ -173,8 +173,8 @@ function timeText(element) {
 //   rehashed or derived, without a reference: produced by the viewer itself (for example a ring-eviction gap)
 //   anything else, with an evidence reference: unverified and referenced, as every event of a replay file is
 //   anything else, without one: unverified and unreferenced, as a host report (hook or telemetry ingest) is
-// A root label is "root N", numbered in the order the roots were started. It is never a path: the terminal lists the
-// roots, and a label of any other form is ignored here, so the event stays in the unlabelled watched group.
+// A root label is "root N", numbered in the order the roots were started (a repeated or nested root takes no number).
+// It is never a path, and a label of any other form is ignored here, so the event stays in the unlabelled watched group.
 const SOURCES = {
   watched: ["Watched artifacts", "Events with an evidence reference that this session re-hashed and whose watched root the model does not name."],
   replay: ["Replay file", "Unverified events with an evidence reference, as every event loaded with --replay is. Never re-hashed by this session."],
@@ -198,7 +198,7 @@ function sourceText(key) {
   if (!key.startsWith(ROOT_PREFIX)) return SOURCES[key];
   const label = key.slice(ROOT_PREFIX.length);
   return [label, "Events with an evidence reference that this session re-hashed under " + label +
-    " of the watched roots, in start order. The path is not shown here; the terminal that started the viewer lists the roots."];
+    " of the watched roots, in start order. The path is not shown on this page."];
 }
 
 // The roots by number, then the unlabelled watched group, then the other sources in their fixed order.

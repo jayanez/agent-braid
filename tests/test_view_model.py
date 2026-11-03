@@ -8,6 +8,7 @@ import unittest
 from agent_braid import view_loom, view_model
 from agent_braid.view_loom import LoomError
 from agent_braid.view_model import build_model
+from agent_braid.view_tail import MAX_ROOTS, root_label
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "specs/061-activity-viewer/contracts/loom-event.example.jsonl"
@@ -544,6 +545,11 @@ class RootIdentityTests(unittest.TestCase):
         self.assertEqual([e["root"] for e in model["elements"]], ["root 1", None, "root 2", None])
         self.assertEqual({row["seq"]: row["root"] for row in model["table"]},
                          {1: "root 1", 2: None, 3: "root 2", 4: None})
+
+    def test_every_label_the_watcher_can_issue_is_accepted(self):
+        for index in range(MAX_ROOTS):
+            with self.subTest(index=index):
+                build_model(self.events(), roots={1: root_label(index)})
 
     def test_a_seq_the_events_do_not_hold_is_ignored(self):
         self.assertEqual(build_model(self.events(), roots={99: "root 1"}), build_model(self.events()))

@@ -23,7 +23,8 @@ Root identity (REQ-010): the event contract names no root and `evidenceRef.path`
 it. The watcher therefore gives each watched root a stable, non-path label ("root 1" to "root 8", in
 start order) and keeps it beside the store, per `seq`, in a `RootLabels` registry. `replay_with_roots`
 returns the retained events with the labels read in the same step, and `build_model(events, roots=...)`
-turns them into a per-element `root`. A label never contains a path or a user name.
+turns them into a per-element `root`. A label never contains a path or a user name. The labels are
+per store, so one store has one watcher: two watchers on one store would both start at "root 1".
 """
 from __future__ import annotations
 
@@ -101,11 +102,11 @@ def root_labels_of(store: LoomStore) -> RootLabels:
         return registry
 
 
-def replay_with_roots(store: LoomStore, after_seq: int = 0) -> tuple[list[dict[str, Any]], dict[int, str]]:
-    """`store.replay(after_seq)` plus the `seq` -> root label map, read together so they agree."""
+def replay_with_roots(store: LoomStore) -> tuple[list[dict[str, Any]], dict[int, str]]:
+    """`store.replay()` plus the `seq` -> root label map, read together so they agree."""
     registry = root_labels_of(store)
     with registry.lock:
-        return store.replay(after_seq), registry.copy()
+        return store.replay(), registry.copy()
 
 
 class TailError(ValueError):
@@ -153,11 +154,6 @@ class ArtifactTail:
         self._lock = threading.Lock()
         self._stop = threading.Event()
         self._thread: threading.Thread | None = None
-
-    @property
-    def root_labels(self) -> list[str]:
-        """The label of each watched root, in start order (the order named, minus repeats and nested roots)."""
-        return [root_label(index) for index in range(len(self._roots))]
 
     # -- polling ---------------------------------------------------------------------------
 

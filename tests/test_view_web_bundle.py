@@ -26,6 +26,7 @@ from agent_braid.view_loom import parse_stream
 from agent_braid.view_model import build_model
 from agent_braid.view_serve import ViewServer
 from agent_braid.view_store import LoomStore
+from agent_braid.view_tail import MAX_ROOTS, root_label
 
 WEB = Path(__file__).resolve().parents[1] / "integrations/agent-braid-view/web"
 VENDOR = WEB / "vendor"
@@ -989,6 +990,11 @@ class RootCheckboxTests(NodePageCase):
         self.assertIn("root 2 (7 events)", first["labels"])
         self.assertIn("Watched artifacts (3 events)", first["labels"])
         self.assertIn("0 events hidden", first["status"])
+
+    def test_every_label_the_watcher_can_issue_gets_its_own_checkbox(self):
+        self.relabel({5 + index: root_label(index) for index in range(MAX_ROOTS)})
+        keys = list(self.drive()[0]["checkboxes"])
+        self.assertEqual(keys[:MAX_ROOTS], [f"watched:{root_label(index)}" for index in range(MAX_ROOTS)])
 
     def test_roots_are_ordered_by_number_not_by_text(self):
         self.relabel({5: "root 10", 6: "root 2", 7: "root 1"})
