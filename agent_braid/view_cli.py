@@ -7,8 +7,9 @@
   static root. Without `--watch`, `serve` discovers watch roots read-only from the `resultRoot` of each
   workspace in the Agent Braid plugin registry (T041; `--no-discover` turns it off, `--watch` replaces
   it): only existing directories private to the user are kept, they share the `ArtifactTail` bounds,
-  and they are listed at start. A missing or invalid registry is a note, never a failure. `--surface web` is the only implemented surface; `mod`, `tui` and `mcp-app` report that
-  they are planned and start nothing.
+  and they are listed at start. A missing or invalid registry is a note, never a failure.
+  `--surface web` is the only implemented surface; `mod`, `tui` and `mcp-app` report that they are
+  planned and start nothing.
 * `validate FILE` checks a recorded loom stream and writes nothing.
 * `env --host claude` prints observational HTTP hook settings for the user to merge into user-level
   Claude Code settings. It writes nothing, contains no credential (the token is read from its file by
@@ -154,7 +155,8 @@ def discover_watch_roots(home: Path | None = None) -> tuple[list[Path], list[str
     if len(roots) < len(workspaces):
         skipped = len(workspaces) - len(roots)
         notes.append(f"{skipped} registered result root{'s' * (skipped != 1)} skipped: "
-                     "missing, not a directory or not private to the user")
+                     "missing, not a directory or not private to the user (restart the viewer once the first "
+                     "analysis has created it)")
     if not workspaces and not found["quarantined"]:
         notes.append("no plugin workspace is registered; nothing was discovered")
     return roots, notes

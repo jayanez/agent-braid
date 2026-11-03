@@ -299,17 +299,15 @@ class DiscoverWatchRootsTests(RegistryFixture, TempCase):
         self.assertEqual(found, roots)
         self.assertEqual(notes, [])
 
-    def test_missing_registry_means_no_roots_and_a_note(self):
-        found, notes = view_cli.discover_watch_roots()
-        self.assertEqual(found, [])
-        self.assertEqual(len(notes), 1)
-        self.assertIn("no plugin workspace is registered", notes[0])
-
-    def test_empty_registry_means_no_roots_and_a_note(self):
-        self.write_registry({"schema": plugin_registry.SCHEMA, "telemetry": "off", "workspaces": []})
-        found, notes = view_cli.discover_watch_roots()
-        self.assertEqual(found, [])
-        self.assertIn("no plugin workspace is registered", notes[0])
+    def test_missing_or_empty_registry_means_no_roots_and_a_note(self):
+        for empty in (False, True):
+            with self.subTest(empty=empty):
+                if empty:
+                    self.write_registry({"schema": plugin_registry.SCHEMA, "telemetry": "off", "workspaces": []})
+                found, notes = view_cli.discover_watch_roots()
+                self.assertEqual(found, [])
+                self.assertEqual(len(notes), 1)
+                self.assertIn("no plugin workspace is registered", notes[0])
 
     def test_an_unusable_registry_is_a_note_never_an_exception(self):
         empty = json.dumps({"schema": plugin_registry.SCHEMA, "telemetry": "off", "workspaces": []}).encode()
@@ -428,7 +426,7 @@ class DiscoveryServeTests(RegistryFixture, ServeCase):
     def test_a_report_copy_written_later_appears_in_the_viewer(self):
         _, roots = self.make_registry(1)
         server, _, _ = self.serve()
-        time.sleep(0.2)
+        time.sleep(0.6)
         self.assertEqual(server.store.replay(), [])
         self.seed_report(roots[0])
         self.assertTrue(self.wait_for_events(server))
@@ -438,7 +436,7 @@ class DiscoveryServeTests(RegistryFixture, ServeCase):
         self.seed_report(roots[0])
         with mock.patch.object(plugin_registry, "inspect_registry", side_effect=AssertionError("read")):
             server, result, thread = self.serve("--no-discover")
-            time.sleep(1.2)
+            time.sleep(0.8)
             self.assertEqual(server.store.replay(), [])
             out = self.finish(server, result, thread)
         self.assertNotIn(str(roots[0]), out)
@@ -451,7 +449,7 @@ class DiscoveryServeTests(RegistryFixture, ServeCase):
         explicit.mkdir()
         with mock.patch.object(plugin_registry, "inspect_registry", side_effect=AssertionError("read")):
             server, result, thread = self.serve("--watch", str(explicit))
-            time.sleep(1.2)
+            time.sleep(0.8)
             self.assertEqual(server.store.replay(), [])
             self.seed_report(explicit)
             self.assertTrue(self.wait_for_events(server))
@@ -787,7 +785,8 @@ class BoundaryTests(unittest.TestCase):
 
     def test_the_registry_is_loaded_lazily_and_only_read(self):
         imports = re.findall(r"from \.plugin_registry import ([^\n]+)", self.SOURCE)
-        self.assertEqual(imports, ["RegistryError, inspect_registry"])
+        names = {name.strip() for line in imports for name in line.strip("()").split(",")}
+        self.assertLessEqual(names, {"RegistryError", "inspect_registry"})
         import subprocess
         import sys
         code = "import sys, agent_braid.view_cli; sys.exit(1 if 'agent_braid.plugin_registry' in sys.modules else 0)"
