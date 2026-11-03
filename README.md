@@ -107,7 +107,7 @@ curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install
 ```
 
 Use `--host claude` or `--host both` as needed, and add
-`--ref agent-braid--v0.1.0-alpha.5` to pin a release. Git and the selected host
+`--ref agent-braid--v0.1.0-alpha.6` to pin a release. Git and the selected host
 must already be installed. See [native installation and setup](docs/tooling/NATIVE_PLUGINS.md)
 for marketplace commands, repository selection and lifecycle operations.
 
@@ -269,7 +269,7 @@ System One shadow mode is off by default. After `plugin setup --system-one shado
 
 The analyzer/runtime contract is `0.1.0-alpha`; AIM and certificate contracts
 are `0.2.0-draft`; the package version is `0.1.0a2`. The native plugin is versioned
-separately (`0.1.0-alpha.6` in `develop`, latest published `0.1.0-alpha.5`); `plugin-status` reports
+separately (latest published `0.1.0-alpha.6`, rollback target `0.1.0-alpha.5`); `plugin-status` reports
 the package as `version` and the plugin as `pluginVersion`. The public CLI does not
 expose source-ref promotion, arbitrary repository code execution, or provider
 calls through the owned runtime.

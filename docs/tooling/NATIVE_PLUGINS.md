@@ -10,14 +10,18 @@ consumer prerequisites. The Python installation remains available below.
 ## Published experimental marketplace
 
 The own GitHub marketplace is published on `plugin-dist`, with version
-`0.1.0-alpha.5` pinned by tag `agent-braid--v0.1.0-alpha.5` at
-`07e5973fe819591854e6df8bca169b5ec82eae05`; it adds opt-in System One shadow mode
-and its native host install has not yet been observed (see the
+`0.1.0-alpha.6` pinned by tag `agent-braid--v0.1.0-alpha.6` at
+`78cc45a3f1c5dbc7b43e0ce5024fc5d1c5da053e`; it adds registry quarantine, the
+`telemetry-audit` skill and `pluginVersion` in `plugin-status`, and its native host
+install has not yet been observed (see the
+[alpha.6 record](../../specs/046-native-ai-plugins/release-acceptance-alpha6.md)).
+The Python package version (`0.1.0a2`) is a separate line from the plugin version
+(see the version update notes under local telemetry consent).
+The previous `0.1.0-alpha.5` is pinned by tag `agent-braid--v0.1.0-alpha.5` at
+`07e5973fe819591854e6df8bca169b5ec82eae05` and is the rollback target; it adds opt-in
+System One shadow mode (see the
 [alpha.5 record](../../specs/046-native-ai-plugins/release-acceptance-alpha5.md)).
-The Python package version (`0.1.0a2`) is a separate line from the plugin version;
-`0.1.0-alpha.6` is prepared in `develop` and not yet published (see the
-version update notes under local telemetry consent).
-The previous `0.1.0-alpha.4` is pinned by tag `agent-braid--v0.1.0-alpha.4` at
+The earlier `0.1.0-alpha.4` is pinned by tag `agent-braid--v0.1.0-alpha.4` at
 `ac2c49825c963bf7daf3fd0851f28d9651580efa`. For alpha.4, native macOS arm64
 observations cover the isolated alpha.3 → alpha.4 update and a public Git-tag install
 with Claude Code 2.1.292, and a Codex CLI 0.164.0 install, remove and reinstall;
@@ -48,8 +52,8 @@ The host's plugin interface offers the equivalent marketplace and installation
 operations. Skills are discovered from the installed plugin; no copying to global
 skills folders or `npx skills add` is needed. Five product skills come from the
 existing canonical bundle; `setup` owns onboarding and `telemetry-audit` the read-only
-host-log versus local-telemetry audit (from `0.1.0-alpha.6`; the published
-alpha.5 has six skills), both independently of that bundle.
+host-log versus local-telemetry audit (from `0.1.0-alpha.6`; alpha.5
+has six skills), both independently of that bundle.
 
 Plugin skills are unprefixed. In Claude Code invoke `/agent-braid:analyze`,
 `/agent-braid:plan`, `/agent-braid:evidence`, `/agent-braid:execute`,
@@ -284,8 +288,8 @@ removes it) before reinstalling `0.1.0-alpha.4` from tag `agent-braid--v0.1.0-al
 The shadow store is not removed by that step; run `system-one purge` first if you
 want it gone.
 
-Version 0.1.0-alpha.6 is prepared in `develop` and is **not yet published**; the
-latest published release stays `0.1.0-alpha.5` until the owner publishes it. It
+Version 0.1.0-alpha.6 is published on `plugin-dist` (tag `agent-braid--v0.1.0-alpha.6`);
+its native host install has not yet been observed. It
 bundles four changes after alpha.5 and adds no registry migration:
 
 - **Registry quarantine** (SPEC-046): a deleted worktree root or an unsafe
