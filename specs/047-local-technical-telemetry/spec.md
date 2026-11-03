@@ -82,6 +82,10 @@ Collector faults never change product behavior; measure overhead and expose know
 
 Verification: [validation plan](validation-plan.md); [assurance](assurance.json).
 
+## Amendment T011 (2026-11-03): plugin refusals, refusal reasons and serve-start
+
+Prompted by host MCP logs that showed dozens of plugin calls and twelve failures while the local store held eight `ok` and one `refused` call. This amends REQ-002 and REQ-004 without changing the requirements they state: the native plugin router (not only `ToolingService.invoke`) is a covered boundary and owns the measurement of plugin calls, so plugin-level refusals count once as `refused`; each refused plugin call and each degraded plugin start adds one closed `refusal-reason` bucket assigned where the refusal is raised, never from message text; `plugin-status` and `workspaces` count `calls` only; and `serve-start` (surface `lifecycle`) is recorded only with consent `local` after the registry passed schema, privacy and shape validation. Batch schema becomes v2 while the store `user_version` stays 1; v1 batches still merge. The reversal of SPEC-046 T018 decision A, the rejected dimensions (build/version, session duration, serve-stop) and the compatibility limits are in the [data contract](data-contract.md#batch-v2-additions-t011). Privacy, default-off, retention, noninterference (REQ-001, REQ-003, REQ-008) are unchanged.
+
 ## Exclusions and candidate identity
 
 No telemetry in core algorithms, the legacy `mcp_runtime` endpoint, resource/prompt discovery, forecasts, host SDKs or skills. No per-event record, sub-day timestamps, requests, results, free exceptions, paths, URLs, names, commits, credentials or repository/user/team IDs or hashes. Aggregates are not an anonymity guarantee. Synthetic controls are engineering evidence only. The historical `482fbcc96227769f08768e79bc4d7f47d3445c4e` candidate and SPEC-044/T004 closure keep their identity and scope. The new candidate requires separate SPEC-044/T018 admission before a future pilot.
