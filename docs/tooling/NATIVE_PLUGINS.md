@@ -402,20 +402,23 @@ adds no registry migration. After alpha.6 it bundles:
   `agent-braid-setup` and `agent-braid-reconnect`. Tool names, schemas and results
   are unchanged (`agent-braid-plugin/v0.2`); it writes no `permission`
   configuration and runs no hook ([OpenCode](#opencode-from-010-alpha7)).
-- **`plugin doctor --host opencode`**: read-only diagnosis of skill-id and server-key
-  collisions (`server-collision`, duplicate guidance, `opencode.json` next to
-  `opencode.jsonc`); without `--host` the output is unchanged
+- **`plugin doctor --host opencode [--project DIR]`**: read-only diagnosis of skill-id
+  collisions, a colliding `agent-braid` server key (`server-collision`), duplicate
+  guidance and `opencode.json` next to `opencode.jsonc`; without `--host` the output is unchanged
   ([SKILLS.md](SKILLS.md#opencode-skill-collisions)).
 - **`install.sh --host opencode` and `--host all`**: `opencode` runs
   `opencode plugin add` with a `github:` source (`--ref TAG` pins it); `--host all`
-  installs every supported host found on `PATH` and skips absent ones with a notice.
-  `--host both` stays `codex` + `claude`.
+  installs every supported host found on `PATH`, skips absent ones with a notice and
+  refuses when none is found; auto-detection also falls back to OpenCode when it is the
+  only host. `--host both` stays `codex` + `claude`.
 - **Legacy profile**: `agent-braid tooling install --host opencode` writes a local
-  `tooling serve` entry and the prefixed `agent-braid-*` skills into
-  `opencode.json` or `opencode.jsonc` (comments and trailing commas preserved by the
-  standard-library `agent_braid.jsonc` reader). It shares the server key
-  `agent-braid` with the plugin and then shadows it, which preview and `doctor`
-  report as `native_plugin_shadowed`; use `--name` for another key
+  `tooling serve` entry into `opencode.json` or `opencode.jsonc` (comments and trailing
+  commas preserved by the standard-library `agent_braid.jsonc` reader) and copies the
+  prefixed `agent-braid-*` skills into the OpenCode skills directory of the scope. It
+  shares the server key `agent-braid` with the plugin and then shadows it; preview and
+  `doctor` report `native_plugin_shadowed` when the plugin entry is in the same
+  configuration file (`opencode plugin add` writes the global one); use `--name` for
+  another key
   ([INSTALL.md](INSTALL.md#opencode-legacy-profile)).
 
 Migration notes: Codex and Claude Code installs need nothing beyond the update.
@@ -431,7 +434,8 @@ is pending. OpenCode behaviour was observed with OpenCode 2.1.4 on macOS arm64 o
 in a disposable profile.
 
 To roll back, reinstall `0.1.0-alpha.6` from tag `agent-braid--v0.1.0-alpha.6`
-(Claude Code, Codex), and for OpenCode remove the plugin with the exact source string
+for Claude Code and Codex (`install.sh --host codex` or `--host claude` with `--ref`;
+not `--host all`, which would try OpenCode), and for OpenCode remove the plugin with the exact source string
 from the configuration (`opencode plugin remove`), since alpha.6 has no OpenCode
 package. The registry and results are accepted unchanged by alpha.6.
 

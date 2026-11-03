@@ -57,6 +57,7 @@ publish, because the pins on `develop` already read "published".
 | Clean build from the merged `develop` commit (`sourceDirty` false) | open, owner or authorized operator |
 | Bundled launcher `plugin doctor` on an empty private home reports `pluginVersion` `0.1.0-alpha.7`, `version` `0.1.0a2` | open, part of the commands below |
 | Fresh clone of the tag byte-identical to the build output | open |
+| `plugin-dist` root README updated for OpenCode in the publication commit (it is not build output) | open, owner or operator |
 | Record PR (`release-acceptance-alpha7.md`, `evidence/release-alpha7.json`, authorization note) | open, after publication |
 
 Still unobserved at preparation time: the T010 interactive rows, the `github:` transport
@@ -66,8 +67,9 @@ alpha.6 and alpha.7 in Claude Code and Codex.
 ## Rollback to alpha.6
 
 1. Claude Code and Codex: reinstall `0.1.0-alpha.6` from tag
-   `agent-braid--v0.1.0-alpha.6` (`install.sh --ref agent-braid--v0.1.0-alpha.6`, or the
-   host's marketplace commands pinned to that tag). The registry and results are accepted
+   `agent-braid--v0.1.0-alpha.6` (`install.sh --host codex` or `--host claude` with
+   `--ref agent-braid--v0.1.0-alpha.6`, never `--host all`, which would try OpenCode;
+   or the host's marketplace commands pinned to that tag). The registry and results are accepted
    unchanged; alpha.7 adds no registry member.
 2. OpenCode: run `opencode plugin remove` with the exact source string from the
    configuration (the plugin id and `agent-braid` answer "not configured"), then
@@ -96,6 +98,7 @@ python3.12 -m venv .venv && .venv/bin/python -m pip install build
 
 # 2. Build (downloads pinned runtime archives and hash-locked wheels)
 OUT=$HOME/agent-braid-dist/alpha7-out; CACHE=$HOME/agent-braid-dist/runtime-cache
+[ -n "$MERGE_SHA" ] || exit 1; rm -rf "$OUT"   # the build refuses an existing output
 .venv/bin/python scripts/build_native_plugin.py --output "$OUT" --cache "$CACHE"
 grep -n '"sourceDirty"' "$OUT/plugins/agent-braid/provenance.json"   # must be false
 "$OUT/plugins/agent-braid/launch" plugin doctor --home "$(mktemp -d)"
@@ -105,18 +108,27 @@ grep -n '"sourceDirty"' "$OUT/plugins/agent-braid/provenance.json"   # must be f
 git clone --branch plugin-dist https://github.com/jayanez/agent-braid.git ~/agent-braid-dist/plugin-dist
 cd ~/agent-braid-dist/plugin-dist
 rsync -a --delete --exclude .git --exclude README.md "$OUT"/ ./
+# Edit the root README.md here: add the OpenCode command (`opencode plugin add 'github:jayanez/agent-braid#plugin-dist::path:plugins/agent-braid'`) and mention OpenCode as a third host.
 git add -A
 git commit -m "dist: Agent Braid 0.1.0-alpha.7 (source ${MERGE_SHA:0:7})" \
   -m "Built from develop $MERGE_SHA (clean source) with scripts/build_native_plugin.py."
 ./plugins/agent-braid/launch plugin doctor --home "$(mktemp -d)"     # again, on the distribution commit
 
 # 4. Annotated tag and push (no force)
+git log --oneline -2          # parent must be 78cc45a3 (fast-forward)
+git ls-remote --tags origin agent-braid--v0.1.0-alpha.7   # must print nothing
 git tag -a agent-braid--v0.1.0-alpha.7 -m "Agent Braid 0.1.0-alpha.7"
 git push origin plugin-dist agent-braid--v0.1.0-alpha.7
 
 # 5. Verify from a fresh public clone of the tag
 git clone --branch agent-braid--v0.1.0-alpha.7 https://github.com/jayanez/agent-braid.git ~/agent-braid-dist/verify
 diff -r --exclude .git --exclude README.md "$OUT" ~/agent-braid-dist/verify   # no output expected
+
+# 6. Values the record PR needs
+cd ~/agent-braid-dist/verify
+git rev-parse HEAD agent-braid--v0.1.0-alpha.7            # distribution commit, tag object
+shasum -a 256 plugins/agent-braid/package-inventory.json plugins/agent-braid/provenance.json sources/agent-braid-0.1.0-alpha.7-source.tar.gz
+find . -path ./.git -prune -o -type f -print | wc -l       # file count
 ```
 
 Then open the **record PR** on `develop`, mirroring #1012: `release-acceptance-alpha7.md`,
