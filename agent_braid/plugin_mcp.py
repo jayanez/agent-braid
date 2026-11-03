@@ -131,8 +131,13 @@ def _prune_report_copies(root_fd, now, max_bytes, days, max_count=REPORT_COPY_MA
     return count, total
 
 
+def _note_pruned(key, count, total):
+    with _PRUNE_LOCK:
+        _PRUNE_STATE[key] = {'at': _monotonic(), 'count': count, 'bytes': total}
+
+
 def _prune_due(key, size, max_bytes, max_count):
-    """Count a copy of `size` bytes just written under `key`; True when the root is to be pruned now."""
+    """Record a copy of `size` bytes just written under `key` (this mutates the state); True when to prune now."""
     with _PRUNE_LOCK:
         known = _PRUNE_STATE.get(key)
         if known is None:
@@ -171,11 +176,11 @@ def write_report_copy(result_root, registered_root, body, *, now=None, max_bytes
         except BaseException:
             _discard_copy(root_fd, name)
             raise
+        key = str(result_root)
         try:
-            if _prune_due(str(result_root), len(body), max_bytes, max_count):
+            if _prune_due(key, len(body), max_bytes, max_count):
                 count, total = _prune_report_copies(root_fd, when, max_bytes, days, max_count, keep=name)
-                with _PRUNE_LOCK:
-                    _PRUNE_STATE[str(result_root)] = {'at': _monotonic(), 'count': count, 'bytes': total}
+                _note_pruned(key, count, total)
         except OSError:
             pass  # retention is best effort: the new copy stays
     finally:

@@ -385,7 +385,7 @@ class FirstPartyBundleTests(unittest.TestCase):
                         self.assertIn(specifier, mapped)
         self.assertGreaterEqual(checked, 3)
 
-    def test_the_page_has_the_scene_elements_and_loads_the_scene_only_after_the_table(self):
+    def test_the_page_has_the_scene_elements_and_loom_has_no_static_scene_import(self):
         # Behaviour (playback binding, selection, every scene failure keeping the table) is in test_view_web_behaviour.
         text = read("loom.js")
         self.assertNotRegex(text, r"(?m)^\s*import\b[^(]", "loom.js must not import the scene statically")

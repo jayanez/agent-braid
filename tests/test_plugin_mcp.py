@@ -560,9 +560,11 @@ class PluginReportCopyTests(unittest.TestCase):
 
     def pruning(self, clock):
         """Patch the clock and count the prunings (each opens every copy directory)."""
-        self.addCleanup(mock.patch.stopall)
-        mock.patch.object(plugin_mcp, '_monotonic', side_effect=lambda: clock[0]).start()
-        return mock.patch.object(plugin_mcp, '_prune_report_copies', wraps=plugin_mcp._prune_report_copies).start()
+        for patcher in (mock.patch.object(plugin_mcp, '_monotonic', side_effect=lambda: clock[0]),
+                        mock.patch.object(plugin_mcp, '_prune_report_copies', wraps=plugin_mcp._prune_report_copies)):
+            prune = patcher.start()
+            self.addCleanup(patcher.stop)
+        return prune
 
     def test_pruning_runs_at_the_first_write_then_only_once_per_interval(self):
         self.start()

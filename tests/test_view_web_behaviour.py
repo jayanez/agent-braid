@@ -206,6 +206,10 @@ class SseResumeTests(PageBehaviourCase):
         final = self.drive([{"wait": 150}], [{"status": 200, "chunks": ["id: 1", "2\r\ndata: changed\r", "\n\r\n"]}, HANG])[-1]
         self.assertEqual(final["events"][1]["Last-Event-ID"], "12")
 
+    def test_a_crlf_pair_split_between_chunks_is_read_as_one_line_end(self):
+        final = self.drive([{"wait": 150}], [{"status": 200, "chunks": ["id: 9\r\n\r", "\ndata: changed\r\n\r\n"]}, HANG])[-1]
+        self.assertEqual(final["events"][1]["Last-Event-ID"], "9")
+
     def test_a_non_numeric_negative_or_oversized_id_never_replaces_the_resume_point(self):
         chunks = [block(3), block("abc"), block("12345678901234567"), block("-4")]
         final = self.drive([{"wait": 150}], [{"status": 200, "chunks": chunks}, HANG])[-1]
