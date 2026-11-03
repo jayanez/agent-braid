@@ -181,7 +181,7 @@ installed package. Command: `python3 -m unittest tests.test_view_packaging -v`.
 Run `python3 -m unittest tests.test_orchestration_governance tests.test_plugin_package
 tests.test_validation_profiles tests.test_view_boundaries -v` and
 `python3 scripts/validate_change.py --base develop --profile quick`. Assert the
-plugin package is unchanged, no socket, HTTP or `urllib` import exists outside
+plugin package changed only by the local report copy of A2/T040, no socket, HTTP or `urllib` import exists outside
 `view_serve.py`, every new viewer code, test, asset and documentation path has
 `activity-viewer` among its classifier matches (license files and evidence
 receipts keep their existing classification),

@@ -210,6 +210,29 @@ per-probe owner authorization but no ADR, and run first.
   date passes without a slice, VIS.1 closes as Deferred. Dependencies: T029,
   T034, T038. Evidence: `evidence/checkpoint-<date>.md`.
 
+- [x] T045 (REQ-006 / SC-006; closure finding 1): the watcher walks directories
+  newest name first, so the plugin's `analysis-<UTC stamp>-<id>` report copies load
+  newest first and a store cap that is reached refuses the oldest copies (with its
+  `stream-truncated` gap), never today's analysis. Files:
+  `agent_braid/view_tail.py`, `tests/test_view_tail.py`. Dependencies: T040, T041.
+  Verification: procedure_006. Done 2026-11-03: closure-fixes PR.
+- [x] T046 (REQ-004 / SC-004; closure finding 2): per-instance session cookie name
+  `braid_view_<port>` (same `HttpOnly; SameSite=Strict; Path=/`), so two viewers on
+  loopback no longer overwrite each other's session. Files:
+  `agent_braid/view_serve.py`, `tests/test_view_serve.py`,
+  `docs/tooling/VIEWER.md`, `specs/061-activity-viewer/contracts/ui-security-privacy.md`.
+  Dependencies: T017. Verification: procedure_004. Done 2026-11-03: closure-fixes PR.
+- [ ] T047 (closure review, VIS.1b follow-ups): findings 3 (hook strands never
+  reopen after `SessionEnd`/`SubagentStop`; `_strands`/`_children` unbounded),
+  4 (static bundle serves every non-dot file, not a manifest), 5 (slow-client
+  timeout is per read), 7 (`IngestRefusal` and inventory limits live in
+  `view_serve`), 8 (root labels in a module-level registry), 9 (behaviour tests
+  for playback, SSE resume, evidence panel, scene fallback), 10 (simplifications:
+  `_serve` split, ingest-token property, bundle path derivation, duplicated
+  exception mapping and HTTP test helpers), 11 (copy pruning cost under lock,
+  discovery once at start), 12 (wheel and sdist tests skipped without Python 3.12+
+  and setuptools 68+). Source: `closure-packet-vis1a.md`. Dependencies: T036.
+
 ## VIS.1b — Effort, recording, export and frames
 
 - [ ] T014 (REQ-002 / SC-002): Host stream adapters (`claude -p` stream-json,

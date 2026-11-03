@@ -435,13 +435,16 @@ Verification: [procedure_012](validation-plan.md#procedure_012); T028, T043.
 ### REQ-013 — Repository and governance boundaries
 
 Viewer code lives in `agent_braid/view_*.py` and `integrations/agent-braid-view/`.
-Network code exists only in `view_serve.py`. The plugin package and its tests are
-unchanged. A validation rule `activity-viewer` classifies the new paths. The
-vendored Three.js license is recorded in `LICENSE`, `LICENSES/` and
-`docs/development/THIRD_PARTY.md` under ADR 0033.
+Network code exists only in `view_serve.py`. The plugin package has one bounded
+change (amendment A2, T040): after each `analyze-work` it keeps a private local copy
+of the report, never uploaded, retained 30 days, 64 MiB and 1,500 copies. It gets no
+hooks, mods or monitors and no viewer code. A validation rule `activity-viewer`
+classifies the new paths. The vendored Three.js license is recorded in `LICENSE`,
+`LICENSES/` and `docs/development/THIRD_PARTY.md` under ADR 0033.
 
 **SC-013:** Given the change set, when governance, plugin package and validation
-profile tests run, then they pass unchanged except for the added rule and its test,
+profile tests run, then they pass unchanged except for the added rule and its test
+and the plugin's local report copy (A2, T040) with its tests,
 no socket or HTTP import appears outside `view_serve.py`, every new viewer code,
 test, asset and documentation path has `activity-viewer` among its classifier
 matches with no unknown path (license files and evidence receipts keep their

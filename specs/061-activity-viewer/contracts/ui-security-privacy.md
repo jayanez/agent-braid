@@ -29,8 +29,10 @@ its own boundary review where it widens a route, an origin or a credential (see
   session, with separate rights):
   - **Open code.** Printed once at start as `http://127.0.0.1:<port>/open?code=<c>`.
     The first valid request exchanges it for an `HttpOnly; SameSite=Strict; Path=/`
-    session cookie and answers `303` to `/`; the code is then invalid. The cookie
-    grants read routes only.
+    session cookie and answers `303` to `/`; the code is then invalid. The cookie is
+    named `braid_view_<port>` (the viewer's own port), because browsers share cookies
+    across loopback ports and two viewers must not overwrite each other's session.
+    The cookie grants read routes only.
   - **Ingest token.** Written at start to a new file created exclusively with
     owner-only permissions in a per-user runtime directory, replaced at each start,
     and sent by host exporters as `Authorization: Bearer <token>`. It grants ingest

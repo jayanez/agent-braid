@@ -220,7 +220,7 @@ class CredentialTests(ServerCase):
             with self.subTest(path=path):
                 status, _, body = self.request(method, path, JSON if method == "POST" else None, b"{}" if method == "POST" else None)
                 self.assertEqual((status, body), (404, b""))
-        status, _, _ = self.request("GET", "/", {"Cookie": f"{view_serve.COOKIE_NAME}=guess"})
+        status, _, _ = self.request("GET", "/", {"Cookie": f"{self.server.cookie_name}=guess"})
         self.assertEqual(status, 404)
         status, _, _ = self.post("/v1/logs", b"{}", {"Authorization": "Bearer guess"})
         self.assertEqual(status, 404)
@@ -237,10 +237,27 @@ class CredentialTests(ServerCase):
         self.assertIn("HttpOnly", attributes)
         self.assertIn("SameSite=Strict", attributes)
         self.assertIn("Path=/", attributes)
+        self.assertTrue(response.getheader("Set-Cookie").startswith(f"braid_view_{self.port}="))
         self.assertNotIn(self.open_code, response.getheader("Set-Cookie"))
         self.assertNotIn(self.token, response.getheader("Set-Cookie"))
         status, _, _ = self.request("GET", f"/open?code={self.open_code}")
         self.assertEqual(status, 404)  # reused
+
+    def test_two_viewers_on_loopback_keep_separate_sessions(self):
+        """Closure finding 2: cookies are not isolated by port, so the cookie name carries the port."""
+        first_cookie, first_port = self.cookie(), self.port
+        self.start(ingest_handlers={})  # a second viewer on another port, same host name
+        second_cookie, second_port = self.cookie(), self.port
+        self.assertNotEqual(first_port, second_port)
+        self.assertNotEqual(first_cookie.partition("=")[0], second_cookie.partition("=")[0])
+        # A browser holds both cookies for 127.0.0.1 and sends them together to either viewer.
+        both = {"Cookie": f"{first_cookie}; {second_cookie}"}
+        self.assertEqual(self.request("GET", "/", both)[0], 200)
+        self.port = first_port
+        self.assertEqual(self.request("GET", "/", both)[0], 200)
+        self.port = second_port
+        # A viewer does not accept the other viewer's cookie.
+        self.assertEqual(self.request("GET", "/", {"Cookie": first_cookie})[0], 404)
 
     def test_the_cookie_reads_but_does_not_ingest_and_the_token_ingests_but_does_not_read(self):
         cookie = self.cookie()

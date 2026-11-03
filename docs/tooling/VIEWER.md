@@ -64,7 +64,8 @@ agent-braid view env      --host claude [--port N] [--runtime-dir DIR]
 Starts the viewer and prints, once, the loopback address to open
 (`http://127.0.0.1:<port>/open?code=...`), the owner-only ingest token file and any
 watched roots. Open the printed address in a browser; the single-use code is
-exchanged for a read-only session cookie. Stop it with Ctrl-C or SIGTERM; the token
+exchanged for a read-only session cookie named `braid_view_<port>`, so two viewers on
+loopback keep separate sessions. Stop it with Ctrl-C or SIGTERM; the token
 file is removed.
 
 | Option | Effect |
@@ -96,7 +97,8 @@ viewer after the first analysis), is a note at start, never a failure.
 local copy of its report in the workspace's result root as `analysis-<utc stamp>-<id>/analysis.json`,
 for the viewer's watcher. Copies are private to the user (directories 0700, files 0600),
 never uploaded, removed after 30 days, and removed oldest first beyond 64 MiB or 1,500
-copies. A failure to write a copy never changes the `analyze-work` result. See
+copies. The viewer reads copies newest first, so when a store limit is reached the oldest
+copies are the ones left out, and a `stream-truncated` gap says so. A failure to write a copy never changes the `analyze-work` result. See
 [plugin privacy](PLUGIN_PRIVACY.md).
 
 **Root labels.** The page never shows a path. Each watched root gets a stable label,
