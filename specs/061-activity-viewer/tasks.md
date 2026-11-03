@@ -164,30 +164,38 @@ per-probe owner authorization but no ADR, and run first.
   tasks add their own flags and tests. Files: `agent_braid/view_cli.py`,
   `agent_braid/cli.py`, `tests/test_view_cli.py`. Dependencies: T017, T019.
   Verification: procedure_011, procedure_012.
-- [ ] T040 (REQ-006 / SC-006; amendment A2): the plugin keeps a private local
+- [x] T040 (REQ-006 / SC-006; amendment A2): the plugin keeps a private local
   copy of each `analyze-work` report in the workspace result root (owner-only
   permissions, never uploaded, retained 30 days, 64 MiB in total, oldest removed
   first). Files: `agent_braid/plugin_mcp.py` (or the tooling module it delegates
   to, plugin path only), `tests/test_plugin_mcp.py`. Dependencies: none.
   Verification: procedure_006.
-- [ ] T041 (REQ-006 / SC-006; amendment A1): `serve` discovers watch roots
+- [x] T041 (REQ-006 / SC-006; amendment A1): `serve` discovers watch roots
   read-only from the registered plugin workspaces' result roots when `--watch` is
   absent; `--no-discover`. Files: `agent_braid/view_cli.py`,
   `tests/test_view_cli.py`. Dependencies: T028. Verification: procedure_006.
-- [ ] T042 (REQ-010 / SC-010; amendment A1): per-source checkboxes filtering the
+- [x] T042 (REQ-010 / SC-010; amendment A1): per-source checkboxes filtering the
   scene and table with a hidden-events count. Files:
   `integrations/agent-braid-view/web/*` (not `vendor/`),
   `tests/test_view_web_bundle.py`. Dependencies: T025. Verification:
-  procedure_010.
+  procedure_010. Done 2026-11-03 (#996) with all watched roots grouped under one
+  checkbox; one checkbox per root is T044.
 - [ ] T043 (REQ-012 / SC-012; amendment A3): ship the web bundle and vendored
   files in the built package and resolve them from the installed package. Files:
   `build_support.py`, `pyproject.toml`, `agent_braid/view_cli.py` (bundle
   lookup only), `tests/test_view_packaging.py`. Dependencies: T028, T041 (shared
   `view_cli.py`). Verification: procedure_012.
+- [ ] T044 (REQ-010 / SC-010; amendment A1): one checkbox per watched root: a
+  stable label per root that exposes no path, carried in the viewer model without
+  changing the loom event contract. Files: `agent_braid/view_tail.py`,
+  `agent_braid/view_model.py`, `integrations/agent-braid-view/web/loom.js`,
+  `tests/test_view_tail.py`, `tests/test_view_model.py`,
+  `tests/test_view_web_bundle.py`. Dependencies: T041, T042. Verification:
+  procedure_010.
 - [ ] T029 (REQ-013 / SC-013): Boundary tests (`tests/test_view_boundaries.py`)
   and regression run of governance, plugin package and validation profiles; rerun
   at the VIS.1b closure. Dependencies: T010–T013, T015–T017, T019, T020,
-  T024, T026, T028, T040–T043. Verification: procedure_013.
+  T024, T026, T028, T040–T044. Verification: procedure_013.
 - [ ] T034 (REQ-015 / SC-015): `docs/tooling/VIEWER.md`,
   `integrations/agent-braid-view/README.md`, tooling index and
   `tests/test_view_docs.py`; updated for VIS.1b at its closure. Dependencies:

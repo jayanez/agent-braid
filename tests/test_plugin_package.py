@@ -390,7 +390,7 @@ class WorkflowPackagingTests(unittest.TestCase):
         names = ['plugin.json', '.claude-plugin/plugin.json', 'mcp.json', '.mcp.json', 'launch']
         names += [x for x in inventory(self.default) if x.startswith('skills/')]
         # Five product skills plus the setup skill, all present in both builds.
-        self.assertEqual(len([x for x in names if x.endswith('/SKILL.md')]), 6)
+        self.assertEqual(len([x for x in names if x.endswith('/SKILL.md')]), 7)
         for name in names:
             self.assertEqual((self.opt_in / name).read_bytes(), (self.default / name).read_bytes(), name)
         before, after = inventory(self.default), inventory(self.opt_in)
