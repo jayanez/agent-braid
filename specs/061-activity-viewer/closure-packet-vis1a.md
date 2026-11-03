@@ -83,31 +83,31 @@ requires restarting Claude Code (the ingest token is new at each start) and the 
    scan the newest N at start; or count live entities. Needs a design call. Medium.
 2. **Resolved by the closure-fixes PR (T046).** Two `view serve` instances share the cookie name `braid_view` on loopback, so the
    second overwrites the first's session. Fix: name the cookie per port. Medium.
-3. Hook strands never reopen after `SessionEnd` or `SubagentStop` and later events for
+3. **Resolved by #1026 (design choice: a closed strand stays closed, later events leave a shape-unpinned gap; reopening is deferred until a resumed-session contract exists).** Hook strands never reopen after `SessionEnd` or `SubagentStop` and later events for
    them are dropped without a gap; `_strands` and `_children` are unbounded. Needs a
    decision on resumed sessions (REQ-003 absence rule). Low-medium.
-4. The static bundle serves every non-dot regular file in `web/`, while the contract says
+4. **Resolved by #1026.** The static bundle serves every non-dot regular file in `web/`, while the contract says
    files listed in a manifest. Fix: allowlist or first-party manifest. Low.
-5. Slow-client connection slots: the 10-second socket timeout is per read, not per request.
+5. **Resolved by #1026.** Slow-client connection slots: the 10-second socket timeout is per read, not per request.
    Loopback only. Low.
 6. **Resolved by the closure-fixes PR (spec.md and assurance.json REQ-013/SC-013 text).** REQ-013 and SC-013 in `spec.md` say the plugin package and its tests are unchanged;
    T040 changed `plugin_mcp.py` and `tests/test_plugin_mcp.py`. Record the exception in
    the spec text (spec amendment, owner decision). Low.
-7. `IngestRefusal` and the inventory limits live in `view_serve`, so loading `view_hooks`
+7. **Resolved by #1026.** `IngestRefusal` and the inventory limits live in `view_serve`, so loading `view_hooks`
    loads the network modules transitively. Move to `view_loom` or `view_store`. Small.
-8. Root labels live in a module-level registry beside the store (`view_tail`), and
+8. **Resolved by #1026.** Root labels live in a module-level registry beside the store (`view_tail`), and
    `view_serve` imports the watcher for them. Cleaner: label per entry in the store, or a
    provider passed to the server. Follow-up.
-9. Web bundle tests rely on source-text assertions for playback, SSE resume, evidence
+9. **Resolved by #1025.** Web bundle tests rely on source-text assertions for playback, SSE resume, evidence
    panel and scene-failure fallback; extend the Node page driver with behaviour tests.
-10. Simplifications: `_serve` is long (split into replay, roots, banner); `server._ingest_token`
+10. **Resolved by #1025, #1026 and this PR.** Simplifications: `_serve` is long (split into replay, roots, banner); `server._ingest_token`
     is read by the CLI (expose a property); the bundle/vendor path is derived in three
     places; the same exception-to-code mapping is written twice in `plugin_mcp.py`;
     HTTP test helpers are duplicated in five test files; `_private` is imported across
     modules.
-11. Report-copy pruning lists up to about 1,500 directories on every `analyze-work`
+11. **Resolved by #1025.** Report-copy pruning lists up to about 1,500 directories on every `analyze-work`
     while a lock is held; discovery runs once at start (restart after the first analysis).
-12. The wheel and sdist build tests are skipped without Python 3.12+ and setuptools 68+;
+12. **Resolved by this PR (CI installs setuptools and sets `AGENT_BRAID_REQUIRE_BUILD_TESTS=1`).** The wheel and sdist build tests are skipped without Python 3.12+ and setuptools 68+;
     CI is the evidence for SC-012's wheel claim.
 
 ## Converge pass (read-only consistency of spec, tasks, assurance and code)

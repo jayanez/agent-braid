@@ -222,7 +222,7 @@ per-probe owner authorization but no ADR, and run first.
   `agent_braid/view_serve.py`, `tests/test_view_serve.py`,
   `docs/tooling/VIEWER.md`, `specs/061-activity-viewer/contracts/ui-security-privacy.md`.
   Dependencies: T017. Verification: procedure_004. Done 2026-11-03: #1013.
-- [ ] T047 (closure review, VIS.1b follow-ups): findings 3 (hook strands never
+- [x] T047 (closure review, VIS.1b follow-ups): findings 3 (hook strands never
   reopen after `SessionEnd`/`SubagentStop`; `_strands`/`_children` unbounded),
   4 (static bundle serves every non-dot file, not a manifest), 5 (slow-client
   timeout is per read), 7 (`IngestRefusal` and inventory limits live in
@@ -232,6 +232,9 @@ per-probe owner authorization but no ADR, and run first.
   exception mapping and HTTP test helpers), 11 (copy pruning cost under lock,
   discovery once at start), 12 (wheel and sdist tests skipped without Python 3.12+
   and setuptools 68+). Source: `closure-packet-vis1a.md`. Dependencies: T036.
+  Finding 3 design choice: a closed strand stays closed; later events for it leave a
+  shape-unpinned gap, and reopening is deferred until a resumed-session contract exists.
+  Done 2026-11-03 (#1025, #1026, this PR).
 
 ## VIS.1b — Effort, recording, export and frames
 

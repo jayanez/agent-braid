@@ -110,7 +110,14 @@ jobs:
       - name: Restore reviewed public candidate history
         run: python3 scripts/restore_public_spec_history.py
 
+      # The wheel and sdist build tests (tests/test_view_packaging.py) need the declared build backend;
+      # requiring them makes a missing backend or a packaging regression fail instead of skip.
+      - name: Install the package build backend
+        run: python3 -m pip install 'setuptools>=68'
+
       - name: Run complete bounded and negative test suite
+        env:
+          AGENT_BRAID_REQUIRE_BUILD_TESTS: "1"
         run: python3 -m unittest discover -s tests -v
 
       - name: Validate optional MCP SDK in an isolated tooling environment
