@@ -14,6 +14,9 @@ The own GitHub marketplace is published on `plugin-dist`, with version
 `07e5973fe819591854e6df8bca169b5ec82eae05`; it adds opt-in System One shadow mode
 and its native host install has not yet been observed (see the
 [alpha.5 record](../../specs/046-native-ai-plugins/release-acceptance-alpha5.md)).
+The Python package version (`0.1.0a2`) is a separate line from the plugin version;
+`0.1.0-alpha.6` is prepared in `develop` and not yet published (see the
+version update notes under local telemetry consent).
 The previous `0.1.0-alpha.4` is pinned by tag `agent-braid--v0.1.0-alpha.4` at
 `ac2c49825c963bf7daf3fd0851f28d9651580efa`. For alpha.4, native macOS arm64
 observations cover the isolated alpha.3 → alpha.4 update and a public Git-tag install
@@ -45,7 +48,8 @@ The host's plugin interface offers the equivalent marketplace and installation
 operations. Skills are discovered from the installed plugin; no copying to global
 skills folders or `npx skills add` is needed. Five product skills come from the
 existing canonical bundle; `setup` owns onboarding and `telemetry-audit` the read-only
-host-log versus local-telemetry audit, both independently of that bundle.
+host-log versus local-telemetry audit (from `0.1.0-alpha.6`; the published
+alpha.5 has six skills), both independently of that bundle.
 
 Plugin skills are unprefixed. In Claude Code invoke `/agent-braid:analyze`,
 `/agent-braid:plan`, `/agent-braid:evidence`, `/agent-braid:execute`,
@@ -110,6 +114,9 @@ does not authorize execution or issue a grant. Runtime opt-in and an existing
 operator grant store are separate explicit configuration choices.
 
 The bootstrap `plugin-status` MCP tool returns `bundledCli` and `registryHome`.
+It also reports two independent versions: `version` is the Python package the
+bundled runtime was built from and `pluginVersion` is this native plugin release
+(from 0.1.0-alpha.6; `null` outside a package).
 Pass that `registryHome` explicitly as `--home` on CLI setup/discovery operations
 to keep storage consistent when a host filters environment variables. Use that absolute
 launcher path for the following commands (shell quotes are required for spaces):
@@ -276,6 +283,39 @@ alpha.4. Rollback needs one step first: alpha.4 refuses a registry that carries 
 removes it) before reinstalling `0.1.0-alpha.4` from tag `agent-braid--v0.1.0-alpha.4`.
 The shadow store is not removed by that step; run `system-one purge` first if you
 want it gone.
+
+Version 0.1.0-alpha.6 is prepared in `develop` and is **not yet published**; the
+latest published release stays `0.1.0-alpha.5` until the owner publishes it. It
+bundles three changes after alpha.5 and adds no registry migration:
+
+- **Registry quarantine** (SPEC-046): a deleted worktree root or an unsafe
+  registration no longer refuses the whole registry. Stale roots and unsafe rows
+  are reported as `staleWorktreeRoots` and `unsafeWorkspaces`, a workspace whose
+  repository is gone as `unavailableWorkspaces`, and every other workspace keeps
+  serving. `plugin setup --prune-stale` previews removing them
+  ([details](#deleted-worktrees-and-unsafe-registrations)).
+- **Refusal reasons and serve-start telemetry** (SPEC-047 T011): with consent
+  `local`, each refused call or refused start adds one closed `refusal-reason`
+  bucket and each start adds one `serve-start`. Exports now write batch schema
+  `agent-braid-local-telemetry-batch/v2`; merge accepts v1 and v2. The store format is unchanged, so
+  an alpha.5 or older build still writes to and reports the same store, but it
+  refuses v2 batches and cannot export a store that holds v2 cells; export and
+  merge with a current build ([TELEMETRY.md](TELEMETRY.md#refusal-reasons-and-plugin-starts)).
+- **`telemetry-audit` skill and `telemetry audit-logs`** (SPEC-047 T012): a
+  read-only comparison of the plugin's host MCP logs with the local store; the
+  skill is a seventh packaged skill, so the skill listing changes
+  (`/agent-braid:telemetry-audit`).
+- **`pluginVersion`** in `plugin-status`: `version` stays the Python package
+  (`0.1.0a2`) and `pluginVersion` is the native plugin release (`0.1.0-alpha.6`).
+
+Registered workspaces, results and telemetry consent are untouched, so no migration
+step is needed after updating from alpha.5. To roll back, reinstall `0.1.0-alpha.5` from tag
+`agent-braid--v0.1.0-alpha.5`; the registry and results are accepted unchanged
+(alpha.6 adds no registry member). Alpha.5 does not know `unavailableWorkspaces`
+or the `telemetry-audit` skill, and it refuses a registry holding a deleted
+worktree root or an unsafe row, so run `plugin setup --prune-stale` (preview, then
+apply) first if `plugin doctor` reports either. Telemetry cells written by alpha.6
+stay in the store; see the compatibility note above for the older build's limits.
 
 ## Storage, updates and removal
 
