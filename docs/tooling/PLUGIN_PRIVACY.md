@@ -45,6 +45,16 @@ allowlist, which is unverified on any host. The agents run on the host's model
 provider, which therefore receives those prompts and tool results under the
 host's own terms. Review the resulting envelope before sharing it.
 
+OpenCode (from `0.1.0-alpha.7`) may attach a session identifier to MCP requests
+(the request `_meta` field; the host documents this and it was not observed, and
+`ai.opencode/sessionID` is only the key used in the regression test). Agent Braid
+never reads it: in the tested paths it is not stored, exported, counted in telemetry
+or System One episodes, or used for authorization, and the plugin code does not log it. Tool results and evidence are byte-identical
+with and without it, and the telemetry and System One stores gain the same cells and
+fields (checked by tests). The OpenCode plugin entry
+itself writes no files, makes no network call and subscribes to no events. The host's
+own session and history storage remain governed by OpenCode.
+
 Runtime execution remains explicitly opt-in and requires existing operator grants;
 the plugin neither creates grants nor widens filesystem trust. Reconnection is
 required after workspace configuration changes. MCP resources have workspace

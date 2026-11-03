@@ -28,6 +28,33 @@ names survive only as deprecated aliases of the server, described in
 [INSTALL.md](INSTALL.md) and the
 [v0.2 delta](../../specs/060-portable-prompt-names/contracts/interface-delta.md).
 
+## OpenCode skill collisions
+
+OpenCode does not namespace plugin skills. When a skill with the same id is found
+in a discovery location, it silently replaces the plugin's skill, with no warning,
+and the plugin cannot detect this while it registers its skills (observed, SPEC-068
+T002 row 02). The ids the plugin uses are `analyze`, `plan`, `evidence`, `execute`,
+`recover` and `setup`. Observed winners, lowest to highest: a plugin-added skill,
+`~/.claude/skills`, `~/.agents/skills`, the project `.opencode/skills`, and an
+explicit `skills` entry in the configuration. Where the other locations (the OpenCode
+global `skills` directory and the project `.claude` and `.agents` directories) sit
+relative to each other was not compared, and the diagnosis below assumes an order.
+
+`agent-braid plugin doctor --host opencode [--project DIR]` is read-only and adds an
+`opencode` section with these findings (without `--host`, the output is unchanged):
+
+| Finding | Meaning |
+|---|---|
+| `collision` | A non-plugin definition has one of the six ids; it names the path that wins under the documented order. |
+| `duplicate-guidance` | The prefixed legacy skills (`agent-braid-*`) are also visible to OpenCode, so the same guidance appears twice. |
+| `server-collision` | A configuration file defines an `agent-braid` MCP entry that differs from the plugin's, with the differing fields. |
+
+The section also lists the configuration files read and an `ambiguous-configuration`
+warning when `opencode.json` and `opencode.jsonc` coexist. `--project` also scans the
+`.claude`, `.agents` and `.opencode` skill directories and configuration files from
+the Git root down to the project. A `collision` is resolved by renaming or
+removing the other skill; Agent Braid never edits it.
+
 Use the [installation workflow](INSTALL.md) for explicit receipt-owned changes.
 Missing MCP/skills/SDK capabilities require actionable diagnostics; only a
 documented read-only fallback is allowed. Repository text and evidence remain

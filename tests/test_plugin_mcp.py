@@ -690,3 +690,110 @@ class PluginPromptNegativeControlTests(unittest.TestCase):
         self.assertEqual(len(shared['prompts']), 3)  # the old v0.1 plugin behaviour: would fail the new assertion
         self.assertNotIn('prompts', service.capabilities())
         self.assertEqual(len(core._PROMPTS), 6)  # portable server keeps its prompts (3 canonical + 3 aliases)
+
+
+class PluginOpenCodeSessionIdentifierTests(unittest.IsolatedAsyncioTestCase):
+    """SPEC-068 REQ-009 / REQ-010: an OpenCode request `_meta` session identifier changes nothing and is stored nowhere."""
+    setUp = registry_tests.PluginRegistryTests.setUp
+    install = registry_tests.PluginRegistryTests.install
+    SESSION = 'ses_OpenCodeSentinel0123456789'
+    META = {'ai.opencode/sessionID': SESSION}
+    SAMPLE = json.loads((Path(__file__).resolve().parents[1] / 'examples/analysis/file-edits.json').read_text())
+
+    def consent(self):
+        preview = plan_setup(self.home, [], telemetry='local', system_one='shadow')
+        apply(self.home, preview, preview['previewDigest'])
+
+    async def drive(self, label, meta):
+        """One OpenCode-like session over the real SDK (in memory): every plugin tool plus a resource read."""
+        from mcp import Client, types
+        from agent_braid import system_one_shadow as shadow, tooling_telemetry as telemetry
+        store, episodes = self.base / label / 'telemetry', self.base / label / 'system-one'
+        kwargs = {'meta': meta} if meta else {}
+        outputs = {}
+        with mock.patch.object(telemetry, 'default_directory', return_value=store), \
+                mock.patch.object(shadow, 'default_directory', return_value=episodes):
+            router = PluginRouter(self.home)
+            router.record_start()
+            identifier = load(self.home)['workspaces'][0]['workspaceId']
+            with mock.patch.object(router, 'invoke', wraps=router.invoke) as spy:
+                client_info = types.Implementation(name='opencode', version='2.1.4')
+                async with Client(plugin_mcp.create_server(router), mode='legacy', client_info=client_info) as client:
+                    calls = [('plugin-status', {}), ('workspaces', {}),
+                             ('analyze-work', {'workspaceId': identifier, 'kind': 'aim', 'request': self.SAMPLE}),
+                             ('analyze-work', {'workspaceId': 'not-registered'}),
+                             ('execute', {'workspaceId': identifier, 'plan': {}, 'grantId': 'x'})]
+                    for index, (name, arguments) in enumerate(calls):
+                        response = await client.call_tool(name, arguments, **kwargs)
+                        outputs[f'{index}-{name}'] = response.structured_content
+                    uri = outputs['2-analyze-work']['evidenceRefs'][0]['uri']
+                    outputs['resource'] = (await client.read_resource(uri, **kwargs)).contents[0].text
+            self.assertNotIn(self.SESSION, repr(spy.call_args_list), 'the router received request metadata')
+            self.assertTrue(shadow.flush(), 'shadow worker did not finish')
+            (self.base / label / 'export').mkdir(mode=0o700)
+            exported = self.base / label / 'export' / 'batch.json'
+            telemetry.Store().export(exported)
+        return normalize(json.dumps(outputs, sort_keys=True).replace(f'/{label}/', '/RUN/')), store, episodes, exported
+
+    def leaks(self):
+        """Every file or directory under the test root whose name or bytes carry the session identifier."""
+        found = []
+        for directory, names, files in os.walk(self.base):
+            for name in names + files:
+                path = Path(directory, name)
+                if self.SESSION in name or (path.is_file() and not path.is_symlink()
+                                            and self.SESSION.encode() in path.read_bytes()):
+                    found.append(str(path))
+        return found
+
+    @unittest.skipUnless(importlib.util.find_spec('mcp'), 'optional mcp==2.3.0 SDK is unavailable')
+    async def test_envelopes_telemetry_and_stores_are_identical_with_and_without_the_session_identifier(self):
+        from agent_braid import tooling_telemetry as telemetry
+        self.install()
+        self.consent()
+        plain, plain_store, plain_episodes, plain_batch = await self.drive('plain', None)
+        tagged, tagged_store, tagged_episodes, tagged_batch = await self.drive('tagged', self.META)
+        self.assertEqual(tagged, plain)  # envelopes and the evidence manifest, byte for byte
+        self.assertNotIn(self.SESSION, tagged)
+        self.assertEqual(self.leaks(), [])
+        # SPEC-047: same cells (durations may land in a neighbouring bucket), same closed fields, schema v2.
+        def cells(directory):
+            with mock.patch.object(telemetry, 'default_directory', return_value=directory):
+                rows = telemetry.Store().report()['rows']
+            return sorted((r['surface'], r['operation'], r['outcome'], r['metric'],
+                           'any' if r['metric'] == 'duration' else r['bucket'], r['count']) for r in rows)
+        self.assertEqual(cells(tagged_store), cells(plain_store))
+        batches = [json.loads(path.read_text()) for path in (plain_batch, tagged_batch)]
+        for batch in batches:
+            self.assertEqual(batch['schema'], telemetry.SCHEMA)
+            self.assertEqual({tuple(sorted(row)) for row in batch['rows']},
+                             {('bucket', 'count', 'day', 'metric', 'operation', 'outcome', 'surface')})
+        self.assertEqual([(r['surface'], r['operation'], r['outcome'], r['metric']) for r in batches[0]['rows']],
+                         [(r['surface'], r['operation'], r['outcome'], r['metric']) for r in batches[1]['rows']])
+        # SPEC-066: the shadow store gains the same structural episodes, with the same fields.
+        def episodes(directory):
+            lines = [json.loads(line) for path in sorted(directory.glob('episodes-*.jsonl'))
+                     for line in path.read_text().splitlines()]
+            return [sorted(line) for line in lines]
+        self.assertTrue(episodes(plain_episodes))
+        self.assertEqual(episodes(tagged_episodes), episodes(plain_episodes))
+
+    def test_negative_control_the_scan_finds_a_stored_identifier(self):
+        self.install()
+        self.assertEqual(self.leaks(), [])
+        (self.base / 'leak.txt').write_text('{"session": "' + self.SESSION + '"}')
+        (self.base / f'{self.SESSION}.json').write_text('{}')
+        self.assertEqual(len(self.leaks()), 2)
+
+    def test_telemetry_vocabularies_and_the_log_audit_classes_are_unchanged(self):
+        from agent_braid import telemetry_audit as audit, tooling_telemetry as telemetry
+        self.assertEqual(telemetry.SCHEMA, 'agent-braid-local-telemetry-batch/v2')
+        self.assertEqual(telemetry.OUTCOMES, ('ok', 'refused', 'error', 'cancelled', 'unknown'))
+        self.assertEqual(telemetry.REASON_SURFACES, ('mcp', 'lifecycle'))
+        self.assertEqual(set(telemetry.BUCKETS), {'calls', 'duration', 'classification', 'missing-summary', 'refusal-reason'})
+        self.assertEqual(telemetry.BUCKETS['refusal-reason'], telemetry.REFUSAL_REASONS)
+        self.assertEqual(len(telemetry.REFUSAL_REASONS), 11)
+        self.assertEqual(audit.SCHEMA, 'agent-braid-telemetry-log-audit/v1')
+        self.assertEqual(audit.CALL_CLASSES, ('router-refused', 'reconnect-required', 'worktree-allowlist', 'request-shape',
+                                              'arguments-invalid', 'operation-refused', 'other'))
+        self.assertEqual(audit.STARTUP_CLASSES, telemetry.REFUSAL_REASONS)
