@@ -220,6 +220,9 @@ def reconcile(days: dict, report: dict | None, today: datetime.date, since: str 
     """Compare log call counts with the store's ``calls`` per UTC day and operation."""
     if report is None:
         return {'status': 'unavailable', 'rows': [], 'flagged': 0}
+    if not report.get('rows'):
+        # Consent off and an empty store look the same here; comparing would flag every log call.
+        return {'status': 'unavailable', 'reason': 'store-empty', 'rows': [], 'startup': [], 'flagged': 0}
     first_retained = (today - datetime.timedelta(days=RETENTION_DAYS - 1)).isoformat()
     store: dict[tuple, dict] = {}
     serve_start_refused: dict[str, int] = {}
@@ -248,7 +251,7 @@ def reconcile(days: dict, report: dict | None, today: datetime.date, since: str 
                 'storeServeStartRefused': serve_start_refused.get(day, 0)}
                for day in sorted(set(days) | set(serve_start_refused)) if day >= since
                and (days.get(day, {}).get('startupRefusalSessionCount') or serve_start_refused.get(day))]
-    return {'status': 'compared' if report.get('rows') else 'store-empty', 'rows': rows, 'startup': startup,
+    return {'status': 'compared', 'rows': rows, 'startup': startup,
             'flagged': sum(1 for row in rows if row['flagged']), 'storeRetentionStart': first_retained}
 
 
@@ -265,7 +268,7 @@ def audit(cache_root: Path | None, report: dict | None, today: datetime.date | N
         alerts.append('startup-refusals')
     if reconciliation['flagged']:
         alerts.append('reconciliation-gap')
-    if reconciliation['status'] == 'store-empty':
+    if reconciliation.get('reason') == 'store-empty':
         alerts.append('store-empty')
     summary = {'startupRefusals': startup_total, 'connectionFailures': sum(d['connectionFailures'] for d in days.values()),
                'callFailureClasses': {}}

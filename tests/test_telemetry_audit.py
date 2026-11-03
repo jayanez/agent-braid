@@ -146,8 +146,10 @@ class ReconcileTests(Fixture):
         match = audit.reconcile(days, report_rows(('2026-11-02', 'mcp', 'analyze-work', 'ok', 'calls', 'all', 2)), TODAY)
         self.assertEqual(match['flagged'], 0)
         self.assertEqual(audit.reconcile(days, None, TODAY), {'status': 'unavailable', 'rows': [], 'flagged': 0})
-        empty = audit.reconcile(days, report_rows(), TODAY)
-        self.assertEqual((empty['status'], empty['flagged']), ('store-empty', 1))
+        # Consent off (no store) and consent local with an empty store both give no rows: unavailable, never a gap.
+        for report in (report_rows(), {'rows': []}):
+            empty = audit.reconcile(days, report, TODAY)
+            self.assertEqual((empty['status'], empty['reason'], empty['flagged'], empty['rows']), ('unavailable', 'store-empty', 0, []))
 
     def test_days_beyond_store_retention_are_not_flagged(self):
         self.write('-p1', [line('debug', 'Calling MCP tool: workspaces', stamp='2026-09-01T00:00:00.000Z')])
@@ -183,11 +185,11 @@ class AuditAndCliTests(Fixture):
         self.write('-p1', [line('error', 'Server stderr: plugin refused: Unsafe worktree root\n'),
                            line('debug', 'Calling MCP tool: analyze-work'), failure('analyze-work', GENERIC)])
         result = audit.audit(self.cache, report_rows(), today=TODAY, since='2026-11-01', salt=SALT)
-        self.assertEqual(result['alerts'], ['startup-refusals', 'reconciliation-gap', 'store-empty'])
+        self.assertEqual(result['alerts'], ['startup-refusals', 'store-empty'])
         self.assertEqual(result['summary']['startupRefusals'], 1)
         self.assertEqual(result['cannotSee'], list(audit.CANNOT_SEE))
         text = audit.render_text(result)
-        self.assertIn('GAP 2026-11-02 analyze-work: log 1 vs store 0', text)
+        self.assertIn('Reconciliation: unavailable', text)
         self.assertIn('Telemetry cannot see:', text)
         self.assertNotIn('/Users/secret', text)
 
