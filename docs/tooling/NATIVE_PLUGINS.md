@@ -286,7 +286,7 @@ want it gone.
 
 Version 0.1.0-alpha.6 is prepared in `develop` and is **not yet published**; the
 latest published release stays `0.1.0-alpha.5` until the owner publishes it. It
-bundles three changes after alpha.5 and adds no registry migration:
+bundles four changes after alpha.5 and adds no registry migration:
 
 - **Registry quarantine** (SPEC-046): a deleted worktree root or an unsafe
   registration no longer refuses the whole registry. Stale roots and unsafe rows
