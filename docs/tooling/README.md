@@ -118,7 +118,7 @@ for the required observations and support boundaries.
 | Developer journey | Chat explanations, interaction graph and offline Markdown/SVG/HTML evidence exports | [SPEC-043](../../specs/043-ai-tooling-journey/spec.md) · [Presentation contract](../../specs/043-ai-tooling-journey/contracts/presentation.md) |
 | Evaluation | Actual host receipts, controls, complete costs and CLI/MCP/MCP-plus-skills comparison | [SPEC-044](../../specs/044-ai-tooling-evaluation/spec.md) · [Prospective protocol](../../specs/044-ai-tooling-evaluation/evaluation-protocol.md) |
 | Installed verifiers | Which offline installed-package verifier applies to portable contract v0.1 and v0.2 | [Installed-package verifiers](INSTALLED_VERIFIERS.md) |
-| Activity viewer (VIS.1, draft) | Read-only loopback viewer of agents and coordination decisions, live and replay | [SPEC-061](../../specs/061-activity-viewer/spec.md) · [UI, security and privacy contract](../../specs/061-activity-viewer/contracts/ui-security-privacy.md) |
+| Activity viewer (VIS.1a) | Read-only loopback viewer of agents and coordination decisions, live and replay; Codex and OpenTelemetry ingest, recording and export are VIS.1b | [Viewer guide](VIEWER.md) · [SPEC-061](../../specs/061-activity-viewer/spec.md) · [UI, security and privacy contract](../../specs/061-activity-viewer/contracts/ui-security-privacy.md) |
 
 The proposed interface defaults to analysis. Runtime activation requires explicit
 configuration and the existing operator grant policy. Grant issuance stays outside

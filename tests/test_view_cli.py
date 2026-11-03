@@ -489,6 +489,28 @@ class DiscoveryServeTests(RegistryFixture, ServeCase):
         self.assertEqual(sum(str(root) in out for root in roots), 8)
         self.assertIn("Discovery note: 2 further result roots exceed the bound of 8 roots", out)
 
+    def test_the_banner_maps_each_page_label_to_its_path_in_start_order(self):
+        _, roots = self.make_registry(3)
+        server, result, thread = self.serve()
+        out = self.finish(server, result, thread)
+        for index, root in enumerate(roots, start=1):
+            self.assertIn(f"  root {index}: {root}\n", out)
+        self.assertLess(out.index("root 1:"), out.index("root 2:"))
+        self.assertLess(out.index("root 2:"), out.index("root 3:"))
+
+    def test_explicit_watch_roots_get_the_same_labels_and_the_page_still_shows_no_path(self):
+        first, second = self.base / "first", self.base / "second"
+        first.mkdir()
+        second.mkdir()
+        self.seed_report(second)
+        server, result, thread = self.serve("--watch", str(first), "--watch", str(second))
+        self.wait_for_events(server)
+        page = json.dumps(self.snapshot(server))
+        out = self.finish(server, result, thread)
+        self.assertIn(f"root 1: {first}", out)
+        self.assertIn(f"root 2: {second}", out)
+        self.assertNotIn(str(self.base), page)
+
     def test_the_option_is_part_of_the_cli(self):
         self.assertFalse(parse("view", "serve").no_discover)
         self.assertTrue(parse("view", "serve", "--no-discover").no_discover)

@@ -180,26 +180,29 @@ per-probe owner authorization but no ADR, and run first.
   `tests/test_view_web_bundle.py`. Dependencies: T025. Verification:
   procedure_010. Done 2026-11-03 (#996) with all watched roots grouped under one
   checkbox; one checkbox per root is T044.
-- [ ] T043 (REQ-012 / SC-012; amendment A3): ship the web bundle and vendored
+- [x] T043 (REQ-012 / SC-012; amendment A3): ship the web bundle and vendored
   files in the built package and resolve them from the installed package. Files:
   `build_support.py`, `pyproject.toml`, `agent_braid/view_cli.py` (bundle
   lookup only), `tests/test_view_packaging.py`. Dependencies: T028, T041 (shared
-  `view_cli.py`). Verification: procedure_012.
-- [ ] T044 (REQ-010 / SC-010; amendment A1): one checkbox per watched root: a
+  `view_cli.py`). Verification: procedure_012. Done 2026-11-03: PR #1005.
+- [x] T044 (REQ-010 / SC-010; amendment A1): one checkbox per watched root: a
   stable label per root that exposes no path, carried in the viewer model without
   changing the loom event contract. Files: `agent_braid/view_tail.py`,
   `agent_braid/view_model.py`, `integrations/agent-braid-view/web/loom.js`,
   `tests/test_view_tail.py`, `tests/test_view_model.py`,
   `tests/test_view_web_bundle.py`. Dependencies: T041, T042. Verification:
-  procedure_010.
-- [ ] T029 (REQ-013 / SC-013): Boundary tests (`tests/test_view_boundaries.py`)
+  procedure_010. Done 2026-11-03: PR #1003; the start banner maps each `root N`
+  label to its path (VIS.1a closure PR).
+- [x] T029 (REQ-013 / SC-013): Boundary tests (`tests/test_view_boundaries.py`)
   and regression run of governance, plugin package and validation profiles; rerun
   at the VIS.1b closure. Dependencies: T010–T013, T015–T017, T019, T020,
-  T024, T026, T028, T040–T044. Verification: procedure_013.
-- [ ] T034 (REQ-015 / SC-015): `docs/tooling/VIEWER.md`,
+  T024, T026, T028, T040–T044. Verification: procedure_013. Done 2026-11-03:
+  VIS.1a closure PR.
+- [x] T034 (REQ-015 / SC-015): `docs/tooling/VIEWER.md`,
   `integrations/agent-braid-view/README.md`, tooling index and
   `tests/test_view_docs.py`; updated for VIS.1b at its closure. Dependencies:
-  T028, T041, T043. Verification: procedure_015.
+  T028, T041, T043. Verification: procedure_015. Done 2026-11-03: VIS.1a closure
+  PR.
 - [ ] T035 (REQ-015; Q-VIS1): Go/no-go checkpoint after the VIS.1a slice, by
   2027-01-31 (OD-8): the owner opens the viewer on census or real sessions, records a
   descriptive Q-VIS1 observation (procedure_hvis1) and the census result, and
