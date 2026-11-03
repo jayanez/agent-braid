@@ -146,6 +146,13 @@ def run(args):
         command([paths / 'git', 'init', '-q', root])
     doctor = json.loads(command([launch, 'plugin', 'doctor']))
     assert doctor['runtimeIncluded'] and doctor['package']['status'] == 'verified'
+    opencode_files = [name for name in ('package.json', 'opencode/index.js') if (plugin / name).is_file()]
+    if opencode_files:
+        # SPEC-068: the OpenCode files are package bytes covered by the verified inventory.
+        covered = json.loads((plugin / 'package-inventory.json').read_text())['files']
+        assert len(opencode_files) == 2, 'OpenCode package is incomplete'
+        assert all(name in covered for name in opencode_files), 'OpenCode files not inventoried'
+        assert json.loads((plugin / 'provenance.json').read_text())['hosts'] == ['codex', 'claude', 'opencode']
     selection = ['--source-root', roots[0], '--source-root', roots[1]]
     preview = json.loads(command([launch, 'plugin', 'setup', *selection]))
     assert not Path(env['AGENT_BRAID_HOME']).exists(), 'Preview wrote application state'
@@ -235,6 +242,7 @@ def run(args):
                               'pathPrerequisites': sorted(x.name for x in paths.iterdir()), 'context': args.context},
               'provenanceSha256': hashlib.sha256((plugin / 'provenance.json').read_bytes()).hexdigest(),
               'packageInventorySha256': hashlib.sha256((plugin / 'package-inventory.json').read_bytes()).hexdigest(),
+              'opencodeFiles': {name: hashlib.sha256((plugin / name).read_bytes()).hexdigest() for name in opencode_files},
               'protocols': protocols, 'commands': commands,
               'limits': ['No provider/model session, interactive skill journey, human rating or official approval observed',
                          'Repeated native install is not a version-changing update; source-changing upgrade remains a release gate']}
