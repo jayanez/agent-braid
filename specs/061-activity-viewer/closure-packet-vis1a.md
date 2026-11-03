@@ -1,10 +1,14 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # SPEC-061 VIS.1a closure packet (2026-11-03)
 
-Status: **closure review done, owner approval pending.** Nothing here freezes the
-specification, changes `human_review`, `review_record`, `authority_snapshot` or
-`evidence_snapshot`, or approves anything. Engineering evidence is local unit tests;
-host verification and the owner's use of the viewer are separate.
+Status: **VIS.1a closed and frozen 2026-11-03.** The owner approved the closure
+(answer "Arreglar 1+2, luego cerrar (Recommended)"; record
+`owner-review-vis1a-closure-20261103.json`); closure findings 1 and 2 were fixed in #1013,
+the evidence was recorded in #1017 and the assurance snapshots were advanced to 62a44fb7.
+VIS.1b go/no-go T035 is due by 2027-01-31 after real use; T047 holds the review
+follow-ups (findings 3 to 12). The text below is the packet as written for the review.
+Engineering evidence is local unit tests; host verification and the owner's use of the
+viewer are separate.
 
 ## What was delivered
 
@@ -121,7 +125,7 @@ requires restarting Claude Code (the ingest token is new at each start) and the 
 - Docs: `STATUS.md` row updated; the tooling index links the guide; `PLUGIN_PRIVACY.md`
   already states the report copies.
 
-## Evidence (T037 prep)
+## Evidence (T037 prep; historical, resolved by #1017)
 
 The spec-kit validator checks every `obtained_evidence` item against a file at the
 `evidence_snapshot` commit (`b21c1c3b`, mode `historical`) by path and SHA-256. A new
@@ -136,7 +140,9 @@ SC-006, SC-010 to SC-013 and SC-015, and to SC-005 for the hook part, with that 
 and `sha256`, the receipt's `command`, a scenario-specific `outcome` and its `limits`,
 while advancing the evidence snapshot.
 
-## Owner decisions needed
+## Owner decisions needed (historical; resolved 2026-11-03)
+
+Resolved: item 1 by the owner's answer recorded in the status line (findings 1 and 2 fixed in #1013, then close); item 2 (T035) stays open.
 
 1. **Approve the VIS.1a closure** so the orchestrator can advance the evidence snapshot,
    record the evidence entries and freeze. Decide whether closure findings 1 and 2 (newest
