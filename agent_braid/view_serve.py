@@ -254,7 +254,7 @@ def read_replay_file(path: str | os.PathLike[str]) -> bytes:
     return data
 
 
-def _open_regular(name: str, directory: int, *, directory_flag: int = 0) -> int:
+def _open_nofollow(name: str, directory: int, *, directory_flag: int = 0) -> int:
     return os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | directory_flag, dir_fd=directory)
 
 
@@ -267,10 +267,10 @@ def _read_beneath(root: Path, relative: str, limit: int) -> bytes | None:
         return None
     try:
         for part in parts[:-1]:
-            following = _open_regular(part, current, directory_flag=os.O_DIRECTORY)
+            following = _open_nofollow(part, current, directory_flag=os.O_DIRECTORY)
             os.close(current)
             current = following
-        descriptor = _open_regular(parts[-1], current)
+        descriptor = _open_nofollow(parts[-1], current)
         try:
             if not stat.S_ISREG(os.fstat(descriptor).st_mode):
                 return None

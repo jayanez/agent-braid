@@ -412,11 +412,6 @@ class FirstPartyBundleTests(unittest.TestCase):
         self.assertIn("Effort and tokens are not drawn", legend)
         self.assertIn(LEGEND_LITERAL, read("index.html")[read("index.html").index('id="scene-section"'):])
 
-    def test_the_scene_reads_no_effort_or_token_field(self):
-        text = read("braid-scene.js")
-        for field in ("knownTokens", "inputTokens", "outputTokens", "costUsd", "effortBasis", "cacheReadTokens"):
-            with self.subTest(field=field):
-                self.assertNotIn(field, text)
 
 
 SCENE_DRIVER = """
@@ -432,7 +427,9 @@ for (const [owner, list] of built.bySeq) {
     objects.push({
       owner, part: object.userData.part, selectable: object.userData.seq === undefined ? null : object.userData.seq,
       color: material.color ? material.color.getHex() : null, opacity: material.opacity === undefined ? null : material.opacity,
-      pulse: Boolean(material.userData && material.userData.pulse), sides: object.userData.sides === undefined ? null : object.userData.sides,
+      pulse: Boolean(material.userData && material.userData.pulse),
+      sides: object.userData.sides !== undefined ? object.userData.sides
+        : /-ring$/.test(object.userData.part) ? object.geometry.parameters.tubularSegments : null,
     });
   }
 }
@@ -529,7 +526,10 @@ class SceneBuildTests(unittest.TestCase):
         for reason in notdrawn.values():
             self.assertIn("table", reason)
 
-    def test_effort_and_tokens_are_not_drawn(self):
+    def test_effort_and_tokens_are_not_read_or_drawn(self):
+        text = read("braid-scene.js")
+        for field in ("knownTokens", "inputTokens", "outputTokens", "costUsd", "effortBasis", "cacheReadTokens"):
+            self.assertNotIn(field, text)
         effort = [seq for seq, element in self.elements().items() if element["element"] == "effort"]
         self.assertTrue(effort)
         for seq in effort:
@@ -594,6 +594,22 @@ class SceneBuildTests(unittest.TestCase):
         built = self.build(model)
         self.assertFalse(any(item["part"] == "unverified-marker" for item in built["objects"]))
 
+    def test_an_unrecognised_verification_value_is_marked_unverified_like_the_table_does(self):
+        model = json.loads(json.dumps(self.model))
+        for element in model["elements"]:
+            element["unverified"] = False
+            element["verification"] = "something-new"
+        built = self.build(model)
+        marked = {item["owner"] for item in built["objects"] if item["part"] == "unverified-marker"}
+        self.assertTrue(marked)
+        self.assertTrue({e["seq"] for e in model["elements"] if e["element"] in ("crossing", "gate-ring")} & set(self.parts(built)) <= marked)
+
+    def test_a_hazard_that_names_several_units_has_one_unverified_marker(self):
+        for element in self.elements().values():
+            if element["element"] == "hazard-cone" and element["unverified"] and self.parts().get(element["seq"]):
+                markers = [i for i in self.objects_of(element["seq"]) if i["part"] == "unverified-marker"]
+                self.assertEqual(len(markers), 1)
+
     def test_hazards_are_anchored_at_every_unit_they_name_and_not_observed_ones_are_dashed_and_pulsing(self):
         lanes = {lane["strandId"] for lane in self.model["lanes"]}
         hazards = [e for e in self.elements().values() if e["element"] == "hazard-cone"]
@@ -620,18 +636,27 @@ class SceneBuildTests(unittest.TestCase):
             if element["element"] == "wave-marker":
                 self.assertIn("wave-frame-edges", parts)
 
-    def test_gate_and_grant_shapes_differ_by_result_and_state(self):
+    def test_gate_results_and_grant_states_differ_in_colour_or_sides_and_an_unknown_value_is_grey(self):
         model = json.loads(json.dumps(self.model))
-        ring = next(e for e in model["elements"] if e["element"] == "gate-ring" and e["ringKind"] == "workflow-result")
+        gate = next(e for e in model["elements"] if e["element"] == "gate-ring" and e["ringKind"] == "workflow-result")
+        grant = next(e for e in model["elements"] if e["element"] == "gate-ring" and e["ringKind"] == "grant")
         statuses = ["refused", "busy", "inconclusive", "hazards-found", "ok-analyzed", "ok-certified"]
-        rings = []
-        for index, status in enumerate(statuses):
-            clone = dict(ring, seq=100 + index, gateStatus=status, status=status)
-            model["elements"].append(clone)
+        states = ["issued", "consumed", "expired", "refused"]
+        clones = [dict(gate, seq=100 + i, gateStatus=name, status=name) for i, name in enumerate(statuses)]
+        clones += [dict(grant, seq=200 + i, state=name, status=name) for i, name in enumerate(states)]
+        clones += [dict(gate, seq=300, gateStatus="constructor"), dict(grant, seq=301, state="constructor")]
+        model["elements"] += clones
         built = self.build(model)
-        for index, status in enumerate(statuses):
-            rings.append({(i["color"], i["part"]) for i in self.objects_of(100 + index, built) if i["part"] == "gate-result-ring"})
-        self.assertEqual(len({frozenset(item) for item in rings}), len(statuses), "each result has its own colour")
+
+        def shape(seq, part):
+            return {(i["color"], i["sides"]) for i in self.objects_of(seq, built) if i["part"] == part}
+
+        gates = [frozenset(shape(100 + i, "gate-result-ring")) for i in range(len(statuses))]
+        grants = [frozenset(shape(200 + i, "grant-ring")) for i in range(len(states))]
+        self.assertEqual(len(set(gates)), len(statuses), "each result has its own colour or sides")
+        self.assertEqual(len(set(grants)), len(states), "each state has its own colour or sides")
+        self.assertEqual(shape(300, "gate-result-ring"), {(0x8A8D96, 3)})
+        self.assertEqual(shape(301, "grant-ring"), {(0x8A8D96, 3)})
 
     def test_the_playback_frontier_follows_the_last_visible_event(self):
         frontier = self.built["frontier"]

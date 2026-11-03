@@ -69,7 +69,8 @@ const SCENE_LEGEND = [
   "Translucent slabs: planned waves, an advisory plan, not a runtime measurement. Framed slabs: runtime wave markers.",
   "Thin ring: a grant. Thick ring: a workflow gate or gate phase. The sides and colour follow the state or result, and the label names it.",
   "Cone with sparks: an observed hazard. Dashed pulsing wire cone: a hazard that was not observed. Absence of observation is not evidence that none exists.",
-  "Broken strand with a grey dashed stub: an observation gap.",
+  "Broken strand with a grey dashed stub: an observation gap. Pulsing ring on a crossing: partial coverage, so what is not listed is not shown to be absent.",
+  "Grey shapes: a value this viewer does not recognise (a pair classification, a gate state or a grant state). The label says unrecognized.",
   "Amber wire octahedron: unverified. Replayed or host-reported, and not checked by this viewer.",
   "Effort and tokens are not drawn in this release.",
 ];
@@ -178,13 +179,22 @@ function renderLegend() {
 // ---------------------------------------------------------------- data
 
 let rowsCache = null;
+let elementsCache = null;
+
+// The model's elements by seq, built once per model.
+function elementOf(seq) {
+  if (!state.model) return undefined;
+  if (!elementsCache || elementsCache.model !== state.model) {
+    elementsCache = { model: state.model, bySeq: new Map(state.model.elements.map((element) => [element.seq, element])) };
+  }
+  return elementsCache.bySeq.get(seq);
+}
 
 function rowsInOrder() {
   if (!state.model) return [];
   if (rowsCache && rowsCache.model === state.model) return rowsCache.rows;
-  const bySeq = new Map(state.model.elements.map((element) => [element.seq, element]));
   const rows = state.model.table
-    .map((row) => ({ row, element: bySeq.get(row.seq) }))
+    .map((row) => ({ row, element: elementOf(row.seq) }))
     .filter((entry) => entry.element)
     .sort((a, b) => a.element.order - b.element.order || a.row.seq - b.row.seq);
   rowsCache = { model: state.model, rows };
@@ -504,8 +514,7 @@ function detailPairs(element) {
 }
 
 function renderEvidence() {
-  const element = state.selected === null || !state.model
-    ? null : state.model.elements.find((candidate) => candidate.seq === state.selected);
+  const element = state.selected === null ? undefined : elementOf(state.selected);
   if (!element) {
     fill("evidence", h("p", { class: "hint" },
       "Select an event to see its source event, class, verification and evidence reference."));
@@ -603,15 +612,6 @@ let scene = null;
 let sceneModel = null;
 let sceneCursor = -1;
 let sceneSelected = null;
-let elementsCache = null;
-
-function elementOf(seq) {
-  if (!state.model) return undefined;
-  if (!elementsCache || elementsCache.model !== state.model) {
-    elementsCache = { model: state.model, bySeq: new Map(state.model.elements.map((element) => [element.seq, element])) };
-  }
-  return elementsCache.bySeq.get(seq);
-}
 
 function showHover(seq) {
   const element = seq === null ? undefined : elementOf(seq);
@@ -624,6 +624,8 @@ function showHover(seq) {
 function updateSceneNote() {
   const info = scene.summary();
   const parts = ["Showing " + info.drawn + " of " + info.visible + " events at this position in 3D."];
+  const untimed = info.seqs.filter((seq) => { const element = elementOf(seq); return element && element.timeKnown === false; }).length;
+  if (untimed) parts.push(untimed + " of them state no time: the scene places them after their predecessor and invents no time.");
   if (info.omitted.length) {
     parts.push("Only in the table: " + info.omitted.map((item) => item.count + " (" + item.reason + ")").join("; ") + ".");
   }
@@ -633,6 +635,15 @@ function updateSceneNote() {
 // Keeps the scene on the model, playback position and selection of the table. Cheap when nothing changed.
 function syncScene() {
   if (!scene) return;
+  try {
+    applyScene();
+  } catch (error) {
+    console.error(error);
+    sceneUnavailable("it could not draw this model.");
+  }
+}
+
+function applyScene() {
   const modelChanged = sceneModel !== state.model;
   if (modelChanged) {
     sceneModel = state.model;

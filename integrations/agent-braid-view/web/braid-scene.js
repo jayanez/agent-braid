@@ -38,6 +38,8 @@ const LANE_GAP = 1.6;
 const TUBE_RADIUS = 0.07;
 const CLIP_EPSILON = 0.12;
 const MAX_DRAWN_ELEMENTS = 2000;
+const MAX_OBJECTS = 12000; // meshes, sprites and lines together: a guard for the main thread and GPU memory
+const MAX_LABELS = 400;
 const LABEL_LIMIT = 40;
 const BADGE_RADIUS = 0.17;
 const VERTICAL_FOV = 40;
@@ -63,7 +65,6 @@ const COLORS = {
   runtimeWave: 0x8e5ea2,
   unverified: 0xf2a900,
   grey: 0x8a8d96,
-  selection: 0x1b8cff,
 };
 const HOST_COLORS = { braid: 0x5b7db1, claude: 0xb0794f, codex: 0x7a8f5a };
 // [sides, colour]: the shape differs as well as the colour, and the label names the state or result.
@@ -74,6 +75,12 @@ const GATE_RESULTS = {
 const GRANT_STATES = {
   "issued": [32, 0x3a86ff], "consumed": [32, 0x8a8d96], "expired": [12, 0x9d8189], "refused": [4, 0xd1495b],
 };
+
+// Same rule as marksOf in loom.js: an event is unverified when it says so or states no recognised verification.
+const KNOWN_VERIFICATION = new Set(["rehashed", "derived", "unverified"]);
+export function isUnverified(element) {
+  return element.unverified === true || !KNOWN_VERIFICATION.has(element.verification);
+}
 
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 
@@ -101,7 +108,6 @@ export function buildBraid(model, options = {}) {
   const group = new THREE.Group();
   const built = {
     group, bySeq: new Map(), xOf: new Map(), notDrawn: new Map(), animated: new Set(), animatedSeqs: new Set(),
-    minX: 0, maxX: 0,
     dispose() {
       group.traverse((object) => {
         if (object.geometry) object.geometry.dispose();
@@ -125,7 +131,6 @@ export function buildBraid(model, options = {}) {
   const xOf = (element) => (Number(element.x) || 0) * scale;
   const zOf = (index) => (index - (laneCount - 1) / 2) * LANE_GAP;
   const spanZ = Math.max(0, laneCount - 1) * LANE_GAP;
-  built.maxX = TIME_LENGTH;
   for (const element of elements) built.xOf.set(element.seq, xOf(element));
 
   const materials = new Map();
@@ -167,8 +172,8 @@ export function buildBraid(model, options = {}) {
     return object;
   }
 
-  function tube(owner, part, curve, radius, mat, segments = 16) {
-    return put(owner, new THREE.Mesh(new THREE.TubeGeometry(curve, segments, radius, 8, false), mat), part);
+  function tube(owner, part, curve, radius, mat, segments = 16, selectable = true) {
+    return put(owner, new THREE.Mesh(new THREE.TubeGeometry(curve, segments, radius, 8, false), mat), part, selectable);
   }
 
   function line3(a, b) {
@@ -187,10 +192,20 @@ export function buildBraid(model, options = {}) {
     }
   }
 
+  // Labels with the same text and size share one canvas texture and material.
+  const labelStyles = new Map();
+  let labelCount = 0;
   function label(owner, text, position, settings = {}) {
-    if (!labelsOn) return;
-    const sprite = makeLabel(text, textStyle, settings);
-    if (!sprite) return;
+    if (!labelsOn || labelCount >= MAX_LABELS) return;
+    const key = text + "|" + (settings.size || "") + "|" + (settings.align || "");
+    if (!labelStyles.has(key)) labelStyles.set(key, makeLabel(text, textStyle, settings));
+    const style = labelStyles.get(key);
+    if (!style) return;
+    labelCount += 1;
+    const sprite = new THREE.Sprite(style.material);
+    sprite.scale.set(style.width, style.height, 1);
+    sprite.center.set(settings.align === "right" ? 1 : 0.5, 0.5);
+    sprite.renderOrder = 10;
     sprite.position.copy(position);
     put(owner, sprite, "label", settings.selectable === true);
   }
@@ -223,16 +238,12 @@ export function buildBraid(model, options = {}) {
     let start = x0;
     for (const gapX of (gapsAt.get(lane.strandId) || []).sort((a, b) => a - b)) {
       if (gapX <= start || gapX >= x1) continue;
-      if (gapX - 0.25 > start) tube(lane.seq, "strand", line3(V(start, 0, z), V(gapX - 0.25, 0, z)), radius, mat, 1);
+      if (gapX - 0.25 > start) tube(lane.seq, "strand", line3(V(start, 0, z), V(gapX - 0.25, 0, z)), radius, mat, 1, lane.declared);
       start = gapX + 0.25;
     }
-    if (x1 > start) tube(lane.seq, "strand", line3(V(start, 0, z), V(x1, 0, z)), radius, mat, 1);
+    if (x1 > start) tube(lane.seq, "strand", line3(V(start, 0, z), V(x1, 0, z)), radius, mat, 1, lane.declared);
     label(lane.seq, shorten(lane.label), V(x0 - 0.3, 0.3, z), { align: "right", selectable: lane.declared });
-    if (lane.declared && opener && opener.unverified) unverifiedMarker(opener, x0, 0.5, z);
-    // tubes of a lane that only a crossing names are not selectable: they are not an event of their own
-    for (const object of built.bySeq.get(lane.seq) || []) {
-      if (!lane.declared && object.userData.part === "strand") delete object.userData.seq;
-    }
+    if (lane.declared && opener && isUnverified(opener)) unverifiedMarker(opener, x0, 0.5, z);
   }
 
   // ---- per element
@@ -245,8 +256,8 @@ export function buildBraid(model, options = {}) {
       if (!built.bySeq.has(element.seq)) built.notDrawn.set(element.seq, "strand without a lane");
       continue; // the lane loop above drew it
     }
-    if (drawnCount >= MAX_DRAWN_ELEMENTS) {
-      built.notDrawn.set(element.seq, "draw cap of " + MAX_DRAWN_ELEMENTS + " elements: shown in the table");
+    if (drawnCount >= MAX_DRAWN_ELEMENTS || group.children.length >= MAX_OBJECTS) {
+      built.notDrawn.set(element.seq, "draw cap of " + MAX_DRAWN_ELEMENTS + " elements or " + MAX_OBJECTS + " objects: shown in the table");
       continue;
     }
     const before = built.bySeq.has(element.seq) ? built.bySeq.get(element.seq).length : 0;
@@ -257,7 +268,6 @@ export function buildBraid(model, options = {}) {
     if (after === before && !built.notDrawn.has(element.seq)) built.notDrawn.set(element.seq, "nothing to place in the lanes: shown in the table");
     if (after > before) drawnCount += 1;
   }
-  built.materials = materials;
   return built;
 }
 
@@ -333,9 +343,10 @@ function drawCrossing(c) {
           tube(seq, "bridge-unknown", line3(points[index], points[index + 1]), 0.05, pulse, 1);
         }
       } else {
-        const known = { "independent-candidate": ["bridge", COLORS.independent], "ordered": ["bridge-ordered", COLORS.ordered],
-          "conflicting": ["bridge-conflicting", COLORS.conflict] }[element.classification];
-        const [part, colour] = known || ["bridge-unrecognized", COLORS.grey];
+        const table = { "independent-candidate": ["bridge", COLORS.independent], "ordered": ["bridge-ordered", COLORS.ordered],
+          "conflicting": ["bridge-conflicting", COLORS.conflict] };
+        const [part, colour] = Object.hasOwn(table, element.classification) ? table[element.classification]
+          : ["bridge-unrecognized", COLORS.grey];
         tube(seq, part, arc, 0.05, material("solid", colour), 28);
       }
       badgeY = rise / 2 + 0.3;
@@ -355,7 +366,7 @@ function drawCrossing(c) {
     put(seq, halo, "partial-halo");
   }
   classBadge(c, element.compatibilityClass, x, badgeY, mid);
-  if (element.unverified) c.unverifiedMarker(element, x, markerY, mid);
+  if (isUnverified(element)) c.unverifiedMarker(element, x, markerY, mid);
 }
 
 function drawHazard(c) {
@@ -383,7 +394,7 @@ function drawHazard(c) {
       geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
       put(element.seq, new THREE.Points(geometry, material("points", COLORS.spark)), "hazard-spark");
     }
-    if (element.unverified) c.unverifiedMarker(element, x, 1.15, z);
+    if (index === 0 && isUnverified(element)) c.unverifiedMarker(element, x, 1.15, z); // one marker per hazard
     index += 1;
   }
   if (index === 0) c.built.notDrawn.set(element.seq, "no unit strand of this hazard is in the lanes: shown in the table");
@@ -404,7 +415,7 @@ function drawGap(c) {
     bar.rotation.z = side < 0 ? 0.35 : -0.35;
     put(element.seq, bar, "gap-break");
   }
-  if (element.unverified) c.unverifiedMarker(element, x, 0.6, z);
+  if (isUnverified(element)) c.unverifiedMarker(element, x, 0.6, z);
 }
 
 function slabsFor(c, indexes, x, color, filled, part) {
@@ -440,7 +451,7 @@ function drawWavePlane(c) {
     return;
   }
   label(element.seq, "advisory plan, not a runtime measurement", V(x, 1.15, top), { selectable: true });
-  if (element.unverified) c.unverifiedMarker(element, x, 1.5, top);
+  if (isUnverified(element)) c.unverifiedMarker(element, x, 1.5, top);
 }
 
 function drawWaveMarker(c) {
@@ -452,7 +463,7 @@ function drawWaveMarker(c) {
   }
   slabsFor(c, indexes, x, COLORS.runtimeWave, element.phase === "finished", "wave-frame");
   label(element.seq, "wave " + element.wave + " " + element.phase, V(x, 1.0, zOf(Math.min(...indexes))), { selectable: true });
-  if (element.unverified) c.unverifiedMarker(element, x, 1.4, zOf(Math.min(...indexes)));
+  if (isUnverified(element)) c.unverifiedMarker(element, x, 1.4, zOf(Math.min(...indexes)));
 }
 
 function drawGateRing(c) {
@@ -460,17 +471,17 @@ function drawGateRing(c) {
   const grant = element.ringKind === "grant";
   const table = grant ? GRANT_STATES : GATE_RESULTS;
   const name = grant ? element.state : element.gateStatus;
-  const [sides, color] = table[name] || [3, COLORS.grey];
+  const known = Object.hasOwn(table, name);
+  const [sides, color] = known ? table[name] : [3, COLORS.grey];
   const radius = Math.max(grant ? 0.95 : 1.25, spanZ / 2 + (grant ? 0.65 : 1.0));
   let ring;
   if (element.ringKind === "workflow-phase") {
-    const points = [];
-    for (let step = 0; step < 48; step += 1) {
+    const around = (step) => {
       const angle = (step / 48) * Math.PI * 2;
-      if (step % 3 !== 2) points.push(V(0, Math.sin(angle) * radius, Math.cos(angle) * radius));
-    }
-    const dashed = [];
-    for (let step = 0; step + 1 < points.length; step += 2) dashed.push(points[step], points[step + 1]);
+      return V(0, Math.sin(angle) * radius, Math.cos(angle) * radius);
+    };
+    const dashed = []; // two dashes of every three steps of the circle
+    for (let step = 0; step < 48; step += 3) dashed.push(around(step), around(step + 1));
     ring = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(dashed), material("line", color));
   } else {
     ring = new THREE.Mesh(new THREE.TorusGeometry(radius, grant ? 0.035 : 0.075, 8, sides), material("solid", color));
@@ -478,8 +489,8 @@ function drawGateRing(c) {
   }
   ring.position.set(x, 0, 0);
   put(element.seq, ring, grant ? "grant-ring" : element.ringKind === "workflow-phase" ? "gate-phase-ring" : "gate-result-ring");
-  label(element.seq, (grant ? "grant " : "gate ") + String(name), V(x, radius + 0.3, 0), { selectable: true });
-  if (element.unverified) c.unverifiedMarker(element, x, radius + 0.75, 0);
+  label(element.seq, (grant ? "grant " : "gate ") + (known ? name : "unrecognized"), V(x, radius + 0.3, 0), { selectable: true });
+  if (isUnverified(element)) c.unverifiedMarker(element, x, radius + 0.75, 0);
 }
 
 function drawBead(c) {
@@ -492,7 +503,7 @@ function drawBead(c) {
   const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 8), material("solid", COLORS.grey));
   mesh.position.set(x, 0, zOf(lane));
   put(element.seq, mesh, "strand-state");
-  if (element.unverified) c.unverifiedMarker(element, x, 0.5, zOf(lane));
+  if (isUnverified(element)) c.unverifiedMarker(element, x, 0.5, zOf(lane));
 }
 
 function drawStrandEnd(c) {
@@ -506,7 +517,7 @@ function drawStrandEnd(c) {
   cap.rotation.y = Math.PI / 2;
   cap.position.set(x, 0, zOf(lane));
   put(element.seq, cap, "strand-end");
-  if (element.unverified) c.unverifiedMarker(element, x, 0.5, zOf(lane));
+  if (isUnverified(element)) c.unverifiedMarker(element, x, 0.5, zOf(lane));
 }
 
 const DRAWERS = {
@@ -552,12 +563,12 @@ function makeLabel(text, style, settings) {
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.LinearFilter;
   texture.generateMipmaps = false;
-  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, depthTest: false, transparent: true }));
   const unit = 1 / (pixels / (settings.size || 0.34));
-  sprite.scale.set(canvas.width * unit, canvas.height * unit, 1);
-  sprite.center.set(settings.align === "right" ? 1 : 0.5, 0.5);
-  sprite.renderOrder = 10;
-  return sprite;
+  return {
+    material: new THREE.SpriteMaterial({ map: texture, depthTest: false, transparent: true }),
+    width: canvas.width * unit,
+    height: canvas.height * unit,
+  };
 }
 
 // ---------------------------------------------------------------- inspection helpers (also used by tests)
@@ -706,27 +717,25 @@ export function createBraidScene(container, hooks = {}) {
     fitted = true;
   }
 
+  function clearSelection() {
+    if (!selection) return;
+    scene.remove(selection);
+    selection.traverse((object) => {
+      if (object.geometry) object.geometry.dispose();
+      if (object.material) object.material.dispose();
+    });
+    selection = null;
+  }
+
   function updateSelection() {
-    if (selection) {
-      scene.remove(selection);
-      selection.traverse((object) => {
-        if (object.geometry) object.geometry.dispose();
-        if (object.material) object.material.dispose();
-      });
-      selection = null;
-    }
+    clearSelection();
     const objects = selected === null ? undefined : built.bySeq.get(selected);
     if (!objects || !visible.has(selected)) return;
     const box = new THREE.Box3();
     for (const object of objects) if (object.userData.part !== "label") box.expandByObject(object);
     if (box.isEmpty()) return;
     box.expandByScalar(0.18);
-    const colour = new THREE.Color();
-    try {
-      colour.set(colors.accent);
-    } catch (error) {
-      colour.set(COLORS.selection);
-    }
+    const colour = new THREE.Color(colors.accent);
     const centre = box.getCenter(new THREE.Vector3());
     const extent = box.getSize(new THREE.Vector3());
     selection = new THREE.Group();
@@ -778,12 +787,13 @@ export function createBraidScene(container, hooks = {}) {
   let down = null;
   let hoverFrame = 0;
   function onPointerDown(event) {
-    down = { x: event.clientX, y: event.clientY };
+    // only the primary button of the primary pointer selects: not a right or middle click, not a second finger
+    down = event.button === 0 && event.isPrimary ? { id: event.pointerId, x: event.clientX, y: event.clientY } : null;
   }
   function onPointerUp(event) {
     const start = down;
     down = null;
-    if (!start || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 4) return;
+    if (!start || start.id !== event.pointerId || Math.hypot(event.clientX - start.x, event.clientY - start.y) > 4) return;
     const seq = pick(event);
     if (seq !== null && hooks.onSelect) hooks.onSelect(seq);
   }
@@ -851,11 +861,10 @@ export function createBraidScene(container, hooks = {}) {
     },
     // What the scene shows right now, for the note under it.
     summary() {
-      let drawn = 0;
-      for (const seq of visible) if (built.bySeq.has(seq)) drawn += 1;
       const omitted = new Map();
       for (const [seq, reason] of built.notDrawn) if (visible.has(seq)) omitted.set(reason, (omitted.get(reason) || 0) + 1);
-      return { visible: visible.size, drawn, omitted: [...omitted].map(([reason, count]) => ({ reason, count })) };
+      const seqs = [...visible].filter((seq) => built.bySeq.has(seq));
+      return { visible: visible.size, drawn: seqs.length, seqs, omitted: [...omitted].map(([reason, count]) => ({ reason, count })) };
     },
     dispose() {
       disposed = true;
@@ -865,6 +874,12 @@ export function createBraidScene(container, hooks = {}) {
       document.removeEventListener("visibilitychange", onVisibility);
       darkQuery.removeEventListener("change", onTheme);
       reducedMotion.removeEventListener("change", onVisibility);
+      canvas.removeEventListener("pointerdown", onPointerDown);
+      canvas.removeEventListener("pointerup", onPointerUp);
+      canvas.removeEventListener("pointermove", onPointerMove);
+      canvas.removeEventListener("pointerleave", onPointerLeave);
+      canvas.removeEventListener("webglcontextlost", onContextLost);
+      clearSelection();
       controls.dispose();
       built.dispose();
       renderer.dispose();
