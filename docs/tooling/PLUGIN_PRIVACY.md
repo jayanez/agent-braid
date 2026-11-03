@@ -26,6 +26,10 @@ alternative private location. Registration is previewed before application.
 Unregistering a workspace and uninstalling the plugin retain its results. Users
 can inspect and remove their own retained application data after preserving any
 needed evidence. No deletion request to a remote Agent Braid service is needed.
+Each successful `analyze-work` call also keeps a local copy of its report in that
+workspace's private result root, for the read-only activity viewer
+([SPEC-061](../../specs/061-activity-viewer/spec.md)). Copies are never uploaded and are removed
+after 30 days, or oldest first beyond 64 MiB or 1,500 copies.
 
 An optional, Claude-only `braid-gate` workflow is specified but unreleased
 ([recipe](CLAUDE_WORKFLOWS.md)); Codex ignores it and the product skills and setup

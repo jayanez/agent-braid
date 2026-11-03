@@ -44,11 +44,12 @@ claude plugin install agent-braid \
 The host's plugin interface offers the equivalent marketplace and installation
 operations. Skills are discovered from the installed plugin; no copying to global
 skills folders or `npx skills add` is needed. Five product skills come from the
-existing canonical bundle; a sixth, `setup`, owns onboarding independently.
+existing canonical bundle; `setup` owns onboarding and `telemetry-audit` the read-only
+host-log versus local-telemetry audit, both independently of that bundle.
 
 Plugin skills are unprefixed. In Claude Code invoke `/agent-braid:analyze`,
 `/agent-braid:plan`, `/agent-braid:evidence`, `/agent-braid:execute`,
-`/agent-braid:recover` or `/agent-braid:setup`; in Codex select the skill from the Agent Braid
+`/agent-braid:recover`, `/agent-braid:setup` or `/agent-braid:telemetry-audit`; in Codex select the skill from the Agent Braid
 plugin (`$` or `/skills`); its qualified name is expected to be
 `agent-braid:analyze` and has not yet been observed in a native Codex session. The legacy global install keeps `agent-braid-*`.
 Skills and docs reference tools by bare MCP name (for example `analyze-work`):

@@ -54,7 +54,7 @@ def copy_tracked_workflows(source, destination):
 
 PLUGIN_NAME = 'agent-braid'
 SKILL_SUBSTITUTIONS = {f'agent-braid-{x}': x for x in ('analyze', 'plan', 'evidence', 'execute', 'recover')}
-PACKAGED_SKILL_NAMES = frozenset(SKILL_SUBSTITUTIONS.values()) | {'setup'}
+PACKAGED_SKILL_NAMES = frozenset(SKILL_SUBSTITUTIONS.values()) | {'setup', 'telemetry-audit'}
 NAME_PATTERN = re.compile(r'^[a-z0-9]+(-[a-z0-9]+)*$')
 PREFIXED_TOKEN = re.compile(r'(?<![A-Za-z0-9-])agent-braid-(?:analyze|plan|evidence|execute|recover)(?![A-Za-z0-9-])')
 FRONTMATTER_NAME = re.compile(r'^name: (\S+)$', re.M)
@@ -264,7 +264,8 @@ def assemble(output, cache, *, platforms=None, allow_dirty=False, include_workfl
             destination.write_text(packaged)
             skill_provenance.append({'canonicalName': skill.name, 'packagedName': SKILL_SUBSTITUTIONS[skill.name],
                 'canonicalSha256': skill.sha256, 'packagedSha256': hashlib.sha256(packaged.encode()).hexdigest()})
-        shutil.copytree(ROOT / 'integrations/agent-braid/plugin/setup', plugin / 'skills/setup')
+        for plugin_only in ('setup', 'telemetry-audit'):
+            shutil.copytree(ROOT / 'integrations/agent-braid/plugin' / plugin_only, plugin / 'skills' / plugin_only)
         if include_workflows:
             # Pre-adoption guard: Claude-only component, opt-in, never a releasable identity.
             copy_tracked_workflows(WORKFLOWS_SOURCE, plugin / 'workflows')
