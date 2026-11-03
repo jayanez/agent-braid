@@ -55,11 +55,16 @@ research outcomes are legitimate; assess protocol adherence separately from the
 result. Passing deterministic checks does not prove constitutional semantics,
 scientific validity, production safety, or a human approval.
 
-Run `python3 -m scripts.validate_change --base develop --profile quick` after a
-coherent implementation increment; sensitive or unknown paths escalate
-conservatively. Run `--profile pr` once on a stable candidate before review or
-integration. Feature-specific clean-room reproduction and evidence capture remain
-separate boundary commands and must not be inferred from either profile. Analysis
+While iterating run targeted tests for the touched modules and
+`python3 -m scripts.validate_spec_kit`; run
+`python3 -m scripts.validate_change --base develop --profile quick` only when the
+touched paths do not escalate to the full suite, or when the author wants it. The
+CI `validate` aggregate on the PR head is the `pr`-profile evidence; run
+`--profile pr` locally only when CI cannot run it (offline, outage, workflow not
+triggered) or for sensitive paths that `docs/development/VALIDATION_PROFILES.md`
+says need a local candidate run. Never run two full suites at once on one machine.
+Feature-specific clean-room reproduction and evidence capture remain separate
+boundary commands and must not be inferred from any profile or from CI. Analysis
 and review are read-only.
 Do not edit `CONSTITUTION.md` or its replica through any feature command.
 Do not execute multiple agents, hooks, external issue creation, commits, pushes,

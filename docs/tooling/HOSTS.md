@@ -45,6 +45,15 @@ route and authentication, and the trusted supervisor observer must supply
 fresh account, included-quota and paid-usage facts. See
 [REGISTRATION.md](REGISTRATION.md) and [SUPERVISOR.md](SUPERVISOR.md).
 
+## OpenCode
+
+There is no OpenCode session adapter. OpenCode integrates through the native plugin
+([NATIVE_PLUGINS.md](NATIVE_PLUGINS.md), from `0.1.0-alpha.7`) and the legacy
+`tooling install --host opencode` profile ([INSTALL.md](INSTALL.md)). Neither launches
+an OpenCode or provider session, and neither grants a tool or approval: OpenCode's
+own permission rules remain host decisions, never Agent Braid grants. Real-host
+observation of the packaged plugin (SPEC-068 T010) is pending.
+
 ## Portable server prompts
 
 Portable server prompts (SPEC-060, ADR 0031; candidate under implementation, no

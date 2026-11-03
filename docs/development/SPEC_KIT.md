@@ -76,18 +76,23 @@ worktree audit.
 
 ## Equivalent journey
 
-| Phase | Codex | Claude Code |
-|---|---|---|
-| Specify | `$speckit-specify` | `/speckit-specify` |
-| Clarify | `$speckit-clarify` | `/speckit-clarify` |
-| Plan | `$speckit-plan` | `/speckit-plan` |
-| Tasks | `$speckit-tasks` | `/speckit-tasks` |
-| Analyze | `$speckit-analyze` | `/speckit-analyze` |
-| Implement | `$speckit-implement` | `/speckit-implement` |
-| Converge | `$speckit-converge` | `/speckit-converge` |
-| Amendment proposal | `$speckit-constitution` | `/speckit-constitution` |
+| Phase | Codex | Claude Code | OpenCode |
+|---|---|---|---|
+| Specify | `$speckit-specify` | `/speckit-specify` | skill `speckit-specify` |
+| Clarify | `$speckit-clarify` | `/speckit-clarify` | skill `speckit-clarify` |
+| Plan | `$speckit-plan` | `/speckit-plan` | skill `speckit-plan` |
+| Tasks | `$speckit-tasks` | `/speckit-tasks` | skill `speckit-tasks` |
+| Analyze | `$speckit-analyze` | `/speckit-analyze` | skill `speckit-analyze` |
+| Implement | `$speckit-implement` | `/speckit-implement` | skill `speckit-implement` |
+| Converge | `$speckit-converge` | `/speckit-converge` | skill `speckit-converge` |
+| Amendment proposal | `$speckit-constitution` | `/speckit-constitution` | skill `speckit-constitution` |
 
-Checklist and taskstoissues use the same prefixes. Issue drafts do not authorize
+Checklist and taskstoissues use the same prefixes. OpenCode has no committed Spec
+Kit integration: OpenCode was observed discovering skills from `.agents/skills/` and
+`.claude/skills/` (2.1.4, macOS arm64, simple marker skills; discovery of the
+`speckit-*` skills themselves is unobserved), so ask the agent to use the named skill. How OpenCode lists and invokes skills in a live session, for
+example whether a slash form exists, is unobserved; nothing in this repository
+depends on OpenCode. Issue drafts do not authorize
 remote writes. Handoffs do not authorize concurrent agents, commits, pushes or
 autonomous delivery. Review each stage before proceeding. The
 [pilot quickstart](../../specs/001-certificate-verifier-pilot/quickstart.md)

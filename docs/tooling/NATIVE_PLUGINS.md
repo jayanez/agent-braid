@@ -3,7 +3,8 @@
 
 The native plugin is installed once **per user, per local host** and reused across
 repositories. Supported package targets are macOS arm64 and Linux x86_64 (glibc 2.28 or newer; no musl compatibility claim). Codex
-or Claude Code and Git must already be installed. The package includes CPython
+or Claude Code and Git must already be installed (OpenCode is planned for `0.1.0-alpha.7`, see
+[OpenCode](#opencode-available-from-010-alpha7)). The package includes CPython
 3.12.15 and hash-locked dependencies; Python, pip, uv, Node and Docker are not
 consumer prerequisites. The Python installation remains available below.
 
@@ -93,9 +94,11 @@ curl -fsSL https://raw.githubusercontent.com/jayanez/agent-braid/develop/install
   | sh -s -- --host codex
 ```
 
-Use `--host claude` or `--host all` (every supported host found on `PATH`; absent
-hosts are skipped with a notice and none found is refused) as appropriate.
-`--host both` remains a deprecated alias for `codex` + `claude`. A reviewed source commit can
+Use `--host claude`, `--host opencode` or `--host all` (every supported host found
+on `PATH`: Codex, Claude Code and OpenCode; absent hosts are skipped with a notice
+and none found is refused) as appropriate. `--host opencode` refuses when
+`opencode` is absent. `--host both` remains a deprecated alias for `codex` +
+`claude` only and never touches OpenCode. A reviewed source commit can
 replace `develop` in the download URL; `--ref TAG` pins the distribution ref.
 `--marketplace /absolute/local/catalog` supports an unpublished local candidate.
 The installer needs curl only for fetching this script and never downloads a
@@ -103,6 +106,71 @@ Python environment, uses sudo, starts a provider session or modifies repository
 configuration. Every selected host is preflighted before the first mutation.
 If a native manager fails after an earlier operation succeeds, inspect its
 output and rerun the same selection; native managers own idempotency.
+
+## OpenCode (available from 0.1.0-alpha.7)
+
+**Status.** The OpenCode package is planned for `0.1.0-alpha.7`. It is not in the
+published `0.1.0-alpha.6`, and the current `plugin-dist` branch has no
+`package.json` for OpenCode yet, so the command below works only after that
+release. Everything here comes from the SPEC-068
+[surface contract](../../specs/068-opencode-native-integration/contracts/opencode-surface.md),
+its tests and one disposable-profile observation (T002). That observation used
+OpenCode 2.1.4 on macOS arm64 with a local Git source. A real-host run of the published plugin (T010), the `github:`
+transport, Linux, and skill and command shapes in a live session are **unobserved**.
+
+Install (user-global; `opencode plugin add` writes only the global configuration):
+
+```sh
+opencode plugin add 'github:jayanez/agent-braid#plugin-dist::path:plugins/agent-braid'
+```
+
+The installer runs this string (`--ref TAG` replaces `plugin-dist`):
+`sh install.sh --host opencode`, or `--host all` with `opencode` on `PATH`.
+
+What the plugin registers: one MCP server named `agent-braid` (tools appear as
+`agent-braid_<tool>`, with `codemode: false` and `protocol: legacy` set
+explicitly), the six skills `analyze`, `plan`, `evidence`, `execute`, `recover` and
+`setup`, and two commands, `agent-braid-setup` and `agent-braid-reconnect`. It
+publishes no MCP prompts, makes no network call or file write (the commands send
+a message into the session), writes no `permission` configuration, and runs no hook. Tool names, schemas and results are the
+`agent-braid-plugin/v0.2` contract, unchanged. OpenCode permissions are host
+approvals, not Agent Braid grants; execution still needs an operator grant created
+outside every tool, skill and command.
+
+**Update, remove and reconnect** (observed with a branch-pinned local Git source):
+
+- `opencode plugin update` reinstalls a branch-pinned source (the default
+  `plugin-dist`) into a new cache directory under `$XDG_CACHE_HOME/opencode/npm/`;
+  the configuration string is unchanged and the old directory stays on disk. A
+  tag-pinned source reports no update.
+- `opencode plugin remove` needs the **exact** source string from the
+  configuration. The plugin id and the package name `agent-braid` answer "not
+  configured" with exit status 0. Removal edits the global configuration and
+  leaves the cache directory; Agent Braid's registry and results are untouched.
+- `opencode reload` re-runs the plugin and restarts the stdio MCP server, which is
+  how you pick up a new registry (`agent-braid-reconnect` sends a prompt asking the agent to relay these steps and
+  performs no reload; running the commands is unobserved). Plugin loading after a reload is asynchronous: `opencode plugin
+  list` can show nothing for a few seconds. Whether a reload switches a **running
+  session** to a newly installed plugin version is not observed for OpenCode (it
+  did not for Claude Code with `0.1.0-alpha.6`, per SPEC-068 T010), so observe each candidate in a
+  new session.
+
+**Collisions.** OpenCode does not namespace plugin skills: a user or project
+skill with the same id silently wins, and the plugin cannot see discovered skills
+while it registers its own. Run the read-only diagnosis described in
+[SKILLS.md](SKILLS.md#opencode-skill-collisions). The entry never replaces an
+existing `agent-braid` MCP entry; OpenCode would otherwise override it without a
+warning. `plugin doctor --host opencode` reports it as `server-collision`. If you
+also installed the legacy profile (`agent-braid tooling install --host opencode`),
+it uses the same server key by default and shadows the plugin's server; the
+legacy preview and `doctor` warn with `native_plugin_shadowed`
+([INSTALL.md](INSTALL.md#opencode-legacy-profile)).
+
+**Host approval defaults.** In the observed profile no default permission rule
+mentioned MCP tools: the default rule sets started from allow-all, with a few
+exceptions such as asking before reading `.env` files and some deny rules; rule evaluation order is unobserved. A user `permission` entry can
+target `agent-braid_*`. Whether OpenCode prompts when a model calls these tools was
+not observed (it needs a model turn).
 
 ## Setup and repository suggestions
 
@@ -341,8 +409,9 @@ only changes the registry; source files and results survive.
 
 Use each host's native plugin update and uninstall commands or UI. Removing the
 plugin removes its installed files; shared Agent Braid configuration and results
-remain for reinstall/migration. Inspect `codex plugin --help` and
-`claude plugin --help` for commands supported by your exact host version.
+remain for reinstall/migration. Inspect `codex plugin --help`,
+`claude plugin --help` and `opencode plugin --help` for commands supported by your
+exact host version. OpenCode's own cache behavior is described in the OpenCode section above.
 
 For a legacy Python installation, setup offers receipt discovery and an explicit
 migration preview:
