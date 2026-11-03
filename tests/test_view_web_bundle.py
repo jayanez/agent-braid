@@ -12,6 +12,7 @@ import base64
 import hashlib
 import http.client
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -396,8 +397,8 @@ class FirstPartyBundleTests(unittest.TestCase):
     def test_the_scene_is_bound_to_the_tables_selection_and_playback(self):
         text = read("loom.js")
         self.assertRegex(text, r"onSelect:\s*select\b")
-        self.assertIn("const position = rowsInOrder().slice(0, state.cursor);", text)
         self.assertIn("scene.setVisible(", text)
+        self.assertIn("rowsInOrder().slice(0, state.cursor)", text)
         self.assertIn("scene.setSelected(state.selected)", text)
         html = read("index.html")
         for identifier in ("scene-section", "scene-box", "scene-hover", "scene-note", "scene-reset", "legend-scene"):
@@ -411,9 +412,6 @@ class FirstPartyBundleTests(unittest.TestCase):
         self.assertIn("hidden", html[html.index('id="sources"'):html.index('id="source-list"')])
         self.assertLess(html.index('id="sources"'), html.index('id="scene-section"'), "the sources sit above both views")
         self.assertIn("never looks like an absent one", html)
-        self.assertRegex(script, r"rowsInOrder\(\)\.slice\(0, state\.cursor\)\.filter\(\(\{ row, element \}\) => \{\s*"
-                                 r"if \(!isSourceShown\(element, state\.hiddenSources\)\) return false;")
-        self.assertRegex(script, r"position\.filter\(\(\{ element \}\) => isSourceShown\(element, state\.hiddenSources\)\)")
         self.assertRegex(scene, r"setVisible\(seqs, position = seqs\)")
         self.assertRegex(scene, r"frontier = frontierX\(built, frontierSeqs\)")
         self.assertNotRegex(script, r"localStorage|sessionStorage|document\.cookie", "the selection is never stored")
@@ -790,6 +788,7 @@ const observe = () => {
     emptyText: find("table-empty").textContent, emptyHidden: find("table-empty").hidden,
     scene: calls, sceneNote: find("scene-note").textContent,
     evidence: find("evidence").textContent, counters: find("counters").textContent,
+    playback: find("pb-count").textContent,
   };
 };
 const results = [observe()];
@@ -817,7 +816,7 @@ SOURCE_LABELS = {
 }
 
 
-@unittest.skipUnless(shutil.which("node"), "node is needed to drive the page without a browser")
+@unittest.skipIf(not shutil.which("node") and not os.environ.get("CI"), "node is needed to drive the page without a browser")
 class SourceCheckboxTests(unittest.TestCase):
     """REQ-010 / SC-010 (amendment A1): per-source checkboxes drive loom.js under Node with a minimal DOM."""
 
@@ -832,16 +831,10 @@ class SourceCheckboxTests(unittest.TestCase):
                            ("scene-hooks.mjs", SCENE_HOOKS), ("driver.mjs", PAGE_DRIVER)):
             (cls.root / name).write_text(text)
         cls.model = cls.mixed_model()
-        cls.by_source = {}
-        for element in cls.model["elements"]:
-            cls.by_source.setdefault(cls.expected_source(element), []).append(element["seq"])
-
-    @staticmethod
-    def expected_source(element):
-        """The source stated by REQ-010, from the verification and evidence reference alone."""
-        checked = element["verification"] in ("rehashed", "derived")
-        referenced = element["evidenceRef"] is not None
-        return {(True, True): "watched", (True, False): "viewer", (False, True): "replay", (False, False): "hook"}[(checked, referenced)]
+        # Written out, not recomputed: the example plus three watched events turned into replayed (unverified,
+        # referenced) ones. seq 1 is a gap derived by the viewer; seq 18 to 21 are host reports with no artifact.
+        cls.by_source = {"viewer": [1], "replay": [2, 3, 4], "hook": [18, 19, 20, 21],
+                         "watched": [*range(5, 18), 22, 23, 24]}
 
     @classmethod
     def mixed_model(cls):
@@ -924,6 +917,12 @@ class SourceCheckboxTests(unittest.TestCase):
         late = self.drive([{"cursor": 3}, {"toggle": "hook", "shown": False}])[-1]
         self.assertIn(f"{len(hidden)} of {self.total()} retained events are hidden", late["status"])
 
+    def test_the_playback_position_says_how_many_of_the_events_so_far_are_drawn(self):
+        first, hidden = self.drive([{"toggle": "hook", "shown": False}])
+        total = self.total()
+        self.assertEqual(first["playback"], f"{total} of {total}")
+        self.assertEqual(hidden["playback"], f"{total} of {total} ({total - len(self.by_source['hook'])} shown)")
+
     def test_hiding_the_source_of_the_selected_event_clears_the_evidence_panel(self):
         seq = self.by_source["hook"][0]
         selected, cleared = self.drive([{"select": seq}, {"toggle": "hook", "shown": False}])[1:]
@@ -938,7 +937,7 @@ class SourceCheckboxTests(unittest.TestCase):
 
     def test_a_model_with_one_source_offers_one_checkbox_and_an_empty_model_offers_none(self):
         original = self.model
-        kept = {e["seq"] for e in original["elements"] if self.expected_source(e) == "watched"}
+        kept = set(self.by_source["watched"])
         self.model = dict(original, elements=[e for e in original["elements"] if e["seq"] in kept],
                           table=[row for row in original["table"] if row["seq"] in kept])
         try:

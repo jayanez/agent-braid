@@ -165,17 +165,18 @@ function timeText(element) {
 // ---------------------------------------------------------------- event sources
 
 // The page offers one checkbox per source of events, all checked by default. The model carries no adapter name and
-// no root, so the source is derived from the two fields every element has from its event's source block: the
-// verification status and whether an evidence reference exists. Nothing is added to the event contract.
-//   rehashed or derived, with an evidence reference: read from a watched root by an adapter
+// no root, so the source is inferred from the two fields every element has from its event's source block: the
+// verification status and whether an evidence reference exists. Nothing is added to the event contract. The labels
+// name what is known about each group, not a guessed origin.
+//   rehashed or derived, with an evidence reference: read from an artifact root and re-hashed (all roots form one group)
 //   rehashed or derived, without one: produced by the viewer itself (for example a ring-eviction gap)
-//   anything else, with an evidence reference: a replay file (every replayed event is unverified)
-//   anything else, without one: a host report (hook or telemetry ingest)
+//   anything else, with an evidence reference: unverified and referenced, as every event of a replay file is
+//   anything else, without one: unverified and unreferenced, as a host report (hook or telemetry ingest) is
 const SOURCES = {
-  watched: ["Watched artifacts", "Read from the watched or discovered artifact roots and re-hashed by this session. The model does not name the root, so all roots form one source."],
-  replay: ["Replay file", "Recorded events loaded with --replay. Never re-hashed by this session."],
-  hook: ["Hook and telemetry ingest", "Reported by a host with no artifact behind it. Recorded host events in a replay file without an artifact also appear here. Not checked by this viewer."],
-  viewer: ["Derived by the viewer", "Produced by this viewer itself, such as gaps for evicted or truncated ranges."],
+  watched: ["Watched artifacts", "Events with an evidence reference that this session re-hashed. The model does not name the root, so all watched and discovered roots form one group."],
+  replay: ["Replay file", "Unverified events with an evidence reference, as every event loaded with --replay is. Never re-hashed by this session."],
+  hook: ["Hook and telemetry ingest", "Unverified events with no evidence reference, as host reports are. Recorded host events in a replay file that have no artifact also appear here."],
+  viewer: ["Derived by the viewer", "Events with no evidence reference that the viewer produced itself, such as gaps for evicted or truncated ranges."],
 };
 
 function sourceOf(element) {
@@ -184,27 +185,15 @@ function sourceOf(element) {
   return referenced ? "replay" : "hook";
 }
 
-function countSources(elements) {
-  const counts = {};
-  for (const element of elements) counts[sourceOf(element)] = (counts[sourceOf(element)] || 0) + 1;
-  return counts;
-}
-
-function isSourceShown(element, hidden) {
-  return !hidden.has(sourceOf(element));
-}
-
-function hiddenEventCount(counts, hidden) {
-  let total = 0;
-  for (const key of hidden) total += counts[key] || 0;
-  return total;
+function isSourceShown(element) {
+  return !state.hiddenSources.has(sourceOf(element));
 }
 
 function hiddenText(hidden, total) {
   return hidden === 0
     ? "All sources are shown: 0 events hidden."
     : hidden + " of " + total + " retained events are hidden because their source is unchecked. Hidden is not absent: " +
-      "the counters and the list of what is not shown as clean still count them.";
+      "the counters and the list of what is not shown as clean still include them.";
 }
 
 // ---------------------------------------------------------------- legend (static tables above)
@@ -242,13 +231,18 @@ let countsCache = null;
 function sourceCounts() {
   if (!state.model) return {};
   if (!countsCache || countsCache.model !== state.model) {
-    countsCache = { model: state.model, counts: countSources(state.model.elements) };
+    const counts = {};
+    for (const element of state.model.elements) counts[sourceOf(element)] = (counts[sourceOf(element)] || 0) + 1;
+    countsCache = { model: state.model, counts };
   }
   return countsCache.counts;
 }
 
 function hiddenCount() {
-  return hiddenEventCount(sourceCounts(), state.hiddenSources);
+  const counts = sourceCounts();
+  let total = 0;
+  for (const key of state.hiddenSources) total += counts[key] || 0;
+  return total;
 }
 
 function rowsInOrder() {
@@ -455,6 +449,8 @@ const sourceNodes = new Map();
 function renderSources() {
   const counts = sourceCounts();
   const keys = Object.keys(SOURCES).filter((key) => counts[key]);
+  // A source that no longer has events has no checkbox, so it cannot stay hidden with no way to show it again.
+  for (const key of [...state.hiddenSources]) if (!counts[key]) state.hiddenSources.delete(key);
   $("sources").hidden = keys.length === 0;
   const signature = keys.join("|");
   if ($("source-list").dataset.keys !== signature) {
@@ -481,8 +477,9 @@ function toggleSource(key, shown) {
   if (shown) state.hiddenSources.delete(key);
   else state.hiddenSources.add(key);
   const selected = state.selected === null ? undefined : elementOf(state.selected);
-  if (selected && !isSourceShown(selected, state.hiddenSources)) state.selected = null;
+  if (selected && !isSourceShown(selected)) state.selected = null;
   renderSources();
+  renderPlayback();
   renderTable();
   renderEvidence();
 }
@@ -491,7 +488,7 @@ function toggleSource(key, shown) {
 
 function visibleRows() {
   return rowsInOrder().slice(0, state.cursor).filter(({ row, element }) => {
-    if (!isSourceShown(element, state.hiddenSources)) return false;
+    if (!isSourceShown(element)) return false;
     if (state.filterKind && element.element !== state.filterKind) return false;
     if (state.filterUncertain && marksOf(element).length === 0) return false;
     return true;
@@ -652,8 +649,11 @@ function renderPlayback() {
   const range = $("pb-range");
   range.max = String(total);
   range.value = String(state.cursor);
-  $("pb-count").textContent = state.cursor + " of " + total;
-  range.setAttribute("aria-valuetext", state.cursor + " of " + total + " events");
+  // Stepping moves over every retained event; with a source unchecked, say how many of those up to here are drawn.
+  const shown = state.hiddenSources.size
+    ? " (" + rowsInOrder().slice(0, state.cursor).filter(({ element }) => isSourceShown(element)).length + " shown)" : "";
+  $("pb-count").textContent = state.cursor + " of " + total + shown;
+  range.setAttribute("aria-valuetext", state.cursor + " of " + total + " events" + shown);
   $("pb-back").disabled = state.cursor <= 0;
   $("pb-start").disabled = state.cursor <= 0;
   $("pb-forward").disabled = state.cursor >= total;
@@ -762,7 +762,7 @@ function applyScene() {
     // The scene shows only checked sources; the playback frontier still follows the position, not the filter.
     const position = rowsInOrder().slice(0, state.cursor);
     scene.setVisible(
-      position.filter(({ element }) => isSourceShown(element, state.hiddenSources)).map(({ row }) => row.seq),
+      position.filter(({ element }) => isSourceShown(element)).map(({ row }) => row.seq),
       position.map(({ row }) => row.seq));
     updateSceneNote();
   }
