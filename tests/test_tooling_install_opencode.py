@@ -362,7 +362,7 @@ class NativePluginTests(Base):
         yes = ['{"plugins": ["%s"]}' % self.SPEC, '{"plugins": [["%s", {}]], "plugin": ["x"]}' % self.SPEC,
                '{"plugin": ["%s"]}' % self.SPEC, '{"plugin": [["agent-braid@1.2.3", {}]]}', '{"plugin": ["agent-braid"]}',
                '{"plugin": ["file:///opt/x/plugins/agent-braid",]} // c']
-        no = ['{}', '{"plugin": []}', '{"plugin": ["some-agent-braid-fork"]}', '{"plugin": "agent-braid"}', '{"plugins": "agent-braid"}',
+        no = ['{}', '{"plugin": []}', '{"plugin": ["some-agent-braid-fork"]}', '{"plugin": ["x/plugins/agent-braid-fork"]}', '{"plugin": "agent-braid"}', '{"plugins": "agent-braid"}',
               '{"plugin": [1, null, {"a": "agent-braid"}]}', '{"mcp": {"agent-braid": {}}}']
         for text in yes:
             self.assertTrue(native_plugin_configured(text.encode()), text)
@@ -521,7 +521,7 @@ class JsoncScannerTests(unittest.TestCase):
         with self.assertRaises(jsonc.JsoncError):
             jsonc.members('{"a": 1')
 
-    def test_module_has_no_import_side_effects(self):
+    def test_public_api(self):
         self.assertEqual(sorted(name for name in vars(jsonc) if not name.startswith("_") and callable(getattr(jsonc, name))
                                 and getattr(getattr(jsonc, name), "__module__", "") == "agent_braid.jsonc"),
                          ["Cleaned", "JsoncError", "clean", "members", "parse"])

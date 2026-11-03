@@ -472,7 +472,8 @@ def _is_native_plugin(spec: str) -> bool:
     a miss is not evidence that the native plugin is absent."""
     spec = spec.strip().lower()
     return (spec == "agent-braid" or spec.startswith("agent-braid@")
-            or "jayanez/agent-braid" in spec or "plugins/agent-braid" in spec)
+            or "jayanez/agent-braid" in spec
+            or re.search(r"(^|[/:])plugins/agent-braid($|[/#?@])", spec) is not None)
 
 
 def _invalid(message: str) -> InstallationRefused:
