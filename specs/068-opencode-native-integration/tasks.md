@@ -95,7 +95,7 @@ Commands run from the clean clone; `quick` means
   absent OpenCode under `--host opencode`; changed Codex or Claude command output;
   sudo or Python invoked.
 
-- [ ] T007 (REQ-008 / SC-008; REQ-006 / SC-006): Add the `opencode` host to the
+- [x] T007 (REQ-008 / SC-008; REQ-006 / SC-006): Add the `opencode` host to the
   legacy lifecycle per the legacy profile contract: per-host table in
   `tooling_install.py`, JSONC span scanner used only for `opencode`, paths, default
   server name `agent-braid` with the `native_plugin_shadowed` warning (D13), refusal codes, `hosts.json` and `asset_provenance`; tooling
