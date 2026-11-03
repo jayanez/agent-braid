@@ -4,8 +4,12 @@
 * `serve` wires the loopback `ViewServer` (T016/T017) to a `LoomStore`, the observational Claude Code
   hook ingest (T019, `/hook/claude` plus the dropped-names inventory), an optional `--replay` stream,
   optional `--watch` artifact directories (`ArtifactTail`, T020) and the first-party web bundle as the
-  static root. `--surface web` is the only implemented surface; `mod`, `tui` and `mcp-app` report that
-  they are planned and start nothing.
+  static root. Without `--watch`, `serve` discovers watch roots read-only from the `resultRoot` of each
+  workspace in the Agent Braid plugin registry (T041; `--no-discover` turns it off, `--watch` replaces
+  it): only existing directories private to the user are kept, they share the `ArtifactTail` bounds,
+  and they are listed at start. A missing or invalid registry is a note, never a failure.
+  `--surface web` is the only implemented surface; `mod`, `tui` and `mcp-app` report that they are
+  planned and start nothing.
 * `validate FILE` checks a recorded loom stream and writes nothing.
 * `env --host claude` prints observational HTTP hook settings for the user to merge into user-level
   Claude Code settings. It writes nothing, contains no credential (the token is read from its file by
@@ -29,6 +33,7 @@ import os
 import re
 import shlex
 import signal
+import stat
 import sys
 from pathlib import Path
 from typing import Any, Callable
@@ -70,7 +75,9 @@ def add_parser(subparsers: Any) -> None:
     serve = commands.add_parser("serve", help="serve the viewer on loopback")
     serve.add_argument("--replay", type=Path, metavar="FILE", help="a recorded loom JSONL stream to load")
     serve.add_argument("--watch", type=Path, action="append", default=[], metavar="DIR",
-                       help="a directory of known artifacts to poll (repeatable)")
+                       help="a directory of known artifacts to poll (repeatable); replaces discovery")
+    serve.add_argument("--no-discover", action="store_true",
+                       help="without --watch, do not discover watch roots from the plugin registry")
     serve.add_argument("--port", type=_port, default=0, help="loopback port (default: OS-assigned)")
     serve.add_argument("--surface", choices=SURFACES, default="web",
                        help="web is implemented; the others report that they are planned")
@@ -115,6 +122,44 @@ def _remove_created(created: list[Path]) -> None:
             directory.rmdir()
         except OSError:
             return
+
+
+def _private_directory(path: Path) -> bool:
+    """True for an existing directory (not a link) owned by this user with no group or other access."""
+    try:
+        info = os.lstat(path)
+    except OSError:
+        return False
+    return stat.S_ISDIR(info.st_mode) and info.st_uid == os.getuid() and not info.st_mode & 0o077
+
+
+def discover_watch_roots(home: Path | None = None) -> tuple[list[Path], list[str]]:
+    """Result roots of the registered plugin workspaces, read-only: `(roots, notes)`; never raises.
+
+    The registry is only read through its tolerant loader (no lock, no write); a row it quarantines is
+    skipped. Only existing directories private to the user are kept. `notes` explain anything left out
+    without naming a path.
+    """
+    from .plugin_registry import RegistryError, inspect_registry
+    try:
+        found = inspect_registry(home)
+    except (RegistryError, OSError, RuntimeError) as exc:
+        reason = str(exc) if isinstance(exc, RegistryError) else "it could not be read"
+        return [], [f"the plugin registry cannot be used ({reason}); nothing was discovered"]
+    notes: list[str] = []
+    workspaces = found["value"]["workspaces"]
+    roots = [root for root in (Path(row["resultRoot"]) for row in workspaces) if _private_directory(root)]
+    if found["quarantined"]:
+        notes.append(f"{len(found['quarantined'])} registered workspace{'s' * (len(found['quarantined']) != 1)}"
+                     " skipped as unsafe")
+    if len(roots) < len(workspaces):
+        skipped = len(workspaces) - len(roots)
+        notes.append(f"{skipped} registered result root{'s' * (skipped != 1)} skipped: "
+                     "missing, not a directory or not private to the user (restart the viewer once the first "
+                     "analysis has created it)")
+    if not workspaces and not found["quarantined"]:
+        notes.append("no plugin workspace is registered; nothing was discovered")
+    return roots, notes
 
 
 def load_bundle(directory: Path) -> tuple[dict[str, bytes], str | None]:
@@ -171,7 +216,7 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
     from .view_loom import LoomError
     from .view_serve import HOOK_PATH, ServeError, ViewServer, load_replay, read_replay_file
     from .view_store import LoomStore
-    from .view_tail import ArtifactTail, TailError
+    from .view_tail import MAX_ROOTS, ArtifactTail, TailError
 
     bundle, import_map_sha256 = load_bundle(BUNDLE_DIR)
     store = LoomStore()
@@ -182,10 +227,21 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
         raise CliError(f"view serve: replay refused: {exc}", 1) from exc
     except ServeError as exc:
         raise CliError(f"view serve: {exc}") from exc
+    discovered: list[Path] = []
+    notes: list[str] = []
+    if not args.watch and not args.no_discover:
+        discovered, notes = discover_watch_roots()
+    roots = list(args.watch) or discovered
     try:
-        tail = ArtifactTail(store, list(args.watch)) if args.watch else None
+        tail = ArtifactTail(store, roots) if roots else None
     except TailError as exc:
-        raise CliError(f"view serve: watch: {exc.detail}") from exc
+        if args.watch:
+            raise CliError(f"view serve: watch: {exc.detail}") from exc
+        tail, discovered = None, []
+        notes.append(f"the discovered roots cannot be watched ({exc.detail})")
+    if len(discovered) > MAX_ROOTS:
+        notes.append(f"{len(discovered) - MAX_ROOTS} further result roots exceed the bound of {MAX_ROOTS} roots "
+                     "and are not watched")
     hooks = HookIngest(store)
     created = _ensure_private_directory(runtime_dir)
     try:
@@ -200,9 +256,14 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
         raise CliError(f"view serve: cannot bind port {args.port}: {exc.strerror}") from exc
     previous = _stop_on_sigterm()
     try:
-        print(f"Agent Braid activity viewer (read-only), surface web, loopback only.\n"
-              f"Open once in a browser: {server.open_url}\n"
-              f"Ingest token file (owner-only): {server.token_path}", flush=True)
+        lines = [f"Agent Braid activity viewer (read-only), surface web, loopback only.",
+                 f"Open once in a browser: {server.open_url}",
+                 f"Ingest token file (owner-only): {server.token_path}"]
+        if discovered:
+            lines.append("Watching result roots discovered from the plugin registry (read-only):")
+            lines.extend(f"  {root}" for root in discovered[:MAX_ROOTS])
+        lines.extend(f"Discovery note: {note}" for note in notes)
+        print("\n".join(lines), flush=True)
         if tail is not None:
             tail.start()
         try:
@@ -286,4 +347,5 @@ def _env(args: argparse.Namespace) -> int:
     return 0
 
 
-__all__ = ["BUNDLE_DIR", "CliError", "SURFACES", "add_parser", "default_runtime_dir", "load_bundle", "run"]
+__all__ = ["BUNDLE_DIR", "CliError", "SURFACES", "add_parser", "default_runtime_dir", "discover_watch_roots",
+           "load_bundle", "run"]

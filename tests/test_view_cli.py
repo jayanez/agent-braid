@@ -2,6 +2,7 @@
 """SPEC-061 T028: `agent-braid view` command group (procedure_011 surface part, procedure_012)."""
 import argparse
 import contextlib
+import hashlib
 import http.client
 import io
 import json
@@ -18,7 +19,7 @@ from pathlib import Path
 from unittest import mock
 from urllib.parse import urlsplit
 
-from agent_braid import cli, view_cli
+from agent_braid import cli, plugin_registry, view_cli
 from agent_braid.view_hooks import OBSERVATIONAL_EVENTS
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -72,6 +73,56 @@ class TempCase(unittest.TestCase):
         patch = mock.patch.object(view_cli, "BUNDLE_DIR", self.bundle)
         patch.start()
         self.addCleanup(patch.stop)
+        # `serve` without `--watch` reads the plugin registry: point it at a fixture home that does not
+        # exist, so no test ever reads the real user registry.
+        self.agent_home = self.base / "agent-braid-home"
+        environment = mock.patch.dict(os.environ, {"AGENT_BRAID_HOME": str(self.agent_home)})
+        environment.start()
+        self.addCleanup(environment.stop)
+
+
+class RegistryFixture:
+    """Builds a plugin registry in a temporary `AGENT_BRAID_HOME` (never the user's real one)."""
+
+    def make_registry(self, count=1, *, result_mode=0o700, registry_mode=0o600):
+        home = self.agent_home
+        home.mkdir(mode=0o700)
+        home.chmod(0o700)
+        (home / "results").mkdir(mode=0o700)
+        rows, roots = [], []
+        for index in range(count):
+            source = self.base / f"source-{index}"
+            source.mkdir()
+            identifier = hashlib.sha256(str(source).encode()).hexdigest()[:32]
+            result = home / "results" / identifier
+            result.mkdir()
+            result.chmod(result_mode)
+            rows.append({"workspaceId": identifier, "sourceRoot": str(source), "resultRoot": str(result),
+                         "runtimeEnabled": False, "grantStore": None, "worktreeRoots": []})
+            roots.append(result)
+        self.write_registry({"schema": plugin_registry.SCHEMA, "telemetry": "off", "workspaces": rows},
+                            mode=registry_mode)
+        return rows, roots
+
+    def write_registry(self, value, *, mode=0o600):
+        self.agent_home.mkdir(mode=0o700, exist_ok=True)
+        self.agent_home.chmod(0o700)
+        data = value if isinstance(value, bytes) else json.dumps(value).encode()
+        path = self.agent_home / "registry.json"
+        path.write_bytes(data)
+        path.chmod(mode)
+
+    def home_state(self):
+        """Every entry under the fixture home: relative path -> (mode, size, mtime_ns, content)."""
+        found = {}
+        for current, directories, files in os.walk(self.agent_home):
+            for name in directories + files:
+                full = os.path.join(current, name)
+                info = os.lstat(full)
+                content = Path(full).read_bytes() if stat.S_ISREG(info.st_mode) else None
+                found[os.path.relpath(full, self.agent_home)] = (stat.S_IMODE(info.st_mode), info.st_size,
+                                                                 info.st_mtime_ns, content)
+        return found
 
 
 class ServeCase(TempCase):
@@ -241,6 +292,211 @@ class ServeTests(ServeCase):
         self.assertEqual(signal.getsignal(signal.SIGTERM), before)
 
 
+class DiscoverWatchRootsTests(RegistryFixture, TempCase):
+    def test_returns_the_private_result_roots_in_registry_order(self):
+        _, roots = self.make_registry(3)
+        found, notes = view_cli.discover_watch_roots()
+        self.assertEqual(found, roots)
+        self.assertEqual(notes, [])
+
+    def test_missing_or_empty_registry_means_no_roots_and_a_note(self):
+        for empty in (False, True):
+            with self.subTest(empty=empty):
+                if empty:
+                    self.write_registry({"schema": plugin_registry.SCHEMA, "telemetry": "off", "workspaces": []})
+                found, notes = view_cli.discover_watch_roots()
+                self.assertEqual(found, [])
+                self.assertEqual(len(notes), 1)
+                self.assertIn("no plugin workspace is registered", notes[0])
+
+    def test_an_unusable_registry_is_a_note_never_an_exception(self):
+        empty = json.dumps({"schema": plugin_registry.SCHEMA, "telemetry": "off", "workspaces": []}).encode()
+        cases = {
+            "not json": (b"{not json", 0o600),
+            "other schema": (json.dumps({"schema": "x/v1", "telemetry": "off", "workspaces": []}).encode(), 0o600),
+            "not an object": (b"[]", 0o600),
+            "oversized": (b" " * (plugin_registry.MAX_BYTES + 1), 0o600),
+            "shared with the group": (empty, 0o640),
+        }
+        for name, (data, mode) in cases.items():
+            with self.subTest(case=name):
+                shutil.rmtree(self.agent_home, ignore_errors=True)
+                self.write_registry(data, mode=mode)
+                found, notes = view_cli.discover_watch_roots()
+                self.assertEqual(found, [])
+                self.assertEqual(len(notes), 1)
+                self.assertIn("plugin registry cannot be used", notes[0])
+
+    def test_a_registry_home_that_is_not_a_directory_is_a_note(self):
+        self.agent_home.write_text("a file")
+        found, notes = view_cli.discover_watch_roots()
+        self.assertEqual(found, [])
+        self.assertIn("plugin registry cannot be used", notes[0])
+
+    def test_keeps_only_existing_private_directories(self):
+        rows, roots = self.make_registry(4)
+        shutil.rmtree(roots[0])                      # missing
+        roots[1].chmod(0o755)                        # readable by others
+        shutil.rmtree(roots[2])                      # a regular file instead of a directory
+        roots[2].write_text("not a directory")       # (the registry quarantines that row on its own)
+        found, notes = view_cli.discover_watch_roots()
+        self.assertEqual(found, [roots[3]])
+        self.assertEqual(len(notes), 2)
+        self.assertIn("1 registered workspace skipped as unsafe", notes[0])
+        self.assertIn("2 registered result roots skipped", notes[1])
+        for hidden in roots[:3]:
+            self.assertNotIn(str(hidden), " ".join(notes))
+
+    def test_a_directory_not_owned_by_the_user_is_not_private(self):
+        _, roots = self.make_registry(1)
+        real_lstat = os.lstat
+
+        def foreign_owner(path, *args, **kwargs):
+            info = real_lstat(path, *args, **kwargs)
+            if str(path) != str(roots[0]):
+                return info
+            fields = list(info)
+            fields[4] = info.st_uid + 1
+            return os.stat_result(fields)
+
+        with mock.patch.object(view_cli.os, "lstat", side_effect=foreign_owner):
+            found, notes = view_cli.discover_watch_roots()
+        self.assertEqual(found, [])
+        self.assertIn("1 registered result root skipped", notes[0])
+
+    def test_an_unsafe_workspace_row_is_skipped_without_losing_the_others(self):
+        rows, roots = self.make_registry(2)
+        elsewhere = self.base / "elsewhere"
+        elsewhere.mkdir(mode=0o700)
+        shutil.rmtree(roots[0])
+        roots[0].symlink_to(elsewhere)               # the registry quarantines a symlinked result root
+        found, notes = view_cli.discover_watch_roots()
+        self.assertEqual(found, [roots[1]])
+        self.assertIn("1 registered workspace skipped as unsafe", notes[0])
+
+    def test_discovery_never_writes_or_locks_the_registry(self):
+        self.make_registry(2)
+        before = self.home_state()
+        view_cli.discover_watch_roots()
+        self.assertEqual(self.home_state(), before)
+
+    def test_reads_the_registry_only_through_the_read_only_loader(self):
+        self.make_registry(1)
+        with mock.patch.object(plugin_registry, "apply", side_effect=AssertionError("write")), \
+                mock.patch.object(plugin_registry, "plan_setup", side_effect=AssertionError("write")), \
+                mock.patch.object(plugin_registry, "_locked", side_effect=AssertionError("lock")):
+            found, _ = view_cli.discover_watch_roots()
+        self.assertEqual(len(found), 1)
+
+    def test_an_explicit_home_is_honoured_over_the_environment(self):
+        _, roots = self.make_registry(1)
+        with mock.patch.dict(os.environ, {"AGENT_BRAID_HOME": str(self.base / "elsewhere")}):
+            found, _ = view_cli.discover_watch_roots(self.agent_home)
+        self.assertEqual(found, roots)
+
+
+class DiscoveryServeTests(RegistryFixture, ServeCase):
+    def seed_report(self, root, name="analysis.json"):
+        shutil.copy(FIXTURES / "artifacts/analysis-mixed.json", root / name)
+
+    def wait_for_events(self, server, timeout=10):
+        deadline = time.monotonic() + timeout
+        while not server.store.replay() and time.monotonic() < deadline:
+            time.sleep(0.05)
+        return server.store.replay()
+
+    def finish(self, server, result, thread):
+        server.shutdown()
+        thread.join(10)
+        return result["stdout"]
+
+    def test_without_watch_the_registered_result_roots_are_watched_and_listed(self):
+        _, roots = self.make_registry(2)
+        self.seed_report(roots[1])
+        server, result, thread = self.serve()
+        events = self.wait_for_events(server)
+        self.assertTrue(events)
+        self.assertTrue(all(event["source"]["verification"] == "rehashed" for event in events))
+        out = self.finish(server, result, thread)
+        for root in roots:
+            self.assertEqual(out.count(str(root)), 1)
+        self.assertIn("discovered", out)
+        self.assertNotIn("Discovery note", out)
+
+    def test_a_report_copy_written_later_appears_in_the_viewer(self):
+        _, roots = self.make_registry(1)
+        server, _, _ = self.serve()
+        time.sleep(0.6)
+        self.assertEqual(server.store.replay(), [])
+        self.seed_report(roots[0])
+        self.assertTrue(self.wait_for_events(server))
+
+    def test_no_discover_watches_nothing_and_does_not_read_the_registry(self):
+        _, roots = self.make_registry(1)
+        self.seed_report(roots[0])
+        with mock.patch.object(plugin_registry, "inspect_registry", side_effect=AssertionError("read")):
+            server, result, thread = self.serve("--no-discover")
+            time.sleep(0.8)
+            self.assertEqual(server.store.replay(), [])
+            out = self.finish(server, result, thread)
+        self.assertNotIn(str(roots[0]), out)
+        self.assertNotIn("Discovery", out)
+
+    def test_an_explicit_watch_disables_discovery(self):
+        _, roots = self.make_registry(1)
+        self.seed_report(roots[0])
+        explicit = self.base / "explicit"
+        explicit.mkdir()
+        with mock.patch.object(plugin_registry, "inspect_registry", side_effect=AssertionError("read")):
+            server, result, thread = self.serve("--watch", str(explicit))
+            time.sleep(0.8)
+            self.assertEqual(server.store.replay(), [])
+            self.seed_report(explicit)
+            self.assertTrue(self.wait_for_events(server))
+            out = self.finish(server, result, thread)
+        self.assertNotIn(str(roots[0]), out)
+
+    def test_a_missing_registry_prints_a_note_and_still_serves(self):
+        server, result, thread = self.serve()
+        out = self.finish(server, result, thread)
+        self.assertEqual(result["code"], 0)
+        self.assertIn("Discovery note: no plugin workspace is registered", out)
+        self.assertEqual(server.store.replay(), [])
+
+    def test_an_invalid_registry_prints_a_note_and_still_serves(self):
+        self.write_registry(b"{not json")
+        server, result, thread = self.serve()
+        out = self.finish(server, result, thread)
+        self.assertEqual(result["code"], 0)
+        self.assertIn("Discovery note: the plugin registry cannot be used", out)
+
+    def test_serving_leaves_the_registry_and_its_home_untouched(self):
+        _, roots = self.make_registry(2)
+        self.seed_report(roots[0])
+        before = self.home_state()
+        server, result, thread = self.serve()
+        self.wait_for_events(server)
+        self.finish(server, result, thread)
+        self.assertEqual(self.home_state(), before)
+
+    def test_roots_beyond_the_bound_are_not_listed_and_leave_a_gap_and_a_note(self):
+        _, roots = self.make_registry(10)
+        server, result, thread = self.serve()
+        events = self.wait_for_events(server)
+        self.assertEqual([event["data"]["reason"] for event in events if event["kind"] == "observation.gap"],
+                         ["stream-truncated"])
+        out = self.finish(server, result, thread)
+        self.assertEqual(sum(str(root) in out for root in roots), 8)
+        self.assertIn("Discovery note: 2 further result roots exceed the bound of 8 roots", out)
+
+    def test_the_option_is_part_of_the_cli(self):
+        self.assertFalse(parse("view", "serve").no_discover)
+        self.assertTrue(parse("view", "serve", "--no-discover").no_discover)
+        code, out, _ = invoke("view", "serve", "--help")
+        self.assertEqual(code, 0)
+        self.assertIn("--no-discover", out)
+
+
 class ServeRefusalTests(TempCase):
     def assert_no_side_effect(self):
         self.assertFalse(self.runtime.exists())
@@ -368,7 +624,8 @@ class RuntimeDirTests(unittest.TestCase):
     def test_serve_creates_missing_parents_privately(self):
         with tempfile.TemporaryDirectory() as home:
             runtime = Path(home).resolve() / ".local" / "share" / "agent-braid-view"
-            with mock.patch.dict(os.environ, {"HOME": home}, clear=False):
+            fixture_home = {"HOME": home, "AGENT_BRAID_HOME": str(Path(home) / "no-registry")}
+            with mock.patch.dict(os.environ, fixture_home, clear=False):
                 os.environ.pop("XDG_RUNTIME_DIR", None)
                 ready = {}
 
@@ -525,6 +782,15 @@ class BoundaryTests(unittest.TestCase):
     def test_no_network_or_ownership_imports(self):
         for forbidden in ("import socket", "import http", "from http", "urllib", "ownership"):
             self.assertNotIn(forbidden, self.SOURCE)
+
+    def test_the_registry_is_loaded_lazily_and_only_read(self):
+        imports = re.findall(r"from \.plugin_registry import ([^\n]+)", self.SOURCE)
+        names = {name.strip() for line in imports for name in line.strip("()").split(",")}
+        self.assertLessEqual(names, {"RegistryError", "inspect_registry"})
+        import subprocess
+        import sys
+        code = "import sys, agent_braid.view_cli; sys.exit(1 if 'agent_braid.plugin_registry' in sys.modules else 0)"
+        self.assertEqual(subprocess.run([sys.executable, "-c", code], cwd=ROOT).returncode, 0)
 
     def test_importing_the_module_does_not_load_the_server(self):
         import subprocess
