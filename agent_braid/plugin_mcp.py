@@ -246,6 +246,11 @@ class WorkspaceService(core.ToolingService):
         return value
 
 
+def _reason_code(exc):
+    """The stable refusal code of a registry or tooling error; any other exception is `other`. Never read from text."""
+    return exc.code if isinstance(exc, (RegistryError, core.ToolingError)) else 'other'
+
+
 def _plugin_version(plugin_root):
     """Native plugin version stamped by the build in the packaged manifest; None outside a package."""
     if plugin_root is None:
@@ -289,12 +294,7 @@ class PluginRouter:
             except (core.ToolingError, OSError) as exc:  # e.g. the source repository was deleted: isolate this workspace
                 self.unavailable.append({'workspaceId': row['workspaceId'], 'reason': 'configuration rejected'})
                 # A vanished root surfaces as FileNotFoundError from resolve(strict=True); codes never come from text.
-                if isinstance(exc, FileNotFoundError):
-                    code = 'registry-root-missing'
-                elif isinstance(exc, core.ToolingError):
-                    code = exc.code
-                else:
-                    code = 'other'
+                code = 'registry-root-missing' if isinstance(exc, FileNotFoundError) else _reason_code(exc)
                 self._unavailable_codes[row['workspaceId']] = code
                 self._start_reason = self._start_reason or code
         # One global admission lock bounds reservations across all workspace services.
@@ -412,7 +412,7 @@ class PluginRouter:
             return dict(refusal, result={'code': exc.code})
         except (RegistryError, core.ToolingError, OSError, TypeError, ValueError) as exc:
             if observation is not None:
-                observation.reason = exc.code if isinstance(exc, (RegistryError, core.ToolingError)) else 'other'
+                observation.reason = _reason_code(exc)
             return self._refusal(name, 'Plugin request refused: check workspace, arguments, registry and reconnect state')
 
     def read_resource(self, uri, cancelled=None):

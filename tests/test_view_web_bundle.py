@@ -10,7 +10,6 @@ bijection between drawn objects and source events without a browser.
 """
 import base64
 import hashlib
-import http.client
 import json
 import os
 import re
@@ -27,6 +26,7 @@ from agent_braid.view_model import build_model
 from agent_braid.view_serve import ViewServer
 from agent_braid.view_store import LoomStore
 from agent_braid.view_tail import MAX_ROOTS, root_label
+from tests.view_http_helpers import http_request
 
 WEB = Path(__file__).resolve().parents[1] / "integrations/agent-braid-view/web"
 VENDOR = WEB / "vendor"
@@ -1069,16 +1069,7 @@ class ServedBundleTests(unittest.TestCase):
         self.cookie = opened.getheader("Set-Cookie").split(";")[0]
 
     def fetch(self, path, cookie=None, method="GET", host=None):
-        headers = {"Host": host or f"127.0.0.1:{self.server.port}"}
-        if cookie:
-            headers["Cookie"] = cookie
-        connection = http.client.HTTPConnection("127.0.0.1", self.server.port, timeout=5)
-        try:
-            connection.request(method, path, headers=headers)
-            response = connection.getresponse()
-            return response.status, response, response.read()
-        finally:
-            connection.close()
+        return http_request(self.server.port, method, path, {"Cookie": cookie} if cookie else None, host=host)
 
     def test_every_first_party_file_is_served_unchanged_to_a_session(self):
         for path in SERVED_PATHS:
