@@ -102,7 +102,29 @@ def _pairs(items):
     return value
 
 
-def _workspace(value: dict, home: Path) -> None:
+def _worktree_root(item, index: int, home: Path) -> bool:
+    """Classify one declared worktree root: True when live, False when stale (missing).
+
+    Anything else wrong with a root makes its whole workspace unsafe; the reason names the root index and
+    the condition, never the path.
+    """
+    label = f'Worktree root {index}'
+    if not isinstance(item, str) or not Path(item).is_absolute():
+        raise RegistryError(f'{label}: not an absolute path')
+    try:
+        root = _safe(Path(item), directory=True)
+    except RegistryError as exc:
+        raise RegistryError(f'{label}: {exc}') from exc
+    if root.is_relative_to(home) or home.is_relative_to(root):
+        raise RegistryError(f'{label}: overlaps plugin state')
+    return root.is_dir()
+
+
+def _workspace(value: dict, home: Path) -> list[int]:
+    """Validate one workspace row; return the indices of its stale (missing) worktree roots.
+
+    A missing worktree root is not an error: ephemeral worktrees are routinely deleted.
+    """
     keys = {'workspaceId', 'sourceRoot', 'resultRoot', 'runtimeEnabled', 'grantStore', 'worktreeRoots'}
     if not isinstance(value, dict) or set(value) != keys:
         raise RegistryError('Unknown workspace shape')
@@ -119,10 +141,7 @@ def _workspace(value: dict, home: Path) -> None:
         raise RegistryError('Unknown workspace capability configuration')
     if len(value['worktreeRoots']) > MAX_WORKSPACES:
         raise RegistryError('Too many worktree roots')
-    for item in value['worktreeRoots']:
-        root = _safe(Path(item), directory=True)
-        if not root.is_dir() or root.is_relative_to(home) or home.is_relative_to(root):
-            raise RegistryError('Unsafe worktree root')
+    stale = [index for index, item in enumerate(value['worktreeRoots']) if not _worktree_root(item, index, home)]
     grant = value['grantStore']
     if value['runtimeEnabled'] and grant is None:
         raise RegistryError('Runtime requires an explicit existing grant store')
@@ -131,12 +150,27 @@ def _workspace(value: dict, home: Path) -> None:
         if not grant_path.is_dir() or any(grant_path.is_relative_to(p) or p.is_relative_to(grant_path)
                                          for p in (source, home)):
             raise RegistryError('Grant store must exist outside source and plugin state')
+    return stale
 
 
-def _decode(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
-    """Validate the current registry; only setup may convert a v0.1 registry."""
+def _row_id(row) -> str | None:
+    """A row's workspace id for reporting, only when well formed; never echo other row content."""
+    identifier = row.get('workspaceId') if isinstance(row, dict) else None
+    ok = isinstance(identifier, str) and len(identifier) == 32 and all(c in '0123456789abcdef' for c in identifier)
+    return identifier if ok else None
+
+
+def _inspect(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
+    """Tolerant decode: structural problems raise, but a bad workspace row is quarantined on its own.
+
+    Returns `value` (the effective registry: only safe rows and only live worktree roots, which is what the
+    digest and the services see), `declared` (workspaceId -> every worktree root in file order, so setup can
+    preserve stale ones), `stale` and `quarantined` (path-free diagnostics). Whole-registry problems (schema,
+    consent, duplicate members or workspace ids, size, privacy) stay fatal: no row can be trusted then.
+    """
     if raw is None:
-        return {'schema': SCHEMA, 'telemetry': 'off', 'workspaces': []}
+        return {'value': {'schema': SCHEMA, 'telemetry': 'off', 'workspaces': []},
+                'declared': {}, 'stale': [], 'quarantined': []}
     try:
         value = json.loads(raw, object_pairs_hook=_pairs, parse_constant=lambda _: (_ for _ in ()).throw(RegistryError('Nonfinite registry value')))
         if isinstance(value, dict) and set(value) == {'schema', 'workspaces'} and value['schema'] == LEGACY_SCHEMA:
@@ -154,15 +188,33 @@ def _decode(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
         rows = value['workspaces']
         if not isinstance(rows, list) or len(rows) > MAX_WORKSPACES:
             raise RegistryError('Too many registered workspaces')
-        seen = set()
-        for row in rows:
-            _workspace(row, home)
-            if row['workspaceId'] in seen:
-                raise RegistryError('Duplicate workspace')
-            seen.add(row['workspaceId'])
-        return value
+        ids = [_row_id(row) for row in rows]
+        named = [i for i in ids if i]
+        if len(set(named)) != len(named):
+            raise RegistryError('Duplicate workspace')  # an unsafe twin must not hide behind its valid sibling
+        kept, declared, stale, quarantined = [], {}, [], []
+        for index, row in enumerate(rows):
+            try:
+                stale_indices = _workspace(row, home)
+            except (RegistryError, TypeError, KeyError, ValueError, OSError) as exc:
+                reason = str(exc) if isinstance(exc, RegistryError) else 'Malformed workspace row'
+                quarantined.append({'index': index, 'workspaceId': ids[index], 'reason': reason})
+                continue
+            declared[row['workspaceId']] = list(row['worktreeRoots'])
+            stale.extend({'workspaceId': row['workspaceId'], 'rootIndex': i, 'reason': 'missing'} for i in stale_indices)
+            kept.append(dict(row, worktreeRoots=[r for i, r in enumerate(row['worktreeRoots']) if i not in stale_indices]))
+        return {'value': dict(value, workspaces=kept), 'declared': declared, 'stale': stale, 'quarantined': quarantined}
     except (TypeError, KeyError, UnicodeError, json.JSONDecodeError, RecursionError) as exc:
         raise RegistryError('Malformed workspace registry') from exc
+
+
+def _decode(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
+    """Validate the whole registry: any quarantined row is an error. Only setup may convert a v0.1 registry."""
+    found = _inspect(raw, home, migrate=migrate)
+    if found['quarantined']:
+        first = found['quarantined'][0]
+        raise RegistryError(f"Workspace row {first['index']} is unsafe: {first['reason']}")
+    return found['value']
 
 
 def _legacy(raw: bytes | None) -> bool:
@@ -173,7 +225,10 @@ def _legacy(raw: bytes | None) -> bool:
 def configuration_digest(value: dict | None) -> str | None:
     """Path-free digest of the effective configuration: consent and normalized workspace rows.
 
-    Raw bytes, row order and worktree-root order carry no authority and are ignored.
+    Raw bytes, row order and worktree-root order carry no authority and are ignored. The value is the
+    effective registry from `load`/`inspect_registry`, so stale (missing) worktree roots and quarantined rows
+    are excluded: a stale root that reappears, or a quarantined row that becomes safe, changes the digest
+    because authority grew (callers then answer `reconnect-required`).
     """
     if value is None:
         return None
@@ -185,7 +240,41 @@ def configuration_digest(value: dict | None) -> str | None:
     return _hash(_bytes(digested))
 
 
+def not_grown(baseline: dict | None, found: dict | None) -> bool:
+    """True when the inspected registry equals `baseline` except that registered worktree roots were deleted.
+
+    `baseline` is an effective value; `found` is an `inspect_registry` result. A root may vanish from the
+    effective configuration only if it is still declared and now missing on disk (a deleted worktree).
+    Removing it from the declared list is a revocation, and any other change (including a root swapped for
+    a symlink, which quarantines its workspace) needs a reconnect.
+    """
+    if baseline is None or found is None:
+        return False
+    current = found['value']
+    snapshot = {row['workspaceId']: row for row in baseline['workspaces']}
+    if snapshot.keys() != {row['workspaceId'] for row in current['workspaces']}:
+        return False
+    deleted: dict[str, set[str]] = {}
+    for entry in found['stale']:
+        deleted.setdefault(entry['workspaceId'], set()).add(found['declared'][entry['workspaceId']][entry['rootIndex']])
+    relaxed = []
+    for row in current['workspaces']:
+        before = snapshot[row['workspaceId']]
+        now, then = set(row['worktreeRoots']), set(before['worktreeRoots'])
+        if not now <= then or not then - now <= deleted.get(row['workspaceId'], set()):
+            return False
+        relaxed.append(dict(before, worktreeRoots=row['worktreeRoots']))
+    return configuration_digest(dict(baseline, workspaces=relaxed)) == configuration_digest(current)
+
+
+def inspect_registry(home: Path | None = None) -> dict:
+    """Tolerant read for diagnosis, serving and repair; see `_inspect`. Fatal only for structural problems."""
+    selected = home_path(home)
+    return _inspect(_raw(selected), selected)
+
+
 def load(home: Path | None = None) -> dict:
+    """The effective registry; a quarantined (unsafe) row is an error here. Stale worktree roots are not."""
     selected = home_path(home)
     return _decode(_raw(selected), selected)
 
@@ -203,13 +292,28 @@ def _repository(path: Path) -> Path | None:
         return None
 
 
+def _existing_root(path, index: int) -> str:
+    """Setup writes only worktree roots that exist now; stale ones can only be pruned."""
+    root = _safe(Path(path), directory=True)
+    if not root.is_dir():
+        raise RegistryError(f'Worktree root {index} does not exist; select an existing directory')
+    return str(root)
+
+
 def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bool | None = None,
                grant_store: Path | None = None, worktree_roots=(), telemetry: str | None = None,
-               system_one: str | None = None) -> dict:
+               system_one: str | None = None, prune_stale: bool = False) -> dict:
     selected = home_path(home)
     before = _raw(selected)
-    value = _decode(before, selected, migrate=True)
+    found = _inspect(before, selected, migrate=True)  # tolerant, so a registry with stale roots can be repaired
+    value = found['value']
     migrated = LEGACY_SCHEMA if _legacy(before) else None
+    if found['quarantined'] and not prune_stale:
+        raise RegistryError('Registry has unsafe workspace registrations (see plugin doctor); '
+                            'preview with --prune-stale to drop them')
+    if not prune_stale:  # stale roots stay registered (inactive) unless pruning
+        for row in value['workspaces']:
+            row['worktreeRoots'] = found['declared'][row['workspaceId']]
     if telemetry is not None:
         if telemetry not in TELEMETRY_MODES:
             raise RegistryError('Telemetry consent must be off or local')
@@ -237,13 +341,24 @@ def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bo
         if runtime is not None:
             row.update(runtimeEnabled=runtime, grantStore=str(grant_store) if grant_store else None)
         if worktree_roots:
-            row['worktreeRoots'] = [str(_safe(Path(p), directory=True)) for p in worktree_roots]
+            row['worktreeRoots'] = [_existing_root(p, index) for index, p in enumerate(worktree_roots)]
         _workspace(row, selected)
         rows[identifier] = row
     value['workspaces'] = sorted(rows.values(), key=lambda x: x['workspaceId'])
     _decode(_bytes(value), selected)
     effects = ['Replace only the private workspace registry',
                'Create missing private result directories; never delete source/results']
+    kept_stale = sum(found['declared'][e['workspaceId']][e['rootIndex']] in rows[e['workspaceId']]['worktreeRoots']
+                     for e in found['stale'] if e['workspaceId'] in rows)
+    if prune_stale and (found['stale'] or found['quarantined']):
+        effects.append(f"Prune {len(found['stale'])} stale worktree root(s); sources, worktrees and results are untouched")
+        for entry in found['quarantined']:
+            effects.append(f"Drop unsafe workspace registration {entry['workspaceId'] or '(unidentified)'} "
+                           f"(row {entry['index']}): {entry['reason']}; its runtimeEnabled and grantStore "
+                           'configuration is removed and cannot be restored except from a backup')
+    elif kept_stale:
+        effects.append(f'Keep {kept_stale} stale (missing) worktree root(s) registered but inactive; '
+                       'use --prune-stale to remove them')
     if migrated:
         effects.append('Migrate the registry from v0.1 to v0.2 without a v0.1 backup; earlier plugin versions refuse v0.2')
     effects.append(f"Plugin MCP telemetry consent: {value['telemetry']}; applies after reconnect, "
@@ -336,7 +451,7 @@ def discover(home: Path | None, search_roots=(), *, current: Path | None = None,
     # Discovery never writes, so a v0.1 registry is read like a migration preview.
     selected = home_path(home)
     raw = _raw(selected)
-    registered = _decode(raw, selected, migrate=True)
+    registered = _inspect(raw, selected, migrate=True)['value']  # tolerant: discovery must work to repair
     migration_required = _legacy(raw)
     for row in registered['workspaces']:
         add(row['sourceRoot'], 'registered')

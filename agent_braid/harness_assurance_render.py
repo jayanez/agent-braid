@@ -18,18 +18,16 @@ from collections.abc import Mapping
 from typing import Any
 
 from .harness_assurance import (
-    CHECKPOINTS, COMPILED_FORMAT, DEPTH_CHECKPOINT, DEPTHS, INDEPENDENT_REVIEW, MIN_INDEPENDENT_REVIEWERS, MODES,
-    REASONS, SCOPES, AssuranceError, _hash, _id, _int, digest, required_reviews,
+    CHECKPOINTS, COMPILED_FORMAT, COMPILED_KEYS, DEPTH_CHECKPOINT, DEPTHS, INDEPENDENT_REVIEW,
+    MIN_INDEPENDENT_REVIEWERS, MODES, REASONS, SCOPES, AssuranceError, _hash, _id, _int, digest, required_reviews,
 )
+from .harness_assurance_risk import RISK_CLASSES
 
 PLACEHOLDER = "_pending_"
 MAX_FIELD = 200
 _UNSAFE = frozenset("|`[]<>*#_\\")  # Markdown syntax the caller's free text may not carry
-_ARTIFACT_KEYS = frozenset({"schema", "profile", "scopeSources", "checkpoints", "noAttribution", "refusedLowerings",
-                            "executionAuthorization", "risk", "inputs", "reviews", "digest"})
 _REVIEW_KEYS = frozenset({"checkpoint", "depth", "docsOnly", "required", "minIndependentReviewers"})
 _REFUSAL_KEYS = frozenset({"checkpoint", "dimension", "requested", "scope", "floor", "reason"})
-_RISK_CLASSES = ("docs-only", "ordinary", "elevated")
 
 
 def _invalid() -> AssuranceError:
@@ -41,7 +39,7 @@ def _well_formed(artifact: dict[str, Any]) -> bool:
     profile, risk, reviews = artifact["profile"], artifact["risk"], artifact["reviews"]
     rows, refusals = artifact["checkpoints"], artifact["refusedLowerings"]
     if not (type(profile) is dict and _id(profile.get("name")) and _int(profile.get("version"), 1, (1 << 31) - 1)
-            and type(risk) is dict and risk.get("riskClass") in _RISK_CLASSES
+            and type(risk) is dict and risk.get("riskClass") in RISK_CLASSES
             and type(rows) is list and [r.get("checkpoint") for r in rows if type(r) is dict] == list(CHECKPOINTS)
             and type(refusals) is list and _hash(artifact["digest"])):
         return False
@@ -62,7 +60,7 @@ def _well_formed(artifact: dict[str, Any]) -> bool:
 
 def _checked(artifact: Any) -> dict[str, Any]:
     """The artifact when it is a well-formed, unaltered advisory artifact; otherwise ``AssuranceError``."""
-    if type(artifact) is not dict or set(artifact) != _ARTIFACT_KEYS or artifact["schema"] != COMPILED_FORMAT:
+    if type(artifact) is not dict or set(artifact) != COMPILED_KEYS or artifact["schema"] != COMPILED_FORMAT:
         raise _invalid()
     if artifact["executionAuthorization"] is not False:
         raise AssuranceError("execution-authorization")

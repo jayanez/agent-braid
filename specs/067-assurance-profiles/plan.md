@@ -2,8 +2,8 @@
 
 ## Technical context and scope
 
-Python 3.12+ standard library only. Planning only: no code, ADR or shared
-tracking change in this specification PR. Offline-implementable with
+Python 3.12+ standard library only. Implemented by tasks T002 to T010 (code, tests and
+ADR 0036 landed in their own pull requests); this plan is kept as the design record. Offline-implementable with
 deterministic tests; no network, clock or model call in any gate logic.
 
 Planned target files (after founder decisions):

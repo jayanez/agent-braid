@@ -1,6 +1,8 @@
 # SPEC-065: Quickstart
 
-Specification stage: only the structural checks below apply now.
+Implementation in progress: T003 to T008 are done at unit level, the pre-T009 fixes (#979) and the mini delta
+re-check (GO for engineering readiness, #985) are merged, and T009 awaits the founder go. The structural
+checks and the unit tests below apply now; the T009 preparation is a checklist, not an authorization.
 
 ```sh
 python3 -m scripts.validate_spec_kit
@@ -36,6 +38,12 @@ Operator preparation for T009 (a checklist, not an authorization; it needs the f
 - **Account hygiene the code cannot see.** The account check refuses admin/wheel, the
   console user and a loose home. It does not see sudoers rules by name, ACL grants or
   groups such as `_developer`; the operator verifies those.
+- **`config_dir`.** Use a dedicated, empty or small directory, never a home directory or a shared
+  cache, and check its entry count and size before every attempt. The disk bound counts what is
+  already in it (no baseline), so a large or pre-used `config_dir` makes every run refuse with
+  `disk-limit-exceeded`, including the pre-session subset. Investigate that refusal as an
+  environment problem before the next attempt; it is not a probe finding. The before/after
+  listing hashes up to 500 files with no per-file size cap, so a very large file slows it (MDRV-03).
 - **Session.** Run the supervisor inside the dedicated user's own login session, not
   through `sudo -u` from the operator's session, and expect failed probe controls to be
   recorded as findings.

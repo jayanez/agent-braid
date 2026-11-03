@@ -927,6 +927,27 @@ class SessionTests(unittest.TestCase):
         no_init = replace(self.session("oauth"), stdout=b"", egress=clean)
         self.assertEqual(q.classify_session("NET-05-CLI", no_init), "inconclusive")
 
+    def test_net_05_cli_judges_tunnels_against_the_policy_endpoints(self):
+        # F4: a refresh host the policy lists (NC-1 evidence) is a designed tunnel, not an escape
+        refresh = "console.anthropic.com:443"
+        counters = {"connections": 2, "allowed": 2, "allowed:api.anthropic.com:443": 1, f"allowed:{refresh}": 1}
+        session = replace(self.session("oauth"), egress=counters)
+        self.assertEqual(q.classify_session("NET-05-CLI", session), "allowed")  # default: the static endpoint
+        self.assertEqual(q.classify_session("NET-05-CLI", session, endpoints=(*mac.ALLOWED_ENDPOINTS, refresh)),
+                         "denied")
+        other = replace(session, egress={"allowed": 1, "allowed:evil.example:443": 1})
+        self.assertEqual(q.classify_session("NET-05-CLI", other, endpoints=(*mac.ALLOWED_ENDPOINTS, refresh)),
+                         "allowed")
+
+    def test_runner_judges_sessions_against_its_endpoints(self):
+        refresh = "console.anthropic.com:443"
+        world = World(self)
+        world.egress = {"connections": 2, "allowed": 2, "allowed:api.anthropic.com:443": 1, f"allowed:{refresh}": 1}
+        probe = q.BY_ID["NET-05-CLI"]
+        self.assertEqual(world.runner().run_mode(probe, "contained")["attempts"]["session"], "allowed")
+        listed = world.runner(endpoints=(*mac.ALLOWED_ENDPOINTS, refresh))
+        self.assertEqual(listed.run_mode(probe, "contained")["attempts"]["session"], "denied")
+
     def test_detector_self_test_is_allowed_for_every_session_probe(self):
         for pid in ("CRED-05", "HOST-01", "NET-05-CLI"):
             self.assertEqual(q.detector_self_test(pid), "allowed", pid)

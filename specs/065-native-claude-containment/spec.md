@@ -4,8 +4,10 @@
 
 **Status:** draft; implementation in progress. T003 (native manifest profile),
 T004 (quota gate), T005 (macOS containment backend), T006 (native
-transport) and T007 (probe catalog and runner) are implemented at unit level; ADR 0035 (T002) is accepted by the
-founder (2026-11-02); nothing is qualified or authorized. The founder decided every security choice (NC-1 to NC-11) and F5 is
+transport) and T007 (probe catalog and runner) are implemented at unit level; T008
+(independent review) is done, its fixes landed (#979) and the mini delta re-check
+gave GO for engineering readiness only (#985); ADR 0035 (T002) is accepted by the
+founder (2026-11-02). T009 awaits the founder go; nothing is qualified or authorized. The founder decided every security choice (NC-1 to NC-11) and F5 is
 bound, in the [founder decision record](evidence/founder-decisions-20261031.json)
 (T001, 2026-10-31). The decisions authorize no execution, qualification or
 native session.
@@ -55,7 +57,7 @@ Exclusions:
 - Changes to SPEC-048 or SPEC-049 artifacts, ADRs, `docs/STATUS.md`,
   `ROADMAP.md`, `SPEC_MILESTONE_INDEX.md` or `github-tracking.json` in this
   feature's specification change. Entries those files need, including the ADR
-  that T002 drafts in a separate pull request, are listed as proposals in
+  that T002 proposed in a separate pull request (ADR 0035, now accepted), are listed as proposals in
   [plan.md](plan.md#proposed-shared-file-changes).
 
 The normative contracts are [contracts/native-profile.md](contracts/native-profile.md)
@@ -428,7 +430,8 @@ because the mechanism fixes what the policy can express.
 
 ## Evidence and unresolved questions
 
-Obtained evidence: none for any scenario. Planned evidence per scenario is in
+Obtained evidence: no live or scenario evidence (nothing native has run); unit-level records and
+the review records under `evidence/` only. Planned evidence per scenario is in
 [assurance.json](assurance.json). Decided: NC-1 to NC-11 and the F5 binding
 ([founder decision record](evidence/founder-decisions-20261031.json), T001).
 Open: values to be observed by probe (OAuth refresh host names, helper

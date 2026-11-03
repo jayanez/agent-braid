@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """SPEC-061 T016, T017: loopback server checks, route table, event stream, snapshot and replay."""
 import contextlib
+import hashlib
 import http.client
 import io
 import json
@@ -960,6 +961,180 @@ class ReplayTests(unittest.TestCase):
                     view_serve.read_replay_file(big)
             finally:
                 view_serve.MAX_REPLAY_BYTES = original
+
+
+class VendorFileTests(ServerCase):
+    """SPEC-061 T025: `/web/vendor/...` serves only files the vendor manifest lists, byte-checked at request time."""
+
+    LISTED = {"three/a.js": b"export const a = 1;\n", "three/addons/b.js": b"export const b = 2;\n",
+              "three/LICENSE": b"MIT\n"}
+
+    def setUp(self):
+        vendor_tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(vendor_tmp.cleanup)
+        self.outside = Path(vendor_tmp.name) / "outside"
+        self.outside.mkdir()
+        (self.outside / "secret.js").write_bytes(b"secret")
+        self.vendor = Path(vendor_tmp.name) / "vendor"
+        for relative, content in self.LISTED.items():
+            self.write(relative, content)
+        self.write_manifest(self.listed_digests())
+        self.server_kwargs = {"vendor_dir": self.vendor}
+        super().setUp()
+
+    def listed_digests(self):
+        return {relative: hashlib.sha256(content).hexdigest() for relative, content in self.LISTED.items()}
+
+    def write(self, relative, content):
+        path = self.vendor / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(content)
+
+    def write_manifest(self, files, raw=None):
+        text = raw if raw is not None else json.dumps({"package": "three", "files": files})
+        (self.vendor / "manifest.json").write_text(text, encoding="utf-8")
+
+    def restart(self):
+        self.stop()
+        self.start(vendor_dir=self.vendor)
+        self._session = None
+
+    def get(self, path, cookie=True):
+        if cookie and getattr(self, "_session", None) is None:
+            self._session = self.cookie()
+        return self.request("GET", path, {"Cookie": self._session} if cookie else {})
+
+    def assert_refused(self, path, status=404):
+        result, response, body = self.get(path)
+        self.assertEqual((result, body), (status, b""), path)
+        for name, value in CONTRACT_HEADERS.items():
+            self.assertEqual(response.getheader(name), value, name)
+        self.assertIn("script-src 'self'", response.getheader("Content-Security-Policy"))
+
+    def test_listed_files_with_a_matching_hash_are_served_to_a_session(self):
+        for relative, content in self.LISTED.items():
+            with self.subTest(relative=relative):
+                status, response, body = self.get(f"/web/vendor/{relative}")
+                self.assertEqual((status, body), (200, content))
+                for name, value in CONTRACT_HEADERS.items():
+                    self.assertEqual(response.getheader(name), value, name)
+                self.assertEqual(response.getheader("Content-Length"), str(len(content)))
+        _, response, _ = self.get("/web/vendor/three/a.js")
+        self.assertTrue(response.getheader("Content-Type").startswith("text/javascript"))
+
+    def test_a_listed_file_needs_the_read_cookie_like_the_rest_of_the_bundle(self):
+        self.assertEqual(self.get("/web/vendor/three/a.js", cookie=False)[0], 404)
+        session = {"Cookie": self.cookie()}
+        self.assertEqual(self.request("POST", "/web/vendor/three/a.js", session)[0], 405)
+        self.assertEqual(self.request("GET", "/web/vendor/three/a.js", session, host="evil.example")[0], 403)
+
+    def test_files_the_manifest_does_not_list_are_refused_even_when_present(self):
+        self.write("three/unlisted.js", b"x")
+        for relative in ("three/unlisted.js", "manifest.json", "three", "three/", "three/addons", "", "nope.js"):
+            with self.subTest(relative=relative):
+                self.assert_refused(f"/web/vendor/{relative}")
+        self.assert_refused("/web/vendor")
+
+    def test_a_listed_file_whose_bytes_no_longer_match_is_refused_at_request_time(self):
+        self.assertEqual(self.get("/web/vendor/three/a.js")[0], 200)
+        self.write("three/a.js", b"export const a = 'tampered';\n")  # after the server started
+        self.assert_refused("/web/vendor/three/a.js")
+        self.assertEqual(self.get("/web/vendor/three/addons/b.js")[0], 200)  # the others are unaffected
+
+    def test_a_missing_listed_file_is_refused(self):
+        (self.vendor / "three/a.js").unlink()
+        self.assert_refused("/web/vendor/three/a.js")
+
+    def test_symbolic_links_are_refused_whatever_they_point_at(self):
+        os.symlink(self.outside / "secret.js", self.vendor / "three/link.js")
+        os.symlink(self.vendor / "three/a.js", self.vendor / "three/alias.js")  # same bytes, still a link
+        os.symlink(self.outside, self.vendor / "linked")
+        secret = hashlib.sha256(b"secret").hexdigest()
+        files = self.listed_digests()
+        files.update({"three/link.js": secret, "linked/secret.js": secret,
+                      "three/alias.js": files["three/a.js"]})
+        self.write_manifest(files)
+        self.restart()
+        for relative in ("three/link.js", "three/alias.js", "linked/secret.js"):
+            with self.subTest(relative=relative):
+                self.assert_refused(f"/web/vendor/{relative}")
+        self.assertEqual(self.get("/web/vendor/three/a.js")[0], 200)
+
+    def test_a_symbolic_link_as_the_vendor_directory_serves_nothing(self):
+        real = self.vendor.with_name("real-vendor")
+        self.vendor.rename(real)
+        os.symlink(real, self.vendor)
+        self.restart()
+        self.assert_refused("/web/vendor/three/a.js")
+
+    def test_path_traversal_and_odd_spellings_are_refused(self):
+        for path in ("/web/vendor/../vendor/three/a.js", "/web/vendor/three/../three/a.js",
+                     "/web/vendor/%2e%2e/outside/secret.js", "/web/vendor/three/%2e%2e/three/a.js",
+                     "/web/vendor//three/a.js", "/web/vendor/three//a.js", "/web/vendor/three/a.js/",
+                     "/web/vendor/three/a.js%00", "/web/vendor/three%2fa.js", "/web/vendor/three\\a.js",
+                     "/web/vendor/THREE/a.js", "/web/vendor/./three/a.js", "/web/./vendor/three/a.js",
+                     "/web/vendor/three/a.js/.."):
+            with self.subTest(path=path):
+                self.assert_refused(path)
+
+    def test_manifest_entries_that_could_leave_the_vendor_directory_are_ignored(self):
+        escape = hashlib.sha256(b"secret").hexdigest()
+        files = self.listed_digests()
+        files.update({"../outside/secret.js": escape, "/etc/hosts": escape, "three/../../outside/secret.js": escape,
+                      "three//a.js": escape, ".hidden/x.js": escape, "three/.x.js": escape, "a\\b.js": escape,
+                      "three/bad-digest.js": "nothex", "three/short.js": "ab" * 31, "three/upper.js": "AB" * 32,
+                      "": escape, "three/": escape})
+        self.write_manifest(files)
+        self.write("three/.x.js", b"secret")
+        self.restart()
+        self.assertEqual(self.get("/web/vendor/three/a.js")[0], 200)
+        for relative in ("../outside/secret.js", "outside/secret.js", "three/.x.js", "three/bad-digest.js",
+                         "three/short.js", "three/upper.js", "three//a.js"):
+            with self.subTest(relative=relative):
+                self.assert_refused(f"/web/vendor/{relative}")
+        self.assertEqual(set(self.server.vendor_files), set(self.LISTED))
+
+    def test_a_manifest_that_is_missing_unreadable_or_malformed_lists_nothing(self):
+        cases = {
+            "not json": "{", "not an object": "[]", "no files": "{}", "files not an object": '{"files": []}',
+            "duplicate member": '{"files": {"three/a.js": "%s", "three/a.js": "%s"}}' % (("0" * 64,) * 2),
+            "non-finite": '{"files": {}, "x": NaN}',
+        }
+        for name, raw in cases.items():
+            with self.subTest(name=name):
+                self.write_manifest({}, raw=raw)
+                self.restart()
+                self.assertEqual(self.server.vendor_files, {})
+                self.assert_refused("/web/vendor/three/a.js")
+        (self.vendor / "manifest.json").unlink()
+        self.restart()
+        self.assert_refused("/web/vendor/three/a.js")
+
+    def test_an_oversized_listed_file_is_refused(self):
+        original = view_serve.MAX_VENDOR_FILE_BYTES
+        self.addCleanup(setattr, view_serve, "MAX_VENDOR_FILE_BYTES", original)
+        view_serve.MAX_VENDOR_FILE_BYTES = 8
+        self.assert_refused("/web/vendor/three/a.js")
+
+    def test_no_vendor_directory_serves_no_vendor_file(self):
+        self.stop()
+        self.start(vendor_dir=None)
+        self._session = None
+        self.assert_refused("/web/vendor/three/a.js")
+        self.stop()
+        self.start(vendor_dir=self.vendor.with_name("absent"))
+        self._session = None
+        self.assert_refused("/web/vendor/three/a.js")
+
+    def test_flat_bundle_names_keep_working_and_a_nested_name_cannot_be_bundled(self):
+        self.assertEqual(self.get("/web/app.js")[0], 200)
+        with self.assertRaises(ServeError):
+            ViewServer(LoomStore(), self.runtime, bundle={"vendor/three/a.js": b"x"})
+
+    def test_the_default_vendor_directory_is_the_source_checkout_one(self):
+        checkout = Path(__file__).resolve().parents[1] / "integrations/agent-braid-view/web/vendor"
+        self.assertEqual(view_serve.VENDOR_DIR, checkout)
+        self.assertTrue((checkout / "manifest.json").is_file())
 
 
 class ContractTableTests(unittest.TestCase):
