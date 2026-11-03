@@ -29,7 +29,6 @@ from __future__ import annotations
 import argparse
 import base64
 import hashlib
-import importlib.resources
 import json
 import os
 import re
@@ -46,7 +45,6 @@ RUNTIME_DIR_NAME = "agent-braid-view"
 TOKEN_ENV = "AGENT_BRAID_VIEW_TOKEN"
 HOOK_TIMEOUT_SECONDS = 5
 BUNDLE_DIR = Path(__file__).resolve().parent.parent / "integrations" / "agent-braid-view" / "web"
-PACKAGE_BUNDLE = ("view_assets", "web")  # beneath the `agent_braid` package, written by `build_support.py`
 MAX_BUNDLE_FILE_BYTES = 8 * 1024 * 1024
 MAX_BUNDLE_FILES = 64
 _IMPORT_MAP = re.compile(rb"<script\b[^>]*\btype\s*=\s*[\"']?importmap[\"']?[^>]*>(.*?)</script\s*>",
@@ -166,19 +164,15 @@ def discover_watch_roots(home: Path | None = None) -> tuple[list[Path], list[str
 
 
 def resolve_bundle_dir() -> Path:
-    """The web bundle directory: the source checkout when present, else the installed package's copy.
+    """The web bundle directory: the source checkout when it has a bundle, else the installed package's copy.
 
-    When neither exists the source-checkout path is returned so `load_bundle` refuses it with the usual message.
+    The installed copy lives beneath the `agent_braid` package (`view_assets/web`, written by `build_support.py`).
+    When neither has an `index.html` the source-checkout path is returned so `load_bundle` refuses it.
     """
-    if BUNDLE_DIR.is_dir():
-        return BUNDLE_DIR
-    try:
-        installed = importlib.resources.files("agent_braid").joinpath(*PACKAGE_BUNDLE)
-    except (ImportError, OSError, TypeError):
-        return BUNDLE_DIR
-    # Only a real directory can be scanned: a zip-style resource is not served by the flat bundle reader.
-    if isinstance(installed, Path) and installed.is_dir():
-        return installed
+    installed = Path(__file__).resolve().parent / "view_assets" / "web"
+    for candidate in (BUNDLE_DIR, installed):
+        if (candidate / "index.html").is_file():
+            return candidate
     return BUNDLE_DIR
 
 
@@ -200,7 +194,7 @@ def load_bundle(directory: Path) -> tuple[dict[str, bytes], str | None]:
                 raise CliError(f"view: bundle: {entry.name} is larger than the bundle file bound")
             files[entry.name] = content
     except OSError as exc:
-        raise CliError(f"view: bundle: cannot read the web bundle (neither the source checkout nor the installed package has it): {exc.strerror}") from exc
+        raise CliError(f"view: bundle: cannot read the web bundle: {exc.strerror}") from exc
     if "index.html" not in files:
         raise CliError("view: bundle: the web bundle has no index.html")
     index = files["index.html"]

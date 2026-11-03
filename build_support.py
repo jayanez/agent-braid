@@ -12,7 +12,16 @@ VIEW_WEB_SOURCE = Path(__file__).resolve().parent / "integrations" / "agent-brai
 def _view_web_files(source):
     if not (source / "index.html").is_file():
         raise FileNotFoundError(f"the activity viewer web bundle is missing: {source}")
-    return sorted(path for path in source.rglob("*") if path.is_file() and not path.is_symlink())
+    files = []
+    for path in sorted(source.rglob("*")):
+        relative = path.relative_to(source)
+        if any(part.startswith(".") or part == "__pycache__" for part in relative.parts):
+            continue  # editor, OS and cache leftovers are not part of the shipped bundle
+        if path.is_symlink():
+            raise ValueError(f"the activity viewer web bundle must not contain links: {path}")
+        if path.is_file():
+            files.append(path)
+    return files
 
 
 class ToolingBuildPy(build_py):

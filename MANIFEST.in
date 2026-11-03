@@ -5,3 +5,4 @@ recursive-include LICENSES *.txt
 recursive-include integrations/agent-braid *.md *.json
 recursive-include examples/tooling *.json
 recursive-include integrations/agent-braid-view/web *
+global-exclude .DS_Store *.pyc *.swp

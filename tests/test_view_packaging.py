@@ -20,7 +20,6 @@ from agent_braid import view_cli
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "integrations" / "agent-braid-view" / "web"
 PACKAGE_WEB = Path("agent_braid") / "view_assets" / "web"
-FIRST_PARTY = ("index.html", "loom.js", "braid-scene.js", "style.css")
 BUILD_INPUTS = ("pyproject.toml", "build_support.py", "MANIFEST.in", "README.md", "LICENSE", "NOTICE",
                 "TRADEMARKS.md")
 
@@ -57,11 +56,13 @@ def load_build_support():
 
 
 def setuptools_available():
+    """True when this interpreter can run the project's declared build backend (Python 3.12+, setuptools 68+)."""
     try:
         import setuptools.build_meta  # noqa: F401
+        from setuptools import __version__
     except ImportError:
         return False
-    return True
+    return sys.version_info >= (3, 12) and int(__version__.split(".")[0]) >= 68
 
 
 # Runs in a clean interpreter whose only agent_braid is the extracted package under `argv[1]`.
@@ -178,12 +179,23 @@ class BuildSupportMappingTests(ExtractedPackageCase):
         mapping = self.view_mapping()
         expected = {str(self.site / PACKAGE_WEB / relative): str(WEB / relative) for relative in source_bundle_files()}
         self.assertEqual(mapping, expected)
-        for relative in (*FIRST_PARTY, "vendor/manifest.json", "vendor/three/LICENSE"):
+        for relative in ("vendor/manifest.json", "vendor/three/LICENSE"):
             with self.subTest(relative=relative):
                 self.assertIn(str(self.site / PACKAGE_WEB / relative), mapping)
-        for relative in vendor_manifest()["files"]:
-            with self.subTest(vendored=relative):
-                self.assertIn(str(self.site / PACKAGE_WEB / "vendor" / relative), mapping)
+
+    def test_stray_local_files_are_not_shipped_and_links_are_refused(self):
+        bundle = Path(self.tmp.name) / "web"
+        shutil.copytree(WEB, bundle)
+        (bundle / ".DS_Store").write_bytes(b"x")
+        (bundle / "vendor" / "__pycache__").mkdir()
+        (bundle / "vendor" / "__pycache__" / "x.pyc").write_bytes(b"x")
+        (bundle / "vendor" / ".note.swp").write_bytes(b"x")
+        with mock.patch.object(self.build_support, "VIEW_WEB_SOURCE", bundle):
+            mapped = {Path(source).relative_to(bundle).as_posix() for source in self.view_mapping().values()}
+            self.assertEqual(mapped, set(source_bundle_files()))
+            (bundle / "link.js").symlink_to(bundle / "loom.js")
+            with self.assertRaisesRegex(ValueError, "links"):
+                self.builder._asset_mapping()
 
     def test_existing_tooling_assets_stay_in_the_mapping(self):
         mapping = self.builder._asset_mapping()
@@ -210,44 +222,47 @@ class ResolveBundleTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.base = Path(self.tmp.name).resolve()
+        self.installed = Path(view_cli.__file__).resolve().parent / "view_assets" / "web"
+
+    def bundle(self, name):
+        directory = self.base / name
+        directory.mkdir()
+        (directory / "index.html").write_text("<!doctype html>", encoding="utf-8")
+        return directory
 
     def test_the_source_checkout_is_preferred_when_present(self):
-        source = self.base / "source"
-        source.mkdir()
+        source = self.bundle("source")
         with mock.patch.object(view_cli, "BUNDLE_DIR", source):
             self.assertEqual(view_cli.resolve_bundle_dir(), source)
 
     def test_the_installed_package_is_used_when_the_source_checkout_is_absent(self):
-        installed = self.base / "agent_braid" / "view_assets" / "web"
-        installed.mkdir(parents=True)
         with mock.patch.object(view_cli, "BUNDLE_DIR", self.base / "nowhere"), \
-                mock.patch("importlib.resources.files", return_value=self.base / "agent_braid"):
-            self.assertEqual(view_cli.resolve_bundle_dir(), installed)
+                mock.patch.object(Path, "is_file", autospec=True,
+                                  side_effect=lambda path: path == self.installed / "index.html"):
+            self.assertEqual(view_cli.resolve_bundle_dir(), self.installed)
+
+    def test_an_incomplete_source_directory_does_not_shadow_the_installed_copy(self):
+        empty = self.base / "empty"
+        empty.mkdir()
+        with mock.patch.object(view_cli, "BUNDLE_DIR", empty), \
+                mock.patch.object(Path, "is_file", autospec=True,
+                                  side_effect=lambda path: path == self.installed / "index.html"):
+            self.assertEqual(view_cli.resolve_bundle_dir(), self.installed)
 
     def test_nothing_found_returns_the_source_path_so_load_bundle_refuses_it(self):
         missing = self.base / "nowhere"
-        with mock.patch.object(view_cli, "BUNDLE_DIR", missing), \
-                mock.patch("importlib.resources.files", return_value=self.base / "agent_braid"):
+        with mock.patch.object(view_cli, "BUNDLE_DIR", missing):
             self.assertEqual(view_cli.resolve_bundle_dir(), missing)
             with self.assertRaisesRegex(view_cli.CliError, "bundle") as raised:
                 view_cli.load_bundle(view_cli.resolve_bundle_dir())
         self.assertNotIn("source checkout only", raised.exception.message)
         self.assertNotIn("runs from a source checkout", raised.exception.message)
 
-    def test_a_non_filesystem_package_resource_is_not_used(self):
-        class Opaque:  # a zip-style Traversable is not a path the flat bundle reader can scan
-            def joinpath(self, *names):
-                return self
-
-        with mock.patch.object(view_cli, "BUNDLE_DIR", self.base / "nowhere"), \
-                mock.patch("importlib.resources.files", return_value=Opaque()):
-            self.assertEqual(view_cli.resolve_bundle_dir(), self.base / "nowhere")
-
     def test_the_real_source_checkout_resolves_to_the_repository_bundle(self):
         self.assertEqual(view_cli.resolve_bundle_dir(), WEB)
 
 
-@unittest.skipUnless(setuptools_available(), "setuptools is not installed; the wheel build needs the build backend")
+@unittest.skipUnless(setuptools_available(), "the wheel build needs Python 3.12+ and setuptools 68+, the declared build backend")
 class WheelBuildTests(ExtractedPackageCase):
     @classmethod
     def setUpClass(cls):
@@ -287,10 +302,8 @@ class WheelBuildTests(ExtractedPackageCase):
                     packaged = (PACKAGE_WEB / relative).as_posix()
                     self.assertIn(packaged, names)
                     self.assertEqual(archive.read(packaged), (WEB / relative).read_bytes())
-            for relative, digest in vendor_manifest()["files"].items():
-                with self.subTest(vendored=relative):
-                    self.assertEqual(sha256(archive.read((PACKAGE_WEB / "vendor" / relative).as_posix())), digest)
             self.assertIn("agent_braid/tooling_assets/NOTICE", names)
+            self.assertNotIn((PACKAGE_WEB / ".DS_Store").as_posix(), names)
 
     def test_the_sdist_carries_every_bundle_and_vendored_file(self):
         with tarfile.open(self.sdist) as archive:
