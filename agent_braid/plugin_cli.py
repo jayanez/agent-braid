@@ -32,7 +32,7 @@ def add_parser(subparsers):
             command.add_argument('--system-one', choices=('off', 'shadow'), help='persist plugin MCP System One shadow consent; default off')
             command.add_argument('--prune-stale', action='store_true', help='preview removing missing worktree roots and dropping unsafe workspace registrations')
         if name == 'legacy':
-            command.add_argument('--host', choices=('codex', 'claude'), required=True)
+            command.add_argument('--host', choices=('codex', 'claude', 'opencode'), required=True)
             command.add_argument('--receipt', type=Path)
             command.add_argument('--destination', type=Path, help='explicit alternate legacy host root')
             command.add_argument('--apply', action='store_true')

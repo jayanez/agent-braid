@@ -18,6 +18,8 @@ import tempfile
 import tomllib
 from typing import Callable
 
+from . import jsonc
+
 SCHEMA = "agent-braid-installation/v0.1"
 MAX_CONFIG = 2 * 1024 * 1024
 NAME = re.compile(r"[a-z][a-z0-9_-]{0,63}\Z")
@@ -26,9 +28,17 @@ NAME = re.compile(r"[a-z][a-z0-9_-]{0,63}\Z")
 class InstallationRefused(ValueError):
     """An ambiguous target or ownership change prevents a local transaction."""
 
-    def __init__(self, message: str, *, diagnostic: dict | None = None):
+    def __init__(self, message: str, *, diagnostic: dict | None = None, code: str | None = None):
         super().__init__(message)
         self.diagnostic = diagnostic
+        self.code = code  # stable refusal code; set only by the OpenCode profile
+
+
+def _refusal(host: str, code: str, message: str, diagnostic: dict | None = None) -> InstallationRefused:
+    """Codex and Claude keep their historical messages; OpenCode adds a stable code."""
+    if host == "opencode":
+        return InstallationRefused(f"{code}: {message}", diagnostic=diagnostic, code=code)
+    return InstallationRefused(message, diagnostic=diagnostic)
 
 
 def _require(value, message):
@@ -142,9 +152,10 @@ def _toml_mapping_bytes(mapping: dict) -> bytes:
 def _selected_mapping_bytes(raw: bytes | None, host: str, name: str) -> bytes | None:
     if raw is None:
         return None
-    if host == "claude":
-        entry = _json_entry(raw, name)
-        return entry
+    return _PROFILES[host].selected(raw, name)
+
+
+def _toml_selected(raw: bytes, name: str) -> bytes | None:
     parsed = _toml_parse(raw)
     servers = parsed.get("mcp_servers", {})
     mapping = servers.get(name) if isinstance(servers, dict) else None
@@ -290,7 +301,7 @@ class Selection:
 
     def paths(self) -> tuple[Path, Path, Path]:
         _require(self.telemetry in {"off", "local"}, "telemetry mode must be off or local")
-        _require(self.host in {"codex", "claude"}, "unsupported host")
+        _require(self.host in _PROFILES, "unsupported host")
         _require(self.scope in {"user", "project"}, "unsupported scope")
         _require(NAME.fullmatch(self.name), "invalid server name")
         home = (self.home or Path.home()).expanduser().absolute()
@@ -314,18 +325,13 @@ class Selection:
                      and not results.is_relative_to(grant), "grant store overlaps configured roots")
         if self.destination is not None:
             base = self.destination.expanduser().absolute()
-            config = base / ("config.toml" if self.host == "codex" else "config.json")
+            config = base / _PROFILES[self.host].destination_config
             skills = base / "skills"
             receipt = base / "receipts" / f"{self.name}.json"
-        elif self.host == "codex":
-            base = (self.codex_home or Path(os.environ.get("CODEX_HOME", str(home / ".codex")))).expanduser().absolute()
-            config = (base if self.scope == "user" else source / ".codex") / "config.toml"
-            skills = (home if self.scope == "user" else source) / ".agents" / "skills"
-            receipt = (base if self.scope == "user" else source / ".codex") / "agent-braid-receipts" / f"{self.name}.json"
+            if self.host == "opencode":
+                _opencode_ambiguity(base)
         else:
-            config = home / ".claude.json" if self.scope == "user" else source / ".mcp.json"
-            skills = (home if self.scope == "user" else source) / ".claude" / "skills"
-            receipt = (home if self.scope == "user" else source) / ".claude" / "agent-braid-receipts" / f"{self.name}.json"
+            config, skills, receipt = _default_paths(self, home, source)
         receipt = self.receipt.expanduser().absolute() if self.receipt else receipt
         _require(receipt != config and not receipt.is_relative_to(skills), "receipt collides with an asset")
         return config, skills, receipt
@@ -458,6 +464,275 @@ def _config_entry(raw: bytes, host: str, name: str, owned: bytes | None = None, 
     return owned
 
 
+# --- OpenCode profile: JSONC configuration, servers under ``mcp`` ---------------
+
+OPENCODE_SCOPE = "opencode_jsonc_server_entry"
+# Conservative recognition of the Agent Braid native OpenCode plugin in the
+# documented ``plugin`` array. The exact spelling stored by ``opencode plugin add``
+# was not observed here, so only unambiguous spellings match; absence of a match
+# is not evidence that the plugin is not installed.
+
+
+def _is_native_plugin(spec: str) -> bool:
+    spec = spec.strip().lower()
+    return (spec == "agent-braid" or spec.startswith("agent-braid@")
+            or "jayanez/agent-braid" in spec or "plugins/agent-braid" in spec)
+
+
+def _invalid(message: str) -> InstallationRefused:
+    return _refusal("opencode", "invalid_configuration", message)
+
+
+def opencode_home(home: Path | None = None) -> Path:
+    """``$XDG_CONFIG_HOME/opencode`` (relative or empty XDG values are ignored)."""
+    value = os.environ.get("XDG_CONFIG_HOME", "")
+    base = Path(value) if value and os.path.isabs(value) else (home or Path.home()).expanduser().absolute() / ".config"
+    return base / "opencode"
+
+
+def _opencode_ambiguity(directory: Path) -> None:
+    plain, commented = directory / "opencode.json", directory / "opencode.jsonc"
+    if plain.exists() and commented.exists():
+        raise _refusal("opencode", "ambiguous_configuration",
+                       f"both {plain} and {commented} exist; remove or merge one before installing")
+
+
+def _default_paths(selection: "Selection", home: Path, source: Path) -> tuple[Path, Path, Path]:
+    name = selection.name
+    if selection.host == "codex":
+        base = (selection.codex_home or Path(os.environ.get("CODEX_HOME", str(home / ".codex")))).expanduser().absolute()
+        config = (base if selection.scope == "user" else source / ".codex") / "config.toml"
+        skills = (home if selection.scope == "user" else source) / ".agents" / "skills"
+        receipt = (base if selection.scope == "user" else source / ".codex") / "agent-braid-receipts" / f"{name}.json"
+    elif selection.host == "opencode":
+        if selection.scope == "user":
+            directory = opencode_home(home)
+            skills, receipt = directory / "skills", directory / "agent-braid-receipts" / f"{name}.json"
+        else:
+            directory = source
+            skills = source / ".opencode" / "skills"
+            receipt = source / ".opencode" / "agent-braid-receipts" / f"{name}.json"
+        _opencode_ambiguity(directory)
+        config = directory / ("opencode.jsonc" if (directory / "opencode.jsonc").exists() else "opencode.json")
+    else:
+        config = home / ".claude.json" if selection.scope == "user" else source / ".mcp.json"
+        skills = (home if selection.scope == "user" else source) / ".claude" / "skills"
+        receipt = (home if selection.scope == "user" else source) / ".claude" / "agent-braid-receipts" / f"{name}.json"
+    return config, skills, receipt
+
+
+def _oc_load(raw: bytes):
+    """Return ``(text, cleaned, parsed)`` for a valid OpenCode configuration."""
+    try:
+        text = raw.decode("utf-8")
+        parsed = jsonc.parse(text)
+        cleaned = jsonc.clean(text)
+    except (UnicodeError, jsonc.JsoncError) as exc:
+        raise _invalid(f"not valid UTF-8 JSONC ({type(exc).__name__})") from exc
+    if not isinstance(parsed, dict):
+        raise _invalid("the configuration root must be an object")
+    if "mcp" in parsed and not isinstance(parsed["mcp"], dict):
+        raise _invalid("mcp must be an object")
+    return text, cleaned, parsed
+
+
+def _oc_members(cleaned, start=0):
+    try:
+        return jsonc.members(cleaned.text, start)
+    except jsonc.JsoncError as exc:
+        raise _invalid("configuration object could not be scanned") from exc
+
+
+def _oc_locate(raw: bytes, name: str):
+    text, cleaned, parsed = _oc_load(raw)
+    _, end, members = _oc_members(cleaned)
+    container = next((m for m in members if m[0] == "mcp"), None)
+    if container is None:
+        return text, cleaned, end, members, None, None, None
+    _, container_end, entries = _oc_members(cleaned, container[2])
+    return text, cleaned, end, members, container, entries, (container_end,
+                                                              next((m for m in entries if m[0] == name), None))
+
+
+def _oc_entry(raw: bytes, name: str, owned=None, allow_modified=False) -> bytes | None:
+    text, _, _, _, _, _, found = _oc_locate(raw, name)
+    member = found[1] if found else None
+    return text[member[2]:member[3]].encode("utf-8") if member else None
+
+
+def _oc_insertion(cleaned, members, end) -> tuple[int, str]:
+    """Where and with which separator a new last member goes.
+
+    Without a trailing comma the member goes before the closing brace; with one, it
+    goes right after the last value so that the user's trailing comma stays in place.
+    """
+    if not members:
+        return end, ""
+    if any(members[-1][3] <= position < end for position in cleaned.trailing):
+        return members[-1][3], ","
+    return end, ","
+
+
+def _oc_removal(cleaned, members, index, end) -> list[tuple[int, int]]:
+    """Spans to delete: the member and exactly one adjoining separator comma."""
+    _, key_start, _, finish = members[index]
+    last = index + 1 == len(members)
+    if not last:
+        own = cleaned.text.index(",", finish, members[index + 1][1])
+    else:
+        own = next((p for p in cleaned.trailing if finish <= p < end), None)
+    preceding = cleaned.text.index(",", members[index - 1][3], key_start) if index > 0 else None
+    # A last member keeps its own trailing comma when a predecessor can lose its separator.
+    comma = preceding if last and preceding is not None else own if own is not None else preceding
+    return [(key_start, finish)] + ([(comma, comma + 1)] if comma is not None else [])
+
+
+def _cut(text: str, spans) -> str:
+    for begin, finish in sorted(spans, reverse=True):
+        text = text[:begin] + text[finish:]
+    return text
+
+
+def _oc_edit(raw: bytes, name: str, entry: bytes | None, *, created_container: bool = False) -> tuple[bytes, bool]:
+    """Write or remove only ``mcp.<name>``; return the bytes and whether ``mcp`` was created."""
+    text, cleaned, end, members, container, entries, found = _oc_locate(raw, name)
+    if container is None:
+        _require(entry is not None, "cannot remove missing server")
+        addition = json.dumps("mcp") + ": {" + json.dumps(name) + ": " + entry.decode() + "}"
+        position, prefix = _oc_insertion(cleaned, members, end)
+        return (text[:position] + prefix + addition + text[position:]).encode(), True
+    container_end, member = found
+    if member is None:
+        _require(entry is not None, "cannot remove missing server")
+        addition = json.dumps(name) + ": " + entry.decode()
+        position, prefix = _oc_insertion(cleaned, entries, container_end)
+        return (text[:position] + prefix + addition + text[position:]).encode(), False
+    if entry is not None:
+        return (text[:member[2]] + entry.decode() + text[member[3]:]).encode(), created_container
+    spans = _oc_removal(cleaned, entries, entries.index(member), container_end)
+    if created_container and len(entries) == 1:
+        spans = _oc_removal(cleaned, members, members.index(container), end)
+    return _cut(text, spans).encode(), created_container
+
+
+def _oc_build(name: str, server: dict, old_entry) -> bytes:
+    value = {"type": "local", "command": [server["command"], *server["args"]], "codemode": False}
+    return json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False).encode("utf-8")
+
+
+def _oc_insert(raw, name, new_entry, old_entry, entry, receipt):
+    created = bool(receipt.get("createdMcp")) if receipt and entry is not None else False
+    after, created = _oc_edit(raw, name, new_entry, created_container=created)
+    _oc_load(after)
+    return after, new_entry, {"createdMcp": created}
+
+
+def _oc_remove(raw, name, old_entry, receipt):
+    return _oc_edit(raw, name, None, created_container=bool(receipt.get("createdMcp")))[0]
+
+
+def _oc_mapping(raw: bytes, name: str):
+    return _oc_load(raw)[2].get("mcp", {}).get(name)
+
+
+def native_plugin_configured(raw: bytes | None) -> bool:
+    """True when the ``plugin`` array of an OpenCode configuration names the native plugin."""
+    if raw is None:
+        return False
+    plugins = _oc_load(raw)[2].get("plugin", [])
+    if not isinstance(plugins, list):
+        return False
+    specs = [item[0] if isinstance(item, list) and item else item for item in plugins]
+    return any(isinstance(spec, str) and _is_native_plugin(spec) for spec in specs)
+
+
+def _native_plugin_warning(name: str) -> dict:
+    return {"code": "native_plugin_shadowed", "serverName": name, "domain":
+            "plugin entry in the selected OpenCode configuration; the entry spelling is matched conservatively",
+            "message": f"The Agent Braid native OpenCode plugin is configured; mcp.{name} shadows its server."}
+
+
+# --- per-host table ---------------------------------------------------------------
+
+def _json_diff(*, operation, raw, name, entry, new_entry, server, expected, ownership, scope):
+    return _refusal_diff(operation=operation, scope=scope, current=entry, proposed=new_entry,
+                         expected_owned=expected, ownership=ownership)
+
+
+def _toml_diff(*, operation, raw, name, entry, new_entry, server, expected, ownership, scope):
+    return _toml_refusal_diff(raw=raw, name=name, operation=operation, expected_owned=expected,
+                              proposed=server, ownership=ownership)
+
+
+def _toml_entry_failure(exc, raw, name, operation, old_entry, selection):
+    if operation != "uninstall" and any(
+            marker in str(exc) for marker in ("existing TOML server is unowned or modified",
+                                              "owned TOML server has additional shared keys")):
+        return _toml_refusal_diff(raw=raw, name=name, operation=operation, expected_owned=old_entry,
+                                  proposed=selection.server(),
+                                  ownership="unowned" if old_entry is None else "owned_but_modified")
+    return None
+
+
+def _toml_build(name, server, old_entry):
+    entry = _toml_entry(name, server)
+    return b"\n" + entry if old_entry is not None and old_entry.startswith(b"\n") else entry
+
+
+def _toml_insert(raw, name, new_entry, old_entry, entry, receipt):
+    if entry is not None:
+        after = raw.replace(old_entry, new_entry, 1)
+    else:
+        separator = b"" if not raw or raw.endswith(b"\n") else b"\n"
+        new_entry = separator + new_entry  # receipt owns inserted separator too
+        after = raw + new_entry
+    _toml_parse(after)
+    return after, new_entry, {}
+
+
+def _claude_insert(raw, name, new_entry, old_entry, entry, receipt):
+    after = _json_edit(raw, name, new_entry)
+    _parse_json(after)
+    return after, new_entry, {}
+
+
+@dataclass(frozen=True)
+class _Profile:
+    destination_config: str   # file name below ``--destination``
+    scope: str                # refusal diagnostic scope label
+    cli: str                  # executable looked up on PATH by ``doctor``
+    empty: bytes              # configuration used when the file does not exist
+    arguments: str            # key holding the serve arguments in a configured entry
+    entry: Callable           # (raw, name, owned, allow_modified) -> current entry bytes or None
+    selected: Callable        # (raw, name) -> comparable entry bytes or None
+    parse: Callable           # (raw) -> validates the configuration
+    mapping: Callable         # (raw, name) -> configured entry value or None
+    build: Callable           # (name, server, old_entry) -> new entry bytes
+    insert: Callable          # (raw, name, new_entry, old_entry, entry, receipt) -> (after, entry, receipt extras)
+    remove: Callable          # (raw, name, old_entry, receipt) -> after
+    diff: Callable            # keyword-only collision diagnostic builder
+    entry_failure: Callable = lambda *_: None  # diagnostic for a failed ownership read
+
+
+_PROFILES = {
+    "codex": _Profile("config.toml", "codex_toml_server_mapping", "codex", b"", "args",
+                      lambda raw, name, owned, allow_modified: _config_entry(raw, "codex", name, owned, allow_modified=allow_modified),
+                      _toml_selected, _toml_parse,
+                      lambda raw, name: _toml_parse(raw).get("mcp_servers", {}).get(name),
+                      _toml_build, _toml_insert, lambda raw, name, old, receipt: raw.replace(old, b"", 1),
+                      _toml_diff, _toml_entry_failure),
+    "claude": _Profile("config.json", "claude_json_server_entry", "claude", b"{}\n", "args",
+                       lambda raw, name, owned, allow_modified: _json_entry(raw, name),
+                       _json_entry, _parse_json,
+                       lambda raw, name: _parse_json(raw).get("mcpServers", {}).get(name),
+                       lambda name, server, old: _json(server).rstrip(b"\n"), _claude_insert,
+                       lambda raw, name, old, receipt: _json_edit(raw, name, None), _json_diff),
+    "opencode": _Profile("opencode.json", OPENCODE_SCOPE, "opencode", b"{}\n", "command",
+                         _oc_entry, _oc_entry, _oc_load, _oc_mapping,
+                         _oc_build, _oc_insert, _oc_remove, _json_diff),
+}
+
+
 @dataclass(frozen=True)
 class Change:
     path: Path
@@ -544,27 +819,15 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
     config, skills, receipt_path = selection.paths()
     receipt = _load_receipt(receipt_path, selection, config, skills)
     config_before = _read(config)
-    raw = config_before if config_before is not None else (b"" if selection.host == "codex" else b"{}\n")
+    profile = _PROFILES[selection.host]
+    raw = config_before if config_before is not None else profile.empty
     old_entry = receipt["entry"].encode() if receipt else None
     try:
-        entry = _config_entry(raw, selection.host, selection.name, old_entry,
-                              allow_modified=operation == "uninstall")
+        entry = profile.entry(raw, selection.name, old_entry, allow_modified=operation == "uninstall")
     except InstallationRefused as exc:
-        if selection.host == "codex" and operation != "uninstall" and any(
-                marker in str(exc) for marker in ("existing TOML server is unowned or modified",
-                                                  "owned TOML server has additional shared keys")):
-            proposed_server = selection.server()
-            raise InstallationRefused(
-                str(exc),
-                diagnostic=_toml_refusal_diff(
-                    raw=raw,
-                    name=selection.name,
-                    operation=operation,
-                    expected_owned=old_entry,
-                    proposed=proposed_server,
-                    ownership="unowned" if old_entry is None else "owned_but_modified",
-                ),
-            ) from exc
+        diagnostic = profile.entry_failure(exc, raw, selection.name, operation, old_entry, selection)
+        if diagnostic is not None:
+            raise InstallationRefused(str(exc), diagnostic=diagnostic) from exc
         raise
     changes = []
     residuals = []
@@ -573,7 +836,7 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
             return Transaction([], {"operation": operation, "status": "unowned", "host": selection.host,
                                     "scope": selection.scope, "residuals": ["no receipt; no files removed"]})
         if entry == old_entry:
-            after = _json_edit(raw, selection.name, None) if selection.host == "claude" else raw.replace(old_entry, b"", 1)
+            after = profile.remove(raw, selection.name, old_entry, receipt)
             # Retain surrounding bytes including empty shared containers.
             if config_before != after:
                 changes.append(Change(config, config_before, after))
@@ -609,41 +872,20 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
                                     "residuals": residuals})
 
     server = selection.server()
-    new_entry = _toml_entry(selection.name, server) if selection.host == "codex" else _json(server).rstrip(b"\n")
-    if selection.host == "codex" and old_entry is not None and old_entry.startswith(b"\n"):
-        new_entry = b"\n" + new_entry
+    new_entry = profile.build(selection.name, server, old_entry)
     if entry is not None and receipt is None:
-        diagnostic = (_refusal_diff(operation=operation, scope="claude_json_server_entry",
-                                    current=entry, proposed=new_entry, expected_owned=None,
-                                    ownership="unowned")
-                      if selection.host == "claude" else
-                      _toml_refusal_diff(
-                          raw=raw, name=selection.name, operation=operation,
-                          expected_owned=None, proposed=server, ownership="unowned"))
-        raise InstallationRefused("server name collision; no owned receipt", diagnostic=diagnostic)
+        raise _refusal(selection.host, "unowned_collision", "server name collision; no owned receipt",
+                       profile.diff(operation=operation, raw=raw, name=selection.name, entry=entry,
+                                    new_entry=new_entry, server=server, expected=None,
+                                    ownership="unowned", scope=profile.scope))
     if receipt is not None and entry != old_entry and not (entry is None and receipt.get("state") == "uninstalled"):
-        diagnostic = (_refusal_diff(operation=operation, scope="claude_json_server_entry",
-                                    current=entry, proposed=new_entry, expected_owned=old_entry,
-                                    ownership="owned_but_modified")
-                      if selection.host == "claude" else
-                      _toml_refusal_diff(
-                          raw=raw, name=selection.name, operation=operation,
-                          expected_owned=old_entry, proposed=server,
-                          ownership="owned_but_modified"))
-        raise InstallationRefused("owned server changed; refusing overwrite", diagnostic=diagnostic)
+        raise _refusal(selection.host, "changed_digest", "owned server changed; refusing overwrite",
+                       profile.diff(operation=operation, raw=raw, name=selection.name, entry=entry,
+                                    new_entry=new_entry, server=server, expected=old_entry,
+                                    ownership="owned_but_modified", scope=profile.scope))
     _require(operation != "update" or receipt is not None, "update requires an owned receipt")
     _require(operation != "update" or receipt.get("state") == "installed", "update requires an active installation")
-    if selection.host == "codex":
-        if entry is not None:
-            config_after = raw.replace(old_entry, new_entry, 1)
-        else:
-            separator = b"" if not raw or raw.endswith(b"\n") else b"\n"
-            new_entry = separator + new_entry  # receipt owns inserted separator too
-            config_after = raw + new_entry
-        _toml_parse(config_after)
-    else:
-        config_after = _json_edit(raw, selection.name, new_entry)
-        _parse_json(config_after)
+    config_after, new_entry, receipt_extras = profile.insert(raw, selection.name, new_entry, old_entry, entry, receipt)
     if config_before != config_after:
         changes.append(Change(config, config_before, config_after))
     inventory = dict(receipt["files"]) if receipt else {}
@@ -659,9 +901,10 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
             if target.parent.exists():
                 _require(not target.parent.is_symlink() and target.parent.is_dir(), "skill directory is unsafe")
                 if _unowned_skill_contents(target.parent, receipt):
-                    raise InstallationRefused(
+                    raise _refusal(
+                        selection.host, "unowned_collision",
                         f"shared skill contents require manual review: {asset.name}",
-                        diagnostic=_unavailable_refusal_diff(
+                        _unavailable_refusal_diff(
                             operation=operation,
                             scope="skill_directory",
                             reason="The directory contains unowned sibling files; those private filenames and contents are withheld, and no single-file comparison can explain directory ownership.",
@@ -673,9 +916,10 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
             owned = inventory.get(relative)
             after = asset.content.encode("utf-8")
             if before is not None and (owned is None or _digest(before) != owned):
-                raise InstallationRefused(
+                raise _refusal(
+                    selection.host, "unowned_collision" if owned is None else "changed_digest",
                     f"skill collision or user edit: {relative}",
-                    diagnostic=_refusal_diff(
+                    _refusal_diff(
                         operation=operation,
                         scope="skill_asset",
                         current=before,
@@ -695,7 +939,8 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
                      "executable": server["command"], "args": server["args"],
                      "sourceRoot": str(selection.source_root), "resultRoot": str(selection.result_root),
                      "telemetry": {"mode": selection.telemetry, "retentionDays": 30, "automaticUpload": False},
-                     "runtimeEnabled": selection.enable_runtime, "state": "installed", "residuals": []}
+                     "runtimeEnabled": selection.enable_runtime, "state": "installed", "residuals": [],
+                     **receipt_extras}
     receipt_before = _read(receipt_path)
     backups = _planned_backups(changes, receipt.get("backups", []) if receipt else [])
     receipt_after["backups"] = backups
@@ -706,15 +951,18 @@ def plan(selection: Selection, *, operation: str = "install", source_checkout: b
     if receipt_before != encoded:
         changes.append(Change(receipt_path, receipt_before, encoded))
     _require(len({c.path for c in changes}) == len(changes), "transaction destination collision")
-    return Transaction(changes, {"operation": operation, "status": "preview", "host": selection.host,
-                                "scope": selection.scope, "serverName": selection.name,
-                                "server": server, "configPath": str(config), "skillsPath": str(skills),
-                                "receipt": str(receipt_path), "runtimeEnabled": selection.enable_runtime,
-                                "telemetry": {"mode": selection.telemetry, "retentionDays": 30, "automaticUpload": False, "purgeOnUninstall": False},
-                                "bundleVersion": bundle_version, "bundleSha256": bundle_hash,
-                                "enabledTools": ["analyze-work", "analyze", "prepare"] +
-                                (["status", "verify", "execute", "recover"] if selection.enable_runtime else []),
-                                "residuals": residuals})
+    summary = {"operation": operation, "status": "preview", "host": selection.host,
+               "scope": selection.scope, "serverName": selection.name,
+               "server": server, "configPath": str(config), "skillsPath": str(skills),
+               "receipt": str(receipt_path), "runtimeEnabled": selection.enable_runtime,
+               "telemetry": {"mode": selection.telemetry, "retentionDays": 30, "automaticUpload": False, "purgeOnUninstall": False},
+               "bundleVersion": bundle_version, "bundleSha256": bundle_hash,
+               "enabledTools": ["analyze-work", "analyze", "prepare"] +
+               (["status", "verify", "execute", "recover"] if selection.enable_runtime else []),
+               "residuals": residuals}
+    if selection.host == "opencode" and native_plugin_configured(config_after):
+        summary["warnings"] = [_native_plugin_warning(selection.name)]
+    return Transaction(changes, summary)
 
 
 def _atomic(path: Path, value: bytes | None):
@@ -773,8 +1021,7 @@ def _concurrent_refusal(transaction: Transaction, change: Change, current: bytes
             proposed_entry = _selected_mapping_bytes(change.after, host, name)
             diagnostic = _refusal_diff(
                 operation=operation,
-                scope=("claude_json_server_entry" if host == "claude"
-                       else "codex_toml_server_mapping"),
+                scope=_PROFILES[host].scope,
                 current=current_entry,
                 proposed=proposed_entry,
                 expected_owned=expected_entry,
@@ -793,14 +1040,13 @@ def _concurrent_refusal(transaction: Transaction, change: Change, current: bytes
         except (InstallationRefused, ValueError, TypeError, OverflowError, RecursionError, AttributeError):
             diagnostic = _unavailable_refusal_diff(
                 operation=operation,
-                scope=("claude_json_server_entry" if host == "claude"
-                       else "codex_toml_server_mapping"),
+                scope=_PROFILES[host].scope,
                 reason="The selected server entry could not be isolated after concurrent configuration drift; the full configuration was not compared.",
                 ownership="concurrent_drift_after_preview",
             )
     else:
         diagnostic = None
-    return InstallationRefused(message, diagnostic=diagnostic)
+    return _refusal(summary.get("host"), "changed_digest", message, diagnostic)
 
 
 def apply(transaction: Transaction, *, preview_digest: str,
@@ -914,17 +1160,19 @@ def doctor(selection: Selection, *, source_checkout: bool = False) -> dict:
         config, _, receipt = selection.paths()
         existing = _read(config)
         if existing is not None:
-            _toml_parse(existing) if selection.host == "codex" else _parse_json(existing)
+            _PROFILES[selection.host].parse(existing)
         readable = os.access(selection.source_root, os.R_OK)
         writable = os.access(selection.result_root, os.W_OK)
         checks["roots"] = {"status": "ok" if readable and writable else "unavailable",
                            "sourceReadable": readable, "resultWritable": writable}
         checks["configuration"] = {"status": "pending" if existing is None else "present", "scope": selection.scope,
                                    "path": str(config), "receiptPresent": _read(receipt) is not None}
-    except (InstallationRefused, OSError):
+    except (InstallationRefused, OSError) as exc:
         checks["roots"] = {"status": "refused"}
         checks["configuration"] = {"status": "unknown"}
-    host_executable = shutil.which("codex" if selection.host == "codex" else "claude")
+        if getattr(exc, "code", None):
+            checks["configuration"]["code"] = exc.code
+    host_executable = shutil.which(_PROFILES[selection.host].cli)
     checks["host"] = {"status": "present" if host_executable else "unavailable", "executable": host_executable,
                       "version": None, "domain": "PATH resolution only; build observation pending"}
     checks["protocol"] = {"status": "pending", "domain": "stdio discovery requires a separate local probe receipt"}
@@ -937,13 +1185,13 @@ def doctor(selection: Selection, *, source_checkout: bool = False) -> dict:
         if raw is None:
             configured_mode = "not-configured"
         else:
-            mapping = (_toml_parse(raw).get("mcp_servers", {}).get(selection.name) if selection.host == "codex"
-                       else _parse_json(raw).get("mcpServers", {}).get(selection.name))
+            mapping = _PROFILES[selection.host].mapping(raw, selection.name)
+            argument_key = _PROFILES[selection.host].arguments
             if mapping is None:
                 configured_mode = "not-configured"
-            elif (isinstance(mapping, dict) and isinstance(mapping.get("args"), list)
-                  and all(isinstance(value, str) for value in mapping["args"])):
-                arguments = mapping["args"]
+            elif (isinstance(mapping, dict) and isinstance(mapping.get(argument_key), list)
+                  and all(isinstance(value, str) for value in mapping[argument_key])):
+                arguments = mapping[argument_key]
                 modes = []
                 for index, value in enumerate(arguments):
                     if value == "--telemetry":
@@ -959,10 +1207,43 @@ def doctor(selection: Selection, *, source_checkout: bool = False) -> dict:
     checks["telemetry"] = {"requestedMode": selection.telemetry, "configuredMode": configured_mode,
                            "retentionDays": 30, "automaticUpload": False,
                            "domain": "static server arguments only; no metrics read or created; uninstall retains metrics"}
+    if selection.host == "opencode":
+        checks.update(_opencode_doctor(selection))
     checks["authentication"] = {"status": "pending", "domain": "actual selected host observation required"}
     checks["hostApproval"] = {"status": "pending", "domain": "interactive selected host approval not observed"}
     return {"schema": "agent-braid-doctor/v0.1", "checks": checks,
             "paidSessionStarted": False, "runtimeDispatched": False, "grantIssued": False}
+
+
+def _opencode_doctor(selection: Selection) -> dict:
+    """OpenCode-only checks: owned entry, owned skills and the native-plugin shadow warning."""
+    result = {"ownedEntry": {"status": "unknown"}, "ownedSkills": {"status": "unknown"},
+              "nativePlugin": {"status": "unknown"}}
+    try:
+        config, skills, receipt_path = selection.paths()
+        raw = _read(config)
+        receipt = _load_receipt(receipt_path, selection, config, skills)
+        if receipt is None:
+            result["ownedEntry"] = result["ownedSkills"] = {"status": "not-installed"}
+        else:
+            current = _oc_entry(raw, selection.name) if raw is not None else None
+            result["ownedEntry"] = {"status": "ok" if current == receipt["entry"].encode() else
+                                    "missing" if current is None else "modified"}
+            states = {}
+            for relative, digest in receipt["files"].items():
+                data = _read(skills / relative)
+                states[relative] = "missing" if data is None else "ok" if _digest(data) == digest else "modified"
+            result["ownedSkills"] = {"status": "ok" if states and set(states.values()) == {"ok"} else
+                                     "missing" if not states or "missing" in states.values() else "modified",
+                                     "files": states}
+        shadowed = native_plugin_configured(raw)
+        result["nativePlugin"] = ({"status": "shadowed", "code": "native_plugin_shadowed",
+                                   "message": _native_plugin_warning(selection.name)["message"]} if shadowed else
+                                  {"status": "not-detected", "domain": "conservative match on documented plugin entries"})
+    except (InstallationRefused, OSError) as exc:
+        for key in result:
+            result[key] = {"status": "unknown", **({"code": exc.code} if getattr(exc, "code", None) else {})}
+    return result
 
 
 def asset_provenance(*, source_checkout=False) -> dict:
@@ -979,7 +1260,7 @@ def asset_provenance(*, source_checkout=False) -> dict:
     raw = base.joinpath("hosts.json").read_bytes()
     value = _parse_json(raw)
     _require(isinstance(value, dict) and value.get("schema") == "agent-braid-host-assets/v0.1"
-             and value.get("hosts") == ["codex", "claude"] and value.get("scopes") == ["user", "project"]
+             and value.get("hosts") == ["codex", "claude", "opencode"] and value.get("scopes") == ["user", "project"]
              and value.get("transport") == "stdio" and value.get("sdk") == {"distribution": "mcp", "version": "2.3.0"},
              "host asset metadata is incompatible")
     license_records = {}
