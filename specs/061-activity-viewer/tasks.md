@@ -234,7 +234,7 @@ per-probe owner authorization but no ADR, and run first.
   and setuptools 68+). Source: `closure-packet-vis1a.md`. Dependencies: T036.
   Finding 3 design choice: a closed strand stays closed; later events for it leave a
   shape-unpinned gap, and reopening is deferred until a resumed-session contract exists.
-  Done 2026-11-03 (#1025, #1026, this PR).
+  Done 2026-11-03 (#1025, #1026, #1029); closure findings 1, 2 and 6 were resolved earlier by #1013.
 
 ## VIS.1b — Effort, recording, export and frames
 
