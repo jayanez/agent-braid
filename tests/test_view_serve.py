@@ -2,24 +2,27 @@
 """SPEC-061 T016, T017: loopback server checks, route table, event stream, snapshot and replay."""
 import contextlib
 import hashlib
-import http.client
 import io
 import json
 import os
 import re
 import socket
 import stat
+import subprocess
+import sys
 import tempfile
 import threading
 import time
 import unittest
 from pathlib import Path
 
-from agent_braid import view_loom, view_serve, view_tail
+from agent_braid import view_ingest, view_loom, view_roots, view_serve, view_tail
 from agent_braid.view_serve import IngestRefusal, ServeError, ViewServer
 from agent_braid.view_model import build_model
 from agent_braid.view_store import LoomStore
+from tests.view_http_helpers import JSON, http_request
 
+ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = Path(__file__).resolve().parents[1] / "specs/061-activity-viewer/contracts/ui-security-privacy.md"
 IMPORT_MAP_HASH = "A" * 43 + "="  # base64 of 32 bytes
 CONTRACT_HEADERS = {
@@ -27,7 +30,6 @@ CONTRACT_HEADERS = {
     "referrer-policy": "no-referrer",
     "cache-control": "no-store",
 }
-JSON = {"Content-Type": "application/json"}
 
 
 class ServerCase(unittest.TestCase):
@@ -58,15 +60,7 @@ class ServerCase(unittest.TestCase):
         self.thread.join(5)
 
     def request(self, method, path, headers=None, body=None, host=None):
-        headers = dict(headers or {})
-        headers.setdefault("Host", host or f"127.0.0.1:{self.port}")
-        connection = http.client.HTTPConnection("127.0.0.1", self.port, timeout=5)
-        try:
-            connection.request(method, path, body=body, headers=headers)
-            response = connection.getresponse()
-            return response.status, response, response.read()
-        finally:
-            connection.close()
+        return http_request(self.port, method, path, headers, body, host)
 
     def raw(self, data: bytes, port=None):
         with socket.create_connection(("127.0.0.1", port or self.port), timeout=5) as sock:
@@ -95,6 +89,31 @@ class ServerCase(unittest.TestCase):
     def refused_state_unchanged(self):
         self.assertEqual(self.store.stats()["headSeq"], 0)
         self.assertEqual([item for items in self.received.values() for item in items], [])
+
+
+class ModuleBoundaryTests(unittest.TestCase):
+    def test_the_server_does_not_import_the_watcher_or_the_adapters(self):
+        code = ("import sys; sys.path.insert(0, sys.argv[1]); import agent_braid.view_serve; "
+                "print(sorted(name for name in ('agent_braid.view_tail', 'agent_braid.view_adapters') "
+                "if name in sys.modules))")
+        result = subprocess.run([sys.executable, "-I", "-c", code, str(ROOT)], capture_output=True, text=True,
+                                check=True)
+        self.assertEqual(result.stdout.strip(), "[]")
+
+    def test_the_ingest_refusal_and_inventory_limits_are_the_shared_ones(self):
+        self.assertIs(view_serve.IngestRefusal, view_ingest.IngestRefusal)
+        self.assertEqual(view_serve.MAX_INVENTORY_NAMES, view_ingest.MAX_INVENTORY_NAMES)
+        self.assertEqual(view_serve.MAX_INVENTORY_NAME_LENGTH, view_ingest.MAX_INVENTORY_NAME_LENGTH)
+
+    def test_the_watcher_keeps_exposing_the_root_registry(self):
+        self.assertIs(view_tail.replay_with_roots, view_roots.replay_with_roots)
+        self.assertIs(view_tail.root_labels_of, view_roots.root_labels_of)
+        self.assertEqual(view_tail.root_label(1), view_roots.root_label(1))
+
+
+class TokenTests(ServerCase):
+    def test_the_ingest_token_property_is_the_one_in_the_token_file(self):
+        self.assertEqual(self.server.ingest_token, self.token)
 
 
 class BindTests(unittest.TestCase):
@@ -619,6 +638,49 @@ class ConnectionLimitTests(ServerCase):
             started = time.monotonic()
             self.assertEqual(sock.recv(10), b"")
             self.assertLess(time.monotonic() - started, 3)
+
+    def test_a_client_dripping_headers_is_closed_at_one_request_deadline(self):
+        with socket.create_connection(("127.0.0.1", self.port), timeout=5) as sock:
+            started = time.monotonic()
+            closed = False
+            sock.sendall(b"GET / HTTP/1.0\r\n")
+            while time.monotonic() - started < 3 and not closed:
+                time.sleep(0.2)  # each pause is below the 0.5 s read timeout, the total is not
+                try:
+                    sock.sendall(b"X-Drip: 1\r\n")
+                    sock.settimeout(0.01)
+                    closed = sock.recv(1) == b""
+                except socket.timeout:
+                    pass
+                except OSError:
+                    closed = True
+            self.assertTrue(closed, "the connection outlived the request deadline")
+            self.assertLess(time.monotonic() - started, 2)
+
+    def test_a_client_dripping_the_body_is_refused_at_one_request_deadline(self):
+        with socket.create_connection(("127.0.0.1", self.port), timeout=5) as sock:
+            sock.sendall((f"POST /v1/logs HTTP/1.0\r\nHost: 127.0.0.1:{self.port}\r\n"
+                          f"Content-Type: application/json\r\nAuthorization: Bearer {self.token}\r\n"
+                          "Content-Length: 100\r\n\r\n").encode())
+            started = time.monotonic()
+            answer = b""
+            while time.monotonic() - started < 3 and not answer:
+                time.sleep(0.2)
+                try:
+                    sock.sendall(b" ")
+                    sock.settimeout(0.01)
+                    answer = sock.recv(12)
+                except socket.timeout:
+                    pass
+                except OSError:
+                    break
+            self.assertTrue(answer.startswith(b"HTTP/1.0 400"), answer)
+            self.assertLess(time.monotonic() - started, 2)
+        self.refused_state_unchanged()
+
+    def test_a_normal_request_is_served_inside_the_deadline(self):
+        self.assertEqual(self.request("GET", "/")[0], 404)
+        self.assertEqual(self.post("/v1/logs", b"{}")[0], 200)
 
     def test_a_stalled_body_is_refused_with_400_at_the_socket_timeout_and_stores_nothing(self):
         with socket.create_connection(("127.0.0.1", self.port), timeout=5) as sock:

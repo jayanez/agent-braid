@@ -384,7 +384,7 @@ async function followEvents() {
       for (;;) {
         const { done, value } = await reader.read();
         if (done) break;
-        buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, "\n");
+        buffer = (buffer + decoder.decode(value, { stream: true })).replace(/\r\n/g, "\n"); // a CR at the end of a chunk waits for its LF
         let cut = buffer.indexOf("\n\n");
         while (cut !== -1) {
           const { id, data } = parseBlock(buffer.slice(0, cut));
