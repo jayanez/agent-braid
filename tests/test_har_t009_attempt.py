@@ -17,6 +17,7 @@ import subprocess
 import sys
 import tempfile
 from types import SimpleNamespace
+import pwd
 import unittest
 from unittest import mock
 
@@ -765,6 +766,17 @@ class SystemTests(unittest.TestCase):
         self.assertEqual(system.supervisor(), os.path.realpath(sys.executable))
         self.assertEqual(system.interpreter_flags(), (bool(sys.flags.isolated), bool(sys.dont_write_bytecode)))
         self.assertIsInstance(system.other_homes("braidlab"), list)
+
+    def test_other_homes_counts_human_accounts_only(self):
+        """macOS ``nobody`` has uid -2, which ``pwd`` reports as 4294967294; its home is /var/empty."""
+        entries = [pwd.struct_passwd((name, "*", uid, 20, "", home, "/bin/zsh")) for name, uid, home in (
+            ("root", 0, "/var/root"), ("_spotlight", 89, "/var/empty"), ("nobody", 4294967294, "/var/empty"),
+            ("administrator", 501, "/Users/administrator"), ("juanyanez", 502, "/Users/juanyanez"),
+            ("braidlab", 503, "/Users/braidlab"))]
+        with mock.patch.object(har.pwd, "getpwall", return_value=entries), \
+                mock.patch.object(har.os, "stat", side_effect=OSError):
+            self.assertEqual(har.System().other_homes("braidlab"),
+                             ["/Users/administrator", "/Users/juanyanez"])
 
 
 if __name__ == "__main__":
