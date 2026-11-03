@@ -1,0 +1,51 @@
+{
+  "task": "SPEC-067/T008",
+  "procedure": "procedure_010 (REQ-010 / SC-010): with no assurance profile configured, existing validate_change behaviour and existing test results equal those before SPEC-067 code landed",
+  "candidateBinding": "Compared commit e31325d33a59bad7834df18d652874a66dffea51 (first parent of 685defc6, the SPEC-067 T002 merge #944; last commit before any SPEC-067 code) against origin/develop 7485b66a7d2392adc9002c56ec73f01f09c81a68. Both trees were full clean clones of the public repository with public spec history restored.",
+  "noProfileConfigured": "No existing agent_braid module, script or test imports or references harness_assurance*; `grep -rl harness_assurance agent_braid scripts tests` lists only the four new modules and their four test files. scripts/validate_change.py has no assurance-profile input (its only 'assurance' text is the pre-existing feature-assurance rule).",
+  "scopeOfSpec067Commits": "git log --name-only over the nine '(SPEC-067 T0..' commits between the two revisions touches only agent_braid/harness_assurance*.py, tests/test_harness_assurance*.py, docs/adr/0036-assurance-profiles.md, specs/*/assurance.json and specs/067-assurance-profiles/**. No existing code, test or script file.",
+  "executedChecks": [
+    {
+      "command": "python3 scripts/validate_change.py --profile {quick,pr,sensitive} --plan-only --format json --path agent_braid/harness_assurance.py --path scripts/validate_change.py --path agent_braid/cli.py --path docs/README.md --path tests/test_cli.py  (run in each tree)",
+      "exitCode": 0,
+      "result": "byte-identical plan JSON before and after for all three profiles",
+      "sha256": {
+        "quick": "e710b67ab5f71366fbc204ebf3d32518e58d8dfc499b4737aca505bb182d665a",
+        "pr": "bce0bb70e4456e4978c5ef073114e0d01b3493f917653f2a974e0f2275ba77e6",
+        "sensitive": "4e0750487256bcbf45f63951322a6a65561d6593e50f461ecc18a76cc488ee9d"
+      }
+    },
+    {
+      "command": "python3 scripts/validate_change.py --profile quick --plan-only --format json --path specs/067-assurance-profiles/evidence/t008.json --path specs/067-assurance-profiles/tasks.md  (run in each tree)",
+      "exitCode": 0,
+      "result": "byte-identical; classification feature-assurance and contributor-documentation; selected checks repository, contracts, release-records, publication, research-radar, adoption-tracks, market-model, cli-smoke, full-tests, scientific-controls, spec-kit-structure, spec-kit-render, constitution-replica, whitespace",
+      "sha256": "5eccd819dd2045960ed96956ba164939b813a81142ac83bbd61fca29d79f50f8"
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -v  (before, e31325d3)",
+      "exitCode": 0,
+      "result": "Ran 3772 tests in 2698.895s; OK (skipped=32)",
+      "logSha256": "f7ecbf35b35ce5e96453f45a64f6043cde4edb976a20300d0182078d6e72eba2"
+    },
+    {
+      "command": ".venv-speckit/bin/python -m unittest discover -s tests -v  (after, 7485b66a)",
+      "exitCode": 0,
+      "result": "Ran 4382 tests in 2726.439s; OK (skipped=32)",
+      "logSha256": "8c6493b3fa5dced6f96cb5338e967f2898a1bd5032269da380c52c9d5b9672b6"
+    },
+    {
+      "command": "per-test comparison of the two logs",
+      "result": "3762 tests present in both, 0 changed status; the same 32 skips in both; 0 failures or errors in either. 3 test names exist only before (test_harness_containment_macos CompileCheckTests.test_rendered_profiles_compile_and_deny_unlisted_exec, test_harness_qualification_probes RunnerTests.test_missing_cancel_check_blocks_proc_08 and SessionTests.test_net_05_cli_needs_an_egress_observation): renamed or replaced by SPEC-065 harness work, not by SPEC-067 (renamed successors pass after). About 610 tests exist only after, from new harness_assurance*, validation_profiles, view_* and other tracks' modules, all passing."
+    }
+  ],
+  "differencesNotAttributableToSpec067": [
+    "scripts/validate_change.py differs by one added rule, activity-viewer (SPEC-061 T011, #949); a path set that does not match it plans identically. Hashes before and after: d6a0fde38ba5c4565a7f9e267c2b026f1d9c66ccd35516edb0c9da7ba9012630 and 7311802b44a0f21924d939a367e3ca5d00bd4e8b03c38379f9f0c5020983e5ff.",
+    "scripts/validate_repository.py (Three.js licence checks, #958) and scripts/build_native_plugin.py (version, #946) also changed, by other tracks."
+  ],
+  "negativeControls": [
+    "The comparison reports any status change: a changed existing result would appear in the status-changed list (empty here). The test-name diff does surface the three renamed tests, so the comparison can report differences."
+  ],
+  "result": "procedure_010 passes: no existing validate_change output or existing test result changed with no profile configured.",
+  "executionAuthorization": false,
+  "limits": "Process non-regression only. The unittest comparison ran locally on macOS in clean clones, not on CI. The validate_change comparison used explicit --path sets, not a Git-discovered range, and the base resolved to the same ref in both trees. No quality or utility claim for assurance profiles."
+}

@@ -107,6 +107,79 @@ class TelemetryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             target.merge(self.root / 'changed.json')
 
+    def batch_file(self, rows, schema=None, name='batch.json'):
+        import uuid
+        value = dict(schema=schema or telemetry.SCHEMA, batchId=str(uuid.uuid4()), rows=rows)
+        path = self.root / name
+        path.write_text(json.dumps(value))
+        return path
+
+    def row(self, **kwargs):
+        base = dict(day=telemetry.today().isoformat(), surface='mcp', operation='analyze-work', outcome='ok',
+                    metric='calls', bucket='all', count=1)
+        return dict(base, **kwargs)
+
+    def test_v1_batch_merges_into_the_new_store_and_exports_are_v2(self):
+        v1 = self.batch_file([self.row(surface='cli', operation='analyze')], telemetry.SCHEMA_V1)
+        self.assertEqual(self.store.merge(v1)['status'], 'merged')
+        self.assertEqual(self.store.merge(v1)['status'], 'duplicate')
+        self.record()
+        out = self.root / 'out.json'
+        self.store.export(out)
+        self.assertEqual(json.loads(out.read_text())['schema'], 'agent-braid-local-telemetry-batch/v2')
+        self.assertEqual(telemetry.Store(self.root / 'other').merge(out)['status'], 'merged')
+        with closing(sqlite3.connect(self.directory / 'metrics.sqlite3')) as db:
+            self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0], 1)  # store format unchanged
+
+    def test_v1_batch_cannot_carry_v2_vocabulary_and_unknown_schemas_refuse(self):
+        v2_rows = [self.row(surface='lifecycle', operation='serve-start'),
+                   self.row(operation='plugin-status'),
+                   self.row(outcome='refused', metric='refusal-reason', bucket='arguments-invalid')]
+        for row in v2_rows:
+            with self.subTest(row=row):
+                self.assertEqual(telemetry.Store(self.root / 'a').merge(self.batch_file([row], name='ok.json'))['status'], 'merged')
+                with self.assertRaises(ValueError):
+                    telemetry.Store(self.root / 'b').merge(self.batch_file([row], telemetry.SCHEMA_V1, 'v1.json'))
+        self.assertFalse((self.root / 'b').exists())
+        with self.assertRaises(ValueError):
+            self.store.merge(self.batch_file([self.row()], 'agent-braid-local-telemetry-batch/v3'))
+
+    def test_refusal_reason_and_lifecycle_cells_are_closed(self):
+        bad = [self.row(outcome='ok', metric='refusal-reason', bucket='other'),                  # only refused outcomes
+               self.row(surface='cli', operation='analyze', outcome='refused', metric='refusal-reason', bucket='other'),
+               self.row(outcome='refused', metric='refusal-reason', bucket='free text'),
+               self.row(operation='plugin-status', metric='duration', bucket='le-1ms'),          # calls only
+               self.row(operation='workspaces', outcome='refused', metric='refusal-reason', bucket='other'),
+               self.row(surface='lifecycle', operation='serve-start', metric='duration', bucket='le-1ms'),
+               self.row(surface='lifecycle', operation='serve-stop'),
+               self.row(surface='lifecycle', operation='analyze')]
+        for row in bad:
+            with self.subTest(row=row), self.assertRaises(ValueError):
+                self.store.merge(self.batch_file([row]))
+        self.assertFalse(self.directory.exists())
+
+    def test_record_adds_a_reason_only_for_refused_mcp_and_lifecycle_calls(self):
+        self.store.record('mcp', 'analyze-work', 'refused', 5, reason='arguments-invalid')
+        self.store.record('mcp', 'analyze-work', 'refused', 5, reason='not in the vocabulary')
+        self.store.record('mcp', 'analyze-work', 'ok', 5, reason='arguments-invalid')
+        self.store.record('cli', 'analyze', 'refused', 5, reason='arguments-invalid')
+        self.store.record('mcp', 'workspaces', 'refused', 5, reason='arguments-invalid')
+        self.store.record('lifecycle', 'serve-start', 'refused', 0, reason='registry-shape')
+        cells = {(r['surface'], r['operation'], r['outcome'], r['metric'], r['bucket']): r['count']
+                 for r in self.store.report()['rows']}
+        reasons = {k: v for k, v in cells.items() if k[3] == 'refusal-reason'}
+        self.assertEqual(reasons, {('mcp', 'analyze-work', 'refused', 'refusal-reason', 'arguments-invalid'): 1,
+                                   ('mcp', 'analyze-work', 'refused', 'refusal-reason', 'other'): 1,
+                                   ('lifecycle', 'serve-start', 'refused', 'refusal-reason', 'registry-shape'): 1})
+        self.assertNotIn(('mcp', 'workspaces', 'refused', 'duration', 'le-10ms'), cells)
+        self.assertEqual(cells[('mcp', 'workspaces', 'refused', 'calls', 'all')], 1)
+        self.assertFalse([k for k in cells if k[0] == 'lifecycle' and k[3] == 'duration'])
+
+    def test_lifecycle_record_is_fail_open(self):
+        with patch.object(telemetry.Store, 'record', side_effect=ValueError('busy')):
+            telemetry.record_lifecycle('serve-start', 'ok', directory=self.directory)
+        self.assertGreaterEqual(telemetry._known_failures, 1)
+
     def test_exchange_validation_and_failed_export_recovery(self):
         self.record()
         directory = self.root / 'not-a-file'

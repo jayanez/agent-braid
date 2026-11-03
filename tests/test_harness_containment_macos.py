@@ -37,6 +37,7 @@ from tests.test_harness_lab import make_inventory, native_manifest
 NOW = 1_800_000_000
 FACTS = mac.HostFacts("27.0.1", "26A434", "arm64")
 ACCOUNT = "braid-lab"
+OPERATOR = "founder-op"
 FIXTURE = b'import json\nopen("out.txt", "w").write("ok")\nprint(json.dumps({"seq": 0, "kind": "start"}))\n'
 INTERPRETER = os.path.realpath(sys.executable)
 # Stands in for sandbox-exec: drops its options and execs the target unchanged.
@@ -118,18 +119,20 @@ def expected_probes(probe: str, _backend) -> str:
     return dict(mac.F4_PROBES)[probe]
 
 
-def make_backend(machine: Machine, *, runner=expected_probes, **record_args) -> mac.MacOSContainment:
+def make_backend(machine: Machine, *, runner=expected_probes, operator: str = OPERATOR,
+                 **record_args) -> mac.MacOSContainment:
     return mac.MacOSContainment(machine.policy, probe_runner=runner, clock=lambda: NOW,
-                                **records(machine.environment(), **record_args))
+                                operator_account=operator, **records(machine.environment(), **record_args))
 
 
 @contextmanager
 def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = None, darwin: bool = True,
          stub_compile_check: bool = True, processes=None, env: dict | None = None,
          mechanism_uid: int | None = None, gids: tuple[int, ...] = (20,), pw_gid: int = 20,
-         console: int = -1, home: str | None = None, parent=None):
+         operator_uid: int | None = None, home: str | None = None, parent=None):
     """Stub every Darwin fact; ``processes`` stubs the per-user process listing.
 
+    Runs as the test runner's uid, which must be at least 500 (``_MIN_HUMAN_UID``, RV-16).
     The parent environment is cleared of ``ENV_DENY`` names (a developer shell may
     carry them), then ``env`` is applied. The full executable trust check applies to
     the fixtures in the temporary tree; the developer's interpreter (group-writable
@@ -145,6 +148,9 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
             raise lab.LabError(drift)
 
     def getpwnam(name):
+        if name == OPERATOR:  # a different, ordinary human account (uid >= 500)
+            return SimpleNamespace(pw_uid=max(os.getuid(), 500) + 1 if operator_uid is None else operator_uid,
+                                   pw_gid=20, pw_dir="/Users/founder-op")
         if name != ACCOUNT:
             raise KeyError(name)
         return SimpleNamespace(pw_uid=uid, pw_gid=pw_gid, pw_dir=home or machine.home)
@@ -160,7 +166,7 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
             "_MECHANISM_UID": os.getuid() if mechanism_uid is None else mechanism_uid,
             "_user_processes": processes or (lambda uid: BASELINE),
             "_resident_bytes": lambda processes: 0, "_account_groups": lambda account, gid: gids,
-            "_console_uid": lambda: console, "_process_parent": parent or (lambda pid: None),
+            "_process_parent": parent or (lambda pid: None),
             "_trusted_file": trusted,
         }
         for name, value in patches.items():
@@ -375,17 +381,25 @@ class ConstructionTests(unittest.TestCase):
         }
         for reason, change in cases.items():
             with self.subTest(reason), self.assertRaises(lab.LabError) as caught:
-                mac.MacOSContainment(machine.policy, probe_runner=expected_probes,
+                mac.MacOSContainment(machine.policy, probe_runner=expected_probes, operator_account=OPERATOR,
                                      **records(environment, **change))
             self.assertEqual(caught.exception.reason, reason)
         good = records(environment)
         for key in ("qualification_sha256", "host_qualification_sha256"):
             with self.subTest(key), self.assertRaises(lab.LabError) as caught:
-                mac.MacOSContainment(machine.policy, probe_runner=expected_probes, **(good | {key: "0" * 64}))
+                mac.MacOSContainment(machine.policy, probe_runner=expected_probes, operator_account=OPERATOR,
+                                     **(good | {key: "0" * 64}))
             self.assertEqual(caught.exception.reason, "qualification-drift")
         with self.assertRaises(lab.LabError) as caught:
-            mac.MacOSContainment(object(), probe_runner=expected_probes, **good)
+            mac.MacOSContainment(object(), probe_runner=expected_probes, operator_account=OPERATOR, **good)
         self.assertEqual(caught.exception.reason, "invalid-policy")
+        for operator in (ACCOUNT, "", "Bad Name", None, 501):  # the lab account itself, or not an account name
+            with self.subTest(operator=operator), self.assertRaises(lab.LabError) as caught:
+                mac.MacOSContainment(machine.policy, probe_runner=expected_probes, operator_account=operator,
+                                     **good)
+            self.assertEqual(caught.exception.reason, "invalid-policy")
+        with self.assertRaises(TypeError):  # the operator account is required, never defaulted
+            mac.MacOSContainment(machine.policy, probe_runner=expected_probes, **good)
 
 
 class RefusalTests(unittest.TestCase):
@@ -476,10 +490,27 @@ class RefusalTests(unittest.TestCase):
         self.refuse("self-check-unavailable", make_backend(self.machine, runner=None))
 
     def test_os_build_outside_window(self):
-        for facts in (mac.HostFacts("27.1", "26B1", "arm64"), mac.HostFacts("26.4.1", "25E1", "arm64"),
-                      mac.HostFacts("27.0.1", "garbage", "arm64"), mac.HostFacts("27.0.1.1", "26A434", "arm64")):
+        for facts in (mac.HostFacts("26.4.1", "25E1", "arm64"), mac.HostFacts("28.0", "27A1", "arm64"),
+                      mac.HostFacts("2.7", "26A1", "arm64"), mac.HostFacts("270", "26A1", "arm64"),
+                      mac.HostFacts("27", "26A1", "arm64"), mac.HostFacts("27.", "26A1", "arm64"),
+                      mac.HostFacts("27.1000", "26A1", "arm64"), mac.HostFacts("27.0.1000", "26A1", "arm64"),
+                      mac.HostFacts("27.0.1", "garbage", "arm64"), mac.HostFacts("27.0.1.1", "26A434", "arm64"),
+                      mac.HostFacts("27.2.3.4", "26B123", "arm64"), mac.HostFacts("27.x", "26B123", "arm64"),
+                      mac.HostFacts("27.\u0663", "26B123", "arm64"), mac.HostFacts("27.007", "26B123", "arm64"),
+                      mac.HostFacts("27.0.00", "26B123", "arm64"), mac.HostFacts("27.2\n", "26B123", "arm64")):
             with self.subTest(facts):
                 self.refuse("os-unsupported", facts=facts)
+
+    def test_the_whole_27_series_is_accepted_but_each_build_has_its_own_environment_hash(self):
+        """NC-3 (amended 2026-11-03): any 27.x[.y]; the self-check and the hash still bind each build."""
+        for product, build in (("27.0", "26A1"), ("27.0.2", "26A434"), ("27.2", "26B123"), ("27.10.3", "26C7"),
+                               ("27.999.999", "26Z99999z")):
+            facts = mac.HostFacts(product, build, "arm64")
+            with self.subTest(product):
+                self.assertIsNotNone(mac._OS_SERIES.fullmatch(product))
+                self.assertIsNotNone(mac._BUILD.fullmatch(build))
+                # past the OS window, so the refusal is the qualification pinned to another build
+                self.refuse("environment-drift", facts=facts)
 
     def test_executable_drift_and_symlink(self):
         Path(self.machine.claude).write_text("#!/bin/sh\n")
@@ -502,13 +533,15 @@ class RefusalTests(unittest.TestCase):
         self.machine.repin(account="nobody-here")
         self.refuse("dedicated-user-required")
 
-    def test_dedicated_account_must_be_unprivileged_not_the_console_user_with_a_private_home(self):
+    def test_dedicated_account_must_be_unprivileged_not_the_operator_with_a_private_home(self):
         cases = {"admin group": dict(gids=(20, 80)), "wheel group": dict(gids=(0, 20)),
-                 "admin primary group": dict(pw_gid=80), "console user": dict(console=os.getuid()),
-                 "home not owned": dict(home="/")}
+                 "admin primary group": dict(pw_gid=80), "home not owned": dict(home="/"),
+                 "operator account by uid": dict(operator_uid=os.getuid())}
         for name, args in cases.items():
             with self.subTest(name):
                 self.refuse("dedicated-user-unsafe", **args)
+        with self.subTest("system account"), mock.patch.object(mac, "_MIN_HUMAN_UID", os.getuid() + 1):
+            self.refuse("dedicated-user-unsafe", operator_uid=os.getuid() + 2)
         for mode in (0o755, 0o710, 0o701):
             with self.subTest(mode=oct(mode)):
                 os.chmod(self.machine.home, mode)
@@ -518,6 +551,35 @@ class RefusalTests(unittest.TestCase):
         os.symlink(self.machine.root, self.machine.home)  # a home that is a link
         self.refuse("dedicated-user-unsafe")
 
+    def test_console_owner_is_not_a_reason_to_refuse(self):
+        """RV-16 amended 2026-11-03: fast user switching makes the lab account the console owner."""
+        self.assertFalse(hasattr(mac, "_console_uid"))
+        with mock.patch.object(mac.os, "stat", side_effect=AssertionError("/dev/console must not be read")):
+            entry = SimpleNamespace(pw_gid=20, pw_dir=self.machine.home)
+            with mock.patch.object(mac, "_account_groups", lambda account, gid: (20,)):
+                self.assertEqual(mac._account_facts(ACCOUNT, entry, os.getuid(), os.getuid() + 1), ACCOUNT_FACTS)
+
+    def test_operator_account_must_resolve_to_a_human_account(self):
+        """Fail closed: an operator that is missing, unresolvable or a system account is no rule at all."""
+        backend = make_backend(self.machine, operator="no-such-operator")
+        self.refuse("operator-account-unresolved", backend)
+        self.refuse("operator-account-unresolved", operator_uid=0)
+        self.refuse("operator-account-unresolved", operator_uid=499)
+        self.refuse("operator-account-unresolved", operator_uid=-1)
+
+    def test_the_operator_used_for_the_decision_is_in_the_evidence(self):
+        backend = self.refuse("dedicated-user-unsafe", operator_uid=os.getuid())
+        self.assertEqual(backend.run_evidence[-1]["operator"], {"account": OPERATOR, "uid": os.getuid()})
+
+    def test_operator_refusal_is_one_pure_rule(self):
+        refusal = mac._operator_refusal
+        self.assertIsNone(refusal("braidlab", 502, "founder", 501))
+        self.assertEqual(refusal("braidlab", 502, "founder", None), "operator-account-unresolved")
+        self.assertEqual(refusal("braidlab", 502, "founder", 499), "operator-account-unresolved")
+        self.assertEqual(refusal("braidlab", 502, "braidlab", 501), "invalid-policy")
+        self.assertEqual(refusal("braidlab", 499, "founder", 501), "dedicated-user-unsafe")
+        self.assertEqual(refusal("braidlab", 501, "alias", 501), "dedicated-user-unsafe")
+
     def test_account_facts_fail_closed_when_the_system_cannot_say(self):
         entry = SimpleNamespace(pw_gid=20, pw_dir=self.machine.home)
         uid, real_lstat = os.getuid(), os.lstat
@@ -526,21 +588,27 @@ class RefusalTests(unittest.TestCase):
             info = real_lstat(path, *args, **kwargs)
             return SimpleNamespace(st_mode=info.st_mode, st_uid=info.st_uid + 1) if path == entry.pw_dir else info
 
-        with mock.patch.object(mac, "_account_groups", lambda account, gid: (20,)), \
-                mock.patch.object(mac, "_console_uid", lambda: -1):
-            self.assertEqual(mac._account_facts(ACCOUNT, entry, uid), ACCOUNT_FACTS)
-            for name in ("_account_groups", "_console_uid"):
-                with self.subTest(name), mock.patch.object(mac, name, side_effect=OSError), \
-                        self.assertRaises(lab.LabError) as caught:
-                    mac._account_facts(ACCOUNT, entry, uid)
-                self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
+        operator = uid + 1
+        with mock.patch.object(mac, "_account_groups", lambda account, gid: (20,)):
+            self.assertEqual(mac._account_facts(ACCOUNT, entry, uid, operator), ACCOUNT_FACTS)
+            with self.subTest("groups"), mock.patch.object(mac, "_account_groups", side_effect=OSError), \
+                    self.assertRaises(lab.LabError) as caught:
+                mac._account_facts(ACCOUNT, entry, uid, operator)
+            self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
+            with self.subTest("same uid as the operator"), self.assertRaises(lab.LabError) as caught:
+                mac._account_facts(ACCOUNT, entry, uid, uid)
+            self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
+            with self.subTest("system account"), mock.patch.object(mac, "_MIN_HUMAN_UID", uid + 1), \
+                    self.assertRaises(lab.LabError) as caught:
+                mac._account_facts(ACCOUNT, entry, uid, operator)
+            self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
             with self.subTest("owner"), mock.patch.object(mac.os, "lstat", not_owned), \
                     self.assertRaises(lab.LabError) as caught:
-                mac._account_facts(ACCOUNT, entry, uid)
+                mac._account_facts(ACCOUNT, entry, uid, operator)
             self.assertEqual(caught.exception.reason, "dedicated-user-unsafe")
             entry.pw_dir = f"{self.machine.root}/missing"
             with self.subTest("missing home"), self.assertRaises(lab.LabError):
-                mac._account_facts(ACCOUNT, entry, uid)
+                mac._account_facts(ACCOUNT, entry, uid, operator)
 
     def test_leftover_run_directory_refuses_the_next_run(self):
         for prefix in ("run-", "compile-"):
@@ -1023,6 +1091,30 @@ class SupervisedRunTests(unittest.TestCase):
         self.over_disk(backend, b"import os, time\nopen(os.environ['TMPDIR'] + '/big', 'wb').write(b'x' * (3 << 20))\n"
                                 b"time.sleep(30)\n")
 
+    def test_the_dedicated_config_dir_counts_too(self):
+        # DRV-06 (founder decision 2026-11-02c): config_dir is read/write in `launch`, so it is measured
+        backend = self.limited(diskBytes=1 << 20)
+        config = self.machine.policy.config_dir
+        self.over_disk(backend, f"import time\nopen({config!r} + '/big', 'wb').write(b'x' * (3 << 20))\n"
+                                f"time.sleep(30)\n".encode())
+        self.assertEqual(os.listdir(config), ["big"])  # the supervisor never deletes the account's state
+
+    def test_candidate_tmpdir_and_config_dir_are_one_total(self):
+        backend = self.limited(diskFiles=7)
+        config = self.machine.policy.config_dir
+        for index in range(4):  # the account's earlier state counts: 4 files
+            Path(config, f"state-{index}").write_text("x")
+        # 3 in the candidate + TMPDIR/home + 4 in config_dir = 8 > 7, though each tree alone is under
+        record = self.over_disk(backend, b"for i in range(3):\n    open(f'c{i}', 'w').write('x')\n")
+        self.assertGreater(record["diskFiles"], 7)
+
+    def test_a_small_config_dir_leaves_a_run_alone(self):
+        Path(self.machine.policy.config_dir, ".credentials.json").write_text("{}")
+        with host(self.machine):
+            result = self.backend.run_probe(b"open('x', 'w').write('y')\n", Path(self.machine.candidate()),
+                                            lab.FixtureLimits())
+        self.assertEqual((result.exit_code, result.disk_files), (0, 3))  # x, TMPDIR/home and the credentials
+
     def test_a_burst_written_just_before_a_natural_exit_is_still_caught(self):
         backend = self.limited(diskFiles=5)
         self.over_disk(backend, b"for i in range(20):\n    open(f'f{i}', 'w').write('x')\n")
@@ -1058,6 +1150,20 @@ class SupervisedRunTests(unittest.TestCase):
             result = self.backend.run_probe(b"open('x', 'w').write('y')\n", Path(self.machine.candidate()),
                                             lab.FixtureLimits())
         self.assertEqual((result.exit_code, result.disk_files), (0, 2))  # x and TMPDIR/home
+
+    def test_the_environment_hash_covers_the_transport_and_the_quota_module(self):
+        # DRV-05: both change effective policy, so a recorded qualification must not survive an edit
+        hashes = mac._component_hashes()
+        here = Path(mac.__file__).parent
+        for name in ("harness_transport_claude.py", "harness_quota.py", "harness_host_claude.py",
+                     "harness_lab.py", "harness_containment_macos.py"):
+            self.assertEqual(hashes[name], sha256((here / name).read_bytes()).hexdigest(), name)
+        self.assertLessEqual({"harness_transport_claude.py", "harness_quota.py"}, set(hashes))
+        base = self.machine.environment()
+        for name in ("harness_transport_claude.py", "harness_quota.py"):
+            changed = dict(hashes, **{name: "0" * 64})
+            with mock.patch.object(mac, "_component_hashes", lambda changed=changed: changed):
+                self.assertNotEqual(self.machine.environment(), base, name)
 
     # -- RV-30: cleanup -------------------------------------------------------------------
 
@@ -1466,6 +1572,45 @@ class ProxyTests(unittest.TestCase):
                 upstream_side.sendall(b"server-bytes")
                 self.assertEqual(client.recv(64), b"server-bytes")
                 connect.assert_called_once_with(("api.anthropic.com", 443), timeout=2)
+
+
+@unittest.skipUnless(os.environ.get("BRAID_T007_LIVE_CONTROLS") == "1",
+                     "the live disk-bound probe runs only with BRAID_T007_LIVE_CONTROLS=1")
+class LiveDiskBoundProbeTests(unittest.TestCase):
+    """DRV-06: the real 100,000-entry bound over the real filesystem, config_dir included.
+
+    Local only (temporary directories, no sandbox, no claude, no network); it writes about 100,000
+    empty files, which is why CI never runs it.
+    """
+
+    def tree(self):
+        root = Path(tempfile.mkdtemp(prefix="braid-live-disk-"))
+        self.addCleanup(mac._remove_tree, str(root))
+        return [str(root / name) for name in ("candidate", "tmp", "config")]
+
+    def fill(self, directory: str, count: int) -> None:
+        os.mkdir(directory)
+        for index in range(count):
+            open(f"{directory}/f{index}", "wb").close()
+
+    def test_the_default_entry_bound_trips_on_config_dir_alone_and_on_the_three_trees_together(self):
+        candidate, tmpdir, config = self.tree()
+        self.assertEqual(mac.LIMITS["diskFiles"], 100_000)
+        self.fill(candidate, 40_000)
+        self.fill(tmpdir, 40_000)
+        os.mkdir(config)
+        guard = mac._DiskGuard((candidate, tmpdir, config))
+        self.assertFalse(guard.exceeded())  # 80,000 entries: under the bound
+        self.fill(f"{config}/sessions", 20_001)  # the account's own tree pushes the total over it
+        self.assertTrue(guard.exceeded())
+        self.assertGreater(guard.files, 100_000)
+
+    def test_a_config_dir_over_the_bound_by_itself_is_caught(self):
+        candidate, tmpdir, config = self.tree()
+        os.mkdir(candidate)
+        os.mkdir(tmpdir)
+        self.fill(config, 100_001)
+        self.assertTrue(mac._DiskGuard((candidate, tmpdir, config)).exceeded())
 
 
 if __name__ == "__main__":

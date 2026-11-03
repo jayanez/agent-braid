@@ -14,7 +14,7 @@ from scripts.build_native_plugin import (PREFIXED_TOKEN, ROOT, SKILL_SUBSTITUTIO
                                          package_skill)
 
 NAME = 'agent-braid'
-POLICY_NAMES = {'analyze', 'plan', 'evidence', 'execute', 'recover', 'setup'}
+POLICY_NAMES = {'analyze', 'plan', 'evidence', 'execute', 'recover', 'setup', 'telemetry-audit'}
 
 
 def write(path, value):
@@ -35,7 +35,8 @@ def make_staging(root):
         target = plugin / 'skills' / SKILL_SUBSTITUTIONS[skill.name] / 'SKILL.md'
         target.parent.mkdir(parents=True)
         target.write_text(package_skill(skill.content))
-    shutil.copytree(ROOT / 'integrations/agent-braid/plugin/setup', plugin / 'skills/setup')
+    for plugin_only in ('setup', 'telemetry-audit'):
+        shutil.copytree(ROOT / 'integrations/agent-braid/plugin' / plugin_only, plugin / 'skills' / plugin_only)
     return plugin
 
 
@@ -74,6 +75,17 @@ class SkillNamingTests(unittest.TestCase):
         write(self.plugin / 'package-inventory.json', {
             'schema': 'agent-braid-plugin-package/v1', 'version': '0.0.0', 'files': inventory(self.plugin)})
         verify_package(self.plugin)
+
+    def test_telemetry_audit_skill_is_plugin_only_cli_based_and_advisory(self):
+        text = (self.plugin / 'skills/telemetry-audit/SKILL.md').read_text()
+        self.assertIn('telemetry audit-logs', text)
+        self.assertIn('plugin doctor', text)
+        self.assertIn('never as an MCP tool', text)
+        for refusal in ('transcripts', 'private destination', 'registry', 'upload'):
+            self.assertIn(refusal, text)
+        self.assertIn('causality', text)
+        self.assertNotIn('telemetry-audit', {skill.name for skill in load_skill_bundle(source_checkout=True).skills})
+        self.assertIn('telemetry-audit', (self.plugin / 'skills/setup/SKILL.md').read_text())
 
     def test_unmapped_prefixed_reference_fails(self):
         path = self.plugin / 'skills/plan/SKILL.md'

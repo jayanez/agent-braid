@@ -10,11 +10,18 @@ consumer prerequisites. The Python installation remains available below.
 ## Published experimental marketplace
 
 The own GitHub marketplace is published on `plugin-dist`, with version
-`0.1.0-alpha.5` pinned by tag `agent-braid--v0.1.0-alpha.5` at
-`07e5973fe819591854e6df8bca169b5ec82eae05`; it adds opt-in System One shadow mode
-and its native host install has not yet been observed (see the
+`0.1.0-alpha.6` pinned by tag `agent-braid--v0.1.0-alpha.6` at
+`78cc45a3f1c5dbc7b43e0ce5024fc5d1c5da053e`; it adds registry quarantine, the
+`telemetry-audit` skill and `pluginVersion` in `plugin-status`, and its native host
+install has not yet been observed (see the
+[alpha.6 record](../../specs/046-native-ai-plugins/release-acceptance-alpha6.md)).
+The Python package version (`0.1.0a2`) is a separate line from the plugin version
+(see the version update notes under local telemetry consent).
+The previous `0.1.0-alpha.5` is pinned by tag `agent-braid--v0.1.0-alpha.5` at
+`07e5973fe819591854e6df8bca169b5ec82eae05` and is the rollback target; it adds opt-in
+System One shadow mode (see the
 [alpha.5 record](../../specs/046-native-ai-plugins/release-acceptance-alpha5.md)).
-The previous `0.1.0-alpha.4` is pinned by tag `agent-braid--v0.1.0-alpha.4` at
+The earlier `0.1.0-alpha.4` is pinned by tag `agent-braid--v0.1.0-alpha.4` at
 `ac2c49825c963bf7daf3fd0851f28d9651580efa`. For alpha.4, native macOS arm64
 observations cover the isolated alpha.3 → alpha.4 update and a public Git-tag install
 with Claude Code 2.1.292, and a Codex CLI 0.164.0 install, remove and reinstall;
@@ -44,11 +51,13 @@ claude plugin install agent-braid \
 The host's plugin interface offers the equivalent marketplace and installation
 operations. Skills are discovered from the installed plugin; no copying to global
 skills folders or `npx skills add` is needed. Five product skills come from the
-existing canonical bundle; a sixth, `setup`, owns onboarding independently.
+existing canonical bundle; `setup` owns onboarding and `telemetry-audit` the read-only
+host-log versus local-telemetry audit (from `0.1.0-alpha.6`; alpha.5
+has six skills), both independently of that bundle.
 
 Plugin skills are unprefixed. In Claude Code invoke `/agent-braid:analyze`,
 `/agent-braid:plan`, `/agent-braid:evidence`, `/agent-braid:execute`,
-`/agent-braid:recover` or `/agent-braid:setup`; in Codex select the skill from the Agent Braid
+`/agent-braid:recover`, `/agent-braid:setup` or `/agent-braid:telemetry-audit`; in Codex select the skill from the Agent Braid
 plugin (`$` or `/skills`); its qualified name is expected to be
 `agent-braid:analyze` and has not yet been observed in a native Codex session. The legacy global install keeps `agent-braid-*`.
 Skills and docs reference tools by bare MCP name (for example `analyze-work`):
@@ -111,6 +120,9 @@ does not authorize execution or issue a grant. Runtime opt-in and an existing
 operator grant store are separate explicit configuration choices.
 
 The bootstrap `plugin-status` MCP tool returns `bundledCli` and `registryHome`.
+It also reports two independent versions: `version` is the Python package the
+bundled runtime was built from and `pluginVersion` is this native plugin release
+(from 0.1.0-alpha.6; `null` outside a package).
 Pass that `registryHome` explicitly as `--home` on CLI setup/discovery operations
 to keep storage consistent when a host filters environment variables. Use that absolute
 launcher path for the following commands (shell quotes are required for spaces):
@@ -157,14 +169,54 @@ When a connection is stale:
    `plugin-status` again: the digests must match and `reconnectRequired` must be
    `false`. The new connection snapshots the new workspaces and consent.
 
-Local telemetry does not count these refusals (or any other plugin-router refusal such as unknown workspace, malformed arguments, busy admission or a full inventory): they are not usage failures and the SPEC-047 data contract is unchanged.
+With consent `local`, the plugin router counts these refusals like any other call (surface `mcp`, outcome `refused`) and records only a closed `refusal-reason` bucket for each (`reconnect-required`, `workspace-unregistered`, `admission-busy`, `inventory-full`, `arguments-invalid` and the others in the [telemetry contract](TELEMETRY.md)); no message, path or workspace identifier is stored. A stale connection therefore shows up as `refused` with reason `reconnect-required`, which tells it apart from other failures.
 
 Registration is not execution authority and the stale connection keeps its
 original immutable roots and grants until it is replaced.
 
-Scope: SPEC-046 T016–T019 are a bounded defect fix after the 2026-10-19 owner
+Scope: SPEC-046 T016–T019 and the registry quarantine below are a bounded defect fix after the 2026-10-19 owner
 disposition. They do not reopen T014/T015 candidacy, builds, size work or
 publication.
+
+### Deleted worktrees and unsafe registrations
+
+Worktree roots are often ephemeral (for example agent worktrees). The registry
+treats each row on its own so one stale entry never disables the plugin:
+
+- A registered worktree root that no longer exists is *stale*. It is reported by
+  `plugin doctor`, `plugin workspaces` and `plugin-status` as `staleWorktreeRoots`
+  (workspace id, root index and `reason: "missing"`, no paths), is not given to
+  the workspace service and is excluded from the configuration digest. If a
+  registered worktree is deleted while a connection is running, that connection
+  keeps serving, because a deleted root is still declared in the registry and
+  only removes reach. `plugin-status` can therefore show `reconnectRequired: true`
+  (the effective configuration differs from the snapshot) while calls still
+  succeed; reconnect to pick the change up. Removing a root from the registry
+  (for example `setup` with a different `--worktree-root` list), swapping it for
+  a symlink, or a stale root that reappears is not a deletion: delegated calls
+  refuse with `reconnect-required` until you reconnect.
+- A workspace whose row is genuinely unsafe (a worktree root that overlaps the
+  plugin state directory or is a symbolic link or not an absolute path, a
+  mismatched identity, an unknown shape) is quarantined: it is reported as
+  `unsafeWorkspaces` (row index, workspace id when well formed and a path-free
+  reason that names the root index) and is not served, while every other
+  workspace keeps working. Structural problems (unknown schema, duplicate keys or
+  workspace ids, a non-private or oversized file) still refuse the whole registry.
+- `plugin setup` refuses to register a worktree root that does not exist.
+  `plugin setup --prune-stale` previews (and, with `--apply --preview-digest`,
+  applies) removal of stale roots and of quarantined workspace registrations;
+  without it, setup keeps stale roots registered but inactive and refuses to
+  rewrite a registry that holds unsafe rows; the preview lists each dropped
+  workspace id and reason and warns that its `runtimeEnabled`/`grantStore`
+  configuration is removed and cannot be restored except from a backup.
+  `plugin doctor` and setup read the
+  registry tolerantly, so diagnosis and repair work in these states.
+- A registered workspace whose source repository was deleted still has a valid
+  row, but its service cannot start. It is isolated and reported as
+  `unavailableWorkspaces` (`workspaceId`, `reason: "configuration rejected"`)
+  while other workspaces keep serving. Repair it with
+  `plugin workspaces --remove WORKSPACE_ID` (preview, then apply the exact
+  digest), which unregisters it and preserves results.
 
 ## Optional Claude-only gate workflow (unreleased)
 
@@ -237,6 +289,39 @@ alpha.4. Rollback needs one step first: alpha.4 refuses a registry that carries 
 removes it) before reinstalling `0.1.0-alpha.4` from tag `agent-braid--v0.1.0-alpha.4`.
 The shadow store is not removed by that step; run `system-one purge` first if you
 want it gone.
+
+Version 0.1.0-alpha.6 is published on `plugin-dist` (tag `agent-braid--v0.1.0-alpha.6`);
+its native host install has not yet been observed. It
+bundles four changes after alpha.5 and adds no registry migration:
+
+- **Registry quarantine** (SPEC-046): a deleted worktree root or an unsafe
+  registration no longer refuses the whole registry. Stale roots and unsafe rows
+  are reported as `staleWorktreeRoots` and `unsafeWorkspaces`, a workspace whose
+  repository is gone as `unavailableWorkspaces`, and every other workspace keeps
+  serving. `plugin setup --prune-stale` previews removing them
+  ([details](#deleted-worktrees-and-unsafe-registrations)).
+- **Refusal reasons and serve-start telemetry** (SPEC-047 T011): with consent
+  `local`, each refused call or refused start adds one closed `refusal-reason`
+  bucket and each start adds one `serve-start`. Exports now write batch schema
+  `agent-braid-local-telemetry-batch/v2`; merge accepts v1 and v2. The store format is unchanged, so
+  an alpha.5 or older build still writes to and reports the same store, but it
+  refuses v2 batches and cannot export a store that holds v2 cells; export and
+  merge with a current build ([TELEMETRY.md](TELEMETRY.md#refusal-reasons-and-plugin-starts)).
+- **`telemetry-audit` skill and `telemetry audit-logs`** (SPEC-047 T012): a
+  read-only comparison of the plugin's host MCP logs with the local store; the
+  skill is a seventh packaged skill, so the skill listing changes
+  (`/agent-braid:telemetry-audit`).
+- **`pluginVersion`** in `plugin-status`: `version` stays the Python package
+  (`0.1.0a2`) and `pluginVersion` is the native plugin release (`0.1.0-alpha.6`).
+
+Registered workspaces, results and telemetry consent are untouched, so no migration
+step is needed after updating from alpha.5. To roll back, reinstall `0.1.0-alpha.5` from tag
+`agent-braid--v0.1.0-alpha.5`; the registry and results are accepted unchanged
+(alpha.6 adds no registry member). Alpha.5 does not know `unavailableWorkspaces`
+or the `telemetry-audit` skill, and it refuses a registry holding a deleted
+worktree root or an unsafe row, so run `plugin setup --prune-stale` (preview, then
+apply) first if `plugin doctor` reports either. Telemetry cells written by alpha.6
+stay in the store; see the compatibility note above for the older build's limits.
 
 ## Storage, updates and removal
 

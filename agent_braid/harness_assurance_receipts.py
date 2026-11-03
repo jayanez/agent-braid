@@ -31,8 +31,8 @@ from datetime import datetime, timezone
 from typing import Any
 
 from .harness_assurance import (
-    ALLOWED_MODES, CHECKPOINTS, CODE_LADDER, DEPTH_CHECKPOINT, DEPTHS, DOCS_LADDER, INDEPENDENT_REVIEW, MODES,
-    AssuranceError, _hash, _id, _int, digest,
+    ALLOWED_MODES, CHECKPOINTS, CODE_LADDER, COMPILED_FORMAT, DEPTH_CHECKPOINT, DEPTHS, DOCS_LADDER,
+    INDEPENDENT_REVIEW, MODES, AssuranceError, _hash, _id, _int, digest,
 )
 
 RECEIPT_FORMAT = "braid-harness-gate-receipt/v0.1"
@@ -64,7 +64,7 @@ _RECEIPT_KEYS = frozenset({
 _AUTHORIZATION_KEYS = frozenset({
     "schema", "id", "checkpoint", "repository", "branchPattern", "conditions", "issuedAt", "expiresAt", "issuer",
     "ownerStatement", "revokedAt", "digest"})
-_ARTIFACT_KEYS = frozenset({"checkpoints", "inputs", "reviews", "risk", "digest"})
+_ARTIFACT_KEYS = frozenset({"schema", "executionAuthorization", "checkpoints", "inputs", "reviews", "risk", "digest"})
 
 
 class ReceiptError(AssuranceError):
@@ -136,8 +136,12 @@ def _fallback(reason: str) -> dict[str, Any]:
 
 
 def evaluate_standing(authorization: Any, *, checkpoint: str, repository: str, branch: str, now: str,
-                      conditions_met: Mapping[str, Any]) -> dict[str, Any]:
-    """Decide one gate: ``standing-authorization`` citing the record, or ``approve-each`` with a fallback reason."""
+                      conditions_met: Mapping[str, Any], listed: Any) -> dict[str, Any]:
+    """Decide one gate: ``standing-authorization`` citing the record, or ``approve-each`` with a fallback reason.
+
+    ``listed`` is the effective profile's ``standingAuthorizations``: a record whose id is not in it never went
+    through the journaled profile change and falls back as ``out-of-scope``, as does anything that is not a list.
+    """
     _require(checkpoint in CHECKPOINTS, "unknown-checkpoint")
     _require(type(repository) is str and type(branch) is str, "invalid-authorization")
     moment = _seconds(now)
@@ -152,7 +156,8 @@ def evaluate_standing(authorization: Any, *, checkpoint: str, repository: str, b
     checks = (
         ("checkpoint-not-admitting", "standing-authorization" not in ALLOWED_MODES[checkpoint]),
         ("out-of-scope", record["checkpoint"] != checkpoint or record["repository"] != repository
-         or not fnmatch.fnmatchcase(branch, record["branchPattern"])),
+         or not fnmatch.fnmatchcase(branch, record["branchPattern"])
+         or not isinstance(listed, (list, tuple, set, frozenset)) or record["id"] not in listed),
         ("issuer-not-permitted", record["issuer"] not in PERMITTED_ISSUERS),
         ("statement-missing", record["ownerStatement"].strip() == ""),
         ("horizon-exceeded", expires <= issued or expires - issued > MAX_HORIZON_SECONDS),
@@ -175,6 +180,7 @@ def _row(artifact: Mapping[str, Any], checkpoint: str) -> Mapping[str, Any]:
     _require(checkpoint in CHECKPOINTS, "unknown-checkpoint")
     _require(isinstance(artifact, Mapping) and _ARTIFACT_KEYS <= set(artifact)
              and isinstance(artifact["checkpoints"], list), "invalid-artifact")
+    _require(artifact["schema"] == COMPILED_FORMAT and artifact["executionAuthorization"] is False, "invalid-artifact")
     _require(artifact["digest"] == digest(_unsealed(artifact)), "invalid-artifact")
     row = next((r for r in artifact["checkpoints"] if isinstance(r, Mapping) and r.get("checkpoint") == checkpoint), None)
     _require(row is not None, "invalid-artifact")

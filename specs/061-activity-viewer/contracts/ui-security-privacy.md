@@ -110,16 +110,22 @@ Canonical allowlist (the only attributes whose values are kept), applied at ever
 OTLP level (resource, scope, log record, metric data point and exemplar):
 
 - Claude Code OpenTelemetry: `model`, `cost_usd`, `input_tokens`, `output_tokens`,
-  `cache_read_tokens`, `cache_creation_tokens`, `duration_ms`, `agent_id`,
-  `parent_agent_id`, `session.id`, `prompt.id` (salted, used only to group a turn),
-  `tool_name`, `decision`, `query_source`.
+  `cache_read_tokens`, `cache_creation_tokens`, `duration_ms`, `session.id`,
+  `prompt.id` (salted, used only to group a turn), `tool_name`, `decision`, `query_source`.
+  Host verification T030 found no `agent_id` or `parent_agent_id` attribute in Claude Code
+  OpenTelemetry, so subagent attribution comes from the hook `agent_id` below.
 - Codex OpenTelemetry: the per-turn token usage attributes (input, cached input,
   output, reasoning output, total), `model`, conversation and thread identifiers
   (salted). Exact names are pinned by host verification T031; until then unpinned
   names produce `shape-unpinned`.
-- Claude Code hooks: event name (observational events `SessionStart`,
+- Claude Code hooks: `hook_event_name` (observational events `SessionStart`,
   `SessionEnd`, `SubagentStart`, `SubagentStop`, `PostToolUse` only), `agent_id`,
-  `agent_type`, `session_id`, `tool_name`, `tool_use_id` (identifiers salted).
+  `agent_type`, `session_id`, `tool_name`, `tool_use_id` (identifiers salted). Pinned from the
+  T030 receipt. An HTTP `SessionStart` was not delivered under `claude -p`, so nothing
+  depends on it: a strand opens on the first event that mentions it. Every other payload
+  name (for example `tool_input.*`, `tool_response.*`, `last_assistant_message`, `cwd`,
+  `transcript_path`, `agent_transcript_path`, `scratchpad_dir`, prompt fields) is dropped and
+  only its name enters the dropped-attribute inventory.
 - Host stream events (`claude -p` stream-json, `codex exec --json`): event type,
   usage counts, model and identifiers (salted); every message, prompt, tool input
   and tool output field is dropped before any other processing.
@@ -188,6 +194,7 @@ public claim under [GOVERNANCE.md](../../../GOVERNANCE.md).
   script other than the hashed import map; no import, `src`, `href` or fetch in
   first-party files or the import map targets a remote origin. Vendored files are
   checked by manifest hash only; runtime remote loads are also blocked by the CSP.
+- `/web/vendor/<path>` serves a nested vendored file only when `web/vendor/manifest.json` lists it and its SHA-256 matches at request time, and refuses everything else (unlisted, mismatched, symbolic link, traversal) with the same headers; owner approval 2026-11-02 (T025): "Sí, solo lo del manifest (Recommended)".
 - Text from events is inserted as text nodes, never as HTML; the trusted-types
   directive makes the browser refuse HTML sinks.
 - Exported HTML and SVG escape every text and attribute value; exported

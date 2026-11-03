@@ -77,14 +77,17 @@ recorded F5 and NC-1 to NC-11 on 2026-10-31
 ## Current implementation state
 
 Merged: `agent_braid/harness_containment_macos.py` (T005) builds the policy, SBPL
-profile, environment hash, loopback `EgressProxy`, supervisor and F4 pre-run checks
-with unit tests; `agent_braid/harness_quota.py` (T004) is a pure gate over supplied
-readings. Neither qualifies anything: whether the profile enforces each effect is
-decided only by the T007/T009 probes and the human records (unit tests are not
-containment evidence), and the Keychain
-(no `mach-lookup` is allowed) and refresh-endpoint behavior are untested until then.
-Not yet built: the native manifest profile (T003), the native `ClaudeTransport`
-(T006), the probe runner (T007) and the live probe attempt (T009).
+profiles (`fixture`, `launch`, and the `launch-probe` variant accepted 2026-11-02),
+environment hash, loopback `EgressProxy`, supervisor and F4 pre-run checks;
+`agent_braid/harness_quota.py` (T004) is a pure gate over supplied readings; the
+native `ClaudeTransport` (T006), the probe catalog and runner (T007) and the
+independent reviews (T008, delta review of the fixes) are merged. The environment hash
+covers the backend, the lab, the Claude host module, the Claude transport and the
+quota module. None of this qualifies anything: whether the profile enforces each
+effect is decided only by the T009 probes and the human records (unit tests are not
+containment evidence), and the Keychain (no `mach-lookup` is allowed), the
+refresh-endpoint behavior and every probe control are untested until then. Not yet
+done: the live probe attempt (T009) and the issuance of a record (T010).
 
 ## Alternatives considered
 
@@ -116,6 +119,40 @@ Not yet built: the native manifest profile (T003), the native `ClaudeTransport`
   access and supply-chain compromise of the CLI are out of scope.
 - The proxy cannot inspect TLS contents; encrypted ClientHello would hide the real
   SNI, so the proxy refuses it. Allowed endpoints can still carry data to Anthropic.
+- Credential route (RV-17, accepted residual 2026-11-02): the dedicated user's
+  credential is readable by the child, and a hostile child could send it to Anthropic
+  with an attacker-supplied key, since the allowed host is the only egress. Bounds:
+  the destination is limited to Anthropic, the credential belongs to a revocable
+  dedicated user, and the candidate gets no founder secrets. Probes cannot show this
+  and no catalog entry claims it is covered. Revisit at each 30-day requalification.
+- Disk and entry bound (RV-19, extended 2026-11-02): 2 GiB (2 x 1024^3 bytes) and
+  100,000 entries over the candidate directory, the per-run `TMPDIR` and the dedicated
+  user's `CLAUDE_CONFIG_DIR` together. It is a polled threshold, not a quota: a child
+  can overshoot by what it writes during one poll, a very large directory is listed
+  before it is counted, and extended-attribute payload is not counted. All of these
+  fail toward a hard stop or an `allowed` observation, not toward an undetected pass.
+- Probe sessions share `config_dir` state until the session-state purge exists (RV-18).
+  Interim measure: each probe session records a listing (names and content digests,
+  never contents) of `config_dir` before and after it.
+- Install requirement for the dedicated account: the supervisor runs as that account,
+  so it must be able to read the code it runs, the pinned interpreter and the pinned
+  `claude`. The code location is not, and cannot be, unreadable to it. The required
+  form is an install the account can read but not write (root-owned, outside any
+  operator-private directory) and no read access for it to the operator's home. The
+  account check inspects uid, groups, console user and home mode; it does not see
+  sudoers rules by name, ACL grants or groups such as `_developer`, so the operator
+  verifies those. `interpreter_root` is readable and map-executable in `fixture` and
+  `launch-probe`, so it must be a minimal prefix, never a repository or a home directory.
+- Dedicated-user-owned ancestors are trusted by the executable check, so a same-uid actor
+  outside the sandbox could swap a pinned binary between the hash check and the exec
+  (the transport re-hashes); POSIX modes are inspected, ACLs and file flags are not.
+- The pre-session subset of NC-11 runs under both the `fixture` and the `launch-probe`
+  profiles with connect-level NET-01 attempts, a stricter reading of NC-11 accepted
+  2026-11-02 ([record](../../specs/065-native-claude-containment/evidence/founder-decisions-20261102c.json)).
+- Probe controls (supervisor signal, shared memory, mach names, Spotlight names, `ptrace`)
+  have never run and some depend on the supervisor running in the dedicated user's own
+  login session; a failed control leaves its probe, and therefore its effect,
+  `inconclusive`, and is a finding, not a reason to widen the profile.
 - Probe results are observations on one machine, one OS build and one CLI version
   over a finite catalog, not a proof of isolation (Articles 4, 13).
 - Quota readings are manual or external and can be wrong; the caps are limits on

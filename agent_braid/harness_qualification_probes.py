@@ -52,6 +52,7 @@ import os
 from pathlib import Path
 import pwd
 import re
+import stat
 import secrets as _secrets
 import shutil
 import signal
@@ -89,6 +90,8 @@ _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _MACH_NAME = re.compile(r"[A-Za-z][\w-]*(?:\.[\w-]+){2,}\Z")
 # a kill of the limit child is this denial only when the backend reports the matching stop reason
 LIMIT_ATTRIBUTION = {"memory": "memory", "memory-burst": "memory"}
+# attempts that target the dedicated user's real home: they need ``real_home`` to mean anything (DRV-02)
+REAL_HOME_ATTEMPTS = ("real-launch-agent", "hardlink-own-tree")
 _ATTEMPT_CALL = re.compile(r'^(attempt|note|tripwire|limit|limit_note)\("([a-z0-9-]+)"', re.M)
 # every call site, indented or helper-wrapped, so an attempt the line-start scan misses is caught
 _CALL_SITE = re.compile(r'(?<![\w.])(attempt|note|tripwire|limit|limit_note)\(')
@@ -1005,6 +1008,7 @@ class SessionResult:
     refused: str | None = None  # fixed reason when the transport refused to launch
     egress: Mapping | None = None  # EgressProxy counter delta of the session (name -> count)
     quota: Mapping | None = None  # pre/post readings recorded by the driver
+    config: Mapping | None = None  # config_dir listing comparison around the session (DRV-16)
 
 
 def _stream(stdout: bytes) -> tuple[str | None, Mapping | None]:
@@ -1025,17 +1029,30 @@ def _stream(stdout: bytes) -> tuple[str | None, Mapping | None]:
     return key_source, result
 
 
+_KEY_SOURCE_LABEL = re.compile(r"[A-Za-z0-9._-]{1,32}\Z")
+
+
+def _key_source_label(key_source: str | None) -> str | None:
+    """The ``apiKeySource`` the CLI reported, as evidence (DRV-14): the real label when it is a short
+    token of plain characters (a label is not a secret), else ``other``; ``None`` when none was seen."""
+    if not key_source:
+        return None
+    ok = _KEY_SOURCE_LABEL.fullmatch(key_source) and not _looks_secret(key_source)
+    return key_source if ok else "other"
+
+
 def egress_counters_ok(egress: object) -> bool:
     """A counter delta: string names to non-negative integers (booleans excluded)."""
     return (isinstance(egress, Mapping) and all(type(k) is str and type(v) is int and v >= 0
                                                 for k, v in egress.items()))
 
 
-def _egress_verdict(egress: object) -> str:
+def _egress_verdict(egress: object, endpoints: Sequence[str] | None = None) -> str:
     """NET-05-CLI from the ``EgressProxy`` counter delta of one session (RV-03).
 
     ``unexpectedDirect`` (a client that did not speak CONNECT) or a tunnel to a target beyond the
-    allowed endpoints is ``allowed``. ``denied`` needs tunnels opened and every one of them to an
+    allowed endpoints (``endpoints``, default the static NC-1 list; the backend policy's list once refresh hosts
+    exist) is ``allowed``. ``denied`` needs tunnels opened and every one of them to an
     allowed endpoint, so the CLI was observed using the proxy as designed. ``denied:*`` refusals do
     not change the verdict (the proxy held) but are recorded by the caller. No tunnel at all, or
     counters that disagree with each other, prove nothing and stay ``inconclusive``. A connection the
@@ -1046,15 +1063,17 @@ def _egress_verdict(egress: object) -> str:
     if egress.get("unexpectedDirect", 0) > 0:
         return "allowed"
     targets = {k[len("allowed:"):]: v for k, v in egress.items() if k.startswith("allowed:")}
-    if not set(targets) <= set(_mac.ALLOWED_ENDPOINTS):
+    if not set(targets) <= set(_mac.ALLOWED_ENDPOINTS if endpoints is None else endpoints):
         return "allowed"
     if not targets or egress.get("allowed", 0) != sum(targets.values()):
         return "inconclusive"
     return "denied"
 
 
-def classify_session(probe_id: str, session: SessionResult) -> str:
-    """CRED-05, HOST-01 and NET-05-CLI observations as ``allowed``/``denied``/``inconclusive``."""
+def classify_session(probe_id: str, session: SessionResult, endpoints: Sequence[str] | None = None) -> str:
+    """CRED-05, HOST-01 and NET-05-CLI observations as ``allowed``/``denied``/``inconclusive``.
+
+    ``endpoints`` is the proxy's allowed list for NET-05-CLI (``None``: the static ``ALLOWED_ENDPOINTS``)."""
     if session.refused is not None:
         return "inconclusive"
     key_source, result = _stream(session.stdout)
@@ -1071,7 +1090,7 @@ def classify_session(probe_id: str, session: SessionResult) -> str:
                 and key_source in SUBSCRIPTION_KEY_SOURCES)
         return "allowed" if done else "denied"
     if probe_id == "NET-05-CLI":
-        return _egress_verdict(session.egress) if key_source is not None else "inconclusive"
+        return _egress_verdict(session.egress, endpoints) if key_source is not None else "inconclusive"
     raise ProbeError("unknown-session-probe")
 
 
@@ -1114,42 +1133,115 @@ SessionDriver = Callable[[str], SessionResult]
 PROBE_PROMPT = b"Reply with the single word: ok\n"
 
 
-def counter_delta(before: Mapping, after: Mapping) -> dict[str, int] | None:
-    """``after - before`` of two proxy counter readings, ``None`` when either is not a counter mapping
-    or a counter went down (the proxy was replaced mid-session)."""
-    if not (egress_counters_ok(before) and egress_counters_ok(after)):
-        return None
-    if any(after.get(k, 0) < v for k, v in before.items()):
-        return None
-    return {k: v - before.get(k, 0) for k, v in after.items() if v - before.get(k, 0)}
+MAX_CONFIG_ENTRIES = 500
+_SAFE_PART = re.compile(r"[A-Za-z0-9._ @+=-]{1,38}\Z")
 
 
-def _read_counters(tap: Callable[[], Mapping[str, int]] | None) -> Mapping | None:
+def _listing_name(relative: str) -> str:
+    """A relative path that cannot trip the bundle's secret scan: a component that is long or has
+    unusual characters is replaced by ``#`` plus its digest."""
+    return "/".join(part if _SAFE_PART.fullmatch(part) else "#" + sha256(part.encode(errors="replace")).hexdigest()
+                    for part in relative.split("/"))
+
+
+def config_dir_listing(config_dir: Path | str, *, limit: int = MAX_CONFIG_ENTRIES) -> dict | None:
+    """Names and content digests (never contents) of the dedicated account's ``config_dir`` (DRV-16).
+
+    The interim measure for RV-18 until the purge exists: the driver lists the directory before and
+    after each probe session so the bundle shows which paths a session creates, changes or removes.
+    Symbolic links are listed by their target digest, not followed; ``None`` when the directory cannot
+    be read at all (the comparison is then unavailable, not empty).
+    """
+    root = Path(config_dir)
+    entries: dict[str, str] = {}
+    truncated = False
     try:
-        return None if tap is None else tap()
-    except Exception:
+        for current, dirs, files in os.walk(root, followlinks=False, onerror=_raise):
+            dirs.sort()
+            for name in sorted([*dirs, *files]):
+                path = Path(current) / name
+                if len(entries) >= limit:
+                    truncated = True
+                    break
+                key = _listing_name(path.relative_to(root).as_posix())
+                if path.is_symlink():
+                    entries[key] = "link:" + sha256(os.readlink(path).encode(errors="replace")).hexdigest()
+                elif path.is_dir():
+                    entries[key] = "dir"
+                else:
+                    entries[key] = _file_digest(path)
+            if truncated:
+                break
+    except OSError:
         return None
+    return {"entries": entries, "truncated": truncated}
+
+
+def _raise(error: OSError) -> None:
+    raise error
+
+
+def _file_digest(path: Path) -> str:
+    """SHA-256 of a file read in chunks; a file that cannot be read is listed as ``unreadable``."""
+    digest = sha256()
+    try:
+        if not stat.S_ISREG(os.lstat(path).st_mode):
+            return "special"  # a FIFO or device would block or never end
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(descriptor, "rb") as stream:
+            if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+                return "special"
+            while chunk := stream.read(1 << 20):
+                digest.update(chunk)
+    except OSError:
+        return "unreadable"
+    return digest.hexdigest()
+
+
+def config_dir_changes(before: object, after: object) -> dict | None:
+    """The comparison recorded for one session: counts and the changed names. ``None`` unless both
+    listings were read."""
+    if not all(isinstance(x, Mapping) and isinstance(x.get("entries"), Mapping) for x in (before, after)):
+        return None
+    old, new = before["entries"], after["entries"]
+    truncated = bool(before.get("truncated") or after.get("truncated"))
+    if truncated:  # a cut listing shifts entries in and out of the window: counts only, no name diff
+        return {"before": len(old), "after": len(new), "added": [], "removed": [], "modified": [],
+                "digests": {}, "truncated": True}
+    added = sorted(new.keys() - old.keys())
+    modified = sorted(k for k in old.keys() & new.keys() if old[k] != new[k])
+    return {"before": len(old), "after": len(new), "added": added,
+            "removed": sorted(old.keys() - new.keys()), "modified": modified,
+            "digests": {k: new[k] for k in sorted([*added, *modified])}, "truncated": False}
 
 
 def native_session_driver(transport_factory: Callable[[], ClaudeTransport], *, model: str = "haiku",
                           wall_seconds: int = 120,
                           read_quota: Callable[[], Mapping | None] | None = None,
-                          egress_counters: Callable[[], Mapping[str, int]] | None = None) -> SessionDriver:
+                          read_config: Callable[[], Mapping | None] | None = None) -> SessionDriver:
     """Driver for the three NC-10 sessions: a fresh single-attempt T006 transport per probe.
 
     The transport applies the quota gate, the F4 check and the live ``init`` kill itself.
     ``read_quota`` is the orchestrator's NC-6 usage-card reading (an act the module never performs):
     it is called right before and right after the session and its two readings feed the runner's
-    2 % stop rule. ``egress_counters`` is the backend proxy's ``counters`` (``backend.egress_counters``):
-    read right before and after the session, the delta is the session's ``egress``. Without it
-    ``egress`` stays ``None`` and NET-05-CLI is ``inconclusive``.
+    2 % stop rule. The session's ``egress`` is the run's own proxy counter delta (``run.egress``,
+    taken by the backend after its pre-session check, so the NET-06 tunnels of that check are not in
+    it, DRV-01); a run without one leaves ``egress`` ``None`` and NET-05-CLI ``inconclusive``.
+    ``read_config`` lists the dedicated ``config_dir`` (``config_dir_listing``) right before and
+    after the session (DRV-16).
     """
+
+    def read_listing() -> Mapping | None:
+        try:
+            return None if read_config is None else read_config()
+        except Exception:
+            return None
 
     def drive(probe_id: str) -> SessionResult:
         transport = transport_factory()
         cancel = threading.Event()
         pre = read_quota() if read_quota is not None else None
-        tap_before = _read_counters(egress_counters)
+        config_before = read_listing()
         try:
             transport.version()  # the pinned build, again, before the session
             request = ClaudeRequest(session_id=str(uuid.uuid4()), model=model, max_turns=1)
@@ -1162,10 +1254,10 @@ def native_session_driver(transport_factory: Callable[[], ClaudeTransport], *, m
         if read_quota is not None:
             quota |= {"pre": pre, "post": read_quota()}
         quota = quota or None
-        tap_after = _read_counters(egress_counters)
-        egress = None if tap_before is None or tap_after is None else counter_delta(tap_before, tap_after)
+        egress = getattr(run, "egress", None)
         return SessionResult(run.stdout, run.exit_code, run.timed_out, run.cancelled, run.settled,
-                             egress=egress, quota=quota)
+                             egress=dict(egress) if egress_counters_ok(egress) else None, quota=quota,
+                             config=config_dir_changes(config_before, read_listing()))
 
     return drive
 
@@ -1970,7 +2062,8 @@ class QualificationProbeRunner:
                  allowed_ip: str | None = None, resolver: Callable[[str], str | None] = resolve_ipv4,
                  lan_ip: str | None = None, read_credentials: Callable[[], Sequence[str]] = lambda: (),
                  proxy_factory: Callable[..., object] = _mac.EgressProxy,
-                 proxy_block: Callable[..., dict] = run_proxy_parsing, kill_table_diff: bool = False):
+                 proxy_block: Callable[..., dict] = run_proxy_parsing, kill_table_diff: bool = False,
+                 endpoints: Sequence[str] | None = None):
         self.control, self.contained, self.launch_contained = control, contained, launch_contained
         self.arena_parent, self.proxy_address = Path(arena_parent), proxy_address
         self.sessions, self.process_scan, self.process_kill = sessions, process_scan, process_kill
@@ -1982,6 +2075,7 @@ class QualificationProbeRunner:
         self.lan_ip = discover_lan_address() if lan_ip is None else (lan_ip or None)
         self.read_credentials, self.proxy_factory = read_credentials, proxy_factory
         self.proxy_block, self.kill_table_diff = proxy_block, kill_table_diff
+        self.endpoints = None if endpoints is None else tuple(endpoints)  # the proxy's allowed list (policy)
         self.quota: list[dict] = []
         self.markers: list[str] = []
         self._session_count = 0
@@ -2084,6 +2178,10 @@ class QualificationProbeRunner:
             if probe.survivors and not control and not table_ok:
                 # the cooperative nonce scan alone cannot show that a hostile survivor is caught
                 parsed = {n: ("inconclusive" if v == "denied" else v) for n, v in parsed.items()}
+            if not control and not self.real_home:
+                # without the dedicated home the arena stands in for it: denied there is no real-path evidence
+                parsed = {n: ("inconclusive" if v == "denied" and n in REAL_HOME_ATTEMPTS else v)
+                          for n, v in parsed.items()}
             for name, reason in LIMIT_ATTRIBUTION.items():
                 # a kill is a memory denial only when the backend says its memory watchdog fired
                 if not control and parsed.get(name) == "denied" and result.limit_exceeded != reason:
@@ -2120,7 +2218,8 @@ class QualificationProbeRunner:
                              **cancel,
                              "processTable": "ok" if table_before is not None and table_after is not None
                              else ("unused" if not probe.survivors else "unavailable"),
-                             "layout": "synthetic" if control else ("real" if adjacent else "none")},
+                             "layout": "synthetic" if control else ("real" if adjacent else "none"),
+                             "realHome": bool(self.real_home) and not control},
                 **({"machNames": arena.document["mach_names"]} if probe.id == "PROC-06" else {}))
         finally:
             arena.close()
@@ -2228,7 +2327,7 @@ class QualificationProbeRunner:
         self._reserve_session()
         try:
             session = self.sessions(probe.id)
-            outcome = classify_session(probe.id, session)
+            outcome = classify_session(probe.id, session, self.endpoints)
         except Exception:
             session, outcome = SessionResult(refused="driver-failed"), "inconclusive"
         decision = self._settle_quota(session)
@@ -2241,9 +2340,10 @@ class QualificationProbeRunner:
         return self._row(probe, mode, {"session": outcome}, exitCode=session.exit_code,
                          timedOut=session.timed_out, settled=session.settled, refused=session.refused,
                          wallSeconds=probe.wall_seconds, quotaStop=None if decision["proceed"] else decision["reason"],
-                         independent={"apiKeySource": key_source if key_source in SUBSCRIPTION_KEY_SOURCES
-                                      else ("other" if key_source else None),
+                         independent={"apiKeySource": _key_source_label(key_source),
                                       "egressObserved": session.egress is not None,
+                                      "configDir": json.loads(canonical(dict(session.config)))
+                                      if isinstance(session.config, Mapping) else None,
                                       "egress": dict(sorted(session.egress.items()))
                                       if egress_counters_ok(session.egress) and probe.id == "NET-05-CLI" else None})
 
@@ -2335,6 +2435,13 @@ def scan_for_secrets(texts: Mapping[str, str], secrets: Sequence[str]) -> None:
             raise ProbeError("secret-in-artifact")
 
 
+# Candidate credential literals: one opaque token. Paths, URLs, host names, e-mail addresses and
+# sentences also live in these files and appear in the bundle legitimately; scanning for them would
+# refuse every bundle.
+_SECRET_LIKE = re.compile(r"[A-Za-z0-9_+=.-]+")
+_PLAIN_NAME = re.compile(r"[a-z.-]+")
+
+
 def credential_values(config_dir: Path | str) -> list[str]:
     """String values of the dedicated account's credential files, for the scan list only.
 
@@ -2358,7 +2465,8 @@ def credential_values(config_dir: Path | str) -> list[str]:
             leaves(json.loads((Path(config_dir) / name).read_text()))
         except (OSError, ValueError):
             continue
-    return sorted({value for value in found if len(value) >= 16})
+    return sorted({value for value in found if len(value) >= 16 and _SECRET_LIKE.fullmatch(value)
+                   and not _PLAIN_NAME.fullmatch(value)})
 
 
 def write_bundle(out_dir: Path | str, *, environment: Mapping, rows: Sequence[Mapping],
@@ -2449,7 +2557,8 @@ def make_qualification_runner(
         backend: _mac.MacOSContainment, *, arena_parent: Path | str, workdir_factory: Callable[[], Path],
         transport_factory: Callable[[], ClaudeTransport] | None = None,
         read_quota: Callable[[], Mapping | None] | None = None,
-        read_credentials: Callable[[], Sequence[str]] = lambda: (),
+        read_credentials: Callable[[], Sequence[str]] | None = None,
+        read_config: Callable[[], Mapping | None] | None = None,
         real_home: str | None = None, lan_ip: str | None = None, allowed_ip: str | None = None,
         mach_names: Callable[[], Sequence[str]] = enumerate_mach_services,
         public: Mapping | None = None, model: str = "haiku", session_wall_seconds: int = 120,
@@ -2458,17 +2567,21 @@ def make_qualification_runner(
 
     Helper probes run uncontained (the positive control, in the disposable arena only), through
     ``run_probe`` and through the ``launch-probe`` profile; session probes go through
-    ``transport_factory`` (a fresh T006 transport per probe) with the backend's egress counters as
-    the NET-05-CLI tap. Every optional input is fail-closed: what is left out makes the probes that
-    need it ``inconclusive`` (never a pass) and the attempt cannot qualify.
+    ``transport_factory`` (a fresh T006 transport per probe); NET-05-CLI reads the run's own egress
+    delta. Every optional input is fail-closed or wired by default: what cannot be wired makes the
+    probes that need it ``inconclusive`` (never a pass) and the attempt cannot qualify.
 
     * ``transport_factory``: omitted, the three NC-10 session probes are refused (``session-driver-missing``).
     * ``read_quota``: the orchestrator's NC-6 usage-card reading (an act this module never performs);
       omitted, the first session stops the attempt (the 2 % rule needs a pre and a post reading).
-    * ``read_credentials``: the dedicated user's credential values (``credential_values(config_dir)``),
-      for the leak scan of the bundle; omitted, no credential literal is scanned.
-    * ``real_home``: the dedicated user's home (``home_directory()``) for the real-path attempts;
-      omitted, they stay in the arena and are not real-path evidence.
+    * ``read_credentials``: the dedicated user's credential values for the leak scan of the bundle;
+      omitted, ``credential_values(policy.config_dir)`` (DRV-03).
+    * ``read_config``: the ``config_dir`` listing around each session; omitted,
+      ``config_dir_listing(policy.config_dir)`` (DRV-16).
+    * ``real_home``: the dedicated user's home for the real-path attempts; omitted, ``home_directory()``
+      (the runner is the dedicated account). A home that cannot be resolved refuses the runner
+      (``real-home-unavailable``): PROC-05 ``real-launch-agent`` and FS-02 ``hardlink-own-tree`` would
+      otherwise pass inside the arena without touching a real path (DRV-02).
     * ``lan_ip``: this host's LAN address (``None`` discovers it, ``""`` disables the attempts).
     * ``allowed_ip``: the runner-resolved literal of the allowed host (``None`` resolves it).
     * ``mach_names``: enumerates the launchd names for PROC-06 (default asks ``launchctl``).
@@ -2478,13 +2591,17 @@ def make_qualification_runner(
     """
     policy = getattr(backend, "policy", None)
     _require(policy_binds_catalog(policy), "catalog-not-bound")
+    home = home_directory() if real_home is None else real_home
+    _require(type(home) is str and os.path.isabs(home), "real-home-unavailable")
+    config_dir = policy.config_dir
     sessions = None if transport_factory is None else native_session_driver(
         transport_factory, model=model, wall_seconds=session_wall_seconds, read_quota=read_quota,
-        egress_counters=backend.egress_counters)
+        read_config=read_config or (lambda: config_dir_listing(config_dir)))
     options = dict(
         control=uncontained_executor, contained=ContainedExecutor(backend, workdir_factory),
         launch_contained=ContainedExecutor(backend, workdir_factory, LAUNCH_PROBE_ENTRY),
         arena_parent=arena_parent, proxy_address=f"127.0.0.1:{policy.proxy_port}", sessions=sessions,
-        public=public, layout=lambda workdir: layout_from_policy(policy, workdir), real_home=real_home,
-        lan_ip=lan_ip, allowed_ip=allowed_ip, mach_names=mach_names, read_credentials=read_credentials)
+        public=public, layout=lambda workdir: layout_from_policy(policy, workdir), real_home=home,
+        lan_ip=lan_ip, allowed_ip=allowed_ip, mach_names=mach_names,
+        read_credentials=read_credentials or (lambda: credential_values(config_dir)), endpoints=policy.endpoints)
     return QualificationProbeRunner(**(options | runner_options))

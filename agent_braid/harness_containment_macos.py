@@ -22,7 +22,8 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
 * process: exec allow-list (NC-8), CPU, file-size, core, open-file and per-user process
   rlimits applied before the sandbox is entered, a supervisor watchdog for wall time,
   memory (macOS refuses ``RLIMIT_AS`` below the current address space), output and disk
-  (candidate plus per-run ``TMPDIR``: total bytes and entry count, ``disk-limit-exceeded``),
+  (candidate, per-run ``TMPDIR`` and ``config_dir`` together: total bytes and entry count,
+  ``disk-limit-exceeded``),
   and settlement of the group plus every new process of the dedicated user. A process that
   left the group is reported apart from one still alive after the final sweep.
 * run accounting: ``ProbeResult`` and ``ContainedHostRun`` extend the lab and host results
@@ -30,11 +31,11 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
   the run; the same values land in ``run_evidence``.
 
 Before every run the backend takes an exclusive lock on ``run_root`` and re-verifies both
-trusted qualification records, the OS window, the account (not privileged, not the console
-user, a private home), the mechanism and executable hashes, the recomputed environment
-hash, a profile compile check that must report the exec of ``/usr/bin/false`` as denied and
-an allow-listed command as run, no leftover backend directory from an earlier run, a proxy
-whose accept loop is alive, and the NC-11 probe subset through the injected T007 probe
+trusted qualification records, the OS window, the account (not privileged, not a system
+account, not the operator's own account, a private home), the mechanism and executable
+hashes, the recomputed environment hash, a profile compile check that must report the exec
+of ``/usr/bin/false`` as denied and an allow-listed command as run, no leftover backend directory
+from an earlier run, a proxy whose accept loop is alive, and the NC-11 probe subset through the injected T007 probe
 runner. Any failure refuses with a fixed ``LabError`` reason before the child
 starts and is appended to ``run_evidence``. It never degrades and never falls back to
 ``SimulatedContainment``. The observed Claude version is checked by the T006 transport;
@@ -83,7 +84,8 @@ CLAUDE_VERSION = "2.1.292"  # NC-4
 ALLOWED_ENDPOINTS = ("api.anthropic.com:443",)  # NC-1; refresh hosts come from probe evidence
 # NC-8; memory and disk are enforced by the supervisor watchdog, the rest by rlimits.
 # diskBytes/diskFiles: founder decision 2026-11-02 ("2 GB y 100.000 ficheros"), measured over
-# the candidate directory plus the per-run TMPDIR (every entry counts, hard links once).
+# the candidate directory, the per-run TMPDIR and the dedicated user's config_dir together (founder
+# decision 2026-11-02c, DRV-06: every entry counts, hard links once).
 LIMITS = {"wallSeconds": 1800, "cpuSeconds": 1800, "memoryBytes": 4 << 30,
           "fileSizeBytes": 64 << 20, "openFiles": 256, "descendants": 16,
           "diskBytes": 2 << 30, "diskFiles": 100_000}
@@ -101,7 +103,8 @@ EXIT_SANDBOX_COMPILE = 65
 EXIT_SANDBOX_EXEC_DENIED = 71
 _MECHANISM_UID = 0  # sandbox-exec must be root-owned
 _SHARED_WRITE = stat.S_IWGRP | stat.S_IWOTH
-_OS_SERIES = re.compile(r"27\.0(?:\.\d{1,3})?\Z")  # NC-3
+# NC-3, amended 2026-11-03: the whole 27.x series; ASCII digits, canonical (no leading zeros)
+_OS_SERIES = re.compile(r"27\.(?:0|[1-9][0-9]{0,2})(?:\.(?:0|[1-9][0-9]{0,2}))?\Z")
 _BUILD = re.compile(r"[0-9]{2}[A-Z][0-9]{1,5}[a-z]?\Z")
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _ACCOUNT = re.compile(r"[a-z_][a-z0-9_-]{0,31}\Z")
@@ -110,6 +113,7 @@ _ENDPOINT = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-
 _OWNED = ("run-", "compile-")  # run_root directories the backend creates and removes
 _RESERVED = (*_OWNED, ".")  # run_root entries the backend owns
 _PRIVILEGED_GIDS = frozenset({0, 80})  # wheel, admin
+_MIN_HUMAN_UID = 500  # below it: system accounts (RV-16, amended 2026-11-03)
 _POLL_SECONDS = 0.05
 _COMPILE_TIMEOUT_SECONDS = 20
 _STREAM_CHUNK_BYTES = 65_536  # per read, so a large output bound never allocates a large buffer
@@ -358,10 +362,18 @@ class AccountFacts:
     home_mode: int
 
 
+# Trusted code read by path (no import: the transport imports this module). The transport builds the
+# Claude argv and pins the build, the quota module gates every session (DRV-05).
+_COMPONENT_FILES = ("harness_transport_claude.py", "harness_quota.py")
+
+
 def _component_hashes() -> dict[str, str]:
-    """Trusted code the enforcement relies on: this backend, the lab and the host module."""
-    return {Path(m.__file__).name: sha256(Path(m.__file__).read_bytes()).hexdigest()
-            for m in (sys.modules[__name__], harness_lab, harness_host_claude)}
+    """Trusted code the enforcement relies on: this backend, the lab, the host module, the Claude
+    transport and the quota gate."""
+    hashes = {Path(m.__file__).name: sha256(Path(m.__file__).read_bytes()).hexdigest()
+              for m in (sys.modules[__name__], harness_lab, harness_host_claude)}
+    here = Path(__file__).resolve().parent
+    return hashes | {name: sha256((here / name).read_bytes()).hexdigest() for name in _COMPONENT_FILES}
 
 
 def environment_sha256(policy: ContainmentPolicy, facts: HostFacts, uid: int,
@@ -427,19 +439,30 @@ def _account_groups(account: str, gid: int) -> tuple[int, ...]:
     return tuple(sorted(set(os.getgrouplist(account, gid))))
 
 
-def _console_uid() -> int:
-    return os.stat("/dev/console").st_uid
+def _operator_refusal(account: str, uid: int, operator: str, operator_uid: int | None) -> str | None:
+    """The refusal reason for the RV-16 operator rule, or None. Shared by the backend and the T009 driver."""
+    if operator_uid is None or operator_uid < _MIN_HUMAN_UID:
+        return "operator-account-unresolved"
+    if operator == account:
+        return "invalid-policy"
+    if uid < _MIN_HUMAN_UID or uid == operator_uid:
+        return "dedicated-user-unsafe"
+    return None
 
 
-def _account_facts(account: str, entry, uid: int) -> AccountFacts:
-    """Refuse an account that is privileged, the console user or has an open home (RV-16)."""
+def _account_facts(account: str, entry, uid: int, operator_uid: int) -> AccountFacts:
+    """Refuse a privileged or system account, the operator's own, or one with an open home (RV-16).
+
+    RV-16 amended (founder, 2026-11-03): the owner of ``/dev/console`` is no longer refused, because
+    fast user switching makes the dedicated account the console owner. The lab must still never run
+    as the operator's daily account, so that account is named explicitly and compared by uid.
+    """
     try:
         gids = _account_groups(account, entry.pw_gid)
-        console = _console_uid()
         home = os.lstat(entry.pw_dir)
     except OSError:
         raise LabError("dedicated-user-unsafe") from None
-    _require(not _PRIVILEGED_GIDS & {entry.pw_gid, *gids} and uid != console
+    _require(not _PRIVILEGED_GIDS & {entry.pw_gid, *gids} and uid >= _MIN_HUMAN_UID and uid != operator_uid
              and stat.S_ISDIR(home.st_mode) and home.st_uid == uid and not home.st_mode & 0o077,
              "dedicated-user-unsafe")
     return AccountFacts(gids, stat.S_IMODE(home.st_mode))
@@ -874,7 +897,8 @@ class _Lineage:
 
 
 class _DiskGuard:
-    """Total bytes (disk blocks, each inode once) and entry count of the run's writable trees.
+    """Total bytes (disk blocks, each inode once) and entry count of the run's writable trees:
+    the candidate, the per-run ``TMPDIR`` and the dedicated user's ``config_dir`` together.
 
     Symbolic links are not followed. A directory that cannot be listed counts as over the
     limit: the child cannot be allowed to hide data from the measurement.
@@ -942,9 +966,13 @@ class MacOSContainment(ContainmentBackend):
 
     def __init__(self, policy: ContainmentPolicy, *, qualification: bytes, qualification_sha256: str,
                  host_qualification: bytes, host_qualification_sha256: str,
-                 probe_runner: ProbeRunner | None, clock: Callable[[], float] = time.time):
+                 probe_runner: ProbeRunner | None, operator_account: str,
+                 clock: Callable[[], float] = time.time):
         _require(isinstance(policy, ContainmentPolicy), "invalid-policy")
+        _require(type(operator_account) is str and _ACCOUNT.fullmatch(operator_account) is not None
+                 and operator_account != policy.account, "invalid-policy")
         self.policy = policy
+        self.operator_account = operator_account  # the account the lab must never run as (RV-16)
         self.qualification: Qualification = verify_qualification(
             qualification, expected_sha256=qualification_sha256)
         try:
@@ -1018,7 +1046,13 @@ class MacOSContainment(ContainmentBackend):
             raise LabError("dedicated-user-required") from None
         uid = account.pw_uid
         _require(uid != 0 and os.getuid() == uid and os.geteuid() == uid, "dedicated-user-required")
-        account_facts = _account_facts(policy.account, account, uid)
+        try:
+            operator_uid = pwd.getpwnam(self.operator_account).pw_uid
+        except KeyError:
+            raise LabError("operator-account-unresolved") from None
+        _require(operator_uid >= _MIN_HUMAN_UID, "operator-account-unresolved")
+        evidence["operator"] = {"account": self.operator_account, "uid": operator_uid}
+        account_facts = _account_facts(policy.account, account, uid, operator_uid)
         evidence["account"] = {"gids": list(account_facts.gids), "homeMode": account_facts.home_mode}
         info = _lstat(SANDBOX_EXEC, "mechanism-unavailable")
         _require(stat.S_ISREG(info.st_mode) and info.st_uid == _MECHANISM_UID
@@ -1237,7 +1271,7 @@ class MacOSContainment(ContainmentBackend):
         state: dict = {"timedOut": False, "cancelled": False, "outputTruncated": False,
                        "limitExceeded": None}
         egress_before = self._proxy.counters()
-        disk = _DiskGuard((candidate, tmpdir))
+        disk = _DiskGuard((candidate, tmpdir, policy.config_dir))
         out_path = f"{run_dir}/stdout"
         live = _OutputStream(out_path, max_output, on_output, cancel) if on_output is not None else None
         try:

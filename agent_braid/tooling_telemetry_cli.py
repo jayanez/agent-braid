@@ -15,9 +15,33 @@ def add_parser(subparsers):
         command.add_argument('--format', choices=('text', 'json'), default='text')
         if name in {'export', 'merge'}:
             command.add_argument('file', type=Path, help='explicit local batch file; export requires a private destination outside repositories')
+    audit = commands.add_parser('audit-logs', help='read-only comparison of this plugin\'s host MCP logs with the local store')
+    audit.add_argument('--format', choices=('text', 'json'), default='text')
+    audit.add_argument('--cache-root', type=Path, help='host CLI cache root; default is the standard per-user location')
+    audit.add_argument('--since', help='first UTC date, YYYY-MM-DD; default the last seven days')
+
+
+def _run_audit(args) -> int:
+    import datetime
+    from . import telemetry_audit
+    from .tooling_telemetry import Store
+    try:
+        since = datetime.date.fromisoformat(args.since).isoformat() if args.since else None
+        try:
+            report = Store().report()
+        except Exception:  # corrupt or unusable store (sqlite errors included); never echo its payload
+            report = None  # reconciliation is then reported as unavailable, never as success
+        result = telemetry_audit.audit(args.cache_root or telemetry_audit.default_cache_root(), report, since=since)
+    except (ValueError, OSError):
+        print('telemetry audit refused: invalid date or unreadable log location', file=sys.stderr)
+        return 2
+    print(json.dumps(result, sort_keys=True, indent=2) if args.format == 'json' else telemetry_audit.render_text(result))
+    return 0
 
 
 def run(args) -> int:
+    if args.telemetry_command == 'audit-logs':
+        return _run_audit(args)
     from .tooling_telemetry import Store
     try:
         store = Store()

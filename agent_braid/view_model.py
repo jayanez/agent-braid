@@ -11,11 +11,17 @@ that is not adjacent is drawn as hops that visibly do not cross the lanes betwee
 Absence (unknown pairs, incomplete coverage, hazards not observed, gaps, capped
 elements) is reported as such and is never counted as independent or clean. Counters
 carry no ratio against serial execution: planned wave width is shown alone.
+
+Root identity (REQ-010): events carry no root. A caller that watches several roots may pass
+`roots`, a `seq` -> label map ("root 1", "root 2", ...); each element and table row then carries
+its `root` (otherwise `None`). A label is validated to be of that exact form, so no path or user
+name can reach the page through it.
 """
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any
+import re
+from typing import Any, Mapping
 
 from agent_braid.view_loom import (
     EXECUTION_AUTHORIZATION, GAP_REASONS, MAX_EVENTS, LoomError, validate_event,
@@ -34,6 +40,20 @@ _GLYPHS = {
     "unknown": "unknown-link",
 }
 _ABSENCE_HAZARDS = ("not-observed", "partial-coverage", "unattributed-writer")
+_ROOT_LABEL = re.compile(r"root [1-9][0-9]?")
+
+
+def _root_labels(roots: Mapping[int, str] | None) -> Mapping[int, str]:
+    if roots is None:
+        return {}
+    if not isinstance(roots, Mapping):
+        raise ValueError("roots must map an event seq to a root label")
+    for seq, label in roots.items():
+        if type(seq) is not int:
+            raise ValueError("roots keys must be integers (event seq)")
+        if not isinstance(label, str) or _ROOT_LABEL.fullmatch(label) is None:
+            raise ValueError('a root label has the form "root N"')
+    return roots
 
 
 def _positive_int(value: Any, name: str) -> int:
@@ -325,13 +345,15 @@ _BUILDERS["analysis.report"] = _plain(
     pairCount="pairCount", summary="summary", uncertainty="uncertainty", limits="limits")
 
 
-def _element(event: dict[str, Any], built: dict[str, Any], timing: dict[str, Any]) -> dict[str, Any]:
+def _element(event: dict[str, Any], built: dict[str, Any], timing: dict[str, Any],
+             root: str | None) -> dict[str, Any]:
     source = event["source"]
     return {
         "id": f"e{event['seq']}",
         "seq": event["seq"],
         "kind": event["kind"],
         **timing,
+        "root": root,
         "host": source["host"],
         "evidenceRef": deepcopy(source["evidenceRef"]),
         "verification": source["verification"],
@@ -396,7 +418,7 @@ def _table(elements: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [{
         "seq": e["seq"], "kind": e["kind"], "element": e["element"], "relMs": e["relMs"], "x": e["x"],
         "subject": e["subject"], "status": e["status"], "compatibilityClass": e["compatibilityClass"],
-        "verification": e["verification"], "unverified": e["unverified"],
+        "verification": e["verification"], "unverified": e["unverified"], "root": e["root"],
         "evidencePath": (e["evidenceRef"] or {}).get("path"),
         "uncertain": e.get("uncertain", False),
     } for e in elements]
@@ -415,6 +437,7 @@ def _limit_group(kind: str) -> str | None:
 def build_model(
     events: list[dict[str, Any]], *, gap_threshold_ms: int = DEFAULT_GAP_THRESHOLD_MS,
     gap_nominal_ms: int = DEFAULT_GAP_NOMINAL_MS, limits: dict[str, int] | None = None,
+    roots: Mapping[int, str] | None = None,
 ) -> dict[str, Any]:
     """Build the render-ready model of a validated, `seq`-ordered event sequence.
 
@@ -423,6 +446,9 @@ def build_model(
     between consecutive moments are drawn `gap_nominal_ms` wide and listed in
     `axis.compressions`. `limits` overrides DEFAULT_LIMITS per name; elements beyond a limit
     are dropped from `elements` and `lanes` (listed in `truncated`) but never from counters.
+    `roots` maps an event `seq` to the label of the watched root it was read from; it changes
+    only the `root` of elements and rows (ValueError for a key that is not an int or a label
+    that is not "root N"; a `seq` the events do not hold is ignored).
     """
     threshold = _positive_int(gap_threshold_ms, "gap_threshold_ms")
     nominal = _positive_int(gap_nominal_ms, "gap_nominal_ms")
@@ -433,6 +459,7 @@ def build_model(
         if name not in caps:
             raise ValueError(f"unknown limit {name!r}")
         caps[name] = _positive_int(value, name)
+    root_of = _root_labels(roots)
     if len(events) > MAX_EVENTS:
         raise LoomError("too-many-events", f"a model holds at most {MAX_EVENTS} events")
     last_seq = 0
@@ -486,7 +513,7 @@ def build_model(
             built = _crossing(data, lane_of, reports)
         else:
             built = _BUILDERS[kind](data, lane_of)
-        built_elements.append((event, _element(event, built, timing[event["seq"]])))
+        built_elements.append((event, _element(event, built, timing[event["seq"]], root_of.get(event["seq"]))))
 
     counters = _counters([element for _, element in built_elements])
     elements = []
