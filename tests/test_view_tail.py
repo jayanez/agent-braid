@@ -80,14 +80,13 @@ class IngestTests(TailCase):
         self.assertEqual(self.tail().poll_once(), 0)
         self.assertEqual(self.store.stats()["headSeq"], 0)
 
-    def test_nested_artifacts_get_a_root_relative_posix_evidence_path_in_sorted_order(self):
+    def test_nested_artifacts_get_a_root_relative_posix_evidence_path_with_newest_directory_first(self):
         install(self.root, "runs/b/state.json", "runtime-state-ready.json")
         install(self.root, "runs/a/state.json", "runtime-state-completed.json")
         install(self.root, "state.json", "runtime-state-ready.json")
         self.tail().poll_once()
         paths = [event["source"]["evidenceRef"]["path"] for event in self.store.replay()]
-        self.assertEqual(sorted(paths), sorted(["state.json", "runs/a/state.json", "runs/b/state.json"]))
-        self.assertEqual(paths, ["state.json", "runs/a/state.json", "runs/b/state.json"])
+        self.assertEqual(paths, ["state.json", "runs/b/state.json", "runs/a/state.json"])  # newest-named directory first
 
     def test_every_family_is_read_by_its_own_adapter(self):
         names = {
@@ -341,6 +340,24 @@ class BoundTests(TailCase):
         self.assertEqual(len(gaps(self.store)), 1)
         tail.poll_once()
         self.assertEqual(len(gaps(self.store)), 1)
+
+    def test_when_a_store_cap_is_reached_the_newest_report_copies_win(self):
+        """Closure finding 1: copies load newest first, so a lifetime cap refuses the oldest, not today's."""
+        stamps = ["20261001T000000000000", "20261002T000000000000", "20261003T000000000000", "20261004T000000000000"]
+        base = json.loads((FIXTURES / "analysis-file-edits.json").read_text(encoding="utf-8"))
+        text = json.dumps(base)
+        for stamp in stamps:
+            report = json.loads(text.replace('"edit-readme"', f'"readme-{stamp}"')
+                                .replace('"edit-roadmap"', f'"roadmap-{stamp}"'))
+            report["analysisId"] = f"sha256:{hashlib.sha256(stamp.encode()).hexdigest()}"
+            target = self.root / f"analysis-{stamp}Z-0123456789abcdef" / "analysis.json"
+            target.parent.mkdir()
+            target.write_text(json.dumps(report), encoding="utf-8")
+        self.store = LoomStore(caps={"strands": 4})  # two strands per report: room for two reports
+        self.tail().poll_once()
+        strands = {event["data"]["strandId"] for event in self.store.replay() if event["kind"] == "strand.open"}
+        self.assertEqual(strands, {f"{name}-{stamp}" for stamp in stamps[2:] for name in ("readme", "roadmap")})
+        self.assertEqual(len(gaps(self.store)), 1)  # the refusal of the oldest is announced, not silent
 
     def test_eight_roots_are_within_the_bound(self):
         roots = []

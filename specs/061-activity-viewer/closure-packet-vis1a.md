@@ -73,11 +73,11 @@ requires restarting Claude Code (the ingest token is new at each start) and the 
 
 ### Closure findings (not applied)
 
-1. Watcher loads report copies oldest first and the store caps are lifetime caps
+1. **Resolved by the closure-fixes PR (T045).** Watcher loads report copies oldest first and the store caps are lifetime caps
    (4,096 crossings, 256 strands, 64 waves, 1,024 grants), so with many retained copies
    the newest reports can be truncated. Fix: walk `analysis-*` directories newest first or
    scan the newest N at start; or count live entities. Needs a design call. Medium.
-2. Two `view serve` instances share the cookie name `braid_view` on loopback, so the
+2. **Resolved by the closure-fixes PR (T046).** Two `view serve` instances share the cookie name `braid_view` on loopback, so the
    second overwrites the first's session. Fix: name the cookie per port. Medium.
 3. Hook strands never reopen after `SessionEnd` or `SubagentStop` and later events for
    them are dropped without a gap; `_strands` and `_children` are unbounded. Needs a
@@ -86,7 +86,7 @@ requires restarting Claude Code (the ingest token is new at each start) and the 
    files listed in a manifest. Fix: allowlist or first-party manifest. Low.
 5. Slow-client connection slots: the 10-second socket timeout is per read, not per request.
    Loopback only. Low.
-6. REQ-013 and SC-013 in `spec.md` say the plugin package and its tests are unchanged;
+6. **Resolved by the closure-fixes PR (spec.md and assurance.json REQ-013/SC-013 text).** REQ-013 and SC-013 in `spec.md` say the plugin package and its tests are unchanged;
    T040 changed `plugin_mcp.py` and `tests/test_plugin_mcp.py`. Record the exception in
    the spec text (spec amendment, owner decision). Low.
 7. `IngestRefusal` and the inventory limits live in `view_serve`, so loading `view_hooks`
