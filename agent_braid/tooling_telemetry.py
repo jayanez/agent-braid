@@ -15,7 +15,8 @@ import threading
 import time
 import uuid
 
-SCHEMA = 'agent-braid-local-telemetry-batch/v1'
+SCHEMA_V1 = 'agent-braid-local-telemetry-batch/v1'
+SCHEMA = 'agent-braid-local-telemetry-batch/v2'  # exports; both versions merge. The store format stays user_version 1.
 APPLICATION_ID = 0x41425431  # ABT1, local aggregate database format v1
 MAX_BYTES = 10 * 1024 * 1024
 MAX_DATABASE_BYTES = 4 * 1024 * 1024
@@ -29,18 +30,30 @@ SQLITE_TIMEOUT_SECONDS = 0.25
 CATEGORIES = ('independent-candidate', 'ordered', 'conflicting', 'unknown')
 OPERATIONS = {
     'cli': ('analyze', 'analyze-git', 'system-one'),
-    'mcp': ('analyze-work', 'analyze', 'prepare', 'status', 'execute', 'recover', 'verify', 'other'),
+    'mcp': ('analyze-work', 'analyze', 'prepare', 'status', 'execute', 'recover', 'verify',
+            'plugin-status', 'workspaces', 'other'),
+    'lifecycle': ('serve-start',),
 }
+# Plugin bootstrap tools are counted by `calls` only (no duration, no refusal reason).
+CALLS_ONLY = ('plugin-status', 'workspaces')
+# `refusal-reason` is allowed only for refused outcomes of these surfaces.
+REASON_SURFACES = ('mcp', 'lifecycle')
+REFUSAL_REASONS = ('registry-root-missing', 'registry-unsafe-path', 'registry-shape', 'migration-required',
+                   'reconnect-required', 'workspace-unregistered', 'admission-busy', 'inventory-full',
+                   'grant-missing', 'arguments-invalid', 'other')
 OUTCOMES = ('ok', 'refused', 'error', 'cancelled', 'unknown')
 BUCKETS = {
     'calls': ('all',),
     'duration': ('le-1ms', 'le-10ms', 'le-100ms', 'le-1000ms', 'le-10000ms', 'gt-10000ms'),
     'classification': CATEGORIES,
     'missing-summary': ('unavailable',),
+    'refusal-reason': REFUSAL_REASONS,
 }
 LIMITS = [
     'Daily aggregates only; no content, identity, event order or exact durations.',
-    'Coverage: portable MCP tool invocations and CLI analyze/analyze-git/system-one only; discovery, resources, prompts, legacy MCP and internal calls excluded.',
+    'Coverage: portable and plugin MCP tool invocations (including plugin-level refusals), the plugin serve-start event and CLI analyze/analyze-git/system-one only; discovery, resources, prompts, legacy MCP and internal calls excluded.',
+    'Refusal reasons are closed buckets assigned where the refusal is raised, never from message text; serve-start is recorded only after the registry passed schema, privacy and shape validation with consent local, so earlier startup failures leave no trace.',
+    'Batch schema v2 adds the lifecycle surface, the refusal-reason metric and plugin-status/workspaces; the store format and user_version stay 1. v1 batches still merge; builds before v2 refuse v2 batches and cannot export a store that holds v2 cells.',
     'Process death before finalization and collector losses in other/terminated processes are unknown.',
     'Known collector failures are in-memory in this process only; reports from a later CLI cannot recover them.',
     'Thirty UTC dates retained on access; inactive files are not maintained by a daemon.',
@@ -99,6 +112,14 @@ def _path(path: Path, *, directory=False):
     return path
 
 
+def _v2_only(row):
+    return row['surface'] == 'lifecycle' or row['metric'] == 'refusal-reason' or row['operation'] in CALLS_ONLY
+
+
+def mcp_operation(name):
+    return name if name in OPERATIONS['mcp'] else 'other'
+
+
 def _cell(row):
     _require(type(row) is dict and set(row) == {'day', 'surface', 'operation', 'outcome', 'metric', 'bucket', 'count'})
     day = row['day']
@@ -113,6 +134,9 @@ def _cell(row):
     _require(surface in OPERATIONS and operation in OPERATIONS[surface] and outcome in OUTCOMES)
     _require(metric in BUCKETS and bucket in BUCKETS[metric] and _number(row['count']))
     _require(metric not in {'classification', 'missing-summary'} or operation in {'analyze', 'analyze-git', 'analyze-work'})
+    _require(metric != 'refusal-reason' or (outcome == 'refused' and surface in REASON_SURFACES and operation not in CALLS_ONLY))
+    _require(operation not in CALLS_ONLY or metric == 'calls')
+    _require(surface != 'lifecycle' or metric in {'calls', 'refusal-reason'})
     return tuple(row[k] for k in ('day', 'surface', 'operation', 'outcome', 'metric', 'bucket', 'count'))
 
 
@@ -148,12 +172,13 @@ def _batch(raw):
         value = json.loads(raw, object_pairs_hook=pairs,
                            parse_constant=lambda _: (_ for _ in ()).throw(ValueError('nonfinite telemetry value')))
         _require(type(value) is dict and set(value) == {'schema', 'batchId', 'rows'})
-        _require(value['schema'] == SCHEMA and type(value['batchId']) is str)
+        _require(value['schema'] in (SCHEMA_V1, SCHEMA) and type(value['batchId']) is str)
         identity = uuid.UUID(value['batchId'])
         _require(identity.version == 4 and str(identity) == value['batchId'])
         rows = value['rows']
         _require(type(rows) is list and 0 < len(rows) <= MAX_ROWS)
         cells = [_cell(row) for row in rows]
+        _require(value['schema'] == SCHEMA or not any(_v2_only(row) for row in rows), 'v2 vocabulary in a v1 batch')
         _require(len({row[:-1] for row in cells}) == len(cells), 'duplicate telemetry cell')
         _require(sum(row[-1] for row in cells) <= MAX_COUNT * MAX_ROWS, 'telemetry batch count exceeds bound')
     except (TypeError, KeyError, AttributeError, OverflowError, RecursionError, UnicodeError, json.JSONDecodeError):
@@ -264,14 +289,19 @@ class Store:
         _require(db.execute('SELECT count(*) FROM cells WHERE kind=?', (kind,)).fetchone()[0] <= MAX_ROWS, 'telemetry cell limit reached')
         _require(db.execute('SELECT coalesce(max(count),0) FROM cells').fetchone()[0] <= MAX_COUNT, 'telemetry counter limit reached')
 
-    def record(self, surface, operation, outcome, duration_ms, classifications=None):
+    def record(self, surface, operation, outcome, duration_ms, classifications=None, reason=None):
         _require(type(duration_ms) in (int, float) and math.isfinite(duration_ms) and duration_ms >= 0)
         _require(classifications is None or type(classifications) is dict)
         if classifications is not None:
             _require(set(classifications) <= set(CATEGORIES) and all(type(v) is int and 0 <= v <= MAX_COUNT for v in classifications.values()))
         bucket = next((name for limit, name in zip((1,10,100,1000,10000), BUCKETS['duration']) if duration_ms <= limit), 'gt-10000ms')
         prefix = (today().isoformat(), surface, operation, outcome)
-        rows = [(*prefix, 'calls', 'all', 1), (*prefix, 'duration', bucket, 1)]
+        rows = [(*prefix, 'calls', 'all', 1)]
+        if surface != 'lifecycle' and operation not in CALLS_ONLY:
+            rows.append((*prefix, 'duration', bucket, 1))
+        if outcome == 'refused' and surface in REASON_SURFACES and operation not in CALLS_ONLY:
+            # Reasons come from codes chosen at raise sites; anything outside the closed set is `other`.
+            rows.append((*prefix, 'refusal-reason', reason if reason in REFUSAL_REASONS else 'other', 1))
         if operation in {'analyze', 'analyze-git', 'analyze-work'}:
             if classifications is None:
                 rows.append((*prefix, 'missing-summary', 'unavailable', 1))
@@ -396,6 +426,16 @@ class Observation:
     def __init__(self):
         self.outcome = 'error'
         self.classifications = None
+        self.reason = None  # a refusal-reason code, set by the refusing code path; read only when refused
+
+    def complete(self, operation, envelope, cancelled):
+        """Set the outcome (and analyzer summary) from a finished envelope."""
+        status = envelope['status']
+        self.outcome = 'cancelled' if cancelled.is_set() else status if status in OUTCOMES else 'unknown'
+        if operation in {'analyze-work', 'analyze'}:
+            result = envelope.get('result')
+            if type(result) is dict:
+                self.summary(result.get('report', result))
 
     def summary(self, value):
         if type(value) is dict:
@@ -429,6 +469,15 @@ def observe(mode, surface, operation, *, directory=None):
     finally:
         try:
             Store(directory).record(surface, operation, observation.outcome,
-                                    (time.perf_counter() - started) * 1000, observation.classifications)
+                                    (time.perf_counter() - started) * 1000, observation.classifications,
+                                    observation.reason)
         except Exception:
             _note_failure()
+
+
+def record_lifecycle(operation, outcome, reason=None, *, directory=None):
+    """Fail-open count of one lifecycle event (calls, plus a refusal reason when refused)."""
+    try:
+        Store(directory).record('lifecycle', operation, outcome, 0, reason=reason)
+    except Exception:
+        _note_failure()

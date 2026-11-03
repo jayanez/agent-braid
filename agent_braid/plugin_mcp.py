@@ -60,11 +60,17 @@ class PluginRouter:
         # individually, so one deleted worktree can never stop the other workspaces from serving.
         found = self._inspect()
         self.baseline = found['value'] if found else None
+        self._start_reason = None  # refusal bucket of the first workspace not served at start (telemetry only)
         self.baseline_digest = configuration_digest(self.baseline)
         self.snapshot = self.baseline or {'telemetry': 'off', 'workspaces': []}
         self.system_one = self.snapshot.get('systemOne', 'off')
         self.services = {}
         self.unavailable = []
+        self._unavailable_codes = {}
+        for entry, code in zip(found['quarantined'], found['quarantinedCodes']) if found else ():
+            self._start_reason = self._start_reason or code
+            if entry['workspaceId']:
+                self._unavailable_codes[entry['workspaceId']] = code
         for row in self.snapshot['workspaces']:
             try:
                 config = core.ToolingConfig(Path(row['sourceRoot']), Path(row['resultRoot']),
@@ -73,8 +79,17 @@ class PluginRouter:
                     worktree_roots=tuple(Path(p) for p in row['worktreeRoots']),
                     telemetry=self.snapshot['telemetry'], system_one=self.system_one)
                 self.services[row['workspaceId']] = WorkspaceService(row['workspaceId'], config)
-            except (core.ToolingError, OSError):  # e.g. the source repository was deleted: isolate this workspace
+            except (core.ToolingError, OSError) as exc:  # e.g. the source repository was deleted: isolate this workspace
                 self.unavailable.append({'workspaceId': row['workspaceId'], 'reason': 'configuration rejected'})
+                # A vanished root surfaces as FileNotFoundError from resolve(strict=True); codes never come from text.
+                if isinstance(exc, FileNotFoundError):
+                    code = 'registry-root-missing'
+                elif isinstance(exc, core.ToolingError):
+                    code = exc.code
+                else:
+                    code = 'other'
+                self._unavailable_codes[row['workspaceId']] = code
+                self._start_reason = self._start_reason or code
         # One global admission lock bounds reservations across all workspace services.
         self.admission = threading.Lock()
 
@@ -129,14 +144,36 @@ class PluginRouter:
                 'limits': ['No effects admitted by this refusal'],
                 'provenance': {'executionAuthorization': False}}
 
+    def record_start(self):
+        """Count one serve-start (SPEC-047 lifecycle) once the registry passed schema, privacy and shape validation.
+
+        Called by `serve` only, never by construction, so doctor and status reads are not counted. Nothing is
+        written when consent is not local; a registry that failed those checks never reaches here.
+        """
+        if self.baseline is None or self.snapshot['telemetry'] != 'local':
+            return
+        from .tooling_telemetry import record_lifecycle
+        record_lifecycle('serve-start', 'refused' if self._start_reason else 'ok', self._start_reason)
+
     def invoke(self, name, args, cancelled):
+        """The one owner of plugin call measurement: services only report their refusal reason into it."""
+        if self.snapshot['telemetry'] != 'local':
+            return self._dispatch(name, args, cancelled, None)
+        from .tooling_telemetry import mcp_operation, observe
+        operation = mcp_operation(name)
+        with observe('local', 'mcp', operation) as observation:
+            envelope = self._dispatch(name, args, cancelled, observation)
+            observation.complete(operation, envelope, cancelled)
+            return envelope
+
+    def _dispatch(self, name, args, cancelled, observation):
         try:
             core._bounded_input(args)
             if not isinstance(args, dict):
-                raise RegistryError('Tool arguments must be an object')
+                raise RegistryError('Tool arguments must be an object', code='arguments-invalid')
             if name in {'plugin-status', 'workspaces'}:
                 if args:
-                    raise RegistryError('Bootstrap tools accept no arguments')
+                    raise RegistryError('Bootstrap tools accept no arguments', code='arguments-invalid')
                 return {'schemaVersion': SCHEMA, 'workspaceId': None, 'operation': name,
                         'status': 'ok', 'summary': 'Read-only plugin configuration status',
                         'result': self.status(), 'evidenceRefs': [], 'limits': ['Registration is not execution authority'],
@@ -144,24 +181,30 @@ class PluginRouter:
             self._require_current()
             identifier = args.get('workspaceId')
             if not isinstance(identifier, str) or identifier not in self.services:
-                raise RegistryError('Select an explicitly registered workspaceId using workspaces; run setup if none exists')
+                code = ('arguments-invalid' if not isinstance(identifier, str)
+                        else self._unavailable_codes.get(identifier, 'workspace-unregistered'))
+                raise RegistryError('Select an explicitly registered workspaceId using workspaces; run setup if none exists', code=code)
             service = self.services[identifier]
             if not self.admission.acquire(blocking=False):
-                raise RegistryError('Plugin admission is busy; inspect existing work before retrying')
+                raise RegistryError('Plugin admission is busy; inspect existing work before retrying', code='admission-busy')
             try:
                 size = sum(sum(len(a.data) for a in item.artifacts.values()) for item in self.services.values())
                 count = sum(len(item.artifacts) for item in self.services.values())
                 if size + core.MAX_ARTIFACT_BYTES > core.MAX_INVENTORY_BYTES or count >= core.MAX_INVENTORY_ARTIFACTS:
-                    raise RegistryError('Plugin evidence inventory is full; inspect evidence before reconnecting')
-                value = service.invoke(name, {k: v for k, v in args.items() if k != 'workspaceId'}, cancelled)
+                    raise RegistryError('Plugin evidence inventory is full; inspect evidence before reconnecting', code='inventory-full')
+                value = service.invoke(name, {k: v for k, v in args.items() if k != 'workspaceId'}, cancelled, observation)
                 return dict(value, schemaVersion=SCHEMA, workspaceId=identifier)
             finally:
                 self.admission.release()
         except RegistryStale as exc:
+            if observation is not None:
+                observation.reason = exc.code
             identifier = args.get('workspaceId') if isinstance(args, dict) else None
             refusal = self._refusal(name, str(exc), identifier if isinstance(identifier, str) and identifier in self.services else None)
             return dict(refusal, result={'code': exc.code})
-        except (RegistryError, core.ToolingError, OSError, TypeError, ValueError):
+        except (RegistryError, core.ToolingError, OSError, TypeError, ValueError) as exc:
+            if observation is not None:
+                observation.reason = exc.code if isinstance(exc, (RegistryError, core.ToolingError)) else 'other'
             return self._refusal(name, 'Plugin request refused: check workspace, arguments, registry and reconnect state')
 
     def read_resource(self, uri, cancelled=None):
@@ -240,6 +283,8 @@ def create_server(router):
 
 async def serve(home=None, plugin_root=None):
     from mcp.server.stdio import stdio_server
-    server = create_server(PluginRouter(home, plugin_root))
+    router = PluginRouter(home, plugin_root)
+    server = create_server(router)  # an SDK mismatch raises here: that start served nothing and is not counted
+    router.record_start()
     async with stdio_server(stdin=core._BoundedInput(getattr(sys.stdin, 'buffer', sys.stdin))) as (reader, writer):
         await server.run(reader, writer, server.create_initialization_options())

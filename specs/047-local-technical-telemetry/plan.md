@@ -13,4 +13,4 @@ review and the authorized source transfer; it does not repeat the original work.
 
 No new agents, hosts, providers, user installations, reproductions, commits, remote writes, merge or publication are part of that original local preparation. The separate full clone follows the documented unreachable-object recovery; the original checkout is preserved. Local source changes are reviewable before a later candidate freeze.
 
-Technical dependencies are acyclic: T001→T002→{T003,T004,T006}; {T003,T004}→T005; {T003,T004,T005,T006}→T007; {T001,T007}→T008; {T007,T008}→T009→T010. The SPEC-044 pilot depends on validated SPEC-047 and new candidate admission; SPEC-047 development does not depend on the pilot.
+Technical dependencies are acyclic: T001→T002→{T003,T004,T006}; {T003,T004}→T005; {T003,T004,T005,T006}→T007; {T001,T007}→T008; {T007,T008}→T009→T010; the later amendment T011 depends on {T003,T006}. The SPEC-044 pilot depends on validated SPEC-047 and new candidate admission; SPEC-047 development does not depend on the pilot.

@@ -155,7 +155,7 @@ When a connection is stale:
    `plugin-status` again: the digests must match and `reconnectRequired` must be
    `false`. The new connection snapshots the new workspaces and consent.
 
-Local telemetry does not count these refusals (or any other plugin-router refusal such as unknown workspace, malformed arguments, busy admission or a full inventory): they are not usage failures and the SPEC-047 data contract is unchanged.
+With consent `local`, the plugin router counts these refusals like any other call (surface `mcp`, outcome `refused`) and records only a closed `refusal-reason` bucket for each (`reconnect-required`, `workspace-unregistered`, `admission-busy`, `inventory-full`, `arguments-invalid` and the others in the [telemetry contract](TELEMETRY.md)); no message, path or workspace identifier is stored. A stale connection therefore shows up as `refused` with reason `reconnect-required`, which tells it apart from other failures.
 
 Registration is not execution authority and the stale connection keeps its
 original immutable roots and grants until it is replaced.

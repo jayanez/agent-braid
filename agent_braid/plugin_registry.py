@@ -23,7 +23,17 @@ MAX_WORKSPACES = 64
 
 
 class RegistryError(ValueError):
-    """An unsafe or stale registration is refused."""
+    """An unsafe or stale registration is refused.
+
+    `code` is a closed refusal bucket (the telemetry `refusal-reason` vocabulary), chosen where the error
+    is raised; it is never derived from the message. Unclassified raise sites keep `other`.
+    """
+    code = 'other'
+
+    def __init__(self, message: str = '', code: str | None = None):
+        super().__init__(message)
+        if code is not None:
+            self.code = code
 
 
 class RegistryStale(RegistryError):
@@ -33,6 +43,7 @@ class RegistryStale(RegistryError):
 
 class MigrationRequired(RegistryError):
     """A valid alpha.2 registry must be migrated through a setup preview."""
+    code = 'migration-required'
 
 
 def home_path(value: Path | None = None) -> Path:
@@ -49,15 +60,15 @@ def home_path(value: Path | None = None) -> Path:
 def _safe(path: Path, *, directory: bool | None = None) -> Path:
     path = path.expanduser().absolute()
     if path.resolve(strict=False) != path:
-        raise RegistryError('Use a canonical path without symlinks or traversal')
+        raise RegistryError('Use a canonical path without symlinks or traversal', code='registry-unsafe-path')
     for part in (path, *path.parents):
         if part.is_symlink():
-            raise RegistryError('Symbolic links are not allowed in owned paths')
+            raise RegistryError('Symbolic links are not allowed in owned paths', code='registry-unsafe-path')
     if path.exists() and directory is not None:
         mode = path.stat().st_mode
         expected = stat.S_ISDIR(mode) if directory else stat.S_ISREG(mode)
         if not expected:
-            raise RegistryError('Unexpected file type in owned path')
+            raise RegistryError('Unexpected file type in owned path', code='registry-unsafe-path')
     return path
 
 
@@ -65,7 +76,7 @@ def _private(path: Path, *, directory: bool) -> None:
     _safe(path, directory=directory)
     info = path.stat()
     if info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) & 0o077:
-        raise RegistryError('Owned plugin state must be private to its user')
+        raise RegistryError('Owned plugin state must be private to its user', code='registry-unsafe-path')
 
 
 def _bytes(value) -> bytes:
@@ -89,7 +100,7 @@ def _raw(home: Path) -> bytes | None:
     with os.fdopen(fd, 'rb') as stream:
         raw = stream.read(MAX_BYTES + 1)
     if len(raw) > MAX_BYTES:
-        raise RegistryError('Registry exceeds its 256 KiB limit')
+        raise RegistryError('Registry exceeds its 256 KiB limit', code='registry-shape')
     return raw
 
 
@@ -97,7 +108,7 @@ def _pairs(items):
     value = {}
     for key, item in items:
         if key in value:
-            raise RegistryError('Duplicate registry member')
+            raise RegistryError('Duplicate registry member', code='registry-shape')
         value[key] = item
     return value
 
@@ -109,14 +120,16 @@ def _worktree_root(item, index: int, home: Path) -> bool:
     the condition, never the path.
     """
     label = f'Worktree root {index}'
-    if not isinstance(item, str) or not Path(item).is_absolute():
-        raise RegistryError(f'{label}: not an absolute path')
+    if not isinstance(item, str):
+        raise RegistryError(f'{label}: not an absolute path', code='registry-shape')
+    if not Path(item).is_absolute():
+        raise RegistryError(f'{label}: not an absolute path', code='registry-unsafe-path')
     try:
         root = _safe(Path(item), directory=True)
     except RegistryError as exc:
-        raise RegistryError(f'{label}: {exc}') from exc
+        raise RegistryError(f'{label}: {exc}', code=exc.code) from exc
     if root.is_relative_to(home) or home.is_relative_to(root):
-        raise RegistryError(f'{label}: overlaps plugin state')
+        raise RegistryError(f'{label}: overlaps plugin state', code='registry-unsafe-path')
     return root.is_dir()
 
 
@@ -127,29 +140,30 @@ def _workspace(value: dict, home: Path) -> list[int]:
     """
     keys = {'workspaceId', 'sourceRoot', 'resultRoot', 'runtimeEnabled', 'grantStore', 'worktreeRoots'}
     if not isinstance(value, dict) or set(value) != keys:
-        raise RegistryError('Unknown workspace shape')
+        raise RegistryError('Unknown workspace shape', code='registry-shape')
     source = _safe(Path(value['sourceRoot']), directory=True)
     identifier = hashlib.sha256(str(source).encode()).hexdigest()[:32]
     if value['workspaceId'] != identifier:
-        raise RegistryError('Workspace identity does not match its canonical source')
+        raise RegistryError('Workspace identity does not match its canonical source', code='registry-shape')
     if source == home or source.is_relative_to(home) or home.is_relative_to(source):
-        raise RegistryError('Plugin state and source roots must not overlap')
+        raise RegistryError('Plugin state and source roots must not overlap', code='registry-unsafe-path')
     result = _safe(Path(value['resultRoot']), directory=True)
     if result != home / 'results' / identifier:
-        raise RegistryError('Unknown workspace result root')
+        raise RegistryError('Unknown workspace result root', code='registry-shape')
     if type(value['runtimeEnabled']) is not bool or not isinstance(value['worktreeRoots'], list):
-        raise RegistryError('Unknown workspace capability configuration')
+        raise RegistryError('Unknown workspace capability configuration', code='registry-shape')
     if len(value['worktreeRoots']) > MAX_WORKSPACES:
-        raise RegistryError('Too many worktree roots')
+        raise RegistryError('Too many worktree roots', code='registry-shape')
     stale = [index for index, item in enumerate(value['worktreeRoots']) if not _worktree_root(item, index, home)]
     grant = value['grantStore']
     if value['runtimeEnabled'] and grant is None:
-        raise RegistryError('Runtime requires an explicit existing grant store')
+        raise RegistryError('Runtime requires an explicit existing grant store', code='grant-missing')
     if grant is not None:
         grant_path = _safe(Path(grant), directory=True)
-        if not grant_path.is_dir() or any(grant_path.is_relative_to(p) or p.is_relative_to(grant_path)
-                                         for p in (source, home)):
-            raise RegistryError('Grant store must exist outside source and plugin state')
+        if not grant_path.is_dir():
+            raise RegistryError('Grant store must exist outside source and plugin state', code='grant-missing')
+        if any(grant_path.is_relative_to(p) or p.is_relative_to(grant_path) for p in (source, home)):
+            raise RegistryError('Grant store must exist outside source and plugin state', code='registry-unsafe-path')
     return stale
 
 
@@ -170,9 +184,9 @@ def _inspect(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
     """
     if raw is None:
         return {'value': {'schema': SCHEMA, 'telemetry': 'off', 'workspaces': []},
-                'declared': {}, 'stale': [], 'quarantined': []}
+                'declared': {}, 'stale': [], 'quarantined': [], 'quarantinedCodes': []}
     try:
-        value = json.loads(raw, object_pairs_hook=_pairs, parse_constant=lambda _: (_ for _ in ()).throw(RegistryError('Nonfinite registry value')))
+        value = json.loads(raw, object_pairs_hook=_pairs, parse_constant=lambda _: (_ for _ in ()).throw(RegistryError('Nonfinite registry value', code='registry-shape')))
         if isinstance(value, dict) and set(value) == {'schema', 'workspaces'} and value['schema'] == LEGACY_SCHEMA:
             if not migrate:
                 raise MigrationRequired('Registry v0.1 must be migrated with a plugin setup preview')
@@ -180,32 +194,35 @@ def _inspect(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
         # `systemOne` is optional: absent means off, and setup never stores an explicit off.
         if (not isinstance(value, dict) or not {'schema', 'telemetry', 'workspaces'} <= set(value) <= {'schema', 'telemetry', 'workspaces', 'systemOne'}
                 or value['schema'] != SCHEMA):
-            raise RegistryError('Unknown registry schema')
+            raise RegistryError('Unknown registry schema', code='registry-shape')
         if not isinstance(value['telemetry'], str) or value['telemetry'] not in TELEMETRY_MODES:
-            raise RegistryError('Unknown telemetry consent')
+            raise RegistryError('Unknown telemetry consent', code='registry-shape')
         if 'systemOne' in value and (not isinstance(value['systemOne'], str) or value['systemOne'] not in SYSTEM_ONE_MODES):
-            raise RegistryError('Unknown System One consent')
+            raise RegistryError('Unknown System One consent', code='registry-shape')
         rows = value['workspaces']
         if not isinstance(rows, list) or len(rows) > MAX_WORKSPACES:
-            raise RegistryError('Too many registered workspaces')
+            raise RegistryError('Too many registered workspaces', code='registry-shape')
         ids = [_row_id(row) for row in rows]
         named = [i for i in ids if i]
         if len(set(named)) != len(named):
-            raise RegistryError('Duplicate workspace')  # an unsafe twin must not hide behind its valid sibling
-        kept, declared, stale, quarantined = [], {}, [], []
+            raise RegistryError('Duplicate workspace', code='registry-shape')  # an unsafe twin must not hide behind its valid sibling
+        kept, declared, stale, quarantined, codes = [], {}, [], [], []
         for index, row in enumerate(rows):
             try:
                 stale_indices = _workspace(row, home)
             except (RegistryError, TypeError, KeyError, ValueError, OSError) as exc:
                 reason = str(exc) if isinstance(exc, RegistryError) else 'Malformed workspace row'
                 quarantined.append({'index': index, 'workspaceId': ids[index], 'reason': reason})
+                codes.append(exc.code if isinstance(exc, RegistryError) else 'registry-shape')
                 continue
             declared[row['workspaceId']] = list(row['worktreeRoots'])
             stale.extend({'workspaceId': row['workspaceId'], 'rootIndex': i, 'reason': 'missing'} for i in stale_indices)
             kept.append(dict(row, worktreeRoots=[r for i, r in enumerate(row['worktreeRoots']) if i not in stale_indices]))
-        return {'value': dict(value, workspaces=kept), 'declared': declared, 'stale': stale, 'quarantined': quarantined}
+        # `quarantinedCodes` (parallel to `quarantined`, closed refusal buckets) feeds telemetry only; it is not diagnostics output.
+        return {'value': dict(value, workspaces=kept), 'declared': declared, 'stale': stale,
+                'quarantined': quarantined, 'quarantinedCodes': codes}
     except (TypeError, KeyError, UnicodeError, json.JSONDecodeError, RecursionError) as exc:
-        raise RegistryError('Malformed workspace registry') from exc
+        raise RegistryError('Malformed workspace registry', code='registry-shape') from exc
 
 
 def _decode(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
@@ -213,7 +230,7 @@ def _decode(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
     found = _inspect(raw, home, migrate=migrate)
     if found['quarantined']:
         first = found['quarantined'][0]
-        raise RegistryError(f"Workspace row {first['index']} is unsafe: {first['reason']}")
+        raise RegistryError(f"Workspace row {first['index']} is unsafe: {first['reason']}", code=found['quarantinedCodes'][0])
     return found['value']
 
 
