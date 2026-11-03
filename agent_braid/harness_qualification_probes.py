@@ -1047,11 +1047,12 @@ def egress_counters_ok(egress: object) -> bool:
                                                 for k, v in egress.items()))
 
 
-def _egress_verdict(egress: object) -> str:
+def _egress_verdict(egress: object, endpoints: Sequence[str] | None = None) -> str:
     """NET-05-CLI from the ``EgressProxy`` counter delta of one session (RV-03).
 
     ``unexpectedDirect`` (a client that did not speak CONNECT) or a tunnel to a target beyond the
-    allowed endpoints is ``allowed``. ``denied`` needs tunnels opened and every one of them to an
+    allowed endpoints (``endpoints``, default the static NC-1 list; the backend policy's list once refresh hosts
+    exist) is ``allowed``. ``denied`` needs tunnels opened and every one of them to an
     allowed endpoint, so the CLI was observed using the proxy as designed. ``denied:*`` refusals do
     not change the verdict (the proxy held) but are recorded by the caller. No tunnel at all, or
     counters that disagree with each other, prove nothing and stay ``inconclusive``. A connection the
@@ -1062,15 +1063,17 @@ def _egress_verdict(egress: object) -> str:
     if egress.get("unexpectedDirect", 0) > 0:
         return "allowed"
     targets = {k[len("allowed:"):]: v for k, v in egress.items() if k.startswith("allowed:")}
-    if not set(targets) <= set(_mac.ALLOWED_ENDPOINTS):
+    if not set(targets) <= set(_mac.ALLOWED_ENDPOINTS if endpoints is None else endpoints):
         return "allowed"
     if not targets or egress.get("allowed", 0) != sum(targets.values()):
         return "inconclusive"
     return "denied"
 
 
-def classify_session(probe_id: str, session: SessionResult) -> str:
-    """CRED-05, HOST-01 and NET-05-CLI observations as ``allowed``/``denied``/``inconclusive``."""
+def classify_session(probe_id: str, session: SessionResult, endpoints: Sequence[str] | None = None) -> str:
+    """CRED-05, HOST-01 and NET-05-CLI observations as ``allowed``/``denied``/``inconclusive``.
+
+    ``endpoints`` is the proxy's allowed list for NET-05-CLI (``None``: the static ``ALLOWED_ENDPOINTS``)."""
     if session.refused is not None:
         return "inconclusive"
     key_source, result = _stream(session.stdout)
@@ -1087,7 +1090,7 @@ def classify_session(probe_id: str, session: SessionResult) -> str:
                 and key_source in SUBSCRIPTION_KEY_SOURCES)
         return "allowed" if done else "denied"
     if probe_id == "NET-05-CLI":
-        return _egress_verdict(session.egress) if key_source is not None else "inconclusive"
+        return _egress_verdict(session.egress, endpoints) if key_source is not None else "inconclusive"
     raise ProbeError("unknown-session-probe")
 
 
@@ -2059,7 +2062,8 @@ class QualificationProbeRunner:
                  allowed_ip: str | None = None, resolver: Callable[[str], str | None] = resolve_ipv4,
                  lan_ip: str | None = None, read_credentials: Callable[[], Sequence[str]] = lambda: (),
                  proxy_factory: Callable[..., object] = _mac.EgressProxy,
-                 proxy_block: Callable[..., dict] = run_proxy_parsing, kill_table_diff: bool = False):
+                 proxy_block: Callable[..., dict] = run_proxy_parsing, kill_table_diff: bool = False,
+                 endpoints: Sequence[str] | None = None):
         self.control, self.contained, self.launch_contained = control, contained, launch_contained
         self.arena_parent, self.proxy_address = Path(arena_parent), proxy_address
         self.sessions, self.process_scan, self.process_kill = sessions, process_scan, process_kill
@@ -2071,6 +2075,7 @@ class QualificationProbeRunner:
         self.lan_ip = discover_lan_address() if lan_ip is None else (lan_ip or None)
         self.read_credentials, self.proxy_factory = read_credentials, proxy_factory
         self.proxy_block, self.kill_table_diff = proxy_block, kill_table_diff
+        self.endpoints = None if endpoints is None else tuple(endpoints)  # the proxy's allowed list (policy)
         self.quota: list[dict] = []
         self.markers: list[str] = []
         self._session_count = 0
@@ -2322,7 +2327,7 @@ class QualificationProbeRunner:
         self._reserve_session()
         try:
             session = self.sessions(probe.id)
-            outcome = classify_session(probe.id, session)
+            outcome = classify_session(probe.id, session, self.endpoints)
         except Exception:
             session, outcome = SessionResult(refused="driver-failed"), "inconclusive"
         decision = self._settle_quota(session)
@@ -2598,5 +2603,5 @@ def make_qualification_runner(
         arena_parent=arena_parent, proxy_address=f"127.0.0.1:{policy.proxy_port}", sessions=sessions,
         public=public, layout=lambda workdir: layout_from_policy(policy, workdir), real_home=home,
         lan_ip=lan_ip, allowed_ip=allowed_ip, mach_names=mach_names,
-        read_credentials=read_credentials or (lambda: credential_values(config_dir)))
+        read_credentials=read_credentials or (lambda: credential_values(config_dir)), endpoints=policy.endpoints)
     return QualificationProbeRunner(**(options | runner_options))
