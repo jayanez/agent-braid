@@ -385,22 +385,10 @@ class FirstPartyBundleTests(unittest.TestCase):
                         self.assertIn(specifier, mapped)
         self.assertGreaterEqual(checked, 3)
 
-    def test_the_scene_is_loaded_after_the_table_and_its_failure_keeps_the_table(self):
+    def test_the_page_has_the_scene_elements_and_loads_the_scene_only_after_the_table(self):
+        # Behaviour (playback binding, selection, every scene failure keeping the table) is in test_view_web_behaviour.
         text = read("loom.js")
         self.assertNotRegex(text, r"(?m)^\s*import\b[^(]", "loom.js must not import the scene statically")
-        self.assertIn('import("/web/braid-scene.js")', text)
-        self.assertIn("WebGL2RenderingContext", text)
-        self.assertRegex(text, r"try \{\s*module_ = await import\(")
-        self.assertRegex(text, r"function sceneUnavailable\(reason\)")
-        self.assertIn("The table below shows the same events", text)
-        self.assertLess(text.index("renderAll();\nloadSnapshot();"), text.index("startScene();\n", text.index("loadSnapshot();")))
-
-    def test_the_scene_is_bound_to_the_tables_selection_and_playback(self):
-        text = read("loom.js")
-        self.assertRegex(text, r"onSelect:\s*select\b")
-        self.assertIn("scene.setVisible(", text)
-        self.assertIn("rowsInOrder().slice(0, state.cursor)", text)
-        self.assertIn("scene.setSelected(state.selected)", text)
         html = read("index.html")
         for identifier in ("scene-section", "scene-box", "scene-hover", "scene-note", "scene-reset", "legend-scene"):
             self.assertIn(f'id="{identifier}', html)

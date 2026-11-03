@@ -15,6 +15,7 @@ import shutil
 import stat
 import sys
 import threading
+import time
 from urllib.parse import urlsplit
 
 from . import __version__
@@ -30,6 +31,13 @@ REPORT_COPY_NAME = 'analysis.json'
 REPORT_COPY_DAYS = 30
 REPORT_COPY_MAX_BYTES = 64 * 1024 * 1024
 REPORT_COPY_MAX_COUNT = 1500  # each copy takes two of the watcher's 4,096 entries (view_tail.MAX_ENTRIES)
+# Pruning opens every copy directory, so a process prunes a root at its first write, then only when it was last done
+# REPORT_PRUNE_INTERVAL_SECONDS ago or when the copies it knows of (kept at that pruning, plus its own writes since)
+# pass a cap. Writes from other processes are seen at the next pruning, so a cap can be passed for one interval.
+REPORT_PRUNE_INTERVAL_SECONDS = 60
+_PRUNE_STATE = {}  # result root -> {'at': monotonic time of the last pruning, 'count': copies known, 'bytes': their size}
+_PRUNE_LOCK = threading.Lock()
+_monotonic = time.monotonic
 _COPY_DIRECTORY = re.compile(r'^analysis-(\d{8}T\d{12})Z-[0-9a-f]{16}$')
 _COPY_TEMPORARY = '.analysis.tmp'  # not an artifact name: the watcher never reads a half-written copy
 _COPY_STAMP = '%Y%m%dT%H%M%S%f'
@@ -104,7 +112,7 @@ def _report_copies(root_fd):
 def _prune_report_copies(root_fd, now, max_bytes, days, max_count=REPORT_COPY_MAX_COUNT, keep=None):
     """Remove report copies older than `days`, then the oldest until within `max_bytes` and `max_count`.
 
-    The copy named `keep` (the one just written) is never removed.
+    The copy named `keep` (the one just written) is never removed. Returns the (count, bytes) that remain.
     """
     cutoff = (now - timedelta(days=days)).strftime(_COPY_STAMP)
     kept = []
@@ -120,6 +128,19 @@ def _prune_report_copies(root_fd, now, max_bytes, days, max_count=REPORT_COPY_MA
         if name != keep and _discard_copy(root_fd, name):
             total -= size
             count -= 1
+    return count, total
+
+
+def _prune_due(key, size, max_bytes, max_count):
+    """Count a copy of `size` bytes just written under `key`; True when the root is to be pruned now."""
+    with _PRUNE_LOCK:
+        known = _PRUNE_STATE.get(key)
+        if known is None:
+            return True
+        known['count'] += 1
+        known['bytes'] += size
+        return (_monotonic() - known['at'] >= REPORT_PRUNE_INTERVAL_SECONDS
+                or known['count'] > max_count or known['bytes'] > max_bytes)
 
 
 def write_report_copy(result_root, registered_root, body, *, now=None, max_bytes=REPORT_COPY_MAX_BYTES,
@@ -151,7 +172,10 @@ def write_report_copy(result_root, registered_root, body, *, now=None, max_bytes
             _discard_copy(root_fd, name)
             raise
         try:
-            _prune_report_copies(root_fd, when, max_bytes, days, max_count, keep=name)
+            if _prune_due(str(result_root), len(body), max_bytes, max_count):
+                count, total = _prune_report_copies(root_fd, when, max_bytes, days, max_count, keep=name)
+                with _PRUNE_LOCK:
+                    _PRUNE_STATE[str(result_root)] = {'at': _monotonic(), 'count': count, 'bytes': total}
         except OSError:
             pass  # retention is best effort: the new copy stays
     finally:

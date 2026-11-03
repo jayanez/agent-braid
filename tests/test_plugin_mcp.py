@@ -326,6 +326,7 @@ class PluginReportCopyTests(unittest.TestCase):
 
     def start(self):
         self.install()
+        self.addCleanup(plugin_mcp._PRUNE_STATE.clear)  # pruning is remembered per root for the process
         self.router = PluginRouter(self.home)
         row = load(self.home)['workspaces'][0]
         self.identifier = row['workspaceId']
@@ -556,6 +557,77 @@ class PluginReportCopyTests(unittest.TestCase):
         (stale / 'analysis.json').rename(stale / '.analysis.tmp')
         self.write(self.root, now=now)
         self.assertFalse(stale.exists())
+
+    def pruning(self, clock):
+        """Patch the clock and count the prunings (each opens every copy directory)."""
+        self.addCleanup(mock.patch.stopall)
+        mock.patch.object(plugin_mcp, '_monotonic', side_effect=lambda: clock[0]).start()
+        return mock.patch.object(plugin_mcp, '_prune_report_copies', wraps=plugin_mcp._prune_report_copies).start()
+
+    def test_pruning_runs_at_the_first_write_then_only_once_per_interval(self):
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        clock = [1000.0]
+        prune = self.pruning(clock)
+        self.write(self.root, now=now)
+        self.assertEqual(prune.call_count, 1)
+        for _ in range(5):
+            self.write(self.root, now=now)
+        self.assertEqual(prune.call_count, 1)  # cheap: no copy directory was opened
+        clock[0] += plugin_mcp.REPORT_PRUNE_INTERVAL_SECONDS - 1
+        self.write(self.root, now=now)
+        self.assertEqual(prune.call_count, 1)
+        clock[0] += 1
+        self.write(self.root, now=now)
+        self.assertEqual(prune.call_count, 2)
+        self.assertEqual(len(self.copies()), 8)  # nothing was due for removal
+
+    def test_an_expired_copy_is_removed_at_the_next_pruning_not_before(self):
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        clock = [0.0]
+        self.pruning(clock)
+        self.write(self.root, now=now)
+        expired = self.make_copy(now - timedelta(days=31))
+        self.write(self.root, now=now)
+        self.assertTrue(expired.exists())
+        clock[0] += plugin_mcp.REPORT_PRUNE_INTERVAL_SECONDS
+        self.write(self.root, now=now)
+        self.assertFalse(expired.exists())
+
+    def test_passing_the_count_cap_prunes_at_once_without_waiting_for_the_interval(self):
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        prune = self.pruning([0.0])
+        self.write(self.root, now=now - timedelta(hours=3), max_count=3)
+        self.write(self.root, now=now - timedelta(hours=2), max_count=3)
+        self.write(self.root, now=now - timedelta(hours=1), max_count=3)
+        self.assertEqual((prune.call_count, len(self.copies())), (1, 3))
+        self.write(self.root, now=now, max_count=3)
+        self.assertEqual(prune.call_count, 2)
+        self.assertEqual(len(self.copies()), 3)  # the oldest went; the new one stays
+
+    def test_passing_the_byte_cap_prunes_at_once_without_waiting_for_the_interval(self):
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        prune = self.pruning([0.0])
+        self.write(self.root, b'x' * 40, now=now - timedelta(hours=2), max_bytes=100)
+        self.write(self.root, b'x' * 40, now=now - timedelta(hours=1), max_bytes=100)
+        self.assertEqual((prune.call_count, len(self.copies())), (1, 2))
+        self.write(self.root, b'x' * 40, now=now, max_bytes=100)  # 120 bytes known: over the cap
+        self.assertEqual(prune.call_count, 2)
+        self.assertEqual(len(self.copies()), 2)
+        total = sum((self.root / name / 'analysis.json').stat().st_size for name in self.copies())
+        self.assertLessEqual(total, 100)
+
+    def test_a_failed_pruning_is_tried_again_at_the_next_write(self):
+        self.start()
+        now = datetime(2026, 11, 3, 12, 0, 0, tzinfo=timezone.utc)
+        with mock.patch.object(plugin_mcp, '_prune_report_copies', side_effect=OSError) as failing:
+            self.write(self.root, now=now)
+            self.write(self.root, now=now)
+        self.assertEqual(failing.call_count, 2)
+        self.assertEqual(len(self.copies()), 2)
 
     def test_concurrent_writes_each_leave_a_whole_copy(self):
         self.start()
