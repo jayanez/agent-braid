@@ -19,7 +19,7 @@ Commands run from the clean clone; `quick` means
   no change to existing contracts). Evidence: owner review record bound to a frozen
   commit (`validate_spec_kit freeze`).
 
-- [ ] T002 (REQ-002 / SC-002): Observe the OpenCode host matrix in a disposable
+- [x] T002 (REQ-002 / SC-002): Observe the OpenCode host matrix in a disposable
   profile (`XDG_CONFIG_HOME` and `XDG_DATA_HOME` in temporary directories, never the
   user's configuration) for the installed version: dependency-free module load;
   order of plugin transforms versus discovered skills; override of a user
@@ -33,14 +33,18 @@ Commands run from the clean clone; `quick` means
   appears in configuration, so the legacy preview can detect it. Rows not observed stay `unobserved`. Gate: a Git-install
   failure stops D3 and returns to the owner; any contradiction of research R1–R7
   returns the affected decision to the owner before T003–T007. Dependencies: T001.
-  Files: `evidence/host-matrix.json`, `research.md` (status of each R item).
+  Files: `evidence/opencode-host-matrix.json`, `research.md` (status of each R item).
   Verification: procedure_002. Evidence: matrix with version, command, output digest
   and limits per row. Negative controls: user configuration digest unchanged before
   and after; altered mode or bytes detected.
+  Done 2026-11-03 on OpenCode 2.1.4 / macOS arm64: obtained evidence
+  `evidence/opencode-host-matrix.json`, findings in `research.md` (T002 findings).
+  Rows 04b, 05b (`github:` transport), 09b (Linux) and 12b stay `unobserved`.
 
 - [ ] T003 (REQ-003 / SC-003, stdio part; the real host is T010): Write the OpenCode entry module
   per the surface contract: three transforms only, root from `import.meta.url`, no
-  replacement of an existing skill ID or a foreign `agent-braid` server, no network,
+  removal or update of a skill it can see, no replacement of a foreign `agent-braid` server
+  (semantic-field comparison), no throw, no network,
   writes, child processes or event subscriptions. Tests first: a Python test parses
   the source for forbidden APIs and checks the registered values; an MCP stdio
   fixture checks `workspaces` and `analyze-work` against the Codex/Claude results

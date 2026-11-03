@@ -58,7 +58,7 @@ Owner decisions, 2026-11-02:
 - **D2** OpenCode skills keep the unprefixed product names (`analyze`, `plan`,
   `evidence`, `execute`, `recover`, `setup`) as in Codex and Claude Code. OpenCode
   does not namespace plugin skills and silently prefers the higher-precedence skill
-  of the same name, so collision detection and a warning are mandatory (REQ-004).
+  of the same name, so collision detection and a warning (by `plugin doctor`, not by the entry) are mandatory (REQ-004).
 - **D3** Distribution reuses the Git `plugin-dist` artifact with the bundled
   runtime. If OpenCode's Git install does not preserve executable bits, bytes,
   `.gitattributes` handling or the artifact size limit (REQ-002), work stops and
@@ -99,7 +99,7 @@ Owner decisions, 2026-11-03 (plan review):
 - **D13 (OD-10)** The legacy OpenCode server keeps the default name
   `agent-braid`, as on the other hosts; no duplicate server is introduced. When a
   foreign `agent-braid` entry shadows the native plugin, Agent Braid warns
-  (`plugin doctor`, setup and any write-free host-visible channel T002 finds);
+  (`plugin doctor` and setup; T002 row 10 found no write-free host-visible channel);
   resolving the collision is the operator's step (migrate or update).
 
 ## Requirements and acceptance scenarios

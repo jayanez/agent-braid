@@ -84,8 +84,8 @@ entries. The later source wins for the same ID, without a warning.
    `recover` or `setup` in those locations is a collision (D2).
 
 **Decision.** Collision detection is a read-only scan by `plugin doctor --host
-opencode [--project <dir>]` over the documented locations, plus a refusal in the
-transform to replace an existing skill ID (see contract). The scan is deterministic
+opencode [--project <dir>]` over the documented locations, the detector of record
+(the entry cannot see discovered skills, T002 row 02; see contract). The scan is deterministic
 Python and unit-testable with fixture trees.
 
 **Limit.** Where plugin-added skills sit in that order is a REQ-002 row.

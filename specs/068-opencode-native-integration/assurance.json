@@ -159,7 +159,15 @@
         {
           "given": "OpenCode in a disposable profile",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "opencode (2.1.4) in disposable profiles with a local Git fixture; rows and commands listed in the file",
+              "limits": "One OpenCode version (2.1.4) on macOS arm64; local git+file fixture, no model call. Unobserved rows stay open: 04b (call-time approval), 05b (github: transport), 09b (Linux paths), 12b (model-facing names with codemode). Row 02 contradicts research R4 without changing a decision.",
+              "outcome": "Rows 01-03, 04, 05, 06-08, 09, 10-11, 12, 13 observed; 02 contradicts research (skill transform cannot see discovered skills); D3 gate passes on the local fixture only.",
+              "path": "specs/068-opencode-native-integration/evidence/opencode-host-matrix.json",
+              "sha256": "b9d480c6534340850156093bceaa0f18b50082207ec3b14ab5c45cc4eb90edc4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_002",
