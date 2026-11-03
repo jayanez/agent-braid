@@ -467,13 +467,9 @@ def _config_entry(raw: bytes, host: str, name: str, owned: bytes | None = None, 
 # --- OpenCode profile: JSONC configuration, servers under ``mcp`` ---------------
 
 OPENCODE_SCOPE = "opencode_jsonc_server_entry"
-# Conservative recognition of the Agent Braid native OpenCode plugin in the
-# documented ``plugin`` array. The exact spelling stored by ``opencode plugin add``
-# was not observed here, so only unambiguous spellings match; absence of a match
-# is not evidence that the plugin is not installed.
-
-
 def _is_native_plugin(spec: str) -> bool:
+    """Conservative: the spelling stored by `opencode plugin add` was not observed here;
+    a miss is not evidence that the native plugin is absent."""
     spec = spec.strip().lower()
     return (spec == "agent-braid" or spec.startswith("agent-braid@")
             or "jayanez/agent-braid" in spec or "plugins/agent-braid" in spec)
@@ -528,7 +524,7 @@ def _oc_load(raw: bytes):
         parsed = jsonc.parse(text)
         cleaned = jsonc.clean(text)
     except (UnicodeError, jsonc.JsoncError) as exc:
-        raise _invalid(f"not valid UTF-8 JSONC ({type(exc).__name__})") from exc
+        raise _invalid(f"not valid UTF-8 JSONC ({exc})") from exc
     if not isinstance(parsed, dict):
         raise _invalid("the configuration root must be an object")
     if "mcp" in parsed and not isinstance(parsed["mcp"], dict):

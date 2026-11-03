@@ -44,6 +44,14 @@ class Base(unittest.TestCase):
                                    destination=self.destination, home=self.root / "home")
         self.config, self.skills, self.receipt = self.selection.paths()
 
+    def doctor(self, selection=None):
+        with tempfile.TemporaryDirectory() as bin_dir:
+            fake = Path(bin_dir) / "opencode"
+            fake.write_text("#!/bin/sh\n")
+            fake.chmod(0o755)
+            with patch.dict(os.environ, {"PATH": bin_dir}):
+                return doctor(selection or self.selection, source_checkout=True)
+
     def write_config(self, text, path=None):
         path = path or self.config
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -106,7 +114,22 @@ class LifecycleTests(Base):
         self.transact()
         self.assertFalse(json.loads(self.receipt.read_text())["createdMcp"])
         self.transact("uninstall")
-        self.assertEqual(self.config.read_text(), '{\n  "mcp": {\n  }\n}\n'.replace("{\n  }", "{}"))
+        self.assertEqual(self.config.read_text(), '{\n  "mcp": {}\n}\n')
+
+    def test_foreign_server_after_the_owned_entry_survives_uninstall(self):
+        for tail in ("", ","):
+            with self.subTest(tail=tail):
+                self.write_config('{\n  "mcp": {\n    "first": {"type": "local", "command": ["f"]}\n  }\n}\n')
+                self.transact()
+                text = self.config.read_text()
+                end = text.index("}}\n}")  # closes the owned entry
+                self.write_config(text[:end + 1] + ', // note\n    "after": {"type": "local", "command": ["a"]}' + tail
+                                  + text[end + 1:])
+                self.transact("uninstall")
+                result = self.config.read_text()
+                self.assertNotIn("agent-braid", result)
+                self.assertIn("// note", result)
+                self.assertEqual(set(json.loads(jsonc.clean(result).text)["mcp"]), {"first", "after"})
 
     def test_created_container_is_kept_when_foreign_servers_were_added(self):
         self.write_config("{}\n")
@@ -228,7 +251,7 @@ class RefusalTests(Base):
 
     def test_invalid_configuration_codes(self):
         for text in ('{"mcp": {', "[]", '{"mcp": []}', '{"mcp": null}', '{"a": 1 /* open', '{"a": 1, "a": 2}',
-                     '{"a": NaN}', '{"a" 1}', "\xef\xbb\xbf{}"):
+                     '{"a": NaN}', '{"a" 1}', b"\xef\xbb\xbf{}"):
             with self.subTest(text=text):
                 self.write_config(text)
                 error = self.refused()
@@ -362,16 +385,8 @@ class NativePluginTests(Base):
         self.write_config('{"plugin": ["%s"]}\n' % self.SPEC)
         self.assertEqual(self.doctor()["checks"]["nativePlugin"]["code"], "native_plugin_shadowed")
 
-    def doctor(self, selection=None):
-        with tempfile.TemporaryDirectory() as bin_dir:
-            fake = Path(bin_dir) / "opencode"
-            fake.write_text("#!/bin/sh\n")
-            fake.chmod(0o755)
-            with patch.dict(os.environ, {"PATH": bin_dir}):
-                return doctor(selection or self.selection, source_checkout=True)
 
-
-class DoctorTests(NativePluginTests):
+class DoctorTests(Base):
     def test_doctor_checks_path_entry_and_skills(self):
         report = self.doctor()["checks"]
         self.assertEqual(report["host"]["status"], "present")
@@ -428,7 +443,7 @@ class ManifestAndMigrationTests(Base):
         self.assertEqual(skill.read_text(), "user modified instructions")
         self.assertEqual(self.config.read_text(), COMMENTED)
         self.assertEqual(json.loads(self.receipt.read_text())["state"], "residual")
-        with self.assertRaises(Exception):
+        with self.assertRaises((plugin_legacy.RegistryError, InstallationRefused)):
             plugin_legacy.migrate("claude", self.receipt, destination=self.destination, source_checkout=True)
 
     def test_inventory_default_directory_follows_xdg(self):

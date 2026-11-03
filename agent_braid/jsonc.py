@@ -23,6 +23,7 @@ class Cleaned:
 
 
 def clean(text: str) -> Cleaned:
+    """Blank comments and trailing commas (before ``}`` or ``]``), keeping every offset."""
     out = list(text)
     trailing = []
     pending = None  # a comma whose next significant character is not yet known
@@ -81,14 +82,15 @@ def parse(text: str):
         raise JsoncError("nonfinite JSON value")
     try:
         return json.loads(clean(text).text, object_pairs_hook=pairs, parse_constant=constant)
-    except (json.JSONDecodeError, RecursionError) as exc:
+    except (ValueError, RecursionError) as exc:  # includes JSONDecodeError and oversized integers
         raise JsoncError(f"invalid JSONC: {exc}") from exc
 
 
 def members(cleaned: str, start: int = 0):
     """Return ``(opening, closing, [(key, key_start, value_start, value_end)])``.
 
-    ``cleaned`` is ``clean(text).text``; the object must start at ``start``.
+    ``cleaned`` is ``clean(text).text`` of text that ``parse`` already accepted; the
+    object must start at ``start``. Offsets are character offsets, not bytes.
     """
     decoder = json.JSONDecoder()
     try:
