@@ -12,7 +12,7 @@
   "decision": "accepted",
   "scope": "SPEC-061 VIS.1a closure only: the closure packet specs/061-activity-viewer/closure-packet-vis1a.md and its closure review (PR #1011), the closure fixes for findings 1 and 2 (PR #1013), and the obtained evidence recorded in assurance.json for SC-001 to SC-006, SC-010 to SC-013 and SC-015 (Claude Code hook part only for SC-005) through the receipts evidence/vis1a-local-tests-20261103.json and evidence/vis1a-fixes-tests-20261103.json (PR #1017). The rest of SPEC-061 remains under the T001 approval recorded in owner-review-20261101.json and the probe review owner-review-probes-20261101.json.",
   "ownerResponse": {
-    "source": "direct reply in chat on 2026-11-03 to the question of how to close VIS.1a, given after the closure packet listed findings 1 and 2 as fixes to decide before the owner opens the viewer on real sessions; the reviewed commit is the squash merge of PR #1017, which follows the merge of the fixes PR #1013",
+    "source": "direct reply in chat on 2026-11-03 to the question of how to close VIS.1a, given after the closure packet listed findings 1 and 2 as fixes to decide before the owner opens the viewer on real sessions; the reviewed commit is the squash merge of PR #1017, which follows the merge of the fixes PR #1013; the answer was given before the evidence receipts of #1017 existed, so it approves the closure decision, not those receipts' content",
     "answers": [
       {
         "topic": "¿Cómo cerramos VIS.1a?",
