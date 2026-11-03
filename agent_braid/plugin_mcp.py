@@ -217,10 +217,22 @@ class WorkspaceService(core.ToolingService):
         return value
 
 
+def _plugin_version(plugin_root):
+    """Native plugin version stamped by the build in the packaged manifest; None outside a package."""
+    if plugin_root is None:
+        return None
+    try:
+        value = json.loads((plugin_root / 'plugin.json').read_text(encoding='utf-8')).get('version')
+    except (OSError, ValueError, AttributeError):
+        return None
+    return value if isinstance(value, str) else None
+
+
 class PluginRouter:
     def __init__(self, home=None, plugin_root=None):
         self.home = home_path(home)
         self.plugin_root = Path(plugin_root).resolve() if plugin_root else None
+        self.plugin_version = _plugin_version(self.plugin_root)  # snapshot: the version of the running connection
         # A v0.1 registry (baseline None) serves bootstrap status only until setup migrates it.
         # The registry is read tolerantly: stale worktree roots and unsafe workspace rows are quarantined
         # individually, so one deleted worktree can never stop the other workspaces from serving.
@@ -270,7 +282,8 @@ class PluginRouter:
         found = self._inspect()
         current = found['value'] if found else None
         current_digest = configuration_digest(current)
-        return {'schema': SCHEMA, 'version': __version__,
+        # version is the Python package; pluginVersion is the native plugin build (None outside a package).
+        return {'schema': SCHEMA, 'version': __version__, 'pluginVersion': self.plugin_version,
                 'status': ('migration-required' if current is None else
                            'configured' if self.services else 'setup-required'),
                 'reconnectRequired': current_digest != self.baseline_digest,

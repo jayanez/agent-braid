@@ -79,7 +79,7 @@ class UpdateRollbackTests(unittest.TestCase):
             shutil.rmtree(installed)
             shutil.copytree(alpha4, installed)
             verify_package(installed)
-            self.assertEqual(VERSION, '0.1.0-alpha.5')
+            self.assertEqual(VERSION, '0.1.0-alpha.6')
             self.assertEqual({x.name for x in (installed / 'skills').iterdir()},
                              {'analyze', 'plan', 'evidence', 'execute', 'recover', 'setup', 'telemetry-audit'})
             self.assertEqual(state_digest(home), before)
