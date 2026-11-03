@@ -22,7 +22,8 @@ system or reaches the network.
 
 Root identity (REQ-010): the event contract names no root and `evidenceRef.path` stays relative to
 it. The watcher therefore gives each watched root a stable, non-path label ("root 1" to "root 8", in
-start order) and keeps it beside the store, per `seq`, in a `RootLabels` registry. `replay_with_roots`
+start order) and keeps it beside the store, per `seq`, in a `RootLabels` registry (defined in `view_roots`, so the server
+does not import the watcher). `replay_with_roots`
 returns the retained events with the labels read in the same step, and `build_model(events, roots=...)`
 turns them into a per-element `root`. A label never contains a path or a user name. The labels are
 per store, so one store has one watcher: two watchers on one store would both start at "root 1".
@@ -35,7 +36,6 @@ import os
 import stat
 import threading
 import time
-import weakref
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
@@ -45,6 +45,7 @@ from .view_adapters import (
     events_from_scheduler, read_artifact,
 )
 from .view_loom import SCHEMA_VERSION, LoomError, validate_event
+from .view_roots import RootLabels, replay_with_roots, root_label, root_labels_of
 from .view_store import LoomStore
 
 MAX_ROOTS = 8
@@ -64,50 +65,6 @@ KNOWN_ARTIFACTS: Mapping[str, Adapter] = {
     "ownership-receipt.json": events_from_ownership_receipt,
     "gate-result.json": events_from_gate_result,
 }
-
-
-def root_label(index: int) -> str:
-    """The label of the watched root at zero-based position `index`: "root 1", "root 2", ..."""
-    return f"root {index + 1}"
-
-
-class RootLabels:
-    """Which watched root stored which `seq`, kept beside (never inside) the store's events."""
-
-    def __init__(self) -> None:
-        self.lock = threading.Lock()  # held by the watcher across append + record, and by readers
-        self._by_seq: dict[int, str] = {}
-
-    def record(self, seq: int, label: str) -> None:
-        self._by_seq[seq] = label
-
-    def prune(self, oldest_seq: int | None) -> None:
-        """Forget the events the store's ring has evicted (those older than `oldest_seq`)."""
-        for seq in [seq for seq in self._by_seq if oldest_seq is None or seq < oldest_seq]:
-            del self._by_seq[seq]
-
-    def copy(self) -> dict[int, str]:
-        return dict(self._by_seq)
-
-
-_REGISTRIES: "weakref.WeakKeyDictionary[LoomStore, RootLabels]" = weakref.WeakKeyDictionary()
-_REGISTRIES_LOCK = threading.Lock()
-
-
-def root_labels_of(store: LoomStore) -> RootLabels:
-    """The registry belonging to `store` (created empty on first use, released with the store)."""
-    with _REGISTRIES_LOCK:
-        registry = _REGISTRIES.get(store)
-        if registry is None:
-            registry = _REGISTRIES[store] = RootLabels()
-        return registry
-
-
-def replay_with_roots(store: LoomStore) -> tuple[list[dict[str, Any]], dict[int, str]]:
-    """`store.replay()` plus the `seq` -> root label map, read together so they agree."""
-    registry = root_labels_of(store)
-    with registry.lock:
-        return store.replay(), registry.copy()
 
 
 class TailError(ValueError):
