@@ -15,6 +15,12 @@ What plugs in later: hook ingest (T019), OTLP ingest (T018), frames (T027) and t
 (T024). They register through `read_handlers`, `ingest_handlers`, `bundle` and `names_inventory`;
 a route with nothing registered answers 404.
 
+Vendored code (SPEC-061 T025): `/web/vendor/<path>` serves a nested file of the vendored Three.js tree
+only when `<path>` is listed in the vendor `manifest.json` and the bytes read at that request hash to
+the listed SHA-256. Anything else (unlisted, hash mismatch, missing, symbolic link, spelling that is not
+exactly a listed path, oversized) answers 404 with the contract headers, like an unknown bundle name.
+Owner approval 2026-11-02, recorded in contracts/ui-security-privacy.md.
+
 Event delivery: a client without `Last-Event-ID` receives every retained event (led by a
 `ring-evicted` gap when some were lost) and then live events. Each frame is `id: <seq>` plus one
 `data:` line of the canonical event JSON, so resuming from the last id repeats and skips nothing. The
@@ -25,10 +31,12 @@ A subscriber that fell behind is closed and resumes with its last id.
 from __future__ import annotations
 
 import base64
+import hashlib
 import hmac
 import json
 import math
 import os
+import re
 import secrets
 import socket
 import socketserver
@@ -59,6 +67,13 @@ EVENT_POLL_SECONDS = 0.25
 MAX_INVENTORY_NAMES = 256
 MAX_INVENTORY_NAME_LENGTH = 64
 MAX_REPLAY_BYTES = MAX_EVENTS * (MAX_LINE_BYTES + 1)
+VENDOR_PREFIX = "/web/vendor/"
+VENDOR_DIR = Path(__file__).resolve().parent.parent / "integrations" / "agent-braid-view" / "web" / "vendor"
+VENDOR_MANIFEST = "manifest.json"
+MAX_VENDOR_FILE_BYTES = 8 * 1024 * 1024
+MAX_VENDOR_MANIFEST_BYTES = 64 * 1024
+_VENDOR_PATH = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*(?:/[A-Za-z0-9][A-Za-z0-9._-]*)*")
+_SHA256_HEX = re.compile(r"[0-9a-f]{64}")
 
 # (method, route, credential): the contract's route table. "/web/<file>" is any bundle file name.
 ROUTES: tuple[tuple[str, str, str], ...] = (
@@ -239,6 +254,60 @@ def read_replay_file(path: str | os.PathLike[str]) -> bytes:
     return data
 
 
+def _open_nofollow(name: str, directory: int, *, directory_flag: int = 0) -> int:
+    return os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | directory_flag, dir_fd=directory)
+
+
+def _read_beneath(root: Path, relative: str, limit: int) -> bytes | None:
+    """Read `relative` under `root` without following a symbolic link at any component; None on any problem."""
+    parts = relative.split("/")
+    try:
+        current = os.open(root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    except OSError:
+        return None
+    try:
+        for part in parts[:-1]:
+            following = _open_nofollow(part, current, directory_flag=os.O_DIRECTORY)
+            os.close(current)
+            current = following
+        descriptor = _open_nofollow(parts[-1], current)
+        try:
+            if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+                return None
+            with os.fdopen(descriptor, "rb", closefd=False) as stream:
+                data = stream.read(limit + 1)
+        finally:
+            os.close(descriptor)
+    except OSError:
+        return None
+    finally:
+        os.close(current)
+    return data if len(data) <= limit else None
+
+
+def load_vendor_manifest(vendor_dir: str | os.PathLike[str] | None) -> dict[str, str]:
+    """The `{relative path: sha256}` entries of `<vendor_dir>/manifest.json` that are safe to serve.
+
+    A missing, unreadable, oversized or malformed manifest lists nothing. Entries whose path is not a plain
+    relative path of simple components (no empty, dot or hidden component, no backslash) or whose digest is
+    not 64 lowercase hex digits are dropped.
+    """
+    if vendor_dir is None:
+        return {}
+    data = _read_beneath(Path(vendor_dir), VENDOR_MANIFEST, MAX_VENDOR_MANIFEST_BYTES)
+    if data is None:
+        return {}
+    try:
+        document = parse_json_body(data)
+    except BodyError:
+        return {}
+    files = document.get("files") if isinstance(document, dict) else None
+    if not isinstance(files, dict):
+        return {}
+    return {path: digest for path, digest in files.items()
+            if _VENDOR_PATH.fullmatch(path) and isinstance(digest, str) and _SHA256_HEX.fullmatch(digest)}
+
+
 class ViewServer(ThreadingHTTPServer):
     """Loopback-only HTTP server for the activity viewer. Call `serve_forever` to run it."""
 
@@ -247,6 +316,7 @@ class ViewServer(ThreadingHTTPServer):
     def __init__(self, store: LoomStore, runtime_dir: str | os.PathLike[str], *,
                  host: str = "127.0.0.1", port: int = 0,
                  bundle: Mapping[str, bytes] | None = None,
+                 vendor_dir: str | os.PathLike[str] | None = VENDOR_DIR,
                  read_handlers: Mapping[str, Callable[[], tuple[bytes, str]]] | None = None,
                  ingest_handlers: Mapping[str, Callable[[Any], None]] | None = None,
                  names_inventory: Callable[[], Iterable[str]] | None = None,
@@ -261,6 +331,8 @@ class ViewServer(ThreadingHTTPServer):
             raise ValueError("limits are positive")
         self.store = store
         self.bundle = _valid_bundle(bundle)
+        self.vendor_dir = None if vendor_dir is None else Path(vendor_dir)
+        self.vendor_files = load_vendor_manifest(self.vendor_dir)
         self.read_handlers = dict(read_handlers or {})
         self.ingest_handlers = dict(ingest_handlers or {})
         self.names_inventory = names_inventory
@@ -309,6 +381,16 @@ class ViewServer(ThreadingHTTPServer):
         return [("Content-Security-Policy", self._csp), ("X-Content-Type-Options", "nosniff"),
                 ("Referrer-Policy", "no-referrer"), ("Cache-Control", "no-store"),
                 ("Connection", "close")]
+
+    def read_vendor(self, relative: str) -> bytes | None:
+        """The bytes of a manifest-listed vendored file, or None unless they hash to the listed SHA-256."""
+        digest = self.vendor_files.get(relative)
+        if digest is None or self.vendor_dir is None:
+            return None
+        data = _read_beneath(self.vendor_dir, relative, MAX_VENDOR_FILE_BYTES)
+        if data is None or not hmac.compare_digest(hashlib.sha256(data).hexdigest(), digest):
+            return None
+        return data
 
     def snapshot(self) -> tuple[bytes, str]:
         """`/snapshot`: the model of the retained events and the dropped-attribute names inventory."""
@@ -464,7 +546,9 @@ class _Handler(BaseHTTPRequestHandler):
         if not self._loopback_request():
             return self._send(403)
         kind = _ROUTE_KIND.get(path)
-        if kind is None and path.startswith("/web/") and path[5:] in self.server.bundle:
+        if kind is None and (
+                path.startswith("/web/") and path[5:] in self.server.bundle
+                or path.startswith(VENDOR_PREFIX) and path[len(VENDOR_PREFIX):] in self.server.vendor_files):
             kind = "read"
         if kind is None:
             return self._send(404)
@@ -498,6 +582,11 @@ class _Handler(BaseHTTPRequestHandler):
         server = self.server
         if path == "/events":
             return self._events()
+        if path.startswith(VENDOR_PREFIX):
+            content = server.read_vendor(path[len(VENDOR_PREFIX):])
+            if content is None:
+                return self._send(404)
+            return self._send(200, content, _CONTENT_TYPES.get(os.path.splitext(path)[1], "application/octet-stream"))
         if path == "/" or path.startswith("/web/"):
             name = "index.html" if path == "/" else path[5:]
             content = server.bundle.get(name)
