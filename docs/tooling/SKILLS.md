@@ -51,8 +51,9 @@ relative to each other was not compared, and the diagnosis below assumes an orde
 
 The section also lists the configuration files read and an `ambiguous-configuration`
 warning when `opencode.json` and `opencode.jsonc` coexist. `--project` also scans the
-`.claude`, `.agents` and `.opencode` skill directories and configuration files from
-the Git root down to the project. A `collision` is resolved by renaming or
+`.claude`, `.agents` and `.opencode` skill directories from the filesystem root
+down to the project (OpenCode also loads skills above the Git root) and configuration
+files from the Git root down to the project. A `collision` is resolved by renaming or
 removing the other skill; Agent Braid never edits it.
 
 Use the [installation workflow](INSTALL.md) for explicit receipt-owned changes.

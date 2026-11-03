@@ -91,8 +91,8 @@ with no plugin prefix (T002 row 07). The command `execute` and `session.prompt` 
 reports, for each of the six IDs, every definition found in the documented
 discovery locations (`~/.claude/skills`, `~/.agents/skills`,
 `~/.config/opencode/skills`, and for `--project` the `.claude/skills`,
-`.agents/skills` and `.opencode/skills` directories from the directory to the Git
-root, plus explicit `skills` entries in the configuration files it can read).
+`.agents/skills` and `.opencode/skills` directories from the directory up to the
+filesystem root, not stopping at the Git root (T010 row 14), plus explicit `skills` entries in the configuration files it can read).
 
 | Finding | Meaning |
 |---|---|

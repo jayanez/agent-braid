@@ -194,6 +194,30 @@ class OpenCodeDoctorTests(unittest.TestCase):
         finding, = plugin_opencode.diagnose(outer / 'sub')['findings']
         self.assertEqual(finding['code'], 'server-collision')
 
+    def test_skill_above_the_git_root_is_a_collision_and_nearer_wins(self):
+        # T010 row 14: the host loads skills from directories above the project's Git root.
+        far = skill(self.base / '.agents' / 'skills', 'plan')
+        mid = skill(self.base / '.claude' / 'skills', 'plan')
+        finding, = self.diagnose()['findings']
+        self.assertEqual(finding['code'], 'collision')
+        self.assertEqual(finding['winner'], {'source': 'project-agents', 'path': str(far)})
+        self.assertEqual([d['path'] for d in finding['definitions']], [str(mid), str(far)])
+        near = skill(self.project / '.agents' / 'skills', 'plan')
+        finding, = self.diagnose()['findings']
+        self.assertEqual(finding['winner']['path'], str(near))
+        self.assertEqual([d['path'] for d in finding['definitions']], [str(mid), str(far), str(near)])
+
+    def test_home_skills_are_not_counted_again_as_ancestors(self):
+        skill(self.home / '.agents' / 'skills', 'plan')
+        home_project = self.home / 'work'
+        (home_project / '.git').mkdir(parents=True)
+        finding, = plugin_opencode.diagnose(home_project)['findings']
+        self.assertEqual([d['source'] for d in finding['definitions']], ['home-agents'])
+
+    def test_configuration_above_the_git_root_is_still_not_read(self):
+        self.write(self.base / 'opencode.json', {'mcp': {'agent-braid': {'type': 'remote'}}})
+        self.assertEqual(self.diagnose()['findings'], [])
+
     def test_relative_xdg_config_home_is_used_as_given(self):
         cwd = os.getcwd()
         self.addCleanup(os.chdir, cwd)
