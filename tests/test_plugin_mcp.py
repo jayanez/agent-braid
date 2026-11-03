@@ -223,7 +223,7 @@ class PluginRouterTests(unittest.TestCase):
         self.assertIn('analyze-work', json.dumps(report))
 
     def router_refusals(self, router, identifier):
-        """Every router-level refusal path; each must refuse before the service telemetry boundary."""
+        """Every router-level refusal path."""
         from unittest.mock import patch
         from agent_braid import tooling_mcp as core
         sample = {'workspaceId': identifier, 'kind': 'aim', 'request': {}}
@@ -237,6 +237,7 @@ class PluginRouterTests(unittest.TestCase):
         return out
 
     def assert_router_refusals_write_no_telemetry(self, consent, stale):
+        # Consent off only: with consent local the refusals are counted (tests/test_plugin_mcp_telemetry.py).
         from unittest.mock import patch
         from agent_braid import tooling_telemetry as telemetry
         self.install()
@@ -258,13 +259,10 @@ class PluginRouterTests(unittest.TestCase):
             self.assertFalse(store.exists(), 'a refusal created the telemetry store')
             self.assertEqual(telemetry.Store().report()['rows'], [])
 
-    def test_router_refusals_write_no_telemetry_cell_with_consent_local(self):
-        self.assert_router_refusals_write_no_telemetry('local', stale=True)
-
     def test_router_refusals_write_no_telemetry_with_consent_off(self):
         self.assert_router_refusals_write_no_telemetry('off', stale=True)
 
-    def test_refusal_pin_can_fail_because_service_calls_are_counted(self):
+    def test_service_refusal_with_consent_local_is_counted_once(self):
         from unittest.mock import patch
         from agent_braid import tooling_telemetry as telemetry
         self.install()
@@ -273,7 +271,7 @@ class PluginRouterTests(unittest.TestCase):
         with patch.object(telemetry, 'default_directory', return_value=self.base / 'telemetry'):
             router = PluginRouter(self.home)
             identifier = load(self.home)['workspaces'][0]['workspaceId']
-            # A refusal that does reach the service boundary is counted, so the pin above is not vacuous.
+            # A refusal that reaches the service is counted exactly once, by the router that owns the measurement.
             result = router.invoke('analyze-work', {'workspaceId': identifier}, threading.Event())
             self.assertEqual(result['status'], 'refused')
             rows = telemetry.Store().report()['rows']
