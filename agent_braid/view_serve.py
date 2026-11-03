@@ -66,7 +66,7 @@ INGEST_TOKEN_NAME = "view-ingest-token"
 COOKIE_PREFIX = "braid_view"  # each server names its own cookie "<prefix>_<port>"
 HOOK_PATH = "/hook/claude"
 EVENT_POLL_SECONDS = 0.25
-_MAX_REQUEST_LINE = 65537
+_MAX_REQUEST_LINE = 65537  # the http.server request-line limit (its _MAXLINE + 1)
 MAX_REPLAY_BYTES = MAX_EVENTS * (MAX_LINE_BYTES + 1)
 VENDOR_PREFIX = "/web/vendor/"
 VENDOR_DIR = vendor_dir_of(WEB_SOURCE_DIR)
@@ -504,7 +504,8 @@ class _DeadlineReader:
             self._connection.settimeout(self._timeout)  # writes (event stream) keep the per-operation timeout
 
     def readline(self, limit: int = -1) -> bytes:
-        limit = _MAX_REQUEST_LINE if limit is None or limit < 0 else limit
+        if limit is None or limit < 0:
+            limit = _MAX_REQUEST_LINE
         line = bytearray()
         while len(line) < limit:
             buffered = self._one_receive(lambda: self._stream.peek(1))  # at most one receive
@@ -737,6 +738,5 @@ class _Handler(BaseHTTPRequestHandler):
         self._send(200, b"{}", "application/json")
 
 
-__all__ = ["BodyError", "INGEST_STATUSES", "IngestRefusal", "MAX_INVENTORY_NAME_LENGTH", "MAX_INVENTORY_NAMES",
-           "ROUTES", "ServeError", "ViewServer", "load_replay", "parse_json_body", "read_replay_file",
-           "replay_events"]
+__all__ = ["BodyError", "IngestRefusal", "ROUTES", "ServeError", "ViewServer", "load_replay", "parse_json_body",
+           "read_replay_file", "replay_events"]

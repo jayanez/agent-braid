@@ -115,7 +115,7 @@ Watching result roots discovered from the plugin registry (read-only); the page 
 `SessionStart`, `SessionEnd`, `SubagentStart`, `SubagentStop` and `PostToolUse` only.
 Decision events are refused. The viewer keeps an allowlist of payload field names and
 drops every other field. A session or subagent that was shown as closed stays closed: if
-Claude Code keeps sending events for it (for example after resuming a session), the page shows
+Claude Code keeps sending events for it, the page shows
 one gap naming that strand instead of new activity, so the missing activity is not mistaken
 for none.
 

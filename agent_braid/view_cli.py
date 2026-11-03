@@ -20,8 +20,8 @@ resource. Nothing is left behind by a refusal: the runtime directory is created 
 input was checked and is removed again when the port cannot be bound; the ingest token file is
 removed when the server stops (Ctrl-C or SIGTERM). The web bundle is read from the source checkout
 (`integrations/agent-braid-view/web`) when that directory exists, else from the installed package
-(`agent_braid/view_assets/web`, shipped by the build, T043); only the files named in `BUNDLE_FILES` are
-served (T047), and the vendored files come from the `vendor` directory of the resolved bundle. The viewer never writes host configuration. This module
+(`agent_braid/view_assets/web`, shipped by the build, T043). Only the files named in `BUNDLE_FILES` are
+served (T047); the vendored files come from the `vendor` directory of the resolved bundle. The viewer never writes host configuration. This module
 imports no network code; the server modules are loaded only by the subcommands that need them.
 """
 from __future__ import annotations
@@ -47,7 +47,7 @@ RUNTIME_DIR_NAME = "agent-braid-view"
 TOKEN_ENV = "AGENT_BRAID_VIEW_TOKEN"
 HOOK_TIMEOUT_SECONDS = 5
 BUNDLE_DIR = WEB_SOURCE_DIR
-# The only first-party files `/web/<file>` may serve (contract: files listed in the bundle manifest). A new
+# The only first-party files `/web/<file>` may serve (vendored files follow vendor/manifest.json). A new
 # file of the bundle is added here; a test pins the list to the files of the source bundle.
 BUNDLE_FILES = ("index.html", "style.css", "loom.js", "braid-scene.js")
 MAX_BUNDLE_FILE_BYTES = 8 * 1024 * 1024
