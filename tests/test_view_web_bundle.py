@@ -9,6 +9,7 @@ real vendored Three.js and the model of the example stream, to check the visual 
 bijection between drawn objects and source events without a browser.
 """
 import base64
+import functools
 import hashlib
 import json
 import os
@@ -30,8 +31,9 @@ from tests.view_http_helpers import http_request
 
 WEB = Path(__file__).resolve().parents[1] / "integrations/agent-braid-view/web"
 VENDOR = WEB / "vendor"
-FIRST_PARTY = ("index.html", "loom.js", "braid-scene.js", "style.css")
-SCRIPTS = ("loom.js", "braid-scene.js")
+FIRST_PARTY = ("index.html", "loom.js", "braid-scene.js", "state.js", "strings.js", "style.css")
+SCRIPTS = ("loom.js", "braid-scene.js", "state.js", "strings.js")
+MODULES = tuple(name for name in SCRIPTS if name != "braid-scene.js")  # what loom.js imports (the scene is a dynamic import)
 SERVED_PATHS = ("/", *(f"/web/{name}" for name in FIRST_PARTY))
 EXAMPLE = Path(__file__).resolve().parents[1] / "specs/061-activity-viewer/contracts/loom-event.example.jsonl"
 LEGEND_LITERAL = "not a guarantee"
@@ -197,6 +199,16 @@ def violations_in_page(html: str) -> list[str]:
     return found
 
 
+@functools.lru_cache(maxsize=1)
+def strings_table() -> dict:
+    """The `en` and `es` string tables of strings.js, read by running the module under Node."""
+    program = "import { STRINGS } from %s; console.log(JSON.stringify(STRINGS));" % json.dumps((WEB / "strings.js").as_uri())
+    done = subprocess.run(["node", "--input-type=module", "-e", program], capture_output=True, text=True, timeout=60)
+    if done.returncode != 0:
+        raise AssertionError(done.stderr)
+    return json.loads(done.stdout)
+
+
 def manifest() -> dict:
     return json.loads((VENDOR / "manifest.json").read_text(encoding="utf-8"))
 
@@ -337,13 +349,14 @@ class FirstPartyBundleTests(unittest.TestCase):
         html = read("index.html")
         legend = html[html.index('aria-labelledby="legend-title"'):]
         self.assertIn(LEGEND_LITERAL, legend[:legend.index("</section>")])
-        self.assertIn(LEGEND_LITERAL, read("loom.js"))  # the legend rendered from script keeps the literal
+        self.assertIn(LEGEND_LITERAL, read("strings.js"))  # the legend text lives in the string module
 
     def test_the_page_states_the_non_claim_and_read_only_markers(self):
         html = read("index.html")
         self.assertIn("not a safety ordering", html)
         self.assertIn("executionAuthorization: false", html)
-        self.assertIn("read-only", html)
+        self.assertIn("Read-only", html)  # the boundary strip, visible on every screen
+        self.assertIn("does not authorize execution", html)
 
     def test_every_page_script_and_style_comes_from_the_bundle(self):
         files = {f"/web/{name}" for name in FIRST_PARTY}
@@ -388,7 +401,9 @@ class FirstPartyBundleTests(unittest.TestCase):
     def test_the_page_has_the_scene_elements_and_loom_has_no_static_scene_import(self):
         # Behaviour (playback binding, selection, every scene failure keeping the table) is in test_view_web_behaviour.
         text = read("loom.js")
-        self.assertNotRegex(text, r"(?m)^\s*import\b[^(]", "loom.js must not import the scene statically")
+        for statement in re.findall(r"(?m)^\s*import\b[^(].*?from\s*[\"']([^\"']+)[\"']", text, re.S):
+            self.assertNotIn("braid-scene", statement, "loom.js must not import the scene statically")
+        self.assertRegex(text, r"await import\(\"/web/braid-scene.js\"\)")
         html = read("index.html")
         for identifier in ("scene-section", "scene-box", "scene-hover", "scene-note", "scene-reset", "legend-scene"):
             self.assertIn(f'id="{identifier}', html)
@@ -403,11 +418,15 @@ class FirstPartyBundleTests(unittest.TestCase):
         self.assertIn("never looks like an absent one", html)
         self.assertRegex(scene, r"setVisible\(seqs, position = seqs\)")
         self.assertRegex(scene, r"frontier = frontierX\(built, frontierSeqs\)")
-        self.assertNotRegex(script, r"localStorage|sessionStorage|document\.cookie", "the selection is never stored")
+        self.assertNotRegex(script, r"localStorage|sessionStorage|document\.cookie", "the page shell stores nothing itself")
+        # Only two per-viewer preferences exist (language and view); the selection and the events are never stored.
+        state = read("state.js")
+        self.assertRegex(state, r'PREFERENCE_KEYS = new Set\(\["lang", "view"\]\)')
+        self.assertNotRegex(state, r"sessionStorage|document\.cookie|indexedDB")
+        self.assertEqual(re.findall(r"localStorage\.(\w+)", state), ["getItem", "removeItem", "setItem"])
 
     def test_the_scene_legend_and_page_say_a_class_is_not_a_guarantee_and_no_effort_is_drawn(self):
-        script = read("loom.js")
-        legend = script[script.index("const SCENE_LEGEND"):script.index("const ATTRS")]
+        legend = " ".join(value for key, value in strings_table()["en"].items() if key.startswith("sceneLegend."))
         self.assertIn(LEGEND_LITERAL, legend)
         self.assertIn("not a safety ordering", legend)
         self.assertIn("advisory plan, not a runtime measurement", legend + read("braid-scene.js"))
@@ -702,7 +721,10 @@ class Text extends Node {
 class Element extends Node {
   constructor(tag) {
     super();
-    Object.assign(this, { tag, children: [], attrs: {}, listeners: {}, dataset: {}, hidden: false, className: "", own: null });
+    Object.assign(this, { tag, tagName: tag, children: [], attrs: {}, listeners: {}, dataset: {}, hidden: false, className: "", own: null, tabIndex: 0 });
+    const classes = new Set();
+    this.classList = { add: (name) => classes.add(name), remove: (name) => classes.delete(name),
+      toggle: (name, on) => { if (on === undefined ? !classes.has(name) : on) classes.add(name); else classes.delete(name); }, contains: (name) => classes.has(name) };
   }
   append(...nodes) { this.children.push(...nodes); }
   replaceChildren(...nodes) { this.children = [...nodes]; this.own = null; }
@@ -724,7 +746,12 @@ globalThis.document = {
   getElementById: (id) => { if (!byId.has(id)) byId.set(id, new Element("#" + id)); return byId.get(id); },
   activeElement: null,
   visibilityState: "visible",
+  documentElement: { lang: "" },
+  title: "",
+  addEventListener() {},
+  querySelectorAll: () => [],
 };
+Object.defineProperty(globalThis, "navigator", { value: { languages: JSON.parse(process.env.NAV_LANGUAGES || '["en"]') }, configurable: true });
 globalThis.Node = Node;
 globalThis.CSS = { escape: String };
 globalThis.WebGL2RenderingContext = function WebGL2RenderingContext() {};
@@ -814,6 +841,8 @@ class NodePageCase(unittest.TestCase):
         cls.addClassCleanup(cls.tmp.cleanup)
         cls.root = Path(cls.tmp.name)
         (cls.root / "package.json").write_text('{"type": "module"}')
+        for name in MODULES:
+            shutil.copyfile(WEB / name, cls.root / name)
         shutil.copyfile(WEB / "loom.js", cls.root / "loom.js")
         for name, text in (("dom-stub.mjs", DOM_STUB), ("scene-stub.mjs", SCENE_STUB),
                            ("scene-hooks.mjs", SCENE_HOOKS), ("driver.mjs", PAGE_DRIVER)):
@@ -862,7 +891,8 @@ class SourceCheckboxTests(NodePageCase):
         self.assertFalse(first["sourcesHidden"])
         self.assertEqual(first["checkboxes"], dict.fromkeys(SOURCE_LABELS, True))
         for key, label in SOURCE_LABELS.items():
-            self.assertIn(f"{label} ({len(self.by_source[key])} events)", first["labels"])
+            count = len(self.by_source[key])
+            self.assertIn(f"{label} ({count} event{'' if count == 1 else 's'})", first["labels"])
         self.assertIn("0 events hidden", first["status"])
         self.assertEqual(sorted(first["rows"]), sorted(e["seq"] for e in self.model["elements"]))
         self.assertEqual(sorted(first["scene"]["seqs"]), sorted(first["rows"]))

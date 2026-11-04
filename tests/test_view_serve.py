@@ -946,6 +946,18 @@ class SnapshotTests(StreamCase):
         self.assertIs(document["model"]["executionAuthorization"], False)
         self.assertEqual(document["droppedAttributeNames"], [])
 
+    def test_snapshot_carries_a_language_hint_only_when_the_server_has_a_supported_one(self):
+        self.assertNotIn("uiLanguageHint", json.loads(self.get()[2]))  # none configured: nothing is sent
+        self.server.language_hint = "es"
+        self.assertEqual(json.loads(self.get()[2])["uiLanguageHint"], "es")
+
+    def test_a_language_hint_outside_the_supported_set_is_dropped_at_construction(self):
+        for value in ("fr", "es_ES.UTF-8", "", 5):
+            with self.subTest(value=value):
+                server = ViewServer(self.store, self.tmp.name, language_hint=value)
+                self.addCleanup(server.server_close)
+                self.assertIsNone(server.language_hint)
+
     def test_snapshot_labels_the_elements_with_the_root_the_watcher_read_them_from(self):
         first, second = (Path(self.tmp.name) / name for name in ("one", "two"))
         fixture = Path(__file__).resolve().parent / "fixtures/view/artifacts/runtime-state-ready.json"

@@ -1,9 +1,8 @@
-# ADR 0033 amendment (draft): 2D timeline as the default view; no vendor change
+# ADR 0033 amendment (accepted 2026-11-04; historical draft): 2D timeline as the default view; no vendor change
 
-- **Status:** Proposed. Drafted 2026-11-04 for owner acceptance. **Not accepted, not
-  applied.** `docs/adr/0033-vendored-threejs-mit-boundary.md` is unchanged by this
-  change; on acceptance a separate reviewed change edits it (or issues an ADR that
-  amends it) and records the owner's answer verbatim.
+- **Status:** Accepted by the owner on 2026-11-04 (G2, answer verbatim: "Aceptar
+  (Recommended)") and applied to `docs/adr/0033-vendored-threejs-mit-boundary.md`
+  ("Amendment 2026-11-04"). This file is the historical draft; the ADR is normative.
 - **Date:** 2026-11-04
 - **Deciders:** Juan Antonio Yáñez García (owner)
 - **Constitutional articles:** 21 (as ADR 0033)
@@ -81,6 +80,8 @@ long" from the 3D scene. On 2026-11-04 the owner chose the 2D timeline as the de
 must pass with no manifest change. Acceptance of the amendment itself is a human
 decision and is not implied by any test.
 
-## Acceptance record (to be filled by the owner)
+## Acceptance record
 
-Owner answer (verbatim): _pending_. Date: _pending_. Applied to ADR 0033 by: _pending_.
+Owner answer (verbatim): "Aceptar (Recommended)". Date: 2026-11-04. Applied to ADR 0033
+by: VIS.1c implementation change (T051), which also updates the ADR hash in every
+`current` authority snapshot.

@@ -30,7 +30,7 @@ them to `docs/adr/` and `contracts/`.
 | [timeline-2d.md](timeline-2d.md) | 2D timeline design (default view) |
 | [three-d-fixes.md](three-d-fixes.md) | 3D fixes mapped to Three.js r186 APIs |
 | [contract-v0.2-amendment-draft.md](contract-v0.2-amendment-draft.md) | `agent-braid-loom/v0.2` draft with privacy review items |
-| [adr-0033-amendment-draft.md](adr-0033-amendment-draft.md) | ADR 0033 amendment, **Proposed** |
+| [adr-0033-amendment-draft.md](adr-0033-amendment-draft.md) | ADR 0033 amendment, **Accepted 2026-11-04** and applied to the ADR (this file is the draft) |
 | [skill-lens-findings.md](skill-lens-findings.md) | What each design lens added to the audit |
 | [audit/](audit/) | Source UX audit: report (Spanish, verbatim), screenshots, wireframes, synthetic fixture |
 

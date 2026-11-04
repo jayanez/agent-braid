@@ -99,6 +99,28 @@ _CONTENT_TYPES = {
 }
 
 
+UI_LANGUAGES = ("es", "en")
+_LOCALE_VARIABLES = ("LC_ALL", "LC_MESSAGES", "LANG")
+_LOCALE_TAG = re.compile(r"^([A-Za-z]{2,3})(?:[_.@-].*)?$")
+
+
+def language_hint_from_environ(environ: Mapping[str, str]) -> str | None:
+    """The viewer language (`es` or `en`) the process locale asks for, or None.
+
+    Reads `LC_ALL`, then `LC_MESSAGES`, then `LANG` (the first one that is set and not empty wins, as for any
+    program), like the terminal that started `view serve` sees them. Only a bare tag from the supported set leaves
+    this function: never the full locale string, the environment or a path. `C` and `POSIX` ask for nothing.
+    """
+    for name in _LOCALE_VARIABLES:
+        value = environ.get(name, "")
+        if not value:
+            continue
+        match = _LOCALE_TAG.match(value.strip())
+        language = match.group(1).lower() if match else ""
+        return language if language in UI_LANGUAGES else None
+    return None
+
+
 class ServeError(RuntimeError):
     """The server could not be created; `reason` is a stable name."""
 
@@ -312,6 +334,7 @@ class ViewServer(ThreadingHTTPServer):
                  ingest_handlers: Mapping[str, Callable[[Any], None]] | None = None,
                  names_inventory: Callable[[], Iterable[str]] | None = None,
                  import_map_sha256: str | None = None,
+                 language_hint: str | None = None,
                  max_connections: int = MAX_CONNECTIONS, socket_timeout: float = SOCKET_TIMEOUT,
                  heartbeat: float = HEARTBEAT_SECONDS) -> None:
         if host not in LOOPBACK_HOSTS:
@@ -327,6 +350,7 @@ class ViewServer(ThreadingHTTPServer):
         self.read_handlers = dict(read_handlers or {})
         self.ingest_handlers = dict(ingest_handlers or {})
         self.names_inventory = names_inventory
+        self.language_hint = language_hint if language_hint in UI_LANGUAGES else None
         self.max_connections = max_connections
         self.socket_timeout = socket_timeout
         self.heartbeat = heartbeat
@@ -396,7 +420,9 @@ class ViewServer(ThreadingHTTPServer):
                         if isinstance(name, str) and 0 < len(name) <= MAX_INVENTORY_NAME_LENGTH
                         and name.isprintable()})[:MAX_INVENTORY_NAMES]
         events, roots = replay_with_roots(self.store)  # the watcher's root labels, read together with the events
-        document = {"droppedAttributeNames": names, "model": build_model(events, roots=roots)}
+        document: dict[str, Any] = {"droppedAttributeNames": names, "model": build_model(events, roots=roots)}
+        if self.language_hint is not None:
+            document["uiLanguageHint"] = self.language_hint
         body = json.dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
         return body.encode("utf-8"), "application/json"
 

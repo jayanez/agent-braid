@@ -8,7 +8,7 @@ contract amendment (see "Gates").
 
 | ID | Question (verbatim) | Answer (verbatim) | Consequence |
 |---|---|---|---|
-| D7 | "¿La vista 2D pasa a ser la vista por defecto del visor?" | "Sí, 2D por defecto (Recommended)" | 2D timeline is the default view; 3D stays as a secondary spatial view. ADR 0033 says SVG 2D is "kept as the frame and table fallback, not as the primary surface the owner chose", so an amendment is needed: [draft, Proposed](adr-0033-amendment-draft.md). Not Accepted until the owner accepts it. |
+| D7 | "¿La vista 2D pasa a ser la vista por defecto del visor?" | "Sí, 2D por defecto (Recommended)" | 2D timeline is the default view; 3D stays as a secondary spatial view. ADR 0033 says SVG 2D is "kept as the frame and table fallback, not as the primary surface the owner chose", so an amendment is needed: [draft](adr-0033-amendment-draft.md); accepted on 2026-11-04 (see "Gate answers" below) and applied to the ADR. |
 | D8 | "¿Qué debe significar 'conflicto' en el visor?" | "Ambos, distinguidos (Recommended)" | Two meanings, never merged: **predicted** (analysis class `conflicting`, available now) and **observed** runtime collision (same file touched by two agents; later phase, needs new data). Distinct glyph and wording each ([timeline-2d.md](timeline-2d.md#conflict-vocabulary)). |
 | D9 | Contract fields | "axis.nowMs, waitingOn, Duración de herramienta, Sugiéreme alguno más que marque un valor diferencial para este visor y además revisa el diseño de las secciones, títulos y botones para que sea todo coherente y con un diseño moderno" | Contract draft [v0.2](contract-v0.2-amendment-draft.md) with `axis.nowMs`, `waitingOn` and tool duration, each through privacy review; 2 to 4 further differential fields proposed below as owner-decision items (none accepted); section, title and button review delivered as [design-system.md](design-system.md). |
 | D10 | Vendor | "No, overlays HTML propios (Recommended)" | No new vendor file (no `CSS2DRenderer`, `Line2`, `MapControls`). Fixed-size HTML labels positioned by projection. ADR 0033 vendor list is unchanged. |
@@ -23,16 +23,18 @@ active, what conflicted, how long).
 
 ## Gates (what still needs a human)
 
+Status after the second session of 2026-11-04: G1 and G2 are done; G3 and G4 are authorised and not done.
+
 | Gate | Owner action | Blocks |
 |---|---|---|
 | G1 | Accept (or change) this plan and the open decisions below (T051) | every task T052 onwards |
-| G2 | Accept ADR 0033 amendment (Proposed) | making 2D the default (T059); the 2D view itself can ship behind a view switch (T057) |
+| G2 | Accept ADR 0033 amendment (accepted 2026-11-04) | making 2D the default (T059); the 2D view itself can ship behind a view switch (T057) |
 | G3 | Accept contract v0.2 and its privacy review (precedes the code of T052) | T060 to T063 |
 | G4 | Owner-run host probe authorization (T053) | tool duration from hooks (T062) |
 
 ## Open decisions (with recommendation)
 
-Each is a guided question for the owner; the recommendation is mine, none is accepted.
+Each was a guided question for the owner; the recommendation was the planner's. All were answered on 2026-11-04 (see "Other open decisions as accepted" below; OD-V1 was changed).
 
 | ID | Decision | Options | Recommendation and why |
 |---|---|---|---|
@@ -44,6 +46,8 @@ Each is a guided question for the owner; the recommendation is mine, none is acc
 | OD-V6 | 3D after 2D becomes default | (a) keep as "Spatial map" with the fixes; (b) freeze 3D (fixes only, no new features) | (b) after Phase 2: the audit finds the third axis encodes nothing; keep the capability, stop investing. |
 
 ## Proposed differential fields (not accepted)
+
+Update: F1 to F4 were accepted on 2026-11-04 (F4 not before T035); the table is kept as proposed.
 
 Chosen because they answer the owner's questions ("who is active, what conflicted, how
 long") in ways only a coordination layer can. All are descriptive; none is presented
@@ -58,3 +62,55 @@ as speedup, efficiency or safety (REQ-010, Article 17).
 
 Considered and not proposed: lane goal or prompt text (prohibited, never-retained list);
 file paths per tool call (prohibited beyond relative `evidenceRef`); tool input or output.
+
+## Gate answers recorded 2026-11-04 (second session, verbatim)
+
+Given after the plan merged (#1050). They authorize the implementation tasks listed
+in the "Effect" column and nothing else.
+
+| Gate | Question (verbatim where the owner was asked one; otherwise the item) | Answer (verbatim; the OD-V3 cell is a summary of the answer) | Effect |
+|---|---|---|---|
+| G1 | "¿Aceptas el plan VIS.1c con las recomendaciones para las decisiones abiertas?" | "Me parece todo correcto pero me gustaría si no es mucha complicación que el idioma fuese el que se detecte del TUI, Desktop App del usuario y el fallback al inglés. Es muy complicado?" | Plan accepted. OD-V2, OD-V4, OD-V5 and OD-V6 accepted as recommended. OD-V1 **changed**: see "OD-V1 as accepted". |
+| G2 | ADR 0033 amendment | "Aceptar (Recommended)" | The amendment is applied to `docs/adr/0033-vendored-threejs-mit-boundary.md` with status accepted (see its "Amendment 2026-11-04" section). The 2D timeline may become the default view (T059). |
+| OD-V3 | Differential fields | F1, F2, F3 and F4 all accepted. F4 (effort per lane) still depends on VIS.1b and the T035 decision: it is accepted but not scheduled before T035. | T064 may implement F1 to F3. F4 waits. |
+| G3 | Contract v0.2 privacy review (T052) | "Sí, ambas (Recommended)" | Authorised. **Not done in this change**; scheduled next. |
+| G4 | Owner-run host probe (T053) | "Sí, ambas (Recommended)" | Authorised. **Not done in this change**; scheduled next. |
+
+G3 and G4 were one two-part question answered "Sí, ambas (Recommended)". Authorising
+the review (T052) and the probe (T053) does not accept contract v0.2: the contract
+amendment stays a draft until the T052 privacy review concludes.
+
+### OD-V1 as accepted (UI language)
+
+The owner asked whether the language could follow the one detected from the user's
+TUI and Desktop App, with English as the fallback. It is not complicated, and it is
+implemented as follows (T058):
+
+1. Supported languages: Spanish (`es`) and English (`en`). One `strings.js`, two tables,
+   a key-parity test, English fallback per key.
+2. Detection order, first match wins:
+   1. a manual choice in the UI, remembered per viewer in the browser (`localStorage`,
+      every access in `try/catch`; the page works without it);
+   2. the browser or desktop-app locale (`navigator.languages`, first supported entry);
+   3. a hint from the `view serve` process (`LC_ALL`, then `LC_MESSAGES`, then `LANG`,
+      as the terminal that started the viewer sees them), delivered with the snapshot
+      as a bare language tag (`es` or `en`) and nothing else; an unsupported or unset
+      locale sends no hint;
+   4. English.
+3. The hint is a two-letter tag chosen from the supported set. The full locale string,
+   the environment and any path never leave the process.
+4. Limits (stated, not hidden): "TUI" means the terminal environment of the process that
+   started `view serve`. The Desktop App is reached through the locale its embedded
+   browser reports. A user whose browser locale is supported but differs from the
+   terminal locale gets the browser locale (rule 2 before rule 3); the manual choice
+   overrides both.
+
+### Other open decisions as accepted
+
+| ID | Accepted |
+|---|---|
+| OD-V2 | (b): one-line permanent strip plus an "About this view" panel with the full text |
+| OD-V3 | F1, F2, F3, F4 (F4 not before T035) |
+| OD-V4 | (a): tool duration kept in memory only, absent in replays and default exports |
+| OD-V5 | (a): observed collision derived from `ownership-receipt` and ownership notice adapters only |
+| OD-V6 | (b): freeze 3D (fixes only, no new features) after Phase 2 |

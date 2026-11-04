@@ -16,7 +16,7 @@ from pathlib import Path
 
 from agent_braid.view_loom import parse_stream
 from agent_braid.view_model import build_model
-from tests.test_view_web_bundle import DOM_STUB, EXAMPLE, WEB
+from tests.test_view_web_bundle import DOM_STUB, EXAMPLE, MODULES, WEB
 
 SCENE_STUB = """
 globalThis.sceneCalls = [];
@@ -62,7 +62,7 @@ const queue = [...config.events];
 const encoder = new TextEncoder();
 globalThis.fetch = async (url, options = {}) => {
   requests.push({ url, headers: options.headers || {} });
-  if (url === "/snapshot") return { ok: true, status: 200, json: async () => ({ model, droppedAttributeNames: [] }) };
+  if (url === "/snapshot") return { ok: true, status: 200, json: async () => ({ model, droppedAttributeNames: [], uiLanguageHint: config.hint }) };
   const plan = queue.shift();
   if (!plan) return new Promise(() => {});
   if (plan.status !== 200) return { ok: false, status: plan.status, body: null };
@@ -80,10 +80,10 @@ await sleep(60);
 
 const text = (id) => find(id).textContent;
 const observe = () => ({
-  count: text("pb-count"), playing: find("pb-play").attrs["aria-pressed"],
+  count: text("pb-count"), playing: find("pb-play").attrs["data-playing"],
   rows: find("events-body").children.map((row) => Number(row.descendants().find((node) => node.attrs["data-seq"]).attrs["data-seq"])),
   backDisabled: find("pb-back").disabled, forwardDisabled: find("pb-forward").disabled,
-  evidence: text("evidence"), connection: text("connection"), notice: text("notice"),
+  evidence: text("evidence"), authorization: [text("authorization"), find("authorization").className], connection: text("connection"), notice: text("notice"),
   snapshots: requests.filter((request) => request.url === "/snapshot").length,
   events: requests.filter((request) => request.url === "/events").map((request) => request.headers),
   scene: { section: find("scene-section").hidden, box: find("scene-box").hidden, note: text("scene-note"),
@@ -124,7 +124,8 @@ class PageBehaviourCase(unittest.TestCase):
         cls.addClassCleanup(cls.tmp.cleanup)
         cls.root = Path(cls.tmp.name)
         (cls.root / "package.json").write_text('{"type": "module"}')
-        shutil.copyfile(WEB / "loom.js", cls.root / "loom.js")
+        for name in MODULES:
+            shutil.copyfile(WEB / name, cls.root / name)
         for name, body in (("dom-stub.mjs", DOM_STUB), ("scene-stub.mjs", SCENE_STUB), ("scene-throws.mjs", SCENE_THROWS),
                            ("scene-hooks.mjs", SCENE_HOOKS), ("driver.mjs", DRIVER)):
             (cls.root / name).write_text(body)
@@ -132,10 +133,12 @@ class PageBehaviourCase(unittest.TestCase):
         cls.total = len(cls.model["elements"])
         cls.seqs = [row["seq"] for row in cls.model["table"]]
 
-    def drive(self, steps=(), events=(), variant=None, **config):
+    def drive(self, steps=(), events=(), variant=None, languages=None, **config):
         path = self.root / "input.json"
         path.write_text(json.dumps({"model": self.model, "config": {"events": list(events), **config}, "steps": list(steps)}))
         environment = {**os.environ, "SCENE_VARIANT": variant or "scene-stub.mjs"}
+        if languages is not None:
+            environment["NAV_LANGUAGES"] = json.dumps(languages)
         done = subprocess.run(["node", "driver.mjs", str(path)], cwd=self.root, capture_output=True, text=True,
                               timeout=60, env=environment)
         if done.returncode != 0:
@@ -192,6 +195,31 @@ class PlaybackTests(PageBehaviourCase):
         results = self.drive([{"click": "pb-start"}, {"range": 4}])
         self.assertEqual(results[1]["scene"]["calls"][-1], [])
         self.assertEqual(results[2]["scene"]["calls"][-1], self.seqs[:4])
+
+
+class LanguageTests(PageBehaviourCase):
+    """OD-V1: the page language follows the browser or desktop-app locale, then the server hint, then English."""
+
+    def test_english_is_the_fallback_when_nothing_is_supported(self):
+        final = self.drive(languages=["de-DE"])[0]
+        self.assertEqual(final["count"], f"{self.total} of {self.total}")
+
+    def test_a_spanish_browser_gets_spanish(self):
+        final = self.drive(languages=["es-ES", "en"])[0]
+        self.assertEqual(final["count"], f"{self.total} de {self.total}")
+        self.assertIn("Selecciona un evento", final["evidence"])
+
+    def test_the_server_hint_is_used_when_the_browser_offers_no_supported_language(self):
+        self.assertEqual(self.drive(languages=["fr"], hint="es")[0]["count"], f"{self.total} de {self.total}")
+
+    def test_the_boundary_badge_follows_the_model_and_a_true_value_is_marked(self):
+        first = self.drive()[0]
+        self.assertEqual(first["authorization"], ["executionAuthorization: false", "badge"])
+        self.model = {**self.model, "executionAuthorization": True}
+        try:
+            self.assertEqual(self.drive()[0]["authorization"], ["executionAuthorization: true", "badge mark unverified"])
+        finally:
+            self.model = {**self.model, "executionAuthorization": False}
 
 
 class SseResumeTests(PageBehaviourCase):
