@@ -87,6 +87,7 @@
   },
   "findingsForAllowlist": "None. No host payload name is added. A future PostToolUse.duration_ms entry (T062) needs either the owner's acceptance of the T030 name evidence with a fail-closed integer check, or an authenticated rerun of this probe that records the JSON type.",
   "outcome": "unobserved",
+  "matrixRows": [],
   "outcomeRationale": "The probe could not run a tool call: the disposable profile cannot authenticate, and the only other credential reachable was the agent's inherited one, which had no credit. Under the runbook an unobserved probe that will be rerun keeps its task open. Following the brief, the real profile was not used as a fallback.",
   "rerun": "Owner-run: log in once inside a disposable CLAUDE_CONFIG_DIR (or provide a funded API key for the run only) and repeat the runbook T053 steps; one session is enough.",
   "limits": [
