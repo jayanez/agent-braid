@@ -857,6 +857,22 @@ class ErrorDiagnosisTests(unittest.TestCase):
         for private in ("juanyanez", "braidlab", "operator", "homeMode", "qualificationSha256", "26A123"):
             self.assertNotIn(private, rendered)
 
+    def test_exit_codes_and_accounting_errno_are_printed_as_integers_only(self):
+        records = [backend_record(compileCheck="exec-denied", compileExit={"denied": 71, "allowed": 1, "x": 2},
+                                  exitCode=2),
+                   backend_record("fixture", "process-accounting-failed", accountingErrno=1, accountingFlavor=4,
+                                  exitCode=None, compileExit={"denied": 71, "allowed": "/Users/x"}),
+                   backend_record("launch", "other", exitCode="/Users/x", accountingErrno=10 ** 9,
+                                  compileExit="text"),
+                   backend_record("launch", "bool-code", exitCode=True)]
+        self.assertEqual(har.refusal_evidence(SimpleNamespace(run_evidence=records)), [
+            {"entry": "launch", "refused": "self-check-failed", "compileCheck": "exec-denied", "exitCode": 2,
+             "compileExit": {"denied": 71, "allowed": 1}},
+            {"entry": "fixture", "refused": "process-accounting-failed", "accountingErrno": 1,
+             "accountingFlavor": 4, "compileExit": {"denied": 71}},
+            {"entry": "launch", "refused": "other"},
+            {"entry": "launch", "refused": "bool-code"}])
+
     def test_malformed_or_foreign_evidence_is_dropped_not_printed(self):
         records = ["text", None, {"entry": "/Users/x", "refused": "has space"},
                    {"entry": "launch", "refused": "ok-code", "preSessionCheck": [
@@ -983,7 +999,7 @@ class SelfCheckTests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(report, {
             "verdict": "self-check-ok", "attempt": "t009-test", "preSessionCheck": F4_OK, "compileCheck": "exec-denied",
-            "refusal": None, "stage": None, "backendRefusals": [], "nativeRun": True, "sessionsStarted": 0,
+            "refusal": None, "stage": None, "backendRefusals": [], "probeRuns": [], "nativeRun": True, "sessionsStarted": 0,
             "usageReadings": 0, "executionAuthorization": False})
         self.assertEqual(backend.calls, [("exclusive", "launch"), ("pre_session", "launch", f"{HOME}/run/work-x", True)])
         self.assertTrue(backend.closed)
@@ -1041,6 +1057,13 @@ class SelfCheckTests(unittest.TestCase):
                          (2, "self-check-failed", "compile-check", None))
         self.assertEqual([c["probe"] for c in report["preSessionCheck"]], [p for p, _ in mac.F4_PROBES])
         self.assertTrue(all(c["supplementary"] and c["observed"] == "error" for c in report["preSessionCheck"]))
+
+    def test_exit_codes_of_the_probe_runs_are_reported_without_output(self):
+        backend = FakeBackend(raises=lab.LabError("self-check-failed"))
+        ran = [backend_record("fixture", None, exitCode=3), backend_record("launch-probe", None, exitCode=None),
+               backend_record("fixture", None, exitCode="/Users/x"), backend_record("fixture", "refused-run", exitCode=9)]
+        code, report, _ = self.run_check(backend, f4=lambda probe, be: backend.run_evidence.extend(ran) or "error")
+        self.assertEqual(report["probeRuns"], [{"entry": "fixture", "exitCode": 3}])
 
     def test_a_refusal_before_the_compile_check_names_that_stage(self):
         report = self.run_check(FakeBackend(raises=lab.LabError("workspace-leftovers")))[1]

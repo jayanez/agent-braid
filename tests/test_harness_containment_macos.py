@@ -8,7 +8,9 @@ rlimit preamble, watchdog and settlement run, and the per-user process listing i
 always stubbed so no real process of the developer is ever swept.
 """
 from contextlib import ExitStack, contextmanager
+import ctypes
 from dataclasses import replace
+import errno
 import fcntl
 from hashlib import sha256
 import json
@@ -173,7 +175,7 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
             stack.enter_context(mock.patch.object(mac, name, value))
         if stub_compile_check:
             stack.enter_context(mock.patch.object(mac.MacOSContainment, "_compile_check",
-                                                  lambda self, entry: None))
+                                                  lambda self, entry, evidence: None))
         yield
 
 
@@ -200,7 +202,7 @@ class PolicyTests(unittest.TestCase):
             self.assertNotIn(f'(subpath "{policy.run_root}")', profile)
             metadata = next(line for line in lines if line.startswith("(allow file-read-metadata"))
             self.assertTrue(metadata.endswith(f'(literal "{policy.run_root}") (literal (param "RUNDIR")))'))
-            for denied in ("mach-lookup", "sysctl", "network-bind", "network-inbound", "process-exec*)",
+            for denied in ("mach-lookup", "kern.bootargs", "dtracehelper", "network-bind", "network-inbound", "process-exec*)",
                            "ipc-", '(subpath "/System")', "remote ip", "remote udp"):
                 self.assertNotIn(denied, profile)
         launch, fixture = policy.render("launch").decode(), policy.render("fixture").decode()
@@ -213,6 +215,39 @@ class PolicyTests(unittest.TestCase):
             with self.assertRaises(lab.LabError) as caught:
                 call()
             self.assertEqual(caught.exception.reason, "invalid-entry")
+
+    def test_claude_profiles_carry_the_closed_system_information_list_and_nothing_wider(self):
+        policy = Machine(self).policy
+        rules = {
+            "sysctl": '(allow sysctl-read (sysctl-name "hw.pagesize") (sysctl-name "hw.pagesize_compat") '
+                      '(sysctl-name "hw.ephemeral_storage") (sysctl-name "kern.osproductversion") '
+                      '(sysctl-name "kern.osvariant_status") (sysctl-name "kern.iossupportversion") '
+                      '(sysctl-name "security.mac.lockdown_mode_state") (sysctl-name-prefix "hw.optional."))',
+            "locale": '(allow file-read-data (literal "/usr/share/locale/UTF-8/LC_CTYPE") '
+                      '(literal "/usr/share/locale/C.UTF-8/LC_CTYPE") '
+                      '(literal "/usr/share/locale/en_US.UTF-8/LC_CTYPE"))',
+            "metadata": '(allow file-read-metadata (literal "/etc") (literal "/var"))'}
+        for entry in ("launch", mac.LAUNCH_PROBE):
+            lines = policy.render(entry).decode().splitlines()
+            for rule in rules.values():
+                self.assertEqual(lines.count(rule), 1, rule)
+            sysctl = [line for line in lines if "sysctl" in line]
+            self.assertEqual(sysctl, [rules["sysctl"]])
+            for denied in ("kern.bootargs", "mach-lookup", "dtracehelper", "process-exec*", "network-bind",
+                           "network-inbound", "/usr/bin/curl", mac.COMPILE_PROBE, '(subpath "/etc")',
+                           '(subpath "/var")', '(subpath "/usr/share/locale")'):
+                self.assertNotIn(denied, "\n".join(lines))
+            self.assertEqual(lines[-2], '(deny file-read* file-write* (subpath "/System/Volumes/Data"))')
+            self.assertNotIn("/System/Volumes/Data", "\n".join(lines[:-2]))
+        fixture = policy.render("fixture").decode()
+        for rule in rules.values():
+            self.assertNotIn(rule, fixture)
+        self.assertNotIn("sysctl", fixture)
+
+    def test_fixture_interpreter_never_writes_bytecode(self):
+        policy = Machine(self).policy
+        self.assertEqual(policy.exec_probe("fixture")[1], "-B")
+        self.assertEqual(policy.child_environment("fixture", "/r/tmp")["PYTHONDONTWRITEBYTECODE"], "1")
 
     def test_launch_probe_is_launch_plus_exactly_the_interpreter_literal(self):
         policy = Machine(self).policy
@@ -256,7 +291,7 @@ class PolicyTests(unittest.TestCase):
 
     def test_exec_probe_is_an_allowed_executable_per_entry(self):
         policy = Machine(self).policy
-        self.assertEqual(policy.exec_probe("fixture"), [policy.interpreter, "-I", "-S", "-c", "pass"])
+        self.assertEqual(policy.exec_probe("fixture"), [policy.interpreter, "-B", "-I", "-S", "-c", "pass"])
         self.assertEqual(policy.exec_probe("launch"), [policy.claude, "--version"])
         self.assertEqual(policy.exec_probe(mac.LAUNCH_PROBE), [policy.claude, "--version"])
         for entry in mac.ENTRIES:
@@ -859,6 +894,18 @@ class SupervisedRunTests(unittest.TestCase):
                 os.kill(int(Path(pid_file).read_text()), 0)
         self.assertEqual(self.machine.leftovers(), [])
 
+    def test_accounting_refusal_records_two_integers(self):
+        def failing(processes):
+            raise mac._accounting_error(1, 4)
+
+        with host(self.machine), mock.patch.object(mac, "_resident_bytes", failing), \
+                self.assertRaises(lab.LabError):
+            self.backend.run(b"import time\ntime.sleep(30)\n", Path(self.machine.candidate()),
+                             lab.FixtureLimits(wall_seconds=10))
+        record = self.backend.run_evidence[-1]
+        self.assertEqual((record["refused"], record["accountingErrno"], record["accountingFlavor"]),
+                         ("process-accounting-failed", 1, 4))
+
     def test_unexpected_supervisor_error_is_fixed_reason(self):
         with host(self.machine), mock.patch.object(mac.os.path, "getsize", side_effect=RuntimeError("boom")), \
                 self.assertRaises(lab.LabError) as caught:
@@ -1351,14 +1398,57 @@ class LiveOutputTests(unittest.TestCase):
         self.assertEqual(caught.exception.reason, "invalid-launch")
 
 
+class PidInfoTests(unittest.TestCase):
+    """proc_pidinfo failures: gone and exited processes are not accounting failures, unreadable ones are."""
+
+    def fake(self, outcomes):
+        def proc_pidinfo(pid, flavor, arg, buffer, size):
+            code, status = outcomes[flavor]
+            if code:
+                ctypes.set_errno(code)
+                return 0
+            buffer[0] = status << 32  # pbi_status is the high half of the first word
+            return size
+        return mock.patch.object(mac, "_libsystem", lambda: SimpleNamespace(proc_pidinfo=proc_pidinfo))
+
+    def test_a_process_that_is_gone_is_none(self):
+        with self.fake({4: (errno.ESRCH, 0)}):
+            self.assertIsNone(mac._pidinfo(os.getpid(), mac._PROC_PIDTASKINFO, mac._TASKINFO_WORDS))
+
+    def test_an_exited_unreaped_process_has_no_task_and_counts_as_gone(self):
+        with self.fake({4: (errno.EPERM, 0), 3: (0, mac._SZOMB)}):
+            self.assertIsNone(mac._pidinfo(os.getpid(), mac._PROC_PIDTASKINFO, mac._TASKINFO_WORDS))
+
+    def test_a_live_unreadable_process_fails_closed_with_errno_and_flavor(self):
+        with self.fake({4: (errno.EPERM, 0), 3: (0, 2)}), self.assertRaises(lab.LabError) as caught:
+            mac._pidinfo(os.getpid(), mac._PROC_PIDTASKINFO, mac._TASKINFO_WORDS)
+        self.assertEqual((caught.exception.reason, caught.exception.errno_code, caught.exception.flavor),
+                         ("process-accounting-failed", errno.EPERM, mac._PROC_PIDTASKINFO))
+
+
 class CompileCheckTests(unittest.TestCase):
+    def test_the_exit_codes_of_both_runs_are_left_in_the_evidence(self):
+        backend = make_backend(Machine(self))
+        for exits, reason, expected in (((71, 1), "self-check-failed", {"denied": 71, "allowed": 1}),
+                                        ((0, None), "self-check-allowed", {"denied": 0}),
+                                        ((71, 0), None, {"denied": 71, "allowed": 0})):
+            evidence = {}
+            with mock.patch.object(mac.MacOSContainment, "_sandboxed", side_effect=list(exits)):
+                if reason is None:
+                    backend._compile_check("launch", evidence)
+                else:
+                    with self.assertRaises(lab.LabError) as caught:
+                        backend._compile_check("launch", evidence)
+                    self.assertEqual(caught.exception.reason, reason)
+            self.assertEqual(evidence["compileExit"], expected)
+
     @unittest.skipUnless(HAS_SANDBOX_EXEC, "macOS sandbox-exec unavailable")
     def test_rendered_profiles_compile_deny_unlisted_exec_and_run_a_listed_one(self):
         # /usr/bin/true stands in for the interpreter so no framework has to be readable
         true = "/usr/bin/true"
         machine = Machine(self, interpreter=true, interpreter_sha256=digest(true), interpreter_root=true)
         backend = make_backend(machine)
-        backend._compile_check("fixture")  # real sandbox-exec: exec of /usr/bin/false denied, true runs
+        backend._compile_check("fixture", {})  # real sandbox-exec: exec of /usr/bin/false denied, true runs
         probe_dir = tempfile.mkdtemp(prefix="compile-", dir=machine.policy.run_root)
         self.addCleanup(shutil.rmtree, probe_dir, True)
         # the launch profile compiles and denies the unlisted exec (the pinned claude is not run here)
@@ -1366,15 +1456,15 @@ class CompileCheckTests(unittest.TestCase):
                          mac.EXIT_SANDBOX_EXEC_DENIED)
         with mock.patch.object(mac.ContainmentPolicy, "render", lambda self, entry: b"(version 1)(deny default"), \
                 self.assertRaises(lab.LabError) as caught:
-            backend._compile_check("fixture")
+            backend._compile_check("fixture", {})
         self.assertEqual(caught.exception.reason, "profile-compile-failed")
         with mock.patch.object(mac.ContainmentPolicy, "render", lambda self, entry: b"(version 1)(allow default)"), \
                 self.assertRaises(lab.LabError) as caught:
-            backend._compile_check("fixture")
+            backend._compile_check("fixture", {})
         self.assertEqual(caught.exception.reason, "self-check-allowed")
         with mock.patch.object(mac.ContainmentPolicy, "render", lambda self, entry: b"(version 1)(deny default)"), \
                 self.assertRaises(lab.LabError) as caught:  # a profile that denies everything is not a profile
-            backend._compile_check("fixture")
+            backend._compile_check("fixture", {})
         self.assertEqual(caught.exception.reason, "self-check-failed")
         self.assertEqual(machine.leftovers(), [os.path.basename(probe_dir)])
 
