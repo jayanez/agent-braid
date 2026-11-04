@@ -1,0 +1,25 @@
+LAYOUT PROPUESTO (>=1100 px). Una sola pantalla util sin scroll vertical para lo esencial.
+
++--------------------------------------------------------------------------------------------------+
+| Agent Braid · Actividad     [live ●]  Sesion 12 min 04 s · 5 agentes · 1 conflicto · 2 huecos     |
+| (solo lectura · executionAuthorization:false  -> chip pequeno, el aviso largo va en "Acerca de")  |
++--------------------------------------------------------------------------------------------------+
+| Vista: (•) Lineas de tiempo  ( ) 3D   | Fuentes ▾ | Agente ▾ | Estado ▾ | Solo problemas [ ]    |
++--------------------------------------------------------------+-----------------------------------+
+|                                                              | DETALLE (sticky)                  |
+|   VISTA PRINCIPAL (ver 02-timeline-2d.txt / 03-3d-overlay)   | Explore: map viewer code          |
+|                                                              | ● Terminado · 44 s · 4 herramientas|
+|                                                              | Padre: Claude main session        |
+|                                                              | Eventos: abrir 0:08 → cerrar 0:52 |
+|                                                              | Conflicto con: Plan (ROADMAP.md)  |
+|                                                              | Verificacion: ⚠ no verificado     |
+|                                                              | Evidencia: runs/demo/analysis.json|
+|                                                              | [Campos del modelo ▸]             |
++--------------------------------------------------------------+-----------------------------------+
+| [|<] [<] [▶] [>] [>|]  1x ▾   ──────●────────────────  0:52 / 4:22   [Ir a "ahora"]              |
++--------------------------------------------------------------------------------------------------+
+| Tabs: Eventos (tabla) | Resumen (contadores + "no mostrado como limpio") | Leyenda | Ayuda          |
++--------------------------------------------------------------------------------------------------+
+
+Movil (<700 px): vista principal a pantalla completa (60vh), detalle como bottom sheet que sube al seleccionar,
+tabs abajo; la tabla pasa a lista de tarjetas (sin scroll horizontal).

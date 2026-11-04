@@ -1,0 +1,16 @@
+VISTA 3D (mejorada, secundaria): camara guiada + HUD HTML sobre el canvas
+
++-------------------------------------------------------------------------------+
+| [Vista: Lateral ▾ Cenital  Iso ]  [Encuadrar (F)]  [?]        (HUD arriba-izq)  |
+|                                                                               |
+|   Labels CSS2D por agente en el extremo izquierdo (siempre legibles, anclados) |
+|   Claude main ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━●                                 |
+|   Explore       ━━━━●                                                           |
+|   Plan            ━━━━━━━━●                    [tooltip junto al cursor]        |
+|   ...                                           Second ROADMAP edit · en cola  |
+|                                                                               |
+| Leyenda compacta (abajo-izq): ━ agente  ✕ conflicto  ? desconocido  ▯ hueco   |
+| Ayuda (?): Arrastrar=orbitar · Shift/clic derecho=desplazar · Rueda=zoom        |
+|            (Ctrl+rueda si la pagina debe seguir desplazandose) · Teclas ←↑→↓ · F=encuadrar · Esc=quitar seleccion |
+| Minimapa/eje de tiempo (abajo): regla con ticks 0:30, 1:00… sincronizada con la camara |
++-------------------------------------------------------------------------------+

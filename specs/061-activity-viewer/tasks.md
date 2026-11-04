@@ -272,6 +272,104 @@ per-probe owner authorization but no ADR, and run first.
   `agent_braid/view_export.py`, `tests/test_view_export.py`. Dependencies: T021,
   T027. Verification: procedure_009.
 
+## VIS.1c — Viewer redesign (amendment of 2026-11-04)
+
+Plan: [vis1c/](vis1c/README.md). Requirements REQ-016 to REQ-023. Nothing below is
+started by the planning change. Gates G1 to G4 are owner decisions
+([owner-decisions.md](vis1c/owner-decisions.md#gates-what-still-needs-a-human)); no
+gate is implied by a passing test or a merged document. Parallelizable does not
+authorize concurrent agents; run `analyze-work` on track footprints before two
+concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan.md).
+
+- [ ] T050 (REQ-016 to REQ-023): VIS.1c planning package: spec amendment with
+  verbatim owner decisions, plan, design system and copy guide, 2D timeline
+  design, 3D fixes mapped to Three.js r186, contract v0.2 draft with privacy
+  review, ADR 0033 amendment draft (Proposed), wireframes and audit artefacts.
+  Files: `specs/061-activity-viewer/vis1c/`, `spec.md`, `tasks.md`. Evidence: this
+  change merged (tick on merge). Does not implement the viewer and edits no ADR, schema or
+  tracking source.
+- [ ] T051 (REQ-017, REQ-020): Owner review (G1) of the VIS.1c plan and open decisions
+  OD-V1 to OD-V6, and decision (G2) on the ADR 0033 amendment draft; on acceptance a
+  separate reviewed change applies it to `docs/adr/`. Dependencies: T050. Files:
+  `vis1c/owner-decisions.md`, `vis1c/adr-0033-amendment-draft.md`,
+  `docs/adr/0033-vendored-threejs-mit-boundary.md` (only after acceptance). Evidence:
+  owner review record in this directory, ADR status change merged.
+- [ ] T052 (REQ-022): Contract v0.2: privacy review (G3) of `axis.nowMs`, `waitingOn`
+  and tool duration, then `loom-event.v0.2.schema.json`, the amendment of
+  `ui-security-privacy.md`, `validate` support for both versions. Dependencies: T051.
+  Files: `contracts/`, `agent_braid/view_model.py`, `agent_braid/view_cli.py`,
+  `tests/test_view_loom.py`. Verification: SC-022.
+- [ ] T053 (REQ-014, REQ-022): Owner-run probe (G4) with a throwaway listener and no
+  Loom code: record the names (never values) of the members the installed Claude Code
+  sends for `PostToolUse` and `SubagentStop` hooks, specifically any duration member.
+  Dependencies: T051. Files: `host-verification-runbook.md`, `evidence/`. Evidence:
+  receipt in `evidence/`; a missing member is a valid result.
+- [ ] T054 (REQ-016): Shared state and derived model: `state.js` with `deriveLanes`,
+  conflicts, overlaps, concurrency and visibility; parity tests against
+  `build_model` on the audit fixture and existing fixtures; decide whether lane
+  fields move into `view_model.py`. Dependencies: T051. Files:
+  `integrations/agent-braid-view/web/state.js`, `tests/test_view_web_behaviour.py`,
+  `tests/test_view_model.py`. Verification: SC-016.
+- [ ] T055 (REQ-018): 3D camera: damping, limits, cursor zoom, keyboard, scroll not
+  trapped, presets, "Frame all" with agent-only framing, tweened reset, reduced
+  motion, pulse only on hover or selection. Dependencies: T051. Files:
+  `integrations/agent-braid-view/web/braid-scene.js`. Verification: SC-018.
+- [ ] T056 (REQ-018, REQ-019): 3D labels as first-party HTML overlay with collision
+  handling, pinned agent labels, tooltip, help overlay, legend with glyphs. No
+  vendor change. Dependencies: T055. Files:
+  `integrations/agent-braid-view/web/braid-scene.js`, `tests/test_view_web_bundle.py`.
+  Verification: SC-018, SC-019.
+- [ ] T057 (REQ-017): `timeline.js` 2D view behind the view switch: proportional axis
+  with labelled breaks, lanes, bars, states, conflict vocabulary, tooltip, keyboard
+  listbox, zoom and pan; add the new files to `BUNDLE_FILES` and packaging.
+  Dependencies: T054. Files: `integrations/agent-braid-view/web/timeline.js`,
+  `agent_braid/view_cli.py`, `tests/test_view_web_bundle.py`,
+  `tests/test_view_packaging.py`. Verification: SC-017.
+- [ ] T058 (REQ-016, REQ-019, REQ-020, REQ-021): Page structure and design system:
+  tokens, toolbar, sticky detail panel, summary and legend tabs, compact table and
+  mobile cards, boundary strip and about panel, `strings.js` (es and en with key
+  parity), URL hash state, palette validation in both themes. Dependencies: T054;
+  integrates T056 hooks. Files: `integrations/agent-braid-view/web/loom.js`,
+  `index.html`, `style.css`, `strings.js`, `tests/test_view_web_behaviour.py`.
+  Verification: SC-016, SC-019, SC-020.
+- [ ] T059 (REQ-017): Make the 2D timeline the default view and 3D the secondary
+  "spatial map". Dependencies: T057, T058, and ADR 0033 amendment accepted (G2).
+  Files: `integrations/agent-braid-view/web/loom.js`. Verification: SC-017.
+- [ ] T060 (REQ-022): `axis.nowMs` and `axis.live` from the server clock, live "now"
+  marker and growing running bars; replay `live=false`. Dependencies: T052, T057.
+  Files: `agent_braid/view_model.py`, `agent_braid/view_serve.py`,
+  `integrations/agent-braid-view/web/timeline.js`. Verification: SC-022.
+- [ ] T061 (REQ-022): `waitingOn` and `waitingBasis` from scheduler, runtime and
+  ordered-crossing sources, labelled declared or observed; waiting spans in the
+  timeline. Dependencies: T052, T057. Files: `agent_braid/view_adapters.py`,
+  `agent_braid/view_model.py`, `integrations/agent-braid-view/web/timeline.js`.
+  Verification: SC-022.
+- [ ] T062 (REQ-022): Tool duration end to end from the source T053 shows (or the
+  OTLP `duration_ms` path if VIS.1b ships), retention per OD-V4, "time between
+  events" fallback with its own label. Dependencies: T052, T053, T057. Files:
+  `agent_braid/view_hooks.py`, `agent_braid/view_model.py`,
+  `integrations/agent-braid-view/web/timeline.js`, `tests/test_view_hooks.py`.
+  Verification: SC-022.
+- [ ] T063 (REQ-023): Observed collision event and its timeline glyph, counter and
+  tooltip, from the source chosen in OD-V5; boundary text in the contract. Dependencies:
+  T052, T057, owner confirmation of OD-V5. Files: `agent_braid/view_adapters.py`,
+  `agent_braid/view_model.py`, `integrations/agent-braid-view/web/timeline.js`.
+  Verification: SC-023.
+- [ ] T064 (REQ-023): Differential fields the owner accepts from OD-V3 (F1 lane
+  parallelism and overlap, F2 waiting time, F3 prediction-versus-observation link,
+  F4 effort per lane, F4 only after T035 and VIS.1b). Dependencies: T054, T057,
+  owner acceptance per field. Files: `integrations/agent-braid-view/web/state.js`,
+  `timeline.js`. Verification: SC-023.
+- [ ] T065 (REQ-015, REQ-020, REQ-021): Bundle, CSP, key-parity and accessibility
+  tests, contrast re-measure, captures at 1440 x 900 and 390 x 844 in both themes,
+  keyboard-only walkthrough record, `docs/tooling/VIEWER.md` and `docs/tooling/`
+  updates. Dependencies: T056, T057, T058, T059. Files: `tests/test_view_web_*.py`,
+  `tests/test_view_docs.py`, `docs/tooling/VIEWER.md`. Verification: SC-020, SC-021.
+- [ ] T066 (all VIS.1c REQ): Closure: pre-PR reviews (code, quality, simplification),
+  `validate_change --profile pr`, VoiceOver pass of "select a conflict", owner review
+  of the "find the ROADMAP conflict" task, obtained evidence in `assurance.json`,
+  freeze, owner closure review. Dependencies: every VIS.1c task the owner kept.
+
 ## Closure (each delivery)
 
 - [ ] T036: Pre-PR reviews (code review, quality, simplification),
