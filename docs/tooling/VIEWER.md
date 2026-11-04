@@ -132,15 +132,20 @@ Checks a recorded loom stream against the event contract and writes nothing. It 
 
 ### `view env --host claude`
 
-Prints observational HTTP hook settings for you to merge into your user-level Claude
-Code settings (`~/.claude/settings.json`). **It writes nothing**, contains no credential
-(the token is read from its owner-only file by the printed `export` line) and names only
-the observational hook events above. Start `view serve` first and pass its port with
-`--port`; with the viewer stopped, another process on that port would receive the
-payloads. Your shell reads the ingest token once. It stays the same across `serve`
-restarts, so a restart needs nothing; only when the start text says `Ingest token: new`
-(first start, `--rotate-token`, or an unsafe file that was replaced) restart Claude Code
-(or export the variable again), otherwise its hooks are refused without any visible symptom. `--host codex` is accepted and reports that it is not available yet.
+Prints observational command hook settings for you to merge into your user-level
+Claude Code settings (`~/.claude/settings.json`). **It writes nothing**, contains no
+credential and names only the observational hook events above. Each hook runs a short
+stdlib Python command (the interpreter that ran `view env`) that reads the ingest token
+from its owner-only file at every call and posts the hook payload to the loopback port
+with proxies disabled; the token never appears in the settings, in process listings, in
+the environment or in output. The command prints nothing and always exits 0, so it never
+affects Claude Code. No environment variable is needed, so the hooks also work in the
+Claude desktop app and IDE launches; an `export AGENT_BRAID_VIEW_TOKEN=...` line left in
+your shell profile by an earlier version is unused and can be removed. Start `view serve`
+first and pass its port with `--port`; with the viewer stopped, another process on that
+port would receive the payloads. Because the file is read at every call, a new token
+(`Ingest token: new`) needs no Claude Code restart. If you reinstall Agent Braid under
+another Python, print and merge the hooks again. `--host codex` is accepted and reports that it is not available yet.
 
 ### Exit codes
 

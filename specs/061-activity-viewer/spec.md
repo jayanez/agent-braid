@@ -191,6 +191,31 @@ viewer run grants ingest only (it cannot read), stays owner-only on disk, and is
 host already holds in its environment; rotation is one flag away. This changes REQ-004 and REQ-012 and the
 ingest-token clause of [ui-security-privacy.md](contracts/ui-security-privacy.md).
 
+## Hook command amendment (2026-11-04b)
+
+Real use on 2026-11-04 showed a second silent failure: `view env --host claude` printed `type: "http"`
+hooks whose header read `Bearer $AGENT_BRAID_VIEW_TOKEN` through `allowedEnvVars`, relying on an `export`
+line in the shell profile. The Claude desktop app and IDE launches start from the GUI and never read the
+shell profile, so the variable was absent in every Claude process; hooks sent an empty bearer and the
+viewer answered 404 without a visible symptom. Asked "¿Cómo hacemos que los hooks de la app de escritorio
+lleven el token?", the owner answered on 2026-11-04: "Arreglo en el producto (Recommended)".
+
+From this amendment `view env --host claude` prints `type: "command"` hooks for the same observational
+events (PostToolUse, SessionStart, SessionEnd, SubagentStart, SubagentStop), timeout 5 seconds. Each
+command runs a stdlib Python one-liner with the interpreter that ran `view env` (`-I`, isolated mode).
+At every call it reads the token from its owner-only file, whose path is the only argument besides the
+loopback URL, and POSTs the hook payload from stdin to `http://127.0.0.1:<port>/hook/claude` with proxies
+disabled. The token never enters the settings, argv (so it is not visible in process listings), the
+environment or the output. The command discards its own stdout and stderr and ends with `|| true`, so it
+always exits 0 and Claude Code never reads a decision or added context from it. No environment variable
+is needed; the `export` line of the shell profile is no longer used and can be removed. `view env` still
+writes nothing. Options considered and not taken: `curl` with the token in a `-H` argument (visible in
+process listings), `curl -H @file` (the file holds the raw token, not a header line) and `curl --config -`
+(stdin carries the payload). Trade-off: the printed command names an absolute interpreter path, so
+reinstalling Agent Braid under another interpreter means printing and merging the hooks again. This
+changes REQ-012 (printed host configuration) and the credential clause of
+[ui-security-privacy.md](contracts/ui-security-privacy.md).
+
 ## Requirements and acceptance scenarios
 
 ### REQ-001 — Versioned event contract

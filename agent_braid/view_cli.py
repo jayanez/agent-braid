@@ -12,9 +12,10 @@
   planned and start nothing.
 * `validate FILE` checks a recorded loom stream (v0.1 or v0.2), reports how many events of each
   contract version it read and writes nothing.
-* `env --host claude` prints observational HTTP hook settings for the user to merge into user-level
-  Claude Code settings. It writes nothing, contains no credential (the token is read from its file by
-  the printed shell line) and names only observational hook events.
+* `env --host claude` prints observational command hook settings for the user to merge into user-level
+  Claude Code settings. It writes nothing and contains no credential: each hook runs a short command
+  that reads the token from its owner-only file at every call, so no environment variable is needed and
+  hosts started from the GUI work (SPEC-061 amendment 2026-11-04b). It names only observational events.
 
 Exit codes: 0 success; 1 the stream was read but is invalid; 2 usage error, refusal or unavailable
 resource. Nothing is left behind by a refusal: the runtime directory is created only after every
@@ -47,7 +48,14 @@ from .view_paths import WEB_PACKAGE_DIR, WEB_SOURCE_DIR, vendor_dir_of
 SURFACES = ("web", "mod", "tui", "mcp-app")
 HOSTS = ("claude", "codex")
 RUNTIME_DIR_NAME = "agent-braid-view"
-TOKEN_ENV = "AGENT_BRAID_VIEW_TOKEN"
+# The hook command: a stdlib Python one-liner run by the interpreter that runs `view env`. It reads the
+# token file named in argv (the token itself never enters argv, the environment or the settings), POSTs
+# the hook payload from stdin to the loopback URL with proxies disabled (so the bearer never reaches a
+# proxy), prints nothing and, through `|| true`, always exits 0, so the hook stays observational.
+HOOK_SCRIPT = ("import sys,urllib.request as u;t=open(sys.argv[1]).read().strip();"
+               "u.build_opener(u.ProxyHandler({})).open(u.Request(sys.argv[2],sys.stdin.buffer.read(),"
+               '{"Authorization":"Bearer "+t,"Content-Type":"application/json"}),timeout=4).read()')
+OLD_TOKEN_ENV = "AGENT_BRAID_VIEW_TOKEN"  # the variable earlier versions asked the shell to export
 HOOK_TIMEOUT_SECONDS = 5
 BUNDLE_DIR = WEB_SOURCE_DIR
 # The only first-party files `/web/<file>` may serve (vendored files follow vendor/manifest.json). A new
@@ -376,9 +384,10 @@ def _env(args: argparse.Namespace) -> int:
     from .view_serve import HOOK_PATH, INGEST_TOKEN_NAME
     port = "<port>" if args.port is None else str(args.port)
     token_file = _runtime_dir(args) / INGEST_TOKEN_NAME
-    hook = {"type": "http", "url": f"http://127.0.0.1:{port}{HOOK_PATH}",
-            "headers": {"Authorization": f"Bearer ${TOKEN_ENV}"}, "allowedEnvVars": [TOKEN_ENV],
-            "timeout": HOOK_TIMEOUT_SECONDS}
+    url = f"http://127.0.0.1:{port}{HOOK_PATH}"
+    command = " ".join((shlex.quote(sys.executable), "-I", "-c", shlex.quote(HOOK_SCRIPT),
+                        shlex.quote(str(token_file)), shlex.quote(url), ">/dev/null 2>&1 || true"))
+    hook = {"type": "command", "command": command, "timeout": HOOK_TIMEOUT_SECONDS}
     settings = {"hooks": {event: [{"hooks": [hook]}] for event in OBSERVATIONAL_EVENTS}}
     print("\n".join((
         "# Agent Braid activity viewer: observational Claude Code hooks.",
@@ -388,8 +397,10 @@ def _env(args: argparse.Namespace) -> int:
         "# Use it only while the viewer is running: with it stopped, another process on that port would receive",
         "# the payloads. Start `agent-braid view serve` first and pass its port with --port.",
         "# Hooks send full payloads to the loopback port; the viewer then drops every field it does not need.",
-        "# The token is read from its owner-only file when your shell starts Claude Code; it is never printed:",
-        f"export {TOKEN_ENV}=\"$(cat {shlex.quote(str(token_file))})\"",
+        f"# Each hook reads the token from its owner-only file at every call: {token_file}",
+        "# The token is never printed, never stored in settings and needs no environment variable, so hooks",
+        f"# also work in the desktop app and IDE launches. A previous `export {OLD_TOKEN_ENV}=...` line in",
+        "# your shell profile is no longer used and can be removed.",
         json.dumps(settings, indent=2, sort_keys=True),
     )))
     return 0

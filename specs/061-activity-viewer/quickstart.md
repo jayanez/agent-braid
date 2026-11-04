@@ -32,4 +32,7 @@ The server binds to loopback only and prints a one-time URL that the browser
 exchanges for a session cookie; host exporters use a separate ingest token read
 from an owner-only file. It is read-only, keeps effort data in memory and writes a
 file only when `--record` names one. Configure host exporters only while the
-viewer runs.
+viewer runs. The Claude Code hooks printed by `view env --host claude` are commands
+that read that file at every call (amendment 2026-11-04b), so they need no
+environment variable and work in the desktop app and IDE launches; a shell-profile
+`export AGENT_BRAID_VIEW_TOKEN=...` line from an earlier version can be removed.

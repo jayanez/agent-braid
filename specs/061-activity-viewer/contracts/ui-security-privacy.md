@@ -42,6 +42,10 @@ its own boundary review where it widens a route, an origin or a credential (see
     the spec). The start text says whether it was reused or is new. It is sent by host exporters as `Authorization: Bearer <token>`. It grants ingest
     routes only and cannot read. It is never printed, never put in a URL and never
     written into host configuration; printed configuration reads it from the file.
+    The printed Claude Code hooks (amendment 2026-11-04b) are commands that read the
+    file at every call and pass the token to the loopback request only inside the
+    hook process: never in the settings, in argv, in the environment or in output,
+    and never through a proxy. The hook command always exits 0 and prints nothing.
 - Allowed `Host` values are exactly `127.0.0.1:<port>`, `[::1]:<port>` and
   `localhost:<port>`. A request whose `Origin`, when present, is not the same
   loopback origin, or whose `Sec-Fetch-Site` is `cross-site`, is refused. OTLP and
