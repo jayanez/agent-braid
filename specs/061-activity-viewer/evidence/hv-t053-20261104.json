@@ -66,7 +66,7 @@
     {
       "check": "HTTP hooks from a disposable profile reach the throwaway listener with the configured authorization header",
       "outcome": "verified",
-      "detail": "One SessionEnd per run arrived with the expected bearer header and the same member names T030 recorded for SessionEnd."
+      "detail": "One SessionEnd per run arrived with the expected bearer header and the member names T030 recorded for SessionEnd except scratchpad_dir, which was absent here."
     },
     {
       "check": "PostToolUse carries a tool duration member, and its JSON type",

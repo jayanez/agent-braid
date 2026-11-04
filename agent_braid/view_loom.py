@@ -6,9 +6,10 @@ specs/061-activity-viewer/contracts/loom-event.schema.json (v0.1, frozen) and
 loom-event.v0.2.schema.json without a schema library; tests/test_view_loom.py keeps
 them in sync. Both versions are accepted. v0.2 only adds optional `strand.update`
 members (`toolDurationMs`, `waitingOn`, `waitingBasis`); a v0.1 event that carries one is
-refused, so a stale consumer fails closed. Producers in this package still emit v0.1. It is deliberately stricter
-than the schema in two places: integer fields refuse floats such as 1.0, and text
-that is not encodable as UTF-8 (lone surrogates) is refused. Every event is read-only:
+refused, so a stale consumer fails closed. Producers in this package still emit v0.1.
+It is deliberately stricter than the schemas in three places: integer fields refuse
+floats such as 1.0, text that is not encodable as UTF-8 (lone surrogates) is refused,
+and a v0.2 strand never waits on itself. Every event is read-only:
 `executionAuthorization` is the constant false and nothing here can grant, run or
 schedule anything. A refused line carries a stable reason and a refused stream is
 refused as a whole, never as an accepted prefix.
