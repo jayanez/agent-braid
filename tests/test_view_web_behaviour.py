@@ -57,6 +57,8 @@ const sleep = (ms) => new Promise((resolve) => realSetTimeout(resolve, ms));
 if (config.noWebgl) delete globalThis.WebGL2RenderingContext;
 register("./scene-hooks.mjs", import.meta.url);
 globalThis.location = { hash: config.hash === undefined ? "#v=map3d" : config.hash, pathname: "/", search: "" };
+globalThis.hashWrites = [];
+globalThis.history = { replaceState: (state, title, url) => { globalThis.hashWrites.push(url); location.hash = url.slice(url.indexOf("#") === -1 ? url.length : url.indexOf("#")); } };
 
 const requests = [];
 const queue = [...config.events];
@@ -92,8 +94,11 @@ const observe = () => ({
   evidence: text("evidence"), authorization: [text("authorization"), find("authorization").className], connection: text("connection"), notice: text("notice"),
   snapshots: requests.filter((request) => request.url === "/snapshot").length,
   events: requests.filter((request) => request.url === "/events").map((request) => request.headers),
+  pressed: find("legend-line").children.filter((node) => node.attrs["aria-pressed"] === "true").map((node) => node.dataset.kind),
+  hashes: (globalThis.hashWrites || []).slice(),
   timeline: { hidden: find("timeline-section").hidden, classes: classes("timeline-box"),
               rows: find("timeline-box").descendants().filter((node) => node.attrs.role === "option").map((node) => node.attrs["aria-label"]),
+              selectedRows: find("timeline-box").descendants().filter((node) => node.attrs.role === "option" && node.attrs["aria-selected"] === "true").length,
               note: text("timeline-note"), legend: find("legend-line").children.map((node) => node.textContent) },
   scene: { section: find("scene-section").hidden, box: find("scene-box").hidden, note: text("scene-note"),
            legend: find("legend-scene-block").hidden, calls: [...(globalThis.sceneCalls || [])], selected: [...(globalThis.sceneSelected || [])] },
@@ -101,6 +106,8 @@ const observe = () => ({
 const results = [observe()];
 for (const step of steps) {
   if (step.click) find(step.click).listeners.click[0]();
+  else if (step.chip) find("legend-line").children.find((node) => node.dataset.kind === step.chip).listeners.click[0]();
+  else if (step.view) find("view-" + step.view).listeners.change[0]();
   else if (step.row !== undefined) find("timeline-box").descendants().filter((node) => node.attrs.role === "option")[step.row].listeners.click[0]();
   else if (step.range !== undefined) {
     find("pb-range").value = String(step.range);
@@ -259,6 +266,30 @@ class TimelineTests(PageBehaviourCase):
         results = self.drive([{"row": 1}], hash="")
         self.assertIn("Explore", results[1]["evidence"])
         self.assertIn("Agent", results[1]["evidence"])
+
+    def test_a_legend_chip_filters_the_markers_in_the_timeline_and_the_table_and_is_pressed(self):
+        results = self.drive([{"chip": "conflict"}], hash="")
+        before, after = results[0], results[1]
+        self.assertEqual(after["pressed"], ["conflict"])
+        self.assertEqual(after["timeline"]["classes"]["cls-predicted"], 1)
+        self.assertNotIn("cls-independent-candidate", after["timeline"]["classes"])
+        self.assertLess(len(after["rows"]), len(before["rows"]))
+        crossings = {e["seq"] for e in self.model["elements"] if e["element"] == "crossing" and e["classification"] != "conflicting"}
+        self.assertFalse(crossings & set(after["rows"]))
+        self.assertTrue(any("kd=conflict" in url for url in after["hashes"]))
+
+    def test_selecting_an_agent_is_written_to_the_hash_and_marks_its_row(self):
+        results = self.drive([{"row": 1}], hash="")
+        self.assertTrue(any("sel=" in url for url in results[1]["hashes"]))
+        self.assertEqual(results[1]["timeline"]["selectedRows"], 1)
+
+    def test_switching_to_the_map_and_back_builds_the_scene_once_and_swaps_the_sections(self):
+        results = self.drive([{"view": "map3d"}, {"view": "timeline"}], hash="")
+        self.assertEqual((results[0]["timeline"]["hidden"], results[0]["scene"]["section"]), (False, True))
+        self.assertEqual((results[1]["timeline"]["hidden"], results[1]["scene"]["section"]), (True, False))
+        self.assertTrue(results[1]["scene"]["calls"])
+        self.assertEqual((results[2]["timeline"]["hidden"], results[2]["scene"]["section"]), (False, True))
+        self.assertTrue(any("v=map3d" in url for url in results[1]["hashes"]))
 
     def test_the_playback_position_limits_what_is_drawn(self):
         results = self.drive([{"click": "pb-start"}], hash="")

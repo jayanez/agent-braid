@@ -92,7 +92,7 @@ chose the 2D timeline as the default.
 
 ### Decision
 
-1. **Default surface.** (Takes effect with tasks T057 and T059 of the implementation.) The primary and default view is a first-party 2D SVG timeline
+1. **Default surface.** (Implemented by VIS.1c tasks T057 and T059.) The primary and default view is a first-party 2D SVG timeline
    (one lane per agent, proportional time axis). The 3D scene becomes the secondary
    "spatial map", selectable and linked to the same state. A deep link or a stored
    choice may still open the 3D view.

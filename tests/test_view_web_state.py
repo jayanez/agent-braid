@@ -51,6 +51,13 @@ const calls = {
   tags: () => call.tags.map(strings.normalizeTag),
   translate: () => call.cases.map(([lang, key, params]) => strings.translate(lang, key, params)),
   sources: () => model.elements.map((element) => state.sourceOf(element)),
+  markerkinds: () => Object.fromEntries(model.elements.map((element) => [element.seq, state.markerKind(element)])),
+  hashkinds: () => {
+    const s = state.createState();
+    s.filters.kinds = new Set(["conflict", "gap", "bogus"]);
+    const text = state.encodeHash(s);
+    return { text, decoded: state.decodeHash(text), hasFilters: state.hasFilters(s) };
+  },
 };
 console.log(JSON.stringify(strip(calls[call.name]())));
 """
@@ -232,6 +239,28 @@ class KindFilterTests(ModuleCase):
                 self.assertTrue(all(kept(e) for e in shown if e["element"] in markers))
                 self.assertTrue(any(kept(e) for e in shown))
                 self.assertEqual(sum(1 for e in shown if e["element"] == "strand"), len(self.rich["lanes"]))
+
+    def test_every_element_has_the_marker_kind_the_legend_names(self):
+        kinds = self.run_js("markerkinds", self.rich)
+        expected = {"crossing": {"conflicting": "conflict", "independent-candidate": "independent", "ordered": "ordered", "unknown": "unknown"}}
+        for element in self.rich["elements"]:
+            kind = kinds[str(element["seq"])]
+            if element["element"] == "crossing":
+                self.assertEqual(kind, expected["crossing"][element["classification"]])
+            elif element["element"] == "hazard-cone":
+                self.assertEqual(kind, "hazard")
+            elif element["element"] == "gap":
+                self.assertEqual(kind, "gap")
+            elif element["element"] == "gate-ring":
+                self.assertEqual(kind, "grant" if element["ringKind"] == "grant" else "gate")
+            else:
+                self.assertIsNone(kind, element["element"])
+
+    def test_kinds_are_written_to_the_hash_and_count_as_a_filter(self):
+        result = self.run_js("hashkinds", None)
+        self.assertEqual(result["text"], "#v=timeline&kd=conflict,gap")
+        self.assertEqual(result["decoded"]["kinds"], ["conflict", "gap"])
+        self.assertTrue(result["hasFilters"])
 
     def test_the_kinds_survive_the_hash_and_unknown_ones_are_dropped(self):
         state = {"view": "timeline", "selected": None, "kinds": []}

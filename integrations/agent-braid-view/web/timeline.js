@@ -39,6 +39,7 @@ function el(tag, attrs, ...children) {
   for (const [name, value] of Object.entries(attrs || {})) {
     if (value === null || value === undefined || value === false) continue;
     if (!ALLOWED.has(name)) throw new Error("svg attribute not allowed: " + name);
+    if (name === "href" && !/^#[A-Za-z0-9_-]+$/.test(String(value))) throw new Error("svg href must name a local symbol");
     node.setAttribute(name, String(value));
   }
   for (const child of children.flat()) {
@@ -78,6 +79,7 @@ export function createTimeline(container, hooks) {
   let hoverTimer = null;
   let tooltipWarm = false;
   let drag = null;
+  let dragged = false;
   let disposed = false;
 
   // ---------------------------------------------------------------- viewport
@@ -90,7 +92,9 @@ export function createTimeline(container, hooks) {
     const full = fullSpan();
     const view = input && input.viewport;
     if (!view || !(view.x1 > view.x0)) return [0, full];
-    return [Math.max(0, view.x0), Math.min(full, view.x1)];
+    const from = Math.max(0, view.x0);
+    const to = Math.min(full, view.x1);
+    return to > from ? [from, to] : [0, full]; // a viewport outside the data (stale link) shows everything
   }
 
   function emitViewport(x0, x1) {
@@ -123,8 +127,8 @@ export function createTimeline(container, hooks) {
       tooltip.textContent = text;
       tooltip.hidden = false;
       const box = container.getBoundingClientRect ? container.getBoundingClientRect() : { left: 0, top: 0, width: 600 };
-      let at = event ? event.clientX - box.left + 12 : 40;
-      const top = event ? event.clientY - box.top + 14 : 40;
+      let at = event ? event.clientX - box.left + container.scrollLeft + 12 : 40;
+      const top = event ? event.clientY - box.top + container.scrollTop + 14 : 40;
       at = Math.max(4, Math.min(at, Math.max(4, box.width - 280)));
       tooltip.style.transform = "translate(" + Math.round(at) + "px, " + Math.round(top) + "px)";
       tooltipWarm = true;
@@ -152,6 +156,7 @@ export function createTimeline(container, hooks) {
 
   function draw() {
     if (!input || disposed) return;
+    hideTip(); // the node under the pointer is about to be replaced
     const { model, derived, shown, cursorX, selected } = input;
     const width = Math.max(container.clientWidth || 720, 320);
     const narrow = width < 520; // on a phone the duration leaves the label column; it stays in the tooltip and the details
@@ -242,7 +247,6 @@ export function createTimeline(container, hooks) {
 
     // lanes
     const listbox = el("g", { role: "listbox", "aria-label": t("tl.lanes"), "aria-orientation": "vertical" });
-    const laneLayer = el("g", { "clip-path": "url(#tl-clip)" });
     const tabStop = rows.some((lane) => lane.laneIndex === focusedLane) ? focusedLane : (rows[0] ? rows[0].laneIndex : null);
     const selectedLane = selected === null ? null : rows.find((lane) => lane.openSeq === selected || lane.seqs.includes(selected));
     for (const lane of rows) {
@@ -299,15 +303,16 @@ export function createTimeline(container, hooks) {
           if (!element || !shown.has(seq) || element.element !== "hazard-cone" || element.timeKnown === false) continue;
           const x = sx(element.x);
           const id = element.absence ? "g-hazard-unobserved" : "g-hazard-observed";
-          const mark = el("g", { class: "tl-mark hazard" + (selected === seq ? " selected" : ""), role: "button", tabindex: "-1",
-            "aria-label": t("tl.tip.hazard", { kind: String(element.hazardKind), observed: t(element.absence ? "tl.notObserved" : "tl.observed") }) },
-          glyph(id, x, cy - 13, 13, "gl"), el("rect", { class: "tl-hit", x: x - 8, y: cy - 22, width: 16, height: 14 }));
-          mark.addEventListener("click", (event) => { event.stopPropagation(); hooks.onSelect(seq); });
-          plot.append(tip(mark, t("tl.tip.hazard", { kind: String(element.hazardKind), observed: t(element.absence ? "tl.notObserved" : "tl.observed") })));
+          // inside an option the marker is not a control: it is reached with Left and Right and named by the row
+          const hazardText = t("tl.tip.hazard", { kind: String(element.hazardKind), observed: t(element.absence ? "tl.notObserved" : "tl.observed") });
+          const mark = el("g", { class: "tl-mark hazard" + (selected === seq ? " selected" : ""), "aria-hidden": "true" },
+            glyph(id, x, cy - 13, 13, "gl"), el("rect", { class: "tl-hit", x: x - 8, y: cy - 22, width: 16, height: 14 }));
+          mark.addEventListener("click", (event) => { event.stopPropagation(); if (!dragged) hooks.onSelect(seq); });
+          plot.append(tip(mark, hazardText));
         }
       }
       row.append(plot);
-      row.addEventListener("click", () => hooks.onSelect(lane.openSeq));
+      row.addEventListener("click", () => { if (!dragged && drawn) hooks.onSelect(lane.openSeq); });
       row.addEventListener("focus", () => { focusedLane = lane.laneIndex; });
       listbox.append(row);
     }
@@ -342,27 +347,9 @@ export function createTimeline(container, hooks) {
       root.append(el("line", { class: "tl-cursor", x1: sx(cursorX), y1: RULER_HEIGHT - 2, x2: sx(cursorX), y2: height - 6 }));
     }
 
-    background.addEventListener("pointerdown", (event) => {
-      if (event.button !== 0 || !event.isPrimary) return;
-      drag = { id: event.pointerId, x: event.clientX, moved: false, start: currentRange()[0] };
-      if (background.setPointerCapture) background.setPointerCapture(event.pointerId);
-    });
-    background.addEventListener("pointermove", (event) => {
-      if (!drag || drag.id !== event.pointerId) return;
-      const dx = event.clientX - drag.x;
-      if (Math.abs(dx) < 4 && !drag.moved) return;
-      drag.moved = true;
-      const [a, b] = currentRange();
-      const target = drag.start - (dx / geometry.plotW) * (b - a);
-      emitViewport(target, target + (b - a));
-    });
-    const endDrag = (event) => { if (drag && drag.id === event.pointerId) drag = null; };
-    background.addEventListener("pointerup", endDrag);
-    background.addEventListener("pointercancel", endDrag);
-
     const hadFocus = typeof document !== "undefined" && container.contains && document.activeElement && container.contains(document.activeElement);
     host.replaceChildren(root);
-    if (hadFocus && focusedLane !== null) focusLane(focusedLane);
+    if (hadFocus && focusedLane !== null) focusLane(rows.some((lane) => lane.laneIndex === focusedLane) ? focusedLane : (rows[0] ? rows[0].laneIndex : null), true);
   }
 
   // ---------------------------------------------------------------- keyboard
@@ -371,11 +358,12 @@ export function createTimeline(container, hooks) {
     return host.querySelectorAll ? [...host.querySelectorAll("[role='option']")] : [];
   }
 
-  function focusLane(index) {
+  // `quiet` restores focus after a redraw without scrolling the page (playback redraws on every step).
+  function focusLane(index, quiet) {
     for (const node of laneNodes()) {
       const mine = Number(node.getAttribute("data-lane")) === index;
       node.setAttribute("tabindex", mine ? "0" : "-1");
-      if (mine && node.focus) node.focus({ preventScroll: false });
+      if (mine && node.focus) node.focus({ preventScroll: Boolean(quiet) });
     }
     focusedLane = index;
   }
@@ -392,7 +380,7 @@ export function createTimeline(container, hooks) {
       focusLane(rows[Math.max(0, next)].laneIndex);
     } else if ((key === "Enter" || key === " ") && at >= 0) {
       event.preventDefault();
-      hooks.onSelect(rows[at].openSeq);
+      if (input.shown.has(rows[at].openSeq)) hooks.onSelect(rows[at].openSeq);
     } else if ((key === "ArrowLeft" || key === "ArrowRight") && at >= 0) {
       event.preventDefault();
       const seqs = rows[at].seqs.filter((seq) => input.shown.has(seq));
@@ -425,10 +413,38 @@ export function createTimeline(container, hooks) {
     if (!geometry) return;
     const box = host.getBoundingClientRect ? host.getBoundingClientRect() : { left: 0 };
     const [a, b] = currentRange();
-    const x = a + ((event.clientX - box.left - geometry.labelW) / geometry.plotW) * (b - a);
-    zoomAt(event.deltaY < 0 ? 1.25 : 0.8, x);
+    const x = a + ((event.clientX - box.left - geometry.labelW - LEFT_PAD) / geometry.plotW) * (b - a);
+    zoomAt(Math.exp(-Math.max(-60, Math.min(60, event.deltaY)) * 0.01), x); // a pinch is many small events
   }
 
+  // Pan by dragging anywhere on the plot. The handlers sit on the persistent host (the drawing is replaced on every
+  // change), and a drag that moved swallows the click that follows it.
+  function onPointerDown(event) {
+    if (event.button !== 0 || !event.isPrimary || !geometry || event.clientX - (host.getBoundingClientRect ? host.getBoundingClientRect().left : 0) < geometry.labelW) return;
+    drag = { id: event.pointerId, x: event.clientX, moved: false, start: currentRange() };
+  }
+  function onPointerMove(event) {
+    if (!drag || drag.id !== event.pointerId) return;
+    if (event.buttons === 0) { drag = null; return; }
+    const dx = event.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 4) return;
+    if (!drag.moved && host.setPointerCapture) host.setPointerCapture(event.pointerId);
+    drag.moved = true;
+    dragged = true;
+    const span = drag.start[1] - drag.start[0];
+    const target = drag.start[0] - (dx / geometry.plotW) * span;
+    emitViewport(target, target + span);
+  }
+  function onPointerEnd(event) {
+    if (!drag || drag.id !== event.pointerId) return;
+    drag = null;
+    setTimeout(() => { dragged = false; }, 0); // after the click that ends the drag
+  }
+  host.addEventListener("pointerdown", onPointerDown);
+  host.addEventListener("pointermove", onPointerMove);
+  host.addEventListener("pointerup", onPointerEnd);
+  host.addEventListener("pointercancel", onPointerEnd);
+  host.addEventListener("lostpointercapture", onPointerEnd);
   container.addEventListener("keydown", onKey);
   container.addEventListener("wheel", onWheel, { passive: false });
   const observer = typeof ResizeObserver === "function" ? new ResizeObserver(() => draw()) : null;
@@ -443,13 +459,14 @@ export function createTimeline(container, hooks) {
     zoomIn() { zoomAt(1.5); },
     zoomOut() { zoomAt(1 / 1.5); },
     frame() { hooks.onViewport(null); },
-    // what the drawing contains, for tests and the note under the view
-    describe() {
-      return { rows: geometry ? geometry.rows.length : 0, range: geometry ? [geometry.x0, geometry.x1] : null };
-    },
     dispose() {
       disposed = true;
       clearTimeout(hoverTimer);
+      host.removeEventListener("pointerdown", onPointerDown);
+      host.removeEventListener("pointermove", onPointerMove);
+      host.removeEventListener("pointerup", onPointerEnd);
+      host.removeEventListener("pointercancel", onPointerEnd);
+      host.removeEventListener("lostpointercapture", onPointerEnd);
       container.removeEventListener("keydown", onKey);
       container.removeEventListener("wheel", onWheel);
       if (observer) observer.disconnect();

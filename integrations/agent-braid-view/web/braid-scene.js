@@ -629,7 +629,6 @@ export function createBraidScene(container, hooks = {}) {
   let disposed = false;
   let colors = readColors(container);
   let labelNodes = [];
-  let labelsDirty = true;
 
   function size() {
     const width = Math.max(container.clientWidth, 1);
@@ -638,7 +637,6 @@ export function createBraidScene(container, hooks = {}) {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    labelsDirty = true;
     requestRender();
   }
 
@@ -701,6 +699,7 @@ export function createBraidScene(container, hooks = {}) {
     const back = V(...direction).normalize();
     const probe = camera.clone();
     probe.aspect = camera.aspect;
+    probe.far = 1e6; // the real camera.far is set from the result
     probe.updateProjectionMatrix();
     let distance = Math.max(radius * 0.2, 1);
     for (let step = 0; step < 160; step += 1) {
@@ -732,7 +731,6 @@ export function createBraidScene(container, hooks = {}) {
       tween = { start: null, fromPosition: camera.position.clone(), fromTarget: controls.target.clone(),
         toPosition: pose.position, toTarget: pose.centre };
     }
-    labelsDirty = true;
     requestRender();
   }
 
@@ -781,7 +779,6 @@ export function createBraidScene(container, hooks = {}) {
     frontier = frontierX(built, frontierSeqs);
     clip.constant = Number.isFinite(frontier) ? frontier + CLIP_EPSILON : -1000;
     updateSelection();
-    labelsDirty = true;
     requestRender();
   }
 
@@ -808,7 +805,6 @@ export function createBraidScene(container, hooks = {}) {
       entry.height = entry.node.offsetHeight || 18;
       entry.node.hidden = true;
     }
-    labelsDirty = true;
   }
 
   // Projects every label, then places them greedily in priority order: the selected and hovered element first,
@@ -847,7 +843,6 @@ export function createBraidScene(container, hooks = {}) {
       if (on) entry.node.style.transform = "translate(" + Math.round(entry.place.x) + "px, " + Math.round(entry.place.y) + "px)";
       entry.show = false;
     }
-    labelsDirty = false;
   }
 
   function rebuild() {
@@ -895,7 +890,6 @@ export function createBraidScene(container, hooks = {}) {
   function setHovered(seq) {
     if (seq === hovered) return;
     hovered = seq;
-    labelsDirty = true;
     requestRender();
     if (hooks.onHover) hooks.onHover(seq);
   }
@@ -909,6 +903,7 @@ export function createBraidScene(container, hooks = {}) {
     });
   }
   function onPointerLeave() {
+    if (hoverFrame) { cancelAnimationFrame(hoverFrame); hoverFrame = 0; }
     if (hovered !== null) {
       canvas.classList.remove("over-element");
       setHovered(null);
@@ -916,15 +911,20 @@ export function createBraidScene(container, hooks = {}) {
   }
   function onContextLost(event) {
     event.preventDefault();
-    if (hooks.onUnavailable) hooks.onUnavailable("The WebGL context was lost.");
+    if (hooks.onUnavailable) hooks.onUnavailable("scene.reason.contextLost");
   }
   // The page scrolls over the scene unless Ctrl or Cmd is held (a trackpad pinch arrives as Ctrl + wheel), the canvas
   // has the focus or the scene is locked. This runs before the controls' own wheel listener.
   function onWheel(event) {
     controls.enableZoom = event.ctrlKey || event.metaKey || locked || document.activeElement === canvas;
   }
+  // Touch pinch only works while zoom is enabled, which is the case when the scene is locked.
+  function onBlur() {
+    controls.enableZoom = locked;
+  }
   function onKeyDown(event) {
     if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.key.startsWith("Arrow")) { userMoved = true; tween = null; } // a key pan also cancels an eased move
     if (event.key === "f" || event.key === "F") {
       event.preventDefault();
       api.resetView();
@@ -938,6 +938,7 @@ export function createBraidScene(container, hooks = {}) {
   canvas.addEventListener("webglcontextlost", onContextLost);
   canvas.addEventListener("wheel", onWheel, { capture: true, passive: true });
   canvas.addEventListener("keydown", onKeyDown);
+  canvas.addEventListener("blur", onBlur);
   controls.addEventListener("change", requestRender);
   controls.addEventListener("start", () => { userMoved = true; tween = null; });
   const observer = typeof ResizeObserver === "function" ? new ResizeObserver(() => {
@@ -968,7 +969,6 @@ export function createBraidScene(container, hooks = {}) {
     setSelected(seq) {
       selected = seq === undefined ? null : seq;
       updateSelection();
-      labelsDirty = true;
       requestRender();
     },
     // Frame all agents again, along the chosen preset, with an eased move that a new input cancels.
@@ -984,6 +984,7 @@ export function createBraidScene(container, hooks = {}) {
     },
     setLocked(on) {
       locked = Boolean(on);
+      controls.enableZoom = locked;
       canvas.classList.toggle("locked", locked);
     },
     // The labels carry keys the page translates; call this after a language change.
@@ -995,7 +996,6 @@ export function createBraidScene(container, hooks = {}) {
         entry.height = entry.node.offsetHeight || entry.height;
         entry.node.hidden = true;
       }
-      labelsDirty = true;
       requestRender();
     },
     // What the scene shows right now, for the note under it.
@@ -1020,10 +1020,12 @@ export function createBraidScene(container, hooks = {}) {
       canvas.removeEventListener("webglcontextlost", onContextLost);
       canvas.removeEventListener("wheel", onWheel, { capture: true });
       canvas.removeEventListener("keydown", onKeyDown);
+      canvas.removeEventListener("blur", onBlur);
       clearSelection();
       controls.dispose();
       built.dispose();
       renderer.dispose();
+      if (renderer.forceContextLoss) renderer.forceContextLoss(); // release the GPU context now
       layer.remove();
       canvas.remove();
     },

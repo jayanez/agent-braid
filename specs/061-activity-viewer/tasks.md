@@ -338,7 +338,13 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   Dependencies: T054. Files: `integrations/agent-braid-view/web/timeline.js`,
   `agent_braid/view_cli.py`, `tests/test_view_web_bundle.py`,
   `tests/test_view_packaging.py`. Verification: SC-017. Done 2026-11-04 (part B): `timeline.js` and
-  `BUNDLE_FILES`. Deviation: the "show omitted time" toggle is not built (breaks are always drawn).
+  `BUNDLE_FILES`. Deviations, none hidden: the "show omitted time" toggle is not built (breaks are always
+  drawn); a lane with no close and no state is drawn with a dotted outline and no open arrow (more honest
+  than "running"); no tooltip on keyboard focus (the row labels carry the facts); no polite live region; no
+  bar text inside bars; planned waves are markers, not bands; no ruler brush, double-click frame, pinch or
+  arrow-key cursor stepping in the timeline (buttons and keys 0, +, -, Home, End cover zoom and pan); gates,
+  grants and waves have no keyboard path (the table is the text alternative); no forced-colors rules for
+  the SVG; rows are 34 px, below 44 px on coarse pointers. These go to the T065 accessibility pass.
 - [x] T058 (REQ-016, REQ-019, REQ-020, REQ-021): Page structure and design system:
   tokens, toolbar, sticky detail panel, summary and legend tabs, compact table and
   mobile cards, boundary strip and about panel, `strings.js` (es and en with key

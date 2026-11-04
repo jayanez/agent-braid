@@ -994,6 +994,7 @@ function openHelp() {
 
 function openSceneHelp() {
   const dialog = $("scene-help");
+  if (dialog.open) return;
   if (typeof dialog.showModal === "function") dialog.showModal();
   else dialog.setAttribute("open", "");
 }
@@ -1006,6 +1007,7 @@ function isTyping(event) {
 
 function onKey(event) {
   if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
+  if (event.target && event.target.closest && event.target.closest("dialog")) return; // the dialog handles its own keys
   if (event.key === "Escape") {
     if (!isTyping(event)) deselect();
   } else if (event.key === "?" && !isTyping(event)) {
@@ -1039,8 +1041,8 @@ function bindControls() {
   $("tl-zoom-in").addEventListener("click", () => { if (timeline) timeline.zoomIn(); });
   $("tl-zoom-out").addEventListener("click", () => { if (timeline) timeline.zoomOut(); });
   $("tl-frame").addEventListener("click", () => { if (timeline) timeline.frame(); });
-  $("view-timeline").addEventListener("change", () => setView("timeline"));
-  $("view-map3d").addEventListener("change", () => setView("map3d"));
+  $("view-timeline").addEventListener("change", () => setView("timeline", true));
+  $("view-map3d").addEventListener("change", () => setView("map3d", true));
   $("lang-select").addEventListener("change", (event) => setLanguageChoice(event.target.value));
   $("detail-close").addEventListener("click", deselect);
   $("about-open").addEventListener("click", openHelp);
@@ -1066,14 +1068,15 @@ function renderViewSwitch() {
   $("scene-section").hidden = state.view !== "map3d";
 }
 
-function setView(id) {
+function setView(id, byUser) {
   const next = availableView(id);
   if (next === state.view && viewApplied) return;
   state.view = next;
   viewApplied = true;
-  writePreference("view", next);
+  if (byUser) writePreference("view", next); // a default is never stored as if it were a choice
   renderViewSwitch();
   if (next === "map3d" && !sceneRequested) startScene();
+  else if (next === "map3d" && scene && scene.refreshLabels) scene.refreshLabels(); // sizes cannot be measured while hidden
   syncViews();
   syncHash();
 }
@@ -1324,7 +1327,7 @@ async function startScene() {
 function labelCanvas() {
   if (!scene || !scene.canvas) return;
   scene.canvas.setAttribute("aria-label", t("scene.canvas.aria"));
-  if (scene.refreshLabels) scene.refreshLabels();
+  if (scene.refreshLabels && state.view === "map3d") scene.refreshLabels();
 }
 
 // ---------------------------------------------------------------- start
