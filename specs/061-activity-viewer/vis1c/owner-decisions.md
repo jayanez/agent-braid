@@ -21,7 +21,9 @@ etiquetas, etc" (one shared state model for 2D, 3D and table). Owner pain points
 not understand what is seen; camera; visual look; missing information (which agent is
 active, what conflicted, how long).
 
-## Gates (status after the 2026-11-04 second session: G1 and G2 done, G3 and G4 authorised, not done)
+## Gates (what still needs a human)
+
+Status after the second session of 2026-11-04: G1 and G2 are done; G3 and G4 are authorised and not done.
 
 | Gate | Owner action | Blocks |
 |---|---|---|
@@ -43,7 +45,9 @@ Each was a guided question for the owner; the recommendation was the planner's. 
 | OD-V5 | Observed collision source | (a) derive from `ownership-receipt` and ownership notice adapters only; (b) also from hook `PostToolUse` tool names plus path-free resource ids | (a). It adds no host payload field. (b) needs a probe and a new allowlist entry and is a separate review. |
 | OD-V6 | 3D after 2D becomes default | (a) keep as "Spatial map" with the fixes; (b) freeze 3D (fixes only, no new features) | (b) after Phase 2: the audit finds the third axis encodes nothing; keep the capability, stop investing. |
 
-## Differential fields (proposed in the plan; F1 to F4 accepted 2026-11-04)
+## Proposed differential fields (not accepted)
+
+Update: F1 to F4 were accepted on 2026-11-04 (F4 not before T035); the table is kept as proposed.
 
 Chosen because they answer the owner's questions ("who is active, what conflicted, how
 long") in ways only a coordination layer can. All are descriptive; none is presented
