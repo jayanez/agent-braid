@@ -177,6 +177,41 @@ it holds the following categories outside that policy, under owner decision D4:
 | Relative artifact paths and SHA-256 hashes | memory, recordings | server session or recording file | kept | same | Article 14 evidence inspection |
 | Sub-day relative time (`relMs`) | memory, recordings | server session or recording file | kept | same | ordering and playback |
 
+### Contract v0.2 amendment (2026-11-04, T052)
+
+`agent-braid-loom/v0.2` ([schema](loom-event.v0.2.schema.json)) passed the G3 privacy
+review recorded in
+[contract-v0.2-privacy-review.md](../vis1c/contract-v0.2-privacy-review.md). The v0.1
+[schema](loom-event.schema.json) is frozen and stays valid input: the viewer and
+`view validate` accept both versions, `view validate` reports how many events of each it
+read, and this package's adapters still emit v0.1. v0.2 adds three optional members to
+`strand.update` and nothing else; none carries content, a path or an absolute time:
+
+- `toolDurationMs`: an integer from 0 to 86,400,000 that a host reported for one tool
+  call. It is never derived from the interval between events (that interval is labelled
+  as such, never as a duration). Under owner decision OD-V4 (a) it is held in process
+  memory only: a replayed stream loses it on load, and no recording or export, with or
+  without `--record-effort` or `--include-effort`, carries it. Wider retention needs a new
+  owner decision. No host payload name is added to the allowlist by this amendment; a
+  hook or OTLP source is pinned only through the task that implements it (T062), from a
+  probe receipt.
+- `waitingOn`: one salted strand identifier (the identifier class above), present only
+  when `state` is `waiting` and always together with `waitingBasis`. It is never parsed
+  from host text. A strand never waits on itself; an adapter drops a target that is not a
+  strand of the same session and adds one `shape-unpinned` gap.
+- `waitingBasis`: `declared` (ordered by a plan, scheduler or analysis) or `observed` (a
+  host reported the wait). A declared wait is never shown as an observed one.
+
+The snapshot `axis` may gain `nowMs` (the viewer's monotonic clock at snapshot time,
+same basis as `relMs`, never earlier than the last event) and `live` (`false` for a
+replay, where `nowMs` equals the last event time). They describe the snapshot, are not
+events and are never recorded. The `collision.observed` kind of the draft is **not** in
+v0.2: its per-adapter observation boundary must be written first (T063).
+
+| Category | Held in | Retention | Default export | With `--record-effort` / `--include-effort` | Why |
+|---|---|---|---|---|---|
+| Tool call duration (`toolDurationMs`, v0.2) | process memory | server session | omitted | omitted (OD-V4 (a)) | how long a tool call took, live only |
+
 Recordings and exports are private files on the user's machine. Sharing one is
 the user's decision; presenting a pack as evidence of Agent Braid's effect is a
 public claim under [GOVERNANCE.md](../../../GOVERNANCE.md).

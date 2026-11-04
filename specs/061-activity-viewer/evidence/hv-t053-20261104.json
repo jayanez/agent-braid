@@ -1,0 +1,103 @@
+{
+  "task": "T053",
+  "requirement": "REQ-014, REQ-022",
+  "scenario": "SC-022",
+  "recordedAt": "2026-11-04",
+  "authorization": "Owner authorised the G4 host probe on 2026-11-04 (owner's answer to the two-part G3/G4 question, verbatim: \"Sí, ambas (Recommended)\"; recorded in vis1c/owner-decisions.md). The run was delegated to an agent with the constraints: disposable profile, throwaway loopback listener recording names and types only, at most two tiny claude -p sessions on a cheap model, never the real profile or ~/.claude/settings.json, never the running viewer on port 8765.",
+  "host": {
+    "name": "claude-code",
+    "version": "2.1.292 (Claude Code)",
+    "client": "terminal, non-interactive (claude -p)",
+    "model": "haiku alias"
+  },
+  "os": {
+    "name": "macOS",
+    "version": "27.2",
+    "build": "26B123",
+    "arch": "arm64"
+  },
+  "steps": [
+    "Start a throwaway standard-library listener on 127.0.0.1 (OS-assigned port) with a random bearer token; per hook event it records the member names and their JSON types only, never values, and answers every request with an empty 200.",
+    "Set CLAUDE_CONFIG_DIR to a new empty directory inside the agent's worktree scratch area and pass a throwaway --settings file with HTTP hooks for PostToolUse, PostToolUseFailure, SubagentStart, SubagentStop and SessionEnd (header Authorization: Bearer $PROBE_TOKEN via allowedEnvVars; timeout 5).",
+    "Run 1: the command below with the environment inherited from the agent's host process.",
+    "Run 2: the same command with a cleared environment (env -i with PATH, HOME, PROBE_TOKEN and CLAUDE_CONFIG_DIR only), so only the disposable profile could supply a credential.",
+    "Stop the listener; delete the disposable profile and the listener output."
+  ],
+  "command": "claude -p \"Use the Task tool to launch one general-purpose subagent whose only job is to run the Bash command: echo probe-ok — and report its output. Then reply with exactly the subagent's reported output.\" --settings <throwaway-settings.json> --allowedTools \"Task\" \"Bash(echo:*)\" --model haiku",
+  "expected": "PostToolUse hook payloads arrive; record whether a duration member exists (T030 listed the name duration_ms for PostToolUse on the same version) and its JSON type; record whether SubagentStop carries a duration member.",
+  "observed": {
+    "runs": {
+      "inheritedEnvironment": {
+        "exitCode": 1,
+        "output": "Credit balance is too low",
+        "note": "The disposable profile held no login; the CLI used an API credential present in the agent's inherited environment, whose account had no credit. No model turn and no tool call ran."
+      },
+      "clearedEnvironment": {
+        "exitCode": 1,
+        "output": "Not logged in · Please run /login",
+        "note": "With only the disposable profile available the CLI was not authenticated. No model turn and no tool call ran."
+      }
+    },
+    "hooks": {
+      "authorizationHeaderMatched": true,
+      "eventsReceived": [
+        "SessionEnd"
+      ],
+      "eventsNotReceived": [
+        "PostToolUse",
+        "PostToolUseFailure",
+        "SubagentStart",
+        "SubagentStop"
+      ],
+      "payloadMembers": {
+        "SessionEnd": {
+          "cwd": "string",
+          "hook_event_name": "string",
+          "prompt_id": "string",
+          "reason": "string",
+          "session_id": "string",
+          "transcript_path": "string"
+        }
+      },
+      "requestsRecorded": 2
+    }
+  },
+  "checks": [
+    {
+      "check": "HTTP hooks from a disposable profile reach the throwaway listener with the configured authorization header",
+      "outcome": "verified",
+      "detail": "One SessionEnd per run arrived with the expected bearer header and the member names T030 recorded for SessionEnd except scratchpad_dir, which was absent here."
+    },
+    {
+      "check": "PostToolUse carries a tool duration member, and its JSON type",
+      "outcome": "unobserved",
+      "detail": "No tool call ran because neither run was authenticated, so no PostToolUse payload arrived."
+    },
+    {
+      "check": "SubagentStop carries a duration member",
+      "outcome": "unobserved",
+      "detail": "No subagent ran, so no SubagentStop payload arrived."
+    }
+  ],
+  "priorEvidence": {
+    "receipt": "evidence/hv-t030-20261101.json",
+    "hostVersion": "2.1.292 (Claude Code), the version installed for this run",
+    "finding": "T030 recorded the member name duration_ms among the PostToolUse payload names, and no duration-like name among the SubagentStop payload names (it has last_assistant_message, background_tasks and others, none a duration). T030 recorded names only, not JSON types or units.",
+    "use": "Name evidence only. It is not re-observed by this run and does not by itself pin an allowlist entry (contract v0.2 privacy review item R12)."
+  },
+  "findingsForAllowlist": "None. No host payload name is added. A future PostToolUse.duration_ms entry (T062) needs either the owner's acceptance of the T030 name evidence with a fail-closed integer check, or an authenticated rerun of this probe that records the JSON type.",
+  "outcome": "unobserved",
+  "matrixRows": [],
+  "outcomeRationale": "The probe could not run a tool call: the disposable profile cannot authenticate, and the only other credential reachable was the agent's inherited one, which had no credit. Under the runbook an unobserved probe that will be rerun keeps its task open. Following the brief, the real profile was not used as a fallback.",
+  "rerun": "Owner-run: log in once inside a disposable CLAUDE_CONFIG_DIR (or provide a funded API key for the run only) and repeat the runbook T053 steps; one session is enough.",
+  "limits": [
+    "One machine, one installed version; names and types can change between host versions.",
+    "Names and JSON types only: the listener never recorded values.",
+    "The throwaway listener (sha256 9b8e12477c28da22410375890658f28082825ec46c95fd8c7a5c93155e52f6ee) is not committed, per the runbook.",
+    "Non-interactive claude -p only; the interactive terminal and desktop clients were not probed.",
+    "Two sessions were started; both ended before any model turn."
+  ],
+  "pathOutcomes": {
+    "claude-hook": "unchanged (T030 verified); this run adds no path-level result"
+  }
+}

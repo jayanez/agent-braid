@@ -66,3 +66,22 @@ receives and answers every request with an empty body; it is not committed.
    installed Codex Desktop renders an MCP App resource.
 2. Record `verified` or `unobserved`. `unobserved` is a valid outcome and keeps
    VIS.3 on the browser fallback.
+
+## T053 — Claude Code hook tool duration member (VIS.1c, G4)
+
+Authorised by the owner on 2026-11-04 (G4). No Loom code runs and the user's
+Claude Code configuration is not touched.
+
+1. Start a throwaway listener on a loopback port with a random bearer token; it
+   records, per hook event, the member names and their JSON types only, never
+   values, and answers every request with an empty 200.
+2. Point `CLAUDE_CONFIG_DIR` at a new empty directory and pass HTTP hooks for
+   `PostToolUse`, `PostToolUseFailure`, `SubagentStart`, `SubagentStop` and
+   `SessionEnd` in a throwaway `--settings` file.
+3. Run at most two short `claude -p` sessions on a cheap model, each starting one
+   subagent that runs one tool, as in T030.
+4. Record whether `PostToolUse` (and `SubagentStop`) carries a duration member and
+   its JSON type. Outcomes: `verified` (present, typed), `not-matching` (the
+   hooks arrive without a duration member; a valid result), `unobserved` (no
+   tool event arrived, for example because the disposable profile cannot
+   authenticate). The real profile is never used as a fallback.

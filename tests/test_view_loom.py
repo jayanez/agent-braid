@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""SPEC-061 T010: agent-braid-loom/v0.1 contract, strict parsing and parity with the schema."""
+"""SPEC-061 T010 and T052: agent-braid-loom v0.1 and v0.2 contract, strict parsing and parity with the schemas."""
 from copy import deepcopy
 import json
 from pathlib import Path
@@ -186,7 +186,7 @@ VIOLATIONS = [
     ("extra top-level member", "strand.open", _set("extra", 1)),
     ("extra data member", "strand.open", _set("data", "extra", 1)),
     ("missing data member", "strand.open", _drop("data", "role")),
-    ("wrong schema version", "strand.open", _set("schemaVersion", "agent-braid-loom/v0.2")),
+    ("wrong schema version", "strand.open", _set("schemaVersion", "agent-braid-loom/v0.3")),
     ("seq zero", "strand.open", _set("seq", 0)),
     ("seq above 2^53-1", "strand.open", _set("seq", 2 ** 53)),
     ("seq boolean", "strand.open", _set("seq", True)),
@@ -451,6 +451,153 @@ class ReadOnlyBoundaryTests(unittest.TestCase):
             self.assertNotIn(command, source)
         self.assertNotIn("from agent_braid import ownership", source)
         self.assertNotIn("agent_braid.ownership", source)
+
+
+# -- contract v0.2 (SPEC-061 T052) ----------------------------------------------------------------
+
+SCHEMA_V02 = json.loads((CONTRACTS / "loom-event.v0.2.schema.json").read_text(encoding="utf-8"))
+VALIDATOR_V02 = Draft202012Validator(SCHEMA_V02)
+
+
+def schema_v02_ok(event):
+    return not list(VALIDATOR_V02.iter_errors(event))
+
+
+def v02(event, **data):
+    """`event` as a v0.2 event with `data` members merged in."""
+    event = deepcopy(event)
+    event["schemaVersion"] = view_loom.SCHEMA_VERSION_V02
+    event["data"].update(data)
+    return event
+
+
+def waiting_update(**data):
+    event = by_kind(CORPUS, "strand.update")
+    event["data"]["state"] = "waiting"
+    return v02(event, **data)
+
+
+def spec_schema_v02(spec):
+    """spec_schema for v0.2 specs: an ("optional", spec) member is a property but not required."""
+    if spec[0] == "object":
+        return {"type": "object", "additionalProperties": False,
+                "required": [name for name, child in spec[1].items() if child[0] != "optional"],
+                "properties": {name: spec_schema_v02(child[1] if child[0] == "optional" else child)
+                               for name, child in spec[1].items()}}
+    return spec_schema(spec)
+
+
+class ContractV02Tests(unittest.TestCase):
+    def test_v01_schema_is_frozen_and_v02_differs_only_where_stated(self):
+        self.assertEqual("agent-braid-loom/v0.1", SCHEMA["properties"]["schemaVersion"]["const"])
+        self.assertEqual(view_loom.SCHEMA_VERSION_V02, SCHEMA_V02["properties"]["schemaVersion"]["const"])
+        self.assertEqual(view_loom.SCHEMA_VERSIONS, ("agent-braid-loom/v0.1", "agent-braid-loom/v0.2"))
+        left, right = deepcopy(SCHEMA), deepcopy(SCHEMA_V02)
+        for schema in (left, right):
+            for name in ("$id", "title", "description"):
+                del schema[name]
+            del schema["properties"]["schemaVersion"]
+            for branch in schema["allOf"]:
+                if branch["if"]["properties"]["kind"].get("const") == "strand.update":
+                    del branch["then"]
+        self.assertEqual(left, right)
+
+    def test_v02_data_specs_match_the_v02_schema(self):
+        branches = {c["if"]["properties"]["kind"]["const"]: deepcopy(c["then"]["properties"]["data"])
+                    for c in SCHEMA_V02["allOf"] if "data" in c["then"]["properties"]}
+        self.assertEqual(set(view_loom.DATA_SPECS_V02), set(branches))
+        update = branches["strand.update"]
+        self.assertEqual({"waitingOn": ["waitingBasis"], "waitingBasis": ["waitingOn"]},
+                         update.pop("dependentRequired"))
+        self.assertEqual({"properties": {"state": {"const": "waiting"}}}, update.pop("if"))
+        self.assertEqual({"not": {"required": ["waitingOn"]}}, update.pop("else"))
+        for kind, spec in view_loom.DATA_SPECS_V02.items():
+            with self.subTest(kind=kind):
+                self.assertEqual(branches[kind], spec_schema_v02(("object", spec)))
+        self.assertEqual(view_loom.TOOL_DURATION_MAX_MS, update["properties"]["toolDurationMs"]["maximum"])
+        self.assertEqual(list(view_loom.WAITING_BASES), update["properties"]["waitingBasis"]["enum"])
+
+    def test_v01_inputs_stay_valid_and_are_still_what_producers_emit(self):
+        self.assertEqual("agent-braid-loom/v0.1", view_loom.SCHEMA_VERSION)
+        for event in EXAMPLE + CORPUS:
+            with self.subTest(seq=event["seq"], kind=event["kind"]):
+                self.assertTrue(schema_ok(event))
+                self.assertIs(event, validate_event(event))
+
+    def test_every_v01_event_relabelled_v02_is_valid_in_both_validators(self):
+        for event in EXAMPLE + CORPUS:
+            relabelled = v02(event)
+            with self.subTest(seq=event["seq"], kind=event["kind"]):
+                self.assertTrue(schema_v02_ok(relabelled))
+                validate_event(relabelled)
+                self.assertFalse(schema_v02_ok(event))  # the v0.2 schema names only v0.2
+        self.assertFalse(schema_ok(v02(CORPUS[0])))  # a v0.1-only schema refuses v0.2: fails closed
+
+    def test_new_members_are_accepted_in_v02_only(self):
+        good = [
+            v02(by_kind(CORPUS, "strand.update"), toolDurationMs=0),
+            v02(by_kind(CORPUS, "strand.update"), toolDurationMs=view_loom.TOOL_DURATION_MAX_MS),
+            waiting_update(waitingOn="strand-other", waitingBasis="declared"),
+            waiting_update(waitingOn="sha256:" + "a" * 64, waitingBasis="observed", toolDurationMs=12),
+            waiting_update(),  # waiting without a target stays valid (hook-only sessions)
+        ]
+        for event in good:
+            with self.subTest(data=event["data"]):
+                self.assertTrue(schema_v02_ok(event))
+                self.assertIs(event, validate_event(event))
+                stale = deepcopy(event)
+                stale["schemaVersion"] = view_loom.SCHEMA_VERSION
+                if set(stale["data"]) - set(view_loom.DATA_SPECS["strand.update"]):
+                    with self.assertRaises(LoomError) as raised:
+                        validate_event(stale)
+                    self.assertEqual("unknown-field", raised.exception.reason)
+                    self.assertFalse(schema_ok(stale))
+        self.assertEqual(good[3], parse_event(canonical_bytes(good[3])))
+
+    def test_malformed_new_members_fail_closed_in_both(self):
+        update = v02(by_kind(CORPUS, "strand.update"))
+        update["data"]["state"] = "running"
+        cases = [
+            ("duration as text", v02(update, toolDurationMs="12"), "wrong-type"),
+            ("duration as float", v02(update, toolDurationMs=12.5), "wrong-type"),
+            ("negative duration", v02(update, toolDurationMs=-1), "out-of-range"),
+            ("duration over a day", v02(update, toolDurationMs=view_loom.TOOL_DURATION_MAX_MS + 1), "out-of-range"),
+            ("null duration", v02(update, toolDurationMs=None), "wrong-type"),
+            ("boolean duration", v02(update, toolDurationMs=True), "wrong-type"),
+            ("target while running", v02(update, waitingOn="strand-other", waitingBasis="declared"), "invalid-value"),
+            ("target without basis", waiting_update(waitingOn="strand-other"), "missing-field"),
+            ("basis without target", waiting_update(waitingBasis="observed"), "missing-field"),
+            ("unknown basis", waiting_update(waitingOn="strand-other", waitingBasis="inferred"), "invalid-value"),
+            ("target is a path", waiting_update(waitingOn="/tmp/x", waitingBasis="declared"), "identifier"),
+            ("null target", waiting_update(waitingOn=None, waitingBasis="declared"), "wrong-type"),
+            ("unknown member", v02(update, toolInput="x"), "unknown-field"),
+        ]
+        for label, event, reason in cases:
+            with self.subTest(label):
+                with self.assertRaises(LoomError) as raised:
+                    validate_event(event)
+                self.assertEqual(reason, raised.exception.reason)
+                self.assertFalse(schema_v02_ok(event))
+
+    def test_a_strand_waiting_on_itself_is_refused_by_the_validator(self):
+        event = waiting_update(waitingBasis="declared")
+        event["data"]["waitingOn"] = event["data"]["strandId"]
+        with self.assertRaises(LoomError) as raised:
+            validate_event(event)
+        self.assertEqual("invalid-value", raised.exception.reason)
+
+    def test_unknown_versions_are_refused(self):
+        for version in ("agent-braid-loom/v0.3", "agent-braid-loom/v0.2 ", None, 2):
+            event = by_kind(CORPUS, "strand.open")
+            event["schemaVersion"] = version
+            with self.subTest(version=version), self.assertRaises(LoomError) as raised:
+                validate_event(event)
+            self.assertEqual("schema-version", raised.exception.reason)
+
+    def test_a_stream_may_mix_versions(self):
+        events = [v02(e) if index % 2 else deepcopy(e) for index, e in enumerate(CORPUS)]
+        raw = b"".join(canonical_bytes(e) for e in events)
+        self.assertEqual(events, parse_stream(raw))
 
 
 if __name__ == "__main__":

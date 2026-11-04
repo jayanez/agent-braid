@@ -298,16 +298,26 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   (G1 accepted with OD-V1 changed to detected language, G2 "Aceptar (Recommended)",
   OD-V3 F1 to F4); the amendment is applied to ADR 0033 with its hash updated in every
   `current` authority snapshot. G3 and G4 are authorised and scheduled (T052, T053).
-- [ ] T052 (REQ-022): Contract v0.2: privacy review (G3) of `axis.nowMs`, `waitingOn`
+- [x] T052 (REQ-022): Contract v0.2: privacy review (G3) of `axis.nowMs`, `waitingOn`
   and tool duration, then `loom-event.v0.2.schema.json`, the amendment of
   `ui-security-privacy.md`, `validate` support for both versions. Dependencies: T051.
   Files: `contracts/`, `agent_braid/view_model.py`, `agent_braid/view_cli.py`,
-  `tests/test_view_loom.py`. Verification: SC-022.
+  `tests/test_view_loom.py`. Verification: SC-022. Done 2026-11-04: verdicts R1 to R15 in
+  `vis1c/contract-v0.2-privacy-review.md`; v0.2 publishes optional `strand.update`
+  members `toolDurationMs`, `waitingOn` and `waitingBasis` (v0.1 frozen and still
+  accepted; `view validate` counts events per version; a replay drops `toolDurationMs`
+  per OD-V4 (a)); `axis.nowMs` is written in the contract for T060; R12 is held (no
+  allowlist change) and `collision.observed` (R13 to R15) is deferred to T063. No UI
+  wiring; `view_model.py` needed no change.
 - [ ] T053 (REQ-014, REQ-022): Owner-run probe (G4) with a throwaway listener and no
   Loom code: record the names (never values) of the members the installed Claude Code
   sends for `PostToolUse` and `SubagentStop` hooks, specifically any duration member.
   Dependencies: T051. Files: `host-verification-runbook.md`, `evidence/`. Evidence:
-  receipt in `evidence/`; a missing member is a valid result.
+  receipt in `evidence/`; a missing member is a valid result. Run 2026-11-04:
+  receipt `evidence/hv-t053-20261104.json`, outcome `unobserved` (the
+  disposable profile could not authenticate; no tool call ran); the T030 receipt already
+  names `duration_ms` in `PostToolUse` on the same host version, type unrecorded. Stays
+  open for an owner rerun.
 - [x] T054 (REQ-016): Shared state and derived model: `state.js` with `deriveLanes`,
   conflicts, overlaps, concurrency and visibility; parity tests against
   `build_model` on the audit fixture and existing fixtures; decide whether lane
