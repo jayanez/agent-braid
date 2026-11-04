@@ -220,7 +220,38 @@ class AnalysisTests(unittest.TestCase):
     def test_report_strands_and_one_crossing_per_pair_equal_the_source(self):
         self.assert_matches_source(self.events, self.report)
         self.assertEqual(kinds(self.events),
-                         ["analysis.report"] + ["strand.open"] * 5 + ["crossing.classified"] * 10)
+                         ["analysis.report"] + ["strand.open"] * 5 + ["crossing.classified"] * 10
+                         + ["strand.update"])
+
+    def test_an_ordered_pair_with_a_declared_dependency_is_a_declared_wait_in_v02(self):
+        # T061: edit-after-roadmap lists edit-roadmap in its dependencies and the pair is ordered.
+        waits = [event for event in self.events if event["kind"] == "strand.update"]
+        self.assertEqual(len(waits), 1)
+        self.assertEqual(waits[0]["schemaVersion"], view_loom.SCHEMA_VERSION_V02)
+        self.assertEqual(waits[0]["data"], {"strandId": "edit-after-roadmap", "state": "waiting", "toolName": None,
+                                            "waitingOn": "edit-roadmap", "waitingBasis": "declared"})
+        self.assertEqual(waits[0]["at"]["basis"], "sequence-only")
+        self.assertEqual(waits[0]["source"]["verification"], "rehashed")
+
+    def test_no_wait_without_a_dependency_direction_and_a_dependency_on_no_operation_is_a_gap(self):
+        report = deepcopy(self.report)
+        for operation in report["operations"]:
+            operation["dependencies"] = []
+        self.assertNotIn("strand.update", kinds(run("analysis", dump(report))))
+        broken = deepcopy(self.report)
+        pair = next(p for p in broken["interactions"] if p["classification"] == "ordered")
+        pair["right"] = "not-an-operation"
+        for operation in broken["operations"]:
+            if operation["instanceId"] == pair["left"]:
+                operation["dependencies"] = ["not-an-operation"]
+        events = run("analysis", dump(broken))
+        self.assertNotIn("strand.update", kinds(events))
+        self.assertEqual([g["data"]["reason"] for g in of_kind(events, "observation.gap")], ["shape-unpinned"])
+
+    def test_scheduler_and_runtime_state_emit_no_wait(self):
+        for family in ("scheduler", "state"):
+            with self.subTest(family=family):
+                self.assertNotIn("waitingOn", json.dumps(run(family)))
 
     def test_the_small_example_report_maps_one_pair(self):
         events = run("analysis")

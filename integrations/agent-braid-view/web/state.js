@@ -175,12 +175,34 @@ function deriveSequenceAxis(model) {
   }
   return { basis: source.basis || "sequence-only", sequence: true, untimed, total: model.elements.length,
     minMs: typeof source.minMs === "number" ? source.minMs : 0, maxMs: typeof source.maxMs === "number" ? source.maxMs : 0,
-    spanMs: source.spanMs || 0, spanX, moments: [], breaks: [], xOfMs: () => 0, ticks, nowMs: null };
+    spanMs: source.spanMs || 0, spanX, moments: [], breaks: [], xOfMs: () => 0, ticks,
+    live: source.live === true, nowMs: null, nowX: null };
+}
+
+// T060: the live "now" on the compressed axis, or null. Only a live model whose events all state a time has one
+// (`axis.live` and `axis.nowMs` come from the server clock); `nowMs` may be the server value advanced by the page's
+// own clock between snapshots. It is never before the last stated time. Past that time the axis runs linearly up to
+// the gap threshold and is then compressed to the nominal width, like any other long span.
+export function liveNow(model, nowMs) {
+  const axis = model && model.axis;
+  if (!axis || axis.live !== true || !Array.isArray(model.elements) || needsSequenceAxis(model)) return null;
+  const stated = typeof nowMs === "number" && Number.isFinite(nowMs) ? nowMs : axis.nowMs;
+  if (typeof stated !== "number" || !Number.isFinite(stated)) return null;
+  let last = null;
+  for (const element of model.elements) {
+    if (timeKnownOf(element) && (!last || element.relMs > last.relMs || (element.relMs === last.relMs && element.x > last.x))) last = element;
+  }
+  if (!last) return null; // no stated time to place now against
+  const threshold = typeof axis.gapThresholdMs === "number" ? axis.gapThresholdMs : 5000;
+  const nominal = typeof axis.gapNominalMs === "number" ? axis.gapNominalMs : 1000;
+  const ms = Math.max(stated, last.relMs);
+  const compressed = ms - last.relMs > threshold;
+  return { ms, x: last.x + (compressed ? nominal : ms - last.relMs), fromMs: last.relMs, fromX: last.x, compressed };
 }
 
 // Moments are the distinct stated times with their compressed position. Inside one run of moments closer than the
 // model's gap threshold the axis is linear; across a compression it is not, and no tick is drawn there.
-export function deriveAxis(model) {
+export function deriveAxis(model, live = null) {
   const source = model && model.axis ? model.axis : {};
   const elements = model && Array.isArray(model.elements) ? model.elements : [];
   const seen = new Map();
@@ -188,10 +210,13 @@ export function deriveAxis(model) {
   const moments = [...seen].map(([ms, x]) => ({ ms, x })).sort((a, b) => a.ms - b.ms);
   const threshold = typeof source.gapThresholdMs === "number" ? source.gapThresholdMs : 5000;
   const minMs = typeof source.minMs === "number" ? source.minMs : moments.length ? moments[0].ms : 0;
-  const spanX = Math.max(typeof source.shownSpan === "number" ? source.shownSpan : 0, 0);
+  const spanX = Math.max(typeof source.shownSpan === "number" ? source.shownSpan : 0, live ? live.x : 0, 0);
 
   function xOfMs(ms) {
     if (moments.length === 0) return 0;
+    if (live && ms > live.fromMs) {
+      return live.ms === live.fromMs ? live.x : live.fromX + ((Math.min(ms, live.ms) - live.fromMs) / (live.ms - live.fromMs)) * (live.x - live.fromX);
+    }
     if (ms <= moments[0].ms) return moments[0].x;
     const last = moments[moments.length - 1];
     if (ms >= last.ms) return last.x;
@@ -210,6 +235,9 @@ export function deriveAxis(model) {
   const breaks = (Array.isArray(source.compressions) ? source.compressions : []).map((cut) => ({
     x1: xOfMs(cut.fromMs), x2: xOfMs(cut.toMs), fromMs: cut.fromMs, toMs: cut.toMs, spanMs: cut.spanMs,
   }));
+  if (live && live.compressed) breaks.push({ x1: live.fromX, x2: live.x, fromMs: live.fromMs, toMs: live.ms, spanMs: live.ms - live.fromMs, live: true });
+  // The ticks run on to now unless that last span is compressed (no tick is drawn inside a compression).
+  const tickMoments = live && !live.compressed && live.ms > live.fromMs ? [...moments, { ms: live.ms, x: live.x }] : moments;
 
   // Ticks in elapsed time inside [x0, x1], at a step that leaves about 4 to 10 labels.
   function ticks(x0 = 0, x1 = spanX) {
@@ -217,8 +245,8 @@ export function deriveAxis(model) {
     const step = TICK_STEPS.find((candidate) => range / candidate <= 9) || TICK_STEPS[TICK_STEPS.length - 1];
     const out = [];
     let lastAt = -Infinity;
-    const runs = moments.length ? moments.slice(0, -1).map((a, i) => [a, moments[i + 1]]) : [];
-    if (moments.length === 1) runs.push([moments[0], moments[0]]);
+    const runs = tickMoments.length ? tickMoments.slice(0, -1).map((a, i) => [a, tickMoments[i + 1]]) : [];
+    if (tickMoments.length === 1) runs.push([tickMoments[0], tickMoments[0]]);
     for (const [a, b] of runs) {
       if (b.ms - a.ms > threshold) continue;
       const first = Math.ceil((a.ms - minMs) / step);
@@ -235,7 +263,8 @@ export function deriveAxis(model) {
   }
 
   return { basis: source.basis || "sequence-only", sequence: false, untimed: 0, total: elements.length, minMs, maxMs: typeof source.maxMs === "number" ? source.maxMs : minMs,
-    spanMs: source.spanMs || 0, spanX, moments, breaks, xOfMs, ticks, nowMs: null };
+    spanMs: source.spanMs || 0, spanX, moments, breaks, xOfMs, ticks,
+    live: source.live === true, nowMs: live ? live.ms : null, nowX: live ? live.x : null };
 }
 
 // ---------------------------------------------------------------- lanes
@@ -270,7 +299,12 @@ function laneRecord(bySeq, lane, rec, sessionEndMs, sessionEndX) {
       waitSpans.push(waiting);
       waiting = null;
     }
-    if (update.state === "waiting") waiting = { seq: update.seq, fromMs: msOf(update), fromX: update.x, toMs: null, toX: null, open: true };
+    // T061: what the event says it waits on and on what basis; a v0.1 wait states neither (both null).
+    if (update.state === "waiting") {
+      waiting = { seq: update.seq, fromMs: msOf(update), fromX: update.x, toMs: null, toX: null, open: true,
+        waitingOn: typeof update.waitingOn === "string" ? update.waitingOn : null,
+        basis: update.waitingBasis === "declared" || update.waitingBasis === "observed" ? update.waitingBasis : null };
+    }
   }
   if (waiting) {
     if (close && positioned(close)) {
@@ -291,9 +325,16 @@ function laneRecord(bySeq, lane, rec, sessionEndMs, sessionEndX) {
     observedMs: openKnown && lastMs !== null ? Math.max(0, (close && closeKnown ? close.relMs : lastMs) - openMs) : null,
     endMs: close && closeKnown ? close.relMs : sessionEndMs, endX: close ? close.x : sessionEndX,
     lastMs, lastX,
+    // T062: `durationMs` only when the host stated it (`toolDurationMs`, live only); otherwise `intervalMs` is the
+    // time to the agent's next event that states one, labelled as an interval and never as a duration.
     toolMarks: updates.filter((update) => typeof update.toolName === "string" && update.toolName)
-      .map((update) => ({ seq: update.seq, ms: update.relMs, x: update.x, toolName: update.toolName, state: update.state,
-        timeKnown: timeKnownOf(update) })),
+      .map((update) => {
+        const next = timeKnownOf(update) ? rec.touched.find((other) => other.order > update.order && timeKnownOf(other)) : null;
+        return { seq: update.seq, ms: update.relMs, x: update.x, toolName: update.toolName, state: update.state,
+          timeKnown: timeKnownOf(update),
+          durationMs: Number.isInteger(update.toolDurationMs) && update.toolDurationMs >= 0 ? update.toolDurationMs : null,
+          intervalMs: next ? Math.max(0, next.relMs - update.relMs) : null };
+      }),
     waitSpans,
     gaps: rec.gaps.map((gap) => ({ seq: gap.seq, ms: gap.relMs, x: gap.x, reason: gap.reason, timeKnown: timeKnownOf(gap), placed: Boolean(gap.placed) })),
     seqs: [],
@@ -301,7 +342,7 @@ function laneRecord(bySeq, lane, rec, sessionEndMs, sessionEndX) {
 }
 
 // Agents with opening, closing, state and duration, ordered for display (each parent followed by its children).
-export function deriveLanes(model) {
+export function deriveLanes(model, live = null) {
   const empty = { lanes: [], rows: [], byIndex: new Map(), byStrand: new Map(), sessionEndMs: null, sessionEndX: 0 };
   if (!model || !Array.isArray(model.lanes) || !Array.isArray(model.elements)) return empty;
   const bySeq = new Map(model.elements.map((element) => [element.seq, element]));
@@ -309,8 +350,9 @@ export function deriveLanes(model) {
   const touchedBy = new Map();
   const timedElements = model.elements.filter(timeKnownOf);
   const placedElements = model.elements.filter(positioned);
-  const sessionEndMs = timedElements.length ? Math.max(...timedElements.map((element) => element.relMs)) : null;
-  const sessionEndX = placedElements.length ? Math.max(...placedElements.map((element) => element.x)) : 0;
+  // An agent still open ends at the session's last event, or at now in live mode (T060: running bars grow).
+  const sessionEndMs = live ? live.ms : timedElements.length ? Math.max(...timedElements.map((element) => element.relMs)) : null;
+  const sessionEndX = live ? live.x : placedElements.length ? Math.max(...placedElements.map((element) => element.x)) : 0;
   const record = (strandId) => {
     if (!perStrand.has(strandId)) perStrand.set(strandId, { close: null, updates: [], gaps: [], touched: [] });
     return perStrand.get(strandId);
@@ -461,11 +503,13 @@ export function waitingTime(lane) {
 
 // `placedModel` is the model the views draw: the model itself, or its sequence placement when an event states no
 // time (see placeBySequence). Every derivation reads the placed model, so the views agree on positions.
-export function derive(model) {
+// `options.nowMs` advances the live "now" with the page's clock between snapshots (T060); ignored unless live.
+export function derive(model, options = {}) {
   const placedModel = placeBySequence(model);
-  const lanes = deriveLanes(placedModel);
+  const live = placedModel === model ? liveNow(model, options.nowMs) : null;
+  const lanes = deriveLanes(placedModel, live);
   const crossings = deriveCrossings(placedModel, lanes);
-  const axis = placedModel !== model ? deriveSequenceAxis(placedModel) : deriveAxis(model);
+  const axis = placedModel !== model ? deriveSequenceAxis(placedModel) : deriveAxis(model, live);
   const basis = axis.sequence ? "sequence-only" : model && model.axis ? model.axis.basis : "sequence-only";
   return {
     ...lanes, axis, crossings, conflicts: conflictsOf(crossings), placedModel,

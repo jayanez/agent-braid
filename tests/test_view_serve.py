@@ -1001,6 +1001,21 @@ class SnapshotTests(StreamCase):
         self.assertIs(document["model"]["executionAuthorization"], False)
         self.assertEqual(document["droppedAttributeNames"], [])
 
+    def test_a_server_without_a_live_clock_serves_a_replay_axis(self):
+        axis = json.loads(self.get()[2])["model"]["axis"]
+        self.assertIs(axis["live"], False)
+        self.assertEqual(axis["nowMs"], axis["maxMs"])
+
+    def test_a_live_clock_sets_now_and_live_and_is_read_per_snapshot(self):
+        ticks = iter([10**9, 10**9 + 1])
+        self.stop()
+        self.start(live_clock=lambda: next(ticks), **self.server_kwargs)
+        self.load()
+        first = json.loads(self.get()[2])["model"]["axis"]
+        second = json.loads(self.get()[2])["model"]["axis"]
+        self.assertIs(first["live"], True)
+        self.assertEqual((first["nowMs"], second["nowMs"]), (10**9, 10**9 + 1))
+
     def test_snapshot_carries_a_language_hint_only_when_the_server_has_a_supported_one(self):
         self.assertNotIn("uiLanguageHint", json.loads(self.get()[2]))  # none configured: nothing is sent
         self.server.language_hint = "es"

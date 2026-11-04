@@ -21,6 +21,14 @@ Mapping, from the host verification receipt (evidence/hv-t030-20261101.json): Op
 agent id, so a subagent strand comes from the hook `agent_id`; no HTTP `SessionStart` was delivered under
 `claude -p`, so a session or subagent strand opens on the first event that mentions it. The hook payload
 carries no outcome, so a strand closes as `unknown`.
+
+Tool duration (T062, contract v0.2): `PostToolUse.duration_ms` is pinned from the T030 receipt by owner decision
+(T053 closed on that evidence). Only a JSON integer from 0 to 86,400,000 ms is kept, as `toolDurationMs` on a v0.2
+`strand.update`; any other shape (a bool, a float, a string, a negative or an oversize value) is dropped and one
+`shape-unpinned` gap says so. The name is read only on `PostToolUse`: on any other event it is inventoried as
+dropped, and no duration is assumed for `SubagentStop`. The value lives in the store's memory only (OD-V4 (a));
+a replay drops it (`view_serve.replay_events`). Hooks carry no waiting signal, so this module never emits
+`waitingOn`.
 """
 from __future__ import annotations
 
@@ -33,13 +41,18 @@ import time
 from typing import Any, Callable, Iterator
 
 from agent_braid.view_ingest import MAX_INVENTORY_NAME_LENGTH, MAX_INVENTORY_NAMES, IngestRefusal
-from agent_braid.view_loom import SCHEMA_VERSION, TEXT_MAX_LENGTH, TEXT_PATTERN
+from agent_braid.view_loom import (
+    SCHEMA_VERSION, SCHEMA_VERSION_V02, TEXT_MAX_LENGTH, TEXT_PATTERN, TOOL_DURATION_MAX_MS,
+)
 from agent_braid.view_store import LoomStore
 
 OBSERVATIONAL_EVENTS = ("SessionStart", "SessionEnd", "SubagentStart", "SubagentStop", "PostToolUse")
 # The only payload names whose values are read, pinned from the T030 receipt. `tool_use_id` is allowlisted
 # (its name is not inventoried as dropped) but no Loom field carries it, so it is not stored.
-ALLOWED_FIELDS = ("hook_event_name", "session_id", "agent_id", "agent_type", "tool_name", "tool_use_id")
+ALLOWED_FIELDS = ("hook_event_name", "session_id", "agent_id", "agent_type", "tool_name", "tool_use_id",
+                  "duration_ms")
+# `duration_ms` is read only on this event (T062); on any other event its name is inventoried as dropped.
+DURATION_EVENT = "PostToolUse"
 MAX_IDENTIFIER_LENGTH = 256
 MAX_TRACKED_STRANDS = 1024  # the store's own strand cap is 256; this bounds the ids remembered beyond it
 _TEXT = re.compile(TEXT_PATTERN)
@@ -121,7 +134,7 @@ class HookIngest:
         if event not in OBSERVATIONAL_EVENTS:
             raise IngestRefusal(403)
         with self._lock:
-            self._remember_names(payload)
+            self._remember_names(payload, event)
             session = _identifier(payload.get("session_id"))
             agent = _identifier(payload.get("agent_id"))
             if session is None or (agent is None and event in ("SubagentStart", "SubagentStop")):
@@ -145,23 +158,35 @@ class HookIngest:
             if event == "SubagentStop":
                 self._close(agent_strand)
             elif event == "PostToolUse":
-                self._update(target, _text(payload.get("tool_name")))
+                self._update(target, _text(payload.get("tool_name")), self._duration(payload))
 
     # -- internals (callers hold the lock) ---------------------------------------------------
 
     def _hash(self, kind: str, value: str) -> str:
         return hmac.new(self._salt, f"{kind}\0{value}".encode("utf-8"), hashlib.sha256).hexdigest()[:16]
 
-    def _remember_names(self, payload: dict[str, Any]) -> None:
-        for name in _field_names({key: value for key, value in payload.items() if key not in ALLOWED_FIELDS}):
+    def _remember_names(self, payload: dict[str, Any], event: str) -> None:
+        def kept(key: str) -> bool:
+            return key in ALLOWED_FIELDS and (key != "duration_ms" or event == DURATION_EVENT)
+        for name in _field_names({key: value for key, value in payload.items() if not kept(key)}):
             if len(self._names) >= MAX_INVENTORY_NAMES:
                 return
             if len(name) <= MAX_INVENTORY_NAME_LENGTH and name.isprintable():
                 self._names.add(name)
 
-    def _append(self, kind: str, data: dict[str, Any]) -> bool:
+    def _duration(self, payload: dict[str, Any]) -> int | None:
+        """`duration_ms` when it is a JSON integer in range; otherwise None, with one gap when it was present."""
+        if "duration_ms" not in payload:
+            return None
+        value = payload["duration_ms"]
+        if type(value) is int and 0 <= value <= TOOL_DURATION_MAX_MS:
+            return value
+        self._gap("duration_ms", "shape-unpinned")
+        return None
+
+    def _append(self, kind: str, data: dict[str, Any], version: str = SCHEMA_VERSION) -> bool:
         event = {
-            "schemaVersion": SCHEMA_VERSION, "seq": 1, "kind": kind,
+            "schemaVersion": version, "seq": 1, "kind": kind,
             "at": {"relMs": (self._clock() - self._origin) // 1_000_000, "basis": "viewer-monotonic"},
             "source": {"adapter": "claude-hook", "evidenceRef": None, "host": "claude",
                        "verification": "unverified"},
@@ -200,8 +225,16 @@ class HookIngest:
             self._children.setdefault(session_strand, []).append(agent_strand)
         return opened
 
-    def _update(self, strand: str, tool_name: str | None) -> None:
-        self._append("strand.update", {"strandId": strand, "state": "running", "toolName": tool_name})
+    def _update(self, strand: str, tool_name: str | None, duration: int | None = None) -> None:
+        data: dict[str, Any] = {"strandId": strand, "state": "running", "toolName": tool_name}
+        if duration is None:
+            self._append("strand.update", data)
+        else:  # contract v0.2: the only member this adapter adds
+            self._append("strand.update", {**data, "toolDurationMs": duration}, SCHEMA_VERSION_V02)
+
+    def now_ms(self) -> int:
+        """The viewer clock in ms on the same monotonic basis as the events this ingest stamps (T060)."""
+        return (self._clock() - self._origin) // 1_000_000
 
     def _close(self, strand: str | None) -> None:
         if strand is not None and self._strands.get(strand) == "open":

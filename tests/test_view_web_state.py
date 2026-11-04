@@ -57,6 +57,11 @@ const calls = {
   translate: () => call.cases.map(([lang, key, params]) => strings.translate(lang, key, params)),
   sources: () => model.elements.map((element) => state.sourceOf(element)),
   markerkinds: () => Object.fromEntries(model.elements.map((element) => [element.seq, state.markerKind(element)])),
+  live: () => {
+    const d = state.derive(model, call.nowMs === undefined ? {} : { nowMs: call.nowMs });
+    return { live: d.axis.live, nowMs: d.axis.nowMs, nowX: d.axis.nowX, spanX: d.axis.spanX, breaks: d.axis.breaks,
+      ticks: d.axis.ticks(), lanes: d.lanes };
+  },
   hashkinds: () => {
     const s = state.createState();
     s.filters.kinds = new Set(["conflict", "gap", "bogus"]);
@@ -556,3 +561,70 @@ class SequenceAxisTests(ModuleCase):
     def test_a_fully_timed_model_is_left_on_its_time_axis(self):
         result = self.run_js("sequence", self.rich)
         self.assertEqual((result["sequence"], result["same"], result["untimed"]), (False, True, 0))
+
+
+@NODE
+class LiveAndV02Tests(ModuleCase):
+    """T060 to T062: the live "now", growing running bars, stated waits and stated tool durations (contract v0.2)."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        from agent_braid.view_hooks import HookIngest
+        from agent_braid.view_store import LoomStore
+        ticks = iter(range(0, 10**12, 1_000_000_000))  # one second per clock read
+        hooks = HookIngest(LoomStore(), clock=lambda: next(ticks), salt=b"t" * 16)
+        hooks.handle({"hook_event_name": "PostToolUse", "session_id": "s", "tool_name": "Bash", "duration_ms": 40})
+        hooks.handle({"hook_event_name": "PostToolUse", "session_id": "s", "tool_name": "Read"})
+        hooks.handle({"hook_event_name": "PostToolUse", "session_id": "s", "agent_id": "a", "tool_name": "Grep"})
+        cls.events = hooks.store.replay()
+        cls.last = max(event["at"]["relMs"] for event in cls.events)
+
+    def model(self, now_ms=None):
+        return json.loads(json.dumps(build_model(self.events, now_ms=now_ms)))
+
+    def test_a_replay_has_no_now_and_open_bars_end_at_the_last_event(self):
+        result = self.run_js("live", self.model())
+        self.assertEqual((result["live"], result["nowMs"], result["nowX"]), (False, None, None))
+        self.assertTrue(all(lane["endMs"] == self.last for lane in result["lanes"]))
+
+    def test_live_now_extends_the_axis_and_every_open_bar_to_now(self):
+        model = self.model(now_ms=self.last + 2000)
+        result = self.run_js("live", model)
+        self.assertEqual((result["live"], result["nowMs"]), (True, self.last + 2000))
+        self.assertEqual(result["nowX"], max(e["x"] for e in model["elements"]) + 2000)
+        self.assertEqual(result["spanX"], result["nowX"])
+        self.assertTrue(all(lane["endMs"] == self.last + 2000 and lane["endX"] == result["nowX"] for lane in result["lanes"]))
+        self.assertTrue(any(tick["ms"] is not None and tick["ms"] > self.last - model["axis"]["minMs"] for tick in result["ticks"]))
+
+    def test_the_page_clock_advances_now_and_a_long_wait_is_a_labelled_break(self):
+        model = self.model(now_ms=self.last)
+        result = self.run_js("live", model, nowMs=self.last + 60_000)
+        self.assertEqual(result["nowMs"], self.last + 60_000)
+        self.assertEqual(result["breaks"][-1]["spanMs"], 60_000)
+        self.assertTrue(result["breaks"][-1]["live"])
+        self.assertEqual(result["nowX"] - result["breaks"][-1]["x1"], model["axis"]["gapNominalMs"])
+
+    def test_now_is_never_before_the_last_event(self):
+        result = self.run_js("live", self.model(now_ms=self.last), nowMs=0)
+        self.assertEqual(result["nowMs"], self.last)
+
+    def test_a_stated_tool_duration_is_shown_and_otherwise_only_the_interval_to_the_next_event(self):
+        session = next(lane for lane in self.run_js("live", self.model())["lanes"] if lane["role"] == "agent")
+        marks = {mark["toolName"]: mark for mark in session["toolMarks"]}
+        self.assertEqual(marks["Bash"]["durationMs"], 40)
+        self.assertIsNone(marks["Read"]["durationMs"])
+        self.assertEqual(marks["Bash"]["intervalMs"], marks["Read"]["ms"] - marks["Bash"]["ms"])
+        self.assertIsNone(marks["Read"]["intervalMs"])  # no later event of this agent states a time
+
+    def test_a_declared_wait_carries_its_target_and_basis_and_a_v01_wait_carries_neither(self):
+        from agent_braid.view_adapters import events_from_analysis
+        data = (Path(__file__).resolve().parent / "fixtures/view/artifacts/analysis-mixed.json").read_bytes()
+        model = json.loads(json.dumps(build_model(events_from_analysis(data, path="a.json"))))
+        lane = next(l for l in self.run_js("live", model)["lanes"] if l["strandId"] == "edit-after-roadmap")
+        self.assertEqual([(s["waitingOn"], s["basis"]) for s in lane["waitSpans"]], [("edit-roadmap", "declared")])
+        plain = json.loads(json.dumps(self.rich))
+        update = next(e for e in plain["elements"] if e["element"] == "strand-state")
+        update["state"] = "waiting"
+        spans = [s for l in self.run_js("live", plain)["lanes"] for s in l["waitSpans"]]
+        self.assertTrue(spans and all(s["waitingOn"] is None and s["basis"] is None for s in spans))

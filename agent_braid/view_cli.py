@@ -250,7 +250,9 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
                             ingest_handlers={HOOK_PATH: hooks.handle}, names_inventory=hooks.dropped_names,
                             import_map_sha256=import_map_sha256, vendor_dir=vendor_dir_of(bundle_dir),
                             language_hint=language_hint_from_environ(os.environ),
-                            rotate_token=args.rotate_token)
+                            rotate_token=args.rotate_token,
+                            # T060: live unless a recorded stream was loaded (a replay is never live)
+                            live_clock=hooks.now_ms if args.replay is None else None)
     except ServeError as exc:
         _remove_created(created)
         raise CliError(f"view serve: {exc}") from exc

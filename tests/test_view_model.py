@@ -597,3 +597,43 @@ class BoundaryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LiveAxisAndV02Tests(unittest.TestCase):
+    """T060 to T062: `axis.nowMs` and `axis.live`, and the v0.2 members carried on lane-state elements."""
+
+    def events(self):
+        update = ev(3, "strand.update", {"strandId": "b", "state": "waiting", "toolName": None,
+                                         "waitingOn": "a", "waitingBasis": "declared"})
+        update["schemaVersion"] = view_loom.SCHEMA_VERSION_V02
+        tool = ev(4, "strand.update", {"strandId": "a", "state": "running", "toolName": "Bash", "toolDurationMs": 40})
+        tool["schemaVersion"] = view_loom.SCHEMA_VERSION_V02
+        return [strand(1, "a"), strand(2, "b"), update, tool]
+
+    def test_a_replay_is_not_live_and_now_is_the_last_stated_time(self):
+        axis = build_model(self.events())["axis"]
+        self.assertIs(axis["live"], False)
+        self.assertEqual(axis["nowMs"], axis["maxMs"])
+
+    def test_live_now_is_the_server_clock_never_before_the_last_event(self):
+        self.assertEqual(build_model(self.events(), now_ms=10_000)["axis"]["nowMs"], 10_000)
+        axis = build_model(self.events(), now_ms=5)["axis"]
+        self.assertIs(axis["live"], True)
+        self.assertEqual(axis["nowMs"], axis["maxMs"])
+
+    def test_an_empty_live_model_has_now(self):
+        self.assertEqual(build_model([], now_ms=7)["axis"]["nowMs"], 7)
+        self.assertIsNone(build_model([])["axis"]["nowMs"])
+
+    def test_now_must_be_a_non_negative_int(self):
+        for value in (-1, 1.5, True, "3"):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                build_model(self.events(), now_ms=value)
+
+    def test_wait_and_duration_members_are_carried_as_stated(self):
+        model = build_model(self.events())
+        wait, tool = by_seq(model, 3), by_seq(model, 4)
+        self.assertEqual((wait["waitingOn"], wait["waitingBasis"]), ("a", "declared"))
+        self.assertEqual(tool["toolDurationMs"], 40)
+        self.assertNotIn("toolDurationMs", wait)
+        self.assertNotIn("waitingOn", tool)

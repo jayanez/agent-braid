@@ -279,16 +279,26 @@ export function createTimeline(container, hooks) {
         const bar = el("g", { class: "tl-bar host-" + lane.host + " " + status });
         bar.append(el("rect", { class: "tl-bar-fill", x: startX, y: cy - BAR_HEIGHT / 2, width: barW, height: BAR_HEIGHT, rx: 3 }));
         if (status === "running") bar.append(el("rect", { class: "tl-bar-hatch", x: startX, y: cy - BAR_HEIGHT / 2, width: barW, height: BAR_HEIGHT, rx: 3 }));
+        // T061: a wait names its target and its basis only when the event states them; declared waits are outlined
         for (const span of lane.waitSpans) {
           const from = sx(span.fromX);
           const to = sx(span.toX === null ? Math.max(limit, span.fromX) : Math.min(span.toX, Math.max(limit, span.fromX)));
-          bar.append(el("rect", { class: "tl-wait", x: from, y: cy - BAR_HEIGHT / 2, width: Math.max(to - from, 2), height: BAR_HEIGHT }));
+          const target = span.waitingOn === null ? null : derived.byStrand.get(span.waitingOn);
+          const text = span.waitingOn === null ? t("tl.tip.waitUnstated")
+            : t("tl.tip.wait", { target: target ? target.displayLabel : span.waitingOn, basis: t("wait.basis." + span.basis) });
+          bar.append(tip(el("rect", { class: "tl-wait" + (span.basis ? " basis-" + span.basis : ""), x: from, y: cy - BAR_HEIGHT / 2,
+            width: Math.max(to - from, 2), height: BAR_HEIGHT }), text));
         }
+        // T062: a duration only when the host stated one; otherwise the interval to the next event, labelled as such
         for (const mark of lane.toolMarks) {
           if (!shown.has(mark.seq)) continue;
           const x = sx(mark.x);
-          bar.append(tip(el("line", { class: "tl-tool", x1: x, y1: cy - BAR_HEIGHT / 2 + 2, x2: x, y2: cy + BAR_HEIGHT / 2 - 2 }),
-            t("tl.tip.tool", { name: mark.toolName, time: mark.timeKnown ? formatClock(mark.ms - minMs) : "#" + mark.seq })));
+          const params = { name: mark.toolName, time: mark.timeKnown ? formatClock(mark.ms - minMs) : "#" + mark.seq };
+          const text = mark.durationMs !== null ? t("tl.tip.toolDuration", { ...params, text: formatDuration(mark.durationMs) })
+            : mark.intervalMs !== null ? t("tl.tip.toolInterval", { ...params, text: formatDuration(mark.intervalMs) })
+              : t("tl.tip.tool", params);
+          bar.append(tip(el("line", { class: "tl-tool" + (mark.durationMs !== null ? " stated" : ""), x1: x, y1: cy - BAR_HEIGHT / 2 + 2,
+            x2: x, y2: cy + BAR_HEIGHT / 2 - 2 }), text));
         }
         if (status === "running") bar.append(el("path", { class: "tl-open-end", d: "M" + (startX + barW) + " " + (cy - 6) + " l6 6 l-6 6" }));
         if (closedShown) {
@@ -347,6 +357,16 @@ export function createTimeline(container, hooks) {
       connectors.append(tip(group, text));
     }
     root.append(connectors);
+
+    // T060: the live "now" marker, from the server clock advanced by the page clock; open bars run up to it
+    const nowX = derived.axis.nowX;
+    if (typeof nowX === "number" && nowX >= x0 && nowX <= x1) {
+      const x = sx(nowX);
+      const now = el("g", { class: "tl-now" },
+        el("line", { class: "tl-now-line", x1: x, y1: RULER_HEIGHT - 10, x2: x, y2: height - 6 }),
+        el("text", { class: "tl-now-label", x: x - 4, y: 11, "text-anchor": "end" }, t("tl.now")));
+      root.append(tip(now, t("tl.tip.now", { time: formatClock(derived.axis.nowMs - minMs) })));
+    }
 
     // playback cursor, one line across every lane
     if (cursorX !== null && cursorX >= x0 && cursorX <= x1) {
