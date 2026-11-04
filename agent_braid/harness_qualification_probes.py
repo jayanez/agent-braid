@@ -30,6 +30,10 @@ attempts replace name-resolution-masked ones, informational ``tripwire`` attempt
 they succeed, the survivor scan diffs the dedicated user's process table, the NC-10 2 % stop rule
 and the session count persist, and the runner/judge/arena source is bound into the catalog hash.
 
+Round 4 (attempt 3): the survivor scan keeps only new processes that are alive, not zombies and named like an
+executable the profile can start (the rest is noted as strayProcesses), rows read settled through swept_settled,
+and redact_stderr_tail / reached_init serve the self-check startup stage.
+
 Integration of the T005 backend delta (RV-01/02/03/13): PROC-04 and PROC-08 are judged on the
 backend's ``surviving_processes`` (a leaver that the sweep killed is reported, not an escape), the
 PROC-08 cancellation half is driven through ``run_probe(cancel=)``, NET-05-CLI is judged on the
@@ -1132,7 +1136,7 @@ def redact_stderr_tail(raw: bytes, secrets: Sequence[str], *, operator_account: 
     lines = raw.decode("utf-8", "replace").splitlines()
     if len(raw) >= _mac.STDERR_TAIL_BYTES and lines:
         lines = lines[1:]
-    name = re.escape(operator_account)
+    name = re.escape(operator_account) if operator_account else None
     out = []
     for line in lines[-STDERR_TAIL_LINES:]:
         line = _NOT_PRINTABLE.sub("?", line)
@@ -1140,8 +1144,9 @@ def redact_stderr_tail(raw: bytes, secrets: Sequence[str], *, operator_account: 
         if hits:
             out.append(f"<redacted:{hits[0][0]}>")
             continue
-        line = re.sub(rf"/Users/{name}(?![A-Za-z0-9_.-])", "<operator-home>", line)
-        line = re.sub(rf"(?<![A-Za-z0-9_.-]){name}(?![A-Za-z0-9_-])", "<operator>", line) if operator_account else line
+        if name:  # macOS paths are case-insensitive, and the name is replaced wherever it occurs
+            line = re.sub(rf"/Users/{name}(?![A-Za-z0-9_])", "<operator-home>", line, flags=re.I)
+            line = re.sub(name, "<operator>", line, flags=re.I)
         out.append(line[:STDERR_LINE_CHARS])
     return out
 
@@ -1991,10 +1996,12 @@ def live_process_names(pids: Sequence[int]) -> dict[int, str]:
     """
     if not pids:
         return {}
-    out = subprocess.run(["/bin/ps", "-o", "pid=,stat=,comm=", "-p", ",".join(str(p) for p in pids)],
-                         capture_output=True, timeout=10, text=True).stdout
+    done = subprocess.run(["/bin/ps", "-o", "pid=,stat=,comm=", "-p", ",".join(str(p) for p in pids)],
+                          capture_output=True, timeout=10, text=True)
+    if done.returncode not in (0, 1) or (done.returncode == 1 and done.stderr.strip()):
+        raise OSError("ps failed")  # exit 1 without a message only means that no pid matched
     names = {}
-    for line in out.splitlines():
+    for line in done.stdout.splitlines():
         parts = line.split(None, 2)
         if len(parts) == 3 and parts[0].isdigit() and not parts[1].startswith("Z"):
             names[int(parts[0])] = Path(parts[2]).name

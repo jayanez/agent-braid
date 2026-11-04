@@ -17,7 +17,7 @@ No SBPL rule changed: the three profiles render byte for byte as before (`profil
 | Hash | Moves | Why |
 | --- | --- | --- |
 | `environmentSha256` | yes | the backend module hash changes (watchdog, proxy flag, launch options); recomputed by the dry run |
-| `catalogSha256` | yes | the probes module bytes (runner, judge, process filter, redaction) and the PROC-03 helper source and residual change; value at this head `4433fa49...e5019` (recompute at the final commit) |
+| `catalogSha256` | yes | the probes module bytes (runner, judge, process filter, redaction) and the PROC-03 helper source and residual change; value at this head `cf2fb4be...a46c0` (recompute at the final commit) |
 | profile hashes (`fixture`, `launch`, `launch-probe`), `claude`, interpreter, `sandbox-exec` pins | no | unchanged |
 | `bundleSha256` of `t009-20261104b` and `t009-20261104c` | no, but each verifies only at the commit it ran at (`a4d5c294` for `b`): the catalog hash binds the module source |
 
@@ -121,5 +121,5 @@ applied (open question in the result).
 ## Validation
 
 Focused: `tests.test_harness_containment_macos`, `..._qualification_probes`, `test_har_t009_attempt`,
-`test_har_t009_setup` all pass (552 tests, 3 skipped on non-macOS or live-only cases). The required profile ran
+`test_har_t009_setup` all pass (553 tests, 3 skipped on non-macOS or live-only cases). The required profile ran
 once on the final candidate (see the PR).

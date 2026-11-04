@@ -1106,6 +1106,11 @@ class SelfCheckTests(unittest.TestCase):
                 code, report, _ = self.run_check(FakeBackend(check=F4_OK, startup={"egress": leak}))
                 self.assertEqual((code, report["verdict"]), (2, "self-check-egress-leak"))
                 self.assertTrue(report["startup"]["egressLeak"])
+        code, report, _ = self.run_check(FakeBackend(check=F4_OK, startup={"egress": {"bytesUp": 4000}}))
+        self.assertEqual((code, report["verdict"], report["startup"]["egress"]["bytesUp"]), (2, "self-check-egress-leak", 4000))
+        for bad in (None, {"allowed": -1}, {"denied": "2"}):  # missing or malformed counters fail closed
+            self.assertEqual(self.run_check(FakeBackend(check=F4_OK, startup={"egress": bad}))[1]["verdict"],
+                             "self-check-egress-leak")
         report = self.run_check(FakeBackend(check=F4_OK, startup={"egress": {"connections": 2, "denied": 2}}))[1]
         self.assertFalse(report["startup"]["egressLeak"])
         self.assertEqual(report["startup"]["egress"]["denied"], 2)
@@ -1141,6 +1146,12 @@ class SelfCheckTests(unittest.TestCase):
             "<redacted:anthropic-api-key>", f"read {HOME}/claude/.claude.json failed: EPERM",
             "<redacted:long-run>", "?[31mred?[0m"])
         self.assertNotIn(SECRET, json.dumps(report))
+
+    def test_the_operator_account_is_replaced_in_any_case_and_an_empty_one_changes_nothing(self):
+        raw = b"/Users/JuanYanez/x and dir-juanyanez and /Users/ here"
+        self.assertEqual(q.redact_stderr_tail(raw, [], operator_account="juanyanez"),
+                         ["<operator-home>/x and dir-<operator> and /Users/ here"])
+        self.assertEqual(q.redact_stderr_tail(raw, [], operator_account=""), [raw.decode()])
 
     def test_redaction_keeps_the_last_twenty_lines_and_drops_a_tail_cut_mid_line(self):
         lines = [f"line {n}" for n in range(30)]

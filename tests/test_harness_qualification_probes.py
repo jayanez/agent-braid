@@ -1116,7 +1116,7 @@ class ExecutorTests(unittest.TestCase):
     def test_scan_processes_matches_the_nonce_and_skips_this_process(self):
         listing = (f"  101 python -c A nonce123 x\n  {os.getpid()} python nonce123\n"
                    "  202 other\n  303 python nonce123\n")
-        with mock.patch.object(q.subprocess, "run", return_value=SimpleNamespace(stdout=listing)):
+        with mock.patch.object(q.subprocess, "run", return_value=SimpleNamespace(stdout=listing, stderr="", returncode=0)):
             self.assertEqual(q.scan_processes("nonce123"), [101, 303])
 
     def test_kill_processes_ignores_missing_pids(self):
@@ -1664,10 +1664,16 @@ class ReviewRunnerTests(unittest.TestCase):
 
     def test_live_process_names_skips_zombies_and_takes_the_executable_basename(self):
         listing = "  9 Ss   /usr/libexec/cfprefsd\n 10 Z    (python3.12)\n 11 R+ /opt/py/bin/python3.12\n bad\n"
-        with mock.patch.object(q.subprocess, "run", return_value=SimpleNamespace(stdout=listing)) as run:
+        with mock.patch.object(q.subprocess, "run", return_value=SimpleNamespace(stdout=listing, stderr="", returncode=0)) as run:
             self.assertEqual(q.live_process_names([9, 10, 11]), {9: "cfprefsd", 11: "python3.12"})
         self.assertEqual(run.call_args.args[0], ["/bin/ps", "-o", "pid=,stat=,comm=", "-p", "9,10,11"])
         self.assertEqual(q.live_process_names([]), {})
+        for done in (SimpleNamespace(stdout="", stderr="usage", returncode=2),
+                     SimpleNamespace(stdout="", stderr="ps: denied", returncode=1)):
+            with mock.patch.object(q.subprocess, "run", return_value=done), self.assertRaises(OSError):
+                q.live_process_names([9])
+        with mock.patch.object(q.subprocess, "run", return_value=SimpleNamespace(stdout="", stderr="", returncode=1)):
+            self.assertEqual(q.live_process_names([9]), {})  # no pid matched: they are gone
 
     def test_descendant_names_come_from_the_exec_allow_list_and_this_interpreter(self):
         policy = SimpleNamespace(claude="/x/bin/claude-2.1.292", interpreter="/x/py/bin/python3.12",
@@ -2279,7 +2285,7 @@ class DiscoveryHelperTests(unittest.TestCase):
     def test_process_table_parses_ps_and_skips_ps_and_this_process(self):
         listing = (f"  11 Sat Nov  1 12:00:00 2026 /usr/bin/python3\n  12 Sat Nov  1 12:00:01 2026 /bin/ps\n"
                    f"  {os.getpid()} Sat Nov  1 12:00:02 2026 /usr/bin/python3\nbroken line\n")
-        with mock.patch.object(q.subprocess, "run", return_value=SimpleNamespace(stdout=listing)) as run:
+        with mock.patch.object(q.subprocess, "run", return_value=SimpleNamespace(stdout=listing, stderr="", returncode=0)) as run:
             self.assertEqual(q.own_process_table(), {(11, "Sat Nov 1 12:00:00 2026")})
         self.assertIn("-U", run.call_args.args[0])
 

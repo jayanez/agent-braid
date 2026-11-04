@@ -869,13 +869,15 @@ def startup_stage(backend: object, workdir: Callable[[], Path], secrets: Sequenc
     session = _probes.SessionResult(run.stdout, run.exit_code, run.timed_out, run.cancelled, run.settled,
                                     auth_token=marks[-1] if marks else None)
     egress = getattr(run, "egress", None)
-    egress = egress if isinstance(egress, Mapping) else {}
-    leak = any(_int(egress.get(key)) for key in STARTUP_LEAK_FIELDS)
+    counters = isinstance(egress, Mapping) and all(type(v) is int and v >= 0 for v in egress.values())
+    egress = dict(egress) if counters else {}
+    # fail closed: counters that are missing or malformed, or any tunnel or byte, read as a leak
+    leak = not counters or any(egress.get(key, 0) > 0 for key in STARTUP_LEAK_FIELDS)
     return report | {
         "reachedInit": _probes.reached_init(run.stdout), "exitCode": _int(run.exit_code),
         "reason": _probes.session_exit_reason(session), "timedOut": bool(run.timed_out),
         "authToken": session.auth_token if session.auth_token in ("present", "absent") else None,
-        "egress": {key: _int(egress.get(key)) or 0 for key in ("connections", "denied", *STARTUP_LEAK_FIELDS)},
+        "egress": {key: egress.get(key, 0) for key in ("connections", "denied", *STARTUP_LEAK_FIELDS)},
         "egressLeak": leak,
         "stderrTail": _probes.redact_stderr_tail(getattr(run, "stderr_tail", b""), secrets,
                                                  operator_account=operator_account)}

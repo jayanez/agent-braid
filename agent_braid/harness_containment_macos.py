@@ -1467,8 +1467,8 @@ class MacOSContainment(ContainmentBackend):
             self._refuse("launch", "invalid-launch")
         with self._exclusive("launch"):
             evidence, candidate, uid = self._pre_session("launch", cwd, probes=True)
-            self._proxy.refuse_all = no_egress
             try:
+                self._proxy.refuse_all = no_egress
                 return self._spawn("launch", list(argv), evidence, candidate=candidate, uid=uid,
                                    wall=wall_seconds, cpu=LIMITS["cpuSeconds"], max_output=max_output_bytes,
                                    cancel=cancel, stdin=stdin, on_output=on_output,
