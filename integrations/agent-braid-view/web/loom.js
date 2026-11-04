@@ -137,19 +137,23 @@ function applyStaticText() {
   for (const node of document.querySelectorAll("[data-i18n-label]")) node.setAttribute("aria-label", t(node.dataset.i18nLabel));
 }
 
+let languageApplied = false;
+
 function applyLanguage() {
   const next = detectLanguage();
   const changed = next !== state.lang;
   state.lang = next;
-  if (changed || !applyLanguage.done) {
-    applyLanguage.done = true;
+  if (changed || !languageApplied) {
+    languageApplied = true;
     applyStaticText();
     for (const id of ["source-list", "agent-list", "status-list"]) $(id).dataset.keys = ""; // rebuilt in the new language
     const select = $("lang-select");
     if (select) select.value = state.langChoice;
+    if (noticeKey) setNotice(noticeKey.key, noticeKey.params);
     if (state.model) renderAll();
     else renderChrome();
     if (scene) syncScene(true);
+    else if (sceneFailure) $("scene-note").textContent = t("scene.unavailable", { reason: t(sceneFailure) });
   }
 }
 
@@ -280,10 +284,13 @@ function shownInViews(element) {
   return isSourceShown(element) && passesFilters(element, derived(), state.filters);
 }
 
-function setNotice(text) {
+let noticeKey = null;
+
+function setNotice(key, params) {
+  noticeKey = key ? { key, params } : null;
   const box = $("notice");
-  box.textContent = text || "";
-  box.hidden = !text;
+  box.textContent = key ? t(key, params) : "";
+  box.hidden = !key;
 }
 
 let snapshotRequest = 0;
@@ -294,15 +301,15 @@ async function loadSnapshot() {
   try {
     response = await fetch("/snapshot", { cache: "no-store", credentials: "same-origin" });
   } catch (error) {
-    setNotice(t("notice.unreachable"));
+    setNotice("notice.unreachable");
     return;
   }
   if (response.status === 404) {
-    setNotice(t("notice.notOpen"));
+    setNotice("notice.notOpen");
     return;
   }
   if (!response.ok) {
-    setNotice(t("notice.snapshotFailed", { status: response.status }));
+    setNotice("notice.snapshotFailed", { status: response.status });
     return;
   }
   let document_;
@@ -310,11 +317,11 @@ async function loadSnapshot() {
     document_ = await response.json();
     if (!document_ || typeof document_.model !== "object" || document_.model === null) throw new Error("no model");
   } catch (error) {
-    setNotice(t("notice.invalidJson"));
+    setNotice("notice.invalidJson");
     return;
   }
   if (request !== snapshotRequest) return; // a newer request supersedes this response
-  setNotice("");
+  setNotice(null);
   const firstModel = state.model === null;
   const atEnd = state.cursor >= totalCount();
   state.model = document_.model;
@@ -325,12 +332,12 @@ async function loadSnapshot() {
   if (state.selected !== null && !state.model.elements.some((element) => element.seq === state.selected)) {
     state.selected = null;
   }
-  applyLanguage(); // the hint may change the language; this also renders when it does not
   try {
+    applyLanguage(); // the hint may change the language
     renderAll();
   } catch (error) {
     console.error(error);
-    setNotice(t("notice.renderFailed"));
+    setNotice("notice.renderFailed");
   }
 }
 
@@ -428,7 +435,15 @@ function renderSummary() {
 }
 
 // Static parts that depend on the language or the number of views and not on the model.
+function renderAuthorization() {
+  const value = state.model ? state.model.executionAuthorization : false;
+  const badge = $("authorization");
+  badge.textContent = "executionAuthorization: " + String(value);
+  badge.className = value === false ? "badge" : "badge mark unverified";
+}
+
 function renderChrome() {
+  renderAuthorization();
   setConnection(connectionKey);
   renderViewSwitch();
   renderTabs();
@@ -683,7 +698,7 @@ function renderTable() {
   const rows = visibleRows();
   const last = state.cursor > 0 ? rowsInOrder()[state.cursor - 1] : null;
   const active = document.activeElement;
-  const focusedSeq = active && active.dataset ? active.dataset.seq : null;
+  const focusedSeq = active && active.dataset && active.dataset.seq !== undefined ? active.dataset.seq : null;
   const cell = (key, ...children) => h("td", { "data-label": t("table.col." + key) }, ...children);
   fill("events-body", rows.map(({ row, element }) => {
     const [glyph, label] = shapeOf(element);
@@ -883,7 +898,7 @@ function renderPlayback() {
   $("pb-back").disabled = state.cursor <= 0;
   $("pb-start").disabled = state.cursor <= 0;
   $("pb-forward").disabled = state.cursor >= total;
-  $("pb-play").setAttribute("aria-pressed", state.playing ? "true" : "false");
+  $("pb-play").setAttribute("data-playing", state.playing ? "true" : "false");
   $("pb-play").textContent = t(state.playing ? "playback.pause" : "playback.play");
 }
 
@@ -984,7 +999,7 @@ function isTyping(event) {
 function onKey(event) {
   if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
   if (event.key === "Escape") {
-    deselect();
+    if (!isTyping(event)) deselect();
   } else if (event.key === "?" && !isTyping(event)) {
     event.preventDefault();
     openHelp();
@@ -1045,6 +1060,8 @@ function restoreFromHash() {
   state.filters.onlyProblems = wanted.onlyProblems;
   if (wanted.selected !== null && elementOf(wanted.selected)) state.selected = wanted.selected;
   if (wanted.viewport) state.viewport = wanted.viewport;
+  const chosen = state.selected === null ? undefined : elementOf(state.selected);
+  if (chosen && !shownInViews(chosen)) state.selected = null; // a restored filter may hide the restored selection
 }
 
 // ---------------------------------------------------------------- 3D scene (optional)
@@ -1087,7 +1104,7 @@ function syncScene(force) {
     applyScene(force);
   } catch (error) {
     console.error(error);
-    sceneUnavailable(t("scene.reason.draw"));
+    sceneUnavailable("scene.reason.draw");
   }
 }
 
@@ -1116,7 +1133,11 @@ function applyScene(force) {
   }
 }
 
+// `reason` is a string key of the page or, from the scene itself, a sentence it wrote.
+let sceneFailure = null;
+
 function sceneUnavailable(reason) {
+  sceneFailure = reason;
   if (scene) {
     try {
       scene.dispose();
@@ -1130,12 +1151,12 @@ function sceneUnavailable(reason) {
   $("scene-hover").hidden = true;
   $("scene-reset").hidden = true;
   $("legend-scene-block").hidden = true;
-  $("scene-note").textContent = t("scene.unavailable", { reason });
+  $("scene-note").textContent = t("scene.unavailable", { reason: t(reason) });
 }
 
 async function startScene() {
   if (typeof WebGL2RenderingContext !== "function") {
-    sceneUnavailable(t("scene.reason.noWebgl2"));
+    sceneUnavailable("scene.reason.noWebgl2");
     return;
   }
   let module_;
@@ -1143,7 +1164,7 @@ async function startScene() {
     module_ = await import("/web/braid-scene.js");
   } catch (error) {
     console.error(error);
-    sceneUnavailable(t("scene.reason.load"));
+    sceneUnavailable("scene.reason.load");
     return;
   }
   $("scene-section").hidden = false; // the canvas needs a laid-out box to size itself
@@ -1151,7 +1172,7 @@ async function startScene() {
     scene = module_.createBraidScene($("scene-box"), { onSelect: select, onHover: showHover, onUnavailable: sceneUnavailable });
   } catch (error) {
     console.error(error);
-    sceneUnavailable(t("scene.reason.start"));
+    sceneUnavailable("scene.reason.start");
     return;
   }
   $("legend-scene-block").hidden = false;

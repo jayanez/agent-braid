@@ -165,11 +165,12 @@ Case in English UI strings). A message says what happened, why and what to do. T
 non-claim is stated once in the strip and once in "Ayuda"; elsewhere wording is
 descriptive and conditional ("según el análisis", "no verificado").
 
-UI language is open (OD-V1). All strings live in one module (`strings.js`, planned in
-T058) as `es` and `en` tables with a key-parity test; the recommendation is Spanish by
-default with English available. Terms below are the single vocabulary.
+UI language is decided (OD-V1 as accepted 2026-11-04, see owner-decisions.md): detected
+from the browser or desktop-app locale, then the `view serve` process locale, then
+English, with a manual choice. All strings live in one module (`strings.js`) as `es` and
+`en` tables with a key-parity test. Terms below are the single vocabulary.
 
-| Concept | es (default) | en | Do not say |
+| Concept | es | en | Do not say |
 |---|---|---|---|
 | strand / lane | agente (fila: "Carril" only in help) | agent | strand, hebra |
 | lane main | sesión principal | main session | root |

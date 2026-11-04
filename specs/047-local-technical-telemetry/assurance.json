@@ -57,7 +57,7 @@
       "docs/adr/0030-native-plugin-surface-naming.md": "2bff8ce3fd5c2e183dca8000044ccd4d08980ec7e4a1b31d9af7a3a4b7f18c8e",
       "docs/adr/0031-portable-prompt-names.md": "2e2ccf4e3d3b82cfb3e375d790104b9bb79f7f503041f11e60738e546d670d8e",
       "docs/adr/0032-activity-viewer-companion.md": "75c41ed41b9ffa886df423dffb47ff2fd110f4a7fe639d54ee6b82b3148a5b06",
-      "docs/adr/0033-vendored-threejs-mit-boundary.md": "fd73edd159eb4af031824b637beadf8b59c27ef631ec28c54470ace1ec0dff87",
+      "docs/adr/0033-vendored-threejs-mit-boundary.md": "fc0866d0e33d203e18bd9a8018cb9defc25f476db6a8294ef32c2982ae049bd6",
       "docs/adr/0034-system-one-shadow-advisory-boundary.md": "83de00082099fbefad0f2603aae8020270b157e731aae613f412586d33c086eb",
       "docs/adr/0035-native-claude-laboratory-containment.md": "9db60ef1544e5218eb7fa7ba34315f48b33e464b761e07359fc5bfcd9bfaf0c5",
       "docs/adr/0036-assurance-profiles.md": "9a7abf22920a9ba91cb61c5c48b905a1415182bc9434bcf884680ec41666b464",

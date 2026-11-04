@@ -207,6 +207,7 @@ function laneRecord(bySeq, lane, rec, sessionEndMs, sessionEndX) {
   let waiting = null;
   const endOf = (element) => ({ ms: element.relMs, x: element.x });
   for (const update of updates) {
+    if (update.timeKnown === false) continue; // an update that states no time starts or ends no span
     if (waiting) {
       waiting.toMs = update.relMs; waiting.toX = update.x; waiting.open = false;
       waitSpans.push(waiting);
@@ -215,7 +216,7 @@ function laneRecord(bySeq, lane, rec, sessionEndMs, sessionEndX) {
     if (update.state === "waiting") waiting = { seq: update.seq, fromMs: update.relMs, fromX: update.x, toMs: null, toX: null, open: true };
   }
   if (waiting) {
-    if (close) { const end = endOf(close); waiting.toMs = end.ms; waiting.toX = end.x; waiting.open = false; }
+    if (close && closeKnown) { const end = endOf(close); waiting.toMs = end.ms; waiting.toX = end.x; waiting.open = false; }
     waitSpans.push(waiting);
   }
 
@@ -224,7 +225,7 @@ function laneRecord(bySeq, lane, rec, sessionEndMs, sessionEndX) {
     host: lane.host, role: lane.role, declared: lane.declared, unverified: Boolean(lane.unverified),
     parentStrandId: lane.parentStrandId === undefined ? null : lane.parentStrandId, parentLane: null, orphan: false, depth: 0,
     openSeq: lane.seq, openMs, openX, openKnown,
-    closeSeq: close ? close.seq : null, closeMs: close ? close.relMs : null, closeX: close ? close.x : null, closeKnown,
+    closeSeq: close ? close.seq : null, closeMs: close && closeKnown ? close.relMs : null, closeX: close ? close.x : null, closeKnown,
     outcome: close ? (typeof close.outcome === "string" ? close.outcome : "unknown") : null,
     state, idle, inferred: !close && state !== "unknown",
     durationMs: close && openKnown && closeKnown ? Math.max(0, close.relMs - openMs) : null,
@@ -347,10 +348,12 @@ export function conflictsOf(crossings) {
 
 // Number of agents open at each instant (F1), as steps in session time, with the peak. A lane still open at the
 // end of the session counts up to the last event.
-export function deriveConcurrency(derived) {
+export function deriveConcurrency(derived, basis) {
   const edges = [];
+  if (basis === "mixed" || basis === "sequence-only") return { steps: [], peak: 0, peakMs: null };
   for (const lane of derived.lanes) {
-    if (!lane.openKnown || lane.openMs === null || lane.endMs === null) continue;
+    // only lanes whose state is known count: an agent with no update and no close is not shown as open
+    if (!lane.openKnown || lane.openMs === null || lane.endMs === null || lane.state === "unknown") continue;
     edges.push([lane.openMs, 1], [Math.max(lane.endMs, lane.openMs), -1]);
   }
   edges.sort((a, b) => a[0] - b[0] || a[1] - b[1]); // closing before opening at the same instant
@@ -400,7 +403,7 @@ export function derive(model) {
   const crossings = deriveCrossings(model, lanes);
   return {
     ...lanes, axis: deriveAxis(model), crossings, conflicts: conflictsOf(crossings),
-    concurrency: deriveConcurrency(lanes), overlaps: deriveOverlaps(model, lanes, crossings),
+    concurrency: deriveConcurrency(lanes, model && model.axis ? model.axis.basis : "sequence-only"), overlaps: deriveOverlaps(model, lanes, crossings),
   };
 }
 
@@ -442,7 +445,7 @@ export function hasFilters(state) {
 
 // ---------------------------------------------------------------- the URL hash
 
-const HASH_ITEM = /^[A-Za-z0-9._:#-]{1,64}$/;
+const HASH_ITEM = /^[\x20-\x7e]{1,64}$/; // printable ASCII; items travel percent-encoded and never as markup
 const MAX_HASH_ITEMS = 64;
 
 // view, selection, filters and viewport only. The hash never carries an event value, a path or a label: only

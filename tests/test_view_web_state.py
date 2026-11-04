@@ -152,6 +152,9 @@ class DerivedModelTests(ModuleCase):
 
     def test_concurrency_counts_open_lanes_and_its_peak_is_the_maximum_step(self):
         steps = self.derived["concurrency"]["steps"]
+        known = [lane for lane in self.derived["lanes"] if lane["state"] != "unknown"]
+        peak = max(sum(1 for lane in known if lane["openMs"] <= at < lane["endMs"]) for at in (lane["openMs"] for lane in known))
+        self.assertEqual(self.derived["concurrency"]["peak"], peak)
         self.assertEqual(self.derived["concurrency"]["peak"], max(step["open"] for step in steps))
         self.assertEqual(steps[-1]["open"], 0)
         self.assertTrue(all(left["ms"] < right["ms"] for left, right in zip(steps, steps[1:])))
@@ -166,6 +169,22 @@ class DerivedModelTests(ModuleCase):
         self.assertTrue(ticks)
         for tick in ticks:
             self.assertFalse(any(b["x1"] < tick["x"] < b["x2"] for b in self.derived["breaks"]), tick)
+
+    def test_a_close_that_states_no_time_gives_no_end_time_and_no_waiting_span(self):
+        model = json.loads(json.dumps(self.rich))
+        close = next(e for e in model["elements"] if e["element"] == "strand-end" and e["strandId"] == "explore")
+        close["timeKnown"] = False
+        lane = next(l for l in self.run_js("derive", model)["lanes"] if l["strandId"] == "explore")
+        self.assertEqual((lane["closeMs"], lane["durationMs"], lane["state"]), (None, None, "finished"))
+
+    def test_waiting_spans_run_between_stated_updates_and_an_open_one_has_no_end(self):
+        model = json.loads(json.dumps(self.rich))
+        updates = [e for e in model["elements"] if e["element"] == "strand-state" and e["strandId"] == "explore"]
+        updates[0]["state"] = "waiting"
+        lane = next(l for l in self.run_js("derive", model)["lanes"] if l["strandId"] == "explore")
+        self.assertEqual(lane["waitSpans"][0]["fromMs"], updates[0]["relMs"])
+        self.assertEqual(lane["waitSpans"][0]["toMs"], updates[1]["relMs"])
+        self.assertFalse(lane["waitSpans"][0]["open"])
 
     def test_a_model_without_lanes_derives_nothing_and_does_not_fail(self):
         empty = {"lanes": [], "elements": [], "table": [], "axis": {}, "counters": {"gaps": {"total": 0}}}
@@ -209,14 +228,19 @@ class HashTests(ModuleCase):
         self.assertRegex(result["text"], r"^#[A-Za-z0-9=&,._:%#-]+$")
 
     def test_hostile_input_is_dropped_not_interpreted(self):
-        hostile = "#v=<script>&sel=1;DROP&hide=a b,../../etc,ok&st=running,evil&x=9-1&ag=" + "a" * 200
+        hostile = "#v=<script>&sel=1;DROP&hide=ok,%01,%E0%A4%A&st=running,evil&x=9-1&ag=" + "a" * 200
         decoded = self.run_js("hash", None, state={}, hostile=hostile)["hostile"]
         self.assertEqual((decoded["view"], decoded["selected"], decoded["viewport"]), (None, None, None))
         self.assertEqual((decoded["hide"], decoded["status"], decoded["agents"]), (["ok"], ["running"], []))
 
     def test_an_unsafe_id_is_never_written_to_the_hash(self):
-        state = {"view": "timeline", "selected": None, "hiddenSources": ["fine", "has space", "<x>"]}
+        state = {"view": "timeline", "selected": None, "hiddenSources": ["fine", "bad\u0001", "x" * 65]}
         self.assertEqual(self.run_js("hash", None, state=state, hostile="")["text"], "#v=timeline&hide=fine")
+
+    def test_a_watched_root_source_survives_the_round_trip(self):
+        state = {"view": "map3d", "selected": None, "hiddenSources": ["watched:root 1"]}
+        result = self.run_js("hash", None, state=state, hostile="")
+        self.assertEqual(result["decoded"]["hide"], ["watched:root 1"])
 
 
 @NODE
@@ -304,6 +328,33 @@ class StringTableTests(unittest.TestCase):
         self.assertEqual(sorted(key for key in prefixes if not any(known.startswith(key) for known in keys)), [])
         self.assertEqual(sorted((asked - prefixes) - keys), [])
 
+    def test_every_key_built_from_a_list_or_a_prefix_exists(self):
+        keys = set(self.table["en"])
+        text = read("loom.js")
+        lists = {"sceneLegend.": r"SCENE_LEGEND_KEYS = \[([^\]]*)\]", "mark.": r"MARK_KEYS = \[([^\]]*)\]"}
+        for prefix, pattern in lists.items():
+            names = re.findall(r'"([A-Za-z]+)"', re.search(pattern, text).group(1))
+            self.assertTrue(names)
+            for name in names:
+                self.assertIn(prefix + name, keys)
+                if prefix == "mark.":
+                    self.assertIn(prefix + name + ".meaning", keys)
+        for name in ("rehashed", "derived", "unverified"):
+            self.assertIn(f"verification.{name}.meaning", keys)
+        for name in ("watched", "replay", "hook", "viewer"):
+            self.assertIn(f"source.{name}.meaning", keys)
+        for name in ("running", "waiting", "finished", "unknown"):
+            self.assertIn(f"state.{name}", keys)
+        for name in ("live", "reconnecting", "notOpen", "connecting"):
+            self.assertIn(f"connection.{name}", keys)
+        for value in re.findall(r'"(scene\.reason\.[A-Za-z0-9]+)"', text):
+            self.assertIn(value, keys)
+
+    def test_the_scene_reason_texts_the_page_translates_are_the_ones_the_scene_emits(self):
+        scene = read("braid-scene.js")
+        for english in re.findall(r'^\s*"([^"]+)": "scene\.reason\.', read("loom.js"), re.M):
+            self.assertIn(english, scene)
+
     def test_no_user_facing_literal_is_assigned_in_the_page_script(self):
         text = read("loom.js")
         self.assertEqual(re.findall(r'textContent\s*=\s*"[^"]*[a-z] [a-z][^"]*"', text), [])
@@ -369,8 +420,9 @@ class LanguageHintTests(unittest.TestCase):
                 self.assertEqual(language_hint_from_environ(environ), expected)
 
     def test_the_hint_leaves_only_as_a_two_letter_tag(self):
-        for value in ("es_ES.UTF-8@euro", "EN_us"):
-            self.assertIn(language_hint_from_environ({"LANG": value}), ("es", "en"))
+        self.assertEqual(language_hint_from_environ({"LANG": "es_ES.UTF-8@euro"}), "es")
+        self.assertEqual(language_hint_from_environ({"LANG": "EN_us"}), "en")
+        self.assertEqual(language_hint_from_environ({"LC_ALL": "en", "LANG": "es_ES.UTF-8"}), "en")
 
 
 if __name__ == "__main__":

@@ -34,7 +34,7 @@
 <span data-i18n="boundary">Read-only · does not authorize execution</span></p>
 <noscript><p class="notice">This viewer needs its own first-party JavaScript (no external code) to render the table.</p></noscript>
 <p class="notice" id="notice" hidden></p>
-<div class="toolbar" role="toolbar" data-i18n-label="toolbar.label" aria-label="View and filters">
+<div class="toolbar" role="group" data-i18n-label="toolbar.label" aria-label="View and filters">
   <fieldset class="view-switch" id="view-switch" hidden>
     <legend class="sr" data-i18n="view.legend">View</legend>
     <label class="choice"><input type="radio" name="view" value="timeline" id="view-timeline"><span data-i18n="view.timeline">Timeline</span></label>
@@ -82,7 +82,7 @@
     <h2 class="sr" id="playback-title" data-i18n="playback.title">Playback</h2>
     <button type="button" id="pb-start" data-i18n="playback.start" data-i18n-title="playback.start.title" title="Back to the first event">Start</button>
     <button type="button" id="pb-back" data-i18n="playback.back" data-i18n-title="playback.back.title" title="One event back">Step back</button>
-    <button type="button" id="pb-play" aria-pressed="false">Play</button>
+    <button type="button" id="pb-play" data-playing="false">Play</button>
     <button type="button" id="pb-forward" data-i18n="playback.forward" data-i18n-title="playback.forward.title" title="One event forward">Step forward</button>
     <button type="button" id="pb-end" data-i18n="playback.end" data-i18n-title="playback.end.title" title="Show all events and follow new ones">Go to now</button>
     <label class="field"><span data-i18n="playback.mode">Pace</span>

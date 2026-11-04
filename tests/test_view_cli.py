@@ -193,6 +193,12 @@ class ServeTests(ServeCase):
         self.assertTrue(replayed)
         self.assertTrue(all(event["source"]["verification"] == "unverified" for event in replayed))
 
+    def test_the_snapshot_carries_the_language_of_the_process_locale_as_a_bare_tag(self):
+        for locale, expected in (("es_ES.UTF-8", "es"), ("fr_FR.UTF-8", None)):
+            with self.subTest(locale=locale), mock.patch.dict(os.environ, {"LANG": locale, "LC_ALL": "", "LC_MESSAGES": ""}):
+                server, _, _ = self.serve()
+                self.assertEqual(self.snapshot(server).get("uiLanguageHint"), expected)
+
     def test_hook_ingest_is_registered_with_names_inventory(self):
         server, _, _ = self.serve()
         payload = json.loads((FIXTURES / "hooks/unknown-attribute.json").read_text())

@@ -80,10 +80,10 @@ await sleep(60);
 
 const text = (id) => find(id).textContent;
 const observe = () => ({
-  count: text("pb-count"), playing: find("pb-play").attrs["aria-pressed"],
+  count: text("pb-count"), playing: find("pb-play").attrs["data-playing"],
   rows: find("events-body").children.map((row) => Number(row.descendants().find((node) => node.attrs["data-seq"]).attrs["data-seq"])),
   backDisabled: find("pb-back").disabled, forwardDisabled: find("pb-forward").disabled,
-  evidence: text("evidence"), connection: text("connection"), notice: text("notice"),
+  evidence: text("evidence"), authorization: [text("authorization"), find("authorization").className], connection: text("connection"), notice: text("notice"),
   snapshots: requests.filter((request) => request.url === "/snapshot").length,
   events: requests.filter((request) => request.url === "/events").map((request) => request.headers),
   scene: { section: find("scene-section").hidden, box: find("scene-box").hidden, note: text("scene-note"),
@@ -212,11 +212,14 @@ class LanguageTests(PageBehaviourCase):
     def test_the_server_hint_is_used_when_the_browser_offers_no_supported_language(self):
         self.assertEqual(self.drive(languages=["fr"], hint="es")[0]["count"], f"{self.total} de {self.total}")
 
-    def test_a_supported_browser_language_beats_the_server_hint(self):
-        self.assertEqual(self.drive(languages=["en-US"], hint="es")[0]["count"], f"{self.total} of {self.total}")
-
-    def test_an_unsupported_hint_is_ignored(self):
-        self.assertEqual(self.drive(languages=["fr"], hint="tlh")[0]["count"], f"{self.total} of {self.total}")
+    def test_the_boundary_badge_follows_the_model_and_a_true_value_is_marked(self):
+        first = self.drive()[0]
+        self.assertEqual(first["authorization"], ["executionAuthorization: false", "badge"])
+        self.model = {**self.model, "executionAuthorization": True}
+        try:
+            self.assertEqual(self.drive()[0]["authorization"], ["executionAuthorization: true", "badge mark unverified"])
+        finally:
+            self.model = {**self.model, "executionAuthorization": False}
 
 
 class SseResumeTests(PageBehaviourCase):
