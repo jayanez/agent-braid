@@ -247,8 +247,7 @@ observed in Claude Code and Codex, and install, interactive skill and command us
 update and removal in OpenCode, on macOS arm64 (records in
 [specs/046-native-ai-plugins](specs/046-native-ai-plugins/) and the
 [OpenCode native observation](specs/068-opencode-native-integration/evidence/native-observation.json)).
-The recorded Claude Code and Codex installs predate the latest plugin release, whose
-installs there are not observed, and Linux execution has not been observed. Always install the latest release; the commands
+Linux execution has not been observed. Always install the latest release; the commands
 above do.
 
 <details>
