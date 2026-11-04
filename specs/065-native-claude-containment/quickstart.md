@@ -252,12 +252,14 @@ SHORT=${COMMIT:0:7}
 PYRUN=("$BRAID/python312/bin/python3.12" -B -I "$BRAID/repo-$SHORT/scripts/har_t009_attempt.py")
 OPERATOR_ACCOUNT='PASTE_YOUR_OWN_ACCOUNT_SHORT_NAME'   # your daily account; "id -un" in your own session
 printf %s "$OPERATOR_ACCOUNT" | grep -Eq '^[a-z_][a-z0-9_-]{0,31}$' || { echo "STOP: OPERATOR_ACCOUNT is not an account name"; false; }
-ARGS=(--attempt t009-20261104 --operator-account "$OPERATOR_ACCOUNT"
+ATTEMPT='t009-20261104'   # the attempt label the orchestrator gave you; a new label (and out dir) after attempt 1, see step 10c
+printf %s "$ATTEMPT" | grep -Eq '^t009-[0-9]{8}[a-z0-9-]{0,16}$' || { echo "STOP: ATTEMPT is not an attempt label"; false; }
+ARGS=(--attempt "$ATTEMPT" --operator-account "$OPERATOR_ACCOUNT"
   --claude "$BRAID/claude-2.1.292" --claude-sha256 "$CLAUDE_SHA256"
   --interpreter "$BRAID/python312/bin/python3.12" --interpreter-sha256 "$PYTHON_SHA256"
   --interpreter-root "$BRAID/python312" --sandbox-exec-sha256 "$SANDBOX_EXEC_SHA256"
   --config-dir "$HOME/t009/config" --run-root "$HOME/t009/run"
-  --arena-parent "$HOME/t009/arena" --out-dir "$HOME/t009/out/t009-20261104")
+  --arena-parent "$HOME/t009/arena" --out-dir "$HOME/t009/out/$ATTEMPT")
 "${PYRUN[@]}" "${ARGS[@]}" --dry-run | tee "$HOME/t009/dry-run.json"
 cp "$HOME/t009/dry-run.json" /Users/Shared/t009-dry-run.json
 ```
@@ -268,13 +270,57 @@ tell the orchestrator that `/Users/Shared/t009-dry-run.json` exists. A `refused`
 failure of the procedure: it names what to fix. Do not continue to step 11 until the orchestrator
 confirms in writing that the verdict is `ready` and matches the pins it recomputed.
 
+**Before step 10b: the code changed after attempt 1.** The fix of 2026-11-04 edits
+`harness_qualification_probes.py`, and the catalog hash binds that file's bytes, so the catalog and
+environment hashes moved. Before step 10b you need the orchestrator's new `COMMIT` pin, step 5 redone with
+it (`repo-$SHORT` is the installed copy the pre-flight checks), the variable block of step 10 updated with
+that `COMMIT`, and a fresh step 10 dry run that the orchestrator confirmed as `ready`. With the old copy or
+the old dry run the self-check's pre-flight refuses with a hash mismatch.
+
+**Step 10b. Self-check (after the dry run, before step 11; added after attempt 1 of 2026-11-03).** The
+real run refuses a session when the backend's own pre-session check fails, and by then a session is
+counted. `--self-check` runs that check alone, built exactly like the real run, so a failure shows
+here and costs nothing. It needs `--founder-go` because it does run native things under the sandbox:
+the pinned `claude --version` (once for the launch profile and once per F4 probe under the
+`launch-probe` profile; no session, no prompt, no login, no network), the five F4 fixtures with the
+interpreter (FS-01, NET-01, CRED-01, PROC-01, NET-06), and, for NET-06 only, one TLS handshake with the
+allowed endpoint through the local proxy (no request, no credential). It reserves no session, asks for
+no usage reading and no typed name, and writes no counter and no bundle.
+
+```sh
+"${PYRUN[@]}" "${ARGS[@]}" --self-check --founder-go | tee "$HOME/t009/self-check.json"
+cp "$HOME/t009/self-check.json" /Users/Shared/t009-self-check.json
+```
+
+It prints a JSON verdict and exits 0 (`self-check-ok`) or 2. In `preSessionCheck` every F4 probe shows
+its `expected` and `observed` verdict (`allowed`, `denied`, `error` or `not-run`); `compileCheck` is
+`exec-denied` when the profile compiled, denied a non-listed exec and ran a listed one; `refusal` is the
+backend's fixed reason code and `stage` says where it stopped (`mechanism-or-workspace`,
+`compile-check` or `f4-probes`). After a refusal the probes the check did not reach are run one by
+one and marked `"supplementary": true` (after `self-check-allowed`, an escape, they are not run and show
+`not-run`), and `backendRefusals` lists the refusals of the nested runs
+(entry `fixture`, `launch` or `launch-probe` and the fixed reason code). Nothing printed is a
+path, account name, hash or value. Tell the orchestrator that `/Users/Shared/t009-self-check.json`
+exists. Do not continue to step 11 unless the verdict is `self-check-ok` and the orchestrator
+confirms it in writing. A `self-check-refused` is a finding, not a failure of the procedure.
+
+**Step 10c. The attempt label for the real run.** The output directory of attempt 1
+(`$HOME/t009/out/t009-20261104`) holds `.sessions.json` with `sessionsStarted: 1` and
+`quotaStop: session-refused-self-check-failed`. Running step 11 with that same `ATTEMPT` resumes the stop
+and refuses every session, so it cannot work. Do not delete or edit that file. Whether a refused session
+counts against the budget of three, and whether to archive the old directory and start a new one, is
+decided by you with the orchestrator (NC-10). Only when the orchestrator names a new attempt label,
+set `ATTEMPT` to it in the variable block of step 10, run step 10 again (dry run, confirmed `ready`) and then step 11.
+If the orchestrator says to continue the old attempt, `ATTEMPT` stays as it is and the sessions will be refused: then stop
+and send the output.
+
 **Step 11. The real attempt (only after the orchestrator confirms).** The same command with
 `--founder-go` instead of `--dry-run`. If you closed the terminal after step 10, run its variable block
 (from `BRAID=` to the `ARGS=(...)` line, `OPERATOR_ACCOUNT` included) again first.
 
 ```sh
 "${PYRUN[@]}" "${ARGS[@]}" --founder-go
-cp -R "$HOME/t009/out/t009-20261104" /Users/Shared/t009-bundle-20261104
+cp -R "$HOME/t009/out/$ATTEMPT" "/Users/Shared/t009-bundle-$ATTEMPT"
 ```
 
 It asks you to type the attempt name, then, before and after each of at most three sessions, for the
@@ -287,16 +333,45 @@ The values are typed by you, so they are operator-attested. At the end it prints
 If it ends with a JSON `"verdict": "error"` instead, keep that output: it says how many sessions were
 spent (`quota.started`). The session counter stays in the output directory, so a re-run with the same
 `--out-dir` continues the budget of three sessions (a new attempt name does not reset it). Send the output
-to the orchestrator before trying again.
+to the orchestrator before trying again. If the sessions end as `quota-stop` one after another,
+the old counter is being resumed: stop and send the output (step 10c).
+
+**If step 11 fails.** Keep the whole JSON, the console text above it and the output directory exactly as
+they are; do not delete, edit or move anything in the output directory (the session counter
+`.sessions.json` is the NC-10 budget), and do not run step 11 again before the orchestrator says so.
+The error verdict can carry these fields, none of which holds a secret or a value:
+
+- `reason`: the exception and its fixed reason code, for example `ProbeError: secret-in-artifact`.
+- `quota.started`: sessions counted; `nativeRun` is `true` because the helper probes run natively with
+  or without a session.
+- `scan` (a refused bundle only): `findings`, each with the `file` (`results.jsonl`, `quota.json`,
+  `environment.json`, `catalog.json` or `summary.json`), the `line`, the JSON `path` (for example
+  `$.machNames[17]`; `<key>` stands for a key that is not a plain field name), the `rule`
+  (`listed-literal`, `long-run`, `anthropic-api-key`, `jwt`, `pem-header`, `github-token` or
+  `aws-access-key-id`) and the match `length`. For a `listed-literal` the `origin` says which list it came
+  from (`caller`, `marker`, or `credential#N`) and, for a credential, `source` names the file and field of
+  the account's own config that holds it (for example `.claude.json`, `$.oauthAccount.billingType`). The
+  value is never printed. `total` counts every finding; at most 20 are listed. A refused bundle writes no
+  bundle file; only the counter stays.
+- `preSessionEvidence`: the backend's refusals (`entry`, fixed `refused` code, `compileCheck`, and the F4
+  probes' `expected`/`observed` verdicts), the same vocabulary as step 10b.
+
+The counter matters for the next run. After a session that the backend refused before launching
+anything, the counter holds `sessionsStarted: 1` and a `quotaStop` such as
+`session-refused-self-check-failed`, and a re-run with the same `--out-dir` resumes that stop: it
+would refuse every remaining session (`quota-stop`) and write a bundle with the three session probes
+inconclusive. Whether such a refused session still counts against the budget of three, and
+whether the counter may be archived into the evidence and restarted in a new `--out-dir`, is a decision
+of the founder with the orchestrator (NC-10); do not decide it by deleting the file.
 
 Then, back in your own session, take ownership of the copy (`sudo chown -R "$USER"
-/Users/Shared/t009-bundle-20261104`), review the bundle for local identifiers and copy it to
+"/Users/Shared/t009-bundle-$ATTEMPT"`), review the bundle for local identifiers and copy it to
 `specs/065-native-claude-containment/evidence/qualification/<attempt>/`.
 
 ### Teardown (after the bundle is copied)
 
 ```sh
-rm -r /Users/Shared/t009-bundle-20261104 /Users/Shared/t009-dry-run.json
+rm -r "/Users/Shared/t009-bundle-$ATTEMPT" /Users/Shared/t009-dry-run.json /Users/Shared/t009-self-check.json
 # log out of braidlab (Apple menu, Log Out) and revoke its Claude session in the account settings
 sudo sysadminctl -deleteUser "$ACCT"           # removes the account, its home and its keychain
 ls /Users                                      # braidlab gone (else: sudo rm -r /Users/braidlab)

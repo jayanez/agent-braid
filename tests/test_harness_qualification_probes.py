@@ -2398,5 +2398,248 @@ class PreT009FixTests(unittest.TestCase):
         self.assertEqual(row["attempts"]["hardlink-own-tree"], "allowed")
 
 
+# --- T009 attempt 1 (2026-11-03): refused self-check, bundle blocked by the secret scan --------------
+
+# What Claude Code 2.1.x keeps in the dedicated account's .claude.json after a login, with invented values.
+CLAUDE_JSON_2_1 = {
+    "numStartups": 3, "installMethod": "native", "autoUpdates": False,
+    "firstStartTime": "2026-11-03T21:11:12.345Z", "userID": "9f2c" * 16,
+    "oauthAccount": {"accountUuid": "3f1c2a52-7b1e-4f6a-9d0e-5a2f8c1d9b77", "emailAddress": "lab@example.com",
+                     "organizationUuid": "c1d2e3f4-0a1b-4c2d-8e3f-a4b5c6d7e8f9", "organizationName": "Lab Org",
+                     "displayName": "Lab", "billingType": "stripe_subscription", "organizationRole": "admin"},
+    "lastReleaseNotesSeen": "2.1.292", "lastOnboardingVersion": "2.1.292",
+    "projects": {"/Users/lab/run/work-abcd1234": {
+        "lastSessionId": "7b9d3c1e-0f2a-4b6c-8d4e-1a2b3c4d5e6f",
+        "lastModelUsage": {"claude-haiku-4-5-20251001": {"inputTokens": 3}}}},
+    "cachedGrowthBookFeatures": {"model": "claude-haiku-4-5-20251001", "env": ["ANTHROPIC_API_KEY"]},
+    "cachedStatsigGates": {"gate": True}}
+# Real Mach service names of macOS 27 (from the MachServices of the system LaunchDaemons on the founder's
+# machine); the first two hold a 48-character underscore-joined run, the third a 40-character CamelCase one.
+APPLE_LONG_NAMES = [
+    "com.apple.proactive.SuggestionRequest.ps_unstructured_reminder_interaction_suggestions",
+    "com.apple.proactive.SuggestionRequest.ps_unstructured_calendar_interaction_suggestions",
+    "com.apple.SoftwareUpdateNotificationManagerService"]
+
+
+class AttemptOneReproductionTests(unittest.TestCase):
+    """The path of the founder's first real run, with doubles: session 1 refused by the backend's
+    pre-session check, the other modes stopped, the bundle written."""
+
+    def attempt_one(self, world, *, refused="self-check-failed", mach=("com.apple.fake.service",), config=None):
+        credentials = []
+        if config is not None:
+            directory = world.tmp / "config"
+            directory.mkdir(exist_ok=True)
+            (directory / ".claude.json").write_text(json.dumps(config))
+            credentials = q.credential_values(directory)
+        out = world.tmp / "bundle"
+        runner = world.runner(sessions=lambda probe_id: q.SessionResult(refused=refused),
+                              read_credentials=lambda: credentials, mach_names=lambda: list(mach))
+        return out, runner.run(out, environment=environment()), credentials
+
+    def test_a_refused_first_session_still_writes_a_bundle_with_realistic_credentials(self):
+        world = World(self)
+        out, summary, credentials = self.attempt_one(world, config=CLAUDE_JSON_2_1)
+        self.assertGreaterEqual(len(credentials), 5)
+        rows = {(r["probe"], r["mode"]): r for r in map(json.loads, (out / "results.jsonl").read_text().splitlines())}
+        self.assertEqual(rows[("CRED-05", "contained")]["refused"], "self-check-failed")
+        self.assertEqual({rows[(p, "contained")]["refused"] for p in ("HOST-01", "NET-05-CLI")}, {"quota-stop"})
+        self.assertEqual(rows[("CRED-05", "uncontained-control")]["control"], "detector-self-test")
+        quota = json.loads((out / "quota.json").read_text())
+        self.assertEqual(quota["sessionsStarted"], 1)
+        self.assertEqual(quota["sessions"][0]["decision"]["reason"], "session-refused-self-check-failed")
+        self.assertEqual(q.verify_bundle(out), summary["bundleSha256"])
+        # no literal taken from the account's files is part of the bundle's closed vocabulary
+        texts = "".join((out / name).read_text() for name in q.BUNDLE_FILES)
+        self.assertEqual([c for c in credentials if c in texts], [])
+
+    def test_launchd_names_with_a_long_identifier_no_longer_refuse_the_bundle(self):
+        # before the fix: ProbeError secret-in-artifact (long-run) from PROC-06's machNames
+        for name in APPLE_LONG_NAMES:
+            self.assertTrue(q._looks_secret(name), name)
+        world = World(self)
+        out, _, _ = self.attempt_one(world, mach=[*APPLE_LONG_NAMES, "com.apple.ok.name"])
+        rows = [json.loads(t) for t in (out / "results.jsonl").read_text().splitlines()]
+        recorded = [r["machNames"] for r in rows if r["probe"] == "PROC-06"]
+        self.assertEqual(len(recorded), 3)
+        for names in recorded:
+            self.assertEqual(sorted(names), sorted([
+                *("#" + hashlib.sha256(n.encode()).hexdigest() for n in APPLE_LONG_NAMES), "com.apple.ok.name"]))
+        # the helper is still handed the real names: the sweep tests what launchd really lists
+        swept = [a.kwargs["mach_names"] for a in world.arenas if a.kwargs["mach_names"]]
+        self.assertTrue(swept and all(set(APPLE_LONG_NAMES) <= set(names) for names in swept))
+        self.assertNotIn("ps_unstructured", "".join((out / name).read_text() for name in q.BUNDLE_FILES))
+
+    def test_a_long_reason_code_composed_by_the_runner_does_not_refuse_the_bundle(self):
+        # session-refused- (16 characters) plus a 24+ character backend reason is a 40+ character run
+        for reason in ("operator-account-unresolved", "dedicated-user-own-login", "process-accounting-failed",
+                       "workdir-outside-run-root", "qualification-environment-mismatch"):
+            with self.subTest(reason=reason):
+                world = World(self)
+                out, _, _ = self.attempt_one(world, refused=reason)
+                quota = json.loads((out / "quota.json").read_text())
+                self.assertEqual(quota["sessions"][0]["decision"]["reason"], f"session-refused-{reason}")
+
+    def test_the_stop_reason_allowance_is_narrow(self):
+        for text in ("a" * 45, "A" * 45, "ab" * 25, "x" * 20 + "-" + "y" * 20,  # not a stop reason at all
+                     "operator-account-unresolved-and-more-words-here",  # hyphenated words without the prefix
+                     "Session-Refused-Operator-Account-Unresolved", "session_refused_operator_account_unresolved",
+                     "session-refused-operator-account-unresolved-1", "session-refused-op3rator-account-unresolved",
+                     "session-refused-" + "ab" * 25, "session-refused-" + "-".join(["abcdefgh"] * 7)):  # over 64
+            with self.subTest(text=text):
+                with self.assertRaises(q.ProbeError):
+                    q.scan_for_secrets({"f": json.dumps({"k": text})}, [])
+        for code in ("qualification-environment-mismatch", "operator-account-unresolved", "post-reading-not-after-pre-reading"):
+            q.scan_for_secrets({"f": json.dumps({"k": f"session-refused-{code}"})}, [])
+
+    def test_changed_paths_the_bundle_records_are_safe_to_record(self):
+        world = World(self)
+        long_name = "outside-0123456789ab/" + "n" * 50
+        world.changed = {"FS-01": [long_name, "outside-0123456789ab/new.txt"]}
+        row = world.runner().run_mode(q.BY_ID["FS-01"], "uncontained-control")
+        self.assertEqual(row["independent"]["changedOutside"],
+                         ["#" + hashlib.sha256(long_name.encode()).hexdigest(),
+                          "outside-0123456789ab/new.txt"])
+        world.runner().run(world.tmp / "b", environment=environment())  # the bundle passes the scan
+
+    def test_bundle_safe_name_keeps_clean_names_and_hashes_the_rest(self):
+        self.assertEqual(q.bundle_safe_name("com.apple.fake.service"), "com.apple.fake.service")
+        self.assertEqual(q.bundle_safe_name("com.x.sk-ant-api03-abcdef"),
+                         "#" + hashlib.sha256(b"com.x.sk-ant-api03-abcdef").hexdigest())
+
+
+class RedactedScanReportTests(unittest.TestCase):
+    """A refused bundle says where and by which rule, never what."""
+
+    SECRET = "QXz9_Wv7=Kp3+Lm5-Rt8"
+
+    def refusal(self, texts, secrets=(), **kw):
+        with self.assertRaises(q.ProbeError) as raised:
+            q.scan_for_secrets(texts, list(secrets), **kw)
+        return raised.exception
+
+    def assertRedacted(self, error, secret=None, extra=()):
+        self.assertEqual((error.reason, str(error)), ("secret-in-artifact", "secret-in-artifact"))
+        rendered = json.dumps(error.detail)
+        for value in (secret or self.SECRET, *extra):
+            for size in (3, 4):
+                for start in range(len(value) - size + 1):
+                    self.assertNotIn(value[start:start + size], rendered, value[start:start + size])
+            self.assertNotIn(value, repr(error))
+
+    def test_a_listed_literal_is_reported_with_file_line_path_rule_length_and_origin(self):
+        rows = [json.dumps({"probe": "FS-01", "independent": {"changedOutside": ["a", f"x/{self.SECRET}/y"]}}),
+                json.dumps({"probe": "FS-02"})]
+        error = self.refusal({"results.jsonl": "\n".join(rows[::-1]) + "\n", "quota.json": "{}\n"},
+                             [self.SECRET], origins=["credential#0"])
+        self.assertEqual(error.detail, {"total": 1, "findings": [
+            {"file": "results.jsonl", "line": 2, "path": "$.independent.changedOutside[1]",
+             "rule": "listed-literal", "length": len(self.SECRET), "origin": "credential#0"}]})
+        self.assertRedacted(error)
+
+    def test_each_token_shape_and_the_long_run_are_named(self):
+        cases = {"anthropic-api-key": "sk-ant-api03-abcdef", "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.s",
+                 "pem-header": "-----BEGIN PRIVATE KEY-----", "github-token": "ghp_" + "a" * 30,
+                 "aws-access-key-id": "AKIA" + "A" * 16, "long-run": "QUJD" * 12}
+        for rule, value in cases.items():
+            with self.subTest(rule=rule):
+                error = self.refusal({"environment.json": json.dumps({"backend": value}) + "\n"})
+                finding = error.detail["findings"][0]
+                self.assertEqual((finding["file"], finding["line"], finding["path"], finding["rule"]),
+                                 ("environment.json", 1, "$.backend", rule))
+                self.assertGreaterEqual(finding["length"], 10)
+                self.assertNotIn(value, json.dumps(error.detail))
+
+    def test_a_key_is_never_named_in_the_path_when_it_is_the_value_or_not_a_plain_field_name(self):
+        document = {"names": {self.SECRET: 1, "/Users/lab/some dir": {"inner": "sk-ant-api03-abcdef"}, "ok_key": 2}}
+        error = self.refusal({"f.json": json.dumps(document)}, [self.SECRET])
+        self.assertEqual(sorted((f["path"], f["rule"]) for f in error.detail["findings"]),
+                         [("$.names.<key>", "listed-literal"), ("$.names.<key>.inner", "anthropic-api-key")])
+        self.assertRedacted(error, extra=["/Users/lab/some dir"])
+
+    def test_text_that_is_not_json_is_placed_by_line_and_a_multi_line_literal_by_file(self):
+        error = self.refusal({"notes.txt": f"first\nsecond {self.SECRET}\n"}, [self.SECRET])
+        self.assertEqual(error.detail["findings"], [{"file": "notes.txt", "line": 2, "path": None,
+                                                     "rule": "listed-literal", "length": len(self.SECRET),
+                                                     "origin": "listed"}])
+        spanning = "ab\ncd"
+        error = self.refusal({"notes.txt": "x ab\ncd y\n"}, [spanning])
+        self.assertEqual(error.detail["findings"], [{"file": "notes.txt", "line": None, "path": None,
+                                                     "rule": "listed-literal", "length": 5, "origin": "listed"}])
+
+    def test_findings_are_capped_but_counted(self):
+        text = "".join(json.dumps({"n": i, "v": f"ghp_{'a' * 30}"}) + "\n" for i in range(30))
+        error = self.refusal({"results.jsonl": text})
+        self.assertEqual((len(error.detail["findings"]), error.detail["total"]), (q.MAX_FINDINGS, 30))
+
+    def test_an_unlabelled_literal_is_listed_and_a_clean_scan_raises_nothing(self):
+        error = self.refusal({"f": f"a {self.SECRET}"}, [self.SECRET, ""])
+        self.assertEqual(error.detail["findings"][0]["origin"], "listed")
+        q.scan_for_secrets({"f": json.dumps({"id": "FS-01", "sha": "ab" * 32})}, [self.SECRET, ""])
+
+    def test_the_runner_labels_extras_and_credentials(self):
+        world = World(self)
+        credentials = ["Hj3Vb7Nm5Rt8Zq4Xw9Kp2", "Zq4Xw9Kp2Vb7Nm5Rt8Hj3"]
+        for name, secret, extra, expected in (("caller", "Gy6Tf1Ds0Ra8Eq2Wc4Ux", ["Gy6Tf1Ds0Ra8Eq2Wc4Ux"], "caller"),
+                                               ("credential", credentials[1], [], "credential#1")):
+            with self.subTest(name=name):
+                runner = world.runner(read_credentials=lambda: credentials)
+                with self.assertRaises(q.ProbeError) as raised:
+                    runner.run(world.tmp / f"b-{name}", environment=environment(backend=secret), secrets=extra)
+                finding = raised.exception.detail["findings"][0]
+                self.assertEqual((finding["file"], finding["path"], finding["origin"]),
+                                 ("environment.json", "$.backend", expected))
+                self.assertRedacted(raised.exception, secret)
+                self.assertFalse((world.tmp / f"b-{name}" / "summary.json").exists())  # nothing but the counter
+
+    def test_the_arena_marker_is_labelled_a_marker(self):
+        world = World(self)
+        runner = world.runner(mach_names=lambda: ["com.apple.fake.service"])
+        runner.markers.append("braid-dummy-fake-marker")
+        with self.assertRaises(q.ProbeError) as raised:
+            q.write_bundle(world.tmp / "m", environment=environment(), rows=[{"probe": "x", "note": "has braid-dummy-fake-marker"}],
+                           quota=[], summary={}, secrets=runner.markers, origins=["marker"])
+        self.assertEqual(raised.exception.detail["findings"][0]["origin"], "marker")
+        self.assertEqual(raised.exception.detail["findings"][0]["file"], "results.jsonl")
+
+    def test_a_second_scan_of_the_summary_reports_its_own_file(self):
+        world = World(self)
+        with self.assertRaises(q.ProbeError) as raised:
+            q.write_bundle(world.tmp / "m", environment=environment(), rows=[], quota=[],
+                           summary={"leak": self.SECRET}, secrets=[self.SECRET])
+        self.assertEqual(raised.exception.detail["findings"][0]["file"], "summary.json")
+        self.assertFalse((world.tmp / "m").exists())
+
+    def test_credential_origins_follow_credential_values_and_name_fields_only(self):
+        tmp = Path(tempfile.mkdtemp(prefix="braid-cfg-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        (tmp / ".credentials.json").write_text(json.dumps({"claudeAiOauth": {"accessToken": "tok-1234567890abcdef"}}))
+        (tmp / ".claude.json").write_text(json.dumps({
+            "oauthAccount": {"billingType": "stripe_subscription"}, "ids": ["aaaaaaaa-1111-2222-3333-444444444444"],
+            "projects": {"/Users/lab/dir": {"lastSessionId": "7b9d3c1e-0f2a-4b6c-8d4e-1a2b3c4d5e6f"}},
+            "dup": "tok-1234567890abcdef"}))
+        inventory = q.credential_inventory(tmp)
+        values, origins = [v for v, _ in inventory], [o for _, o in inventory]
+        self.assertEqual(values, q.credential_values(tmp))
+        by_value = dict(zip(values, origins))
+        self.assertEqual(by_value["tok-1234567890abcdef"], {"file": ".credentials.json", "path": "$.claudeAiOauth.accessToken"})
+        self.assertEqual(by_value["stripe_subscription"], {"file": ".claude.json", "path": "$.oauthAccount.billingType"})
+        self.assertEqual(by_value["aaaaaaaa-1111-2222-3333-444444444444"], {"file": ".claude.json", "path": "$.ids[0]"})
+        self.assertEqual(by_value["7b9d3c1e-0f2a-4b6c-8d4e-1a2b3c4d5e6f"],
+                         {"file": ".claude.json", "path": "$.projects.<key>.lastSessionId"})
+        self.assertNotIn("/Users/lab", json.dumps(origins))
+        self.assertEqual(q.credential_inventory(tmp / "missing"), [])
+
+    def test_a_credential_valued_key_is_never_printed_in_an_origin_path(self):
+        tmp = Path(tempfile.mkdtemp(prefix="braid-cfg-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        key = "Zq8Xk2Lm9Pq4Rt7Vw1Yz3Ab5Cd6Ef8Gh"  # 32 characters, a plain-looking name that is also a value
+        (tmp / ".claude.json").write_text(json.dumps({"cache": {key: key}, "plain": {"hasLongName": "x1" * 10}}))
+        inventory = q.credential_inventory(tmp)
+        self.assertIn(key, [v for v, _ in inventory])
+        self.assertNotIn(key, json.dumps([o for _, o in inventory]))
+        self.assertEqual(dict(inventory)[key]["path"], "$.cache.<key>")
+        self.assertEqual(dict(inventory)["x1" * 10]["path"], "$.plain.hasLongName")
+
 if __name__ == "__main__":
     unittest.main()
