@@ -9,9 +9,9 @@
     "REQ-003 / SC-003 real-host part",
     "REQ-006 / SC-006 real-host part"
   ],
-  "status": "partial: automated part recorded; interactive rows unobserved pending the owner (see t010-runbook.md)",
-  "observedBy": "track (automated, no model turn)",
-  "date": "2026-11-03",
+  "status": "complete for rows 01-20: interactive rows observed; rows 21-23 unobserved by design (see limits)",
+  "observedBy": "track (automated, no model turn, 2026-11-03); owner with coordinator (interactive rows 16-20, OpenCode.app, 2026-11-04)",
+  "date": "2026-11-04",
   "opencodeVersion": "2.1.4",
   "opencodeBinary": "~/.opencode/bin/opencode (v2.1.4)",
   "platform": {
@@ -36,7 +36,7 @@
   "isolation": {
     "profile": "HOME and XDG_CONFIG_HOME, XDG_DATA_HOME, XDG_CACHE_HOME, XDG_STATE_HOME inside <worktree>/.t010/profile (second profile .t010/profile2); OPENCODE_DISABLE_AUTOUPDATE=1; serve on 127.0.0.1:47617, second service on 47619.",
     "notTouched": "The real ~/.config/opencode, ~/.local/share/opencode, the real Agent Braid registry, Claude Code and Codex configuration. The host read the real home skill directories (row 06, row 15).",
-    "noModel": "No model provider was called and no credential was entered. The local server's own ephemeral password was used for the local API only and redacted from the saved logs.",
+    "noModel": "Automated part (rows 01-15): no model provider was called and no credential was entered; the local server's own ephemeral password was used for the local API only and redacted from the saved logs. Interactive part (rows 16-20): the provider credential came from an environment variable already set for the owner's shell; nothing was typed into or stored in the profile, and no credential appears in this record.",
     "processes": "All opencode serve and service processes and their MCP children were stopped at the end."
   },
   "rows": [
@@ -236,7 +236,8 @@
         "check: '(update available)'; update: 'Updated Server plugin'; a second cache directory appeared and the first stayed; the configuration string was unchanged; after reload plugin list showed the new commit d4dd581; the new directory matched the inventory exactly (4003 files, 0 differences; obs-inventory-compare-updated.txt).",
         "remove agent-braid: 'is not configured', exit 0. remove with the exact source string: removed, configuration left as {\"plugins\": []}.",
         "Before reload plugin list still showed the plugin; after reload: 'No plugins found', mcp.list empty, commands [init, review], none of the six plugin skills in skill.list (98 entries, obs-skill-list-after-remove.json).",
-        "Leftovers: both cache directories (node_modules, package.json, package-lock.json) stay on disk. No Agent Braid registry existed in this profile, so registry survival after removal is not shown here."
+        "Leftovers: both cache directories (node_modules, package.json, package-lock.json) stay on disk. No Agent Braid registry existed in this profile, so registry survival after removal is not shown here.",
+        "Owner session (2026-11-04): exact-string remove left opencode.json {\"plugins\": []}, 'No plugins found' after reload, a new session listed no agent-braid skills, commands or tools; the Agent Braid registry and both cache epoch directories stayed, as in the automated run."
       ],
       "status": "observed",
       "limits": [
@@ -296,7 +297,8 @@
       "status": "contradicts",
       "limits": [
         "Contradicts the contract wording 'from the directory to the Git root' (discovery scope) and the claim that doctor is the detector of record for SC-004: the host walks past the nearest Git root; where it stops (outermost repository, home, filesystem root) was not determined.",
-        "Coordinator decision needed; no code was changed."
+        "Coordinator decision needed; no code was changed.",
+        "Resolved on the release branch: commit 96f30b7c in PR #1030 makes doctor scan skill directories above the Git root (test in tests/test_plugin_opencode.py) and aligns contracts/opencode-surface.md; this candidate (841c2508) predates that fix, so the row stays 'contradicts' for the observed build."
       ]
     },
     {
@@ -322,72 +324,102 @@
       "id": "16-skill-invocation-in-session",
       "requirement": "REQ-004 / SC-004",
       "question": "Can a user or model invoke each skill in a session, and with what text?",
-      "method": "Not attempted.",
-      "commands": [],
-      "observation": [
-        "Needs a model turn or a human session; not attempted (no provider call, no credentials)."
+      "method": "OpenCode.app 2.2.5 paired with `opencode pair` (local link, no --remote) to the disposable profile's managed service on 127.0.0.1:47618 (CLI 2.1.4); provider via an exported environment API key; throwaway workspace .t010/ws-throwaway; session prompts in .t010/HANDOFF-opencode.md; sessions exported with `opencode session export` to .t010/obs-ses_*.json (untracked).",
+      "commands": [
+        "Prompt: list the skills named analyze, plan, evidence, execute, recover or setup without calling a tool",
+        "Prompt: use the analyze skill on workspace 6cb1f07e39191fa91feafa9ff4a81a02 for two edits of README.md (no format given)",
+        "Prompt (retry): call agent-braid_analyze-work with kind aim and request = examples/analysis/file-edits-conflict.json"
       ],
-      "status": "unobserved",
+      "observation": [
+        "The model listed all six skills (analyze, plan, evidence, execute, recover, setup) as loadable.",
+        "Asked to use the analyze skill, the model loaded it (skill tool, id 'analyze', path .../node_modules/agent-braid/skills/analyze) and followed it to agent-braid_analyze-work with the explicit workspace id.",
+        "First call: the model invented request {units:[{id, writes:[README.md]}]}; result status 'refused', summary 'analyze-work refused: The bounded operation was refused', no reason given (findings F1, F2 below).",
+        "Retry with a valid AIM analysis input: status 'ok', 'analyze-work completed with a valid core result', classifications conflicting 1 / independent-candidate 0 / ordered 0 / unknown 0, pair edit-readme vs edit-readme-intro 'conflicting', constraint 'serialize-or-isolate', limits state no execution authority; one evidenceRef was stored.",
+        "F1: the analyze-work input schema only says request is 'object or array' and the analyze skill gives no AIM shape, so a model cannot build a valid request unaided (host-independent; also in alpha.6).",
+        "F2: analysis.InvalidAnalysis is not a ToolingError, so agent_braid/tooling_mcp.py _safe_error replaces its message with the generic refusal text (host-independent)."
+      ],
+      "status": "observed",
       "limits": [
-        "Owner or operator (t010-runbook.md steps 3 and 5)."
+        "Model answers are the model's report of what it sees; the tool calls and results were confirmed from the session exports.",
+        "Skill text was not compared byte-for-byte in session; package digest identifies it (row 06)."
       ]
     },
     {
       "id": "17-command-execution",
       "requirement": "REQ-004 / REQ-005",
       "question": "Does agent-braid-setup prompt the session with the setup skill, and agent-braid-reconnect with the operator steps (execute and ctx.session.prompt shapes)?",
-      "method": "Not attempted.",
-      "commands": [],
-      "observation": [
-        "Needs a model turn or a human session; not attempted (no provider call, no credentials).",
-        "The shapes come from the v2 documentation and stay unverified."
+      "method": "OpenCode.app 2.2.5 paired with `opencode pair` (local link, no --remote) to the disposable profile's managed service on 127.0.0.1:47618 (CLI 2.1.4); provider via an exported environment API key; throwaway workspace .t010/ws-throwaway; session prompts in .t010/HANDOFF-opencode.md; sessions exported with `opencode session export` to .t010/obs-ses_*.json (untracked).",
+      "commands": [
+        "/agent-braid-setup",
+        "/agent-braid-reconnect"
       ],
-      "status": "unobserved",
+      "observation": [
+        "/agent-braid-setup was offered and sent the packaged setup skill text to the session; the model ran plugin-status (step 1) and the read-only checks of steps 7-10 (migration none, telemetry off, System One off, no stale or unsafe entries) and stopped before steps 2-6 and 12 because the session brief forbade shell commands (a test restriction, not a plugin defect); no registry change was made.",
+        "F3: setup step 11 asks for the telemetry-audit skill; the model answered it is not in its skill list. The package ships skills/telemetry-audit but the OpenCode entry registers only six skills (index.js SKILLS; contract: six skills).",
+        "/agent-braid-reconnect sent the operator steps ('Run opencode reload ... restarts the stdio MCP process' or restart the session) and performed no reload or tool call."
+      ],
+      "status": "observed",
       "limits": [
-        "Owner or operator (t010-runbook.md steps 6 and 8)."
+        "Model answers are the model's report of what it sees; the tool calls and results were confirmed from the session exports.",
+        "Setup steps that need the bundled CLI were not exercised from the session."
       ]
     },
     {
       "id": "18-new-session-after-new-version",
       "requirement": "REQ-012",
       "question": "Does a new plugin version need a new OpenCode session (as observed for Claude Code)?",
-      "method": "Not attempted; only the host plugin list was seen to move to the new commit after reload (row 11).",
-      "commands": [],
-      "observation": [
-        "Not observed whether a running session keeps the old plugin version, skills or tools."
+      "method": "OpenCode.app 2.2.5 paired with `opencode pair` (local link, no --remote) to the disposable profile's managed service on 127.0.0.1:47618 (CLI 2.1.4); provider via an exported environment API key; throwaway workspace .t010/ws-throwaway; session prompts in .t010/HANDOFF-opencode.md; sessions exported with `opencode session export` to .t010/obs-ses_*.json (untracked). Registry change and version update were done from a terminal in the same profile.",
+      "commands": [
+        "launch plugin setup --home <profile registry> --source-root ws-throwaway --source-root ws-two (preview, then --apply --preview-digest)",
+        "opencode reload",
+        "push one commit to the local candidate branch; opencode plugin check; opencode plugin update; opencode reload",
+        "plugin-status from the open sessions and from a new session after each step"
       ],
-      "status": "unobserved",
+      "observation": [
+        "After registering a second workspace (f3ad567899e0f21d92ccb4b7704f187c), the open session reported reconnectRequired true and still one workspace.",
+        "After 'opencode reload' (managed service), the same open session and a new session both reported reconnectRequired false and both workspaces.",
+        "Update b092f0d -> 603374c: check '(update available)', update 'Updated Server plugin', a second cache epoch directory 1793806923056 appeared beside 1793741149786.",
+        "After reload, the first open session, the second open session and a new session all reported bundledCli under the new epoch 1793806923056: open OpenCode sessions switch to the new version after reload, unlike the Claude Code observation (new session needed)."
+      ],
+      "status": "observed",
       "limits": [
-        "Owner or operator (t010-runbook.md steps 8 to 10)."
+        "The update changed only a root file outside plugins/agent-braid, so plugin bytes and pluginVersion stayed the same; a skill-text change between versions was not observed."
       ]
     },
     {
       "id": "19-model-facing-tool-names",
       "requirement": "REQ-003",
       "question": "Which tool names does the model see (agent-braid_<tool> with codemode false)?",
-      "method": "Not attempted; the host API has no tool listing.",
-      "commands": [],
-      "observation": [
-        "Needs a model turn or a human session; not attempted (no provider call, no credentials).",
-        "Only the tool count was observed (2, then 5)."
+      "method": "OpenCode.app 2.2.5 paired with `opencode pair` (local link, no --remote) to the disposable profile's managed service on 127.0.0.1:47618 (CLI 2.1.4); provider via an exported environment API key; throwaway workspace .t010/ws-throwaway; session prompts in .t010/HANDOFF-opencode.md; sessions exported with `opencode session export` to .t010/obs-ses_*.json (untracked).",
+      "commands": [
+        "Prompt: list the exact names of every tool starting with agent-braid, without calling a tool"
       ],
-      "status": "unobserved",
+      "observation": [
+        "Names seen by the model: agent-braid_analyze, agent-braid_analyze-work, agent-braid_plugin-status, agent-braid_prepare, agent-braid_workspaces (prefix 'agent-braid_', no other wrapper).",
+        "The model reported that the Code Mode catalog of the execute tool lists no agent-braid tools."
+      ],
+      "status": "observed",
       "limits": [
-        "Same as T002 row 12b. Owner or operator (t010-runbook.md step 3)."
+        "Model answers are the model's report of what it sees; the tool calls and results were confirmed from the session exports."
       ]
     },
     {
       "id": "20-host-tool-call-and-approval",
       "requirement": "REQ-003 / SC-003",
       "question": "Does a model call agent-braid_plugin-status and agent-braid_analyze-work through the host, and does the host prompt for approval?",
-      "method": "Not attempted; the same tools were called over direct stdio (row 08).",
-      "commands": [],
-      "observation": [
-        "Needs a model turn or a human session; not attempted (no provider call, no credentials)."
+      "method": "OpenCode.app 2.2.5 paired with `opencode pair` (local link, no --remote) to the disposable profile's managed service on 127.0.0.1:47618 (CLI 2.1.4); provider via an exported environment API key; throwaway workspace .t010/ws-throwaway; session prompts in .t010/HANDOFF-opencode.md; sessions exported with `opencode session export` to .t010/obs-ses_*.json (untracked). Default host permissions; the plugin writes no permission configuration.",
+      "commands": [
+        "Prompt: call plugin-status",
+        "Prompt: analyze-work (twice, see row 16)"
       ],
-      "status": "unobserved",
+      "observation": [
+        "plugin-status: called through the host as agent-braid_plugin-status; status configured, pluginVersion 0.1.0-alpha.6 (candidate), registryHome inside .t010/profile, reconnectRequired false, one workspace 6cb1f07e39191fa91feafa9ff4a81a02.",
+        "agent-braid_analyze-work: called through the host with the explicit workspace id; results as in row 16.",
+        "The owner reports that OpenCode showed no approval prompt for either tool under default permissions; this matches the contract (host defaults apply; host approvals are not Agent Braid grants). execute and recover still require an Agent Braid grant and were not called."
+      ],
+      "status": "observed",
       "limits": [
-        "Same as T002 row 04b. Owner or operator (t010-runbook.md steps 4, 5, 7)."
+        "Approval behaviour is the owner's report from the desktop app; it is not stored in the session export. Only default permissions were observed."
       ]
     },
     {
@@ -434,14 +466,19 @@
     }
   ],
   "summary": {
-    "observed": 14,
-    "unobserved": 8,
+    "observed": 19,
+    "unobserved": 3,
     "contradicts": 1,
-    "contradiction": "Row 14: the host loads skills from directories above the project's Git root and an ancestor skill replaced a plugin skill, while plugin doctor --host opencode reports nothing for it; the contract limits discovery to the directory-to-Git-root range."
+    "contradiction": "Row 14: the host loads skills from directories above the project's Git root and an ancestor skill replaced a plugin skill, while plugin doctor --host opencode reports nothing for it; the contract limits discovery to the directory-to-Git-root range. Resolved for 0.1.0-alpha.7 by commit 96f30b7c (PR #1030); the observed candidate predates the fix.",
+    "findings": [
+      "F1 analyze-work input schema does not describe the AIM request shape",
+      "F2 InvalidAnalysis reasons are masked as a generic refusal",
+      "F3 setup step 11 names telemetry-audit, which the OpenCode entry does not register"
+    ]
   },
   "limits": [
     "Single host version and platform (macOS arm64); local Git source only.",
-    "Nothing here is a grant, approval, release or owner acceptance; interactive rows stay unobserved until the owner runs the runbook.",
+    "Nothing here is a grant, approval, release or owner acceptance. Rows 21-23 stay unobserved: row 21 needs a published plugin-dist (planned as a post-publication smoke check), row 22 needs Linux, row 23 needs request inspection.",
     "Raw outputs are kept untracked in <worktree>/.t010 (obs-*.txt, obs-*.json, serve-run*.log)."
   ]
 }
