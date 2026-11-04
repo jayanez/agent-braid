@@ -138,6 +138,46 @@ export function orderedRows(model) {
 
 const TICK_STEPS = [100, 200, 500, 1000, 2000, 5000, 10000, 15000, 30000, 60000, 120000, 300000, 600000, 900000, 1800000, 3600000];
 
+// ---------------------------------------------------------------- the sequence axis
+
+// When any event states no time (an analysis report, for one, carries only its order), a time axis cannot place
+// it without inventing a time. The views then use a sequence axis instead: every event gets its own slot in the
+// model's `order` (stated time, then sequence number), SEQUENCE_STEP apart. Times and durations stay what the
+// events state: a sequence position is never turned into a duration.
+export const SEQUENCE_STEP = 1000;
+
+const timeKnownOf = (element) => Boolean(element) && element.timeKnown !== false;
+// Whether an element has a position on the axis in use: a stated time, or a slot of the sequence axis.
+export const positioned = (element) => timeKnownOf(element) || Boolean(element && element.placed);
+
+export function needsSequenceAxis(model) {
+  return Boolean(model && Array.isArray(model.elements) && model.elements.some((element) => element.timeKnown === false));
+}
+
+// The model with every element at its sequence slot (`x`) and `placed: true`; the model itself when every event
+// states a time. Nothing else changes: `relMs`, `basis` and `timeKnown` are the event's own.
+export function placeBySequence(model) {
+  if (!needsSequenceAxis(model)) return model;
+  const elements = model.elements.map((element) => ({ ...element, x: (element.order + 0.5) * SEQUENCE_STEP, placed: true }));
+  return { ...model, elements };
+}
+
+function deriveSequenceAxis(model) {
+  const source = model.axis || {};
+  const ordered = [...model.elements].sort((a, b) => a.x - b.x);
+  const spanX = ordered.length * SEQUENCE_STEP;
+  const untimed = model.elements.filter((element) => element.timeKnown === false).length;
+  // Ticks name events by sequence number, at a step that leaves about 4 to 10 labels.
+  function ticks(x0 = 0, x1 = spanX) {
+    const visible = ordered.filter((element) => element.x >= x0 && element.x <= x1);
+    const step = Math.max(1, Math.ceil(visible.length / 9));
+    return visible.filter((_, index) => index % step === 0).map((element) => ({ x: element.x, ms: null, label: "#" + element.seq }));
+  }
+  return { basis: source.basis || "sequence-only", sequence: true, untimed, total: model.elements.length,
+    minMs: typeof source.minMs === "number" ? source.minMs : 0, maxMs: typeof source.maxMs === "number" ? source.maxMs : 0,
+    spanMs: source.spanMs || 0, spanX, moments: [], breaks: [], xOfMs: () => 0, ticks, nowMs: null };
+}
+
 // Moments are the distinct stated times with their compressed position. Inside one run of moments closer than the
 // model's gap threshold the axis is linear; across a compression it is not, and no tick is drawn there.
 export function deriveAxis(model) {
@@ -194,7 +234,7 @@ export function deriveAxis(model) {
     return out;
   }
 
-  return { basis: source.basis || "sequence-only", minMs, maxMs: typeof source.maxMs === "number" ? source.maxMs : minMs,
+  return { basis: source.basis || "sequence-only", sequence: false, untimed: 0, total: elements.length, minMs, maxMs: typeof source.maxMs === "number" ? source.maxMs : minMs,
     spanMs: source.spanMs || 0, spanX, moments, breaks, xOfMs, ticks, nowMs: null };
 }
 
@@ -202,11 +242,11 @@ export function deriveAxis(model) {
 
 function laneRecord(bySeq, lane, rec, sessionEndMs, sessionEndX) {
   const opener = bySeq.get(lane.seq);
-  const openKnown = Boolean(opener) && opener.timeKnown !== false;
+  const openKnown = timeKnownOf(opener);
   const openMs = opener ? opener.relMs : null;
   const openX = opener ? opener.x : 0;
   const close = rec.close;
-  const closeKnown = Boolean(close) && close.timeKnown !== false;
+  const closeKnown = timeKnownOf(close);
   const updates = rec.updates;
   const lastUpdate = updates.length ? updates[updates.length - 1] : null;
   let state = "unknown";
@@ -214,24 +254,28 @@ function laneRecord(bySeq, lane, rec, sessionEndMs, sessionEndX) {
   if (close) state = "finished";
   else if (lastUpdate && (lastUpdate.state === "running" || lastUpdate.state === "waiting")) state = lastUpdate.state;
   else if (lastUpdate && lastUpdate.state === "idle") { state = "running"; idle = true; }
-  const timed = [opener, ...rec.touched].filter((element) => element && element.timeKnown !== false);
+  const timed = [opener, ...rec.touched].filter(timeKnownOf);
+  const placedAt = [opener, ...rec.touched].filter(positioned);
   const lastMs = timed.length ? Math.max(...timed.map((element) => element.relMs)) : openMs;
-  const lastX = timed.length ? Math.max(...timed.map((element) => element.x)) : openX;
+  const lastX = placedAt.length ? Math.max(...placedAt.map((element) => element.x)) : openX;
 
   const waitSpans = [];
   let waiting = null;
-  const endOf = (element) => ({ ms: element.relMs, x: element.x });
+  // A span's time is known only when both of its ends state one; on the sequence axis it still has a position.
+  const msOf = (element) => (timeKnownOf(element) ? element.relMs : null);
   for (const update of updates) {
-    if (update.timeKnown === false) continue; // an update that states no time starts or ends no span
+    if (!positioned(update)) continue; // an update with no position starts or ends no span
     if (waiting) {
-      waiting.toMs = update.relMs; waiting.toX = update.x; waiting.open = false;
+      waiting.toMs = waiting.fromMs === null ? null : msOf(update); waiting.toX = update.x; waiting.open = false;
       waitSpans.push(waiting);
       waiting = null;
     }
-    if (update.state === "waiting") waiting = { seq: update.seq, fromMs: update.relMs, fromX: update.x, toMs: null, toX: null, open: true };
+    if (update.state === "waiting") waiting = { seq: update.seq, fromMs: msOf(update), fromX: update.x, toMs: null, toX: null, open: true };
   }
   if (waiting) {
-    if (close && closeKnown) { const end = endOf(close); waiting.toMs = end.ms; waiting.toX = end.x; waiting.open = false; }
+    if (close && positioned(close)) {
+      waiting.toMs = waiting.fromMs === null ? null : msOf(close); waiting.toX = close.x; waiting.open = false;
+    }
     waitSpans.push(waiting);
   }
 
@@ -248,7 +292,8 @@ function laneRecord(bySeq, lane, rec, sessionEndMs, sessionEndX) {
     endMs: close && closeKnown ? close.relMs : sessionEndMs, endX: close ? close.x : sessionEndX,
     lastMs, lastX,
     toolMarks: updates.filter((update) => typeof update.toolName === "string" && update.toolName)
-      .map((update) => ({ seq: update.seq, ms: update.relMs, x: update.x, toolName: update.toolName, state: update.state })),
+      .map((update) => ({ seq: update.seq, ms: update.relMs, x: update.x, toolName: update.toolName, state: update.state,
+        timeKnown: timeKnownOf(update) })),
     waitSpans,
     gaps: rec.gaps.map((gap) => ({ seq: gap.seq, ms: gap.relMs, x: gap.x, reason: gap.reason })),
     seqs: [],
@@ -262,9 +307,10 @@ export function deriveLanes(model) {
   const bySeq = new Map(model.elements.map((element) => [element.seq, element]));
   const perStrand = new Map();
   const touchedBy = new Map();
-  const timedElements = model.elements.filter((element) => element.timeKnown !== false);
+  const timedElements = model.elements.filter(timeKnownOf);
+  const placedElements = model.elements.filter(positioned);
   const sessionEndMs = timedElements.length ? Math.max(...timedElements.map((element) => element.relMs)) : null;
-  const sessionEndX = timedElements.length ? Math.max(...timedElements.map((element) => element.x)) : 0;
+  const sessionEndX = placedElements.length ? Math.max(...placedElements.map((element) => element.x)) : 0;
   const record = (strandId) => {
     if (!perStrand.has(strandId)) perStrand.set(strandId, { close: null, updates: [], gaps: [], touched: [] });
     return perStrand.get(strandId);
@@ -351,7 +397,7 @@ export function deriveCrossings(model, derived) {
       resources: Array.isArray(element.sharedResources) ? element.sharedResources : [],
       reasons: Array.isArray(element.reasons) ? element.reasons : [],
       uncertain: Boolean(element.uncertain), incomplete: Boolean(element.incompleteCoverage),
-      ms: element.relMs, x: element.x, timeKnown: element.timeKnown !== false, overlap,
+      ms: element.relMs, x: element.x, timeKnown: element.timeKnown !== false, positioned: positioned(element), overlap,
     });
   }
   return out;
@@ -407,18 +453,24 @@ export function waitingTime(lane) {
   let total = 0;
   let known = true;
   for (const span of lane.waitSpans) {
-    if (span.toMs === null) known = false;
+    if (span.fromMs === null || span.toMs === null) known = false;
     else total += Math.max(0, span.toMs - span.fromMs);
   }
   return { totalMs: total, open: lane.waitSpans.some((span) => span.open), complete: known };
 }
 
+// `placedModel` is the model the views draw: the model itself, or its sequence placement when an event states no
+// time (see placeBySequence). Every derivation reads the placed model, so the views agree on positions.
 export function derive(model) {
-  const lanes = deriveLanes(model);
-  const crossings = deriveCrossings(model, lanes);
+  const placedModel = placeBySequence(model);
+  const lanes = deriveLanes(placedModel);
+  const crossings = deriveCrossings(placedModel, lanes);
+  const axis = placedModel !== model ? deriveSequenceAxis(placedModel) : deriveAxis(model);
+  const basis = axis.sequence ? "sequence-only" : model && model.axis ? model.axis.basis : "sequence-only";
   return {
-    ...lanes, axis: deriveAxis(model), crossings, conflicts: conflictsOf(crossings),
-    concurrency: deriveConcurrency(lanes, model && model.axis ? model.axis.basis : "sequence-only"), overlaps: deriveOverlaps(model, lanes, crossings),
+    ...lanes, axis, crossings, conflicts: conflictsOf(crossings), placedModel,
+    placedBySeq: new Map(placedModel && Array.isArray(placedModel.elements) ? placedModel.elements.map((element) => [element.seq, element]) : []),
+    concurrency: deriveConcurrency(lanes, basis), overlaps: deriveOverlaps(model, lanes, crossings),
   };
 }
 

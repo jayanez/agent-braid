@@ -187,14 +187,69 @@ class TokenFileTests(unittest.TestCase):
         code = self.make().open_url.split("code=")[1]
         self.assertGreaterEqual(len(code), 22)
 
-    def test_token_file_is_replaced_at_each_start(self):
+    def test_a_safe_token_file_is_reused_at_the_next_start(self):
         first = self.make()
         old = first.token_path.read_text()
+        self.assertFalse(first.token_reused)
         second = self.make()
+        self.assertTrue(second.token_reused)
         self.assertEqual(first.token_path, second.token_path)
-        self.assertNotEqual(second.token_path.read_text(), old)
-        self.assertEqual(stat.S_IMODE(os.stat(second.token_path).st_mode), 0o600)
+        self.assertEqual(second.token_path.read_text(), old)
+        self.assertEqual(second.ingest_token, old)
+        self.assertNotEqual(second.open_url, first.open_url)  # the read credential stays per start
         self.assertEqual(sorted(p.name for p in self.runtime.iterdir()), [view_serve.INGEST_TOKEN_NAME])
+
+    def test_rotate_token_replaces_a_safe_token_file(self):
+        old = self.make().token_path.read_text()
+        server = ViewServer(LoomStore(), self.runtime, rotate_token=True)
+        self.addCleanup(server.server_close)
+        self.assertFalse(server.token_reused)
+        self.assertNotEqual(server.token_path.read_text(), old)
+        self.assertEqual(server.ingest_token, server.token_path.read_text())
+        self.assertEqual(stat.S_IMODE(os.stat(server.token_path).st_mode), 0o600)
+
+    def test_an_unsafe_or_malformed_token_file_is_replaced_not_reused(self):
+        good = "A" * 43
+        path = self.runtime / view_serve.INGEST_TOKEN_NAME
+        cases = {
+            "group-readable": (good, 0o640), "world-readable": (good, 0o644), "executable": (good, 0o700),
+            "short": ("A" * 22, 0o600), "trailing newline": (good + "\n", 0o600),
+            "bad characters": ("A" * 42 + "=", 0o600), "empty": ("", 0o600),
+        }
+        for name, (content, mode) in cases.items():
+            with self.subTest(name=name):
+                self.runtime.mkdir(mode=0o700, exist_ok=True)
+                path.unlink(missing_ok=True)
+                path.write_text(content)
+                path.chmod(mode)
+                server = self.make()
+                self.assertFalse(server.token_reused)
+                self.assertNotEqual(server.ingest_token, content)
+                self.assertEqual(stat.S_IMODE(os.stat(path).st_mode), 0o600)
+        with self.subTest(name="hard link"):
+            path.unlink()
+            path.write_text(good)
+            path.chmod(0o600)
+            os.link(path, Path(self.tmp.name) / "second-link")
+            self.assertFalse(self.make().token_reused)
+        with self.subTest(name="directory"):
+            path.unlink()
+            path.mkdir()
+            with self.assertRaises(ServeError):
+                self.make()
+            path.rmdir()
+
+    def test_a_planted_symlink_to_a_safe_looking_token_is_not_reused(self):
+        self.runtime.mkdir(mode=0o700)
+        victim = Path(self.tmp.name) / "victim"
+        victim.write_text("B" * 43)
+        victim.chmod(0o600)
+        (self.runtime / view_serve.INGEST_TOKEN_NAME).symlink_to(victim)
+        server = self.make()
+        self.assertFalse(server.token_reused)
+        self.assertNotEqual(server.ingest_token, "B" * 43)
+        self.assertEqual(victim.read_text(), "B" * 43)
+        self.assertFalse(server.token_path.is_symlink())
 
     def test_a_planted_symlink_at_the_token_path_is_replaced_not_followed(self):
         self.runtime.mkdir(mode=0o700)

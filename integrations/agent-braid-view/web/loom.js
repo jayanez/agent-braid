@@ -16,7 +16,7 @@
 import {
   createState, derive, summarize, formatClock, formatDuration, marksOf, sourceOf, sourceKeys, ROOT_PREFIX, orderedRows,
   passesFilters, hasFilters, encodeHash, decodeHash, readPreference, writePreference, waitingTime, LANE_STATES,
-  MARKER_KINDS, markerKind,
+  MARKER_KINDS, markerKind, positioned,
 } from "./state.js";
 import { createTimeline, iconNode } from "./timeline.js";
 import { translate, chooseLanguage, normalizeTag, LANGUAGES } from "./strings.js";
@@ -1125,14 +1125,18 @@ function syncTimeline() {
   }
   const position = rowsInOrder().slice(0, state.cursor);
   const shown = new Set(position.filter(({ element }) => shownInViews(element)).map(({ row }) => row.seq));
-  const last = position.length ? position[position.length - 1].element : null;
-  timeline.render({
-    model: state.model, derived: derived(), shown, selected: state.selected, viewport: state.viewport,
-    cursorX: last && last.timeKnown !== false ? last.x : null,
-  });
   const info = derived();
-  $("timeline-note").textContent = t("tl.note", { shown: shown.size, total: totalCount() }) +
-    (info.axis.breaks.length ? " " + tn("tl.breaks", info.axis.breaks.length) : "");
+  const lastElement = position.length ? position[position.length - 1].element : null;
+  const last = lastElement ? info.placedBySeq.get(lastElement.seq) : null;
+  timeline.render({
+    model: info.placedModel, derived: info, shown, selected: state.selected, viewport: state.viewport,
+    cursorX: positioned(last) ? last.x : null,
+  });
+  const axis = info.axis;
+  const order = !axis.sequence ? "" : axis.untimed === axis.total ? t("tl.sequence.none") + " "
+    : t("tl.sequence.some", { n: axis.untimed, total: axis.total }) + " ";
+  $("timeline-note").textContent = order + t("tl.note", { shown: shown.size, total: totalCount() }) +
+    (axis.breaks.length ? " " + tn("tl.breaks", axis.breaks.length) : "");
 }
 
 function syncViews() {
@@ -1255,7 +1259,7 @@ function applyScene(force) {
   const modelChanged = sceneModel !== state.model;
   if (modelChanged) {
     sceneModel = state.model;
-    scene.setModel(state.model);
+    scene.setModel(derived().placedModel); // events that state no time are laid out in sequence order
   }
   const hidden = [...state.hiddenSources].sort().join("|") + "#" + [...state.filters.agents].sort().join("|") + "#" +
     [...state.filters.status].sort().join("|") + "#" + [...state.filters.kinds].sort().join("|") + "#" + state.filters.onlyProblems;

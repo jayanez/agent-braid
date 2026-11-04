@@ -33,9 +33,13 @@ its own boundary review where it widens a route, an origin or a credential (see
     named `braid_view_<port>` (the viewer's own port), because browsers share cookies
     across loopback ports and two viewers must not overwrite each other's session.
     The cookie grants read routes only.
-  - **Ingest token.** Written at start to a new file created exclusively with
-    owner-only permissions in a per-user runtime directory, replaced at each start,
-    and sent by host exporters as `Authorization: Bearer <token>`. It grants ingest
+  - **Ingest token.** Kept in a file with owner-only permissions in a per-user
+    runtime directory. At start an existing file is reused when it is a regular file
+    (no symbolic link, one link) owned by the user, mode 0600, holding one well-formed
+    token; otherwise, or with `serve --rotate-token`, a new token is written to a file
+    created exclusively and moved into place. The file is kept when the viewer stops,
+    so hosts that read it once keep working across restarts (amendment 2026-11-04 in
+    the spec). The start text says whether it was reused or is new. It is sent by host exporters as `Authorization: Bearer <token>`. It grants ingest
     routes only and cannot read. It is never printed, never put in a URL and never
     written into host configuration; printed configuration reads it from the file.
 - Allowed `Host` values are exactly `127.0.0.1:<port>`, `[::1]:<port>` and

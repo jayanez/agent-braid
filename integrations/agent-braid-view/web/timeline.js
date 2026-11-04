@@ -10,8 +10,11 @@
 // No third-party code and no markup strings: elements are made with createElementNS and a fixed allowlist of
 // attribute names, every text is a text node, and nothing here reads the network. Glyphs are `<use>` references to the
 // symbols defined once in index.html, the same ones the legend and the 3D map use.
+//
+// When any event states no time the axis is the event order (state.js, placeBySequence): the ruler names sequence
+// numbers, every event has its own slot and no duration is drawn or derived from a slot.
 
-import { formatClock, formatDuration } from "./state.js";
+import { formatClock, formatDuration, positioned } from "./state.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const ALLOWED = new Set(["x", "y", "x1", "y1", "x2", "y2", "width", "height", "rx", "r", "cx", "cy", "d", "points", "transform",
@@ -197,7 +200,8 @@ export function createTimeline(container, hooks) {
       }
     }
 
-    // ruler: ticks in elapsed time, none inside a compressed span
+    // ruler: ticks in elapsed time, none inside a compressed span; on the sequence axis, event numbers
+    if (derived.axis.sequence) root.append(el("text", { class: "tl-axis-label", x: 8, y: RULER_HEIGHT - 8 }, t("tl.axisSequence")));
     layer.append(el("line", { class: "tl-axis", x1: labelW, y1: RULER_HEIGHT - 2, x2: labelW + plotW, y2: RULER_HEIGHT - 2 }));
     let lastLabelX = -Infinity;
     for (const tick of derived.axis.ticks(x0, x1)) {
@@ -226,7 +230,7 @@ export function createTimeline(container, hooks) {
     // governance row: grants, gates and wave markers at their position
     const govY = RULER_HEIGHT + BAND_HEIGHT + GOVERNANCE_HEIGHT / 2;
     for (const element of model.elements) {
-      if (!shown.has(element.seq) || element.timeKnown === false) continue;
+      if (!shown.has(element.seq) || !positioned(element)) continue;
       let id = null;
       if (element.element === "gate-ring") id = element.ringKind === "grant" ? "g-grant" : "g-gate";
       else if (element.element === "wave-marker") id = "g-wave";
@@ -284,14 +288,14 @@ export function createTimeline(container, hooks) {
           if (!shown.has(mark.seq)) continue;
           const x = sx(mark.x);
           bar.append(tip(el("line", { class: "tl-tool", x1: x, y1: cy - BAR_HEIGHT / 2 + 2, x2: x, y2: cy + BAR_HEIGHT / 2 - 2 }),
-            t("tl.tip.tool", { name: mark.toolName, time: formatClock(mark.ms - minMs) })));
+            t("tl.tip.tool", { name: mark.toolName, time: mark.timeKnown ? formatClock(mark.ms - minMs) : "#" + mark.seq })));
         }
         if (status === "running") bar.append(el("path", { class: "tl-open-end", d: "M" + (startX + barW) + " " + (cy - 6) + " l6 6 l-6 6" }));
         if (closedShown) {
           bar.append(el("text", { class: "tl-outcome outcome-" + lane.outcome, x: startX + barW + 4, y: cy + 4 }, OUTCOME_MARK[lane.outcome] || "?"));
         }
         for (const gap of lane.gaps) {
-          if (!shown.has(gap.seq)) continue;
+          if (!shown.has(gap.seq) || !positioned(gap)) continue;
           const x = sx(gap.x);
           const g = el("g", { class: "tl-gap" }, glyph("g-gap", x, cy, 14, "gl"));
           bar.append(tip(g, t("tl.tip.gap", { reason: String(gap.reason) })));
@@ -300,7 +304,7 @@ export function createTimeline(container, hooks) {
         // events of this lane that are markers: hazards
         for (const seq of lane.seqs) {
           const element = bySeq.get(seq);
-          if (!element || !shown.has(seq) || element.element !== "hazard-cone" || element.timeKnown === false) continue;
+          if (!element || !shown.has(seq) || element.element !== "hazard-cone" || !positioned(element)) continue;
           const x = sx(element.x);
           const id = element.absence ? "g-hazard-unobserved" : "g-hazard-observed";
           // inside an option the marker is not a control: it is reached with Left and Right and named by the row
@@ -321,7 +325,7 @@ export function createTimeline(container, hooks) {
     // crossings: a connector between the two agents' rows at the pair's position
     const connectors = el("g", { class: "tl-connectors", "clip-path": "url(#tl-clip)" });
     for (const crossing of derived.crossings) {
-      if (!shown.has(crossing.seq) || !crossing.timeKnown || crossing.lanes.length < 2) continue;
+      if (!shown.has(crossing.seq) || !crossing.positioned || crossing.lanes.length < 2) continue;
       const [a, b] = crossing.lanes.map((index) => derived.byIndex.get(index));
       if (!a || !b || !rowY.has(a.laneIndex) || !rowY.has(b.laneIndex)) continue;
       const x = sx(crossing.x);
@@ -335,7 +339,9 @@ export function createTimeline(container, hooks) {
       const mid = (ya + yb) / 2;
       group.append(glyph(id, x, mid, 18, "gl"), el("rect", { class: "tl-hit", x: x - 11, y: mid - 11, width: 22, height: 22 }));
       if (crossing.kind === "predicted") {
-        group.append(el("text", { class: "tl-cross-word", x: x + 14, y: mid + 4 }, t("tl.conflictWord")));
+        // near the right edge the word goes to the left of the glyph, so the clip does not cut it
+        const flip = x + 110 > labelW + LEFT_PAD + plotW;
+        group.append(el("text", { class: "tl-cross-word", x: flip ? x - 14 : x + 14, y: mid + 4, "text-anchor": flip ? "end" : null }, t("tl.conflictWord")));
       }
       group.addEventListener("click", (event) => { event.stopPropagation(); hooks.onSelect(crossing.seq); });
       connectors.append(tip(group, text));

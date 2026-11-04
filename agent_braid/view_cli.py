@@ -17,8 +17,10 @@
 
 Exit codes: 0 success; 1 the stream was read but is invalid; 2 usage error, refusal or unavailable
 resource. Nothing is left behind by a refusal: the runtime directory is created only after every
-input was checked and is removed again when the port cannot be bound; the ingest token file is
-removed when the server stops (Ctrl-C or SIGTERM). The web bundle is read from the source checkout
+input was checked and is removed again when the port cannot be bound. The ingest token file is kept
+when the server stops and reused at the next start while it is still a safe owner-only file, so hosts
+that read it once keep working across restarts; `serve --rotate-token` replaces it (SPEC-061 amendment
+2026-11-04). The web bundle is read from the source checkout
 (`integrations/agent-braid-view/web`) when that directory exists, else from the installed package
 (`agent_braid/view_assets/web`, shipped by the build, T043). Only the files named in `BUNDLE_FILES` are
 served (T047); the vendored files come from the `vendor` directory of the resolved bundle. The viewer never writes host configuration. This module
@@ -88,6 +90,8 @@ def add_parser(subparsers: Any) -> None:
                        help="web is implemented; the others report that they are planned")
     serve.add_argument("--runtime-dir", type=Path, metavar="DIR",
                        help="private directory for the ingest token (default: per-user location)")
+    serve.add_argument("--rotate-token", action="store_true",
+                       help="replace the ingest token instead of reusing it (then restart the hosts that read it)")
     validate = commands.add_parser("validate", help="check a recorded loom stream")
     validate.add_argument("file", type=Path)
     env = commands.add_parser("env", help="print host configuration; writes nothing")
@@ -244,7 +248,8 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
         server = ViewServer(store, runtime_dir, port=args.port, bundle=bundle,
                             ingest_handlers={HOOK_PATH: hooks.handle}, names_inventory=hooks.dropped_names,
                             import_map_sha256=import_map_sha256, vendor_dir=vendor_dir_of(bundle_dir),
-                            language_hint=language_hint_from_environ(os.environ))
+                            language_hint=language_hint_from_environ(os.environ),
+                            rotate_token=args.rotate_token)
     except ServeError as exc:
         _remove_created(created)
         raise CliError(f"view serve: {exc}") from exc
@@ -268,7 +273,6 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
         if tail is not None:
             tail.stop()
         server.server_close()
-        _remove_own_token(server)
     return 0
 
 
@@ -317,7 +321,9 @@ def _banner(server: Any, tail: Any, discovered: list[Path], notes: list[str]) ->
 
     lines = ["Agent Braid activity viewer (read-only), surface web, loopback only.",
              f"Open once in a browser: {server.open_url}",
-             f"Ingest token file (owner-only): {server.token_path}"]
+             f"Ingest token file (owner-only): {server.token_path}",
+             "Ingest token: reused from the previous start; running hosts keep working." if server.token_reused
+             else "Ingest token: new; restart Claude Code (or any host that read the old token) to pick it up."]
     if tail is not None:
         source = "discovered from the plugin registry" if discovered else "given with --watch"
         lines.append(f"Watching result roots {source} (read-only); the page shows only these labels:")
@@ -335,15 +341,6 @@ def _stop_on_sigterm() -> Any:
         return signal.signal(signal.SIGTERM, stop)
     except ValueError:  # not the main thread (tests): the caller stops the server itself
         return None
-
-
-def _remove_own_token(server: Any) -> None:
-    """Delete the token file when it still holds this server's token, so a stopped viewer leaves none."""
-    try:
-        if server.token_path.read_text() == server.ingest_token:
-            server.token_path.unlink()
-    except OSError:
-        pass
 
 
 # -- validate ------------------------------------------------------------------------------------

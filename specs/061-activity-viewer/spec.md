@@ -175,6 +175,22 @@ English), with a manual choice remembered per viewer. The ADR 0033 amendment is 
 `docs/adr/0033-vendored-threejs-mit-boundary.md`, so REQ-017's gate G2 is met. The privacy review (T052) and
 the host probe (T053) are authorised and not yet done; contract v0.2 stays a draft until T052 concludes.
 
+## Ingest token amendment (2026-11-04)
+
+Real use on 2026-11-04 showed that a new ingest token at every `view serve` start breaks Claude Code
+hooks silently: Claude Code reads `AGENT_BRAID_VIEW_TOKEN` once, from the shell that started it, so after
+any viewer restart every hook was refused (404, no visible symptom) until Claude Code was restarted. The
+owner approved fixing it on 2026-11-04 ("OK, adelante"). From this amendment the ingest token is
+**stable across restarts**: `serve` reuses the existing token file when it is a regular file (not a
+symbolic link, one link), owned by the user, mode exactly 0600, in the owner-only runtime directory and
+holding one well-formed token; otherwise it writes a new one as before. `serve --rotate-token` replaces it
+explicitly. The file is no longer deleted when the viewer stops, and the start text says whether the token
+was reused or is new (never the token itself), so the user knows when hosts need a restart. The read
+credential is unchanged: one open code and one cookie per start. Trade-off accepted: a token that outlives a
+viewer run grants ingest only (it cannot read), stays owner-only on disk, and is the same secret a running
+host already holds in its environment; rotation is one flag away. This changes REQ-004 and REQ-012 and the
+ingest-token clause of [ui-security-privacy.md](contracts/ui-security-privacy.md).
+
 ## Requirements and acceptance scenarios
 
 ### REQ-001 — Versioned event contract
@@ -267,10 +283,10 @@ Verification: [procedure_003](validation-plan.md#procedure_003); T013, T020.
 ### REQ-004 — Loopback server boundary
 
 `agent-braid view serve` binds only to `127.0.0.1` (or `::1`) and uses two
-per-session credentials with separate rights: a one-time open code, printed at
+credentials with separate rights: a one-time open code, printed at
 start, that the browser exchanges once for an `HttpOnly`, `SameSite=Strict`
-session cookie granting read routes only; and an ingest token, written to a new
-owner-only file and sent by host exporters as an `Authorization: Bearer` header,
+session cookie granting read routes only; and an ingest token, kept in an
+owner-only file (reused across restarts, replaced by `serve --rotate-token`) and sent by host exporters as an `Authorization: Bearer` header,
 granting ingest routes only. No credential remains in a URL after the exchange,
 in an access log or in printed host configuration. Requests with a `Host` other
 than the bound loopback names, a foreign `Origin`, a cross-site `Sec-Fetch-Site`,

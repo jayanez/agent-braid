@@ -250,7 +250,7 @@ pre { margin: var(--s-1) 0 0; padding: var(--s-2); max-height: 280px; overflow: 
 .tl-row.pending { opacity: 0.45; }
 .tl-label { fill: var(--text); font-size: var(--t-label); }
 .tl-duration, .tl-tick-label, .tl-band-label, .tl-break-label { fill: var(--muted); font-variant-numeric: tabular-nums; font-size: var(--t-meta); }
-.tl-gov-label { fill: var(--muted); font-size: var(--t-label); }
+.tl-gov-label, .tl-axis-label { fill: var(--muted); font-size: var(--t-label); }
 .tl-state { fill: var(--muted); font-size: var(--t-label); }
 .tl-state.state-finished { fill: var(--text); }
 .tl-axis, .tl-tick { stroke: var(--muted); stroke-width: 1; }
