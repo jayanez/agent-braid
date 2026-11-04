@@ -1,6 +1,6 @@
 # Contract: legacy `tooling install --host opencode` profile
 
-Status: proposed with [ADR 0037](../../../docs/adr/0037-opencode-native-plugin.md).
+Status: adopted with [ADR 0037](../../../docs/adr/0037-opencode-native-plugin.md).
 Adds one host to the SPEC-042 receipt-owned lifecycle. The `codex` and `claude`
 profiles, their receipts, previews and refusal diagnostics are unchanged byte for
 byte. The route is the frozen fallback for platforms without a bundled runtime and

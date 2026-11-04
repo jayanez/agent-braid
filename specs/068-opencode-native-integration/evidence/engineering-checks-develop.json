@@ -2,20 +2,22 @@
   "schema": "spec-068-engineering-checks/1",
   "scope": "Deterministic engineering tests of work merged on develop. Not native-host observation, release evidence, owner review or a compatibility claim.",
   "develop_commit": "38c0b2687652a8e25362931937a98bd2ecdbe7b6",
+  "refreshed_at_develop_commit": "0eb75d84b6ad5cbe156b5d0c4ff967833f416205",
+  "refresh_note": "2026-11-04 (record PR for 0.1.0-alpha.7): PR #1030 changed tests/test_opencode_entry.py, tests/test_plugin_opencode.py and tests/test_plugin_mcp.py (seven skills, doctor ancestor-skill scan, AIM validation message). Their sha256 values, the seven-skill wording and the test_plugin_opencode count (22 to 25) were refreshed after rerunning these three modules at 0eb75d84 (macOS arm64, CPython 3.13, test_plugin_mcp in a scratch venv with the pinned mcp SDK): 22 + 25 + 51 tests passed, no skips. The other modules were not rerun; their file hashes are unchanged on develop.",
   "run_date": "2026-11-03",
   "environment": "macOS arm64, CPython 3.13.11, python -m unittest <module>; fake opencode/codex/claude executables; no model provider. test_plugin_mcp ran in a scratch venv with the pinned mcp==2.3.0 SDK (requirements-native-plugin.txt, hash-checked) so its SDK-gated test did not skip; the other modules ran in .venv-speckit.",
-  "result": "All listed modules passed with no skips: 22 + 22 + 41 + 1 + 13 + 24 + 51 tests. CI on each merged PR is the pr-profile evidence for its head.",
+  "result": "All listed modules passed with no skips: 22 + 25 + 41 + 1 + 13 + 24 + 51 tests. CI on each merged PR is the pr-profile evidence for its head.",
   "scenarios": {
     "SC-003": {
       "merged_in": "PR #1022 (f7bdf78f)",
       "tests": [
         {
           "file": "tests/test_opencode_entry.py",
-          "sha256": "794ea67ffe7406b66cbb309f654dee6c5ea28dcaa4901e333b4f8007be6304dd",
+          "sha256": "1ea432948779814604cb22240d8611bf88da69c2967b5dfb86c13228cc77732c",
           "tests_run": 22
         }
       ],
-      "outcome": "OpenCode entry module (tests/test_opencode_entry.py, 22 tests): source parse finds none of the forbidden APIs and each forbidden API inserted into a copy is detected; registered values follow the contract; one server, six skills and two commands; repeated transforms are idempotent; a foreign agent-braid server and existing skills are never replaced, updated or removed; a broken host context never throws.",
+      "outcome": "OpenCode entry module (tests/test_opencode_entry.py, 22 tests): source parse finds none of the forbidden APIs and each forbidden API inserted into a copy is detected; registered values follow the contract; one server, seven skills and two commands; repeated transforms are idempotent; a foreign agent-braid server and existing skills are never replaced, updated or removed; a broken host context never throws.",
       "limits": "Unit tests of the entry module with a synthetic host context. The MCP core results are the unchanged SPEC-046 tests (test_plugin_mcp); no stdio fixture drives the entry's registered command, and the real host starting the server is T010 (unobserved)."
     },
     "SC-004": {
@@ -23,16 +25,16 @@
       "tests": [
         {
           "file": "tests/test_plugin_opencode.py",
-          "sha256": "c2abb64c319fff64df3c6a2a12fcbca85594c93e671b9a3926c9afbb4a582b43",
-          "tests_run": 22
+          "sha256": "e6bf55cca5b7c768540c2fb45ecb52db9119db1948a59c64fc31d254bbc1f503",
+          "tests_run": 25
         },
         {
           "file": "tests/test_opencode_entry.py",
-          "sha256": "794ea67ffe7406b66cbb309f654dee6c5ea28dcaa4901e333b4f8007be6304dd",
+          "sha256": "1ea432948779814604cb22240d8611bf88da69c2967b5dfb86c13228cc77732c",
           "tests_run": 22
         }
       ],
-      "outcome": "plugin doctor --host opencode reports collision, duplicate-guidance, server-collision and ambiguous-configuration on fixture trees; output without --host unchanged; the entry registers six skills and the setup and reconnect commands.",
+      "outcome": "plugin doctor --host opencode reports collision, duplicate-guidance, server-collision and ambiguous-configuration on fixture trees; output without --host unchanged; the entry registers seven skills and the setup and reconnect commands.",
       "limits": "Fixture skill trees and a fake registry; the precedence order between some discovery locations was not compared on the host (T002 row 02). Live skill listing in a session is unobserved (T010)."
     },
     "SC-005": {
@@ -40,13 +42,13 @@
       "tests": [
         {
           "file": "tests/test_opencode_entry.py",
-          "sha256": "794ea67ffe7406b66cbb309f654dee6c5ea28dcaa4901e333b4f8007be6304dd",
+          "sha256": "1ea432948779814604cb22240d8611bf88da69c2967b5dfb86c13228cc77732c",
           "tests_run": 22
         },
         {
           "file": "tests/test_plugin_opencode.py",
-          "sha256": "c2abb64c319fff64df3c6a2a12fcbca85594c93e671b9a3926c9afbb4a582b43",
-          "tests_run": 22
+          "sha256": "e6bf55cca5b7c768540c2fb45ecb52db9119db1948a59c64fc31d254bbc1f503",
+          "tests_run": 25
         }
       ],
       "outcome": "agent-braid-reconnect prompts the session with the operator steps and performs no reload; no automatic reload path exists in the entry (source parse).",
@@ -103,7 +105,7 @@
       "tests": [
         {
           "file": "tests/test_plugin_mcp.py",
-          "sha256": "bb76452474bd3368fd99a4c76f68e0f55f59a6d7856e2f38ed844c4ad3f7c4ab",
+          "sha256": "93750b1ddf610acd33b57db82d3ac1ab1c4ccc643f8531aa630bd65659d20609",
           "tests_run": 51
         }
       ],

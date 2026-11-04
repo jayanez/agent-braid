@@ -34,7 +34,7 @@ records the official sources behind these design choices. Product implementation
 compatibility observations and usability evaluation remain pending.
 
 Cursor, VS Code/GitHub Copilot and pi are documented future routes; OpenCode is
-specified separately as SPEC-068 (implemented on `develop`, plugin not yet published).
+specified separately as SPEC-068 (plugin published from `0.1.0-alpha.7`).
 Additional hosts, remote consumers and interactive embedded views require their
 own contracts and observations before any support claim.
 

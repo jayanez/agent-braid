@@ -4,11 +4,10 @@ Stable task IDs. Completion requires obtained evidence; task completion does not
 imply native-host, release or founder acceptance. Parallelizable is a dependency
 property and does not authorize concurrent agents. T002–T009 are done on `develop`
 (engineering evidence in `evidence/opencode-host-matrix.json` and
-`evidence/engineering-checks-develop.json`). Still open: T001 (the owner adopted
-ADR 0037 on 2026-11-03; PR #1030, draft, records the status, marks T001 and holds
-the alpha.7 release preparation), T010 (PR #1031, draft, holds the observation
-record and runbook; the owner runs the interactive rows) and T011 (publication of
-`0.1.0-alpha.7`, conditional on T010, a green CI and a final owner decision). GitHub:
+`evidence/engineering-checks-develop.json`). T001 is done (the owner adopted ADR 0037
+on 2026-11-03; PR #1030 recorded the status), T010 is done (PR #1031: observation
+record and runbook) and T011 is done (plugin `0.1.0-alpha.7` published on 2026-11-04
+from release PR #1030; record in `release-acceptance-alpha7.md`). GitHub:
 milestone 27, parent #1032, tasks #1033–#1043.
 
 Commands run from the clean clone; `quick` means
@@ -93,7 +92,7 @@ Commands run from the clean clone; `quick` means
   Verification: procedure_004, procedure_005, `quick`. Evidence: test output.
   Negative controls: shadowing `analyze` in `.opencode/skills`; prefixed legacy
   skills reported as collision; any grant path; automatic reload.
-  Done: PR #1023; `tests/test_plugin_opencode.py` (22 tests).
+  Done: PR #1023; `tests/test_plugin_opencode.py` (22 tests at #1023, 25 after #1030).
 
 - [x] T006 (REQ-007 / SC-007; REQ-006 / SC-006, native install, update and remove commands): Add `opencode` to `install.sh --host` and to `--host
   all` (skipped with a notice when absent; `--host opencode` refuses when absent);
@@ -108,9 +107,9 @@ Commands run from the clean clone; `quick` means
   sudo or Python invoked.
   Done: PR #1027; `install.sh`, `tests/test_plugin_installer.py` (`OpenCodeInstallerTests`), README quick start.
   #1027 merged before publication, so `install.sh --host opencode` and `--host all`
-  with `opencode` on `PATH` fail at the OpenCode step against `plugin-dist` until
-  `0.1.0-alpha.7` is published; the README says so. Whether to gate that step is an
-  owner decision (T011).
+  with `opencode` on `PATH` failed at the OpenCode step against `plugin-dist` until
+  `0.1.0-alpha.7` was published. The owner decided on 2026-11-04 to leave that behaviour
+  as is; it is resolved by the publication of `0.1.0-alpha.7`.
 
 - [x] T007 (REQ-008 / SC-008; REQ-006 / SC-006): Add the `opencode` host to the
   legacy lifecycle per the legacy profile contract: per-host table in
@@ -155,7 +154,7 @@ Commands run from the clean clone; `quick` means
   Done: PR #1027; README, `docs/tooling/{NATIVE_PLUGINS,INSTALL,SKILLS,HOSTS,PLUGIN_PRIVACY,README}.md`, `docs/development/SPEC_KIT.md`, SPEC-039 `program.md`; unobserved items marked in the text. A later consolidation pass added the M4.7
   entries to `ROADMAP.md` and `docs/STATUS.md` and corrected the remaining "future route" wording.
 
-- [ ] T010 (REQ-012 / SC-012; REQ-003 / SC-003 and REQ-006 / SC-006, real-host part): Native observation in a clean OpenCode profile by
+- [x] T010 (REQ-012 / SC-012; REQ-003 / SC-003 and REQ-006 / SC-006, real-host part): Native observation in a clean OpenCode profile by
   the owner or an operator: install from a candidate tag, skill and command listing,
   `agent-braid_analyze-work` on a registered workspace, reconnect, removal, on each
   available target platform. Each candidate version is observed in a new OpenCode
@@ -164,11 +163,15 @@ Commands run from the clean clone; `quick` means
   OpenCode behaviour is a T002 row). Unobserved items stay open. Dependencies: T009 and an
   owner decision. Files: `evidence/native-observation.json`. Verification:
   procedure_012. Evidence: observation record with versions and limits.
-  Open. Draft PR #1031 (`track/068-t010-observation`) holds
-  `evidence/native-observation.json` (rows observed so far) and `t010-runbook.md`;
-  the owner runs the interactive rows in a disposable profile (D15). Issue #1042.
+  Done. PR #1031 (merged as `11e5bf76`) holds `evidence/native-observation.json` and
+  `t010-runbook.md`; the owner ran the interactive rows in a disposable profile (D15).
+  Result: 19 of 23 rows observed before publication, row 14 contradicted the observed candidate (fixed in #1030
+  by `96f30b7c`, not re-observed), rows 22 (Linux) and 23 (session `_meta` identifier)
+  unobserved. Row 21 (github transport against the published `plugin-dist`) was observed
+  on 2026-11-04 after publication as a smoke check, recorded in the record PR for
+  `release-acceptance-alpha7.md`. Issue #1042.
 
-- [ ] T011 (REQ-001…REQ-012): Stable candidate: `--profile pr`, `validate_spec_kit
+- [x] T011 (REQ-001…REQ-012): Stable candidate: `--profile pr`, `validate_spec_kit
   freeze`, release notes for `0.1.0-alpha.7` (D11), and the owner's release
   decision. Base: published `0.1.0-alpha.6` (release PR #1006, record PR #1012,
   tag `agent-braid--v0.1.0-alpha.6`), which stays the rollback target. Follow the
@@ -180,10 +183,16 @@ Commands run from the clean clone; `quick` means
   snapshots. Evidence: release-readiness record stating whether anything was
   released; tag, `plugin-dist` publication and remote tracking only on explicit
   authorization.
-  Open. The release preparation is draft PR #1030 (`release/068-alpha7-prep`:
-  version constant, notes, pins, `release-readiness-alpha7.md`); it merges only at
-  publication because the pins would then say "published". Conditions (D16): T010
-  without contradiction, green CI, final owner decision. Issue #1043.
+  Done. Published on 2026-11-04. Release PR #1030 (squash-merged as `0eb75d84`: version
+  constant, notes, pins, `release-readiness-alpha7.md`); `plugin-dist` commit
+  `8f19b1b7a806ee88d8adb38145491abbfac376b5` (parent `78cc45a3`, the alpha.6
+  distribution) and annotated tag `agent-braid--v0.1.0-alpha.7` (tag object
+  `4057a71cf5df27cc37b2001d55ceb4d8057455dd`), pushed without force. Record:
+  `release-acceptance-alpha7.md`, `evidence/release-alpha7.json` and
+  `owner-authorization-20261104.md` (record PR on `develop`). `validate_spec_kit
+  freeze` was not run for SPEC-068. Conditions (D16) were met: T010 without a
+  contradiction left open (row 14 fixed in the release), green CI on #1030, final owner
+  decision "Sí, publicar". Issue #1043.
 
 ## Limits
 

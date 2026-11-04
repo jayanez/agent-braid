@@ -20,6 +20,7 @@
   <a href="docs/tooling/README.md"><img src="https://img.shields.io/badge/MCP-stdio%20server-1f6feb?logo=modelcontextprotocol&logoColor=white" alt="MCP stdio server"></a>
   <a href="docs/tooling/NATIVE_PLUGINS.md"><img src="https://img.shields.io/badge/Codex-native%20plugin-412991?logo=openai&logoColor=white" alt="Native plugin for Codex"></a>
   <a href="docs/tooling/NATIVE_PLUGINS.md"><img src="https://img.shields.io/badge/Claude%20Code-native%20plugin-D97757?logo=anthropic&logoColor=white" alt="Native plugin for Claude Code"></a>
+  <a href="docs/tooling/NATIVE_PLUGINS.md"><img src="https://img.shields.io/badge/OpenCode-native%20plugin-211E1E?logo=opencode&logoColor=white" alt="Native plugin for OpenCode"></a>
   <a href="https://github.com/jayanez/agent-braid/tags"><img src="https://img.shields.io/github/v/tag/jayanez/agent-braid?filter=agent-braid--v*&label=plugin" alt="Latest native plugin release tag"></a>
   <a href="docs/tooling/INSTALL.md"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux-lightgrey" alt="macOS and Linux"></a>
   <a href="docs/tooling/TELEMETRY.md"><img src="https://img.shields.io/badge/telemetry-off%20by%20default-success" alt="Telemetry off by default"></a>
@@ -112,7 +113,8 @@ Git and the selected host (Claude Code, Codex or OpenCode) must already be insta
 >   | sh -s -- --host all
 > ```
 >
-> Add `--ref agent-braid--v0.1.0-alpha.7` to pin a release. `--host all` also
+> To pin a specific release, add `--ref` with a tag from the
+> [tags page](https://github.com/jayanez/agent-braid/tags). `--host all` also
 > includes OpenCode when `opencode` is on your PATH, and `--host opencode` installs
 > only that host. (`--host both` is a deprecated alias for `codex` + `claude`.)
 
@@ -133,7 +135,7 @@ codex plugin marketplace add https://github.com/jayanez/agent-braid.git --ref pl
 codex plugin add agent-braid@agent-braid
 ```
 
-**OpenCode** (from `0.1.0-alpha.7`)
+**OpenCode**
 
 ```sh
 opencode plugin add 'github:jayanez/agent-braid#plugin-dist::path:plugins/agent-braid'
@@ -233,17 +235,21 @@ exact plan digest, issued outside every agent tool, skill and command; the
 grant to a private result you can verify.
 
 *Codex: select the `setup` or `analyze` skill (with `$` or `/skills`); OpenCode
-registers the `setup` skill and an `agent-braid-setup` command, and the `analyze`
-invocation form in a live OpenCode session is unobserved. The CLI blocks need the
+lists the Agent Braid skills and loads them through its skill tool, and offers the
+`/agent-braid-setup` and `/agent-braid-reconnect` commands (observed in a live
+session). The CLI blocks need the
 install from "Use the CLI directly" below (`agent-braid` is `.venv/bin/agent-braid`
 there); steps 2 and 3 also need the tutorial fixture that defines `$DEMO_DIR`, and
 can be re-run independently.*
 
-**Status of this install path.** The
-[alpha.4 acceptance record](specs/046-native-ai-plugins/release-acceptance-alpha4.md)
-covers a Claude Code update, a public-tag install and a Codex CLI install, removal
-and reinstall. Interactive skill use and Linux execution were not observed, and the alpha.7
-native installs, including the OpenCode install, have not yet been observed.
+**Status of this install path.** Install, update, removal and reinstall have been
+observed in Claude Code and Codex, and install, interactive skill and command use,
+update and removal in OpenCode, on macOS arm64 (records in
+[specs/046-native-ai-plugins](specs/046-native-ai-plugins/) and the
+[OpenCode native observation](specs/068-opencode-native-integration/evidence/native-observation.json)).
+The recorded Claude Code and Codex installs predate the latest plugin release, whose
+installs there are not observed, and Linux execution has not been observed. Always install the latest release; the commands
+above do.
 
 <details>
 <summary><strong>Use the CLI directly (Python 3.12+)</strong></summary>

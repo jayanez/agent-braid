@@ -39,7 +39,7 @@ procedure_008: JSONC comments and foreign servers preserved; idempotent repeat;
 
 procedure_004: collision, duplicate-guidance and server-collision findings of
 `plugin doctor --host opencode` on fixture trees (`test_plugin_opencode`); the
-entry source has no forbidden API and registers six skills and two commands
+entry source has no forbidden API and registers seven skills and two commands
 (`test_opencode_entry`).
 
 ```bash
@@ -69,7 +69,7 @@ opencode mcp list
 Expected: rows of `evidence/opencode-host-matrix.json` filled with version, command and
 result, or `unobserved`. User configuration is never touched.
 
-## Native observation (T010, open; draft PR #1031 holds the runbook)
+## Native observation (T010, done; PR #1031 holds the runbook and record)
 
 Clean profile as above; record install, skill and command listing, an
 `agent-braid_analyze-work` call on a registered workspace, reconnect and removal in

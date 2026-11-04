@@ -12,9 +12,10 @@ consumer prerequisites. The Python installation remains available below.
 
 The own GitHub marketplace is published on `plugin-dist`, with version
 `0.1.0-alpha.7` pinned by tag `agent-braid--v0.1.0-alpha.7`; it adds the OpenCode
-native plugin (see the [OpenCode](#opencode-from-010-alpha7) section and the
-[alpha.7 readiness record](../../specs/068-opencode-native-integration/release-readiness-alpha7.md)),
-and its native host installs have not yet been observed.
+native plugin (see the [OpenCode](#opencode-from-010-alpha7) section, the
+[alpha.7 release record](../../specs/068-opencode-native-integration/release-acceptance-alpha7.md)
+and the [readiness record](../../specs/068-opencode-native-integration/release-readiness-alpha7.md));
+its Claude Code and Codex host installs have not been observed.
 The previous `0.1.0-alpha.6` is pinned by tag `agent-braid--v0.1.0-alpha.6` at
 `78cc45a3f1c5dbc7b43e0ce5024fc5d1c5da053e` and is the rollback target; it adds registry
 quarantine, the `telemetry-audit` skill and `pluginVersion` in `plugin-status` (see the
@@ -112,13 +113,16 @@ output and rerun the same selection; native managers own idempotency.
 
 ## OpenCode (from 0.1.0-alpha.7)
 
-**Status.** The OpenCode package ships from `0.1.0-alpha.7`; `0.1.0-alpha.6` and
-earlier have no OpenCode `package.json`, so the command below needs alpha.7 or
-later. Everything here comes from the SPEC-068
+**Status.** The OpenCode package is published from `0.1.0-alpha.7` (2026-11-04);
+`0.1.0-alpha.6` and earlier have no OpenCode `package.json`, so the command below needs
+alpha.7 or later. Everything here comes from the SPEC-068
 [surface contract](../../specs/068-opencode-native-integration/contracts/opencode-surface.md),
-its tests and one disposable-profile observation (T002). That observation used
-OpenCode 2.1.4 on macOS arm64 with a local Git source. A real-host run of the published plugin (T010), the `github:`
-transport, Linux, and skill and command shapes in a live session are **unobserved**.
+its tests, a disposable-profile host matrix (T002), the
+[T010 native observation](../../specs/068-opencode-native-integration/evidence/native-observation.json)
+(interactive skill and command use, tool calls, update and removal) and a
+post-publication install from the `github:` source. All of it used OpenCode 2.1.4 on
+macOS arm64 in a disposable profile. Linux and call-time behaviour on Linux are
+**unobserved**, as is the OpenCode session identifier in request `_meta`.
 
 Install (user-global; `opencode plugin add` writes only the global configuration):
 
@@ -426,15 +430,16 @@ If you tried the legacy OpenCode profile and now add the plugin, either remove t
 legacy entry or give it another key, and check `plugin doctor --host opencode`.
 Registered workspaces, results and telemetry consent are untouched.
 
-Known limits and unobserved: a real-host run of the published plugin (SPEC-068 T010
-interactive rows), the `github:` transport against `plugin-dist`, Linux, skill and
-command shapes in a live OpenCode session, and call-time approval prompts were not
-observed; the native host install of alpha.6 and alpha.7 in Claude Code and Codex
-is pending. OpenCode behaviour was observed with OpenCode 2.1.4 on macOS arm64 only,
-in a disposable profile. The `analyze-work` input schema does not describe the AIM
-request shape, so a model needs an example (for instance
-`examples/analysis/file-edits.json`) to build a valid request; a schema description is
-planned for a later release.
+Known limits and unobserved: Linux, the OpenCode session identifier in request `_meta`
+(T010 row 23) and the native host install of alpha.6 and alpha.7 in Claude Code and
+Codex were not observed. OpenCode behaviour was observed with OpenCode 2.1.4 on macOS
+arm64 only, in a disposable profile (T010 in
+[release-acceptance-alpha7.md](../../specs/068-opencode-native-integration/release-acceptance-alpha7.md)).
+Under default permissions OpenCode showed no approval prompt for `plugin-status` or
+`analyze-work` (the owner's report from the desktop app, not stored in the session
+export). The `analyze-work` input schema does not describe the AIM request shape, so a
+model needs an example (for instance `examples/analysis/file-edits.json`) to build a
+valid request; a schema description is tracked in issue #1080 for a later release.
 
 Fixes from the T010 observation: `analyze-work` with kind `aim` now returns the
 analyzer's fixed validation message (for example "expected AIM record or nonempty AIM
