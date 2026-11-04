@@ -1890,11 +1890,14 @@ class QualRound3Tests(unittest.TestCase):
         blocked = q.summarize(passing_rows(override={"NET-02": weak}))
         self.assertFalse(blocked["passRuleSatisfied"])
         self.assertEqual(blocked["effects"]["network"]["status"], "inconclusive")
-        # and verification re-derives the same exclusions from the rows
-        world = World(self)
-        self.assertEqual(q.summarize(passing_rows(override={"NET-02": rows}))["probes"]["NET-02"]["status"],
-                         "denied")
-        del world
+        # a bundle written from such rows verifies: the exclusions are re-derived from the rows
+        rows_all = passing_rows(override={"NET-02": rows})
+        out = Path(tempfile.mkdtemp(prefix="braid-t007-nab-")) / "bundle"
+        self.addCleanup(shutil.rmtree, out.parent, ignore_errors=True)
+        written = q.write_bundle(out, environment=environment(), rows=rows_all, quota=[],
+                                 summary=q.summarize(rows_all))
+        self.assertEqual(q.verify_bundle(out), written["bundleSha256"])
+        self.assertEqual(written["effects"]["network"]["notApplicable"], {"NET-02": ["tcp-ipv6-literal"]})
 
     # prelude ------------------------------------------------------------------------------------------
 

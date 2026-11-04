@@ -282,6 +282,12 @@ shared object store fails the portable-root check).
   qualification. A new attempt needs the follow-ups in the result (session path, positive controls, PROC-03 and
   PROC-04 decisions, quota label) and a touched-lines re-check; T010 reviews this bundle (expected outcome: not
   qualified).
+  Round 3, 2026-11-04 (`evidence/founder-decisions-20261104d.json`: NC-5 amended to a token file; re-check
+  `evidence/recheck-qual-round3.md`): contained auth by the token file, a closed-set exit reason per session row,
+  a no-model `auth` self-check stage, the failed positive controls repaired or excluded by tested
+  not-applicable rules, the PROC-03 probe and watchdog measurement, PROC-04 attribution by an inherited run tag,
+  and the quota source label `operator-typed-usage`. The next attempt is a new name with a new budget of 3 sessions
+  (NC-10) and needs the orchestrator's written GO on that re-check; nothing native ran for this change.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes

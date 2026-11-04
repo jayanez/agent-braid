@@ -10,6 +10,9 @@ steps the runbook already has, and it stops (non-zero exit, the runbook's ``STOP
 2. WAITS for the orchestrator's verification of that summary (``verify-setup.json``, bound to the summary's
    SHA-256: the claude copy against the published checksum, the codesign identity) -- runbook "before step 9";
 3. step 9: the environment check and ``claude auth login`` (interactive: the login in the browser is yours);
+   step 9b (NC-5, amended 2026-11-04): ``claude setup-token`` in this account's session, then the token it
+   prints is pasted at a hidden terminal prompt (never into chat) and written, mode 0600, to ``oauth-token`` in
+   the account's ``CLAUDE_CONFIG_DIR``. The contained CLI authenticates with that file only (no Keychain);
 4. step 10: the driver ``--dry-run``; saves ``from-lab/dry-run.json`` and its SHA-256; WAITS for
    ``verify-dry-run.json``;
 5. step 10b: the driver ``--self-check --founder-go``; saves ``from-lab/self-check.json`` and its SHA-256;
@@ -38,6 +41,7 @@ Run it with the pinned interpreter from the root-owned code copy::
 from __future__ import annotations
 
 import argparse
+import getpass
 import hashlib
 import json
 import os
@@ -66,6 +70,8 @@ ACCOUNT_RE = re.compile(r"[a-z_][a-z0-9_-]{0,31}")
 ATTEMPT_RE = re.compile(r"t009-[0-9]{8}[a-z0-9-]{0,16}")
 ENV_RE = re.compile(r"ANTHROPIC|CLAUDE", re.IGNORECASE)
 BIG_FILE = 1024 * 1024  # "a few small files (a fresh login), nothing big"
+TOKEN_FILE = "oauth-token"  # the same name as harness_containment_macos.TOKEN_FILE (this script is stdlib only)
+TOKEN_RE = re.compile(r"[A-Za-z0-9._~+/=-]{20,2048}")  # the same shape the backend accepts
 PIN_KEYS = ("claudeSha256", "interpreterSha256", "sandboxExecSha256")
 
 
@@ -233,6 +239,31 @@ def copy_bundle(out_dir: Path, from_lab: Path, attempt: str, driver_exit: int, s
     say(f"   copied {out_dir} to {dest}: {len(files)} files, listing SHA-256 {record['listingSha256']}")
 
 
+def store_token(config: Path, prompt: Callable[[str], str], say: Callable[[str], None], *, renew: bool) -> None:
+    """Step 9b: save the pasted long-lived token as ``config/oauth-token``, mode 0600, created exclusively.
+
+    The prompt is hidden (``getpass``); the value is never echoed, printed or put in an error message. An
+    existing file is kept unless ``renew``."""
+    path = config / TOKEN_FILE
+    if os.path.lexists(path):
+        if not renew:
+            say(f"   {path} already exists: kept (--renew-token replaces it)")
+            return
+        path.unlink()
+    token = prompt("   Paste the token that claude setup-token printed (input hidden; it is written only to "
+                   f"{path}): ").strip()
+    if not TOKEN_RE.fullmatch(token):
+        raise Stop("STOP: what was pasted is not a token (expected one line of letters, digits and . _ ~ + / = -)")
+    try:
+        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+        with os.fdopen(descriptor, "w") as handle:
+            handle.write(token + "\n")
+        os.chmod(path, 0o600)
+    except OSError as exc:
+        raise Stop(f"STOP: cannot write {path}: {exc.strerror}") from exc
+    say(f"   saved {path} (mode 0600)")
+
+
 def plan(args: argparse.Namespace, pins: dict, home: str) -> None:
     handoff = args.handoff
     show = lambda cmd: print("+ " + " ".join(shlex.quote(w) for w in cmd))  # noqa: E731
@@ -241,6 +272,10 @@ def plan(args: argparse.Namespace, pins: dict, home: str) -> None:
     print("== Step 9. environment check (no ANTHROPIC/CLAUDE variable), then login")
     print("+ CLAUDE_CONFIG_DIR=" + shlex.quote(f"{home}/t009/config") + f" DISABLE_AUTOUPDATER=1 {CLAUDE} auth login"
           + ("    # skipped with --skip-login" if args.skip_login else ""))
+    print("== Step 9b. the long-lived token (NC-5): claude setup-token, then paste it at the hidden prompt")
+    print("+ CLAUDE_CONFIG_DIR=" + shlex.quote(f"{home}/t009/config") + f" {CLAUDE} setup-token"
+          + ("    # skipped with --skip-token" if args.skip_token else ""))
+    print(f"== write {home}/t009/config/{TOKEN_FILE}, mode 0600 (kept if it exists, unless --renew-token)")
     print("== Step 10. dry run, saved to from-lab/dry-run.json (+ .sha256); WAIT for verify-dry-run.json")
     show(driver_command(args, pins, home, "--dry-run"))
     print("== Step 10b. self-check, saved to from-lab/self-check.json (+ .sha256); WAIT for verify-self-check.json")
@@ -251,7 +286,7 @@ def plan(args: argparse.Namespace, pins: dict, home: str) -> None:
 
 
 def run(args: argparse.Namespace, env: dict[str, str], *, sleep: Callable[[float], None] = time.sleep,
-        clock: Callable[[], float] = time.monotonic) -> int:
+        clock: Callable[[], float] = time.monotonic, prompt: Callable[[str], str] = getpass.getpass) -> int:
     for value, pattern, message in (
             (args.commit, COMMIT_RE, "STOP: COMMIT is not a 40-character hash"),
             (args.operator_account, ACCOUNT_RE, "STOP: OPERATOR_ACCOUNT is not an account name"),
@@ -297,6 +332,15 @@ def run(args: argparse.Namespace, env: dict[str, str], *, sleep: Callable[[float
         raise Stop("STOP: after the login config_dir must hold a few small files")
     say(f"   {config}: {len(files)} files")
 
+    say("\n== Step 9b. Long-lived token for the contained CLI (NC-5): the Keychain stays closed to the sandbox")
+    if not args.skip_token:
+        if not (config / TOKEN_FILE).exists() or args.renew_token:
+            say("   claude setup-token opens the browser; approve it, then copy the token it prints.")
+            say("   Paste it only at the hidden prompt below, never into a chat.")
+            if subprocess.run([CLAUDE, "setup-token"], env=session_env, cwd=home).returncode != 0:
+                raise Stop("STOP: claude setup-token failed")
+        store_token(config, prompt, say, renew=args.renew_token)
+
     say("\n== Step 10. Dry run (pre-flight only)")
     sha = run_driver_capture(driver_command(args, pins, home, "--dry-run"), session_env, home, "dry-run.json",
                              from_lab, {"ready": 0}, say)
@@ -333,16 +377,18 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--wait-timeout", type=float, default=7200.0, help="seconds to wait for each verification file")
     p.add_argument("--poll", type=float, default=5.0, help="seconds between looks for a verification file")
     p.add_argument("--skip-login", action="store_true", help="skip claude auth login (already logged in)")
+    p.add_argument("--skip-token", action="store_true", help="skip claude setup-token (the token file is in place)")
+    p.add_argument("--renew-token", action="store_true", help="make a new token and replace the file")
     p.add_argument("--resume", action="store_true", help="continue a crashed run of the same attempt label (NC-10)")
     p.add_argument("--plan", action="store_true", help="print the stages and commands; run nothing")
     return p
 
 
 def main(argv: Sequence[str] | None = None, *, env: dict[str, str] | None = None, sleep=time.sleep,
-         clock=time.monotonic) -> int:
+         clock=time.monotonic, prompt: Callable[[str], str] = getpass.getpass) -> int:
     args = parser().parse_args(argv)
     try:
-        return run(args, dict(os.environ if env is None else env), sleep=sleep, clock=clock)
+        return run(args, dict(os.environ if env is None else env), sleep=sleep, clock=clock, prompt=prompt)
     except Stop as exc:
         print(str(exc), file=sys.stderr)
         return 1
