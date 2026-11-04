@@ -44,8 +44,10 @@ from .harness_lab import ContainmentBackend, LabError, Qualification, _check_bac
 from .harness_manifest import NATIVE_BUILD, NATIVE_PROFILE, HarnessManifest
 from .system_one import InvalidDecision, parse_json
 
-# NC-5 (dedicated user's own login) and NC-7 (config and temp locations): the variables the
-# contained launcher sets; no token variable exists.
+# NC-5 (dedicated user, authenticated by the token file in its config dir, amended 2026-11-04) and NC-7
+# (config and temp locations): the variables the contained launcher takes from the plan. The token
+# variable is not among them: the backend's supervisor reads the file and sets it in the child only, so
+# the transport and the parent environment never hold the value.
 NATIVE_ENV_ALLOW = ("CLAUDE_CONFIG_DIR", "HOME", "PATH", "TMPDIR")
 VERSION_WALL_SECONDS = 10
 VERSION_MAX_OUTPUT_BYTES = 4096

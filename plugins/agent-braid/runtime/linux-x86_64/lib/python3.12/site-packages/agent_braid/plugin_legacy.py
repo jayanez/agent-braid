@@ -5,7 +5,7 @@ import json
 import os
 from pathlib import Path
 from .plugin_registry import RegistryError, _pairs, _safe
-from .tooling_install import Selection, _load_receipt, plan, apply
+from .tooling_install import Selection, _load_receipt, plan, apply, opencode_home
 
 
 def selection(host, receipt, destination=None):
@@ -34,6 +34,8 @@ def inventory(host, destination=None):
         directory = Path(destination) / 'receipts'
     elif host == 'codex':
         directory = Path(os.environ.get('CODEX_HOME', str(Path.home() / '.codex'))) / 'agent-braid-receipts'
+    elif host == 'opencode':
+        directory = opencode_home() / 'agent-braid-receipts'
     else:
         directory = Path.home() / '.claude/agent-braid-receipts'
     _safe(directory, directory=True)

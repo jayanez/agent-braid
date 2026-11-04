@@ -34,7 +34,7 @@ def add_parser(subparsers):
     serve.add_argument("--worktree-root", type=Path, action="append", default=[])
     for name in ("configure", "install", "doctor", "update", "uninstall"):
         command = commands.add_parser(name, help=f"{name} selected receipt-owned host assets")
-        command.add_argument("--host", choices=("codex", "claude"), required=True)
+        command.add_argument("--host", choices=("codex", "claude", "opencode"), required=True)
         command.add_argument("--scope", choices=("user", "project"), required=True)
         command.add_argument("--source-root", type=Path, required=True)
         command.add_argument("--result-root", type=Path, required=True)
@@ -105,6 +105,8 @@ def run(args) -> int:
         if isinstance(exc, InstallationRefused) and exc.diagnostic is not None:
             record = {"schema": "agent-braid-tooling-refusal-record/v1",
                       "message": str(exc), "diagnostic": exc.diagnostic}
+            if getattr(exc, "code", None):
+                record["code"] = exc.code
             sys.stderr.write(json.dumps(record, ensure_ascii=False, sort_keys=True,
                                         separators=(",", ":"), allow_nan=False) + "\n")
             return 2
