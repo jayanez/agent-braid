@@ -295,7 +295,7 @@ function laneRecord(bySeq, lane, rec, sessionEndMs, sessionEndX) {
       .map((update) => ({ seq: update.seq, ms: update.relMs, x: update.x, toolName: update.toolName, state: update.state,
         timeKnown: timeKnownOf(update) })),
     waitSpans,
-    gaps: rec.gaps.map((gap) => ({ seq: gap.seq, ms: gap.relMs, x: gap.x, reason: gap.reason })),
+    gaps: rec.gaps.map((gap) => ({ seq: gap.seq, ms: gap.relMs, x: gap.x, reason: gap.reason, timeKnown: timeKnownOf(gap), placed: Boolean(gap.placed) })),
     seqs: [],
   };
 }
@@ -432,8 +432,8 @@ export function deriveConcurrency(derived, basis) {
 }
 
 // Pairs of agents and the time they were open together (F1). Capped so a very large session stays cheap.
-export function deriveOverlaps(model, derived, crossings, limit = 64) {
-  const basis = model && model.axis ? model.axis.basis : "sequence-only";
+export function deriveOverlaps(model, derived, crossings, limit = 64, axisBasis = null) {
+  const basis = axisBasis || (model && model.axis ? model.axis.basis : "sequence-only");
   const wanted = new Map();
   const add = (a, b) => { if (a !== undefined && b !== undefined && a !== b) wanted.set(Math.min(a, b) + ":" + Math.max(a, b), [Math.min(a, b), Math.max(a, b)]); };
   for (const crossing of crossings) add(crossing.lanes[0], crossing.lanes[1]);
@@ -470,7 +470,7 @@ export function derive(model) {
   return {
     ...lanes, axis, crossings, conflicts: conflictsOf(crossings), placedModel,
     placedBySeq: new Map(placedModel && Array.isArray(placedModel.elements) ? placedModel.elements.map((element) => [element.seq, element]) : []),
-    concurrency: deriveConcurrency(lanes, basis), overlaps: deriveOverlaps(model, lanes, crossings),
+    concurrency: deriveConcurrency(lanes, basis), overlaps: deriveOverlaps(model, lanes, crossings, 64, basis),
   };
 }
 
