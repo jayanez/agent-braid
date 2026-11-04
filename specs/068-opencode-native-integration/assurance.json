@@ -207,7 +207,7 @@
           "when": "OpenCode lists skills and commands"
         }
       ],
-      "text": "Skills, commands and collision warning. Expose the six product skills from the canonical sources without duplicated text, plus explicit `setup` and reconnect commands. Detect a same-named skill of higher precedence and warn."
+      "text": "Skills, commands and collision warning. Expose the seven skills (five product skills, setup and telemetry-audit) without duplicated text, plus explicit `setup` and reconnect commands. Detect a same-named skill of higher precedence and warn."
     },
     {
       "id": "REQ-005",

@@ -10,7 +10,7 @@ under Clarifications; they authorize no implementation, release or remote tracki
 
 Bring Agent Braid into OpenCode at parity with the Codex and Claude Code
 integration delivered under M4.5: a native user plugin with the bundled runtime,
-the `agent-braid-plugin/v0.2` MCP surface, the six product skills, guided setup,
+the `agent-braid-plugin/v0.2` MCP surface, the seven skills (five product skills, setup and telemetry-audit), guided setup,
 lifecycle operations, the shell installer and a receipt-owned Python fallback
 profile. This is engineering, not a research protocol.
 
@@ -148,7 +148,7 @@ Verification: [procedure_003](validation-plan.md); T003, T004, T010.
 
 ### REQ-004 — Skills, commands and collision warning
 
-Expose the six product skills from the canonical sources without duplicated
+Expose the seven skills (five product skills, setup and telemetry-audit) without duplicated
 text, plus explicit `setup` and reconnect commands. Detect a same-named skill of
 higher precedence and warn.
 

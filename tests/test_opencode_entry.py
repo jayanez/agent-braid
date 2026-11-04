@@ -11,7 +11,7 @@ import unittest
 from agent_braid.tooling_assets import load_skill_bundle
 from scripts.build_native_plugin import OPENCODE_SOURCE as ENTRY, ROOT, SKILL_SUBSTITUTIONS, package_skill
 
-SKILL_IDS = ["analyze", "plan", "evidence", "execute", "recover", "setup", "telemetry-audit"]
+SKILL_IDS = ['analyze', 'plan', 'evidence', 'execute', 'recover', 'setup', 'telemetry-audit']
 NODE = shutil.which('node')
 
 # Registrations are limited to three transforms. These APIs would add a network, write, process or

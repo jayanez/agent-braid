@@ -13,7 +13,7 @@ Template and base: alpha.6 is the published base and the rollback target (releas
 
 ## What `0.1.0-alpha.7` carries
 
-OpenCode native plugin (entry module, seven skills including `telemetry-audit`, `agent-braid-setup` and
+OpenCode native plugin (entry module, seven skills including `telemetry-audit`, and the commands `agent-braid-setup` and
 `agent-braid-reconnect`), `plugin doctor --host opencode`, `install.sh --host opencode`
 and `--host all`, the legacy `tooling install --host opencode` profile, the
 standard-library `agent_braid.jsonc` reader, and no registry migration. Release notes

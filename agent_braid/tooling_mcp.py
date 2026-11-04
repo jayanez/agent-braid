@@ -416,10 +416,8 @@ class ToolingService:
         return run_id
 
     def _safe_error(self, exc: BaseException) -> str:
-        if isinstance(exc, ToolingError):
-            return str(exc)[:1024]
-        if type(exc) is analysis.InvalidAnalysis:
-            # Fixed validator messages only. Subclasses (Git) can carry git stderr or paths.
+        # Exact InvalidAnalysis carries fixed validator messages; subclasses (Git) can carry git stderr or paths.
+        if isinstance(exc, ToolingError) or type(exc) is analysis.InvalidAnalysis:
             return str(exc)[:1024]
         if isinstance(exc, OSError):
             return "The operation could not complete because an observation was unavailable"
