@@ -309,15 +309,17 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   per OD-V4 (a)); `axis.nowMs` is written in the contract for T060; R12 is held (no
   allowlist change) and `collision.observed` (R13 to R15) is deferred to T063. No UI
   wiring; `view_model.py` needed no change.
-- [ ] T053 (REQ-014, REQ-022): Owner-run probe (G4) with a throwaway listener and no
+- [x] T053 (REQ-014, REQ-022): Owner-run probe (G4) with a throwaway listener and no
   Loom code: record the names (never values) of the members the installed Claude Code
   sends for `PostToolUse` and `SubagentStop` hooks, specifically any duration member.
   Dependencies: T051. Files: `host-verification-runbook.md`, `evidence/`. Evidence:
   receipt in `evidence/`; a missing member is a valid result. Run 2026-11-04:
   receipt `evidence/hv-t053-20261104.json`, outcome `unobserved` (the
   disposable profile could not authenticate; no tool call ran); the T030 receipt already
-  names `duration_ms` in `PostToolUse` on the same host version, type unrecorded. Stays
-  open for an owner rerun.
+  names `duration_ms` in `PostToolUse` on the same host version, type unrecorded.
+  Closed 2026-11-04 by owner decision (no rerun): the T030 name evidence is accepted;
+  T062 pins `PostToolUse.duration_ms` with a strict integer check and drops any other
+  shape, and no duration member is assumed for `SubagentStop`.
 - [x] T054 (REQ-016): Shared state and derived model: `state.js` with `deriveLanes`,
   conflicts, overlaps, concurrency and visibility; parity tests against
   `build_model` on the audit fixture and existing fixtures; decide whether lane
