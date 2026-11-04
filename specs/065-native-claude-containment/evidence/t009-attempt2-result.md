@@ -23,7 +23,7 @@ path need work before another attempt).
 | Run started | `startedAt` 1793785994 = 2026-11-04 09:53:14 UTC |
 | Pre-flight | dry run `ready`; `--self-check` `self-check-ok` (compile check `exec-denied` as expected, five F4 probes as expected, fixture and launch-probe runs exit 0, `sessionsStarted` 0) |
 | Verdict | `bundle-written`; `sessionsStarted` 3 |
-| Catalog | 32 probes (31 effect probes plus HOST-01), 93 result rows (uncontained control, contained fixture, contained launch-probe) |
+| Catalog | 32 probes (31 effect probes plus HOST-01), 93 result rows (uncontained control, contained fixture, contained launch-probe; for the three session probes a `detector-self-test` control and one contained row without profile) |
 | Probes that passed | 22 of 32 |
 
 Bundle integrity: the four hashed files re-hash to the `files` map in `summary.json`, and
@@ -71,19 +71,19 @@ dedicated account block those attempts on this machine; it is not a qualificatio
 ## 3. Failing probes: attempts and most likely cause
 
 "Positive control failed" means the uncontained run did not show the attempt succeeding, so a denial in the
-contained run proves nothing. In all five cases the contained rows were denied (`EPERM`) for every counted
-attempt except the one named. The causes below come from reading the probe helper source
+contained run proves nothing. In CRED-02, FS-07, NET-02 and PROC-07 the contained run denied (`EPERM`) every counted attempt and only the control failed;
+FS-03 is `inconclusive` in both modes. The causes below come from reading the probe helper source
 (`agent_braid/harness_qualification_probes.py`) against the control rows; none was reproduced.
 
 | Probe | Attempt(s) | Observed | Most likely cause | Kind |
 | --- | --- | --- | --- | --- |
-| CRED-02 | `mach-secd` (the others denied) | control `inconclusive`, errno `NONE` | `mach("com.apple.secd")` returns `True` only on status 0 and `False` only on 1100 (sandbox refusal); any other status (for example an unknown service name in the lab account's launchd domain) is `None`, so the control cannot show it | probe design: service not registered for this account |
+| CRED-02 | `mach-secd` (the others denied) | control `inconclusive`, errno `NONE` | `mach("com.apple.secd")` returns `True` only on status 0 and `False` only on 1100 (sandbox refusal); any other status (for example an unknown service name in the lab account's launchd domain) is `None`, so the control cannot show it | likely probe design: service not registered for this account (unconfirmed) |
 | FS-03 | `alias-private-var` (the others denied) | control and contained `inconclusive`, errno `NONE` | `var_alias` is empty unless the outside directory lies under `/private/var/` (line 1445); the arena parent is under the lab home, so the attempt is `None` in every mode | probe design: path not built on this layout |
-| FS-07 | `mach-spotlight` (the others denied) | control `inconclusive`, errno `NONE` | same as CRED-02 with `com.apple.Spotlight` | probe design |
-| NET-02 | `tcp-ipv6-literal` (IPv4 denied) | control errno `EHOSTUNREACH` (also `tcp-link-local-v6`) | the lab Mac has no IPv6 route, so the uncontained control cannot connect | environment: no IPv6 connectivity |
+| FS-07 | `mach-spotlight` (the others denied) | control `inconclusive`, errno `NONE` | same as CRED-02 with `com.apple.Spotlight` | likely probe design (unconfirmed) |
+| NET-02 | `tcp-ipv6-literal` (IPv4 denied) | control errno `EHOSTUNREACH` (also `tcp-link-local-v6`) | the lab Mac has no IPv6 route, so the uncontained control cannot connect | likely environment: no IPv6 connectivity (inferred from `EHOSTUNREACH` alone) |
 | PROC-07 | `ptrace-sibling` (nine others denied) | control `denied`, errno `EPERM` | `ptrace` of a sibling is refused for an ordinary uncontained process on macOS, so there is no positive control | probe design: attempt cannot succeed uncontained |
-| PROC-03 | `memory`, `memory-burst` allowed; `open-files` has no control | contained `allowed`, `limitExceeded` null, `escalated` true; control `open-files` `denied` (`LIMIT`) | the memory watchdog never fired for a helper that mapped and touched 4 GiB + 256 MiB (limit `memoryBytes` 4 GiB, poll 50 ms). Candidate causes: the watchdog reads `pti_resident_size`, which omits pages the macOS compressor holds; the helper finishes inside a poll; or the machine's free memory kept residency below the limit. `file-size` was denied (`LIMIT`). `open-files` is `inconclusive` because the runner's own hard limit also stops the control | possible real gap in the watchdog, or measurement choice; not determined |
-| PROC-04 | `double-fork` (setsid grandchild, sleeps 25 s) | contained `allowed`; runner scan found 1 survivor; backend `escapedProcesses` 0, `survivingProcesses` 0 | the detached grandchild is reparented and, per the documented `_Lineage` residual, reads as unrelated to the backend, so the backend neither counts nor sweeps it; the runner's independent nonce scan finds and kills it, which the judge reads as survival. This is exactly PROC-ESC-1 (accepted for T009, see below) being exercised, and it shows that the backend accounting and the independent scan disagree | design residual PROC-ESC-1 |
+| PROC-03 | `memory`, `memory-burst` allowed; `open-files` has no control | contained `allowed`, `limitExceeded` null, `escalated` true; control `open-files` `denied` (`LIMIT`) | `memory` is a probe defect: it writes one byte per MiB (`block[offset] = 1`, step 1 MiB), touching about one page in sixteen, so its residency stays near 70 MiB and it can never reach the 4 GiB limit. `memory-burst` touches every 4096 bytes (every 16 KiB arm64 page) over 4 GiB + 256 MiB and was also not stopped (`memoryBytes` 4 GiB, poll 50 ms); hypotheses for that: the watchdog reads `pti_resident_size`, which omits pages held by the macOS compressor; the helper finishes inside a poll; free memory kept residency below the limit. `file-size` was denied (`LIMIT`). `open-files` is `inconclusive`, probably because the runner's own hard limit also stops the control (the data shows only that the control was `denied`) | `memory`: probe design; `memory-burst`: possible watchdog gap or measurement choice, not determined |
+| PROC-04 | `double-fork` (setsid grandchild, sleeps 25 s) | contained `allowed`; runner scan found 1 survivor; backend `escapedProcesses` 0, `survivingProcesses` 0 | the detached grandchild is reparented and, per the documented `_Lineage` residual, reads as unrelated to the backend, so the backend neither counts nor sweeps it; the runner's independent nonce scan most likely finds it (and kills it afterwards), which the judge reads as survival. This is exactly PROC-ESC-1 (accepted for T009, see below) being exercised, and it shows that the backend accounting and the independent scan disagree | design residual PROC-ESC-1 |
 
 PROC-ESC-1 (founder, 2026-11-04): the decision accepts that a process that deliberately separates itself
 (`setsid`) counts as unrelated during T009. It was accepted as a residual of the accounting, not as a pass:
@@ -104,7 +104,7 @@ all three rows have the same shape:
 - NET-05-CLI `egress` `{}` and `egressObserved` true: the proxy saw **zero** tunnels, not even to an
   allowed endpoint, so the CLI never reached the network stage;
 - `configDir` before and after: 3 entries, nothing added, modified or removed;
-- quota 47 %/48 % before and after every session (delta 0): consistent with no model turn. (`wallSeconds` 60
+- quota 47 %/48 % before and after every session (delta 0 at 1 % resolution): consistent with no model turn, though a small usage would not show. (`wallSeconds` 60
   in the rows is the configured limit, not a measurement.)
 
 So the CLI exited with status 1 before emitting `init` and before opening any tunnel. The bundle keeps only
@@ -112,7 +112,7 @@ parsed fields and counters, not stdout or stderr, so the exit reason is not in t
 most likely first:
 
 1. **The CLI could not read its login inside the sandbox.** Runbook step 9 logs in with the account's own
-   `CLAUDE_CONFIG_DIR` and "its own keychain" (NC-5); the config directory holds only 3 small files, and the
+   `CLAUDE_CONFIG_DIR` and "its own keychain" (NC-5); the config directory holds only 3 files, and the
    backend states that Keychain services are not reachable (no `mach-lookup`; CRED-02 requires that denial).
    If the 2.1.292 CLI keeps its OAuth token in the login Keychain on macOS, the contained run starts as "not
    logged in" and exits 1 with no `init`. The self-check never exercised this: it runs `claude --version`
@@ -133,7 +133,7 @@ Scanned in the orchestrator session before publication, over `results.jsonl`, `s
 `environment.json`, `quota.json`, the run transcript and the self-check output (and re-checked here): the
 only account-bearing strings are `/Users/braidlab/...` paths (6 times on line 1 and once on line 80 of
 `results.jsonl`, once in the transcript). No e-mail address, token, uid, machine name or founder identifier
-appears. `braidlab` is the dedicated test account, removed at teardown. Decision `T009-BUNDLE-PUBLISH`
+appears. `braidlab` is the dedicated test account, to be removed at teardown. Decision `T009-BUNDLE-PUBLISH`
 ("A. Publicar tal cual") covers publishing these paths as they are. The dry-run output, which names the
 founder's own account, is excluded for that reason.
 
@@ -166,7 +166,7 @@ with a new budget of 3 sessions (NC-10).
    `var_alias` from a directory under `/private/var/` (for example the per-user temp dir) so
    `alias-private-var` runs; make the IPv6 attempt conditional on a route and report "not applicable"
    otherwise; replace `ptrace-sibling` with an attempt that can succeed uncontained, or drop it from the
-   counted set by a reviewed catalog change; give `open-files` an uncontained control that is not stopped by
+   counted set by a reviewed catalog change; make `memory` touch every page (it touches about one in sixteen); give `open-files` an uncontained control that is not stopped by
    the runner's own hard limit.
 3. **Decide PROC-03 (memory) and PROC-04 (setsid).** PROC-03: record the watchdog's peak observed resident
    bytes and sample count as integers, test with a lower limit or `ri_phys_footprint` (includes compressed
@@ -180,5 +180,5 @@ with a new budget of 3 sessions (NC-10).
 6. **Keep the sandbox allow-list unchanged** unless item 1 shows a specific missing permission; any addition
    follows the closed-list rule of `founder-decisions-20261104.json` and a new founder decision.
 
-Cost note: the three sessions used no usage (delta 0); a repeat needs no extra approval beyond a new attempt
+Cost note: the card showed no change in the three sessions (delta 0 at 1 % resolution); a repeat needs no extra approval beyond a new attempt
 name, but each new attempt spends operator time, so items 1 and 2 should land together.

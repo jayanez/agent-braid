@@ -31,7 +31,7 @@
       "ownerStatement": "A. Publicar tal cual (Recommended)",
       "decision": {
         "disposition": "publish-as-is",
-        "reading": "The bundle of attempt t009-20261104b is published unchanged under evidence/qualification/t009-20261104b/, including the /Users/braidlab/... paths (braidlab is the dedicated test account, removed at teardown). No e-mail address, token, uid or founder identifier is in the published files; the dry-run output, which names the founder's own account, is not published."
+        "reading": "The bundle of attempt t009-20261104b is published unchanged under evidence/qualification/t009-20261104b/, including the /Users/braidlab/... paths (braidlab is the dedicated test account, to be removed at teardown). No e-mail address, token, uid or founder identifier is in the published files; the dry-run output, which names the founder's own account, is not published."
       }
     }
   ],
