@@ -23,7 +23,7 @@ sys.path.insert(0, str(ROOT))
 from agent_braid.plugin_package import file_hash, inventory, verify_package
 from agent_braid.tooling_assets import load_skill_bundle
 
-VERSION = '0.1.0-alpha.6'
+VERSION = '0.1.0-alpha.7'
 DISTRIBUTION_ATTRIBUTES = '* -text -filter -ident\n'
 WORKFLOWS_SOURCE = ROOT / 'integrations/agent-braid/plugin/workflows'
 OPENCODE_SOURCE = ROOT / 'integrations/agent-braid/plugin/opencode/index.js'

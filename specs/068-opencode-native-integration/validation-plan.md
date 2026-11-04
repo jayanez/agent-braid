@@ -16,7 +16,7 @@ Commands use the isolated environment: `.venv-speckit/bin/python -m unittest …
 | procedure_001 | SC-001 | `speckit-analyze` report, ADR 0037, surface contract | requirements, tasks and procedures agree; existing contracts unchanged | contract change to `agent-braid-plugin/v0.2`; missing gate |
 | procedure_002 | SC-002 | `evidence/opencode-host-matrix.json` (disposable profile) | every row observed or `unobserved`, with version and command | user config touched; Git install alters exec bits, bytes or size |
 | procedure_003 | SC-003 | native package test + MCP stdio fixture | core values equal Codex/Claude for the same input | unknown ID, arbitrary root, execution without grant |
-| procedure_004 | SC-004 | skill/command listing fixture + `plugin doctor` | six skills and two commands with canonical text; collision reported | shadowing skill named `analyze`; any grant path |
+| procedure_004 | SC-004 | skill/command listing fixture + `plugin doctor` | seven skills and two commands with canonical text; collision reported | shadowing skill named `analyze`; any grant path |
 | procedure_005 | SC-005 | setup/registry fixture | `reconnectRequired: true` until reconnect command | automatic reload observed |
 | procedure_006 | SC-006 | lifecycle fixture with fake `opencode` | install, update, remove and legacy migration leave documented state | foreign configuration removed; unowned entry removed |
 | procedure_007 | SC-007 | `tests/test_plugin_installer.py` | `--host opencode`, `all` and `--dry-run` commands as specified | absent OpenCode; Codex/Claude output changed |

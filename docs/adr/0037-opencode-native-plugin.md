@@ -1,8 +1,10 @@
 # ADR 0037: OpenCode native plugin
 
-- **Status:** Proposed. Adoption authorizes no implementation, observation,
-  release, tag or `plugin-dist` publication by itself.
+- **Status:** Accepted 2026-11-03 by the owner, Juan Antonio Yáñez García. Adoption
+  authorizes no implementation, observation, release, tag or `plugin-dist`
+  publication by itself.
 - **Date:** 2026-11-03
+- **Deciders:** Juan Antonio Yáñez García (owner), accepted 2026-11-03
 - **Articles:** 0, 5, 6, 12–16, 19, 20, 23–25
 - **Specification:** [SPEC-068](../../specs/068-opencode-native-integration/spec.md)
 

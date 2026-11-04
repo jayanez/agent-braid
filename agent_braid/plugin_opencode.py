@@ -6,7 +6,10 @@ writes, never contacts the network, grants nothing and does not reload the host.
 (lowest to highest) is the order observed in SPEC-068 T002 row 02: home ``.claude``, home
 ``.agents``, OpenCode config ``skills``, project ``.claude``, ``.agents``, ``.opencode`` and
 explicit ``skills`` config entries; within one kind a nearer directory is listed later.
-Ordering of ancestors below the project directory was not observed and is an assumption.
+Skill directories are scanned in every ancestor up to the filesystem root, not only to the Git
+root (T010 row 14: the host loaded a skill above the Git root). Configuration files still stop
+at the Git root because no observation shows the host reading them above it.
+The relative order of ancestor directories (root first, nearest last) was not observed and is an assumption.
 """
 from __future__ import annotations
 
@@ -16,7 +19,7 @@ from pathlib import Path
 
 from . import jsonc
 
-SKILL_IDS = ('analyze', 'plan', 'evidence', 'execute', 'recover', 'setup')
+SKILL_IDS = ('analyze', 'plan', 'evidence', 'execute', 'recover', 'setup', 'telemetry-audit')
 SERVER_NAME = 'agent-braid'
 LEGACY_PREFIX = 'agent-braid-'
 _CONFIG_NAMES = ('opencode.json', 'opencode.jsonc')
@@ -33,19 +36,24 @@ def _chain(project: Path) -> list[Path]:
     return list(reversed(chain))
 
 
+def _skill_chain(project: Path) -> list[Path]:
+    """Root-first, nearest-last directories down to ``project`` (T010 row 14: no Git-root stop)."""
+    return [*reversed(project.parents), project]
+
+
 def _global_directory() -> Path:
     """OpenCode global directory; T002 row 09: a relative XDG_CONFIG_HOME is used as given."""
     value = os.environ.get('XDG_CONFIG_HOME', '')
     return (Path(value) if value else Path.home() / '.config') / 'opencode'
 
 
-def _skill_directories(chain: list[Path] | None) -> list[tuple[str, Path]]:
+def _skill_directories(chain: list[Path]) -> list[tuple[str, Path]]:
     home = Path.home()
     found = [('home-claude', home / '.claude' / 'skills'), ('home-agents', home / '.agents' / 'skills'),
              ('opencode-config', _global_directory() / 'skills')]
     for source, relative in (('project-claude', '.claude/skills'), ('project-agents', '.agents/skills'),
                              ('project-opencode', '.opencode/skills')):
-        found += [(source, directory / relative) for directory in chain or ()]
+        found += [(source, directory / relative) for directory in chain]
     return found
 
 
@@ -117,6 +125,7 @@ def diagnose(project: Path | None = None, plugin_root: Path | None = None) -> di
     project = Path(project).expanduser().absolute() if project is not None else None
     plugin_root = plugin_root.expanduser().absolute() if plugin_root else None
     chain = _chain(project) if project is not None else None
+    skill_chain = _skill_chain(project) if project is not None else []
     definitions: dict[str, list[dict]] = {name: [] for name in SKILL_IDS}
     legacy: list[dict] = []
     seen: set = set()
@@ -136,7 +145,7 @@ def diagnose(project: Path | None = None, plugin_root: Path | None = None) -> di
             elif skill_id.startswith(LEGACY_PREFIX) and skill_id[len(LEGACY_PREFIX):] in SKILL_IDS:
                 legacy.append(dict(item, skillId=skill_id))
 
-    for source, directory in _skill_directories(chain):
+    for source, directory in _skill_directories(skill_chain):
         scan(source, directory)
 
     reports, warnings, server = [], [], None

@@ -11,7 +11,7 @@ import unittest
 from agent_braid.tooling_assets import load_skill_bundle
 from scripts.build_native_plugin import OPENCODE_SOURCE as ENTRY, ROOT, SKILL_SUBSTITUTIONS, package_skill
 
-SKILL_IDS = ['analyze', 'plan', 'evidence', 'execute', 'recover', 'setup']
+SKILL_IDS = ['analyze', 'plan', 'evidence', 'execute', 'recover', 'setup', 'telemetry-audit']
 NODE = shutil.which('node')
 
 # Registrations are limited to three transforms. These APIs would add a network, write, process or
@@ -176,7 +176,8 @@ def make_package(root):
         target = root / 'skills' / SKILL_SUBSTITUTIONS[skill.name] / 'SKILL.md'
         target.parent.mkdir(parents=True)
         target.write_text(package_skill(skill.content))
-    shutil.copytree(ROOT / 'integrations/agent-braid/plugin/setup', root / 'skills/setup')
+    for plugin_only in ('setup', 'telemetry-audit'):
+        shutil.copytree(ROOT / 'integrations/agent-braid/plugin' / plugin_only, root / 'skills' / plugin_only)
     return root
 
 
@@ -216,7 +217,7 @@ class EntryRuntimeTests(unittest.TestCase):
         self.assertEqual(value['shape'], {'id': 'agent-braid', 'setup': 'function', 'keys': ['default']})
         self.assertFalse(value['setupThrew'])
 
-    def test_registers_server_six_skills_and_two_commands(self):
+    def test_registers_server_seven_skills_and_two_commands(self):
         value = self.run_scenario({'order': ['mcp', 'skill', 'command']})
         servers = dict(value['final']['servers'])
         self.assertEqual(servers, {'agent-braid': self.expected_server()})

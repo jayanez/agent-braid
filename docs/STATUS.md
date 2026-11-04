@@ -83,8 +83,9 @@ domains, not a single end-to-end candidate claim.
 The first targets are **Codex local CLI and Claude Code local CLI**. M4.5 formal product
 support and full acceptance remain pending. Separate bounded SPEC-021 host
 observations for Codex and Claude are linked below; they do not establish M4.5
-product support or acceptance. Cursor, VS Code/GitHub Copilot, OpenCode and pi are
-future routes. Start with the [integration guide](../docs/tooling/README.md) for the
+product support or acceptance. Cursor, VS Code/GitHub Copilot and pi are future routes;
+OpenCode is a native plugin host from plugin `0.1.0-alpha.7` (SPEC-068), with its
+native host observation pending. Start with the [integration guide](../docs/tooling/README.md) for the
 spec, contract and task map.
 
 ### Optional local diagnostics
@@ -284,7 +285,7 @@ The [local telemetry identity reconciliation](../specs/047-local-technical-telem
 | **Connect through stdio MCP** | Six bounded tools: `analyze`, `prepare`, `status`, `execute`, `recover`, `verify` | Configured source/result roots and the same local policy; grant issuance stays with the operator. |
 | **Prepare and inspect M3.5 proposals** | Synthetic trainer/inference, evaluator controls, hidden-proposal journals, session/pair accounting, filtered labs and aggregate seals | Software scope completed for T002/T004 on caller-declared synthetic inputs; **zero admitted real pairs**. Real-feed adaptation, source rights, protocol approval, capture, real fit and held-out evaluation remain gated. |
 | **Inspect local System 1 decisions** | Opt-in `system-one` diagnostics with a standard-library reference backend, plus a verified typed-plan selection core with Core, stdio and opt-in MCP SDK consumers | Synthetic requests and owned fixtures in a finite two-to-four-operation grammar. Since plugin `0.1.0-alpha.5` an opt-in System One shadow mode (SPEC-066 S1.5a) records one structural episode per successful `analyze-work` call on the machine, with `system-one report|purge` and a `system-one` telemetry operation; outputs are unchanged and the reference backend abstains. No learned model, calibration, accepted utility or execution authority; the first owner shadow week runs 2026-11-02 to 2026-11-09. |
-| **Use Agent Braid from Codex or Claude Code** | Native user plugins (`0.1.0-alpha.6`; rollback target `0.1.0-alpha.5`) with bundled runtime, skills, workspace registry and guided setup; plugin versions are a separate line from the Python package (`0.1.0a2`) | Alpha.2 passed both native interactive journeys; alpha.3 was observed on macOS Claude Code only; alpha.4 on macOS Claude Code and, through the CLI and loader, Codex; alpha.5 (System One shadow mode) is published with engineering checks only; alpha.6 (published 2026-11-03) adds registry quarantine (deleted worktrees no longer disable the plugin; `plugin setup --prune-stale`), the `telemetry-audit` skill and a `pluginVersion` field in `plugin-status`, with engineering checks only and its native host observation pending; M4.5 product support and acceptance remain open. |
+| **Use Agent Braid from Codex, Claude Code or OpenCode** | Native user plugins (`0.1.0-alpha.7`; rollback target `0.1.0-alpha.6`) with bundled runtime, skills, workspace registry and guided setup; plugin versions are a separate line from the Python package (`0.1.0a2`) | Alpha.2 passed both native interactive journeys; alpha.3 was observed on macOS Claude Code only; alpha.4 on macOS Claude Code and, through the CLI and loader, Codex; alpha.5 (System One shadow mode) is published with engineering checks only; alpha.6 (published 2026-11-03) adds registry quarantine (deleted worktrees no longer disable the plugin; `plugin setup --prune-stale`), the `telemetry-audit` skill and a `pluginVersion` field in `plugin-status`, with engineering checks only; alpha.7 adds the OpenCode native plugin (SPEC-068; `plugin doctor --host opencode`, `install.sh --host opencode`/`all`, a legacy `tooling install --host opencode` profile), with engineering checks and one disposable-profile observation only and the native host observations of alpha.6 and alpha.7 pending; M4.5 product support and acceptance remain open. |
 | **Forecast local workloads** | Opt-in `forecast` predict/advice/inspect/export, optional Chronos-2 adapter and a read-only stdio MCP transport | Synthetic and frozen paired controls with episode-cluster uncertainty; advice is heuristic and grants no parallelism or utility claim. |
 | **Measure your own usage locally** | Default-off `telemetry` with a private bounded SQLite store and manual export/merge/purge | Numeric aggregates only, no automatic transmission; pilot remains **NO-GO**. Since plugin `0.1.0-alpha.6` it also counts closed refusal reasons and plugin server starts (batch schema v2) and offers a read-only `telemetry audit-logs` comparison of host MCP logs with the store; no field-use evidence yet. |
 
@@ -293,13 +294,15 @@ The [local telemetry identity reconciliation](../specs/047-local-technical-telem
 The preferred installation route is the **native user plugin** for Codex or
 Claude Code on macOS arm64 and Linux x86_64. It includes Python and dependencies,
 registers its skills automatically and guides you through selecting repositories.
-The experimental `0.1.0-alpha.6` marketplace is published on `plugin-dist`,
-with the pinned tag [`agent-braid--v0.1.0-alpha.6`](https://github.com/jayanez/agent-braid/tree/agent-braid--v0.1.0-alpha.6)
-([record](../specs/046-native-ai-plugins/release-acceptance-alpha6.md)). It adds registry
-quarantine, the `telemetry-audit` skill and `pluginVersion` in `plugin-status`; its native
-host install has not yet been observed. The previous `0.1.0-alpha.5` (tag
+The experimental `0.1.0-alpha.7` marketplace is published on `plugin-dist`,
+with the pinned tag [`agent-braid--v0.1.0-alpha.7`](https://github.com/jayanez/agent-braid/tree/agent-braid--v0.1.0-alpha.7)
+([readiness and notes](../specs/068-opencode-native-integration/release-readiness-alpha7.md)). It adds the
+OpenCode native plugin (SPEC-068); its native host installs have not yet been observed. The previous `0.1.0-alpha.6` (tag
+[`agent-braid--v0.1.0-alpha.6`](https://github.com/jayanez/agent-braid/tree/agent-braid--v0.1.0-alpha.6),
+[record](../specs/046-native-ai-plugins/release-acceptance-alpha6.md)) is the rollback target and added registry
+quarantine, the `telemetry-audit` skill and `pluginVersion` in `plugin-status`; `0.1.0-alpha.5` (tag
 [`agent-braid--v0.1.0-alpha.5`](https://github.com/jayanez/agent-braid/tree/agent-braid--v0.1.0-alpha.5),
-[record](../specs/046-native-ai-plugins/release-acceptance-alpha5.md)) is the rollback target and added opt-in
+[record](../specs/046-native-ai-plugins/release-acceptance-alpha5.md)) added opt-in
 System One shadow mode (SPEC-066); alpha.4 removed the plugin MCP prompts and the
 redundant skill prefixes (SPEC-054).
 The portable MCP server in `develop` implements unprefixed prompt names with bounded

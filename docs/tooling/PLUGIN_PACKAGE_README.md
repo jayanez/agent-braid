@@ -1,6 +1,6 @@
 # Agent Braid native plugin
 
-Agent Braid inspects agent interactions, explains conflicts and carries bounded evidence forward. This local plugin includes its Python runtime, the existing tooling MCP implementation, five canonical product skills and a setup workflow. No Python, pip, uv or Node installation is required by the user. Git and a supported local Codex or Claude Code client remain prerequisites.
+Agent Braid inspects agent interactions, explains conflicts and carries bounded evidence forward. This local plugin includes its Python runtime, the existing tooling MCP implementation, five canonical product skills and a setup workflow. No Python, pip, uv or Node installation is required by the user. Git and a supported local Codex, Claude Code or OpenCode client remain prerequisites.
 
 Install at user scope from the Agent Braid marketplace. Open setup (Claude Code: `/agent-braid:setup`; Codex: select the Agent Braid `setup` skill), select repositories, inspect the private configuration/results destinations, apply the exact preview and reconnect MCP. Selection is per repository; global plugin availability is not unrestricted filesystem access. Analysis is the default. Execution requires explicit operator configuration and existing exact grants; setup never creates grants or starts provider sessions.
 
@@ -15,3 +15,5 @@ Support: https://github.com/jayanez/agent-braid/issues
 Software and executable materials: AGPL-3.0-only. Documentation and skill instructions: CC-BY-SA-4.0. Bundled Python and third-party packages retain their own included licenses. See LICENSE, LICENSES and provenance.json.
 
 Invoke the product skills in Claude Code as `/agent-braid:analyze`, `/agent-braid:plan`, `/agent-braid:evidence`, `/agent-braid:execute`, `/agent-braid:recover` and `/agent-braid:setup`; in Codex select the plugin skill (expected qualified name `agent-braid:analyze`, not yet observed natively). Plugin skills are unprefixed because the host namespace already carries the plugin name. Skill text refers to tools by their bare MCP names (for example `analyze-work`); Claude Code keeps the hyphens in host tool ids and Codex rewrites them to underscores. Codex does not display MCP prompts and the plugin publishes none.
+
+OpenCode (from `0.1.0-alpha.7`) installs this package as a plugin from its Git source with `opencode plugin add 'github:jayanez/agent-braid#plugin-dist::path:plugins/agent-braid'`; it loads the seven skills `analyze`, `plan`, `evidence`, `execute`, `recover`, `setup` and `telemetry-audit` and the commands `agent-braid-setup` and `agent-braid-reconnect`, with tools named `agent-braid_<tool>`.

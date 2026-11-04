@@ -202,9 +202,9 @@ class PluginRouterTests(unittest.TestCase):
         self.assertIsNone(status['pluginVersion'])  # no packaged plugin root, e.g. a source checkout
         package = self.base / 'package'
         package.mkdir()
-        (package / 'plugin.json').write_text(json.dumps({'name': 'agent-braid', 'version': '0.1.0-alpha.6'}))
+        (package / 'plugin.json').write_text(json.dumps({'name': 'agent-braid', 'version': '0.1.0-alpha.7'}))
         status = PluginRouter(self.home, package).status()
-        self.assertEqual((status['version'], status['pluginVersion']), (__version__, '0.1.0-alpha.6'))
+        self.assertEqual((status['version'], status['pluginVersion']), (__version__, '0.1.0-alpha.7'))
 
     def test_plugin_version_is_null_for_a_missing_or_malformed_manifest(self):
         self.install()

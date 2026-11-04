@@ -10,7 +10,7 @@ import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const SERVER = "agent-braid"
-const SKILLS = ["analyze", "plan", "evidence", "execute", "recover", "setup"]
+const SKILLS = ["analyze", "plan", "evidence", "execute", "recover", "setup", "telemetry-audit"]
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 
 const RECONNECT_TEXT = [

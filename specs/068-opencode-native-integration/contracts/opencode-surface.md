@@ -60,7 +60,7 @@ editor.set("agent-braid", {
 
 ### Skills
 
-Six skills, IDs `analyze`, `plan`, `evidence`, `execute`, `recover`, `setup`, read
+Seven skills, IDs `analyze`, `plan`, `evidence`, `execute`, `recover`, `setup`, `telemetry-audit`, read
 from the packaged `skills/<id>/SKILL.md` produced by the SPEC-054 build
 substitution. No text is duplicated in JavaScript; the entry passes `{path, content}` with
 the full `SKILL.md` content.
@@ -88,15 +88,18 @@ with no plugin prefix (T002 row 07). The command `execute` and `session.prompt` 
 ## Collision diagnosis
 
 `agent-braid plugin doctor --host opencode [--project <dir>]` is read-only and
-reports, for each of the six IDs, every definition found in the documented
+reports, for each of the seven IDs, every definition found in the documented
 discovery locations (`~/.claude/skills`, `~/.agents/skills`,
 `~/.config/opencode/skills`, and for `--project` the `.claude/skills`,
-`.agents/skills` and `.opencode/skills` directories from the directory to the Git
-root, plus explicit `skills` entries in the configuration files it can read).
+`.agents/skills` and `.opencode/skills` directories from the directory up to the
+filesystem root, not stopping at the Git root (T010 row 14), plus explicit
+`skills` entries in the configuration files it can read; those configuration
+files are still read only from the Git root down to the directory, since no
+observation shows the host reading them above it).
 
 | Finding | Meaning |
 |---|---|
-| `collision` | A non-plugin definition has one of the six IDs; output names the path that would win under the documented precedence |
+| `collision` | A non-plugin definition has one of the seven IDs; output names the path that would win under the documented precedence |
 | `duplicate-guidance` | Prefixed legacy skills (`agent-braid-*`) are also visible to OpenCode |
 | `server-collision` | The configuration defines an `agent-braid` MCP entry that is not the plugin's |
 
@@ -130,7 +133,7 @@ entry (ADR 0024).
 
 - Entry removes or updates a skill ID it can see, or replaces a foreign
   `agent-braid` server.
-- `plugin doctor --host opencode` misses a user or project skill with one of the six
+- `plugin doctor --host opencode` misses a user or project skill with one of the seven
   IDs (the entry cannot detect it, T002 row 02).
 - Entry throws from a transform (disables the whole plugin, T002 row 10).
 - Entry performs network access, writes files or subscribes to events.

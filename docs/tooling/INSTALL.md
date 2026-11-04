@@ -2,7 +2,7 @@
 # Installing Agent Braid
 
 Start with the [native plugin installation guide](NATIVE_PLUGINS.md) for
-user-scoped Codex and Claude Code plugins (and OpenCode from `0.1.0-alpha.7`), bundled runtime, automatic skill
+user-scoped Codex and Claude Code plugins (and OpenCode, from `0.1.0-alpha.7`), bundled runtime, automatic skill
 discovery, repository suggestions, setup, diagnostics, update and removal.
 It includes the optional curl installer and clearly separates local candidates
 from public distribution readiness.
@@ -59,7 +59,7 @@ The carrier version is Python package `0.1.0a2`, published on 2026-10-27 as GitH
 pre-release `v0.1.0-alpha.2` (no PyPI; see the
 [release record](../../specs/060-portable-prompt-names/evidence/release-0.1.0a2.md)); no plugin release
 accompanied it, because the plugin publishes no prompts. The native plugin has its own version line
-(latest published `0.1.0-alpha.6`; see [Native AI plugins](NATIVE_PLUGINS.md)). Updating needs no host configuration
+(latest published `0.1.0-alpha.7`, rollback target `0.1.0-alpha.6`; see [Native AI plugins](NATIVE_PLUGINS.md)). Updating needs no host configuration
 edit: update the package and reconnect the host. To roll back, reinstall the
 earlier package; it lists only the prefixed names.
 
