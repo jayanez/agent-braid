@@ -10,7 +10,8 @@
   and they are listed at start. A missing or invalid registry is a note, never a failure.
   `--surface web` is the only implemented surface; `mod`, `tui` and `mcp-app` report that they are
   planned and start nothing.
-* `validate FILE` checks a recorded loom stream and writes nothing.
+* `validate FILE` checks a recorded loom stream (v0.1 or v0.2), reports how many events of each
+  contract version it read and writes nothing.
 * `env --host claude` prints observational HTTP hook settings for the user to merge into user-level
   Claude Code settings. It writes nothing, contains no credential (the token is read from its file by
   the printed shell line) and names only observational hook events.
@@ -349,7 +350,9 @@ def _remove_own_token(server: Any) -> None:
 # -- validate ------------------------------------------------------------------------------------
 
 def _validate(args: argparse.Namespace) -> int:
-    from .view_loom import LoomError, parse_stream
+    from collections import Counter
+
+    from .view_loom import SCHEMA_VERSIONS, LoomError, parse_stream
     from .view_serve import ServeError, read_replay_file
     try:
         data = read_replay_file(args.file)
@@ -359,7 +362,9 @@ def _validate(args: argparse.Namespace) -> int:
         events = parse_stream(data)
     except LoomError as exc:
         raise CliError(f"view validate: invalid: {exc}", 1) from exc
-    print(f"ok: {len(events)} events")
+    versions = Counter(event["schemaVersion"] for event in events)
+    read = ", ".join(f"{version}: {versions[version]}" for version in SCHEMA_VERSIONS if versions[version])
+    print(f"ok: {len(events)} events ({read or 'none'})")
     return 0
 
 

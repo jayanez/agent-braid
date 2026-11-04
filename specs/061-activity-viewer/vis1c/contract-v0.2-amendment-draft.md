@@ -1,6 +1,6 @@
 # Contract amendment draft: `agent-braid-loom/v0.2` (REQ-022, REQ-023)
 
-**Status: draft for owner review (gate G3). Not accepted. Not applied.** The files
+**Status (2026-11-04): reviewed under G3 and applied by T052, except section 4 (deferred). Verdicts per item: [contract-v0.2-privacy-review.md](contract-v0.2-privacy-review.md). The text below is the draft as reviewed.** Original status: draft for owner review (gate G3). Not accepted. Not applied. The files
 `contracts/loom-event.schema.json` and `contracts/ui-security-privacy.md` are not
 edited by this change. On acceptance, T052 produces `loom-event.v0.2.schema.json`
 (a new file; v0.1 stays valid and frozen), the matching amendment of

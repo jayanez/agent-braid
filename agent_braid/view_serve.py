@@ -238,6 +238,9 @@ def replay_events(data: bytes) -> list[dict[str, Any]]:
     events = parse_stream(data)
     for event in events:
         event["source"]["verification"] = "unverified"  # the viewer never re-hashed a replayed event
+        if event["kind"] == "strand.update":
+            # Contract v0.2, OD-V4: tool duration lives in memory only and is absent from replays.
+            event["data"].pop("toolDurationMs", None)
     return events
 
 

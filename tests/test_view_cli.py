@@ -689,7 +689,19 @@ class ValidateTests(TempCase):
     def test_valid_stream_exits_zero(self):
         code, out, err = invoke("view", "validate", str(LOOM / "valid-corpus.jsonl"))
         self.assertEqual((code, err), (0, ""))
-        self.assertRegex(out, r"^ok: \d+ events\n$")
+        self.assertRegex(out, r"^ok: \d+ events \(agent-braid-loom/v0\.1: \d+\)\n$")
+
+    def test_a_mixed_stream_reports_each_contract_version(self):
+        lines = (LOOM / "valid-corpus.jsonl").read_text(encoding="utf-8").splitlines()
+        events = [json.loads(line) for line in lines]
+        for event in events[1::2]:
+            event["schemaVersion"] = "agent-braid-loom/v0.2"
+        mixed = self.base / "mixed.jsonl"
+        mixed.write_text("".join(json.dumps(event) + "\n" for event in events), encoding="utf-8")
+        code, out, err = invoke("view", "validate", str(mixed))
+        self.assertEqual((code, err), (0, ""))
+        old, new = len(events[0::2]), len(events[1::2])
+        self.assertEqual(out, f"ok: {len(events)} events (agent-braid-loom/v0.1: {old}, agent-braid-loom/v0.2: {new})\n")
 
     def test_invalid_streams_exit_one_with_a_stable_message(self):
         for name in ("decreasing-seq", "duplicate-key", "nan", "duplicate-seq"):

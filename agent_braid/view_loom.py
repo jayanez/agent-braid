@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""The agent-braid-loom/v0.1 event contract: constants, strict parsing and validation.
+"""The agent-braid-loom event contract (v0.1 and v0.2): constants, strict parsing and validation.
 
 One Loom event is one JSON line. This module implements the rules of
-specs/061-activity-viewer/contracts/loom-event.schema.json without a schema
-library; tests/test_view_loom.py keeps the two in sync. It is deliberately stricter
+specs/061-activity-viewer/contracts/loom-event.schema.json (v0.1, frozen) and
+loom-event.v0.2.schema.json without a schema library; tests/test_view_loom.py keeps
+them in sync. Both versions are accepted. v0.2 only adds optional `strand.update`
+members (`toolDurationMs`, `waitingOn`, `waitingBasis`); a v0.1 event that carries one is
+refused, so a stale consumer fails closed. Producers in this package still emit v0.1. It is deliberately stricter
 than the schema in two places: integer fields refuse floats such as 1.0, and text
 that is not encodable as UTF-8 (lone surrogates) is refused. Every event is read-only:
 `executionAuthorization` is the constant false and nothing here can grant, run or
@@ -17,7 +20,11 @@ import math
 import re
 from typing import Any
 
-SCHEMA_VERSION = "agent-braid-loom/v0.1"
+SCHEMA_VERSION = "agent-braid-loom/v0.1"  # what this package's adapters emit
+SCHEMA_VERSION_V02 = "agent-braid-loom/v0.2"
+SCHEMA_VERSIONS = (SCHEMA_VERSION, SCHEMA_VERSION_V02)
+TOOL_DURATION_MAX_MS = 86_400_000
+WAITING_BASES = ("declared", "observed")
 EXECUTION_AUTHORIZATION = False
 MAX_LINE_BYTES = 16 * 1024
 MAX_EVENTS = 50_000
@@ -71,7 +78,8 @@ REASONS = (
 # Field specs, interpreted by _check: ("ident",), ("text",), ("enum", values),
 # ("const", value), ("bool",), ("int", min, max-or-None), ("number", min, max),
 # ("null", spec), ("list", item spec, max items), ("object", {field: spec}),
-# ("evpath",) and ("sha256",). Objects are closed and every field is required.
+# ("evpath",), ("sha256",) and ("optional", spec). Objects are closed and every field is
+# required unless its spec is ("optional", spec), which may be absent but is never null.
 IDENT = ("ident",)
 TEXT = ("text",)
 _HOST = ("enum", HOSTS)
@@ -81,7 +89,7 @@ _COUNT = ("int", 0, None)
 _TOKENS = ("null", ("int", 0, 1_000_000_000_000))
 
 EVENT_SPEC: dict[str, Any] = {
-    "schemaVersion": ("const", SCHEMA_VERSION),
+    "schemaVersion": ("enum", SCHEMA_VERSIONS),
     "seq": ("int", 1, MAX_SEQ),
     "kind": ("enum", KINDS),
     "at": ("object", {"relMs": ("int", 0, MAX_SEQ), "basis": ("enum", AT_BASES)}),
@@ -200,6 +208,19 @@ DATA_SPECS: dict[str, dict[str, Any]] = {
 }
 
 
+# v0.2 (contract amendment T052): additive optional members only; every other kind is v0.1.
+DATA_SPECS_V02: dict[str, dict[str, Any]] = {
+    **DATA_SPECS,
+    "strand.update": {
+        **DATA_SPECS["strand.update"],
+        "toolDurationMs": ("optional", ("int", 0, TOOL_DURATION_MAX_MS)),
+        "waitingOn": ("optional", IDENT),
+        "waitingBasis": ("optional", ("enum", WAITING_BASES)),
+    },
+}
+DATA_SPECS_BY_VERSION = {SCHEMA_VERSION: DATA_SPECS, SCHEMA_VERSION_V02: DATA_SPECS_V02}
+
+
 class LoomError(ValueError):
     """A line, event or stream was refused; `reason` is one of REASONS."""
 
@@ -268,6 +289,8 @@ def _check(spec: tuple, value: Any, path: str) -> None:
             _check(spec[1], item, f"{path}[{index}]")
     elif tag == "object":
         _check_object(spec[1], value, path)
+    elif tag == "optional":
+        _check(spec[1], value, path)
     elif tag == "evpath":
         if len(value) > EVIDENCE_PATH_MAX_LENGTH or not _EVIDENCE_PATH.fullmatch(value):
             raise _fail("evidence-path", path, "not a relative path without '..', backslash or control characters")
@@ -283,14 +306,15 @@ def _check_object(fields: dict[str, Any] | None, value: Any, path: str) -> None:
         raise _fail("wrong-type", path, "expected an object")
     if fields is None:
         return
-    missing = [name for name in fields if name not in value]
+    missing = [name for name, spec in fields.items() if name not in value and spec[0] != "optional"]
     if missing:
         raise _fail("missing-field", path, f"missing {', '.join(missing)}")
     extra = sorted(str(name) for name in value if name not in fields)
     if extra:
         raise _fail("unknown-field", path, f"unknown {', '.join(extra)}")
     for name, spec in fields.items():
-        _check(spec, value[name], f"{path}.{name}" if path else name)
+        if name in value:
+            _check(spec, value[name], f"{path}.{name}" if path else name)
 
 
 def validate_event(event: Any) -> Any:
@@ -299,15 +323,29 @@ def validate_event(event: Any) -> Any:
         raise LoomError("not-an-object", "an event is a JSON object")
     if event.get("executionAuthorization") is not False:
         raise _fail("execution-authorization", "executionAuthorization", "must be present and false")
-    if event.get("schemaVersion") != SCHEMA_VERSION:
-        raise _fail("schema-version", "schemaVersion", f"must be {SCHEMA_VERSION}")
+    version = event.get("schemaVersion")
+    if not isinstance(version, str) or version not in DATA_SPECS_BY_VERSION:
+        raise _fail("schema-version", "schemaVersion", f"must be one of {', '.join(SCHEMA_VERSIONS)}")
+    specs = DATA_SPECS_BY_VERSION[version]
     kind = event.get("kind")
-    if not isinstance(kind, str) or kind not in DATA_SPECS:
+    if not isinstance(kind, str) or kind not in specs:
         raise _fail("unknown-kind", "kind", "not one of the closed event kinds")
     _check_object(EVENT_SPEC, event, "")
     _check_class(kind, event["assurance"]["compatibilityClass"])
-    _check_object(DATA_SPECS[kind], event["data"], "data")
+    _check_object(specs[kind], event["data"], "data")
+    if kind == "strand.update":
+        _check_waiting(event["data"])
     return event
+
+
+def _check_waiting(data: dict[str, Any]) -> None:
+    """v0.2: `waitingOn` names a target only while waiting and always comes with its basis."""
+    if ("waitingOn" in data) != ("waitingBasis" in data):
+        raise _fail("missing-field", "data", "waitingOn and waitingBasis come together")
+    if "waitingOn" in data and data["state"] != "waiting":
+        raise _fail("invalid-value", "data.waitingOn", "allowed only when state is waiting")
+    if data.get("waitingOn") == data["strandId"]:
+        raise _fail("invalid-value", "data.waitingOn", "a strand does not wait on itself")
 
 
 def _check_class(kind: str, value: Any) -> None:

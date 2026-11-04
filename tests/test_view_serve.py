@@ -1036,6 +1036,22 @@ class ReplayTests(unittest.TestCase):
         self.assertTrue(all(lane["unverified"] for lane in model["lanes"]))
         self.assertTrue(all(element["unverified"] for element in model["elements"]))
 
+    def test_a_v02_replay_loads_and_drops_tool_duration(self):
+        events = [json.loads(line) for line in CORPUS.read_bytes().splitlines()]
+        for event in events:
+            event["schemaVersion"] = view_loom.SCHEMA_VERSION_V02
+            if event["kind"] == "strand.update":
+                event["data"]["toolDurationMs"] = 1234
+        data = b"".join(view_loom.canonical_bytes(event) for event in events)
+        replayed = view_serve.replay_events(data)
+        updates = [e for e in replayed if e["kind"] == "strand.update"]
+        self.assertTrue(updates)
+        self.assertFalse(any("toolDurationMs" in e["data"] for e in updates))  # OD-V4: absent from replays
+        store = LoomStore()
+        self.assertEqual(view_serve.load_replay(store, data), len(replayed))
+        model = build_model(store.replay())
+        self.assertNotIn("toolDurationMs", json.dumps(model))  # not wired into the model (T060 to T064)
+
     def test_a_refused_stream_stores_nothing(self):
         store = LoomStore()
         for name in ("duplicate-key", "decreasing-seq", "duplicate-seq", "nan"):
