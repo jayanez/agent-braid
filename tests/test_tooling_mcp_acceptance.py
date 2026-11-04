@@ -23,7 +23,7 @@ import unittest
 from unittest.mock import patch
 from typing import Any
 
-from agent_braid import analysis, mcp_runtime, runtime_policy
+from agent_braid import analysis, git_adapter, mcp_runtime, runtime_policy
 from agent_braid.tooling_mcp import (
     CHUNK_BYTES, INLINE_RESULT_BYTES, ToolingConfig, ToolingError, ToolingService,
     _tool_definitions,
@@ -250,6 +250,19 @@ class MpcAcceptance(unittest.TestCase):
         unknown = self.service.invoke("analyze-work", {"kind": "unregistered", "request": SAMPLE}, threading.Event())
         self.assertEqual(unknown["status"], "refused")
         self.assertFalse(unknown["result"])
+
+    def test_malformed_aim_request_returns_the_validator_reason(self):
+        for request, reason in (({}, "expected AIM record or nonempty AIM array"),
+                                ([1], "AIM records must be objects"),
+                                ([{"aimVersion": "0.2.0-draft"}], "AIM record fields do not match 0.2.0-draft")):
+            envelope = self.service.invoke("analyze-work", {"kind": "aim", "request": request}, threading.Event())
+            self.assertEqual(envelope["status"], "refused")
+            self.assertIsNone(envelope["result"])
+            self.assertEqual(envelope["summary"], f"analyze-work refused: {reason}")
+        # Git analysis errors can carry git output or paths and stay masked.
+        git_error = git_adapter.InvalidGitAnalysis("Git observation failed: /private/path")
+        self.assertEqual(self.service._safe_error(git_error), "The bounded operation was refused")
+        self.assertEqual(len(self.service._safe_error(analysis.InvalidAnalysis("x" * 5000))), 1024)
 
     def test_sc004_schema_depth_summary_and_envelope_refusal_controls(self):
         good = self.service.invoke("analyze-work", {"kind": "aim", "request": SAMPLE}, threading.Event())

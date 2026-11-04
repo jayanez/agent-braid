@@ -19,7 +19,7 @@ from pathlib import Path
 
 from . import jsonc
 
-SKILL_IDS = ('analyze', 'plan', 'evidence', 'execute', 'recover', 'setup')
+SKILL_IDS = ('analyze', 'plan', 'evidence', 'execute', 'recover', 'setup', 'telemetry-audit')
 SERVER_NAME = 'agent-braid'
 LEGACY_PREFIX = 'agent-braid-'
 _CONFIG_NAMES = ('opencode.json', 'opencode.jsonc')

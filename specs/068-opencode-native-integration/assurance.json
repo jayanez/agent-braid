@@ -203,7 +203,7 @@
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/068-opencode-native-integration/validation-plan.md",
           "test_name": "procedure_004",
-          "then": "the six skills and two commands appear with canonical text; given a higher-precedence skill named `analyze`, `plugin doctor` reports the collision and the skill it shadows; no skill, command or hook issues a grant.",
+          "then": "the seven skills and two commands appear with canonical text; given a higher-precedence skill named `analyze`, `plugin doctor` reports the collision and the skill it shadows; no skill, command or hook issues a grant.",
           "when": "OpenCode lists skills and commands"
         }
       ],

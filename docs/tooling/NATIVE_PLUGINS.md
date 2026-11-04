@@ -131,8 +131,8 @@ The installer runs this string (`--ref TAG` replaces `plugin-dist`):
 
 What the plugin registers: one MCP server named `agent-braid` (tools appear as
 `agent-braid_<tool>`, with `codemode: false` and `protocol: legacy` set
-explicitly), the six skills `analyze`, `plan`, `evidence`, `execute`, `recover` and
-`setup`, and two commands, `agent-braid-setup` and `agent-braid-reconnect`. It
+explicitly), the seven skills `analyze`, `plan`, `evidence`, `execute`, `recover`, `setup` and
+`telemetry-audit`, and two commands, `agent-braid-setup` and `agent-braid-reconnect`. It
 publishes no MCP prompts, makes no network call or file write (the commands send
 a message into the session), writes no `permission` configuration, and runs no hook. Tool names, schemas and results are the
 `agent-braid-plugin/v0.2` contract, unchanged. OpenCode permissions are host
@@ -397,8 +397,8 @@ Version 0.1.0-alpha.7 (SPEC-068, ADR 0037) adds OpenCode as a third native host 
 adds no registry migration. After alpha.6 it bundles:
 
 - **OpenCode native plugin**: one dependency-free ES module (`opencode/index.js`,
-  `package.json`) registers the `agent-braid` MCP server, the six skills `analyze`,
-  `plan`, `evidence`, `execute`, `recover` and `setup`, and the commands
+  `package.json`) registers the `agent-braid` MCP server, the seven skills `analyze`,
+  `plan`, `evidence`, `execute`, `recover`, `setup` and `telemetry-audit`, and the commands
   `agent-braid-setup` and `agent-braid-reconnect`. Tool names, schemas and results
   are unchanged (`agent-braid-plugin/v0.2`); it writes no `permission`
   configuration and runs no hook ([OpenCode](#opencode-from-010-alpha7)).
@@ -431,7 +431,15 @@ interactive rows), the `github:` transport against `plugin-dist`, Linux, skill a
 command shapes in a live OpenCode session, and call-time approval prompts were not
 observed; the native host install of alpha.6 and alpha.7 in Claude Code and Codex
 is pending. OpenCode behaviour was observed with OpenCode 2.1.4 on macOS arm64 only,
-in a disposable profile.
+in a disposable profile. The `analyze-work` input schema does not describe the AIM
+request shape, so a model needs an example (for instance
+`examples/analysis/file-edits.json`) to build a valid request; a schema description is
+planned for a later release.
+
+Fixes from the T010 observation: `analyze-work` with kind `aim` now returns the
+analyzer's fixed validation message (for example "expected AIM record or nonempty AIM
+array") instead of a generic refusal, and the OpenCode entry registers
+`telemetry-audit`, so OpenCode exposes seven skills like Claude Code and Codex.
 
 To roll back, reinstall `0.1.0-alpha.6` from tag `agent-braid--v0.1.0-alpha.6`
 for Claude Code and Codex (`install.sh --host codex` or `--host claude` with `--ref`;

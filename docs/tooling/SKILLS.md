@@ -45,7 +45,7 @@ relative to each other was not compared, and the diagnosis below assumes an orde
 
 | Finding | Meaning |
 |---|---|
-| `collision` | A non-plugin definition has one of the six ids; it names the path that wins under the documented order. |
+| `collision` | A non-plugin definition has one of the seven ids; it names the path that wins under the documented order. |
 | `duplicate-guidance` | The prefixed legacy skills (`agent-braid-*`) are also visible to OpenCode, so the same guidance appears twice. |
 | `server-collision` | A configuration file defines an `agent-braid` MCP entry that differs from the plugin's, with the differing fields. |
 

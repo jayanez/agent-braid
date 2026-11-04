@@ -60,7 +60,7 @@ editor.set("agent-braid", {
 
 ### Skills
 
-Six skills, IDs `analyze`, `plan`, `evidence`, `execute`, `recover`, `setup`, read
+Seven skills, IDs `analyze`, `plan`, `evidence`, `execute`, `recover`, `setup`, `telemetry-audit`, read
 from the packaged `skills/<id>/SKILL.md` produced by the SPEC-054 build
 substitution. No text is duplicated in JavaScript; the entry passes `{path, content}` with
 the full `SKILL.md` content.

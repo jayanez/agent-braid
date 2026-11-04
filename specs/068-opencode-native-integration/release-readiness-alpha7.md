@@ -13,7 +13,7 @@ Template and base: alpha.6 is the published base and the rollback target (releas
 
 ## What `0.1.0-alpha.7` carries
 
-OpenCode native plugin (entry module, six skills, `agent-braid-setup` and
+OpenCode native plugin (entry module, seven skills including `telemetry-audit`, `agent-braid-setup` and
 `agent-braid-reconnect`), `plugin doctor --host opencode`, `install.sh --host opencode`
 and `--host all`, the legacy `tooling install --host opencode` profile, the
 standard-library `agent_braid.jsonc` reader, and no registry migration. Release notes
@@ -22,6 +22,13 @@ standard-library `agent_braid.jsonc` reader, and no registry migration. Release 
 0.1.0-alpha.7". This PR also includes the held SPEC-068 installer, OpenCode card, docs
 and T008 regression (#1027), records the owner's acceptance of ADR 0037 (2026-11-03)
 and marks T001 done.
+
+T010 native observation fixes (rows 16 and 17): `analyze-work` with kind `aim` returns
+the analyzer's fixed validation message instead of the generic refusal (Git analysis
+errors stay masked because they can carry git output), and the OpenCode entry
+registers `telemetry-audit` (seven skills; `plugin doctor` collision ids updated). The
+`analyze-work` schema still does not describe the AIM request shape; that is a known
+limit planned for a later release.
 
 Version locations moved to `0.1.0-alpha.7`: `VERSION` in
 `scripts/build_native_plugin.py` (it stamps both host manifests, the marketplace

@@ -153,7 +153,7 @@ text, plus explicit `setup` and reconnect commands. Detect a same-named skill of
 higher precedence and warn.
 
 **SC-004:** Given the installed plugin, when OpenCode lists skills and commands,
-then the six skills and two commands appear with canonical text; given a
+then the seven skills and two commands appear with canonical text; given a
 higher-precedence skill named `analyze`, `plugin doctor` reports the collision and
 the skill it shadows; no skill, command or hook issues a grant.
 
