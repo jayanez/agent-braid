@@ -247,6 +247,20 @@ shared object store fails the portable-root check).
   run, the installed copy and the orchestrator's re-check are repeated before the self-check is re-run. The
   NC-10 counter decision for the refused session 1 is a new attempt with 3 sessions. This task stays
   unchecked.
+  Status 2026-11-04: the founder gave the go for T009 and asked for the operator runbook to be
+  automated (`evidence/founder-decisions-20261104b.json`, verbatim: "Go pero quiero que prepares tú el
+  runbook para que todo sea completamente automatizado"). Steps 0 to 8 are now
+  `scripts/har_t009_setup.py`
+  (`tests/test_har_t009_setup.py`; quickstart "Operator setup for T009"). Every runbook check is a hard
+  stop in them (plus safety stops of their own) and they run no `claude`, `sandbox-exec` or network before step 9.
+  Founder scope change the same day ("sólo tenga que cambiar de usuario y lanzar un script"): the setup script
+  also creates the handoff directory `/Users/Shared/braid-t009/`, `scripts/har_t009_lab.py` is the one script in
+  the lab account (steps 9, 10, 10b and 11) and `scripts/har_t009_verify.py` is the orchestrator's helper that writes
+  the verification files the lab script waits for (setup summary, dry run, self-check; each bound to the subject's
+  SHA-256). The driver still asks the founder for the NC-6 readings and keeps the NC-10 budget; the lab script
+  neither types nor skips them and has no flag that skips a verification. This change touches no backend,
+  probes, transport or quota module (the re-check above for the sandbox allow-list is separate). Nothing native has run
+  for this record; `executionAuthorization` stays false and issuance stays T010. This task stays unchecked.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes
