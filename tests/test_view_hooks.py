@@ -188,6 +188,81 @@ class MappingTests(IngestCase):
         self.assertEqual(self.data("strand.open")[1]["label"], "Claude subagent")
 
 
+class ToolDurationTests(IngestCase):
+    """T062: `PostToolUse.duration_ms` pinned with a strict integer check, memory only."""
+
+    def post(self, **changes):
+        payload = fixture("post-tool-use-main")
+        payload.update(changes)
+        self.hooks.handle(payload)
+
+    def updates(self):
+        return [event for event in self.events() if event["kind"] == "strand.update"]
+
+    def test_an_integer_duration_becomes_tool_duration_on_a_v02_update(self):
+        self.post()
+        (update,) = self.updates()
+        self.assertEqual(update["schemaVersion"], "agent-braid-loom/v0.2")
+        self.assertEqual(update["data"]["toolDurationMs"], 12)
+        self.assertNotIn("duration_ms", self.hooks.dropped_names())
+
+    def test_the_bounds_are_kept(self):
+        for value in (0, 86_400_000):
+            with self.subTest(value=value):
+                self.setUp()
+                self.post(duration_ms=value)
+                self.assertEqual(self.updates()[0]["data"]["toolDurationMs"], value)
+
+    def test_any_other_shape_is_dropped_with_one_gap_and_the_update_stays_v01(self):
+        for value in (True, False, 12.0, 12.5, "12", -1, 86_400_001, None, [12], {"ms": 12}):
+            with self.subTest(value=value):
+                self.setUp()
+                self.post(duration_ms=value)
+                self.post(duration_ms=value)
+                updates = self.updates()
+                self.assertEqual(len(updates), 2)
+                for update in updates:
+                    self.assertNotIn("toolDurationMs", update["data"])
+                    self.assertEqual(update["schemaVersion"], "agent-braid-loom/v0.1")
+                gaps = self.data("observation.gap")
+                self.assertEqual([gap["reason"] for gap in gaps], ["shape-unpinned"])
+
+    def test_no_duration_member_leaves_a_v01_update_and_no_gap(self):
+        payload = fixture("post-tool-use-main")
+        del payload["duration_ms"]
+        self.hooks.handle(payload)
+        self.assertEqual(self.updates()[0]["schemaVersion"], "agent-braid-loom/v0.1")
+        self.assertEqual(self.data("observation.gap"), [])
+
+    def test_duration_is_read_only_on_post_tool_use_and_never_assumed_for_subagent_stop(self):
+        payload = fixture("subagent-stop")
+        payload["duration_ms"] = 99
+        self.hooks.handle(payload)
+        self.assertNotIn("99", json.dumps([event["data"] for event in self.events()]))
+        self.assertIn("duration_ms", self.hooks.dropped_names())
+        self.assertNotIn("toolDurationMs", json.dumps(self.events()))
+
+    def test_hooks_never_emit_a_wait(self):
+        for name in PrivacyTests.ALL:
+            self.hooks.handle(fixture(name))
+        blob = json.dumps(self.events())
+        self.assertNotIn("waitingOn", blob)
+        self.assertNotIn('"waiting"', blob)
+
+    def test_a_replay_of_the_recorded_events_drops_the_duration(self):
+        self.post()
+        from agent_braid.view_loom import canonical_bytes
+        replayed = view_serve.replay_events(b"".join(canonical_bytes(event) for event in self.events()))
+        self.assertNotIn("toolDurationMs", json.dumps(replayed))
+
+    def test_now_ms_is_the_ingest_clock_on_the_event_basis(self):
+        ticks = iter([0, 5_000_000, 5_000_000, 9_000_000])
+        hooks = HookIngest(LoomStore(), clock=lambda: next(ticks))
+        hooks.handle(fixture("post-tool-use-main"))  # stamps the open and the update at 5 ms
+        self.assertEqual([event["at"]["relMs"] for event in hooks.store.replay()], [5, 5])
+        self.assertEqual(hooks.now_ms(), 9)
+
+
 class PrivacyTests(IngestCase):
     ALL = ("session-start", "subagent-start", "post-tool-use-main", "post-tool-use-subagent",
            "subagent-stop", "session-end", "unknown-attribute")

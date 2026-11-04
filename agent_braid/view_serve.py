@@ -378,6 +378,7 @@ class ViewServer(ThreadingHTTPServer):
                  import_map_sha256: str | None = None,
                  language_hint: str | None = None,
                  rotate_token: bool = False,
+                 live_clock: Callable[[], int] | None = None,
                  max_connections: int = MAX_CONNECTIONS, socket_timeout: float = SOCKET_TIMEOUT,
                  heartbeat: float = HEARTBEAT_SECONDS) -> None:
         if host not in LOOPBACK_HOSTS:
@@ -393,6 +394,8 @@ class ViewServer(ThreadingHTTPServer):
         self.read_handlers = dict(read_handlers or {})
         self.ingest_handlers = dict(ingest_handlers or {})
         self.names_inventory = names_inventory
+        # T060: the live server clock in ms on the events' monotonic basis; None serves a replay (`axis.live` false).
+        self.live_clock = live_clock
         self.language_hint = language_hint if language_hint in UI_LANGUAGES else None
         self.max_connections = max_connections
         self.socket_timeout = socket_timeout
@@ -463,7 +466,8 @@ class ViewServer(ThreadingHTTPServer):
                         if isinstance(name, str) and 0 < len(name) <= MAX_INVENTORY_NAME_LENGTH
                         and name.isprintable()})[:MAX_INVENTORY_NAMES]
         events, roots = replay_with_roots(self.store)  # the watcher's root labels, read together with the events
-        document: dict[str, Any] = {"droppedAttributeNames": names, "model": build_model(events, roots=roots)}
+        document: dict[str, Any] = {"droppedAttributeNames": names, "model": build_model(
+            events, roots=roots, now_ms=None if self.live_clock is None else self.live_clock())}
         if self.language_hint is not None:
             document["uiLanguageHint"] = self.language_hint
         body = json.dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)

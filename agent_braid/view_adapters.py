@@ -25,6 +25,15 @@ identifier of its own, so the gate id is the SHA-256 of its bytes.
 Scheduler strand closes carry the outcome `ok` because the preparation evidence is only
 produced once every worker finished; the adapter rehashes the bytes but does not re-verify
 the evidence digest.
+
+Waiting (T061, contract v0.2): an analysis report's `ordered` pair whose operation lists the other in its
+`dependencies` adds one v0.2 `strand.update` for the dependent operation, `state` `waiting`, `waitingOn` the
+operation it depends on and `waitingBasis` `declared` (the order is declared by the analysis; nothing was seen
+waiting). The target is the other operation's own instance id, never parsed from text; a dependency that names no
+operation of the same report adds one `shape-unpinned` gap and no wait. An ordered pair with no dependency
+direction adds nothing. Scheduler preparations and runtime state carry no waiting signal: a later-wave worker's
+strand opens when it starts, so no interval in which it was open and waiting is recorded, and these adapters emit
+no wait.
 """
 from __future__ import annotations
 
@@ -35,7 +44,7 @@ import stat
 from pathlib import Path
 from typing import Any, Callable
 
-from .view_loom import MAX_SEQ, LoomError, validate_event
+from .view_loom import MAX_SEQ, SCHEMA_VERSION, SCHEMA_VERSION_V02, LoomError, validate_event
 
 MAX_ARTIFACT_BYTES = 16 * 1024 * 1024
 HOST = "braid"
@@ -123,10 +132,11 @@ class _Source:
         self.evidence = {"path": path, "sha256": hashlib.sha256(data).hexdigest()}
 
     def event(self, kind: str, data: dict[str, Any], *, rel_ms: int = 0, timed: bool = False,
-              compatibility_class: int | None = None, derived: bool = False) -> dict[str, Any]:
+              compatibility_class: int | None = None, derived: bool = False,
+              version: str = SCHEMA_VERSION) -> dict[str, Any]:
         """A validated event with seq 1; `_number` assigns the real sequence numbers."""
         return validate_event({
-            "schemaVersion": "agent-braid-loom/v0.1",
+            "schemaVersion": version,
             "seq": 1,
             "kind": kind,
             "at": {"relMs": rel_ms, "basis": "artifact-relative" if timed else "sequence-only"},
@@ -198,6 +208,31 @@ def _analysis(report: dict[str, Any], source: _Source) -> list[dict[str, Any]]:
             if exc.reason not in _CAP_REASONS:
                 raise
             events.append(source.gap("stream-truncated"))
+    events.extend(_declared_waits(report, source))
+    return events
+
+
+def _declared_waits(report: dict[str, Any], source: _Source) -> list[dict[str, Any]]:
+    """One declared wait per operation that an `ordered` pair and its own `dependencies` put after another."""
+    operations = {operation["instanceId"]: operation for operation in report["operations"]}
+    waits: dict[str, str] = {}
+    unknown_target = False
+    for pair in report["interactions"]:
+        if pair["classification"] != "ordered":
+            continue
+        for waiter, target in ((pair["left"], pair["right"]), (pair["right"], pair["left"])):
+            operation = operations.get(waiter)
+            if operation is None or target not in (operation.get("dependencies") or []):
+                continue
+            if target not in operations or target == waiter:
+                unknown_target = True
+            else:
+                waits.setdefault(waiter, target)
+    events = [source.event("strand.update", {
+        "strandId": waiter, "state": "waiting", "toolName": None, "waitingOn": target, "waitingBasis": "declared",
+    }, version=SCHEMA_VERSION_V02) for waiter, target in waits.items()]
+    if unknown_target:
+        events.append(source.gap("shape-unpinned"))
     return events
 
 

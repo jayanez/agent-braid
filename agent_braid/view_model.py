@@ -291,8 +291,10 @@ def _lane_event(element: str, status_field: str):
             "lanes": _lanes_of(lanes, [data["strandId"]])[0], "strandId": data["strandId"],
         }
         built[status_field] = data[status_field]
-        if "toolName" in data:
-            built["toolName"] = data["toolName"]
+        # v0.2 members (T061, T062) are copied only when the event states them; nothing is derived here.
+        for name in ("toolName", "toolDurationMs", "waitingOn", "waitingBasis"):
+            if name in data:
+                built[name] = data[name]
         return built
     return build
 
@@ -437,7 +439,7 @@ def _limit_group(kind: str) -> str | None:
 def build_model(
     events: list[dict[str, Any]], *, gap_threshold_ms: int = DEFAULT_GAP_THRESHOLD_MS,
     gap_nominal_ms: int = DEFAULT_GAP_NOMINAL_MS, limits: dict[str, int] | None = None,
-    roots: Mapping[int, str] | None = None,
+    roots: Mapping[int, str] | None = None, now_ms: int | None = None,
 ) -> dict[str, Any]:
     """Build the render-ready model of a validated, `seq`-ordered event sequence.
 
@@ -449,6 +451,10 @@ def build_model(
     `roots` maps an event `seq` to the label of the watched root it was read from; it changes
     only the `root` of elements and rows (ValueError for a key that is not an int or a label
     that is not "root N"; a `seq` the events do not hold is ignored).
+    `now_ms` (T060, contract v0.2 R1 to R3) is the live server clock on the events' monotonic
+    basis: given, `axis.live` is true and `axis.nowMs` is that clock, never earlier than the
+    last stated time; omitted (a replay or a test), `axis.live` is false and `axis.nowMs` is the
+    last stated time (None when no event states one). Neither is an event or ever recorded.
     """
     threshold = _positive_int(gap_threshold_ms, "gap_threshold_ms")
     nominal = _positive_int(gap_nominal_ms, "gap_nominal_ms")
@@ -499,6 +505,11 @@ def build_model(
         })
 
     timing, axis = _time_axis(events, threshold, nominal)
+    if now_ms is not None and (type(now_ms) is not int or now_ms < 0):
+        raise ValueError("now_ms is a non-negative int")
+    live = now_ms is not None
+    axis["live"] = live
+    axis["nowMs"] = (max(now_ms, axis["maxMs"]) if axis["maxMs"] is not None else now_ms) if live else axis["maxMs"]
     reports: dict[str, dict] = {}
     for event in events:
         if event["kind"] == "analysis.report":

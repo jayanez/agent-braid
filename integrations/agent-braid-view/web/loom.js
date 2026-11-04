@@ -240,11 +240,46 @@ function elementOf(seq) {
   return elementsCache.bySeq.get(seq);
 }
 
-// The derived model (agents, crossings, axis, overlaps) of the current model, computed once per model.
+// T060: the live "now" in ms, the server's `axis.nowMs` advanced by this page's clock since the snapshot arrived;
+// null for a replay or before the first snapshot. Never sent anywhere and never stored.
+let snapshotAt = 0;
+function liveNowMs() {
+  const axis = state.model && state.model.axis;
+  if (!axis || axis.live !== true || typeof axis.nowMs !== "number") return null;
+  return axis.nowMs + Math.max(0, Math.round(performance.now() - snapshotAt));
+}
+
+// The derived model (agents, crossings, axis, overlaps) of the current model, computed once per model and, in live
+// mode, once per second of the page clock (running bars grow up to now).
 function derived() {
-  if (!derivedCache || derivedCache.model !== state.model) derivedCache = { model: state.model, value: derive(state.model) };
+  const now = liveNowMs();
+  const tick = now === null ? null : Math.floor(now / 1000);
+  if (!derivedCache || derivedCache.model !== state.model || derivedCache.tick !== tick) {
+    derivedCache = { model: state.model, tick, value: derive(state.model, now === null ? {} : { nowMs: tick * 1000 }) };
+  }
   return derivedCache.value;
 }
+
+// The live badge, shared by every view: "live · now m:ss", "replay · not live", or hidden before a snapshot.
+function renderLive() {
+  const badge = $("live-badge");
+  const axis = state.model && state.model.axis;
+  if (!axis || typeof axis.live !== "boolean") { badge.hidden = true; return; }
+  badge.hidden = false;
+  badge.title = t("live.title");
+  const now = derived().axis.nowMs;
+  badge.textContent = axis.live ? t("live.badge", { time: formatClock((now === null ? liveNowMs() : now) - axisMin()) }) : t("live.replay");
+  badge.className = "badge" + (axis.live ? " live-on" : "");
+}
+
+// Once a second in live mode: the badge, and the timeline when it is shown and the position is at the end.
+setInterval(() => {
+  if (!state.model || !state.model.axis || state.model.axis.live !== true || document.visibilityState !== "visible") return;
+  renderLive();
+  // A redraw would close an open tooltip: the bars wait while the pointer is over the timeline.
+  if (state.view === "timeline" && !state.playing && state.cursor >= totalCount() && !$("timeline-box").matches(":hover")) syncTimeline();
+  else if (state.view === "map3d" && scene) updateSceneNote();
+}, 1000);
 
 let countsCache = null;
 
@@ -326,6 +361,7 @@ async function loadSnapshot() {
   const firstModel = state.model === null;
   const atEnd = state.cursor >= totalCount();
   state.model = document_.model;
+  snapshotAt = performance.now();
   state.languageHint = normalizeTag(document_.uiLanguageHint);
   state.dropped = Array.isArray(document_.droppedAttributeNames) ? document_.droppedAttributeNames : [];
   state.cursor = atEnd ? totalCount() : Math.min(state.cursor, totalCount());
@@ -449,6 +485,7 @@ function renderChrome() {
   renderViewSwitch();
   renderTabs();
   renderSummary();
+  renderLive();
 }
 
 // ---------------------------------------------------------------- legend (static tables above)
@@ -828,8 +865,20 @@ function agentSection(element) {
       : lane.observedMs !== null ? t("agent.durationAtLeast", { text: formatDuration(lane.observedMs) }) : t("detail.unknown")],
   ];
   if (lane.toolMarks.length) rows.push([t("agent.tools"), String(lane.toolMarks.length)]);
+  const stated = lane.toolMarks.filter((mark) => mark.durationMs !== null);
+  if (stated.length) {
+    rows.push([t("agent.toolTime"), t("agent.toolTimeValue", { text: formatDuration(stated.reduce((sum, mark) => sum + mark.durationMs, 0)),
+      n: stated.length, total: lane.toolMarks.length })]);
+  }
   if (waiting.totalMs > 0 || waiting.open) {
     rows.push([t("agent.waiting"), formatDuration(waiting.totalMs) + (waiting.open ? " " + t("agent.waitingOpen") : "")]);
+  }
+  const targets = lane.waitSpans.filter((span) => span.waitingOn !== null);
+  if (targets.length) {
+    rows.push([t("agent.waitingOn"), h("ul", null, targets.slice(0, 5).map((span) => {
+      const other = info.byStrand.get(span.waitingOn);
+      return h("li", null, (other ? other.displayLabel : span.waitingOn) + " · " + t("wait.basis." + span.basis));
+    }))]);
   }
   if (overlaps.length) {
     rows.push([t("agent.overlaps"), h("ul", null, overlaps.slice(0, 5).map((item) => {
@@ -1128,9 +1177,11 @@ function syncTimeline() {
   const info = derived();
   const lastElement = position.length ? position[position.length - 1].element : null;
   const last = lastElement ? info.placedBySeq.get(lastElement.seq) : null;
+  // In live mode at the end of the stream there is no playback cursor: open bars run on to now (T060).
+  const liveAtEnd = info.axis.nowX !== null && state.cursor >= totalCount();
   timeline.render({
     model: info.placedModel, derived: info, shown, selected: state.selected, viewport: state.viewport,
-    cursorX: positioned(last) ? last.x : null,
+    cursorX: positioned(last) && !liveAtEnd ? last.x : null,
   });
   const axis = info.axis;
   const order = !axis.sequence ? "" : axis.untimed === axis.total ? t("tl.sequence.none") + " "
@@ -1241,6 +1292,8 @@ function updateSceneNote() {
       items: info.omitted.map((item) => item.count + " (" + (SCENE_REASON_KEYS[item.reason] ? t(SCENE_REASON_KEYS[item.reason]) : item.reason) + ")").join("; "),
     }));
   }
+  const now = liveNowMs();
+  if (now !== null) parts.push(t("scene.live", { time: formatClock(now - axisMin()) }));
   $("scene-note").textContent = parts.join(" ");
 }
 

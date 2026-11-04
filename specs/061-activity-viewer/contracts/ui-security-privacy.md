@@ -128,7 +128,11 @@ OTLP level (resource, scope, log record, metric data point and exemplar):
   names produce `shape-unpinned`.
 - Claude Code hooks: `hook_event_name` (observational events `SessionStart`,
   `SessionEnd`, `SubagentStart`, `SubagentStop`, `PostToolUse` only), `agent_id`,
-  `agent_type`, `session_id`, `tool_name`, `tool_use_id` (identifiers salted). Pinned from the
+  `agent_type`, `session_id`, `tool_name`, `tool_use_id` (identifiers salted), and
+  `duration_ms` on `PostToolUse` only (T062, 2026-11-04: the T030 receipt names it and the
+  owner accepted that evidence when closing T053; only a JSON integer from 0 to 86,400,000 is
+  kept, as the in-memory `toolDurationMs`, and any other shape is dropped with one
+  `shape-unpinned` gap; on any other event the name is inventoried as dropped). Pinned from the
   T030 receipt. An HTTP `SessionStart` was not delivered under `claude -p`, so nothing
   depends on it: a strand opens on the first event that mentions it. A strand that was
   closed stays closed: an event that would continue it adds one `shape-unpinned` gap naming the
@@ -188,7 +192,7 @@ review recorded in
 [contract-v0.2-privacy-review.md](../vis1c/contract-v0.2-privacy-review.md). The v0.1
 [schema](loom-event.schema.json) is frozen and stays valid input: the viewer and
 `view validate` accept both versions, `view validate` reports how many events of each it
-read, and this package's adapters still emit v0.1. v0.2 adds three optional members to
+read, and this package's adapters emit v0.1 except where they set a v0.2 member (T061, T062). v0.2 adds three optional members to
 `strand.update` and nothing else; none carries content, a path or an absolute time:
 
 - `toolDurationMs`: an integer from 0 to 86,400,000 that a host reported for one tool
@@ -198,7 +202,8 @@ read, and this package's adapters still emit v0.1. v0.2 adds three optional memb
   without `--record-effort` or `--include-effort`, carries it. Wider retention needs a new
   owner decision. No host payload name is added to the allowlist by this amendment; a
   hook or OTLP source is pinned only through the task that implements it (T062), from a
-  probe receipt.
+  probe receipt. T062 pinned the hook `PostToolUse.duration_ms` on 2026-11-04 (see the
+  Claude Code hooks allowlist above); the adapters add `toolDurationMs` in v0.2 events only.
 - `waitingOn`: one salted strand identifier (the identifier class above), present only
   when `state` is `waiting` and always together with `waitingBasis`. It is never parsed
   from host text. A strand never waits on itself; an adapter drops a target that is not a
@@ -209,7 +214,9 @@ read, and this package's adapters still emit v0.1. v0.2 adds three optional memb
 The snapshot `axis` may gain `nowMs` (the viewer's monotonic clock at snapshot time,
 same basis as `relMs`, never earlier than the last event) and `live` (`false` for a
 replay, where `nowMs` equals the last event time). They describe the snapshot, are not
-events and are never recorded. The `collision.observed` kind of the draft is **not** in
+events and are never recorded. Since T060 (2026-11-04) `/snapshot` always carries both: `live` is
+true while `view serve` runs without `--replay`, and `nowMs` is then the server clock, clamped
+to the last event time. The `collision.observed` kind of the draft is **not** in
 v0.2: its per-adapter observation boundary must be written first (T063).
 
 | Category | Held in | Retention | Default export | With `--record-effort` / `--include-effort` | Why |

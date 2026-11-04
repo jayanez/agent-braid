@@ -371,21 +371,44 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
 - [x] T059 (REQ-017): Make the 2D timeline the default view and 3D the secondary
   "spatial map". Dependencies: T057, T058, and ADR 0033 amendment accepted (G2).
   Files: `integrations/agent-braid-view/web/loom.js`. Verification: SC-017.
-- [ ] T060 (REQ-022): `axis.nowMs` and `axis.live` from the server clock, live "now"
+- [x] T060 (REQ-022): `axis.nowMs` and `axis.live` from the server clock, live "now"
   marker and growing running bars; replay `live=false`. Dependencies: T052, T057.
   Files: `agent_braid/view_model.py`, `agent_braid/view_serve.py`,
-  `integrations/agent-braid-view/web/timeline.js`. Verification: SC-022.
-- [ ] T061 (REQ-022): `waitingOn` and `waitingBasis` from scheduler, runtime and
+  `integrations/agent-braid-view/web/timeline.js`. Verification: SC-022. Done 2026-11-04:
+  `build_model(now_ms=)` sets `axis.live` and `axis.nowMs` (clamped to the last event);
+  `view serve` passes the hook ingest clock (same monotonic basis) unless `--replay` is given,
+  so a replay is `live=false` with `nowMs` at the last event. The page advances now with its
+  own clock between snapshots (once a second, paused while the pointer is over the
+  timeline), draws a "now" line, runs open bars up to it (a long silence becomes a labelled
+  break) and shows a live or replay badge in the header for both views; the 3D note states
+  now. Deviation: no 3D now plane (the scene's x scale is fitted to events and clipped at the
+  playback frontier). Receipts: `vis1c/evidence/t060-t062-live-timeline-es-1440.jpg`,
+  `vis1c/evidence/t060-live-3d-es-1440.jpg`, from synthetic hook traffic on a private instance.
+- [x] T061 (REQ-022): `waitingOn` and `waitingBasis` from scheduler, runtime and
   ordered-crossing sources, labelled declared or observed; waiting spans in the
   timeline. Dependencies: T052, T057. Files: `agent_braid/view_adapters.py`,
   `agent_braid/view_model.py`, `integrations/agent-braid-view/web/timeline.js`.
-  Verification: SC-022.
-- [ ] T062 (REQ-022): Tool duration end to end from the source T053 shows (or the
+  Verification: SC-022. Done 2026-11-04: an analysis report's `ordered` pair whose operation
+  lists the other in `dependencies` emits one v0.2 `strand.update` (`waiting`, `waitingOn` the
+  other instance id, `waitingBasis` `declared`); a dependency naming no operation adds one
+  `shape-unpinned` gap. The model carries the members as stated; the timeline outlines declared
+  waits and its tooltip and the agent detail name the target and the basis. Deviation: scheduler
+  preparations and runtime state carry no waiting signal (a later-wave worker opens when it
+  starts), so they emit none; hooks emit none either (F2), so a hook-only session shows no wait
+  and nothing is inferred. Receipt: `vis1c/evidence/t061-declared-wait-replay-en-1440.jpg`.
+- [x] T062 (REQ-022): Tool duration end to end from the source T053 shows (or the
   OTLP `duration_ms` path if VIS.1b ships), retention per OD-V4, "time between
   events" fallback with its own label. Dependencies: T052, T053, T057. Files:
   `agent_braid/view_hooks.py`, `agent_braid/view_model.py`,
   `integrations/agent-braid-view/web/timeline.js`, `tests/test_view_hooks.py`.
-  Verification: SC-022.
+  Verification: SC-022. Done 2026-11-04: `PostToolUse.duration_ms` is allowlisted for that
+  event only (contract and privacy review R12 updated with the rationale); a JSON integer from
+  0 to 86,400,000 becomes `toolDurationMs` on a v0.2 `strand.update`, and a bool, float, string,
+  negative or oversize value is dropped with one `shape-unpinned` gap; no duration is assumed for
+  `SubagentStop`. Memory only: a replay drops it, and no recorder or exporter exists. The timeline
+  tooltip says "took N (stated by the host, shown live only)"; without a stated value it says the
+  interval to the agent's next event, labelled as an interval; the agent detail sums the stated
+  times. Receipt: `vis1c/evidence/t060-t062-live-timeline-es-1440.jpg`.
 - [ ] T063 (REQ-023): Observed collision event and its timeline glyph, counter and
   tooltip, from the source chosen in OD-V5; boundary text in the contract. Dependencies:
   T052, T057, owner confirmation of OD-V5. Files: `agent_braid/view_adapters.py`,

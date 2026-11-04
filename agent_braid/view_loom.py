@@ -21,7 +21,7 @@ import math
 import re
 from typing import Any
 
-SCHEMA_VERSION = "agent-braid-loom/v0.1"  # what this package's adapters emit
+SCHEMA_VERSION = "agent-braid-loom/v0.1"  # what this package's adapters emit unless they set a v0.2 member
 SCHEMA_VERSION_V02 = "agent-braid-loom/v0.2"
 SCHEMA_VERSIONS = (SCHEMA_VERSION, SCHEMA_VERSION_V02)
 TOOL_DURATION_MAX_MS = 86_400_000
