@@ -288,6 +288,9 @@ shared object store fails the portable-root check).
   not-applicable rules, the PROC-03 probe and watchdog measurement, PROC-04 attribution by an inherited run tag,
   and the quota source label `operator-typed-usage`. The next attempt is a new name with a new budget of 3 sessions
   (NC-10) and needs the orchestrator's written GO on that re-check; nothing native ran for this change.
+  Round 3 self-check, 2026-11-04 (attempt `t009-20261104c`): F4 as expected; the `auth` stage gave `auth-rejected`
+  with the token present, while outside the sandbox the same token works. Closed read-only list widened once more
+  (`evidence/founder-decisions-20261104e.json`, "A. Solo lecturas"; re-check `evidence/recheck-t009-allowlist2.md`).
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes

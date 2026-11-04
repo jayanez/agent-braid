@@ -1,0 +1,36 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T009 round 3: the self-check's auth stage failed inside the sandbox (claude auth status exit 1 with the token present); widen the closed read-only list",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-04",
+  "baseCommit": "92d00dc5",
+  "decisionChannel": "Founder answer to an interactive guided question in the HAR orchestrator session, 2026-11-04, recorded verbatim. Additive to the earlier records, which stay as written.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261104.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261104d.json"
+  ],
+  "decisionOrder": [
+    "SANDBOX-READ-LIST-2"
+  ],
+  "decisions": [
+    {
+      "id": "SANDBOX-READ-LIST-2",
+      "item": "What to open in the launch profiles so the auth stage can pass. Facts: self-check of attempt t009-20261104c gave auth reason auth-rejected (exit 1, authToken present); outside the sandbox, with the same token in CLAUDE_CODE_OAUTH_TOKEN, `claude auth status` exits 0 with an empty and with the real config_dir (operator diagnostic, exit codes only); the unified log shows the contained CLI denied sysctl-read hw.memsize, hw.ncpu, hw.activecpu, hw.perflevel{0,1,2}.physicalcpu_max, file-read-metadata of /private/var/db/timezone/zoneinfo and /usr/share/icu/icudt78l.dat, process-exec* /usr/bin/security, plus kern.bootargs, the syslog socket, /dev/dtracehelper and mach-lookup notification_center/logd.",
+      "question": "¿Qué abrimos del sandbox para que la fase auth funcione?",
+      "ownerStatement": "A. Solo lecturas (Recommended)",
+      "decision": {
+        "disposition": "widen-closed-read-only-list",
+        "reading": "Add to the launch and launch-probe profiles only: sysctl-read of hw.memsize, hw.ncpu, hw.activecpu and the prefix hw.perflevel; file-read* of the read-only system databases /private/var/db/timezone and /usr/share/icu. The exec of /usr/bin/security, kern.bootargs, every mach-lookup, the syslog socket, /dev/dtracehelper and the network stay denied. If the auth stage still fails, the cause is isolated to /usr/bin/security and needs a new founder decision.",
+        "bounds": "The fixture profile is unchanged. The environment hash moves (profile hashes). Every other bound is unchanged (NC-1, NC-4, NC-5 as amended in founder-decisions-20261104d.json, NC-6, NC-7, NC-8, NC-10, NC-11, PROC-ESC-1)."
+      }
+    }
+  ],
+  "closes": [],
+  "stillOpen": [
+    "whether the auth stage passes with this list; if not, whether /usr/bin/security may be executed (it would still reach no keychain: mach-lookup stays denied)"
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records one founder answer. It authorizes no native run; the next real attempt still needs the self-check including the auth stage to pass, the orchestrator's written confirmation and the founder's go for the new budget of 3 sessions (NC-10). Issuance stays T010."
+}
