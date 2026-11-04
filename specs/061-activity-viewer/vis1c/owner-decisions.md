@@ -114,3 +114,13 @@ implemented as follows (T058):
 | OD-V4 | (a): tool duration kept in memory only, absent in replays and default exports |
 | OD-V5 | (a): observed collision derived from `ownership-receipt` and ownership notice adapters only |
 | OD-V6 | (b): freeze 3D (fixes only, no new features) after Phase 2 |
+
+### Decisions after T052 and T053 (2026-11-04)
+
+Verbatim answers to the guided questions:
+
+| Question | Answer | Effect |
+|---|---|---|
+| T053: the probe saw no tool call; how do we close the duration question? | "Aceptar T030" (after asking "No me recomiendas repetir la sonda?" and hearing the trade-off) | T053 closed without a rerun. The T030 receipt (Claude Code 2.1.292) naming `duration_ms` in `PostToolUse` is the evidence; T062 accepts only a strict integer and drops any other shape. |
+| Is `collision.observed` added later, in T063, as a new contract version? | "Sí, en T063 (Recommended)" | R13 to R15 stay deferred; T063 writes the per-adapter definition of "touched" first, then an additive contract version. |
+| Should tool duration ever appear in recordings or exports? | "Nunca, solo en vivo (Recommended)" | OD-V4 (a) confirmed, including with `--record-effort` and `--include-effort` (R10). |
