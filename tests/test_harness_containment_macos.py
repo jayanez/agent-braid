@@ -170,6 +170,7 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
             "_user_processes": processes or (lambda uid: BASELINE),
             "_resident_bytes": resident or (lambda processes: 0), "_account_groups": lambda account, gid: gids,
             "_process_links": links or (lambda identity: (None, None)),
+            "_tagged": lambda pid, tag: False,
             "_trusted_file": trusted,
         }
         for name, value in patches.items():
@@ -846,7 +847,7 @@ class SupervisedRunTests(unittest.TestCase):
         self.assertEqual(value["nproc"], [2 + 1 + mac.LIMITS["descendants"]] * 2)
         self.assertEqual(value["cwd"], candidate)
         self.assertEqual(set(value["env"]) - {"__CF_USER_TEXT_ENCODING", "LC_CTYPE"},
-                         set(self.machine.policy.child_environment("fixture", "/x")))
+                         set(self.machine.policy.child_environment("fixture", "/x")) | {mac.RUN_TAG_VARIABLE})
 
     def test_child_exit_125_is_an_ordinary_result(self):
         result = self.fixture(b"import os\nos._exit(125)\n")
@@ -931,7 +932,7 @@ class SupervisedRunTests(unittest.TestCase):
         self.assertEqual(self.backend.run_evidence[-1]["refused"], "workspace-unavailable")
 
     def leaver(self, *, killable: bool, parent: bool, source=b"import time\ntime.sleep(0.6)\n",
-               group: bool = False, resident=None):
+               group: bool = False, resident=None, tagged: bool = False, tags=None):
         """A process of the dedicated user that appears while the child runs and outlives the group.
 
         ``parent``: its parent is the child; ``group``: it is in the child's process group (an orphan);
@@ -955,8 +956,17 @@ class SupervisedRunTests(unittest.TestCase):
                   links=lambda identity: (spawned[0].pid if parent and identity == ghost else 1,
                                           spawned[0].pid if group and identity == ghost else identity[0]),
                   resident=resident), \
+                mock.patch.object(mac, "_tagged", self.tag_reader(ghost, tagged, tags)), \
                 mock.patch.object(mac.subprocess, "Popen", popen), mock.patch.object(mac.os, "kill", fake_kill):
             return self.backend.run(source, Path(self.machine.candidate()), lab.FixtureLimits(wall_seconds=5))
+
+    @staticmethod
+    def tag_reader(ghost, tagged, tags):
+        def reader(pid, tag):
+            if tags is not None:
+                tags.append(tag)
+            return tagged and pid == ghost[0]
+        return reader
 
     def test_a_swept_leaver_is_counted_apart_from_a_survivor_and_attributed_to_the_child(self):
         result = self.leaver(killable=True, parent=True)
@@ -966,6 +976,27 @@ class SupervisedRunTests(unittest.TestCase):
         evidence = self.backend.run_evidence[-1]
         self.assertEqual((evidence["escapedProcesses"], evidence["escapedDescendants"],
                           evidence["unattributedProcesses"], evidence["survivingProcesses"]), (1, 1, 0, 0))
+
+    def test_a_setsid_leaver_reparented_to_launchd_is_found_by_the_run_tag(self):
+        tags = []
+        result = self.leaver(killable=True, parent=False, tagged=True, tags=tags)
+        self.assertEqual((result.escaped_processes, result.escaped_descendants, result.surviving_processes),
+                         (1, 1, 0))  # PROC-ESC-1: the backend now sees what the runner scan sees
+        self.assertTrue(tags and all(t.startswith(mac.RUN_TAG_VARIABLE.encode() + b"=") for t in tags))
+
+    def test_an_untagged_unrelated_process_is_still_neither_counted_nor_killed(self):
+        result = self.leaver(killable=True, parent=False, tagged=False)
+        self.assertEqual((result.escaped_processes, result.surviving_processes), (0, 0))
+        self.assertEqual(self.backend.run_evidence[-1]["unrelatedProcesses"], 1)
+
+    def test_the_memory_watchdog_records_what_it_measured(self):
+        with host(self.machine, resident=lambda processes: 123_456):
+            result = self.backend.run(b"import time\ntime.sleep(0.5)\n", Path(self.machine.candidate()),
+                                      lab.FixtureLimits(wall_seconds=5))
+        evidence = self.backend.run_evidence[-1]
+        self.assertEqual(evidence["peakMemoryBytes"], 123_456)
+        self.assertGreaterEqual(evidence["memorySamples"], 1)
+        self.assertEqual((result.peak_memory_bytes, result.memory_samples > 0), (123_456, True))
 
     def test_an_orphan_of_the_childs_group_is_an_escape_even_if_never_seen_with_the_child_as_parent(self):
         result = self.leaver(killable=True, parent=False, group=True)  # surviving 0: the kill reached it
@@ -1309,7 +1340,7 @@ class SupervisedRunTests(unittest.TestCase):
         self.assertEqual((run.exit_code, run.settled, run.cancelled), (0, True, False))
         names, _, rest = run.stdout.partition(b"\n")
         self.assertEqual(set(names.decode().split()) - {"__CF_USER_TEXT_ENCODING", "LC_CTYPE"},
-                         set(self.machine.policy.child_environment("launch", "/x")))
+                         set(self.machine.policy.child_environment("launch", "/x")) | {mac.RUN_TAG_VARIABLE})
         self.assertEqual(rest, b"prompt-bytes")
         self.assertEqual(self.backend.run_evidence[-1]["entry"], "launch")
 
@@ -1324,6 +1355,126 @@ class SupervisedRunTests(unittest.TestCase):
             run = backend.launch((self.machine.claude,), b"", cwd=self.machine.candidate(), wall_seconds=20,
                                  max_output_bytes=10, cancel=cancel)
         self.assertEqual((run.cancelled, run.exit_code, run.settled), (True, None, True))
+
+
+class AuthTokenTests(unittest.TestCase):
+    """Founder decision 2026-11-04 ("A. Token en archivo"): one strict file in config_dir, one variable."""
+
+    TOKEN = "sk-ant-oat01-" + "Ab1Cd2Ef3Gh4" * 5
+
+    def setUp(self):
+        self.machine = Machine(self)
+        self.path = f"{self.machine.policy.config_dir}/{mac.TOKEN_FILE}"
+
+    def write(self, data: bytes | str | None = None, mode: int = 0o600) -> str:
+        data = (self.TOKEN + "\n") if data is None else data
+        Path(self.path).unlink(missing_ok=True)
+        Path(self.path).write_bytes(data if isinstance(data, bytes) else data.encode())
+        os.chmod(self.path, mode)
+        return self.path
+
+    def read(self, uid: int | None = None):
+        return mac.read_token(self.machine.policy.config_dir, os.getuid() if uid is None else uid)
+
+    def test_a_missing_file_is_no_token_and_a_valid_one_is_returned_without_its_newline(self):
+        self.assertIsNone(self.read())
+        self.write()
+        self.assertEqual(self.read(), self.TOKEN)
+        self.write(self.TOKEN)
+        self.assertEqual(self.read(), self.TOKEN)
+
+    def test_every_unsafe_file_refuses_with_a_fixed_reason(self):
+        cases = {
+            "group-readable": lambda: self.write(mode=0o640),
+            "read-only": lambda: self.write(mode=0o400),
+            "empty": lambda: self.write(b""),
+            "too-big": lambda: self.write(b"a" * (mac.TOKEN_MAX_BYTES + 1)),
+            "not-ascii": lambda: self.write("sk-ant-\u00e9" + "a" * 30),
+            "inner-space": lambda: self.write("sk-ant-oat01 " + "a" * 30),
+            "too-short": lambda: self.write("sk-ant-short"),
+            "two-lines": lambda: self.write(self.TOKEN + "\n" + self.TOKEN),
+        }
+        for name, make in cases.items():
+            with self.subTest(name):
+                make()
+                with self.assertRaises(lab.LabError) as caught:
+                    self.read()
+                self.assertEqual(caught.exception.reason, "auth-token-invalid")
+                self.assertNotIn(self.TOKEN, repr(caught.exception))
+
+    def test_a_symlink_a_directory_a_second_link_and_another_owner_are_refused(self):
+        real = f"{self.machine.root}/elsewhere"
+        Path(real).write_text(self.TOKEN)
+        os.chmod(real, 0o600)
+        os.symlink(real, self.path)
+        with self.assertRaises(lab.LabError):
+            self.read()
+        os.unlink(self.path)
+        os.mkdir(self.path, 0o700)
+        with self.assertRaises(lab.LabError):
+            self.read()
+        os.rmdir(self.path)
+        self.write()
+        self.assertEqual(self.read(), self.TOKEN)
+        with self.assertRaises(lab.LabError):
+            self.read(uid=os.getuid() + 1)  # owned by someone else than the dedicated account
+        os.link(self.path, f"{self.machine.root}/second-name")
+        with self.assertRaises(lab.LabError):
+            self.read()
+
+    def claude_printing_token(self) -> None:
+        write_exec(self.machine.claude, f"#!{INTERPRETER} -IS\nimport os\n"
+                   f"print(os.environ.get({mac.TOKEN_VARIABLE!r}) == {self.TOKEN!r}, "
+                   f"{mac.TOKEN_VARIABLE!r} in os.environ)\n")
+        self.machine.repin(claude_sha256=digest(self.machine.claude))
+
+    def launch(self):
+        backend = make_backend(self.machine)
+        self.addCleanup(backend.close)
+        with host(self.machine):
+            return backend, backend.launch((self.machine.claude,), b"", cwd=self.machine.candidate(),
+                                           wall_seconds=5, max_output_bytes=4096, cancel=threading.Event())
+
+    def test_launch_hands_the_token_to_the_child_only_and_records_no_value(self):
+        self.claude_printing_token()
+        self.write()
+        backend, run = self.launch()
+        self.assertEqual(run.stdout.decode().split(), ["True", "True"])
+        self.assertEqual(backend.run_evidence[-1]["authToken"], "present")
+        self.assertNotIn(self.TOKEN, json.dumps(backend.run_evidence))
+        self.assertNotIn(mac.TOKEN_VARIABLE, os.environ)  # the supervisor's own environment is untouched
+        self.assertEqual(self.machine.leftovers(), [])
+
+    def test_launch_without_a_token_file_sets_no_variable(self):
+        self.claude_printing_token()
+        backend, run = self.launch()
+        self.assertEqual(run.stdout.decode().split(), ["False", "False"])
+        self.assertEqual(backend.run_evidence[-1]["authToken"], "absent")
+
+    def test_launch_refuses_an_unsafe_token_file_before_creating_anything(self):
+        self.claude_printing_token()
+        self.write(mode=0o644)
+        with self.assertRaises(lab.LabError) as caught:
+            self.launch()
+        self.assertEqual(caught.exception.reason, "auth-token-invalid")
+        self.assertEqual(self.machine.leftovers(), [])
+
+    def test_the_fixture_entries_never_receive_the_token(self):
+        self.write()
+        backend = make_backend(self.machine)
+        self.addCleanup(backend.close)
+        source = b"import os\nprint(%r in os.environ)\n" % mac.TOKEN_VARIABLE
+        with host(self.machine):
+            result = backend.run(source, Path(self.machine.candidate()), lab.FixtureLimits(wall_seconds=5))
+        self.assertEqual(result.stdout.decode().strip(), "False")
+        self.assertNotIn("authToken", backend.run_evidence[-1])
+
+    def test_the_environment_hash_binds_the_credential_method_and_the_token_names(self):
+        base = self.machine.environment()
+        for name, value in (("TOKEN_FILE", "other-file"), ("TOKEN_VARIABLE", "OTHER_VARIABLE"),
+                            ("CREDENTIAL_METHOD", "dedicated-user-own-login")):
+            with self.subTest(name), mock.patch.object(mac, name, value):
+                self.assertNotEqual(self.machine.environment(), base)
 
 
 class LiveOutputTests(unittest.TestCase):
@@ -1448,7 +1599,7 @@ def kinfo_record(pid: int, *, ppid: int = 1, pgid: int = 1, stat: int = 2, secon
 class ProcessAccountingTests(unittest.TestCase):
     """Process-table reads (no task access) classify any process; task reads fail closed for a live one."""
 
-    def fake(self, *, task=0, kinfo=None, sysctl_error=0, sysctl_size=None):
+    def fake(self, *, task=0, kinfo=None, sysctl_error=0, sysctl_size=None, footprint=None, procargs=None):
         """``task``: errno of proc_pidinfo (0: readable); ``kinfo``: the record sysctl returns (None: gone)."""
         def proc_pidinfo(pid, flavor, arg, buffer, size):
             if task:
@@ -1468,8 +1619,14 @@ class ProcessAccountingTests(unittest.TestCase):
             size._obj.value = len(kinfo) if sysctl_size is None else sysctl_size
             return 0
 
-        return mock.patch.object(mac, "_libsystem",
-                                 lambda: SimpleNamespace(proc_pidinfo=proc_pidinfo, sysctl=sysctl))
+        def proc_pid_rusage(pid, flavor, buffer):
+            if footprint is None:
+                return -1
+            buffer[mac._FOOTPRINT_WORD] = footprint
+            return 0
+
+        return mock.patch.object(mac, "_libsystem", lambda: SimpleNamespace(
+            proc_pidinfo=proc_pidinfo, sysctl=sysctl, proc_pid_rusage=proc_pid_rusage))
 
     def test_kinfo_reads_start_parent_group_and_state_without_task_access(self):
         with self.fake(task=errno.EPERM, kinfo=kinfo_record(77, ppid=1, pgid=55, stat=2)):
@@ -1500,6 +1657,41 @@ class ProcessAccountingTests(unittest.TestCase):
         self.assertGreater(start, 0)
         self.assertNotEqual(state, mac._SZOMB)
         self.assertIsNone(mac._kinfo(2 ** 22 - 3))
+
+    def test_the_task_read_reports_the_larger_of_resident_size_and_physical_footprint(self):
+        with self.fake(kinfo=kinfo_record(os.getpid()), footprint=9 << 30):
+            self.assertEqual(mac._task_resident(os.getpid()), 9 << 30)  # compressed pages count
+        with self.fake(kinfo=kinfo_record(os.getpid()), footprint=100):
+            self.assertEqual(mac._task_resident(os.getpid()), 4096)
+        with self.fake(kinfo=kinfo_record(os.getpid())):  # the rusage call failing keeps the resident size
+            self.assertEqual(mac._task_resident(os.getpid()), 4096)
+
+    def test_tagged_finds_the_run_tag_only_as_a_whole_environment_string(self):
+        def sysctl_with(raw, status=0):
+            def sysctl(mib, count, buffer, size, new, newlen):
+                if status:
+                    return status
+                ctypes.memmove(buffer, raw, len(raw))
+                size._obj.value = len(raw)
+                return 0
+            return mock.patch.object(mac, "_libsystem", lambda: SimpleNamespace(sysctl=sysctl))
+
+        tag = b"BRAID_RUN_TAG=abc123"
+        env = b"\x02\0\0\0/bin/x\0\0\0x\0y\0HOME=/h\0" + tag + b"\0PATH=/bin\0"
+        with sysctl_with(env):
+            self.assertTrue(mac._tagged(5, tag))
+        with sysctl_with(b"\x01\0\0\0/bin/x\0x\0NOT" + tag + b"\0"):
+            self.assertFalse(mac._tagged(5, tag))
+        with sysctl_with(env, status=-1):
+            self.assertFalse(mac._tagged(5, tag))  # unreadable or gone
+
+    def test_lineage_adopts_a_tagged_process_whatever_its_parent_and_group(self):
+        lineage = mac._Lineage(100, b"BRAID_RUN_TAG=t")
+        with mock.patch.object(mac, "_process_links", lambda identity: (1, identity[0])), \
+                mock.patch.object(mac, "_tagged", lambda pid, tag: pid == 300 and tag == b"BRAID_RUN_TAG=t"):
+            members = lineage.members({(100, 1), (200, 2), (300, 3)})
+        self.assertEqual(members, {(100, 1), (300, 3)})
+        self.assertEqual(lineage.unrelated(), {(200, 2)})
 
     def test_a_task_read_of_a_process_that_is_gone_is_none(self):
         with self.fake(task=errno.ESRCH):
