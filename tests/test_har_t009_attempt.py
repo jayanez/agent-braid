@@ -440,7 +440,7 @@ class UsageCardTests(unittest.TestCase):
     def test_fresh_reading_is_returned_in_the_quota_form(self):
         reader, _ = self.reader(["12", "30%", "n", "14:58"])
         self.assertEqual(reader.read("before"), {
-            "source": "claude-desktop-usage-card", "observedAt": "2026-11-04T14:58:00Z",
+            "source": "operator-typed-usage", "observedAt": "2026-11-04T14:58:00Z",
             "fiveHourPercent": 12, "weeklyPercent": 30, "extraUsageEnabled": False})
 
     def test_now_and_extra_usage(self):
@@ -465,7 +465,7 @@ class UsageCardTests(unittest.TestCase):
     def test_a_typo_is_asked_again_up_to_three_times_per_field(self):
         reader, said = self.reader(["12.5", "12", "thirty", "30", "yes", "25:00", "14:58:30"])
         self.assertEqual(reader.read("before"), {
-            "source": "claude-desktop-usage-card", "observedAt": "2026-11-04T14:58:30Z",
+            "source": "operator-typed-usage", "observedAt": "2026-11-04T14:58:30Z",
             "fiveHourPercent": 12, "weeklyPercent": 30, "extraUsageEnabled": True})
         self.assertGreaterEqual(sum("try again" in line for line in said), 3)
         reader, _ = self.reader(["x", "y", "12", "30", "no", "now"])  # the third try is the last
@@ -926,11 +926,14 @@ class ErrorDiagnosisTests(unittest.TestCase):
 
 
 class FakeBackend:
-    """The two methods ``launch`` calls before it spawns, and the evidence list; nothing else is allowed."""
+    """The two methods ``launch`` calls before it spawns, the evidence list and the one ``auth`` launch."""
 
-    def __init__(self, *, check=None, raises=None, leftovers=()):
+    def __init__(self, *, check=None, raises=None, leftovers=(), auth=(0, "present"), auth_raises=None,
+                 auth_stdout=b""):
         self.calls, self.run_evidence, self.closed = [], [], False
         self._check, self._raises, self._leftovers = check, raises, list(leftovers)
+        self._auth, self._auth_raises, self._auth_stdout = auth, auth_raises, auth_stdout
+        self.policy = SimpleNamespace(claude=CLAUDE)
 
     @contextlib.contextmanager
     def _exclusive(self, entry):
@@ -948,8 +951,13 @@ class FakeBackend:
             raise self._raises
         return {"entry": entry, "compileCheck": "exec-denied", "preSessionCheck": self._check}, str(workdir), 502
 
-    def launch(self, *a, **k):
-        raise AssertionError("the self-check never launches")
+    def launch(self, argv, stdin, **k):
+        self.calls.append(("launch", argv, stdin, str(k["cwd"]), k["wall_seconds"], k["max_output_bytes"]))
+        if self._auth_raises is not None:
+            raise self._auth_raises
+        exit_code, mark = self._auth
+        self.run_evidence.append({"entry": "launch", "authToken": mark, "exitCode": exit_code})
+        return SimpleNamespace(exit_code=exit_code, timed_out=exit_code is None, stdout=self._auth_stdout)
 
     def close(self):
         self.closed = True
@@ -999,11 +1007,57 @@ class SelfCheckTests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(report, {
             "verdict": "self-check-ok", "attempt": "t009-test", "preSessionCheck": F4_OK, "compileCheck": "exec-denied",
+            "auth": {"stage": "auth", "noModel": True, "authToken": "present", "reason": "ok", "exitCode": 0},
             "refusal": None, "stage": None, "backendRefusals": [], "probeRuns": [], "nativeRun": True, "sessionsStarted": 0,
             "usageReadings": 0, "executionAuthorization": False})
-        self.assertEqual(backend.calls, [("exclusive", "launch"), ("pre_session", "launch", f"{HOME}/run/work-x", True)])
+        self.assertEqual(backend.calls, [("exclusive", "launch"), ("pre_session", "launch", f"{HOME}/run/work-x", True),
+                                         ("launch", (CLAUDE, "auth", "status"), b"", f"{HOME}/run/work-x",
+                                          har.AUTH_WALL_SECONDS, har.AUTH_MAX_OUTPUT_BYTES)])
         self.assertTrue(backend.closed)
-        built["removed"].assert_called_once_with(f"{HOME}/run/work-x")
+        built["removed"].assert_called_with(f"{HOME}/run/work-x")  # one workdir for the check, one for auth
+        self.assertEqual(built["removed"].call_count, 2)
+
+    def test_the_auth_stage_reports_a_closed_reason_from_the_exit_code_and_the_token_mark(self):
+        cases = ((dict(auth=(1, "absent")), "auth-missing", 1), (dict(auth=(1, "present")), "auth-rejected", 1),
+                 (dict(auth=(None, "present")), "timed-out", None), (dict(auth=(0, "absent")), "ok", 0))
+        for options, reason, exit_code in cases:
+            with self.subTest(options):
+                code, report, _ = self.run_check(FakeBackend(check=F4_OK, **options))
+                self.assertEqual(report["auth"]["reason"], reason)
+                self.assertIn(reason, har.AUTH_REASONS)
+                self.assertEqual(report["auth"]["exitCode"], exit_code)
+                ready = reason == "ok"
+                self.assertEqual((code, report["verdict"]), (0, "self-check-ok") if ready
+                                 else (2, "self-check-auth-failed"))
+                self.assertEqual((report["sessionsStarted"], report["usageReadings"]), (0, 0))
+                self.assertFalse(report["executionAuthorization"])
+
+    def test_the_auth_stage_never_reports_the_output_of_the_command(self):
+        backend = FakeBackend(check=F4_OK, auth=(1, "present"), auth_stdout=b'{"email": "' + SECRET.encode() + b'"}')
+        report = self.run_check(backend)[1]
+        self.assertNotIn(SECRET, json.dumps(report))
+
+    def test_a_backend_refusal_of_the_auth_launch_is_a_fixed_reason(self):
+        for raised, refusal in ((lab.LabError("auth-token-invalid"), "auth-token-invalid"),
+                                (RuntimeError(SECRET), "backend-failed")):
+            with self.subTest(refusal):
+                code, report, _ = self.run_check(FakeBackend(check=F4_OK, auth_raises=raised))
+                self.assertEqual((code, report["verdict"]), (2, "self-check-auth-failed"))
+                self.assertEqual((report["auth"]["reason"], report["auth"]["refusal"], report["auth"]["exitCode"]),
+                                 ("refused", refusal, None))
+                self.assertNotIn(SECRET, json.dumps(report))
+
+    def test_the_auth_stage_does_not_run_after_a_refused_pre_session_check(self):
+        backend = FakeBackend(raises=lab.LabError("self-check-failed"))
+        report = self.run_check(backend, f4=lambda probe, be: "error")[1]
+        self.assertEqual(report["auth"], {"stage": "auth", "reason": "not-run"})
+        self.assertFalse([c for c in backend.calls if c[0] == "launch"])
+
+    def test_auth_reason_is_a_pure_function_of_exit_code_and_token_mark(self):
+        self.assertEqual([har.auth_reason(*args) for args in ((0, None), (1, "absent"), (2, "present"), (1, None))],
+                         ["ok", "auth-missing", "auth-rejected", "auth-rejected"])
+        self.assertEqual(har.auth_reason(None, "present", timed_out=True), "timed-out")
+
 
     def test_the_backend_is_built_like_the_real_run(self):
         _, _, built = self.run_check(FakeBackend(check=F4_OK))

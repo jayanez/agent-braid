@@ -19,15 +19,19 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
   metadata of ``/etc`` and ``/var``) that the ``launch`` and ``launch-probe`` profiles carry.
 * credential: UID separation (the supervisor must run as the dedicated account, NC-2,
   NC-5), an environment built from scratch, and a refusal when an ``ENV_DENY`` variable
-  is present in the parent. Keychain services are not reachable (no ``mach-lookup``);
-  whether NC-5's login works without them is for the T007/T009 probes.
+  is present in the parent. Keychain services are not reachable (no ``mach-lookup``). The ``launch``
+  entry authenticates with the long-lived token of ``claude setup-token``, read by the supervisor from
+  ``TOKEN_FILE`` in the dedicated user's ``config_dir`` (``read_token``: strict checks) and set as
+  ``TOKEN_VARIABLE`` in the child environment only (NC-5 as amended 2026-11-04); the fixture entries never
+  get it. Every run also carries ``RUN_TAG_VARIABLE``, a per-run random value that descendants inherit.
 * process: exec allow-list (NC-8), CPU, file-size, core, open-file and per-user process
   rlimits applied before the sandbox is entered, a supervisor watchdog for wall time,
   memory (macOS refuses ``RLIMIT_AS`` below the current address space), output and disk
   (candidate, per-run ``TMPDIR`` and ``config_dir`` together: total bytes and entry count,
   ``disk-limit-exceeded``),
   and settlement of the group plus every new process of the dedicated user that belongs to the child's
-  tree (parent chain or process group); other new processes are only counted as noise. A process that
+  tree (parent chain, process group or the inherited run tag); other new processes are only counted as
+  noise. The memory watchdog measures the larger of the resident size and the physical footprint. A process that
   left the group is reported apart from one still alive after the final sweep.
 * run accounting: ``ProbeResult`` and ``ContainedHostRun`` extend the lab and host results
   with the process counts, the cleanup outcome, the peak disk use and the proxy counters of
@@ -62,6 +66,7 @@ from pathlib import Path
 import platform
 import pwd
 import re
+import secrets
 import selectors
 import shutil
 import signal
@@ -84,7 +89,14 @@ from .system_one import canonical
 BACKEND = "macos-dedicated-user-sandbox-exec"
 ENVIRONMENT_FORMAT = "braid-macos-containment-environment/v0.1"
 SANDBOX_EXEC = "/usr/bin/sandbox-exec"
-CREDENTIAL_METHOD = "dedicated-user-own-login"  # NC-5
+CREDENTIAL_METHOD = "dedicated-user-token-file"  # NC-5, amended 2026-11-04 (founder: "A. Token en archivo")
+# The long-lived token of ``claude setup-token`` lives in one file inside the dedicated user's
+# ``CLAUDE_CONFIG_DIR`` and reaches the contained CLI only as this variable (Claude Code documents it as
+# taking precedence over keychain-stored credentials). No Keychain access is opened.
+TOKEN_FILE = "oauth-token"
+TOKEN_VARIABLE = "CLAUDE_CODE_OAUTH_TOKEN"
+TOKEN_MAX_BYTES = 4096
+RUN_TAG_VARIABLE = "BRAID_RUN_TAG"  # inherited by every descendant; lets the sweep find a setsid leaver
 CLAUDE_VERSION = "2.1.292"  # NC-4
 ALLOWED_ENDPOINTS = ("api.anthropic.com:443",)  # NC-1; refresh hosts come from probe evidence
 # NC-8; memory and disk are enforced by the supervisor watchdog, the rest by rlimits.
@@ -122,6 +134,7 @@ _OS_SERIES = re.compile(r"27\.(?:0|[1-9][0-9]{0,2})(?:\.(?:0|[1-9][0-9]{0,2}))?\
 _BUILD = re.compile(r"[0-9]{2}[A-Z][0-9]{1,5}[a-z]?\Z")
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _ACCOUNT = re.compile(r"[a-z_][a-z0-9_-]{0,31}\Z")
+_TOKEN = re.compile(r"[A-Za-z0-9._~+/=-]{20,2048}\Z")
 _PATH = re.compile(r"(?:/[A-Za-z0-9._@+-]+)+\Z")  # no quotes, spaces or escapes in SBPL
 _ENDPOINT = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+:443\Z")
 _OWNED = ("run-", "compile-")  # run_root directories the backend creates and removes
@@ -220,6 +233,40 @@ def _trusted_file(path: str, expected_sha256: str, missing: str, drift: str) -> 
 
 
 # --- policy ---------------------------------------------------------------------------
+
+
+def read_token(config_dir: str, uid: int) -> str | None:
+    """The contained CLI's long-lived token, or ``None`` when ``TOKEN_FILE`` does not exist.
+
+    Strict: a regular file (a symbolic link is never followed), owned by ``uid``, mode exactly ``0600``,
+    a single link, 1 to ``TOKEN_MAX_BYTES`` bytes, holding one ASCII token. Anything else refuses with
+    ``auth-token-invalid``. The value goes to the supervisor's child environment only: it is never logged,
+    put in evidence or in an exception.
+    """
+    try:
+        descriptor = os.open(f"{config_dir}/{TOKEN_FILE}",
+                             os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC)
+    except FileNotFoundError:
+        return None
+    except OSError:
+        raise LabError("auth-token-invalid") from None
+    try:
+        info = os.fstat(descriptor)
+        if not (stat.S_ISREG(info.st_mode) and info.st_uid == uid and stat.S_IMODE(info.st_mode) == 0o600
+                and info.st_nlink == 1 and 0 < info.st_size <= TOKEN_MAX_BYTES):
+            raise LabError("auth-token-invalid")
+        data = os.read(descriptor, TOKEN_MAX_BYTES + 1)
+    except OSError:
+        raise LabError("auth-token-invalid") from None
+    finally:
+        os.close(descriptor)
+    try:
+        token = data.decode("ascii").removesuffix("\n")
+    except UnicodeDecodeError:
+        raise LabError("auth-token-invalid") from None
+    if _TOKEN.fullmatch(token) is None:
+        raise LabError("auth-token-invalid")
+    return token
 
 
 def _probe_catalog_sha256() -> str:
@@ -348,6 +395,8 @@ class ContainmentPolicy:
             ]
         if writes:
             lines.append(f"(allow file-read* file-write* {literals('subpath', writes)})")
+        if writes:  # the token reaches the child through its environment only; the file stays out of its reach
+            lines.append(f'(deny file-read* file-write* (literal "{self.config_dir}/{TOKEN_FILE}"))')
         lines += [f"(deny file-read* file-write* {literals('subpath', DENIED)})",
                   f'(allow network-outbound (remote tcp "localhost:{self.proxy_port}"))']
         return ("\n".join(lines) + "\n").encode()
@@ -422,6 +471,8 @@ def environment_sha256(policy: ContainmentPolicy, facts: HostFacts, uid: int,
                         "root": policy.interpreter_root},
         "supervisor": {"path": supervisor, "sha256": _file_sha256(supervisor)},
         "credentialMethod": CREDENTIAL_METHOD,
+        "authentication": {"tokenFile": TOKEN_FILE, "tokenVariable": TOKEN_VARIABLE,
+                           "runTagVariable": RUN_TAG_VARIABLE},
         "configDir": policy.config_dir,
         "runRoot": policy.run_root,
         "network": {"endpoints": list(policy.endpoints), "proxyPort": policy.proxy_port},
@@ -453,7 +504,8 @@ def _libsystem():
         lib.proc_listpids.argtypes = [ctypes.c_uint32, ctypes.c_uint32, ctypes.c_void_p, ctypes.c_int]
         lib.proc_pidinfo.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_uint64, ctypes.c_void_p,
                                      ctypes.c_int]
-        for name in ("sysctlbyname", "sysctl", "proc_listpids", "proc_pidinfo"):
+        lib.proc_pid_rusage.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_void_p]
+        for name in ("sysctlbyname", "sysctl", "proc_listpids", "proc_pidinfo", "proc_pid_rusage"):
             getattr(lib, name).restype = ctypes.c_int
         _LIBSYSTEM = lib
     return _LIBSYSTEM
@@ -510,6 +562,10 @@ def host_facts() -> HostFacts:
 
 _PROC_RUID_ONLY, _PROC_PIDTASKINFO = 5, 4
 _TASKINFO_WORDS = 12  # struct proc_taskinfo is 96 bytes; resident size is word 1
+# struct rusage_info_v2 (RUSAGE_INFO_V2 = 2): ``ri_phys_footprint`` is the 8-byte word at offset 72. It counts
+# the pages the process owns including those the memory compressor or swap hold, which ``pti_resident_size``
+# omits; the watchdog measures the larger of the two.
+_RUSAGE_INFO_V2, _RUSAGE_WORDS, _FOOTPRINT_WORD = 2, 32, 9
 
 # struct kinfo_proc (sys/sysctl.h, 648 bytes on arm64 and x86_64) from sysctl KERN_PROC/KERN_PROC_PID:
 # a plain process-table read that needs no task access, so it works for every process of the same user.
@@ -549,6 +605,14 @@ def _kinfo(pid: int) -> tuple[int, int, int, int] | None:
             struct.unpack_from("=i", raw, _KP_PGID)[0], raw[_KP_STAT])
 
 
+def _footprint(pid: int) -> int:
+    """``ri_phys_footprint`` of ``pid`` in bytes; ``0`` when the call fails (the resident size still counts)."""
+    buffer = (ctypes.c_uint64 * _RUSAGE_WORDS)()
+    if _libsystem().proc_pid_rusage(pid, _RUSAGE_INFO_V2, buffer) != 0:
+        return 0
+    return buffer[_FOOTPRINT_WORD]
+
+
 def _task_resident(pid: int) -> int | None:
     """Resident bytes from one ``proc_pidinfo`` task call; ``None`` only when the process is gone or exited.
 
@@ -559,7 +623,7 @@ def _task_resident(pid: int) -> int | None:
     buffer = (ctypes.c_uint64 * _TASKINFO_WORDS)()
     ctypes.set_errno(0)
     if _libsystem().proc_pidinfo(pid, _PROC_PIDTASKINFO, 0, buffer, ctypes.sizeof(buffer)) == ctypes.sizeof(buffer):
-        return buffer[1]
+        return max(buffer[1], _footprint(pid))
     code = ctypes.get_errno()
     if code == errno.ESRCH:
         return None
@@ -591,6 +655,23 @@ def _user_processes(uid: int) -> set[tuple[int, int]]:
         if pid > 0 and (info := _kinfo(pid)) is not None:
             out.add((pid, info[0]))
     return out
+
+
+_KERN_PROCARGS2, _PROCARGS_BYTES = 49, 1 << 20
+
+
+def _tagged(pid: int, tag: bytes) -> bool | None:
+    """Whether the environment of ``pid`` holds the entry ``tag`` (``NAME=value``); ``None`` when unreadable
+    (the caller asks again later).
+
+    ``KERN_PROCARGS2`` of a process of the same user needs no privilege. The entry must start a string, so
+    it is an environment (or argument) string and not the tail of another.
+    """
+    mib = (ctypes.c_int * 3)(_CTL_KERN, _KERN_PROCARGS2, pid)
+    size, buffer = ctypes.c_size_t(_PROCARGS_BYTES), ctypes.create_string_buffer(_PROCARGS_BYTES)
+    if _libsystem().sysctl(mib, 3, buffer, ctypes.byref(size), None, 0) != 0:
+        return None
+    return b"\0" + tag in ctypes.string_at(buffer, size.value)
 
 
 def _process_links(identity: tuple[int, int]) -> tuple[int | None, int | None]:
@@ -933,6 +1014,9 @@ class RunAccounting:
     ``egress`` is the proxy counter delta of the run (see ``EgressProxy``).
     ``limit_exceeded`` is the resource stop reason of the run: ``memory`` (watchdog) or ``cpu``
     (``SIGXCPU`` from the CPU rlimit), else ``None``. A disk breach refuses the run instead.
+    ``peak_memory_bytes`` and ``memory_samples`` are what the memory watchdog measured (the larger of the
+    resident size and the physical footprint, summed over the child's tree) and how often: evidence for a
+    memory limit that did not fire.
     """
 
     escaped_processes: int = 0
@@ -942,6 +1026,8 @@ class RunAccounting:
     disk_bytes: int = 0
     disk_files: int = 0
     limit_exceeded: str | None = None
+    peak_memory_bytes: int = field(default=0, compare=False)
+    memory_samples: int = field(default=0, compare=False)
     egress: dict = field(default_factory=dict, compare=False, hash=False)
 
 
@@ -963,26 +1049,38 @@ class _Lineage:
 
     A new process is the child's when it is the child, when its parent is the child or an earlier
     member, or when its process group is led by the child or an earlier member (an orphan reparented to
-    ``launchd`` keeps the group). The links are read once, when the process is first seen. Residual: a
-    descendant that calls ``setsid`` and is reparented before the poll that would have seen it, or that
-    starts and exits between two polls, reads as unrelated (documented in the T009 re-check).
+    ``launchd`` keeps the group), or when its environment carries the run's ``RUN_TAG_VARIABLE`` (every
+    descendant inherits it, so a ``setsid`` leaver reparented before it was first seen is still found,
+    PROC-ESC-1). The links and the tag are read once, when the process is first seen. Residual: a
+    descendant that also scrubs its environment (``exec`` with an empty one) before the poll that would
+    have seen it, or that starts and exits between two polls, reads as unrelated (T009 re-check).
     """
 
-    def __init__(self, root: int):
+    def __init__(self, root: int, tag: bytes | None = None):
         self._root = root
+        self._tag = tag  # ``RUN_TAG_VARIABLE=<value>`` as bytes; ``None`` disables the environment test
         self._pids = {root}
         self._links: dict[tuple[int, int], tuple[int | None, int | None]] = {}
+        self._tagged: set[tuple[int, int]] = set()
+        self._unread: set[tuple[int, int]] = set()  # environment not readable yet: asked again at the next poll
         self.identities: set[tuple[int, int]] = set()
 
     def observe(self, processes: set[tuple[int, int]]) -> None:
         for identity in processes - self._links.keys():
             self._links[identity] = _process_links(identity)
+            self._unread.add(identity)
+        for identity in self._unread & processes if self._tag is not None else ():
+            found = _tagged(identity[0], self._tag)
+            if found is not None:
+                self._unread.discard(identity)
+                if found:
+                    self._tagged.add(identity)
         grew = True
         while grew:
             grew = False
             for identity, (parent, group) in self._links.items():
                 if identity[0] != self._root and identity not in self.identities \
-                        and (parent in self._pids or group in self._pids):
+                        and (parent in self._pids or group in self._pids or identity in self._tagged):
                     self.identities.add(identity)
                     self._pids.add(identity[0])
                     grew = True
@@ -1042,10 +1140,17 @@ class _DiskGuard:
 
 
 def _resource_limit(uid: int, baseline: set[tuple[int, int]], lineage: _Lineage,
-                    disk: _DiskGuard) -> str | None:
-    """The first exceeded resource limit (``memory`` or ``disk``), else ``None``."""
+                    disk: _DiskGuard, state: dict) -> str | None:
+    """The first exceeded resource limit (``memory`` or ``disk``), else ``None``.
+
+    ``state`` receives the largest measured memory of the child's tree and the number of measurements
+    (integers, evidence for a limit that did not fire).
+    """
     own = lineage.members(_user_processes(uid) - baseline)  # unrelated processes are not measured
-    if _resident_bytes(own) > LIMITS["memoryBytes"]:
+    measured = _resident_bytes(own)
+    state["memorySamples"] = state.get("memorySamples", 0) + 1
+    state["peakMemoryBytes"] = max(state.get("peakMemoryBytes", 0), measured)
+    if measured > LIMITS["memoryBytes"]:
         return "memory"
     return "disk" if disk.exceeded() else None
 
@@ -1367,6 +1472,9 @@ class MacOSContainment(ContainmentBackend):
                    wall: int, cpu: int, max_output: int, cancel: threading.Event | None,
                    stdin: bytes, on_output: Callable[[bytes], None] | None = None) -> ContainedHostRun:
         policy = self.policy
+        token = read_token(policy.config_dir, uid) if entry == "launch" else None  # before anything is created
+        if entry == "launch":
+            record["authToken"] = "present" if token else "absent"  # never the value
         try:
             run_dir = tempfile.mkdtemp(prefix="run-", dir=policy.run_root)
         except OSError:
@@ -1398,15 +1506,19 @@ class MacOSContainment(ContainmentBackend):
                         str(LIMITS["openFiles"]), str(nproc), candidate, str(status_w), SANDBOX_EXEC,
                         "-p", policy.render(entry).decode(), "-D", f"CANDIDATE={candidate}",
                         "-D", f"TMPDIR={tmpdir}", "-D", f"RUNDIR={run_dir}", "--", *target]
+                tag = f"{RUN_TAG_VARIABLE}={secrets.token_hex(16)}"
+                env = policy.child_environment(entry, tmpdir) | {RUN_TAG_VARIABLE: tag.partition("=")[2]}
+                if token:
+                    env[TOKEN_VARIABLE] = token
                 try:
-                    child = subprocess.Popen(argv, cwd=run_dir, env=policy.child_environment(entry, tmpdir),
+                    child = subprocess.Popen(argv, cwd=run_dir, env=env,
                                              stdin=source, stdout=sink, stderr=subprocess.DEVNULL,
                                              close_fds=True, pass_fds=(status_w,), start_new_session=True)
                 except (OSError, ValueError):
                     raise LabError("launch-failed") from None
                 finally:
                     os.close(status_w)
-                lineage = _Lineage(child.pid)
+                lineage = _Lineage(child.pid, tag.encode())
                 self._watch(child, state, uid=uid, baseline=baseline, out_path=out_path,
                             deadline=time.monotonic() + wall, max_output=max_output, cancel=cancel,
                             live=live, lineage=lineage, disk=disk)
@@ -1478,6 +1590,7 @@ class MacOSContainment(ContainmentBackend):
             escaped_descendants=state.get("escapedDescendants", 0),
             surviving_processes=state.get("survivingProcesses", 0), cleanup_failed=not cleaned,
             disk_bytes=disk.bytes, disk_files=disk.files, limit_exceeded=state["limitExceeded"],
+            peak_memory_bytes=state.get("peakMemoryBytes", 0), memory_samples=state.get("memorySamples", 0),
             egress=egress)
 
     def _watch(self, child: subprocess.Popen, state: dict, *, uid: int, baseline: set[tuple[int, int]],
@@ -1495,7 +1608,7 @@ class MacOSContainment(ContainmentBackend):
                 state["cancelled"] = True
             elif os.path.getsize(out_path) > max_output:
                 state["outputTruncated"] = True
-            elif (limit := _resource_limit(uid, baseline, lineage, disk)) is not None:
+            elif (limit := _resource_limit(uid, baseline, lineage, disk, state)) is not None:
                 state["limitExceeded"] = limit
             else:
                 time.sleep(_POLL_SECONDS)

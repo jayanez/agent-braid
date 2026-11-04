@@ -8,6 +8,7 @@ import hashlib
 import io
 import json
 import os
+import stat
 from pathlib import Path
 import tempfile
 import unittest
@@ -341,6 +342,9 @@ class LabTests(unittest.TestCase):
         self.driver = {"--dry-run": (0, '{"verdict": "ready"}'), "--self-check": (0, '{"verdict": "self-check-ok"}'),
                        "--founder-go": (0, "")}
         self.login_rc = 0
+        self.token_rc = 0
+        self.pasted = "sk-ant-oat01-" + "Ab1Cd2Ef3Gh4" * 5
+        self.prompts = []
         self.verifier = lambda stage, sha: True  # who "approves" which stage; replaced per test
         self.waits = 0
 
@@ -353,6 +357,8 @@ class LabTests(unittest.TestCase):
         self.calls.append((list(cmd), kw))
         if cmd[1:3] == ["auth", "login"]:
             return mock.Mock(returncode=self.login_rc)
+        if cmd[1:2] == ["setup-token"]:
+            return mock.Mock(returncode=self.token_rc)
         flag = next((f for f in ("--dry-run", "--self-check", "--founder-go") if f in cmd), None)
         code, out = self.driver[flag]
         if flag == "--founder-go" and "--self-check" not in cmd:  # the real attempt writes its bundle
@@ -393,7 +399,8 @@ class LabTests(unittest.TestCase):
             stack.enter_context(mock.patch.object(lab.os, "access", lambda path, mode: Path(path) == self.from_lab))
             stack.enter_context(contextlib.redirect_stdout(out))
             stack.enter_context(contextlib.redirect_stderr(err))
-            code = lab.main([*self.argv, *extra], env=env if env is not None else {}, sleep=self.sleeping, clock=clock)
+            code = lab.main([*self.argv, *extra], env=env if env is not None else {}, sleep=self.sleeping, clock=clock,
+                            prompt=lambda text: self.prompts.append(text) or self.pasted)
         return code, out.getvalue(), err.getvalue()
 
     @staticmethod
@@ -405,7 +412,7 @@ class LabTests(unittest.TestCase):
         return known or hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
     def driver_modes(self):
-        return [next((f for f in ("--dry-run", "--self-check", "--founder-go") if f in c[0]), "login")
+        return [next((f for f in ("--dry-run", "--self-check", "--founder-go", "setup-token") if f in c[0]), "login")
                 for c in self.calls]
 
     # plan
@@ -413,7 +420,7 @@ class LabTests(unittest.TestCase):
         code, out, _ = self.go(["--plan"])
         self.assertEqual(code, 0)
         self.assertEqual(self.calls, [])
-        for needle in ("verify-setup.json", "auth login", "--dry-run", "--self-check --founder-go", "verify-self-check.json",
+        for needle in ("verify-setup.json", "auth login", "setup-token", "oauth-token", "--dry-run", "--self-check --founder-go", "verify-self-check.json",
                        "--founder-go", f"bundle-t009-20261104"):
             self.assertIn(needle, out)
 
@@ -427,7 +434,7 @@ class LabTests(unittest.TestCase):
     def test_full_flow_waits_for_each_verification_and_runs_in_order(self):
         code, out, err = self.go()
         self.assertEqual(code, 0, err)
-        self.assertEqual(self.driver_modes(), ["login", "--dry-run", "--self-check", "--founder-go"])
+        self.assertEqual(self.driver_modes(), ["login", "setup-token", "--dry-run", "--self-check", "--founder-go"])
         self.assertEqual(self.waits, 3)
         dry_sha = hashlib.sha256(b'{"verdict": "ready"}').hexdigest()
         self.assertEqual((self.from_lab / "dry-run.json.sha256").read_text(), f"{dry_sha}  dry-run.json\n")
@@ -444,6 +451,60 @@ class LabTests(unittest.TestCase):
     def test_skip_login(self):
         self.assertEqual(self.go(["--skip-login"])[0], 0)
         self.assertNotIn("login", self.driver_modes())
+
+    # step 9b: the token file
+    @property
+    def token_path(self):
+        return self.home / "t009/config/oauth-token"
+
+    def test_the_token_is_saved_from_a_hidden_prompt_with_mode_0600_and_never_printed(self):
+        code, out, err = self.go()
+        self.assertEqual(code, 0, err)
+        self.assertEqual(self.token_path.read_text(), self.pasted + "\n")
+        self.assertEqual(stat.S_IMODE(self.token_path.stat().st_mode), 0o600)
+        self.assertEqual(len(self.prompts), 1)
+        self.assertNotIn(self.pasted, out + err + self.prompts[0])
+        env = next(kw["env"] for cmd, kw in self.calls if cmd[1:2] == ["setup-token"])
+        self.assertEqual(env["CLAUDE_CONFIG_DIR"], str(self.home / "t009/config"))
+
+    def test_an_existing_token_file_is_kept_and_nothing_is_asked(self):
+        self.token_path.write_text("kept\n")
+        self.assertEqual(self.go()[0], 0)
+        self.assertEqual(self.token_path.read_text(), "kept\n")
+        self.assertEqual((self.prompts, "setup-token" in self.driver_modes()), ([], False))
+
+    def test_renew_replaces_the_file_and_skip_token_does_nothing(self):
+        self.token_path.write_text("old\n")
+        self.assertEqual(self.go(["--renew-token"])[0], 0)
+        self.assertEqual(self.token_path.read_text(), self.pasted + "\n")
+        self.token_path.unlink()
+        self.calls.clear()
+        self.prompts.clear()
+        self.assertEqual(self.go(["--skip-token"])[0], 0)
+        self.assertFalse(self.token_path.exists())
+        self.assertNotIn("setup-token", self.driver_modes())
+        self.assertEqual(self.prompts, [])
+
+    def test_a_malformed_renewal_keeps_the_old_token(self):
+        self.token_path.write_text("old-token-" + "a" * 20 + "\n")
+        self.pasted = "short"
+        self.assertEqual(self.go(["--renew-token"])[0], 1)
+        self.assertEqual(self.token_path.read_text(), "old-token-" + "a" * 20 + "\n")
+
+    def test_a_failed_setup_token_or_a_malformed_paste_stops_before_the_dry_run(self):
+        self.token_rc = 1
+        code, _, err = self.go()
+        self.assertEqual((code, "setup-token failed" in err, self.driver_modes()), (1, True, ["login", "setup-token"]))
+        self.token_rc = 0
+        for pasted in ("", "short", "two words " + "a" * 30, "sk-ant-\u00e9" + "a" * 30):
+            with self.subTest(pasted=pasted):
+                self.pasted = pasted
+                self.calls.clear()
+                code, out, err = self.go()
+                self.assertEqual(code, 1)
+                self.assertIn("is not a token", err)
+                self.assertFalse(self.token_path.exists())
+                self.assertNotIn("--dry-run", self.driver_modes())
 
     def test_real_attempt_exit_code_is_passed_through_and_bundle_still_copied(self):
         self.driver["--founder-go"] = (2, "")
@@ -462,7 +523,7 @@ class LabTests(unittest.TestCase):
         code, _, err = self.go(approve=("setup",), extra=["--wait-timeout", "10"])
         self.assertEqual(code, 1)
         self.assertIn("no valid verification of dry-run", err)
-        self.assertEqual(self.driver_modes(), ["login", "--dry-run"])
+        self.assertEqual(self.driver_modes(), ["login", "setup-token", "--dry-run"])
 
     def test_missing_self_check_verification_stops_before_the_real_attempt(self):
         code, _, err = self.go(approve=("setup", "dry-run"), extra=["--wait-timeout", "10"])
@@ -577,7 +638,7 @@ class LabTests(unittest.TestCase):
         code, _, err = self.go()
         self.assertEqual(code, 1)
         self.assertIn("not self-check-ok", err)
-        self.assertEqual(self.driver_modes(), ["login", "--dry-run", "--self-check"])
+        self.assertEqual(self.driver_modes(), ["login", "setup-token", "--dry-run", "--self-check"])
 
     def test_existing_session_counter_needs_a_new_label_or_resume(self):
         out_dir = self.home / "t009/out/t009-20261104"
@@ -586,7 +647,7 @@ class LabTests(unittest.TestCase):
         code, _, err = self.go()
         self.assertEqual(code, 1)
         self.assertIn("step 10c", err)
-        self.assertEqual(self.driver_modes(), ["login", "--dry-run", "--self-check"])
+        self.assertEqual(self.driver_modes(), ["login", "setup-token", "--dry-run", "--self-check"])
         self.setUp()
         out_dir = self.home / "t009/out/t009-20261104"
         out_dir.mkdir(parents=True)

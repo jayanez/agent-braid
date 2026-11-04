@@ -68,8 +68,9 @@ This is the founder's runbook for the conditional go recorded in
 `executionAuthorization` stays `false`, issuance stays T010 (NC-9). The order is fixed:
 
 1. you run steps 0 to 8 (step 0 is a check; the rest use sudo, in your own session) with `scripts/har_t009_setup.py`, only after the orchestrator confirms the re-check of the 2026-11-03 decisions is a GO;
-2. you switch to the dedicated account and run steps 9 to 11 in its own login session with `scripts/har_t009_lab.py` (login, driver `--dry-run`,
-   self-check and the real attempt, waiting for the orchestrator's verification files between them);
+2. you switch to the dedicated account and run steps 9 to 11 in its own login session with `scripts/har_t009_lab.py` (login, the
+   long-lived token of step 9b, driver `--dry-run`, self-check with its `auth` stage and the real attempt, waiting for the
+   orchestrator's verification files between them);
 3. you send the dry-run output to the orchestrator, which verifies it as evidence;
 4. only after the orchestrator confirms, step 11 (the real attempt: at most 3 small Haiku sessions).
 
@@ -154,11 +155,14 @@ What it does, in order, each stage a hard stop:
 2. **waits** for `to-lab/verify-setup.json` (bound to the summary's SHA-256; the orchestrator checks the claude hash
    against the published release checksum before step 9);
 3. step 9: no `ANTHROPIC`/`CLAUDE` variable (names or values), then `claude auth login` (the browser login is yours;
-   `--skip-login` if already logged in) and the check that `config_dir` holds a few small files;
+   `--skip-login` if already logged in) and the check that `config_dir` holds a few small files; then step 9b: unless
+   `--skip-token`, `claude setup-token` (the browser approval is yours) and the token pasted at a hidden prompt is
+   written to `config_dir/oauth-token`, mode 0600 (an existing file is kept unless `--renew-token`); the value is
+   never printed;
 4. step 10: the driver `--dry-run`, saved to `from-lab/dry-run.json` with its SHA-256; must be `ready`; **waits** for
    `to-lab/verify-dry-run.json`;
 5. step 10b: the driver `--self-check --founder-go`, saved to `from-lab/self-check.json` with its SHA-256; must be
-   `self-check-ok`; **waits** for `to-lab/verify-self-check.json`;
+   `self-check-ok` (pre-session check and the `auth` stage); **waits** for `to-lab/verify-self-check.json`;
 6. step 10c: refuses an attempt label whose output directory already holds a session counter (a new label from the
    orchestrator, or `--resume` for a crashed run of the same label; NC-10);
 7. step 11: the driver `--founder-go` with your terminal attached. **The driver asks you** to type the attempt name
@@ -349,6 +353,31 @@ ls -la "$CLAUDE_CONFIG_DIR"                          # a few small files (a fres
 Undo: `claude auth logout` with the same `CLAUDE_CONFIG_DIR`, and revoke the session in the Claude
 account settings; deleting the account (teardown) removes its keychain.
 
+**Step 9b. The long-lived token for the contained CLI (NC-5 as amended on 2026-11-04,
+`evidence/founder-decisions-20261104d.json`).** The sandbox cannot reach the Keychain, so the contained
+CLI cannot use the login of step 9. It authenticates with a token that only a file in the account's
+`config_dir` holds. Still in the braidlab session, in the same Terminal, with the same variables:
+
+```sh
+export CLAUDE_CONFIG_DIR="$HOME/t009/config" DISABLE_AUTOUPDATER=1
+/usr/local/libexec/braid/claude-2.1.292 setup-token    # opens the browser; approve; it PRINTS the token in the terminal
+( umask 077; trap 'stty echo' EXIT INT; printf 'Paste the token here (hidden): '; stty -echo; read -r T; stty echo; echo
+  printf %s "$T" > "$CLAUDE_CONFIG_DIR/oauth-token" )      # zsh and bash alike; the subshell forgets T
+chmod 600 "$CLAUDE_CONFIG_DIR/oauth-token"
+ls -l "$CLAUDE_CONFIG_DIR/oauth-token"                 # -rw-------  1 braidlab  ...  one small file
+```
+
+You paste the token only at that hidden prompt, in the terminal of the braidlab session: never into a chat,
+a note or a file of yours. `claude setup-token` does not save the token anywhere; `CLAUDE_CODE_OAUTH_TOKEN` is
+the variable Claude Code documents for it, and it takes precedence over Keychain credentials. The backend reads
+the file (a regular file owned by the account, mode exactly 0600, one link, at most 4096 bytes, one line) and sets
+that variable in the child only; any other shape of the file is a refusal with the fixed reason
+`auth-token-invalid`. The file is a secret literal of the bundle scan. `har_t009_lab.py` does exactly this
+(`--skip-token` if the file is in place, `--renew-token` to replace it).
+
+Undo: delete the file, and revoke the token in the Claude account settings (claude.ai, Settings, the
+sessions/tokens list of the subscription account). Both are in the teardown.
+
 **Step 10. Dry run in the braidlab session.** Pre-flight only: no sandbox, no `claude`, no network. It
 prints a JSON verdict, `ready` or `refused` with the failed checks and a fix hint for each, and exits 0
 or 2. Paste the quoted values first (from the orchestrator, from step 8, and your own account short name,
@@ -416,7 +445,15 @@ backend's fixed reason code and `stage` says where it stopped (`mechanism-or-wor
 one and marked `"supplementary": true` (after `self-check-allowed`, an escape, they are not run and show
 `not-run`), and `backendRefusals` lists the refusals of the nested runs
 (entry `fixture`, `launch` or `launch-probe` and the fixed reason code). Nothing printed is a
-path, account name, hash or value. Tell the orchestrator that `/Users/Shared/t009-self-check.json`
+path, account name, hash or value. After a passing pre-session check the self-check runs one more stage,
+`auth`: `claude auth status` under the same launch profile and environment as a session, with the token of
+step 9b. Claude Code documents it as exiting 0 when logged in and 1 when not, with no model call, so it
+costs no session and no quota. `auth` reports `reason` (`ok`, `auth-missing`: it failed and no token file
+existed, `auth-rejected`: it failed although a token file was supplied, `timed-out`, `refused` with a fixed
+`refusal` such as `auth-token-invalid`, or `not-run` after a refused pre-session check), `exitCode` and
+`authToken` (`present` or `absent`). Its output, which can name the account, is never read into the report.
+Any reason but `ok` ends the self-check with the verdict `self-check-auth-failed` (exit 2): fix the token
+(step 9b with `--renew-token`) before a session is spent. Tell the orchestrator that `/Users/Shared/t009-self-check.json`
 exists. Do not continue to step 11 unless the verdict is `self-check-ok` and the orchestrator
 confirms it in writing. A `self-check-refused` is a finding, not a failure of the procedure.
 
@@ -489,6 +526,9 @@ Then, back in your own session, take ownership of the copy (`sudo chown -R "$USE
 ```sh
 rm -r "/Users/Shared/t009-bundle-$ATTEMPT" /Users/Shared/t009-dry-run.json /Users/Shared/t009-self-check.json /Users/Shared/t009-setup-summary.json
 sudo rm -r /Users/Shared/braid-t009              # the handoff directory of the scripts (from-lab/ is the lab account's)
+# revoke the long-lived token of step 9b in the Claude account settings (claude.ai, Settings; the token that
+# `claude setup-token` made), and delete its file (also removed with the account):
+sudo rm -f "/Users/$ACCT/t009/config/oauth-token"   # the account deletion below removes it anyway
 # log out of braidlab (Apple menu, Log Out) and revoke its Claude session in the account settings
 sudo sysadminctl -deleteUser "$ACCT"           # removes the account, its home and its keychain
 ls /Users                                      # braidlab gone (else: sudo rm -r /Users/braidlab)

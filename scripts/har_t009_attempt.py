@@ -40,6 +40,14 @@ once per F4 probe under the ``launch-probe`` profile), the five F4 fixtures with
 functional control (one TLS handshake with the allowed endpoint through the local proxy, no request, no
 credential). It prints each F4 probe's expected and observed verdict (also the ones after a refusal) and the
 compile check, so a refused self-check is diagnosable before a session is spent.
+
+After a passing pre-session check the self-check runs one more stage, ``auth``: ``claude auth status`` under
+the same ``launch`` profile and environment as a session (including the token the dedicated account keeps in
+its config directory, see ``harness_containment_macos.read_token``). Claude Code documents it as a status
+command that exits 0 when logged in and 1 when not, and as making no model call, so it spends no session and
+no quota. Only its exit code, whether the token file existed and a closed reason are reported; its output
+(which can name the account) is never read into the report. A failing stage ends the self-check with the
+verdict ``self-check-auth-failed``, so a login problem is found before a session is spent.
 """
 from __future__ import annotations
 
@@ -55,6 +63,7 @@ import re
 import stat
 import sys
 import tempfile
+import threading
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -778,6 +787,46 @@ def _stage(refusal: str | None, evidence: Mapping) -> str | None:
     return "compile-check" if refusal in _COMPILE_REFUSALS else "mechanism-or-workspace"
 
 
+AUTH_WALL_SECONDS = 30
+AUTH_MAX_OUTPUT_BYTES = 4096
+AUTH_REASONS = ("ok", "auth-missing", "auth-rejected", "timed-out", "refused", "not-run")
+
+
+def auth_reason(exit_code: int | None, token_mark: str | None, *, timed_out: bool = False) -> str:
+    """Closed reason of the ``auth`` stage from the exit code and the token mark only, never from output.
+
+    ``auth-missing``: it failed and no token file existed. ``auth-rejected``: it failed although a token file
+    was supplied (the token is expired, revoked, or not accepted under this profile)."""
+    if timed_out:
+        return "timed-out"
+    if exit_code == 0:
+        return "ok"
+    return "auth-missing" if token_mark == "absent" else "auth-rejected"
+
+
+def auth_stage(backend: object, workdir: Callable[[], Path]) -> dict:
+    """``claude auth status`` through ``launch``: no prompt, no model call, no session, no usage reading."""
+    seen = len(getattr(backend, "run_evidence", []))
+    report: dict = {"stage": "auth", "noModel": True}
+    try:
+        run = backend.launch((backend.policy.claude, "auth", "status"), b"", cwd=workdir(),
+                             wall_seconds=AUTH_WALL_SECONDS, max_output_bytes=AUTH_MAX_OUTPUT_BYTES,
+                             cancel=threading.Event())
+    except LabError as exc:
+        run, report["refusal"] = None, _code(exc.reason)
+    except Exception:
+        run, report["refusal"] = None, "backend-failed"
+    marks = [r.get("authToken") for r in getattr(backend, "run_evidence", [])[seen:]
+             if isinstance(r, Mapping) and r.get("entry") == "launch"]
+    mark = marks[-1] if marks and marks[-1] in ("present", "absent") else None
+    report["authToken"] = mark
+    if run is None:
+        return report | {"reason": "refused", "exitCode": None}
+    exit_code = _int(getattr(run, "exit_code", None))
+    return report | {"reason": auth_reason(exit_code, mark, timed_out=bool(getattr(run, "timed_out", False))),
+                     "exitCode": exit_code}
+
+
 def self_check(backend: object, workdir: Callable[[], Path], probe_runner: Callable[[str, object], str]) -> dict:
     """Run the backend's pre-session check for the ``launch`` entry and nothing else.
 
@@ -822,7 +871,10 @@ def self_check(backend: object, workdir: Callable[[], Path], probe_runner: Calla
             run = {"entry": _code(r.get("entry")), "exitCode": _int(r.get("exitCode"))} | _integers(r, _NOISE)
             if run not in runs:
                 runs.append(run)
-    return {"verdict": "self-check-ok" if refusal is None else "self-check-refused",
+    auth = auth_stage(backend, workdir) if refusal is None else {"stage": "auth", "reason": "not-run"}
+    verdict = ("self-check-refused" if refusal is not None
+               else "self-check-ok" if auth["reason"] == "ok" else "self-check-auth-failed")
+    return {"verdict": verdict, "auth": auth,
             "preSessionCheck": checks, "probeRuns": runs[-MAX_EVIDENCE:],
             "compileCheck": _code(evidence.get("compileCheck")),
             "refusal": _code(refusal), "stage": _stage(refusal, evidence),

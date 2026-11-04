@@ -1,0 +1,37 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T009 after attempt 2 (t009-20261104b): how the contained Claude CLI authenticates (NC-5 amendment)",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-04",
+  "baseCommit": "58233022",
+  "decisionChannel": "Founder answer to an interactive guided question in the HAR orchestrator session, 2026-11-04, recorded verbatim. Additive to founder-decisions-20261031.json (NC-5 as decided) and the later records, which stay as written.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261104c.json"
+  ],
+  "decisionOrder": [
+    "NC-5-token-file"
+  ],
+  "decisions": [
+    {
+      "id": "NC-5-token-file",
+      "item": "How the contained Claude CLI authenticates now that the three session probes of attempt t009-20261104b exited 1 before the init event and the sandbox cannot reach the Keychain",
+      "question": "¿Cómo seguimos con la contención nativa de Claude?",
+      "ownerStatement": "A. Token en archivo (Recommended)",
+      "decision": {
+        "disposition": "token-file-in-config-dir",
+        "reading": "NC-5 is amended, not replaced: the dedicated account still does its own login, but the contained CLI authenticates with a long-lived token created by `claude setup-token` in braidlab's own session. The token is stored only in a file inside braidlab's CLAUDE_CONFIG_DIR (~/t009/config), mode 0600, owned by braidlab. The supervisor reads that file and sets it as CLAUDE_CODE_OAUTH_TOKEN in the child environment; no Keychain access is opened (mach-lookup stays fully denied, CRED-02 keeps requiring that denial). Nothing of the founder is copied: the token belongs to the lab account's own session, and teardown revokes it in the Claude account settings and deletes the file.",
+        "bounds": "The token file is a secret literal for the bundle scan (it can never land in a bundle). The environment hash changes with the credential method. Every other bound is unchanged: NC-1, NC-4, NC-6, NC-7, NC-8, NC-10 (new attempt name, budget of 3 sessions), NC-11, and PROC-ESC-1 as recorded in founder-decisions-20261104c.json."
+      }
+    }
+  ],
+  "closes": [],
+  "stillOpen": [
+    "whether `claude auth status` under the launch profile exits 0 with a token supplied only through CLAUDE_CODE_OAUTH_TOKEN (the new `auth` self-check stage answers it before a session is spent)",
+    "whether a PROC-04 variant that also scrubs the environment of the leaver is added to the catalog (it would fail until the backend can attribute such a process): see evidence/recheck-qual-round3.md"
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records one founder answer. executionAuthorization stays false and issuance stays T010 (NC-9, founder only). It authorizes no native run: the next attempt is a new name with a new budget of 3 sessions (NC-10), after the touched-lines re-check in evidence/recheck-qual-round3.md and the orchestrator's written confirmations. The earlier records are not rewritten. No native session, probe, sudo command or account change was run when this record was written. Any change needs a new founder decision record."
+}

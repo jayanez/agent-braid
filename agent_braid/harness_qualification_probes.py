@@ -148,9 +148,15 @@ def _code(exc):
     return errno.errorcode.get(getattr(exc, "errno", None), "OTHER")
 
 
+class Absent(Exception):
+    """The named Mach service is not registered in this account's launchd domain: nothing to deny."""
+
+
 def _classify(fn, deny, dns):
     try:
         result = fn()
+    except Absent:
+        return "inconclusive", "ABSENT"
     except socket.gaierror:
         # name resolution fails inside the profile before any connect, so it says nothing about
         # network-outbound: only the explicit DNS attempt may read it as a denial
@@ -238,13 +244,15 @@ def execs(argv):
     return True if subprocess.run(argv, capture_output=True, timeout=5).returncode == 0 else None
 
 
-def mach(service):
+def mach(service, absent=False):
     import ctypes
     lib = ctypes.CDLL("/usr/lib/libSystem.B.dylib")
     port = ctypes.c_uint(0)
     lib.bootstrap_look_up.argtypes = [ctypes.c_uint, ctypes.c_char_p, ctypes.POINTER(ctypes.c_uint)]
     status = lib.bootstrap_look_up(ctypes.c_uint.in_dll(lib, "bootstrap_port"), service.encode(),
                                    ctypes.byref(port))
+    if absent and status == 1102:  # BOOTSTRAP_UNKNOWN_SERVICE: not registered for this account
+        raise Absent()
     return True if status == 0 else False if status == 1100 else None
 
 
@@ -432,7 +440,7 @@ def spotlight():
     return True if A["indexed_name"].encode() in out else None
 attempt("mach-mds", lambda: mach("com.apple.metadata.mds"))
 attempt("mach-mdwrite", lambda: mach("com.apple.metadata.mdwrite"))
-attempt("mach-spotlight", lambda: mach("com.apple.Spotlight"))
+attempt("mach-spotlight", lambda: mach("com.apple.Spotlight", True))
 tripwire("mdfind", spotlight)
 ''',
     "NET-01": r'''
@@ -491,7 +499,7 @@ attempt("claude-config", lambda: reads(A["claude_config"]))
     "CRED-02": r'''
 attempt("keychain-file", lambda: reads(A["keychain"]))
 attempt("mach-securityd", lambda: mach("com.apple.SecurityServer"))
-attempt("mach-secd", lambda: mach("com.apple.secd"))
+attempt("mach-secd", lambda: mach("com.apple.secd", True))
 ''',
     "CRED-03": r'''
 attempt("ssh-key", lambda: reads(A["secret_files"][2]))
@@ -564,15 +572,16 @@ def file_size():
 def open_files():
     import resource
     hard = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
-    want = A["limits"]["openFiles"] + 64
+    count = A["limits"]["openFiles"] + 64
+    want = count + 64  # headroom for the descriptors this process already holds: a bare `count` limit fails the control
     resource.setrlimit(resource.RLIMIT_NOFILE, (want if hard == resource.RLIM_INFINITY else min(hard, want), hard))
-    held = [os.open("/dev/null", os.O_RDONLY) for _ in range(A["limits"]["openFiles"] + 64)]
+    held = [os.open("/dev/null", os.O_RDONLY) for _ in range(count)]
     return bool(held)
 def memory():
     import mmap
     size = A["limits"]["memoryBytes"] + (256 << 20)
     block = mmap.mmap(-1, size)
-    for offset in range(0, size, 1 << 20):
+    for offset in range(0, size, mmap.PAGESIZE):  # one byte in every page, or the pages are never resident
         block[offset] = 1
     return True
 def memory_burst():
@@ -746,6 +755,7 @@ class Probe:
     wall_seconds: int = 10
     sessions: int = 0
     extra: tuple[str, ...] = ()  # counted attempts the runner itself fills in
+    residual: str = ""  # a limit of what a pass of this probe covers, stated in the bundle's catalog
 
     def __post_init__(self) -> None:
         _require(self.runner in ("helper", "session") and self.expected in ("denied", "allowed")
@@ -800,7 +810,9 @@ CATALOG: tuple[Probe, ...] = (
     _helper("NET-01", "network", "TCP to a runner-owned loopback listener and a public literal address",
             watch=("tcp4",)),
     _helper("NET-02", "network", "TCP to a literal IPv4 and IPv6 address, private and link-local targets",
-            wall_seconds=20),
+            wall_seconds=20,
+            residual="tcp-ipv6-literal is excluded when the machine has no IPv6 route (control EHOSTUNREACH, "
+                     "ENETUNREACH or EADDRNOTAVAIL); IPv6 egress is then not tested and the row says so."),
     _helper("NET-03", "network", "UDP and DNS-based exfiltration", watch=("udp",)),
     _helper("NET-04", "network", "non-allowed loopback port, host LAN address and local Unix-domain socket",
             watch=("tcp4", "tcp6", "tcp-lan", "unix"), wall_seconds=20),
@@ -824,12 +836,18 @@ CATALOG: tuple[Probe, ...] = (
     _helper("PROC-03", "process", "exceed file-size, open-file and memory limits (CPU and file-count noted)",
             snapshot=True, wall_seconds=40, survivors=True),
     _helper("PROC-04", "process", "double-fork and setsid to leave the group and survive",
-            judge="survivors", survivors=True),
+            judge="survivors", survivors=True,
+            residual="PROC-ESC-1: the backend attributes a descendant that left the group through the run tag "
+                     "every descendant inherits in its environment. A descendant that also scrubs its "
+                     "environment (exec with an empty one) before the backend first sees it reads as unrelated: "
+                     "this probe does not attempt that variant, so a denial here does not cover it."),
     _helper("PROC-05", "process", "register a launch agent or other persistent job", snapshot=True),
     _helper("PROC-06", "process", "spawn outside the group via LaunchServices, AppleEvents, osascript, IOKit or any launchd name",
             wall_seconds=30),
     _helper("PROC-07", "process", "signal, attach to or inspect another same-user process, sysctl and IPC primitives",
-            watch=("sibling-signal",), wall_seconds=20),
+            watch=("sibling-signal",), wall_seconds=20,
+            residual="ptrace-sibling is excluded when the kernel refuses it even uncontained (control EPERM): "
+                     "no sandbox decision is observable then, and the row says so in notApplicable."),
     _helper("PROC-08", "process", "outlive a timeout and a cancellation", judge="survivors",
             survivors=True, wall_seconds=3, extra=("cancel-settlement",)),
     Probe("HOST-01", "host", "one read-only `claude -p` session completes under the policy",
@@ -873,6 +891,7 @@ def catalog_document(catalog: Sequence[Probe] = CATALOG) -> dict:
             "tripwires": list(probe.tripwires),
             "profiles": ["fixture", LAUNCH_PROBE_ENTRY] if probe.runner == "helper" else ["launch"],
             "judge": probe.judge, "sessions": probe.sessions, "wallSeconds": probe.wall_seconds,
+            "residual": probe.residual,
             "sourceSha256": sha256(probe.source_template.encode()).hexdigest()
             if probe.runner == "helper" else None})
     # the runner, judge and arena are part of what a pass means: any edit to this file re-binds
@@ -895,10 +914,43 @@ def policy_binds_catalog(policy: object) -> bool:
 # --- pass rule (pure) -------------------------------------------------------------------------
 
 
+# Counted attempts whose positive control can be impossible on a machine for a reason that has nothing to do
+# with the sandbox, keyed by (probe, attempt) to the closed error codes the uncontained control must show.
+# This is the only way an attempt is excluded; every other counted attempt always needs a working control.
+#   ABSENT: the Mach service is not registered in the account's launchd domain (nothing to look up).
+#   EHOSTUNREACH, ENETUNREACH, EADDRNOTAVAIL: the machine has no IPv6 route or address.
+#   EPERM: the kernel refuses ptrace of another process even to an uncontained process, so no sandbox
+#          decision is observable.
+NOT_APPLICABLE = {
+    ("CRED-02", "mach-secd"): ("ABSENT",),
+    ("FS-07", "mach-spotlight"): ("ABSENT",),
+    ("NET-02", "tcp-ipv6-literal"): ("EHOSTUNREACH", "ENETUNREACH", "EADDRNOTAVAIL"),
+    ("PROC-07", "ptrace-sibling"): ("EPERM",),
+}
+
+
+def not_applicable(probe: Probe, control: Mapping | None) -> frozenset[str]:
+    """Counted attempts the uncontained control shows cannot be exercised here (see ``NOT_APPLICABLE``).
+
+    An attempt qualifies only when the control did not succeed at it and failed with one of the codes
+    listed for it. At least one counted attempt always remains required; otherwise nothing is excluded.
+    A contained ``allowed`` at an excluded attempt is still an escape (``_judge_row``).
+    """
+    if control is None or probe.functional:
+        return frozenset()
+    attempts, errors = control.get("attempts", {}), control.get("errors") or {}
+    found = frozenset(name for name in probe.counted
+                      if errors.get(name) in NOT_APPLICABLE.get((probe.id, name), ())
+                      and attempts.get(name) != "allowed")
+    return found if len(found) < len(probe.counted) else frozenset()
+
+
 def row_outcome(probe: Probe, attempts: Mapping[str, str], *, escalated: bool = False,
-                settled: bool = True) -> str:
-    """Observed outcome of one mode run. Functional: all allowed. Escape: any allowed."""
-    values = [attempts.get(name, "inconclusive") for name in probe.counted]
+                settled: bool = True, names: Sequence[str] | None = None) -> str:
+    """Observed outcome of one mode run. Functional: all allowed. Escape: any allowed.
+
+    ``names`` narrows the counted attempts (the not-applicable ones left out)."""
+    values = [attempts.get(name, "inconclusive") for name in (probe.counted if names is None else names)]
     if probe.functional:
         if values and all(v == "allowed" for v in values):
             return "allowed"
@@ -918,23 +970,27 @@ def _judge_row(probe: Probe, control: Mapping | None, contained: Mapping | None)
     if control is None or contained is None:
         return {"probe": probe.id, "status": "inconclusive", "pass": False, "reason": "mode-missing"}
     c_attempts, k_attempts = control["attempts"], contained["attempts"]
+    excluded = not_applicable(probe, control)
+    # an excluded attempt needs no control, but an escape at it is still an escape
+    names = [n for n in probe.counted if n not in excluded or k_attempts.get(n) == "allowed"]
     joined = {}
-    for name in probe.counted:
+    for name in names:
         seen = k_attempts.get(name, "inconclusive")
         # an observed escape is never hidden by a failed control; a denial needs a working one
         escape = seen == "allowed" and not probe.functional
         joined[name] = seen if escape or c_attempts.get(name) == "allowed" else "inconclusive"
-    controlled = all(c_attempts.get(name) == "allowed" for name in probe.counted)
+    controlled = all(c_attempts.get(name) == "allowed" for name in probe.counted if name not in excluded)
     if probe.functional:
         status = row_outcome(probe, joined)
     else:
         status = row_outcome(probe, joined, escalated=bool(contained.get("escalated")),
-                             settled=bool(contained.get("settled", True)))
+                             settled=bool(contained.get("settled", True)), names=names)
     reason = "ok" if status == probe.expected and controlled else (
         "escape-allowed" if status == "allowed" and not probe.functional
         else "positive-control-failed" if not controlled else "not-observed")
     return {"probe": probe.id, "status": status, "pass": status == probe.expected and controlled,
-            "controlled": controlled, "reason": reason, "attempts": joined}
+            "controlled": controlled, "reason": reason, "attempts": joined,
+            "notApplicable": sorted(excluded)}
 
 
 def judge_probe(probe: Probe, control: Mapping | None, contained: Mapping | None,
@@ -986,6 +1042,8 @@ def summarize(rows: Sequence[Mapping], catalog: Sequence[Probe] = CATALOG) -> di
             status = "enforced"
         effects[effect] = {"status": status, "probes": {p.id: j["status"] for p, j in members},
                            "missing": absent,
+                           "notApplicable": {p.id: j["notApplicable"] for p, j in members
+                                             if j.get("notApplicable")},
                            "failing": [p.id for p, j in members if not j["pass"]]}
     host = [j for p, j in judged if p.effect == "host"]
     host_ok = bool(host) and all(j["pass"] for j in host) and "HOST-01" not in missing
@@ -1014,6 +1072,7 @@ class SessionResult:
     egress: Mapping | None = None  # EgressProxy counter delta of the session (name -> count)
     quota: Mapping | None = None  # pre/post readings recorded by the driver
     config: Mapping | None = None  # config_dir listing comparison around the session (DRV-16)
+    auth_token: str | None = None  # "present" or "absent": whether the token file existed at launch
 
 
 def _stream(stdout: bytes) -> tuple[str | None, Mapping | None]:
@@ -1032,6 +1091,34 @@ def _stream(stdout: bytes) -> tuple[str | None, Mapping | None]:
         elif event.get("type") == "result" and result is None:
             result = event
     return key_source, result
+
+
+EXIT_REASONS = ("ok", "no-init", "exit-before-init", "cli-exit-nonzero", "auth-missing", "refused",
+                "timed-out", "cancelled")
+
+
+def session_exit_reason(session: SessionResult) -> str:
+    """Why a session ended, from a closed set, derived only from the transport's refusal, the stop flags,
+    the exit code, the presence of the ``init`` event and whether the token file existed; never from
+    output text.
+
+    ``auth-missing``: no token file and the CLI left with a failure before ``init`` (it had no login).
+    ``exit-before-init``: the CLI failed before ``init`` although a token file existed (rejected token,
+    start-up failure under the profile, ...). ``cli-exit-nonzero``: it failed after ``init``.
+    ``no-init``: it exited 0 without an ``init`` event.
+    """
+    if session.refused is not None:
+        return "refused"
+    if session.timed_out:
+        return "timed-out"
+    if session.cancelled:
+        return "cancelled"
+    initialised = _stream(session.stdout)[0] is not None
+    if session.exit_code == 0:
+        return "ok" if initialised else "no-init"
+    if initialised:
+        return "cli-exit-nonzero"
+    return "auth-missing" if session.auth_token == "absent" else "exit-before-init"
 
 
 _KEY_SOURCE_LABEL = re.compile(r"[A-Za-z0-9._-]{1,32}\Z")
@@ -1220,6 +1307,13 @@ def config_dir_changes(before: object, after: object) -> dict | None:
             "digests": {k: new[k] for k in sorted([*added, *modified])}, "truncated": False}
 
 
+def token_mark(transport: object) -> str | None:
+    """``present`` or ``absent`` as the backend recorded for its last launch; ``None`` when it recorded none."""
+    records = getattr(getattr(transport, "backend", None), "run_evidence", None) or []
+    marks = [r.get("authToken") for r in records if isinstance(r, Mapping) and r.get("entry") == "launch"]
+    return marks[-1] if marks and marks[-1] in ("present", "absent") else None
+
+
 def native_session_driver(transport_factory: Callable[[], ClaudeTransport], *, model: str = "haiku",
                           wall_seconds: int = 120,
                           read_quota: Callable[[], Mapping | None] | None = None,
@@ -1253,7 +1347,7 @@ def native_session_driver(transport_factory: Callable[[], ClaudeTransport], *, m
             run = transport.run(build_plan(request, PROBE_PROMPT), PROBE_PROMPT,
                                 HostLimits(wall_seconds=wall_seconds), cancel)
         except ClaudeHostError as exc:
-            return SessionResult(refused=exc.reason)
+            return SessionResult(refused=exc.reason, auth_token=token_mark(transport))
         evidence = getattr(transport, "run_evidence", None)
         quota = {"admission": dict(evidence[0].get("quota", {}))} if evidence else {}
         if read_quota is not None:
@@ -1262,7 +1356,8 @@ def native_session_driver(transport_factory: Callable[[], ClaudeTransport], *, m
         egress = getattr(run, "egress", None)
         return SessionResult(run.stdout, run.exit_code, run.timed_out, run.cancelled, run.settled,
                              egress=dict(egress) if egress_counters_ok(egress) else None, quota=quota,
-                             config=config_dir_changes(config_before, read_listing()))
+                             config=config_dir_changes(config_before, read_listing()),
+                             auth_token=token_mark(transport))
 
     return drive
 
@@ -1351,7 +1446,8 @@ class Arena:
         self._sockets: list[socket.socket] = []
         self._sibling: subprocess.Popen | None = None
         self.relay: str | None = None
-        self.extra_outside = [f"/tmp/braid-probe-{self.nonce}", f"/private/tmp/braid-probe-alias-{self.nonce}"]
+        self.extra_outside = [f"/tmp/braid-probe-{self.nonce}", f"/private/tmp/braid-probe-alias-{self.nonce}",
+                              f"/private/var/tmp/braid-probe-var-{self.nonce}"]
         self._planted_files: list[str] = []
         self._planted_dirs: list[str] = []
         try:
@@ -1442,8 +1538,7 @@ class Arena:
         self._plant_dir(str(own_dir / "Library"))
         agents = self._plant_dir(str(own_dir / "Library/LaunchAgents"))
         own_file = self._plant(f"{own_dir}/.braid-own-{self.nonce}")
-        var_alias = (f"/var/{outside.as_posix().removeprefix('/private/var/')}/new.txt"
-                     if outside.as_posix().startswith("/private/var/") else "")
+        var_alias = f"/var/tmp/braid-probe-var-{self.nonce}"  # /var links to /private/var: the runner-owned file above
         info = os.stat(outside)
         udp_port = self._listen_udp()
         unix = {name: self._listen_unix(str(sockets / f"{key}"), name)
@@ -1661,6 +1756,8 @@ class ExecResult:
     escaped_processes: int | None = None  # seen leaving the group (swept)
     surviving_processes: int | None = None  # still alive after the final sweep iteration
     cancelled: bool = False
+    peak_memory_bytes: int | None = None  # the memory watchdog's largest measurement (integers only)
+    memory_samples: int | None = None
 
 
 Executor = Callable[[bytes, Path, int, "Arena"], ExecResult]
@@ -1793,7 +1890,8 @@ class ContainedExecutor:
         return ExecResult(result.stdout, result.exit_code, result.timed_out, result.output_truncated,
                           result.settled, getattr(result, "limit_exceeded", "unavailable"),
                           getattr(result, "escaped_processes", None), getattr(result, "surviving_processes", None),
-                          getattr(result, "cancelled", False))
+                          getattr(result, "cancelled", False), getattr(result, "peak_memory_bytes", None),
+                          getattr(result, "memory_samples", None))
 
 
 def layout_from_policy(policy: object, workdir: Path | str | None) -> dict[str, str]:
@@ -2221,6 +2319,9 @@ class QualificationProbeRunner:
                              **({"escapedProcesses": result.escaped_processes,
                                  "survivingProcesses": result.surviving_processes}
                                 if probe.survivors and not control else {}),
+                             **({"memoryWatchdog": {"peakBytes": result.peak_memory_bytes,
+                                                    "samples": result.memory_samples}}
+                                if probe.id == "PROC-03" and not control else {}),
                              **cancel,
                              "processTable": "ok" if table_before is not None and table_after is not None
                              else ("unused" if not probe.survivors else "unavailable"),
@@ -2345,6 +2446,8 @@ class QualificationProbeRunner:
         self.quota.append({"probe": probe.id, "quota": readings, "decision": decision})
         key_source, _ = _stream(session.stdout)
         return self._row(probe, mode, {"session": outcome}, exitCode=session.exit_code,
+                         exitReason=session_exit_reason(session),
+                         authToken=session.auth_token if session.auth_token in ("present", "absent") else None,
                          timedOut=session.timed_out, settled=session.settled, refused=session.refused,
                          wallSeconds=probe.wall_seconds, quotaStop=None if decision["proceed"] else decision["reason"],
                          independent={"apiKeySource": _key_source_label(key_source),
@@ -2565,6 +2668,12 @@ def _credential_leaves(config_dir: Path | str) -> list[tuple[str, str, tuple]]:
             leaves(json.loads((Path(config_dir) / name).read_text()), name, ())
         except (OSError, ValueError):
             continue
+    try:  # the long-lived token (plain text, not JSON): read leniently, whatever its mode, to scan for it
+        token = (Path(config_dir) / _mac.TOKEN_FILE).read_text().strip()
+    except (OSError, ValueError):
+        token = ""
+    if token:
+        found.append((token, _mac.TOKEN_FILE, ()))
     return found
 
 
@@ -2577,7 +2686,8 @@ def credential_inventory(config_dir: Path | str) -> list[tuple[str, dict]]:
     by value. ``origin`` is ``{"file", "path"}`` with plain field names only (``<key>`` for any other
     key, and for any key that is itself a candidate value), never a value: it lets a refusal that names
     ``credential#3`` be traced to a key."""
-    leaves = [leaf for leaf in _credential_leaves(config_dir) if _is_candidate(leaf[0])]
+    # the token is always scanned for, whatever characters it holds
+    leaves = [leaf for leaf in _credential_leaves(config_dir) if _is_candidate(leaf[0]) or leaf[1] == _mac.TOKEN_FILE]
     candidates = sorted({value for value, _, _ in leaves})
     first: dict[str, dict] = {}
     for value, name, parts in leaves:
