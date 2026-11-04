@@ -12,129 +12,196 @@
 <script type="module" src="/web/loom.js"></script>
 </head>
 <body>
+<a class="skip-link" href="#main-view" data-i18n="skip">Skip to the main view</a>
 <header class="top">
-  <h1>Agent Braid activity viewer</h1>
-  <p class="badges">
+  <div class="top-title">
+    <h1 data-i18n="title">Agent activity</h1>
     <span class="badge" id="connection" role="status">connecting</span>
-    <span class="badge">read-only</span>
-    <span class="badge" id="authorization">executionAuthorization: false</span>
-  </p>
+  </div>
+  <p class="summary" id="summary"></p>
+  <div class="top-tools">
+    <label class="field"><span data-i18n="lang.label">Language</span>
+      <select id="lang-select">
+        <option value="auto" data-i18n="lang.auto">Automatic</option>
+        <option value="es">Español</option>
+        <option value="en">English</option>
+      </select>
+    </label>
+    <button type="button" id="about-open" data-i18n="about.open">About this view</button>
+  </div>
 </header>
-<p class="nonclaim">This view reports what was observed or declared. A rendered shape, label, counter or
-compatibility class is not a guarantee, not a safety ordering and not permission to run, schedule or interleave work.</p>
+<p class="boundary" role="note"><span class="badge" id="authorization">executionAuthorization: false</span>
+<span data-i18n="boundary">Read-only · does not authorize execution</span></p>
 <noscript><p class="notice">This viewer needs its own first-party JavaScript (no external code) to render the table.</p></noscript>
 <p class="notice" id="notice" hidden></p>
+<div class="toolbar" role="toolbar" data-i18n-label="toolbar.label" aria-label="View and filters">
+  <fieldset class="view-switch" id="view-switch" hidden>
+    <legend class="sr" data-i18n="view.legend">View</legend>
+    <label class="choice"><input type="radio" name="view" value="timeline" id="view-timeline"><span data-i18n="view.timeline">Timeline</span></label>
+    <label class="choice"><input type="radio" name="view" value="map3d" id="view-map3d"><span data-i18n="view.map3d">3D map</span></label>
+  </fieldset>
+  <details class="menu" id="sources" hidden>
+    <summary data-i18n="sources.menu">Sources</summary>
+    <div class="menu-body">
+      <p class="hint" data-i18n="sources.hint">Unchecking a source hides its elements in the views and in the table. Hidden events are counted below and stay in the summary, so a hidden source never looks like an absent one.</p>
+      <div class="source-list" id="source-list"></div>
+      <p class="source-status" id="source-status" role="status"></p>
+    </div>
+  </details>
+  <details class="menu" id="agent-menu" hidden>
+    <summary data-i18n="filters.agents">Agents</summary>
+    <div class="menu-body">
+      <p class="hint" id="agent-hint"></p>
+      <div class="source-list" id="agent-list"></div>
+    </div>
+  </details>
+  <details class="menu" id="status-menu" hidden>
+    <summary data-i18n="filters.status">Status</summary>
+    <div class="menu-body">
+      <p class="hint" id="status-hint"></p>
+      <div class="source-list" id="status-list"></div>
+    </div>
+  </details>
+  <label class="choice" data-i18n-title="filters.problems.title" title="Conflicting or unknown pairs, partial coverage, unobserved hazards and gaps. Unverified alone is not a problem: every replayed or host-reported event is unverified."><input type="checkbox" id="filter-problems"><span data-i18n="filters.problems">Only problems</span></label>
+  <button type="button" id="filter-clear" disabled data-i18n="filters.clear">Clear filters</button>
+  <output class="filter-status" id="filter-status" hidden></output>
+</div>
 <main class="layout">
   <div class="main-column">
-  <fieldset class="sources" id="sources" hidden>
-    <legend>Event sources</legend>
-    <p class="hint">Unchecking a source hides its elements in the 3D scene and in the table. Hidden events are counted
-    below and stay in the counters, so a hidden source never looks like an absent one.</p>
-    <div class="source-list" id="source-list"></div>
-    <p class="source-status" id="source-status" role="status"></p>
-  </fieldset>
+  <div id="main-view" tabindex="-1">
   <section class="scene" id="scene-section" aria-labelledby="scene-title" hidden>
-    <h2 id="scene-title">Braid scene (3D)</h2>
-    <p class="hint">The same model, playback position and evidence panel as the table below. Drag to orbit, scroll to zoom,
-    click an element to select its event. Classes are categorical badges, not a guarantee, and no shape ranks one class as safer than another.
-    The table is the complete text alternative.</p>
+    <h2 id="scene-title" data-i18n="scene.title">Spatial 3D map</h2>
+    <p class="hint" data-i18n="scene.hint">The same model, playback position and details as the table. Drag to orbit, scroll to zoom, click an element to select its event. Classes are categorical badges, not a guarantee, and no shape ranks one class as safer than another. The table is the complete text alternative.</p>
     <div class="scene-box" id="scene-box"></div>
     <p class="scene-status" id="scene-hover" aria-live="off">Hover an element to see its event.</p>
     <p class="hint" id="scene-note"></p>
-    <p class="scene-actions"><button type="button" id="scene-reset" title="Frame the whole scene again">Reset view</button></p>
-  </section>
-  <section aria-labelledby="table-title">
-    <h2 id="table-title">Events</h2>
-    <section class="playback" aria-label="Playback controls">
-      <button type="button" id="pb-start" title="Back to the first event">Start</button>
-      <button type="button" id="pb-back" title="One event back">Step back</button>
-      <button type="button" id="pb-play" aria-pressed="false">Autoplay</button>
-      <button type="button" id="pb-forward" title="One event forward">Step forward</button>
-      <button type="button" id="pb-end" title="Show all events and follow new ones">End (live)</button>
-      <label>Speed
-        <select id="pb-speed">
-          <option value="0.5">0.5x</option>
-          <option value="1" selected>1x</option>
-          <option value="2">2x</option>
-          <option value="4">4x</option>
-        </select>
-      </label>
-      <label class="grow">Position
-        <input type="range" id="pb-range" min="0" max="0" value="0" step="1">
-      </label>
-      <output id="pb-count" aria-live="off">0 of 0</output>
-    </section>
-    <p class="hint">Playback reveals events one at a time in model order. It does not replay real timing, and the
-    counters and absence markers always cover every retained event, not the playback position.</p>
-    <section class="filters" aria-label="Table filters">
-      <label>Element
-        <select id="filter-kind"><option value="">all</option></select>
-      </label>
-      <label><input type="checkbox" id="filter-uncertain"> only unverified or uncertain</label>
-    </section>
-    <div class="table-wrap">
-      <table>
-        <caption class="sr">Events of the viewer model, in model order. Select a row to see its event and evidence.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Seq</th>
-            <th scope="col">Time</th>
-            <th scope="col">Shape</th>
-            <th scope="col">Subject</th>
-            <th scope="col">Status</th>
-            <th scope="col">Class</th>
-            <th scope="col">Verification</th>
-            <th scope="col">Marks</th>
-          </tr>
-        </thead>
-        <tbody id="events-body"></tbody>
-      </table>
-    </div>
-    <p class="hint" id="table-empty" hidden>No events to show.</p>
+    <p class="scene-actions"><button type="button" id="scene-reset" data-i18n="scene.reset" data-i18n-title="scene.reset.title" title="Frame the whole scene again">Reset view</button></p>
   </section>
   </div>
-  <aside>
-    <section class="panel" id="evidence-panel" aria-labelledby="evidence-title" tabindex="-1">
-      <h2 id="evidence-title">Evidence</h2>
+  <section class="playback" role="group" aria-labelledby="playback-title">
+    <h2 class="sr" id="playback-title" data-i18n="playback.title">Playback</h2>
+    <button type="button" id="pb-start" data-i18n="playback.start" data-i18n-title="playback.start.title" title="Back to the first event">Start</button>
+    <button type="button" id="pb-back" data-i18n="playback.back" data-i18n-title="playback.back.title" title="One event back">Step back</button>
+    <button type="button" id="pb-play" aria-pressed="false">Play</button>
+    <button type="button" id="pb-forward" data-i18n="playback.forward" data-i18n-title="playback.forward.title" title="One event forward">Step forward</button>
+    <button type="button" id="pb-end" data-i18n="playback.end" data-i18n-title="playback.end.title" title="Show all events and follow new ones">Go to now</button>
+    <label class="field"><span data-i18n="playback.mode">Pace</span>
+      <select id="pb-mode">
+        <option value="events" data-i18n="playback.mode.events">By events</option>
+        <option value="real" data-i18n="playback.mode.real">Real time</option>
+      </select>
+    </label>
+    <label class="field"><span data-i18n="playback.speed">Speed</span>
+      <select id="pb-speed">
+        <option value="0.5">0.5x</option>
+        <option value="1" selected>1x</option>
+        <option value="2">2x</option>
+        <option value="4">4x</option>
+      </select>
+    </label>
+    <label class="field grow"><span data-i18n="playback.position">Position</span>
+      <input type="range" id="pb-range" min="0" max="0" value="0" step="1">
+    </label>
+    <output id="pb-count" aria-live="off">0 of 0</output>
+  </section>
+  <p class="hint" data-i18n="playback.note">Playback reveals events one at a time in model order. By events steps at a fixed pace; real time follows the time between events on the (compressed) axis. The counters and absence markers always cover every retained event, not the playback position.</p>
+  <section class="tabs" aria-label="Sections" data-i18n-label="tabs.label">
+    <div class="tablist" role="tablist" id="tablist" aria-label="Sections" data-i18n-label="tabs.label">
+      <button type="button" role="tab" id="tab-events" aria-controls="panel-events" aria-selected="true" data-i18n="tab.events">Events</button>
+      <button type="button" role="tab" id="tab-summary" aria-controls="panel-summary" aria-selected="false" tabindex="-1" data-i18n="tab.summary">Summary</button>
+      <button type="button" role="tab" id="tab-legend" aria-controls="panel-legend" aria-selected="false" tabindex="-1" data-i18n="tab.legend">Legend</button>
+      <button type="button" role="tab" id="tab-help" aria-controls="panel-help" aria-selected="false" tabindex="-1" data-i18n="tab.help">Help</button>
+    </div>
+    <div role="tabpanel" id="panel-events" aria-labelledby="tab-events">
+      <h2 class="sr" id="table-title" data-i18n="table.title">Events</h2>
+      <p class="filters"><label class="field"><span data-i18n="table.kind">Element</span>
+        <select id="filter-kind"><option value="">all</option></select>
+      </label></p>
+      <div class="table-wrap">
+        <table>
+          <caption class="sr" data-i18n="table.caption">Events of the viewer model, in model order. Select a row to see its event and evidence.</caption>
+          <thead>
+            <tr>
+              <th scope="col" data-i18n="table.col.seq">Seq</th>
+              <th scope="col" data-i18n="table.col.time">Time</th>
+              <th scope="col" data-i18n="table.col.shape">Shape</th>
+              <th scope="col" data-i18n="table.col.subject">Subject</th>
+              <th scope="col" data-i18n="table.col.status">Status</th>
+              <th scope="col" data-i18n="table.col.class">Class</th>
+              <th scope="col" data-i18n="table.col.verification">Verification</th>
+              <th scope="col" data-i18n="table.col.marks">Marks</th>
+            </tr>
+          </thead>
+          <tbody id="events-body"></tbody>
+        </table>
+      </div>
+      <p class="hint" id="table-empty" hidden>No events to show.</p>
+    </div>
+    <div role="tabpanel" id="panel-summary" aria-labelledby="tab-summary" hidden>
+      <section class="panel" aria-labelledby="counters-title">
+        <h2 id="counters-title" data-i18n="summary.counters">Counters</h2>
+        <p class="hint" id="counters-scope"></p>
+        <dl id="counters" class="kv"></dl>
+      </section>
+      <section class="panel" aria-labelledby="absence-title">
+        <h2 id="absence-title" data-i18n="summary.absence">Not shown as clean</h2>
+        <p class="hint" data-i18n="summary.absence.hint">Unknown, partial, unobserved or dropped information. None of these counts as independent or clean.</p>
+        <dl id="absence" class="kv"></dl>
+      </section>
+      <section class="panel" aria-labelledby="lanes-title">
+        <h2 id="lanes-title" data-i18n="summary.lanes">Agents</h2>
+        <p class="hint" data-i18n="summary.lanes.hint">Order is a layout choice: each parent is followed by its children. It is not a ranking and not an ordering of safety.</p>
+        <ol id="lanes" class="lanes"></ol>
+      </section>
+    </div>
+    <div role="tabpanel" id="panel-legend" aria-labelledby="tab-legend" hidden>
+      <section class="panel" aria-labelledby="legend-title">
+        <h2 id="legend-title" data-i18n="legend.title">Legend</h2>
+        <p class="legend-claim" data-i18n="legend.claim">A compatibility class (Constitution Article 13) is a categorical label, not a guarantee. It is not a universal ordering of runtime safety, and a producer's claimed class is not verified evidence.</p>
+        <h3 data-i18n="legend.classes">Compatibility class</h3>
+        <ul id="legend-classes" class="legend"></ul>
+        <h3 data-i18n="legend.shapes">Shapes</h3>
+        <ul id="legend-shapes" class="legend"></ul>
+        <h3 data-i18n="legend.verification">Verification</h3>
+        <ul id="legend-verification" class="legend"></ul>
+        <h3 data-i18n="legend.marks">Marks</h3>
+        <ul id="legend-marks" class="legend"></ul>
+        <div id="legend-scene-block" hidden>
+          <h3 data-i18n="legend.scene">3D map</h3>
+          <ul id="legend-scene" class="legend"></ul>
+        </div>
+      </section>
+    </div>
+    <div role="tabpanel" id="panel-help" aria-labelledby="tab-help" hidden>
+      <section class="panel" aria-labelledby="help-title">
+        <h2 id="help-title" tabindex="-1" data-i18n="help.title">Help</h2>
+        <h3 data-i18n="help.about.title">About this view</h3>
+        <p data-i18n="help.about.claim">This view reports what was observed or declared. A rendered shape, label, counter or compatibility class is not a guarantee, not a safety ordering and not permission to run, schedule or interleave work.</p>
+        <p data-i18n="help.about.readonly">The viewer is read-only: it never starts, schedules or changes anything. executionAuthorization: false.</p>
+        <p data-i18n="help.about.sources">Unknown, unobserved and unverified information is shown as such and is never counted as clean.</p>
+        <h3 data-i18n="help.controls.title">Controls</h3>
+        <ul class="plain">
+          <li data-i18n="help.controls.select">Select an event: click or press Enter on a row of the events table or on an element of the 3D map. The details panel shows it.</li>
+          <li data-i18n="help.controls.esc">Esc clears the selection.</li>
+          <li data-i18n="help.controls.help">? opens this help.</li>
+          <li data-i18n="help.controls.tabs">Left and Right arrows move between the tabs.</li>
+          <li data-i18n="help.controls.scene">3D map: drag to orbit, scroll to zoom, click to select.</li>
+        </ul>
+        <h3 data-i18n="help.dropped.title">Dropped attribute names</h3>
+        <p class="hint" data-i18n="help.dropped.hint">Names only, never values. The viewer discards these host attributes before processing.</p>
+        <ul id="dropped-list" class="plain"></ul>
+      </section>
+    </div>
+  </section>
+  </div>
+  <aside class="detail" id="detail" aria-labelledby="evidence-title">
+    <section class="panel" id="evidence-panel" tabindex="-1">
+      <div class="panel-head">
+        <h2 id="evidence-title" data-i18n="detail.title">Details</h2>
+        <button type="button" id="detail-close" hidden data-i18n="detail.close">Deselect</button>
+      </div>
       <div id="evidence" class="evidence"><p class="hint">Select an event to see its source event, class, verification and evidence reference.</p></div>
     </section>
-    <section class="panel" aria-labelledby="counters-title">
-      <h2 id="counters-title">Counters</h2>
-      <p class="hint" id="counters-scope"></p>
-      <dl id="counters" class="kv"></dl>
-    </section>
-    <section class="panel" aria-labelledby="absence-title">
-      <h2 id="absence-title">Not shown as clean</h2>
-      <p class="hint">Unknown, partial, unobserved or dropped information. None of these counts as independent or clean.</p>
-      <dl id="absence" class="kv"></dl>
-    </section>
-    <section class="panel" aria-labelledby="lanes-title">
-      <h2 id="lanes-title">Lanes</h2>
-      <p class="hint">Lane order is a layout choice, not a simplification and not an ordering of safety.</p>
-      <ol id="lanes" class="lanes"></ol>
-    </section>
-    <section class="panel" aria-labelledby="legend-title">
-      <h2 id="legend-title">Legend</h2>
-      <p class="legend-claim">A compatibility class (Constitution Article 13) is a categorical label, not a guarantee.
-      It is not a universal ordering of runtime safety, and a producer's claimed class is not verified evidence.</p>
-      <h3>Compatibility class</h3>
-      <ul id="legend-classes" class="legend"></ul>
-      <h3>Shapes</h3>
-      <ul id="legend-shapes" class="legend"></ul>
-      <h3>Verification</h3>
-      <ul id="legend-verification" class="legend"></ul>
-      <h3>Marks</h3>
-      <ul id="legend-marks" class="legend"></ul>
-      <div id="legend-scene-block" hidden>
-        <h3>3D scene</h3>
-        <ul id="legend-scene" class="legend"></ul>
-      </div>
-    </section>
-    <details class="panel">
-      <summary>Dropped attribute names</summary>
-      <p class="hint">Names only, never values. The viewer discards these host attributes before processing.</p>
-      <ul id="dropped-list" class="plain"></ul>
-    </details>
   </aside>
 </main>
 </body>

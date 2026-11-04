@@ -281,19 +281,23 @@ gate is implied by a passing test or a merged document. Parallelizable does not
 authorize concurrent agents; run `analyze-work` on track footprints before two
 concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan.md).
 
-- [ ] T050 (REQ-016 to REQ-023): VIS.1c planning package: spec amendment with
+- [x] T050 (REQ-016 to REQ-023): VIS.1c planning package: spec amendment with
   verbatim owner decisions, plan, design system and copy guide, 2D timeline
   design, 3D fixes mapped to Three.js r186, contract v0.2 draft with privacy
   review, ADR 0033 amendment draft (Proposed), wireframes and audit artefacts.
-  Files: `specs/061-activity-viewer/vis1c/`, `spec.md`, `tasks.md`. Evidence: this
-  change merged (tick on merge). Does not implement the viewer and edits no ADR, schema or
+  Files: `specs/061-activity-viewer/vis1c/`, `spec.md`, `tasks.md`. Evidence: merged in
+  #1050 (ticked 2026-11-04). Does not implement the viewer and edits no ADR, schema or
   tracking source.
-- [ ] T051 (REQ-017, REQ-020): Owner review (G1) of the VIS.1c plan and open decisions
+- [x] T051 (REQ-017, REQ-020): Owner review (G1) of the VIS.1c plan and open decisions
   OD-V1 to OD-V6, and decision (G2) on the ADR 0033 amendment draft; on acceptance a
   separate reviewed change applies it to `docs/adr/`. Dependencies: T050. Files:
   `vis1c/owner-decisions.md`, `vis1c/adr-0033-amendment-draft.md`,
   `docs/adr/0033-vendored-threejs-mit-boundary.md` (only after acceptance). Evidence:
-  owner review record in this directory, ADR status change merged.
+  owner review record in this directory, ADR status change merged. Done
+  2026-11-04: answers recorded verbatim in `vis1c/owner-decisions.md` and `spec.md`
+  (G1 accepted with OD-V1 changed to detected language, G2 "Aceptar (Recommended)",
+  OD-V3 F1 to F4); the amendment is applied to ADR 0033 with its hash updated in every
+  `current` authority snapshot. G3 and G4 are authorised and scheduled (T052, T053).
 - [ ] T052 (REQ-022): Contract v0.2: privacy review (G3) of `axis.nowMs`, `waitingOn`
   and tool duration, then `loom-event.v0.2.schema.json`, the amendment of
   `ui-security-privacy.md`, `validate` support for both versions. Dependencies: T051.
@@ -304,12 +308,15 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   sends for `PostToolUse` and `SubagentStop` hooks, specifically any duration member.
   Dependencies: T051. Files: `host-verification-runbook.md`, `evidence/`. Evidence:
   receipt in `evidence/`; a missing member is a valid result.
-- [ ] T054 (REQ-016): Shared state and derived model: `state.js` with `deriveLanes`,
+- [x] T054 (REQ-016): Shared state and derived model: `state.js` with `deriveLanes`,
   conflicts, overlaps, concurrency and visibility; parity tests against
   `build_model` on the audit fixture and existing fixtures; decide whether lane
   fields move into `view_model.py`. Dependencies: T051. Files:
   `integrations/agent-braid-view/web/state.js`, `tests/test_view_web_behaviour.py`,
-  `tests/test_view_model.py`. Verification: SC-016.
+  `tests/test_view_model.py`. Verification: SC-016. Done 2026-11-04 (VIS.1c part A):
+  the derivation stays in `state.js` (no field moved into `view_model.py`; parity is
+  tested against `build_model` output on the audit fixture and the contract example in
+  `tests/test_view_web_state.py`).
 - [ ] T055 (REQ-018): 3D camera: damping, limits, cursor zoom, keyboard, scroll not
   trapped, presets, "Frame all" with agent-only framing, tweened reset, reduced
   motion, pulse only on hover or selection. Dependencies: T051. Files:
@@ -331,7 +338,11 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   parity), URL hash state, palette validation in both themes. Dependencies: T054;
   integrates T056 hooks. Files: `integrations/agent-braid-view/web/loom.js`,
   `index.html`, `style.css`, `strings.js`, `tests/test_view_web_behaviour.py`.
-  Verification: SC-016, SC-019, SC-020.
+  Verification: SC-016, SC-019, SC-020. Part A done 2026-11-04: page structure,
+  tokens, toolbar and filters, sticky detail panel, tabs, boundary strip and help,
+  `strings.js` with language detection (OD-V1 as accepted), URL hash state. Open
+  until part B: palette validation in both themes, the view switch with the
+  timeline and the 3D HUD hooks.
 - [ ] T059 (REQ-017): Make the 2D timeline the default view and 3D the secondary
   "spatial map". Dependencies: T057, T058, and ADR 0033 amendment accepted (G2).
   Files: `integrations/agent-braid-view/web/loom.js`. Verification: SC-017.

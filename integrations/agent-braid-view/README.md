@@ -11,7 +11,9 @@ code. The user guide is [docs/tooling/VIEWER.md](../../docs/tooling/VIEWER.md).
 | Path | Role |
 |---|---|
 | `web/index.html` | Page shell with the single inline import map the server hashes for its policy |
-| `web/loom.js` | Event stream client, viewer model rendering, table, playback, source checkboxes and legend |
+| `web/loom.js` | Page shell: event stream client, header, toolbar, filters, detail panel, playback, tabs (events table, summary, legend, help) |
+| `web/state.js` | Shared state and derived model (agents, crossings, axis, overlaps, filters, URL hash); no DOM, no network |
+| `web/strings.js` | Every user-facing string in Spanish and English, with language detection (manual choice, browser or desktop-app locale, server hint, English) |
 | `web/braid-scene.js` | Three.js braid scene bound to the same model and evidence panel as the table |
 | `web/style.css` | Styles |
 | `web/vendor/` | Vendored Three.js r186 (MIT) with its licence and `manifest.json` of SHA-256 hashes ([ADR 0033](../../docs/adr/0033-vendored-threejs-mit-boundary.md)) |

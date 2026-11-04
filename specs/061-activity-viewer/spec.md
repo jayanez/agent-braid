@@ -148,8 +148,8 @@ Owner decisions (2026-11-04), quoted verbatim:
 | D10 | vendor | "No, overlays HTML propios (Recommended)" |
 
 Effects: D7 supersedes only the default-surface clause of REQ-010 (and the ADR 0033 alternatives line that kept
-SVG 2D as a fallback), through the **Proposed** ADR 0033 amendment [draft](vis1c/adr-0033-amendment-draft.md),
-which is not accepted until the owner accepts it; REQ-010 is otherwise unchanged and applies to the 2D view.
+SVG 2D as a fallback), through the ADR 0033 amendment ([draft](vis1c/adr-0033-amendment-draft.md); accepted
+by the owner on 2026-11-04, see below, and applied to the ADR); REQ-010 is otherwise unchanged and applies to the 2D view.
 D8 requires two distinct conflict meanings. D9 is drafted as contract
 [`agent-braid-loom/v0.2`](vis1c/contract-v0.2-amendment-draft.md) with privacy review items, and
 proposes further differential fields as owner-decision items ([owner-decisions.md](vis1c/owner-decisions.md));
@@ -158,6 +158,22 @@ Open decisions (UI language, governance-text placement, differential fields, too
 observed-collision source, 3D after 2D) are in [owner-decisions.md](vis1c/owner-decisions.md).
 The T001 approval, the VIS.1a closure approval and the historical snapshots (b21c1c3b, advanced to 62a44fb7) do not cover this
 amendment; it is reviewed at the VIS.1c closure (T066) and its requirements have no obtained evidence yet.
+
+Owner answers (2026-11-04, second session, after the plan merged in #1050), quoted verbatim; the full
+record and the effects are in [owner-decisions.md](vis1c/owner-decisions.md#gate-answers-recorded-2026-11-04-second-session-verbatim):
+
+| Gate | Answer |
+|---|---|
+| G1 "¿Aceptas el plan VIS.1c con las recomendaciones para las decisiones abiertas?" | "Me parece todo correcto pero me gustaría si no es mucha complicación que el idioma fuese el que se detecte del TUI, Desktop App del usuario y el fallback al inglés. Es muy complicado?" |
+| G2 ADR 0033 amendment | "Aceptar (Recommended)" |
+| OD-V3 differential fields | F1, F2, F3 and F4 accepted (F4 not before T035) |
+| G3 contract v0.2 privacy review (T052) and G4 host probe (T053) | "Sí, ambas (Recommended)" |
+
+Effects: OD-V2, OD-V4, OD-V5 and OD-V6 are accepted as recommended. OD-V1 is changed: the UI language is
+detected (browser or desktop-app locale, then a language-tag hint from the `view serve` process locale, then
+English), with a manual choice remembered per viewer. The ADR 0033 amendment is accepted and applied to
+`docs/adr/0033-vendored-threejs-mit-boundary.md`, so REQ-017's gate G2 is met. The privacy review (T052) and
+the host probe (T053) are authorised and not yet done; contract v0.2 stays a draft until T052 concludes.
 
 ## Requirements and acceptance scenarios
 

@@ -49,7 +49,7 @@ HOOK_TIMEOUT_SECONDS = 5
 BUNDLE_DIR = WEB_SOURCE_DIR
 # The only first-party files `/web/<file>` may serve (vendored files follow vendor/manifest.json). A new
 # file of the bundle is added here; a test pins the list to the files of the source bundle.
-BUNDLE_FILES = ("index.html", "style.css", "loom.js", "braid-scene.js")
+BUNDLE_FILES = ("index.html", "style.css", "loom.js", "braid-scene.js", "state.js", "strings.js")
 MAX_BUNDLE_FILE_BYTES = 8 * 1024 * 1024
 _IMPORT_MAP = re.compile(rb"<script\b[^>]*\btype\s*=\s*[\"']?importmap[\"']?[^>]*>(.*?)</script\s*>",
                          re.DOTALL | re.IGNORECASE)
@@ -232,7 +232,7 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
         raise CliError(f"view serve: surface {args.surface} is planned and not implemented; nothing was started")
     runtime_dir = _runtime_dir(args)
     from .view_hooks import HookIngest
-    from .view_serve import HOOK_PATH, ServeError, ViewServer
+    from .view_serve import HOOK_PATH, ServeError, ViewServer, language_hint_from_environ
 
     bundle_dir = resolve_bundle_dir()
     bundle, import_map_sha256 = load_bundle(bundle_dir)
@@ -243,7 +243,8 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
     try:
         server = ViewServer(store, runtime_dir, port=args.port, bundle=bundle,
                             ingest_handlers={HOOK_PATH: hooks.handle}, names_inventory=hooks.dropped_names,
-                            import_map_sha256=import_map_sha256, vendor_dir=vendor_dir_of(bundle_dir))
+                            import_map_sha256=import_map_sha256, vendor_dir=vendor_dir_of(bundle_dir),
+                            language_hint=language_hint_from_environ(os.environ))
     except ServeError as exc:
         _remove_created(created)
         raise CliError(f"view serve: {exc}") from exc

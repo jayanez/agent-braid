@@ -1,95 +1,78 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Agent Braid activity viewer: first-party table view of the Loom model, plus the optional 3D scene.
+// Agent Braid activity viewer: first-party shell of the Loom model (SPEC-061 VIS.1a, redesigned in VIS.1c).
 //
-// The table view, evidence panel, counters and playback work on their own. The Three.js scene
-// (braid-scene.js) is loaded afterwards with a dynamic import and only when WebGL2 exists; if it is
-// missing, refused or fails, the page says so and keeps the table. The scene is bound to this model,
-// this playback position and this evidence panel: it only calls `select` and reads `state`.
+// This file fetches the model, follows the server, keeps the one shared state (state.js) and renders the page
+// around it: header, toolbar, the main view, the detail panel, playback and the tabs (events table, summary,
+// legend, help). The optional 3D scene (braid-scene.js) is loaded afterwards with a dynamic import and only when
+// WebGL2 exists; if it is missing, refused or fails, the page says so and keeps the table. Views are bound to
+// this state: they only call `select` and read the model, the playback position and the filters.
 //
-// Read-only. It fetches /snapshot (the model built by the server) and follows /events
-// (Server-Sent Events, resumed with Last-Event-ID) only to learn that the model changed.
-// Every value from an event reaches the page as a text node: elements are built with
-// createElement and textContent, never from markup strings, which the Trusted Types
-// directive of the content security policy would refuse anyway. Nothing here sends data
-// anywhere except same-origin GET requests, and nothing is an authorization.
+// Read-only. It fetches /snapshot (the model built by the server) and follows /events (Server-Sent Events,
+// resumed with Last-Event-ID) only to learn that the model changed. Every value from an event reaches the page as a
+// text node: elements are built with createElement and textContent, never from markup strings, which the Trusted
+// Types directive of the content security policy would refuse anyway. All user-facing wording lives in strings.js.
+// Nothing here sends data anywhere except same-origin GET requests, and nothing is an authorization.
 
-const CLASS_LABELS = ["heuristic", "syntactic", "semantic", "transactional", "confluence", "Yang–Baxter"];
+import {
+  createState, derive, summarize, formatClock, formatDuration, marksOf, sourceOf, sourceKeys, ROOT_PREFIX, orderedRows,
+  passesFilters, hasFilters, encodeHash, decodeHash, readPreference, writePreference, waitingTime, LANE_STATES,
+} from "./state.js";
+import { translate, chooseLanguage, normalizeTag, LANGUAGES } from "./strings.js";
 
-const VERIFICATION = {
-  rehashed: ["✓", "rehashed", "An adapter read the artifact and this viewer session computed the hash."],
-  derived: ["≈", "derived", "Derived by the viewer from rehashed events."],
-  unverified: ["⚠", "unverified", "Replayed or host-reported. Nothing here was checked by this viewer."],
-};
+const CLASS_NAMES = ["heuristic", "syntactic", "semantic", "transactional", "confluence", "Yang–Baxter"];
 
+// [glyph, key]: the key is the verification value, its label is `verification.<key>` and its meaning `verification.<key>.meaning`.
+const VERIFICATION = { rehashed: "✓", derived: "≈", unverified: "⚠" };
+
+// [glyph, string key of the label]
 const CROSSING_SHAPES = {
-  "swap": ["⇄", "swap: independent candidate"],
-  "ordered-link": ["→", "ordered link"],
-  "conflict-knot": ["✕", "conflict knot"],
-  "unknown-link": ["?", "unknown link"],
-  "bridge": ["⌒", "bridge: passes over lanes, does not cross"],
-  "unplaced": ["·", "unplaced pair"],
+  "swap": ["⇄", "shape.swap"],
+  "ordered-link": ["→", "shape.orderedLink"],
+  "conflict-knot": ["✕", "shape.conflictKnot"],
+  "unknown-link": ["?", "shape.unknownLink"],
+  "bridge": ["⌒", "shape.bridge"],
+  "unplaced": ["·", "shape.unplaced"],
 };
 
 const ELEMENT_SHAPES = {
-  "strand": ["│", "strand"],
-  "strand-state": ["│", "strand state"],
-  "strand-end": ["└", "strand end"],
-  "effort": ["Σ", "effort (host estimate)"],
-  "wave-plane": ["▤", "planned waves (advisory)"],
-  "wave-marker": ["▸", "wave marker"],
-  "hazard-cone": ["△", "hazard"],
-  "gap": ["▯", "observation gap"],
-  "runtime-phase": ["○", "runtime phase"],
-  "session": ["□", "session"],
-  "report": ["¶", "analysis report"],
+  "strand": ["│", "shape.strand"],
+  "strand-state": ["│", "shape.strandState"],
+  "strand-end": ["└", "shape.strandEnd"],
+  "effort": ["Σ", "shape.effort"],
+  "wave-plane": ["▭", "shape.wavePlane"],
+  "wave-marker": ["▣", "shape.waveMarker"],
+  "hazard-cone": ["△", "shape.hazardCone"],
+  "gap": ["▯", "shape.gap"],
+  "runtime-phase": ["○", "shape.runtimePhase"],
+  "session": ["□", "shape.session"],
+  "report": ["¶", "shape.report"],
 };
 
 const RING_SHAPES = {
-  "grant": ["◯", "grant"],
-  "workflow-phase": ["◎", "gate phase"],
-  "workflow-result": ["◉", "gate result"],
+  "grant": ["◯", "shape.grant"],
+  "workflow-phase": ["◎", "shape.gatePhase"],
+  "workflow-result": ["◉", "shape.gateResult"],
 };
 
-const MARKS = {
-  unverified: ["unverified", "Not checked by this viewer. Never counted as a verified fact."],
-  uncertain: ["uncertain", "Unknown classification or incomplete coverage. Not independent, not clean."],
-  partial: ["partial coverage", "Coverage is not complete: what is not listed is not shown to be absent."],
-  absence: ["not observed", "A hazard that was not observed or only partly observed. This is not evidence that none exists."],
-  gap: ["gap", "The viewer or a host did not observe this range."],
-  notime: ["no time", "The event states no time. It is placed after its predecessor, no time is invented."],
-};
+const MARK_KEYS = ["unverified", "uncertain", "partial", "absence", "gap", "notime"];
+const SCENE_LEGEND_KEYS = ["tube", "swap", "bridge", "ordered", "unknown", "badge", "slabs", "rings", "hazard", "gap", "grey", "unverified", "effort"];
 
-const SCENE_LEGEND = [
-  "Tube: one strand per agent or unit. Its colour is the host, never a status.",
-  "Two tubes exchanging lanes: an independent candidate pair. The swap is layout only and not a guarantee.",
-  "Arc over other lanes: an independent candidate pair between lanes that are not adjacent. It does not cross them.",
-  "Arrow: an ordered pair. Red knot between two stubs: a conflicting pair, never a swap.",
-  "Dashed pulsing link: an unknown pair. It is not independent and not clean.",
-  "Polygon badge on a crossing: the compatibility class. The sides are 3 plus the class number. Every badge looks the same otherwise: a class is a categorical label, not a guarantee and not a safety ordering.",
-  "Translucent slabs: planned waves, an advisory plan, not a runtime measurement. Framed slabs: runtime wave markers.",
-  "Thin ring: a grant. Thick ring: a workflow gate or gate phase. The sides and colour follow the state or result, and the label names it.",
-  "Cone with sparks: an observed hazard. Dashed pulsing wire cone: a hazard that was not observed. Absence of observation is not evidence that none exists.",
-  "Broken strand with a grey dashed stub: an observation gap. Pulsing ring on a crossing: partial coverage, so what is not listed is not shown to be absent.",
-  "Grey shapes: a value this viewer does not recognise (a pair classification, a gate state or a grant state). The label says unrecognized.",
-  "Amber wire octahedron: unverified. Replayed or host-reported, and not checked by this viewer.",
-  "Effort and tokens are not drawn in this release.",
-];
+// The scene reports why an event is not drawn in English; the page shows it in the viewer's language.
+const SCENE_REASON_KEYS = {
+  "session origin: shown in the table": "scene.reason.session",
+  "analysis report: shown in the table and the evidence panel": "scene.reason.report",
+  "runtime phase: shown in the table": "scene.reason.runtimePhase",
+  "effort and tokens are not drawn in this release: shown in the table": "scene.reason.effort",
+};
 
 const ATTRS = /^(type|title|value|data-[a-z-]+|aria-[a-z-]+)$/;
 const STEP_MS = 700;
+const REAL_TIME_MIN_MS = 120;
+const REAL_TIME_MAX_MS = 1500;
+const TABS = ["events", "summary", "legend", "help"];
 
-const state = {
-  model: null,
-  dropped: [],
-  cursor: 0,
-  playing: false,
-  timer: null,
-  selected: null,
-  filterKind: "",
-  filterUncertain: false,
-  hiddenSources: new Set(),
-  lastId: "",
-};
+const state = createState();
+state.view = "map3d"; // the views registered below decide the default
 
 // ---------------------------------------------------------------- DOM helpers
 
@@ -117,95 +100,116 @@ function fill(id, ...children) {
   $(id).replaceChildren(...children.flat().filter((child) => child !== null && child !== undefined));
 }
 
+// ---------------------------------------------------------------- language
+
+function t(key, params) {
+  return translate(state.lang, key, params);
+}
+
+// The count form of a message: `key.one` for exactly one, `key.other` otherwise; the count is available as {n}.
+function tn(key, count, params) {
+  return translate(state.lang, key + (count === 1 ? ".one" : ".other"), { n: count, ...params });
+}
+
+function browserLanguages() {
+  try {
+    if (typeof navigator === "undefined") return [];
+    if (Array.isArray(navigator.languages) && navigator.languages.length) return [...navigator.languages];
+    return navigator.language ? [navigator.language] : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function detectLanguage() {
+  return chooseLanguage({
+    choice: state.langChoice, languages: browserLanguages(), hint: state.languageHint,
+  });
+}
+
+// Static text carries its English default in the page and a key; this swaps in the chosen language.
+function applyStaticText() {
+  if (document.documentElement) document.documentElement.lang = state.lang;
+  document.title = t("page.documentTitle");
+  if (typeof document.querySelectorAll !== "function") return;
+  for (const node of document.querySelectorAll("[data-i18n]")) node.textContent = t(node.dataset.i18n);
+  for (const node of document.querySelectorAll("[data-i18n-title]")) node.title = t(node.dataset.i18nTitle);
+  for (const node of document.querySelectorAll("[data-i18n-label]")) node.setAttribute("aria-label", t(node.dataset.i18nLabel));
+}
+
+function applyLanguage() {
+  const next = detectLanguage();
+  const changed = next !== state.lang;
+  state.lang = next;
+  if (changed || !applyLanguage.done) {
+    applyLanguage.done = true;
+    applyStaticText();
+    for (const id of ["source-list", "agent-list", "status-list"]) $(id).dataset.keys = ""; // rebuilt in the new language
+    const select = $("lang-select");
+    if (select) select.value = state.langChoice;
+    if (state.model) renderAll();
+    else renderChrome();
+    if (scene) syncScene(true);
+  }
+}
+
+function setLanguageChoice(choice) {
+  state.langChoice = choice === "es" || choice === "en" ? choice : "auto";
+  writePreference("lang", state.langChoice === "auto" ? null : state.langChoice);
+  applyLanguage();
+}
+
 // ---------------------------------------------------------------- labels
 
 function classLabel(value) {
-  if (value === null || value === undefined) return "none (not a per-pair analysis result)";
-  const name = CLASS_LABELS[value];
-  return name === undefined ? "unrecognized class " + String(value) : "class " + value + " · " + name;
+  if (value === null || value === undefined) return t("class.none");
+  const name = CLASS_NAMES[value];
+  return name === undefined ? t("class.unrecognized", { value: String(value) }) : t("class.named", { value, name });
 }
 
 function shapeOf(element) {
   if (element.element === "crossing") {
-    const [glyph, label] = CROSSING_SHAPES[element.drawAs] || ["?", "crossing"];
-    return [glyph, element.incompleteCoverage && element.isSwap ? label + " (partial coverage)" : label];
+    const [glyph, key] = CROSSING_SHAPES[element.drawAs] || ["?", "shape.crossing"];
+    const label = t(key);
+    return [glyph, element.incompleteCoverage && element.isSwap ? t("shape.partialSuffix", { label }) : label];
   }
-  if (element.element === "gate-ring") return RING_SHAPES[element.ringKind] || ["◯", "gate"];
-  return ELEMENT_SHAPES[element.element] || ["·", element.element];
-}
-
-function marksOf(element) {
-  const marks = [];
-  if (element.unverified || !VERIFICATION[element.verification]) marks.push("unverified");
-  if (element.uncertain) marks.push("uncertain");
-  if (element.incompleteCoverage) marks.push("partial");
-  if (element.absence) marks.push("absence");
-  if (element.element === "gap") marks.push("gap");
-  if (element.timeKnown === false) marks.push("notime");
-  return marks;
+  if (element.element === "gate-ring") {
+    const [glyph, key] = RING_SHAPES[element.ringKind] || ["◯", "shape.gate"];
+    return [glyph, t(key)];
+  }
+  const entry = ELEMENT_SHAPES[element.element];
+  return entry ? [entry[0], t(entry[1])] : ["·", String(element.element)];
 }
 
 function markNode(key) {
-  const [label, meaning] = MARKS[key];
-  return h("span", { class: "mark " + key, title: meaning }, label);
+  return h("span", { class: "mark " + key, title: t("mark." + key + ".meaning") }, t("mark." + key));
 }
 
 function verificationNode(value) {
-  const entry = VERIFICATION[value];
-  if (!entry) return h("span", { class: "mark uncertain" }, "unrecognized: " + String(value));
-  return h("span", { class: "mark " + (value === "unverified" ? "unverified" : ""), title: entry[2] },
-    entry[0] + " " + entry[1]);
+  if (!VERIFICATION[value]) return h("span", { class: "mark uncertain" }, t("verification.unrecognized", { value: String(value) }));
+  return h("span", { class: "mark " + (value === "unverified" ? "unverified" : ""), title: t("verification." + value + ".meaning") },
+    VERIFICATION[value] + " " + t("verification." + value));
 }
 
 function timeText(element) {
-  if (!element.timeKnown) return "sequence only";
-  return String(element.relMs) + " ms";
+  if (!element.timeKnown) return t("time.sequenceOnly");
+  return formatClock(element.relMs - axisMin());
+}
+
+function axisMin() {
+  return state.model && state.model.axis && typeof state.model.axis.minMs === "number" ? state.model.axis.minMs : 0;
+}
+
+function textOf(value) {
+  return String(value === null || value === undefined ? "" : value);
 }
 
 // ---------------------------------------------------------------- event sources
 
-// The page offers one checkbox per source of events, all checked by default. The event contract names no adapter and
-// no root, so the source is inferred from the fields every element has: the verification status, whether an evidence
-// reference exists and, for events read from a watched root, the model's `root` label. Nothing is added to the event
-// contract. The labels name what is known about each group, not a guessed origin.
-//   rehashed or derived, with an evidence reference and a root label: read from that watched root and re-hashed
-//   rehashed or derived, with an evidence reference, no root label: watched, root not named
-//   rehashed or derived, without a reference: produced by the viewer itself (for example a ring-eviction gap)
-//   anything else, with an evidence reference: unverified and referenced, as every event of a replay file is
-//   anything else, without one: unverified and unreferenced, as a host report (hook or telemetry ingest) is
-// A root label is "root N", numbered in the order the roots were started (a repeated or nested root takes no number).
-// It is never a path, and a label of any other form is ignored here, so the event stays in the unlabelled watched group.
-const SOURCES = {
-  watched: ["Watched artifacts", "Events with an evidence reference that this session re-hashed and whose watched root the model does not name."],
-  replay: ["Replay file", "Unverified events with an evidence reference, as every event loaded with --replay is. Never re-hashed by this session."],
-  hook: ["Hook and telemetry ingest", "Unverified events with no evidence reference, as host reports are. Recorded host events in a replay file that have no artifact also appear here."],
-  viewer: ["Derived by the viewer", "Events with no evidence reference that the viewer produced itself, such as gaps for evicted or truncated ranges."],
-};
-
-const ROOT_PREFIX = "watched:";
-const ROOT_LABEL = /^root ([1-9][0-9]?)$/;
-
-function sourceOf(element) {
-  const referenced = Boolean(element.evidenceRef);
-  if (element.verification === "rehashed" || element.verification === "derived") {
-    if (!referenced) return "viewer";
-    return typeof element.root === "string" && ROOT_LABEL.test(element.root) ? ROOT_PREFIX + element.root : "watched";
-  }
-  return referenced ? "replay" : "hook";
-}
-
 function sourceText(key) {
-  if (!key.startsWith(ROOT_PREFIX)) return SOURCES[key];
+  if (!key.startsWith(ROOT_PREFIX)) return [t("source." + key), t("source." + key + ".meaning")];
   const label = key.slice(ROOT_PREFIX.length);
-  return [label, "Events with an evidence reference that this session re-hashed under " + label +
-    " of the watched roots, in start order. The path is not shown on this page."];
-}
-
-// The roots by number, then the unlabelled watched group, then the other sources in their fixed order.
-function sourceKeys(counts) {
-  const number = (key) => Number(ROOT_LABEL.exec(key.slice(ROOT_PREFIX.length))[1]);
-  const roots = Object.keys(counts).filter((key) => key.startsWith(ROOT_PREFIX)).sort((a, b) => number(a) - number(b));
-  return [...roots, ...Object.keys(SOURCES).filter((key) => counts[key])];
+  return [label, t("source.root.meaning", { label })];
 }
 
 function isSourceShown(element) {
@@ -213,31 +217,14 @@ function isSourceShown(element) {
 }
 
 function hiddenText(hidden, total) {
-  return hidden === 0
-    ? "All sources are shown: 0 events hidden."
-    : hidden + " of " + total + " retained events are hidden because their source is unchecked. Hidden is not absent: " +
-      "the counters and the list of what is not shown as clean still include them.";
-}
-
-// ---------------------------------------------------------------- legend (static tables above)
-
-function renderLegend() {
-  fill("legend-classes", CLASS_LABELS.map((name, index) => h("li", null, "class " + index + " · " + name)),
-    h("li", null, "no class: the event is not a per-pair analysis result"));
-  fill("legend-shapes",
-    Object.values(CROSSING_SHAPES).map(([glyph, label]) => h("li", null, h("span", { class: "glyph" }, glyph), label)),
-    Object.values(ELEMENT_SHAPES).map(([glyph, label]) => h("li", null, h("span", { class: "glyph" }, glyph), label)),
-    Object.values(RING_SHAPES).map(([glyph, label]) => h("li", null, h("span", { class: "glyph" }, glyph), label)));
-  fill("legend-verification", Object.values(VERIFICATION).map(([glyph, label, meaning]) =>
-    h("li", null, h("span", { class: "glyph" }, glyph), label + ": " + meaning)));
-  fill("legend-marks", Object.keys(MARKS).map((key) => h("li", null, markNode(key), " " + MARKS[key][1])));
-  fill("legend-scene", SCENE_LEGEND.map((text) => h("li", null, text)));
+  return hidden === 0 ? t("sources.allShown") : t("sources.someHidden", { hidden, total });
 }
 
 // ---------------------------------------------------------------- data
 
 let rowsCache = null;
 let elementsCache = null;
+let derivedCache = null;
 
 // The model's elements by seq, built once per model.
 function elementOf(seq) {
@@ -246,6 +233,12 @@ function elementOf(seq) {
     elementsCache = { model: state.model, bySeq: new Map(state.model.elements.map((element) => [element.seq, element])) };
   }
   return elementsCache.bySeq.get(seq);
+}
+
+// The derived model (agents, crossings, axis, overlaps) of the current model, computed once per model.
+function derived() {
+  if (!derivedCache || derivedCache.model !== state.model) derivedCache = { model: state.model, value: derive(state.model) };
+  return derivedCache.value;
 }
 
 let countsCache = null;
@@ -271,12 +264,20 @@ function hiddenCount() {
 function rowsInOrder() {
   if (!state.model) return [];
   if (rowsCache && rowsCache.model === state.model) return rowsCache.rows;
-  const rows = state.model.table
-    .map((row) => ({ row, element: elementOf(row.seq) }))
-    .filter((entry) => entry.element)
-    .sort((a, b) => a.element.order - b.element.order || a.row.seq - b.row.seq);
+  const rows = orderedRows(state.model);
   rowsCache = { model: state.model, rows };
   return rows;
+}
+
+// Events that the agent, status and problems filters leave out, over every retained event.
+function filteredOutCount() {
+  if (!state.model) return 0;
+  const info = derived();
+  return state.model.elements.filter((element) => !passesFilters(element, info, state.filters)).length;
+}
+
+function shownInViews(element) {
+  return isSourceShown(element) && passesFilters(element, derived(), state.filters);
 }
 
 function setNotice(text) {
@@ -293,15 +294,15 @@ async function loadSnapshot() {
   try {
     response = await fetch("/snapshot", { cache: "no-store", credentials: "same-origin" });
   } catch (error) {
-    setNotice("The viewer server cannot be reached.");
+    setNotice(t("notice.unreachable"));
     return;
   }
   if (response.status === 404) {
-    setNotice("This session is not open. Use the open link printed by the server; it works once.");
+    setNotice(t("notice.notOpen"));
     return;
   }
   if (!response.ok) {
-    setNotice("The snapshot could not be produced (status " + response.status + "). The last model stays on screen.");
+    setNotice(t("notice.snapshotFailed", { status: response.status }));
     return;
   }
   let document_;
@@ -309,26 +310,27 @@ async function loadSnapshot() {
     document_ = await response.json();
     if (!document_ || typeof document_.model !== "object" || document_.model === null) throw new Error("no model");
   } catch (error) {
-    setNotice("The snapshot is not valid JSON.");
+    setNotice(t("notice.invalidJson"));
     return;
   }
   if (request !== snapshotRequest) return; // a newer request supersedes this response
   setNotice("");
+  const firstModel = state.model === null;
   const atEnd = state.cursor >= totalCount();
   state.model = document_.model;
-  const authorization = $("authorization");
-  authorization.textContent = "executionAuthorization: " + String(state.model.executionAuthorization);
-  authorization.className = state.model.executionAuthorization === false ? "badge" : "badge mark unverified";
+  state.languageHint = normalizeTag(document_.uiLanguageHint);
   state.dropped = Array.isArray(document_.droppedAttributeNames) ? document_.droppedAttributeNames : [];
   state.cursor = atEnd ? totalCount() : Math.min(state.cursor, totalCount());
+  if (firstModel) restoreFromHash();
   if (state.selected !== null && !state.model.elements.some((element) => element.seq === state.selected)) {
     state.selected = null;
   }
+  applyLanguage(); // the hint may change the language; this also renders when it does not
   try {
     renderAll();
   } catch (error) {
     console.error(error);
-    setNotice("The snapshot does not match the model contract and could not be rendered.");
+    setNotice(t("notice.renderFailed"));
   }
 }
 
@@ -348,8 +350,11 @@ function scheduleRefresh() {
   }, 150);
 }
 
-function setConnection(text) {
-  $("connection").textContent = text;
+let connectionKey = "connecting";
+
+function setConnection(key) {
+  connectionKey = key;
+  $("connection").textContent = t("connection." + key);
 }
 
 function parseBlock(block) {
@@ -371,7 +376,7 @@ async function followEvents() {
       if (state.lastId) headers["Last-Event-ID"] = state.lastId;
       const response = await fetch("/events", { headers, cache: "no-store", credentials: "same-origin" });
       if (response.status === 404) {
-        setConnection("not open");
+        setConnection("notOpen");
         return;
       }
       if (!response.ok || !response.body) throw new Error("status " + response.status);
@@ -405,6 +410,46 @@ async function followEvents() {
   }
 }
 
+// ---------------------------------------------------------------- header and chrome
+
+function renderSummary() {
+  const box = $("summary");
+  if (!state.model || totalCount() === 0) {
+    box.textContent = t("summary.empty");
+    return;
+  }
+  const s = summarize(state.model, derived());
+  const parts = [tn("summary.agents", s.agents)];
+  if (s.durationMs > 0) parts.push(formatDuration(s.durationMs));
+  if (s.peak > 1) parts.push(tn("summary.peak", s.peak));
+  if (s.predictedConflicts > 0) parts.push(tn("summary.conflicts", s.predictedConflicts));
+  if (s.gaps > 0) parts.push(tn("summary.gaps", s.gaps));
+  box.textContent = parts.join(" · ");
+}
+
+// Static parts that depend on the language or the number of views and not on the model.
+function renderChrome() {
+  setConnection(connectionKey);
+  renderViewSwitch();
+  renderTabs();
+  renderSummary();
+}
+
+// ---------------------------------------------------------------- legend (static tables above)
+
+function renderLegend() {
+  fill("legend-classes", CLASS_NAMES.map((name, index) => h("li", null, t("class.named", { value: index, name }))),
+    h("li", null, t("class.legendNone")));
+  fill("legend-shapes",
+    Object.values(CROSSING_SHAPES).map(([glyph, key]) => h("li", null, h("span", { class: "glyph" }, glyph), t(key))),
+    Object.values(ELEMENT_SHAPES).map(([glyph, key]) => h("li", null, h("span", { class: "glyph" }, glyph), t(key))),
+    Object.values(RING_SHAPES).map(([glyph, key]) => h("li", null, h("span", { class: "glyph" }, glyph), t(key))));
+  fill("legend-verification", Object.keys(VERIFICATION).map((key) =>
+    h("li", null, h("span", { class: "glyph" }, VERIFICATION[key]), t("verification." + key) + ": " + t("verification." + key + ".meaning"))));
+  fill("legend-marks", MARK_KEYS.map((key) => h("li", null, markNode(key), " " + t("mark." + key + ".meaning"))));
+  fill("legend-scene", SCENE_LEGEND_KEYS.map((key) => h("li", null, t("sceneLegend." + key))));
+}
+
 // ---------------------------------------------------------------- counters
 
 function kv(list, label, value, sub) {
@@ -420,54 +465,75 @@ function renderCounters() {
     return;
   }
   const c = model.counters;
-  $("counters-scope").textContent = "Counts over all " + model.eventCount +
-    " retained events. They are counts of observed or declared facts, never a speedup or a ratio against serial execution.";
+  $("counters-scope").textContent = t("counters.scope", { count: model.eventCount });
   const out = [];
-  kv(out, "conflicts flagged", c.conflictsFlagged);
-  kv(out, "ordered pairs", c.orderedPairs);
-  kv(out, "independent candidates (complete coverage)", c.independentCandidates);
-  kv(out, "unknown pairs", c.unknownPairs);
-  kv(out, "drawn as swap", c.swaps);
-  kv(out, "drawn as bridge", c.bridges);
-  kv(out, "planned wave width (maximum)", c.plannedWaveWidth.maxWidth === null ? "none planned" : c.plannedWaveWidth.maxWidth);
-  out.push(h("dd", { class: "full" }, c.plannedWaveWidth.label + " (" + c.plannedWaveWidth.plans + " plan(s))"));
-  kv(out, "hazards", c.hazards.total);
+  kv(out, t("counters.conflicts"), c.conflictsFlagged);
+  kv(out, t("counters.ordered"), c.orderedPairs);
+  kv(out, t("counters.independent"), c.independentCandidates);
+  kv(out, t("counters.unknown"), c.unknownPairs);
+  kv(out, t("counters.swaps"), c.swaps);
+  kv(out, t("counters.bridges"), c.bridges);
+  kv(out, t("counters.waveWidth"), c.plannedWaveWidth.maxWidth === null ? t("counters.nonePlanned") : c.plannedWaveWidth.maxWidth);
+  out.push(h("dd", { class: "full" }, t("counters.waveLabel") + " (" + tn("counters.plans", c.plannedWaveWidth.plans) + ")"));
+  kv(out, t("counters.hazards"), c.hazards.total);
   for (const [name, count] of Object.entries(c.hazards.byKind)) kv(out, name, count, true);
-  kv(out, "gaps", c.gaps.total);
+  kv(out, t("counters.gaps"), c.gaps.total);
   for (const [name, count] of Object.entries(c.gaps.byReason)) if (count) kv(out, name, count, true);
-  kv(out, "gate phases", c.gates.phases);
-  kv(out, "gate results", c.gates.results);
-  kv(out, "grants", c.grants.total);
+  kv(out, t("counters.gatePhases"), c.gates.phases);
+  kv(out, t("counters.gateResults"), c.gates.results);
+  kv(out, t("counters.grants"), c.grants.total);
   for (const name of ["issued", "consumed", "expired", "refused"]) kv(out, name, c.grants[name], true);
-  kv(out, "unverified elements", c.unverifiedElements);
+  kv(out, t("counters.unverified"), c.unverifiedElements);
   fill("counters", out);
 
   const a = c.absence;
   const gone = [];
-  kv(gone, "unknown pairs", a.unknownPairs);
-  kv(gone, "independent with incomplete coverage", a.independentWithIncompleteCoverage);
-  kv(gone, "hazards not observed or partly observed", a.hazardsNotObserved);
-  kv(gone, "observation gaps", a.gaps);
-  kv(gone, "elements dropped by a cap", a.truncated);
-  for (const cut of model.truncated) kv(gone, "cap on " + cut.what + " (limit " + cut.limit + ")", cut.dropped + " dropped", true);
+  kv(gone, t("absence.unknownPairs"), a.unknownPairs);
+  kv(gone, t("absence.partial"), a.independentWithIncompleteCoverage);
+  kv(gone, t("absence.hazards"), a.hazardsNotObserved);
+  kv(gone, t("absence.gaps"), a.gaps);
+  kv(gone, t("absence.truncated"), a.truncated);
+  for (const cut of model.truncated) kv(gone, t("absence.cap", { what: cut.what, limit: cut.limit }), t("absence.dropped", { count: cut.dropped }), true);
   fill("absence", gone);
 }
 
+function laneKind(lane) {
+  if (lane.parentLane !== null) return t("agent.kind.subagent");
+  if (lane.orphan) return t("agent.kind.orphan");
+  return lane.role === "agent" ? t("agent.kind.main") : t("agent.kind.unit");
+}
+
+const OUTCOMES = new Set(["ok", "error", "unknown", "cancelled"]);
+
+function outcomeText(outcome) {
+  return OUTCOMES.has(outcome) ? t("outcome." + outcome) : textOf(outcome);
+}
+
+function stateText(lane) {
+  const base = t("state." + lane.state);
+  return lane.inferred ? base + " " + t("state.inferred") : base;
+}
+
 function renderLanes() {
-  const lanes = state.model ? state.model.lanes : [];
-  fill("lanes", lanes.map((lane) => h("li", null,
-    lane.label + " ",
-    h("span", { class: "hint" }, "(" + (lane.declared ? lane.host + " " + lane.role : "named by a crossing, not declared") + ") "),
-    lane.unverified ? markNode("unverified") : null)));
+  const info = derived();
+  fill("lanes", info.rows.map(({ laneIndex }) => {
+    const lane = info.byIndex.get(laneIndex);
+    return h("li", { class: lane.depth ? "child" : "" },
+      lane.displayLabel + " ",
+      h("span", { class: "hint" }, "(" + (lane.declared ? lane.host + " " + lane.role : t("lanes.undeclared")) + ", " + stateText(lane) + ") "),
+      lane.unverified ? markNode("unverified") : null);
+  }));
 }
 
 function renderDropped() {
-  fill("dropped-list", state.dropped.length ? state.dropped.map((name) => h("li", null, name)) : [h("li", null, "none recorded")]);
+  fill("dropped-list", state.dropped.length ? state.dropped.map((name) => h("li", null, name)) : [h("li", null, t("dropped.none"))]);
 }
 
-// ---------------------------------------------------------------- source checkboxes
+// ---------------------------------------------------------------- filters (sources, agents, status, problems)
 
 const sourceNodes = new Map();
+const agentNodes = new Map();
+const statusNodes = new Map();
 
 function renderSources() {
   const counts = sourceCounts();
@@ -492,9 +558,74 @@ function renderSources() {
   for (const key of keys) {
     const node = sourceNodes.get(key);
     node.input.checked = !state.hiddenSources.has(key);
-    node.count.textContent = "(" + counts[key] + " events)";
+    node.count.textContent = "(" + tn("sources.events", counts[key]) + ")";
   }
   $("source-status").textContent = hiddenText(hiddenCount(), totalCount());
+}
+
+function checkboxList(listId, nodes, entries, onToggle) {
+  const signature = entries.map((entry) => entry.key).join("|");
+  const list = $(listId);
+  if (list.dataset.keys !== signature) {
+    list.dataset.keys = signature;
+    nodes.clear();
+    fill(listId, entries.map((entry) => {
+      const input = h("input", { type: "checkbox", "data-filter": entry.key,
+        on: { change: (event) => onToggle(entry.key, event.target.checked) } });
+      const count = h("span", { class: "source-count" });
+      nodes.set(entry.key, { input, count });
+      return h("label", { class: "source", title: entry.title || null }, input, " ", entry.label, " ", count);
+    }));
+  }
+  for (const entry of entries) {
+    const node = nodes.get(entry.key);
+    node.input.checked = entry.checked;
+    node.count.textContent = "(" + entry.count + ")";
+  }
+}
+
+function renderAgentFilters() {
+  const info = derived();
+  const entries = info.rows.map(({ laneIndex }) => {
+    const lane = info.byIndex.get(laneIndex);
+    return { key: lane.strandId, label: lane.displayLabel, count: lane.seqs.length, checked: state.filters.agents.has(lane.strandId), title: laneKind(lane) };
+  });
+  for (const id of [...state.filters.agents]) if (!info.byStrand.has(id)) state.filters.agents.delete(id);
+  $("agent-menu").hidden = entries.length === 0;
+  checkboxList("agent-list", agentNodes, entries, (key, on) => {
+    if (on) state.filters.agents.add(key);
+    else state.filters.agents.delete(key);
+    filtersChanged();
+  });
+  $("agent-hint").textContent = state.filters.agents.size ? t("filters.agents.some", { n: state.filters.agents.size }) : t("filters.agents.all");
+}
+
+function renderStatusFilters() {
+  const info = derived();
+  const entries = LANE_STATES.map((name) => ({
+    key: name, label: t("state." + name), count: info.lanes.filter((lane) => lane.state === name).length,
+    checked: state.filters.status.has(name),
+  }));
+  $("status-menu").hidden = info.lanes.length === 0;
+  checkboxList("status-list", statusNodes, entries, (key, on) => {
+    if (on) state.filters.status.add(key);
+    else state.filters.status.delete(key);
+    filtersChanged();
+  });
+  $("status-hint").textContent = t("filters.status.note");
+}
+
+function renderFilterStatus() {
+  const out = $("filter-status");
+  const hidden = hiddenCount();
+  const left = state.model ? filteredOutCount() : 0;
+  const parts = [];
+  if (hidden) parts.push(tn("filters.hiddenSources", hidden));
+  if (left) parts.push(tn("filters.leftOut", left));
+  out.textContent = parts.join(" · ");
+  out.hidden = parts.length === 0;
+  $("filter-clear").disabled = !hasFilters(state);
+  $("filter-problems").checked = state.filters.onlyProblems;
 }
 
 function toggleSource(key, shown) {
@@ -502,19 +633,36 @@ function toggleSource(key, shown) {
   else state.hiddenSources.add(key);
   const selected = state.selected === null ? undefined : elementOf(state.selected);
   if (selected && !isSourceShown(selected)) state.selected = null;
+  filtersChanged();
+}
+
+function filtersChanged() {
+  const selected = state.selected === null ? undefined : elementOf(state.selected);
+  if (selected && !shownInViews(selected)) state.selected = null;
   renderSources();
+  renderAgentFilters();
+  renderStatusFilters();
+  renderFilterStatus();
   renderPlayback();
   renderTable();
   renderEvidence();
+  syncHash();
+}
+
+function clearFilters() {
+  state.hiddenSources.clear();
+  state.filters.agents.clear();
+  state.filters.status.clear();
+  state.filters.onlyProblems = false;
+  filtersChanged();
 }
 
 // ---------------------------------------------------------------- table
 
 function visibleRows() {
-  return rowsInOrder().slice(0, state.cursor).filter(({ row, element }) => {
-    if (!isSourceShown(element)) return false;
+  return rowsInOrder().slice(0, state.cursor).filter(({ element }) => {
+    if (!shownInViews(element)) return false;
     if (state.filterKind && element.element !== state.filterKind) return false;
-    if (state.filterUncertain && marksOf(element).length === 0) return false;
     return true;
   });
 }
@@ -523,10 +671,10 @@ function renderKindFilter() {
   const select = $("filter-kind");
   const kinds = [...new Set((state.model ? state.model.elements : []).map((element) => element.element))].sort();
   if (state.filterKind && !kinds.includes(state.filterKind)) state.filterKind = "";
-  const key = kinds.join("|");
+  const key = kinds.join("|") + "|" + state.lang;
   if (select.dataset.kinds === key) return;
   select.dataset.kinds = key;
-  select.replaceChildren(h("option", { value: "" }, "all"),
+  select.replaceChildren(h("option", { value: "" }, t("table.kindAll")),
     ...kinds.map((kind) => h("option", { value: kind }, kind)));
   select.value = state.filterKind;
 }
@@ -536,22 +684,23 @@ function renderTable() {
   const last = state.cursor > 0 ? rowsInOrder()[state.cursor - 1] : null;
   const active = document.activeElement;
   const focusedSeq = active && active.dataset ? active.dataset.seq : null;
+  const cell = (key, ...children) => h("td", { "data-label": t("table.col." + key) }, ...children);
   fill("events-body", rows.map(({ row, element }) => {
     const [glyph, label] = shapeOf(element);
     const selected = state.selected === row.seq;
     return h("tr", { class: (selected ? "selected " : "") + (last && last.row.seq === row.seq ? "current" : "") },
-    h("td", null, h("button", {
-      type: "button", class: "row-button", "aria-label": "Select event " + row.seq,
+    cell("seq", h("button", {
+      type: "button", class: "row-button", "aria-label": t("table.select", { seq: row.seq }),
       "aria-pressed": selected ? "true" : "false", "data-seq": row.seq,
       on: { click: () => select(row.seq) },
-    }, (selected ? "\u25B6 " : "") + row.seq)),
-    h("td", null, timeText(element)),
-    h("td", null, h("span", { class: "glyph", "aria-hidden": "true" }, glyph), label),
-    h("td", null, String(row.subject === null || row.subject === undefined ? "" : row.subject)),
-    h("td", null, row.status === null || row.status === undefined ? "—" : String(row.status)),
-    h("td", null, classLabel(row.compatibilityClass)),
-    h("td", null, verificationNode(element.verification)),
-    h("td", null, marksOf(element).map(markNode)));
+    }, (selected ? "▶ " : "") + row.seq)),
+    cell("time", h("span", { title: element.timeKnown ? element.relMs + " ms" : null }, timeText(element))),
+    cell("shape", h("span", { class: "glyph", "aria-hidden": "true" }, glyph), label),
+    cell("subject", textOf(row.subject)),
+    cell("status", row.status === null || row.status === undefined ? "—" : String(row.status)),
+    cell("class", classLabel(row.compatibilityClass)),
+    cell("verification", verificationNode(element.verification)),
+    cell("marks", marksOf(element).map(markNode)));
   }));
   if (focusedSeq !== null) {
     const again = $("events-body").querySelector('[data-seq="' + CSS.escape(focusedSeq) + '"]');
@@ -560,8 +709,7 @@ function renderTable() {
   $("table-empty").hidden = rows.length > 0;
   const hidden = hiddenCount();
   $("table-empty").textContent = (state.model && totalCount() > 0 && rows.length === 0
-    ? "No events at this position or filter." : "No events to show.") +
-    (hidden ? " " + hiddenText(hidden, totalCount()) : "");
+    ? t("table.emptyPosition") : t("table.empty")) + (hidden ? " " + hiddenText(hidden, totalCount()) : "");
   syncScene();
 }
 
@@ -569,9 +717,14 @@ function select(seq) {
   state.selected = seq;
   renderTable();
   renderEvidence();
+  syncHash();
 }
 
-// ---------------------------------------------------------------- evidence
+function deselect() {
+  if (state.selected !== null) select(null);
+}
+
+// ---------------------------------------------------------------- detail panel
 
 function listOrNone(values, none) {
   if (!Array.isArray(values) || values.length === 0) return h("span", null, none);
@@ -588,6 +741,10 @@ function section(title, ...body) {
   return h("section", { class: "evidence-section" }, h("h3", null, title), body);
 }
 
+function noneRecorded() {
+  return t("detail.noneRecorded");
+}
+
 function detailPairs(element) {
   switch (element.element) {
     case "crossing": {
@@ -595,75 +752,120 @@ function detailPairs(element) {
       const coverage = Array.isArray(evidence.coverage) ? evidence.coverage : [];
       const report = element.report;
       return [
-        ["classification", element.classification],
-        ["drawn as", shapeOf(element)[1]],
-        ["left strand", element.left],
-        ["right strand", element.right],
-        ["shared resources", listOrNone(element.sharedResources, "none recorded")],
-        ["evidence method", String(evidence.method)],
-        ["rule set", String(evidence.ruleSet)],
-        ["coverage", coverage.join(", ") + (element.incompleteCoverage
-          ? " (incomplete: resources not listed are not shown to be absent)" : "")],
-        ["reasons", listOrNone(element.reasons, "none recorded")],
-        ["constraints", listOrNone(element.constraints, "none recorded")],
-        ["lanes passed over", element.passesOverLanes.length ? element.passesOverLanes.join(", ") : "none"],
-        ["report uncertainty", report ? listOrNone(report.uncertainty, "none recorded") : "no report in the retained events"],
-        ["report limits", report ? listOrNone(report.limits, "none recorded") : "no report in the retained events"],
+        [t("detail.classification"), element.classification],
+        [t("detail.drawnAs"), shapeOf(element)[1]],
+        [t("detail.leftAgent"), element.left],
+        [t("detail.rightAgent"), element.right],
+        [t("detail.sharedResources"), listOrNone(element.sharedResources, noneRecorded())],
+        [t("detail.evidenceMethod"), String(evidence.method)],
+        [t("detail.ruleSet"), String(evidence.ruleSet)],
+        [t("detail.coverage"), coverage.join(", ") + (element.incompleteCoverage ? " " + t("detail.coverage.incomplete") : "")],
+        [t("detail.reasons"), listOrNone(element.reasons, noneRecorded())],
+        [t("detail.constraints"), listOrNone(element.constraints, noneRecorded())],
+        [t("detail.passedOver"), element.passesOverLanes.length ? element.passesOverLanes.join(", ") : t("detail.none")],
+        [t("detail.reportUncertainty"), report ? listOrNone(report.uncertainty, noneRecorded()) : t("detail.noReport")],
+        [t("detail.reportLimits"), report ? listOrNone(report.limits, noneRecorded()) : t("detail.noReport")],
       ];
     }
     case "hazard-cone":
-      return [["hazard", element.hazardKind], ["stage", element.stage], ["units", listOrNone(element.units, "none")],
-        ["not observed", element.absence ? "yes: absence of observation is not evidence that no hazard exists" : "no"]];
+      return [[t("detail.hazard"), element.hazardKind], [t("detail.stage"), element.stage], [t("detail.units"), listOrNone(element.units, t("detail.none"))],
+        [t("detail.notObserved"), element.absence ? t("detail.notObserved.yes") : t("detail.no")]];
     case "gap":
-      return [["reason", element.reason], ["strand", element.strandId === null ? "none" : element.strandId],
-        ["from seq", element.fromSeq === null ? "unknown" : element.fromSeq],
-        ["to seq", element.toSeq === null ? "unknown" : element.toSeq]];
+      return [[t("detail.reason"), element.reason], [t("detail.agent"), element.strandId === null ? t("detail.none") : element.strandId],
+        [t("detail.fromSeq"), element.fromSeq === null ? t("detail.unknown") : element.fromSeq],
+        [t("detail.toSeq"), element.toSeq === null ? t("detail.unknown") : element.toSeq]];
     case "wave-plane":
-      return [["plan", element.planId], ["mode", element.mode], ["label", element.label],
-        ["waves", listOrNone(element.waves.map((wave) => wave.width + " wide: " + wave.strands.join(", ")), "none")]];
+      return [[t("detail.plan"), element.planId], [t("detail.mode"), element.mode], [t("detail.label"), element.label],
+        [t("detail.waves"), listOrNone(element.waves.map((wave) => t("detail.waveLine", { width: wave.width, agents: wave.strands.join(", ") })), t("detail.none"))]];
     case "wave-marker":
-      return [["schedule", element.scheduleId], ["wave", element.wave], ["phase", element.phase],
-        ["strands", listOrNone(element.strands, "none")]];
+      return [[t("detail.schedule"), element.scheduleId], [t("detail.wave"), element.wave], [t("detail.phase"), element.phase],
+        [t("detail.agents"), listOrNone(element.strands, t("detail.none"))]];
     case "gate-ring":
       return element.ringKind === "grant"
-        ? [["grant", element.grantId], ["action", element.action], ["state", element.state],
-          ["derived by the viewer", element.derived ? "yes" : "no"]]
-        : [["gate", element.gateId], ["status", element.gateStatus],
-          element.ringKind === "workflow-phase" ? ["phase", element.phase] : ["operation count", element.operationCount]];
+        ? [[t("detail.grant"), element.grantId], [t("detail.action"), element.action], [t("detail.state"), element.state],
+          [t("detail.derived"), element.derived ? t("detail.yes") : t("detail.no")]]
+        : [[t("detail.gate"), element.gateId], [t("detail.gateStatus"), element.gateStatus],
+          element.ringKind === "workflow-phase" ? [t("detail.phase"), element.phase] : [t("detail.operationCount"), element.operationCount]];
     case "effort":
-      return [["basis", element.effortBasis], ["known tokens (input + output)", element.knownTokens === null ? "unknown" : element.knownTokens]];
+      return [[t("detail.effortBasis"), element.effortBasis], [t("detail.knownTokens"), element.knownTokens === null ? t("detail.unknown") : element.knownTokens]];
     default:
       return [];
   }
 }
 
+// What the event says about its agent: state, start and end, duration, waiting time and the time it overlapped
+// with other agents (F1, F2). Only what the events state; an end that was not observed is said so.
+function agentSection(element) {
+  const info = derived();
+  const lane = element.strandId !== undefined && element.strandId !== null ? info.byStrand.get(element.strandId) : null;
+  if (!lane) return null;
+  const waiting = waitingTime(lane);
+  const overlaps = info.overlaps.filter((item) => item.lanes.includes(lane.laneIndex));
+  const rows = [
+    [t("agent.name"), lane.displayLabel],
+    [t("agent.kind"), laneKind(lane)],
+    [t("agent.state"), stateText(lane)],
+    [t("agent.start"), lane.openKnown ? formatClock(lane.openMs - axisMin()) : t("time.sequenceOnly")],
+    [t("agent.end"), lane.closeSeq !== null ? formatClock(lane.closeMs - axisMin()) + " · " + outcomeText(lane.outcome) : t("agent.endNotObserved")],
+    [t("agent.duration"), lane.durationMs !== null ? formatDuration(lane.durationMs)
+      : lane.observedMs !== null ? t("agent.durationAtLeast", { text: formatDuration(lane.observedMs) }) : t("detail.unknown")],
+  ];
+  if (lane.toolMarks.length) rows.push([t("agent.tools"), String(lane.toolMarks.length)]);
+  if (waiting.totalMs > 0 || waiting.open) {
+    rows.push([t("agent.waiting"), formatDuration(waiting.totalMs) + (waiting.open ? " " + t("agent.waitingOpen") : "")]);
+  }
+  if (overlaps.length) {
+    rows.push([t("agent.overlaps"), h("ul", null, overlaps.slice(0, 5).map((item) => {
+      const other = info.byIndex.get(item.lanes[0] === lane.laneIndex ? item.lanes[1] : item.lanes[0]);
+      return h("li", null, other.displayLabel + ": " + formatDuration(item.ms));
+    }))]);
+  }
+  return section(t("detail.agentSection"), definitions(rows), h("p", { class: "hint" }, t("agent.note")));
+}
+
+// For a crossing: whether the two agents were open at the same time. Descriptive; it does not say the analysis was right.
+function overlapRow(element) {
+  if (element.element !== "crossing") return null;
+  const info = derived();
+  const crossing = info.crossings.find((item) => item.seq === element.seq);
+  if (!crossing) return null;
+  const overlap = crossing.overlap;
+  const text = overlap === null ? t("crossing.overlap.unknown")
+    : overlap.ms > 0 ? t("crossing.overlap.yes", { text: formatDuration(overlap.ms) }) + (overlap.inferred ? " " + t("state.inferred") : "")
+      : t("crossing.overlap.no");
+  return section(t("crossing.overlapTitle"), h("p", null, text), h("p", { class: "hint" }, t("crossing.overlapNote")));
+}
+
 function renderEvidence() {
   const element = state.selected === null ? undefined : elementOf(state.selected);
+  $("detail-close").hidden = !element;
+  $("detail").classList.toggle("open", Boolean(element));
   if (!element) {
-    fill("evidence", h("p", { class: "hint" },
-      "Select an event to see its source event, class, verification and evidence reference."));
+    fill("evidence", h("p", { class: "hint" }, t("evidence.empty")));
     return;
   }
   const ref = element.evidenceRef;
   const marks = marksOf(element);
   fill("evidence",
-    h("p", null, h("strong", null, "Event " + element.seq + " · " + element.kind), " ", marks.map(markNode)),
-    section("Event", definitions([
-      ["element", element.element],
-      ["subject", String(element.subject === null || element.subject === undefined ? "" : element.subject)],
-      ["status", element.status === null || element.status === undefined ? "—" : String(element.status)],
-      ["host", element.host],
-      ["time", timeText(element) + " (" + element.basis + ")"],
+    h("p", null, h("strong", null, t("evidence.title", { seq: element.seq, kind: element.kind })), " ", marks.map(markNode)),
+    agentSection(element),
+    overlapRow(element),
+    section(t("detail.eventSection"), definitions([
+      [t("detail.element"), element.element],
+      [t("detail.subject"), textOf(element.subject)],
+      [t("detail.status"), element.status === null || element.status === undefined ? "—" : String(element.status)],
+      [t("detail.host"), element.host],
+      [t("detail.time"), timeText(element) + " (" + (element.timeKnown ? element.relMs + " ms, " : "") + element.basis + ")"],
     ])),
-    section("Compatibility class", h("p", null, classLabel(element.compatibilityClass)),
-      h("p", { class: "hint" }, "A categorical label, not a guarantee and not a safety ordering.")),
-    section("Verification", h("p", null, verificationNode(element.verification)),
-      h("p", { class: "hint" }, (VERIFICATION[element.verification] || ["", "", ""])[2])),
-    section("Evidence reference", ref
-      ? definitions([["path", ref.path], ["sha256", ref.sha256]])
-      : h("p", null, "None: the event is host-reported or derived by the viewer, so there is no artifact to open.")),
-    detailPairs(element).length ? section("Details", definitions(detailPairs(element))) : null,
-    h("details", null, h("summary", null, "All model fields"), h("pre", null, JSON.stringify(element, null, 2))));
+    section(t("detail.classSection"), h("p", null, classLabel(element.compatibilityClass)),
+      h("p", { class: "hint" }, t("detail.classNote"))),
+    section(t("detail.verificationSection"), h("p", null, verificationNode(element.verification)),
+      h("p", { class: "hint" }, VERIFICATION[element.verification] ? t("verification." + element.verification + ".meaning") : "")),
+    section(t("detail.evidenceSection"), ref
+      ? definitions([[t("detail.path"), ref.path], ["sha256", ref.sha256]])
+      : h("p", null, t("detail.noArtifact"))),
+    detailPairs(element).length ? section(t("detail.detailsSection"), definitions(detailPairs(element))) : null,
+    h("details", null, h("summary", null, t("detail.allFields")), h("pre", null, JSON.stringify(element, null, 2))));
 }
 
 // ---------------------------------------------------------------- playback
@@ -675,13 +877,14 @@ function renderPlayback() {
   range.value = String(state.cursor);
   // Stepping moves over every retained event; with a source unchecked, say how many of those up to here are drawn.
   const shown = state.hiddenSources.size
-    ? " (" + rowsInOrder().slice(0, state.cursor).filter(({ element }) => isSourceShown(element)).length + " shown)" : "";
-  $("pb-count").textContent = state.cursor + " of " + total + shown;
-  range.setAttribute("aria-valuetext", state.cursor + " of " + total + " events" + shown);
+    ? " " + t("playback.shown", { n: rowsInOrder().slice(0, state.cursor).filter(({ element }) => isSourceShown(element)).length }) : "";
+  $("pb-count").textContent = t("playback.count", { cursor: state.cursor, total }) + shown;
+  range.setAttribute("aria-valuetext", t("playback.valueText", { cursor: state.cursor, total }) + shown);
   $("pb-back").disabled = state.cursor <= 0;
   $("pb-start").disabled = state.cursor <= 0;
   $("pb-forward").disabled = state.cursor >= total;
   $("pb-play").setAttribute("aria-pressed", state.playing ? "true" : "false");
+  $("pb-play").textContent = t(state.playing ? "playback.pause" : "playback.play");
 }
 
 function setCursor(value) {
@@ -696,6 +899,18 @@ function stopPlayback() {
   state.timer = null;
 }
 
+// "By events" steps at a fixed pace. "Real time" waits as long as the compressed axis between two events,
+// within bounds, so a long omitted gap never stalls playback.
+function stepDelay() {
+  const speed = Number($("pb-speed").value) || 1;
+  if ($("pb-mode").value !== "real") return STEP_MS / speed;
+  const rows = rowsInOrder();
+  const here = rows[state.cursor - 1];
+  const next = rows[state.cursor];
+  if (!here || !next) return STEP_MS / speed;
+  return Math.min(REAL_TIME_MAX_MS, Math.max(REAL_TIME_MIN_MS, (next.element.x - here.element.x) / speed));
+}
+
 function tick() {
   state.timer = null;
   if (!state.playing) return;
@@ -705,8 +920,7 @@ function tick() {
     return;
   }
   setCursor(state.cursor + 1);
-  const speed = Number($("pb-speed").value) || 1;
-  state.timer = setTimeout(tick, STEP_MS / speed);
+  state.timer = setTimeout(tick, stepDelay());
 }
 
 function togglePlay() {
@@ -721,6 +935,62 @@ function togglePlay() {
   renderPlayback();
 }
 
+// ---------------------------------------------------------------- tabs and help
+
+let currentTab = "events";
+
+function renderTabs() {
+  for (const name of TABS) {
+    const tab = $("tab-" + name);
+    const on = name === currentTab;
+    tab.setAttribute("aria-selected", on ? "true" : "false");
+    tab.tabIndex = on ? 0 : -1;
+    $("panel-" + name).hidden = !on;
+  }
+}
+
+function showTab(name, focus) {
+  if (!TABS.includes(name)) return;
+  currentTab = name;
+  renderTabs();
+  if (focus) $("tab-" + name).focus();
+}
+
+function onTabKey(event) {
+  const at = TABS.indexOf(currentTab);
+  let next = at;
+  if (event.key === "ArrowRight") next = (at + 1) % TABS.length;
+  else if (event.key === "ArrowLeft") next = (at + TABS.length - 1) % TABS.length;
+  else if (event.key === "Home") next = 0;
+  else if (event.key === "End") next = TABS.length - 1;
+  else return;
+  event.preventDefault();
+  showTab(TABS[next], true);
+}
+
+function openHelp() {
+  showTab("help", false);
+  const heading = $("help-title");
+  if (heading.scrollIntoView) heading.scrollIntoView({ block: "start" });
+  heading.focus();
+}
+
+function isTyping(event) {
+  const target = event.target;
+  const tag = target && target.tagName ? String(target.tagName).toLowerCase() : "";
+  return tag === "input" || tag === "select" || tag === "textarea" || Boolean(target && target.isContentEditable);
+}
+
+function onKey(event) {
+  if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
+  if (event.key === "Escape") {
+    deselect();
+  } else if (event.key === "?" && !isTyping(event)) {
+    event.preventDefault();
+    openHelp();
+  }
+}
+
 function bindControls() {
   $("pb-start").addEventListener("click", () => { stopPlayback(); setCursor(0); });
   $("pb-back").addEventListener("click", () => { stopPlayback(); setCursor(state.cursor - 1); });
@@ -729,8 +999,52 @@ function bindControls() {
   $("pb-play").addEventListener("click", togglePlay);
   $("pb-range").addEventListener("input", (event) => { stopPlayback(); setCursor(Number(event.target.value)); });
   $("filter-kind").addEventListener("change", (event) => { state.filterKind = event.target.value; renderTable(); });
-  $("filter-uncertain").addEventListener("change", (event) => { state.filterUncertain = event.target.checked; renderTable(); });
+  $("filter-problems").addEventListener("change", (event) => { state.filters.onlyProblems = event.target.checked; filtersChanged(); });
+  $("filter-clear").addEventListener("click", clearFilters);
   $("scene-reset").addEventListener("click", () => { if (scene) scene.resetView(); });
+  $("lang-select").addEventListener("change", (event) => setLanguageChoice(event.target.value));
+  $("detail-close").addEventListener("click", deselect);
+  $("about-open").addEventListener("click", openHelp);
+  $("tablist").addEventListener("keydown", onTabKey);
+  for (const name of TABS) $("tab-" + name).addEventListener("click", () => showTab(name, false));
+  document.addEventListener("keydown", onKey);
+}
+
+// ---------------------------------------------------------------- views and the URL hash
+
+// The views this build offers. The first is the default; a deep link or a stored choice may pick another.
+const views = [{ id: "map3d" }];
+
+function availableView(id) {
+  return views.some((view) => view.id === id) ? id : views[0].id;
+}
+
+function renderViewSwitch() {
+  const box = $("view-switch");
+  box.hidden = views.length < 2;
+}
+
+function syncHash() {
+  if (typeof history === "undefined" || typeof location === "undefined" || typeof history.replaceState !== "function") return;
+  try {
+    const next = encodeHash(state);
+    if (next !== location.hash) history.replaceState(null, "", location.pathname + location.search + next);
+  } catch (error) {
+    // the hash is a convenience; a browser that refuses it keeps the page working
+  }
+}
+
+function restoreFromHash() {
+  if (typeof location === "undefined") return;
+  const wanted = decodeHash(location.hash);
+  const stored = readPreference("view");
+  state.view = availableView(wanted.view || stored || state.view);
+  for (const key of wanted.hide) state.hiddenSources.add(key);
+  for (const id of wanted.agents) state.filters.agents.add(id);
+  for (const name of wanted.status) state.filters.status.add(name);
+  state.filters.onlyProblems = wanted.onlyProblems;
+  if (wanted.selected !== null && elementOf(wanted.selected)) state.selected = wanted.selected;
+  if (wanted.viewport) state.viewport = wanted.viewport;
 }
 
 // ---------------------------------------------------------------- 3D scene (optional)
@@ -744,51 +1058,57 @@ let sceneHidden = "";
 function showHover(seq) {
   const element = seq === null ? undefined : elementOf(seq);
   $("scene-hover").textContent = element
-    ? "Event " + element.seq + " · " + element.kind + " · " + String(element.subject === null || element.subject === undefined ? "" : element.subject) +
-      " · " + classLabel(element.compatibilityClass) + (marksOf(element).includes("unverified") ? " · unverified" : "")
-    : "Hover an element to see its event.";
+    ? t("scene.hover", { seq: element.seq, kind: element.kind, subject: textOf(element.subject), cls: classLabel(element.compatibilityClass) }) +
+      (marksOf(element).includes("unverified") ? " · " + t("mark.unverified") : "")
+    : t("scene.hoverHint");
 }
 
 function updateSceneNote() {
   const info = scene.summary();
-  const parts = ["Showing " + info.drawn + " of " + info.visible + " events at this position in 3D."];
+  const parts = [t("scene.showing", { drawn: info.drawn, visible: info.visible })];
   const hidden = hiddenCount();
-  if (hidden) parts.push(hidden + " events from unchecked sources are hidden here and in the table. They are not absent.");
+  if (hidden) parts.push(t("scene.hiddenSources", { n: hidden }));
+  const left = filteredOutCount();
+  if (left) parts.push(t("scene.leftOut", { n: left }));
   const untimed = info.seqs.filter((seq) => { const element = elementOf(seq); return element && element.timeKnown === false; }).length;
-  if (untimed) parts.push(untimed + " of them state no time: the scene places them after their predecessor and invents no time.");
+  if (untimed) parts.push(t("scene.untimed", { n: untimed }));
   if (info.omitted.length) {
-    parts.push("Only in the table: " + info.omitted.map((item) => item.count + " (" + item.reason + ")").join("; ") + ".");
+    parts.push(t("scene.onlyInTable", {
+      items: info.omitted.map((item) => item.count + " (" + (SCENE_REASON_KEYS[item.reason] ? t(SCENE_REASON_KEYS[item.reason]) : item.reason) + ")").join("; "),
+    }));
   }
   $("scene-note").textContent = parts.join(" ");
 }
 
-// Keeps the scene on the model, playback position and selection of the table. Cheap when nothing changed.
-function syncScene() {
+// Keeps the scene on the model, playback position, filters and selection of the table. Cheap when nothing changed.
+function syncScene(force) {
   if (!scene) return;
   try {
-    applyScene();
+    applyScene(force);
   } catch (error) {
     console.error(error);
-    sceneUnavailable("it could not draw this model.");
+    sceneUnavailable(t("scene.reason.draw"));
   }
 }
 
-function applyScene() {
+function applyScene(force) {
   const modelChanged = sceneModel !== state.model;
   if (modelChanged) {
     sceneModel = state.model;
     scene.setModel(state.model);
   }
-  const hidden = [...state.hiddenSources].sort().join("|");
-  if (modelChanged || sceneCursor !== state.cursor || sceneHidden !== hidden) {
+  const hidden = [...state.hiddenSources].sort().join("|") + "#" + [...state.filters.agents].sort().join("|") + "#" +
+    [...state.filters.status].sort().join("|") + "#" + state.filters.onlyProblems;
+  if (modelChanged || force || sceneCursor !== state.cursor || sceneHidden !== hidden) {
     sceneCursor = state.cursor;
     sceneHidden = hidden;
-    // The scene shows only checked sources; the playback frontier still follows the position, not the filter.
+    // The scene shows only what passes the filters; the playback frontier still follows the position, not the filter.
     const position = rowsInOrder().slice(0, state.cursor);
     scene.setVisible(
-      position.filter(({ element }) => isSourceShown(element)).map(({ row }) => row.seq),
+      position.filter(({ element }) => shownInViews(element)).map(({ row }) => row.seq),
       position.map(({ row }) => row.seq));
     updateSceneNote();
+    showHover(null);
   }
   if (modelChanged || sceneSelected !== state.selected) {
     sceneSelected = state.selected;
@@ -810,12 +1130,12 @@ function sceneUnavailable(reason) {
   $("scene-hover").hidden = true;
   $("scene-reset").hidden = true;
   $("legend-scene-block").hidden = true;
-  $("scene-note").textContent = "The 3D scene is not available: " + reason + " The table below shows the same events, counters and evidence.";
+  $("scene-note").textContent = t("scene.unavailable", { reason });
 }
 
 async function startScene() {
   if (typeof WebGL2RenderingContext !== "function") {
-    sceneUnavailable("this browser has no WebGL2.");
+    sceneUnavailable(t("scene.reason.noWebgl2"));
     return;
   }
   let module_;
@@ -823,7 +1143,7 @@ async function startScene() {
     module_ = await import("/web/braid-scene.js");
   } catch (error) {
     console.error(error);
-    sceneUnavailable("its code could not be loaded or was refused.");
+    sceneUnavailable(t("scene.reason.load"));
     return;
   }
   $("scene-section").hidden = false; // the canvas needs a laid-out box to size itself
@@ -831,7 +1151,7 @@ async function startScene() {
     scene = module_.createBraidScene($("scene-box"), { onSelect: select, onHover: showHover, onUnavailable: sceneUnavailable });
   } catch (error) {
     console.error(error);
-    sceneUnavailable("WebGL2 could not be started.");
+    sceneUnavailable(t("scene.reason.start"));
     return;
   }
   $("legend-scene-block").hidden = false;
@@ -841,7 +1161,11 @@ async function startScene() {
 // ---------------------------------------------------------------- start
 
 function renderAll() {
+  renderChrome();
   renderSources();
+  renderAgentFilters();
+  renderStatusFilters();
+  renderFilterStatus();
   renderKindFilter();
   renderCounters();
   renderLanes();
@@ -849,10 +1173,16 @@ function renderAll() {
   renderTable();
   renderEvidence();
   renderPlayback();
+  renderLegend();
+  showHover(null);
 }
 
-renderLegend();
+state.langChoice = (() => {
+  const stored = readPreference("lang");
+  return LANGUAGES.includes(stored) ? stored : "auto";
+})();
 bindControls();
+applyLanguage();
 renderAll();
 loadSnapshot();
 followEvents();
