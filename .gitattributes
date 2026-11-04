@@ -2,3 +2,5 @@
 specs/046-local-technical-telemetry/evidence/*.log -whitespace
 # Vendored third-party bytes stay unmodified (ADR 0033); upstream whitespace is not ours to fix.
 integrations/agent-braid-view/web/vendor/three/** -whitespace
+# T009 operator transcript is kept byte-verbatim; the driver prompts end with a space.
+specs/065-native-claude-containment/evidence/qualification/t009-20261104b/operator/*.txt -whitespace
