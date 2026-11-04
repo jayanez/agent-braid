@@ -236,11 +236,15 @@ shared object store fails the portable-root check).
   Status 2026-11-04: the founder gave the go for T009 and asked for the operator runbook to be
   automated (`evidence/founder-decisions-20261104.json`, verbatim: "Go pero quiero que prepares tú el
   runbook para que todo sea completamente automatizado"). Steps 0 to 8 are now
-  `scripts/har_t009_setup.py` and steps 9 and 10 are `scripts/har_t009_dryrun.py`
+  `scripts/har_t009_setup.py`
   (`tests/test_har_t009_setup.py`; quickstart "Operator setup for T009"). Every runbook check is a hard
-  stop in them (plus safety stops of their own), they run no `claude` session, no `sandbox-exec` and no network before step 9 (the dry-run
-  wrapper runs the login and the driver `--dry-run` only), and they do not take the NC-6 readings or run
-  step 10b or 11, which stay manual after the orchestrator's written confirmations. No backend, probes,
+  stop in them (plus safety stops of their own) and they run no `claude`, `sandbox-exec` or network before step 9.
+  Founder scope change the same day ("sólo tenga que cambiar de usuario y lanzar un script"): the setup script
+  also creates the handoff directory `/Users/Shared/braid-t009/`, `scripts/har_t009_lab.py` is the one script in
+  the lab account (steps 9, 10, 10b and 11) and `scripts/har_t009_verify.py` is the orchestrator's helper that writes
+  the verification files the lab script waits for (setup summary, dry run, self-check; each bound to the subject's
+  SHA-256). The driver still asks the founder for the NC-6 readings and keeps the NC-10 budget; the lab script
+  neither types nor skips them and has no flag that skips a verification. No backend, probes,
   transport or quota module changed, so no new re-check of touched lines is needed. Nothing native has run
   for this record; `executionAuthorization` stays false and issuance stays T010. This task stays unchecked.
 

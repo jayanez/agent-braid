@@ -13,7 +13,8 @@ import tempfile
 import unittest
 from unittest import mock
 
-from scripts import har_t009_dryrun as dry
+from scripts import har_t009_lab as lab
+from scripts import har_t009_verify as verify
 from scripts import har_t009_setup as setup
 
 COMMIT = "0123456789abcdef0123456789abcdef01234567"
@@ -57,6 +58,7 @@ class FakeRunner(setup.Runner):
             (HOME_STAT, (0, "braidlab staff 700\n")),
             ("stat -f %Su %Sg %Lp", (0, "root wheel 755\n")),
             ("stat -f %Su %Sg %Sp", (0, "root wheel -rwxr-xr-x\n")),
+            ("stat -f %Su:%Lp", (0, "braidlab:750\n") if "from-lab" in text else (0, "founder:755\n")),
             ("stat -f %Su %Lp", (0, "braidlab 700\n")),
             ("stat -f %Lp", (0, "750\n")),
             ("shasum -a 256 /opt/claude", (0, f"{H_CLAUDE}  {CLAUDE_SRC}\n{H_CLAUDE}  {CLAUDE_DST}\n")),
@@ -91,9 +93,11 @@ class SetupTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        self.summary = str(Path(self.tmp.name) / "summary.json")
+        self.handoff = Path(self.tmp.name) / "handoff"
+        (self.handoff / "to-lab").mkdir(parents=True)
+        self.summary = str(self.handoff / "to-lab" / "setup-summary.json")
         self.base = ["--commit", COMMIT, "--claude-src", CLAUDE_SRC, "--python-src", "/py", "--checkout", "/co",
-                     "--summary-out", self.summary]
+                     "--handoff", str(self.handoff)]
 
     def go(self, overrides=None):
         runner = FakeRunner(overrides=overrides)
@@ -264,10 +268,21 @@ class SetupTests(unittest.TestCase):
 
     def test_unwritable_summary_is_a_stop_not_a_traceback(self):
         base = [*self.base]
-        base[base.index("--summary-out") + 1] = "/nonexistent-dir/summary.json"
+        base[base.index("--handoff") + 1] = "/nonexistent-dir"
         code, err = run_main(base, FakeRunner())
         self.assertEqual(code, 1)
         self.assertIn("STOP: cannot write the summary", err)
+
+    def test_handoff_dirs_are_created_with_tight_owners(self):
+        _, _, runner = self.go()
+        h = str(self.handoff)
+        self.assertIn(f"install -d -m 755 {h}/to-lab", runner.calls)
+        self.assertIn(f"sudo install -d -o braidlab -g staff -m 750 {h}/from-lab", runner.calls)
+        self.assertEqual(json.loads(Path(self.summary).read_text())["handoff"]["fromLab"], f"{h}/from-lab")
+
+    def test_stop_when_the_lab_account_could_write_to_lab(self):
+        self.assertStops({"stat -f %Su:%Lp": (0, "braidlab:755\\n")}, "STOP: ")
+        self.assertStops({"stat -f %Su:%Lp": (0, "founder:777\\n")}, "STOP: ")
 
     def test_stop_archive_fails(self):
         self.assertStops({"pipe": (1, 0)}, "STOP: pipeline failed")
@@ -295,154 +310,454 @@ class SetupTests(unittest.TestCase):
         self.assertIn("not as the lab account", err)
 
 
-class DryRunWrapperTests(unittest.TestCase):
+def write_json(path, data, mode=0o644):
+    Path(path).write_text(json.dumps(data))
+    os.chmod(path, mode)
+
+
+class LabTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        self.summary = Path(self.tmp.name) / "summary.json"
-        self.summary.write_text(json.dumps({
-            "summaryVersion": dry.SUMMARY_VERSION, "commit": COMMIT,
-            "pins": {"claudeSha256": H_CLAUDE, "interpreterSha256": H_PY, "sandboxExecSha256": H_SB}}))
+        root = Path(self.tmp.name)
+        self.home = root / "home"
+        (self.home / "t009/config").mkdir(parents=True)
+        (self.home / "t009/config/login.json").write_text("{}")  # what a fresh login leaves
+        self.handoff = root / "handoff"
+        self.to_lab, self.from_lab = self.handoff / "to-lab", self.handoff / "from-lab"
+        self.to_lab.mkdir(parents=True)
+        self.from_lab.mkdir()
+        self.braid = root / "braid"
+        scripts_dir = self.braid / f"repo-{SHORT}/scripts"
+        scripts_dir.mkdir(parents=True)
+        (scripts_dir / "har_t009_attempt.py").write_text("")
+        self.summary = self.to_lab / "setup-summary.json"
+        write_json(self.summary, {"summaryVersion": lab.SUMMARY_VERSION, "commit": COMMIT,
+                                  "pins": {"claudeSha256": H_CLAUDE, "interpreterSha256": H_PY,
+                                           "sandboxExecSha256": H_SB}})
         self.argv = ["--commit", COMMIT, "--operator-account", "juanyanez", "--attempt", "t009-20261104",
-                     "--summary", str(self.summary)]
+                     "--handoff", str(self.handoff), "--poll", "0"]
+        self.calls = []
+        self.driver = {"--dry-run": (0, '{"verdict": "ready"}'), "--self-check": (0, '{"verdict": "self-check-ok"}'),
+                       "--founder-go": (0, "")}
+        self.login_rc = 0
+        self.verifier = lambda stage, sha: True  # who "approves" which stage; replaced per test
+        self.waits = 0
 
-    def run_main(self, argv, env=None):
+    def approval(self, stage, sha, override=None):
+        record = {"verificationVersion": lab.VERIFY_VERSION, "stage": stage, "commit": COMMIT,
+                  "attempt": "t009-20261104", "subjectSha256": sha, "verdict": "approved", **(override or {})}
+        write_json(self.to_lab / f"verify-{stage}.json", record)
+
+    def fake_run(self, cmd, **kw):
+        self.calls.append((list(cmd), kw))
+        if cmd[1:3] == ["auth", "login"]:
+            return mock.Mock(returncode=self.login_rc)
+        flag = next((f for f in ("--dry-run", "--self-check", "--founder-go") if f in cmd), None)
+        code, out = self.driver[flag]
+        if flag == "--founder-go" and "--self-check" not in cmd:  # the real attempt writes its bundle
+            out_dir = self.home / "t009/out/t009-20261104"
+            out_dir.mkdir(parents=True, exist_ok=True)
+            (out_dir / "summary.json").write_text("{}")
+        return mock.Mock(returncode=code, stdout=out, stderr="")
+
+    def sleeping(self, _seconds):
+        """Each wait iteration lets the 'orchestrator' act once, as the real one does between polls."""
+        self.waits += 1
+        for stage, sha in list(self.pending.items()):
+            if self.verifier(stage, sha):
+                self.approval(stage, sha)
+                del self.pending[stage]
+
+    def go(self, extra=(), approve=("setup", "dry-run", "self-check"), env=None, uid=None, **patches):
+        """Run the lab script; verification files appear while it polls (they are bound to the real SHA-256)."""
+        self.pending = {}
+        real_wait = lab.wait_for_verification
+
+        def wait(stage, sha, **kw):
+            if stage in approve:
+                self.pending[stage] = sha
+            return real_wait(stage, sha, **kw)
+
         out, err = io.StringIO(), io.StringIO()
-        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
-            code = dry.main(argv, env=env if env is not None else {})
+        clock = iter(range(0, 100000)).__next__
+        stack = contextlib.ExitStack()
+        with stack:
+            stack.enter_context(mock.patch.dict(os.environ, {"HOME": str(self.home)}))
+            stack.enter_context(mock.patch.object(lab, "BRAID", str(self.braid)))
+            stack.enter_context(mock.patch.object(lab.subprocess, "run", self.fake_run))
+            stack.enter_context(mock.patch.object(lab, "sha256_file", patches.pop("hash_of", None) or self.default_hash))
+            stack.enter_context(mock.patch.object(lab, "wait_for_verification", wait))
+            stack.enter_context(mock.patch.object(lab, "operator_uid", lambda name, real=os.getuid(): real))
+            stack.enter_context(mock.patch.object(lab.os, "getuid", return_value=uid if uid is not None else os.getuid() + 1))
+            stack.enter_context(mock.patch.object(lab.os, "access", lambda path, mode: Path(path) == self.from_lab))
+            stack.enter_context(contextlib.redirect_stdout(out))
+            stack.enter_context(contextlib.redirect_stderr(err))
+            code = lab.main([*self.argv, *extra], env=env if env is not None else {}, sleep=self.sleeping, clock=clock)
         return code, out.getvalue(), err.getvalue()
 
-    def test_dry_run_prints_login_and_the_driver_dry_run_only(self):
-        code, out, _ = self.run_main([*self.argv, "--dry-run"])
-        self.assertEqual(code, 0)
-        self.assertIn("claude-2.1.292 auth login", out)
-        self.assertIn("--dry-run", out)
-        self.assertIn(f"--claude-sha256 {H_CLAUDE}", out)
-        self.assertIn(f"{dry.BRAID}/repo-{SHORT}/scripts/har_t009_attempt.py", out)
-        self.assertIn("python3.12 -B -I", out)
-        self.assertNotIn("--founder-go", out)
-        self.assertNotIn("--self-check", out)
+    @staticmethod
+    def default_hash_for(path):
+        return H_CLAUDE if "claude" in path else H_PY if "python" in path else H_SB if "sandbox" in path else None
 
-    def test_dry_run_without_a_summary_uses_placeholders(self):
+    def default_hash(self, path):
+        known = self.default_hash_for(path)
+        return known or hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+    def driver_modes(self):
+        return [next((f for f in ("--dry-run", "--self-check", "--founder-go") if f in c[0]), "login")
+                for c in self.calls]
+
+    # plan
+    def test_plan_prints_every_stage_and_runs_nothing(self):
+        code, out, _ = self.go(["--plan"])
+        self.assertEqual(code, 0)
+        self.assertEqual(self.calls, [])
+        for needle in ("verify-setup.json", "auth login", "--dry-run", "--self-check --founder-go", "verify-self-check.json",
+                       "--founder-go", f"bundle-t009-20261104"):
+            self.assertIn(needle, out)
+
+    def test_plan_without_a_summary_uses_placeholders(self):
         self.summary.unlink()
-        code, out, _ = self.run_main([*self.argv, "--dry-run"])
+        code, out, _ = self.go(["--plan"])
         self.assertEqual(code, 0)
         self.assertIn("claudeSha256 from the setup summary", out)
 
+    # the happy path
+    def test_full_flow_waits_for_each_verification_and_runs_in_order(self):
+        code, out, err = self.go()
+        self.assertEqual(code, 0, err)
+        self.assertEqual(self.driver_modes(), ["login", "--dry-run", "--self-check", "--founder-go"])
+        self.assertEqual(self.waits, 3)
+        dry_sha = hashlib.sha256(b'{"verdict": "ready"}').hexdigest()
+        self.assertEqual((self.from_lab / "dry-run.json.sha256").read_text(), f"{dry_sha}  dry-run.json\n")
+        self.assertTrue((self.from_lab / "self-check.json").exists())
+        self.assertTrue((self.from_lab / "bundle-t009-20261104/summary.json").exists())
+        record = json.loads((self.from_lab / "bundle-t009-20261104.sha256.json").read_text())
+        self.assertEqual(record["driverExit"], 0)
+        # the real attempt has the terminal attached (the driver asks for the NC-6 readings) and is never captured
+        real_cmd, real_kw = self.calls[-1]
+        self.assertNotIn("capture_output", real_kw)
+        self.assertEqual(real_kw["env"]["DISABLE_AUTOUPDATER"], "1")
+        self.assertEqual(real_cmd.count("--founder-go"), 1)
+
+    def test_skip_login(self):
+        self.assertEqual(self.go(["--skip-login"])[0], 0)
+        self.assertNotIn("login", self.driver_modes())
+
+    def test_real_attempt_exit_code_is_passed_through_and_bundle_still_copied(self):
+        self.driver["--founder-go"] = (2, "")
+        code, _, _ = self.go()
+        self.assertEqual(code, 2)
+        self.assertEqual(json.loads((self.from_lab / "bundle-t009-20261104.sha256.json").read_text())["driverExit"], 2)
+
+    # verification gates
+    def test_nothing_runs_before_the_setup_verification(self):
+        code, _, err = self.go(approve=(), extra=["--wait-timeout", "10"])
+        self.assertEqual(code, 1)
+        self.assertIn("no valid verification of setup", err)
+        self.assertEqual(self.calls, [])
+
+    def test_missing_dry_run_verification_stops_before_the_self_check(self):
+        code, _, err = self.go(approve=("setup",), extra=["--wait-timeout", "10"])
+        self.assertEqual(code, 1)
+        self.assertIn("no valid verification of dry-run", err)
+        self.assertEqual(self.driver_modes(), ["login", "--dry-run"])
+
+    def test_missing_self_check_verification_stops_before_the_real_attempt(self):
+        code, _, err = self.go(approve=("setup", "dry-run"), extra=["--wait-timeout", "10"])
+        self.assertEqual(code, 1)
+        self.assertIn("no valid verification of self-check", err)
+        self.assertNotIn("--founder-go", [m for m in self.driver_modes() if m != "--self-check"])
+
+    def test_mismatching_or_rejected_verification_is_a_hard_stop(self):
+        cases = [("subjectSha256", "0" * 64), ("commit", "1" * 40), ("attempt", "t009-20269999"),
+                 ("verdict", "rejected"), ("stage", "dry-run"), ("verificationVersion", "x")]
+        for key, value in cases:
+            with self.subTest(key):
+                self.setUp()
+                self.verifier = lambda stage, sha, key=key, value=value: self.approval(stage, sha, {key: value}) or False
+                code, _, err = self.go(approve=("setup",), extra=["--wait-timeout", "10"])
+                self.assertEqual(code, 1)
+                self.assertIn("does not match", err)
+                self.assertEqual(self.calls, [])
+
+    def test_verification_must_not_be_owned_by_the_lab_account(self):
+        code, _, err = self.go(uid=os.getuid(), extra=["--wait-timeout", "10"])
+        self.assertEqual(code, 1)
+        self.assertIn("not owned by the operator", err)
+
+    def test_verification_must_not_be_group_or_world_writable(self):
+        self.verifier = lambda stage, sha: self.approval(stage, sha) or os.chmod(self.to_lab / f"verify-{stage}.json", 0o666) or False
+        code, _, err = self.go(approve=("setup",), extra=["--wait-timeout", "10"])
+        self.assertEqual(code, 1)
+        self.assertIn("writable by others", err)
+
+    def test_stale_approval_for_an_old_subject_is_refused(self):
+        self.approval("setup", "f" * 64)
+        code, _, err = self.go(approve=(), extra=["--wait-timeout", "10"])
+        self.assertEqual(code, 1)
+        self.assertIn("does not match", err)
+
+    def test_stop_if_the_lab_account_can_write_to_lab(self):
+        self.approval("setup", hashlib.sha256(self.summary.read_bytes()).hexdigest())
+        real = os.getuid()
+        with mock.patch.object(lab.os, "access", lambda path, mode: True), mock.patch.object(lab.os, "getuid", return_value=real + 1):
+            with self.assertRaises(lab.Stop) as caught:
+                lab.check_verification(self.to_lab / "verify-setup.json", self.to_lab, {}, real)
+        self.assertIn("writable by this account", str(caught.exception))
+
+    # runbook stops
     def test_argument_validation(self):
-        cases = [("--commit", "abc", "COMMIT is not a 40-character hash"),
-                 ("--operator-account", "Bad Name", "OPERATOR_ACCOUNT"),
-                 ("--attempt", "t009-2026", "ATTEMPT")]
-        for flag, value, message in cases:
+        for flag, value, message in (("--commit", "abc", "COMMIT is not a 40-character hash"),
+                                     ("--operator-account", "Bad Name", "OPERATOR_ACCOUNT"),
+                                     ("--attempt", "t009-2026", "ATTEMPT")):
             argv = list(self.argv)
             argv[argv.index(flag) + 1] = value
-            code, _, err = self.run_main(argv)
+            self.argv = argv
+            code, _, err = self.go()
             self.assertEqual(code, 1, flag)
             self.assertIn(message, err)
+            self.setUp()
 
-    def test_summary_must_match_commit_and_version(self):
-        argv = list(self.argv)
-        argv[1] = COMMIT[:-1] + "8"
-        code, _, err = self.run_main(argv)
+    def test_summary_must_exist_match_commit_and_version(self):
+        self.summary.unlink()
+        self.assertIn("missing or cannot be read", self.go()[2])
+        write_json(self.summary, {"summaryVersion": "x", "commit": COMMIT, "pins": {}})
+        self.assertIn("STOP:", self.go()[2])
+        write_json(self.summary, {"summaryVersion": lab.SUMMARY_VERSION, "commit": "8" * 40,
+                                  "pins": {"claudeSha256": H_CLAUDE, "interpreterSha256": H_PY, "sandboxExecSha256": H_SB}})
+        self.assertIn("not the commit the setup summary", self.go()[2])
+        self.summary.write_text("{not json")
+        self.assertIn("missing or cannot be read", self.go()[2])
+        self.assertEqual(self.calls, [])
+
+    def test_hash_mismatch_stops_before_anything_runs(self):
+        code, _, err = self.go(hash_of=lambda path: "0" * 64)
         self.assertEqual(code, 1)
-        self.assertIn("not the commit the setup summary", err)
-        self.summary.write_text(json.dumps({"summaryVersion": "x", "commit": COMMIT}))
-        self.assertIn("not a har-t009-setup-v1 file", self.run_main(self.argv)[2])
+        self.assertIn("does not match its pinned hash", err)
+        self.assertEqual(self.calls, [])
 
-    def test_pin_must_be_64_hex(self):
-        code, _, err = self.run_main([*self.argv, "--claude-sha256", "zz"])
+    def test_env_value_with_claude_is_caught_like_the_runbook_grep(self):
+        code, _, err = self.go(env={"__CFBundleIdentifier": "com.anthropic.claudefordesktop"})
         self.assertEqual(code, 1)
-        self.assertIn("a hash is not pasted correctly", err)
+        self.assertIn("__CFBundleIdentifier", err)
+        self.assertEqual(self.calls, [])
 
-    def test_stop_when_environment_has_claude_or_anthropic_variables(self):
-        code, _, err = self.run_main(self.argv, env={"ANTHROPIC_API_KEY": "secret-value", "PATH": "/bin"})
+    def test_login_failure_and_bad_config_dir_stop(self):
+        self.login_rc = 1
+        self.assertIn("claude auth login failed", self.go()[2])
+        self.login_rc = 0
+        (self.home / "t009/config/big").write_bytes(b"x" * (lab.BIG_FILE + 1))
+        self.assertIn("few small files", self.go(["--skip-login"])[2])
+        (self.home / "t009/config/big").unlink()
+        (self.home / "t009/config/login.json").unlink()
+        self.assertIn("few small files", self.go(["--skip-login"])[2])
+
+    def test_refused_dry_run_is_saved_then_stops(self):
+        self.driver["--dry-run"] = (2, '{"verdict": "refused"}')
+        code, _, err = self.go()
         self.assertEqual(code, 1)
-        self.assertIn("ANTHROPIC_API_KEY", err)
-        self.assertNotIn("secret-value", err)
-
-    # real path, with subprocess and hashing replaced
-    def real(self, argv=None, login_rc=0, driver=(0, '{"verdict": "ready"}'), hash_of=None, files=None, env=None):
-        root = Path(self.tmp.name)
-        (root / "home/t009/config").mkdir(parents=True)
-        for name, size in (files if files is not None else {"a.json": 10}).items():
-            (root / "home/t009/config" / name).write_bytes(b"x" * size)
-        scripts_dir = root / f"braid/repo-{SHORT}/scripts"
-        scripts_dir.mkdir(parents=True)
-        (scripts_dir / "har_t009_attempt.py").write_text("")
-        shared = root / "shared.json"
-        calls = []
-
-        def fake_run(cmd, **kw):
-            calls.append((cmd, kw))
-            if cmd[1:3] == ["auth", "login"]:
-                return mock.Mock(returncode=login_rc)
-            return mock.Mock(returncode=driver[0], stdout=driver[1], stderr="")
-
-        def default_hash(path):
-            return H_CLAUDE if "claude" in path else H_PY if "python" in path else H_SB
-
-        with mock.patch.dict(os.environ, {"HOME": str(root / "home")}), \
-                mock.patch.object(dry, "BRAID", str(root / "braid")), \
-                mock.patch.object(dry, "SHARED_COPY", str(shared)), \
-                mock.patch.object(dry.subprocess, "run", fake_run), \
-                mock.patch.object(dry, "sha256_file", hash_of or default_hash):
-            result = self.run_main(argv or self.argv, env=env)
-        return result, calls, root, shared
-
-    def test_real_run_saves_the_verdict_and_never_self_checks(self):
-        (code, out, _), calls, root, shared = self.real()
-        self.assertEqual(code, 0)
-        driver_cmd, kw = calls[-1]
-        self.assertEqual(driver_cmd[-1], "--dry-run")
-        self.assertNotIn("--founder-go", driver_cmd)
-        self.assertNotIn("--self-check", driver_cmd)
-        self.assertEqual(kw["env"]["CLAUDE_CONFIG_DIR"], str(root / "home/t009/config"))
-        self.assertEqual(kw["env"]["DISABLE_AUTOUPDATER"], "1")
-        self.assertEqual((root / "home/t009/dry-run.json").read_text(), '{"verdict": "ready"}')
-        self.assertEqual(shared.read_text(), '{"verdict": "ready"}')
-        self.assertTrue(any(c[0][1:3] == ["auth", "login"] for c in calls))
-
-    def test_skip_login_does_not_run_claude(self):
-        (code, _, _), calls, _, _ = self.real([*self.argv, "--skip-login"])
-        self.assertEqual(code, 0)
-        self.assertFalse(any(c[0][1:3] == ["auth", "login"] for c in calls))
-
-    def test_refused_verdict_exit_code_is_passed_through_and_saved(self):
-        (code, _, _), _, _, shared = self.real(driver=(2, '{"verdict": "refused"}'))
-        self.assertEqual(code, 2)
-        self.assertTrue(shared.exists())
+        self.assertIn("verdict is refused, not ready", err)
+        self.assertTrue((self.from_lab / "dry-run.json").exists())
+        self.assertNotIn("--self-check", self.driver_modes())
 
     def test_crashed_driver_saves_nothing(self):
         for result in ((1, "Traceback"), (1, '{"verdict": "error"}')):
             with self.subTest(result):
                 self.setUp()
-                (code, _, err), _, root, shared = self.real(driver=result)
+                self.driver["--dry-run"] = result
+                code, _, err = self.go()
                 self.assertEqual(code, 1)
                 self.assertIn("STOP:", err)
-                self.assertFalse(shared.exists())
-                self.assertFalse((root / "home/t009/dry-run.json").exists())
+                self.assertFalse((self.from_lab / "dry-run.json").exists())
 
-    def test_hash_mismatch_stops_before_login(self):
-        (code, _, err), calls, _, _ = self.real(hash_of=lambda path: "0" * 64)
+    def test_self_check_refusal_stops_before_the_real_attempt(self):
+        self.driver["--self-check"] = (2, '{"verdict": "self-check-refused"}')
+        code, _, err = self.go()
         self.assertEqual(code, 1)
-        self.assertIn("does not match its pinned hash", err)
-        self.assertEqual(calls, [])
+        self.assertIn("not self-check-ok", err)
+        self.assertEqual(self.driver_modes(), ["login", "--dry-run", "--self-check"])
 
-    def test_login_failure_and_bad_config_dir_stop(self):
-        cases = [({"login_rc": 1}, "claude auth login failed"), ({"files": {}}, "few small files"),
-                 ({"files": {"big": dry.BIG_FILE + 1}}, "few small files")]
-        for kwargs, message in cases:
-            with self.subTest(message, **{k: str(v) for k, v in kwargs.items()}):
-                self.setUp()
-                (code, _, err), _, _, _ = self.real(**kwargs)
-                self.assertEqual(code, 1)
-                self.assertIn(message, err)
-
-    def test_env_value_with_claude_is_caught_like_the_runbook_grep(self):
-        (code, _, err), calls, _, _ = self.real(env={"__CFBundleIdentifier": "com.anthropic.claudefordesktop"})
+    def test_existing_session_counter_needs_a_new_label_or_resume(self):
+        out_dir = self.home / "t009/out/t009-20261104"
+        out_dir.mkdir(parents=True)
+        (out_dir / ".sessions.json").write_text("{}")
+        code, _, err = self.go()
         self.assertEqual(code, 1)
-        self.assertIn("__CFBundleIdentifier", err)
-        self.assertEqual(calls, [])
+        self.assertIn("step 10c", err)
+        self.assertEqual(self.driver_modes(), ["login", "--dry-run", "--self-check"])
+        self.setUp()
+        out_dir = self.home / "t009/out/t009-20261104"
+        out_dir.mkdir(parents=True)
+        (out_dir / ".sessions.json").write_text("{}")
+        self.assertEqual(self.go(["--resume"])[0], 0)
+
+    def test_existing_bundle_copy_is_never_overwritten(self):
+        (self.from_lab / "bundle-t009-20261104").mkdir()
+        (self.from_lab / "bundle-t009-20261104/keep").write_text("old")
+        code, _, _ = self.go()
+        self.assertEqual(code, 0)
+        self.assertEqual((self.from_lab / "bundle-t009-20261104/keep").read_text(), "old")
+        self.assertTrue((self.from_lab / "bundle-t009-20261104-2/summary.json").exists())
+
+    def test_bundle_copy_failure_keeps_the_driver_exit_code(self):
+        self.driver["--founder-go"] = (2, "")
+        with mock.patch.object(lab.shutil, "copytree", side_effect=OSError(28, "No space left")):
+            code, _, err = self.go()
+        self.assertEqual(code, 2)
+        self.assertIn("cannot copy the bundle", err)
+
+    def test_rerun_with_a_different_report_keeps_the_old_one(self):
+        (self.from_lab / "dry-run.json").write_text('{"verdict": "ready", "old": true}')
+        self.assertEqual(self.go()[0], 0)
+        self.assertEqual((self.from_lab / "dry-run.json.1").read_text(), '{"verdict": "ready", "old": true}')
+        self.assertEqual((self.from_lab / "dry-run.json").read_text(), '{"verdict": "ready"}')
+
+    def test_verification_symlink_and_foreign_owner_are_refused(self):
+        target = self.to_lab / "elsewhere.json"
+        write_json(target, {})
+        (self.to_lab / "verify-setup.json").symlink_to(target)
+        code, _, err = self.go(approve=(), extra=["--wait-timeout", "10"])
+        self.assertEqual(code, 1)
+        self.assertIn("STOP:", err)
+        (self.to_lab / "verify-setup.json").unlink()
+        write_json(self.to_lab / "verify-setup.json", {})
+        with mock.patch.object(lab.os, "getuid", return_value=os.getuid() + 1):
+            with self.assertRaises(lab.Stop) as caught:
+                lab.check_verification(self.to_lab / "verify-setup.json", self.to_lab, {}, os.getuid() + 7)
+        self.assertIn("not owned by the operator", str(caught.exception))
+
+    def test_unknown_operator_account_stops(self):
+        with self.assertRaises(lab.Stop):
+            lab.operator_uid("no-such-account-xyz")
+
+    def test_flags_that_skip_a_gate_do_not_exist(self):
+        flags = {a.option_strings[0] for a in lab.parser()._actions if a.option_strings}
+        self.assertFalse({"--skip-verification", "--no-wait", "--skip-self-check", "--founder-go", "--self-check"} & flags)
+
+    def test_shared_constants_agree_across_the_scripts(self):
+        for module in (lab, verify):
+            self.assertEqual(module.BRAID, setup.BRAID)
+            self.assertEqual(module.VERIFY_VERSION, "har-t009-verify-v1")
+            self.assertEqual(module.SUMMARY_VERSION, setup.SUMMARY_VERSION)
+            self.assertEqual(module.DEFAULT_HANDOFF, setup.DEFAULT_HANDOFF)
+            self.assertTrue(module.CLAUDE.endswith(setup.CLAUDE_VERSION) if hasattr(module, "CLAUDE") else True)
+        self.assertEqual(verify.TEAM_ID, setup.TEAM_ID)
+        self.assertEqual(verify.LISTING_COMMAND, setup.LISTING_COMMAND)
+
+
+class VerifyTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.handoff = Path(self.tmp.name)
+        (self.handoff / "to-lab").mkdir()
+        (self.handoff / "from-lab").mkdir()
+        self.summary = {
+            "summaryVersion": setup.SUMMARY_VERSION, "commit": COMMIT, "nativeRun": False, "executionAuthorization": False,
+            "pins": {"claudeSha256": H_CLAUDE, "interpreterSha256": H_PY, "sandboxExecSha256": H_SB},
+            "claude": {"sha256": H_CLAUDE, "sourceSha256": H_CLAUDE, "teamIdentifier": "Q6L2SF6YDW"},
+            "codeCopy": {"path": "/x", "listingSha256": hashlib.sha256(LISTING.encode()).hexdigest()}}
+        write_json(self.handoff / "to-lab/setup-summary.json", self.summary)
+
+    def args(self, stage, published=H_CLAUDE):
+        return verify.parser().parse_args([stage, "--commit", COMMIT, "--attempt", "t009-20261104",
+                                           "--handoff", str(self.handoff), "--published-claude-sha256", published])
+
+    def host(self, hash_of=None, codesign_out=CODESIGN, verify_rc=0):
+        def run(cmd, cwd=None):
+            if cmd[:2] == ["codesign", "--verify"]:
+                return verify_rc, ""
+            if cmd[:2] == ["codesign", "-dv"]:
+                return 0, codesign_out
+            return 0, LISTING
+        hasher = hash_of or (lambda path: H_CLAUDE if "claude" in path else H_PY if "python" in path else
+                             H_SB if "sandbox" in path else hashlib.sha256(Path(path).read_bytes()).hexdigest())
+        return run, hasher
+
+    def call(self, args, **host):
+        run, hasher = self.host(**host)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = verify.verify(args, run=run, hash_file=hasher)
+        return code, json.loads((self.handoff / f"to-lab/verify-{args.stage}.json").read_text())
+
+    def test_setup_approved_binds_to_the_summary_hash(self):
+        code, record = self.call(self.args("setup"))
+        self.assertEqual((code, record["verdict"]), (0, "approved"), record["failed"])
+        self.assertEqual(record["subjectSha256"], hashlib.sha256((self.handoff / "to-lab/setup-summary.json").read_bytes()).hexdigest())
+        self.assertEqual((record["stage"], record["commit"], record["attempt"]), ("setup", COMMIT, "t009-20261104"))
+        self.assertIs(record["executionAuthorization"], False)
+
+    def test_setup_rejections(self):
+        rows = [({"published": "9" * 64}, "PUBLISHED release checksum"),
+                ({"hash_of": lambda path: "0" * 64}, "re-hashed"),
+                ({"codesign_out": "TeamIdentifier=ZZZZZZZZZZ\n"}, "TeamIdentifier Q6L2SF6YDW and the Anthropic"),
+                ({"verify_rc": 3}, "codesign --verify")]
+        for host, fragment in rows:
+            with self.subTest(fragment):
+                published = host.pop("published", H_CLAUDE)
+                code, record = self.call(self.args("setup", published), **host)
+                self.assertEqual((code, record["verdict"]), (1, "rejected"))
+                self.assertTrue(any(fragment in name for name in record["failed"]), record["failed"])
+
+    def test_setup_rejects_a_summary_for_another_commit_or_with_native_run(self):
+        for key, value in (("commit", "8" * 40), ("nativeRun", True), ("executionAuthorization", True)):
+            with self.subTest(key):
+                write_json(self.handoff / "to-lab/setup-summary.json", {**self.summary, key: value})
+                self.assertEqual(self.call(self.args("setup"))[1]["verdict"], "rejected")
+
+    def test_dry_run_and_self_check_stages(self):
+        report = {"verdict": "ready", "failed": [], "attempt": "t009-20261104", "nativeRun": False, "dryRun": True,
+                  "executionAuthorization": False, "probeCatalogSha256": "a" * 64}
+        text = json.dumps(report)
+        (self.handoff / "from-lab/dry-run.json").write_text(text)
+        digest = hashlib.sha256(text.encode()).hexdigest()
+        (self.handoff / "from-lab/dry-run.json.sha256").write_text(f"{digest}  dry-run.json\n")
+        code, record = self.call(self.args("dry-run"))
+        self.assertEqual((code, record["verdict"], record["subjectSha256"]), (0, "approved", digest))
+        for key, value in (("verdict", "refused"), ("failed", ["x"]), ("nativeRun", True), ("attempt", "t009-20269999")):
+            with self.subTest(key):
+                bad = json.dumps({**report, key: value})
+                (self.handoff / "from-lab/dry-run.json").write_text(bad)
+                (self.handoff / "from-lab/dry-run.json.sha256").write_text(f"{hashlib.sha256(bad.encode()).hexdigest()}  dry-run.json\n")
+                self.assertEqual(self.call(self.args("dry-run"))[1]["verdict"], "rejected")
+        sc = json.dumps({"verdict": "self-check-ok", "attempt": "t009-20261104", "executionAuthorization": False})
+        (self.handoff / "from-lab/self-check.json").write_text(sc)
+        (self.handoff / "from-lab/self-check.json.sha256").write_text(f"{hashlib.sha256(sc.encode()).hexdigest()}  self-check.json\n")
+        self.assertEqual(self.call(self.args("self-check"))[1]["verdict"], "approved")
+
+    def test_lab_edited_output_is_rejected_when_its_sidecar_disagrees(self):
+        report = json.dumps({"verdict": "ready", "failed": [], "attempt": "t009-20261104", "nativeRun": False,
+                             "dryRun": True, "executionAuthorization": False, "probeCatalogSha256": "a" * 64})
+        (self.handoff / "from-lab/dry-run.json").write_text(report)
+        (self.handoff / "from-lab/dry-run.json.sha256").write_text(f"{'0' * 64}  dry-run.json\n")
+        self.assertEqual(self.call(self.args("dry-run"))[1]["verdict"], "rejected")
+
+    def test_symlinked_subject_is_refused(self):
+        real = self.handoff / "from-lab/real.json"
+        real.write_text("{}")
+        (self.handoff / "from-lab/dry-run.json").symlink_to(real)
+        with self.assertRaises(verify.Stop):
+            verify.verify(self.args("dry-run"))
+
+    def test_missing_subject_and_bad_arguments_stop(self):
+        with self.assertRaises(verify.Stop):
+            verify.verify(self.args("dry-run"))
+        bad = self.args("setup", published="zz")
+        with self.assertRaises(verify.Stop):
+            verify.verify(bad)
+        bad = self.args("setup")
+        bad.commit = "abc"
+        with self.assertRaises(verify.Stop):
+            verify.verify(bad)
+
+    def test_the_verification_file_is_founder_readable_and_written_atomically(self):
+        self.call(self.args("setup"))
+        target = self.handoff / "to-lab/verify-setup.json"
+        self.assertEqual(oct(target.stat().st_mode & 0o777), "0o644")
+        self.assertFalse((self.handoff / "to-lab/verify-setup.json.tmp").exists())
 
 
 if __name__ == "__main__":

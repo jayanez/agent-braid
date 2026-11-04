@@ -21,7 +21,7 @@ overwrite their previous copy, and the code copy is rebuilt. The empty ``config_
 kept as written, so a re-run after the step 9 login stops there instead of touching a logged-in account.
 
 The final stdout line block is a machine-readable summary (hashes of the claude copy, the interpreter and
-the code copy listing, the codesign TeamIdentifier) that is also written to ``--summary-out``. Send it to
+the code copy listing, the codesign TeamIdentifier) that is also written to ``<handoff>/to-lab/setup-summary.json``. Send it to
 the orchestrator: it checks the claude hash against an independent source before you continue to step 9.
 """
 
@@ -45,7 +45,7 @@ CLAUDE_VERSION = "2.1.292"
 PYTHON_TAG = "python312"
 DEFAULT_CLAUDE_SRC = f"/opt/homebrew/Caskroom/claude-code/{CLAUDE_VERSION}/claude"
 DEFAULT_PY_SRC = "~/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none"
-DEFAULT_SUMMARY = "/Users/Shared/t009-setup-summary.json"
+DEFAULT_HANDOFF = "/Users/Shared/braid-t009"
 SANDBOX_EXEC = "/usr/bin/sandbox-exec"
 TEAM_ID = "Q6L2SF6YDW"
 AUTHORITY = f"Authority=Developer ID Application: Anthropic PBC ({TEAM_ID})"
@@ -185,7 +185,7 @@ def _codesign(r: Runner, path: str) -> str | None:
 
 
 def run_setup(r: Runner, *, commit: str, account: str, checkout: str, claude_src: str, py_src: str,
-              home: str, summary_out: str) -> dict:
+              home: str, handoff: str) -> dict:
     short = commit[:7]
     claude_dst = f"{BRAID}/claude-{CLAUDE_VERSION}"
     py_prefix = f"{BRAID}/{PYTHON_TAG}"
@@ -317,10 +317,22 @@ def run_setup(r: Runner, *, commit: str, account: str, checkout: str, claude_src
             and SANDBOX_EXEC in p, "STOP: a pinned file changed after it was installed")
     summary["pins"] = {"claudeSha256": pins.get(claude_dst), "interpreterSha256": pins.get(f"{py_prefix}/bin/python3.12"),
                        "sandboxExecSha256": pins.get(SANDBOX_EXEC)}
+    r.step("Step 8b. Create the handoff directory (not in the runbook; the lab script and the orchestrator use it)")
+    to_lab, from_lab = f"{handoff}/to-lab", f"{handoff}/from-lab"
+    r.do(["install", "-d", "-m", "755", handoff])
+    r.do(["install", "-d", "-m", "755", to_lab])  # yours: the setup summary and the orchestrator's verification files
+    r.do(["install", "-d", "-o", account, "-g", "staff", "-m", "750", from_lab], sudo=True)  # the lab writes here
+    for path, lab_owned, mode in ((handoff, False, "755"), (to_lab, False, "755"), (from_lab, True, "750")):
+        st = r.query(["stat", "-f", "%Su:%Lp", path])
+        r.check(f"{path} is {'owned by the lab account' if lab_owned else 'yours'}, mode {mode}", st,
+                lambda v, o=lab_owned, m=mode: v.strip().endswith(f":{m}")
+                and (v.strip().split(":")[0] == account) == o,
+                f"STOP: {path} has the wrong owner or mode (the lab account must not be able to write {to_lab})")
+    summary["handoff"] = {"dir": handoff, "toLab": to_lab, "fromLab": from_lab}
     summary.update({"nativeRun": False, "executionAuthorization": False,
                     "next": "send this summary to the orchestrator; do not continue to step 9 until it confirms "
                             "the claude sha256 against the published checksum",
-                    "summaryFile": summary_out})
+                    "summaryFile": f"{to_lab}/setup-summary.json"})
     return summary
 
 
@@ -345,7 +357,8 @@ def parser() -> argparse.ArgumentParser:
                    help="your checkout, only used to export the code at --commit (default: this repository)")
     p.add_argument("--claude-src", default=DEFAULT_CLAUDE_SRC)
     p.add_argument("--python-src", default=DEFAULT_PY_SRC)
-    p.add_argument("--summary-out", default=DEFAULT_SUMMARY)
+    p.add_argument("--handoff", default=DEFAULT_HANDOFF,
+                   help="shared directory: to-lab/ is yours (summary, verification files), from-lab/ is the lab's")
     p.add_argument("--dry-run", action="store_true", help="print every command and check; run nothing")
     return p
 
@@ -364,12 +377,12 @@ def main(argv: Sequence[str] | None = None, *, runner: Runner | None = None, hom
     try:
         summary = run_setup(r, commit=args.commit, account=args.account, checkout=expand(args.checkout),
                             claude_src=expand(args.claude_src), py_src=expand(args.python_src), home=home,
-                            summary_out=args.summary_out)
+                            handoff=args.handoff)
         if r.dry_run:
             print("\n(dry run: nothing was run; every check above is enforced in a real run)", file=r.out)
             return 0
         text = json.dumps(summary, indent=2, sort_keys=True)
-        write_summary(args.summary_out, text + "\n")
+        write_summary(summary["summaryFile"], text + "\n")
     except Stop as exc:
         print(str(exc), file=sys.stderr)
         return 1
