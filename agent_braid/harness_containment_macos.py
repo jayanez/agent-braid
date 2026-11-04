@@ -26,7 +26,8 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
   memory (macOS refuses ``RLIMIT_AS`` below the current address space), output and disk
   (candidate, per-run ``TMPDIR`` and ``config_dir`` together: total bytes and entry count,
   ``disk-limit-exceeded``),
-  and settlement of the group plus every new process of the dedicated user. A process that
+  and settlement of the group plus every new process of the dedicated user that belongs to the child's
+  tree (parent chain or process group); other new processes are only counted as noise. A process that
   left the group is reported apart from one still alive after the final sweep.
 * run accounting: ``ProbeResult`` and ``ContainedHostRun`` extend the lab and host results
   with the process counts, the cleanup outcome, the peak disk use and the proxy counters of
@@ -66,6 +67,7 @@ import shutil
 import signal
 import socket
 import stat
+import struct
 import subprocess
 import sys
 import tempfile
@@ -446,10 +448,12 @@ def _libsystem():
         lib = ctypes.CDLL("/usr/lib/libSystem.B.dylib", use_errno=True)
         lib.sysctlbyname.argtypes = [ctypes.c_char_p, ctypes.c_void_p, ctypes.POINTER(ctypes.c_size_t),
                                      ctypes.c_void_p, ctypes.c_size_t]
+        lib.sysctl.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_uint, ctypes.c_void_p,
+                               ctypes.POINTER(ctypes.c_size_t), ctypes.c_void_p, ctypes.c_size_t]
         lib.proc_listpids.argtypes = [ctypes.c_uint32, ctypes.c_uint32, ctypes.c_void_p, ctypes.c_int]
         lib.proc_pidinfo.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_uint64, ctypes.c_void_p,
                                      ctypes.c_int]
-        for name in ("sysctlbyname", "proc_listpids", "proc_pidinfo"):
+        for name in ("sysctlbyname", "sysctl", "proc_listpids", "proc_pidinfo"):
             getattr(lib, name).restype = ctypes.c_int
         _LIBSYSTEM = lib
     return _LIBSYSTEM
@@ -504,12 +508,15 @@ def host_facts() -> HostFacts:
                      platform.machine())
 
 
-_PROC_RUID_ONLY, _PROC_PIDTASKINFO, _PROC_PIDTBSDINFO = 5, 4, 3
-_BSDINFO_WORDS = 17  # struct proc_bsdinfo is 136 bytes; start sec/usec are words 15 and 16
+_PROC_RUID_ONLY, _PROC_PIDTASKINFO = 5, 4
 _TASKINFO_WORDS = 12  # struct proc_taskinfo is 96 bytes; resident size is word 1
 
-
-_SZOMB = 5  # pbi_status of a process that exited and is not yet reaped
+# struct kinfo_proc (sys/sysctl.h, 648 bytes on arm64 and x86_64) from sysctl KERN_PROC/KERN_PROC_PID:
+# a plain process-table read that needs no task access, so it works for every process of the same user.
+_CTL_KERN, _KERN_PROC, _KERN_PROC_PID = 1, 14, 1
+_KINFO_BYTES = 648
+_KP_STAT, _KP_PID, _KP_PPID, _KP_PGID = 36, 40, 560, 564  # p_stat (1 byte), p_pid, e_ppid, e_pgid
+_SZOMB = 5  # p_stat of a process that exited and is not yet reaped
 
 
 def _accounting_error(code: int, flavor: int) -> LabError:
@@ -519,30 +526,52 @@ def _accounting_error(code: int, flavor: int) -> LabError:
     return error
 
 
-def _pidinfo(pid: int, flavor: int, words: int) -> tuple[int, ...] | None:
-    """One ``proc_pidinfo`` call; ``None`` only when the process is gone or exited (fail closed).
+def _kinfo(pid: int) -> tuple[int, int, int, int] | None:
+    """``(start time in microseconds, parent pid, process group, p_stat)``; ``None`` only when gone.
 
-    A process that exited and is not yet reaped (``SZOMB``) has no task any more: the task flavors
-    fail for it while ``kill(pid, 0)`` still succeeds, so it counts as gone, not as unreadable.
+    Any other failure, or an answer that is not the 648-byte record of ``pid``, fails closed.
     """
-    buffer = (ctypes.c_uint64 * words)()
+    mib = (ctypes.c_int * 4)(_CTL_KERN, _KERN_PROC, _KERN_PROC_PID, pid)
+    size, buffer = ctypes.c_size_t(_KINFO_BYTES), ctypes.create_string_buffer(_KINFO_BYTES)
     ctypes.set_errno(0)
-    if _libsystem().proc_pidinfo(pid, flavor, 0, buffer, ctypes.sizeof(buffer)) == ctypes.sizeof(buffer):
-        return tuple(buffer)
+    if _libsystem().sysctl(mib, 4, buffer, ctypes.byref(size), None, 0) != 0:
+        code = ctypes.get_errno()
+        if code == errno.ESRCH:
+            return None
+        raise _accounting_error(code, _KERN_PROC)
+    if size.value == 0:  # the table has no such pid
+        return None
+    raw = buffer.raw
+    if size.value != _KINFO_BYTES or struct.unpack_from("=i", raw, _KP_PID)[0] != pid:
+        raise _accounting_error(errno.EINVAL, _KERN_PROC)
+    seconds, microseconds = struct.unpack_from("=qi", raw, 0)
+    return (seconds * 1_000_000 + microseconds, struct.unpack_from("=i", raw, _KP_PPID)[0],
+            struct.unpack_from("=i", raw, _KP_PGID)[0], raw[_KP_STAT])
+
+
+def _task_resident(pid: int) -> int | None:
+    """Resident bytes from one ``proc_pidinfo`` task call; ``None`` only when the process is gone or exited.
+
+    Only the child and its descendants are measured (the memory watchdog); a live one the call cannot
+    read fails closed. An exited and not yet reaped process (``SZOMB``) has no task any more: the call
+    fails for it while ``kill(pid, 0)`` still succeeds, so it counts as gone, not as unreadable.
+    """
+    buffer = (ctypes.c_uint64 * _TASKINFO_WORDS)()
+    ctypes.set_errno(0)
+    if _libsystem().proc_pidinfo(pid, _PROC_PIDTASKINFO, 0, buffer, ctypes.sizeof(buffer)) == ctypes.sizeof(buffer):
+        return buffer[1]
     code = ctypes.get_errno()
     if code == errno.ESRCH:
         return None
-    if flavor != _PROC_PIDTBSDINFO:
-        status = _pidinfo(pid, _PROC_PIDTBSDINFO, _BSDINFO_WORDS)
-        if status is None or status[0] >> 32 == _SZOMB:
-            return None
+    if (found := _kinfo(pid)) is None or found[3] == _SZOMB:
+        return None
     try:
         os.kill(pid, 0)
     except ProcessLookupError:
         return None
     except OSError:
         pass
-    raise _accounting_error(code, flavor)
+    raise _accounting_error(code, _PROC_PIDTASKINFO)
 
 
 def _user_processes(uid: int) -> set[tuple[int, int]]:
@@ -559,23 +588,32 @@ def _user_processes(uid: int) -> set[tuple[int, int]]:
         size = got * 2  # the list may be truncated: retry larger
     out = set()
     for pid in buffer[:got // 4]:
-        if pid > 0 and (info := _pidinfo(pid, _PROC_PIDTBSDINFO, _BSDINFO_WORDS)) is not None:
-            out.add((pid, info[15] * 1_000_000 + info[16]))
+        if pid > 0 and (info := _kinfo(pid)) is not None:
+            out.add((pid, info[0]))
     return out
 
 
-def _process_parent(pid: int) -> int | None:
-    """Parent pid (``pbi_ppid``, the low half of word 2), ``None`` when the process is gone."""
-    info = _pidinfo(pid, _PROC_PIDTBSDINFO, _BSDINFO_WORDS)
-    return None if info is None else info[2] & 0xFFFFFFFF
+def _process_links(identity: tuple[int, int]) -> tuple[int | None, int | None]:
+    """``(parent pid, process group)`` of one listed process from a single read; ``(None, None)`` when it is
+    gone or the pid now belongs to another process (a different start time)."""
+    info = _kinfo(identity[0])
+    return (info[1], info[2]) if info is not None and info[0] == identity[1] else (None, None)
 
 
 def _resident_bytes(processes: set[tuple[int, int]]) -> int:
-    total = 0
+    return sum(_task_resident(pid) or 0 for pid, _ in processes)
+
+
+def _unreadable_tasks(processes: set[tuple[int, int]]) -> int:
+    """How many of ``processes`` ``proc_pidinfo`` cannot read for lack of permission (evidence only)."""
+    count = 0
+    buffer = (ctypes.c_uint64 * _TASKINFO_WORDS)()
     for pid, _ in processes:
-        info = _pidinfo(pid, _PROC_PIDTASKINFO, _TASKINFO_WORDS)
-        total += 0 if info is None else info[1]
-    return total
+        ctypes.set_errno(0)
+        if _libsystem().proc_pidinfo(pid, _PROC_PIDTASKINFO, 0, buffer, ctypes.sizeof(buffer)) <= 0 \
+                and ctypes.get_errno() == errno.EPERM:
+            count += 1
+    return count
 
 
 # --- loopback egress proxy (NC-1) -------------------------------------------------------
@@ -884,8 +922,10 @@ class _OutputStream:
 class RunAccounting:
     """What one supervised run measured, beyond the lab and host results (additive fields).
 
-    ``escaped_processes`` are new processes of the dedicated user seen after the group
-    settled, i.e. that left the group; the sweep kills them and ``settled`` stays strict.
+    ``escaped_processes`` are processes of the child's own tree (see ``_Lineage``) seen after the group
+    settled, i.e. that left the group; the sweep kills them and ``settled`` stays strict. Other new
+    processes of the user (launchd agents) are not escapes; the run evidence counts them as
+    ``unrelatedProcesses``.
     ``surviving_processes`` are those still alive after the final sweep iteration: a judge
     of "survives kill" uses this one. ``escaped_descendants`` are the leavers that were seen
     in the child's process tree during the run (polled, so a fast double fork between two
@@ -918,24 +958,44 @@ class ProbeResult(RunAccounting, ChildResult):
 
 
 class _Lineage:
-    """Processes seen in the child's tree during the run, to tell leavers from bystanders."""
+    """The child's own tree (the child, its descendants and the members of its process group) among the
+    new processes of the dedicated user; every other new process is unrelated.
+
+    A new process is the child's when it is the child, when its parent is the child or an earlier
+    member, or when its process group is led by the child or an earlier member (an orphan reparented to
+    ``launchd`` keeps the group). The links are read once, when the process is first seen. Residual: a
+    descendant that calls ``setsid`` and is reparented before the poll that would have seen it, or that
+    starts and exits between two polls, reads as unrelated (documented in the T009 re-check).
+    """
 
     def __init__(self, root: int):
+        self._root = root
         self._pids = {root}
-        self._parents: dict[tuple[int, int], int | None] = {}
+        self._links: dict[tuple[int, int], tuple[int | None, int | None]] = {}
         self.identities: set[tuple[int, int]] = set()
 
     def observe(self, processes: set[tuple[int, int]]) -> None:
-        for identity in processes - self._parents.keys():
-            self._parents[identity] = _process_parent(identity[0])
+        for identity in processes - self._links.keys():
+            self._links[identity] = _process_links(identity)
         grew = True
         while grew:
             grew = False
-            for identity, parent in self._parents.items():
-                if identity not in self.identities and parent in self._pids:
+            for identity, (parent, group) in self._links.items():
+                if identity[0] != self._root and identity not in self.identities \
+                        and (parent in self._pids or group in self._pids):
                     self.identities.add(identity)
                     self._pids.add(identity[0])
                     grew = True
+
+    def members(self, processes: set[tuple[int, int]]) -> set[tuple[int, int]]:
+        """The child's own processes among ``processes``, after observing them."""
+        self.observe(processes)
+        return {identity for identity in processes if identity[0] == self._root or identity in self.identities}
+
+    def unrelated(self) -> set[tuple[int, int]]:
+        """Every process seen so far that is not the child's."""
+        return {identity for identity in self._links
+                if identity[0] != self._root and identity not in self.identities}
 
 
 class _DiskGuard:
@@ -984,9 +1044,8 @@ class _DiskGuard:
 def _resource_limit(uid: int, baseline: set[tuple[int, int]], lineage: _Lineage,
                     disk: _DiskGuard) -> str | None:
     """The first exceeded resource limit (``memory`` or ``disk``), else ``None``."""
-    processes = _user_processes(uid) - baseline
-    lineage.observe(processes)
-    if _resident_bytes(processes) > LIMITS["memoryBytes"]:
+    own = lineage.members(_user_processes(uid) - baseline)  # unrelated processes are not measured
+    if _resident_bytes(own) > LIMITS["memoryBytes"]:
         return "memory"
     return "disk" if disk.exceeded() else None
 
@@ -1360,13 +1419,19 @@ class MacOSContainment(ContainmentBackend):
                 state["settled"] = _settle(child.pid)
                 state["baselineProcesses"] = len(baseline)
                 try:
-                    escaped, surviving = self._sweep(uid, baseline)
-                    descendants = len(escaped & (lineage.identities if lineage else set()))
+                    escaped, surviving = self._sweep(uid, baseline, lineage)
+                    descendants = len(escaped & lineage.identities)
                     state.update(escapedProcesses=len(escaped), escapedDescendants=descendants,
                                  unattributedProcesses=len(escaped) - descendants,
                                  survivingProcesses=surviving)
                 except LabError as exc:  # cleanup still runs; the run stays unsettled
                     sweep_error = exc
+                unrelated = lineage.unrelated()  # noise level for the evidence: counts only, never acted on
+                try:
+                    unreadable = _unreadable_tasks(unrelated)
+                except Exception:
+                    unreadable = 0
+                state.update(unrelatedProcesses=len(unrelated), unreadableProcesses=unreadable)
             stopped_early = (state["timedOut"] or state["cancelled"] or state["outputTruncated"]
                              or state["limitExceeded"])
             if live is not None:
@@ -1437,12 +1502,16 @@ class MacOSContainment(ContainmentBackend):
                 continue
             return
 
-    def _sweep(self, uid: int, baseline: set[tuple[int, int]]) -> tuple[set[tuple[int, int]], int]:
-        """Kill every new process of the dedicated user left after the group settled.
+    def _sweep(self, uid: int, baseline: set[tuple[int, int]],
+               lineage: _Lineage) -> tuple[set[tuple[int, int]], int]:
+        """Kill every new process of the child's own tree left after the group settled.
 
         Returns the processes seen leaving the group and how many were still alive after
         the last kill round (a failed kill or an exhausted retry budget). Any leaver leaves
-        the run unsettled even when the kill succeeds. Only ever runs as the dedicated account.
+        the run unsettled even when the kill succeeds. New processes of the dedicated user
+        that are not the child's (see ``_Lineage``) are neither killed nor counted: a GUI
+        session's launchd agents appear at any time and are not the child's. Only ever runs
+        as the dedicated account.
         """
         try:
             account_uid = pwd.getpwnam(self.policy.account).pw_uid
@@ -1451,7 +1520,7 @@ class MacOSContainment(ContainmentBackend):
         _require(uid == os.getuid() == account_uid, "dedicated-user-required")
         escaped: set[tuple[int, int]] = set()
         for _ in range(40):
-            survivors = _user_processes(uid) - baseline
+            survivors = lineage.members(_user_processes(uid) - baseline)
             if not survivors:
                 return escaped, 0
             escaped |= survivors
@@ -1461,4 +1530,4 @@ class MacOSContainment(ContainmentBackend):
                 except OSError:
                     pass
             time.sleep(_POLL_SECONDS)
-        return escaped, len(_user_processes(uid) - baseline)
+        return escaped, len(lineage.members(_user_processes(uid) - baseline))
