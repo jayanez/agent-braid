@@ -15,7 +15,7 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
   which it holds on ``127.0.0.1`` and ``::1`` and which admits ``CONNECT`` to the listed
   endpoints only when the TLS SNI equals the CONNECT host (NC-1). DNS, UDP, other
   loopback ports, Unix sockets, every ``mach-lookup`` and ``sysctl`` stay denied, except the closed
-  read-only list (``SYSCTL_READ_NAMES``, ``SYSCTL_READ_PREFIXES``, three ``LC_CTYPE`` literals,
+  read-only list (``SYSCTL_READ_NAMES``, ``SYSCTL_READ_PREFIXES``, three ``LC_CTYPE`` literals, ``DATA_READ``,
   metadata of ``/etc`` and ``/var``) that the ``launch`` and ``launch-probe`` profiles carry.
 * credential: UID separation (the supervisor must run as the dedicated account, NC-2,
   NC-5), an environment built from scratch, and a refusal when an ``ENV_DENY`` variable
@@ -115,10 +115,16 @@ DENIED = ("/System/Volumes/Data",)
 # from the kernel sandbox denials of the T009 self-check (founder decision 2026-11-04, "A. Lista
 # cerrada"). Only the ``launch`` and ``launch-probe`` profiles carry it; ``fixture`` runs without it.
 # Not here, on purpose: kern.bootargs, every mach-lookup, /dev/dtracehelper, /System/Volumes/Data.
+# Widened once more (founder decision 2026-11-04, "A. Solo lecturas"), from the denials of the self-check's
+# ``auth`` stage: CPU count, memory size, performance levels, the time-zone database and the ICU data.
+# Still not here: kern.bootargs, the exec of /usr/bin/security, every mach-lookup, the syslog socket.
 SYSCTL_READ_NAMES = ("hw.pagesize", "hw.pagesize_compat", "hw.ephemeral_storage", "kern.osproductversion",
-                     "kern.osvariant_status", "kern.iossupportversion", "security.mac.lockdown_mode_state")
-SYSCTL_READ_PREFIXES = ("hw.optional.",)  # the CPU feature flags, one per feature
+                     "kern.osvariant_status", "kern.iossupportversion", "security.mac.lockdown_mode_state",
+                     "hw.memsize", "hw.ncpu", "hw.activecpu")
+SYSCTL_READ_PREFIXES = ("hw.optional.", "hw.perflevel")  # CPU feature flags; per performance level, e.g.
+# hw.perflevel0.physicalcpu_max
 LOCALE_READ = tuple(f"/usr/share/locale/{name}/LC_CTYPE" for name in ("UTF-8", "C.UTF-8", "en_US.UTF-8"))
+DATA_READ = ("/private/var/db/timezone", "/usr/share/icu")  # read-only system databases (time zones, ICU)
 METADATA_ONLY = ("/etc", "/var")  # stat of the two literal paths, not of anything below them
 COMPILE_PROBE = "/usr/bin/false"  # never allow-listed: its exec must be denied
 LAUNCH_PROBE = "launch-probe"  # the launch profile plus the interpreter, for the T007 helper probes
@@ -391,6 +397,7 @@ class ContainmentPolicy:
                 f"(allow sysctl-read {literals('sysctl-name', SYSCTL_READ_NAMES)} "
                 f"{literals('sysctl-name-prefix', SYSCTL_READ_PREFIXES)})",
                 f"(allow file-read-data {literals('literal', LOCALE_READ)})",
+                f"(allow file-read* {literals('subpath', DATA_READ)})",
                 f"(allow file-read-metadata {literals('literal', METADATA_ONLY)})",
             ]
         if writes:

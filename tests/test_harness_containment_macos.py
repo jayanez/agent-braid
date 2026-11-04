@@ -224,7 +224,10 @@ class PolicyTests(unittest.TestCase):
             "sysctl": '(allow sysctl-read (sysctl-name "hw.pagesize") (sysctl-name "hw.pagesize_compat") '
                       '(sysctl-name "hw.ephemeral_storage") (sysctl-name "kern.osproductversion") '
                       '(sysctl-name "kern.osvariant_status") (sysctl-name "kern.iossupportversion") '
-                      '(sysctl-name "security.mac.lockdown_mode_state") (sysctl-name-prefix "hw.optional."))',
+                      '(sysctl-name "security.mac.lockdown_mode_state") (sysctl-name "hw.memsize") '
+                      '(sysctl-name "hw.ncpu") (sysctl-name "hw.activecpu") (sysctl-name-prefix "hw.optional.") '
+                      '(sysctl-name-prefix "hw.perflevel"))',
+            "data": '(allow file-read* (subpath "/private/var/db/timezone") (subpath "/usr/share/icu"))',
             "locale": '(allow file-read-data (literal "/usr/share/locale/UTF-8/LC_CTYPE") '
                       '(literal "/usr/share/locale/C.UTF-8/LC_CTYPE") '
                       '(literal "/usr/share/locale/en_US.UTF-8/LC_CTYPE"))',
@@ -237,7 +240,8 @@ class PolicyTests(unittest.TestCase):
             self.assertEqual(sysctl, [rules["sysctl"]])
             for denied in ("kern.bootargs", "mach-lookup", "dtracehelper", "process-exec*", "network-bind",
                            "network-inbound", "/usr/bin/curl", mac.COMPILE_PROBE, '(subpath "/etc")',
-                           '(subpath "/var")', '(subpath "/usr/share/locale")'):
+                           '(subpath "/var")', '(subpath "/usr/share/locale")', "/usr/bin/security",
+                           '(subpath "/private/var")', '(subpath "/usr/share")', "syslog"):
                 self.assertNotIn(denied, "\n".join(lines))
             self.assertEqual(lines[-2], '(deny file-read* file-write* (subpath "/System/Volumes/Data"))')
             self.assertNotIn("/System/Volumes/Data", "\n".join(lines[:-2]))
