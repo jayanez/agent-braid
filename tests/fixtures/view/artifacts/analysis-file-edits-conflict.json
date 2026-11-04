@@ -1,0 +1,80 @@
+{
+  "analysisId": "sha256:4f9e8796b5d9ee119355faea4b0e79ac9ef168dadbcc6118bc260fedc010cc92",
+  "analyzer": {
+    "name": "agent-braid",
+    "ruleSet": "exact-resource-footprints-v1",
+    "version": "0.1.0-alpha"
+  },
+  "executionAuthorization": false,
+  "inputDigest": "sha256:18a87662606f6d9c46534b55772d758b481e3fd89c5d4f5e2a7e63c2843d740d",
+  "interactions": [
+    {
+      "classification": "conflicting",
+      "constraints": [
+        "serialize-or-isolate"
+      ],
+      "evidence": {
+        "assuranceClass": 0,
+        "coverage": [
+          "complete"
+        ],
+        "method": "exact-resource-footprint",
+        "ruleSet": "exact-resource-footprints-v1"
+      },
+      "left": "edit-readme",
+      "reasons": [
+        "At least one exact shared resource has a write-like effect."
+      ],
+      "right": "edit-readme-intro",
+      "sharedResources": [
+        "repo://agent-braid/README.md"
+      ]
+    }
+  ],
+  "limits": [
+    "Resource identity is exact-string equality; aliases and semantic dependencies are not inferred.",
+    "A candidate establishes no concurrent-execution refinement, authorization, or task correctness.",
+    "The analyzer does not execute agents, tools, Git operations, or external effects."
+  ],
+  "operations": [
+    {
+      "attemptId": "edit-readme-1",
+      "coverage": {
+        "domain": "synthetic exact repository paths",
+        "method": "fixture declaration",
+        "status": "complete"
+      },
+      "dependencies": [],
+      "instanceId": "edit-readme",
+      "resources": [
+        "repo://agent-braid/README.md"
+      ]
+    },
+    {
+      "attemptId": "edit-readme-intro-1",
+      "coverage": {
+        "domain": "synthetic exact repository paths",
+        "method": "fixture declaration",
+        "status": "complete"
+      },
+      "dependencies": [],
+      "instanceId": "edit-readme-intro",
+      "resources": [
+        "repo://agent-braid/README.md"
+      ]
+    }
+  ],
+  "reportVersion": "0.1.0-alpha",
+  "sourceKind": "aim",
+  "summary": {
+    "classifications": {
+      "conflicting": 1,
+      "independent-candidate": 0,
+      "ordered": 0,
+      "unknown": 0
+    },
+    "operationCount": 2,
+    "pairCount": 1
+  },
+  "uncertainty": []
+}

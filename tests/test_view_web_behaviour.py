@@ -25,7 +25,7 @@ globalThis.sceneHandlers = null;
 export function createBraidScene(container, handlers) {
   globalThis.sceneHandlers = handlers;
   return {
-    setModel() {},
+    setModel(model) { globalThis.sceneXs = model ? new Set(model.elements.map((element) => element.x)).size : 0; },
     setVisible(seqs) { sceneCalls.push([...seqs]); },
     setSelected(seq) { sceneSelected.push(seq); },
     resetView() {},
@@ -101,7 +101,8 @@ const observe = () => ({
               selectedRows: find("timeline-box").descendants().filter((node) => node.attrs.role === "option" && node.attrs["aria-selected"] === "true").length,
               note: text("timeline-note"), legend: find("legend-line").children.map((node) => node.textContent) },
   scene: { section: find("scene-section").hidden, box: find("scene-box").hidden, note: text("scene-note"),
-           legend: find("legend-scene-block").hidden, calls: [...(globalThis.sceneCalls || [])], selected: [...(globalThis.sceneSelected || [])] },
+           legend: find("legend-scene-block").hidden, calls: [...(globalThis.sceneCalls || [])], selected: [...(globalThis.sceneSelected || [])],
+           distinctX: globalThis.sceneXs || 0 },
 });
 const results = [observe()];
 for (const step of steps) {
@@ -150,9 +151,9 @@ class PageBehaviourCase(unittest.TestCase):
         cls.total = len(cls.model["elements"])
         cls.seqs = [row["seq"] for row in cls.model["table"]]
 
-    def drive(self, steps=(), events=(), variant=None, languages=None, **config):
+    def drive(self, steps=(), events=(), variant=None, languages=None, model=None, **config):
         path = self.root / "input.json"
-        path.write_text(json.dumps({"model": self.model, "config": {"events": list(events), **config}, "steps": list(steps)}))
+        path.write_text(json.dumps({"model": model or self.model, "config": {"events": list(events), **config}, "steps": list(steps)}))
         environment = {**os.environ, "SCENE_VARIANT": variant or "scene-stub.mjs"}
         if languages is not None:
             environment["NAV_LANGUAGES"] = json.dumps(languages)
@@ -433,3 +434,49 @@ class SceneFallbackTests(PageBehaviourCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+UNTIMED_REPORT = Path(__file__).resolve().parent / "fixtures/view/artifacts/analysis-file-edits-conflict.json"
+MIXED_REPORT = Path(__file__).resolve().parent / "fixtures/view/artifacts/analysis-mixed.json"
+
+
+def untimed_model(*reports):
+    """The model of analysis reports as the watcher reads them: every event is `sequence-only`."""
+    from agent_braid.view_adapters import events_from_analysis
+    events = []
+    for index, report in enumerate(reports):
+        events += events_from_analysis(report.read_bytes(), path=f"r{index}/analysis.json", seq_start=len(events) + 1)
+    return json.loads(json.dumps(build_model(events)))
+
+
+class UntimedTimelineTests(PageBehaviourCase):
+    """Real-use bug 2026-11-04: analysis reports state no time, and the 2D timeline drew no bar and no marker."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.untimed = untimed_model(UNTIMED_REPORT, MIXED_REPORT)
+
+    def test_an_untimed_model_draws_a_bar_per_agent_and_every_crossing_on_a_sequence_axis(self):
+        first = self.drive(hash="", model=self.untimed)[0]
+        classes = first["timeline"]["classes"]
+        crossings = [e for e in self.untimed["elements"] if e["element"] == "crossing"]
+        self.assertEqual(classes.get("tl-bar"), len(self.untimed["lanes"]))
+        self.assertEqual(classes.get("tl-cross"), len(crossings))
+        self.assertEqual(classes.get("cls-predicted"), sum(e["classification"] == "conflicting" for e in crossings))
+        self.assertEqual(classes.get("tl-axis-label"), 1)
+        self.assertNotIn("tl-concurrency", classes)  # no stated time: no count of agents open at once
+        self.assertTrue(first["timeline"]["note"].startswith("No timestamps: ordered by sequence."))
+
+    def test_the_notice_is_translated(self):
+        first = self.drive(hash="", model=self.untimed, languages=["es-ES"])[0]
+        self.assertTrue(first["timeline"]["note"].startswith("Sin marcas de tiempo: ordenado por secuencia."))
+
+    def test_the_map_gets_the_sequence_placement_instead_of_one_slice(self):
+        results = self.drive([{"view": "map3d"}], hash="", model=self.untimed)
+        self.assertEqual(results[1]["scene"]["distinctX"], len(self.untimed["elements"]))
+
+    def test_a_timed_model_keeps_the_time_axis_and_no_notice(self):
+        first = self.drive(hash="")[0]
+        self.assertNotIn("tl-axis-label", first["timeline"]["classes"])
+        self.assertFalse(first["timeline"]["note"].startswith("No timestamps"))

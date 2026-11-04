@@ -27,6 +27,11 @@ const { model, call } = JSON.parse(readFileSync(process.argv[2], "utf8"));
 const derived = model ? state.derive(model) : null;
 const strip = (value) => JSON.parse(JSON.stringify(value, (key, item) => (typeof item === "function" || item instanceof Map || item instanceof Set ? undefined : item)));
 const calls = {
+  sequence: () => ({ sequence: derived.axis.sequence, untimed: derived.axis.untimed, total: derived.axis.total,
+    spanX: derived.axis.spanX, ticks: derived.axis.ticks(), same: derived.placedModel === model,
+    placed: derived.placedModel.elements.map((element) => ({ seq: element.seq, x: element.x, timeKnown: element.timeKnown, relMs: element.relMs })),
+    lanes: derived.lanes, crossings: derived.crossings, concurrency: derived.concurrency, overlaps: derived.overlaps,
+    waiting: derived.lanes.map(state.waitingTime) }),
   derive: () => ({ lanes: derived.lanes, rows: derived.rows, crossings: derived.crossings, conflicts: derived.conflicts,
     concurrency: derived.concurrency, overlaps: derived.overlaps, breaks: derived.axis.breaks, ticks: derived.axis.ticks(),
     summary: state.summarize(model, derived) }),
@@ -478,3 +483,76 @@ class LanguageHintTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def _flip_untimed(model_events, every):
+    """A copy of loom events where every `every`-th one states no time (shape of a mixed real stream)."""
+    out = json.loads(json.dumps(model_events))
+    for index, event in enumerate(out):
+        if index % every == 1:
+            event["at"] = {"relMs": 0, "basis": "sequence-only"}
+    return out
+
+
+@NODE
+class SequenceAxisTests(ModuleCase):
+    """Real-use bug 2026-11-04: a model with events that state no time is drawn on a sequence axis, honestly."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        from tests.test_view_web_behaviour import MIXED_REPORT, UNTIMED_REPORT, untimed_model
+        cls.untimed = untimed_model(UNTIMED_REPORT, MIXED_REPORT)
+        cls.mixed = json.loads(json.dumps(build_model(_flip_untimed(parse_stream(RICH.read_bytes()), 3))))
+
+    def test_an_untimed_model_gets_one_slot_per_event_in_model_order_and_sequence_ticks(self):
+        result = self.run_js("sequence", self.untimed)
+        self.assertTrue(result["sequence"])
+        self.assertEqual((result["untimed"], result["total"]), (len(self.untimed["elements"]),) * 2)
+        order = {e["seq"]: e["order"] for e in self.untimed["elements"]}
+        xs = {item["seq"]: item["x"] for item in result["placed"]}
+        self.assertEqual(len(set(xs.values())), len(xs))
+        self.assertEqual(sorted(xs, key=xs.get), sorted(order, key=order.get))
+        self.assertEqual(result["spanX"], 1000 * len(xs))
+        self.assertTrue(result["ticks"] and all(re.fullmatch(r"#\d+", tick["label"]) for tick in result["ticks"]))
+        self.assertLessEqual(len(result["ticks"]), 10)
+        self.assertTrue(all(c["positioned"] and not c["timeKnown"] for c in result["crossings"]))
+
+    def test_no_duration_overlap_or_concurrency_is_derived_from_sequence_slots(self):
+        result = self.run_js("sequence", self.untimed)
+        for lane in result["lanes"]:
+            self.assertEqual((lane["durationMs"], lane["observedMs"], lane["openKnown"]), (None, None, False))
+            self.assertLess(lane["openX"], lane["endX"] + 1)
+        self.assertEqual(result["concurrency"], {"steps": [], "peak": 0, "peakMs": None})
+        self.assertEqual(result["overlaps"], [])
+        self.assertTrue(all(c["overlap"] is None for c in result["crossings"]))
+
+    def test_a_mixed_model_states_durations_only_where_both_ends_state_a_time(self):
+        result = self.run_js("sequence", self.mixed)
+        self.assertTrue(result["sequence"])
+        self.assertGreater(result["untimed"], 0)
+        self.assertLess(result["untimed"], result["total"])
+        placed = {item["seq"]: item for item in result["placed"]}
+        stated = {e["seq"]: e for e in self.mixed["elements"]}
+        for item in result["placed"]:  # time stays the event's own; only the position is the slot
+            self.assertEqual((item["timeKnown"], item["relMs"]), (stated[item["seq"]]["timeKnown"], stated[item["seq"]]["relMs"]))
+        some = False
+        for lane in result["lanes"]:
+            opener = placed[lane["openSeq"]]
+            close = placed.get(lane["closeSeq"])
+            if lane["durationMs"] is not None:
+                some = True
+                self.assertTrue(opener["timeKnown"] and close["timeKnown"])
+                self.assertEqual(lane["durationMs"], close["relMs"] - opener["relMs"])
+            elif close is not None:
+                self.assertFalse(opener["timeKnown"] and close["timeKnown"])
+        self.assertTrue(some, "the mixed fixture keeps at least one fully timed lane")
+        for lane, waiting in zip(result["lanes"], result["waiting"]):
+            for span in lane["waitSpans"]:
+                if span["fromMs"] is None or span["toMs"] is None:
+                    self.assertFalse(waiting["complete"])
+        self.assertEqual(result["concurrency"]["peak"], 0)
+
+    def test_a_fully_timed_model_is_left_on_its_time_axis(self):
+        result = self.run_js("sequence", self.rich)
+        self.assertEqual((result["sequence"], result["same"], result["untimed"]), (False, True, 0))

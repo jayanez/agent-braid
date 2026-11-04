@@ -262,19 +262,30 @@ class ServeTests(ServeCase):
         self.assertIn(str(server.token_path), result["stdout"])
         self.assertNotIn(token, result["stdout"] + result["stderr"])
 
-    def test_the_token_file_is_removed_when_the_server_stops(self):
-        server, _, thread = self.serve()
-        self.assertTrue(server.token_path.exists())
-        server.shutdown()
+    def test_the_token_survives_a_restart_and_the_start_text_says_so(self):
+        first, result, thread = self.serve()
+        token = self.token(first)
+        first.shutdown()
         thread.join(10)
-        self.assertFalse(server.token_path.exists())
+        self.assertTrue(first.token_path.exists())
+        self.assertIn("Ingest token: new", result["stdout"])
+        second, again, thread = self.serve()
+        self.assertEqual(self.token(second), token)
+        second.shutdown()
+        thread.join(10)
+        self.assertIn("Ingest token: reused", again["stdout"])
+        self.assertNotIn(token, result["stdout"] + again["stdout"] + result["stderr"] + again["stderr"])
 
-    def test_a_token_file_replaced_by_another_server_is_left_alone(self):
-        server, _, thread = self.serve()
-        server.token_path.write_text("another-servers-token")
-        server.shutdown()
+    def test_rotate_token_writes_a_new_token(self):
+        first, _, thread = self.serve()
+        token = self.token(first)
+        first.shutdown()
         thread.join(10)
-        self.assertEqual(server.token_path.read_text(), "another-servers-token")
+        second, result, thread = self.serve("--rotate-token")
+        self.assertNotEqual(self.token(second), token)
+        second.shutdown()
+        thread.join(10)
+        self.assertIn("Ingest token: new", result["stdout"])
 
     def test_sigterm_stops_the_server_cleanly_and_restores_the_handler(self):
         import signal
@@ -289,7 +300,7 @@ class ServeTests(ServeCase):
         with contextlib.redirect_stdout(io.StringIO()):
             code = view_cli.run(args, on_ready=on_ready)
         self.assertEqual(code, 0)
-        self.assertFalse(seen["token_path"].exists())
+        self.assertTrue(seen["token_path"].exists())  # kept for the next start (amendment 2026-11-04)
         self.assertEqual(signal.getsignal(signal.SIGTERM), before)
 
 

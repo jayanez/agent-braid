@@ -1294,3 +1294,25 @@ class VendoredFilesTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SequenceAxisStaticTests(unittest.TestCase):
+    """Real-use bug 2026-11-04, read without running the scripts: the sequence-axis notice exists in every UI
+    language, the timeline filters by position (not by stated time) and the scene is given the placed model."""
+
+    def test_the_notice_and_the_axis_label_exist_in_every_language(self):
+        table = strings_table()
+        for language, entries in table.items():
+            for key in ("tl.sequence.none", "tl.sequence.some", "tl.axisSequence"):
+                with self.subTest(language=language, key=key):
+                    self.assertTrue(entries.get(key))
+
+    def test_the_timeline_never_hides_an_event_only_because_it_states_no_time(self):
+        source = read("timeline.js")
+        self.assertNotIn("timeKnown === false", source)
+        self.assertIn("positioned(", source)
+
+    def test_the_scene_and_the_timeline_draw_the_placed_model(self):
+        source = read("loom.js")
+        self.assertIn("scene.setModel(derived().placedModel)", source)
+        self.assertIn("model: info.placedModel", source)

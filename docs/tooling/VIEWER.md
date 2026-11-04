@@ -18,7 +18,7 @@ interleave work: every event carries `executionAuthorization: false`.
 - **Read-only.** No page, route or key runs, schedules, grants or writes anything. It
   never writes to a repository, a plugin registry, a run directory or host
   configuration. The one file it writes is its own ingest token, in a private runtime
-  directory, removed again when it stops.
+  directory; it is kept when the viewer stops and reused at the next start.
 - **Observational hooks.** It answers Claude Code hooks with an empty body and never
   takes part in a host decision.
 - **No effort measurement yet.** Codex and OpenTelemetry ingest, token and effort
@@ -67,8 +67,11 @@ Starts the viewer and prints, once, the loopback address to open
 (`http://127.0.0.1:<port>/open?code=...`), the owner-only ingest token file and any
 watched roots. Open the printed address in a browser; the single-use code is
 exchanged for a read-only session cookie named `braid_view_<port>`, so two viewers on
-loopback keep separate sessions. Stop it with Ctrl-C or SIGTERM; the token
-file is removed.
+loopback keep separate sessions. Stop it with Ctrl-C or SIGTERM. The token
+file is kept and reused at the next start while it is still a safe owner-only file, so
+hosts that read it once keep working after a restart; the start text says
+`Ingest token: reused ...` or `Ingest token: new ...` (only a new token needs a host
+restart).
 
 | Option | Effect |
 |---|---|
@@ -77,6 +80,7 @@ file is removed.
 | `--no-discover` | Without `--watch`, do not look for roots in the plugin registry. |
 | `--port N` | Loopback port, 0 to 65535. The default `0` lets the operating system choose one. (`view env --port` takes 1 to 65535: the port `serve` printed.) |
 | `--runtime-dir DIR` | Absolute path of the private directory (mode 0700) for the ingest token. The default is `$XDG_RUNTIME_DIR/agent-braid-view`, else `~/.local/share/agent-braid-view`. |
+| `--rotate-token` | Replace the ingest token instead of reusing it. Restart Claude Code (or export the variable again) afterwards. |
 | `--surface S` | `web` is the only implemented surface. `mod`, `tui` and `mcp-app` report that they are planned and start nothing. |
 
 **Watched artifacts.** `--watch` and discovery read only files with these exact names,
@@ -133,9 +137,10 @@ Code settings (`~/.claude/settings.json`). **It writes nothing**, contains no cr
 (the token is read from its owner-only file by the printed `export` line) and names only
 the observational hook events above. Start `view serve` first and pass its port with
 `--port`; with the viewer stopped, another process on that port would receive the
-payloads. The ingest token is new at every `serve` start but your shell reads it once, so after
-restarting the viewer restart Claude Code (or export the variable again), otherwise its hooks are refused
-without any visible symptom. `--host codex` is accepted and reports that it is not available yet.
+payloads. Your shell reads the ingest token once. It stays the same across `serve`
+restarts, so a restart needs nothing; only when the start text says `Ingest token: new`
+(first start, `--rotate-token`, or an unsafe file that was replaced) restart Claude Code
+(or export the variable again), otherwise its hooks are refused without any visible symptom. `--host codex` is accepted and reports that it is not available yet.
 
 ### Exit codes
 

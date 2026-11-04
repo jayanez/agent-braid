@@ -188,8 +188,43 @@ def parse_json_body(data: bytes) -> Any:
         raise BodyError("body is not valid JSON") from exc
 
 
-def _write_ingest_token(runtime_dir: Path, token: str) -> Path:
-    """Replace `<runtime_dir>/view-ingest-token` with `token`, created exclusively, mode 0600."""
+_TOKEN_SHAPE = re.compile(r"[A-Za-z0-9_-]{43}")  # secrets.token_urlsafe(32): 256 bits, url-safe base64
+
+
+def _reusable_token(directory: int) -> str | None:
+    """The token in `view-ingest-token` when it is safe to keep, else None.
+
+    Safe means: a regular file reached without following a symlink, owned by this uid, mode exactly
+    0600, and holding one well-formed token (the shape `secrets.token_urlsafe(32)` produces).
+    """
+    try:
+        descriptor = os.open(INGEST_TOKEN_NAME, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
+    except OSError:
+        return None
+    try:
+        info = os.fstat(descriptor)
+        if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid()
+                or stat.S_IMODE(info.st_mode) != 0o600 or info.st_nlink != 1 or info.st_size != 43):
+            return None
+        data = os.read(descriptor, 64)
+    except OSError:
+        return None
+    finally:
+        os.close(descriptor)
+    try:
+        text = data.decode("ascii")
+    except UnicodeDecodeError:
+        return None
+    return text if _TOKEN_SHAPE.fullmatch(text) else None
+
+
+def _ingest_token_file(runtime_dir: Path, *, rotate: bool = False) -> tuple[Path, str, bool]:
+    """`(path, token, reused)` for `<runtime_dir>/view-ingest-token`.
+
+    The token is stable across restarts (SPEC-061 amendment 2026-11-04): an existing safe token file is
+    reused, so a host that read the token once at shell start keeps working after a viewer restart.
+    Otherwise, or with `rotate`, a new token replaces the file, created exclusively with mode 0600.
+    """
     if not runtime_dir.is_absolute():
         raise ServeError("runtime-dir", "the runtime directory is an absolute path")
     try:
@@ -200,11 +235,15 @@ def _write_ingest_token(runtime_dir: Path, token: str) -> Path:
         directory = os.open(runtime_dir, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     except OSError as exc:
         raise ServeError("runtime-dir", f"cannot open the runtime directory: {exc.strerror}") from exc
+    token = secrets.token_urlsafe(32)
     temporary = f".{INGEST_TOKEN_NAME}.{os.getpid()}.{secrets.token_hex(4)}"
     try:
         info = os.fstat(directory)
         if info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) & 0o077:
             raise ServeError("runtime-dir", "the runtime directory is owned by the user and private (0700)")
+        existing = None if rotate else _reusable_token(directory)
+        if existing is not None:
+            return runtime_dir / INGEST_TOKEN_NAME, existing, True
         descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600,
                              dir_fd=directory)
         try:
@@ -221,7 +260,7 @@ def _write_ingest_token(runtime_dir: Path, token: str) -> Path:
         raise ServeError("token-file", f"cannot write the ingest token: {exc.strerror}") from exc
     finally:
         os.close(directory)
-    return runtime_dir / INGEST_TOKEN_NAME
+    return runtime_dir / INGEST_TOKEN_NAME, token, False
 
 
 def _valid_bundle(bundle: Mapping[str, bytes] | None) -> dict[str, bytes]:
@@ -338,6 +377,7 @@ class ViewServer(ThreadingHTTPServer):
                  names_inventory: Callable[[], Iterable[str]] | None = None,
                  import_map_sha256: str | None = None,
                  language_hint: str | None = None,
+                 rotate_token: bool = False,
                  max_connections: int = MAX_CONNECTIONS, socket_timeout: float = SOCKET_TIMEOUT,
                  heartbeat: float = HEARTBEAT_SECONDS) -> None:
         if host not in LOOPBACK_HOSTS:
@@ -363,7 +403,6 @@ class ViewServer(ThreadingHTTPServer):
         self._closing = threading.Event()
         self._open_code: str | None = secrets.token_urlsafe(32)
         self._read_token: str | None = None
-        self._ingest_token = secrets.token_urlsafe(32)
         self.address_family = socket.AF_INET6 if host == "::1" else socket.AF_INET
         super().__init__((host, port), _Handler)
         self.port = self.server_address[1]
@@ -372,7 +411,8 @@ class ViewServer(ThreadingHTTPServer):
         self._hosts = frozenset({f"127.0.0.1:{self.port}", f"[::1]:{self.port}", f"localhost:{self.port}"})
         self.url_host = f"[::1]:{self.port}" if host == "::1" else f"127.0.0.1:{self.port}"
         try:
-            self.token_path = _write_ingest_token(Path(runtime_dir), self._ingest_token)
+            self.token_path, self._ingest_token, self.token_reused = _ingest_token_file(
+                Path(runtime_dir), rotate=rotate_token)
         except ServeError:
             self.server_close()
             raise
@@ -399,7 +439,7 @@ class ViewServer(ThreadingHTTPServer):
 
     @property
     def ingest_token(self) -> str:
-        """The bearer token of this run (the one written to `token_path`); never log it."""
+        """The bearer token held in `token_path` (reused across restarts unless rotated); never log it."""
         return self._ingest_token
 
     def response_headers(self) -> list[tuple[str, str]]:
