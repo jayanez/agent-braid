@@ -291,6 +291,16 @@ shared object store fails the portable-root check).
   Round 3 self-check, 2026-11-04 (attempt `t009-20261104c`): F4 as expected; the `auth` stage gave `auth-rejected`
   with the token present, while outside the sandbox the same token works. Closed read-only list widened once more
   (`evidence/founder-decisions-20261104e.json`, "A. Solo lecturas"; re-check `evidence/recheck-t009-allowlist2.md`).
+  Attempt 3, 2026-11-04 (`t009-20261104c`; result `evidence/t009-attempt3-result.md`; bundle
+  `evidence/qualification/t009-20261104c/`, `bundleSha256` `ccd227a9119b74439c59ae4d19946ee3e441270e4e3378fff3e858b3236397da`):
+  27 of 32 probes passed; outcome **not qualified**. Filesystem `enforced`; credential and network `inconclusive`
+  only because the three sessions ended `exit-before-init` (exit 1, token present, quota 9 % to 9 %); process
+  `not-enforced` (PROC-03 memory, PROC-08). Round 4 (re-check `evidence/recheck-qual-round4.md`; founder
+  acceptance "OK, adelante"): a no-model `startup` self-check stage that makes the CLI's standard error visible
+  (redacted) with the model unreachable; PROC-08 judged on live, non-zombie, allowed-executable survivors with the
+  stray processes recorded; PROC-03 watchdog on the lifetime peak footprint, faster polling and a probe that holds
+  1 GiB over the limit for two seconds, the swept-member case no longer read as unsettled. No SBPL rule changed;
+  any widening waits for a founder decision with the `startup` evidence.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes

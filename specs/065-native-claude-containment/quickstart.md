@@ -162,7 +162,9 @@ What it does, in order, each stage a hard stop:
 4. step 10: the driver `--dry-run`, saved to `from-lab/dry-run.json` with its SHA-256; must be `ready`; **waits** for
    `to-lab/verify-dry-run.json`;
 5. step 10b: the driver `--self-check --founder-go`, saved to `from-lab/self-check.json` with its SHA-256; must be
-   `self-check-ok` (pre-session check and the `auth` stage); **waits** for `to-lab/verify-self-check.json`;
+   `self-check-ok` (pre-session check and the `auth` stage; its `startup` stage, the session launch with the model
+   unreachable, is diagnostic: the orchestrator reads `reachedInit` and the redacted `stderrTail`; a tunnel that
+   opened ends it as `self-check-egress-leak`); **waits** for `to-lab/verify-self-check.json`;
 6. step 10c: refuses an attempt label whose output directory already holds a session counter (a new label from the
    orchestrator, or `--resume` for a crashed run of the same label; NC-10);
 7. step 11: the driver `--founder-go` with your terminal attached. **The driver asks you** to type the attempt name
