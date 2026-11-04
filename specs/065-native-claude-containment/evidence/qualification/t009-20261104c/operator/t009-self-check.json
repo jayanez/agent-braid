@@ -1,0 +1,60 @@
+{
+  "attempt": "t009-20261104c",
+  "auth": {
+    "authToken": "present",
+    "exitCode": 0,
+    "noModel": true,
+    "reason": "ok",
+    "stage": "auth"
+  },
+  "backendRefusals": [],
+  "compileCheck": "exec-denied",
+  "executionAuthorization": false,
+  "nativeRun": true,
+  "preSessionCheck": [
+    {
+      "expected": "denied",
+      "observed": "denied",
+      "probe": "FS-01"
+    },
+    {
+      "expected": "denied",
+      "observed": "denied",
+      "probe": "NET-01"
+    },
+    {
+      "expected": "denied",
+      "observed": "denied",
+      "probe": "CRED-01"
+    },
+    {
+      "expected": "denied",
+      "observed": "denied",
+      "probe": "PROC-01"
+    },
+    {
+      "expected": "allowed",
+      "observed": "allowed",
+      "probe": "NET-06"
+    }
+  ],
+  "probeRuns": [
+    {
+      "entry": "fixture",
+      "exitCode": 0,
+      "unreadableProcesses": 0,
+      "unrelatedProcesses": 0
+    },
+    {
+      "entry": "launch-probe",
+      "exitCode": 0,
+      "unreadableProcesses": 0,
+      "unrelatedProcesses": 0
+    }
+  ],
+  "refusal": null,
+  "sessionsStarted": 0,
+  "stage": null,
+  "usageReadings": 0,
+  "verdict": "self-check-ok"
+}
