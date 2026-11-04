@@ -233,6 +233,16 @@ shared object store fails the portable-root check).
   own bytes), so the dry run, the installed code copy (step 5) and the re-check by the orchestrator
   are repeated. The counter of the output directory stops further sessions: its reset is a
   founder decision (quickstart "If step 11 fails"). Nothing is qualified; `executionAuthorization` stays false.
+  Status 2026-11-04: the founder gave the go for T009 and asked for the operator runbook to be
+  automated (`evidence/founder-decisions-20261104.json`, verbatim: "Go pero quiero que prepares tú el
+  runbook para que todo sea completamente automatizado"). Steps 0 to 8 are now
+  `scripts/har_t009_setup.py` and steps 9 and 10 are `scripts/har_t009_dryrun.py`
+  (`tests/test_har_t009_setup.py`; quickstart "Operator setup for T009"). Every runbook check is a hard
+  stop in them (plus safety stops of their own), they run no `claude` session, no `sandbox-exec` and no network before step 9 (the dry-run
+  wrapper runs the login and the driver `--dry-run` only), and they do not take the NC-6 readings or run
+  step 10b or 11, which stay manual after the orchestrator's written confirmations. No backend, probes,
+  transport or quota module changed, so no new re-check of touched lines is needed. Nothing native has run
+  for this record; `executionAuthorization` stays false and issuance stays T010. This task stays unchecked.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes

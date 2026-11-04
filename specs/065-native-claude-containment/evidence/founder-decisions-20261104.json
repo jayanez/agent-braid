@@ -1,0 +1,40 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T009 founder go after attempt 1 and the diagnosis fix, with an automated operator runbook",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-04",
+  "baseCommit": "e3901f81076f4c8bca2fa8d5cc36d5ecbfd41c86",
+  "decisionChannel": "Founder answer to an interactive AskUserQuestion prompt in the HAR orchestrator session, 2026-11-04, recorded verbatim. Additive to founder-decisions-20261103.json and -20261103b.json, which stay as written.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261103.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261103b.json"
+  ],
+  "decisionOrder": [
+    "T009-GO-AUTOMATED-RUNBOOK"
+  ],
+  "decisions": [
+    {
+      "id": "T009-GO-AUTOMATED-RUNBOOK",
+      "item": "Founder go for the next T009 operator run (setup, dry run, self-check, real attempt) after attempt 1 and the 2026-11-04 diagnosis fix, with the operator runbook automated as far as the decisions allow",
+      "question": "HAR SPEC-065 T009 (#985): ¿das el go de fundador?",
+      "ownerStatement": "Go pero quiero que prepares tú el runbook para que todo sea completamente automatizado",
+      "decision": {
+        "disposition": "go-with-automated-runbook",
+        "reading": "The founder confirms the go for T009 under the bounds already recorded (founder-decisions-20261103.json: conditional go, at most 3 Haiku low-effort sessions, each at most 2 % of the 5-hour window; founder-decisions-20261103b.json: NC-3, RV-16, NC-6 and in-memory attempt records) and asks the orchestrator to prepare the runbook so that the operator steps are automated. The orchestrator prepared scripts/har_t009_setup.py (steps 0 to 8: every runbook check is a hard stop, sudo asked once, account password interactive) and scripts/har_t009_dryrun.py (steps 9 and 10: the account login and the driver --dry-run). The NC-6 quota readings and the real attempt (step 11) stay typed by the founder, and the orchestrator's written confirmations before step 9, before step 10b and before step 11 stay in force: automation does not replace or bypass them.",
+        "bounds": "Unchanged from the earlier records: NC-10 (at most 3 Haiku low-effort sessions, each at most 2 % of the 5-hour window), NC-6 readings typed by the operator and self-attested, NC-1, NC-4, NC-5, NC-7, NC-8, NC-11, RV-17/19/21/22 and DRV-06/10 as recorded. Any edit to the backend, probes, transport or quota module still needs a new re-check of the touched lines before the attempt; this record's scripts do not touch those modules. Whether the refused session of attempt 1 counts against the budget of three, and the attempt label for the next run, remain the decision named in quickstart step 10c (NC-10) and are not decided here."
+      }
+    }
+  ],
+  "closes": [],
+  "stillOpen": [
+    {
+      "id": "attempt-1-counter",
+      "item": "Session counter and attempt label after attempt 1 (NC-10, quickstart step 10c)",
+      "reading": "Attempt t009-20261104 holds .sessions.json with sessionsStarted 1 and quotaStop session-refused-self-check-failed. Whether a refused session counts against the budget of three, and the new attempt label and output directory, are for the founder with the orchestrator before step 11."
+    }
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records one founder answer. executionAuthorization stays false and issuance stays T010 (NC-9, founder only). It is a go to run the runbook under the recorded bounds, not an authorization of any native run on its own: the orchestrator's written confirmations before steps 9, 10b and 11 are still required. The earlier records are not rewritten. No native session, probe, sudo command or account creation was run when this record was written. Any change needs a new founder decision record."
+}

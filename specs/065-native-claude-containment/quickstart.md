@@ -64,11 +64,11 @@ Neither outcome is a failure of the procedure.
 ## Operator setup for T009
 
 This is the founder's runbook for the conditional go recorded in
-`evidence/founder-decisions-20261103.json`, as amended by `evidence/founder-decisions-20261103b.json`. It is a checklist, not an authorization:
+`evidence/founder-decisions-20261103.json`, as amended by `evidence/founder-decisions-20261103b.json` and confirmed on 2026-11-04 by `evidence/founder-decisions-20261104.json`. It is a checklist, not an authorization:
 `executionAuthorization` stays `false`, issuance stays T010 (NC-9). The order is fixed:
 
-1. you run steps 0 to 8 (step 0 is a check; the rest use sudo, in your own session), only after the orchestrator confirms the re-check of the 2026-11-03 decisions is a GO;
-2. you switch to the dedicated account and run steps 9 and 10 in its own login session (login, then the
+1. you run steps 0 to 8 (step 0 is a check; the rest use sudo, in your own session) with `scripts/har_t009_setup.py`, only after the orchestrator confirms the re-check of the 2026-11-03 decisions is a GO;
+2. you switch to the dedicated account and run steps 9 and 10 in its own login session with `scripts/har_t009_dryrun.py` (login, then the
    driver `--dry-run`);
 3. you send the dry-run output to the orchestrator, which verifies it as evidence;
 4. only after the orchestrator confirms, step 11 (the real attempt: at most 3 small Haiku sessions).
@@ -86,6 +86,45 @@ the sessions run only in step 11. If any command fails or prints something other
 and tell the orchestrator; do not improvise. `COMMIT` below is the full commit the orchestrator names (it
 must contain `scripts/har_t009_attempt.py`); replace the quoted `PASTE_...` text with it. A line that ends
 in `STOP` means: do not continue.
+
+> **Founder go of 2026-11-04** (`evidence/founder-decisions-20261104.json`): "Go pero quiero que prepares tú el runbook
+> para que todo sea completamente automatizado". The scripts below automate steps 0 to 10. They are not an
+> authorization. Every check of the runbook is a hard stop in them (same `STOP:` text where the runbook has one),
+> and they add only safety stops of their own (not root, macOS only, inputs exist, the commit contains the driver,
+> a failed command, the pins re-hashed before the login, a driver that crashed saves nothing). They do not replace the orchestrator's written confirmations:
+> the setup summary goes to the orchestrator before step 9, the dry run before step 10b, and the self-check
+> before step 11. The self-check (10b) and the real attempt with the NC-6 readings you type (11) stay manual.
+
+### Run it with the scripts (steps 0 to 8)
+
+`COMMIT` is the full commit the orchestrator names. It must contain `scripts/har_t009_attempt.py`,
+`scripts/har_t009_setup.py` and `scripts/har_t009_dryrun.py`. Run it in your own session, from your checkout
+at that commit, not as root:
+
+```sh
+COMMIT='PASTE_THE_40_CHARACTER_COMMIT_FROM_THE_ORCHESTRATOR'
+python3 scripts/har_t009_setup.py --commit "$COMMIT" --dry-run   # prints every command and check, runs none
+python3 scripts/har_t009_setup.py --commit "$COMMIT"             # sudo is asked for up front
+```
+
+It runs steps 0 to 8 in order. The new account's password is typed at the `sysadminctl` prompt
+(`-password -`); it never goes through the script. It never runs `claude`, `sandbox-exec` or the network. On a
+failed check it prints the runbook's `STOP:` line and exits 1; fix the cause or tell the orchestrator, do not
+improvise. `sudo` is authorized once at the start; it may ask again if its timestamp expires during a slow
+step. A failed command prints its first error lines. Re-running is safe where the runbook allows it: an existing account is kept and re-checked, installs
+overwrite their copy, and the code copy is rebuilt. The empty `config_dir` check of step 7 is kept as written,
+so a re-run after the step 9 login stops there (that is the runbook's rule, not a bug). The re-install of the code copy after a fix ("Before step 10b" below)
+is therefore not a re-run of the script: use the manual commands of step 5 (and a new `COMMIT` in step 10); the
+dry-run script then needs `--claude-sha256`, `--python-sha256` and `--sandbox-exec-sha256` from step 8 because the
+setup summary belongs to the old commit.
+
+At the end it prints, and writes to `/Users/Shared/t009-setup-summary.json`, a JSON summary: the claude copy
+hash, the interpreter hash, `sandbox-exec` hash, the codesign `TeamIdentifier`, the code copy's listing hash and
+tree, and the mode of your home before step 6. **Paste that JSON to the orchestrator** and wait for its
+written confirmation (it checks the claude hash against the published release checksum, which step 3 says must
+happen before step 9). Options: `--account`, `--checkout`, `--claude-src`, `--python-src`, `--summary-out`.
+
+### Reference: the manual commands for steps 0 to 8 (what the script runs, and the undo)
 
 Variables, in your own terminal (not root):
 
@@ -216,6 +255,32 @@ them itself from the dry-run.
 ```sh
 shasum -a 256 "$BRAID/claude-2.1.292" "$BRAID/python312/bin/python3.12" /usr/bin/sandbox-exec
 ```
+
+### Run it with the scripts (steps 9 and 10)
+
+After the orchestrator confirmed the setup summary, switch to the `braidlab` login session (fast user switching,
+as in step 9 below), open Terminal there and run, with the pinned interpreter from the root-owned code copy
+(`<short>` is the first 7 characters of `COMMIT`; `OPERATOR_ACCOUNT` is your daily account, `id -un` in your own
+session; `ATTEMPT` is the label the orchestrator gave you):
+
+```sh
+B=/usr/local/libexec/braid
+$B/python312/bin/python3.12 -B -I $B/repo-<short>/scripts/har_t009_dryrun.py \
+    --commit <COMMIT> --operator-account <OPERATOR_ACCOUNT> --attempt <ATTEMPT> --dry-run   # prints, runs none
+$B/python312/bin/python3.12 -B -I $B/repo-<short>/scripts/har_t009_dryrun.py \
+    --commit <COMMIT> --operator-account <OPERATOR_ACCOUNT> --attempt <ATTEMPT>
+```
+
+It reads the pins from `/Users/Shared/t009-setup-summary.json` (the commit in it must equal `--commit`), re-hashes
+`claude`, the interpreter and `sandbox-exec` against them, checks that no `ANTHROPIC`/`CLAUDE` variable is set,
+runs `claude auth login` (the browser login, unless `--skip-login`), checks that `config_dir` holds a few small
+files, runs the driver `--dry-run` with the step 10 arguments, and saves the verdict to `~/t009/dry-run.json`
+and `/Users/Shared/t009-dry-run.json`. It exits 0 for `ready` and 2 for `refused`; 1 is one of its own `STOP:` lines, and a driver that crashed or
+printed no JSON verdict saves nothing. Other options: `--summary`, `--claude-sha256`, `--python-sha256`,
+`--sandbox-exec-sha256` (explicit pins override the summary). It never passes
+`--self-check` or `--founder-go`. Check that the verdict names your own daily account as the operator account,
+tell the orchestrator that `/Users/Shared/t009-dry-run.json` exists, and wait for its written confirmation.
+Step 10b onward is manual, as written below.
 
 **Step 9. Switch to the account's own login session and log in to Claude.** Use fast user switching
 (the user name in the menu bar, or Lock Screen, then "Switch User"), log in as `braidlab` (skip the
@@ -371,7 +436,7 @@ Then, back in your own session, take ownership of the copy (`sudo chown -R "$USE
 ### Teardown (after the bundle is copied)
 
 ```sh
-rm -r "/Users/Shared/t009-bundle-$ATTEMPT" /Users/Shared/t009-dry-run.json /Users/Shared/t009-self-check.json
+rm -r "/Users/Shared/t009-bundle-$ATTEMPT" /Users/Shared/t009-dry-run.json /Users/Shared/t009-self-check.json /Users/Shared/t009-setup-summary.json
 # log out of braidlab (Apple menu, Log Out) and revoke its Claude session in the account settings
 sudo sysadminctl -deleteUser "$ACCT"           # removes the account, its home and its keychain
 ls /Users                                      # braidlab gone (else: sudo rm -r /Users/braidlab)
