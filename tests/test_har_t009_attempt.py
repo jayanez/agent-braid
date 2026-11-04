@@ -1065,6 +1065,20 @@ class SelfCheckTests(unittest.TestCase):
         code, report, _ = self.run_check(backend, f4=lambda probe, be: backend.run_evidence.extend(ran) or "error")
         self.assertEqual(report["probeRuns"], [{"entry": "fixture", "exitCode": 3}])
 
+    def test_the_noise_level_of_a_run_is_printed_as_integers_only(self):
+        backend = FakeBackend(raises=lab.LabError("self-check-failed"))
+        ran = [backend_record("fixture", None, exitCode=0, unrelatedProcesses=12, unreadableProcesses=9),
+               backend_record("launch", None, exitCode=0, unrelatedProcesses="/Users/x", unreadableProcesses=True)]
+        code, report, _ = self.run_check(backend, f4=lambda probe, be: backend.run_evidence.extend(ran) or "error")
+        self.assertEqual(report["probeRuns"], [
+            {"entry": "fixture", "exitCode": 0, "unrelatedProcesses": 12, "unreadableProcesses": 9},
+            {"entry": "launch", "exitCode": 0}])
+        refused = backend_record("fixture", "process-accounting-failed", unrelatedProcesses=3,
+                                 unreadableProcesses=2, unattributedProcesses=5)
+        self.assertEqual(har.refusal_evidence(SimpleNamespace(run_evidence=[refused])), [
+            {"entry": "fixture", "refused": "process-accounting-failed", "unrelatedProcesses": 3,
+             "unreadableProcesses": 2}])
+
     def test_a_refusal_before_the_compile_check_names_that_stage(self):
         report = self.run_check(FakeBackend(raises=lab.LabError("workspace-leftovers")))[1]
         self.assertEqual((report["refusal"], report["stage"]), ("workspace-leftovers", "mechanism-or-workspace"))
