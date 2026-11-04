@@ -174,7 +174,7 @@ shared object store fails the portable-root check).
   GO for engineering readiness only, with residuals MDRV-01 to MDRV-04. No record is
   issued and `executionAuthorization` stays false.
 
-- [ ] T009 (REQ-005 / SC-005; REQ-006 / SC-006; REQ-007 / SC-007; REQ-008 / SC-008; REQ-010 / SC-010; REQ-003 / SC-003): Qualification attempt on the
+- [x] T009 (REQ-005 / SC-005; REQ-006 / SC-006; REQ-007 / SC-007; REQ-008 / SC-008; REQ-010 / SC-010; REQ-003 / SC-003): Qualification attempt on the
   founder's machine: run the full catalog in both modes for the decided
   configuration, including HOST-01 within the NC-10 budget with pre/post quota
   readings. Keep the bundle whatever the outcome. Dependencies: T002 accepted,
@@ -268,7 +268,20 @@ shared object store fails the portable-root check).
   SHA-256). The driver still asks the founder for the NC-6 readings and keeps the NC-10 budget; the lab script
   neither types nor skips them and has no flag that skips a verification. This change touches no backend,
   probes, transport or quota module (the re-check above for the sandbox allow-list is separate). Nothing native has run
-  for this record; `executionAuthorization` stays false and issuance stays T010. This task stays unchecked.
+  for this record; `executionAuthorization` stays false and issuance stays T010.
+  Attempt 2, 2026-11-04 (`t009-20261104b`; result `evidence/t009-attempt2-result.md`; founder record
+  `evidence/founder-decisions-20261104c.json`: PROC-ESC-1 accepted for T009, bundle published as is): the full
+  catalog ran in both modes with 3 sessions; outcome **not qualified** (`passRuleSatisfied` false, no record
+  written). Process `not-enforced` (PROC-03 memory, PROC-04 double-fork); credential, filesystem and network
+  `inconclusive` (CRED-02, FS-03, FS-07, NET-02, PROC-07 positive controls; CRED-05, NET-05-CLI, HOST-01 not
+  observed: the CLI exited 1 before `init` with zero proxy tunnels and 0 % quota used). Bundle:
+  `specs/065-native-claude-containment/evidence/qualification/t009-20261104b/`, `bundleSha256`
+  `4a512d3139c81c3316515ce52cc3537f41021dd14469d11f4aaa4f82cedaa159` (commit `a4d5c294`, environment
+  `355c0b3b...`, catalog `842f47fc...`). T009 is checked because its evidence line accepts a not-qualified or
+  inconclusive bundle as a valid negative outcome and the bundle is kept; this checks the attempt, not the
+  qualification. A new attempt needs the follow-ups in the result (session path, positive controls, PROC-03 and
+  PROC-04 decisions, quota label) and a touched-lines re-check; T010 reviews this bundle and issues a
+  not-qualified decision.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes
