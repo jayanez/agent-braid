@@ -22,7 +22,7 @@ export function createState() {
     hovered: null,
     filterKind: "",
     hiddenSources: new Set(),
-    filters: { agents: new Set(), status: new Set(), onlyProblems: false },
+    filters: { agents: new Set(), status: new Set(), kinds: new Set(), onlyProblems: false },
     view: "timeline",
     viewport: null, // { x0, x1 } in axis x, or null for the whole axis
     lang: "en",
@@ -80,6 +80,21 @@ export function isProblem(element) {
   if (element.element === "crossing" && (element.classification === "conflicting" || element.classification === "unknown")) return true;
   if (!KNOWN_VERIFICATION.has(element.verification)) return true;
   return marksOf(element).some((mark) => mark !== "unverified" && mark !== "notime");
+}
+
+// The legend entries that act as filters: the kind of marker an element is, or null for everything else (agents,
+// their states and ends are never hidden by a legend filter).
+export const MARKER_KINDS = ["conflict", "independent", "ordered", "unknown", "hazard", "gap", "gate", "grant"];
+
+export function markerKind(element) {
+  switch (element.element) {
+    case "crossing":
+      return { "conflicting": "conflict", "independent-candidate": "independent", "ordered": "ordered" }[element.classification] || "unknown";
+    case "hazard-cone": return "hazard";
+    case "gap": return "gap";
+    case "gate-ring": return element.ringKind === "grant" ? "grant" : "gate";
+    default: return null;
+  }
 }
 
 // ---------------------------------------------------------------- event sources
@@ -435,12 +450,16 @@ export function passesFilters(element, derived, filters) {
   if (filters.status.size > 0 && lanes.length > 0 &&
       !lanes.some((index) => filters.status.has(laneStateOf(derived, index)))) return false;
   if (filters.onlyProblems && !isProblem(element)) return false;
+  if (filters.kinds && filters.kinds.size > 0) {
+    const kind = markerKind(element);
+    if (kind !== null && !filters.kinds.has(kind)) return false;
+  }
   return true;
 }
 
 export function hasFilters(state) {
   const f = state.filters;
-  return f.agents.size > 0 || f.status.size > 0 || f.onlyProblems || state.hiddenSources.size > 0;
+  return f.agents.size > 0 || f.status.size > 0 || f.kinds.size > 0 || f.onlyProblems || state.hiddenSources.size > 0;
 }
 
 // ---------------------------------------------------------------- the URL hash
@@ -458,6 +477,7 @@ export function encodeHash(state) {
   if (state.hiddenSources.size) parts.push("hide=" + safe(state.hiddenSources).join(","));
   if (state.filters.agents.size) parts.push("ag=" + safe(state.filters.agents).join(","));
   if (state.filters.status.size) parts.push("st=" + [...state.filters.status].filter((value) => LANE_STATES.includes(value)).join(","));
+  if (state.filters.kinds && state.filters.kinds.size) parts.push("kd=" + [...state.filters.kinds].filter((value) => MARKER_KINDS.includes(value)).join(","));
   if (state.filters.onlyProblems) parts.push("pr=1");
   if (state.viewport && Number.isFinite(state.viewport.x0) && Number.isFinite(state.viewport.x1)) {
     parts.push("x=" + Math.round(state.viewport.x0) + "-" + Math.round(state.viewport.x1));
@@ -466,7 +486,7 @@ export function encodeHash(state) {
 }
 
 export function decodeHash(text) {
-  const out = { view: null, selected: null, hide: [], agents: [], status: [], onlyProblems: false, viewport: null };
+  const out = { view: null, selected: null, hide: [], agents: [], status: [], kinds: [], onlyProblems: false, viewport: null };
   if (typeof text !== "string" || text.length > 4096) return out;
   for (const part of text.replace(/^#/, "").split("&")) {
     const at = part.indexOf("=");
@@ -480,6 +500,7 @@ export function decodeHash(text) {
     else if (key === "hide") out.hide = list();
     else if (key === "ag") out.agents = list();
     else if (key === "st") out.status = list().filter((item) => LANE_STATES.includes(item));
+    else if (key === "kd") out.kinds = list().filter((item) => MARKER_KINDS.includes(item));
     else if (key === "pr") out.onlyProblems = value === "1";
     else if (key === "x") {
       const match = /^(-?[0-9]{1,12})-(-?[0-9]{1,12})$/.exec(value);

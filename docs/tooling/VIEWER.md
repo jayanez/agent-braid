@@ -45,8 +45,10 @@ python3 -m pip install /absolute/artifacts/agent_braid-0.1.0a2-py3-none-any.whl
 agent-braid view serve
 ```
 
-The viewer needs Python 3.12 or newer and uses only the standard library. A browser
-with WebGL2 is needed for the 3D scene; the table works without it. Three.js r186 is vendored under
+The viewer needs Python 3.12 or newer and uses only the standard library. The page opens on the 2D timeline
+and the events table, which need no WebGL; a browser with WebGL2 is needed only for the optional 3D map.
+The page language follows the browser or desktop-app locale, then the locale of the terminal that started
+`view serve` (sent to the page as a bare `es` or `en`), then English; a manual choice overrides it. Three.js r186 is vendored under
 `integrations/agent-braid-view/web/vendor/` with its licence and a hash manifest; the
 page never loads code from another origin.
 

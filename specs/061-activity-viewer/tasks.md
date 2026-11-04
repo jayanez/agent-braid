@@ -317,22 +317,35 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   the derivation stays in `state.js` (no field moved into `view_model.py`; parity is
   tested against `build_model` output on the audit fixture and the contract example in
   `tests/test_view_web_state.py`).
-- [ ] T055 (REQ-018): 3D camera: damping, limits, cursor zoom, keyboard, scroll not
+- [x] T055 (REQ-018): 3D camera: damping, limits, cursor zoom, keyboard, scroll not
   trapped, presets, "Frame all" with agent-only framing, tweened reset, reduced
   motion, pulse only on hover or selection. Dependencies: T051. Files:
-  `integrations/agent-braid-view/web/braid-scene.js`. Verification: SC-018.
-- [ ] T056 (REQ-018, REQ-019): 3D labels as first-party HTML overlay with collision
+  `integrations/agent-braid-view/web/braid-scene.js`. Verification: SC-018. Done 2026-11-04 (VIS.1c
+  part B): damping, limits from the framed size, cursor zoom, keys, wheel only with Ctrl or
+  Cmd (or focus, or lock), `pan-y` touch with a lock toggle, presets and an eased "Frame all"
+  (agents only), pulse only on hover or selection. Deviation: the lateral preset is raised and
+  the top view is the default, because agents lie along z and a view along -z stacks every lane.
+- [x] T056 (REQ-018, REQ-019): 3D labels as first-party HTML overlay with collision
   handling, pinned agent labels, tooltip, help overlay, legend with glyphs. No
   vendor change. Dependencies: T055. Files:
   `integrations/agent-braid-view/web/braid-scene.js`, `tests/test_view_web_bundle.py`.
-  Verification: SC-018, SC-019.
-- [ ] T057 (REQ-017): `timeline.js` 2D view behind the view switch: proportional axis
+  Verification: SC-018, SC-019. Done 2026-11-04 (part B): HTML labels with collision handling and
+  agent labels pinned at the left, hit volumes, a shared SVG glyph set, a legend line that filters
+  every view and a help overlay. No floating 3D tooltip: the hover line and the labels carry it.
+- [x] T057 (REQ-017): `timeline.js` 2D view behind the view switch: proportional axis
   with labelled breaks, lanes, bars, states, conflict vocabulary, tooltip, keyboard
   listbox, zoom and pan; add the new files to `BUNDLE_FILES` and packaging.
   Dependencies: T054. Files: `integrations/agent-braid-view/web/timeline.js`,
   `agent_braid/view_cli.py`, `tests/test_view_web_bundle.py`,
-  `tests/test_view_packaging.py`. Verification: SC-017.
-- [ ] T058 (REQ-016, REQ-019, REQ-020, REQ-021): Page structure and design system:
+  `tests/test_view_packaging.py`. Verification: SC-017. Done 2026-11-04 (part B): `timeline.js` and
+  `BUNDLE_FILES`. Deviations, none hidden: the "show omitted time" toggle is not built (breaks are always
+  drawn); a lane with no close and no state is drawn with a dotted outline and no open arrow (more honest
+  than "running"); no tooltip on keyboard focus (the row labels carry the facts); no polite live region; no
+  bar text inside bars; planned waves are markers, not bands; no ruler brush, double-click frame, pinch or
+  arrow-key cursor stepping in the timeline (buttons and keys 0, +, -, Home, End cover zoom and pan); gates,
+  grants and waves have no keyboard path (the table is the text alternative); no forced-colors rules for
+  the SVG; rows are 34 px, below 44 px on coarse pointers. These go to the T065 accessibility pass.
+- [x] T058 (REQ-016, REQ-019, REQ-020, REQ-021): Page structure and design system:
   tokens, toolbar, sticky detail panel, summary and legend tabs, compact table and
   mobile cards, boundary strip and about panel, `strings.js` (es and en with key
   parity), URL hash state, palette validation in both themes. Dependencies: T054;
@@ -340,10 +353,10 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   `index.html`, `style.css`, `strings.js`, `tests/test_view_web_behaviour.py`.
   Verification: SC-016, SC-019, SC-020. Part A done 2026-11-04: page structure,
   tokens, toolbar and filters, sticky detail panel, tabs, boundary strip and help,
-  `strings.js` with language detection (OD-V1 as accepted), URL hash state. Open
-  until part B: palette validation in both themes, the view switch with the
-  timeline and the 3D HUD hooks.
-- [ ] T059 (REQ-017): Make the 2D timeline the default view and 3D the secondary
+  `strings.js` with language detection (OD-V1 as accepted), URL hash state. Part B done
+  2026-11-04: view switch, timeline and 3D HUD hooks. The dataviz palette validator was not run;
+  contrast values stay as measured in the design system and the captures are receipts.
+- [x] T059 (REQ-017): Make the 2D timeline the default view and 3D the secondary
   "spatial map". Dependencies: T057, T058, and ADR 0033 amendment accepted (G2).
   Files: `integrations/agent-braid-view/web/loom.js`. Verification: SC-017.
 - [ ] T060 (REQ-022): `axis.nowMs` and `axis.live` from the server clock, live "now"
