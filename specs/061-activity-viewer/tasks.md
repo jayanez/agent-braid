@@ -419,11 +419,29 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   F4 effort per lane, F4 only after T035 and VIS.1b). Dependencies: T054, T057,
   owner acceptance per field. Files: `integrations/agent-braid-view/web/state.js`,
   `timeline.js`. Verification: SC-023.
+  Added 2026-11-04 (owner request after real use): distinguishable lane labels. Every
+  hook session lane currently reads "Claude session", so four sessions cannot be told
+  apart. Give each lane a short, privacy-safe distinguishing label (for example a short
+  salted session suffix, start time, or the basename of the working folder only if the
+  allowlist review accepts it), shown in both views, the table and the detail panel.
 - [ ] T065 (REQ-015, REQ-020, REQ-021): Bundle, CSP, key-parity and accessibility
   tests, contrast re-measure, captures at 1440 x 900 and 390 x 844 in both themes,
   keyboard-only walkthrough record, `docs/tooling/VIEWER.md` and `docs/tooling/`
   updates. Dependencies: T056, T057, T058, T059. Files: `tests/test_view_web_*.py`,
   `tests/test_view_docs.py`, `docs/tooling/VIEWER.md`. Verification: SC-020, SC-021.
+  Added 2026-11-04 (owner request): also cover the lane-label disambiguation of T064 in
+  the accessibility pass (labels read out distinctly by VoiceOver and keyboard focus).
+- [ ] T067 (REQ-004): Open the viewer in another browser without restarting it. Today
+  the one-time open code is per start, so once the integrated browser has used it, any
+  other browser gets 404 until `view serve` restarts, which also drops the in-memory
+  history. Owner request 2026-11-04: offer a new open link on demand, for example an
+  `agent-braid view open` command that asks the running server (loopback, owner-only
+  credential) for a fresh single-use code, and a "copy link for another browser"
+  action in the page. Each code stays single-use and short-lived; existing cookies stay
+  valid; nothing is logged. Dependencies: none. Files: `agent_braid/view_serve.py`,
+  `agent_braid/view_cli.py`, web bundle, `contracts/ui-security-privacy.md`,
+  `docs/tooling/VIEWER.md`, tests. Verification: a second browser opens the live view
+  while the first stays connected, with no restart and no loss of history.
 - [ ] T066 (all VIS.1c REQ): Closure: pre-PR reviews (code, quality, simplification),
   `validate_change --profile pr`, VoiceOver pass of "select a conflict", owner review
   of the "find the ROADMAP conflict" task, obtained evidence in `assurance.json`,
