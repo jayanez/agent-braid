@@ -7,9 +7,12 @@ import io
 import json
 import os
 import re
+import shlex
 import shutil
 import socket
 import stat
+import subprocess
+import sys
 import tempfile
 import threading
 import time
@@ -748,22 +751,53 @@ class EnvTests(TempCase):
 
     @staticmethod
     def settings(text):
-        return json.loads("\n".join(line for line in text.splitlines()
-                                    if line.strip() and not line.startswith(("#", "export "))))
+        return json.loads("\n".join(line for line in text.splitlines() if line.strip() and not line.startswith("#")))
 
-    def test_prints_observational_http_hooks_for_claude(self):
+    def commands(self, out):
+        hooks = self.settings(out)["hooks"]
+        return [group["hooks"][0]["command"] for entries in hooks.values() for group in entries]
+
+    @staticmethod
+    def run_hook(command, payload=b'{"hook_event_name": "SessionStart"}'):
+        # No AGENT_BRAID_VIEW_TOKEN in the environment, as in a Claude desktop app or IDE launch.
+        return subprocess.run(["/bin/sh", "-c", command], input=payload, capture_output=True, timeout=20,
+                              env={"PATH": "/usr/bin:/bin"}, check=False)
+
+    def serve(self, runtime=None):
+        from agent_braid.view_hooks import HookIngest
+        from agent_braid.view_serve import HOOK_PATH, ViewServer
+        from agent_braid.view_store import LoomStore
+        store = LoomStore()
+        server = ViewServer(store, runtime or self.runtime, ingest_handlers={HOOK_PATH: HookIngest(store).handle},
+                            bundle={"index.html": b"<!doctype html>"})
+        thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.01}, daemon=True)
+        thread.start()
+        self.addCleanup(server.server_close)
+        self.addCleanup(server.shutdown)
+        return store, server
+
+    def test_prints_observational_command_hooks_for_claude(self):
         code, out, err = self.env("--port", "4310")
         self.assertEqual((code, err), (0, ""))
         hooks = self.settings(out)["hooks"]
         self.assertEqual(sorted(hooks), sorted(OBSERVATIONAL_EVENTS))
         for entries in hooks.values():
             (group,) = entries
+            self.assertEqual(set(group), {"hooks"})
             (hook,) = group["hooks"]
-            self.assertEqual(hook["type"], "http")
-            self.assertEqual(hook["url"], "http://127.0.0.1:4310/hook/claude")
-            self.assertEqual(hook["headers"], {"Authorization": "Bearer $AGENT_BRAID_VIEW_TOKEN"})
-            self.assertEqual(hook["allowedEnvVars"], ["AGENT_BRAID_VIEW_TOKEN"])
-            self.assertGreater(hook["timeout"], 0)
+            self.assertEqual(set(hook), {"type", "command", "timeout"})
+            self.assertEqual(hook["type"], "command")
+            self.assertTrue(0 < hook["timeout"] <= 5)
+            self.assertIn("http://127.0.0.1:4310/hook/claude", hook["command"])
+            self.assertTrue(hook["command"].endswith(" >/dev/null 2>&1 || true"))
+        self.assertNotIn("allowedEnvVars", out)
+        self.assertNotIn("headers", out)
+
+    def test_needs_no_environment_variable_and_drops_the_shell_profile_line(self):
+        _, out, _ = self.env("--port", "4310")
+        self.assertFalse(any(line.startswith("export ") for line in out.splitlines()))
+        self.assertNotIn("$AGENT_BRAID_VIEW_TOKEN", out)
+        self.assertIn("can be removed", out)
 
     def test_port_placeholder_when_not_given(self):
         code, out, _ = self.env()
@@ -780,18 +814,56 @@ class EnvTests(TempCase):
                 self.assertIn("http://127.0.0.1:", line)
         self.assertNotIn("0.0.0.0", out)
 
-    def test_reads_the_token_from_its_file_and_prints_no_credential(self):
-        from agent_braid.view_serve import INGEST_TOKEN_NAME, ViewServer
-        from agent_braid.view_store import LoomStore
-        server = ViewServer(LoomStore(), self.runtime)
-        self.addCleanup(server.server_close)
+    def test_names_the_token_file_and_prints_no_credential(self):
+        _, server = self.serve()
         token = server.token_path.read_text()
         code, out, err = self.env("--port", str(server.port))
         self.assertEqual(code, 0)
         self.assertNotIn(token, out + err)
         self.assertNotIn(server._open_code, out + err)
-        self.assertIn(str(server.token_path), out)
-        self.assertRegex(out, r"export AGENT_BRAID_VIEW_TOKEN=\"\$\(cat '?[^)]*" + INGEST_TOKEN_NAME + r"'?\)\"")
+        for command in self.commands(out):
+            self.assertIn(shlex.quote(str(server.token_path)), command)
+
+    def test_quotes_a_token_file_path_with_spaces_and_quotes(self):
+        runtime = self.base / "my run's dir"
+        _, out, _ = invoke("view", "env", "--host", "claude", "--runtime-dir", str(runtime), "--port", "4310")
+        for command in self.commands(out):
+            words = shlex.split(command.removesuffix(" >/dev/null 2>&1 || true"))
+            self.assertEqual(words[1:3], ["-I", "-c"])
+            self.assertEqual(words[4:], [str(runtime / "view-ingest-token"), "http://127.0.0.1:4310/hook/claude"])
+
+    def test_the_command_posts_the_payload_and_it_is_ingested(self):
+        runtime = self.base / "run with space"
+        store, server = self.serve(runtime)
+        token = server.token_path.read_text()
+        _, out, _ = invoke("view", "env", "--host", "claude", "--runtime-dir", str(runtime), "--port", str(server.port))
+        command = self.commands(out)[0]
+        self.assertNotIn(token, command)
+        payload = json.dumps({"hook_event_name": "SessionStart", "session_id": "s-1", "source": "startup"}).encode()
+        self.assertEqual(store.replay(), [])
+        result = self.run_hook(command, payload)
+        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, b"", b""))
+        events = store.replay()
+        self.assertTrue(events, "the hook payload was not ingested")
+        self.assertNotIn(token, json.dumps(events))
+
+    def test_the_command_exits_zero_silently_when_the_viewer_is_down_and_the_token_missing(self):
+        with socket.socket() as probe:
+            probe.bind(("127.0.0.1", 0))
+            free = probe.getsockname()[1]
+        _, out, _ = self.env("--port", str(free))  # no server, no token file
+        result = self.run_hook(self.commands(out)[0])
+        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, b"", b""))
+
+    def test_a_wrong_token_is_refused_and_the_hook_still_exits_zero(self):
+        store, server = self.serve()
+        _, out, _ = self.env("--port", str(server.port))
+        good = server.token_path.read_text()
+        server.token_path.write_text("x" * len(good))
+        self.addCleanup(server.token_path.write_text, good)
+        result = self.run_hook(self.commands(out)[0])
+        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, b"", b""))
+        self.assertEqual(store.replay(), [])
 
     def test_says_it_writes_nothing_and_to_use_user_level_settings(self):
         _, out, _ = self.env()
@@ -839,8 +911,15 @@ class BoundaryTests(unittest.TestCase):
     SOURCE = (ROOT / "agent_braid/view_cli.py").read_text()
 
     def test_no_network_or_ownership_imports(self):
+        # The hook command is text for a separate process that Claude Code runs; the module imports no network.
+        script = re.search(r"\nHOOK_SCRIPT = \(.*?\)\n", self.SOURCE, re.DOTALL)
+        self.assertIsNotNone(script)
+        rest = self.SOURCE.replace(script.group(0), "\n")
         for forbidden in ("import socket", "import http", "from http", "urllib", "ownership"):
-            self.assertNotIn(forbidden, self.SOURCE)
+            self.assertNotIn(forbidden, rest)
+        self.assertNotIn("urllib", sys.modules.get("agent_braid.view_cli").__dict__)
+        self.assertEqual(view_cli.HOOK_SCRIPT.count("import "), 1)
+        self.assertIn("ProxyHandler({})", view_cli.HOOK_SCRIPT)
 
     def test_the_registry_is_loaded_lazily_and_only_read(self):
         imports = re.findall(r"from \.plugin_registry import ([^\n]+)", self.SOURCE)
