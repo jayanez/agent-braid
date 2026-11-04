@@ -233,6 +233,20 @@ shared object store fails the portable-root check).
   own bytes), so the dry run, the installed code copy (step 5) and the re-check by the orchestrator
   are repeated. The counter of the output directory stops further sessions: its reset is a
   founder decision (quickstart "If step 11 fails"). Nothing is qualified; `executionAuthorization` stays false.
+  Self-check 1, 2026-11-04 (`evidence/t009-selfcheck1-20261104.md`; founder record
+  `evidence/founder-decisions-20261104.json`; re-check `evidence/recheck-t009-sandbox-allowlist.md`): the
+  founder's `--self-check` refused at the compile check (`self-check-failed`): the allowed `claude --version`
+  exited non-zero under the profile, which granted no `sysctl-read` (kernel log: the Bun binary was denied its
+  start-up `hw.*` and `kern.*` reads). The founder chose "A. Lista cerrada": the `launch` and `launch-probe`
+  profiles now allow a closed list of read-only system information (named `sysctl-read`s plus the
+  `hw.optional.` prefix, three literal `LC_CTYPE` files, metadata of `/etc` and `/var`); `kern.bootargs`,
+  `mach-lookup`, `/dev/dtracehelper` and everything else stay denied. The fixture interpreter runs with
+  `-B`. `process-accounting-failed` (fixture entry) is handled for exited-unreaped processes, and the
+  self-check now prints exit codes (`compileExit`, `exitCode`, `probeRuns`) and the errno of an accounting
+  failure, integers only. The backend edit moves the environment hash (the catalog hash does not); the dry
+  run, the installed copy and the orchestrator's re-check are repeated before the self-check is re-run. The
+  NC-10 counter decision for the refused session 1 is a new attempt with 3 sessions. This task stays
+  unchecked.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes

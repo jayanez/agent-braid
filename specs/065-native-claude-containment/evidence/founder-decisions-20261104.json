@@ -1,0 +1,58 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T009 attempt 1 follow-up: NC-10 counter, --self-check and the sandbox allow-list",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-04",
+  "baseCommit": "e3901f81",
+  "decisionChannel": "Founder answers to interactive guided questions in the HAR orchestrator session, 2026-11-04, recorded verbatim. Additive to founder-decisions-20261103.json and -20261103b.json, which stay as written.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261103.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261103b.json"
+  ],
+  "decisionOrder": [
+    "NC-10-session-1",
+    "self-check-runs-claude-version",
+    "sandbox-allow-list"
+  ],
+  "decisions": [
+    {
+      "id": "NC-10-session-1",
+      "item": "How the NC-10 session counter treats session 1 of attempt t009-20261104, refused by the backend before claude ran",
+      "question": "NC-10: ¿cómo tratamos la sesión 1, que se rechazó sin llegar a ejecutar claude?",
+      "ownerStatement": "Intento nuevo, 3 sesiones (Recommended)",
+      "decision": {
+        "disposition": "new-attempt-full-budget",
+        "reading": "The refused session 1 is not counted against a new attempt: the next attempt is a new attempt name with its own output directory and the full budget of 3 sessions. The counter of the earlier directory is not edited."
+      }
+    },
+    {
+      "id": "self-check-runs-claude-version",
+      "item": "Whether --self-check executes 'claude --version' inside the sandbox",
+      "question": "¿Aceptas que --self-check ejecute 'claude --version' dentro del sandbox (sin sesión, sin modelo y sin cuota)?",
+      "ownerStatement": "Acepto (Recommended)",
+      "decision": {
+        "disposition": "accept-self-check-claude-version",
+        "reading": "The self-check may run the pinned `claude --version` under the sandbox profile (the compile check's allowed run) and the F4 fixtures, with no session, no prompt, no model call and no usage. It never starts a session."
+      }
+    },
+    {
+      "id": "sandbox-allow-list",
+      "item": "How much the sandbox profile opens so that claude can start (macOS 27.2)",
+      "question": "¿Cuánto abrimos el sandbox para que claude pueda arrancar?",
+      "ownerStatement": "A. Lista cerrada (Recommended)",
+      "decision": {
+        "disposition": "closed-list-of-read-only-system-information",
+        "reading": "Only a closed list of read-only system information seen in the kernel sandbox log: sysctl-read by exact name or the narrow prefix hw.optional., locale data reads under /usr/share/locale, and metadata-only reads of /etc and /var. Everything else stays denied: network, mach-lookup, /System/Volumes/Data, writes outside the allowed directories, and kern.bootargs unless shown necessary (then an open question for the founder). Implemented (locale narrowed to three literal LC_CTYPE files); self re-check in evidence/t009-selfcheck1-20261104.md and evidence/recheck-t009-sandbox-allowlist.md."
+      }
+    }
+  ],
+  "stillOpen": [
+    "kern.bootargs for the claude process: stays denied; to be raised only if the next self-check still fails with the closed list allowed",
+    "mach-lookup (opendirectoryd.libinfo, notification_center): requested by python only; nothing added",
+    "the /usr/bin/curl exec attempt by claude --version: stays denied; read with the new compileExit integers"
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records three founder decisions only. executionAuthorization stays false and issuance stays T010 (NC-9, founder only). The earlier records are not rewritten. No native session, probe, sudo command or account change was run for this record. The profile edit needs the orchestrator's security re-check before the founder repeats the self-check. Any change needs a new founder decision record."
+}
