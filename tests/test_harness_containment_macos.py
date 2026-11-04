@@ -22,6 +22,7 @@ import signal
 import socket
 import ssl
 import stat
+import struct
 import subprocess
 import sys
 import tempfile
@@ -131,7 +132,7 @@ def make_backend(machine: Machine, *, runner=expected_probes, operator: str = OP
 def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = None, darwin: bool = True,
          stub_compile_check: bool = True, processes=None, env: dict | None = None,
          mechanism_uid: int | None = None, gids: tuple[int, ...] = (20,), pw_gid: int = 20,
-         operator_uid: int | None = None, home: str | None = None, parent=None):
+         operator_uid: int | None = None, home: str | None = None, links=None, resident=None):
     """Stub every Darwin fact; ``processes`` stubs the per-user process listing.
 
     Runs as the test runner's uid, which must be at least 500 (``_MIN_HUMAN_UID``, RV-16).
@@ -167,8 +168,8 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
             "pwd": SimpleNamespace(getpwnam=getpwnam), "SANDBOX_EXEC": machine.sandbox,
             "_MECHANISM_UID": os.getuid() if mechanism_uid is None else mechanism_uid,
             "_user_processes": processes or (lambda uid: BASELINE),
-            "_resident_bytes": lambda processes: 0, "_account_groups": lambda account, gid: gids,
-            "_process_parent": parent or (lambda pid: None),
+            "_resident_bytes": resident or (lambda processes: 0), "_account_groups": lambda account, gid: gids,
+            "_process_links": links or (lambda identity: (None, None)),
             "_trusted_file": trusted,
         }
         for name, value in patches.items():
@@ -929,33 +930,12 @@ class SupervisedRunTests(unittest.TestCase):
         self.assertEqual(caught.exception.reason, "workspace-unavailable")
         self.assertEqual(self.backend.run_evidence[-1]["refused"], "workspace-unavailable")
 
-    def test_escaped_process_is_swept_and_unsettles(self):
-        alive = {"escapee": False}
-        escapee = (999_999, 7)
+    def leaver(self, *, killable: bool, parent: bool, source=b"import time\ntime.sleep(0.6)\n",
+               group: bool = False, resident=None):
+        """A process of the dedicated user that appears while the child runs and outlives the group.
 
-        def processes(uid):
-            return BASELINE | ({escapee} if alive["escapee"] else set())
-
-        def fake_kill(pid, sig):
-            alive["escapee"] = False
-
-        real_settle = mac._settle
-
-        def settle(pgid):  # the escapee shows up outside the group once the group is gone
-            alive["escapee"] = True
-            return real_settle(pgid)
-
-        with host(self.machine, processes=processes), mock.patch.object(mac, "_settle", settle), \
-                mock.patch.object(mac.os, "kill", side_effect=fake_kill) as kill_mock:
-            result = self.backend.run(b"pass\n", Path(self.machine.candidate()), lab.FixtureLimits(wall_seconds=5))
-        self.assertFalse(result.settled)
-        evidence = self.backend.run_evidence[-1]
-        self.assertEqual((evidence["escapedProcesses"], evidence["survivingProcesses"]), (1, 0))
-        self.assertEqual((result.escaped_processes, result.surviving_processes), (1, 0))
-        kill_mock.assert_called_with(999_999, mac.signal.SIGKILL)
-
-    def leaver(self, *, killable: bool, parent: bool, source=b"import time\ntime.sleep(0.6)\n"):
-        """A process of the dedicated user that appears while the child runs and outlives the group."""
+        ``parent``: its parent is the child; ``group``: it is in the child's process group (an orphan);
+        neither: an unrelated process (``launchd`` parent, a group of its own)."""
         ghost, state = (999_999, 7), {"calls": 0, "dead": False}
         spawned = []
         real_popen = mac.subprocess.Popen
@@ -972,7 +952,9 @@ class SupervisedRunTests(unittest.TestCase):
             state["dead"] = state["dead"] or killable
 
         with host(self.machine, processes=processes,
-                  parent=lambda pid: spawned[0].pid if parent and pid == ghost[0] else None), \
+                  links=lambda identity: (spawned[0].pid if parent and identity == ghost else 1,
+                                          spawned[0].pid if group and identity == ghost else identity[0]),
+                  resident=resident), \
                 mock.patch.object(mac.subprocess, "Popen", popen), mock.patch.object(mac.os, "kill", fake_kill):
             return self.backend.run(source, Path(self.machine.candidate()), lab.FixtureLimits(wall_seconds=5))
 
@@ -985,11 +967,49 @@ class SupervisedRunTests(unittest.TestCase):
         self.assertEqual((evidence["escapedProcesses"], evidence["escapedDescendants"],
                           evidence["unattributedProcesses"], evidence["survivingProcesses"]), (1, 1, 0, 0))
 
-    def test_a_leaver_never_seen_in_the_childs_tree_is_unattributed(self):
-        result = self.leaver(killable=True, parent=False)
+    def test_an_orphan_of_the_childs_group_is_an_escape_even_if_never_seen_with_the_child_as_parent(self):
+        result = self.leaver(killable=True, parent=False, group=True)  # surviving 0: the kill reached it
         self.assertEqual((result.escaped_processes, result.escaped_descendants, result.surviving_processes),
-                         (1, 0, 0))
-        self.assertEqual(self.backend.run_evidence[-1]["unattributedProcesses"], 1)
+                         (1, 1, 0))
+        self.assertFalse(result.settled)
+
+    def test_an_unrelated_new_process_is_neither_killed_nor_counted_and_does_not_unsettle(self):
+        kills = []
+        real_kill = mac.os.kill
+        with mock.patch.object(mac.os, "kill", lambda pid, sig: kills.append(pid) or real_kill(pid, sig)):
+            result = self.leaver(killable=False, parent=False)
+        self.assertNotIn(999_999, kills)
+        self.assertEqual((result.escaped_processes, result.surviving_processes, result.settled), (0, 0, True))
+        evidence = self.backend.run_evidence[-1]
+        self.assertEqual((evidence["unrelatedProcesses"], evidence["escapedProcesses"]), (1, 0))
+        self.assertNotIn("refused", evidence)
+
+    def test_an_unreadable_member_refuses_and_an_unreadable_unrelated_process_does_not(self):
+        def unreadable(pid):
+            if pid == 999_999:
+                raise mac._accounting_error(errno.EPERM, mac._PROC_PIDTASKINFO)
+            return 0
+        # unrelated: never measured, the run is settled
+        self.leaver(killable=False, parent=False, resident=lambda processes: sum(unreadable(p) for p, _ in processes))
+        self.assertNotIn("refused", self.backend.run_evidence[-1])
+        # member: measured, fails closed with errno and flavor
+        with self.assertRaises(lab.LabError) as caught:
+            self.leaver(killable=False, parent=True, resident=lambda processes: sum(unreadable(p) for p, _ in processes))
+        self.assertEqual(caught.exception.reason, "process-accounting-failed")
+        self.assertEqual(self.backend.run_evidence[-1]["accountingErrno"], errno.EPERM)
+
+    def test_the_memory_watchdog_measures_only_the_childs_own_tree(self):
+        measured = []
+        self.leaver(killable=False, parent=False,
+                    resident=lambda processes: measured.append(set(processes)) or 0)
+        self.assertTrue(measured)
+        self.assertNotIn((999_999, 7), set().union(*measured))
+
+    def test_the_noise_counts_are_integers_in_the_run_evidence(self):
+        with mock.patch.object(mac, "_unreadable_tasks", lambda processes: len(processes) * 10):
+            self.leaver(killable=False, parent=False)
+        evidence = self.backend.run_evidence[-1]
+        self.assertEqual((evidence["unrelatedProcesses"], evidence["unreadableProcesses"]), (1, 10))
 
     def test_a_survivor_that_resists_every_kill_is_reported_after_the_final_sweep(self):
         result = self.leaver(killable=False, parent=True, source=b"pass\n")
@@ -999,9 +1019,24 @@ class SupervisedRunTests(unittest.TestCase):
     def test_lineage_follows_grandchildren_whatever_the_listing_order(self):
         lineage = mac._Lineage(100)
         parents = {200: 100, 300: 200, 400: 1}
-        with mock.patch.object(mac, "_process_parent", parents.get):
+        with mock.patch.object(mac, "_process_links", lambda identity: (parents[identity[0]], identity[0])):
             lineage.observe({(300, 3), (200, 2), (400, 4)})
         self.assertEqual(lineage.identities, {(200, 2), (300, 3)})
+        self.assertEqual(lineage.unrelated(), {(400, 4)})
+
+    def test_lineage_keeps_a_reparented_member_of_the_childs_group_and_the_root(self):
+        lineage = mac._Lineage(100)
+        parents, groups = {100: 7, 200: 1, 300: 1, 400: 1}, {100: 100, 200: 100, 300: 300, 400: 999}
+        with mock.patch.object(mac, "_process_links", lambda identity: (parents[identity[0]], groups[identity[0]])):
+            members = lineage.members({(100, 1), (200, 2), (300, 3), (400, 4)})
+        self.assertEqual(members, {(100, 1), (200, 2)})
+        self.assertEqual(lineage.identities, {(200, 2)})
+        self.assertEqual(lineage.unrelated(), {(300, 3), (400, 4)})
+
+    def test_a_process_that_vanished_before_it_was_classified_is_unrelated(self):
+        lineage = mac._Lineage(100)
+        with mock.patch.object(mac, "_process_links", lambda identity: (None, None)):
+            self.assertEqual(lineage.members({(500, 5)}), set())
 
     def test_results_extend_the_lab_and_host_results_additively(self):
         with host(self.machine):
@@ -1255,7 +1290,7 @@ class SupervisedRunTests(unittest.TestCase):
                 if not host_args:
                     self.machine.repin(account="gone-account")
                     self.backend.policy = self.machine.policy
-                self.backend._sweep(os.getuid(), set())
+                self.backend._sweep(os.getuid(), set(), mac._Lineage(1))
             self.assertEqual(caught.exception.reason, "dedicated-user-required")
 
     def test_preamble_failure_refuses(self):
@@ -1398,32 +1433,104 @@ class LiveOutputTests(unittest.TestCase):
         self.assertEqual(caught.exception.reason, "invalid-launch")
 
 
-class PidInfoTests(unittest.TestCase):
-    """proc_pidinfo failures: gone and exited processes are not accounting failures, unreadable ones are."""
+def kinfo_record(pid: int, *, ppid: int = 1, pgid: int = 1, stat: int = 2, seconds: int = 1_700_000_000,
+                 microseconds: int = 5) -> bytes:
+    """A 648-byte ``struct kinfo_proc`` with only the fields the backend reads."""
+    raw = bytearray(mac._KINFO_BYTES)
+    struct.pack_into("=qi", raw, 0, seconds, microseconds)
+    raw[mac._KP_STAT] = stat
+    struct.pack_into("=i", raw, mac._KP_PID, pid)
+    struct.pack_into("=i", raw, mac._KP_PPID, ppid)
+    struct.pack_into("=i", raw, mac._KP_PGID, pgid)
+    return bytes(raw)
 
-    def fake(self, outcomes):
+
+class ProcessAccountingTests(unittest.TestCase):
+    """Process-table reads (no task access) classify any process; task reads fail closed for a live one."""
+
+    def fake(self, *, task=0, kinfo=None, sysctl_error=0, sysctl_size=None):
+        """``task``: errno of proc_pidinfo (0: readable); ``kinfo``: the record sysctl returns (None: gone)."""
         def proc_pidinfo(pid, flavor, arg, buffer, size):
-            code, status = outcomes[flavor]
-            if code:
-                ctypes.set_errno(code)
-                return 0
-            buffer[0] = status << 32  # pbi_status is the high half of the first word
+            if task:
+                ctypes.set_errno(task)
+                return -1
+            buffer[1] = 4096
             return size
-        return mock.patch.object(mac, "_libsystem", lambda: SimpleNamespace(proc_pidinfo=proc_pidinfo))
 
-    def test_a_process_that_is_gone_is_none(self):
-        with self.fake({4: (errno.ESRCH, 0)}):
-            self.assertIsNone(mac._pidinfo(os.getpid(), mac._PROC_PIDTASKINFO, mac._TASKINFO_WORDS))
+        def sysctl(mib, count, buffer, size, new, newlen):
+            if sysctl_error:
+                ctypes.set_errno(sysctl_error)
+                return -1
+            if kinfo is None:
+                size._obj.value = 0
+                return 0
+            ctypes.memmove(buffer, kinfo, len(kinfo))
+            size._obj.value = len(kinfo) if sysctl_size is None else sysctl_size
+            return 0
+
+        return mock.patch.object(mac, "_libsystem",
+                                 lambda: SimpleNamespace(proc_pidinfo=proc_pidinfo, sysctl=sysctl))
+
+    def test_kinfo_reads_start_parent_group_and_state_without_task_access(self):
+        with self.fake(task=errno.EPERM, kinfo=kinfo_record(77, ppid=1, pgid=55, stat=2)):
+            self.assertEqual(mac._kinfo(77), (1_700_000_000_000_005, 1, 55, 2))
+            self.assertEqual(mac._process_links((77, 1_700_000_000_000_005)), (1, 55))
+            self.assertEqual(mac._process_links((77, 1)), (None, None))  # the pid was reused
+
+    def test_kinfo_of_a_process_that_is_gone_is_none(self):
+        for fake in (self.fake(kinfo=None), self.fake(sysctl_error=errno.ESRCH)):
+            with fake:
+                self.assertIsNone(mac._kinfo(77))
+                self.assertEqual(mac._process_links((77, 1)), (None, None))
+
+    def test_kinfo_fails_closed_on_any_other_error_or_a_foreign_record(self):
+        cases = (dict(sysctl_error=errno.EPERM), dict(kinfo=kinfo_record(78)),
+                 dict(kinfo=kinfo_record(77), sysctl_size=100))
+        for case in cases:
+            with self.subTest(case), self.fake(**case), self.assertRaises(lab.LabError) as caught:
+                mac._kinfo(77)
+            self.assertEqual((caught.exception.reason, caught.exception.flavor),
+                             ("process-accounting-failed", mac._KERN_PROC))
+
+    def test_the_real_process_table_agrees_with_the_os(self):
+        if sys.platform != "darwin":
+            self.skipTest("macOS only")
+        start, parent, group, state = mac._kinfo(os.getpid())
+        self.assertEqual((parent, group), (os.getppid(), os.getpgrp()))
+        self.assertGreater(start, 0)
+        self.assertNotEqual(state, mac._SZOMB)
+        self.assertIsNone(mac._kinfo(2 ** 22 - 3))
+
+    def test_a_task_read_of_a_process_that_is_gone_is_none(self):
+        with self.fake(task=errno.ESRCH):
+            self.assertIsNone(mac._task_resident(os.getpid()))
 
     def test_an_exited_unreaped_process_has_no_task_and_counts_as_gone(self):
-        with self.fake({4: (errno.EPERM, 0), 3: (0, mac._SZOMB)}):
-            self.assertIsNone(mac._pidinfo(os.getpid(), mac._PROC_PIDTASKINFO, mac._TASKINFO_WORDS))
+        with self.fake(task=errno.EPERM, kinfo=kinfo_record(os.getpid(), stat=mac._SZOMB)):
+            self.assertIsNone(mac._task_resident(os.getpid()))
+        with self.fake(task=errno.EPERM, kinfo=None):
+            self.assertIsNone(mac._task_resident(os.getpid()))
 
     def test_a_live_unreadable_process_fails_closed_with_errno_and_flavor(self):
-        with self.fake({4: (errno.EPERM, 0), 3: (0, 2)}), self.assertRaises(lab.LabError) as caught:
-            mac._pidinfo(os.getpid(), mac._PROC_PIDTASKINFO, mac._TASKINFO_WORDS)
+        with self.fake(task=errno.EPERM, kinfo=kinfo_record(os.getpid())), \
+                self.assertRaises(lab.LabError) as caught:
+            mac._task_resident(os.getpid())
         self.assertEqual((caught.exception.reason, caught.exception.errno_code, caught.exception.flavor),
                          ("process-accounting-failed", errno.EPERM, mac._PROC_PIDTASKINFO))
+
+    def test_resident_bytes_sums_readable_tasks_and_fails_closed_on_an_unreadable_member(self):
+        with self.fake(kinfo=kinfo_record(os.getpid())):
+            self.assertEqual(mac._resident_bytes({(1, 1), (2, 2)}), 8192)
+        with self.fake(task=errno.EPERM, kinfo=kinfo_record(os.getpid())), self.assertRaises(lab.LabError):
+            mac._resident_bytes({(os.getpid(), 1)})
+
+    def test_unreadable_tasks_are_counted_for_the_evidence_and_never_raise(self):
+        with self.fake(task=errno.EPERM):
+            self.assertEqual(mac._unreadable_tasks({(1, 1), (2, 2)}), 2)
+        with self.fake(task=errno.ESRCH):
+            self.assertEqual(mac._unreadable_tasks({(1, 1)}), 0)
+        with self.fake():
+            self.assertEqual(mac._unreadable_tasks({(1, 1)}), 0)
 
 
 class CompileCheckTests(unittest.TestCase):

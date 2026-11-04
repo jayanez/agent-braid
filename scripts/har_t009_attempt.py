@@ -643,12 +643,17 @@ def _integers(record: Mapping, names: tuple[str, ...]) -> dict[str, int]:
     return {name: number for name in names if (number := _int(record.get(name))) is not None}
 
 
+_NOISE = ("unrelatedProcesses", "unreadableProcesses")  # new processes of the user that are not the child's
+
+
 def refusal_evidence(backend: object, since: int = 0) -> list[dict]:
     """What the backend recorded about its refusals, as the driver may print it: per record the entry
     (``fixture``, ``launch``, ``launch-probe``), the fixed refusal reason, whether the compile check passed
     and the F4 probes' ids and verdicts, plus integers only: the exit code of the run, the exit codes of
-    the compile check's two runs (``compileExit``) and the errno and flavor of a failed process
-    accounting call. No path, account, hash or other field of the record is copied."""
+    the compile check's two runs (``compileExit``), the errno and flavor of a failed process
+    accounting call and the noise level of the run (``unrelatedProcesses``, ``unreadableProcesses``: counts of
+    new processes of the user that are not the child's, and of those whose task info is unreadable). No path,
+    account, hash or other field of the record is copied."""
     records = getattr(backend, "run_evidence", None)
     found = []
     for record in (records[since:] if isinstance(records, list) else []):
@@ -660,7 +665,7 @@ def refusal_evidence(backend: object, since: int = 0) -> list[dict]:
         if checks:
             item["preSessionCheck"] = checks
         if "refused" in item:
-            item |= _integers(record, ("exitCode", "accountingErrno", "accountingFlavor"))
+            item |= _integers(record, ("exitCode", "accountingErrno", "accountingFlavor") + _NOISE)
         if isinstance(record.get("compileExit"), Mapping):
             exits = _integers(record["compileExit"], ("denied", "allowed"))
             if exits:
@@ -814,7 +819,7 @@ def self_check(backend: object, workdir: Callable[[], Path], probe_runner: Calla
     runs: list[dict] = []
     for r in getattr(backend, "run_evidence", [])[seen:]:
         if isinstance(r, Mapping) and not r.get("refused") and _int(r.get("exitCode")) is not None:
-            run = {"entry": _code(r.get("entry")), "exitCode": _int(r.get("exitCode"))}
+            run = {"entry": _code(r.get("entry")), "exitCode": _int(r.get("exitCode"))} | _integers(r, _NOISE)
             if run not in runs:
                 runs.append(run)
     return {"verdict": "self-check-ok" if refusal is None else "self-check-refused",

@@ -245,8 +245,16 @@ shared object store fails the portable-root check).
   self-check now prints exit codes (`compileExit`, `exitCode`, `probeRuns`) and the errno of an accounting
   failure, integers only. The backend edit moves the environment hash (the catalog hash does not); the dry
   run, the installed copy and the orchestrator's re-check are repeated before the self-check is re-run. The
-  NC-10 counter decision for the refused session 1 is a new attempt with 3 sessions. This task stays
-  unchecked.
+  NC-10 counter decision for the refused session 1 is a new attempt with 3 sessions.
+  Self-check 2, 2026-11-04 (`evidence/t009-selfcheck2-20261104.md`; re-check `evidence/recheck-t009-accounting.md`):
+  the compile check passes on every entry (#1049) but the F4 probes were refused `process-accounting-failed`
+  (errno 1, flavor 3): the per-user process listing read `PROC_PIDTBSDINFO` of every process of the GUI session,
+  which fails with `EPERM` for processes that are not the child's. Process listing, parentage, group and start
+  time now come from `sysctl KERN_PROC_PID`; `proc_pidinfo` stays only for memory of the child's own tree
+  (fail closed); unrelated new processes are no longer killed or counted as escapes; run records carry
+  `unrelatedProcesses` and `unreadableProcesses`. Residuals PROC-ESC-1 and PROC-ESC-2 (re-check). The backend
+  edit moves the environment hash (the catalog hash does not); the dry run, the installed copy and the
+  orchestrator's re-check are repeated before the self-check is re-run. This task stays unchecked.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes
