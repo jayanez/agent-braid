@@ -33,7 +33,7 @@ const calls = {
   filters: () => {
     const result = {};
     for (const [name, filters] of Object.entries(call.sets)) {
-      const f = { agents: new Set(filters.agents || []), status: new Set(filters.status || []), onlyProblems: Boolean(filters.onlyProblems) };
+      const f = { agents: new Set(filters.agents || []), status: new Set(filters.status || []), kinds: new Set(filters.kinds || []), onlyProblems: Boolean(filters.onlyProblems) };
       result[name] = model.elements.filter((element) => state.passesFilters(element, derived, f)).map((element) => element.seq);
     }
     return result;
@@ -218,13 +218,35 @@ class FilterTests(ModuleCase):
 
 
 @NODE
+class KindFilterTests(ModuleCase):
+    """REQ-019 / SC-019: a legend entry filters markers alike in every view; agents and their states are never hidden by it."""
+
+    def test_a_marker_kind_keeps_its_markers_and_hides_other_markers_but_never_agents(self):
+        result = self.run_js("filters", self.rich, sets={"conflict": {"kinds": ["conflict"]}, "gap": {"kinds": ["gap", "hazard"]}})
+        by_seq = {e["seq"]: e for e in self.rich["elements"]}
+        markers = {"crossing", "hazard-cone", "gap", "gate-ring"}
+        for name, kept in (("conflict", lambda e: e["element"] == "crossing" and e["classification"] == "conflicting"),
+                           ("gap", lambda e: e["element"] in ("gap", "hazard-cone"))):
+            shown = [by_seq[seq] for seq in result[name]]
+            with self.subTest(kind=name):
+                self.assertTrue(all(kept(e) for e in shown if e["element"] in markers))
+                self.assertTrue(any(kept(e) for e in shown))
+                self.assertEqual(sum(1 for e in shown if e["element"] == "strand"), len(self.rich["lanes"]))
+
+    def test_the_kinds_survive_the_hash_and_unknown_ones_are_dropped(self):
+        state = {"view": "timeline", "selected": None, "kinds": []}
+        decoded = self.run_js("hash", None, state=state, hostile="#kd=conflict,evil,gap")["hostile"]
+        self.assertEqual(decoded["kinds"], ["conflict", "gap"])
+
+
+@NODE
 class HashTests(ModuleCase):
     def test_the_hash_carries_ids_only_and_round_trips(self):
         state = {"view": "map3d", "selected": 12, "hiddenSources": ["hook"], "agents": ["explore"], "status": ["waiting"],
                  "onlyProblems": True, "viewport": {"x0": 1000, "x1": 9000}}
         result = self.run_js("hash", None, state=state, hostile="")
         self.assertEqual(result["decoded"], {"view": "map3d", "selected": 12, "hide": ["hook"], "agents": ["explore"],
-                                             "status": ["waiting"], "onlyProblems": True, "viewport": {"x0": 1000, "x1": 9000}})
+                                             "status": ["waiting"], "kinds": [], "onlyProblems": True, "viewport": {"x0": 1000, "x1": 9000}})
         self.assertRegex(result["text"], r"^#[A-Za-z0-9=&,._:%#-]+$")
 
     def test_hostile_input_is_dropped_not_interpreted(self):

@@ -31,11 +31,12 @@ from tests.view_http_helpers import http_request
 
 WEB = Path(__file__).resolve().parents[1] / "integrations/agent-braid-view/web"
 VENDOR = WEB / "vendor"
-FIRST_PARTY = ("index.html", "loom.js", "braid-scene.js", "state.js", "strings.js", "style.css")
-SCRIPTS = ("loom.js", "braid-scene.js", "state.js", "strings.js")
+FIRST_PARTY = ("index.html", "loom.js", "braid-scene.js", "state.js", "strings.js", "timeline.js", "style.css")
+SCRIPTS = ("loom.js", "braid-scene.js", "state.js", "strings.js", "timeline.js")
 MODULES = tuple(name for name in SCRIPTS if name != "braid-scene.js")  # what loom.js imports (the scene is a dynamic import)
 SERVED_PATHS = ("/", *(f"/web/{name}" for name in FIRST_PARTY))
 EXAMPLE = Path(__file__).resolve().parents[1] / "specs/061-activity-viewer/contracts/loom-event.example.jsonl"
+SVG_NAMESPACE = "http://www.w3.org/2000/svg"
 LEGEND_LITERAL = "not a guarantee"
 CONTRACT_HEADERS = {
     "x-content-type-options": "nosniff",
@@ -309,7 +310,8 @@ class FirstPartyBundleTests(unittest.TestCase):
     def test_no_remote_url_in_any_first_party_file(self):
         for name in FIRST_PARTY:
             with self.subTest(name=name):
-                self.assertEqual(REMOTE_URL.findall(read(name)), [])
+                # The SVG namespace is an identifier the DOM API needs, never a request: it is not a remote reference.
+                self.assertEqual(REMOTE_URL.findall(read(name).replace(SVG_NAMESPACE, "")), [])
 
     def test_the_scripts_have_no_evaluation_or_html_sink(self):
         for name in SCRIPTS:
@@ -338,6 +340,27 @@ class FirstPartyBundleTests(unittest.TestCase):
         dynamic = [m.group(0) for m in SET_ATTRIBUTE.finditer(text) if m.group(3) is not None]
         self.assertEqual(len(dynamic), 1, dynamic)
         self.assertRegex(text, r"ATTRS\.test\(key\)\)\s*node\.setAttribute\(key,")
+
+    def test_the_timeline_sets_only_allowlisted_svg_attributes(self):
+        text = read("timeline.js")
+        dynamic = [m.group(0) for m in SET_ATTRIBUTE.finditer(text) if m.group(3) is not None]
+        self.assertEqual(len(dynamic), 1, dynamic)
+        self.assertRegex(text, r"if \(!ALLOWED\.has\(name\)\) throw new Error")
+        allowed = re.search(r"const ALLOWED = new Set\(\[(.*?)\]\);", text, re.S).group(1)
+        for name in re.findall(r'"([^"]+)"', allowed):
+            self.assertIsNone(UNSAFE_ATTRIBUTE.match(name) if name != "href" else None, name)  # href only carries "#symbol"
+        self.assertRegex(text, r'href: "#" \+ id')
+        self.assertNotRegex(text, r"\.innerHTML|insertAdjacent|\.style\.cssText")
+
+    def test_every_symbol_and_pattern_the_scripts_and_styles_reference_is_defined_once_in_the_page(self):
+        html = read("index.html")
+        defined = re.findall(r'<(?:symbol|pattern) id="([^"]+)"', html)
+        self.assertEqual(len(defined), len(set(defined)))
+        used = set(re.findall(r'"(g-[a-z-]+)"', read("timeline.js") + read("loom.js")))
+        used |= set(re.findall(r"url\(#([a-z-]+)\)", read("style.css") + read("timeline.js")))
+        used.discard("tl-clip")  # the clip path is created by the timeline itself
+        self.assertTrue(used)
+        self.assertEqual(sorted(used - set(defined)), [])
 
     def test_a_meta_policy_copy_omits_frame_ancestors(self):
         for policy in PageScan(read("index.html")).meta_csp:
@@ -456,10 +479,14 @@ for (const [owner, list] of built.bySeq) {
 }
 const seqs = model.elements.map((element) => element.seq);
 const empty = buildBraid(null);
+const labelled = buildBraid(model);
 console.log(JSON.stringify({
   description: describeBraid(built), objects,
   frontier: { all: frontierX(built, seqs), none: String(frontierX(built, [])), first: frontierX(built, seqs.slice(0, 3)) },
   xs: Object.fromEntries(built.xOf), emptyParts: describeBraid(empty).parts,
+  labels: labelled.labels.map((item) => ({ owner: item.owner, text: item.text, key: item.key, pin: item.pin, priority: item.priority })),
+  unlabelled: built.labels.length,
+  sprites: (() => { let count = 0; labelled.group.traverse((object) => { if (object.isSprite) count += 1; }); return count; })(),
 }));
 """
 TEAL, RED, AMBER = 0x2A9D8F, 0xD1495B, 0xE0A100
@@ -525,6 +552,27 @@ class SceneBuildTests(unittest.TestCase):
             elif kind == "hazard-cone" and any(unit in lanes for unit in element["units"]):
                 drawn.add(element["seq"])
         return drawn
+
+    def test_labels_are_descriptors_for_html_not_sprites_and_each_agent_label_is_pinned_first(self):
+        built = self.built
+        self.assertEqual(built["sprites"], 0)
+        self.assertEqual(built["unlabelled"], 0)
+        pinned = [item for item in built["labels"] if item["pin"]]
+        declared = [lane for lane in self.model["lanes"] if lane["declared"]]
+        self.assertEqual(len(pinned), len(declared))
+        self.assertTrue(all(item["priority"] == 0 for item in pinned))
+        self.assertTrue(all(item["priority"] > 0 for item in built["labels"] if not item["pin"]))
+        self.assertTrue({item["key"] for item in built["labels"]} - {None} <= {
+            "scene.label.class", "scene.label.wavePlan", "scene.label.wave", "scene.label.grant", "scene.label.grantUnknown",
+            "scene.label.gate", "scene.label.gateUnknown"})
+
+    def test_every_declared_agent_has_an_invisible_hit_volume_that_selects_its_own_event(self):
+        for lane in self.model["lanes"]:
+            if not lane["declared"]:
+                continue
+            volumes = [item for item in self.objects_of(lane["seq"]) if item["part"] == "hit-volume"]
+            self.assertEqual(len(volumes), 1)
+            self.assertEqual(volumes[0]["selectable"], lane["seq"])
 
     def test_every_drawn_object_belongs_to_one_source_event_and_only_event_kinds_that_are_drawn_appear(self):
         elements = self.elements()
@@ -722,12 +770,19 @@ class Element extends Node {
   constructor(tag) {
     super();
     Object.assign(this, { tag, tagName: tag, children: [], attrs: {}, listeners: {}, dataset: {}, hidden: false, className: "", own: null, tabIndex: 0 });
+    this.style = {};
+    this.clientWidth = 800;
+    this.clientHeight = 400;
     const classes = new Set();
     this.classList = { add: (name) => classes.add(name), remove: (name) => classes.delete(name),
       toggle: (name, on) => { if (on === undefined ? !classes.has(name) : on) classes.add(name); else classes.delete(name); }, contains: (name) => classes.has(name) };
   }
   append(...nodes) { this.children.push(...nodes); }
   replaceChildren(...nodes) { this.children = [...nodes]; this.own = null; }
+  getAttribute(name) { return name in this.attrs ? this.attrs[name] : null; }
+  removeEventListener() {}
+  contains() { return false; }
+  getBoundingClientRect() { return { left: 0, top: 0, width: 800, height: 400 }; }
   setAttribute(name, value) {
     this.attrs[name] = value;
     if (name.startsWith("data-")) this.dataset[name.slice(5)] = value;
@@ -747,6 +802,7 @@ globalThis.document = {
   activeElement: null,
   visibilityState: "visible",
   documentElement: { lang: "" },
+  createElementNS: (ns, tag) => { const node = new Element(tag); node.namespace = ns; return node; },
   title: "",
   addEventListener() {},
   querySelectorAll: () => [],
@@ -784,6 +840,7 @@ import { find } from "./dom-stub.mjs";
 
 const { model, steps } = JSON.parse(readFileSync(process.argv[2], "utf8"));
 register("./scene-hooks.mjs", import.meta.url);
+globalThis.location = { hash: "#v=map3d", pathname: "/", search: "" }; // these tests drive the 3D scene stub
 globalThis.fetch = async (url) => {
   if (url === "/snapshot") return { ok: true, status: 200, json: async () => ({ model, droppedAttributeNames: [] }) };
   return new Promise(() => {}); // /events never answers: the model does not change

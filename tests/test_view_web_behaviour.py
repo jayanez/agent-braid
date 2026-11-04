@@ -56,6 +56,7 @@ globalThis.setTimeout = (fn, ms, ...rest) => realSetTimeout(fn, Math.min(ms, 20)
 const sleep = (ms) => new Promise((resolve) => realSetTimeout(resolve, ms));
 if (config.noWebgl) delete globalThis.WebGL2RenderingContext;
 register("./scene-hooks.mjs", import.meta.url);
+globalThis.location = { hash: config.hash === undefined ? "#v=map3d" : config.hash, pathname: "/", search: "" };
 
 const requests = [];
 const queue = [...config.events];
@@ -79,6 +80,11 @@ await import("./loom.js");
 await sleep(60);
 
 const text = (id) => find(id).textContent;
+const classes = (id) => {
+  const counts = {};
+  for (const node of find(id).descendants()) for (const name of (node.attrs.class || "").split(" ")) if (name) counts[name] = (counts[name] || 0) + 1;
+  return counts;
+};
 const observe = () => ({
   count: text("pb-count"), playing: find("pb-play").attrs["data-playing"],
   rows: find("events-body").children.map((row) => Number(row.descendants().find((node) => node.attrs["data-seq"]).attrs["data-seq"])),
@@ -86,12 +92,16 @@ const observe = () => ({
   evidence: text("evidence"), authorization: [text("authorization"), find("authorization").className], connection: text("connection"), notice: text("notice"),
   snapshots: requests.filter((request) => request.url === "/snapshot").length,
   events: requests.filter((request) => request.url === "/events").map((request) => request.headers),
+  timeline: { hidden: find("timeline-section").hidden, classes: classes("timeline-box"),
+              rows: find("timeline-box").descendants().filter((node) => node.attrs.role === "option").map((node) => node.attrs["aria-label"]),
+              note: text("timeline-note"), legend: find("legend-line").children.map((node) => node.textContent) },
   scene: { section: find("scene-section").hidden, box: find("scene-box").hidden, note: text("scene-note"),
            legend: find("legend-scene-block").hidden, calls: [...(globalThis.sceneCalls || [])], selected: [...(globalThis.sceneSelected || [])] },
 });
 const results = [observe()];
 for (const step of steps) {
   if (step.click) find(step.click).listeners.click[0]();
+  else if (step.row !== undefined) find("timeline-box").descendants().filter((node) => node.attrs.role === "option")[step.row].listeners.click[0]();
   else if (step.range !== undefined) {
     find("pb-range").value = String(step.range);
     find("pb-range").listeners.input[0]({ target: find("pb-range") });
@@ -195,6 +205,72 @@ class PlaybackTests(PageBehaviourCase):
         results = self.drive([{"click": "pb-start"}, {"range": 4}])
         self.assertEqual(results[1]["scene"]["calls"][-1], [])
         self.assertEqual(results[2]["scene"]["calls"][-1], self.seqs[:4])
+
+
+RICH = Path(__file__).resolve().parents[1] / "specs/061-activity-viewer/vis1c/audit/fixture/rich.jsonl"
+
+
+class TimelineTests(PageBehaviourCase):
+    """REQ-017 / SC-017: the 2D timeline is the default view and draws what the model states."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.model = json.loads(json.dumps(build_model(parse_stream(RICH.read_bytes()))))
+        cls.total = len(cls.model["elements"])
+        cls.seqs = [row["seq"] for row in cls.model["table"]]
+
+    def first(self, **config):
+        return self.drive(hash="", **config)[0]
+
+    def test_the_timeline_is_the_default_and_the_scene_is_not_loaded_until_asked_for(self):
+        first = self.first()
+        self.assertFalse(first["timeline"]["hidden"])
+        self.assertTrue(first["scene"]["section"])
+        self.assertEqual(first["scene"]["calls"], [])
+
+    def test_there_is_one_row_per_agent_with_its_state_and_times_in_the_label(self):
+        rows = self.first()["timeline"]["rows"]
+        self.assertEqual(len(rows), len(self.model["lanes"]))
+        explore = next(row for row in rows if row.startswith("Explore"))
+        self.assertIn("0:08 – 0:52", explore)
+        self.assertIn("44\u00a0s", explore)
+        self.assertIn("finished", explore)
+
+    def test_a_lane_without_a_close_is_not_drawn_as_finished_or_given_an_outcome(self):
+        rows = self.first()["timeline"]["rows"]
+        unknown = next(row for row in rows if row.startswith("Edit ROADMAP"))
+        self.assertNotIn("finished", unknown)
+        self.assertIn("not observed", unknown)
+
+    def test_every_compression_is_a_labelled_break(self):
+        classes = self.first()["timeline"]["classes"]
+        self.assertEqual(classes["tl-break"], len(self.model["axis"]["compressions"]))
+        self.assertEqual(classes["tl-zigzag"], len(self.model["axis"]["compressions"]))
+
+    def test_the_predicted_conflict_is_drawn_with_its_word_and_no_observed_collision_exists(self):
+        timeline = self.first()["timeline"]
+        self.assertEqual(timeline["classes"]["cls-predicted"], 1)
+        self.assertEqual(timeline["classes"]["tl-cross-word"], 1)
+        self.assertFalse(any("observed collision" in label.lower() for label in timeline["legend"]))
+        self.assertTrue(any(label.strip().startswith("possible conflict") for label in timeline["legend"]))
+
+    def test_selecting_an_agent_shows_it_in_the_detail_panel_and_the_hash_follows(self):
+        results = self.drive([{"row": 1}], hash="")
+        self.assertIn("Explore", results[1]["evidence"])
+        self.assertIn("Agent", results[1]["evidence"])
+
+    def test_the_playback_position_limits_what_is_drawn(self):
+        results = self.drive([{"click": "pb-start"}], hash="")
+        self.assertEqual(results[0]["timeline"]["classes"].get("tl-bar", 0) > 0, True)
+        self.assertNotIn("tl-bar", results[1]["timeline"]["classes"])
+
+    def test_choosing_the_map_in_the_hash_builds_the_scene_and_not_the_timeline(self):
+        first = self.drive(hash="#v=map3d")[0]
+        self.assertTrue(first["timeline"]["hidden"])
+        self.assertFalse(first["scene"]["section"])
+        self.assertTrue(first["scene"]["calls"])
+        self.assertEqual(first["timeline"]["classes"], {})
 
 
 class LanguageTests(PageBehaviourCase):

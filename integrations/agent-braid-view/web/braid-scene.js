@@ -39,7 +39,7 @@ const TUBE_RADIUS = 0.07;
 const CLIP_EPSILON = 0.12;
 const MAX_DRAWN_ELEMENTS = 2000;
 const MAX_OBJECTS = 12000; // meshes, sprites and lines together: a guard for the main thread and GPU memory
-const MAX_LABELS = 400;
+const MAX_LABELS = 400; // label descriptors; the page shows about 40 at a time
 const LABEL_LIMIT = 40;
 const BADGE_RADIUS = 0.17;
 const VERTICAL_FOV = 40;
@@ -103,11 +103,10 @@ function runsOf(indexes) {
 // ---------------------------------------------------------------- building the objects of a model
 
 export function buildBraid(model, options = {}) {
-  const labelsOn = options.labels !== false && typeof document !== "undefined";
-  const textStyle = { color: options.textColor || "#444444", halo: options.haloColor || "#ffffff" };
+  const labelsOn = options.labels !== false;
   const group = new THREE.Group();
   const built = {
-    group, bySeq: new Map(), xOf: new Map(), notDrawn: new Map(), animated: new Set(), animatedSeqs: new Set(),
+    group, bySeq: new Map(), xOf: new Map(), notDrawn: new Map(), animated: new Set(), animatedSeqs: new Set(), labels: [],
     dispose() {
       group.traverse((object) => {
         if (object.geometry) object.geometry.dispose();
@@ -192,22 +191,18 @@ export function buildBraid(model, options = {}) {
     }
   }
 
-  // Labels with the same text and size share one canvas texture and material.
-  const labelStyles = new Map();
+  // Labels are descriptors, drawn by the page as HTML of fixed pixel size (no canvas texture, no vendored addon).
+  // `key` and `params` let the page translate the text; `text` is the English fallback. `pin` keeps an agent label
+  // at the left edge of the view; a lower `priority` is placed first when labels collide.
   let labelCount = 0;
   function label(owner, text, position, settings = {}) {
     if (!labelsOn || labelCount >= MAX_LABELS) return;
-    const key = text + "|" + (settings.size || "") + "|" + (settings.align || "");
-    if (!labelStyles.has(key)) labelStyles.set(key, makeLabel(text, textStyle, settings));
-    const style = labelStyles.get(key);
-    if (!style) return;
     labelCount += 1;
-    const sprite = new THREE.Sprite(style.material);
-    sprite.scale.set(style.width, style.height, 1);
-    sprite.center.set(settings.align === "right" ? 1 : 0.5, 0.5);
-    sprite.renderOrder = 10;
-    sprite.position.copy(position);
-    put(owner, sprite, "label", settings.selectable === true);
+    built.labels.push({
+      owner, text, key: settings.key || null, params: settings.params || null, position: position.clone(),
+      pin: settings.pin === true, priority: settings.priority === undefined ? 3 : settings.priority,
+      selectable: settings.selectable === true,
+    });
   }
 
   function unverifiedMarker(element, x, y, z) {
@@ -242,7 +237,15 @@ export function buildBraid(model, options = {}) {
       start = gapX + 0.25;
     }
     if (x1 > start) tube(lane.seq, "strand", line3(V(start, 0, z), V(x1, 0, z)), radius, mat, 1, lane.declared);
-    label(lane.seq, shorten(lane.label), V(x0 - 0.3, 0.3, z), { align: "right", selectable: lane.declared });
+    label(lane.seq, shorten(lane.label), V(x0, 0, z), { pin: true, priority: 0, selectable: lane.declared });
+    // a thick invisible volume so a thin tube is easy to hit; colour and depth are not written, so it is never seen
+    if (lane.declared) {
+      const hit = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, Math.max(x1 - x0, 0.1), 6),
+        new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false }));
+      hit.rotation.z = Math.PI / 2;
+      hit.position.set((x0 + x1) / 2, 0, z);
+      put(lane.seq, hit, "hit-volume");
+    }
     if (lane.declared && opener && isUnverified(opener)) unverifiedMarker(opener, x0, 0.5, z);
   }
 
@@ -281,7 +284,7 @@ function classBadge(c, class_, x, y, z) {
   mesh.position.set(x, y, z);
   mesh.userData.sides = sides;
   c.put(c.element.seq, mesh, "badge");
-  c.label(c.element.seq, "class " + class_, V(x, y + 0.3, z), { size: 0.26, selectable: true });
+  c.label(c.element.seq, "class " + class_, V(x, y + 0.3, z), { key: "scene.label.class", params: { n: class_ }, priority: 1, selectable: true });
 }
 
 function drawCrossing(c) {
@@ -450,7 +453,7 @@ function drawWavePlane(c) {
     c.built.notDrawn.set(element.seq, "plan without placed lanes: shown in the table");
     return;
   }
-  label(element.seq, "advisory plan, not a runtime measurement", V(x, 1.15, top), { selectable: true });
+  label(element.seq, "advisory plan, not a runtime measurement", V(x, 1.15, top), { key: "scene.label.wavePlan", priority: 4, selectable: true });
   if (isUnverified(element)) c.unverifiedMarker(element, x, 1.5, top);
 }
 
@@ -462,7 +465,8 @@ function drawWaveMarker(c) {
     return;
   }
   slabsFor(c, indexes, x, COLORS.runtimeWave, element.phase === "finished", "wave-frame");
-  label(element.seq, "wave " + element.wave + " " + element.phase, V(x, 1.0, zOf(Math.min(...indexes))), { selectable: true });
+  label(element.seq, "wave " + element.wave + " " + element.phase, V(x, 1.0, zOf(Math.min(...indexes))),
+    { key: "scene.label.wave", params: { wave: element.wave, phase: element.phase }, priority: 4, selectable: true });
   if (isUnverified(element)) c.unverifiedMarker(element, x, 1.4, zOf(Math.min(...indexes)));
 }
 
@@ -489,7 +493,8 @@ function drawGateRing(c) {
   }
   ring.position.set(x, 0, 0);
   put(element.seq, ring, grant ? "grant-ring" : element.ringKind === "workflow-phase" ? "gate-phase-ring" : "gate-result-ring");
-  label(element.seq, (grant ? "grant " : "gate ") + (known ? name : "unrecognized"), V(x, radius + 0.3, 0), { selectable: true });
+  label(element.seq, (grant ? "grant " : "gate ") + (known ? name : "unrecognized"), V(x, radius + 0.3, 0),
+    { key: "scene.label." + (grant ? "grant" : "gate") + (known ? "" : "Unknown"), params: { name }, priority: 4, selectable: true });
   if (isUnverified(element)) c.unverifiedMarker(element, x, radius + 0.75, 0);
 }
 
@@ -531,46 +536,6 @@ const DRAWERS = {
   "strand-end": drawStrandEnd,
 };
 
-// ---------------------------------------------------------------- text sprites (drawn on a 2D canvas)
-
-function makeLabel(text, style, settings) {
-  let canvas;
-  let context;
-  try {
-    canvas = document.createElement("canvas");
-    context = canvas.getContext("2d");
-  } catch (error) {
-    return null;
-  }
-  if (!context) return null;
-  const pixels = 2 * (settings.size ? settings.size / 0.34 * 28 : 28);
-  const font = "600 " + Math.round(pixels) + "px system-ui, sans-serif";
-  context.font = font;
-  const width = Math.ceil(context.measureText(text).width) + 16;
-  const height = Math.ceil(pixels * 1.5);
-  canvas.width = Math.min(width, 2048);
-  canvas.height = height;
-  context.font = font;
-  context.textBaseline = "middle";
-  context.textAlign = "center";
-  context.lineJoin = "round";
-  context.lineWidth = 6;
-  context.strokeStyle = style.halo;
-  context.fillStyle = style.color;
-  context.strokeText(text, canvas.width / 2, height / 2, canvas.width - 8);
-  context.fillText(text, canvas.width / 2, height / 2, canvas.width - 8);
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.minFilter = THREE.LinearFilter;
-  texture.generateMipmaps = false;
-  const unit = 1 / (pixels / (settings.size || 0.34));
-  return {
-    material: new THREE.SpriteMaterial({ map: texture, depthTest: false, transparent: true }),
-    width: canvas.width * unit,
-    height: canvas.height * unit,
-  };
-}
-
 // ---------------------------------------------------------------- inspection helpers (also used by tests)
 
 // The x of the playback frontier: the position of the last visible event, or -Infinity when nothing is visible.
@@ -596,31 +561,48 @@ export function describeBraid(built) {
 
 function readColors(container) {
   const style = getComputedStyle(container);
-  const pick = (name, fallback) => {
-    const value = style.getPropertyValue(name).trim();
-    return value || fallback;
-  };
-  return { text: style.color || "#444444", halo: pick("--panel", "#ffffff"), accent: pick("--accent", "#1b5fa6") };
+  const accent = style.getPropertyValue("--accent").trim();
+  return { accent: accent || "#1b5fa6" };
 }
+
+// Governance objects never enter the framing: slabs, rings, unverified markers and the invisible hit volumes.
+const OUTSIDE_FRAMING = new Set(["wave-slab", "wave-frame-edges", "grant-ring", "gate-result-ring", "gate-phase-ring",
+  "unverified-marker", "hit-volume"]);
+// Agents lie side by side along z and time runs along x, so a view along -z would stack every lane on one line: the
+// lateral preset is raised, and the top view, where each agent is its own row, is the default.
+const PRESET_DIRECTIONS = { lateral: [0, 0.5, 1], top: [0, 1, 0.02], iso: [-0.15, 0.55, 0.85] };
+const TWEEN_MS = 220; // the camera eases for at most this long and a new input cancels it
+const LABEL_PRIORITY_LIMIT = 40;
+const LABEL_GAP = 2;
 
 export function createBraidScene(container, hooks = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
   const canvas = renderer.domElement;
-  canvas.setAttribute("role", "img");
+  canvas.setAttribute("role", "group");
   canvas.setAttribute("aria-label",
-    "3D view of strands, crossings, waves, gates and hazards. The events table presents the same facts as text.");
+    "3D view of agents, crossings, waves, gates and hazards. The events table presents the same facts as text.");
+  canvas.tabIndex = 0;
   canvas.classList.add("scene-canvas");
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(VERTICAL_FOV, 1, 0.1, 400);
   const controls = new OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
   controls.screenSpacePanning = true;
+  controls.zoomToCursor = true;
+  controls.maxPolarAngle = Math.PI * 0.49;
+  controls.enableZoom = false; // the wheel zooms only with Ctrl or Cmd, with the canvas focused or with the scene locked
+  controls.listenToKeyEvents(canvas);
   const clip = new THREE.Plane(V(-1, 0, 0), -1000);
   renderer.clippingPlanes = [clip];
   scene.add(new THREE.AmbientLight(0xffffff, 1.6));
   const sun = new THREE.DirectionalLight(0xffffff, 2.2);
   sun.position.set(6, 12, 8);
   scene.add(sun);
-  container.append(canvas);
+  const layer = document.createElement("div");
+  layer.className = "scene-labels-layer";
+  layer.setAttribute("aria-hidden", "true");
+  container.append(canvas, layer);
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -628,6 +610,7 @@ export function createBraidScene(container, hooks = {}) {
   raycaster.params.Line = { threshold: 0.15 };
   raycaster.params.Points = { threshold: 0.12 };
   const pointer = new THREE.Vector2();
+  const projected = V(0, 0, 0);
 
   let model = null;
   let built = buildBraid(null);
@@ -639,9 +622,14 @@ export function createBraidScene(container, hooks = {}) {
   let hovered = null;
   let fitted = false;
   let userMoved = false;
+  let preset = "top";
+  let locked = false;
+  let tween = null;
   let frame = 0;
   let disposed = false;
   let colors = readColors(container);
+  let labelNodes = [];
+  let labelsDirty = true;
 
   function size() {
     const width = Math.max(container.clientWidth, 1);
@@ -650,37 +638,48 @@ export function createBraidScene(container, hooks = {}) {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    labelsDirty = true;
     requestRender();
   }
 
+  // Only the selected or hovered element pulses, and never with reduced motion.
   function pulsing() {
     if (reducedMotion.matches || document.visibilityState !== "visible" || built.animated.size === 0) return false;
-    for (const seq of built.animatedSeqs) if (visible.has(seq)) return true;
-    return false;
+    return [selected, hovered].some((seq) => seq !== null && built.animatedSeqs.has(seq) && visible.has(seq));
   }
 
   function render(time) {
     frame = 0;
     if (disposed) return;
+    if (tween) {
+      if (tween.start === null) tween.start = time || 0;
+      const k = Math.min(1, ((time || 0) - tween.start) / TWEEN_MS);
+      const eased = 1 - Math.pow(1 - k, 3);
+      camera.position.lerpVectors(tween.fromPosition, tween.toPosition, eased);
+      controls.target.lerpVectors(tween.fromTarget, tween.toTarget, eased);
+      if (k >= 1) tween = null;
+    }
+    const moving = controls.update();
+    const animate = pulsing();
     const wave = reducedMotion.matches ? 0.85 : 0.5 + 0.5 * Math.sin((time || 0) / 260);
-    for (const item of built.animated) item.opacity = item.userData.base * (0.35 + 0.65 * wave);
+    for (const item of built.animated) item.opacity = item.userData.base * (animate ? 0.35 + 0.65 * wave : 0.85);
     renderer.render(scene, camera);
-    if (pulsing()) requestRender();
+    updateLabels();
+    if (moving || tween || animate) requestRender();
   }
 
   function requestRender() {
     if (!frame && !disposed) frame = requestAnimationFrame(render);
   }
 
-  // Sample points of everything that was built (all of it, not only what is visible now).
+  // ---------------------------------------------------------------- framing and the guided camera
+
+  // Sample points of the agents and their events (governance objects are left out of the framing).
   function samplePoints() {
     const points = [];
     built.group.updateMatrixWorld(true);
     built.group.traverse((object) => {
-      if (object.isSprite) {
-        for (const side of [-0.5, 0.5]) points.push(V(side - (object.center.x - 0.5), 0, 0).applyMatrix4(object.matrixWorld));
-        return;
-      }
+      if (OUTSIDE_FRAMING.has(object.userData.part)) return;
       const attribute = object.geometry && object.geometry.attributes && object.geometry.attributes.position;
       if (!attribute) return;
       const stride = Math.max(1, Math.floor(attribute.count / 12));
@@ -692,29 +691,55 @@ export function createBraidScene(container, hooks = {}) {
     return keep === 1 ? points : points.filter((_, index) => index % keep === 0);
   }
 
-  function fit() {
+  // The pose that keeps every sampled point inside the view along `direction`, and the radius of what is framed.
+  function poseFor(direction) {
     const points = samplePoints();
-    if (points.length === 0) return;
-    const centre = new THREE.Box3().setFromPoints(points).getCenter(new THREE.Vector3());
-    const direction = V(-0.15, 0.55, 0.85).normalize();
-    // Back the camera off along a fixed direction until every sampled point is inside the view.
-    let distance = 1;
-    for (let step = 0; step < 120; step += 1) {
-      camera.position.copy(centre).addScaledVector(direction, distance);
-      camera.lookAt(centre);
-      camera.updateMatrixWorld();
-      const projected = V(0, 0, 0);
+    if (points.length === 0) return null;
+    const box = new THREE.Box3().setFromPoints(points);
+    const centre = box.getCenter(new THREE.Vector3());
+    const radius = box.getBoundingSphere(new THREE.Sphere()).radius;
+    const back = V(...direction).normalize();
+    const probe = camera.clone();
+    probe.aspect = camera.aspect;
+    probe.updateProjectionMatrix();
+    let distance = Math.max(radius * 0.2, 1);
+    for (let step = 0; step < 160; step += 1) {
+      probe.position.copy(centre).addScaledVector(back, distance);
+      probe.lookAt(centre);
+      probe.updateMatrixWorld();
       const inside = points.every((point) => {
-        projected.copy(point).project(camera);
-        return Math.abs(projected.x) <= 0.92 && Math.abs(projected.y) <= 0.9 && projected.z < 1;
+        projected.copy(point).project(probe);
+        // the top margin is larger: the page draws its buttons over the top of the view
+        return Math.abs(projected.x) <= 0.9 && projected.y <= 0.72 && projected.y >= -0.9 && projected.z < 1;
       });
       if (inside) break;
       distance *= 1.05;
     }
-    controls.target.copy(centre);
-    camera.far = Math.max(400, distance * 4);
+    return { centre, position: centre.clone().addScaledVector(back, distance), distance, radius };
+  }
+
+  function moveTo(pose, immediate) {
+    camera.far = Math.max(400, pose.distance * 6);
     camera.updateProjectionMatrix();
-    controls.update();
+    controls.minDistance = Math.max(0.5, pose.radius * 0.25);
+    controls.maxDistance = Math.max(pose.distance * 2.5, pose.radius * 6);
+    if (immediate || reducedMotion.matches) {
+      tween = null;
+      camera.position.copy(pose.position);
+      controls.target.copy(pose.centre);
+      controls.update();
+    } else {
+      tween = { start: null, fromPosition: camera.position.clone(), fromTarget: controls.target.clone(),
+        toPosition: pose.position, toTarget: pose.centre };
+    }
+    labelsDirty = true;
+    requestRender();
+  }
+
+  function frameAll(immediate) {
+    const pose = poseFor(PRESET_DIRECTIONS[preset]);
+    if (!pose) return;
+    moveTo(pose, immediate);
     fitted = true;
   }
 
@@ -733,7 +758,7 @@ export function createBraidScene(container, hooks = {}) {
     const objects = selected === null ? undefined : built.bySeq.get(selected);
     if (!objects || !visible.has(selected)) return;
     const box = new THREE.Box3();
-    for (const object of objects) if (object.userData.part !== "label") box.expandByObject(object);
+    for (const object of objects) if (object.userData.part !== "hit-volume") box.expandByObject(object);
     if (box.isEmpty()) return;
     box.expandByScalar(0.18);
     const colour = new THREE.Color(colors.accent);
@@ -756,21 +781,90 @@ export function createBraidScene(container, hooks = {}) {
     frontier = frontierX(built, frontierSeqs);
     clip.constant = Number.isFinite(frontier) ? frontier + CLIP_EPSILON : -1000;
     updateSelection();
+    labelsDirty = true;
     requestRender();
+  }
+
+  // ---------------------------------------------------------------- HTML labels of fixed pixel size
+
+  function labelText(descriptor) {
+    return hooks.t && descriptor.key ? hooks.t(descriptor.key, descriptor.params || undefined) : descriptor.text;
+  }
+
+  // Built once per model and per language: the sizes are measured here and never inside the frame loop.
+  function buildLabels() {
+    layer.replaceChildren();
+    labelNodes = built.labels.map((descriptor) => {
+      const node = document.createElement("div");
+      node.className = "scene-label" + (descriptor.pin ? " pin" : "");
+      node.textContent = labelText(descriptor);
+      node.hidden = true;
+      layer.append(node);
+      return { descriptor, node, width: 0, height: 0 };
+    });
+    for (const entry of labelNodes) {
+      entry.node.hidden = false;
+      entry.width = entry.node.offsetWidth || 60;
+      entry.height = entry.node.offsetHeight || 18;
+      entry.node.hidden = true;
+    }
+    labelsDirty = true;
+  }
+
+  // Projects every label, then places them greedily in priority order: the selected and hovered element first,
+  // then the agents, then the rest; a label that would overlap one already placed is hidden. At most about 40 show.
+  function updateLabels() {
+    if (labelNodes.length === 0) return;
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    const rank = (entry) => (entry.descriptor.owner === selected || entry.descriptor.owner === hovered ? -1 : entry.descriptor.priority);
+    const candidates = [];
+    for (const entry of labelNodes) {
+      const { descriptor } = entry;
+      if (!visible.has(descriptor.owner)) { entry.place = null; continue; }
+      projected.copy(descriptor.position).project(camera);
+      if (projected.z > 1 || projected.z < -1) { entry.place = null; continue; }
+      const x = (projected.x * 0.5 + 0.5) * width;
+      const y = (-projected.y * 0.5 + 0.5) * height;
+      entry.place = { x: descriptor.pin ? 8 : x - entry.width / 2, y: y - entry.height / 2 - (descriptor.pin ? 0 : 10) };
+      candidates.push(entry);
+    }
+    candidates.sort((a, b) => rank(a) - rank(b));
+    const placed = [];
+    let shown = 0;
+    for (const entry of candidates) {
+      const box = { l: entry.place.x, t: entry.place.y, r: entry.place.x + entry.width, b: entry.place.y + entry.height };
+      const important = rank(entry) <= 0;
+      const outside = box.r < 0 || box.l > width || box.b < 0 || box.t > height;
+      const blocked = placed.some((other) => box.l < other.r + LABEL_GAP && box.r > other.l - LABEL_GAP &&
+        box.t < other.b + LABEL_GAP && box.b > other.t - LABEL_GAP);
+      entry.show = !outside && !blocked && (important || shown < LABEL_PRIORITY_LIMIT);
+      if (entry.show) { placed.push(box); shown += 1; }
+    }
+    for (const entry of labelNodes) {
+      const on = Boolean(entry.show) && entry.place !== null;
+      entry.node.hidden = !on;
+      if (on) entry.node.style.transform = "translate(" + Math.round(entry.place.x) + "px, " + Math.round(entry.place.y) + "px)";
+      entry.show = false;
+    }
+    labelsDirty = false;
   }
 
   function rebuild() {
     colors = readColors(container);
     scene.remove(built.group);
     built.dispose();
-    built = buildBraid(model, { textColor: colors.text, haloColor: colors.halo });
+    built = buildBraid(model);
     scene.add(built.group);
+    buildLabels();
     if (!fitted && model && model.elements.length > 0) {
       size();
-      fit();
+      frameAll(true);
     }
     applyVisibility();
   }
+
+  // ---------------------------------------------------------------- pointer, keyboard and wheel
 
   function pick(event) {
     const rect = canvas.getBoundingClientRect();
@@ -798,28 +892,43 @@ export function createBraidScene(container, hooks = {}) {
     const seq = pick(event);
     if (seq !== null && hooks.onSelect) hooks.onSelect(seq);
   }
+  function setHovered(seq) {
+    if (seq === hovered) return;
+    hovered = seq;
+    labelsDirty = true;
+    requestRender();
+    if (hooks.onHover) hooks.onHover(seq);
+  }
   function onPointerMove(event) {
     if (event.buttons !== 0 || hoverFrame) return;
     hoverFrame = requestAnimationFrame(() => {
       hoverFrame = 0;
       const seq = pick(event);
       canvas.classList.toggle("over-element", seq !== null);
-      if (seq !== hovered) {
-        hovered = seq;
-        if (hooks.onHover) hooks.onHover(seq);
-      }
+      setHovered(seq);
     });
   }
   function onPointerLeave() {
     if (hovered !== null) {
-      hovered = null;
       canvas.classList.remove("over-element");
-      if (hooks.onHover) hooks.onHover(null);
+      setHovered(null);
     }
   }
   function onContextLost(event) {
     event.preventDefault();
     if (hooks.onUnavailable) hooks.onUnavailable("The WebGL context was lost.");
+  }
+  // The page scrolls over the scene unless Ctrl or Cmd is held (a trackpad pinch arrives as Ctrl + wheel), the canvas
+  // has the focus or the scene is locked. This runs before the controls' own wheel listener.
+  function onWheel(event) {
+    controls.enableZoom = event.ctrlKey || event.metaKey || locked || document.activeElement === canvas;
+  }
+  function onKeyDown(event) {
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.key === "f" || event.key === "F") {
+      event.preventDefault();
+      api.resetView();
+    }
   }
 
   canvas.addEventListener("pointerdown", onPointerDown);
@@ -827,11 +936,13 @@ export function createBraidScene(container, hooks = {}) {
   canvas.addEventListener("pointermove", onPointerMove);
   canvas.addEventListener("pointerleave", onPointerLeave);
   canvas.addEventListener("webglcontextlost", onContextLost);
+  canvas.addEventListener("wheel", onWheel, { capture: true, passive: true });
+  canvas.addEventListener("keydown", onKeyDown);
   controls.addEventListener("change", requestRender);
-  controls.addEventListener("start", () => { userMoved = true; });
+  controls.addEventListener("start", () => { userMoved = true; tween = null; });
   const observer = typeof ResizeObserver === "function" ? new ResizeObserver(() => {
     size();
-    if (!userMoved && fitted) fit(); // until the user moves the camera, keep the whole scene framed
+    if (!userMoved && fitted) frameAll(true); // until the user moves the camera, keep the whole scene framed
   }) : null;
   if (observer) observer.observe(container);
   const onVisibility = () => requestRender();
@@ -841,7 +952,8 @@ export function createBraidScene(container, hooks = {}) {
   reducedMotion.addEventListener("change", onVisibility);
   size();
 
-  return {
+  const api = {
+    canvas,
     setModel(next) {
       model = next;
       rebuild();
@@ -856,11 +968,34 @@ export function createBraidScene(container, hooks = {}) {
     setSelected(seq) {
       selected = seq === undefined ? null : seq;
       updateSelection();
+      labelsDirty = true;
       requestRender();
     },
+    // Frame all agents again, along the chosen preset, with an eased move that a new input cancels.
     resetView() {
       userMoved = false;
-      fit();
+      frameAll(false);
+    },
+    setPreset(name) {
+      if (!PRESET_DIRECTIONS[name]) return;
+      preset = name;
+      userMoved = false;
+      frameAll(false);
+    },
+    setLocked(on) {
+      locked = Boolean(on);
+      canvas.classList.toggle("locked", locked);
+    },
+    // The labels carry keys the page translates; call this after a language change.
+    refreshLabels() {
+      for (const entry of labelNodes) entry.node.textContent = labelText(entry.descriptor);
+      for (const entry of labelNodes) {
+        entry.node.hidden = false;
+        entry.width = entry.node.offsetWidth || entry.width;
+        entry.height = entry.node.offsetHeight || entry.height;
+        entry.node.hidden = true;
+      }
+      labelsDirty = true;
       requestRender();
     },
     // What the scene shows right now, for the note under it.
@@ -883,11 +1018,15 @@ export function createBraidScene(container, hooks = {}) {
       canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("pointerleave", onPointerLeave);
       canvas.removeEventListener("webglcontextlost", onContextLost);
+      canvas.removeEventListener("wheel", onWheel, { capture: true });
+      canvas.removeEventListener("keydown", onKeyDown);
       clearSelection();
       controls.dispose();
       built.dispose();
       renderer.dispose();
+      layer.remove();
       canvas.remove();
     },
   };
+  return api;
 }

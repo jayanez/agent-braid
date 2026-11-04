@@ -16,7 +16,9 @@
 import {
   createState, derive, summarize, formatClock, formatDuration, marksOf, sourceOf, sourceKeys, ROOT_PREFIX, orderedRows,
   passesFilters, hasFilters, encodeHash, decodeHash, readPreference, writePreference, waitingTime, LANE_STATES,
+  MARKER_KINDS, markerKind,
 } from "./state.js";
+import { createTimeline, iconNode } from "./timeline.js";
 import { translate, chooseLanguage, normalizeTag, LANGUAGES } from "./strings.js";
 
 const CLASS_NAMES = ["heuristic", "syntactic", "semantic", "transactional", "confluence", "Yang–Baxter"];
@@ -72,7 +74,6 @@ const REAL_TIME_MAX_MS = 1500;
 const TABS = ["events", "summary", "legend", "help"];
 
 const state = createState();
-state.view = "map3d"; // the views registered below decide the default
 
 // ---------------------------------------------------------------- DOM helpers
 
@@ -152,7 +153,7 @@ function applyLanguage() {
     if (noticeKey) setNotice(noticeKey.key, noticeKey.params);
     if (state.model) renderAll();
     else renderChrome();
-    if (scene) syncScene(true);
+    if (scene) { labelCanvas(); syncScene(true); }
     else if (sceneFailure) $("scene-note").textContent = t("scene.unavailable", { reason: t(sceneFailure) });
   }
 }
@@ -668,6 +669,7 @@ function clearFilters() {
   state.hiddenSources.clear();
   state.filters.agents.clear();
   state.filters.status.clear();
+  state.filters.kinds.clear();
   state.filters.onlyProblems = false;
   filtersChanged();
 }
@@ -725,7 +727,7 @@ function renderTable() {
   const hidden = hiddenCount();
   $("table-empty").textContent = (state.model && totalCount() > 0 && rows.length === 0
     ? t("table.emptyPosition") : t("table.empty")) + (hidden ? " " + hiddenText(hidden, totalCount()) : "");
-  syncScene();
+  syncViews();
 }
 
 function select(seq) {
@@ -990,6 +992,12 @@ function openHelp() {
   heading.focus();
 }
 
+function openSceneHelp() {
+  const dialog = $("scene-help");
+  if (typeof dialog.showModal === "function") dialog.showModal();
+  else dialog.setAttribute("open", "");
+}
+
 function isTyping(event) {
   const target = event.target;
   const tag = target && target.tagName ? String(target.tagName).toLowerCase() : "";
@@ -1002,7 +1010,8 @@ function onKey(event) {
     if (!isTyping(event)) deselect();
   } else if (event.key === "?" && !isTyping(event)) {
     event.preventDefault();
-    openHelp();
+    if (state.view === "map3d") openSceneHelp();
+    else openHelp();
   }
 }
 
@@ -1017,6 +1026,21 @@ function bindControls() {
   $("filter-problems").addEventListener("change", (event) => { state.filters.onlyProblems = event.target.checked; filtersChanged(); });
   $("filter-clear").addEventListener("click", clearFilters);
   $("scene-reset").addEventListener("click", () => { if (scene) scene.resetView(); });
+  $("scene-frame").addEventListener("click", () => { if (scene) scene.resetView(); });
+  for (const id of ["scene-view-lateral", "scene-view-top", "scene-view-iso"]) {
+    $(id).addEventListener("click", (event) => { if (scene) scene.setPreset(event.currentTarget.dataset.preset); });
+  }
+  $("scene-lock").addEventListener("click", () => {
+    const on = $("scene-lock").getAttribute("aria-pressed") !== "true";
+    $("scene-lock").setAttribute("aria-pressed", on ? "true" : "false");
+    if (scene) scene.setLocked(on);
+  });
+  $("scene-help-open").addEventListener("click", openSceneHelp);
+  $("tl-zoom-in").addEventListener("click", () => { if (timeline) timeline.zoomIn(); });
+  $("tl-zoom-out").addEventListener("click", () => { if (timeline) timeline.zoomOut(); });
+  $("tl-frame").addEventListener("click", () => { if (timeline) timeline.frame(); });
+  $("view-timeline").addEventListener("change", () => setView("timeline"));
+  $("view-map3d").addEventListener("change", () => setView("map3d"));
   $("lang-select").addEventListener("change", (event) => setLanguageChoice(event.target.value));
   $("detail-close").addEventListener("click", deselect);
   $("about-open").addEventListener("click", openHelp);
@@ -1028,15 +1052,126 @@ function bindControls() {
 // ---------------------------------------------------------------- views and the URL hash
 
 // The views this build offers. The first is the default; a deep link or a stored choice may pick another.
-const views = [{ id: "map3d" }];
+const views = [{ id: "timeline" }, { id: "map3d" }];
 
 function availableView(id) {
   return views.some((view) => view.id === id) ? id : views[0].id;
 }
 
 function renderViewSwitch() {
-  const box = $("view-switch");
-  box.hidden = views.length < 2;
+  $("view-switch").hidden = views.length < 2;
+  $("view-timeline").checked = state.view === "timeline";
+  $("view-map3d").checked = state.view === "map3d";
+  $("timeline-section").hidden = state.view !== "timeline";
+  $("scene-section").hidden = state.view !== "map3d";
+}
+
+function setView(id) {
+  const next = availableView(id);
+  if (next === state.view && viewApplied) return;
+  state.view = next;
+  viewApplied = true;
+  writePreference("view", next);
+  renderViewSwitch();
+  if (next === "map3d" && !sceneRequested) startScene();
+  syncViews();
+  syncHash();
+}
+
+let viewApplied = false;
+
+// ---------------------------------------------------------------- 2D timeline
+
+let timeline = null;
+
+function laneInfo(lane) {
+  const range = lane.openKnown
+    ? formatClock(lane.openMs - axisMin()) + " – " + (lane.closeKnown && lane.closeMs !== null ? formatClock(lane.closeMs - axisMin()) : t("agent.endNotObserved"))
+    : t("time.sequenceOnly");
+  const duration = lane.durationMs !== null ? formatDuration(lane.durationMs)
+    : lane.state !== "unknown" && lane.observedMs !== null ? "≥ " + formatDuration(lane.observedMs) : "–";
+  const outcome = lane.closeSeq !== null ? ", " + outcomeText(lane.outcome) : "";
+  const waiting = waitingTime(lane);
+  const parts = [lane.displayLabel, laneKind(lane), stateText(lane) + outcome, range, duration];
+  if (lane.toolMarks.length) parts.push(tn("tl.tools", lane.toolMarks.length));
+  if (waiting.totalMs > 0) parts.push(t("tl.waited", { text: formatDuration(waiting.totalMs) }));
+  const mark = lane.state === "finished" ? { ok: "✓", error: "✕", cancelled: "⊘" }[lane.outcome] || "?" : lane.state === "running" ? "▶" : lane.state === "waiting" ? "⏸" : "?";
+  return { aria: parts.join(", "), tip: parts.join(" · "), mark, duration };
+}
+
+function crossingTip(crossing) {
+  const names = crossing.lanes.map((index) => { const lane = derived().byIndex.get(index); return lane ? lane.displayLabel : String(index); }).join(" / ");
+  const resources = crossing.resources.length ? crossing.resources.join(", ") : t("detail.none");
+  let text;
+  if (crossing.kind === "predicted") text = t("tl.tip.conflict", { names, resources });
+  else if (crossing.classification === "independent-candidate") text = t("tl.tip.independent", { names });
+  else if (crossing.classification === "ordered") text = t("tl.tip.ordered", { names });
+  else text = t("tl.tip.unknown", { names });
+  const overlap = crossing.overlap;
+  if (overlap === null) return text;
+  return text + " " + (overlap.ms > 0 ? t("tl.tip.overlapYes", { text: formatDuration(overlap.ms) }) : t("tl.tip.overlapNo"));
+}
+
+function syncTimeline() {
+  if (state.view !== "timeline" || !state.model) return;
+  if (!timeline) {
+    timeline = createTimeline($("timeline-box"), {
+      t, onSelect: select, describe: laneInfo, crossingTip,
+      onViewport: (viewport) => { state.viewport = viewport; syncViews(); syncHash(); },
+    });
+  }
+  const position = rowsInOrder().slice(0, state.cursor);
+  const shown = new Set(position.filter(({ element }) => shownInViews(element)).map(({ row }) => row.seq));
+  const last = position.length ? position[position.length - 1].element : null;
+  timeline.render({
+    model: state.model, derived: derived(), shown, selected: state.selected, viewport: state.viewport,
+    cursorX: last && last.timeKnown !== false ? last.x : null,
+  });
+  const info = derived();
+  $("timeline-note").textContent = t("tl.note", { shown: shown.size, total: totalCount() }) +
+    (info.axis.breaks.length ? " " + tn("tl.breaks", info.axis.breaks.length) : "");
+}
+
+function syncViews() {
+  if (state.view === "timeline") syncTimeline();
+  else syncScene();
+  renderLegendLine();
+}
+
+// ---------------------------------------------------------------- legend line (a filter shared by every view)
+
+function kindCounts() {
+  const counts = Object.fromEntries(MARKER_KINDS.map((kind) => [kind, 0]));
+  if (state.model) for (const element of state.model.elements) { const kind = markerKind(element); if (kind) counts[kind] += 1; }
+  return counts;
+}
+
+const KIND_GLYPH = {
+  conflict: "g-conflict-predicted", independent: "g-independent", ordered: "g-ordered", unknown: "g-unknown",
+  hazard: "g-hazard-observed", gap: "g-gap", gate: "g-gate", grant: "g-grant",
+};
+
+function renderLegendLine() {
+  const counts = kindCounts();
+  const list = $("legend-line");
+  const present = MARKER_KINDS.filter((kind) => counts[kind] > 0);
+  const signature = present.map((kind) => kind + counts[kind]).join("|") + "|" + state.lang;
+  list.hidden = present.length === 0;
+  if (list.dataset.keys !== signature) {
+    list.dataset.keys = signature;
+    list.replaceChildren(...present.map((kind) => {
+      const button = h("button", { type: "button", class: "legend-chip", "data-kind": kind, title: t("legend.line." + kind + ".title"),
+        on: { click: () => toggleKind(kind) } }, iconNode(KIND_GLYPH[kind]), " ", t("legend.line." + kind), " ", h("span", { class: "source-count" }, String(counts[kind])));
+      return button;
+    }));
+  }
+  for (const node of list.children) node.setAttribute("aria-pressed", state.filters.kinds.has(node.dataset.kind) ? "true" : "false");
+}
+
+function toggleKind(kind) {
+  if (state.filters.kinds.has(kind)) state.filters.kinds.delete(kind);
+  else state.filters.kinds.add(kind);
+  filtersChanged();
 }
 
 function syncHash() {
@@ -1049,14 +1184,19 @@ function syncHash() {
   }
 }
 
+// The view is chosen before the first model arrives, so only the chosen view is ever built.
+function restoreView() {
+  const wanted = typeof location === "undefined" ? { view: null } : decodeHash(location.hash);
+  state.view = availableView(wanted.view || readPreference("view") || state.view);
+}
+
 function restoreFromHash() {
   if (typeof location === "undefined") return;
   const wanted = decodeHash(location.hash);
-  const stored = readPreference("view");
-  state.view = availableView(wanted.view || stored || state.view);
   for (const key of wanted.hide) state.hiddenSources.add(key);
   for (const id of wanted.agents) state.filters.agents.add(id);
   for (const name of wanted.status) state.filters.status.add(name);
+  for (const kind of wanted.kinds) state.filters.kinds.add(kind);
   state.filters.onlyProblems = wanted.onlyProblems;
   if (wanted.selected !== null && elementOf(wanted.selected)) state.selected = wanted.selected;
   if (wanted.viewport) state.viewport = wanted.viewport;
@@ -1115,7 +1255,7 @@ function applyScene(force) {
     scene.setModel(state.model);
   }
   const hidden = [...state.hiddenSources].sort().join("|") + "#" + [...state.filters.agents].sort().join("|") + "#" +
-    [...state.filters.status].sort().join("|") + "#" + state.filters.onlyProblems;
+    [...state.filters.status].sort().join("|") + "#" + [...state.filters.kinds].sort().join("|") + "#" + state.filters.onlyProblems;
   if (modelChanged || force || sceneCursor !== state.cursor || sceneHidden !== hidden) {
     sceneCursor = state.cursor;
     sceneHidden = hidden;
@@ -1146,7 +1286,6 @@ function sceneUnavailable(reason) {
     }
     scene = null;
   }
-  $("scene-section").hidden = false;
   $("scene-box").hidden = true;
   $("scene-hover").hidden = true;
   $("scene-reset").hidden = true;
@@ -1154,7 +1293,10 @@ function sceneUnavailable(reason) {
   $("scene-note").textContent = t("scene.unavailable", { reason: t(reason) });
 }
 
+let sceneRequested = false;
+
 async function startScene() {
+  sceneRequested = true;
   if (typeof WebGL2RenderingContext !== "function") {
     sceneUnavailable("scene.reason.noWebgl2");
     return;
@@ -1167,16 +1309,22 @@ async function startScene() {
     sceneUnavailable("scene.reason.load");
     return;
   }
-  $("scene-section").hidden = false; // the canvas needs a laid-out box to size itself
   try {
-    scene = module_.createBraidScene($("scene-box"), { onSelect: select, onHover: showHover, onUnavailable: sceneUnavailable });
+    scene = module_.createBraidScene($("scene-box"), { onSelect: select, onHover: showHover, onUnavailable: sceneUnavailable, t });
   } catch (error) {
     console.error(error);
     sceneUnavailable("scene.reason.start");
     return;
   }
   $("legend-scene-block").hidden = false;
+  labelCanvas();
   syncScene();
+}
+
+function labelCanvas() {
+  if (!scene || !scene.canvas) return;
+  scene.canvas.setAttribute("aria-label", t("scene.canvas.aria"));
+  if (scene.refreshLabels) scene.refreshLabels();
 }
 
 // ---------------------------------------------------------------- start
@@ -1205,6 +1353,7 @@ state.langChoice = (() => {
 bindControls();
 applyLanguage();
 renderAll();
+restoreView();
+setView(state.view);
 loadSnapshot();
 followEvents();
-startScene();
