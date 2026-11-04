@@ -1,0 +1,60 @@
+# VIS.1c owner decisions
+
+## Recorded 2026-11-04 (verbatim)
+
+Owner answers given in the planning session of 2026-11-04. They authorize planning
+only. They are not an acceptance of this plan, of the ADR amendment or of the
+contract amendment (see "Gates").
+
+| ID | Question (verbatim) | Answer (verbatim) | Consequence |
+|---|---|---|---|
+| D7 | "¿La vista 2D pasa a ser la vista por defecto del visor?" | "Sí, 2D por defecto (Recommended)" | 2D timeline is the default view; 3D stays as a secondary spatial view. ADR 0033 says SVG 2D is "kept as the frame and table fallback, not as the primary surface the owner chose", so an amendment is needed: [draft, Proposed](adr-0033-amendment-draft.md). Not Accepted until the owner accepts it. |
+| D8 | "¿Qué debe significar 'conflicto' en el visor?" | "Ambos, distinguidos (Recommended)" | Two meanings, never merged: **predicted** (analysis class `conflicting`, available now) and **observed** runtime collision (same file touched by two agents; later phase, needs new data). Distinct glyph and wording each ([timeline-2d.md](timeline-2d.md#conflict-vocabulary)). |
+| D9 | Contract fields | "axis.nowMs, waitingOn, Duración de herramienta, Sugiéreme alguno más que marque un valor diferencial para este visor y además revisa el diseño de las secciones, títulos y botones para que sea todo coherente y con un diseño moderno" | Contract draft [v0.2](contract-v0.2-amendment-draft.md) with `axis.nowMs`, `waitingOn` and tool duration, each through privacy review; 2 to 4 further differential fields proposed below as owner-decision items (none accepted); section, title and button review delivered as [design-system.md](design-system.md). |
+| D10 | Vendor | "No, overlays HTML propios (Recommended)" | No new vendor file (no `CSS2DRenderer`, `Line2`, `MapControls`). Fixed-size HTML labels positioned by projection. ADR 0033 vendor list is unchanged. |
+
+Earlier owner direction (recorded as given in the planning session, not a quoted
+question): 3D fixes are guided camera, auto-framing, legend, legible labels, controls
+with a help overlay and a reset button; plus a 2D view "precisa clara y fiable con las
+mismas estrategias y funciones que la visualización 3D en cuanto a filtros, leyendas,
+etiquetas, etc" (one shared state model for 2D, 3D and table). Owner pain points: does
+not understand what is seen; camera; visual look; missing information (which agent is
+active, what conflicted, how long).
+
+## Gates (what still needs a human)
+
+| Gate | Owner action | Blocks |
+|---|---|---|
+| G1 | Accept (or change) this plan and the open decisions below (T051) | every task T052 onwards |
+| G2 | Accept ADR 0033 amendment (Proposed) | making 2D the default (T059); the 2D view itself can ship behind a view switch (T057) |
+| G3 | Accept contract v0.2 and its privacy review (precedes the code of T052) | T060 to T063 |
+| G4 | Owner-run host probe authorization (T053) | tool duration from hooks (T062) |
+
+## Open decisions (with recommendation)
+
+Each is a guided question for the owner; the recommendation is mine, none is accepted.
+
+| ID | Decision | Options | Recommendation and why |
+|---|---|---|---|
+| OD-V1 | UI language | (a) Spanish only; (b) English only; (c) Spanish default plus English, one `strings` module, language switch remembered per browser | (c). The owner works in Spanish and the repository documentation is English; text is already isolated for translation by the design in [design-system.md](design-system.md#copy-guide). Cost: two string tables to keep in sync, tested by a key-parity test. Undo: drop one table. |
+| OD-V2 | Placement of the governance text ("what a shape means and does not mean", the no-claim statement) | (a) always-visible long banner (today); (b) one-line permanent strip plus an "About this view" panel with the full text; (c) only in the panel | (b). The non-claim and `executionAuthorization: false` stay visible on every screen (REQ-010, Article 17 discipline) but stop occupying the first fold. (c) is rejected: hiding it would weaken the visible-boundary requirement. |
+| OD-V3 | Differential fields beyond D9 (below) | accept F1 to F4 individually | See table below; F1 and F2 are the cheapest and most on-brand. |
+| OD-V4 | Tool duration retention | (a) memory only, shown live, absent in replays and default exports; (b) also kept in recordings as exact value; (c) kept in recordings and exports as coarse bucket | (a) first; revisit (c) after real use. Matches the existing "Exact durations" row of the deviation table (D4). |
+| OD-V5 | Observed collision source | (a) derive from `ownership-receipt` and ownership notice adapters only; (b) also from hook `PostToolUse` tool names plus path-free resource ids | (a). It adds no host payload field. (b) needs a probe and a new allowlist entry and is a separate review. |
+| OD-V6 | 3D after 2D becomes default | (a) keep as "Spatial map" with the fixes; (b) freeze 3D (fixes only, no new features) | (b) after Phase 2: the audit finds the third axis encodes nothing; keep the capability, stop investing. |
+
+## Proposed differential fields (not accepted)
+
+Chosen because they answer the owner's questions ("who is active, what conflicted, how
+long") in ways only a coordination layer can. All are descriptive; none is presented
+as speedup, efficiency or safety (REQ-010, Article 17).
+
+| ID | Field | Source and privacy justification | Value |
+|---|---|---|---|
+| F1 | **Lane parallelism and overlap**: concurrency band (number of lanes open at each instant), peak concurrency, overlap time per lane pair | Derived client-side from `strand.open`/`strand.close` `relMs`, already retained ("Sub-day relative time" row). No new data, no collection. | Shows the "several agents at once" the product is about, and shows where a predicted conflict pair actually overlapped in time. |
+| F2 | **Waiting time**: total and current time a lane spent in `waiting`, with `waitingOn` when known | `strand.update.state` (already allowlisted shape) plus `waitingOn` salted strand id (HMAC identifier, already permitted class). No tool input or output. Observed waiting is only as good as the host signal; hook-only sessions emit none, so the UI labels it "inferred". | Answers "why is it stuck" and "how long". |
+| F3 | **Prediction versus observation link**: for each pair the analysis called `conflicting`, `independent-candidate` or `ordered`, show whether the two lanes overlapped in time and (phase 4) whether an observed collision occurred | Uses `crossing.classified` (existing), lane times (existing) and, later, resource ids only (no paths beyond the existing `evidenceRef`/`sharedResources`). Wording is descriptive ("overlapped", "no collision observed in this session"), never "the analysis was right". | The distinctive Braid view: analysis next to what happened. Also feeds the Q-VIS1 observation descriptively. Risk: reads as validation; mitigated by wording and by not counting percentages. |
+| F4 | **Effort per lane** (tokens, cost) as an optional column | `effort.sample` already exists, is ephemeral (REQ-007), `host-estimate`, in memory, omitted from default export; D4 deviation table already covers it. Needs VIS.1b ingest (T014, T018) to carry data. | Cost next to duration. Depends on VIS.1b; do not schedule before T035 decides it. |
+
+Considered and not proposed: lane goal or prompt text (prohibited, never-retained list);
+file paths per tool call (prohibited beyond relative `evidenceRef`); tool input or output.
