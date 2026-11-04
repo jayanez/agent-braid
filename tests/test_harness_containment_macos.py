@@ -1402,6 +1402,18 @@ class AuthTokenTests(unittest.TestCase):
                 self.assertEqual(caught.exception.reason, "auth-token-invalid")
                 self.assertNotIn(self.TOKEN, repr(caught.exception))
 
+    def test_a_fifo_is_refused_without_blocking(self):
+        os.mkfifo(self.path, 0o600)
+        with self.assertRaises(lab.LabError):
+            self.read()
+
+    def test_the_sandbox_profile_keeps_the_token_file_out_of_the_childs_reach(self):
+        text = self.machine.policy.render("launch").decode()
+        deny = f'(deny file-read* file-write* (literal "{self.machine.policy.config_dir}/{mac.TOKEN_FILE}"))'
+        self.assertIn(deny, text)
+        self.assertGreater(text.index(deny), text.index(f'(subpath "{self.machine.policy.config_dir}")'))
+        self.assertNotIn(deny, self.machine.policy.render("fixture").decode())
+
     def test_a_symlink_a_directory_a_second_link_and_another_owner_are_refused(self):
         real = f"{self.machine.root}/elsewhere"
         Path(real).write_text(self.TOKEN)
@@ -1683,7 +1695,28 @@ class ProcessAccountingTests(unittest.TestCase):
         with sysctl_with(b"\x01\0\0\0/bin/x\0x\0NOT" + tag + b"\0"):
             self.assertFalse(mac._tagged(5, tag))
         with sysctl_with(env, status=-1):
-            self.assertFalse(mac._tagged(5, tag))  # unreadable or gone
+            self.assertIsNone(mac._tagged(5, tag))  # unreadable or gone: asked again later
+
+    def test_lineage_asks_again_for_an_environment_it_could_not_read(self):
+        answers = iter([None, True])
+        lineage = mac._Lineage(100, b"BRAID_RUN_TAG=t")
+        with mock.patch.object(mac, "_process_links", lambda identity: (1, identity[0])), \
+                mock.patch.object(mac, "_tagged", lambda pid, tag: next(answers)):
+            self.assertEqual(lineage.members({(300, 3)}), set())
+            self.assertEqual(lineage.members({(300, 3)}), {(300, 3)})
+
+    @unittest.skipUnless(sys.platform == "darwin", "macOS only")
+    def test_the_real_environment_and_footprint_reads_agree_with_the_os(self):
+        child = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(20)"],
+                                 env={"BRAID_RUN_TAG": "x", "PATH": "/usr/bin"})
+        self.addCleanup(child.wait)
+        self.addCleanup(child.kill)
+        deadline = time.time() + 5
+        while mac._tagged(child.pid, b"BRAID_RUN_TAG=x") is not True and time.time() < deadline:
+            time.sleep(0.05)
+        self.assertTrue(mac._tagged(child.pid, b"BRAID_RUN_TAG=x"))
+        self.assertFalse(mac._tagged(child.pid, b"BRAID_RUN_TAG=y"))
+        self.assertGreater(mac._footprint(os.getpid()), 0)
 
     def test_lineage_adopts_a_tagged_process_whatever_its_parent_and_group(self):
         lineage = mac._Lineage(100, b"BRAID_RUN_TAG=t")

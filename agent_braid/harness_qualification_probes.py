@@ -810,7 +810,9 @@ CATALOG: tuple[Probe, ...] = (
     _helper("NET-01", "network", "TCP to a runner-owned loopback listener and a public literal address",
             watch=("tcp4",)),
     _helper("NET-02", "network", "TCP to a literal IPv4 and IPv6 address, private and link-local targets",
-            wall_seconds=20),
+            wall_seconds=20,
+            residual="tcp-ipv6-literal is excluded when the machine has no IPv6 route (control EHOSTUNREACH, "
+                     "ENETUNREACH or EADDRNOTAVAIL); IPv6 egress is then not tested and the row says so."),
     _helper("NET-03", "network", "UDP and DNS-based exfiltration", watch=("udp",)),
     _helper("NET-04", "network", "non-allowed loopback port, host LAN address and local Unix-domain socket",
             watch=("tcp4", "tcp6", "tcp-lan", "unix"), wall_seconds=20),
@@ -843,7 +845,9 @@ CATALOG: tuple[Probe, ...] = (
     _helper("PROC-06", "process", "spawn outside the group via LaunchServices, AppleEvents, osascript, IOKit or any launchd name",
             wall_seconds=30),
     _helper("PROC-07", "process", "signal, attach to or inspect another same-user process, sysctl and IPC primitives",
-            watch=("sibling-signal",), wall_seconds=20),
+            watch=("sibling-signal",), wall_seconds=20,
+            residual="ptrace-sibling is excluded when the kernel refuses it even uncontained (control EPERM): "
+                     "no sandbox decision is observable then, and the row says so in notApplicable."),
     _helper("PROC-08", "process", "outlive a timeout and a cancellation", judge="survivors",
             survivors=True, wall_seconds=3, extra=("cancel-settlement",)),
     Probe("HOST-01", "host", "one read-only `claude -p` session completes under the policy",
@@ -2682,7 +2686,8 @@ def credential_inventory(config_dir: Path | str) -> list[tuple[str, dict]]:
     by value. ``origin`` is ``{"file", "path"}`` with plain field names only (``<key>`` for any other
     key, and for any key that is itself a candidate value), never a value: it lets a refusal that names
     ``credential#3`` be traced to a key."""
-    leaves = [leaf for leaf in _credential_leaves(config_dir) if _is_candidate(leaf[0])]
+    # the token is always scanned for, whatever characters it holds
+    leaves = [leaf for leaf in _credential_leaves(config_dir) if _is_candidate(leaf[0]) or leaf[1] == _mac.TOKEN_FILE]
     candidates = sorted({value for value, _, _ in leaves})
     first: dict[str, dict] = {}
     for value, name, parts in leaves:

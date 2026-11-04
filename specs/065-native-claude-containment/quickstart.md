@@ -155,12 +155,12 @@ What it does, in order, each stage a hard stop:
 2. **waits** for `to-lab/verify-setup.json` (bound to the summary's SHA-256; the orchestrator checks the claude hash
    against the published release checksum before step 9);
 3. step 9: no `ANTHROPIC`/`CLAUDE` variable (names or values), then `claude auth login` (the browser login is yours;
-   `--skip-login` if already logged in) and the check that `config_dir` holds a few small files;
+   `--skip-login` if already logged in) and the check that `config_dir` holds a few small files; then step 9b: unless
+   `--skip-token`, `claude setup-token` (the browser approval is yours) and the token pasted at a hidden prompt is
+   written to `config_dir/oauth-token`, mode 0600 (an existing file is kept unless `--renew-token`); the value is
+   never printed;
 4. step 10: the driver `--dry-run`, saved to `from-lab/dry-run.json` with its SHA-256; must be `ready`; **waits** for
    `to-lab/verify-dry-run.json`;
-   step 9b: unless `--skip-token`, `claude setup-token` (the browser approval is yours), then the token pasted at a
-   hidden prompt is written to `config_dir/oauth-token`, mode 0600, created exclusively (an existing file is kept
-   unless `--renew-token`); the value is never printed;
 5. step 10b: the driver `--self-check --founder-go`, saved to `from-lab/self-check.json` with its SHA-256; must be
    `self-check-ok` (pre-session check and the `auth` stage); **waits** for `to-lab/verify-self-check.json`;
 6. step 10c: refuses an attempt label whose output directory already holds a session counter (a new label from the
@@ -361,7 +361,7 @@ CLI cannot use the login of step 9. It authenticates with a token that only a fi
 ```sh
 export CLAUDE_CONFIG_DIR="$HOME/t009/config" DISABLE_AUTOUPDATER=1
 /usr/local/libexec/braid/claude-2.1.292 setup-token    # opens the browser; approve; it PRINTS the token in the terminal
-( umask 077; printf 'Paste the token here (hidden): '; stty -echo; read -r T; stty echo; echo
+( umask 077; trap 'stty echo' EXIT INT; printf 'Paste the token here (hidden): '; stty -echo; read -r T; stty echo; echo
   printf %s "$T" > "$CLAUDE_CONFIG_DIR/oauth-token" )      # zsh and bash alike; the subshell forgets T
 chmod 600 "$CLAUDE_CONFIG_DIR/oauth-token"
 ls -l "$CLAUDE_CONFIG_DIR/oauth-token"                 # -rw-------  1 braidlab  ...  one small file
@@ -528,7 +528,7 @@ rm -r "/Users/Shared/t009-bundle-$ATTEMPT" /Users/Shared/t009-dry-run.json /User
 sudo rm -r /Users/Shared/braid-t009              # the handoff directory of the scripts (from-lab/ is the lab account's)
 # revoke the long-lived token of step 9b in the Claude account settings (claude.ai, Settings; the token that
 # `claude setup-token` made), and delete its file (also removed with the account):
-rm -f "/Users/braidlab/t009/config/oauth-token"   # run as braidlab or with sudo; the account deletion below removes it anyway
+sudo rm -f "/Users/$ACCT/t009/config/oauth-token"   # the account deletion below removes it anyway
 # log out of braidlab (Apple menu, Log Out) and revoke its Claude session in the account settings
 sudo sysadminctl -deleteUser "$ACCT"           # removes the account, its home and its keychain
 ls /Users                                      # braidlab gone (else: sudo rm -r /Users/braidlab)

@@ -1987,6 +1987,13 @@ class QualRound3Tests(unittest.TestCase):
 
     # token in the scan list ------------------------------------------------------------------------------
 
+    def test_a_token_with_slash_or_tilde_is_still_a_scan_literal(self):
+        config = Path(tempfile.mkdtemp(prefix="braid-t007-tok-"))
+        self.addCleanup(shutil.rmtree, config, ignore_errors=True)
+        token = "sk-ant-oat01-ab/cd~ef" + "Gh4" * 8
+        (config / mac.TOKEN_FILE).write_text(token)
+        self.assertEqual(q.credential_values(config), [token])
+
     def test_the_token_file_is_a_secret_literal_that_can_never_reach_a_bundle(self):
         world = World(self)
         config = world.tmp / "config"

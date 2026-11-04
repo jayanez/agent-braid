@@ -395,6 +395,8 @@ class ContainmentPolicy:
             ]
         if writes:
             lines.append(f"(allow file-read* file-write* {literals('subpath', writes)})")
+        if writes:  # the token reaches the child through its environment only; the file stays out of its reach
+            lines.append(f'(deny file-read* file-write* (literal "{self.config_dir}/{TOKEN_FILE}"))')
         lines += [f"(deny file-read* file-write* {literals('subpath', DENIED)})",
                   f'(allow network-outbound (remote tcp "localhost:{self.proxy_port}"))']
         return ("\n".join(lines) + "\n").encode()
@@ -658,8 +660,9 @@ def _user_processes(uid: int) -> set[tuple[int, int]]:
 _KERN_PROCARGS2, _PROCARGS_BYTES = 49, 1 << 20
 
 
-def _tagged(pid: int, tag: bytes) -> bool:
-    """Whether the environment of ``pid`` holds the entry ``tag`` (``NAME=value``); ``False`` when unreadable.
+def _tagged(pid: int, tag: bytes) -> bool | None:
+    """Whether the environment of ``pid`` holds the entry ``tag`` (``NAME=value``); ``None`` when unreadable
+    (the caller asks again later).
 
     ``KERN_PROCARGS2`` of a process of the same user needs no privilege. The entry must start a string, so
     it is an environment (or argument) string and not the tail of another.
@@ -667,8 +670,8 @@ def _tagged(pid: int, tag: bytes) -> bool:
     mib = (ctypes.c_int * 3)(_CTL_KERN, _KERN_PROCARGS2, pid)
     size, buffer = ctypes.c_size_t(_PROCARGS_BYTES), ctypes.create_string_buffer(_PROCARGS_BYTES)
     if _libsystem().sysctl(mib, 3, buffer, ctypes.byref(size), None, 0) != 0:
-        return False
-    return b"\0" + tag in buffer.raw[:size.value]
+        return None
+    return b"\0" + tag in ctypes.string_at(buffer, size.value)
 
 
 def _process_links(identity: tuple[int, int]) -> tuple[int | None, int | None]:
@@ -1059,13 +1062,19 @@ class _Lineage:
         self._pids = {root}
         self._links: dict[tuple[int, int], tuple[int | None, int | None]] = {}
         self._tagged: set[tuple[int, int]] = set()
+        self._unread: set[tuple[int, int]] = set()  # environment not readable yet: asked again at the next poll
         self.identities: set[tuple[int, int]] = set()
 
     def observe(self, processes: set[tuple[int, int]]) -> None:
         for identity in processes - self._links.keys():
             self._links[identity] = _process_links(identity)
-            if self._tag is not None and _tagged(identity[0], self._tag):
-                self._tagged.add(identity)
+            self._unread.add(identity)
+        for identity in self._unread & processes if self._tag is not None else ():
+            found = _tagged(identity[0], self._tag)
+            if found is not None:
+                self._unread.discard(identity)
+                if found:
+                    self._tagged.add(identity)
         grew = True
         while grew:
             grew = False

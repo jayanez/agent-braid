@@ -249,16 +249,18 @@ def store_token(config: Path, prompt: Callable[[str], str], say: Callable[[str],
         if not renew:
             say(f"   {path} already exists: kept (--renew-token replaces it)")
             return
-        path.unlink()
     token = prompt("   Paste the token that claude setup-token printed (input hidden; it is written only to "
                    f"{path}): ").strip()
     if not TOKEN_RE.fullmatch(token):
         raise Stop("STOP: what was pasted is not a token (expected one line of letters, digits and . _ ~ + / = -)")
-    try:
-        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    temporary = config / (TOKEN_FILE + ".new")
+    try:  # written beside the target and moved over it: a failure never leaves the old token half replaced
+        temporary.unlink(missing_ok=True)
+        descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
         with os.fdopen(descriptor, "w") as handle:
             handle.write(token + "\n")
-        os.chmod(path, 0o600)
+        os.chmod(temporary, 0o600)
+        os.replace(temporary, path)
     except OSError as exc:
         raise Stop(f"STOP: cannot write {path}: {exc.strerror}") from exc
     say(f"   saved {path} (mode 0600)")
@@ -334,7 +336,7 @@ def run(args: argparse.Namespace, env: dict[str, str], *, sleep: Callable[[float
 
     say("\n== Step 9b. Long-lived token for the contained CLI (NC-5): the Keychain stays closed to the sandbox")
     if not args.skip_token:
-        if not (config / TOKEN_FILE).exists() or args.renew_token:
+        if not os.path.lexists(config / TOKEN_FILE) or args.renew_token:
             say("   claude setup-token opens the browser; approve it, then copy the token it prints.")
             say("   Paste it only at the hidden prompt below, never into a chat.")
             if subprocess.run([CLAUDE, "setup-token"], env=session_env, cwd=home).returncode != 0:

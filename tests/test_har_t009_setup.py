@@ -485,6 +485,12 @@ class LabTests(unittest.TestCase):
         self.assertNotIn("setup-token", self.driver_modes())
         self.assertEqual(self.prompts, [])
 
+    def test_a_malformed_renewal_keeps_the_old_token(self):
+        self.token_path.write_text("old-token-" + "a" * 20 + "\n")
+        self.pasted = "short"
+        self.assertEqual(self.go(["--renew-token"])[0], 1)
+        self.assertEqual(self.token_path.read_text(), "old-token-" + "a" * 20 + "\n")
+
     def test_a_failed_setup_token_or_a_malformed_paste_stops_before_the_dry_run(self):
         self.token_rc = 1
         code, _, err = self.go()
