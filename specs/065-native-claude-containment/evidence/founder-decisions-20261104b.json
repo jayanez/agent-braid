@@ -1,0 +1,47 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T009 founder go after attempt 1 and the diagnosis fix, with an automated operator runbook",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-04",
+  "baseCommit": "e3901f81076f4c8bca2fa8d5cc36d5ecbfd41c86",
+  "decisionChannel": "Founder answer to an interactive AskUserQuestion prompt in the HAR orchestrator session, 2026-11-04, recorded verbatim. Additive to founder-decisions-20261103.json, -20261103b.json and -20261104.json, which stay as written.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261103.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261103b.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261104.json"
+  ],
+  "decisionOrder": [
+    "T009-GO-AUTOMATED-RUNBOOK",
+    "T009-SCOPE-ONE-SCRIPT"
+  ],
+  "decisions": [
+    {
+      "id": "T009-GO-AUTOMATED-RUNBOOK",
+      "item": "Founder go for the next T009 operator run (setup, dry run, self-check, real attempt) after attempt 1 and the 2026-11-04 diagnosis fix, with the operator runbook automated as far as the decisions allow",
+      "question": "HAR SPEC-065 T009 (#985): ¿das el go de fundador?",
+      "ownerStatement": "Go pero quiero que prepares tú el runbook para que todo sea completamente automatizado",
+      "decision": {
+        "disposition": "go-with-automated-runbook",
+        "reading": "The founder confirms the go for T009 under the bounds already recorded (founder-decisions-20261103.json: conditional go, at most 3 Haiku low-effort sessions, each at most 2 % of the 5-hour window; founder-decisions-20261103b.json: NC-3, RV-16, NC-6 and in-memory attempt records) and asks the orchestrator to prepare the runbook so that the operator steps are automated. The orchestrator prepared scripts/har_t009_setup.py (steps 0 to 8: every runbook check is a hard stop, sudo asked once, account password interactive) and the lab-account script described in T009-SCOPE-ONE-SCRIPT. The NC-6 quota readings stay typed by the founder, and the orchestrator's verification before step 9, before step 10b and before step 11 stays in force: automation does not replace or bypass it.",
+        "bounds": "Unchanged from the earlier records: NC-10 (at most 3 Haiku low-effort sessions, each at most 2 % of the 5-hour window), NC-6 readings typed by the operator and self-attested, NC-1, NC-4, NC-5, NC-7, NC-8, NC-11, RV-17/19/21/22 and DRV-06/10 as recorded. Any edit to the backend, probes, transport or quota module still needs a new re-check of the touched lines before the attempt; this record's scripts do not touch those modules. The refused session of attempt 1 does not count: founder-decisions-20261104.json (NC-10-session-1) chose a new attempt name with its own output directory and the full budget of 3 sessions; the orchestrator names that label."
+      }
+    },
+    {
+      "id": "T009-SCOPE-ONE-SCRIPT",
+      "item": "Scope change to the automation: the founder only switches user and launches one script",
+      "question": "Not preserved: a follow-up instruction in the same orchestrator session after the first answer; the founder statement below is verbatim.",
+      "ownerStatement": "OK, vamos a seguir con los pasos, pero automatiza todo lo que puedas para que sólo tenga que cambiar de usuario y lanzar un script",
+      "decision": {
+        "disposition": "single-script-per-account-with-orchestrator-handoff",
+        "reading": "The founder runs one setup script in the own account (steps 0 to 8; only the sudo password and the new account's password are typed) and, after switching user, one script in the dedicated account (scripts/har_t009_lab.py: login, driver --dry-run, --self-check, the real attempt, bundle copy). The two accounts exchange files in a handoff directory (/Users/Shared/braid-t009/): to-lab/ is owned by the founder (the lab account cannot write it) and holds the setup summary and the orchestrator's verification files; from-lab/ is owned by the dedicated account and holds the dry run, the self-check and the bundle, each with its SHA-256. The lab script waits for a verification file written by the orchestrator (scripts/har_t009_verify.py, run from the founder's account) bound to the SHA-256 of the exact subject, for the setup summary, the dry run and the self-check, and refuses a missing, mismatching, rejected or tampered one. The login in the browser and the NC-6 quota readings stay typed by the founder, asked by the driver; the NC-10 budget and the driver's quota stops are unchanged.",
+        "bounds": "Same as T009-GO-AUTOMATED-RUNBOOK. No flag skips a verification, the self-check or the readings. No backend, probes, transport or quota module is touched; if the flow needed that, it would need a new re-check. executionAuthorization stays false and issuance stays T010."
+      }
+    }
+  ],
+  "closes": [],
+  "stillOpen": [],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records one founder answer. executionAuthorization stays false and issuance stays T010 (NC-9, founder only). It is a go to run the runbook under the recorded bounds, not an authorization of any native run on its own: the orchestrator's written confirmations before steps 9, 10b and 11 are still required. The earlier records are not rewritten. No native session, probe, sudo command or account creation was run when this record was written. Any change needs a new founder decision record."
+}

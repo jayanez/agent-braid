@@ -64,7 +64,7 @@ Neither outcome is a failure of the procedure.
 ## Operator setup for T009
 
 This is the founder's runbook for the conditional go recorded in
-`evidence/founder-decisions-20261103.json`, as amended by `evidence/founder-decisions-20261103b.json` and confirmed on 2026-11-04 by `evidence/founder-decisions-20261104.json`. It is a checklist, not an authorization:
+`evidence/founder-decisions-20261103.json`, as amended by `evidence/founder-decisions-20261103b.json` and confirmed on 2026-11-04 by `evidence/founder-decisions-20261104b.json`. It is a checklist, not an authorization:
 `executionAuthorization` stays `false`, issuance stays T010 (NC-9). The order is fixed:
 
 1. you run steps 0 to 8 (step 0 is a check; the rest use sudo, in your own session) with `scripts/har_t009_setup.py`, only after the orchestrator confirms the re-check of the 2026-11-03 decisions is a GO;
@@ -87,7 +87,7 @@ and tell the orchestrator; do not improvise. `COMMIT` below is the full commit t
 must contain `scripts/har_t009_attempt.py`); replace the quoted `PASTE_...` text with it. A line that ends
 in `STOP` means: do not continue.
 
-> **Founder go of 2026-11-04** (`evidence/founder-decisions-20261104.json`): "Go pero quiero que prepares tú el runbook
+> **Founder go of 2026-11-04** (`evidence/founder-decisions-20261104b.json`): "Go pero quiero que prepares tú el runbook
 > para que todo sea completamente automatizado", and then "vamos a seguir con los pasos, pero automatiza todo lo
 > que puedas para que sólo tenga que cambiar de usuario y lanzar un script". So the runbook is two scripts and a
 > verification helper. They are not an authorization. Every check of the runbook is a hard stop in them (same

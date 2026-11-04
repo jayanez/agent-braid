@@ -1,0 +1,23 @@
+VISTA 2D "LINEAS DE TIEMPO" (SVG, un carril por agente/subagente, eje X = tiempo proporcional)
+
+ tiempo  0:00    0:30    1:00    1:30    2:00 ░░ 3:00    3:30    4:00    4:22
+          |       |       |       |       |  // |       |       |       |      <- ░░ = tramo inactivo
+                                                comprimido, con etiqueta "−6 min 20 s" (nunca silencioso)
+ Claude main session  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━●(unknown)
+  ├ Explore            ▕▇▇▇▇▇▇▇▇▇▇▇▕ 44 s ✓
+  ├ Plan                ▕▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▕ 1 m 26 s ✓
+  ├ Code reviewer                                                      ▕▇▇▇▇▇▇▇▇▇▇▕ 50 s ✓
+ Edit README (braid)                           ▕▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▕ ✓  ──┐
+ Edit ROADMAP (braid)                          ▕▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ ─┤ ola 0 (runtime, marco)
+ Second ROADMAP edit                                           ▕▒▒ en cola ▒▒▒▕▇▇▇▇▕  ✕ conflicto con ROADMAP
+ Run unknown script                                                       ? desconocido (borde discontinuo)
+ Codex thread                                                         ▕▇▇▇▇▇▇▇▇ ▯hueco ▇▇▇▇▇▇▇ ... (sin cierre: "en curso" ▶)
+
+ Marcas sobre/entre carriles:  ✕ conflicto (rojo + icono, linea vertical que une los dos carriles)
+                               ⇄ independiente candidato (teal + icono)   → ordenado   ? desconocido
+                               ▲ peligro   ◯ concesion   ◉ puerta   ▯ hueco de observacion   ⚠ no verificado
+ Codificacion de la barra:     relleno solido = terminado · rayas = en curso · punteado = estimado/sin cierre
+                               ancho = duracion real · textura "tool" = marcas finas con nombre de herramienta
+ Interaccion: hover = tooltip (agente · estado · inicio–fin · duracion); clic = panel Detalle; arrastrar = pan en X;
+              rueda/pellizco = zoom en X; doble clic = encuadrar; teclas ←/→ mover cursor, +/− zoom, Home/End, 0 = todo.
+ Cursor de reproduccion: linea vertical que cruza todos los carriles; mismo "posicion" que 3D y tabla.

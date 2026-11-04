@@ -634,10 +634,21 @@ def _checks(value: object) -> list[dict]:
     return rows
 
 
+def _int(value: object) -> int | None:
+    """A small integer (an exit code or errno), else ``None``: no other value is printed."""
+    return value if type(value) is int and -1000 <= value <= 1000 else None
+
+
+def _integers(record: Mapping, names: tuple[str, ...]) -> dict[str, int]:
+    return {name: number for name in names if (number := _int(record.get(name))) is not None}
+
+
 def refusal_evidence(backend: object, since: int = 0) -> list[dict]:
     """What the backend recorded about its refusals, as the driver may print it: per record the entry
     (``fixture``, ``launch``, ``launch-probe``), the fixed refusal reason, whether the compile check passed
-    and the F4 probes' ids and verdicts. No path, account, hash or other field of the record is copied."""
+    and the F4 probes' ids and verdicts, plus integers only: the exit code of the run, the exit codes of
+    the compile check's two runs (``compileExit``) and the errno and flavor of a failed process
+    accounting call. No path, account, hash or other field of the record is copied."""
     records = getattr(backend, "run_evidence", None)
     found = []
     for record in (records[since:] if isinstance(records, list) else []):
@@ -648,6 +659,12 @@ def refusal_evidence(backend: object, since: int = 0) -> list[dict]:
         checks = _checks(record.get("preSessionCheck"))
         if checks:
             item["preSessionCheck"] = checks
+        if "refused" in item:
+            item |= _integers(record, ("exitCode", "accountingErrno", "accountingFlavor"))
+        if isinstance(record.get("compileExit"), Mapping):
+            exits = _integers(record["compileExit"], ("denied", "allowed"))
+            if exits:
+                item["compileExit"] = exits
         if ("refused" in item or "preSessionCheck" in item) and item not in found:
             found.append(item)
     return found[-MAX_EVIDENCE:]
@@ -794,8 +811,15 @@ def self_check(backend: object, workdir: Callable[[], Path], probe_runner: Calla
                 checks.append({"probe": probe, "expected": expected,
                                "observed": observed if observed in ("allowed", "denied", "not-run") else "error",
                                "supplementary": True})
+    runs: list[dict] = []
+    for r in getattr(backend, "run_evidence", [])[seen:]:
+        if isinstance(r, Mapping) and not r.get("refused") and _int(r.get("exitCode")) is not None:
+            run = {"entry": _code(r.get("entry")), "exitCode": _int(r.get("exitCode"))}
+            if run not in runs:
+                runs.append(run)
     return {"verdict": "self-check-ok" if refusal is None else "self-check-refused",
-            "preSessionCheck": checks, "compileCheck": _code(evidence.get("compileCheck")),
+            "preSessionCheck": checks, "probeRuns": runs[-MAX_EVIDENCE:],
+            "compileCheck": _code(evidence.get("compileCheck")),
             "refusal": _code(refusal), "stage": _stage(refusal, evidence),
             "backendRefusals": [r for r in refusal_evidence(backend, seen) if "refused" in r],
             "nativeRun": True, "sessionsStarted": 0, "usageReadings": 0, "executionAuthorization": False}

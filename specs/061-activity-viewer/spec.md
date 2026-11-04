@@ -56,7 +56,7 @@ any host permission or tool decision.
 
 ## Deliveries and checkpoint
 
-VIS.1 is one milestone with two deliveries:
+VIS.1 is one milestone with two deliveries and, since 2026-11-04, a third (VIS.1c, below):
 
 - **VIS.1a — coordination slice:** owner-run host probes and an artifact census
   first, then the contract, coordination adapters (analysis, plans, scheduler,
@@ -69,6 +69,13 @@ VIS.1 is one milestone with two deliveries:
   ingest, recording, export, the effort evidence pack and text, braille, SVG and
   RGBA frames. REQ-007 to REQ-009, the OTLP part of REQ-005, the host stream part
   of REQ-002 and the remaining parts of REQ-011 and REQ-012.
+
+- **VIS.1c — viewer redesign (amendment of 2026-11-04):** shared state model, 2D
+  timeline as default view, repaired 3D map, design system and copy, contract
+  `agent-braid-loom/v0.2` fields. REQ-016 to REQ-023, tasks T050 to T066. It is
+  independent of the T035 decision on VIS.1b: it changes the VIS.1a surface only and
+  needs no effort, recording or export work. See the
+  [VIS.1c amendment](#vis1c-amendment-2026-11-04).
 
 After VIS.1a the owner holds a go/no-go checkpoint (T035) by a date set in T001:
 the census result against a threshold set in T001, a descriptive Q-VIS1
@@ -120,6 +127,37 @@ Owner decisions after the T028 and T025 reviews, quoted verbatim:
 | A4 | Watch names (2026-11-02): "Por nombre (Recommended)". `--watch` reads known artifact names only (REQ-006, unchanged). |
 
 This amendment extends REQ-006, REQ-010 and REQ-012 and adds T040–T043. The T001 approval and the historical snapshot at b21c1c3b do not cover it; it is reviewed at the VIS.1a closure (T037).
+
+## VIS.1c amendment (2026-11-04)
+
+A UX audit of the shipped VIS.1a viewer ([audit](vis1c/audit/report.es.md), `develop` at `e8060ac5`,
+synthetic fixture) found that the viewer is faithful to the contract but answers the model's question
+("which compatibility class does each pair have") and not the user's ("which agent did what, when, for
+how long, and where did it conflict"). VIS.1c is a third delivery that redesigns the viewer surface
+(requirements REQ-016 to REQ-023, tasks T050 to T066). It is an amendment of this specification and not a
+new spec number: see [vis1c/README.md](vis1c/README.md#why-this-is-vis1c-inside-spec-061-and-not-a-new-spec).
+This change is a plan only; it implements nothing.
+
+Owner decisions (2026-11-04), quoted verbatim:
+
+| ID | Question | Answer |
+|---|---|---|
+| D7 | "¿La vista 2D pasa a ser la vista por defecto del visor?" | "Sí, 2D por defecto (Recommended)" |
+| D8 | "¿Qué debe significar 'conflicto' en el visor?" | "Ambos, distinguidos (Recommended)" |
+| D9 | contract fields | "axis.nowMs, waitingOn, Duración de herramienta, Sugiéreme alguno más que marque un valor diferencial para este visor y además revisa el diseño de las secciones, títulos y botones para que sea todo coherente y con un diseño moderno" |
+| D10 | vendor | "No, overlays HTML propios (Recommended)" |
+
+Effects: D7 supersedes only the default-surface clause of REQ-010 (and the ADR 0033 alternatives line that kept
+SVG 2D as a fallback), through the **Proposed** ADR 0033 amendment [draft](vis1c/adr-0033-amendment-draft.md),
+which is not accepted until the owner accepts it; REQ-010 is otherwise unchanged and applies to the 2D view.
+D8 requires two distinct conflict meanings. D9 is drafted as contract
+[`agent-braid-loom/v0.2`](vis1c/contract-v0.2-amendment-draft.md) with privacy review items, and
+proposes further differential fields as owner-decision items ([owner-decisions.md](vis1c/owner-decisions.md));
+nothing in D9 beyond the three named fields is accepted. D10 keeps the vendor list of ADR 0033 unchanged.
+Open decisions (UI language, governance-text placement, differential fields, tool-duration retention,
+observed-collision source, 3D after 2D) are in [owner-decisions.md](vis1c/owner-decisions.md).
+The T001 approval, the VIS.1a closure approval and the historical snapshots (b21c1c3b, advanced to 62a44fb7) do not cover this
+amendment; it is reviewed at the VIS.1c closure (T066) and its requirements have no obtained evidence yet.
 
 ## Requirements and acceptance scenarios
 
@@ -482,6 +520,137 @@ only, read-only, ephemeral effort, default-minimal export, `host-estimate` label
 no speedup claim and the HV status of each host, and every link resolves.
 
 Verification: [procedure_015](validation-plan.md#procedure_015); T034, T035.
+
+### REQ-016 — One state model for timeline, 3D map and table (VIS.1c)
+
+The viewer keeps one state (model, view, playback cursor, selection, hover, source and agent and status
+filters, viewport) and one derived model (agents with opening, closing, state, duration and parent;
+conflicts; time overlaps) from which the 2D timeline, the 3D map and the event table render. No view keeps its own
+selection or filter. Selecting an agent or event in one view selects it in the others; a filter or hidden
+source acts identically on all three, and hidden events stay counted. View, selection and viewport are
+restorable from the URL hash, which carries no event values. Lanes with the same agent type are told apart by
+an ordinal computed from opening time; no new data is collected for this.
+
+**SC-016:** Given `vis1c/audit/fixture/rich.jsonl`, when a lane is selected in the timeline, then the same
+event is selected in the 3D map and the table; when a source is hidden, then the same events disappear from
+all three and the hidden count is shown; the derived opening, closing and duration of every lane equal the
+`relMs` values of its `strand.open` and `strand.close` events.
+
+Verification: T054, T057, T058; [vis1c/timeline-2d.md](vis1c/timeline-2d.md#shared-state-model-req-016).
+
+### REQ-017 — 2D timeline as the default view (VIS.1c)
+
+After the ADR 0033 amendment is accepted (gate G2) the default view is a first-party SVG timeline with one
+lane per agent, children under their parent, a time axis proportional to elapsed time in `m:ss`, a visible
+labelled break wherever the model compressed a gap (`axis.compressions`), and for every lane its start, end,
+duration and state (running, waiting, finished, or unknown) with outcome shown honestly (a hook-closed lane is
+"unknown", never success). Predicted conflict (analysis class `conflicting`) and observed collision (the same
+resource touched by two agents, available only when its source exists) have distinct glyphs, words and
+counters; a predicted conflict is never worded as having happened, and an observed collision is never inferred
+from a prediction. Independent, ordered and unknown crossings keep the REQ-010 rules; unknown, unobserved and
+gap information is never drawn as clean (REQ-003). The 3D map remains selectable. The timeline needs no WebGL
+and no new third-party code, and works under the existing CSP.
+
+**SC-017:** Given the audit fixture, when the timeline is opened, then each bar's start, end and duration equal
+the model's `relMs` values; every gap listed in `axis.compressions` appears as a labelled break with its omitted time; the
+two ROADMAP edits show a connector worded "possible conflict, per analysis" and no observed-collision counter
+is rendered; a lane without a close event is drawn running with an open end and the label "(inferido)" when no
+`axis.nowMs` exists; no zero is shown for a quantity the viewer cannot observe; and the page has no `style=`
+markup and no CSP violation in the console.
+
+Verification: T057, T059; [vis1c/timeline-2d.md](vis1c/timeline-2d.md).
+
+### REQ-018 — Guided and legible 3D map (VIS.1c)
+
+The 3D map frames only agents and their events (governance objects never enter the framing), offers presets
+(side, top, isometric), a "Frame all" action that also works after the user has moved the camera, a reset, damped
+orbit, zoom limits derived from the scene size, cursor-centred zoom, keyboard control, and a help overlay listing
+pointer, touch and keyboard controls. The page scrolls normally over the canvas unless the user zooms with
+Ctrl or Cmd, focuses the canvas or locks the scene. Labels are first-party HTML of fixed pixel size positioned by
+projection, with collision handling and agent labels pinned at the left edge; no new vendored file is used.
+Camera motion eases for at most 300 ms, is interruptible and honours reduced motion.
+
+**SC-018:** Given the audit fixture at 1440 x 900 and 390 x 844, when the 3D map opens, then all lanes are
+inside the frame and no lane label overlaps another without interaction; "Frame all" restores the framing in
+under 400 ms; wheel over the page scrolls the page without Ctrl or Cmd; Tab reaches the canvas and the arrow
+keys, F and Esc act; the vendored files match the manifest unchanged.
+
+Verification: T055, T056; [vis1c/three-d-fixes.md](vis1c/three-d-fixes.md).
+
+### REQ-019 — Shared legend, filters and labels (VIS.1c)
+
+One glyph set (SVG symbols defined once) and one vocabulary serve the timeline, the 3D map, the legend, the
+tooltip and the table. The legend shows the real glyphs with a short sentence and a count, is clickable as a
+filter, and keeps the long explanations in help. Filters (sources, agent, status, problems only) and labels
+behave the same in every view. Source-level unverified status is stated once; a per-element marker remains for
+crossings and gate results as REQ-010 requires, and for the exceptions.
+
+**SC-019:** Given a legend entry clicked, then the matching elements are filtered in 2D, 3D and table alike;
+every glyph in the legend renders identically in the timeline and in the HUD of the 3D map.
+
+Verification: T056, T058.
+
+### REQ-020 — Page structure, design system and copy (VIS.1c)
+
+The page follows [vis1c/design-system.md](vis1c/design-system.md): header with a one-line summary, a boundary
+strip that keeps "read-only, does not authorize execution" and `executionAuthorization: false` visible on every
+screen, a toolbar with the view switch and filters, one main view, a sticky detail panel (bottom sheet on narrow
+screens), a playback bar and tabs (events, summary, legend, help and about). Titles, sections and buttons use the
+single vocabulary of the copy guide, with all user-facing text in one string module with a Spanish and an English
+table and a key-parity test (language and the placement of the long governance text are owner decisions OD-V1
+and OD-V2). The essential task fits one screen at 1440 x 900 without scrolling. The no-claim statements of
+REQ-010 are shown once in the strip and in full in help; no wording states a guarantee, ordering or speedup.
+
+**SC-020:** Given the page at 1440 x 900, then the timeline, the detail panel, the playback bar and the boundary
+strip are visible without scrolling; every user-facing string comes from the string module; the Spanish and
+English tables have identical keys; the boundary strip is present in every view.
+
+Verification: T058, T065.
+
+### REQ-021 — Accessibility and motion of the redesigned viewer (VIS.1c)
+
+Every function has a keyboard path and a non-gesture alternative; timeline agents are one roving-tabindex listbox
+and the table remains the complete text alternative with shared selection; focus is visible and never covered by
+sticky regions; text meets 4.5:1 and graphics 3:1 in both themes; no meaning rests on colour alone; targets and
+reflow meet the design-system baseline (no horizontal page scroll at 320 CSS px and 200 % zoom); reduced motion,
+reduced transparency, increased contrast and forced colors are honoured; animations use transform and opacity,
+stay under 300 ms, are interruptible and are absent for keyboard-repeated actions. Verification evidence states
+that no screen-reader run exists until the T066 VoiceOver pass is recorded.
+
+**SC-021:** Given the audit fixture, when the page is walked by keyboard only, then every agent, conflict,
+filter, view switch, playback control and the help overlay is reachable and operable, the focus order equals the
+visual order, and an automated accessibility scan and a contrast re-measure report no critical finding.
+
+Verification: T065, T066.
+
+### REQ-022 — Contract v0.2 additive fields (VIS.1c)
+
+Subject to gate G3 and privacy review: `axis.nowMs` and `axis.live` in the snapshot, optional `waitingOn` with
+`waitingBasis` (declared or observed) on a waiting `strand.update`, and optional `toolDurationMs` on a
+`strand.update`, per the [draft](vis1c/contract-v0.2-amendment-draft.md). Every field is optional, bounded and
+content-free; no host payload name enters the allowlist before an owner-run probe shows it exists (REQ-014);
+tool duration follows the "Exact durations" retention of the deviation table (memory only, omitted from default
+export, buckets in packs); v0.1 files stay valid; the UI degrades honestly when a field is absent, and labels
+anything inferred.
+
+**SC-022:** Given v0.2 fixtures with and without the fields, then fields are validated and bounded, absent fields
+never produce an invented value, a malformed value is dropped with a `shape-unpinned` gap, default export contains
+no tool duration, and the dropped-attribute inventory is unchanged.
+
+Verification: T052, T053, T060, T061, T062.
+
+### REQ-023 — Observed collision and differential fields (VIS.1c, later phase)
+
+Only after the owner confirms the source (OD-V5) and accepts each field (OD-V3): an observed-collision event
+derived from ownership evidence, never from a prediction, and any accepted differential field (lane parallelism
+and overlap, waiting time, prediction-versus-observation link, effort per lane). Each is descriptive, carries its
+own privacy justification, and is never presented as speedup, efficiency, validation of the analysis, or safety.
+
+**SC-023:** Given an ownership receipt fixture with two agents touching one resource, then an observed collision
+is shown with its own glyph and counter, separate from predicted conflicts; given no such source, no observed
+counter and no zero is rendered; no accepted field produces a ratio against serial execution.
+
+Verification: T063, T064; [vis1c/owner-decisions.md](vis1c/owner-decisions.md#proposed-differential-fields-not-accepted).
 
 ## Scientific boundaries and compatibility
 

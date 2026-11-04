@@ -14,7 +14,9 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
 * network: deny-default; the only egress is TCP to the loopback ``EgressProxy`` port,
   which it holds on ``127.0.0.1`` and ``::1`` and which admits ``CONNECT`` to the listed
   endpoints only when the TLS SNI equals the CONNECT host (NC-1). DNS, UDP, other
-  loopback ports, Unix sockets, ``sysctl`` and every ``mach-lookup`` stay denied.
+  loopback ports, Unix sockets, every ``mach-lookup`` and ``sysctl`` stay denied, except the closed
+  read-only list (``SYSCTL_READ_NAMES``, ``SYSCTL_READ_PREFIXES``, three ``LC_CTYPE`` literals,
+  metadata of ``/etc`` and ``/var``) that the ``launch`` and ``launch-probe`` profiles carry.
 * credential: UID separation (the supervisor must run as the dedicated account, NC-2,
   NC-5), an environment built from scratch, and a refusal when an ``ENV_DENY`` variable
   is present in the parent. Keychain services are not reachable (no ``mach-lookup``);
@@ -50,6 +52,7 @@ from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 import ctypes
 from dataclasses import asdict, dataclass, field, fields
+import errno
 import fcntl
 import hashlib
 from hashlib import sha256
@@ -94,6 +97,15 @@ F4_PROBES = (("FS-01", "denied"), ("NET-01", "denied"), ("CRED-01", "denied"),
 SYSTEM_READ = ("/usr/lib", "/System/Library", "/System/Cryptexes", "/System/Volumes/Preboot/Cryptexes",
                "/private/var/db/dyld", "/Library/Apple")
 DENIED = ("/System/Volumes/Data",)
+# Closed list of read-only system information the Claude (Bun) binary needs to start on macOS 27.2,
+# from the kernel sandbox denials of the T009 self-check (founder decision 2026-11-04, "A. Lista
+# cerrada"). Only the ``launch`` and ``launch-probe`` profiles carry it; ``fixture`` runs without it.
+# Not here, on purpose: kern.bootargs, every mach-lookup, /dev/dtracehelper, /System/Volumes/Data.
+SYSCTL_READ_NAMES = ("hw.pagesize", "hw.pagesize_compat", "hw.ephemeral_storage", "kern.osproductversion",
+                     "kern.osvariant_status", "kern.iossupportversion", "security.mac.lockdown_mode_state")
+SYSCTL_READ_PREFIXES = ("hw.optional.",)  # the CPU feature flags, one per feature
+LOCALE_READ = tuple(f"/usr/share/locale/{name}/LC_CTYPE" for name in ("UTF-8", "C.UTF-8", "en_US.UTF-8"))
+METADATA_ONLY = ("/etc", "/var")  # stat of the two literal paths, not of anything below them
 COMPILE_PROBE = "/usr/bin/false"  # never allow-listed: its exec must be denied
 LAUNCH_PROBE = "launch-probe"  # the launch profile plus the interpreter, for the T007 helper probes
 ENTRIES = ("fixture", "launch", LAUNCH_PROBE)
@@ -287,7 +299,7 @@ class ContainmentPolicy:
         """A command the profile of ``entry`` allows and that must succeed (the compile positive case)."""
         _require(entry in ENTRIES, "invalid-entry")
         if entry == "fixture":
-            return [self.interpreter, "-I", "-S", "-c", "pass"]
+            return [self.interpreter, "-B", "-I", "-S", "-c", "pass"]
         return [self.claude, "--version"]
 
     def render(self, entry: str) -> bytes:
@@ -325,6 +337,13 @@ class ContainmentPolicy:
             '(literal (param "RUNDIR")))',
             '(allow file-read* file-write* (subpath (param "CANDIDATE")) (subpath (param "TMPDIR")))',
         ]
+        if entry != "fixture":
+            lines += [
+                f"(allow sysctl-read {literals('sysctl-name', SYSCTL_READ_NAMES)} "
+                f"{literals('sysctl-name-prefix', SYSCTL_READ_PREFIXES)})",
+                f"(allow file-read-data {literals('literal', LOCALE_READ)})",
+                f"(allow file-read-metadata {literals('literal', METADATA_ONLY)})",
+            ]
         if writes:
             lines.append(f"(allow file-read* file-write* {literals('subpath', writes)})")
         lines += [f"(deny file-read* file-write* {literals('subpath', DENIED)})",
@@ -339,6 +358,7 @@ class ContainmentPolicy:
                "https_proxy": proxy, "http_proxy": proxy, "NO_PROXY": "", "no_proxy": ""}
         if entry == "fixture":
             env["PYTHONHASHSEED"] = "0"
+            env["PYTHONDONTWRITEBYTECODE"] = "1"  # the interpreter must not write .pyc files (no write allowed)
         else:
             env.update(CLAUDE_CONFIG_DIR=self.config_dir, DISABLE_AUTOUPDATER="1",
                        CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="1")
@@ -489,18 +509,40 @@ _BSDINFO_WORDS = 17  # struct proc_bsdinfo is 136 bytes; start sec/usec are word
 _TASKINFO_WORDS = 12  # struct proc_taskinfo is 96 bytes; resident size is word 1
 
 
+_SZOMB = 5  # pbi_status of a process that exited and is not yet reaped
+
+
+def _accounting_error(code: int, flavor: int) -> LabError:
+    """The fixed refusal plus two integers (errno of the failed call, its flavor) for the evidence."""
+    error = LabError("process-accounting-failed")
+    error.errno_code, error.flavor = code, flavor
+    return error
+
+
 def _pidinfo(pid: int, flavor: int, words: int) -> tuple[int, ...] | None:
-    """One ``proc_pidinfo`` call; ``None`` only when the process is gone (fail closed)."""
+    """One ``proc_pidinfo`` call; ``None`` only when the process is gone or exited (fail closed).
+
+    A process that exited and is not yet reaped (``SZOMB``) has no task any more: the task flavors
+    fail for it while ``kill(pid, 0)`` still succeeds, so it counts as gone, not as unreadable.
+    """
     buffer = (ctypes.c_uint64 * words)()
+    ctypes.set_errno(0)
     if _libsystem().proc_pidinfo(pid, flavor, 0, buffer, ctypes.sizeof(buffer)) == ctypes.sizeof(buffer):
         return tuple(buffer)
+    code = ctypes.get_errno()
+    if code == errno.ESRCH:
+        return None
+    if flavor != _PROC_PIDTBSDINFO:
+        status = _pidinfo(pid, _PROC_PIDTBSDINFO, _BSDINFO_WORDS)
+        if status is None or status[0] >> 32 == _SZOMB:
+            return None
     try:
         os.kill(pid, 0)
     except ProcessLookupError:
         return None
     except OSError:
         pass
-    raise LabError("process-accounting-failed")
+    raise _accounting_error(code, flavor)
 
 
 def _user_processes(uid: int) -> set[tuple[int, int]]:
@@ -1100,13 +1142,14 @@ class MacOSContainment(ContainmentBackend):
         except OSError:
             raise LabError("workspace-unsafe") from None
 
-    def _compile_check(self, entry: str) -> None:
+    def _compile_check(self, entry: str, evidence: dict) -> None:
         """The exact profile must compile, deny a non-listed exec and run a listed one.
 
         The positive case (RV-23) tells "denied by the profile" from "exec failed anyway": a
         profile that denied everything would otherwise pass. ``launch`` runs the pinned
         Claude executable with ``--version`` under the profile; ``fixture`` runs the
-        interpreter on an empty program.
+        interpreter on an empty program. The two exit codes (integers) are left in ``evidence`` as
+        ``compileExit`` so a refusal can be told apart without the system log.
         """
         probe_dir = None
         denied = allowed = None
@@ -1122,6 +1165,8 @@ class MacOSContainment(ContainmentBackend):
         finally:
             if probe_dir is not None:
                 _remove_tree(probe_dir)  # a failure shows as a leftover at the next pre-session
+        evidence["compileExit"] = {name: code for name, code in (("denied", denied), ("allowed", allowed))
+                                   if code is not None}
         _require(denied != EXIT_SANDBOX_COMPILE, "profile-compile-failed")
         _require(denied == EXIT_SANDBOX_EXEC_DENIED, "self-check-allowed")
         _require(allowed == 0, "self-check-failed")
@@ -1155,7 +1200,7 @@ class MacOSContainment(ContainmentBackend):
                 raise LabError("proxy-unavailable")
             if not self._proxy.running:
                 self._proxy.start()
-            self._compile_check(entry)
+            self._compile_check(entry, evidence)
             evidence["compileCheck"] = "exec-denied"
             if probes:
                 self._run_probes(evidence)
@@ -1204,7 +1249,7 @@ class MacOSContainment(ContainmentBackend):
             self._refuse(entry, "invalid-fixture")
         with self._exclusive(entry):
             evidence, candidate, uid = self._pre_session(entry, workdir, probes=probes)
-            run = self._spawn(entry, [self.policy.interpreter, "-I", "-S", "-c", text], evidence,
+            run = self._spawn(entry, [self.policy.interpreter, "-B", "-I", "-S", "-c", text], evidence,
                               candidate=candidate, uid=uid, wall=limits.wall_seconds,
                               cpu=min(limits.wall_seconds + 1, LIMITS["cpuSeconds"]),
                               max_output=limits.max_output_bytes, cancel=cancel, stdin=b"")
@@ -1250,6 +1295,8 @@ class MacOSContainment(ContainmentBackend):
                                    on_output=on_output)
         except LabError as exc:
             record["refused"] = exc.reason
+            if type(getattr(exc, "errno_code", None)) is int:  # integers only, for the evidence
+                record["accountingErrno"], record["accountingFlavor"] = exc.errno_code, exc.flavor
             raise
         except Exception:
             record["refused"] = "supervisor-failed"

@@ -1,0 +1,23 @@
+# Design lenses applied to the audit (VIS.1c)
+
+The source audit loaded only `ui-ux-review` and `dataviz`; it applied the other lists
+from memory (see its header). For this plan the following were loaded through the
+Skill tool and applied to the audit findings, the 2D design, the design system and the
+copy guide. Each row says what the lens added; none is a pass/fail certification.
+
+| Lens | Added to the plan | Where |
+|---|---|---|
+| `web-design-guidelines` (Vercel Web Interface Guidelines, fetched 2026-11-04) | icon-only buttons need `aria-label`; native `<button>` for actions, no clickable `div`; visible `:focus-visible` and sticky regions must not cover focus; no `transition: all`; honour reduced motion; `tabular-nums` for number columns; `text-wrap: balance` on titles; `…` and non-breaking units; handle long and empty content with truncation and empty states; URL reflects state (view, selection, viewport in the hash); `touch-action: manipulation`, `overscroll-behavior` in sheets; gestures need click and keyboard alternatives; `color-scheme` and `theme-color`; `Intl` formatting for durations and numbers; `translate="no"` for identifiers; specific button labels, active voice, errors with the fix | [design-system.md](design-system.md) (tokens, components, a11y baseline, copy), REQ-021 |
+| `design:accessibility-review` (WCAG 2.1 AA) | contrast table computed from the actual hex values (text 4.5:1, graphics 3:1); 2.5.5 target size; keyboard map per component; focus order equals DOM order; non-text content (bars, glyphs) with names; 1.4.1 colour not sole carrier (every state has an icon and a word); 3.2.1 no change on focus; 4.1.2 name/role/value for the timeline listbox, toolbar, dialog; 200 % zoom and 320 px reflow; honest limit: no screen-reader run yet | design-system.md "Accessibility baseline", REQ-021, T066 |
+| `emil-design-eng` | animation frequency rule (no animation on keyboard-repeated actions); purpose for each motion; custom ease-out curves and 120 to 220 ms durations; `scale(0.97)` press; nothing from `scale(0)`; origin-aware tooltips; instant neighbouring tooltips; transitions over keyframes for retargeting; transform and opacity only; asymmetric enter and exit | design-system.md "Motion", three-d-fixes.md (camera tween) |
+| `apple-design` | interruptible motion that retargets from the live pose; 1:1 tracking with pointer capture; response on pointer-down; spatial consistency (panel enters and leaves the same way); progressive disclosure and simplicity not minimalism; material only for floating chrome with reduced-transparency and contrast fallbacks; size-specific tracking and leading; wayfinding (where am I, where can I go); direct labels over generic ones | design-system.md principles, tokens, components; three-d-fixes.md |
+| `ui-ux-pro-max` | priority order (accessibility, touch, layout, type and colour, motion, forms and feedback, navigation, charts and data); pre-delivery checklist habits (no emoji icons, consistent icon family, 44 px targets, dark-mode contrast, safe areas); chart rules (legend, tooltip, accessible colours); its pattern of a persisted master design system maps to this folder's design-system.md. Its search database was **not** run: this is a docs-only change in a stack (static first-party JS and CSS) the database does not model, and no generated palette or font pairing is adopted | design-system.md, timeline-2d.md |
+| `design:design-system` | token, component and pattern structure; states and variants per component; naming consistency (extend the existing `--bg/--panel/...` tokens, do not rename); documentation per component with accessibility; document-then-implement order | design-system.md |
+| `design:ux-copy` | one vocabulary table; CTA pattern verb plus object; error, empty and status message structure (what happened, why, what to do); confirmation copy not needed (viewer is read-only, nothing destructive); localization notes (text expansion, no idioms, identifiers untranslated) | design-system.md "Copy guide" |
+| `ui-ux-review` (audit conductor) and `dataviz` (audit) | retained as the audit's own conclusions: P0 to P3 findings, encoding rules, validated host palette, form heuristic for the timeline | [audit/report.es.md](audit/report.es.md), timeline-2d.md |
+
+Where lenses disagreed, the repository's constraints won (CSP, no new vendor code,
+read-only boundary, no-claim wording, REQ-003 absence rule). Examples: a translucent
+glass toolbar is limited to floating chrome with solid fallbacks; modern `backdrop`
+effects never carry text that needs contrast; "Title Case for buttons" (Vercel) is
+applied to the English strings only, while the Spanish strings use sentence case.
