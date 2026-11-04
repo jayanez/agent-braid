@@ -253,6 +253,14 @@ class CatalogShapeTests(unittest.TestCase):
             self.assertNotIn("/Users/", text)
             self.assertNotIn("sk-ant", text)
 
+    def test_the_memory_attempts_exceed_the_limit_by_a_gigabyte_and_hold_it_for_the_watchdog(self):
+        # T009 attempt 3: 256 MiB over the limit, released at once, peaked at 99 % of the limit in the watchdog
+        for name in ("memory", "memory_burst"):
+            body = q.BY_ID["PROC-03"].source_template.split(f"def {name}():")[1].split("\ndef ")[0]
+            self.assertIn('A["limits"]["memoryBytes"] + (1 << 30)', body, name)
+            self.assertIn("time.sleep(2)", body, name)
+            self.assertLess(body.index("time.sleep(2)"), body.index("return True"), name)
+
     def test_catalog_hash_is_stable_and_binds_the_sources(self):
         self.assertEqual(q.CATALOG_SHA256, q.catalog_sha256())
         changed = list(q.CATALOG)
@@ -1601,6 +1609,86 @@ class ReviewRunnerTests(unittest.TestCase):
         proc02 = next(r for r in self.rows(out) if r["probe"] == "PROC-02" and r["mode"] == "contained")
         self.assertEqual(proc02["independent"]["survivors"], 1)
         self.assertEqual(proc02["independent"]["processTable"], "ok")
+
+    def table_diff_world(self, names, *, child_names=frozenset({"python3.12"}), listing=None):
+        """A table that gains pids 9 and 10 during each run; ``names`` is what ``ps -p`` says about them."""
+        world, state = World(self), {"calls": 0}
+
+        def table():
+            state["calls"] += 1
+            return {(1, "t0")} if state["calls"] % 2 else {(1, "t0"), (9, "t1"), (10, "t1")}
+
+        def process_names(pids):
+            if isinstance(names, Exception):
+                raise names
+            return {pid: names[pid] for pid in pids if pid in names}
+
+        out, summary = self.run_all(world, process_table=table, child_names=child_names,
+                                    process_names=listing or process_names)
+        return world, out, summary
+
+    def contained_row(self, out, probe_id):
+        return next(r for r in self.rows(out) if r["probe"] == probe_id and r["mode"] == "contained")
+
+    def test_new_processes_that_no_contained_run_can_start_are_noted_not_counted_as_survivors(self):
+        # T009 attempt 3: two to eight new processes of the dedicated user, with the backend reporting nothing
+        # surviving, turned PROC-08 allowed; launchd agents are not descendants of a profile that execs only
+        # the interpreter, claude and sandbox-exec
+        world, out, summary = self.table_diff_world({9: "mdworker_shared", 10: "cfprefsd"})
+        proc08 = self.contained_row(out, "PROC-08")
+        self.assertEqual(proc08["independent"]["survivors"], 0)
+        self.assertEqual(proc08["independent"]["strayProcesses"], {"count": 2, "names": ["cfprefsd", "mdworker_shared"]})
+        self.assertEqual(proc08["independent"]["cancel"]["survivors"], 0)
+        self.assertEqual(proc08["independent"]["cancel"]["strayProcesses"]["count"], 2)
+        self.assertEqual(summary["probes"]["PROC-08"]["status"], "denied")
+        self.assertEqual(world.killed.count(9), 0)
+
+    def test_a_new_process_with_an_allowed_executable_name_is_still_a_survivor(self):
+        _, out, summary = self.table_diff_world({9: "mdworker_shared", 10: "python3.12"})
+        proc08 = self.contained_row(out, "PROC-08")
+        self.assertEqual(proc08["independent"]["survivors"], 1)
+        self.assertEqual(proc08["independent"]["strayProcesses"]["count"], 1)
+        self.assertEqual(summary["probes"]["PROC-08"]["status"], "allowed")
+        self.assertEqual(summary["probes"]["PROC-04"]["status"], "allowed")
+
+    def test_a_failing_ps_counts_every_new_process_and_without_names_nothing_is_filtered(self):
+        _, out, summary = self.table_diff_world(OSError("ps"))
+        self.assertEqual(self.contained_row(out, "PROC-08")["independent"]["survivors"], 2)
+        self.assertNotIn("strayProcesses", self.contained_row(out, "PROC-08")["independent"])
+        _, out, _ = self.table_diff_world({9: "mdworker_shared"}, child_names=None)
+        self.assertEqual(self.contained_row(out, "PROC-08")["independent"]["survivors"], 2)
+
+    def test_a_process_that_ps_no_longer_lists_is_gone_and_survives_nothing(self):
+        _, out, _ = self.table_diff_world({})
+        self.assertEqual(self.contained_row(out, "PROC-08")["independent"]["survivors"], 0)
+
+    def test_live_process_names_skips_zombies_and_takes_the_executable_basename(self):
+        listing = "  9 Ss   /usr/libexec/cfprefsd\n 10 Z    (python3.12)\n 11 R+ /opt/py/bin/python3.12\n bad\n"
+        with mock.patch.object(q.subprocess, "run", return_value=SimpleNamespace(stdout=listing)) as run:
+            self.assertEqual(q.live_process_names([9, 10, 11]), {9: "cfprefsd", 11: "python3.12"})
+        self.assertEqual(run.call_args.args[0], ["/bin/ps", "-o", "pid=,stat=,comm=", "-p", "9,10,11"])
+        self.assertEqual(q.live_process_names([]), {})
+
+    def test_descendant_names_come_from_the_exec_allow_list_and_this_interpreter(self):
+        policy = SimpleNamespace(claude="/x/bin/claude-2.1.292", interpreter="/x/py/bin/python3.12",
+                                 helpers=(("/x/bin/helper", "h"),))
+        names = q.descendant_names(policy)
+        self.assertTrue({"claude-2.1.292", "python3.12", "helper", "sandbox-exec", "Python"} <= names)
+        self.assertNotIn("mdworker_shared", names)
+
+    def test_a_member_the_sweep_killed_while_it_was_exiting_does_not_unsettle_a_limit_kill(self):
+        # T009 attempt 3, launch-probe PROC-03: the watchdog fired, the group was swept, one dying member was
+        # seen on the way out (escaped 1, surviving 0), and the row read unsettled, hence allowed
+        world = World(self)
+        world.unsettled.add("PROC-03")
+        world.accounting[("contained", "PROC-03")] = (1, 0)
+        world.accounting[("contained-launch", "PROC-03")] = (1, 0)
+        _, summary = self.run_all(world)
+        self.assertEqual(summary["probes"]["PROC-03"]["status"], "denied")
+        still = World(self)
+        still.unsettled.add("PROC-03")
+        still.accounting[("contained", "PROC-03")] = (1, 1)  # something outlived the sweep
+        self.assertEqual(self.run_all(still)[1]["probes"]["PROC-03"]["status"], "allowed")
 
     def test_survival_needs_the_helper_to_have_actually_tried(self):
         world = World(self)

@@ -929,10 +929,11 @@ class FakeBackend:
     """The two methods ``launch`` calls before it spawns, the evidence list and the one ``auth`` launch."""
 
     def __init__(self, *, check=None, raises=None, leftovers=(), auth=(0, "present"), auth_raises=None,
-                 auth_stdout=b""):
+                 auth_stdout=b"", startup=None, startup_raises=None):
         self.calls, self.run_evidence, self.closed = [], [], False
         self._check, self._raises, self._leftovers = check, raises, list(leftovers)
         self._auth, self._auth_raises, self._auth_stdout = auth, auth_raises, auth_stdout
+        self._startup, self._startup_raises = startup or {}, startup_raises
         self.policy = SimpleNamespace(claude=CLAUDE)
 
     @contextlib.contextmanager
@@ -951,7 +952,18 @@ class FakeBackend:
             raise self._raises
         return {"entry": entry, "compileCheck": "exec-denied", "preSessionCheck": self._check}, str(workdir), 502
 
+    def _startup_launch(self, argv, stdin, k):
+        self.calls.append(("startup", argv, stdin, k["wall_seconds"], k["capture_stderr"], k["no_egress"]))
+        if self._startup_raises is not None:
+            raise self._startup_raises
+        v = {"exit_code": 1, "stdout": b"", "stderr_tail": b"", "egress": {"connections": 0}} | self._startup
+        self.run_evidence.append({"entry": "launch", "authToken": "present", "exitCode": v["exit_code"]})
+        return SimpleNamespace(exit_code=v["exit_code"], timed_out=False, cancelled=False, settled=True,
+                               stdout=v["stdout"], stderr_tail=v["stderr_tail"], egress=v["egress"])
+
     def launch(self, argv, stdin, **k):
+        if argv[1:2] != ("auth",):
+            return self._startup_launch(argv, stdin, k)
         self.calls.append(("launch", argv, stdin, str(k["cwd"]), k["wall_seconds"], k["max_output_bytes"]))
         if self._auth_raises is not None:
             raise self._auth_raises
@@ -1008,14 +1020,22 @@ class SelfCheckTests(unittest.TestCase):
         self.assertEqual(report, {
             "verdict": "self-check-ok", "attempt": "t009-test", "preSessionCheck": F4_OK, "compileCheck": "exec-denied",
             "auth": {"stage": "auth", "noModel": True, "authToken": "present", "reason": "ok", "exitCode": 0},
+            "startup": {"stage": "startup", "noModel": True, "reachedInit": False, "exitCode": 1,
+                        "reason": "exit-before-init", "timedOut": False, "authToken": "present",
+                        "egress": {"connections": 0, "denied": 0, "allowed": 0, "bytesUp": 0, "bytesDown": 0,
+                                   "upstreamFailed": 0},
+                        "egressLeak": False, "stderrTail": []},
             "refusal": None, "stage": None, "backendRefusals": [], "probeRuns": [], "nativeRun": True, "sessionsStarted": 0,
             "usageReadings": 0, "executionAuthorization": False})
-        self.assertEqual(backend.calls, [("exclusive", "launch"), ("pre_session", "launch", f"{HOME}/run/work-x", True),
-                                         ("launch", (CLAUDE, "auth", "status"), b"", f"{HOME}/run/work-x",
-                                          har.AUTH_WALL_SECONDS, har.AUTH_MAX_OUTPUT_BYTES)])
+        (*head, startup_call) = backend.calls
+        self.assertEqual(head, [("exclusive", "launch"), ("pre_session", "launch", f"{HOME}/run/work-x", True),
+                                ("launch", (CLAUDE, "auth", "status"), b"", f"{HOME}/run/work-x",
+                                 har.AUTH_WALL_SECONDS, har.AUTH_MAX_OUTPUT_BYTES)])
+        self.assertEqual(startup_call[0], "startup")
+        self.assertEqual(startup_call[2:], (q.PROBE_PROMPT, har.STARTUP_WALL_SECONDS, True, True))
         self.assertTrue(backend.closed)
-        built["removed"].assert_called_with(f"{HOME}/run/work-x")  # one workdir for the check, one for auth
-        self.assertEqual(built["removed"].call_count, 2)
+        built["removed"].assert_called_with(f"{HOME}/run/work-x")  # one workdir each for the check, auth and startup
+        self.assertEqual(built["removed"].call_count, 3)
 
     def test_the_auth_stage_reports_a_closed_reason_from_the_exit_code_and_the_token_mark(self):
         cases = ((dict(auth=(1, "absent")), "auth-missing", 1), (dict(auth=(1, "present")), "auth-rejected", 1),
@@ -1052,6 +1072,81 @@ class SelfCheckTests(unittest.TestCase):
         report = self.run_check(backend, f4=lambda probe, be: "error")[1]
         self.assertEqual(report["auth"], {"stage": "auth", "reason": "not-run"})
         self.assertFalse([c for c in backend.calls if c[0] == "launch"])
+
+    INIT = b'{"type":"system","subtype":"init","apiKeySource":"none"}\n'
+
+    def test_the_startup_stage_runs_the_session_launch_of_the_probe_runner_with_no_egress(self):
+        backend = FakeBackend(check=F4_OK, startup={"exit_code": 0, "stdout": self.INIT})
+        report = self.run_check(backend)[1]
+        call = [c for c in backend.calls if c[0] == "startup"][0]
+        argv = call[1]
+        plan = hc.build_plan(hc.ClaudeRequest(session_id="00000000-0000-4000-8000-000000000000", model="haiku",
+                                              max_turns=1), q.PROBE_PROMPT)
+
+        def without_session(args, skip):
+            return [a for a in args if a != args[args.index("--session-id") + 1]] if skip else list(args)
+
+        self.assertEqual(argv[0], CLAUDE)
+        self.assertEqual(without_session(argv[1:], True), without_session(plan.argv[1:], True))
+        self.assertEqual(call[2:], (q.PROBE_PROMPT, har.STARTUP_WALL_SECONDS, True, True))  # stderr kept, no egress
+        self.assertTrue(report["startup"]["reachedInit"])
+        self.assertEqual((report["startup"]["exitCode"], report["startup"]["reason"]), (0, "ok"))
+        self.assertEqual(report["verdict"], "self-check-ok")
+
+    def test_the_startup_stage_is_diagnostic_and_never_fails_the_self_check_by_itself(self):
+        for startup in ({"exit_code": 1}, {"exit_code": 0}, {"exit_code": 1, "stdout": self.INIT}):
+            with self.subTest(startup):
+                code, report, _ = self.run_check(FakeBackend(check=F4_OK, startup=startup))
+                self.assertEqual((code, report["verdict"]), (0, "self-check-ok"))
+                self.assertIn(report["startup"]["reason"], q.EXIT_REASONS)
+
+    def test_a_tunnel_that_opened_in_the_startup_stage_ends_the_self_check(self):
+        for leak in ({"allowed": 1}, {"bytesUp": 5}, {"upstreamFailed": 1}):
+            with self.subTest(leak):
+                code, report, _ = self.run_check(FakeBackend(check=F4_OK, startup={"egress": leak}))
+                self.assertEqual((code, report["verdict"]), (2, "self-check-egress-leak"))
+                self.assertTrue(report["startup"]["egressLeak"])
+        report = self.run_check(FakeBackend(check=F4_OK, startup={"egress": {"connections": 2, "denied": 2}}))[1]
+        self.assertFalse(report["startup"]["egressLeak"])
+        self.assertEqual(report["startup"]["egress"]["denied"], 2)
+
+    def test_a_refused_startup_launch_is_a_fixed_reason(self):
+        for raised, refusal in ((lab.LabError("auth-token-invalid"), "auth-token-invalid"),
+                                (RuntimeError(SECRET), "backend-failed")):
+            with self.subTest(refusal):
+                report = self.run_check(FakeBackend(check=F4_OK, startup_raises=raised))[1]
+                self.assertEqual(report["startup"], {"stage": "startup", "noModel": True, "reason": "refused",
+                                                     "refusal": refusal, "reachedInit": False})
+                self.assertNotIn(SECRET, json.dumps(report))
+
+    def test_the_startup_stage_does_not_run_after_a_refused_pre_session_check(self):
+        backend = FakeBackend(raises=lab.LabError("self-check-failed"))
+        report = self.run_check(backend, f4=lambda probe, be: "error")[1]
+        self.assertEqual(report["startup"], {"stage": "startup", "reason": "not-run"})
+        self.assertFalse([c for c in backend.calls if c[0] == "startup"])
+
+    def test_the_stderr_tail_is_redacted_line_by_line_and_the_founder_account_replaced(self):
+        tail = "\n".join([
+            "starting",
+            f"token {SECRET} was rejected",
+            f"cannot read {FOUNDER_HOME}/Library/x for juanyanez",
+            "key sk-ant-api03-abcdefghijkl",
+            f"read {HOME}/claude/.claude.json failed: EPERM",
+            "x" * 50 + "A1" * 30,
+            "\x1b[31mred\x1b[0m"]).encode()
+        backend = FakeBackend(check=F4_OK, startup={"stderr_tail": tail})
+        report = har.startup_stage(backend, lambda: Path(f"{HOME}/run/work-x"), [SECRET], "juanyanez")
+        self.assertEqual(report["stderrTail"], [
+            "starting", "<redacted:listed-literal>", "cannot read <operator-home>/Library/x for <operator>",
+            "<redacted:anthropic-api-key>", f"read {HOME}/claude/.claude.json failed: EPERM",
+            "<redacted:long-run>", "?[31mred?[0m"])
+        self.assertNotIn(SECRET, json.dumps(report))
+
+    def test_redaction_keeps_the_last_twenty_lines_and_drops_a_tail_cut_mid_line(self):
+        lines = [f"line {n}" for n in range(30)]
+        self.assertEqual(q.redact_stderr_tail("\n".join(lines).encode(), [], operator_account="op"), lines[-20:])
+        cut = ("half-a-token\n" + "\n".join(lines)).encode().rjust(mac.STDERR_TAIL_BYTES, b" ")
+        self.assertNotIn("half-a-token", " ".join(q.redact_stderr_tail(cut, [], operator_account="op")))
 
     def test_auth_reason_is_a_pure_function_of_exit_code_and_token_mark(self):
         self.assertEqual([har.auth_reason(*args) for args in ((0, None), (1, "absent"), (2, "present"), (1, None))],

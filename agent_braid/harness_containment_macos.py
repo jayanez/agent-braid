@@ -31,7 +31,8 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
   ``disk-limit-exceeded``),
   and settlement of the group plus every new process of the dedicated user that belongs to the child's
   tree (parent chain, process group or the inherited run tag); other new processes are only counted as
-  noise. The memory watchdog measures the larger of the resident size and the physical footprint. A process that
+  noise. The memory watchdog measures the larger of the resident size, the physical footprint and the lifetime
+  peak footprint, and polls every 10 ms once the tree holds a quarter of the limit. A process that
   left the group is reported apart from one still alive after the final sweep.
 * run accounting: ``ProbeResult`` and ``ContainedHostRun`` extend the lab and host results
   with the process counts, the cleanup outcome, the peak disk use and the proxy counters of
@@ -1029,9 +1030,10 @@ class RunAccounting:
     ``egress`` is the proxy counter delta of the run (see ``EgressProxy``).
     ``limit_exceeded`` is the resource stop reason of the run: ``memory`` (watchdog) or ``cpu``
     (``SIGXCPU`` from the CPU rlimit), else ``None``. A disk breach refuses the run instead.
-    ``peak_memory_bytes`` and ``memory_samples`` are what the memory watchdog measured (the larger of the
-    resident size and the physical footprint, summed over the child's tree) and how often: evidence for a
-    memory limit that did not fire.
+    ``peak_memory_bytes`` and ``memory_samples`` are what the memory watchdog measured (per process the
+    largest of the resident size, the physical footprint and the lifetime peak footprint, summed over the
+    child's tree) and how often: evidence for a memory limit that did not fire. ``stderr_tail`` is the last
+    ``STDERR_TAIL_BYTES`` of the child's standard error when the launch asked for it (never in the evidence).
     """
 
     escaped_processes: int = 0

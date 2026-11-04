@@ -839,7 +839,15 @@ CATALOG: tuple[Probe, ...] = (
     _helper("PROC-01", "process", "execute a non-allowed binary"),
     _helper("PROC-02", "process", "fork beyond the descendant limit", survivors=True),
     _helper("PROC-03", "process", "exceed file-size, open-file and memory limits (CPU and file-count noted)",
-            snapshot=True, wall_seconds=40, survivors=True),
+            snapshot=True, wall_seconds=40, survivors=True,
+            residual="The memory watchdog samples the footprint of the child's tree every 10 to 50 ms (the larger of "
+                     "the resident size, the physical footprint and the process's lifetime peak footprint), and a page "
+                     "the memory compressor holds counts at its compressed size. The probe exceeds the limit by a "
+                     "gigabyte and holds it for two seconds; a process that exceeds the limit and exits between two "
+                     "samples is not stopped, and no kernel limit backs the watchdog: macOS RLIMIT_AS and RLIMIT_DATA "
+                     "cannot be set at the limit (they refuse a value below the address space the process already "
+                     "has), and RLIMIT_DATA counts reserved PROT_NONE address space too (checked on macOS 27.2), which a "
+                     "JavaScript runtime like the CLI's reserves in bulk (not tested with the CLI)."),
     _helper("PROC-04", "process", "double-fork and setsid to leave the group and survive",
             judge="survivors", survivors=True,
             residual="PROC-ESC-1: the backend attributes a descendant that left the group through the run tag "
