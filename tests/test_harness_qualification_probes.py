@@ -1796,6 +1796,257 @@ class SessionStopRuleTests(unittest.TestCase):
         self.assertIsNone(q.native_session_driver(lambda: FakeNativeTransport(evidence=False))("HOST-01").quota)
 
 
+class QualRound3Tests(unittest.TestCase):
+    """Round 3 (2026-11-04): not-applicable rules, the repaired controls, the token in the scan list,
+    session exit reasons and the PROC-03/04 evidence. No judge is weakened."""
+
+    def rows(self, pid, control, contained, errors):
+        probe = q.BY_ID[pid]
+        base = {"settled": True, "escalated": False, "probe": pid}
+        c = dict(base, mode="uncontained-control", attempts=dict(control), errors=dict(errors))
+        k = dict(base, mode="contained", attempts=dict(contained))
+        return c, k, dict(k, mode="contained-launch")
+
+    def judge(self, pid, control, contained, errors):
+        return q.judge_probe(q.BY_ID[pid], *self.rows(pid, control, contained, errors))
+
+    def all_with(self, pid, value, **over):
+        return {n: value for n in q.BY_ID[pid].counted} | over
+
+    # not-applicable rules ----------------------------------------------------------------------------
+
+    def test_an_ipv6_attempt_without_a_route_is_not_applicable_and_the_ipv4_attempt_still_decides(self):
+        for code in ("EHOSTUNREACH", "ENETUNREACH", "EADDRNOTAVAIL"):
+            with self.subTest(code):
+                verdict = self.judge("NET-02", {"tcp-ipv4-literal": "allowed", "tcp-ipv6-literal": "inconclusive"},
+                                     self.all_with("NET-02", "denied"), {"tcp-ipv6-literal": code})
+                self.assertEqual((verdict["status"], verdict["pass"], verdict["notApplicable"]),
+                                 ("denied", True, ["tcp-ipv6-literal"]))
+
+    def test_a_contained_escape_at_a_not_applicable_attempt_is_still_an_escape(self):
+        verdict = self.judge("NET-02", {"tcp-ipv4-literal": "allowed", "tcp-ipv6-literal": "inconclusive"},
+                             {"tcp-ipv4-literal": "denied", "tcp-ipv6-literal": "allowed"},
+                             {"tcp-ipv6-literal": "EHOSTUNREACH"})
+        self.assertEqual((verdict["status"], verdict["pass"], verdict["reason"]),
+                         ("allowed", False, "escape-allowed"))
+        self.assertEqual(q.summarize(passing_rows(override={"NET-02": self.rows(
+            "NET-02", {"tcp-ipv4-literal": "allowed", "tcp-ipv6-literal": "inconclusive"},
+            {"tcp-ipv4-literal": "denied", "tcp-ipv6-literal": "allowed"},
+            {"tcp-ipv6-literal": "EHOSTUNREACH"})}))["effects"]["network"]["status"], "not-enforced")
+
+    def test_only_the_listed_attempts_and_codes_are_excluded(self):
+        # an unlisted code for a listed attempt, a listed code for an unlisted attempt, a missing errors map
+        cases = (("NET-02", {"tcp-ipv4-literal": "allowed", "tcp-ipv6-literal": "inconclusive"},
+                  {"tcp-ipv6-literal": "OTHER"}),
+                 ("NET-02", {"tcp-ipv4-literal": "inconclusive", "tcp-ipv6-literal": "allowed"},
+                  {"tcp-ipv4-literal": "EHOSTUNREACH"}),
+                 ("NET-02", {"tcp-ipv4-literal": "allowed", "tcp-ipv6-literal": "inconclusive"}, {}),
+                 ("FS-01", {"outside-dir": "inconclusive"}, {"outside-dir": "ABSENT"}),
+                 ("CRED-02", {"keychain-file": "inconclusive"}, {"keychain-file": "ABSENT"}),
+                 ("PROC-07", {"signal-sibling": "denied"}, {"signal-sibling": "EPERM"}))
+        for pid, control, errors in cases:
+            with self.subTest(pid=pid, errors=errors):
+                full = {n: "allowed" for n in q.BY_ID[pid].counted} | control
+                verdict = self.judge(pid, full, self.all_with(pid, "denied"), errors)
+                self.assertEqual((verdict["pass"], verdict["reason"], verdict["notApplicable"]),
+                                 (False, "positive-control-failed", []))
+
+    def test_an_attempt_that_succeeded_uncontained_is_never_excluded(self):
+        verdict = self.judge("NET-02", self.all_with("NET-02", "allowed"), self.all_with("NET-02", "denied"),
+                             {"tcp-ipv6-literal": "EHOSTUNREACH"})
+        self.assertEqual((verdict["pass"], verdict["notApplicable"]), (True, []))
+
+    def test_each_listed_rule_excludes_exactly_its_attempt(self):
+        expected = {("CRED-02", "mach-secd", "ABSENT"), ("FS-07", "mach-spotlight", "ABSENT"),
+                    ("PROC-07", "ptrace-sibling", "EPERM"), ("NET-02", "tcp-ipv6-literal", "EHOSTUNREACH")}
+        self.assertEqual({(pid, name, codes[0]) for (pid, name), codes in q.NOT_APPLICABLE.items()}, expected)
+        for pid, name, code in sorted(expected):
+            with self.subTest(pid=pid, attempt=name):
+                control = self.all_with(pid, "allowed", **{name: "denied" if code == "EPERM" else "inconclusive"})
+                verdict = self.judge(pid, control, self.all_with(pid, "denied"), {name: code})
+                self.assertEqual((verdict["pass"], verdict["notApplicable"]), (True, [name]))
+
+    def test_at_least_one_counted_attempt_always_stays_required(self):
+        probe = q.BY_ID["NET-01"]
+        rules = {("NET-01", name): ("EHOSTUNREACH",) for name in probe.counted}
+        control = {"attempts": {n: "inconclusive" for n in probe.counted},
+                   "errors": {n: "EHOSTUNREACH" for n in probe.counted}}
+        with mock.patch.object(q, "NOT_APPLICABLE", rules):
+            self.assertEqual(q.not_applicable(probe, control), frozenset())
+        self.assertEqual(q.not_applicable(q.BY_ID["NET-06"], control), frozenset())  # functional: never
+        self.assertEqual(q.not_applicable(probe, None), frozenset())
+
+    def test_the_summary_still_requires_every_mandatory_attempt_and_names_the_exclusions(self):
+        rows = self.rows("NET-02", {"tcp-ipv4-literal": "allowed", "tcp-ipv6-literal": "inconclusive"},
+                         self.all_with("NET-02", "denied"), {"tcp-ipv6-literal": "EHOSTUNREACH"})
+        summary = q.summarize(passing_rows(override={"NET-02": rows}))
+        self.assertTrue(summary["passRuleSatisfied"])
+        self.assertEqual(summary["effects"]["network"]["notApplicable"], {"NET-02": ["tcp-ipv6-literal"]})
+        self.assertEqual(summary["probes"]["NET-02"]["notApplicable"], ["tcp-ipv6-literal"])
+        # the mandatory IPv4 attempt inconclusive in the contained run still blocks the effect
+        weak = self.rows("NET-02", {"tcp-ipv4-literal": "allowed", "tcp-ipv6-literal": "inconclusive"},
+                         {"tcp-ipv4-literal": "inconclusive", "tcp-ipv6-literal": "denied"},
+                         {"tcp-ipv6-literal": "EHOSTUNREACH"})
+        blocked = q.summarize(passing_rows(override={"NET-02": weak}))
+        self.assertFalse(blocked["passRuleSatisfied"])
+        self.assertEqual(blocked["effects"]["network"]["status"], "inconclusive")
+        # and verification re-derives the same exclusions from the rows
+        world = World(self)
+        self.assertEqual(q.summarize(passing_rows(override={"NET-02": rows}))["probes"]["NET-02"]["status"],
+                         "denied")
+        del world
+
+    # prelude ------------------------------------------------------------------------------------------
+
+    def test_an_unregistered_mach_service_reads_as_absent_in_the_helper(self):
+        ns = {"A": {}}
+        exec(q.PRELUDE, ns)
+
+        def absent():
+            raise ns["Absent"]()
+
+        self.assertEqual(ns["_classify"](absent, ns["DENY"], False), ("inconclusive", "ABSENT"))
+        for pid, name in (("CRED-02", "mach-secd"), ("FS-07", "mach-spotlight")):
+            self.assertRegex(q.BY_ID[pid].body, rf'attempt\("{name}", lambda: mach\("[\w.]+", True\)\)')
+
+    # repaired probes ------------------------------------------------------------------------------------
+
+    def helper(self, name, limits):
+        body = q.BY_ID["PROC-03"].body
+        start = body.index(f"def {name}():")
+        end = body.index("\ndef ", start + 1) if "\ndef " in body[start + 1:] else body.index("\ncpu", start)
+        code = "import json\nA = {'limits': %r}\n" % limits + q.PRELUDE + body[start:end] + "\n"
+        return code
+
+    def run_python(self, code, prelude=""):
+        return subprocess.run([sys.executable, "-I", "-S", "-c", prelude + code], capture_output=True,
+                              text=True, timeout=60)
+
+    def test_the_open_files_control_has_headroom_and_the_contained_limit_still_stops_it(self):
+        code = self.helper("open_files", {"openFiles": 32})
+        free = self.run_python(code + "print(open_files())\n")
+        self.assertEqual((free.returncode, free.stdout.strip()), (0, "True"), free.stderr)  # the control opens all
+        capped = self.run_python("import resource\nresource.setrlimit(resource.RLIMIT_NOFILE, (32, 32))\n"
+                                 + code + "open_files()\n")
+        self.assertNotEqual(capped.returncode, 0)
+        self.assertIn("OSError", capped.stderr)  # EMFILE under the enforced hard limit
+
+    def test_the_memory_attempt_touches_every_page(self):
+        body = q.BY_ID["PROC-03"].body
+        self.assertIn("mmap.PAGESIZE", body[body.index("def memory():"):body.index("def memory_burst")])
+        code = self.helper("memory", {"memoryBytes": 0})  # 256 MiB mapping
+        script = ("import resource, sys\n" + code + "memory()\n"
+                  "peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss\n"
+                  "print(peak if sys.platform == 'darwin' else peak * 1024)\n")
+        result = self.run_python(script)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertGreater(int(result.stdout), 200 << 20)  # a 1 byte per MiB loop would stay near 30 MiB
+
+    def test_the_var_alias_names_a_runner_owned_file_under_private_var_on_every_layout(self):
+        tmp = Path(tempfile.mkdtemp(prefix="bt-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        arena = q.Arena(tmp, public=q.DEFAULT_PUBLIC, proxy="127.0.0.1:9", proxy_enforcing=True,
+                        spawn_sibling=False)
+        self.addCleanup(arena.close)
+        alias = arena.document["var_alias"]
+        self.assertTrue(alias.startswith("/var/tmp/braid-probe-var-"), alias)
+        self.assertIn("/private" + alias, arena.extra_outside)  # watched as changed and removed on close
+        self.assertEqual(arena.document["nonce"], alias.rsplit("-", 1)[1])
+        self.assertIn('writes(A["var_alias"]) if A["var_alias"] else None', q.BY_ID["FS-03"].body)
+
+    # PROC-03 / PROC-04 ----------------------------------------------------------------------------------
+
+    def test_the_proc_03_row_reports_what_the_memory_watchdog_measured(self):
+        world = World(self)
+        base = world.run("contained")
+
+        def contained(source, workdir, wall, arena, *, cancel=None):
+            return replace(base(source, workdir, wall, arena, cancel=cancel), peak_memory_bytes=7, memory_samples=3)
+
+        contained.accepts_cancel = True
+        result = world.runner(contained=contained).run_mode(q.BY_ID["PROC-03"], "contained")
+        self.assertEqual(result["independent"]["memoryWatchdog"], {"peakBytes": 7, "samples": 3})
+        control = world.runner().run_mode(q.BY_ID["PROC-03"], "uncontained-control")
+        self.assertNotIn("memoryWatchdog", control["independent"])
+
+    def test_the_contained_executor_passes_the_watchdog_measurements_through(self):
+        backend = SimpleNamespace(run_probe=lambda *a, **k: mac.ProbeResult(
+            b"", 0, False, False, True, peak_memory_bytes=11, memory_samples=2))
+        result = q.ContainedExecutor(backend, lambda: Path(tempfile.gettempdir()))(
+            b"x", Path("."), 5, SimpleNamespace())
+        self.assertEqual((result.peak_memory_bytes, result.memory_samples), (11, 2))
+
+    def test_the_catalog_in_the_bundle_states_the_proc_esc_1_residual(self):
+        entries = {e["id"]: e for e in q.catalog_document()["probes"]}
+        self.assertIn("PROC-ESC-1", entries["PROC-04"]["residual"])
+        self.assertIn("scrubs its environment", entries["PROC-04"]["residual"])
+        self.assertEqual(entries["FS-01"]["residual"], "")
+
+    # token in the scan list ------------------------------------------------------------------------------
+
+    def test_the_token_file_is_a_secret_literal_that_can_never_reach_a_bundle(self):
+        world = World(self)
+        config = world.tmp / "config"
+        config.mkdir()
+        token = "sk-ant-oat01-" + "Ab1Cd2Ef3Gh4" * 5
+        (config / mac.TOKEN_FILE).write_text(token + "\n")
+        os.chmod(config / mac.TOKEN_FILE, 0o640)  # the scan reads it whatever its mode
+        self.assertEqual(q.credential_values(config), [token])
+        inventory = q.credential_inventory(config)
+        self.assertEqual(inventory[0][1], {"file": mac.TOKEN_FILE, "path": "$"})
+        with self.assertRaises(q.ProbeError) as raised:
+            world.runner(read_credentials=lambda: q.credential_values(config)).run(
+                world.tmp / "b", environment=environment(backend=token))
+        self.assertEqual(raised.exception.reason, "secret-in-artifact")
+        self.assertNotIn(token, str(raised.exception))
+        self.assertNotIn(token, json.dumps(raised.exception.detail))
+
+    # sessions --------------------------------------------------------------------------------------------
+
+    def test_session_exit_reasons_come_from_the_exit_code_the_init_event_and_the_token_mark(self):
+        init = OAUTH_STREAM
+        cases = (
+            (q.SessionResult(init, 0), "ok"),
+            (q.SessionResult(b"", 0), "no-init"),
+            (q.SessionResult(init, 1), "cli-exit-nonzero"),
+            (q.SessionResult(b"", 1, auth_token="absent"), "auth-missing"),
+            (q.SessionResult(b"", 1, auth_token="present"), "exit-before-init"),
+            (q.SessionResult(b"", 1), "exit-before-init"),
+            (q.SessionResult(b"", None, timed_out=True), "timed-out"),
+            (q.SessionResult(b"", None, cancelled=True), "cancelled"),
+            (q.SessionResult(refused="quota-stop"), "refused"),
+        )
+        for session, reason in cases:
+            with self.subTest(reason=reason):
+                self.assertEqual(q.session_exit_reason(session), reason)
+                self.assertIn(reason, q.EXIT_REASONS)
+        # never from text: the same exit with any output text gives the same reason
+        self.assertEqual(q.session_exit_reason(q.SessionResult(b"Not logged in. Please run /login", 1,
+                                                               auth_token="present")), "exit-before-init")
+
+    def test_session_rows_carry_the_exit_reason_and_the_token_mark(self):
+        world = World(self)
+        runner = world.runner(sessions=lambda pid: q.SessionResult(
+            b"", 1, auth_token="absent", quota={"pre": reading(60, 10), "post": reading(10, 10)}))
+        result = runner.run_mode(q.BY_ID["CRED-05"], "contained")
+        self.assertEqual((result["exitReason"], result["authToken"], result["exitCode"]), ("auth-missing", "absent", 1))
+        ok = world.runner().run_mode(q.BY_ID["HOST-01"], "contained")
+        self.assertEqual((ok["exitReason"], ok["authToken"]), ("ok", None))
+
+    def test_the_driver_reads_the_token_mark_from_the_backends_launch_record(self):
+        class Backend:
+            run_evidence = [{"entry": "launch", "authToken": "present"}, {"entry": "fixture"},
+                            {"entry": "launch", "authToken": "absent"}]
+
+        for error, expect in ((None, "absent"), ("quota-stop", "absent")):
+            transport = FakeNativeTransport(error=error)
+            transport.backend = Backend()
+            result = q.native_session_driver(lambda t=transport: t)("HOST-01")
+            self.assertEqual(result.auth_token, expect)
+        bare = q.native_session_driver(FakeNativeTransport)("HOST-01")
+        self.assertIsNone(bare.auth_token)  # a transport without a backend record says nothing
+
+
 class BundleHardeningTests(unittest.TestCase):
     """RV-24: allow-listed environment document, token-shaped strings and credential values."""
 

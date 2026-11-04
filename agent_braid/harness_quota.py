@@ -47,7 +47,12 @@ import re
 from types import MappingProxyType
 from typing import Any
 
-SOURCE = "claude-desktop-usage-card"
+# Where a reading came from. Since NC-6 was amended (2026-11-03) the operator reads claude.ai Usage or the
+# phone and types the numbers, so new readings say so. The original label named the Desktop card read by the
+# orchestrator; readings (and bundles) that carry it stay valid input and are reproduced with their label.
+SOURCE = "operator-typed-usage"
+LEGACY_SOURCE = "claude-desktop-usage-card"
+ACCEPTED_SOURCES = (SOURCE, LEGACY_SOURCE)
 FRESHNESS = timedelta(minutes=5)
 SESSION_WALL = timedelta(minutes=30)
 MAX_READING_SPAN = SESSION_WALL + 2 * FRESHNESS
@@ -75,13 +80,14 @@ class QuotaDecision:
 
 @dataclass(frozen=True)
 class _Reading:
+    source: str
     observed_at: datetime
     five_hour: int
     weekly: int
     extra_usage: bool
 
     def record(self) -> dict[str, Any]:
-        return {"source": SOURCE, "observedAt": self.observed_at.isoformat().replace("+00:00", "Z"),
+        return {"source": self.source, "observedAt": self.observed_at.isoformat().replace("+00:00", "Z"),
                 "fiveHourPercent": self.five_hour, "weeklyPercent": self.weekly,
                 "extraUsageEnabled": self.extra_usage}
 
@@ -103,7 +109,7 @@ def _reading(raw: Any, role: str) -> _Reading:
         raise _Stop(f"missing-{role}-reading")
     if not isinstance(raw, Mapping) or set(raw) != _READING_KEYS:
         raise _Stop("unparseable-reading")
-    if raw["source"] != SOURCE:
+    if raw["source"] not in ACCEPTED_SOURCES:
         raise _Stop("unsupported-reading-source")
     stamp = raw["observedAt"]
     if not isinstance(stamp, str) or not _INSTANT.match(stamp):
@@ -114,7 +120,7 @@ def _reading(raw: Any, role: str) -> _Reading:
         raise _Stop("unparseable-reading") from None
     if type(raw["extraUsageEnabled"]) is not bool:
         raise _Stop("unparseable-reading")
-    return _Reading(observed, _percent(raw["fiveHourPercent"]), _percent(raw["weeklyPercent"]),
+    return _Reading(raw["source"], observed, _percent(raw["fiveHourPercent"]), _percent(raw["weeklyPercent"]),
                     raw["extraUsageEnabled"])
 
 

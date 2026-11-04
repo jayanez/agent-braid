@@ -71,6 +71,17 @@ class AdmitTests(GateTest):
         self.assertProceeds(decision)
         self.assertEqual(decision.evidence["pre"]["observedAt"], "2026-11-01T11:59:59.500000Z")
 
+    def test_the_source_label_says_the_operator_typed_the_reading_and_the_old_label_still_verifies(self):
+        self.assertEqual(quota.SOURCE, "operator-typed-usage")
+        legacy = reading(source=quota.LEGACY_SOURCE)
+        decision = quota.admit(legacy, NOW + timedelta(minutes=1), cohort())
+        self.assertProceeds(decision)
+        self.assertEqual(decision.evidence["pre"], legacy)  # an older bundle's reading keeps its own label
+        self.assertEqual(quota.admit(reading(), NOW, cohort()).evidence["pre"]["source"], quota.SOURCE)
+        both = quota.settle_probe(legacy, reading(LATER, five=32, source=quota.SOURCE), LATER)
+        self.assertEqual(both.evidence["pre"]["source"], quota.LEGACY_SOURCE)
+        self.assertEqual(both.evidence["post"]["source"], quota.SOURCE)
+
     def test_unsupported_source(self):
         self.assertRefused(quota.admit(reading(source="statusline"), NOW, cohort()),
                            "unsupported-reading-source")

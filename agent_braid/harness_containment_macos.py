@@ -19,15 +19,19 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
   metadata of ``/etc`` and ``/var``) that the ``launch`` and ``launch-probe`` profiles carry.
 * credential: UID separation (the supervisor must run as the dedicated account, NC-2,
   NC-5), an environment built from scratch, and a refusal when an ``ENV_DENY`` variable
-  is present in the parent. Keychain services are not reachable (no ``mach-lookup``);
-  whether NC-5's login works without them is for the T007/T009 probes.
+  is present in the parent. Keychain services are not reachable (no ``mach-lookup``). The ``launch``
+  entry authenticates with the long-lived token of ``claude setup-token``, read by the supervisor from
+  ``TOKEN_FILE`` in the dedicated user's ``config_dir`` (``read_token``: strict checks) and set as
+  ``TOKEN_VARIABLE`` in the child environment only (NC-5 as amended 2026-11-04); the fixture entries never
+  get it. Every run also carries ``RUN_TAG_VARIABLE``, a per-run random value that descendants inherit.
 * process: exec allow-list (NC-8), CPU, file-size, core, open-file and per-user process
   rlimits applied before the sandbox is entered, a supervisor watchdog for wall time,
   memory (macOS refuses ``RLIMIT_AS`` below the current address space), output and disk
   (candidate, per-run ``TMPDIR`` and ``config_dir`` together: total bytes and entry count,
   ``disk-limit-exceeded``),
   and settlement of the group plus every new process of the dedicated user that belongs to the child's
-  tree (parent chain or process group); other new processes are only counted as noise. A process that
+  tree (parent chain, process group or the inherited run tag); other new processes are only counted as
+  noise. The memory watchdog measures the larger of the resident size and the physical footprint. A process that
   left the group is reported apart from one still alive after the final sweep.
 * run accounting: ``ProbeResult`` and ``ContainedHostRun`` extend the lab and host results
   with the process counts, the cleanup outcome, the peak disk use and the proxy counters of
