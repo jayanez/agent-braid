@@ -724,11 +724,16 @@ export function createBraidScene(container, hooks = {}) {
     return { centre, position: centre.clone().addScaledVector(back, distance), distance, radius };
   }
 
+  let fogFrame = null;
   function moveTo(pose, immediate) {
     camera.far = Math.max(400, pose.distance * 6);
     camera.updateProjectionMatrix();
     // VIS.1d: a light depth fog in the page's ground colour, so far strands recede instead of competing
-    scene.fog = new THREE.Fog(new THREE.Color(colors.ground), pose.distance * 0.9, pose.distance * 3.2);
+    // The fog follows the whole-scene framing, not a close fly-to pose, so far strands recede but never vanish
+    // after a fly-to or a zoom out to the limit.
+    if (pose.framesScene || !fogFrame) fogFrame = { distance: pose.distance, radius: pose.radius };
+    scene.fog = new THREE.Fog(new THREE.Color(colors.ground), fogFrame.distance * 0.9,
+      fogFrame.distance * 2.5 + fogFrame.radius * 2);
     controls.minDistance = Math.max(0.5, pose.radius * 0.25);
     controls.maxDistance = Math.max(pose.distance * 2.5, pose.radius * 6);
     if (immediate || reducedMotion.matches) {
@@ -746,6 +751,7 @@ export function createBraidScene(container, hooks = {}) {
   function frameAll(immediate) {
     const pose = poseFor(PRESET_DIRECTIONS[preset]);
     if (!pose) return;
+    pose.framesScene = true;
     moveTo(pose, immediate);
     fitted = true;
   }
@@ -990,7 +996,10 @@ export function createBraidScene(container, hooks = {}) {
   }) : null;
   if (observer) observer.observe(container);
   const onVisibility = () => requestRender();
-  const onTheme = () => rebuild();
+  const onTheme = () => {
+    rebuild();
+    if (scene.fog) { scene.fog.color.set(colors.ground); requestRender(); }
+  };
   document.addEventListener("visibilitychange", onVisibility);
   darkQuery.addEventListener("change", onTheme);
   reducedMotion.addEventListener("change", onVisibility);

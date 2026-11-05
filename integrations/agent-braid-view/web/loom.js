@@ -420,6 +420,7 @@ async function loadSnapshot() {
   const firstModel = state.model === null;
   const atEnd = state.cursor >= totalCount();
   state.model = document_.model;
+  lastLiveMs = null; // a new snapshot starts its own "last update"
   snapshotAt = performance.now();
   state.languageHint = normalizeTag(document_.uiLanguageHint);
   state.dropped = Array.isArray(document_.droppedAttributeNames) ? document_.droppedAttributeNames : [];
