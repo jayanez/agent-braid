@@ -477,11 +477,11 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   (SC-023). The duration panel shows running and waiting per lane (F1, F2).
   Files: new first-party `planmap.js` (pinned in `BUNDLE_FILES`), `state.js`,
   tests. Verification: SC-025 (plan part).
-- [ ] T072 (REQ-026, REQ-027): 3D view in the scope the owner chose (the owner chose
-  the Explore option, which reopens OD-V6). Either a
-  re-skin with tokens, T064 labels and glyphs in place of class text, or the
-  Explore view with eased presets and fly-to-selected, using no new vendored file.
-  Use Context7 for the Three.js r186 APIs. Files: `braid-scene.js`, tests.
+- [ ] T072 (REQ-026, REQ-027): Explore 3D (the owner chose this option on
+  2026-11-05, which reopens OD-V6). The tokens and thread styles of the loom, T064
+  labels, plan-map glyphs in place of class text, eased camera presets,
+  fly-to-selected, and reset and fit always visible. No new vendored file. Use
+  Context7 for the Three.js r186 APIs. Files: `braid-scene.js`, tests.
   Verification: SC-026 (3D part), SC-027.
 - [ ] T073 (REQ-024, REQ-027, T065 UI part): Audit and evidence. Run a Web
   Interface Guidelines audit; fix or waive each finding, with a reason. Take a
