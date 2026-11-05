@@ -31,7 +31,8 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
   ``disk-limit-exceeded``),
   and settlement of the group plus every new process of the dedicated user that belongs to the child's
   tree (parent chain, process group or the inherited run tag); other new processes are only counted as
-  noise. The memory watchdog measures the larger of the resident size and the physical footprint. A process that
+  noise. The memory watchdog measures the larger of the resident size, the physical footprint and the lifetime
+  peak footprint, and polls every 10 ms once the tree holds a quarter of the limit. A process that
   left the group is reported apart from one still alive after the final sweep.
 * run accounting: ``ProbeResult`` and ``ContainedHostRun`` extend the lab and host results
   with the process counts, the cleanup outcome, the peak disk use and the proxy counters of
@@ -54,7 +55,7 @@ from __future__ import annotations
 
 from collections import Counter
 from collections.abc import Callable, Iterator
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 import ctypes
 from dataclasses import asdict, dataclass, field, fields
 import errno
@@ -148,6 +149,8 @@ _RESERVED = (*_OWNED, ".")  # run_root entries the backend owns
 _PRIVILEGED_GIDS = frozenset({0, 80})  # wheel, admin
 _MIN_HUMAN_UID = 500  # below it: system accounts (RV-16, amended 2026-11-03)
 _POLL_SECONDS = 0.05
+_POLL_FAST_SECONDS = 0.01  # once the tree holds a quarter of the memory limit: a burst must not slip between samples
+STDERR_TAIL_BYTES = 8192
 _COMPILE_TIMEOUT_SECONDS = 20
 _STREAM_CHUNK_BYTES = 65_536  # per read, so a large output bound never allocates a large buffer
 
@@ -569,10 +572,13 @@ def host_facts() -> HostFacts:
 
 _PROC_RUID_ONLY, _PROC_PIDTASKINFO = 5, 4
 _TASKINFO_WORDS = 12  # struct proc_taskinfo is 96 bytes; resident size is word 1
-# struct rusage_info_v2 (RUSAGE_INFO_V2 = 2): ``ri_phys_footprint`` is the 8-byte word at offset 72. It counts
-# the pages the process owns including those the memory compressor or swap hold, which ``pti_resident_size``
-# omits; the watchdog measures the larger of the two.
-_RUSAGE_INFO_V2, _RUSAGE_WORDS, _FOOTPRINT_WORD = 2, 32, 9
+# struct rusage_info_v4 (RUSAGE_INFO_V4 = 4, 296 bytes): ``ri_phys_footprint`` is the 8-byte word at offset 72 and
+# ``ri_lifetime_max_phys_footprint`` the word at offset 240 (checked on macOS 27.2: it keeps the peak after the
+# memory is freed). The footprint counts the pages the process owns including those the memory compressor or
+# swap hold, which ``pti_resident_size`` omits, but a page the compressor squeezed counts at its compressed size;
+# the lifetime maximum keeps a burst that was gone between two samples. The watchdog measures the largest of
+# the three.
+_RUSAGE_INFO_V4, _RUSAGE_WORDS, _FOOTPRINT_WORD, _LIFETIME_MAX_WORD = 4, 37, 9, 30
 
 # struct kinfo_proc (sys/sysctl.h, 648 bytes on arm64 and x86_64) from sysctl KERN_PROC/KERN_PROC_PID:
 # a plain process-table read that needs no task access, so it works for every process of the same user.
@@ -613,11 +619,12 @@ def _kinfo(pid: int) -> tuple[int, int, int, int] | None:
 
 
 def _footprint(pid: int) -> int:
-    """``ri_phys_footprint`` of ``pid`` in bytes; ``0`` when the call fails (the resident size still counts)."""
+    """The larger of ``ri_phys_footprint`` and ``ri_lifetime_max_phys_footprint`` of ``pid`` in bytes; ``0``
+    when the call fails (the resident size still counts)."""
     buffer = (ctypes.c_uint64 * _RUSAGE_WORDS)()
-    if _libsystem().proc_pid_rusage(pid, _RUSAGE_INFO_V2, buffer) != 0:
+    if _libsystem().proc_pid_rusage(pid, _RUSAGE_INFO_V4, buffer) != 0:
         return 0
-    return buffer[_FOOTPRINT_WORD]
+    return max(buffer[_FOOTPRINT_WORD], buffer[_LIFETIME_MAX_WORD])
 
 
 def _task_resident(pid: int) -> int | None:
@@ -797,6 +804,7 @@ class EgressProxy:
         self._failed = False
         self._counts: Counter[str] = Counter()
         self._counts_lock = threading.Lock()
+        self.refuse_all = False  # set around one launch that must not reach any host (``launch(no_egress=True)``)
 
     @property
     def running(self) -> bool:
@@ -895,6 +903,7 @@ class EgressProxy:
         host_port = target.decode("ascii", "replace").lower()
         refusal = (_Refused("not-connect", direct=True) if method != b"CONNECT"
                    else _Refused("bad-request") if not version.startswith(b"HTTP/1.")
+                   else _Refused("no-egress-stage") if self.refuse_all
                    else _Refused("target-not-allowed") if host_port not in self.endpoints else None)
         if refusal is not None:
             client.sendall(b"HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\n\r\n")
@@ -1021,9 +1030,10 @@ class RunAccounting:
     ``egress`` is the proxy counter delta of the run (see ``EgressProxy``).
     ``limit_exceeded`` is the resource stop reason of the run: ``memory`` (watchdog) or ``cpu``
     (``SIGXCPU`` from the CPU rlimit), else ``None``. A disk breach refuses the run instead.
-    ``peak_memory_bytes`` and ``memory_samples`` are what the memory watchdog measured (the larger of the
-    resident size and the physical footprint, summed over the child's tree) and how often: evidence for a
-    memory limit that did not fire.
+    ``peak_memory_bytes`` and ``memory_samples`` are what the memory watchdog measured (per process the
+    largest of the resident size, the physical footprint and the lifetime peak footprint, summed over the
+    child's tree) and how often: evidence for a memory limit that did not fire. ``stderr_tail`` is the last
+    ``STDERR_TAIL_BYTES`` of the child's standard error when the launch asked for it (never in the evidence).
     """
 
     escaped_processes: int = 0
@@ -1035,6 +1045,7 @@ class RunAccounting:
     limit_exceeded: str | None = None
     peak_memory_bytes: int = field(default=0, compare=False)
     memory_samples: int = field(default=0, compare=False)
+    stderr_tail: bytes = field(default=b"", compare=False, repr=False)
     egress: dict = field(default_factory=dict, compare=False, hash=False)
 
 
@@ -1430,7 +1441,8 @@ class MacOSContainment(ContainmentBackend):
 
     def launch(self, argv: tuple[str, ...], stdin: bytes, *, cwd: Path | str, wall_seconds: int,
                max_output_bytes: int, cancel: threading.Event,
-               on_output: Callable[[bytes], None] | None = None) -> ContainedHostRun:
+               on_output: Callable[[bytes], None] | None = None, capture_stderr: bool = False,
+               no_egress: bool = False) -> ContainedHostRun:
         """Contained launcher for the native transport (T006): pinned Claude executable only.
 
         The argument list beyond ``argv[0]`` is the transport's (T006) responsibility.
@@ -1438,6 +1450,12 @@ class MacOSContainment(ContainmentBackend):
         never past ``max_output_bytes``, while the child runs; it may set ``cancel`` to stop
         the group. A callback that raises kills and settles the group, then refuses with
         ``output-callback-failed``.
+
+        ``capture_stderr`` keeps the last ``STDERR_TAIL_BYTES`` of the child's standard error in the result's
+        ``stderr_tail`` (otherwise it goes nowhere); the caller redacts it before it is shown anywhere.
+        ``no_egress`` makes the egress proxy refuse every CONNECT for this launch only, after the pre-session
+        check (which needs the proxy for NET-06): the profile allows the child nothing but the loopback proxy,
+        so no model request can leave the machine and nothing can be billed. Both are for diagnostic stages.
         """
         if not (type(argv) is tuple and len(argv) >= 1 and argv[0] == self.policy.claude
                 and all(type(a) is str and "\0" not in a for a in argv)
@@ -1449,21 +1467,27 @@ class MacOSContainment(ContainmentBackend):
             self._refuse("launch", "invalid-launch")
         with self._exclusive("launch"):
             evidence, candidate, uid = self._pre_session("launch", cwd, probes=True)
-            return self._spawn("launch", list(argv), evidence, candidate=candidate, uid=uid,
-                               wall=wall_seconds, cpu=LIMITS["cpuSeconds"], max_output=max_output_bytes,
-                               cancel=cancel, stdin=stdin, on_output=on_output)
+            try:
+                self._proxy.refuse_all = no_egress
+                return self._spawn("launch", list(argv), evidence, candidate=candidate, uid=uid,
+                                   wall=wall_seconds, cpu=LIMITS["cpuSeconds"], max_output=max_output_bytes,
+                                   cancel=cancel, stdin=stdin, on_output=on_output,
+                                   capture_stderr=capture_stderr)
+            finally:
+                self._proxy.refuse_all = False
 
     # -- supervision ----------------------------------------------------------------------
 
     def _spawn(self, entry: str, target: list[str], evidence: dict, *, candidate: str, uid: int,
                wall: int, cpu: int, max_output: int, cancel: threading.Event | None,
-               stdin: bytes, on_output: Callable[[bytes], None] | None = None) -> ContainedHostRun:
+               stdin: bytes, on_output: Callable[[bytes], None] | None = None,
+               capture_stderr: bool = False) -> ContainedHostRun:
         """Supervise one contained child; whatever happens it is killed, settled and recorded."""
         record = dict(evidence)
         try:
             return self._supervise(entry, target, record, candidate=candidate, uid=uid, wall=wall,
                                    cpu=cpu, max_output=max_output, cancel=cancel, stdin=stdin,
-                                   on_output=on_output)
+                                   on_output=on_output, capture_stderr=capture_stderr)
         except LabError as exc:
             record["refused"] = exc.reason
             if type(getattr(exc, "errno_code", None)) is int:  # integers only, for the evidence
@@ -1477,7 +1501,8 @@ class MacOSContainment(ContainmentBackend):
 
     def _supervise(self, entry: str, target: list[str], record: dict, *, candidate: str, uid: int,
                    wall: int, cpu: int, max_output: int, cancel: threading.Event | None,
-                   stdin: bytes, on_output: Callable[[bytes], None] | None = None) -> ContainedHostRun:
+                   stdin: bytes, on_output: Callable[[bytes], None] | None = None,
+                   capture_stderr: bool = False) -> ContainedHostRun:
         policy = self.policy
         token = read_token(policy.config_dir, uid) if entry == "launch" else None  # before anything is created
         if entry == "launch":
@@ -1494,6 +1519,7 @@ class MacOSContainment(ContainmentBackend):
         egress_before = self._proxy.counters()
         disk = _DiskGuard((candidate, tmpdir, policy.config_dir))
         out_path = f"{run_dir}/stdout"
+        err_path = f"{run_dir}/stderr"
         live = _OutputStream(out_path, max_output, on_output, cancel) if on_output is not None else None
         try:
             try:
@@ -1503,9 +1529,10 @@ class MacOSContainment(ContainmentBackend):
                     stream.write(stdin)
                 source = open(f"{run_dir}/stdin", "rb")
                 sink = open(out_path, "wb")
+                err_sink = open(err_path, "wb") if capture_stderr else subprocess.DEVNULL
             except OSError:
                 raise LabError("workspace-unavailable") from None
-            with source, sink:
+            with source, sink, (err_sink if capture_stderr else nullcontext()):
                 baseline = _user_processes(uid)
                 nproc = len(baseline) + 1 + LIMITS["descendants"]
                 status, status_w = os.pipe()
@@ -1519,7 +1546,7 @@ class MacOSContainment(ContainmentBackend):
                     env[TOKEN_VARIABLE] = token
                 try:
                     child = subprocess.Popen(argv, cwd=run_dir, env=env,
-                                             stdin=source, stdout=sink, stderr=subprocess.DEVNULL,
+                                             stdin=source, stdout=sink, stderr=err_sink,
                                              close_fds=True, pass_fds=(status_w,), start_new_session=True)
                 except (OSError, ValueError):
                     raise LabError("launch-failed") from None
@@ -1570,6 +1597,15 @@ class MacOSContainment(ContainmentBackend):
                     data = stream.read(max_output + 1)
             except OSError:
                 data = b""
+            stderr_tail = b""
+            if capture_stderr:
+                try:
+                    with open(err_path, "rb") as stream:
+                        stream.seek(0, os.SEEK_END)
+                        stream.seek(max(0, stream.tell() - STDERR_TAIL_BYTES))
+                        stderr_tail = stream.read(STDERR_TAIL_BYTES)
+                except OSError:
+                    pass
             if child is not None and not stopped_early and disk.exceeded():
                 state["limitExceeded"] = "disk"  # a burst written just before a natural exit
             try:
@@ -1598,7 +1634,7 @@ class MacOSContainment(ContainmentBackend):
             surviving_processes=state.get("survivingProcesses", 0), cleanup_failed=not cleaned,
             disk_bytes=disk.bytes, disk_files=disk.files, limit_exceeded=state["limitExceeded"],
             peak_memory_bytes=state.get("peakMemoryBytes", 0), memory_samples=state.get("memorySamples", 0),
-            egress=egress)
+            egress=egress, stderr_tail=stderr_tail)
 
     def _watch(self, child: subprocess.Popen, state: dict, *, uid: int, baseline: set[tuple[int, int]],
                out_path: str, deadline: float, max_output: int, cancel: threading.Event | None,
@@ -1618,7 +1654,8 @@ class MacOSContainment(ContainmentBackend):
             elif (limit := _resource_limit(uid, baseline, lineage, disk, state)) is not None:
                 state["limitExceeded"] = limit
             else:
-                time.sleep(_POLL_SECONDS)
+                near = state.get("peakMemoryBytes", 0) > LIMITS["memoryBytes"] // 4
+                time.sleep(_POLL_FAST_SECONDS if near else _POLL_SECONDS)
                 continue
             return
 

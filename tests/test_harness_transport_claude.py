@@ -16,6 +16,7 @@ from pathlib import Path
 import shutil
 import tempfile
 import threading
+import types
 import unittest
 from unittest import mock
 
@@ -107,6 +108,7 @@ class MacLaunchSignature(mac.MacOSContainment):
         self.policy, self.qualification, self.host_qualification = (
             fake.policy, fake.qualification, fake.host_qualification)
         self.run_evidence = []
+        self._proxy = types.SimpleNamespace(refuse_all=False)
 
     def close(self):
         pass
@@ -118,7 +120,7 @@ class MacLaunchSignature(mac.MacOSContainment):
         return {}, "candidate", 0
 
     def _spawn(self, entry, target, evidence, *, candidate, uid, wall, cpu, max_output, cancel, stdin,
-               on_output=None):
+               on_output=None, capture_stderr=False):
         return self.fake.launch(tuple(target), stdin, cwd=candidate, wall_seconds=wall,
                                 max_output_bytes=max_output, cancel=cancel, on_output=on_output)
 

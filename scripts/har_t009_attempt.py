@@ -48,11 +48,21 @@ command that exits 0 when logged in and 1 when not, and as making no model call,
 no quota. Only its exit code, whether the token file existed and a closed reason are reported; its output
 (which can name the account) is never read into the report. A failing stage ends the self-check with the
 verdict ``self-check-auth-failed``, so a login problem is found before a session is spent.
+
+The last stage, ``startup``, is the session launch of the probe runner (same ``build_plan`` argv, same prompt
+on stdin, same ``launch`` profile, environment and token, same backend ``launch``) with the model made
+unreachable: the backend's egress proxy answers every CONNECT of that one launch with 403 before it opens any
+upstream connection, and the profile lets the child reach nothing but that proxy (NET-01 to NET-08), so no
+model request can leave the machine and no quota can be spent (the stage checks the proxy counters and
+reports them). It reports whether the CLI reached its ``init`` event, the exit code, the closed exit reason
+and the last lines of its standard error, each passed through the bundle's secret scan (a line that trips it
+is replaced by ``<redacted:rule>``) with the founder's account replaced. It is diagnostic: it does not change
+the verdict, because a CLI that cannot reach its API may fail for that reason alone.
 """
 from __future__ import annotations
 
 import argparse
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 import json
@@ -65,13 +75,15 @@ import sys
 import tempfile
 import threading
 import time
+import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from agent_braid import harness_containment_macos as _mac  # noqa: E402
 from agent_braid import harness_qualification_probes as _probes  # noqa: E402
-from agent_braid.harness_host_claude import ENV_DENY, QUALIFICATION_FORMAT as HOST_FORMAT  # noqa: E402
+from agent_braid.harness_host_claude import (  # noqa: E402
+    ENV_DENY, QUALIFICATION_FORMAT as HOST_FORMAT, ClaudeRequest, build_plan)
 from agent_braid.harness_lab import ENFORCED_EFFECTS, QUALIFICATION_FORMAT as LAB_FORMAT, LabError  # noqa: E402
 from agent_braid.harness_quota import FRESHNESS, PROBE_MAX_FIVE_HOUR, PROBE_MAX_SESSIONS, SOURCE  # noqa: E402
 from agent_braid.harness_transport_claude import NativeClaudeTransport  # noqa: E402
@@ -827,7 +839,52 @@ def auth_stage(backend: object, workdir: Callable[[], Path]) -> dict:
                      "exitCode": exit_code}
 
 
-def self_check(backend: object, workdir: Callable[[], Path], probe_runner: Callable[[str, object], str]) -> dict:
+STARTUP_WALL_SECONDS = 45
+STARTUP_MODEL = "haiku"
+STARTUP_LEAK_FIELDS = ("allowed", "bytesUp", "bytesDown", "upstreamFailed")
+
+
+def startup_stage(backend: object, workdir: Callable[[], Path], secrets: Sequence[str],
+                  operator_account: str) -> dict:
+    """The probe runner's session launch with the model unreachable; see the module docstring.
+
+    Nothing can be billed: ``launch(no_egress=True)`` makes the proxy refuse every CONNECT of this launch, and
+    the stage reports the proxy's own counters; a tunnel that opened or a byte that went upstream ends the
+    stage with ``egressLeak`` (it cannot happen by construction, the counters are the check)."""
+    seen = len(getattr(backend, "run_evidence", []))
+    report: dict = {"stage": "startup", "noModel": True}
+    plan = build_plan(ClaudeRequest(session_id=str(uuid.uuid4()), model=STARTUP_MODEL, max_turns=1),
+                      _probes.PROBE_PROMPT)
+    argv = (backend.policy.claude, *plan.argv[1:])
+    try:
+        run = backend.launch(argv, _probes.PROBE_PROMPT, cwd=workdir(), wall_seconds=STARTUP_WALL_SECONDS,
+                             max_output_bytes=65_536, cancel=threading.Event(), capture_stderr=True,
+                             no_egress=True)
+    except LabError as exc:
+        return report | {"reason": "refused", "refusal": _code(exc.reason), "reachedInit": False}
+    except Exception:
+        return report | {"reason": "refused", "refusal": "backend-failed", "reachedInit": False}
+    marks = [r.get("authToken") for r in getattr(backend, "run_evidence", [])[seen:]
+             if isinstance(r, Mapping) and r.get("entry") == "launch"]
+    session = _probes.SessionResult(run.stdout, run.exit_code, run.timed_out, run.cancelled, run.settled,
+                                    auth_token=marks[-1] if marks else None)
+    egress = getattr(run, "egress", None)
+    counters = isinstance(egress, Mapping) and all(type(v) is int and v >= 0 for v in egress.values())
+    egress = dict(egress) if counters else {}
+    # fail closed: counters that are missing or malformed, or any tunnel or byte, read as a leak
+    leak = not counters or any(egress.get(key, 0) > 0 for key in STARTUP_LEAK_FIELDS)
+    return report | {
+        "reachedInit": _probes.reached_init(run.stdout), "exitCode": _int(run.exit_code),
+        "reason": _probes.session_exit_reason(session), "timedOut": bool(run.timed_out),
+        "authToken": session.auth_token if session.auth_token in ("present", "absent") else None,
+        "egress": {key: egress.get(key, 0) for key in ("connections", "denied", *STARTUP_LEAK_FIELDS)},
+        "egressLeak": leak,
+        "stderrTail": _probes.redact_stderr_tail(getattr(run, "stderr_tail", b""), secrets,
+                                                 operator_account=operator_account)}
+
+
+def self_check(backend: object, workdir: Callable[[], Path], probe_runner: Callable[[str, object], str], *,
+               secrets: Sequence[str] = (), operator_account: str = "") -> dict:
     """Run the backend's pre-session check for the ``launch`` entry and nothing else.
 
     These are the two calls ``MacOSContainment.launch`` makes before it spawns anything (the exclusive
@@ -872,9 +929,12 @@ def self_check(backend: object, workdir: Callable[[], Path], probe_runner: Calla
             if run not in runs:
                 runs.append(run)
     auth = auth_stage(backend, workdir) if refusal is None else {"stage": "auth", "reason": "not-run"}
+    startup = (startup_stage(backend, workdir, secrets, operator_account) if refusal is None
+               else {"stage": "startup", "reason": "not-run"})
     verdict = ("self-check-refused" if refusal is not None
+               else "self-check-egress-leak" if startup.get("egressLeak")
                else "self-check-ok" if auth["reason"] == "ok" else "self-check-auth-failed")
-    return {"verdict": verdict, "auth": auth,
+    return {"verdict": verdict, "auth": auth, "startup": startup,
             "preSessionCheck": checks, "probeRuns": runs[-MAX_EVIDENCE:],
             "compileCheck": _code(evidence.get("compileCheck")),
             "refusal": _code(refusal), "stage": _stage(refusal, evidence),
@@ -898,7 +958,9 @@ def run_self_check(args: argparse.Namespace, system: System, *, backend_factory=
         policy, probe_runner=probe_runner, clock=time.time, operator_account=args.operator_account,
         **attempt_records(report["observed"]["environmentSha256"], int(time.time())))
     try:
-        return self_check(backend, workdir, probe_runner) | {"attempt": args.attempt}
+        inventory = _probes.credential_inventory(args.config_dir)
+        return self_check(backend, workdir, probe_runner, secrets=[value for value, _ in inventory],
+                          operator_account=args.operator_account) | {"attempt": args.attempt}
     except (Exception, KeyboardInterrupt) as exc:
         reason = type(exc).__name__ + (f": {exc.reason}" if _code(getattr(exc, "reason", None)) else "")
         return {"verdict": "error", "reason": reason, "attempt": args.attempt,

@@ -1361,6 +1361,63 @@ class SupervisedRunTests(unittest.TestCase):
         self.assertEqual((run.cancelled, run.exit_code, run.settled), (True, None, True))
 
 
+class DiagnosticLaunchTests(unittest.TestCase):
+    """``launch(capture_stderr=, no_egress=)``: what a diagnostic stage needs, and nothing more."""
+
+    def setUp(self):
+        self.machine = Machine(self)
+
+    def spawn_with(self, script: str, **options):
+        write_exec(self.machine.claude, script)
+        self.machine.repin(claude_sha256=digest(self.machine.claude))
+        backend = make_backend(self.machine)
+        self.addCleanup(backend.close)
+        seen = {}
+        original = backend._spawn
+
+        def watching(*args, **kwargs):
+            seen["during"] = backend._proxy.refuse_all
+            return original(*args, **kwargs)
+
+        with host(self.machine), mock.patch.object(backend, "_spawn", watching):
+            run = backend.launch((self.machine.claude,), b"", cwd=self.machine.candidate(), wall_seconds=10,
+                                 max_output_bytes=4096, cancel=threading.Event(), **options)
+        return backend, run, seen
+
+    def test_stderr_goes_nowhere_unless_captured(self):
+        script = f"#!{INTERPRETER} -IS\nimport sys\nsys.stderr.write('boom\\n')\nsys.exit(3)\n"
+        _, run, _ = self.spawn_with(script)
+        self.assertEqual((run.exit_code, run.stderr_tail), (3, b""))
+
+    def test_captured_stderr_keeps_only_the_last_bytes_and_stdout_stays_apart(self):
+        script = (f"#!{INTERPRETER} -IS\nimport sys\nprint('out')\n"
+                  f"sys.stderr.write('first\\n' + 'x' * {mac.STDERR_TAIL_BYTES} + '\\nlast line\\n')\nsys.exit(1)\n")
+        backend, run, _ = self.spawn_with(script, capture_stderr=True)
+        self.assertEqual(run.stdout, b"out\n")
+        self.assertEqual(len(run.stderr_tail), mac.STDERR_TAIL_BYTES)
+        self.assertTrue(run.stderr_tail.endswith(b"last line\n"))
+        self.assertNotIn(b"first", run.stderr_tail)
+        self.assertEqual(backend.run_evidence[-1]["exitCode"], 1)
+        self.assertNotIn("stderr", json.dumps(backend.run_evidence[-1]))  # the evidence never carries the text
+
+    def test_the_proxy_refuses_everything_during_one_launch_only(self):
+        backend, _, seen = self.spawn_with(FAKE_CLAUDE, no_egress=True)
+        self.assertTrue(seen["during"])
+        self.assertFalse(backend._proxy.refuse_all)  # restored: the next pre-session check needs NET-06
+        backend.close()  # frees the proxy port for the second backend
+        _, _, seen = self.spawn_with(FAKE_CLAUDE)
+        self.assertFalse(seen["during"])
+
+    def test_the_flag_is_restored_when_the_launch_fails(self):
+        backend = make_backend(self.machine)
+        self.addCleanup(backend.close)
+        with host(self.machine), mock.patch.object(backend, "_spawn", side_effect=lab.LabError("launch-failed")), \
+                self.assertRaises(lab.LabError):
+            backend.launch((self.machine.claude,), b"", cwd=self.machine.candidate(), wall_seconds=5,
+                           max_output_bytes=10, cancel=threading.Event(), no_egress=True)
+        self.assertFalse(backend._proxy.refuse_all)
+
+
 class AuthTokenTests(unittest.TestCase):
     """Founder decision 2026-11-04 ("A. Token en archivo"): one strict file in config_dir, one variable."""
 
@@ -1615,7 +1672,8 @@ def kinfo_record(pid: int, *, ppid: int = 1, pgid: int = 1, stat: int = 2, secon
 class ProcessAccountingTests(unittest.TestCase):
     """Process-table reads (no task access) classify any process; task reads fail closed for a live one."""
 
-    def fake(self, *, task=0, kinfo=None, sysctl_error=0, sysctl_size=None, footprint=None, procargs=None):
+    def fake(self, *, task=0, kinfo=None, sysctl_error=0, sysctl_size=None, footprint=None, procargs=None,
+             lifetime=None):
         """``task``: errno of proc_pidinfo (0: readable); ``kinfo``: the record sysctl returns (None: gone)."""
         def proc_pidinfo(pid, flavor, arg, buffer, size):
             if task:
@@ -1639,6 +1697,8 @@ class ProcessAccountingTests(unittest.TestCase):
             if footprint is None:
                 return -1
             buffer[mac._FOOTPRINT_WORD] = footprint
+            if lifetime is not None:
+                buffer[mac._LIFETIME_MAX_WORD] = lifetime
             return 0
 
         return mock.patch.object(mac, "_libsystem", lambda: SimpleNamespace(
@@ -1681,6 +1741,42 @@ class ProcessAccountingTests(unittest.TestCase):
             self.assertEqual(mac._task_resident(os.getpid()), 4096)
         with self.fake(kinfo=kinfo_record(os.getpid())):  # the rusage call failing keeps the resident size
             self.assertEqual(mac._task_resident(os.getpid()), 4096)
+
+    def test_the_task_read_keeps_the_lifetime_peak_of_a_burst_that_was_gone_between_two_samples(self):
+        with self.fake(kinfo=kinfo_record(os.getpid()), footprint=100, lifetime=5 << 30):
+            self.assertEqual(mac._task_resident(os.getpid()), 5 << 30)
+        with self.fake(kinfo=kinfo_record(os.getpid()), footprint=7 << 30, lifetime=5 << 30):
+            self.assertEqual(mac._task_resident(os.getpid()), 7 << 30)
+
+    @unittest.skipUnless(sys.platform == "darwin", "macOS only")
+    def test_the_real_lifetime_peak_outlives_the_memory_it_measured(self):
+        import mmap
+        block = mmap.mmap(-1, 200 << 20)
+        for offset in range(0, 200 << 20, mmap.PAGESIZE):
+            block[offset] = 1
+        held = mac._footprint(os.getpid())
+        block.close()
+        self.assertGreaterEqual(mac._footprint(os.getpid()), held)  # the peak is still there after the free
+
+    def test_the_watch_polls_faster_once_the_tree_holds_a_quarter_of_the_limit(self):
+        child = mock.Mock()
+        child.poll.side_effect = [None, None, None, 0]
+        sleeps = []
+        limit_reads = iter([None, None, None])
+        state = {"peakMemoryBytes": 0, "timedOut": False}
+
+        def resource_limit(*_a):
+            state["peakMemoryBytes"] = mac.LIMITS["memoryBytes"] // 2 if len(sleeps) >= 1 else 1
+            return next(limit_reads)
+
+        backend = mock.Mock()
+        with mock.patch.object(mac, "_resource_limit", resource_limit), \
+                mock.patch.object(mac.time, "sleep", sleeps.append), \
+                mock.patch.object(mac.os.path, "getsize", return_value=0):
+            mac.MacOSContainment._watch(backend, child, state, uid=1, baseline=set(), out_path="x",
+                                        deadline=time.monotonic() + 60, max_output=10, cancel=None, live=None,
+                                        lineage=None, disk=None)
+        self.assertEqual(sleeps, [mac._POLL_SECONDS, mac._POLL_FAST_SECONDS, mac._POLL_FAST_SECONDS])
 
     def test_tagged_finds_the_run_tag_only_as_a_whole_environment_string(self):
         def sysctl_with(raw, status=0):
@@ -1876,6 +1972,21 @@ class ProxyTests(unittest.TestCase):
         self.assertEqual(self.read_all(client), b"")
         client = self.connect_client(connect)  # silent client: handshake deadline closes it
         self.assertEqual(self.read_all(client), b"")
+        connect.assert_not_called()
+
+    def test_a_proxy_told_to_refuse_everything_refuses_even_the_allowed_host_and_never_connects(self):
+        connect = mock.Mock(side_effect=AssertionError("upstream contacted"))
+        proxy = mac.EgressProxy(0, ("api.anthropic.com:443",), connect=connect, timeout=2)
+        proxy.refuse_all = True
+        proxy.start()
+        self.addCleanup(proxy.close)
+        client = socket.create_connection(("127.0.0.1", proxy.port), timeout=3)
+        self.addCleanup(client.close)
+        client.sendall(b"CONNECT api.anthropic.com:443 HTTP/1.1\r\n\r\n" + client_hello("api.anthropic.com"))
+        self.assertTrue(self.read_all(client).startswith(b"HTTP/1.1 403"))
+        counters = self.counted(proxy, {"denied:no-egress-stage": 1})
+        self.assertEqual((counters.get("denied:no-egress-stage"), counters.get("allowed", 0),
+                          counters.get("bytesUp", 0)), (1, 0, 0))
         connect.assert_not_called()
 
     def counted(self, proxy, wanted: dict, timeout: float = 3.0) -> dict:

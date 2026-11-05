@@ -30,6 +30,10 @@ attempts replace name-resolution-masked ones, informational ``tripwire`` attempt
 they succeed, the survivor scan diffs the dedicated user's process table, the NC-10 2 % stop rule
 and the session count persist, and the runner/judge/arena source is bound into the catalog hash.
 
+Round 4 (attempt 3): the survivor scan keeps only new processes that are alive, not zombies and named like an
+executable the profile can start (the rest is noted as strayProcesses), rows read settled through swept_settled,
+and redact_stderr_tail / reached_init serve the self-check startup stage.
+
 Integration of the T005 backend delta (RV-01/02/03/13): PROC-04 and PROC-08 are judged on the
 backend's ``surviving_processes`` (a leaver that the sweep killed is reported, not an escape), the
 PROC-08 cancellation half is driven through ``run_probe(cancel=)``, NET-05-CLI is judged on the
@@ -579,16 +583,21 @@ def open_files():
     return bool(held)
 def memory():
     import mmap
-    size = A["limits"]["memoryBytes"] + (256 << 20)
+    # A gigabyte over the limit, and held for a moment: the watchdog measures the footprint, which counts a page
+    # the memory compressor holds at its compressed size, at a few samples a second. T009 attempt 3 measured
+    # 99 % of the limit for an allocation 6 % over it that ended at once.
+    size = A["limits"]["memoryBytes"] + (1 << 30)
     block = mmap.mmap(-1, size)
     for offset in range(0, size, mmap.PAGESIZE):  # one byte in every page, or the pages are never resident
         block[offset] = 1
+    time.sleep(2)
     return True
 def memory_burst():
     import mmap
-    size = A["limits"]["memoryBytes"] + (256 << 20)
+    size = A["limits"]["memoryBytes"] + (1 << 30)
     block = mmap.mmap(-1, size)
     block[0:size:4096] = b"\x01" * len(range(0, size, 4096))
+    time.sleep(2)
     return True
 def cpu():
     end = time.process_time() + A["cpu_spin"]
@@ -834,7 +843,15 @@ CATALOG: tuple[Probe, ...] = (
     _helper("PROC-01", "process", "execute a non-allowed binary"),
     _helper("PROC-02", "process", "fork beyond the descendant limit", survivors=True),
     _helper("PROC-03", "process", "exceed file-size, open-file and memory limits (CPU and file-count noted)",
-            snapshot=True, wall_seconds=40, survivors=True),
+            snapshot=True, wall_seconds=40, survivors=True,
+            residual="The memory watchdog samples the footprint of the child's tree every 10 to 50 ms (the larger of "
+                     "the resident size, the physical footprint and the process's lifetime peak footprint), and a page "
+                     "the memory compressor holds counts at its compressed size. The probe exceeds the limit by a "
+                     "gigabyte and holds it for two seconds; a process that exceeds the limit and exits between two "
+                     "samples is not stopped, and no kernel limit backs the watchdog: macOS RLIMIT_AS and RLIMIT_DATA "
+                     "cannot be set at the limit (they refuse a value below the address space the process already "
+                     "has), and RLIMIT_DATA counts reserved PROT_NONE address space too (checked on macOS 27.2), which a "
+                     "JavaScript runtime like the CLI's reserves in bulk (not tested with the CLI)."),
     _helper("PROC-04", "process", "double-fork and setsid to leave the group and survive",
             judge="survivors", survivors=True,
             residual="PROC-ESC-1: the backend attributes a descendant that left the group through the run tag "
@@ -1095,6 +1112,43 @@ def _stream(stdout: bytes) -> tuple[str | None, Mapping | None]:
 
 EXIT_REASONS = ("ok", "no-init", "exit-before-init", "cli-exit-nonzero", "auth-missing", "refused",
                 "timed-out", "cancelled")
+
+
+def reached_init(stdout: bytes) -> bool:
+    """Whether the stream carries the CLI's ``init`` event (it started and reached its first output)."""
+    return _stream(stdout)[0] is not None
+
+
+STDERR_TAIL_LINES = 20
+STDERR_LINE_CHARS = 200
+_NOT_PRINTABLE = re.compile(r"[^\x20-\x7e]")
+
+
+def redact_stderr_tail(raw: bytes, secrets: Sequence[str], *, operator_account: str,
+                       origins: Sequence[str] = ()) -> list[str]:
+    """The last ``STDERR_TAIL_LINES`` lines of a child's standard error, safe to publish.
+
+    Each line is reduced to printable ASCII and then passed through the bundle's secret scan (listed
+    literals, token shapes, long opaque runs); a line that trips it is replaced by ``<redacted:rule>``.
+    The founder's own account is replaced too: ``/Users/<account>`` by ``<operator-home>`` and the bare name
+    by ``<operator>``. A tail cut at the capture limit loses its first line, which may be half a token.
+    """
+    lines = raw.decode("utf-8", "replace").splitlines()
+    if len(raw) >= _mac.STDERR_TAIL_BYTES and lines:
+        lines = lines[1:]
+    name = re.escape(operator_account) if operator_account else None
+    out = []
+    for line in lines[-STDERR_TAIL_LINES:]:
+        line = _NOT_PRINTABLE.sub("?", line)
+        hits = _scan_hits(line, secrets, origins)
+        if hits:
+            out.append(f"<redacted:{hits[0][0]}>")
+            continue
+        if name:  # macOS paths are case-insensitive, and the name is replaced wherever it occurs
+            line = re.sub(rf"/Users/{name}(?![A-Za-z0-9_])", "<operator-home>", line, flags=re.I)
+            line = re.sub(name, "<operator>", line, flags=re.I)
+        out.append(line[:STDERR_LINE_CHARS])
+    return out
 
 
 def session_exit_reason(session: SessionResult) -> str:
@@ -1931,6 +1985,40 @@ def own_process_table() -> set[tuple[int, str]]:
     return table
 
 
+_PS_NAME = re.compile(r"[A-Za-z0-9._ +()-]{1,48}\Z")
+
+
+def live_process_names(pids: Sequence[int]) -> dict[int, str]:
+    """``{pid: executable basename}`` of the listed processes that are alive and not zombies.
+
+    A zombie (state ``Z``) has exited and only awaits its parent's ``wait``: it survives nothing. A pid
+    ``ps`` does not list is gone. Raises when ``ps`` fails, so the caller can fail closed.
+    """
+    if not pids:
+        return {}
+    done = subprocess.run(["/bin/ps", "-o", "pid=,stat=,comm=", "-p", ",".join(str(p) for p in pids)],
+                          capture_output=True, timeout=10, text=True)
+    if done.returncode not in (0, 1) or (done.returncode == 1 and done.stderr.strip()):
+        raise OSError("ps failed")  # exit 1 without a message only means that no pid matched
+    names = {}
+    for line in done.stdout.splitlines():
+        parts = line.split(None, 2)
+        if len(parts) == 3 and parts[0].isdigit() and not parts[1].startswith("Z"):
+            names[int(parts[0])] = Path(parts[2]).name
+    return names
+
+
+def descendant_names(policy: object) -> frozenset[str]:
+    """Executable basenames a process of a contained run can carry: the profile's exec allow-list (the pinned
+    interpreter, the pinned ``claude`` and its helpers), ``sandbox-exec`` and this runner's own interpreter
+    (the supervisor's preamble and the uncontained control). Any other new process of the dedicated user is
+    a launchd agent or the like and is noted, not counted as a survivor."""
+    paths = {policy.claude, policy.interpreter, _mac.SANDBOX_EXEC, sys.executable, os.path.realpath(sys.executable),
+             *(path for path, _ in policy.helpers)}
+    names = {Path(path).name for path in paths}
+    return frozenset(names | {"Python", "python", "python3", f"python{sys.version_info[0]}.{sys.version_info[1]}"})
+
+
 def kill_processes(pids: Sequence[int]) -> None:
     for pid in pids:
         try:
@@ -1962,7 +2050,7 @@ def parse_helper_output(probe: Probe, result: ExecResult) -> tuple[dict[str, str
         elif (type(name) is str and name in declared and event.get("outcome") in OUTCOMES
               and name not in outcomes):
             outcomes[name] = event["outcome"]
-    killed = result.settled and not result.timed_out and (result.exit_code is None or result.exit_code < 0)
+    killed = swept_settled(result) and not result.timed_out and (result.exit_code is None or result.exit_code < 0)
     for name in begun - set(outcomes):
         if name in probe.terminal and name in LIMIT_ATTRIBUTION and killed:
             outcomes[name] = "denied"
@@ -2166,7 +2254,8 @@ class QualificationProbeRunner:
                  lan_ip: str | None = None, read_credentials: Callable[[], Sequence[str]] = lambda: (),
                  proxy_factory: Callable[..., object] = _mac.EgressProxy,
                  proxy_block: Callable[..., dict] = run_proxy_parsing, kill_table_diff: bool = False,
-                 endpoints: Sequence[str] | None = None):
+                 endpoints: Sequence[str] | None = None, child_names: frozenset[str] | None = None,
+                 process_names: Callable[[Sequence[int]], Mapping[int, str]] = live_process_names):
         self.control, self.contained, self.launch_contained = control, contained, launch_contained
         self.arena_parent, self.proxy_address = Path(arena_parent), proxy_address
         self.sessions, self.process_scan, self.process_kill = sessions, process_scan, process_kill
@@ -2178,6 +2267,7 @@ class QualificationProbeRunner:
         self.lan_ip = discover_lan_address() if lan_ip is None else (lan_ip or None)
         self.read_credentials, self.proxy_factory = read_credentials, proxy_factory
         self.proxy_block, self.kill_table_diff = proxy_block, kill_table_diff
+        self.child_names, self.process_names = child_names, process_names  # ``None``: every new process counts
         self.endpoints = None if endpoints is None else tuple(endpoints)  # the proxy's allowed list (policy)
         self.quota: list[dict] = []
         self.markers: list[str] = []
@@ -2239,6 +2329,25 @@ class QualificationProbeRunner:
         except Exception:
             return None
 
+    def _new_processes(self, before: set, after: set) -> tuple[list[int], dict]:
+        """The new processes of the table diff that can be survivors of the run, and a note on the rest.
+
+        With ``child_names`` set, a new process counts only when it is alive, not a zombie, and carries the
+        name of an executable the profile lets a contained run start. The note (``count``, up to 8 sanitized
+        names) says what else appeared, so the noise level is evidence rather than a guess. A failing ``ps``
+        counts every new process (fail closed)."""
+        new = sorted(pid for pid, _ in after - before)
+        if self.child_names is None or not new:
+            return new, {}
+        try:
+            names = dict(self.process_names(new))
+        except Exception:
+            return new, {}
+        mine = [pid for pid in new if names.get(pid) in self.child_names]
+        stray = sorted({bundle_safe_name(names[pid]) for pid in new if pid in names and pid not in mine
+                        and _PS_NAME.fullmatch(names[pid])})
+        return mine, {"strayProcesses": {"count": len(new) - len(mine), "names": stray[:8]}} if len(new) > len(mine) else {}
+
     def _helper_row(self, probe: Probe, mode: str) -> dict:
         control = mode == "uncontained-control"
         executor = {"uncontained-control": self.control, "contained": self.contained,
@@ -2271,8 +2380,10 @@ class QualificationProbeRunner:
             found = list(self.process_scan(arena.nonce)) if probe.survivors else []
             scanned = set(found)
             table_after = self._table() if probe.survivors else None
+            stray: dict = {}
             if table_before is not None and table_after is not None:
-                found = sorted({*found, *(pid for pid, _ in table_after - table_before)})
+                fresh, stray = self._new_processes(table_before, table_after)
+                found = sorted({*found, *fresh})
             table_ok = table_before is not None and table_after is not None
             if found:
                 self.process_kill(found if self.kill_table_diff else [p for p in found if p in scanned])
@@ -2289,7 +2400,9 @@ class QualificationProbeRunner:
                 # a kill is a memory denial only when the backend says its memory watchdog fired
                 if not control and parsed.get(name) == "denied" and result.limit_exceeded != reason:
                     parsed[name] = "inconclusive"
-            row_settled = result.settled
+            # a member the sweep killed while it was still exiting is reported (escapedProcesses), not held
+            # against the row: surviving_processes says whether anything outlived the sweep
+            row_settled = swept_settled(result)
             if probe.judge == "survivors":
                 tried = any(v in ("allowed", "denied") for v in parsed.values()) or (
                     bool(begun) and result.timed_out)
@@ -2315,7 +2428,7 @@ class QualificationProbeRunner:
                 independent={"changedOutside": [bundle_safe_name(path) for path in changed[:MAX_CHANGED_PATHS]],
                              "changedCount": len(changed),
                              "listenerHits": {k: hits[k] for k in sorted(hits)}, "survivors": len(found),
-                             "tripwires": tripped,
+                             "tripwires": tripped, **stray,
                              **({"escapedProcesses": result.escaped_processes,
                                  "survivingProcesses": result.surviving_processes}
                                 if probe.survivors and not control else {}),
@@ -2377,8 +2490,10 @@ class QualificationProbeRunner:
         after = self._table()
         scanned = set(found)
         table_ok = before is not None and after is not None
+        stray: dict = {}
         if table_ok:
-            found |= {pid for pid, _ in after - before}
+            fresh, stray = self._new_processes(before, after)
+            found |= set(fresh)
         if found:
             self.process_kill(sorted(found if self.kill_table_diff else scanned))
         _, begun = parse_helper_output(probe, result)
@@ -2391,7 +2506,7 @@ class QualificationProbeRunner:
             state = "denied"
         else:
             state = "inconclusive"
-        return state, {"cancel": {"cancelled": result.cancelled, "survivors": len(found),
+        return state, {"cancel": {"cancelled": result.cancelled, "survivors": len(found), **stray,
                                   "survivingProcesses": result.surviving_processes,
                                   "escapedProcesses": result.escaped_processes,
                                   "settled": swept_settled(result), "refused": error}}
@@ -2838,5 +2953,6 @@ def make_qualification_runner(
         arena_parent=arena_parent, proxy_address=f"127.0.0.1:{policy.proxy_port}", sessions=sessions,
         public=public, layout=lambda workdir: layout_from_policy(policy, workdir), real_home=home,
         lan_ip=lan_ip, allowed_ip=allowed_ip, mach_names=mach_names,
-        read_credentials=read_credentials or (lambda: credential_values(config_dir)), endpoints=policy.endpoints)
+        read_credentials=read_credentials or (lambda: credential_values(config_dir)), endpoints=policy.endpoints,
+        child_names=descendant_names(policy))
     return QualificationProbeRunner(**(options | runner_options))
