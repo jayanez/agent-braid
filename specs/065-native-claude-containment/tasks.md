@@ -302,6 +302,12 @@ shared object store fails the portable-root check).
   1 GiB over the limit for two seconds, the swept-member case no longer read as unsettled. No SBPL rule changed;
   any widening waits for a founder decision with the `startup` evidence.
 
+  Round 4 self-check, 2026-11-05 (attempt label `t009-20261105a`, no session spent): the new no-model `startup` stage
+  (egress refused, 0 connections) shows the contained `claude -p` exits before init with
+  `EPERM: operation not permitted, mkdir '/tmp/claude-503'`: the CLI's private temp directory defaults to `/tmp`, outside
+  the profile's writes. The launch environment now sets the documented `CLAUDE_CODE_TMPDIR` to the per-run `TMPDIR`
+  (already writable); no profile rule changes.
+
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes
   the containment and Claude host records with `evidenceSha256` = bundle hash,

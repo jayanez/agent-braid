@@ -421,8 +421,10 @@ class ContainmentPolicy:
             env["PYTHONHASHSEED"] = "0"
             env["PYTHONDONTWRITEBYTECODE"] = "1"  # the interpreter must not write .pyc files (no write allowed)
         else:
+            # CLAUDE_CODE_TMPDIR: the CLI makes its private temp directory claude-<uid> under it; the default
+            # /tmp is outside the profile's writes (startup stage, 2026-11-05: "EPERM ... mkdir '/tmp/claude-503'")
             env.update(CLAUDE_CONFIG_DIR=self.config_dir, DISABLE_AUTOUPDATER="1",
-                       CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="1")
+                       CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="1", CLAUDE_CODE_TMPDIR=tmpdir)
         return env
 
 
