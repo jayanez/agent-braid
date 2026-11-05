@@ -56,6 +56,17 @@ keeps the final say. Today it only records structural decision episodes beside
 each analysis so the owner can measure it; it has no learned model yet, never
 changes a result and never grants authority.
 
+**Watch your agents work.** `agent-braid view serve` opens **Loom**, a read-only
+dashboard on your own machine: each Claude Code session and subagent is a live
+thread, the analysis plans show where agents may collide, and an Explore 3D view
+shows the same lanes in depth.
+
+<p align="center">
+  <img src="specs/061-activity-viewer/vis1d/evidence/after-live-desktop-dark.png"
+       alt="Loom dashboard: a Now sentence and KPI tiles above live threads for four Claude Code sessions and their subagents on a real time axis, with the plan map below"
+       width="960">
+</p>
+
 ## ✨ What Agent Braid gives you
 
 - **See interactions before they collide.** An effect graph across agent tasks
@@ -347,8 +358,8 @@ which need an order or isolation, and keeps the evidence.
 
 Agents keep working in their own host. Agent Braid analyzes what they declare,
 and only an operator grant on an exact plan digest can execute anything. Everything
-else (telemetry, System One, the Harness laboratory and the Loom viewer) is opt-in,
-experimental or still in development, and none of it can authorize execution.
+else (telemetry, System One, the Harness laboratory and the Loom viewer) is opt-in
+or experimental, and none of it can authorize execution.
 
 <details>
 <summary><b>Drill-down: analysis, authority and the System One shadow path</b></summary>

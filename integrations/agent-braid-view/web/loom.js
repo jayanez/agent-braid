@@ -942,7 +942,15 @@ function renderKindFilter() {
   box.dataset.kinds = key;
   const chip = (kind, label, glyph, n) => h("button", {
     type: "button", class: "kind-chip", "aria-pressed": state.filterKind === kind ? "true" : "false",
-    on: { click: () => { state.filterKind = state.filterKind === kind && kind !== "" ? "" : kind; renderKindFilter(); renderTable(); } },
+    "data-kind": kind,
+    on: { click: () => {
+      state.filterKind = state.filterKind === kind && kind !== "" ? "" : kind;
+      renderKindFilter();
+      // the chips were rebuilt: give focus back to the one just pressed
+      const again = box.querySelector ? box.querySelector('[data-kind="' + CSS.escape(kind) + '"].kind-chip') : null;
+      if (again) again.focus();
+      renderTable();
+    } },
   }, glyph ? h("span", { class: "glyph", "data-kind": kind, "aria-hidden": "true" }, glyph) : null, label,
   h("span", { class: "n" }, String(n)));
   box.replaceChildren(chip("", t("table.kindAll"), null, [...counts.values()].reduce((a, b) => a + b, 0)),
@@ -1140,8 +1148,10 @@ function renderEvidence() {
   const element = state.selected === null ? undefined : elementOf(state.selected);
   // Details opens by itself on a selection (a click must always show something) and closes again on deselect
   // only when it was this auto-open that opened it.
-  if (element && !panels.detail) { panels.detail = true; detailAuto = true; applyPanels(); }
-  else if (!element && detailAuto) { panels.detail = false; detailAuto = false; applyPanels(); }
+  const fresh = state.selected !== lastSelectedSeq;
+  lastSelectedSeq = state.selected;
+  if (fresh && element && !panels.detail) { panels.detail = true; detailAuto = true; applyPanels(); }
+  else if (fresh && !element && detailAuto) { panels.detail = false; detailAuto = false; applyPanels(); }
   $("detail-close").hidden = !element;
   $("detail").classList.toggle("open", Boolean(element));
   if (!element) {
@@ -1504,6 +1514,7 @@ function renderPlan() {
 // beside it. The open/closed choice is a per-viewer convenience kept in this browser only.
 const panels = { detail: readPreference("panel.detail") === "open", side: readPreference("panel.side") === "open" };
 let detailAuto = false;
+let lastSelectedSeq = null; // Details opens by itself only when the selection changes, never on a re-render
 let sideTab = "collisions";
 
 function applyPanels() {

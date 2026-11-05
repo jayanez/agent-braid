@@ -768,7 +768,9 @@ export function createBraidScene(container, hooks = {}) {
     requestRender();
   }
 
+  let focusedSeq = null;
   function frameAll(immediate) {
+    focusedSeq = null;
     const pose = poseFor(PRESET_DIRECTIONS[preset]);
     if (!pose) return;
     pose.framesScene = true;
@@ -777,7 +779,7 @@ export function createBraidScene(container, hooks = {}) {
   }
 
   // VIS.1d T072: an eased move that centres the selected element and brings it close, along the current direction.
-  function focusOn(seq) {
+  function focusOn(seq, immediate) {
     const objects = seq === null ? undefined : built.bySeq.get(seq);
     if (!objects || !visible.has(seq)) return false;
     const box = new THREE.Box3();
@@ -790,7 +792,8 @@ export function createBraidScene(container, hooks = {}) {
     back.normalize();
     const distance = Math.max(radius * 4, 3);
     userMoved = true;
-    moveTo({ centre, position: centre.clone().addScaledVector(back, distance), distance, radius: Math.max(radius, distance / 2) }, false);
+    moveTo({ centre, position: centre.clone().addScaledVector(back, distance), distance, radius: Math.max(radius, distance / 2) }, Boolean(immediate));
+    focusedSeq = seq;
     return true;
   }
 
@@ -1023,6 +1026,8 @@ export function createBraidScene(container, hooks = {}) {
       if (disposed) return;
       // a new shape rebuilds the braid at the new proportions, then frames it again
       if (Math.abs(camera.aspect - builtAspect) / Math.max(builtAspect, 0.1) > 0.05) rebuild();
+      // a fly-to survives a resize (opening the Details rail resizes the canvas): it is redone at the new shape
+      if (focusedSeq !== null && focusOn(focusedSeq, true)) return;
       userMoved = false;
       frameAll(true);
     }, 150);
