@@ -236,9 +236,9 @@ class ToolDurationTests(IngestCase):
 
     def test_duration_is_read_only_on_post_tool_use_and_never_assumed_for_subagent_stop(self):
         payload = fixture("subagent-stop")
-        payload["duration_ms"] = 99
+        payload["duration_ms"] = 987654321
         self.hooks.handle(payload)
-        self.assertNotIn("99", json.dumps([event["data"] for event in self.events()]))
+        self.assertNotIn("987654321", json.dumps([event["data"] for event in self.events()]))
         self.assertIn("duration_ms", self.hooks.dropped_names())
         self.assertNotIn("toolDurationMs", json.dumps(self.events()))
 

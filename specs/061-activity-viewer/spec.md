@@ -115,7 +115,7 @@ Accepted without changes in T001 on 2026-11-01.
 | ID | Decision requested on 2026-10-31 |
 |---|---|
 | D1 | The viewer is an opt-in companion inside this repository, never inside the `agent-braid` plugin package. |
-| D2 | First surface: web 3D with Three.js on loopback. The Claude Code mod pane, a terminal UI and a Codex MCP App are planned; the surface is selectable by configuration; the design stays host-agnostic for Cursor, OpenCode, Pi and others. Vendoring Three.js is conditional on ADR 0033; without it VIS.1 ships the table view and SVG frames only. |
+| D2 | First surface: web 3D with Three.js on loopback. The Claude Code mod pane, a terminal UI and a Codex MCP App are planned; the surface is selectable by configuration; the design stays host-agnostic for Cursor, OpenCode, Pi and others (a design aim, not delivered parity; see the host parity amendment of 2026-11-05). Vendoring Three.js is conditional on ADR 0033; without it VIS.1 ships the table view and SVG frames only. |
 | D3 | Live-capable from VIS.1: contract, loopback server, Server-Sent Events, `--watch`, observational Claude Code HTTP hooks, replay and the web viewer in VIS.1a; OTLP/JSON ingest for Claude Code and Codex in VIS.1b (amended 2026-10-31 after the counterfactual review). |
 | D4 | Effort data is ephemeral in memory. Export omits it by default; `--include-effort` builds, in VIS.1b, a comparative evidence pack aligned with `agent-braid harness compare`, so recorded sessions can be compared as host estimates. Presenting a pack as evidence of Agent Braid's effect is a public claim under GOVERNANCE.md. |
 | D5 | Track documentation (ROADMAP, STATUS, milestone index, program, GitHub tracking) is updated from the start. |
@@ -212,6 +212,20 @@ after captures are in `vis1d/evidence/`. On 2026-11-05 the owner chose "Dashboar
 The T001 approval, the VIS.1a closure approval, the VIS.1c gate answers and the
 historical snapshots do not cover this amendment. It is reviewed at its own closure
 (T074).
+
+## Host parity amendment (2026-11-05)
+
+The owner asked for the same viewer experience in Claude Code, Codex and OpenCode. A review
+on 2026-11-05 found parity only for plan maps from `analyze-work` report copies and for
+result-root discovery, which all three native plugins share. Live sessions, subagents,
+tool calls, durations and waiting reach the viewer from Claude Code hooks only
+(`/hook/claude`). Codex live data was split between VIS.1b (OTLP) and VIS.3 (hooks and
+`notify`); OpenCode had no task, probe or route, only a VIS.4 research row.
+
+The owner chose to plan parity now and to build it only when the owner resumes viewer
+work. This amendment adds REQ-029 and tasks T076 to T083 (VIS.1e). It does not change
+D7, D8, D10, OD-V1 to OD-V6, the CSP, loopback binding, the never-collect list or any
+allowlist; each new host source passes its own probe and privacy review first.
 
 ## Ingest token amendment (2026-11-04)
 
@@ -833,6 +847,28 @@ start") before any code. Existing cookies stay valid, and nothing is logged.
 stays connected. The in-memory history is kept, and the code is refused on reuse.
 
 Verification: T067, T070.
+
+### REQ-029 — Host parity (VIS.1e)
+
+Claude Code, Codex and OpenCode get the same viewer experience wherever the host emits
+the data: plan maps; one live thread per session; subagents as branches; tool calls as
+beads with durations only when the host states them; waiting where the host signals it;
+a `view env --host <host>` setup command that writes nothing; the same page, labels,
+filters and telemetry counts; and the same two agent skills in each host: one that starts
+or opens the viewer with any of its options, and one that answers general and specific
+questions about what the viewer holds (sessions, lanes, running and waiting agents,
+predicted collisions, durations, usage counts) from a read-only summary. A capability a host cannot provide is shown as absent for
+that host, never as zero, and documented per host. Each host source is admitted only
+after an owner-run probe that records field names (never values) and a privacy review of
+its allowlist.
+
+**SC-029:** Given one recorded fixture per host with two sessions, one subagent and one
+stated tool call, the viewer derives the same lanes, branches, beads and labels for each
+host; `view env --host` exists for each host and writes nothing; the launch and stats
+skills are installed and answer the same questions in each host; a capability missing on
+one host is documented in `docs/tooling/VIEWER.md` and shown as absent, not zero.
+
+Verification: T076 to T086.
 
 ## Scientific boundaries and compatibility
 

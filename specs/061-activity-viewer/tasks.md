@@ -530,6 +530,51 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   `docs/tooling/VIEWER.md`, `docs/tooling/TELEMETRY.md`. Verification: `tests/test_view_serve.py`
   (UsageTests), `tests/test_tooling_telemetry.py`.
 
+## VIS.1e — Host parity (amendment of 2026-11-05)
+
+Planned on the owner's request of 2026-11-05; built only when the owner resumes viewer
+work. Goal: REQ-029, the same experience in Claude Code, Codex and OpenCode.
+
+- [ ] T076 (REQ-029): Parity contract. A host-neutral mapping from each host's session,
+  subagent, tool and stop signals to the existing loom events, per-host capability table
+  (provided, absent, unknown), and the "absent, not zero" rule. Files: `contracts/host-parity.md`,
+  `contracts/surfaces-matrix.json`. Dependencies: none.
+- [ ] T077 (REQ-029): Codex live probe with a throwaway listener and no Loom code: record the
+  names (never values) emitted by Codex hooks, `notify` and `[otel]` for session start and end,
+  subagent, tool call and duration. Extends T031. Files: `host-verification-runbook.md`, `evidence/`.
+- [ ] T078 (REQ-029): OpenCode live probe, same method: plugin events and any OpenTelemetry export
+  of the installed OpenCode, through the SPEC-068 plugin or a throwaway listener. Files:
+  `host-verification-runbook.md`, `evidence/`.
+- [ ] T079 (REQ-029): Privacy review of the Codex and OpenCode field allowlists from T077 and T078
+  (owner gate), as T052 did for Claude Code.
+- [ ] T080 (REQ-029): Codex ingest route and adapter to the loom events of T076, with refusal of
+  decision events and the empty-response rule. Files: `agent_braid/view_hooks.py` or a new
+  `view_host_codex.py`, `view_serve.py`, contract route table. Dependencies: T077, T079.
+- [ ] T081 (REQ-029): OpenCode ingest route and adapter, same rules; the SPEC-068 plugin may post to
+  it only if the probe shows no in-process alternative. Dependencies: T078, T079.
+- [ ] T082 (REQ-029): `view env --host codex|opencode` printing observational setup that writes
+  nothing, reads the ingest token at every call and never blocks the host. Files: `agent_braid/view_cli.py`.
+- [ ] T083 (REQ-029): Parity tests with one recorded fixture per host (SC-029), per-host captures,
+  and the host table in `docs/tooling/VIEWER.md` and the README. Dependencies: T080 to T082.
+- [ ] T084 (REQ-029): `view stats`, a read-only summary of a running viewer for the owner (owner
+  token, like `view open`): sessions and lanes by host, running and waiting agents, predicted
+  collisions by class, longest stated tool calls, plans loaded, with `--json` and filters
+  (`--host`, `--session`, `--since`); and its usage counts from `telemetry report`. Same privacy
+  rules as the page: labels only, no path, no payload. Files: `agent_braid/view_cli.py`,
+  `agent_braid/view_serve.py` (an owner-token read route), contract route table.
+- [ ] T085 (REQ-029): Owner gate on where viewer skills live. ADR 0032 keeps viewer code and
+  the words `agent-braid view` out of the native plugin tree (`tests/test_view_boundaries.py`).
+  Options: (a) skills shipped by the viewer companion and installed per host by a previewed
+  `view setup`, (b) an ADR 0032 amendment that lets the plugin carry skills that only call the
+  CLI. Recommendation: (a), which keeps the boundary.
+- [ ] T086 (REQ-029): Two skills with identical text for Claude Code, Codex and OpenCode, placed
+  per T085. "Viewer": start (`serve` with `--port`, `--watch`, `--no-discover`, `--replay`,
+  `--runtime-dir`, `--telemetry`, `--rotate-token`), open another browser (`open`), print host
+  setup (`env --host`), and check whether one is running. "Viewer stats": answer general and
+  specific questions through `view stats` and `telemetry report`, never by reading the page or
+  the token. Tests: skill parity across hosts and a fixture-driven stats answer. Dependencies:
+  T084, T085.
+
 ## Closure (each delivery)
 
 - [ ] T036: Pre-PR reviews (code review, quality, simplification),

@@ -432,7 +432,7 @@ def _validate(args: argparse.Namespace) -> int:
 
 def _env(args: argparse.Namespace) -> int:
     if args.host != "claude":
-        raise CliError(f"view env: host {args.host} is not available yet; OTLP ingest arrives with VIS.1b")
+        raise CliError(f"view env: host {args.host} is not available yet; live sessions for it are planned in VIS.1e")
     from .view_hooks import OBSERVATIONAL_EVENTS
     from .view_serve import HOOK_PATH, INGEST_TOKEN_NAME
     port = "<port>" if args.port is None else str(args.port)
