@@ -480,7 +480,7 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   Files: new first-party `planmap.js` (pinned in `BUNDLE_FILES`), `state.js`,
   tests. Verification: SC-025 (plan part).
   Done 2026-11-05 (this PR): plan map per report (planmap.js), collisions and durations panels; no observed tile without a source.
-- [x] T072 T072 (REQ-026, REQ-027): Explore 3D (the owner chose this option on
+- [x] T072 (REQ-026, REQ-027): Explore 3D (the owner chose this option on
   2026-11-05, which reopens OD-V6). The tokens and thread styles of the loom, T064
   labels, plan-map glyphs in place of class text, eased camera presets,
   fly-to-selected, and reset and fit always visible. No new vendored file. Use
