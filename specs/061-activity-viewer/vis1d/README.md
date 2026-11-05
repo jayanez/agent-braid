@@ -2,7 +2,8 @@
 
 Planning package for a fourth delivery of SPEC-061 (track VIS.1). Dated 2026-11-05.
 Nothing here implements the viewer. The tasks T068 to T074 in [tasks.md](../tasks.md)
-are unticked, and the owner has not yet chosen an option (see "Owner decision").
+are unticked. The owner chose the full dashboard and the redone 3D view (see
+"Owner decision").
 
 ## Why
 
