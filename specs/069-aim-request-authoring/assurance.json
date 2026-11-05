@@ -13,7 +13,7 @@
   ],
   "assumptions": "Plugin 0.1.0-alpha.7 as the compatibility baseline; runtime stays dependency-free; jsonschema is available as a dev/CI dependency; hosts expose non-interactive modes (claude -p, codex exec, opencode run) to be confirmed in plan research; the 2026-11-05 divergence observation covers two inputs only.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "b0c2ec5dcabbad7be3b2e23fef2c8ea5fb860ef3",
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -96,13 +96,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive by default: aim and git semantics, analysis-report schema, agent-braid-plugin and agent-braid-tooling contracts unchanged unless REQ-002/REQ-009 record a versioned decision with migration messages; requests accepted by alpha.7 replayed for byte-identical reports.",
   "domain": "Agent Braid analyze-work MCP request authoring: AIM 0.2.0-draft records, analysis-input envelope 0.1.0-alpha, git analysis request 0.1.0-alpha and a new units request, as delivered to host models through the native plugin.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "b0c2ec5dcabbad7be3b2e23fef2c8ea5fb860ef3",
+    "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; analyze-work remains read-only analysis; no grants, prepare or execute; native runs use disposable profiles and a sandbox workspace and never touch the user's real host configuration or credentials.",
   "human_review": "pending",
