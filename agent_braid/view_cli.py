@@ -264,7 +264,8 @@ def _open_link(args: argparse.Namespace) -> int:
             candidates = []
         if len(candidates) > 1:
             ports = ", ".join(path.name[len(OWNER_TOKEN_PREFIX):] for path in candidates)
-            raise CliError(f"view open: several viewers are running (ports {ports}); pass --port")
+            raise CliError(f"view open: owner token files for ports {ports}; pass --port for the running viewer "
+                           "(a file left by a viewer that did not stop cleanly is replaced at its next start)")
     if not candidates:
         raise CliError("view open: no running viewer found; start one with `agent-braid view serve`")
     path = candidates[0]

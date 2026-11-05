@@ -283,6 +283,9 @@ def _owner_token_file(runtime_dir: Path, port: int) -> tuple[Path, str]:
     except OSError as exc:
         raise ServeError("runtime-dir", f"cannot open the runtime directory: {exc.strerror}") from exc
     try:
+        folder = os.fstat(directory)
+        if folder.st_uid != os.getuid() or stat.S_IMODE(folder.st_mode) & 0o077:
+            raise ServeError("runtime-dir", "the runtime directory is owned by the user and private (0700)")
         try:
             info = os.stat(name, dir_fd=directory, follow_symlinks=False)
         except FileNotFoundError:
@@ -295,13 +298,30 @@ def _owner_token_file(runtime_dir: Path, port: int) -> tuple[Path, str]:
         try:
             os.fchmod(descriptor, 0o600)
             os.write(descriptor, token.encode("ascii"))
+            written = os.fstat(descriptor)
         finally:
             os.close(descriptor)
     except OSError as exc:
         raise ServeError("owner-token", f"cannot write the owner token: {exc.strerror}") from exc
     finally:
         os.close(directory)
-    return runtime_dir / name, token
+    return runtime_dir / name, token, (written.st_dev, written.st_ino)
+
+
+def _remove_owner_token_file(path: Path, identity: tuple[int, int]) -> None:
+    """Remove the owner token file this viewer wrote, and only that file (same device and inode), via the directory."""
+    try:
+        directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    except OSError:
+        return
+    try:
+        info = os.stat(path.name, dir_fd=directory, follow_symlinks=False)
+        if (info.st_dev, info.st_ino) == identity and stat.S_ISREG(info.st_mode):
+            os.unlink(path.name, dir_fd=directory)
+    except OSError:
+        pass
+    finally:
+        os.close(directory)
 
 
 def read_owner_token(path: Path) -> str | None:
@@ -313,7 +333,7 @@ def read_owner_token(path: Path) -> str | None:
     try:
         info = os.fstat(descriptor)
         if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid()
-                or stat.S_IMODE(info.st_mode) != 0o600 or info.st_size != 43):
+                or stat.S_IMODE(info.st_mode) != 0o600 or info.st_nlink != 1 or info.st_size != 43):
             return None
         text = os.read(descriptor, 64).decode("ascii", "replace")
     except OSError:
@@ -505,7 +525,7 @@ class ViewServer(ThreadingHTTPServer):
         try:
             self.token_path, self._ingest_token, self.token_reused = _ingest_token_file(
                 Path(runtime_dir), rotate=rotate_token)
-            self.owner_path, self._owner_token = _owner_token_file(Path(runtime_dir), self.port)
+            self.owner_path, self._owner_token, self._owner_identity = _owner_token_file(Path(runtime_dir), self.port)
         except ServeError:
             self.server_close()
             raise
@@ -671,11 +691,7 @@ class ViewServer(ThreadingHTTPServer):
     def server_close(self) -> None:
         self._closing.set()
         if getattr(self, "owner_path", None) is not None:
-            try:
-                if read_owner_token(self.owner_path) == self._owner_token:
-                    self.owner_path.unlink()  # only our own file: never one another viewer wrote since
-            except OSError:
-                pass
+            _remove_owner_token_file(self.owner_path, self._owner_identity)  # only our own file, never a swapped one
             self.owner_path = None
         super().server_close()
 
