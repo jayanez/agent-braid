@@ -142,8 +142,18 @@ Owner decisions of 2026-11-05 after the counterfactual analysis
 - **D11 — Required hosts (resolves OD-3).** Claude Code, Codex and OpenCode must
   all meet REQ-010 before release. Codex must be installed for the driver
   (it is not on this machine's `PATH` on 2026-11-05).
+- **D12 — Token cap (resolves OD-2).** The compact `analyze-work` tool
+  definition is capped at 1,500 tokens (named-tokenizer approximation, REQ-005).
+  A test fails above the cap and the description-only fallback applies; the cap
+  is raised only by a reviewed change. Decided by the owner on 2026-11-05.
+- **D13 — Host authentication (resolves OD-4).** The driver takes an API key from
+  the operator's environment at run time where the host supports it, never
+  writing or logging it; runs bill to that API account. A host without
+  environment-key support uses a one-time owner sign-in into a dedicated,
+  reused sandbox profile that never reads the real configuration. Decided by
+  the owner on 2026-11-05.
 
-Open questions for the owner (OD-*) are listed under Evidence and unresolved
+Former open questions (OD-*) and their resolutions are listed under Evidence and unresolved
 questions.
 
 ## Requirements and acceptance scenarios
@@ -230,7 +240,7 @@ documented fallback (description plus skill) as a declared limit. The tool
 definitions are recorded at the server boundary (the plugin's `list_tools`
 output, captured by a recording stdio proxy), where byte identity across hosts
 is checked. Size is measured with named tokenizers as an approximation and kept
-under the cap OD-2. Whether a host loads tool schemas eagerly or on use (Claude
+under the D12 cap (1,500 tokens). Whether a host loads tool schemas eagerly or on use (Claude
 Code defers MCP tool schemas until use) is recorded. The per-kind schema is
 kept only if the D9 ablation arm shows it improves first-attempt validity in at
 least one host; otherwise the fallback is used everywhere.
@@ -509,16 +519,10 @@ Planned and obtained evidence are separate fields in `assurance.json`. At draft
 stage no obtained evidence exists; the 2026-11-05 divergence observation is a
 pre-specification note, to be reproduced and recorded by T002.
 
-Open questions for the owner:
-
-- **OD-2:** Token cap for the `analyze-work` definition (REQ-005), proposed in
-  the plan from measurements.
-- **OD-4:** Host authentication in disposable profiles (REQ-013): which
-  non-interactive method each host supports, observed in the plan's research;
-  if none, the owner accepts a one-time sign-in step or declares the host a
-  limit.
-
-OD-1, OD-3, OD-5 and OD-6 were resolved by D10, D11, D8 and D9.
+No open questions remain. OD-1 to OD-6 were resolved by D10, D12, D11, D13,
+D8 and D9. Owner review of spec and plan (T001, first part) is recorded in
+`reviews/owner-t001-20261105.md`; ADR 0038 and the request contract are
+reviewed separately before T001 closes.
 
 Native evidence, human review and owner approval are separate gates; no green
 check implies them.

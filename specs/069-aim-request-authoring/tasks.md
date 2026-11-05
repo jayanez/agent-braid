@@ -17,7 +17,7 @@ and T010's final run measures the release candidate without them.
 
 - [ ] T001 (REQ-001 / SC-001): [P1] Write ADR 0038 and
   `contracts/analyze-work-request.md`; owner review of spec, plan, ADR and
-  contract; decide OD-1 to OD-4. Dependencies: adversarial and counterfactual
+  contract; OD-1 to OD-4 decided as D10–D13. Dependencies: adversarial and counterfactual
   reviews recorded. Verification: procedure_001. Evidence: owner review record
   bound to a frozen commit.
 - [ ] T002 (REQ-002 / SC-002): [P1] Script that enumerates schema keywords and
@@ -47,7 +47,7 @@ and T010's final run measures the release candidate without them.
   `--fake-hosts` CI self-test, tool allowlist, OS-sandbox denied-access probe
   and canary, transcript redaction and secret scan, teardown check and
   `runbook.md` manual-step list; research host headless and authentication
-  modes (OD-4); install Codex for the driver (D11). Dependencies: T001. Verification: procedure_013.
+  modes (D13); install Codex for the driver (D11). Dependencies: T001. Verification: procedure_013.
 - [ ] T010 (REQ-010 / SC-010): [P2] Write the prompt sets and scoring rules; freeze
   the held-out set before any guidance rewrite. Baseline run (P2) of alpha.7
   plus the PR #1099 guidance through the driver; final run (closing phase) on
@@ -88,4 +88,4 @@ and T010's final run measures the release candidate without them.
 
 Corpus agreement is not proof over all inputs. Native results cover the observed
 host versions, models and prompt set. Host sign-in may remain a one-time manual
-step (OD-4); any other manual step is a defect in T013.
+step (D13); any other manual step is a defect in T013.
