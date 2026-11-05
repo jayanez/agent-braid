@@ -31,8 +31,8 @@ from tests.view_http_helpers import http_request
 
 WEB = Path(__file__).resolve().parents[1] / "integrations/agent-braid-view/web"
 VENDOR = WEB / "vendor"
-FIRST_PARTY = ("index.html", "loom.js", "braid-scene.js", "state.js", "strings.js", "timeline.js", "style.css")
-SCRIPTS = ("loom.js", "braid-scene.js", "state.js", "strings.js", "timeline.js")
+FIRST_PARTY = ("index.html", "loom.js", "braid-scene.js", "state.js", "strings.js", "timeline.js", "planmap.js", "style.css")
+SCRIPTS = ("loom.js", "braid-scene.js", "state.js", "strings.js", "timeline.js", "planmap.js")
 MODULES = tuple(name for name in SCRIPTS if name != "braid-scene.js")  # what loom.js imports (the scene is a dynamic import)
 SERVED_PATHS = ("/", *(f"/web/{name}" for name in FIRST_PARTY))
 EXAMPLE = Path(__file__).resolve().parents[1] / "specs/061-activity-viewer/contracts/loom-event.example.jsonl"

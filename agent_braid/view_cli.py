@@ -60,7 +60,7 @@ HOOK_TIMEOUT_SECONDS = 5
 BUNDLE_DIR = WEB_SOURCE_DIR
 # The only first-party files `/web/<file>` may serve (vendored files follow vendor/manifest.json). A new
 # file of the bundle is added here; a test pins the list to the files of the source bundle.
-BUNDLE_FILES = ("index.html", "style.css", "loom.js", "braid-scene.js", "state.js", "strings.js", "timeline.js")
+BUNDLE_FILES = ("index.html", "style.css", "loom.js", "braid-scene.js", "state.js", "strings.js", "timeline.js", "planmap.js")
 MAX_BUNDLE_FILE_BYTES = 8 * 1024 * 1024
 _IMPORT_MAP = re.compile(rb"<script\b[^>]*\btype\s*=\s*[\"']?importmap[\"']?[^>]*>(.*?)</script\s*>",
                          re.DOTALL | re.IGNORECASE)

@@ -453,30 +453,33 @@ Plan: [vis1d/README.md](vis1d/README.md), direction: [vis1d/direction.md](vis1d/
 Owner option recorded 2026-11-05: full dashboard and the redone 3D view (vis1d/README.md).
 T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
 
-- [ ] T068 (REQ-024, REQ-027): Dashboard shell and tokens. Covers the app bar, the
+- [x] T068 (REQ-024, REQ-027): Dashboard shell and tokens. Covers the app bar, the
   Now sentence, the KPI strip, the filter chips, the 12-column grid and its
   breakpoints, the tokens from direction.md in both themes, the help popover in
   place of the inline hint paragraphs, and the quiet read-only footer. es/en strings
   keep key parity. Files: `integrations/agent-braid-view/web/index.html`,
   `style.css`, `strings.js`, `loom.js`, `tests/test_view_web_*.py`.
   Verification: SC-024 (first-screen part), palette test.
-- [ ] T069 (REQ-025, REQ-026): Live loom. Covers threads on a time axis, the running
+  Done 2026-11-05 (this PR): shell, Now sentence, KPI strip, chips, grid, tokens, quiet footer; help text kept in the Help tab and the Sources menu.
+- [x] T069 (REQ-025, REQ-026): Live loom. Covers threads on a time axis, the running
   glow, waiting with its tether, finished lanes, subagent branches, tool beads, the
   now edge, the first-load draw-in, and the distinct lane labels (the T064 label
   part). Files: `timeline.js`, `state.js`, tests. Verification: SC-025 (loom part),
   SC-026.
+  Done 2026-11-05 (this PR): threads, glow, branches, tethers, beads, now edge, one-time draw-in; short ids for host lanes (T064 label part).
 - [ ] T070 (REQ-024, REQ-028): Details rail and its bottom-sheet form, KPI and noun
   selection, and playback docked in the hero with follow-now. Also T067
   `view open` (CLI, owner-only credential; the read cookie never mints codes), after
   the `contracts/ui-security-privacy.md` amendment (prerequisite). Files: `loom.js`, `index.html`,
   `agent_braid/view_serve.py`, `agent_braid/view_cli.py`, tests.
   Verification: SC-024, SC-028.
-- [ ] T071 (REQ-025): Plan map and the collision and duration panels. The plan map
+- [x] T071 (REQ-025): Plan map and the collision and duration panels. The plan map
   has dependency columns, the three pair styles, hot nodes and a report selector.
   The collision panel lists predicted pairs, and observed ones only with a source
   (SC-023). The duration panel shows running and waiting per lane (F1, F2).
   Files: new first-party `planmap.js` (pinned in `BUNDLE_FILES`), `state.js`,
   tests. Verification: SC-025 (plan part).
+  Done 2026-11-05 (this PR): plan map per report (planmap.js), collisions and durations panels; no observed tile without a source.
 - [ ] T072 (REQ-026, REQ-027): Explore 3D (the owner chose this option on
   2026-11-05, which reopens OD-V6). The tokens and thread styles of the loom, T064
   labels, plan-map glyphs in place of class text, eased camera presets,

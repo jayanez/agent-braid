@@ -62,6 +62,18 @@ const calls = {
     return { live: d.axis.live, nowMs: d.axis.nowMs, nowX: d.axis.nowX, spanX: d.axis.spanX, breaks: d.axis.breaks,
       ticks: d.axis.ticks(), lanes: d.lanes };
   },
+  loom: () => {
+    const live = state.liveSubset(model);
+    const loom = state.derive(live);
+    const plans = state.derivePlans(model, derived);
+    const facts = state.nowFacts(loom, plans);
+    return { same: live === model, liveSeqs: live.elements.map((element) => element.seq), liveLanes: live.lanes.map((lane) => lane.laneIndex),
+      basis: live.axis.basis, sequence: loom.axis.sequence,
+      plans: plans.map((plan) => ({ key: plan.key, ops: plan.ops.map((lane) => lane.strandId), pairs: plan.pairs.map((pair) => pair.seq),
+        columns: Object.fromEntries(plan.ops.map((lane) => [lane.strandId, plan.columns.get(lane.laneIndex)])) })),
+      facts: { running: facts.running.length, conflicts: facts.conflicts.length, plans: facts.plans, collided: facts.collided, live: facts.live } };
+  },
+  shortids: () => Object.fromEntries(state.shortIds(call.lanes)),
   hashkinds: () => {
     const s = state.createState();
     s.filters.kinds = new Set(["conflict", "gap", "bogus"]);
@@ -628,3 +640,67 @@ class LiveAndV02Tests(ModuleCase):
         update["state"] = "waiting"
         spans = [s for l in self.run_js("live", plain)["lanes"] for s in l["waitSpans"]]
         self.assertTrue(spans and all(s["waitingOn"] is None and s["basis"] is None for s in spans))
+
+
+@NODE
+class LoomAndPlanTests(ModuleCase):
+    """VIS.1d REQ-025 / SC-025: timed events go to the live loom, untimed reports to the plan map; REQ-026 short ids."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        from tests.test_view_web_behaviour import MIXED_REPORT, UNTIMED_REPORT, untimed_model
+        cls.untimed = untimed_model(UNTIMED_REPORT, MIXED_REPORT)
+        # one model with both: the untimed reports followed by the timed example stream
+        mixed = json.loads(json.dumps(cls.untimed))
+        offset = max(e["seq"] for e in mixed["elements"])
+        lane_offset = len(mixed["lanes"])
+        for element in cls.example["elements"]:
+            item = dict(element, seq=element["seq"] + offset, order=element["order"] + len(mixed["elements"]),
+                        lanes=[index + lane_offset for index in element.get("lanes", [])])
+            mixed["elements"].append(item)
+        for lane in cls.example["lanes"]:
+            mixed["lanes"].append(dict(lane, laneIndex=lane["laneIndex"] + lane_offset, seq=lane["seq"] + offset))
+        mixed["table"] = [dict(row, seq=row["seq"]) for row in mixed["table"]]
+        mixed["axis"] = dict(cls.example["axis"], basis="mixed")
+        cls.mixed = mixed
+
+    def test_a_timed_model_is_its_own_live_part(self):
+        result = self.run_js("loom", self.example)
+        self.assertTrue(result["same"])
+        self.assertFalse(result["sequence"])
+        self.assertEqual(result["plans"], [])
+
+    def test_a_mixed_model_keeps_only_timed_events_in_the_loom_and_a_time_axis(self):
+        result = self.run_js("loom", self.mixed)
+        timed = {e["seq"] for e in self.mixed["elements"] if e["timeKnown"]}
+        self.assertEqual(set(result["liveSeqs"]), timed)
+        self.assertFalse(result["sequence"])
+        self.assertNotEqual(result["basis"], "mixed")
+        self.assertEqual(len(result["liveLanes"]), len(self.example["lanes"]))
+
+    def test_every_report_is_one_plan_with_its_own_operations_and_pairs(self):
+        result = self.run_js("loom", self.untimed)
+        self.assertEqual([plan["key"] for plan in result["plans"]], ["r1/analysis.json", "r0/analysis.json"])  # newest first
+        for plan in result["plans"]:
+            own = [e for e in self.untimed["elements"] if (e.get("evidenceRef") or {}).get("path") == plan["key"]]
+            self.assertEqual(sorted(plan["ops"]), sorted({e["strandId"] for e in own if e["element"] == "strand"}))
+            self.assertEqual(sorted(plan["pairs"]), sorted(e["seq"] for e in own if e["element"] == "crossing"))
+
+    def test_a_declared_wait_moves_the_waiting_operation_one_column_right(self):
+        result = self.run_js("loom", self.untimed)
+        for plan in result["plans"]:
+            own = [e for e in self.untimed["elements"] if (e.get("evidenceRef") or {}).get("path") == plan["key"]]
+            for wait in (e for e in own if e["element"] == "strand-state" and e.get("waitingOn") in plan["columns"]):
+                self.assertGreater(plan["columns"][wait["strandId"]], plan["columns"][wait["waitingOn"]])
+
+    def test_the_now_facts_count_predicted_conflicts_and_never_an_observed_collision(self):
+        result = self.run_js("loom", self.untimed)
+        conflicts = sum(e["element"] == "crossing" and e["classification"] == "conflicting" for e in self.untimed["elements"])
+        self.assertEqual(result["facts"], {"running": 0, "conflicts": conflicts, "plans": 2, "collided": None, "live": False})
+
+    def test_short_ids_are_five_characters_and_lengthen_together_on_a_collision(self):
+        lanes = [{"host": "claude", "strandId": "abcde111"}, {"host": "claude", "strandId": "abcde222"},
+                 {"host": "claude", "strandId": "fffff000"}, {"host": "braid", "strandId": "edit-readme"}]
+        ids = self.run_js("shortids", lanes=lanes)
+        self.assertEqual(ids, {"abcde111": "abcde1", "abcde222": "abcde2", "fffff000": "fffff"})

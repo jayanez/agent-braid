@@ -1,19 +1,18 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Agent Braid activity viewer: the 2D timeline (SPEC-061 VIS.1c, REQ-017, T057).
+// Agent Braid activity viewer: the live loom (SPEC-061 VIS.1c REQ-017, VIS.1d REQ-025 and REQ-026, T069).
 //
-// A first-party SVG drawing of the shared derived model (state.js): one row per agent (children under their parent),
-// a time axis proportional to the model's compressed axis with every compression drawn as a labelled break, bars with
-// a state pattern and an outcome glyph, tool ticks, waiting stretches, observation gaps, hazards, the predicted conflict
-// and the other classified pairs as connectors with glyphs, a concurrency band and the playback cursor. It keeps no
-// selection, filter or cursor of its own: `render` receives them and the user's actions go back through `hooks`.
+// A first-party SVG drawing of the live part of the shared derived model (state.js liveSubset): one thread per agent
+// on a real time axis, children branching off their parent's thread and rejoining it when they stop, waiting stretches
+// with a tether to the agent they wait on, tool calls as beads (the longest stated one filled), observation gaps,
+// hazards, every compression drawn as a labelled break, the live "now" edge and the playback cursor. Plans (events
+// that state no time) are not drawn here: they go to the plan map. On the first drawing the threads draw in once,
+// unless the reader asked for reduced motion. It keeps no selection, filter or cursor of its own: `render` receives
+// them and the user's actions go back through `hooks`.
 //
 // No third-party code and no markup strings: elements are made with createElementNS and a fixed allowlist of
 // attribute names, every text is a text node, and nothing here reads the network. Glyphs are `<use>` references to the
 // symbols defined once in index.html, the same ones the legend and the 3D map use.
 //
-// When any event states no time the axis is the event order (state.js, placeBySequence): the ruler names sequence
-// numbers, every event has its own slot and no duration is drawn or derived from a slot.
-
 import { formatClock, formatDuration, positioned } from "./state.js";
 
 const NS = "http://www.w3.org/2000/svg";
@@ -22,11 +21,9 @@ const ALLOWED = new Set(["x", "y", "x1", "y1", "x2", "y2", "width", "height", "r
   "aria-label", "aria-selected", "aria-hidden", "aria-orientation", "clip-path", "href", "data-tip", "data-lane", "data-seq", "id",
   "focusable", "preserveAspectRatio"]);
 
-const ROW_HEIGHT = 34;
-const BAR_HEIGHT = 14;
-const RULER_HEIGHT = 40;
-const BAND_HEIGHT = 30;
-const GOVERNANCE_HEIGHT = 30;
+const ROW_HEIGHT = 46;
+const RULER_HEIGHT = 34;
+const GOVERNANCE_HEIGHT = 28;
 const MIN_SPAN = 500;
 const RIGHT_PAD = 28;
 const LEFT_PAD = 14;
@@ -84,6 +81,8 @@ export function createTimeline(container, hooks) {
   let drag = null;
   let dragged = false;
   let disposed = false;
+  // the one orchestrated moment: threads draw in once, unless the reader asked for reduced motion
+  let intro = !(typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches);
 
   // ---------------------------------------------------------------- viewport
 
@@ -157,19 +156,34 @@ export function createTimeline(container, hooks) {
 
   // ---------------------------------------------------------------- drawing
 
+  function emptyState() {
+    const text = hooks.empty ? hooks.empty() : null;
+    const box = document.createElement("div");
+    box.className = "tl-empty";
+    const strong = document.createElement("strong");
+    strong.textContent = text ? text.title : t("tl.empty.title");
+    box.append(strong, document.createTextNode(text ? text.body : ""));
+    host.replaceChildren(box);
+    geometry = null;
+  }
+
   function draw() {
     if (!input || disposed) return;
     hideTip(); // the node under the pointer is about to be replaced
     const { model, derived, shown, cursorX, selected } = input;
-    const width = Math.max(container.clientWidth || 720, 320);
-    const narrow = width < 520; // on a phone the duration leaves the label column; it stays in the tooltip and the details
-    const labelW = narrow ? 118 : Math.round(Math.min(260, Math.max(130, width * 0.3)));
+    const rows = derived.rows.map((row) => derived.byIndex.get(row.laneIndex));
+    if (!rows.length) { emptyState(); return; }
+    // a phone scrolls the loom sideways instead of squeezing the time axis
+    const width = Math.max(container.clientWidth || 720, 720);
+    const narrow = (container.clientWidth || 720) < 560; // on a phone the duration leaves the label column; it stays in the tooltip and the details
+    const labelW = narrow ? 132 : Math.round(Math.min(220, Math.max(150, width * 0.2)));
     const plotW = Math.max(width - labelW - LEFT_PAD - RIGHT_PAD, 100);
     const [x0, x1] = currentRange();
     const sx = (x) => labelW + LEFT_PAD + ((x - x0) / (x1 - x0)) * plotW;
-    const rows = derived.rows.map((row) => derived.byIndex.get(row.laneIndex));
-    const top = RULER_HEIGHT + BAND_HEIGHT + GOVERNANCE_HEIGHT;
-    const height = top + rows.length * ROW_HEIGHT + 12;
+    const governance = model.elements.filter((element) => shown.has(element.seq) && positioned(element) &&
+      (element.element === "gate-ring" || element.element === "wave-marker" || element.element === "wave-plane"));
+    const top = RULER_HEIGHT + (governance.length ? GOVERNANCE_HEIGHT : 0);
+    const height = top + rows.length * ROW_HEIGHT + 10;
     const rowY = new Map(rows.map((lane, index) => [lane.laneIndex, top + index * ROW_HEIGHT]));
     const center = (lane) => rowY.get(lane.laneIndex) + ROW_HEIGHT / 2;
     const bySeq = new Map(model.elements.map((element) => [element.seq, element]));
@@ -177,13 +191,10 @@ export function createTimeline(container, hooks) {
     const visibleLane = (lane) => shown.has(lane.openSeq);
     geometry = { labelW, plotW, x0, x1, sx, rowY, rows };
 
-    const root = el("svg", { class: "tl-svg", viewBox: "0 0 " + width + " " + height, width, height, role: "group",
+    const root = el("svg", { class: "tl-svg" + (intro ? " intro" : ""), viewBox: "0 0 " + width + " " + height, width, height, role: "group",
       "aria-label": t("tl.aria"), focusable: "false" });
     root.append(el("defs", null, el("clipPath", { id: "tl-clip" }, el("rect", { x: labelW, y: 0, width: plotW + LEFT_PAD + RIGHT_PAD, height }))));
-
-    // background: drag to pan
-    const background = el("rect", { class: "tl-bg", x: labelW, y: 0, width: plotW + LEFT_PAD + RIGHT_PAD, height });
-    root.append(background);
+    root.append(el("rect", { class: "tl-bg", x: labelW, y: 0, width: plotW + LEFT_PAD + RIGHT_PAD, height }));
 
     // breaks: a faint column through every lane and a zigzag with the omitted time on the ruler
     const layer = el("g", { "clip-path": "url(#tl-clip)" });
@@ -200,42 +211,23 @@ export function createTimeline(container, hooks) {
       }
     }
 
-    // ruler: ticks in elapsed time, none inside a compressed span; on the sequence axis, event numbers
-    if (derived.axis.sequence) root.append(el("text", { class: "tl-axis-label", x: 8, y: RULER_HEIGHT - 8 }, t("tl.axisSequence")));
-    layer.append(el("line", { class: "tl-axis", x1: labelW, y1: RULER_HEIGHT - 2, x2: labelW + plotW, y2: RULER_HEIGHT - 2 }));
+    // ruler: elapsed time with a faint grid line per tick (the loom only ever draws events that state a time)
+    if (derived.axis.sequence) root.append(el("text", { class: "tl-axis-label", x: 12, y: RULER_HEIGHT - 12 }, t("tl.axisSequence")));
     let lastLabelX = -Infinity;
+    const nowAt = typeof derived.axis.nowX === "number" ? sx(derived.axis.nowX) : null;
     for (const tick of derived.axis.ticks(x0, x1)) {
       const x = sx(tick.x);
-      layer.append(el("line", { class: "tl-tick", x1: x, y1: RULER_HEIGHT - 2, x2: x, y2: RULER_HEIGHT + 4 }));
-      if (x - lastLabelX < 40) continue; // a label too close to the previous one would overlap it
+      layer.append(el("line", { class: "tl-grid", x1: x, y1: RULER_HEIGHT - 4, x2: x, y2: height - 6 }));
+      if (x - lastLabelX < 48) continue; // a label too close to the previous one would overlap it
+      if (nowAt !== null && x > nowAt - 64 && x < nowAt + 8) continue; // nor may it run into the "now" label
       lastLabelX = x;
-      layer.append(el("text", { class: "tl-tick-label", x, y: RULER_HEIGHT - 8, "text-anchor": "middle" }, tick.label));
+      layer.append(el("text", { class: "tl-tick-label", x: x + 4, y: RULER_HEIGHT - 12 }, tick.label));
     }
 
-    // concurrency band (F1): how many agents were open at each instant, a count and nothing more
-    const bandTop = RULER_HEIGHT + 6;
-    const peak = derived.concurrency.peak;
-    root.append(el("text", { class: "tl-band-label", x: 8, y: bandTop + 18 }, peak > 0 ? clip(t("tl.concurrency", { n: peak }), Math.floor((labelW - 12) / 5.8)) : ""));
-    const steps = derived.concurrency.steps;
-    if (peak > 0 && steps.length) {
-      let path = "";
-      for (let i = 0; i < steps.length; i += 1) {
-        const x = sx(derived.axis.xOfMs(steps[i].ms));
-        const y = bandTop + BAND_HEIGHT - 8 - (steps[i].open / peak) * (BAND_HEIGHT - 16);
-        path += (i === 0 ? "M" : " H" + x + " V") + (i === 0 ? x + " " + y : y);
-      }
-      layer.append(tip(el("path", { class: "tl-concurrency", d: path }), t("tl.concurrencyTip", { n: peak })));
-    }
-
-    // governance row: grants, gates and wave markers at their position
-    const govY = RULER_HEIGHT + BAND_HEIGHT + GOVERNANCE_HEIGHT / 2;
-    for (const element of model.elements) {
-      if (!shown.has(element.seq) || !positioned(element)) continue;
-      let id = null;
-      if (element.element === "gate-ring") id = element.ringKind === "grant" ? "g-grant" : "g-gate";
-      else if (element.element === "wave-marker") id = "g-wave";
-      else if (element.element === "wave-plane") id = "g-wave-plan";
-      if (!id) continue;
+    // governance row, only when something sits on it: grants, gates and wave markers at their position
+    const govY = RULER_HEIGHT + GOVERNANCE_HEIGHT / 2;
+    for (const element of governance) {
+      const id = element.element === "gate-ring" ? (element.ringKind === "grant" ? "g-grant" : "g-gate") : element.element === "wave-marker" ? "g-wave" : "g-wave-plan";
       const x = sx(element.x);
       const label = element.element === "gate-ring"
         ? t(element.ringKind === "grant" ? "tl.tip.grant" : "tl.tip.gate", { subject: String(element.subject), status: String(element.status) })
@@ -245,51 +237,80 @@ export function createTimeline(container, hooks) {
       marker.addEventListener("click", (event) => { event.stopPropagation(); hooks.onSelect(element.seq); });
       layer.append(tip(marker, label));
     }
-
+    if (governance.length) root.append(el("text", { class: "tl-gov-label", x: 12, y: govY + 4 }, t("tl.governance")));
     root.append(layer);
-    root.append(el("text", { class: "tl-gov-label", x: 8, y: govY + 4 }, t("tl.governance")));
 
-    // lanes
+    // lanes: one thread per agent; children branch off their parent's thread and rejoin it when they stop
     const listbox = el("g", { role: "listbox", "aria-label": t("tl.lanes"), "aria-orientation": "vertical" });
-    const tabStop = rows.some((lane) => lane.laneIndex === focusedLane) ? focusedLane : (rows[0] ? rows[0].laneIndex : null);
+    const threads = el("g", { "clip-path": "url(#tl-clip)", "aria-hidden": "true" });
+    const tabStop = rows.some((lane) => lane.laneIndex === focusedLane) ? focusedLane : rows[0].laneIndex;
     const selectedLane = selected === null ? null : rows.find((lane) => lane.openSeq === selected || lane.seqs.includes(selected));
+    const longest = hooks.longestSeq ? hooks.longestSeq() : null;
+    const drawn = [];
     for (const lane of rows) {
       const y = rowY.get(lane.laneIndex);
       const cy = y + ROW_HEIGHT / 2;
-      const drawn = visibleLane(lane);
+      const isDrawn = visibleLane(lane);
       const info = hooks.describe(lane);
-      const row = el("g", { class: "tl-row" + (drawn ? "" : " pending") + (selectedLane === lane ? " selected" : ""), role: "option",
-        tabindex: lane.laneIndex === tabStop ? "0" : "-1", "aria-selected": selectedLane === lane ? "true" : "false",
+      const row = el("g", { class: "tl-row" + (isDrawn ? "" : " pending") + (selectedLane === lane ? " selected" : "") + (lane.state === "finished" ? " finished-lane" : ""),
+        role: "option", tabindex: lane.laneIndex === tabStop ? "0" : "-1", "aria-selected": selectedLane === lane ? "true" : "false",
         "aria-label": info.aria, "data-lane": lane.laneIndex });
-      row.append(el("rect", { class: "tl-row-bg", x: 0, y, width: width, height: ROW_HEIGHT }));
-      // label column (fixed): indent, state mark, name, duration
-      const indent = 8 + lane.depth * 14;
-      row.append(el("text", { class: "tl-state state-" + lane.state, x: indent, y: cy + 4 }, info.mark));
-      const room = Math.floor((labelW - indent - (narrow ? 22 : 74)) / 6.4);
-      row.append(el("text", { class: "tl-label", x: indent + 16, y: cy + 4 }, clip(lane.displayLabel, room), el("title", null, lane.displayLabel)));
-      if (!narrow) row.append(el("text", { class: "tl-duration", x: labelW - 8, y: cy + 4, "text-anchor": "end" }, info.duration));
+      row.append(el("rect", { class: "tl-row-bg", x: 4, y: y + 2, width: width - 8, height: ROW_HEIGHT - 4, rx: 8 }));
+      const indent = 12 + Math.min(lane.depth, 3) * 16;
+      const room = Math.floor((labelW - indent - (narrow ? 8 : 52)) / 6.6);
+      row.append(el("text", { class: "tl-label", x: indent, y: cy - 2 }, clip(info.name, room), el("title", null, info.name)));
+      row.append(el("text", { class: "tl-sublabel", x: indent, y: cy + 13 }, clip(info.sub, room + 2)));
+      if (!narrow) row.append(el("text", { class: "tl-duration", x: labelW - 6, y: cy + 4, "text-anchor": "end" }, info.duration));
       const plot = el("g", { "clip-path": "url(#tl-clip)" });
-      if (drawn) {
+      if (isDrawn) {
         const startX = sx(lane.openX);
         const limit = cursorX === null ? lane.endX : Math.min(lane.endX, cursorX);
-        const endX = sx(Math.max(limit, lane.openX));
-        const barW = Math.max(endX - startX, 3);
+        const endX = Math.max(sx(Math.max(limit, lane.openX)), startX + 3);
         const closedShown = lane.closeSeq !== null && shown.has(lane.closeSeq);
         const status = closedShown ? "finished" : lane.state === "unknown" ? "unknown" : "running";
-        const bar = el("g", { class: "tl-bar host-" + lane.host + " " + status });
-        bar.append(el("rect", { class: "tl-bar-fill", x: startX, y: cy - BAR_HEIGHT / 2, width: barW, height: BAR_HEIGHT, rx: 3 }));
-        if (status === "running") bar.append(el("rect", { class: "tl-bar-hatch", x: startX, y: cy - BAR_HEIGHT / 2, width: barW, height: BAR_HEIGHT, rx: 3 }));
-        // T061: a wait names its target and its basis only when the event states them; declared waits are outlined
-        for (const span of lane.waitSpans) {
-          const from = sx(span.fromX);
-          const to = sx(span.toX === null ? Math.max(limit, span.fromX) : Math.min(span.toX, Math.max(limit, span.fromX)));
-          const target = span.waitingOn === null ? null : derived.byStrand.get(span.waitingOn);
-          const text = span.waitingOn === null ? t("tl.tip.waitUnstated")
-            : t("tl.tip.wait", { target: target ? target.displayLabel : span.waitingOn, basis: t("wait.basis." + span.basis) });
-          bar.append(tip(el("rect", { class: "tl-wait" + (span.basis ? " basis-" + span.basis : ""), x: from, y: cy - BAR_HEIGHT / 2,
-            width: Math.max(to - from, 2), height: BAR_HEIGHT }), text));
+        // the thread, split where it waits; a wait names its target and basis only when the event states them (T061)
+        const spans = lane.waitSpans.map((span) => ({ span, from: sx(span.fromX),
+          to: sx(span.toX === null ? Math.max(limit, span.fromX) : Math.min(span.toX, Math.max(limit, span.fromX))) }))
+          .filter((item) => item.to > item.from || item.span.open);
+        let at = startX;
+        const pieces = [];
+        for (const item of spans) {
+          if (item.from > at) pieces.push({ from: at, to: item.from, kind: status });
+          pieces.push({ from: Math.max(item.from, at), to: Math.max(item.to, item.from + 2), kind: "waiting", span: item.span });
+          at = Math.max(at, item.to);
         }
-        // T062: a duration only when the host stated one; otherwise the interval to the next event, labelled as such
+        if (endX > at) pieces.push({ from: at, to: endX, kind: status });
+        for (const piece of pieces) {
+          const d = "M" + piece.from + " " + cy + " H" + piece.to;
+          if (piece.kind === "running") threads.append(el("path", { class: "thread-glow", d }));
+          const path = el("path", { class: "thread " + piece.kind + (piece.span && piece.span.basis ? " basis-" + piece.span.basis : ""), d });
+          if (intro && piece.kind !== "waiting" && path.style && typeof path.style.setProperty === "function") path.style.setProperty("--len", String(Math.ceil(piece.to - piece.from) + 2));
+          if (piece.span) {
+            const target = piece.span.waitingOn === null ? null : derived.byStrand.get(piece.span.waitingOn);
+            const text = piece.span.waitingOn === null ? t("tl.tip.waitUnstated")
+              : t("tl.tip.wait", { target: target ? hooks.nameOf(target) : piece.span.waitingOn, basis: t("wait.basis." + piece.span.basis) });
+            plot.append(tip(path, text));
+            if (target && rowY.has(target.laneIndex)) {
+              const ty = center(target);
+              const tx = piece.from - Math.min(48, Math.max(18, (piece.from - startX) / 2));
+              threads.append(el("path", { class: "tether", d: "M" + piece.from + " " + cy + " C" + (piece.from - 14) + " " + cy + " " + (tx + 10) + " " + ty + " " + tx + " " + ty }));
+            }
+          } else {
+            plot.append(tip(path, info.tip));
+          }
+        }
+        // a child branches off its parent's thread and, once closed, rejoins it
+        const parent = lane.parentLane === null ? null : derived.byIndex.get(lane.parentLane);
+        if (parent && rowY.has(parent.laneIndex) && visibleLane(parent)) {
+          const py = center(parent);
+          const bx = Math.max(sx(parent.openX), startX - 26);
+          threads.append(el("path", { class: "branch" + (status === "finished" ? " finished" : ""), d: "M" + bx + " " + py + " C" + (startX - 6) + " " + py + " " + (startX - 12) + " " + cy + " " + startX + " " + cy }));
+          if (status === "finished") {
+            const ex = endX;
+            threads.append(el("path", { class: "branch finished", d: "M" + ex + " " + cy + " C" + (ex + 12) + " " + cy + " " + (ex + 6) + " " + py + " " + (ex + 26) + " " + py }));
+          }
+        }
+        // T062: tool calls are beads; a duration only when the host stated it, else the interval, labelled as such
         for (const mark of lane.toolMarks) {
           if (!shown.has(mark.seq)) continue;
           const x = sx(mark.x);
@@ -297,21 +318,16 @@ export function createTimeline(container, hooks) {
           const text = mark.durationMs !== null ? t("tl.tip.toolDuration", { ...params, text: formatDuration(mark.durationMs) })
             : mark.intervalMs !== null ? t("tl.tip.toolInterval", { ...params, text: formatDuration(mark.intervalMs) })
               : t("tl.tip.tool", params);
-          bar.append(tip(el("line", { class: "tl-tool" + (mark.durationMs !== null ? " stated" : ""), x1: x, y1: cy - BAR_HEIGHT / 2 + 2,
-            x2: x, y2: cy + BAR_HEIGHT / 2 - 2 }), text));
+          const isLongest = longest === mark.seq;
+          plot.append(tip(el("circle", { class: "bead" + (mark.durationMs !== null ? " stated" : "") + (isLongest ? " longest" : ""), cx: x, cy, r: isLongest ? 5 : 3.5 }), text));
         }
-        if (status === "running") bar.append(el("path", { class: "tl-open-end", d: "M" + (startX + barW) + " " + (cy - 6) + " l6 6 l-6 6" }));
-        if (closedShown) {
-          bar.append(el("text", { class: "tl-outcome outcome-" + lane.outcome, x: startX + barW + 4, y: cy + 4 }, OUTCOME_MARK[lane.outcome] || "?"));
+        if (closedShown && lane.outcome !== "ok") {
+          plot.append(el("text", { class: "tl-outcome outcome-" + lane.outcome, x: endX + 6, y: cy + 4 }, OUTCOME_MARK[lane.outcome] || "?"));
         }
         for (const gap of lane.gaps) {
           if (!shown.has(gap.seq) || !positioned(gap)) continue;
-          const x = sx(gap.x);
-          const g = el("g", { class: "tl-gap" }, glyph("g-gap", x, cy, 14, "gl"));
-          bar.append(tip(g, t("tl.tip.gap", { reason: String(gap.reason) })));
+          plot.append(tip(el("g", { class: "tl-gap" }, glyph("g-gap", sx(gap.x), cy, 14, "gl")), t("tl.tip.gap", { reason: String(gap.reason) })));
         }
-        plot.append(tip(bar, info.tip));
-        // events of this lane that are markers: hazards
         for (const seq of lane.seqs) {
           const element = bySeq.get(seq);
           if (!element || !shown.has(seq) || element.element !== "hazard-cone" || !positioned(element)) continue;
@@ -326,13 +342,16 @@ export function createTimeline(container, hooks) {
         }
       }
       row.append(plot);
-      row.addEventListener("click", () => { if (!dragged && drawn) hooks.onSelect(lane.openSeq); });
+      row.addEventListener("click", () => { if (!dragged && isDrawn) hooks.onSelect(lane.openSeq); });
       row.addEventListener("focus", () => { focusedLane = lane.laneIndex; });
-      listbox.append(row);
+      row.addEventListener("pointerenter", () => { if (root.classList) root.classList.add("lens"); });
+      row.addEventListener("pointerleave", () => { if (root.classList) root.classList.remove("lens"); });
+      drawn.push(row);
     }
-    root.append(listbox);
+    listbox.append(...drawn);
+    root.append(threads, listbox);
 
-    // crossings: a connector between the two agents' rows at the pair's position
+    // crossings that state a time: a connector between the two agents' rows (plans live in the plan map)
     const connectors = el("g", { class: "tl-connectors", "clip-path": "url(#tl-clip)" });
     for (const crossing of derived.crossings) {
       if (!shown.has(crossing.seq) || !crossing.positioned || crossing.lanes.length < 2) continue;
@@ -349,7 +368,6 @@ export function createTimeline(container, hooks) {
       const mid = (ya + yb) / 2;
       group.append(glyph(id, x, mid, 18, "gl"), el("rect", { class: "tl-hit", x: x - 11, y: mid - 11, width: 22, height: 22 }));
       if (crossing.kind === "predicted") {
-        // near the right edge the word goes to the left of the glyph, so the clip does not cut it
         const flip = x + 110 > labelW + LEFT_PAD + plotW;
         group.append(el("text", { class: "tl-cross-word", x: flip ? x - 14 : x + 14, y: mid + 4, "text-anchor": flip ? "end" : null }, t("tl.conflictWord")));
       }
@@ -358,24 +376,25 @@ export function createTimeline(container, hooks) {
     }
     root.append(connectors);
 
-    // T060: the live "now" marker, from the server clock advanced by the page clock; open bars run up to it
+    // T060: the live "now" edge, from the server clock advanced by the page clock; running threads grow into it
     const nowX = derived.axis.nowX;
     if (typeof nowX === "number" && nowX >= x0 && nowX <= x1) {
       const x = sx(nowX);
       const now = el("g", { class: "tl-now" },
-        el("line", { class: "tl-now-line", x1: x, y1: RULER_HEIGHT - 10, x2: x, y2: height - 6 }),
-        el("text", { class: "tl-now-label", x: x - 4, y: 11, "text-anchor": "end" }, t("tl.now")));
+        el("line", { class: "tl-now-line", x1: x, y1: RULER_HEIGHT - 4, x2: x, y2: height - 6 }),
+        el("text", { class: "tl-now-label", x: x - 4, y: RULER_HEIGHT - 12, "text-anchor": "end" }, t("tl.now")));
       root.append(tip(now, t("tl.tip.now", { time: formatClock(derived.axis.nowMs - minMs) })));
     }
 
     // playback cursor, one line across every lane
     if (cursorX !== null && cursorX >= x0 && cursorX <= x1) {
-      root.append(el("line", { class: "tl-cursor", x1: sx(cursorX), y1: RULER_HEIGHT - 2, x2: sx(cursorX), y2: height - 6 }));
+      root.append(el("line", { class: "tl-cursor", x1: sx(cursorX), y1: RULER_HEIGHT - 4, x2: sx(cursorX), y2: height - 6 }));
     }
 
     const hadFocus = typeof document !== "undefined" && container.contains && document.activeElement && container.contains(document.activeElement);
     host.replaceChildren(root);
-    if (hadFocus && focusedLane !== null) focusLane(rows.some((lane) => lane.laneIndex === focusedLane) ? focusedLane : (rows[0] ? rows[0].laneIndex : null), true);
+    intro = false; // the draw-in plays once, on the first drawing with agents
+    if (hadFocus && focusedLane !== null) focusLane(rows.some((lane) => lane.laneIndex === focusedLane) ? focusedLane : rows[0].laneIndex, true);
   }
 
   // ---------------------------------------------------------------- keyboard
