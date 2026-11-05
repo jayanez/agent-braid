@@ -33,6 +33,21 @@ its own boundary review where it widens a route, an origin or a credential (see
     named `braid_view_<port>` (the viewer's own port), because browsers share cookies
     across loopback ports and two viewers must not overwrite each other's session.
     The cookie grants read routes only.
+  - **Open code on demand** (amendment 2026-11-05, VIS.1d T067). The owner can ask a
+    running viewer for a new open code with `agent-braid view open`, so another browser
+    can open it without a restart. Such a code is single use and expires 120 seconds
+    after it is issued. At most 4 issued codes are pending at once; the oldest is
+    dropped beyond that. Each exchange of any open code creates its own read cookie
+    value, so a browser that opened the viewer earlier stays connected. At most 8 read
+    cookie values are valid at once; the oldest is dropped beyond that. The read cookie
+    never mints a code, and the page has no control that does.
+  - **Owner token** (amendment 2026-11-05, VIS.1d T067). New at every start and written
+    to `<runtime dir>/view-owner-<port>`, created exclusively with mode 0600. A file left
+    by a viewer that did not stop cleanly is replaced only when it is a regular file
+    owned by the user. The file is removed when the viewer stops. It is sent only by
+    `agent-braid view open` as `Authorization: Bearer <token>` on the loopback port. It
+    grants only the open-code route: it cannot read and cannot ingest. It is never
+    printed, never put in a URL and never written into host configuration.
   - **Ingest token.** Kept in a file with owner-only permissions in a per-user
     runtime directory. At start an existing file is reused when it is a regular file
     (no symbolic link, one link) owned by the user, mode 0600, holding one well-formed
@@ -74,6 +89,8 @@ its own boundary review where it widens a route, an origin or a credential (see
 |---|---|---|
 | Unknown path, missing or wrong credential, reused open code | 404 | none |
 | Read credential on an ingest route or ingest credential on a read route | 404 | none |
+| Any credential other than the owner token on the open-code route | 404 | none |
+| A body on the open-code route | 413 | none |
 | Method not allowed on a known path | 405 | none |
 | Foreign `Host`, foreign `Origin` or cross-site `Sec-Fetch-Site` | 403 | none |
 | Decision hook event | 403, empty body | none |
@@ -99,6 +116,7 @@ records whether the installed Claude Code treats these responses as non-blocking
 | GET | `/frame.svg`, `/frame.txt` | read cookie | pure frame rendering |
 | POST | `/v1/logs`, `/v1/metrics` | ingest token | OTLP HTTP/JSON ingest, append to memory |
 | POST | `/hook/claude` | ingest token | observational Claude Code HTTP hook ingest, empty response body |
+| POST | `/v1/open-code` | owner token | issues one open code (single use, 120 s) and answers `{"url", "ttlSeconds"}`; no body accepted |
 
 Any other path returns 404 without state change. VIS.1 has no route that accepts
 loom lines from another process and no Codex `notify` or hook route (VIS.3).

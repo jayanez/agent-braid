@@ -57,6 +57,7 @@ page never loads code from another origin.
 ```text
 agent-braid view serve    [--replay FILE] [--watch DIR ...] [--no-discover]
                           [--port N] [--surface web] [--runtime-dir DIR]
+agent-braid view open     [--port N] [--runtime-dir DIR]
 agent-braid view validate FILE
 agent-braid view env      --host claude [--port N] [--runtime-dir DIR]
 ```
@@ -124,6 +125,16 @@ drops every other field. A session or subagent that was shown as closed stays cl
 Claude Code keeps sending events for it, the page shows
 one gap naming that strand instead of new activity, so the missing activity is not mistaken
 for none.
+
+### `view open`
+
+Prints a new single-use link to the viewer that is already running, so you can open it
+in another browser without a restart. Browsers that opened it earlier stay connected,
+and the history in memory is kept. The link is valid for 120 seconds and works once.
+The command reads the viewer's owner token from `<runtime dir>/view-owner-<port>`, a
+file the viewer creates with mode 0600 at start and removes when it stops. The token
+is never printed. With more than one viewer running, pass its `--port`; `--runtime-dir`
+is as for `serve`. The page itself never creates links.
 
 ### `view validate FILE`
 

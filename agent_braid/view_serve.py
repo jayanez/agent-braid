@@ -63,6 +63,11 @@ OTLP_BODY_LIMIT = 1024 * 1024
 HOOK_BODY_LIMIT = 256 * 1024
 MAX_JSON_DEPTH = 64
 INGEST_TOKEN_NAME = "view-ingest-token"
+OWNER_TOKEN_PREFIX = "view-owner-"  # "<prefix><port>": the owner credential of one running viewer (T067)
+OPEN_CODE_PATH = "/v1/open-code"
+OPEN_CODE_TTL_SECONDS = 120.0  # an open code issued on demand is single-use and short-lived
+MAX_PENDING_OPEN_CODES = 4
+MAX_READ_SESSIONS = 8  # browsers holding a read cookie at once; the oldest is dropped beyond this
 COOKIE_PREFIX = "braid_view"  # each server names its own cookie "<prefix>_<port>"
 HOOK_PATH = "/hook/claude"
 EVENT_POLL_SECONDS = 0.25
@@ -88,9 +93,10 @@ ROUTES: tuple[tuple[str, str, str], ...] = (
     ("POST", "/v1/logs", "ingest token"),
     ("POST", "/v1/metrics", "ingest token"),
     ("POST", HOOK_PATH, "ingest token"),
+    ("POST", OPEN_CODE_PATH, "owner token"),
 )
 _BODY_LIMITS = {"/v1/logs": OTLP_BODY_LIMIT, "/v1/metrics": OTLP_BODY_LIMIT, HOOK_PATH: HOOK_BODY_LIMIT}
-_KIND = {"open code": "open", "read cookie": "read", "ingest token": "ingest"}
+_KIND = {"open code": "open", "read cookie": "read", "ingest token": "ingest", "owner token": "owner"}
 _ROUTE_KIND = {route: _KIND[credential] for _, route, credential in ROUTES if "<" not in route}
 _CONTENT_TYPES = {
     ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
@@ -263,6 +269,86 @@ def _ingest_token_file(runtime_dir: Path, *, rotate: bool = False) -> tuple[Path
     return runtime_dir / INGEST_TOKEN_NAME, token, False
 
 
+def _owner_token_file(runtime_dir: Path, port: int) -> tuple[Path, str]:
+    """Write a fresh owner token to `<runtime_dir>/view-owner-<port>` (mode 0600, created exclusively).
+
+    The owner token lets `agent-braid view open` ask this running viewer for a new open code (T067). It is new at
+    every start, is never printed or put in a URL, and the file is removed when the viewer stops. A file left by a
+    viewer that did not stop cleanly is replaced only when it is a regular file owned by this user.
+    """
+    name = f"{OWNER_TOKEN_PREFIX}{port}"
+    token = secrets.token_urlsafe(32)
+    try:
+        directory = os.open(runtime_dir, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    except OSError as exc:
+        raise ServeError("runtime-dir", f"cannot open the runtime directory: {exc.strerror}") from exc
+    try:
+        try:
+            info = os.stat(name, dir_fd=directory, follow_symlinks=False)
+        except FileNotFoundError:
+            info = None
+        if info is not None:
+            if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid():
+                raise ServeError("owner-token", "the owner token path is not a regular file of this user")
+            os.unlink(name, dir_fd=directory)
+        descriptor = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=directory)
+        try:
+            os.fchmod(descriptor, 0o600)
+            os.write(descriptor, token.encode("ascii"))
+        finally:
+            os.close(descriptor)
+    except OSError as exc:
+        raise ServeError("owner-token", f"cannot write the owner token: {exc.strerror}") from exc
+    finally:
+        os.close(directory)
+    return runtime_dir / name, token
+
+
+def read_owner_token(path: Path) -> str | None:
+    """The token in an owner token file when it is safe to use: regular, not a link, this user's, mode 0600."""
+    try:
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    except OSError:
+        return None
+    try:
+        info = os.fstat(descriptor)
+        if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid()
+                or stat.S_IMODE(info.st_mode) != 0o600 or info.st_size != 43):
+            return None
+        text = os.read(descriptor, 64).decode("ascii", "replace")
+    except OSError:
+        return None
+    finally:
+        os.close(descriptor)
+    return text if _TOKEN_SHAPE.fullmatch(text) else None
+
+
+def request_open_code(port: int, token: str, timeout: float = 5.0) -> tuple[str, int]:
+    """`agent-braid view open`: ask the viewer on loopback `port` for a new open code; `(url, ttl seconds)`."""
+    import http.client
+
+    connection = http.client.HTTPConnection("127.0.0.1", port, timeout=timeout)
+    try:
+        connection.request("POST", OPEN_CODE_PATH, body=b"",
+                           headers={"Authorization": f"Bearer {token}", "Host": f"127.0.0.1:{port}", "Content-Length": "0"})
+        response = connection.getresponse()
+        body = response.read(4096)
+    except OSError as exc:
+        raise ServeError("open-code", f"did not answer ({exc.strerror or exc})") from exc
+    finally:
+        connection.close()
+    if response.status != 200:
+        raise ServeError("open-code", f"refused the request ({response.status})")
+    try:
+        document = json.loads(body)
+        url, ttl = document["url"], int(document["ttlSeconds"])
+    except (ValueError, KeyError, TypeError) as exc:
+        raise ServeError("open-code", "sent an unexpected answer") from exc
+    if not isinstance(url, str) or not url.startswith(f"http://127.0.0.1:{port}/open?code="):
+        raise ServeError("open-code", "sent an unexpected answer")
+    return url, ttl
+
+
 def _valid_bundle(bundle: Mapping[str, bytes] | None) -> dict[str, bytes]:
     files = dict(bundle or {})
     for name, content in files.items():
@@ -405,7 +491,9 @@ class ViewServer(ThreadingHTTPServer):
         self._connections = 0
         self._closing = threading.Event()
         self._open_code: str | None = secrets.token_urlsafe(32)
-        self._read_token: str | None = None
+        # T067: codes issued on demand by the owner, each with its expiry on the monotonic clock
+        self._issued_codes: dict[str, float] = {}
+        self._read_tokens: list[str] = []
         self.address_family = socket.AF_INET6 if host == "::1" else socket.AF_INET
         super().__init__((host, port), _Handler)
         self.port = self.server_address[1]
@@ -413,9 +501,11 @@ class ViewServer(ThreadingHTTPServer):
         self.cookie_name = f"{COOKIE_PREFIX}_{self.port}"
         self._hosts = frozenset({f"127.0.0.1:{self.port}", f"[::1]:{self.port}", f"localhost:{self.port}"})
         self.url_host = f"[::1]:{self.port}" if host == "::1" else f"127.0.0.1:{self.port}"
+        self.owner_path: Path | None = None
         try:
             self.token_path, self._ingest_token, self.token_reused = _ingest_token_file(
                 Path(runtime_dir), rotate=rotate_token)
+            self.owner_path, self._owner_token = _owner_token_file(Path(runtime_dir), self.port)
         except ServeError:
             self.server_close()
             raise
@@ -480,22 +570,53 @@ class ViewServer(ThreadingHTTPServer):
         return left is not None and right is not None and hmac.compare_digest(
             left.encode("utf-8"), right.encode("utf-8"))
 
+    def _issued_code(self, code: str) -> str | None:
+        """The issued code equal to `code` that has not expired (callers hold the lock); expired ones are dropped."""
+        now = time.monotonic()
+        for issued, expiry in list(self._issued_codes.items()):
+            if expiry <= now:
+                del self._issued_codes[issued]
+        return next((issued for issued in self._issued_codes if self._same(code, issued)), None)
+
     def open_code_valid(self, code: str) -> bool:
         with self._lock:
-            return self._same(code, self._open_code)
+            return self._same(code, self._open_code) or self._issued_code(code) is not None
 
     def exchange_open_code(self, code: str) -> str | None:
-        """Spend the open code; return the read cookie value, or None for any other code."""
+        """Spend an open code (the start one or one issued on demand); return a new read cookie value, else None.
+
+        Each browser that opens the viewer gets its own read cookie, so a second browser never signs out the
+        first. At most MAX_READ_SESSIONS cookies are valid at once; the oldest is dropped beyond that.
+        """
         with self._lock:
-            if not self._same(code, self._open_code):
-                return None
-            self._open_code = None
-            self._read_token = secrets.token_urlsafe(32)
-            return self._read_token
+            if self._same(code, self._open_code):
+                self._open_code = None
+            else:
+                issued = self._issued_code(code)
+                if issued is None:
+                    return None
+                del self._issued_codes[issued]
+            token = secrets.token_urlsafe(32)
+            self._read_tokens.append(token)
+            del self._read_tokens[:-MAX_READ_SESSIONS]
+            return token
+
+    def issue_open_code(self) -> str:
+        """T067: a new single-use open code, valid OPEN_CODE_TTL_SECONDS; return the URL that carries it."""
+        with self._lock:
+            self._issued_code("")  # drop expired codes
+            while len(self._issued_codes) >= MAX_PENDING_OPEN_CODES:
+                del self._issued_codes[min(self._issued_codes, key=self._issued_codes.__getitem__)]
+            code = secrets.token_urlsafe(32)
+            self._issued_codes[code] = time.monotonic() + OPEN_CODE_TTL_SECONDS
+        return f"http://{self.url_host}/open?code={code}"
+
+    def owner_token_valid(self, value: str) -> bool:
+        return self._same(value, getattr(self, "_owner_token", None))
 
     def read_cookie_valid(self, value: str) -> bool:
         with self._lock:
-            return self._same(value, self._read_token)
+            return any(self._same(value, token) for token in self._read_tokens)
 
     def ingest_token_valid(self, value: str) -> bool:
         return self._same(value, self._ingest_token)
@@ -549,6 +670,13 @@ class ViewServer(ThreadingHTTPServer):
 
     def server_close(self) -> None:
         self._closing.set()
+        if getattr(self, "owner_path", None) is not None:
+            try:
+                if read_owner_token(self.owner_path) == self._owner_token:
+                    self.owner_path.unlink()  # only our own file: never one another viewer wrote since
+            except OSError:
+                pass
+            self.owner_path = None
         super().server_close()
 
 
@@ -666,6 +794,10 @@ class _Handler(BaseHTTPRequestHandler):
         scheme, _, token = (self.headers.get("Authorization") or "").partition(" ")
         return scheme.lower() == "bearer" and self.server.ingest_token_valid(token.strip())
 
+    def _owner_authorized(self) -> bool:
+        scheme, _, token = (self.headers.get("Authorization") or "").partition(" ")
+        return scheme.lower() == "bearer" and self.server.owner_token_valid(token.strip())
+
     # -- routing ---------------------------------------------------------------------------
 
     def _dispatch(self, method: str) -> None:
@@ -687,6 +819,15 @@ class _Handler(BaseHTTPRequestHandler):
             if method != "GET":
                 return self._send(405)
             return self._read(path)
+        if kind == "owner":
+            if not self._owner_authorized():
+                return self._send(404)
+            if method != "POST":
+                return self._send(405)
+            if (self.headers.get("Content-Length") or "0") != "0":
+                return self._send(413)  # the request carries no body
+            body = json.dumps({"url": self.server.issue_open_code(), "ttlSeconds": int(OPEN_CODE_TTL_SECONDS)})
+            return self._send(200, body.encode("ascii"), "application/json")
         if not self._ingest_authorized():
             return self._send(404)
         if method != "POST":
@@ -811,5 +952,5 @@ class _Handler(BaseHTTPRequestHandler):
         self._send(200, b"{}", "application/json")
 
 
-__all__ = ["BodyError", "IngestRefusal", "ROUTES", "ServeError", "ViewServer", "load_replay", "parse_json_body",
-           "read_replay_file", "replay_events"]
+__all__ = ["BodyError", "IngestRefusal", "OPEN_CODE_PATH", "OWNER_TOKEN_PREFIX", "ROUTES", "ServeError", "ViewServer",
+           "load_replay", "parse_json_body", "read_owner_token", "read_replay_file", "replay_events", "request_open_code"]
