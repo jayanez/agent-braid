@@ -739,15 +739,15 @@ class PromptRegressionBoundaryTests(unittest.TestCase):
     """SPEC-060 procedure_005: prompt names reach neither the installer, host preview nor telemetry."""
 
     def test_prompt_names_never_enter_the_telemetry_vocabulary(self):
-        """Prompts stay outside telemetry; the SPEC-047 T011 v2 additions are the only vocabulary change."""
+        """Prompts stay outside telemetry; the SPEC-047 T011 v2 and SPEC-061 v3 (viewer) additions are the only vocabulary changes."""
         from agent_braid import tooling_telemetry
-        self.assertEqual(tooling_telemetry.SCHEMA, "agent-braid-local-telemetry-batch/v2")
+        self.assertEqual(tooling_telemetry.SCHEMA, "agent-braid-local-telemetry-batch/v3")
         self.assertEqual(tooling_telemetry.SCHEMA_V1, "agent-braid-local-telemetry-batch/v1")
         self.assertEqual(tooling_telemetry.OPERATIONS["mcp"],
                          ("analyze-work", "analyze", "prepare", "status", "execute", "recover", "verify",
                           "plugin-status", "workspaces", "other"))
         self.assertEqual(tooling_telemetry.OPERATIONS["cli"], ("analyze", "analyze-git", "system-one"))
-        self.assertEqual(tooling_telemetry.OPERATIONS["lifecycle"], ("serve-start",))
+        self.assertEqual(tooling_telemetry.OPERATIONS["lifecycle"], ("serve-start", "view-start"))
         everything = json.dumps([tooling_telemetry.OPERATIONS, tooling_telemetry.BUCKETS])
         for prompt in ("plan", "evidence", *ALIAS_PROMPTS):  # "analyze" is also a tool name, so it is not a signal
             self.assertNotIn(f'"{prompt}"', everything)

@@ -70,6 +70,8 @@ MAX_PENDING_OPEN_CODES = 4
 MAX_READ_SESSIONS = 8  # browsers holding a read cookie at once; the oldest is dropped beyond this
 COOKIE_PREFIX = "braid_view"  # each server names its own cookie "<prefix>_<port>"
 HOOK_PATH = "/hook/claude"
+USAGE_PATH = "/v1/usage"  # closed UI interaction names for opt-in local telemetry
+USAGE_BODY_LIMIT = 256
 EVENT_POLL_SECONDS = 0.25
 _MAX_REQUEST_LINE = 65537  # the http.server request-line limit (its _MAXLINE + 1)
 MAX_REPLAY_BYTES = MAX_EVENTS * (MAX_LINE_BYTES + 1)
@@ -94,10 +96,13 @@ ROUTES: tuple[tuple[str, str, str], ...] = (
     ("POST", "/v1/metrics", "ingest token"),
     ("POST", HOOK_PATH, "ingest token"),
     ("POST", OPEN_CODE_PATH, "owner token"),
+    ("POST", USAGE_PATH, "read cookie"),
 )
 _BODY_LIMITS = {"/v1/logs": OTLP_BODY_LIMIT, "/v1/metrics": OTLP_BODY_LIMIT, HOOK_PATH: HOOK_BODY_LIMIT}
 _KIND = {"open code": "open", "read cookie": "read", "ingest token": "ingest", "owner token": "owner"}
 _ROUTE_KIND = {route: _KIND[credential] for _, route, credential in ROUTES if "<" not in route}
+_ROUTE_KIND[USAGE_PATH] = "usage"
+_INGEST_USAGE = {HOOK_PATH: "ingest-hook", "/v1/logs": "ingest-otlp", "/v1/metrics": "ingest-otlp"}
 _CONTENT_TYPES = {
     ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
     ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
@@ -485,6 +490,8 @@ class ViewServer(ThreadingHTTPServer):
                  language_hint: str | None = None,
                  rotate_token: bool = False,
                  live_clock: Callable[[], int] | None = None,
+                 usage: Callable[[str, str], None] | None = None,
+                 usage_events: Iterable[str] = (),
                  max_connections: int = MAX_CONNECTIONS, socket_timeout: float = SOCKET_TIMEOUT,
                  heartbeat: float = HEARTBEAT_SECONDS) -> None:
         if host not in LOOPBACK_HOSTS:
@@ -498,6 +505,8 @@ class ViewServer(ThreadingHTTPServer):
         self.vendor_dir = None if vendor_dir is None else Path(vendor_dir)
         self.vendor_files = load_vendor_manifest(self.vendor_dir)
         self.read_handlers = dict(read_handlers or {})
+        self._usage = usage
+        self.usage_events = frozenset(usage_events)
         self.ingest_handlers = dict(ingest_handlers or {})
         self.names_inventory = names_inventory
         # T060: the live server clock in ms on the events' monotonic basis; None serves a replay (`axis.live` false).
@@ -620,6 +629,15 @@ class ViewServer(ThreadingHTTPServer):
             self._read_tokens.append(token)
             del self._read_tokens[:-MAX_READ_SESSIONS]
             return token
+
+    def count(self, operation: str, outcome: str = "ok") -> None:
+        """Hand one usage count to the opt-in telemetry callback; never fails the request."""
+        if self._usage is None:
+            return
+        try:
+            self._usage(operation, outcome)
+        except Exception:
+            pass
 
     def issue_open_code(self) -> str:
         """T067: a new single-use open code, valid OPEN_CODE_TTL_SECONDS; return the URL that carries it."""
@@ -835,6 +853,12 @@ class _Handler(BaseHTTPRequestHandler):
             if method != "GET":
                 return self._send(405)
             return self._read(path)
+        if kind == "usage":
+            if not self._read_authorized():
+                return self._send(404)
+            if method != "POST":
+                return self._send(405)
+            return self._usage_event()
         if kind == "owner":
             if not self._owner_authorized():
                 return self._send(404)
@@ -876,6 +900,8 @@ class _Handler(BaseHTTPRequestHandler):
             content = server.bundle.get(name)
             if content is None:
                 return self._send(404)
+            if path == "/":
+                server.count("page-load")
             suffix = os.path.splitext(name)[1]
             return self._send(200, content, _CONTENT_TYPES.get(suffix, "application/octet-stream"))
         reader = server.read_handlers.get(path)
@@ -959,14 +985,42 @@ class _Handler(BaseHTTPRequestHandler):
             parsed = parse_json_body(data)
         except BodyError:
             return self._send(400)
+        operation = _INGEST_USAGE.get(path)
         try:
             handler(parsed)
         except IngestRefusal as refusal:
+            if operation:
+                self.server.count(operation, "refused")
             return self._send(refusal.status)
         except Exception:
+            if operation:
+                self.server.count(operation, "error")
             return self._send(500)
+        if operation:
+            self.server.count(operation)
         self._send(200, b"{}", "application/json")
+
+    def _usage_event(self) -> None:
+        """One closed UI interaction name, `{"event": "ui-..."}`; nothing else is accepted or stored."""
+        media = (self.headers.get("Content-Type") or "").partition(";")[0].strip().lower()
+        if media != "application/json":
+            return self._send(415)
+        declared = self.headers.get("Content-Length") or ""
+        if not declared.isascii() or not declared.isdigit() or len(declared) > 4:
+            return self._send(411 if not declared else 400)
+        length = int(declared)
+        if length > USAGE_BODY_LIMIT:
+            return self._send(413)
+        try:
+            data = self.rfile.read(length)
+            parsed = parse_json_body(data) if len(data) == length else None
+        except (OSError, BodyError):
+            parsed = None
+        if not isinstance(parsed, dict) or set(parsed) != {"event"} or parsed["event"] not in self.server.usage_events:
+            return self._send(400)
+        self.server.count(parsed["event"])
+        self._send(204)
 
 
 __all__ = ["BodyError", "IngestRefusal", "OPEN_CODE_PATH", "OWNER_TOKEN_PREFIX", "ROUTES", "ServeError", "ViewServer",
-           "load_replay", "parse_json_body", "read_owner_token", "read_replay_file", "replay_events", "request_open_code"]
+           "USAGE_PATH", "load_replay", "parse_json_body", "read_owner_token", "read_replay_file", "replay_events", "request_open_code"]

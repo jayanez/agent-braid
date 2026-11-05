@@ -56,17 +56,6 @@ keeps the final say. Today it only records structural decision episodes beside
 each analysis so the owner can measure it; it has no learned model yet, never
 changes a result and never grants authority.
 
-**Watch your agents work.** `agent-braid view serve` opens **Loom**, a read-only
-dashboard on your own machine: each Claude Code session and subagent is a live
-thread, the analysis plans show where agents may collide, and an Explore 3D view
-shows the same lanes in depth.
-
-<p align="center">
-  <img src="specs/061-activity-viewer/vis1d/evidence/after-live-desktop-dark.png"
-       alt="Loom dashboard: a Now sentence and KPI tiles above live threads for four Claude Code sessions and their subagents on a real time axis, with the plan map below"
-       width="960">
-</p>
-
 ## ✨ What Agent Braid gives you
 
 - **See interactions before they collide.** An effect graph across agent tasks
@@ -362,9 +351,13 @@ else (telemetry, System One, the Harness laboratory and the Loom viewer) is opt-
 or experimental, and none of it can authorize execution.
 
 <details>
-<summary><b>Drill-down: analysis, authority and the System One shadow path</b></summary>
+<summary><b>Analysis, authority and the System One shadow path</b></summary>
 
-![Agent tasks flow through analyze-work, an advisory report and prepare to a one-use operator grant, then execute into a private result repository; a dashed System One shadow path copies each successful analysis into a structural episode, a local private store and a counts-only report, and never returns to the main path](docs/assets/agent-braid-system2-system-one.svg)
+<br>
+
+<p align="center">
+  <img src="docs/assets/agent-braid-system2-system-one.svg" alt="Agent tasks flow through analyze-work, an advisory report and prepare to a one-use operator grant, then execute into a private result repository; a dashed System One shadow path copies each successful analysis into a structural episode, a local private store and a counts-only report, and never returns to the main path">
+</p>
 
 1. **Declare.** Agent tasks reach Agent Braid as AIM effect records or immutable Git commits.
 2. **Analyze (System 2).** `analyze-work` builds the effect graph or replays Git orders and returns an advisory report: `independent-candidate`, `ordered`, `conflicting` or `unknown`, always with `executionAuthorization: false`.
@@ -376,9 +369,13 @@ or experimental, and none of it can authorize execution.
 </details>
 
 <details>
-<summary><b>Drill-down: Braid Harness laboratory (experimental, offline)</b></summary>
+<summary><b>Braid Harness laboratory (experimental, offline)</b></summary>
 
-![An admission grant lets harness prepare import a verified candidate into one new private directory; context assembly feeds a deterministic fixture runner with simulated containment; a native backend gate refuses until qualified; a hash-chained attempt journal feeds observation records, verifiers and cost reconciliation, then an evaluation report; promotion needs a human decision that is not delivered yet](docs/assets/agent-braid-harness.svg)
+<br>
+
+<p align="center">
+  <img src="docs/assets/agent-braid-harness.svg" alt="An admission grant lets harness prepare import a verified candidate into one new private directory; context assembly feeds a deterministic fixture runner with simulated containment; a native backend gate refuses until qualified; a hash-chained attempt journal feeds observation records, verifiers and cost reconciliation, then an evaluation report; promotion needs a human decision that is not delivered yet">
+</p>
 
 1. **Admit.** A single-use admission grant lets `harness prepare` import a verified candidate; its only effect is one new private directory.
 2. **Attempt.** Context assembly feeds a deterministic fixture runner with `simulated` containment. A native Claude backend (SPEC-065) is built but refuses until it is qualified.
@@ -389,9 +386,18 @@ or experimental, and none of it can authorize execution.
 </details>
 
 <details>
-<summary><b>Drill-down: Loom activity viewer</b></summary>
+<summary><b>Loom activity viewer</b></summary>
 
-![The Loom viewer dashboard in dark mode: a Now sentence ("4 agents running across 4 sessions, 2 possible collisions across 3 plans, none observed"), four KPI tiles, filter chips, the live loom with one thread per Claude Code session and its subagents on a real time axis, and the details rail](specs/061-activity-viewer/vis1d/evidence/after-live-desktop-dark.png)
+<br>
+
+**Watch your agents work.** `agent-braid view serve` opens **Loom**, a read-only
+dashboard on your own machine: each Claude Code session and subagent is a live
+thread, the analysis plans show where agents may collide, and an Explore 3D view
+shows the same lanes in depth.
+
+<p align="center">
+  <img src="docs/assets/agent-braid-loom-viewer.png" alt="The Loom viewer dashboard in dark mode: a Now sentence (&quot;4 agents running across 4 sessions, 2 possible collisions across 3 plans, none observed&quot;), four KPI tiles, filter chips, the live loom with one thread per Claude Code session and its subagents on a real time axis, and the details rail">
+</p>
 
 1. **Start it.** `agent-braid view serve` binds `127.0.0.1` only and prints a single-use link; `agent-braid view open` prints a new link for another browser without a restart.
 2. **Connect Claude Code.** `agent-braid view env --host claude --port <port>` prints observational hooks to merge into your user settings (it writes nothing). Each session and subagent becomes a thread on the live loom, with tool calls as beads and stated tool durations shown live only.

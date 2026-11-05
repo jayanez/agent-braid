@@ -1,4 +1,6 @@
-# Local telemetry data contract v1 / batch v2
+# Local telemetry data contract v1 / batch v3
+
+> **Amended by SPEC-061 (2026-11-05): batch schema v3.** Export writes `agent-braid-local-telemetry-batch/v3`; the store format is unchanged. v3 adds the activity-viewer vocabulary in [Batch v3 additions](#batch-v3-additions-spec-061). Everything else, including the v2 rules below, is unchanged.
 
 > **Amended by T011 (2026-11-03): batch schema v2.** The exchange schema is now `agent-braid-local-telemetry-batch/v2`; the store format (application ID ABT1, `user_version` 1) and its tables are unchanged. v2 adds the `lifecycle` surface, the `refusal-reason` metric and the `plugin-status` / `workspaces` operations, described in [Batch v2 additions](#batch-v2-additions-t011). Everything below that does not mention v2 is unchanged.
 
@@ -65,3 +67,14 @@ Rules, enforced on record and on merge:
 Bucket meaning: `registry-root-missing` a registered source or worktree root no longer exists; `registry-unsafe-path` a path is a symlink, non-canonical, overlaps plugin state or is not private; `registry-shape` the registry or a row violates its schema; `migration-required` a v0.1 registry awaits a setup preview; `reconnect-required` the registry changed effectively since the connection started; `workspace-unregistered` the requested workspace id is not registered; `admission-busy` plugin or per-service admission is busy; `inventory-full` an evidence inventory limit is reached; `grant-missing` a runtime tool was requested without an enabled runtime and grant (or the registry row lacks its grant store); `arguments-invalid` the tool name, arguments or request failed shape or bounds checks; `other` anything else.
 
 Compatibility. Export always writes v2. Merge accepts v1 and v2; a v1 batch that contains any v2 vocabulary is invalid. Because `user_version` stays 1, builds before this change keep writing to a store that also holds v2 cells and can still report it. They refuse v2 batches (their validator accepts only the v1 schema and the v1 vocabulary) and cannot export while the store holds unexported v2 cells (the batch fails their validation); export with a current build. Merging a v2 batch into a store used by an old build is therefore done by a current build only. No migration or downgrade is provided.
+
+## Batch v3 additions (SPEC-061)
+
+| Field | Added values |
+|---|---|
+| surface / operation | view: `page-load`, `ingest-hook`, `ingest-otlp`, `ui-view-2d`, `ui-view-3d`, `ui-filter`, `ui-select`, `ui-details`, `ui-side-tab`, `ui-camera`; lifecycle: `view-start` |
+
+- Recorded only by `agent-braid view serve --telemetry local` (default off). `view` cells are `calls` only: no duration, classification, missing-summary or refusal-reason cell.
+- `page-load` counts each authorized `GET /`; `ingest-hook` and `ingest-otlp` count each authorized ingest request with outcome `ok`, `refused` or `error`; `view-start` counts each viewer start.
+- `ui-*` names are sent by the page to `POST /v1/usage` as one closed name per request, at most once per name per second. The page never sends what was selected, filtered or shown; the server drops any other name or member.
+- Compatibility: merge accepts v1, v2 and v3. A v1 or v2 batch that contains v3 vocabulary is invalid. Builds before v3 refuse v3 batches and cannot export a store holding unexported v3 cells; export with a current build.

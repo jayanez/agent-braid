@@ -209,6 +209,9 @@ per-probe owner authorization but no ADR, and run first.
   decides keep, re-scope or close as Deferred for VIS.1b and VIS.2–VIS.4. If the
   date passes without a slice, VIS.1 closes as Deferred. Dependencies: T029,
   T034, T038. Evidence: `evidence/checkpoint-<date>.md`.
+  Owner 2026-11-05: wait for real use on the owner's repositories (Agent Braid, Smart Notes,
+  Kinetiq), decide early rather than at the deadline (review reminder 2026-11-19), and use the
+  opt-in viewer usage telemetry (`view serve --telemetry local`, T075) as one input.
 
 - [x] T045 (REQ-006 / SC-006; closure finding 1): the watcher walks directories
   newest name first, so the plugin's `analysis-<UTC stamp>-<id>` report copies load
@@ -414,11 +417,13 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   T052, T057, owner confirmation of OD-V5. Files: `agent_braid/view_adapters.py`,
   `agent_braid/view_model.py`, `integrations/agent-braid-view/web/timeline.js`.
   Verification: SC-023.
+  Owner 2026-11-05: paused; the owner resumes T063 and T064 explicitly.
 - [ ] T064 (REQ-023): Differential fields the owner accepts from OD-V3 (F1 lane
   parallelism and overlap, F2 waiting time, F3 prediction-versus-observation link,
   F4 effort per lane, F4 only after T035 and VIS.1b). Dependencies: T054, T057,
   owner acceptance per field. Files: `integrations/agent-braid-view/web/state.js`,
   `timeline.js`. Verification: SC-023.
+  Owner 2026-11-05: paused; the owner resumes T063 and T064 explicitly.
   Added 2026-11-04 (owner request after real use): distinguishable lane labels. Every
   hook session lane currently reads "Claude session", so four sessions cannot be told
   apart. Give each lane a short, privacy-safe distinguishing label (for example a short
@@ -507,9 +512,23 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   Owner review pass 2026-11-05 (PR D): tabbed Collisions/Duration panel, collapsible rails, accordion
   details, events chips and table, Summary/Legend/Help cards, Loom scroll and follow-now, Explore 3D
   toolbar, footer and resize; after captures retaken; README front page shows the viewer.
-- [ ] T074 (all VIS.1d REQ): Closure. Covers the pre-PR reviews, `validate_change
+  Owner 2026-11-05: the VoiceOver pass is pending evidence and does not block the VIS.1d closure.
+- [x] T074 (all VIS.1d REQ): Closure. Covers the pre-PR reviews, `validate_change
   --profile pr`, the owner review of the before and after captures, the obtained
   evidence in `assurance.json`, and the freeze. Dependencies: T068 to T073.
+  Done 2026-11-05: owner accepted the closure with one caveat, the VoiceOver pass of T073 stays
+  pending and does not block ([owner-review-vis1d-closure-20261105.json](owner-review-vis1d-closure-20261105.json)).
+
+- [ ] T075 (owner request 2026-11-05, input to T035): Opt-in viewer usage telemetry.
+  `view serve --telemetry local` (default off) counts viewer starts, page loads, hook and
+  OTLP ingest requests by outcome, and closed UI interaction names sent to `POST /v1/usage`
+  (Loom or 3D, filters, selection, Details, side tab, 3D camera), calls only, in the local
+  store as batch schema v3. No selection target, filter value, session, agent, path or
+  repository is stored. Files: `agent_braid/tooling_telemetry.py`, `agent_braid/view_serve.py`,
+  `agent_braid/view_cli.py`, `integrations/agent-braid-view/web/loom.js`,
+  `contracts/ui-security-privacy.md`, `specs/047-local-technical-telemetry/data-contract.md`,
+  `docs/tooling/VIEWER.md`, `docs/tooling/TELEMETRY.md`. Verification: `tests/test_view_serve.py`
+  (UsageTests), `tests/test_tooling_telemetry.py`.
 
 ## Closure (each delivery)
 
