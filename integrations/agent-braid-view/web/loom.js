@@ -173,6 +173,14 @@ function classLabel(value) {
   return name === undefined ? t("class.unrecognized", { value: String(value) }) : t("class.named", { value, name });
 }
 
+// The table's class cell: a short pill that never wraps; the full wording stays in its title and the details.
+function classCell(value) {
+  const full = classLabel(value);
+  const name = CLASS_NAMES[value];
+  if (value === null || value === undefined) return h("span", { class: "pill none", title: full }, "—");
+  return h("span", { class: "pill level", title: full }, name ? value + " · " + name : String(value));
+}
+
 function shapeOf(element) {
   if (element.element === "crossing") {
     const [glyph, key] = CROSSING_SHAPES[element.drawAs] || ["?", "shape.crossing"];
@@ -682,22 +690,25 @@ function renderChrome() {
 // ---------------------------------------------------------------- legend (static tables above)
 
 function renderLegend() {
-  fill("legend-classes", CLASS_NAMES.map((name, index) => h("li", null, t("class.named", { value: index, name }))),
-    h("li", null, t("class.legendNone")));
+  // one item per class, in the same neutral badge style as the shapes
+  fill("legend-classes", CLASS_NAMES.map((name, index) => h("li", { class: "class-tile" },
+    h("span", { class: "class-n", "aria-hidden": "true" }, String(index)), h("span", { class: "class-name" }, h("span", { class: "sr" }, t("class.named", { value: index, name: "" })), name))),
+    h("li", { class: "wide" }, t("class.legendNone")));
   fill("legend-shapes",
     Object.values(CROSSING_SHAPES).map(([glyph, key]) => h("li", null, h("span", { class: "glyph" }, glyph), t(key))),
     Object.values(ELEMENT_SHAPES).map(([glyph, key]) => h("li", null, h("span", { class: "glyph" }, glyph), t(key))),
     Object.values(RING_SHAPES).map(([glyph, key]) => h("li", null, h("span", { class: "glyph" }, glyph), t(key))));
   fill("legend-verification", Object.keys(VERIFICATION).map((key) =>
-    h("li", null, h("span", { class: "glyph" }, VERIFICATION[key]), t("verification." + key) + ": " + t("verification." + key + ".meaning"))));
-  fill("legend-marks", MARK_KEYS.map((key) => h("li", null, markNode(key), " " + t("mark." + key + ".meaning"))));
+    h("li", null, h("span", { class: "glyph" }, VERIFICATION[key]),
+      h("span", null, h("b", null, t("verification." + key)), h("span", { class: "meaning" }, t("verification." + key + ".meaning"))))));
+  fill("legend-marks", MARK_KEYS.map((key) => h("li", null, markNode(key), h("span", { class: "meaning" }, t("mark." + key + ".meaning")))));
   fill("legend-scene", SCENE_LEGEND_KEYS.map((key) => h("li", null, t("sceneLegend." + key))));
 }
 
 // ---------------------------------------------------------------- counters
 
 function kv(list, label, value, sub) {
-  list.push(h("dt", { class: sub ? "sub" : "" }, label), h("dd", null, String(value)));
+  list.push(h("dt", { class: sub ? "sub" : "" }, label), h("dd", { class: value === 0 ? "zero" : typeof value === "number" ? "num" : "" }, String(value)));
 }
 
 function renderCounters() {
@@ -763,9 +774,11 @@ function renderLanes() {
   fill("lanes", info.rows.map(({ laneIndex }) => {
     const lane = info.byIndex.get(laneIndex);
     return h("li", { class: lane.depth ? "child" : "" },
-      lane.displayLabel + " ",
-      h("span", { class: "hint" }, "(" + (lane.declared ? lane.host + " " + lane.role : t("lanes.undeclared")) + ", " + stateText(lane) + ") "),
-      lane.unverified ? markNode("unverified") : null);
+      h("span", { class: "lane-name" }, lane.displayLabel),
+      h("span", { class: "lane-meta" },
+        h("span", { class: "lane-host" }, lane.declared ? lane.host + " " + lane.role : t("lanes.undeclared")),
+        h("span", { class: "state-pill s-" + lane.state }, stateText(lane)),
+        lane.unverified ? markNode("unverified") : null));
   }));
 }
 
@@ -912,16 +925,28 @@ function visibleRows() {
   });
 }
 
+// VIS.1d: the element filter is a row of chips, one per element kind present, each with its count and the
+// shape glyph the table uses; "all" clears it.
 function renderKindFilter() {
-  const select = $("filter-kind");
-  const kinds = [...new Set((state.model ? state.model.elements : []).map((element) => element.element))].sort();
+  const box = $("filter-kind");
+  const counts = new Map();
+  const sample = new Map();
+  for (const element of state.model ? state.model.elements : []) {
+    counts.set(element.element, (counts.get(element.element) || 0) + 1);
+    if (!sample.has(element.element)) sample.set(element.element, element);
+  }
+  const kinds = [...counts.keys()].sort();
   if (state.filterKind && !kinds.includes(state.filterKind)) state.filterKind = "";
-  const key = kinds.join("|") + "|" + state.lang;
-  if (select.dataset.kinds === key) return;
-  select.dataset.kinds = key;
-  select.replaceChildren(h("option", { value: "" }, t("table.kindAll")),
-    ...kinds.map((kind) => h("option", { value: kind }, kind)));
-  select.value = state.filterKind;
+  const key = kinds.map((kind) => kind + counts.get(kind)).join("|") + "|" + state.lang + "|" + state.filterKind;
+  if (box.dataset.kinds === key) return;
+  box.dataset.kinds = key;
+  const chip = (kind, label, glyph, n) => h("button", {
+    type: "button", class: "kind-chip", "aria-pressed": state.filterKind === kind ? "true" : "false",
+    on: { click: () => { state.filterKind = state.filterKind === kind && kind !== "" ? "" : kind; renderKindFilter(); renderTable(); } },
+  }, glyph ? h("span", { class: "glyph", "data-kind": kind, "aria-hidden": "true" }, glyph) : null, label,
+  h("span", { class: "n" }, String(n)));
+  box.replaceChildren(chip("", t("table.kindAll"), null, [...counts.values()].reduce((a, b) => a + b, 0)),
+    ...kinds.map((kind) => { const [glyph, label] = shapeOf(sample.get(kind)); return chip(kind, label, glyph, counts.get(kind)); }));
 }
 
 function renderTable() {
@@ -933,17 +958,18 @@ function renderTable() {
   fill("events-body", rows.map(({ row, element }) => {
     const [glyph, label] = shapeOf(element);
     const selected = state.selected === row.seq;
-    return h("tr", { class: (selected ? "selected " : "") + (last && last.row.seq === row.seq ? "current" : "") },
+    const tone = element.element === "crossing" ? " k-" + (["conflicting", "ordered", "independent-candidate"].includes(element.classification) ? element.classification : "unknown") : "";
+    return h("tr", { class: (selected ? "selected " : "") + (last && last.row.seq === row.seq ? "current" : "") + tone },
     cell("seq", h("button", {
       type: "button", class: "row-button", "aria-label": t("table.select", { seq: row.seq }),
       "aria-pressed": selected ? "true" : "false", "data-seq": row.seq,
       on: { click: () => select(row.seq) },
     }, (selected ? "▶ " : "") + row.seq)),
     cell("time", h("span", { title: element.timeKnown ? element.relMs + " ms" : null }, timeText(element))),
-    cell("shape", h("span", { class: "glyph", "aria-hidden": "true" }, glyph), label),
+    cell("shape", h("span", { class: "shape" }, h("span", { class: "glyph", "data-kind": element.element, "aria-hidden": "true" }, glyph), label)),
     cell("subject", textOf(row.subject)),
     cell("status", row.status === null || row.status === undefined ? "—" : String(row.status)),
-    cell("class", classLabel(row.compatibilityClass)),
+    cell("class", classCell(row.compatibilityClass)),
     cell("verification", verificationNode(element.verification)),
     cell("marks", marksOf(element).map(markNode)));
   }));
@@ -989,8 +1015,18 @@ function definitions(pairs) {
   return h("dl", null, nodes);
 }
 
+// VIS.1d: the details rail is an accordion. A section remembers whether the reader opened or closed it (by its
+// title) across live re-renders; until then only the first section of a selection is open.
+const sectionOpen = new Map();
+let sectionsDrawn = 0;
 function section(title, ...body) {
-  return h("section", { class: "evidence-section" }, h("h3", null, title), body);
+  const open = sectionOpen.has(title) ? sectionOpen.get(title) : sectionsDrawn === 0;
+  sectionsDrawn += 1;
+  const node = h("details", { class: "evidence-section" },
+    h("summary", null, h("span", { class: "chev", "aria-hidden": "true" }), h("span", null, title)), h("div", { class: "acc-body" }, body));
+  node.open = open;
+  node.addEventListener("toggle", () => sectionOpen.set(title, node.open));
+  return node;
 }
 
 function noneRecorded() {
@@ -1102,6 +1138,10 @@ function overlapRow(element) {
 
 function renderEvidence() {
   const element = state.selected === null ? undefined : elementOf(state.selected);
+  // Details opens by itself on a selection (a click must always show something) and closes again on deselect
+  // only when it was this auto-open that opened it.
+  if (element && !panels.detail) { panels.detail = true; detailAuto = true; applyPanels(); }
+  else if (!element && detailAuto) { panels.detail = false; detailAuto = false; applyPanels(); }
   $("detail-close").hidden = !element;
   $("detail").classList.toggle("open", Boolean(element));
   if (!element) {
@@ -1110,6 +1150,7 @@ function renderEvidence() {
   }
   const ref = element.evidenceRef;
   const marks = marksOf(element);
+  sectionsDrawn = 0;
   fill("evidence",
     h("p", null, h("strong", null, t("evidence.title", { seq: element.seq, kind: element.kind })), " ", marks.map(markNode)),
     agentSection(element),
@@ -1129,7 +1170,7 @@ function renderEvidence() {
       ? definitions([[t("detail.path"), ref.path], ["sha256", ref.sha256]])
       : h("p", null, t("detail.noArtifact"))),
     detailPairs(element).length ? section(t("detail.detailsSection"), definitions(detailPairs(element))) : null,
-    h("details", null, h("summary", null, t("detail.allFields")), h("pre", null, JSON.stringify(element, null, 2))));
+    section(t("detail.allFields"), h("pre", null, JSON.stringify(element, null, 2))));
 }
 
 // ---------------------------------------------------------------- playback
@@ -1271,7 +1312,7 @@ function bindControls() {
   $("pb-end").addEventListener("click", () => { stopPlayback(); setCursor(totalCount()); });
   $("pb-play").addEventListener("click", togglePlay);
   $("pb-range").addEventListener("input", (event) => { stopPlayback(); setCursor(Number(event.target.value)); });
-  $("filter-kind").addEventListener("change", (event) => { state.filterKind = event.target.value; renderTable(); });
+
   $("filter-problems").addEventListener("change", (event) => { state.filters.onlyProblems = event.target.checked; filtersChanged(); });
   $("filter-clear").addEventListener("click", clearFilters);
   $("scene-reset").addEventListener("click", () => { if (scene) scene.resetView(); });
@@ -1300,6 +1341,18 @@ function bindControls() {
     });
   }
   bindMenus();
+  $("detail-toggle").addEventListener("click", () => togglePanel("detail"));
+  $("side-toggle").addEventListener("click", () => togglePanel("side"));
+  for (const tab of ["collisions", "durations"]) {
+    $("stab-" + tab).addEventListener("click", () => showSideTab(tab, false));
+    $("stab-" + tab).addEventListener("keydown", (event) => {
+      if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+        event.preventDefault();
+        showSideTab(event.key === "Home" ? "collisions" : event.key === "End" ? "durations" : sideTab === "collisions" ? "durations" : "collisions", true);
+      }
+    });
+  }
+  applyPanels();
   $("detail-close").addEventListener("click", deselect);
   $("about-open").addEventListener("click", openHelp);
   $("tablist").addEventListener("keydown", onTabKey);
@@ -1446,6 +1499,50 @@ function renderPlan() {
     .map((name) => h("li", null, h("i", { class: name, "aria-hidden": "true" }), t("plan.key." + name))));
 }
 
+// ---------------------------------------------------------------- collapsible side panels
+// Details and the Collisions/Duration panel start collapsed; a collapsed panel leaves its width to the graph
+// beside it. The open/closed choice is a per-viewer convenience kept in this browser only.
+const panels = { detail: readPreference("panel.detail") === "open", side: readPreference("panel.side") === "open" };
+let detailAuto = false;
+let sideTab = "collisions";
+
+function applyPanels() {
+  for (const [name, open] of Object.entries(panels)) {
+    const toggle = $(name + "-toggle");
+    if (toggle) toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  $("evidence").hidden = !panels.detail;
+  $("side-body").hidden = !panels.side;
+  const dash = document.querySelector ? document.querySelector(".dash") : null;
+  if (dash && dash.classList) {
+    dash.classList.toggle("detail-collapsed", !panels.detail);
+    dash.classList.toggle("side-collapsed", !panels.side);
+  }
+}
+
+function togglePanel(name) {
+  panels[name] = !panels[name];
+  if (name === "detail") detailAuto = false;
+  writePreference("panel." + name, panels[name] ? "open" : null);
+  applyPanels();
+}
+
+function showSideTab(name, focus) {
+  sideTab = name;
+  for (const tab of ["collisions", "durations"]) {
+    const on = tab === name;
+    $("stab-" + tab).setAttribute("aria-selected", on ? "true" : "false");
+    $("stab-" + tab).tabIndex = on ? 0 : -1;
+    $(tab + "-section").hidden = !on;
+  }
+  if (focus) $("stab-" + name).focus();
+}
+
+function renderSideBadge() {
+  const parts = [$("collisions-n").textContent, $("durations-n").textContent];
+  $("side-badge").textContent = parts.filter(Boolean).length ? parts.map((n) => n || "0").join(" · ") : "";
+}
+
 // A list panel shows its first LIST_LIMIT rows; its "Show all" button opens the rest in place.
 const LIST_LIMIT = 8;
 const expanded = new Set();
@@ -1464,6 +1561,7 @@ function renderCollisions() {
   const items = [];
   for (const plan of plans()) for (const pair of plan.pairs) if (pair.kind === "predicted") items.push({ plan, pair });
   $("collisions-count").textContent = tn("col.count", items.length);
+  $("collisions-n").textContent = String(items.length);
   if (!items.length) {
     showAll("collisions", items);
     fill("collisions", h("li", { class: "empty" }, plans().length ? t("col.none") : t("col.noPlans")));
@@ -1485,6 +1583,7 @@ function renderDurations() {
   const info = loomDerived();
   const lanes = info.lanes.filter((lane) => lane.openKnown && lane.observedMs !== null);
   $("durations-count").textContent = lanes.length ? t("dur.legend") : "";
+  $("durations-n").textContent = String(lanes.length);
   if (!lanes.length) {
     showAll("durations", lanes);
     fill("durations", h("li", { class: "empty" }, t("dur.none")));
@@ -1518,6 +1617,7 @@ function renderDashboard() {
   renderPlan();
   renderCollisions();
   renderDurations();
+  renderSideBadge();
 }
 
 function syncViews() {
@@ -1603,10 +1703,14 @@ let sceneHidden = "";
 
 function showHover(seq) {
   const element = seq === null ? undefined : elementOf(seq);
-  $("scene-hover").textContent = element
-    ? t("scene.hover", { seq: element.seq, kind: element.kind, subject: textOf(element.subject), cls: classLabel(element.compatibilityClass) }) +
-      (marksOf(element).includes("unverified") ? " · " + t("mark.unverified") : "")
-    : t("scene.hoverHint");
+  if (!element) { $("scene-hover").replaceChildren(t("scene.hoverHint")); return; }
+  const [glyph, shape] = shapeOf(element);
+  $("scene-hover").replaceChildren(
+    h("span", { class: "glyph", "data-kind": element.element, "aria-hidden": "true" }, glyph),
+    h("b", null, textOf(element.subject)),
+    h("span", { class: "hover-meta" }, "#" + element.seq + " · " + shape +
+      (element.compatibilityClass === null || element.compatibilityClass === undefined ? "" : " · " + classLabel(element.compatibilityClass))),
+    marksOf(element).includes("unverified") ? markNode("unverified") : null);
 }
 
 function updateSceneNote() {
@@ -1625,7 +1729,8 @@ function updateSceneNote() {
   }
   const now = liveNowMs();
   if (now !== null) parts.push(t("scene.live", { time: formatClock(now - axisMin()) }));
-  $("scene-note").textContent = parts.join(" ");
+  // one quiet chip per fact instead of one run-on sentence
+  fill("scene-note", parts.map((part) => h("li", null, part)));
 }
 
 // Keeps the scene on the model, playback position, filters and selection of the table. Cheap when nothing changed.

@@ -12,7 +12,7 @@
 
 const NS = "http://www.w3.org/2000/svg";
 const ALLOWED = new Set(["x", "y", "width", "height", "rx", "r", "cx", "cy", "d", "class", "viewBox", "role", "tabindex",
-  "aria-label", "aria-pressed", "aria-hidden", "text-anchor", "data-seq", "focusable"]);
+  "aria-label", "aria-pressed", "aria-hidden", "text-anchor", "data-seq", "focusable", "preserveAspectRatio"]);
 
 const NODE_W = 156;
 const NODE_H = 30;
@@ -64,7 +64,9 @@ export function createPlanMap(container, hooks) {
   function render({ plan, selected }) {
     if (!plan) { container.replaceChildren(); return; }
     const { at, width, height } = layoutPlan(plan);
-    const root = el("svg", { viewBox: "0 0 " + width + " " + height, width, height, role: "group", "aria-label": t("plan.aria"), focusable: "false" });
+    const root = el("svg", { viewBox: "0 0 " + width + " " + height, width, height, preserveAspectRatio: "xMinYMid meet", role: "group", "aria-label": t("plan.aria"), focusable: "false" });
+    // the map grows with its panel, at most to 1.3 times its natural size, so text never turns oversized
+    if (root.style) { root.style.maxWidth = Math.round(width * 1.3) + "px"; root.style.maxHeight = Math.round(height * 1.3) + "px"; }
     const edges = el("g", { "aria-hidden": "true" });
     const rings = el("g");
     const hot = new Set();
