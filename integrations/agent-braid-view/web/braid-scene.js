@@ -127,10 +127,13 @@ export function buildBraid(model, options = {}) {
   const laneById = new Map(lanes.map((lane) => [lane.strandId, lane.laneIndex]));
   const laneCount = lanes.reduce((count, lane) => Math.max(count, lane.laneIndex + 1), 0);
   const rawMax = elements.reduce((most, element) => Math.max(most, Number(element.x) || 0), 1);
-  const scale = TIME_LENGTH / rawMax;
+  const spanZ = Math.max(0, laneCount - 1) * LANE_GAP;
+  // VIS.1d: the time axis grows with the number of lanes, so many lanes do not squeeze time into a narrow
+  // column in a wide view (about 2.2 times the lane depth, never shorter than TIME_LENGTH).
+  const timeLength = Math.max(TIME_LENGTH, spanZ * 2.2);
+  const scale = timeLength / rawMax;
   const xOf = (element) => (Number(element.x) || 0) * scale;
   const zOf = (index) => (index - (laneCount - 1) / 2) * LANE_GAP;
-  const spanZ = Math.max(0, laneCount - 1) * LANE_GAP;
   for (const element of elements) built.xOf.set(element.seq, xOf(element));
 
   const materials = new Map();
@@ -228,7 +231,7 @@ export function buildBraid(model, options = {}) {
   for (const lane of lanes) {
     const opener = byId.get(lane.seq);
     const x0 = opener ? xOf(opener) : 0;
-    const x1 = Math.max(closeAt.has(lane.strandId) ? closeAt.get(lane.strandId) : TIME_LENGTH, x0 + 0.05);
+    const x1 = Math.max(closeAt.has(lane.strandId) ? closeAt.get(lane.strandId) : timeLength, x0 + 0.05);
     const z = zOf(lane.laneIndex);
     const mat = material("solid", HOST_COLORS[lane.host] || COLORS.grey);
     const radius = lane.declared ? TUBE_RADIUS : TUBE_RADIUS * 0.6;

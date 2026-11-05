@@ -320,9 +320,16 @@ function renderLive() {
   badge.hidden = false;
   badge.title = t("live.title");
   const now = derived().axis.nowMs;
-  badge.textContent = axis.live ? t("live.badge", { time: formatClock((now === null ? liveNowMs() : now) - axisMin()) }) : t("live.replay");
-  badge.className = "pill-live" + (axis.live ? " live-on" : "");
+  // While the event stream is down, "now" stops at the last moment this page was connected: the page cannot
+  // know what happened since, so it must not keep claiming to be live.
+  const connected = connectionKey === "live";
+  if (axis.live && connected) lastLiveMs = (now === null ? liveNowMs() : now) - axisMin();
+  badge.textContent = !axis.live ? t("live.replay")
+    : connected || lastLiveMs === null ? t("live.badge", { time: formatClock((now === null ? liveNowMs() : now) - axisMin()) })
+    : t("live.stale", { time: formatClock(lastLiveMs) });
+  badge.className = "pill-live" + (axis.live && (connected || lastLiveMs === null) ? " live-on" : "");
 }
+let lastLiveMs = null;
 
 // Once a second in live mode: the badge, and the timeline when it is shown and the position is at the end.
 setInterval(() => {
@@ -452,6 +459,7 @@ function setConnection(key) {
   connectionKey = key;
   $("connection").textContent = t("connection." + key);
   $("connection").className = "badge conn" + (key === "live" || key === "open" || key === "connected" ? "" : " trouble");
+  renderLive();
 }
 
 function parseBlock(block) {

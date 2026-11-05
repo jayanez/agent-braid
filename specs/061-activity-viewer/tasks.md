@@ -467,12 +467,15 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   part). Files: `timeline.js`, `state.js`, tests. Verification: SC-025 (loom part),
   SC-026.
   Done 2026-11-05 (this PR): threads, glow, branches, tethers, beads, now edge, one-time draw-in; short ids for host lanes (T064 label part).
-- [ ] T070 (REQ-024, REQ-028): Details rail and its bottom-sheet form, KPI and noun
+- [x] T070 (REQ-024, REQ-028): Details rail and its bottom-sheet form, KPI and noun
   selection, and playback docked in the hero with follow-now. Also T067
   `view open` (CLI, owner-only credential; the read cookie never mints codes), after
   the `contracts/ui-security-privacy.md` amendment (prerequisite). Files: `loom.js`, `index.html`,
   `agent_braid/view_serve.py`, `agent_braid/view_cli.py`, tests.
   Verification: SC-024, SC-028.
+  Done 2026-11-05: details rail with its phone bottom sheet (T068 shell), noun and KPI selection, playback
+  docked under the loom with "Go to now"; `view open` and the contract amendment in #1094 (T067). The live
+  badge now says "Not live · last update" while the event stream is down.
 - [x] T071 (REQ-025): Plan map and the collision and duration panels. The plan map
   has dependency columns, the three pair styles, hot nodes and a report selector.
   The collision panel lists predicted pairs, and observed ones only with a source
@@ -494,6 +497,10 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   Measure contrast again. Capture `vis1d/evidence/after-*.png` at 1440×900 and
   390×844 in dark and light, on the baseline instance data, in the four states.
   Update `docs/tooling/VIEWER.md`. Verification: SC-027.
+  Progress 2026-11-05: audit record `vis1d/audit-2026-11-05.md`; contrast re-measured and `--faint` raised
+  to 4.5:1 for small text; scripted keyboard-only walk and the four states captured
+  (`vis1d/a11y-2026-11-05.md`, `vis1d/evidence/after-*.png`); VIEWER.md, quickstart and the main README
+  updated. Open: the VoiceOver pass of the lane labels, which needs a person with VoiceOver.
 - [ ] T074 (all VIS.1d REQ): Closure. Covers the pre-PR reviews, `validate_change
   --profile pr`, the owner review of the before and after captures, the obtained
   evidence in `assurance.json`, and the freeze. Dependencies: T068 to T073.
