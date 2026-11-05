@@ -431,7 +431,7 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   `tests/test_view_docs.py`, `docs/tooling/VIEWER.md`. Verification: SC-020, SC-021.
   Added 2026-11-04 (owner request): also cover the lane-label disambiguation of T064 in
   the accessibility pass (labels read out distinctly by VoiceOver and keyboard focus).
-- [ ] T067 (REQ-004): Open the viewer in another browser without restarting it. Today
+- [x] T067 (REQ-004): Open the viewer in another browser without restarting it. Today
   the one-time open code is per start, so once the integrated browser has used it, any
   other browser gets 404 until `view serve` restarts, which also drops the in-memory
   history. Owner request 2026-11-04: offer a new open link on demand, for example an
@@ -442,6 +442,9 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   `agent_braid/view_cli.py`, web bundle, `contracts/ui-security-privacy.md`,
   `docs/tooling/VIEWER.md`, tests. Verification: a second browser opens the live view
   while the first stays connected, with no restart and no loss of history.
+  Done 2026-11-05 (#1094): `agent-braid view open` and `POST /v1/open-code` behind an owner-only token file;
+  codes single-use, 120 s, at most 4 pending; up to 8 read cookies, so the first browser stays connected.
+  The page has no "copy link" action: the read cookie never mints codes (contract amendment 2026-11-05).
 - [ ] T066 (all VIS.1c REQ): Closure: pre-PR reviews (code, quality, simplification),
   `validate_change --profile pr`, VoiceOver pass of "select a conflict", owner review
   of the "find the ROADMAP conflict" task, obtained evidence in `assurance.json`,

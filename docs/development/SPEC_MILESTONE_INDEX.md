@@ -111,7 +111,7 @@ and tracking do not admit native execution or automatic promotion.
 |---|---|
 | [SPEC-061: activity-viewer](../../specs/061-activity-viewer/spec.md) | VIS.1 — Activity viewer (#25) |
 
-VIS is an independent track: VIS.1 (SPEC-061) is specified; VIS.2 (Claude Code
+VIS is an independent track: VIS.1 (SPEC-061) is in progress (VIS.1a closed 2026-11-03, VIS.1d dashboard relaunch 2026-11-05, VIS.1b behind the T035 checkpoint); VIS.2 (Claude Code
 mod pane), VIS.3 (Codex hooks and `notify`, MCP App and terminal UI) and VIS.4 (other hosts) are
 planned in the [derived tracks](../../specs/061-activity-viewer/tracks.md) and get
 their own specs and milestones when started. The track never gates the core,
