@@ -447,6 +447,49 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   of the "find the ROADMAP conflict" task, obtained evidence in `assurance.json`,
   freeze, owner closure review. Dependencies: every VIS.1c task the owner kept.
 
+## VIS.1d — Dashboard relaunch (amendment of 2026-11-05)
+
+Plan: [vis1d/README.md](vis1d/README.md), direction: [vis1d/direction.md](vis1d/direction.md).
+No VIS.1d code until the owner picks an option (recorded in vis1d/README.md).
+T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
+
+- [ ] T068 (REQ-024, REQ-027): Dashboard shell and tokens. Covers the app bar, the
+  Now sentence, the KPI strip, the filter chips, the 12-column grid and its
+  breakpoints, the tokens from direction.md in both themes, the help popover in
+  place of the inline hint paragraphs, and the quiet read-only footer. es/en strings
+  keep key parity. Files: `integrations/agent-braid-view/web/index.html`,
+  `style.css`, `strings.js`, `loom.js`, `tests/test_view_web_*.py`.
+  Verification: SC-024 (first-screen part), palette test.
+- [ ] T069 (REQ-025, REQ-026): Live loom. Covers threads on a time axis, the running
+  glow, waiting with its tether, finished lanes, subagent branches, tool beads, the
+  now edge, the first-load draw-in, and the distinct lane labels (the T064 label
+  part). Files: `timeline.js`, `state.js`, tests. Verification: SC-025 (loom part),
+  SC-026.
+- [ ] T070 (REQ-024, REQ-028): Details rail and its bottom-sheet form, KPI and noun
+  selection, and playback docked in the hero with follow-now. Also the T067
+  "Copy link" action and `view open`. Files: `loom.js`, `index.html`,
+  `agent_braid/view_serve.py`, `agent_braid/view_cli.py`, tests.
+  Verification: SC-024, SC-028.
+- [ ] T071 (REQ-025): Plan map and the collision and duration panels. The plan map
+  has dependency columns, the three pair styles, hot nodes and a report selector.
+  The collision panel lists predicted pairs, and observed ones only with a source
+  (SC-023). The duration panel shows running and waiting per lane (F1, F2).
+  Files: new first-party `planmap.js` (pinned in `BUNDLE_FILES`), `state.js`,
+  tests. Verification: SC-025 (plan part).
+- [ ] T072 (REQ-026, REQ-027): Explore 3D in the scope the owner chose. Either a
+  re-skin with tokens, T064 labels and glyphs in place of class text, or the
+  Explore view with eased presets and fly-to-selected, using no new vendored file.
+  Use Context7 for the Three.js r186 APIs. Files: `braid-scene.js`, tests.
+  Verification: SC-026 (3D part), SC-027.
+- [ ] T073 (REQ-024, REQ-027, T065 UI part): Audit and evidence. Run a Web
+  Interface Guidelines audit and fix its findings. Take a keyboard-only walk.
+  Measure contrast again. Capture `vis1d/evidence/after-*.png` at 1440×900 and
+  390×844 in dark and light, on the baseline instance data, in the four states.
+  Update `docs/tooling/VIEWER.md`. Verification: SC-027.
+- [ ] T074 (all VIS.1d REQ): Closure. Covers the pre-PR reviews, `validate_change
+  --profile pr`, the owner review of the before and after captures, the obtained
+  evidence in `assurance.json`, and the freeze. Dependencies: T068 to T073.
+
 ## Closure (each delivery)
 
 - [ ] T036: Pre-PR reviews (code review, quality, simplification),

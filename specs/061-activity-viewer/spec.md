@@ -77,6 +77,12 @@ VIS.1 is one milestone with two deliveries and, since 2026-11-04, a third (VIS.1
   needs no effort, recording or export work. See the
   [VIS.1c amendment](#vis1c-amendment-2026-11-04).
 
+- **VIS.1d — dashboard relaunch (amendment of 2026-11-05):** one design direction,
+  dashboard page structure, live loom of sessions separated from a plan map of
+  analysis reports, distinct lane labels, accessibility and an on-demand open link.
+  REQ-024 to REQ-028, tasks T068 to T074. See the
+  [VIS.1d amendment](#vis1d-amendment-2026-11-05).
+
 After VIS.1a the owner holds a go/no-go checkpoint (T035) by a date set in T001:
 the census result against a threshold set in T001, a descriptive Q-VIS1
 observation on real or census sessions, and a recorded decision to keep,
@@ -174,6 +180,38 @@ detected (browser or desktop-app locale, then a language-tag hint from the `view
 English), with a manual choice remembered per viewer. The ADR 0033 amendment is accepted and applied to
 `docs/adr/0033-vendored-threejs-mit-boundary.md`, so REQ-017's gate G2 is met. The privacy review (T052) and
 the host probe (T053) are authorised and not yet done; contract v0.2 stays a draft until T052 concludes.
+
+## VIS.1d amendment (2026-11-05)
+
+The owner judged the viewer very poor after VIS.1c was merged (T050 to T062). On
+2026-11-05 the owner asked for a viewer that impresses the owner and anyone who
+sees or uses it, with its page, panels and selectors following a dashboard
+structure. VIS.1d is a fourth delivery that relaunches the viewer surface: one
+design direction ([vis1d/direction.md](vis1d/direction.md)), requirements REQ-024 to
+REQ-028 and tasks T068 to T074. Like VIS.1c, it is an amendment of this specification
+and not a new spec number.
+
+VIS.1d keeps every decision in force:
+
+- D7: 2D is the default view.
+- D8: predicted and observed conflicts use two visual languages.
+- D10: no new vendored files.
+- OD-V1: language detection and es/en key parity.
+- OD-V2: the read-only statement stays as one quiet line plus the About panel.
+- OD-V4: tool duration is shown live only.
+- OD-V5 and SC-023: the observed-collision source is unchanged, and no observed
+  counter or zero is shown without a source.
+- The CSP, loopback-only binding, the never-collect list and the hook allowlist do
+  not change.
+
+VIS.1d changes how the page presents these facts, not what is collected. OD-V6 (3D
+frozen) is reopened only if the owner picks the option that says so. Before and
+after captures are in `vis1d/evidence/`. The owner's choice of option is pending and
+will be recorded verbatim in [vis1d/README.md](vis1d/README.md#owner-decision-pending).
+
+The T001 approval, the VIS.1a closure approval, the VIS.1c gate answers and the
+historical snapshots do not cover this amendment. It is reviewed at its own closure
+(T074).
 
 ## Ingest token amendment (2026-11-04)
 
@@ -708,6 +746,86 @@ is shown with its own glyph and counter, separate from predicted conflicts; give
 counter and no zero is rendered; no accepted field produces a ratio against serial execution.
 
 Verification: T063, T064; [vis1c/owner-decisions.md](vis1c/owner-decisions.md#proposed-differential-fields-not-accepted).
+
+### REQ-024 — Dashboard page structure (VIS.1d)
+
+The page is a dashboard. In order, it has:
+
+1. An app bar.
+2. A Now sentence that answers who is running, who waits on whom, what may collide
+   or collided, and the longest tool call.
+3. A strip of KPI tiles that act as filter shortcuts.
+4. Filter chips.
+5. A hero panel with the active view.
+6. A details rail.
+7. Plan, collision and duration panels.
+8. A collapsible events table.
+
+All of these drive the one state model of REQ-016, and help text lives in one help
+popover. At 1440×900, the Now sentence, the KPIs, the filters, the hero and the rail
+fit in the first screen.
+
+**SC-024:** Given the baseline instance data, at 1440×900 the Now sentence, the five
+KPI tiles, the hero and the details rail are visible without scrolling. Clicking a
+KPI tile, a Now-sentence noun, a plan node or a collision row selects or filters the
+same element in every view and in the table. The page shows no explanatory paragraph
+outside the help popover and the About panel.
+
+Verification: T068, T070, T073.
+
+### REQ-025 — Live loom separated from the plan map (VIS.1d)
+
+Host sessions and subagents are drawn on a real time axis as threads, showing
+running, waiting (with a tether to `waitingOn`), finished, tool beads and the now
+edge. Analysis-report operations are drawn in a separate plan map in dependency
+order, with their predicted pairs. Untimed events never make the session axis fall
+back to event order, and the plan map never shows a duration.
+
+**SC-025:** Given untimed analysis reports and timed hook sessions together, the
+loom shows a time ruler, not sequence numbers, and contains no analysis operation.
+The plan map shows every operation and every classified pair of the selected report.
+With reports only, the plan map becomes the hero and the loom shows its empty line.
+
+Verification: T069, T071.
+
+### REQ-026 — Distinct lane labels (VIS.1d, folds T064 labels)
+
+Every hook lane has a visible label that tells it apart: "Session" plus a short
+stable id taken from the salted strand hash, a subagent's type with its parent's
+short id, and an ordinal for repeats. No new data is collected for the labels. The
+same text is the accessible name in 2D and 3D.
+
+**SC-026:** Given four hook sessions and three subagents, every lane label in the
+loom, the details rail, the 3D view and the table is unique, and VoiceOver reads it
+in the same form.
+
+Verification: T069, T072.
+
+### REQ-027 — One visual language, motion and states (VIS.1d)
+
+The page uses the tokens, type scale and copy of
+[vis1d/direction.md](vis1d/direction.md) in both themes. Motion is limited to the
+first-load draw-in and the now edge, and reduced motion turns both off. The empty,
+untimed, live and disconnected states each have their defined content. Both views
+apply the visual language. The 3D scope follows the owner's option.
+
+**SC-027:** Captures at 1440×900 and 390×844, in dark and light, show the four
+states. The palette test passes in both themes. A Web Interface Guidelines audit of
+the result has no open finding. A keyboard-only walk reaches every control with a
+visible focus.
+
+Verification: T068, T072, T073.
+
+### REQ-028 — Open link on demand (VIS.1d, carries T067)
+
+A running viewer can issue a fresh single-use, short-lived open code without a
+restart, from `agent-braid view open` and from a "Copy link" action in the page, as
+T067 describes. Existing cookies stay valid, and nothing is logged.
+
+**SC-028:** A second browser opens the live view through a new link while the first
+stays connected. The in-memory history is kept, and the code is refused on reuse.
+
+Verification: T067, T070.
 
 ## Scientific boundaries and compatibility
 
