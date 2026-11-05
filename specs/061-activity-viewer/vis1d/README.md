@@ -70,12 +70,18 @@ index, `github-tracking.json`, `CONSTITUTION.md`, the ADRs, and
 `specs/065-*` and SPEC-068. `contracts/ui-security-privacy.md` is edited only by
 the separate reviewed amendment that T067 needs.
 
-## Owner decision (pending)
+## Owner decision (recorded 2026-11-05)
 
-The owner is sent one guided question through the orchestrator session. It offers
-three options, recommends one, and attaches the mockups. The answer will be
-recorded here verbatim before any T068 code. One option reopens OD-V6 (3D frozen),
-so it is called out separately.
+The owner answered through the orchestrator session; the labels are verbatim.
+
+| Question | Answer | Effect |
+|---|---|---|
+| «¿Con qué alcance construyo el relanzamiento tipo dashboard del visor Loom?» | "Dashboard + 3D renovado (Recomendado)" | Option 1: the full dashboard and the redone 3D Explore view, plus T064, T065 and T067. **OD-V6 (3D frozen) is reopened** for T072: eased camera presets, fly-to-selected and reset always visible, with no new vendored file and no new data. |
+| «¿Puede la otra sesión fusionar el plan (PR #1085, solo documentación) cuando el CI esté en verde?» | "Sí, fusionar con CI verde" | This plan merges once CI is green. |
+
+The owner saw the before captures and the mockups. T068 to T074 are authorized in
+this scope. The contract amendment that T067 needs is still a separate, reviewed
+change.
 
 ## Evidence boundary
 

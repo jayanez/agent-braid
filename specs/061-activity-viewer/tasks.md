@@ -450,7 +450,7 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
 ## VIS.1d — Dashboard relaunch (amendment of 2026-11-05)
 
 Plan: [vis1d/README.md](vis1d/README.md), direction: [vis1d/direction.md](vis1d/direction.md).
-No VIS.1d code until the owner picks an option (recorded in vis1d/README.md).
+Owner option recorded 2026-11-05: full dashboard and the redone 3D view (vis1d/README.md).
 T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
 
 - [ ] T068 (REQ-024, REQ-027): Dashboard shell and tokens. Covers the app bar, the
@@ -477,8 +477,8 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   (SC-023). The duration panel shows running and waiting per lane (F1, F2).
   Files: new first-party `planmap.js` (pinned in `BUNDLE_FILES`), `state.js`,
   tests. Verification: SC-025 (plan part).
-- [ ] T072 (REQ-026, REQ-027): 3D view in the scope the owner chose (depends on the
-  owner's option; OD-V6 stays in force unless that option reopens it). Either a
+- [ ] T072 (REQ-026, REQ-027): 3D view in the scope the owner chose (the owner chose
+  the Explore option, which reopens OD-V6). Either a
   re-skin with tokens, T064 labels and glyphs in place of class text, or the
   Explore view with eased presets and fly-to-selected, using no new vendored file.
   Use Context7 for the Three.js r186 APIs. Files: `braid-scene.js`, tests.

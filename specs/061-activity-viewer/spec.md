@@ -204,10 +204,10 @@ VIS.1d keeps every decision in force:
 - The CSP, loopback-only binding, the never-collect list and the hook allowlist do
   not change.
 
-VIS.1d changes how the page presents these facts, not what is collected. OD-V6 (3D
-frozen) is reopened only if the owner picks the option that says so. Before and
-after captures are in `vis1d/evidence/`. The owner's choice of option is pending and
-will be recorded verbatim in [vis1d/README.md](vis1d/README.md#owner-decision-pending).
+VIS.1d changes how the page presents these facts, not what is collected. Before and
+after captures are in `vis1d/evidence/`. On 2026-11-05 the owner chose "Dashboard + 3D renovado
+(Recomendado)", which reopens OD-V6 for T072; see
+[vis1d/README.md](vis1d/README.md#owner-decision-recorded-2026-11-05).
 
 The T001 approval, the VIS.1a closure approval, the VIS.1c gate answers and the
 historical snapshots do not cover this amendment. It is reviewed at its own closure
