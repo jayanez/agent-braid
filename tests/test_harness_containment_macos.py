@@ -353,7 +353,9 @@ class PolicyTests(unittest.TestCase):
             self.assertEqual(env["HTTPS_PROXY"], f"http://127.0.0.1:{policy.proxy_port}")
         self.assertEqual(launch["CLAUDE_CONFIG_DIR"], policy.config_dir)
         self.assertEqual(launch["DISABLE_AUTOUPDATER"], "1")
+        self.assertEqual(launch["CLAUDE_CODE_TMPDIR"], "/r/tmp")  # not /tmp/claude-<uid>, which the profile denies
         self.assertNotIn("CLAUDE_CONFIG_DIR", fixture)
+        self.assertNotIn("CLAUDE_CODE_TMPDIR", fixture)
 
     def test_environment_hash_binds_every_input(self):
         machine = Machine(self)
