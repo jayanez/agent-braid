@@ -93,7 +93,7 @@ simulator for workloads with external effects, and evaluation contracts for
 measuring real owned work. A read-only activity viewer, **Loom**, runs on
 loopback (`agent-braid view serve`): a live dashboard of Claude Code sessions and
 subagents, the analysis plans and their predicted collisions, and an Explore 3D
-view. Codex and OpenTelemetry ingest, recording and export are still in development. They share the same
+view. Plan maps work the same from Codex and OpenCode; their live sessions, OpenTelemetry ingest, recording and export are still in development. They share the same
 rule as everything else: none of them can authorize execution on its own.
 
 ## 🚀 Quick start
@@ -404,7 +404,7 @@ shows the same lanes in depth.
 3. **See plans.** The plugin's `analyze-work` reports appear as plan maps: operations in dependency order, with "may collide", "must wait" and "independent" pairs. No time is invented for a plan.
 4. **Explore.** The Explore 3D view shows the same lanes in depth, with camera presets and fly-to-selected.
 
-The viewer is read-only, keeps no access log and makes no speedup claim; every event carries `executionAuthorization: false`. Codex and OpenTelemetry ingest, recording and export are not available yet. Guide: [docs/tooling/VIEWER.md](docs/tooling/VIEWER.md); spec: [SPEC-061](specs/061-activity-viewer/spec.md).
+The viewer is read-only, keeps no access log and makes no speedup claim; every event carries `executionAuthorization: false`. Plan maps work the same from Claude Code, Codex and OpenCode; live threads come from Claude Code only for now, with Codex and OpenCode planned ([hosts](docs/tooling/VIEWER.md#hosts)). OpenTelemetry ingest, recording and export are not available yet. Guide: [docs/tooling/VIEWER.md](docs/tooling/VIEWER.md); spec: [SPEC-061](specs/061-activity-viewer/spec.md).
 
 </details>
 

@@ -67,6 +67,13 @@ event; the allowlists drop the names each receipt lists in `findingsForAllowlist
 - Open questions: MCP Apps support per Codex build; app-server multi-client use
   alongside a live TUI.
 
+## Host parity for VIS.1 (VIS.1e, 2026-11-05)
+
+Live sessions in the web viewer for Codex and OpenCode move into VIS.1e (REQ-029, T076 to
+T083) so the three hosts share one experience. VIS.3 keeps the Codex-specific surfaces (MCP
+App, terminal UI) and VIS.4 the remaining hosts (Cursor, Pi, VS Code) and any in-host
+OpenCode surface.
+
 ## VIS.4 — Other hosts (SPEC-064)
 
 - Research per host: MCP and MCP Apps support, OpenTelemetry export, hooks or

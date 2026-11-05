@@ -22,7 +22,10 @@ interleave work: every event carries `executionAuthorization: false`.
   counts to the local telemetry store (see [Usage telemetry](#usage-telemetry)).
 - **Observational hooks.** It answers Claude Code hooks with an empty body and never
   takes part in a host decision.
-- **No effort measurement yet.** Codex and OpenTelemetry ingest, token and effort
+- **Live sessions come from Claude Code only, for now.** Plan maps work the same for
+  Claude Code, Codex and OpenCode; live threads for Codex and OpenCode are planned
+  (see [Hosts](#hosts)).
+- **No effort measurement yet.** OpenTelemetry ingest, token and effort
   views, recording and export are **VIS.1b** and are not available. When they arrive,
   effort stays ephemeral (held in memory only), recording is explicit (`--record`),
   the default export is minimal, effort figures are labelled `host-estimate`, and no
@@ -171,7 +174,7 @@ your shell profile by an earlier version is unused and can be removed. Start `vi
 first and pass its port with `--port`; with the viewer stopped, another process on that
 port would receive the payloads. Because the file is read at every call, a new token
 (`Ingest token: new`) needs no Claude Code restart. If you reinstall Agent Braid under
-another Python, print and merge the hooks again. `--host codex` is accepted and reports that it is not available yet.
+another Python, print and merge the hooks again. `--host codex` is accepted and reports that it is not available yet; OpenCode has no `--host` value yet (both are planned in VIS.1e).
 
 ### Exit codes
 
@@ -241,6 +244,20 @@ scene's facts. Class words appear on hover or selection only.
 Summary, Legend and Help.
 Playback reveals events in model order. Counters and absence markers always cover every
 retained event (at most 50,000, with evicted ranges shown as gaps).
+
+## Hosts
+
+| What you see | Claude Code | Codex | OpenCode |
+|---|---|---|---|
+| Plan maps from `analyze-work` reports | yes | yes | yes |
+| Result folders found from the plugin registry | yes | yes | yes |
+| Live sessions, subagents, tool calls, waiting | yes (hooks) | planned (VIS.1e) | planned (VIS.1e) |
+| `view env --host` setup | `claude` | planned (VIS.1e) | planned (VIS.1e) |
+| Tokens and effort | planned (VIS.1b) | planned (VIS.1b) | not planned yet |
+| In-host surface | mod pane planned (VIS.2) | MCP App and terminal UI planned (VIS.3) | not planned yet |
+
+A planned row does not exist in this release. Builds of VIS.1e start only when the owner
+resumes viewer work ([REQ-029](../../specs/061-activity-viewer/spec.md)).
 
 ## Host verification status
 
