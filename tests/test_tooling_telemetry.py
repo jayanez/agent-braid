@@ -119,14 +119,14 @@ class TelemetryTests(unittest.TestCase):
                     metric='calls', bucket='all', count=1)
         return dict(base, **kwargs)
 
-    def test_v1_batch_merges_into_the_new_store_and_exports_are_v2(self):
+    def test_v1_batch_merges_into_the_new_store_and_exports_are_v3(self):
         v1 = self.batch_file([self.row(surface='cli', operation='analyze')], telemetry.SCHEMA_V1)
         self.assertEqual(self.store.merge(v1)['status'], 'merged')
         self.assertEqual(self.store.merge(v1)['status'], 'duplicate')
         self.record()
         out = self.root / 'out.json'
         self.store.export(out)
-        self.assertEqual(json.loads(out.read_text())['schema'], 'agent-braid-local-telemetry-batch/v2')
+        self.assertEqual(json.loads(out.read_text())['schema'], 'agent-braid-local-telemetry-batch/v3')
         self.assertEqual(telemetry.Store(self.root / 'other').merge(out)['status'], 'merged')
         with closing(sqlite3.connect(self.directory / 'metrics.sqlite3')) as db:
             self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0], 1)  # store format unchanged
@@ -142,7 +142,29 @@ class TelemetryTests(unittest.TestCase):
                     telemetry.Store(self.root / 'b').merge(self.batch_file([row], telemetry.SCHEMA_V1, 'v1.json'))
         self.assertFalse((self.root / 'b').exists())
         with self.assertRaises(ValueError):
-            self.store.merge(self.batch_file([self.row()], 'agent-braid-local-telemetry-batch/v3'))
+            self.store.merge(self.batch_file([self.row()], 'agent-braid-local-telemetry-batch/v4'))
+
+    def test_viewer_cells_are_calls_only_and_need_a_v3_batch(self):
+        view_rows = [self.row(surface='view', operation='page-load', outcome='ok', metric='calls', bucket='all'),
+                     self.row(surface='lifecycle', operation='view-start', outcome='ok', metric='calls', bucket='all')]
+        for row in view_rows:
+            with self.subTest(row=row):
+                self.assertEqual(telemetry.Store(self.root / 'a').merge(self.batch_file([row], name='ok.json'))['status'], 'merged')
+                for schema in (telemetry.SCHEMA_V1, telemetry.SCHEMA_V2):
+                    with self.assertRaises(ValueError):
+                        telemetry.Store(self.root / 'b').merge(self.batch_file([row], schema, 'old.json'))
+        for bad in (self.row(surface='view', operation='page-load', outcome='ok', metric='duration', bucket='le-1ms'),
+                    self.row(surface='view', operation='ui-free-text', outcome='ok', metric='calls', bucket='all')):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                telemetry.Store(self.root / 'c').merge(self.batch_file([bad], name='bad.json'))
+
+    def test_record_view_counts_calls_only_and_fails_open(self):
+        telemetry.record_view('view-start', directory=self.directory)
+        telemetry.record_view('ui-select', directory=self.directory)
+        telemetry.record_view('not-a-name', directory=self.directory)  # dropped, never raised
+        with closing(sqlite3.connect(self.directory / 'metrics.sqlite3')) as db:
+            cells = db.execute("SELECT surface, operation, metric FROM cells WHERE kind='total' ORDER BY operation").fetchall()
+        self.assertEqual(cells, [('view', 'ui-select', 'calls'), ('lifecycle', 'view-start', 'calls')])
 
     def test_refusal_reason_and_lifecycle_cells_are_closed(self):
         bad = [self.row(outcome='ok', metric='refusal-reason', bucket='other'),                  # only refused outcomes

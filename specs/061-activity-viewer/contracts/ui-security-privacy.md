@@ -91,6 +91,7 @@ its own boundary review where it widens a route, an origin or a credential (see
 | Read credential on an ingest route or ingest credential on a read route | 404 | none |
 | Any credential other than the owner token on the open-code route | 404 | none |
 | A body on the open-code route | 413 | none |
+| A usage body that is not exactly `{"event": <closed name>}` | 400 | none |
 | Method not allowed on a known path | 405 | none |
 | Foreign `Host`, foreign `Origin` or cross-site `Sec-Fetch-Site` | 403 | none |
 | Decision hook event | 403, empty body | none |
@@ -117,6 +118,7 @@ records whether the installed Claude Code treats these responses as non-blocking
 | POST | `/v1/logs`, `/v1/metrics` | ingest token | OTLP HTTP/JSON ingest, append to memory |
 | POST | `/hook/claude` | ingest token | observational Claude Code HTTP hook ingest, empty response body |
 | POST | `/v1/open-code` | owner token | issues one open code (single use, 120 s) and answers `{"url", "ttlSeconds"}`; no body accepted |
+| POST | `/v1/usage` | read cookie | body `{"event": "<name>"}` with one closed UI interaction name (at most 256 bytes); `204`, no state change in the viewer; counted only when `view serve --telemetry local` (added 2026-11-05) |
 
 Any other path returns 404 without state change. VIS.1 has no route that accepts
 loom lines from another process and no Codex `notify` or hook route (VIS.3).

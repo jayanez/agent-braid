@@ -1390,6 +1390,52 @@ class OpenOnDemandTests(ServerCase):
         self.assertEqual(self.request("GET", "/", {"Cookie": cookies[-1]})[0], 200)
 
 
+class UsageTests(ServerCase):
+    """`/v1/usage`: a read-cookie POST carrying one closed interaction name, counted only through the callback."""
+
+    def setUp(self):
+        self.counted = []
+        self.server_kwargs = {"usage": lambda op, outcome: self.counted.append((op, outcome)),
+                              "usage_events": ("ui-select", "ui-view-3d")}
+        super().setUp()
+
+    def usage(self, body, cookie=None, content_type="application/json"):
+        headers = {"Content-Type": content_type}
+        if cookie:
+            headers["Cookie"] = cookie
+        return self.request("POST", "/v1/usage", headers, body)[0]
+
+    def test_a_closed_name_is_counted_and_answers_204(self):
+        cookie = self.cookie()
+        self.assertEqual(self.usage(b'{"event":"ui-select"}', cookie), 204)
+        self.assertEqual(self.counted, [("ui-select", "ok")])
+
+    def test_refusals_count_nothing(self):
+        cookie = self.cookie()
+        self.assertEqual(self.usage(b'{"event":"ui-select"}'), 404)  # no read cookie
+        self.assertEqual(self.request("POST", "/v1/usage", {"Authorization": f"Bearer {self.token}", **JSON},
+                                      b'{"event":"ui-select"}')[0], 404)  # the ingest token is not a read credential
+        for body in (b'{"event":"free text"}', b'{"event":"ui-select","target":"a"}', b'[]', b'{'):
+            self.assertEqual(self.usage(body, cookie), 400)
+        self.assertEqual(self.usage(b'{"event":"ui-select"}', cookie, "text/plain"), 415)
+        self.assertEqual(self.usage(b'{"event":"' + b"x" * 300 + b'"}', cookie), 413)
+        self.assertEqual(self.request("GET", "/v1/usage", {"Cookie": cookie})[0], 405)
+        self.assertEqual(self.counted, [])
+
+    def test_page_loads_and_ingest_outcomes_are_counted(self):
+        cookie = self.cookie()
+        self.assertEqual(self.request("GET", "/", {"Cookie": cookie})[0], 200)
+        self.assertEqual(self.post("/hook/claude", b'{"hook_event_name":"SessionStart"}')[0], 200)
+        self.assertIn(("page-load", "ok"), self.counted)
+        self.assertIn(("ingest-hook", "ok"), self.counted)
+
+    def test_without_a_callback_the_route_still_answers_the_same(self):
+        self.server_kwargs = {"usage_events": ("ui-select",)}
+        self.stop()
+        self.start(**self.server_kwargs)
+        self.assertEqual(self.usage(b'{"event":"ui-select"}', self.cookie()), 204)
+
+
 class ContractTableTests(unittest.TestCase):
     def test_route_table_equals_the_contract_table(self):
         text = CONTRACT.read_text()
