@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import re
 import shutil
 import subprocess
 import sys
@@ -12,7 +14,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from agent_braid import tooling_assets
+from agent_braid import analysis, tooling_assets
 
 
 REPOSITORY = Path(__file__).resolve().parents[1]
@@ -133,6 +135,16 @@ class ToolingAssetTests(unittest.TestCase):
             self.assertTrue(skill.content.startswith("---\n"))
             self.assertIn(f"name: {skill.name}\n", skill.content.split("---", 2)[1])
             self.assertIn("license: CC-BY-SA-4.0\n", skill.content)
+
+    def test_analyze_skill_aim_example_is_a_valid_conflicting_request(self) -> None:
+        # Issue #1080: the analyze skill must carry a copyable AIM request that the
+        # analyzer accepts, so a host model need not invent the request shape.
+        content = (SOURCE_SKILLS / "agent-braid-analyze" / "SKILL.md").read_text("utf-8")
+        blocks = re.findall(r"```json\n(.*?)```", content, re.S)
+        self.assertEqual(1, len(blocks))
+        report = analysis.analyze(json.loads(blocks[0]))
+        self.assertEqual(["conflicting"], [item["classification"] for item in report["interactions"]])
+        self.assertEqual(["serialize-or-isolate"], report["interactions"][0]["constraints"])
 
     def test_workflow_guidance_keeps_authority_and_failure_boundaries(self) -> None:
         bundle = tooling_assets.load_skill_bundle(source_checkout=True)
