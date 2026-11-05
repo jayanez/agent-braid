@@ -198,7 +198,7 @@ drawn on this axis.
 **Plan map.** One analysis report at a time (choose it in the panel): operations in
 columns by their declared waits, and pairs drawn as "may collide", "must wait",
 "independent" or "unknown". It has no time axis and states no order of execution.
-The Collisions panel lists predicted pairs; the How long panel shows running and waiting
+The Collisions panel lists predicted pairs; the Duration panel shows running and waiting
 per lane.
 
 **Details rail.** The selected event, its class, verification and evidence reference. On

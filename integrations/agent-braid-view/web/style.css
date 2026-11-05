@@ -222,14 +222,18 @@ button:disabled { opacity: 0.45; cursor: default; }
 .panel-note:empty { display: none; }
 .hero { grid-column: span 9; display: flex; flex-direction: column; }
 .detail { grid-column: span 3; grid-row: span 2; position: sticky; top: var(--s-3); max-height: calc(100vh - 2 * var(--s-3)); overflow: auto; }
-.plan { grid-column: span 5; }
-.collisions { grid-column: span 2; }
-.durations { grid-column: span 2; }
+/* VIS.1d owner feedback: the plan map is a graph and gets the whole width beside the rail; collisions and
+   duration sit below it as two equal cards, each with its own scroll */
+.plan { grid-column: span 9; }
+.collisions, .durations { grid-column: span 6; display: flex; flex-direction: column; max-height: 420px; }
+.collisions > ul, .durations > ul { overflow-y: auto; min-height: 0; }
+.collisions.all, .durations.all { max-height: none; }
+.show-all { margin: 0 18px 14px; align-self: flex-start; }
 .tabs { grid-column: 1 / -1; padding: 6px 18px 16px; }
 .dash.no-plans .plan, .dash.no-plans .collisions { display: none; }
 .dash.no-plans .durations { grid-column: span 9; }
 .dash.no-live .durations { display: none; }
-.dash.no-live .plan { grid-column: span 7; }
+.dash.no-live .collisions { grid-column: 1 / -1; }
 
 /* ---- hero: timeline and scene ---- */
 .timeline, .scene { display: flex; flex-direction: column; }
@@ -331,7 +335,8 @@ pre { margin: var(--s-1) 0 0; padding: var(--s-2); max-height: 260px; overflow: 
 
 /* ---- plan map ---- */
 .plan-box { padding: 0 10px; overflow-x: auto; }
-.plan-box svg { display: block; width: 100%; max-width: 760px; height: auto; }
+.plan-box svg { display: block; max-width: none; height: auto; }
+.plan-sub { color: var(--faint); font-size: var(--t-meta); font-variant-numeric: tabular-nums; }
 .plan-empty { padding: 4px 18px 18px; color: var(--muted); font-size: var(--t-label); }
 .pm-node { cursor: pointer; outline: none; }
 .pm-node rect { fill: var(--panel-2); stroke: var(--line); stroke-width: 1; }
@@ -417,7 +422,7 @@ tbody tr.current td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
 @media (max-width: 1279px) {
   .hero, .tabs { grid-column: 1 / -1; }
   .detail { grid-column: 1 / -1; grid-row: auto; position: static; max-height: none; }
-  .plan, .dash.no-live .plan { grid-column: 1 / -1; }
+  .plan { grid-column: 1 / -1; }
   .collisions, .durations, .dash.no-plans .durations { grid-column: span 6; }
 }
 @media (max-width: 767px) {

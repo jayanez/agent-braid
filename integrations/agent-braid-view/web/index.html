@@ -179,6 +179,7 @@
     <header class="ph">
       <h2 id="plan-title" data-i18n="plan.title">Plan</h2>
       <span class="count" id="plan-count"></span>
+      <span class="plan-sub" id="plan-sub"></span>
       <div class="ph-tools"><label class="field compact"><span class="sr" data-i18n="plan.pick">Choose a plan</span><select id="plan-select" hidden></select></label></div>
     </header>
     <div class="plan-box" id="plan-box"></div>
@@ -187,10 +188,12 @@
   <section class="panel collisions" id="collisions-section" aria-labelledby="collisions-title">
     <header class="ph"><h2 id="collisions-title" data-i18n="col.title">Collisions</h2><span class="count" id="collisions-count"></span></header>
     <ul class="rowlist" id="collisions"></ul>
+    <button type="button" class="show-all" id="collisions-all" hidden></button>
   </section>
   <section class="panel durations" id="durations-section" aria-labelledby="durations-title">
-    <header class="ph"><h2 id="durations-title" data-i18n="dur.title">How long</h2><span class="count" id="durations-count"></span></header>
+    <header class="ph"><h2 id="durations-title" data-i18n="dur.title">Duration</h2><span class="count" id="durations-count"></span></header>
     <ul class="bars" id="durations"></ul>
+    <button type="button" class="show-all" id="durations-all" hidden></button>
   </section>
   <section class="panel tabs" aria-label="Sections" data-i18n-label="tabs.label">
     <div class="tablist" role="tablist" id="tablist" aria-label="Sections" data-i18n-label="tabs.label">
