@@ -466,8 +466,9 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   part). Files: `timeline.js`, `state.js`, tests. Verification: SC-025 (loom part),
   SC-026.
 - [ ] T070 (REQ-024, REQ-028): Details rail and its bottom-sheet form, KPI and noun
-  selection, and playback docked in the hero with follow-now. Also the T067
-  "Copy link" action and `view open`. Files: `loom.js`, `index.html`,
+  selection, and playback docked in the hero with follow-now. Also T067
+  `view open` (CLI, owner-only credential; the read cookie never mints codes), after
+  the `contracts/ui-security-privacy.md` amendment (prerequisite). Files: `loom.js`, `index.html`,
   `agent_braid/view_serve.py`, `agent_braid/view_cli.py`, tests.
   Verification: SC-024, SC-028.
 - [ ] T071 (REQ-025): Plan map and the collision and duration panels. The plan map
@@ -476,13 +477,15 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   (SC-023). The duration panel shows running and waiting per lane (F1, F2).
   Files: new first-party `planmap.js` (pinned in `BUNDLE_FILES`), `state.js`,
   tests. Verification: SC-025 (plan part).
-- [ ] T072 (REQ-026, REQ-027): Explore 3D in the scope the owner chose. Either a
+- [ ] T072 (REQ-026, REQ-027): 3D view in the scope the owner chose (depends on the
+  owner's option; OD-V6 stays in force unless that option reopens it). Either a
   re-skin with tokens, T064 labels and glyphs in place of class text, or the
   Explore view with eased presets and fly-to-selected, using no new vendored file.
   Use Context7 for the Three.js r186 APIs. Files: `braid-scene.js`, tests.
   Verification: SC-026 (3D part), SC-027.
 - [ ] T073 (REQ-024, REQ-027, T065 UI part): Audit and evidence. Run a Web
-  Interface Guidelines audit and fix its findings. Take a keyboard-only walk.
+  Interface Guidelines audit; fix or waive each finding, with a reason. Take a
+  keyboard-only walk and a VoiceOver pass of the lane labels (SC-026).
   Measure contrast again. Capture `vis1d/evidence/after-*.png` at 1440×900 and
   390×844 in dark and light, on the baseline instance data, in the four states.
   Update `docs/tooling/VIEWER.md`. Verification: SC-027.

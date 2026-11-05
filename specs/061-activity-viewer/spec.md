@@ -762,11 +762,13 @@ The page is a dashboard. In order, it has:
 8. A collapsible events table.
 
 All of these drive the one state model of REQ-016, and help text lives in one help
-popover. At 1440×900, the Now sentence, the KPIs, the filters, the hero and the rail
+popover. Tool durations (the "Longest tool call" tile, bead and rail durations)
+appear only in live mode and are absent in replays, recordings and exports (OD-V4).
+At 1440×900, the Now sentence, the KPIs, the filters, the hero and the rail
 fit in the first screen.
 
-**SC-024:** Given the baseline instance data, at 1440×900 the Now sentence, the five
-KPI tiles, the hero and the details rail are visible without scrolling. Clicking a
+**SC-024:** Given the baseline instance data, at 1440×900 the Now sentence, the KPI
+tiles (four, or five when an observed-collision source exists), the hero and the details rail are visible without scrolling. Clicking a
 KPI tile, a Now-sentence noun, a plan node or a collision row selects or filters the
 same element in every view and in the table. The page shows no explanatory paragraph
 outside the help popover and the About panel.
@@ -791,13 +793,14 @@ Verification: T069, T071.
 ### REQ-026 — Distinct lane labels (VIS.1d, folds T064 labels)
 
 Every hook lane has a visible label that tells it apart: "Session" plus a short
-stable id taken from the salted strand hash, a subagent's type with its parent's
-short id, and an ordinal for repeats. No new data is collected for the labels. The
+id taken from the salted strand hash (stable within one server session, since the
+salt is per session), a subagent's type with its parent's short id, and an ordinal
+for repeats. When two short ids collide, both are lengthened until they differ. No new data is collected for the labels. The
 same text is the accessible name in 2D and 3D.
 
 **SC-026:** Given four hook sessions and three subagents, every lane label in the
-loom, the details rail, the 3D view and the table is unique, and VoiceOver reads it
-in the same form.
+loom, the details rail, the 3D view and the table is unique (also with two
+hashes forced to share their first characters), and VoiceOver reads it in the same form.
 
 Verification: T069, T072.
 
@@ -810,8 +813,8 @@ untimed, live and disconnected states each have their defined content. Both view
 apply the visual language. The 3D scope follows the owner's option.
 
 **SC-027:** Captures at 1440×900 and 390×844, in dark and light, show the four
-states. The palette test passes in both themes. A Web Interface Guidelines audit of
-the result has no open finding. A keyboard-only walk reaches every control with a
+states. The palette test passes in both themes. Every finding of a Web Interface Guidelines
+audit of the result is fixed or explicitly waived, with a reason, in the evidence. A keyboard-only walk reaches every control with a
 visible focus.
 
 Verification: T068, T072, T073.
@@ -819,8 +822,12 @@ Verification: T068, T072, T073.
 ### REQ-028 — Open link on demand (VIS.1d, carries T067)
 
 A running viewer can issue a fresh single-use, short-lived open code without a
-restart, from `agent-braid view open` and from a "Copy link" action in the page, as
-T067 describes. Existing cookies stay valid, and nothing is logged.
+restart. `agent-braid view open` asks the running server for one over loopback,
+using an owner-only credential (the ingest-token file's directory permissions, or a
+separate owner token). The read cookie never mints codes. The page's "Copy link"
+action only copies a link the owner obtained from `view open`, or it is omitted.
+This needs an amendment of `contracts/ui-security-privacy.md` ("printed once at
+start") before any code. Existing cookies stay valid, and nothing is logged.
 
 **SC-028:** A second browser opens the live view through a new link while the first
 stays connected. The in-memory history is kept, and the code is refused on reuse.

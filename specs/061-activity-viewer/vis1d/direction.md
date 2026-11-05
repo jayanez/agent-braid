@@ -13,7 +13,7 @@ The four questions are:
 ## Page structure (dashboard)
 
 ```
-┌ App bar: mark, "Agent activity", live clock │ Loom | Explore 3D │ Copy link · ES · ? ┐
+┌ App bar: mark, "Agent activity", live clock │ Loom | 3D │ ES · ? ──────────────┐
 ├ Now: one plain sentence that answers the four questions                               ┤
 ├ KPI strip: Running │ Waiting │ May collide │ Collided* │ Longest tool call              ┤
 ├ Filter chips: All agents · Running · Waiting · Problems │ Live sessions · Plans         ┤
@@ -31,7 +31,8 @@ The four questions are:
 ```
 
 \* The "Collided" tile appears only when an observed-collision source exists
-(SC-023). Without one, the tile says "Not tracked yet". It never shows `0`.
+(SC-023). Without one, the tile is not rendered at all, so there is no counter
+and no `0`.
 
 Every element drives the same state (`state.js`) and its selection.
 
@@ -136,8 +137,10 @@ meaning alone. The existing palette test validates both themes, and the existing
 
 ## Lane labels (T064)
 
-A hook lane reads **"Session" plus a short stable id**. The id is the first 5
-characters of the salted strand hash, so it adds no new collected data. A subagent
+A hook lane reads **"Session" plus a short id**. The id is the first 5
+characters of the salted strand hash, so it adds no new collected data. It is
+stable within one server session (the salt is per session). On a collision, both
+ids are lengthened until they differ. A subagent
 lane reads its `agent_type` and "subagent of <parent short id>". Two lanes of the
 same type also get the existing ordinal. Screen readers read the same text as the
 visible label.
@@ -164,5 +167,6 @@ OD-V6 froze 3D to fixes only, so it offers two scopes.
   - The KPI tiles are buttons.
   - Focus rings are visible.
   - Contrast is measured again.
-- **T067:** "Copy link" asks the running server for a fresh single-use open code.
-  `agent-braid view open` does the same from the terminal.
+- **T067:** `agent-braid view open` asks the running server, over loopback and
+  with an owner-only credential, for a fresh single-use open code. The page's read
+  cookie never mints codes. This needs a contract amendment first.

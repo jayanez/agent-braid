@@ -66,8 +66,9 @@ The requirements are REQ-024 to REQ-028 in the "VIS.1d amendment" section of
 - The `BUNDLE_FILES` pin test is kept current.
 
 Files that are deliberately not edited: `STATUS.md`, `ROADMAP.md`, the milestone
-index, `github-tracking.json`, `CONSTITUTION.md`, the ADRs, `contracts/`, and
-`specs/065-*` and SPEC-068.
+index, `github-tracking.json`, `CONSTITUTION.md`, the ADRs, and
+`specs/065-*` and SPEC-068. `contracts/ui-security-privacy.md` is edited only by
+the separate reviewed amendment that T067 needs.
 
 ## Owner decision (pending)
 
@@ -78,5 +79,7 @@ so it is called out separately.
 
 ## Evidence boundary
 
-The screenshots come from synthetic input generated on this machine. They are not
+The `before-*` screenshots are captures of synthetic input generated on this
+machine. The `mockup-*` images are illustrations of a static prototype with
+hand-entered data; they are not captures of the viewer. They are not
 real-use evidence and grant no approval. No owner results were read or copied.
