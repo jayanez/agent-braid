@@ -643,6 +643,28 @@ class SurfaceVersionTests(unittest.TestCase):
             const = definition.outputSchema["properties"]["schemaVersion"]
             self.assertEqual(const, {"const": "agent-braid-tooling/v0.1"}, definition.name)
 
+    def test_analyze_work_definition_describes_the_aim_request_shape(self):
+        # Issue #1080: the advertised definition must name the AIM envelope and
+        # record fields and point to the skill example; other tools stay unchanged.
+        import types as pytypes
+        from agent_braid.tooling_mcp import _tool_definitions
+
+        class Tool:
+            def __init__(self, **kwargs):
+                self.__dict__.update(kwargs)
+        types = pytypes.SimpleNamespace(Tool=Tool, ToolAnnotations=lambda **kw: kw)
+        by_name = {item.name: item for item in _tool_definitions(self.service, types)}
+        work = by_name["analyze-work"]
+        request_help = work.inputSchema["properties"]["request"]["description"]
+        for text in (work.description, request_help):
+            for field in ("analysisInputVersion", "operations", "aimVersion", "instanceId",
+                          "definition", "inputDigest", "effects", "coverage", "evidence",
+                          "agent-braid-analyze", "gitAnalysisRequestVersion"):
+                self.assertIn(field, text)
+        self.assertEqual(work.inputSchema["properties"]["request"]["oneOf"],
+                         [{"type": "object"}, {"type": "array"}])
+        self.assertNotIn("agent-braid-analyze", by_name["analyze"].description)
+
     def test_negative_control_v02_stamp_on_an_envelope_is_detected(self):
         from agent_braid.tooling_mcp import _json_bytes
         envelope = self.service.invoke("analyze", {"request": SAMPLE}, threading.Event())
