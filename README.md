@@ -434,7 +434,9 @@ System One shadow mode is off by default. After `plugin setup --system-one shado
 
 The analyzer/runtime contract is `0.1.0-alpha`; AIM and certificate contracts
 are `0.2.0-draft`; the package version is `0.1.0a2`. The native plugin is versioned
-separately (latest published `0.1.0-alpha.7`, rollback target `0.1.0-alpha.6`); `plugin-status` reports
+separately: the latest release is on the [tags page](https://github.com/jayanez/agent-braid/tags)
+and in the plugin badge above, and the rollback target is in
+[NATIVE_PLUGINS.md](docs/tooling/NATIVE_PLUGINS.md); `plugin-status` reports
 the package as `version` and the plugin as `pluginVersion`. The public CLI does not
 expose source-ref promotion, arbitrary repository code execution, or provider
 calls through the owned runtime.
