@@ -20,7 +20,7 @@ from agent_braid import view_ingest, view_loom, view_roots, view_serve, view_tai
 from agent_braid.view_serve import IngestRefusal, ServeError, ViewServer
 from agent_braid.view_model import build_model
 from agent_braid.view_store import LoomStore
-from tests.view_http_helpers import JSON, http_request
+from tests.view_http_helpers import read_cookie, JSON, http_request
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = Path(__file__).resolve().parents[1] / "specs/061-activity-viewer/contracts/ui-security-privacy.md"
@@ -197,7 +197,9 @@ class TokenFileTests(unittest.TestCase):
         self.assertEqual(second.token_path.read_text(), old)
         self.assertEqual(second.ingest_token, old)
         self.assertNotEqual(second.open_url, first.open_url)  # the read credential stays per start
-        self.assertEqual(sorted(p.name for p in self.runtime.iterdir()), [view_serve.INGEST_TOKEN_NAME])
+        # no temporary file is left; each running viewer has its own owner token file (T067)
+        self.assertEqual(sorted(p.name for p in self.runtime.iterdir()),
+                         sorted([view_serve.INGEST_TOKEN_NAME, first.owner_path.name, second.owner_path.name]))
 
     def test_rotate_token_replaces_a_safe_token_file(self):
         old = self.make().token_path.read_text()
@@ -1326,6 +1328,66 @@ class VendorFileTests(ServerCase):
         checkout = Path(__file__).resolve().parents[1] / "integrations/agent-braid-view/web/vendor"
         self.assertEqual(view_serve.VENDOR_DIR, checkout)
         self.assertTrue((checkout / "manifest.json").is_file())
+
+
+class OpenOnDemandTests(ServerCase):
+    """T067 / SC-028: a running viewer issues a new single-use open link to its owner, with no restart."""
+
+    def owner(self):
+        return self.server.owner_path.read_text()
+
+    def issue(self, token=None):
+        headers = {"Authorization": f"Bearer {token or self.owner()}", "Content-Length": "0"}
+        return self.request("POST", view_serve.OPEN_CODE_PATH, headers, b"")
+
+    def test_the_owner_token_file_is_private_per_port_and_removed_at_stop(self):
+        path = self.server.owner_path
+        self.assertEqual(path.name, f"view-owner-{self.port}")
+        self.assertEqual(stat.S_IMODE(path.stat().st_mode), 0o600)
+        self.assertNotEqual(self.owner(), self.token)
+        self.assertNotIn(self.owner(), self.server.open_url)
+        self.stop()
+        self.assertFalse(path.exists())
+
+    def test_a_second_browser_opens_with_a_new_code_and_the_first_stays_connected(self):
+        first = self.cookie()
+        status, _, body = self.issue()
+        self.assertEqual(status, 200)
+        document = json.loads(body)
+        self.assertEqual(document["ttlSeconds"], 120)
+        self.assertTrue(document["url"].startswith(f"http://127.0.0.1:{self.port}/open?code="))
+        second = read_cookie(self.port, document["url"])
+        self.assertNotEqual(first, second)
+        for cookie in (first, second):
+            self.assertEqual(self.request("GET", "/snapshot", {"Cookie": cookie})[0], 200)
+        code = document["url"].split("code=")[1]
+        self.assertEqual(self.request("GET", f"/open?code={code}")[0], 404)  # single use
+
+    def test_an_issued_code_expires(self):
+        status, _, body = self.issue()
+        code = json.loads(body)["url"].split("code=")[1]
+        with self.server._lock:
+            self.server._issued_codes[code] = 0.0  # as if its time had passed
+        self.assertEqual(self.request("GET", f"/open?code={code}")[0], 404)
+
+    def test_only_the_owner_token_issues_codes(self):
+        for token in (self.token, "guess"):
+            self.assertEqual(self.issue(token)[0], 404)  # the ingest token cannot read, so it cannot open either
+        cookie = self.cookie()
+        status, _, _ = self.request("POST", view_serve.OPEN_CODE_PATH, {"Cookie": cookie, "Content-Length": "0"}, b"")
+        self.assertEqual(status, 404)  # a read cookie never mints a code
+        self.assertEqual(self.request("GET", view_serve.OPEN_CODE_PATH, {"Authorization": f"Bearer {self.owner()}"})[0], 405)
+        status, _, _ = self.request("POST", view_serve.OPEN_CODE_PATH,
+                                    {"Authorization": f"Bearer {self.owner()}", "Origin": "http://evil.example"}, b"")
+        self.assertEqual(status, 403)
+
+    def test_pending_codes_and_read_sessions_are_bounded(self):
+        urls = [json.loads(self.issue()[2])["url"] for _ in range(view_serve.MAX_PENDING_OPEN_CODES + 1)]
+        self.assertEqual(self.request("GET", "/open?code=" + urls[0].split("code=")[1])[0], 404)  # the oldest was dropped
+        cookies = [self.cookie()] + [read_cookie(self.port, json.loads(self.issue()[2])["url"])
+                                     for _ in range(view_serve.MAX_READ_SESSIONS)]
+        self.assertEqual(self.request("GET", "/", {"Cookie": cookies[0]})[0], 404)  # the oldest session was dropped
+        self.assertEqual(self.request("GET", "/", {"Cookie": cookies[-1]})[0], 200)
 
 
 class ContractTableTests(unittest.TestCase):

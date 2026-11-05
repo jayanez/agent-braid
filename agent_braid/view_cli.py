@@ -101,6 +101,9 @@ def add_parser(subparsers: Any) -> None:
                        help="private directory for the ingest token (default: per-user location)")
     serve.add_argument("--rotate-token", action="store_true",
                        help="replace the ingest token instead of reusing it (then restart the hosts that read it)")
+    opener = commands.add_parser("open", help="print a new single-use link to a running viewer (no restart)")
+    opener.add_argument("--port", type=_printed_port, help="the port of the running viewer (default: the only one)")
+    opener.add_argument("--runtime-dir", type=Path, metavar="DIR", help="as for `serve`")
     validate = commands.add_parser("validate", help="check a recorded loom stream")
     validate.add_argument("file", type=Path)
     env = commands.add_parser("env", help="print host configuration; writes nothing")
@@ -232,10 +235,50 @@ def run(args: argparse.Namespace, *, on_ready: Callable[[Any], None] | None = No
             return _serve(args, on_ready)
         if args.view_command == "validate":
             return _validate(args)
+        if args.view_command == "open":
+            return _open_link(args)
         return _env(args)
     except CliError as refusal:
         print(refusal.message, file=sys.stderr)
         return refusal.code
+
+
+# -- open (T067) ---------------------------------------------------------------------------------
+
+def _open_link(args: argparse.Namespace) -> int:
+    """Ask a running viewer for a new single-use open code and print the link; write nothing.
+
+    The request goes to the viewer's loopback port with its owner token, read from the owner-only file the
+    viewer wrote at start. Browsers that already opened the viewer stay connected; the history is kept.
+    """
+    from .view_serve import OWNER_TOKEN_PREFIX, ServeError, read_owner_token, request_open_code
+
+    runtime_dir = _runtime_dir(args)
+    if args.port is not None:
+        candidates = [runtime_dir / f"{OWNER_TOKEN_PREFIX}{args.port}"]
+    else:
+        try:
+            candidates = sorted(path for path in runtime_dir.iterdir()
+                                if path.name.startswith(OWNER_TOKEN_PREFIX) and path.name[len(OWNER_TOKEN_PREFIX):].isdigit())
+        except OSError:
+            candidates = []
+        if len(candidates) > 1:
+            ports = ", ".join(path.name[len(OWNER_TOKEN_PREFIX):] for path in candidates)
+            raise CliError(f"view open: owner token files for ports {ports}; pass --port for the running viewer "
+                           "(a file left by a viewer that did not stop cleanly is replaced at its next start)")
+    if not candidates:
+        raise CliError("view open: no running viewer found; start one with `agent-braid view serve`")
+    path = candidates[0]
+    port = int(path.name[len(OWNER_TOKEN_PREFIX):])
+    token = read_owner_token(path)
+    if token is None:
+        raise CliError(f"view open: no usable owner token for port {port}; is the viewer running?")
+    try:
+        url, ttl = request_open_code(port, token)
+    except ServeError as exc:
+        raise CliError(f"view open: the viewer on port {port}: {exc.detail}") from exc
+    print(f"Open in another browser (single use, valid {ttl} s): {url}")
+    return 0
 
 
 # -- serve ---------------------------------------------------------------------------------------
@@ -332,6 +375,7 @@ def _banner(server: Any, tail: Any, discovered: list[Path], notes: list[str]) ->
 
     lines = ["Agent Braid activity viewer (read-only), surface web, loopback only.",
              f"Open once in a browser: {server.open_url}",
+             "For another browser later, run: agent-braid view open",
              f"Ingest token file (owner-only): {server.token_path}",
              "Ingest token: reused from the previous start; running hosts keep working." if server.token_reused
              else "Ingest token: new; restart Claude Code (or any host that read the old token) to pick it up."]

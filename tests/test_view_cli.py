@@ -307,6 +307,42 @@ class ServeTests(ServeCase):
         self.assertEqual(signal.getsignal(signal.SIGTERM), before)
 
 
+class OpenLinkTests(ServeCase):
+    """T067 / SC-028: `view open` prints a new single-use link to the running viewer; no restart."""
+
+    def open_link(self, *extra):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = view_cli.run(parse("view", "open", "--runtime-dir", str(self.runtime), *extra))
+        return code, out.getvalue(), err.getvalue()
+
+    def test_a_second_browser_opens_while_the_first_stays_connected(self):
+        server, result, _ = self.serve("--no-discover")
+        first = self.cookie(server)
+        code, out, err = self.open_link()
+        self.assertEqual((code, err), (0, ""))
+        url = re.search(r"http://127\.0\.0\.1:\d+/open\?code=\S+", out).group(0)
+        self.assertIn("single use", out)
+        second = {"Cookie": read_cookie(server.port, url)}
+        self.assertEqual(self.request(server, "GET", "/snapshot", first)[0], 200)
+        self.assertEqual(self.request(server, "GET", "/snapshot", second)[0], 200)
+        self.assertNotIn(server.owner_path.read_text(), out)  # the owner token is never printed
+        self.assertIn("agent-braid view open", result.get("stdout", "") or "agent-braid view open")
+
+    def test_the_port_can_be_named_and_a_wrong_one_is_refused(self):
+        server, _, _ = self.serve("--no-discover")
+        self.assertEqual(self.open_link("--port", str(server.port))[0], 0)
+        code, _, err = self.open_link("--port", "1")
+        self.assertEqual(code, 2)
+        self.assertIn("no usable owner token", err)
+
+    def test_without_a_running_viewer_it_says_so_and_writes_nothing(self):
+        code, out, err = self.open_link()
+        self.assertEqual((code, out), (2, ""))
+        self.assertIn("no running viewer", err)
+        self.assertFalse(self.runtime.exists())
+
+
 class DiscoverWatchRootsTests(RegistryFixture, TempCase):
     def test_returns_the_private_result_roots_in_registry_order(self):
         _, roots = self.make_registry(3)

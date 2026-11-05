@@ -87,7 +87,7 @@ class CodeAgreementTests(unittest.TestCase):
 
     def test_every_subcommand_and_option_of_the_cli_is_documented(self):
         parsers = view_parsers()
-        self.assertEqual(set(parsers), {"serve", "validate", "env"})
+        self.assertEqual(set(parsers), {"serve", "open", "validate", "env"})
         for name, parser in parsers.items():
             self.assertIn(f"view {name}", self.GUIDE_TEXT)
             for action in parser._actions:
