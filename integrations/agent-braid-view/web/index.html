@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#e9edf4">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1220">
 <title>Agent Braid activity viewer</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="/web/style.css">
@@ -126,6 +128,7 @@
         <li data-i18n="scene.help.zoom">Hold Ctrl or Cmd and scroll to zoom toward the pointer. Plain scrolling scrolls the page.</li>
         <li data-i18n="scene.help.keys">With the map focused: arrow keys pan, F frames all agents, G flies to the selected element, Esc clears the selection.</li>
         <li data-i18n="scene.help.fly">Double click an element to select it and fly to it.</li>
+        <li data-i18n="scene.help.keyboard">Without a pointer, select any element in the events table or the loom; then press G here to fly to it.</li>
         <li data-i18n="scene.help.touch">On a touch screen: two fingers pan and zoom. Turn on Lock scene to orbit with one finger.</li>
         <li data-i18n="scene.help.select">Click an element to select its event; the details panel and the table show it.</li>
       </ul>
@@ -219,7 +222,7 @@
           <tbody id="events-body"></tbody>
         </table>
       </div>
-      <p class="hint" id="table-empty" hidden>No events to show.</p>
+      <p class="hint" id="table-empty" hidden data-i18n="table.empty">No events to show.</p>
     </div>
     <div role="tabpanel" id="panel-summary" aria-labelledby="tab-summary" hidden>
       <section class="panel" aria-labelledby="counters-title">

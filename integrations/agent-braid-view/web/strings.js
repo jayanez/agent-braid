@@ -513,6 +513,7 @@ export const STRINGS = {
     "scene.fly": "Fly to selected (G)",
     "scene.fly.title": "Fly to the selected element (G or double click)",
     "scene.help.fly": "Double click an element to select it and fly to it.",
+    "scene.help.keyboard": "Without a pointer, select any element in the events table or the loom; then press G here to fly to it.",
   },
   es: {
     "page.documentTitle": "Visor de actividad de Agent Braid",
@@ -1015,6 +1016,7 @@ export const STRINGS = {
     "scene.fly": "Ir a la selección (G)",
     "scene.fly.title": "Volar al elemento seleccionado (G o doble clic)",
     "scene.help.fly": "Haz doble clic en un elemento para seleccionarlo y volar hasta él.",
+    "scene.help.keyboard": "Sin puntero, selecciona cualquier elemento en la tabla de eventos o en el telar; después pulsa G aquí para volar hasta él.",
   },
 };
 

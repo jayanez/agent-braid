@@ -823,10 +823,13 @@ export function createBraidScene(container, hooks = {}) {
       layer.append(node);
       return { descriptor, node, width: 0, height: 0 };
     });
+    // one layout pass: show every label, read every size, then hide them all
+    for (const entry of labelNodes) entry.node.hidden = false;
     for (const entry of labelNodes) {
-      entry.node.hidden = false;
       entry.width = entry.node.offsetWidth || 60;
       entry.height = entry.node.offsetHeight || 18;
+    }
+    for (const entry of labelNodes) {
       entry.node.hidden = true;
     }
   }
@@ -1031,12 +1034,12 @@ export function createBraidScene(container, hooks = {}) {
     // The labels carry keys the page translates; call this after a language change.
     refreshLabels() {
       for (const entry of labelNodes) entry.node.textContent = labelText(entry.descriptor);
+      for (const entry of labelNodes) entry.node.hidden = false;
       for (const entry of labelNodes) {
-        entry.node.hidden = false;
         entry.width = entry.node.offsetWidth || entry.width;
         entry.height = entry.node.offsetHeight || entry.height;
-        entry.node.hidden = true;
       }
+      for (const entry of labelNodes) entry.node.hidden = true;
       requestRender();
     },
     // What the scene shows right now, for the note under it.
