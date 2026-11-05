@@ -1,38 +1,44 @@
-# SPEC-061 quickstart (planned behavior)
+# SPEC-061 quickstart
 
-Nothing here works yet; this describes the planned VIS.1 commands.
+Updated 2026-11-05 (VIS.1d). The commands in the first block work today; the second
+block is planned for VIS.1b and does not exist yet. The user guide is
+[docs/tooling/VIEWER.md](../../docs/tooling/VIEWER.md).
 
 ```sh
-# Replay the bundled example in a local browser
-agent-braid view serve --replay examples/view/loom-replay.jsonl
+# Start the viewer (loopback only); it prints a single-use link to open
+agent-braid view serve
 
-# Watch a run directory and accept live host telemetry
+# Replay a recorded loom stream, or watch a run directory
+agent-braid view serve --replay specs/061-activity-viewer/contracts/loom-event.example.jsonl
 agent-braid view serve --watch /path/to/run-root
 
-# Record the session to an explicit new private file (effort only if asked)
-agent-braid view serve --record ~/agent-braid-recordings/with-braid.loom.jsonl --record-effort
+# Print a new single-use link for another browser while the viewer runs
+agent-braid view open
 
-# Print host configuration to paste (writes nothing)
-agent-braid view env --host claude
-agent-braid view env --host codex
+# Print Claude Code hook settings to merge into ~/.claude/settings.json (writes nothing)
+agent-braid view env --host claude --port <port printed by serve>
 
 # Validate a loom file
 agent-braid view validate session.loom.jsonl
+```
 
-# Export a recording without effort (default), or a comparative effort pack
+What the page shows: a Now sentence and KPI tiles (running, waiting, may collide,
+longest stated tool call), the live loom (one thread per Claude Code session and
+subagent on a real time axis), a plan map per `analyze-work` report (operations in
+dependency order and their classified pairs, with no time axis), collision and
+duration panels, the details rail, playback, and an Explore 3D view of the same lanes.
+
+Planned (VIS.1b, not available):
+
+```sh
+agent-braid view env --host codex
+agent-braid view serve --record ~/agent-braid-recordings/with-braid.loom.jsonl --record-effort
 agent-braid view export --from with-braid.loom.jsonl --to ~/agent-braid-exports/session-1
-agent-braid view export --from with-braid.loom.jsonl --to ~/agent-braid-exports/pack-1 \
-  --include-effort --baseline without-braid \
-  --arm without-braid=without-braid.loom.jsonl --arm with-braid=with-braid.loom.jsonl \
-  --arm-note "without-braid=task A at commit X, run first" \
-  --arm-note "with-braid=same task and commit, run after the baseline"
 ```
 
 The server binds to loopback only and prints a one-time URL that the browser
-exchanges for a session cookie; host exporters use a separate ingest token read
-from an owner-only file. It is read-only, keeps effort data in memory and writes a
-file only when `--record` names one. Configure host exporters only while the
-viewer runs. The Claude Code hooks printed by `view env --host claude` are commands
-that read that file at every call (amendment 2026-11-04b), so they need no
-environment variable and work in the desktop app and IDE launches; a shell-profile
-`export AGENT_BRAID_VIEW_TOKEN=...` line from an earlier version can be removed.
+exchanges for a session cookie; `view open` asks the running server, with an
+owner-only token file, for another single-use code. Host hooks use a separate ingest
+token read from an owner-only file at every call, so they need no environment
+variable and work in the desktop app and IDE launches. The viewer is read-only and
+writes no file other than its own tokens.

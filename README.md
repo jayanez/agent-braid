@@ -90,9 +90,10 @@ changes a result and never grants authority.
 Beyond the core, Agent Braid includes research tools for studying agent work
 itself: an offline laboratory for comparing agent-guidance variants, a closed
 simulator for workloads with external effects, and evaluation contracts for
-measuring real owned work. A read-only activity viewer, **Loom**, is in
-development: its event contract, adapters and store are merged as library code,
-and its loopback server and 3D braid view are not built yet. They share the same
+measuring real owned work. A read-only activity viewer, **Loom**, runs on
+loopback (`agent-braid view serve`): a live dashboard of Claude Code sessions and
+subagents, the analysis plans and their predicted collisions, and an Explore 3D
+view. Codex and OpenTelemetry ingest, recording and export are still in development. They share the same
 rule as everything else: none of them can authorize execution on its own.
 
 ## 🚀 Quick start
@@ -377,13 +378,16 @@ experimental or still in development, and none of it can authorize execution.
 </details>
 
 <details>
-<summary><b>Drill-down: Loom activity viewer (in development)</b></summary>
+<summary><b>Drill-down: Loom activity viewer</b></summary>
 
-![Agent Braid artifacts, and later host telemetry, pass through event adapters and a strict agent-braid-loom/v0.1 validator into a ring event store and a viewer model, all merged as library code; a loopback server and a Three.js braid viewer are planned](docs/assets/agent-braid-loom.svg)
+![The Loom viewer dashboard in dark mode: a Now sentence ("4 agents running across 4 sessions, 2 possible collisions across 3 plans, none observed"), four KPI tiles, filter chips, the live loom with one thread per Claude Code session and its subagents on a real time axis, and the details rail](specs/061-activity-viewer/vis1d/evidence/after-live-desktop-dark.png)
 
-1. **Collect.** Adapters turn Agent Braid reports and Git inputs into events; Claude Code hooks, OTLP and Codex telemetry adapters are planned.
-2. **Validate and store.** A strict `agent-braid-loom/v0.1` validator, a bounded ring store and a pure viewer model are merged as library code.
-3. **Show (planned).** A loopback-only server and a Three.js braid viewer for replay and live use are not built yet. The viewer will be read-only and makes no speedup claim. See [SPEC-061](specs/061-activity-viewer/spec.md).
+1. **Start it.** `agent-braid view serve` binds `127.0.0.1` only and prints a single-use link; `agent-braid view open` prints a new link for another browser without a restart.
+2. **Connect Claude Code.** `agent-braid view env --host claude --port <port>` prints observational hooks to merge into your user settings (it writes nothing). Each session and subagent becomes a thread on the live loom, with tool calls as beads and stated tool durations shown live only.
+3. **See plans.** The plugin's `analyze-work` reports appear as plan maps: operations in dependency order, with "may collide", "must wait" and "independent" pairs. No time is invented for a plan.
+4. **Explore.** The Explore 3D view shows the same lanes in depth, with camera presets and fly-to-selected.
+
+The viewer is read-only, keeps no access log and makes no speedup claim; every event carries `executionAuthorization: false`. Codex and OpenTelemetry ingest, recording and export are not available yet. Guide: [docs/tooling/VIEWER.md](docs/tooling/VIEWER.md); spec: [SPEC-061](specs/061-activity-viewer/spec.md).
 
 </details>
 

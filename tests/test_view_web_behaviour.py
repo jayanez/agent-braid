@@ -478,6 +478,17 @@ class UntimedTimelineTests(PageBehaviourCase):
         self.assertEqual(plan.get("pm-ring", 0), sum(e["classification"] == "conflicting" for e in crossings))
         self.assertNotIn("ms", " ".join(first["plan"]["nodes"]))  # a plan states no duration
 
+    def test_a_plan_with_a_generated_id_is_named_by_its_operations_not_the_id(self):
+        # Owner feedback 2026-11-05: the plan selector showed report UUIDs instead of names.
+        from agent_braid.view_adapters import events_from_analysis
+        folder = "analysis-20261105T101000Z-3f2a9c1e-7b4d-4e8a-9c0f-1a2b3c4d5e6f"
+        events = events_from_analysis(UNTIMED_REPORT.read_bytes(), path=folder + "/analysis.json", seq_start=1)
+        model = json.loads(json.dumps(build_model(events)))
+        title = self.drive(hash="", model=model)[0]["plan"]["title"]
+        self.assertNotIn("3f2a9c1e", title)
+        self.assertNotIn("7b4d", title)
+        self.assertRegex(title, r"\+|“.+”")
+
     def test_the_empty_loom_is_translated(self):
         first = self.drive(hash="", model=self.untimed, languages=["es-ES"])[0]
         self.assertIn("No hay sesiones en directo", first["timeline"]["empty"])

@@ -320,9 +320,16 @@ function renderLive() {
   badge.hidden = false;
   badge.title = t("live.title");
   const now = derived().axis.nowMs;
-  badge.textContent = axis.live ? t("live.badge", { time: formatClock((now === null ? liveNowMs() : now) - axisMin()) }) : t("live.replay");
-  badge.className = "pill-live" + (axis.live ? " live-on" : "");
+  // While the event stream is down, "now" stops at the last moment this page was connected: the page cannot
+  // know what happened since, so it must not keep claiming to be live.
+  const connected = connectionKey === "live";
+  if (axis.live && connected) lastLiveMs = (now === null ? liveNowMs() : now) - axisMin();
+  badge.textContent = !axis.live ? t("live.replay")
+    : connected || lastLiveMs === null ? t("live.badge", { time: formatClock((now === null ? liveNowMs() : now) - axisMin()) })
+    : t("live.stale", { time: formatClock(lastLiveMs) });
+  badge.className = "pill-live" + (axis.live && (connected || lastLiveMs === null) ? " live-on" : "");
 }
+let lastLiveMs = null;
 
 // Once a second in live mode: the badge, and the timeline when it is shown and the position is at the end.
 setInterval(() => {
@@ -413,6 +420,7 @@ async function loadSnapshot() {
   const firstModel = state.model === null;
   const atEnd = state.cursor >= totalCount();
   state.model = document_.model;
+  lastLiveMs = null; // a new snapshot starts its own "last update"
   snapshotAt = performance.now();
   state.languageHint = normalizeTag(document_.uiLanguageHint);
   state.dropped = Array.isArray(document_.droppedAttributeNames) ? document_.droppedAttributeNames : [];
@@ -452,6 +460,7 @@ function setConnection(key) {
   connectionKey = key;
   $("connection").textContent = t("connection." + key);
   $("connection").className = "badge conn" + (key === "live" || key === "open" || key === "connected" ? "" : " trouble");
+  renderLive();
 }
 
 function parseBlock(block) {
@@ -590,12 +599,67 @@ function toggleStatus(name) {
   filtersChanged();
 }
 
-// A plan's name is its report folder without the stamp the plugin adds ("analysis-<UTC stamp>-<id>" → "<id>").
+// Filter menus (<details>): one open at a time; an outside click, Escape or focus leaving the menu closes it.
+// Escape returns focus to the menu's own summary.
+function bindMenus() {
+  if (!document.querySelectorAll) return;
+  const menus = [...document.querySelectorAll("details.menu")];
+  const closeAll = (except) => { for (const menu of menus) if (menu !== except && menu.open) menu.open = false; };
+  for (const menu of menus) {
+    menu.addEventListener("toggle", () => { if (menu.open) closeAll(menu); });
+    menu.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menu.open) { event.preventDefault(); menu.open = false; const s = menu.querySelector("summary"); if (s) s.focus(); }
+    });
+    menu.addEventListener("focusout", (event) => {
+      if (menu.open && event.relatedTarget && !menu.contains(event.relatedTarget)) menu.open = false;
+    });
+  }
+  document.addEventListener("click", (event) => {
+    const inside = menus.find((menu) => menu.contains(event.target));
+    closeAll(inside || null);
+  });
+}
+
+// A plan's parts from its report folder: "analysis-<UTC stamp>-<id>" gives a stamp and an id.
+function planParts(plan) {
+  const folder = String(plan.key).split("/")[0];
+  const match = /^analysis-([0-9]{8}T[0-9]{6}Z)-(.+)$/.exec(folder);
+  const id = match ? match[2] : folder;
+  let when = null;
+  if (match) {
+    const s = match[1];
+    const time = Date.UTC(+s.slice(0, 4), +s.slice(4, 6) - 1, +s.slice(6, 8), +s.slice(9, 11), +s.slice(11, 13), +s.slice(13, 15));
+    if (Number.isFinite(time)) when = time;
+  }
+  // a generated id (a UUID or a long hex digest) names nothing a person chose
+  const generated = /^[0-9a-f]{8}(-?[0-9a-f]{4}){3}-?[0-9a-f]{12}$/i.test(id) || /^[0-9a-f]{12,}$/i.test(id);
+  return { id, when, generated, folder };
+}
+
+// A plan's name is a human label, never a hash: the name the report folder carries, else its operations
+// ("edit-readme + 3 more"). The generated id is secondary text only (planSub).
 function planName(plan) {
   if (!plan) return "";
-  const folder = String(plan.key).split("/")[0];
-  const match = /^analysis-[0-9TZ]+-(.+)$/.exec(folder);
-  return match ? match[1] : folder === "plan" ? t("plan.unnamed") : folder;
+  const parts = planParts(plan);
+  if (!parts.generated && parts.folder !== "plan") return parts.id;
+  const names = [...plan.ops].sort((a, b) => a.laneIndex - b.laneIndex).map((lane) => lane.displayLabel);
+  if (!names.length) return t("plan.unnamed");
+  if (names.length <= 2) return names.join(" + ");
+  return tn("plan.more", names.length - 1, { first: names[0] });
+}
+
+function planWhen(plan) {
+  const { when } = planParts(plan);
+  if (when === null) return "";
+  try {
+    return new Intl.DateTimeFormat(state.lang, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(when));
+  } catch { return ""; }
+}
+
+// Secondary, muted text: when the report was written and the start of its generated id.
+function planSub(plan) {
+  const parts = planParts(plan);
+  return [planWhen(plan), parts.generated ? parts.id.slice(0, 8) : ""].filter(Boolean).join(" · ");
 }
 
 // Static parts that depend on the language or the number of views and not on the model.
@@ -1212,6 +1276,7 @@ function bindControls() {
   $("filter-clear").addEventListener("click", clearFilters);
   $("scene-reset").addEventListener("click", () => { if (scene) scene.resetView(); });
   $("scene-frame").addEventListener("click", () => { if (scene) scene.resetView(); });
+  $("scene-fly").addEventListener("click", () => { if (scene && scene.focusSelected) scene.focusSelected(); });
   for (const id of ["scene-view-lateral", "scene-view-top", "scene-view-iso"]) {
     $(id).addEventListener("click", (event) => { if (scene) scene.setPreset(event.currentTarget.dataset.preset); });
   }
@@ -1228,6 +1293,13 @@ function bindControls() {
   $("view-map3d").addEventListener("change", () => setView("map3d", true));
   $("lang-select").addEventListener("change", (event) => setLanguageChoice(event.target.value));
   $("plan-select").addEventListener("change", (event) => { planChoice = event.target.value; renderPlan(); });
+  for (const id of ["collisions", "durations"]) {
+    $(id + "-all").addEventListener("click", () => {
+      if (expanded.has(id)) expanded.delete(id); else expanded.add(id);
+      if (id === "collisions") renderCollisions(); else renderDurations();
+    });
+  }
+  bindMenus();
   $("detail-close").addEventListener("click", deselect);
   $("about-open").addEventListener("click", openHelp);
   $("tablist").addEventListener("keydown", onTabKey);
@@ -1353,13 +1425,17 @@ function renderPlan() {
   const signature = list.map((plan) => plan.key).join("|") + state.lang;
   if (select_.dataset.keys !== signature) {
     select_.dataset.keys = signature;
-    select_.replaceChildren(...list.map((plan) => h("option", { value: plan.key }, planName(plan))));
+    select_.replaceChildren(...list.map((plan) => {
+      const when = planWhen(plan);
+      return h("option", { value: plan.key }, when ? t("plan.optionWhen", { name: planName(plan), when }) : planName(plan));
+    }));
   }
   select_.hidden = list.length < 2;
   select_.value = planChoice || "";
   const plan = list.find((item) => item.key === planChoice) || null;
   $("plan-title").textContent = plan ? t("plan.titleNamed", { name: planName(plan) }) : t("plan.title");
   $("plan-count").textContent = plan ? tn("plan.count", plan.ops.length, { pairs: plan.pairs.length }) : "";
+  $("plan-sub").textContent = plan ? planSub(plan) : "";
   if (!planMap) {
     planMap = createPlanMap($("plan-box"), { t, onSelect: selectAndShow, nameOf: (lane) => lane.displayLabel, pairText,
       opText: (lane) => t("plan.opAria", { name: lane.displayLabel }) });
@@ -1370,16 +1446,34 @@ function renderPlan() {
     .map((name) => h("li", null, h("i", { class: name, "aria-hidden": "true" }), t("plan.key." + name))));
 }
 
+// A list panel shows its first LIST_LIMIT rows; its "Show all" button opens the rest in place.
+const LIST_LIMIT = 8;
+const expanded = new Set();
+function showAll(id, items) {
+  const button = $(id + "-all");
+  const section = $(id + "-section");
+  const open = expanded.has(id);
+  button.hidden = items.length <= LIST_LIMIT;
+  button.textContent = open ? t("list.showFewer") : t("list.showAll", { n: items.length });
+  button.setAttribute("aria-expanded", open ? "true" : "false");
+  if (section && section.classList) section.classList.toggle("all", open);
+  return open ? items : items.slice(0, LIST_LIMIT);
+}
+
 function renderCollisions() {
   const items = [];
   for (const plan of plans()) for (const pair of plan.pairs) if (pair.kind === "predicted") items.push({ plan, pair });
   $("collisions-count").textContent = tn("col.count", items.length);
   if (!items.length) {
+    showAll("collisions", items);
     fill("collisions", h("li", { class: "empty" }, plans().length ? t("col.none") : t("col.noPlans")));
     return;
   }
   const info = derived();
-  fill("collisions", items.slice(0, 8).map(({ plan, pair }) => {
+  // most severe first: the pairs that share the most resources, then those whose shared resource is unknown
+  const severity = ({ pair }) => (pair.classification === "conflicting" ? 1000 : 0) + (pair.resources.length || 0.5);
+  items.sort((a, b) => severity(b) - severity(a));
+  fill("collisions", showAll("collisions", items).map(({ plan, pair }) => {
     const names = pair.lanes.map((index) => { const lane = info.byIndex.get(index); return lane ? lane.displayLabel : "?"; }).join(" ↔ ");
     const what = pair.resources.length ? t("col.shares", { what: pair.resources.join(", ") }) : t("col.unknownShare");
     return h("li", null, h("button", { type: "button", "aria-pressed": state.selected === pair.seq ? "true" : "false", on: { click: () => selectAndShow(pair.seq) } },
@@ -1392,13 +1486,15 @@ function renderDurations() {
   const lanes = info.lanes.filter((lane) => lane.openKnown && lane.observedMs !== null);
   $("durations-count").textContent = lanes.length ? t("dur.legend") : "";
   if (!lanes.length) {
+    showAll("durations", lanes);
     fill("durations", h("li", { class: "empty" }, t("dur.none")));
     return;
   }
   const rows = lanes.map((lane) => ({ lane, waited: waitingTime(lane).totalMs, total: lane.durationMs !== null ? lane.durationMs : lane.observedMs }))
-    .sort((a, b) => b.total - a.total).slice(0, 8);
+    .sort((a, b) => b.total - a.total);
+  const shown = showAll("durations", rows);
   const max = Math.max(...rows.map((row) => row.total), 1);
-  fill("durations", rows.map(({ lane, waited, total }) => {
+  fill("durations", shown.map(({ lane, waited, total }) => {
     const run = h("span", { class: "r" + (lane.state === "finished" ? " finished" : "") });
     const wait = h("span", { class: "w" });
     if (run.style) run.style.width = (Math.max(total - waited, 0) / max * 100).toFixed(2) + "%";
@@ -1547,7 +1643,13 @@ function applyScene(force) {
   const modelChanged = sceneModel !== state.model;
   if (modelChanged) {
     sceneModel = state.model;
-    scene.setModel(derived().placedModel); // events that state no time are laid out in sequence order
+    // events that state no time are laid out in sequence order; lanes carry the names the 2D views show (T064)
+    const info = derived();
+    const placed = info.placedModel;
+    scene.setModel(placed && Array.isArray(placed.lanes) ? { ...placed, lanes: placed.lanes.map((lane) => {
+      const named = info.byStrand.get(lane.strandId);
+      return named ? { ...lane, label: named.displayLabel } : lane;
+    }) } : placed);
   }
   const hidden = [...state.hiddenSources].sort().join("|") + "#" + [...state.filters.agents].sort().join("|") + "#" +
     [...state.filters.status].sort().join("|") + "#" + [...state.filters.kinds].sort().join("|") + "#" + state.filters.onlyProblems;

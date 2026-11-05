@@ -431,7 +431,7 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   `tests/test_view_docs.py`, `docs/tooling/VIEWER.md`. Verification: SC-020, SC-021.
   Added 2026-11-04 (owner request): also cover the lane-label disambiguation of T064 in
   the accessibility pass (labels read out distinctly by VoiceOver and keyboard focus).
-- [ ] T067 (REQ-004): Open the viewer in another browser without restarting it. Today
+- [x] T067 (REQ-004): Open the viewer in another browser without restarting it. Today
   the one-time open code is per start, so once the integrated browser has used it, any
   other browser gets 404 until `view serve` restarts, which also drops the in-memory
   history. Owner request 2026-11-04: offer a new open link on demand, for example an
@@ -442,6 +442,9 @@ concurrent tracks and see the file-ownership table in [vis1c/plan.md](vis1c/plan
   `agent_braid/view_cli.py`, web bundle, `contracts/ui-security-privacy.md`,
   `docs/tooling/VIEWER.md`, tests. Verification: a second browser opens the live view
   while the first stays connected, with no restart and no loss of history.
+  Done 2026-11-05 (#1094): `agent-braid view open` and `POST /v1/open-code` behind an owner-only token file;
+  codes single-use, 120 s, at most 4 pending; up to 8 read cookies, so the first browser stays connected.
+  The page has no "copy link" action: the read cookie never mints codes (contract amendment 2026-11-05).
 - [ ] T066 (all VIS.1c REQ): Closure: pre-PR reviews (code, quality, simplification),
   `validate_change --profile pr`, VoiceOver pass of "select a conflict", owner review
   of the "find the ROADMAP conflict" task, obtained evidence in `assurance.json`,
@@ -467,12 +470,15 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   part). Files: `timeline.js`, `state.js`, tests. Verification: SC-025 (loom part),
   SC-026.
   Done 2026-11-05 (this PR): threads, glow, branches, tethers, beads, now edge, one-time draw-in; short ids for host lanes (T064 label part).
-- [ ] T070 (REQ-024, REQ-028): Details rail and its bottom-sheet form, KPI and noun
+- [x] T070 (REQ-024, REQ-028): Details rail and its bottom-sheet form, KPI and noun
   selection, and playback docked in the hero with follow-now. Also T067
   `view open` (CLI, owner-only credential; the read cookie never mints codes), after
   the `contracts/ui-security-privacy.md` amendment (prerequisite). Files: `loom.js`, `index.html`,
   `agent_braid/view_serve.py`, `agent_braid/view_cli.py`, tests.
   Verification: SC-024, SC-028.
+  Done 2026-11-05: details rail with its phone bottom sheet (T068 shell), noun and KPI selection, playback
+  docked under the loom with "Go to now"; `view open` and the contract amendment in #1094 (T067). The live
+  badge now says "Not live · last update" while the event stream is down.
 - [x] T071 (REQ-025): Plan map and the collision and duration panels. The plan map
   has dependency columns, the three pair styles, hot nodes and a report selector.
   The collision panel lists predicted pairs, and observed ones only with a source
@@ -480,18 +486,24 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   Files: new first-party `planmap.js` (pinned in `BUNDLE_FILES`), `state.js`,
   tests. Verification: SC-025 (plan part).
   Done 2026-11-05 (this PR): plan map per report (planmap.js), collisions and durations panels; no observed tile without a source.
-- [ ] T072 (REQ-026, REQ-027): Explore 3D (the owner chose this option on
+- [x] T072 (REQ-026, REQ-027): Explore 3D (the owner chose this option on
   2026-11-05, which reopens OD-V6). The tokens and thread styles of the loom, T064
   labels, plan-map glyphs in place of class text, eased camera presets,
   fly-to-selected, and reset and fit always visible. No new vendored file. Use
   Context7 for the Three.js r186 APIs. Files: `braid-scene.js`, tests.
   Verification: SC-026 (3D part), SC-027.
+  Done 2026-11-05: Loom palette in 3D, T064 names on lane labels, class words on hover or selection only,
+  fly to selected (button, G, double click), 420 ms eased presets, depth fog in the ground colour.
 - [ ] T073 (REQ-024, REQ-027, T065 UI part): Audit and evidence. Run a Web
   Interface Guidelines audit; fix or waive each finding, with a reason. Take a
   keyboard-only walk and a VoiceOver pass of the lane labels (SC-026).
   Measure contrast again. Capture `vis1d/evidence/after-*.png` at 1440×900 and
   390×844 in dark and light, on the baseline instance data, in the four states.
   Update `docs/tooling/VIEWER.md`. Verification: SC-027.
+  Progress 2026-11-05: audit record `vis1d/audit-2026-11-05.md`; contrast re-measured and `--faint` raised
+  to 4.5:1 for small text; scripted keyboard-only walk and the four states captured
+  (`vis1d/a11y-2026-11-05.md`, `vis1d/evidence/after-*.png`); VIEWER.md, quickstart and the main README
+  updated. Open: the VoiceOver pass of the lane labels, which needs a person with VoiceOver.
 - [ ] T074 (all VIS.1d REQ): Closure. Covers the pre-PR reviews, `validate_change
   --profile pr`, the owner review of the before and after captures, the obtained
   evidence in `assurance.json`, and the freeze. Dependencies: T068 to T073.

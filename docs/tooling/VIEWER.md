@@ -1,8 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Activity viewer
 
-**Status:** SPEC-061 VIS.1a, a read-only viewer of Agent Braid coordination
-artifacts and Claude Code hook events. It is a companion that ships with this
+**Status:** SPEC-061 VIS.1a with the VIS.1d dashboard (2026-11-05), a read-only
+viewer of Agent Braid coordination artifacts and Claude Code hook events. It is a companion that ships with this
 repository and its Python package; the native plugin (`integrations/agent-braid/`)
 contains none of its code. See [SPEC-061](../../specs/061-activity-viewer/spec.md),
 [ADR 0032](../adr/0032-activity-viewer-companion.md) and
@@ -45,8 +45,8 @@ python3 -m pip install /absolute/artifacts/agent_braid-0.1.0a2-py3-none-any.whl
 agent-braid view serve
 ```
 
-The viewer needs Python 3.12 or newer and uses only the standard library. The page opens on the 2D timeline
-and the events table, which need no WebGL; a browser with WebGL2 is needed only for the optional 3D map.
+The viewer needs Python 3.12 or newer and uses only the standard library. The page opens on the dashboard and its
+live loom, which need no WebGL; a browser with WebGL2 is needed only for the optional Explore 3D view.
 The page language follows the browser or desktop-app locale, then the locale of the terminal that started
 `view serve` (sent to the page as a bare `es` or `en`), then English; a manual choice overrides it. Three.js r186 is vendored under
 `integrations/agent-braid-view/web/vendor/` with its licence and a hash manifest; the
@@ -168,20 +168,52 @@ another Python, print and merge the hooks again. `--host codex` is accepted and 
 
 ## Reading the page
 
-The page shows a Three.js braid scene and, as its complete text alternative, a table
-of the same events with a playback control and an evidence panel. Playback reveals events
-in model order and does not replay real timing. Counters and absence markers always
-cover every retained event (at most 50,000, with evicted ranges shown as gaps).
+![The dashboard in dark mode with live Claude Code sessions: the Now sentence, KPI tiles, filter chips, the live loom and the details rail](../../specs/061-activity-viewer/vis1d/evidence/after-live-desktop-dark.png)
 
-**Source checkboxes.** One checkbox per source of events filters the scene and the
-table: one per watched root (`root 1`, `root 2`, ...), then watched artifacts whose
-root is not named, replay file, hook ingest and events derived by the viewer. Hidden
-events are counted below the checkboxes and stay in the counters, so a hidden source
-never looks like an absent one.
+The page is a dashboard read from top to bottom. Every view, panel, tile and table row
+drives the same selection and filters, and the URL hash keeps them.
 
-**Legend.** The legend lists what each shape, class badge and mark means. It states that
-a badge is a categorical label, not a guarantee and not a safety ordering, and the
-page repeats that statement at the top.
+**App bar.** The live badge says `Live · now m:ss` while the event stream is connected,
+`Not live · last update m:ss` when it is lost (the page cannot know what happened
+since), and `Replay · not live` for a replay. Next to it are the connection state, the
+Loom and Explore 3D switch, the language and About.
+
+**Now sentence and KPI tiles.** One sentence answers who is running, who waits on whom,
+what may collide and the longest stated tool call. Each noun in it selects its agent or
+pair. The tiles (Running, Waiting, May collide, Longest tool call; Planned operations
+when nothing is live) apply their filter when clicked. There is no "collided" tile:
+no source of observed collisions exists yet, and the page shows no zero it cannot back.
+
+**Filters.** Sources, Agents and Status menus, "Only problems", one chip per pair class
+and Clear filters. A hidden source is counted inside the Sources menu and stays in the
+counters, so a hidden source never looks like an absent one.
+
+**Live loom.** One thread per Claude Code session, on a real time axis; subagents branch
+off their session. A running thread glows, a waiting one is dotted with a tether to what
+it waits on, a finished one is muted. Tool calls are beads; a duration is shown only when
+the host stated it, live only. Lanes are named `Session 7f3ab` or `Explore · 7f3ab`: a
+short, salted id that is stable while the viewer runs. Untimed analysis plans are never
+drawn on this axis.
+
+**Plan map.** One analysis report at a time (choose it in the panel): operations in
+columns by their declared waits, and pairs drawn as "may collide", "must wait",
+"independent" or "unknown". It has no time axis and states no order of execution.
+The Collisions panel lists predicted pairs; the Duration panel shows running and waiting
+per lane.
+
+**Details rail.** The selected event, its class, verification and evidence reference. On
+a phone it becomes a bottom sheet with a close button.
+
+**Playback.** Docked under the loom: step through events or play them by events or in
+real time; "Go to now" returns to the end and follows new events.
+
+**Explore 3D.** The same lanes in depth: time on x, lanes across, with Side, Top and
+Isometric presets, Frame all (F), Fly to selected (G or double click) and Lock scene.
+Class words appear on hover or selection only.
+
+**Tabs.** Events (the complete text alternative of the views), Summary, Legend and Help.
+Playback reveals events in model order. Counters and absence markers always cover every
+retained event (at most 50,000, with evicted ranges shown as gaps).
 
 ## Host verification status
 

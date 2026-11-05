@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#e9edf4">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1220">
 <title>Agent Braid activity viewer</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="/web/style.css">
@@ -114,6 +116,7 @@
         <button type="button" id="scene-view-top" data-preset="top" data-i18n="scene.preset.top">Top</button>
         <button type="button" id="scene-view-iso" data-preset="iso" data-i18n="scene.preset.iso">Isometric</button>
         <button type="button" id="scene-frame" data-i18n="scene.frame" data-i18n-title="scene.frame.title" title="Frame all agents (F)">Frame all (F)</button>
+        <button type="button" id="scene-fly" data-i18n="scene.fly" data-i18n-title="scene.fly.title" title="Fly to the selected element (G or double click)">Fly to selected (G)</button>
         <button type="button" id="scene-lock" aria-pressed="false" data-i18n="scene.lock" data-i18n-title="scene.lock.title" title="Lock the scene so one finger orbits instead of scrolling the page">Lock scene</button>
         <button type="button" id="scene-help-open" data-i18n="scene.help" data-i18n-title="scene.help.title" title="Controls of the 3D map (?)">Help (?)</button>
       </div>
@@ -123,7 +126,9 @@
       <ul class="plain">
         <li data-i18n="scene.help.orbit">Drag to orbit. Right-drag or Shift-drag to pan.</li>
         <li data-i18n="scene.help.zoom">Hold Ctrl or Cmd and scroll to zoom toward the pointer. Plain scrolling scrolls the page.</li>
-        <li data-i18n="scene.help.keys">With the map focused: arrow keys pan, F frames all agents, Esc clears the selection.</li>
+        <li data-i18n="scene.help.keys">With the map focused: arrow keys pan, F frames all agents, G flies to the selected element, Esc clears the selection.</li>
+        <li data-i18n="scene.help.fly">Double click an element to select it and fly to it.</li>
+        <li data-i18n="scene.help.keyboard">Without a pointer, select any element in the events table or the loom; then press G here to fly to it.</li>
         <li data-i18n="scene.help.touch">On a touch screen: two fingers pan and zoom. Turn on Lock scene to orbit with one finger.</li>
         <li data-i18n="scene.help.select">Click an element to select its event; the details panel and the table show it.</li>
       </ul>
@@ -174,6 +179,7 @@
     <header class="ph">
       <h2 id="plan-title" data-i18n="plan.title">Plan</h2>
       <span class="count" id="plan-count"></span>
+      <span class="plan-sub" id="plan-sub"></span>
       <div class="ph-tools"><label class="field compact"><span class="sr" data-i18n="plan.pick">Choose a plan</span><select id="plan-select" hidden></select></label></div>
     </header>
     <div class="plan-box" id="plan-box"></div>
@@ -182,10 +188,12 @@
   <section class="panel collisions" id="collisions-section" aria-labelledby="collisions-title">
     <header class="ph"><h2 id="collisions-title" data-i18n="col.title">Collisions</h2><span class="count" id="collisions-count"></span></header>
     <ul class="rowlist" id="collisions"></ul>
+    <button type="button" class="show-all" id="collisions-all" hidden></button>
   </section>
   <section class="panel durations" id="durations-section" aria-labelledby="durations-title">
-    <header class="ph"><h2 id="durations-title" data-i18n="dur.title">How long</h2><span class="count" id="durations-count"></span></header>
+    <header class="ph"><h2 id="durations-title" data-i18n="dur.title">Duration</h2><span class="count" id="durations-count"></span></header>
     <ul class="bars" id="durations"></ul>
+    <button type="button" class="show-all" id="durations-all" hidden></button>
   </section>
   <section class="panel tabs" aria-label="Sections" data-i18n-label="tabs.label">
     <div class="tablist" role="tablist" id="tablist" aria-label="Sections" data-i18n-label="tabs.label">
@@ -217,7 +225,7 @@
           <tbody id="events-body"></tbody>
         </table>
       </div>
-      <p class="hint" id="table-empty" hidden>No events to show.</p>
+      <p class="hint" id="table-empty" hidden data-i18n="table.empty">No events to show.</p>
     </div>
     <div role="tabpanel" id="panel-summary" aria-labelledby="tab-summary" hidden>
       <section class="panel" aria-labelledby="counters-title">

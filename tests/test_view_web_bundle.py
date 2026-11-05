@@ -489,7 +489,7 @@ console.log(JSON.stringify({
   sprites: (() => { let count = 0; labelled.group.traverse((object) => { if (object.isSprite) count += 1; }); return count; })(),
 }));
 """
-TEAL, RED, AMBER = 0x2A9D8F, 0xD1495B, 0xE0A100
+TEAL, RED, AMBER = 0x3FC1A5, 0xFF7A85, 0xF2B54A  # the VIS.1d Loom palette (direction.md)
 
 
 @unittest.skipIf(not shutil.which("node") and not os.environ.get("CI"), "node is needed to build the scene without a browser")
@@ -1314,5 +1314,6 @@ class SequenceAxisStaticTests(unittest.TestCase):
 
     def test_the_scene_and_the_timeline_draw_the_placed_model(self):
         source = read("loom.js")
-        self.assertIn("scene.setModel(derived().placedModel)", source)
+        self.assertIn("const placed = info.placedModel;", source)
+        self.assertIn("scene.setModel(placed", source)
         self.assertIn("model: info.placedModel", source)

@@ -9,7 +9,7 @@
   --line: #d7deea;
   --text: #0f1830;
   --muted: #4d5a75;
-  --faint: #6b7791;
+  --faint: #5a6680;
   --accent: #1f6fe0;
   --run: #1f6fe0;
   --run-glow: rgb(31 111 224 / 0.16);
@@ -60,7 +60,7 @@
     --line: #26324c;
     --text: #e7ecf5;
     --muted: #9aa6bd;
-    --faint: #75829c;
+    --faint: #8592ab;
     --accent: #6aa8ff;
     --run: #5aa9ff;
     --run-glow: rgb(90 169 255 / 0.55);
@@ -84,7 +84,7 @@
   --line: #26324c;
   --text: #e7ecf5;
   --muted: #9aa6bd;
-  --faint: #75829c;
+  --faint: #8592ab;
   --accent: #6aa8ff;
   --run: #5aa9ff;
   --run-glow: rgb(90 169 255 / 0.55);
@@ -110,9 +110,9 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
   font-size: var(--t-body); line-height: 1.45; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased;
 }
-h1 { font-size: 1.0625rem; line-height: 1.2; font-weight: 650; letter-spacing: -0.01em; margin: 0; }
+h1 { font-size: 1.0625rem; line-height: 1.2; font-weight: 650; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
 h2 { font-size: var(--t-title); line-height: 1.3; font-weight: 600; margin: 0; letter-spacing: -0.005em; text-wrap: balance; }
-h3 { font-size: var(--t-label); margin: var(--s-3) 0 var(--s-1); color: var(--muted); font-weight: 600; }
+h3 { font-size: var(--t-label); margin: var(--s-3) 0 var(--s-1); color: var(--muted); font-weight: 600; text-wrap: balance; }
 a { color: var(--accent); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
@@ -222,14 +222,18 @@ button:disabled { opacity: 0.45; cursor: default; }
 .panel-note:empty { display: none; }
 .hero { grid-column: span 9; display: flex; flex-direction: column; }
 .detail { grid-column: span 3; grid-row: span 2; position: sticky; top: var(--s-3); max-height: calc(100vh - 2 * var(--s-3)); overflow: auto; }
-.plan { grid-column: span 5; }
-.collisions { grid-column: span 2; }
-.durations { grid-column: span 2; }
+/* VIS.1d owner feedback: the plan map is a graph and gets the whole width beside the rail; collisions and
+   duration sit below it as two equal cards, each with its own scroll */
+.plan { grid-column: span 9; }
+.collisions, .durations { grid-column: span 6; display: flex; flex-direction: column; max-height: 420px; }
+.collisions > ul, .durations > ul { overflow-y: auto; min-height: 0; }
+.collisions.all, .durations.all { max-height: none; }
+.show-all { margin: 0 18px 14px; align-self: flex-start; }
 .tabs { grid-column: 1 / -1; padding: 6px 18px 16px; }
 .dash.no-plans .plan, .dash.no-plans .collisions { display: none; }
 .dash.no-plans .durations { grid-column: span 9; }
 .dash.no-live .durations { display: none; }
-.dash.no-live .plan { grid-column: span 7; }
+.dash.no-live .collisions { grid-column: 1 / -1; }
 
 /* ---- hero: timeline and scene ---- */
 .timeline, .scene { display: flex; flex-direction: column; }
@@ -315,7 +319,7 @@ button:disabled { opacity: 0.45; cursor: default; }
 .scene-labels-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
 .scene-label { position: absolute; left: 0; top: 0; white-space: nowrap; font-size: var(--t-meta); line-height: 1.3; padding: 0 4px; color: var(--text); background: color-mix(in srgb, var(--panel) 85%, transparent); border-radius: 4px; }
 .scene-label.pin { font-size: var(--t-label); font-weight: 500; }
-.scene-help { max-width: min(520px, calc(100vw - 2 * var(--s-4))); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: var(--text); padding: var(--s-4); }
+.scene-help { overscroll-behavior: contain; max-width: min(520px, calc(100vw - 2 * var(--s-4))); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: var(--text); padding: var(--s-4); }
 .scene-help::backdrop { background: rgb(0 0 0 / 0.45); }
 
 /* ---- details rail ---- */
@@ -331,7 +335,8 @@ pre { margin: var(--s-1) 0 0; padding: var(--s-2); max-height: 260px; overflow: 
 
 /* ---- plan map ---- */
 .plan-box { padding: 0 10px; overflow-x: auto; }
-.plan-box svg { display: block; width: 100%; max-width: 760px; height: auto; }
+.plan-box svg { display: block; max-width: none; height: auto; }
+.plan-sub { color: var(--faint); font-size: var(--t-meta); font-variant-numeric: tabular-nums; }
 .plan-empty { padding: 4px 18px 18px; color: var(--muted); font-size: var(--t-label); }
 .pm-node { cursor: pointer; outline: none; }
 .pm-node rect { fill: var(--panel-2); stroke: var(--line); stroke-width: 1; }
@@ -385,7 +390,7 @@ th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--lin
 td:nth-child(2) { white-space: nowrap; }
 th { position: sticky; top: 0; background: var(--panel); font-weight: 600; white-space: nowrap; color: var(--muted); font-size: var(--t-meta); }
 tbody tr.selected { background: var(--sel); }
-tbody tr { content-visibility: auto; contain-intrinsic-size: auto 34px; }
+tbody tr { content-visibility: auto; contain-intrinsic-size: auto 34px; scroll-margin-top: 34px; }
 tbody tr.current td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
 .row-button { min-height: 28px; padding: 2px var(--s-2); }
 .mark { display: inline-block; margin: 1px 4px 1px 0; padding: 0 6px; border-radius: 4px; border: 1px solid var(--line); font-size: var(--t-meta); white-space: nowrap; }
@@ -417,7 +422,7 @@ tbody tr.current td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
 @media (max-width: 1279px) {
   .hero, .tabs { grid-column: 1 / -1; }
   .detail { grid-column: 1 / -1; grid-row: auto; position: static; max-height: none; }
-  .plan, .dash.no-live .plan { grid-column: 1 / -1; }
+  .plan { grid-column: 1 / -1; }
   .collisions, .durations, .dash.no-plans .durations { grid-column: span 6; }
 }
 @media (max-width: 767px) {

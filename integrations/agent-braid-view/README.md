@@ -11,11 +11,12 @@ code. The user guide is [docs/tooling/VIEWER.md](../../docs/tooling/VIEWER.md).
 | Path | Role |
 |---|---|
 | `web/index.html` | Page shell with the single inline import map the server hashes for its policy |
-| `web/loom.js` | Page shell: event stream client, header, toolbar, filters, detail panel, playback, tabs (events table, summary, legend, help) |
-| `web/state.js` | Shared state and derived model (agents, crossings, axis, overlaps, filters, URL hash); no DOM, no network |
-| `web/timeline.js` | The 2D SVG timeline (default view): a row per agent, proportional axis with labelled breaks, bars, conflicts, keyboard listbox, zoom and pan |
+| `web/loom.js` | Dashboard shell: event stream client, app bar, Now sentence and KPI tiles, filter chips, details rail, playback, plan, collision and duration panels, tabs (events table, summary, legend, help) |
+| `web/state.js` | Shared state and derived model (agents, crossings, axis, overlaps, filters, URL hash, live subset, plans, short lane ids, Now facts); no DOM, no network |
+| `web/timeline.js` | The live loom (default view): one thread per session and subagent on a real time axis, waiting tethers, tool beads, the now edge, keyboard listbox, zoom and pan |
+| `web/planmap.js` | The plan map: one analysis report's operations in dependency columns and their classified pairs, with no time axis |
 | `web/strings.js` | Every user-facing string in Spanish and English, with language detection (manual choice, browser or desktop-app locale, server hint, English) |
-| `web/braid-scene.js` | Three.js braid scene bound to the same model and evidence panel as the table |
+| `web/braid-scene.js` | Explore 3D: the Three.js scene of the same lanes, with camera presets and fly-to-selected, bound to the same model and details rail |
 | `web/style.css` | Styles |
 | `web/vendor/` | Vendored Three.js r186 (MIT) with its licence and `manifest.json` of SHA-256 hashes ([ADR 0033](../../docs/adr/0033-vendored-threejs-mit-boundary.md)) |
 
