@@ -104,9 +104,8 @@ the verified result with its evidence and limits.
 
 The first targets are **Codex local CLI and Claude Code local CLI** on macOS
 arm64 at recorded exact versions. [SPEC-068](../../specs/068-opencode-native-integration/spec.md)
-adds **OpenCode** as a third host (implemented on `develop`; the native plugin ships
-from `0.1.0-alpha.7`, which is not yet published, and a legacy profile); its real-host
-observation is pending. Linux x86_64 is the initial package/protocol/core
+adds **OpenCode** as a third host (native plugin published from `0.1.0-alpha.7`, plus a
+legacy profile); its real-host observation covers OpenCode on macOS arm64 only. Linux x86_64 is the initial package/protocol/core
 reproduction target. See the [capability and host matrix](../../specs/039-ai-tooling-program/capability-matrix.md)
 for the required observations and support boundaries.
 

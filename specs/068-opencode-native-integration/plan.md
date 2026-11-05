@@ -123,8 +123,9 @@ behaviour is not claimed. D12 and D13 are recorded owner decisions.
   the operator resolves it with `plugin legacy` or by updating. The recommendation
   `agent-braid-tooling` was not selected.
 - **ADR 0037 adoption.** Adopted by the owner on 2026-11-03 (D14); the ADR text on
-  `develop` still reads Proposed until PR #1030 records the status. Adoption
-  authorizes no release by itself.
+  `develop` reads Accepted since PR #1030. Adoption authorized no release by
+  itself; the release was authorized separately on 2026-11-04
+  (`owner-authorization-20261104.md`).
 - T002 findings that contradict R1–R7 return to the owner before T003–T007.
 
 Remote tracking exists: GitHub milestone 27 (M4.7), parent issue #1032 and task

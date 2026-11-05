@@ -1,0 +1,57 @@
+{
+ "schema": "agent-braid-plugin-release-acceptance/v1",
+ "task": "SPEC-068 T011 release record for 0.1.0-alpha.7 (OpenCode as third native host)",
+ "publishedOn": "2026-11-04",
+ "publishedDistribution": "8f19b1b7a806ee88d8adb38145491abbfac376b5",
+ "previousDistribution": "78cc45a3f1c5dbc7b43e0ce5024fc5d1c5da053e",
+ "publishedTag": "agent-braid--v0.1.0-alpha.7",
+ "tagObject": "4057a71cf5df27cc37b2001d55ceb4d8057455dd",
+ "sourceCommit": "0eb75d84b6ad5cbe156b5d0c4ff967833f416205",
+ "package": {
+  "version": "0.1.0-alpha.7",
+  "pythonPackageVersion": "0.1.0a2",
+  "platforms": [
+   "macos-arm64",
+   "linux-x86_64"
+  ],
+  "files": 8004,
+  "inventoryFiles": 7998,
+  "inventorySha256": "a71a3847409f91ea5419c2980efb1f8dde44ea0524ec2a173e55638922d55a45",
+  "provenanceSha256": "3e00f4b0050f8ceafa917a342c72f31d8866e954db96795471f6c59c4a61f64f",
+  "sourceArchive": "sources/agent-braid-0.1.0-alpha.7-source.tar.gz",
+  "sourceArchiveSha256": "f2a07b59ada8f10d82eea4e37ea7eff056c086cdd66712cbada544ccdc029f7c"
+ },
+ "platform": {
+  "os": "macOS arm64",
+  "hosts": [
+   "OpenCode 2.1.4 (post-publication smoke, T010 row 21)"
+  ]
+ },
+ "observations": [
+  "Release PR #1030 squash-merged on develop as 0eb75d84 (PR head before merge 4405c898ff3ccbeae05526f3f686d8f3b35b5de4, CI validate aggregate green); evidence PR #1031 merged as 11e5bf762bddc4ce8b8182be22214664a7e6b9a5",
+  "Release build from a fresh clone at the merge commit (git status --short empty) with Python 3.12.13: scripts/build_native_plugin.py reported status built, version 0.1.0-alpha.7, platforms macos-arm64 and linux-x86_64, provenance sourceDirty false",
+  "plugin-dist commit 8f19b1b7 (parent 78cc45a3, the alpha.6 distribution; fast-forward) with message 'dist: Agent Braid 0.1.0-alpha.7 (source 0eb75d8)'; the root README.md on plugin-dist was edited by hand (owner-approved diff): OpenCode as third host, the opencode plugin add command, installer --host all, and the OpenCode reconnect step",
+  "Annotated tag agent-braid--v0.1.0-alpha.7 (tag object 4057a71c) points to 8f19b1b7; plugin-dist and the tag were pushed without force",
+  "Hashes re-derived from a fresh public clone of the tag; the tag tree holds 8004 files (excluding .git) of which 7998 are in the package inventory",
+  "diff -r of the fresh tag clone against the build output is identical except the root README.md, which exists only on plugin-dist by design",
+  "Bundled launcher `plugin doctor` against an empty canonical private home on the build output, on the plugin-dist commit, on the fresh tag clone and on the github-installed copy: pluginVersion 0.1.0-alpha.7, version 0.1.0a2, package verified, 7998 files; on the github-installed copy `plugin doctor --host opencode` reported findings []",
+  "T010 row 21 post-publication smoke in a disposable OpenCode 2.1.4 profile (macOS arm64): `opencode plugin add 'github:jayanez/agent-braid#plugin-dist::path:plugins/agent-braid'` reported installed and added; `opencode plugin list` showed agent-braid 8f19b1b with that source (the first list on a cold profile said 'No plugins found', a repeat after about 6 s listed it); `opencode plugin remove` with the exact source string left the configuration as {\"plugins\": []}"
+ ],
+ "notObserved": [
+  "Native host install or update of alpha.7 in Claude Code or Codex",
+  "Linux x86_64 execution and call-time behaviour on Linux (built, not run)",
+  "T010 row 22 (Linux) and row 23 (OpenCode session identifier in request _meta), declared as limits of this release",
+  "A model session against the github-installed OpenCode copy",
+  "scripts/reproduce_native_plugin.py was not run for this release",
+  "validate_spec_kit freeze for SPEC-068",
+  "Rollback from alpha.7 to alpha.6 (documented, not executed)"
+ ],
+ "limits": [
+  "Agent-operated engineering checks on macOS arm64; not a human usability rating, official directory approval or scientific acceptance",
+  "T010 finding F1 (the analyze-work input schema does not describe the AIM request shape) is a known limit of this release, tracked in issue #1080; F2 and F3 were fixed in #1030",
+  "alpha.7 adds no registry member; alpha.6 accepts the registry unchanged",
+  "OpenCode has no alpha.6 package; rolling back the OpenCode host means removing the plugin"
+ ],
+ "authorization": "specs/068-opencode-native-integration/owner-authorization-20261104.md",
+ "verification": "Hashes, tag object, file counts and byte equality were derived from a fresh public clone of the tag on 2026-11-04."
+}

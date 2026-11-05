@@ -1,6 +1,6 @@
 # Contract: OpenCode native surface
 
-Status: proposed with [ADR 0037](../../../docs/adr/0037-opencode-native-plugin.md).
+Status: adopted with [ADR 0037](../../../docs/adr/0037-opencode-native-plugin.md).
 Additive. It changes no existing contract: `agent-braid-plugin/v0.2`, the
 SPEC-054 naming policy, SPEC-047 telemetry and SPEC-066 System One are unchanged.
 

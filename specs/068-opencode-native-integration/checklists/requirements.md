@@ -19,8 +19,8 @@ unchecked item below (CHK-022) depends on a gate that is still open.
 ## Normative references
 
 - [x] CHK-007 Constitution articles, GOVERNANCE, claim discipline and ADRs 0021/0024/0030/0031 are cited (`spec.md` §Authorities; `assurance.json` `articles`, `references`).
-- [x] CHK-008 ADR 0037 exists and states that adoption authorizes nothing by itself (`docs/adr/0037-opencode-native-plugin.md`). On `develop` it reads Proposed; the owner adopted it on 2026-11-03 (D14) and PR #1030 records Accepted.
-- [x] CHK-009 Current authority snapshot matches the tree (`validate_spec_kit` passed on `develop` at 38c0b268, 2026-11-03; PR #1030 refreshes the ADR 0037 hash lines when it records the ADR status).
+- [x] CHK-008 ADR 0037 exists and states that adoption authorizes nothing by itself (`docs/adr/0037-opencode-native-plugin.md`). The owner adopted it on 2026-11-03 (D14) and `develop` reads Accepted since PR #1030.
+- [x] CHK-009 Current authority snapshot matches the tree (`validate_spec_kit` passed on `develop` at 38c0b268, 2026-11-03; PR #1030 refreshed the ADR 0037 hash lines when it recorded the ADR status).
 
 ## Acceptance coverage and traceability
 
@@ -42,7 +42,7 @@ unchecked item below (CHK-022) depends on a gate that is still open.
 
 - [x] CHK-020 Planned and obtained evidence are separate fields (`assurance.json`). Obtained: SC-002 (host matrix) and SC-003–SC-010 (`evidence/engineering-checks-develop.json`, fixtures and fake executables, run 2026-11-03). Empty: SC-001, SC-011, SC-012.
 - [x] CHK-021 Host facts are labelled documented (OpenCode 2.1.2 docs) until T002/T010 observe them (`research.md`, `plan.md`). T002 observed 2.1.4 on macOS arm64 (`research.md` §T002 findings); rows 04b, 05b, 09b and 12b and every T010 item stay unobserved.
-- [ ] CHK-022 Owner review record exists and is bound to a frozen commit — pending T001. The owner adopted ADR 0037 on 2026-11-03 (D14); the binding to a frozen commit stays with the T011 candidate freeze (PR #1030).
+- [ ] CHK-022 Owner review record exists and is bound to a frozen commit — open. The owner adopted ADR 0037 on 2026-11-03 (D14) and the release was published from develop 0eb75d84 on 2026-11-04, but `validate_spec_kit freeze` was not run for SPEC-068, so no frozen-commit binding exists.
 
 ## Scientific boundaries
 

@@ -2,12 +2,16 @@
 
 **Milestone:** M4.7 — AI tooling integration for OpenCode (GitHub milestone 27; parent issue #1032, task issues #1033–#1043)
 
-**Status:** implemented on `develop` for T002–T009 (engineering checks only, see
-`tasks.md` and `evidence/engineering-checks-develop.json`); T001 (ADR adoption
-record), T010 (native observation) and T011 (release) are open. The plugin is not
-published: it first ships in `0.1.0-alpha.7`. Owner decisions D1 to D16 of
-2026-11-02 and 2026-11-03 are recorded under Clarifications; none of them is a
-native-host observation, a release or founder acceptance.
+**Status:** released as native plugin `0.1.0-alpha.7` on 2026-11-04 (T001 to T011
+done; see `tasks.md`, `release-acceptance-alpha7.md` and `evidence/release-alpha7.json`).
+Engineering checks are in `evidence/engineering-checks-develop.json`; T010 native
+observation is in `evidence/native-observation.json` (20 of 23 rows observed, including row 21 after publication; row 14
+contradicted the observed candidate and was fixed in the release, rows 22 and 23
+unobserved and declared as limits). Owner decisions D1 to D16 of 2026-11-02 and
+2026-11-03 are recorded under Clarifications, and the publication decisions of
+2026-11-04 in `owner-authorization-20261104.md`. None of them is native-host
+acceptance (Claude Code and Codex installs of alpha.7 are not observed), an
+official directory submission or a scientific claim.
 
 ## Purpose and scope
 
@@ -107,9 +111,8 @@ Owner decisions, 2026-11-03 (plan review):
 
 Owner decisions, 2026-11-03 (release preparation):
 
-- **D14** ADR 0037 is adopted. The status change and the assurance hash lines land
-  with the release-preparation PR (#1030); until then the ADR on `develop` reads
-  Proposed.
+- **D14** ADR 0037 is adopted. The status change and the assurance hash lines landed
+  with the release-preparation PR (#1030); the ADR on `develop` now reads Accepted.
 - **D15** The native observation (T010) runs in a disposable OpenCode profile, never
   the owner's configuration.
 - **D16** Publishing `0.1.0-alpha.7` is conditional on a T010 record with no
