@@ -422,7 +422,7 @@ export const STRINGS = {
     "scene.help.title2": "Controls of the 3D map",
     "scene.help.orbit": "Drag to orbit. Right-drag or Shift-drag to pan.",
     "scene.help.zoom": "Hold Ctrl or Cmd and scroll to zoom toward the pointer. Plain scrolling scrolls the page.",
-    "scene.help.keys": "With the map focused: arrow keys pan, F frames all agents, Esc clears the selection.",
+    "scene.help.keys": "With the map focused: arrow keys pan, F frames all agents, G flies to the selected element, Esc clears the selection.",
     "scene.help.touch": "On a touch screen: two fingers pan and zoom. Turn on Lock scene to orbit with one finger.",
     "scene.help.select": "Click an element to select its event; the details panel and the table show it.",
     "scene.help.close": "Close",
@@ -510,6 +510,9 @@ export const STRINGS = {
     "dur.legend": "running and waiting",
     "dur.none": "No timed activity yet.",
     "dur.waited": "{text} waiting",
+    "scene.fly": "Fly to selected (G)",
+    "scene.fly.title": "Fly to the selected element (G or double click)",
+    "scene.help.fly": "Double click an element to select it and fly to it.",
   },
   es: {
     "page.documentTitle": "Visor de actividad de Agent Braid",
@@ -921,7 +924,7 @@ export const STRINGS = {
     "scene.help.title2": "Controles del mapa 3D",
     "scene.help.orbit": "Arrastra para orbitar. Arrastra con el botón derecho o con Mayús para desplazar.",
     "scene.help.zoom": "Mantén Ctrl o Cmd y usa la rueda para acercar hacia el puntero. La rueda sola desplaza la página.",
-    "scene.help.keys": "Con el mapa enfocado: las flechas desplazan, F encuadra todos los agentes y Esc quita la selección.",
+    "scene.help.keys": "Con el mapa enfocado: las flechas desplazan, F encuadra todos los agentes, G vuela al elemento seleccionado y Esc quita la selección.",
     "scene.help.touch": "En pantalla táctil: dos dedos desplazan y acercan. Activa Bloquear mapa para orbitar con un dedo.",
     "scene.help.select": "Haz clic en un elemento para seleccionar su evento; el panel de detalle y la tabla lo muestran.",
     "scene.help.close": "Cerrar",
@@ -1009,6 +1012,9 @@ export const STRINGS = {
     "dur.legend": "en marcha y esperando",
     "dur.none": "Aún no hay actividad con tiempos.",
     "dur.waited": "{text} esperando",
+    "scene.fly": "Ir a la selección (G)",
+    "scene.fly.title": "Volar al elemento seleccionado (G o doble clic)",
+    "scene.help.fly": "Haz doble clic en un elemento para seleccionarlo y volar hasta él.",
   },
 };
 

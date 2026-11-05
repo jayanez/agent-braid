@@ -1212,6 +1212,7 @@ function bindControls() {
   $("filter-clear").addEventListener("click", clearFilters);
   $("scene-reset").addEventListener("click", () => { if (scene) scene.resetView(); });
   $("scene-frame").addEventListener("click", () => { if (scene) scene.resetView(); });
+  $("scene-fly").addEventListener("click", () => { if (scene && scene.focusSelected) scene.focusSelected(); });
   for (const id of ["scene-view-lateral", "scene-view-top", "scene-view-iso"]) {
     $(id).addEventListener("click", (event) => { if (scene) scene.setPreset(event.currentTarget.dataset.preset); });
   }
@@ -1547,7 +1548,13 @@ function applyScene(force) {
   const modelChanged = sceneModel !== state.model;
   if (modelChanged) {
     sceneModel = state.model;
-    scene.setModel(derived().placedModel); // events that state no time are laid out in sequence order
+    // events that state no time are laid out in sequence order; lanes carry the names the 2D views show (T064)
+    const info = derived();
+    const placed = info.placedModel;
+    scene.setModel(placed && Array.isArray(placed.lanes) ? { ...placed, lanes: placed.lanes.map((lane) => {
+      const named = info.byStrand.get(lane.strandId);
+      return named ? { ...lane, label: named.displayLabel } : lane;
+    }) } : placed);
   }
   const hidden = [...state.hiddenSources].sort().join("|") + "#" + [...state.filters.agents].sort().join("|") + "#" +
     [...state.filters.status].sort().join("|") + "#" + [...state.filters.kinds].sort().join("|") + "#" + state.filters.onlyProblems;

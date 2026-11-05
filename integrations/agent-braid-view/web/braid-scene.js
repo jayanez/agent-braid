@@ -54,10 +54,10 @@ const NOT_DRAWN_REASON = {
 };
 
 const COLORS = {
-  independent: 0x2a9d8f,
-  ordered: 0x5f7fb0,
-  conflict: 0xd1495b,
-  unknown: 0xe0a100,
+  independent: 0x3fc1a5,
+  ordered: 0xa99cff,
+  conflict: 0xff7a85,
+  unknown: 0xf2b54a,
   hazard: 0xe4572e,
   spark: 0xffb703,
   badge: 0x7f8fa9,
@@ -66,7 +66,8 @@ const COLORS = {
   unverified: 0xf2a900,
   grey: 0x8a8d96,
 };
-const HOST_COLORS = { braid: 0x5b7db1, claude: 0xb0794f, codex: 0x7a8f5a };
+// VIS.1d: live host agents take the loom's running hue, planned operations its quiet grey-blue
+const HOST_COLORS = { braid: 0x6b7891, claude: 0x5aa9ff, codex: 0x7a8f5a };
 // [sides, colour]: the shape differs as well as the colour, and the label names the state or result.
 const GATE_RESULTS = {
   "refused": [3, 0xd1495b], "busy": [4, 0x8a8d96], "inconclusive": [5, 0xe0a100],
@@ -201,6 +202,7 @@ export function buildBraid(model, options = {}) {
     built.labels.push({
       owner, text, key: settings.key || null, params: settings.params || null, position: position.clone(),
       pin: settings.pin === true, priority: settings.priority === undefined ? 3 : settings.priority,
+      onDemand: settings.onDemand === true,
       selectable: settings.selectable === true,
     });
   }
@@ -284,7 +286,8 @@ function classBadge(c, class_, x, y, z) {
   mesh.position.set(x, y, z);
   mesh.userData.sides = sides;
   c.put(c.element.seq, mesh, "badge");
-  c.label(c.element.seq, "class " + class_, V(x, y + 0.3, z), { key: "scene.label.class", params: { n: class_ }, priority: 1, selectable: true });
+  c.label(c.element.seq, "class " + class_, V(x, y + 0.3, z), { key: "scene.label.class", params: { n: class_ }, priority: 1, selectable: true,
+    onDemand: true }); // VIS.1d: the badge shape is always drawn; its words show for the hovered or selected pair
 }
 
 function drawCrossing(c) {
@@ -562,7 +565,8 @@ export function describeBraid(built) {
 function readColors(container) {
   const style = getComputedStyle(container);
   const accent = style.getPropertyValue("--accent").trim();
-  return { accent: accent || "#1b5fa6" };
+  const ground = style.getPropertyValue("--ground").trim();
+  return { accent: accent || "#1b5fa6", ground: ground || "#0d1220" };
 }
 
 // Governance objects never enter the framing: slabs, rings, unverified markers and the invisible hit volumes.
@@ -571,7 +575,7 @@ const OUTSIDE_FRAMING = new Set(["wave-slab", "wave-frame-edges", "grant-ring", 
 // Agents lie side by side along z and time runs along x, so a view along -z would stack every lane on one line: the
 // lateral preset is raised, and the top view, where each agent is its own row, is the default.
 const PRESET_DIRECTIONS = { lateral: [0, 0.5, 1], top: [0, 1, 0.02], iso: [-0.15, 0.55, 0.85] };
-const TWEEN_MS = 220; // the camera eases for at most this long and a new input cancels it
+const TWEEN_MS = 420; // the camera eases for at most this long and a new input cancels it
 const LABEL_PRIORITY_LIMIT = 40;
 const LABEL_GAP = 2;
 
@@ -720,6 +724,8 @@ export function createBraidScene(container, hooks = {}) {
   function moveTo(pose, immediate) {
     camera.far = Math.max(400, pose.distance * 6);
     camera.updateProjectionMatrix();
+    // VIS.1d: a light depth fog in the page's ground colour, so far strands recede instead of competing
+    scene.fog = new THREE.Fog(new THREE.Color(colors.ground), pose.distance * 0.9, pose.distance * 3.2);
     controls.minDistance = Math.max(0.5, pose.radius * 0.25);
     controls.maxDistance = Math.max(pose.distance * 2.5, pose.radius * 6);
     if (immediate || reducedMotion.matches) {
@@ -739,6 +745,24 @@ export function createBraidScene(container, hooks = {}) {
     if (!pose) return;
     moveTo(pose, immediate);
     fitted = true;
+  }
+
+  // VIS.1d T072: an eased move that centres the selected element and brings it close, along the current direction.
+  function focusOn(seq) {
+    const objects = seq === null ? undefined : built.bySeq.get(seq);
+    if (!objects || !visible.has(seq)) return false;
+    const box = new THREE.Box3();
+    for (const object of objects) if (object.userData.part !== "hit-volume") box.expandByObject(object);
+    if (box.isEmpty()) return false;
+    const centre = box.getCenter(new THREE.Vector3());
+    const radius = Math.max(box.getBoundingSphere(new THREE.Sphere()).radius, 0.6);
+    const back = camera.position.clone().sub(controls.target);
+    if (back.lengthSq() < 1e-6) back.set(...PRESET_DIRECTIONS[preset]);
+    back.normalize();
+    const distance = Math.max(radius * 4, 3);
+    userMoved = true;
+    moveTo({ centre, position: centre.clone().addScaledVector(back, distance), distance, radius: Math.max(radius, distance / 2) }, false);
+    return true;
   }
 
   function clearSelection() {
@@ -818,6 +842,7 @@ export function createBraidScene(container, hooks = {}) {
     for (const entry of labelNodes) {
       const { descriptor } = entry;
       if (!visible.has(descriptor.owner)) { entry.place = null; continue; }
+      if (descriptor.onDemand && descriptor.owner !== selected && descriptor.owner !== hovered) { entry.place = null; continue; }
       projected.copy(descriptor.position).project(camera);
       if (projected.z > 1 || projected.z < -1) { entry.place = null; continue; }
       const x = (projected.x * 0.5 + 0.5) * width;
@@ -928,10 +953,22 @@ export function createBraidScene(container, hooks = {}) {
     if (event.key === "f" || event.key === "F") {
       event.preventDefault();
       api.resetView();
+    } else if ((event.key === "g" || event.key === "G") && selected !== null) {
+      event.preventDefault();
+      focusOn(selected);
     }
   }
 
+  // A double click selects an element and flies to it.
+  function onDoubleClick(event) {
+    const seq = pick(event);
+    if (seq === null) return;
+    if (hooks.onSelect) hooks.onSelect(seq);
+    focusOn(seq);
+  }
+
   canvas.addEventListener("pointerdown", onPointerDown);
+  canvas.addEventListener("dblclick", onDoubleClick);
   canvas.addEventListener("pointerup", onPointerUp);
   canvas.addEventListener("pointermove", onPointerMove);
   canvas.addEventListener("pointerleave", onPointerLeave);
@@ -970,6 +1007,10 @@ export function createBraidScene(container, hooks = {}) {
       selected = seq === undefined ? null : seq;
       updateSelection();
       requestRender();
+    },
+    // Fly to the selected element (VIS.1d T072); false when nothing selected is drawn.
+    focusSelected() {
+      return focusOn(selected);
     },
     // Frame all agents again, along the chosen preset, with an eased move that a new input cancels.
     resetView() {
@@ -1014,6 +1055,7 @@ export function createBraidScene(container, hooks = {}) {
       darkQuery.removeEventListener("change", onTheme);
       reducedMotion.removeEventListener("change", onVisibility);
       canvas.removeEventListener("pointerdown", onPointerDown);
+      canvas.removeEventListener("dblclick", onDoubleClick);
       canvas.removeEventListener("pointerup", onPointerUp);
       canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("pointerleave", onPointerLeave);
