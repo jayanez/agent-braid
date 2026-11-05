@@ -61,7 +61,7 @@ hosts do not reliably read resources; skill-only is the interim #1099); a
 separate builder tool (rejected: one more tool in three hosts).
 
 Open research for the owner: host authentication inside disposable profiles
-(OD-4). Claude Code and OpenCode may accept an API key through the environment;
+(resolved by D13). Claude Code and OpenCode may accept an API key through the environment;
 the driver must take it from the operator's environment or keychain, never from
 a file or prompt text, and never log it.
 
@@ -90,7 +90,7 @@ a file or prompt text, and never log it.
    the published schemas (descriptions stripped, `$ref` inlined) and checked by
    a test for equality with a regenerated copy. A unit test runs the plugin's
    `list_tools` so the `workspaceId` injection cannot break every tool (A1).
-   Size cap OD-2 (proposed 1,500 tokens, approximated with named tokenizers;
+   Size cap D12 (1,500 tokens, approximated with named tokenizers;
    hosts do not expose per-tool counts).
 6. **`units` kind.** New module `agent_braid/units.py`: validate the request,
    normalize resources lexically (NFC, `.` collapsed, `..`, absolute paths and
@@ -153,8 +153,8 @@ read-only (Article 20). No contradiction found.
 
 ## Human review and unresolved decisions
 
-- OD-1 milestone; OD-2 token cap; OD-3 hosts required for release; OD-4 host
-  authentication method in disposable profiles.
+- OD-1 to OD-4 resolved by D10, D12, D11 and D13 (2026-11-05). Size cap
+  for item 5 is 1,500 tokens (D12); authentication for item 8 follows D13.
 - Each REQ-002 divergence decision that changes what AIM 0.2.0-draft accepts.
 - OD-5 and OD-6 resolved by D8 and D9 (2026-11-05).
 - Adversarial and counterfactual reviews of this definition (owner instruction,
