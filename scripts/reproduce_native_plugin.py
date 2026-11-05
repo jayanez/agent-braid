@@ -66,7 +66,7 @@ async def codex_inventory(executable, env, cwd, *, timeout_seconds=120):
         listed = await request(1, 'skills/list', {'cwds': [str(cwd)], 'forceReload': True})
         selected = [skill for row in listed['data'] for skill in row['skills']
                     if skill.get('pluginId') == 'agent-braid@agent-braid']
-        assert len(selected) == 6 and all(skill['enabled'] for skill in selected), 'Native Codex did not load the six plugin skills'
+        assert len(selected) == 7 and all(skill['enabled'] for skill in selected), 'Native Codex did not load the seven plugin skills'
         inventory = await request(2, 'mcpServerStatus/list', {'limit': 20})
         servers = [server for server in inventory['data'] if server.get('pluginId') == 'agent-braid@agent-braid']
         assert len(servers) == 1, 'Native Codex did not load plugin MCP (inspect manifest/loader diagnostics)'
