@@ -861,7 +861,7 @@ class PluginOpenCodeSessionIdentifierTests(unittest.IsolatedAsyncioTestCase):
 
     def test_telemetry_vocabularies_and_the_log_audit_classes_are_unchanged(self):
         from agent_braid import telemetry_audit as audit, tooling_telemetry as telemetry
-        self.assertEqual(telemetry.SCHEMA, 'agent-braid-local-telemetry-batch/v2')
+        self.assertEqual(telemetry.SCHEMA, 'agent-braid-local-telemetry-batch/v3')
         self.assertEqual(telemetry.OUTCOMES, ('ok', 'refused', 'error', 'cancelled', 'unknown'))
         self.assertEqual(telemetry.REASON_SURFACES, ('mcp', 'lifecycle'))
         self.assertEqual(set(telemetry.BUCKETS), {'calls', 'duration', 'classification', 'missing-summary', 'refusal-reason'})
