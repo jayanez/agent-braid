@@ -130,7 +130,10 @@ export function buildBraid(model, options = {}) {
   const spanZ = Math.max(0, laneCount - 1) * LANE_GAP;
   // VIS.1d: the time axis grows with the number of lanes, so many lanes do not squeeze time into a narrow
   // column in a wide view (about 2.2 times the lane depth, never shorter than TIME_LENGTH).
-  const timeLength = Math.max(TIME_LENGTH, spanZ * 2.2);
+  // VIS.1d: the time axis takes the canvas proportions (about 0.9 of its width when the lanes fill its
+  // height), so a wide canvas is filled instead of showing a narrow column; never shorter than TIME_LENGTH.
+  const aspect = Number.isFinite(options.aspect) && options.aspect > 0 ? options.aspect : 2;
+  const timeLength = Math.max(TIME_LENGTH, spanZ * Math.max(aspect * 1.3, 1.2));
   const scale = timeLength / rawMax;
   const xOf = (element) => (Number(element.x) || 0) * scale;
   const zOf = (index) => (index - (laneCount - 1) / 2) * LANE_GAP;
@@ -621,6 +624,7 @@ export function createBraidScene(container, hooks = {}) {
 
   let model = null;
   let built = buildBraid(null);
+  let builtAspect = 0;
   let visible = new Set();
   let frontierSeqs = [];
   let selected = null;
@@ -684,7 +688,8 @@ export function createBraidScene(container, hooks = {}) {
     const points = [];
     built.group.updateMatrixWorld(true);
     built.group.traverse((object) => {
-      if (OUTSIDE_FRAMING.has(object.userData.part)) return;
+      if (OUTSIDE_FRAMING.has(object.userData.part) || object.userData.part === "hit-volume") return;
+      if (!object.visible) return; // what playback or a filter hides does not widen the framing
       const attribute = object.geometry && object.geometry.attributes && object.geometry.attributes.position;
       if (!attribute) return;
       const stride = Math.max(1, Math.floor(attribute.count / 12));
@@ -708,18 +713,33 @@ export function createBraidScene(container, hooks = {}) {
     probe.aspect = camera.aspect;
     probe.far = 1e6; // the real camera.far is set from the result
     probe.updateProjectionMatrix();
-    let distance = Math.max(radius * 0.2, 1);
-    for (let step = 0; step < 160; step += 1) {
-      probe.position.copy(centre).addScaledVector(back, distance);
-      probe.lookAt(centre);
-      probe.updateMatrixWorld();
-      const inside = points.every((point) => {
-        projected.copy(point).project(probe);
-        // the top margin is larger: the page draws its buttons over the top of the view
-        return Math.abs(projected.x) <= 0.9 && projected.y <= 0.72 && projected.y >= -0.9 && projected.z < 1;
-      });
-      if (inside) break;
-      distance *= 1.05;
+    const fit = (target) => {
+      let distance = Math.max(radius * 0.2, 1);
+      for (let step = 0; step < 160; step += 1) {
+        probe.position.copy(target).addScaledVector(back, distance);
+        probe.lookAt(target);
+        probe.updateMatrixWorld();
+        const inside = points.every((point) => {
+          projected.copy(point).project(probe);
+          // the top margin is larger: the page draws its buttons over the top of the view
+          return Math.abs(projected.x) <= 0.9 && projected.y <= 0.72 && projected.y >= -0.9 && projected.z < 1;
+        });
+        if (inside) break;
+        distance *= 1.05;
+      }
+      return distance;
+    };
+    let distance = fit(centre);
+    // Perspective makes a slanted braid land off centre; shift the target sideways (screen x only) so its
+    // projected extent is centred, then fit again.
+    let low = Infinity;
+    let high = -Infinity;
+    for (const point of points) { projected.copy(point).project(probe); low = Math.min(low, projected.x); high = Math.max(high, projected.x); }
+    if (Number.isFinite(low) && Math.abs(low + high) > 0.02) {
+      const right = V(1, 0, 0).applyQuaternion(probe.quaternion);
+      const halfWidth = distance * Math.tan(THREE.MathUtils.degToRad(probe.fov / 2)) * probe.aspect;
+      centre.addScaledVector(right, ((low + high) / 2) * halfWidth);
+      distance = fit(centre);
     }
     return { centre, position: centre.clone().addScaledVector(back, distance), distance, radius };
   }
@@ -748,7 +768,9 @@ export function createBraidScene(container, hooks = {}) {
     requestRender();
   }
 
+  let focusedSeq = null;
   function frameAll(immediate) {
+    focusedSeq = null;
     const pose = poseFor(PRESET_DIRECTIONS[preset]);
     if (!pose) return;
     pose.framesScene = true;
@@ -757,7 +779,7 @@ export function createBraidScene(container, hooks = {}) {
   }
 
   // VIS.1d T072: an eased move that centres the selected element and brings it close, along the current direction.
-  function focusOn(seq) {
+  function focusOn(seq, immediate) {
     const objects = seq === null ? undefined : built.bySeq.get(seq);
     if (!objects || !visible.has(seq)) return false;
     const box = new THREE.Box3();
@@ -770,7 +792,8 @@ export function createBraidScene(container, hooks = {}) {
     back.normalize();
     const distance = Math.max(radius * 4, 3);
     userMoved = true;
-    moveTo({ centre, position: centre.clone().addScaledVector(back, distance), distance, radius: Math.max(radius, distance / 2) }, false);
+    moveTo({ centre, position: centre.clone().addScaledVector(back, distance), distance, radius: Math.max(radius, distance / 2) }, Boolean(immediate));
+    focusedSeq = seq;
     return true;
   }
 
@@ -855,7 +878,7 @@ export function createBraidScene(container, hooks = {}) {
       const { descriptor } = entry;
       if (!visible.has(descriptor.owner)) { entry.place = null; continue; }
       if (descriptor.onDemand && descriptor.owner !== selected && descriptor.owner !== hovered) { entry.place = null; continue; }
-      projected.copy(descriptor.position).project(camera);
+      projected.copy(descriptor.position).applyMatrix4(built.group.matrixWorld).project(camera);
       if (projected.z > 1 || projected.z < -1) { entry.place = null; continue; }
       const x = (projected.x * 0.5 + 0.5) * width;
       const y = (-projected.y * 0.5 + 0.5) * height;
@@ -884,9 +907,11 @@ export function createBraidScene(container, hooks = {}) {
 
   function rebuild() {
     colors = readColors(container);
+    if (!fitted) size(); // the first build takes the canvas proportions
     scene.remove(built.group);
     built.dispose();
-    built = buildBraid(model);
+    built = buildBraid(model, { aspect: camera.aspect });
+    builtAspect = camera.aspect;
     scene.add(built.group);
     buildLabels();
     if (!fitted && model && model.elements.length > 0) {
@@ -990,9 +1015,22 @@ export function createBraidScene(container, hooks = {}) {
   canvas.addEventListener("blur", onBlur);
   controls.addEventListener("change", requestRender);
   controls.addEventListener("start", () => { userMoved = true; tween = null; });
+  // VIS.1d: a resize always frames the whole scene again for the new shape (debounced, since framing samples
+  // every point); the projection itself follows the size at once.
+  let refit = 0;
   const observer = typeof ResizeObserver === "function" ? new ResizeObserver(() => {
     size();
-    if (!userMoved && fitted) frameAll(true); // until the user moves the camera, keep the whole scene framed
+    if (!fitted) return;
+    clearTimeout(refit);
+    refit = setTimeout(() => {
+      if (disposed) return;
+      // a new shape rebuilds the braid at the new proportions, then frames it again
+      if (Math.abs(camera.aspect - builtAspect) / Math.max(builtAspect, 0.1) > 0.05) rebuild();
+      // a fly-to survives a resize (opening the Details rail resizes the canvas): it is redone at the new shape
+      if (focusedSeq !== null && focusOn(focusedSeq, true)) return;
+      userMoved = false;
+      frameAll(true);
+    }, 150);
   }) : null;
   if (observer) observer.observe(container);
   const onVisibility = () => requestRender();

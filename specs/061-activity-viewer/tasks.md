@@ -504,6 +504,9 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
   to 4.5:1 for small text; scripted keyboard-only walk and the four states captured
   (`vis1d/a11y-2026-11-05.md`, `vis1d/evidence/after-*.png`); VIEWER.md, quickstart and the main README
   updated. Open: the VoiceOver pass of the lane labels, which needs a person with VoiceOver.
+  Owner review pass 2026-11-05 (PR D): tabbed Collisions/Duration panel, collapsible rails, accordion
+  details, events chips and table, Summary/Legend/Help cards, Loom scroll and follow-now, Explore 3D
+  toolbar, footer and resize; after captures retaken; README front page shows the viewer.
 - [ ] T074 (all VIS.1d REQ): Closure. Covers the pre-PR reviews, `validate_change
   --profile pr`, the owner review of the before and after captures, the obtained
   evidence in `assurance.json`, and the freeze. Dependencies: T068 to T073.

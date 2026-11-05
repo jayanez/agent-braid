@@ -193,25 +193,37 @@ off their session. A running thread glows, a waiting one is dotted with a tether
 it waits on, a finished one is muted. Tool calls are beads; a duration is shown only when
 the host stated it, live only. Lanes are named `Session 7f3ab` or `Explore · 7f3ab`: a
 short, salted id that is stable while the viewer runs. Untimed analysis plans are never
-drawn on this axis.
+drawn on this axis. Zoom in, Zoom out and Fit move the time window; a zoomed window
+that reaches "now" keeps following it.
 
 **Plan map.** One analysis report at a time (choose it in the panel): operations in
 columns by their declared waits, and pairs drawn as "may collide", "must wait",
 "independent" or "unknown". It has no time axis and states no order of execution.
-The Collisions panel lists predicted pairs; the Duration panel shows running and waiting
-per lane.
+A report is named by its folder or by its operations, never by a generated id.
 
-**Details rail.** The selected event, its class, verification and evidence reference. On
-a phone it becomes a bottom sheet with a close button.
+**Collisions and duration.** One panel beside the plan map with two tabs: Collisions
+lists predicted pairs, most severe first; Duration shows running and waiting per lane,
+longest first. Each list shows eight rows and a "Show all" button.
+
+**Side rails.** Details and the Collisions and duration panel start collapsed to a thin
+rail and give their width to the graph beside them; click the rail to open it. The
+browser remembers that choice. Details opens by itself when you select something.
+
+**Details.** The selected event, its class, verification and evidence reference, in
+collapsible sections; the rail is as tall as the live loom or 3D panel and scrolls
+inside. On a phone it becomes a bottom sheet with a close button.
 
 **Playback.** Docked under the loom: step through events or play them by events or in
 real time; "Go to now" returns to the end and follows new events.
 
-**Explore 3D.** The same lanes in depth: time on x, lanes across, with Side, Top and
-Isometric presets, Frame all (F), Fly to selected (G or double click) and Lock scene.
-Class words appear on hover or selection only.
+**Explore 3D.** The same lanes in depth: time on x, lanes across. The toolbar holds the
+Side, Top and Isometric presets, Frame all (F), Fly to selected (G or double click),
+Reset view and Lock scene, with Help in the top-right corner. The scene is reframed to
+fit whenever the window changes size. Below it, the element under the pointer and the
+scene's facts. Class words appear on hover or selection only.
 
-**Tabs.** Events (the complete text alternative of the views), Summary, Legend and Help.
+**Tabs.** Events (the complete text alternative of the views, filtered by element chips),
+Summary, Legend and Help.
 Playback reveals events in model order. Counters and absence markers always cover every
 retained event (at most 50,000, with evicted ranges shown as gaps).
 

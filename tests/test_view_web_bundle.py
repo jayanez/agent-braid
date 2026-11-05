@@ -442,9 +442,9 @@ class FirstPartyBundleTests(unittest.TestCase):
         self.assertRegex(scene, r"setVisible\(seqs, position = seqs\)")
         self.assertRegex(scene, r"frontier = frontierX\(built, frontierSeqs\)")
         self.assertNotRegex(script, r"localStorage|sessionStorage|document\.cookie", "the page shell stores nothing itself")
-        # Only two per-viewer preferences exist (language and view); the selection and the events are never stored.
+        # Per-viewer preferences: language, view and whether Details and the side panel are open; the selection and the events are never stored.
         state = read("state.js")
-        self.assertRegex(state, r'PREFERENCE_KEYS = new Set\(\["lang", "view"\]\)')
+        self.assertRegex(state, r'PREFERENCE_KEYS = new Set\(\["lang", "view", "panel\.detail", "panel\.side"\]\)')
         self.assertNotRegex(state, r"sessionStorage|document\.cookie|indexedDB")
         self.assertEqual(re.findall(r"localStorage\.(\w+)", state), ["getItem", "removeItem", "setItem"])
 

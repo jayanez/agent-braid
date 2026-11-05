@@ -742,7 +742,7 @@ export function decodeHash(text) {
 
 // Only the language choice and the last view are stored, in this browser, never sent anywhere. Every access is
 // guarded: private windows and blocked storage must leave the page working.
-const PREFERENCE_KEYS = new Set(["lang", "view"]);
+const PREFERENCE_KEYS = new Set(["lang", "view", "panel.detail", "panel.side"]);
 const PREFERENCE_PREFIX = "agent-braid-view.";
 
 export function readPreference(key) {

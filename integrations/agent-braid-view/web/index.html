@@ -112,13 +112,18 @@
     <header class="ph"><h2 id="scene-title" data-i18n="scene.title">Explore in 3D</h2></header>
     <div class="scene-box" id="scene-box">
       <div class="scene-hud" id="scene-hud">
-        <button type="button" id="scene-view-lateral" data-preset="lateral" data-i18n="scene.preset.lateral">Side</button>
-        <button type="button" id="scene-view-top" data-preset="top" data-i18n="scene.preset.top">Top</button>
-        <button type="button" id="scene-view-iso" data-preset="iso" data-i18n="scene.preset.iso">Isometric</button>
-        <button type="button" id="scene-frame" data-i18n="scene.frame" data-i18n-title="scene.frame.title" title="Frame all agents (F)">Frame all (F)</button>
-        <button type="button" id="scene-fly" data-i18n="scene.fly" data-i18n-title="scene.fly.title" title="Fly to the selected element (G or double click)">Fly to selected (G)</button>
+        <div class="hud-group" role="group" aria-label="Camera" data-i18n-label="scene.camera">
+          <button type="button" id="scene-view-lateral" data-preset="lateral" data-i18n="scene.preset.lateral">Side</button>
+          <button type="button" id="scene-view-top" data-preset="top" data-i18n="scene.preset.top">Top</button>
+          <button type="button" id="scene-view-iso" data-preset="iso" data-i18n="scene.preset.iso">Isometric</button>
+        </div>
+        <div class="hud-group">
+          <button type="button" id="scene-frame" data-i18n="scene.frame" data-i18n-title="scene.frame.title" title="Frame all agents (F)">Frame all (F)</button>
+          <button type="button" id="scene-fly" data-i18n="scene.fly" data-i18n-title="scene.fly.title" title="Fly to the selected element (G or double click)">Fly to selected (G)</button>
+          <button type="button" id="scene-reset" data-i18n="scene.reset" data-i18n-title="scene.reset.title" title="Frame the whole scene again">Reset view</button>
+        </div>
         <button type="button" id="scene-lock" aria-pressed="false" data-i18n="scene.lock" data-i18n-title="scene.lock.title" title="Lock the scene so one finger orbits instead of scrolling the page">Lock scene</button>
-        <button type="button" id="scene-help-open" data-i18n="scene.help" data-i18n-title="scene.help.title" title="Controls of the 3D map (?)">Help (?)</button>
+        <button type="button" class="hud-help" id="scene-help-open" data-i18n="scene.help" data-i18n-title="scene.help.title" title="Controls of the 3D map (?)">Help (?)</button>
       </div>
     </div>
     <dialog class="scene-help" id="scene-help" aria-labelledby="scene-help-title">
@@ -134,9 +139,10 @@
       </ul>
       <form method="dialog"><button type="submit" id="scene-help-close" data-i18n="scene.help.close">Close</button></form>
     </dialog>
-    <p class="scene-status" id="scene-hover" aria-live="off" data-i18n="scene.hoverHint">Hover an element to see its event.</p>
-    <p class="hint" id="scene-note"></p>
-    <p class="scene-actions"><button type="button" id="scene-reset" data-i18n="scene.reset" data-i18n-title="scene.reset.title" title="Frame the whole scene again">Reset view</button></p>
+    <div class="scene-foot">
+      <p class="scene-status" id="scene-hover" aria-live="off" data-i18n="scene.hoverHint">Hover an element to see its event.</p>
+      <ul class="scene-facts" id="scene-note"></ul>
+    </div>
   </section>
   </div>
   <section class="playback" role="group" aria-labelledby="playback-title">
@@ -169,7 +175,7 @@
   <aside class="panel detail" id="detail" aria-labelledby="evidence-title">
     <section id="evidence-panel" tabindex="-1">
       <header class="ph">
-        <h2 id="evidence-title" data-i18n="detail.title">Details</h2>
+        <h2 class="collapse-h"><button type="button" class="collapse" id="detail-toggle" aria-expanded="false" aria-controls="evidence"><span class="chev" aria-hidden="true"></span><span id="evidence-title" data-i18n="detail.title">Details</span></button></h2>
         <button type="button" class="ghost sm" id="detail-close" hidden data-i18n="detail.close">Deselect</button>
       </header>
       <div id="evidence" class="evidence"><p class="hint">Select an event to see its source event, class, verification and evidence reference.</p></div>
@@ -185,15 +191,26 @@
     <div class="plan-box" id="plan-box"></div>
     <ul class="plan-key" id="plan-key"></ul>
   </section>
-  <section class="panel collisions" id="collisions-section" aria-labelledby="collisions-title">
-    <header class="ph"><h2 id="collisions-title" data-i18n="col.title">Collisions</h2><span class="count" id="collisions-count"></span></header>
-    <ul class="rowlist" id="collisions"></ul>
-    <button type="button" class="show-all" id="collisions-all" hidden></button>
-  </section>
-  <section class="panel durations" id="durations-section" aria-labelledby="durations-title">
-    <header class="ph"><h2 id="durations-title" data-i18n="dur.title">Duration</h2><span class="count" id="durations-count"></span></header>
-    <ul class="bars" id="durations"></ul>
-    <button type="button" class="show-all" id="durations-all" hidden></button>
+  <section class="panel side" id="side" aria-label="Collisions and duration" data-i18n-label="side.label">
+    <header class="ph side-head">
+      <h2 class="collapse-h"><button type="button" class="collapse" id="side-toggle" aria-expanded="false" aria-controls="side-body"><span class="chev" aria-hidden="true"></span><span class="side-name" data-i18n="side.title">Collisions and duration</span><span class="side-badge" id="side-badge"></span></button></h2>
+    </header>
+    <div class="side-body" id="side-body">
+      <div class="tablist side-tabs" role="tablist" aria-label="Collisions and duration" data-i18n-label="side.label">
+        <button type="button" role="tab" id="stab-collisions" aria-controls="collisions-section" aria-selected="true"><span id="collisions-title" data-i18n="col.title">Collisions</span> <span class="tab-count" id="collisions-n"></span></button>
+        <button type="button" role="tab" id="stab-durations" aria-controls="durations-section" aria-selected="false" tabindex="-1"><span id="durations-title" data-i18n="dur.title">Duration</span> <span class="tab-count" id="durations-n"></span></button>
+      </div>
+      <div role="tabpanel" class="side-panel" id="collisions-section" aria-labelledby="stab-collisions">
+        <p class="count side-count" id="collisions-count"></p>
+        <ul class="rowlist" id="collisions"></ul>
+        <button type="button" class="show-all" id="collisions-all" hidden></button>
+      </div>
+      <div role="tabpanel" class="side-panel" id="durations-section" aria-labelledby="stab-durations" hidden>
+        <p class="count side-count" id="durations-count"></p>
+        <ul class="bars" id="durations"></ul>
+        <button type="button" class="show-all" id="durations-all" hidden></button>
+      </div>
+    </div>
   </section>
   <section class="panel tabs" aria-label="Sections" data-i18n-label="tabs.label">
     <div class="tablist" role="tablist" id="tablist" aria-label="Sections" data-i18n-label="tabs.label">
@@ -204,9 +221,7 @@
     </div>
     <div role="tabpanel" id="panel-events" aria-labelledby="tab-events">
       <h2 class="sr" id="table-title" data-i18n="table.title">Events</h2>
-      <p class="filters"><label class="field"><span data-i18n="table.kind">Element</span>
-        <select id="filter-kind"><option value="">all</option></select>
-      </label></p>
+      <div class="kind-chips" id="filter-kind" role="group" aria-label="Element" data-i18n-label="table.kind"></div>
       <div class="table-wrap">
         <table>
           <caption class="sr" data-i18n="table.caption">Events of the viewer model, in model order. Select a row to see its event and evidence.</caption>
@@ -246,40 +261,43 @@
     </div>
     <div role="tabpanel" id="panel-legend" aria-labelledby="tab-legend" hidden>
       <section class="panel" aria-labelledby="legend-title">
-        <h2 id="legend-title" data-i18n="legend.title">Legend</h2>
+        <h2 class="sr" id="legend-title" data-i18n="legend.title">Legend</h2>
         <p class="legend-claim" data-i18n="legend.claim">A compatibility class (Constitution Article 13) is a categorical label, not a guarantee. It is not a universal ordering of runtime safety, and a producer's claimed class is not verified evidence.</p>
-        <h3 data-i18n="legend.classes">Compatibility class</h3>
-        <ul id="legend-classes" class="legend"></ul>
-        <h3 data-i18n="legend.shapes">Shapes</h3>
-        <ul id="legend-shapes" class="legend"></ul>
-        <h3 data-i18n="legend.verification">Verification</h3>
-        <ul id="legend-verification" class="legend"></ul>
-        <h3 data-i18n="legend.marks">Marks</h3>
-        <ul id="legend-marks" class="legend"></ul>
-        <div id="legend-scene-block" hidden>
-          <h3 data-i18n="legend.scene">3D map</h3>
-          <ul id="legend-scene" class="legend"></ul>
+        <div class="cards">
+          <div class="card"><h3 data-i18n="legend.shapes">Shapes</h3><ul id="legend-shapes" class="legend cols"></ul></div>
+          <div class="card"><h3 data-i18n="legend.classes">Compatibility class</h3><ul id="legend-classes" class="legend classes"></ul>
+            <h3 data-i18n="legend.verification">Verification</h3><ul id="legend-verification" class="legend"></ul></div>
+          <div class="card"><h3 data-i18n="legend.marks">Marks</h3><ul id="legend-marks" class="legend"></ul></div>
+          <div class="card" id="legend-scene-block" hidden><h3 data-i18n="legend.scene">3D map</h3><ul id="legend-scene" class="legend"></ul></div>
         </div>
       </section>
     </div>
     <div role="tabpanel" id="panel-help" aria-labelledby="tab-help" hidden>
       <section class="panel" aria-labelledby="help-title">
-        <h2 id="help-title" tabindex="-1" data-i18n="help.title">Help</h2>
+        <h2 class="sr" id="help-title" tabindex="-1" data-i18n="help.title">Help</h2>
+        <div class="cards">
+        <div class="card">
         <h3 data-i18n="help.about.title">About this view</h3>
         <p data-i18n="help.about.claim">This view reports what was observed or declared. A rendered shape, label, counter or compatibility class is not a guarantee, not a safety ordering and not permission to run, schedule or interleave work.</p>
         <p data-i18n="help.about.readonly">The viewer is read-only: it never starts, schedules or changes anything. executionAuthorization: false.</p>
         <p data-i18n="help.about.sources">Unknown, unobserved and unverified information is shown as such and is never counted as clean.</p>
+        </div>
+        <div class="card">
         <h3 data-i18n="help.controls.title">Controls</h3>
-        <ul class="plain">
+        <ul class="plain steps">
           <li data-i18n="help.controls.select">Select an event: click or press Enter on a row of the events table or on an element of the 3D map. The details panel shows it.</li>
           <li data-i18n="help.controls.esc">Esc clears the selection.</li>
           <li data-i18n="help.controls.help">? opens this help.</li>
           <li data-i18n="help.controls.tabs">Left and Right arrows move between the tabs.</li>
           <li data-i18n="help.controls.scene">3D map: drag to orbit, Ctrl or Cmd plus scroll to zoom, click to select. Press ? with the map open for all controls.</li>
         </ul>
+        </div>
+        <div class="card">
         <h3 data-i18n="help.dropped.title">Dropped attribute names</h3>
         <p class="hint" data-i18n="help.dropped.hint">Names only, never values. The viewer discards these host attributes before processing.</p>
-        <ul id="dropped-list" class="plain"></ul>
+        <ul id="dropped-list" class="plain steps"></ul>
+        </div>
+        </div>
       </section>
     </div>
   </section>

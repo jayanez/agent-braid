@@ -94,6 +94,8 @@ export function createTimeline(container, hooks) {
     const full = fullSpan();
     const view = input && input.viewport;
     if (!view || !(view.x1 > view.x0)) return [0, full];
+    // a zoomed window that reached the live end keeps following it, so the loom advances with "now"
+    if (view.follow) { const span = Math.min(view.x1 - view.x0, full); return [full - span, full]; }
     const from = Math.max(0, view.x0);
     const to = Math.min(full, view.x1);
     return to > from ? [from, to] : [0, full]; // a viewport outside the data (stale link) shows everything
@@ -104,7 +106,8 @@ export function createTimeline(container, hooks) {
     const span = Math.min(Math.max(x1 - x0, MIN_SPAN), full);
     let start = Math.max(0, Math.min(x0, full - span));
     if (span >= full - 1) start = 0;
-    hooks.onViewport(span >= full - 1 ? null : { x0: start, x1: start + span });
+    const follow = start + span >= full - Math.max(1, full * 0.002);
+    hooks.onViewport(span >= full - 1 ? null : { x0: start, x1: start + span, follow });
   }
 
   function zoomAt(factor, centerX) {
@@ -174,7 +177,9 @@ export function createTimeline(container, hooks) {
     const rows = derived.rows.map((row) => derived.byIndex.get(row.laneIndex));
     if (!rows.length) { emptyState(); return; }
     // a phone scrolls the loom sideways instead of squeezing the time axis
-    const width = Math.max(container.clientWidth || 720, 720);
+    // the drawing is exactly as wide as the box, so a desktop never shows a horizontal scroll bar that
+    // scrolls nothing; zoom and pan move the time window instead
+    const width = Math.max(Math.floor(container.clientWidth || 720), 720);
     const narrow = (container.clientWidth || 720) < 560; // on a phone the duration leaves the label column; it stays in the tooltip and the details
     const labelW = narrow ? 132 : Math.round(Math.min(220, Math.max(150, width * 0.2)));
     const plotW = Math.max(width - labelW - LEFT_PAD - RIGHT_PAD, 100);
