@@ -294,7 +294,8 @@ function nameLanes(info, ids) {
       lane.sub = t("lane.sessionSub", { host: lane.host });
     } else if (own) {
       lane.name = parentId ? t("lane.subagent", { label: lane.label, id: parentId }) : t("lane.subagent", { label: lane.label, id: own });
-      lane.sub = parent ? t("lane.subagentOf", { parent: t("lane.session", { id: parentId }) }) : t("agent.kind.orphan");
+      lane.sub = parent && parentId ? t("lane.subagentOf", { parent: t("lane.session", { id: parentId }) })
+        : parent ? t("lane.subagentOf", { parent: parent.label }) : t("agent.kind.orphan");
     } else {
       lane.name = lane.label;
       lane.sub = lane.declared ? lane.host + " " + lane.role : t("lanes.undeclared");

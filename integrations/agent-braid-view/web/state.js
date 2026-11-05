@@ -559,7 +559,7 @@ export function derivePlans(model, derived) {
     const depth = new Map();
     const visit = (strandId, trail) => {
       if (depth.has(strandId)) return depth.get(strandId);
-      if (trail.has(strandId)) return 0; // a cycle of declared waits is drawn flat, never resolved by guesswork
+      if (trail.has(strandId)) { cyclic = true; return 0; } // a cycle of declared waits is drawn flat, never resolved by guesswork
       trail.add(strandId);
       let column = 0;
       for (const target of on.get(strandId) || []) {
@@ -569,7 +569,10 @@ export function derivePlans(model, derived) {
       depth.set(strandId, column);
       return column;
     };
-    for (const lane of plan.ops) plan.columns.set(lane.laneIndex, visit(lane.strandId, new Set()));
+    let cyclic = false;
+    for (const lane of plan.ops) visit(lane.strandId, new Set());
+    // with a cycle, depths would depend on the order operations were visited: draw the whole plan flat instead
+    for (const lane of plan.ops) plan.columns.set(lane.laneIndex, cyclic ? 0 : depth.get(lane.strandId));
     delete plan.waits;
   }
   // Newest first: report folders carry a UTC stamp ("analysis-<stamp>-<id>"), so the key order is the time order.
