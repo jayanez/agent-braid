@@ -501,6 +501,135 @@ export function waitingTime(lane) {
   return { totalMs: total, open: lane.waitSpans.some((span) => span.open), complete: known };
 }
 
+// ---------------------------------------------------------------- VIS.1d: live loom, plan map, lane ids
+
+// The part of the model the live loom draws (REQ-025): the events that state a time and the agents they open.
+// Events that state no time (analysis reports and their operations) go to the plan map instead, so the loom keeps
+// a real time axis and never falls back to event order. The axis basis is recomputed over the kept events.
+export function liveSubset(model) {
+  if (!model || !Array.isArray(model.elements) || !Array.isArray(model.lanes)) return model;
+  if (!needsSequenceAxis(model)) return model;
+  const elements = model.elements.filter(timeKnownOf);
+  const kept = new Set(elements.map((element) => element.seq));
+  const lanes = model.lanes.filter((lane) => kept.has(lane.seq));
+  const bases = new Set(elements.map((element) => element.basis).filter((basis) => typeof basis === "string"));
+  const basis = bases.size === 1 ? [...bases][0] : bases.size ? "mixed" : "sequence-only";
+  return { ...model, elements, lanes, axis: { ...(model.axis || {}), basis } };
+}
+
+// The plans of the plan map: one per analysis report, with its operations in dependency order and its classified
+// pairs. An operation's column is the length of the longest chain of declared waits (T061 `waitingOn`) that leads to
+// it; an operation with no declared wait is in column 0. Nothing here states a duration.
+export function derivePlans(model, derived) {
+  if (!model || !Array.isArray(model.elements) || !derived) return [];
+  const plans = new Map();
+  const keyOf = (element) => (element && element.evidenceRef && typeof element.evidenceRef.path === "string" ? element.evidenceRef.path : "plan");
+  const planOf = (element) => {
+    const key = keyOf(element);
+    if (!plans.has(key)) plans.set(key, { key, seq: null, ops: [], opSeqs: new Map(), pairs: [], columns: new Map(), waits: [] });
+    return plans.get(key);
+  };
+  // Operations come from each report's own strand openings: one strand id can appear in several reports, while the
+  // model keeps one lane per strand id, so a lane may belong to more than one plan.
+  for (const element of model.elements) {
+    if (element.timeKnown !== false) continue;
+    if (element.element === "report") {
+      const plan = planOf(element);
+      plan.seq = plan.seq === null ? element.seq : Math.max(plan.seq, element.seq);
+    } else if (element.element === "strand") {
+      const lane = derived.byIndex.get(Array.isArray(element.lanes) ? element.lanes[0] : undefined);
+      const plan = planOf(element);
+      if (lane && !plan.ops.includes(lane)) { plan.ops.push(lane); plan.opSeqs.set(lane.laneIndex, element.seq); }
+    } else if (element.element === "strand-state" && element.state === "waiting" && typeof element.waitingOn === "string") {
+      planOf(element).waits.push({ from: element.strandId, on: element.waitingOn });
+    }
+  }
+  for (const crossing of derived.crossings) {
+    if (crossing.timeKnown) continue;
+    const element = model.elements.find((item) => item.seq === crossing.seq);
+    if (plans.has(keyOf(element))) plans.get(keyOf(element)).pairs.push(crossing);
+  }
+  // An operation's column is the length of the longest chain of this report's declared waits that leads to it.
+  for (const plan of plans.values()) {
+    const on = new Map();
+    for (const wait of plan.waits) {
+      if (!on.has(wait.from)) on.set(wait.from, []);
+      on.get(wait.from).push(wait.on);
+    }
+    const depth = new Map();
+    const visit = (strandId, trail) => {
+      if (depth.has(strandId)) return depth.get(strandId);
+      if (trail.has(strandId)) return 0; // a cycle of declared waits is drawn flat, never resolved by guesswork
+      trail.add(strandId);
+      let column = 0;
+      for (const target of on.get(strandId) || []) {
+        if (plan.ops.some((lane) => lane.strandId === target)) column = Math.max(column, visit(target, trail) + 1);
+      }
+      trail.delete(strandId);
+      depth.set(strandId, column);
+      return column;
+    };
+    for (const lane of plan.ops) plan.columns.set(lane.laneIndex, visit(lane.strandId, new Set()));
+    delete plan.waits;
+  }
+  // Newest first: report folders carry a UTC stamp ("analysis-<stamp>-<id>"), so the key order is the time order.
+  return [...plans.values()].filter((plan) => plan.ops.length > 0)
+    .sort((a, b) => (a.key < b.key ? 1 : a.key > b.key ? -1 : 0));
+}
+
+// T064: a short id per host lane, the first characters of its salted strand id (stable within one server session,
+// since the salt is per session). Ids that would collide are lengthened together until they differ. No new data.
+export const SHORT_ID_LENGTH = 5;
+export function shortIds(lanes) {
+  const out = new Map();
+  const ids = [...new Set(lanes.filter((lane) => lane.host !== "braid" && typeof lane.strandId === "string").map((lane) => lane.strandId))];
+  let pending = ids;
+  let length = SHORT_ID_LENGTH;
+  while (pending.length) {
+    const groups = new Map();
+    for (const id of pending) {
+      const prefix = id.slice(0, length);
+      if (!groups.has(prefix)) groups.set(prefix, []);
+      groups.get(prefix).push(id);
+    }
+    const next = [];
+    for (const [prefix, members] of groups) {
+      if (members.length === 1 || members.every((id) => id.length <= length)) for (const id of members) out.set(id, prefix);
+      else next.push(...members);
+    }
+    pending = next;
+    length += 1;
+  }
+  return out;
+}
+
+// The facts of the Now sentence and the KPI strip (REQ-024), as numbers and lane references; wording is in strings.js.
+// `loom` is the derived live part, `plans` the plan map. A collision count exists only when an observed-collision
+// source exists (SC-023): today none does, so `collided` is null and no tile or zero is shown.
+export function nowFacts(loom, plans) {
+  const lanes = loom ? loom.lanes : [];
+  const running = lanes.filter((lane) => lane.state === "running");
+  const waiting = lanes.filter((lane) => lane.state === "waiting");
+  const sessions = lanes.filter((lane) => lane.parentLane === null && lane.role !== "subagent");
+  const waits = waiting.map((lane) => {
+    const span = lane.waitSpans.length ? lane.waitSpans[lane.waitSpans.length - 1] : null;
+    return { lane, on: span && span.waitingOn !== null ? loom.byStrand.get(span.waitingOn) || null : null };
+  });
+  let longest = null;
+  for (const lane of lanes) {
+    for (const mark of lane.toolMarks) {
+      if (mark.durationMs !== null && (!longest || mark.durationMs > longest.mark.durationMs)) longest = { lane, mark };
+    }
+  }
+  const conflicts = [];
+  for (const plan of plans) for (const pair of plan.pairs) if (pair.kind === "predicted") conflicts.push({ plan, pair });
+  return {
+    running, waiting, waits, sessions, subagents: lanes.length - sessions.length, live: lanes.length > 0,
+    conflicts, plans: plans.length, operations: plans.reduce((total, plan) => total + plan.ops.length, 0),
+    longest, collided: null,
+  };
+}
+
 // `placedModel` is the model the views draw: the model itself, or its sequence placement when an event states no
 // time (see placeBySequence). Every derivation reads the placed model, so the views agree on positions.
 // `options.nowMs` advances the live "now" with the page's clock between snapshots (T060); ignored unless live.

@@ -99,7 +99,10 @@ const observe = () => ({
   timeline: { hidden: find("timeline-section").hidden, classes: classes("timeline-box"),
               rows: find("timeline-box").descendants().filter((node) => node.attrs.role === "option").map((node) => node.attrs["aria-label"]),
               selectedRows: find("timeline-box").descendants().filter((node) => node.attrs.role === "option" && node.attrs["aria-selected"] === "true").length,
-              note: text("timeline-note"), legend: find("legend-line").children.map((node) => node.textContent) },
+              note: text("timeline-note"), empty: text("timeline-box"), legend: find("legend-line").children.map((node) => node.textContent) },
+  plan: { classes: classes("plan-box"), title: text("plan-title"),
+          nodes: find("plan-box").descendants().filter((node) => (node.attrs.class || "").split(" ").includes("pm-node")).map((node) => node.attrs["aria-label"]) },
+  now: text("summary"), kpis: find("kpis").children.length,
   scene: { section: find("scene-section").hidden, box: find("scene-box").hidden, note: text("scene-note"),
            legend: find("legend-scene-block").hidden, calls: [...(globalThis.sceneCalls || [])], selected: [...(globalThis.sceneSelected || [])],
            distinctX: globalThis.sceneXs || 0 },
@@ -294,8 +297,8 @@ class TimelineTests(PageBehaviourCase):
 
     def test_the_playback_position_limits_what_is_drawn(self):
         results = self.drive([{"click": "pb-start"}], hash="")
-        self.assertEqual(results[0]["timeline"]["classes"].get("tl-bar", 0) > 0, True)
-        self.assertNotIn("tl-bar", results[1]["timeline"]["classes"])
+        self.assertEqual(results[0]["timeline"]["classes"].get("thread", 0) > 0, True)
+        self.assertNotIn("thread", results[1]["timeline"]["classes"])
 
     def test_choosing_the_map_in_the_hash_builds_the_scene_and_not_the_timeline(self):
         first = self.drive(hash="#v=map3d")[0]
@@ -457,20 +460,34 @@ class UntimedTimelineTests(PageBehaviourCase):
         super().setUpClass()
         cls.untimed = untimed_model(UNTIMED_REPORT, MIXED_REPORT)
 
-    def test_an_untimed_model_draws_a_bar_per_agent_and_every_crossing_on_a_sequence_axis(self):
-        first = self.drive(hash="", model=self.untimed)[0]
-        classes = first["timeline"]["classes"]
-        crossings = [e for e in self.untimed["elements"] if e["element"] == "crossing"]
-        self.assertEqual(classes.get("tl-bar"), len(self.untimed["lanes"]))
-        self.assertEqual(classes.get("tl-cross"), len(crossings))
-        self.assertEqual(classes.get("cls-predicted"), sum(e["classification"] == "conflicting" for e in crossings))
-        self.assertEqual(classes.get("tl-axis-label"), 1)
-        self.assertNotIn("tl-concurrency", classes)  # no stated time: no count of agents open at once
-        self.assertTrue(first["timeline"]["note"].startswith("No timestamps: ordered by sequence."))
+    def plan_elements(self, path):
+        return [e for e in self.untimed["elements"] if (e.get("evidenceRef") or {}).get("path") == path]
 
-    def test_the_notice_is_translated(self):
+    def test_untimed_reports_go_to_the_plan_map_and_never_to_the_live_loom(self):
+        # VIS.1d (REQ-025): plans state no time, so they are drawn as a plan map and the loom keeps a real time axis.
+        first = self.drive(hash="", model=self.untimed)[0]
+        self.assertEqual(first["timeline"]["rows"], [])
+        self.assertNotIn("thread", first["timeline"]["classes"])
+        self.assertIn("No live sessions", first["timeline"]["empty"])
+        newest = self.plan_elements("r1/analysis.json")
+        strands = {e["lanes"][0] for e in newest if e["element"] == "strand"}
+        crossings = [e for e in newest if e["element"] == "crossing"]
+        plan = first["plan"]["classes"]
+        self.assertEqual(plan.get("pm-node"), len(strands))
+        self.assertEqual(plan.get("pm-edge"), len(crossings))
+        self.assertEqual(plan.get("pm-ring", 0), sum(e["classification"] == "conflicting" for e in crossings))
+        self.assertNotIn("ms", " ".join(first["plan"]["nodes"]))  # a plan states no duration
+
+    def test_the_empty_loom_is_translated(self):
         first = self.drive(hash="", model=self.untimed, languages=["es-ES"])[0]
-        self.assertTrue(first["timeline"]["note"].startswith("Sin marcas de tiempo: ordenado por secuencia."))
+        self.assertIn("No hay sesiones en directo", first["timeline"]["empty"])
+
+    def test_the_now_line_counts_predicted_collisions_and_shows_no_collided_tile(self):
+        first = self.drive(hash="", model=self.untimed)[0]
+        conflicts = sum(e["element"] == "crossing" and e["classification"] == "conflicting" for e in self.untimed["elements"])
+        self.assertIn("none observed", first["now"])
+        self.assertIn(str(conflicts) + " possible collision", first["now"])
+        self.assertNotIn("Collided", first["now"])
 
     def test_the_map_gets_the_sequence_placement_instead_of_one_slice(self):
         results = self.drive([{"view": "map3d"}], hash="", model=self.untimed)

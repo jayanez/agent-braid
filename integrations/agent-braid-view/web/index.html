@@ -32,34 +32,37 @@
   </defs>
 </svg>
 <a class="skip-link" href="#main-view" data-i18n="skip">Skip to the main view</a>
-<header class="top">
-  <div class="top-title">
+<header class="appbar">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 7c6 0 6 10 12 10s4-10 8-10M2 17c6 0 6-10 12-10s4 10 8 10"/></svg>
     <h1 data-i18n="title">Agent activity</h1>
-    <span class="badge" id="connection" role="status">connecting</span>
-    <span class="badge" id="live-badge" hidden></span>
+    <span class="pill-live" id="live-badge" hidden></span>
+    <span class="badge conn" id="connection" role="status">connecting</span>
   </div>
-  <p class="summary" id="summary"></p>
+  <fieldset class="view-switch" id="view-switch" hidden>
+    <legend class="sr" data-i18n="view.legend">View</legend>
+    <label class="seg"><input type="radio" name="view" value="timeline" id="view-timeline"><span data-i18n="view.timeline">Loom</span></label>
+    <label class="seg"><input type="radio" name="view" value="map3d" id="view-map3d"><span data-i18n="view.map3d">Explore 3D</span></label>
+  </fieldset>
   <div class="top-tools">
-    <label class="field"><span data-i18n="lang.label">Language</span>
+    <label class="field compact"><span class="sr" data-i18n="lang.label">Language</span>
       <select id="lang-select">
         <option value="auto" data-i18n="lang.auto">Automatic</option>
         <option value="es">Español</option>
         <option value="en">English</option>
       </select>
     </label>
-    <button type="button" id="about-open" data-i18n="about.open">About this view</button>
+    <button type="button" class="ghost" id="about-open" data-i18n="about.open">About this view</button>
   </div>
 </header>
-<p class="boundary" role="note"><span class="badge" id="authorization">executionAuthorization: false</span>
-<span data-i18n="boundary">Read-only · does not authorize execution</span></p>
 <noscript><p class="notice">This viewer needs its own first-party JavaScript (no external code) to render the table.</p></noscript>
+<section class="now" aria-labelledby="now-title">
+  <h2 class="sr" id="now-title" data-i18n="now.title">Now</h2>
+  <p class="now-line" id="summary" aria-live="polite"></p>
+  <div class="kpis" id="kpis" role="group" data-i18n-label="kpi.label" aria-label="Key figures"></div>
+</section>
 <p class="notice" id="notice" hidden></p>
 <div class="toolbar" role="group" data-i18n-label="toolbar.label" aria-label="View and filters">
-  <fieldset class="view-switch" id="view-switch" hidden>
-    <legend class="sr" data-i18n="view.legend">View</legend>
-    <label class="choice"><input type="radio" name="view" value="timeline" id="view-timeline"><span data-i18n="view.timeline">Timeline</span></label>
-    <label class="choice"><input type="radio" name="view" value="map3d" id="view-map3d"><span data-i18n="view.map3d">3D map</span></label>
-  </fieldset>
   <details class="menu" id="sources" hidden>
     <summary data-i18n="sources.menu">Sources</summary>
     <div class="menu-body">
@@ -82,29 +85,29 @@
       <div class="source-list" id="status-list"></div>
     </div>
   </details>
-  <label class="choice" data-i18n-title="filters.problems.title" title="Conflicting or unknown pairs, partial coverage, unobserved hazards and gaps. Unverified alone is not a problem: every replayed or host-reported event is unverified."><input type="checkbox" id="filter-problems"><span data-i18n="filters.problems">Only problems</span></label>
-  <button type="button" id="filter-clear" disabled data-i18n="filters.clear">Clear filters</button>
+  <label class="chip-check" data-i18n-title="filters.problems.title" title="Conflicting or unknown pairs, partial coverage, unobserved hazards and gaps. Unverified alone is not a problem: every replayed or host-reported event is unverified."><input type="checkbox" id="filter-problems"><span data-i18n="filters.problems">Only problems</span></label>
+  <div class="legend-line" id="legend-line" role="group" aria-label="Legend" data-i18n-label="legend.line.label" hidden></div>
+  <button type="button" class="ghost" id="filter-clear" disabled data-i18n="filters.clear">Clear filters</button>
   <output class="filter-status" id="filter-status" hidden></output>
 </div>
-<main class="layout">
-  <div class="main-column">
+<main class="dash">
+  <section class="panel hero" aria-label="Main view" data-i18n-label="hero.label">
   <div id="main-view" tabindex="-1">
   <section class="timeline" id="timeline-section" aria-labelledby="timeline-title" hidden>
-    <div class="view-head">
-      <h2 id="timeline-title" data-i18n="tl.title">Timeline</h2>
-      <div class="view-tools">
-        <button type="button" id="tl-zoom-out" data-i18n="tl.zoomOut" data-i18n-title="tl.zoomOut.title" title="Zoom out on the time axis">Zoom out</button>
-        <button type="button" id="tl-zoom-in" data-i18n="tl.zoomIn" data-i18n-title="tl.zoomIn.title" title="Zoom in on the time axis">Zoom in</button>
-        <button type="button" id="tl-frame" data-i18n="tl.frame" data-i18n-title="tl.frame.title" title="Show the whole session (0 or F)">Frame all</button>
+    <header class="ph">
+      <h2 id="timeline-title" data-i18n="tl.title">Live sessions</h2>
+      <span class="count" id="loom-count"></span>
+      <div class="ph-tools">
+        <button type="button" class="ghost sm" id="tl-zoom-out" data-i18n="tl.zoomOut" data-i18n-title="tl.zoomOut.title" title="Zoom out on the time axis">Zoom out</button>
+        <button type="button" class="ghost sm" id="tl-zoom-in" data-i18n="tl.zoomIn" data-i18n-title="tl.zoomIn.title" title="Zoom in on the time axis">Zoom in</button>
+        <button type="button" class="ghost sm" id="tl-frame" data-i18n="tl.frame" data-i18n-title="tl.frame.title" title="Show the whole session (0 or F)">Fit</button>
       </div>
-    </div>
-    <p class="hint" data-i18n="tl.hint">One row per agent, children under their parent. Bars show start, end and state; a zigzag marks time the viewer omitted. Possible conflicts come from the analysis, not from what happened. The table is the complete text alternative.</p>
+    </header>
     <div class="timeline-box" id="timeline-box"></div>
-    <p class="hint" id="timeline-note"></p>
+    <p class="panel-note" id="timeline-note"></p>
   </section>
   <section class="scene" id="scene-section" aria-labelledby="scene-title" hidden>
-    <h2 id="scene-title" data-i18n="scene.title">Spatial 3D map</h2>
-    <p class="hint" data-i18n="scene.hint">The same model, playback position and details as the table. Drag to orbit, hold Ctrl or Cmd and scroll to zoom, click an element to select its event. Classes are categorical badges, not a guarantee, and no shape ranks one class as safer than another. The table is the complete text alternative.</p>
+    <header class="ph"><h2 id="scene-title" data-i18n="scene.title">Explore in 3D</h2></header>
     <div class="scene-box" id="scene-box">
       <div class="scene-hud" id="scene-hud">
         <button type="button" id="scene-view-lateral" data-preset="lateral" data-i18n="scene.preset.lateral">Side</button>
@@ -131,7 +134,6 @@
     <p class="scene-actions"><button type="button" id="scene-reset" data-i18n="scene.reset" data-i18n-title="scene.reset.title" title="Frame the whole scene again">Reset view</button></p>
   </section>
   </div>
-  <div class="legend-line" id="legend-line" role="group" aria-label="Legend" data-i18n-label="legend.line.label" hidden></div>
   <section class="playback" role="group" aria-labelledby="playback-title">
     <h2 class="sr" id="playback-title" data-i18n="playback.title">Playback</h2>
     <button type="button" id="pb-start" data-i18n="playback.start" data-i18n-title="playback.start.title" title="Back to the first event">Start</button>
@@ -158,8 +160,34 @@
     </label>
     <output id="pb-count" aria-live="off">0 of 0</output>
   </section>
-  <p class="hint" data-i18n="playback.note">Playback reveals events one at a time in model order. By events steps at a fixed pace; real time follows the time between events on the (compressed) axis. The counters and absence markers always cover every retained event, not the playback position.</p>
-  <section class="tabs" aria-label="Sections" data-i18n-label="tabs.label">
+  </section>
+  <aside class="panel detail" id="detail" aria-labelledby="evidence-title">
+    <section id="evidence-panel" tabindex="-1">
+      <header class="ph">
+        <h2 id="evidence-title" data-i18n="detail.title">Details</h2>
+        <button type="button" class="ghost sm" id="detail-close" hidden data-i18n="detail.close">Deselect</button>
+      </header>
+      <div id="evidence" class="evidence"><p class="hint">Select an event to see its source event, class, verification and evidence reference.</p></div>
+    </section>
+  </aside>
+  <section class="panel plan" id="plan-section" aria-labelledby="plan-title">
+    <header class="ph">
+      <h2 id="plan-title" data-i18n="plan.title">Plan</h2>
+      <span class="count" id="plan-count"></span>
+      <div class="ph-tools"><label class="field compact"><span class="sr" data-i18n="plan.pick">Choose a plan</span><select id="plan-select" hidden></select></label></div>
+    </header>
+    <div class="plan-box" id="plan-box"></div>
+    <ul class="plan-key" id="plan-key"></ul>
+  </section>
+  <section class="panel collisions" id="collisions-section" aria-labelledby="collisions-title">
+    <header class="ph"><h2 id="collisions-title" data-i18n="col.title">Collisions</h2><span class="count" id="collisions-count"></span></header>
+    <ul class="rowlist" id="collisions"></ul>
+  </section>
+  <section class="panel durations" id="durations-section" aria-labelledby="durations-title">
+    <header class="ph"><h2 id="durations-title" data-i18n="dur.title">How long</h2><span class="count" id="durations-count"></span></header>
+    <ul class="bars" id="durations"></ul>
+  </section>
+  <section class="panel tabs" aria-label="Sections" data-i18n-label="tabs.label">
     <div class="tablist" role="tablist" id="tablist" aria-label="Sections" data-i18n-label="tabs.label">
       <button type="button" role="tab" id="tab-events" aria-controls="panel-events" aria-selected="true" data-i18n="tab.events">Events</button>
       <button type="button" role="tab" id="tab-summary" aria-controls="panel-summary" aria-selected="false" tabindex="-1" data-i18n="tab.summary">Summary</button>
@@ -247,16 +275,8 @@
       </section>
     </div>
   </section>
-  </div>
-  <aside class="detail" id="detail" aria-labelledby="evidence-title">
-    <section class="panel" id="evidence-panel" tabindex="-1">
-      <div class="panel-head">
-        <h2 id="evidence-title" data-i18n="detail.title">Details</h2>
-        <button type="button" id="detail-close" hidden data-i18n="detail.close">Deselect</button>
-      </div>
-      <div id="evidence" class="evidence"><p class="hint">Select an event to see its source event, class, verification and evidence reference.</p></div>
-    </section>
-  </aside>
 </main>
+<footer class="boundary" role="note"><span class="badge" id="authorization">executionAuthorization: false</span>
+<span data-i18n="boundary">Read-only · does not authorize execution</span></footer>
 </body>
 </html>

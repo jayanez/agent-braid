@@ -16,9 +16,10 @@
 import {
   createState, derive, summarize, formatClock, formatDuration, marksOf, sourceOf, sourceKeys, ROOT_PREFIX, orderedRows,
   passesFilters, hasFilters, encodeHash, decodeHash, readPreference, writePreference, waitingTime, LANE_STATES,
-  MARKER_KINDS, markerKind, positioned,
+  MARKER_KINDS, markerKind, positioned, liveSubset, derivePlans, shortIds, nowFacts,
 } from "./state.js";
 import { createTimeline, iconNode } from "./timeline.js";
+import { createPlanMap } from "./planmap.js";
 import { translate, chooseLanguage, normalizeTag, LANGUAGES } from "./strings.js";
 
 const CLASS_NAMES = ["heuristic", "syntactic", "semantic", "transactional", "confluence", "Yang–Baxter"];
@@ -252,12 +253,62 @@ function liveNowMs() {
 // The derived model (agents, crossings, axis, overlaps) of the current model, computed once per model and, in live
 // mode, once per second of the page clock (running bars grow up to now).
 function derived() {
+  refreshDerived();
+  return derivedCache.value;
+}
+
+// VIS.1d (REQ-025): the live loom draws only the events that state a time; plans go to the plan map.
+function loomDerived() {
+  refreshDerived();
+  return derivedCache.loom;
+}
+
+function plans() {
+  refreshDerived();
+  return derivedCache.plans;
+}
+
+function refreshDerived() {
   const now = liveNowMs();
   const tick = now === null ? null : Math.floor(now / 1000);
-  if (!derivedCache || derivedCache.model !== state.model || derivedCache.tick !== tick) {
-    derivedCache = { model: state.model, tick, value: derive(state.model, now === null ? {} : { nowMs: tick * 1000 }) };
+  if (derivedCache && derivedCache.model === state.model && derivedCache.tick === tick && derivedCache.lang === state.lang) return;
+  const options = now === null ? {} : { nowMs: tick * 1000 };
+  const value = derive(state.model, options);
+  const live = liveSubset(state.model);
+  const loom = live === state.model ? value : derive(live, options);
+  const ids = shortIds(value.lanes);
+  nameLanes(value, ids);
+  if (loom !== value) nameLanes(loom, ids);
+  derivedCache = { model: state.model, tick, lang: state.lang, value, loom, plans: state.model ? derivePlans(state.model, value) : [], ids };
+}
+
+// T064 (REQ-026): host lanes are told apart by a short id from their salted strand id, a subagent by its type and
+// its parent's short id, and an ordinal only where that still repeats. Nothing new is collected.
+function nameLanes(info, ids) {
+  for (const lane of info.lanes) {
+    const own = ids.get(lane.strandId);
+    const parent = lane.parentLane === null ? null : info.byIndex.get(lane.parentLane);
+    const parentId = parent ? ids.get(parent.strandId) : null;
+    if (own && lane.parentLane === null && lane.role !== "subagent") {
+      lane.name = t("lane.session", { id: own });
+      lane.sub = t("lane.sessionSub", { host: lane.host });
+    } else if (own) {
+      lane.name = parentId ? t("lane.subagent", { label: lane.label, id: parentId }) : t("lane.subagent", { label: lane.label, id: own });
+      lane.sub = parent ? t("lane.subagentOf", { parent: t("lane.session", { id: parentId }) }) : t("agent.kind.orphan");
+    } else {
+      lane.name = lane.label;
+      lane.sub = lane.declared ? lane.host + " " + lane.role : t("lanes.undeclared");
+    }
   }
-  return derivedCache.value;
+  const groups = new Map();
+  for (const lane of info.lanes) {
+    if (!groups.has(lane.name)) groups.set(lane.name, []);
+    groups.get(lane.name).push(lane);
+  }
+  for (const group of groups.values()) {
+    group.sort((a, b) => a.openX - b.openX || a.openSeq - b.openSeq);
+    group.forEach((lane, index) => { lane.displayLabel = group.length > 1 ? lane.name + " #" + (index + 1) : lane.name; });
+  }
 }
 
 // The live badge, shared by every view: "live · now m:ss", "replay · not live", or hidden before a snapshot.
@@ -269,7 +320,7 @@ function renderLive() {
   badge.title = t("live.title");
   const now = derived().axis.nowMs;
   badge.textContent = axis.live ? t("live.badge", { time: formatClock((now === null ? liveNowMs() : now) - axisMin()) }) : t("live.replay");
-  badge.className = "badge" + (axis.live ? " live-on" : "");
+  badge.className = "pill-live" + (axis.live ? " live-on" : "");
 }
 
 // Once a second in live mode: the badge, and the timeline when it is shown and the position is at the end.
@@ -277,7 +328,7 @@ setInterval(() => {
   if (!state.model || !state.model.axis || state.model.axis.live !== true || document.visibilityState !== "visible") return;
   renderLive();
   // A redraw would close an open tooltip: the bars wait while the pointer is over the timeline.
-  if (state.view === "timeline" && !state.playing && state.cursor >= totalCount() && !$("timeline-box").matches(":hover")) syncTimeline();
+  if (state.view === "timeline" && !state.playing && state.cursor >= totalCount() && !$("timeline-box").matches(":hover")) { syncTimeline(); renderSummary(); renderDurations(); }
   else if (state.view === "map3d" && scene) updateSceneNote();
 }, 1000);
 
@@ -399,6 +450,7 @@ let connectionKey = "connecting";
 function setConnection(key) {
   connectionKey = key;
   $("connection").textContent = t("connection." + key);
+  $("connection").className = "badge conn" + (key === "live" || key === "open" || key === "connected" ? "" : " trouble");
 }
 
 function parseBlock(block) {
@@ -456,19 +508,93 @@ async function followEvents() {
 
 // ---------------------------------------------------------------- header and chrome
 
+// The Now sentence and the KPI strip (REQ-024): who is running, who waits on whom, what may collide, how long.
+// Every noun selects its agent or pair; every tile applies its filter. No observed-collision source exists yet, so
+// no "collided" tile and no zero is shown (SC-023).
+function noun(text, cls, seq) {
+  return h("button", { type: "button", class: "noun " + cls, on: { click: () => { if (seq !== null) selectAndShow(seq); } } }, text);
+}
+
 function renderSummary() {
   const box = $("summary");
+  const kpis = $("kpis");
   if (!state.model || totalCount() === 0) {
-    box.textContent = t("summary.empty");
+    box.textContent = t("now.empty");
+    kpis.replaceChildren();
     return;
   }
-  const s = summarize(state.model, derived());
-  const parts = [tn("summary.agents", s.agents)];
-  if (s.durationMs > 0) parts.push(formatDuration(s.durationMs));
-  if (s.peak > 1) parts.push(tn("summary.peak", s.peak));
-  if (s.predictedConflicts > 0) parts.push(tn("summary.conflicts", s.predictedConflicts));
-  if (s.gaps > 0) parts.push(tn("summary.gaps", s.gaps));
-  box.textContent = parts.join(" · ");
+  const facts = nowFacts(loomDerived(), plans());
+  const parts = [];
+  const add = (...nodes) => { if (parts.length) parts.push(" "); parts.push(...nodes); };
+  if (facts.live) {
+    const n = facts.running.length;
+    if (n > 0) add(h("b", { class: "w-run" }, tn("now.running", n)), " ", tn("now.acrossSessions", facts.sessions.length));
+    else add(tn("now.noneRunning", facts.sessions.length));
+  } else if (facts.plans) {
+    add(t("now.noLive"));
+  }
+  for (const wait of facts.waits.slice(0, 2)) {
+    add(noun(wait.lane.displayLabel, "w-wait", wait.lane.openSeq), " ", wait.on ? t("now.waitsOn") : t("now.waits"),
+      wait.on ? [" ", noun(wait.on.displayLabel, "", wait.on.openSeq)] : null, ".");
+  }
+  if (facts.waits.length > 2) add(tn("now.moreWaiting", facts.waits.length - 2));
+  if (facts.conflicts.length) {
+    const first = facts.conflicts[0].pair;
+    add(noun(tn("now.mayCollide", facts.conflicts.length), "w-risk", first.seq), " ",
+      facts.plans === 1 ? t("now.inPlan", { plan: planName(plans()[0]) }) : tn("now.inPlans", facts.plans), ".");
+  } else if (facts.plans) {
+    add(tn("now.plansClear", facts.plans));
+  }
+  if (facts.longest) {
+    add(t("now.longest"), " ", h("b", null, formatDuration(facts.longest.mark.durationMs)), " ",
+      t("now.longestWhere", { tool: facts.longest.mark.toolName }), " ", noun(facts.longest.lane.displayLabel, "", facts.longest.mark.seq), ".");
+  }
+  box.replaceChildren(...parts.flat().filter((part) => part !== null).map((part) => (typeof part === "string" ? document.createTextNode(part) : part)));
+
+  const tiles = [];
+  const tile = (cls, value, label, sub, onClick, pressed) => {
+    const node = h(onClick ? "button" : "div", {
+      type: onClick ? "button" : null, class: "kpi " + cls, "aria-pressed": onClick ? (pressed ? "true" : "false") : null,
+      on: onClick ? { click: onClick } : null,
+    }, h("span", { class: "v" }, value), h("span", { class: "l" }, label), h("span", { class: "s" }, sub));
+    tiles.push(node);
+  };
+  const statusOnly = (name) => state.filters.status.size === 1 && state.filters.status.has(name);
+  if (facts.live) {
+    tile("k-run", String(facts.running.length), t("kpi.running"), tn("kpi.runningSub", facts.sessions.length, { sub: facts.subagents }),
+      () => toggleStatus("running"), statusOnly("running"));
+    tile("k-wait", String(facts.waits.length), t("kpi.waiting"), facts.waits.length
+      ? facts.waits.slice(0, 2).map((wait) => wait.on ? t("kpi.waitingOn", { name: wait.on.displayLabel }) : wait.lane.displayLabel).join(", ")
+      : t("kpi.nobodyWaits"), () => toggleStatus("waiting"), statusOnly("waiting"));
+  }
+  if (facts.plans) {
+    const resources = [...new Set(facts.conflicts.flatMap((item) => item.pair.resources))];
+    tile("k-risk", String(facts.conflicts.length), t("kpi.mayCollide"), resources.length ? resources.slice(0, 2).join(", ") : tn("kpi.inPlans", facts.plans),
+      facts.conflicts.length ? () => toggleKind("conflict") : null, state.filters.kinds.has("conflict"));
+    if (!facts.live) tile("", String(facts.operations), t("kpi.operations"), tn("kpi.inPlans", facts.plans), null, false);
+  }
+  if (facts.collided !== null) tile("k-hit", String(facts.collided), t("kpi.collided"), "", null, false);
+  if (facts.live) {
+    tile("", facts.longest ? formatDuration(facts.longest.mark.durationMs) : "–", t("kpi.longest"),
+      facts.longest ? t("kpi.longestSub", { tool: facts.longest.mark.toolName, name: facts.longest.lane.displayLabel }) : t("kpi.noDurations"),
+      facts.longest ? () => selectAndShow(facts.longest.mark.seq) : null, false);
+  }
+  kpis.replaceChildren(...tiles);
+}
+
+function toggleStatus(name) {
+  const only = state.filters.status.size === 1 && state.filters.status.has(name);
+  state.filters.status.clear();
+  if (!only) state.filters.status.add(name);
+  filtersChanged();
+}
+
+// A plan's name is its report folder without the stamp the plugin adds ("analysis-<UTC stamp>-<id>" → "<id>").
+function planName(plan) {
+  if (!plan) return "";
+  const folder = String(plan.key).split("/")[0];
+  const match = /^analysis-[0-9TZ]+-(.+)$/.exec(folder);
+  return match ? match[1] : folder === "plan" ? t("plan.unnamed") : folder;
 }
 
 // Static parts that depend on the language or the number of views and not on the model.
@@ -772,6 +898,13 @@ function select(seq) {
   renderTable();
   renderEvidence();
   syncHash();
+}
+
+// A selection made from the dashboard (a noun, a tile, a plan node or a list row) that the filters may be hiding.
+function selectAndShow(seq) {
+  const element = elementOf(seq);
+  if (element && !shownInViews(element)) clearFilters();
+  select(seq);
 }
 
 function deselect() {
@@ -1093,6 +1226,7 @@ function bindControls() {
   $("view-timeline").addEventListener("change", () => setView("timeline", true));
   $("view-map3d").addEventListener("change", () => setView("map3d", true));
   $("lang-select").addEventListener("change", (event) => setLanguageChoice(event.target.value));
+  $("plan-select").addEventListener("change", (event) => { planChoice = event.target.value; renderPlan(); });
   $("detail-close").addEventListener("click", deselect);
   $("about-open").addEventListener("click", openHelp);
   $("tablist").addEventListener("keydown", onTabKey);
@@ -1141,18 +1275,20 @@ function laneInfo(lane) {
     ? formatClock(lane.openMs - axisMin()) + " – " + (lane.closeKnown && lane.closeMs !== null ? formatClock(lane.closeMs - axisMin()) : t("agent.endNotObserved"))
     : t("time.sequenceOnly");
   const duration = lane.durationMs !== null ? formatDuration(lane.durationMs)
-    : lane.state !== "unknown" && lane.observedMs !== null ? "≥ " + formatDuration(lane.observedMs) : "–";
+    : lane.state !== "unknown" && lane.observedMs !== null ? formatDuration(lane.observedMs) : "–";
   const outcome = lane.closeSeq !== null ? ", " + outcomeText(lane.outcome) : "";
   const waiting = waitingTime(lane);
-  const parts = [lane.displayLabel, laneKind(lane), stateText(lane) + outcome, range, duration];
+  const name = lane.displayLabel;
+  const parts = [name, lane.sub || laneKind(lane), stateText(lane) + outcome, range, duration];
   if (lane.toolMarks.length) parts.push(tn("tl.tools", lane.toolMarks.length));
   if (waiting.totalMs > 0) parts.push(t("tl.waited", { text: formatDuration(waiting.totalMs) }));
   const mark = lane.state === "finished" ? { ok: "✓", error: "✕", cancelled: "⊘" }[lane.outcome] || "?" : lane.state === "running" ? "▶" : lane.state === "waiting" ? "⏸" : "?";
-  return { aria: parts.join(", "), tip: parts.join(" · "), mark, duration };
+  return { aria: parts.join(", "), tip: parts.join(" · "), mark, duration, name, sub: lane.sub || laneKind(lane) };
 }
 
 function crossingTip(crossing) {
-  const names = crossing.lanes.map((index) => { const lane = derived().byIndex.get(index); return lane ? lane.displayLabel : String(index); }).join(" / ");
+  const info = derived();
+  const names = crossing.lanes.map((index) => { const lane = info.byIndex.get(index); return lane ? lane.displayLabel : String(index); }).join(" / ");
   const resources = crossing.resources.length ? crossing.resources.join(", ") : t("detail.none");
   let text;
   if (crossing.kind === "predicted") text = t("tl.tip.conflict", { names, resources });
@@ -1164,36 +1300,134 @@ function crossingTip(crossing) {
   return text + " " + (overlap.ms > 0 ? t("tl.tip.overlapYes", { text: formatDuration(overlap.ms) }) : t("tl.tip.overlapNo"));
 }
 
+// The tool call with the longest stated duration among the shown events (live only; never in a replay or export).
+function longestToolSeq() {
+  const facts = nowFacts(loomDerived(), []);
+  return facts.longest ? facts.longest.mark.seq : null;
+}
+
 function syncTimeline() {
   if (state.view !== "timeline" || !state.model) return;
   if (!timeline) {
     timeline = createTimeline($("timeline-box"), {
-      t, onSelect: select, describe: laneInfo, crossingTip,
+      t, onSelect: select, describe: laneInfo, crossingTip, nameOf: (lane) => lane.displayLabel, longestSeq: longestToolSeq,
+      empty: () => plans().length
+        ? { title: t("tl.empty.plansTitle"), body: t("tl.empty.plansBody") }
+        : { title: t("tl.empty.title"), body: t("tl.empty.body") },
       onViewport: (viewport) => { state.viewport = viewport; syncViews(); syncHash(); },
     });
   }
   const position = rowsInOrder().slice(0, state.cursor);
   const shown = new Set(position.filter(({ element }) => shownInViews(element)).map(({ row }) => row.seq));
-  const info = derived();
-  const lastElement = position.length ? position[position.length - 1].element : null;
-  const last = lastElement ? info.placedBySeq.get(lastElement.seq) : null;
-  // In live mode at the end of the stream there is no playback cursor: open bars run on to now (T060).
+  const info = loomDerived();
+  let last = null;
+  for (let index = position.length - 1; index >= 0 && !last; index -= 1) last = info.placedBySeq.get(position[index].element.seq) || null;
+  // In live mode at the end of the stream there is no playback cursor: open threads run on to now (T060).
   const liveAtEnd = info.axis.nowX !== null && state.cursor >= totalCount();
   timeline.render({
     model: info.placedModel, derived: info, shown, selected: state.selected, viewport: state.viewport,
     cursorX: positioned(last) && !liveAtEnd ? last.x : null,
   });
-  const axis = info.axis;
-  const order = !axis.sequence ? "" : axis.untimed === axis.total ? t("tl.sequence.none") + " "
-    : t("tl.sequence.some", { n: axis.untimed, total: axis.total }) + " ";
-  $("timeline-note").textContent = order + t("tl.note", { shown: shown.size, total: totalCount() }) +
-    (axis.breaks.length ? " " + tn("tl.breaks", axis.breaks.length) : "");
+  const sessions = info.lanes.filter((lane) => lane.parentLane === null).length;
+  $("loom-count").textContent = info.lanes.length ? tn("loom.count", sessions, { sub: info.lanes.length - sessions }) : "";
+  $("timeline-note").textContent = info.axis.breaks.length ? tn("tl.breaks", info.axis.breaks.length) : "";
+}
+
+// ---------------------------------------------------------------- plan map, collisions and durations (VIS.1d)
+
+let planMap = null;
+let planChoice = null;
+
+function pairText(pair) {
+  const info = derived();
+  const names = pair.lanes.map((index) => { const lane = info.byIndex.get(index); return lane ? lane.displayLabel : String(index); });
+  return t("pair." + (["conflicting", "ordered", "independent-candidate"].includes(pair.classification) ? pair.classification : "unknown"),
+    { a: names[0] || "", b: names[1] || "" });
+}
+
+function renderPlan() {
+  const list = plans();
+  const select_ = $("plan-select");
+  if (!list.some((plan) => plan.key === planChoice)) planChoice = list.length ? list[0].key : null;
+  const signature = list.map((plan) => plan.key).join("|") + state.lang;
+  if (select_.dataset.keys !== signature) {
+    select_.dataset.keys = signature;
+    select_.replaceChildren(...list.map((plan) => h("option", { value: plan.key }, planName(plan))));
+  }
+  select_.hidden = list.length < 2;
+  select_.value = planChoice || "";
+  const plan = list.find((item) => item.key === planChoice) || null;
+  $("plan-title").textContent = plan ? t("plan.titleNamed", { name: planName(plan) }) : t("plan.title");
+  $("plan-count").textContent = plan ? tn("plan.count", plan.ops.length, { pairs: plan.pairs.length }) : "";
+  if (!planMap) {
+    planMap = createPlanMap($("plan-box"), { t, onSelect: selectAndShow, nameOf: (lane) => lane.displayLabel, pairText,
+      opText: (lane) => t("plan.opAria", { name: lane.displayLabel }) });
+  }
+  planMap.render({ plan, selected: state.selected });
+  const present = new Set(plan ? plan.pairs.map((pair) => pair.classification) : []);
+  fill("plan-key", ["conflicting", "ordered", "independent-candidate", "unknown"].filter((name) => present.has(name))
+    .map((name) => h("li", null, h("i", { class: name, "aria-hidden": "true" }), t("plan.key." + name))));
+}
+
+function renderCollisions() {
+  const items = [];
+  for (const plan of plans()) for (const pair of plan.pairs) if (pair.kind === "predicted") items.push({ plan, pair });
+  $("collisions-count").textContent = tn("col.count", items.length);
+  if (!items.length) {
+    fill("collisions", h("li", { class: "empty" }, plans().length ? t("col.none") : t("col.noPlans")));
+    return;
+  }
+  const info = derived();
+  fill("collisions", items.slice(0, 8).map(({ plan, pair }) => {
+    const names = pair.lanes.map((index) => { const lane = info.byIndex.get(index); return lane ? lane.displayLabel : "?"; }).join(" ↔ ");
+    const what = pair.resources.length ? t("col.shares", { what: pair.resources.join(", ") }) : t("col.unknownShare");
+    return h("li", null, h("button", { type: "button", "aria-pressed": state.selected === pair.seq ? "true" : "false", on: { click: () => selectAndShow(pair.seq) } },
+      h("span", { class: "tag" }, t("col.predicted") + (plans().length > 1 ? " · " + planName(plan) : "")), h("span", { class: "who" }, names), h("span", { class: "what" }, what)));
+  }));
+}
+
+function renderDurations() {
+  const info = loomDerived();
+  const lanes = info.lanes.filter((lane) => lane.openKnown && lane.observedMs !== null);
+  $("durations-count").textContent = lanes.length ? t("dur.legend") : "";
+  if (!lanes.length) {
+    fill("durations", h("li", { class: "empty" }, t("dur.none")));
+    return;
+  }
+  const rows = lanes.map((lane) => ({ lane, waited: waitingTime(lane).totalMs, total: lane.durationMs !== null ? lane.durationMs : lane.observedMs }))
+    .sort((a, b) => b.total - a.total).slice(0, 8);
+  const max = Math.max(...rows.map((row) => row.total), 1);
+  fill("durations", rows.map(({ lane, waited, total }) => {
+    const run = h("span", { class: "r" + (lane.state === "finished" ? " finished" : "") });
+    const wait = h("span", { class: "w" });
+    if (run.style) run.style.width = (Math.max(total - waited, 0) / max * 100).toFixed(2) + "%";
+    if (wait.style) wait.style.width = (waited / max * 100).toFixed(2) + "%";
+    const label = (lane.durationMs === null && lane.state !== "finished" ? "≥ " : "") + formatDuration(total);
+    return h("li", null, h("button", { type: "button", title: lane.displayLabel, on: { click: () => selectAndShow(lane.openSeq) } },
+      h("span", { class: "row" }, h("span", null, lane.displayLabel), h("span", null, label + (waited > 0 ? " · " + t("dur.waited", { text: formatDuration(waited) }) : ""))),
+      h("span", { class: "track", "aria-hidden": "true" }, run, wait)));
+  }));
+}
+
+function renderDashboard() {
+  const hasPlans = plans().length > 0;
+  const hasLive = loomDerived().lanes.length > 0;
+  const dash = document.querySelector ? document.querySelector(".dash") : null;
+  if (dash && dash.classList) {
+    dash.classList.toggle("no-plans", !hasPlans);
+    dash.classList.toggle("no-live", !hasLive && hasPlans);
+  }
+  renderSummary();
+  renderPlan();
+  renderCollisions();
+  renderDurations();
 }
 
 function syncViews() {
   if (state.view === "timeline") syncTimeline();
   else syncScene();
   renderLegendLine();
+  renderDashboard();
 }
 
 // ---------------------------------------------------------------- legend line (a filter shared by every view)
