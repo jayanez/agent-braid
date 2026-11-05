@@ -894,6 +894,7 @@ function toggleSource(key, shown) {
 }
 
 function filtersChanged() {
+  track("ui-filter");
   const selected = state.selected === null ? undefined : elementOf(state.selected);
   if (selected && !shownInViews(selected)) state.selected = null;
   renderSources();
@@ -992,7 +993,24 @@ function renderTable() {
   syncViews();
 }
 
+// Opt-in local usage counts (`view serve --telemetry local`): a closed interaction name only, never what was
+// selected or filtered. The server ignores it unless telemetry is on; one count per name per second at most.
+const trackedAt = new Map();
+function track(name) {
+  if (typeof fetch !== "function") return;
+  const now = Date.now();
+  if (now - (trackedAt.get(name) || 0) < 1000) return;
+  trackedAt.set(name, now);
+  try {
+    fetch("/v1/usage", {
+      method: "POST", credentials: "same-origin", keepalive: true, cache: "no-store",
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event: name }),
+    }).catch(() => {});
+  } catch (_) { /* usage counts never affect the page */ }
+}
+
 function select(seq) {
+  if (seq !== null && seq !== state.selected) track("ui-select");
   state.selected = seq;
   renderTable();
   renderEvidence();
@@ -1325,11 +1343,11 @@ function bindControls() {
 
   $("filter-problems").addEventListener("change", (event) => { state.filters.onlyProblems = event.target.checked; filtersChanged(); });
   $("filter-clear").addEventListener("click", clearFilters);
-  $("scene-reset").addEventListener("click", () => { if (scene) scene.resetView(); });
-  $("scene-frame").addEventListener("click", () => { if (scene) scene.resetView(); });
-  $("scene-fly").addEventListener("click", () => { if (scene && scene.focusSelected) scene.focusSelected(); });
+  $("scene-reset").addEventListener("click", () => { track("ui-camera"); if (scene) scene.resetView(); });
+  $("scene-frame").addEventListener("click", () => { track("ui-camera"); if (scene) scene.resetView(); });
+  $("scene-fly").addEventListener("click", () => { track("ui-camera"); if (scene && scene.focusSelected) scene.focusSelected(); });
   for (const id of ["scene-view-lateral", "scene-view-top", "scene-view-iso"]) {
-    $(id).addEventListener("click", (event) => { if (scene) scene.setPreset(event.currentTarget.dataset.preset); });
+    $(id).addEventListener("click", (event) => { track("ui-camera"); if (scene) scene.setPreset(event.currentTarget.dataset.preset); });
   }
   $("scene-lock").addEventListener("click", () => {
     const on = $("scene-lock").getAttribute("aria-pressed") !== "true";
@@ -1392,7 +1410,10 @@ function setView(id, byUser) {
   if (next === state.view && viewApplied) return;
   state.view = next;
   viewApplied = true;
-  if (byUser) writePreference("view", next); // a default is never stored as if it were a choice
+  if (byUser) {
+    writePreference("view", next); // a default is never stored as if it were a choice
+    track(next === "map3d" ? "ui-view-3d" : "ui-view-2d");
+  }
   renderViewSwitch();
   if (next === "map3d" && !sceneRequested) startScene();
   else if (next === "map3d" && scene && scene.refreshLabels) scene.refreshLabels(); // sizes cannot be measured while hidden
@@ -1534,6 +1555,7 @@ function applyPanels() {
 function togglePanel(name) {
   panels[name] = !panels[name];
   if (name === "detail") detailAuto = false;
+  track(name === "detail" ? "ui-details" : "ui-side-tab");
   writePreference("panel." + name, panels[name] ? "open" : null);
   applyPanels();
 }
@@ -1547,6 +1569,7 @@ function showSideTab(name, focus) {
     $(tab + "-section").hidden = !on;
   }
   if (focus) $("stab-" + name).focus();
+  if (focus !== undefined) track("ui-side-tab");
 }
 
 function renderSideBadge() {

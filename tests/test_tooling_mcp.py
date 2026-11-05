@@ -643,6 +643,28 @@ class SurfaceVersionTests(unittest.TestCase):
             const = definition.outputSchema["properties"]["schemaVersion"]
             self.assertEqual(const, {"const": "agent-braid-tooling/v0.1"}, definition.name)
 
+    def test_analyze_work_definition_describes_the_aim_request_shape(self):
+        # Issue #1080: the advertised definition must name the AIM envelope and
+        # record fields and point to the skill example; other tools stay unchanged.
+        import types as pytypes
+        from agent_braid.tooling_mcp import _tool_definitions
+
+        class Tool:
+            def __init__(self, **kwargs):
+                self.__dict__.update(kwargs)
+        types = pytypes.SimpleNamespace(Tool=Tool, ToolAnnotations=lambda **kw: kw)
+        by_name = {item.name: item for item in _tool_definitions(self.service, types)}
+        work = by_name["analyze-work"]
+        request_help = work.inputSchema["properties"]["request"]["description"]
+        for text in (work.description, request_help):
+            for field in ("analysisInputVersion", "operations", "aimVersion", "instanceId",
+                          "definition", "inputDigest", "effects", "coverage", "evidence",
+                          "agent-braid-analyze", "gitAnalysisRequestVersion"):
+                self.assertIn(field, text)
+        self.assertEqual(work.inputSchema["properties"]["request"]["oneOf"],
+                         [{"type": "object"}, {"type": "array"}])
+        self.assertNotIn("agent-braid-analyze", by_name["analyze"].description)
+
     def test_negative_control_v02_stamp_on_an_envelope_is_detected(self):
         from agent_braid.tooling_mcp import _json_bytes
         envelope = self.service.invoke("analyze", {"request": SAMPLE}, threading.Event())
@@ -739,15 +761,15 @@ class PromptRegressionBoundaryTests(unittest.TestCase):
     """SPEC-060 procedure_005: prompt names reach neither the installer, host preview nor telemetry."""
 
     def test_prompt_names_never_enter_the_telemetry_vocabulary(self):
-        """Prompts stay outside telemetry; the SPEC-047 T011 v2 additions are the only vocabulary change."""
+        """Prompts stay outside telemetry; the SPEC-047 T011 v2 and SPEC-061 v3 (viewer) additions are the only vocabulary changes."""
         from agent_braid import tooling_telemetry
-        self.assertEqual(tooling_telemetry.SCHEMA, "agent-braid-local-telemetry-batch/v2")
+        self.assertEqual(tooling_telemetry.SCHEMA, "agent-braid-local-telemetry-batch/v3")
         self.assertEqual(tooling_telemetry.SCHEMA_V1, "agent-braid-local-telemetry-batch/v1")
         self.assertEqual(tooling_telemetry.OPERATIONS["mcp"],
                          ("analyze-work", "analyze", "prepare", "status", "execute", "recover", "verify",
                           "plugin-status", "workspaces", "other"))
         self.assertEqual(tooling_telemetry.OPERATIONS["cli"], ("analyze", "analyze-git", "system-one"))
-        self.assertEqual(tooling_telemetry.OPERATIONS["lifecycle"], ("serve-start",))
+        self.assertEqual(tooling_telemetry.OPERATIONS["lifecycle"], ("serve-start", "view-start"))
         everything = json.dumps([tooling_telemetry.OPERATIONS, tooling_telemetry.BUCKETS])
         for prompt in ("plan", "evidence", *ALIAS_PROMPTS):  # "analyze" is also a tool name, so it is not a signal
             self.assertNotIn(f'"{prompt}"', everything)

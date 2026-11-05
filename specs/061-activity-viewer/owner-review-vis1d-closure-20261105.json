@@ -1,0 +1,55 @@
+{
+  "schema": "agent-braid-bounded-founder-review-v1",
+  "spec": "SPEC-061",
+  "reviewedCommit": "9b3a93a5",
+  "evidenceCommit": "9b3a93a5",
+  "decisionDate": "2026-11-05",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "github": "jayanez",
+    "role": "owner and founder"
+  },
+  "decision": "accepted",
+  "scope": "SPEC-061 VIS.1d closure (T074): the dashboard relaunch merged in PRs #1085, #1086, #1094, #1095 and #1097 (squash 9b3a93a5) and the before and after captures in vis1d/evidence/. The VoiceOver pass of T073 is recorded as pending evidence that does not block the closure.",
+  "ownerResponse": {
+    "source": "interactive questions in chat on 2026-11-05 after the owner was sent the before and after captures (timeline before; live light and dark, Explore 3D and mobile after)",
+    "answers": [
+      {
+        "topic": "T074 (cierre VIS.1d): ¿apruebas el cierre de VIS.1d?",
+        "answer": "Aprobar con salvedad (Recomendado)"
+      },
+      {
+        "topic": "T073 VoiceOver: ¿quién lo hace?",
+        "answer": "queda anotado como evidencia pendiente, no bloquea"
+      },
+      {
+        "topic": "T063/T064: ¿cuál vale?",
+        "answer": "Pausar, lo reanudo yo (Recomendado)"
+      },
+      {
+        "topic": "T035: ¿decides ahora o esperas a usar el visor con sesiones reales?",
+        "answer": "Vamos a esperar uso real y lo que quiero también es que añadas a la telemetría los la información relevante del uso y actividad del visor. El uso real lo iré haciendo yo sobre mis propios repos: este repo de Agent Braid, Smart Notes y Kinetiq. No quiwero que sea algo que se dilate hasta enero. Ya reanudaré yo expresamente la implementación del resto de tareas y funcionalidades del visor"
+      },
+      {
+        "topic": "Telemetría del visor: ¿qué nivel?",
+        "answer": "Servidor + interacciones (Recomendado)"
+      },
+      {
+        "topic": "Repos sumados en la telemetría: ¿te vale?",
+        "answer": "Sumado está bien (Recomendado)"
+      },
+      {
+        "topic": "¿Cómo disparamos la decisión T035?",
+        "answer": "Recordatorio en 2 semanas"
+      }
+    ]
+  },
+  "notAccepted": [
+    "the VoiceOver pass of the lane labels and of select a conflict (T073, SC-026), pending",
+    "T063 and T064 (observed collision, F1 to F3), paused until the owner resumes them",
+    "the T035 go/no-go for VIS.1b and VIS.2 to VIS.4, to be decided after real use, with a review reminder on 2026-11-19",
+    "T065 and T066 (VIS.1c closure), still open",
+    "any claim that the viewer shortens locating hazards (Q-VIS1 remains open), release and scientific validity"
+  ],
+  "limits": "Acceptance binds the reviewed commit only; later changes need a new review. The evidence is local tests, scripted keyboard walks and captures on owned fixtures; no screen-reader evidence exists yet."
+}

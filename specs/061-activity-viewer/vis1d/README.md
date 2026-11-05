@@ -84,6 +84,13 @@ The owner saw the before captures and the mockups. T068 to T074 are authorized i
 this scope. The contract amendment that T067 needs is still a separate, reviewed
 change.
 
+### Closure (recorded 2026-11-05)
+
+The owner accepted the VIS.1d closure (T074) with one caveat: the VoiceOver pass of T073
+stays pending and does not block. T063 and T064 are paused until the owner resumes them.
+T035 waits for real use, with opt-in usage telemetry (T075) and a review on 2026-11-19.
+Record: [owner-review-vis1d-closure-20261105.json](../owner-review-vis1d-closure-20261105.json).
+
 ## Evidence boundary
 
 The `before-*` screenshots are captures of synthetic input generated on this

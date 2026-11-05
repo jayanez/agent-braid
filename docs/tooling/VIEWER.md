@@ -18,7 +18,8 @@ interleave work: every event carries `executionAuthorization: false`.
 - **Read-only.** No page, route or key runs, schedules, grants or writes anything. It
   never writes to a repository, a plugin registry, a run directory or host
   configuration. The one file it writes is its own ingest token, in a private runtime
-  directory; it is kept when the viewer stops and reused at the next start.
+  directory; it is kept when the viewer stops and reused at the next start. With `--telemetry local` it also adds
+  counts to the local telemetry store (see [Usage telemetry](#usage-telemetry)).
 - **Observational hooks.** It answers Claude Code hooks with an empty body and never
   takes part in a host decision.
 - **No effort measurement yet.** Codex and OpenTelemetry ingest, token and effort
@@ -57,6 +58,7 @@ page never loads code from another origin.
 ```text
 agent-braid view serve    [--replay FILE] [--watch DIR ...] [--no-discover]
                           [--port N] [--surface web] [--runtime-dir DIR]
+                          [--telemetry off|local] [--rotate-token]
 agent-braid view open     [--port N] [--runtime-dir DIR]
 agent-braid view validate FILE
 agent-braid view env      --host claude [--port N] [--runtime-dir DIR]
@@ -81,6 +83,7 @@ restart).
 | `--no-discover` | Without `--watch`, do not look for roots in the plugin registry. |
 | `--port N` | Loopback port, 0 to 65535. The default `0` lets the operating system choose one. (`view env --port` takes 1 to 65535: the port `serve` printed.) |
 | `--runtime-dir DIR` | Absolute path of the private directory (mode 0700) for the ingest token. The default is `$XDG_RUNTIME_DIR/agent-braid-view`, else `~/.local/share/agent-braid-view`. |
+| `--telemetry local` | Count viewer usage in the local telemetry store (default `off`); see [Usage telemetry](#usage-telemetry). |
 | `--rotate-token` | Replace the ingest token instead of reusing it. Restart Claude Code (or export the variable again) afterwards. |
 | `--surface S` | `web` is the only implemented surface. `mod`, `tui` and `mcp-app` report that they are planned and start nothing. |
 
@@ -125,6 +128,18 @@ drops every other field. A session or subagent that was shown as closed stays cl
 Claude Code keeps sending events for it, the page shows
 one gap naming that strand instead of new activity, so the missing activity is not mistaken
 for none.
+
+### Usage telemetry
+
+With `--telemetry local`, `serve` adds daily counters to the local telemetry store
+(`~/.local/share/agent-braid/telemetry/`, 30 days, never uploaded): viewer starts, page
+loads, hook and OTLP ingest requests by outcome, and which parts of the page are used
+(Loom or Explore 3D, filters, a selection, Details, the side panel tabs, the 3D camera).
+The page sends only a fixed interaction name to `POST /v1/usage`, at most once per name
+per second; it never sends what was selected, filtered or shown. No session, agent,
+path or repository is stored, so use across several repositories is summed. Read the
+counts with `agent-braid telemetry report`. Without the flag the route still answers
+and nothing is counted.
 
 ### `view open`
 

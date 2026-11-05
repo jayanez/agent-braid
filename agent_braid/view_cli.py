@@ -99,6 +99,8 @@ def add_parser(subparsers: Any) -> None:
                        help="web is implemented; the others report that they are planned")
     serve.add_argument("--runtime-dir", type=Path, metavar="DIR",
                        help="private directory for the ingest token (default: per-user location)")
+    serve.add_argument("--telemetry", choices=("off", "local"), default="off",
+                       help="explicit local usage counters (no content, paths or names); default off")
     serve.add_argument("--rotate-token", action="store_true",
                        help="replace the ingest token instead of reusing it (then restart the hosts that read it)")
     opener = commands.add_parser("open", help="print a new single-use link to a running viewer (no restart)")
@@ -295,6 +297,9 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
     store = _replayed_store(args)
     tail, discovered, notes = _watcher(args, store)
     hooks = HookIngest(store)
+    from .tooling_telemetry import VIEW_UI_EVENTS, record_view
+
+    usage = record_view if args.telemetry == "local" else None
     created = _ensure_private_directory(runtime_dir)
     try:
         server = ViewServer(store, runtime_dir, port=args.port, bundle=bundle,
@@ -303,7 +308,8 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
                             language_hint=language_hint_from_environ(os.environ),
                             rotate_token=args.rotate_token,
                             # T060: live unless a recorded stream was loaded (a replay is never live)
-                            live_clock=hooks.now_ms if args.replay is None else None)
+                            live_clock=hooks.now_ms if args.replay is None else None,
+                            usage=usage, usage_events=VIEW_UI_EVENTS)
     except ServeError as exc:
         _remove_created(created)
         raise CliError(f"view serve: {exc}") from exc
@@ -313,6 +319,9 @@ def _serve(args: argparse.Namespace, on_ready: Callable[[Any], None] | None) -> 
     previous = _stop_on_sigterm()
     try:
         print("\n".join(_banner(server, tail, discovered, notes)), flush=True)
+        if usage is not None:
+            print("Usage telemetry: local counts only; see `agent-braid telemetry report`.", flush=True)
+        server.count("view-start")
         if tail is not None:
             tail.start()
         try:

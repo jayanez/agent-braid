@@ -170,7 +170,7 @@ class LoopbackTests(unittest.TestCase):
         serve = view._subparsers._group_actions[0].choices["serve"]
         options = {option for action in serve._actions for option in action.option_strings}
         self.assertEqual(options, {"-h", "--help", "--replay", "--watch", "--no-discover", "--port", "--surface",
-                                   "--runtime-dir", "--rotate-token"})
+                                   "--runtime-dir", "--rotate-token", "--telemetry"})
         for path in VIEW_MODULES:
             self.assertNotRegex(path.read_text(encoding="utf-8"), r"[\"']0\.0\.0\.0[\"']", path.name)
 

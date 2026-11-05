@@ -673,11 +673,22 @@ def _prompt_get(name: str) -> tuple[str, str]:
     raise ToolingError("Unknown prompt")
 
 
+_ANALYZE_WORK_REQUEST_HELP = (
+    "kind=aim: request is an AIM envelope {analysisInputVersion: \"0.1.0-alpha\", "
+    "source: {kind: \"aim\", description}, operations: [AIM 0.2.0-draft record, ...]}; "
+    "each record needs aimVersion, instanceId, attemptId, definition {id, digest}, inputDigest, "
+    "dependencies, readVersions, effects {declared [{kind, resource}], inferred, observed, coverage} "
+    "and evidence. The agent-braid-analyze skill has a complete copyable example. "
+    "kind=git: request is {gitAnalysisRequestVersion, repository, baseRevision, operations}."
+)
+
+
 def _tool_definitions(service: ToolingService, types: Any) -> list[Any]:
     definitions = []
     for name in service.tools:
         if name == "analyze-work":
-            request = {"oneOf": [{"type": "object"}, {"type": "array"}]}
+            request = {"oneOf": [{"type": "object"}, {"type": "array"}],
+                       "description": _ANALYZE_WORK_REQUEST_HELP}
             schema = {"type": "object", "additionalProperties": False,
                       "properties": {"kind": {"enum": ["aim", "git"]}, "request": request},
                       "required": ["kind", "request"]}
@@ -702,8 +713,11 @@ def _tool_definitions(service: ToolingService, types: Any) -> list[Any]:
                 required.append("action")
             schema = {"type": "object", "additionalProperties": False,
                       "properties": props, "required": required}
+        description = f"Bounded Agent Braid {name}; host permissions and annotations do not grant runtime authority."
+        if name == "analyze-work":
+            description = f"{description} {_ANALYZE_WORK_REQUEST_HELP}"
         definitions.append(types.Tool(
-            name=name, description=f"Bounded Agent Braid {name}; host permissions and annotations do not grant runtime authority.",
+            name=name, description=description,
             inputSchema=schema, outputSchema={"type": "object", "properties": {
                 "schemaVersion": {"const": SCHEMA_VERSION},
                 "operation": {"type": "string"},
