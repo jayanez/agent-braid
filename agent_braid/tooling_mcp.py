@@ -145,6 +145,37 @@ def _bounded_input(value: Any) -> bytes:
     return raw
 
 
+_PATH_REFUSAL = "Git repository or worktree path is outside the configured source root or operator allowlist"
+
+
+def _permitted_path(value: str, allowed: set[Path]) -> bool:
+    try:
+        return Path(value).expanduser().resolve(strict=True) in allowed
+    except (OSError, RuntimeError, ValueError):
+        return False
+
+
+def _require_git_structure(request: dict[str, Any]) -> None:
+    """Fixed-text structural checks that precede any filesystem access."""
+    def need(ok: bool, message: str, pointer: str, expected: str) -> None:
+        if not ok:
+            raise analysis.InvalidAnalysis(message, pointer=pointer, expected=expected)
+    need(isinstance(request["repository"], str) and bool(request["repository"].strip()),
+         "invalid repository", "/repository", "a non-blank string")
+    operations = request["operations"]
+    need(isinstance(operations, list) and len(operations) >= 2,
+         "at least two Git operations are required", "/operations", "an array of at least two operations")
+    for index, operation in enumerate(operations):
+        here = f"/operations/{index}"
+        need(isinstance(operation, dict), "Git operations must be objects", here, "an operation object")
+        source = operation.get("source")
+        need(isinstance(source, dict), "Git operation source is invalid", f"{here}/source",
+             "an object describing a commit or worktree source")
+        if source.get("kind") == "worktree":
+            need(isinstance(source.get("path"), str) and bool(source["path"].strip()),
+                 "Git operation source is invalid", f"{here}/source/path", "a non-blank string")
+
+
 def _operation_count(request: Any) -> int:
     if isinstance(request, list):
         return len(request)
@@ -162,7 +193,7 @@ def _validate_operation_bounds(request: Any) -> None:
         raise ToolingError("Request exceeds the 32-operation adapter limit", code="arguments-invalid")
     values = request if isinstance(request, list) else (
         request.get("operations", []) if isinstance(request, dict) else [])
-    for item in values:
+    for item in values if isinstance(values, list) else []:
         if isinstance(item, dict):
             for key in ("instanceId", "attemptId"):
                 value = item.get(key)
@@ -417,7 +448,9 @@ class ToolingService:
 
     def _safe_error(self, exc: BaseException) -> str:
         # Exact InvalidAnalysis carries fixed validator messages; subclasses (Git) can carry git stderr or paths.
-        if isinstance(exc, ToolingError) or type(exc) is analysis.InvalidAnalysis:
+        # A pointer marks a structural refusal built from fixed text and schema-defined names only.
+        if (isinstance(exc, ToolingError) or type(exc) is analysis.InvalidAnalysis
+                or getattr(exc, "pointer", None) is not None):
             return str(exc)[:1024]
         if isinstance(exc, OSError):
             return "The operation could not complete because an observation was unavailable"
@@ -435,23 +468,20 @@ class ToolingService:
                     "provenance": {"source": "AIM input", "executionAuthorization": False}}
         if kind != "git":
             raise ToolingError("Unsupported analysis kind", code="arguments-invalid")
-        if not isinstance(request, dict) or set(request) != {
-                "gitAnalysisRequestVersion", "repository", "baseRevision", "operations"}:
-            raise ToolingError("Git analysis request shape is invalid", code="arguments-invalid")
-        repository = Path(request["repository"]).expanduser().resolve(strict=True)
-        if repository != self.config.source_root:
-            raise ToolingError("Git repository is outside the configured source root", code="arguments-invalid")
+        if not isinstance(request, dict):
+            raise analysis.InvalidAnalysis("Git analysis request shape is invalid", pointer="", expected="an object")
+        analysis.exact_keys(request, {"gitAnalysisRequestVersion", "repository", "baseRevision", "operations"},
+                            "Git analysis request shape is invalid", "")
+        _require_git_structure(request)
+        # One refusal for a missing path and for an existing path outside the roots: the
+        # answer must not reveal whether a host path exists (SPEC-069 REQ-007).
         roots = set(self.config.worktree_roots)
+        if not _permitted_path(request["repository"], {self.config.source_root}):
+            raise ToolingError(_PATH_REFUSAL, code="arguments-invalid")
         for operation in request["operations"]:
-            if not isinstance(operation, dict):
-                raise ToolingError("Git operations must be objects", code="arguments-invalid")
-            source = operation.get("source")
-            if not isinstance(source, dict):
-                raise ToolingError("Git operation source is invalid", code="arguments-invalid")
-            if source.get("kind") == "worktree":
-                candidate = Path(source.get("path", "")).expanduser().resolve(strict=True)
-                if candidate not in roots:
-                    raise ToolingError("Worktree is outside the operator-configured allowlist", code="arguments-invalid")
+            source = operation["source"]
+            if source.get("kind") == "worktree" and not _permitted_path(source["path"], roots):
+                raise ToolingError(_PATH_REFUSAL, code="arguments-invalid")
         report, provenance = git_adapter.analyze_git_with_provenance(request)
         return {"report": report, "provenance": provenance}
 
