@@ -255,16 +255,22 @@ class CatalogShapeTests(unittest.TestCase):
 
     def test_the_memory_attempts_exceed_the_limit_by_a_gigabyte_and_hold_it_for_the_watchdog(self):
         # T009 attempt 3: 256 MiB over the limit, released at once, peaked at 99 % of the limit in the watchdog
-        for name in ("memory", "memory_burst"):
-            body = q.BY_ID["PROC-03"].source_template.split(f"def {name}():")[1].split("\ndef ")[0]
-            self.assertIn('incompressible(A["limits"]["memoryBytes"] + (1 << 30))', body, name)
-            self.assertIn("time.sleep(2)", body, name)
-            self.assertLess(body.index("time.sleep(2)"), body.index("return True"), name)
+        body = q.BY_ID["PROC-03"].source_template.split("def memory():")[1].split("\ndef ")[0]
+        self.assertIn('incompressible(A["limits"]["memoryBytes"] + (1 << 30))', body)
+        self.assertIn("time.sleep(2)", body)
+        self.assertLess(body.index("time.sleep(2)"), body.index("return True"))
+
+    def test_the_memory_attempt_runs_last_because_its_kill_stops_the_helper(self):
+        # T009 attempt 4, launch-probe row: the kill of "memory" left "memory-burst" never begun, so inconclusive
+        probe = q.BY_ID["PROC-03"]
+        self.assertEqual(probe.counted[-1], "memory")
+        self.assertEqual([name for name, _ in probe.attempts][-1], "memory")
+        self.assertEqual(set(q.LIMIT_ATTRIBUTION), {"memory"})
 
     def test_the_memory_residual_names_the_footprint_limit_and_the_founders_acceptance(self):
         residual = q.BY_ID["PROC-03"].residual
         self.assertIn("physical footprint of the child's tree at most memoryBytes", residual)
-        self.assertIn("compressed size, so a process whose pages compress well can reserve more", residual)
+        self.assertIn("compressed size, so a process whose pages compress well can hold more memory than the limit", residual)
         self.assertIn("founder-decisions-20261106.json", residual)
         self.assertTrue((Path(__file__).resolve().parents[1] / "specs/065-native-claude-containment/evidence/founder-decisions-20261106.json")
                         .is_file())
@@ -1310,7 +1316,7 @@ class ReviewCatalogTests(unittest.TestCase):
             "FS-06": {"inherited-descriptor", "fifo", "device-node", "dev-ptmx", "dev-fd"},
             "FS-07": {"mach-mds", "mach-mdwrite", "mach-spotlight"},
             "PROC-01": {"exec-written-script"}, "PROC-05": {"real-launch-agent"},
-            "PROC-03": {"memory", "memory-burst"},
+            "PROC-03": {"memory"},
             "PROC-06": {"mach-sweep", "mach-tccd", "iokit-service"},
             "PROC-07": {"signal-supervisor", "ptrace-sibling", "sysctl-proc-all", "sysctl-hw", "list-pids",
                         "shm-posix", "sem-posix", "shm-sysv"}}
@@ -2049,13 +2055,12 @@ class QualRound3Tests(unittest.TestCase):
                   "pages = range(0, size, mmap.PAGESIZE)\n"
                   "ratios = [len(zlib.compress(block[o:o + mmap.PAGESIZE], 9)) / mmap.PAGESIZE for o in pages]\n"
                   "distinct = len({block[o:o + mmap.PAGESIZE] for o in pages})\n"
-                  "print(min(ratios), distinct, len(pages), block[size - 1:size] != b'\\x00')\n")
+                  "print(min(ratios), distinct, len(pages))\n")
         result = self.run_python(script)
         self.assertEqual(result.returncode, 0, result.stderr)
-        smallest, distinct, pages, tail_written = result.stdout.split()
-        self.assertGreater(float(smallest), 0.99)  # no page compresses, so the footprint counts it in full
+        smallest, distinct, pages = result.stdout.split()
+        self.assertGreater(float(smallest), 0.99)  # no page compresses (the partial last tile included)
         self.assertEqual(distinct, pages)  # no two pages are equal, so nothing can share a page
-        self.assertEqual(tail_written, "True")
 
     def test_the_memory_attempt_touches_every_page(self):
         code = self.helper({"memoryBytes": 0}, "incompressible", "memory")  # 1 GiB mapping

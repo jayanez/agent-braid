@@ -377,7 +377,7 @@ because the mechanism fixes what the policy can express.
   in the context package. Interaction with NC-5: see the note there.
 
 - **NC-8 Process and CPU limits and the executable
-  allow-list.** Decided (founder, 2026-10-31): wall 30 min, CPU 30 min, memory 4 GB, file size 64 MB, 256 open files, 16 descendants; executables = the Claude binary plus helpers observed by probe. ([record](evidence/founder-decisions-20261031.json)) Memory is the physical footprint of the child's tree at most 4 GiB; compressed memory counts at its compressed size, so a process whose pages compress well can reserve more: residual accepted (founder, 2026-11-06, PROC-03, [record](evidence/founder-decisions-20261106.json)). History: Values for session wall time (at most the F3 30-minute unit
+  allow-list.** Decided (founder, 2026-10-31): wall 30 min, CPU 30 min, memory 4 GB, file size 64 MB, 256 open files, 16 descendants; executables = the Claude binary plus helpers observed by probe. ([record](evidence/founder-decisions-20261031.json)) Memory is enforced as the physical footprint of the child's tree at most `memoryBytes` (4 GiB, 4,294,967,296 bytes, the value enforced for this decision since T005); compressed memory counts at its compressed size, so a process whose pages compress well can hold more memory than that: residual accepted (founder, 2026-11-06, PROC-03, [record](evidence/founder-decisions-20261106.json)). History: Values for session wall time (at most the F3 30-minute unit
   cap; today the shared host bound is 60 s, see analysis A2), CPU seconds, address space or memory, file size,
   open files and descendants, and which executables may run (the Claude binary
   and any helper the allowed read-only tools need, such as a bundled search

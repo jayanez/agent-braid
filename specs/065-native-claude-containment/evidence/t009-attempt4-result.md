@@ -81,34 +81,41 @@ Recorded in `evidence/founder-decisions-20261106.json`. Owner answer, verbatim: 
 (Recommended)". The accepted option: the limit becomes "physical footprint at most 4 GiB"; the probe uses random
 data, which does not compress; the catalog records the residual (compressed memory counts at its compressed size)
 as accepted by the founder; then a new attempt of 3 sessions (this one used 0 % of the quota). Risk: a process can
-reserve more than 4 GiB if its pages compress well. Undo: return to the strict rule. `executionAuthorization` stays
+reserve more than 4 GiB if its pages compress well (precisely: it can hold more than 4 GiB of written memory, not
+only reserve address space). Undo: return to the strict rule. `executionAuthorization` stays
 false.
 
 ## 5. Changes in this PR
 
 - **Evidence**: bundle `evidence/qualification/t009-20261105a/` with `SHA256SUMS`, the transcript and the
   self-check output under `operator/`; this result; the founder record; the attempt-4 line in `tasks.md` T009.
-- **PROC-03 probe** (`agent_braid/harness_qualification_probes.py`): `memory` and `memory-burst` call a new helper
+- **PROC-03 probe** (`agent_braid/harness_qualification_probes.py`): `memory` calls a new helper
   `incompressible(size)` that maps the limit plus 1 GiB, fills it from a 64 MiB `os.urandom` tile and writes each
-  page's own offset into its first 8 bytes; both still hold the allocation for 2 s. Why a tile and not fresh
-  `os.urandom` everywhere: fresh random data costs about 2 s per GiB on this hardware (about 10 s per attempt, twice
-  per row, inside a 40 s probe wall), while the tiled fill takes about 2.5 s for 5 GiB. The macOS compressor works
+  page's own offset into its first 8 bytes; it still holds the allocation for 2 s. Why a tile and not fresh
+  `os.urandom` everywhere: fresh random data costs about 2 s per GiB on this hardware (about 10 s for the
+  allocation, inside a 40 s probe wall), while the tiled fill takes about 2.5 s for 5 GiB. The macOS compressor works
   one page at a time, so a page of random bytes does not compress whether or not the same bytes appear in another
   page, and the offset stamp makes every page distinct, so not even a deduplicating store could share two. A unit
   test checks that no page of a 96 MiB fill compresses below 99 % with `zlib` level 9 and that all pages differ.
+- **`memory-burst` dropped, `memory` last** (pre-PR review finding; not part of the owner's answer, flagged for the
+  orchestrator): a memory kill stops the whole helper, so a second memory attempt after the first never begins and
+  reads `inconclusive` (the attempt-4 launch-probe row). With incompressible data the first attempt is expected to
+  be stopped every time, which would have made PROC-03 `inconclusive` in both contained rows of attempt 5. The two
+  attempts were the same allocation, so one is kept; it now runs after the `cpu` and `file-count` notes so those
+  are still observed. `LIMIT_ATTRIBUTION` keeps only `memory`. The judge is unchanged.
 - **Residual and limit wording**: the PROC-03 catalog residual, the `LIMITS` comment in
   `agent_braid/harness_containment_macos.py`, NC-8 in `spec.md` and the PROC-03 row of
   `contracts/containment-qualification.md` state the enforced limit (physical footprint of the child's tree at
-  most `memoryBytes`) and the accepted residual, citing the founder record. The watchdog, the judge and every
-  other rule are unchanged. The catalog hash moves to `b29277e6...fdcdf573bb` (the environment hash moves with it);
+  most `memoryBytes`, 4 GiB) and the accepted residual, citing the founder record. The watchdog, the judge and every
+  other rule are unchanged. The catalog hash moves to `5ecbd7eb...0134e929` (the environment hash moves with it);
   no SBPL profile changes.
 
 ## 6. Follow-ups
 
 1. Run `--self-check` on the merged commit (no session) and confirm it is `self-check-ok` with the new catalog hash.
 2. Then attempt 5 under the new name `t009-20261106a`, at most 3 Haiku low-effort sessions (NC-10 terms as before),
-   after the orchestrator's written confirmation. Expected change: PROC-03 `memory` and `memory-burst` both denied in
-   both contained rows, the control row still allowed.
-3. The uncontained control now holds 5 GiB of incompressible memory twice; on a machine with little free memory
+   after the orchestrator's written confirmation. Expected change: PROC-03 `memory` denied in both contained rows,
+   the control row still allowed.
+3. The uncontained control now holds 5 GiB of incompressible memory; on a machine with little free memory
    it will swap. That is the control's job (the footprint counts swapped pages), but it can lengthen the row.
 4. The kernel-limit question (attempt 3, section 7 item 3) stays open; the accepted residual does not close it.

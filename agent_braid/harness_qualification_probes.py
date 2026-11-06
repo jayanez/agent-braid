@@ -93,7 +93,7 @@ _ERRNO = re.compile(r"[A-Z0-9_]{1,24}\Z")
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _MACH_NAME = re.compile(r"[A-Za-z][\w-]*(?:\.[\w-]+){2,}\Z")
 # a kill of the limit child is this denial only when the backend reports the matching stop reason
-LIMIT_ATTRIBUTION = {"memory": "memory", "memory-burst": "memory"}
+LIMIT_ATTRIBUTION = {"memory": "memory"}
 # attempts that target the dedicated user's real home: they need ``real_home`` to mean anything (DRV-02)
 REAL_HOME_ATTEMPTS = ("real-launch-agent", "hardlink-own-tree")
 _ATTEMPT_CALL = re.compile(r'^(attempt|note|tripwire|limit|limit_note)\("([a-z0-9-]+)"', re.M)
@@ -584,9 +584,9 @@ def open_files():
 def incompressible(size):
     # The limit is the physical footprint, which counts a page the memory compressor holds at its compressed
     # size (residual accepted by the founder, PROC-03, 2026-11-06). One byte per page compressed to almost
-    # nothing: T009 attempt 4 held 1 GiB over the limit for 2 s and the footprint read ~0.7 GiB under it. So
-    # every page gets random bytes, which do not compress. Fresh os.urandom for 5 GiB costs ~2 s per GiB here,
-    # too slow for the probe's wall time with two attempts; a 64 MiB random tile costs ~0.1 s and is copied at
+    # nothing: T009 attempt 4 held 1 GiB over the limit for 2 s and the lifetime peak footprint stayed 0.96 GiB
+    # under it. So every page gets random bytes, which do not compress. Fresh os.urandom costs ~2 s per GiB here
+    # (~10 s for this allocation, inside a 40 s probe wall); a 64 MiB random tile costs ~0.1 s and is copied at
     # memory speed. The compressor works on one page at a time, so a tile larger than a page compresses no
     # better than fresh random data, and the page's own offset written into its first 8 bytes makes every page
     # distinct, so not even a deduplicating store could share two of them.
@@ -603,11 +603,6 @@ def memory():
     block = incompressible(A["limits"]["memoryBytes"] + (1 << 30))
     time.sleep(2)
     return True
-def memory_burst():
-    # The same allocation again: attempt 4 saw the first or the second stopped, never which in advance.
-    block = incompressible(A["limits"]["memoryBytes"] + (1 << 30))
-    time.sleep(2)
-    return True
 def cpu():
     end = time.process_time() + A["cpu_spin"]
     while time.process_time() < end:
@@ -619,10 +614,11 @@ def file_count():
     return True
 limit("file-size", file_size)
 limit("open-files", open_files)
-limit("memory", memory)
-limit("memory-burst", memory_burst)
 limit_note("cpu", cpu)
 limit_note("file-count", file_count)
+# Last: a memory kill stops the whole tree, so nothing after it would run (T009 attempt 4 lost "memory-burst",
+# a second copy of this attempt, to the kill of the first; it was dropped).
+limit("memory", memory)
 ''',
     "PROC-04": r'''
 def daemon():
@@ -857,7 +853,7 @@ CATALOG: tuple[Probe, ...] = (
                      "The memory watchdog samples it every 10 to 50 ms (the larger of the resident size, the physical "
                      "footprint and the process's lifetime peak footprint). Accepted residual (founder decision "
                      "PROC-03, evidence/founder-decisions-20261106.json): a page the memory compressor holds counts at "
-                     "its compressed size, so a process whose pages compress well can reserve more than the limit. "
+                     "its compressed size, so a process whose pages compress well can hold more memory than the limit. "
                      "The probe fills a gigabyte over the limit with incompressible data and holds it for two seconds; "
                      "a process that exceeds the limit and exits between two "
                      "samples is not stopped, and no kernel limit backs the watchdog: macOS RLIMIT_AS and RLIMIT_DATA "
