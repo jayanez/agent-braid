@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-braid.dev/schemas/0.1.0-alpha/analysis-input.schema.json",
+  "$comment": "SPEC-069 REQ-003. Accepted request forms of the runtime (agent_braid.analysis._records): the envelope below, a single AIM record, or a nonempty array of AIM records. Batch-level checks (unique identifiers, known and acyclic dependencies) and adapter bounds (32 operations, 256-byte identifiers) are runtime checks that JSON Schema cannot express; see specs/069-aim-request-authoring/contracts/analyze-work-request.md.",
+  "title": "Agent Braid analysis input 0.1.0-alpha",
+  "oneOf": [
+    {"$ref": "#/$defs/envelope"},
+    {"$ref": "https://agent-braid.dev/schemas/0.2.0-draft/agent-interaction-metadata.schema.json"},
+    {"$ref": "#/$defs/records"}
+  ],
+  "$defs": {
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "https://agent-braid.dev/schemas/0.2.0-draft/agent-interaction-metadata.schema.json"}
+    },
+    "envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["analysisInputVersion", "source", "operations"],
+      "properties": {
+        "analysisInputVersion": {"const": "0.1.0-alpha"},
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "description"],
+          "properties": {
+            "kind": {"type": "string", "minLength": 1, "pattern": "\\S"},
+            "description": {"type": "string", "minLength": 1, "pattern": "\\S"}
+          }
+        },
+        "operations": {"$ref": "#/$defs/records"}
+      }
+    }
+  }
+}

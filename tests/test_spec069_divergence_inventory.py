@@ -16,14 +16,24 @@ ROOT = Path(__file__).resolve().parents[1]
 class DivergenceInventoryTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.fresh = inventory.build()
+        cls.fresh = inventory.build(inventory.BASELINE_REV)
         cls.committed = json.loads(inventory.OUTPUT.read_text())
+        cls.after = inventory.build()
 
     def test_committed_inventory_is_current(self):
         fresh = copy.deepcopy(self.fresh)
         committed = copy.deepcopy(self.committed)
         fresh.pop("environment"), committed.pop("environment")
         self.assertEqual(fresh, committed)
+
+    def test_after_decisions_inventory_is_current_and_resolves_blank_strings(self):
+        committed = json.loads(inventory.OUTPUT_AFTER.read_text())
+        after = copy.deepcopy(self.after)
+        after.pop("environment"), committed.pop("environment")
+        self.assertEqual(after, committed)
+        causes = {item["rootCause"].split(":")[0] for item in self.after["summary"]["rootCauses"]}
+        self.assertNotIn("RC-blank", causes)
+        self.assertFalse(self.after["summary"]["observedOn2026-11-05"]["blank instanceId accepted by schema, refused by runtime"])
 
     def test_the_three_divergences_observed_on_2026_11_05_are_present(self):
         self.assertTrue(all(self.fresh["summary"]["observedOn2026-11-05"].values()),
@@ -61,9 +71,11 @@ class DivergenceInventoryTests(unittest.TestCase):
         fresh.pop("environment"), committed.pop("environment")
         self.assertNotEqual(fresh, committed)
 
-    def test_schema_hashes_match_the_files(self):
-        for schema in self.fresh["schemas"][:2]:
-            self.assertEqual(schema["sha256"], inventory.sha256(ROOT / schema["path"]))
+    def test_schema_hashes_match_the_inspected_revisions(self):
+        for doc, rev in ((self.fresh, inventory.BASELINE_REV), (self.after, None)):
+            for schema in doc["schemas"][:2]:
+                text = inventory.schema_text(ROOT / schema["path"], rev)
+                self.assertEqual(schema["sha256"], inventory.text_sha256(text))
 
 
 if __name__ == "__main__":

@@ -5151,9 +5151,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "aim-0074",
@@ -5216,7 +5216,7 @@
    "label": "blank string (spaces)",
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
@@ -5226,9 +5226,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "aim-0075",
@@ -5291,7 +5291,7 @@
    "label": "blank string (U+001C only)",
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
@@ -5301,9 +5301,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "aim-0076",
@@ -5366,7 +5366,7 @@
    "label": "blank string (U+001D only)",
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
@@ -5376,9 +5376,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "aim-0077",
@@ -5441,7 +5441,7 @@
    "label": "blank string (U+001E only)",
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
@@ -5451,9 +5451,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "aim-0078",
@@ -5516,7 +5516,7 @@
    "label": "blank string (U+001F only)",
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
@@ -5526,9 +5526,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "aim-0079",
@@ -5591,7 +5591,7 @@
    "label": "blank string (U+0085 only)",
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
@@ -5601,9 +5601,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "aim-0080",
@@ -5666,7 +5666,7 @@
    "label": "blank string (U+FEFF only)",
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
@@ -22192,9 +22192,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "git-0308",
@@ -22234,7 +22234,7 @@
    "label": "blank string (U+FEFF only)",
    "pointer": "/repository",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-git-resolution: a value that is not blank for Python strip() but does not resolve to a repository or revision",
    "serviceSummary": "analyze-work unknown: The operation could not complete because an observation was unavailable",
    "verdicts": {
     "analysisModule": null,
@@ -22756,9 +22756,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "git-0319",
@@ -22798,7 +22798,7 @@
    "label": "blank string (U+FEFF only)",
    "pointer": "/baseRevision",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-git-resolution: a value that is not blank for Python strip() but does not resolve to a repository or revision",
    "serviceSummary": "analyze-work unknown: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
@@ -24827,9 +24827,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "git-0363",
@@ -24869,7 +24869,7 @@
    "label": "blank string (spaces)",
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
@@ -24879,9 +24879,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "git-0364",
@@ -24921,7 +24921,7 @@
    "label": "blank string (U+001C only)",
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
@@ -24931,9 +24931,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "git-0365",
@@ -24973,7 +24973,7 @@
    "label": "blank string (U+001D only)",
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
@@ -24983,9 +24983,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "git-0366",
@@ -25025,7 +25025,7 @@
    "label": "blank string (U+001E only)",
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
@@ -25035,9 +25035,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "git-0367",
@@ -25077,7 +25077,7 @@
    "label": "blank string (U+001F only)",
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
@@ -25087,9 +25087,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "git-0368",
@@ -25129,7 +25129,7 @@
    "label": "blank string (U+0085 only)",
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
@@ -25139,9 +25139,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "git-0369",
@@ -25181,7 +25181,7 @@
    "label": "blank string (U+FEFF only)",
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
    "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
@@ -26790,9 +26790,9 @@
   },
   {
    "decision": {
-    "ownerDecisionRequired": true,
+    "ownerDecisionRequired": false,
     "policy": "D8",
-    "proposal": "tighten the published schema where JSON Schema can express the runtime check (no runtime change, no new AIM version, schema note); otherwise document as a runtime-only check",
+    "proposal": "document as an intentional non-structural or runtime-only check",
     "status": "proposed"
    },
    "id": "git-0402",
@@ -26832,7 +26832,7 @@
    "label": "blank string (U+FEFF only)",
    "pointer": "/operations/0/source/revision",
    "relation": "runtime-stricter",
-   "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only",
+   "rootCause": "RC-git-resolution: a value that is not blank for Python strip() but does not resolve to a repository or revision",
    "serviceSummary": "analyze-work unknown: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
@@ -28965,6 +28965,7 @@
    "path": null
   }
  ],
+ "schemasAt": "14187e05668e03ee452a91f5209fd5ae883a04e4",
  "semanticObservations": [
   {
    "classification": "independent-candidate",
@@ -29077,7 +29078,7 @@
    "readVersions 1.0 accepted by schema, refused by runtime": true
   },
   "probes": 404,
-  "rootCauseCount": 9,
+  "rootCauseCount": 10,
   "rootCauses": [
    {
     "probeCount": 1,
@@ -29100,20 +29101,34 @@
     "rootCause": "RC-adapter: adapter bounds (32 operations, 256-byte identifiers) are not in any schema"
    },
    {
-    "probeCount": 7,
+    "probeCount": 21,
     "probes": [
+     "aim-0074",
+     "aim-0075",
+     "aim-0076",
+     "aim-0077",
+     "aim-0078",
+     "aim-0079",
+     "aim-0080",
      "aim-0264",
      "aim-0265",
      "aim-0266",
      "aim-0267",
      "aim-0268",
+     "git-0363",
+     "git-0364",
+     "git-0365",
+     "git-0366",
+     "git-0367",
+     "git-0368",
+     "git-0369",
      "git-0403",
      "git-0404"
     ],
     "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express"
    },
    {
-    "probeCount": 96,
+    "probeCount": 79,
     "probes": [
      "aim-0019",
      "aim-0020",
@@ -29133,13 +29148,6 @@
      "aim-0050",
      "aim-0051",
      "aim-0052",
-     "aim-0074",
-     "aim-0075",
-     "aim-0076",
-     "aim-0077",
-     "aim-0078",
-     "aim-0079",
-     "aim-0080",
      "aim-0091",
      "aim-0114",
      "aim-0115",
@@ -29177,14 +29185,12 @@
      "git-0305",
      "git-0306",
      "git-0307",
-     "git-0308",
      "git-0313",
      "git-0314",
      "git-0315",
      "git-0316",
      "git-0317",
      "git-0318",
-     "git-0319",
      "git-0337",
      "git-0338",
      "git-0339",
@@ -29197,20 +29203,12 @@
      "git-0351",
      "git-0352",
      "git-0353",
-     "git-0363",
-     "git-0364",
-     "git-0365",
-     "git-0366",
-     "git-0367",
-     "git-0368",
-     "git-0369",
      "git-0396",
      "git-0397",
      "git-0398",
      "git-0399",
      "git-0400",
-     "git-0401",
-     "git-0402"
+     "git-0401"
     ],
     "rootCause": "RC-blank: the runtime refuses blank strings; the schema states minLength only"
    },
@@ -29275,6 +29273,15 @@
      "aim-0263"
     ],
     "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item"
+   },
+   {
+    "probeCount": 3,
+    "probes": [
+     "git-0308",
+     "git-0319",
+     "git-0402"
+    ],
+    "rootCause": "RC-git-resolution: a value that is not blank for Python strip() but does not resolve to a repository or revision"
    },
    {
     "probeCount": 1,
