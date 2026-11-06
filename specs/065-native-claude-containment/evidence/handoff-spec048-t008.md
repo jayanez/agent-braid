@@ -168,8 +168,9 @@ Scientific limit: the records describe one machine, one OS build, one CLI versio
   1. if code or pins change (for example a new Claude version: `CLAUDE_VERSION = "2.1.292"` is pinned in
      `harness_containment_macos.py`, NC-4), a code PR and a re-check of the touched lines first (T009 precondition);
   2. `scripts/har_t009_setup.py --commit <C>` in the founder's session (sudo, steps 0 to 8: pinned copies under
-     `/usr/local/libexec/braid/`, handoff directory `/Users/Shared/braid-t009/`); with the lab already set up, only
-     the changed pins or the code copy are refreshed;
+     `/usr/local/libexec/braid/`, handoff directory `/Users/Shared/braid-t009/`); with the lab already set up a re-run
+     stops at the step-7 empty `config_dir` check, so changed pins or a new code copy are installed with the manual
+     step-5 commands and a hand-written summary (quickstart, "Operator setup for T009");
   3. `scripts/har_t009_lab.py` in the `braidlab` login session (login skippable, token kept unless `--renew-token`,
      driver `--dry-run`, `--self-check --founder-go` with its `auth` and no-model `startup` stages: **no session
      spent**), with `scripts/har_t009_verify.py` run by the orchestrator between stages;
@@ -188,6 +189,7 @@ Sources: `specs/048-harness-variant-laboratory/tasks.md` T008 (file sha256 `0610
 | T008 acceptance item | What this packet supplies | What 048 T008 must still decide or record itself |
 | --- | --- | --- |
 | Reuse an existing trusted admission seam only where its contract matches | `harness_hosts.HostQualificationRun.admit_unit(containment=..., containment_sha256=...)` already calls `harness_host_claude.verify_host_qualification`; the issued host record (canonical bytes) and its trusted hash `8c1a38fe…178d` are that input; environment `e91007d8…818a` | Check the seam still matches the issued record format, bind the canonical host-record bytes and hash in its own evidence, and decide how the trusted hashes reach the trusted caller (no record authored by T008 itself) |
+| Same environment at every unit | The qualified policy inputs: `scripts/har_t009_attempt.py` `_build_policy` (account, run root, config dir, `claude` path and hash, interpreter path, hash and root, `sandbox-exec` hash, proxy port; `refresh_endpoints` empty) all enter `environmentSha256` | Build the native unit's `ContainmentPolicy` from exactly those inputs in the `braidlab` session; any difference refuses `environment-drift` at the NC-11 check |
 | `nativeFeasibility` (048 `t008.json`: no native transport, no non-offline manifest profile, no enforced-effect backend, no issued qualification) | SPEC-065 T003 native manifest profile, T005 macOS backend, T006 `ClaudeTransport`, T010 issued records | Re-assess feasibility against the current code and record it; no module wires `HostQualificationRun` to the native transport and backend today (only `harness_hosts.py` names it), so the native unit path is T008's own work |
 | Independent Claude profile decision | Nothing: the founder record `founder-review-20261031.json` (sha256 `38bedbba…ddc`) says only `qualification-authorized` for Claude | A new founder profile decision record for Claude (qualified, not qualified, or still pending), citing these records, with its own hash bound in `harness_hosts` parsing |
 | Actual controls | SPEC-065 containment evidence (effects enforced, F4 subset, T010 negative controls) | The controls T008 observes in its own native units under `HostQualificationRun` (pre-unit NC-11 check passing, settlement, stop latch) |

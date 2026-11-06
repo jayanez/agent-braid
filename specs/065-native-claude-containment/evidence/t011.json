@@ -3,7 +3,7 @@
   "recordedAt": "2026-11-06",
   "baseCommit": "e332ff18",
   "packet": "specs/065-native-claude-containment/evidence/handoff-spec048-t008.md",
-  "packetSha256": "3afa3c59fe64eb20350bf1d16533bdd8392efb69aebea65e884c81e114c05997",
+  "packetSha256": "27971530b20a3618e3ed1a4e4a50762091276a25a86d536cc4fe2539c627a879",
   "inputs": {
     "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-06.json": "26030d57a021d28ce3b836582ba6196c6636f7401d386a71f7d5a2b9791723ac",
     "specs/065-native-claude-containment/evidence/t010.json": "e18edf60e1043c0f6f3f976f23bd4990f4954f4ef7ca3a5d3319c836ae15e224",

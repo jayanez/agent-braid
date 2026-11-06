@@ -364,7 +364,7 @@ shared object store fails the portable-root check).
   Verification: procedure_011 (no SPEC-048/049 bytes changed by this feature).
   Evidence: the packet.
   Obtained: `evidence/handoff-spec048-t008.md` (sha256
-  `3afa3c59fe64eb20350bf1d16533bdd8392efb69aebea65e884c81e114c05997`; every cited hash recomputed, the two trusted
+  `27971530b20a3618e3ed1a4e4a50762091276a25a86d536cc4fe2539c627a879`; every cited hash recomputed, the two trusted
   hashes from the canonical records) and `evidence/t011.json`; procedure_011 `git diff --stat origin/develop --
   specs/048-* specs/049-*` empty. Open for SPEC-048/T008 (not done here): its own Claude profile decision record,
   native units with route/quota observations under the D2 caps before `expiresAt` 2026-12-06T18:07:44Z, wiring
