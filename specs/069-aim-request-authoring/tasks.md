@@ -20,24 +20,24 @@ and T010's final run measures the release candidate without them.
   contract; OD-1 to OD-4 decided as D10–D13. Dependencies: adversarial and counterfactual
   reviews recorded. Verification: procedure_001. Evidence: owner review record
   bound to a frozen commit.
-- [ ] T002 (REQ-002 / SC-002): [P1] Script that enumerates schema keywords and
+- [x] T002 (REQ-002 / SC-002): [P1] Script that enumerates schema keywords and
   validator checks and probes each with generated inputs; write
   `evidence/divergence-inventory.json`; owner decides each AIM-acceptance change.
   Dependencies: T001. Verification: procedure_002.
-- [ ] T003 (REQ-003 / SC-003): [P1] Publish the envelope schema; test against
+- [x] T003 (REQ-003 / SC-003): [P1] Publish the envelope schema; test against
   examples and corpus. Dependencies: T002. Verification: procedure_003.
-- [ ] T004 (REQ-004 / SC-004): [P1] Corpus generator, committed corpus, differential
+- [x] T004 (REQ-004 / SC-004): [P1] Corpus generator, committed corpus, differential
   test with both negative controls; apply T002 decisions to schemas and
   validators. Dependencies: T002, T003. Verification: procedure_004.
-- [ ] T007 (REQ-007 / SC-007): [P1] Pointer-based structural refusals (unknown keys
+- [x] T007 (REQ-007 / SC-007): [P1] Pointer-based structural refusals (unknown keys
   tokenized), fixed-code semantic refusals, masked git errors, no path-existence
   oracle; bounded, no value echo. Dependencies: T004 (`units` refusals are added by T006
   if P3 runs). Verification: procedure_007.
-- [ ] T009 (REQ-009 / SC-009): [P1] Record alpha.7-accepted requests; replay test (byte-identical
+- [x] T009 (REQ-009 / SC-009): [P1] Record alpha.7-accepted requests; replay test (byte-identical
   except the REQ-015 label); schema notes per D8; contract version decision;
   rollback note.
   Dependencies: T004, T007. Verification: procedure_009.
-- [ ] T015 (REQ-015 / SC-015): [P1] Additive declared-not-observed label for
+- [x] T015 (REQ-015 / SC-015): [P1] Additive declared-not-observed label for
   `independent-candidate` pairs backed only by declared evidence; report schema
   note; alpha.7 replay. Dependencies: T004. Verification: procedure_015.
 

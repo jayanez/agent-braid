@@ -13,7 +13,7 @@
   ],
   "assumptions": "Plugin 0.1.0-alpha.7 as the compatibility baseline; runtime stays dependency-free; jsonschema is available as a dev/CI dependency; hosts expose non-interactive modes (claude -p, codex exec, opencode run) to be confirmed in plan research; the 2026-11-05 divergence observation covers two inputs only.",
   "authority_snapshot": {
-    "commit": "b730c0d6bcaa43f150d153358b85418a8165212e",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -62,6 +62,7 @@
       "docs/adr/0035-native-claude-laboratory-containment.md": "9db60ef1544e5218eb7fa7ba34315f48b33e464b761e07359fc5bfcd9bfaf0c5",
       "docs/adr/0036-assurance-profiles.md": "9a7abf22920a9ba91cb61c5c48b905a1415182bc9434bcf884680ec41666b464",
       "docs/adr/0037-opencode-native-plugin.md": "36c777d124b5905e8b8c25951cf59c2061fedddf1950fc24bfa2bae7197d3809",
+      "docs/adr/0038-analyze-work-request-contract.md": "6de173602f282d61c4ed221707e826ab09f3cfaa7b9ef5e68035c6f01b774ff3",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -72,9 +73,10 @@
       "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
       "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
       "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
-      "schemas/0.1.0-alpha/analysis-report.schema.json": "91c759ad0d28de0b4e68f5bd3958de37ff2e6c102ecd8c6c2f0083e0151ad578",
+      "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
       "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
-      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "928c777ae68a184fae172a7cb2b172ba283b5af912edaf6c4b389bd8bf767a96",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
       "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
       "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
       "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
@@ -87,7 +89,7 @@
       "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
       "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
       "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
-      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "9d2ff528d0d3f02ba5bce63181e88732eecef96e90fabb5898b3314abd554900",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
       "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
       "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
       "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
@@ -96,13 +98,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Additive by default: aim and git semantics, analysis-report schema, agent-braid-plugin and agent-braid-tooling contracts unchanged unless REQ-002/REQ-009 record a versioned decision with migration messages; requests accepted by alpha.7 replayed for byte-identical reports.",
   "domain": "Agent Braid analyze-work MCP request authoring: AIM 0.2.0-draft records, analysis-input envelope 0.1.0-alpha, git analysis request 0.1.0-alpha and a new units request, as delivered to host models through the native plugin.",
   "evidence_snapshot": {
-    "commit": "b730c0d6bcaa43f150d153358b85418a8165212e",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "executionAuthorization stays false; analyze-work remains read-only analysis; no grants, prepare or execute; native runs use disposable profiles and a sandbox workspace and never touch the user's real host configuration or credentials.",
   "human_review": "pending",
@@ -153,7 +155,15 @@
         {
           "given": "the schemas and validators at the candidate commit",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec069_divergence_inventory",
+              "limits": "Probes are generated from schema keywords and a curated runtime-check catalogue; this is not an exhaustive proof over all inputs. Decisions are proposals under D8; no runtime acceptance changed.",
+              "outcome": "passed: Baseline inventory: 404 probes, 166 divergent, 10 root causes (threshold 15 not exceeded); the three 2026-11-05 divergences, adapter bounds, whitespace semantics and the missing envelope schema have rows; after the D8 decisions 74 probes remain divergent, all documented. Negative controls: a missing row and a stale inventory are detected.",
+              "path": "specs/069-aim-request-authoring/evidence/procedure_002.json",
+              "sha256": "19941812a3d0fe84ed79b314245a899a51cbdaa733c0fa25b38b441e7bfd73ab"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/069-aim-request-authoring/validation-plan.md",
           "test_name": "procedure_002",
@@ -169,7 +179,15 @@
         {
           "given": "the new envelope schema",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec069_differential.DifferentialTests.test_envelope_schema_matches_runtime_on_aim_examples tests.test_spec069_differential.DifferentialTests.test_envelope_schema_negative_controls",
+              "limits": "Two example files have sourceKind aim; the 429-case corpus is covered by procedure_004.",
+              "outcome": "passed: The envelope schema accepts every aim example under examples/analysis/ as the runtime does; an envelope with an extra field and one with empty operations are refused by both.",
+              "path": "specs/069-aim-request-authoring/evidence/procedure_003.json",
+              "sha256": "5f823d543c517c26b3d1ce97fb23d24d3c41598d51e50f3ac382a6541617addf"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/069-aim-request-authoring/validation-plan.md",
           "test_name": "procedure_003",
@@ -185,7 +203,15 @@
         {
           "given": "the corpus and the schemas",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec069_differential",
+              "limits": "Corpus agreement is not proof over all inputs. Declared limits (ECMAScript whitespace, trailing newline after a digest, JSON 1.0) are tagged in the corpus. Git cases run against a one-commit temporary repository.",
+              "outcome": "passed: 429 corpus cases (310 aim, 119 git): every case matches its constructed expectation on the schema and on the complete service path; undocumented differences fail. Negative controls: a relaxed schema keyword (aim and git), a relaxed validator check and a tightened validator each fail the comparison.",
+              "path": "specs/069-aim-request-authoring/evidence/procedure_004.json",
+              "sha256": "48478dd872c7db323a33ce4e952d2c7dedc2035169d6c793204e80ea10f57978"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/069-aim-request-authoring/validation-plan.md",
           "test_name": "procedure_004",
@@ -233,7 +259,15 @@
         {
           "given": "each invalid corpus case",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec069_refusals",
+              "limits": "Pointers are checked against the corpus expectation (readVersions keys tokenized). The refusal text is not a versioned contract. No host model was involved.",
+              "outcome": "passed: Every structural refusal in the corpus names its JSON Pointer and expected form through the MCP analyze-work path; batch refusals carry fixed codes; messages are bounded. Negative controls: a secret-shaped unknown key and request values are not echoed, git output stays masked, and a missing path and an outside path return the same refusal.",
+              "path": "specs/069-aim-request-authoring/evidence/procedure_007.json",
+              "sha256": "1173754641b6d496fb86259313c3b4cf0d1b17a8abe9aed2d590cdf300a106e0"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/069-aim-request-authoring/validation-plan.md",
           "test_name": "procedure_007",
@@ -265,7 +299,15 @@
         {
           "given": "a recorded set of requests accepted by alpha.7 (examples, goldens and T010 inputs)",
           "id": "SC-009",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec069_alpha7_replay tests.test_spec069_compatibility",
+              "limits": "aim kind through ToolingService only; git requests are covered by the corpus, not replayed against alpha.7. The alpha.7 reports are bound by digest, not stored.",
+              "outcome": "passed: 317 aim requests recorded from the alpha.7 runtime (source 0eb75d84): 103 accepted stay accepted with identical reports once the T015 label is stripped and analysisId recomputed; 214 not accepted stay not accepted. Tightened keywords equal the compatibility note; contract versions unchanged. Negative controls: a new refusal, changed report bytes and a loosened validator are detected.",
+              "path": "specs/069-aim-request-authoring/evidence/procedure_009.json",
+              "sha256": "a1aacf74ff5163553d5fc3305268ea24e138da408cc8adadf5a176e632107dd6"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/069-aim-request-authoring/validation-plan.md",
           "test_name": "procedure_009",
@@ -361,7 +403,15 @@
         {
           "given": "two disjoint `aim` records with `complete` coverage and only declared evidence",
           "id": "SC-015",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec069_declared_label tests.test_spec069_alpha7_replay.ReplayTests.test_the_label_appears_exactly_for_declared_only_independent_candidates",
+              "limits": "analysisId changes with the label because it digests the whole report; SC-015's 'byte-identical' holds after stripping the label and recomputing the digest.",
+              "outcome": "passed: A declared-only independent-candidate pair carries completenessBasis; replay evidence on either record removes it; other classifications are never labelled; classification, reasons, constraints and evidence are unchanged; across the 103 replayed requests the label appears exactly for declared-only independent candidates.",
+              "path": "specs/069-aim-request-authoring/evidence/procedure_015.json",
+              "sha256": "dc90260e569b400f9930527c58f50266be82e66f0c640fcd0610689cf0e0cbfa"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/069-aim-request-authoring/validation-plan.md",
           "test_name": "procedure_015",

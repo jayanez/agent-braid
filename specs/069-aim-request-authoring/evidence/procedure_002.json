@@ -1,0 +1,27 @@
+{
+ "command": "python -m unittest tests.test_spec069_divergence_inventory",
+ "environment": {
+  "platform": "macOS-27.2",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
+  "agent_braid/git_adapter.py": "77c17bb694057e712a31886d8879f8ca922bd912f80a45fb703285f828ec94ed",
+  "agent_braid/tooling_mcp.py": "24bfaec8d6042abd07728f8a93149f389e36296605f881806f827074accfd388",
+  "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
+  "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
+  "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
+  "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
+  "scripts/spec069_divergence_inventory.py": "9a4b9f5e79e36f0106a8acaf836c8db2e2962022c7aebc9de81361b26829a1c2",
+  "specs/069-aim-request-authoring/evidence/divergence-inventory-after-decisions.json": "759221d2e08ba629b5328c13fb20b5df6adffff01cb68a0b1f99e173c2226601",
+  "specs/069-aim-request-authoring/evidence/divergence-inventory.json": "d549e673788f7b8fc23de51e0cd349b459b9199d02c1829865beacd4653558d6",
+  "tests/test_spec069_divergence_inventory.py": "025305dff4c7bf7bc8c52e127084520423acd554074142e95da1ca214b710512"
+ },
+ "limits": "Probes are generated from schema keywords and a curated runtime-check catalogue; this is not an exhaustive proof over all inputs. Decisions are proposals under D8; no runtime acceptance changed.",
+ "outcome": "passed: Baseline inventory: 404 probes, 166 divergent, 10 root causes (threshold 15 not exceeded); the three 2026-11-05 divergences, adapter bounds, whitespace semantics and the missing envelope schema have rows; after the D8 decisions 74 probes remain divergent, all documented. Negative controls: a missing row and a stale inventory are detected.",
+ "procedure": "procedure_002",
+ "result": "OK",
+ "scenario": "SC-002",
+ "specification": "SPEC-069 P1",
+ "testsRun": 9
+}
