@@ -95,16 +95,16 @@
     "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
     "agent_braid/harness_host_claude.py": "e409512d7b4d20bc5c38a28a2ee1cc31344832718f76ee2f067d25d610d1b9e1",
     "agent_braid/harness_hosts.py": "6295ee85c92bab40279ce0497067d4d6bd212c9037b02d30f4b1b00cf18cd3dc",
-    "agent_braid/harness_hosts_native.py": "ca6439fbd45ecc33dbeb571e78683fc64a1077261062457908858f21e54d2ed7",
+    "agent_braid/harness_hosts_native.py": "4094003a800238db3a45360ba38e06ec8393133d047437dcd3a9e78ad569c816",
     "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
     "agent_braid/harness_manifest.py": "6624d79de56e702062ba02cefb5cab3d6ec7a58b310c3520d7bdbe024df7fe61",
-    "scripts/har_t008_unit.py": "003d9410d017e9b4ee797b6b5bca3a4722021d79772b736fad18acd1f5e3cc1e",
+    "scripts/har_t008_unit.py": "1b552868141ff17b83f00b2b49113bb896f800dd4d27be4e2673e9b68c7dd768",
     "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
     "specs/048-harness-variant-laboratory/evidence/founder-review-20261031.json": "38bedbba82de5c219f3c0a3f6c8f2e3a0309824abeea536862bdc20e3ab4eddc",
     "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
     "tests/test_har_t008_unit.py": "be2b109775689c9b26d35badf3e0f4502a75e241fad509e76049d682da660852",
     "tests/test_harness_hosts.py": "a98ed9b5b1824c497abac262c9a99bc4de0443af9e7d06158f3415f25bc33be5",
-    "tests/test_harness_hosts_native.py": "1271637aab0b0f3d2367ec0253ba9958a8a1d2970b369189c6ad59e2e036efe5"
+    "tests/test_harness_hosts_native.py": "cee79d927994d7519f18a96cfb5060548568e8bf143a6039dde52caa93ae3a41"
   },
   "issuedRecords": {
     "containmentTrustedSha256": "b7641c8a48b9c4a2ef6213fa42fa429ae56b279df86c5da33db07e67ff83f834",

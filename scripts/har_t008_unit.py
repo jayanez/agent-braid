@@ -213,9 +213,6 @@ def _report(args, run, backend, stopped, verdict) -> dict:
 def parser():
     p = t9.parser()
     p.description = "SPEC-048/T008 native Claude cohort driver (Claude profile only)"
-    for action in p._actions:
-        if action.dest == "out_dir":
-            action.required = False
     p.add_argument("--units", type=int, default=MAX_UNITS, help=f"serial units, at most {MAX_UNITS}")
     return p
 

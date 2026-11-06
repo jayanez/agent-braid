@@ -215,6 +215,13 @@ class NativeUnitTests(unittest.TestCase):
         self.assertEqual(cm.exception.reason, "weekly-stop")
         self.assertEqual(self.fx.launcher.run_calls, [])
 
+    def test_five_hour_window_at_the_t004_start_limit_refuses_before_a_unit_opens(self):
+        with self.assertRaises(hh.HostGateError) as cm:
+            self.unit(before=observation(five_hour_percent=90))
+        self.assertEqual(cm.exception.reason, "five-hour-start")
+        self.assertEqual(self.run.verdict().units, ())
+        self.assertFalse(self.run.verdict().open_unit)
+
     def test_containment_not_the_issued_host_record_never_launches(self):
         with self.assertRaises(hh.HostGateError):
             self.unit(containment_sha256="0" * 64)

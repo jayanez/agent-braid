@@ -197,6 +197,9 @@ def run_native_unit(*, run: hh.HostQualificationRun, backend: lab.ContainmentBac
     """
     cohort = {"unitsUsed": len(run.verdict().units),
               "cohortWeeklyPercent": int(before.weekly_percent - run.baseline.weekly_percent)}
+    if before.five_hour_percent >= harness_quota.FIVE_HOUR_START_BELOW:
+        # the T004 gate would refuse after admission; refuse first so no unit is opened and spent
+        raise hh.HostGateError("five-hour-start")
     started = now()
     ticket = run.admit_unit(before, containment=containment, containment_sha256=containment_sha256,
                             now=int(started.timestamp()))
