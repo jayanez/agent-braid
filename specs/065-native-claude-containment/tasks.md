@@ -324,7 +324,7 @@ shared object store fails the portable-root check).
   `SUBSCRIPTION_KEY_SOURCES`. Not a qualification: `qualificationRecordWritten` false; the bundle is ready for the
   T010 human review (checklist in the result, section 4), and only the NC-9 issuer can issue records.
 
-- [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
+- [x] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes
   the containment and Claude host records with `evidenceSha256` = bundle hash,
   `expiresAt` per NC-9, and a decision record carrying both canonical records
@@ -342,6 +342,15 @@ shared object store fails the portable-root check).
   Verification: procedure_009. Negative controls: runner-produced record,
   edited record, wrong environment hash, expired record all refuse. Evidence:
   issuance record and verification output.
+  Obtained: issued 2026-11-06 by the founder (NC-9) on the attempt-5 bundle `t009-20261106a`
+  (`bundleSha256` `45eee4d81bda711f6a1a73ae6a54e373e693208967b29bce352d7f428ef5d1ce`, all four effects `enforced`,
+  HOST-01 completed, CRED-05 `apiKeySource` `none`). Record `evidence/qualification/issuance-2026-11-06.json`: both
+  canonical records, trusted hashes (containment `b7641c8a…f834`, host `8c1a38fe…178d`), `expiresAt` 2026-12-06T18:07:44Z
+  (30 days), NC-9 re-qualification triggers, and the founder's verbatim answers (residuals PROC-ESC-1, PROC-03, NET-02,
+  PROC-04, PROC-07 accepted for the validity; MDRV-04 accepted with PR review; issue). Verification `evidence/t010.json`:
+  both verifiers accept, edited records, a wrong environment hash, an untrusted (runner) hash, another host and partial
+  effects refuse; run-time `environment-drift` and `qualification-expired` covered by the backend tests (213 OK).
+  `executionAuthorization` false; normal use still needs T011 and the SPEC-048/T008 profile decision.
 
 ## Hand-off and closure
 

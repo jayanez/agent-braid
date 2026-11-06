@@ -1,0 +1,37 @@
+{
+  "task": "SPEC-065/T010",
+  "recordedAt": "2026-11-06",
+  "issuanceRecord": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-06.json",
+  "issuanceRecordSha256": "26030d57a021d28ce3b836582ba6196c6636f7401d386a71f7d5a2b9791723ac",
+  "baseCommit": "01d6504a",
+  "commands": [
+    "/usr/local/libexec/braid/python312/bin/python3.12 -B <verify script> <repo> specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-06.json  (reads the records and the bundle; verify_qualification, verify_host_qualification and refusal controls; script text in the PR body)",
+    "/usr/local/libexec/braid/python312/bin/python3.12 -B -m unittest tests.test_harness_containment_macos tests.test_harness_host_claude tests.test_harness_lab  -> Ran 213 tests, OK (skipped=2)"
+  ],
+  "verification": {
+    "checks": {
+      "verify_qualification": true,
+      "verify_host_qualification": true,
+      "evidenceSha256-is-bundle": true,
+      "environmentSha256-is-bundle": true,
+      "bundle-pass-rule": true,
+      "runner-wrote-no-record": true,
+      "expiresAt-30-days": true
+    },
+    "negativeControls": {
+      "edited-containment-record": "refused:qualification-drift",
+      "edited-host-record": "refused:qualification-drift",
+      "wrong-environment-hash": "refused:qualification-drift",
+      "runner-produced-record-untrusted-hash": "refused:qualification-drift",
+      "other-host": "refused:host-mismatch",
+      "partial-effects": "refused:invalid-qualification"
+    },
+    "allPass": true
+  },
+  "runtimeControls": {
+    "wrong-environment-at-run": "MacOSContainment refuses 'environment-drift' when the recomputed environment hash differs (harness_containment_macos.py, unit test test_qualification_for_another_environment_or_expired)",
+    "expired-record": "MacOSContainment refuses 'qualification-expired' at or after expiresAt (same test); _check_backend and _check_transport require now < expiresAt"
+  },
+  "limits": "Record-level checks ran on the orchestrator account; the live environment recomputation runs in the lab account before every native session (NC-11). Nothing native ran for T010.",
+  "executionAuthorization": false
+}
