@@ -17,7 +17,7 @@ SPEC-068 T010 (row 16, finding F1) showed an OpenCode model sending
 `{units: [{id, writes}]}` to `analyze-work` because the tool declared `request` only
 as "object or array". With a valid AIM example the same call returned `conflicting`.
 SPEC-069 T002 then showed that the published AIM and git request schemas and the
-runtime validators disagree in both directions (404 probes, 9 root causes), that no
+runtime validators disagree in both directions (404 probes, 10 root causes), that no
 schema exists for the analysis-input envelope, and that refusals do not say where a
 request failed. Interim guidance (PR #1099) describes the shape in prose only.
 
