@@ -237,6 +237,15 @@ def _ancestors(records: list[dict]) -> dict[str, set[str]]:
     return result
 
 
+DECLARED_NOT_OBSERVED = "declared-not-observed"
+
+
+def _only_declared(record: dict) -> bool:
+    """True when every evidence item of the record has method ``declared``."""
+    evidence = record.get("evidence")
+    return bool(evidence) and all(isinstance(item, dict) and item.get("method") == "declared" for item in evidence)
+
+
 def _interaction(left: dict, right: dict, ancestors: dict[str, set[str]]) -> dict:
     left_id, right_id = left["instanceId"], right["instanceId"]
     left_effects, right_effects = _effect_map(left), _effect_map(right)
@@ -277,7 +286,7 @@ def _interaction(left: dict, right: dict, ancestors: dict[str, set[str]]) -> dic
         constraints.append("validate-read-versions-at-use")
         reasons.append("Read-version preconditions remain point-of-use obligations.")
 
-    return {
+    interaction = {
         "left": left_id,
         "right": right_id,
         "classification": classification,
@@ -291,6 +300,10 @@ def _interaction(left: dict, right: dict, ancestors: dict[str, set[str]]) -> dic
             "ruleSet": RULE_SET,
         },
     }
+    if classification == "independent-candidate" and _only_declared(left) and _only_declared(right):
+        # SPEC-069 REQ-015 / D7: completeness here is the producer's declaration, not an observation.
+        interaction["completenessBasis"] = DECLARED_NOT_OBSERVED
+    return interaction
 
 
 def analyze(value: object) -> dict:
@@ -364,6 +377,8 @@ def render_text(report: dict) -> str:
         for reason in item["reasons"]:
             lines.append(f"  - {reason}")
         lines.append("  constraints: " + ", ".join(item["constraints"]))
+        if item.get("completenessBasis"):
+            lines.append("  completeness: declared by the producer, not observed")
     if report["uncertainty"]:
         lines.append("Uncertainty:")
         lines.extend(f"  - {item}" for item in report["uncertainty"])

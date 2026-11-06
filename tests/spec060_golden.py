@@ -5,6 +5,13 @@ The fixtures under ``tests/fixtures/spec060`` were captured from the develop
 commit that preceded any SPEC-060 behaviour change (portable server v0.1,
 plugin alpha.4). Run, artifact and path-dependent identifiers are replaced by
 placeholders before comparing; every other byte must match.
+
+SPEC-069 T015 regenerated ``core-analyze-work-envelope.json`` and
+``plugin-analyze-work-envelope.json`` once: the additive ``completenessBasis``
+label on declared-only ``independent-candidate`` pairs and the ``analysisId``
+digest that covers it are the only differences (verified by
+``tests/test_spec069_alpha7_replay.py``, which strips the label and recomputes the
+digest against the alpha.7 reports).
 """
 from __future__ import annotations
 

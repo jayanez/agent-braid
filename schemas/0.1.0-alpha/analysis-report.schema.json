@@ -58,6 +58,7 @@
           "sharedResources": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
           "reasons": {"type": "array", "minItems": 1, "items": {"type": "string"}},
           "constraints": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+          "completenessBasis": {"const": "declared-not-observed"},
           "evidence": {
             "type": "object",
             "additionalProperties": false,

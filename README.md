@@ -274,11 +274,12 @@ writes. These two edit different files:
 ```
 
 ```text
-Agent Braid analysis sha256:216014b8a3c05cff6440665d9f13cc9da6524694286d0ada852ccc7dd875a366
+Agent Braid analysis sha256:44aac5d61663008663bb66b07190cce628c9897fb854f9bbf63cc0f5934d90b2
 Operations: 2  Pairs: 1
 edit-readme / edit-roadmap: independent-candidate
   - Complete exact-resource footprints are disjoint.
   constraints: requires-execution-contract-before-parallelism
+  completeness: declared by the producer, not observed
 Execution authorization: false
 ```
 
