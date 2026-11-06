@@ -1,0 +1,75 @@
+{
+  "recordVersion": "spec048-founder-review-v1",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-06",
+  "baseCommit": "14187e05",
+  "decisionChannel": "Founder answers to five interactive guided questions (explanation, examples, risks, undo, recommendation) in the SPEC-048/T008 session, 2026-11-06",
+  "supersedes": "specs/048-harness-variant-laboratory/evidence/founder-review-20261031.json (sha256 38bedbba82de5c219f3c0a3f6c8f2e3a0309824abeea536862bdc20e3ab4eddc) for the Claude profile",
+  "decisions": [
+    {
+      "task": "SPEC-048/T008",
+      "item": "Claude profile qualification",
+      "decision": "qualification-authorized",
+      "ownerStatement": "A: authorized-for-native-units (Recommended)",
+      "detail": "Authorizes executing the T008 native units for the Claude profile only, on the SPEC-065 issued records (containment b7641c8a48b9c4a2ef6213fa42fa429ae56b279df86c5da33db07e67ff83f834, host 8c1a38fe054a09a44a29b53f9aad757500991e1d74aaa655ec4584bcd886178d, issuance record evidence/qualification/issuance-2026-11-06.json, expires 2026-12-06T18:07:44Z), EUR 0, D2 caps, subscription route. The 'qualified' verdict is decided later from the unit evidence. Does not admit SPEC-049/T004 and does not qualify Codex."
+    },
+    {
+      "task": "SPEC-048/T008",
+      "item": "Codex profile qualification",
+      "decision": "not-qualified",
+      "ownerStatement": "Unchanged from founder-review-20261031.json: Registralo como no calificado y anota que lo tenemos que revisar antes de considerar cerrado este milestone",
+      "detail": "Codex CLI is not installed; stays refused and must be reviewed again before HAR.1 closes."
+    }
+  ],
+  "founderAnswers": [
+    {
+      "id": "T008-1",
+      "topic": "Claude profile decision record",
+      "answer": "A: authorized-for-native-units (Recommended)"
+    },
+    {
+      "id": "T008-2",
+      "topic": "Schedule and caps for the native units (D2)",
+      "answer": "4 unidades desde 11-09 (Recommended)",
+      "terms": "Window 2026-11-09T20:30Z to 2026-11-30; cohort of at most 4 serial units; D2 caps unchanged (30 min per unit, session at most 10 % of 5-hour, cohort at most 15 % of weekly, weekly stop above 80 %, EUR 0, subscription route); more than 4 units needs a new founder decision; operator types usage readings at most 5 minutes old before and after each unit.",
+      "readingAtDecision": {
+        "observedAt": "2026-11-06",
+        "plan": "Max",
+        "fiveHourPercent": 27,
+        "fiveHourResetsAt": "2026-11-06T22:50:00Z",
+        "weeklyAllModelsPercent": 81,
+        "weeklyResetsAt": "2026-11-09T20:00:00Z",
+        "extraUsageEnabled": false,
+        "note": "weekly above 80 %: no unit can start before the weekly reset"
+      }
+    },
+    {
+      "id": "T008-3",
+      "topic": "SPEC-048 historical snapshots at 530a5f39",
+      "answer": "A: refrescar historical (Recommended)",
+      "terms": "Refresh authority_snapshot and evidence_snapshot to a recent public develop commit in the T008 change, keeping them historical, with old and new hashes recorded."
+    },
+    {
+      "id": "T008-4",
+      "topic": "MDRV-04 review rule",
+      "answer": "A: PR + guardia por hash (Recommended)",
+      "terms": "Keep PR review and add an automatic guard: the lab driver refuses a unit when any of harness_manifest.py, harness_context.py, harness_observation.py, system_one.py differs from the sha256 it had at the qualified commit 320b00c4, unless the founder approved that exact hash."
+    },
+    {
+      "id": "T008-5",
+      "topic": "Lab teardown",
+      "answer": "A: tras T008 y T004, o 12-06 (Recommended)",
+      "terms": "Keep the lab until SPEC-048/T008 and SPEC-049/T004 are closed or 2026-12-06, whichever comes first; the orchestrator prepares a one-command teardown script that only the founder runs."
+    }
+  ],
+  "hostObservation": {
+    "observedAt": "2026-11-06",
+    "host": {
+      "claude": "claude 2.1.292 pinned at /usr/local/libexec/braid/claude-2.1.292",
+      "codex": "absent (command -v codex: not found)"
+    }
+  },
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false
+}

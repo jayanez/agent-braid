@@ -21,12 +21,12 @@
   ],
   "assumptions": "Owner-controlled sources and qualified local hosts only; immutable authorities and frozen policies; no provider permission, containment support or positive utility inferred.",
   "authority_snapshot": {
-    "commit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
+    "commit": "14187e05668e03ee452a91f5209fd5ae883a04e4",
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
-      "LICENSE": "340d66a837b3a1617645d00622a46d1bcbf3534bedd997b6461d16d2e08b374f",
+      "LICENSE": "de98edde0132e64db2b0c9cfbf2be1e503437a57fc212936195be4c46c1817be",
       "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
       "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
       "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
@@ -65,7 +65,11 @@
       "docs/adr/0030-native-plugin-surface-naming.md": "2bff8ce3fd5c2e183dca8000044ccd4d08980ec7e4a1b31d9af7a3a4b7f18c8e",
       "docs/adr/0031-portable-prompt-names.md": "2e2ccf4e3d3b82cfb3e375d790104b9bb79f7f503041f11e60738e546d670d8e",
       "docs/adr/0032-activity-viewer-companion.md": "75c41ed41b9ffa886df423dffb47ff2fd110f4a7fe639d54ee6b82b3148a5b06",
-      "docs/adr/0033-vendored-threejs-mit-boundary.md": "65591eb05ec807cc1cf02f0dfadbd735affae109f9a590920bc9b92763d52fc4",
+      "docs/adr/0033-vendored-threejs-mit-boundary.md": "4f0c2956498e1329296652e436d8c84552ba18ab893a51314803cf8f9d39868e",
+      "docs/adr/0034-system-one-shadow-advisory-boundary.md": "83de00082099fbefad0f2603aae8020270b157e731aae613f412586d33c086eb",
+      "docs/adr/0035-native-claude-laboratory-containment.md": "9db60ef1544e5218eb7fa7ba34315f48b33e464b761e07359fc5bfcd9bfaf0c5",
+      "docs/adr/0036-assurance-profiles.md": "9a7abf22920a9ba91cb61c5c48b905a1415182bc9434bcf884680ec41666b464",
+      "docs/adr/0037-opencode-native-plugin.md": "36c777d124b5905e8b8c25951cf59c2061fedddf1950fc24bfa2bae7197d3809",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -105,7 +109,7 @@
   "compatibility": "Additive opt-in offline foundations under ADR 0027; internal v0.1 records only. Existing AIM/runtime/plugin/telemetry/System 1/forecast contracts and historical evidence unchanged.",
   "domain": "Owned repository tasks, task-local guidance and selected context packaging; deterministic laboratory controls first. Arbitrary tools, scripts, hooks, policy rewrites and production source mutation are outside the initial editable surface.",
   "evidence_snapshot": {
-    "commit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
+    "commit": "14187e05668e03ee452a91f5209fd5ae883a04e4",
     "mode": "historical"
   },
   "execution_contract": "ADR 0027 adopts only offline foundations T002\u2013T004: immutable identity verification, bounded positive-inventory import and externally issued operator-admission reservation. No launcher or issuance API; all executionAuthorization fields false. Runner, host, context packaging, observation/export and later feature acceptance remain pending; no existing grant or runtime language is widened.",
