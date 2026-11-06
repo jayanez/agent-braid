@@ -1,0 +1,101 @@
+{
+  "recordVersion": "spec065-issuance-v1",
+  "task": "SPEC-065/T010 human issuance of the native Claude containment and host qualification",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-06",
+  "issuer": "founder (NC-9: issuer is the founder only)",
+  "decisionChannel": "Founder answers to interactive guided questions in the HAR orchestrator session, 2026-11-06, recorded verbatim. The issuer reviewed the T009 attempt-5 bundle and the drafts below; the records were written on the issuer's instruction.",
+  "bundle": {
+    "attempt": "t009-20261106a",
+    "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261106a/",
+    "bundleSha256": "45eee4d81bda711f6a1a73ae6a54e373e693208967b29bce352d7f428ef5d1ce",
+    "commit": "320b00c4efd74e14c1c7ff9ee1498574efe361b9",
+    "result": "specs/065-native-claude-containment/evidence/t009-attempt5-result.md"
+  },
+  "review": [
+    {
+      "id": "T010-RESIDUALS",
+      "question": "Emitir significa aceptar PROC-ESC-1, PROC-03 (memoria comprimida) y los residuos del catálogo NET-02, PROC-04, PROC-07 durante los 30 días del registro. ¿Los aceptas para la emisión?",
+      "ownerStatement": "Acepto para emisión (Recommended)",
+      "cites": [
+        "specs/065-native-claude-containment/evidence/founder-decisions-20261104c.json",
+        "specs/065-native-claude-containment/evidence/founder-decisions-20261106.json"
+      ]
+    },
+    {
+      "id": "T010-MDRV-04",
+      "question": "El hash de entorno omite harness_manifest.py, harness_context.py, harness_observation.py y system_one.py. ¿Lo aceptas?",
+      "ownerStatement": "Acepto con revisión PR (Recommended)",
+      "reading": "Accepted for this issuance; any change to those four files during validity is reviewed by the founder before native use. Checked unchanged between 320b00c4 and the issuance commit."
+    },
+    {
+      "id": "T010-NC-9",
+      "question": "Caducidad 30 días tras emitir y recalificación anticipada por cambio de build de macOS, versión o hash de Claude Code, bytes del perfil, catálogo, proxy o método de credencial. ¿Confirmas?",
+      "ownerStatement": "Confirmo 30 días + disparadores (Recommended)"
+    },
+    {
+      "id": "T010-CRED-05",
+      "finding": "apiKeySource observed 'none' in CRED-05, NET-05-CLI and HOST-01, inside SUBSCRIPTION_KEY_SOURCES {none, oauth}; no constant edit."
+    },
+    {
+      "id": "T010-ISSUE",
+      "question": "¿Emites la calificación?",
+      "ownerStatement": "Emito (Recommended)"
+    }
+  ],
+  "decision": {
+    "disposition": "issued",
+    "effects": {
+      "credential": "enforced",
+      "filesystem": "enforced",
+      "network": "enforced",
+      "process": "enforced"
+    },
+    "host01": "completed",
+    "issuedAt": 1793988464,
+    "expiresAt": 1796580464,
+    "reQualificationTriggers": [
+      "OS build",
+      "Claude Code version or hash",
+      "profile bytes",
+      "probe catalog",
+      "proxy",
+      "credential method"
+    ]
+  },
+  "records": {
+    "containment": {
+      "format": "braid-harness-containment-qualification/v0.1",
+      "backend": "macos-dedicated-user-sandbox-exec",
+      "kind": "native",
+      "environmentSha256": "e91007d8626998d49ccb574bc241752bccc5134616598dd76b8f63630f9d818a",
+      "enforced": [
+        "credential",
+        "filesystem",
+        "network",
+        "process"
+      ],
+      "expiresAt": 1796580464,
+      "evidenceSha256": "45eee4d81bda711f6a1a73ae6a54e373e693208967b29bce352d7f428ef5d1ce"
+    },
+    "host": {
+      "format": "braid-harness-host-qualification/v0.1",
+      "host": "claude",
+      "environmentSha256": "e91007d8626998d49ccb574bc241752bccc5134616598dd76b8f63630f9d818a",
+      "enforced": [
+        "credential",
+        "filesystem",
+        "network",
+        "process"
+      ],
+      "expiresAt": 1796580464,
+      "evidenceSha256": "45eee4d81bda711f6a1a73ae6a54e373e693208967b29bce352d7f428ef5d1ce"
+    }
+  },
+  "trustedHashes": {
+    "containmentSha256": "b7641c8a48b9c4a2ef6213fa42fa429ae56b279df86c5da33db07e67ff83f834",
+    "hostSha256": "8c1a38fe054a09a44a29b53f9aad757500991e1d74aaa655ec4584bcd886178d"
+  },
+  "executionAuthorization": false,
+  "notes": "Issuance makes the native Claude profile verifiable by the runtime; normal use still needs the SPEC-048/T008 profile decision (T011 hand-off) and the NC-11 pre-session check before every session. Revocation: a reviewed change that withdraws these trusted hashes."
+}
