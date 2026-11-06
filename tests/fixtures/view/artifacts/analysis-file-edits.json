@@ -1,5 +1,5 @@
 {
-  "analysisId": "sha256:216014b8a3c05cff6440665d9f13cc9da6524694286d0ada852ccc7dd875a366",
+  "analysisId": "sha256:44aac5d61663008663bb66b07190cce628c9897fb854f9bbf63cc0f5934d90b2",
   "analyzer": {
     "name": "agent-braid",
     "ruleSet": "exact-resource-footprints-v1",
@@ -10,6 +10,7 @@
   "interactions": [
     {
       "classification": "independent-candidate",
+      "completenessBasis": "declared-not-observed",
       "constraints": [
         "requires-execution-contract-before-parallelism"
       ],
