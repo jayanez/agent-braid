@@ -1,0 +1,39 @@
+{
+  "task": "SPEC-065/T011",
+  "recordedAt": "2026-11-06",
+  "baseCommit": "e332ff18",
+  "packet": "specs/065-native-claude-containment/evidence/handoff-spec048-t008.md",
+  "packetSha256": "27971530b20a3618e3ed1a4e4a50762091276a25a86d536cc4fe2539c627a879",
+  "inputs": {
+    "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-06.json": "26030d57a021d28ce3b836582ba6196c6636f7401d386a71f7d5a2b9791723ac",
+    "specs/065-native-claude-containment/evidence/t010.json": "e18edf60e1043c0f6f3f976f23bd4990f4954f4ef7ca3a5d3319c836ae15e224",
+    "specs/065-native-claude-containment/evidence/t009-attempt5-result.md": "bd1607dc709208347304e98de6115e126b15dbbd451afb2404c67301eea480a1",
+    "specs/065-native-claude-containment/evidence/qualification/t009-20261106a/environment.json": "20ebde1593c375f5ba6876bb672b729818bd371ec345c48427791d353dd08a03",
+    "specs/048-harness-variant-laboratory/tasks.md": "061054d06a55af26791bbb3771fb34d826351ba36a2340e45261f824e3b1726a",
+    "specs/048-harness-variant-laboratory/evidence/t008.json": "d5df3a902c59a2d0e0a0835dc82accb07dad7d8ac2b254cbee997d4d75c47564",
+    "agent_braid/harness_hosts.py": "c62480020499bd34d33a6012e71846f0646b1ecd320816356c5505b1c2266104",
+    "agent_braid/harness_containment_macos.py": "f241d9af83f5c6097a97513b065a1cc17558b38242fb808ac963c06ae1ad93f3"
+  },
+  "checks": {
+    "trustedHashes-recomputed-from-canonical-records": {
+      "containmentSha256": "b7641c8a48b9c4a2ef6213fa42fa429ae56b279df86c5da33db07e67ff83f834",
+      "hostSha256": "8c1a38fe054a09a44a29b53f9aad757500991e1d74aaa655ec4584bcd886178d",
+      "match": true
+    },
+    "bundleSha256-recomputed-verify_bundle-rule": {
+      "value": "45eee4d81bda711f6a1a73ae6a54e373e693208967b29bce352d7f428ef5d1ce",
+      "match": true
+    },
+    "bundle-SHA256SUMS": "shasum -a 256 -c SHA256SUMS: 7 of 7 OK",
+    "expiresAt": "1796580464 = 2026-12-06T18:07:44Z, 30 days after issuedAt 1793988464",
+    "runtime-code-unchanged-since-qualified-commit": "git diff --stat 320b00c4 origin/develop -- agent_braid/ scripts/ : empty",
+    "abbreviated-hashes-in-packet": "each prefix…suffix matches a full hash of a repository file or record (scratch script)"
+  },
+  "procedure_011": {
+    "command": "git diff --stat origin/develop -- specs/048-* specs/049-*",
+    "output": "",
+    "result": "no SPEC-048/049 byte changed; the packet claims neither T008 nor T004 completion"
+  },
+  "limits": "Docs only; nothing native ran. environmentSha256 is not recomputable offline (it is recomputed in the lab account at every NC-11 check). The packet does not complete SPEC-048/T008, admit SPEC-049/T004, or say anything about Codex.",
+  "executionAuthorization": false
+}
