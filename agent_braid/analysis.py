@@ -22,12 +22,37 @@ DIGEST = re.compile(r"^sha256:[0-9a-f]{64}$")
 
 
 class InvalidAnalysis(ValueError):
-    """The analysis input is malformed or outside the supported contract."""
+    """The analysis input is malformed or outside the supported contract.
+
+    A structural refusal carries ``pointer`` (a JSON Pointer into the request) and
+    ``expected`` (the accepted form); a semantic refusal carries a fixed ``code``.
+    All three are built from fixed text and schema-defined names only: request
+    values are never echoed, and request keys not defined by the contract are
+    replaced by ``_key_token`` (SPEC-069 REQ-007).
+    """
+
+    def __init__(self, message: str, *, pointer: str | None = None,
+                 expected: str | None = None, code: str | None = None) -> None:
+        self.pointer, self.expected, self.code = pointer, expected, code
+        text = message
+        if pointer is not None:
+            text += f" at {pointer or '/'}"
+            if expected:
+                text += f"; expected {expected}"
+        if code:
+            text += f" [{code}]"
+        super().__init__(text)
 
 
-def _require(condition: bool, message: str) -> None:
+def _require(condition: bool, message: str, *, pointer: str | None = None,
+             expected: str | None = None, code: str | None = None) -> None:
     if not condition:
-        raise InvalidAnalysis(message)
+        raise InvalidAnalysis(message, pointer=pointer, expected=expected, code=code)
+
+
+def key_token(key: str) -> str:
+    """Stable placeholder for a request key that the contract does not define."""
+    return "<key:" + hashlib.sha256(key.encode("utf-8", "surrogatepass")).hexdigest()[:8] + ">"
 
 
 def _canonical(value: object) -> bytes:
@@ -40,96 +65,151 @@ def _digest(value: object) -> str:
     return "sha256:" + hashlib.sha256(_canonical(value)).hexdigest()
 
 
-def _nonempty(value: object, label: str) -> str:
-    _require(isinstance(value, str) and bool(value.strip()), f"invalid {label}")
+NONBLANK = "a non-blank string"
+DIGEST_FORM = "a string like sha256:<64 lowercase hex digits>"
+
+
+def _nonempty(value: object, label: str, pointer: str | None = None) -> str:
+    _require(isinstance(value, str) and bool(value.strip()), f"invalid {label}",
+             pointer=pointer, expected=NONBLANK)
     return value
+
+
+def exact_keys(value: dict, required: set[str], message: str, pointer: str) -> None:
+    """Require exactly the named properties; report missing names and tokenized unknown keys."""
+    if set(value) == required:
+        return
+    missing = sorted(required - set(value))
+    unknown = sorted(key_token(key) for key in value if key not in required)
+    detail = []
+    if missing:
+        detail.append("missing " + ", ".join(missing))
+    if unknown:
+        detail.append("unknown " + ", ".join(unknown))
+    raise InvalidAnalysis(message, pointer=pointer, expected=(
+        "an object with exactly the properties " + ", ".join(sorted(required))
+        + " (" + "; ".join(detail) + ")"))
 
 
 def _records(value: object) -> tuple[list[dict], str]:
     source_kind = "aim"
     if isinstance(value, dict) and value.get("analysisInputVersion") == REPORT_VERSION:
-        _require(set(value) == {"analysisInputVersion", "source", "operations"},
-                 "invalid analysis input envelope")
+        exact_keys(value, {"analysisInputVersion", "source", "operations"},
+                   "invalid analysis input envelope", "")
         source = value["source"]
-        _require(isinstance(source, dict) and set(source) == {"kind", "description"},
-                 "invalid source description")
-        source_kind = _nonempty(source.get("kind"), "source kind")
-        _nonempty(source.get("description"), "source description")
+        _require(isinstance(source, dict), "invalid source description",
+                 pointer="/source", expected="an object with exactly the properties description, kind")
+        exact_keys(source, {"kind", "description"}, "invalid source description", "/source")
+        source_kind = _nonempty(source.get("kind"), "source kind", "/source/kind")
+        _nonempty(source.get("description"), "source description", "/source/description")
         value = value["operations"]
+        where = "/operations"
     elif isinstance(value, dict) and value.get("aimVersion") == "0.2.0-draft":
         value = [value]
-    _require(isinstance(value, list) and value, "expected AIM record or nonempty AIM array")
-    _require(all(isinstance(item, dict) for item in value), "AIM records must be objects")
+        where = ""
+    else:
+        where = ""
+    _require(isinstance(value, list) and value, "expected AIM record or nonempty AIM array",
+             pointer=where, expected="an AIM record, a nonempty array of AIM records, or an analysis input envelope")
+    for index, item in enumerate(value):
+        _require(isinstance(item, dict), "AIM records must be objects",
+                 pointer=f"{where}/{index}", expected="an AIM record object")
     return list(value), source_kind
 
 
-def _validate_record(record: dict) -> None:
-    required = {
-        "aimVersion", "instanceId", "attemptId", "definition", "inputDigest",
-        "dependencies", "readVersions", "effects", "evidence",
-    }
-    _require(set(record) == required, "AIM record fields do not match 0.2.0-draft")
-    _require(record["aimVersion"] == "0.2.0-draft", "unsupported AIM version")
-    _nonempty(record["instanceId"], "instanceId")
-    _nonempty(record["attemptId"], "attemptId")
+def _bases(value: object, count: int) -> list[str]:
+    """JSON Pointer of each record inside the request, for the request form ``_records`` accepted."""
+    if isinstance(value, dict) and value.get("analysisInputVersion") == REPORT_VERSION:
+        return [f"/operations/{index}" for index in range(count)]
+    if isinstance(value, dict):
+        return [""]
+    return [f"/{index}" for index in range(count)]
+
+
+EFFECT_FORM = "an object with exactly the properties kind, resource"
+RECORD_FIELDS = {
+    "aimVersion", "instanceId", "attemptId", "definition", "inputDigest",
+    "dependencies", "readVersions", "effects", "evidence",
+}
+
+
+def _validate_record(record: dict, base: str = "") -> None:
+    exact_keys(record, RECORD_FIELDS, "AIM record fields do not match 0.2.0-draft", base)
+    _require(record["aimVersion"] == "0.2.0-draft", "unsupported AIM version",
+             pointer=f"{base}/aimVersion", expected="the constant 0.2.0-draft")
+    _nonempty(record["instanceId"], "instanceId", f"{base}/instanceId")
+    _nonempty(record["attemptId"], "attemptId", f"{base}/attemptId")
     definition = record["definition"]
-    _require(isinstance(definition, dict) and set(definition) == {"id", "digest"},
-             "invalid definition")
-    _nonempty(definition["id"], "definition id")
+    _require(isinstance(definition, dict), "invalid definition", pointer=f"{base}/definition",
+             expected="an object with exactly the properties digest, id")
+    exact_keys(definition, {"id", "digest"}, "invalid definition", f"{base}/definition")
+    _nonempty(definition["id"], "definition id", f"{base}/definition/id")
     _require(isinstance(definition["digest"], str) and DIGEST.fullmatch(definition["digest"]),
-             "invalid definition digest")
+             "invalid definition digest", pointer=f"{base}/definition/digest", expected=DIGEST_FORM)
     _require(isinstance(record["inputDigest"], str) and DIGEST.fullmatch(record["inputDigest"]),
-             "invalid input digest")
+             "invalid input digest", pointer=f"{base}/inputDigest", expected=DIGEST_FORM)
     dependencies = record["dependencies"]
-    _require(isinstance(dependencies, list), "dependencies must be an array")
-    _require(all(isinstance(item, str) and item for item in dependencies),
-             "invalid dependency")
-    _require(len(dependencies) == len(set(dependencies)), "duplicate dependency")
+    _require(isinstance(dependencies, list), "dependencies must be an array",
+             pointer=f"{base}/dependencies", expected="an array of nonempty strings")
+    for index, item in enumerate(dependencies):
+        _require(isinstance(item, str) and item, "invalid dependency",
+                 pointer=f"{base}/dependencies/{index}", expected="a nonempty string")
+    _require(len(dependencies) == len(set(dependencies)), "duplicate dependency",
+             pointer=f"{base}/dependencies", expected="an array of unique strings")
     versions = record["readVersions"]
-    _require(isinstance(versions, dict), "readVersions must be an object")
+    _require(isinstance(versions, dict), "readVersions must be an object",
+             pointer=f"{base}/readVersions", expected="an object mapping resource names to integers >= 0")
     for resource, version in versions.items():
-        _nonempty(resource, "version resource")
-        _require(type(version) is int and version >= 0, "invalid read version")
+        _require(isinstance(resource, str) and bool(resource.strip()), "invalid version resource",
+                 pointer=f"{base}/readVersions", expected="non-blank resource names as property names")
+        _require(type(version) is int and version >= 0, "invalid read version",
+                 pointer=f"{base}/readVersions/{key_token(resource)}", expected="an integer >= 0")
     effects = record["effects"]
-    _require(isinstance(effects, dict) and
-             set(effects) == {"declared", "inferred", "observed", "coverage"},
-             "invalid effects")
+    _require(isinstance(effects, dict), "invalid effects", pointer=f"{base}/effects",
+             expected="an object with exactly the properties coverage, declared, inferred, observed")
+    exact_keys(effects, {"declared", "inferred", "observed", "coverage"}, "invalid effects", f"{base}/effects")
     for channel in ("declared", "inferred", "observed"):
-        _require(isinstance(effects[channel], list), f"{channel} effects must be an array")
-        for effect in effects[channel]:
-            _require(isinstance(effect, dict) and set(effect) == {"kind", "resource"},
-                     "invalid effect")
-            _require(effect["kind"] in EFFECT_KINDS, "unsupported effect kind")
-            _nonempty(effect["resource"], "effect resource")
+        _require(isinstance(effects[channel], list), f"{channel} effects must be an array",
+                 pointer=f"{base}/effects/{channel}", expected="an array of effects")
+        for index, effect in enumerate(effects[channel]):
+            where = f"{base}/effects/{channel}/{index}"
+            _require(isinstance(effect, dict), "invalid effect", pointer=where, expected=EFFECT_FORM)
+            exact_keys(effect, {"kind", "resource"}, "invalid effect", where)
+            _require(effect["kind"] in EFFECT_KINDS, "unsupported effect kind", pointer=f"{where}/kind",
+                     expected="one of " + ", ".join(sorted(EFFECT_KINDS)))
+            _nonempty(effect["resource"], "effect resource", f"{where}/resource")
     coverage = effects["coverage"]
-    _require(isinstance(coverage, dict) and set(coverage) == {"status", "domain", "method"},
-             "invalid coverage")
-    _require(coverage["status"] in {"complete", "partial", "unknown"},
-             "invalid coverage status")
-    _nonempty(coverage["domain"], "coverage domain")
-    _nonempty(coverage["method"], "coverage method")
+    _require(isinstance(coverage, dict), "invalid coverage", pointer=f"{base}/effects/coverage",
+             expected="an object with exactly the properties domain, method, status")
+    exact_keys(coverage, {"status", "domain", "method"}, "invalid coverage", f"{base}/effects/coverage")
+    _require(coverage["status"] in {"complete", "partial", "unknown"}, "invalid coverage status",
+             pointer=f"{base}/effects/coverage/status", expected="one of complete, partial, unknown")
+    _nonempty(coverage["domain"], "coverage domain", f"{base}/effects/coverage/domain")
+    _nonempty(coverage["method"], "coverage method", f"{base}/effects/coverage/method")
     _require(isinstance(record["evidence"], list) and record["evidence"],
-             "evidence must be a nonempty array")
+             "evidence must be a nonempty array", pointer=f"{base}/evidence",
+             expected="a nonempty array of evidence items")
 
 
-def _validate_batch(records: list[dict]) -> None:
-    for record in records:
-        _validate_record(record)
+def _validate_batch(records: list[dict], bases: list[str] | None = None) -> None:
+    bases = bases or [f"/{index}" for index in range(len(records))]
+    for record, base in zip(records, bases):
+        _validate_record(record, base)
     identifiers = [record["instanceId"] for record in records]
     attempts = [record["attemptId"] for record in records]
-    _require(len(identifiers) == len(set(identifiers)), "duplicate instance ID")
-    _require(len(attempts) == len(set(attempts)), "duplicate attempt ID")
+    _require(len(identifiers) == len(set(identifiers)), "duplicate instance ID", code="duplicate-instance-id")
+    _require(len(attempts) == len(set(attempts)), "duplicate attempt ID", code="duplicate-attempt-id")
     known = set(identifiers)
     for record in records:
-        _require(set(record["dependencies"]) <= known, "unknown dependency")
-        _require(record["instanceId"] not in record["dependencies"], "self dependency")
+        _require(set(record["dependencies"]) <= known, "unknown dependency", code="unknown-dependency")
+        _require(record["instanceId"] not in record["dependencies"], "self dependency", code="self-dependency")
     completed: set[str] = set()
     while len(completed) < len(records):
         ready = {
             record["instanceId"] for record in records
             if set(record["dependencies"]) <= completed
         } - completed
-        _require(bool(ready), "cyclic dependencies")
+        _require(bool(ready), "cyclic dependencies", code="cyclic-dependencies")
         completed.update(ready)
 
 
@@ -216,7 +296,7 @@ def _interaction(left: dict, right: dict, ancestors: dict[str, set[str]]) -> dic
 def analyze(value: object) -> dict:
     """Analyze AIM records and return a deterministic, non-authorizing report."""
     records, source_kind = _records(value)
-    _validate_batch(records)
+    _validate_batch(records, _bases(value, len(records)))
     records = sorted(records, key=lambda item: item["instanceId"])
     ancestors = _ancestors(records)
     interactions = [

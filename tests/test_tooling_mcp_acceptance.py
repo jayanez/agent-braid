@@ -258,7 +258,9 @@ class MpcAcceptance(unittest.TestCase):
             envelope = self.service.invoke("analyze-work", {"kind": "aim", "request": request}, threading.Event())
             self.assertEqual(envelope["status"], "refused")
             self.assertIsNone(envelope["result"])
-            self.assertEqual(envelope["summary"], f"analyze-work refused: {reason}")
+            # SPEC-069 REQ-007: the validator reason leads; a JSON Pointer and the expected form follow.
+            self.assertTrue(envelope["summary"].startswith(f"analyze-work refused: {reason} at /"), envelope["summary"])
+            self.assertIn("; expected ", envelope["summary"])
         # Git analysis errors can carry git output or paths and stay masked.
         git_error = git_adapter.InvalidGitAnalysis("Git observation failed: /private/path")
         self.assertEqual(self.service._safe_error(git_error), "The bounded operation was refused")

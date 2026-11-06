@@ -120,7 +120,7 @@ class DifferentialTests(unittest.TestCase):
             relaxed.close()
 
     def test_negative_control_relaxing_a_validator_check_is_detected(self):
-        with patch.object(analysis, "_nonempty", lambda value, label: value):
+        with patch.object(analysis, "_nonempty", lambda value, label, pointer=None: value):
             self.assertTrue(self.harness.mismatches("aim", self.aim), "relaxed validator check went unnoticed")
 
     def test_negative_control_tightening_the_validator_is_detected(self):

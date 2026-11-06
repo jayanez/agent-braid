@@ -37,6 +37,9 @@ GIT_NONBLANK = ("/repository", "/baseRevision", "/operations/0/instanceId", "/op
 GIT_RESOLVED = ("/repository", "/baseRevision", "/operations/0/source/revision")
 
 
+LAYER_OF = {"RC-batch": "batch", "RC-git-resolution": "semantic"}
+
+
 def expectation(kind: str, ptr: str, keyword: str, label: str) -> tuple[str, str, dict]:
     """Expected (schema, service, extra) of a mutation, from the contract's field rules."""
     schema, service, extra = "refuses", "refuses", {}
@@ -119,7 +122,7 @@ def aim_cases() -> list[dict]:
         ptr = inv.pointer(path)
         schema, service, extra = expectation("aim", ptr, keyword, label)
         request = [mutant, copy.deepcopy(b)]
-        layer = "structural" if (schema == "refuses" or service == "refuses" and "difference" not in extra) else "structural"
+        layer = LAYER_OF.get(extra.get("difference"), "structural")
         case(cases, "aim", "array", f"{label} at {ptr or '/'}", request, schema, service, "/0" + ptr, layer, keyword=keyword, **extra)
 
     # batch-level cases (valid records, invalid batch): the schema cannot express them
@@ -137,20 +140,20 @@ def aim_cases() -> list[dict]:
     batch("cyclic dependencies", [x, y])
 
     # envelope structure (schema and service agree)
-    def env(label, mutate):
+    def env(label, mutate, pointer):
         e = copy.deepcopy(envelope); mutate(e)
-        case(cases, "aim", "envelope", label, e, "refuses", "refuses", "", "structural")
-    env("envelope with an extra field", lambda e: e.__setitem__("extra", 1))
-    env("envelope without source", lambda e: e.pop("source"))
-    env("envelope without operations", lambda e: e.pop("operations"))
-    env("envelope without version", lambda e: e.pop("analysisInputVersion"))
-    env("envelope source with an extra field", lambda e: e["source"].__setitem__("x", 1))
-    env("envelope source kind blank", lambda e: e["source"].__setitem__("kind", "  "))
-    env("envelope source description empty", lambda e: e["source"].__setitem__("description", ""))
-    env("envelope with empty operations", lambda e: e.__setitem__("operations", []))
-    env("envelope with a non-object operation", lambda e: e.__setitem__("operations", ["x"]))
-    env("envelope with another analysisInputVersion", lambda e: e.__setitem__("analysisInputVersion", "9.9.9"))
-    env("envelope operations is an object", lambda e: e.__setitem__("operations", {}))
+        case(cases, "aim", "envelope", label, e, "refuses", "refuses", pointer, "structural")
+    env("envelope with an extra field", lambda e: e.__setitem__("extra", 1), "")
+    env("envelope without source", lambda e: e.pop("source"), "")
+    env("envelope without operations", lambda e: e.pop("operations"), "")
+    env("envelope without version", lambda e: e.pop("analysisInputVersion"), "")
+    env("envelope source with an extra field", lambda e: e["source"].__setitem__("x", 1), "/source")
+    env("envelope source kind blank", lambda e: e["source"].__setitem__("kind", "  "), "/source/kind")
+    env("envelope source description empty", lambda e: e["source"].__setitem__("description", ""), "/source/description")
+    env("envelope with empty operations", lambda e: e.__setitem__("operations", []), "/operations")
+    env("envelope with a non-object operation", lambda e: e.__setitem__("operations", ["x"]), "/operations/0")
+    env("envelope with another analysisInputVersion", lambda e: e.__setitem__("analysisInputVersion", "9.9.9"), "")
+    env("envelope operations is an object", lambda e: e.__setitem__("operations", {}), "/operations")
     case(cases, "aim", "array", "empty array", [], "refuses", "refuses", "", "structural")
     case(cases, "aim", "record", "empty object", {}, "refuses", "refuses", "", "structural")
     case(cases, "aim", "record", "string instead of a request", "x", "refuses", "refuses", "", "structural")
@@ -183,7 +186,8 @@ def git_cases() -> list[dict]:
         mutant = inv.roundtrip(fn(copy.deepcopy(base)))
         ptr = inv.pointer(path)
         schema, service, extra = expectation("git", ptr, keyword, label)
-        case(cases, "git", "request", f"{label} at {ptr or '/'}", mutant, schema, service, ptr, "structural", keyword=keyword, **extra)
+        layer = LAYER_OF.get(extra.get("difference"), "structural")
+        case(cases, "git", "request", f"{label} at {ptr or '/'}", mutant, schema, service, ptr, layer, keyword=keyword, **extra)
     single = copy.deepcopy(base); single["operations"] = single["operations"][:1]; single["operations"][0]["dependencies"] = []
     case(cases, "git", "request", "a single operation (at least two are required)", single, "refuses", "refuses", "/operations", "structural", keyword="minItems")
     outside = copy.deepcopy(base); outside["repository"] = "<outside-root>"
