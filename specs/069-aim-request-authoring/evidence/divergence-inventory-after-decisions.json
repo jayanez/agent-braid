@@ -18,7 +18,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM records must be objects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -38,7 +37,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM records must be objects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -58,7 +56,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM records must be objects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -132,7 +129,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM record fields do not match 0.2.0-draft",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -204,7 +200,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM record fields do not match 0.2.0-draft",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -276,7 +271,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM record fields do not match 0.2.0-draft",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -348,7 +342,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM record fields do not match 0.2.0-draft",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -417,7 +410,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM record fields do not match 0.2.0-draft",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -489,7 +481,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM record fields do not match 0.2.0-draft",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -559,7 +550,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM record fields do not match 0.2.0-draft",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -629,7 +619,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM record fields do not match 0.2.0-draft",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -677,7 +666,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM record fields do not match 0.2.0-draft",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -737,7 +725,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM record fields do not match 0.2.0-draft",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -810,7 +797,6 @@
    "pointer": "/aimVersion",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: unsupported AIM version",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -883,7 +869,6 @@
    "pointer": "/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid instanceId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -956,7 +941,6 @@
    "pointer": "/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid instanceId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1029,7 +1013,6 @@
    "pointer": "/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid instanceId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1102,7 +1085,6 @@
    "pointer": "/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid instanceId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1175,7 +1157,6 @@
    "pointer": "/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid instanceId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1248,7 +1229,6 @@
    "pointer": "/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid instanceId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1321,7 +1301,6 @@
    "pointer": "/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid instanceId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1394,7 +1373,6 @@
    "pointer": "/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid instanceId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1467,7 +1445,6 @@
    "pointer": "/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid instanceId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1540,7 +1517,6 @@
    "pointer": "/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid instanceId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1613,7 +1589,6 @@
    "pointer": "/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -1686,7 +1661,6 @@
    "pointer": "/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid attemptId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1759,7 +1733,6 @@
    "pointer": "/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid attemptId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1832,7 +1805,6 @@
    "pointer": "/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid attemptId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1905,7 +1877,6 @@
    "pointer": "/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid attemptId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -1978,7 +1949,6 @@
    "pointer": "/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid attemptId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2051,7 +2021,6 @@
    "pointer": "/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid attemptId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2124,7 +2093,6 @@
    "pointer": "/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid attemptId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2197,7 +2165,6 @@
    "pointer": "/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid attemptId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2270,7 +2237,6 @@
    "pointer": "/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid attemptId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2343,7 +2309,6 @@
    "pointer": "/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid attemptId",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2416,7 +2381,6 @@
    "pointer": "/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -2486,7 +2450,6 @@
    "pointer": "/definition",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2556,7 +2519,6 @@
    "pointer": "/definition",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2626,7 +2588,6 @@
    "pointer": "/definition",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2700,7 +2661,6 @@
    "pointer": "/definition",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2772,7 +2732,6 @@
    "pointer": "/definition",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2844,7 +2803,6 @@
    "pointer": "/definition",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2917,7 +2875,6 @@
    "pointer": "/definition/id",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition id",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -2990,7 +2947,6 @@
    "pointer": "/definition/id",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition id",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3063,7 +3019,6 @@
    "pointer": "/definition/id",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition id",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3136,7 +3091,6 @@
    "pointer": "/definition/id",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition id",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3209,7 +3163,6 @@
    "pointer": "/definition/id",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition id",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3282,7 +3235,6 @@
    "pointer": "/definition/id",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition id",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3355,7 +3307,6 @@
    "pointer": "/definition/id",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition id",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3428,7 +3379,6 @@
    "pointer": "/definition/id",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition id",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3501,7 +3451,6 @@
    "pointer": "/definition/id",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition id",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3574,7 +3523,6 @@
    "pointer": "/definition/id",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition id",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3647,7 +3595,6 @@
    "pointer": "/definition/id",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -3720,7 +3667,6 @@
    "pointer": "/definition/digest",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3793,7 +3739,6 @@
    "pointer": "/definition/digest",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3866,7 +3811,6 @@
    "pointer": "/definition/digest",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -3939,7 +3883,6 @@
    "pointer": "/definition/digest",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4012,7 +3955,6 @@
    "pointer": "/definition/digest",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid definition digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4087,7 +4029,6 @@
    "pointer": "/definition/digest",
    "relation": "runtime-stricter",
    "rootCause": "RC-pattern-newline: the Python jsonschema `$` accepts a trailing newline (ECMAScript does not); the runtime fullmatch refuses it",
-   "serviceSummary": "analyze-work refused: invalid definition digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -4160,7 +4101,6 @@
    "pointer": "/inputDigest",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid input digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4233,7 +4173,6 @@
    "pointer": "/inputDigest",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid input digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4306,7 +4245,6 @@
    "pointer": "/inputDigest",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid input digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4379,7 +4317,6 @@
    "pointer": "/inputDigest",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid input digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4452,7 +4389,6 @@
    "pointer": "/inputDigest",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid input digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4527,7 +4463,6 @@
    "pointer": "/inputDigest",
    "relation": "runtime-stricter",
    "rootCause": "RC-pattern-newline: the Python jsonschema `$` accepts a trailing newline (ECMAScript does not); the runtime fullmatch refuses it",
-   "serviceSummary": "analyze-work refused: invalid input digest",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -4598,7 +4533,6 @@
    "pointer": "/dependencies",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: dependencies must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4669,7 +4603,6 @@
    "pointer": "/dependencies",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: dependencies must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4740,7 +4673,6 @@
    "pointer": "/dependencies",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: dependencies must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4814,7 +4746,6 @@
    "pointer": "/dependencies",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: duplicate dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4887,7 +4818,6 @@
    "pointer": "/dependencies/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -4960,7 +4890,6 @@
    "pointer": "/dependencies/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -5033,7 +4962,6 @@
    "pointer": "/dependencies/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -5106,7 +5034,6 @@
    "pointer": "/dependencies/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -5181,7 +5108,6 @@
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -5256,7 +5182,6 @@
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -5331,7 +5256,6 @@
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -5406,7 +5330,6 @@
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -5481,7 +5404,6 @@
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -5556,7 +5478,6 @@
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -5631,7 +5552,6 @@
    "pointer": "/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -5702,7 +5622,6 @@
    "pointer": "/readVersions",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: readVersions must be an object",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -5773,7 +5692,6 @@
    "pointer": "/readVersions",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: readVersions must be an object",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -5844,7 +5762,6 @@
    "pointer": "/readVersions",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: readVersions must be an object",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -5917,7 +5834,6 @@
    "pointer": "/readVersions/repo:~1~1w~1read.txt",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid read version",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -5990,7 +5906,6 @@
    "pointer": "/readVersions/repo:~1~1w~1read.txt",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid read version",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6063,7 +5978,6 @@
    "pointer": "/readVersions/repo:~1~1w~1read.txt",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid read version",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6138,7 +6052,6 @@
    "pointer": "/readVersions/repo:~1~1w~1read.txt",
    "relation": "runtime-stricter",
    "rootCause": "RC-readversions: readVersions key and number semantics differ",
-   "serviceSummary": "analyze-work refused: invalid read version",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -6211,7 +6124,6 @@
    "pointer": "/readVersions/repo:~1~1w~1read.txt",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid read version",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6284,7 +6196,6 @@
    "pointer": "/readVersions/repo:~1~1w~1read.txt",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid read version",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6358,7 +6269,6 @@
    "pointer": "/readVersions",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid version resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6432,7 +6342,6 @@
    "pointer": "/readVersions",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid version resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6481,7 +6390,6 @@
    "pointer": "/effects",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6530,7 +6438,6 @@
    "pointer": "/effects",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6579,7 +6486,6 @@
    "pointer": "/effects",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6653,7 +6559,6 @@
    "pointer": "/effects",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6720,7 +6625,6 @@
    "pointer": "/effects",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6787,7 +6691,6 @@
    "pointer": "/effects",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6854,7 +6757,6 @@
    "pointer": "/effects",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6922,7 +6824,6 @@
    "pointer": "/effects",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -6990,7 +6891,6 @@
    "pointer": "/effects/declared",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: declared effects must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7058,7 +6958,6 @@
    "pointer": "/effects/declared",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: declared effects must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7126,7 +7025,6 @@
    "pointer": "/effects/declared",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: declared effects must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7196,7 +7094,6 @@
    "pointer": "/effects/declared/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7266,7 +7163,6 @@
    "pointer": "/effects/declared/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7336,7 +7232,6 @@
    "pointer": "/effects/declared/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7410,7 +7305,6 @@
    "pointer": "/effects/declared/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7482,7 +7376,6 @@
    "pointer": "/effects/declared/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7554,7 +7447,6 @@
    "pointer": "/effects/declared/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7627,7 +7519,6 @@
    "pointer": "/effects/declared/0/kind",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: unsupported effect kind",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7700,7 +7591,6 @@
    "pointer": "/effects/declared/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7773,7 +7663,6 @@
    "pointer": "/effects/declared/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7846,7 +7735,6 @@
    "pointer": "/effects/declared/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7919,7 +7807,6 @@
    "pointer": "/effects/declared/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -7992,7 +7879,6 @@
    "pointer": "/effects/declared/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8065,7 +7951,6 @@
    "pointer": "/effects/declared/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8138,7 +8023,6 @@
    "pointer": "/effects/declared/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8211,7 +8095,6 @@
    "pointer": "/effects/declared/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8284,7 +8167,6 @@
    "pointer": "/effects/declared/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8357,7 +8239,6 @@
    "pointer": "/effects/declared/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8430,7 +8311,6 @@
    "pointer": "/effects/declared/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -8498,7 +8378,6 @@
    "pointer": "/effects/inferred",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: inferred effects must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8566,7 +8445,6 @@
    "pointer": "/effects/inferred",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: inferred effects must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8634,7 +8512,6 @@
    "pointer": "/effects/inferred",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: inferred effects must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8704,7 +8581,6 @@
    "pointer": "/effects/inferred/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8774,7 +8650,6 @@
    "pointer": "/effects/inferred/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8844,7 +8719,6 @@
    "pointer": "/effects/inferred/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8918,7 +8792,6 @@
    "pointer": "/effects/inferred/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -8990,7 +8863,6 @@
    "pointer": "/effects/inferred/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9062,7 +8934,6 @@
    "pointer": "/effects/inferred/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9135,7 +9006,6 @@
    "pointer": "/effects/inferred/0/kind",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: unsupported effect kind",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9208,7 +9078,6 @@
    "pointer": "/effects/inferred/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9281,7 +9150,6 @@
    "pointer": "/effects/inferred/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9354,7 +9222,6 @@
    "pointer": "/effects/inferred/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9427,7 +9294,6 @@
    "pointer": "/effects/inferred/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9500,7 +9366,6 @@
    "pointer": "/effects/inferred/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9573,7 +9438,6 @@
    "pointer": "/effects/inferred/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9646,7 +9510,6 @@
    "pointer": "/effects/inferred/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9719,7 +9582,6 @@
    "pointer": "/effects/inferred/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9792,7 +9654,6 @@
    "pointer": "/effects/inferred/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9865,7 +9726,6 @@
    "pointer": "/effects/inferred/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -9938,7 +9798,6 @@
    "pointer": "/effects/inferred/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -10006,7 +9865,6 @@
    "pointer": "/effects/observed",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: observed effects must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10074,7 +9932,6 @@
    "pointer": "/effects/observed",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: observed effects must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10142,7 +9999,6 @@
    "pointer": "/effects/observed",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: observed effects must be an array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10212,7 +10068,6 @@
    "pointer": "/effects/observed/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10282,7 +10137,6 @@
    "pointer": "/effects/observed/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10352,7 +10206,6 @@
    "pointer": "/effects/observed/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10426,7 +10279,6 @@
    "pointer": "/effects/observed/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10498,7 +10350,6 @@
    "pointer": "/effects/observed/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10570,7 +10421,6 @@
    "pointer": "/effects/observed/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10643,7 +10493,6 @@
    "pointer": "/effects/observed/0/kind",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: unsupported effect kind",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10716,7 +10565,6 @@
    "pointer": "/effects/observed/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10789,7 +10637,6 @@
    "pointer": "/effects/observed/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10862,7 +10709,6 @@
    "pointer": "/effects/observed/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -10935,7 +10781,6 @@
    "pointer": "/effects/observed/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11008,7 +10853,6 @@
    "pointer": "/effects/observed/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11081,7 +10925,6 @@
    "pointer": "/effects/observed/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11154,7 +10997,6 @@
    "pointer": "/effects/observed/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11227,7 +11069,6 @@
    "pointer": "/effects/observed/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11300,7 +11141,6 @@
    "pointer": "/effects/observed/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11373,7 +11213,6 @@
    "pointer": "/effects/observed/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid effect resource",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11446,7 +11285,6 @@
    "pointer": "/effects/observed/0/resource",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -11515,7 +11353,6 @@
    "pointer": "/effects/coverage",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11584,7 +11421,6 @@
    "pointer": "/effects/coverage",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11653,7 +11489,6 @@
    "pointer": "/effects/coverage",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11727,7 +11562,6 @@
    "pointer": "/effects/coverage",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11799,7 +11633,6 @@
    "pointer": "/effects/coverage",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11871,7 +11704,6 @@
    "pointer": "/effects/coverage",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -11943,7 +11775,6 @@
    "pointer": "/effects/coverage",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12016,7 +11847,6 @@
    "pointer": "/effects/coverage/status",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage status",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12089,7 +11919,6 @@
    "pointer": "/effects/coverage/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage domain",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12162,7 +11991,6 @@
    "pointer": "/effects/coverage/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage domain",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12235,7 +12063,6 @@
    "pointer": "/effects/coverage/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage domain",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12308,7 +12135,6 @@
    "pointer": "/effects/coverage/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage domain",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12381,7 +12207,6 @@
    "pointer": "/effects/coverage/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage domain",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12454,7 +12279,6 @@
    "pointer": "/effects/coverage/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage domain",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12527,7 +12351,6 @@
    "pointer": "/effects/coverage/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage domain",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12600,7 +12423,6 @@
    "pointer": "/effects/coverage/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage domain",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12673,7 +12495,6 @@
    "pointer": "/effects/coverage/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage domain",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12746,7 +12567,6 @@
    "pointer": "/effects/coverage/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage domain",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12819,7 +12639,6 @@
    "pointer": "/effects/coverage/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -12892,7 +12711,6 @@
    "pointer": "/effects/coverage/method",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage method",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -12965,7 +12783,6 @@
    "pointer": "/effects/coverage/method",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage method",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13038,7 +12855,6 @@
    "pointer": "/effects/coverage/method",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage method",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13111,7 +12927,6 @@
    "pointer": "/effects/coverage/method",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage method",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13184,7 +12999,6 @@
    "pointer": "/effects/coverage/method",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage method",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13257,7 +13071,6 @@
    "pointer": "/effects/coverage/method",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage method",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13330,7 +13143,6 @@
    "pointer": "/effects/coverage/method",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage method",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13403,7 +13215,6 @@
    "pointer": "/effects/coverage/method",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage method",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13476,7 +13287,6 @@
    "pointer": "/effects/coverage/method",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage method",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13549,7 +13359,6 @@
    "pointer": "/effects/coverage/method",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid coverage method",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13622,7 +13431,6 @@
    "pointer": "/effects/coverage/method",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -13683,7 +13491,6 @@
    "pointer": "/evidence",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: evidence must be a nonempty array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13744,7 +13551,6 @@
    "pointer": "/evidence",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: evidence must be a nonempty array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13805,7 +13611,6 @@
    "pointer": "/evidence",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: evidence must be a nonempty array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13866,7 +13671,6 @@
    "pointer": "/evidence",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: evidence must be a nonempty array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -13931,7 +13735,6 @@
    "pointer": "/evidence/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -13996,7 +13799,6 @@
    "pointer": "/evidence/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14061,7 +13863,6 @@
    "pointer": "/evidence/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14137,7 +13938,6 @@
    "pointer": "/evidence/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14211,7 +14011,6 @@
    "pointer": "/evidence/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14285,7 +14084,6 @@
    "pointer": "/evidence/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14359,7 +14157,6 @@
    "pointer": "/evidence/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14431,7 +14228,6 @@
    "pointer": "/evidence/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14505,7 +14301,6 @@
    "pointer": "/evidence/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14579,7 +14374,6 @@
    "pointer": "/evidence/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14653,7 +14447,6 @@
    "pointer": "/evidence/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14728,7 +14521,6 @@
    "pointer": "/evidence/0/property",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14803,7 +14595,6 @@
    "pointer": "/evidence/0/method",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14878,7 +14669,6 @@
    "pointer": "/evidence/0/domain",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -14953,7 +14743,6 @@
    "pointer": "/evidence/0/domain",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -15028,7 +14817,6 @@
    "pointer": "/evidence/0/domain",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -15103,7 +14891,6 @@
    "pointer": "/evidence/0/domain",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -15176,7 +14963,6 @@
    "pointer": "/evidence/0/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -15249,7 +15035,6 @@
    "pointer": "/evidence/0/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -15322,7 +15107,6 @@
    "pointer": "/evidence/0/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -15395,7 +15179,6 @@
    "pointer": "/evidence/0/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -15468,7 +15251,6 @@
    "pointer": "/evidence/0/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -15541,7 +15323,6 @@
    "pointer": "/evidence/0/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -15614,7 +15395,6 @@
    "pointer": "/evidence/0/domain",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -15687,7 +15467,6 @@
    "pointer": "/evidence/0/assumptions",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -15760,7 +15539,6 @@
    "pointer": "/evidence/0/assumptions",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -15833,7 +15611,6 @@
    "pointer": "/evidence/0/assumptions",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -15908,7 +15685,6 @@
    "pointer": "/evidence/0/assumptions/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -15983,7 +15759,6 @@
    "pointer": "/evidence/0/assumptions/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -16058,7 +15833,6 @@
    "pointer": "/evidence/0/assumptions/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -16133,7 +15907,6 @@
    "pointer": "/evidence/0/assumptions/0",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -16206,7 +15979,6 @@
    "pointer": "/evidence/0/assumptions/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -16279,7 +16051,6 @@
    "pointer": "/evidence/0/assumptions/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -16352,7 +16123,6 @@
    "pointer": "/evidence/0/assumptions/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -16425,7 +16195,6 @@
    "pointer": "/evidence/0/assumptions/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -16498,7 +16267,6 @@
    "pointer": "/evidence/0/assumptions/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -16571,7 +16339,6 @@
    "pointer": "/evidence/0/assumptions/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -16644,7 +16411,6 @@
    "pointer": "/evidence/0/assumptions/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -16719,7 +16485,6 @@
    "pointer": "/evidence/0/observationContract",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -16794,7 +16559,6 @@
    "pointer": "/evidence/0/observationContract",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -16869,7 +16633,6 @@
    "pointer": "/evidence/0/observationContract",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -16944,7 +16707,6 @@
    "pointer": "/evidence/0/observationContract",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -17017,7 +16779,6 @@
    "pointer": "/evidence/0/observationContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -17090,7 +16851,6 @@
    "pointer": "/evidence/0/observationContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -17163,7 +16923,6 @@
    "pointer": "/evidence/0/observationContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -17236,7 +16995,6 @@
    "pointer": "/evidence/0/observationContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -17309,7 +17067,6 @@
    "pointer": "/evidence/0/observationContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -17382,7 +17139,6 @@
    "pointer": "/evidence/0/observationContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -17455,7 +17211,6 @@
    "pointer": "/evidence/0/observationContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -17530,7 +17285,6 @@
    "pointer": "/evidence/0/executionContract",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -17605,7 +17359,6 @@
    "pointer": "/evidence/0/executionContract",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -17680,7 +17433,6 @@
    "pointer": "/evidence/0/executionContract",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -17755,7 +17507,6 @@
    "pointer": "/evidence/0/executionContract",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -17828,7 +17579,6 @@
    "pointer": "/evidence/0/executionContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -17901,7 +17651,6 @@
    "pointer": "/evidence/0/executionContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -17974,7 +17723,6 @@
    "pointer": "/evidence/0/executionContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -18047,7 +17795,6 @@
    "pointer": "/evidence/0/executionContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -18120,7 +17867,6 @@
    "pointer": "/evidence/0/executionContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -18193,7 +17939,6 @@
    "pointer": "/evidence/0/executionContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -18266,7 +18011,6 @@
    "pointer": "/evidence/0/executionContract",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -18341,7 +18085,6 @@
    "pointer": "/evidence/0/assuranceClass",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -18416,7 +18159,6 @@
    "pointer": "/evidence/0/assuranceClass",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -18491,7 +18233,6 @@
    "pointer": "/evidence/0/assuranceClass",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -18564,7 +18305,6 @@
    "pointer": "/evidence/0/assuranceClass",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -18639,7 +18379,6 @@
    "pointer": "/evidence/0/assuranceClass",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -18714,7 +18453,6 @@
    "pointer": "/evidence/0/assuranceClass",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -18789,7 +18527,6 @@
    "pointer": "/evidence/0/assuranceClass",
    "relation": "schema-stricter",
    "rootCause": "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "refuses",
@@ -18916,7 +18653,6 @@
    "pointer": "",
    "relation": "runtime-only-batch",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: duplicate instance ID",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -19043,7 +18779,6 @@
    "pointer": "",
    "relation": "runtime-only-batch",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: duplicate attempt ID",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -19174,7 +18909,6 @@
    "pointer": "",
    "relation": "runtime-only-batch",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -19251,7 +18985,6 @@
    "pointer": "",
    "relation": "runtime-only-batch",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: self dependency",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -19382,7 +19115,6 @@
    "pointer": "",
    "relation": "runtime-only-batch",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: cyclic dependencies",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -19516,7 +19248,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -19651,7 +19382,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid analysis input envelope",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -19781,7 +19511,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid analysis input envelope",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -19916,7 +19645,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid source description",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -20050,7 +19778,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid source kind",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -20184,7 +19911,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: invalid source description",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -20211,7 +19937,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: expected AIM record or nonempty AIM array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -20240,7 +19965,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: AIM records must be objects",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -20374,7 +20098,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: expected AIM record or nonempty AIM array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -20501,7 +20224,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -20521,7 +20243,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: expected AIM record or nonempty AIM array",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "refuses",
@@ -20592,7 +20313,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -20616,7 +20336,6 @@
    "pointer": "",
    "relation": "adapter-only",
    "rootCause": "RC-adapter: adapter bounds (32 operations, 256-byte identifiers) are not in any schema",
-   "serviceSummary": "analyze-work refused: Request exceeds the 32-operation adapter limit",
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -20640,7 +20359,6 @@
    "pointer": "",
    "relation": "adapter-only",
    "rootCause": "RC-adapter: adapter bounds (32 operations, 256-byte identifiers) are not in any schema",
-   "serviceSummary": "analyze-work refused: Request exceeds the 32-operation adapter limit",
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -20767,7 +20485,6 @@
    "pointer": "",
    "relation": "adapter-only",
    "rootCause": "RC-adapter: adapter bounds (32 operations, 256-byte identifiers) are not in any schema",
-   "serviceSummary": "analyze-work refused: Operation identifier exceeds 256 bytes",
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -20901,7 +20618,6 @@
    "pointer": "",
    "relation": "adapter-only",
    "rootCause": "RC-adapter: adapter bounds (32 operations, 256-byte identifiers) are not in any schema",
-   "serviceSummary": "analyze-work refused: Operation identifier exceeds 256 bytes",
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -20974,7 +20690,6 @@
    "pointer": "",
    "relation": "adapter-only",
    "rootCause": "RC-adapter-bypass: the 256-byte identifier bound is not applied to a single AIM record request",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -21101,7 +20816,6 @@
    "pointer": "",
    "relation": "adapter-only",
    "rootCause": "RC-adapter: adapter bounds (32 operations, 256-byte identifiers) are not in any schema",
-   "serviceSummary": "analyze-work refused: Operation identifier exceeds 256 bytes",
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -21191,7 +20905,6 @@
    "pointer": "",
    "relation": "adapter-only",
    "rootCause": "RC-adapter: adapter bounds (32 operations, 256-byte identifiers) are not in any schema",
-   "serviceSummary": "analyze-work refused: Input exceeds the maximum nesting depth",
    "verdicts": {
     "analysisModule": "refuses",
     "schema": "accepts",
@@ -21215,7 +20928,6 @@
    "pointer": "",
    "relation": "adapter-only",
    "rootCause": "RC-adapter: adapter bounds (32 operations, 256-byte identifiers) are not in any schema",
-   "serviceSummary": "analyze-work refused: Input exceeds the 1 MiB adapter limit",
    "verdicts": {
     "analysisModule": "accepts",
     "schema": "accepts",
@@ -21235,7 +20947,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git analysis request shape is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21255,7 +20966,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git analysis request shape is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21275,7 +20985,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git analysis request shape is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21326,7 +21035,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git analysis request shape is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21375,7 +21083,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git analysis request shape is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21424,7 +21131,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git analysis request shape is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21473,7 +21179,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git analysis request shape is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21497,7 +21202,6 @@
    "pointer": "",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git analysis request shape is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21547,7 +21251,6 @@
    "pointer": "/gitAnalysisRequestVersion",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21597,7 +21300,6 @@
    "pointer": "/repository",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work error: Internal adapter failure (TypeError); inspect owned state before retry",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21647,7 +21349,6 @@
    "pointer": "/repository",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work error: Internal adapter failure (TypeError); inspect owned state before retry",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21697,7 +21398,6 @@
    "pointer": "/repository",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work error: Internal adapter failure (TypeError); inspect owned state before retry",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21747,7 +21447,6 @@
    "pointer": "/repository",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git repository is outside the configured source root",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21797,7 +21496,6 @@
    "pointer": "/repository",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work unknown: The operation could not complete because an observation was unavailable",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21847,7 +21545,6 @@
    "pointer": "/repository",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work unknown: The operation could not complete because an observation was unavailable",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21897,7 +21594,6 @@
    "pointer": "/repository",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work unknown: The operation could not complete because an observation was unavailable",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21947,7 +21643,6 @@
    "pointer": "/repository",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work unknown: The operation could not complete because an observation was unavailable",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -21997,7 +21692,6 @@
    "pointer": "/repository",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work unknown: The operation could not complete because an observation was unavailable",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22047,7 +21741,6 @@
    "pointer": "/repository",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work unknown: The operation could not complete because an observation was unavailable",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22099,7 +21792,6 @@
    "pointer": "/repository",
    "relation": "runtime-stricter",
    "rootCause": "RC-git-resolution: a value that is not blank for Python strip() but does not resolve to a repository or revision",
-   "serviceSummary": "analyze-work unknown: The operation could not complete because an observation was unavailable",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -22149,7 +21841,6 @@
    "pointer": "/baseRevision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22199,7 +21890,6 @@
    "pointer": "/baseRevision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22249,7 +21939,6 @@
    "pointer": "/baseRevision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22299,7 +21988,6 @@
    "pointer": "/baseRevision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22349,7 +22037,6 @@
    "pointer": "/baseRevision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22399,7 +22086,6 @@
    "pointer": "/baseRevision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22449,7 +22135,6 @@
    "pointer": "/baseRevision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22499,7 +22184,6 @@
    "pointer": "/baseRevision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22549,7 +22233,6 @@
    "pointer": "/baseRevision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22599,7 +22282,6 @@
    "pointer": "/baseRevision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22651,7 +22333,6 @@
    "pointer": "/baseRevision",
    "relation": "runtime-stricter",
    "rootCause": "RC-git-resolution: a value that is not blank for Python strip() but does not resolve to a repository or revision",
-   "serviceSummary": "analyze-work unknown: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -22676,7 +22357,6 @@
    "pointer": "/operations",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git operations must be objects",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22701,7 +22381,6 @@
    "pointer": "/operations",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work error: Internal adapter failure (TypeError); inspect owned state before retry",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22726,7 +22405,6 @@
    "pointer": "/operations",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22751,7 +22429,6 @@
    "pointer": "/operations",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22788,7 +22465,6 @@
    "pointer": "/operations/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git operations must be objects",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22825,7 +22501,6 @@
    "pointer": "/operations/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git operations must be objects",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22862,7 +22537,6 @@
    "pointer": "/operations/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git operations must be objects",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22913,7 +22587,6 @@
    "pointer": "/operations/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -22962,7 +22635,6 @@
    "pointer": "/operations/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23011,7 +22683,6 @@
    "pointer": "/operations/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23057,7 +22728,6 @@
    "pointer": "/operations/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git operation source is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23104,7 +22774,6 @@
    "pointer": "/operations/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23151,7 +22820,6 @@
    "pointer": "/operations/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23201,7 +22869,6 @@
    "pointer": "/operations/0/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23251,7 +22918,6 @@
    "pointer": "/operations/0/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23301,7 +22967,6 @@
    "pointer": "/operations/0/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23351,7 +23016,6 @@
    "pointer": "/operations/0/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23401,7 +23065,6 @@
    "pointer": "/operations/0/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23451,7 +23114,6 @@
    "pointer": "/operations/0/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23501,7 +23163,6 @@
    "pointer": "/operations/0/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23551,7 +23212,6 @@
    "pointer": "/operations/0/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23601,7 +23261,6 @@
    "pointer": "/operations/0/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23651,7 +23310,6 @@
    "pointer": "/operations/0/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23701,7 +23359,6 @@
    "pointer": "/operations/0/instanceId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -23751,7 +23408,6 @@
    "pointer": "/operations/0/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23801,7 +23457,6 @@
    "pointer": "/operations/0/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23851,7 +23506,6 @@
    "pointer": "/operations/0/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23901,7 +23555,6 @@
    "pointer": "/operations/0/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -23951,7 +23604,6 @@
    "pointer": "/operations/0/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24001,7 +23653,6 @@
    "pointer": "/operations/0/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24051,7 +23702,6 @@
    "pointer": "/operations/0/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24101,7 +23751,6 @@
    "pointer": "/operations/0/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24151,7 +23800,6 @@
    "pointer": "/operations/0/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24201,7 +23849,6 @@
    "pointer": "/operations/0/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24251,7 +23898,6 @@
    "pointer": "/operations/0/attemptId",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -24299,7 +23945,6 @@
    "pointer": "/operations/0/dependencies",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24347,7 +23992,6 @@
    "pointer": "/operations/0/dependencies",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24395,7 +24039,6 @@
    "pointer": "/operations/0/dependencies",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24446,7 +24089,6 @@
    "pointer": "/operations/0/dependencies",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: duplicate dependency",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24496,7 +24138,6 @@
    "pointer": "/operations/0/dependencies/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24546,7 +24187,6 @@
    "pointer": "/operations/0/dependencies/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24596,7 +24236,6 @@
    "pointer": "/operations/0/dependencies/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24646,7 +24285,6 @@
    "pointer": "/operations/0/dependencies/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -24698,7 +24336,6 @@
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -24750,7 +24387,6 @@
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -24802,7 +24438,6 @@
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -24854,7 +24489,6 @@
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -24906,7 +24540,6 @@
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -24958,7 +24591,6 @@
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -25010,7 +24642,6 @@
    "pointer": "/operations/0/dependencies/0",
    "relation": "runtime-stricter",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: unknown dependency",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -25058,7 +24689,6 @@
    "pointer": "/operations/0/uncertainPaths",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25106,7 +24736,6 @@
    "pointer": "/operations/0/uncertainPaths",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25154,7 +24783,6 @@
    "pointer": "/operations/0/uncertainPaths",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25207,7 +24835,6 @@
    "pointer": "/operations/0/uncertainPaths",
    "relation": "schema-stricter",
    "rootCause": "RC-git-unique: the git adapter does not enforce uniqueItems on dependencies and uncertainPaths",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25257,7 +24884,6 @@
    "pointer": "/operations/0/uncertainPaths/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25307,7 +24933,6 @@
    "pointer": "/operations/0/uncertainPaths/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25357,7 +24982,6 @@
    "pointer": "/operations/0/uncertainPaths/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25407,7 +25031,6 @@
    "pointer": "/operations/0/uncertainPaths/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25457,7 +25080,6 @@
    "pointer": "/operations/0/uncertainPaths/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -25507,7 +25129,6 @@
    "pointer": "/operations/0/uncertainPaths/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -25557,7 +25178,6 @@
    "pointer": "/operations/0/uncertainPaths/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -25607,7 +25227,6 @@
    "pointer": "/operations/0/uncertainPaths/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -25657,7 +25276,6 @@
    "pointer": "/operations/0/uncertainPaths/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -25707,7 +25325,6 @@
    "pointer": "/operations/0/uncertainPaths/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -25757,7 +25374,6 @@
    "pointer": "/operations/0/uncertainPaths/0",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": null,
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -25804,7 +25420,6 @@
    "pointer": "/operations/0/source",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git operation source is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25851,7 +25466,6 @@
    "pointer": "/operations/0/source",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git operation source is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25898,7 +25512,6 @@
    "pointer": "/operations/0/source",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: Git operation source is invalid",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25949,7 +25562,6 @@
    "pointer": "/operations/0/source",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -25998,7 +25610,6 @@
    "pointer": "/operations/0/source",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26047,7 +25658,6 @@
    "pointer": "/operations/0/source",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26097,7 +25707,6 @@
    "pointer": "/operations/0/source/kind",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26147,7 +25756,6 @@
    "pointer": "/operations/0/source/revision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26197,7 +25805,6 @@
    "pointer": "/operations/0/source/revision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26247,7 +25854,6 @@
    "pointer": "/operations/0/source/revision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26297,7 +25903,6 @@
    "pointer": "/operations/0/source/revision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26347,7 +25952,6 @@
    "pointer": "/operations/0/source/revision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26397,7 +26001,6 @@
    "pointer": "/operations/0/source/revision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26447,7 +26050,6 @@
    "pointer": "/operations/0/source/revision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26497,7 +26099,6 @@
    "pointer": "/operations/0/source/revision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26547,7 +26148,6 @@
    "pointer": "/operations/0/source/revision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26597,7 +26197,6 @@
    "pointer": "/operations/0/source/revision",
    "relation": "equal",
    "rootCause": "none",
-   "serviceSummary": "analyze-work refused: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "refuses",
@@ -26649,7 +26248,6 @@
    "pointer": "/operations/0/source/revision",
    "relation": "runtime-stricter",
    "rootCause": "RC-git-resolution: a value that is not blank for Python strip() but does not resolve to a repository or revision",
-   "serviceSummary": "analyze-work unknown: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -26701,7 +26299,6 @@
    "pointer": "/repository",
    "relation": "runtime-only-batch",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work refused: Git repository is outside the configured source root",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -26753,7 +26350,6 @@
    "pointer": "/baseRevision",
    "relation": "runtime-only-batch",
    "rootCause": "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express",
-   "serviceSummary": "analyze-work unknown: The bounded operation was refused",
    "verdicts": {
     "analysisModule": null,
     "schema": "accepts",
@@ -26773,7 +26369,8 @@
     "aim-0270",
     "aim-0271",
     "aim-0277"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "source is an object with exactly kind and description",
@@ -26783,7 +26380,8 @@
    "line": 54,
    "probedBy": [
     "aim-0272"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "source.kind is a non-blank string",
@@ -26793,7 +26391,8 @@
    "line": 56,
    "probedBy": [
     "aim-0273"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "source.description is a non-blank string",
@@ -26803,7 +26402,8 @@
    "line": 57,
    "probedBy": [
     "aim-0274"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "operations (or a bare array) is a nonempty list",
@@ -26816,7 +26416,8 @@
     "aim-0278",
     "aim-0279",
     "aim-0280"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "every operation is an object",
@@ -26826,7 +26427,8 @@
    "line": 62,
    "probedBy": [
     "aim-0276"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "record has exactly the nine AIM fields",
@@ -27123,7 +26725,8 @@
     "aim-0286",
     "aim-0287",
     "aim-0288"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "aimVersion is 0.2.0-draft",
@@ -27133,7 +26736,8 @@
    "line": 72,
    "probedBy": [
     "aim-0014"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "instanceId is a non-blank string",
@@ -27153,7 +26757,8 @@
     "aim-0023",
     "aim-0024",
     "aim-0025"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "attemptId is a non-blank string",
@@ -27173,7 +26778,8 @@
     "aim-0034",
     "aim-0035",
     "aim-0036"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "definition has exactly id and digest",
@@ -27205,7 +26811,8 @@
     "aim-0057",
     "aim-0058",
     "aim-0059"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "definition.id is a non-blank string",
@@ -27225,7 +26832,8 @@
     "aim-0051",
     "aim-0052",
     "aim-0053"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "definition.digest matches sha256:<64 lowercase hex>",
@@ -27240,7 +26848,8 @@
     "aim-0057",
     "aim-0058",
     "aim-0059"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "inputDigest matches sha256:<64 lowercase hex>",
@@ -27255,7 +26864,8 @@
     "aim-0063",
     "aim-0064",
     "aim-0065"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "dependencies items are nonempty strings",
@@ -27279,7 +26889,8 @@
     "aim-0078",
     "aim-0079",
     "aim-0080"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "dependencies are unique",
@@ -27303,7 +26914,8 @@
     "aim-0078",
     "aim-0079",
     "aim-0080"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "readVersions keys are non-blank strings",
@@ -27323,7 +26935,8 @@
     "aim-0089",
     "aim-0090",
     "aim-0091"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "readVersions values are Python ints >= 0 (JSON 1.0 is a float)",
@@ -27343,7 +26956,8 @@
     "aim-0089",
     "aim-0090",
     "aim-0091"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "effects has exactly four members",
@@ -27453,7 +27067,8 @@
     "aim-0190",
     "aim-0191",
     "aim-0192"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "each effect has exactly kind and resource",
@@ -27483,7 +27098,8 @@
     "aim-0118",
     "aim-0119",
     "aim-0120"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "effect kind is one of eight kinds",
@@ -27493,7 +27109,8 @@
    "line": 102,
    "probedBy": [
     "aim-0109"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "effect resource is a non-blank string",
@@ -27513,7 +27130,8 @@
     "aim-0118",
     "aim-0119",
     "aim-0120"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "coverage has exactly status, domain, method",
@@ -27552,7 +27170,8 @@
     "aim-0190",
     "aim-0191",
     "aim-0192"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "coverage status is complete, partial or unknown",
@@ -27562,7 +27181,8 @@
    "line": 107,
    "probedBy": [
     "aim-0170"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "coverage domain is non-blank",
@@ -27582,7 +27202,8 @@
     "aim-0179",
     "aim-0180",
     "aim-0181"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "coverage method is non-blank",
@@ -27602,7 +27223,8 @@
     "aim-0190",
     "aim-0191",
     "aim-0192"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "evidence is a nonempty list (items are not inspected)",
@@ -27682,7 +27304,8 @@
     "aim-0261",
     "aim-0262",
     "aim-0263"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "instanceId values are unique in a batch",
@@ -27692,7 +27315,8 @@
    "line": 120,
    "probedBy": [
     "aim-0264"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "attemptId values are unique in a batch",
@@ -27702,7 +27326,8 @@
    "line": 121,
    "probedBy": [
     "aim-0265"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "dependencies name instances of the batch",
@@ -27712,7 +27337,8 @@
    "line": 124,
    "probedBy": [
     "aim-0266"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "no instance depends on itself",
@@ -27722,7 +27348,8 @@
    "line": 125,
    "probedBy": [
     "aim-0267"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "dependencies are acyclic",
@@ -27732,7 +27359,8 @@
    "line": 132,
    "probedBy": [
     "aim-0268"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "at most 32 operations (array, or 'operations'/'tasks' list of an object)",
@@ -27743,7 +27371,8 @@
    "probedBy": [
     "aim-0281",
     "aim-0282"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "instanceId and attemptId at most 256 UTF-8 bytes (array items and 'operations' items only)",
@@ -27756,7 +27385,8 @@
     "aim-0284",
     "aim-0285",
     "aim-0286"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "nesting depth at most 32",
@@ -27766,7 +27396,8 @@
    "line": 126,
    "probedBy": [
     "aim-0287"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "request at most 1 MiB",
@@ -27776,7 +27407,8 @@
    "line": 143,
    "probedBy": [
     "aim-0288"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "git request has exactly the four fields",
@@ -27901,7 +27533,8 @@
     "git-0402",
     "git-0403",
     "git-0404"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "git request version is 0.1.0-alpha",
@@ -27911,7 +27544,8 @@
    "line": 293,
    "probedBy": [
     "git-0297"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "repository is a non-blank string",
@@ -27932,7 +27566,8 @@
     "git-0307",
     "git-0308",
     "git-0403"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "repository equals the configured source root",
@@ -27942,7 +27577,8 @@
    "line": 443,
    "probedBy": [
     "git-0403"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "operations is a list with at least two items",
@@ -28034,7 +27670,8 @@
     "git-0400",
     "git-0401",
     "git-0402"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "operation has exactly the five fields",
@@ -28122,7 +27759,8 @@
     "git-0400",
     "git-0401",
     "git-0402"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "instanceId and attemptId are non-blank strings",
@@ -28153,7 +27791,8 @@
     "git-0352",
     "git-0353",
     "git-0354"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "dependencies items are nonempty strings (uniqueness is not checked)",
@@ -28177,7 +27816,8 @@
     "git-0367",
     "git-0368",
     "git-0369"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "uncertainPaths items are nonempty strings (uniqueness is not checked)",
@@ -28201,7 +27841,8 @@
     "git-0382",
     "git-0383",
     "git-0384"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "source has exactly kind+revision (commit) or kind+path (worktree)",
@@ -28228,7 +27869,8 @@
     "git-0400",
     "git-0401",
     "git-0402"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "source kind is commit or worktree",
@@ -28238,7 +27880,8 @@
    "line": 159,
    "probedBy": [
     "git-0391"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   },
   {
    "description": "baseRevision and source revisions are non-blank and resolve to a commit",
@@ -28248,7 +27891,8 @@
    "line": 98,
    "probedBy": [
     "git-0404"
-   ]
+   ],
+   "sourceRevision": "14187e05668e03ee452a91f5209fd5ae883a04e4"
   }
  ],
  "schemas": [

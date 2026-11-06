@@ -445,7 +445,6 @@ def build(schemas_at: str | None = None) -> dict:
                 "verdicts": {"schema": "accepts" if schema_ok else "refuses",
                              "service": "accepts" if service_ok else "refuses",
                              "analysisModule": None if analysis_ok is None else ("accepts" if analysis_ok else "refuses")},
-                "serviceSummary": None if service_ok else summary,
                 "relation": rel,
             }
             row["rootCause"] = root_cause(row)
@@ -557,17 +556,18 @@ def build(schemas_at: str | None = None) -> dict:
         record("git", "baseRevision that does not resolve", "RC-GIT-12", "/baseRevision", unresolved,
                True, ok_service, None, summary, rel="runtime-only-batch" if not ok_service else "equal")
 
-    # 4. Runtime check catalogue with verified anchors
+    # 4. Runtime check catalogue. Anchors are verified against the alpha.7 sources (BASELINE_REV):
+    # the catalogue describes the checks that existed when the inventory began, whatever
+    # later refactors do to the code.
     checks = []
     for rc_id, layer, file, anchor, description in RUNTIME_CHECKS:
-        text = (ROOT / file).read_text()
-        line = next((i for i, l in enumerate(text.splitlines(), 1) if anchor in l or anchor in l.strip()), None)
-        if line is None:
-            # anchors may span a continuation; accept a whole-file match
-            line = 0 if anchor in text else None
-        if line is None:
-            raise SystemExit(f"catalogue anchor for {rc_id} not found in {file}: {anchor!r}; update RUNTIME_CHECKS")
-        checks.append({"id": rc_id, "layer": layer, "file": file, "line": line or None, "description": description})
+        text = subprocess.run(["git", "show", f"{BASELINE_REV}:{file}"], cwd=ROOT, check=True,
+                              capture_output=True, text=True).stdout
+        line = next((i for i, l in enumerate(text.splitlines(), 1) if anchor in l), 0)
+        if line == 0 and anchor not in text:
+            raise SystemExit(f"catalogue anchor for {rc_id} not found in {file}@{BASELINE_REV[:8]}: {anchor!r}; update RUNTIME_CHECKS")
+        checks.append({"id": rc_id, "layer": layer, "file": file, "sourceRevision": BASELINE_REV,
+                       "line": line or None, "description": description})
     for check in checks:
         kind, ptrs = CHECK_POINTERS.get(check["id"], (None, None))
         check["probedBy"] = sorted(
