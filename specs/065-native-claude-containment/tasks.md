@@ -307,6 +307,14 @@ shared object store fails the portable-root check).
   `EPERM: operation not permitted, mkdir '/tmp/claude-503'`: the CLI's private temp directory defaults to `/tmp`, outside
   the profile's writes. The launch environment now sets the documented `CLAUDE_CODE_TMPDIR` to the per-run `TMPDIR`
   (already writable); no profile rule changes.
+  Attempt 4, 2026-11-06 (`t009-20261105a`, commit `515f7285`; result `evidence/t009-attempt4-result.md`; bundle
+  `evidence/qualification/t009-20261105a/`, `bundleSha256` `890b5eae1430f576607904227db85e7b2f5d9fed47255bca41a8d5b6a55a455a`):
+  31 of 32 probes passed and `hostFunctional` true; outcome **not qualified**. Credential, filesystem and network
+  `enforced`; process `not-enforced` only by PROC-03 `memory` (watchdog peak 4,333,109,248 bytes for an allocation
+  1 GiB over the 4 GiB limit held 2 s: the compressor, not sampling). Three sessions, quota delta 0. Founder decision
+  PROC-03 (`evidence/founder-decisions-20261106.json`, "A. Residuo aceptado"): the limit is physical footprint at most
+  4 GiB with compressed memory at its compressed size as an accepted residual, and the probe fills the allocation with
+  incompressible data (the duplicate `memory-burst` attempt is dropped and `memory` runs last). Next: self-check on the new commit, then attempt 5 (`t009-20261106a`, at most 3 Haiku sessions).
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes

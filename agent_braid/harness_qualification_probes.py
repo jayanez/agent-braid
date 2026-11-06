@@ -93,7 +93,7 @@ _ERRNO = re.compile(r"[A-Z0-9_]{1,24}\Z")
 _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _MACH_NAME = re.compile(r"[A-Za-z][\w-]*(?:\.[\w-]+){2,}\Z")
 # a kill of the limit child is this denial only when the backend reports the matching stop reason
-LIMIT_ATTRIBUTION = {"memory": "memory", "memory-burst": "memory"}
+LIMIT_ATTRIBUTION = {"memory": "memory"}
 # attempts that target the dedicated user's real home: they need ``real_home`` to mean anything (DRV-02)
 REAL_HOME_ATTEMPTS = ("real-launch-agent", "hardlink-own-tree")
 _ATTEMPT_CALL = re.compile(r'^(attempt|note|tripwire|limit|limit_note)\("([a-z0-9-]+)"', re.M)
@@ -581,22 +581,26 @@ def open_files():
     resource.setrlimit(resource.RLIMIT_NOFILE, (want if hard == resource.RLIM_INFINITY else min(hard, want), hard))
     held = [os.open("/dev/null", os.O_RDONLY) for _ in range(count)]
     return bool(held)
+def incompressible(size):
+    # The limit is the physical footprint, which counts a page the memory compressor holds at its compressed
+    # size (residual accepted by the founder, PROC-03, 2026-11-06). One byte per page compressed to almost
+    # nothing: T009 attempt 4 held 1 GiB over the limit for 2 s and the lifetime peak footprint stayed 0.96 GiB
+    # under it. So every page gets random bytes, which do not compress. Fresh os.urandom costs ~2 s per GiB here
+    # (~10 s for this allocation, inside a 40 s probe wall); a 64 MiB random tile costs ~0.1 s and is copied at
+    # memory speed. The compressor works on one page at a time, so a tile larger than a page compresses no
+    # better than fresh random data, and the page's own offset written into its first 8 bytes makes every page
+    # distinct, so not even a deduplicating store could share two of them.
+    import mmap, struct
+    block = mmap.mmap(-1, size)
+    tile = memoryview(os.urandom(64 << 20))
+    for offset in range(0, size, len(tile)):
+        block[offset:offset + len(tile)] = tile[:size - offset]
+    for offset in range(0, size, mmap.PAGESIZE):
+        block[offset:offset + 8] = struct.pack("<Q", offset)
+    return block
 def memory():
-    import mmap
-    # A gigabyte over the limit, and held for a moment: the watchdog measures the footprint, which counts a page
-    # the memory compressor holds at its compressed size, at a few samples a second. T009 attempt 3 measured
-    # 99 % of the limit for an allocation 6 % over it that ended at once.
-    size = A["limits"]["memoryBytes"] + (1 << 30)
-    block = mmap.mmap(-1, size)
-    for offset in range(0, size, mmap.PAGESIZE):  # one byte in every page, or the pages are never resident
-        block[offset] = 1
-    time.sleep(2)
-    return True
-def memory_burst():
-    import mmap
-    size = A["limits"]["memoryBytes"] + (1 << 30)
-    block = mmap.mmap(-1, size)
-    block[0:size:4096] = b"\x01" * len(range(0, size, 4096))
+    # A gigabyte over the limit, held for two seconds so the watchdog has several samples at the peak.
+    block = incompressible(A["limits"]["memoryBytes"] + (1 << 30))
     time.sleep(2)
     return True
 def cpu():
@@ -610,10 +614,11 @@ def file_count():
     return True
 limit("file-size", file_size)
 limit("open-files", open_files)
-limit("memory", memory)
-limit("memory-burst", memory_burst)
 limit_note("cpu", cpu)
 limit_note("file-count", file_count)
+# Last: a memory kill stops the whole tree, so nothing after it would run (T009 attempt 4 lost "memory-burst",
+# a second copy of this attempt, to the kill of the first; it was dropped).
+limit("memory", memory)
 ''',
     "PROC-04": r'''
 def daemon():
@@ -844,10 +849,13 @@ CATALOG: tuple[Probe, ...] = (
     _helper("PROC-02", "process", "fork beyond the descendant limit", survivors=True),
     _helper("PROC-03", "process", "exceed file-size, open-file and memory limits (CPU and file-count noted)",
             snapshot=True, wall_seconds=40, survivors=True,
-            residual="The memory watchdog samples the footprint of the child's tree every 10 to 50 ms (the larger of "
-                     "the resident size, the physical footprint and the process's lifetime peak footprint), and a page "
-                     "the memory compressor holds counts at its compressed size. The probe exceeds the limit by a "
-                     "gigabyte and holds it for two seconds; a process that exceeds the limit and exits between two "
+            residual="The enforced memory limit is the physical footprint of the child's tree at most memoryBytes. "
+                     "The memory watchdog samples it every 10 to 50 ms (the larger of the resident size, the physical "
+                     "footprint and the process's lifetime peak footprint). Accepted residual (founder decision "
+                     "PROC-03, evidence/founder-decisions-20261106.json): a page the memory compressor holds counts at "
+                     "its compressed size, so a process whose pages compress well can hold more memory than the limit. "
+                     "The probe fills a gigabyte over the limit with incompressible data and holds it for two seconds; "
+                     "a process that exceeds the limit and exits between two "
                      "samples is not stopped, and no kernel limit backs the watchdog: macOS RLIMIT_AS and RLIMIT_DATA "
                      "cannot be set at the limit (they refuse a value below the address space the process already "
                      "has), and RLIMIT_DATA counts reserved PROT_NONE address space too (checked on macOS 27.2), which a "

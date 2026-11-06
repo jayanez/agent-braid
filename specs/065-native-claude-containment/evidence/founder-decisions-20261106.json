@@ -1,0 +1,40 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T009 after attempt 4 (t009-20261105a): PROC-03 memory is the only failing probe; the watchdog reads the physical footprint, which counts compressed pages at their compressed size",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-06",
+  "baseCommit": "515f7285",
+  "decisionChannel": "Founder answer to an interactive guided question in the HAR orchestrator session, 2026-11-06, recorded verbatim. Additive to the earlier records, which stay as written.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261104e.json"
+  ],
+  "decisionOrder": [
+    "PROC-03"
+  ],
+  "decisions": [
+    {
+      "id": "PROC-03",
+      "item": "How to treat the PROC-03 memory result of attempt t009-20261105a (bundleSha256 890b5eae1430f576607904227db85e7b2f5d9fed47255bca41a8d5b6a55a455a). Facts: 31 of 32 probes pass; in the fixture row the attempt `memory` was allowed while `memory-burst`, `file-size` and `open-files` were denied; the watchdog peak was 4,333,109,248 bytes against a limit of 4,294,967,296 while the probe held the limit plus 1 GiB for 2 s, so the lifetime-maximum footprint stayed at least 1,035,599,872 bytes (0.96 GiB) under the allocation of 5,368,709,120 bytes. The probe wrote one byte per page, which the memory compressor stores at almost no size, and the footprint counts a compressed page at its compressed size.",
+      "question": "PROC-03: ¿cómo tratamos que la memoria comprimida cuente por su tamaño comprimido?",
+      "ownerStatement": "A. Residuo aceptado (Recommended)",
+      "acceptedOption": "El límite pasa a ser 'huella física ≤ 4 GiB'. La prueba usa datos aleatorios, que no se comprimen. El catálogo deja escrito el residuo (la memoria comprimida cuenta por su tamaño comprimido) como aceptado por ti. Luego otro intento de 3 sesiones; este gastó un 0 % de cuota. Riesgo: un proceso puede reservar más de 4 GiB si se comprime bien. Se deshace volviendo a la regla estricta.",
+      "decision": {
+        "disposition": "accept-residual-footprint-limit",
+        "reading": "The NC-8 memory limit is enforced as physical footprint of the child's tree at most memoryBytes (4 GiB). PROC-03 `memory` fills an allocation of the limit plus 1 GiB with incompressible data and holds it for about 2 s. The catalog records the residual as accepted by the founder: compressed memory counts at its compressed size, so a process whose pages compress well can hold more than 4 GiB of memory. The watchdog and every other rule are unchanged.",
+        "bounds": "Authorizes one new attempt under a new name (t009-20261106a) with at most 3 Haiku low-effort sessions, each at most 2 % of the 5-hour window (NC-10 terms as before), after the self-check passes on the new commit and the orchestrator confirms in writing. NC-1, NC-4, NC-5 as amended, NC-6, NC-7, NC-8 values, NC-11 and PROC-ESC-1 are unchanged. The catalog hash and the environment hash move with the probe source.",
+        "implementationNote": "The duplicate attempt `memory-burst` is dropped and `memory` runs last in PROC-03: a memory kill stops the whole helper, so in attempt 4 the kill of the first copy left the second never begun (launch-probe row inconclusive). With incompressible data the first copy is expected to be stopped every time. This is a probe-shape change by the implementer, not part of the owner's answer.",
+        "undo": "Return to the strict rule: drop the accepted residual and require a mechanism that bounds reserved memory regardless of compression; PROC-03 then needs a new design."
+      }
+    }
+  ],
+  "closes": [],
+  "stillOpen": [
+    "whether PROC-03 passes in attempt 5 with incompressible data",
+    "the kernel-limit question of t009-attempt3-result.md section 7 item 3 stays open"
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records one founder answer. executionAuthorization stays false and issuance stays T010 (NC-9, founder only). It authorizes no native run by itself: the next attempt needs the self-check on the new commit, the orchestrator's written confirmation and the founder's go within the budget above."
+}

@@ -255,11 +255,24 @@ class CatalogShapeTests(unittest.TestCase):
 
     def test_the_memory_attempts_exceed_the_limit_by_a_gigabyte_and_hold_it_for_the_watchdog(self):
         # T009 attempt 3: 256 MiB over the limit, released at once, peaked at 99 % of the limit in the watchdog
-        for name in ("memory", "memory_burst"):
-            body = q.BY_ID["PROC-03"].source_template.split(f"def {name}():")[1].split("\ndef ")[0]
-            self.assertIn('A["limits"]["memoryBytes"] + (1 << 30)', body, name)
-            self.assertIn("time.sleep(2)", body, name)
-            self.assertLess(body.index("time.sleep(2)"), body.index("return True"), name)
+        body = q.BY_ID["PROC-03"].source_template.split("def memory():")[1].split("\ndef ")[0]
+        self.assertIn('incompressible(A["limits"]["memoryBytes"] + (1 << 30))', body)
+        self.assertIn("time.sleep(2)", body)
+        self.assertLess(body.index("time.sleep(2)"), body.index("return True"))
+
+    def test_the_memory_attempt_runs_last_because_its_kill_stops_the_helper(self):
+        # T009 attempt 4, launch-probe row: the kill of "memory" left "memory-burst" never begun, so inconclusive
+        probe = q.BY_ID["PROC-03"]
+        self.assertEqual(probe.attempts[-1], ("memory", True))
+        self.assertEqual(set(q.LIMIT_ATTRIBUTION), {"memory"})
+
+    def test_the_memory_residual_names_the_footprint_limit_and_the_founders_acceptance(self):
+        residual = q.BY_ID["PROC-03"].residual
+        self.assertIn("physical footprint of the child's tree at most memoryBytes", residual)
+        self.assertIn("compressed size, so a process whose pages compress well can hold more memory than the limit", residual)
+        self.assertIn("founder-decisions-20261106.json", residual)
+        self.assertTrue((Path(__file__).resolve().parents[1] / "specs/065-native-claude-containment/evidence/founder-decisions-20261106.json")
+                        .is_file())
 
     def test_catalog_hash_is_stable_and_binds_the_sources(self):
         self.assertEqual(q.CATALOG_SHA256, q.catalog_sha256())
@@ -1302,7 +1315,7 @@ class ReviewCatalogTests(unittest.TestCase):
             "FS-06": {"inherited-descriptor", "fifo", "device-node", "dev-ptmx", "dev-fd"},
             "FS-07": {"mach-mds", "mach-mdwrite", "mach-spotlight"},
             "PROC-01": {"exec-written-script"}, "PROC-05": {"real-launch-agent"},
-            "PROC-03": {"memory", "memory-burst"},
+            "PROC-03": {"memory"},
             "PROC-06": {"mach-sweep", "mach-tccd", "iokit-service"},
             "PROC-07": {"signal-supervisor", "ptrace-sibling", "sysctl-proc-all", "sysctl-hw", "list-pids",
                         "shm-posix", "sem-posix", "shm-sysv"}}
@@ -2008,11 +2021,13 @@ class QualRound3Tests(unittest.TestCase):
 
     # repaired probes ------------------------------------------------------------------------------------
 
-    def helper(self, name, limits):
+    def helper(self, limits, *names):
         body = q.BY_ID["PROC-03"].body
-        start = body.index(f"def {name}():")
-        end = body.index("\ndef ", start + 1) if "\ndef " in body[start + 1:] else body.index("\ncpu", start)
-        code = "import json\nA = {'limits': %r}\n" % limits + q.PRELUDE + body[start:end] + "\n"
+        code = "import json\nA = {'limits': %r}\n" % limits + q.PRELUDE
+        for name in names:
+            start = body.index(f"def {name}(")
+            end = body.index("\ndef ", start + 1) if "\ndef " in body[start + 1:] else body.index("\ncpu", start)
+            code += body[start:end] + "\n"
         return code
 
     def run_python(self, code, prelude=""):
@@ -2020,7 +2035,7 @@ class QualRound3Tests(unittest.TestCase):
                               text=True, timeout=60)
 
     def test_the_open_files_control_has_headroom_and_the_contained_limit_still_stops_it(self):
-        code = self.helper("open_files", {"openFiles": 32})
+        code = self.helper({"openFiles": 32}, "open_files")
         free = self.run_python(code + "print(open_files())\n")
         self.assertEqual((free.returncode, free.stdout.strip()), (0, "True"), free.stderr)  # the control opens all
         capped = self.run_python("import resource\nresource.setrlimit(resource.RLIMIT_NOFILE, (32, 32))\n"
@@ -2028,10 +2043,26 @@ class QualRound3Tests(unittest.TestCase):
         self.assertNotEqual(capped.returncode, 0)
         self.assertIn("OSError", capped.stderr)  # EMFILE under the enforced hard limit
 
+    def test_the_memory_attempt_fills_every_page_with_distinct_incompressible_data(self):
+        # T009 attempt 4: one byte per page compressed to almost nothing and the footprint read ~0.7 GiB under an
+        # allocation 1 GiB over the limit held 2 s. Founder decision PROC-03 (2026-11-06): incompressible data.
+        code = self.helper({}, "incompressible")
+        script = (code + "import mmap, zlib\n"
+                  "size = 96 << 20\n"  # not a multiple of the 64 MiB tile: the last tile is partial
+                  "block = incompressible(size)\n"
+                  "assert len(block) == size\n"
+                  "pages = range(0, size, mmap.PAGESIZE)\n"
+                  "ratios = [len(zlib.compress(block[o:o + mmap.PAGESIZE], 9)) / mmap.PAGESIZE for o in pages]\n"
+                  "distinct = len({block[o:o + mmap.PAGESIZE] for o in pages})\n"
+                  "print(min(ratios), distinct, len(pages))\n")
+        result = self.run_python(script)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        smallest, distinct, pages = result.stdout.split()
+        self.assertGreater(float(smallest), 0.99)  # no page compresses (the partial last tile included)
+        self.assertEqual(distinct, pages)  # no two pages are equal, so nothing can share a page
+
     def test_the_memory_attempt_touches_every_page(self):
-        body = q.BY_ID["PROC-03"].body
-        self.assertIn("mmap.PAGESIZE", body[body.index("def memory():"):body.index("def memory_burst")])
-        code = self.helper("memory", {"memoryBytes": 0})  # 256 MiB mapping
+        code = self.helper({"memoryBytes": 0}, "incompressible", "memory")  # 1 GiB mapping
         script = ("import resource, sys\n" + code + "memory()\n"
                   "peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss\n"
                   "print(peak if sys.platform == 'darwin' else peak * 1024)\n")

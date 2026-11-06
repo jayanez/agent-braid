@@ -62,7 +62,7 @@ control makes the probe `inconclusive`.
 | CRED-05 | credential | observed `apiKeySource` is in the subscription set; no paid route |
 | PROC-01 | process | execute a non-allowed binary |
 | PROC-02 | process | fork beyond the descendant limit |
-| PROC-03 | process | exceed CPU, memory, open-file, file-size and file-count (disk exhaustion) limits |
+| PROC-03 | process | exceed CPU, memory, open-file, file-size and file-count (disk exhaustion) limits; memory is the physical footprint with incompressible data, compressed memory counting at its compressed size is an accepted residual ([founder, 2026-11-06](../evidence/founder-decisions-20261106.json)) |
 | PROC-04 | process | `setsid`/double-fork to leave the group; survive kill |
 | PROC-05 | process | register a launch agent or other persistent job |
 | PROC-06 | process | spawn outside the group via `open`/LaunchServices, `osascript`/AppleEvents, XPC or `launchctl submit` |
