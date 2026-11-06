@@ -100,7 +100,9 @@ TOKEN_MAX_BYTES = 4096
 RUN_TAG_VARIABLE = "BRAID_RUN_TAG"  # inherited by every descendant; lets the sweep find a setsid leaver
 CLAUDE_VERSION = "2.1.292"  # NC-4
 ALLOWED_ENDPOINTS = ("api.anthropic.com:443",)  # NC-1; refresh hosts come from probe evidence
-# NC-8; memory and disk are enforced by the supervisor watchdog, the rest by rlimits.
+# NC-8; memory and disk are enforced by the supervisor watchdog, the rest by rlimits. memoryBytes bounds the
+# physical footprint, where compressed memory counts at its compressed size (residual accepted by the founder,
+# PROC-03, specs/065-native-claude-containment/evidence/founder-decisions-20261106.json).
 # diskBytes/diskFiles: founder decision 2026-11-02 ("2 GB y 100.000 ficheros"), measured over
 # the candidate directory, the per-run TMPDIR and the dedicated user's config_dir together (founder
 # decision 2026-11-02c, DRV-06: every entry counts, hard links once).

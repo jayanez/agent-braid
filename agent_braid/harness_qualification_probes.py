@@ -581,22 +581,31 @@ def open_files():
     resource.setrlimit(resource.RLIMIT_NOFILE, (want if hard == resource.RLIM_INFINITY else min(hard, want), hard))
     held = [os.open("/dev/null", os.O_RDONLY) for _ in range(count)]
     return bool(held)
-def memory():
-    import mmap
-    # A gigabyte over the limit, and held for a moment: the watchdog measures the footprint, which counts a page
-    # the memory compressor holds at its compressed size, at a few samples a second. T009 attempt 3 measured
-    # 99 % of the limit for an allocation 6 % over it that ended at once.
-    size = A["limits"]["memoryBytes"] + (1 << 30)
+def incompressible(size):
+    # The limit is the physical footprint, which counts a page the memory compressor holds at its compressed
+    # size (residual accepted by the founder, PROC-03, 2026-11-06). One byte per page compressed to almost
+    # nothing: T009 attempt 4 held 1 GiB over the limit for 2 s and the footprint read ~0.7 GiB under it. So
+    # every page gets random bytes, which do not compress. Fresh os.urandom for 5 GiB costs ~2 s per GiB here,
+    # too slow for the probe's wall time with two attempts; a 64 MiB random tile costs ~0.1 s and is copied at
+    # memory speed. The compressor works on one page at a time, so a tile larger than a page compresses no
+    # better than fresh random data, and the page's own offset written into its first 8 bytes makes every page
+    # distinct, so not even a deduplicating store could share two of them.
+    import mmap, struct
     block = mmap.mmap(-1, size)
-    for offset in range(0, size, mmap.PAGESIZE):  # one byte in every page, or the pages are never resident
-        block[offset] = 1
+    tile = memoryview(os.urandom(64 << 20))
+    for offset in range(0, size, len(tile)):
+        block[offset:offset + len(tile)] = tile[:size - offset]
+    for offset in range(0, size, mmap.PAGESIZE):
+        block[offset:offset + 8] = struct.pack("<Q", offset)
+    return block
+def memory():
+    # A gigabyte over the limit, held for two seconds so the watchdog has several samples at the peak.
+    block = incompressible(A["limits"]["memoryBytes"] + (1 << 30))
     time.sleep(2)
     return True
 def memory_burst():
-    import mmap
-    size = A["limits"]["memoryBytes"] + (1 << 30)
-    block = mmap.mmap(-1, size)
-    block[0:size:4096] = b"\x01" * len(range(0, size, 4096))
+    # The same allocation again: attempt 4 saw the first or the second stopped, never which in advance.
+    block = incompressible(A["limits"]["memoryBytes"] + (1 << 30))
     time.sleep(2)
     return True
 def cpu():
@@ -844,10 +853,13 @@ CATALOG: tuple[Probe, ...] = (
     _helper("PROC-02", "process", "fork beyond the descendant limit", survivors=True),
     _helper("PROC-03", "process", "exceed file-size, open-file and memory limits (CPU and file-count noted)",
             snapshot=True, wall_seconds=40, survivors=True,
-            residual="The memory watchdog samples the footprint of the child's tree every 10 to 50 ms (the larger of "
-                     "the resident size, the physical footprint and the process's lifetime peak footprint), and a page "
-                     "the memory compressor holds counts at its compressed size. The probe exceeds the limit by a "
-                     "gigabyte and holds it for two seconds; a process that exceeds the limit and exits between two "
+            residual="The enforced memory limit is the physical footprint of the child's tree at most memoryBytes. "
+                     "The memory watchdog samples it every 10 to 50 ms (the larger of the resident size, the physical "
+                     "footprint and the process's lifetime peak footprint). Accepted residual (founder decision "
+                     "PROC-03, evidence/founder-decisions-20261106.json): a page the memory compressor holds counts at "
+                     "its compressed size, so a process whose pages compress well can reserve more than the limit. "
+                     "The probe fills a gigabyte over the limit with incompressible data and holds it for two seconds; "
+                     "a process that exceeds the limit and exits between two "
                      "samples is not stopped, and no kernel limit backs the watchdog: macOS RLIMIT_AS and RLIMIT_DATA "
                      "cannot be set at the limit (they refuse a value below the address space the process already "
                      "has), and RLIMIT_DATA counts reserved PROT_NONE address space too (checked on macOS 27.2), which a "
