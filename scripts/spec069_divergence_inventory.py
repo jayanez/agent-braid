@@ -36,8 +36,14 @@ from agent_braid import analysis
 from agent_braid.tooling_mcp import ToolingConfig, ToolingService
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "specs/069-aim-request-authoring/evidence/divergence-inventory.json"
+EVIDENCE = ROOT / "specs/069-aim-request-authoring/evidence"
+# The T002 baseline pins the schemas of develop at the start of SPEC-069 P1 (PR #1138's base);
+# the "after decisions" inventory reads the working tree and shows what the D8 decisions left.
+BASELINE_REV = "14187e05668e03ee452a91f5209fd5ae883a04e4"
+OUTPUT = EVIDENCE / "divergence-inventory.json"
+OUTPUT_AFTER = EVIDENCE / "divergence-inventory-after-decisions.json"
 AIM_SCHEMA = ROOT / "schemas/0.2.0-draft/agent-interaction-metadata.schema.json"
+INPUT_SCHEMA = ROOT / "schemas/0.1.0-alpha/analysis-input.schema.json"
 GIT_SCHEMA = ROOT / "schemas/0.1.0-alpha/git-analysis-request.schema.json"
 REPO_PLACEHOLDER = "<repo>"
 THRESHOLD = 15  # counterfactual C1: more root causes reopen D1 for the owner
@@ -253,6 +259,7 @@ def mutations(schema: dict, instance, path=(), keyword_log=None, root_instance=N
                 add("minLength", f"blank string (U+{ord(ch):04X} only)", lambda r, p=path, c=ch: set_at(r, p, c))
         if "pattern" in schema:
             log("pattern")
+        if "pattern" in schema and schema["pattern"] != "\\S":  # \S nodes are covered by the blank mutations
             add("pattern", "string not matching the pattern", lambda r, p=path: set_at(r, p, "sha256:ZZ"))
             add("pattern", "uppercase hex digest", lambda r, p=path: set_at(r, p, "sha256:" + "A" * 64))
             add("pattern", "trailing newline after a valid digest", lambda r, p=path: set_at(r, p, "sha256:" + "a" * 64 + "\n"))
@@ -299,6 +306,21 @@ def mutations(schema: dict, instance, path=(), keyword_log=None, root_instance=N
 # --------------------------------------------------------------------------
 # Probing
 # --------------------------------------------------------------------------
+def init_repo(base: Path) -> tuple[Path, Path]:
+    """Create a one-commit Git repository and an empty results directory under ``base``."""
+    repo, results = base / "repo", base / "results"
+    repo.mkdir()
+    results.mkdir()
+    env = {"GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null",
+           "PATH": "/usr/bin:/bin:/usr/local/bin:/opt/homebrew/bin"}
+    for args in (["init", "-q"], ["config", "user.email", "p@example.test"], ["config", "user.name", "p"]):
+        subprocess.run(["git", *args], cwd=repo, check=True, env=env)
+    (repo / "a.txt").write_text("a\n")
+    subprocess.run(["git", "add", "."], cwd=repo, check=True, env=env)
+    subprocess.run(["git", "commit", "-q", "-m", "init"], cwd=repo, check=True, env=env)
+    return repo, results
+
+
 class Prober:
     def __init__(self, repo: Path, results: Path) -> None:
         self.repo = repo
@@ -323,8 +345,15 @@ class Prober:
             return False
 
 
-def schema_validator(path: Path) -> jsonschema.Draft202012Validator:
-    return jsonschema.Draft202012Validator(json.loads(path.read_text()))
+def schema_text(path: Path, rev: str | None) -> str:
+    if rev is None:
+        return path.read_text()
+    return subprocess.run(["git", "show", f"{rev}:{path.relative_to(ROOT)}"], cwd=ROOT, check=True,
+                          capture_output=True, text=True).stdout
+
+
+def text_sha256(text: str) -> str:
+    return "sha256:" + hashlib.sha256(text.encode()).hexdigest()
 
 
 def roundtrip(value):
@@ -347,6 +376,10 @@ def root_cause(row: dict) -> str:
         return "RC-envelope: no published schema for the analysis-input envelope"
     if ptr.startswith("/evidence/0"):
         return "RC-evidence: runtime checks only that evidence is a nonempty array; the schema validates each item"
+    if ptr.endswith("/dependencies/0") and ("blank" in label or "U+" in label):
+        return "RC-batch: batch-level checks (duplicates, unknown or self dependency, cycles) that JSON Schema cannot express"
+    if row["kind"] == "git" and "U+FEFF" in label:
+        return "RC-git-resolution: a value that is not blank for Python strip() but does not resolve to a repository or revision"
     if "blank" in label or "U+" in label:
         return "RC-blank: the runtime refuses blank strings; the schema states minLength only"
     if kw == "pattern" and "newline" in label:
@@ -380,25 +413,26 @@ def decision_for(rel: str, cause: str) -> dict:
     return {"policy": "D8", "proposal": "publish an envelope schema (T003)", "status": "proposed", "ownerDecisionRequired": False}
 
 
-def build() -> dict:
-    aim_validator = schema_validator(AIM_SCHEMA)
-    git_validator = schema_validator(GIT_SCHEMA)
-    aim_schema = json.loads(AIM_SCHEMA.read_text())
-    git_schema = json.loads(GIT_SCHEMA.read_text())
+def build(schemas_at: str | None = None) -> dict:
+    """Probe the schemas of revision ``schemas_at`` (None: the working tree) against the current runtime."""
+    aim_text, git_text = schema_text(AIM_SCHEMA, schemas_at), schema_text(GIT_SCHEMA, schemas_at)
+    aim_schema, git_schema = json.loads(aim_text), json.loads(git_text)
+    aim_validator = jsonschema.Draft202012Validator(aim_schema)
+    git_validator = jsonschema.Draft202012Validator(git_schema)
+    try:
+        input_schema = json.loads(schema_text(INPUT_SCHEMA, schemas_at))
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        input_schema = None  # the envelope schema does not exist at this revision
+    input_validator = None
+    if input_schema is not None:
+        from referencing import Registry, Resource
+        registry = Registry().with_resources([(aim_schema["$id"], Resource.from_contents(aim_schema))])
+        input_validator = jsonschema.Draft202012Validator(input_schema, registry=registry)
     rows: list[dict] = []
     keyword_log: dict[str, list] = {"aim": [], "git": []}
 
     with tempfile.TemporaryDirectory() as tmp:
-        repo = Path(tmp) / "repo"
-        results = Path(tmp) / "results"
-        repo.mkdir()
-        results.mkdir()
-        env = {"GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null", "PATH": "/usr/bin:/bin:/usr/local/bin:/opt/homebrew/bin"}
-        for args in (["init", "-q"], ["config", "user.email", "p@example.test"], ["config", "user.name", "p"]):
-            subprocess.run(["git", *args], cwd=repo, check=True, env=env)
-        (repo / "a.txt").write_text("a\n")
-        subprocess.run(["git", "add", "."], cwd=repo, check=True, env=env)
-        subprocess.run(["git", "commit", "-q", "-m", "init"], cwd=repo, check=True, env=env)
+        repo, results = init_repo(Path(tmp))
         prober = Prober(repo.resolve(), results)
 
         def record(kind, label, keyword, ptr, request, schema_ok, service_ok, analysis_ok, summary, rel=None):
@@ -411,7 +445,6 @@ def build() -> dict:
                 "verdicts": {"schema": "accepts" if schema_ok else "refuses",
                              "service": "accepts" if service_ok else "refuses",
                              "analysisModule": None if analysis_ok is None else ("accepts" if analysis_ok else "refuses")},
-                "serviceSummary": None if service_ok else summary,
                 "relation": rel,
             }
             row["rootCause"] = root_cause(row)
@@ -434,6 +467,10 @@ def build() -> dict:
         # 2. AIM: runtime-check driven probes (batch, envelope, adapter, depth)
         def runtime_probe(label, request, rc, kind="aim", rel=None, ptr="", schema_ok=True):
             ok_service, summary = prober.service_verdict(kind, roundtrip(request))
+            if rel == "schema-absent" and input_validator is not None:
+                schema_ok, rel = input_validator.is_valid(roundtrip(request)), None
+                if schema_ok != ok_service:
+                    rel = "runtime-stricter" if schema_ok else "schema-stricter"
             record(kind, label, rc, ptr, request, schema_ok, ok_service,
                    Prober.analysis_verdict(roundtrip(request)) if kind == "aim" else None, summary,
                    rel or ("runtime-only-batch" if (schema_ok and not ok_service) else relation(schema_ok, ok_service)))
@@ -519,17 +556,18 @@ def build() -> dict:
         record("git", "baseRevision that does not resolve", "RC-GIT-12", "/baseRevision", unresolved,
                True, ok_service, None, summary, rel="runtime-only-batch" if not ok_service else "equal")
 
-    # 4. Runtime check catalogue with verified anchors
+    # 4. Runtime check catalogue. Anchors are verified against the alpha.7 sources (BASELINE_REV):
+    # the catalogue describes the checks that existed when the inventory began, whatever
+    # later refactors do to the code.
     checks = []
     for rc_id, layer, file, anchor, description in RUNTIME_CHECKS:
-        text = (ROOT / file).read_text()
-        line = next((i for i, l in enumerate(text.splitlines(), 1) if anchor in l or anchor in l.strip()), None)
-        if line is None:
-            # anchors may span a continuation; accept a whole-file match
-            line = 0 if anchor in text else None
-        if line is None:
-            raise SystemExit(f"catalogue anchor for {rc_id} not found in {file}: {anchor!r}; update RUNTIME_CHECKS")
-        checks.append({"id": rc_id, "layer": layer, "file": file, "line": line or None, "description": description})
+        text = subprocess.run(["git", "show", f"{BASELINE_REV}:{file}"], cwd=ROOT, check=True,
+                              capture_output=True, text=True).stdout
+        line = next((i for i, l in enumerate(text.splitlines(), 1) if anchor in l), 0)
+        if line == 0 and anchor not in text:
+            raise SystemExit(f"catalogue anchor for {rc_id} not found in {file}@{BASELINE_REV[:8]}: {anchor!r}; update RUNTIME_CHECKS")
+        checks.append({"id": rc_id, "layer": layer, "file": file, "sourceRevision": BASELINE_REV,
+                       "line": line or None, "description": description})
     for check in checks:
         kind, ptrs = CHECK_POINTERS.get(check["id"], (None, None))
         check["probedBy"] = sorted(
@@ -562,10 +600,11 @@ def build() -> dict:
     }
     return {
         "inventoryVersion": "1",
+        "schemasAt": schemas_at or "working-tree",
         "specification": "SPEC-069 T002 / REQ-002",
         "schemas": [
-            {"path": str(AIM_SCHEMA.relative_to(ROOT)), "sha256": sha256(AIM_SCHEMA), "keywordsProbed": [{"pointer": p, "keyword": k} for p, k in keyword_log["aim"]]},
-            {"path": str(GIT_SCHEMA.relative_to(ROOT)), "sha256": sha256(GIT_SCHEMA), "keywordsProbed": [{"pointer": p, "keyword": k} for p, k in keyword_log["git"]]},
+            {"path": str(AIM_SCHEMA.relative_to(ROOT)), "sha256": text_sha256(aim_text), "keywordsProbed": [{"pointer": p, "keyword": k} for p, k in keyword_log["aim"]]},
+            {"path": str(GIT_SCHEMA.relative_to(ROOT)), "sha256": text_sha256(git_text), "keywordsProbed": [{"pointer": p, "keyword": k} for p, k in keyword_log["git"]]},
             {"path": None, "note": "analysis-input envelope: no published schema (REQ-003 / T003)"},
         ],
         "runtimeChecks": checks,
@@ -588,27 +627,34 @@ def render(doc: dict) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--check", action="store_true", help="fail when the committed inventory differs")
+    parser.add_argument("--check", action="store_true", help="fail when a committed inventory differs")
     args = parser.parse_args()
-    doc = build()
-    if args.check:
-        committed = json.loads(OUTPUT.read_text())
-        committed.pop("environment", None)
-        fresh = copy.deepcopy(doc)
-        fresh.pop("environment", None)
-        if committed != fresh:
-            print("divergence inventory is stale; rerun without --check", file=sys.stderr)
-            return 1
-        print("divergence inventory is current")
-        return 0
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(render(doc))
-    s = doc["summary"]
-    print(f"probes={s['probes']} divergent={s['divergentProbes']} rootCauses={s['rootCauseCount']} thresholdExceeded={s['thresholdExceeded']}")
-    for item in s["rootCauses"]:
-        print(f"  {item['probeCount']:3d}  {item['rootCause']}")
-    print("observed 2026-11-05:", s["observedOn2026-11-05"])
-    return 0
+    status = 0
+    for output, rev in ((OUTPUT, BASELINE_REV), (OUTPUT_AFTER, None)):
+        if args.check and not output.exists():
+            print(f"{output.name} is missing", file=sys.stderr)
+            status = 1
+            continue
+        doc = build(rev)
+        if args.check:
+            committed = json.loads(output.read_text())
+            committed.pop("environment", None)
+            fresh = copy.deepcopy(doc)
+            fresh.pop("environment", None)
+            if committed != fresh:
+                print(f"{output.name} is stale; rerun without --check", file=sys.stderr)
+                status = 1
+            else:
+                print(f"{output.name} is current")
+            continue
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(render(doc))
+        s = doc["summary"]
+        print(f"{output.name}: probes={s['probes']} divergent={s['divergentProbes']} rootCauses={s['rootCauseCount']} thresholdExceeded={s['thresholdExceeded']}")
+        for item in s["rootCauses"]:
+            print(f"  {item['probeCount']:3d}  {item['rootCause']}")
+        print("  observed 2026-11-05:", s["observedOn2026-11-05"])
+    return status
 
 
 if __name__ == "__main__":

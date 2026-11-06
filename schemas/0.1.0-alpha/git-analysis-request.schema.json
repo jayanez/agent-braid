@@ -2,13 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://agent-braid.dev/schemas/0.1.0-alpha/git-analysis-request.schema.json",
   "title": "Agent Braid Git analysis request 0.1.0-alpha",
+  "$comment": "SPEC-069 D8 schema note: repository, baseRevision, instanceId, attemptId and commit revision carry pattern \\S because the runtime refuses blank values (no version change). The git adapter does not enforce uniqueItems on dependencies and uncertainPaths and the schema keeps it; see specs/069-aim-request-authoring/contracts/analyze-work-request.md.",
   "type": "object",
   "additionalProperties": false,
   "required": ["gitAnalysisRequestVersion", "repository", "baseRevision", "operations"],
   "properties": {
     "gitAnalysisRequestVersion": {"const": "0.1.0-alpha"},
-    "repository": {"type": "string", "minLength": 1},
-    "baseRevision": {"type": "string", "minLength": 1},
+    "repository": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "baseRevision": {"type": "string", "minLength": 1, "pattern": "\\S"},
     "operations": {
       "type": "array",
       "minItems": 2,
@@ -17,8 +18,8 @@
         "additionalProperties": false,
         "required": ["instanceId", "attemptId", "source", "dependencies", "uncertainPaths"],
         "properties": {
-          "instanceId": {"type": "string", "minLength": 1},
-          "attemptId": {"type": "string", "minLength": 1},
+          "instanceId": {"type": "string", "minLength": 1, "pattern": "\\S"},
+          "attemptId": {"type": "string", "minLength": 1, "pattern": "\\S"},
           "dependencies": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
           "uncertainPaths": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
           "source": {
@@ -27,7 +28,7 @@
                 "type": "object",
                 "additionalProperties": false,
                 "required": ["kind", "revision"],
-                "properties": {"kind": {"const": "commit"}, "revision": {"type": "string", "minLength": 1}}
+                "properties": {"kind": {"const": "commit"}, "revision": {"type": "string", "minLength": 1, "pattern": "\\S"}}
               },
               {
                 "type": "object",
