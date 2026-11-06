@@ -138,10 +138,12 @@
   "snapshotRefresh": {
     "changed": "LICENSE and ADR 0033 hashes; ADRs 0034, 0035, 0036, 0037 added",
     "decision": "founder-decisions-20261106.json T008-3 (A)",
-    "method": "scripts/validate_spec_kit.py freeze run on a detached checkout of public origin/develop 14187e05; humanReview stays pending",
+    "method": "authority hashes from scripts/validate_spec_kit.py freeze on a detached checkout of public origin/develop 14187e05; evidence_snapshot restored to 530a5f39; humanReview stays pending",
     "mode": "historical",
     "newCommit": "14187e05668e03ee452a91f5209fd5ae883a04e4",
-    "oldCommit": "530a5f395b19f1bb9519b4846186e201cf4a02aa"
+    "oldCommit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
+    "reason": "obtained evidence inputs (for example NOTICE) hash differently at 14187e05, so freezing evidence there fails with 'Stale evidence input: NOTICE' and would need rewritten evidence hashes; the founder's decision text said both snapshots, this narrower refresh is reported to the founder",
+    "scope": "authority_snapshot only; evidence_snapshot stays historical at 530a5f39"
   },
   "task": "SPEC-048/T008"
 }

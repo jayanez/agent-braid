@@ -109,7 +109,7 @@
   "compatibility": "Additive opt-in offline foundations under ADR 0027; internal v0.1 records only. Existing AIM/runtime/plugin/telemetry/System 1/forecast contracts and historical evidence unchanged.",
   "domain": "Owned repository tasks, task-local guidance and selected context packaging; deterministic laboratory controls first. Arbitrary tools, scripts, hooks, policy rewrites and production source mutation are outside the initial editable surface.",
   "evidence_snapshot": {
-    "commit": "14187e05668e03ee452a91f5209fd5ae883a04e4",
+    "commit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
     "mode": "historical"
   },
   "execution_contract": "ADR 0027 adopts only offline foundations T002\u2013T004: immutable identity verification, bounded positive-inventory import and externally issued operator-admission reservation. No launcher or issuance API; all executionAuthorization fields false. Runner, host, context packaging, observation/export and later feature acceptance remain pending; no existing grant or runtime language is widened.",
