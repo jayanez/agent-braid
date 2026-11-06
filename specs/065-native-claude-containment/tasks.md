@@ -315,6 +315,14 @@ shared object store fails the portable-root check).
   PROC-03 (`evidence/founder-decisions-20261106.json`, "A. Residuo aceptado"): the limit is physical footprint at most
   4 GiB with compressed memory at its compressed size as an accepted residual, and the probe fills the allocation with
   incompressible data (the duplicate `memory-burst` attempt is dropped and `memory` runs last). Next: self-check on the new commit, then attempt 5 (`t009-20261106a`, at most 3 Haiku sessions).
+  Attempt 5, 2026-11-06 (`t009-20261106a`, commit `320b00c4`; result `evidence/t009-attempt5-result.md`; bundle
+  `evidence/qualification/t009-20261106a/`, `bundleSha256` `45eee4d81bda711f6a1a73ae6a54e373e693208967b29bce352d7f428ef5d1ce`):
+  self-check `self-check-ok` before the run; all 32 probes passed, `hostFunctional` true and `passRuleSatisfied` true.
+  Credential, filesystem, network and process `enforced`; PROC-03 `memory` denied in both contained rows (watchdog
+  `limitExceeded` `memory`, peaks 4,295,802,880 and 4,484,923,392 bytes), the uncontained control allowed. Three
+  sessions (CRED-05, NET-05-CLI, HOST-01), quota delta 0; CRED-05 `apiKeySource` `none`, inside
+  `SUBSCRIPTION_KEY_SOURCES`. Not a qualification: `qualificationRecordWritten` false; the bundle is ready for the
+  T010 human review (checklist in the result, section 4), and only the NC-9 issuer can issue records.
 
 - [ ] T010 (REQ-009 / SC-009): Human issuance. The issuer fixed by NC-9 reviews
   the T009 bundle; if every effect is `enforced` and HOST-01 completed, writes
