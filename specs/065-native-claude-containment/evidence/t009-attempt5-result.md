@@ -6,7 +6,7 @@ account `braidlab`, backend `macos-dedicated-user-sandbox-exec`. Bundle: `eviden
 decision of `evidence/founder-decisions-20261106.json` and the probe change of #1134.
 
 **This is not a qualification.** `passRuleSatisfied` is `true`, but `qualificationRecordWritten` is `false` and
-`executionAuthorization` is `false`: the runner never writes qualification records. Only the T010 issuer fixed by
+`executionAuthorization` is `false`: the runner does not write qualification records (a runner-produced record must refuse, a T010 negative control). Only the T010 issuer fixed by
 NC-9 (the founder) can review this bundle and issue the containment and Claude host records. Until T010 issues them
 and both verify against the trusted hashes, native launches keep refusing.
 
@@ -19,7 +19,7 @@ and both verify against the trusted hashes, native launches keep refusing.
 | `catalogSha256` | `5ecbd7eba61f4bc87322cce79153f5b5812d186aebb9eff43d3098e30134e929` (the hash #1134 announced) |
 | `bundleSha256` | `45eee4d81bda711f6a1a73ae6a54e373e693208967b29bce352d7f428ef5d1ce` |
 | Environment | macOS 27.2 (build 26B123), arm64, `claude` 2.1.292 (sha256 `97a01e5b...0386138f`), `profileSha256` `08e3ff93...eaf65294`, `sandboxExecSha256` `10cf4a46...6b2a92` (all unchanged from attempt 4) |
-| Pre-flight | `--self-check` `self-check-ok`: compile check `exec-denied`, the five F4 probes as expected, fixture and launch-probe runs exit 0, `auth` stage ok (exit 0, token present), `startup` stage `reachedInit` true (then timed out, as designed with egress refused: 19 CONNECTs, 19 denied, 0 allowed, 0 bytes, no leak), `sessionsStarted` 0 |
+| Pre-flight | `--self-check` `self-check-ok`: compile check `exec-denied`, the five F4 probes as expected, fixture and launch-probe runs exit 0 (the second launch-probe run counted one `unrelatedProcesses`, none unreadable), `auth` stage ok (exit 0, token present), `startup` stage `reachedInit` true (then timed out, as designed with egress refused: 19 CONNECTs, 19 denied, 0 allowed, 0 bytes, no leak), `sessionsStarted` 0 |
 | Verdict | `bundle-written`; `sessionsStarted` 3 (CRED-05, NET-05-CLI, HOST-01); `hostFunctional` true; `passRuleSatisfied` true |
 | Probes that passed | 32 of 32 (attempt 4: 31 of 32); `notEnforced`, `inconclusive` and `missingProbes` are empty |
 | Quota | 5-hour window 1 % before and after every session (delta 0), weekly 75 % (delta 0), `operator-typed-usage`, decision `proceed` (`within-caps`) for each |
