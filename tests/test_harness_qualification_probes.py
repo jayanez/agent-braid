@@ -263,8 +263,7 @@ class CatalogShapeTests(unittest.TestCase):
     def test_the_memory_attempt_runs_last_because_its_kill_stops_the_helper(self):
         # T009 attempt 4, launch-probe row: the kill of "memory" left "memory-burst" never begun, so inconclusive
         probe = q.BY_ID["PROC-03"]
-        self.assertEqual(probe.counted[-1], "memory")
-        self.assertEqual([name for name, _ in probe.attempts][-1], "memory")
+        self.assertEqual(probe.attempts[-1], ("memory", True))
         self.assertEqual(set(q.LIMIT_ATTRIBUTION), {"memory"})
 
     def test_the_memory_residual_names_the_footprint_limit_and_the_founders_acceptance(self):
