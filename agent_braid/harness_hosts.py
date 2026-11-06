@@ -413,7 +413,10 @@ class HostQualificationRun:
         if isinstance(after, QuotaObservation):
             self._last_observed_at = max(self._last_observed_at, after.observed_at)
         self._open = None
-        if breach is not None:
+        if breach is None and not completed:
+            breach_stop = "unit-incomplete"  # a unit that did not complete ends the cohort
+            self._stopped = breach_stop
+        elif breach is not None:
             self._stopped = breach
         return record
 

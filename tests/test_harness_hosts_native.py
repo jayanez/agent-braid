@@ -117,6 +117,16 @@ class UnhashedGuardTests(unittest.TestCase):
     def test_current_files_match_the_qualified_commit(self):
         hn.guard_unhashed(ROOT / "agent_braid")
 
+    def test_a_symlinked_module_blocks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            for name in hn.UNHASHED:
+                (Path(tmp) / name).write_bytes((ROOT / "agent_braid" / name).read_bytes())
+            target = Path(tmp) / "elsewhere.py"
+            (Path(tmp) / "system_one.py").rename(target)
+            (Path(tmp) / "system_one.py").symlink_to(target)
+            with self.assertRaises(hn.NativeWiringError):
+                hn.guard_unhashed(Path(tmp))
+
     def test_a_changed_file_blocks_unless_the_founder_approved_that_exact_hash(self):
         with tempfile.TemporaryDirectory() as tmp:
             for name in hn.UNHASHED:
@@ -218,12 +228,27 @@ class NativeUnitTests(unittest.TestCase):
         self.assertFalse(verdict.qualified)
         self.assertEqual(len(verdict.units), 1)
 
-    def test_a_host_error_settles_not_completed_and_reraises(self):
+    def test_a_host_error_settles_not_completed_latches_the_stop_and_reraises(self):
         self.fx.launcher.fail = hc.ClaudeHostError("transport-failed")
         with self.assertRaises(hc.ClaudeHostError):
             self.unit()
-        record = self.run.verdict().units[0]
-        self.assertFalse(record.completed)
+        verdict = self.run.verdict()
+        self.assertFalse(verdict.units[0].completed)
+        self.assertEqual((self.run.stopped, verdict.qualified, verdict.open_unit),
+                         ("unit-incomplete", False, False))
+
+    def test_a_failing_clock_at_settlement_never_reads_as_qualified(self):
+        def broken():
+            raise RuntimeError("clock")
+        with self.assertRaises(RuntimeError):
+            self.unit(settle_now=broken)
+        self.assertFalse(self.run.verdict().qualified)
+        self.assertEqual(self.run.stopped, "unit-unsettled")
+
+    def test_a_lost_after_reading_error_is_a_breach_not_a_crash(self):
+        def boom():
+            raise ValueError("typed")
+        self.assertEqual(self.unit(after=None, read_after=boom).record.breach, "missing-observation")
 
     def test_missing_after_reading_is_a_breach_and_stops_the_cohort(self):
         outcome = self.unit(after=None)

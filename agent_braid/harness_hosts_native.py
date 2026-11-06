@@ -147,8 +147,10 @@ def guard_unhashed(directory: Path | str, approved: Mapping[str, str] | None = N
     """Refuse unless each omitted module has its qualified bytes or a founder-approved hash."""
     approved = approved or {}
     for name, qualified in UNHASHED.items():
+        path = Path(directory) / name
         try:
-            actual = sha256((Path(directory) / name).read_bytes()).hexdigest()
+            _require(not path.is_symlink(), "unhashed-file-changed")
+            actual = sha256(path.read_bytes()).hexdigest()
         except OSError:
             raise NativeWiringError("unhashed-file-changed") from None
         _require(actual in (qualified, approved.get(name)), "unhashed-file-changed")
@@ -193,30 +195,42 @@ def run_native_unit(*, run: hh.HostQualificationRun, backend: lab.ContainmentBac
     before anything launches; a host error is re-raised after the unit is settled
     not-completed.
     """
+    cohort = {"unitsUsed": len(run.verdict().units),
+              "cohortWeeklyPercent": int(before.weekly_percent - run.baseline.weekly_percent)}
     started = now()
     ticket = run.admit_unit(before, containment=containment, containment_sha256=containment_sha256,
                             now=int(started.timestamp()))
-    cohort = {"unitsUsed": len(run.verdict().units),
-              "cohortWeeklyPercent": int(before.weekly_percent - run.baseline.weekly_percent)}
     result = error = None
     try:
         transport = NativeClaudeTransport(backend, workdir=workdir, pre_reading=reading_of(before),
-                                          quota=("cohort", cohort), clock=now,
-                                          environ=environ)
+                                          quota=("cohort", cohort), clock=now, environ=environ)
         result = hc.run_claude(manifest, context, transport=transport, request=request,
                                compatibility=compatibility, attempt_id=attempt_id,
                                inventory=inventory, now=ticket.admitted_at,
                                retention_seconds=retention_seconds,
                                limits=hc.HostLimits(wall_seconds=run.caps.unit_wall_seconds),
                                qualification=backend.host_qualification)
-    except Exception as exc:  # settle first, then surface the original refusal
+    except BaseException as exc:  # settle first, then surface the original refusal
         error = exc
     try:
-        after = read_after()
-    except Exception:
-        after = None  # a lost reading is a breach, not a crash
-    completed = result is not None and result.observation.to_dict()["terminal"] == "completed"
-    record = run.settle_unit(ticket, after, completed=completed, now=settle_now())
+        try:
+            after = read_after()
+        except Exception:
+            after = None  # a lost reading is a breach, not a crash
+        completed = False
+        try:
+            completed = result is not None and result.observation.to_dict()["terminal"] == "completed"
+        except Exception:
+            completed = False
+        record = run.settle_unit(ticket, after, completed=completed, now=settle_now())
+    except BaseException as exc:
+        if error is None:
+            error = exc
+        try:
+            run._stop("unit-unsettled")  # latch: an unsettled unit must never read as qualified
+        except hh.HostGateError:
+            pass
+        raise error
     if error is not None:
         raise error
     return UnitOutcome(record, result)

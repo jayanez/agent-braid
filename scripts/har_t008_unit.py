@@ -99,8 +99,8 @@ def read_observation(reader: t9.UsageCardReader, ask, say, role: str, clock) -> 
 
 
 def trusted_inputs(args) -> tuple[hn.IssuedRecords, dict, object]:
-    issued = hn.issued_records((ROOT / args.issuance).read_bytes(), **TRUSTED)
-    environment = json.loads((ROOT / args.environment).read_bytes())
+    issued = hn.issued_records((ROOT / ISSUANCE).read_bytes(), **TRUSTED)
+    environment = json.loads((ROOT / ENVIRONMENT).read_bytes())
     policy = hn.qualified_policy(
         environment, account=args.account, run_root=args.run_root, config_dir=args.config_dir,
         claude=args.claude, interpreter=args.interpreter, interpreter_sha256=args.interpreter_sha256 or "",
@@ -151,16 +151,29 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
                               operator_account=args.operator_account,
                               qualification=issued.containment, qualification_sha256=issued.containment_sha256,
                               host_qualification=issued.host, host_qualification_sha256=issued.host_sha256)
-    export = canonical({"format": "braid-harness-export-inventory/v0.1", "allowedEventFields": ["text", "state"],
-                        "secrets": [value for value, _ in inventory], "maxRetentionSeconds": 3600})
-    manifest, context = hn.unit_inputs(
-        environment_sha256=issued.environment_sha256, claude_sha256=policy.claude_sha256,
-        containment_sha256=backend.qualification.sha256,
-        host_qualification_sha256=backend.host_qualification.sha256)
+    try:
+        export = canonical({"format": "braid-harness-export-inventory/v0.1", "allowedEventFields": ["text", "state"],
+                            "secrets": [value for value, _ in inventory], "maxRetentionSeconds": 3600})
+        manifest, context = hn.unit_inputs(
+            environment_sha256=issued.environment_sha256, claude_sha256=policy.claude_sha256,
+            containment_sha256=backend.qualification.sha256,
+            host_qualification_sha256=backend.host_qualification.sha256)
+    except BaseException:
+        backend.close()
+        cleanup()
+        raise
     records, stop = [], None
+    if units < 1:
+        backend.close()
+        cleanup()
+        raise t9.AttemptRefused(["no-units-requested"])
     try:
         for index in range(units):
+            check_window(clock(), issued)  # the founder window and the issued validity hold for every unit
             before = read_observation(reader, ask, say, f"BEFORE unit {index + 1} of {units}", clock)
+            if before is None:
+                stop = "before-reading-refused"
+                break
             try:
                 outcome = hn.run_native_unit(
                     run=run, backend=backend, workdir=workdir(), containment=issued.host,
@@ -172,19 +185,28 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
                     attempt_id=f"{args.attempt}-u{index}", before=before,
                     read_after=lambda: read_observation(reader, ask, say, f"AFTER unit {index + 1}", clock),
                     now=clock, retention_seconds=3600, settle_now=lambda: int(clock().timestamp()))
-            except (hh.HostGateError, hc.ClaudeHostError, _mac.LabError) as exc:
+            except (hh.HostGateError, hc.ClaudeHostError, _mac.LabError, hn.NativeWiringError) as exc:
                 stop = exc.reason
                 break
-            records.append(outcome.record.to_dict())
             say(f"[T008] unit {index + 1}: completed={outcome.record.completed} breach={outcome.record.breach}")
             if run.stopped:
                 stop = run.stopped
                 break
+    except BaseException as exc:  # Ctrl-C, SIGTERM-as-exception or a bug: keep the evidence, then re-raise
+        stop = f"aborted:{type(exc).__name__}"
+        print(json.dumps(_report(args, run, backend, stop, "cohort-aborted"), indent=2, sort_keys=True))
+        raise
     finally:
         backend.close()
         cleanup()
-    return {"verdict": "cohort-finished", "attempt": args.attempt, "units": records, "stopped": stop or run.stopped,
-            "hostVerdict": run.verdict().to_dict(), "backendRefusals": t9.refusal_evidence(backend),
+    return _report(args, run, backend, stop or run.stopped,
+                   "cohort-finished" if not (stop or run.stopped) else "cohort-stopped")
+
+
+def _report(args, run, backend, stopped, verdict) -> dict:
+    host = run.verdict().to_dict()
+    return {"verdict": verdict, "attempt": args.attempt, "units": host["units"], "stopped": stopped,
+            "hostVerdict": host, "backendRefusals": t9.refusal_evidence(backend),
             "executionAuthorization": False}
 
 
@@ -194,8 +216,6 @@ def parser():
     for action in p._actions:
         if action.dest == "out_dir":
             action.required = False
-    p.add_argument("--issuance", default=ISSUANCE)
-    p.add_argument("--environment", default=ENVIRONMENT)
     p.add_argument("--units", type=int, default=MAX_UNITS, help=f"serial units, at most {MAX_UNITS}")
     return p
 
@@ -219,8 +239,12 @@ def main(argv=None, *, system=None) -> int:
         print(json.dumps({"verdict": "refused", "reasons": exc.reasons, "details": exc.details, "nativeRun": False,
                           "executionAuthorization": False}, indent=2, sort_keys=True))
         return 2
+    except (OSError, ValueError, hn.NativeWiringError, _mac.LabError, hh.HostGateError) as exc:
+        print(json.dumps({"verdict": "refused", "reasons": [getattr(exc, "reason", type(exc).__name__)],
+                          "nativeRun": False, "executionAuthorization": False}, indent=2, sort_keys=True))
+        return 2
     print(json.dumps(result, indent=2, sort_keys=True))
-    return 0
+    return 0 if result["verdict"] == "cohort-finished" else 2
 
 
 if __name__ == "__main__":
