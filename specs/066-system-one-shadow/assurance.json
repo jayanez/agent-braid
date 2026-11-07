@@ -182,7 +182,7 @@
           "when": "an episode is recorded"
         }
       ],
-      "text": "Episode contract agent-braid-s1-episode/v0.1 with derived structural features only for each successful analyze-work call."
+      "text": "Episode contract agent-braid-s1-episode/v0.2 (v0.1 lines stay readable) with derived structural features only for each successful, report-bearing analyze or analyze-work result (founder decision 4 of 2026-11-07; the current runtime analyze result carries no report and records nothing)."
     },
     {
       "id": "REQ-004",
@@ -266,6 +266,6 @@
     }
   ],
   "scientific_limits": "S1.5a measures nothing about accuracy, calibration or utility. The reference backend always abstains. H-S1 is untested; null and negative results are valid. No speedup, cost or safety claim.",
-  "scope": "SPEC-066 S1.5a: opt-in System One shadow observer that records one structural decision episode per successful analyze-work call into a private local store, with consent, report, purge and pinned identity. S1.5b\u2013e are outline requirements only.",
+  "scope": "SPEC-066 S1.5a: opt-in System One shadow observer that records one structural decision episode per successful, report-bearing analyze or analyze-work result into a private local store, with consent, report, purge and pinned identity. S1.5b\u2013e are outline requirements only.",
   "stage": "draft"
 }
