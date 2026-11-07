@@ -1,0 +1,26 @@
+{
+ "command": "python -m unittest tests.test_spec069_refusals",
+ "environment": {
+  "platform": "macOS-27.2",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
+  "agent_braid/git_adapter.py": "77c17bb694057e712a31886d8879f8ca922bd912f80a45fb703285f828ec94ed",
+  "agent_braid/tooling_mcp.py": "24bfaec8d6042abd07728f8a93149f389e36296605f881806f827074accfd388",
+  "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
+  "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
+  "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
+  "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
+  "tests/fixtures/analysis-requests/aim.json": "347c45ab4469994254e6213329a2f337c5a48d7e73338ea8dadbef9d6864fe36",
+  "tests/fixtures/analysis-requests/git.json": "89de14125fc46cee08b05c6b3ffb26bb6d34401b700c2d5d0111a77bb6f2e215",
+  "tests/test_spec069_refusals.py": "4d74b05ae81d4ae3c5f91091b9a9b88930b1f010b925cff5d181a94abfa16cb9"
+ },
+ "limits": "Pointers are checked against the corpus expectation (readVersions keys tokenized). The refusal text is not a versioned contract. No host model was involved.",
+ "outcome": "passed: Every structural refusal in the corpus names its JSON Pointer and expected form through the MCP analyze-work path; batch refusals carry fixed codes; messages are bounded. Negative controls: a secret-shaped unknown key and request values are not echoed, git output stays masked, and a missing path and an outside path return the same refusal.",
+ "procedure": "procedure_007",
+ "result": "OK",
+ "scenario": "SC-007",
+ "specification": "SPEC-069 P1",
+ "testsRun": 7
+}
