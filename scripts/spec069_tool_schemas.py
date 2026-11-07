@@ -60,9 +60,9 @@ VALUES = frozenset({"type", "enum", "const", "required", "minItems", "maxItems",
 # installed development requirements and none may be added, so the cap is checked with a named,
 # conservative approximation: ceil(UTF-8 bytes / 3.7) of the compact JSON a host forwards to its
 # model (name, description, inputSchema). A one-time calibration on 2026-11-07 (tiktoken in a
-# disposable environment, never a dependency; evidence/procedure_005.json) measured 4.09 to 4.23
+# disposable environment, never a dependency; evidence/procedure_005.json) measured 4.13 to 4.23
 # bytes per token for these definitions with o200k_base and cl100k_base, so the approximation
-# over-counts those two tokenizers by about 10 to 14 %. Anthropic's tokenizer is not public and is
+# over-counts those two tokenizers by about 12 to 14 %. Anthropic's tokenizer is not public and is
 # not bounded by this approximation.
 TOKEN_CAP = 1500
 TOKEN_APPROXIMATION = "ceil(utf8-bytes / 3.7) of the compact model-facing JSON (conservative for o200k_base and cl100k_base; not a tokenizer)"
@@ -104,7 +104,7 @@ class _Compactor:
     def __init__(self) -> None:
         self.published = _published()
         self.definitions: dict[str, Any] = {}
-        self.sources: dict[str, str] = {}
+        self.sources: set[str] = set()
         self.shared: dict[str, tuple[str, Any]] = {}
         for name, (identifier, pointer) in SHARED.items():
             document = self.published[identifier][1]
@@ -114,7 +114,7 @@ class _Compactor:
     def document(self, path: str) -> dict:
         for identifier, (where, document) in self.published.items():
             if where == path:
-                self.sources[where] = identifier
+                self.sources.add(where)
                 return document
         raise GeneratorError(f"{path} has no $id")
 
@@ -156,9 +156,11 @@ class _Compactor:
         if fragment.strip("/") or target not in self.published:
             raise GeneratorError(f"unsupported reference {reference}")
         name = _definition_name(target)
+        if name in SHARED:
+            raise GeneratorError(f"definition name {name!r} of {target} is reserved for a shared subschema")
         if name not in self.definitions:
             where, referenced = self.published[target]
-            self.sources[where] = target
+            self.sources.add(where)
             self.definitions[name] = None  # reserve: a reference cycle is refused below
             self.definitions[name] = self.schema(referenced, referenced)
         elif self.definitions[name] is None:

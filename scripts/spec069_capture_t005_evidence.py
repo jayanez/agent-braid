@@ -30,7 +30,7 @@ from scripts.spec069_capture_p1_evidence import EVIDENCE, ROOT, sha
 MODULES = [
     "tests.test_spec069_schema_delivery",
     "tests.test_spec069_differential.DeclaredSchemaDifferentialTests",
-    "tests.test_tooling_mcp.ToolingServiceTests.test_analyze_work_definition_describes_the_aim_request_shape",
+    "tests.test_tooling_mcp.SurfaceVersionTests.test_analyze_work_definition_describes_the_aim_request_shape",
     "tests.test_tooling_mcp.SdkClientIntegrationTests.test_plugin_list_tools_serves_the_nested_per_kind_schema_through_the_sdk",
 ]
 INPUTS = [
@@ -81,8 +81,11 @@ def listed_sizes() -> tuple[dict, dict]:
                 for tool in plugin_mcp.tool_listing(router, fake):
                     definition = {"name": tool.name, "description": tool.description, "inputSchema": tool.input_schema}
                     raw = generator.model_facing_bytes(definition)
+                    full = json.dumps(dict(definition, outputSchema=getattr(tool, "outputSchema", None),
+                                           annotations=getattr(tool, "annotations", None)),
+                                      ensure_ascii=False, separators=(",", ":")).encode("utf-8")
                     arm[tool.name] = {"bytes": len(raw), "approximateTokens": generator.approximate_tokens(definition),
-                                      "sha256": hashlib.sha256(raw).hexdigest()}
+                                      "sha256": hashlib.sha256(raw).hexdigest(), "fullDefinitionBytes": len(full)}
                     if tool.name == "analyze-work":
                         texts[delivery] = raw.decode("utf-8")
                 sizes[delivery] = arm
@@ -113,7 +116,7 @@ def main(argv: list[str] | None = None) -> int:
     lines = process.stderr.strip().splitlines()
     skipped = [line for line in lines if "skipped" in line]
     ran = next((line for line in lines if line.startswith("Ran ")), "")
-    passed = process.returncode == 0 and lines[-1].startswith("OK") and not skipped
+    passed = process.returncode == 0 and bool(lines) and lines[-1].startswith("OK") and not skipped
     environment = subprocess.run([args.python, "-c", "import platform, importlib.metadata as m; print(platform.python_version(), m.version('mcp'), m.version('jsonschema'))"],
                                  capture_output=True, text=True, check=True).stdout.split()
     sizes, texts = listed_sizes()
@@ -135,7 +138,9 @@ def main(argv: list[str] | None = None) -> int:
                    "The size is an approximation (" + generator.TOKEN_APPROXIMATION + "), cap " + str(generator.TOKEN_CAP)
                    + "; the calibration covers o200k_base and cl100k_base only. Kinds aim and git; units pending T006."),
         "pending": PENDING,
-        "sizes": {"approximation": generator.TOKEN_APPROXIMATION, "cap": generator.TOKEN_CAP, "arms": sizes},
+        "sizes": {"approximation": generator.TOKEN_APPROXIMATION, "cap": generator.TOKEN_CAP, "arms": sizes,
+                  "measured": "bytes and approximateTokens: name, description and inputSchema as hosts forward them "
+                              "to the model; fullDefinitionBytes adds outputSchema and annotations (not sent to the model)"},
         "calibration": calibrate(args.tokenizer_python, texts),
         "environment": {"python": environment[0], "mcp": environment[1], "jsonschema": environment[2],
                         "platform": platform.platform(terse=True), "capturePython": platform.python_version()},

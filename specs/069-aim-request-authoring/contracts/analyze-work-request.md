@@ -100,8 +100,8 @@ item are declared once under the top-level `$defs` and referenced as `#/$defs/<n
   `evidence` item that is not an evidence object); the runtime still accepts them.
 - **Size cap (D12).** Name, description and `inputSchema` of each listed tool, as compact
   UTF-8 JSON, stay within 1,500 tokens approximated as ceil(bytes / 3.7). A one-time
-  calibration measured 4.09–4.23 bytes per token with `o200k_base` and `cl100k_base`, so
-  the approximation over-counts them by about 10–14 %; Anthropic's tokenizer is not
+  calibration measured 4.13–4.23 bytes per token with `o200k_base` and `cl100k_base`, so
+  the approximation over-counts them by about 12–14 %; Anthropic's tokenizer is not
   measured. Above the cap the test fails and the description-only fallback applies.
 - **Ablation switch (D9).** `python -m scripts.spec069_tool_schemas --delivery
   description-only` rewrites the generated module so a build serves the interim

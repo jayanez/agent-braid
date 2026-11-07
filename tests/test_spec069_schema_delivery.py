@@ -19,12 +19,20 @@ from agent_braid import analyze_work_schema, plugin_mcp
 from agent_braid import tooling_mcp as core
 from scripts import spec069_tool_schemas as generator
 
-# The analyze-work definition served before T005 (alpha.7 plus PR #1099): the description-only arm.
+# The analyze-work inputSchema served before T005 (develop 23b29a47: alpha.7 plus PR #1099), copied
+# literally: the description-only arm must equal it. A guidance rewrite (T008) that changes the prose
+# makes this test fail on purpose, so the arm's new meaning is updated knowingly.
+INTERIM_HELP = (
+    "kind=aim: request is an AIM envelope {analysisInputVersion: \"0.1.0-alpha\", "
+    "source: {kind: \"aim\", description}, operations: [AIM 0.2.0-draft record, ...]}; "
+    "each record needs aimVersion, instanceId, attemptId, definition {id, digest}, inputDigest, "
+    "dependencies, readVersions, effects {declared [{kind, resource}], inferred, observed, coverage} "
+    "and evidence. The agent-braid-analyze skill has a complete copyable example. "
+    "kind=git: request is {gitAnalysisRequestVersion, repository, baseRevision, operations}.")
 INTERIM_INPUT_SCHEMA = {
     "type": "object", "additionalProperties": False,
     "properties": {"kind": {"enum": ["aim", "git"]},
-                   "request": {"oneOf": [{"type": "object"}, {"type": "array"}],
-                               "description": core._ANALYZE_WORK_REQUEST_HELP}},
+                   "request": {"oneOf": [{"type": "object"}, {"type": "array"}], "description": INTERIM_HELP}},
     "required": ["kind", "request"]}
 PLAIN_TOP_LEVEL = {"type", "additionalProperties", "properties", "required", "$defs"}
 
@@ -138,6 +146,9 @@ class SchemaDeliveryTests(unittest.TestCase):
                 compactor.schema(node, {"$defs": {"x": {}}})
         with self.assertRaises(generator.GeneratorError):
             generator.render("anything")
+        clash = dict(generator.SHARED, agentInteractionMetadata=generator.SHARED["effect"])
+        with mock.patch.object(generator, "SHARED", clash), self.assertRaises(generator.GeneratorError):
+            generator.build()
 
     # --- tool definition (A1) -------------------------------------------------
     def test_both_arms_keep_a_plain_object_top_level(self):

@@ -1,0 +1,186 @@
+{
+ "calibration": {
+  "bytesPerToken": {
+   "description-only": {
+    "cl100k_base": 4.19,
+    "o200k_base": 4.14
+   },
+   "per-kind": {
+    "cl100k_base": 4.23,
+    "o200k_base": 4.13
+   }
+  },
+  "counts": {
+   "description-only": {
+    "cl100k_base": 338,
+    "o200k_base": 342
+   },
+   "per-kind": {
+    "cl100k_base": 1188,
+    "o200k_base": 1217
+   }
+  },
+  "note": "One-time calibration of the D12 approximation in a disposable interpreter; tiktoken is not a repository dependency. Anthropic's tokenizer is not public and is not measured.",
+  "tiktoken": "0.14.0"
+ },
+ "command": "python -m unittest -v tests.test_spec069_schema_delivery tests.test_spec069_differential.DeclaredSchemaDifferentialTests tests.test_tooling_mcp.SurfaceVersionTests.test_analyze_work_definition_describes_the_aim_request_shape tests.test_tooling_mcp.SdkClientIntegrationTests.test_plugin_list_tools_serves_the_nested_per_kind_schema_through_the_sdk",
+ "environment": {
+  "capturePython": "3.13.11",
+  "jsonschema": "4.25.1",
+  "mcp": "2.3.0",
+  "platform": "macOS-27.2",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/analyze_work_schema.py": "ebbb7c9330fa6ec60ebf0dd39ca794de1c269b24f6816a6c29d87577e79e00ff",
+  "agent_braid/plugin_mcp.py": "56115f8f3c6dbfef31fd2888f2a6b29a70f3f3471e31a6f0c19b8af6693b2d3b",
+  "agent_braid/tooling_mcp.py": "e349dc7a481ce0bf5bb123fe1d6feff06970f7e3e7783b961443672bc2c144f3",
+  "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
+  "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
+  "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
+  "scripts/spec069_capture_t005_evidence.py": "c5f011d693a08086b6b24b50a6bfc126152ba39e69bdf795e0df0bfcc1989d84",
+  "scripts/spec069_tool_schemas.py": "69964cc6ce9eef8530a780040fcebc30189358614ed3521f71f803573070601e",
+  "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "b890d49ae2e92e14c3011dbd5f3edc048009b4635086537228519286c6878b08",
+  "specs/069-aim-request-authoring/reviews/t005-handoff-20261107.md": "91fe4e30857e04cfdbc000ada17b74f003f55b588e6cca8c3bc9202aa6bf5dea",
+  "tests/fixtures/analysis-requests/aim.json": "347c45ab4469994254e6213329a2f337c5a48d7e73338ea8dadbef9d6864fe36",
+  "tests/fixtures/analysis-requests/git.json": "89de14125fc46cee08b05c6b3ffb26bb6d34401b700c2d5d0111a77bb6f2e215",
+  "tests/spec069_differential.py": "06ae8e85fee9b24137130eafeb87911ebbc0953d049eb99ed503d7b6134048e4",
+  "tests/test_spec069_differential.py": "d2ece9223aae62866d480f986fc828ca106100a89f168694475258b54781a9cb",
+  "tests/test_spec069_schema_delivery.py": "7cc9b02b40f9486a879318b05bd4d0c82ee0d9d9b2a37290ab07209cc77776f7",
+  "tests/test_tooling_mcp.py": "4edbddff0e3e242d4ca8d2853b36ba1da7bf3ead6d9f1de11ef92f1171e01a5b"
+ },
+ "limits": "Offline only: no host connected, so host acceptance of the nested form, recording-proxy byte identity and eager/deferred loading are not observed. Corpus agreement is not proof over all inputs. The size is an approximation (ceil(utf8-bytes / 3.7) of the compact model-facing JSON (conservative for o200k_base and cl100k_base; not a tokenizer)), cap 1500; the calibration covers o200k_base and cl100k_base only. Kinds aim and git; units pending T006.",
+ "outcome": "passed: the generated per-kind schemas equal a fresh regeneration byte for byte and carry the source hashes; the inputSchema top level stays a plain object in both D9 arms; the plugin listing (fake types and the real mcp SDK, auto and legacy modes) lists every tool with workspaceId injected and the schemas nested under request; each kind's branches and the whole call schema give the published schemas' verdicts on all 429 corpus cases; every listed tool is under the D12 cap; the description-only arm is byte identical to the interim definition. Negative controls: a top-level oneOf is flagged and breaks the plugin listing, an oversized definition fails and names the fallback, drift in a published schema changes the generated file, and a relaxed or tightened declared keyword changes corpus verdicts.",
+ "pending": [
+  "Host probe of the nested form in Claude Code, Codex and OpenCode (host acceptance per host, request received as an object, not a string).",
+  "Recording stdio proxy: byte identity of the listed definitions across host connections.",
+  "Whether each host loads the tool schemas eagerly or on use.",
+  "D9 ablation arm (description-only vs per-kind) in the native final run; the per-kind schema is kept only if it improves first-attempt validity in at least one host.",
+  "Kind units: added after T006 merges (follow-up)."
+ ],
+ "procedure": "procedure_005",
+ "result": "OK",
+ "scenario": "SC-005",
+ "sizes": {
+  "approximation": "ceil(utf8-bytes / 3.7) of the compact model-facing JSON (conservative for o200k_base and cl100k_base; not a tokenizer)",
+  "arms": {
+   "description-only": {
+    "analyze": {
+     "approximateTokens": 82,
+     "bytes": 301,
+     "fullDefinitionBytes": 842,
+     "sha256": "1f1566b7bbac649fb59e6c9d384561d6a3729e1bb547e66485d5b3ed523dc274"
+    },
+    "analyze-work": {
+     "approximateTokens": 383,
+     "bytes": 1415,
+     "fullDefinitionBytes": 1956,
+     "sha256": "4f9ad3423f5bd1d685bbbf84a9a6be12d5a002a7151be5aa8dba8f618a166b00"
+    },
+    "execute": {
+     "approximateTokens": 90,
+     "bytes": 333,
+     "fullDefinitionBytes": 875,
+     "sha256": "ae3db5eae763ad9d283cc524cb2478129190dd772fbb3fb0cbff85c6e3f0fa17"
+    },
+    "plugin-status": {
+     "approximateTokens": 62,
+     "bytes": 226,
+     "fullDefinitionBytes": 304,
+     "sha256": "06c99edfc344f05e8735cb2fe8d2c935851e0acd1ac5d85a4d4349205a5d156b"
+    },
+    "prepare": {
+     "approximateTokens": 105,
+     "bytes": 387,
+     "fullDefinitionBytes": 928,
+     "sha256": "5131bdf8b254b0528b54867fb12601f3c97bcd7d0eb5696a43b9b2a62476951b"
+    },
+    "recover": {
+     "approximateTokens": 103,
+     "bytes": 379,
+     "fullDefinitionBytes": 920,
+     "sha256": "cd3271ba45c710274f8cafb7c9cfe6206855344e6a6d7b92db5106d2aef8407b"
+    },
+    "status": {
+     "approximateTokens": 80,
+     "bytes": 293,
+     "fullDefinitionBytes": 834,
+     "sha256": "17d6e512f0c0b838ce82446c4ab7979ccbbe76c17be86664b1e8ef0f0c37b3c5"
+    },
+    "verify": {
+     "approximateTokens": 80,
+     "bytes": 293,
+     "fullDefinitionBytes": 834,
+     "sha256": "f0741b86e59a12e06f0ffed6916ade51da61ee03b64230ac5ab36483625e8c24"
+    },
+    "workspaces": {
+     "approximateTokens": 61,
+     "bytes": 223,
+     "fullDefinitionBytes": 301,
+     "sha256": "43aeee7b2b0a0744a28324df8bf3360e6785e649a2160bfb379c456fa6c9b3ca"
+    }
+   },
+   "per-kind": {
+    "analyze": {
+     "approximateTokens": 82,
+     "bytes": 301,
+     "fullDefinitionBytes": 842,
+     "sha256": "1f1566b7bbac649fb59e6c9d384561d6a3729e1bb547e66485d5b3ed523dc274"
+    },
+    "analyze-work": {
+     "approximateTokens": 1358,
+     "bytes": 5023,
+     "fullDefinitionBytes": 5564,
+     "sha256": "f2caa7a9a37f057cd50da7bfb1f947b0c87f6886bb7213489331f72f9f704ead"
+    },
+    "execute": {
+     "approximateTokens": 90,
+     "bytes": 333,
+     "fullDefinitionBytes": 875,
+     "sha256": "ae3db5eae763ad9d283cc524cb2478129190dd772fbb3fb0cbff85c6e3f0fa17"
+    },
+    "plugin-status": {
+     "approximateTokens": 62,
+     "bytes": 226,
+     "fullDefinitionBytes": 304,
+     "sha256": "06c99edfc344f05e8735cb2fe8d2c935851e0acd1ac5d85a4d4349205a5d156b"
+    },
+    "prepare": {
+     "approximateTokens": 105,
+     "bytes": 387,
+     "fullDefinitionBytes": 928,
+     "sha256": "5131bdf8b254b0528b54867fb12601f3c97bcd7d0eb5696a43b9b2a62476951b"
+    },
+    "recover": {
+     "approximateTokens": 103,
+     "bytes": 379,
+     "fullDefinitionBytes": 920,
+     "sha256": "cd3271ba45c710274f8cafb7c9cfe6206855344e6a6d7b92db5106d2aef8407b"
+    },
+    "status": {
+     "approximateTokens": 80,
+     "bytes": 293,
+     "fullDefinitionBytes": 834,
+     "sha256": "17d6e512f0c0b838ce82446c4ab7979ccbbe76c17be86664b1e8ef0f0c37b3c5"
+    },
+    "verify": {
+     "approximateTokens": 80,
+     "bytes": 293,
+     "fullDefinitionBytes": 834,
+     "sha256": "f0741b86e59a12e06f0ffed6916ade51da61ee03b64230ac5ab36483625e8c24"
+    },
+    "workspaces": {
+     "approximateTokens": 61,
+     "bytes": 223,
+     "fullDefinitionBytes": 301,
+     "sha256": "43aeee7b2b0a0744a28324df8bf3360e6785e649a2160bfb379c456fa6c9b3ca"
+    }
+   }
+  },
+  "cap": 1500,
+  "measured": "bytes and approximateTokens: name, description and inputSchema as hosts forward them to the model; fullDefinitionBytes adds outputSchema and annotations (not sent to the model)"
+ },
+ "skipped": [],
+ "specification": "SPEC-069 P3 / T005 (offline part)",
+ "testsRun": 24
+}
