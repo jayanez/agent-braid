@@ -1,8 +1,8 @@
 # `analyze-work` request contract (SPEC-069, phase P1)
 
-**Status:** proposed with [ADR 0038](../../../docs/adr/0038-analyze-work-request-contract.md);
-not accepted until the owner reviews both. Normative for the request forms
-below; nothing here describes host behaviour (that is measured in P2).
+**Status:** accepted 2026-11-07 with [ADR 0038](../../../docs/adr/0038-analyze-work-request-contract.md)
+by the owner. Normative for the request forms below; nothing here describes host
+behaviour (that is measured in P2).
 
 ## Call
 

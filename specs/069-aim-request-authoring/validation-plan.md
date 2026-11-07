@@ -3,8 +3,8 @@
 Status (2026-11-06, draft): procedures 002, 003, 004, 007, 009 and 015 have
 obtained local evidence (`evidence/procedure_*.json`, written by
 `scripts/spec069_capture_p1_evidence.py`; CI `validate` on each pull request is the
-`pr`-profile evidence). Procedure 001 awaits the owner's review of ADR 0038 and the
-contract; procedures 005, 006, 008, 010-014 have none. Deterministic
+`pr`-profile evidence). Procedure 001 has the owner's review record
+(`reviews/owner-t001-adr-contract-20261107.md`); procedures 005, 006, 008, 010-014 have none. Deterministic
 procedures run in CI and locally with `.venv-speckit/bin/python -m unittest …`.
 Native procedures run only through the automated driver of REQ-013 in disposable
 profiles; no procedure requires pasting prompts or answers by hand. Passing
