@@ -219,6 +219,25 @@ class ClassificationConsistencyTests(unittest.TestCase):
                 risk.apply_risk(resolved, bad)
             self.assertEqual(ctx.exception.reason, "invalid-diff-summary")
 
+    def test_hidden_size_and_shared_file_reasons_are_refused(self):
+        resolved = view()
+        big = classify(["agent_braid/harness_lab.py"], lines=5000)
+        shared = classify(["agent_braid/cli.py"])
+        for forged in (dict(big, reasons=[r for r in big["reasons"] if r["rule"] != "size-over-400"]),
+                       dict(shared, reasons=[r for r in shared["reasons"] if r["rule"] != "shared-file"])):
+            forged = dict(forged, raiseDepthTo=None, raiseModeTo=None, riskClass="ordinary")
+            with self.assertRaises(ha.AssuranceError) as ctx:
+                risk.apply_risk(resolved, forged)
+            self.assertEqual(ctx.exception.reason, "invalid-diff-summary")
+
+    def test_dir_glob_matches_the_bare_directory_and_path_count_is_bounded(self):
+        profile = with_rule(ha.preset("standard"), match={"paths": ["scripts/**"], "minChangedLines": 0})
+        self.assertTrue(classify(["scripts"], profile=profile)["reasons"])
+        many = [f"docs/f{i}.md" for i in range(risk.MAX_PATHS + 1)]
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            risk.classify_risk(ha.preset("standard"), many, 1, impact("README.md"))
+        self.assertEqual(ctx.exception.reason, "invalid-diff-summary")
+
     def test_residual_a_self_consistent_docs_only_claim_is_not_recomputed_from_the_diff(self):
         forged = dict(classify(["agent_braid/harness_lab.py"]), docsOnly=True, riskClass="docs-only", reasons=[],
                       raiseDepthTo=None, raiseModeTo=None)

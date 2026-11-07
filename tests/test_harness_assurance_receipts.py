@@ -242,7 +242,7 @@ class VerifyReceiptTests(unittest.TestCase):
         r = receipt(art)
         refused(self, "depth-below-effective", resealed(r, depth="R2"), art=art)
         refused(self, "depth-below-effective", resealed(receipt(), depth=None, depthSource=None))
-        verify(resealed(receipt(), depth="R4", depthSource="profile"))
+        verify(resealed(receipt(), depth="R4", depthSource="profile", reviews=reviews_for(at_depth("R4", True))))
 
     def test_lower_depth_receipt_for_a_raised_gate_is_refused(self):
         low = receipt(artifact("lite"))  # R1 receipt against an R2 artifact
@@ -411,6 +411,51 @@ class StandingReceiptTests(unittest.TestCase):
         forged = resealed(receipt(art, checkpoint="merge"), mode="standing-authorization",
                           approvals=[{"kind": "standing-authorization", "ref": "auth-1"}])
         refused(self, "mode-below-effective", forged, art=art)
+
+
+class T011ReviewFindingTests(unittest.TestCase):
+    """SPEC-067 T011 review findings: a re-sealed artifact or a claimed depth cannot lower the required reviews."""
+
+    def test_claimed_depth_above_effective_needs_that_depths_reviews(self):
+        art = at_depth("R2", docs_only=True)
+        r = receipt(art)
+        verify(r, art)
+        refused(self, "review-missing", resealed(r, depth="R4"), art=art, review_kind="adversarial-security-review")
+
+    def test_resealed_artifact_with_emptied_reviews_is_refused(self):
+        art = artifact(paths=("agent_braid/cli.py",), lines=500)
+        r = receipt(art)
+        forged = rc._sealed({**{k: v for k, v in art.items() if k != "digest"},
+                             "reviews": {**art["reviews"], "required": [], "minIndependentReviewers": 0}})
+        # the requirement comes from the receipt depth and the risk, so the emptied section changes nothing
+        refused(self, "invalid-artifact", resealed(r, reviews=[]), art=forged)
+
+    def test_artifact_docs_only_that_disagrees_with_its_risk_is_refused(self):
+        art = artifact(paths=("agent_braid/cli.py",), lines=10)
+        forged = rc._sealed({**{k: v for k, v in art.items() if k != "digest"},
+                             "reviews": {**art["reviews"], "docsOnly": True}})
+        refused(self, "invalid-artifact", receipt(art), art=forged)
+
+    def test_deeply_nested_or_extra_artifact_content_is_a_fixed_refusal(self):
+        art = artifact()
+        nested = []
+        for _ in range(5000):
+            nested = [nested]
+        refused(self, "invalid-artifact", receipt(art), art={**art, "extra": nested})
+        refused(self, "invalid-artifact", receipt(art), art={**art, "extra": 1})
+
+    def test_standing_mode_needs_exactly_the_standing_approval(self):
+        art = artifact()
+        r = receipt(art, checkpoint="merge", approvals=[], standing=evaluate(authorization()))
+        extra = [*r["approvals"], {"kind": "human", "ref": "pr-comment-1"}]
+        refused(self, "approval-mismatch", resealed(r, approvals=extra), art=art)
+        refused(self, "approval-mismatch", resealed(r, approvals=[]), art=art)
+
+    def test_recorded_failing_command_is_not_a_refusal(self):
+        # exit codes are recorded evidence of process, not a pass criterion (contract: "a command with an exit code")
+        art = artifact()
+        failing = [{**COMMAND, "exitCode": 1}]
+        verify(receipt(art, commands=failing), art)
 
 
 if __name__ == "__main__":

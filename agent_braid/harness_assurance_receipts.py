@@ -31,8 +31,9 @@ from datetime import datetime, timezone
 from typing import Any
 
 from .harness_assurance import (
-    ALLOWED_MODES, CHECKPOINTS, CODE_LADDER, COMPILED_FORMAT, DEPTH_CHECKPOINT, DEPTHS, DOCS_LADDER,
-    INDEPENDENT_REVIEW, MODES, AssuranceError, _hash, _id, _int, digest,
+    ALLOWED_MODES, CHECKPOINTS, CODE_LADDER, COMPILED_FORMAT, COMPILED_KEYS, DEPTH_CHECKPOINT, DEPTHS, DOCS_LADDER,
+    INDEPENDENT_REVIEW, MIN_INDEPENDENT_REVIEWERS, MODES, AssuranceError, _hash, _id, _int, digest,
+    required_reviews,
 )
 
 RECEIPT_FORMAT = "braid-harness-gate-receipt/v0.1"
@@ -64,7 +65,6 @@ _RECEIPT_KEYS = frozenset({
 _AUTHORIZATION_KEYS = frozenset({
     "schema", "id", "checkpoint", "repository", "branchPattern", "conditions", "issuedAt", "expiresAt", "issuer",
     "ownerStatement", "revokedAt", "digest"})
-_ARTIFACT_KEYS = frozenset({"schema", "executionAuthorization", "checkpoints", "inputs", "reviews", "risk", "digest"})
 
 
 class ReceiptError(AssuranceError):
@@ -178,7 +178,7 @@ def evaluate_standing(authorization: Any, *, checkpoint: str, repository: str, b
 
 def _row(artifact: Mapping[str, Any], checkpoint: str) -> Mapping[str, Any]:
     _require(checkpoint in CHECKPOINTS, "unknown-checkpoint")
-    _require(isinstance(artifact, Mapping) and _ARTIFACT_KEYS <= set(artifact)
+    _require(isinstance(artifact, Mapping) and COMPILED_KEYS == set(artifact)
              and isinstance(artifact["checkpoints"], list), "invalid-artifact")
     _require(artifact["schema"] == COMPILED_FORMAT and artifact["executionAuthorization"] is False, "invalid-artifact")
     _require(artifact["digest"] == digest(_unsealed(artifact)), "invalid-artifact")
@@ -267,13 +267,19 @@ def _check_mode(receipt: Mapping[str, Any], row: Mapping[str, Any]) -> None:
 
 
 def _check_reviews(receipt: Mapping[str, Any], artifact: Mapping[str, Any]) -> None:
-    required = artifact["reviews"]["required"]
+    # Derive the requirement from the depth the receipt claims and the artifact's risk, not from the artifact's own
+    # (re-sealable) review section: a claimed depth above the effective one needs that depth's reviews.
+    docs_only = artifact["risk"]["docsOnly"]
+    _require(artifact["reviews"]["docsOnly"] is docs_only, "invalid-artifact")
+    own = artifact["reviews"]
+    _require(own["required"] == list(required_reviews(own["depth"], docs_only)), "invalid-artifact")
+    required = required_reviews(receipt["depth"], docs_only)
+    minimum = MIN_INDEPENDENT_REVIEWERS if INDEPENDENT_REVIEW in required else 0
     done = [r for r in receipt["reviews"] if r["status"] == "completed"]
     for kind in required:
         if kind == INDEPENDENT_REVIEW:
             reviewers = {r["reviewer"] for r in done if r["kind"] == kind and r["reviewer"] != receipt["author"]}
-            _require(len(reviewers) >= artifact["reviews"]["minIndependentReviewers"],
-                     "independent-reviews-insufficient", kind)
+            _require(len(reviewers) >= minimum, "independent-reviews-insufficient", kind)
         else:
             _require(any(r["kind"] == kind for r in done), "review-missing", kind)
 
@@ -285,15 +291,17 @@ def verify_receipt(receipt: Any, artifact: Mapping[str, Any], *, checkpoint: str
     ``ReceiptError.reason`` is a fixed string from ``RECEIPT_REASONS``; ``ReceiptError.review`` names the first
     unsatisfied required review. Checks run in the order: structure, digest, artifact, checkpoint, commits,
     profile, depth, mode and approvals, reviews. A standing-authorization approval is checked only for form: its
-    reference is not resolved here, so the caller confirms the cited record with ``evaluate_standing``.
+    reference is not resolved here, so the caller confirms the cited record with ``evaluate_standing``. Command
+    exit codes are recorded process evidence, not a pass criterion, and ``pre-pr-review`` reviews are required at
+    the depth the receipt claims (derived from the artifact's risk, not from its re-sealable review section).
     """
     _check_shape(receipt)
     _require(receipt["digest"] == digest(_unsealed(receipt)), "digest-mismatch")
     try:
         _verify_against(receipt, artifact, checkpoint, base_commit, head_commit)
-    except (KeyError, TypeError, ValueError, IndexError, AttributeError) as error:
-        if isinstance(error, ReceiptError):
-            raise
+    except ReceiptError:
+        raise
+    except (KeyError, TypeError, ValueError, IndexError, AttributeError, RecursionError, OverflowError):
         raise ReceiptError("invalid-artifact") from None  # a self-consistent but malformed artifact
     return receipt
 
