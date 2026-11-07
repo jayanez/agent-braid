@@ -1,0 +1,58 @@
+{
+  "task": "SPEC-065/T012",
+  "recordedAt": "2026-11-08",
+  "baseCommit": "425e3064",
+  "inputs": {
+    "agent_braid/harness_manifest.py": "6624d79de56e702062ba02cefb5cab3d6ec7a58b310c3520d7bdbe024df7fe61",
+    "agent_braid/harness_quota.py": "c2565c057b9beeadc855d5bac850febc96e7f949a48707e5714c53440f2774e8",
+    "agent_braid/harness_containment_macos.py": "f241d9af83f5c6097a97513b065a1cc17558b38242fb808ac963c06ae1ad93f3",
+    "agent_braid/harness_transport_claude.py": "3ef09f0e3cc55f28ae677e88ffa5f36bc1080184d0d55b22a113add24da0258a",
+    "agent_braid/harness_qualification_probes.py": "3fb8bdc66bfdeb4aec717e9bafb9367acdd5f7e7afb16b1c51c2e2a24396e28e",
+    "agent_braid/harness_host_claude.py": "e409512d7b4d20bc5c38a28a2ee1cc31344832718f76ee2f067d25d610d1b9e1"
+  },
+  "checks": {
+    "runtime-code-unchanged-since-qualified-commit": "git diff --stat 320b00c4 origin/develop -- agent_braid/harness_manifest.py agent_braid/harness_quota.py agent_braid/harness_containment_macos.py agent_braid/harness_transport_claude.py agent_braid/harness_qualification_probes.py agent_braid/harness_host_claude.py : empty; the containment hash f241d9af... equals the T011 input",
+    "targeted-tests": "python3.13 -B -m unittest tests.test_harness_qualification_probes tests.test_harness_transport_claude tests.test_harness_quota tests.test_harness_manifest tests.test_harness_containment_macos -> Ran 478 tests, OK (skipped=3)",
+    "validate_spec_kit-065-record-in-clean-clone": "validate_record on specs/065-native-claude-containment/assurance.json accepted at 425e3064 before and after the obtained-evidence update; authority_snapshot (current) not stale, so no snapshot refresh was needed",
+    "validate_spec_kit-whole-repo-in-clean-clone": "fails on specs/066-system-one-shadow: Stale evidence input agent_braid/tooling_mcp.py (not SPEC-065; reported to the orchestrator). Historical records 001-017 and 046 cannot be checked in a clone that lacks the private history"
+  },
+  "codeReview": {
+    "scope": "T003-T007 at 425e3064, two independent read-only reviews (adversarial/silent-failure and functional/quality)",
+    "mustFixBeforeFreeze": [],
+    "noEscapeOrBypassFound": "no runner path writes a qualification record; expired, drifted and other-host records, API-key variables, non-subscription apiKeySource and PATH shadowing refuse",
+    "fixed": [
+      "tests/test_harness_qualification_probes.py: the all-arenas-closed test also asserts that an arena was created (the all() was vacuous); tests are outside the environment hash, so no re-qualification is needed"
+    ],
+    "deferredToNextRequalification": [
+      "R1 harness_host_claude.py: a memory-limit kill returns exit_code None and no terminal event; only missing-result remains, limit_exceeded is not carried into ClaudeHostResult (medium)",
+      "R2 per-session and manifest caps (maxNativeSessions, maxModelSessions, maxAutomaticRetries) are shape-checked only; a fresh NativeClaudeTransport and a new probe output directory reset the counters (medium)",
+      "R3 NativeClaudeTransport.run validates argv[0], env_deny and the prompt hash, not the remaining arguments; the sandbox still applies and run_claude uses build_plan (medium)",
+      "R4 observation text is redacted only against caller-supplied inventory.secrets; the contained CLI can read the dedicated account's .credentials.json and a model echo would not be shape-scanned (medium)",
+      "R5 the init kill is a 50 ms poll; a paid route could send a first request before it (low, design)",
+      "R6 _credential_leaves swallows OSError/ValueError and uses a blocking read_text (low)",
+      "R7 the route-violation path drops egress, escaped_processes and cleanup_failed (low)",
+      "R8 _InitWatch: an unterminated final line is not evaluated live; a complete line over MAX_INIT_BYTES is parsed (low, fail-closed afterwards)",
+      "R9 proxy counters are global to the loopback port (low)",
+      "R10 ENV_DENY omits Foundry and AWS_BEARER_TOKEN_BEDROCK; harmless because the child environment is built from scratch (info)",
+      "R11 harness_manifest.py and system_one.py are used by the transport but are not in the environment hash (MDRV-04 already recorded; pin their sha256 in a test when next touched)",
+      "R12 the manifest declares maxNetworkConnections 8 but the proxy enforces MAX_CONNECTIONS 16; nothing reads the manifest value",
+      "R13 NATIVE_ENV_ALLOW is passed in the LaunchPlan but launch never reads env_allow; the child environment comes from child_environment, so the K4 comment is inaccurate and its test is tautological",
+      "R14 stale docstrings in harness_host_claude.py (doubles only; offline-only; HOME authentication vs the NC-5 token file)",
+      "R15 CPU stop reports exit_code -24 with limit_exceeded cpu while memory and disk stops report None",
+      "R16 the descendant cap uses a per-uid RLIMIT_NPROC with a baseline, so it is not strict if baseline processes exit",
+      "R17 component hashes are read from disk at each call, CATALOG_SHA256 at import"
+    ],
+    "deferredTestOnly": [
+      "tests/test_harness_transport_claude.py:338 accepts two refusal reasons; pin the one the fixture produces",
+      "assert the real child_environment('launch', ...) key set instead of NATIVE_ENV_ALLOW equals itself (R13)"
+    ],
+    "rejected": [],
+    "note": "Any edit to the backend, probes, transport or quota modules moves the environment or catalog hash and needs a new security re-check of the touched lines plus a new qualification before the expiry. R1-R4 and R13 should be bundled into one such edit if SPEC-048/T008 asks for a re-qualification."
+  },
+  "validation": {
+    "quick": "recorded in the PR body (scripts/validate_change.py --base develop --profile quick)",
+    "pr": "the CI validate aggregate on the PR head is the pr-profile evidence (docs/development/VALIDATION_PROFILES.md); a local pr run is not repeated by default",
+    "freeze": "not performed: the assurance record stays draft and human_review pending; freeze needs a clean merged candidate commit and human review of the feature"
+  },
+  "limits": "Review and validation record only. It qualifies nothing, authorizes no native session, and says nothing about Codex. Qualification (issued 2026-11-06) expires 2026-12-06T18:07:44Z; executionAuthorization false. Structural checks are not scientific proof."
+}

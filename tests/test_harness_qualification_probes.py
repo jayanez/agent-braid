@@ -521,6 +521,7 @@ class RunnerTests(unittest.TestCase):
         world = World(self)
         world.raises[("contained", "FS-01")] = RuntimeError("boom")
         _, summary = self.run_all(world)
+        self.assertTrue(world.arenas)
         self.assertTrue(all(a.closed for a in world.arenas))
         self.assertEqual(summary["probes"]["FS-01"]["status"], "inconclusive")
 
