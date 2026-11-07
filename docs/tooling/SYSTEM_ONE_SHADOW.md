@@ -23,8 +23,9 @@ question (decision point DP-1, unknown-pair resolution).
   episode is dropped and counted in memory (`busy`).
 - Shadow work never raises into the caller. Over its 50 ms work budget, the
   episode is recorded as `skipped`.
-- `analyze` records an episode only when its result carries the interaction report
-  (an AIM analysis); a Git replay `analyze` result carries none and records nothing.
+- `analyze` records an episode only when its result carries the interaction report.
+  The current runtime `analyze` result (Git replay) carries none, so today it
+  records nothing.
   Artifact-backed reports above 1 MiB are not decoded and record nothing.
 - Nothing is uploaded. There is no hosted service.
 

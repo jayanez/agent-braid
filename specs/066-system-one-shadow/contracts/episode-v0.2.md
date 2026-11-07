@@ -7,9 +7,11 @@ a store stay valid and readable: the validator accepts both schemas, and
 
 One episode is a single JSON object on one line (UTF-8, canonical: sorted keys,
 no insignificant whitespace, no NaN or infinity, no duplicate members). The S1.5a
-shadow observer writes it after a successful `analyze-work` call (AIM or Git).
-`analyze` is reserved because its runtime result carries no interaction report.
-An episode never reaches an MCP envelope.
+shadow observer writes it after a successful, report-bearing `analyze-work` (AIM
+or Git) or `analyze` result (SPEC-066 REQ-003). The current runtime `analyze`
+result carries no interaction report, so today it yields no episode; a
+report-bearing `analyze` result is recorded with `analysisKind` `aim`. An episode
+never reaches an MCP envelope.
 
 ## Inputs
 

@@ -196,6 +196,21 @@ class ParityTests(Base):
         # The Git replay `analyze` result carries no System 2 interaction report: no episode.
         self.assertEqual(len(self.episodes()), before)
 
+    def test_report_bearing_analyze_result_records_one_aim_episode(self):
+        """REQ-003 as aligned by founder decision 4 (2026-11-07): `analyze` counts when it carries a report."""
+        from agent_braid import analysis
+        value = {'report': analysis.analyze(SAMPLE), 'executionAuthorization': False}
+        call = lambda s: s.invoke('analyze', {'request': SAMPLE}, threading.Event())
+        envelopes = []
+        for mode in ('off', 'shadow'):
+            with patch.object(tooling_mcp.mcp_runtime.RuntimeTools, 'invoke', return_value=deepcopy(value)):
+                envelopes.append(self.envelope_bytes(mode, call))
+        self.assertEqual(json.loads(envelopes[0])['status'], 'ok')
+        self.assertEqual(envelopes[0], envelopes[1])
+        episode, = self.episodes()
+        shadow.validate_episode(episode)
+        self.assertEqual((episode['operation'], episode['analysisKind']), ('analyze', 'aim'))
+
     def expected_tree(self, request):
         env = {**os.environ, 'GIT_CONFIG_NOSYSTEM': '1', 'GIT_CONFIG_GLOBAL': os.devnull}
         def git(*args):

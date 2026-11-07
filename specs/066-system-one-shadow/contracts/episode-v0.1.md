@@ -2,8 +2,9 @@
 
 One episode is a single JSON object on one line (UTF-8, canonical: sorted keys,
 no insignificant whitespace, no NaN or infinity, no duplicate members). It is
-written by the S1.5a shadow observer after a successful `analyze-work` call
-(`analyze` is reserved: its runtime result carries no interaction report). It never reaches an MCP envelope.
+written by the S1.5a shadow observer after a successful, report-bearing `analyze`
+or `analyze-work` result (the current runtime `analyze` result carries no
+interaction report, so today it yields none). It never reaches an MCP envelope.
 
 ## Top level
 
