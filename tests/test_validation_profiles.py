@@ -58,7 +58,8 @@ class ValidationProfileTests(unittest.TestCase):
         for path in ("agent_braid/view_loom.py", "tests/test_view_loom.py",
                      "tests/fixtures/view/loom/event.json",
                      "integrations/agent-braid-view/README.md", "examples/view/demo.json",
-                     "docs/tooling/VIEWER.md"):
+                     "docs/tooling/VIEWER.md",
+                     "specs/061-activity-viewer/contracts/host-parity.md"):
             with self.subTest(path=path):
                 plan = validation.build_plan([path], "quick")
                 self.assertIn("activity-viewer", plan.impact.domains)
