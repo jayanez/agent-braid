@@ -183,4 +183,3 @@ def sweep(home: Path | None, retention_days: int, *, now: float | None = None) -
     for run_id in removed:
         purge(home, run_id)
     return {'status': 'swept', 'removed': removed, 'retentionDays': retention_days}
-
