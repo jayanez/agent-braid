@@ -148,9 +148,7 @@ def measure(samples: int, warmup: int) -> dict:
                 pairs = report['summary']['pairCount']
                 cells.append({'operations': size, 'pairs': pairs, 'pairsRecorded': min(pairs, shadow.MAX_PAIRS),
                               'store': kind, 'worker': summary(worker), 'requestPath': summary(path),
-                              'workerStatuses': dict(sorted(statuses.items())),
-                              'workerMedianWithinReferenceBudget':
-                                  statistics.median(worker) <= shadow.BUDGET_NANOSECONDS})
+                              'workerStatuses': dict(sorted(statuses.items()))})
         refusals = {reason: count - refusals_before.get(reason, 0)
                     for reason, count in shadow.refusal_counts().items()
                     if count != refusals_before.get(reason, 0)}
