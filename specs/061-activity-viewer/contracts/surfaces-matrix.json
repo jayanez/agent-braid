@@ -202,7 +202,8 @@
         "values": [
           "agent"
         ],
-        "meaning": "A session lane opens (role agent, no parent)."
+        "meaning": "A session lane opens (role agent, no parent).",
+        "valueProperty": "role"
       },
       {
         "id": "session.close",
@@ -220,7 +221,8 @@
         "values": [
           "subagent"
         ],
-        "meaning": "A subagent branch opens under the session lane."
+        "meaning": "A subagent branch opens under the session lane.",
+        "valueProperty": "role"
       },
       {
         "id": "subagent.close",
@@ -238,7 +240,8 @@
         "values": [
           "running"
         ],
-        "meaning": "A tool call becomes a bead on the lane that ran it, labelled by tool name only."
+        "meaning": "A tool call becomes a bead on the lane that ran it, labelled by tool name only.",
+        "valueProperty": "state"
       },
       {
         "id": "tool.duration",
@@ -256,7 +259,8 @@
         "values": [
           "waiting"
         ],
-        "meaning": "The host says the lane is blocked; waitingBasis comes with it."
+        "meaning": "The host says the lane is blocked; waitingBasis comes with it.",
+        "valueProperty": "state"
       },
       {
         "id": "turn.idle",
@@ -266,7 +270,8 @@
         "values": [
           "idle"
         ],
-        "meaning": "The host says a turn ended and the lane is idle (not closed)."
+        "meaning": "The host says a turn ended and the lane is idle (not closed).",
+        "valueProperty": "state"
       },
       {
         "id": "outcome",
@@ -278,7 +283,8 @@
           "failed",
           "cancelled"
         ],
-        "meaning": "The host states how a lane ended; otherwise the outcome is unknown."
+        "meaning": "The host states how a lane ended; otherwise the outcome is unknown.",
+        "valueProperty": "outcome"
       }
     ],
     "hosts": {
@@ -294,55 +300,81 @@
             "status": "provided",
             "basis": "derived",
             "evidence": "hv-t030-20261101.json",
-            "note": "No HTTP SessionStart reached the listener under claude -p; the lane opens on the first event that names the session."
+            "note": "No HTTP SessionStart reached the listener under claude -p; the lane opens on the first event that names the session.",
+            "receiptNames": [
+              "SessionStart"
+            ]
           },
           "session.close": {
             "status": "provided",
             "basis": "receipt",
             "evidence": "hv-t030-20261101.json",
-            "note": "SessionEnd was delivered."
+            "note": "SessionEnd was delivered.",
+            "receiptNames": [
+              "SessionEnd"
+            ]
           },
           "subagent.open": {
             "status": "provided",
             "basis": "receipt",
             "evidence": "hv-t030-20261101.json",
-            "note": "SubagentStart carries agent_id and agent_type; OpenTelemetry carries no agent id."
+            "note": "SubagentStart carries agent_id and agent_type; OpenTelemetry carries no agent id.",
+            "receiptNames": [
+              "SubagentStart",
+              "agent_id"
+            ]
           },
           "subagent.close": {
             "status": "provided",
             "basis": "receipt",
             "evidence": "hv-t030-20261101.json",
-            "note": "SubagentStop was delivered."
+            "note": "SubagentStop was delivered.",
+            "receiptNames": [
+              "SubagentStop"
+            ]
           },
           "tool.call": {
             "status": "provided",
             "basis": "receipt",
             "evidence": "hv-t030-20261101.json",
-            "note": "PostToolUse carries tool_name."
+            "note": "PostToolUse carries tool_name.",
+            "receiptNames": [
+              "PostToolUse",
+              "tool_name"
+            ]
           },
           "tool.duration": {
             "status": "provided",
             "basis": "receipt",
             "evidence": "hv-t030-20261101.json",
-            "note": "PostToolUse carries duration_ms (name observed; its JSON type was pinned by owner decision at T053, whose own probe was unobserved)."
+            "note": "PostToolUse carries duration_ms (name observed in hv-t030; its JSON type was accepted by owner decision at T053 closure, and the T053 probe hv-t053 recorded unobserved).",
+            "receiptNames": [
+              "PostToolUse",
+              "duration_ms"
+            ]
           },
           "waiting": {
             "status": "absent",
             "basis": "policy",
             "evidence": null,
-            "note": "None of the five admitted observational events carries a waiting signal; any other hook event is refused. Notification-style events are not probed or admitted."
+            "note": "None of the five admitted observational events carries a waiting signal; any other hook event is refused. Notification-style events are not probed or admitted.",
+            "receiptNames": []
           },
           "turn.idle": {
             "status": "absent",
             "basis": "policy",
             "evidence": null,
-            "note": "The Stop event is a decision event and is refused (REQ-005), so no idle state is derived."
+            "note": "The Stop event is a decision event and is refused (REQ-005), so no idle state is derived.",
+            "receiptNames": []
           },
           "outcome": {
             "status": "absent",
             "basis": "receipt",
             "evidence": "hv-t030-20261101.json",
-            "note": "Hook payloads state no outcome (SessionEnd has a reason that is not read); lanes close as unknown."
+            "note": "Hook payloads state no outcome (SessionEnd has a reason that is not read); lanes close as unknown.",
+            "receiptNames": [
+              "SessionEnd"
+            ]
           }
         }
       },
@@ -355,58 +387,67 @@
         ],
         "cells": {
           "session.open": {
-            "status": "provided",
-            "basis": "receipt",
-            "evidence": "hv-t031-20261101.json",
-            "note": "codex.conversation_starts and conversation.id were observed in [otel] logs (partial receipt: no turn completed); no ingest path exists yet."
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "codex.conversation_starts and conversation.id were seen in [otel] logs of a partial receipt (hv-t031, no turn completed), but whether it fires once per session or per turn is not known. T077 records it.",
+            "receiptNames": []
           },
           "session.close": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "Not observed: the probe turn never completed. T077 records it."
+            "note": "Not observed: the probe turn never completed. T077 records it.",
+            "receiptNames": []
           },
           "subagent.open": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "Not observed; Codex hook and notify events are documentation only. T077 records it."
+            "note": "Not observed; Codex hook and notify events are documentation only. T077 records it.",
+            "receiptNames": []
           },
           "subagent.close": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "Not observed; Codex hook and notify events are documentation only. T077 records it."
+            "note": "Not observed; Codex hook and notify events are documentation only. T077 records it.",
+            "receiptNames": []
           },
           "tool.call": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "Not observed: no tool call ran in the partial T031 receipt. T077 records it."
+            "note": "Not observed: no tool call ran in the partial T031 receipt. T077 records it.",
+            "receiptNames": []
           },
           "tool.duration": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "Not observed for tool calls; duration_ms seen in T031 belongs to API and startup events and is not mapped. T077 records it."
+            "note": "Not observed for tool calls; duration_ms seen in T031 belongs to API and startup events and is not mapped. T077 records it.",
+            "receiptNames": []
           },
           "waiting": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "Not observed. T077 records it."
+            "note": "Not observed. T077 records it.",
+            "receiptNames": []
           },
           "turn.idle": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "Not observed; the documented notify agent-turn-complete event has not been probed. T077 records it."
+            "note": "Not observed; the documented notify agent-turn-complete event has not been probed. T077 records it.",
+            "receiptNames": []
           },
           "outcome": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "Not observed. T077 records it."
+            "note": "Not observed. T077 records it.",
+            "receiptNames": []
           }
         }
       },
@@ -420,55 +461,64 @@
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "No probe has run for this host; T078 records it."
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
           },
           "session.close": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "No probe has run for this host; T078 records it."
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
           },
           "subagent.open": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "No probe has run for this host; T078 records it."
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
           },
           "subagent.close": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "No probe has run for this host; T078 records it."
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
           },
           "tool.call": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "No probe has run for this host; T078 records it."
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
           },
           "tool.duration": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "No probe has run for this host; T078 records it."
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
           },
           "waiting": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "No probe has run for this host; T078 records it."
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
           },
           "turn.idle": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "No probe has run for this host; T078 records it."
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
           },
           "outcome": {
             "status": "unknown",
             "basis": "none",
             "evidence": null,
-            "note": "No probe has run for this host; T078 records it."
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
           }
         }
       }

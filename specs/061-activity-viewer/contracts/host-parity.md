@@ -65,7 +65,9 @@ Rules that hold for every host:
 ## Absent, not zero
 
 A capability whose value is `absent` or `unknown` for a host is shown for that host as not
-provided: no empty lane, no bead count of 0, no duration label, no "0 waiting", no flat bar (a missing capability is never drawn as zero). A
+provided to the viewer (wording such as "not read by Agent Braid" where the basis is `policy`,
+because the host may offer the signal and the viewer does not admit it, so the page never says the
+host lacks it): no empty lane, no bead count of 0, no duration label, no "0 waiting", no flat bar (a missing capability is never drawn as zero). A
 count that depends on a missing capability is omitted and never shown as zero, in the page, in
 `view stats` (T084) and in the usage telemetry counts. `unknown` means no probe has observed the
 host either way, `absent` means a probe or this contract's policy rules the signal out; both
@@ -75,14 +77,17 @@ guessing from another host.
 
 ## Capability table
 
-Values: `provided` (a receipt observed the host emitting a signal that maps to the capability),
+Values: `provided` (a receipt observed the host emitting a signal that maps to the capability,
+or, on a `derived` basis, an observed event from which the viewer derives it),
 `absent` (a receipt observed it missing, or a policy of this contract rules it out for every
-admitted source), `unknown` (neither). Basis: `receipt`, `policy`, `derived` (the viewer derives
-it from another event) or `none`.
+admitted source), `unknown` (neither). Basis: `receipt`, `policy`, `derived` or `none`. Each
+cell in the matrix lists the receipt names (`receiptNames`) a test finds in its receipt.
+Codex `codex.conversation_starts` was seen in the partial T031 receipt, but whether it fires
+per session or per turn is not known, so `session.open` stays `unknown` until T077.
 
 | Capability | Claude Code | Codex | OpenCode |
 |---|---|---|---|
-| `session.open` | provided (derived from the first event; no HTTP `SessionStart` delivered) | provided (`codex.conversation_starts`, partial receipt) | unknown |
+| `session.open` | provided (derived from the first event; no HTTP `SessionStart` delivered) | unknown | unknown |
 | `session.close` | provided (`SessionEnd`) | unknown | unknown |
 | `subagent.open` | provided (`SubagentStart`, `agent_id`) | unknown | unknown |
 | `subagent.close` | provided (`SubagentStop`) | unknown | unknown |

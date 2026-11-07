@@ -7,6 +7,7 @@ cell that claims evidence to a receipt that exists for that host, tie every mapp
 schemas, and keep the "absent, not zero" and privacy rules in the prose. They check structure, not host behaviour.
 """
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -83,15 +84,60 @@ class TableShapeTests(unittest.TestCase):
             with self.subTest(capability):
                 self.assertEqual(cell["status"], "unknown")
 
-    def test_codex_claims_only_what_the_partial_receipt_observed(self):
-        statuses = {capability: cell["status"] for capability, cell in PARITY["hosts"]["codex"]["cells"].items()}
-        self.assertEqual({name for name, status in statuses.items() if status != "unknown"}, {"session.open"})
-        self.assertEqual(statuses["session.open"], "provided")
+    def test_codex_claims_nothing_until_a_completed_turn_is_probed(self):
+        for capability, cell in PARITY["hosts"]["codex"]["cells"].items():
+            with self.subTest(capability):
+                self.assertEqual(cell["status"], "unknown")
+
+    def test_receipt_names_are_really_in_the_cited_receipt(self):
+        for host, capability, cell in cells():
+            if cell["evidence"] is None:
+                self.assertEqual(cell["receiptNames"], [])
+                continue
+            with self.subTest(host=host, capability=capability):
+                self.assertTrue(cell["receiptNames"])
+                raw = (SPEC / "evidence" / cell["evidence"]).read_text(encoding="utf-8")
+                for name in cell["receiptNames"]:
+                    self.assertIn(f'"{name}"', raw)
+
+    def test_the_header_points_at_this_contract(self):
+        self.assertEqual(PARITY["schemaVersion"], "agent-braid-view-host-parity/v0.1")
+        self.assertTrue((SPEC / "contracts" / PARITY["contract"]).is_file())
+
+    def test_the_markdown_table_agrees_with_the_matrix(self):
+        section = CONTRACT.read_text(encoding="utf-8").split("## Capability table", 1)[1].split("\n## ", 1)[0]
+        rows = {}
+        for line in section.splitlines():
+            match = re.match(r"^\| `([a-z.]+)` \| (\w+)[^|]*\| (\w+)[^|]*\| (\w+)[^|]*\|$", line)
+            if match:
+                rows[match.group(1)] = match.groups()[1:]
+        self.assertEqual(set(rows), set(EXPECTED_CAPABILITIES))
+        for capability, statuses in rows.items():
+            with self.subTest(capability):
+                self.assertEqual(statuses, tuple(PARITY["hosts"][host]["cells"][capability]["status"]
+                                                 for host in HOSTS))
+
+
+def enums_by_property(node, found=None):
+    """Every enum list found under a property of that name, anywhere in a JSON schema."""
+    found = {} if found is None else found
+    if isinstance(node, dict):
+        for name, child in node.get("properties", {}).items():
+            if isinstance(child, dict) and "enum" in child:
+                found.setdefault(name, set()).update(child["enum"])
+        for child in node.values():
+            enums_by_property(child, found)
+    elif isinstance(node, list):
+        for child in node:
+            enums_by_property(child, found)
+    return found
 
 
 class LoomAgreementTests(unittest.TestCase):
     V01_TEXT = V01.read_text(encoding="utf-8")
+    V01_SCHEMA = json.loads(V01_TEXT)
     V02_TEXT = V02.read_text(encoding="utf-8")
+    V02_SCHEMA = json.loads(V02_TEXT)
 
     def test_mapped_kinds_and_versions_exist(self):
         for item in PARITY["capabilities"]:
@@ -102,15 +148,22 @@ class LoomAgreementTests(unittest.TestCase):
     def test_v02_members_are_exactly_the_ones_v01_refuses(self):
         members = {item["member"] for item in PARITY["capabilities"] if item["since"] == "v0.2"}
         self.assertEqual(members, {"toolDurationMs", "waitingOn"})
+        for item in PARITY["capabilities"]:
+            if item["since"] == "v0.1":
+                self.assertIsNone(item["member"], item["id"])
+        v01_members = set(self.V01_SCHEMA["properties"]["data"].get("properties", {}))
         for member in members:
             self.assertIn(f'"{member}"', self.V02_TEXT)
             self.assertNotIn(f'"{member}"', self.V01_TEXT)
+            self.assertNotIn(member, v01_members)
 
-    def test_mapped_values_are_in_the_schema_enums(self):
+    def test_mapped_values_are_in_the_named_schema_enum(self):
+        enums = enums_by_property(self.V02_SCHEMA)
         for item in PARITY["capabilities"]:
-            for value in item.get("values", []):
-                with self.subTest(item["id"], value=value):
-                    self.assertIn(f'"{value}"', self.V02_TEXT)
+            with self.subTest(item["id"]):
+                self.assertEqual(bool(item["values"]), "valueProperty" in item)
+                if item["values"]:
+                    self.assertLessEqual(set(item["values"]), enums[item["valueProperty"]])
 
     def test_the_claude_column_agrees_with_the_existing_hook_adapter(self):
         provided = {capability for capability, cell in PARITY["hosts"]["claude-code"]["cells"].items()
