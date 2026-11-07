@@ -180,7 +180,7 @@ def _operation_count(request: Any) -> int:
     if isinstance(request, list):
         return len(request)
     if isinstance(request, dict):
-        for key in ("operations", "tasks"):
+        for key in ("operations", "tasks", "units"):
             value = request.get(key)
             if isinstance(value, list):
                 return len(value)
@@ -462,6 +462,15 @@ class ToolingService:
         if not isinstance(args, dict) or set(args) != {"kind", "request"}:
             raise ToolingError("analyze-work requires exactly kind and request", code="arguments-invalid")
         kind, request = args["kind"], args["request"]
+        if kind == "units":
+            # SPEC-069 REQ-006. units refuses first so its bound refusals name a pointer; the shared
+            # adapter bounds then cover the declaration and the constructed records (A7). The scope
+            # is derived from the configured source root, as the plugin derives workspaceId (A4).
+            from . import units
+            built = units.construct(request, units.workspace_scope(self.config.source_root))
+            _validate_operation_bounds(request)
+            _validate_operation_bounds(built["constructedRequest"])
+            return {"report": analysis.analyze(built["constructedRequest"]), **built}
         _validate_operation_bounds(request)
         if kind == "aim":
             return {"report": analysis.analyze(request),
@@ -711,6 +720,11 @@ _ANALYZE_WORK_REQUEST_HELP = (
     "and evidence. The agent-braid-analyze skill has a complete copyable example. "
     "kind=git: request is {gitAnalysisRequestVersion, repository, baseRevision, operations}."
 )
+# The per-kind arm states the shapes in the schema, so its prose only points at it (D12 size cap).
+_ANALYZE_WORK_SCHEMA_HELP = (
+    "request must match the properties.request branch labelled with its kind. "
+    "The agent-braid-analyze skill has complete copyable examples."
+)
 
 
 def _analyze_work_input_schema(delivery: str) -> dict[str, Any]:
@@ -718,7 +732,8 @@ def _analyze_work_input_schema(delivery: str) -> dict[str, Any]:
 
     ``per-kind`` declares the compact schemas generated from the published ones under
     ``properties.request`` with their shared ``$defs``; ``description-only`` is the interim
-    definition (alpha.7 plus PR #1099). The top level stays a plain object either way (A1).
+    definition (alpha.7 plus PR #1099) with ``kind`` extended to every supported kind. The top level
+    stays a plain object either way (A1).
     """
     kind = {"enum": list(analyze_work_schema.KINDS)}
     if delivery == "description-only":
@@ -735,9 +750,10 @@ def _analyze_work_input_schema(delivery: str) -> dict[str, Any]:
 
 def _tool_definitions(service: ToolingService, types: Any, delivery: str | None = None) -> list[Any]:
     definitions = []
+    delivery = delivery or analyze_work_schema.DELIVERY
     for name in service.tools:
         if name == "analyze-work":
-            schema = _analyze_work_input_schema(delivery or analyze_work_schema.DELIVERY)
+            schema = _analyze_work_input_schema(delivery)
         elif name in {"analyze", "prepare"}:
             request = {"type": "object"}
             props = {"request": request}
@@ -761,7 +777,8 @@ def _tool_definitions(service: ToolingService, types: Any, delivery: str | None 
                       "properties": props, "required": required}
         description = f"Bounded Agent Braid {name}; host permissions and annotations do not grant runtime authority."
         if name == "analyze-work":
-            description = f"{description} {_ANALYZE_WORK_REQUEST_HELP}"
+            help_text = _ANALYZE_WORK_REQUEST_HELP if delivery == "description-only" else _ANALYZE_WORK_SCHEMA_HELP
+            description = f"{description} {help_text}"
         definitions.append(types.Tool(
             name=name, description=description,
             inputSchema=schema, outputSchema={"type": "object", "properties": {

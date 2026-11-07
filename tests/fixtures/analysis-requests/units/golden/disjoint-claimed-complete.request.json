@@ -1,0 +1,25 @@
+{
+  "units": [
+    {
+      "coverage": "complete",
+      "effects": [
+        {
+          "kind": "write",
+          "resource": "README.md"
+        }
+      ],
+      "id": "edit-readme"
+    },
+    {
+      "coverage": "complete",
+      "effects": [
+        {
+          "kind": "write",
+          "resource": "docs/guide.md"
+        }
+      ],
+      "id": "edit-guide"
+    }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+}

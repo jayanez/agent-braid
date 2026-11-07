@@ -1,0 +1,41 @@
+{
+ "difference": "RC-batch",
+ "expect": {
+  "schema": "accepts",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0122",
+ "label": "cyclic dependencies",
+ "layer": "batch",
+ "pointer": "/units",
+ "request": {
+  "units": [
+   {
+    "dependencies": [
+     "y"
+    ],
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "a"
+     }
+    ],
+    "id": "x"
+   },
+   {
+    "dependencies": [
+     "x"
+    ],
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "b"
+     }
+    ],
+    "id": "y"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

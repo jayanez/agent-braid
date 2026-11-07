@@ -7,6 +7,7 @@ import contextlib
 import copy
 import io
 import json
+import re
 import tempfile
 import types as pytypes
 import unittest
@@ -20,8 +21,9 @@ from agent_braid import tooling_mcp as core
 from scripts import spec069_tool_schemas as generator
 
 # The analyze-work inputSchema served before T005 (develop 23b29a47: alpha.7 plus PR #1099), copied
-# literally: the description-only arm must equal it. A guidance rewrite (T008) that changes the prose
-# makes this test fail on purpose, so the arm's new meaning is updated knowingly.
+# literally: the description-only arm must equal it except that `kind` lists every supported kind
+# (units since T006). A guidance rewrite (T008) that changes the prose makes this test fail on
+# purpose, so the arm's new meaning is updated knowingly.
 INTERIM_HELP = (
     "kind=aim: request is an AIM envelope {analysisInputVersion: \"0.1.0-alpha\", "
     "source: {kind: \"aim\", description}, operations: [AIM 0.2.0-draft record, ...]}; "
@@ -34,6 +36,15 @@ INTERIM_INPUT_SCHEMA = {
     "properties": {"kind": {"enum": ["aim", "git"]},
                    "request": {"oneOf": [{"type": "object"}, {"type": "array"}], "description": INTERIM_HELP}},
     "required": ["kind", "request"]}
+
+
+def interim() -> dict:
+    """The interim inputSchema with `kind` listing every supported kind."""
+    value = copy.deepcopy(INTERIM_INPUT_SCHEMA)
+    value["properties"]["kind"]["enum"] = list(analyze_work_schema.KINDS)
+    return value
+
+
 PLAIN_TOP_LEVEL = {"type", "additionalProperties", "properties", "required", "$defs"}
 
 
@@ -117,6 +128,7 @@ class SchemaDeliveryTests(unittest.TestCase):
         self.assertEqual(analyze_work_schema.SOURCES, built["sources"])
         self.assertEqual(set(built["sources"]), set(generator.KIND_SOURCES.values())
                          | {"schemas/0.2.0-draft/agent-interaction-metadata.schema.json"})
+        self.assertEqual(analyze_work_schema.KINDS, ("aim", "git", "units"))
 
     def test_negative_control_drift_from_a_published_schema_is_detected(self):
         published = generator._published()
@@ -170,14 +182,17 @@ class SchemaDeliveryTests(unittest.TestCase):
         self.assertEqual(request["type"], ["object", "array"])
         labels = [branch["description"] for branch in request["oneOf"]]
         self.assertEqual(labels, ["kind=aim envelope", "kind=aim agent-interaction-metadata",
-                                  "kind=aim records", "kind=git"])
+                                  "kind=aim records", "kind=git", "kind=units"])
         self.assertEqual(sorted(schema["$defs"]), ["agentInteractionMetadata", "effect"])
         self.assertNotIn("description", request)
 
     def test_description_only_arm_is_the_interim_definition_byte_for_byte(self):
         work = self.analyze_work("description-only")
-        self.assertEqual(core._json_bytes(work.inputSchema), core._json_bytes(INTERIM_INPUT_SCHEMA))
-        self.assertEqual(work.description, self.analyze_work("per-kind").description)
+        self.assertEqual(core._json_bytes(work.inputSchema), core._json_bytes(interim()))
+        self.assertTrue(work.description.endswith(INTERIM_HELP))
+        per_kind = self.analyze_work("per-kind").description
+        self.assertTrue(per_kind.endswith(core._ANALYZE_WORK_SCHEMA_HELP))
+        self.assertNotIn("aimVersion", per_kind)  # the shapes are in the schema, not repeated in prose (D12)
 
     def test_the_ablation_switch_changes_only_the_delivery_line(self):
         committed = generator.OUTPUT.read_text(encoding="utf-8").splitlines()
@@ -185,9 +200,18 @@ class SchemaDeliveryTests(unittest.TestCase):
         self.assertEqual([(a, b) for a, b in zip(committed, ablation) if a != b],
                          [("DELIVERY = 'per-kind'", "DELIVERY = 'description-only'")])
         with mock.patch.object(analyze_work_schema, "DELIVERY", "description-only"):
-            self.assertEqual(self.analyze_work().inputSchema, INTERIM_INPUT_SCHEMA)
+            self.assertEqual(self.analyze_work().inputSchema, interim())
         with self.assertRaises(ValueError):
             self.analyze_work("unknown")
+
+    def test_declared_patterns_use_no_lookaround(self):
+        # Lookarounds are not accepted by every model-provider schema dialect; the units resource
+        # pattern is relaxed to non-blank and the runtime keeps the full lexical rules.
+        patterns = re.findall(r'"pattern": "((?:[^"\\]|\\.)*)"', analyze_work_schema.SCHEMAS)
+        self.assertTrue(patterns)
+        self.assertEqual([p for p in patterns if "(?" in p], [])
+        with mock.patch.object(generator, "RELAXED_PATTERNS", {}):
+            self.assertIn("(?", generator.render("per-kind"))  # negative control: without the relaxation
 
     def test_each_listing_returns_fresh_schemas(self):
         first = self.analyze_work().inputSchema
@@ -219,7 +243,9 @@ class SchemaDeliveryTests(unittest.TestCase):
         validator = jsonschema.Draft202012Validator(self.listed()["analyze-work"].input_schema)
         self.assertTrue(validator.is_valid({"workspaceId": "ws", "kind": "aim", "request": sample}))
         self.assertFalse(validator.is_valid({"kind": "aim", "request": sample}))
-        self.assertFalse(validator.is_valid({"workspaceId": "ws", "kind": "units", "request": sample}))
+        self.assertFalse(validator.is_valid({"workspaceId": "ws", "kind": "other", "request": sample}))
+        units = {"unitsRequestVersion": "0.1.0-alpha", "units": [{"id": "a", "effects": [{"kind": "write", "resource": "README.md"}]}]}
+        self.assertTrue(validator.is_valid({"workspaceId": "ws", "kind": "units", "request": units}))
 
     def test_negative_control_a_top_level_one_of_breaks_the_plugin_listing(self):
         def nested(service, types, delivery=None):

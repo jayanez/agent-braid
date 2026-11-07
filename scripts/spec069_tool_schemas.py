@@ -39,6 +39,18 @@ DELIVERIES = ("per-kind", "description-only")
 KIND_SOURCES = {
     "aim": "schemas/0.1.0-alpha/analysis-input.schema.json",
     "git": "schemas/0.1.0-alpha/git-analysis-request.schema.json",
+    "units": "schemas/0.1.0-alpha/units-request.schema.json",
+}
+
+# Patterns the compact schema replaces with a weaker one: published $id -> {JSON Pointer of the
+# pattern: replacement}. The units resource pattern states its lexical refusals with lookaheads, which
+# some model-provider schema dialects do not accept; the declared form keeps only "non-blank" and the
+# runtime (agent_braid/units.py) still refuses every case the published pattern refuses, with a
+# pointer refusal. The differential test lists exactly those corpus cases as declared-looser.
+RELAXED_PATTERNS = {
+    "https://agent-braid.dev/schemas/0.1.0-alpha/units-request.schema.json": {
+        "/properties/units/items/properties/effects/items/properties/resource/pattern": "\\S",
+    },
 }
 
 # Subschemas repeated verbatim in a published schema, declared once under ``$defs`` and referenced
@@ -60,9 +72,9 @@ VALUES = frozenset({"type", "enum", "const", "required", "minItems", "maxItems",
 # installed development requirements and none may be added, so the cap is checked with a named,
 # conservative approximation: ceil(UTF-8 bytes / 3.7) of the compact JSON a host forwards to its
 # model (name, description, inputSchema). A one-time calibration on 2026-11-07 (tiktoken in a
-# disposable environment, never a dependency; evidence/procedure_005.json) measured 4.13 to 4.23
+# disposable environment, never a dependency; evidence/procedure_005.json) measured 4.14 to 4.27
 # bytes per token for these definitions with o200k_base and cl100k_base, so the approximation
-# over-counts those two tokenizers by about 12 to 14 %. Anthropic's tokenizer is not public and is
+# over-counts those two tokenizers by about 12 to 15 %. Anthropic's tokenizer is not public and is
 # not bounded by this approximation.
 TOKEN_CAP = 1500
 TOKEN_APPROXIMATION = "ceil(utf8-bytes / 3.7) of the compact model-facing JSON (conservative for o200k_base and cl100k_base; not a tokenizer)"
@@ -81,6 +93,21 @@ def _published() -> dict[str, tuple[str, dict]]:
         if isinstance(document, dict) and isinstance(document.get("$id"), str):
             found[document["$id"]] = (path.relative_to(ROOT).as_posix(), document)
     return found
+
+
+def _relax(identifier: str, document: dict) -> dict:
+    """A copy of a published document with its ``RELAXED_PATTERNS`` applied; refuses a missing target."""
+    overrides = RELAXED_PATTERNS.get(identifier, {})
+    if not overrides:
+        return document
+    document = json.loads(json.dumps(document))
+    for pointer, replacement in overrides.items():
+        parent, _, key = pointer.rpartition("/")
+        node = _pointer(document, parent)
+        if key != "pattern" or not isinstance(node, dict) or not isinstance(node.get(key), str):
+            raise GeneratorError(f"relaxed pattern target {pointer} not found in {identifier}")
+        node[key] = replacement
+    return document
 
 
 def _definition_name(identifier: str) -> str:
@@ -102,7 +129,8 @@ def _pointer(document: dict, fragment: str) -> Any:
 
 class _Compactor:
     def __init__(self) -> None:
-        self.published = _published()
+        self.published = {identifier: (where, _relax(identifier, document))
+                          for identifier, (where, document) in _published().items()}
         self.definitions: dict[str, Any] = {}
         self.sources: set[str] = set()
         self.shared: dict[str, tuple[str, Any]] = {}

@@ -7,16 +7,16 @@
  "inputs": {
   "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
   "agent_braid/git_adapter.py": "77c17bb694057e712a31886d8879f8ca922bd912f80a45fb703285f828ec94ed",
-  "agent_braid/tooling_mcp.py": "24bfaec8d6042abd07728f8a93149f389e36296605f881806f827074accfd388",
+  "agent_braid/tooling_mcp.py": "ff7032dd7ffb7bdf81af708eb03bc14cfdaff8c5b6b38ed68e1dae8ac4eb8969",
   "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
   "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
   "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
   "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
-  "scripts/spec069_generate_corpus.py": "095820b81bd893e8a343161bea7bfcd9e8ed81e08616cd4dcc2fc85fd24e7718",
+  "scripts/spec069_generate_corpus.py": "2e1201773f89c9d48b84a2e1421aa17b18c62792634279782ecf1fa760e5a6c1",
   "tests/fixtures/analysis-requests/aim.json": "347c45ab4469994254e6213329a2f337c5a48d7e73338ea8dadbef9d6864fe36",
   "tests/fixtures/analysis-requests/git.json": "89de14125fc46cee08b05c6b3ffb26bb6d34401b700c2d5d0111a77bb6f2e215",
-  "tests/spec069_differential.py": "06ae8e85fee9b24137130eafeb87911ebbc0953d049eb99ed503d7b6134048e4",
-  "tests/test_spec069_differential.py": "2c4cb4c30d2561ec660a078eff8d57b159c536a2332daadc5399994f86c8595b"
+  "tests/spec069_differential.py": "8683249637d89dbdf11db5531a98ad2fe59940db2f9f113e88c047e6cd323dd2",
+  "tests/test_spec069_differential.py": "ad26fd700d1063fa963af66a612b77810aa3991afb468b8ddf3ea12d8471fc96"
  },
  "limits": "Corpus agreement is not proof over all inputs. Declared limits (ECMAScript whitespace, trailing newline after a digest, JSON 1.0) are tagged in the corpus. Git cases run against a one-commit temporary repository.",
  "outcome": "passed: 429 corpus cases (310 aim, 119 git): every case matches its constructed expectation on the schema and on the complete service path; undocumented differences fail. Negative controls: a relaxed schema keyword (aim and git), a relaxed validator check and a tightened validator each fail the comparison.",
@@ -24,5 +24,5 @@
  "result": "OK",
  "scenario": "SC-004",
  "specification": "SPEC-069 P1",
- "testsRun": 11
+ "testsRun": 24
 }

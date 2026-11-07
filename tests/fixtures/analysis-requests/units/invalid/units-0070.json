@@ -1,0 +1,41 @@
+{
+ "difference": "RC-batch",
+ "expect": {
+  "schema": "accepts",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0070",
+ "keyword": "minLength",
+ "label": "blank string (U+FEFF only) at /units/0/dependencies/0",
+ "layer": "batch",
+ "limit": "blank-whitespace-differs-in-ecmascript",
+ "pointer": "/units/0/dependencies/0",
+ "request": {
+  "units": [
+   {
+    "coverage": "partial",
+    "dependencies": [
+     "\ufeff"
+    ],
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "README.md"
+     }
+    ],
+    "id": "edit-readme"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "docs/guide.md"
+     }
+    ],
+    "id": "write-guide"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

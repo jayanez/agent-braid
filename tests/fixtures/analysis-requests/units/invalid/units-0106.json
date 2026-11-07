@@ -1,0 +1,26 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0106",
+ "keyword": "pattern",
+ "label": "resource with a tab",
+ "layer": "structural",
+ "pointer": "/units/0/effects/0/resource",
+ "request": {
+  "units": [
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "docs/a\tb"
+     }
+    ],
+    "id": "u"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

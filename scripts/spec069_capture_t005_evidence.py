@@ -38,6 +38,7 @@ INPUTS = [
     "scripts/spec069_tool_schemas.py", "scripts/spec069_capture_t005_evidence.py",
     "tests/test_spec069_schema_delivery.py", "tests/test_spec069_differential.py", "tests/spec069_differential.py",
     "tests/test_tooling_mcp.py", "tests/fixtures/analysis-requests/aim.json", "tests/fixtures/analysis-requests/git.json",
+    "scripts/spec069_generate_corpus.py",
     "specs/069-aim-request-authoring/contracts/analyze-work-request.md",
     "specs/069-aim-request-authoring/reviews/t005-handoff-20261107.md",
 ]
@@ -52,7 +53,6 @@ PENDING = [
     "Recording stdio proxy: byte identity of the listed definitions across host connections.",
     "Whether each host loads the tool schemas eagerly or on use.",
     "D9 ablation arm (description-only vs per-kind) in the native final run; the per-kind schema is kept only if it improves first-attempt validity in at least one host.",
-    "Kind units: added after T006 merges (follow-up).",
 ]
 
 
@@ -128,15 +128,20 @@ def main(argv: list[str] | None = None) -> int:
             "the generated per-kind schemas equal a fresh regeneration byte for byte and carry the source hashes; the "
             "inputSchema top level stays a plain object in both D9 arms; the plugin listing (fake types and the real "
             "mcp SDK, auto and legacy modes) lists every tool with workspaceId injected and the schemas nested under "
-            "request; each kind's branches and the whole call schema give the published schemas' verdicts on all 429 "
-            "corpus cases; every listed tool is under the D12 cap; the description-only arm is byte identical to the "
-            "interim definition. Negative controls: a top-level oneOf is flagged and breaks the plugin listing, an "
+            "request; for kinds aim, git and units each kind's branches and the whole call schema give the published "
+            "schemas' verdicts on all 553 corpus cases (310 aim, 119 git, 124 units), the only difference being the "
+            "documented units resource-pattern relaxation (19 units cases, each refused by the runtime with the "
+            "resource pattern as the only schema error); no declared pattern uses a lookaround; every listed tool is "
+            "under the D12 cap; the description-only arm is byte identical to the interim definition except that kind "
+            "lists units. Negative controls: a top-level oneOf is flagged and breaks the plugin listing, an "
             "oversized definition fails and names the fallback, drift in a published schema changes the generated "
-            "file, and a relaxed or tightened declared keyword changes corpus verdicts."),
+            "file, dropping the relaxation brings the lookahead back, and a relaxed (aim, git, units) or tightened "
+            "declared keyword changes corpus verdicts."),
         "limits": ("Offline only: no host connected, so host acceptance of the nested form, recording-proxy byte "
                    "identity and eager/deferred loading are not observed. Corpus agreement is not proof over all inputs. "
                    "The size is an approximation (" + generator.TOKEN_APPROXIMATION + "), cap " + str(generator.TOKEN_CAP)
-                   + "; the calibration covers o200k_base and cl100k_base only. Kinds aim and git; units pending T006."),
+                   + "; the calibration covers o200k_base and cl100k_base only. The units resource pattern is declared as "
+                   "non-blank only; its lexical rules are runtime checks."),
         "pending": PENDING,
         "sizes": {"approximation": generator.TOKEN_APPROXIMATION, "cap": generator.TOKEN_CAP, "arms": sizes,
                   "measured": "bytes and approximateTokens: name, description and inputSchema as hosts forward them "

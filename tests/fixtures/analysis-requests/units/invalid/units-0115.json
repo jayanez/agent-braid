@@ -1,0 +1,23 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0115",
+ "keyword": "type",
+ "label": "request is an array",
+ "layer": "structural",
+ "pointer": "",
+ "request": [
+  {
+   "effects": [
+    {
+     "kind": "write",
+     "resource": "a"
+    }
+   ],
+   "id": "u"
+  }
+ ]
+}

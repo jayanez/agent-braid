@@ -1,0 +1,27 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0040",
+ "keyword": "type",
+ "label": "integer instead of object at /units/0",
+ "layer": "structural",
+ "pointer": "/units/0",
+ "request": {
+  "units": [
+   7,
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "docs/guide.md"
+     }
+    ],
+    "id": "write-guide"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

@@ -678,7 +678,7 @@ class SurfaceVersionTests(unittest.TestCase):
                 self.__dict__.update(kwargs)
         types = pytypes.SimpleNamespace(Tool=Tool, ToolAnnotations=lambda **kw: kw)
         # SPEC-069 T005: the description-only arm (D9) keeps the interim definition; the per-kind
-        # arm keeps the same tool description and declares the schemas instead of the request prose.
+        # arm declares the schemas and its prose only points at them (D12 size cap).
         by_name = {item.name: item for item in _tool_definitions(self.service, types, "description-only")}
         work = by_name["analyze-work"]
         request_help = work.inputSchema["properties"]["request"]["description"]
@@ -691,8 +691,8 @@ class SurfaceVersionTests(unittest.TestCase):
                          [{"type": "object"}, {"type": "array"}])
         self.assertNotIn("agent-braid-analyze", by_name["analyze"].description)
         per_kind = {item.name: item for item in _tool_definitions(self.service, types)}["analyze-work"]
-        self.assertEqual(per_kind.description, work.description)
-        self.assertEqual(len(per_kind.inputSchema["properties"]["request"]["oneOf"]), 4)
+        self.assertIn("agent-braid-analyze", per_kind.description)
+        self.assertEqual(len(per_kind.inputSchema["properties"]["request"]["oneOf"]), 5)
 
     def test_negative_control_v02_stamp_on_an_envelope_is_detected(self):
         from agent_braid.tooling_mcp import _json_bytes

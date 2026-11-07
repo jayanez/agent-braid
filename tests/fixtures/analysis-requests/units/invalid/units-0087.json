@@ -1,0 +1,39 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0087",
+ "keyword": "minLength",
+ "label": "blank string (U+001C only) at /units/0/effects/0/resource",
+ "layer": "structural",
+ "pointer": "/units/0/effects/0/resource",
+ "request": {
+  "units": [
+   {
+    "coverage": "partial",
+    "dependencies": [
+     "write-guide"
+    ],
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "\u001c"
+     }
+    ],
+    "id": "edit-readme"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "docs/guide.md"
+     }
+    ],
+    "id": "write-guide"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

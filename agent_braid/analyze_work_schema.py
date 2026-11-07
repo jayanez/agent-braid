@@ -6,10 +6,11 @@ SOURCES; do not edit. DELIVERY is the D9 ablation switch read by the tool defini
 """
 
 DELIVERY = 'per-kind'
-KINDS = ('aim', 'git')
+KINDS = ('aim', 'git', 'units')
 SOURCES = {
     'schemas/0.1.0-alpha/analysis-input.schema.json': 'f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5',
     'schemas/0.1.0-alpha/git-analysis-request.schema.json': '9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b',
+    'schemas/0.1.0-alpha/units-request.schema.json': '5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0',
     'schemas/0.2.0-draft/agent-interaction-metadata.schema.json': '3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a',
 }
 SCHEMAS = r'''{
@@ -173,6 +174,84 @@ SCHEMAS = r'''{
       }
      }
     }
+   },
+   {
+    "description": "kind=units",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+     "unitsRequestVersion": {
+      "const": "0.1.0-alpha"
+     },
+     "units": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+       "type": "object",
+       "additionalProperties": false,
+       "properties": {
+        "id": {
+         "type": "string",
+         "maxLength": 256,
+         "pattern": "\\S"
+        },
+        "dependencies": {
+         "type": "array",
+         "items": {
+          "type": "string",
+          "pattern": "\\S"
+         },
+         "uniqueItems": true
+        },
+        "effects": {
+         "type": "array",
+         "minItems": 1,
+         "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+           "kind": {
+            "enum": [
+             "read",
+             "write",
+             "call",
+             "transform",
+             "emit",
+             "delete",
+             "deploy"
+            ]
+           },
+           "resource": {
+            "type": "string",
+            "pattern": "\\S"
+           }
+          },
+          "required": [
+           "kind",
+           "resource"
+          ]
+         }
+        },
+        "coverage": {
+         "enum": [
+          "complete",
+          "partial",
+          "unknown"
+         ]
+        }
+       },
+       "required": [
+        "id",
+        "effects"
+       ]
+      }
+     }
+    },
+    "required": [
+     "unitsRequestVersion",
+     "units"
+    ]
    }
   ]
  },

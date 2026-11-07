@@ -13,7 +13,7 @@
   ],
   "assumptions": "Plugin 0.1.0-alpha.7 as the compatibility baseline; runtime stays dependency-free; jsonschema is available as a dev/CI dependency; hosts expose non-interactive modes (claude -p, codex exec, opencode run) to be confirmed in plan research; the 2026-11-05 divergence observation covers two inputs only.",
   "authority_snapshot": {
-    "commit": "b2f92b6d92bf459c0eb51a02283cc4c8ada9e75f",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -62,7 +62,7 @@
       "docs/adr/0035-native-claude-laboratory-containment.md": "9db60ef1544e5218eb7fa7ba34315f48b33e464b761e07359fc5bfcd9bfaf0c5",
       "docs/adr/0036-assurance-profiles.md": "9a7abf22920a9ba91cb61c5c48b905a1415182bc9434bcf884680ec41666b464",
       "docs/adr/0037-opencode-native-plugin.md": "36c777d124b5905e8b8c25951cf59c2061fedddf1950fc24bfa2bae7197d3809",
-      "docs/adr/0038-analyze-work-request-contract.md": "588a5b3201df28ae94e39c3a4788a32f1b7b4c563ceb6b7c67029f855f727c3b",
+      "docs/adr/0038-analyze-work-request-contract.md": "782f47f184bb415c59210e83e39461c090f9b6be949b41f7e53ae08ff8b18869",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -89,6 +89,7 @@
       "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
       "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
       "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
       "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
       "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
       "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
@@ -98,13 +99,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Additive by default: aim and git semantics, analysis-report schema, agent-braid-plugin and agent-braid-tooling contracts unchanged unless REQ-002/REQ-009 record a versioned decision with migration messages; requests accepted by alpha.7 replayed for byte-identical reports.",
   "domain": "Agent Braid analyze-work MCP request authoring: AIM 0.2.0-draft records, analysis-input envelope 0.1.0-alpha, git analysis request 0.1.0-alpha and a new units request, as delivered to host models through the native plugin.",
   "evidence_snapshot": {
-    "commit": "b2f92b6d92bf459c0eb51a02283cc4c8ada9e75f",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "executionAuthorization stays false; analyze-work remains read-only analysis; no grants, prepare or execute; native runs use disposable profiles and a sandbox workspace and never touch the user's real host configuration or credentials.",
   "human_review": "pending",
@@ -169,7 +170,7 @@
               "limits": "Probes are generated from schema keywords and a curated runtime-check catalogue; this is not an exhaustive proof over all inputs. Decisions are proposals under D8; no runtime acceptance changed.",
               "outcome": "passed: Baseline inventory: 404 probes, 166 divergent, 10 root causes (threshold 15 not exceeded); the three 2026-11-05 divergences, adapter bounds, whitespace semantics and the missing envelope schema have rows; after the D8 decisions 74 probes remain divergent, all documented. Negative controls: a missing row and a stale inventory are detected.",
               "path": "specs/069-aim-request-authoring/evidence/procedure_002.json",
-              "sha256": "19941812a3d0fe84ed79b314245a899a51cbdaa733c0fa25b38b441e7bfd73ab"
+              "sha256": "08db2e26a773ba078190d3da584ba12b7f3e1c40131695a0cf77b68b519e2e19"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -193,7 +194,7 @@
               "limits": "Two example files have sourceKind aim; the 429-case corpus is covered by procedure_004.",
               "outcome": "passed: The envelope schema accepts every aim example under examples/analysis/ as the runtime does; an envelope with an extra field and one with empty operations are refused by both.",
               "path": "specs/069-aim-request-authoring/evidence/procedure_003.json",
-              "sha256": "5f823d543c517c26b3d1ce97fb23d24d3c41598d51e50f3ac382a6541617addf"
+              "sha256": "fb22d58cbe0dd921a41dddc7778ff952a283299987c790ae95eaa23352dbece2"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -217,7 +218,7 @@
               "limits": "Corpus agreement is not proof over all inputs. Declared limits (ECMAScript whitespace, trailing newline after a digest, JSON 1.0) are tagged in the corpus. Git cases run against a one-commit temporary repository.",
               "outcome": "passed: 429 corpus cases (310 aim, 119 git): every case matches its constructed expectation on the schema and on the complete service path; undocumented differences fail. Negative controls: a relaxed schema keyword (aim and git), a relaxed validator check and a tightened validator each fail the comparison.",
               "path": "specs/069-aim-request-authoring/evidence/procedure_004.json",
-              "sha256": "48478dd872c7db323a33ce4e952d2c7dedc2035169d6c793204e80ea10f57978"
+              "sha256": "65b09ddb4e48321d70013d8187823d35d2367c210313fc129c3e3b5274250148"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -235,7 +236,15 @@
         {
           "given": "the built plugin",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest -v tests.test_spec069_schema_delivery tests.test_spec069_differential.DeclaredSchemaDifferentialTests tests.test_tooling_mcp.SurfaceVersionTests.test_analyze_work_definition_describes_the_aim_request_shape tests.test_tooling_mcp.SdkClientIntegrationTests.test_plugin_list_tools_serves_the_nested_per_kind_schema_through_the_sdk (Python 3.13.11, mcp 2.3.0)",
+              "limits": "Offline only: no host connected, so host acceptance of the nested form, recording-proxy byte identity and eager/deferred loading are not observed. Corpus agreement is not proof over all inputs. The size is an approximation (ceil(utf8-bytes / 3.7) of the compact model-facing JSON (conservative for o200k_base and cl100k_base; not a tokenizer)), cap 1500; the calibration covers o200k_base and cl100k_base only. The units resource pattern is declared as non-blank only; its lexical rules are runtime checks. Pending on the native driver: Host probe of the nested form in Claude Code, Codex and OpenCode (host acceptance per host, request received as an object, not a string). Recording stdio proxy: byte identity of the listed definitions across host connections. Whether each host loads the tool schemas eagerly or on use. D9 ablation arm (description-only vs per-kind) in the native final run; the per-kind schema is kept only if it improves first-attempt validity in at least one host.",
+              "outcome": "passed: the generated per-kind schemas equal a fresh regeneration byte for byte and carry the source hashes; the inputSchema top level stays a plain object in both D9 arms; the plugin listing (fake types and the real mcp SDK, auto and legacy modes) lists every tool with workspaceId injected and the schemas nested under request; for kinds aim, git and units each kind's branches and the whole call schema give the published schemas' verdicts on all 553 corpus cases (310 aim, 119 git, 124 units), the only difference being the documented units resource-pattern relaxation (19 units cases, each refused by the runtime with the resource pattern as the only schema error); no declared pattern uses a lookaround; every listed tool is under the D12 cap; the description-only arm is byte identical to the interim definition except that kind lists units. Negative controls: a top-level oneOf is flagged and breaks the plugin listing, an oversized definition fails and names the fallback, drift in a published schema changes the generated file, dropping the relaxation brings the lookahead back, and a relaxed (aim, git, units) or tightened declared keyword changes corpus verdicts.",
+              "path": "specs/069-aim-request-authoring/evidence/procedure_005.json",
+              "sha256": "ce97565bddf087d276a36f2fa82c66e9a5478389e73fcd396b75e9dce52441d1"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/069-aim-request-authoring/validation-plan.md",
           "test_name": "procedure_005",
@@ -251,7 +260,15 @@
         {
           "given": "a `units` request equivalent to T010's attempt (two units that write `README.md`)",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec069_units tests.test_spec069_differential tests.test_spec069_alpha7_replay",
+              "limits": "Corpus agreement is not proof over all inputs. Resources are declarations normalized lexically; symbolic links, case-insensitive file systems and generated files are not resolved. No host model was involved; the analyze-work tool definition lists kind units since T005 (procedure_005). Run on macOS only here; Linux runs in CI and Windows is T014. ECMAScript validators differ from Python on U+0085 and U+FEFF in the schema's non-blank checks (declared limit, tagged in the corpus).",
+              "outcome": "passed: A units request with two units writing README.md is accepted through analyze-work; the constructed AIM validates against the AIM and envelope schemas and equals its byte golden; replaying it through kind aim returns a byte-identical report; the pair is conflicting with serialize-or-isolate, coverage partial, provenance names agent-braid.units-declaration/0.1.0-alpha. Negative controls: README.md and ./README.md (and //, trailing /, NFC variants) are one resource; claimed complete coverage gives partial and the same bytes; disjoint units are unknown and no accepted corpus case is independent-candidate; a .. path, an absolute path, a case-only duplicate, 33 units, a 257-byte id, a duplicate id, an unknown dependency and an unsupported effect kind are refused with a pointer and expected form or a fixed code, without request values; outputs are identical across runs, processes and hash seeds; construction opens no file. The units corpus (132 files: 124 cases, 8 goldens) matches the units schema and the service path, and relaxing the resource pattern, the effect-kind check or the lexical checks fails the comparison. The adapter bounds still refuse when the module's own bounds are loosened (A7). The scope equals the plugin workspaceId. The aim/git corpus (429 cases) and the alpha.7 replay (317 requests) are unchanged.",
+              "path": "specs/069-aim-request-authoring/evidence/procedure_006.json",
+              "sha256": "7b99171d60f07c84a564af548c82527fbecd969b858f9b2e50eba632b37ffe67"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/069-aim-request-authoring/validation-plan.md",
           "test_name": "procedure_006",
@@ -273,7 +290,7 @@
               "limits": "Pointers are checked against the corpus expectation (readVersions keys tokenized). The refusal text is not a versioned contract. No host model was involved.",
               "outcome": "passed: Every structural refusal in the corpus names its JSON Pointer and expected form through the MCP analyze-work path; batch refusals carry fixed codes; messages are bounded. Negative controls: a secret-shaped unknown key and request values are not echoed, git output stays masked, and a missing path and an outside path return the same refusal.",
               "path": "specs/069-aim-request-authoring/evidence/procedure_007.json",
-              "sha256": "1173754641b6d496fb86259313c3b4cf0d1b17a8abe9aed2d590cdf300a106e0"
+              "sha256": "a26419eb358f64cb45a808d79ffa7fbd2a38a7e7c47d26db1ab1634091583946"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -313,7 +330,7 @@
               "limits": "aim kind through ToolingService only; git requests are covered by the corpus, not replayed against alpha.7. The alpha.7 reports are bound by digest, not stored.",
               "outcome": "passed: 317 aim requests recorded from the alpha.7 runtime (source 0eb75d84): 103 accepted stay accepted with identical reports once the T015 label is stripped and analysisId recomputed; 214 not accepted stay not accepted. Tightened keywords equal the compatibility note; contract versions unchanged. Negative controls: a new refusal, changed report bytes and a loosened validator are detected.",
               "path": "specs/069-aim-request-authoring/evidence/procedure_009.json",
-              "sha256": "a1aacf74ff5163553d5fc3305268ea24e138da408cc8adadf5a176e632107dd6"
+              "sha256": "c4ad42d30b37288fff97f1e3be9271e3e9717d657ee01ad61b207021749e8701"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -417,7 +434,7 @@
               "limits": "analysisId changes with the label because it digests the whole report; SC-015's 'byte-identical' holds after stripping the label and recomputing the digest.",
               "outcome": "passed: A declared-only independent-candidate pair carries completenessBasis; replay evidence on either record removes it; other classifications are never labelled; classification, reasons, constraints and evidence are unchanged; across the 103 replayed requests the label appears exactly for declared-only independent candidates.",
               "path": "specs/069-aim-request-authoring/evidence/procedure_015.json",
-              "sha256": "dc90260e569b400f9930527c58f50266be82e66f0c640fcd0610689cf0e0cbfa"
+              "sha256": "6b5d493abf5b8e87ca2d9297468ce32e15f47f117813f09e3bf9fc8dc8bdb945"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
