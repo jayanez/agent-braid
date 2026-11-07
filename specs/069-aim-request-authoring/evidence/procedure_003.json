@@ -7,13 +7,13 @@
  "inputs": {
   "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
   "agent_braid/git_adapter.py": "77c17bb694057e712a31886d8879f8ca922bd912f80a45fb703285f828ec94ed",
-  "agent_braid/tooling_mcp.py": "24bfaec8d6042abd07728f8a93149f389e36296605f881806f827074accfd388",
+  "agent_braid/tooling_mcp.py": "f6713ad253ffabf537e19464952e16a4e2a412294539ebd45bde46fc913b0e0e",
   "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
   "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
   "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
   "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
-  "tests/spec069_differential.py": "06ae8e85fee9b24137130eafeb87911ebbc0953d049eb99ed503d7b6134048e4",
-  "tests/test_spec069_differential.py": "2c4cb4c30d2561ec660a078eff8d57b159c536a2332daadc5399994f86c8595b"
+  "tests/spec069_differential.py": "8683249637d89dbdf11db5531a98ad2fe59940db2f9f113e88c047e6cd323dd2",
+  "tests/test_spec069_differential.py": "66cf4ad2b5f16379b16d942aaed7fd6cc2561113cebdd870803c5da442dd2265"
  },
  "limits": "Two example files have sourceKind aim; the 429-case corpus is covered by procedure_004.",
  "outcome": "passed: The envelope schema accepts every aim example under examples/analysis/ as the runtime does; an envelope with an extra field and one with empty operations are refused by both.",

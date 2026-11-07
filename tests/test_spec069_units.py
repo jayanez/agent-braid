@@ -21,6 +21,7 @@ from referencing import Registry, Resource
 from agent_braid import analysis, tooling_mcp, units
 from agent_braid.tooling_mcp import ToolingConfig, ToolingService
 from scripts import spec069_generate_corpus as generator
+from tests import test_plugin_registry as registry_tests
 from tests.spec069_differential import ROOT, load_corpus
 
 GOLDEN = generator.UNITS_OUTPUT / "golden"
@@ -305,6 +306,9 @@ class BoundsAndScopeTests(UnitsServiceCase):
         self.assertEqual(resource, f"repo://{scope}/README.md")
         self.assertNotIn(str(self.service.config.source_root), json.dumps(result))
 
+    def test_golden_scope_is_the_scope_of_a_workspace_root(self):
+        self.assertEqual(units.workspace_scope("/workspace"), SCOPE)
+
     def test_invalid_scope_is_an_internal_error_not_a_constructed_record(self):
         for scope in ("", "../x", "A" * 32, "a" * 31):
             with self.subTest(scope=scope), self.assertRaises(ValueError):
@@ -314,9 +318,8 @@ class BoundsAndScopeTests(UnitsServiceCase):
 class PluginScopeTests(unittest.TestCase):
     """A4: the plugin strips workspaceId before the service; the derived scope equals it."""
 
-    from tests import test_plugin_registry as _registry
-    setUp = _registry.PluginRegistryTests.setUp
-    install = _registry.PluginRegistryTests.install
+    setUp = registry_tests.PluginRegistryTests.setUp
+    install = registry_tests.PluginRegistryTests.install
 
     def test_units_resources_carry_the_registered_workspace_id(self):
         from agent_braid.plugin_mcp import PluginRouter

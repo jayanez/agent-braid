@@ -94,7 +94,7 @@ construction identifier `agent-braid.units-declaration/0.1.0-alpha`.
 | envelope | `{analysisInputVersion: "0.1.0-alpha", source: {kind: "units", description: "Agent Braid C; effects declared by the host model, not observed"}, operations: [one record per unit, input order]}` |
 | `aimVersion` | `0.2.0-draft` |
 | `instanceId`, `attemptId` | the unit `id` (one attempt per declared unit; both stay within the 256-byte bound) |
-| `definition.id` | `C` (reserved; no producer code has this identifier) |
+| `definition.id` | `C`, reserved for this construction. `kind` `aim` does not refuse it (D8 forbids runtime tightening), so only the provenance of a `units` call shows that a record was constructed here |
 | `definition.digest` | `sha256:` + SHA-256 of the UTF-8 bytes of `C`: identifies the construction rules version, not code |
 | `inputDigest` | `sha256:` + SHA-256 of the canonical JSON (keys sorted, separators `,` `:`, ASCII escapes) of `{construction: C, workspace: <scope>, id, dependencies, effects: [{kind, resource: <path>}]}`, effects and dependencies in input order; different declarations or scopes give different digests |
 | `dependencies` | the unit's dependencies, input order |
@@ -112,7 +112,9 @@ The scope is therefore derived inside the service from its configured source roo
 with the registry's own rule: the first 32 hex digits of the SHA-256 of the canonical
 source root path. For a plugin workspace this equals its `workspaceId` (a test
 compares them); for the portable `agent-braid-tooling` server it is the same digest of
-its source root. The scope never contains the host path.
+its source root. The scope never contains the host path, but it is a pseudonym, not a
+secret: anyone who can guess the path can recompute it (the same holds for
+`workspaceId`).
 
 Byte goldens of the constructed request (scope of a source root at `/workspace`) are
 in `tests/fixtures/analysis-requests/units/golden/`; the corpus cases are in
