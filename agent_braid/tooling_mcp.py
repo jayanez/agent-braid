@@ -359,10 +359,17 @@ class ToolingService:
             if type(source) not in {dict, bytes}:
                 return
             kind = args.get("kind", "aim") if name == "analyze-work" else "aim"
+            request = args.get("request")
+            if kind == "units":
+                # The episode is derived from the constructed AIM records, not the declaration.
+                result = envelope.get("result")
+                request = result.get("constructedRequest") if type(result) is dict else None
             from . import system_one_shadow
-            system_one_shadow.submit(name, kind, source, args.get("request"), str(self.config.source_root))
+            system_one_shadow.submit(name, kind, source, request, str(self.config.source_root))
         except Exception:
-            pass
+            # Never alters the envelope, but a failure is counted, not dropped (SPEC-069 REQ-014).
+            from . import system_one_shadow
+            system_one_shadow.note_refusal("internal-error")
 
     def _invoke_measured(self, name: str, args: Any, cancelled: threading.Event) -> dict[str, Any]:
         if self.config.telemetry == "off":
