@@ -35,7 +35,8 @@ MODULES = [
 ]
 INPUTS = [
     "agent_braid/analyze_work_schema.py", "agent_braid/plugin_mcp.py", "agent_braid/tooling_mcp.py",
-    "scripts/spec069_tool_schemas.py", "scripts/spec069_capture_t005_evidence.py",
+    "scripts/spec069_tool_schemas.py", "scripts/spec069_capture_t005_evidence.py", "scripts/spec069_host_probe.py",
+    "specs/069-aim-request-authoring/evidence/host-probe-nested-schema.json",
     "tests/test_spec069_schema_delivery.py", "tests/test_spec069_differential.py", "tests/spec069_differential.py",
     "tests/test_tooling_mcp.py", "tests/fixtures/analysis-requests/aim.json", "tests/fixtures/analysis-requests/git.json",
     "scripts/spec069_generate_corpus.py",
@@ -49,10 +50,9 @@ TOKENIZER_PROBE = (
     " for name in ('o200k_base', 'cl100k_base')} for key, text in texts.items()}}))\n"
 )
 PENDING = [
-    "Host probe of the nested form in Claude Code, Codex and OpenCode (host acceptance per host, request received as an object, not a string).",
-    "Recording stdio proxy: byte identity of the listed definitions across host connections.",
-    "Whether each host loads the tool schemas eagerly or on use.",
-    "D9 ablation arm (description-only vs per-kind) in the native final run; the per-kind schema is kept only if it improves first-attempt validity in at least one host.",
+    "Model calls through Claude Code and OpenCode (conformance of the call, request received as an object): the Anthropic API rejected every call with a credit-balance error in the 2026-11-07 probe, see evidence/host-probe-nested-schema.json.",
+    "Codex host probe: no OpenAI key in the probe environment (declared limit).",
+    "D9 ablation (--arm final-no-schema versus --arm final) in the native final run; the per-kind schema is kept only if it improves first-attempt validity in at least one host.",
 ]
 
 
