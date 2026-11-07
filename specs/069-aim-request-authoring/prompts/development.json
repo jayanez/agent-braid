@@ -1,0 +1,530 @@
+{
+  "setId": "spec069-development-v1",
+  "cases": [
+    {
+      "id": "DEV-01",
+      "prompt": "Use Agent Braid to check whether two edits can safely be worked on at the same time. One person will reword the install section of README.md. Another person will add a build-status badge line near the top of README.md.",
+      "expect": {
+        "kind": "aim",
+        "units": [
+          {
+            "key": "a",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "README.md"
+              }
+            ],
+            "dependsOn": []
+          },
+          {
+            "key": "b",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "README.md"
+              }
+            ],
+            "dependsOn": []
+          }
+        ],
+        "pairs": [
+          {
+            "left": "a",
+            "right": "b",
+            "classification": "conflicting",
+            "constraints": [
+              "serialize-or-isolate"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DEV-02",
+      "prompt": "Use Agent Braid to check whether these two changes can go ahead in parallel: one updates the error messages in src/api.py, the other fixes a typo in docs/faq.md.",
+      "expect": {
+        "kind": "aim",
+        "units": [
+          {
+            "key": "a",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "src/api.py"
+              }
+            ],
+            "dependsOn": []
+          },
+          {
+            "key": "b",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "docs/faq.md"
+              }
+            ],
+            "dependsOn": []
+          }
+        ],
+        "pairs": [
+          {
+            "left": "a",
+            "right": "b",
+            "classification": "independent-candidate",
+            "constraints": [
+              "requires-execution-contract-before-parallelism"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DEV-03",
+      "prompt": "Use Agent Braid to check which of these three pieces of planned work can run in parallel. Piece one adds a --verbose flag to src/cli.py and describes it in docs/guide.md. Piece two renames the --out option in src/cli.py. Piece three adds a question to docs/faq.md.",
+      "expect": {
+        "kind": "aim",
+        "units": [
+          {
+            "key": "one",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "src/cli.py"
+              },
+              {
+                "kind": "write",
+                "resource": "docs/guide.md"
+              }
+            ],
+            "dependsOn": []
+          },
+          {
+            "key": "two",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "src/cli.py"
+              }
+            ],
+            "dependsOn": []
+          },
+          {
+            "key": "three",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "docs/faq.md"
+              }
+            ],
+            "dependsOn": []
+          }
+        ],
+        "pairs": [
+          {
+            "left": "one",
+            "right": "three",
+            "classification": "independent-candidate",
+            "constraints": [
+              "requires-execution-contract-before-parallelism"
+            ]
+          },
+          {
+            "left": "one",
+            "right": "two",
+            "classification": "conflicting",
+            "constraints": [
+              "serialize-or-isolate"
+            ]
+          },
+          {
+            "left": "three",
+            "right": "two",
+            "classification": "independent-candidate",
+            "constraints": [
+              "requires-execution-contract-before-parallelism"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DEV-04",
+      "prompt": "Use Agent Braid to check how these three tasks relate. Task one adds a helper function to src/utils.py. Task two changes src/api.py to call that new helper, so it can only start once task one is finished. Task three updates the endpoint description in docs/api.md.",
+      "expect": {
+        "kind": "aim",
+        "units": [
+          {
+            "key": "one",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "src/utils.py"
+              }
+            ],
+            "dependsOn": []
+          },
+          {
+            "key": "two",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "src/api.py"
+              },
+              {
+                "kind": "read",
+                "resource": "src/utils.py",
+                "optional": true
+              }
+            ],
+            "dependsOn": [
+              "one"
+            ]
+          },
+          {
+            "key": "three",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "docs/api.md"
+              }
+            ],
+            "dependsOn": []
+          }
+        ],
+        "pairs": [
+          {
+            "left": "one",
+            "right": "three",
+            "classification": "independent-candidate",
+            "constraints": [
+              "requires-execution-contract-before-parallelism"
+            ]
+          },
+          {
+            "left": "one",
+            "right": "two",
+            "classification": "ordered",
+            "constraints": [
+              "preserve-dependency-order"
+            ]
+          },
+          {
+            "left": "three",
+            "right": "two",
+            "classification": "independent-candidate",
+            "constraints": [
+              "requires-execution-contract-before-parallelism"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DEV-05",
+      "prompt": "Use Agent Braid to check which of these three jobs can run at the same time. Job one only looks at config/staging.yaml to produce a report and changes nothing. Job two rewrites config/staging.yaml with new timeout values. Job three only looks at config/production.yaml to produce a report and changes nothing.",
+      "expect": {
+        "kind": "aim",
+        "units": [
+          {
+            "key": "one",
+            "effects": [
+              {
+                "kind": "read",
+                "resource": "config/staging.yaml"
+              }
+            ],
+            "dependsOn": []
+          },
+          {
+            "key": "two",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "config/staging.yaml"
+              }
+            ],
+            "dependsOn": []
+          },
+          {
+            "key": "three",
+            "effects": [
+              {
+                "kind": "read",
+                "resource": "config/production.yaml"
+              }
+            ],
+            "dependsOn": []
+          }
+        ],
+        "pairs": [
+          {
+            "left": "one",
+            "right": "three",
+            "classification": "independent-candidate",
+            "constraints": [
+              "requires-execution-contract-before-parallelism"
+            ]
+          },
+          {
+            "left": "one",
+            "right": "two",
+            "classification": "conflicting",
+            "constraints": [
+              "serialize-or-isolate"
+            ]
+          },
+          {
+            "left": "three",
+            "right": "two",
+            "classification": "independent-candidate",
+            "constraints": [
+              "requires-execution-contract-before-parallelism"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DEV-06",
+      "prompt": "Use Agent Braid to check whether these three jobs can overlap. Job one deletes the file scripts/old_build.sh. Job two edits scripts/build.sh to add a logging line. Job three adds a deprecation note to scripts/old_build.sh.",
+      "expect": {
+        "kind": "aim",
+        "units": [
+          {
+            "key": "one",
+            "effects": [
+              {
+                "kind": "delete",
+                "resource": "scripts/old_build.sh"
+              }
+            ],
+            "dependsOn": []
+          },
+          {
+            "key": "two",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "scripts/build.sh"
+              }
+            ],
+            "dependsOn": []
+          },
+          {
+            "key": "three",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "scripts/old_build.sh"
+              }
+            ],
+            "dependsOn": []
+          }
+        ],
+        "pairs": [
+          {
+            "left": "one",
+            "right": "three",
+            "classification": "conflicting",
+            "constraints": [
+              "serialize-or-isolate"
+            ]
+          },
+          {
+            "left": "one",
+            "right": "two",
+            "classification": "unknown",
+            "constraints": [
+              "serialize-unless-stronger-evidence"
+            ]
+          },
+          {
+            "left": "three",
+            "right": "two",
+            "classification": "independent-candidate",
+            "constraints": [
+              "requires-execution-contract-before-parallelism"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DEV-07",
+      "prompt": "Use Agent Braid to check whether these three jobs can run side by side. Job one deploys the file config/staging.yaml. Job two edits config/staging.yaml to change the region. Job three deploys the file config/production.yaml.",
+      "expect": {
+        "kind": "aim",
+        "units": [
+          {
+            "key": "one",
+            "effects": [
+              {
+                "kind": "deploy",
+                "resource": "config/staging.yaml"
+              }
+            ],
+            "dependsOn": []
+          },
+          {
+            "key": "two",
+            "effects": [
+              {
+                "kind": "write",
+                "resource": "config/staging.yaml"
+              }
+            ],
+            "dependsOn": []
+          },
+          {
+            "key": "three",
+            "effects": [
+              {
+                "kind": "deploy",
+                "resource": "config/production.yaml"
+              }
+            ],
+            "dependsOn": []
+          }
+        ],
+        "pairs": [
+          {
+            "left": "one",
+            "right": "three",
+            "classification": "unknown",
+            "constraints": [
+              "serialize-unless-stronger-evidence"
+            ]
+          },
+          {
+            "left": "one",
+            "right": "two",
+            "classification": "conflicting",
+            "constraints": [
+              "serialize-or-isolate"
+            ]
+          },
+          {
+            "left": "three",
+            "right": "two",
+            "classification": "unknown",
+            "constraints": [
+              "serialize-unless-stronger-evidence"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DEV-08",
+      "prompt": "Use Agent Braid to check whether the work on the two branches docs-guide and src-api of the project repository can proceed in parallel. Both branches were cut from main.",
+      "expect": {
+        "kind": "git",
+        "units": [
+          {
+            "key": "a",
+            "revision": "docs-guide",
+            "dependsOn": []
+          },
+          {
+            "key": "b",
+            "revision": "src-api",
+            "dependsOn": []
+          }
+        ],
+        "baseRevision": "main",
+        "pairs": [
+          {
+            "left": "a",
+            "right": "b",
+            "classification": "independent-candidate",
+            "constraints": [
+              "requires-execution-contract-before-parallelism"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DEV-09",
+      "prompt": "Use Agent Braid to check whether the work on the two branches readme-badge and readme-intro of the project repository can proceed in parallel. Both branches were cut from main.",
+      "expect": {
+        "kind": "git",
+        "units": [
+          {
+            "key": "a",
+            "revision": "readme-badge",
+            "dependsOn": []
+          },
+          {
+            "key": "b",
+            "revision": "readme-intro",
+            "dependsOn": []
+          }
+        ],
+        "baseRevision": "main",
+        "pairs": [
+          {
+            "left": "a",
+            "right": "b",
+            "classification": "conflicting",
+            "constraints": [
+              "serialize-or-isolate"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "DEV-10",
+      "prompt": "Use Agent Braid to check how the work on three branches of the project repository relates: docs-guide, guide-and-api and src-cli. All three were cut from main and none must wait for another.",
+      "expect": {
+        "kind": "git",
+        "units": [
+          {
+            "key": "a",
+            "revision": "docs-guide",
+            "dependsOn": []
+          },
+          {
+            "key": "b",
+            "revision": "guide-and-api",
+            "dependsOn": []
+          },
+          {
+            "key": "c",
+            "revision": "src-cli",
+            "dependsOn": []
+          }
+        ],
+        "baseRevision": "main",
+        "pairs": [
+          {
+            "left": "a",
+            "right": "b",
+            "classification": "conflicting",
+            "constraints": [
+              "serialize-or-isolate"
+            ]
+          },
+          {
+            "left": "a",
+            "right": "c",
+            "classification": "independent-candidate",
+            "constraints": [
+              "requires-execution-contract-before-parallelism"
+            ]
+          },
+          {
+            "left": "b",
+            "right": "c",
+            "classification": "independent-candidate",
+            "constraints": [
+              "requires-execution-contract-before-parallelism"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
