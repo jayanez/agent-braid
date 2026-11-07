@@ -56,6 +56,8 @@ LIMITS = [
     'activeMode is a property of the running MCP connection and is not readable offline; configuredMode is.',
     'Plugin versions are the agent-braid versions present in each host plugin cache, not proof of the running build.',
     'Episodes skipped before storage (busy or refused store) are counted only in the observing process.',
+    'The window is fixed to the shadow week; when the receipt is made on its last date, that date may be partial.',
+    'Counts come from this repository\'s readers (readerPackageVersion), not from the installed plugin runtime.',
 ]
 
 
@@ -213,8 +215,28 @@ def plugin_versions() -> dict:
             'opencode': 'not located'}
 
 
+def _present(*paths: Path) -> bool:
+    """Presence only: nothing below the path is listed or read."""
+    return any(os.path.lexists(path) for path in paths)
+
+
+def _other_sources():
+    """The remaining REAL_USE_EVIDENCE.md sources; none of them records SPEC-066 episodes or consent."""
+    home, data = Path.home(), Path.home() / '.local/share/agent-braid'
+    no_shadow = 'it holds no SPEC-066 shadow episodes or consent'
+    from_telemetry = 'analyze-work call counts come from telemetry'
+    return (('Local evidence, coordination and identity stores',
+             (data / 'evidence', data / 'coordination', data / 'identity'), no_shadow),
+            ('Runtime state', (home / '.local/state/agent-braid',), no_shadow),
+            ('Plugin results', (plugin_registry.home_path() / 'results',), no_shadow),
+            ('Claude Code host transcripts', (home / '.claude/projects',),
+             from_telemetry + '; the SPEC-053 transcript adapter was not run'),
+            ('Codex host sessions', (home / '.codex/sessions',), from_telemetry))
+
+
 def build(current: date) -> dict:
-    window = _days(DAY_ONE, current)
+    last = min(current, DUE)
+    window = _days(DAY_ONE, last)
     episodes = shadow_counts(window)
     registry = consent()
     usage = telemetry_counts(window)
@@ -227,19 +249,13 @@ def build(current: date) -> dict:
         {'source': 'Host plugin caches (plugin versions)',
          'result': 'observations' if any(versions['claudeCode'].values()) or versions['codex']['cached']
          else NO_OBSERVATIONS},
-        {'source': 'Local evidence, coordination and identity stores',
-         'result': 'not queried: they hold no SPEC-066 shadow episodes or consent'},
-        {'source': 'Runtime state', 'result': 'not queried: it holds no SPEC-066 shadow episodes or consent'},
-        {'source': 'Plugin results', 'result': 'not queried: execution results carry no shadow episodes'},
-        {'source': 'Claude Code host transcripts',
-         'result': 'not queried: analyze-work call counts come from telemetry; the SPEC-053 adapter was not run'},
-        {'source': 'Codex host sessions',
-         'result': 'not queried: analyze-work call counts come from telemetry'},
+        *({'source': name, 'result': (('present; not queried: ' + reason) if _present(*paths) else 'absent')}
+          for name, paths, reason in _other_sources()),
     ]
     return {'schema': SCHEMA,
             'specification': 'SPEC-066', 'task': 'T030', 'scenario': 'SC-006', 'procedure': 'procedure_006',
             'receiptDate': current.isoformat(),
-            'window': {'firstDate': DAY_ONE.isoformat(), 'lastDate': current.isoformat(), 'clock': 'UTC dates',
+            'window': {'firstDate': DAY_ONE.isoformat(), 'lastDate': last.isoformat(), 'clock': 'UTC dates',
                        'basis': 'day 1 is the first plugin-status with systemOne.activeMode=shadow (tasks.md T030)'},
             'outcome': 'observations' if episodes['status'] == 'observed' else NO_OBSERVATIONS,
             'systemOneShadow': episodes,

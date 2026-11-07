@@ -122,6 +122,13 @@ class CountTests(Base):
         self.assertEqual(sum(calls['pairClassifications'].values()), 2)
         self.assertEqual(value['telemetry']['operations']['cli:system-one']['calls'], {})
 
+    def test_the_window_is_the_shadow_week_even_when_the_receipt_is_late(self):
+        value = receipt.build(date(2026, 11, 12))
+        self.assertEqual(value['receiptDate'], '2026-11-12')
+        self.assertEqual((value['window']['firstDate'], value['window']['lastDate']), ('2026-11-02', '2026-11-09'))
+        self.assertEqual(value['systemOneShadow']['episodes'], 2)  # the 2026-11-10 call stays outside
+        self.assertEqual(value['telemetry']['operations']['mcp:analyze-work']['calls'], {'ok': 2, 'refused': 1})
+
     def test_shadow_counts_match_the_system_one_report_on_the_same_dates(self):
         with patch.object(shadow, 'today', return_value=date(2026, 11, 9)):
             report = shadow.report()
@@ -184,9 +191,16 @@ class SourceTests(Base):
         for name in ('systemOneShadow', 'consent', 'telemetry'):
             self.assertEqual(value[name]['status'], 'no observations')
         self.assertEqual(len(value['sourcesChecked']), 9)
-        self.assertTrue(all(item['result'] for item in value['sourcesChecked']))
+        self.assertEqual([item['result'] for item in value['sourcesChecked'][4:]], ['absent'] * 5)
         self.assertFalse(value['executionAuthorization'])
         self.assertEqual(list(self.home.rglob('*')), [])
+
+    def test_other_sources_are_checked_for_presence_only(self):
+        (self.home / '.codex/sessions/2026').mkdir(parents=True)
+        (self.home / '.codex/sessions/2026' / SENTINEL).write_text(SENTINEL)
+        results = {item['source']: item['result'] for item in receipt.build(date(2026, 11, 9))['sourcesChecked']}
+        self.assertTrue(results['Codex host sessions'].startswith('present; not queried: '))
+        self.assertEqual(results['Claude Code host transcripts'], 'absent')
 
     def test_consent_is_read_from_the_registry_without_changing_it(self):
         preview = plugin_registry.plan_setup(None, [], system_one='shadow', telemetry='local')
