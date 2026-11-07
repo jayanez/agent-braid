@@ -67,6 +67,14 @@ and T010's final run measures the release candidate without them.
   (gate); build-time schemas under `request`, plugin `list_tools` test,
   recording-proxy byte check, named-tokenizer size and cap check.
   Dependencies: T004, T006. Verification: procedure_005.
+  Progress (2026-11-07, not ticked): offline part delivered for kinds `aim`, `git` and
+  `units` (`scripts/spec069_tool_schemas.py`, generated `agent_braid/analyze_work_schema.py`,
+  plugin `tool_listing` unit and SDK tests, corpus differential of the declared schema,
+  D12 size check, D9 build-time switch `--delivery`); offline evidence
+  `evidence/procedure_005.json`. Pending: the host probe of the nested form in Claude
+  Code, Codex and OpenCode, the recording-proxy byte identity across host connections and
+  the eager/deferred loading record, all on the native driver
+  (`reviews/t005-handoff-20261107.md`).
 - [ ] T014 (REQ-014 / SC-014): [P3, conditional] Telemetry and shadow handling for `units`;
   normalization tests on macOS and Linux CI; Windows tested or declared a
   limit; release-note text for the #1099 transition. Dependencies: T006.

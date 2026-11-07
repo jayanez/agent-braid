@@ -47,8 +47,8 @@ PROCEDURES = {
             "The aim/git corpus (429 cases) and the alpha.7 replay (317 requests) are unchanged."),
         "limits": (
             "Corpus agreement is not proof over all inputs. Resources are declarations normalized lexically; symbolic "
-            "links, case-insensitive file systems and generated files are not resolved. No host model was involved and "
-            "the analyze-work tool definition does not yet list kind units (T005). Run on macOS only here; Linux runs in "
+            "links, case-insensitive file systems and generated files are not resolved. No host model was involved; "
+            "the analyze-work tool definition lists kind units since T005 (procedure_005). Run on macOS only here; Linux runs in "
             "CI and Windows is T014. ECMAScript validators differ from Python on U+0085 and U+FEFF in the schema's "
             "non-blank checks (declared limit, tagged in the corpus)."),
     },
