@@ -1,0 +1,99 @@
+{
+  "analysisInputVersion": "0.1.0-alpha",
+  "operations": [
+    {
+      "aimVersion": "0.2.0-draft",
+      "attemptId": "write-guide",
+      "definition": {
+        "digest": "sha256:c16a8f8227dbb2a4d8b0d557a6d2de7241e25473320c25c6f21d8abf6280fcf3",
+        "id": "agent-braid.units-declaration/0.1.0-alpha"
+      },
+      "dependencies": [],
+      "effects": {
+        "coverage": {
+          "domain": "workspace-relative paths declared by the host model",
+          "method": "units declaration (agent-braid.units-declaration/0.1.0-alpha)",
+          "status": "partial"
+        },
+        "declared": [
+          {
+            "kind": "write",
+            "resource": "repo://c52ddf65534b7b46035084358ab7902b/docs/guide.md"
+          }
+        ],
+        "inferred": [],
+        "observed": []
+      },
+      "evidence": [
+        {
+          "assumptions": [
+            "Effects are declared by the host model and not observed by Agent Braid.",
+            "The declaration may be incomplete, so coverage is partial.",
+            "Resources are compared after lexical normalization only; symbolic links, case-insensitive file systems, generated files and semantic dependencies are not resolved."
+          ],
+          "assuranceClass": 0,
+          "domain": "workspace-relative paths declared by the host model",
+          "executionContract": "no execution; analysis only",
+          "method": "declared",
+          "observationContract": "none: built from the request without filesystem or repository access",
+          "property": "independence"
+        }
+      ],
+      "inputDigest": "sha256:7878f0606c01ea0d19403786a69f4404709e9731c82dcf5baace1c1b907c2f65",
+      "instanceId": "write-guide",
+      "readVersions": {}
+    },
+    {
+      "aimVersion": "0.2.0-draft",
+      "attemptId": "link-guide",
+      "definition": {
+        "digest": "sha256:c16a8f8227dbb2a4d8b0d557a6d2de7241e25473320c25c6f21d8abf6280fcf3",
+        "id": "agent-braid.units-declaration/0.1.0-alpha"
+      },
+      "dependencies": [
+        "write-guide"
+      ],
+      "effects": {
+        "coverage": {
+          "domain": "workspace-relative paths declared by the host model",
+          "method": "units declaration (agent-braid.units-declaration/0.1.0-alpha)",
+          "status": "partial"
+        },
+        "declared": [
+          {
+            "kind": "read",
+            "resource": "repo://c52ddf65534b7b46035084358ab7902b/docs/guide.md"
+          },
+          {
+            "kind": "write",
+            "resource": "repo://c52ddf65534b7b46035084358ab7902b/README.md"
+          }
+        ],
+        "inferred": [],
+        "observed": []
+      },
+      "evidence": [
+        {
+          "assumptions": [
+            "Effects are declared by the host model and not observed by Agent Braid.",
+            "The declaration may be incomplete, so coverage is partial.",
+            "Resources are compared after lexical normalization only; symbolic links, case-insensitive file systems, generated files and semantic dependencies are not resolved."
+          ],
+          "assuranceClass": 0,
+          "domain": "workspace-relative paths declared by the host model",
+          "executionContract": "no execution; analysis only",
+          "method": "declared",
+          "observationContract": "none: built from the request without filesystem or repository access",
+          "property": "independence"
+        }
+      ],
+      "inputDigest": "sha256:b0124d86d4f27bc29a09e86e2b92401ca54fe49ff98b1750a95b6a7f90d00f9d",
+      "instanceId": "link-guide",
+      "readVersions": {}
+    }
+  ],
+  "source": {
+    "description": "Agent Braid agent-braid.units-declaration/0.1.0-alpha; effects declared by the host model, not observed",
+    "kind": "units"
+  }
+}

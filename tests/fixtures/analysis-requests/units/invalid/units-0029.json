@@ -1,0 +1,13 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0029",
+ "keyword": "type",
+ "label": "integer instead of object at /",
+ "layer": "structural",
+ "pointer": "",
+ "request": 7
+}

@@ -1,0 +1,38 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0043",
+ "keyword": "required",
+ "label": "missing required property id at /units/0",
+ "layer": "structural",
+ "pointer": "/units/0",
+ "request": {
+  "units": [
+   {
+    "coverage": "partial",
+    "dependencies": [
+     "write-guide"
+    ],
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "README.md"
+     }
+    ]
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "docs/guide.md"
+     }
+    ],
+    "id": "write-guide"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

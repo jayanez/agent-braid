@@ -47,11 +47,11 @@ whether to serialize. Their ground truth arrives later as an observed outcome.
 This specification turns System One into a measured, owner-consented, local
 subsystem in stages:
 
-1. **S1.5a (this delivery): shadow mode.** For every successful `analyze-work`
-   call, record one System One decision episode next to the unchanged System 2
-   result, without changing any output. The runtime `analyze` tool returns
-   evidence and an advisory plan without the interaction report, so it yields no
-   episode in v0.1.
+1. **S1.5a (this delivery): shadow mode.** For every successful report-bearing
+   `analyze` or `analyze-work` call, record one System One decision episode next
+   to the unchanged System 2 result, without changing any output. The current
+   runtime `analyze` tool (Git replay) returns evidence and an advisory plan
+   without the interaction report, so today it yields no episode.
 2. **S1.5b: owned corpus.** Admit the owner's own episodes and real-use sources
    as a permissioned corpus, and join episodes with later observed outcomes.
 3. **S1.5c: reference-grade contracts.** Adopt the strongest Laya/Jev decision
@@ -123,8 +123,8 @@ to the envelope in `off` mode for the same input. This covers `analyze`,
 - Shadow work stays within a fixed budget of 50 ms of wall time per call; over
   budget, the episode is recorded as `skipped`.
 
-**REQ-003 Episode contract.** Each successful `analyze-work` call (AIM or Git) in
-`shadow` mode appends at most one episode that conforms to
+**REQ-003 Episode contract.** Each successful, report-bearing `analyze` or
+`analyze-work` result in `shadow` mode appends at most one episode that conforms to
 [agent-braid-s1-episode/v0.2](contracts/episode-v0.2.md); lines written as
 [v0.1](contracts/episode-v0.1.md) stay readable. Episodes contain only derived
 structural features:
@@ -133,6 +133,14 @@ structural features:
 - coverage statuses
 - shared-resource counts and a dependency flag
 - complete per-class pair counts, so shares cover pairs beyond the 64-pair cap
+
+Report-bearing means the `ok` result, inline or held in its evidence artifact,
+carries a System 2 interaction report under `report`. Every `analyze-work` result
+(AIM or Git) does. The current runtime `analyze` result (Git replay) does not, so
+it records nothing; a report-bearing `analyze` result is recorded with operation
+`analyze` and analysis kind `aim`. Founder decision 4 of 2026-11-07 (founder
+decisions record of that date, PR #1151) aligned this requirement with the
+shipped code; no behaviour changed.
 
 v0.1 recorded per-side effect kinds as `null`. v0.2 enriches the episode with structural features: resource classes
 (src/test/docs/config/lockfile/generated), path depth, directory overlap and

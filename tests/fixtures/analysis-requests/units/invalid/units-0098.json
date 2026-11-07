@@ -1,0 +1,26 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0098",
+ "keyword": "pattern",
+ "label": "resource with an inner .. segment",
+ "layer": "structural",
+ "pointer": "/units/0/effects/0/resource",
+ "request": {
+  "units": [
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "docs/../README.md"
+     }
+    ],
+    "id": "u"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

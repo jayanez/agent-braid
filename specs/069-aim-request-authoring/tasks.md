@@ -58,7 +58,7 @@ and T010's final run measures the release candidate without them.
 
 ## Phase P3 — `units` and schema delivery, only if the P2 baseline misses D4 in a required host (D6)
 
-- [ ] T006 (REQ-006 / SC-006): [P3, conditional] `units` schema and `agent_braid/units.py`;
+- [x] T006 (REQ-006 / SC-006): [P3, conditional] `units` schema and `agent_braid/units.py`;
   construction table and golden fixtures; forced `partial` coverage;
   lexical normalization; adapter bounds for units; determinism, replay and
   workspace-boundary tests. Dependencies: T004.

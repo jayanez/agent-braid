@@ -1,0 +1,25 @@
+{
+ "expect": {
+  "schema": "accepts",
+  "service": "accepts"
+ },
+ "form": "request",
+ "id": "units-0006",
+ "label": "effect kind call",
+ "layer": "valid",
+ "pointer": "",
+ "request": {
+  "units": [
+   {
+    "effects": [
+     {
+      "kind": "call",
+      "resource": "repo-file.txt"
+     }
+    ],
+    "id": "u"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

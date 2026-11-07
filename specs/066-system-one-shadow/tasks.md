@@ -220,12 +220,21 @@ specifications unless a SPEC-066 requirement amends them.
 
 ## S1.5a — Closure
 
-- [ ] T031: Pre-PR reviews (code review, quality, simplification),
+- [x] T031: Pre-PR reviews (code review, quality, simplification),
   `validate_change --profile pr` on the stable candidate, `/speckit-converge`.
   Converge input (2026-11-01): the code also records an episode for a report-bearing
   `analyze` result (`OPERATIONS` includes `analyze`), while REQ-003 names only
   `analyze-work`; the user guide follows the code. Align the spec or the code.
   Dependencies: T010–T021.
+  Evidence (2026-11-07): founder decision 4 (PR #1151) aligned REQ-003, the plan and
+  both episode contracts with the code, no behaviour change, pinned by
+  `ParityTests.test_report_bearing_analyze_result_records_one_aim_episode`.
+  Reviews and read-only converge over T010–T022 in
+  `reviews/T031-r1-20261107.md` (automated same-family passes, not independent
+  review, no approval): no blocking or major finding; minor findings R1-04 to R1-09
+  stay open for T032. The `pr` profile is the CI `validate` aggregate on the pull
+  request head (AGENTS.md), not a local run. T021 (overhead receipt) is delivered
+  separately and is not reviewed here; T030 and T032 stay open.
 - [ ] T032: Record obtained evidence in `assurance.json`, freeze, and owner review
   of the S1.5a closure, with the decision whether S1.5b starts. Dependencies: T030,
   T031.

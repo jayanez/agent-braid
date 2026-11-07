@@ -1,0 +1,304 @@
+{
+ "expect": {
+  "schema": "accepts",
+  "service": "accepts"
+ },
+ "form": "request",
+ "id": "units-0027",
+ "label": "exactly 32 units",
+ "layer": "valid",
+ "pointer": "",
+ "request": {
+  "units": [
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f0"
+     }
+    ],
+    "id": "u0"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f1"
+     }
+    ],
+    "id": "u1"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f2"
+     }
+    ],
+    "id": "u2"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f3"
+     }
+    ],
+    "id": "u3"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f4"
+     }
+    ],
+    "id": "u4"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f5"
+     }
+    ],
+    "id": "u5"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f6"
+     }
+    ],
+    "id": "u6"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f7"
+     }
+    ],
+    "id": "u7"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f8"
+     }
+    ],
+    "id": "u8"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f9"
+     }
+    ],
+    "id": "u9"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f10"
+     }
+    ],
+    "id": "u10"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f11"
+     }
+    ],
+    "id": "u11"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f12"
+     }
+    ],
+    "id": "u12"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f13"
+     }
+    ],
+    "id": "u13"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f14"
+     }
+    ],
+    "id": "u14"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f15"
+     }
+    ],
+    "id": "u15"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f16"
+     }
+    ],
+    "id": "u16"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f17"
+     }
+    ],
+    "id": "u17"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f18"
+     }
+    ],
+    "id": "u18"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f19"
+     }
+    ],
+    "id": "u19"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f20"
+     }
+    ],
+    "id": "u20"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f21"
+     }
+    ],
+    "id": "u21"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f22"
+     }
+    ],
+    "id": "u22"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f23"
+     }
+    ],
+    "id": "u23"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f24"
+     }
+    ],
+    "id": "u24"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f25"
+     }
+    ],
+    "id": "u25"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f26"
+     }
+    ],
+    "id": "u26"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f27"
+     }
+    ],
+    "id": "u27"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f28"
+     }
+    ],
+    "id": "u28"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f29"
+     }
+    ],
+    "id": "u29"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f30"
+     }
+    ],
+    "id": "u30"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "f31"
+     }
+    ],
+    "id": "u31"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

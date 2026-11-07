@@ -1,0 +1,23 @@
+{
+  "units": [
+    {
+      "effects": [
+        {
+          "kind": "write",
+          "resource": "README.md"
+        }
+      ],
+      "id": "edit-readme"
+    },
+    {
+      "effects": [
+        {
+          "kind": "write",
+          "resource": "README.md"
+        }
+      ],
+      "id": "edit-readme-intro"
+    }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+}
