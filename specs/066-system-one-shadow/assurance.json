@@ -161,10 +161,10 @@
           "obtained_evidence": [
             {
               "command": "python3 scripts/spec066_shadow_overhead.py --samples 200 --warmup 10 --output specs/066-system-one-shadow/evidence/overhead-20261107.json",
-              "limits": "T021 measurement receipt only, not a gate: one owner machine (macOS 27.2 arm64, Python 3.13.11) under concurrent load, synthetic AIM batches, temporary HOME, worker step timed synchronously, stalled filesystem not simulated. The SC-003 refusal checks (procedure_003) are recorded separately.",
-              "outcome": "measured: worker step median 1.9-5.8 ms and p95 2.2-6.2 ms (maximum 11.0 ms) for 2, 12 and 32 operations with a cold and a warm store; request-path hand-off median at most 0.007 ms; 1,200 episodes abstained, none budget-exceeded, no refusal. 50 ms budget shown as reference only.",
+              "limits": "T021 measurement receipt only, not a gate: one owner machine (macOS 27.2 arm64, Python 3.13.11) under concurrent load (load average 8.1 at start; receipt re-measured 2026-11-08 after agent_braid/tooling_mcp.py changed in #1155), synthetic AIM batches, temporary HOME, worker step timed synchronously, stalled filesystem not simulated. The SC-003 refusal checks (procedure_003) are recorded separately.",
+              "outcome": "measured: worker step median 2.1-6.6 ms and p95 2.3-8.0 ms (maximum 33.8 ms) for 2, 12 and 32 operations with a cold and a warm store; request-path hand-off median at most 0.018 ms; 1,200 episodes abstained, none budget-exceeded, no refusal. 50 ms budget shown as reference only.",
               "path": "specs/066-system-one-shadow/evidence/overhead-20261107.json",
-              "sha256": "5b91803a5d5bb78c2a4266a3e825592a13a1d07a719592e16f87b5e7482ed548"
+              "sha256": "28c49cd967caa60f8ff5d7718c72908df68d87e79ae0d033c75df2b4c1c2f35b"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_003 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
