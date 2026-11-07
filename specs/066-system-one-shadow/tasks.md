@@ -207,6 +207,10 @@ specifications unless a SPEC-066 requirement amends them.
   2026-11-02 (plugin `0.1.0-alpha.5`, `plugin-status` read by the coordinator:
   `systemOne.configuredMode` and `activeMode` both `shadow`, telemetry `local`, store
   not yet present); report due 2026-11-09.
+  Preparation (2026-11-07): `python -m scripts.spec066_t030_receipt` writes the receipt
+  on or after 2026-11-09 (UTC) and refuses earlier; `--dry-run` prints it without
+  writing. Tests: `tests/test_spec066_t030_receipt.py`. Not ticked: the receipt itself
+  is the evidence.
 
 ## S1.5a — Closure
 
