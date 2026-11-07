@@ -1,0 +1,39 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0060",
+ "keyword": "type",
+ "label": "integer instead of string at /units/0/dependencies/0",
+ "layer": "structural",
+ "pointer": "/units/0/dependencies/0",
+ "request": {
+  "units": [
+   {
+    "coverage": "partial",
+    "dependencies": [
+     7
+    ],
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "README.md"
+     }
+    ],
+    "id": "edit-readme"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "docs/guide.md"
+     }
+    ],
+    "id": "write-guide"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

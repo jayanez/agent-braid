@@ -1,0 +1,26 @@
+{
+ "expect": {
+  "schema": "accepts",
+  "service": "accepts"
+ },
+ "form": "request",
+ "id": "units-0012",
+ "label": "coverage claim partial (recorded as partial)",
+ "layer": "valid",
+ "pointer": "",
+ "request": {
+  "units": [
+   {
+    "coverage": "partial",
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "README.md"
+     }
+    ],
+    "id": "u"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

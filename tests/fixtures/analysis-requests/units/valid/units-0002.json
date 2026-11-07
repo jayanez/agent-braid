@@ -1,0 +1,25 @@
+{
+ "expect": {
+  "schema": "accepts",
+  "service": "accepts"
+ },
+ "form": "request",
+ "id": "units-0002",
+ "label": "single unit",
+ "layer": "valid",
+ "pointer": "",
+ "request": {
+  "units": [
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "README.md"
+     }
+    ],
+    "id": "only"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

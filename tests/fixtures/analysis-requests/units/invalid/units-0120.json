@@ -1,0 +1,29 @@
+{
+ "difference": "RC-batch",
+ "expect": {
+  "schema": "accepts",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0120",
+ "label": "unknown dependency",
+ "layer": "batch",
+ "pointer": "/units/0/dependencies/0",
+ "request": {
+  "units": [
+   {
+    "dependencies": [
+     "ghost"
+    ],
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "a"
+     }
+    ],
+    "id": "u"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

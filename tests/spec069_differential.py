@@ -15,9 +15,13 @@ from scripts import spec069_divergence_inventory as inv
 
 ROOT = inv.ROOT
 CORPUS = ROOT / "tests/fixtures/analysis-requests"
+UNITS_SCHEMA = ROOT / "schemas/0.1.0-alpha/units-request.schema.json"
 
 
 def load_corpus(kind: str) -> list[dict]:
+    if kind == "units":  # one file per case under units/valid and units/invalid
+        files = [*(CORPUS / "units/valid").glob("*.json"), *(CORPUS / "units/invalid").glob("*.json")]
+        return sorted((json.loads(path.read_text()) for path in files), key=lambda case: case["id"])
     return json.loads((CORPUS / f"{kind}.json").read_text())["cases"]
 
 
@@ -32,15 +36,20 @@ def git_validator(git_schema: dict | None = None):
     return jsonschema.Draft202012Validator(git_schema or json.loads(inv.GIT_SCHEMA.read_text()))
 
 
+def units_validator(units_schema: dict | None = None):
+    return jsonschema.Draft202012Validator(units_schema or json.loads(UNITS_SCHEMA.read_text()))
+
+
 class Harness:
     """Evaluates corpus cases with the published schemas and the complete service path."""
 
-    def __init__(self, aim=None, git=None) -> None:
+    def __init__(self, aim=None, git=None, units=None) -> None:
         self.temp = tempfile.TemporaryDirectory()
         repo, results = inv.init_repo(Path(self.temp.name))
         self.prober = inv.Prober(repo.resolve(), results)
         self.repo = repo.resolve()
-        self.validators = {"aim": aim or aim_validator(), "git": git or git_validator()}
+        self.validators = {"aim": aim or aim_validator(), "git": git or git_validator(),
+                           "units": units or units_validator()}
 
     def close(self) -> None:
         self.temp.cleanup()
@@ -52,7 +61,7 @@ class Harness:
             request = json.loads(text)
             schema_ok = self.validators["git"].is_valid(json.loads(json.dumps(case["request"])))
         else:
-            schema_ok = self.validators["aim"].is_valid(request)
+            schema_ok = self.validators[kind].is_valid(request)
         service_ok, _ = self.prober.service_verdict(kind, request)
         return {"schema": "accepts" if schema_ok else "refuses", "service": "accepts" if service_ok else "refuses"}
 

@@ -1,0 +1,30 @@
+{
+  "units": [
+    {
+      "effects": [
+        {
+          "kind": "write",
+          "resource": "docs/guide.md"
+        }
+      ],
+      "id": "write-guide"
+    },
+    {
+      "dependencies": [
+        "write-guide"
+      ],
+      "effects": [
+        {
+          "kind": "read",
+          "resource": "docs/guide.md"
+        },
+        {
+          "kind": "write",
+          "resource": "README.md"
+        }
+      ],
+      "id": "link-guide"
+    }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+}

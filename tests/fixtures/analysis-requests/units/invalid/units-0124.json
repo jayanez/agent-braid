@@ -1,0 +1,30 @@
+{
+ "difference": "RC-batch",
+ "expect": {
+  "schema": "accepts",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0124",
+ "label": "case-only difference inside one unit",
+ "layer": "batch",
+ "pointer": "/units/0/effects/1/resource",
+ "request": {
+  "units": [
+   {
+    "effects": [
+     {
+      "kind": "read",
+      "resource": "Docs/a"
+     },
+     {
+      "kind": "write",
+      "resource": "docs/a"
+     }
+    ],
+    "id": "u"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

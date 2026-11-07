@@ -1,0 +1,26 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0114",
+ "keyword": "enum",
+ "label": "effect kind outside the vocabulary",
+ "layer": "structural",
+ "pointer": "/units/0/effects/0/kind",
+ "request": {
+  "units": [
+   {
+    "effects": [
+     {
+      "kind": "modify",
+      "resource": "a"
+     }
+    ],
+    "id": "u"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}
