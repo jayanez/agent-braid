@@ -179,11 +179,11 @@ specifications unless a SPEC-066 requirement amends them.
   Status 2026-11-01: Pending.
   Evidence (2026-11-07): `evidence/overhead-20261107.json`, produced by
   `python3 scripts/spec066_shadow_overhead.py --samples 200 --warmup 10` at commit
-  `4c2f0cbe` (clean inputs) on the owner machine (macOS 27.2 arm64, Python 3.13.11,
-  load average about 5 from concurrent work) in a temporary HOME; telemetry off and
+  `0693fb5a` (clean inputs, after merging `develop`) on the owner machine (macOS 27.2 arm64, Python 3.13.11,
+  load average about 4.8 from concurrent work) in a temporary HOME; telemetry off and
   no real consent or store touched. Worker step (the work under the 50 ms budget)
-  median 2.1–6.5 ms and p95 2.3–7.0 ms across the six cells (maximum 25.9 ms);
-  request-path hand-off median at most 0.016 ms and p95 at most 0.023 ms; all
+  median 1.9–5.8 ms and p95 2.2–6.2 ms across the six cells (maximum 11.0 ms);
+  request-path hand-off median at most 0.007 ms and p95 at most 0.017 ms; all
   1,200 measured episodes `abstained`, none `budget-exceeded`, no refusal. Script tests:
   `tests/test_spec066_shadow_overhead.py`. Descriptive receipt of one machine and
   run, not a gate; a stalled filesystem is not simulated.
