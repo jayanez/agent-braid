@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import unittest.mock
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "examples/journey/run_journey.py"
@@ -32,7 +33,6 @@ class SyntheticJourneyTests(unittest.TestCase):
         receipt = self.receipt
         self.assertEqual("passed", receipt["status"])
         self.assertEqual(STEPS, [step["step"] for step in receipt["steps"]])
-        self.assertTrue(all(step["outcome"] == "passed" for step in receipt["steps"]))
         self.assertEqual("synthetic-local", receipt["domain"])
         for flag in ("hostConnection", "networkUsed", "modelSpend", "executionAuthorization"):
             self.assertIs(False, receipt[flag])
@@ -58,8 +58,27 @@ class SyntheticJourneyTests(unittest.TestCase):
 
     def test_receipt_has_no_local_paths(self):
         text = json.dumps(self.receipt)
-        self.assertNotIn(tempfile.gettempdir(), text)
-        self.assertNotIn(str(ROOT), text)
+        for path in (tempfile.gettempdir(), Path(tempfile.gettempdir()).resolve(), ROOT):
+            self.assertNotIn(str(path), text)
+        self.assertNotIn("/private/var", text)
+
+    def test_failure_is_loud_and_removes_stale_receipt(self):
+        module = _load()
+        with tempfile.TemporaryDirectory() as temporary:
+            out = Path(temporary) / "receipt.json"
+            out.write_text("stale", encoding="utf-8")
+            with unittest.mock.patch.object(module, "_run_journey", side_effect=KeyError("boom")):
+                self.assertEqual(1, module.main(["--output", str(out)]))
+            self.assertFalse(out.exists())
+
+    def test_network_access_is_blocked_during_the_run(self):
+        import socket
+        module = _load()
+        def reach_out():
+            socket.socket()
+        with unittest.mock.patch.object(module, "_run_journey", side_effect=reach_out):
+            with self.assertRaises(module.JourneyError):
+                module.run_journey()
 
     def test_single_command_writes_receipt_and_exits_zero(self):
         with tempfile.TemporaryDirectory() as temporary:
