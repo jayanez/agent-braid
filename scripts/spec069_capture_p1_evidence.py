@@ -70,6 +70,18 @@ PROCEDURES = {
         "outcome_note": "317 aim requests recorded from the alpha.7 runtime (source 0eb75d84): 103 accepted stay accepted with identical reports once the T015 label is stripped and analysisId recomputed; 214 not accepted stay not accepted. Tightened keywords equal the compatibility note; contract versions unchanged. Negative controls: a new refusal, changed report bytes and a loosened validator are detected.",
         "limits": "aim kind through ToolingService only; git requests are covered by the corpus, not replayed against alpha.7. The alpha.7 reports are bound by digest, not stored.",
     },
+    "procedure_013": {
+        "requirement": "SC-013",
+        "shared": False,
+        "modules": ["tests.test_spec069_native_runs"],
+        "inputs": ["scripts/spec069_native_runs.py", "tests/test_spec069_native_runs.py",
+                   "specs/069-aim-request-authoring/runbook.md",
+                   "tests/fixtures/spec069-fake-hosts/_fake.py", "tests/fixtures/spec069-fake-hosts/claude",
+                   "tests/fixtures/spec069-fake-hosts/codex", "tests/fixtures/spec069-fake-hosts/opencode",
+                   "specs/069-aim-request-authoring/evidence/native-runs-baseline-anthropic.json"],
+        "outcome_note": "The --fake-hosts self-test runs the whole pipeline (profiles, sandbox workspace, plugin install, headless runs, parsing, scoring, redaction, secret scan, evidence with hashes, teardown) with negative controls: a leaked real path stops the run, a planted fake secret is absent from the evidence, a denied tool is refused and one that runs stops the run, a leftover profile or process is detected. Real runs through the same driver completed unattended on Claude Code 2.1.292 and OpenCode 2.1.4 (60 runs, claude-sonnet-5-5, evidence/native-runs-baseline-anthropic.json, teardown clean, secret scan passed); the first real pass stopped on a built-in tool not in the deny list, which is now not offered at all.",
+        "limits": "Codex: install, registration, sandbox and launch verified with the real binary, but the authenticated model call ends in 'Quota exceeded' on the owner's account, so the MCP transcript shape and parser are unverified; Codex is a declared limit (owner decision 2026-11-07) and blocks REQ-012 for that host. The OS sandbox is macOS sandbox-exec only; the driver does not run on Windows or Linux real runs. The self-test proves the pipeline, not any host or model.",
+    },
     "procedure_015": {
         "requirement": "SC-015",
         "modules": ["tests.test_spec069_declared_label",
@@ -96,10 +108,13 @@ def run(modules: list[str]) -> dict:
 
 def main() -> int:
     status = 0
+    only = set(sys.argv[1:])
     for name, spec in PROCEDURES.items():
+        if only and name not in only:
+            continue
         result = run(spec["modules"])
         passed = result["returncode"] == 0 and result["result"].startswith("OK")
-        inputs = sorted(set(SHARED_INPUTS + spec["inputs"]))
+        inputs = sorted(set((SHARED_INPUTS if spec.get("shared", True) else []) + spec["inputs"]))
         record = {
             "procedure": name, "scenario": spec["requirement"], "specification": "SPEC-069 P1",
             "command": result["command"], "testsRun": result["testsRun"], "result": result["result"],
