@@ -87,3 +87,26 @@ records that the tarball matches the registry integrity and that the vendored
 bytes equal the extracted files. Other upstream files, post-processing addons and
 other third-party web code are not vendored; updates repeat the manifest and the
 receipt and require review.
+
+## Braid Lightning (microsoft/agent-lightning)
+
+Pinned sources: `microsoft/agent-lightning` `main` at
+`bc3a9e80417d731744040df5d37117f9cc48005f` (v1.0.3) and `v0.x` at
+`6db3c73dc0af2e50fe80e56873a57c1703f1b2a7`, Copyright (c) Microsoft Corporation,
+MIT License. The complete upstream license is retained in
+[`LICENSES/Agent-Lightning-MIT.txt`](../../LICENSES/Agent-Lightning-MIT.txt).
+Every adapted module keeps `SPDX-License-Identifier: AGPL-3.0-only` and a
+prominent notice naming the upstream path, commit, copyright holder and MIT
+license, plus a summary of changes. MIT terms apply to the adapted upstream
+portions; they do not relicense unrelated Agent Braid code or documentation.
+The licensing record is [ADR 0040](../adr/0040-braid-lightning-mit-vendoring.md)
+(Proposed).
+
+The [reviewed inventory](../../specs/070-braid-lightning-foundations/third-party-inventory.md)
+binds complete original file hashes and maps each upstream file to its Agent
+Braid module. Adaptations replace Pydantic, FastAPI, Hydra and Kubernetes with
+standard-library dataclasses, private JSON-lines files and a closed JSON
+configuration; content-bearing payloads become digests. No verl, vLLM, torch,
+Ray, tracer, `.poml` tooling, example, dataset, documentation, dashboard or
+branding is imported. The name "Braid Lightning" credits the upstream project
+and implies no endorsement by Microsoft.

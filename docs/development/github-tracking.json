@@ -30,7 +30,13 @@
     "Deferred": "Work parked by the founder on 2026-10-31 until its reopen criteria hold: SPEC-029 T001 source permissions granted and admitted real groups greater than zero (third-party sources), or SPEC-066 REQ-101 admission (the owner's own sources, decided 2026-11-01). The 15 task issues named in the S1.5 milestone moved there by the SPEC-066 T003 task-level override (owner decision R6); the remaining deferred work stays here. Parent issues stay open; nothing here is accepted, cancelled or authorized. See docs/development/FOUNDER_DECISIONS_20261031.md.",
     "VIS.1 — Activity viewer": "Read-only, loopback-only companion that turns Agent Braid artifacts and allowlisted Claude Code and Codex telemetry into the agent-braid-loom/v0.1 event stream and a local Three.js braid viewer with live delivery, replay and explicit minimal export. Independent track; never gates the core, M4.x or HAR. No execution authority, no telemetry persistence, effort kept in memory. Draft planning; no due date, host acceptance or release implied. Extra cash spend EUR 0.",
     "S1.5 — System One shadow activation": "Resumes the deferred System One program (SPEC-028–033) as a measured, owner-consented, local subsystem. S1.5a records one structural decision episode beside every successful analyze-work result without changing any output; S1.5b–e (owned corpus, reference-grade abstention and calibration contracts, a native learned model, per-decision-point go/no-go) are outline and blocked. Absorbs 15 open task issues parked in Deferred by owner decision R6 (SPEC-029 T001-T009, SPEC-031 T008, SPEC-033 T002, T003, T004, T006, T008) through task-level milestone overrides (SPEC-066 T003). Independent track; never gates the core, M4.x, HAR or VIS. No execution authority, no network, no content in episodes. Engineering and hypothesis (H-S1); nothing here is accepted, calibrated or promoted. Decision: docs/development/FOUNDER_DECISIONS_20261101.md; ADR 0034. Extra cash spend EUR 0.",
-    "M4.8 — AIM request authoring": "Published, validator-equivalent analyze-work request contract (SPEC-069): schema/validator differential test, field-specific refusals, declared-not-observed report label, fully automated native measurement in Claude Code, Codex and OpenCode, and a conditional `units` authoring kind with schema delivery, in phases P1-P3. Origin: SPEC-068 T010 finding F1, issue #1080. Draft; human review pending."
+    "M4.8 — AIM request authoring": "Published, validator-equivalent analyze-work request contract (SPEC-069): schema/validator differential test, field-specific refusals, declared-not-observed report label, fully automated native measurement in Claude Code, Codex and OpenCode, and a conditional `units` authoring kind with schema delivery, in phases P1-P3. Origin: SPEC-068 T010 finding F1, issue #1080. Draft; human review pending.",
+    "BL.0 — Braid Lightning foundations": "Governance, MIT vendoring provenance, content-free records, configuration profile and wizard, private run store and setup consent for Braid Lightning (SPEC-070). Draft planning; no execution authority. Extra cash spend EUR 0.",
+    "BL.1 — Lightning rollouts and verifiable reward": "Subscription-only headless host rollouts and a verifiable reward vector for the SPEC-069 laboratory (SPEC-071). Draft planning; extra cash spend EUR 0.",
+    "BL.2 — Lightning prompt optimization": "Preregistered APO and GEPA optimization of the analyze guidance against the frozen held-out set (SPEC-072); a null result completes the protocol.",
+    "BL.3 — Lightning promotion": "Human-only promotion of optimized guidance through the HAR profile registry, with build check and rollback (SPEC-073).",
+    "BL.4 — Lightning trace consent": "Consent, redaction, retention and trace adapters for content-bearing Braid Lightning traces (SPEC-074, ADR 0041).",
+    "BL.5 — Lightning dataset export": "Deterministic supervised and trajectory dataset export with manifests and a usage-terms gate (SPEC-075)."
   },
   "closed_milestones": [
     "M0 — Operational foundations",
@@ -310,6 +316,34 @@
     },
     "069-aim-request-authoring": {
       "milestone": "M4.8 — AIM request authoring",
+      "state": "open"
+    },
+    "070-braid-lightning-foundations": {
+      "milestone": "BL.0 — Braid Lightning foundations",
+      "state": "open"
+    },
+    "071-lightning-rollouts-reward": {
+      "milestone": "BL.1 — Lightning rollouts and verifiable reward",
+      "state": "open"
+    },
+    "072-lightning-prompt-optimization": {
+      "milestone": "BL.2 — Lightning prompt optimization",
+      "state": "open"
+    },
+    "073-lightning-promotion": {
+      "milestone": "BL.3 — Lightning promotion",
+      "state": "open"
+    },
+    "074-lightning-trace-consent": {
+      "milestone": "BL.4 — Lightning trace consent",
+      "state": "open"
+    },
+    "075-lightning-dataset-export": {
+      "milestone": "BL.5 — Lightning dataset export",
+      "state": "open"
+    },
+    "076-lightning-local-grpo": {
+      "milestone": "Deferred",
       "state": "open"
     }
   },
