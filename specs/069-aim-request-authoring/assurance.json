@@ -322,7 +322,7 @@
               "limits": "aim kind through ToolingService only; git requests are covered by the corpus, not replayed against alpha.7. The alpha.7 reports are bound by digest, not stored.",
               "outcome": "passed: 317 aim requests recorded from the alpha.7 runtime (source 0eb75d84): 103 accepted stay accepted with identical reports once the T015 label is stripped and analysisId recomputed; 214 not accepted stay not accepted. Tightened keywords equal the compatibility note; contract versions unchanged. Negative controls: a new refusal, changed report bytes and a loosened validator are detected.",
               "path": "specs/069-aim-request-authoring/evidence/procedure_009.json",
-              "sha256": "a729389a6fe1a084f7c3d1a65cdf2135fe0537c0b6046f65de8071ff5ff0938d"
+              "sha256": "aad0eb84ccc0eaae7c8974481cb85f82e5a0d7752b0b5aa9a0f07e0ee299ae97"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",

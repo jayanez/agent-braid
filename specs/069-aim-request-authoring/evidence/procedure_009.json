@@ -13,7 +13,7 @@
   "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
   "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
   "scripts/spec069_record_alpha7.py": "03c7f81658cefe1da55e29fe7ee034b24dc46716a8176e985d3816b27fd53c09",
-  "specs/069-aim-request-authoring/compatibility.md": "d61724ccce35925769141e19ff67b9e6ffa850c8502c3cf29123e2cc711e5881",
+  "specs/069-aim-request-authoring/compatibility.md": "82282a2599579cbf1db80eb99d8ffb33c2703ab51c2eb6c14a18d670f45904f0",
   "specs/069-aim-request-authoring/evidence/alpha7-replay.json": "1e4a00db64d39be8c32e44a965c8c63bea6e0f138a2f34f36885f3bcaa08231e",
   "tests/test_spec069_alpha7_replay.py": "2aca69bffd3a6f5dafb8caf968ebcf0918354ad02854497fff437ca6282f1e06",
   "tests/test_spec069_compatibility.py": "0cef4924c1eeffc604c2779e4cca3b8f3aa92c8fde158f431e454585432fa0cc"
