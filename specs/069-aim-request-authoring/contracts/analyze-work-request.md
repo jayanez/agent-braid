@@ -155,6 +155,60 @@ when either record has a non-declared evidence item). Classification, reasons,
 constraints and evidence are unchanged. `analysisId` digests the whole report and
 therefore includes the label.
 
+## Delivery in the tool definition (phase P3, T005)
+
+P3 runs (founder decision 2 of 2026-11-07), so REQ-005 delivery enters this contract.
+This section was added by T005 after the owner's acceptance above; that acceptance does
+not cover it, and it awaits review. The `analyze-work` `inputSchema` keeps a plain-object
+top level: `type`, `additionalProperties`, `properties` (`kind` with the enum `aim`,
+`git`, `units`; `request`; and the plugin-injected `workspaceId`), `required`, and one
+`$defs` table (A1). `properties.request` is
+`{"type": ["object", "array"], "oneOf": [...]}` with one branch per request form above,
+each labelled by a `description` `kind=<kind>[ <form>]`. The AIM record and its effect
+item are declared once under the top-level `$defs` and referenced as `#/$defs/<name>`.
+
+- **Source.** `scripts/spec069_tool_schemas.py` derives the branches from the published
+  schemas: annotations stripped, references inside one file inlined, a reference to
+  another published file shared through `$defs`, `minLength: 1` dropped where
+  `pattern: "\S"` already implies it. It writes `agent_braid/analyze_work_schema.py`
+  (with the SHA-256 of each source schema); a test regenerates it and compares bytes.
+- **One relaxation.** The `units` resource `pattern` states the lexical refusals with
+  lookaheads, which not every model-provider schema dialect accepts; the declared
+  branch replaces it with `\S` (non-blank). `agent_braid/units.py` still refuses every
+  such resource with a pointer refusal, so the declared schema is looser than the
+  published one only there: 19 of the 124 `units` corpus cases, each refused by the
+  runtime. No declared pattern uses a lookaround (tested).
+- **Equivalence.** On the committed corpus (310 `aim`, 119 `git`, 124 `units` cases),
+  each kind's branches and the whole call schema give the published schemas' verdicts,
+  with the relaxation above for `units` (`DeclaredSchemaDifferentialTests`). The
+  link between `kind` and the request form cannot be stated inside `request` without a
+  top-level combinator, so a request of another kind's form passes the declared schema
+  and is refused by the runtime with a structural refusal.
+- **Validating hosts.** A host that validates arguments against the declared schema
+  refuses, before calling, the runtime-looser classes listed above (for example an
+  `evidence` item that is not an evidence object); the runtime still accepts them.
+- **Size cap (D12).** Name, description and `inputSchema` of each listed tool, as compact
+  UTF-8 JSON, stay within 1,500 tokens approximated as ceil(bytes / 3.7) (`analyze-work`
+  with the three kinds: 5,447 bytes, about 1,473 tokens). A one-time
+  calibration measured 4.14–4.27 bytes per token with `o200k_base` and `cl100k_base`, so
+  the approximation over-counts them by about 12–15 %; Anthropic's tokenizer is not
+  measured. Above the cap the test fails and the description-only fallback applies.
+- **Ablation switch (D9).** `python -m scripts.spec069_tool_schemas --delivery
+  description-only` rewrites the generated module so a build serves the interim
+  definition (`request` declared as object or array with the interim prose in both the
+  tool description and `request`, byte identical to alpha.7 plus PR #1099 except that
+  `kind` lists `units`). The per-kind arm's tool description replaces that prose with
+  one sentence pointing at the labelled branches and the skill, because the shapes are
+  in the schema and the definition must fit the cap; the ablation therefore compares
+  "interim prose only" with "schema plus pointer".
+  Only `per-kind` is committed. The arm is part of the built bytes, so it reaches every
+  host the same way (no environment variable, which Codex does not forward to plugin MCP
+  servers by default).
+- **Not yet observed.** Whether each host accepts the nested form, the recording-proxy
+  byte identity across host connections, eager or deferred schema loading, and the D9
+  ablation result are pending on the native driver; adoption in a release waits for
+  them (REQ-005). Hand-off: `reviews/t005-handoff-20261107.md`.
+
 ## Compatibility and versions
 
 Unchanged: `agent-braid-plugin/v0.2`, `agent-braid-tooling/v0.1`, AIM
@@ -171,4 +225,5 @@ rollback: [compatibility.md](../compatibility.md).
 
 `tests/test_spec069_differential.py`, `test_spec069_units.py`, `test_spec069_refusals.py`,
 `test_spec069_declared_label.py`, `test_spec069_alpha7_replay.py`,
-`test_spec069_compatibility.py`, `test_spec069_divergence_inventory.py`.
+`test_spec069_compatibility.py`, `test_spec069_divergence_inventory.py`,
+`test_spec069_schema_delivery.py`.

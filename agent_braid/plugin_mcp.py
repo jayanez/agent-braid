@@ -425,6 +425,27 @@ class PluginRouter:
         return self.services[parsed.netloc].read_resource(uri, cancelled)
 
 
+def tool_listing(router, types):
+    """The plugin's tool definitions: every delegated tool gains a required top-level `workspaceId`.
+
+    The injection writes into `properties` and `required` of each inputSchema, so every delegated schema
+    keeps a plain-object top level; per-kind request schemas stay nested under `request` (SPEC-069 A1).
+    """
+    definitions = {}
+    for service in router.services.values():
+        for definition in core._tool_definitions(service, types):
+            definition.input_schema['properties']['workspaceId'] = {'type': 'string'}
+            definition.input_schema['required'].append('workspaceId')
+            definition.output_schema['properties']['schemaVersion'] = {'const': SCHEMA}
+            definition.output_schema['properties']['workspaceId'] = {'type': ['string', 'null']}
+            definitions[definition.name] = definition
+    for name in ('plugin-status', 'workspaces'):
+        definitions[name] = types.Tool(name=name, description='Read-only setup status, bundled CLI location and registered workspace IDs. No registration or grant effects.',
+            inputSchema={'type': 'object', 'properties': {}, 'additionalProperties': False},
+            annotations=types.ToolAnnotations(readOnlyHint=True, openWorldHint=False))
+    return list(definitions.values())
+
+
 def create_server(router):
     if version('mcp') != '2.3.0':
         raise RuntimeError('Plugin requires the bundled mcp==2.3.0 SDK')
@@ -432,19 +453,7 @@ def create_server(router):
     import mcp.types as types
 
     async def list_tools(_ctx, _params):
-        definitions = {}
-        for service in router.services.values():
-            for definition in core._tool_definitions(service, types):
-                definition.input_schema['properties']['workspaceId'] = {'type': 'string'}
-                definition.input_schema['required'].append('workspaceId')
-                definition.output_schema['properties']['schemaVersion'] = {'const': SCHEMA}
-                definition.output_schema['properties']['workspaceId'] = {'type': ['string', 'null']}
-                definitions[definition.name] = definition
-        for name in ('plugin-status', 'workspaces'):
-            definitions[name] = types.Tool(name=name, description='Read-only setup status, bundled CLI location and registered workspace IDs. No registration or grant effects.',
-                inputSchema={'type': 'object', 'properties': {}, 'additionalProperties': False},
-                annotations=types.ToolAnnotations(readOnlyHint=True, openWorldHint=False))
-        return types.ListToolsResult(tools=list(definitions.values()))
+        return types.ListToolsResult(tools=tool_listing(router, types))
 
     async def call_tool(_ctx, params):
         event = threading.Event()

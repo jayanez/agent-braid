@@ -7,7 +7,7 @@
  "inputs": {
   "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
   "agent_braid/git_adapter.py": "77c17bb694057e712a31886d8879f8ca922bd912f80a45fb703285f828ec94ed",
-  "agent_braid/tooling_mcp.py": "f6713ad253ffabf537e19464952e16a4e2a412294539ebd45bde46fc913b0e0e",
+  "agent_braid/tooling_mcp.py": "ff7032dd7ffb7bdf81af708eb03bc14cfdaff8c5b6b38ed68e1dae8ac4eb8969",
   "agent_braid/units.py": "715f32da8869c11d2572103bfcfc37710f1b5bfebbd0c6097577a8bbf894a49e",
   "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
   "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
@@ -15,7 +15,7 @@
   "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
   "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
   "scripts/spec069_generate_corpus.py": "2e1201773f89c9d48b84a2e1421aa17b18c62792634279782ecf1fa760e5a6c1",
-  "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "08aad7ca0bf1fe96c60441ceda9326719fdec2f66a9d2cd95806cb60b86cd44e",
+  "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "9b9ded77d91c63b8b5324eb32c9a0c24c1675b9168971a7dd1d2f507d37cbdf7",
   "specs/069-aim-request-authoring/evidence/alpha7-replay.json": "1e4a00db64d39be8c32e44a965c8c63bea6e0f138a2f34f36885f3bcaa08231e",
   "tests/fixtures/analysis-requests/units/golden/disjoint-claimed-complete.constructed.json": "acf0776d7f302a220899cb0e2839e0f98be533db6f3a9e901315b31e8603b064",
   "tests/fixtures/analysis-requests/units/golden/disjoint-claimed-complete.request.json": "449f6dd9811aaafafe34a0493804a8cfa3fb466cb0b3a3968b2383acac60db8c",
@@ -27,14 +27,14 @@
   "tests/fixtures/analysis-requests/units/golden/t010-readme-conflict.request.json": "4acf9d001cefbb8e396ca52397f96816bd718f54dd0ce82518897e1d66fd0d31",
   "tests/spec069_differential.py": "8683249637d89dbdf11db5531a98ad2fe59940db2f9f113e88c047e6cd323dd2",
   "tests/test_spec069_alpha7_replay.py": "2aca69bffd3a6f5dafb8caf968ebcf0918354ad02854497fff437ca6282f1e06",
-  "tests/test_spec069_differential.py": "66cf4ad2b5f16379b16d942aaed7fd6cc2561113cebdd870803c5da442dd2265",
+  "tests/test_spec069_differential.py": "ad26fd700d1063fa963af66a612b77810aa3991afb468b8ddf3ea12d8471fc96",
   "tests/test_spec069_units.py": "214155914da841c72f8a8b3349bc01934b571eaf897b4f896584bdf37a181f8c"
  },
- "limits": "Corpus agreement is not proof over all inputs. Resources are declarations normalized lexically; symbolic links, case-insensitive file systems and generated files are not resolved. No host model was involved and the analyze-work tool definition does not yet list kind units (T005). Run on macOS only here; Linux runs in CI and Windows is T014. ECMAScript validators differ from Python on U+0085 and U+FEFF in the schema's non-blank checks (declared limit, tagged in the corpus).",
+ "limits": "Corpus agreement is not proof over all inputs. Resources are declarations normalized lexically; symbolic links, case-insensitive file systems and generated files are not resolved. No host model was involved; the analyze-work tool definition lists kind units since T005 (procedure_005). Run on macOS only here; Linux runs in CI and Windows is T014. ECMAScript validators differ from Python on U+0085 and U+FEFF in the schema's non-blank checks (declared limit, tagged in the corpus).",
  "outcome": "passed: A units request with two units writing README.md is accepted through analyze-work; the constructed AIM validates against the AIM and envelope schemas and equals its byte golden; replaying it through kind aim returns a byte-identical report; the pair is conflicting with serialize-or-isolate, coverage partial, provenance names agent-braid.units-declaration/0.1.0-alpha. Negative controls: README.md and ./README.md (and //, trailing /, NFC variants) are one resource; claimed complete coverage gives partial and the same bytes; disjoint units are unknown and no accepted corpus case is independent-candidate; a .. path, an absolute path, a case-only duplicate, 33 units, a 257-byte id, a duplicate id, an unknown dependency and an unsupported effect kind are refused with a pointer and expected form or a fixed code, without request values; outputs are identical across runs, processes and hash seeds; construction opens no file. The units corpus (132 files: 124 cases, 8 goldens) matches the units schema and the service path, and relaxing the resource pattern, the effect-kind check or the lexical checks fails the comparison. The adapter bounds still refuse when the module's own bounds are loosened (A7). The scope equals the plugin workspaceId. The aim/git corpus (429 cases) and the alpha.7 replay (317 requests) are unchanged.",
  "procedure": "procedure_006",
  "result": "OK",
  "scenario": "SC-006",
  "specification": "SPEC-069 P3",
- "testsRun": 52
+ "testsRun": 58
 }
