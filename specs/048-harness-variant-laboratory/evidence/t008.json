@@ -1,5 +1,13 @@
 {
   "candidateBinding": "Current source/input hashes on base 99919eddae66034298931eceda13dd9cf2b4efb7; no frozen implementation commit claimed",
+  "claudeProfileDecision": {
+    "codex": "not-qualified: not installed (unchanged)",
+    "decision": "qualification-authorized (A: authorized-for-native-units)",
+    "record": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261106.json",
+    "scope": "Claude only, issued SPEC-065 records, D2 caps, EUR 0, subscription route, window 2026-11-09T20:30Z to 2026-11-30, at most 4 serial units",
+    "sha256": "6f5394dae371c2c8082153db3ce3ab99fd02d86d4c5372b931c0926f5ce7b4a0",
+    "verdict": "not decided: qualified only after native units complete within the caps"
+  },
   "decisionRecords": {
     "d2Caps": {
       "parsedCaps": "unit 1800 s, session <= 10 % of 5-hour window, cohort <= 15 % of weekly window, <= 16 units, weekly stop above 80 %, EUR 0 additional cash",
@@ -17,7 +25,7 @@
       "source": "origin/develop 99919edd (PR #793); SHA-256 verified equal to the hash bound here"
     }
   },
-  "disposition": "Open: native Claude qualification infeasible with the existing adapters. The native gate passed (both founder records on origin/develop at 99919edd), but no native session was opened because containment cannot be verified first: no Claude containment qualification exists and the adapters cannot dispatch a contained native session (see nativeFeasibility). Offline host-profile gate implemented and tested. Codex stays refused.",
+  "disposition": "Open: Claude profile decision recorded (qualification-authorized, units authorized) and native wiring built and tested with doubles; no native unit has run, so no qualified verdict and SPEC-049/T004 stays blocked. Codex stays refused.",
   "executedChecks": [
     {
       "command": ".venv-speckit/bin/python -m unittest tests.test_harness_hosts -v",
@@ -45,6 +53,11 @@
       "command": "HostQualificationRun on the committed records with the 08:55Z get_usage reading; admit_unit with no containment qualification record",
       "exitCode": 1,
       "scope": "Gate run before any native session: Codex refused 'not-qualified: not installed'; Claude admission refused 'invalid-qualification' at the containment check (all D2 quota checks passed on that reading: 5-hour 89 % + 10 % session reserve = 99 %, weekly 49 %, extra usage off). No session launched."
+    },
+    {
+      "command": ".venv python3.13 -m unittest tests.test_harness_hosts_native tests.test_har_t008_unit",
+      "exitCode": 0,
+      "scope": "Wiring controls with FakeLauncher doubles: issued-record trust, qualified policy refusals, MDRV-04 guard, admission/settlement with quota gate, failed run still settles; no native session"
     }
   ],
   "executionAuthorization": false,
@@ -80,14 +93,27 @@
   },
   "inputs": {
     "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
-    "agent_braid/harness_host_claude.py": "9798cec28e0b12e7cc9a31056b145169bcc217f67a894cbcda930d12e856b795",
-    "agent_braid/harness_hosts.py": "c62480020499bd34d33a6012e71846f0646b1ecd320816356c5505b1c2266104",
+    "agent_braid/harness_host_claude.py": "e409512d7b4d20bc5c38a28a2ee1cc31344832718f76ee2f067d25d610d1b9e1",
+    "agent_braid/harness_hosts.py": "6295ee85c92bab40279ce0497067d4d6bd212c9037b02d30f4b1b00cf18cd3dc",
+    "agent_braid/harness_hosts_native.py": "4094003a800238db3a45360ba38e06ec8393133d047437dcd3a9e78ad569c816",
     "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
-    "agent_braid/harness_manifest.py": "373f1dd8e888c88fde6a47399c429c9b56ab040eea94811f22de796bc6b5d5a1",
+    "agent_braid/harness_manifest.py": "6624d79de56e702062ba02cefb5cab3d6ec7a58b310c3520d7bdbe024df7fe61",
+    "scripts/har_t008_unit.py": "1b552868141ff17b83f00b2b49113bb896f800dd4d27be4e2673e9b68c7dd768",
     "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
     "specs/048-harness-variant-laboratory/evidence/founder-review-20261031.json": "38bedbba82de5c219f3c0a3f6c8f2e3a0309824abeea536862bdc20e3ab4eddc",
     "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
-    "tests/test_harness_hosts.py": "a98ed9b5b1824c497abac262c9a99bc4de0443af9e7d06158f3415f25bc33be5"
+    "tests/test_har_t008_unit.py": "be2b109775689c9b26d35badf3e0f4502a75e241fad509e76049d682da660852",
+    "tests/test_harness_hosts.py": "a98ed9b5b1824c497abac262c9a99bc4de0443af9e7d06158f3415f25bc33be5",
+    "tests/test_harness_hosts_native.py": "cee79d927994d7519f18a96cfb5060548568e8bf143a6039dde52caa93ae3a41"
+  },
+  "issuedRecords": {
+    "containmentTrustedSha256": "b7641c8a48b9c4a2ef6213fa42fa429ae56b279df86c5da33db07e67ff83f834",
+    "environmentSha256": "e91007d8626998d49ccb574bc241752bccc5134616598dd76b8f63630f9d818a",
+    "expiresAt": 1796580464,
+    "hostTrustedSha256": "8c1a38fe054a09a44a29b53f9aad757500991e1d74aaa655ec4584bcd886178d",
+    "issuance": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-06.json",
+    "issuanceSha256": "26030d57a021d28ce3b836582ba6196c6636f7401d386a71f7d5a2b9791723ac",
+    "mdrv04Guard": "agent_braid/harness_hosts_native.py guard_unhashed pins the four modules the environment hash omits at their 320b00c4 bytes"
   },
   "limits": [
     "Quota readings are integer percentages of plan windows; sub-point consumption is invisible and caps are enforced at one-point granularity. Per-unit token counts are not observed.",
@@ -98,12 +124,26 @@
     "A qualified verdict needs one completed unit within caps and no integrity stop; it says nothing about utility, and never about the other host.",
     "Route is supplied by the caller as 'subscription' when get_usage reports plan status ok; get_usage exposes no route field."
   ],
-  "nativeFeasibility": "Infeasible now with the existing adapters. harness_host_claude.run_claude refuses any non-double transport unless the manifest names host kind 'claude', but harness_manifest parses only the offline profile; no native ClaudeTransport subclass exists; harness_lab offers only simulated containment; and no Claude HostQualification with enforced credential/filesystem/network/process effects has been issued from evidence. The founder authorization requires containment verified before every native session and the brief allows only the containment the adapters already verify, so a native session would have to bypass the adapters or rely on a self-authored qualification record (synthetic evidence). Neither was done.",
+  "nativeFeasibility": "Feasible for the Claude profile from 2026-11-06. SPEC-065 supplies the native manifest profile (T003), macOS backend (T005), native ClaudeTransport (T006) and founder-issued containment and host records (T010, #1136, expire 2026-12-06T18:07:44Z). agent_braid/harness_hosts_native.py now wires HostQualificationRun to the transport and backend and builds ContainmentPolicy from exactly the qualified pins; scripts/har_t008_unit.py is the lab driver. Nothing native has run for T008 yet: the weekly all-models window read 81 % on 2026-11-06, above the D2 stop of 80 %, so the first unit waits for the reset at 2026-11-09T20:00Z.",
+  "nativeFeasibilityBefore": "Infeasible now with the existing adapters. harness_host_claude.run_claude refuses any non-double transport unless the manifest names host kind 'claude', but harness_manifest parses only the offline profile; no native ClaudeTransport subclass exists; harness_lab offers only simulated containment; and no Claude HostQualification with enforced credential/filesystem/network/process effects has been issued from evidence. The founder authorization requires containment verified before every native session and the brief allows only the containment the adapters already verify, so a native session would have to bypass the adapters or rely on a self-authored qualification record (synthetic evidence). Neither was done.",
   "outcome": "agent_braid/harness_hosts.py: hash-bound parsing of the founder T008 record into independent per-host decisions (Codex not-qualified: not installed; a host without its own decision stays refused) and of the D2 record into exact caps; strict quota observations bound by SHA-256; a serial one-host cohort that, before every unit, requires a fresh, non-regressing reading, refuses on extra usage, non-subscription route, window reset or imminent reset, weekly stop, cohort cap and five-hour headroom, and verifies the Claude containment qualification (reusing harness_host_claude.verify_host_qualification) for environment and expiry through the unit deadline; settlement records deltas, wall time and the first breach and latches a stop. Partial qualification never implies both-host acceptance.",
   "pending": [
     "A native Claude transport, a non-offline manifest profile and an enforced-effect Claude containment backend whose qualification is obtained from evidence, before any native T008 unit",
     "Native Claude qualification units with before/after get_usage readings under HostQualificationRun",
-    "Codex profile review before closing HAR.1 (founder decision: not qualified, not installed)"
+    "Codex profile review before closing HAR.1 (founder decision: not qualified, not installed)",
+    "Native units (up to 4, from 2026-11-09T20:30Z) with before/after readings, then the founder's qualified/not-qualified verdict",
+    "Snapshot refresh of 048 assurance (founder decision 3/5, A)",
+    "Codex profile review before HAR.1 closes"
   ],
+  "snapshotRefresh": {
+    "changed": "LICENSE and ADR 0033 hashes; ADRs 0034, 0035, 0036, 0037 added",
+    "decision": "founder-decisions-20261106.json T008-3 (A)",
+    "method": "authority hashes from scripts/validate_spec_kit.py freeze on a detached checkout of public origin/develop 14187e05; evidence_snapshot restored to 530a5f39; humanReview stays pending",
+    "mode": "historical",
+    "newCommit": "14187e05668e03ee452a91f5209fd5ae883a04e4",
+    "oldCommit": "530a5f395b19f1bb9519b4846186e201cf4a02aa",
+    "reason": "obtained evidence inputs (for example NOTICE) hash differently at 14187e05, so freezing evidence there fails with 'Stale evidence input: NOTICE' and would need rewritten evidence hashes; the founder's decision text said both snapshots, this narrower refresh is reported to the founder",
+    "scope": "authority_snapshot only; evidence_snapshot stays historical at 530a5f39"
+  },
   "task": "SPEC-048/T008"
 }
