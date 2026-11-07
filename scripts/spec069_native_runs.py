@@ -51,6 +51,9 @@ SYSTEM_PATH = "/usr/bin:/bin:/usr/sbin:/sbin"
 PLUGIN_NAME = "agent-braid"
 # ToolSearch and Skill are host-side helpers: tool discovery, and the plugin's packaged guidance (the thing under measurement).
 CLAUDE_ALLOWED = ["mcp__plugin_agent-braid_agent-braid__*", "ToolSearch", "Skill"]
+# Built-in tools the host may offer: schema discovery and the plugin's packaged skills only. Anything else
+# (for example ListAgents, SendMessage, TaskStop) is not available at all, rather than denied one by one.
+CLAUDE_BUILTIN = ["ToolSearch", "Skill"]
 CLAUDE_DENIED = ["Bash", "Edit", "Write", "NotebookEdit", "WebFetch", "WebSearch", "Read", "Glob", "Grep", "Task", "Agent"]
 OPENCODE_DENIED = ["bash", "edit", "write", "webfetch", "websearch", "read", "glob", "grep", "list", "task", "external_directory"]
 # Host-side discovery helpers the host itself needs before it can see MCP tools (observed, see the runbook).
@@ -522,7 +525,7 @@ def prompt_argv(host: HostConfig, prompt: str, args: argparse.Namespace) -> list
     if host.name == "claude-code":
         argv = [binary, "-p", prompt, "--output-format", "stream-json", "--verbose", "--max-turns", str(args.max_turns),
                 "--no-session-persistence", "--plugin-dir", str(args.plugin_root_for["claude-code"]),
-                "--allowedTools", *CLAUDE_ALLOWED, "--disallowedTools", *CLAUDE_DENIED]
+                "--tools", ",".join(CLAUDE_BUILTIN), "--allowedTools", *CLAUDE_ALLOWED, "--disallowedTools", *CLAUDE_DENIED]
         return argv + (["--model", host.model] if host.model else [])
     if host.name == "codex":
         argv = [binary, "exec", "--json", "--skip-git-repo-check", "-s", "read-only", "-c", 'approval_policy="never"']
