@@ -49,8 +49,34 @@ PROCEDURES = {
             "Corpus agreement is not proof over all inputs. Resources are declarations normalized lexically; symbolic "
             "links, case-insensitive file systems and generated files are not resolved. No host model was involved; "
             "the analyze-work tool definition lists kind units since T005 (procedure_005). Run on macOS only here; Linux runs in "
-            "CI and Windows is T014. ECMAScript validators differ from Python on U+0085 and U+FEFF in the schema's "
+            "CI and Windows is tested for normalization only (procedure_014). ECMAScript validators differ from Python on U+0085 and U+FEFF in the schema's "
             "non-blank checks (declared limit, tagged in the corpus)."),
+    },
+    "procedure_014": {
+        "requirement": "SC-014",
+        "modules": ["tests.test_spec069_units_telemetry", "tests.test_system_one_shadow"],
+        "inputs": ["agent_braid/system_one_shadow.py", "agent_braid/units.py", "scripts/spec069_generate_corpus.py",
+                   "tests/test_spec069_units_telemetry.py", "tests/test_system_one_shadow.py",
+                   "specs/069-aim-request-authoring/contracts/analyze-work-request.md",
+                   "specs/069-aim-request-authoring/compatibility.md",
+                   "specs/066-system-one-shadow/contracts/episode-v0.2.md"],
+        "outcome_note": (
+            "Before the change an accepted units call in shadow mode left no episode: the store validator refused "
+            "analysisKind units (counter unavailable) and ToolingService._shadow discarded any failure in a bare "
+            "except. Now each accepted units call records one valid episode with analysisKind units, derived from the "
+            "constructed AIM records (effect kinds present, no declaration text, no request string stored), also when "
+            "the result is artifact-backed; refused calls record no episode; the envelope is identical with shadow off "
+            "and on; a shadow guard failure is counted as internal-error and does not change the envelope. Local "
+            "telemetry records an accepted units call as outcome ok with its classification counts and a refused one "
+            "as refused with a reason bucket, never error. Normalization gives identical bytes under ntpath and "
+            "posixpath semantics, composes macOS NFD input to NFC, refuses Windows-style paths and cannot hide a "
+            "case-only collision. Negative control: reverting the fix fails 5 of the new tests."),
+        "limits": (
+            "CI runs on Linux only; macOS is covered by running the same tests locally. Windows is tested for lexical "
+            "normalization only (os.path patched to ntpath), not for the plugin, the driver or the shadow store: a "
+            "declared limit. Local telemetry does not split by request kind, so the per-kind field metric of REQ-012 "
+            "is not provided here. The SPEC-066 episode v0.2 vocabulary gains units (additive, private local store) "
+            "and awaits owner review."),
     },
 }
 
