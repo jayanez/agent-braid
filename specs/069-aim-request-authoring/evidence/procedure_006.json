@@ -15,7 +15,7 @@
   "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
   "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
   "scripts/spec069_generate_corpus.py": "2e1201773f89c9d48b84a2e1421aa17b18c62792634279782ecf1fa760e5a6c1",
-  "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "9b9ded77d91c63b8b5324eb32c9a0c24c1675b9168971a7dd1d2f507d37cbdf7",
+  "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "4414d53c60c05d90e02f02ea810c5af197484180e2a7f575c3449a2dd5954dcc",
   "specs/069-aim-request-authoring/evidence/alpha7-replay.json": "1e4a00db64d39be8c32e44a965c8c63bea6e0f138a2f34f36885f3bcaa08231e",
   "tests/fixtures/analysis-requests/units/golden/disjoint-claimed-complete.constructed.json": "acf0776d7f302a220899cb0e2839e0f98be533db6f3a9e901315b31e8603b064",
   "tests/fixtures/analysis-requests/units/golden/disjoint-claimed-complete.request.json": "449f6dd9811aaafafe34a0493804a8cfa3fb466cb0b3a3968b2383acac60db8c",

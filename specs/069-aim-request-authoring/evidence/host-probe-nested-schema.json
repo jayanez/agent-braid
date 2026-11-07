@@ -1,0 +1,495 @@
+{
+  "definitions": {
+    "per-kind": {
+      "bytes": 5447,
+      "canonicalSha256": "fa54fee74c248e09dffe48e41e874768176826b35388f7bdbeaea9eb4ce2dcc1",
+      "inputSchemaCanonicalSha256": "ebf61790c83110f78f7484acd0a4cd0ef918ad30c0efbc5d953ef3e77d11a689"
+    }
+  },
+  "double": "scripts/spec069_host_probe.py serve (recording stdio MCP test double, not the product)",
+  "driverSha256": "5cda6976aaf1dc52fe0394e71e3f0a43a3a9ef60c7d3a22dfd74a7ba875d90d6",
+  "evidenceVersion": 1,
+  "generatedAt": "2026-11-07T22:39:35Z",
+  "label": "host-run",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "prompts": {
+    "aim": "Use the analyze-work tool of the probe MCP server (workspaceId \"probe-workspace\") to check whether two edits can safely be worked on at the same time. One person will reword the install section of README.md. Another person will add a build-status badge line near the top of README.md. Make the tool call, then stop.",
+    "git": "Use the analyze-work tool of the probe MCP server (workspaceId \"probe-workspace\") to check whether the work on the two branches docs-guide and src-api of the project repository can proceed in parallel. Both branches were cut from main. Make the tool call, then stop.",
+    "units": "Use the analyze-work tool of the probe MCP server (workspaceId \"probe-workspace\") to check two units of work that declare the resources they touch: unit \"a\" writes README.md and unit \"b\" also writes README.md. Make the tool call, then stop."
+  },
+  "results": {
+    "claude-code/per-kind": {
+      "arm": "per-kind",
+      "expectedDefinitionCanonicalSha256": "fa54fee74c248e09dffe48e41e874768176826b35388f7bdbeaea9eb4ce2dcc1",
+      "expectedInputSchemaCanonicalSha256": "ebf61790c83110f78f7484acd0a4cd0ef918ad30c0efbc5d953ef3e77d11a689",
+      "expectedModelFacingBytes": 5447,
+      "model": "claude-sonnet-5-5",
+      "osSandbox": "sandbox-exec",
+      "probe": {
+        "canaryReadThroughRedirectedHome": true,
+        "deniedPaths": [
+          {
+            "denied": true,
+            "path": "~/.claude"
+          },
+          {
+            "denied": true,
+            "path": "~/.claude.json"
+          },
+          {
+            "denied": true,
+            "path": "~/.codex"
+          },
+          {
+            "denied": true,
+            "path": "~/.config/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/.local/share/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/.local/state/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/.cache/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/Library/Keychains"
+          },
+          {
+            "denied": true,
+            "path": "~/Library/Application Support/Claude"
+          },
+          {
+            "denied": true,
+            "path": "~/Library/Application Support/Codex"
+          }
+        ],
+        "enforced": true,
+        "sandbox": "sandbox-exec"
+      },
+      "runs": [
+        {
+          "apiRequests": {
+            "analyzeWorkEntry": {
+              "hasDescription": true,
+              "inputSchemaBytes": 5159,
+              "inputSchemaEqualsServed": true,
+              "inputSchemaSha256": "ebf61790c83110f78f7484acd0a4cd0ef918ad30c0efbc5d953ef3e77d11a689",
+              "name": "mcp__probe__analyze-work"
+            },
+            "analyzeWorkSchemaEqualsServedInEveryRequest": true,
+            "count": 1,
+            "firstRequestHadAnalyzeWork": true,
+            "firstRequestIndexWithAnalyzeWork": 0,
+            "firstRequestToolNames": [
+              "mcp__probe__analyze-work"
+            ]
+          },
+          "calls": [],
+          "connection": {
+            "initialize": {
+              "clientInfo": {
+                "description": "Anthropic's agentic coding tool",
+                "name": "claude-code",
+                "title": "Claude Code",
+                "version": "2.1.292",
+                "websiteUrl": "https://claude.com/claude-code"
+              },
+              "protocolVersionRequested": "2025-11-25"
+            },
+            "toolsList": [
+              {
+                "lineBytes": 5493,
+                "lineSha256": "e0291c26310f907928c9444102bbe8b9349be38ba696ac8873ef2e4bb362157c",
+                "matchesDefinition": true,
+                "toolCanonicalSha256": "fa54fee74c248e09dffe48e41e874768176826b35388f7bdbeaea9eb4ce2dcc1"
+              }
+            ]
+          },
+          "durationSeconds": 1.9,
+          "exitCode": 1,
+          "firstCallArguments": null,
+          "hostError": "Credit balance is too low",
+          "listedByHost": true,
+          "models": [
+            "<synthetic>",
+            "claude-sonnet-5-5"
+          ],
+          "prompt": "aim",
+          "timedOut": false,
+          "toolNames": [],
+          "toolSearchCalledBeforeAnalyzeWork": false,
+          "transcript": {
+            "bytes": 4740,
+            "file": "host-probe-nested-schema.transcripts/claude-code/per-kind-aim.jsonl",
+            "sha256": "e586d9ea7c4c2eff3ffc64dee46422f36c491c2d5e2c5837fdd4f514489b581f"
+          }
+        },
+        {
+          "apiRequests": {
+            "analyzeWorkEntry": {
+              "hasDescription": true,
+              "inputSchemaBytes": 5159,
+              "inputSchemaEqualsServed": true,
+              "inputSchemaSha256": "ebf61790c83110f78f7484acd0a4cd0ef918ad30c0efbc5d953ef3e77d11a689",
+              "name": "mcp__probe__analyze-work"
+            },
+            "analyzeWorkSchemaEqualsServedInEveryRequest": true,
+            "count": 1,
+            "firstRequestHadAnalyzeWork": true,
+            "firstRequestIndexWithAnalyzeWork": 0,
+            "firstRequestToolNames": [
+              "mcp__probe__analyze-work"
+            ]
+          },
+          "calls": [],
+          "connection": {
+            "initialize": {
+              "clientInfo": {
+                "description": "Anthropic's agentic coding tool",
+                "name": "claude-code",
+                "title": "Claude Code",
+                "version": "2.1.292",
+                "websiteUrl": "https://claude.com/claude-code"
+              },
+              "protocolVersionRequested": "2025-11-25"
+            },
+            "toolsList": [
+              {
+                "lineBytes": 5493,
+                "lineSha256": "e0291c26310f907928c9444102bbe8b9349be38ba696ac8873ef2e4bb362157c",
+                "matchesDefinition": true,
+                "toolCanonicalSha256": "fa54fee74c248e09dffe48e41e874768176826b35388f7bdbeaea9eb4ce2dcc1"
+              }
+            ]
+          },
+          "durationSeconds": 1.3,
+          "exitCode": 1,
+          "firstCallArguments": null,
+          "hostError": "Credit balance is too low",
+          "listedByHost": true,
+          "models": [
+            "<synthetic>",
+            "claude-sonnet-5-5"
+          ],
+          "prompt": "git",
+          "timedOut": false,
+          "toolNames": [],
+          "toolSearchCalledBeforeAnalyzeWork": false,
+          "transcript": {
+            "bytes": 4740,
+            "file": "host-probe-nested-schema.transcripts/claude-code/per-kind-git.jsonl",
+            "sha256": "6c8c68bde2ab2ce7f3d71cbaa7e958b292241356817e6e11669de5282bbf31e4"
+          }
+        },
+        {
+          "apiRequests": {
+            "analyzeWorkEntry": {
+              "hasDescription": true,
+              "inputSchemaBytes": 5159,
+              "inputSchemaEqualsServed": true,
+              "inputSchemaSha256": "ebf61790c83110f78f7484acd0a4cd0ef918ad30c0efbc5d953ef3e77d11a689",
+              "name": "mcp__probe__analyze-work"
+            },
+            "analyzeWorkSchemaEqualsServedInEveryRequest": true,
+            "count": 1,
+            "firstRequestHadAnalyzeWork": true,
+            "firstRequestIndexWithAnalyzeWork": 0,
+            "firstRequestToolNames": [
+              "mcp__probe__analyze-work"
+            ]
+          },
+          "calls": [],
+          "connection": {
+            "initialize": {
+              "clientInfo": {
+                "description": "Anthropic's agentic coding tool",
+                "name": "claude-code",
+                "title": "Claude Code",
+                "version": "2.1.292",
+                "websiteUrl": "https://claude.com/claude-code"
+              },
+              "protocolVersionRequested": "2025-11-25"
+            },
+            "toolsList": [
+              {
+                "lineBytes": 5493,
+                "lineSha256": "e0291c26310f907928c9444102bbe8b9349be38ba696ac8873ef2e4bb362157c",
+                "matchesDefinition": true,
+                "toolCanonicalSha256": "fa54fee74c248e09dffe48e41e874768176826b35388f7bdbeaea9eb4ce2dcc1"
+              }
+            ]
+          },
+          "durationSeconds": 1.4,
+          "exitCode": 1,
+          "firstCallArguments": null,
+          "hostError": "Credit balance is too low",
+          "listedByHost": true,
+          "models": [
+            "<synthetic>",
+            "claude-sonnet-5-5"
+          ],
+          "prompt": "units",
+          "timedOut": false,
+          "toolNames": [],
+          "toolSearchCalledBeforeAnalyzeWork": false,
+          "transcript": {
+            "bytes": 4740,
+            "file": "host-probe-nested-schema.transcripts/claude-code/per-kind-units.jsonl",
+            "sha256": "d36259637a12421a1196f3f9aeb358f92f108cc632222bb84ba51e2f0466c57b"
+          }
+        }
+      ],
+      "status": "ran",
+      "verdict": {
+        "callsConformToDeclaredSchema": "0/0",
+        "callsMade": 0,
+        "hostErrors": [
+          "Credit balance is too low"
+        ],
+        "hostListedTool": true,
+        "loading": "eager",
+        "modelAnswered": false,
+        "modelCalledToolInPrompts": [],
+        "requestAlwaysObject": null,
+        "servedBytesEqualDefinition": true,
+        "toolsListSha256s": [
+          "fa54fee74c248e09dffe48e41e874768176826b35388f7bdbeaea9eb4ce2dcc1"
+        ]
+      },
+      "version": "2.1.292 (Claude Code)"
+    },
+    "codex/per-kind": {
+      "limit": "no CODEX_API_KEY or OPENAI_API_KEY in the environment: codex was not run (declared limit)",
+      "status": "declared-limit"
+    },
+    "opencode/per-kind": {
+      "arm": "per-kind",
+      "expectedDefinitionCanonicalSha256": "fa54fee74c248e09dffe48e41e874768176826b35388f7bdbeaea9eb4ce2dcc1",
+      "expectedInputSchemaCanonicalSha256": "ebf61790c83110f78f7484acd0a4cd0ef918ad30c0efbc5d953ef3e77d11a689",
+      "expectedModelFacingBytes": 5447,
+      "model": "anthropic/claude-sonnet-5-5",
+      "osSandbox": "sandbox-exec",
+      "probe": {
+        "canaryReadThroughRedirectedHome": true,
+        "deniedPaths": [
+          {
+            "denied": true,
+            "path": "~/.claude"
+          },
+          {
+            "denied": true,
+            "path": "~/.claude.json"
+          },
+          {
+            "denied": true,
+            "path": "~/.codex"
+          },
+          {
+            "denied": true,
+            "path": "~/.config/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/.local/share/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/.local/state/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/.cache/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/Library/Keychains"
+          },
+          {
+            "denied": true,
+            "path": "~/Library/Application Support/Claude"
+          },
+          {
+            "denied": true,
+            "path": "~/Library/Application Support/Codex"
+          }
+        ],
+        "enforced": true,
+        "sandbox": "sandbox-exec"
+      },
+      "runs": [
+        {
+          "apiRequests": {
+            "analyzeWorkEntry": null,
+            "analyzeWorkSchemaEqualsServedInEveryRequest": null,
+            "count": 1,
+            "firstRequestHadAnalyzeWork": false,
+            "firstRequestIndexWithAnalyzeWork": null,
+            "firstRequestToolNames": [
+              "question",
+              "skill",
+              "execute"
+            ]
+          },
+          "calls": [],
+          "connection": {
+            "initialize": {
+              "clientInfo": {
+                "name": "opencode",
+                "version": "2.1.4"
+              },
+              "protocolVersionRequested": "2025-11-25"
+            },
+            "toolsList": [
+              {
+                "lineBytes": 5493,
+                "lineSha256": "e0291c26310f907928c9444102bbe8b9349be38ba696ac8873ef2e4bb362157c",
+                "matchesDefinition": true,
+                "toolCanonicalSha256": "fa54fee74c248e09dffe48e41e874768176826b35388f7bdbeaea9eb4ce2dcc1"
+              }
+            ]
+          },
+          "durationSeconds": 1.4,
+          "exitCode": 1,
+          "firstCallArguments": null,
+          "hostError": "{'type': 'provider.invalid-request', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.', 'status': 400, 'response': {",
+          "listedByHost": true,
+          "models": [],
+          "prompt": "aim",
+          "timedOut": false,
+          "toolNames": [],
+          "toolSearchCalledBeforeAnalyzeWork": false,
+          "transcript": {
+            "bytes": 859,
+            "file": "host-probe-nested-schema.transcripts/opencode/per-kind-aim.jsonl",
+            "sha256": "ff0fc93b41f54f4576a459a9ed0ae06b1d628cb1eb789b9822af4452fdc0ecab"
+          }
+        },
+        {
+          "apiRequests": {
+            "analyzeWorkEntry": null,
+            "analyzeWorkSchemaEqualsServedInEveryRequest": null,
+            "count": 1,
+            "firstRequestHadAnalyzeWork": false,
+            "firstRequestIndexWithAnalyzeWork": null,
+            "firstRequestToolNames": [
+              "question",
+              "skill",
+              "execute"
+            ]
+          },
+          "calls": [],
+          "connection": {
+            "initialize": {
+              "clientInfo": {
+                "name": "opencode",
+                "version": "2.1.4"
+              },
+              "protocolVersionRequested": "2025-11-25"
+            },
+            "toolsList": [
+              {
+                "lineBytes": 5493,
+                "lineSha256": "e0291c26310f907928c9444102bbe8b9349be38ba696ac8873ef2e4bb362157c",
+                "matchesDefinition": true,
+                "toolCanonicalSha256": "fa54fee74c248e09dffe48e41e874768176826b35388f7bdbeaea9eb4ce2dcc1"
+              }
+            ]
+          },
+          "durationSeconds": 1.0,
+          "exitCode": 1,
+          "firstCallArguments": null,
+          "hostError": "{'type': 'provider.invalid-request', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.', 'status': 400, 'response': {",
+          "listedByHost": true,
+          "models": [],
+          "prompt": "git",
+          "timedOut": false,
+          "toolNames": [],
+          "toolSearchCalledBeforeAnalyzeWork": false,
+          "transcript": {
+            "bytes": 859,
+            "file": "host-probe-nested-schema.transcripts/opencode/per-kind-git.jsonl",
+            "sha256": "931d86e2faca9511dd6705812978f86f1a9df7cea5b2b5293a117b49c330bc1f"
+          }
+        },
+        {
+          "apiRequests": {
+            "analyzeWorkEntry": null,
+            "analyzeWorkSchemaEqualsServedInEveryRequest": null,
+            "count": 1,
+            "firstRequestHadAnalyzeWork": false,
+            "firstRequestIndexWithAnalyzeWork": null,
+            "firstRequestToolNames": [
+              "question",
+              "skill",
+              "execute"
+            ]
+          },
+          "calls": [],
+          "connection": {
+            "initialize": {
+              "clientInfo": {
+                "name": "opencode",
+                "version": "2.1.4"
+              },
+              "protocolVersionRequested": "2025-11-25"
+            },
+            "toolsList": [
+              {
+                "lineBytes": 5493,
+                "lineSha256": "e0291c26310f907928c9444102bbe8b9349be38ba696ac8873ef2e4bb362157c",
+                "matchesDefinition": true,
+                "toolCanonicalSha256": "fa54fee74c248e09dffe48e41e874768176826b35388f7bdbeaea9eb4ce2dcc1"
+              }
+            ]
+          },
+          "durationSeconds": 0.9,
+          "exitCode": 1,
+          "firstCallArguments": null,
+          "hostError": "{'type': 'provider.invalid-request', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.', 'status': 400, 'response': {",
+          "listedByHost": true,
+          "models": [],
+          "prompt": "units",
+          "timedOut": false,
+          "toolNames": [],
+          "toolSearchCalledBeforeAnalyzeWork": false,
+          "transcript": {
+            "bytes": 859,
+            "file": "host-probe-nested-schema.transcripts/opencode/per-kind-units.jsonl",
+            "sha256": "a4f282bbfc6a459ccc31347c2c9a9646177f5bd9d0b3447c0c43c12c8d9f1278"
+          }
+        }
+      ],
+      "status": "ran",
+      "verdict": {
+        "callsConformToDeclaredSchema": "0/0",
+        "callsMade": 0,
+        "hostErrors": [
+          "{'type': 'provider.invalid-request', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.', 'status': 400, 'response': {"
+        ],
+        "hostListedTool": true,
+        "loading": "not-observed",
+        "modelAnswered": false,
+        "modelCalledToolInPrompts": [],
+        "requestAlwaysObject": null,
+        "servedBytesEqualDefinition": true,
+        "toolsListSha256s": [
+          "fa54fee74c248e09dffe48e41e874768176826b35388f7bdbeaea9eb4ce2dcc1"
+        ]
+      },
+      "version": "opencode v2.1.4"
+    }
+  },
+  "scriptSha256": "c4540057982a4c7ab4d5a2b06fc9bea004cc99423f639eebdcc1d6c796286389",
+  "task": "SPEC-069 T005 host probe of the nested per-kind schema",
+  "teardown": {
+    "clean": true,
+    "leftoverProcesses": 0,
+    "profileRemoved": true
+  }
+}

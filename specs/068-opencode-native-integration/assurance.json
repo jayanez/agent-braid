@@ -65,7 +65,7 @@
       "docs/adr/0035-native-claude-laboratory-containment.md": "9db60ef1544e5218eb7fa7ba34315f48b33e464b761e07359fc5bfcd9bfaf0c5",
       "docs/adr/0036-assurance-profiles.md": "9a7abf22920a9ba91cb61c5c48b905a1415182bc9434bcf884680ec41666b464",
       "docs/adr/0037-opencode-native-plugin.md": "36c777d124b5905e8b8c25951cf59c2061fedddf1950fc24bfa2bae7197d3809",
-      "docs/adr/0038-analyze-work-request-contract.md": "782f47f184bb415c59210e83e39461c090f9b6be949b41f7e53ae08ff8b18869",
+      "docs/adr/0038-analyze-work-request-contract.md": "095a8f89eed4d40ced3cf3400b620b2a2126370057a3966543dd2cd684392fdd",
       "docs/adr/0039-braid-lightning-boundary.md": "183214ea605fbe5c06d818400890456f148e9d493f8059d060cc4d5a84f066a4",
       "docs/adr/0040-braid-lightning-mit-vendoring.md": "f91c61f138f37fcd50a10a9b6f1365e36ece7a16140af609a5d3b145156c19a0",
       "docs/adr/0041-braid-lightning-content-traces.md": "fcc51de61b554dce32abcae1e0ad6d7dc7a3c5a1159ff78fccacc8a02c2093c0",

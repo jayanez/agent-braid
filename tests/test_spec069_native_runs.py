@@ -290,3 +290,47 @@ class UnitTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class AblationArmTests(unittest.TestCase):
+    """D9: arm ``final-no-schema`` builds the committed HEAD with only the request schema reverted."""
+
+    def test_arm_is_selectable_and_recorded(self) -> None:
+        code, evidence, _ = run_driver("--arm", "final-no-schema", "--limit-cases", "1")
+        self.assertEqual(code, 0)
+        self.assertEqual(evidence["arm"], "final-no-schema")
+        self.assertIn("final-no-schema", driver.ARMS)
+
+    def test_build_reverts_only_the_request_schema_in_a_disposable_worktree(self) -> None:
+        calls: list[list[str]] = []
+
+        def fake_run(command, **kwargs):
+            calls.append([str(part) for part in command])
+            out = '{"sourceDirty": true}' if "build_native_plugin.py" in " ".join(map(str, command)) else ""
+            return mock.Mock(returncode=0, stdout=out, stderr="")
+
+        work = Path(scratch("t005-arm-"))
+        with mock.patch.object(driver.subprocess, "run", side_effect=fake_run):
+            _, record = driver.build_candidate("final-no-schema", work, work / "cache", allow_dirty=False)
+        joined = [" ".join(call) for call in calls]
+        self.assertTrue(any("worktree add --detach" in c and c.endswith(" HEAD") for c in joined), joined)
+        generate = [c for c in joined if "spec069_tool_schemas --delivery description-only" in c]
+        self.assertEqual(len(generate), 1, joined)
+        build = next(c for c in joined if "build_native_plugin.py" in c)
+        self.assertIn("--allow-dirty", build)
+        self.assertLess(joined.index(generate[0]), joined.index(build))
+        self.assertTrue(record["allowDirty"] and record["arm"] == "final-no-schema")
+        self.assertTrue(any("worktree remove" in c for c in joined), joined)
+
+    def test_final_arm_is_built_from_the_checkout_without_reverting_the_schema(self) -> None:
+        calls: list[str] = []
+
+        def fake_run(command, **kwargs):
+            calls.append(" ".join(map(str, command)))
+            return mock.Mock(returncode=0, stdout="{}", stderr="")
+
+        work = Path(scratch("t005-arm-"))
+        with mock.patch.object(driver.subprocess, "run", side_effect=fake_run):
+            _, record = driver.build_candidate("final", work, work / "cache", allow_dirty=False)
+        self.assertFalse(any("--delivery" in c or "worktree add" in c for c in calls), calls)
+        self.assertEqual(record["delivery"], "per-kind")
