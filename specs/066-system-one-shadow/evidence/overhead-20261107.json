@@ -1,0 +1,210 @@
+{
+ "budgetReferenceMs": 50.0,
+ "cells": [
+  {
+   "operations": 2,
+   "pairs": 1,
+   "pairsRecorded": 1,
+   "requestPath": {
+    "maxMs": 0.0335,
+    "meanMs": 0.014,
+    "medianMs": 0.0137,
+    "minMs": 0.007,
+    "p95Ms": 0.0177,
+    "samples": 200
+   },
+   "store": "cold",
+   "worker": {
+    "maxMs": 4.5113,
+    "meanMs": 3.0528,
+    "medianMs": 2.9479,
+    "minMs": 2.4937,
+    "p95Ms": 3.7751,
+    "samples": 200
+   },
+   "workerStatuses": {
+    "abstained/calibration-absent": 200
+   }
+  },
+  {
+   "operations": 2,
+   "pairs": 1,
+   "pairsRecorded": 1,
+   "requestPath": {
+    "maxMs": 0.0186,
+    "meanMs": 0.011,
+    "medianMs": 0.0107,
+    "minMs": 0.0062,
+    "p95Ms": 0.015,
+    "samples": 200
+   },
+   "store": "warm",
+   "worker": {
+    "maxMs": 2.459,
+    "meanMs": 2.0884,
+    "medianMs": 2.0717,
+    "minMs": 1.9122,
+    "p95Ms": 2.2503,
+    "samples": 200
+   },
+   "workerStatuses": {
+    "abstained/calibration-absent": 200
+   }
+  },
+  {
+   "operations": 12,
+   "pairs": 66,
+   "pairsRecorded": 64,
+   "requestPath": {
+    "maxMs": 0.4834,
+    "meanMs": 0.0182,
+    "medianMs": 0.015,
+    "minMs": 0.0077,
+    "p95Ms": 0.0219,
+    "samples": 200
+   },
+   "store": "cold",
+   "worker": {
+    "maxMs": 25.853,
+    "meanMs": 6.2338,
+    "medianMs": 5.9362,
+    "minMs": 5.4283,
+    "p95Ms": 7.0225,
+    "samples": 200
+   },
+   "workerStatuses": {
+    "abstained/calibration-absent": 200
+   }
+  },
+  {
+   "operations": 12,
+   "pairs": 66,
+   "pairsRecorded": 64,
+   "requestPath": {
+    "maxMs": 0.0573,
+    "meanMs": 0.0163,
+    "medianMs": 0.0156,
+    "minMs": 0.0092,
+    "p95Ms": 0.0225,
+    "samples": 200
+   },
+   "store": "warm",
+   "worker": {
+    "maxMs": 10.6515,
+    "meanMs": 5.2582,
+    "medianMs": 5.1458,
+    "minMs": 4.6256,
+    "p95Ms": 5.8157,
+    "samples": 200
+   },
+   "workerStatuses": {
+    "abstained/calibration-absent": 200
+   }
+  },
+  {
+   "operations": 32,
+   "pairs": 496,
+   "pairsRecorded": 64,
+   "requestPath": {
+    "maxMs": 0.0255,
+    "meanMs": 0.0153,
+    "medianMs": 0.015,
+    "minMs": 0.0111,
+    "p95Ms": 0.0188,
+    "samples": 200
+   },
+   "store": "cold",
+   "worker": {
+    "maxMs": 13.5543,
+    "meanMs": 6.5848,
+    "medianMs": 6.4925,
+    "minMs": 6.1364,
+    "p95Ms": 6.8481,
+    "samples": 200
+   },
+   "workerStatuses": {
+    "abstained/calibration-absent": 200
+   }
+  },
+  {
+   "operations": 32,
+   "pairs": 496,
+   "pairsRecorded": 64,
+   "requestPath": {
+    "maxMs": 0.0272,
+    "meanMs": 0.0158,
+    "medianMs": 0.0152,
+    "minMs": 0.0109,
+    "p95Ms": 0.022,
+    "samples": 200
+   },
+   "store": "warm",
+   "worker": {
+    "maxMs": 15.4456,
+    "meanMs": 5.8899,
+    "medianMs": 5.7222,
+    "minMs": 5.4425,
+    "p95Ms": 6.3847,
+    "samples": 200
+   },
+   "workerStatuses": {
+    "abstained/calibration-absent": 200
+   }
+  }
+ ],
+ "command": "python3 scripts/spec066_shadow_overhead.py --samples 200 --warmup 10",
+ "environment": {
+  "cpuCount": 12,
+  "implementation": "CPython",
+  "loadAverageAtStart": [
+   5.8,
+   5.39,
+   5.99
+  ],
+  "machine": "arm64",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.11"
+ },
+ "executionAuthorization": false,
+ "inputs": {
+  "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
+  "agent_braid/system_one_shadow.py": "52a836f550a9ae63e099186c8675a103cbf9906d359cc79b2b4eba3110ba4aa9",
+  "agent_braid/tooling_mcp.py": "24bfaec8d6042abd07728f8a93149f389e36296605f881806f827074accfd388",
+  "agent_braid/tooling_telemetry.py": "2643db58f41356a35c44b829c76f425a3fe82f2202912e14f85b24e458783c23",
+  "scripts/spec066_shadow_overhead.py": "31bec82b1bd69d466e2b0cac93ee42db4724ec5143bc525520b14e6bffb6d134"
+ },
+ "kind": "measurement receipt (descriptive, not a gate)",
+ "limits": [
+  "Descriptive receipt of one machine and one run; not a gate, a guarantee or a cross-machine figure.",
+  "Synthetic AIM batches; real reports may differ in pair mix and resource count.",
+  "The worker step is timed synchronously; in service it runs on one background thread, so it adds no request latency unless the process is CPU-bound.",
+  "A stalled or slow filesystem is not simulated; the store write is bounded by the platform only.",
+  "Cold samples include directory, salt (with fsync) and lock creation; warm samples do not.",
+  "The 50 ms budget is shown as a reference only."
+ ],
+ "method": {
+  "clock": "time.perf_counter_ns",
+  "p95": "statistics.quantiles(n=20, method=\"inclusive\")[18]",
+  "samplesPerCell": 200,
+  "sizes": [
+   2,
+   12,
+   32
+  ],
+  "store": "fresh temporary HOME; telemetry off; no real consent read or changed",
+  "stores": [
+   "cold",
+   "warm"
+  ],
+  "warmTruncateBytes": 2097152,
+  "warmupPerCell": 10
+ },
+ "refusalsDuringMeasurement": {},
+ "schema": "agent-braid-spec066-overhead/v0.1",
+ "source": {
+  "commit": "4c2f0cbec590996661dd88cac8cfbf21f21b45e2",
+  "dirty": false
+ },
+ "specification": "SPEC-066 T021 (REQ-002 / SC-003)",
+ "startedAt": "2026-11-07T14:42:54Z"
+}
