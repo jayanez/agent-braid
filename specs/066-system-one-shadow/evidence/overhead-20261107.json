@@ -6,20 +6,20 @@
    "pairs": 1,
    "pairsRecorded": 1,
    "requestPath": {
-    "maxMs": 0.0187,
-    "meanMs": 0.007,
-    "medianMs": 0.0062,
-    "minMs": 0.0053,
-    "p95Ms": 0.0111,
+    "maxMs": 0.0194,
+    "meanMs": 0.0128,
+    "medianMs": 0.0127,
+    "minMs": 0.0078,
+    "p95Ms": 0.0162,
     "samples": 200
    },
    "store": "cold",
    "worker": {
-    "maxMs": 3.466,
-    "meanMs": 2.6576,
-    "medianMs": 2.5662,
-    "minMs": 2.3649,
-    "p95Ms": 3.1949,
+    "maxMs": 4.0467,
+    "meanMs": 2.8738,
+    "medianMs": 2.8406,
+    "minMs": 2.6072,
+    "p95Ms": 3.2297,
     "samples": 200
    },
    "workerStatuses": {
@@ -31,20 +31,20 @@
    "pairs": 1,
    "pairsRecorded": 1,
    "requestPath": {
-    "maxMs": 0.0156,
-    "meanMs": 0.0076,
-    "medianMs": 0.0065,
-    "minMs": 0.005,
-    "p95Ms": 0.0123,
+    "maxMs": 0.0193,
+    "meanMs": 0.0122,
+    "medianMs": 0.0118,
+    "minMs": 0.0076,
+    "p95Ms": 0.0168,
     "samples": 200
    },
    "store": "warm",
    "worker": {
-    "maxMs": 2.825,
-    "meanMs": 1.975,
-    "medianMs": 1.9361,
-    "minMs": 1.7871,
-    "p95Ms": 2.1859,
+    "maxMs": 2.7781,
+    "meanMs": 2.097,
+    "medianMs": 2.0826,
+    "minMs": 1.9357,
+    "p95Ms": 2.2435,
     "samples": 200
    },
    "workerStatuses": {
@@ -56,20 +56,20 @@
    "pairs": 66,
    "pairsRecorded": 64,
    "requestPath": {
-    "maxMs": 0.0197,
-    "meanMs": 0.0075,
-    "medianMs": 0.0066,
-    "minMs": 0.0057,
-    "p95Ms": 0.0129,
+    "maxMs": 0.0496,
+    "meanMs": 0.0174,
+    "medianMs": 0.0166,
+    "minMs": 0.0119,
+    "p95Ms": 0.0223,
     "samples": 200
    },
    "store": "cold",
    "worker": {
-    "maxMs": 10.9998,
-    "meanMs": 5.4164,
-    "medianMs": 5.3119,
-    "minMs": 5.0211,
-    "p95Ms": 5.7497,
+    "maxMs": 10.6295,
+    "meanMs": 6.3137,
+    "medianMs": 6.0479,
+    "minMs": 5.6879,
+    "p95Ms": 7.7838,
     "samples": 200
    },
    "workerStatuses": {
@@ -81,20 +81,20 @@
    "pairs": 66,
    "pairsRecorded": 64,
    "requestPath": {
-    "maxMs": 0.0426,
-    "meanMs": 0.0078,
-    "medianMs": 0.0063,
-    "minMs": 0.0052,
-    "p95Ms": 0.0136,
+    "maxMs": 0.043,
+    "meanMs": 0.0169,
+    "medianMs": 0.0164,
+    "minMs": 0.0125,
+    "p95Ms": 0.0212,
     "samples": 200
    },
    "store": "warm",
    "worker": {
-    "maxMs": 6.6564,
-    "meanMs": 4.7068,
-    "medianMs": 4.6623,
-    "minMs": 4.3969,
-    "p95Ms": 5.0718,
+    "maxMs": 5.7406,
+    "meanMs": 5.1876,
+    "medianMs": 5.173,
+    "minMs": 4.9674,
+    "p95Ms": 5.3781,
     "samples": 200
    },
    "workerStatuses": {
@@ -106,20 +106,20 @@
    "pairs": 496,
    "pairsRecorded": 64,
    "requestPath": {
-    "maxMs": 0.0161,
-    "meanMs": 0.0069,
-    "medianMs": 0.0064,
-    "minMs": 0.0057,
-    "p95Ms": 0.0099,
+    "maxMs": 0.0243,
+    "meanMs": 0.0161,
+    "medianMs": 0.0159,
+    "minMs": 0.0123,
+    "p95Ms": 0.0189,
     "samples": 200
    },
    "store": "cold",
    "worker": {
-    "maxMs": 6.947,
-    "meanMs": 5.8582,
-    "medianMs": 5.8388,
-    "minMs": 5.5883,
-    "p95Ms": 6.213,
+    "maxMs": 8.8998,
+    "meanMs": 6.5974,
+    "medianMs": 6.5593,
+    "minMs": 6.2624,
+    "p95Ms": 6.9283,
     "samples": 200
    },
    "workerStatuses": {
@@ -131,20 +131,20 @@
    "pairs": 496,
    "pairsRecorded": 64,
    "requestPath": {
-    "maxMs": 0.022,
-    "meanMs": 0.0084,
-    "medianMs": 0.0063,
-    "minMs": 0.0054,
-    "p95Ms": 0.0169,
+    "maxMs": 0.0222,
+    "meanMs": 0.0163,
+    "medianMs": 0.0161,
+    "minMs": 0.012,
+    "p95Ms": 0.0198,
     "samples": 200
    },
    "store": "warm",
    "worker": {
-    "maxMs": 10.5885,
-    "meanMs": 5.4043,
-    "medianMs": 5.2511,
-    "minMs": 4.9884,
-    "p95Ms": 6.0402,
+    "maxMs": 9.6693,
+    "meanMs": 5.8035,
+    "medianMs": 5.7688,
+    "minMs": 5.5043,
+    "p95Ms": 5.992,
     "samples": 200
    },
    "workerStatuses": {
@@ -157,9 +157,9 @@
   "cpuCount": 12,
   "implementation": "CPython",
   "loadAverageAtStart": [
-   4.76,
-   4.49,
-   4.9
+   6.02,
+   6.92,
+   7.31
   ],
   "machine": "arm64",
   "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
@@ -169,7 +169,7 @@
  "inputs": {
   "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
   "agent_braid/system_one_shadow.py": "52a836f550a9ae63e099186c8675a103cbf9906d359cc79b2b4eba3110ba4aa9",
-  "agent_braid/tooling_mcp.py": "f6713ad253ffabf537e19464952e16a4e2a412294539ebd45bde46fc913b0e0e",
+  "agent_braid/tooling_mcp.py": "ff7032dd7ffb7bdf81af708eb03bc14cfdaff8c5b6b38ed68e1dae8ac4eb8969",
   "agent_braid/tooling_telemetry.py": "2643db58f41356a35c44b829c76f425a3fe82f2202912e14f85b24e458783c23",
   "scripts/spec066_shadow_overhead.py": "31bec82b1bd69d466e2b0cac93ee42db4724ec5143bc525520b14e6bffb6d134"
  },
@@ -202,9 +202,9 @@
  "refusalsDuringMeasurement": {},
  "schema": "agent-braid-spec066-overhead/v0.1",
  "source": {
-  "commit": "0693fb5ae8acfd00dafd0880399fcf3353b46f9e",
+  "commit": "aaf8a04666a77d7b01b6370b54ff8cdfc2e2ba3a",
   "dirty": false
  },
  "specification": "SPEC-066 T021 (REQ-002 / SC-003)",
- "startedAt": "2026-11-07T16:29:45Z"
+ "startedAt": "2026-11-07T23:48:55Z"
 }

@@ -164,7 +164,7 @@
               "limits": "T021 measurement receipt only, not a gate: one owner machine (macOS 27.2 arm64, Python 3.13.11) under concurrent load, synthetic AIM batches, temporary HOME, worker step timed synchronously, stalled filesystem not simulated. The SC-003 refusal checks (procedure_003) are recorded separately.",
               "outcome": "measured: worker step median 1.9-5.8 ms and p95 2.2-6.2 ms (maximum 11.0 ms) for 2, 12 and 32 operations with a cold and a warm store; request-path hand-off median at most 0.007 ms; 1,200 episodes abstained, none budget-exceeded, no refusal. 50 ms budget shown as reference only.",
               "path": "specs/066-system-one-shadow/evidence/overhead-20261107.json",
-              "sha256": "5b91803a5d5bb78c2a4266a3e825592a13a1d07a719592e16f87b5e7482ed548"
+              "sha256": "15a7bbc4845c36075f3ada9a86126124b43f66daf5fb4d0048700006c6b0f0fc"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_003 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
