@@ -1,0 +1,26 @@
+{
+ "expect": {
+  "schema": "accepts",
+  "service": "accepts"
+ },
+ "form": "request",
+ "id": "units-0013",
+ "label": "coverage claim unknown (recorded as partial)",
+ "layer": "valid",
+ "pointer": "",
+ "request": {
+  "units": [
+   {
+    "coverage": "unknown",
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "README.md"
+     }
+    ],
+    "id": "u"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

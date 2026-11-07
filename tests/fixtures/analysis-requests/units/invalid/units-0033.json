@@ -1,0 +1,15 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0033",
+ "keyword": "required",
+ "label": "missing required property units at /",
+ "layer": "structural",
+ "pointer": "",
+ "request": {
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

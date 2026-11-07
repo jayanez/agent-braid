@@ -1,0 +1,35 @@
+{
+ "difference": "RC-batch",
+ "expect": {
+  "schema": "accepts",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0119",
+ "label": "duplicate unit id",
+ "layer": "batch",
+ "pointer": "/units/1/id",
+ "request": {
+  "units": [
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "a"
+     }
+    ],
+    "id": "u"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "b"
+     }
+    ],
+    "id": "u"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

@@ -1,0 +1,40 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0059",
+ "keyword": "uniqueItems",
+ "label": "duplicate item at /units/0/dependencies",
+ "layer": "structural",
+ "pointer": "/units/0/dependencies",
+ "request": {
+  "units": [
+   {
+    "coverage": "partial",
+    "dependencies": [
+     "write-guide",
+     "write-guide"
+    ],
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "README.md"
+     }
+    ],
+    "id": "edit-readme"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "docs/guide.md"
+     }
+    ],
+    "id": "write-guide"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

@@ -1,0 +1,40 @@
+{
+ "expect": {
+  "schema": "accepts",
+  "service": "accepts"
+ },
+ "form": "request",
+ "id": "units-0092",
+ "keyword": "minLength",
+ "label": "blank string (U+FEFF only) at /units/0/effects/0/resource",
+ "layer": "structural",
+ "limit": "blank-whitespace-differs-in-ecmascript",
+ "pointer": "/units/0/effects/0/resource",
+ "request": {
+  "units": [
+   {
+    "coverage": "partial",
+    "dependencies": [
+     "write-guide"
+    ],
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "\ufeff"
+     }
+    ],
+    "id": "edit-readme"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "docs/guide.md"
+     }
+    ],
+    "id": "write-guide"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

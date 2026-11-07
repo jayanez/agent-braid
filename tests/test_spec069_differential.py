@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""SPEC-069 T003/T004 (procedures 003 and 004): schema/validator differential test."""
+"""SPEC-069 T003/T004/T006 (procedures 003, 004 and 006): schema/validator differential test."""
 
 from __future__ import annotations
 
@@ -10,7 +10,8 @@ from unittest.mock import patch
 
 from agent_braid import analysis
 from scripts import spec069_generate_corpus as generator
-from tests.spec069_differential import ROOT, Harness, aim_validator, git_validator, load_corpus
+from tests.spec069_differential import (ROOT, UNITS_SCHEMA, Harness, aim_validator, git_validator, load_corpus,
+                                        units_validator)
 from scripts import spec069_divergence_inventory as inv
 
 DOCUMENTED = {
@@ -133,6 +134,70 @@ class DifferentialTests(unittest.TestCase):
 
         with patch.object(analysis, "_validate_record", stricter):
             self.assertTrue(self.harness.mismatches("aim", self.aim))
+
+
+class UnitsDifferentialTests(unittest.TestCase):
+    """The units request schema against the complete analyze-work service path (T006)."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.harness = Harness()  # its own service: the owned-evidence inventory is capped at 128 artifacts
+        cls.units = load_corpus("units")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.harness.close()
+
+    def test_units_corpus_is_current(self):
+        files = generator.units_files()
+        on_disk = {p.relative_to(generator.UNITS_OUTPUT).as_posix(): p.read_text()
+                   for p in generator.UNITS_OUTPUT.rglob("*") if p.is_file()}
+        self.assertEqual(on_disk, files)
+
+    def test_every_units_case_matches_its_expected_verdicts(self):
+        self.assertGreater(len(self.units), 100)
+        self.assertEqual(self.harness.mismatches("units", self.units), [])
+
+    def test_units_cases_are_filed_by_service_verdict(self):
+        for folder in ("valid", "invalid"):
+            for path in (generator.UNITS_OUTPUT / folder).glob("*.json"):
+                case = json.loads(path.read_text())
+                self.assertEqual(case["expect"]["service"] == "accepts", folder == "valid", path.name)
+
+    def test_units_differences_are_documented(self):
+        for case in self.units:
+            if case["expect"]["schema"] != case["expect"]["service"]:
+                self.assertIn(case.get("difference"), {"RC-batch", "RC-adapter"}, case["id"])
+            else:
+                self.assertNotIn("difference", case, case["id"])
+
+    def test_units_corpus_covers_every_keyword_of_the_schema(self):
+        log = []
+        inv.mutations(json.loads(UNITS_SCHEMA.read_text()), generator.units_base(), keyword_log=log)
+        pointers = {c["pointer"] for c in self.units if c.get("keyword")}
+        for pointer, _ in log:
+            self.assertIn(pointer, pointers, f"no units case for {pointer or '/'}")
+        # maxItems and maxLength are not walked by the inventory; the corpus adds them explicitly
+        keywords = {c.get("keyword") for c in self.units}
+        self.assertLessEqual({"maxItems", "maxLength", "pattern", "enum", "const", "uniqueItems", "minItems",
+                              "additionalProperties", "required", "type", "minLength"}, keywords)
+
+    def test_units_negative_control_relaxing_a_schema_keyword_is_detected(self):
+        schema = json.loads(UNITS_SCHEMA.read_text())
+        resource = schema["properties"]["units"]["items"]["properties"]["effects"]["items"]["properties"]["resource"]
+        del resource["pattern"]
+        relaxed = Harness(units=units_validator(schema))
+        try:
+            self.assertTrue(relaxed.mismatches("units", self.units), "relaxed resource pattern went unnoticed")
+        finally:
+            relaxed.close()
+
+    def test_units_negative_control_relaxing_a_validator_check_is_detected(self):
+        from agent_braid import units
+        with patch.object(units, "EFFECT_KINDS", units.EFFECT_KINDS + ("unknown",)):
+            self.assertTrue(self.harness.mismatches("units", self.units), "relaxed effect kind check went unnoticed")
+        with patch.object(units, "normalize_resource", lambda value, pointer: value):
+            self.assertTrue(self.harness.mismatches("units", self.units), "removed lexical checks went unnoticed")
 
 
 if __name__ == "__main__":

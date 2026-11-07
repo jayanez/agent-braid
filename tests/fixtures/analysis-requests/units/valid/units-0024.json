@@ -1,0 +1,29 @@
+{
+ "expect": {
+  "schema": "accepts",
+  "service": "accepts"
+ },
+ "form": "request",
+ "id": "units-0024",
+ "label": "unit without dependencies or coverage",
+ "layer": "valid",
+ "pointer": "",
+ "request": {
+  "units": [
+   {
+    "effects": [
+     {
+      "kind": "read",
+      "resource": "a"
+     },
+     {
+      "kind": "write",
+      "resource": "b"
+     }
+    ],
+    "id": "u"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

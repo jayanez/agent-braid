@@ -1,0 +1,25 @@
+{
+ "expect": {
+  "schema": "accepts",
+  "service": "accepts"
+ },
+ "form": "request",
+ "id": "units-0021",
+ "label": "resource dots inside a name",
+ "layer": "valid",
+ "pointer": "",
+ "request": {
+  "units": [
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "a..b/c..d"
+     }
+    ],
+    "id": "u"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

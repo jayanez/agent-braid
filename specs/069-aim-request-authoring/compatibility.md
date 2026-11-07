@@ -1,4 +1,4 @@
-# SPEC-069: Compatibility notes for phase P1 (REQ-009, D8)
+# SPEC-069: Compatibility notes for phases P1 and P3 (REQ-009, D8)
 
 Baseline: plugin `0.1.0-alpha.7`, runtime source commit `0eb75d84`
 (`agent-braid--v0.1.0-alpha.7`). Evidence:
@@ -21,6 +21,20 @@ Differences a caller can observe:
 | Missing repository or worktree path | Same refusal as a path outside the roots (was `unknown` for a missing path) | none |
 | Git `operations` that is not a list | Refused (was an internal error) | none |
 | `completenessBasis: declared-not-observed` on declared-only `independent-candidate` pairs | Additive optional property; `analysisId` changes because it digests the whole report | analysis report stays `0.1.0-alpha`; the schema gains an optional property (T015) |
+| New `kind` `units` (P3, T006) | Additive: a request kind alpha.7 refused (`Unsupported analysis kind`) is now accepted; no `aim` or `git` verdict or report changes | new contract `units` request `0.1.0-alpha` (`schemas/0.1.0-alpha/units-request.schema.json`); the other versions below are unchanged |
+
+## The `units` kind (phase P3)
+
+`units` is part of the P3 request contract
+([contract](contracts/analyze-work-request.md), section "Kind `units`"; REQ-006). It
+has its own versioned schema and runtime (`agent_braid/units.py`) and returns the
+constructed AIM request with the report, so a result can be replayed through `kind`
+`aim` on any plugin that has the `aim` kind, including alpha.7. Adding it changes
+nothing that alpha.7 accepted: the alpha.7 replay and the aim/git corpus are
+unchanged (`evidence/procedure_006.json`). Its schema states only what its runtime
+refuses, except the runtime-only checks listed in the contract (unique unit ids, known
+and acyclic dependencies, case-only duplicate resources, the 256-byte identifier
+bound).
 
 ## Schema notes (tightening without a new version, D8)
 
@@ -80,10 +94,14 @@ adapter bounds, the 1 MiB input and depth 32 bounds, repository and worktree roo
 `agent-braid-plugin/v0.2`, `agent-braid-tooling/v0.1`, AIM `0.2.0-draft`, analysis
 input `0.1.0-alpha`, git request `0.1.0-alpha` and analysis report `0.1.0-alpha`
 are unchanged. `tests/test_spec069_compatibility.py` fails if any changes without
-this note.
+this note. New in P3: the `units` request `0.1.0-alpha`.
 
 ## Rollback
 
-Reinstall the previous plugin tag (`agent-braid--v0.1.0-alpha.7`). Phase P1 adds no
-request kind, so no saved request becomes unusable; the `units` kind (P3, if it
-runs) is not part of P1.
+Reinstall the previous plugin tag (`agent-braid--v0.1.0-alpha.7`). The previous plugin
+refuses a saved `units` request (`unitsRequestVersion` `0.1.0-alpha`) with a fixed
+message naming the kind it does not support: `analyze-work refused: Unsupported
+analysis kind` (observed on the alpha.7 runtime, source `0eb75d84`, 2026-11-07). A
+saved `constructedRequest` from a `units` result is an ordinary `aim` envelope and
+still replays through `kind` `aim` there. Saved `aim` and `git` requests are
+unaffected.

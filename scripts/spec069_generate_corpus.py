@@ -1,11 +1,17 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""SPEC-069 T004: deterministic generator of the analyze-work request corpus.
+"""SPEC-069 T004 / T006: deterministic generator of the analyze-work request corpus.
 
-Writes ``tests/fixtures/analysis-requests/{aim,git}.json``. Each case records its
-request, the schema and service verdicts it is *expected* to produce (derived from
-how the case was constructed, never from running the validators), the JSON
-Pointer of the failing location, the layer and, where the two layers differ on
-purpose, the documented difference.
+Writes ``tests/fixtures/analysis-requests/{aim,git}.json`` and, for the ``units``
+kind, one file per case under ``units/valid/`` and ``units/invalid/`` (by the
+expected service verdict). Each case records its request, the schema and service
+verdicts it is *expected* to produce (derived from how the case was constructed,
+never from running the validators), the JSON Pointer of the failing location, the
+layer and, where the two layers differ on purpose, the documented difference.
+
+``units/golden/`` holds byte goldens of the AIM request that ``agent_braid.units``
+constructs for a few named requests at a fixed workspace scope. They are snapshots
+of the construction, reviewed as diffs; the tests recompute their digests from the
+contract's construction table independently.
 
     python -m scripts.spec069_generate_corpus            # write
     python -m scripts.spec069_generate_corpus --check    # fail when committed files differ
@@ -25,6 +31,11 @@ ROOT = inv.ROOT
 OUTPUT = ROOT / "tests/fixtures/analysis-requests"
 AIM_SCHEMA = json.loads(inv.AIM_SCHEMA.read_text())
 GIT_SCHEMA = json.loads(inv.GIT_SCHEMA.read_text())
+UNITS_SCHEMA_PATH = ROOT / "schemas/0.1.0-alpha/units-request.schema.json"
+UNITS_SCHEMA = json.loads(UNITS_SCHEMA_PATH.read_text())
+UNITS_OUTPUT = OUTPUT / "units"
+# Fixed workspace scope of the goldens: the scope of a source root at /workspace.
+GOLDEN_SCOPE = "c52ddf65534b7b46035084358ab7902b"
 
 # Limits declared in the contract: characters on which Python and ECMAScript
 # disagree, and a Python-jsonschema quirk. Cases keep them visible but tagged.
@@ -197,6 +208,161 @@ def git_cases() -> list[dict]:
     return cases
 
 
+# --- units (SPEC-069 T006 / REQ-006) ---------------------------------------------------------
+def units_base() -> dict:
+    """Two valid units; unit 0 carries every optional property so each one is mutated."""
+    return {
+        "unitsRequestVersion": "0.1.0-alpha",
+        "units": [
+            {"id": "edit-readme", "dependencies": ["write-guide"],
+             "effects": [{"kind": "write", "resource": "README.md"}], "coverage": "partial"},
+            {"id": "write-guide", "effects": [{"kind": "write", "resource": "docs/guide.md"}]},
+        ],
+    }
+
+
+def units_request(*units: dict) -> dict:
+    return {"unitsRequestVersion": "0.1.0-alpha", "units": list(units)}
+
+
+def unit(identifier: str, *effects: tuple[str, str], dependencies=None, coverage=None) -> dict:
+    value = {"id": identifier, "effects": [{"kind": kind, "resource": resource} for kind, resource in effects]}
+    if dependencies is not None:
+        value["dependencies"] = dependencies
+    if coverage is not None:
+        value["coverage"] = coverage
+    return value
+
+
+def units_expectation(ptr: str, label: str) -> tuple[str, str, dict]:
+    """Expected (schema, service, extra) of a mutation of the units base request."""
+    es_char = next((tag for tag in ES_DIFFERS if tag in label), None)
+    if not label.startswith("blank string") or es_char is None:
+        return "refuses", "refuses", {}
+    if ptr.endswith("/resource") and es_char in ("U+001C", "U+001D", "U+001E", "U+001F"):
+        return "refuses", "refuses", {}  # control characters: refused by every validator
+    extra = {"limit": "blank-whitespace-differs-in-ecmascript"}
+    if es_char != "U+FEFF":
+        return "refuses", "refuses", extra
+    if ptr.endswith("/dependencies/0"):
+        return "accepts", "refuses", dict(extra, difference="RC-batch")  # a valid string naming no unit
+    return "accepts", "accepts", extra
+
+
+def units_cases() -> list[dict]:
+    cases: list[dict] = []
+    base = units_base()
+
+    def add(label, request, schema, service, pointer, layer, **extra):
+        case(cases, "units", "request", label, request, schema, service, pointer, layer, **extra)
+
+    # valid cases
+    add("two units, one depends on the other", base, "accepts", "accepts", "", "valid")
+    add("single unit", units_request(unit("only", ("write", "README.md"))), "accepts", "accepts", "", "valid")
+    add("two units write README.md (T010 F1 shape)",
+        units_request(unit("edit-readme", ("write", "README.md")), unit("edit-readme-intro", ("write", "README.md"))),
+        "accepts", "accepts", "", "valid")
+    for kind in ("read", "write", "call", "transform", "emit", "delete", "deploy"):
+        add(f"effect kind {kind}", units_request(unit("u", (kind, "repo-file.txt"))), "accepts", "accepts", "", "valid")
+    for claim in ("complete", "partial", "unknown"):
+        add(f"coverage claim {claim} (recorded as partial)",
+            units_request(unit("u", ("write", "README.md"), coverage=claim)), "accepts", "accepts", "", "valid")
+    for label, resource in (("dot-slash prefix", "./README.md"), ("trailing slash", "docs/"),
+                            ("empty segment", "docs//guide.md"), ("dot segment", "docs/./guide.md"),
+                            ("three dots is a name", "..."), ("hidden file", ".github/CODEOWNERS"),
+                            ("colon after the first segment", "docs/a:b.md"), ("dots inside a name", "a..b/c..d"),
+                            ("non-ASCII composed", "docs/caf\u00e9.md"), ("non-ASCII decomposed", "docs/cafe\u0301.md")):
+        add(f"resource {label}", units_request(unit("u", ("write", resource))), "accepts", "accepts", "", "valid")
+    add("unit without dependencies or coverage", units_request(unit("u", ("read", "a"), ("write", "b"))),
+        "accepts", "accepts", "", "valid")
+    add("same resource read and written in one unit", units_request(unit("u", ("read", "a"), ("write", "./a"))),
+        "accepts", "accepts", "", "valid")
+    add("unit id of exactly 256 bytes", units_request(unit("i" * 256, ("write", "a"))), "accepts", "accepts", "", "valid")
+    add("exactly 32 units", units_request(*[unit(f"u{i}", ("write", f"f{i}")) for i in range(32)]),
+        "accepts", "accepts", "", "valid")
+
+    # structural mutations of the base request (schema keywords walked by the inventory)
+    for path, keyword, label, fn in inv.mutations(UNITS_SCHEMA, base):
+        mutant = inv.roundtrip(fn(copy.deepcopy(base)))
+        ptr = inv.pointer(path)
+        schema, service, extra = units_expectation(ptr, label)
+        layer = LAYER_OF.get(extra.get("difference"), "structural")
+        case(cases, "units", "request", f"{label} at {ptr or '/'}", mutant, schema, service, ptr, layer,
+             keyword=keyword, **extra)
+
+    # lexical refusals stated by the resource pattern (schema and runtime agree)
+    where = "/units/0/effects/0/resource"
+    for label, resource in (("a .. segment", "../README.md"), ("an inner .. segment", "docs/../README.md"),
+                            ("a trailing .. segment", "docs/.."), ("an absolute path", "/etc/hosts"),
+                            ("a scheme", "repo://w/README.md"), ("a URL", "https://example.org/x"),
+                            ("a drive letter", "C:/Users/x"), ("a backslash", "docs\\guide.md"),
+                            ("a Windows path", "C:\\Users\\x"), ("a tab", "docs/a\tb"),
+                            ("a newline", "README.md\n"), ("DEL", "a\u007fb"), ("a lone dot", "."),
+                            ("a dot slash", "./"), ("only slashes and dots", ".//./"),
+                            ("a scheme-like first segment", "notes:2026.md")):
+        add(f"resource with {label}", units_request(unit("u", ("write", resource))), "refuses", "refuses",
+            where, "structural", keyword="pattern")
+    add("effect kind unknown (not an Article 5 family)", units_request(unit("u", ("unknown", "a"))),
+        "refuses", "refuses", "/units/0/effects/0/kind", "structural", keyword="enum")
+    add("effect kind outside the vocabulary", units_request(unit("u", ("modify", "a"))),
+        "refuses", "refuses", "/units/0/effects/0/kind", "structural", keyword="enum")
+    add("request is an array", [unit("u", ("write", "a"))], "refuses", "refuses", "", "structural", keyword="type")
+
+    # bounds: maxItems and maxLength in the schema, the adapter bounds at runtime (A7)
+    add("33 units", units_request(*[unit(f"u{i}", ("write", f"f{i}")) for i in range(33)]),
+        "refuses", "refuses", "/units", "structural", keyword="maxItems")
+    add("unit id of 257 bytes", units_request(unit("i" * 257, ("write", "a"))), "refuses", "refuses",
+        "/units/0/id", "structural", keyword="maxLength")
+    add("unit id of 129 two-byte characters (258 bytes)", units_request(unit("\u00e9" * 129, ("write", "a"))),
+        "accepts", "refuses", "/units/0/id", "adapter", difference="RC-adapter")
+
+    # batch-level refusals: valid units, invalid declaration; the schema cannot express them
+    def batch(label, request, pointer):
+        add(label, request, "accepts", "refuses", pointer, "batch", difference="RC-batch")
+    batch("duplicate unit id", units_request(unit("u", ("write", "a")), unit("u", ("write", "b"))), "/units/1/id")
+    batch("unknown dependency", units_request(unit("u", ("write", "a"), dependencies=["ghost"])), "/units/0/dependencies/0")
+    batch("self dependency", units_request(unit("u", ("write", "a"), dependencies=["u"])), "/units/0/dependencies/0")
+    batch("cyclic dependencies", units_request(unit("x", ("write", "a"), dependencies=["y"]),
+                                               unit("y", ("write", "b"), dependencies=["x"])), "/units")
+    batch("resources differ only by letter case", units_request(unit("u", ("write", "README.md")),
+                                                                unit("v", ("write", "readme.md"))),
+          "/units/1/effects/0/resource")
+    batch("case-only difference inside one unit", units_request(unit("u", ("read", "Docs/a"), ("write", "docs/a"))),
+          "/units/0/effects/1/resource")
+    return cases
+
+
+GOLDEN_REQUESTS = {
+    "t010-readme-conflict": units_request(unit("edit-readme", ("write", "README.md")),
+                                          unit("edit-readme-intro", ("write", "README.md"))),
+    "dot-slash-alias": units_request(unit("edit-readme", ("write", "README.md")),
+                                     unit("edit-readme-intro", ("write", "./README.md"))),
+    "disjoint-claimed-complete": units_request(unit("edit-readme", ("write", "README.md"), coverage="complete"),
+                                               unit("edit-guide", ("write", "docs/guide.md"), coverage="complete")),
+    "ordered": units_request(unit("write-guide", ("write", "docs/guide.md")),
+                             unit("link-guide", ("read", "docs/guide.md"), ("write", "README.md"),
+                                  dependencies=["write-guide"])),
+}
+
+
+def golden_bytes(value) -> str:
+    return json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+
+
+def units_files() -> dict[str, str]:
+    """Relative path under ``units/`` -> exact file text."""
+    from agent_braid import units as construction
+    files = {}
+    for entry in units_cases():
+        folder = "valid" if entry["expect"]["service"] == "accepts" else "invalid"
+        files[f"{folder}/{entry['id']}.json"] = json.dumps(entry, indent=1, sort_keys=True, ensure_ascii=True) + "\n"
+    for name, request in GOLDEN_REQUESTS.items():
+        files[f"golden/{name}.request.json"] = golden_bytes(request)
+        constructed = construction.construct(request, GOLDEN_SCOPE)["constructedRequest"]
+        files[f"golden/{name}.constructed.json"] = golden_bytes(constructed)
+    return files
+
+
 def render(cases: list[dict], kind: str) -> str:
     """One case per line, keys sorted: compact and reviewable as a diff."""
     head = {"corpusVersion": "1", "specification": "SPEC-069 T004 / REQ-004", "kind": kind,
@@ -223,6 +389,25 @@ def main() -> int:
         OUTPUT.mkdir(parents=True, exist_ok=True)
         path.write_text(text)
         print(f"{path.name}: {len(cases)} cases")
+    files = units_files()
+    present = {p.relative_to(UNITS_OUTPUT).as_posix() for p in UNITS_OUTPUT.rglob("*") if p.is_file()} \
+        if UNITS_OUTPUT.exists() else set()
+    if args.check:
+        stale = sorted(name for name, text in files.items()
+                       if not (UNITS_OUTPUT / name).exists() or (UNITS_OUTPUT / name).read_text() != text)
+        stale += sorted(present - set(files))
+        if stale:
+            print(f"units/ is stale ({len(stale)} files); rerun without --check", file=sys.stderr)
+            status = 1
+        else:
+            print(f"units/ is current ({len(files)} files)")
+        return status
+    for name in present - set(files):
+        (UNITS_OUTPUT / name).unlink()
+    for name, text in files.items():
+        (UNITS_OUTPUT / name).parent.mkdir(parents=True, exist_ok=True)
+        (UNITS_OUTPUT / name).write_text(text)
+    print(f"units/: {len(files)} files")
     return status
 
 
