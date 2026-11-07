@@ -15,7 +15,7 @@ and T010's final run measures the release candidate without them.
 
 ## Phase P1 — contract alignment (D6)
 
-- [ ] T001 (REQ-001 / SC-001): [P1] Write ADR 0038 and
+- [x] T001 (REQ-001 / SC-001): [P1] Write ADR 0038 and
   `contracts/analyze-work-request.md`; owner review of spec, plan, ADR and
   contract; OD-1 to OD-4 decided as D10–D13. Dependencies: adversarial and counterfactual
   reviews recorded. Verification: procedure_001. Evidence: owner review record

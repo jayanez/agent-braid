@@ -1,8 +1,8 @@
 # ADR 0038: analyze-work request contract
 
-- **Status:** Proposed 2026-11-06, awaiting owner review. Writing this record
-  accepts nothing: acceptance, any publication, tag, plugin-dist push or release
-  are separate owner decisions.
+- **Status:** Accepted 2026-11-07 by the owner, Juan Antonio Yáñez García
+  ([review record](../../specs/069-aim-request-authoring/reviews/owner-t001-adr-contract-20261107.md)).
+  Adoption authorizes no publication, tag, plugin-dist push or release by itself.
 - **Date:** 2026-11-06
 - **Deciders:** Juan Antonio Yáñez García (owner); proposed by the SPEC-069 P1
   implementation.
