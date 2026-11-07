@@ -5,14 +5,14 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "scripts/spec069_native_runs.py": "de1250ba3e40d82cdc3568a1f0134d8bcb0a71b5803925d620b48b38ee2af777",
+  "scripts/spec069_native_runs.py": "5cda6976aaf1dc52fe0394e71e3f0a43a3a9ef60c7d3a22dfd74a7ba875d90d6",
   "specs/069-aim-request-authoring/evidence/native-runs-baseline-anthropic.json": "1663332c6c04577fa51ffbbd9ed5d9d0fbc5311a883f7239eb746ee2db9896fe",
-  "specs/069-aim-request-authoring/runbook.md": "6d6389beca2a290cca4445f581a9a084bec8a0f4c9f653db121066a573a87857",
+  "specs/069-aim-request-authoring/runbook.md": "248a5ca350c5d7361ef65be436d9283a385cc53564a3a8b3acaf26d95bcf8442",
   "tests/fixtures/spec069-fake-hosts/_fake.py": "a051b3eda610282b763f5cb5b221ca681f7aed66907ea4b174b78e24bc18ea49",
   "tests/fixtures/spec069-fake-hosts/claude": "de42483c09be9c10cb2e1c92b7e21242a257588b26ffcc91d5997bd11146e630",
   "tests/fixtures/spec069-fake-hosts/codex": "49c44741964527b6e204e939ab510b30bbcb94b48e3764a0b8aae6de0f33c1f2",
   "tests/fixtures/spec069-fake-hosts/opencode": "21092c62fe15ef7e6627f8f9351e6d362db820ec61550b0b0e99351b4a2590d7",
-  "tests/test_spec069_native_runs.py": "4ec685c42a6cc94bb7f89b6c1ffde3577bcbbea646e3fbe3c045994c152db1e6"
+  "tests/test_spec069_native_runs.py": "f7e707e615b31c2d730e91d9ccaa7eef6f8e0ad562e2ee48c461569b49fcb57d"
  },
  "limits": "Codex: install, registration, sandbox and launch verified with the real binary, but the authenticated model call ends in 'Quota exceeded' on the owner's account, so the MCP transcript shape and parser are unverified; Codex is a declared limit (owner decision 2026-11-07) and blocks REQ-012 for that host. The OS sandbox is macOS sandbox-exec only; the driver does not run on Windows or Linux real runs. The self-test proves the pipeline, not any host or model.",
  "outcome": "passed: The --fake-hosts self-test runs the whole pipeline (profiles, sandbox workspace, plugin install, headless runs, parsing, scoring, redaction, secret scan, evidence with hashes, teardown) with negative controls: a leaked real path stops the run, a planted fake secret is absent from the evidence, a denied tool is refused and one that runs stops the run, a leftover profile or process is detected. Real runs through the same driver completed unattended on Claude Code 2.1.292 and OpenCode 2.1.4 (60 runs, claude-sonnet-5-5, evidence/native-runs-baseline-anthropic.json, teardown clean, secret scan passed); the first real pass stopped on a built-in tool not in the deny list, which is now not offered at all.",
@@ -20,5 +20,5 @@
  "result": "OK",
  "scenario": "SC-013",
  "specification": "SPEC-069 P1",
- "testsRun": 26
+ "testsRun": 29
 }

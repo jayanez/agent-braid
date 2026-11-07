@@ -154,7 +154,9 @@ class NegativeControlTests(unittest.TestCase):
         self.assertFalse(evidence["teardown"]["clean"])
         self.assertGreaterEqual(evidence["teardown"]["leftoverProcesses"], 1)
         rows = subprocess.run(["ps", "-axo", "command="], capture_output=True, text=True).stdout
-        self.assertNotIn("sleep 300", rows)
+        # exact match: another process whose command merely starts with "sleep 300" (for example
+        # "sleep 3000") is not the fake host's straggler
+        self.assertNotIn("sleep 300", [line.strip() for line in rows.splitlines()])
 
     def test_leftover_profile_is_detected(self) -> None:
         profile = driver.Profile()
