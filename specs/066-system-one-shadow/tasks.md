@@ -171,12 +171,22 @@ specifications unless a SPEC-066 requirement amends them.
   Evidence (2026-11-01): `docs/tooling/SYSTEM_ONE_SHADOW.md` and cross-references in
   `PLUGIN_PRIVACY.md` and `INSTALL.md`. README and the plugin setup skill still carry
   interim text.
-- [ ] T021 (REQ-002 / SC-003): Overhead measurement: median and p95 of the shadow
+- [x] T021 (REQ-002 / SC-003): Overhead measurement: median and p95 of the shadow
   step for 2, 12 and 32 operations on the owner machine, with and without a warm
   store, reported as a measurement receipt (not a gate) with the 50 ms budget as
   reference. Dependencies: T014. Evidence:
   `evidence/overhead-<date>.json`.
   Status 2026-11-01: Pending.
+  Evidence (2026-11-07): `evidence/overhead-20261107.json`, produced by
+  `python3 scripts/spec066_shadow_overhead.py --samples 200 --warmup 10` at commit
+  `0693fb5a` (clean inputs, after merging `develop`) on the owner machine (macOS 27.2 arm64, Python 3.13.11,
+  load average about 4.8 from concurrent work) in a temporary HOME; telemetry off and
+  no real consent or store touched. Worker step (the work under the 50 ms budget)
+  median 1.9–5.8 ms and p95 2.2–6.2 ms across the six cells (maximum 11.0 ms);
+  request-path hand-off median at most 0.007 ms and p95 at most 0.017 ms; all
+  1,200 measured episodes `abstained`, none `budget-exceeded`, no refusal. Script tests:
+  `tests/test_spec066_shadow_overhead.py`. Descriptive receipt of one machine and
+  run, not a gate; a stalled filesystem is not simulated.
 
 - [x] T022 (REQ-003 / SC-002): Episode v0.2 enrichment: extend the builder, validator
   and store to `agent-braid-s1-episode/v0.2` ([contract](contracts/episode-v0.2.md)):
