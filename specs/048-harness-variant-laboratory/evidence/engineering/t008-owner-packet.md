@@ -32,6 +32,14 @@ Then the same without `--plan`. It re-hashes the pins, runs the dry run (must sa
 (at most 4 serial Haiku units). Per unit you type the usage card before and after (5-hour %, weekly %, extra
 usage, reset times, plan, route `subscription`). Any D2 stop ends the cohort and is evidence, not a failure to hide.
 
+## Trust basis of the code copy
+
+The wrapper does not wait for a new orchestrator verification record (the T009 `verify-*.json` files are bound to
+the T009 attempt). It requires the copy `repo-<short>` and its directories to be root-owned, not writable by
+others and not symlinks, and re-hashes `claude`, the interpreter and `sandbox-exec` against the pins of the T009
+setup summary. The directory name binds the commit only by convention: before you run it, check that the copy was
+installed from the commit named in the PR the orchestrator gives you (the T009 setup script records the commit).
+
 ## What you get back
 
 `from-lab/t008-dry-run.json`, `from-lab/t008-cohort-<attempt>.txt` (transcript) and `.json` (final report), each
