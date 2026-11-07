@@ -17,7 +17,12 @@ python -m scripts.spec069_native_runs --arm baseline --prompt-set development --
 ```
 
 - `--arm baseline` builds develop commit `8f63c606` (alpha.7 runtime plus the PR #1099 guidance) in a
-  temporary git worktree; `--arm final` builds this checkout. `--plugin-dir <plugins/agent-braid>` uses a
+  temporary git worktree; `--arm final` builds this checkout; `--arm final-no-schema` (D9 ablation) builds the
+  committed `HEAD` with only the request schema reverted to the interim description
+  (`spec069_tool_schemas --delivery description-only`; dirty by construction, recorded as `sourceDirty`, with
+  `delivery` and the SHA-256 of the generated schema module in the evidence `candidate`). Run `final` and
+  `final-no-schema` with the same prompt set, models and repetitions; the schema is kept only if first-attempt
+  validity improves in at least one host. `--plugin-dir <plugins/agent-braid>` uses a
   prebuilt plugin instead (the build needs `uv` and Python 3.12; the runtime tarball cache is
   `$TMPDIR/agent-braid-spec069-build-cache`).
 - `--prompt-set` is a set id under `prompts/` or a path. The held-out set is run by the driver only.
@@ -113,3 +118,15 @@ All three run headless. Observations that shaped the driver:
 - Teardown detects stragglers by the profile path in their command line, plus the process groups the
   driver started.
 - The driver does not run on Windows.
+
+## Host probe of the nested per-kind schema (T005 gate)
+
+```sh
+python -m scripts.spec069_host_probe --model claude-code=<id> --model opencode=anthropic/<id> --model codex=<id>
+```
+
+Needs `jsonschema` (the dev requirements), the same environment keys as the driver and no plugin build: a
+recording stdio test double serves the candidate's model-facing `analyze-work` definition. It writes
+`evidence/host-probe-nested-schema.json` (listing, byte identity by canonical SHA-256, call conformance,
+eager or deferred loading from a tool-name-and-hash-only forwarder to the Anthropic API). A host without a
+key, or whose model calls the API cannot pay for, is a declared limit or `modelAnswered: false`, never a pass.

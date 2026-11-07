@@ -491,6 +491,30 @@ profile (install, skills, `analyze-work`, reconnect, removal) with unobserved it
 left open; the publication of `0.1.0-alpha.7`; separate owner closure.
 Passing tests prove neither native behaviour nor owner approval.
 
+## M4.8 — AIM request authoring
+
+**Status:** Open
+([GitHub milestone 28](https://github.com/jayanez/agent-braid/milestone/28); origin
+issue #1080). [SPEC-069](specs/069-aim-request-authoring/spec.md) is a draft whose P1
+candidate was frozen after the owner's acceptance (#1147);
+[ADR 0038](docs/adr/0038-analyze-work-request-contract.md) was accepted on 2026-11-07.
+P1, contract alignment, is done (T001–T004, T007, T009, T015). P2, automation and
+baseline, is in progress: the prompt sets, scoring rules and native-run driver are
+merged (#1148, #1149) and T010 and T013 stay open. P3 runs by founder decision 2 of
+[2026-11-07](docs/development/FOUNDER_DECISIONS_20261107.md); T006, the `units` kind
+for `analyze-work`, is merged (#1154). Nothing is released.
+
+**Objective:** host models in Claude Code, Codex and OpenCode author a valid
+`analyze-work` request without prior knowledge of AIM, and every accepted or refused
+request follows one published contract that is tested to match the runtime
+validators.
+
+The closing phase is the final native run (T010), the documentation (T011) and the
+`0.1.0-alpha.8` release (T012). The owner's yes to that release (founder decision 12)
+applies only when the native runs meet D4 in Claude Code, Codex and OpenCode; a
+missed or unobserved host still blocks it. Model behaviour is measured, not
+guaranteed.
+
 ## Parallel mathematical laboratory
 
 The project may expose selected GAP/YangBaxter, SageMath, SnapPy, quimb, or proof-assistant capabilities when a concrete research hypothesis requires them. The laboratory remains modular and cannot block the practical analyzer.
@@ -557,9 +581,13 @@ found the code present on `develop` but without product callers, a learned model
 or observed use. The new track **S1.5** ([SPEC-066](specs/066-system-one-shadow/spec.md),
 [ADR 0034](docs/adr/0034-system-one-shadow-advisory-boundary.md); milestone #26,
 human review pending) resumes the deferred work in stages. S1.5a is merged and ships
-in plugin `0.1.0-alpha.5`, so Agent Braid now supports an opt-in System One decision
-layer in shadow mode; the owner's one-week shadow session runs 2026-11-02 to
-2026-11-09:
+in plugin `0.1.0-alpha.5` and later, so Agent Braid now supports an opt-in System One
+decision layer in shadow mode. The owner's one-week shadow session (T030) runs
+2026-11-02 to 2026-11-09. The S1.5a closure is open: the specification freeze (T005),
+the overhead receipt (T021), the redacted T030 receipt, the converge pass (T031; the
+[2026-11-07 founder decisions](docs/development/FOUNDER_DECISIONS_20261107.md) align
+REQ-003 with the code) and the owner's closure review (T032), which also decides
+whether S1.5b starts:
 
 - **S1.5a** opt-in shadow recording of one episode per successful `analyze-work`
   call, with outputs unchanged (the only stage specified to implementation level);

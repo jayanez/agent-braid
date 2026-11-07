@@ -7,7 +7,7 @@
  "inputs": {
   "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
   "agent_braid/git_adapter.py": "77c17bb694057e712a31886d8879f8ca922bd912f80a45fb703285f828ec94ed",
-  "agent_braid/tooling_mcp.py": "33c4c1499d04891d4b88e45d811eccbe2fc8487f073756a992348dc975313805",
+  "agent_braid/tooling_mcp.py": "ff7032dd7ffb7bdf81af708eb03bc14cfdaff8c5b6b38ed68e1dae8ac4eb8969",
   "agent_braid/units.py": "715f32da8869c11d2572103bfcfc37710f1b5bfebbd0c6097577a8bbf894a49e",
   "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
   "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
@@ -15,7 +15,7 @@
   "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
   "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
   "scripts/spec069_generate_corpus.py": "2e1201773f89c9d48b84a2e1421aa17b18c62792634279782ecf1fa760e5a6c1",
-  "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "b5f92716f7537790db3ab547ad0754f5a867beedcbe94188e7dabb3f2783a48b",
+  "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "4414d53c60c05d90e02f02ea810c5af197484180e2a7f575c3449a2dd5954dcc",
   "specs/069-aim-request-authoring/evidence/alpha7-replay.json": "1e4a00db64d39be8c32e44a965c8c63bea6e0f138a2f34f36885f3bcaa08231e",
   "tests/fixtures/analysis-requests/units/golden/disjoint-claimed-complete.constructed.json": "acf0776d7f302a220899cb0e2839e0f98be533db6f3a9e901315b31e8603b064",
   "tests/fixtures/analysis-requests/units/golden/disjoint-claimed-complete.request.json": "449f6dd9811aaafafe34a0493804a8cfa3fb466cb0b3a3968b2383acac60db8c",
