@@ -1,0 +1,39 @@
+{
+ "expect": {
+  "schema": "refuses",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0096",
+ "keyword": "enum",
+ "label": "value outside enum at /units/0/coverage",
+ "layer": "structural",
+ "pointer": "/units/0/coverage",
+ "request": {
+  "units": [
+   {
+    "coverage": "not-in-enum",
+    "dependencies": [
+     "write-guide"
+    ],
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "README.md"
+     }
+    ],
+    "id": "edit-readme"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "docs/guide.md"
+     }
+    ],
+    "id": "write-guide"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

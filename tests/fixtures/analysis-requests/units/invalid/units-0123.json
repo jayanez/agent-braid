@@ -1,0 +1,35 @@
+{
+ "difference": "RC-batch",
+ "expect": {
+  "schema": "accepts",
+  "service": "refuses"
+ },
+ "form": "request",
+ "id": "units-0123",
+ "label": "resources differ only by letter case",
+ "layer": "batch",
+ "pointer": "/units/1/effects/0/resource",
+ "request": {
+  "units": [
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "README.md"
+     }
+    ],
+    "id": "u"
+   },
+   {
+    "effects": [
+     {
+      "kind": "write",
+      "resource": "readme.md"
+     }
+    ],
+    "id": "v"
+   }
+  ],
+  "unitsRequestVersion": "0.1.0-alpha"
+ }
+}

@@ -3,6 +3,11 @@
 - **Status:** Accepted 2026-11-07 by the owner, Juan Antonio Yáñez García
   ([review record](../../specs/069-aim-request-authoring/reviews/owner-t001-adr-contract-20261107.md)).
   Adoption authorizes no publication, tag, plugin-dist push or release by itself.
+- **Status note (2026-11-07):** the condition of point 7 is met. The P2 baseline
+  (PR #1150) misses D4, and the founder decided on 2026-11-07 (decision 2 of that day,
+  PR #1151) that P3 runs; the `units` kind therefore enters the
+  [request contract](../../specs/069-aim-request-authoring/contracts/analyze-work-request.md)
+  (SPEC-069 T006). The decisions of this ADR are unchanged.
 - **Date:** 2026-11-06
 - **Deciders:** Juan Antonio Yáñez García (owner); proposed by the SPEC-069 P1
   implementation.

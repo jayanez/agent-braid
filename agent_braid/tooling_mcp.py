@@ -180,7 +180,7 @@ def _operation_count(request: Any) -> int:
     if isinstance(request, list):
         return len(request)
     if isinstance(request, dict):
-        for key in ("operations", "tasks"):
+        for key in ("operations", "tasks", "units"):
             value = request.get(key)
             if isinstance(value, list):
                 return len(value)
@@ -462,6 +462,15 @@ class ToolingService:
         if not isinstance(args, dict) or set(args) != {"kind", "request"}:
             raise ToolingError("analyze-work requires exactly kind and request", code="arguments-invalid")
         kind, request = args["kind"], args["request"]
+        if kind == "units":
+            # SPEC-069 REQ-006. units refuses first so its bound refusals name a pointer; the shared
+            # adapter bounds then cover the declaration and the constructed records (A7). The scope
+            # is derived from the configured source root, as the plugin derives workspaceId (A4).
+            from . import units
+            built = units.construct(request, units.workspace_scope(self.config.source_root))
+            _validate_operation_bounds(request)
+            _validate_operation_bounds(built["constructedRequest"])
+            return {"report": analysis.analyze(built["constructedRequest"]), **built}
         _validate_operation_bounds(request)
         if kind == "aim":
             return {"report": analysis.analyze(request),
