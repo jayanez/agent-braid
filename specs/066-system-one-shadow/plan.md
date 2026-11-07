@@ -7,8 +7,9 @@
   runtime dependency, no import of `torch` or any model library.
 - Tests: `unittest`, owned fixtures under `tests/fixtures/system_one_shadow/`.
 - Scope is S1.5a as defined in [spec.md](spec.md): shadow mode for DP-1 (unknown-pair
-  resolution) on the portable MCP `analyze-work` tool (the runtime `analyze` result carries
-  no interaction report, so it yields no episode in v0.1). S1.5b–e are
+  resolution) on report-bearing results of the portable MCP `analyze-work` and `analyze`
+  tools (the current runtime `analyze` result carries no interaction report, so today it
+  yields no episode; REQ-003 as aligned by founder decision 4 of 2026-11-07). S1.5b–e are
   outline plans below; each needs its own plan and task review before any
   implementation starts.
 - Inputs reused, not changed: the System 2 report (`agent_braid/analysis.py`),
@@ -111,8 +112,9 @@ Alternatives rejected:
    returned unchanged. The call sits after the telemetry context closes, so the
    SPEC-047 duration histogram does not include shadow time. The import is lazy,
    inside the branch, so `off` never loads the module. Only `ok` envelopes of
-   `analyze-work` with a System 2 report produce an episode; `analyze` (no report in its
-   runtime result) and every other tool are no-ops.
+   `analyze-work` or `analyze` that carry a System 2 report produce an episode (an
+   `analyze` episode records analysis kind `aim`); the current runtime `analyze` result
+   has no report, so it and every other tool are no-ops.
    Two result shapes need care. A large result is returned as an
    `evidence-artifact-reference` and the report is read from the retained artifact
    bytes. A result without a `report` member, such as the Git replay form of
