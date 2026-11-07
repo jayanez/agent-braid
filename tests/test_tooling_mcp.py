@@ -507,6 +507,30 @@ class SdkClientIntegrationTests(unittest.IsolatedAsyncioTestCase):
                 prompt = await client.get_prompt("evidence")
                 self.assertIn("SHA-256", prompt.messages[0].content.text)
 
+    async def test_plugin_list_tools_serves_the_nested_per_kind_schema_through_the_sdk(self):
+        # SPEC-069 T005 (A1): the real SDK serializes the plugin listing with workspaceId injected into
+        # every delegated tool and the per-kind schemas nested under `request`.
+        from types import SimpleNamespace
+        from mcp import Client
+        from agent_braid import analyze_work_schema, plugin_mcp
+        config = ToolingConfig(self.source, self.results, grant_store=self.base / "grants", runtime_enabled=True)
+        router = SimpleNamespace(services={"ws": plugin_mcp.WorkspaceService("ws", config)})
+        expected = json.loads(analyze_work_schema.SCHEMAS)
+        for mode in ("auto", "legacy"):
+            async with Client(plugin_mcp.create_server(router), mode=mode) as client:
+                tools = {tool.name: tool for tool in (await client.list_tools()).tools}
+                self.assertEqual(set(tools), {"plugin-status", "workspaces", "analyze-work", "analyze", "prepare",
+                                              "status", "execute", "recover", "verify"})
+                for name in set(tools) - {"plugin-status", "workspaces"}:
+                    schema = tools[name].input_schema
+                    self.assertEqual(schema["type"], "object", name)
+                    self.assertNotIn("oneOf", schema, name)
+                    self.assertEqual(schema["properties"]["workspaceId"], {"type": "string"}, name)
+                    self.assertIn("workspaceId", schema["required"], name)
+                work = tools["analyze-work"].input_schema
+                self.assertEqual(work["properties"]["request"], expected["request"])
+                self.assertEqual(work["$defs"], expected["$defs"])
+
 
 # SPEC-060 contract agent-braid-tooling/v0.2: the v0.1 prompt texts, reproduced byte for byte.
 PROMPT_TEXT_V01 = {
@@ -653,7 +677,9 @@ class SurfaceVersionTests(unittest.TestCase):
             def __init__(self, **kwargs):
                 self.__dict__.update(kwargs)
         types = pytypes.SimpleNamespace(Tool=Tool, ToolAnnotations=lambda **kw: kw)
-        by_name = {item.name: item for item in _tool_definitions(self.service, types)}
+        # SPEC-069 T005: the description-only arm (D9) keeps the interim definition; the per-kind
+        # arm keeps the same tool description and declares the schemas instead of the request prose.
+        by_name = {item.name: item for item in _tool_definitions(self.service, types, "description-only")}
         work = by_name["analyze-work"]
         request_help = work.inputSchema["properties"]["request"]["description"]
         for text in (work.description, request_help):
@@ -664,6 +690,9 @@ class SurfaceVersionTests(unittest.TestCase):
         self.assertEqual(work.inputSchema["properties"]["request"]["oneOf"],
                          [{"type": "object"}, {"type": "array"}])
         self.assertNotIn("agent-braid-analyze", by_name["analyze"].description)
+        per_kind = {item.name: item for item in _tool_definitions(self.service, types)}["analyze-work"]
+        self.assertEqual(per_kind.description, work.description)
+        self.assertEqual(len(per_kind.inputSchema["properties"]["request"]["oneOf"]), 4)
 
     def test_negative_control_v02_stamp_on_an_envelope_is_detected(self):
         from agent_braid.tooling_mcp import _json_bytes

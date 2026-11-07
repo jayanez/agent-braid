@@ -8,6 +8,8 @@ import json
 import unittest
 from unittest.mock import patch
 
+import jsonschema
+
 from agent_braid import analysis
 from scripts import spec069_generate_corpus as generator
 from tests.spec069_differential import ROOT, Harness, aim_validator, git_validator, load_corpus
@@ -133,6 +135,77 @@ class DifferentialTests(unittest.TestCase):
 
         with patch.object(analysis, "_validate_record", stricter):
             self.assertTrue(self.harness.mismatches("aim", self.aim))
+
+
+class DeclaredSchemaDifferentialTests(unittest.TestCase):
+    """SPEC-069 T005 (procedure_005): the analyze-work tool definition judges the corpus as the published schemas do."""
+
+    @classmethod
+    def setUpClass(cls):
+        from agent_braid import analyze_work_schema
+        cls.schemas = json.loads(analyze_work_schema.SCHEMAS)
+        cls.cases = {kind: load_corpus(kind) for kind in analyze_work_schema.KINDS}
+        cls.published = {"aim": aim_validator(), "git": git_validator()}
+
+    @staticmethod
+    def kind_validator(schemas, kind):
+        branches = [b for b in schemas["request"]["oneOf"] if b["description"].split()[0] == f"kind={kind}"]
+        return jsonschema.Draft202012Validator({"$defs": schemas["$defs"], "oneOf": branches})
+
+    @staticmethod
+    def call_validator(schemas):
+        from agent_braid import tooling_mcp as core
+        schema = core._analyze_work_input_schema("per-kind")
+        schema["properties"]["request"], schema["$defs"] = schemas["request"], schemas["$defs"]
+        schema["properties"]["workspaceId"] = {"type": "string"}  # as plugin list_tools injects it
+        schema["required"].append("workspaceId")
+        return jsonschema.Draft202012Validator(schema)
+
+    def mismatches(self, schemas):
+        out = []
+        call = self.call_validator(schemas)
+        for kind, cases in self.cases.items():
+            declared = self.kind_validator(schemas, kind)
+            for case in cases:
+                request = json.loads(json.dumps(case["request"]))
+                expected = self.published[kind].is_valid(request)
+                got = (declared.is_valid(request), call.is_valid({"kind": kind, "request": request, "workspaceId": "w"}))
+                if got != (expected, expected):
+                    out.append((case["id"], expected, got))
+        return out
+
+    def test_declared_schema_verdicts_equal_the_published_schemas_on_the_corpus(self):
+        self.assertEqual(sum(len(cases) for cases in self.cases.values()), 429)
+        self.assertEqual(self.mismatches(self.schemas), [])
+
+    def test_published_verdicts_are_the_recorded_corpus_expectations(self):
+        for kind, cases in self.cases.items():
+            for case in cases:
+                verdict = "accepts" if self.published[kind].is_valid(json.loads(json.dumps(case["request"]))) else "refuses"
+                self.assertEqual(verdict, case["expect"]["schema"], case["id"])
+
+    def test_no_corpus_request_matches_a_form_of_another_kind(self):
+        # The kind/form link is not expressible inside `request` without a top-level combinator (A1);
+        # the runtime refuses a cross-kind call. The corpus has no request that would depend on it.
+        for kind, cases in self.cases.items():
+            for other in set(self.cases) - {kind}:
+                validator = self.kind_validator(self.schemas, other)
+                crossing = [c["id"] for c in cases if validator.is_valid(json.loads(json.dumps(c["request"])))]
+                self.assertEqual(crossing, [], f"{kind} cases accepted as {other}")
+
+    def test_negative_control_relaxing_a_declared_keyword_is_detected(self):
+        relaxed = copy.deepcopy(self.schemas)
+        del relaxed["$defs"]["agentInteractionMetadata"]["properties"]["instanceId"]["pattern"]
+        self.assertTrue(self.mismatches(relaxed), "relaxed declared AIM keyword went unnoticed")
+        relaxed = copy.deepcopy(self.schemas)
+        git = next(b for b in relaxed["request"]["oneOf"] if b["description"] == "kind=git")
+        git["properties"]["operations"]["minItems"] = 1
+        self.assertTrue(self.mismatches(relaxed), "relaxed declared git keyword went unnoticed")
+
+    def test_negative_control_tightening_a_declared_keyword_is_detected(self):
+        tightened = copy.deepcopy(self.schemas)
+        tightened["$defs"]["effect"]["properties"]["kind"]["enum"].remove("unknown")
+        self.assertTrue(self.mismatches(tightened), "tightened declared effect kind went unnoticed")
 
 
 if __name__ == "__main__":

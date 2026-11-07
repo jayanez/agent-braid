@@ -22,7 +22,7 @@ from urllib.parse import quote, unquote, urlsplit
 import uuid
 
 from . import __version__
-from . import analysis, git_adapter, mcp_runtime
+from . import analysis, analyze_work_schema, git_adapter, mcp_runtime
 from . import git_replay, git_runtime, runtime_policy, runtime_scheduler
 from .git_process import GitInfrastructureFailure
 
@@ -713,15 +713,31 @@ _ANALYZE_WORK_REQUEST_HELP = (
 )
 
 
-def _tool_definitions(service: ToolingService, types: Any) -> list[Any]:
+def _analyze_work_input_schema(delivery: str) -> dict[str, Any]:
+    """The analyze-work inputSchema for a D9 arm (SPEC-069 REQ-005); a fresh object on every call.
+
+    ``per-kind`` declares the compact schemas generated from the published ones under
+    ``properties.request`` with their shared ``$defs``; ``description-only`` is the interim
+    definition (alpha.7 plus PR #1099). The top level stays a plain object either way (A1).
+    """
+    kind = {"enum": list(analyze_work_schema.KINDS)}
+    if delivery == "description-only":
+        request = {"oneOf": [{"type": "object"}, {"type": "array"}], "description": _ANALYZE_WORK_REQUEST_HELP}
+        return {"type": "object", "additionalProperties": False,
+                "properties": {"kind": kind, "request": request}, "required": ["kind", "request"]}
+    if delivery != "per-kind":
+        raise ValueError(f"Unknown analyze-work schema delivery {delivery!r}")
+    compact = json.loads(analyze_work_schema.SCHEMAS)
+    return {"type": "object", "additionalProperties": False,
+            "properties": {"kind": kind, "request": compact["request"]}, "required": ["kind", "request"],
+            "$defs": compact["$defs"]}
+
+
+def _tool_definitions(service: ToolingService, types: Any, delivery: str | None = None) -> list[Any]:
     definitions = []
     for name in service.tools:
         if name == "analyze-work":
-            request = {"oneOf": [{"type": "object"}, {"type": "array"}],
-                       "description": _ANALYZE_WORK_REQUEST_HELP}
-            schema = {"type": "object", "additionalProperties": False,
-                      "properties": {"kind": {"enum": ["aim", "git"]}, "request": request},
-                      "required": ["kind", "request"]}
+            schema = _analyze_work_input_schema(delivery or analyze_work_schema.DELIVERY)
         elif name in {"analyze", "prepare"}:
             request = {"type": "object"}
             props = {"request": request}
