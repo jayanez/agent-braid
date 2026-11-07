@@ -43,7 +43,7 @@ and T010's final run measures the release candidate without them.
 
 ## Phase P2 — automation and baseline (D6)
 
-- [ ] T013 (REQ-013 / SC-013): [P2] Driver `scripts/spec069_native_runs.py` with
+- [x] T013 (REQ-013 / SC-013): [P2] Driver `scripts/spec069_native_runs.py` with
   `--fake-hosts` CI self-test, tool allowlist, OS-sandbox denied-access probe
   and canary, transcript redaction and secret scan, teardown check and
   `runbook.md` manual-step list; research host headless and authentication
