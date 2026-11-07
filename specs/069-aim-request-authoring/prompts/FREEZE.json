@@ -1,0 +1,37 @@
+{
+  "freezeVersion": 1,
+  "task": "SPEC-069 T010 (REQ-010 / SC-010, issue #1112)",
+  "frozenFiles": [
+    "specs/069-aim-request-authoring/prompts/development.json",
+    "specs/069-aim-request-authoring/prompts/held-out.json",
+    "scripts/spec069_scoring.py",
+    "scripts/spec069_fixture_workspace.py"
+  ],
+  "heldOut": {
+    "file": "specs/069-aim-request-authoring/prompts/held-out.json",
+    "policy": "The held-out set must not be shown to the authors of the guidance rewrite (T008), nor used to tune the skill, the tool description or examples. It is run by the driver only. Changing it after the freeze needs a new record below and invalidates earlier runs on it.",
+    "seenBy": [
+      {
+        "who": "SPEC-069 T010 content session (session started from the parent)",
+        "role": "author of the prompt sets and scoring rules"
+      },
+      {
+        "who": "parent session local_aedc3e68-d162-4eb8-9782-db4cb23724fc",
+        "role": "reviews the T010 pull request"
+      }
+    ],
+    "note": "Add every further reader here, with the reason, before they open held-out.json. The driver session (T013) uses the interface only; add it if it opens the file."
+  },
+  "records": [
+    {
+      "reason": "Initial freeze of the P2 prompt sets and scoring rules",
+      "previous": null,
+      "files": {
+        "specs/069-aim-request-authoring/prompts/development.json": "2d558fb72036a6bfcdc31e0ef3b8cf36b5a581e6cd19fe27e6dd5b2b4bfed0b6",
+        "specs/069-aim-request-authoring/prompts/held-out.json": "254ffee400c490d745d6b66f46e0bc8d19a13fae666f22c8554003a4e9a22278",
+        "scripts/spec069_scoring.py": "43883cbbf04d9050173ad04839facb5f5d1b691104fa4f157c72350323a87820",
+        "scripts/spec069_fixture_workspace.py": "2f300ac845cf477403f7d2946f3c5360f1b58990bcee39aa9430318538bb87e5"
+      }
+    }
+  ]
+}
