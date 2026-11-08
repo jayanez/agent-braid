@@ -95,9 +95,9 @@ for i in range(3):
 # Band 4: layers
 y4=y3+h3+28; h4=170
 band(y4,h4,'04  Opt-in, experimental and in-development layers','none of them can authorize execution','side')
-xs=row(4,238,32)
-L=[('Local telemetry',['numeric counts, local only'],'off by default','pill'),('System One',['decision layer in shadow mode','no learned model yet'],'opt-in · S1.5','pill v'),('Braid Harness lab',['offline variant evaluation'],'experimental · HAR','pill a'),('Loom viewer',['event stream + 3D braid'],'in development · VIS','pill s')]
-for x,(t,l,p,pc) in zip(xs,L): card(x,y4+56,238,94,t,l,'card side',pill=p,pcls=pc)
+xs=row(5,208,10)
+L=[('Local telemetry',['numeric counts, local only'],'off by default','pill'),('System One',['decision layer in shadow mode','no learned model yet'],'opt-in · S1.5','pill v'),('Braid Harness lab',['offline variant evaluation'],'experimental · HAR','pill a'),('Loom viewer',['event stream + 3D braid'],'in development · VIS','pill s'),('Braid Lightning',['reward-driven guidance','optimization lab'],'configure only · BL','pill a')]
+for x,(t,l,p,pc) in zip(xs,L): card(x,y4+56,208,94,t,l,'card side',pill=p,pcls=pc)
 H=y4+h4+30
 
 css='''
@@ -134,7 +134,7 @@ svg{font-family:ui-sans-serif,-apple-system,"Segoe UI",Helvetica,Arial,sans-seri
 '''
 svg=[f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-labelledby="t d">',
  '<title id="t">Agent Braid: the algebraic concurrency layer for multi-agent AI development</title>',
- '<desc id="d">Parallel agents in the AI development lifecycle declare tasks; Agent Braid computes which operations commute (parallel), are ordered, conflict (serialize or isolate) or are unknown (exclusive ownership); a verified plan runs only after a one-use operator grant on the exact digest; telemetry, System One shadow mode, the Harness lab and the Loom viewer are opt-in, experimental or in development and never authorize execution.</desc>',
+ '<desc id="d">Parallel agents in the AI development lifecycle declare tasks; Agent Braid computes which operations commute (parallel), are ordered, conflict (serialize or isolate) or are unknown (exclusive ownership); a verified plan runs only after a one-use operator grant on the exact digest; telemetry, System One shadow mode, the Harness lab, the Loom viewer and the Braid Lightning optimization lab are opt-in, experimental or in development and never authorize execution.</desc>',
  f'<style>{css}</style>',
  '<defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z"/></marker></defs>',
  f'<rect width="{W}" height="{H}" class="bg"/>']+out+['</svg>']

@@ -25,6 +25,7 @@
   <a href="docs/tooling/INSTALL.md"><img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux-lightgrey" alt="macOS and Linux"></a>
   <a href="docs/tooling/TELEMETRY.md"><img src="https://img.shields.io/badge/telemetry-off%20by%20default-success" alt="Telemetry off by default"></a>
   <a href="docs/tooling/SYSTEM_ONE_SHADOW.md"><img src="https://img.shields.io/badge/System%20One-opt--in%20shadow-8250df" alt="Opt-in System One decision layer in shadow mode"></a>
+  <a href="docs/tooling/LIGHTNING.md"><img src="https://img.shields.io/badge/Braid%20Lightning-opt--in%20optimization%20lab-f59e0b" alt="Opt-in Braid Lightning optimization laboratory"></a>
 </p>
 
 <p align="center">
@@ -83,6 +84,14 @@ changes a result and never grants authority.
   records, verifies and compares harness variants on deterministic fixtures, with
   no native host, no paid route and no promotion without a human decision. See
   [Harnessing](docs/tooling/HARNESSING.md).
+- **Improve agent guidance from rewards, under human control.** Braid Lightning,
+  adapted from [microsoft/agent-lightning](https://github.com/microsoft/agent-lightning)
+  (MIT), is an opt-in reinforcement-learning layer that will optimize the guidance
+  Agent Braid gives agents from recorded rollouts and verifiable rewards, on your
+  host subscription with no extra spend, and promote nothing without a human
+  decision. Today you can enable and configure it (`plugin setup --lightning lab`,
+  `lightning init`); rollouts and optimization are specified and planned. See
+  [Braid Lightning](docs/tooling/LIGHTNING.md).
 - **Stay local and minimal.** The core uses only Python's standard library.
   Decision diagnostics, workload forecasting and usage telemetry are opt-in, off
   by default and never leave the machine automatically.
@@ -338,7 +347,7 @@ local diagnostics are off by default: [telemetry](docs/tooling/TELEMETRY.md)
 
 ## 🔀 How it works
 
-![Agent Braid as the algebraic concurrency layer: parallel agents in the AI development lifecycle declare tasks; commutation analysis over declared effects and Git replay classifies each pair as independent-candidate (can run in parallel), ordered, conflicting (serialize or isolate) or unknown (keep exclusive ownership); a verified plan runs only after a one-use operator grant on the exact digest, through the owned Git runtime into a private result; telemetry, System One shadow mode, the Harness lab and the Loom viewer are opt-in, experimental or in development and cannot authorize execution](docs/assets/agent-braid-overview.svg)
+![Agent Braid as the algebraic concurrency layer: parallel agents in the AI development lifecycle declare tasks; commutation analysis over declared effects and Git replay classifies each pair as independent-candidate (can run in parallel), ordered, conflicting (serialize or isolate) or unknown (keep exclusive ownership); a verified plan runs only after a one-use operator grant on the exact digest, through the owned Git runtime into a private result; telemetry, System One shadow mode, the Harness lab, the Loom viewer and the Braid Lightning optimization lab are opt-in, experimental or in development and cannot authorize execution](docs/assets/agent-braid-overview.svg)
 
 In an AI development lifecycle (AIDLC), several agents plan, build, test and
 review the same codebase at once. Agent Braid is the algebraic concurrency layer
@@ -348,7 +357,8 @@ which need an order or isolation, and keeps the evidence.
 
 Agents keep working in their own host. Agent Braid analyzes what they declare,
 and only an operator grant on an exact plan digest can execute anything. Everything
-else (telemetry, System One, the Harness laboratory and the Loom viewer) is opt-in
+else (telemetry, System One, the Harness laboratory, the Loom viewer and Braid
+Lightning) is opt-in
 or experimental, and none of it can authorize execution.
 
 <details>
@@ -383,6 +393,23 @@ or experimental, and none of it can authorize execution.
 3. **Record.** Each attempt writes a hash-chained journal and observation records with loss and privacy accounting.
 4. **Evaluate.** Verifiers and cost reconciliation produce an evaluation report (`harness evaluation-summary`, `harness compare`).
 5. **No promotion yet.** No verdict promotes or activates a profile; the human promotion step is not delivered. See [Harnessing](docs/tooling/HARNESSING.md).
+
+</details>
+
+<details>
+<summary><b>Braid Lightning optimization layer (opt-in, BL track)</b></summary>
+
+<br>
+
+<p align="center">
+  <img src="docs/assets/agent-braid-lightning.svg" alt="The owner opts in with plugin setup --lightning lab and configures a profile with the lightning init wizard; headless Claude Code and OpenCode rollouts on the subscription route are scored by a verifiable reward (schema validity, D4 criteria, canaries), stored as content-free hashed records, and fed to a GEPA or APO optimizer whose candidate guidance is evaluated on a frozen held-out set; only a human promotion through the HAR profile registry ships a skill by hash">
+</p>
+
+1. **Opt in.** `plugin setup --lightning lab` records consent; the MCP server never starts a run.
+2. **Configure.** `agent-braid lightning init` is a wizard modelled on Agent Lightning's trainer configuration, simplified (no Kubernetes, no GPU trainer): target guidance, hosts, algorithm, budgets and trace consent, with EUR 0 spend, the subscription route and human promotion fixed.
+3. **Roll out and reward (BL.1, planned).** Headless host runs are scored by verifiable rewards only; any `*_API_KEY` is refused.
+4. **Optimize (BL.2, planned).** GEPA (primary) and APO propose guidance candidates; a preregistered frozen held-out evaluation decides, and a null result is valid.
+5. **Promote (BL.3, planned).** Only a human decision through the HAR profile registry ships a candidate, with rollback. Weight-level GRPO on a local GPU is deferred (ADR 0042). See [Braid Lightning](docs/tooling/LIGHTNING.md) and the [program](specs/070-braid-lightning-foundations/program.md).
 
 </details>
 
@@ -450,6 +477,7 @@ command's required artifacts, destinations and acknowledgements.
 | `forecast capabilities`, `forecast predict`, `forecast advice`, `forecast inspect`, `forecast export`, `forecast serve-mcp` | Run opt-in local numeric forecasts and heuristic advice, or serve them over a read-only stdio MCP transport. |
 | `telemetry status`, `telemetry report`, `telemetry export`, `telemetry merge`, `telemetry purge`, `telemetry audit-logs` | Inspect, move or clear default-off local numeric telemetry; `audit-logs` is a read-only comparison of the plugin's host MCP logs with the local store. |
 | `plugin setup` (including `--prune-stale`), `plugin discover`, `plugin doctor`, `plugin workspaces`, `plugin serve` | Configure and diagnose the native user plugin and its workspace registry; `--prune-stale` previews removing deleted worktree roots and unsafe registrations. |
+| `lightning init`, `lightning validate`, `lightning status`, `lightning purge` | Configure, check and inspect the opt-in Braid Lightning optimization laboratory, or delete its runs; no run starts yet. `plugin setup --lightning lab` records consent. |
 | `tooling` | Experimental portable local AI tooling surface. |
 
 System One shadow mode is off by default. After `plugin setup --system-one shadow` (or `python -m agent_braid.tooling_mcp --system-one shadow` for the standalone server) and a reconnect, each successful `analyze-work` call also appends one closed-vocabulary structural episode to `~/.local/share/agent-braid/system-one/`, with 30 UTC dates retained and no upload; the write runs on a background worker, off the request path, and is dropped when that worker is busy. Episodes include structural features (per-side effect kinds, resource classes and path-shape counts) and per-repository salted pseudonymous resource hashes; the salt and episodes stay on this machine and `system-one purge` removes both. Every MCP envelope stays byte-identical, the reference backend only abstains, and no execution authority changes.
@@ -500,7 +528,7 @@ demonstrate a useful parallel speedup, and the project says so. The
 | Use it from Codex or Claude Code | [Native plugins](docs/tooling/NATIVE_PLUGINS.md) · [AI tooling guide](docs/tooling/README.md) |
 | Understand architecture and limits | [Architecture](ARCHITECTURE.md) · [Git replay](docs/architecture/GIT_REPLAY.md) · [ADRs](docs/adr/) |
 | Consume portable artifacts | [AIM](docs/architecture/AGENT_INTERACTION_METADATA.md) · [Certificates](docs/architecture/CONFLUENCE_CERTIFICATE.md) · [Schemas](schemas/) |
-| Explore the laboratories | [Harnessing](docs/tooling/HARNESSING.md) · [Activity viewer spec](specs/061-activity-viewer/spec.md) · [System One](docs/system-one/README.md) |
+| Explore the laboratories | [Harnessing](docs/tooling/HARNESSING.md) · [Braid Lightning](docs/tooling/LIGHTNING.md) · [Activity viewer spec](specs/061-activity-viewer/spec.md) · [System One](docs/system-one/README.md) |
 | Turn on optional local diagnostics | [Telemetry](docs/tooling/TELEMETRY.md) · [System One shadow mode](docs/tooling/SYSTEM_ONE_SHADOW.md) · [Forecast operations](docs/forecast/OPERATIONS.md) |
 | Reproduce experiments | [Bounded laboratory](research/lab/README.md) · [Experiment protocol](docs/experiments/PROTOCOL.md) · [External reproduction](docs/releases/EXTERNAL_REPRODUCTION.md) |
 | Explore the research programme | [Research](RESEARCH.md) · [Mathematical foundations](MATHEMATICAL_FOUNDATIONS.md) · [References](research/REFERENCES.md) |

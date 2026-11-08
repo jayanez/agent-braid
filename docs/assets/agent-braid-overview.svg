@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1042" width="1200" height="1042" role="img" aria-labelledby="t d">
 <title id="t">Agent Braid: the algebraic concurrency layer for multi-agent AI development</title>
-<desc id="d">Parallel agents in the AI development lifecycle declare tasks; Agent Braid computes which operations commute (parallel), are ordered, conflict (serialize or isolate) or are unknown (exclusive ownership); a verified plan runs only after a one-use operator grant on the exact digest; telemetry, System One shadow mode, the Harness lab and the Loom viewer are opt-in, experimental or in development and never authorize execution.</desc>
+<desc id="d">Parallel agents in the AI development lifecycle declare tasks; Agent Braid computes which operations commute (parallel), are ordered, conflict (serialize or isolate) or are unknown (exclusive ownership); a verified plan runs only after a one-use operator grant on the exact digest; telemetry, System One shadow mode, the Harness lab, the Loom viewer and the Braid Lightning optimization lab are opt-in, experimental or in development and never authorize execution.</desc>
 <style>
 :root{--bg:#ffffff;--band:#f6f8fb;--bandb:#e2e8f0;--hero:#f5f3ff;--herob:#c4b5fd;--side:#fafafa;--card:#ffffff;--cardb:#cbd5e1;--tx:#0f172a;--mu:#475569;--vi:#6d28d9;--vibg:#ede9fe;--ok:#15803d;--okbg:#ecfdf5;--ord:#1d4ed8;--ordbg:#eff6ff;--bad:#b91c1c;--badbg:#fef2f2;--unk:#475569;--unkbg:#f1f5f9;--auth:#be123c;--authbg:#fff1f2;--amb:#b45309;--ambbg:#fffbeb;--sky:#0369a1;--skybg:#f0f9ff;--ar:#64748b}
 @media (prefers-color-scheme: dark){:root{--bg:#0d1117;--band:#161b22;--bandb:#30363d;--hero:#1c1530;--herob:#6d28d9;--side:#12161c;--card:#0f141b;--cardb:#3b4250;--tx:#f0f6fc;--mu:#9da7b3;--vi:#c4b5fd;--vibg:#2e1f55;--ok:#4ade80;--okbg:#0f2a1a;--ord:#93c5fd;--ordbg:#10213f;--bad:#fca5a5;--badbg:#3a1414;--unk:#cbd5e1;--unkbg:#1e2530;--auth:#fda4af;--authbg:#3b1220;--amb:#fcd34d;--ambbg:#33260a;--sky:#7dd3fc;--skybg:#0b2537;--ar:#8b949e}}
@@ -119,25 +119,31 @@ svg{font-family:ui-sans-serif,-apple-system,"Segoe UI",Helvetica,Arial,sans-seri
 <rect x="40" y="842" width="1120" height="170" rx="18" class="side"/>
 <text x="68" y="876" class="bt" text-anchor="start">04  Opt-in, experimental and in-development layers</text>
 <text x="1132" y="876" class="bs" text-anchor="end">none of them can authorize execution</text>
-<rect x="76.0" y="898" width="238" height="94" rx="12" class="card side"/>
-<text x="195.0" y="932.0" class="ct" text-anchor="middle">Local telemetry</text>
-<text x="195.0" y="952.0" class="cs" text-anchor="middle">numeric counts, local only</text>
-<rect x="137.8" y="958.0" width="114.39999999999999" height="20" rx="10" class="pill"/>
-<text x="195.0" y="972.0" class="pt" text-anchor="middle">off by default</text>
-<rect x="346.0" y="898" width="238" height="94" rx="12" class="card side"/>
-<text x="465.0" y="923.5" class="ct" text-anchor="middle">System One</text>
-<text x="465.0" y="943.5" class="cs" text-anchor="middle">decision layer in shadow mode</text>
-<text x="465.0" y="960.5" class="cs" text-anchor="middle">no learned model yet</text>
-<rect x="411.1" y="966.5" width="107.8" height="20" rx="10" class="pill v"/>
-<text x="465.0" y="980.5" class="pt" text-anchor="middle">opt-in · S1.5</text>
-<rect x="616.0" y="898" width="238" height="94" rx="12" class="card side"/>
-<text x="735.0" y="932.0" class="ct" text-anchor="middle">Braid Harness lab</text>
-<text x="735.0" y="952.0" class="cs" text-anchor="middle">offline variant evaluation</text>
-<rect x="664.6" y="958.0" width="140.8" height="20" rx="10" class="pill a"/>
-<text x="735.0" y="972.0" class="pt" text-anchor="middle">experimental · HAR</text>
-<rect x="886.0" y="898" width="238" height="94" rx="12" class="card side"/>
-<text x="1005.0" y="932.0" class="ct" text-anchor="middle">Loom viewer</text>
-<text x="1005.0" y="952.0" class="cs" text-anchor="middle">event stream + 3D braid</text>
-<rect x="928.0" y="958.0" width="154.0" height="20" rx="10" class="pill s"/>
-<text x="1005.0" y="972.0" class="pt" text-anchor="middle">in development · VIS</text>
+<rect x="60.0" y="898" width="208" height="94" rx="12" class="card side"/>
+<text x="164.0" y="932.0" class="ct" text-anchor="middle">Local telemetry</text>
+<text x="164.0" y="952.0" class="cs" text-anchor="middle">numeric counts, local only</text>
+<rect x="106.80000000000001" y="958.0" width="114.39999999999999" height="20" rx="10" class="pill"/>
+<text x="164.0" y="972.0" class="pt" text-anchor="middle">off by default</text>
+<rect x="278.0" y="898" width="208" height="94" rx="12" class="card side"/>
+<text x="382.0" y="923.5" class="ct" text-anchor="middle">System One</text>
+<text x="382.0" y="943.5" class="cs" text-anchor="middle">decision layer in shadow mode</text>
+<text x="382.0" y="960.5" class="cs" text-anchor="middle">no learned model yet</text>
+<rect x="328.1" y="966.5" width="107.8" height="20" rx="10" class="pill v"/>
+<text x="382.0" y="980.5" class="pt" text-anchor="middle">opt-in · S1.5</text>
+<rect x="496.0" y="898" width="208" height="94" rx="12" class="card side"/>
+<text x="600.0" y="932.0" class="ct" text-anchor="middle">Braid Harness lab</text>
+<text x="600.0" y="952.0" class="cs" text-anchor="middle">offline variant evaluation</text>
+<rect x="529.6" y="958.0" width="140.8" height="20" rx="10" class="pill a"/>
+<text x="600.0" y="972.0" class="pt" text-anchor="middle">experimental · HAR</text>
+<rect x="714.0" y="898" width="208" height="94" rx="12" class="card side"/>
+<text x="818.0" y="932.0" class="ct" text-anchor="middle">Loom viewer</text>
+<text x="818.0" y="952.0" class="cs" text-anchor="middle">event stream + 3D braid</text>
+<rect x="741.0" y="958.0" width="154.0" height="20" rx="10" class="pill s"/>
+<text x="818.0" y="972.0" class="pt" text-anchor="middle">in development · VIS</text>
+<rect x="932.0" y="898" width="208" height="94" rx="12" class="card side"/>
+<text x="1036.0" y="923.5" class="ct" text-anchor="middle">Braid Lightning</text>
+<text x="1036.0" y="943.5" class="cs" text-anchor="middle">reward-driven guidance</text>
+<text x="1036.0" y="960.5" class="cs" text-anchor="middle">optimization lab</text>
+<rect x="962.3" y="966.5" width="147.39999999999998" height="20" rx="10" class="pill a"/>
+<text x="1036.0" y="980.5" class="pt" text-anchor="middle">configure only · BL</text>
 </svg>
