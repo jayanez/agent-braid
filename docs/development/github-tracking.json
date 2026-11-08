@@ -59,7 +59,8 @@
     "GOV.1 — Governance and adoption",
     "FC.1 — Forecast-guided parallelism experiment",
     "PUB.1 — Public research preview",
-    "M4.7 — AI tooling integration for OpenCode"
+    "M4.7 — AI tooling integration for OpenCode",
+    "BL.0 — Braid Lightning foundations"
   ],
   "specs": {
     "001-certificate-verifier-pilot": {
@@ -320,7 +321,7 @@
     },
     "070-braid-lightning-foundations": {
       "milestone": "BL.0 — Braid Lightning foundations",
-      "state": "open"
+      "state": "closed"
     },
     "071-lightning-rollouts-reward": {
       "milestone": "BL.1 — Lightning rollouts and verifiable reward",
