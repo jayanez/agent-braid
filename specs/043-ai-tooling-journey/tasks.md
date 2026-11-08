@@ -37,6 +37,7 @@ Stable task IDs are implementation obligations. Check only after the paired proc
   Dependencies: T001–T005. Targets: `docs/tooling onboarding/diagnostics; unsupported render fallback`.
   Verification and planned evidence: `validation-plan.md::procedure_onboarding_fallback`; `evidence/sc-008.json` with actual commands and negative controls. Obtained: none.
   Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): onboarding observed in one host only; no diagnostics, raw-evidence or rendering fallback receipts. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
+  Progress 2026-11-08 (#1207): `docs/tooling/ONBOARDING.md` and `tests/test_onboarding_docs.py` (command-existence checks). Documentation only; observed sessions in both hosts required by the 2026-10-31 owner decision remain pending, so the task stays Deferred.
 
 - [ ] T009 (REQ-001,REQ-002,REQ-003,REQ-004,REQ-005,REQ-006,REQ-007,REQ-008/SC-001,SC-002,SC-003,SC-004,SC-005,SC-006,SC-007,SC-008): Reconcile implementation evidence and run repository quick/PR gates.
   Dependencies: T001–T008. Targets: this spec's assurance.json, validation receipts and bounded candidate.
