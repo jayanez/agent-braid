@@ -35,7 +35,7 @@ property and does not authorize concurrent agents.
 
 - [x] T008 (REQ-008 / SC-008): import, socket, process and MCP boundary tests.
   Dependencies: T003–T007. Verification: procedure_008.
-- [ ] T009 (REQ-001 / SC-001): ROADMAP track BL, spec and milestone index,
+- [x] T009 (REQ-001 / SC-001): ROADMAP track BL, spec and milestone index,
   `github-tracking.json`; after merge, the reviewed tracking reconciliation
   creates milestones BL.0–BL.5 and the task issues (BL.6 tasks under Deferred).
   Dependencies: T001. Verification: procedure_009.
