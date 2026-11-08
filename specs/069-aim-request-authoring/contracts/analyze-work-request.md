@@ -146,6 +146,25 @@ A refused call returns `status: refused` and a summary
 - Messages never contain a request value, are at most 1,024 characters, and the
   alpha.7 reason text always leads.
 
+## Telemetry and shadow (REQ-014)
+
+Local telemetry records a `units` call like any `analyze-work` call: outcome `ok` or
+`refused` (with a refusal-reason bucket), duration, and the report's classification
+counts; it does not distinguish `kind`. System One shadow records an accepted `units`
+call as one episode with `analysisKind` `units`, derived from the constructed AIM
+records and the report (no declaration text; effect kinds come from the constructed
+records). A refused call records no episode. A shadow failure never changes the
+envelope and is counted as `internal-error` in the in-process refusal counters; it is
+no longer discarded silently. Before T014 a `units` episode was refused by the store's
+validator (`unavailable`) and lost.
+
+Platforms: normalization is lexical string logic with no filesystem or `os.path` use,
+so it gives identical bytes on macOS, Linux and Windows path semantics (tested by
+patching `os.path` to `ntpath`; CI runs on Linux, macOS is covered by the same tests
+run locally and by Unicode NFD input as macOS file systems produce it). Windows is
+tested only for this normalization, not for the plugin, the driver or the shadow
+store (declared limit).
+
 ## Report label
 
 When an interaction is `independent-candidate` and every evidence item of both
@@ -204,10 +223,19 @@ item are declared once under the top-level `$defs` and referenced as `#/$defs/<n
   Only `per-kind` is committed. The arm is part of the built bytes, so it reaches every
   host the same way (no environment variable, which Codex does not forward to plugin MCP
   servers by default).
-- **Not yet observed.** Whether each host accepts the nested form, the recording-proxy
-  byte identity across host connections, eager or deferred schema loading, and the D9
-  ablation result are pending on the native driver; adoption in a release waits for
-  them (REQ-005). Hand-off: `reviews/t005-handoff-20261107.md`.
+- **Host probe (2026-11-07, `evidence/host-probe-nested-schema.json`).** A recording stdio
+  test double served the model-facing `analyze-work` definition (per-kind arm, 5,447
+  bytes) to Claude Code and OpenCode in disposable profiles; Codex was not run (no
+  OpenAI key in the environment, a declared limit). Both hosts listed the tool without
+  refusing the nested form and received byte-identical definitions (same canonical
+  SHA-256 on both connections, equal to the served definition). Claude Code sent the
+  tool to the model API in its first request, with an `input_schema` equal to the served
+  one (eager loading under `--strict-mcp-config`). **Not observed:** whether the models'
+  calls conform and whether `request` arrives as an object, because the Anthropic API
+  rejected every model call (credit balance too low); and OpenCode's model-API request.
+  Those, the D9 ablation result and Codex's acceptance remain pending (REQ-005); adoption
+  in a release waits for them. The ablation arm is `--arm final-no-schema` of
+  `scripts/spec069_native_runs.py` versus `--arm final`.
 
 ## Compatibility and versions
 
