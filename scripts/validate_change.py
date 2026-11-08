@@ -177,6 +177,7 @@ RULES = (
     Rule("activity-viewer", (
         "agent_braid/view_*.py", "tests/test_view_*.py", "tests/fixtures/view/**",
         "integrations/agent-braid-view/**", "examples/view/**", "docs/tooling/VIEWER.md",
+        "specs/061-activity-viewer/contracts/**",
         # Reports the viewer adapters read: changes escalate to the full tests.
         "agent_braid/analysis.py", "agent_braid/git_replay.py",
     ), ("full-tests",), True,
