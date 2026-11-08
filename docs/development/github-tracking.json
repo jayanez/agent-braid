@@ -457,7 +457,13 @@
     "VIS.1 — Activity viewer": 25,
     "S1.5 — System One shadow activation": 26,
     "M4.7 — AI tooling integration for OpenCode": 27,
-    "M4.8 — AIM request authoring": 28
+    "M4.8 — AIM request authoring": 28,
+    "BL.0 — Braid Lightning foundations": 29,
+    "BL.1 — Lightning rollouts and verifiable reward": 30,
+    "BL.2 — Lightning prompt optimization": 31,
+    "BL.3 — Lightning promotion": 32,
+    "BL.4 — Lightning trace consent": 33,
+    "BL.5 — Lightning dataset export": 34
   },
   "task_cancellations": {
     "SPEC-045/T007": {
