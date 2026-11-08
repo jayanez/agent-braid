@@ -6,6 +6,7 @@ Stable task IDs are implementation obligations. Check only after the paired proc
   Dependencies: none; consumed contract review. Targets: `docs/tooling/JOURNEY.md; examples/tooling; full fixture workflow`.
   Verification and planned evidence: `validation-plan.md::procedure_full_journey`; `evidence/sc-001.json` with actual commands and negative controls. Obtained: none.
   Deferred 2026-10-31 ([2026-10-31 owner decision](../044-ai-tooling-evaluation/owner-decision-20261031-m45-closure.md)): no execute, recover or export step observed. Reopen criteria are listed in that record; observational receipts do not satisfy this task.
+  Progress 2026-11-08 (#1161): `examples/journey/run_journey.py` and `tests/test_journey_synthetic.py` run the owned synthetic journey (install, discovery, analysis, plan, grant refusal, interrupted execute, recover, verify, export, uninstall) with a receipt and three negative controls. Synthetic local control only; `evidence/sc-001.json`, the validation-plan procedure and the owner reopen decision remain pending, so the task stays open.
 
 - [x] T002 (REQ-002/SC-002): Explain decisions with input identity, conflicts/dependencies, conditional premises, unknowns, assurance and observation limits.
   Dependencies: T001. Targets: `tooling_present.py chat summary; classification fidelity controls`.

@@ -376,6 +376,7 @@ shared object store fails the portable-root check).
   snapshot, freeze, and human review of the feature. Dependencies: T003–T011.
   Files: `assurance.json`, `evidence/t012.json`. Verification: `quick`, `pr`,
   `validate_spec_kit`. Evidence: validation output bound to the candidate commit.
+  Obtained (part 1, 2026-11-08, #1162): `evidence/t012.json`; two independent code reviews of T003-T007 found no must-fix; 17 residuals deferred to the next re-qualification; obtained_evidence bound for SC-001..SC-011. Freeze and human review pending.
 
 ## Unblocking map
 
