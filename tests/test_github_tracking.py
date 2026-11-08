@@ -114,7 +114,7 @@ class TrackingTests(unittest.TestCase):
             self.assertEqual(S1_5, by_key[key]["milestone"])
             self.assertEqual("open", by_key[key]["state"])
         pinned = set(overrides) - moved
-        self.assertEqual(45, len(pinned))
+        self.assertEqual(98, len(pinned))
         for key in pinned:
             self.assertEqual("closed", by_key[key]["state"])
             self.assertIn(overrides[key], config["closed_milestones"])
