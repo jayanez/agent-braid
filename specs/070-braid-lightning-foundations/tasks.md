@@ -6,7 +6,7 @@ property and does not authorize concurrent agents.
 
 ## Phase 1 — governance
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of the program, this spec, ADRs
+- [x] T001 (REQ-001 / SC-001): Owner review of the program, this spec, ADRs
   0039–0042 and the configuration contract; record decisions in `reviews/`.
   Dependencies: none. Verification: procedure_001.
 - [x] T002 (REQ-002 / SC-002): Retain `LICENSES/Agent-Lightning-MIT.txt`, add the

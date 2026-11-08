@@ -687,7 +687,7 @@ from recorded rollouts and verifiable rewards. Owner decisions of 2026-11-08: ho
 CLI subscription route only (extra cash spend EUR 0), first target the
 `analyze-work` authoring guidance of SPEC-069, weight-level RL deferred, name
 "Braid Lightning". The boundary is [ADR 0039](docs/adr/0039-braid-lightning-boundary.md)
-(proposed): advisory only, human promotion, `executionAuthorization` false.
+(accepted 2026-11-08): advisory only, human promotion, `executionAuthorization` false.
 
 | Milestone | Spec | Capability |
 |---|---|---|

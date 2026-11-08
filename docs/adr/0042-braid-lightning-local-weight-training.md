@@ -1,6 +1,6 @@
 # ADR 0042: Local weight training for Braid Lightning (deferred)
 
-- **Status:** proposed and deferred (2026-11-08); reopened only by founder go/no-go
+- **Status:** proposed and deferred; deferral confirmed by the founder on 2026-11-08 ([founder decisions](../development/FOUNDER_DECISIONS_20261108.md), decision 3); reopened only by founder go/no-go
 - **Date:** 2026-11-08
 - **Deciders:** Juan Antonio Yáñez García (founder)
 - **Constitutional articles:** 0, 13, 19, 23

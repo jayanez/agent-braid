@@ -85,7 +85,7 @@ Design decisions recorded here:
 
 Open decisions:
 
-- **OD-1 — Subscription credential.** Whether the runner may accept
+- **OD-1 — Subscription credential (decided 2026-11-08: OAuth token from the environment).** The owner chose that the runner accepts `CLAUDE_CODE_OAUTH_TOKEN` (and the OpenCode equivalent) read from the operator environment only, never written, for disposable profiles ([founder decisions](../../docs/development/FOUNDER_DECISIONS_20261108.md), decision 4). Original question: whether the runner may accept
   `CLAUDE_CODE_OAUTH_TOKEN` (and the OpenCode equivalent) from the operator's
   environment as the subscription credential for disposable profiles, or must
   rely only on an existing host sign-in. Either way the value is read from the

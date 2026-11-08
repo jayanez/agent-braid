@@ -1,6 +1,6 @@
 # ADR 0041: Consent, redaction and retention for content-bearing traces
 
-- **Status:** proposed (2026-11-08); delivered by SPEC-074
+- **Status:** accepted by the owner on 2026-11-08 ([founder decisions](../development/FOUNDER_DECISIONS_20261108.md), decision 3); applies when SPEC-074 is delivered
 - **Date:** 2026-11-08
 - **Deciders:** Juan Antonio Yáñez García (owner)
 - **Constitutional articles:** 0, 13, 14, 15
