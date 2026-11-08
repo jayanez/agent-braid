@@ -177,5 +177,351 @@
       "track": "VIS.4",
       "note": "MCP, OpenTelemetry or hooks to be researched in SPEC-064."
     }
-  ]
+  ],
+  "hostParity": {
+    "schemaVersion": "agent-braid-view-host-parity/v0.1",
+    "contract": "host-parity.md",
+    "capabilityValues": [
+      "provided",
+      "absent",
+      "unknown"
+    ],
+    "basisValues": [
+      "receipt",
+      "policy",
+      "derived",
+      "none"
+    ],
+    "rule": "A cell changes from unknown only from a host-verification receipt in specs/061-activity-viewer/evidence/ (or a policy of the contract); absent and unknown are shown as not provided by this host, never as zero.",
+    "capabilities": [
+      {
+        "id": "session.open",
+        "loomKind": "strand.open",
+        "since": "v0.1",
+        "member": null,
+        "values": [
+          "agent"
+        ],
+        "meaning": "A session lane opens (role agent, no parent).",
+        "valueProperty": "role"
+      },
+      {
+        "id": "session.close",
+        "loomKind": "strand.close",
+        "since": "v0.1",
+        "member": null,
+        "values": [],
+        "meaning": "The session lane closes; the viewer closes its open subagent lanes with it."
+      },
+      {
+        "id": "subagent.open",
+        "loomKind": "strand.open",
+        "since": "v0.1",
+        "member": null,
+        "values": [
+          "subagent"
+        ],
+        "meaning": "A subagent branch opens under the session lane.",
+        "valueProperty": "role"
+      },
+      {
+        "id": "subagent.close",
+        "loomKind": "strand.close",
+        "since": "v0.1",
+        "member": null,
+        "values": [],
+        "meaning": "The subagent branch closes."
+      },
+      {
+        "id": "tool.call",
+        "loomKind": "strand.update",
+        "since": "v0.1",
+        "member": null,
+        "values": [
+          "running"
+        ],
+        "meaning": "A tool call becomes a bead on the lane that ran it, labelled by tool name only.",
+        "valueProperty": "state"
+      },
+      {
+        "id": "tool.duration",
+        "loomKind": "strand.update",
+        "since": "v0.2",
+        "member": "toolDurationMs",
+        "values": [],
+        "meaning": "The host-stated duration of that tool call, integer milliseconds, held in memory only."
+      },
+      {
+        "id": "waiting",
+        "loomKind": "strand.update",
+        "since": "v0.2",
+        "member": "waitingOn",
+        "values": [
+          "waiting"
+        ],
+        "meaning": "The host says the lane is blocked; waitingBasis comes with it.",
+        "valueProperty": "state"
+      },
+      {
+        "id": "turn.idle",
+        "loomKind": "strand.update",
+        "since": "v0.1",
+        "member": null,
+        "values": [
+          "idle"
+        ],
+        "meaning": "The host says a turn ended and the lane is idle (not closed).",
+        "valueProperty": "state"
+      },
+      {
+        "id": "outcome",
+        "loomKind": "strand.close",
+        "since": "v0.1",
+        "member": null,
+        "values": [
+          "ok",
+          "failed",
+          "cancelled"
+        ],
+        "meaning": "The host states how a lane ended; otherwise the outcome is unknown.",
+        "valueProperty": "outcome"
+      }
+    ],
+    "hosts": {
+      "claude-code": {
+        "loomHost": "claude",
+        "adapters": [
+          "claude-hook",
+          "otlp-logs",
+          "otlp-metrics"
+        ],
+        "cells": {
+          "session.open": {
+            "status": "provided",
+            "basis": "derived",
+            "evidence": "hv-t030-20261101.json",
+            "note": "No HTTP SessionStart reached the listener under claude -p; the lane opens on the first event that names the session.",
+            "receiptNames": [
+              "SessionStart"
+            ]
+          },
+          "session.close": {
+            "status": "provided",
+            "basis": "receipt",
+            "evidence": "hv-t030-20261101.json",
+            "note": "SessionEnd was delivered.",
+            "receiptNames": [
+              "SessionEnd"
+            ]
+          },
+          "subagent.open": {
+            "status": "provided",
+            "basis": "receipt",
+            "evidence": "hv-t030-20261101.json",
+            "note": "SubagentStart carries agent_id and agent_type; OpenTelemetry carries no agent id.",
+            "receiptNames": [
+              "SubagentStart",
+              "agent_id"
+            ]
+          },
+          "subagent.close": {
+            "status": "provided",
+            "basis": "receipt",
+            "evidence": "hv-t030-20261101.json",
+            "note": "SubagentStop was delivered.",
+            "receiptNames": [
+              "SubagentStop"
+            ]
+          },
+          "tool.call": {
+            "status": "provided",
+            "basis": "receipt",
+            "evidence": "hv-t030-20261101.json",
+            "note": "PostToolUse carries tool_name.",
+            "receiptNames": [
+              "PostToolUse",
+              "tool_name"
+            ]
+          },
+          "tool.duration": {
+            "status": "provided",
+            "basis": "receipt",
+            "evidence": "hv-t030-20261101.json",
+            "note": "PostToolUse carries duration_ms (name observed in hv-t030; its JSON type was accepted by owner decision at T053 closure, and the T053 probe hv-t053 recorded unobserved).",
+            "receiptNames": [
+              "PostToolUse",
+              "duration_ms"
+            ]
+          },
+          "waiting": {
+            "status": "absent",
+            "basis": "policy",
+            "evidence": null,
+            "note": "None of the five admitted observational events carries a waiting signal; any other hook event is refused. Notification-style events are not probed or admitted.",
+            "receiptNames": []
+          },
+          "turn.idle": {
+            "status": "absent",
+            "basis": "policy",
+            "evidence": null,
+            "note": "The Stop event is a decision event and is refused (REQ-005), so no idle state is derived.",
+            "receiptNames": []
+          },
+          "outcome": {
+            "status": "absent",
+            "basis": "receipt",
+            "evidence": "hv-t030-20261101.json",
+            "note": "Hook payloads state no outcome (SessionEnd has a reason that is not read); lanes close as unknown.",
+            "receiptNames": [
+              "SessionEnd"
+            ]
+          }
+        }
+      },
+      "codex": {
+        "loomHost": "codex",
+        "adapters": [
+          "otlp-logs",
+          "codex-notify",
+          "codex-hook"
+        ],
+        "cells": {
+          "session.open": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "codex.conversation_starts and conversation.id were seen in [otel] logs of a partial receipt (hv-t031, no turn completed), but whether it fires once per session or per turn is not known. T077 records it.",
+            "receiptNames": []
+          },
+          "session.close": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "Not observed: the probe turn never completed. T077 records it.",
+            "receiptNames": []
+          },
+          "subagent.open": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "Not observed; Codex hook and notify events are documentation only. T077 records it.",
+            "receiptNames": []
+          },
+          "subagent.close": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "Not observed; Codex hook and notify events are documentation only. T077 records it.",
+            "receiptNames": []
+          },
+          "tool.call": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "Not observed: no tool call ran in the partial T031 receipt. T077 records it.",
+            "receiptNames": []
+          },
+          "tool.duration": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "Not observed for tool calls; duration_ms seen in T031 belongs to API and startup events and is not mapped. T077 records it.",
+            "receiptNames": []
+          },
+          "waiting": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "Not observed. T077 records it.",
+            "receiptNames": []
+          },
+          "turn.idle": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "Not observed; the documented notify agent-turn-complete event has not been probed. T077 records it.",
+            "receiptNames": []
+          },
+          "outcome": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "Not observed. T077 records it.",
+            "receiptNames": []
+          }
+        }
+      },
+      "opencode": {
+        "loomHost": "other",
+        "adapters": [
+          "unassigned:opencode"
+        ],
+        "cells": {
+          "session.open": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
+          },
+          "session.close": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
+          },
+          "subagent.open": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
+          },
+          "subagent.close": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
+          },
+          "tool.call": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
+          },
+          "tool.duration": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
+          },
+          "waiting": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
+          },
+          "turn.idle": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
+          },
+          "outcome": {
+            "status": "unknown",
+            "basis": "none",
+            "evidence": null,
+            "note": "No probe has run for this host; T078 records it.",
+            "receiptNames": []
+          }
+        }
+      }
+    }
+  }
 }

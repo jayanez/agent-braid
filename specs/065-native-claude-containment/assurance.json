@@ -157,7 +157,15 @@
         {
           "given": "the committed offline manifests and the offline test corpus",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "two read-only code reviews of T003-T007, targeted tests, record validation in a clean clone",
+              "limits": "Review record only; qualifies nothing; code edits would need a new security re-check",
+              "outcome": "no must-fix finding; 17 deferred residuals and 1 test-only fix recorded; 478 tests OK",
+              "path": "specs/065-native-claude-containment/evidence/t012.json",
+              "sha256": "6cb45aeff23a5e669edaa6cf3448b365c9c4872dd0ace21636a379014f485ce7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_001 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
           "test_file": "specs/065-native-claude-containment/validation-plan.md",
           "test_name": "procedure_001",
@@ -173,7 +181,15 @@
         {
           "given": "a native manifest, a verified host qualification and a contained launcher",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "two read-only code reviews of T003-T007, targeted tests, record validation in a clean clone",
+              "limits": "Review record only; qualifies nothing; code edits would need a new security re-check",
+              "outcome": "no must-fix finding; 17 deferred residuals and 1 test-only fix recorded; 478 tests OK",
+              "path": "specs/065-native-claude-containment/evidence/t012.json",
+              "sha256": "6cb45aeff23a5e669edaa6cf3448b365c9c4872dd0ace21636a379014f485ce7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_002 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
           "test_file": "specs/065-native-claude-containment/validation-plan.md",
           "test_name": "procedure_002",
@@ -189,7 +205,15 @@
         {
           "given": "quota readings",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "two read-only code reviews of T003-T007, targeted tests, record validation in a clean clone",
+              "limits": "Review record only; qualifies nothing; code edits would need a new security re-check",
+              "outcome": "no must-fix finding; 17 deferred residuals and 1 test-only fix recorded; 478 tests OK",
+              "path": "specs/065-native-claude-containment/evidence/t012.json",
+              "sha256": "6cb45aeff23a5e669edaa6cf3448b365c9c4872dd0ace21636a379014f485ce7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_003 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
           "test_file": "specs/065-native-claude-containment/validation-plan.md",
           "test_name": "procedure_003",
@@ -205,7 +229,15 @@
         {
           "given": "a qualified backend on a supported machine",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "two read-only code reviews of T003-T007, targeted tests, record validation in a clean clone",
+              "limits": "Review record only; qualifies nothing; code edits would need a new security re-check",
+              "outcome": "no must-fix finding; 17 deferred residuals and 1 test-only fix recorded; 478 tests OK",
+              "path": "specs/065-native-claude-containment/evidence/t012.json",
+              "sha256": "6cb45aeff23a5e669edaa6cf3448b365c9c4872dd0ace21636a379014f485ce7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_004 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
           "test_file": "specs/065-native-claude-containment/validation-plan.md",
           "test_name": "procedure_004",
@@ -221,7 +253,22 @@
         {
           "given": "the contained child",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "T009 attempt t009-20261106a, bundleSha256 45eee4d8...d1ce, commit 320b00c4 (result record)",
+              "limits": "One machine, OS build, CLI version and finite catalog until expiresAt; not a general isolation proof; says nothing about Codex",
+              "outcome": "32 of 32 probes passed in both modes, hostFunctional true, all four effects enforced; runner wrote no record",
+              "path": "specs/065-native-claude-containment/evidence/t009-attempt5-result.md",
+              "sha256": "bd1607dc709208347304e98de6115e126b15dbbd451afb2404c67301eea480a1"
+            },
+            {
+              "command": "two read-only code reviews of T003-T007, targeted tests, record validation in a clean clone",
+              "limits": "Review record only; qualifies nothing; code edits would need a new security re-check",
+              "outcome": "no must-fix finding; 17 deferred residuals and 1 test-only fix recorded; 478 tests OK",
+              "path": "specs/065-native-claude-containment/evidence/t012.json",
+              "sha256": "6cb45aeff23a5e669edaa6cf3448b365c9c4872dd0ace21636a379014f485ce7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_005 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
           "test_file": "specs/065-native-claude-containment/validation-plan.md",
           "test_name": "procedure_005",
@@ -237,7 +284,22 @@
         {
           "given": "the contained child",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "T009 attempt t009-20261106a, bundleSha256 45eee4d8...d1ce, commit 320b00c4 (result record)",
+              "limits": "One machine, OS build, CLI version and finite catalog until expiresAt; not a general isolation proof; says nothing about Codex",
+              "outcome": "32 of 32 probes passed in both modes, hostFunctional true, all four effects enforced; runner wrote no record",
+              "path": "specs/065-native-claude-containment/evidence/t009-attempt5-result.md",
+              "sha256": "bd1607dc709208347304e98de6115e126b15dbbd451afb2404c67301eea480a1"
+            },
+            {
+              "command": "two read-only code reviews of T003-T007, targeted tests, record validation in a clean clone",
+              "limits": "Review record only; qualifies nothing; code edits would need a new security re-check",
+              "outcome": "no must-fix finding; 17 deferred residuals and 1 test-only fix recorded; 478 tests OK",
+              "path": "specs/065-native-claude-containment/evidence/t012.json",
+              "sha256": "6cb45aeff23a5e669edaa6cf3448b365c9c4872dd0ace21636a379014f485ce7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_006 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
           "test_file": "specs/065-native-claude-containment/validation-plan.md",
           "test_name": "procedure_006",
@@ -253,7 +315,22 @@
         {
           "given": "the contained child",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "T009 attempt t009-20261106a, bundleSha256 45eee4d8...d1ce, commit 320b00c4 (result record)",
+              "limits": "One machine, OS build, CLI version and finite catalog until expiresAt; not a general isolation proof; says nothing about Codex",
+              "outcome": "32 of 32 probes passed in both modes, hostFunctional true, all four effects enforced; runner wrote no record",
+              "path": "specs/065-native-claude-containment/evidence/t009-attempt5-result.md",
+              "sha256": "bd1607dc709208347304e98de6115e126b15dbbd451afb2404c67301eea480a1"
+            },
+            {
+              "command": "two read-only code reviews of T003-T007, targeted tests, record validation in a clean clone",
+              "limits": "Review record only; qualifies nothing; code edits would need a new security re-check",
+              "outcome": "no must-fix finding; 17 deferred residuals and 1 test-only fix recorded; 478 tests OK",
+              "path": "specs/065-native-claude-containment/evidence/t012.json",
+              "sha256": "6cb45aeff23a5e669edaa6cf3448b365c9c4872dd0ace21636a379014f485ce7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_007 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
           "test_file": "specs/065-native-claude-containment/validation-plan.md",
           "test_name": "procedure_007",
@@ -269,7 +346,22 @@
         {
           "given": "the contained child",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "T009 attempt t009-20261106a, bundleSha256 45eee4d8...d1ce, commit 320b00c4 (result record)",
+              "limits": "One machine, OS build, CLI version and finite catalog until expiresAt; not a general isolation proof; says nothing about Codex",
+              "outcome": "32 of 32 probes passed in both modes, hostFunctional true, all four effects enforced; runner wrote no record",
+              "path": "specs/065-native-claude-containment/evidence/t009-attempt5-result.md",
+              "sha256": "bd1607dc709208347304e98de6115e126b15dbbd451afb2404c67301eea480a1"
+            },
+            {
+              "command": "two read-only code reviews of T003-T007, targeted tests, record validation in a clean clone",
+              "limits": "Review record only; qualifies nothing; code edits would need a new security re-check",
+              "outcome": "no must-fix finding; 17 deferred residuals and 1 test-only fix recorded; 478 tests OK",
+              "path": "specs/065-native-claude-containment/evidence/t012.json",
+              "sha256": "6cb45aeff23a5e669edaa6cf3448b365c9c4872dd0ace21636a379014f485ce7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_008 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
           "test_file": "specs/065-native-claude-containment/validation-plan.md",
           "test_name": "procedure_008",
@@ -285,7 +377,22 @@
         {
           "given": "a complete passing evidence bundle and a human issuance record",
           "id": "SC-009",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "verify_qualification and verify_host_qualification against the founder-issued records (qualification/issuance-2026-11-06.json)",
+              "limits": "Human issuance by the NC-9 issuer; expires 2026-12-06T18:07:44Z; executionAuthorization false",
+              "outcome": "both verifiers accept; edited, wrong-environment, runner-produced, other-host and partial-effect records refuse",
+              "path": "specs/065-native-claude-containment/evidence/t010.json",
+              "sha256": "e18edf60e1043c0f6f3f976f23bd4990f4954f4ef7ca3a5d3319c836ae15e224"
+            },
+            {
+              "command": "two read-only code reviews of T003-T007, targeted tests, record validation in a clean clone",
+              "limits": "Review record only; qualifies nothing; code edits would need a new security re-check",
+              "outcome": "no must-fix finding; 17 deferred residuals and 1 test-only fix recorded; 478 tests OK",
+              "path": "specs/065-native-claude-containment/evidence/t012.json",
+              "sha256": "6cb45aeff23a5e669edaa6cf3448b365c9c4872dd0ace21636a379014f485ce7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_009 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
           "test_file": "specs/065-native-claude-containment/validation-plan.md",
           "test_name": "procedure_009",
@@ -301,7 +408,29 @@
         {
           "given": "the probe catalog",
           "id": "SC-010",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "independent static security review of the probe catalog and backend policy (T008)",
+              "limits": "Static review, not a qualification",
+              "outcome": "34 findings, 0 critical, 4 high, dispositioned and re-checked",
+              "path": "specs/065-native-claude-containment/evidence/probe-catalog-review.md",
+              "sha256": "9abc938f3e3ac96038f65b1e221579fab7f6f1a86d856bab89e19477212c7d8e"
+            },
+            {
+              "command": "T009 attempt t009-20261106a, bundleSha256 45eee4d8...d1ce, commit 320b00c4 (result record)",
+              "limits": "One machine, OS build, CLI version and finite catalog until expiresAt; not a general isolation proof; says nothing about Codex",
+              "outcome": "32 of 32 probes passed in both modes, hostFunctional true, all four effects enforced; runner wrote no record",
+              "path": "specs/065-native-claude-containment/evidence/t009-attempt5-result.md",
+              "sha256": "bd1607dc709208347304e98de6115e126b15dbbd451afb2404c67301eea480a1"
+            },
+            {
+              "command": "two read-only code reviews of T003-T007, targeted tests, record validation in a clean clone",
+              "limits": "Review record only; qualifies nothing; code edits would need a new security re-check",
+              "outcome": "no must-fix finding; 17 deferred residuals and 1 test-only fix recorded; 478 tests OK",
+              "path": "specs/065-native-claude-containment/evidence/t012.json",
+              "sha256": "6cb45aeff23a5e669edaa6cf3448b365c9c4872dd0ace21636a379014f485ce7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_010 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
           "test_file": "specs/065-native-claude-containment/validation-plan.md",
           "test_name": "procedure_010",
@@ -317,7 +446,22 @@
         {
           "given": "all SPEC-065 tasks complete",
           "id": "SC-011",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "hand-off packet for SPEC-048/T008 (T011); procedure_011 git diff --stat origin/develop -- specs/048-* specs/049-* was empty when recorded",
+              "limits": "Docs only; does not claim T008 or T004 completion; the SPEC-048 inputs of t011.json have since changed (SPEC-048 evolves), so t011.json is not bound",
+              "outcome": "packet lists the issued records, hashes, limits, expiry and open T008 items",
+              "path": "specs/065-native-claude-containment/evidence/handoff-spec048-t008.md",
+              "sha256": "27971530b20a3618e3ed1a4e4a50762091276a25a86d536cc4fe2539c627a879"
+            },
+            {
+              "command": "two read-only code reviews of T003-T007, targeted tests, record validation in a clean clone",
+              "limits": "Review record only; qualifies nothing; code edits would need a new security re-check",
+              "outcome": "no must-fix finding; 17 deferred residuals and 1 test-only fix recorded; 478 tests OK",
+              "path": "specs/065-native-claude-containment/evidence/t012.json",
+              "sha256": "6cb45aeff23a5e669edaa6cf3448b365c9c4872dd0ace21636a379014f485ce7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_011 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
           "test_file": "specs/065-native-claude-containment/validation-plan.md",
           "test_name": "procedure_011",

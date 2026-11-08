@@ -38,7 +38,7 @@ top-level field.
 | `day` | string | UTC date, `YYYY-MM-DD` |
 | `surface` | string | `mcp` |
 | `operation` | string | `analyze` or `analyze-work` |
-| `analysisKind` | string | `aim` or `git` |
+| `analysisKind` | string | `aim`, `git` or `units` (SPEC-069 T014: a `units` episode is derived from the constructed AIM records and the report; it holds no declaration text) |
 | `analyzer` | object | `{version, ruleSet}`, each matching `^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$` |
 | `operationCount` | integer | 1–64 |
 | `pairCount` | integer | 0–2016 |

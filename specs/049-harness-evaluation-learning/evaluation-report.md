@@ -1,9 +1,64 @@
 # HAR.2 evaluation report
 
-Status: deterministic cohort **infeasible** at
-`ab2db0c45ab70c3689e39226897a5ddf2932126a` (2026-10-29). Native cohort
-**pending**. No cohort was run and this report contains no outcome numbers.
-SPEC-049/T005 stays open. Evidence: [evidence/t005.json](evidence/t005.json).
+Status (2026-11-08): deterministic HAR cohort **infeasible**; native cohort
+**not run** (pending); library ablation (arm D) **not run**. The deterministic
+controls were executed. No HAR cohort was run and this report contains no HAR
+outcome numbers. SPEC-049/T005 stays open. The original determination was made
+at `ab2db0c45ab70c3689e39226897a5ddf2932126a` (2026-10-29,
+[evidence/t005.json](evidence/t005.json)); the 2026-11-08 re-check is in
+[evidence/evaluation/deterministic-controls-20261108.json](evidence/evaluation/deterministic-controls-20261108.json).
+
+## State at 2026-11-08
+
+Since the first determination the founder froze the case roster and the arm A
+and B identities ([case-roster.md](case-roster.md), decision record dated
+2026-10-30) and the guidance-observable synthetic-control double (R13) was
+implemented. That settles the roster and the A and B identities (blockers 2 and 3 below) but not the executable cases (blocker 1) or arm C (blocker 4).
+Still blocking the deterministic cohort:
+
+- **Arm C** is deferred (R8, option a). Without a real proposer,
+  `harness_evaluation.register` cannot bind a chosen arm-C candidate. The only
+  deterministic route (keep-base) makes C equal to A and carries no information.
+- **Units (R11)** are authorized but not built: no `harness_verification.Unit`
+  (input, frozen rubric, oracle, hash) exists for any of the 7 roster cases.
+- **R3**: L3-C02-a stays unassigned.
+- **Partition**: the fallback holdout is the single lineage L1, so any cohort
+  would be `descriptive-only` under D3.
+- **Library ablation (arm D)** needs arm C, so T006 being done does not make it
+  runnable.
+
+Controls actually executed (all pass): frozen roster, draft and arm A/B
+candidate hashes re-verified; every R13 record hash recomputed and equal to its
+recorded value; `register` refuses an empty or `synthetic-control` registration
+with `invalid-registration`; 64 module tests and 1316 harness tests pass.
+
+### Engineering control: synthetic-control A versus B (not the T005 paired outcome)
+
+The R13 double reads the arm-B guidance bytes and switches two behaviours by a
+frozen mapping. Rows below are recomputed from it. They are labelled
+`synthetic-control`, are verdict-ineligible and are excluded from every D4
+verdict. The double encodes the behaviour it reports, so they do not show that
+any guidance helps. "Interrupted" for B is the designed stop-on-drift switch on
+a drift case, not a failure and not a win.
+
+| Stratum | Case | Steps executed A / B | Steps repeated A / B | Terminal A / B |
+|---|---|---|---|---|
+| continuity | L1-C01-a | 4 / 2 | 2 / 0 | completed / completed |
+| continuity | L2-C01-a | 3 / 0 | 1 / 0 | completed / interrupted |
+| coordination | L1-C02-a | 2 / 0 | 0 / 0 | completed / interrupted |
+| coordination | L1-C03-a | 2 / 2 | 0 / 0 | completed / completed |
+| coordination | L1-C03-b | 3 / 3 | 0 / 0 | completed / completed |
+| coordination | L1-C03-c | 2 / 1 | 1 / 0 | completed / completed |
+
+A completes the drift cases L2-C01-a and L1-C02-a only because the double
+ignores drift by construction. Four of six cases differ, exactly the four the
+frozen mapping predicts. This shows only that the double responds to the arm-B
+bytes and that A and B are distinguishable under that mapping; it says nothing
+about any real solver. The
+double has no false-safe-admission, missed-parallelism or review-effort notion,
+so those T005 items are not computed. No cost was incurred (additional cash
+EUR 0, no attempts to reconcile). `evaluation-protocol.md` changed after R13
+pinned it (D2 caps added); the R13 record hashes still recompute unchanged.
 
 This report takes the "infeasible" path that the
 [frozen protocol](evaluation-protocol.md) sets in advance (D6). D3 separately
@@ -11,9 +66,9 @@ says to record a feasibility result if native yield stays unknown, which is true
 of the native cohort below. It is not an unsupported, inconclusive or negative result about the method. It
 says only that the registered material cannot support an evaluation yet.
 
-## Why the deterministic cohort cannot run
+## Why the deterministic cohort could not run at 2026-10-29
 
-Four facts block it. Each is checked against the pinned inputs listed in the
+These are the four facts recorded then; the section above gives the current state. Each is checked against the pinned inputs listed in the
 evidence record:
 
 1. **There are no executable case definitions.** [source-registration.md](source-registration.md)
@@ -34,7 +89,8 @@ evidence record:
    Today the only proposers are injected test doubles, so no real arm-C candidate
    exists.
 
-Engineering note: the arms differ only in guidance text. The existing fixtures
+Engineering note (superseded for the synthetic domain by the R13 double above;
+the point about real solvers still holds for real cohorts): the arms differ only in guidance text. The existing fixtures
 for the offline runner (`harness_lab`, simulated containment) are fixed scripts
 that do not read guidance. Without a model solver, A, B and C would give
 identical fixture outcomes by construction. Writing arm-specific behavior into
@@ -60,8 +116,7 @@ pending for the native cohort:
 | Shared | Unknown/refused/failed/interrupted/ungraded counts; label/class coverage; task quality; declared/observed effect violations; complete costs and per-profile limits | not computed |
 | T005 reporting | Paired per-stratum outcomes; correction/review effort; sensitivity to missing outcomes | not computed |
 
-No costs were incurred beyond this offline inspection: no host, model, paid
-route or native session was used. The T012 reconciliation therefore has no
+No host, model, paid route or native session was used. The T012 reconciliation therefore has no
 attempts to reconcile.
 
 ## Native cohort
@@ -70,11 +125,11 @@ Pending. It is blocked on SPEC-049/T004 (native admission) and SPEC-048/T008
 (qualified host). There is no native source, session or outcome, and none is
 substituted with synthetic data.
 
-## What would unblock the deterministic cohort
+## What would unblock the deterministic cohort (as of 2026-10-29)
 
-The founder must supply, in a decision record made before any outcome:
+The founder must supply, in a decision record made before any outcome. Since then the roster and the A/B identities were frozen; constructed units and arm C were not:
 
-1. **A frozen case roster.** Constructed case definitions drawn from the
+1. **A frozen case roster (now frozen; constructed units are still missing).** Constructed case definitions drawn from the
    registered lineages L1–L4 ([corpus.md](corpus.md)). Each case needs its
    lineage, task family, stratum, holdout partition, rubric and deterministic
    oracle. The roster must follow D1: L1 is never split, L3 stays unassigned
@@ -88,7 +143,11 @@ so a deterministic cohort stays descriptive only.
 
 ## Limits
 
-This is an offline inspection and refusal check only. It runs no fixture, host,
-model, native session, paid route or human annotation. It makes no inferential,
+This is offline inspection, refusal checks and a re-run of the R13 synthetic-control
+double only. It uses no host, model, native session, paid route or human
+annotation, and it runs no HAR unit. Results hold only for the synthetic domain. Numbers were recomputed with an
+uncommitted scratch script from the committed double. One earlier run of the
+1316 harness tests in this session showed a single error that did not
+reproduce on two reruns; its cause was not investigated. It makes no inferential,
 economic or promotion claim and does not authorize execution or promotion. The
 pre-PR reviews were run by Claude subagents and are not independent Luna review.

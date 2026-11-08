@@ -75,7 +75,7 @@ and T010's final run measures the release candidate without them.
   Code, Codex and OpenCode, the recording-proxy byte identity across host connections and
   the eager/deferred loading record, all on the native driver
   (`reviews/t005-handoff-20261107.md`).
-- [ ] T014 (REQ-014 / SC-014): [P3, conditional] Telemetry and shadow handling for `units`;
+- [x] T014 (REQ-014 / SC-014): [P3, conditional] Telemetry and shadow handling for `units`;
   normalization tests on macOS and Linux CI; Windows tested or declared a
   limit; release-note text for the #1099 transition. Dependencies: T006.
   Verification: procedure_014.

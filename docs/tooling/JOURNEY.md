@@ -96,6 +96,23 @@ reconstruct the complete bytes from its manifest and ordered chunks, verify each
 chunk and the complete SHA-256 and byte count, and only then save and present the
 complete envelope. A reference alone is not a complete result.
 
+## One-command synthetic journey
+
+To run every step below in one go (install, discovery, analysis, plan, grant
+refusal, interrupted execution, recovery, verification, export, uninstall) and
+get a machine-readable receipt, run from a source checkout:
+
+```sh
+.venv/bin/python examples/journey/run_journey.py --output journey-receipt.json
+```
+
+It reuses the same public entry points as the control below, in temporary roots,
+with no host, network or model. The receipt lists each step's outcome, hashes,
+three negative controls (unissued grant, mismatched acknowledgement, no grant
+tool exposed) and `executionAuthorization: false`: the grants it uses are
+issued only by the script acting as a local test operator. It is a synthetic
+control, not actual-host observation; its test is `tests/test_journey_synthetic.py`.
+
 ## Separate operator-authorized runtime path
 
 The source integration control in `tests/test_tooling_journey.py` exercises the

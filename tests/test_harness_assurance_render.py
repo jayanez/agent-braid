@@ -205,6 +205,13 @@ class ArtifactRefusalTests(unittest.TestCase):
             art = resealed(art, reviews={**art["reviews"], "required": ["code-review"]})
             refused(self, "invalid-artifact", call, art)
 
+    def test_reviews_docs_only_that_disagrees_with_risk_is_refused(self):
+        for call in self.calls:
+            art = artifact()
+            art = resealed(art, reviews={**art["reviews"], "docsOnly": not art["risk"]["docsOnly"],
+                                         "required": art["reviews"]["required"]})
+            refused(self, "invalid-artifact", call, art)
+
     def test_resealed_artifact_with_missing_or_hostile_values_is_refused(self):
         def mutate(change):
             art = artifact("R4", docs_only=False)
