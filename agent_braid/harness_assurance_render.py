@@ -52,7 +52,8 @@ def _well_formed(artifact: dict[str, Any]) -> bool:
     row = next(r for r in rows if r["checkpoint"] == DEPTH_CHECKPOINT)
     required = reviews.get("required") if type(reviews) is dict else None
     return (set(reviews) == _REVIEW_KEYS and reviews["checkpoint"] == DEPTH_CHECKPOINT and reviews["depth"] in DEPTHS
-            and type(reviews["docsOnly"]) is bool and type(required) is list
+            and type(reviews["docsOnly"]) is bool and reviews["docsOnly"] is risk.get("docsOnly")
+            and type(required) is list
             and required == list(required_reviews(reviews["depth"], reviews["docsOnly"]))
             and reviews["minIndependentReviewers"] == (MIN_INDEPENDENT_REVIEWERS if INDEPENDENT_REVIEW in required else 0)
             and row.get("depth") == reviews["depth"] and _id(row.get("depthSource")))

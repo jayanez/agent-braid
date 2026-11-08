@@ -136,7 +136,15 @@
         {
           "given": "a profile covering every checkpoint",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "see the command in the evidence file",
+              "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
+              "outcome": "Stable-candidate review and local pr run recorded; three unrelated failures disclosed.",
+              "path": "specs/067-assurance-profiles/evidence/t011.json",
+              "sha256": "c4754c82aff4ce08ac2defcdfe20b1b7669c09d994abcbfd1b754bdf53960edb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/067-assurance-profiles/validation-plan.md",
           "test_name": "procedure_001",
@@ -152,7 +160,15 @@
         {
           "given": "a valid standing authorization",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "see the command in the evidence file",
+              "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
+              "outcome": "Stable-candidate review and local pr run recorded; three unrelated failures disclosed.",
+              "path": "specs/067-assurance-profiles/evidence/t011.json",
+              "sha256": "c4754c82aff4ce08ac2defcdfe20b1b7669c09d994abcbfd1b754bdf53960edb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/067-assurance-profiles/validation-plan.md",
           "test_name": "procedure_002",
@@ -168,7 +184,15 @@
         {
           "given": "a lower-scope setting that would reduce a floor or disable the no-attribution invariant",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "see the command in the evidence file",
+              "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
+              "outcome": "Stable-candidate review and local pr run recorded; three unrelated failures disclosed.",
+              "path": "specs/067-assurance-profiles/evidence/t011.json",
+              "sha256": "c4754c82aff4ce08ac2defcdfe20b1b7669c09d994abcbfd1b754bdf53960edb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/067-assurance-profiles/validation-plan.md",
           "test_name": "procedure_003",
@@ -184,7 +208,15 @@
         {
           "given": "a diff touching a sensitive path",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "see the command in the evidence file",
+              "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
+              "outcome": "Stable-candidate review and local pr run recorded; three unrelated failures disclosed.",
+              "path": "specs/067-assurance-profiles/evidence/t011.json",
+              "sha256": "c4754c82aff4ce08ac2defcdfe20b1b7669c09d994abcbfd1b754bdf53960edb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/067-assurance-profiles/validation-plan.md",
           "test_name": "procedure_004",
@@ -200,7 +232,15 @@
         {
           "given": "depth `R2`",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "see the command in the evidence file",
+              "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
+              "outcome": "Stable-candidate review and local pr run recorded; three unrelated failures disclosed.",
+              "path": "specs/067-assurance-profiles/evidence/t011.json",
+              "sha256": "c4754c82aff4ce08ac2defcdfe20b1b7669c09d994abcbfd1b754bdf53960edb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/067-assurance-profiles/validation-plan.md",
           "test_name": "procedure_005",
@@ -216,7 +256,15 @@
         {
           "given": "the same profile and diff",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "see the command in the evidence file",
+              "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
+              "outcome": "Stable-candidate review and local pr run recorded; three unrelated failures disclosed.",
+              "path": "specs/067-assurance-profiles/evidence/t011.json",
+              "sha256": "c4754c82aff4ce08ac2defcdfe20b1b7669c09d994abcbfd1b754bdf53960edb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/067-assurance-profiles/validation-plan.md",
           "test_name": "procedure_006",
@@ -232,7 +280,15 @@
         {
           "given": "a receipt for a commit",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "see the command in the evidence file",
+              "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
+              "outcome": "Stable-candidate review and local pr run recorded; three unrelated failures disclosed.",
+              "path": "specs/067-assurance-profiles/evidence/t011.json",
+              "sha256": "c4754c82aff4ce08ac2defcdfe20b1b7669c09d994abcbfd1b754bdf53960edb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/067-assurance-profiles/validation-plan.md",
           "test_name": "procedure_007",
@@ -248,7 +304,15 @@
         {
           "given": "a change request originating from an agent-writable path or an agent identity",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "see the command in the evidence file",
+              "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
+              "outcome": "Stable-candidate review and local pr run recorded; three unrelated failures disclosed.",
+              "path": "specs/067-assurance-profiles/evidence/t011.json",
+              "sha256": "c4754c82aff4ce08ac2defcdfe20b1b7669c09d994abcbfd1b754bdf53960edb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/067-assurance-profiles/validation-plan.md",
           "test_name": "procedure_008",
@@ -264,7 +328,15 @@
         {
           "given": "the registration record",
           "id": "SC-009",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "see the command in the evidence file",
+              "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
+              "outcome": "Stable-candidate review and local pr run recorded; three unrelated failures disclosed.",
+              "path": "specs/067-assurance-profiles/evidence/t011.json",
+              "sha256": "c4754c82aff4ce08ac2defcdfe20b1b7669c09d994abcbfd1b754bdf53960edb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/067-assurance-profiles/validation-plan.md",
           "test_name": "procedure_009",
@@ -280,7 +352,15 @@
         {
           "given": "no assurance profile",
           "id": "SC-010",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "see the command in the evidence file",
+              "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
+              "outcome": "Stable-candidate review and local pr run recorded; three unrelated failures disclosed.",
+              "path": "specs/067-assurance-profiles/evidence/t011.json",
+              "sha256": "c4754c82aff4ce08ac2defcdfe20b1b7669c09d994abcbfd1b754bdf53960edb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/067-assurance-profiles/validation-plan.md",
           "test_name": "procedure_010",

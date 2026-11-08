@@ -1,0 +1,144 @@
+{
+  "task": "SPEC-067/T011",
+  "procedure": "stable-candidate validation and review of T002 to T007 (all REQ / SC)",
+  "candidateBinding": "Code candidate commit 6045c1f2e5325250bf131e04e3caa06180ddaa98 on branch har/067-t011 (base origin/develop 425e3064). The evidence commit that adds this file and the assurance.json entries changes no code.",
+  "reviews": [
+    {
+      "kind": "adversarial",
+      "scope": "harness_assurance*.py and tests",
+      "applied": [
+        "receipts: a claimed depth above the effective one now requires that depth's reviews (reviews derived from the receipt depth and the artifact risk, not the re-sealable review section)",
+        "receipts: artifact must have exactly the compiled key set; its review section must equal the ladder for its own depth and docsOnly, and docsOnly must equal the risk docsOnly (a re-sealed artifact with emptied reviews is refused)",
+        "receipts: RecursionError and OverflowError map to the fixed reason invalid-artifact"
+      ],
+      "rejected": [
+        {
+          "finding": "exit code 1 accepted in a receipt",
+          "reason": "contract records commands with exit codes as process evidence, not as a pass criterion; documented in the verify_receipt docstring and pinned by a test"
+        },
+        {
+          "finding": "merge: autonomous is a valid profile",
+          "reason": "Q2 admits standing authorization only at merge; autonomous merge is operator-owned and floors stay human-only"
+        },
+        {
+          "finding": "case-sensitive SHARED_FILES, reviewer ids not case-folded, free text allows @mention",
+          "reason": "low severity, fail-safe or cosmetic; recorded for a later task"
+        }
+      ],
+      "recorded": [
+        "standing-authorization record is bound by id only (profile lists ids); binding the record digest in the profile needs a profile schema change (own 067 task)",
+        "docs-only default depth R1 (Q1) needs a per-preset docs depth in the profile schema (F6; own 067 task)",
+        "classify_risk trusts the caller-supplied impact seam and compile_artifact does not recompute docsOnly from the diff (test_residual_a pins this); recomputation belongs to the verifying side"
+      ]
+    },
+    {
+      "kind": "counterfactual",
+      "result": "closed catalog, raise-only risk and advisory-only compile fail safe; standing expiry depends on the caller-supplied now; floors are human-only only as far as the caller's actor kind is honest (binding, not authenticity)"
+    },
+    {
+      "kind": "functional",
+      "agents": [
+        "pr-review-toolkit:code-reviewer",
+        "silent-failure-hunter",
+        "pr-test-analyzer"
+      ],
+      "applied": [
+        "tests added for hidden size and shared-file reasons, scripts/** bare directory, path-count bound, standing-mode approval mismatch, claimed-depth reviews, nested artifact"
+      ],
+      "rejected": [
+        {
+          "finding": "classify_risk should default impact internally",
+          "reason": "impact is a deliberate test seam and verification must recompute from the diff; see recorded residual"
+        }
+      ]
+    },
+    {
+      "kind": "quality-and-simplification",
+      "result": "no must-fix beyond the receipts changes; duplication of the unsealed-digest helper and REASONS tuples recorded as optional cleanup"
+    }
+  ],
+  "executedChecks": [
+    {
+      "command": "python3.13 -m unittest tests.test_harness_assurance tests.test_harness_assurance_receipts tests.test_harness_assurance_render tests.test_harness_assurance_risk",
+      "exitCode": 0,
+      "result": "Ran 194 tests, OK (185 before the review fixes; 9 added)"
+    },
+    {
+      "command": "fresh clone of public GitHub, fetch of the candidate branch, restore_public_spec_history, git fsck --unreachable, scripts/validate_change.py --base origin/develop --profile pr",
+      "exitCode": 1,
+      "result": "repository, contracts, release-records, publication, research-radar, adoption-tracks, market-model and cli-smoke passed; full-tests: Ran 5547 tests, failures=1 errors=2 skipped=37. All three failures are outside SPEC-067 and this change.",
+      "logSha256": "b6ce7b291bf0794b40aed3af8c63aba1d6d8d4c7f61017711e0a009cae723a56",
+      "failures": [
+        "test_history_equivalence (feature 066) and test_spec_kit.test_current_tree_and_constitution_baseline: ValueError 'Stale evidence input: agent_braid/tooling_mcp.py' from specs/066-system-one-shadow/assurance.json; agent_braid/tooling_mcp.py is not touched by this change (owner: the SPEC-066 or SPEC-069 track)",
+        "test_spec069_native_runs.test_leftover_process_is_detected_then_removed: an unrelated 'sleep 300' process from another session on the shared machine"
+      ]
+    }
+  ],
+  "prProfileEvidence": "The three failures above keep the local pr profile red for reasons unrelated to SPEC-067. The CI validate aggregate on the PR head is the pr-profile evidence of record; this file does not claim a green pr run.",
+  "authoritySnapshotFreezeHumanReview": "Not done here: the authority snapshot commit, stage change and human_review are founder-owned and stay pending.",
+  "executionAuthorization": false,
+  "limits": "Structural and unit evidence plus model reviews; reviews are not independent human review and prove no soundness. No utility claim for assurance profiles (H1 is registered-not-run).",
+  "taskEvidence": {
+    "SC-001": [
+      {
+        "path": "specs/067-assurance-profiles/evidence/t002.json",
+        "sha256": "5cf4f9942912b661dd4e41b1569c01d21fee706139d1e54f997f82a2b11145ef"
+      }
+    ],
+    "SC-002": [
+      {
+        "path": "specs/067-assurance-profiles/evidence/t006.json",
+        "sha256": "26997d25b1f28e4e1aa3e8552b8e5bca9029a303a78bdeb00658b14c1139e70f"
+      }
+    ],
+    "SC-003": [
+      {
+        "path": "specs/067-assurance-profiles/evidence/t003.json",
+        "sha256": "69ee4549e6fd83acba9df49a53c80916b898dc7be2b5801ad7ab413e0ed9de84"
+      }
+    ],
+    "SC-004": [
+      {
+        "path": "specs/067-assurance-profiles/evidence/t004.json",
+        "sha256": "6d152785aa87a409941d7f34b09d97e06d7cb5eb26f863e2b06e07ac0c48d8ba"
+      }
+    ],
+    "SC-005": [
+      {
+        "path": "specs/067-assurance-profiles/evidence/t005.json",
+        "sha256": "fdff9050d51f8982a4a3ac53123e448e9429dc88b38601aae8f88db5e7792708"
+      }
+    ],
+    "SC-006": [
+      {
+        "path": "specs/067-assurance-profiles/evidence/t007.json",
+        "sha256": "cb1564734355d3cb1d9f8d8b4f8542adbf89443f6da34de48fbf57eef436f4e5"
+      }
+    ],
+    "SC-007": [
+      {
+        "path": "specs/067-assurance-profiles/evidence/t006.json",
+        "sha256": "26997d25b1f28e4e1aa3e8552b8e5bca9029a303a78bdeb00658b14c1139e70f"
+      }
+    ],
+    "SC-008": [
+      {
+        "path": "specs/067-assurance-profiles/evidence/t003.json",
+        "sha256": "69ee4549e6fd83acba9df49a53c80916b898dc7be2b5801ad7ab413e0ed9de84"
+      }
+    ],
+    "SC-009": [
+      {
+        "path": "specs/067-assurance-profiles/evidence/t009.json",
+        "sha256": "49824b16393cd4398e591cb68eb00bce41d71deff871e26c870b949faca51863"
+      }
+    ],
+    "SC-010": [
+      {
+        "path": "specs/067-assurance-profiles/evidence/t008.json",
+        "sha256": "46e3ba2674da96dfd9edd125fa59230127b8d8fc8221f7fc83df683fe6ac4b34"
+      }
+    ]
+  },
+  "taskEvidenceNote": "Pointers only: those files record their own input hashes, which are historical (later tasks changed shared modules); they are not re-validated against the current tree here."
+}
