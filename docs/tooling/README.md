@@ -1,5 +1,7 @@
 # AI tooling integrations
 
+New to the tooling? See the [getting-started guide](ONBOARDING.md).
+
 Start with [native plugin installation and setup](NATIVE_PLUGINS.md), including
 the optional curl installer. The experimental source candidate includes its
 runtime and automatically supplies five product skills plus setup. Public
