@@ -146,6 +146,25 @@ A refused call returns `status: refused` and a summary
 - Messages never contain a request value, are at most 1,024 characters, and the
   alpha.7 reason text always leads.
 
+## Telemetry and shadow (REQ-014)
+
+Local telemetry records a `units` call like any `analyze-work` call: outcome `ok` or
+`refused` (with a refusal-reason bucket), duration, and the report's classification
+counts; it does not distinguish `kind`. System One shadow records an accepted `units`
+call as one episode with `analysisKind` `units`, derived from the constructed AIM
+records and the report (no declaration text; effect kinds come from the constructed
+records). A refused call records no episode. A shadow failure never changes the
+envelope and is counted as `internal-error` in the in-process refusal counters; it is
+no longer discarded silently. Before T014 a `units` episode was refused by the store's
+validator (`unavailable`) and lost.
+
+Platforms: normalization is lexical string logic with no filesystem or `os.path` use,
+so it gives identical bytes on macOS, Linux and Windows path semantics (tested by
+patching `os.path` to `ntpath`; CI runs on Linux, macOS is covered by the same tests
+run locally and by Unicode NFD input as macOS file systems produce it). Windows is
+tested only for this normalization, not for the plugin, the driver or the shadow
+store (declared limit).
+
 ## Report label
 
 When an interaction is `independent-candidate` and every evidence item of both

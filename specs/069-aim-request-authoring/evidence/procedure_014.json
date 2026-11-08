@@ -1,0 +1,31 @@
+{
+ "command": "python -m unittest tests.test_spec069_units_telemetry tests.test_system_one_shadow",
+ "environment": {
+  "platform": "macOS-27.2",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
+  "agent_braid/git_adapter.py": "77c17bb694057e712a31886d8879f8ca922bd912f80a45fb703285f828ec94ed",
+  "agent_braid/system_one_shadow.py": "f8efe79ad2c491e4be7ed05a7290f54017d4f7d225e0242e813d023ef4ce6b53",
+  "agent_braid/tooling_mcp.py": "33c4c1499d04891d4b88e45d811eccbe2fc8487f073756a992348dc975313805",
+  "agent_braid/units.py": "715f32da8869c11d2572103bfcfc37710f1b5bfebbd0c6097577a8bbf894a49e",
+  "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
+  "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
+  "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
+  "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
+  "scripts/spec069_generate_corpus.py": "2e1201773f89c9d48b84a2e1421aa17b18c62792634279782ecf1fa760e5a6c1",
+  "specs/066-system-one-shadow/contracts/episode-v0.2.md": "9f8f130616044fccb702ac5891649e54380c3c063de46ed0e269a955fd8dec98",
+  "specs/069-aim-request-authoring/compatibility.md": "48a18f8c22c4b25216d5c511f30514eceb92fd6b671a5c123d4dfab637086d05",
+  "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "ae433d93d7e0af3e056246588719ea5d7ac1e95c8eb13b68b620977900cba118",
+  "tests/test_spec069_units_telemetry.py": "b669d15c48bcd3dc99ff258b32ce8756a776621e32df2368aad5901f5c29b724",
+  "tests/test_system_one_shadow.py": "d3d88fc2975aad24c2b9827a0d54ff2ed87d2475acc25593c1e0ce41337d25d4"
+ },
+ "limits": "CI runs on Linux only; macOS is covered by running the same tests locally. Windows is tested for lexical normalization only (os.path patched to ntpath), not for the plugin, the driver or the shadow store: a declared limit. Local telemetry does not split by request kind, so the per-kind field metric of REQ-012 is not provided here. The SPEC-066 episode v0.2 vocabulary gains units (additive, private local store) and awaits owner review.",
+ "outcome": "passed: Before the change an accepted units call in shadow mode left no episode: the store validator refused analysisKind units (counter unavailable) and ToolingService._shadow discarded any failure in a bare except. Now each accepted units call records one valid episode with analysisKind units, derived from the constructed AIM records (effect kinds present, no declaration text, no request string stored), also when the result is artifact-backed; refused calls record no episode; the envelope is identical with shadow off and on; a shadow guard failure is counted as internal-error and does not change the envelope. Local telemetry records an accepted units call as outcome ok with its classification counts and a refused one as refused with a reason bucket, never error. Normalization gives identical bytes under ntpath and posixpath semantics, composes macOS NFD input to NFC, refuses Windows-style paths and cannot hide a case-only collision. Negative control: reverting the fix fails 5 of the new tests.",
+ "procedure": "procedure_014",
+ "result": "OK",
+ "scenario": "SC-014",
+ "specification": "SPEC-069 P3",
+ "testsRun": 65
+}
