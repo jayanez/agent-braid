@@ -1,0 +1,23 @@
+{
+ "command": "python -m unittest tests.test_lightning_cli.BoundaryTests",
+ "environment": {
+  "platform": "macOS-27.2",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_cli.py": "8ee9a115edb003d756180ada6f4f91adc1b0421025c69338751bb6f5eb9e2610",
+  "agent_braid/lightning_config.py": "50dfec9b5144eab63799920a3a7ed2a62fc499138de3c1619d1c3b27a555128b",
+  "agent_braid/lightning_schema.py": "6072cfe55bee4ae8cfed8d86755697e64aba79da1c3a034b4e18f793163e8be8",
+  "agent_braid/lightning_store.py": "4e801c5a78f82a6ae856252807e37933eec1f415b638cd2b6e892cc3eba9d039",
+  "agent_braid/plugin_mcp.py": "56115f8f3c6dbfef31fd2888f2a6b29a70f3f3471e31a6f0c19b8af6693b2d3b",
+  "agent_braid/tooling_mcp.py": "33c4c1499d04891d4b88e45d811eccbe2fc8487f073756a992348dc975313805",
+  "tests/test_lightning_cli.py": "a6d2804a600dc768e3e4bff33f6d9ffe582f39f7ec6ab51476c9f7ca745c1c1a"
+ },
+ "limits": "Static import inspection; it does not prove the absence of every possible side effect.",
+ "outcome": "passed: BL.0 modules import only the standard library and local Braid Lightning or registry modules, import no socket, subprocess, http, urllib or asyncio, and no MCP module mentions Braid Lightning.",
+ "procedure": "procedure_008",
+ "result": "OK",
+ "scenario": "SC-008",
+ "specification": "SPEC-070 BL.0",
+ "testsRun": 3
+}

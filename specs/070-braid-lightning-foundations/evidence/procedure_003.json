@@ -1,0 +1,18 @@
+{
+ "command": "python -m unittest tests.test_lightning_schema",
+ "environment": {
+  "platform": "macOS-27.2",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_schema.py": "6072cfe55bee4ae8cfed8d86755697e64aba79da1c3a034b4e18f793163e8be8",
+  "tests/test_lightning_schema.py": "135ceb3b9bb82c0104bfa598fbd417d4a00ebab7c3b7c169b1e487141df38f87"
+ },
+ "limits": "Deterministic unit inputs only; no host, model or store concurrency is exercised.",
+ "outcome": "passed: Rollout and event records round-trip byte-identically; unknown, missing, duplicate and non-finite inputs are refused with closed codes; transitions follow upstream VALID_TRANSITIONS; records carry no free-text content fields.",
+ "procedure": "procedure_003",
+ "result": "OK",
+ "scenario": "SC-003",
+ "specification": "SPEC-070 BL.0",
+ "testsRun": 8
+}

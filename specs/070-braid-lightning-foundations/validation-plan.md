@@ -1,8 +1,9 @@
 # SPEC-070: Validation plan
 
-Status (2026-11-08, draft): procedures 002–008 have local test runs on the
-candidate; procedures 001 and 009 need the owner and the post-merge tracking
-reconciliation. Deterministic procedures run in CI `validate`. The last column
+Status (2026-11-08, draft): procedures 002–008 have obtained local evidence
+(`evidence/procedure_*.json`, written by `scripts/spec070_capture_evidence.py`);
+procedure 001 has the owner T001 review record and procedure 009 the published
+tracking (BL.0–BL.5 #29–#34, SPEC-076 under Deferred #24). Deterministic procedures run in CI `validate`. The last column
 names the scenario `test_name` used in `assurance.json`; SC-001 maps once, to
 procedure_001, whose record also carries the procedure_009 tracking check.
 
