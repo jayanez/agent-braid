@@ -12,7 +12,7 @@
   "tests/fixtures/spec069-fake-hosts/claude": "de42483c09be9c10cb2e1c92b7e21242a257588b26ffcc91d5997bd11146e630",
   "tests/fixtures/spec069-fake-hosts/codex": "49c44741964527b6e204e939ab510b30bbcb94b48e3764a0b8aae6de0f33c1f2",
   "tests/fixtures/spec069-fake-hosts/opencode": "21092c62fe15ef7e6627f8f9351e6d362db820ec61550b0b0e99351b4a2590d7",
-  "tests/test_spec069_native_runs.py": "d2b4218e04b4b1129694b169500030cbed7d941e2b987c588fcefc47dfd68f06"
+  "tests/test_spec069_native_runs.py": "8571747f61c9286d387521722f1198b560434c90d74ccbf74bb153b7a5adf509"
  },
  "limits": "Codex: install, registration, sandbox and launch verified with the real binary, but the authenticated model call ends in 'Quota exceeded' on the owner's account, so the MCP transcript shape and parser are unverified; Codex is a declared limit (owner decision 2026-11-07) and blocks REQ-012 for that host. The OS sandbox is macOS sandbox-exec only; the driver does not run on Windows or Linux real runs. The self-test proves the pipeline, not any host or model.",
  "outcome": "passed: The --fake-hosts self-test runs the whole pipeline (profiles, sandbox workspace, plugin install, headless runs, parsing, scoring, redaction, secret scan, evidence with hashes, teardown) with negative controls: a leaked real path stops the run, a planted fake secret is absent from the evidence, a denied tool is refused and one that runs stops the run, a leftover profile or process is detected. Real runs through the same driver completed unattended on Claude Code 2.1.292 and OpenCode 2.1.4 (60 runs, claude-sonnet-5-5, evidence/native-runs-baseline-anthropic.json, teardown clean, secret scan passed); the first real pass stopped on a built-in tool not in the deny list, which is now not offered at all.",

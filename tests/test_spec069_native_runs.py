@@ -154,7 +154,8 @@ class NegativeControlTests(unittest.TestCase):
         self.assertFalse(evidence["teardown"]["clean"])
         self.assertGreaterEqual(evidence["teardown"]["leftoverProcesses"], 1)
         rows = subprocess.run(["ps", "-axo", "command="], capture_output=True, text=True).stdout
-        self.assertNotIn("sleep 300", rows)
+        # whole lines: an unrelated process such as "sleep 3000" must not fail this check
+        self.assertNotIn("sleep 300", [line.strip() for line in rows.splitlines()])
 
     def test_leftover_profile_is_detected(self) -> None:
         profile = driver.Profile()
