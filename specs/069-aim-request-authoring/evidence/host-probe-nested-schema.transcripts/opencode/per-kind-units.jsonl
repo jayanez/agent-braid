@@ -1,0 +1,4 @@
+{"type":"step_start","timestamp":1794091186139,"sessionID":"ses_e47d50a52ffeluiBDP35lpOEII","part":{"id":"prt_1b82af7db0019Zo24l7ueyL8Qt","sessionID":"ses_e47d50a52ffeluiBDP35lpOEII","messageID":"msg_1b82af690001LvYLWijeKxtMV5","type":"step-start","snapshot":"12c8613d62b8f5777ae078f53aa0161107cfadbc"}}
+{"type":"error","timestamp":1794091186157,"sessionID":"ses_e47d50a52ffeluiBDP35lpOEII","error":{"type":"provider.invalid-request","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.","status":400,"response":{"body":"{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgpNW4dZDUCJ28EiVoXrq\"}"}}}
+
+
