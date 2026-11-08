@@ -17,7 +17,7 @@
   "authority_snapshot": {
     "commit": null,
     "hashes": {
-      "ARCHITECTURE.md": "7bad53a83a54da09a0f55fb514432b53265cc1d99e88fdc3e42989b2fa4ea256",
+      "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "de98edde0132e64db2b0c9cfbf2be1e503437a57fc212936195be4c46c1817be",
@@ -65,6 +65,10 @@
       "docs/adr/0036-assurance-profiles.md": "9a7abf22920a9ba91cb61c5c48b905a1415182bc9434bcf884680ec41666b464",
       "docs/adr/0037-opencode-native-plugin.md": "36c777d124b5905e8b8c25951cf59c2061fedddf1950fc24bfa2bae7197d3809",
       "docs/adr/0038-analyze-work-request-contract.md": "095a8f89eed4d40ced3cf3400b620b2a2126370057a3966543dd2cd684392fdd",
+      "docs/adr/0039-braid-lightning-boundary.md": "8d15cbd7f3924c477250b3417275812c7990012a5a48d986dcd7024f9148cfa9",
+      "docs/adr/0040-braid-lightning-mit-vendoring.md": "ef0053259f7f9dc5929ed8709f037a6632a874c4bc035a898be8649afa5f0c84",
+      "docs/adr/0041-braid-lightning-content-traces.md": "1361654c3cb9a4b745eaf3aa3a3613fc0b76278a93f9fad3421bfd8a37a0a73c",
+      "docs/adr/0042-braid-lightning-local-weight-training.md": "d4b1c5b7664a88be27ce64c4a3eb013161103e47694cab445b3e70b5269eacaf",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -94,6 +98,7 @@
       "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
       "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
       "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/lightning-config.schema.json": "bf880e7125b4246c54e05ce2ce095242f3ed51fc8864c4559edc1db8b49e0445",
       "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
       "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
       "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",

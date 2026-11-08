@@ -1,0 +1,317 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jayanez/agent-braid/schemas/0.3.0-experimental/lightning-config.schema.json",
+  "title": "Braid Lightning configuration profile",
+  "description": "Experimental. Validator: agent_braid/lightning_config.py; contract: specs/070-braid-lightning-foundations/contracts/lightning-config.md. The validator additionally requires data.train and data.holdout to differ.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "target",
+    "data",
+    "rollout",
+    "algorithm",
+    "optimizer",
+    "reward",
+    "budget",
+    "traces",
+    "export",
+    "promotion"
+  ],
+  "properties": {
+    "schema": {
+      "const": "braid-lightning-config/v0.1"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "path",
+        "lab"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "skill"
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/repositoryPath"
+        },
+        "lab": {
+          "type": "string",
+          "enum": [
+            "spec069"
+          ]
+        }
+      }
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "train",
+        "holdout",
+        "freezeSha256"
+      ],
+      "properties": {
+        "train": {
+          "$ref": "#/$defs/repositoryPath"
+        },
+        "holdout": {
+          "$ref": "#/$defs/repositoryPath"
+        },
+        "freezeSha256": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          ]
+        }
+      }
+    },
+    "rollout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hosts",
+        "repetitions",
+        "maxTurns",
+        "timeoutSeconds",
+        "parallel"
+      ],
+      "properties": {
+        "hosts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "claude-code",
+              "opencode"
+            ]
+          }
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "maxTurns": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 30,
+          "maximum": 3600
+        },
+        "parallel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        }
+      }
+    },
+    "algorithm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "beamWidth",
+        "branchFactor",
+        "rounds",
+        "minibatch"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": [
+            "gepa",
+            "apo",
+            "baseline"
+          ]
+        },
+        "beamWidth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "branchFactor": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "rounds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "minibatch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        }
+      }
+    },
+    "optimizer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "host",
+        "route"
+      ],
+      "properties": {
+        "host": {
+          "type": "string",
+          "enum": [
+            "claude-code",
+            "opencode"
+          ]
+        },
+        "route": {
+          "const": "subscription"
+        }
+      }
+    },
+    "reward": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "components",
+        "gate"
+      ],
+      "properties": {
+        "components": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "schema",
+              "d4",
+              "canary"
+            ]
+          }
+        },
+        "gate": {
+          "type": "string",
+          "enum": [
+            "d4-holdout"
+          ]
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxRollouts",
+        "maxOptimizerCalls",
+        "eurCap"
+      ],
+      "properties": {
+        "maxRollouts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2000
+        },
+        "maxOptimizerCalls": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 500
+        },
+        "eurCap": {
+          "const": 0
+        }
+      }
+    },
+    "traces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sources",
+        "contentConsent",
+        "retentionDays"
+      ],
+      "properties": {
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "rollout",
+              "host-transcript",
+              "loom",
+              "system-one"
+            ]
+          }
+        },
+        "contentConsent": {
+          "type": "string",
+          "enum": [
+            "none",
+            "redacted"
+          ]
+        },
+        "retentionDays": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 90
+        }
+      }
+    },
+    "export": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "level"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "level": {
+          "type": "string",
+          "enum": [
+            "transition",
+            "trajectory"
+          ]
+        }
+      }
+    },
+    "promotion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "executionAuthorization"
+      ],
+      "properties": {
+        "mode": {
+          "const": "human"
+        },
+        "executionAuthorization": {
+          "const": false
+        }
+      }
+    }
+  },
+  "$defs": {
+    "repositoryPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^(?!\\.{1,2}(/|$))(?!.*/\\.{1,2}(/|$))[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$"
+    }
+  }
+}

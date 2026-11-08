@@ -1,0 +1,237 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Braid Lightning (opt-in optimization lab): from verifiable rewards to a human-promoted guidance candidate",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "docs/assets/agent-braid-lightning.html",
+    "legend": {
+      "entries": {
+        "backend": {
+          "label": "Lightning step"
+        },
+        "security": {
+          "label": "Owner gate"
+        },
+        "database": {
+          "label": "Private record"
+        },
+        "frontend": {
+          "label": "Report"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "owner",
+      "label": "Owner authority",
+      "variant": "exception"
+    },
+    {
+      "id": "lab",
+      "label": "Laboratory (subscription route, EUR 0)"
+    },
+    {
+      "id": "records",
+      "label": "Private run store"
+    },
+    {
+      "id": "eval",
+      "label": "Held-out evaluation"
+    }
+  ],
+  "phases": [
+    {
+      "id": "configure",
+      "label": "Configure (BL.0)",
+      "fromCol": 0,
+      "toCol": 1,
+      "variant": "security"
+    },
+    {
+      "id": "rollout",
+      "label": "Rollouts + reward (BL.1)",
+      "fromCol": 2,
+      "toCol": 3
+    },
+    {
+      "id": "optimize",
+      "label": "Optimize + promote (BL.2-BL.3)",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "emphasis"
+    }
+  ],
+  "mainPath": [
+    "consent",
+    "wizard",
+    "runner",
+    "reward",
+    "optimizer",
+    "heldout",
+    "promotion"
+  ],
+  "nodes": [
+    {
+      "id": "consent",
+      "lane": "owner",
+      "col": 0,
+      "type": "security",
+      "label": "Setup consent",
+      "sublabel": "plugin setup --lightning lab"
+    },
+    {
+      "id": "wizard",
+      "lane": "lab",
+      "col": 1,
+      "type": "backend",
+      "label": "lightning init",
+      "sublabel": "wizard, preview + digest"
+    },
+    {
+      "id": "profile",
+      "lane": "records",
+      "col": 1,
+      "type": "database",
+      "label": "lightning.json",
+      "sublabel": "fixed: EUR 0, human promotion"
+    },
+    {
+      "id": "runner",
+      "lane": "lab",
+      "col": 2,
+      "type": "backend",
+      "label": "Headless host rollouts",
+      "sublabel": "Claude Code, OpenCode",
+      "tag": "any *_API_KEY refused"
+    },
+    {
+      "id": "reward",
+      "lane": "lab",
+      "col": 3,
+      "type": "backend",
+      "label": "Verifiable reward",
+      "sublabel": "schema + D4 + canaries",
+      "tag": "no LLM judge"
+    },
+    {
+      "id": "runs",
+      "lane": "records",
+      "col": 3,
+      "type": "database",
+      "label": "Rollouts + events",
+      "sublabel": "content-free, hashed"
+    },
+    {
+      "id": "optimizer",
+      "lane": "lab",
+      "col": 4,
+      "type": "backend",
+      "label": "GEPA / APO optimizer",
+      "sublabel": "candidate guidance"
+    },
+    {
+      "id": "heldout",
+      "lane": "eval",
+      "col": 4,
+      "type": "frontend",
+      "label": "Frozen held-out report",
+      "sublabel": "preregistered, null is valid"
+    },
+    {
+      "id": "promotion",
+      "lane": "owner",
+      "col": 5,
+      "type": "security",
+      "label": "Human promotion",
+      "sublabel": "HAR profile registry",
+      "tag": "planned"
+    },
+    {
+      "id": "skill",
+      "lane": "eval",
+      "col": 5,
+      "type": "frontend",
+      "label": "Shipped skill by hash",
+      "sublabel": "rollback kept"
+    }
+  ],
+  "edges": [
+    {
+      "id": "enable",
+      "from": "consent",
+      "to": "wizard",
+      "label": "opt in",
+      "variant": "security"
+    },
+    {
+      "id": "write",
+      "from": "wizard",
+      "to": "profile",
+      "variant": "default"
+    },
+    {
+      "id": "start",
+      "from": "wizard",
+      "to": "runner",
+      "variant": "default"
+    },
+    {
+      "id": "score",
+      "from": "runner",
+      "to": "reward",
+      "variant": "default"
+    },
+    {
+      "id": "store",
+      "from": "reward",
+      "to": "runs",
+      "variant": "default"
+    },
+    {
+      "id": "learn",
+      "from": "reward",
+      "to": "optimizer",
+      "variant": "emphasis"
+    },
+    {
+      "id": "evaluate",
+      "from": "optimizer",
+      "to": "heldout",
+      "variant": "default"
+    },
+    {
+      "id": "decide",
+      "from": "heldout",
+      "to": "promotion",
+      "label": "human decision",
+      "variant": "dashed"
+    },
+    {
+      "id": "ship",
+      "from": "promotion",
+      "to": "skill",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "No authority from the lab",
+      "items": [
+        "executionAuthorization stays false; the MCP server never starts a run",
+        "Nothing is promoted without a human decision through the HAR registry"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Delivered today",
+      "items": [
+        "BL.0 only: consent, wizard, validated profile and private run store",
+        "Rollouts, optimization, promotion, consented traces and export are specified (SPEC-071 to SPEC-075); local GPU training is deferred"
+      ]
+    }
+  ]
+}

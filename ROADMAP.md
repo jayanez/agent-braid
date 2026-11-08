@@ -676,3 +676,30 @@ founder) and owner review T001, all accepted 2026-11-01; owner-run host
 verification receipts and the T035 checkpoint (by 2027-01-31) remain. VIS.2–VIS.4
 get specifications and milestones only after T035 records keep. The track is independent
 of the core, M4.x and HAR and gates none of them. Extra cash spend EUR 0.
+
+## BL — Braid Lightning
+
+[The Braid Lightning program](specs/070-braid-lightning-foundations/program.md) adapts
+[microsoft/agent-lightning](https://github.com/microsoft/agent-lightning) (MIT;
+[ADR 0040](docs/adr/0040-braid-lightning-mit-vendoring.md), proposed) into an
+off-by-default optimization laboratory that improves the guidance Agent Braid owns
+from recorded rollouts and verifiable rewards. Owner decisions of 2026-11-08: host
+CLI subscription route only (extra cash spend EUR 0), first target the
+`analyze-work` authoring guidance of SPEC-069, weight-level RL deferred, name
+"Braid Lightning". The boundary is [ADR 0039](docs/adr/0039-braid-lightning-boundary.md)
+(accepted 2026-11-08): advisory only, human promotion, `executionAuthorization` false.
+
+| Milestone | Spec | Capability |
+|---|---|---|
+| BL.0 — Braid Lightning foundations | [SPEC-070](specs/070-braid-lightning-foundations/spec.md) | ADRs, provenance, records, configuration wizard, run store, setup consent |
+| BL.1 — Lightning rollouts and verifiable reward | [SPEC-071](specs/071-lightning-rollouts-reward/spec.md) | subscription-only rollouts, reward vector, anti-reward-hacking controls |
+| BL.2 — Lightning prompt optimization | [SPEC-072](specs/072-lightning-prompt-optimization/spec.md) | preregistered APO and GEPA protocol |
+| BL.3 — Lightning promotion | [SPEC-073](specs/073-lightning-promotion/spec.md) | human promotion through the HAR profile registry |
+| BL.4 — Lightning trace consent | [SPEC-074](specs/074-lightning-trace-consent/spec.md) | consent, redaction, retention, adapters ([ADR 0041](docs/adr/0041-braid-lightning-content-traces.md)) |
+| BL.5 — Lightning dataset export | [SPEC-075](specs/075-lightning-dataset-export/spec.md) | supervised and trajectory datasets |
+| Deferred | [SPEC-076](specs/076-lightning-local-grpo/spec.md) | local GPU GRPO ([ADR 0042](docs/adr/0042-braid-lightning-local-weight-training.md)) |
+
+**Status:** draft planning (2026-11-08). BL.0 code is delivered for review: the
+experimental `agent-braid lightning init|validate|status|purge` commands and
+`plugin setup --lightning`. No run, host launch or model call exists yet; nothing is
+promoted or released.
