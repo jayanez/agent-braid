@@ -1,5 +1,28 @@
 {
- "calibration": null,
+ "calibration": {
+  "bytesPerToken": {
+   "description-only": {
+    "cl100k_base": 4.19,
+    "o200k_base": 4.14
+   },
+   "per-kind": {
+    "cl100k_base": 4.27,
+    "o200k_base": 4.16
+   }
+  },
+  "counts": {
+   "description-only": {
+    "cl100k_base": 340,
+    "o200k_base": 344
+   },
+   "per-kind": {
+    "cl100k_base": 1275,
+    "o200k_base": 1309
+   }
+  },
+  "note": "One-time calibration of the D12 approximation in a disposable interpreter; tiktoken is not a repository dependency. Anthropic's tokenizer is not public and is not measured.",
+  "tiktoken": "0.14.0"
+ },
  "command": "python -m unittest -v tests.test_spec069_schema_delivery tests.test_spec069_differential.DeclaredSchemaDifferentialTests tests.test_tooling_mcp.SurfaceVersionTests.test_analyze_work_definition_describes_the_aim_request_shape tests.test_tooling_mcp.SdkClientIntegrationTests.test_plugin_list_tools_serves_the_nested_per_kind_schema_through_the_sdk",
  "environment": {
   "capturePython": "3.13.11",
@@ -11,7 +34,7 @@
  "inputs": {
   "agent_braid/analyze_work_schema.py": "a7a5ccb6dde3ff1ad3650dfbd3a9e3c457e9c2c1782f88bb44ff5d852c156d41",
   "agent_braid/plugin_mcp.py": "56115f8f3c6dbfef31fd2888f2a6b29a70f3f3471e31a6f0c19b8af6693b2d3b",
-  "agent_braid/tooling_mcp.py": "ff7032dd7ffb7bdf81af708eb03bc14cfdaff8c5b6b38ed68e1dae8ac4eb8969",
+  "agent_braid/tooling_mcp.py": "33c4c1499d04891d4b88e45d811eccbe2fc8487f073756a992348dc975313805",
   "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
   "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
   "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
@@ -20,7 +43,7 @@
   "scripts/spec069_generate_corpus.py": "2e1201773f89c9d48b84a2e1421aa17b18c62792634279782ecf1fa760e5a6c1",
   "scripts/spec069_host_probe.py": "c4540057982a4c7ab4d5a2b06fc9bea004cc99423f639eebdcc1d6c796286389",
   "scripts/spec069_tool_schemas.py": "7712157d0541774b0ff90087d3880aaa96d9491dbec6654752143564cdad9609",
-  "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "4414d53c60c05d90e02f02ea810c5af197484180e2a7f575c3449a2dd5954dcc",
+  "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "ae433d93d7e0af3e056246588719ea5d7ac1e95c8eb13b68b620977900cba118",
   "specs/069-aim-request-authoring/evidence/host-probe-nested-schema.json": "385724b418df83e0be570dedcee1d586fc020f4fcaa8ff2b846444fa7076d59f",
   "specs/069-aim-request-authoring/reviews/t005-handoff-20261107.md": "c8bfc718878a5df8804e120633bb0f8d6a7132c39ee8706da4b9dcf14ca6f85d",
   "tests/fixtures/analysis-requests/aim.json": "347c45ab4469994254e6213329a2f337c5a48d7e73338ea8dadbef9d6864fe36",

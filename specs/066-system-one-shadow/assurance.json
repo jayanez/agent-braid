@@ -161,10 +161,10 @@
           "obtained_evidence": [
             {
               "command": "python3 scripts/spec066_shadow_overhead.py --samples 200 --warmup 10 --output specs/066-system-one-shadow/evidence/overhead-20261107.json",
-              "limits": "T021 measurement receipt only, not a gate: one owner machine (macOS 27.2 arm64, Python 3.13.11) under concurrent load (load average 8.1 at start; receipt re-measured 2026-11-08 after agent_braid/tooling_mcp.py changed in #1155), synthetic AIM batches, temporary HOME, worker step timed synchronously, stalled filesystem not simulated. The SC-003 refusal checks (procedure_003) are recorded separately.",
-              "outcome": "measured: worker step median 2.1-6.6 ms and p95 2.3-8.0 ms (maximum 33.8 ms) for 2, 12 and 32 operations with a cold and a warm store; request-path hand-off median at most 0.018 ms; 1,200 episodes abstained, none budget-exceeded, no refusal. 50 ms budget shown as reference only.",
+              "limits": "T021 measurement receipt only, not a gate: one owner machine (macOS 27.2 arm64, Python 3.13.11) under concurrent load, synthetic AIM batches, temporary HOME, worker step timed synchronously, stalled filesystem not simulated. The SC-003 refusal checks (procedure_003) are recorded separately.",
+              "outcome": "measured (re-captured 2026-11-08 after SPEC-069 T014 changed the shadow code): worker step median 2.0-6.5 ms and p95 2.7-7.3 ms (maximum 15.5 ms) for 2, 12 and 32 operations with a cold and a warm store; request-path hand-off median at most 0.016 ms; 1,200 episodes abstained, none budget-exceeded, no refusal. 50 ms budget shown as reference only.",
               "path": "specs/066-system-one-shadow/evidence/overhead-20261107.json",
-              "sha256": "28c49cd967caa60f8ff5d7718c72908df68d87e79ae0d033c75df2b4c1c2f35b"
+              "sha256": "02668bfee750a4387d8945ffc8d0d7065158f2a4b5ac1056ed87158511e71cf0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_003 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
