@@ -36,6 +36,23 @@ refuses, except the runtime-only checks listed in the contract (unique unit ids,
 and acyclic dependencies, case-only duplicate resources, the 256-byte identifier
 bound).
 
+## Release-note text: replacing the interim guidance of PR #1099
+
+Proposed text for the plugin release that ships `units` (owner reviews; nothing is published here):
+
+> `analyze-work` now accepts `kind` `units`. List units with an `id`, optional
+> `dependencies` and `effects` of `{kind, resource}` where `resource` is a
+> workspace-relative path; Agent Braid builds the AIM records, always records coverage as
+> `partial`, and returns the report with the constructed AIM request, which can be sent
+> again with `kind` `aim`. This supersedes the interim guidance of PR #1099, which described
+> the AIM envelope in the tool description and gave a complete AIM example in the
+> analyze skill because hosts had to guess the request shape; that guidance stays valid
+> for `kind` `aim`, and `units` is the simpler path for simple requests. The `aim` and `git` kinds, their reports and `analysisId` are unchanged. A plugin before
+> this release refuses a saved `units` request with `Unsupported analysis kind`; the
+> constructed request still replays through `kind` `aim`. System One shadow episodes now
+> use `analysisKind` `units` for these calls. Windows path semantics are tested for
+> normalization only.
+
 ## Schema notes (tightening without a new version, D8)
 
 The published schemas now state, with `pattern: "\S"`, what the runtime already
