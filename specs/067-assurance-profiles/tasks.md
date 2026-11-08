@@ -135,6 +135,7 @@ shared object store fails the portable-root check).
   `assurance.json`, `evidence/t011.json`. Verification: `quick`, `pr`,
   `validate_spec_kit`. Evidence: validation output bound to the candidate
   commit.
+  Obtained (2026-11-08, #1168): `evidence/t011.json`; five reviews produced fixes in the receipt verifier and renderer, 9 added tests (194 passing). F6 and the id-only standing-authorization binding are recorded for their own tasks. Freeze, authority snapshot and human review pending (founder).
 
 ## Unblocking map
 

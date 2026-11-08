@@ -535,10 +535,11 @@ T063, T064, T065 and T067 stay open; VIS.1d folds their UI parts in where noted.
 Planned on the owner's request of 2026-11-05; built only when the owner resumes viewer
 work. Goal: REQ-029, the same experience in Claude Code, Codex and OpenCode.
 
-- [ ] T076 (REQ-029): Parity contract. A host-neutral mapping from each host's session,
+- [x] T076 (REQ-029): Parity contract. A host-neutral mapping from each host's session,
   subagent, tool and stop signals to the existing loom events, per-host capability table
   (provided, absent, unknown), and the "absent, not zero" rule. Files: `contracts/host-parity.md`,
   `contracts/surfaces-matrix.json`. Dependencies: none.
+  Obtained (2026-11-08, #1163): `contracts/host-parity.md` and `hostParity` in `contracts/surfaces-matrix.json`; Claude Code provided from hv-t030, Codex all unknown (hv-t031 partial), OpenCode unprobed; `tests/test_view_host_parity.py`; hosted CI green. Quality and simplification passes were not run.
 - [ ] T077 (REQ-029): Codex live probe with a throwaway listener and no Loom code: record the
   names (never values) emitted by Codex hooks, `notify` and `[otel]` for session start and end,
   subagent, tool call and duration. Extends T031. Files: `host-verification-runbook.md`, `evidence/`.
