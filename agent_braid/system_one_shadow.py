@@ -44,7 +44,7 @@ MAX_PAIRS = 64
 RETENTION_DAYS = 30
 
 OPERATIONS = ('analyze', 'analyze-work')
-KINDS = ('aim', 'git')
+KINDS = ('aim', 'git', 'units')  # `units` episodes are derived from the constructed AIM request (SPEC-069 REQ-014)
 CLASSIFICATIONS = ('independent-candidate', 'ordered', 'conflicting', 'unknown')
 REASON_CODES = ('dependency-order', 'shared-write', 'partial-coverage', 'external-effect',
                 'disjoint', 'shared-read-only', 'read-version')
@@ -99,6 +99,11 @@ class StoreRefused(ValueError):
 def _note_refusal(reason: str) -> None:
     with _refusal_lock:
         _refusals[reason] += 1
+
+
+def note_refusal(reason: str) -> None:
+    """Count a refusal from outside this module (the adapter's guard), same counters."""
+    _note_refusal(reason)
 
 
 def refusal_counts() -> dict:
@@ -350,7 +355,7 @@ def build_episode(report: dict, operation: str, kind: str, *, request=None, salt
     if pairs:
         pairs = pairs[:MAX_PAIRS]
         sides = {entry['instanceId']: entry['resources'] for entry in report['operations']}
-        kinds = (_aim_kinds(request) if kind == 'aim'
+        kinds = (_aim_kinds(request) if kind in ('aim', 'units')
                  else {name: _git_kinds(resources) for name, resources in sides.items()})
         if kinds is not None:
             kinds = {name: value for name, value in kinds.items() if value is not None}

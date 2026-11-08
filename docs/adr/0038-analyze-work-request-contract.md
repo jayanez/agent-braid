@@ -17,6 +17,17 @@
   normative text in the
   [request contract](../../specs/069-aim-request-authoring/contracts/analyze-work-request.md)
 
+- **Amendment (proposed 2026-11-07, SPEC-069 T005; not accepted):** phase P3 declares a
+  compact schema per `kind` inside the `analyze-work` `inputSchema`, nested under
+  `properties.request` as a `oneOf` of labelled per-kind branches with one shared
+  `$defs` table; the top level stays a plain object because the model APIs refuse a
+  top-level `oneOf` and the plugin writes `workspaceId` into every tool schema. It is
+  generated at build time from the published schemas and capped at 1,500 approximate
+  tokens (D12). Keeping it depends on the D9 ablation (`final` against
+  `final-no-schema`): it stays only if first-attempt validity improves in at least one
+  host. The decisions above are unchanged; the owner reviews this amendment separately.
+  Normative text: the "Delivery in the tool definition" section of the request contract.
+
 ## Context
 
 SPEC-068 T010 (row 16, finding F1) showed an OpenCode model sending

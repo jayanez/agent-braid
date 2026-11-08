@@ -47,6 +47,7 @@ BASELINE_COMMIT = "8f63c606"  # develop commit of PR #1099: alpha.7 runtime plus
 DEFAULT_CODEX_BIN = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex"
 DEFAULT_OPENCODE_BIN = "~/.opencode/bin/opencode"
 HOSTS = ("claude-code", "codex", "opencode")
+ARMS = ("baseline", "final", "final-no-schema")
 SYSTEM_PATH = "/usr/bin:/bin:/usr/sbin:/sbin"
 PLUGIN_NAME = "agent-braid"
 # ToolSearch and Skill are host-side helpers: tool discovery, and the plugin's packaged guidance (the thing under measurement).
@@ -604,13 +605,18 @@ def register_workspace(plugin_root: Path, workspace: Path, env: dict[str, str], 
 # Candidate plugin
 # ----------------------------------------------------------------------------
 def build_candidate(arm: str, work: Path, build_cache: Path, allow_dirty: bool) -> tuple[Path, dict[str, Any]]:
-    """Build the plugin for an arm: ``baseline`` = develop commit 8f63c606 (alpha.7 runtime plus #1099), ``final`` = this checkout."""
+    """Build the plugin for an arm.
+
+    ``baseline`` = develop commit 8f63c606 (alpha.7 runtime plus #1099); ``final`` = this checkout (per-kind request
+    schemas in the ``analyze-work`` inputSchema); ``final-no-schema`` = the committed HEAD of this checkout with only the
+    request schema reverted to the interim description (D9 ablation, ``spec069_tool_schemas --delivery description-only``).
+    """
     source = ROOT
     cleanup: Callable[[], None] = lambda: None  # noqa: E731
-    if arm == "baseline":
-        source = work / "baseline-source"
-        subprocess.run(["git", "-C", str(ROOT), "worktree", "add", "--detach", str(source), BASELINE_COMMIT], check=True,
-                       capture_output=True)
+    if arm in ("baseline", "final-no-schema"):
+        source = work / f"{arm}-source"
+        subprocess.run(["git", "-C", str(ROOT), "worktree", "add", "--detach", str(source), BASELINE_COMMIT if arm == "baseline" else "HEAD"],
+                       check=True, capture_output=True)
         cleanup = lambda: subprocess.run(["git", "-C", str(ROOT), "worktree", "remove", "--force", str(source)],  # noqa: E731
                                          capture_output=True)
     try:
@@ -620,6 +626,10 @@ def build_candidate(arm: str, work: Path, build_cache: Path, allow_dirty: bool) 
         subprocess.run([str(py), "-m", "ensurepip"], check=True, capture_output=True)
         subprocess.run([str(py), "-m", "pip", "install", "-q", "build", "-r", str(source / "requirements-dev.txt")], check=True,
                        capture_output=True)
+        if arm == "final-no-schema":
+            subprocess.run([str(py), "-m", "scripts.spec069_tool_schemas", "--delivery", "description-only"], cwd=source, check=True,
+                           capture_output=True)
+            allow_dirty = True  # dirty by construction: the generated schema module differs from the committed one
         out = work / "candidate"
         platform_id = "macos-arm64" if sys.platform == "darwin" else "linux-x86_64"
         command = [str(py), str(source / "scripts/build_native_plugin.py"), "--output", str(out), "--cache", str(build_cache),
@@ -627,8 +637,14 @@ def build_candidate(arm: str, work: Path, build_cache: Path, allow_dirty: bool) 
         built = subprocess.run(command, cwd=source, check=True, capture_output=True, text=True)
         info = json.loads(built.stdout[built.stdout.index("{"):]) if "{" in built.stdout else {}
         commit = subprocess.run(["git", "-C", str(source), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
-        return out / "plugins" / PLUGIN_NAME, {"arm": arm, "sourceCommit": commit, "allowDirty": allow_dirty,
-                                               "sourceDirty": info.get("sourceDirty")}
+        record = {"arm": arm, "sourceCommit": commit, "allowDirty": allow_dirty, "sourceDirty": info.get("sourceDirty")}
+        schema_module = source / "agent_braid/analyze_work_schema.py"
+        if arm != "baseline" and schema_module.exists():
+            text = schema_module.read_text(encoding="utf-8")
+            found = re.search(r"^DELIVERY = '([^']+)'", text, re.M)
+            record["delivery"] = found.group(1) if found else None
+            record["analyzeWorkSchemaSha256"] = sha256_bytes(text.encode("utf-8"))
+        return out / "plugins" / PLUGIN_NAME, record
     finally:
         cleanup()
 
@@ -785,7 +801,8 @@ MANUAL_STEPS = [
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     p.add_argument("--prompt-set", default="development", help="a set id under specs/069-aim-request-authoring/prompts/ or a path")
-    p.add_argument("--arm", choices=("baseline", "final"), default="final")
+    p.add_argument("--arm", choices=ARMS, default="final",
+                   help="baseline = alpha.7 + #1099; final = candidate with per-kind schemas; final-no-schema = candidate with the interim description only (D9)")
     p.add_argument("--hosts", default=",".join(HOSTS))
     p.add_argument("--repetitions", type=int, default=1, help="D9 asks for 3 per prompt in a measured run")
     p.add_argument("--limit-cases", type=int, default=0, help="run only the first N prompts (probes)")
