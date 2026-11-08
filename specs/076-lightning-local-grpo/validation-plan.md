@@ -9,7 +9,7 @@ environment.
 | procedure_001 | SC-001 | founder decision record | go/no-go with evidence per criterion | go recorded with a criterion unmet |
 | procedure_002 | SC-002 | proxy bind/token tests | non-loopback bind and missing token refused | 0.0.0.0 accepted |
 | procedure_003 | SC-003 | fake backend tests | both fields forced; `token-ids-missing` recorded | response without token IDs accepted |
-| procedure_004 | SC-004 | event tests with retries | correct rollout/attempt keys; replay matches | attempt mislabelled |
+| procedure_004 | SC-004 | event tests with retries | correct rollout/attempt keys; v0.2 events with token-ID hashes; v0.1 events still read; replay matches | attempt mislabelled; v0.2 field in a v0.1 event refused |
 | procedure_005 | SC-005 | pause/resume tests | 503 + `Retry-After`; drain; resume | call accepted while paused |
 | procedure_006 | SC-006 | import boundary, metadata | core imports no GPU package | `import torch` in core |
 | procedure_007 | SC-007 | fake-GPU runner | clean start/stop; no k8s | orphan child process |

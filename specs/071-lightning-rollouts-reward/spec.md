@@ -46,7 +46,7 @@ Exclusions:
 
 ## Authorities
 
-Constitution clause zero and Articles 0, 12, 13, 14, 19, 20 and 23;
+Constitution clause zero and Articles 12, 13, 14, 19, 20 and 23;
 [GOVERNANCE.md](../../GOVERNANCE.md);
 [claim discipline](../../docs/theory/CLAIM_DISCIPLINE.md);
 [ADR 0021](../../docs/adr/0021-codex-claude-tooling-integration.md) (EUR 0
@@ -109,14 +109,21 @@ Open decisions:
   `rollout.timeoutSeconds` and `rollout.maxTurns`, kills the whole process tree
   on timeout or interrupt and verifies no leftover process, runs at most
   `rollout.parallel` rollouts at once (default 1), follows the SPEC-070 state
-  machine, and writes each rollout record through `lightning_store`.
+  machine, and writes each `braid-lightning-rollout/v0.1` record (owned by
+  `agent_braid/lightning_schema.py`, unchanged) and one
+  `braid-lightning-attempt-result/v0.1` record per attempt (new store kind
+  `result`) through `lightning_store`.
 - **REQ-004 — Subscription only.** Before launch the runner refuses
   (`paid-route-refused`) if the child environment contains any variable whose
   name ends in `_API_KEY`, or any of `ANTHROPIC_AUTH_TOKEN`,
   `ANTHROPIC_BASE_URL`, `CLAUDE_CODE_USE_BEDROCK`, `CLAUDE_CODE_USE_VERTEX`.
-  After launch it records the host-reported key source; a source outside
-  `harness_host_claude.SUBSCRIPTION_KEY_SOURCES`, or none, ends the rollout as
-  `route-unverified` and stops the run. Every rollout record carries `keySource`.
+  After launch it records the host-reported `apiKeySource`. A missing
+  `apiKeySource` ends the rollout as `route-unverified` and stops the run. The
+  value `oauth` is accepted. The value `none` is accepted only as the SPEC-069
+  fixture assumption, pending T003 evidence of what a subscription sign-in
+  reports; any other value outside
+  `harness_host_claude.SUBSCRIPTION_KEY_SOURCES` ends the rollout as
+  `route-unverified`. Every attempt-result record carries `keySource`.
 - **REQ-005 — Credential handling.** Depending on OD-1, the runner passes the
   subscription credential from its own environment to the child environment
   only; the value is registered with `Secrets` and never appears in any file,
@@ -126,8 +133,9 @@ Open decisions:
   host reports a window limit, mapping it to a name in `_BUDGET_STOPS`
   (`five-hour-headroom`, `weekly-stop`, `window-reset`, `window-reset-imminent`),
   or when `budget.maxRollouts` is reached (`unit-cap`); the stop name and the
-  completed count are recorded and `status` reports them; a stopped run resumes
-  only by an explicit new command.
+  completed count are recorded and `status` reports them. A quota or budget
+  stop ends the run; it resumes the same run id only by an explicit
+  `agent-braid lightning run --resume <run-id>`, never automatically.
 - **REQ-007 — Hooks.** `lightning_hooks` provides `on_rollout_start`,
   `on_trace_end` and `on_rollout_end` with upstream ordering; a hook exception
   is recorded and fails the rollout, never the store; hooks receive read-only
@@ -151,10 +159,14 @@ Open decisions:
   labels evidence `pipeline-only`; `status` reports run state and stops;
   `report` prints per-host summaries with Wilson intervals. All outputs carry
   `executionAuthorization: false`.
-- **REQ-011 — Replayable records.** Every rollout record follows
-  [contracts/rollout-record.md](contracts/rollout-record.md) with candidate,
-  prompt, transcript and reward hashes; recomputing the reward from the stored
-  transcript yields byte-identical reward records.
+- **REQ-011 — Replayable records.** Every attempt follows
+  [contracts/rollout-record.md](contracts/rollout-record.md)
+  (`braid-lightning-attempt-result/v0.1`, referencing the unchanged
+  `braid-lightning-rollout/v0.1`) with candidate, prompt, transcript and reward
+  hashes and the content-free parsed attempts (request envelope digests,
+  refusal codes and `score_case` inputs). Replay recomputes the reward from
+  those stored parsed attempts and yields byte-identical reward records.
+  Replay from the transcript itself requires SPEC-074 consent `redacted`.
 - **REQ-012 — Boundaries.** BL.1 code never calls `execute`, `recover` or grant
   paths, exposes no MCP tool, adds no runtime dependency, opens no listener, and
   every refusal uses the closed vocabulary in
@@ -168,8 +180,11 @@ Open decisions:
   sign-in, yields a first-attempt success proportion inside the T010 Wilson
   interval [0.361, 0.698] per host
   (`evidence/native-runs-baseline-anthropic.json`), with zero paid-route
-  observations. A proportion outside the interval is reported as a
-  non-replication, not hidden.
+  observations. Because the route, model and host versions differ from T010
+  (API key route), the report is labelled `route-changed comparison`, not
+  replication: it gives both proportions, both Wilson intervals and the
+  route, model and version differences. A proportion outside the interval is
+  reported as a difference, not hidden.
 
 ## Success criteria
 
@@ -180,6 +195,8 @@ Milestone exit: SC-013, SC-014 and SC-004 obtained, and OD-1 decided.
 ## Compatibility
 
 Additive. `scripts/spec069_native_runs.py` keeps its CLI and evidence format;
-its tests are the regression gate. No existing output changes. New records use
-the SPEC-070 store and schema identifiers `braid-lightning-rollout/v0.1` and
-`braid-lightning-reward/v0.1`.
+its tests are the regression gate. No existing output changes.
+`braid-lightning-rollout/v0.1` (owned by `agent_braid/lightning_schema.py`) is
+unchanged. New records use the SPEC-070 store and the new identifiers
+`braid-lightning-attempt-result/v0.1` (store kind `result`, added to
+`lightning_store.KINDS`) and `braid-lightning-reward/v0.1`.

@@ -17,7 +17,8 @@ evidence.
   Dependencies: T001. Verification: procedure_002.
 - [ ] T004 (REQ-003 / SC-003): Forced token IDs and logprobs. Dependencies: T003.
   Verification: procedure_003.
-- [ ] T005 (REQ-004 / SC-004): `model_request` events per rollout/attempt.
+- [ ] T005 (REQ-004 / SC-004): `model_request` events per rollout/attempt under
+  `braid-lightning-event/v0.2`; v0.1 events still read.
   Dependencies: T004. Verification: procedure_004.
 - [ ] T006 (REQ-005 / SC-005): Pause and resume. Dependencies: T003.
   Verification: procedure_005.

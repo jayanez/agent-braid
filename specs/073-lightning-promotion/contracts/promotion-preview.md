@@ -13,7 +13,9 @@ Schema identifier: `braid-lightning-promotion-preview/v0.1` (JSON on stdout).
 | `fileSha256Before` | hex | target file bytes now |
 | `registrySha256Before` | hex | registry bytes now |
 | `cohort` | const `native` | evaluated cohort |
-| `evidence` | sorted list of hex | evaluation and cost report digests cited |
+| `evidence` | sorted list of hex | SPEC-049 registration and evaluation record digests cited |
+| `heldOutSupport` | enum `supported`, `no-held-out-support` | H1 outcome of the SPEC-072 report for every host of the scope |
+| `overrideReason` | string or null | required on apply when `heldOutSupport` is `no-held-out-support`; recorded in the decision |
 | `diffSummary` | object `{added, removed}` line counts | no text body |
 | `requiredDecision` | const `approved` | the human decision still needed |
 | `previewDigest` | hex | SHA-256 over canonical bytes of all fields above |
@@ -26,4 +28,5 @@ when the recomputed digest equals `d`. Order: registry `record` (if new), human
 
 Refusal reasons: `unknown-scope`, `candidate-not-stored`, `digest-mismatch`,
 `preview-stale`, `automatic-promotion-disabled`, `cohort-mismatch`,
-`no-previous`, `text-too-large`.
+`no-previous`, `text-too-large`, `no-held-out-support` (apply without an
+owner override reason).

@@ -23,6 +23,6 @@ records only decisions specific to BL.1.
   `ANTHROPIC_API_KEY` through `KEY_SPECS`; that is the paid route. The runner
   inverts the policy: such keys are refused, following
   `harness_host_claude.ENV_DENY` and `SUBSCRIPTION_KEY_SOURCES`.
-- **Baseline to replicate.** T010 baseline: claude-code and opencode each 16/30
+- **Baseline to compare (`route-changed comparison`).** T010 baseline: claude-code and opencode each 16/30
   first-attempt successes on the development set, Wilson 95 % interval
   [0.361, 0.698]; verdict `misses` (negative result).

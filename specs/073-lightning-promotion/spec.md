@@ -88,11 +88,16 @@ committed export consumed by release builds).
 ## Requirements
 
 - **REQ-001 — Candidate record.** `lightning_promote.build_record` turns a BL.2
-  winner (candidate text digest, scope, evaluation and cost report digests) into
-  a valid `ProfileRegistry.record` input with cohort `native`; a text over the
-  mapped file's limit, an unknown scope, or a digest that does not match the
-  stored text is refused.
-- **REQ-002 — Human decision only.** `decide()` is called only with a human
+  winner (candidate text digest, scope, and the SPEC-072 REQ-011 SPEC-049
+  `Registration`/`EvaluationRecord` pair, A = A0, C = A2 GEPA) into a valid
+  `ProfileRegistry.record` input with cohort `native`; a text over the mapped
+  file's limit, an unknown scope, or a digest that does not match the stored
+  text is refused. `build_record` refuses unless the SPEC-072 report records H1
+  `supported` for every host of the scope; otherwise the preview states
+  `no-held-out-support` and an apply requires an explicit owner override
+  reason, which is recorded in the decision.
+- **REQ-002 — Human decision only.** `decide()` is called with the SPEC-072
+  `Registration` and `EvaluationRecord` pair and only with a human
   actor; any automatic actor is refused with `automatic-promotion-disabled`;
   `begin` and `commit` run only after an approved decision for the same
   candidate and current identity.

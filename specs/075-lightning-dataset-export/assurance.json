@@ -151,7 +151,7 @@
       "id": "REQ-002",
       "scenarios": [
         {
-          "given": "a fixture store mixing consented, metadata-only, unconsented and unredacted traces",
+          "given": "a fixture store mixing consent redacted, consent none, unconsented and unredacted traces",
           "id": "SC-002",
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -161,7 +161,7 @@
           "when": "export runs"
         }
       ],
-      "text": "Consented, redacted input only. Export consumes only SPEC-074 adapter output with content consent and a redaction version; everything else is excluded and counted by reason."
+      "text": "Consented, redacted input only. Export consumes only SPEC-074 adapter output with consent redacted and a redaction version; everything else is excluded and counted by reason (consent-none among them)."
     },
     {
       "id": "REQ-003",
@@ -177,7 +177,7 @@
           "when": "exported as `supervised`"
         }
       ],
-      "text": "Supervised dataset. `supervised` writes one JSONL line per example: `{\"messages\": [...]}` with roles `system|user|assistant|tool`, plus a record ID referencing the manifest."
+      "text": "Supervised dataset. `supervised` writes one JSONL line per example: `{\"messages\": [...]}` with roles `system|user|assistant|tool`, plus a record ID referencing the manifest; it includes only records with d4FirstAttempt true, or every line carries an explicit `outcome` field."
     },
     {
       "id": "REQ-004",
@@ -193,7 +193,7 @@
           "when": "exported at both levels"
         }
       ],
-      "text": "Trajectory dataset and aggregation levels. `trajectory` writes per-rollout records with reward vector, attempt and status. `--level transition` yields one record per model call; `--level trajectory` merges a rollout into one record (E2)."
+      "text": "Rollout dataset and aggregation levels. Kind `rollout` writes per-rollout records with reward vector, attempt and status. `--level transition` yields one record per model call; `--level trajectory` merges a rollout into one record (E2)."
     },
     {
       "id": "REQ-005",
@@ -241,7 +241,7 @@
           "when": "exported with the default"
         }
       ],
-      "text": "Success/failure balance. Per task, records are balanced per E4 and imbalance is reported."
+      "text": "Success/failure balance. For `rollout` exports only, records are balanced per task per E4 and imbalance is reported; `supervised` exports are never balanced and no benefit is claimed."
     },
     {
       "id": "REQ-008",
@@ -273,7 +273,7 @@
           "when": "called with valid and invalid arguments"
         }
       ],
-      "text": "CLI. `agent-braid lightning export --run <id>|--all --kind supervised|trajectory --level transition|trajectory --out <dir> [--seed N] [--balance equal|none]` with bounded, value-free refusals."
+      "text": "CLI. `agent-braid lightning export --run <id>|--all --kind supervised|rollout --level transition|trajectory --out <dir> [--seed N] [--balance equal|none] [--outcome-field]` with bounded, value-free refusals, refusing with export-disabled unless export.enabled is true."
     },
     {
       "id": "REQ-010",
@@ -322,9 +322,25 @@
         }
       ],
       "text": "Documentation and converge. Documentation states what datasets are, their limits and the terms gate; Spec Kit artifacts converge."
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "a fixture store with one record past retention",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/075-lightning-dataset-export/validation-plan.md",
+          "test_name": "procedure_013",
+          "then": "the expired record is refused with retention-expired, the manifest records retention per source, and lightning purge lists the citing manifest.",
+          "when": "export runs and the run is later purged"
+        }
+      ],
+      "text": "Source retention. The manifest records each source run's SPEC-074 retention; export refuses records past retention with retention-expired; documentation states exported files are outside purge; lightning purge lists dataset manifests citing the run."
     }
   ],
   "scientific_limits": "Datasets are artifacts, not evidence that training improves a model; text-level merging is declared per record; host-model output exports only after the owner's terms decision (legal, not scientific).",
-  "scope": "Export of consented, redacted Lightning traces into supervised and trajectory datasets with deterministic manifests, balance, canary scan and a terms gate; no training.",
+  "scope": "Export of consented, redacted Lightning traces into supervised and rollout datasets with deterministic manifests, rollout-only balance, source retention, an export.enabled gate, canary scan and a terms gate; no training.",
   "stage": "draft"
 }

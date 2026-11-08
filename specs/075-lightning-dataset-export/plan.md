@@ -36,7 +36,7 @@ network, non-determinism).
 | — | `schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json` | new (lead) |
 
 Pipeline: terms gate (if any candidate source is `host-model`) → select →
-consent/redaction filter (counted) → aggregate (level) → balance (seeded) →
+consent/redaction filter (counted) → aggregate (level) → balance (seeded, `rollout` kind only) →
 canonical lines → canary scan → write `records.jsonl` then `manifest.json`
 atomically (temporary directory, then rename). Compatibility: additive only.
 

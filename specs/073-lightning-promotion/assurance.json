@@ -143,7 +143,7 @@
           "when": "build_record runs"
         }
       ],
-      "text": "Candidate record. lightning_promote.build_record turns a BL.2 winner into a valid ProfileRegistry.record input with cohort native and candidateSha256; unknown scope, digest mismatch with stored text, or oversize text is refused."
+      "text": "Candidate record. lightning_promote.build_record turns a BL.2 winner and its SPEC-072 SPEC-049 Registration/EvaluationRecord pair into a valid ProfileRegistry.record input with cohort native and candidateSha256; unknown scope, digest mismatch with stored text, or oversize text is refused; it refuses unless the SPEC-072 report records H1 supported for the scope's hosts, otherwise the preview states no-held-out-support and apply requires an explicit owner override reason recorded in the decision."
     },
     {
       "id": "REQ-002",

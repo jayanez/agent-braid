@@ -24,19 +24,20 @@ manual copy-paste.
 ## Phase P2 — runner, reward and controls
 
 - [ ] T003 (REQ-003 / SC-003): `lightning_runner` with timeout, kill tree,
-  bounded parallel, store writes and state machine. Dependencies: T002.
+  bounded parallel, store writes and state machine; extend
+  `lightning_store.KINDS` with `result` and test it. Dependencies: T002.
   Verification: procedure_003.
 - [ ] T004 (REQ-004 / SC-004): Environment gate and key-source check; research
-  the OpenCode key source (OD-2). Dependencies: T003. Verification: procedure_004.
+  the OpenCode key source (OD-2); record T003 evidence for the `none` value. Dependencies: T003. Verification: procedure_004.
 - [ ] T005 (REQ-005 / SC-005): Credential pass-through and secret scan for both
   OD-1 options, tested with a synthetic token. Dependencies: T004.
   Verification: procedure_005.
-- [ ] T006 (REQ-006 / SC-006): Budget and quota stops. Dependencies: T003.
+- [ ] T006 (REQ-006 / SC-006): Budget and quota stops and `run --resume <run-id>`. Dependencies: T003.
   Verification: procedure_006.
 - [ ] T007 (REQ-007 / SC-007): `lightning_hooks`. Dependencies: T003.
   Verification: procedure_007.
 - [ ] T008 (REQ-008, REQ-011 / SC-008, SC-011): `lightning_reward`, rollout and
-  reward records, replay test. Dependencies: T003. Verification: procedure_008,
+  attempt-result and reward records, replay from content-free parsed attempts. Dependencies: T003. Verification: procedure_008,
   procedure_011.
 - [ ] T009 (REQ-009 / SC-009): Hidden `.git`, egress denial, canaries, FREEZE
   check. Dependencies: T003, T008. Verification: procedure_009.
@@ -53,7 +54,7 @@ manual copy-paste.
 
 - [ ] T012 (REQ-014 / SC-014): Owner decides OD-1; owner signs in; one command
   runs the baseline on the subscription route; record evidence and the
-  paid-route observation count. Dependencies: T011, OD-1.
+  paid-route observation count; label the report `route-changed comparison`. Dependencies: T011, OD-1.
   Verification: procedure_014.
 
 ## Closing

@@ -13,7 +13,7 @@ surface are adapted here (see [third-party-inventory.md](third-party-inventory.m
 
 ## Constitution check before research
 
-- Article 0 and clause zero: engineering only; no algebraic or performance claim.
+- Clause zero: engineering only; no algebraic or performance claim.
 - Article 12: the store serializes writers with an exclusive lock; runs default to `parallel = 1`.
 - Article 13: rewards and configuration values are never presented as guarantees.
 - Article 14: records are canonical, hashable and replayable.

@@ -11,7 +11,7 @@ standard-library only. Scope follows REQ-001 to REQ-014; L1–L5 are binding.
 
 ## Constitution check before research
 
-- Clause zero, Article 0: engineering only; no algebraic claim.
+- Clause zero: engineering only; no algebraic claim.
 - Article 12: bounded concurrency (`parallel` default 1) and the store lock.
 - Article 13: rewards are empirical measurements, labelled as such.
 - Article 14: hashes of candidate, prompt, transcript and reward for replay.
@@ -35,13 +35,17 @@ SPEC-069 driver as a subprocess (duplicates parsing and hides records).
 | `scripts/spec069_native_runs.py` (local) | `agent_braid/lightning_hosts.py` | moved functions; driver re-imports them; `KEY_SPECS` stays in the driver |
 | v1.0.3 `agentlightning/controller/local_reconciler.py` | `agent_braid/lightning_runner.py` | subprocess, timeout, kill tree, bounded parallel, subscription gate |
 | v1.0.3 `agentlightning/hooks.py` | `agent_braid/lightning_hooks.py` | synchronous hooks |
-| v1.0.3 `agentlightning/schemas.py` | SPEC-070 `lightning_schema` | rollout record extends it |
+| v1.0.3 `agentlightning/schemas.py` | SPEC-070 `lightning_schema` | `braid-lightning-rollout/v0.1` unchanged; new `braid-lightning-attempt-result/v0.1` referencing it |
 | v0.x `agentlightning/emitter/reward.py` | `agent_braid/lightning_reward.py` | vector reward over `score_case` and `analyze_work_schema` |
 | v0.x Trainer CLI | `agent_braid/lightning_cli.py` (`run`, `status`, `report`) | registered by SPEC-070 |
 
 Flow: configuration, FREEZE and scoring hash check, environment gate
 (REQ-004), isolation probe; then per rollout: profile, hooks, launch, parse,
 key-source check, teardown, reward, store; finally the summary.
+
+BL.1 extends `lightning_store.KINDS` with `result` (`results.jsonl`) for the
+attempt-result records, with store tests for append, read, unknown-key refusal
+and the unchanged `rollout` and `event` kinds.
 
 Each ported file carries the SPDX header and adaptation notice of ADR 0040.
 
@@ -65,9 +69,10 @@ credential path is gated by OD-1.
   expected shapes.
 - OpenCode may expose no key source (OD-2): the runner refuses rather than
   assumes.
-- Quota exhaustion mid-run: recorded stop, resumable; partial results are
-  reported as partial.
-- Real baseline outside the interval: reported as non-replication; SPEC-072
+- Quota exhaustion mid-run: recorded stop ends the run; resumed only by
+  `lightning run --resume <run-id>`; partial results are reported as partial.
+- Real baseline outside the interval: reported as a `route-changed comparison`
+  difference; SPEC-072
   then uses the new baseline as its control.
 - The OS sandbox is macOS only; Linux CI runs fake hosts only, recorded as a
   limit.

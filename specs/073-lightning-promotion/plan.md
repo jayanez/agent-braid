@@ -22,7 +22,8 @@ evaluation and cost report. Output: a registry journal entry, an updated
 ## Research, assumptions and alternatives
 
 See [research.md](research.md). Assumptions: SPEC-072 emits the winner with
-evaluation and cost report digests compatible with `decide()`; skill texts fit
+a SPEC-049 `Registration`/`EvaluationRecord` pair (SPEC-072 REQ-011, A = A0,
+C = A2 GEPA) that `decide()` consumes, and records the H1 outcome per host; skill texts fit
 the scope map limits. Rejected alternatives: a new Lightning registry;
 automatic hot-swap of resources as upstream does; whole texts in the experience
 store; manual skill edits after an approval.

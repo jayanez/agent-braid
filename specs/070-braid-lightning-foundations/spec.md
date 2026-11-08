@@ -41,7 +41,7 @@ Exclusions:
 
 ## Authorities
 
-Constitution clause zero and Articles 0, 12, 13, 14, 16, 19, 20, 23 and 25;
+Constitution clause zero and Articles 12, 13, 14, 16, 19, 20, 23 and 25;
 [GOVERNANCE.md](../../GOVERNANCE.md); [claim discipline](../../docs/theory/CLAIM_DISCIPLINE.md);
 ADR 0012 and ADR 0033 (vendored-code license boundaries), ADR 0021 (EUR 0 spend),
 ADR 0024 (native plugins), ADR 0025 (local telemetry), ADR 0027 (Braid Harness

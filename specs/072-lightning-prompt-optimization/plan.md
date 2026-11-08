@@ -6,11 +6,13 @@ SPEC-071 provides a subscription-only runner, rollout records and a verifiable
 reward vector. The target is the body of
 `integrations/agent-braid/skills/agent-braid-analyze/SKILL.md`. The optimizer
 LLM is a host CLI call through the same runner (L1). The runtime stays
-standard-library only. Scope follows REQ-001 to REQ-010.
+standard-library only. Scope follows REQ-001 to REQ-011. Until BL.4 the optimizer reflects only on
+content-free reward vectors, `score_case` reasons, refusal codes and candidate
+text, so BL.2 depends on BL.1 only.
 
 ## Constitution check before research
 
-- Clause zero, Article 0: a measured hypothesis about prompt text; no algebraic
+- Clause zero: a measured hypothesis about prompt text; no algebraic
   claim.
 - Article 9: the protocol must be able to produce a counterexample; a null
   result is a valid outcome.
@@ -39,12 +41,19 @@ See [research.md](research.md).
 | arXiv 2507.19457 (paper only) | `agent_braid/lightning_gepa.py` | no code vendored |
 
 Optimizer call path: algorithm builds input from development data only,
-contamination check (REQ-006), runner call on `optimizer.host`, parse the
+contamination check (REQ-006), runner call on `optimizer.host` in the SPEC-071
+disposable profile and OS sandbox (no path to `held-out.json`, scoring sources
+or `.git`), parse the
 candidate text, record the candidate, evaluate through rollouts.
 
 Held-out path: a separate CLI command (`agent-braid lightning report
 --holdout`) checks the protocol freeze and FREEZE hashes, runs arms A0–A2, and
-writes the analysis.
+writes the analysis plus the SPEC-049 `Registration`/`EvaluationRecord` pair
+(A = A0, C = A2 GEPA) for SPEC-073 (REQ-011).
+
+Store: BL.2 extends `lightning_store.KINDS` with `candidate`
+(`candidates.jsonl`), with store tests for append, read and unknown-key
+refusal.
 
 ## Constitution check after design
 
@@ -63,7 +72,8 @@ Unchanged. Promotion stays outside the design.
 
 - Overfitting to 10 development prompts: rounds capped, held-out untouched.
 - Optimizer output not a valid skill body: refused and counted as a failed call.
-- Quota exhaustion: runs pause; budgets are per arm.
+- Quota exhaustion: the run ends; it resumes the same run id only by
+  `lightning run --resume <run-id>`; budgets are per arm run.
 - Low power: decision rule fixed in advance; intervals reported.
 - Host model updates between arms: arms run in the same window; versions
   recorded; mismatch reported as a limit.

@@ -6,8 +6,8 @@ and committed fixtures; canaries are synthetic.
 
 | Procedure | Scenario | Test target | Expected | Negative controls |
 |---|---|---|---|---|
-| procedure_001 | SC-001 | `tests/test_lightning_consent.py` (planned) | schema and validator agree; consent changes only via matching preview digest | `raw` value accepted (must fail); stale digest |
-| procedure_002 | SC-002 | same, gate tests | content fields refused with `content-consent-required`; outputs content-free | invalid config treated as `redacted` (must fail) |
+| procedure_001 | SC-001 | `tests/test_lightning_consent.py` (planned) | `lightning-config.schema.json` `traces` section and validator agree; consent changes only via `lightning init` matching preview digest | `raw` value accepted (must fail); stale digest; `plugin setup` changing consent (must fail) |
+| procedure_002 | SC-002 | same, gate tests | store refuses content fields with `store-consent`; adapter/CLI report `content-consent-required`; outputs content-free | invalid config treated as `redacted` (must fail) |
 | procedure_003 | SC-003 | `tests/test_lightning_redact.py` (planned) | every class replaced by its placeholder; post-scan clean | disable one pattern → test fails |
 | procedure_004 | SC-004 | canary corpus test | 100% canaries caught in all encodings; none in any output | drop base64 handling → failure reported |
 | procedure_005 | SC-005 | retention and purge tests (injected clock) | records past retention removed; purge leaves no content bytes | retention 91 refused; sweep skipped → test fails |

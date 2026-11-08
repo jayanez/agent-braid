@@ -5,7 +5,7 @@ The scope map is a closed table in `agent_braid/lightning_promote.py`.
 | Scope | Target path | Text limit |
 |---|---|---|
 | `lightning.skill.analyze` | `integrations/agent-braid/skills/agent-braid-analyze/SKILL.md` | 32 KiB |
-| `lightning.skill.plan` | `integrations/agent-braid/skills/agent-braid-plan/SKILL.md` | 32 KiB |
+| `lightning.skill.plan` (planned, no producer yet) | `integrations/agent-braid/skills/agent-braid-plan/SKILL.md` | 32 KiB |
 
 Entries are proposals pending OD-1; paths are confirmed against the plugin
 source tree in T002.

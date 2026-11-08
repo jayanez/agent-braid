@@ -105,7 +105,11 @@ failure record. Verification: procedure_003; T004.
 ### REQ-004 — Event recording
 
 Every call is recorded as a `model_request` event keyed by rollout and attempt
-in the Lightning store, with prompt and response token IDs and hashes.
+in the Lightning store, with prompt and response token IDs and hashes. This
+adds the event schema `braid-lightning-event/v0.2`: host `local-vllm` and, in
+`model_request`, `promptTokenIdsSha256` and `responseTokenIdsSha256`.
+`braid-lightning-event/v0.1` records stay readable unchanged. ADR 0042 records
+this schema change.
 
 **SC-004:** Given two rollouts with retries, when calls pass through, then each
 event carries the right rollout and attempt IDs and replay rebuilds the
@@ -208,7 +212,9 @@ and `speckit-converge` passes. Verification: procedure_015; T015.
 
 Hypothesis (deferred): GRPO on verifiable Agent Braid rewards may raise a local
 model's held-out pass rate; untested. Additive optional extra and modules; no
-change to core, schemas or MCP surfaces.
+change to core or MCP surfaces. One schema change: the new event schema
+`braid-lightning-event/v0.2` (REQ-004, recorded by ADR 0042); v0.1 events stay
+readable.
 
 ## Evidence and unresolved questions
 

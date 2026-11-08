@@ -38,11 +38,11 @@ recorded evidence; weight-level RL is BL.6.
 | Milestone | Spec | Capability | Exit criterion | Depends on |
 |---|---|---|---|---|
 | BL.0 — Braid Lightning foundations | [SPEC-070](spec.md) | ADRs, vendoring provenance, data model, configuration, wizard, store, setup flag | ADRs reviewed; tests and Spec Kit gates pass | — |
-| BL.1 — Lightning rollouts and verifiable reward | [SPEC-071](../071-lightning-rollouts-reward/spec.md) | subscription-only rollout runner and reward vector | fake-host pipeline passes; one real baseline replicates SPEC-069 T010 within its Wilson interval; zero paid-route observations | BL.0, SPEC-069 freeze |
+| BL.1 — Lightning rollouts and verifiable reward | [SPEC-071](../071-lightning-rollouts-reward/spec.md) | subscription-only rollout runner and reward vector | fake-host pipeline passes; one real baseline reported against SPEC-069 T010 as a `route-changed comparison` (both proportions, Wilson intervals, route/model/version differences); zero paid-route observations | BL.0, SPEC-069 freeze |
 | BL.2 — Lightning prompt optimization | [SPEC-072](../072-lightning-prompt-optimization/spec.md) | APO and GEPA over the analyze guidance | preregistered held-out evaluation completed; a null result is valid | BL.1 |
 | BL.3 — Lightning promotion | [SPEC-073](../073-lightning-promotion/spec.md) | human promotion through the HAR profile registry, rollback | approved candidate shipped by hash; rollback tested | BL.2, SPEC-049 |
 | BL.4 — Lightning trace consent | [SPEC-074](../074-lightning-trace-consent/spec.md) | consent, redaction, retention, trace adapters | no content without consent; secret canaries caught; purge tested | BL.0 |
-| BL.5 — Lightning dataset export | [SPEC-075](../075-lightning-dataset-export/spec.md) | supervised and trajectory datasets with manifests | deterministic manifests; canary corpus clean; terms-of-use gate recorded | BL.4 |
+| BL.5 — Lightning dataset export | [SPEC-075](../075-lightning-dataset-export/spec.md) | supervised and rollout datasets with manifests | deterministic manifests; canary corpus clean; terms-of-use gate recorded | BL.4 |
 | Deferred | [SPEC-076](../076-lightning-local-grpo/spec.md) | local GPU GRPO behind a token-ID proxy | founder go/no-go and ADR 0042 | BL.5 |
 
 The order is a dependency order, not a schedule. Milestone and issue state do

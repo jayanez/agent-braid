@@ -16,15 +16,18 @@ research protocol; no training runs here.
 In scope:
 
 - module `agent_braid/lightning_export.py` (standard library only);
-- two dataset kinds: `supervised` (SFT chat `messages` JSONL) and `trajectory`
+- two dataset kinds: `supervised` (SFT chat `messages` JSONL) and `rollout`
   (per-rollout records with reward and attempt metadata);
 - aggregation levels `transition` and `trajectory`, porting the concepts of the
   upstream v1 trace aggregator (`agentlightning/verl/rollout_adapter.py`);
 - a dataset manifest with per-record hashes, source rollout, group and task IDs,
   consent level, redaction version and deterministic ordering, published as
   `schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json`;
-- success/failure balancing per task;
-- CLI `agent-braid lightning export`;
+- success/failure balancing per task for `rollout` exports;
+- CLI `agent-braid lightning export`, refused with `export-disabled` unless the
+  configuration has `export.enabled` set to `true`;
+- source retention recorded in the manifest, with refusal of records past
+  retention;
 - a terms-of-use gate recorded before any host-model output is exported.
 
 Exclusions:
@@ -54,9 +57,10 @@ Exclusions:
 Design decisions (proposed, for owner review in T001):
 
 - **E1 — Input boundary.** Export reads only records returned by
-  `lightning_adapter` with consent level `content` (or higher, as SPEC-074
-  defines) and a recorded redaction version. Metadata-only consent yields no
-  record; the reason is counted in the manifest, never silently dropped.
+  `lightning_adapter` with consent `redacted` (the only content level SPEC-074
+  defines; the vocabulary is `none` | `redacted`) and a recorded redaction
+  version. Consent `none` yields no record; the reason `consent-none` is counted
+  in the manifest, never silently dropped.
 - **E2 — Prefix merging.** Trajectory aggregation merges consecutive turns
   by token-ID prefix only when every turn carries token IDs (never true for
   hosted Claude Code or OpenCode). Otherwise merging is text-level on the
@@ -66,10 +70,14 @@ Design decisions (proposed, for owner review in T001):
   turnIndex)`; JSONL lines use `trace_adapter.canonical_bytes`. No timestamps or
   host paths enter dataset bytes; `generatedAt` is excluded from the manifest
   digest.
-- **E4 — Balance.** Per task, successes and failures are capped to equal counts
-  (default) with a deterministic seeded choice; tasks with only one outcome are
-  reported, not padded. Rationale: the SWE-Gym finding that unbalanced
-  success-only data skews behaviour (research §2).
+- **E4 — Balance.** Balancing applies to `rollout` (trajectory) exports only:
+  per task, successes and failures are capped to equal counts (default) with a
+  deterministic seeded choice; tasks with only one outcome are reported, not
+  padded. Rationale: the SWE-Gym finding that unbalanced success-only data
+  skews behaviour (research §2). `supervised` exports are not balanced: they
+  include only records with `d4FirstAttempt` true, or every line carries an
+  explicit `outcome` field. No claim is made that either choice benefits a
+  model.
 - **E5 — Terms gate.** Exporting host-model output requires an owner decision
   record naming provider, terms version or URL, review date and outcome. Without
   it the CLI refuses with `terms-gate-missing`. This is a legal question, not a
@@ -96,10 +104,11 @@ or amended and OD-2 is decided. Verification: procedure_001; T001.
 
 ### REQ-002 — Consented, redacted input only
 
-Export consumes only SPEC-074 adapter output with content consent and a
-redaction version; everything else is excluded and counted by reason.
+Export consumes only SPEC-074 adapter output with consent `redacted` and a
+redaction version; everything else is excluded and counted by reason
+(`consent-none` among them).
 
-**SC-002:** Given a fixture store mixing consented, metadata-only, unconsented
+**SC-002:** Given a fixture store mixing consent `redacted`, consent `none`, unconsented
 and unredacted traces, when export runs, then only the consented redacted traces
 appear and the manifest counts each exclusion reason. Verification:
 procedure_002; T003.
@@ -107,20 +116,22 @@ procedure_002; T003.
 ### REQ-003 — Supervised dataset
 
 `supervised` writes one JSONL line per example: `{"messages": [...]}` with roles
-`system|user|assistant|tool`, plus a record ID referencing the manifest.
+`system|user|assistant|tool`, plus a record ID referencing the manifest. It
+includes only records with `d4FirstAttempt` true, unless `--outcome-field` is
+given, in which case every line carries an explicit `outcome` field.
 
 **SC-003:** Given fixture trajectories, when exported as `supervised`, then
 every line validates against the record shape in the contract and its hash
 matches the manifest. Verification: procedure_003; T004.
 
-### REQ-004 — Trajectory dataset and aggregation levels
+### REQ-004 — Rollout dataset and aggregation levels
 
-`trajectory` writes per-rollout records with reward vector, attempt and status.
+Kind `rollout` writes per-rollout records with reward vector, attempt and status.
 `--level transition` yields one record per model call; `--level trajectory`
 merges a rollout into one record (E2).
 
 **SC-004:** Given a three-turn rollout with and without token IDs, when exported
-at both levels, then transition yields three records, trajectory yields one, and
+at both levels with kind `rollout`, then transition yields three records, trajectory yields one, and
 the text-level record carries `limits: ["text-level-merge"]`. Verification:
 procedure_004; T005.
 
@@ -146,10 +157,11 @@ Verification: procedure_006; T006.
 
 ### REQ-007 — Success/failure balance
 
-Per task, records are balanced per E4 and imbalance is reported.
+For `rollout` exports only, records are balanced per task per E4 and imbalance
+is reported; `supervised` exports are never balanced (E4).
 
-**SC-007:** Given a task with 5 successes and 2 failures, when exported with the
-default, then 2 of each are kept by a seeded choice, stable across reruns, and
+**SC-007:** Given a task with 5 successes and 2 failures, when exported as
+`rollout` with the default, then 2 of each are kept by a seeded choice, stable across reruns, and
 the manifest reports the dropped counts. Verification: procedure_007; T007.
 
 ### REQ-008 — Terms-of-use gate
@@ -163,12 +175,15 @@ hash. Verification: procedure_008; T008, T010.
 
 ### REQ-009 — CLI
 
-`agent-braid lightning export --run <id>|--all --kind supervised|trajectory
---level transition|trajectory --out <dir> [--seed N] [--balance equal|none]`
-with bounded, value-free refusals.
+`agent-braid lightning export --run <id>|--all --kind supervised|rollout
+--level transition|trajectory --out <dir> [--seed N] [--balance equal|none]
+[--outcome-field]` with bounded, value-free refusals; it refuses with
+`export-disabled` unless the configuration has `export.enabled` set to
+`true`.
 
 **SC-009:** Given the CLI, when called with valid and invalid arguments, then it
-exports or refuses with a fixed code; it refuses an existing non-empty output
+exports or refuses with a fixed code; it refuses with `export-disabled` when
+`export.enabled` is not `true`, and refuses an existing non-empty output
 directory, symlinks and paths outside the plugin home or the given directory.
 Verification: procedure_009; T009.
 
@@ -199,6 +214,20 @@ Kit artifacts converge.
 **SC-012:** Given the final candidate, when `speckit-converge` and link checks
 run, then requirements, tasks, procedures and evidence agree and no
 undocumented claim remains. Verification: procedure_012; T012.
+
+### REQ-013 — Source retention
+
+The manifest records, per source run, the SPEC-074 retention bound
+(`traces.retentionDays`) and the expiry date of each record's source; export
+refuses with `retention-expired` any record whose source is past retention.
+Documentation states that exported files are outside SPEC-074 purge and must
+be deleted by the owner; `agent-braid lightning purge` lists the dataset
+manifests that cite the purged run.
+
+**SC-013:** Given a fixture store with one record past retention, when export
+runs, then that record is refused with `retention-expired`, the manifest
+records retention per source, and a later `lightning purge` of the run lists
+the manifest that cites it. Verification: procedure_013; T013.
 
 ## Scientific boundaries and compatibility
 

@@ -43,7 +43,9 @@ model (OD-3).
 
 Contracts: [token-proxy.md](contracts/token-proxy.md),
 [training-config-proposal.md](contracts/training-config-proposal.md).
-Compatibility: additive; configuration v0.1 unchanged.
+Compatibility: additive; configuration v0.1 unchanged; event schema
+`braid-lightning-event/v0.2` added (host `local-vllm`, token-ID hashes in
+`model_request`), v0.1 events stay readable; ADR 0042 records the change.
 
 ## Validation strategy
 

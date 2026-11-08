@@ -10,11 +10,12 @@ imply owner acceptance. `quick` means
   privacy review; OD-1 to OD-3 decided. Dependencies: none. Verification:
   review record bound to a frozen commit.
 - [ ] T002 (REQ-001 / SC-001): consent fields in the configuration validator,
-  schema corpus agreement with `lightning-trace-consent.schema.json`, setup
-  preview with digest. Dependencies: T001, SPEC-070 REQ-004. Verification:
+  extension of the `traces` section of `lightning-config.schema.json` with
+  corpus agreement, `lightning init` preview with digest. Dependencies: T001, SPEC-070 REQ-004. Verification:
   procedure_001.
-- [ ] T003 (REQ-002 / SC-002): consent gate in store and adapter; fail closed on
-  invalid configuration. Dependencies: T002. Verification: procedure_002.
+- [ ] T003 (REQ-002 / SC-002): consent gate in store (`store-consent`) and
+  adapter/CLI (`content-consent-required`); fail closed on invalid
+  configuration. Dependencies: T002. Verification: procedure_002.
 
 ## Phase P2 — redaction
 
@@ -27,8 +28,8 @@ imply owner acceptance. `quick` means
 
 ## Phase P3 — retention
 
-- [ ] T006 (REQ-005 / SC-005): sweep with injected clock, `lightning sweep` and
-  `lightning purge` with preview digest. Dependencies: T003.
+- [ ] T006 (REQ-005 / SC-005): sweep with injected clock, `lightning sweep`, and
+  the BL.0 `lightning purge` extended to content with preview digest. Dependencies: T003.
   Verification: procedure_005.
 
 ## Phase P4 — adapter

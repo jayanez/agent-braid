@@ -21,18 +21,22 @@ protocol.
 In scope:
 
 - the consent contract: `traces.contentConsent` in `lightning.json`
-  (`none` | `redacted`), set only through a setup preview with digest;
+  (`none` | `redacted`), changed only through `agent-braid lightning init`
+  preview and apply with digest (`plugin setup` only sets `lightning`
+  `off` | `lab`);
 - `agent_braid/lightning_redact.py`: redaction of secrets, tokens, emails, home
   paths and API-key patterns, reusing the `scripts/spec069_native_runs.py`
   pattern set and literal-value scan;
-- retention (default 30 days, maximum 90) and purge for stored content;
+- retention (default 30 days, maximum 90) and content purge, extending the
+  BL.0 (SPEC-070) `agent-braid lightning purge`;
 - `agent_braid/lightning_adapter.py`, porting agent-lightning v0.x
   `TracerTraceToTriplet` and `TraceToMessages`;
 - adapter inputs: Lightning rollout records, host transcripts (through
   `trace_adapter` and the Claude and Codex observers), the Loom stream, and
   System One shadow episodes (read-only);
-- schema `schemas/0.3.0-experimental/lightning-trace-consent.schema.json`
-  (named here; created by the lead);
+- an extension of the `traces` section of
+  `schemas/0.3.0-experimental/lightning-config.schema.json` (no separate
+  consent schema);
 - [privacy-review.md](privacy-review.md).
 
 Exclusions:
@@ -84,13 +88,16 @@ shows the consent date).
 
 - **REQ-001 — Consent contract.** `traces.contentConsent` accepts only `none`
   and `redacted`, defaults to `none`, and is changed only by `agent-braid
-  lightning init` or `plugin setup` with a preview showing the sources,
-  retention and effects, applied with `--apply --preview-digest`. The schema
-  `lightning-trace-consent.schema.json` and the validator agree on a corpus.
+  lightning init` with a preview showing the sources, retention and effects,
+  applied with `--apply --preview-digest`; `plugin setup` only sets `lightning`
+  `off` | `lab` and never the consent. The consent fields extend the `traces`
+  section of `schemas/0.3.0-experimental/lightning-config.schema.json`, and
+  that schema and the validator agree on a corpus.
 - **REQ-002 — Refusal without consent.** With consent `none` (or an invalid
-  configuration), every content-bearing field is refused by the store and the
-  adapter emits only content-free records; the refusal reason is
-  `content-consent-required`.
+  configuration), every content-bearing field is refused by the store with
+  the SPEC-070 store refusal `store-consent`, and the adapter emits only
+  content-free records; the adapter and CLI report the refusal as
+  `content-consent-required`. Both codes are in the contract vocabulary.
 - **REQ-003 — Redaction.** `lightning_redact` replaces secrets (literal known
   values and the spec069 `SECRET_PATTERNS`), bearer and OAuth tokens, emails,
   home-directory paths and API-key shapes with typed placeholders; a
@@ -100,7 +107,8 @@ shows the consent date).
   base64 forms; every canary is caught and no canary reaches any output.
 - **REQ-005 — Retention and purge.** Content records carry a creation date;
   a sweep deletes records older than `traces.retentionDays` (default 30,
-  maximum 90); `agent-braid lightning purge` deletes all content for a run or
+  maximum 90); the BL.0 `agent-braid lightning purge`, extended here, deletes
+  all content for a run or
   all runs after a preview; purge leaves no content bytes in the store.
 - **REQ-006 — Adapter.** `lightning_adapter` ports `TracerTraceToTriplet` and
   `TraceToMessages` to the standard library: rollout records, host transcripts
@@ -127,4 +135,6 @@ retention sweep are tested.
 
 Additive. Default consent `none` keeps current behaviour. The configuration
 schema `braid-lightning-config/v0.1` already declares `traces.contentConsent`
-and `traces.retentionDays`; this specification gives `redacted` its effect.
+and `traces.retentionDays`; this specification extends that `traces` section
+(`consentedAt`, `consentPreviewDigest`) and gives `redacted` its effect. No
+separate consent schema is added.

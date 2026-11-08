@@ -11,7 +11,9 @@ imply release or owner acceptance. `quick` means
   Verification: review record bound to a frozen commit.
 - [ ] T002 (REQ-001 / SC-001): `lightning_promote.build_record` with the scope
   map and content-addressed text lookup; tests for unknown scope, digest
-  mismatch and oversize text. Dependencies: T001, SPEC-072 winner format.
+  mismatch and oversize text; consume the SPEC-072 SPEC-049 pair; refuse
+  without H1 `supported` unless an owner override reason is recorded.
+  Dependencies: T001, SPEC-072 T013 (pair format).
   Verification: procedure_001.
 - [ ] T003 (REQ-003 / SC-003): `preview` and CLI `lightning promote` (no
   writes) with preview digest. Dependencies: T002. Verification: procedure_003.

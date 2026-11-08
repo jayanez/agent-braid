@@ -24,9 +24,12 @@ Module: `agent_braid/lightning_proxy.py`. Port of upstream v1.0.3
 
 ## Event record
 
-Each call appends a `model_request` event to the SPEC-070 store:
-`rolloutId`, `attemptId`, `sequence`, `model`, `promptTokenIds`,
-`responseTokenIds`, `logprobsSha256`, `requestSha256`, `responseSha256`,
+Each call appends a `model_request` event (schema
+`braid-lightning-event/v0.2`, host `local-vllm`; v0.1 events stay readable;
+recorded by ADR 0042) to the SPEC-070 store: `rolloutId`, `attemptId`,
+`sequence`, `model`, `promptTokenIds`, `responseTokenIds`,
+`promptTokenIdsSha256`, `responseTokenIdsSha256`, `logprobsSha256`,
+`requestSha256`, `responseSha256`,
 `status` (`ok` \| `token-ids-missing` \| `upstream-error`). Bytes via
 `trace_adapter.canonical_bytes`.
 

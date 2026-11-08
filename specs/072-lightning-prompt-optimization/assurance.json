@@ -222,7 +222,7 @@
           "when": "GEPA iterates"
         }
       ],
-      "text": "lightning_gepa keeps a Pareto front over per-prompt reward vectors, samples parents by front dominance, mutates by reflection on minibatch transcripts and rewards, accepts a child only if its minibatch score exceeds the parent's, then evaluates it on the full development set; no code is vendored."
+      "text": "lightning_gepa keeps a Pareto front over per-prompt reward vectors, samples parents by front dominance, mutates by reflection on the content-free minibatch reward vectors, score_case reasons, refusal codes and parent text (transcript reflection is an optional later mode gated on SPEC-074 consent), accepts a child only if its minibatch score exceeds the parent's, then evaluates it on the full development set; no code is vendored."
     },
     {
       "id": "REQ-006",
@@ -238,7 +238,7 @@
           "when": "the optimizer call is attempted"
         }
       ],
-      "text": "Before every optimizer call the full input is hashed and refused as holdout-contamination if it contains held-out prompt text, case ids or the held-out canary; held-out prompts load only in the held-out command; any refusal stops the run."
+      "text": "Before every optimizer call the full input is hashed and refused as holdout-contamination if it contains held-out prompt text, case ids or the held-out canary; held-out prompts load only in the held-out command; optimizer calls run in the SPEC-071 disposable profile and sandbox with no path to held-out.json, scoring sources or .git; any refusal stops the run."
     },
     {
       "id": "REQ-007",
@@ -254,7 +254,7 @@
           "when": "the algorithm runs"
         }
       ],
-      "text": "Runs stop at maxRollouts, maxOptimizerCalls, rounds, a quota stop, or 2 rounds without development improvement; APO defaults to at most 3 rounds; the stop reason is recorded."
+      "text": "Runs stop at maxRollouts, maxOptimizerCalls, rounds, a quota stop (which ends the run; resumption only by lightning run --resume <run-id>), or 2 rounds without development improvement; APO defaults to at most 3 rounds; budgets are per arm run; the stop reason is recorded."
     },
     {
       "id": "REQ-008",
@@ -270,7 +270,7 @@
           "when": "the held-out evaluation runs"
         }
       ],
-      "text": "After the freeze each arm runs once on the held-out set in every required host; the report gives D4 verdicts, Wilson 95 % intervals and paired per-prompt comparisons; H1 is decided only by the preregistered rule and a null or negative result is reported as the outcome."
+      "text": "After the freeze each arm runs once on the held-out set in claude-code and opencode; the report gives D4 verdicts, Wilson 95 % intervals and paired per-prompt comparisons; H1 is supported iff in every required host A0 misses D4 and the primary arm A2 (GEPA) meets D4, not assessable where A0 meets D4; A1 (APO) is descriptive; a null or negative result is reported as the outcome."
     },
     {
       "id": "REQ-009",
@@ -302,7 +302,23 @@
           "when": "selection is replayed from stored records"
         }
       ],
-      "text": "Every run records configuration digest, seeds, candidate lineage, optimizer prompt and transcript hashes and rollout record hashes, so re-scoring stored transcripts reproduces every selection decision."
+      "text": "Every run records configuration digest, seeds, candidate lineage, optimizer prompt and transcript hashes and SPEC-071 attempt-result record hashes, so re-scoring stored content-free parsed attempts reproduces every selection decision."
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "a completed held-out report",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
+          "test_file": "specs/072-lightning-prompt-optimization/validation-plan.md",
+          "test_name": "procedure_011",
+          "then": "both records validate against REGISTRATION_FORMAT and REPORT_FORMAT, arm A is A0 and arm C is A2, and registrationSha256 binds the pair.",
+          "when": "the SPEC-049 pair is emitted and loaded by the harness_promotion verifiers"
+        }
+      ],
+      "text": "The held-out report emits a SPEC-049 Registration and EvaluationRecord pair in the formats of agent_braid/harness_promotion.py and harness_evaluation.py, with A = A0 baseline and C = the preregistered primary arm (A2 GEPA), so SPEC-073 can call decide(); BL.2 never calls decide()."
     }
   ],
   "scientific_limits": "Ten held-out prompts and three repetitions give wide intervals; the decision follows the preregistered D4 rule only. Results describe observed host versions, models and prompt sets and do not generalize to other skills, hosts or tasks.",

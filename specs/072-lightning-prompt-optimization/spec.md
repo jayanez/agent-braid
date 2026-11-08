@@ -47,7 +47,7 @@ Exclusions:
 
 ## Authorities
 
-Constitution clause zero and Articles 0, 9, 12, 13, 14, 19, 20, 21 and 23;
+Constitution clause zero and Articles 9, 12, 13, 14, 19, 20, 21 and 23;
 [GOVERNANCE.md](../../GOVERNANCE.md);
 [claim discipline](../../docs/theory/CLAIM_DISCIPLINE.md);
 [ADR 0021](../../docs/adr/0021-codex-claude-tooling-integration.md) (EUR 0
@@ -69,9 +69,13 @@ L3 (no weight RL), L4 and L5 apply.
 
 Design decisions recorded here:
 
-- **P1 — Development only.** The optimizer sees only development prompts,
-  their rewards and transcripts. Held-out prompts are run once per arm after
-  the protocol hash is frozen.
+- **P1 — Development only, content-free reflection.** The optimizer sees only
+  development prompts and, until BL.4 (SPEC-074) exists, only the content-free
+  reward vector, `score_case` reasons, refusal codes and the candidate text
+  itself; it never sees transcripts. Transcript-based reflection is an optional
+  later mode gated on SPEC-074 consent `redacted`. BL.2 therefore depends on
+  BL.1 only. Held-out prompts are run once per arm after the protocol hash is
+  frozen.
 - **P2 — Scalar for selection.** APO and GEPA select by the mean of
   `d4FirstAttempt` over the minibatch, with `schemaValid` mean as tie-breaker;
   GEPA's Pareto front uses per-prompt `d4FirstAttempt`. The reward vector is
@@ -87,9 +91,10 @@ Open decisions:
   keep 10 cases × 3 repetitions (power limited) or extend it before freezing
   the protocol (requires a new FREEZE version under SPEC-069 rules). Blocks
   T009.
-- **OD-2 — Required hosts.** Whether H1 is evaluated in Claude Code and
-  OpenCode only (Codex is a declared limit in SPEC-069) or waits for Codex.
-  Blocks T009.
+- **OD-2 — Required hosts (decided).** Required hosts are fixed in advance as
+  `claude-code` and `opencode`; Codex is a declared limit in SPEC-069. The
+  preregistered primary arm is GEPA (A2); APO (A1) is secondary and
+  descriptive only.
 
 ## Requirements
 
@@ -115,7 +120,9 @@ Open decisions:
 - **REQ-005 — GEPA.** `lightning_gepa` maintains a Pareto front of candidates
   over per-prompt reward vectors, selects a parent from the front with
   probability proportional to the number of prompts it dominates on, mutates by
-  reflection over the parent's minibatch transcripts and rewards, accepts a
+  reflection over the parent's minibatch reward vectors, `score_case` reasons,
+  refusal codes and the parent text (no transcripts before BL.4; transcript
+  reflection is an optional later mode gated on SPEC-074 consent), accepts a
   child only if its minibatch score exceeds the parent's, and then evaluates it
   on the full development set. The implementation cites the paper and vendors
   no code.
@@ -124,35 +131,53 @@ Open decisions:
   (`holdout-contamination`) if it contains any held-out prompt text, held-out
   case id, or the held-out canary; held-out prompts are loaded only by the
   held-out evaluation command; SPEC-071 canaries remain active; any refusal
-  stops the run.
+  stops the run. Every optimizer call runs in the SPEC-071 disposable profile
+  and OS sandbox with no readable path to `held-out.json`, the scoring sources
+  or `.git`.
 - **REQ-007 — Budgets and stopping.** Runs stop at `budget.maxRollouts`,
-  `budget.maxOptimizerCalls`, `algorithm.rounds`, a SPEC-071 quota stop, or
+  `budget.maxOptimizerCalls`, `algorithm.rounds`, a SPEC-071 quota stop (which
+  ends the run; the same run id resumes only by an explicit
+  `agent-braid lightning run --resume <run-id>`), or
   when the development score has not improved for 2 consecutive rounds; APO is
   capped at 3 rounds by default (ProTeGi overfitting beyond about 3 steps); the
-  stop reason is recorded.
+  stop reason is recorded. Budgets are per arm run: each arm is a separate
+  `lightning run` with its own `budget.maxRollouts`, and the preregistered
+  algorithm parameters in the protocol's feasibility table override the
+  configuration defaults where these exceed one arm budget.
 - **REQ-008 — Held-out evaluation and analysis.** After the freeze, each arm
-  (baseline guidance, best APO, best GEPA) runs once on the held-out set in
-  every required host with the protocol's repetitions; the report gives, per
-  host and arm, the D4 verdict, Wilson 95 % intervals, and paired per-prompt
-  comparisons against baseline as specified in the protocol; H1 is accepted or
-  rejected exactly by the preregistered rule, and a null or negative result is
-  reported as the outcome.
+  (A0 baseline guidance, A1 best APO, A2 best GEPA) runs once on the held-out
+  set in every required host (`claude-code`, `opencode`) with the protocol's
+  repetitions; the report gives, per host and arm, the D4 verdict, Wilson 95 %
+  intervals, and paired per-prompt comparisons against baseline as specified
+  in the protocol. H1 is supported if and only if, in every required host, A0
+  misses D4 on held-out and the primary arm A2 (GEPA) meets D4; if A0 meets D4
+  in a required host, H1 is `not assessable` for that host. A1 (APO) is
+  secondary and descriptive only. A null or negative result is reported as the
+  outcome.
 - **REQ-009 — Boundaries.** No BL.2 code writes to the repository skill file,
   calls `harness_promotion`, `execute`, `recover` or grant paths, exposes an MCP
   tool, or adds a runtime dependency; the best candidate is reported by hash
   only, for SPEC-073.
 - **REQ-010 — Replay.** Every run records configuration digest, seeds, candidate
-  lineage, optimizer prompt hashes, optimizer transcript hashes and rollout
-  record hashes, so that re-scoring the stored transcripts reproduces every
-  selection decision.
+  lineage, optimizer prompt hashes, optimizer transcript hashes and SPEC-071
+  attempt-result (`braid-lightning-attempt-result/v0.1`) record hashes, so that re-scoring the stored content-free parsed attempts
+  (SPEC-071 REQ-011) reproduces every selection decision.
+- **REQ-011 — SPEC-049 evaluation pair.** The held-out report emits a SPEC-049
+  `Registration` and `EvaluationRecord` pair in the formats of
+  `agent_braid/harness_promotion.py` and `agent_braid/harness_evaluation.py`
+  (`REGISTRATION_FORMAT`, `REPORT_FORMAT`), with arm A = A0 baseline and arm
+  C = the preregistered primary arm (A2 GEPA), recording the H1 outcome per
+  required host, so that SPEC-073 can call `harness_promotion.decide()` on it.
+  BL.2 only writes the pair; it never calls `decide()`.
 
 ## Success criteria
 
-Each requirement has one acceptance scenario (SC-001 to SC-010) in
+Each requirement has one acceptance scenario (SC-001 to SC-011) in
 `assurance.json`, with its procedure in [validation-plan.md](validation-plan.md).
 Milestone exit: SC-001 and SC-008 obtained; the result may be null.
 
 ## Compatibility
 
 Additive. No existing output changes; the shipped skill is untouched. Records
-use `braid-lightning-candidate/v0.1` and the SPEC-071 record schemas.
+use `braid-lightning-candidate/v0.1` (new `lightning_store.KINDS` entry
+`candidate`) and the SPEC-071 record schemas.

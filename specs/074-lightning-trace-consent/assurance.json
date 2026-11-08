@@ -7,7 +7,7 @@
     20,
     23
   ],
-  "assumptions": "SPEC-070 configuration and store exist with traces.contentConsent, traces.sources and traces.retentionDays; host transcript readers and Loom and System One validators keep their current interfaces; the schema file lightning-trace-consent.schema.json is created by the lead; runtime stays standard-library only.",
+  "assumptions": "SPEC-070 configuration and store exist with traces.contentConsent, traces.sources and traces.retentionDays; host transcript readers and Loom and System One validators keep their current interfaces; the traces section of lightning-config.schema.json is extended (no separate consent schema); runtime stays standard-library only.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -150,7 +150,7 @@
           "when": "consent is set to redacted through init, and the corpus is checked"
         }
       ],
-      "text": "Consent contract. traces.contentConsent accepts only none and redacted, defaults to none, and changes only through a setup preview applied with --apply --preview-digest; schema and validator agree on a corpus."
+      "text": "Consent contract. traces.contentConsent accepts only none and redacted, defaults to none, and changes only through a lightning init preview applied with --apply --preview-digest (plugin setup only sets lightning off|lab); the consent fields extend the traces section of lightning-config.schema.json and that schema and the validator agree on a corpus."
     },
     {
       "id": "REQ-002",
@@ -166,7 +166,7 @@
           "when": "the store and the adapter process it"
         }
       ],
-      "text": "Refusal without consent. With consent none or an invalid configuration, content-bearing fields are refused with content-consent-required and adapter outputs are content-free."
+      "text": "Refusal without consent. With consent none or an invalid configuration, the store refuses content-bearing fields with the SPEC-070 refusal store-consent, the adapter and CLI report content-consent-required, and adapter outputs are content-free."
     },
     {
       "id": "REQ-003",
@@ -214,7 +214,7 @@
           "when": "the sweep and then purge run"
         }
       ],
-      "text": "Retention and purge. A sweep deletes content records older than traces.retentionDays (default 30, max 90); lightning purge deletes content for a run or all runs after a preview and leaves no content bytes."
+      "text": "Retention and purge. A sweep deletes content records older than traces.retentionDays (default 30, max 90); the BL.0 lightning purge, extended here, deletes content for a run or all runs after a preview and leaves no content bytes."
     },
     {
       "id": "REQ-006",
@@ -266,6 +266,6 @@
     }
   ],
   "scientific_limits": "Engineering only. Catching the canary corpus does not prove every secret or personal datum is caught; pattern redaction has residual false negatives listed in the privacy review.",
-  "scope": "Specification only: consent levels none and redacted recorded in lightning.json and confirmed by a setup preview; a redaction pipeline reusing the spec069 secret scan; retention (default 30, max 90 days) and purge; a standard-library port of TracerTraceToTriplet and TraceToMessages over rollouts, host transcripts, Loom and read-only System One episodes; schema lightning-trace-consent.schema.json; privacy review.",
+  "scope": "Specification only: consent levels none and redacted recorded in lightning.json and confirmed by a lightning init preview; a redaction pipeline reusing the spec069 secret scan; retention (default 30, max 90 days) and purge; a standard-library port of TracerTraceToTriplet and TraceToMessages over rollouts, host transcripts, Loom and read-only System One episodes; an extension of the traces section of lightning-config.schema.json; privacy review.",
   "stage": "draft"
 }

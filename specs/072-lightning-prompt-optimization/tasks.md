@@ -11,12 +11,13 @@ script or test.
 ## Phase P0 — review
 
 - [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan, contract and
-  evaluation protocol; decide OD-1 and OD-2. Dependencies: SPEC-071 T011.
+  evaluation protocol; decide OD-1 (OD-2 decided: `claude-code`, `opencode`). Dependencies: SPEC-071 T011.
   Verification: procedure_001.
 
 ## Phase P1 — foundations
 
-- [ ] T002 (REQ-002 / SC-002): `lightning_resources` candidate record and store.
+- [ ] T002 (REQ-002 / SC-002): `lightning_resources` candidate record and store;
+  extend `lightning_store.KINDS` with `candidate` and test it.
   Dependencies: T001. Verification: procedure_002.
 - [ ] T003 (REQ-003 / SC-003): `lightning_algorithm` base and `Baseline`; fake-host
   equality with SPEC-071. Dependencies: T002. Verification: procedure_003.
@@ -25,11 +26,14 @@ script or test.
 
 - [ ] T004 (REQ-004 / SC-004): `lightning_apo` and Markdown templates with
   hashes. Dependencies: T003. Verification: procedure_004.
-- [ ] T005 (REQ-005 / SC-005): `lightning_gepa` from the paper. Dependencies:
+- [ ] T005 (REQ-005 / SC-005): `lightning_gepa` from the paper; reflection on
+  content-free inputs only. Dependencies:
   T003. Verification: procedure_005.
-- [ ] T006 (REQ-006 / SC-006): Contamination check before every optimizer call.
+- [ ] T006 (REQ-006 / SC-006): Contamination check before every optimizer call;
+  optimizer calls in the SPEC-071 disposable profile and sandbox.
   Dependencies: T004, T005. Verification: procedure_006.
-- [ ] T007 (REQ-007 / SC-007): Budgets and stopping rules. Dependencies: T004,
+- [ ] T007 (REQ-007 / SC-007): Budgets per arm run, stopping rules and
+  `--resume <run-id>`. Dependencies: T004,
   T005. Verification: procedure_007.
 - [ ] T008 (REQ-010 / SC-010): Lineage, seeds and replay of selection decisions.
   Dependencies: T004–T007. Verification: procedure_010.
@@ -39,7 +43,7 @@ script or test.
 - [ ] T009 (REQ-001 / SC-001): Run APO and GEPA on the development set in each
   required host; freeze `evaluation-protocol.md` by hash in
   `evidence/protocol-freeze.json` before any held-out rollout.
-  Dependencies: T008, OD-1, OD-2. Verification: procedure_001.
+  Dependencies: T008, OD-1. Verification: procedure_001.
 
 ## Phase P4 — held-out evaluation
 
@@ -47,14 +51,19 @@ script or test.
   protocol; report H1 outcome, including a null or negative result.
   Dependencies: T009. Verification: procedure_008.
 
+- [ ] T013 (REQ-011 / SC-011): Emit the SPEC-049 `Registration` and
+  `EvaluationRecord` pair (A = A0, C = A2 GEPA) from the held-out report;
+  verify the formats load through `harness_promotion`. Dependencies: T010.
+  Verification: procedure_011.
+
 ## Closing
 
 - [ ] T011 (REQ-009 / SC-009): Boundary tests: skill file untouched, no
   promotion, execution or MCP path. Dependencies: T010.
   Verification: procedure_009.
-- [ ] T012 (REQ-001–REQ-010 / SC-001–SC-010): `/speckit-converge`: reconcile
+- [ ] T012 (REQ-001–REQ-011 / SC-001–SC-011): `/speckit-converge`: reconcile
   spec, tasks, assurance and evidence; sync tracking; hand the best candidate
-  hash to SPEC-073. Dependencies: T011. Verification: all procedures.
+  hash to SPEC-073. Dependencies: T011, T013. Verification: all procedures.
 
 ## Limits
 

@@ -189,7 +189,7 @@
           "when": "the runner executes the rollout set"
         }
       ],
-      "text": "lightning_runner runs one subprocess rollout per prompt, repetition and host in a disposable profile, enforces timeoutSeconds and maxTurns, kills the process tree and verifies no leftover process, runs at most rollout.parallel at once (default 1), follows the SPEC-070 state machine and writes records through lightning_store."
+      "text": "lightning_runner runs one subprocess rollout per prompt, repetition and host in a disposable profile, enforces timeoutSeconds and maxTurns, kills the process tree and verifies no leftover process, runs at most rollout.parallel at once (default 1), follows the SPEC-070 state machine and writes the unchanged braid-lightning-rollout/v0.1 records and braid-lightning-attempt-result/v0.1 records (new store kind result) through lightning_store."
     },
     {
       "id": "REQ-004",
@@ -205,7 +205,7 @@
           "when": "a run starts"
         }
       ],
-      "text": "The runner refuses paid-route-refused before launch if the child environment has a variable ending in _API_KEY or ANTHROPIC_AUTH_TOKEN, ANTHROPIC_BASE_URL, CLAUDE_CODE_USE_BEDROCK or CLAUDE_CODE_USE_VERTEX; it records the host key source and ends the run as route-unverified if the source is missing or outside SUBSCRIPTION_KEY_SOURCES."
+      "text": "The runner refuses paid-route-refused before launch if the child environment has a variable ending in _API_KEY or ANTHROPIC_AUTH_TOKEN, ANTHROPIC_BASE_URL, CLAUDE_CODE_USE_BEDROCK or CLAUDE_CODE_USE_VERTEX; it records the host apiKeySource; a missing apiKeySource ends the rollout route-unverified and stops the run; oauth is accepted; none is accepted only as the SPEC-069 fixture assumption pending T003 evidence; any other value outside SUBSCRIPTION_KEY_SOURCES is route-unverified."
     },
     {
       "id": "REQ-005",
@@ -237,7 +237,7 @@
           "when": "the runner reaches it"
         }
       ],
-      "text": "The runner stops without retry on a host window limit, mapped to a _BUDGET_STOPS name, or at budget.maxRollouts (unit-cap); the stop and completed count are recorded and reported by status; resumption needs a new command."
+      "text": "The runner stops without retry on a host window limit, mapped to a _BUDGET_STOPS name, or at budget.maxRollouts (unit-cap); the stop and completed count are recorded and reported by status; a quota stop ends the run, which resumes the same run id only by an explicit agent-braid lightning run --resume <run-id>."
     },
     {
       "id": "REQ-007",
@@ -317,7 +317,7 @@
           "when": "rewards are recomputed from stored transcripts"
         }
       ],
-      "text": "Every rollout record follows contracts/rollout-record.md with candidate, prompt, transcript and reward hashes; recomputing the reward from the stored transcript yields byte-identical reward records."
+      "text": "Every attempt follows contracts/rollout-record.md (braid-lightning-attempt-result/v0.1, referencing the unchanged braid-lightning-rollout/v0.1) with candidate, prompt, transcript and reward hashes and content-free parsed attempts; replay recomputes the reward from those parsed attempts byte-identically; transcript replay requires SPEC-074 consent redacted."
     },
     {
       "id": "REQ-012",
@@ -361,14 +361,14 @@
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_014",
-          "then": "each host's proportion and interval are recorded against the T010 interval, paid-route observations are zero, and any non-replication is reported.",
+          "then": "both proportions, both Wilson intervals and the route, model and version differences are recorded under the label route-changed comparison, paid-route observations are zero, and any difference is reported.",
           "when": "the runner executes the baseline"
         }
       ],
-      "text": "One real run of the T010 baseline guidance on the development set, three repetitions, per host with a subscription sign-in, yields a first-attempt proportion inside [0.361, 0.698] with zero paid-route observations; an outside value is reported as non-replication."
+      "text": "One real run of the T010 baseline guidance on the development set, three repetitions, per host with a subscription sign-in, is reported against the T010 interval [0.361, 0.698] as a route-changed comparison (both proportions, Wilson intervals and route, model and version differences), with zero paid-route observations; an outside value is reported as a difference."
     }
   ],
-  "scientific_limits": "Engineering only. Rewards are empirical measurements on the observed host versions, models and prompt sets, not guarantees. The baseline replication compares proportions to a 95 % Wilson interval from 30 trials per host; it does not establish stable model behaviour.",
+  "scientific_limits": "Engineering only. Rewards are empirical measurements on the observed host versions, models and prompt sets, not guarantees. The baseline route-changed comparison compares proportions to a 95 % Wilson interval from 30 trials per host; it does not establish stable model behaviour.",
   "scope": "Specification only: extracted host helpers, a subscription-only rollout runner with hooks, a verifiable reward vector, anti-reward-hacking controls, CLI run/status/report, a fake-host CI pipeline and one real baseline run.",
   "stage": "draft"
 }

@@ -22,8 +22,8 @@ No network, model or subprocess.
 
 ## Research, assumptions and alternatives
 
-See [research.md](research.md). Assumptions: SPEC-070 store and configuration
-exist with `traces.*` keys; host transcript readers expose turn-level records.
+See [research.md](research.md). Assumptions: SPEC-070 store, configuration
+schema `traces` section (extended here) and `lightning purge` exist; host transcript readers expose turn-level records.
 Rejected: a `raw` level, export-time redaction, OpenTelemetry tracers.
 
 ## Design and compatibility
