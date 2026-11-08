@@ -1,0 +1,180 @@
+{
+  "recordVersion": "spec049-t005-deterministic-controls-v1",
+  "task": "SPEC-049/T005",
+  "label": "deterministic-controls",
+  "recordedAt": "2026-11-08",
+  "candidateBinding": "Repository head 425e3064b9cccee25f567286af9d6e4f7999708f; input hashes below",
+  "status": "Deterministic controls executed. Deterministic HAR cohort not run (infeasible). Native cohort not run. Library ablation (arm D) not run.",
+  "method": "Actual offline execution: hash checks of the frozen roster and arm bytes, recomputation of the R13 synthetic-control A versus B pairs, register refusal checks and unittest runs. The generator is a scratch script that is not committed; every number below is reproducible with the committed tests/harness_guidance_double.py and the commands in executedChecks.",
+  "inputs": {
+    "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+    "specs/049-harness-evaluation-learning/case-roster.md": "6a1e55f896fb77a1bbc42dc402eef1abc5d3f56e7a4b1dbcfd152c8c93e6a4e0",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "379d2b86dcd78a0c346c2e29bba579d62b8426a293d3f3d2b2a653360605f0dc",
+    "specs/049-harness-evaluation-learning/evidence/r13-guidance-double.json": "e38100caf7a060e78cc3cb1ee340cd09ee2beac22fa5528e2cfa6ede89d80358",
+    "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
+    "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-draft.json": "5056b3bbfafa4a667350ac823861a14d28ea232d5b901ea7bc93574dc721ff43",
+    "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-founder-freeze-20261030.json": "499fe88d8bda05a500dcef2cb07e55429aad3ff59c5a0f2aefe2e9f9887741ff",
+    "tests/harness_guidance_double.py": "12090b191da647019f6e73b6e538797767af383c4f94bf86be4bf20fa0dd21fa",
+    "tests/test_harness_guidance_double.py": "635daf92756dd8ab85fedb5471c078a128d6b09e0edf90181d164b62d2c7a464"
+  },
+  "checks": {
+    "rosterMatchesFreeze": true,
+    "draftMatchesFreeze": true,
+    "armHashesMatchFrozen": true,
+    "recomputedRecordHashesMatchR13": true,
+    "differingCasesMatchR13": true
+  },
+  "registerRefusals": {
+    "synthetic-with-zero-units-and-no-arm-C-round": "invalid-registration",
+    "synthetic-control": "invalid-registration"
+  },
+  "blockers": {
+    "deterministicCohort": [
+      "R8: arm C is deferred. No real proposer, no manifest/policy/prober for a refinement round, so register cannot bind a chosen arm-C candidate. The only deterministic route (keep-base) gives C = A and carries no information.",
+      "R11: authorized but not performed. 0 harness_verification.Unit objects (task input, frozen rubric, deterministic oracle, unit hash) exist for the 7 roster cases; no unit hashes are in a freeze record.",
+      "R3: L3-C02-a is unassigned.",
+      "Fallback partition: the holdout is one lineage (L1), so every comparison is descriptive-only under D3 even if the cohort ran."
+    ],
+    "libraryAblation": "Arm D needs arm C and the cohort registration, so T006 being done does not make it runnable.",
+    "nativeCohort": "Pending SPEC-049/T004 (native admission, owner-gated) and SPEC-048/T008 (qualified host). Not run; not substituted with synthetic data."
+  },
+  "syntheticControl": {
+    "label": "synthetic-control",
+    "verdictEligible": false,
+    "meaning": "Engineering positive control only. It shows that guidance bytes reach a guidance-reading double and that arms A and B are distinguishable where the frozen mapping predicts. The double encodes the behaviour it then reports, so these rows are not evidence that any guidance helps and are excluded from every D4 verdict. B ending interrupted on drift cases is the designed stop-on-drift switch, not a failure and not a win. A completes the drift cases only because the double ignores drift by construction.",
+    "pairs": [
+      {
+        "caseId": "L1-C01-a",
+        "stratum": "continuity",
+        "stepsExecuted": {
+          "A": 4,
+          "B": 2
+        },
+        "stepsRepeated": {
+          "A": 2,
+          "B": 0
+        },
+        "terminal": {
+          "A": "completed",
+          "B": "completed"
+        },
+        "behaviourDiffers": true
+      },
+      {
+        "caseId": "L2-C01-a",
+        "stratum": "continuity",
+        "stepsExecuted": {
+          "A": 3,
+          "B": 0
+        },
+        "stepsRepeated": {
+          "A": 1,
+          "B": 0
+        },
+        "terminal": {
+          "A": "completed",
+          "B": "interrupted"
+        },
+        "behaviourDiffers": true
+      },
+      {
+        "caseId": "L1-C02-a",
+        "stratum": "coordination",
+        "stepsExecuted": {
+          "A": 2,
+          "B": 0
+        },
+        "stepsRepeated": {
+          "A": 0,
+          "B": 0
+        },
+        "terminal": {
+          "A": "completed",
+          "B": "interrupted"
+        },
+        "behaviourDiffers": true
+      },
+      {
+        "caseId": "L1-C03-a",
+        "stratum": "coordination",
+        "stepsExecuted": {
+          "A": 2,
+          "B": 2
+        },
+        "stepsRepeated": {
+          "A": 0,
+          "B": 0
+        },
+        "terminal": {
+          "A": "completed",
+          "B": "completed"
+        },
+        "behaviourDiffers": false
+      },
+      {
+        "caseId": "L1-C03-b",
+        "stratum": "coordination",
+        "stepsExecuted": {
+          "A": 3,
+          "B": 3
+        },
+        "stepsRepeated": {
+          "A": 0,
+          "B": 0
+        },
+        "terminal": {
+          "A": "completed",
+          "B": "completed"
+        },
+        "behaviourDiffers": false
+      },
+      {
+        "caseId": "L1-C03-c",
+        "stratum": "coordination",
+        "stepsExecuted": {
+          "A": 2,
+          "B": 1
+        },
+        "stepsRepeated": {
+          "A": 1,
+          "B": 0
+        },
+        "terminal": {
+          "A": "completed",
+          "B": "completed"
+        },
+        "behaviourDiffers": true
+      }
+    ]
+  },
+  "endpointsNotComputed": [
+    "Paired per-stratum HAR outcomes (A, B, C)",
+    "False safe admissions",
+    "Missed safe parallelism",
+    "Correction and review effort",
+    "Sensitivity to missing outcomes on a real cohort",
+    "T012 cost reconciliation (no attempts exist: no host, model, paid route or session was used; additional cash EUR 0)"
+  ],
+  "executedChecks": [
+    {
+      "command": "python3.13 -m unittest tests.test_harness_guidance_double tests.test_harness_evaluation",
+      "exitCode": 0,
+      "testsRun": 64,
+      "scope": "Focused modules, Python 3.13 (/opt/homebrew)."
+    },
+    {
+      "command": "python3.13 -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "testsRun": 1316,
+      "skipped": 3,
+      "scope": "All harness modules. One earlier run in the same session showed a single error that did not reproduce on two reruns; its cause was not investigated."
+    }
+  ],
+  "limits": "Offline controls only. No fixture solver reading guidance beyond the R13 double, host, model, native session, paid route or human annotation was used. No inferential, economic, adoption or promotion claim. executionAuthorization, nativeAdmission and promotionAuthorization are false. The reviews of this change were run by Claude subagents and are not independent Luna review. Claims are limited to the synthetic domain.",
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "notes": [
+    "evaluation-protocol.md changed after r13-guidance-double.json pinned it (D2 caps added); the record hashes recompute unchanged because the double does not read the protocol."
+  ]
+}

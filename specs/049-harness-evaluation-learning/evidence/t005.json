@@ -1,55 +1,61 @@
 {
   "blockers": [
-    "0 executable HAR case definitions and 0 registered comparison units (source-registration.md, observed versus planned yield)",
-    "No frozen case roster or discovery/holdout assignment: the T002 founder freeze fixed rules D1-D6 only (summarized in D7)",
-    "No frozen arm identities: no A/B/C candidate hashes and no matched profile hash registered",
-    "No real proposer for the arm-C refinement round: only injected test doubles exist",
+    "Arm C deferred (R8): no real proposer, so register cannot bind a chosen arm-C candidate; keep-base gives C = A and carries no information; library ablation (arm D) depends on it",
+    "0 constructed harness_verification.Unit objects for the 7 roster cases (R11 authorized, not performed)",
+    "L3-C02-a unassigned (R3); fallback holdout is the single lineage L1, so any cohort is descriptive-only (D3)",
     "Native cohort pending on SPEC-049/T004 and SPEC-048/T008"
   ],
-  "candidateBinding": "Repository head ab2db0c45ab70c3689e39226897a5ddf2932126a; input hashes below",
-  "disposition": "Deterministic cohort infeasible, recorded on the predetermined report path (protocol D6). No cohort run and no outcome reported. Native cohort pending. Task stays open.",
+  "candidateBinding": "Repository head 425e3064b9cccee25f567286af9d6e4f7999708f (2026-11-08); input hashes below. Supersedes the 2026-10-29 binding ab2db0c4.",
+  "disposition": "Deterministic cohort infeasible (arm C deferred R8, no constructed units R11, L3 unassigned R3). Deterministic controls executed 2026-11-08. Native cohort not run (pending T004 and SPEC-048/T008). Library ablation not run. Task stays open.",
   "executedChecks": [
     {
-      "command": ".venv-speckit/bin/python -c \"from agent_braid.harness_evaluation import register, EvaluationError; register([], lineages={}, families={}, strata={}, candidates={}, refinement=None, profile_sha256='0'*64, cohort='synthetic')\" (wrapped to catch EvaluationError)",
+      "command": "python3.13 -m unittest tests.test_harness_guidance_double tests.test_harness_evaluation",
       "exitCode": 0,
-      "observed": "refused invalid-registration",
-      "scope": "Confirms that the T003 evaluator cannot register a cohort with zero units. Python 3.13.11."
+      "testsRun": 64
     },
     {
-      "command": ".venv-speckit/bin/python -m unittest discover -s tests -p \"test_harness*.py\"",
+      "command": "python3.13 -m unittest discover -s tests -p \"test_harness*.py\"",
       "exitCode": 0,
-      "scope": "Regression check of the unchanged harness modules; no library code changed. Python 3.13.11.",
-      "testsRun": 551
+      "scope": "One earlier run showed one error that did not reproduce on two reruns; not investigated. Full detail in evidence/evaluation/deterministic-controls-20261108.json",
+      "testsRun": 1316
     }
   ],
   "executionAuthorization": false,
   "founderInputsRequired": [
-    "A frozen case roster drawn from registered lineages L1-L4. Each case needs lineage, task family, stratum, holdout partition, rubric and deterministic oracle, following D1 (L1 never split, L3 unassigned until resolved, L4 held out only if a derived task qualifies)",
-    "A/B/C arm identities: exact candidate hashes, the matched profile hash, and arm C taken from a recorded refinement round with a real proposer; both inputs supplied in a founder decision record before any outcome is evaluated"
+    "Arm C: a real proposer, harness manifest, selection policy and prober through the native branch (R8), or a new decision to accept keep-base",
+    "Authorization to run (not just construct) the deterministic cohort once units and arm C exist"
   ],
   "inputs": {
     "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
-    "agent_braid/harness_experience.py": "92afe433d6d93984bfae35274644ed1bdafa0e57ff344c30808ae219ed64a057",
-    "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
-    "agent_braid/harness_refinement.py": "74c342c7a7bd4175e19d3132fe628a81cb9cf81d1e83a6af8f81225c048474dd",
+    "specs/049-harness-evaluation-learning/case-roster.md": "6a1e55f896fb77a1bbc42dc402eef1abc5d3f56e7a4b1dbcfd152c8c93e6a4e0",
     "specs/049-harness-evaluation-learning/corpus.md": "1a400003c2bc7ad2b5a44a33421f47c55cbc78a1db458e377d5a6cc0f61b979a",
-    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "b25d038dd99376d4c4c50641a12b40ff59dd0aa9348392e05cfaed34fb58a19b",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "379d2b86dcd78a0c346c2e29bba579d62b8426a293d3f3d2b2a653360605f0dc",
+    "specs/049-harness-evaluation-learning/evidence/r13-guidance-double.json": "e38100caf7a060e78cc3cb1ee340cd09ee2beac22fa5528e2cfa6ede89d80358",
     "specs/049-harness-evaluation-learning/evidence/registration/t002-founder-freeze-20261028.json": "c2d420ffe1159ec115a8ab1adfccce44710f496fd15254f8c0e255cabaedd8c1",
-    "specs/049-harness-evaluation-learning/source-registration.md": "0a9704a7a5a8209cfdde5f6d97a2cea677625464265794559a63e72ba0dd97ef"
+    "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-founder-freeze-20261030.json": "499fe88d8bda05a500dcef2cb07e55429aad3ff59c5a0f2aefe2e9f9887741ff",
+    "specs/049-harness-evaluation-learning/source-registration.md": "0a9704a7a5a8209cfdde5f6d97a2cea677625464265794559a63e72ba0dd97ef",
+    "tests/harness_guidance_double.py": "12090b191da647019f6e73b6e538797767af383c4f94bf86be4bf20fa0dd21fa"
   },
-  "limits": "Offline inspection and refusal check only. No fixture, host, model, native session, paid route or human annotation was used, and no endpoint, cost or outcome number was produced. Fixed fixtures do not read guidance, so A/B/C fixture output would be identical by construction; it was not produced and is not a result. Arm D is infeasible for the same reasons. No inferential, economic or promotion claim is made. The pre-PR reviews were run by Claude subagents and are not independent Luna review.",
-  "method": "Inspection of the pinned registration and protocol inputs plus actual offline execution of the T003 registration refusal",
+  "limits": "Offline inspection, refusal checks and a re-run of the R13 synthetic-control double only. No host, model, native session, paid route or human annotation, no HAR unit run, and no endpoint, cost or outcome number was produced for a cohort. The synthetic-control rows are verdict-ineligible and show only that guidance bytes reach a double. No inferential, economic or promotion claim. Pre-PR reviews were run by Claude subagents and are not independent Luna review.",
+  "method": "Inspection of pinned registration inputs plus actual offline execution of hash checks, the R13 double, T003 register refusals and the harness tests",
   "nativeAdmission": false,
   "outcome": "infeasible",
   "outputs": {
-    "specs/049-harness-evaluation-learning/evaluation-report.md": "a5e7fcbed268bb9da3a6254a896a48526901c1042097054ff6778ec5cb7d5e68"
+    "specs/049-harness-evaluation-learning/evaluation-report.md": "d938924be825945060afe38fc30c634ee481b188ddec28e7fb43dbeeeeec7b4e",
+    "specs/049-harness-evaluation-learning/evidence/evaluation/deterministic-controls-20261108.json": "fbb8f3d13786fca34c2843b7d4e8209d9e9ef7ef0bddb9e276bb9dc11e5d211a"
   },
   "pending": [
-    "Founder roster and arm-identity decision record",
-    "Deterministic cohort run after that record",
+    "Unit construction for the roster cases (R11) and a freeze record with unit hashes",
+    "Arm C",
+    "Deterministic cohort run after those",
     "Native cohort (SPEC-049/T004, SPEC-048/T008)",
     "Stable pr-profile result recorded in the pull request"
   ],
   "spec": "049-harness-evaluation-learning",
+  "supersedes": {
+    "candidateBinding": "ab2db0c45ab70c3689e39226897a5ddf2932126a (2026-10-29)",
+    "evaluationReportSha256": "a5e7fcbed268bb9da3a6254a896a48526901c1042097054ff6778ec5cb7d5e68",
+    "evidenceSha256": "0bf8db87e43116f2f03e34718c3d88592f39c8208d4a9b4769bd1eef3edc9d5d"
+  },
   "task": "SPEC-049/T005"
 }
