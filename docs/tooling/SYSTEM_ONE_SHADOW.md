@@ -43,7 +43,7 @@ UTC day, the backend identifier, the manifest digest and the salted pseudonyms.
 
 | Group | Fields |
 |---|---|
-| Episode | random `episodeId` (UUID4, not derived from any input), UTC `day`, `surface`, `operation`, `analysisKind` (`aim` or `git`), analyzer version and rule set, `operationCount` |
+| Episode | random `episodeId` (UUID4, not derived from any input), UTC `day`, `surface`, `operation`, `analysisKind` (`aim`, `git` or `units`), analyzer version and rule set, `operationCount` |
 | Pair counts | `pairCount`, `classificationCounts` for all pairs, `pairsRecorded` (at most 64 pairs per episode; the rest are counted but dropped in report order) |
 | Per pair | System 2 class, whether it was determinate, reason codes, constraints, coverage, shared-resource count, dependency flag, per-side effect kinds (`read`, `write`, `call`, `transform`, `emit`, `delete`, `deploy`, `unknown`) |
 | Structural features | per-side and shared counts over seven resource classes (`src`, `test`, `docs`, `config`, `lockfile`, `generated`, `other`), maximum path depth, same-parent-directory count, top-directory overlap |
