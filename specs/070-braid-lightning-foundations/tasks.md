@@ -39,6 +39,6 @@ property and does not authorize concurrent agents.
   `github-tracking.json`; after merge, the reviewed tracking reconciliation
   creates milestones BL.0–BL.5 and the task issues (BL.6 tasks under Deferred).
   Dependencies: T001. Verification: procedure_009.
-- [ ] T010 (REQ-001 / SC-001): `/speckit-analyze` and `/speckit-converge`;
+- [x] T010 (REQ-001 / SC-001): `/speckit-analyze` and `/speckit-converge`;
   freeze the candidate for human review. Dependencies: T001–T009.
   Verification: procedure_001.

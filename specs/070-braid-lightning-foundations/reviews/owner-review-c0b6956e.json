@@ -1,0 +1,56 @@
+{
+ "recordVersion": "0.1.0",
+ "feature": "SPEC-070",
+ "reviewedCommit": "c0b6956e422c9ede2446835bf1a6f5182d3a5b03",
+ "reviewer": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "conflictsOfInterest": "The reviewer is the project founder and owner. The review records that role explicitly; it is an internal owner decision, not independent external validation.",
+ "method": "Guided interactive review on 2026-11-08 in four blocks (governance and provenance; records and configuration; wizard, store and setup; boundaries and closure), each presented with its evidence and limits.",
+ "humanReview": {
+  "decision": "approved",
+  "date": "2026-11-08",
+  "rationale": "Approve BL.0 within its documented scope: proposed-then-accepted governance, MIT provenance, content-free records, validated configuration with fixed constants, preview/apply wizard, private run store and setup consent. Limits stated in each evidence record apply."
+ },
+ "milestoneClosure": {
+  "decision": "approved",
+  "date": "2026-11-08",
+  "milestone": "BL.0 — Braid Lightning foundations (#29)",
+  "rationale": "Close BL.0. This does not approve BL.1-BL.5, any rollout, model call, optimization result or execution authority."
+ },
+ "evidence": [
+  {
+   "path": "specs/070-braid-lightning-foundations/evidence/procedure_002.json",
+   "sha256": "8e64be6caf6178d719a6108b69b682340e9c81a3ef291a0c8a5983b0ee474735"
+  },
+  {
+   "path": "specs/070-braid-lightning-foundations/evidence/procedure_003.json",
+   "sha256": "37c3597ba610fd352f37488c389b5298ae35518df82cf5da42ffb1de90849885"
+  },
+  {
+   "path": "specs/070-braid-lightning-foundations/evidence/procedure_004.json",
+   "sha256": "19511b19f6614d75dc0b7a0d4ff4aa8a3f38a88d038a66deaf00926814e09195"
+  },
+  {
+   "path": "specs/070-braid-lightning-foundations/evidence/procedure_005.json",
+   "sha256": "04aad1a3782ce88051be91f6bf55c7cb1ce40d39449196fa039cbeb1e9c132b3"
+  },
+  {
+   "path": "specs/070-braid-lightning-foundations/evidence/procedure_006.json",
+   "sha256": "f7d5a37aaf7b180aa10f94cd77d7d26313fc8f2276be71514b4ee25cca0d9e3e"
+  },
+  {
+   "path": "specs/070-braid-lightning-foundations/evidence/procedure_007.json",
+   "sha256": "71e8ed4533104eac98afcff8531d3be779746e5405628d1b2634c8d2d9566c8a"
+  },
+  {
+   "path": "specs/070-braid-lightning-foundations/evidence/procedure_008.json",
+   "sha256": "260d805c15748d5cd826f6a2fabbff5bb6fd6fb3682271f496526a7410724c30"
+  },
+  {
+   "path": "specs/070-braid-lightning-foundations/reviews/owner-t001-20261108.md",
+   "sha256": "a1ab76b3b5e935399c24749041a51e707539b65efed6c8fa470049f6827bfc0e"
+  }
+ ]
+}

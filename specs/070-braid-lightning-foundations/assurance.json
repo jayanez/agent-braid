@@ -12,7 +12,7 @@
   ],
   "assumptions": "Python 3.12+ standard library; plugin home from plugin_registry.home_path; upstream pinned at agent-lightning main bc3a9e80 and v0.x 6db3c73d; owner decisions L1-L5 of 2026-11-08.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "c0b6956e422c9ede2446835bf1a6f5182d3a5b03",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -103,16 +103,16 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive. Registry schema id unchanged; a registry storing lightning lab is refused by earlier plugin versions (stated in setup effects). No existing output changes.",
   "domain": "Braid Lightning foundations: configuration profile, content-free rollout and event records, private run store and setup consent.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "c0b6956e422c9ede2446835bf1a6f5182d3a5b03",
+    "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; no BL.0 code launches a process, opens a socket, calls a model or exposes an MCP tool; runs do not exist yet.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "None; engineering specification with no scientific claim.",
   "observation_contract": "Deterministic unit tests record refusal codes, bytes and digests; no host or model is observed.",
   "references": [
@@ -328,7 +328,8 @@
       "text": "Boundaries: BL.0 modules import only the standard library and local Braid Lightning or registry modules, open no socket, launch no process, expose no MCP tool and emit executionAuthorization false."
     }
   ],
+  "review_record": "specs/070-braid-lightning-foundations/reviews/owner-review-c0b6956e.json",
   "scientific_limits": "Engineering only. Passing tests establish configured behaviour on the tested inputs, not optimization benefit, which SPEC-072 measures.",
   "scope": "Specification and delivery of BL.0: ADRs 0039-0042 (proposed), MIT vendoring provenance, lightning_schema, lightning_config with wizard, lightning_store, and the plugin setup lightning consent key.",
-  "stage": "draft"
+  "stage": "validated"
 }
