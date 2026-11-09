@@ -1,0 +1,164 @@
+{
+ "consent": {
+  "status": "observed",
+  "systemOneActiveMode": "not-readable-offline",
+  "systemOneConfiguredMode": "shadow",
+  "telemetryConfiguredMode": "local"
+ },
+ "evidenceClass": "observational real use (docs/development/REAL_USE_EVIDENCE.md)",
+ "executionAuthorization": false,
+ "limits": [
+  "Observational real use of one owner: not preregistered, not randomized, not bound to a frozen candidate.",
+  "Counts only. No accuracy, utility or calibration of System One is measured; the reference backend abstains.",
+  "Episodes and telemetry cover UTC dates in the window and only what each store retained (30 dates).",
+  "activeMode is a property of the running MCP connection and is not readable offline; configuredMode is.",
+  "Plugin versions are the agent-braid versions present in each host plugin cache, not proof of the running build.",
+  "Episodes skipped before storage (busy or refused store) are counted only in the observing process.",
+  "The window is fixed to the shadow week; when the receipt is made on its last date, that date may be partial.",
+  "Counts come from this repository's readers (readerPackageVersion), not from the installed plugin runtime."
+ ],
+ "outcome": "observations",
+ "procedure": "procedure_006",
+ "receiptDate": "2026-11-09",
+ "scenario": "SC-006",
+ "schema": "agent-braid-spec066-real-use-shadow-receipt/v0.1",
+ "sourcesChecked": [
+  {
+   "result": "observations",
+   "source": "System One shadow store (system-one report)"
+  },
+  {
+   "result": "observations",
+   "source": "Plugin workspace registry (systemOne consent)"
+  },
+  {
+   "result": "observations",
+   "source": "Local technical telemetry (SPEC-047)"
+  },
+  {
+   "result": "observations",
+   "source": "Host plugin caches (plugin versions)"
+  },
+  {
+   "result": "present; not queried: it holds no SPEC-066 shadow episodes or consent",
+   "source": "Local evidence, coordination and identity stores"
+  },
+  {
+   "result": "present; not queried: it holds no SPEC-066 shadow episodes or consent",
+   "source": "Runtime state"
+  },
+  {
+   "result": "present; not queried: it holds no SPEC-066 shadow episodes or consent",
+   "source": "Plugin results"
+  },
+  {
+   "result": "present; not queried: analyze-work call counts come from telemetry; the SPEC-053 transcript adapter was not run",
+   "source": "Claude Code host transcripts"
+  },
+  {
+   "result": "present; not queried: analyze-work call counts come from telemetry",
+   "source": "Codex host sessions"
+  }
+ ],
+ "specification": "SPEC-066",
+ "systemOneShadow": {
+  "datesWithEpisodes": 5,
+  "dp1OpportunityShare": 0.274648,
+  "episodeSchemas": {
+   "agent-braid-s1-episode/v0.2": 25
+  },
+  "episodes": 25,
+  "invalidLinesInRetainedStore": 0,
+  "operations": {
+   "analyze-work": 25
+  },
+  "pairsAnalysed": 142,
+  "pairsAnalysedByClass": {
+   "conflicting": 1,
+   "independent-candidate": 21,
+   "ordered": 81,
+   "unknown": 39
+  },
+  "pairsRecorded": 142,
+  "pairsRecordedByClass": {
+   "conflicting": 1,
+   "independent-candidate": 21,
+   "ordered": 81,
+   "unknown": 39
+  },
+  "reportSchema": "agent-braid-s1-report/v0.1",
+  "status": "observed",
+  "storePresent": true,
+  "systemOneStatus": {
+   "abstained": 25
+  },
+  "unknownPairs": 39
+ },
+ "task": "T030",
+ "telemetry": {
+  "operations": {
+   "cli:analyze": {
+    "calls": {},
+    "datesWithCalls": 0,
+    "pairClassifications": {},
+    "refusalReasons": {}
+   },
+   "cli:system-one": {
+    "calls": {},
+    "datesWithCalls": 0,
+    "pairClassifications": {},
+    "refusalReasons": {}
+   },
+   "mcp:analyze": {
+    "calls": {},
+    "datesWithCalls": 0,
+    "pairClassifications": {},
+    "refusalReasons": {}
+   },
+   "mcp:analyze-work": {
+    "calls": {
+     "ok": 28,
+     "refused": 7
+    },
+    "datesWithCalls": 6,
+    "pairClassifications": {
+     "conflicting": 4,
+     "independent-candidate": 23,
+     "ordered": 105,
+     "unknown": 59
+    },
+    "refusalReasons": {
+     "arguments-invalid": 4
+    }
+   }
+  },
+  "reportSchema": "agent-braid-local-telemetry-report/v1",
+  "status": "observed",
+  "storePresent": true
+ },
+ "versions": {
+  "claudeCode": {
+   "cached": [
+    "0.1.0-alpha.4",
+    "0.1.0-alpha.5",
+    "0.1.0-alpha.6"
+   ],
+   "installed": [
+    "0.1.0-alpha.6"
+   ]
+  },
+  "codex": {
+   "cached": [
+    "0.1.0-alpha.7"
+   ]
+  },
+  "opencode": "not located",
+  "readerPackageVersion": "0.1.0a2"
+ },
+ "window": {
+  "basis": "day 1 is the first plugin-status with systemOne.activeMode=shadow (tasks.md T030)",
+  "clock": "UTC dates",
+  "firstDate": "2026-11-02",
+  "lastDate": "2026-11-09"
+ }
+}
