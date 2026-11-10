@@ -32,21 +32,17 @@ def root_digest(identifier: str) -> str:
 
 
 def scope_digest(record: dict) -> str:
-    corpus = record["corpus"]
-    return digest({
-        "schema": "agent-braid-spec066-s15b-corpus-scope/v1",
-        "admittedWorkspaceIds": [w["workspaceId"] for w in corpus["admittedWorkspaces"]],
-        "excludedWorkspaceIds": [w["workspaceId"] for w in corpus["excludedWorkspaces"]],
-        "dataClass": corpus["dataClass"],
-        "retentionDays": corpus["retentionDays"],
-        "revocation": corpus["revocation"],
-        "otherRepositories": "separate-express-owner-approval-each-time",
-    })
+    return digest({"schema": "agent-braid-spec066-s15b-corpus-scope/v1", "corpus": record["corpus"]})
 
 
 def consent_digest(record: dict) -> str:
-    return digest({"schema": "agent-braid-spec066-s15b-corpus-consent-ref/v1",
-                   "date": record["decisionDate"], "answer": record["ownerResponse"]["answer"]})
+    response = record["ownerResponse"]
+    return digest({"schema": "agent-braid-spec066-s15b-corpus-consent-ref/v1", "date": record["decisionDate"],
+                   "answer": response["answer"], "decision": response["decisionAsRecorded"]})
+
+
+CORPUS = {"admission", "admittedWorkspaces", "excludedWorkspaces", "otherRepositories", "thirdPartySources",
+          "sourceFamilies", "dataClass", "retentionDays", "revocation"}
 
 
 def check_record(record: dict) -> None:
@@ -54,7 +50,12 @@ def check_record(record: dict) -> None:
     def need(condition, code):
         if not condition:
             raise OwnedWorkError(code)
-    need(set(record) == TOP, "record-shape")
+    need(isinstance(record, dict) and set(record) == TOP, "record-shape")
+    need(isinstance(record["corpus"], dict) and set(record["corpus"]) == CORPUS, "record-shape")
+    need(isinstance(record["corpus"]["admittedWorkspaces"], list)
+         and isinstance(record["corpus"]["excludedWorkspaces"], list), "record-shape")
+    need(record["corpus"]["thirdPartySources"] == "excluded" and record["corpus"]["admission"] == "owner-own-work-only"
+         and all(w["status"] == "explicitly-not-admitted" for w in record["corpus"]["excludedWorkspaces"]), "record-corpus")
     need(record["executionAuthorization"] is False and record["trainingAdmission"] is False, "record-authority")
     corpus = record["corpus"]
     admitted = [w["workspaceId"] for w in corpus["admittedWorkspaces"]]
@@ -106,6 +107,24 @@ class Base(unittest.TestCase):
         return changed
 
 
+    def _rebound(self, path, value):
+        changed = self._with(path, value)
+        changed["digests"]["scopeDigest"] = scope_digest(changed)
+        return changed
+
+    def _overlap(self):
+        changed = copy.deepcopy(self.record)
+        changed["corpus"]["excludedWorkspaces"].append(dict(changed["corpus"]["admittedWorkspaces"][0], status="explicitly-not-admitted"))
+        changed["digests"]["scopeDigest"] = scope_digest(changed)
+        return changed
+
+    def _bad_root(self):
+        changed = copy.deepcopy(self.record)
+        changed["corpus"]["admittedWorkspaces"][0]["sourceRootDigest"] = D("0")
+        changed["digests"]["scopeDigest"] = scope_digest(changed)
+        return changed
+
+
 class ConsentRecordTests(Base):
     def test_record_is_strict_json_and_self_consistent(self):
         check_record(self.record)
@@ -140,6 +159,33 @@ class ConsentRecordTests(Base):
                     yield from strings(child)
         self.assertFalse([s for s in strings(self.record) if s.startswith("/") or "\\" in s])
 
+    def test_duplicate_keys_and_wrong_types_are_refused_before_checking(self):
+        with self.assertRaises(OwnedWorkError) as caught:
+            parse_json(self.raw.replace(b'"executionAuthorization": false,', b'"executionAuthorization": false, "executionAuthorization": true,'))
+        self.assertEqual(caught.exception.code, "duplicate-key")
+        with self.assertRaises(OwnedWorkError) as caught:
+            check_record([])
+        self.assertEqual(caught.exception.code, "record-shape")
+
+    def test_registered_worktrees_are_admitted_by_registry_membership_not_by_this_validator(self):
+        self.assertIs(self.record["corpus"]["admittedWorkspaces"][0]["includesRegisteredWorktrees"], True)
+        worktree = workspace_id("/work/agent-braid/.claude/worktrees")
+        with self.assertRaises(OwnedWorkError) as caught:
+            resolve(self.record, root=root_digest(worktree))
+        self.assertEqual(caught.exception.code, "authority-scope")
+
+    def test_a_registry_root_other_than_the_descriptor_root_is_refused(self):
+        other = root_digest(workspace_id("/work/unregistered-repo"))
+        raw = json.loads(authority(self.record))
+        raw["sourceRootDigest"] = other
+        raw = canonical_bytes(raw)
+        registry = OperatorRegistry((raw,), frozenset({self.record["digests"]["consentReferenceDigest"]}), frozenset({D("d")}),
+                                    frozenset({self.record["corpus"]["admittedWorkspaces"][0]["sourceRootDigest"]}), frozenset(), D("2"))
+        with self.assertRaises(OwnedWorkError) as caught:
+            resolve_authority(raw, registry, source_root_digest=other, scope_digest=self.record["digests"]["scopeDigest"],
+                              expected_pins=PINS, actions=("read-metadata",), now_utc=NOW)
+        self.assertEqual(caught.exception.code, "authority-scope")
+
     def test_a_widened_or_altered_record_is_refused(self):
         smart_notes = workspace_id("/work/smart-notes")
         widened = copy.deepcopy(self.record)
@@ -149,6 +195,17 @@ class ConsentRecordTests(Base):
             (widened, "record-corpus"),
             (self._with(("corpus", "retentionDays"), 90), "record-scope"),
             (self._with(("corpus", "dataClass"), "raw"), "record-scope"),
+            (self._with(("corpus", "includesNothing"), 1), "record-shape"),
+            (self._with(("corpus", "thirdPartySources"), "included"), "record-corpus"),
+            (self._with(("corpus", "admittedWorkspaces"), "x"), "record-shape"),
+            (self._with(("corpus", "sourceFamilies"), ["everything"]), "record-scope"),
+            (self._with(("corpus", "otherRepositories"), "allowed"), "record-scope"),
+            (self._with(("extra",), 1), "record-shape"),
+            (self._rebound(("corpus", "retentionDays"), 90), "record-bounds"),
+            (self._rebound(("corpus", "dataClass"), "raw"), "record-bounds"),
+            (self._overlap(), "record-corpus"),
+            (self._bad_root(), "record-root"),
+            (self._with(("ownerResponse", "decisionAsRecorded"), "Todos"), "record-consent"),
             (self._with(("ownerResponse", "answer"), "Todos"), "record-consent"),
             (self._with(("trainingAdmission",), True), "record-authority"),
             (self._with(("executionAuthorization",), True), "record-authority"),

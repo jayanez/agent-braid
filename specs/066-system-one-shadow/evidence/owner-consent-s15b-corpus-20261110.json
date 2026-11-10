@@ -34,20 +34,21 @@
   "decision": "admitted-scope-only",
   "decisionDate": "2026-11-10",
   "digests": {
-    "consentReferenceDigest": "c2a9e7d452df170183ed016dc296532257f88db729201b536215a1be9b92caee",
-    "rule": "sha256 of the canonical JSON (agent_braid.owned_work_authority.digest) of the scope, consent-reference and root objects rebuilt from the fields above",
-    "scopeDigest": "79c3f1709397d02d0014e3f9a65d117bbec0ad323e0db725fccdfc8b1bbd2fb1"
+    "consentReferenceDigest": "d3e787ccf77c9ecc52e83bb67b6f67b05cf8bdab1c084719c4807759b49c37af",
+    "rule": "sha256 of the canonical JSON (agent_braid.owned_work_authority.digest) of the scope (the whole corpus object), consent-reference (date, answer, decisionAsRecorded) and root objects rebuilt from the fields above",
+    "scopeDigest": "37ff53a1bc56f29e7a4a16150fafd8385b92288e2317986e2a1d721a5706a4be"
   },
   "executionAuthorization": false,
   "limits": [
     "A consent scope, not a corpus: no episode, run or label is read, joined or stored by this record.",
     "It grants no execution authority, no training admission, no calibration, no promotion to advise and no utility claim; fitting a model is a later S1.5d decision with its own review.",
-    "The workspace id is the registry identity of the owner's workspace; membership of a path in a workspace is established by the plugin registry, not by this record or by the pure authority validator.",
+    "The excluded workspace ids are asserted by the owner decision, not derived by this record. The workspace id is the registry identity (a truncated sha256 of the canonical source root, low-sensitivity but not anonymous) of the owner's workspace; membership of a path (including a registered worktree) in a workspace is established by the plugin registry, not by this record or by the pure authority validator, which compares digests only.",
     "Digests bind the record fields; they do not authenticate the owner. The binding to the owner's answer is the quoted reply and the review of this pull request.",
     "Revocation is the owner running system-one purge and removing the workspace from the plugin registry; this record is then void for that workspace."
   ],
   "ownerResponse": {
     "answer": "Solo agent-braid (Recommended)",
+    "decisionAsRecorded": "Only the owner's own work in the plugin-registered workspace agent-braid, with its worktrees; the two other registered workspaces (excludedWorkspaces) explicitly not admitted; any other repository needs a separate express owner approval; structural data only, 30-day retention, revocable with system-one purge (coordinator's wording of the option)",
     "precedingDecision": "S1.5a closed and S1.5b started: \"Cerrar y arrancar S1.5b (Recommended)\"",
     "question": "Which corpus may S1.5b use (T101 consent)?",
     "role": "owner and founder",

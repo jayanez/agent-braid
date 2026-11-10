@@ -246,7 +246,7 @@ specifications unless a SPEC-066 requirement amends them.
 
 ## S1.5b — Owned corpus (outline, blocked until T032)
 
-- [x] T101 (REQ-101): Owner consent record that admits the owner's own work (episodes,
+- [ ] T101 (REQ-101): Owner consent record that admits the owner's own work (episodes,
   real runs, and the SPEC-047, SPEC-053 and SPEC-059 real-use sources) as the only
   permissioned corpus, restricted to plugin-registered workspaces (other repositories
   only on the owner's express approval), reusing the SPEC-051 validator; third-party
@@ -265,8 +265,10 @@ specifications unless a SPEC-066 requirement amends them.
   widened scope and a missing registry; it also refuses a record that is widened,
   re-scoped or marked as execution or training authority. Scope only: no episode, run
   or label is read, no authority descriptor is minted (it needs the T103 and T104
-  pins), and no fitting is admitted. T032 is closed by the owner decision of the same
-  day (formal tick with the freeze change).
+  pins), and no fitting is admitted. Not ticked: it depends on T032, whose
+  owner decision of the same day is recorded in its own change; tick T101 once that
+  merges. The test checks digests only: the plugin registry, not this validator,
+  decides whether a path (including a registered worktree) belongs to a workspace.
 - [ ] T102 (REQ-102): Outcome observer that joins DP-1 episodes with a later runtime
   conflict, merge conflict or verify result under a random join key; pairs without an
   outcome stay unlabelled. Dependencies: T101. Files: to be set by the S1.5b plan.
