@@ -72,4 +72,3 @@ agent-braid lightning run --home "<registryHome>" --resume <id>   # only after a
 - **Stops.** `budget.maxRollouts` ends a run with `unit-cap`; a host quota message ends it with
   `five-hour-headroom` or `weekly-stop`. Nothing resumes automatically.
 - The laboratory runs from an Agent Braid checkout (it uses the SPEC-069 prompt sets, fixture and driver).
-
