@@ -20,6 +20,11 @@ map to SC-001–SC-009; procedure_010 covers the episode v0.2 features and hashe
 | procedure_009 | REQ-008 / SC-009 | automated |
 | procedure_010 | REQ-003 (v0.2) / SC-002 | automated |
 
+The `pytest -k` commands below are the original wording. `requirements-dev.txt` does not
+install pytest, so the obtained runs use the equivalent `python3 -m unittest
+tests.test_system_one_shadow.<Class>.<test>` ids (receipt
+`evidence/s15a-local-tests-20261110.json`).
+
 ## procedure_001
 
 Build a service pair over the same owned roots, one with `system_one="off"` and one
@@ -41,7 +46,7 @@ Command: `python3 -m pytest -q tests/test_system_one_shadow.py -k "test_analyze_
 Validate episodes produced from owned fixtures against the contract with
 `validate_episode`: one fixture per classification (including a report whose pair
 carries both `dependency-order` and `read-version`), an AIM batch and a Git analysis
-(`effectKinds` is `null` for both, because the report carries no effect kinds), a report with more than 64 pairs
+(`effectKinds` is filled per side from the validated AIM request and is `null` for Git, per [episode-v0.2.md](contracts/episode-v0.2.md); v0.1 fixtures keep `null`), a report with more than 64 pairs
 (`pairsRecorded` 64, `pairCount` the total, first 64 in report order), and a report
 with zero pairs. Assert the reason codes equal the table, the constraints are in the
 closed set, the episode is canonical and single-line, and `observedOutcome` is
@@ -193,4 +198,4 @@ Negative controls: an episode with a raw path in the hash field, a hash of the w
 length or alphabet, an unknown resource class, an extra string field, and a hash field
 present in a v0.1 episode are each refused with a stable reason. A store whose salt
 file has group-readable mode is refused with the path rules of procedure_003.
-Command: to be set when T022 lands; the tests live in `tests/test_system_one_shadow.py`.
+Command: `python3 -m unittest tests.test_system_one_shadow.FeatureTests tests.test_system_one_shadow.StoreTests.test_purge_leaves_a_foreign_salt_directory_in_place tests.test_system_one_shadow.StoreTests.test_torn_salt_is_replaced_with_a_complete_secret`.
