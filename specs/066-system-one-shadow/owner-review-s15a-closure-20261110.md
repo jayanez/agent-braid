@@ -13,7 +13,7 @@ The S1.5a evidence now in `assurance.json`, every item byte-bound by SHA-256:
 | Evidence | What it shows | What it does not show |
 |---|---|---|
 | `evidence/real-use-shadow-2026-11-09.json` (T030, SC-006) | One owner, shadow week 2026-11-02 to 2026-11-09: 25 episodes on 5 dates, 142 pairs (conflicting 1, independent-candidate 21, ordered 81, unknown 39), DP-1 opportunity share 0.274648, all 25 episodes abstained, no invalid store lines. Counts only. | Accuracy, calibration or utility of System One. The reference backend always abstains. |
-| `evidence/overhead-20261107.json` (T021, SC-003) | Worker step median 2.0 to 6.5 ms, p95 2.7 to 7.3 ms on one machine; request-path hand-off at most 0.024 ms p95. A receipt, not a gate. | A bound on any other machine or a stalled filesystem. |
+| `evidence/overhead-20261107.json` (T021, SC-003) | Worker step median 2.0 to 6.5 ms, p95 2.7 to 7.3 ms on one machine; request-path hand-off median at most 0.016 ms and p95 at most 0.024 ms. A receipt, not a gate. | A bound on any other machine or a stalled filesystem. |
 | `evidence/s15a-local-tests-20261110.json` (SC-001 to SC-005, SC-007 to SC-010) | The named scenario tests and the 105-test module run pass at develop `0cb79302`. | The CI `pr` profile (that is the CI `validate` aggregate on the pull request head), independent review, or any scientific claim. |
 
 Reviews of T010 to T022 are in `reviews/T031-r1-20261107.md` (automated same-family

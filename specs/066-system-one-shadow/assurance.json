@@ -143,7 +143,7 @@
               "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
               "outcome": "SC-005 test and the 105-test module run: OK.",
               "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
-              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+              "sha256": "388e1722ef06e0817a24fcef610721a78e43d1132f7a642fb0323544bb9cf2b0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_005 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
@@ -167,7 +167,7 @@
               "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
               "outcome": "SC-001 test and the 105-test module run: OK.",
               "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
-              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+              "sha256": "388e1722ef06e0817a24fcef610721a78e43d1132f7a642fb0323544bb9cf2b0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_001 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
@@ -192,7 +192,7 @@
               "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
               "outcome": "SC-003 test and the 105-test module run: OK.",
               "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
-              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+              "sha256": "388e1722ef06e0817a24fcef610721a78e43d1132f7a642fb0323544bb9cf2b0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_003 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
@@ -216,7 +216,7 @@
               "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
               "outcome": "SC-002 test and the 105-test module run: OK.",
               "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
-              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+              "sha256": "388e1722ef06e0817a24fcef610721a78e43d1132f7a642fb0323544bb9cf2b0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_002 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
@@ -258,7 +258,7 @@
               "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
               "outcome": "SC-010 test and the 105-test module run: OK.",
               "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
-              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+              "sha256": "388e1722ef06e0817a24fcef610721a78e43d1132f7a642fb0323544bb9cf2b0"
             }
           ],
           "planned_evidence": "Covered by procedure_003 (store refusals).",
@@ -282,7 +282,7 @@
               "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
               "outcome": "SC-004 test and the 105-test module run: OK.",
               "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
-              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+              "sha256": "388e1722ef06e0817a24fcef610721a78e43d1132f7a642fb0323544bb9cf2b0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_004 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
@@ -306,7 +306,7 @@
               "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
               "outcome": "SC-007 test and the 105-test module run: OK.",
               "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
-              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+              "sha256": "388e1722ef06e0817a24fcef610721a78e43d1132f7a642fb0323544bb9cf2b0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_007 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
@@ -330,7 +330,7 @@
               "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
               "outcome": "SC-008 test and the 105-test module run: OK.",
               "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
-              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+              "sha256": "388e1722ef06e0817a24fcef610721a78e43d1132f7a642fb0323544bb9cf2b0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_008 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
@@ -354,7 +354,7 @@
               "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
               "outcome": "SC-009 test and the 105-test module run: OK.",
               "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
-              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+              "sha256": "388e1722ef06e0817a24fcef610721a78e43d1132f7a642fb0323544bb9cf2b0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_009 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",

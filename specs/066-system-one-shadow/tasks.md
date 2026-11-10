@@ -248,7 +248,7 @@ specifications unless a SPEC-066 requirement amends them.
   of the S1.5a closure, with the decision whether S1.5b starts. Dependencies: T030,
   T031.
   Evidence (2026-11-10), candidate part: obtained evidence recorded in `assurance.json`
-  for SC-001 to SC-010 (new scenario SC-006 under REQ-003): the T030 receipt
+  for SC-001 to SC-005 and SC-007 to SC-010 (local-test receipt) and SC-006 (new scenario under REQ-003, backed only by): the T030 receipt
   `evidence/real-use-shadow-2026-11-09.json` (25 episodes, 5 dates, 142 pairs, DP-1
   opportunity share 0.274648, all abstained; counts only, no utility claim), the T021
   overhead receipt `evidence/overhead-20261107.json` and the local test receipt
