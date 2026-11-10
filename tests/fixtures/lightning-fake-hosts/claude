@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: AGPL-3.0-only
+"""Braid Lightning fake Claude Code: the SPEC-069 fake host, plus ``apiKeySource`` from FAKE_KEY_SOURCE.
+
+The SPEC-069 fixture is reused unchanged; this wrapper only adds the credential source a real subscription
+sign-in reports in the init event, so the runner's route check (SPEC-071 REQ-004) can be exercised.
+"""
+import json
+import os
+import subprocess
+import sys
+
+here = os.path.dirname(os.path.abspath(__file__))
+original = os.path.join(here, "..", "spec069-fake-hosts", "claude")
+done = subprocess.run([sys.executable, original, *sys.argv[1:]], capture_output=True, text=True)
+source = os.environ.get("FAKE_KEY_SOURCE")
+lines = []
+for line in done.stdout.splitlines():
+    if source is not None and line.startswith("{"):
+        row = json.loads(line)
+        if row.get("type") == "system" and row.get("subtype") == "init":
+            row["apiKeySource"] = source
+            line = json.dumps(row)
+    lines.append(line)
+sys.stdout.write("\n".join(lines) + ("\n" if lines else ""))
+sys.stderr.write(done.stderr)
+sys.exit(done.returncode)

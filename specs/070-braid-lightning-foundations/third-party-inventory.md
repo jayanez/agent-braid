@@ -23,9 +23,9 @@ further files.
 | main `agentlightning/server/store.py` | `685c500977a9dfbea2fc1836139a73fd2752082739008ecda8842871ccc44efd` | `agent_braid/lightning_store.py` | 070 |
 | v0.x `agentlightning/store/base.py` | `d9a642313c6e07190bb46db95c903d3447f32b70a0363f32a6a2c40c7238207e` | `agent_braid/lightning_store.py` | 070 |
 | v0.x `agentlightning/store/memory.py` | `5af8bba052ea731943f93d3589f7ec29f011874e83837f6478770079f81a2fd5` | `agent_braid/lightning_store.py` | 070 |
-| main `agentlightning/hooks.py` | `21c7fe9474f05efe8403b0b583e14b13a9510efce3a1dc3c793c883036bce95b` | `agent_braid/lightning_hooks.py` (planned) | 071 |
-| main `agentlightning/controller/local_reconciler.py` | `c49f21804830b8cc37374bf26a849f062dd346820d98e757d3914c92da50685d` | `agent_braid/lightning_runner.py` (planned) | 071 |
-| v0.x `agentlightning/emitter/reward.py` | `ef9e08da2a41ca1ce40005a3896e79a369159d19271122c0d4823b118bb88955` | `agent_braid/lightning_reward.py` (planned) | 071 |
+| main `agentlightning/hooks.py` | `21c7fe9474f05efe8403b0b583e14b13a9510efce3a1dc3c793c883036bce95b` | `agent_braid/lightning_hooks.py` | 071 |
+| main `agentlightning/controller/local_reconciler.py` | `c49f21804830b8cc37374bf26a849f062dd346820d98e757d3914c92da50685d` | `agent_braid/lightning_runner.py` | 071 |
+| v0.x `agentlightning/emitter/reward.py` | `ef9e08da2a41ca1ce40005a3896e79a369159d19271122c0d4823b118bb88955` | `agent_braid/lightning_reward.py` | 071 |
 | v0.x `agentlightning/algorithm/base.py` | `b8a6282a59067906c80238ea131d91d1ee7ac39d7e52197e4c0fee891100ce1d` | `agent_braid/lightning_algorithm.py` (planned) | 072 |
 | v0.x `agentlightning/algorithm/apo/apo.py` | `afe4ff80714957ce4d001025fc23b3675db00500254c9dcd2c94b6d21bce42e2` | `agent_braid/lightning_apo.py` (planned) | 072 |
 | v0.x `agentlightning/types/resources.py` | `fc7bcbd2cd5a261225ffe9c4a80c5071a7c13244ad3bc683b0c385ab7e76896c` | `agent_braid/lightning_resources.py` (planned) | 072 |

@@ -149,7 +149,15 @@
         {
           "given": "this specification, plan and contracts at a candidate commit",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Owner review of spec, plan, contracts, REQ-014 and OD-2 through guided interactive questions (2026-11-10)",
+              "limits": "T001 scope only; human_review of the frozen candidate is separate.",
+              "outcome": "Approved; REQ-014 is run-and-report; OD-2 refuse when unverified; real baseline needs an explicit owner yes.",
+              "path": "specs/071-lightning-rollouts-reward/reviews/owner-t001-20261110.md",
+              "sha256": "4b1147159d82810cc8a477ee8592da27a54375bd88da5a1c705a9d0bc9ba474c"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_001",
@@ -165,7 +173,15 @@
         {
           "given": "the SPEC-069 driver before and after extraction",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec069_native_runs",
+              "limits": "Behaviour equivalence is shown by the driver test suite and the unchanged evidence format; the driver file hash recorded in its evidence changes by construction.",
+              "outcome": "passed: Host plumbing extracted to agent_braid/lightning_hosts.py; the SPEC-069 driver re-exports it and its 29 tests, including the --fake-hosts self-test with all negative controls, pass unchanged.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_002.json",
+              "sha256": "85bbc82c158e52d3b24941ee3a40935ff3db9d1cc242b7dc9d79887a7dad9414"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_002",
@@ -181,7 +197,15 @@
         {
           "given": "a configuration with parallel 1 and a fake host that hangs",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_runner.PipelineTests.test_fake_pipeline_records_rewards_and_replays tests.test_lightning_runner.PipelineTests.test_timeout_fails_the_rollout tests.test_lightning_runner.PipelineTests.test_straggler_process_is_detected_and_killed",
+              "limits": "Fake hosts only; parallel greater than 1 is not implemented (the profile default and REQ-003 bound are 1).",
+              "outcome": "passed: Rollouts run sequentially in a disposable sandboxed profile, follow the SPEC-070 state machine, write rollout, event and attempt-result records through the store; a timeout fails the rollout; a straggler process is detected and killed at teardown.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_003.json",
+              "sha256": "97df775c358fac9e6e480d7e6595e2ad027dae7d365697cb8ecca8f23724cda4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_003",
@@ -197,7 +221,15 @@
         {
           "given": "an operator environment containing FOO_API_KEY, or a host reporting key source apiKey",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_runner.RouteTests tests.test_lightning_runner.PipelineTests.test_missing_key_source_stops_as_route_unverified tests.test_lightning_runner.PipelineTests.test_paid_key_in_environment_refuses_before_launch",
+              "limits": "What a real subscription sign-in reports is not yet observed; the value none stays a fixture assumption until the real baseline (T012).",
+              "outcome": "passed: Any *_API_KEY or ANTHROPIC_AUTH_TOKEN/BASE_URL/Bedrock/Vertex variable is refused by name before launch; the host-reported apiKeySource is recorded; oauth (and none as the fixture assumption) is accepted; a missing or other source ends the run as route-unverified; OpenCode reports none and is a declared limit (OD-2).",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_004.json",
+              "sha256": "42f9ba3f959281bcf0ce5421d2ac2e55a80681b3e5590b469b13bc392fbabae0"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_004",
@@ -213,7 +245,15 @@
         {
           "given": "a synthetic subscription token in the runner environment",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_runner.PipelineTests.test_subscription_credential_is_passed_but_never_written tests.test_lightning_runner.PipelineTests.test_leaked_secret_is_caught",
+              "limits": "Synthetic token only.",
+              "outcome": "passed: A synthetic CLAUDE_CODE_OAUTH_TOKEN reaches the child environment only; credentialPresent is true and the value appears in no store file or status; a planted secret in host output stops the run as credential-leak and is absent from the store.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_005.json",
+              "sha256": "6617e1c013c42517e774868c2004e4264fcdbb6ad6c833a0c6d43b932fef0969"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_005",
@@ -229,7 +269,15 @@
         {
           "given": "a fake host reporting a five-hour window limit",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_runner.RouteTests.test_quota_messages_map_to_budget_stop_names tests.test_lightning_runner.PipelineTests.test_unit_cap_stops_and_resume_is_explicit",
+              "limits": "Quota message patterns are assumptions until observed on a real host.",
+              "outcome": "passed: Quota messages map to _BUDGET_STOPS names; budget.maxRollouts ends the run with unit-cap; the same run id continues only with an explicit resume and skips completed rollouts; resume without a run id is refused.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_006.json",
+              "sha256": "7a02b8e8ab1229a600fd03a0a3c62cb6e6c7a87f7e3dfb69fcf0c5da3e104283"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_006",
@@ -245,7 +293,15 @@
         {
           "given": "hooks registered for a rollout, one of which raises",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_runner.HookTests tests.test_lightning_runner.PipelineTests.test_failing_hook_fails_only_its_rollout",
+              "limits": "Synchronous hooks only.",
+              "outcome": "passed: Hooks run in upstream order on deep read-only copies; a raising hook fails only its rollout (hook-failed); unknown hook names are refused.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_007.json",
+              "sha256": "fbd51c9675a8c4ea7641fdb50145df68e7388a8956f0b8bf273c51437194e3dd"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_007",
@@ -261,7 +317,15 @@
         {
           "given": "SPEC-069 fixture attempts with known score_case verdicts",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_runner.RewardTests",
+              "limits": "schemaValid is the runtime verdict, kept equivalent to the declared schema by the SPEC-069 differential test.",
+              "outcome": "passed: The reward vector matches score_case, is byte-identical for equal inputs, never credits an uncalled tool, zeroes D4 on a canary hit, and refuses changed scoring rules or prompt sets.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_008.json",
+              "sha256": "e3ef6beccf613499b4cbb8bbf434725a3c468ad7fc6b8642a4d7378873b675b0"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_008",
@@ -277,7 +341,15 @@
         {
           "given": "a fake host that reads .git, the canary file and an external URL",
           "id": "SC-009",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_runner.PipelineTests.test_canary_hit_zeroes_d4 tests.test_lightning_runner.RewardTests.test_changed_scoring_or_prompt_set_is_refused",
+              "limits": "The model cannot read files or reach the network because every built-in file, shell and web tool is denied (SPEC-069 allowlist); the OS sandbox denies real configuration paths but is not a network firewall. Fake hosts do not exercise sandbox-exec.",
+              "outcome": "passed: A canary token planted in a non-target workspace file is detected when it reaches the transcript and zeroes D4 for that rollout; the prompt-set and scoring hashes are checked against FREEZE before any run.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_009.json",
+              "sha256": "33a6fd19d6e14a6fd8836f4fd084bafa993dd5d558e30d44126bdd7ab5ec2bc4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_009",
@@ -293,7 +365,15 @@
         {
           "given": "a valid configuration",
           "id": "SC-010",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_runner.PlanTests tests.test_lightning_runner.CliTests",
+              "limits": "CLI tests use a temporary home.",
+              "outcome": "passed: run --dry-run launches nothing and plans within budget; run without setup consent is refused (consent-required); --fake-hosts runs labelled pipeline-only; status and report work by run id; outputs carry executionAuthorization false.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_010.json",
+              "sha256": "01a7651b5cc781bbd437fd6df769b39dbf50e56985b69aa65d339b4d229c0a87"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_010",
@@ -309,7 +389,15 @@
         {
           "given": "a completed fake run",
           "id": "SC-011",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_runner.RewardTests.test_replay_from_parsed_attempts_is_byte_identical_and_detects_edits tests.test_lightning_runner.PipelineTests.test_fake_pipeline_records_rewards_and_replays",
+              "limits": "Transcript replay needs SPEC-074 consent and is not offered.",
+              "outcome": "passed: Rewards recomputed from stored content-free parsed attempts hash to the recorded rewardSha256; an edited parsed attempt changes the hash; result records contain no prompt text.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_011.json",
+              "sha256": "61cc861d2088425f909ea69992cc5ef04fac1c2b751f8514c16361d16246c82a"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_011",
@@ -325,7 +413,15 @@
         {
           "given": "the BL.1 modules",
           "id": "SC-012",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_runner.BoundaryTests",
+              "limits": "Static inspection.",
+              "outcome": "passed: BL.1 modules import only the standard library (and the repository scripts lazily), open no listener, call no execute, recover or grant function, and no MCP module mentions Braid Lightning.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_012.json",
+              "sha256": "0a5b0837470a7340aac6948ded3927e2723cd7385f3cea4f4117a17d1f8d0e02"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_012",
@@ -341,7 +437,15 @@
         {
           "given": "the CI environment with the SPEC-069 fake hosts",
           "id": "SC-013",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_runner.PipelineTests",
+              "limits": "Pipeline-only: proves the runner, not any host or model.",
+              "outcome": "passed: The full fake-host pipeline passes; each negative variant (planted API key, missing key source, leaked secret, canary hit, straggler, timeout, hook failure, unit cap) yields its code or recorded outcome.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/procedure_013.json",
+              "sha256": "301df17d440985e0a06b26ef9f6abcc9e433db39657cd5079619a364b97f6bf4"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_013",

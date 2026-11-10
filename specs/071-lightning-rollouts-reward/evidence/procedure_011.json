@@ -1,0 +1,25 @@
+{
+ "command": "python -m unittest tests.test_lightning_runner.RewardTests.test_replay_from_parsed_attempts_is_byte_identical_and_detects_edits tests.test_lightning_runner.PipelineTests.test_fake_pipeline_records_rewards_and_replays",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_hooks.py": "4760f91d5bd9505bffe994751b6ed790acab036087a417f99755944f891c9c11",
+  "agent_braid/lightning_hosts.py": "a147d8fb36c7d4e8b06aa328699a7662a52fdf71e05b292fe8a13756ddf15b23",
+  "agent_braid/lightning_reward.py": "2443da49073dfdd28be6972b6a1f9ef1bd1dcf4583d34920fba6b0a4a5aff4e0",
+  "agent_braid/lightning_runner.py": "c8563264f94e14c01548a5e0b78de5e346b0c88c94b34a676d9d861cc8dfadc2",
+  "agent_braid/lightning_schema.py": "3a5b70ded3d8696ec59eb1873d89fddb6b5400aca4443ae3a228ac804d81dc19",
+  "agent_braid/lightning_store.py": "8b1df5d0cf17c726f48bb16b637660f26cfd7fc6d8ad592052cf043947f9b241",
+  "tests/fixtures/lightning-fake-hosts/claude": "2c75ac72fc22350f131b77886735209ec7d06856098dec1c15418258952153e1",
+  "tests/fixtures/lightning-fake-hosts/opencode": "c819a0d54b984b833e9809340fed3e4550b723871c3f8892bcea6bcfee78a1d7",
+  "tests/test_lightning_runner.py": "085d3c04ef3fdb020a6693a56a40e950fff9608ef8043d8d9c9f6bba16329aff"
+ },
+ "limits": "Transcript replay needs SPEC-074 consent and is not offered.",
+ "outcome": "passed: Rewards recomputed from stored content-free parsed attempts hash to the recorded rewardSha256; an edited parsed attempt changes the hash; result records contain no prompt text.",
+ "procedure": "procedure_011",
+ "result": "OK",
+ "scenario": "SC-011",
+ "specification": "SPEC-071 BL.1",
+ "testsRun": 2
+}
