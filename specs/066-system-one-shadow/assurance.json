@@ -106,7 +106,7 @@
     },
     "mode": "current"
   },
-  "compatibility": "New contracts agent-braid-s1-episode/v0.1 and agent-braid-s1-report/v0.1; optional systemOne registry member that leaves bytes and digest unchanged when off; new CLI subcommands system-one report and purge; telemetry CLI operation system-one (newer batches with it are not importable by older versions). Portable MCP envelope unchanged.",
+  "compatibility": "New contracts agent-braid-s1-episode/v0.1, its additive successor v0.2 (v0.1 lines stay readable) and agent-braid-s1-report/v0.1; optional systemOne registry member that leaves bytes and digest unchanged when off; new CLI subcommands system-one report and purge; telemetry CLI operation system-one (newer batches with it are not importable by older versions). Portable MCP envelope unchanged.",
   "domain": "Local machine; portable and plugin MCP analyze-work over AIM and Git inputs within the MCP adapter bounds (at most 32 operations); the reference rule backend stdlib-rule-fixture-v1.",
   "evidence_snapshot": {
     "commit": null,
@@ -115,7 +115,7 @@
   "execution_contract": "Advisory only. executionAuthorization stays false; shadow never changes, delays beyond its work budget or fails any result; no network; files are written only to the private System One store with owner-only permissions.",
   "human_review": "pending",
   "hypotheses": "H-S1 (spec.md): on owner DP-1 unknown pairs a calibrated local backend can advise likely-independent with observed false-independence at most 2% at coverage at least 30%. Not tested in S1.5a.",
-  "observation_contract": "Owned fixtures and seeded requests in tests/test_system_one_shadow.py; byte comparison of envelopes in off and shadow mode; validation of stored episode lines against agent-braid-s1-episode/v0.1; one owner-run real-use check (SC-006) recorded as a derived redacted receipt.",
+  "observation_contract": "Owned fixtures and seeded requests in tests/test_system_one_shadow.py; byte comparison of envelopes in off and shadow mode; validation of stored episode lines against agent-braid-s1-episode/v0.1 and v0.2; one owner-run real-use check (SC-006) recorded as a derived redacted receipt.",
   "references": [
     "CONSTITUTION.md",
     "GOVERNANCE.md",
@@ -137,7 +137,15 @@
         {
           "given": "a registry without systemOne or with off",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3.13 -m unittest tests.test_system_one_shadow tests.test_system_one_shadow_store tests.test_system_one_shadow_boundaries tests.test_spec066_shadow_overhead tests.test_spec066_t030_receipt, and the scenario test id listed in the receipt",
+              "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
+              "outcome": "SC-005 test and the 105-test module run: OK.",
+              "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
+              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_005 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
           "test_name": "RegistryTests.test_absent_and_off_keep_registry_bytes_and_digest",
@@ -153,7 +161,15 @@
         {
           "given": "two services over the same roots, off and shadow",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3.13 -m unittest tests.test_system_one_shadow tests.test_system_one_shadow_store tests.test_system_one_shadow_boundaries tests.test_spec066_shadow_overhead tests.test_spec066_t030_receipt, and the scenario test id listed in the receipt",
+              "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
+              "outcome": "SC-001 test and the 105-test module run: OK.",
+              "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
+              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_001 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
           "test_name": "ParityTests.test_git_analyze_work_prepare_and_analyze_are_byte_identical",
@@ -170,6 +186,13 @@
               "outcome": "measured (re-captured 2026-11-08 after SPEC-069 T014 changed the shadow code): worker step median 2.0-6.5 ms and p95 2.7-7.3 ms (maximum 15.5 ms) for 2, 12 and 32 operations with a cold and a warm store; request-path hand-off median at most 0.016 ms; 1,200 episodes abstained, none budget-exceeded, no refusal. 50 ms budget shown as reference only.",
               "path": "specs/066-system-one-shadow/evidence/overhead-20261107.json",
               "sha256": "02668bfee750a4387d8945ffc8d0d7065158f2a4b5ac1056ed87158511e71cf0"
+            },
+            {
+              "command": "python3.13 -m unittest tests.test_system_one_shadow tests.test_system_one_shadow_store tests.test_system_one_shadow_boundaries tests.test_spec066_shadow_overhead tests.test_spec066_t030_receipt, and the scenario test id listed in the receipt",
+              "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
+              "outcome": "SC-003 test and the 105-test module run: OK.",
+              "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
+              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_003 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
@@ -187,12 +210,38 @@
         {
           "given": "requests whose identifiers and resources carry sentinel strings",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3.13 -m unittest tests.test_system_one_shadow tests.test_system_one_shadow_store tests.test_system_one_shadow_boundaries tests.test_spec066_shadow_overhead tests.test_spec066_t030_receipt, and the scenario test id listed in the receipt",
+              "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
+              "outcome": "SC-002 test and the 105-test module run: OK.",
+              "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
+              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_002 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
           "test_name": "EpisodeTests.test_episode_conforms_and_holds_no_input_string",
           "then": "it validates and contains none of the sentinels",
           "when": "an episode is recorded"
+        },
+        {
+          "given": "the owner enabled shadow on the published plugin 0.1.0-alpha.5 and worked normally for the shadow week",
+          "id": "SC-006",
+          "obtained_evidence": [
+            {
+              "command": "python -m scripts.spec066_t030_receipt (owner machine, 2026-11-09 UTC); tests: tests.test_spec066_t030_receipt",
+              "limits": "Observational real use of one owner, not preregistered, not randomized, not bound to a frozen candidate; counts only; the reference backend always abstains, so no accuracy, calibration or utility claim; activeMode is not readable offline; episode counts cover what the store retained.",
+              "outcome": "observations: 25 episodes on 5 dates (window 2026-11-02 to 2026-11-09, plugin versions 0.1.0-alpha.4 to alpha.7 in host caches), 142 pairs (conflicting 1, independent-candidate 21, ordered 81, unknown 39), DP-1 opportunity share 0.274648, all 25 episodes abstained, 0 invalid lines; 35 analyze-work calls in local telemetry (28 ok, 7 refused).",
+              "path": "specs/066-system-one-shadow/evidence/real-use-shadow-2026-11-09.json",
+              "sha256": "45c47e3ff7245ce4a8d46fb1acfff7684f301e6bbbe14e03a07262bb3be8988e"
+            }
+          ],
+          "planned_evidence": "Owner-run procedure_006 (specs/066-system-one-shadow/validation-plan.md): derived redacted receipt under docs/development/REAL_USE_EVIDENCE.md rules.",
+          "test_file": "tests/test_spec066_t030_receipt.py",
+          "test_name": "CountTests.test_shadow_counts_match_the_system_one_report_on_the_same_dates",
+          "then": "the receipt records at least one episode with counts only and no identifiers; it grants nothing and shows no utility",
+          "when": "the redacted receipt is built from the System One store, the plugin registry, local telemetry and host caches"
         }
       ],
       "text": "Episode contract agent-braid-s1-episode/v0.2 (v0.1 lines stay readable) with derived structural features only for each successful, report-bearing analyze or analyze-work result (founder decision 4 of 2026-11-07; the current runtime analyze result carries no report and records nothing)."
@@ -203,7 +252,15 @@
         {
           "given": "a symlinked store directory",
           "id": "SC-010",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3.13 -m unittest tests.test_system_one_shadow tests.test_system_one_shadow_store tests.test_system_one_shadow_boundaries tests.test_spec066_shadow_overhead tests.test_spec066_t030_receipt, and the scenario test id listed in the receipt",
+              "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
+              "outcome": "SC-010 test and the 105-test module run: OK.",
+              "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
+              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+            }
+          ],
           "planned_evidence": "Covered by procedure_003 (store refusals).",
           "test_file": "tests/test_system_one_shadow.py",
           "test_name": "StoreTests.test_symlinked_store_directory_is_refused",
@@ -219,7 +276,15 @@
         {
           "given": "seeded episodes",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3.13 -m unittest tests.test_system_one_shadow tests.test_system_one_shadow_store tests.test_system_one_shadow_boundaries tests.test_spec066_shadow_overhead tests.test_spec066_t030_receipt, and the scenario test id listed in the receipt",
+              "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
+              "outcome": "SC-004 test and the 105-test module run: OK.",
+              "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
+              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_004 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
           "test_name": "ReportTests.test_report_counts_match_seeded_episodes",
@@ -235,7 +300,15 @@
         {
           "given": "--telemetry local",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3.13 -m unittest tests.test_system_one_shadow tests.test_system_one_shadow_store tests.test_system_one_shadow_boundaries tests.test_spec066_shadow_overhead tests.test_spec066_t030_receipt, and the scenario test id listed in the receipt",
+              "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
+              "outcome": "SC-007 test and the 105-test module run: OK.",
+              "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
+              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_007 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
           "test_name": "ReportTests.test_command_telemetry_is_opt_in_and_aggregate_only",
@@ -251,7 +324,15 @@
         {
           "given": "a compiled manifest digest that differs",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3.13 -m unittest tests.test_system_one_shadow tests.test_system_one_shadow_store tests.test_system_one_shadow_boundaries tests.test_spec066_shadow_overhead tests.test_spec066_t030_receipt, and the scenario test id listed in the receipt",
+              "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
+              "outcome": "SC-008 test and the 105-test module run: OK.",
+              "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
+              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_008 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
           "test_name": "EpisodeTests.test_identity_mismatch_is_refused_and_still_valid",
@@ -267,7 +348,15 @@
         {
           "given": "a shadow consent applied after connection",
           "id": "SC-009",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python3.13 -m unittest tests.test_system_one_shadow tests.test_system_one_shadow_store tests.test_system_one_shadow_boundaries tests.test_spec066_shadow_overhead tests.test_spec066_t030_receipt, and the scenario test id listed in the receipt",
+              "limits": "Local unit tests on one machine at develop 0cb79302 against owned fixtures; not the CI pr profile (the CI validate aggregate on the pull request head is that evidence), not an independent review, and no statement about accuracy, calibration or utility of System One.",
+              "outcome": "SC-009 test and the 105-test module run: OK.",
+              "path": "specs/066-system-one-shadow/evidence/s15a-local-tests-20261110.json",
+              "sha256": "ef80094b2222ef8c5ef0a181d1a85f19d2cda6e8e9db1235aeb0726f21d2d1ee"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure_009 record (specs/066-system-one-shadow/validation-plan.md): command, hashes, environment, outcome, limits.",
           "test_file": "tests/test_system_one_shadow.py",
           "test_name": "RegistryTests.test_plugin_status_reports_configured_and_active_mode_after_reconnect",

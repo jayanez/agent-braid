@@ -20,7 +20,8 @@ direction: no external service, third-party decision model or pretrained encoder
 Laya and Jev are design references only.
 Checked S1.5a tasks below cite `tests/test_system_one_shadow.py` (one module instead
 of the separate test files named in each task); unchecked ones remain open, partly
-implemented where noted.
+implemented where noted. No `tests/fixtures/system_one_shadow/` directory was created:
+fixtures are built in the test module.
 
 Existing deferred issues absorbed by this milestone, with the SPEC-066 task that
 carries each one forward, are listed in [issue-drafts.md](issue-drafts.md) and
@@ -76,6 +77,9 @@ specifications unless a SPEC-066 requirement amends them.
 - [ ] T005: Freeze the specification candidate with
   `python3 -m scripts.validate_spec_kit freeze specs/066-system-one-shadow`.
   Dependencies: T002. Evidence: historical snapshot in `assurance.json`.
+  Status 2026-11-10: runs with the T032 closure, because a freeze needs the candidate
+  (the T032 evidence change) merged first; exact packet in
+  [owner-review-s15a-closure-20261110.md](owner-review-s15a-closure-20261110.md).
 
 ## S1.5a — Shadow mode
 
@@ -243,6 +247,18 @@ specifications unless a SPEC-066 requirement amends them.
 - [ ] T032: Record obtained evidence in `assurance.json`, freeze, and owner review
   of the S1.5a closure, with the decision whether S1.5b starts. Dependencies: T030,
   T031.
+  Evidence (2026-11-10), candidate part: obtained evidence recorded in `assurance.json`
+  for SC-001 to SC-010 (new scenario SC-006 under REQ-003): the T030 receipt
+  `evidence/real-use-shadow-2026-11-09.json` (25 episodes, 5 dates, 142 pairs, DP-1
+  opportunity share 0.274648, all abstained; counts only, no utility claim), the T021
+  overhead receipt `evidence/overhead-20261107.json` and the local test receipt
+  `evidence/s15a-local-tests-20261110.json`; R1-06 to R1-08 fixed, R1-04, R1-05 and
+  R1-09 dispositions recorded. Owner decision, interactive answer of 2026-11-10 to
+  whether to close S1.5a and start S1.5b: "Cerrar y arrancar S1.5b (Recommended)" =
+  close S1.5a and start S1.5b ([record](owner-review-s15a-closure-20261110.md)). Not
+  ticked: the freeze and the `approved` human review bind a `develop` commit that
+  contains this candidate, so they land in the follow-up freeze change (T005 with it);
+  the packet is in the record. S1.5b tasks still need their own plan and review.
 
 ## S1.5b — Owned corpus (outline, blocked until T032)
 
