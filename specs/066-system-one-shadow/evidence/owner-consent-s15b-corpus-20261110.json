@@ -1,0 +1,66 @@
+{
+  "corpus": {
+    "admission": "owner-own-work-only",
+    "admittedWorkspaces": [
+      {
+        "includesRegisteredWorktrees": true,
+        "sourceRootDigest": "61faef27e9806d159d337f72436bd2020423a8e218ebb19ec1ed69089f286793",
+        "workspaceId": "eedc05f71069fdb4af00c6b99932195b"
+      }
+    ],
+    "dataClass": "structural-only",
+    "excludedWorkspaces": [
+      {
+        "status": "explicitly-not-admitted",
+        "workspaceId": "d3bbc34b44184e2d87966c8175c1a277"
+      },
+      {
+        "status": "explicitly-not-admitted",
+        "workspaceId": "d615578cfefe747d77cd4ae884525081"
+      }
+    ],
+    "otherRepositories": "refused until a separate express owner approval names them",
+    "retentionDays": 30,
+    "revocation": "agent-braid system-one purge",
+    "sourceFamilies": [
+      "System One shadow episodes",
+      "real runs (runtime conflict, merge conflict, verify result)",
+      "SPEC-047 local telemetry",
+      "SPEC-053 transcript adapter output",
+      "SPEC-059 real-use sources"
+    ],
+    "thirdPartySources": "excluded"
+  },
+  "decision": "admitted-scope-only",
+  "decisionDate": "2026-11-10",
+  "digests": {
+    "consentReferenceDigest": "c2a9e7d452df170183ed016dc296532257f88db729201b536215a1be9b92caee",
+    "rule": "sha256 of the canonical JSON (agent_braid.owned_work_authority.digest) of the scope, consent-reference and root objects rebuilt from the fields above",
+    "scopeDigest": "79c3f1709397d02d0014e3f9a65d117bbec0ad323e0db725fccdfc8b1bbd2fb1"
+  },
+  "executionAuthorization": false,
+  "limits": [
+    "A consent scope, not a corpus: no episode, run or label is read, joined or stored by this record.",
+    "It grants no execution authority, no training admission, no calibration, no promotion to advise and no utility claim; fitting a model is a later S1.5d decision with its own review.",
+    "The workspace id is the registry identity of the owner's workspace; membership of a path in a workspace is established by the plugin registry, not by this record or by the pure authority validator.",
+    "Digests bind the record fields; they do not authenticate the owner. The binding to the owner's answer is the quoted reply and the review of this pull request.",
+    "Revocation is the owner running system-one purge and removing the workspace from the plugin registry; this record is then void for that workspace."
+  ],
+  "ownerResponse": {
+    "answer": "Solo agent-braid (Recommended)",
+    "precedingDecision": "S1.5a closed and S1.5b started: \"Cerrar y arrancar S1.5b (Recommended)\"",
+    "question": "Which corpus may S1.5b use (T101 consent)?",
+    "role": "owner and founder",
+    "source": "interactive answer in the Claude Code coordinator session on 2026-11-10; the transcript is not stored in the repository"
+  },
+  "requirement": "REQ-101",
+  "schema": "agent-braid-spec066-s15b-corpus-consent/v0.1",
+  "specification": "SPEC-066",
+  "task": "T101",
+  "trainingAdmission": false,
+  "validator": {
+    "authorityDescriptor": "not minted here: an admitted descriptor needs the feature, oracle and split pins of T103 and T104 and a trusted operator registry",
+    "reuses": "SPEC-051 agent_braid.owned_work_authority: parse_json, digest and resolve_authority",
+    "test": "tests/test_spec066_corpus_consent.py"
+  }
+}

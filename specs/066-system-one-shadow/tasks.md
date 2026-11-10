@@ -246,12 +246,27 @@ specifications unless a SPEC-066 requirement amends them.
 
 ## S1.5b — Owned corpus (outline, blocked until T032)
 
-- [ ] T101 (REQ-101): Owner consent record that admits the owner's own work (episodes,
+- [x] T101 (REQ-101): Owner consent record that admits the owner's own work (episodes,
   real runs, and the SPEC-047, SPEC-053 and SPEC-059 real-use sources) as the only
   permissioned corpus, restricted to plugin-registered workspaces (other repositories
   only on the owner's express approval), reusing the SPEC-051 validator; third-party
   sources stay excluded. Carries forward
   SPEC-029 T001 (#285). Dependencies: T032. Evidence: owner record.
+  Evidence (2026-11-10): `evidence/owner-consent-s15b-corpus-20261110.json`, test
+  `tests/test_spec066_corpus_consent.py`. Owner decision, interactive answer of
+  2026-11-10 to which corpus S1.5b may use: "Solo agent-braid (Recommended)" = the only
+  permitted corpus is the owner's own work in the plugin-registered workspace
+  agent-braid (workspaceId `eedc05f71069fdb4af00c6b99932195b`, with its registered
+  worktrees); smart-notes and kinetiq-core are explicitly not admitted; any other
+  repository needs a separate express owner approval; structural data only, 30-day
+  retention, revocable with `system-one purge`. The test reuses the SPEC-051
+  `resolve_authority`: it admits the agent-braid root digest and refuses an
+  unregistered repository, smart-notes, kinetiq-core and their worktree paths, a
+  widened scope and a missing registry; it also refuses a record that is widened,
+  re-scoped or marked as execution or training authority. Scope only: no episode, run
+  or label is read, no authority descriptor is minted (it needs the T103 and T104
+  pins), and no fitting is admitted. T032 is closed by the owner decision of the same
+  day (formal tick with the freeze change).
 - [ ] T102 (REQ-102): Outcome observer that joins DP-1 episodes with a later runtime
   conflict, merge conflict or verify result under a random join key; pairs without an
   outcome stay unlabelled. Dependencies: T101. Files: to be set by the S1.5b plan.
