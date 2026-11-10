@@ -35,7 +35,7 @@
   "decisionDate": "2026-11-10",
   "digests": {
     "consentReferenceDigest": "d3e787ccf77c9ecc52e83bb67b6f67b05cf8bdab1c084719c4807759b49c37af",
-    "rule": "sha256 of the canonical JSON (agent_braid.owned_work_authority.digest) of the scope (the whole corpus object), consent-reference (date, answer, decisionAsRecorded) and root objects rebuilt from the fields above",
+    "rule": "sha256 of the canonical JSON (agent_braid.owned_work_authority.digest) of: scopeDigest = {schema: agent-braid-spec066-s15b-corpus-scope/v1, corpus: <the corpus object>}; consentReferenceDigest = {schema: agent-braid-spec066-s15b-corpus-consent-ref/v1, date: decisionDate, answer: ownerResponse.answer, decision: ownerResponse.decisionAsRecorded}; sourceRootDigest = {schema: agent-braid-spec066-s15b-corpus-root/v1, workspaceId}",
     "scopeDigest": "37ff53a1bc56f29e7a4a16150fafd8385b92288e2317986e2a1d721a5706a4be"
   },
   "executionAuthorization": false,
