@@ -1,0 +1,45 @@
+{
+  "schema": "agent-braid-bounded-founder-review-v1",
+  "spec": "SPEC-066",
+  "reviewedCommit": "c962596092b4ec3e82330d8ab5befba1855ed6ca",
+  "evidenceCommit": "c962596092b4ec3e82330d8ab5befba1855ed6ca",
+  "decisionDate": "2026-11-10",
+  "reviewer": {
+    "name": "Juan Antonio Yáñez García",
+    "github": "jayanez",
+    "role": "owner and founder"
+  },
+  "decision": "accepted",
+  "scope": "SPEC-066 S1.5a closure only: the obtained evidence recorded in assurance.json for SC-001 to SC-010 through the receipts real-use-shadow-2026-11-09.json, overhead-20261107.json and s15a-local-tests-20261110.json (PR #1279), and the decision whether S1.5b starts. The T101 corpus consent (PR #1280) is a separate owner answer recorded in evidence/owner-consent-s15b-corpus-20261110.json.",
+  "ownerResponse": {
+    "source": "interactive answer in the Claude Code coordinator session on 2026-11-10; the transcript is not stored in the repository",
+    "answers": [
+      {
+        "topic": "Close S1.5a and decide whether S1.5b starts (T032)",
+        "answer": "Cerrar y arrancar S1.5b (Recommended)"
+      }
+    ],
+    "packetPath": "specs/066-system-one-shadow/owner-review-s15a-closure-20261110.md"
+  },
+  "receipts": {
+    "real-use-shadow-2026-11-09.json": {
+      "sha256": "45c47e3ff7245ce4a8d46fb1acfff7684f301e6bbbe14e03a07262bb3be8988e",
+      "outcome": "observations: 25 episodes, 5 dates, 142 pairs, DP-1 share 0.274648, all abstained; counts only"
+    },
+    "overhead-20261107.json": {
+      "sha256": "02668bfee750a4387d8945ffc8d0d7065158f2a4b5ac1056ed87158511e71cf0",
+      "outcome": "measurement receipt: worker step median 2.0-6.5 ms, p95 2.7-7.3 ms on one machine; not a gate"
+    },
+    "s15a-local-tests-20261110.json": {
+      "sha256": "388e1722ef06e0817a24fcef610721a78e43d1132f7a642fb0323544bb9cf2b0",
+      "outcome": "local unit tests passed (105 in the five modules)"
+    }
+  },
+  "notAccepted": [
+    "any S1.5b implementation: T102, T103 and T106 need their own S1.5b plan and review",
+    "promotion to advise, calibration, training admission, or any accuracy or utility claim (H-S1 is untested; the reference backend always abstains)",
+    "execution authority (executionAuthorization stays false)",
+    "release or publication of any package, and scientific validity"
+  ],
+  "limits": "Acceptance binds the reviewed commit only; later changes need a new review. Evidence is one owner's observational real use, one-machine measurements and local unit tests on owned fixtures; CI on the pull request head is the pr evidence. Acceptance is distinct from implementation, integration and release."
+}

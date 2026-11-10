@@ -13,7 +13,7 @@
   ],
   "assumptions": "The System 2 analyzer keeps its reason sentences (drift test guards it); the owner enables shadow explicitly; the local filesystem honours O_NOFOLLOW and flock; no learned backend is installed.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "c962596092b4ec3e82330d8ab5befba1855ed6ca",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -104,16 +104,16 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "New contracts agent-braid-s1-episode/v0.1, its additive successor v0.2 (v0.1 lines stay readable) and agent-braid-s1-report/v0.1; optional systemOne registry member that leaves bytes and digest unchanged when off; new CLI subcommands system-one report and purge; telemetry CLI operation system-one (newer batches with it are not importable by older versions). Portable MCP envelope unchanged.",
   "domain": "Local machine; portable and plugin MCP analyze-work over AIM and Git inputs within the MCP adapter bounds (at most 32 operations); the reference rule backend stdlib-rule-fixture-v1.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "c962596092b4ec3e82330d8ab5befba1855ed6ca",
+    "mode": "historical"
   },
   "execution_contract": "Advisory only. executionAuthorization stays false; shadow never changes, delays beyond its work budget or fails any result; no network; files are written only to the private System One store with owner-only permissions.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "H-S1 (spec.md): on owner DP-1 unknown pairs a calibrated local backend can advise likely-independent with observed false-independence at most 2% at coverage at least 30%. Not tested in S1.5a.",
   "observation_contract": "Owned fixtures and seeded requests in tests/test_system_one_shadow.py; byte comparison of envelopes in off and shadow mode; validation of stored episode lines against agent-braid-s1-episode/v0.1 and v0.2; one owner-run real-use check (SC-006) recorded as a derived redacted receipt.",
   "references": [
@@ -367,6 +367,7 @@
       "text": "plugin-status reports systemOne configured and active modes, store presence and retention, never episode contents."
     }
   ],
+  "review_record": "specs/066-system-one-shadow/owner-review-s15a-closure-20261110.json",
   "scientific_limits": "S1.5a measures nothing about accuracy, calibration or utility. The reference backend always abstains. H-S1 is untested; null and negative results are valid. No speedup, cost or safety claim.",
   "scope": "SPEC-066 S1.5a: opt-in System One shadow observer that records one structural decision episode per successful, report-bearing analyze or analyze-work result into a private local store, with consent, report, purge and pinned identity. S1.5b\u2013e are outline requirements only.",
   "stage": "draft"

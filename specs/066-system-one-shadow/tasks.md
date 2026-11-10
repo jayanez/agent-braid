@@ -74,12 +74,11 @@ specifications unless a SPEC-066 requirement amends them.
   descriptions were set to the source text and read back, and the scoped #26
   re-audit planned no operation; #900 is in Review pending in Project 6. The scoped
   #24 audit still stops on SPEC-041/T002 (closed in M4.5), outside S1.5.
-- [ ] T005: Freeze the specification candidate with
+- [x] T005: Freeze the specification candidate with
   `python3 -m scripts.validate_spec_kit freeze specs/066-system-one-shadow`.
   Dependencies: T002. Evidence: historical snapshot in `assurance.json`.
-  Status 2026-11-10: runs with the T032 closure, because a freeze needs the candidate
-  (the T032 evidence change) merged first; exact packet in
-  [owner-review-s15a-closure-20261110.md](owner-review-s15a-closure-20261110.md).
+  Evidence (2026-11-10): frozen at develop `c9625960` (authority and evidence snapshots
+  historical); packet in [owner-review-s15a-closure-20261110.md](owner-review-s15a-closure-20261110.md).
 
 ## S1.5a — Shadow mode
 
@@ -244,7 +243,7 @@ specifications unless a SPEC-066 requirement amends them.
   stay open for T032. The `pr` profile is the CI `validate` aggregate on the pull
   request head (AGENTS.md), not a local run. T021 (overhead receipt) is delivered
   separately and is not reviewed here; T030 and T032 stay open.
-- [ ] T032: Record obtained evidence in `assurance.json`, freeze, and owner review
+- [x] T032: Record obtained evidence in `assurance.json`, freeze, and owner review
   of the S1.5a closure, with the decision whether S1.5b starts. Dependencies: T030,
   T031.
   Evidence (2026-11-10), candidate part: obtained evidence recorded in `assurance.json`
@@ -255,14 +254,13 @@ specifications unless a SPEC-066 requirement amends them.
   `evidence/s15a-local-tests-20261110.json`; R1-06 to R1-08 fixed, R1-04, R1-05 and
   R1-09 dispositions recorded. Owner decision, interactive answer of 2026-11-10 to
   whether to close S1.5a and start S1.5b: "Cerrar y arrancar S1.5b (Recommended)" =
-  close S1.5a and start S1.5b ([record](owner-review-s15a-closure-20261110.md)). Not
-  ticked: the freeze and the `approved` human review bind a `develop` commit that
-  contains this candidate, so they land in the follow-up freeze change (T005 with it);
-  the packet is in the record. S1.5b tasks still need their own plan and review.
+  close S1.5a and start S1.5b ([record](owner-review-s15a-closure-20261110.md)). Frozen at
+  develop `c9625960` and approved in `owner-review-s15a-closure-20261110.json` (T005
+  ticked with it); S1.5b tasks still need their own plan and review.
 
 ## S1.5b — Owned corpus (outline, blocked until T032)
 
-- [ ] T101 (REQ-101): Owner consent record that admits the owner's own work (episodes,
+- [x] T101 (REQ-101): Owner consent record that admits the owner's own work (episodes,
   real runs, and the SPEC-047, SPEC-053 and SPEC-059 real-use sources) as the only
   permissioned corpus, restricted to plugin-registered workspaces (other repositories
   only on the owner's express approval), reusing the SPEC-051 validator; third-party
@@ -281,9 +279,7 @@ specifications unless a SPEC-066 requirement amends them.
   widened scope and a missing registry; it also refuses a record that is widened,
   re-scoped or marked as execution or training authority. Scope only: no episode, run
   or label is read, no authority descriptor is minted (it needs the T103 and T104
-  pins), and no fitting is admitted. Not ticked: it depends on T032, whose
-  owner decision of the same day is recorded in its own change; tick T101 once that
-  merges. The test checks digests only: the plugin registry, not this validator,
+  pins), and no fitting is admitted. Ticked after T032 (freeze change). The test checks digests only: the plugin registry, not this validator,
   decides whether a path (including a registered worktree) belongs to a workspace.
 - [ ] T102 (REQ-102): Outcome observer that joins DP-1 episodes with a later runtime
   conflict, merge conflict or verify result under a random join key; pairs without an
