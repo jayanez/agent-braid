@@ -20,6 +20,7 @@ import re
 
 ROLLOUT_SCHEMA = 'braid-lightning-rollout/v0.1'
 EVENT_SCHEMA = 'braid-lightning-event/v0.1'
+RESULT_SCHEMA = 'braid-lightning-attempt-result/v0.1'  # SPEC-071
 
 QUEUING, RUNNING, SUCCEEDED, FAILED = 'queuing', 'running', 'succeeded', 'failed'
 ROLLOUT_STATES = (QUEUING, RUNNING, SUCCEEDED, FAILED)
@@ -329,10 +330,89 @@ class Event:
                 'data': json.loads(json.dumps(self.data))}
 
 
-def parse_record(value) -> Rollout | Event:
+PROMPT_SETS = ('development', 'held-out')
+LABELS = ('pipeline-only', 'host-run')
+BUDGET_STOPS = ('unit-cap', 'five-hour-headroom', 'weekly-stop', 'window-reset', 'window-reset-imminent')
+REFUSALS = ('route-unverified', 'credential-leak', 'canary-hit', 'rollout-timeout', 'hook-failed', 'host-failed',
+            'straggler-process')
+_RFC3339 = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z')
+_ATTEMPT_KEYS = {'kind', 'requestSha256', 'accepted', 'refusalSummary', 'request', 'report'}
+
+
+def _text(value, where: str, *, optional: bool = True, limit: int = 128):
+    if optional and value is None:
+        return None
+    if not isinstance(value, str) or not 1 <= len(value) <= limit or not value.isprintable():
+        raise LightningSchemaError(f'{where} must be 1-{limit} printable characters', 'record-type')
+    return value
+
+
+def _parsed_attempt(value, where: str) -> dict:
+    value = _exact(value, _ATTEMPT_KEYS, where)
+    if value['kind'] is not None:
+        _text(value['kind'], f'{where}.kind', limit=32)
+    _digest(value['requestSha256'], f'{where}.requestSha256')
+    _boolean(value['accepted'], f'{where}.accepted')
+    _text(value['refusalSummary'], f'{where}.refusalSummary', limit=300)
+    for key in ('request', 'report'):
+        if value[key] is not None and not isinstance(value[key], (dict, list)):
+            raise LightningSchemaError(f'{where}.{key} must be an object, a list or null', 'record-type')
+    return json.loads(json.dumps(value))
+
+
+@dataclass(frozen=True)
+class AttemptResult:
+    """Everything BL.1 records about one attempt of a rollout (SPEC-071 contracts/rollout-record.md)."""
+    value: dict
+
+    KEYS = frozenset({'schema', 'runId', 'rolloutId', 'attemptId', 'promptSet', 'promptSetSha256', 'hostVersion', 'model',
+                      'repetition', 'keySource', 'credentialPresent', 'stop', 'refusal', 'startedAt', 'endedAt',
+                      'durationSeconds', 'parsedAttempts', 'transcriptSha256', 'rewardSha256', 'label',
+                      'executionAuthorization'})
+
+    @classmethod
+    def parse(cls, value) -> 'AttemptResult':
+        value = _exact(value, set(cls.KEYS), 'result')
+        if value['schema'] != RESULT_SCHEMA:
+            raise LightningSchemaError('Unknown result schema', 'record-schema')
+        if value['executionAuthorization'] is not False:
+            raise LightningSchemaError('result.executionAuthorization is fixed to false', 'record-shape')
+        for key in ('runId', 'rolloutId', 'attemptId'):
+            _identifier(value[key], f'result.{key}')
+        _choice(value['promptSet'], PROMPT_SETS, 'result.promptSet')
+        _digest(value['promptSetSha256'], 'result.promptSetSha256')
+        _text(value['hostVersion'], 'result.hostVersion')
+        _text(value['model'], 'result.model')
+        _integer(value['repetition'], 'result.repetition', low=1, high=100)
+        _text(value['keySource'], 'result.keySource', limit=32)
+        _boolean(value['credentialPresent'], 'result.credentialPresent')
+        if value['stop'] is not None:
+            _choice(value['stop'], BUDGET_STOPS, 'result.stop')
+        if value['refusal'] is not None:
+            _choice(value['refusal'], REFUSALS, 'result.refusal')
+        for key in ('startedAt', 'endedAt'):
+            if not isinstance(value[key], str) or not _RFC3339.fullmatch(value[key]):
+                raise LightningSchemaError(f'result.{key} must be UTC RFC 3339', 'record-type')
+        _number(value['durationSeconds'], 'result.durationSeconds', low=0)
+        attempts = value['parsedAttempts']
+        if not isinstance(attempts, list) or len(attempts) > 32:
+            raise LightningSchemaError('result.parsedAttempts must be a list of at most 32 attempts', 'record-shape')
+        parsed = [_parsed_attempt(item, f'result.parsedAttempts[{i}]') for i, item in enumerate(attempts)]
+        _digest(value['transcriptSha256'], 'result.transcriptSha256')
+        _digest(value['rewardSha256'], 'result.rewardSha256', optional=True)
+        _choice(value['label'], LABELS, 'result.label')
+        return cls(json.loads(json.dumps(dict(value, parsedAttempts=parsed))))
+
+    def to_dict(self) -> dict:
+        return json.loads(json.dumps(self.value))
+
+
+def parse_record(value) -> Rollout | Event | AttemptResult:
     """Dispatch on the record's `schema`; anything else is refused."""
     if isinstance(value, dict) and value.get('schema') == ROLLOUT_SCHEMA:
         return Rollout.parse(value)
     if isinstance(value, dict) and value.get('schema') == EVENT_SCHEMA:
         return Event.parse(value)
+    if isinstance(value, dict) and value.get('schema') == RESULT_SCHEMA:
+        return AttemptResult.parse(value)
     raise LightningSchemaError('Unknown record kind', 'record-schema')

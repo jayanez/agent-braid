@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Experimental `agent-braid lightning` commands (SPEC-070 REQ-005, REQ-006, REQ-008).
+"""Experimental `agent-braid lightning` commands (SPEC-070 REQ-005 to REQ-008, SPEC-071 REQ-010).
 
-BL.0 configures and inspects; it starts no run, launches no host and contacts no model.
+`init`, `validate`, `status` and `purge` configure and inspect. `run` delegates to `lightning_runner` (SPEC-071):
+`--dry-run` launches nothing, `--fake-hosts` runs the pipeline against fake hosts, and a host run needs the
+`plugin setup --lightning lab` consent and the host subscription route. The MCP server never starts a run.
 """
 from __future__ import annotations
 
@@ -40,7 +42,7 @@ def _hosts(text: str) -> list[str]:
 def add_parser(subparsers):
     parser = subparsers.add_parser('lightning', help='experimental Braid Lightning optimization laboratory (configure only)')
     commands = parser.add_subparsers(dest='lightning_command', required=True)
-    for name in ('init', 'validate', 'status', 'purge'):
+    for name in ('init', 'validate', 'status', 'purge', 'run', 'report'):
         command = commands.add_parser(name)
         command.add_argument('--home', type=Path, help='explicit private Agent Braid state root')
     init = commands.choices['init']
@@ -60,6 +62,15 @@ def add_parser(subparsers):
     export.add_argument('--no-export', dest='export', action='store_const', const=False)
     init.add_argument('--apply', action='store_true')
     init.add_argument('--preview-digest')
+    commands.choices['status'].add_argument('--run-id', help='report one run: attempts, stop and resume command')
+    commands.choices['report'].add_argument('--run-id', required=True)
+    runner = commands.choices['run']
+    mode = runner.add_mutually_exclusive_group()
+    mode.add_argument('--dry-run', action='store_true', help='print the planned rollouts; launch nothing')
+    mode.add_argument('--fake-hosts', action='store_true', help='run the full pipeline against fake hosts (pipeline-only)')
+    mode.add_argument('--resume', metavar='RUN_ID', help='continue a stopped run explicitly (never automatic)')
+    runner.add_argument('--prompt-set', choices=('development', 'held-out'), default='development')
+    runner.add_argument('--plugin-dir', type=Path, help='a prebuilt plugins/agent-braid directory; skips the build')
     purge = commands.choices['purge']
     target = purge.add_mutually_exclusive_group(required=True)
     target.add_argument('--run-id')
@@ -134,6 +145,26 @@ def run(args, *, ask=None) -> int:
                 raise config.ConfigError('No Braid Lightning profile; run lightning init first', 'config-missing-key')
             output = {'status': 'valid', 'path': str(config.config_path(home)), 'configDigest': config.digest(value),
                       'executionAuthorization': False}
+        elif args.lightning_command == 'run':
+            from . import lightning_runner as runner
+            value = config.load(home)
+            if value is None:
+                raise config.ConfigError('No Braid Lightning profile; run lightning init first', 'config-missing-key')
+            root = runner.checkout_root()
+            if args.dry_run:
+                output = runner.plan(value, args.prompt_set, root)
+                output.pop('order')
+            else:
+                if not args.fake_hosts and registry.inspect_registry(home)['value'].get('lightning') != 'lab':
+                    raise config.ConfigError('Host runs need setup consent: plugin setup --lightning lab', 'consent-required')
+                output = runner.run(home, value, run_id=args.resume, resume=bool(args.resume), prompt_set=args.prompt_set,
+                                    fake_hosts=args.fake_hosts, plugin_dir=args.plugin_dir)
+        elif args.lightning_command == 'report':
+            from . import lightning_runner as runner
+            output = runner.report(home, args.run_id)
+        elif args.lightning_command == 'status' and args.run_id:
+            from . import lightning_runner as runner
+            output = runner.run_status(home, args.run_id)
         elif args.lightning_command == 'status':
             value = config.load(home)
             consent = registry.inspect_registry(home)['value'].get('lightning', 'off')

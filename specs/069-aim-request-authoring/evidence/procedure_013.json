@@ -1,11 +1,12 @@
 {
  "command": "python -m unittest tests.test_spec069_native_runs",
  "environment": {
-  "platform": "macOS-27.2",
+  "platform": "macOS-27.2.1",
   "python": "3.13.11"
  },
  "inputs": {
-  "scripts/spec069_native_runs.py": "5cda6976aaf1dc52fe0394e71e3f0a43a3a9ef60c7d3a22dfd74a7ba875d90d6",
+  "agent_braid/lightning_hosts.py": "a147d8fb36c7d4e8b06aa328699a7662a52fdf71e05b292fe8a13756ddf15b23",
+  "scripts/spec069_native_runs.py": "1d78468bc75b88187799335bd5ca4590ad954674e4c14e4f519c5b7ab996b055",
   "specs/069-aim-request-authoring/evidence/native-runs-baseline-anthropic.json": "1663332c6c04577fa51ffbbd9ed5d9d0fbc5311a883f7239eb746ee2db9896fe",
   "specs/069-aim-request-authoring/runbook.md": "248a5ca350c5d7361ef65be436d9283a385cc53564a3a8b3acaf26d95bcf8442",
   "tests/fixtures/spec069-fake-hosts/_fake.py": "a051b3eda610282b763f5cb5b221ca681f7aed66907ea4b174b78e24bc18ea49",

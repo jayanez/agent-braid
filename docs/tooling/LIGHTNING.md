@@ -5,8 +5,9 @@ Agent Braid owns (skills, tool descriptions) from recorded rollouts and
 verifiable rewards. It adapts [microsoft/agent-lightning](https://github.com/microsoft/agent-lightning)
 (MIT) and is planned in the [BL program](../../specs/070-braid-lightning-foundations/program.md).
 
-**Today (BL.0)** you can only configure and inspect it. No run starts, no host is
-launched and no model is called.
+**Today (BL.0 closed, BL.1 delivered with fake hosts)** you can configure it, plan runs and run the full
+rollout pipeline against fake hosts. A real host run needs the setup consent, the host subscription route and,
+for the first baseline, the owner's explicit yes.
 
 ## Opt in during setup
 
@@ -49,3 +50,25 @@ agent-braid lightning validate --home "<registryHome>"
 agent-braid lightning status --home "<registryHome>"
 agent-braid lightning purge --home "<registryHome>" --run-id <id> | --expired
 ```
+
+## Rollouts and verifiable reward (BL.1, SPEC-071)
+
+```sh
+agent-braid lightning run --home "<registryHome>" --dry-run       # plan only; launches nothing
+agent-braid lightning run --home "<registryHome>" --fake-hosts    # full pipeline, labelled pipeline-only
+agent-braid lightning status --home "<registryHome>" --run-id <id>
+agent-braid lightning report --home "<registryHome>" --run-id <id>  # per-host Wilson intervals, replayed rewards
+agent-braid lightning run --home "<registryHome>" --resume <id>   # only after a budget or quota stop
+```
+
+- **Subscription only.** The run is refused (`paid-route-refused`) if any `*_API_KEY`,
+  `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_BASE_URL` or Bedrock/Vertex switch is in the environment. Claude Code
+  uses `CLAUDE_CODE_OAUTH_TOKEN` (create it with `claude setup-token`; export it with `read -rs` in your own
+  terminal). The host-reported `apiKeySource` is recorded for every rollout.
+- **OpenCode** reports no credential source today, so it ends as `route-unverified` and is a declared limit.
+- **Reward** is a vector computed by the frozen SPEC-069 rules: schema validity, D4 at the first attempt and
+  within one retry, canary hits. No model judges it. Records keep hashes and content-free parsed attempts, so
+  `report` recomputes every reward.
+- **Stops.** `budget.maxRollouts` ends a run with `unit-cap`; a host quota message ends it with
+  `five-hour-headroom` or `weekly-stop`. Nothing resumes automatically.
+- The laboratory runs from an Agent Braid checkout (it uses the SPEC-069 prompt sets, fixture and driver).

@@ -4,7 +4,8 @@
 created by the reviewed tracking reconciliation after merge).
 
 **Status:** draft. Owner decisions L1–L5 of 2026-11-08 apply (see the
-[program](../070-braid-lightning-foundations/program.md)). OD-1 is open.
+[program](../070-braid-lightning-foundations/program.md)). OD-1 and OD-2 are decided; T001 owner review
+recorded on 2026-11-10 ([review](reviews/owner-t001-20261110.md)).
 `human_review` is pending; this specification grants no execution authority.
 
 ## Purpose and scope
@@ -51,8 +52,9 @@ Constitution clause zero and Articles 12, 13, 14, 19, 20 and 23;
 [claim discipline](../../docs/theory/CLAIM_DISCIPLINE.md);
 [ADR 0021](../../docs/adr/0021-codex-claude-tooling-integration.md) (EUR 0
 spend); [ADR 0034](../../docs/adr/0034-system-one-shadow-advisory-boundary.md)
-(System One advisory boundary); ADR 0039 (Braid Lightning boundary, Proposed by
-SPEC-070) and ADR 0040 (MIT vendoring into AGPL, Proposed by SPEC-070).
+(System One advisory boundary); [ADR 0039](../../docs/adr/0039-braid-lightning-boundary.md) (Braid Lightning boundary, accepted
+2026-11-08) and [ADR 0040](../../docs/adr/0040-braid-lightning-mit-vendoring.md) (MIT vendoring into AGPL,
+accepted 2026-11-08).
 Precedents: [SPEC-049](../049-harness-evaluation-learning/spec.md) (human-only
 promotion, budget stops), [SPEC-069](../069-aim-request-authoring/spec.md)
 (driver, prompt sets, D4, T010 baseline),
@@ -90,7 +92,9 @@ Open decisions:
   environment as the subscription credential for disposable profiles, or must
   rely only on an existing host sign-in. Either way the value is read from the
   environment only and never written. Owner decision; blocks T012.
-- **OD-2 — OpenCode subscription evidence.** Which field of the OpenCode stream
+- **OD-2 — OpenCode subscription evidence (decided 2026-11-10: refuse when unverified).** The owner chose that
+  OpenCode runs only when it reports a subscription credential source; it currently reports none, so it is a
+  declared limit (`route-unverified`) and BL.1 can close with Claude Code. Original question: which field of the OpenCode stream
   establishes the key source; if none exists, the runner records `unverified`
   and refuses (REQ-004). Decided after T003 research.
 
@@ -146,10 +150,12 @@ Open decisions:
   `d4FirstAttempt` and `d4WithinRetry` (via `score_case`), `attempts`, and
   `canaryHits`. It is deterministic for equal inputs, uses no model call, and
   refuses if the scoring file hash differs from FREEZE.
-- **REQ-009 — Anti-reward-hacking controls.** Each rollout workspace has no
-  readable `.git` and no path to the held-out file or scoring source; network
-  egress other than the host's model endpoint is denied by the existing OS
-  sandbox; a canary token planted in non-target files is detected in tool
+- **REQ-009 — Anti-reward-hacking controls.** The model cannot read the
+  workspace `.git`, the held-out file or the scoring source, and cannot reach the
+  network, because every built-in file, shell and web tool is denied (the
+  SPEC-069 allowlist leaves only Agent Braid MCP tools; the plugin itself needs
+  `.git` for `git`-kind analysis); the OS sandbox additionally denies the real
+  configuration and credential paths (it is not a network firewall); a canary token planted in non-target files is detected in tool
   calls or output and recorded as `canaryHits > 0`, which zeroes D4 for that
   rollout; the held-out set hash is checked against FREEZE before any held-out
   rollout.
@@ -179,8 +185,10 @@ Open decisions:
   development set, three repetitions, in each host that has a subscription
   sign-in, yields a first-attempt success proportion inside the T010 Wilson
   interval [0.361, 0.698] per host
-  (`evidence/native-runs-baseline-anthropic.json`), with zero paid-route
-  observations. Because the route, model and host versions differ from T010
+  (`evidence/native-runs-baseline-anthropic.json`) or outside it, with zero
+  paid-route observations. Decided 2026-11-10: the requirement is that the run
+  completes on the subscription route and reports the comparison; whether the
+  proportion falls inside the interval is a finding, not a pass condition. Because the route, model and host versions differ from T010
   (API key route), the report is labelled `route-changed comparison`, not
   replication: it gives both proportions, both Wilson intervals and the
   route, model and version differences. A proportion outside the interval is

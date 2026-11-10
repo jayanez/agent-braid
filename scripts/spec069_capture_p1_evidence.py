@@ -74,7 +74,7 @@ PROCEDURES = {
         "requirement": "SC-013",
         "shared": False,
         "modules": ["tests.test_spec069_native_runs"],
-        "inputs": ["scripts/spec069_native_runs.py", "tests/test_spec069_native_runs.py",
+        "inputs": ["scripts/spec069_native_runs.py", "agent_braid/lightning_hosts.py", "tests/test_spec069_native_runs.py",
                    "specs/069-aim-request-authoring/runbook.md",
                    "tests/fixtures/spec069-fake-hosts/_fake.py", "tests/fixtures/spec069-fake-hosts/claude",
                    "tests/fixtures/spec069-fake-hosts/codex", "tests/fixtures/spec069-fake-hosts/opencode",

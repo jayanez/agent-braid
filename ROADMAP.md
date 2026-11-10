@@ -699,7 +699,7 @@ CLI subscription route only (extra cash spend EUR 0), first target the
 | BL.5 — Lightning dataset export | [SPEC-075](specs/075-lightning-dataset-export/spec.md) | supervised and trajectory datasets |
 | Deferred | [SPEC-076](specs/076-lightning-local-grpo/spec.md) | local GPU GRPO ([ADR 0042](docs/adr/0042-braid-lightning-local-weight-training.md)) |
 
-**Status:** BL.0 closed on 2026-11-08 (SPEC-070 approved by the owner, review record bound to `c0b6956e`); BL.1–BL.5 draft. BL.0 delivered the
+**Status:** BL.0 closed on 2026-11-08 (SPEC-070 approved by the owner, review record bound to `c0b6956e`); BL.1 delivered with fake hosts on 2026-11-10 (subscription-only runner, verifiable reward, hooks, CLI; the real baseline T012 waits for the owner's yes); BL.2–BL.5 draft. BL.0 delivered the
 experimental `agent-braid lightning init|validate|status|purge` commands and
 `plugin setup --lightning`. No run, host launch or model call exists yet; nothing is
 promoted or released.

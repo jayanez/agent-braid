@@ -19,10 +19,10 @@ import time
 
 from . import lightning_config
 from . import plugin_registry as registry
-from .lightning_schema import Event, LightningSchemaError, Rollout, canonical_bytes, loads, parse_record
+from .lightning_schema import AttemptResult, Event, LightningSchemaError, Rollout, canonical_bytes, loads, parse_record
 
 RUN_SCHEMA = 'braid-lightning-run/v0.1'
-KINDS = {'rollout': 'rollouts.jsonl', 'event': 'events.jsonl'}
+KINDS = {'rollout': 'rollouts.jsonl', 'event': 'events.jsonl', 'result': 'results.jsonl'}  # result: SPEC-071
 CONTENT_KINDS = ('trace',)  # content-bearing records; refused until the SPEC-074 consent contract exists
 MAX_LINE = 64 * 1024
 _RUN_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,63}')
@@ -117,12 +117,13 @@ class RunStore:
             raise StoreError('Content-bearing traces require the SPEC-074 consent contract', 'store-consent')
         if kind not in KINDS:
             raise StoreError('Unknown record kind', 'store-kind')
-        value = record.to_dict() if isinstance(record, (Rollout, Event)) else record
+        value = record.to_dict() if isinstance(record, (Rollout, Event, AttemptResult)) else record
         try:
             parsed = parse_record(value)
         except LightningSchemaError as exc:
             raise StoreError(str(exc), exc.code) from exc
-        if (kind == 'rollout') != isinstance(parsed, Rollout):
+        expected = {'rollout': Rollout, 'event': Event, 'result': AttemptResult}[kind]
+        if not isinstance(parsed, expected):
             raise StoreError('Record kind does not match its schema', 'store-kind')
         raw = canonical_bytes(parsed.to_dict())
         if len(raw) > MAX_LINE:
