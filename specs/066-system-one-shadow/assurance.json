@@ -240,7 +240,7 @@
           "planned_evidence": "Owner-run procedure_006 (specs/066-system-one-shadow/validation-plan.md): derived redacted receipt under docs/development/REAL_USE_EVIDENCE.md rules.",
           "test_file": "tests/test_spec066_t030_receipt.py",
           "test_name": "CountTests.test_shadow_counts_match_the_system_one_report_on_the_same_dates",
-          "then": "the receipt records at least one episode with counts only and no identifiers; it grants nothing and shows no utility",
+          "then": "the receipt records at least one episode with counts only and no identifiers; it grants nothing and shows no utility; the plugin build that ran is not verified (activeMode is not readable offline, host caches hold several versions)",
           "when": "the redacted receipt is built from the System One store, the plugin registry, local telemetry and host caches"
         }
       ],
