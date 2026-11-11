@@ -18,13 +18,14 @@ python -m scripts.spec069_native_runs --arm baseline --prompt-set development --
 
 ### Other access paths (D13), when API credit is not available
 
-Three independent switches; combine them freely. The default (keys from the environment) is unchanged.
+Four independent switches; combine them freely. The default (keys from the environment) is unchanged.
 
 | Switch | What it does | One-time manual step |
 | --- | --- | --- |
 | `--model opencode=openrouter/anthropic/claude-sonnet-5-5` | OpenCode through OpenRouter: the driver injects `OPENROUTER_API_KEY` into the OpenCode child only and writes the `openrouter` provider (key as `{env:OPENROUTER_API_KEY}`, never the value) plus the pinned id as a custom model into the redirected XDG config. Evidence: `route: openrouter` and a note | store the key (below) |
 | `--keys-from-keychain` | the driver reads each host's key itself with `security find-generic-password -s NAME -w`: `agent-braid-anthropic` (Claude Code, OpenCode direct), `agent-braid-openai` (Codex), `agent-braid-openrouter` (OpenCode via OpenRouter). The environment is **not** consulted in this mode. A missing item is a declared limit for that host, never a prompt | `security add-generic-password -a "$USER" -s agent-braid-openrouter -w` (the `-w` with no value asks for the secret on the terminal, so it is never in shell history) |
 | `--auth subscription --auth-profile-dir DIR` | Claude Code and Codex use the owner's subscription through a sign-in kept in `DIR` (recorded as `auth: interactive-once`). OpenCode keeps using a key | the one-time sign-ins (below) |
+| `--auth token` | Claude Code only: a long-lived subscription OAuth token (from `claude setup-token`) is injected as `CLAUDE_CODE_OAUTH_TOKEN` into the Claude Code child only; no `ANTHROPIC_API_KEY` is set for that child and no profile credential file is used. Evidence: `auth: oauth-token-env`, `keySource: keychain` or `environment`, plus a note. With `--keys-from-keychain` the token is read from the keychain item `agent-braid-claude-oauth` (the environment is not used); otherwise from the driver's `CLAUDE_CODE_OAUTH_TOKEN`. Codex and OpenCode keep their own routes. A missing token is a declared limit for Claude Code | the one-time token (below) |
 
 ```bash
 # keys, once each (prompted without echo)
@@ -32,13 +33,18 @@ security add-generic-password -a "$USER" -s agent-braid-anthropic -w
 security add-generic-password -a "$USER" -s agent-braid-openai -w
 security add-generic-password -a "$USER" -s agent-braid-openrouter -w
 
+# Claude Code token (resolves the keychain caveat), once, in your own Terminal.app, never in chat:
+claude setup-token        # complete the browser sign-in; copy the token it prints
+security add-generic-password -a "$USER" -s agent-braid-claude-oauth -w    # paste the token at the silent prompt
+python -m scripts.spec069_native_runs --check-login claude-code --auth token --keys-from-keychain
+
 # subscription sign-in, once per host: the driver prints the exact command, you run it in Terminal.app
 python -m scripts.spec069_native_runs --login claude-code --auth-profile-dir ~/agent-braid-auth   # then /login in Claude Code
 python -m scripts.spec069_native_runs --login codex       --auth-profile-dir ~/agent-braid-auth
 python -m scripts.spec069_native_runs --check-login claude-code --auth-profile-dir ~/agent-braid-auth
 python -m scripts.spec069_native_runs --check-login codex       --auth-profile-dir ~/agent-braid-auth
 
-# a run with no API credit
+# a run with no API credit (Claude Code by token; use --auth subscription instead for Codex's sign-in)
 python -m scripts.spec069_native_runs --arm baseline --prompt-set development --repetitions 3 \
     --auth subscription --auth-profile-dir ~/agent-braid-auth --keys-from-keychain \
     --model claude-code=<id> --model codex=<id> --model opencode=openrouter/anthropic/claude-sonnet-5-5 \
@@ -102,6 +108,7 @@ Safety (A10), each with a negative control in the self-test:
 
 | Step | Reason |
 | --- | --- |
+| Token mode only: `claude setup-token` and `security add-generic-password -a "$USER" -s agent-braid-claude-oauth -w` in your own Terminal.app (silent prompt) | D13: the driver never reads a terminal or prompts for, writes or logs a token |
 | Store the API keys once: macOS keychain items (`--keys-from-keychain`) or `export` in your own terminal | D13: the driver never prompts for, writes or logs a key |
 | Subscription mode: the one-time sign-in per host in your own Terminal.app (`--login HOST` prints the command) | the driver never reads a terminal, a credential file or a password |
 | Install Codex when the ChatGPT desktop bundle is missing | the driver does not install host applications (D11) |
@@ -126,12 +133,20 @@ host, never as a negative result and never as a request to paste anything.
   `--check-login` again; the driver reports a host that cannot answer as a declared limit, never a result).
   Evidence says `auth: interactive-once`. Subscription and API-key runs may differ in default model, system prompt
   and limits: pin the model and keep one arm pair on one access path.
-- **Keychain caveat (unverified).** On macOS, Claude Code may store its session in the keychain rather than in
-  `.credentials.json`, and the driver redirects `HOME` for every host. If `--check-login claude-code` fails right
-  after a successful `/login`, that is the first suspect; the alternative is a long-lived token through the
-  environment (counterfactual C5), which is not implemented here. Codex keeps `auth.json` in `CODEX_HOME`. Codex
-  also writes its plugin install state into the same reusable directory, so a re-run reinstalls over it.
-- With `--keys-from-keychain` or `--auth subscription` an inherited `ANTHROPIC_BASE_URL` is not forwarded (it
+- **Keychain caveat (observed, resolved by `--auth token`).** On macOS, Claude Code keeps its session in the
+  keychain rather than in `.credentials.json`, and the driver redirects `HOME` for every host, so
+  `--check-login claude-code --auth-profile-dir ...` fails even after a completed `/login`. The implemented
+  alternative is counterfactual C5: a long-lived token through the environment (`--auth token`). Token mode
+  checks presence and length only (never the value), then sends one trivial headless prompt under the run's OS
+  sandbox; an absent token or a rejected or expired one is reported as a declared limit, never a result. Run it
+  again after `claude setup-token`. Whether `--check-login` passes on a given machine is only proven once the owner
+  has stored the token. Codex keeps `auth.json` in `CODEX_HOME`. Codex also writes its plugin install state into
+  the same reusable directory, so a re-run reinstalls over it.
+- **Subscription and API runs may differ.** A token run bills to the subscription allowance and may use a different
+  default model, system prompt and limits than an API-key run: pin `--model claude-code=<id>` and keep one arm
+  pair (baseline and final) on one access path. The token shape (`sk-ant-oat...`) is redacted and secret-scanned
+  in transcripts and evidence like every other credential.
+- With `--keys-from-keychain`, `--auth subscription` or `--auth token` an inherited `ANTHROPIC_BASE_URL` is not forwarded (it
   belongs to the environment key).
 
 ## Host findings

@@ -21,6 +21,10 @@ byte reaches the evidence directory. ``--fake-hosts`` evidence is labelled ``pip
 Credential routes (D13), all injected into the child environment only and never written:
 the default reads keys from this process's environment; ``--keys-from-keychain`` reads them from the macOS keychain
 (generic passwords ``agent-braid-anthropic`` / ``-openai`` / ``-openrouter``) through the ``security`` CLI;
+``--auth token`` (claude-code only) injects a long-lived OAuth token from ``claude setup-token`` as
+``CLAUDE_CODE_OAUTH_TOKEN`` into the Claude Code child only (keychain service ``agent-braid-claude-oauth`` with
+``--keys-from-keychain``, else this process's ``CLAUDE_CODE_OAUTH_TOKEN``; recorded as ``auth: oauth-token-env``; no
+``ANTHROPIC_API_KEY`` is set for that child and no profile credential file is used);
 ``--auth subscription`` (claude-code and codex) uses a one-time owner sign-in kept in a dedicated reusable profile
 (``--auth-profile-dir``, recorded as ``auth: interactive-once``; ``--login HOST`` prints the sign-in command and
 ``--check-login HOST`` verifies it). OpenCode may run through OpenRouter: ``--model opencode=openrouter/<id>``.
@@ -86,7 +90,12 @@ KEY_SPECS = {"claude-code": (("ANTHROPIC_API_KEY",), "ANTHROPIC_API_KEY"),
 
 OPENROUTER_PREFIX = "openrouter/"
 OPENROUTER_SPEC = (("OPENROUTER_API_KEY",), "OPENROUTER_API_KEY")
-KEYCHAIN_SERVICES = {"anthropic": "agent-braid-anthropic", "openai": "agent-braid-openai", "openrouter": "agent-braid-openrouter"}
+KEYCHAIN_SERVICES = {"anthropic": "agent-braid-anthropic", "openai": "agent-braid-openai", "openrouter": "agent-braid-openrouter",
+                     "claude-oauth": "agent-braid-claude-oauth"}
+# Long-lived Claude Code OAuth token (``claude setup-token``): the one credential injected into the claude-code child in token mode.
+OAUTH_AUTH, OAUTH_ENV = "oauth-token-env", "CLAUDE_CODE_OAUTH_TOKEN"
+TOKEN_NOTE = ("Token mode (auth: oauth-token-env): Claude Code authenticated with a long-lived subscription OAuth token, not an API key; "
+              "subscription and API runs may differ in default model, system prompt and limits, so keep one arm pair on one access path")
 KEY_ACCOUNT = {"claude-code": "anthropic", "codex": "openai", "opencode": "anthropic"}
 OPENROUTER_NOTE = ("OpenCode ran through OpenRouter (route: openrouter), not the direct Anthropic API: routing, provider "
                    "selection, caching and latency differ, so these results are not strictly comparable with the direct-API baseline")
@@ -152,8 +161,25 @@ def keychain_secret(service: str, security_bin: str) -> str | None:
     return value or None
 
 
+def acquire_oauth_token(args: argparse.Namespace) -> tuple[str, str]:
+    """``(token, source)`` for token mode: the keychain with ``--keys-from-keychain`` (the environment is then not used), else the environment."""
+    if args.keys_from_keychain:
+        service = KEYCHAIN_SERVICES["claude-oauth"]
+        token = keychain_secret(service, args.security_bin)
+        if not token:
+            raise DeclaredLimit(f"keychain item {service} is missing or unreadable (generic password created with `claude setup-token`; the driver never prompts)")
+        return token, "keychain"
+    token = os.environ.get(OAUTH_ENV)
+    if not token:
+        raise DeclaredLimit(f"no {OAUTH_ENV} in the driver environment and --keys-from-keychain not set (create the token once with `claude setup-token`)")
+    return token, "environment"
+
+
 def acquire_credential(host: HostConfig, args: argparse.Namespace) -> tuple[str | None, str, str]:
-    """``(key or None, auth, key source)``. Raises DeclaredLimit when the host's credential is not available."""
+    """``(key or token or None, auth, key source)``. Raises DeclaredLimit when the host's credential is not available."""
+    if args.auth == "token" and host.name == "claude-code":
+        token, source = acquire_oauth_token(args)
+        return token, OAUTH_AUTH, source
     if args.auth == "subscription" and host.name in AUTH_SUBDIR:
         return None, "interactive-once", "profile"
     if args.keys_from_keychain:
@@ -201,10 +227,11 @@ def credential_file_info(auth_dir: Path, host: str) -> dict[str, Any]:
 
 
 def build_host_env(profile: Profile, host: HostConfig, key: str | None, ab_home: Path, passthrough: dict[str, str],
-                   auth_home: Path | None = None) -> dict[str, str]:
+                   auth_home: Path | None = None, oauth_token: str | None = None) -> dict[str, str]:
     """A minimal environment: private HOME/XDG, the one credential, no inherited variables.
 
     With ``auth_home`` (subscription mode) the host's configuration directory is the dedicated sign-in directory and no key is set.
+    With ``oauth_token`` (token mode, claude-code only) the token is the one credential and ``ANTHROPIC_API_KEY`` is never set.
     """
     home = profile.make("hosts", host.name, "home")
     xdg = profile.make("hosts", host.name, "xdg")
@@ -228,6 +255,9 @@ def build_host_env(profile: Profile, host: HostConfig, key: str | None, ab_home:
     if key is not None:  # an empty key is still set: the Lightning runner relies on it
         env[host.key_target] = key
     env.update(passthrough)
+    if oauth_token is not None:
+        env.pop("ANTHROPIC_API_KEY", None)  # an API key would take precedence over the token: the token path must be the one used
+        env[OAUTH_ENV] = oauth_token
     return env
 
 
@@ -456,14 +486,15 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
              out_dir: Path, scoring: Any, fixture: Any) -> dict[str, Any]:
     """One host end to end. Raises DeclaredLimit for a host that cannot run, SafetyStop for a safety failure."""
     key, auth, key_source = acquire_credential(host, args)
+    token, key = (key, None) if auth == OAUTH_AUTH else (None, key)
     route = route_of(host.name, host.model)
     if host.name == "opencode" and not host.model and not args.fake_hosts:
         raise DeclaredLimit("OpenCode needs --model opencode=anthropic/<id> or openrouter/<id>: without it the host uses a free hosted model")
-    secrets.add(key)
+    secrets.add(token or key)
     auth_home = ctx["auth_home"] if auth == "interactive-once" else None
     ab_home = profile.make("hosts", host.name, "agent-braid-home")
     passthrough = dict(ctx["passthrough"])
-    env = build_host_env(profile, host, key, ab_home, passthrough, auth_home)
+    env = build_host_env(profile, host, key, ab_home, passthrough, auth_home, token)
     protected, sandbox = ctx["protected"], ctx["sandbox"]
     workspace = fixture.build(profile.make("hosts", host.name, "workspace") / "repo")
     guard_leaks(f"{host.name} setup", env, [str(host.binary)], protected)
@@ -516,7 +547,7 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
     if violations:
         raise SafetyStop(f"{host.name}: " + "; ".join(violations))
     reported = sorted({r["keySourceReported"] for r in runs if r.get("keySourceReported")})
-    notes = ([OPENROUTER_NOTE, OPENCODE_MODEL_NOTE] if route == "openrouter" else []) + ([SUBSCRIPTION_NOTE] if auth == "interactive-once" else [])
+    notes = ([OPENROUTER_NOTE, OPENCODE_MODEL_NOTE] if route == "openrouter" else []) + ([SUBSCRIPTION_NOTE] if auth == "interactive-once" else []) + ([TOKEN_NOTE] if auth == OAUTH_AUTH else [])
     return {"status": "ran", "version": version, "auth": auth, "keySource": key_source, "route": route, "notes": notes,
             "hostReportedKeySource": reported, "modelPinned": bool(host.model), "model": host.model,
             "modelsObserved": sorted({m for run in runs for m in run["models"]}), "osSandbox": probe["sandbox"],
@@ -535,6 +566,7 @@ def write_evidence(path: Path, evidence: dict, secrets: Secrets) -> None:
 MANUAL_STEPS = [
     {"step": "Store the API keys once (macOS keychain generic passwords, or export them in your own terminal before the run)", "reason": "keys are read from the driver environment or the keychain only and are never prompted for, written or logged (D13)"},
     {"step": "Subscription mode only: sign in once per host in your own Terminal.app (--login HOST prints the command)", "reason": "the driver never reads a terminal or a credential file (D13: interactive-once)"},
+    {"step": "Token mode only: run `claude setup-token` in your own Terminal.app and store the token silently (security add-generic-password -a \"$USER\" -s agent-braid-claude-oauth -w)", "reason": "the driver never reads a terminal and never prompts for or logs a token (D13)"},
     {"step": "Install Codex when the ChatGPT desktop bundle is absent (--codex-bin)", "reason": "the driver does not install host applications (D11)"},
     {"step": "Decide on the release (REQ-012) and on the result of a run", "reason": "owner decisions are not automated (D5)"},
 ]
@@ -561,8 +593,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--keys-from-keychain", action="store_true",
                    help="read each host's key from the macOS keychain (services agent-braid-anthropic/-openai/-openrouter); the environment is not used")
     p.add_argument("--security-bin", default="/usr/bin/security", help=argparse.SUPPRESS)
-    p.add_argument("--auth", choices=("key", "subscription"), default="key",
-                   help="key = API key (default); subscription = one-time sign-in in --auth-profile-dir (claude-code, codex; D13 fallback)")
+    p.add_argument("--auth", choices=("key", "subscription", "token"), default="key",
+                   help="key = API key (default); subscription = one-time sign-in in --auth-profile-dir (claude-code, codex; D13 fallback); "
+                        "token = long-lived Claude Code OAuth token from `claude setup-token` (claude-code only; keychain agent-braid-claude-oauth or CLAUDE_CODE_OAUTH_TOKEN)")
     p.add_argument("--auth-profile-dir", type=Path, help="dedicated reusable sign-in directory (outside the repo and every real host configuration); kept across runs")
     p.add_argument("--login", choices=("claude-code", "codex"), metavar="HOST", help="print the command to sign in HOST in your own terminal, then exit")
     p.add_argument("--check-login", choices=("claude-code", "codex"), metavar="HOST",
@@ -577,8 +610,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     args.plugin_root_for = {}
     if args.fake_hosts and args.security_bin == "/usr/bin/security":
         args.security_bin = str(FAKE_HOSTS_DIR / "security")
-    if (args.auth == "subscription" or args.login or args.check_login) and not args.auth_profile_dir:
-        p.error("--auth subscription, --login and --check-login need --auth-profile-dir")
+    token_mode = args.auth == "token"
+    if token_mode and ((args.login or args.check_login) not in (None, "claude-code")):
+        p.error("--auth token applies to claude-code only")
+    if (args.auth == "subscription" or ((args.login or args.check_login) and not token_mode)) and not args.auth_profile_dir:
+        p.error("--auth subscription, --login and --check-login need --auth-profile-dir (except with --auth token)")
     return args
 
 
@@ -589,6 +625,12 @@ def login_command(host: str, auth_home: Path) -> str:
 
 def print_login(args: argparse.Namespace) -> int:
     """Print the sign-in command only. Nothing is started, read or created."""
+    if args.auth == "token":
+        print("Create the token once in your own Terminal.app (the driver never reads the terminal; never paste the token in chat):\n\n"
+              "    claude setup-token\n"
+              f"    security add-generic-password -a \"$USER\" -s {KEYCHAIN_SERVICES['claude-oauth']} -w    # type the token silently\n\n"
+              "Then confirm with: python -m scripts.spec069_native_runs --check-login claude-code --auth token --keys-from-keychain")
+        return 0
     protected = real_config_paths(args.real_home or real_home())
     try:
         auth_home = check_auth_profile(args.auth_profile_dir, protected)
@@ -609,20 +651,32 @@ def check_login(args: argparse.Namespace) -> int:
     secrets = Secrets()
     profile = Profile()
     result: dict[str, Any] = {"host": host_name, "ok": False}
+    token = None
     try:
-        auth_home = prepare_auth_profile(args.auth_profile_dir, protected)
+        if args.auth == "token":
+            auth_home = None
+            try:
+                token, source = acquire_oauth_token(args)
+            except DeclaredLimit as limit:
+                result["error"] = f"declared limit: {limit}"
+                return 1
+            secrets.add(token)
+            result["credential"] = {"auth": OAUTH_AUTH, "source": source, "present": True, "length": len(token)}  # presence and length only
+        else:
+            auth_home = prepare_auth_profile(args.auth_profile_dir, protected)
+            result["credential"] = credential_file_info(auth_home, host_name)
         binary = host_binary(host_name, args)
-        result["credential"] = credential_file_info(auth_home, host_name)
         if binary is None:
             result["error"] = f"{host_name} executable not found"
             return 1
         host = HostConfig(host_name, binary, (), "", fake=args.fake_hosts)
         env = build_host_env(profile, host, None, profile.make("hosts", host_name, "agent-braid-home"), {"FAKE_PYTHON": sys.executable,
-                             **({k: os.environ[k] for k in ("FAKE_LOG", "FAKE_VARIANT") if k in os.environ} | {"FAKE_REQUIRE_LOGIN": "1"} if args.fake_hosts else {})}, auth_home)
+                             **({k: os.environ[k] for k in ("FAKE_LOG", "FAKE_VARIANT") if k in os.environ} | {"FAKE_REQUIRE_LOGIN": "1"} if args.fake_hosts else {})}, auth_home, token)
         cwd = profile.make("hosts", host_name, "workspace")
         probe = probe_isolation(env, Path(env["HOME"]), sandbox, protected)
         result["sandbox"] = probe["sandbox"]
-        result["usableUnderSandbox"] = auth_dir_usable(env, auth_home, host_name, sandbox)
+        if auth_home is not None:
+            result["usableUnderSandbox"] = auth_dir_usable(env, auth_home, host_name, sandbox)
         binary_s = str(binary)
         argv = ([binary_s, "-p", TRIVIAL_PROMPT, "--output-format", "stream-json", "--verbose", "--max-turns", "1", "--no-session-persistence",
                  "--tools", ""] if host_name == "claude-code" else
@@ -633,7 +687,9 @@ def check_login(args: argparse.Namespace) -> int:
         if not result["ok"]:
             tail = (done.stdout.strip().splitlines() or done.stderr.strip().splitlines() or ["no output"])[-1][:200]
             result["error"] = secrets.redact(f"headless prompt failed (exit {done.returncode}): {tail}")
-        elif not result["credential"]["exists"]:
+            if token is not None:
+                result["error"] += "; declared limit: the token may be rejected or expired (run `claude setup-token` again and store it)"
+        elif auth_home is not None and not result["credential"]["exists"]:
             result["note"] = "no credential file in the dedicated profile; the session works, so it is held elsewhere (for example the keychain)"
     except SafetyStop as stop:
         result["error"] = f"safety stop: {stop}"

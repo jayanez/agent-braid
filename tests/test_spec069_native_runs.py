@@ -539,6 +539,118 @@ class LoginTests(unittest.TestCase):
         self.assertNotIn("PLANTEDSUBSCRIPTIONTOKEN", out)
 
 
+OAUTH_TOKEN = "sk-ant-oat01-PLANTEDOAUTHTOKENFORTEST0123456789abcdef"
+
+
+def oauth_keychain(token: str = OAUTH_TOKEN) -> dict[str, str]:
+    return keychain(**{"claude-oauth": token})
+
+
+class TokenAuthTests(unittest.TestCase):
+    def run_token(self, *extra: str, env: dict[str, str] | None = None, key: str | None = None) -> tuple[int, dict, Path, Path]:
+        log = Path(scratch("t013-log-")) / "invocations.jsonl"
+        code, evidence, tmp = run_driver("--auth", "token", "--limit-cases", "2", "--extra-env", f"FAKE_LOG={log}", *extra, key=key, env=env)
+        return code, evidence, tmp, log
+
+    def test_token_from_the_keychain_reaches_only_claude_code_without_an_api_key(self) -> None:
+        code, evidence, tmp, log = self.run_token("--keys-from-keychain", "--fake-variant", "leak-secret", key=None,
+                                                  env={**oauth_keychain(), **keychain(**{"claude-oauth": OAUTH_TOKEN, "openai": "sk-openai-PLANTEDOPENAIKEY0123456789", "anthropic": PLANTED_KEY})})
+        self.assertEqual(code, 0)
+        host = evidence["hosts"]["claude-code"]
+        self.assertEqual((host["status"], host["auth"], host["keySource"]), ("ran", "oauth-token-env", "keychain"))
+        self.assertTrue(any("oauth-token-env" in note for note in host["notes"]))
+        self.assertTrue(any("may differ" in note for note in host["notes"]))
+        self.assertEqual({n: h["auth"] for n, h in evidence["hosts"].items() if n != "claude-code"}, {"codex": "env-key", "opencode": "env-key"})
+        seen = {}
+        for line in log.read_text().splitlines():
+            row = json.loads(line)
+            seen.setdefault(row["host"], set()).update(row["credentialVars"])
+        self.assertEqual(seen["claude"], {"CLAUDE_CODE_OAUTH_TOKEN"})
+        for other in ("codex", "opencode"):
+            self.assertNotIn("CLAUDE_CODE_OAUTH_TOKEN", seen[other])
+        text = all_text(tmp)
+        self.assertNotIn(OAUTH_TOKEN, text)
+        self.assertNotIn("PLANTEDOAUTHTOKEN", text)
+
+    def test_token_from_the_environment_and_an_api_key_in_the_driver_environment_is_not_forwarded(self) -> None:
+        code, evidence, _, log = self.run_token("--hosts", "claude-code", key=PLANTED_KEY, env={"CLAUDE_CODE_OAUTH_TOKEN": OAUTH_TOKEN})
+        self.assertEqual((code, evidence["hosts"]["claude-code"]["keySource"]), (0, "environment"))
+        self.assertTrue(all(json.loads(line)["credentialVars"] == ["CLAUDE_CODE_OAUTH_TOKEN"] for line in log.read_text().splitlines()))
+
+    def test_api_key_extra_env_cannot_override_the_token(self) -> None:
+        code, evidence, _, _ = self.run_token("--hosts", "claude-code", "--extra-env", "ANTHROPIC_API_KEY=sk-ant-api03-EXTRAENVKEY0123456789",
+                                              env={"CLAUDE_CODE_OAUTH_TOKEN": OAUTH_TOKEN})
+        self.assertEqual((code, evidence["hosts"]["claude-code"]["status"]), (0, "ran"))
+
+    def test_absent_token_is_a_declared_limit_for_claude_code_only(self) -> None:
+        code, evidence, _, _ = self.run_token(key=PLANTED_KEY)
+        self.assertEqual(code, 0)
+        self.assertEqual(evidence["hosts"]["claude-code"]["status"], "declared-limit")
+        self.assertIn("CLAUDE_CODE_OAUTH_TOKEN", evidence["hosts"]["claude-code"]["limit"])
+        self.assertEqual(evidence["hosts"]["codex"]["status"], "ran")
+
+    def test_missing_keychain_item_is_a_declared_limit_and_the_environment_is_not_used(self) -> None:
+        _, evidence, _, _ = self.run_token("--keys-from-keychain", "--hosts", "claude-code", env={"CLAUDE_CODE_OAUTH_TOKEN": OAUTH_TOKEN, **keychain()})
+        self.assertEqual(evidence["hosts"]["claude-code"]["status"], "declared-limit")
+        self.assertIn("agent-braid-claude-oauth", evidence["hosts"]["claude-code"]["limit"])
+        self.assertNotIn(OAUTH_TOKEN, json.dumps(evidence))
+
+    def test_token_printed_by_a_host_is_caught_by_the_secret_scan_without_the_literal(self) -> None:
+        secrets = driver.Secrets()  # no literal known: only the token shape
+        text = f"model said {OAUTH_TOKEN} and bearer {OAUTH_TOKEN[:20]}"
+        self.assertNotIn("PLANTEDOAUTH", secrets.redact(text))
+        with self.assertRaises(driver.SecretLeak):
+            secrets.assert_clean("transcript.jsonl", text)
+        with self.assertRaises(driver.SecretLeak):
+            secrets.assert_clean("evidence.json", json.dumps({"x": "sk-ant-oat01-ABCDEFGHIJKLMNOPQRSTUVWX"}))
+
+    def test_token_mode_does_not_need_a_profile_directory_and_is_claude_code_only(self) -> None:
+        driver.parse_args(["--auth", "token"])
+        driver.parse_args(["--auth", "token", "--check-login", "claude-code"])
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
+            driver.parse_args(["--auth", "token", "--check-login", "codex"])
+
+    def test_the_token_is_never_prompted_for_or_stored_by_login(self) -> None:
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            self.assertEqual(driver.main(["--fake-hosts", "--auth", "token", "--login", "claude-code"]), 0)
+        self.assertIn("claude setup-token", out.getvalue())
+        self.assertIn("agent-braid-claude-oauth", out.getvalue())
+
+
+class TokenCheckLoginTests(unittest.TestCase):
+    call = LoginTests.call
+
+    def test_check_login_passes_when_the_token_is_present_and_reports_presence_and_length_only(self) -> None:
+        code, out, _ = self.call("--check-login", "claude-code", "--auth", "token", env={"CLAUDE_CODE_OAUTH_TOKEN": OAUTH_TOKEN})
+        result = json.loads(out)
+        self.assertEqual((code, result["ok"]), (0, True))
+        self.assertEqual(result["credential"], {"auth": "oauth-token-env", "source": "environment", "present": True, "length": len(OAUTH_TOKEN)})
+        self.assertNotIn("PLANTEDOAUTH", out)
+
+    def test_check_login_from_the_keychain(self) -> None:
+        code, out, _ = self.call("--check-login", "claude-code", "--auth", "token", "--keys-from-keychain", env=oauth_keychain())
+        self.assertEqual((code, json.loads(out)["credential"]["source"]), (0, "keychain"))
+
+    def test_check_login_without_a_token_reports_a_declared_limit(self) -> None:
+        code, out, _ = self.call("--check-login", "claude-code", "--auth", "token", env={"CLAUDE_CODE_OAUTH_TOKEN": ""})
+        result = json.loads(out)
+        self.assertEqual((code, result["ok"]), (1, False))
+        self.assertIn("declared limit", result["error"])
+
+    def test_check_login_with_a_rejected_token_reports_a_declared_limit_without_the_token(self) -> None:
+        rejected = "sk-ant-oat01-REJECTEDTOKEN0123456789abcdef"
+        code, out, _ = self.call("--check-login", "claude-code", "--auth", "token", env={"CLAUDE_CODE_OAUTH_TOKEN": rejected})
+        result = json.loads(out)
+        self.assertEqual((code, result["ok"]), (1, False))
+        self.assertIn("declared limit", result["error"])
+        self.assertNotIn(rejected, out)
+
+    def test_check_login_leaky_host_prints_the_token_and_it_is_redacted(self) -> None:
+        code, out, _ = self.call("--check-login", "claude-code", "--auth", "token", env={"CLAUDE_CODE_OAUTH_TOKEN": OAUTH_TOKEN, "FAKE_VARIANT": "leak-secret"})
+        self.assertNotIn(OAUTH_TOKEN, out)
+
+
 class OpenCodeUsageTests(unittest.TestCase):
     def test_usage_is_summed_over_steps_and_a_named_model_is_kept(self) -> None:
         rows = [{"type": "step_finish", "part": {"type": "step-finish", "cost": 0.5, "tokens": {"input": 2, "output": 10, "cache": {"read": 5}}}},
