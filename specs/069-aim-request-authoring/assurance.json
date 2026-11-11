@@ -158,7 +158,7 @@
           "test_file": "specs/069-aim-request-authoring/validation-plan.md",
           "test_name": "procedure_001",
           "then": "requirements, tasks and procedures agree, unchanged contracts are listed, and the native-evidence and owner gates are explicit.",
-          "when": "they are analyzed against ADR 0024, ADR 0030, ADR 0037 and Articles 13\u201316"
+          "when": "they are analyzed against ADR 0024, ADR 0030, ADR 0037 and Articles 13–16"
         }
       ],
       "text": "Specification and architecture. Record the `analyze-work` request contract (kinds, schemas, delivery, `units` construction, refusal format, versioning) in ADR 0038 and a contract file under `contracts/`."
@@ -404,10 +404,10 @@
           "obtained_evidence": [
             {
               "command": "python -m unittest tests.test_spec069_native_runs",
-              "limits": "Codex: install, registration, sandbox and launch verified with the real binary, but the authenticated model call ends in 'Quota exceeded' on the owner's account, so the MCP transcript shape and parser are unverified; Codex is a declared limit (owner decision 2026-11-07) and blocks REQ-012 for that host. The OS sandbox is macOS sandbox-exec only; the driver does not run on Windows or Linux real runs. The self-test proves the pipeline, not any host or model.",
+              "limits": "Codex: through the owner's subscription sign-in the driver completed real runs on 2026-11-11 (T010 evidence: 30 runs per arm, parser and MCP transcript shape exercised; the model id is not named in the stream and was read from the disposable Codex session logs), so Codex is no longer a declared limit for the development set; the ChatGPT usage limit can still stop a later run. The OS sandbox is macOS sandbox-exec only; the driver does not run on Windows or Linux real runs. The self-test proves the pipeline, not any host or model.",
               "outcome": "passed: The --fake-hosts self-test runs the whole pipeline (profiles, sandbox workspace, plugin install, headless runs, parsing, scoring, redaction, secret scan, evidence with hashes, teardown) with negative controls: a leaked real path stops the run, a planted fake secret is absent from the evidence, a denied tool is refused and one that runs stops the run, a leftover profile or process is detected. Real runs through the same driver completed unattended on Claude Code 2.1.292 and OpenCode 2.1.4 (60 runs, claude-sonnet-5-5, evidence/native-runs-baseline-anthropic.json, teardown clean, secret scan passed); the first real pass stopped on a built-in tool not in the deny list, which is now not offered at all.",
               "path": "specs/069-aim-request-authoring/evidence/procedure_013.json",
-              "sha256": "33643c86746d1365e5c9b90ab969d75bf6d47002f9c7e9c76b1d5f9ce94b445c"
+              "sha256": "3c064a2f3bc0cdb7deb653d860c530692291c369ed1ee57720123a6ed941c8c0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
