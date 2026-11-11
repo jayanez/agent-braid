@@ -16,6 +16,47 @@ python -m scripts.spec069_native_runs --arm baseline --prompt-set development --
     --output specs/069-aim-request-authoring/evidence/native-runs-baseline.json
 ```
 
+### Other access paths (D13), when API credit is not available
+
+Three independent switches; combine them freely. The default (keys from the environment) is unchanged.
+
+| Switch | What it does | One-time manual step |
+| --- | --- | --- |
+| `--model opencode=openrouter/anthropic/claude-sonnet-5-5` | OpenCode through OpenRouter: the driver injects `OPENROUTER_API_KEY` into the OpenCode child only and writes the `openrouter` provider (key as `{env:OPENROUTER_API_KEY}`, never the value) plus the pinned id as a custom model into the redirected XDG config. Evidence: `route: openrouter` and a note | store the key (below) |
+| `--keys-from-keychain` | the driver reads each host's key itself with `security find-generic-password -s NAME -w`: `agent-braid-anthropic` (Claude Code, OpenCode direct), `agent-braid-openai` (Codex), `agent-braid-openrouter` (OpenCode via OpenRouter). The environment is **not** consulted in this mode. A missing item is a declared limit for that host, never a prompt | `security add-generic-password -a "$USER" -s agent-braid-openrouter -w` (the `-w` with no value asks for the secret on the terminal, so it is never in shell history) |
+| `--auth subscription --auth-profile-dir DIR` | Claude Code and Codex use the owner's subscription through a sign-in kept in `DIR` (recorded as `auth: interactive-once`). OpenCode keeps using a key | the one-time sign-ins (below) |
+
+```bash
+# keys, once each (prompted without echo)
+security add-generic-password -a "$USER" -s agent-braid-anthropic -w
+security add-generic-password -a "$USER" -s agent-braid-openai -w
+security add-generic-password -a "$USER" -s agent-braid-openrouter -w
+
+# subscription sign-in, once per host: the driver prints the exact command, you run it in Terminal.app
+python -m scripts.spec069_native_runs --login claude-code --auth-profile-dir ~/agent-braid-auth   # then /login in Claude Code
+python -m scripts.spec069_native_runs --login codex       --auth-profile-dir ~/agent-braid-auth
+python -m scripts.spec069_native_runs --check-login claude-code --auth-profile-dir ~/agent-braid-auth
+python -m scripts.spec069_native_runs --check-login codex       --auth-profile-dir ~/agent-braid-auth
+
+# a run with no API credit
+python -m scripts.spec069_native_runs --arm baseline --prompt-set development --repetitions 3 \
+    --auth subscription --auth-profile-dir ~/agent-braid-auth --keys-from-keychain \
+    --model claude-code=<id> --model codex=<id> --model opencode=openrouter/anthropic/claude-sonnet-5-5 \
+    --output specs/069-aim-request-authoring/evidence/native-runs-baseline.json
+```
+
+- `--login HOST` only prints the command (`CLAUDE_CONFIG_DIR=<DIR>/claude claude`, then `/login`; or
+  `CODEX_HOME=<DIR>/codex codex login`). It starts nothing, creates nothing, and the driver never reads a terminal.
+- `--check-login HOST` looks at the host's credential file by existence and size only (`.credentials.json` /
+  `auth.json`; the file is never opened), then sends one trivial headless prompt under the same OS sandbox as a
+  run. It prints JSON (`ok`, credential presence and size, sandbox probe) and exits `0` when the host answered.
+  No credential file at all with a working prompt means the session is held elsewhere (see the keychain caveat).
+- The sign-in directory must be outside the repository and must not be, contain or lie under (also through a
+  symlink) `~/.claude`, `~/.codex`, `~/.config/opencode` or any other protected real path: the run is refused
+  with a safety stop (`2`) before any host starts. It is created `0700`, reused across runs and **not** deleted by
+  teardown. The OS sandbox still denies the real configuration directories, Keychains, `.ssh` and `.aws`; a probe
+  also checks that `DIR/<host>` can be listed and written under it.
+
 - `--arm baseline` builds develop commit `8f63c606` (alpha.7 runtime plus the PR #1099 guidance) in a
   temporary git worktree; `--arm final` builds this checkout; `--arm final-no-schema` (D9 ablation) builds the
   committed `HEAD` with only the request schema reverted to the interim description
@@ -61,14 +102,37 @@ Safety (A10), each with a negative control in the self-test:
 
 | Step | Reason |
 | --- | --- |
-| Export the API keys in your own terminal | D13: keys are read from the environment only; the driver never prompts for, writes or logs one |
+| Store the API keys once: macOS keychain items (`--keys-from-keychain`) or `export` in your own terminal | D13: the driver never prompts for, writes or logs a key |
+| Subscription mode: the one-time sign-in per host in your own Terminal.app (`--login HOST` prints the command) | the driver never reads a terminal, a credential file or a password |
 | Install Codex when the ChatGPT desktop bundle is missing | the driver does not install host applications (D11) |
 | Decide on results and on the release (REQ-012) | owner decisions (D5) |
-| One-time sign-in into a dedicated profile | only if a host has no environment-key mode. None needs it: all three accept a key. Not implemented because it is not needed |
 
 A missing key, a missing binary, an unpinned OpenCode model, a failed plugin install or a host that
 fails before the model answers (for example a rejected key) is reported as a **declared limit** for that
 host, never as a negative result and never as a request to paste anything.
+
+## Comparability and limits of the other access paths
+
+- **OpenRouter.** The model is the same but the route is not: OpenRouter picks the upstream provider, caching
+  and latency differ, and cost is not reported (`cost: 0`). Results are labelled `route: openrouter` and are **not
+  strictly comparable** with a direct-API baseline. Keep the baseline and final arms on the same route; do not
+  compare an `openrouter` arm with a `direct` arm without saying so. OpenCode's JSON stream names no model, so
+  `modelsObserved` is empty and the pinned id is the identity. OpenCode's catalogue spells ids with dots
+  (`claude-sonnet-5.5`) while OpenRouter serves `anthropic/claude-sonnet-5-5`, so the driver declares the pinned
+  id as a custom model (without it OpenCode answers `Model unavailable`). Probed 2026-11-11 with one prompt:
+  valid first attempt.
+- **Subscription.** Runs consume the owner's subscription allowance and are subject to its rate limits;
+  automated headless use may be restricted by the provider's terms, and a sign-in can expire (run
+  `--check-login` again; the driver reports a host that cannot answer as a declared limit, never a result).
+  Evidence says `auth: interactive-once`. Subscription and API-key runs may differ in default model, system prompt
+  and limits: pin the model and keep one arm pair on one access path.
+- **Keychain caveat (unverified).** On macOS, Claude Code may store its session in the keychain rather than in
+  `.credentials.json`, and the driver redirects `HOME` for every host. If `--check-login claude-code` fails right
+  after a successful `/login`, that is the first suspect; the alternative is a long-lived token through the
+  environment (counterfactual C5), which is not implemented here. Codex keeps `auth.json` in `CODEX_HOME`. Codex
+  also writes its plugin install state into the same reusable directory, so a re-run reinstalls over it.
+- With `--keys-from-keychain` or `--auth subscription` an inherited `ANTHROPIC_BASE_URL` is not forwarded (it
+  belongs to the environment key).
 
 ## Host findings
 

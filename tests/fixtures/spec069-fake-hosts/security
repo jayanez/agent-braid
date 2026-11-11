@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: AGPL-3.0-only
+"""Fake macOS ``security`` for the SPEC-069 driver self-test: serves ``find-generic-password -s NAME -w`` from FAKE_KEYCHAIN (JSON)."""
+import json
+import os
+import sys
+
+argv = sys.argv[1:]
+items = json.loads(os.environ.get("FAKE_KEYCHAIN", "{}"))
+if argv[:1] == ["find-generic-password"] and "-s" in argv and "-w" in argv and argv[argv.index("-s") + 1] in items:
+    print(items[argv[argv.index("-s") + 1]])
+    sys.exit(0)
+print("security: SecKeychainSearchCopyNext: The specified item could not be found in the keychain.", file=sys.stderr)
+sys.exit(44)

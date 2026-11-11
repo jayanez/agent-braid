@@ -24,6 +24,18 @@ from unittest import mock
 from scripts import spec069_native_runs as driver
 
 PLANTED_KEY = "sk-ant-api03-PLANTEDKEYFORTEST0123456789abcdef"
+OPENROUTER_KEY = "sk-or-v1-PLANTEDOPENROUTERKEY0123456789abcdef"
+PLANTED_CREDENTIAL = '{"accessToken": "sk-ant-oat01-PLANTEDSUBSCRIPTIONTOKEN0123456789"}'
+OPENED: list[str] = []
+WATCHED: set[str] = set()
+
+
+def _audit(event: str, args: tuple) -> None:
+    if event == "open" and WATCHED and isinstance(args[0], (str, os.PathLike)) and os.fspath(args[0]) in WATCHED:
+        OPENED.append(os.fspath(args[0]))
+
+
+sys.addaudithook(_audit)
 FAKE_HOSTS = driver.FAKE_HOSTS_DIR
 
 
@@ -335,3 +347,202 @@ class AblationArmTests(unittest.TestCase):
             _, record = driver.build_candidate("final", work, work / "cache", allow_dirty=False)
         self.assertFalse(any("--delivery" in c or "worktree add" in c for c in calls), calls)
         self.assertEqual(record["delivery"], "per-kind")
+
+
+def keychain(**items: str) -> dict[str, str]:
+    return {"FAKE_KEYCHAIN": json.dumps({f"agent-braid-{name}": value for name, value in items.items()})}
+
+
+def all_text(tmp: Path) -> str:
+    return "".join(f.read_text() for f in [tmp / "native-runs.json", *tmp.rglob("*.jsonl")])
+
+
+class OpenRouterTests(unittest.TestCase):
+    MODEL = "opencode=openrouter/anthropic/claude-sonnet-5-5"
+
+    def test_openrouter_route_is_configured_keyed_and_recorded(self) -> None:
+        code, evidence, tmp = run_driver("--hosts", "opencode", "--model", self.MODEL, "--limit-cases", "2",
+                                         env={"OPENROUTER_API_KEY": OPENROUTER_KEY})
+        host = evidence["hosts"]["opencode"]
+        self.assertEqual((code, host["status"], host["route"]), (0, "ran", "openrouter"))  # the fake refuses a missing provider or key
+        self.assertTrue(any("not strictly comparable" in note for note in host["notes"]))
+        self.assertNotIn(OPENROUTER_KEY, all_text(tmp))
+
+    def test_direct_route_is_unchanged_and_openrouter_needs_its_own_key(self) -> None:
+        _, evidence, _ = run_driver("--hosts", "opencode", "--model", "opencode=anthropic/m", "--limit-cases", "1")
+        self.assertEqual((evidence["hosts"]["opencode"]["route"], evidence["hosts"]["opencode"]["notes"]), ("direct", []))
+        with mock.patch.dict(os.environ, {"ANTHROPIC_API_KEY": PLANTED_KEY}, clear=True):
+            host = driver.HostConfig("opencode", Path("/bin/oc"), *driver.key_spec("opencode", "openrouter/x/y"), model="openrouter/x/y")
+            with self.assertRaises(driver.DeclaredLimit) as raised:
+                driver.acquire_credential(host, driver.parse_args(["--model", self.MODEL]))
+        self.assertIn("OPENROUTER_API_KEY", str(raised.exception))
+
+    def test_command_line_selects_the_openrouter_id(self) -> None:
+        host = driver.HostConfig("opencode", Path("/bin/oc"), *driver.key_spec("opencode", "openrouter/anthropic/m"), model="openrouter/anthropic/m")
+        self.assertEqual(driver.prompt_argv(host, "p", driver.parse_args([]))[-3:-1], ["-m", "openrouter/anthropic/m"])
+        self.assertEqual(host.key_target, "OPENROUTER_API_KEY")
+
+
+class KeychainTests(unittest.TestCase):
+    ALL = keychain(anthropic=PLANTED_KEY, openai="sk-openai-PLANTEDOPENAIKEY0123456789", openrouter=OPENROUTER_KEY)
+
+    def test_keys_come_from_the_keychain_and_never_reach_evidence_or_transcripts(self) -> None:
+        code, evidence, tmp = run_driver("--keys-from-keychain", "--fake-variant", "leak-secret", "--limit-cases", "2",
+                                         "--model", "opencode=openrouter/anthropic/m", key=None, env=self.ALL)
+        self.assertEqual(code, 0)
+        self.assertEqual({n: (h["status"], h["keySource"]) for n, h in evidence["hosts"].items()},
+                         {n: ("ran", "keychain") for n in ("claude-code", "codex", "opencode")})
+        text = all_text(tmp)
+        for secret in (PLANTED_KEY, OPENROUTER_KEY, "sk-openai-PLANTEDOPENAIKEY0123456789"):
+            self.assertNotIn(secret, text)
+        self.assertTrue(any("[REDACTED]" in f.read_text() for f in tmp.rglob("*.jsonl")))
+
+    def test_missing_item_is_a_declared_limit_for_that_host_only_and_the_environment_is_not_used(self) -> None:
+        code, evidence, _ = run_driver("--keys-from-keychain", "--limit-cases", "1", key=PLANTED_KEY,
+                                       env={**keychain(anthropic=PLANTED_KEY), "OPENAI_API_KEY": "env-openai-value-123456"})
+        self.assertEqual(code, 0)
+        hosts = evidence["hosts"]
+        self.assertEqual((hosts["claude-code"]["status"], hosts["opencode"]["status"]), ("ran", "ran"))
+        self.assertEqual(hosts["codex"]["status"], "declared-limit")
+        self.assertIn("agent-braid-openai", hosts["codex"]["limit"])
+        self.assertNotIn("env-openai-value-123456", json.dumps(evidence))
+
+    def test_environment_key_is_ignored_when_the_keychain_is_empty(self) -> None:
+        _, evidence, _ = run_driver("--keys-from-keychain", "--hosts", "claude-code", "--limit-cases", "1", key=PLANTED_KEY, env=keychain())
+        self.assertEqual(evidence["hosts"]["claude-code"]["status"], "declared-limit")
+
+    def test_security_cli_is_called_with_the_service_and_its_output_is_not_kept(self) -> None:
+        with mock.patch.dict(os.environ, self.ALL):
+            self.assertEqual(driver.keychain_secret("agent-braid-anthropic", str(FAKE_HOSTS / "security")), PLANTED_KEY)
+            self.assertIsNone(driver.keychain_secret("agent-braid-absent", str(FAKE_HOSTS / "security")))
+        self.assertIsNone(driver.keychain_secret("x", "/nonexistent/security"))
+
+
+def auth_dir(claude: bool = True, codex: bool = True) -> Path:
+    root = Path(scratch("t013-auth-")) / "profile"
+    for host, enabled in (("claude", claude), ("codex", codex)):
+        if enabled:
+            (root / host).mkdir(parents=True)
+            (root / host / (".credentials.json" if host == "claude" else "auth.json")).write_text(PLANTED_CREDENTIAL)
+    return root
+
+
+class SubscriptionTests(unittest.TestCase):
+    def test_subscription_runs_without_any_key_and_keeps_the_profile(self) -> None:
+        profile = auth_dir()
+        files = [profile / "claude/.credentials.json", profile / "codex/auth.json"]
+        before = [f.read_bytes() for f in files]
+        WATCHED.update(str(f) for f in files)
+        OPENED.clear()
+        self.addCleanup(WATCHED.clear)
+        code, evidence, tmp = run_driver("--auth", "subscription", "--auth-profile-dir", str(profile), "--hosts", "claude-code,codex",
+                                         "--limit-cases", "2", key=None)
+        self.assertEqual(code, 0)
+        opened = list(OPENED)  # before this test reads the files itself
+        for name in ("claude-code", "codex"):
+            host = evidence["hosts"][name]
+            self.assertEqual((host["status"], host["auth"], host["keySource"]), ("ran", "interactive-once", "profile"))
+            self.assertTrue(any("subscription" in note for note in host["notes"]))
+            self.assertEqual(host["probe"]["authProfile"]["bytes"], len(PLANTED_CREDENTIAL))
+            self.assertTrue(host["probe"]["authProfile"]["usableUnderSandbox"] and host["probe"]["canaryReadThroughRedirectedHome"])
+        self.assertEqual([f.read_bytes() for f in files], before, "teardown must keep the sign-in")
+        self.assertEqual(profile.stat().st_mode & 0o777, 0o700)
+        self.assertEqual(opened, [], "the driver must not open a credential file")
+        self.assertNotIn("PLANTEDSUBSCRIPTIONTOKEN", all_text(tmp))
+
+    def test_credential_echoed_by_a_leaky_host_is_redacted(self) -> None:
+        profile = auth_dir()
+        code, evidence, tmp = run_driver("--auth", "subscription", "--auth-profile-dir", str(profile), "--hosts", "claude-code,codex",
+                                         "--fake-variant", "echo-credentials", "--limit-cases", "1", key=None)
+        self.assertEqual(code, 0)
+        self.assertEqual(evidence["hosts"]["codex"]["status"], "ran")
+        self.assertNotIn("PLANTEDSUBSCRIPTIONTOKEN", all_text(tmp))
+        self.assertTrue(any("[REDACTED]" in f.read_text() for f in tmp.rglob("*.jsonl")))
+
+    def test_missing_sign_in_is_a_declared_limit(self) -> None:
+        _, evidence, _ = run_driver("--auth", "subscription", "--auth-profile-dir", str(auth_dir(claude=False, codex=False)),
+                                    "--hosts", "claude-code", "--limit-cases", "1", key=None)
+        self.assertEqual(evidence["hosts"]["claude-code"]["status"], "declared-limit")
+
+    def test_opencode_still_uses_a_key_in_subscription_mode(self) -> None:
+        _, evidence, _ = run_driver("--auth", "subscription", "--auth-profile-dir", str(auth_dir()), "--hosts", "opencode",
+                                    "--model", "opencode=anthropic/m", "--limit-cases", "1")
+        self.assertEqual(evidence["hosts"]["opencode"]["auth"], "env-key")
+
+    def test_profile_on_a_real_config_path_is_refused_before_any_host_runs(self) -> None:
+        home = Path(scratch("t013-home-"))
+        (home / ".codex").mkdir()
+        (home / ".config/opencode").mkdir(parents=True)
+        link = Path(scratch("t013-link-")) / "innocent"
+        link.symlink_to(home / ".codex")
+        log = Path(scratch("t013-log-")) / "invocations.jsonl"
+        for target in (home / ".codex", home / ".config/opencode/sub", home, link, driver.ROOT / "evidence-profile"):
+            with self.subTest(target=str(target)):
+                code, evidence, _ = run_driver("--real-home", str(home), "--auth", "subscription", "--auth-profile-dir", str(target),
+                                               "--limit-cases", "1", key=None, env={"FAKE_LOG": str(log)})
+                self.assertEqual(code, driver.EXIT_SAFETY)
+                self.assertIn("auth profile", evidence["stopped"])
+                self.assertFalse(log.exists())
+        self.assertFalse((home / ".config/opencode/sub").exists())
+
+    def test_subscription_flags_need_a_profile_directory(self) -> None:
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
+            driver.parse_args(["--auth", "subscription"])
+
+
+class LoginTests(unittest.TestCase):
+    def call(self, *argv: str, env: dict[str, str] | None = None) -> tuple[int, str, str]:
+        out, err = io.StringIO(), io.StringIO()
+        with mock.patch.dict(os.environ, env or {}), contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = driver.main(["--fake-hosts", *argv])
+        return code, out.getvalue(), err.getvalue()
+
+    def test_login_only_prints_the_exact_commands_and_creates_nothing(self) -> None:
+        profile = Path(scratch("t013-login-")) / "p"
+        code, out, _ = self.call("--login", "claude-code", "--auth-profile-dir", str(profile))
+        self.assertEqual(code, 0)
+        self.assertIn(f"CLAUDE_CONFIG_DIR={os.path.realpath(profile)}/claude claude", out)
+        code, out, _ = self.call("--login", "codex", "--auth-profile-dir", str(profile))
+        self.assertIn(f"CODEX_HOME={os.path.realpath(profile)}/codex codex login", out)
+        self.assertFalse(profile.exists())
+
+    def test_login_refuses_a_real_config_path(self) -> None:
+        home = Path(scratch("t013-home-"))
+        code, out, err = self.call("--login", "claude-code", "--auth-profile-dir", str(home / ".claude"), "--real-home", str(home))
+        self.assertEqual(code, driver.EXIT_SAFETY)
+        self.assertEqual(out, "")
+        self.assertIn("refused", err)
+
+    def test_check_login_reports_existence_and_size_and_answers_a_prompt(self) -> None:
+        profile = auth_dir()
+        WATCHED.add(str(profile / "claude/.credentials.json"))
+        OPENED.clear()
+        self.addCleanup(WATCHED.clear)
+        code, out, _ = self.call("--check-login", "claude-code", "--auth-profile-dir", str(profile))
+        result = json.loads(out)
+        self.assertEqual(code, 0)
+        self.assertEqual((result["ok"], result["credential"]), (True, {"file": ".credentials.json", "exists": True, "bytes": len(PLANTED_CREDENTIAL)}))
+        self.assertTrue(result["usableUnderSandbox"])
+        self.assertTrue(result["teardown"]["clean"])
+        self.assertEqual(OPENED, [])
+        self.assertNotIn("PLANTEDSUBSCRIPTIONTOKEN", out)
+
+    def test_check_login_without_a_sign_in_fails_cleanly(self) -> None:
+        code, out, _ = self.call("--check-login", "codex", "--auth-profile-dir", str(auth_dir(codex=False)))
+        result = json.loads(out)
+        self.assertEqual((code, result["ok"], result["credential"]["exists"]), (1, False, False))
+        self.assertIn("Not logged in", result["error"])
+
+    def test_check_login_leaky_host_output_is_redacted(self) -> None:
+        code, out, _ = self.call("--check-login", "claude-code", "--auth-profile-dir", str(auth_dir()), env={"FAKE_VARIANT": "echo-credentials"})
+        self.assertEqual(code, 0)
+        self.assertNotIn("PLANTEDSUBSCRIPTIONTOKEN", out)
+
+
+class OpenCodeUsageTests(unittest.TestCase):
+    def test_usage_is_summed_over_steps_and_a_named_model_is_kept(self) -> None:
+        rows = [{"type": "step_finish", "part": {"type": "step-finish", "cost": 0.5, "tokens": {"input": 2, "output": 10, "cache": {"read": 5}}}},
+                {"type": "step_finish", "part": {"type": "step-finish", "cost": 0.25, "tokens": {"input": 3, "output": 4, "cache": {"read": 1}}, "modelID": "m/x"}}]
+        transcript = driver.parse_opencode_run("\n".join(json.dumps(r) for r in rows))
+        self.assertEqual(transcript.usage, {"cost": 0.75, "tokens": {"input": 5, "output": 14, "cache": {"read": 6}}})
+        self.assertEqual(transcript.models, ["m/x"])

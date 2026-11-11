@@ -23,8 +23,28 @@ def log(host, argv):
 
 
 def scenario_for(prompt):
-    data = json.loads(Path(os.environ["FAKE_SCENARIO"]).read_text())
-    return data[prompt]
+    if "FAKE_SCENARIO" not in os.environ:
+        return {"steps": [], "text": "OK"}  # a plain prompt such as the sign-in check
+    return json.loads(Path(os.environ["FAKE_SCENARIO"]).read_text()).get(prompt, {"steps": [], "text": "OK"})
+
+
+def credential_text(*names):
+    """Variant ``echo-credentials``: a leaky host that prints the credential file it was signed in with."""
+    if os.environ.get("FAKE_VARIANT") != "echo-credentials":
+        return ""
+    for var, name in names:
+        path = Path(os.environ.get(var, "")) / name
+        if path.is_file():
+            return path.read_text()
+    return ""
+
+
+def require_login(var, name, key_var):
+    """Subscription self-test (FAKE_REQUIRE_LOGIN): without an API key the host needs the sign-in file, like the real ones."""
+    if not os.environ.get("FAKE_REQUIRE_LOGIN") or os.environ.get(key_var) or (Path(os.environ.get(var, "/nonexistent")) / name).is_file():
+        return
+    print("Not logged in", file=sys.stderr)
+    sys.exit(1)
 
 
 def side_effects(text):
@@ -35,7 +55,7 @@ def side_effects(text):
     if variant == "straggler":
         subprocess.Popen(["/bin/sh", "-c", "sleep 300; echo " + os.environ["HOME"]], start_new_session=True,
                          stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    return text
+    return text + " " + credential_text(("CLAUDE_CONFIG_DIR", ".credentials.json"), ("CODEX_HOME", "auth.json"))
 
 
 def emit(row):
@@ -50,6 +70,7 @@ def copy_plugin(source, target):
 
 
 def claude(argv):
+    require_login("CLAUDE_CONFIG_DIR", ".credentials.json", "ANTHROPIC_API_KEY")
     prompt = argv[argv.index("-p") + 1]
     denied = set(argv[argv.index("--disallowedTools") + 1:]) if "--disallowedTools" in argv else set()
     scen = scenario_for(prompt)
@@ -76,6 +97,12 @@ def opencode(argv):
         print("Error: would use the background service", file=sys.stderr)
         sys.exit(9)
     prompt = argv[-1]
+    model = argv[argv.index("-m") + 1] if "-m" in argv else ""
+    if model.startswith("openrouter/"):  # the driver must configure the provider and inject only this key
+        config = json.loads((Path(os.environ["XDG_CONFIG_HOME"]) / "opencode/opencode.json").read_text())
+        if "openrouter" not in config.get("provider", {}) or not os.environ.get("OPENROUTER_API_KEY") or os.environ.get("ANTHROPIC_API_KEY"):
+            print("Error: openrouter is not configured", file=sys.stderr)
+            sys.exit(8)
     scen = scenario_for(prompt)
     for number, step in enumerate(scen["steps"]):
         name = step["tool"]
@@ -92,6 +119,7 @@ def opencode(argv):
 
 
 def codex(argv):
+    require_login("CODEX_HOME", "auth.json", "CODEX_API_KEY")
     prompt = argv[-1]
     scen = scenario_for(prompt)
     emit({"type": "thread.started", "thread_id": "fake"})
