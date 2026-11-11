@@ -1,0 +1,10 @@
+{
+  "note": "Synthetic inputs only: a made-up secret, made-up roots and made-up resource names. Episodes are built by the test through build_episode.",
+  "secretHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+  "roots": {"source": "/synthetic/admitted", "worktree": "/synthetic/admitted-wt", "second": "/synthetic/second-workspace"},
+  "pairs": {
+    "conflicting": {"left": ["src/pkg/a.py", "src/shared.py"], "right": ["src/pkg/b.py", "src/shared.py"]},
+    "disjoint": {"left": ["src/pkg/c.py"], "right": ["docs/d.md"]},
+    "twin": {"left": ["src/pkg/e.py"], "right": ["src/pkg/f.py"]}
+  }
+}
