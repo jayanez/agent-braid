@@ -6,7 +6,7 @@
  },
  "inputs": {
   "agent_braid/lightning_hosts.py": "a147d8fb36c7d4e8b06aa328699a7662a52fdf71e05b292fe8a13756ddf15b23",
-  "scripts/spec069_native_runs.py": "078b8f68050733c06886db6851c41acbe54e287354085f7e45b571db0cd51ac1",
+  "scripts/spec069_native_runs.py": "5f74321d484759960221e20b31166ba75777f2a1f41d40874991c7daa73bc67b",
   "tests/test_spec069_native_runs.py": "96f14b4d6104af03211dbcd2654f64e7bb119c6d9698a60be2df72e789148b1c"
  },
  "limits": "Behaviour equivalence is shown by the driver test suite and the unchanged evidence format; the driver file hash recorded in its evidence changes by construction.",

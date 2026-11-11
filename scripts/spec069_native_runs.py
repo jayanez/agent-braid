@@ -225,7 +225,7 @@ def build_host_env(profile: Profile, host: HostConfig, key: str | None, ab_home:
         sign_in.mkdir(mode=0o700, exist_ok=True)
         sign_in.chmod(0o700)
         env[AUTH_ENV[host.name]] = str(sign_in)
-    if key:
+    if key is not None:  # an empty key is still set: the Lightning runner relies on it
         env[host.key_target] = key
     env.update(passthrough)
     return env
@@ -618,7 +618,7 @@ def check_login(args: argparse.Namespace) -> int:
             return 1
         host = HostConfig(host_name, binary, (), "", fake=args.fake_hosts)
         env = build_host_env(profile, host, None, profile.make("hosts", host_name, "agent-braid-home"), {"FAKE_PYTHON": sys.executable,
-                             **({k: os.environ[k] for k in ("FAKE_LOG", "FAKE_VARIANT") if k in os.environ} if args.fake_hosts else {})}, auth_home)
+                             **({k: os.environ[k] for k in ("FAKE_LOG", "FAKE_VARIANT") if k in os.environ} | {"FAKE_REQUIRE_LOGIN": "1"} if args.fake_hosts else {})}, auth_home)
         cwd = profile.make("hosts", host_name, "workspace")
         probe = probe_isolation(env, Path(env["HOME"]), sandbox, protected)
         result["sandbox"] = probe["sandbox"]
@@ -698,6 +698,8 @@ def main(argv: list[str] | None = None) -> int:
             secrets.add(planted)
             passthrough.update({"FAKE_SCENARIO": str(scenario_file), "FAKE_VARIANT": args.fake_variant, "FAKE_PLANTED_SECRET": planted,
                                 "FAKE_PYTHON": sys.executable})
+            if args.auth == "subscription":
+                passthrough["FAKE_REQUIRE_LOGIN"] = "1"
             os.environ.setdefault("ANTHROPIC_API_KEY", "fake-anthropic-key-0001")
         for name in [h for h in args.hosts.split(",") if h]:
             binary = host_binary(name, args)

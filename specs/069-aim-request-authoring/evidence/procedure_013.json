@@ -6,10 +6,10 @@
  },
  "inputs": {
   "agent_braid/lightning_hosts.py": "a147d8fb36c7d4e8b06aa328699a7662a52fdf71e05b292fe8a13756ddf15b23",
-  "scripts/spec069_native_runs.py": "078b8f68050733c06886db6851c41acbe54e287354085f7e45b571db0cd51ac1",
+  "scripts/spec069_native_runs.py": "5f74321d484759960221e20b31166ba75777f2a1f41d40874991c7daa73bc67b",
   "specs/069-aim-request-authoring/evidence/native-runs-baseline-anthropic.json": "1663332c6c04577fa51ffbbd9ed5d9d0fbc5311a883f7239eb746ee2db9896fe",
   "specs/069-aim-request-authoring/runbook.md": "e963df9a8bffb3a1b0a516417f579dc59775136815fdb36303b764c05d649a7d",
-  "tests/fixtures/spec069-fake-hosts/_fake.py": "73f8d58ffbecc79a2d099ddc3e876fcc41921830b8b38ac126393c7e58299fdb",
+  "tests/fixtures/spec069-fake-hosts/_fake.py": "ee4abf00ece8c4a014713966fdf93c65bfa6e331c470e750c69c869fc3d233e3",
   "tests/fixtures/spec069-fake-hosts/claude": "de42483c09be9c10cb2e1c92b7e21242a257588b26ffcc91d5997bd11146e630",
   "tests/fixtures/spec069-fake-hosts/codex": "49c44741964527b6e204e939ab510b30bbcb94b48e3764a0b8aae6de0f33c1f2",
   "tests/fixtures/spec069-fake-hosts/opencode": "21092c62fe15ef7e6627f8f9351e6d362db820ec61550b0b0e99351b4a2590d7",

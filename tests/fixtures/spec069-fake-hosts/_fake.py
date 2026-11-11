@@ -40,8 +40,8 @@ def credential_text(*names):
 
 
 def require_login(var, name, key_var):
-    """Without an API key the host needs the sign-in file in its configuration directory, like the real ones."""
-    if os.environ.get(key_var) or (Path(os.environ.get(var, "/nonexistent")) / name).is_file():
+    """Subscription self-test (FAKE_REQUIRE_LOGIN): without an API key the host needs the sign-in file, like the real ones."""
+    if not os.environ.get("FAKE_REQUIRE_LOGIN") or os.environ.get(key_var) or (Path(os.environ.get(var, "/nonexistent")) / name).is_file():
         return
     print("Not logged in", file=sys.stderr)
     sys.exit(1)
