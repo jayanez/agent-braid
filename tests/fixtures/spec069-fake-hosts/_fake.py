@@ -19,7 +19,8 @@ def log(host, argv):
     path = os.environ.get("FAKE_LOG")
     if path:
         with open(path, "a") as handle:
-            handle.write(json.dumps({"host": host, "argv": argv[:6]}) + "\n")
+            handle.write(json.dumps({"host": host, "argv": argv[:6], "credentialVars": sorted(
+                k for k in ("ANTHROPIC_API_KEY", "CLAUDE_CODE_OAUTH_TOKEN", "CODEX_API_KEY", "OPENROUTER_API_KEY") if k in os.environ)}) + "\n")
 
 
 def scenario_for(prompt):
@@ -47,11 +48,19 @@ def require_login(var, name, key_var):
     sys.exit(1)
 
 
+def require_token():
+    """Token mode: a rejected token or an API key beside the token (which would win over it) fails like the real host."""
+    token = os.environ.get("CLAUDE_CODE_OAUTH_TOKEN")
+    if token and (token.startswith("sk-ant-oat01-REJECTED") or os.environ.get("ANTHROPIC_API_KEY")):
+        print("Invalid bearer token" if not os.environ.get("ANTHROPIC_API_KEY") else "ANTHROPIC_API_KEY set beside the token", file=sys.stderr)
+        sys.exit(1)
+
+
 def side_effects(text):
     """Variants that need the host process to misbehave."""
     variant = os.environ.get("FAKE_VARIANT", "default")
     if variant == "leak-secret":
-        text += " " + os.environ.get("FAKE_PLANTED_SECRET", "") + " " + os.environ.get("ANTHROPIC_API_KEY", "")
+        text += " " + os.environ.get("FAKE_PLANTED_SECRET", "") + " " + os.environ.get("ANTHROPIC_API_KEY", "") + " " + os.environ.get("CLAUDE_CODE_OAUTH_TOKEN", "")
     if variant == "straggler":
         subprocess.Popen(["/bin/sh", "-c", "sleep 300; echo " + os.environ["HOME"]], start_new_session=True,
                          stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -70,7 +79,8 @@ def copy_plugin(source, target):
 
 
 def claude(argv):
-    require_login("CLAUDE_CONFIG_DIR", ".credentials.json", "ANTHROPIC_API_KEY")
+    require_token()
+    require_login("CLAUDE_CONFIG_DIR", ".credentials.json", "CLAUDE_CODE_OAUTH_TOKEN" if os.environ.get("CLAUDE_CODE_OAUTH_TOKEN") else "ANTHROPIC_API_KEY")
     prompt = argv[argv.index("-p") + 1]
     denied = set(argv[argv.index("--disallowedTools") + 1:]) if "--disallowedTools" in argv else set()
     scen = scenario_for(prompt)
