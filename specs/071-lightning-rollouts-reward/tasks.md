@@ -52,7 +52,7 @@ manual copy-paste.
 
 ## Phase P4 — real baseline
 
-- [ ] T012 (REQ-014 / SC-014): Owner decides OD-1; owner signs in; one command
+- [x] T012 (REQ-014 / SC-014): Owner decides OD-1; owner signs in; one command
   runs the baseline on the subscription route; record evidence and the
   paid-route observation count; label the report `route-changed comparison`. Dependencies: T011, OD-1.
   Verification: procedure_014.

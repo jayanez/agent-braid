@@ -461,7 +461,15 @@
         {
           "given": "the owner signed in on the subscription and OD-1 decided",
           "id": "SC-014",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m scripts.spec071_real_baseline",
+              "limits": "One run, Claude Code only (OpenCode excluded by OD-2); route-changed comparison: subscription route and host 2.1.311 versus T010 api-key route and host 2.1.292, same model claude-sonnet-5-5; Claude Code reported apiKeySource none for the OAuth-token route, accepted under SC-005; a finding, not proof of equivalence.",
+              "outcome": "passed: run-20261111T085405Z-a14514 completed 30/30 rollouts with no stop or refusal; first attempt 16/30, Wilson [0.361, 0.698], within retry 16/30; inside the T010 interval [0.361, 0.698] (T010 16/30); paid-route observations 0.",
+              "path": "specs/071-lightning-rollouts-reward/evidence/native-baseline.json",
+              "sha256": "8b53f7de9a4c28e3906214bae369904d9d1ca8a5d5fa0b1322e8b42d2695f561"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/071-lightning-rollouts-reward/validation-plan.md",
           "test_name": "procedure_014",
