@@ -59,7 +59,7 @@ manual copy-paste.
 
 ## Closing
 
-- [ ] T013 (REQ-001–REQ-014 / SC-001–SC-014): `/speckit-converge`: reconcile
+- [x] T013 (REQ-001–REQ-014 / SC-001–SC-014): `/speckit-converge`: reconcile
   spec, tasks, assurance and evidence; sync tracking. Dependencies: T012.
   Verification: all procedures.
 
