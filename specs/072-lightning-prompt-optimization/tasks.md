@@ -10,8 +10,8 @@ script or test.
 
 ## Phase P0 — review
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan, contract and
-  evaluation protocol; decide OD-1 (OD-2 decided: `claude-code`, `opencode`). Dependencies: SPEC-071 T011.
+- [x] T001 (REQ-001 / SC-001): Owner review of spec, plan, contract and
+  evaluation protocol; OD-1 decided 2026-11-11: keep 10 × 3 (OD-2 decided: `claude-code`, `opencode`). Dependencies: SPEC-071 T011.
   Verification: procedure_001.
 
 ## Phase P1 — foundations
