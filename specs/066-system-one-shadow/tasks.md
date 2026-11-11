@@ -281,12 +281,61 @@ specifications unless a SPEC-066 requirement amends them.
   or label is read, no authority descriptor is minted (it needs the T103 and T104
   pins), and no fitting is admitted. Ticked after T032 (freeze change). The test checks digests only: the plugin registry, not this validator,
   decides whether a path (including a registered worktree) belongs to a workspace.
-- [ ] T102 (REQ-102): Outcome observer that joins DP-1 episodes with a later runtime
+  Plan (2026-11-10): [s15b-plan-20261110.md](s15b-plan-20261110.md) written and
+  reviewed (adversarial and counterfactual passes by separate agents; same-family, not
+  independent, no approval); no code, no corpus read.
+  W0 gate (2026-11-10, #1284, ea142626): `research/s15b_corpus_gate.py` and
+  `tests/test_spec066_s15b_corpus_gate.py` enforce the T101 consent as a fail-closed
+  path gate (literal admitted and excluded workspace ids, registry roots resolved through
+  symlinks, closed refusal codes that echo no input, optional digest-bound addendum,
+  retention helpers); 21 tests pass; keeps `git-history-replay` blocked without an
+  addendum. No corpus data read; no authority descriptor minted; no execution or
+  training authority.
+  Addendum (2026-11-11): the owner's answers of 2026-11-10 (plan section 8, Q1-Q8) are
+  recorded in `evidence/owner-consent-s15b-git-history-addendum-20261110.json`
+  (digest-bound record; the bare gate input is
+  `evidence/s15b-source-family-addendum-20261110.json`), test
+  `tests/test_spec066_s15b_addendum.py`. It adds only the source family
+  `git-history-replay` for workspace `eedc05f71069fdb4af00c6b99932195b`, owner-authored
+  commits only, third-party authors excluded; corpus building within
+  admitted-scope-only, no fitting; oracle `git merge-tree`, planner agreement recorded
+  only; revocation `python -m scripts.spec066_s15b_observe --purge`; 30-day pool, then
+  the sealed corpus is deleted and a digests-only manifest kept; at least 30 labelled
+  DP-1 pairs per class, else T104 and T105 stop; excluded-workspace episodes ignored,
+  not purged; Q3 deferred. The record is the coordinator's wording of interactive
+  answers (the transcript is not stored); the gate checks it by digest only. It grants
+  no execution or training authority and runs nothing.
+- [x] T102 (REQ-102): Outcome observer that joins DP-1 episodes with a later runtime
   conflict, merge conflict or verify result under a random join key; pairs without an
-  outcome stay unlabelled. Dependencies: T101. Files: to be set by the S1.5b plan.
-- [ ] T103 (REQ-103): Amended label rubric: observed outcomes primary, owner
+  outcome stay unlabelled. Dependencies: T101. Files:
+  `research/s15b_outcome_observer.py`, `scripts/spec066_s15b_observe.py`,
+  `tests/test_spec066_outcome_observer.py`, `tests/fixtures/spec066_s15b/outcomes/**`;
+  plan: [s15b-plan-20261110.md](s15b-plan-20261110.md). Needs the W0 gate
+  `research/s15b_corpus_gate.py` first.
+  Obtained 2026-11-11 (#1285, 9517ad41): T102 delivered in PR #1285 on synthetic
+  sources only; real yield is 0. The observer joins episode pairs with an outcome only on
+  a unique salted-pseudonym match (7-day window) under a random UUID4 join key and
+  stores a structural record; unmatched, ambiguous and unattributable pairs stay
+  unlabelled. It reads the shadow store and secret read-only (never creates the salt),
+  ignores excluded-workspace episodes (never persisted or purged), keeps its own store
+  `system-one-s15b/` for 30 days from the episode day, and `--purge` is the revocation
+  path. `--yield-report` (default) writes nothing; `--write` appends records and writes
+  counts-only evidence. No real source retains pair-level resources and the runtime-state
+  and plugin-result roots lie outside any gate-admitted workspace root, so the real
+  yield is 0 (valid per the plan; shadow collection continues); aggregate-only sources
+  are not wired; pairs with 32 or more resources per side cannot be matched. No corpus
+  built, no scientific claim. Local `validate_change` stopped at contracts (jsonschema
+  missing locally); CI is the `pr` evidence.
+- [x] T103 (REQ-103): Amended label rubric: observed outcomes primary, owner
   adjudication of a random sample for label noise, missing-label policy frozen before
-  any fit. Carries forward SPEC-029 T002 (#286). Dependencies: T101.
+  any fit. Carries forward SPEC-029 T002 (#286). Dependencies: T101. Files:
+  `contracts/label-rubric-v0.1.md`, `contracts/label-rubric-v0.1.json`,
+  `research/s15b_label_rubric.py`, `tests/test_spec066_label_rubric.py`.
+  Obtained 2026-11-11 (#1283, c97b1629): T103 delivered in PR #1283: frozen label rubric
+  v0.1 (md and json, digest pinned), validator, stratified hash-ranked adjudication
+  sample, Wilson noise estimator; tests R-1..R-8 pass; no corpus read; no scientific
+  claim. Deviation recorded in the contract: keyed SHA-256 ranking instead of a seeded
+  PRNG (same guarantee). The owner adjudication itself is T105.
 - [ ] T104 (REQ-101, REQ-102, REQ-103): Build the owned corpus with group split,
   near-duplicate audit, class and size coverage shown before any fit, and the
   pre-fit feasibility review that seals the untouched test manifest. Carries forward
@@ -299,8 +348,21 @@ specifications unless a SPEC-066 requirement amends them.
   only (same privacy rules as REQ-003). A repository outside the registered
   workspaces requires the owner's express approval first. Tests first; negative
   controls: an unregistered repository, a pair without an observable outcome (stays
-  unlabelled), a merge-tree failure. Dependencies: T101, T022. Files: to be set by the
-  S1.5b plan.
+  unlabelled), a merge-tree failure. Dependencies: T101, T022. Files:
+  `research/s15b_git_history_replay.py`, `scripts/spec066_s15b_replay_labels.py`,
+  `tests/test_spec066_git_history_replay.py`. Real run needs the owner addendum for the
+  `git-history-replay` source family (plan Q1).
+  Obtained 2026-11-11 (#1286, 11f5680e), NOT ticked: T106 fixture-complete in PR #1286
+  (37 tests on temporary repositories; owner-authored commits only, identity given on the
+  command line and never stored; oracle `git merge-tree --write-tree` in an empty scratch
+  bare repository with a sanitized environment; planner agreement recorded only; 30-day
+  retention; real repositories refused without the addendum). The addendum is recorded
+  in `evidence/owner-consent-s15b-git-history-addendum-20261110.json` (see T101). The real
+  run was refused until the git-history-replay addendum existed; not delivered until one
+  real dry run (Q1 is answered and recorded; the dry run is not). Open: one real dry run
+  recorded as evidence. This repository
+  squash-merges, so merge-commit pairs will be near zero and branch-tip pairs compare a
+  branch with today's HEAD; report by origin. No scientific claim.
 
 ## S1.5c — Reference-grade contracts (outline, blocked until T032)
 

@@ -1,0 +1,93 @@
+{
+  "addendum": {
+    "consentScopeDigest": "37ff53a1bc56f29e7a4a16150fafd8385b92288e2317986e2a1d721a5706a4be",
+    "digest": "5af1aae03405a7e62344edeafd8c2ac3904b8d87f8a4caeb6e001338d9e49b62",
+    "schema": "agent-braid-spec066-s15b-source-family-addendum/v1",
+    "sourceFamilies": [
+      "git-history-replay"
+    ]
+  },
+  "amends": "evidence/owner-consent-s15b-corpus-20261110.json",
+  "conditions": {
+    "addedSourceFamilies": [
+      "git-history-replay"
+    ],
+    "afterRetention": "sealed corpus deleted; manifest of digests kept",
+    "authorship": "owner-authored-commits-only",
+    "belowMinimum": "stop T104 and T105",
+    "corpusBuilding": "within-admitted-scope-only",
+    "deferred": [
+      "Q3"
+    ],
+    "excludedWorkspaceEpisodes": "ignored-not-purged",
+    "fitting": "not-admitted",
+    "labelOracle": "git merge-tree",
+    "minimumLabelledPairsPerClass": 30,
+    "plannerAgreement": "recorded-only",
+    "retentionDays": 30,
+    "revocationCommand": "python -m scripts.spec066_s15b_observe --purge",
+    "thirdPartyAuthors": "excluded",
+    "workspaceId": "eedc05f71069fdb4af00c6b99932195b"
+  },
+  "decision": "adds-source-family-only",
+  "decisionDate": "2026-11-10",
+  "digests": {
+    "addendumDigest": "5af1aae03405a7e62344edeafd8c2ac3904b8d87f8a4caeb6e001338d9e49b62",
+    "conditionsDigest": "c4b3dcc75fbfd6ee48fc4cb047b1f5469a7f3f75a9c0a7bfb432d870d1f4e403",
+    "ownerReferenceDigest": "5b99a90ec908cc2de95f2da8a871055677a223c6daaea7e0196405b96f29530b",
+    "rule": "sha256 of the canonical JSON (agent_braid.owned_work_authority.digest). addendumDigest = digest of the addendum without its digest field (the gate's rule); conditionsDigest = digest of {schema: agent-braid-spec066-s15b-addendum-conditions/v1, conditions}; ownerReferenceDigest = digest of {schema: agent-braid-spec066-s15b-addendum-owner-ref/v1, date: decisionDate, answers: ownerResponse.answers}"
+  },
+  "executionAuthorization": false,
+  "limits": [
+    "Adds one source family to the T101 scope; it changes neither the admitted workspace, the excluded workspaces, the retention nor the data class, and the gate never lets an addendum do so.",
+    "It grants no execution authority, no training admission, no calibration and no utility claim; fitting stays a later S1.5d decision with its own review.",
+    "The gate verifies this addendum by digest only. The digest binds the family list to the T101 scope digest; it does not authenticate the owner or enforce the owner-authored-commits-only condition, which is enforced by the T106 code (research/s15b_git_history_replay.py) and recorded here as the owner's condition.",
+    "Q3 is deferred: nothing here admits a local pointer table or any identifier store.",
+    "Admitting the family is not a real run: T106 stays unticked until one real dry run is recorded under this addendum.",
+    "Revocation removes only the S1.5b store (python -m scripts.spec066_s15b_observe --purge); the shadow store keeps its own command, agent-braid system-one purge."
+  ],
+  "ownerResponse": {
+    "answers": [
+      {
+        "answer": "Add the source family git-history-replay for workspace eedc05f71069fdb4af00c6b99932195b, owner-authored commits only; commits by third-party authors are excluded.",
+        "id": "Q1"
+      },
+      {
+        "answer": "The label oracle is git merge-tree; the replay planner's agreement is recorded only and is not required for a label.",
+        "id": "Q2"
+      },
+      {
+        "answer": "Deferred: no local pointer table until T105 is reachable and its sample size is known.",
+        "id": "Q3"
+      },
+      {
+        "answer": "python -m scripts.spec066_s15b_observe --purge is the revocation path for the S1.5b store.",
+        "id": "Q4"
+      },
+      {
+        "answer": "A 30-day pool; afterwards the sealed corpus is deleted and only a manifest of digests is kept.",
+        "id": "Q5"
+      },
+      {
+        "answer": "Corpus building (joining and storing structural labels) is within admitted-scope-only, with no fitting.",
+        "id": "Q6"
+      },
+      {
+        "answer": "At least 30 labelled DP-1 pairs per class; below that, T104 and T105 stop.",
+        "id": "Q7"
+      },
+      {
+        "answer": "Episodes of excluded workspaces already in the host store are ignored, never read into the corpus or persisted, and not purged.",
+        "id": "Q8"
+      }
+    ],
+    "role": "owner and founder",
+    "source": "interactive answers in the Claude Code coordinator session on 2026-11-10 to the questions in section 8 of s15b-plan-20261110.md; the transcript is not stored in the repository",
+    "wording": "the coordinator's wording of the owner's answers, not a verbatim transcript"
+  },
+  "requirement": "REQ-101",
+  "schema": "agent-braid-spec066-s15b-corpus-addendum-record/v0.1",
+  "specification": "SPEC-066",
+  "task": "T101",
+  "trainingAdmission": false
+}
