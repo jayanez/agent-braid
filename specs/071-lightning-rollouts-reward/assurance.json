@@ -179,7 +179,7 @@
               "limits": "Behaviour equivalence is shown by the driver test suite and the unchanged evidence format; the driver file hash recorded in its evidence changes by construction.",
               "outcome": "passed: Host plumbing extracted to agent_braid/lightning_hosts.py; the SPEC-069 driver re-exports it and its 29 tests, including the --fake-hosts self-test with all negative controls, pass unchanged.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_002.json",
-              "sha256": "85bbc82c158e52d3b24941ee3a40935ff3db9d1cc242b7dc9d79887a7dad9414"
+              "sha256": "858028c699d6682d9086197483c00b2aaa119dcba468c566538f506f57db5cec"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",

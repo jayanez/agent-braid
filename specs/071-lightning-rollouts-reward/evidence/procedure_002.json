@@ -6,8 +6,8 @@
  },
  "inputs": {
   "agent_braid/lightning_hosts.py": "a147d8fb36c7d4e8b06aa328699a7662a52fdf71e05b292fe8a13756ddf15b23",
-  "scripts/spec069_native_runs.py": "1d78468bc75b88187799335bd5ca4590ad954674e4c14e4f519c5b7ab996b055",
-  "tests/test_spec069_native_runs.py": "8571747f61c9286d387521722f1198b560434c90d74ccbf74bb153b7a5adf509"
+  "scripts/spec069_native_runs.py": "078b8f68050733c06886db6851c41acbe54e287354085f7e45b571db0cd51ac1",
+  "tests/test_spec069_native_runs.py": "96f14b4d6104af03211dbcd2654f64e7bb119c6d9698a60be2df72e789148b1c"
  },
  "limits": "Behaviour equivalence is shown by the driver test suite and the unchanged evidence format; the driver file hash recorded in its evidence changes by construction.",
  "outcome": "passed: Host plumbing extracted to agent_braid/lightning_hosts.py; the SPEC-069 driver re-exports it and its 29 tests, including the --fake-hosts self-test with all negative controls, pass unchanged.",
@@ -15,5 +15,5 @@
  "result": "OK",
  "scenario": "SC-002",
  "specification": "SPEC-071 BL.1",
- "testsRun": 29
+ "testsRun": 48
 }
