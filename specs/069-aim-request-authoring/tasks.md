@@ -55,6 +55,10 @@ and T010's final run measures the release candidate without them.
   `evidence/native-runs-baseline.json` and `evidence/native-runs.json`; report
   shortfalls as negative results. Dependencies: T013 (baseline); T005–T009,
   T014, T015 (final). Verification: procedure_010.
+  Progress 2026-11-11 (still open: held-out final run): Codex baseline and the
+  development-set ablation (`final` vs `final-no-schema`) are recorded in
+  `evidence/native-runs-baseline-codex.json`, `evidence/native-runs-ablation-*.json` and
+  `evidence/native-runs-ablation-summary.json`; see `validation-plan.md`.
 
 ## Phase P3 — `units` and schema delivery, only if the P2 baseline misses D4 in a required host (D6)
 

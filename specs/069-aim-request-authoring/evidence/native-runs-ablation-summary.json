@@ -1,0 +1,191 @@
+[
+ {
+  "host": "claude-code",
+  "arm": "baseline (API key)",
+  "file": "native-runs-baseline-anthropic",
+  "trials": 30,
+  "first": 16,
+  "firstCI": [
+   0.361,
+   0.698
+  ],
+  "retry": 16,
+  "retryCI": [
+   0.361,
+   0.698
+  ],
+  "promptsFirst": 4,
+  "promptsRetry": 4,
+  "prompts": 10,
+  "verdict": "misses",
+  "costUsd": 1.42
+ },
+ {
+  "host": "opencode",
+  "arm": "baseline (API key, direct)",
+  "file": "native-runs-baseline-anthropic",
+  "trials": 30,
+  "first": 16,
+  "firstCI": [
+   0.361,
+   0.698
+  ],
+  "retry": 16,
+  "retryCI": [
+   0.361,
+   0.698
+  ],
+  "promptsFirst": 5,
+  "promptsRetry": 5,
+  "prompts": 10,
+  "verdict": "misses",
+  "costUsd": null
+ },
+ {
+  "host": "codex",
+  "arm": "baseline",
+  "file": "native-runs-baseline-codex",
+  "trials": 30,
+  "first": 0,
+  "firstCI": [
+   0.0,
+   0.114
+  ],
+  "retry": 0,
+  "retryCI": [
+   0.0,
+   0.114
+  ],
+  "promptsFirst": 0,
+  "promptsRetry": 0,
+  "prompts": 10,
+  "verdict": "misses",
+  "costUsd": null
+ },
+ {
+  "host": "claude-code",
+  "arm": "final",
+  "file": "native-runs-ablation-final-claude-code",
+  "trials": 30,
+  "first": 12,
+  "firstCI": [
+   0.246,
+   0.577
+  ],
+  "retry": 15,
+  "retryCI": [
+   0.332,
+   0.668
+  ],
+  "promptsFirst": 2,
+  "promptsRetry": 3,
+  "prompts": 10,
+  "verdict": "misses",
+  "costUsd": 1.86
+ },
+ {
+  "host": "claude-code",
+  "arm": "final-no-schema",
+  "file": "native-runs-ablation-final-no-schema-claude-code",
+  "trials": 30,
+  "first": 17,
+  "firstCI": [
+   0.392,
+   0.726
+  ],
+  "retry": 17,
+  "retryCI": [
+   0.392,
+   0.726
+  ],
+  "promptsFirst": 5,
+  "promptsRetry": 5,
+  "prompts": 10,
+  "verdict": "misses",
+  "costUsd": 1.91
+ },
+ {
+  "host": "opencode",
+  "arm": "final",
+  "file": "native-runs-ablation-final-opencode",
+  "trials": 30,
+  "first": 16,
+  "firstCI": [
+   0.361,
+   0.698
+  ],
+  "retry": 16,
+  "retryCI": [
+   0.361,
+   0.698
+  ],
+  "promptsFirst": 5,
+  "promptsRetry": 5,
+  "prompts": 10,
+  "verdict": "misses",
+  "costUsd": null
+ },
+ {
+  "host": "opencode",
+  "arm": "final-no-schema",
+  "file": "native-runs-ablation-final-no-schema-opencode",
+  "trials": 30,
+  "first": 16,
+  "firstCI": [
+   0.361,
+   0.698
+  ],
+  "retry": 16,
+  "retryCI": [
+   0.361,
+   0.698
+  ],
+  "promptsFirst": 5,
+  "promptsRetry": 5,
+  "prompts": 10,
+  "verdict": "misses",
+  "costUsd": null
+ },
+ {
+  "host": "codex",
+  "arm": "final",
+  "file": "native-runs-ablation-final-codex",
+  "trials": 30,
+  "first": 9,
+  "firstCI": [
+   0.167,
+   0.479
+  ],
+  "retry": 9,
+  "retryCI": [
+   0.167,
+   0.479
+  ],
+  "promptsFirst": 3,
+  "promptsRetry": 3,
+  "prompts": 10,
+  "verdict": "misses",
+  "costUsd": null
+ },
+ {
+  "host": "codex",
+  "arm": "final-no-schema",
+  "file": "native-runs-ablation-final-no-schema-codex",
+  "trials": 30,
+  "first": 0,
+  "firstCI": [
+   0.0,
+   0.114
+  ],
+  "retry": 0,
+  "retryCI": [
+   0.0,
+   0.114
+  ],
+  "promptsFirst": 0,
+  "promptsRetry": 0,
+  "prompts": 10,
+  "verdict": "misses",
+  "costUsd": null
+ }
+]
