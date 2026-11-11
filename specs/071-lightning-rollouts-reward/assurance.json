@@ -10,7 +10,7 @@
   ],
   "assumptions": "SPEC-070 schema, configuration and store are merged; Claude Code and OpenCode run headless on the owner's subscription; the macOS OS sandbox of the SPEC-069 driver is available for real runs; SPEC-069 FREEZE, prompt sets and scoring are unchanged; OD-1 and OD-2 are open.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "39a427ae7fd74bc817889d946cc8bb3616489bb9",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -101,16 +101,16 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive: scripts/spec069_native_runs.py keeps its CLI and evidence format and its tests are the regression gate; no existing output changes; new records braid-lightning-rollout/v0.1 and braid-lightning-reward/v0.1.",
   "domain": "Braid Lightning BL.1: subscription-only rollouts of host models on the SPEC-069 prompt sets and a program-computed reward vector over analyze-work requests.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "39a427ae7fd74bc817889d946cc8bb3616489bb9",
+    "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; no execute, recover, grant or MCP-started runs; rollouts use disposable profiles, an OS sandbox and the host subscription route only; any *_API_KEY in a child environment is refused; extra cash spend EUR 0.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "None; engineering specification with no scientific claim.",
   "observation_contract": "Each rollout records host, host version, model, key source, credential presence (boolean), prompt and candidate hashes, redacted transcript hash, reward vector and hash, stop and refusal codes; fake-host evidence is labelled pipeline-only.",
   "references": [
@@ -480,7 +480,8 @@
       "text": "One real run of the T010 baseline guidance on the development set, three repetitions, per host with a subscription sign-in, is reported against the T010 interval [0.361, 0.698] as a route-changed comparison (both proportions, Wilson intervals and route, model and version differences), with zero paid-route observations; an outside value is reported as a difference."
     }
   ],
+  "review_record": "specs/071-lightning-rollouts-reward/reviews/owner-review-39a427ae.json",
   "scientific_limits": "Engineering only. Rewards are empirical measurements on the observed host versions, models and prompt sets, not guarantees. The baseline route-changed comparison compares proportions to a 95 % Wilson interval from 30 trials per host; it does not establish stable model behaviour.",
   "scope": "Specification only: extracted host helpers, a subscription-only rollout runner with hooks, a verifiable reward vector, anti-reward-hacking controls, CLI run/status/report, a fake-host CI pipeline and one real baseline run.",
-  "stage": "draft"
+  "stage": "validated"
 }

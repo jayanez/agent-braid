@@ -1,0 +1,80 @@
+{
+ "recordVersion": "0.1.0",
+ "feature": "SPEC-071",
+ "reviewedCommit": "39a427ae7fd74bc817889d946cc8bb3616489bb9",
+ "reviewer": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "conflictsOfInterest": "The reviewer is the project founder and owner. The review records that role explicitly; it is an internal owner decision, not independent external validation.",
+ "method": "Guided interactive review on 2026-11-11 in four blocks (host extraction and subscription route; verifiable reward; runner, hooks, stops and pipeline; real baseline and closure), each presented with its evidence and limits.",
+ "humanReview": {
+  "decision": "approved",
+  "date": "2026-11-11",
+  "rationale": "Approve BL.1 within its documented scope: subscription-only runner with paid-route refusal, credential kept in the environment, verifiable replayable reward with no model judge, hooks and manual-resume stops, fake-host pipeline with negative controls, and one real Claude Code baseline (16/30, inside the T010 interval, zero paid-route observations) labelled route-changed comparison. Limits stated in each evidence record apply; Claude Code reported apiKeySource none; OpenCode is a declared limit (OD-2)."
+ },
+ "milestoneClosure": {
+  "decision": "approved",
+  "date": "2026-11-11",
+  "milestone": "BL.1 — Lightning rollouts and verifiable reward (#30)",
+  "rationale": "Close BL.1. This does not approve BL.2-BL.5, any optimization run or result, promotion, or execution authority."
+ },
+ "evidence": [
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/native-baseline.json",
+   "sha256": "8b53f7de9a4c28e3906214bae369904d9d1ca8a5d5fa0b1322e8b42d2695f561"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_002.json",
+   "sha256": "85bbc82c158e52d3b24941ee3a40935ff3db9d1cc242b7dc9d79887a7dad9414"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_003.json",
+   "sha256": "f535e51a20a9b5f7c8164c41b44706ade1d0a5337e6c26b2ab8e92898812af34"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_004.json",
+   "sha256": "8c1779d576f0a64ebb6106ef85f65a2bc978b8622de6c2ec0bd815b3166730e4"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_005.json",
+   "sha256": "fd56863b8cf694f54a26eea194f47e5b55b6b5da350836906cfc85eb81695fc0"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_006.json",
+   "sha256": "4deee04cc7a1f792668a756b094b754b28b0818eb2e6e60b029a1d9467231f42"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_007.json",
+   "sha256": "d446380ecc9d33c87b8ed47aa2b8723a4ac0058584ce9de8989f10d35f8fc809"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_008.json",
+   "sha256": "c7ca4a2f8373cbb294e2d1b9705a43823047e3b44c7e7146a7bfa24ab4f63f50"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_009.json",
+   "sha256": "90bb3945c363e02b82ba155a30a27c148f745ff159d182f430e5278a4ec72e28"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_010.json",
+   "sha256": "8d15effe006ab82805419d70b70da4236bea6f75a137f57ce395f90e2d6b59ba"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_011.json",
+   "sha256": "530e8fccd79367c2c36c54e3528b141597cce4b548d674bce7d91ae67849994e"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_012.json",
+   "sha256": "8a8dadf9adc532b6621846344ce401f48aeb0315ebf780663491bc625316c2e1"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/evidence/procedure_013.json",
+   "sha256": "7bcf19923fc34944ad8188a8a93680541488facbdfe4f8727d6d7e4704fdbe55"
+  },
+  {
+   "path": "specs/071-lightning-rollouts-reward/reviews/owner-t001-20261110.md",
+   "sha256": "4b1147159d82810cc8a477ee8592da27a54375bd88da5a1c705a9d0bc9ba474c"
+  }
+ ]
+}
