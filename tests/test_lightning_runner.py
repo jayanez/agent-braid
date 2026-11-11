@@ -53,6 +53,12 @@ class RouteTests(unittest.TestCase):
             self.assertNotIn('sk-secret-value', str(caught.exception))
         runner.env_gate({'HOME': '/x', 'CLAUDE_CODE_OAUTH_TOKEN': 't'})
 
+    def test_parent_gate_checks_provider_keys_only(self):
+        runner.parent_gate({'CONTEXT7_API_KEY': 'x', 'SGAI_API_KEY': 'y'})
+        for name in ('ANTHROPIC_API_KEY', 'OPENAI_API_KEY', 'ANTHROPIC_BASE_URL'):
+            with self.subTest(name=name), self.assertRaises(runner.RunnerError):
+                runner.parent_gate({name: 'v'})
+
     def test_key_source_verdicts(self):
         self.assertIsNone(runner.key_source_verdict('claude-code', 'oauth'))
         self.assertIsNone(runner.key_source_verdict('claude-code', 'none'))  # SPEC-069 fixture assumption

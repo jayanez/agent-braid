@@ -68,6 +68,19 @@ def env_gate(env: dict[str, str]) -> None:
                           'paid-route-refused')
 
 
+# Model-provider credentials. The child environment is built from scratch and refuses any ``*_API_KEY`` (REQ-004);
+# this process's own environment is checked only for provider keys, so unrelated tool keys (for example an MCP
+# server's key) do not block a run but a provider key exported by mistake does.
+PROVIDER_KEYS = ('ANTHROPIC_API_KEY', 'OPENAI_API_KEY', 'CODEX_API_KEY', 'GEMINI_API_KEY', 'GOOGLE_API_KEY',
+                 'OPENROUTER_API_KEY', 'AWS_BEARER_TOKEN_BEDROCK')
+
+
+def parent_gate(env: dict[str, str]) -> None:
+    offending = sorted(k for k in env if k in PROVIDER_KEYS or k in ENV_DENY)
+    if offending:
+        raise RunnerError(f'Model provider route variables are present: {", ".join(offending)}', 'paid-route-refused')
+
+
 def key_source_verdict(host: str, key_source: str | None) -> str | None:
     """None when the host-reported credential source is a subscription; else ``route-unverified``."""
     if host == 'claude-code' and key_source in ACCEPTED_KEY_SOURCES:
@@ -131,7 +144,7 @@ def _canary_hits(stdout: str, transcript) -> int:
 def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, prompt_set: str = 'development',
         fake_hosts: bool = False, fake_variant: str = 'default', fake_key_source: str | None = 'none',
         plugin_dir: Path | None = None, hooks: hooks_mod.RolloutHooks | None = None,
-        environ: dict[str, str] | None = None) -> dict:
+        environ: dict[str, str] | None = None, arm: str = 'final', models: dict[str, str] | None = None) -> dict:
     """Run (or resume) the rollouts of ``plan``; return the run status."""
     environ = dict(os.environ if environ is None else environ)
     root = checkout_root()
@@ -160,19 +173,21 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
 
     # REQ-004: the child environment is built from scratch; the gate also checks this process's environment so a
     # paid key exported by mistake stops the run instead of being silently dropped.
-    env_gate({k: v for k, v in environ.items() if k.endswith('_API_KEY') or k in ENV_DENY})
+    parent_gate(environ)
     secrets = Secrets()
     protected = real_config_paths(real_home())
     sandbox = OsSandbox(protected, enabled=not fake_hosts)
     profile = Profile(prefix='lightning-')
-    status: dict = {'runId': run_id, 'label': label, 'promptSet': prompt_set, 'planned': work['withinBudget'],
+    if arm not in driver.ARMS:
+        raise RunnerError('Unknown candidate arm', 'config-enum')
+    status: dict = {'runId': run_id, 'label': label, 'promptSet': prompt_set, 'arm': arm, 'models': dict(models or {}), 'planned': work['withinBudget'],
                     'completedBefore': completed, 'stop': None, 'refusal': None, 'hosts': {},
                     'executionAuthorization': False}
     try:
         workdir = profile.make('work')
         if plugin_dir is None:
             plugin_dir = driver.fake_plugin(workdir) if fake_hosts else driver.build_candidate(
-                'final', workdir, Path(environ.get('TMPDIR', '/tmp')) / 'agent-braid-lightning-build-cache', False)[0]
+                arm, workdir, Path(environ.get('TMPDIR', '/tmp')) / 'agent-braid-lightning-build-cache', False)[0]
         passthrough: dict[str, str] = {}
         if fake_hosts:
             variant = fake_variant if fake_variant in driver.FAKE_VARIANTS else 'default'
@@ -198,7 +213,8 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
                 continue
             credential_name = CREDENTIALS[host_name]
             credential = environ.get(credential_name) if credential_name else None
-            host = HostConfig(host_name, binary, (), credential_name or 'LIGHTNING_NO_CREDENTIAL', fake=fake_hosts)
+            host = HostConfig(host_name, binary, (), credential_name or 'LIGHTNING_NO_CREDENTIAL',
+                              model=(models or {}).get(host_name), fake=fake_hosts)
             ab_home = profile.make('hosts', host_name, 'agent-braid-home')
             env = driver.build_host_env(profile, host, credential or '', ab_home, passthrough)
             if not credential:

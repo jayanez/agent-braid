@@ -1,0 +1,105 @@
+{
+  "arm": "baseline",
+  "comparison": {
+    "insideT010Interval": true,
+    "label": "route-changed comparison",
+    "lightning": {
+      "firstAttempt": 16,
+      "firstAttemptInterval": [
+        0.3614201328152505,
+        0.6976787277587178
+      ],
+      "route": "subscription",
+      "trials": 30,
+      "withinRetry": 16,
+      "withinRetryInterval": [
+        0.3614201328152505,
+        0.6976787277587178
+      ]
+    },
+    "note": "A finding, not a pass condition: route, host version and possibly model differ from T010.",
+    "t010": {
+      "firstAttemptInterval": [
+        0.3614201328152505,
+        0.6976787277587178
+      ],
+      "firstAttemptTrials": 16,
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "route": "api-key (env-key)",
+      "trials": 30,
+      "version": "2.1.292 (Claude Code)"
+    }
+  },
+  "evidenceVersion": 1,
+  "executionAuthorization": false,
+  "generatedAt": "2026-11-11T09:05:35Z",
+  "hostVersions": [
+    "2.1.311 (Claude Code)"
+  ],
+  "keySourcesObserved": [
+    "none"
+  ],
+  "label": "host-run",
+  "modelsObserved": [
+    "claude-sonnet-5-5"
+  ],
+  "paidRouteObservations": 0,
+  "pinnedModel": "claude-sonnet-5-5",
+  "promptSet": "development",
+  "repetitions": 3,
+  "report": {
+    "claim": "empirical-measurement",
+    "executionAuthorization": false,
+    "hosts": {
+      "claude-code": {
+        "firstAttempt": 16,
+        "firstAttemptInterval": [
+          0.3614201328152505,
+          0.6976787277587178
+        ],
+        "trials": 30,
+        "withinRetry": 16,
+        "withinRetryInterval": [
+          0.3614201328152505,
+          0.6976787277587178
+        ]
+      }
+    },
+    "labels": [
+      "host-run"
+    ],
+    "replayMatches": true,
+    "runId": "run-20261111T085405Z-a14514"
+  },
+  "status": {
+    "arm": "baseline",
+    "completed": 30,
+    "completedBefore": 0,
+    "executionAuthorization": false,
+    "hosts": {
+      "claude-code": {
+        "probe": "sandbox-exec",
+        "rollouts": 30,
+        "status": "ran",
+        "version": "2.1.311 (Claude Code)"
+      }
+    },
+    "label": "host-run",
+    "models": {
+      "claude-code": "claude-sonnet-5-5"
+    },
+    "planned": 30,
+    "promptSet": "development",
+    "refusal": null,
+    "runId": "run-20261111T085405Z-a14514",
+    "stop": null,
+    "teardown": {
+      "clean": true,
+      "leftoverProcesses": 0,
+      "profileRemoved": true
+    }
+  },
+  "task": "SPEC-071 T012 (REQ-014 / SC-014)"
+}
