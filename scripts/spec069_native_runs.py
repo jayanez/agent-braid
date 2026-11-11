@@ -51,7 +51,7 @@ from agent_braid.lightning_hosts import (  # noqa: F401  (re-exported: the drive
     SYSTEM_PATH, DeclaredLimit, HostConfig, OsSandbox, Profile, SafetyStop, SecretLeak, Secrets, ToolCall, Transcript,
     _flatten, _jsonl, attempts_from, guard_leaks, kill_tree, parse_claude, parse_codex, parse_envelope, parse_opencode,
     probe_isolation, process_list, real_config_paths, real_home, run_process, sandbox_profile, sha256_bytes, sha256_file,
-    short_name, tool_class, utc_now)
+    short_name, tool_class as _host_tool_class, utc_now)
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC_DIR = ROOT / "specs/069-aim-request-authoring"
@@ -224,6 +224,29 @@ def credential_file_info(auth_dir: Path, host: str) -> dict[str, Any]:
         return {"file": AUTH_FILE[host], "exists": True, "bytes": (auth_dir / AUTH_SUBDIR[host] / AUTH_FILE[host]).stat().st_size}
     except OSError:
         return {"file": AUTH_FILE[host], "exists": False, "bytes": 0}
+
+
+# Codex's read-only MCP resource listing is a discovery helper (observed in T010), like ToolSearch for Claude Code.
+CODEX_HELPERS = frozenset({"codex__list_mcp_resources", "codex__list_mcp_resource_templates"})
+
+
+def tool_class(host: str, call: ToolCall) -> str:
+    """``agent-braid``, ``meta`` or ``denied``: the shared classification plus Codex's resource-listing helpers."""
+    if host == "codex" and call.tool in CODEX_HELPERS:
+        return "meta"
+    return _host_tool_class(host, call)
+
+
+def agent_braid_home(profile: Profile, host: HostConfig) -> Path:
+    """Where the plugin registry lives for a host.
+
+    Codex starts the plugin server without ``AGENT_BRAID_HOME``, so the server falls back to the default state root under
+    ``HOME`` (observed 2026-11-11: registry empty and ``analyze-work`` unreachable). Register there; the other hosts forward
+    the variable.
+    """
+    if host.name == "codex":
+        return profile.make("hosts", host.name, "home", "Library", "Application Support", "AgentBraid")
+    return profile.make("hosts", host.name, "agent-braid-home")
 
 
 def build_host_env(profile: Profile, host: HostConfig, key: str | None, ab_home: Path, passthrough: dict[str, str],
@@ -492,7 +515,7 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
         raise DeclaredLimit("OpenCode needs --model opencode=anthropic/<id> or openrouter/<id>: without it the host uses a free hosted model")
     secrets.add(token or key)
     auth_home = ctx["auth_home"] if auth == "interactive-once" else None
-    ab_home = profile.make("hosts", host.name, "agent-braid-home")
+    ab_home = agent_braid_home(profile, host)
     passthrough = dict(ctx["passthrough"])
     env = build_host_env(profile, host, key, ab_home, passthrough, auth_home, token)
     protected, sandbox = ctx["protected"], ctx["sandbox"]

@@ -190,6 +190,16 @@ class NegativeControlTests(unittest.TestCase):
         self.assertEqual(evidence["summary"]["overall"], "negative-result")  # 4 of 10 prompts missed the first attempt
 
 
+class RegistryHomeTests(unittest.TestCase):
+    def test_codex_registry_is_the_default_state_root_under_home(self) -> None:
+        profile = driver.Profile(Path(scratch("t013-test-")))
+        codex = driver.HostConfig("codex", Path("/bin/true"), (), "")
+        home = driver.agent_braid_home(profile, codex)
+        self.assertEqual(home, profile.make("hosts", "codex", "home") / "Library/Application Support/AgentBraid")
+        other = driver.HostConfig("opencode", Path("/bin/true"), (), "")
+        self.assertEqual(driver.agent_braid_home(profile, other).name, "agent-braid-home")
+
+
 class DeclaredLimitTests(unittest.TestCase):
     def test_missing_key_is_a_declared_limit_and_never_prompts(self) -> None:
         tmp = Path(scratch("t013-test-"))
@@ -285,6 +295,8 @@ class UnitTests(unittest.TestCase):
         self.assertEqual(driver.tool_class("opencode", call("execute", {"code": "return 1"})), "meta")
         self.assertEqual(driver.tool_class("opencode", call("execute", {"code": "await fetch('http://x')"})), "denied")
         self.assertEqual(driver.tool_class("codex", call("command_execution")), "denied")
+        # Codex's read-only MCP resource listing is a discovery helper (observed in T010), not a denied tool.
+        self.assertEqual(driver.tool_class("codex", call("codex__list_mcp_resources", {})), "meta")
 
     def test_redaction_covers_known_values_and_patterns(self) -> None:
         secrets = driver.Secrets(["plain-secret-value"])
