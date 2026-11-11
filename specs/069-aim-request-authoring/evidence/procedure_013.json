@@ -6,14 +6,15 @@
  },
  "inputs": {
   "agent_braid/lightning_hosts.py": "a147d8fb36c7d4e8b06aa328699a7662a52fdf71e05b292fe8a13756ddf15b23",
-  "scripts/spec069_native_runs.py": "1d78468bc75b88187799335bd5ca4590ad954674e4c14e4f519c5b7ab996b055",
+  "scripts/spec069_native_runs.py": "078b8f68050733c06886db6851c41acbe54e287354085f7e45b571db0cd51ac1",
   "specs/069-aim-request-authoring/evidence/native-runs-baseline-anthropic.json": "1663332c6c04577fa51ffbbd9ed5d9d0fbc5311a883f7239eb746ee2db9896fe",
-  "specs/069-aim-request-authoring/runbook.md": "248a5ca350c5d7361ef65be436d9283a385cc53564a3a8b3acaf26d95bcf8442",
-  "tests/fixtures/spec069-fake-hosts/_fake.py": "a051b3eda610282b763f5cb5b221ca681f7aed66907ea4b174b78e24bc18ea49",
+  "specs/069-aim-request-authoring/runbook.md": "e963df9a8bffb3a1b0a516417f579dc59775136815fdb36303b764c05d649a7d",
+  "tests/fixtures/spec069-fake-hosts/_fake.py": "73f8d58ffbecc79a2d099ddc3e876fcc41921830b8b38ac126393c7e58299fdb",
   "tests/fixtures/spec069-fake-hosts/claude": "de42483c09be9c10cb2e1c92b7e21242a257588b26ffcc91d5997bd11146e630",
   "tests/fixtures/spec069-fake-hosts/codex": "49c44741964527b6e204e939ab510b30bbcb94b48e3764a0b8aae6de0f33c1f2",
   "tests/fixtures/spec069-fake-hosts/opencode": "21092c62fe15ef7e6627f8f9351e6d362db820ec61550b0b0e99351b4a2590d7",
-  "tests/test_spec069_native_runs.py": "8571747f61c9286d387521722f1198b560434c90d74ccbf74bb153b7a5adf509"
+  "tests/fixtures/spec069-fake-hosts/security": "e3e712bfd5eb4279897219eba0228c6b0cdbd98fc4d87a60b0a7e60616636da5",
+  "tests/test_spec069_native_runs.py": "96f14b4d6104af03211dbcd2654f64e7bb119c6d9698a60be2df72e789148b1c"
  },
  "limits": "Codex: install, registration, sandbox and launch verified with the real binary, but the authenticated model call ends in 'Quota exceeded' on the owner's account, so the MCP transcript shape and parser are unverified; Codex is a declared limit (owner decision 2026-11-07) and blocks REQ-012 for that host. The OS sandbox is macOS sandbox-exec only; the driver does not run on Windows or Linux real runs. The self-test proves the pipeline, not any host or model.",
  "outcome": "passed: The --fake-hosts self-test runs the whole pipeline (profiles, sandbox workspace, plugin install, headless runs, parsing, scoring, redaction, secret scan, evidence with hashes, teardown) with negative controls: a leaked real path stops the run, a planted fake secret is absent from the evidence, a denied tool is refused and one that runs stops the run, a leftover profile or process is detected. Real runs through the same driver completed unattended on Claude Code 2.1.292 and OpenCode 2.1.4 (60 runs, claude-sonnet-5-5, evidence/native-runs-baseline-anthropic.json, teardown clean, secret scan passed); the first real pass stopped on a built-in tool not in the deny list, which is now not offered at all.",
@@ -21,5 +22,5 @@
  "result": "OK",
  "scenario": "SC-013",
  "specification": "SPEC-069 P1",
- "testsRun": 29
+ "testsRun": 48
 }

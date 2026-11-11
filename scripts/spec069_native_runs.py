@@ -17,6 +17,13 @@ a probe and a canary configuration prove it before the first prompt; any real pa
 environment value stops the run; credentials come only from this process's environment, are injected
 into the child environment and are never written; transcripts are redacted and scanned before any
 byte reaches the evidence directory. ``--fake-hosts`` evidence is labelled ``pipeline-only``.
+
+Credential routes (D13), all injected into the child environment only and never written:
+the default reads keys from this process's environment; ``--keys-from-keychain`` reads them from the macOS keychain
+(generic passwords ``agent-braid-anthropic`` / ``-openai`` / ``-openrouter``) through the ``security`` CLI;
+``--auth subscription`` (claude-code and codex) uses a one-time owner sign-in kept in a dedicated reusable profile
+(``--auth-profile-dir``, recorded as ``auth: interactive-once``; ``--login HOST`` prints the sign-in command and
+``--check-login HOST`` verifies it). OpenCode may run through OpenRouter: ``--model opencode=openrouter/<id>``.
 """
 
 from __future__ import annotations
@@ -26,6 +33,7 @@ import json
 import os
 import platform
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -76,8 +84,128 @@ KEY_SPECS = {"claude-code": (("ANTHROPIC_API_KEY",), "ANTHROPIC_API_KEY"),
              "opencode": (("ANTHROPIC_API_KEY",), "ANTHROPIC_API_KEY")}
 
 
-def build_host_env(profile: Profile, host: HostConfig, key: str, ab_home: Path, passthrough: dict[str, str]) -> dict[str, str]:
-    """A minimal environment: private HOME/XDG, the one credential, no inherited variables."""
+OPENROUTER_PREFIX = "openrouter/"
+OPENROUTER_SPEC = (("OPENROUTER_API_KEY",), "OPENROUTER_API_KEY")
+KEYCHAIN_SERVICES = {"anthropic": "agent-braid-anthropic", "openai": "agent-braid-openai", "openrouter": "agent-braid-openrouter"}
+KEY_ACCOUNT = {"claude-code": "anthropic", "codex": "openai", "opencode": "anthropic"}
+OPENROUTER_NOTE = ("OpenCode ran through OpenRouter (route: openrouter), not the direct Anthropic API: routing, provider "
+                   "selection, caching and latency differ, so these results are not strictly comparable with the direct-API baseline")
+OPENCODE_MODEL_NOTE = "the OpenCode JSON stream names no model (OpenCode 2.1.4): the pinned id is the model identity, modelsObserved stays empty"
+# Subscription sign-in (D13 fallback): one dedicated subdirectory per host, the credential file the host writes there.
+AUTH_SUBDIR = {"claude-code": "claude", "codex": "codex"}
+AUTH_FILE = {"claude-code": ".credentials.json", "codex": "auth.json"}
+AUTH_ENV = {"claude-code": "CLAUDE_CONFIG_DIR", "codex": "CODEX_HOME"}
+LOGIN_COMMAND = {"claude-code": "CLAUDE_CONFIG_DIR={dir} claude", "codex": "CODEX_HOME={dir} codex login"}
+LOGIN_HINT = {"claude-code": "then type /login inside Claude Code, complete the browser sign-in, and exit",
+              "codex": "complete the browser sign-in it opens"}
+TRIVIAL_PROMPT = "Reply with the single word OK."
+SUBSCRIPTION_NOTE = ("Subscription mode (auth: interactive-once): runs bill to the owner's subscription limits, not an API "
+                     "account; usage may be rate limited and automated use is subject to the provider's terms")
+
+
+def _add_counts(total: dict[str, Any], step: dict[str, Any]) -> None:
+    for key, value in step.items():
+        if isinstance(value, dict):
+            _add_counts(total.setdefault(key, {}), value)
+        elif isinstance(value, (int, float)) and not isinstance(value, bool):
+            total[key] = total.get(key, 0) + value
+
+
+def parse_opencode_run(stdout: str) -> Transcript:
+    """``parse_opencode`` with usage summed over every step (cost, tokens) and a model when a row names one.
+
+    OpenCode 2.1.4 names no model in its JSON stream; the shared parser keeps only the last step's usage.
+    """
+    out = parse_opencode(stdout)
+    out.usage, models = {}, set(out.models)
+    for row in _jsonl(stdout):
+        part = row.get("part") or {}
+        models.update(m for named in (row, part) for m in [named.get("modelID") or named.get("model")] if isinstance(m, str) and m)
+        if part.get("type") == "step-finish":
+            _add_counts(out.usage, {key: part[key] for key in ("cost", "tokens") if key in part})
+    out.models = sorted(models)
+    return out
+
+
+HOST_PARSERS = {**PARSERS, "opencode": parse_opencode_run}
+
+
+def route_of(host: str, model: str | None) -> str:
+    return "openrouter" if host == "opencode" and bool(model) and model.startswith(OPENROUTER_PREFIX) else "direct"
+
+
+def key_spec(host: str, model: str | None) -> tuple[tuple[str, ...], str]:
+    return OPENROUTER_SPEC if route_of(host, model) == "openrouter" else KEY_SPECS[host]
+
+
+def keychain_secret(service: str, security_bin: str) -> str | None:
+    """One generic password from the macOS keychain through the ``security`` CLI; ``None`` when absent or unreadable.
+
+    The value goes to the caller only: no output of the command is logged, and a failure reports the service name alone.
+    """
+    try:
+        done = subprocess.run([security_bin, "find-generic-password", "-s", service, "-w"], capture_output=True, text=True,
+                              stdin=subprocess.DEVNULL, timeout=30)
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    value = done.stdout.rstrip("\n") if done.returncode == 0 else ""
+    return value or None
+
+
+def acquire_credential(host: HostConfig, args: argparse.Namespace) -> tuple[str | None, str, str]:
+    """``(key or None, auth, key source)``. Raises DeclaredLimit when the host's credential is not available."""
+    if args.auth == "subscription" and host.name in AUTH_SUBDIR:
+        return None, "interactive-once", "profile"
+    if args.keys_from_keychain:
+        route = route_of(host.name, host.model)
+        service = KEYCHAIN_SERVICES["openrouter" if route == "openrouter" else KEY_ACCOUNT[host.name]]
+        key = keychain_secret(service, args.security_bin)
+        if not key:
+            raise DeclaredLimit(f"keychain item {service} is missing or unreadable (generic password; the driver never prompts)")
+        return key, "env-key", "keychain"
+    key = next((os.environ[name] for name in host.key_sources if os.environ.get(name)), None)
+    if args.fake_hosts:
+        key = key or "fake-key-not-a-secret"
+    if not key:
+        raise DeclaredLimit(f"no {' or '.join(host.key_sources)} in the driver environment (D13: the key is read from the environment only)")
+    return key, "env-key", "environment"
+
+
+def check_auth_profile(path: Path, protected: list[Path]) -> Path:
+    """The resolved dedicated sign-in directory; SafetyStop when it is, contains or lies under a real configuration path."""
+    resolved = Path(os.path.realpath(path.expanduser()))
+    for real in protected:
+        for variant in {real, Path(os.path.realpath(real))}:
+            if resolved == variant or variant in resolved.parents or resolved in variant.parents:
+                raise SafetyStop(f"auth profile directory overlaps a real configuration path: {variant.name}")
+    if resolved == ROOT or ROOT in resolved.parents or resolved in ROOT.parents:
+        raise SafetyStop("auth profile directory must be outside the repository")
+    return resolved
+
+
+def prepare_auth_profile(path: Path, protected: list[Path]) -> Path:
+    resolved = check_auth_profile(path, protected)
+    resolved.mkdir(parents=True, exist_ok=True)
+    if resolved.stat().st_uid != os.getuid():
+        raise SafetyStop("auth profile directory is not owned by this user")
+    resolved.chmod(0o700)
+    return resolved
+
+
+def credential_file_info(auth_dir: Path, host: str) -> dict[str, Any]:
+    """Existence and size only: the file is never opened."""
+    try:
+        return {"file": AUTH_FILE[host], "exists": True, "bytes": (auth_dir / AUTH_SUBDIR[host] / AUTH_FILE[host]).stat().st_size}
+    except OSError:
+        return {"file": AUTH_FILE[host], "exists": False, "bytes": 0}
+
+
+def build_host_env(profile: Profile, host: HostConfig, key: str | None, ab_home: Path, passthrough: dict[str, str],
+                   auth_home: Path | None = None) -> dict[str, str]:
+    """A minimal environment: private HOME/XDG, the one credential, no inherited variables.
+
+    With ``auth_home`` (subscription mode) the host's configuration directory is the dedicated sign-in directory and no key is set.
+    """
     home = profile.make("hosts", host.name, "home")
     xdg = profile.make("hosts", host.name, "xdg")
     tmp = profile.make("hosts", host.name, "tmp")
@@ -92,7 +220,13 @@ def build_host_env(profile: Profile, host: HostConfig, key: str, ab_home: Path, 
         env["DISABLE_AUTOUPDATER"] = "1"
     if host.name == "codex":
         env["CODEX_HOME"] = str(profile.make("hosts", host.name, "codex-home"))
-    env[host.key_target] = key
+    if auth_home is not None:
+        sign_in = auth_home / AUTH_SUBDIR[host.name]
+        sign_in.mkdir(mode=0o700, exist_ok=True)
+        sign_in.chmod(0o700)
+        env[AUTH_ENV[host.name]] = str(sign_in)
+    if key:
+        env[host.key_target] = key
     env.update(passthrough)
     return env
 
@@ -158,12 +292,21 @@ def install_plugin(host: HostConfig, plugin_dir: Path, env: dict[str, str], prof
 
 
 def write_host_policy(host: HostConfig, env: dict[str, str]) -> None:
-    """OpenCode permissions: deny every built-in tool. (Claude and Codex take their policy as flags.)"""
+    """OpenCode permissions: deny every built-in tool; the OpenRouter provider reads its key from the child environment.
+
+    (Claude and Codex take their policy as flags.)
+    """
     if host.name != "opencode":
         return
     path = Path(env["XDG_CONFIG_HOME"]) / "opencode" / "opencode.json"
     config = json.loads(path.read_text()) if path.exists() else {}
     config["permission"] = {name: "deny" for name in OPENCODE_DENIED}
+    if route_of(host.name, host.model) == "openrouter":
+        # The pinned id is declared as a custom model: OpenCode's catalogue lists other spellings (claude-sonnet-5.5) and
+        # answers "Model unavailable" for an id it does not know, although OpenRouter serves it.
+        model_id = host.model[len(OPENROUTER_PREFIX):]
+        config.setdefault("provider", {})["openrouter"] = {"options": {"apiKey": "{env:OPENROUTER_API_KEY}"},
+                                                           "models": {model_id: {"name": model_id}}}
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(config))
 
@@ -258,7 +401,7 @@ def fake_plugin(work: Path) -> Path:
 # ----------------------------------------------------------------------------
 # Fake-host scenarios (--fake-hosts)
 # ----------------------------------------------------------------------------
-FAKE_VARIANTS = ("default", "retry", "denied-tool", "executed-tool", "leak-secret", "straggler")
+FAKE_VARIANTS = ("default", "retry", "denied-tool", "executed-tool", "leak-secret", "straggler", "echo-credentials")
 
 
 def envelope_ok(case: dict, request: dict) -> dict:
@@ -302,26 +445,35 @@ def evidence_label(fake: bool) -> str:
     return "pipeline-only" if fake else "host-run"
 
 
+def auth_dir_usable(env: dict[str, str], auth_home: Path, host: str, sandbox: OsSandbox) -> bool:
+    """The dedicated sign-in directory can be listed and written under the same OS sandbox the host runs in."""
+    target = str(auth_home / AUTH_SUBDIR[host])
+    script = 'ls "$1" >/dev/null && t="$1/.sandbox-write-probe" && : > "$t" && rm -f "$t"'
+    return subprocess.run(sandbox.wrap(["/bin/sh", "-c", script, "sh", target]), env=env, capture_output=True, timeout=30).returncode == 0
+
+
 def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: dict, profile: Profile, secrets: Secrets,
              out_dir: Path, scoring: Any, fixture: Any) -> dict[str, Any]:
     """One host end to end. Raises DeclaredLimit for a host that cannot run, SafetyStop for a safety failure."""
-    key = next((os.environ[name] for name in KEY_SPECS[host.name][0] if os.environ.get(name)), None)
-    if args.fake_hosts:
-        key = key or "fake-key-not-a-secret"
-    if not key:
-        raise DeclaredLimit(f"no {' or '.join(KEY_SPECS[host.name][0])} in the driver environment (D13: the key is read from the environment only)")
+    key, auth, key_source = acquire_credential(host, args)
+    route = route_of(host.name, host.model)
     if host.name == "opencode" and not host.model and not args.fake_hosts:
-        raise DeclaredLimit("OpenCode needs --model opencode=anthropic/<id>: without it the host uses a free hosted model")
+        raise DeclaredLimit("OpenCode needs --model opencode=anthropic/<id> or openrouter/<id>: without it the host uses a free hosted model")
     secrets.add(key)
+    auth_home = ctx["auth_home"] if auth == "interactive-once" else None
     ab_home = profile.make("hosts", host.name, "agent-braid-home")
     passthrough = dict(ctx["passthrough"])
-    env = build_host_env(profile, host, key, ab_home, passthrough)
+    env = build_host_env(profile, host, key, ab_home, passthrough, auth_home)
     protected, sandbox = ctx["protected"], ctx["sandbox"]
     workspace = fixture.build(profile.make("hosts", host.name, "workspace") / "repo")
     guard_leaks(f"{host.name} setup", env, [str(host.binary)], protected)
     if not sandbox.tool and not args.no_os_sandbox and not args.fake_hosts:
         raise DeclaredLimit("no OS sandbox available on this platform; refusing an unsandboxed real run (use --no-os-sandbox only for an engineering probe)")
     probe = probe_isolation(env, Path(env["HOME"]), sandbox, protected)
+    if auth_home is not None:
+        probe["authProfile"] = {**credential_file_info(auth_home, host.name), "usableUnderSandbox": auth_dir_usable(env, auth_home, host.name, sandbox)}
+        if sandbox.name != "none" and not probe["authProfile"]["usableUnderSandbox"]:
+            raise SafetyStop("isolation probe: the dedicated sign-in directory is not usable under the sandbox")
     version = version_of(host, env, workspace, profile, protected, sandbox)
     plugin_root = install_plugin(host, ctx["plugin_dir"], env, profile, workspace, protected, sandbox, args)
     args.plugin_root_for[host.name] = plugin_root
@@ -335,7 +487,7 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
             done = run_process(argv, env, workspace, profile, protected, sandbox, args.timeout, f"{host.name} {case['id']}")
             stdout = secrets.redact(done.stdout)
             stderr = secrets.redact(done.stderr)
-            transcript = PARSERS[host.name](done.stdout)
+            transcript = HOST_PARSERS[host.name](done.stdout)
             if done.returncode != 0 and not transcript.tool_calls and not transcript.text:
                 # The host failed before the model answered (authentication, quota, network): not a measurement.
                 tail = (stdout.strip().splitlines() or stderr.strip().splitlines() or ["no output"])[-1][:240]
@@ -353,6 +505,7 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
                       "transcript": {"file": str(file.relative_to(out_dir.parent)), "sha256": sha256_bytes(body.encode()), "bytes": len(body.encode())},
                       "toolCalls": [{"tool": call.tool, "class": cls, "isError": call.is_error} for call, cls in classes],
                       "deniedToolRequests": denied, "models": transcript.models, "usage": secrets.redact_json(transcript.usage),
+                      "keySourceReported": secrets.redact(transcript.key_source) if transcript.key_source else None,
                       "attempts": secrets.redact_json(attempts), "score": scoring.score_case(case, attempts)}
             runs.append(record)
             if any(item["outcome"] == "executed" for item in denied):
@@ -362,7 +515,10 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
             break
     if violations:
         raise SafetyStop(f"{host.name}: " + "; ".join(violations))
-    return {"status": "ran", "version": version, "auth": "env-key", "modelPinned": bool(host.model), "model": host.model,
+    reported = sorted({r["keySourceReported"] for r in runs if r.get("keySourceReported")})
+    notes = ([OPENROUTER_NOTE, OPENCODE_MODEL_NOTE] if route == "openrouter" else []) + ([SUBSCRIPTION_NOTE] if auth == "interactive-once" else [])
+    return {"status": "ran", "version": version, "auth": auth, "keySource": key_source, "route": route, "notes": notes,
+            "hostReportedKeySource": reported, "modelPinned": bool(host.model), "model": host.model,
             "modelsObserved": sorted({m for run in runs for m in run["models"]}), "osSandbox": probe["sandbox"],
             "probe": probe, "workspaceRegistered": bool(workspace_id), "runs": runs,
             "allowlist": {"claude-code": CLAUDE_ALLOWED, "codex": ["agent-braid MCP server; read-only sandbox; approval never"],
@@ -377,7 +533,8 @@ def write_evidence(path: Path, evidence: dict, secrets: Secrets) -> None:
 
 
 MANUAL_STEPS = [
-    {"step": "Export the API keys in your own terminal before the run", "reason": "keys are read from the driver environment only and are never prompted for, written or logged (D13)"},
+    {"step": "Store the API keys once (macOS keychain generic passwords, or export them in your own terminal before the run)", "reason": "keys are read from the driver environment or the keychain only and are never prompted for, written or logged (D13)"},
+    {"step": "Subscription mode only: sign in once per host in your own Terminal.app (--login HOST prints the command)", "reason": "the driver never reads a terminal or a credential file (D13: interactive-once)"},
     {"step": "Install Codex when the ChatGPT desktop bundle is absent (--codex-bin)", "reason": "the driver does not install host applications (D11)"},
     {"step": "Decide on the release (REQ-012) and on the result of a run", "reason": "owner decisions are not automated (D5)"},
 ]
@@ -401,6 +558,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--timeout", type=int, default=300)
     p.add_argument("--max-turns", type=int, default=12)
     p.add_argument("--output", type=Path, help="evidence file (default: evidence/native-runs-<arm>.json)")
+    p.add_argument("--keys-from-keychain", action="store_true",
+                   help="read each host's key from the macOS keychain (services agent-braid-anthropic/-openai/-openrouter); the environment is not used")
+    p.add_argument("--security-bin", default="/usr/bin/security", help=argparse.SUPPRESS)
+    p.add_argument("--auth", choices=("key", "subscription"), default="key",
+                   help="key = API key (default); subscription = one-time sign-in in --auth-profile-dir (claude-code, codex; D13 fallback)")
+    p.add_argument("--auth-profile-dir", type=Path, help="dedicated reusable sign-in directory (outside the repo and every real host configuration); kept across runs")
+    p.add_argument("--login", choices=("claude-code", "codex"), metavar="HOST", help="print the command to sign in HOST in your own terminal, then exit")
+    p.add_argument("--check-login", choices=("claude-code", "codex"), metavar="HOST",
+                   help="confirm the sign-in (credential file existence and size, never its contents, plus one trivial headless prompt), then exit")
     p.add_argument("--fake-hosts", action="store_true", help="run the same pipeline against the fake hosts (pipeline-only evidence)")
     p.add_argument("--fake-variant", choices=FAKE_VARIANTS, default="default")
     p.add_argument("--extra-env", action="append", default=[], metavar="KEY=VALUE",
@@ -409,11 +575,81 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--no-os-sandbox", action="store_true", help="engineering probe only; never for measured evidence")
     args = p.parse_args(argv)
     args.plugin_root_for = {}
+    if args.fake_hosts and args.security_bin == "/usr/bin/security":
+        args.security_bin = str(FAKE_HOSTS_DIR / "security")
+    if (args.auth == "subscription" or args.login or args.check_login) and not args.auth_profile_dir:
+        p.error("--auth subscription, --login and --check-login need --auth-profile-dir")
     return args
+
+
+def login_command(host: str, auth_home: Path) -> str:
+    target = shlex.quote(str(auth_home / AUTH_SUBDIR[host]))
+    return f"mkdir -p -m 700 {target} && " + LOGIN_COMMAND[host].format(dir=target)
+
+
+def print_login(args: argparse.Namespace) -> int:
+    """Print the sign-in command only. Nothing is started, read or created."""
+    protected = real_config_paths(args.real_home or real_home())
+    try:
+        auth_home = check_auth_profile(args.auth_profile_dir, protected)
+    except SafetyStop as stop:
+        print(f"refused: {stop}", file=sys.stderr)
+        return EXIT_SAFETY
+    print(f"Run this in your own Terminal.app ({LOGIN_HINT[args.login]}); the driver never reads the terminal or the credential file:\n\n"
+          f"    {login_command(args.login, auth_home)}\n\nThen confirm with: python -m scripts.spec069_native_runs --check-login {args.login} "
+          f"--auth-profile-dir {shlex.quote(str(auth_home))}")
+    return 0
+
+
+def check_login(args: argparse.Namespace) -> int:
+    """Credential file existence and size (never contents) plus one trivial headless prompt under the run's sandbox."""
+    host_name = args.check_login
+    protected = real_config_paths(args.real_home or real_home())
+    sandbox = OsSandbox(protected, enabled=not args.no_os_sandbox)
+    secrets = Secrets()
+    profile = Profile()
+    result: dict[str, Any] = {"host": host_name, "ok": False}
+    try:
+        auth_home = prepare_auth_profile(args.auth_profile_dir, protected)
+        binary = host_binary(host_name, args)
+        result["credential"] = credential_file_info(auth_home, host_name)
+        if binary is None:
+            result["error"] = f"{host_name} executable not found"
+            return 1
+        host = HostConfig(host_name, binary, (), "", fake=args.fake_hosts)
+        env = build_host_env(profile, host, None, profile.make("hosts", host_name, "agent-braid-home"), {"FAKE_PYTHON": sys.executable,
+                             **({k: os.environ[k] for k in ("FAKE_LOG", "FAKE_VARIANT") if k in os.environ} if args.fake_hosts else {})}, auth_home)
+        cwd = profile.make("hosts", host_name, "workspace")
+        probe = probe_isolation(env, Path(env["HOME"]), sandbox, protected)
+        result["sandbox"] = probe["sandbox"]
+        result["usableUnderSandbox"] = auth_dir_usable(env, auth_home, host_name, sandbox)
+        binary_s = str(binary)
+        argv = ([binary_s, "-p", TRIVIAL_PROMPT, "--output-format", "stream-json", "--verbose", "--max-turns", "1", "--no-session-persistence",
+                 "--tools", ""] if host_name == "claude-code" else
+                [binary_s, "exec", "--json", "--skip-git-repo-check", "-s", "read-only", "-c", 'approval_policy="never"', TRIVIAL_PROMPT])
+        done = run_process(argv, env, cwd, profile, protected, sandbox, args.timeout, f"{host_name} check-login")
+        transcript = PARSERS[host_name](done.stdout)
+        result["ok"] = done.returncode == 0 and bool(transcript.text.strip())
+        if not result["ok"]:
+            tail = (done.stdout.strip().splitlines() or done.stderr.strip().splitlines() or ["no output"])[-1][:200]
+            result["error"] = secrets.redact(f"headless prompt failed (exit {done.returncode}): {tail}")
+        elif not result["credential"]["exists"]:
+            result["note"] = "no credential file in the dedicated profile; the session works, so it is held elsewhere (for example the keychain)"
+    except SafetyStop as stop:
+        result["error"] = f"safety stop: {stop}"
+        return EXIT_SAFETY
+    finally:
+        result["teardown"] = profile.teardown()
+        print(json.dumps(result))
+    return 0 if result["ok"] else 1
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    if args.login:
+        return print_login(args)
+    if args.check_login:
+        return check_login(args)
     from scripts import spec069_fixture_workspace as fixture
     from scripts import spec069_scoring as scoring
 
@@ -424,7 +660,8 @@ def main(argv: list[str] | None = None) -> int:
     secrets = Secrets()
     passthrough = dict(item.split("=", 1) for item in args.extra_env)
     for name in ("ANTHROPIC_BASE_URL",):
-        if os.environ.get(name) and not args.fake_hosts:
+        # the base URL belongs to the environment key: it never follows a keychain key or a subscription sign-in
+        if os.environ.get(name) and not args.fake_hosts and not args.keys_from_keychain and args.auth == "key":
             passthrough.setdefault(name, os.environ[name])
             secrets.add(os.environ[name])
     home = args.real_home or real_home()
@@ -437,7 +674,8 @@ def main(argv: list[str] | None = None) -> int:
                                 "generatedAt": utc_now(), "arm": args.arm, "platform": platform.platform(),
                                 "promptSet": {"setId": prompt_set["setId"], "file": str(prompt_path.name),
                                               "sha256": sha256_file(prompt_path), "cases": len(prompt_set["cases"])},
-                                "repetitions": args.repetitions, "hosts": {}, "manualSteps": MANUAL_STEPS,
+                                "repetitions": args.repetitions, "hosts": {}, "manualSteps": MANUAL_STEPS, "authMode": args.auth,
+                                "keysFromKeychain": args.keys_from_keychain,
                                 "driverSha256": sha256_file(Path(__file__)), "scoringSha256": sha256_file(Path(scoring.__file__))}
     if args.fake_hosts:
         evidence["note"] = "PIPELINE ONLY: fake host executables prove the driver pipeline, not any host or model."
@@ -450,7 +688,8 @@ def main(argv: list[str] | None = None) -> int:
             plugin_dir, evidence["candidate"] = fake_plugin(work), {"arm": args.arm, "fake": True}
         else:
             plugin_dir, evidence["candidate"] = build_candidate(args.arm, work, args.build_cache, args.allow_dirty)
-        ctx = {"plugin_dir": plugin_dir, "protected": protected, "sandbox": sandbox, "passthrough": passthrough}
+        auth_home = prepare_auth_profile(args.auth_profile_dir, protected) if args.auth == "subscription" else None
+        ctx = {"plugin_dir": plugin_dir, "protected": protected, "sandbox": sandbox, "passthrough": passthrough, "auth_home": auth_home}
         if args.fake_hosts:
             scenario = build_fake_scenario(prompt_set["cases"], args.fake_variant, scoring.reference_request)
             scenario_file = profile.make("fake") / "scenario.json"
@@ -465,7 +704,7 @@ def main(argv: list[str] | None = None) -> int:
             if binary is None:
                 evidence["hosts"][name] = {"status": "declared-limit", "limit": f"{name} executable not found"}
                 continue
-            host = HostConfig(name, binary, *KEY_SPECS[name], model=models.get(name), fake=args.fake_hosts)
+            host = HostConfig(name, binary, *key_spec(name, models.get(name)), model=models.get(name), fake=args.fake_hosts)
             try:
                 evidence["hosts"][name] = run_host(host, args, prompt_set, ctx, profile, secrets, out_dir, scoring, fixture)
             except DeclaredLimit as limit:
