@@ -1,0 +1,81 @@
+{
+  "adjudication": {
+    "estimand": "owner-vs-observed-disagreement-rate",
+    "interval": "wilson-95",
+    "packetFields": [
+      "joinKey",
+      "label",
+      "outcomeKind",
+      "source",
+      "structuralPair"
+    ],
+    "packetLimitation": "A structural-only packet may not be adjudicable; plan question Q3 decides whether a local pointer table is consented.",
+    "populationLimitation": "One-person owned population; this replaces the two-blind-reviewer requirement of SPEC-029 and is reported as a limitation.",
+    "sample": {
+      "drawKey": "sha256 of manifest digest, source, label and joinKey, lowest ranks first",
+      "fractionPercent": 20,
+      "manifestDigestSource": "T104 sealed corpus manifest",
+      "perSourceCap": 40,
+      "strata": [
+        "source",
+        "label"
+      ]
+    }
+  },
+  "dp1": {
+    "answers": [
+      "likely-conflicting",
+      "likely-independent",
+      "undetermined"
+    ],
+    "poolLabelsByDefault": false,
+    "truth": {
+      "likely-conflicting": [
+        "conflict"
+      ],
+      "likely-independent": [
+        "no-conflict-observed",
+        "textually-clean"
+      ]
+    },
+    "undetermined": "counted-never-scored",
+    "unscoredLabels": [
+      "integration-failure"
+    ]
+  },
+  "executionAuthorization": false,
+  "labels": [
+    "conflict",
+    "integration-failure",
+    "no-conflict-observed",
+    "textually-clean"
+  ],
+  "missingLabelPolicy": {
+    "countBy": [
+      "class",
+      "reason",
+      "source"
+    ],
+    "dropSilently": false,
+    "excludeFromFitAndEvaluation": true,
+    "impute": false,
+    "reportUnlabelledShare": true,
+    "worstCaseBound": "all-unlabelled-as-each-label"
+  },
+  "oracles": {
+    "git-history-replay": "git-merge-tree",
+    "real-run": "observed-run-result"
+  },
+  "outcomeToLabel": {
+    "merge-clean": "textually-clean",
+    "merge-conflict": "conflict",
+    "runtime-conflict": "conflict",
+    "verify-fail": "integration-failure",
+    "verify-pass": "no-conflict-observed"
+  },
+  "schemaVersion": "agent-braid-s1-label-rubric/v0.1",
+  "sources": [
+    "git-history-replay",
+    "real-run"
+  ]
+}
