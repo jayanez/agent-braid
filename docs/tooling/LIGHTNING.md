@@ -5,9 +5,9 @@ Agent Braid owns (skills, tool descriptions) from recorded rollouts and
 verifiable rewards. It adapts [microsoft/agent-lightning](https://github.com/microsoft/agent-lightning)
 (MIT) and is planned in the [BL program](../../specs/070-braid-lightning-foundations/program.md).
 
-**Today (BL.0 closed, BL.1 delivered with fake hosts)** you can configure it, plan runs and run the full
-rollout pipeline against fake hosts. A real host run needs the setup consent, the host subscription route and,
-for the first baseline, the owner's explicit yes.
+**Today (BL.0 and BL.1 closed)** you can configure it, plan runs, run the rollout pipeline against fake hosts
+and run Claude Code rollouts on the subscription route. A real host run needs the setup consent and the host
+subscription route. Prompt optimization (BL.2) is not available yet.
 
 ## Opt in during setup
 
