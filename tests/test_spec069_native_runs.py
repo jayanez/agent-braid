@@ -295,6 +295,8 @@ class UnitTests(unittest.TestCase):
         self.assertEqual(driver.tool_class("opencode", call("execute", {"code": "return 1"})), "meta")
         self.assertEqual(driver.tool_class("opencode", call("execute", {"code": "await fetch('http://x')"})), "denied")
         self.assertEqual(driver.tool_class("codex", call("command_execution")), "denied")
+        # Codex's read-only MCP resource listing is a discovery helper (observed in T010), not a denied tool.
+        self.assertEqual(driver.tool_class("codex", call("codex__list_mcp_resources", {})), "meta")
 
     def test_redaction_covers_known_values_and_patterns(self) -> None:
         secrets = driver.Secrets(["plain-secret-value"])

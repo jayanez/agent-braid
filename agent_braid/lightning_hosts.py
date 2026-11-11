@@ -35,7 +35,7 @@ CLAUDE_BUILTIN = ["ToolSearch", "Skill"]
 CLAUDE_DENIED = ["Bash", "Edit", "Write", "NotebookEdit", "WebFetch", "WebSearch", "Read", "Glob", "Grep", "Task", "Agent"]
 OPENCODE_DENIED = ["bash", "edit", "write", "webfetch", "websearch", "read", "glob", "grep", "list", "task", "external_directory"]
 # Host-side discovery helpers the host itself needs before it can see MCP tools (observed, see the runbook).
-META_TOOLS = {"claude-code": {"ToolSearch", "Skill"}, "codex": set(), "opencode": {"execute", "skill"}}
+META_TOOLS = {"claude-code": {"ToolSearch", "Skill"}, "codex": {"codex__list_mcp_resources", "codex__list_mcp_resource_templates"}, "opencode": {"execute", "skill"}}
 
 
 class SafetyStop(RuntimeError):
