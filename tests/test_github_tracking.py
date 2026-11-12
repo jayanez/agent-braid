@@ -14,7 +14,7 @@ import unittest
 from unittest.mock import patch
 
 from scripts.sync_github_tracking import (ROOT, apply_plan, build_plan, main,
-                                          milestone_plan,
+                                          milestone_plan, pages,
                                           remote_inventory, source_inventory,
                                           validate_milestone_numbers)
 
@@ -24,6 +24,36 @@ DEFERRED = "Deferred"
 OWNER_DECISION_R6 = ([f"SPEC-029/T00{n}" for n in range(1, 10)]
                      + ["SPEC-031/T008", "SPEC-033/T002", "SPEC-033/T003",
                         "SPEC-033/T004", "SPEC-033/T006", "SPEC-033/T008"])
+
+
+class PaginationTests(unittest.TestCase):
+    """GitHub lists newest first, so a record created mid-listing shifts the
+    previous page's last item onto the next page (a scoped audit on 2026-11-12
+    stopped with "duplicate GitHub marker SPEC-032/T003: #315 and #315")."""
+
+    @staticmethod
+    def issue(number):
+        return {"id": 1000 + number, "number": number, "title": f"t{number}",
+                "body": f"<!-- agent-braid-task-id: SPEC-900/T{number:03d} -->"}
+
+    def shifted_listing(self, path):
+        page = int(re.search(r"[?&]page=(\d+)", path).group(1))
+        if page == 1:
+            return [self.issue(n) for n in range(200, 100, -1)]
+        return [self.issue(n) for n in range(101, 90, -1)]
+
+    def test_record_repeated_across_a_shifted_page_boundary_is_listed_once(self):
+        with patch("scripts.sync_github_tracking.gh_api", side_effect=self.shifted_listing):
+            listed = pages("repos/owner/repo/issues?state=all")
+        self.assertEqual([item["number"] for item in listed], list(range(200, 90, -1)))
+
+    def test_shifted_issue_listing_is_not_a_duplicate_marker(self):
+        def listing(path):
+            return [] if "/sub_issues" in path or "/milestones" in path else self.shifted_listing(path)
+        with patch("scripts.sync_github_tracking.gh_api", side_effect=listing):
+            _, issues, _ = remote_inventory("owner/repo")
+        self.assertEqual(len(issues), 110)
+        self.assertEqual(issues["SPEC-900/T101"]["number"], 101)
 
 
 class TaskMilestoneOverrideTests(unittest.TestCase):

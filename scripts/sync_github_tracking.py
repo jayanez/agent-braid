@@ -223,14 +223,18 @@ def gh_api(path: str, *, method: str = "GET", body: dict | None = None) -> Any:
 
 
 def pages(path: str) -> list[dict]:
-    items: list[dict] = []
+    # GitHub lists newest first: a record created while paging (a new pull
+    # request, say) pushes the previous page's last item onto the next page.
+    # Keep one entry per id so that repeat is not read as a duplicate record.
+    items: dict[int, dict] = {}
     page = 1
     while True:
         separator = "&" if "?" in path else "?"
         batch = gh_api(f"{path}{separator}per_page=100&page={page}")
-        items.extend(batch)
+        for item in batch:
+            items[item["id"]] = item
         if len(batch) < 100:
-            return items
+            return list(items.values())
         page += 1
 
 
