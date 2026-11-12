@@ -66,6 +66,7 @@ class Observer:
             line, buf = buf.split(b"\n", 1)
             if len(line) > MAX_LINE:
                 self.fail("line_limit")
+                raise ValueError("MCP line limit exceeded")
             else:
                 self.line(direction, line + b"\n")
         if len(buf) > MAX_LINE:

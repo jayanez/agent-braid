@@ -323,6 +323,31 @@ print(json.dumps({"jsonrpc":"2.0", "id":request["id"], "result":{"tools":[{"name
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("line_limit", json.loads(receipt.read_text())["errors"])
 
+    def test_oversize_complete_line_prevents_later_request_from_reaching_server(self):
+        with tempfile.TemporaryDirectory() as temp:
+            receipt = Path(temp) / "receipt.json"
+            side_effect = Path(temp) / "called"
+            server = (
+                "import json,sys; "
+                "[(open(sys.argv[1], 'w').close() if json.loads(line).get('method') == 'tools/call' else None) "
+                "for line in sys.stdin.buffer if line.startswith(b'{')]"
+            )
+            valid_request = (
+                b'{"jsonrpc":"2.0","id":1,"method":"tools/call",'
+                b'"params":{"name":"analyze-work"}}\n'
+            )
+            result = subprocess.run(
+                [sys.executable, str(PROXY), "--receipt", str(receipt), "--", sys.executable, "-c", server, str(side_effect)],
+                input=b"x" * (1024 * 1024 + 1) + b"\n" + valid_request,
+                capture_output=True,
+                timeout=15,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertFalse(side_effect.exists())
+            evidence = json.loads(receipt.read_text())
+            self.assertFalse(evidence["complete"])
+            self.assertIn("line_limit", evidence["errors"])
+
     def test_missing_target_definition_is_not_valid_evidence(self):
         with tempfile.TemporaryDirectory() as temp:
             receipt = Path(temp) / "receipt.json"
