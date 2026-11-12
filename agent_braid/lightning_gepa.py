@@ -14,7 +14,8 @@ import json
 import random
 
 from . import lightning_runner as runner_mod
-from .lightning_algorithm import PROMPTS, Algorithm, Session, Stagnation, _now, experiments, rank, render, score
+from .lightning_algorithm import (PROMPTS, Algorithm, Session, Stagnation, _now, experiments, rank, render, rescore,
+                                  score)
 from .lightning_resources import CANDIDATE_SCHEMA, MAX_TEXT, ORIGIN_PATH, Candidate, sha256_text
 
 TEMPLATE = PROMPTS / 'gepa_reflection.md'
@@ -68,27 +69,30 @@ def select_parent(front: list[str], scores: dict[str, dict[str, float]], cases: 
 class GEPA(Algorithm):
     """Reflective prompt evolution with a Pareto front (see module docstring).
 
-    ``evaluator(body, case_ids, repetitions) -> [vector]`` as for APO; ``seed_vectors`` are the seed's full
+    ``evaluator`` and ``scorer`` as for APO; ``seed_vectors`` are the seed's full
     development vectors from the SPEC-071 baseline run (not charged to the arm). ``rng_seed`` fixes parent and
     minibatch sampling so a resumed run repeats its choices.
     """
     name = 'gepa'
 
-    def __init__(self, *, evaluator, optimizer: runner_mod.OptimizerChannel, seed_vectors: list[dict],
+    def __init__(self, *, evaluator, optimizer: runner_mod.OptimizerChannel, seed_vectors: list[dict], scorer=rescore,
                  rng_seed: int = 0):
         if not isinstance(optimizer, runner_mod.OptimizerChannel):
             raise runner_mod.RunnerError('Optimizer calls must go through the runner', 'optimizer-bypass')
         self.evaluator = evaluator
         self.optimizer = optimizer
         self.seed_vectors = list(seed_vectors)
+        self.scorer = scorer
         self.rng_seed = rng_seed
 
-    def run(self, home, config: dict, *, run_id: str, resume: bool = False, **_ignored) -> dict:
+    def run(self, home, config: dict, *, run_id: str, resume: bool = False, replay: bool = False,
+            **_ignored) -> dict:
         algo, rollout = config['algorithm'], config['rollout']
         cases = [c['id'] for c in json.loads(
             (runner_mod.checkout_root() / runner_mod.PROMPT_FILES['development']).read_text())['cases']]
         store, seed_record, seed_body, front_sha = self.start(home, config, run_id, self.seed_vectors, resume=resume)
-        session = Session(store, config, self.optimizer, self.evaluator, resume=resume)
+        session = Session(store, config, self.optimizer, self.evaluator, resume=resume, scorer=self.scorer,
+                          replay=replay)
         stagnation = Stagnation()
         rng = random.Random(self.rng_seed)
         size = min(algo['minibatch'], len(cases))

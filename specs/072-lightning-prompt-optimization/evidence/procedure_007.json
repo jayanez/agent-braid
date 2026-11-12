@@ -5,12 +5,13 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_algorithm.py": "6580987bd54361b42e87517e9cd66aa452751f403c905746cc6838858883a32c",
-  "agent_braid/lightning_apo.py": "b936f12a314bc34c44fe1a82a40918294647c2e29686dd00de056a17e77a5439",
-  "agent_braid/lightning_gepa.py": "4c9910814a1a2b2a0640ba7c0635429f55d866f7464f12dee40c8ad32740608f",
+  "agent_braid/lightning_algorithm.py": "f3367d6e6a5881874f28d0dfe760c60141ddefb5be58d836bebb0d90226143a6",
+  "agent_braid/lightning_apo.py": "3c499b52d4f2c5a90a0044cdf2f05c8a5b958d18300d41b7781379b63c21ae6a",
+  "agent_braid/lightning_gepa.py": "e610b1c2eff80b9638cda36f673ca81251c886310b7d3e5cfba74467c5ffb556",
   "agent_braid/lightning_runner.py": "beeb3b4b83a71a91f74886943e2348f162a2613afb34301744e44e037a29e8fb",
-  "agent_braid/lightning_store.py": "43ad85735cb25d64aaaf6af4973f8ca5af6f663a6607e702e0f582b2f15ec7ec",
-  "tests/test_lightning_stopping.py": "cb2286de47ffe9df799fd6814081cacb812b1bfe0ef6f4ae2e37250336d01984"
+  "agent_braid/lightning_store.py": "e3d93b950342f4aeacd90e88c82c50a76dfd83c3503aeabe6f77600747d92c21",
+  "tests/lightning_fakes.py": "127558709fc6e36f46b77a93ed5107b7d5bb51284d191648ed16645ed44b1383",
+  "tests/test_lightning_stopping.py": "89201cfab42a9a3223099cef8e9e2f1dc9736107de99703bc0c4bfc393cd81ab"
  },
  "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; wiring the algorithms into `agent-braid lightning run` with real candidate evaluation is T009 work.",
  "outcome": "passed: With budgets set low in fake runs each algorithm stops at the first applicable rule and records it in the run journal: unit-cap (APO at configuration defaults), optimizer-cap, no-improvement after 2 consecutive flat rounds, and a weekly-stop quota stop that carries the explicit `agent-braid lightning run --resume <run-id>` command; a refused optimizer input (holdout-contamination) stops the run with the refusal recorded and no call made; APO never runs more than 3 rounds; no run exceeds its rollout or optimizer-call cap (negative control). Resuming a quota-stopped APO or GEPA run with the same seed replays the journaled optimizer outputs and evaluations in order and reaches the same rounds, best candidate, rollouts and calls as an uninterrupted run without repeating any optimizer call; resuming with another seed or configuration is refused (resume-diverged). The journal is private and refuses unknown entry shapes.",

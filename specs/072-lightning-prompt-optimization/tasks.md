@@ -35,7 +35,7 @@ script or test.
 - [x] T007 (REQ-007 / SC-007): Budgets per arm run, stopping rules and
   `--resume <run-id>`. Dependencies: T004,
   T005. Verification: procedure_007.
-- [ ] T008 (REQ-010 / SC-010): Lineage, seeds and replay of selection decisions.
+- [x] T008 (REQ-010 / SC-010): Lineage, seeds and replay of selection decisions.
   Dependencies: T004–T007. Verification: procedure_010.
 
 ## Phase P3 — development runs and freeze

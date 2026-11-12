@@ -5,6 +5,8 @@ from pathlib import Path
 import tempfile
 import unittest
 
+from tests import lightning_fakes as fakes
+
 from agent_braid import lightning_apo as apo
 from agent_braid import lightning_config as config
 from agent_braid import lightning_gepa as gepa
@@ -64,7 +66,7 @@ class Base(unittest.TestCase):
     def run_algo(self, kind, cfg, *, optimizer=None, evaluator=None, run_id='run', resume=False, rng_seed=0):
         optimizer = optimizer or Optimizer()
         channel = runner.OptimizerChannel('claude-code', transport=optimizer, fake=True)
-        options = {'evaluator': evaluator or Evaluator(), 'optimizer': channel, 'seed_vectors': self.seed}
+        options = {'evaluator': fakes.results(evaluator or Evaluator()), 'scorer': fakes.scorer, 'optimizer': channel, 'seed_vectors': self.seed}
         algo = apo.APO(**options) if kind == 'apo' else gepa.GEPA(**options, rng_seed=rng_seed)
         return algo.run(self.home, cfg, run_id=run_id, resume=resume), optimizer
 
@@ -106,7 +108,7 @@ class StopTests(Base):
     def test_a_refused_optimizer_input_stops_the_run(self):
         cfg = profile('gepa')
         channel = runner.OptimizerChannel('claude-code', transport=Optimizer(), fake=True)
-        algo = gepa.GEPA(evaluator=Evaluator(), optimizer=channel, seed_vectors=self.seed)
+        algo = gepa.GEPA(evaluator=fakes.results(Evaluator()), scorer=fakes.scorer, optimizer=channel, seed_vectors=self.seed)
         algo.skill_text = lambda _cfg: '---\nname: x\n---\nGuidance mentioning HELD-04.\n'
         summary = algo.run(self.home, cfg, run_id='refused')
         self.assertEqual((summary['stop'], summary['refusal']), ('refused', 'holdout-contamination'))

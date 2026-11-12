@@ -5,6 +5,8 @@ from pathlib import Path
 import tempfile
 import unittest
 
+from tests import lightning_fakes as fakes
+
 from agent_braid import lightning_algorithm as algorithm
 from agent_braid import lightning_apo as apo
 from agent_braid import lightning_config as config
@@ -52,7 +54,7 @@ class APOTests(unittest.TestCase):
     def run_apo(self, cfg, fake=None, run_id='apo'):
         fake = fake or FakeOptimizer()
         channel = runner.OptimizerChannel('claude-code', transport=fake, fake=True)
-        algo = apo.APO(evaluator=vectors, optimizer=channel, seed_vectors=self.seed)
+        algo = apo.APO(evaluator=fakes.results(vectors), scorer=fakes.scorer, optimizer=channel, seed_vectors=self.seed)
         return algo.run(self.home, cfg, run_id=run_id), fake
 
     def test_preregistered_beam_matches_feasibility_table_and_records_lineage(self):
@@ -100,7 +102,7 @@ class APOTests(unittest.TestCase):
 
     def test_optimizer_calls_outside_the_runner_are_refused(self):
         with self.assertRaises(runner.RunnerError) as caught:
-            apo.APO(evaluator=vectors, optimizer=FakeOptimizer(), seed_vectors=self.seed)
+            apo.APO(evaluator=fakes.results(vectors), scorer=fakes.scorer, optimizer=FakeOptimizer(), seed_vectors=self.seed)
         self.assertEqual(caught.exception.code, 'optimizer-bypass')
         with self.assertRaises(runner.RunnerError) as caught:
             runner.OptimizerChannel('claude-code', transport=FakeOptimizer())
