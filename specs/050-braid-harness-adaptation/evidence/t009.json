@@ -1,0 +1,52 @@
+{
+  "candidateBinding": "Current source/input hashes on a branch from origin/develop 9f258bf2; no frozen implementation commit claimed",
+  "contractSha256": "f097a2cfb26af8ef1e0c9e60ff0912e16c1de1121dff1dd9a1b7e6d214fc8e51",
+  "currentEvidenceDecision": {
+    "activation": null,
+    "assessmentSha256": "f097a2cfb26af8ef1e0c9e60ff0912e16c1de1121dff1dd9a1b7e6d214fc8e51",
+    "decisionSha256": "6d9f6b52a1adde011a36f2f7930732f7a102746c5a076ab4732a819bf6b7472d",
+    "executionAuthorization": false,
+    "outcome": "abstain",
+    "policySha256": "f4eddf198334679601fbd32b8af09369f27df004baabf4ef2b3aa3309108d87f",
+    "reason": "pending-endpoints",
+    "rule": 12
+  },
+  "executedChecks": [
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_auto_promotion tests.test_harness_auto_promotion_controls",
+      "exitCode": 0,
+      "scope": "40 new tests + 20 SPEC-049 controls, Python 3.13.",
+      "testsRun": 60
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest discover -s tests -p \"test_harness*.py\"",
+      "exitCode": 0,
+      "scope": "All harness modules, Python 3.13 (3 skipped).",
+      "testsRun": 1763
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+    "agent_braid/harness_manifest.py": "6624d79de56e702062ba02cefb5cab3d6ec7a58b310c3520d7bdbe024df7fe61",
+    "agent_braid/harness_promotion.py": "659207a11e93e23cf9d677cbbb11c1eeaa9a125d15246e65efdb3b9a40206325",
+    "agent_braid/harness_surface.py": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
+    "agent_braid/system_one.py": "8a52a047bc72ba4f1099df60c1051178fbcb7735ee4d6e615d9b8052bbb31f44",
+    "specs/049-harness-evaluation-learning/auto-promotion-assessment.md": "f097a2cfb26af8ef1e0c9e60ff0912e16c1de1121dff1dd9a1b7e6d214fc8e51",
+    "specs/050-braid-harness-adaptation/contracts/interface.md": "d0cd7d0b06df8147ba02def65149aeffc962f8c59199781cf3eb9496d94f8e03",
+    "tests/test_harness_auto_promotion_controls.py": "0e995aeda16ab256894440f7d6684866894568e1b1f716041d5794c691f931b7"
+  },
+  "limits": "Pure offline controls over synthetic doubles; no host, model, paid route, network or clock; nothing native ran. The T003 registration/report is checked only to reproduce the T013 record, not re-derived from unit rows, so an internally consistent forged report is not detected; actor, checker, safety counts, conflict/revocation ledgers, spend, incident flag and evaluation tick are caller-asserted. PolicyRun is a value that dataclasses.replace can forge (grants nothing). stop() withdraws the registry's active profile, not only the run's candidate. No numeric default limits exist (caller-fixed). No persistence codec. Native activation needs a separately adopted policy, a separate ADR and operator decision; none exists. Pre-PR reviews were run by Claude subagents and are not independent Luna review.",
+  "method": "Actual offline unittest execution",
+  "outcome": "Disabled-by-default engine compiling the 16 ordered fail-closed rules of auto-promotion-assessment.md (contract sha256 bound), plus derived-candidate, record-reproducibility and evaluation-tick preconditions, an immutable disabled->shadow->canary->stopped run (active unreachable) with rollback/revocation/incident/drift stops. On a synthetic report with the six pending T003 endpoints the production policy abstains with pending-endpoints (rule 12); no function grants promotion or execution authority.",
+  "outputs": {
+    "agent_braid/harness_auto_promotion.py": "d148ff2958bfb56c213e6d9afa4479d25dc4f3e9b95fd3baf6da43049e222404",
+    "tests/test_harness_auto_promotion.py": "d301627ba47730c76344ecc8c9a6af3a5857fbaccecfe54b42c40ba9ee22a0e1"
+  },
+  "pending": [
+    "Stable pr-profile result recorded in the pull request",
+    "Owner decision on tolerating pending endpoints; separate adoption policy/ADR for any activation; T014 native evidence; independent review"
+  ],
+  "spec": "050-braid-harness-adaptation",
+  "task": "SPEC-050/T009"
+}
