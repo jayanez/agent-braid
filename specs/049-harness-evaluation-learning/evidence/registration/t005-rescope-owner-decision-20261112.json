@@ -1,0 +1,13 @@
+{
+  "recordVersion": "spec049-t005-rescope-v1",
+  "task": "SPEC-049/T005",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-12",
+  "decisionChannel": "Repository owner answer given interactively in the orchestrator Claude Code chat on 2026-11-12 (button answer 'Yes, re-scope T005') to the question whether SPEC-049 T005 may close on the deterministic-only result to unblock T008. The wording below paraphrases that answer; it is not a quote.",
+  "decision": "T005 closes on its deterministic-only descriptive disposition (evidence/evaluation/deterministic-cohort-20261112.json, #1301). The remaining T005 scope moves unchanged to a new task T014: the native cohort, a non-trivial arm C, the library ablation (arm D) and the endpoints the R13 double cannot compute (false safe admissions, missed safe parallelism, correction and review effort, conflict precision and recall, sensitivity to missing outcomes).",
+  "effectOnDependencies": "T008 may proceed on the T005 disposition, which T008 already states needs no positive result. T007 keeps its own requirement of applicable native evidence for native acceptance. T010 additionally depends on T014 and must report it as pending while open.",
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Changes task scope only; executes nothing, admits no native run and grants no promotion. The T005 disposition remains plumbing-only, descriptive-only under D3 and carries no utility or cost claim. Recorded by an agent from an owner chat answer; it is not independent review."
+}
