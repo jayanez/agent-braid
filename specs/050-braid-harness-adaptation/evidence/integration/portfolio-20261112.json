@@ -1,0 +1,674 @@
+{
+  "candidateBinding": "Branch feat/050-t012-portfolio from origin/develop ac8fc1cc; source/input hashes below; no frozen implementation commit claimed",
+  "counterfactualChecks": {
+    "killed": 25,
+    "method": "Scratch script removed one guard at a time (or the named combination) from the harness modules and reran tests.test_harness_integration_portfolio; every module was restored afterwards and git status showed no module change",
+    "mutations": 27,
+    "results": [
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-activate-allowed"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-any-host"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": false,
+        "mutation": "lifecycle-no-hash-check"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-robot-operator"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-blocked-staged"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-unlinked-migration"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-halt-ignored"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-drift-ignored"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-canary-identity"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-state-authority"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-revoke-no-store"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-revoke-not-persisted"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-rollback-unverified"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-incident-no-rollback"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-private-leak-journal"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-write-outside-root"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_auto_promotion.py"
+        ],
+        "killed": true,
+        "mutation": "autopromotion-active-state"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_orchestration.py"
+        ],
+        "killed": true,
+        "mutation": "orchestration-plan-hash"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_components.py"
+        ],
+        "killed": true,
+        "mutation": "components-any-host-parse"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_components.py"
+        ],
+        "killed": true,
+        "mutation": "components-stale-parent"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_components.py"
+        ],
+        "killed": true,
+        "mutation": "components-profile-hash"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_tools.py"
+        ],
+        "killed": true,
+        "mutation": "tools-authority-flag"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_hooks.py"
+        ],
+        "killed": false,
+        "mutation": "hooks-authority-flag-first"
+      },
+      {
+        "allOccurrences": true,
+        "files": [
+          "agent_braid/harness_hooks.py"
+        ],
+        "killed": true,
+        "mutation": "hooks-authority-flag-all"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_components.py",
+          "agent_braid/harness_lifecycle.py"
+        ],
+        "killed": true,
+        "mutation": "lifecycle-and-components-hash-checks"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_curation.py"
+        ],
+        "killed": true,
+        "mutation": "curation-no-revocation"
+      },
+      {
+        "allOccurrences": false,
+        "files": [
+          "agent_braid/harness_advisory.py"
+        ],
+        "killed": true,
+        "mutation": "advisory-envelope-authority"
+      }
+    ],
+    "survivorExplanation": "Both survivors remove one of two redundant checks: lifecycle.migrate re-hashes raw bytes and then hc.verify_profile compares the same hash; harness_hooks._body checks executionAuthorization and parse_hookset repeats the check on every path. Removing both checks of each pair is killed (lifecycle-and-components-hash-checks, hooks-authority-flag-all). Earlier passes left further survivors: the incident-stop registry rollback without a run, a private-payload journal leak, the plan hash check and the parse-time host check (first local pass), and persisted revocation, the canary identity-drift check and prior-profile verification on rollback (found by the adversarial review). The tests were strengthened; this record is the rerun.",
+    "survivors": [
+      "lifecycle-no-hash-check",
+      "hooks-authority-flag-first"
+    ]
+  },
+  "environment": "Python 3.13 (/opt/homebrew), macOS; no host, model, network or paid route; hooks on a fake clock",
+  "executedChecks": [
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest discover -s tests -p test_harness_admission.py",
+      "exitCode": 0,
+      "module": "tests/test_harness_admission.py",
+      "skipped": 0,
+      "testsRun": 24
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_advisory",
+      "exitCode": 0,
+      "module": "tests/test_harness_advisory.py",
+      "skipped": 0,
+      "testsRun": 20
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_assurance",
+      "exitCode": 0,
+      "module": "tests/test_harness_assurance.py",
+      "skipped": 0,
+      "testsRun": 90
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_assurance_receipts",
+      "exitCode": 0,
+      "module": "tests/test_harness_assurance_receipts.py",
+      "skipped": 0,
+      "testsRun": 51
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_assurance_render",
+      "exitCode": 0,
+      "module": "tests/test_harness_assurance_render.py",
+      "skipped": 0,
+      "testsRun": 20
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_assurance_risk",
+      "exitCode": 0,
+      "module": "tests/test_harness_assurance_risk.py",
+      "skipped": 0,
+      "testsRun": 33
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_auto_promotion",
+      "exitCode": 0,
+      "module": "tests/test_harness_auto_promotion.py",
+      "skipped": 0,
+      "testsRun": 40
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_auto_promotion_controls",
+      "exitCode": 0,
+      "module": "tests/test_harness_auto_promotion_controls.py",
+      "skipped": 0,
+      "testsRun": 20
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_cli",
+      "exitCode": 0,
+      "module": "tests/test_harness_cli.py",
+      "skipped": 0,
+      "testsRun": 39
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_components",
+      "exitCode": 0,
+      "module": "tests/test_harness_components.py",
+      "skipped": 0,
+      "testsRun": 32
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_containment_macos",
+      "exitCode": 0,
+      "module": "tests/test_harness_containment_macos.py",
+      "skipped": 2,
+      "testsRun": 147
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest discover -s tests -p test_harness_context.py",
+      "exitCode": 0,
+      "module": "tests/test_harness_context.py",
+      "skipped": 0,
+      "testsRun": 20
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_costs",
+      "exitCode": 0,
+      "module": "tests/test_harness_costs.py",
+      "skipped": 0,
+      "testsRun": 40
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_curation",
+      "exitCode": 0,
+      "module": "tests/test_harness_curation.py",
+      "skipped": 0,
+      "testsRun": 43
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_evaluation",
+      "exitCode": 0,
+      "module": "tests/test_harness_evaluation.py",
+      "skipped": 0,
+      "testsRun": 43
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_experience",
+      "exitCode": 0,
+      "module": "tests/test_harness_experience.py",
+      "skipped": 0,
+      "testsRun": 54
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest discover -s tests -p test_harness_foundations.py",
+      "exitCode": 0,
+      "module": "tests/test_harness_foundations.py",
+      "skipped": 0,
+      "testsRun": 3
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_guidance_double",
+      "exitCode": 0,
+      "module": "tests/test_harness_guidance_double.py",
+      "skipped": 0,
+      "testsRun": 21
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_hooks",
+      "exitCode": 0,
+      "module": "tests/test_harness_hooks.py",
+      "skipped": 0,
+      "testsRun": 67
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_host_claude",
+      "exitCode": 0,
+      "module": "tests/test_harness_host_claude.py",
+      "skipped": 0,
+      "testsRun": 38
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_host_codex",
+      "exitCode": 0,
+      "module": "tests/test_harness_host_codex.py",
+      "skipped": 0,
+      "testsRun": 64
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_hosts",
+      "exitCode": 0,
+      "module": "tests/test_harness_hosts.py",
+      "skipped": 0,
+      "testsRun": 28
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_hosts_native",
+      "exitCode": 0,
+      "module": "tests/test_harness_hosts_native.py",
+      "skipped": 0,
+      "testsRun": 22
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_integration",
+      "exitCode": 0,
+      "module": "tests/test_harness_integration.py",
+      "skipped": 0,
+      "testsRun": 29
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_integration_portfolio",
+      "exitCode": 0,
+      "module": "tests/test_harness_integration_portfolio.py",
+      "skipped": 0,
+      "testsRun": 10
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_journal",
+      "exitCode": 0,
+      "module": "tests/test_harness_journal.py",
+      "skipped": 0,
+      "testsRun": 27
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_lab",
+      "exitCode": 0,
+      "module": "tests/test_harness_lab.py",
+      "skipped": 0,
+      "testsRun": 28
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_lifecycle",
+      "exitCode": 0,
+      "module": "tests/test_harness_lifecycle.py",
+      "skipped": 0,
+      "testsRun": 35
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_manifest",
+      "exitCode": 0,
+      "module": "tests/test_harness_manifest.py",
+      "skipped": 0,
+      "testsRun": 22
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_observation",
+      "exitCode": 0,
+      "module": "tests/test_harness_observation.py",
+      "skipped": 0,
+      "testsRun": 28
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_orchestration",
+      "exitCode": 0,
+      "module": "tests/test_harness_orchestration.py",
+      "skipped": 0,
+      "testsRun": 43
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_promotion",
+      "exitCode": 0,
+      "module": "tests/test_harness_promotion.py",
+      "skipped": 0,
+      "testsRun": 25
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_qualification_probes",
+      "exitCode": 0,
+      "module": "tests/test_harness_qualification_probes.py",
+      "skipped": 1,
+      "testsRun": 241
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_quota",
+      "exitCode": 0,
+      "module": "tests/test_harness_quota.py",
+      "skipped": 0,
+      "testsRun": 38
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_records",
+      "exitCode": 0,
+      "module": "tests/test_harness_records.py",
+      "skipped": 0,
+      "testsRun": 19
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_refinement",
+      "exitCode": 0,
+      "module": "tests/test_harness_refinement.py",
+      "skipped": 0,
+      "testsRun": 30
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_search",
+      "exitCode": 0,
+      "module": "tests/test_harness_search.py",
+      "skipped": 0,
+      "testsRun": 55
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_skills",
+      "exitCode": 0,
+      "module": "tests/test_harness_skills.py",
+      "skipped": 0,
+      "testsRun": 62
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_surface",
+      "exitCode": 0,
+      "module": "tests/test_harness_surface.py",
+      "skipped": 0,
+      "testsRun": 29
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_t005_cohort",
+      "exitCode": 0,
+      "module": "tests/test_harness_t005_cohort.py",
+      "skipped": 0,
+      "testsRun": 19
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_tools",
+      "exitCode": 0,
+      "module": "tests/test_harness_tools.py",
+      "skipped": 0,
+      "testsRun": 37
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_transport_claude",
+      "exitCode": 0,
+      "module": "tests/test_harness_transport_claude.py",
+      "skipped": 0,
+      "testsRun": 30
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_verification",
+      "exitCode": 0,
+      "module": "tests/test_harness_verification.py",
+      "skipped": 0,
+      "testsRun": 42
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest discover -s tests -p test_harness*.py",
+      "exitCode": 0,
+      "scope": "All harness modules in one discover run",
+      "skipped": 3,
+      "testsRun": 1808
+    }
+  ],
+  "executionAuthorization": false,
+  "heldOutPerAxis": {
+    "inputsStillMatch": true,
+    "label": "synthetic-control",
+    "limits": "Descriptive-only, verdict-ineligible synthetic control; arm C equals arm A by construction; oracles not independent of the double; no regression or improvement verdict follows",
+    "outcomeSummary": {
+      "continuity (1 unit, 1 lineage)": {
+        "A": "0/1 correct",
+        "B": "1/1 correct",
+        "C": "0/1 correct"
+      },
+      "coordination (4 units, 1 lineage)": {
+        "A": "3/4 correct",
+        "B": "3/4 correct (1 not-completed: L1-C02-a interrupted by stop-on-drift)",
+        "C": "3/4 correct"
+      }
+    },
+    "pending": [
+      "SPEC-049/T014 native cohort, non-trivial arm C and library ablation",
+      "SPEC-049/T010 per-axis dispositions"
+    ],
+    "recomputedBy": "tests/test_harness_t005_cohort.py (recomputes the deterministic result and compares it with the record)",
+    "source": "specs/049-harness-evaluation-learning/evidence/evaluation/deterministic-cohort-20261112.json",
+    "sourceSha256": "2e1ad97b36d8bd397edb4d09d5dafd7156aef431b9ea310bd4567f0c418ce7cc",
+    "verdict": null
+  },
+  "inputs": {
+    "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
+    "agent_braid/harness_advisory.py": "e37df2539af308157d89d5ce39b37cd87b34cbc402f143bffd5a157dda22ccef",
+    "agent_braid/harness_assurance.py": "5b8bd5aef8e8d45e701998c709b8ddb31f907a3f6c6d2684f5f2934ca1fe846c",
+    "agent_braid/harness_assurance_receipts.py": "cdd9dde12d9aaaaedd8bb7bafc2128286eb0ad8c36762df88fdae1ad69d96854",
+    "agent_braid/harness_assurance_render.py": "b96a9cc5c0865a6f0c686f8666c12396e3f703885fa363ec2ff661cb1b860d04",
+    "agent_braid/harness_assurance_risk.py": "7d062d814c053770d3a1fafd458292b28ee895a19f3f600d7ce4cae9191ef128",
+    "agent_braid/harness_auto_promotion.py": "d148ff2958bfb56c213e6d9afa4479d25dc4f3e9b95fd3baf6da43049e222404",
+    "agent_braid/harness_cli.py": "1a923177390fc77f058e7bda8b94db8dadeeb96f61e5589dea69f6a5f68f47db",
+    "agent_braid/harness_components.py": "971765102de1ea3e550b3e4760af495ac663631cadcc0fb03dbbd2893e9c894b",
+    "agent_braid/harness_containment_macos.py": "f241d9af83f5c6097a97513b065a1cc17558b38242fb808ac963c06ae1ad93f3",
+    "agent_braid/harness_context.py": "026a29c21b3d52afad4c8fb1f11730fd410d8f17d5d437cecfaf409732dd657e",
+    "agent_braid/harness_costs.py": "d60212a1922500bdc6a2275ff7dbdcf421e3f9258a7ba0931a8727c25f985f5e",
+    "agent_braid/harness_curation.py": "e61e16fd682d17d3479b9f956ade7b7df7e5084a51e449fd2a3b9833daa2c67c",
+    "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+    "agent_braid/harness_experience.py": "92afe433d6d93984bfae35274644ed1bdafa0e57ff344c30808ae219ed64a057",
+    "agent_braid/harness_hooks.py": "305575b5b455ae57510b69a4c810d66665385eb51240aef03f61edeb01f6ec9e",
+    "agent_braid/harness_host_claude.py": "e409512d7b4d20bc5c38a28a2ee1cc31344832718f76ee2f067d25d610d1b9e1",
+    "agent_braid/harness_host_codex.py": "648b8ab68125d412ee54254e492061f5f88faeaa5ee5ac92e4dccc5d556309b0",
+    "agent_braid/harness_hosts.py": "6295ee85c92bab40279ce0497067d4d6bd212c9037b02d30f4b1b00cf18cd3dc",
+    "agent_braid/harness_hosts_native.py": "4094003a800238db3a45360ba38e06ec8393133d047437dcd3a9e78ad569c816",
+    "agent_braid/harness_journal.py": "b1c1e598ca28a5f01043bbf5c261f4a84d658e644e4ad077e6c86e67c6dc52f9",
+    "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
+    "agent_braid/harness_lifecycle.py": "b9d2997622816e999533be3a5c958189f0c46d02df9fc5d3fa14840415fe433f",
+    "agent_braid/harness_manifest.py": "6624d79de56e702062ba02cefb5cab3d6ec7a58b310c3520d7bdbe024df7fe61",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "agent_braid/harness_orchestration.py": "3eda81a8c1e1b80674dcccd3aebf9e36cf45ae092978d91795c1e4a4467c06d1",
+    "agent_braid/harness_promotion.py": "659207a11e93e23cf9d677cbbb11c1eeaa9a125d15246e65efdb3b9a40206325",
+    "agent_braid/harness_qualification_probes.py": "3fb8bdc66bfdeb4aec717e9bafb9367acdd5f7e7afb16b1c51c2e2a24396e28e",
+    "agent_braid/harness_quota.py": "c2565c057b9beeadc855d5bac850febc96e7f949a48707e5714c53440f2774e8",
+    "agent_braid/harness_records.py": "5c5515141174108b243b217660ed3b5d95abd038414d71a3d105d28606b71034",
+    "agent_braid/harness_refinement.py": "74c342c7a7bd4175e19d3132fe628a81cb9cf81d1e83a6af8f81225c048474dd",
+    "agent_braid/harness_search.py": "297b7db50ef52696508527bffe98e70d61c177a8771145db82fa017a4dcaa935",
+    "agent_braid/harness_skills.py": "556e13ff9789e156093808c2400e6cccbeef184ac7af2cf56f9bea60cddd8cdd",
+    "agent_braid/harness_surface.py": "78ca27952ffa1054d8ef61cbc0bd9458d51d967f716e5bd1ba6462daa892529c",
+    "agent_braid/harness_tools.py": "90efd0c0a2960ed47cb3bf6778b0c63621585f771342199e0808605c4c7d9dc2",
+    "agent_braid/harness_transport_claude.py": "3ef09f0e3cc55f28ae677e88ffa5f36bc1080184d0d55b22a113add24da0258a",
+    "agent_braid/harness_verification.py": "fe8fd34a4d87d4247e8cc696a5f4ef288853c3dbf3daa52d2a7bdf41eadfb3fd",
+    "specs/049-harness-evaluation-learning/auto-promotion-assessment.md": "f097a2cfb26af8ef1e0c9e60ff0912e16c1de1121dff1dd9a1b7e6d214fc8e51",
+    "specs/049-harness-evaluation-learning/evidence/evaluation/deterministic-cohort-20261112.json": "2e1ad97b36d8bd397edb4d09d5dafd7156aef431b9ea310bd4567f0c418ce7cc",
+    "specs/050-braid-harness-adaptation/contracts/interface.md": "d0cd7d0b06df8147ba02def65149aeffc962f8c59199781cf3eb9496d94f8e03",
+    "specs/050-braid-harness-adaptation/tasks.md": "9aa83beb26bbcebe16ffb5e220b8617126a7514216e30256670dddf70d1e73c9",
+    "tests/test_harness_auto_promotion.py": "d301627ba47730c76344ecc8c9a6af3a5857fbaccecfe54b42c40ba9ee22a0e1",
+    "tests/test_harness_components.py": "04ea61fffe513027d2dc97d9863c1193d11cb26eefe48a38564ee71676ee05fd",
+    "tests/test_harness_curation.py": "4d09dbc7b760b01447766f4fb5cbf830cd3ba5a2badda71fe535a706c8b78f42",
+    "tests/test_harness_evaluation.py": "0d9be2568839288deea7b6065e10e2bcae42336f2e568b63e6006eb64f283948",
+    "tests/test_harness_hooks.py": "c36a8ebad420a3fc1a88d2319b7d3a8d6f9966800d47300079073384588b6e31",
+    "tests/test_harness_lifecycle.py": "0355e7954e633d40a84d8fc7054f002b7932f7f9aa9e89bf50711f89911b91ea",
+    "tests/test_harness_orchestration.py": "03436b09b87556ab9fe18734ad89704def19f12d2c4fba450e80c50561a97153",
+    "tests/test_harness_promotion.py": "86490d9735131ef726cf14a4f853406d93ed4f9c04723b2b65baf5195f108f51",
+    "tests/test_harness_refinement.py": "0c6c14adfaa59c4d500e6c8c80c655247d2a8dcc12d961eb79992fe29d5300cb",
+    "tests/test_harness_search.py": "654039045ba51898a1a1b6641d6a6baec7a6767453324fe3e33acb60d95583ff",
+    "tests/test_harness_skills.py": "ba4ae1f07bcf03322c3b3f38c98ed8d75f1203e4c40d85d683a1d89fbcd99022",
+    "tests/test_harness_tools.py": "2a76e57a677c4d967444a064263f5171602c56d57b7865a8ed6893b71b5fb893"
+  },
+  "label": "synthetic-offline-control",
+  "method": "Actual offline unittest execution of every tests/test_harness*.py module, one process per module, plus one discover run over all of them; combined portfolio controls in tests/test_harness_integration_portfolio.py; local guard-removal pass",
+  "nativeExecution": false,
+  "outputs": {
+    "specs/048-harness-variant-laboratory/capability-coverage.md": "35a5589c0438d28ac1cb5469c3975baefe36bc4fbaec9a537db7ee978a82bec3",
+    "specs/050-braid-harness-adaptation/capability-report.md": "1a69b6f082e2094de377dfda0bf29ea699bbca1ac9a21f691fdd5354d1ec109c",
+    "tests/test_harness_integration_portfolio.py": "bf9635fc3aad04673ecec195cfe59822711893c89ec3055f5fe947feb46f7230"
+  },
+  "portfolioControls": {
+    "adversarialControls": [
+      "tampered profile bytes and stored blobs",
+      "stale parent and skipped versions",
+      "future lifecycle state format",
+      "host/model identity drift",
+      "forged orchestration plan, tool and hook contracts, automatic policies, run state and lifecycle state",
+      "automatic operators and blocked profiles"
+    ],
+    "chain": [
+      "harness_components",
+      "harness_skills",
+      "harness_tools",
+      "harness_hooks",
+      "harness_orchestration",
+      "harness_search",
+      "harness_curation",
+      "harness_auto_promotion",
+      "harness_lifecycle",
+      "harness_advisory"
+    ],
+    "crossHost": "claude only (observed build, unqualified); codex refused by components, lifecycle and hook matrix",
+    "invariants": [
+      "executionAuthorization and nativeExecution false in every emitted record",
+      "no PolicyRun or lifecycle state reaches active, lifecycle status keeps activation/ordinaryUse/export closed, activate always refuses, and revocation clears the synthetic registry's served pointer",
+      "every Python-level mutating filesystem call stays inside the workspace (write guard resolving paths at call time, plus an outside sentinel)",
+      "a private payload marker never appears in any kept record or in any lifecycle-owned file other than its private blob",
+      "one revocation reaches the persisted T013 registry and the T008 curation store",
+      "synthetic equal-budget accounting is deterministic and volume is not scored; the configured cash cap constant is EUR 0; no real cost was measured"
+    ],
+    "module": "tests/test_harness_integration_portfolio.py",
+    "recovery": "interrupted install and uninstall recovered without residue",
+    "testsRun": 10
+  },
+  "recordVersion": "spec050-t012-portfolio-integration-v1",
+  "recordedAt": "2026-11-12",
+  "task": "SPEC-050/T012",
+  "totals": {
+    "modules": 43,
+    "skipped": 3,
+    "testsRun": 1808
+  }
+}
