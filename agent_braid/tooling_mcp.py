@@ -732,8 +732,8 @@ _ANALYZE_WORK_REQUEST_HELP = (
 # being told `unknown` for work they were asked to compare for parallelism (SPEC-069 T008).
 _ANALYZE_WORK_SCHEMA_HELP = (
     "request must match the properties.request branch labelled with its kind. "
-    "aim: can named files run in parallel; git: branches; units: conflicts only, never independent-candidate. "
-    "Skill agent-braid-analyze has examples."
+    "Can named files run in parallel: aim (units cannot say independent-candidate). Branches: git, "
+    "attemptIds distinct. Skill agent-braid-analyze has examples."
 )
 
 
