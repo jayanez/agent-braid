@@ -59,6 +59,9 @@ and T010's final run measures the release candidate without them.
   development-set ablation (`final` vs `final-no-schema`) are recorded in
   `evidence/native-runs-baseline-codex.json`, `evidence/native-runs-ablation-*.json` and
   `evidence/native-runs-ablation-summary.json`; see `validation-plan.md`.
+  Progress 2026-11-12 (not ticked): held-out final run done once (`evidence/native-runs-t010-heldout-final*.json`): first attempt
+  Claude Code 27/30, OpenCode 27/30, Codex 24/30; D4 not met in any host (10/10 within one retry fails; Codex also below 8/10).
+  The ablation arm was not run on the held-out set. Acceptance unmet: left open with the gap in `validation-plan.md`.
 
 ## Phase P3 — `units` and schema delivery, only if the P2 baseline misses D4 in a required host (D6)
 
@@ -89,6 +92,8 @@ and T010's final run measures the release candidate without them.
   Progress 2026-11-12: guidance, scoring support for `units` and drift test landed; development-set first attempt Claude Code
   28/30, OpenCode 30/30, Codex 27/30 (validation-plan.md). D4 per-prompt criterion met for OpenCode only; left open pending
   T005/T007 and the T010 held-out run.
+  Held-out result 2026-11-12: D4 not met in any host (see T010 and `validation-plan.md`); T008 stays open pending an owner
+  decision to accept the deviation or a new guidance round on a new held-out set.
 
 ## Closing — final run, documentation and release
 

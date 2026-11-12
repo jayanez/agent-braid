@@ -107,3 +107,36 @@ development-set results, over seven rounds; the table is the last round on the e
 - **D12:** compact `analyze-work` definition stays at or below 1500 tokens (test enforced).
 - **Spend:** a few USD notional across the seven rounds; far below the 60 USD cap.
 - **Not done:** the held-out final run (T010). T008 stays open.
+
+## T010 held-out final run (2026-11-12)
+
+Held-out set `spec069-held-out-v1` (10 prompts, frozen before the T008 rewrite, never opened by the T008 or T010 run sessions), arm
+`final` (per-kind schema delivery) on source commit `f3648396` (clean checkout, includes the T008 guidance), 3 repetitions per prompt,
+one run, no iteration afterwards. Same access paths as the development runs: Claude Code `claude-sonnet-5-5` by subscription token,
+OpenCode `openrouter/anthropic/claude-sonnet-5-5` by OpenRouter, Codex on its host default model by subscription sign-in. Evidence:
+`evidence/native-runs-t010-heldout-final.json` (Claude Code, OpenCode) and `evidence/native-runs-t010-heldout-final-codex.json`
+(Codex), with redacted transcripts. All hosts ran, driver exit 0, teardown clean, secret scan passed. No driver or infrastructure failure,
+so no case was re-run.
+
+| Host | First attempt (trials, Wilson 95%) | Within one retry | Prompts first / retry (of 10) | Missed prompts | D4 verdict |
+| --- | --- | --- | --- | --- | --- |
+| Claude Code | 27/30 (0.74-0.97) | 27/30 (0.74-0.97) | 9 / 9 | HELD-04 | misses (first attempt meets 8/10; retry criterion 10/10 not met) |
+| OpenCode | 27/30 (0.74-0.97) | 27/30 (0.74-0.97) | 9 / 9 | HELD-04 | misses (same) |
+| Codex | 24/30 (0.63-0.90) | 24/30 (0.63-0.90) | 7 / 7 | HELD-02, HELD-04, HELD-05 | misses (first attempt and retry) |
+
+- **Result:** D4 is not met on the held-out set in any host. Claude Code and OpenCode reach the first-attempt threshold (9 of 10 prompts)
+  but D4 also needs 10/10 within one retry; accepted calls are final (no retry credit), so a wrong accepted call cannot be recovered.
+  Codex reaches 7 of 10 prompts. Negative result, reported as observed.
+- **Failure pattern (observed, not acted on):** HELD-04 fails in all 9 trials of all three hosts with the same signature: the models
+  declare an extra `read src/db.py` in the unit that writes `docs/api.md`, where the scorer expects only a write. Whether this is a
+  guidance gap or an ambiguity in the prompt or the scoring rule is not established here; the held-out set and scoring are frozen and
+  were not changed. Codex also failed HELD-05 twice (constraint set differs from expectation: a validate-read-versions-at-use
+  constraint is reported) and HELD-02 once (tool not called). Generalisation from development (28/30, 30/30, 27/30) to held-out
+  (27/30, 27/30, 24/30) is a drop of 1, 3 and 3 trials; the intervals overlap.
+- **Not run on the held-out set:** the `final-no-schema` ablation arm (the D9 ablation stays on the development set) and a
+  baseline-arm held-out run.
+- **Spend:** Claude Code 1.87 USD notional (subscription token); OpenCode via OpenRouter and Codex on the subscription report no cost.
+  Cumulative with earlier T010/T008 rounds: well below the 60 USD cap.
+- **What accepting this needs:** an owner decision to accept the shortfall as a documented deviation from D4 (REQ-010, REQ-008),
+  with these numbers and the HELD-04 pattern as the stated limit; or a new guidance round, which would need a new, unseen held-out
+  set because this one is now consumed (changing it needs a new FREEZE record and invalidates these runs).
