@@ -56,6 +56,46 @@ class RunnerError(ValueError):
         self.code = code
 
 
+HELDOUT_ID = re.compile(r'HELD-\d+')
+
+
+def contamination_passed(text: str) -> bool:
+    """Minimal pre-call scan (SPEC-072 REQ-006): no held-out case id and no rollout canary in the input.
+
+    T006 extends this to held-out prompt text and the sandboxed optimizer call.
+    """
+    return HELDOUT_ID.search(text) is None and LIGHTNING_CANARY not in text
+
+
+class OptimizerChannel:
+    """The only path for optimizer calls (SPEC-072 REQ-004): hashes and checks every input, numbers the call.
+
+    ``transport(text) -> str`` performs the call. Only ``fake`` transports exist until the sandboxed host call lands
+    (SPEC-072 T006); a real channel is refused rather than run unsandboxed.
+    """
+
+    def __init__(self, host: str, *, transport=None, fake: bool = False):
+        if not fake:
+            raise RunnerError('Real optimizer calls need the SPEC-072 T006 sandboxed host path', 'isolation-failed')
+        if host not in CREDENTIALS or transport is None:
+            raise RunnerError('Unknown optimizer host or missing transport', 'config-enum')
+        self.host = host
+        self._transport = transport
+        self.calls: list[dict] = []
+
+    def call(self, text: str) -> tuple[str, str, dict]:
+        """Return (call id, output, contamination check); a contaminated input is refused before any call."""
+        check = {'inputSha256': hashlib.sha256(text.encode('utf-8')).hexdigest(),
+                 'passed': contamination_passed(text)}
+        if not check['passed']:
+            raise RunnerError('Optimizer input contains held-out material', 'holdout-contamination')
+        call_id = f'opt-{len(self.calls) + 1:04d}'
+        output = self._transport(text)
+        output = output if isinstance(output, str) else ''  # an empty reply is a failed call, judged by the caller
+        self.calls.append({'callId': call_id, **check})
+        return call_id, output, check
+
+
 def utc(ts: float) -> str:
     return datetime.fromtimestamp(ts, timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
 
