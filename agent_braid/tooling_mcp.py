@@ -731,9 +731,9 @@ _ANALYZE_WORK_REQUEST_HELP = (
 # It does choose the kind, because the dev-set transcripts show hosts picking `units` and then
 # being told `unknown` for work they were asked to compare for parallelism (SPEC-069 T008).
 _ANALYZE_WORK_SCHEMA_HELP = (
-    "request: the properties.request branch for its kind. "
     "aim for any parallel or overlap question about files, never units (cannot report "
-    "independent-candidate). Branches: git, attemptIds distinct. Skill agent-braid-analyze: examples."
+    "independent-candidate); every aim record needs sha256:<64 hex> digests and one evidence item. "
+    "Branches: git, attemptIds distinct. Skill agent-braid-analyze."
 )
 
 
