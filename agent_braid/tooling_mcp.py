@@ -170,7 +170,7 @@ def _require_git_structure(request: dict[str, Any]) -> None:
         need(isinstance(operation, dict), "Git operations must be objects", here, "an operation object")
         source = operation.get("source")
         need(isinstance(source, dict), "Git operation source is invalid", f"{here}/source",
-             "an object describing a commit or worktree source")
+             "an object {kind: \"commit\", revision: <branch or commit>} or {kind: \"worktree\", path}")
         if source.get("kind") == "worktree":
             need(isinstance(source.get("path"), str) and bool(source["path"].strip()),
                  "Git operation source is invalid", f"{here}/source/path", "a non-blank string")
@@ -728,9 +728,12 @@ _ANALYZE_WORK_REQUEST_HELP = (
     "kind=git: request is {gitAnalysisRequestVersion, repository, baseRevision, operations}."
 )
 # The per-kind arm states the shapes in the schema, so its prose only points at it (D12 size cap).
+# It does choose the kind, because the dev-set transcripts show hosts picking `units` and then
+# being told `unknown` for work they were asked to compare for parallelism (SPEC-069 T008).
 _ANALYZE_WORK_SCHEMA_HELP = (
     "request must match the properties.request branch labelled with its kind. "
-    "The agent-braid-analyze skill has complete copyable examples."
+    "aim: parallelism of named files; git: branches; units: conflicts only, never independent-candidate. "
+    "Skill agent-braid-analyze has examples."
 )
 
 

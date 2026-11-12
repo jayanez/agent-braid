@@ -24,23 +24,40 @@ and advisory. It never authorizes execution.
    explain the missing capability and stop. Do not guess command flags or fall
    back to `prepare`, `execute`, or another write-capable operation.
 
-## Build an AIM request
+## Build an analyze-work request
 
-For `analyze-work` with `kind` `aim`, `request` is an AIM envelope, not a free
-list of units. Describe each proposed unit of work as one AIM 0.2.0-draft
-record. This complete request asks whether two units that both write
-`README.md` interact; copy it and change only what the user's work defines:
+Pick the `kind` first; each kind has a different request shape.
 
-```json
+| The user asks about | `kind` | What it can report |
+| --- | --- | --- |
+| whether work on named files can run in parallel, overlap or must be ordered | `aim` | `independent-candidate`, `conflicting`, `ordered`, `unknown` |
+| branches or worktrees of a Git repository | `git` | the same four |
+| a quick conflict or order check by path, without digests | `units` | `conflicting`, `ordered`, `unknown`; never `independent-candidate` |
+
+Work that touches disjoint files is `unknown` under `units` because that kind
+always records partial coverage, so use `aim` when the user wants to know whether
+the work can go in parallel. Copy the matching example and change only what the
+user's work defines. Never call `analyze-work` with an invented shape to see what
+happens.
+
+### `aim`
+
+`request` is an AIM envelope, not a free list of units: one AIM 0.2.0-draft
+record per proposed unit. This complete request has two units that write
+different files; the documented result is `independent-candidate` with
+`requires-execution-contract-before-parallelism`. If two units write the same
+file the report says `conflicting` with `serialize-or-isolate` instead.
+
+```json kind=aim result=independent-candidate constraints=requires-execution-contract-before-parallelism
 {"analysisInputVersion": "0.1.0-alpha",
- "source": {"kind": "aim", "description": "Two proposed edits that both write README.md"},
+ "source": {"kind": "aim", "description": "Two proposed edits to different files"},
  "operations": [
-  {"aimVersion": "0.2.0-draft", "instanceId": "unit-one", "attemptId": "unit-one-1",
+  {"aimVersion": "0.2.0-draft", "instanceId": "edit-auth", "attemptId": "edit-auth-1",
    "definition": {"id": "repository.update-file-v1",
                   "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"},
    "inputDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
    "dependencies": [], "readVersions": {},
-   "effects": {"declared": [{"kind": "write", "resource": "repo://workspace/README.md"}],
+   "effects": {"declared": [{"kind": "write", "resource": "repo://workspace/src/auth.py"}],
                "inferred": [], "observed": [],
                "coverage": {"status": "complete", "domain": "exact repository paths",
                             "method": "user declaration"}},
@@ -49,12 +66,12 @@ record. This complete request asks whether two units that both write
                  "assumptions": ["no aliases or generated dependencies"],
                  "observationContract": "normalized repository tree",
                  "executionContract": "no execution; analysis only", "assuranceClass": 1}]},
-  {"aimVersion": "0.2.0-draft", "instanceId": "unit-two", "attemptId": "unit-two-1",
+  {"aimVersion": "0.2.0-draft", "instanceId": "edit-setup-doc", "attemptId": "edit-setup-doc-1",
    "definition": {"id": "repository.update-file-v1",
                   "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"},
    "inputDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
    "dependencies": [], "readVersions": {},
-   "effects": {"declared": [{"kind": "write", "resource": "repo://workspace/README.md"}],
+   "effects": {"declared": [{"kind": "write", "resource": "repo://workspace/docs/setup.md"}],
                "inferred": [], "observed": [],
                "coverage": {"status": "complete", "domain": "exact repository paths",
                             "method": "user declaration"}},
@@ -65,20 +82,58 @@ record. This complete request asks whether two units that both write
                  "executionContract": "no execution; analysis only", "assuranceClass": 1}]}]}
 ```
 
-- Give every unit a distinct `instanceId` and `attemptId`, and list every
-  resource it touches under `effects.declared` with a `kind` (`read`, `write`,
-  `call`, `transform`, `emit`, `delete`, `deploy` or `unknown`) and an exact
-  resource such as `repo://<workspace>/<path>`.
-- Use `"status": "partial"` or `"unknown"` in `coverage` when the declared
-  effects may be incomplete. Never claim `complete` coverage you do not have.
-- Use exact digests when the definition and input are known. Placeholder
-  digests like the ones above make the input synthetic: say so in
+- Give every unit a distinct `instanceId`, `attemptId`, `definition.digest` and
+  `inputDigest`, and list every resource it touches under `effects.declared`
+  with a `kind` (`read`, `write`, `call`, `transform`, `emit`, `delete`,
+  `deploy` or `unknown`) and the resource `repo://workspace/<path>`.
+- A unit that must wait for another lists that unit's `instanceId` under
+  `dependencies` and declares a `read` of the file the other unit writes.
+- `coverage.status` is `complete` when the user named the exact files each unit
+  touches: the request declares exactly those paths, so say `complete` and add
+  nothing you were not told. Use `partial` or `unknown` only when the user says
+  other files may be touched or you cannot name them. Never claim `complete`
+  for files you guessed, and never write `partial` just to be careful: it turns
+  every pair into `unknown`.
+- Placeholder digests like the ones above make the input synthetic: say so in
   `source.description` and in your report.
-- For a Git or worktree request use `kind` `git` with
-  `{gitAnalysisRequestVersion, repository, baseRevision, operations}` instead.
 
-If the tool refuses the request, report the refusal reason verbatim and fix
-only the field it names; do not invent another shape.
+### `git`
+
+`request` is `{gitAnalysisRequestVersion, repository, baseRevision, operations}`.
+`repository` is the registered workspace's root directory. Every operation needs
+all five fields. The documented result for this request is
+`independent-candidate` when the two branches change different files:
+
+```json kind=git result=independent-candidate constraints=requires-execution-contract-before-parallelism
+{"gitAnalysisRequestVersion": "0.1.0-alpha",
+ "repository": "<workspace root directory>",
+ "baseRevision": "main",
+ "operations": [
+  {"instanceId": "branch-one", "attemptId": "branch-one-1", "dependencies": [],
+   "uncertainPaths": [], "source": {"kind": "commit", "revision": "feature-one"}},
+  {"instanceId": "branch-two", "attemptId": "branch-two-1", "dependencies": [],
+   "uncertainPaths": [], "source": {"kind": "commit", "revision": "feature-two"}}]}
+```
+
+### `units`
+
+`request` is `{unitsRequestVersion, units}`. Resources are plain
+workspace-relative paths such as `docs/guide.md`: no `repo://`, drive letter,
+leading `/` or `..`. A `coverage` claim is accepted and ignored. The documented
+result for two units that write the same file is `conflicting`:
+
+```json kind=units result=conflicting constraints=serialize-or-isolate
+{"unitsRequestVersion": "0.1.0-alpha",
+ "units": [
+  {"id": "edit-one", "effects": [{"kind": "write", "resource": "docs/guide.md"}]},
+  {"id": "edit-two", "effects": [{"kind": "write", "resource": "docs/guide.md"}],
+   "dependencies": []}]}
+```
+
+If the tool refuses the request, the refusal names a JSON Pointer and the
+expected form. Report the refusal reason verbatim, fix only the field it names
+and call once more; do not invent another shape. An accepted result is final:
+do not call again to get a different classification.
 
 ## Explain the returned evidence
 
