@@ -22,6 +22,10 @@ This relay expects newline-delimited JSON-RPC, at most 1 MiB per line and 4,096 
 events; invalid, missing or duplicate `analyze-work` definitions, outstanding requests, subprocess errors,
 truncation and limit violations mark the receipt incomplete. It does not aggregate paginated listings or
 establish that all tools were listed; each `tools/list` response must contain exactly one `analyze-work`.
+All client-initiated requests with IDs are tracked until a server response; duplicate outstanding IDs,
+invalid IDs and ambiguous request/response messages invalidate the receipt. Server-initiated requests and
+client responses are not correlated with client-initiated requests, even when IDs collide. A successful
+`tools/call` receipt requires a matching response but does not assert that its analysis succeeded.
 The caller must supervise the process and use a timeout: ordinary stdio backpressure can block a peer.
 After client EOF the relay allows five seconds for server shutdown, then terminates its process group.
 An abrupt kill can leave an empty or partial receipt, which must be rejected, not treated as success.

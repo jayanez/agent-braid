@@ -28,6 +28,15 @@ def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode("utf-8")
 
 
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON key")
+        result[key] = value
+    return result
+
+
 class Observer:
     def __init__(self):
         self.pending = {}
@@ -53,22 +62,26 @@ class Observer:
 
     def line(self, direction, raw):
         try:
-            msg = json.loads(raw)
-            if not isinstance(msg, dict):
+            msg = json.loads(raw, object_pairs_hook=unique_object)
+            if not isinstance(msg, dict) or msg.get("jsonrpc") != "2.0":
                 raise ValueError
             ident = msg.get("id")
-            if ident is not None and (isinstance(ident, bool) or not isinstance(ident, (str, int))):
+            if "id" in msg and (isinstance(ident, bool) or not isinstance(ident, (str, int))):
                 raise ValueError
             if isinstance(ident, str) and len(ident) > 128:
                 raise ValueError
             key = (type(ident).__name__, ident)
-            if direction == "in":
-                method = msg.get("method")
-                if method in ("initialize", "tools/list") and ident is not None:
+            if "method" in msg:
+                method = msg["method"]
+                if not isinstance(method, str) or "result" in msg or "error" in msg:
+                    raise ValueError
+                if direction == "in" and method in ("initialize", "tools/list", "tools/call") and "id" not in msg:
+                    raise ValueError
+                if direction == "in" and "id" in msg:
                     if key in self.pending or len(self.pending) >= MAX_EVENTS:
                         raise ValueError
                     self.pending[key] = method
-                if method == "tools/call" and isinstance(msg.get("params"), dict) and msg["params"].get("name") == "analyze-work":
+                if direction == "in" and method == "tools/call" and isinstance(msg.get("params"), dict) and msg["params"].get("name") == "analyze-work":
                     params = msg.get("params")
                     args = params.get("arguments") if isinstance(params, dict) else None
                     request = args.get("request") if isinstance(args, dict) else None
@@ -76,8 +89,14 @@ class Observer:
                     if len(self.receipt["calls"]) >= MAX_EVENTS:
                         raise ValueError
                     self.receipt["calls"].append({"requestType": request_type})
-            elif key in self.pending:
+            else:
+                if "id" not in msg or ("result" in msg) == ("error" in msg):
+                    raise ValueError
+                if direction != "out" or key not in self.pending:
+                    return
                 method = self.pending.pop(key)
+                if method not in ("initialize", "tools/list", "tools/call"):
+                    return
                 result = msg.get("result")
                 if not isinstance(result, dict):
                     self.fail("rpc_error")
@@ -86,7 +105,7 @@ class Observer:
                     if not isinstance(version, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", version):
                         raise ValueError
                     self.receipt["protocolVersion"] = version
-                else:
+                elif method == "tools/list":
                     tools = result.get("tools")
                     if not isinstance(tools, list) or len(tools) > MAX_EVENTS:
                         raise ValueError

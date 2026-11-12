@@ -12,6 +12,7 @@ import tempfile
 import unittest
 import importlib.util
 from pathlib import Path
+from scripts import spec069_stdio_proxy as proxy
 
 PROXY = Path(__file__).resolve().parents[1] / "scripts/spec069_stdio_proxy.py"
 SERVER = r'''
@@ -29,7 +30,94 @@ for line in sys.stdin.buffer:
 '''
 
 
+class CorrelationTests(unittest.TestCase):
+    def send(self, observer, direction, **message):
+        observer.feed(direction, json.dumps({"jsonrpc": "2.0", **message}).encode() + b"\n")
+
+    def test_bidirectional_id_collision_does_not_consume_listing(self):
+        observer = proxy.Observer()
+        self.send(observer, "in", id=7, method="tools/list")
+        self.send(observer, "out", id=7, method="sampling/createMessage", params={"secret": "PRIVATE-PROMPT"})
+        self.send(observer, "in", id=7, result={"secret": "PRIVATE-RESPONSE"})
+        self.assertEqual(observer.receipt["listings"], [])
+        self.assertTrue(observer.pending)
+        self.send(observer, "out", id=7, result={"tools": [{"name": "analyze-work"}]})
+        self.assertEqual(len(observer.receipt["listings"]), 1)
+        self.assertFalse(observer.pending)
+        self.assertNotIn("PRIVATE", json.dumps(observer.receipt))
+
+    def test_forged_request_with_result_is_never_a_response(self):
+        observer = proxy.Observer()
+        self.send(observer, "in", id=1, method="tools/list")
+        self.send(observer, "out", id=1, method="sampling/createMessage", result={"tools": [{"name": "analyze-work"}]})
+        self.assertEqual(observer.receipt["listings"], [])
+        self.assertTrue(observer.pending)
+        self.assertTrue(observer.receipt["errors"])
+
+    def test_duplicate_and_invalid_client_request_ids_fail_closed(self):
+        for bad in (None, True, 1.5, [], "x" * 129):
+            with self.subTest(bad=bad):
+                observer = proxy.Observer()
+                self.send(observer, "in", id=bad, method="tools/call", params={"name": "analyze-work"})
+                self.assertTrue(observer.receipt["errors"])
+        observer = proxy.Observer()
+        self.send(observer, "in", id="PRIVATE-ID", method="tools/list")
+        self.send(observer, "in", id="PRIVATE-ID", method="tools/call", params={"name": "analyze-work"})
+        self.assertTrue(observer.receipt["errors"])
+        self.assertNotIn("PRIVATE-ID", json.dumps(observer.receipt))
+
+    def test_unrelated_request_cannot_reuse_pending_id(self):
+        observer = proxy.Observer()
+        self.send(observer, "in", id=1, method="other/request")
+        self.send(observer, "in", id=1, method="tools/list")
+        self.assertTrue(observer.receipt["errors"])
+        self.send(observer, "out", id=1, result={"tools": [{"name": "analyze-work"}]})
+        self.assertEqual(observer.receipt["listings"], [])
+
+    def test_invalid_responses_leave_request_pending_without_leaking_payload(self):
+        for response in ({"id": 1, "result": {}, "error": {"message": "PRIVATE-ERROR"}},
+                         {"id": 1}, {"id": None, "result": {}}, {"id": True, "result": {}}):
+            with self.subTest(response=response):
+                observer = proxy.Observer()
+                self.send(observer, "in", id=1, method="tools/call", params={"name": "analyze-work"})
+                self.send(observer, "out", **response)
+                self.assertTrue(observer.receipt["errors"])
+                self.assertTrue(observer.pending)
+                self.assertNotIn("PRIVATE", json.dumps(observer.receipt))
+
+    def test_call_response_completes_only_matching_server_response(self):
+        observer = proxy.Observer()
+        self.send(observer, "in", id="call", method="tools/call", params={"name": "analyze-work", "arguments": {"request": {}}})
+        self.send(observer, "out", id="other", result={})
+        self.assertTrue(observer.pending)
+        self.send(observer, "out", id="call", result={"content": [{"text": "PRIVATE-RESULT"}]})
+        self.assertFalse(observer.pending)
+        self.assertFalse(observer.receipt["errors"])
+        self.assertNotIn("PRIVATE", json.dumps(observer.receipt))
+
+    def test_duplicate_json_keys_cannot_forge_response_or_id(self):
+        observer = proxy.Observer()
+        self.send(observer, "in", id=1, method="tools/list")
+        observer.feed("out", b'{"jsonrpc":"2.0","id":2,"id":1,"result":{"tools":[{"name":"analyze-work"}]}}\n')
+        self.assertTrue(observer.pending)
+        self.assertEqual(observer.receipt["listings"], [])
+        self.assertTrue(observer.receipt["errors"])
+
+
 class ProxyTests(unittest.TestCase):
+    def test_unanswered_analyze_work_call_is_incomplete(self):
+        with tempfile.TemporaryDirectory() as temp:
+            receipt = Path(temp) / "receipt.json"
+            server = "import sys; sys.stdin.buffer.read()"
+            call = {"jsonrpc": "2.0", "id": 8, "method": "tools/call", "params": {"name": "analyze-work", "arguments": {"request": {"secret": "PRIVATE-REQUEST"}}}}
+            result = subprocess.run([sys.executable, str(PROXY), "--receipt", str(receipt), "--", sys.executable, "-c", server],
+                                    input=json.dumps(call).encode() + b"\n", capture_output=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            evidence = json.loads(receipt.read_text())
+            self.assertFalse(evidence["complete"])
+            self.assertIn("incomplete_message", evidence["errors"])
+            self.assertNotIn("PRIVATE-REQUEST", json.dumps(evidence))
+
     def test_transparent_and_private_per_connection_receipt(self):
         messages = [
             {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-03-26"}},
