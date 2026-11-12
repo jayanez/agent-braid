@@ -120,7 +120,7 @@ class SkillExampleTests(GuidanceCase):
 class ToolDescriptionTests(unittest.TestCase):
     def test_description_chooses_the_kind_and_and_states_the_coverage_rule(self):
         text = tooling_mcp._ANALYZE_WORK_SCHEMA_HELP
-        for phrase in ("aim", "git", "units", "independent-candidate", "coverage complete if files are named"):
+        for phrase in ("aim", "git", "units", "independent-candidate", "coverage complete if files named"):
             self.assertIn(phrase, text)
 
     def test_git_source_refusal_states_the_commit_form(self):
