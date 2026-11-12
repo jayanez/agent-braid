@@ -1,10 +1,22 @@
 {
   "authorization": "specs/049-harness-evaluation-learning/evidence/registration/t005-owner-decisions-20261112.json",
-  "candidateBinding": "Branch feat/049-t005-deterministic-cohort on develop 7e764596 (parent commit 21185d46c4b7e7774385d1213639145c348ff83b); input hashes below",
+  "candidateBinding": "Branch feat/049-t005-deterministic-cohort on develop 7e764596 (parent commit 91ca786b94231dfa40c16e29244cedd7d7406d0f); input hashes below",
   "commands": [
     "python3.13 -m tests.harness_t005_cohort"
   ],
-  "executedChecks": [],
+  "executedChecks": [
+    {
+      "command": "python3.13 -m tests.harness_t005_cohort",
+      "exitCode": 0,
+      "scope": "The authorized single run; output equals the results key of evidence/evaluation/deterministic-cohort-20261112.json"
+    },
+    {
+      "command": "python3.13 -m unittest tests.test_harness_t005_cohort tests.test_harness_evaluation tests.test_harness_guidance_double",
+      "exitCode": 0,
+      "scope": "Cohort controls (19) plus the evaluation and double modules, Python 3.13 (/opt/homebrew)",
+      "testsRun": 83
+    }
+  ],
   "executionAuthorization": false,
   "inputs": {
     "agent_braid/harness_costs.py": "d60212a1922500bdc6a2275ff7dbdcf421e3f9258a7ba0931a8727c25f985f5e",
@@ -18,11 +30,11 @@
     "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-founder-freeze-20261030.json": "499fe88d8bda05a500dcef2cb07e55429aad3ff59c5a0f2aefe2e9f9887741ff",
     "specs/049-harness-evaluation-learning/evidence/registration/t005-units-freeze-20261112.json": "469135c420a01a5b56dbf49529f6a822c8b6469ef0d8ed9cbc8a95c5920bd934",
     "tests/harness_guidance_double.py": "12090b191da647019f6e73b6e538797767af383c4f94bf86be4bf20fa0dd21fa",
-    "tests/harness_t005_cohort.py": "cc929fc03c8e9e1d872b4fa0dbb63f76c448972a8a0d1e0c0439e25c9a8792f3"
+    "tests/harness_t005_cohort.py": "3bf7f0175212f35727c9bc394b9d220021d5530acc4d583345d10bdba4f30809"
   },
   "interpretation": "Descriptive counts of how the R13 double behaves under frozen oracles. B interrupted on L1-C02-a is the double's designed stop-on-drift switch; the evaluation convention scores an interrupted attempt as not-completed, so that cell reads as a B shortfall although it is the designed behaviour. A completes the drift case only because the double ignores drift. The oracles are derived from the same owned scenarios as the double, so they are not independent of it.",
   "label": "synthetic-control",
-  "limits": "Plumbing only. Descriptive-only under D3 (one holdout lineage, 1 and 4 units against a minimum of 19; reasons below-D3-minimum and repeated-within-lineage); no noninferiority verdict, no utility, refinement, library, inferential, economic, adoption or promotion claim. Arm C equals arm A by construction (keep-base) and arm D was not run. The synthetic-control rows are verdict-ineligible and excluded from every D4 verdict. Not computed: false safe admissions, missed safe parallelism, correction and review effort, interrupted-recovery, conflict precision and recall (the double has no such notions). Costs: every measure is unknown (no exporter, no reservations); cost claims are blocked, and the authorized EUR 0 is a statement that no paid route exists, not an observed invoice. The one discovery base probe is outside the T012 ledger. No host, model, native session, paid route or human annotation. Reviews by Claude subagents are not independent Luna review.",
+  "limits": "Plumbing only. Descriptive-only under D3 (one holdout lineage, 1 and 4 units against a minimum of 19; reasons below-D3-minimum and repeated-within-lineage); no noninferiority verdict, no utility, refinement, library, inferential, economic, adoption or promotion claim. Arm C equals arm A by construction (keep-base) and arm D was not run. The synthetic-control rows are verdict-ineligible and excluded from every D4 verdict. Not computed: false safe admissions, missed safe parallelism, correction and review effort, interrupted-recovery, conflict precision and recall (the double has no such notions). Costs: every measure is unknown (no exporter, no reservations); cost claims are blocked, and the authorized EUR 0 is a statement that no paid route exists, not an observed invoice. The one discovery base probe is outside the T012 ledger. The authorized run is the recorded execution; the unit tests recompute the same deterministic result and compare it with this record. No host, model, native session, paid route or human annotation. Reviews by Claude subagents are not independent Luna review.",
   "method": "python3.13 -m tests.harness_t005_cohort: build six Units, run a keep-base round whose only probe is the R13 double on discovery L2-C01-a, register the five L1 holdout cases with arms A, B and C (C is A), run the double once per unit and arm, observe, commit, grade with each unit's FixtureOracle and report with harness_evaluation.evaluate.",
   "nativeAdmission": false,
   "outcomeSummary": {

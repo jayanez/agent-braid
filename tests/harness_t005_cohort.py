@@ -5,13 +5,14 @@ Builds the Units for the six lineage-assigned roster cases, a keep-base arm-C ro
 the three-arm registration, then runs the registered cohort once with the R13 guidance
 double as solver. The double encodes the behaviour it reports, and the oracles below are
 written from the same owned scenarios, so every outcome shows that registration,
-observation, commitment, grading, denominators and cost reporting connect end to end. It
+observation, commitment, grading, denominators and the blocked-cost path connect end to end. It
 shows nothing about whether any guidance helps. Arm C is arm A by construction (keep-base)
 and arm D is not run. Nothing reads a clock, host, model or network, and no record carries
 execution authority. ``python -m tests.harness_t005_cohort`` prints the result record.
 """
 from __future__ import annotations
 
+import functools
 from hashlib import sha256
 import json
 import sys
@@ -39,9 +40,9 @@ NOW = 1_800_000_000
 SECRET = "sk-test-SECRET-0123456789"
 UNKNOWN_COST = {"status": "unknown", "reason": "offline-double-no-exporter"}
 COST_KEYS = ("cash", "quota", "wall", "cpu", "rss", "disk", "journal", "processes", "human")
-LABEL = double.LABEL
 
 
+@functools.cache
 def _inventory() -> obs.ExportInventory:
     wire = {"format": obs.INVENTORY_FORMAT, "allowedEventFields": ["text", "state"],
             "secrets": [SECRET], "maxRetentionSeconds": 3600}
@@ -106,14 +107,13 @@ def attempt(case_id: str, unit: ver.Unit, files: dict[str, bytes], candidate: st
     """Run the double on one case and return (double record, commitment, outputs)."""
     record = double.run(case_id, files, candidate_sha256=candidate).to_dict()
     outputs = result_output(case_id, record)
-    after = {RESULT_PATH: outputs} if outputs is not None else {}
+    committed = {RESULT_PATH: outputs} if outputs is not None else None
     observation = obs.observe(record["events"], manifest_sha256=manifest_sha256,
                               attempt_id=attempt_id, source="fixture", inventory=_inventory(),
-                              now=NOW, retention_seconds=60, before={}, after=after)
+                              now=NOW, retention_seconds=60, before={}, after=committed or {})
     commitment = ver.commit(unit, candidate_sha256=candidate, observation=observation,
-                            outputs={RESULT_PATH: outputs} if outputs is not None else None,
-                            now=NOW)
-    return record, commitment, ({RESULT_PATH: outputs} if outputs is not None else None)
+                            outputs=committed, now=NOW)
+    return record, commitment, committed
 
 
 def keep_base_round(units: dict[str, ver.Unit]):
@@ -127,7 +127,10 @@ def keep_base_round(units: dict[str, ver.Unit]):
         _, commitment, outputs = attempt(DISCOVERY, discovery, {}, double.ARM_SHA256["A"],
                                          "discovery-base", manifest.sha256)
         verdict = ver.verify_unit(discovery, commitment, outputs).to_dict()
-        passed = verdict["oracle"]["verdict"] == "pass"
+        oracle = verdict["oracle"]["verdict"]
+        if oracle not in ver.VERDICTS:
+            raise ValueError("ungraded-base-probe")
+        passed = oracle == "pass"
         return {"terminal": commitment.data["terminal"],
                 "score": ver.MAX_SCORE_MICROS if passed else 0,
                 "observationSha256": commitment.data["observationSha256"]}
@@ -178,22 +181,16 @@ def results() -> dict[str, Any]:
     """Deterministic, JSON-ready result of one run (what the evidence record stores)."""
     run = run_cohort()
     report = run["report"].to_dict()
-    strata = {}
-    for name, s in report["strata"].items():
-        strata[name] = {
-            "units": s["units"], "lineages": s["lineages"],
-            "arms": {a: {k: v for k, v in arm.items()} for a, arm in s["arms"].items()},
-            "comparisons": s["comparisons"]}
     return {
-        "label": LABEL, "verdictEligible": False,
+        "label": double.LABEL, "verdictEligible": False,
         "registrationSha256": run["registration"].sha256, "reportSha256": run["report"].sha256,
         "refinement": report["refinement"], "refinementDecisionSha256": run["decision"].sha256,
         "manifestSha256": run["manifest"].sha256, "policySha256": run["policy"].sha256,
-        "order": thaw(run["registration"].data["order"]),
+        "order": run["registration"].to_dict()["order"],
         "unitSha256": {c: u.sha256 for c, u in sorted(run["units"].items())},
         "rows": [{"unitId": r["unitId"], "arm": r["arm"], "outcome": r["outcome"],
-                  "terminal": r.get("terminal")} for r in report["rows"]],
-        "attempts": run["detail"], "strata": thaw(strata),
+                  "terminal": r["terminal"]} for r in report["rows"]],
+        "attempts": run["detail"], "strata": report["strata"],
         "costs": {"blockers": report["costs"]["economic"]["blockers"],
                   "claimBlocked": report["costs"]["economic"]["claimBlocked"]},
         "pendingEndpoints": report["pendingEndpoints"],

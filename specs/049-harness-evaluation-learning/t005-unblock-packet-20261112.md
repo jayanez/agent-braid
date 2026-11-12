@@ -240,8 +240,8 @@ false everywhere and the roster freeze authorizes construction only.
 - (c) **No run authorization**; close T005 deterministic path as infeasible and
   wait for native.
 
-**What T005 could then claim.** (a): the pipeline, oracle independence from the
-solver where it exists, full denominators and zero cost; every verdict
+**What T005 could then claim.** (a): the pipeline, full denominators and cost
+reporting with unknown measures (the oracles are derived from the double's scenarios, so they are not independent of it); every verdict
 `descriptive-only` (reasons `repeated-within-lineage`, `below-D3-minimum`). It
 cannot claim false safe admissions, missed parallelism or review effort: the
 double has no such notions and `PENDING_ENDPOINTS` lists them as not computed
@@ -283,7 +283,7 @@ adding evidence.
 
 | R11 | R8 | Run | T005 can say | T005 cannot say |
 |---|---|---|---|---|
-| built | (b) keep-base | (a) run | Pipeline runs end to end offline; A/B differ where the double's frozen mapping predicts; C = A by construction; all denominators and zero cost shown; descriptive-only | Any utility, refinement, library or inferential result; false-safe, missed-parallelism, review-effort endpoints |
+| built | (b) keep-base | (a) run | Pipeline runs end to end offline; A/B differ where the double's frozen mapping predicts; C = A by construction; all denominators shown and cost claims blocked (measures unknown); descriptive-only | Any utility, refinement, library or inferential result; false-safe, missed-parallelism, review-effort endpoints |
 | built | (a) defer | (b) dry | Registration cannot bind C, so nothing | Cohort registered |
 | not built | any | any | Status quo (infeasible) | Anything new |
 

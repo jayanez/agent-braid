@@ -7,11 +7,13 @@ import unittest
 
 from agent_braid import harness_evaluation as ev
 from agent_braid import harness_verification as ver
+from agent_braid.harness_host_codex import VerifierRequest
 from tests import harness_guidance_double as double
 from tests import harness_t005_cohort as cohort
 
 REGISTRATION = Path(__file__).resolve().parents[1] / (
     "specs/049-harness-evaluation-learning/evidence/registration")
+ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = Path(__file__).resolve().parents[1] / (
     "specs/049-harness-evaluation-learning/evidence/evaluation/"
     "deterministic-cohort-20261112.json")
@@ -51,7 +53,8 @@ class UnitFreezeTests(unittest.TestCase):
         repeated = {cohort.RESULT_PATH: b"done: s1 s2 s3 s4\nrepeated: s1 s2\n"}
         partial = {cohort.RESULT_PATH: b"done: s3 s4\nrepeated: none\n"}
         for outputs, accepted in ((good, True), (repeated, False), (partial, False)):
-            self.assertIs(unit.oracles[0]._accepts(outputs), accepted)
+            request = VerifierRequest("attempt-1", "a" * 64, "b" * 64, outputs)
+            self.assertEqual(unit.oracles[0].verify(request), "pass" if accepted else "fail")
 
     def test_arm_c_freeze_matches_a_fresh_keep_base_round(self):
         manifest, policy, decision = cohort.keep_base_round(self.units)
@@ -146,15 +149,48 @@ class CohortRunTests(unittest.TestCase):
         self.assertTrue(self.result["costs"]["claimBlocked"])
         self.assertIn("unknown-cash", self.result["costs"]["blockers"])
         self.assertEqual(self.result["pendingEndpoints"], list(ev.PENDING_ENDPOINTS))
-        self.assertNotIn("verdict", json.dumps(self.result["strata"]).replace('"verdict": null', ""))
+        verdicts = []
+
+        def walk(node):
+            if isinstance(node, dict):
+                verdicts.extend(v for k, v in node.items() if k == "verdict")
+                for value in node.values():
+                    walk(value)
+            elif isinstance(node, list):
+                for value in node:
+                    walk(value)
+        walk(self.result["strata"])
+        self.assertEqual(len(verdicts), 4)
+        self.assertTrue(all(v is None for v in verdicts))
+        self.assertNotIn(cohort.SECRET, json.dumps(self.result))
 
     def test_a_run_is_deterministic(self):
         self.assertEqual(json.dumps(cohort.results(), sort_keys=True),
                          json.dumps(self.result, sort_keys=True))
 
     def test_double_inputs_are_unchanged(self):
-        self.assertEqual(sha256(Path(double.__file__).read_bytes()).hexdigest(),
-                         "12090b191da647019f6e73b6e538797767af383c4f94bf86be4bf20fa0dd21fa")
+        recorded = json.loads(EVIDENCE.read_text(encoding="utf-8"))["inputs"]
+        for path in ("tests/harness_guidance_double.py", "specs/049-harness-evaluation-learning/case-roster.md",
+                     "specs/049-harness-evaluation-learning/evaluation-protocol.md"):
+            self.assertEqual(sha256((ROOT / path).read_bytes()).hexdigest(), recorded[path], path)
+        self.assertEqual(recorded["specs/049-harness-evaluation-learning/case-roster.md"],
+                         cohort.ROSTER_SHA256)
+
+    def test_terminals_and_behaviour_of_every_cell_are_pinned(self):
+        terminals = {(r["unitId"], r["arm"]): r["terminal"] for r in self.result["rows"]}
+        for key, terminal in terminals.items():
+            self.assertEqual(terminal, "interrupted" if key == ("L1-C02-a", "B") else "completed")
+        by = {(a["caseId"], a["arm"]): (a["executed"], a["repeated"]) for a in self.result["attempts"]}
+        self.assertEqual(by[("L1-C01-a", "A")], (["s1", "s2", "s3", "s4"], ["s1", "s2"]))
+        self.assertEqual(by[("L1-C01-a", "B")], (["s3", "s4"], []))
+        self.assertEqual(by[("L1-C03-c", "A")], (["w1", "w2"], ["w1"]))
+        self.assertEqual(by[("L1-C03-c", "B")], (["w2"], []))
+        self.assertEqual(by[("L1-C02-a", "B")], ([], []))
+
+    def test_an_interrupted_attempt_commits_no_result(self):
+        record = double.run("L1-C02-a", double.arm_files("B"),
+                            candidate_sha256=double.ARM_SHA256["B"]).to_dict()
+        self.assertIsNone(cohort.result_output("L1-C02-a", record))
 
     def test_recorded_run_evidence_equals_a_fresh_run(self):
         recorded = json.loads(EVIDENCE.read_text(encoding="utf-8"))
