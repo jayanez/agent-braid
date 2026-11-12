@@ -11,20 +11,13 @@ from __future__ import annotations
 
 import hashlib
 import json
-from pathlib import Path
-import re
 
 from . import lightning_runner as runner_mod
-from . import lightning_store as store_mod
-from .lightning_algorithm import Algorithm, _now
-from .lightning_config import digest
-from .lightning_resources import CANDIDATE_SCHEMA, ORIGIN_PATH, MAX_TEXT, Candidate, seed, sha256_text, split_skill
+from .lightning_algorithm import PROMPTS, Algorithm, _now, experiments, rank, render, score
+from .lightning_resources import CANDIDATE_SCHEMA, ORIGIN_PATH, MAX_TEXT, Candidate, sha256_text
 
 MAX_ROUNDS = 3  # ProTeGi-style optimization overfits after about 3 steps (SPEC-072 REQ-007)
-PROMPTS = Path(__file__).resolve().parent / 'lightning_prompts'
 TEMPLATES = {'gradient': PROMPTS / 'apo_text_gradient.md', 'edit': PROMPTS / 'apo_apply_edit.md'}
-_PLACEHOLDER = re.compile(r'\{(prompt_template|experiments|critique)\}')
-_HEADER = re.compile(r'\A(?:<!--.*?-->\s*)+', re.S)
 
 
 def template_hashes() -> dict[str, str]:
@@ -36,30 +29,8 @@ def template_set_sha256() -> str:
     return hashlib.sha256(json.dumps(template_hashes(), sort_keys=True).encode()).hexdigest()
 
 
-def render(role: str, **values: str) -> str:
-    """Fill a template in one pass, so placeholder-like text inside a value is never expanded."""
-    text = _HEADER.sub('', TEMPLATES[role].read_text(encoding='utf-8'))
-    return _PLACEHOLDER.sub(lambda m: values[m.group(1)], text)
-
-
-def experiments(vectors: list[dict]) -> str:
-    return '\n'.join(
-        f"- {v['caseId']} on {v['host']}: first attempt {'passed' if v['d4FirstAttempt'] else 'failed'} D4; "
-        f"request {'schema-valid' if v['schemaValid'] else 'schema-invalid'}; "
-        f"reasons: {', '.join(v.get('reasons') or []) or 'none'}; refusal: {v.get('refusal') or 'none'}"
-        for v in vectors)
-
-
-def score(vectors: list[dict]) -> dict | None:
-    if not vectors:
-        return None
-    n = len(vectors)
-    return {'d4FirstAttempt': round(sum(bool(v['d4FirstAttempt']) for v in vectors) / n, 6),
-            'schemaValid': round(sum(bool(v['schemaValid']) for v in vectors) / n, 6), 'rollouts': n}
-
-
-def _key(node: dict) -> float:
-    return node['score']['d4FirstAttempt'] if node['score'] else -1.0
+def _key(node: dict) -> tuple[float, float]:
+    return rank(node['score'])
 
 
 class APO(Algorithm):
@@ -83,14 +54,7 @@ class APO(Algorithm):
         cases = [c['id'] for c in json.loads(
             (runner_mod.checkout_root() / runner_mod.PROMPT_FILES['development']).read_text())['cases']]
         hosts = len(rollout['hosts'])
-        store = store_mod.RunStore(home, run_id)
-        store.create(config_digest=digest(config))
-        raw = self.skill_text(config)
-        front_sha = sha256_text(split_skill(raw)[0])
-        seed_record, seed_body = seed(raw, created_at=_now(),
-                                      dev_score={'minibatch': None, 'full': score(self.seed_vectors)})
-        store.write_candidate_text(seed_record.sha256, seed_body)
-        store.append('candidate', seed_record)
+        store, seed_record, seed_body, front_sha = self.start(home, config, run_id, self.seed_vectors)
         template_sha = template_set_sha256()
 
         state = {'rollouts': 0, 'stop': None}
@@ -122,7 +86,7 @@ class APO(Algorithm):
                 beam[0]['score'] = score(beam[0]['vectors'])
             children = []
             for parent in list(beam):
-                critique = ask(render('gradient', prompt_template=parent['body'],
+                critique = ask(render(TEMPLATES['gradient'], prompt_template=parent['body'],
                                       experiments=experiments(parent['vectors'])))
                 if critique is None:
                     break
@@ -131,7 +95,7 @@ class APO(Algorithm):
                     failed_calls += 1
                     continue
                 for _ in range(algo['branchFactor']):
-                    edit = ask(render('edit', prompt_template=parent['body'], critique=critique_text))
+                    edit = ask(render(TEMPLATES['edit'], prompt_template=parent['body'], critique=critique_text))
                     if edit is None:
                         break
                     edit_id, body, edit_check = edit

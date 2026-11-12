@@ -116,7 +116,7 @@ class APOTests(unittest.TestCase):
         self.assertEqual((fake.inputs, channel.calls), ([], []))
 
     def test_render_fills_placeholders_once(self):
-        text = apo.render('edit', prompt_template='keep {critique} literal', critique='C')
+        text = apo.render(apo.TEMPLATES['edit'], prompt_template='keep {critique} literal', critique='C')
         self.assertIn('keep {critique} literal', text)
         self.assertNotIn('<!--', text)
 
