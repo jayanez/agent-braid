@@ -5,13 +5,13 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_algorithm.py": "886879ff4eb7aad0e9f5c5f07d1b1395eebbc4f49e919e14c974763954876d5f",
-  "agent_braid/lightning_apo.py": "32368e3a29bf36c55d5b1582a7e0200b25af1c731b5c1540936dfa1449a5c6d3",
+  "agent_braid/lightning_algorithm.py": "b31dbe61bac8a3135e475bbba3dc23655f4a7e15fde157f87a42f8a3b304bf5c",
+  "agent_braid/lightning_apo.py": "dd5115f286abb39b1c2807bad2f5f5bf1f9bcd5fd6e1c611cada00724a5248db",
   "agent_braid/lightning_prompts/apo_apply_edit.md": "d993094869cbb040c26b78b8969012fdbb16c52959b7c39be8725729d031ce58",
   "agent_braid/lightning_prompts/apo_text_gradient.md": "5cde3e3ba09249dfd4109120ced5304ab83b9e80f3c9dbf280dda880120e78af",
   "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",
   "agent_braid/lightning_runner.py": "b11e461109fa3db8de8f4d1c575c0a0ffc36c0fd2179d743259c03bfd186f7ec",
-  "tests/test_lightning_apo.py": "8cd764eac7859afd36f7ba5a61bfc373c8e2abf5e11478c3972afb8d795a79b6"
+  "tests/test_lightning_apo.py": "63b08c8efce8492660484f5f9b562ccd2232fb350e32071282ca14e629b4e9e7"
  },
  "limits": "Fake optimizer and synthetic body-dependent rewards; no model contacted. The pre-call scan covers held-out case ids and the rollout canary only; held-out prompt text, the sandboxed optimizer host call and its read restrictions are T006. Evaluating a real candidate body through host rollouts is T009 work.",
  "outcome": "passed: With the preregistered parameters (beam 2, branch 2, 2 rounds, minibatch 5, 2 hosts, 3 repetitions) APO runs 1 then 2 parents with 2 then 4 children, 9 optimizer calls and 120 rollouts (20 + 40 search, 60 full evaluation of the best), as in the feasibility table; every APO candidate records its parent, round, two call ids, both passed contamination checks and the hash of the critique and edit templates; configuration defaults stop at the 120-rollout cap (unit-cap), configured rounds above 3 are capped at 3, the optimizer-call cap stops the run, and unusable edits are failed calls without candidates. Negative controls: an optimizer outside the runner channel is refused (optimizer-bypass), a non-fake channel is refused until the sandboxed host path exists (isolation-failed), and inputs with a held-out case id or the rollout canary are refused before any call (holdout-contamination).",

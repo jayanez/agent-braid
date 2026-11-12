@@ -51,6 +51,15 @@ PROCEDURES = {
         "outcome_note": "With the preregistered parameters (beam 2, branch 2, 2 rounds, minibatch 5, 2 hosts, 3 repetitions) APO runs 1 then 2 parents with 2 then 4 children, 9 optimizer calls and 120 rollouts (20 + 40 search, 60 full evaluation of the best), as in the feasibility table; every APO candidate records its parent, round, two call ids, both passed contamination checks and the hash of the critique and edit templates; configuration defaults stop at the 120-rollout cap (unit-cap), configured rounds above 3 are capped at 3, the optimizer-call cap stops the run, and unusable edits are failed calls without candidates. Negative controls: an optimizer outside the runner channel is refused (optimizer-bypass), a non-fake channel is refused until the sandboxed host path exists (isolation-failed), and inputs with a held-out case id or the rollout canary are refused before any call (holdout-contamination).",
         "limits": "Fake optimizer and synthetic body-dependent rewards; no model contacted. The pre-call scan covers held-out case ids and the rollout canary only; held-out prompt text, the sandboxed optimizer host call and its read restrictions are T006. Evaluating a real candidate body through host rollouts is T009 work.",
     },
+    'procedure_005': {
+        "scenario": 'SC-005',
+        "modules": ["tests.test_lightning_gepa"],
+        "inputs": ["agent_braid/lightning_gepa.py", "agent_braid/lightning_algorithm.py", "agent_braid/lightning_runner.py",
+                   "agent_braid/lightning_resources.py", "agent_braid/lightning_prompts/gepa_reflection.md",
+                   "tests/test_lightning_gepa.py"],
+        "outcome_note": "The Pareto front over per-prompt D4 scores keeps exactly the non-dominated candidates (a dominated candidate and an equal score vector are excluded) and parent sampling follows the number of prompts each front member scores best on (0.75 observed for 3 of 4 prompts); a child whose minibatch score beats its parent's is accepted, fully evaluated (60 rollouts) and replaces the dominated seed on the front, while children that do not improve are recorded with a minibatch score only and never fully evaluated; with the preregistered settings a run costs 3 minibatches of 10 plus one full evaluation, and a second accepted child whose full evaluation would exceed 120 rollouts is not evaluated (unit-cap); the reflection input holds only the parent text and the parent's minibatch vectors; the same seed repeats parent and minibatch choices; an unusable reflection is a failed call. Negative control: an optimizer outside the runner channel is refused (optimizer-bypass).",
+        "limits": "Fake optimizer and synthetic rewards; no model contacted. Implemented from the paper's description; no GEPA or DSPy code. Pre-call scan limits as in procedure_004 (T006). No-improvement stopping is T007.",
+    },
 }
 
 
