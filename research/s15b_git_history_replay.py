@@ -180,16 +180,15 @@ def _enumerate(ctx: _Context, root: Path) -> tuple[list, Counter, bool]:
             if (parts[1], parts[2]) not in seen:
                 seen.add((parts[1], parts[2]))
                 pairs.append(_Pair("merge-commit", _need_oid(parts[1]), _need_oid(parts[2]), _need_oid(parts[0])))
+    # One command for every branch not yet merged into the tip; a per-branch ancestry check
+    # exhausts the command budget on a checkout with many local branches.
     refs = ctx.git(root, "for-each-ref", "--format=%(objectname) %(refname)", "--sort=refname",
-                   "refs/heads", budget=budget, allow_failure=False)
+                   f"--no-merged={tip}", "refs/heads", budget=budget, allow_failure=False)
     for line in _text(refs.stdout).splitlines():
         oid, _, ref = line.partition(" ")
         if ref == f"refs/heads/{branch}" or not _OID.fullmatch(oid):
             continue
-        merged = ctx.git(root, "merge-base", "--is-ancestor", oid, tip, budget=budget)
-        if merged.returncode not in (0, 1):
-            raise ReplayError("git-unavailable")
-        if merged.returncode == 1 and (tip, oid) not in seen:
+        if (tip, oid) not in seen:
             seen.add((tip, oid))
             pairs.append(_Pair("branch-tip", tip, oid))
     return pairs, skipped, capped

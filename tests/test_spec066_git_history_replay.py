@@ -473,6 +473,16 @@ class HardeningTests(Base):
         self.repo.git("branch", "twin", "secret-feature-branch")
         self.assertEqual(self.run_replay()["evidence"]["pairs"]["byOrigin"]["branch-tip"], 1)
 
+    def test_many_local_branches_do_not_exhaust_the_enumeration_budget(self):
+        # A real checkout keeps hundreds of merged local branches; enumeration must not spend
+        # one git command per branch (a 64-command budget was exhausted and reported as
+        # git-unavailable).
+        self.build_history()
+        for index in range(100):
+            self.repo.git("branch", f"merged-{index:03d}", "main~1")
+        pairs = self.run_replay()["evidence"]["pairs"]
+        self.assertEqual(pairs["byOrigin"]["branch-tip"], 1)
+
     def test_total_analysis_failure_stops_the_run(self):
         self.build_history()
         with mock.patch.object(replay.shadow, "build_episode", side_effect=KeyError("x")):
