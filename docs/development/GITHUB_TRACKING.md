@@ -165,6 +165,33 @@ Private Project membership and custom status remain a separate verification.
    custom status are not currently audited by the read-only repository token,
    which lacks private user-Project access.
 
+### Deliberately unpublished milestones
+
+`unpublished_milestones` in `github-tracking.json` lists declared milestones that
+are deliberately kept off GitHub. It currently names only
+`M4.6 — Claude Code dynamic workflows` (SPEC-052, SPEC-053, SPEC-057, SPEC-058
+and SPEC-059). Without the list, every post-merge and weekly full audit failed on
+the roughly 370 operations that M4.6 always leaves pending, which hid real drift.
+
+The full audit (no scope flag) still computes and prints those operations: they
+appear under `skipped_unpublished` in the JSON output, grouped by milestone with a
+`pending` count, and a `skipped unpublished milestone` line per milestone goes to
+standard error. They are excluded only from the pass/fail decision, which depends
+on `operations` alone, and from a full `apply`, which never publishes a listed
+milestone. The skipped set is part of the plan digest when it is non-empty.
+Operations are attributed by the desired milestone of their source record, or by
+the milestone name for a milestone creation; orphan reviews and every operation of
+an unlisted milestone count exactly as before. Pull request `source` checks are
+unchanged apart from validating the list.
+
+The list is validated by `source` and every audit. An undeclared, duplicate or
+non-string entry is a configuration error, and so is an entry with a
+`milestone_numbers` binding. A full audit also fails when a listed milestone
+already exists on GitHub. Publishing a milestone therefore means removing it from
+`unpublished_milestones` in the same change that prepares its publication; its
+operations then count again, and once created its number goes in
+`milestone_numbers`.
+
 The audit deliberately does not create issues from unchecked speculative text,
 declare future M2–M4 tasks, close a parent because every child is closed, or
 convert a passing validator into approval. Source deletions and disputed states
