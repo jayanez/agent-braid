@@ -2,12 +2,12 @@
  "command": "python -m unittest tests.test_lightning_resources",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "python": "3.13.11"
  },
  "inputs": {
   "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",
   "agent_braid/lightning_schema.py": "3a5b70ded3d8696ec59eb1873d89fddb6b5400aca4443ae3a228ac804d81dc19",
-  "agent_braid/lightning_store.py": "9f6f35d2a86476de804910aa2017968032c6554025d5a17e7e1d76d1e4a502b4",
+  "agent_braid/lightning_store.py": "43ad85735cb25d64aaaf6af4973f8ca5af6f663a6607e702e0f582b2f15ec7ec",
   "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
   "tests/test_lightning_resources.py": "2f4b656b17550989475ff29acb25b4cb35380702bf141ec4e0c5a3d81a5014a1"
  },

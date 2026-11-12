@@ -14,7 +14,7 @@ import json
 import random
 
 from . import lightning_runner as runner_mod
-from .lightning_algorithm import PROMPTS, Algorithm, _now, experiments, rank, render, score
+from .lightning_algorithm import PROMPTS, Algorithm, Session, Stagnation, _now, experiments, rank, render, score
 from .lightning_resources import CANDIDATE_SCHEMA, MAX_TEXT, ORIGIN_PATH, Candidate, sha256_text
 
 TEMPLATE = PROMPTS / 'gepa_reflection.md'
@@ -83,12 +83,13 @@ class GEPA(Algorithm):
         self.seed_vectors = list(seed_vectors)
         self.rng_seed = rng_seed
 
-    def run(self, home, config: dict, *, run_id: str, **_ignored) -> dict:
-        algo, budget, rollout = config['algorithm'], config['budget'], config['rollout']
+    def run(self, home, config: dict, *, run_id: str, resume: bool = False, **_ignored) -> dict:
+        algo, rollout = config['algorithm'], config['rollout']
         cases = [c['id'] for c in json.loads(
             (runner_mod.checkout_root() / runner_mod.PROMPT_FILES['development']).read_text())['cases']]
-        hosts = len(rollout['hosts'])
-        store, seed_record, seed_body, front_sha = self.start(home, config, run_id, self.seed_vectors)
+        store, seed_record, seed_body, front_sha = self.start(home, config, run_id, self.seed_vectors, resume=resume)
+        session = Session(store, config, self.optimizer, self.evaluator, resume=resume)
+        stagnation = Stagnation()
         rng = random.Random(self.rng_seed)
         size = min(algo['minibatch'], len(cases))
         template = template_sha256()
@@ -96,14 +97,8 @@ class GEPA(Algorithm):
         pool = {seed_record.sha256: {'body': seed_body, 'full': self.seed_vectors, 'record': seed_record.to_dict()}}
         scores = {seed_record.sha256: per_case(self.seed_vectors)}
         front = pareto_front(scores, cases)
-        state = {'rollouts': 0, 'stop': None, 'failedCalls': 0}
+        failed_calls = 0
         history = []
-
-        def charge(units: int) -> bool:
-            if state['rollouts'] + units > budget['maxRollouts']:
-                state['stop'] = 'unit-cap'
-                return False
-            return True
 
         def refresh_front() -> None:
             nonlocal front
@@ -113,55 +108,56 @@ class GEPA(Algorithm):
                 member = sha in front
                 if record['algorithm'] == 'gepa' and record['paretoMember'] != member:
                     record = {**record, 'paretoMember': member, 'createdAt': _now()}
-                    store.append('candidate', Candidate.parse(record))
+                    self.record(store, Candidate.parse(record))
                     node['record'] = record
 
         seen = {seed_record.sha256}
+        stagnation.update(rank(score(self.seed_vectors)))
         for rnd in range(1, algo['rounds'] + 1):
-            if len(self.optimizer.calls) >= budget['maxOptimizerCalls']:
-                state['stop'] = 'optimizer-cap'
-                break
             parent = select_parent(front, scores, cases, rng)
             batch = sorted(rng.sample(cases, size))
             parent_vectors = [v for v in pool[parent]['full'] if v['caseId'] in batch]
-            call_id, body, check = self.optimizer.call(render(
-                TEMPLATE, prompt_template=pool[parent]['body'], experiments=experiments(parent_vectors)))
+            reply = session.call(render(TEMPLATE, prompt_template=pool[parent]['body'],
+                                        experiments=experiments(parent_vectors)))
+            if reply is None:
+                break
+            call_id, body, check = reply
             entry = {'round': rnd, 'parent': parent, 'minibatch': batch, 'child': None, 'accepted': False}
             history.append(entry)
             sha = sha256_text(body)
             if not body.strip() or len(body.encode('utf-8')) > MAX_TEXT or sha in seen:
-                state['failedCalls'] += 1  # not a usable skill body: a failed call, no candidate
-                continue
-            if not charge(size * hosts):
+                failed_calls += 1  # not a usable skill body: a failed call, no candidate
+            else:
+                child_vectors = session.evaluate(body, batch, 1)
+                if child_vectors is None:
+                    break
+                seen.add(sha)
+                minibatch = score(child_vectors)
+                entry.update(child=sha, accepted=rank(minibatch) > rank(score(parent_vectors)))
+                record = Candidate.parse({
+                    'schema': CANDIDATE_SCHEMA, 'sha256': sha, 'parentSha256': parent, 'originPath': ORIGIN_PATH,
+                    'frontMatterSha256': front_sha, 'algorithm': 'gepa', 'round': rnd, 'optimizerCalls': [call_id],
+                    'optimizerTemplateSha256': template, 'contaminationCheck': [check],
+                    'devScore': {'minibatch': minibatch, 'full': None}, 'paretoMember': False, 'createdAt': _now(),
+                    'promotion': 'none', 'executionAuthorization': False}).to_dict()
+                store.write_candidate_text(sha, body)
+                self.record(store, Candidate.parse(record))
+                if entry['accepted']:
+                    full = session.evaluate(body, cases, rollout['repetitions'])
+                    if full is None:
+                        break  # an accepted child whose full evaluation exceeds the budget is not evaluated
+                    record = {**record, 'devScore': {'minibatch': minibatch, 'full': score(full)}, 'createdAt': _now()}
+                    self.record(store, Candidate.parse(record))
+                    pool[sha] = {'body': body, 'full': full, 'record': record}
+                    scores[sha] = per_case(full)
+                    refresh_front()
+            best_now = max(rank(score(node['full'])) for node in pool.values())
+            if stagnation.update(best_now) and rnd < algo['rounds']:
+                session.stop = 'no-improvement'
                 break
-            child_vectors = self.evaluator(body, batch, 1)
-            state['rollouts'] += len(child_vectors)
-            seen.add(sha)
-            minibatch = score(child_vectors)
-            entry.update(child=sha, accepted=rank(minibatch) > rank(score(parent_vectors)))
-            record = Candidate.parse({
-                'schema': CANDIDATE_SCHEMA, 'sha256': sha, 'parentSha256': parent, 'originPath': ORIGIN_PATH,
-                'frontMatterSha256': front_sha, 'algorithm': 'gepa', 'round': rnd, 'optimizerCalls': [call_id],
-                'optimizerTemplateSha256': template, 'contaminationCheck': [check],
-                'devScore': {'minibatch': minibatch, 'full': None}, 'paretoMember': False, 'createdAt': _now(),
-                'promotion': 'none', 'executionAuthorization': False}).to_dict()
-            store.write_candidate_text(sha, body)
-            store.append('candidate', Candidate.parse(record))
-            if not entry['accepted']:
-                continue
-            if not charge(len(cases) * rollout['repetitions'] * hosts):
-                break  # an accepted child whose full evaluation exceeds the budget is not evaluated
-            full = self.evaluator(body, cases, rollout['repetitions'])
-            state['rollouts'] += len(full)
-            record = {**record, 'devScore': {'minibatch': minibatch, 'full': score(full)}, 'createdAt': _now()}
-            store.append('candidate', Candidate.parse(record))
-            pool[sha] = {'body': body, 'full': full, 'record': record}
-            scores[sha] = per_case(full)
-            refresh_front()
 
         best = max(pool, key=lambda sha: rank(score(pool[sha]['full'])))
         return {'algorithm': self.name, 'runId': run_id, 'seedSha256': seed_record.sha256, 'bestSha256': best,
                 'bestFull': score(pool[best]['full']), 'seedFull': score(self.seed_vectors), 'front': list(front),
-                'rounds': history, 'rollouts': state['rollouts'], 'optimizerCalls': len(self.optimizer.calls),
-                'failedCalls': state['failedCalls'], 'stop': state['stop'], 'templateSha256': template,
-                'rngSeed': self.rng_seed, 'executionAuthorization': False}
+                'rounds': history, 'failedCalls': failed_calls, 'templateSha256': template, 'rngSeed': self.rng_seed,
+                **session.finish(run_id), 'executionAuthorization': False}

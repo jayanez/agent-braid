@@ -91,8 +91,8 @@ class GEPATests(unittest.TestCase):
 
     def test_child_not_improving_on_the_minibatch_is_rejected_without_full_evaluation(self):
         summary, _ = self.run_gepa(['PASS:DEV-01,DEV-02,DEV-03\nreworded\n', 'PASS:none\n', 'PASS:DEV-01\n'])
-        self.assertEqual([r['accepted'] for r in summary['rounds']], [False, False, False])
-        self.assertEqual(summary['rollouts'], 30)
+        self.assertEqual([r['accepted'] for r in summary['rounds']], [False, False])
+        self.assertEqual((summary['stop'], summary['rollouts']), ('no-improvement', 20))  # 2 flat rounds
         self.assertEqual(summary['bestSha256'], summary['seedSha256'])
         self.assertEqual(summary['front'], [summary['seedSha256']])
 
