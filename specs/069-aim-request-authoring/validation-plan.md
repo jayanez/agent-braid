@@ -69,7 +69,7 @@ First-attempt valid trials (Wilson 95% interval) and valid within one refusal-gu
   (same driver hash, same plugin build inputs).
 - **Spend:** about 3.8 USD notional on Claude Code (plus 0.09 smoke), OpenRouter runs a few tenths of a dollar by the earlier
   per-run price (cost not reported), Codex on the subscription: far below the 60 USD cap.
-- **Not done:** the held-out final run, so T010 stays open.
+- **Not done here:** the held-out final run, done later (see the held-out section below).
 
 ## T008 guidance rewrite, development-set re-run (2026-11-12)
 
@@ -106,7 +106,7 @@ development-set results, over seven rounds; the table is the last round on the e
   the usage limit once during tuning and was re-run after the reset.
 - **D12:** compact `analyze-work` definition stays at or below 1500 tokens (test enforced).
 - **Spend:** a few USD notional across the seven rounds; far below the 60 USD cap.
-- **Not done:** the held-out final run (T010). T008 stays open.
+- **Not done here:** the held-out final run (T010); it was run afterwards, see the section below. T008 closed with accepted deviation (below).
 
 ## T010 held-out final run (2026-11-12)
 
@@ -137,6 +137,7 @@ so no case was re-run.
   baseline-arm held-out run.
 - **Spend:** Claude Code 1.87 USD notional (subscription token); OpenCode via OpenRouter and Codex on the subscription report no cost.
   Cumulative with earlier T010/T008 rounds: well below the 60 USD cap.
-- **What accepting this needs:** an owner decision to accept the shortfall as a documented deviation from D4 (REQ-010, REQ-008),
-  with these numbers and the HELD-04 pattern as the stated limit; or a new guidance round, which would need a new, unseen held-out
-  set because this one is now consumed (changing it needs a new FREEZE record and invalidates these runs).
+- **Owner decision 2026-11-12 ("Aceptar desviación"):** the D4 shortfall is accepted as a documented deviation from REQ-010 and REQ-008, with
+  the numbers above and the HELD-04 pattern as the stated limit. D4 is not met and is not claimed as met. T010 and T008 are closed with this
+  deviation. The held-out set is consumed; any new guidance round needs a new, unseen held-out set and a new FREEZE record. The
+  `final-no-schema` ablation was not run on the held-out set.

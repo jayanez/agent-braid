@@ -48,7 +48,7 @@ and T010's final run measures the release candidate without them.
   and canary, transcript redaction and secret scan, teardown check and
   `runbook.md` manual-step list; research host headless and authentication
   modes (D13); install Codex for the driver (D11). Dependencies: T001. Verification: procedure_013.
-- [ ] T010 (REQ-010 / SC-010): [P2] Write the prompt sets and scoring rules; freeze
+- [x] T010 (REQ-010 / SC-010): [P2] Write the prompt sets and scoring rules; freeze
   the held-out set before any guidance rewrite. Baseline run (P2) of alpha.7
   plus the PR #1099 guidance through the driver; final run (closing phase) on
   the release candidate, with the ablation arm; record
@@ -59,9 +59,14 @@ and T010's final run measures the release candidate without them.
   development-set ablation (`final` vs `final-no-schema`) are recorded in
   `evidence/native-runs-baseline-codex.json`, `evidence/native-runs-ablation-*.json` and
   `evidence/native-runs-ablation-summary.json`; see `validation-plan.md`.
-  Progress 2026-11-12 (not ticked): held-out final run done once (`evidence/native-runs-t010-heldout-final*.json`): first attempt
-  Claude Code 27/30, OpenCode 27/30, Codex 24/30; D4 not met in any host (10/10 within one retry fails; Codex also below 8/10).
-  The ablation arm was not run on the held-out set. Acceptance unmet: left open with the gap in `validation-plan.md`.
+  Closed 2026-11-12 with accepted deviation (owner decision 2026-11-12, "Aceptar desviación"): D4 is NOT met. Held-out
+  final run done once (`evidence/native-runs-t010-heldout-final*.json`, set `spec069-held-out-v1`, arm `final`, 3 repetitions): first attempt
+  Claude Code 27/30 (Wilson 0.74-0.97), OpenCode 27/30 (0.74-0.97), Codex 24/30 (0.63-0.90); within one retry 27/30, 27/30, 24/30; prompts
+  9/10, 9/10, 7/10 (Codex misses HELD-02, HELD-04, HELD-05). The 10/10-within-one-retry criterion fails in every host and Codex is also below 8/10
+  first attempt. HELD-04 fails every trial on all hosts with the same signature (extra declared read of `src/db.py` on the unit writing
+  `docs/api.md`); whether the cause is guidance or prompt/scoring ambiguity is not established. The held-out set is consumed and was not changed;
+  the `final-no-schema` ablation was not run on the held-out set (development set only). The shortfall is a documented deviation, not a pass;
+  details in `validation-plan.md`.
 
 ## Phase P3 — `units` and schema delivery, only if the P2 baseline misses D4 in a required host (D6)
 
@@ -86,14 +91,14 @@ and T010's final run measures the release candidate without them.
   normalization tests on macOS and Linux CI; Windows tested or declared a
   limit; release-note text for the #1099 transition. Dependencies: T006.
   Verification: procedure_014.
-- [ ] T008 (REQ-008 / SC-008): [P3, conditional] Rewrite skill and tool description for three
+- [x] T008 (REQ-008 / SC-008): [P3, conditional] Rewrite skill and tool description for three
   kinds; add `units` examples; drift test. Dependencies: T005, T006, T007, held-out set frozen (T010).
   Verification: procedure_008.
   Progress 2026-11-12: guidance, scoring support for `units` and drift test landed; development-set first attempt Claude Code
-  28/30, OpenCode 30/30, Codex 27/30 (validation-plan.md). D4 per-prompt criterion met for OpenCode only; left open pending
-  T005/T007 and the T010 held-out run.
-  Held-out result 2026-11-12: D4 not met in any host (see T010 and `validation-plan.md`); T008 stays open pending an owner
-  decision to accept the deviation or a new guidance round on a new held-out set.
+  28/30, OpenCode 30/30, Codex 27/30 (validation-plan.md).
+  Closed 2026-11-12 with accepted deviation (owner decision 2026-11-12, "Aceptar desviación"): D4 is NOT met on the held-out run (see T010 and
+  `validation-plan.md`): Claude Code 27/30 and OpenCode 27/30 first attempt, Codex 24/30; HELD-04 fails identically on all hosts. The owner
+  accepted the REQ-008 deviation and the change to the frozen `scripts/spec069_scoring.py` (PR #1314). T005 and T007 are tracked separately and unchanged.
 
 ## Closing — final run, documentation and release
 
