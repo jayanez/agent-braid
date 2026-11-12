@@ -1,0 +1,22 @@
+{
+ "command": "python -m unittest tests.test_lightning_algorithm",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_algorithm.py": "886879ff4eb7aad0e9f5c5f07d1b1395eebbc4f49e919e14c974763954876d5f",
+  "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",
+  "agent_braid/lightning_runner.py": "b4b0e683f5bbb0213c7c093614a8eda771729f786aeac0b60395d737d027dfcb",
+  "agent_braid/lightning_store.py": "9f6f35d2a86476de804910aa2017968032c6554025d5a17e7e1d76d1e4a502b4",
+  "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "19bc2ec66b9f6c1f47d0d4feac6b52dac0ff092e23d8d36aebbf7439e6632a31",
+  "tests/test_lightning_algorithm.py": "42d79a96e930de133f102517e0ed377cc6692d95f6157d021ecd1487ed93d4da"
+ },
+ "limits": "Fake hosts only (pipeline-only label); no model contacted. Fake-host outcomes do not depend on the skill text, so equality shows pipeline identity, not prompt quality.",
+ "outcome": "passed: Baseline on fake hosts yields per-host trials, first-attempt and within-retry counts and Wilson intervals identical to a direct SPEC-071 fake-host run, with stored rewards replaying; it records the round-0 seed candidate with its text and a full-set devScore equal to the report's first-attempt rate; a modified seed changes the candidate sha256 in the summary (negative control); the base Algorithm.run is abstract.",
+ "procedure": "procedure_003",
+ "result": "OK",
+ "scenario": "SC-003",
+ "specification": "SPEC-072 BL.2",
+ "testsRun": 3
+}
