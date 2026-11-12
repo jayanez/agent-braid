@@ -254,7 +254,7 @@ class CliTests(Base):
         return code, out.getvalue(), err.getvalue()
 
     def init(self):
-        flags = ['--non-interactive', '--hosts', 'claude-code', '--repetitions', '1']
+        flags = ['--non-interactive', '--algorithm', 'baseline', '--hosts', 'claude-code', '--repetitions', '1']
         preview = json.loads(self.cli('init', *flags)[1])
         self.assertEqual(self.cli('init', *flags, '--apply', '--preview-digest', preview['previewDigest'])[0], 0)
 
