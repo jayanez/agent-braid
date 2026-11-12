@@ -172,7 +172,7 @@
               "limits": "Record and store only; the seed check against the run's recorded commit is applied when runs record a commit (T003).",
               "outcome": "passed: The seed is the analyze skill body below its fixed front matter; seed and child records round-trip canonically byte for byte; the child names the seed as parent; text whose hash differs, unknown keys, foreign origins, refused contamination checks and broken lineage are refused with codes; the store keeps text beside the record privately and refuses a record without matching text; later records may change only scores and Pareto membership.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_002.json",
-              "sha256": "3c9d8fdc8fea2d2456f9d74d9511d1223054a6df8224736fc8453512fe5ffb91"
+              "sha256": "22bd11ec1167e515a3defe9406353d070a9471bd26402f494830951f69f47d8f"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -196,7 +196,7 @@
               "limits": "Fake hosts only (pipeline-only label); no model contacted. Fake-host outcomes do not depend on the skill text, so equality shows pipeline identity, not prompt quality.",
               "outcome": "passed: Baseline on fake hosts yields per-host trials, first-attempt and within-retry counts and Wilson intervals identical to a direct SPEC-071 fake-host run, with stored rewards replaying; it records the round-0 seed candidate with its text and a full-set devScore equal to the report's first-attempt rate; a modified seed changes the candidate sha256 in the summary (negative control); the base Algorithm.run is abstract.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_003.json",
-              "sha256": "ee1df76542ab39a6fc02ed171d3855d97ea8506d5617e5e17c85b7baa3d0c816"
+              "sha256": "f0a20f8f61bbf8fd5f4b72015ae7fea6c7dddd5c7f6f276b9ccc545e1560a610"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -220,7 +220,7 @@
               "limits": "Fake optimizer and synthetic body-dependent rewards; no model contacted. The full pre-call scan and the sandboxed optimizer host are evidenced by procedure_006. Evaluating a real candidate body through host rollouts is T009 work.",
               "outcome": "passed: With the preregistered parameters (beam 2, branch 2, 2 rounds, minibatch 5, 2 hosts, 3 repetitions) APO runs 1 then 2 parents with 2 then 4 children, 9 optimizer calls and 120 rollouts (20 + 40 search, 60 full evaluation of the best), as in the feasibility table; every APO candidate records its parent, round, two call ids, both passed contamination checks and the hash of the critique and edit templates; configuration defaults stop at the 120-rollout cap (unit-cap), configured rounds above 3 are capped at 3, the optimizer-call cap stops the run, and unusable edits are failed calls without candidates. Negative controls: an optimizer outside the runner channel is refused (optimizer-bypass), a non-fake channel is refused until the sandboxed host path exists (isolation-failed), and inputs with a held-out case id or the rollout canary are refused before any call (holdout-contamination).",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_004.json",
-              "sha256": "9356d9ab76cbfac3342358d441d9de97371b3367356e05451b2c068ef4e5bd60"
+              "sha256": "9081cf706f9e493bbc3a7e974b84b25945cbc0f8f8f40ad0790791b257588626"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -241,10 +241,10 @@
           "obtained_evidence": [
             {
               "command": "python -m unittest tests.test_lightning_gepa",
-              "limits": "Fake optimizer and synthetic rewards; no model contacted. Implemented from the paper's description; no GEPA or DSPy code. The pre-call scan and sandboxed host are evidenced by procedure_006. No-improvement stopping is T007.",
+              "limits": "Fake optimizer and synthetic rewards; no model contacted. Implemented from the paper's description; no GEPA or DSPy code. The pre-call scan and sandboxed host are evidenced by procedure_006.",
               "outcome": "passed: The Pareto front over per-prompt D4 scores keeps exactly the non-dominated candidates (a dominated candidate and an equal score vector are excluded) and parent sampling follows the number of prompts each front member scores best on (0.75 observed for 3 of 4 prompts); a child whose minibatch score beats its parent's is accepted, fully evaluated (60 rollouts) and replaces the dominated seed on the front, while children that do not improve are recorded with a minibatch score only and never fully evaluated; with the preregistered settings a run costs 3 minibatches of 10 plus one full evaluation, and a second accepted child whose full evaluation would exceed 120 rollouts is not evaluated (unit-cap); the reflection input holds only the parent text and the parent's minibatch vectors; the same seed repeats parent and minibatch choices; an unusable reflection is a failed call. Negative control: an optimizer outside the runner channel is refused (optimizer-bypass).",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_005.json",
-              "sha256": "bb15e077e082d5b2b5ed01a5be75c50078651ef93c524081e5eba32280fcc9c8"
+              "sha256": "a5e23cbb1b5774486b2f7de309299f14d0a3d01dbee4dc4302b715d0105e7380"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -286,7 +286,15 @@
         {
           "given": "budgets set low in a fake run",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_stopping",
+              "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; wiring the algorithms into `agent-braid lightning run` with real candidate evaluation is T009 work.",
+              "outcome": "passed: With budgets set low in fake runs each algorithm stops at the first applicable rule and records it in the run journal: unit-cap (APO at configuration defaults), optimizer-cap, no-improvement after 2 consecutive flat rounds, and a weekly-stop quota stop that carries the explicit `agent-braid lightning run --resume <run-id>` command; a refused optimizer input (holdout-contamination) stops the run with the refusal recorded and no call made; APO never runs more than 3 rounds; no run exceeds its rollout or optimizer-call cap (negative control). Resuming a quota-stopped APO or GEPA run with the same seed replays the journaled optimizer outputs and evaluations in order and reaches the same rounds, best candidate, rollouts and calls as an uninterrupted run without repeating any optimizer call; resuming with another seed or configuration is refused (resume-diverged). The journal is private and refuses unknown entry shapes.",
+              "path": "specs/072-lightning-prompt-optimization/evidence/procedure_007.json",
+              "sha256": "2e910e509196bc4927ea9783a051c0f68e314a947c7f567e9e01462aa262ec47"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/072-lightning-prompt-optimization/validation-plan.md",
           "test_name": "procedure_007",

@@ -5,8 +5,8 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_algorithm.py": "b31dbe61bac8a3135e475bbba3dc23655f4a7e15fde157f87a42f8a3b304bf5c",
-  "agent_braid/lightning_apo.py": "dd5115f286abb39b1c2807bad2f5f5bf1f9bcd5fd6e1c611cada00724a5248db",
+  "agent_braid/lightning_algorithm.py": "6580987bd54361b42e87517e9cd66aa452751f403c905746cc6838858883a32c",
+  "agent_braid/lightning_apo.py": "b936f12a314bc34c44fe1a82a40918294647c2e29686dd00de056a17e77a5439",
   "agent_braid/lightning_prompts/apo_apply_edit.md": "d993094869cbb040c26b78b8969012fdbb16c52959b7c39be8725729d031ce58",
   "agent_braid/lightning_prompts/apo_text_gradient.md": "5cde3e3ba09249dfd4109120ced5304ab83b9e80f3c9dbf280dda880120e78af",
   "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",

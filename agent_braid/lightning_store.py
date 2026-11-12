@@ -27,6 +27,9 @@ KINDS = {'rollout': 'rollouts.jsonl', 'event': 'events.jsonl', 'result': 'result
          'candidate': 'candidates.jsonl'}  # candidate: SPEC-072
 CONTENT_KINDS = ('trace',)  # content-bearing records; refused until the SPEC-074 consent contract exists
 MAX_LINE = 64 * 1024
+JOURNAL = 'journal.jsonl'  # SPEC-072 REQ-007: optimizer outputs and evaluation vectors, replayed by --resume
+MAX_JOURNAL_LINE = 256 * 1024
+_VECTOR_KEYS = {'caseId', 'host', 'd4FirstAttempt', 'schemaValid', 'reasons', 'refusal'}
 _RUN_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,63}')
 
 
@@ -192,6 +195,64 @@ class RunStore:
             return check_text(path.read_bytes().decode('utf-8'), sha256)
         except (LightningSchemaError, UnicodeDecodeError) as exc:
             raise StoreError('Stored candidate text does not match its sha256', 'candidate-hash-mismatch') from exc
+
+
+    def append_journal(self, entry: dict) -> None:
+        """Append one algorithm journal entry (an optimizer call or an evaluation); exact keys per kind."""
+        try:
+            _journal_entry(entry)
+        except (LightningSchemaError, TypeError, KeyError) as exc:
+            raise StoreError(f'Invalid journal entry: {exc}', 'store-shape') from exc
+        raw = canonical_bytes(entry)
+        if len(raw) > MAX_JOURNAL_LINE:
+            raise StoreError('Journal entry is too large', 'store-shape')
+        path = self.root / JOURNAL
+        with self._locked():
+            registry._safe(path, directory=False)
+            fd = os.open(path, os.O_CREAT | os.O_APPEND | os.O_WRONLY | os.O_NOFOLLOW, 0o600)
+            with os.fdopen(fd, 'ab') as stream:
+                stream.write(raw)
+                stream.flush()
+                os.fsync(stream.fileno())
+
+    def read_journal(self) -> list[dict]:
+        self.manifest()
+        path = self.root / JOURNAL
+        registry._safe(path, directory=False)
+        if not path.exists():
+            return []
+        registry._private(path, directory=False)
+        entries = []
+        for number, line in enumerate(path.read_bytes().splitlines(), 1):
+            try:
+                entries.append(_journal_entry(loads(line)))
+            except (LightningSchemaError, TypeError, KeyError) as exc:
+                raise StoreError(f'{JOURNAL} line {number}: {exc}', 'store-shape') from exc
+        return entries
+
+
+def _journal_entry(entry):
+    if not isinstance(entry, dict):
+        raise TypeError('entry must be an object')
+    kind = entry.get('kind')
+    if kind == 'call':
+        if set(entry) != {'kind', 'inputSha256', 'callId', 'output', 'check'} or not isinstance(entry['output'], str):
+            raise KeyError('call keys')
+        _digest(entry['inputSha256'], 'journal.inputSha256')
+        if set(entry['check']) != {'inputSha256', 'passed'} or entry['check']['passed'] is not True:
+            raise KeyError('call check')
+    elif kind == 'eval':
+        if set(entry) != {'kind', 'key', 'vectors'} or not isinstance(entry['vectors'], list):
+            raise KeyError('eval keys')
+        _digest(entry['key'], 'journal.key')
+        if any(not isinstance(v, dict) or set(v) != _VECTOR_KEYS for v in entry['vectors']):
+            raise KeyError('eval vector keys')
+    elif kind == 'stop':
+        if set(entry) != {'kind', 'reason', 'refusal'}:
+            raise KeyError('stop keys')
+    else:
+        raise KeyError('kind')
+    return entry
 
 
 def _parse(kind: str, value):
