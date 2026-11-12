@@ -5,6 +5,8 @@ import random
 import tempfile
 import unittest
 
+from tests import lightning_fakes as fakes
+
 from agent_braid import lightning_algorithm as algorithm
 from agent_braid import lightning_config as config
 from agent_braid import lightning_gepa as gepa
@@ -66,7 +68,7 @@ class GEPATests(unittest.TestCase):
     def run_gepa(self, bodies, cfg=None, run_id='gepa', rng_seed=0):
         fake = Optimizer(bodies)
         channel = runner.OptimizerChannel('claude-code', transport=fake, fake=True)
-        algo = gepa.GEPA(evaluator=vectors, optimizer=channel, seed_vectors=self.seed, rng_seed=rng_seed)
+        algo = gepa.GEPA(evaluator=fakes.results(vectors), scorer=fakes.scorer, optimizer=channel, seed_vectors=self.seed, rng_seed=rng_seed)
         return algo.run(self.home, cfg or profile(), run_id=run_id), fake
 
     def test_better_child_is_accepted_evaluated_and_dominates_the_seed(self):
@@ -127,7 +129,7 @@ class GEPATests(unittest.TestCase):
 
     def test_optimizer_outside_the_runner_is_refused(self):
         with self.assertRaises(runner.RunnerError) as caught:
-            gepa.GEPA(evaluator=vectors, optimizer=Optimizer([]), seed_vectors=self.seed)
+            gepa.GEPA(evaluator=fakes.results(vectors), scorer=fakes.scorer, optimizer=Optimizer([]), seed_vectors=self.seed)
         self.assertEqual(caught.exception.code, 'optimizer-bypass')
 
 

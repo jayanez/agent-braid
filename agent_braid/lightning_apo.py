@@ -14,7 +14,7 @@ import json
 
 from . import lightning_runner as runner_mod
 from .lightning_algorithm import (PROMPTS, QUOTA_STOPS, Algorithm, Session, Stagnation, _now, experiments, rank,
-                                  render, score)
+                                  render, rescore, score)
 from .lightning_resources import CANDIDATE_SCHEMA, ORIGIN_PATH, MAX_TEXT, Candidate, sha256_text
 
 MAX_ROUNDS = 3  # ProTeGi-style optimization overfits after about 3 steps (SPEC-072 REQ-007)
@@ -37,25 +37,30 @@ def _key(node: dict) -> tuple[float, float]:
 class APO(Algorithm):
     """Beam search with textual gradients; the evaluator runs rollouts for a candidate body on development cases.
 
-    ``evaluator(body, case_ids, repetitions) -> [vector]`` where a vector is ``{caseId, host, d4FirstAttempt,
-    schemaValid, reasons, refusal}``; ``seed_vectors`` are the seed's full development vectors from the SPEC-071
+    ``evaluator(body, case_ids, repetitions) -> [attempt-result record]`` (SPEC-071, development cases only);
+    ``scorer(record)`` re-scores a record into a vector ``{caseId, host, d4FirstAttempt, schemaValid, reasons,
+    refusal}`` (default: ``rescore``); ``seed_vectors`` are the seed's full development vectors from the SPEC-071
     baseline run (not charged to the arm).
     """
     name = 'apo'
 
-    def __init__(self, *, evaluator, optimizer: runner_mod.OptimizerChannel, seed_vectors: list[dict]):
+    def __init__(self, *, evaluator, optimizer: runner_mod.OptimizerChannel, seed_vectors: list[dict],
+                 scorer=rescore):
         if not isinstance(optimizer, runner_mod.OptimizerChannel):
             raise runner_mod.RunnerError('Optimizer calls must go through the runner', 'optimizer-bypass')
         self.evaluator = evaluator
         self.optimizer = optimizer
         self.seed_vectors = list(seed_vectors)
+        self.scorer = scorer
 
-    def run(self, home, config: dict, *, run_id: str, resume: bool = False, **_ignored) -> dict:
+    def run(self, home, config: dict, *, run_id: str, resume: bool = False, replay: bool = False,
+            **_ignored) -> dict:
         algo, rollout = config['algorithm'], config['rollout']
         cases = [c['id'] for c in json.loads(
             (runner_mod.checkout_root() / runner_mod.PROMPT_FILES['development']).read_text())['cases']]
         store, seed_record, seed_body, front_sha = self.start(home, config, run_id, self.seed_vectors, resume=resume)
-        session = Session(store, config, self.optimizer, self.evaluator, resume=resume)
+        session = Session(store, config, self.optimizer, self.evaluator, resume=resume, scorer=self.scorer,
+                          replay=replay)
         stagnation = Stagnation()
         template_sha = template_set_sha256()
 
@@ -115,7 +120,7 @@ class APO(Algorithm):
 
         optimized = [n for n in beam if n['sha'] != seed_record.sha256]
         best = max(optimized, key=_key) if optimized else None
-        if best is not None and session.refusal is None and session.stop not in QUOTA_STOPS:
+        if best is not None and session.refusal is None and session.stop not in (*QUOTA_STOPS, 'replay-diverged'):
             stop = session.stop
             session.stop = None  # a search stop still allows the final evaluation within budget
             full = session.evaluate(best['body'], cases, rollout['repetitions'])

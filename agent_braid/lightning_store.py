@@ -27,9 +27,8 @@ KINDS = {'rollout': 'rollouts.jsonl', 'event': 'events.jsonl', 'result': 'result
          'candidate': 'candidates.jsonl'}  # candidate: SPEC-072
 CONTENT_KINDS = ('trace',)  # content-bearing records; refused until the SPEC-074 consent contract exists
 MAX_LINE = 64 * 1024
-JOURNAL = 'journal.jsonl'  # SPEC-072 REQ-007: optimizer outputs and evaluation vectors, replayed by --resume
+JOURNAL = 'journal.jsonl'  # SPEC-072 REQ-007/REQ-010: seeds, optimizer outputs and attempt-result references
 MAX_JOURNAL_LINE = 256 * 1024
-_VECTOR_KEYS = {'caseId', 'host', 'd4FirstAttempt', 'schemaValid', 'reasons', 'refusal'}
 _RUN_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,63}')
 
 
@@ -198,7 +197,7 @@ class RunStore:
 
 
     def append_journal(self, entry: dict) -> None:
-        """Append one algorithm journal entry (an optimizer call or an evaluation); exact keys per kind."""
+        """Append one algorithm journal entry (start, optimizer call, evaluation or stop); exact keys per kind."""
         try:
             _journal_entry(entry)
         except (LightningSchemaError, TypeError, KeyError) as exc:
@@ -242,11 +241,17 @@ def _journal_entry(entry):
         if set(entry['check']) != {'inputSha256', 'passed'} or entry['check']['passed'] is not True:
             raise KeyError('call check')
     elif kind == 'eval':
-        if set(entry) != {'kind', 'key', 'vectors'} or not isinstance(entry['vectors'], list):
+        if set(entry) != {'kind', 'key', 'results'} or not isinstance(entry['results'], list):
             raise KeyError('eval keys')
         _digest(entry['key'], 'journal.key')
-        if any(not isinstance(v, dict) or set(v) != _VECTOR_KEYS for v in entry['vectors']):
-            raise KeyError('eval vector keys')
+        for ref in entry['results']:
+            if not isinstance(ref, list) or len(ref) != 2 or not isinstance(ref[0], str) or not _RUN_ID.fullmatch(ref[0]):
+                raise KeyError('eval result reference')
+            _digest(ref[1], 'journal.results')
+    elif kind == 'start':
+        if set(entry) != {'kind', 'algorithm', 'rngSeed'} or entry['algorithm'] not in ('apo', 'gepa') or \
+                not (entry['rngSeed'] is None or type(entry['rngSeed']) is int):
+            raise KeyError('start keys')
     elif kind == 'stop':
         if set(entry) != {'kind', 'reason', 'refusal'}:
             raise KeyError('stop keys')

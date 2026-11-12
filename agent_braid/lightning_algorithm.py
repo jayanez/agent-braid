@@ -13,10 +13,12 @@ import json
 from pathlib import Path
 import re
 
+from . import lightning_reward as reward_mod
 from . import lightning_runner as runner_mod
 from . import lightning_store as store_mod
 from .lightning_config import digest
 from .lightning_resources import Candidate, latest, seed, sha256_text, split_skill
+from .lightning_schema import AttemptResult, canonical_bytes
 
 
 def _now() -> str:
@@ -58,23 +60,56 @@ def rank(value: dict | None) -> tuple[float, float]:
 
 QUOTA_STOPS = ('weekly-stop', 'five-hour-headroom')
 NO_IMPROVEMENT_ROUNDS = 2  # SPEC-072 REQ-007
+VECTOR_KEYS = frozenset({'caseId', 'host', 'd4FirstAttempt', 'schemaValid', 'reasons', 'refusal'})
+
+
+def result_sha256(result: dict) -> str:
+    return hashlib.sha256(canonical_bytes(result)).hexdigest()
+
+
+def rescore(result: dict) -> dict:
+    """The reward vector of one SPEC-071 attempt-result record, re-scored from its content-free parsed attempts."""
+    host, case_id = result['rolloutId'].split('.')[:2]
+    if result['promptSet'] != 'development':
+        raise runner_mod.RunnerError('Optimization scores development attempts only', 'holdout-contamination')
+    vector = {'caseId': case_id, 'host': host, 'd4FirstAttempt': False, 'schemaValid': False, 'reasons': [],
+              'refusal': result['refusal']}
+    if result['refusal'] is not None:
+        return vector
+    root = runner_mod.checkout_root()
+    from scripts import spec069_scoring as scoring
+    cases = json.loads((root / runner_mod.PROMPT_FILES['development']).read_text())['cases']
+    case = next(c for c in cases if c['id'] == case_id)
+    reward = reward_mod.replay(result['rolloutId'], case, result['parsedAttempts'], canary_hits=0,
+                               components=['schema', 'd4', 'canary'], scoring=scoring,
+                               scoring_sha256=reward_mod.check_scoring(root))
+    return {**vector, 'd4FirstAttempt': reward['d4FirstAttempt'], 'schemaValid': reward['schemaValid'],
+            'reasons': reward['reasons']}
 
 
 class Session:
-    """One algorithm run's budgets, stop reason and replay journal (SPEC-072 REQ-007).
+    """One algorithm run's budgets, stop reason and replay journal (SPEC-072 REQ-007, REQ-010).
 
-    Optimizer calls and evaluations go through here. Each is journaled with its result; a resumed run re-executes the
-    algorithm with the same seed and takes recorded results in order instead of calling again, so it reaches the same
-    state before it continues. A quota stop ends the run (resumable); any other refusal stops it.
+    Optimizer calls and evaluations go through here. A call is journaled with its output; an evaluation stores the
+    evaluator's SPEC-071 attempt-result records in the run and journals their ids and hashes. Vectors are always
+    ``scorer(result)``, so selection decisions are a function of the stored parsed attempts. A resumed run re-executes
+    the algorithm with the same seed and takes journaled results in order instead of calling again. ``replay`` takes
+    everything from the journal, writes nothing and notes stored results whose hash no longer matches. A quota stop
+    ends the run (resumable); any other refusal stops it.
     """
 
-    def __init__(self, store, config: dict, optimizer, evaluator, *, resume: bool = False):
+    def __init__(self, store, config: dict, optimizer, evaluator, *, resume: bool = False, scorer=rescore,
+                 replay: bool = False):
         self.store = store
         self.budget = config['budget']
         self.hosts = len(config['rollout']['hosts'])
         self.optimizer = optimizer
         self.evaluator = evaluator
-        self.journal = [e for e in store.read_journal() if e['kind'] != 'stop'] if resume else []
+        self.scorer = scorer
+        self.replay = replay
+        self.journal = [e for e in store.read_journal() if e['kind'] in ('call', 'eval')] if resume or replay else []
+        self.results = {r.value['attemptId']: r.value for r in store.read('result')} if resume or replay else {}
+        self.altered: list[str] = []
         self.position = 0
         self.rollouts = 0
         self.calls = 0
@@ -84,9 +119,14 @@ class Session:
 
     def _replay(self, kind: str, key: str):
         if self.position >= len(self.journal):
+            if self.replay:
+                raise runner_mod.RunnerError('The journal ends before the run does', 'replay-incomplete')
             return None
         entry = self.journal[self.position]
         if entry['kind'] != kind or entry['inputSha256' if kind == 'call' else 'key'] != key:
+            if self.replay:
+                self.stop = 'replay-diverged'  # the re-scored attempts lead to another decision: stop and report
+                return False
             raise runner_mod.RunnerError('The resumed run diverged from its journal', 'resume-diverged')
         self.position += 1
         self.replayed += 1
@@ -107,6 +147,8 @@ class Session:
             return None
         key = hashlib.sha256(text.encode('utf-8')).hexdigest()
         entry = self._replay('call', key)
+        if entry is False:
+            return None
         if entry is None:
             try:
                 call_id, output, check = self.optimizer.call(text)
@@ -127,22 +169,41 @@ class Session:
             return None
         key = hashlib.sha256(json.dumps([sha256_text(body), case_ids, repetitions]).encode()).hexdigest()
         entry = self._replay('eval', key)
+        if entry is False:
+            return None
         if entry is None:
             try:
-                vectors = self.evaluator(body, case_ids, repetitions)
+                records = [AttemptResult.parse(r) for r in self.evaluator(body, case_ids, repetitions)]
             except runner_mod.RunnerError as exc:
                 self._halt(exc)
                 return None
-            entry = {'kind': 'eval', 'key': key, 'vectors': vectors}
+            for record in records:
+                if record.value['attemptId'] in self.results:
+                    raise runner_mod.RunnerError('An attempt id was reused', 'resume-diverged')
+                self.store.append('result', record)
+                self.results[record.value['attemptId']] = record.value
+            entry = {'kind': 'eval', 'key': key,
+                     'results': [[r.value['attemptId'], result_sha256(r.value)] for r in records]}
             self.store.append_journal(entry)
-        self.rollouts += len(entry['vectors'])
-        return entry['vectors']
+        results = []
+        for attempt_id, sha in entry['results']:
+            if attempt_id not in self.results:
+                raise runner_mod.RunnerError('A journaled attempt result is missing', 'replay-incomplete')
+            if result_sha256(self.results[attempt_id]) != sha:
+                self.altered.append(attempt_id)
+            results.append(self.results[attempt_id])
+        vectors = [self.scorer(r) for r in results]
+        if any(set(v) != VECTOR_KEYS for v in vectors):
+            raise runner_mod.RunnerError('The scorer returned an unknown vector shape', 'reward-shape')
+        self.rollouts += len(vectors)
+        return vectors
 
     def finish(self, run_id: str) -> dict:
-        """Record the stop reason; return the summary fields every algorithm reports."""
-        self.store.append_journal({'kind': 'stop', 'reason': self.stop, 'refusal': self.refusal})
+        """Record the stop reason (not on replay); return the summary fields every algorithm reports."""
+        if not self.replay:
+            self.store.append_journal({'kind': 'stop', 'reason': self.stop, 'refusal': self.refusal})
         return {'stop': self.stop, 'refusal': self.refusal, 'rollouts': self.rollouts, 'optimizerCalls': self.calls,
-                'replayed': self.replayed,
+                'replayed': self.replayed, 'alteredResults': list(self.altered),
                 'resume': f'agent-braid lightning run --resume {run_id}' if self.stop in QUOTA_STOPS else None}
 
 
@@ -179,28 +240,42 @@ class Algorithm:
     def skill_text(self, config: dict) -> str:
         return (runner_mod.checkout_root() / config['target']['path']).read_text(encoding='utf-8')
 
+    rng_seed: int | None = None
+    replaying = False
+
     def start(self, home, config: dict, run_id: str, seed_vectors: list[dict], *, resume: bool = False):
-        """Create (or reopen, on resume) the run store with the seed recorded; return (store, seed, body,
-        frontMatterSha256)."""
+        """Create (or reopen, on resume or replay) the run store with the seed and the algorithm's seed recorded;
+        return (store, seed, body, frontMatterSha256)."""
         store = store_mod.RunStore(home, run_id)
         raw = self.skill_text(config)
         record, body = seed(raw, created_at=_now(), dev_score={'minibatch': None, 'full': score(seed_vectors)})
-        if resume:
+        start = {'kind': 'start', 'algorithm': self.name, 'rngSeed': self.rng_seed}
+        self._derived = {}
+        if resume or self.replaying:
             if store.manifest()['configDigest'] != digest(config):
                 raise runner_mod.RunnerError('The resumed run has a different configuration', 'resume-diverged')
-            if record.sha256 not in candidates(home, run_id):
+            stored = candidates(home, run_id)
+            if record.sha256 not in stored:
                 raise runner_mod.RunnerError('The resumed run has a different seed', 'resume-diverged')
-            self._known = {sha: c.value for sha, c in candidates(home, run_id).items()}
+            if next((e for e in store.read_journal() if e['kind'] == 'start'), None) != start:
+                raise runner_mod.RunnerError('The resumed run has another algorithm or seed', 'resume-diverged')
+            self._known = {sha: c.value for sha, c in stored.items()}
+            self._derived = {record.sha256: self._known[record.sha256]}
             return store, record, body, sha256_text(split_skill(raw)[0])
         store.create(config_digest=digest(config))
+        store.append_journal(start)
         store.write_candidate_text(record.sha256, body)
         store.append('candidate', record)
         self._known = {record.sha256: record.to_dict()}
         return store, record, body, sha256_text(split_skill(raw)[0])
 
     def record(self, store, record: Candidate) -> None:
-        """Append a candidate record unless the run already holds it (a resumed run re-derives its records)."""
+        """Append a candidate record unless the run already holds it (a resumed run re-derives its records); on
+        replay only note what the run derives."""
         value = record.to_dict()
+        if self.replaying:
+            self._derived[record.sha256] = value
+            return
         known = self._known.get(record.sha256)
         if known is not None and {k: v for k, v in known.items() if k != 'createdAt'} == \
                 {k: v for k, v in value.items() if k != 'createdAt'}:
@@ -235,3 +310,28 @@ ALGORITHMS: dict[str, type[Algorithm]] = {'baseline': Baseline}
 def candidates(home, run_id: str) -> dict[str, Candidate]:
     """Latest candidate record per sha256 in a run, with lineage checked."""
     return latest(store_mod.RunStore(home, run_id).read('candidate'))
+
+
+def _decision(value: dict) -> dict:
+    return {k: v for k, v in value.items() if k != 'createdAt'}
+
+
+def replay(home, run_id: str, algorithm: Algorithm, config: dict) -> dict:
+    """Re-run a finished algorithm from its journal and stored attempt results, writing nothing (SPEC-072 REQ-010).
+
+    Every vector is re-scored from the stored parsed attempts, so the comparison shows whether those attempts still
+    reproduce every candidate record (lineage, scores, Pareto membership) and the summary's choices.
+    """
+    stored = {sha: _decision(c.value) for sha, c in candidates(home, run_id).items()}
+    algorithm.replaying = True
+    try:
+        summary = algorithm.run(home, config, run_id=run_id, resume=True, replay=True)
+    finally:
+        algorithm.replaying = False
+    derived = {sha: _decision(value) for sha, value in algorithm._derived.items()}
+    changed = sorted(sha for sha in stored.keys() | derived.keys() if stored.get(sha) != derived.get(sha))
+    diverged = summary['stop'] == 'replay-diverged'
+    return {'runId': run_id, 'algorithm': algorithm.name, 'selectionsMatch': not changed and not diverged,
+            'changedCandidates': changed, 'diverged': diverged,
+            'resultsMatch': not summary['alteredResults'], 'alteredResults': summary['alteredResults'],
+            'bestSha256': summary['bestSha256'], 'executionAuthorization': False}
