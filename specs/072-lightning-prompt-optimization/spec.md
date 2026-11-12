@@ -5,7 +5,7 @@ the reviewed tracking reconciliation after merge).
 
 **Status:** draft. Owner decisions L1–L5 of 2026-11-08 apply (see the
 [program](../070-braid-lightning-foundations/program.md)). OD-1 and OD-2 are
-open. `human_review` is pending; this specification grants no execution
+decided. `human_review` is pending (T001 owner review recorded 2026-11-11); this specification grants no execution
 authority and promotes nothing.
 
 ## Purpose and scope
@@ -85,12 +85,11 @@ Design decisions recorded here:
 - **P4 — Shared optimizer host.** The optimizer host is `optimizer.host` from
   the configuration; rollouts run in every configured host.
 
-Open decisions:
+Owner decisions:
 
-- **OD-1 — Held-out size.** The SPEC-069 held-out set has 10 cases; whether to
-  keep 10 cases × 3 repetitions (power limited) or extend it before freezing
-  the protocol (requires a new FREEZE version under SPEC-069 rules). Blocks
-  T009.
+- **OD-1 — Held-out size (decided 2026-11-11).** Keep the frozen SPEC-069
+  held-out set: 10 cases × 3 repetitions. D4 is a binary rule; the low power
+  of the descriptive sign test is a declared limit. No new FREEZE version.
 - **OD-2 — Required hosts (decided).** Required hosts are fixed in advance as
   `claude-code` and `opencode`; Codex is a declared limit in SPEC-069. The
   preregistered primary arm is GEPA (A2); APO (A1) is secondary and

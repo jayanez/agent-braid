@@ -33,7 +33,7 @@ first attempt and 10 of 10 within one retry, pooled over repetitions as
   against `FREEZE.json` (never optimizer-visible).
 - Required hosts, fixed in advance: `claude-code` and `opencode` (Codex is a
   declared SPEC-069 limit).
-- Repetitions: 3 per prompt per host per arm (per OD-1).
+- Repetitions: 3 per prompt per host per arm (OD-1 decided 2026-11-11: keep 10 × 3).
 
 ## Budgets
 
