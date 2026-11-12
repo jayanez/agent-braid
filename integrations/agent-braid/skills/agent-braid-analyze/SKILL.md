@@ -101,7 +101,8 @@ file the report says `conflicting` with `serialize-or-isolate` instead.
 
 `request` is `{gitAnalysisRequestVersion, repository, baseRevision, operations}`.
 `repository` is the registered workspace's root directory. Every operation needs
-all five fields. The documented result for this request is
+all five fields, and each `attemptId` must differ from the others (for example
+the `instanceId` plus `-1`). The documented result for this request is
 `independent-candidate` when the two branches change different files:
 
 ```json kind=git result=independent-candidate constraints=requires-execution-contract-before-parallelism
