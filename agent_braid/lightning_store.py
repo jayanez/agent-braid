@@ -19,10 +19,12 @@ import time
 
 from . import lightning_config
 from . import plugin_registry as registry
-from .lightning_schema import AttemptResult, Event, LightningSchemaError, Rollout, canonical_bytes, loads, parse_record
+from .lightning_resources import Candidate, check_text
+from .lightning_schema import AttemptResult, Event, _digest, LightningSchemaError, Rollout, canonical_bytes, loads, parse_record
 
 RUN_SCHEMA = 'braid-lightning-run/v0.1'
-KINDS = {'rollout': 'rollouts.jsonl', 'event': 'events.jsonl', 'result': 'results.jsonl'}  # result: SPEC-071
+KINDS = {'rollout': 'rollouts.jsonl', 'event': 'events.jsonl', 'result': 'results.jsonl',  # result: SPEC-071
+         'candidate': 'candidates.jsonl'}  # candidate: SPEC-072
 CONTENT_KINDS = ('trace',)  # content-bearing records; refused until the SPEC-074 consent contract exists
 MAX_LINE = 64 * 1024
 _RUN_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,63}')
@@ -117,14 +119,16 @@ class RunStore:
             raise StoreError('Content-bearing traces require the SPEC-074 consent contract', 'store-consent')
         if kind not in KINDS:
             raise StoreError('Unknown record kind', 'store-kind')
-        value = record.to_dict() if isinstance(record, (Rollout, Event, AttemptResult)) else record
+        value = record.to_dict() if isinstance(record, (Rollout, Event, AttemptResult, Candidate)) else record
         try:
-            parsed = parse_record(value)
+            parsed = _parse(kind, value)
         except LightningSchemaError as exc:
             raise StoreError(str(exc), exc.code) from exc
-        expected = {'rollout': Rollout, 'event': Event, 'result': AttemptResult}[kind]
+        expected = {'rollout': Rollout, 'event': Event, 'result': AttemptResult, 'candidate': Candidate}[kind]
         if not isinstance(parsed, expected):
             raise StoreError('Record kind does not match its schema', 'store-kind')
+        if kind == 'candidate':
+            self.candidate_text(parsed.sha256)
         raw = canonical_bytes(parsed.to_dict())
         if len(raw) > MAX_LINE:
             raise StoreError('Record is too large', 'store-shape')
@@ -149,10 +153,49 @@ class RunStore:
         records = []
         for number, line in enumerate(path.read_bytes().splitlines(), 1):
             try:
-                records.append(parse_record(loads(line)))
+                records.append(_parse(kind, loads(line)))
             except LightningSchemaError as exc:
                 raise StoreError(f'{KINDS[kind]} line {number}: {exc}', exc.code) from exc
         return records
+
+    def write_candidate_text(self, sha256: str, text: str) -> None:
+        """Store a candidate body as `candidates/<sha256>.md`; an existing file must hold the same bytes."""
+        try:
+            raw = check_text(text, sha256).encode('utf-8')
+        except LightningSchemaError as exc:
+            raise StoreError(str(exc), exc.code) from exc
+        directory = self.root / 'candidates'
+        with self._locked():
+            _private_dir(directory)
+            path = directory / f'{sha256}.md'
+            registry._safe(path, directory=False)
+            if path.exists():
+                registry._private(path, directory=False)
+                if path.read_bytes() != raw:
+                    raise StoreError('Stored candidate text differs from its sha256', 'candidate-hash-mismatch')
+                return
+            self._write_new(path, raw)
+
+    def candidate_text(self, sha256: str) -> str:
+        """Read a candidate body and verify it against its sha256."""
+        self.manifest()
+        try:
+            _digest(sha256, 'candidate sha256')
+        except LightningSchemaError as exc:
+            raise StoreError(str(exc), exc.code) from exc
+        path = self.root / 'candidates' / f'{sha256}.md'
+        registry._safe(path, directory=False)
+        if not path.exists():
+            raise StoreError('Candidate text is not stored', 'candidate-text-missing')
+        registry._private(path, directory=False)
+        try:
+            return check_text(path.read_bytes().decode('utf-8'), sha256)
+        except (LightningSchemaError, UnicodeDecodeError) as exc:
+            raise StoreError('Stored candidate text does not match its sha256', 'candidate-hash-mismatch') from exc
+
+
+def _parse(kind: str, value):
+    return Candidate.parse(value) if kind == 'candidate' else parse_record(value)
 
 
 def list_runs(home: Path | None = None) -> list[dict]:

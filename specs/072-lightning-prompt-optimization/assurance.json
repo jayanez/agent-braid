@@ -166,7 +166,15 @@
         {
           "given": "a seed and a child candidate",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_resources",
+              "limits": "Record and store only; the seed check against the run's recorded commit is applied when runs record a commit (T003).",
+              "outcome": "passed: The seed is the analyze skill body below its fixed front matter; seed and child records round-trip canonically byte for byte; the child names the seed as parent; text whose hash differs, unknown keys, foreign origins, refused contamination checks and broken lineage are refused with codes; the store keeps text beside the record privately and refuses a record without matching text; later records may change only scores and Pareto membership.",
+              "path": "specs/072-lightning-prompt-optimization/evidence/procedure_002.json",
+              "sha256": "3c9d8fdc8fea2d2456f9d74d9511d1223054a6df8224736fc8453512fe5ffb91"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/072-lightning-prompt-optimization/validation-plan.md",
           "test_name": "procedure_002",

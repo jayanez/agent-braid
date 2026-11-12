@@ -15,13 +15,18 @@ beside it as `candidates/<sha256>.md`. Exact keys; unknown keys refused.
 | `round` | integer ≥ 0 | 0 for the seed |
 | `optimizerCalls` | list of identifiers | runner call ids that produced it |
 | `optimizerTemplateSha256` | 64 hex or null | template used (APO or GEPA reflection) |
-| `contaminationCheck` | object `{inputSha256, passed}` per call | REQ-006 |
-| `devScore` | object or null | minibatch and full development scores (P2) |
+| `contaminationCheck` | list of `{inputSha256, passed}`, one per optimizer call, `passed` true | REQ-006; a refused call yields no candidate |
+| `devScore` | null or `{minibatch, full}`, each null or `{d4FirstAttempt, schemaValid, rollouts}` | development scores (P2); means in [0, 1] |
 | `paretoMember` | boolean | GEPA only; false otherwise |
 | `createdAt` | UTC RFC 3339 | — |
 | `promotion` | const `none` | promotion is SPEC-073 and human only |
 | `executionAuthorization` | const `false` | — |
 
 Rules: records are append-only and immutable; a candidate whose text hash does
-not match `sha256` is refused; the seed's `sha256` must equal the hash of the
-body of `originPath` at the run's recorded commit.
+not match `sha256` is refused, and a record is refused until its text is stored;
+the seed's `sha256` must equal the hash of the body of `originPath` at the run's
+recorded commit. Lineage: only the round-0 `baseline` seed has a null parent and
+no optimizer calls; every other candidate has a recorded parent, round ≥ 1,
+optimizer calls and a template hash. A later record for the same `sha256` may
+change only `devScore`, `paretoMember` and `createdAt` (the latest wins); any
+other difference is refused (`candidate-immutable`).
