@@ -22,6 +22,12 @@ This relay expects newline-delimited JSON-RPC, at most 1 MiB per line, 4,096 out
 events; invalid, missing or duplicate `analyze-work` definitions, outstanding requests, subprocess errors,
 truncation and limit violations mark the receipt incomplete. It does not aggregate paginated listings or
 establish that all tools were listed; each `tools/list` response must contain exactly one `analyze-work`.
+`complete: true` additionally requires a valid `initialize` request offering a date-shaped protocol version,
+its correlated successful response with a date-shaped protocol version, and at least one successful
+`tools/list` response containing that target definition, as well as
+a clean child exit and no recorded errors. Empty stdin, a clean child exit before handshake, initialization
+without a target listing, or a listing without initialization cannot produce a complete receipt. An
+`analyze-work` call is not required to complete a schema/listing receipt.
 Requests with IDs in both directions are tracked separately until the corresponding opposite-side response;
 duplicate outstanding IDs in one direction, unsolicited or duplicate responses, invalid IDs, non-JSON numeric
 constants, numbers outside finite float range, scalar `params` and ambiguous messages invalidate the receipt.

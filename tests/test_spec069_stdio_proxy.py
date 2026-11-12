@@ -161,9 +161,65 @@ class CorrelationTests(unittest.TestCase):
 
 
 class ProxyTests(unittest.TestCase):
+    def test_empty_stdin_and_clean_child_exit_are_not_complete(self):
+        with tempfile.TemporaryDirectory() as temp:
+            receipt = Path(temp) / "receipt.json"
+            result = subprocess.run([sys.executable, str(PROXY), "--receipt", str(receipt), "--", sys.executable, "-c", "pass"],
+                                    input=b"", capture_output=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            evidence = json.loads(receipt.read_text())
+            self.assertFalse(evidence["complete"])
+            self.assertIsNone(evidence["protocolVersion"])
+            self.assertEqual(evidence["listings"], [])
+
+    def test_listing_without_valid_initialize_is_not_complete(self):
+        message = b'{"jsonrpc":"2.0","id":1,"method":"tools/list"}\n'
+        with tempfile.TemporaryDirectory() as temp:
+            receipt = Path(temp) / "receipt.json"
+            result = subprocess.run([sys.executable, str(PROXY), "--receipt", str(receipt), "--", sys.executable, "-c", SERVER],
+                                    input=message, capture_output=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertFalse(json.loads(receipt.read_text())["complete"])
+
+    def test_initialize_without_target_listing_is_not_complete(self):
+        server = r'''
+import json, sys
+for line in sys.stdin.buffer:
+    message = json.loads(line)
+    result = {"protocolVersion": "2025-03-26"} if message["method"] == "initialize" else {"tools": []}
+    print(json.dumps({"jsonrpc":"2.0", "id":message["id"], "result":result}), flush=True)
+'''
+        messages = b'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26"}}\n{"jsonrpc":"2.0","id":2,"method":"tools/list"}\n'
+        with tempfile.TemporaryDirectory() as temp:
+            receipt = Path(temp) / "receipt.json"
+            result = subprocess.run([sys.executable, str(PROXY), "--receipt", str(receipt), "--", sys.executable, "-c", server],
+                                    input=messages, capture_output=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertFalse(json.loads(receipt.read_text())["complete"])
+
+    def test_malformed_initialize_response_is_not_complete(self):
+        server = r'''
+import json, sys
+for line in sys.stdin.buffer:
+    message = json.loads(line)
+    result = {"protocolVersion": "not-a-version"} if message["method"] == "initialize" else {"tools": [{"name":"analyze-work"}]}
+    print(json.dumps({"jsonrpc":"2.0", "id":message["id"], "result":result}), flush=True)
+'''
+        messages = b'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26"}}\n{"jsonrpc":"2.0","id":2,"method":"tools/list"}\n'
+        with tempfile.TemporaryDirectory() as temp:
+            receipt = Path(temp) / "receipt.json"
+            result = subprocess.run([sys.executable, str(PROXY), "--receipt", str(receipt), "--", sys.executable, "-c", server],
+                                    input=messages, capture_output=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            evidence = json.loads(receipt.read_text())
+            self.assertFalse(evidence["complete"])
+            self.assertIsNone(evidence["protocolVersion"])
+
     def test_bidirectional_process_collision_is_valid(self):
         server = r'''
 import json, sys
+init = json.loads(sys.stdin.readline())
+print(json.dumps({"jsonrpc":"2.0", "id":init["id"], "result":{"protocolVersion":"2025-03-26"}}), flush=True)
 request = json.loads(sys.stdin.readline())
 print(json.dumps({"jsonrpc":"2.0", "id":request["id"], "method":"sampling/createMessage", "params":{}}), flush=True)
 response = json.loads(sys.stdin.readline())
@@ -175,6 +231,10 @@ print(json.dumps({"jsonrpc":"2.0", "id":request["id"], "result":{"tools":[{"name
             proc = subprocess.Popen([sys.executable, str(PROXY), "--receipt", str(receipt), "--", sys.executable, "-c", server],
                                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             try:
+                proc.stdin.write(b'{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2025-03-26"}}\n')
+                proc.stdin.flush()
+                self.assertTrue(select.select([proc.stdout], [], [], 10)[0])
+                self.assertEqual(json.loads(proc.stdout.readline())["result"]["protocolVersion"], "2025-03-26")
                 proc.stdin.write(b'{"jsonrpc":"2.0","id":1,"method":"tools/list"}\n')
                 proc.stdin.flush()
                 self.assertTrue(select.select([proc.stdout], [], [], 10)[0])
@@ -278,7 +338,8 @@ print(json.dumps({"jsonrpc":"2.0", "id":request["id"], "result":{"tools":[{"name
             receipts = []
             for ident in (2, 99):
                 receipt = Path(temp) / f"{ident}.json"
-                message = json.dumps({"jsonrpc": "2.0", "id": ident, "method": "tools/list"}).encode() + b"\n"
+                message = (b'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26"}}\n'
+                           + json.dumps({"jsonrpc": "2.0", "id": ident, "method": "tools/list"}).encode() + b"\n")
                 subprocess.run([sys.executable, str(PROXY), "--receipt", str(receipt), "--", sys.executable, "-c", SERVER],
                                input=message, capture_output=True, timeout=10, check=True)
                 receipts.append(json.loads(receipt.read_text())["listings"][0])

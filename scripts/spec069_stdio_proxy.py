@@ -92,6 +92,11 @@ class Observer:
                     raise ValueError
                 if direction == "in" and method in ("initialize", "tools/list", "tools/call") and "id" not in msg:
                     raise ValueError
+                if direction == "in" and method == "initialize":
+                    params = msg.get("params")
+                    offered_version = params.get("protocolVersion") if isinstance(params, dict) else None
+                    if not isinstance(offered_version, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", offered_version):
+                        raise ValueError
                 if "id" in msg:
                     pending = self.pending if direction == "in" else self.server_pending
                     if key in pending or len(pending) >= MAX_EVENTS:
@@ -199,7 +204,16 @@ def relay(command, receipt):
             signal.signal(sig, handler)
         if any(observer.buffers.values()) or observer.pending or observer.server_pending:
             observer.fail("incomplete_message")
-        observer.receipt["complete"] = status == 0 and not observer.receipt["errors"]
+        if status == 0 and observer.receipt["protocolVersion"] is None:
+            observer.fail("missing_initialize")
+        if status == 0 and not observer.receipt["listings"]:
+            observer.fail("missing_target_listing")
+        observer.receipt["complete"] = (
+            status == 0
+            and observer.receipt["protocolVersion"] is not None
+            and bool(observer.receipt["listings"])
+            and not observer.receipt["errors"]
+        )
         json.dump(observer.receipt, receipt, sort_keys=True)
         receipt.write("\n")
         receipt.flush()
