@@ -88,12 +88,68 @@ class CorrelationTests(unittest.TestCase):
     def test_call_response_completes_only_matching_server_response(self):
         observer = proxy.Observer()
         self.send(observer, "in", id="call", method="tools/call", params={"name": "analyze-work", "arguments": {"request": {}}})
-        self.send(observer, "out", id="other", result={})
-        self.assertTrue(observer.pending)
         self.send(observer, "out", id="call", result={"content": [{"text": "PRIVATE-RESULT"}]})
         self.assertFalse(observer.pending)
         self.assertFalse(observer.receipt["errors"])
         self.assertNotIn("PRIVATE", json.dumps(observer.receipt))
+
+    def test_non_json_constants_and_overflow_rejected_in_both_directions(self):
+        for direction in ("in", "out"):
+            for value in (b"NaN", b"Infinity", b"-Infinity", b"1e400"):
+                with self.subTest(direction=direction, value=value):
+                    observer = proxy.Observer()
+                    observer.feed(direction, b'{"jsonrpc":"2.0","method":"notifications/example","params":{"x":' + value + b'}}\n')
+                    self.assertTrue(observer.receipt["errors"])
+
+    def test_scalar_or_null_params_invalid_for_requests_and_notifications(self):
+        for direction in ("in", "out"):
+            for value in (None, True, 3, "PRIVATE-PARAM"):
+                for with_id in (False, True):
+                    with self.subTest(direction=direction, value=value, with_id=with_id):
+                        observer = proxy.Observer()
+                        message = {"method": "custom", "params": value}
+                        if with_id:
+                            message["id"] = 1
+                        self.send(observer, direction, **message)
+                        self.assertTrue(observer.receipt["errors"])
+                        self.assertNotIn("PRIVATE-PARAM", json.dumps(observer.receipt))
+
+    def test_unsolicited_and_duplicate_responses_rejected_in_each_direction(self):
+        for direction in ("in", "out"):
+            with self.subTest(direction=direction, case="unsolicited"):
+                observer = proxy.Observer()
+                self.send(observer, direction, id=1, result={})
+                self.assertTrue(observer.receipt["errors"])
+            with self.subTest(direction=direction, case="duplicate"):
+                observer = proxy.Observer()
+                opposite = "out" if direction == "in" else "in"
+                self.send(observer, opposite, id=1, method="custom")
+                self.send(observer, direction, id=1, result={})
+                self.assertFalse(observer.receipt["errors"])
+                self.send(observer, direction, id=1, result={})
+                self.assertTrue(observer.receipt["errors"])
+
+    def test_valid_bidirectional_same_id_requests_and_responses(self):
+        observer = proxy.Observer()
+        self.send(observer, "in", id=1, method="tools/list", params={})
+        self.send(observer, "out", id=1, method="sampling/createMessage", params={})
+        self.send(observer, "in", id=1, result={"secret": "PRIVATE-CONTENT"})
+        self.send(observer, "out", id=1, result={"tools": [{"name": "analyze-work"}]})
+        self.assertFalse(observer.receipt["errors"])
+        self.assertFalse(observer.pending)
+        self.assertNotIn("PRIVATE-CONTENT", json.dumps(observer.receipt))
+
+    def test_invalid_jsonrpc_error_and_response_params_rejected(self):
+        responses = [{"id": 1, "error": None}, {"id": 1, "error": {"code": True, "message": "x"}},
+                     {"id": 1, "error": {"code": 1, "message": 2}},
+                     {"id": 1, "result": {}, "params": {}}]
+        for response in responses:
+            with self.subTest(response=response):
+                observer = proxy.Observer()
+                self.send(observer, "in", id=1, method="custom")
+                self.send(observer, "out", **response)
+                self.assertTrue(observer.receipt["errors"])
+                self.assertTrue(observer.pending)
 
     def test_duplicate_json_keys_cannot_forge_response_or_id(self):
         observer = proxy.Observer()
@@ -105,6 +161,39 @@ class CorrelationTests(unittest.TestCase):
 
 
 class ProxyTests(unittest.TestCase):
+    def test_bidirectional_process_collision_is_valid(self):
+        server = r'''
+import json, sys
+request = json.loads(sys.stdin.readline())
+print(json.dumps({"jsonrpc":"2.0", "id":request["id"], "method":"sampling/createMessage", "params":{}}), flush=True)
+response = json.loads(sys.stdin.readline())
+assert response["id"] == request["id"] and response["result"] == {}
+print(json.dumps({"jsonrpc":"2.0", "id":request["id"], "result":{"tools":[{"name":"analyze-work"}]}}), flush=True)
+'''
+        with tempfile.TemporaryDirectory() as temp:
+            receipt = Path(temp) / "receipt.json"
+            proc = subprocess.Popen([sys.executable, str(PROXY), "--receipt", str(receipt), "--", sys.executable, "-c", server],
+                                    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            try:
+                proc.stdin.write(b'{"jsonrpc":"2.0","id":1,"method":"tools/list"}\n')
+                proc.stdin.flush()
+                self.assertTrue(select.select([proc.stdout], [], [], 10)[0])
+                self.assertEqual(json.loads(proc.stdout.readline())["method"], "sampling/createMessage")
+                proc.stdin.write(b'{"jsonrpc":"2.0","id":1,"result":{}}\n')
+                proc.stdin.flush()
+                self.assertTrue(select.select([proc.stdout], [], [], 10)[0])
+                self.assertEqual(json.loads(proc.stdout.readline())["result"]["tools"][0]["name"], "analyze-work")
+                proc.stdin.close()
+                self.assertEqual(proc.wait(timeout=10), 0)
+                self.assertTrue(json.loads(receipt.read_text())["complete"])
+            finally:
+                if proc.poll() is None:
+                    proc.kill()
+                    proc.wait()
+                for stream in (proc.stdin, proc.stdout, proc.stderr):
+                    if not stream.closed:
+                        stream.close()
+
     def test_unanswered_analyze_work_call_is_incomplete(self):
         with tempfile.TemporaryDirectory() as temp:
             receipt = Path(temp) / "receipt.json"

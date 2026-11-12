@@ -18,13 +18,14 @@ the bytes. Compare canonical definition hashes only for comparable builds and pr
 raw-line hashes only when JSON-RPC IDs and serialization are also the same. A matching hash is not host
 acceptance, model exposure, loading mode or request correctness.
 
-This relay expects newline-delimited JSON-RPC, at most 1 MiB per line and 4,096 tracked requests or
+This relay expects newline-delimited JSON-RPC, at most 1 MiB per line, 4,096 outstanding requests per direction, and 4,096 recorded
 events; invalid, missing or duplicate `analyze-work` definitions, outstanding requests, subprocess errors,
 truncation and limit violations mark the receipt incomplete. It does not aggregate paginated listings or
 establish that all tools were listed; each `tools/list` response must contain exactly one `analyze-work`.
-All client-initiated requests with IDs are tracked until a server response; duplicate outstanding IDs,
-invalid IDs and ambiguous request/response messages invalidate the receipt. Server-initiated requests and
-client responses are not correlated with client-initiated requests, even when IDs collide. A successful
+Requests with IDs in both directions are tracked separately until the corresponding opposite-side response;
+duplicate outstanding IDs in one direction, unsolicited or duplicate responses, invalid IDs, non-JSON numeric
+constants, numbers outside finite float range, scalar `params` and ambiguous messages invalidate the receipt.
+The same ID may be outstanding in both directions. A successful
 `tools/call` receipt requires a matching response but does not assert that its analysis succeeded.
 The caller must supervise the process and use a timeout: ordinary stdio backpressure can block a peer.
 After client EOF the relay allows five seconds for server shutdown, then terminates its process group.

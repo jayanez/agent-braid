@@ -8,6 +8,7 @@ The receipt is not evidence of host acceptance or model-side schema loading.
 import argparse
 import hashlib
 import json
+import math
 import os
 import re
 import selectors
@@ -37,9 +38,21 @@ def unique_object(pairs):
     return result
 
 
+def reject_constant(value):
+    raise ValueError("non-JSON numeric constant")
+
+
+def finite_float(value):
+    number = float(value)
+    if not math.isfinite(number):
+        raise ValueError("number outside finite float range")
+    return number
+
+
 class Observer:
     def __init__(self):
         self.pending = {}
+        self.server_pending = {}
         self.buffers = {"in": b"", "out": b""}
         self.receipt = {"version": 1, "complete": False, "protocolVersion": None, "listings": [], "calls": [], "errors": []}
 
@@ -62,7 +75,7 @@ class Observer:
 
     def line(self, direction, raw):
         try:
-            msg = json.loads(raw, object_pairs_hook=unique_object)
+            msg = json.loads(raw, object_pairs_hook=unique_object, parse_constant=reject_constant, parse_float=finite_float)
             if not isinstance(msg, dict) or msg.get("jsonrpc") != "2.0":
                 raise ValueError
             ident = msg.get("id")
@@ -75,12 +88,15 @@ class Observer:
                 method = msg["method"]
                 if not isinstance(method, str) or "result" in msg or "error" in msg:
                     raise ValueError
+                if "params" in msg and not isinstance(msg["params"], (dict, list)):
+                    raise ValueError
                 if direction == "in" and method in ("initialize", "tools/list", "tools/call") and "id" not in msg:
                     raise ValueError
-                if direction == "in" and "id" in msg:
-                    if key in self.pending or len(self.pending) >= MAX_EVENTS:
+                if "id" in msg:
+                    pending = self.pending if direction == "in" else self.server_pending
+                    if key in pending or len(pending) >= MAX_EVENTS:
                         raise ValueError
-                    self.pending[key] = method
+                    pending[key] = method
                 if direction == "in" and method == "tools/call" and isinstance(msg.get("params"), dict) and msg["params"].get("name") == "analyze-work":
                     params = msg.get("params")
                     args = params.get("arguments") if isinstance(params, dict) else None
@@ -90,11 +106,19 @@ class Observer:
                         raise ValueError
                     self.receipt["calls"].append({"requestType": request_type})
             else:
-                if "id" not in msg or ("result" in msg) == ("error" in msg):
+                if "id" not in msg or "params" in msg or ("result" in msg) == ("error" in msg):
                     raise ValueError
-                if direction != "out" or key not in self.pending:
+                if "error" in msg:
+                    error = msg["error"]
+                    if (not isinstance(error, dict) or isinstance(error.get("code"), bool)
+                            or not isinstance(error.get("code"), int) or not isinstance(error.get("message"), str)):
+                        raise ValueError
+                pending = self.pending if direction == "out" else self.server_pending
+                if key not in pending:
+                    raise ValueError
+                method = pending.pop(key)
+                if direction != "out":
                     return
-                method = self.pending.pop(key)
                 if method not in ("initialize", "tools/list", "tools/call"):
                     return
                 result = msg.get("result")
@@ -173,7 +197,7 @@ def relay(command, receipt):
                     stream.close()
         for sig, handler in old.items():
             signal.signal(sig, handler)
-        if any(observer.buffers.values()) or observer.pending:
+        if any(observer.buffers.values()) or observer.pending or observer.server_pending:
             observer.fail("incomplete_message")
         observer.receipt["complete"] = status == 0 and not observer.receipt["errors"]
         json.dump(observer.receipt, receipt, sort_keys=True)
