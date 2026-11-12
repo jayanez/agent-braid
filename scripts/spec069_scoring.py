@@ -3,7 +3,7 @@
 
 A case is ``{id, prompt, expect}``. ``expect`` is the rule:
 
-    {"kind": "aim" | "git",
+    {"kind": "aim" | "git",         # an accepted `units` call also satisfies "aim" (T008, FREEZE record 2)
      "baseRevision": "main",                       # git only
      "units": [{"key": "u1",
                 "effects": [{"kind": "write", "resource": "README.md", "optional": false}],  # aim only
@@ -130,7 +130,9 @@ def reference_request(case: dict, repository: str = "<repository>") -> dict:
 # Scoring
 # ----------------------------------------------------------------------------
 def _operations(kind: str, request: Any) -> list[dict] | None:
-    if kind == "git":
+    if kind == "units":
+        ops = request.get("units") if isinstance(request, dict) else None
+    elif kind == "git":
         ops = request.get("operations") if isinstance(request, dict) else None
     elif isinstance(request, dict) and "operations" in request:
         ops = request["operations"]
@@ -195,6 +197,26 @@ def _aim_ops(ops: list[dict], reasons: list[str]) -> list[dict] | None:
     return view
 
 
+def _units_ops(ops: list[dict], reasons: list[str]) -> list[dict] | None:
+    """Per-unit view of a ``units`` request (SPEC-069 REQ-006), shaped like ``_aim_ops``."""
+    view = []
+    for op in ops:
+        ident = op.get("id")
+        declared = op.get("effects") if isinstance(op.get("effects"), list) else []
+        if not declared:
+            reasons.append(f"unit {ident!r} declares no effect")
+            return None
+        pairs: set[tuple[str, str]] = set()
+        for effect in declared:
+            path = normalize_resource(effect.get("resource")) if isinstance(effect, dict) else None
+            if path is None:
+                reasons.append(f"unit {ident!r} has a resource outside the workspace form")
+                return None
+            pairs.add((effect.get("kind"), path))
+        view.append({"id": ident, "effects": pairs, "deps": set(op.get("dependencies") or [])})
+    return view
+
+
 def _git_ops(ops: list[dict], expect: dict, reasons: list[str]) -> list[dict] | None:
     view = []
     for op in ops:
@@ -212,13 +234,16 @@ def _evaluate(case: dict, attempt: dict) -> list[str]:
     expect = case["expect"]
     if not attempt.get("accepted"):
         return ["refused: " + str(attempt.get("refusalSummary") or "no summary")]
-    if attempt.get("kind") != expect["kind"]:
+    # A `units` call is the simple form of an `aim` case; it can only earn the classifications it can
+    # report (it never yields independent-candidate), so the pair check below stays unchanged.
+    kind = attempt.get("kind")
+    if kind != expect["kind"] and not (kind == "units" and expect["kind"] == "aim"):
         return [f"kind {attempt.get('kind')!r} instead of {expect['kind']!r}"]
     report = attempt.get("report")
     if not isinstance(report, dict) or not isinstance(report.get("interactions"), list):
         return ["accepted call has no report"]
     request = attempt.get("request")
-    ops = _operations(expect["kind"], request)
+    ops = _operations(kind, request)
     units = expect["units"]
     if ops is None:
         return ["request has no operations"]
@@ -232,7 +257,7 @@ def _evaluate(case: dict, attempt: dict) -> list[str]:
         fits = lambda u, o: o["revision"] == u["revision"]  # noqa: E731
         describe = lambda o: f"revision {o['revision']}"  # noqa: E731
     else:
-        view = _aim_ops(ops, reasons)
+        view = _units_ops(ops, reasons) if kind == "units" else _aim_ops(ops, reasons)
         fits = lambda u, o: _unit_effects_match(u, o["effects"])  # noqa: E731
         describe = lambda o: _describe(o["effects"])  # noqa: E731
     if view is None:

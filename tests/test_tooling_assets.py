@@ -136,15 +136,11 @@ class ToolingAssetTests(unittest.TestCase):
             self.assertIn(f"name: {skill.name}\n", skill.content.split("---", 2)[1])
             self.assertIn("license: CC-BY-SA-4.0\n", skill.content)
 
-    def test_analyze_skill_aim_example_is_a_valid_conflicting_request(self) -> None:
-        # Issue #1080: the analyze skill must carry a copyable AIM request that the
-        # analyzer accepts, so a host model need not invent the request shape.
+    def test_analyze_skill_examples_are_checked_by_the_drift_test(self) -> None:
+        # Issue #1080 / SPEC-069 T008: the examples are validated and analysed in tests/test_spec069_guidance.py.
         content = (SOURCE_SKILLS / "agent-braid-analyze" / "SKILL.md").read_text("utf-8")
-        blocks = re.findall(r"```json\n(.*?)```", content, re.S)
-        self.assertEqual(1, len(blocks))
-        report = analysis.analyze(json.loads(blocks[0]))
-        self.assertEqual(["conflicting"], [item["classification"] for item in report["interactions"]])
-        self.assertEqual(["serialize-or-isolate"], report["interactions"][0]["constraints"])
+        self.assertEqual(3, len(re.findall(r"```json kind=\w+ result=\S+ constraints=\S+\n", content)))
+        self.assertEqual(3, len(re.findall(r"```json", content)))
 
     def test_workflow_guidance_keeps_authority_and_failure_boundaries(self) -> None:
         bundle = tooling_assets.load_skill_bundle(source_checkout=True)

@@ -70,3 +70,40 @@ First-attempt valid trials (Wilson 95% interval) and valid within one refusal-gu
 - **Spend:** about 3.8 USD notional on Claude Code (plus 0.09 smoke), OpenRouter runs a few tenths of a dollar by the earlier
   per-run price (cost not reported), Codex on the subscription: far below the 60 USD cap.
 - **Not done:** the held-out final run, so T010 stays open.
+
+## T008 guidance rewrite, development-set re-run (2026-11-12)
+
+Skill (`agent-braid-analyze`), `analyze-work` tool description and the git source refusal text were rewritten; a drift test
+(`tests/test_spec069_guidance.py`) sends every annotated skill example through the real tool and checks the documented
+classification, with negative controls. Same driver and arm (`final`, per-kind schema delivery), development set only, 10 prompts
+x 3 repetitions per host, final source commit `731e238e`. The held-out set was not opened or run (D9). Tuning used only
+development-set results, over seven rounds; the table is the last round on the exact shipped text.
+
+| Host | Before (T010 `final`) | After, first attempt | After, within one retry | Prompts first/retry (of 10) | Verdict |
+| --- | --- | --- | --- | --- | --- |
+| Claude Code | 12/30 (0.25-0.58) | 28/30 (0.79-0.98) | 28/30 (0.79-0.98) | 8 / 8 (misses DEV-02, DEV-03) | misses |
+| OpenCode | 16/30 (0.36-0.70) | 30/30 (0.89-1.00) | 30/30 (0.89-1.00) | 10 / 10 | meets |
+| Codex | 9/30 (0.17-0.48) | 27/30 (0.74-0.97) | 27/30 (0.74-0.97) | 8 / 8 (misses DEV-01, DEV-04) | misses |
+
+- **D4 reachability:** the pooled trial rate is above 8/10 on all three hosts; OpenCode meets the per-prompt criterion. Claude
+  Code and Codex each miss two prompts (every repetition must be valid for a prompt to count), so D4 is not yet met on the
+  development set. Remaining failures are non-systematic: `units` used for a parallelism question (valid call, classification
+  `unknown`), the tool not called at all (Claude Code DEV-03 once), and an `aim` record the scorer rejects. Accepted calls are final
+  (no retry credit), so within-retry equals first attempt. The gap looks like host variance over three repetitions, not a
+  guidance defect, but this is unproven until the T010 held-out run.
+- **Scoring change (frozen file, new FREEZE record):** `scripts/spec069_scoring.py` now accepts an accepted `units` call as the
+  simple form of an `aim` case, with the same per-unit resource and dependency checks. `units` still never earns
+  `independent-candidate` (coverage is always partial), so a case that expects that result stays unmet by `units`. Re-scoring the
+  T010 evidence with this rule moves Codex `final` 9 to 15 and Claude Code `final` 12 to 13, so most of Codex's earlier misses
+  were a scoring gap, not authoring errors. Negative controls in `tests/test_spec069_scoring.py`.
+- **Spec deviation (REQ-008 "prefer units"):** the skill now routes parallelism or overlap questions to `aim` (the only kind that
+  can report `independent-candidate`) and keeps `units` for conflict and ordering checks. Needs an owner decision to adopt
+  formally; no contract changed.
+- **Tuning iterations (first attempt, of 30; development set):** Claude Code 26, 24, 22, 30, 29, 30 (before the last wording
+  trim), final 28; OpenCode 30, 30, 29, 30, 30, 30, final 30; Codex 9 (T010), 22 in round 5 (earlier description), final 27.
+  Intermediate evidence files are not shipped. The run before this one for Codex (22/30) is in history at commit `11594ec9`.
+- **Access paths unchanged:** Claude Code by subscription token, OpenCode by OpenRouter, Codex by subscription sign-in; Codex hit
+  the usage limit once during tuning and was re-run after the reset.
+- **D12:** compact `analyze-work` definition stays at or below 1500 tokens (test enforced).
+- **Spend:** a few USD notional across the seven rounds; far below the 60 USD cap.
+- **Not done:** the held-out final run (T010). T008 stays open.
