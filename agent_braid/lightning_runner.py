@@ -56,6 +56,161 @@ class RunnerError(ValueError):
         self.code = code
 
 
+HELDOUT_ID = re.compile(r'HELD-\d+')
+HOLDOUT_CANARY = 'braid-lightning-holdout-canary-' + hashlib.sha256(b'braid-lightning-holdout-canary').hexdigest()[:16]
+FINGERPRINTS = 'specs/072-lightning-prompt-optimization/holdout-fingerprints.json'
+FINGERPRINT_SCHEMA = 'braid-lightning-holdout-fingerprints/v0.1'
+WINDOW = 8  # words; every held-out prompt has at least 29
+_WORD = re.compile(r'[a-z0-9]+')
+# Never readable by an optimizer call (SPEC-072 REQ-006), besides the host configuration stores.
+OPTIMIZER_DENIED = (PROMPT_FILES['held-out'], 'scripts/spec069_scoring.py', 'scripts/spec069_fixture_workspace.py', '.git')
+
+
+def normalize_words(text: str) -> list[str]:
+    return _WORD.findall(text.lower())
+
+
+def window_sha256(words: list[str]) -> str:
+    return hashlib.sha256(' '.join(words).encode()).hexdigest()
+
+
+def canary_note(prompt_set: str) -> str:
+    """The non-target note planted in rollout workspaces; held-out workspaces also carry the held-out canary."""
+    extra = f' {HOLDOUT_CANARY}' if prompt_set == 'held-out' else ''
+    return f'Internal note {LIGHTNING_CANARY}{extra}\n'
+
+
+def load_fingerprints(root: Path) -> dict:
+    """Held-out hashes bound to the FREEZE record; the optimizer path never reads held-out.json itself."""
+    value = json.loads((root / FINGERPRINTS).read_text())
+    if value.get('schema') != FINGERPRINT_SCHEMA or value.get('window') != WINDOW:
+        raise RunnerError('Unknown held-out fingerprint file', 'holdout-fingerprint-stale')
+    if reward_mod.frozen_hashes(root).get(PROMPT_FILES['held-out']) != value.get('heldOutSha256'):
+        raise RunnerError('Held-out fingerprints do not match FREEZE.json', 'holdout-fingerprint-stale')
+    return value
+
+
+def contamination_passed(text: str, fingerprints: dict | None = None) -> bool:
+    """Pre-call scan (SPEC-072 REQ-006): no held-out case id, held-out prompt window or canary in the input."""
+    prints = fingerprints if fingerprints is not None else load_fingerprints(checkout_root())
+    if HELDOUT_ID.search(text) or LIGHTNING_CANARY in text or HOLDOUT_CANARY in text:
+        return False
+    ids = set(prints['idSha256'])
+    if any(hashlib.sha256(token.encode()).hexdigest() in ids for token in re.findall(r'[A-Za-z0-9_-]+', text)):
+        return False
+    words = normalize_words(text)
+    windows = set(prints['windowSha256'])
+    return not any(window_sha256(words[i:i + WINDOW]) in windows for i in range(len(words) - WINDOW + 1))
+
+
+class SandboxedHost:
+    """One optimizer host in a disposable profile and OS sandbox (SPEC-072 REQ-006).
+
+    No tools, no plugin, an empty working directory, and no readable path to held-out.json, the scoring sources,
+    ``.git`` or the host configuration stores. Only Claude Code on the subscription route is supported (OD-2).
+    """
+
+    def __init__(self, host: str, *, fake_hosts: bool = False, environ: dict[str, str] | None = None,
+                 timeout_seconds: int = 300, model: str | None = None, fake_key_source: str | None = 'none',
+                 passthrough: dict[str, str] | None = None):
+        if host != 'claude-code':
+            raise RunnerError('Only Claude Code has a verified subscription route for optimizer calls', 'route-unverified')
+        from scripts import spec069_native_runs as driver
+        environ = dict(os.environ if environ is None else environ)
+        parent_gate(environ)
+        root = checkout_root()
+        self.timeout = timeout_seconds
+        self.protected = real_config_paths(real_home()) + [root / path for path in OPTIMIZER_DENIED]
+        self.sandbox = OsSandbox(self.protected)
+        if not self.sandbox.tool and not fake_hosts:
+            raise RunnerError('No OS sandbox on this platform; refusing an unsandboxed optimizer call', 'isolation-failed')
+        self.profile = Profile(prefix='lightning-opt-')
+        self.secrets = Secrets()
+        try:
+            binary = _fake_binary(root, host) if fake_hosts else _host_binary(host)
+            if binary is None:
+                raise RunnerError('Optimizer host executable not found', 'isolation-failed')
+            credential = environ.get(CREDENTIALS[host])
+            self.secrets.add(credential)
+            self.host = HostConfig(host, binary, (), CREDENTIALS[host], model=model, fake=fake_hosts)
+            extra = dict(passthrough or {})
+            if fake_hosts:
+                extra.update({'FAKE_PYTHON': sys.executable} | ({'FAKE_KEY_SOURCE': fake_key_source}
+                                                                 if fake_key_source is not None else {}))
+            self.env = driver.build_host_env(self.profile, self.host, credential or '',
+                                             self.profile.make('optimizer', 'agent-braid-home'), extra)
+            if not credential:
+                self.env.pop(self.host.key_target, None)
+            env_gate(self.env)
+            self.cwd = self.profile.make('optimizer', 'work')
+            self.probe = probe_isolation(self.env, Path(self.env['HOME']), self.sandbox, self.protected)
+        except SafetyStop as exc:
+            self.close()
+            raise RunnerError(str(exc), 'isolation-failed') from exc
+        except BaseException:
+            self.close()
+            raise
+
+    def __call__(self, text: str) -> str:
+        argv = [str(self.host.binary), '-p', text, '--output-format', 'stream-json', '--verbose', '--max-turns', '1',
+                '--no-session-persistence', '--tools', ''] + (['--model', self.host.model] if self.host.model else [])
+        try:
+            done = run_process(argv, self.env, self.cwd, self.profile, self.protected, self.sandbox, self.timeout,
+                               'optimizer call')
+        except SafetyStop as exc:
+            raise RunnerError(str(exc), 'isolation-failed') from exc
+        if self.secrets.scan(done.stdout + done.stderr):
+            raise RunnerError('A credential appeared in optimizer output', 'credential-leak')
+        if done.timed_out:
+            return ''  # a failed call, judged by the caller
+        transcript = PARSERS[self.host.name](done.stdout)
+        quota = None if transcript.text else quota_stop(done.stdout, done.stderr)
+        if quota:
+            raise RunnerError('Subscription quota reached', quota)
+        if key_source_verdict(self.host.name, transcript.key_source):
+            raise RunnerError('The optimizer host did not report a subscription credential source', 'route-unverified')
+        if transcript.tool_calls:
+            raise RunnerError('The optimizer host used a tool', 'isolation-failed')
+        return transcript.text
+
+    def close(self) -> dict:
+        return self.profile.teardown()
+
+
+class OptimizerChannel:
+    """The only path for optimizer calls (SPEC-072 REQ-004, REQ-006): checks and hashes every input, numbers calls.
+
+    By default calls go to a :class:`SandboxedHost`. ``transport(text) -> str`` with ``fake=True`` replaces the
+    host with an in-process fake for algorithm tests; a transport without ``fake`` is refused.
+    """
+
+    def __init__(self, host: str, *, transport=None, fake: bool = False, **host_options):
+        if host not in CREDENTIALS:
+            raise RunnerError('Unknown optimizer host', 'config-enum')
+        if transport is not None and not fake:
+            raise RunnerError('Only fake in-process transports bypass the sandboxed host', 'isolation-failed')
+        self.fingerprints = load_fingerprints(checkout_root())
+        self.host = host
+        self._transport = transport if transport is not None else SandboxedHost(host, **host_options)
+        self.calls: list[dict] = []
+
+    def call(self, text: str) -> tuple[str, str, dict]:
+        """Return (call id, output, contamination check); a contaminated input is refused before any call."""
+        check = {'inputSha256': hashlib.sha256(text.encode('utf-8')).hexdigest(),
+                 'passed': contamination_passed(text, self.fingerprints)}
+        if not check['passed']:
+            raise RunnerError('Optimizer input contains held-out material', 'holdout-contamination')
+        call_id = f'opt-{len(self.calls) + 1:04d}'
+        output = self._transport(text)
+        output = output if isinstance(output, str) else ''  # an empty reply is a failed call, judged by the caller
+        self.calls.append({'callId': call_id, **check})
+        return call_id, output, check
+
+    def close(self) -> dict | None:
+        close = getattr(self._transport, 'close', None)
+        return close() if close else None
+
+
 def utc(ts: float) -> str:
     return datetime.fromtimestamp(ts, timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
 
@@ -223,7 +378,7 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
                 secrets.add(credential)
             env_gate(env)
             workspace = fixture.build(profile.make('hosts', host_name, 'workspace') / 'repo')
-            (workspace / CANARY_FILE).write_text(f'Internal note {LIGHTNING_CANARY}\n')
+            (workspace / CANARY_FILE).write_text(canary_note(prompt_set))
             guard_leaks(f'{host_name} setup', env, [str(binary)], protected)
             if not sandbox.tool and not fake_hosts:
                 raise RunnerError('No OS sandbox on this platform; refusing an unsandboxed real run', 'isolation-failed')

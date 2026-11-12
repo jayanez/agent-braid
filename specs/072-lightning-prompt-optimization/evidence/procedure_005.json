@@ -1,0 +1,22 @@
+{
+ "command": "python -m unittest tests.test_lightning_gepa",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_algorithm.py": "b31dbe61bac8a3135e475bbba3dc23655f4a7e15fde157f87a42f8a3b304bf5c",
+  "agent_braid/lightning_gepa.py": "c6d3f866e86c4e018cb05d218b7a982ed48ff4f66fde8403f096c129e78b6cde",
+  "agent_braid/lightning_prompts/gepa_reflection.md": "4d4a33c87e9f4214a0e925f7115055a5b27c659c7451a40a8e4a573a69208ced",
+  "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",
+  "agent_braid/lightning_runner.py": "beeb3b4b83a71a91f74886943e2348f162a2613afb34301744e44e037a29e8fb",
+  "tests/test_lightning_gepa.py": "32353c37f43868da922469a1f91ac45f7cd1f620e75d85c20135bf47d8e09695"
+ },
+ "limits": "Fake optimizer and synthetic rewards; no model contacted. Implemented from the paper's description; no GEPA or DSPy code. The pre-call scan and sandboxed host are evidenced by procedure_006. No-improvement stopping is T007.",
+ "outcome": "passed: The Pareto front over per-prompt D4 scores keeps exactly the non-dominated candidates (a dominated candidate and an equal score vector are excluded) and parent sampling follows the number of prompts each front member scores best on (0.75 observed for 3 of 4 prompts); a child whose minibatch score beats its parent's is accepted, fully evaluated (60 rollouts) and replaces the dominated seed on the front, while children that do not improve are recorded with a minibatch score only and never fully evaluated; with the preregistered settings a run costs 3 minibatches of 10 plus one full evaluation, and a second accepted child whose full evaluation would exceed 120 rollouts is not evaluated (unit-cap); the reflection input holds only the parent text and the parent's minibatch vectors; the same seed repeats parent and minibatch choices; an unusable reflection is a failed call. Negative control: an optimizer outside the runner channel is refused (optimizer-bypass).",
+ "procedure": "procedure_005",
+ "result": "OK",
+ "scenario": "SC-005",
+ "specification": "SPEC-072 BL.2",
+ "testsRun": 9
+}

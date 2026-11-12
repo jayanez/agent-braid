@@ -42,6 +42,34 @@ PROCEDURES = {
         "outcome_note": "Baseline on fake hosts yields per-host trials, first-attempt and within-retry counts and Wilson intervals identical to a direct SPEC-071 fake-host run, with stored rewards replaying; it records the round-0 seed candidate with its text and a full-set devScore equal to the report's first-attempt rate; a modified seed changes the candidate sha256 in the summary (negative control); the base Algorithm.run is abstract.",
         "limits": "Fake hosts only (pipeline-only label); no model contacted. Fake-host outcomes do not depend on the skill text, so equality shows pipeline identity, not prompt quality.",
     },
+    'procedure_004': {
+        "scenario": 'SC-004',
+        "modules": ["tests.test_lightning_apo"],
+        "inputs": ["agent_braid/lightning_apo.py", "agent_braid/lightning_runner.py", "agent_braid/lightning_algorithm.py",
+                   "agent_braid/lightning_resources.py", "agent_braid/lightning_prompts/apo_text_gradient.md",
+                   "agent_braid/lightning_prompts/apo_apply_edit.md", "tests/test_lightning_apo.py"],
+        "outcome_note": "With the preregistered parameters (beam 2, branch 2, 2 rounds, minibatch 5, 2 hosts, 3 repetitions) APO runs 1 then 2 parents with 2 then 4 children, 9 optimizer calls and 120 rollouts (20 + 40 search, 60 full evaluation of the best), as in the feasibility table; every APO candidate records its parent, round, two call ids, both passed contamination checks and the hash of the critique and edit templates; configuration defaults stop at the 120-rollout cap (unit-cap), configured rounds above 3 are capped at 3, the optimizer-call cap stops the run, and unusable edits are failed calls without candidates. Negative controls: an optimizer outside the runner channel is refused (optimizer-bypass), a non-fake channel is refused until the sandboxed host path exists (isolation-failed), and inputs with a held-out case id or the rollout canary are refused before any call (holdout-contamination).",
+        "limits": "Fake optimizer and synthetic body-dependent rewards; no model contacted. The full pre-call scan and the sandboxed optimizer host are evidenced by procedure_006. Evaluating a real candidate body through host rollouts is T009 work.",
+    },
+    'procedure_005': {
+        "scenario": 'SC-005',
+        "modules": ["tests.test_lightning_gepa"],
+        "inputs": ["agent_braid/lightning_gepa.py", "agent_braid/lightning_algorithm.py", "agent_braid/lightning_runner.py",
+                   "agent_braid/lightning_resources.py", "agent_braid/lightning_prompts/gepa_reflection.md",
+                   "tests/test_lightning_gepa.py"],
+        "outcome_note": "The Pareto front over per-prompt D4 scores keeps exactly the non-dominated candidates (a dominated candidate and an equal score vector are excluded) and parent sampling follows the number of prompts each front member scores best on (0.75 observed for 3 of 4 prompts); a child whose minibatch score beats its parent's is accepted, fully evaluated (60 rollouts) and replaces the dominated seed on the front, while children that do not improve are recorded with a minibatch score only and never fully evaluated; with the preregistered settings a run costs 3 minibatches of 10 plus one full evaluation, and a second accepted child whose full evaluation would exceed 120 rollouts is not evaluated (unit-cap); the reflection input holds only the parent text and the parent's minibatch vectors; the same seed repeats parent and minibatch choices; an unusable reflection is a failed call. Negative control: an optimizer outside the runner channel is refused (optimizer-bypass).",
+        "limits": "Fake optimizer and synthetic rewards; no model contacted. Implemented from the paper's description; no GEPA or DSPy code. The pre-call scan and sandboxed host are evidenced by procedure_006. No-improvement stopping is T007.",
+    },
+    'procedure_006': {
+        "scenario": 'SC-006',
+        "modules": ["tests.test_lightning_contamination"],
+        "inputs": ["agent_braid/lightning_runner.py", "agent_braid/lightning_hosts.py", "scripts/spec072_holdout_fingerprints.py",
+                   "specs/072-lightning-prompt-optimization/holdout-fingerprints.json",
+                   "specs/069-aim-request-authoring/prompts/FREEZE.json", "tests/test_lightning_contamination.py",
+                   "tests/fixtures/lightning-fake-hosts/claude"],
+        "outcome_note": "The committed held-out fingerprints (sha256 of held-out case ids and of every 8-word normalized window of the held-out prompts not shared with a development prompt) are reproducible and bound to the FREEZE hash of held-out.json; the analyze skill body and every development prompt pass the scan; a held-out 8-word excerpt in different case and spacing, a held-out case id (by pattern and by hash), the held-out canary planted only in held-out rollout workspaces, and the rollout canary are refused (holdout-contamination); stale fingerprints are refused (holdout-fingerprint-stale); the channel checks before every call and a refused input never reaches the host. The sandboxed optimizer host runs Claude Code with no tools, no plugin and an empty working directory in a disposable profile without API keys; its protected paths include held-out.json, the SPEC-069 scoring and fixture sources and .git, and on macOS the isolation probe is enforced and a read of held-out.json under the sandbox fails; teardown is clean. Negative controls: an unverified credential source (route-unverified), a paid key in the parent environment (paid-route-refused), OpenCode as optimizer host (route-unverified) and a non-fake in-process transport (isolation-failed) are refused.",
+        "limits": "Fake Claude Code host; no model contacted. The scan matches exact 8-word windows after normalization: paraphrased held-out content is not detected. Windows shared with development prompts are not fingerprinted (held-out prompts keep 11 to 45 windows each). Sandbox denial is asserted only on macOS (sandbox-exec); elsewhere real optimizer calls are refused.",
+    },
 }
 
 

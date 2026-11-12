@@ -8,14 +8,50 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from pathlib import Path
+import re
 
 from . import lightning_runner as runner_mod
 from . import lightning_store as store_mod
-from .lightning_resources import Candidate, latest, seed
+from .lightning_config import digest
+from .lightning_resources import Candidate, latest, seed, sha256_text, split_skill
 
 
 def _now() -> str:
     return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+PROMPTS = Path(__file__).resolve().parent / 'lightning_prompts'
+_PLACEHOLDER = re.compile(r'\{(prompt_template|experiments|critique)\}')
+_HEADER = re.compile(r'\A(?:<!--.*?-->\s*)+', re.S)
+
+
+def render(path: Path, **values: str) -> str:
+    """Fill a Markdown template in one pass, so placeholder-like text inside a value is never expanded."""
+    text = _HEADER.sub('', path.read_text(encoding='utf-8'))
+    return _PLACEHOLDER.sub(lambda m: values[m.group(1)], text)
+
+
+def experiments(vectors: list[dict]) -> str:
+    """Content-free reward vectors as optimizer input lines (SPEC-072 P1: no transcripts)."""
+    return '\n'.join(
+        f"- {v['caseId']} on {v['host']}: first attempt {'passed' if v['d4FirstAttempt'] else 'failed'} D4; "
+        f"request {'schema-valid' if v['schemaValid'] else 'schema-invalid'}; "
+        f"reasons: {', '.join(v.get('reasons') or []) or 'none'}; refusal: {v.get('refusal') or 'none'}"
+        for v in vectors)
+
+
+def score(vectors: list[dict]) -> dict | None:
+    if not vectors:
+        return None
+    n = len(vectors)
+    return {'d4FirstAttempt': round(sum(bool(v['d4FirstAttempt']) for v in vectors) / n, 6),
+            'schemaValid': round(sum(bool(v['schemaValid']) for v in vectors) / n, 6), 'rollouts': n}
+
+
+def rank(value: dict | None) -> tuple[float, float]:
+    """Selection key (SPEC-072 P2): mean d4FirstAttempt, then mean schemaValid as tie-breaker."""
+    return (value['d4FirstAttempt'], value['schemaValid']) if value else (-1.0, -1.0)
 
 
 def dev_score(store: store_mod.RunStore) -> dict | None:
@@ -34,6 +70,17 @@ class Algorithm:
 
     def skill_text(self, config: dict) -> str:
         return (runner_mod.checkout_root() / config['target']['path']).read_text(encoding='utf-8')
+
+    def start(self, home, config: dict, run_id: str, seed_vectors: list[dict]):
+        """Create the run store and record the seed with its full development score; return (store, seed, body,
+        frontMatterSha256)."""
+        store = store_mod.RunStore(home, run_id)
+        store.create(config_digest=digest(config))
+        raw = self.skill_text(config)
+        record, body = seed(raw, created_at=_now(), dev_score={'minibatch': None, 'full': score(seed_vectors)})
+        store.write_candidate_text(record.sha256, body)
+        store.append('candidate', record)
+        return store, record, body, sha256_text(split_skill(raw)[0])
 
     def run(self, home, config: dict, **runner_kwargs) -> dict:
         raise NotImplementedError

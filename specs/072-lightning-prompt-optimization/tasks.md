@@ -24,12 +24,12 @@ script or test.
 
 ## Phase P2 — optimizers and controls
 
-- [ ] T004 (REQ-004 / SC-004): `lightning_apo` and Markdown templates with
+- [x] T004 (REQ-004 / SC-004): `lightning_apo` and Markdown templates with
   hashes. Dependencies: T003. Verification: procedure_004.
-- [ ] T005 (REQ-005 / SC-005): `lightning_gepa` from the paper; reflection on
+- [x] T005 (REQ-005 / SC-005): `lightning_gepa` from the paper; reflection on
   content-free inputs only. Dependencies:
   T003. Verification: procedure_005.
-- [ ] T006 (REQ-006 / SC-006): Contamination check before every optimizer call;
+- [x] T006 (REQ-006 / SC-006): Contamination check before every optimizer call;
   optimizer calls in the SPEC-071 disposable profile and sandbox.
   Dependencies: T004, T005. Verification: procedure_006.
 - [ ] T007 (REQ-007 / SC-007): Budgets per arm run, stopping rules and
