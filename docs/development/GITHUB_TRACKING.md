@@ -123,6 +123,15 @@ milestone numbers before and after the migration. Require equality except for
 the approved titles, and a second title-only audit with `operations: []`.
 Private Project membership and custom status remain a separate verification.
 
+`unpublished_milestones` lists declared milestones whose GitHub publication
+still awaits a separate explicit authorization (currently
+`M4.6 — Claude Code dynamic workflows`). The full and title-only audits exclude
+their source records, report the held record count per milestone and bind it
+into the plan digest, so the post-merge audit reflects only drift on published
+records. It fails closed if a held milestone already exists remotely, is
+registered or closed, or holds the parent of a published record. To publish,
+remove the entry in the reviewed change and run the guarded audit/apply.
+
 ## Change path
 
 1. Change the spec, task list and assurance record through the usual Spec Kit

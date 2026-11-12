@@ -484,6 +484,9 @@
     "SPEC-050",
     "SPEC-066"
   ],
+  "unpublished_milestones": [
+    "M4.6 — Claude Code dynamic workflows"
+  ],
   "milestone_numbers": {
     "M0 — Operational foundations": 1,
     "M0.5 — Open strategy and preview preparation": 2,

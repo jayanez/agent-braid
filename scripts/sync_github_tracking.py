@@ -98,9 +98,42 @@ def resolve_milestones(config: dict, milestones: dict) -> dict:
     return resolved
 
 
+def validate_unpublished_milestones(config: dict) -> list[str]:
+    held = config.get("unpublished_milestones", [])
+    if not isinstance(held, list) or len(set(held)) != len(held) or not set(held) <= set(config["milestones"]):
+        raise ValueError("unpublished milestones must be unique declared milestones")
+    for name in held:
+        if name in config.get("milestone_numbers", {}) or name in config["closed_milestones"]:
+            raise ValueError(f"unpublished milestone {name!r} cannot be registered or closed")
+    return held
+
+
+def published_scope(config: dict, desired: list[dict], milestones: dict) -> tuple[dict, list[dict], dict]:
+    """Exclude source records whose milestone publication still awaits authorization.
+
+    Fails closed when a held milestone already exists remotely or a published record
+    depends on a held parent. Held record counts are reported and bound into the digest.
+    """
+    held = validate_unpublished_milestones(config)
+    if not held:
+        return config, desired, {}
+    for name in held:
+        if name in milestones:
+            raise ValueError(f"unpublished milestone {name!r} exists remotely; remove it from unpublished_milestones")
+    kept = [item for item in desired if item["milestone"] not in held]
+    kept_keys = {item["key"] for item in kept}
+    for item in kept:
+        if item["parent"] and item["parent"] not in kept_keys:
+            raise ValueError(f"{item['key']} has its parent in an unpublished milestone")
+    counts = {name: sum(item["milestone"] == name for item in desired) for name in held}
+    scoped = {**config, "milestones": {name: text for name, text in config["milestones"].items() if name not in held}}
+    return scoped, kept, counts
+
+
 def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dict, list[dict]]:
     config = json.loads(config_path.read_text(encoding="utf-8"))
     validate_milestone_numbers(config)
+    validate_unpublished_milestones(config)
     cancellations = task_cancellations(root, config)
     folders = sorted(path for path in (root / "specs").glob("[0-9]*") if (path / "spec.md").is_file())
     configured = set(config["specs"])
@@ -537,11 +570,13 @@ def main(argv: list[str] | None = None) -> int:
                           "milestone_number": args.milestone_number,
                           "new_record_keys": sorted(args.new_record_key), "operations": operations}
     else:
-        scoped_config, scoped_desired, scoped_issues, scoped_milestones = config, desired, issues, milestones
-        operations = build_plan(config, desired, milestones, issues, extra,
+        scoped_config, scoped_desired, held = published_scope(config, desired, milestones)
+        scoped_issues, scoped_milestones = issues, milestones
+        operations = build_plan(scoped_config, scoped_desired, milestones, issues, extra,
                                 milestone_titles_only=args.milestone_titles_only)
         scope = "milestone-titles" if args.milestone_titles_only else "full"
-        digest_payload = {"repository": repo, "scope": scope, "operations": operations}
+        digest_payload = {"repository": repo, "scope": scope, "operations": operations,
+                          **({"unpublished_milestones": held} if held else {})}
     plan_digest = hashlib.sha256(json.dumps(digest_payload,
                                             sort_keys=True, ensure_ascii=False,
                                             separators=(",", ":")).encode("utf-8")).hexdigest()
@@ -549,6 +584,8 @@ def main(argv: list[str] | None = None) -> int:
                       "scope": scope,
                       **({"milestone_number": args.milestone_number} if args.milestone_number is not None else {}),
                       **({"new_record_keys": sorted(args.new_record_key)} if args.milestone_number is not None else {}),
+                      **({"unpublished_milestones": digest_payload["unpublished_milestones"]}
+                         if "unpublished_milestones" in digest_payload else {}),
                       "plan_sha256": plan_digest, "operations": operations}, indent=2, ensure_ascii=False))
     if args.mode == "audit":
         return 1 if operations else 0

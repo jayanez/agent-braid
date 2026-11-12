@@ -14,7 +14,7 @@ import unittest
 from unittest.mock import patch
 
 from scripts.sync_github_tracking import (ROOT, apply_plan, build_plan, main,
-                                          milestone_plan,
+                                          milestone_plan, published_scope,
                                           remote_inventory, source_inventory,
                                           validate_milestone_numbers)
 
@@ -24,6 +24,49 @@ DEFERRED = "Deferred"
 OWNER_DECISION_R6 = ([f"SPEC-029/T00{n}" for n in range(1, 10)]
                      + ["SPEC-031/T008", "SPEC-033/T002", "SPEC-033/T003",
                         "SPEC-033/T004", "SPEC-033/T006", "SPEC-033/T008"])
+
+
+class UnpublishedMilestoneTests(unittest.TestCase):
+    """Milestones awaiting publication are excluded from the full audit, fail closed."""
+
+    def setUp(self):
+        self.config = {"milestones": {"A": "published", "H": "held"}, "closed_milestones": [],
+                       "milestone_numbers": {"A": 1}, "unpublished_milestones": ["H"]}
+        self.desired = [
+            {"key": "SPEC-001", "parent": None, "milestone": "A"},
+            {"key": "SPEC-001/T001", "parent": "SPEC-001", "milestone": "A"},
+            {"key": "SPEC-002", "parent": None, "milestone": "H"},
+            {"key": "SPEC-002/T001", "parent": "SPEC-002", "milestone": "H"},
+        ]
+        self.remote = {"A": {"number": 1, "title": "A", "state": "open"}}
+
+    def test_held_records_and_milestone_are_excluded_and_counted(self):
+        config, kept, held = published_scope(self.config, self.desired, self.remote)
+        self.assertEqual(["SPEC-001", "SPEC-001/T001"], [item["key"] for item in kept])
+        self.assertEqual({"H": 2}, held)
+        self.assertEqual({"A"}, set(config["milestones"]))
+
+    def test_absent_member_keeps_everything(self):
+        del self.config["unpublished_milestones"]
+        self.assertEqual((self.config, self.desired, {}), published_scope(self.config, self.desired, self.remote))
+
+    def test_held_milestone_existing_remotely_is_refused(self):
+        remote = {**self.remote, "H": {"number": 2, "title": "H", "state": "open"}}
+        with self.assertRaisesRegex(ValueError, "exists remotely"):
+            published_scope(self.config, self.desired, remote)
+
+    def test_published_record_with_held_parent_is_refused(self):
+        self.desired[1]["milestone"] = "A"
+        self.desired[3]["milestone"] = "A"
+        with self.assertRaisesRegex(ValueError, "parent in an unpublished milestone"):
+            published_scope(self.config, self.desired, self.remote)
+
+    def test_invalid_declarations_are_refused(self):
+        for held in (["X"], ["H", "H"], ["A"], "H"):
+            with self.subTest(held=held), self.assertRaises(ValueError):
+                published_scope({**self.config, "unpublished_milestones": held}, self.desired, self.remote)
+        with self.assertRaisesRegex(ValueError, "registered or closed"):
+            published_scope({**self.config, "closed_milestones": ["H"]}, self.desired, self.remote)
 
 
 class TaskMilestoneOverrideTests(unittest.TestCase):
