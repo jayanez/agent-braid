@@ -2,6 +2,8 @@
 
 Status: planning coverage audit, 2026-10-20. This replaces the original compact twenty-task scope. **Braid Harness** names Agent Braid's proposed capability and lifecycle. Harness2/Harness² names only the upstream reference and reused source provenance. No Google implementation, branding, operational assumptions or acceptance is implied.
 
+Current HAR.3 status, 2026-11-12: the [SPEC-050 capability report](../050-braid-harness-adaptation/capability-report.md) (SPEC-050/T012) lists, per requirement, what is implemented offline, qualified and activated, plus the pending owners. SPEC-050/T002-T011 are implemented offline, with T004 and T010 partial. No capability is qualified or activated. The matrix below keeps its planning role; the report is the status source for the SPEC-050 rows.
+
 The revised program has **3 milestones, 3 specs, 28 requirements/scenarios and 40 open implementation/gate tasks**: HAR.1 has 15, HAR.2 has 13, HAR.3 has 12. This count follows implementation ownership and independent acceptance; it is not a fixed completeness target. The original twenty tasks covered a first guidance/context pilot but compressed important implementation and left advanced capabilities without task ownership.
 
 | Capability or lifecycle concern | Owning requirement(s) | Concrete task ownership / acceptance boundary |
