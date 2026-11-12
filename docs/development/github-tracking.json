@@ -63,6 +63,9 @@
     "BL.0 — Braid Lightning foundations",
     "BL.1 — Lightning rollouts and verifiable reward"
   ],
+  "unpublished_milestones": [
+    "M4.6 — Claude Code dynamic workflows"
+  ],
   "specs": {
     "001-certificate-verifier-pilot": {
       "milestone": "M0 — Operational foundations",

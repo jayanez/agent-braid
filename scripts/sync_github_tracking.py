@@ -75,6 +75,50 @@ def validate_milestone_numbers(config: dict) -> dict:
     return numbers
 
 
+def validate_unpublished_milestones(config: dict) -> list[str]:
+    """Milestones deliberately kept off GitHub; the full audit reports but does not fail on them."""
+    names = config.get("unpublished_milestones", [])
+    if not isinstance(names, list) or any(not isinstance(name, str) for name in names):
+        raise ValueError("unpublished milestones must be a list of milestone names")
+    if len(set(names)) != len(names):
+        raise ValueError("duplicate unpublished milestone entry")
+    unknown = sorted(set(names) - set(config["milestones"]))
+    if unknown:
+        raise ValueError(f"unpublished milestone is not declared: {unknown}")
+    numbered = sorted(set(names) & set(config.get("milestone_numbers", {})))
+    if numbered:
+        raise ValueError(f"unpublished milestone has a registered GitHub number: {numbered}")
+    return names
+
+
+def partition_unpublished(config: dict, desired: list[dict],
+                          operations: list[dict]) -> tuple[list[dict], dict]:
+    """Split full-audit operations into counted ones and those of listed unpublished milestones.
+
+    Only operations that can be attributed to a listed milestone (its creation, or a
+    source record whose desired milestone is listed) are set aside; everything else,
+    including orphan reviews, still counts.
+    """
+    listed = set(validate_unpublished_milestones(config))
+    if not listed:
+        return operations, {}
+    milestone_of = {item["key"]: item["milestone"] for item in desired}
+    counted: list[dict] = []
+    skipped: dict[str, dict] = {}
+    for operation in operations:
+        if "key" in operation:
+            owner = milestone_of.get(operation["key"])
+        else:
+            owner = operation.get("name")
+        if owner in listed:
+            entry = skipped.setdefault(owner, {"pending": 0, "operations": []})
+            entry["pending"] += 1
+            entry["operations"].append(operation)
+        else:
+            counted.append(operation)
+    return counted, {name: skipped[name] for name in config["unpublished_milestones"] if name in skipped}
+
+
 def resolve_milestones(config: dict, milestones: dict) -> dict:
     numbers = validate_milestone_numbers(config)
     by_number = {item["number"]: item for item in milestones.values()}
@@ -101,6 +145,7 @@ def resolve_milestones(config: dict, milestones: dict) -> dict:
 def source_inventory(root: Path = ROOT, config_path: Path = CONFIG) -> tuple[dict, list[dict]]:
     config = json.loads(config_path.read_text(encoding="utf-8"))
     validate_milestone_numbers(config)
+    validate_unpublished_milestones(config)
     cancellations = task_cancellations(root, config)
     folders = sorted(path for path in (root / "specs").glob("[0-9]*") if (path / "spec.md").is_file())
     configured = set(config["specs"])
@@ -530,6 +575,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     repo = config["repository"]
     milestones, issues, extra = remote_inventory(repo, milestone_titles_only=args.milestone_titles_only)
+    skipped: dict[str, dict] = {}
     if args.milestone_number is not None:
         scoped_config, scoped_desired, scoped_issues, operations = milestone_plan(
             config, desired, milestones, issues, extra, args.milestone_number,
@@ -545,7 +591,14 @@ def main(argv: list[str] | None = None) -> int:
         operations = build_plan(config, desired, milestones, issues, extra,
                                 milestone_titles_only=args.milestone_titles_only)
         scope = "milestone-titles" if args.milestone_titles_only else "full"
-        digest_payload = {"repository": repo, "scope": scope, "operations": operations}
+        if scope == "full":
+            published = sorted(name for name in validate_unpublished_milestones(config) if name in milestones)
+            if published:
+                raise ValueError(f"unpublished milestone exists on GitHub: {published}; "
+                                 "remove it from unpublished_milestones")
+            operations, skipped = partition_unpublished(config, desired, operations)
+        digest_payload = {"repository": repo, "scope": scope, "operations": operations,
+                          **({"skipped_unpublished": skipped} if skipped else {})}
     plan_digest = hashlib.sha256(json.dumps(digest_payload,
                                             sort_keys=True, ensure_ascii=False,
                                             separators=(",", ":")).encode("utf-8")).hexdigest()
@@ -553,7 +606,12 @@ def main(argv: list[str] | None = None) -> int:
                       "scope": scope,
                       **({"milestone_number": args.milestone_number} if args.milestone_number is not None else {}),
                       **({"new_record_keys": sorted(args.new_record_key)} if args.milestone_number is not None else {}),
-                      "plan_sha256": plan_digest, "operations": operations}, indent=2, ensure_ascii=False))
+                      "plan_sha256": plan_digest, "operations": operations,
+                      **({"skipped_unpublished": skipped} if skipped else {})},
+                     indent=2, ensure_ascii=False))
+    for name, entry in skipped.items():
+        print(f"tracking sync: skipped unpublished milestone {name!r}: {entry['pending']} pending "
+              "operations (listed in unpublished_milestones; not counted)", file=sys.stderr)
     if args.mode == "audit":
         return 1 if operations else 0
     if args.confirm_repository != repo:

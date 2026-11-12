@@ -16,7 +16,8 @@ from unittest.mock import patch
 from scripts.sync_github_tracking import (ROOT, apply_plan, build_plan, main,
                                           milestone_plan, pages,
                                           remote_inventory, source_inventory,
-                                          validate_milestone_numbers)
+                                          validate_milestone_numbers,
+                                          validate_unpublished_milestones)
 
 
 S1_5 = "S1.5 — System One shadow activation"
@@ -651,6 +652,149 @@ class ScopedMilestoneTests(unittest.TestCase):
             main(["apply", "--milestone-number", "6",
                   *sum((["--new-record-key", key] for key in sorted(keys)), []),
                   "--confirm-repository", "owner/repo", "--plan-sha256", stale_digest])
+
+
+class UnpublishedMilestoneTests(unittest.TestCase):
+    """The full audit reports, but does not fail on, deliberately unpublished milestones."""
+
+    def setUp(self):
+        self.published = "A — Published"
+        self.hidden = "U — Unpublished"
+        self.config = {"repository": "owner/repo", "project_url": "https://example.test/project",
+                       "milestones": {self.published: "published", self.hidden: "unpublished"},
+                       "closed_milestones": [], "milestone_numbers": {self.published: 1},
+                       "unpublished_milestones": [self.hidden]}
+        self.milestones = {self.published: {"number": 1, "title": self.published, "state": "open"}}
+        body = "## Task\n\nTask\n\n- Source: source\n- Trace: See the parent issue and assurance record.\n"
+        self.desired = [
+            {"key": "SPEC-001", "kind": "spec", "parent": None, "title": "[SPEC-001] One",
+             "milestone": self.published, "state": "open", "body": ""},
+            {"key": "SPEC-002", "kind": "spec", "parent": None, "title": "[SPEC-002] Two",
+             "milestone": self.hidden, "state": "open", "body": ""},
+            {"key": "SPEC-002/T001", "kind": "task", "parent": "SPEC-002", "title": "[SPEC-002 T001] Task",
+             "milestone": self.hidden, "state": "closed", "task_text": "Task", "body": body},
+        ]
+        self.issues = {"SPEC-001": {"number": 4, "id": 40, "title": "[SPEC-001] One", "state": "open",
+                                    "milestone": {"number": 1, "title": self.published}, "body": ""}}
+        self.extra = {"children": {"SPEC-001": set()}, "unmarked_titles": set()}
+
+    def audit(self, args=("audit",)):
+        output, errors = io.StringIO(), io.StringIO()
+        with patch("scripts.sync_github_tracking.source_inventory", return_value=(self.config, self.desired)), \
+             patch("scripts.sync_github_tracking.remote_inventory",
+                   return_value=(self.milestones, self.issues, self.extra)), \
+             redirect_stdout(output), patch("sys.stderr", errors):
+            code = main(list(args))
+        return code, json.loads(output.getvalue()), errors.getvalue()
+
+    def test_listed_milestone_is_reported_but_does_not_fail_the_full_audit(self):
+        code, report, errors = self.audit()
+        self.assertEqual(0, code)
+        self.assertEqual([], report["operations"])
+        skipped = report["skipped_unpublished"][self.hidden]
+        # create_milestone + two create_issue + link_subissue + set_state (closed task)
+        self.assertEqual(5, skipped["pending"])
+        self.assertEqual(5, len(skipped["operations"]))
+        self.assertEqual({"create_milestone", "create_issue", "link_subissue", "set_state"},
+                         {op["action"] for op in skipped["operations"]})
+        self.assertIn(self.hidden, errors)
+        self.assertIn("5 pending", errors)
+
+    def test_drift_outside_the_list_still_fails(self):
+        self.issues["SPEC-001"]["title"] = "stale"
+        code, report, _ = self.audit()
+        self.assertEqual(1, code)
+        self.assertEqual([{"action": "update_title", "key": "SPEC-001",
+                           "from": "stale", "to": "[SPEC-001] One"}], report["operations"])
+        self.assertEqual(5, report["skipped_unpublished"][self.hidden]["pending"])
+
+    def test_orphans_are_never_skipped(self):
+        self.issues["SPEC-999"] = {"number": 99}
+        code, report, _ = self.audit()
+        self.assertEqual(1, code)
+        self.assertEqual(["review_orphan"], [op["action"] for op in report["operations"]])
+
+    def test_empty_or_absent_list_keeps_previous_behaviour(self):
+        for value in (None, []):
+            with self.subTest(value=value):
+                if value is None:
+                    self.config.pop("unpublished_milestones", None)
+                else:
+                    self.config["unpublished_milestones"] = value
+                code, report, _ = self.audit()
+                self.assertEqual(1, code)
+                self.assertNotIn("skipped_unpublished", report)
+                self.assertEqual(5, len(report["operations"]))
+
+    def test_skipped_operations_are_bound_to_digest_and_never_applied(self):
+        _, report, _ = self.audit()
+        self.config["unpublished_milestones"] = []
+        _, unlisted, _ = self.audit()
+        self.assertNotEqual(report["plan_sha256"], unlisted["plan_sha256"])
+        self.config["unpublished_milestones"] = [self.hidden]
+        self.issues["SPEC-001"]["title"] = "stale"
+        _, drifted, _ = self.audit()
+        with patch("scripts.sync_github_tracking.source_inventory", return_value=(self.config, self.desired)), \
+             patch("scripts.sync_github_tracking.remote_inventory",
+                   return_value=(self.milestones, self.issues, self.extra)), \
+             patch("scripts.sync_github_tracking.subprocess.run",
+                   side_effect=[SimpleNamespace(stdout="develop"), SimpleNamespace(stdout="")]), \
+             patch("scripts.sync_github_tracking.apply_plan") as apply, \
+             redirect_stdout(io.StringIO()), patch("sys.stderr", new_callable=io.StringIO):
+            self.assertEqual(0, main(["apply", "--confirm-repository", "owner/repo",
+                                      "--plan-sha256", drifted["plan_sha256"]]))
+        self.assertEqual(drifted["operations"], apply.call_args.args[5])
+        self.assertTrue(all(op.get("key") != "SPEC-002" for op in apply.call_args.args[5]))
+
+    def test_scoped_and_title_only_audits_are_unchanged(self):
+        self.config["milestone_numbers"] = {self.published: 1}
+        code, report, _ = self.audit(("audit", "--milestone-number", "1"))
+        self.assertEqual(0, code)
+        self.assertNotIn("skipped_unpublished", report)
+
+    def test_listed_milestone_that_exists_remotely_is_refused(self):
+        self.milestones[self.hidden] = {"number": 2, "title": self.hidden, "state": "open"}
+        with self.assertRaisesRegex(ValueError, "exists on GitHub"):
+            self.audit()
+
+    def test_invalid_lists_are_configuration_errors(self):
+        cases = {
+            "unknown": ["Nope"],
+            "duplicate": [self.hidden, self.hidden],
+            "not a list": self.hidden,
+            "non-string": [3],
+            "published number": [self.published],
+        }
+        for name, value in cases.items():
+            with self.subTest(name):
+                config = deepcopy(self.config)
+                config["unpublished_milestones"] = value
+                with self.assertRaisesRegex(ValueError, "unpublished milestone"):
+                    validate_unpublished_milestones(config)
+
+    def test_source_inventory_validates_the_list(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            folder = root / "specs/001-example"
+            folder.mkdir(parents=True)
+            (folder / "spec.md").write_text("# Example\n")
+            (folder / "assurance.json").write_text('{"requirements": []}')
+            (folder / "tasks.md").write_text("- [ ] T001: First.\n")
+            config = {"repository": "owner/repo", "project_url": "example",
+                      "milestones": {"A": "first"}, "closed_milestones": [],
+                      "specs": {"001-example": {"milestone": "A", "state": "open"}},
+                      "task_state_overrides": {}, "project_review_pending": [],
+                      "task_cancellations": {}, "unpublished_milestones": ["A", "A"]}
+            path = root / "config.json"
+            path.write_text(json.dumps(config))
+            with self.assertRaisesRegex(ValueError, "unpublished milestone"):
+                source_inventory(root, path)
+
+    def test_committed_list_names_the_m46_milestone(self):
+        config, desired = source_inventory()
+        self.assertEqual(["M4.6 — Claude Code dynamic workflows"], config["unpublished_milestones"])
+        listed = {item["key"] for item in desired if item["milestone"] in config["unpublished_milestones"]}
+        self.assertTrue({"SPEC-052", "SPEC-053", "SPEC-057", "SPEC-058", "SPEC-059"} <= listed)
 
 
 if __name__ == "__main__":
