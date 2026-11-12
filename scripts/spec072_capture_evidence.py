@@ -42,6 +42,15 @@ PROCEDURES = {
         "outcome_note": "Baseline on fake hosts yields per-host trials, first-attempt and within-retry counts and Wilson intervals identical to a direct SPEC-071 fake-host run, with stored rewards replaying; it records the round-0 seed candidate with its text and a full-set devScore equal to the report's first-attempt rate; a modified seed changes the candidate sha256 in the summary (negative control); the base Algorithm.run is abstract.",
         "limits": "Fake hosts only (pipeline-only label); no model contacted. Fake-host outcomes do not depend on the skill text, so equality shows pipeline identity, not prompt quality.",
     },
+    'procedure_004': {
+        "scenario": 'SC-004',
+        "modules": ["tests.test_lightning_apo"],
+        "inputs": ["agent_braid/lightning_apo.py", "agent_braid/lightning_runner.py", "agent_braid/lightning_algorithm.py",
+                   "agent_braid/lightning_resources.py", "agent_braid/lightning_prompts/apo_text_gradient.md",
+                   "agent_braid/lightning_prompts/apo_apply_edit.md", "tests/test_lightning_apo.py"],
+        "outcome_note": "With the preregistered parameters (beam 2, branch 2, 2 rounds, minibatch 5, 2 hosts, 3 repetitions) APO runs 1 then 2 parents with 2 then 4 children, 9 optimizer calls and 120 rollouts (20 + 40 search, 60 full evaluation of the best), as in the feasibility table; every APO candidate records its parent, round, two call ids, both passed contamination checks and the hash of the critique and edit templates; configuration defaults stop at the 120-rollout cap (unit-cap), configured rounds above 3 are capped at 3, the optimizer-call cap stops the run, and unusable edits are failed calls without candidates. Negative controls: an optimizer outside the runner channel is refused (optimizer-bypass), a non-fake channel is refused until the sandboxed host path exists (isolation-failed), and inputs with a held-out case id or the rollout canary are refused before any call (holdout-contamination).",
+        "limits": "Fake optimizer and synthetic body-dependent rewards; no model contacted. The pre-call scan covers held-out case ids and the rollout canary only; held-out prompt text, the sandboxed optimizer host call and its read restrictions are T006. Evaluating a real candidate body through host rollouts is T009 work.",
+    },
 }
 
 
