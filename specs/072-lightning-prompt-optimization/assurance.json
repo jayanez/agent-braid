@@ -10,7 +10,7 @@
     21,
     23
   ],
-  "assumptions": "SPEC-071 runner and reward are delivered; the optimizer runs through the host CLI on the subscription route; the SPEC-069 held-out set and FREEZE are unchanged (OD-1 decided 2026-11-11: keep 10 cases × 3 repetitions); required hosts per OD-2.",
+  "assumptions": "SPEC-071 runner and reward are delivered; the optimizer runs through the host CLI on the subscription route; the SPEC-069 held-out set and FREEZE are unchanged (OD-1 decided 2026-11-11: keep 10 cases \u00d7 3 repetitions); required hosts per OD-2.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -190,7 +190,15 @@
         {
           "given": "the seed guidance and the fake hosts",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_algorithm",
+              "limits": "Fake hosts only (pipeline-only label); no model contacted. Fake-host outcomes do not depend on the skill text, so equality shows pipeline identity, not prompt quality.",
+              "outcome": "passed: Baseline on fake hosts yields per-host trials, first-attempt and within-retry counts and Wilson intervals identical to a direct SPEC-071 fake-host run, with stored rewards replaying; it records the round-0 seed candidate with its text and a full-set devScore equal to the report's first-attempt rate; a modified seed changes the candidate sha256 in the summary (negative control); the base Algorithm.run is abstract.",
+              "path": "specs/072-lightning-prompt-optimization/evidence/procedure_003.json",
+              "sha256": "7ea8904d2f4d4225b0131f46b6416f84dccf44e4a837e5d9337c17751d193ef1"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/072-lightning-prompt-optimization/validation-plan.md",
           "test_name": "procedure_003",

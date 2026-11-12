@@ -33,6 +33,15 @@ PROCEDURES = {
         "outcome_note": "The seed is the analyze skill body below its fixed front matter; seed and child records round-trip canonically byte for byte; the child names the seed as parent; text whose hash differs, unknown keys, foreign origins, refused contamination checks and broken lineage are refused with codes; the store keeps text beside the record privately and refuses a record without matching text; later records may change only scores and Pareto membership.",
         "limits": "Record and store only; the seed check against the run's recorded commit is applied when runs record a commit (T003).",
     },
+    'procedure_003': {
+        "scenario": 'SC-003',
+        "modules": ["tests.test_lightning_algorithm"],
+        "inputs": ["agent_braid/lightning_algorithm.py", "agent_braid/lightning_runner.py", "agent_braid/lightning_resources.py",
+                   "agent_braid/lightning_store.py", "tests/test_lightning_algorithm.py",
+                   "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md"],
+        "outcome_note": "Baseline on fake hosts yields per-host trials, first-attempt and within-retry counts and Wilson intervals identical to a direct SPEC-071 fake-host run, with stored rewards replaying; it records the round-0 seed candidate with its text and a full-set devScore equal to the report's first-attempt rate; a modified seed changes the candidate sha256 in the summary (negative control); the base Algorithm.run is abstract.",
+        "limits": "Fake hosts only (pipeline-only label); no model contacted. Fake-host outcomes do not depend on the skill text, so equality shows pipeline identity, not prompt quality.",
+    },
 }
 
 

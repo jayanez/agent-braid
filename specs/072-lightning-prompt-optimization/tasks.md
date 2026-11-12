@@ -19,7 +19,7 @@ script or test.
 - [x] T002 (REQ-002 / SC-002): `lightning_resources` candidate record and store;
   extend `lightning_store.KINDS` with `candidate` and test it.
   Dependencies: T001. Verification: procedure_002.
-- [ ] T003 (REQ-003 / SC-003): `lightning_algorithm` base and `Baseline`; fake-host
+- [x] T003 (REQ-003 / SC-003): `lightning_algorithm` base and `Baseline`; fake-host
   equality with SPEC-071. Dependencies: T002. Verification: procedure_003.
 
 ## Phase P2 — optimizers and controls
