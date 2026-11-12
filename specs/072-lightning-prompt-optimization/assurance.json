@@ -172,7 +172,7 @@
               "limits": "Record and store only; the seed check against the run's recorded commit is applied when runs record a commit (T003).",
               "outcome": "passed: The seed is the analyze skill body below its fixed front matter; seed and child records round-trip canonically byte for byte; the child names the seed as parent; text whose hash differs, unknown keys, foreign origins, refused contamination checks and broken lineage are refused with codes; the store keeps text beside the record privately and refuses a record without matching text; later records may change only scores and Pareto membership.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_002.json",
-              "sha256": "3c9d8fdc8fea2d2456f9d74d9511d1223054a6df8224736fc8453512fe5ffb91"
+              "sha256": "0fdd2cd82e2db11c7ad5347d5f06207b77287b0cc3785ff82f4ed564efab92d1"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -196,7 +196,7 @@
               "limits": "Fake hosts only (pipeline-only label); no model contacted. Fake-host outcomes do not depend on the skill text, so equality shows pipeline identity, not prompt quality.",
               "outcome": "passed: Baseline on fake hosts yields per-host trials, first-attempt and within-retry counts and Wilson intervals identical to a direct SPEC-071 fake-host run, with stored rewards replaying; it records the round-0 seed candidate with its text and a full-set devScore equal to the report's first-attempt rate; a modified seed changes the candidate sha256 in the summary (negative control); the base Algorithm.run is abstract.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_003.json",
-              "sha256": "ee1df76542ab39a6fc02ed171d3855d97ea8506d5617e5e17c85b7baa3d0c816"
+              "sha256": "5a87fac05da3a07057c2b285530da4c5de6cc5d927a297a6bb73e49d0bed18b8"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -220,7 +220,7 @@
               "limits": "Fake optimizer and synthetic body-dependent rewards; no model contacted. The full pre-call scan and the sandboxed optimizer host are evidenced by procedure_006. Evaluating a real candidate body through host rollouts is T009 work.",
               "outcome": "passed: With the preregistered parameters (beam 2, branch 2, 2 rounds, minibatch 5, 2 hosts, 3 repetitions) APO runs 1 then 2 parents with 2 then 4 children, 9 optimizer calls and 120 rollouts (20 + 40 search, 60 full evaluation of the best), as in the feasibility table; every APO candidate records its parent, round, two call ids, both passed contamination checks and the hash of the critique and edit templates; configuration defaults stop at the 120-rollout cap (unit-cap), configured rounds above 3 are capped at 3, the optimizer-call cap stops the run, and unusable edits are failed calls without candidates. Negative controls: an optimizer outside the runner channel is refused (optimizer-bypass), a non-fake channel is refused until the sandboxed host path exists (isolation-failed), and inputs with a held-out case id or the rollout canary are refused before any call (holdout-contamination).",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_004.json",
-              "sha256": "9356d9ab76cbfac3342358d441d9de97371b3367356e05451b2c068ef4e5bd60"
+              "sha256": "fe830316370e7608b00e324ca551910fc4458a479d2eab0c6b972a59aa4b0556"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -244,7 +244,7 @@
               "limits": "Fake optimizer and synthetic rewards; no model contacted. Implemented from the paper's description; no GEPA or DSPy code. The pre-call scan and sandboxed host are evidenced by procedure_006. No-improvement stopping is T007.",
               "outcome": "passed: The Pareto front over per-prompt D4 scores keeps exactly the non-dominated candidates (a dominated candidate and an equal score vector are excluded) and parent sampling follows the number of prompts each front member scores best on (0.75 observed for 3 of 4 prompts); a child whose minibatch score beats its parent's is accepted, fully evaluated (60 rollouts) and replaces the dominated seed on the front, while children that do not improve are recorded with a minibatch score only and never fully evaluated; with the preregistered settings a run costs 3 minibatches of 10 plus one full evaluation, and a second accepted child whose full evaluation would exceed 120 rollouts is not evaluated (unit-cap); the reflection input holds only the parent text and the parent's minibatch vectors; the same seed repeats parent and minibatch choices; an unusable reflection is a failed call. Negative control: an optimizer outside the runner channel is refused (optimizer-bypass).",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_005.json",
-              "sha256": "bb15e077e082d5b2b5ed01a5be75c50078651ef93c524081e5eba32280fcc9c8"
+              "sha256": "cb609a4b78b76890303529657e726e9c885e99ea1e581fece5d00226f15a0720"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -268,7 +268,7 @@
               "limits": "Fake Claude Code host; no model contacted. The scan matches exact 8-word windows after normalization: paraphrased held-out content is not detected. Windows shared with development prompts are not fingerprinted (held-out prompts keep 11 to 45 windows each). Sandbox denial is asserted only on macOS (sandbox-exec); elsewhere real optimizer calls are refused.",
               "outcome": "passed: The committed held-out fingerprints (sha256 of held-out case ids and of every 8-word normalized window of the held-out prompts not shared with a development prompt) are reproducible and bound to the FREEZE hash of held-out.json; the analyze skill body and every development prompt pass the scan; a held-out 8-word excerpt in different case and spacing, a held-out case id (by pattern and by hash), the held-out canary planted only in held-out rollout workspaces, and the rollout canary are refused (holdout-contamination); stale fingerprints are refused (holdout-fingerprint-stale); the channel checks before every call and a refused input never reaches the host. The sandboxed optimizer host runs Claude Code with no tools, no plugin and an empty working directory in a disposable profile without API keys; its protected paths include held-out.json, the SPEC-069 scoring and fixture sources and .git, and on macOS the isolation probe is enforced and a read of held-out.json under the sandbox fails; teardown is clean. Negative controls: an unverified credential source (route-unverified), a paid key in the parent environment (paid-route-refused), OpenCode as optimizer host (route-unverified) and a non-fake in-process transport (isolation-failed) are refused.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_006.json",
-              "sha256": "8fbc362ac930f1b2b92f006cf02f2be28dcb48ea58425749a388e7a82471b8b0"
+              "sha256": "dc8cc302843b54194c812226a3ddd1def496043051b99b966cbac3e77ec83ee9"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",

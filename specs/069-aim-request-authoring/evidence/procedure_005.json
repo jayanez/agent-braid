@@ -6,8 +6,8 @@
     "o200k_base": 4.14
    },
    "per-kind": {
-    "cl100k_base": 4.27,
-    "o200k_base": 4.16
+    "cl100k_base": 4.26,
+    "o200k_base": 4.15
    }
   },
   "counts": {
@@ -16,8 +16,8 @@
     "o200k_base": 344
    },
    "per-kind": {
-    "cl100k_base": 1275,
-    "o200k_base": 1309
+    "cl100k_base": 1301,
+    "o200k_base": 1336
    }
   },
   "note": "One-time calibration of the D12 approximation in a disposable interpreter; tiktoken is not a repository dependency. Anthropic's tokenizer is not public and is not measured.",
@@ -25,16 +25,16 @@
  },
  "command": "python -m unittest -v tests.test_spec069_schema_delivery tests.test_spec069_differential.DeclaredSchemaDifferentialTests tests.test_tooling_mcp.SurfaceVersionTests.test_analyze_work_definition_describes_the_aim_request_shape tests.test_tooling_mcp.SdkClientIntegrationTests.test_plugin_list_tools_serves_the_nested_per_kind_schema_through_the_sdk",
  "environment": {
-  "capturePython": "3.13.11",
+  "capturePython": "3.12.13",
   "jsonschema": "4.25.1",
   "mcp": "2.3.0",
-  "platform": "macOS-27.2",
-  "python": "3.13.11"
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
  },
  "inputs": {
   "agent_braid/analyze_work_schema.py": "a7a5ccb6dde3ff1ad3650dfbd3a9e3c457e9c2c1782f88bb44ff5d852c156d41",
   "agent_braid/plugin_mcp.py": "56115f8f3c6dbfef31fd2888f2a6b29a70f3f3471e31a6f0c19b8af6693b2d3b",
-  "agent_braid/tooling_mcp.py": "33c4c1499d04891d4b88e45d811eccbe2fc8487f073756a992348dc975313805",
+  "agent_braid/tooling_mcp.py": "35b82114a575965aaa28e444d9d19902e15cc5d836065e6e049c57377ab3de58",
   "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
   "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
   "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
@@ -130,10 +130,10 @@
      "sha256": "1f1566b7bbac649fb59e6c9d384561d6a3729e1bb547e66485d5b3ed523dc274"
     },
     "analyze-work": {
-     "approximateTokens": 1473,
-     "bytes": 5447,
-     "fullDefinitionBytes": 5988,
-     "sha256": "2bb707d0d8f43338e42a7f55043284f6040713c2b6874fa49556f7ac32308c3d"
+     "approximateTokens": 1498,
+     "bytes": 5539,
+     "fullDefinitionBytes": 6080,
+     "sha256": "69c8c66a874199c1ba09076cff0c478badff652e95b64ba02e51ee592100cdfc"
     },
     "execute": {
      "approximateTokens": 90,

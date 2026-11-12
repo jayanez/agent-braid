@@ -86,6 +86,9 @@ and T010's final run measures the release candidate without them.
 - [ ] T008 (REQ-008 / SC-008): [P3, conditional] Rewrite skill and tool description for three
   kinds; add `units` examples; drift test. Dependencies: T005, T006, T007, held-out set frozen (T010).
   Verification: procedure_008.
+  Progress 2026-11-12: guidance, scoring support for `units` and drift test landed; development-set first attempt Claude Code
+  28/30, OpenCode 30/30, Codex 27/30 (validation-plan.md). D4 per-prompt criterion met for OpenCode only; left open pending
+  T005/T007 and the T010 held-out run.
 
 ## Closing — final run, documentation and release
 

@@ -243,6 +243,36 @@ class ScoreCaseTests(Env):
         self.assertTrue(scoring.score_case(case, [self.attempt(case, ops)])["validFirstAttempt"])
         self.assertFalse(scoring.score_case(case, [self.attempt(case, ops[0])])["validFirstAttempt"])
 
+    def units_attempt(self, case, resource=lambda r: r):
+        """A `units` call for an aim case, analysed by the real units adapter (T008, FREEZE record 2)."""
+        from agent_braid import units as units_module
+        request = {"unitsRequestVersion": "0.1.0-alpha", "units": [
+            {"id": u["key"], "dependencies": list(u["dependsOn"]),
+             "effects": [{"kind": e["kind"], "resource": resource(e["resource"])}
+                         for e in u["effects"] if not e.get("optional")]}
+            for u in case["expect"]["units"]]}
+        report = units_module.analyze(request, "0" * 32)["report"]
+        return {"kind": "units", "request": request, "accepted": True, "refusalSummary": None, "report": report}
+
+    def test_units_call_earns_only_the_classifications_it_can_report(self):
+        conflict, wanted_independent = self.case("DEV-01"), self.case("DEV-02")
+        self.assertTrue(scoring.score_case(conflict, [self.units_attempt(conflict)])["validFirstAttempt"])
+        # negative control: a units call can never satisfy an independent-candidate expectation
+        scored = scoring.score_case(wanted_independent, [self.units_attempt(wanted_independent)])
+        self.assertFalse(scored["validFirstAttempt"])
+        self.assertIn("is unknown instead of independent-candidate", scored["reasons"][0])
+
+    def test_units_call_is_checked_for_resources_dependencies_and_kind(self):
+        conflict, ordered, git = self.case("DEV-01"), self.case("DEV-04"), self.case("DEV-08")
+        wrong = self.units_attempt(conflict, resource=lambda r: "other/" + r)
+        self.assertFalse(scoring.score_case(conflict, [wrong])["validFirstAttempt"])
+        for unit in (wrong2 := self.units_attempt(ordered))["request"]["units"]:
+            unit["dependencies"] = []
+        self.assertFalse(scoring.score_case(ordered, [wrong2])["validFirstAttempt"])
+        attempt = self.good(git)
+        attempt["kind"] = "units"  # units never stands in for a git case
+        self.assertFalse(scoring.score_case(git, [attempt])["validFirstAttempt"])
+
     def test_wrong_kind_and_missing_report_are_invalid(self):
         case = self.case("DEV-08")
         attempt = self.good(case)
