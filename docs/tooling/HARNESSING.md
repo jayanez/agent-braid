@@ -130,3 +130,50 @@ operator contract.
   `specs/049-harness-evaluation-learning/contracts/interface.md`. These views
   read the shapes the T003 and T013 modules emit, and may change when those
   contracts are versioned.
+
+## Experimental lifecycle library (SPEC-050 T011)
+
+`agent_braid.harness_lifecycle` is an offline Python library, not a command. It
+adds no CLI, plugin or MCP surface. It is disabled by default: nothing exists
+until a human calls `install(root, opt_in=True, ...)` for one task-local scope.
+Only `claude` is a supported host, because it is the only host with an observed
+build; `codex` and unknown hosts are refused.
+
+Everything it writes stays inside `ROOT/.braid-harness-lifecycle`, with
+directories 0700 and files 0600, plus two kinds of short-lived working
+directories in `ROOT`: one for staging an install and one for removal. Every
+result has `executionAuthorization: false`, and `activate` always refuses.
+Ordinary use stays unavailable, because the SPEC-049 T008 disposition is
+deferred and the T009 production policy abstains with `pending-endpoints`.
+
+- `migrate` stages a verified, admitted component profile only as the next
+  linked version of the current one. `rollback` restores the prior profile only
+  if its stored bytes still match the recorded hash. Every profile has a
+  caller-fixed expiry tick.
+- `check_drift` compares the source, host, model, tool and policy identity
+  with the installed one. Any difference blocks migration and canaries until a
+  human calls `requalify` with an evidence hash. That rebinds only the
+  installation: a promotion decision made under the old identity stays stale in
+  the registry.
+- `begin_canary` and `observe_canary` run the T009 canary against the persisted
+  T013 registry. `incident_stop` halts the installation and rolls the registry
+  back, and only a human `clear_incident` lifts the halt. `revoke` withdraws
+  registry decisions that cite the evidence and, if a caller-held T008 store is
+  given, propagates the revocation through it.
+- `retain` keeps a private record until a retention tick the caller must give;
+  there is no default duration. Records are deleted only when a human calls
+  `purge`. Nothing is exported.
+- `uninstall` refuses unknown or linked content, then removes the whole
+  installation and returns a hash receipt. `recover` finishes an interrupted
+  install, uninstall or purge and deletes temporary or unreferenced files.
+  `residue` lists anything left behind.
+
+Limits:
+
+- Operators, identities, retention ticks and evidence hashes are
+  caller-asserted.
+- Writes are serialized by a POSIX lock. A same-user process swapping
+  directories between a check and a write is outside the threat model.
+- Racing installs on one root are not handled.
+- Human workflow usability, native hosts and any activation have not been
+  observed.

@@ -1,0 +1,48 @@
+{
+  "candidateBinding": "Current source/input hashes on a branch from origin/develop f3648396; no frozen implementation commit claimed",
+  "counterfactualChecks": {
+    "method": "Scratch script removed one guard at a time from agent_braid/harness_lifecycle.py and reran tests.test_harness_lifecycle; the module was restored afterwards",
+    "mutations": 23,
+    "survivors": []
+  },
+  "disposition": "implemented-offline-not-activated",
+  "executedChecks": [
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_lifecycle",
+      "exitCode": 0,
+      "scope": "35 new lifecycle tests over temporary directories, Python 3.13.",
+      "testsRun": 35
+    },
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_lifecycle tests.test_harness_auto_promotion tests.test_harness_auto_promotion_controls tests.test_harness_promotion tests.test_harness_curation tests.test_harness_components",
+      "exitCode": 0,
+      "scope": "Lifecycle plus the reused T002, T008, T009 and SPEC-049 T013 modules, Python 3.13.",
+      "testsRun": 195
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_auto_promotion.py": "d148ff2958bfb56c213e6d9afa4479d25dc4f3e9b95fd3baf6da43049e222404",
+    "agent_braid/harness_components.py": "971765102de1ea3e550b3e4760af495ac663631cadcc0fb03dbbd2893e9c894b",
+    "agent_braid/harness_curation.py": "e61e16fd682d17d3479b9f956ade7b7df7e5084a51e449fd2a3b9833daa2c67c",
+    "agent_braid/harness_experience.py": "92afe433d6d93984bfae35274644ed1bdafa0e57ff344c30808ae219ed64a057",
+    "agent_braid/harness_promotion.py": "659207a11e93e23cf9d677cbbb11c1eeaa9a125d15246e65efdb3b9a40206325",
+    "specs/050-braid-harness-adaptation/contracts/interface.md": "d0cd7d0b06df8147ba02def65149aeffc962f8c59199781cf3eb9496d94f8e03",
+    "specs/050-braid-harness-adaptation/tasks.md": "c4ee1376d69574b51a8faeff0afa78d3dd9f14800d9d39db058d0c73e66c2efc"
+  },
+  "limits": "Pure offline controls with synthetic doubles in temporary directories. No host, model, paid route or network was used, and nothing native ran. Ticks are supplied by the caller. Operators, identities, retention ticks and evidence hashes are caller-asserted: records prove binding, not authenticity. The T010 dependency is still open in tasks.md; this library adds no CLI, plugin or MCP surface. Staged profiles cannot select model or route settings, because verify_profile is called without an approved-settings list, so such profiles refuse. Retention duration and purge schedule remain an open contract question (section 10/12): there is no default, and nothing is deleted except by an explicit human purge. The bounds MAX_PRIVATE=64, MAX_PRIVATE_BYTES=65536, MAX_PREVIOUS=16, MAX_JOURNAL=256 and STOP_RESERVE=8 are module-local and provisional. Writes are serialized by a POSIX flock and use temp-file, fsync and rename. The state file is written before the registry. A crash between the two shows registryConsistent false and is repaired by repeating a stop or by a human save_registry. A same-user process swapping a directory between the layout check and a write is outside the contract section 7 threat model. Concurrent installs on one root, and recover racing an install, are not handled. A rolled-back profile's bytes are deleted by recover as unreferenced. docs/tooling/HARNESSING.md is listed as an output of SPEC-049/T009 evidence; that pin was already stale (a later commit changed the file) and T011 names the file as a target, so a section was appended. Pre-PR adversarial, functional, quality and simplification reviews were run by Claude subagents and are not independent Luna review; the counterfactual pass was a local mutation script.",
+  "method": "Actual offline unittest execution plus a local guard-removal (mutation) pass",
+  "outcome": "Offline, disabled-by-default lifecycle library. It provides human opt-in installation for the one supported host; linked profile migration with byte-verified rollback/downgrade and retained prior profiles; expiry gating; source/host/model/tool/policy drift detection with human requalification; a T009 canary against the persisted T013 registry; incident stop with registry rollback and human clear; registry plus T008 revocation propagation; explicit retention with human purge; and verifiable uninstall with a hash receipt. Interrupted install, migration, purge and uninstall are atomic or completed by recover. Fresh, upgrade, downgrade, interrupted, unsupported-host and future/old state-format paths are tested. activate always refuses, and no result carries execution authority.",
+  "outputs": {
+    "agent_braid/harness_lifecycle.py": "b9d2997622816e999533be3a5c958189f0c46d02df9fc5d3fa14840415fe433f",
+    "docs/tooling/HARNESSING.md": "0dbaa8f72f8c4ea4cfc40ee6c6cf51541d40338423810075f34da5221829a59f",
+    "tests/test_harness_lifecycle.py": "0355e7954e633d40a84d8fc7054f002b7932f7f9aa9e89bf50711f89911b91ea"
+  },
+  "pending": [
+    "Stable pr-profile result recorded in the pull request",
+    "Human workflow usability observation (separately observed; not claimed)",
+    "Native/host requalification of any profile, T010 advisory integration, retention-duration decision, separate adoption policy/ADR and operator decision for any activation, and independent review"
+  ],
+  "spec": "050-braid-harness-adaptation",
+  "task": "SPEC-050/T011"
+}
