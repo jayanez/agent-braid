@@ -1,0 +1,47 @@
+{
+  "recordVersion": "spec049-t005-units-freeze-v1",
+  "task": "SPEC-049/T005 (R11, R8)",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-12",
+  "frozenBeforeAnyOutcome": true,
+  "authorizedBy": "specs/049-harness-evaluation-learning/evidence/registration/t005-owner-decisions-20261112.json",
+  "constructedIn": "tests/harness_t005_cohort.py",
+  "frozenRoster": {
+    "path": "specs/049-harness-evaluation-learning/case-roster.md",
+    "sha256": "6a1e55f896fb77a1bbc42dc402eef1abc5d3f56e7a4b1dbcfd152c8c93e6a4e0"
+  },
+  "rubric": {
+    "text": "Correct when the committed result lists every case step as done and records no step as repeated. An interrupted or refused attempt commits no result.\n",
+    "sha256": "7abead3ffbc64922e41605861601a00fa82f6df245bd1bf5bb5d8747557923fc"
+  },
+  "oracle": "FixtureOracle over out/result.txt: 'done: <all case steps in order>' then 'repeated: none'. Written from the owned scenarios in tests/harness_guidance_double.py CASES, so it is not independent of the double (a limit, not a control).",
+  "units": [
+    {"unitId": "L1-C01-a", "partition": "holdout", "stratum": "continuity", "family": "C01", "lineage": "L1", "unitSha256": "63b11700bddb4f6b688ab279be23663c0bed3239e57e5909752d8bb12c1ab0b0", "oracleSha256": "c50e31fcfb5955b10db5ed4e07ff3acd3099f1faf2b7adc59aef968049694ec6"},
+    {"unitId": "L1-C02-a", "partition": "holdout", "stratum": "coordination", "family": "C02", "lineage": "L1", "unitSha256": "0c616bb0ca59d2b7b503b1508d5def95818f237f365897fe80420c1fc2a50e17", "oracleSha256": "2b4c7d2688bbc892b72d79068d0e6eb2253e13da75640b56fe7cdc7329aa9646"},
+    {"unitId": "L1-C03-a", "partition": "holdout", "stratum": "coordination", "family": "C03", "lineage": "L1", "unitSha256": "343adbc1297c104ca1dd84430ac16205ede3159a6e31a3345ad31550020cfdd3", "oracleSha256": "2b4c7d2688bbc892b72d79068d0e6eb2253e13da75640b56fe7cdc7329aa9646"},
+    {"unitId": "L1-C03-b", "partition": "holdout", "stratum": "coordination", "family": "C03", "lineage": "L1", "unitSha256": "c4568161843c5b4a91dfafdc207af16fc049a0ea33e2f7945870429b4d320abb", "oracleSha256": "49b04c34680be5281491d14f9f5ebf4bfee4774cc84760b09f710260f7cbd961"},
+    {"unitId": "L1-C03-c", "partition": "holdout", "stratum": "coordination", "family": "C03", "lineage": "L1", "unitSha256": "70aae2b616eefd35fc0155dea2073dc4ad86783858d5aa833c62bccee1e5a711", "oracleSha256": "2b4c7d2688bbc892b72d79068d0e6eb2253e13da75640b56fe7cdc7329aa9646"},
+    {"unitId": "L2-C01-a", "partition": "discovery", "stratum": "continuity", "family": "C01", "lineage": "L2", "unitSha256": "8aab9c0a7a11870bea3d6a7203d40283da39bbfef58744e7c3105628518b7492", "oracleSha256": "872734e524457291e0827bc73b7f2d3c2c0d4c9e16543d14b23d5b5df8539642"}
+  ],
+  "unassigned": ["L3-C02-a"],
+  "armC": {
+    "decision": "keep-base",
+    "reasons": ["all-abstained"],
+    "armCIsBase": true,
+    "candidateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "manifestSha256": "ca8c61f0ece45da47cdfa929dc1d0b92a954d6aedcfdbd1a7d481cc5e3aa24d4",
+    "policySha256": "42f60f1dc8801106b6e0c9f452e955df67ff5d7e0dc7b509af2939a3521dec7d",
+    "policy": {"version": "select-v1", "marginMicros": 100, "maxProbes": 4},
+    "refinementDecisionSha256": "072a2f66bd38d2bcc4ad08ad617d7d003f2c03b63758e1858406557882e46a92",
+    "proposer": "abstains in both scopes (no real proposer exists)",
+    "prober": "one base probe: the R13 double with arm A on discovery unit L2-C01-a, graded by that unit's oracle",
+    "meaning": "Plumbing control. C equals A by construction and carries no information about refinement. Arm D is not run."
+  },
+  "arms": {
+    "A": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "B": "4bc36ca01e403f9312a74c7658fb77cea88465fc993875a540eff8974fa36516",
+    "profileSha256": "2f42b12d6c9777826922632fedccb5e51761646cca81a40aa79c3c978aa92ba4"
+  },
+  "executionAuthorization": false,
+  "limits": "Fixes unit, oracle, rubric and arm C identities only; records no outcome. The scoped run authorization sits in t005-owner-decisions-20261112.json. Synthetic domain; verdict-ineligible."
+}

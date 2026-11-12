@@ -1,0 +1,664 @@
+{
+  "authorization": "specs/049-harness-evaluation-learning/evidence/registration/t005-owner-decisions-20261112.json",
+  "candidateBinding": "Branch feat/049-t005-deterministic-cohort on develop 7e764596 (parent commit 91ca786b94231dfa40c16e29244cedd7d7406d0f); input hashes below",
+  "commands": [
+    "python3.13 -m tests.harness_t005_cohort"
+  ],
+  "executedChecks": [
+    {
+      "command": "python3.13 -m tests.harness_t005_cohort",
+      "exitCode": 0,
+      "scope": "The authorized single run; output equals the results key of evidence/evaluation/deterministic-cohort-20261112.json"
+    },
+    {
+      "command": "python3.13 -m unittest tests.test_harness_t005_cohort tests.test_harness_evaluation tests.test_harness_guidance_double",
+      "exitCode": 0,
+      "scope": "Cohort controls (19) plus the evaluation and double modules, Python 3.13 (/opt/homebrew)",
+      "testsRun": 83
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_costs.py": "d60212a1922500bdc6a2275ff7dbdcf421e3f9258a7ba0931a8727c25f985f5e",
+    "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "agent_braid/harness_refinement.py": "74c342c7a7bd4175e19d3132fe628a81cb9cf81d1e83a6af8f81225c048474dd",
+    "agent_braid/harness_verification.py": "fe8fd34a4d87d4247e8cc696a5f4ef288853c3dbf3daa52d2a7bdf41eadfb3fd",
+    "specs/049-harness-evaluation-learning/case-roster.md": "6a1e55f896fb77a1bbc42dc402eef1abc5d3f56e7a4b1dbcfd152c8c93e6a4e0",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md": "379d2b86dcd78a0c346c2e29bba579d62b8426a293d3f3d2b2a653360605f0dc",
+    "specs/049-harness-evaluation-learning/evidence/registration/t005-owner-decisions-20261112.json": "2785aef07d0923099f5aa5333b8f0c58aab0e4b374f04f33793706c9923a4ef7",
+    "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-founder-freeze-20261030.json": "499fe88d8bda05a500dcef2cb07e55429aad3ff59c5a0f2aefe2e9f9887741ff",
+    "specs/049-harness-evaluation-learning/evidence/registration/t005-units-freeze-20261112.json": "469135c420a01a5b56dbf49529f6a822c8b6469ef0d8ed9cbc8a95c5920bd934",
+    "tests/harness_guidance_double.py": "12090b191da647019f6e73b6e538797767af383c4f94bf86be4bf20fa0dd21fa",
+    "tests/harness_t005_cohort.py": "3bf7f0175212f35727c9bc394b9d220021d5530acc4d583345d10bdba4f30809"
+  },
+  "interpretation": "Descriptive counts of how the R13 double behaves under frozen oracles. B interrupted on L1-C02-a is the double's designed stop-on-drift switch; the evaluation convention scores an interrupted attempt as not-completed, so that cell reads as a B shortfall although it is the designed behaviour. A completes the drift case only because the double ignores drift. The oracles are derived from the same owned scenarios as the double, so they are not independent of it.",
+  "label": "synthetic-control",
+  "limits": "Plumbing only. Descriptive-only under D3 (one holdout lineage, 1 and 4 units against a minimum of 19; reasons below-D3-minimum and repeated-within-lineage); no noninferiority verdict, no utility, refinement, library, inferential, economic, adoption or promotion claim. Arm C equals arm A by construction (keep-base) and arm D was not run. The synthetic-control rows are verdict-ineligible and excluded from every D4 verdict. Not computed: false safe admissions, missed safe parallelism, correction and review effort, interrupted-recovery, conflict precision and recall (the double has no such notions). Costs: every measure is unknown (no exporter, no reservations); cost claims are blocked, and the authorized EUR 0 is a statement that no paid route exists, not an observed invoice. The one discovery base probe is outside the T012 ledger. The authorized run is the recorded execution; the unit tests recompute the same deterministic result and compare it with this record. No host, model, native session, paid route or human annotation. Reviews by Claude subagents are not independent Luna review.",
+  "method": "python3.13 -m tests.harness_t005_cohort: build six Units, run a keep-base round whose only probe is the R13 double on discovery L2-C01-a, register the five L1 holdout cases with arms A, B and C (C is A), run the double once per unit and arm, observe, commit, grade with each unit's FixtureOracle and report with harness_evaluation.evaluate.",
+  "nativeAdmission": false,
+  "outcomeSummary": {
+    "continuity (1 unit, 1 lineage)": {
+      "A": "0/1 correct",
+      "B": "1/1 correct",
+      "C": "0/1 correct"
+    },
+    "coordination (4 units, 1 lineage)": {
+      "A": "3/4 correct",
+      "B": "3/4 correct (1 not-completed: L1-C02-a interrupted by stop-on-drift)",
+      "C": "3/4 correct"
+    }
+  },
+  "promotionAuthorization": false,
+  "recordVersion": "spec049-t005-deterministic-cohort-v1",
+  "recordedAt": "2026-11-12",
+  "results": {
+    "attempts": [
+      {
+        "arm": "A",
+        "caseId": "L1-C01-a",
+        "doubleRecordSha256": "519b68a6c3a6bf400134c7fd87ad18a1c922c67ce859476d3593747e54323052",
+        "executed": [
+          "s1",
+          "s2",
+          "s3",
+          "s4"
+        ],
+        "repeated": [
+          "s1",
+          "s2"
+        ],
+        "terminal": "completed"
+      },
+      {
+        "arm": "B",
+        "caseId": "L1-C01-a",
+        "doubleRecordSha256": "62baf0f16bb0ca4e1ad508f403004d7d797d7c8bdd7f4c02ba03ddd5929ea3ec",
+        "executed": [
+          "s3",
+          "s4"
+        ],
+        "repeated": [],
+        "terminal": "completed"
+      },
+      {
+        "arm": "C",
+        "caseId": "L1-C01-a",
+        "doubleRecordSha256": "519b68a6c3a6bf400134c7fd87ad18a1c922c67ce859476d3593747e54323052",
+        "executed": [
+          "s1",
+          "s2",
+          "s3",
+          "s4"
+        ],
+        "repeated": [
+          "s1",
+          "s2"
+        ],
+        "terminal": "completed"
+      },
+      {
+        "arm": "A",
+        "caseId": "L1-C02-a",
+        "doubleRecordSha256": "cd4eb8de22f62f58dbd05b59a3bfef85519ed8edb2337c89b238f1d8e3c032aa",
+        "executed": [
+          "w1",
+          "w2"
+        ],
+        "repeated": [],
+        "terminal": "completed"
+      },
+      {
+        "arm": "B",
+        "caseId": "L1-C02-a",
+        "doubleRecordSha256": "530c7ad0d44dbd4110e0198a199c6d7349848b6b4409e088dd21fae648f9b2d1",
+        "executed": [],
+        "repeated": [],
+        "terminal": "interrupted"
+      },
+      {
+        "arm": "C",
+        "caseId": "L1-C02-a",
+        "doubleRecordSha256": "cd4eb8de22f62f58dbd05b59a3bfef85519ed8edb2337c89b238f1d8e3c032aa",
+        "executed": [
+          "w1",
+          "w2"
+        ],
+        "repeated": [],
+        "terminal": "completed"
+      },
+      {
+        "arm": "A",
+        "caseId": "L1-C03-a",
+        "doubleRecordSha256": "d7ea862b0f41dd962120318d1ecfa1649da0ec7cf4bdc8507791112cd1c7e64a",
+        "executed": [
+          "w1",
+          "w2"
+        ],
+        "repeated": [],
+        "terminal": "completed"
+      },
+      {
+        "arm": "B",
+        "caseId": "L1-C03-a",
+        "doubleRecordSha256": "de57e8e24f8185dbe342cf00cd1e37c73ec0a4ec3da1824c0f8c175ef435e797",
+        "executed": [
+          "w1",
+          "w2"
+        ],
+        "repeated": [],
+        "terminal": "completed"
+      },
+      {
+        "arm": "C",
+        "caseId": "L1-C03-a",
+        "doubleRecordSha256": "d7ea862b0f41dd962120318d1ecfa1649da0ec7cf4bdc8507791112cd1c7e64a",
+        "executed": [
+          "w1",
+          "w2"
+        ],
+        "repeated": [],
+        "terminal": "completed"
+      },
+      {
+        "arm": "A",
+        "caseId": "L1-C03-b",
+        "doubleRecordSha256": "9b784d9f92f55e0f388818caabefb12be5f0b5f8d0647ccc9eccbd1516ac3332",
+        "executed": [
+          "w1",
+          "w2",
+          "w3"
+        ],
+        "repeated": [],
+        "terminal": "completed"
+      },
+      {
+        "arm": "B",
+        "caseId": "L1-C03-b",
+        "doubleRecordSha256": "ab2e90293550261e18ce48dce2c9058e91d4d1946831fcf9bfbd9ac761a98cca",
+        "executed": [
+          "w1",
+          "w2",
+          "w3"
+        ],
+        "repeated": [],
+        "terminal": "completed"
+      },
+      {
+        "arm": "C",
+        "caseId": "L1-C03-b",
+        "doubleRecordSha256": "9b784d9f92f55e0f388818caabefb12be5f0b5f8d0647ccc9eccbd1516ac3332",
+        "executed": [
+          "w1",
+          "w2",
+          "w3"
+        ],
+        "repeated": [],
+        "terminal": "completed"
+      },
+      {
+        "arm": "A",
+        "caseId": "L1-C03-c",
+        "doubleRecordSha256": "537f8b4ff4283297ac181aad7a4cd5de1dc5187e712e6cb4b6445f390c1a22d6",
+        "executed": [
+          "w1",
+          "w2"
+        ],
+        "repeated": [
+          "w1"
+        ],
+        "terminal": "completed"
+      },
+      {
+        "arm": "B",
+        "caseId": "L1-C03-c",
+        "doubleRecordSha256": "868fd0653958ad9436da5a3d6c08e5ce66c10c9ce1836ec8acec23e3d7852221",
+        "executed": [
+          "w2"
+        ],
+        "repeated": [],
+        "terminal": "completed"
+      },
+      {
+        "arm": "C",
+        "caseId": "L1-C03-c",
+        "doubleRecordSha256": "537f8b4ff4283297ac181aad7a4cd5de1dc5187e712e6cb4b6445f390c1a22d6",
+        "executed": [
+          "w1",
+          "w2"
+        ],
+        "repeated": [
+          "w1"
+        ],
+        "terminal": "completed"
+      }
+    ],
+    "costs": {
+      "blockers": [
+        "unknown-cash",
+        "unreserved-attempt"
+      ],
+      "claimBlocked": true
+    },
+    "executionAuthorization": false,
+    "label": "synthetic-control",
+    "manifestSha256": "ca8c61f0ece45da47cdfa929dc1d0b92a954d6aedcfdbd1a7d481cc5e3aa24d4",
+    "order": {
+      "L1-C01-a": [
+        "A",
+        "B",
+        "C"
+      ],
+      "L1-C02-a": [
+        "A",
+        "B",
+        "C"
+      ],
+      "L1-C03-a": [
+        "A",
+        "B",
+        "C"
+      ],
+      "L1-C03-b": [
+        "B",
+        "C",
+        "A"
+      ],
+      "L1-C03-c": [
+        "C",
+        "A",
+        "B"
+      ]
+    },
+    "pendingEndpoints": [
+      "interventions",
+      "rework",
+      "interrupted-recovery",
+      "conflict-precision-recall",
+      "false-safe-admissions",
+      "useful-parallelism"
+    ],
+    "policySha256": "42f60f1dc8801106b6e0c9f452e955df67ff5d7e0dc7b509af2939a3521dec7d",
+    "refinement": {
+      "armCIsBase": true,
+      "decision": "keep-base",
+      "manifestSha256": "ca8c61f0ece45da47cdfa929dc1d0b92a954d6aedcfdbd1a7d481cc5e3aa24d4",
+      "sha256": "072a2f66bd38d2bcc4ad08ad617d7d003f2c03b63758e1858406557882e46a92"
+    },
+    "refinementDecisionSha256": "072a2f66bd38d2bcc4ad08ad617d7d003f2c03b63758e1858406557882e46a92",
+    "registrationSha256": "fb8a354bc8f56a4cdcdd010dba3774357a6e762ea7c6371aa7c3abb9992ea805",
+    "reportSha256": "ba8b053e01af33b7449186b86d3d8f993bcaab90165e4b05a9b6d2ee13a59361",
+    "rows": [
+      {
+        "arm": "A",
+        "outcome": "incorrect",
+        "terminal": "completed",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "incorrect",
+        "terminal": "completed",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "not-completed",
+        "terminal": "interrupted",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "B",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "C",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "A",
+        "outcome": "incorrect",
+        "terminal": "completed",
+        "unitId": "L1-C03-c"
+      },
+      {
+        "arm": "B",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-c"
+      },
+      {
+        "arm": "C",
+        "outcome": "incorrect",
+        "terminal": "completed",
+        "unitId": "L1-C03-c"
+      }
+    ],
+    "strata": {
+      "continuity": {
+        "arms": {
+          "A": {
+            "correctPerRegistered": 0,
+            "correctPerStarted": 0,
+            "interval": {
+              "lowerMicros": 0,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 975000
+            },
+            "missingSensitivity": {
+              "lower": 0,
+              "upper": 0
+            },
+            "outcomes": {
+              "correct": 0,
+              "incorrect": 1,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 1,
+            "terminals": {
+              "completed": 1,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "B": {
+            "correctPerRegistered": 1,
+            "correctPerStarted": 1,
+            "interval": {
+              "lowerMicros": 25000,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 1000000
+            },
+            "missingSensitivity": {
+              "lower": 1,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 1,
+              "incorrect": 0,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 1,
+            "terminals": {
+              "completed": 1,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "C": {
+            "correctPerRegistered": 0,
+            "correctPerStarted": 0,
+            "interval": {
+              "lowerMicros": 0,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 975000
+            },
+            "missingSensitivity": {
+              "lower": 0,
+              "upper": 0
+            },
+            "outcomes": {
+              "correct": 0,
+              "incorrect": 1,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 1,
+            "terminals": {
+              "completed": 1,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          }
+        },
+        "comparisons": {
+          "B-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 0,
+            "comparatorOnly": 1,
+            "lineages": 1,
+            "missing": 0,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 1,
+            "worseUpperBound": 0
+          },
+          "C-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 0,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 0,
+            "neither": 1,
+            "noninferiority": {
+              "reasons": [
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 1,
+            "worseUpperBound": 0
+          }
+        },
+        "lineages": 1,
+        "units": 1
+      },
+      "coordination": {
+        "arms": {
+          "A": {
+            "correctPerRegistered": "3/4",
+            "correctPerStarted": "3/4",
+            "interval": {
+              "lowerMicros": 194120,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 993691
+            },
+            "missingSensitivity": {
+              "lower": "3/4",
+              "upper": "3/4"
+            },
+            "outcomes": {
+              "correct": 3,
+              "incorrect": 1,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 4,
+            "terminals": {
+              "completed": 4,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "B": {
+            "correctPerRegistered": "3/4",
+            "correctPerStarted": "3/4",
+            "interval": {
+              "lowerMicros": 194120,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 993691
+            },
+            "missingSensitivity": {
+              "lower": "3/4",
+              "upper": "3/4"
+            },
+            "outcomes": {
+              "correct": 3,
+              "incorrect": 0,
+              "not-attempted": 0,
+              "not-completed": 1,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 4,
+            "terminals": {
+              "completed": 3,
+              "failed": 0,
+              "interrupted": 1,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "C": {
+            "correctPerRegistered": "3/4",
+            "correctPerStarted": "3/4",
+            "interval": {
+              "lowerMicros": 194120,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 993691
+            },
+            "missingSensitivity": {
+              "lower": "3/4",
+              "upper": "3/4"
+            },
+            "outcomes": {
+              "correct": 3,
+              "incorrect": 1,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 4,
+            "terminals": {
+              "completed": 4,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          }
+        },
+        "comparisons": {
+          "B-vs-A": {
+            "baseOnly": 1,
+            "bothCorrect": 2,
+            "comparatorOnly": 1,
+            "lineages": 1,
+            "missing": 0,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "repeated-within-lineage",
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 4,
+            "worseUpperBound": 1
+          },
+          "C-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 3,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 0,
+            "neither": 1,
+            "noninferiority": {
+              "reasons": [
+                "repeated-within-lineage",
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 4,
+            "worseUpperBound": 0
+          }
+        },
+        "lineages": 1,
+        "units": 4
+      }
+    },
+    "unitSha256": {
+      "L1-C01-a": "63b11700bddb4f6b688ab279be23663c0bed3239e57e5909752d8bb12c1ab0b0",
+      "L1-C02-a": "0c616bb0ca59d2b7b503b1508d5def95818f237f365897fe80420c1fc2a50e17",
+      "L1-C03-a": "343adbc1297c104ca1dd84430ac16205ede3159a6e31a3345ad31550020cfdd3",
+      "L1-C03-b": "c4568161843c5b4a91dfafdc207af16fc049a0ea33e2f7945870429b4d320abb",
+      "L1-C03-c": "70aae2b616eefd35fc0155dea2073dc4ad86783858d5aa833c62bccee1e5a711",
+      "L2-C01-a": "8aab9c0a7a11870bea3d6a7203d40283da39bbfef58744e7c3105628518b7492"
+    },
+    "verdictEligible": false
+  },
+  "status": "One offline deterministic cohort run executed under the scoped owner authorization. Plumbing only. Native cohort and arm D not run.",
+  "task": "SPEC-049/T005",
+  "unitsFreeze": "specs/049-harness-evaluation-learning/evidence/registration/t005-units-freeze-20261112.json"
+}

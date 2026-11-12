@@ -1,61 +1,72 @@
 {
   "blockers": [
-    "Arm C deferred (R8): no real proposer, so register cannot bind a chosen arm-C candidate; keep-base gives C = A and carries no information; library ablation (arm D) depends on it",
-    "0 constructed harness_verification.Unit objects for the 7 roster cases (R11 authorized, not performed)",
-    "L3-C02-a unassigned (R3); fallback holdout is the single lineage L1, so any cohort is descriptive-only (D3)",
+    "Arm C is keep-base (R8 option b): C = A by construction, no information about refinement; a real arm C needs a real proposer through the native branch",
+    "Library ablation (arm D) not run: it needs a non-trivial arm C",
+    "R3: L3-C02-a unassigned, not in the cohort",
+    "Holdout is the single lineage L1, so any cohort is descriptive-only (D3)",
     "Native cohort pending on SPEC-049/T004 and SPEC-048/T008"
   ],
-  "candidateBinding": "Repository head 425e3064b9cccee25f567286af9d6e4f7999708f (2026-11-08); input hashes below. Supersedes the 2026-10-29 binding ab2db0c4.",
-  "disposition": "Deterministic cohort infeasible (arm C deferred R8, no constructed units R11, L3 unassigned R3). Deterministic controls executed 2026-11-08. Native cohort not run (pending T004 and SPEC-048/T008). Library ablation not run. Task stays open.",
+  "candidateBinding": "Branch feat/049-t005-deterministic-cohort on develop 7e764596 (parent commit 91ca786b94231dfa40c16e29244cedd7d7406d0f); input hashes below. Supersedes the 2026-11-08 binding 425e3064.",
+  "disposition": "One offline deterministic synthetic-control cohort run executed 2026-11-12 under a scoped owner authorization (evidence/registration/t005-owner-decisions-20261112.json): six Units frozen (t005-units-freeze-20261112.json), arm C = keep-base (C equals A by construction), R3 L3-C02-a left unassigned, solver is the R13 double. Plumbing only: every comparison descriptive-only under D3, no utility, refinement or library claim. Native cohort and arm D not run. Task stays open; whether a deterministic-only disposition may close it is an owner question.",
   "executedChecks": [
     {
-      "command": "python3.13 -m unittest tests.test_harness_guidance_double tests.test_harness_evaluation",
+      "command": "python3.13 -m tests.harness_t005_cohort",
       "exitCode": 0,
-      "testsRun": 64
+      "scope": "The authorized single run; output equals the results key of evidence/evaluation/deterministic-cohort-20261112.json"
     },
     {
-      "command": "python3.13 -m unittest discover -s tests -p \"test_harness*.py\"",
+      "command": "python3.13 -m unittest tests.test_harness_t005_cohort tests.test_harness_evaluation tests.test_harness_guidance_double",
       "exitCode": 0,
-      "scope": "One earlier run showed one error that did not reproduce on two reruns; not investigated. Full detail in evidence/evaluation/deterministic-controls-20261108.json",
-      "testsRun": 1316
+      "scope": "Cohort controls (19) plus the evaluation and double modules, Python 3.13 (/opt/homebrew)",
+      "testsRun": 83
     }
   ],
   "executionAuthorization": false,
   "founderInputsRequired": [
-    "Arm C: a real proposer, harness manifest, selection policy and prober through the native branch (R8), or a new decision to accept keep-base",
-    "Authorization to run (not just construct) the deterministic cohort once units and arm C exist"
+    "Native cohort: native admission (SPEC-049/T004) on a qualified host (SPEC-048/T008)",
+    "Arm C: a real proposer, manifest, selection policy and prober through the native branch, if a non-trivial arm C is wanted",
+    "Whether T005 may be closed on a deterministic-only, descriptive disposition (re-scope or split of the task)"
   ],
   "inputs": {
+    "agent_braid/harness_costs.py": "d60212a1922500bdc6a2275ff7dbdcf421e3f9258a7ba0931a8727c25f985f5e",
     "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+    "agent_braid/harness_observation.py": "053075bad3ac4f18da28569f4c60f4d32923a5a4f1ac8c183cd5941f41cd2a2a",
+    "agent_braid/harness_refinement.py": "74c342c7a7bd4175e19d3132fe628a81cb9cf81d1e83a6af8f81225c048474dd",
+    "agent_braid/harness_verification.py": "fe8fd34a4d87d4247e8cc696a5f4ef288853c3dbf3daa52d2a7bdf41eadfb3fd",
     "specs/049-harness-evaluation-learning/case-roster.md": "6a1e55f896fb77a1bbc42dc402eef1abc5d3f56e7a4b1dbcfd152c8c93e6a4e0",
     "specs/049-harness-evaluation-learning/corpus.md": "1a400003c2bc7ad2b5a44a33421f47c55cbc78a1db458e377d5a6cc0f61b979a",
     "specs/049-harness-evaluation-learning/evaluation-protocol.md": "379d2b86dcd78a0c346c2e29bba579d62b8426a293d3f3d2b2a653360605f0dc",
     "specs/049-harness-evaluation-learning/evidence/r13-guidance-double.json": "e38100caf7a060e78cc3cb1ee340cd09ee2beac22fa5528e2cfa6ede89d80358",
     "specs/049-harness-evaluation-learning/evidence/registration/t002-founder-freeze-20261028.json": "c2d420ffe1159ec115a8ab1adfccce44710f496fd15254f8c0e255cabaedd8c1",
+    "specs/049-harness-evaluation-learning/evidence/registration/t005-owner-decisions-20261112.json": "2785aef07d0923099f5aa5333b8f0c58aab0e4b374f04f33793706c9923a4ef7",
     "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-founder-freeze-20261030.json": "499fe88d8bda05a500dcef2cb07e55429aad3ff59c5a0f2aefe2e9f9887741ff",
+    "specs/049-harness-evaluation-learning/evidence/registration/t005-units-freeze-20261112.json": "469135c420a01a5b56dbf49529f6a822c8b6469ef0d8ed9cbc8a95c5920bd934",
     "specs/049-harness-evaluation-learning/source-registration.md": "0a9704a7a5a8209cfdde5f6d97a2cea677625464265794559a63e72ba0dd97ef",
-    "tests/harness_guidance_double.py": "12090b191da647019f6e73b6e538797767af383c4f94bf86be4bf20fa0dd21fa"
+    "specs/049-harness-evaluation-learning/t005-unblock-packet-20261112.md": "e03c032fb5fb99f2ccafb463412066cfc692a558eefc2c7832b8e67b32118868",
+    "tests/harness_guidance_double.py": "12090b191da647019f6e73b6e538797767af383c4f94bf86be4bf20fa0dd21fa",
+    "tests/harness_t005_cohort.py": "3bf7f0175212f35727c9bc394b9d220021d5530acc4d583345d10bdba4f30809"
   },
-  "limits": "Offline inspection, refusal checks and a re-run of the R13 synthetic-control double only. No host, model, native session, paid route or human annotation, no HAR unit run, and no endpoint, cost or outcome number was produced for a cohort. The synthetic-control rows are verdict-ineligible and show only that guidance bytes reach a double. No inferential, economic or promotion claim. Pre-PR reviews were run by Claude subagents and are not independent Luna review.",
-  "method": "Inspection of pinned registration inputs plus actual offline execution of hash checks, the R13 double, T003 register refusals and the harness tests",
+  "limits": "Offline plumbing run with the R13 double as solver. The double encodes the behaviour it reports and the oracles are derived from the same owned scenarios, so rows are verdict-ineligible synthetic-control and excluded from every D4 verdict. Descriptive-only under D3. No host, model, native session, paid route or human annotation; costs are unknown and cost claims blocked. No inferential, economic, adoption or promotion claim. Reviews were run by Claude subagents and are not independent Luna review.",
+  "method": "Actual offline execution of python3.13 -m tests.harness_t005_cohort plus hash checks of the frozen roster, units and arm bytes; see evidence/evaluation/deterministic-cohort-20261112.json",
   "nativeAdmission": false,
-  "outcome": "infeasible",
+  "outcome": "deterministic-synthetic-control-run-plumbing-only",
   "outputs": {
-    "specs/049-harness-evaluation-learning/evaluation-report.md": "d938924be825945060afe38fc30c634ee481b188ddec28e7fb43dbeeeeec7b4e",
-    "specs/049-harness-evaluation-learning/evidence/evaluation/deterministic-controls-20261108.json": "fbb8f3d13786fca34c2843b7d4e8209d9e9ef7ef0bddb9e276bb9dc11e5d211a"
+    "specs/049-harness-evaluation-learning/evaluation-report.md": "117156fa76dba09258da2bd144e26c3972376a55afcda5e51744ee7c7173fd5a",
+    "specs/049-harness-evaluation-learning/evidence/evaluation/deterministic-cohort-20261112.json": "2e1ad97b36d8bd397edb4d09d5dafd7156aef431b9ea310bd4567f0c418ce7cc",
+    "specs/049-harness-evaluation-learning/evidence/evaluation/deterministic-controls-20261108.json": "fbb8f3d13786fca34c2843b7d4e8209d9e9ef7ef0bddb9e276bb9dc11e5d211a",
+    "tests/test_harness_t005_cohort.py": "7f40b8d61153938f66dac731af92db78a4525e638501b9bec5a027bbf737edea"
   },
   "pending": [
-    "Unit construction for the roster cases (R11) and a freeze record with unit hashes",
-    "Arm C",
-    "Deterministic cohort run after those",
     "Native cohort (SPEC-049/T004, SPEC-048/T008)",
+    "Non-trivial arm C and library ablation (arm D)",
+    "Endpoints the double cannot compute: false safe admissions, missed safe parallelism, correction and review effort, interrupted-recovery, conflict precision and recall",
     "Stable pr-profile result recorded in the pull request"
   ],
   "spec": "049-harness-evaluation-learning",
   "supersedes": {
-    "candidateBinding": "ab2db0c45ab70c3689e39226897a5ddf2932126a (2026-10-29)",
-    "evaluationReportSha256": "a5e7fcbed268bb9da3a6254a896a48526901c1042097054ff6778ec5cb7d5e68",
-    "evidenceSha256": "0bf8db87e43116f2f03e34718c3d88592f39c8208d4a9b4769bd1eef3edc9d5d"
+    "candidateBinding": "Repository head 425e3064b9cccee25f567286af9d6e4f7999708f (2026-11-08); input hashes below. Supersedes the 2026-10-29 binding ab2db0c4.",
+    "evaluationReportSha256": "d938924be825945060afe38fc30c634ee481b188ddec28e7fb43dbeeeeec7b4e",
+    "evidenceSha256": "c98b28da5b59122f5c1a348d13f33514596c49017020b15e046f4e66554dc07b"
   },
   "task": "SPEC-049/T005"
 }
