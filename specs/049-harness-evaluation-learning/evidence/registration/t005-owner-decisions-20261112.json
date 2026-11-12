@@ -1,0 +1,48 @@
+{
+  "recordVersion": "spec049-t005-owner-decisions-v1",
+  "task": "SPEC-049/T005",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-12",
+  "decisionChannel": "Repository owner answers given interactively in the orchestrator Claude Code chat on 2026-11-12 to the decision packet specs/049-harness-evaluation-learning/t005-unblock-packet-20261112.md. The wording below is a paraphrase of those chat answers, not a quotation.",
+  "decisionPacket": "specs/049-harness-evaluation-learning/t005-unblock-packet-20261112.md",
+  "decisions": [
+    {
+      "item": "R11 unit construction",
+      "decision": "construct-six",
+      "detail": "Construct harness_verification.Unit objects for the six lineage-assigned cases: L1-C01-a, L1-C02-a, L1-C03-a, L1-C03-b, L1-C03-c (holdout) and L2-C01-a (discovery), in new files, with their hashes frozen in a new freeze record before any run."
+    },
+    {
+      "item": "R3 L3-C02-a",
+      "decision": "leave-unassigned",
+      "detail": "L3-C02-a stays unassigned and is not in the cohort. No Unit is built for it."
+    },
+    {
+      "item": "R8 arm C",
+      "decision": "keep-base-plumbing-control",
+      "detail": "Arm C is the keep-base outcome of a recorded round, labelled a plumbing control. C equals A by construction, carries no information about refinement, and arm D (library ablation) is not run."
+    },
+    {
+      "item": "Run authorization",
+      "decision": "one-offline-synthetic-control-run",
+      "detail": "Authorize exactly one offline deterministic cohort run with the R13 guidance double as solver, additional cash EUR 0, cohort label synthetic, outcomes labelled synthetic-control. The run may happen only after the R11 units and the R8 keep-base round are frozen."
+    }
+  ],
+  "runAuthorization": {
+    "scope": "exactly one offline deterministic cohort run of the registered SPEC-049/T005 cohort",
+    "runs": 1,
+    "solver": "tests/harness_guidance_double.py (R13 guidance double)",
+    "label": "synthetic-control",
+    "verdictEligible": false,
+    "additionalCashEur": 0,
+    "claims": "plumbing only: registration, observation, commitment, grading, denominators and cost reporting connect end to end; every comparison is descriptive-only under D3; no guidance utility, refinement, library, inferential, economic or promotion claim",
+    "preconditions": [
+      "R11 units frozen in evidence/registration/t005-units-freeze-20261112.json",
+      "R8 keep-base round frozen in the same record",
+      "Run evidence repeats the synthetic-control label"
+    ]
+  },
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Executes nothing itself. The scoped runAuthorization above is the only permission granted; executionAuthorization stays false for every other purpose. The native cohort (SPEC-049/T004, SPEC-048/T008), arm D and any host, model or paid route stay out of scope. Any change to a frozen value needs a new decision record before outcomes. Recorded by an agent from owner chat answers; it is not independent review."
+}

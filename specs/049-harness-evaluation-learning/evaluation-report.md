@@ -1,12 +1,71 @@
 # HAR.2 evaluation report
 
+Status (2026-11-12): one offline deterministic **synthetic-control** cohort run
+was executed under a scoped owner authorization; it is **plumbing only**, every
+comparison is descriptive-only under D3, and it supports no utility claim. Native
+cohort **not run** (pending); library ablation (arm D) **not run**. SPEC-049/T005
+stays open. See "Deterministic synthetic-control cohort (2026-11-12)" below. The
+2026-11-08 text that follows records the state before that run and stays as
+history.
+
 Status (2026-11-08): deterministic HAR cohort **infeasible**; native cohort
 **not run** (pending); library ablation (arm D) **not run**. The deterministic
-controls were executed. No HAR cohort was run and this report contains no HAR
+controls were executed. No HAR cohort was run and this report contained no HAR
 outcome numbers. SPEC-049/T005 stays open. The original determination was made
 at `ab2db0c45ab70c3689e39226897a5ddf2932126a` (2026-10-29,
 [evidence/t005.json](evidence/t005.json)); the 2026-11-08 re-check is in
 [evidence/evaluation/deterministic-controls-20261108.json](evidence/evaluation/deterministic-controls-20261108.json).
+
+## Deterministic synthetic-control cohort (2026-11-12)
+
+Owner answers of 2026-11-12 to the
+[decision packet](t005-unblock-packet-20261112.md) are recorded as paraphrased chat
+answers in
+[evidence/registration/t005-owner-decisions-20261112.json](evidence/registration/t005-owner-decisions-20261112.json):
+construct Units for the six lineage-assigned cases (R11), leave L3-C02-a
+unassigned (R3), take arm C as keep-base labelled a plumbing control (R8), and
+authorize exactly one offline run with the R13 double as solver. The units, rubric,
+oracles and the keep-base round are frozen before the run in
+[evidence/registration/t005-units-freeze-20261112.json](evidence/registration/t005-units-freeze-20261112.json).
+The run and its recomputable results are in
+[evidence/evaluation/deterministic-cohort-20261112.json](evidence/evaluation/deterministic-cohort-20261112.json)
+(`python3.13 -m tests.harness_t005_cohort`; code in `tests/harness_t005_cohort.py`,
+tests in `tests/test_harness_t005_cohort.py`).
+
+What it is. Five L1 holdout cases times arms A, B and C, graded by each unit's
+`FixtureOracle`. Arm C is arm A by construction (keep-base round, one base probe of
+the double on discovery unit L2-C01-a). The solver is the R13 double, which encodes
+its own effect, and the oracles come from the same owned scenarios, so they are
+not independent of it. Rows are labelled `synthetic-control` and are excluded from
+every D4 verdict.
+
+Correct completions per registered unit (one lineage, so no stratum is assessable):
+
+| Stratum | Units | A | B | C (= A) |
+|---|---|---|---|---|
+| continuity | 1 | 0/1 | 1/1 | 0/1 |
+| coordination | 4 | 3/4 | 3/4 | 3/4 |
+
+In coordination, B has one `not-completed` cell: L1-C02-a, where the double's
+stop-on-drift switch interrupts by design. The evaluation convention counts an
+interrupted attempt as not-completed, so that cell reads as a B shortfall although
+it is the designed behaviour; A completes it only because the double ignores drift.
+B versus A is 1 comparator-only, 1 base-only and 2 both-correct pairs in
+coordination, and 1 comparator-only pair in continuity. Every comparison reports
+`descriptive-only` (`below-D3-minimum`, plus `repeated-within-lineage` in
+coordination) with no verdict.
+
+What it shows. Registration, observation, commitment, grading, denominators and
+interval reporting connect end to end on frozen units. What it does not show: that
+any guidance helps, any refinement effect (C = A), any library effect (arm D not
+run), false safe admissions, missed safe parallelism, correction and review effort,
+or any cost (every measure is unknown, no reservations exist, so cost claims are
+blocked). The one discovery probe is outside the T012 ledger. No host, model,
+native session, paid route or human annotation was used.
+
+Still open for T005: the native cohort (SPEC-049/T004 and SPEC-048/T008), the
+library ablation, and whether the task may be closed on a deterministic-only
+disposition; that last question is for the owner and is not decided here.
 
 ## State at 2026-11-08
 
