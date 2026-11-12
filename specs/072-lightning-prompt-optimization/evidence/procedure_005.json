@@ -2,7 +2,7 @@
  "command": "python -m unittest tests.test_lightning_gepa",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.13.11"
+  "python": "3.12.13"
  },
  "inputs": {
   "agent_braid/lightning_algorithm.py": "b31dbe61bac8a3135e475bbba3dc23655f4a7e15fde157f87a42f8a3b304bf5c",
