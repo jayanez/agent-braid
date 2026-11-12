@@ -340,9 +340,12 @@ specifications unless a SPEC-066 requirement amends them.
   near-duplicate audit, class and size coverage shown before any fit, and the
   pre-fit feasibility review that seals the untouched test manifest. Carries forward
   SPEC-029 T003 (#287) and T008 (#292). Dependencies: T102, T103.
+  Stopped 2026-11-12 by plan Q7: the T106 real dry run labelled 3 merge-clean and 1
+  merge-conflict pairs, below the minimum of 30 per class; no fit and no corpus build.
+  Reopens only with a new admitted source or a new owner decision.
 - [ ] T105 (REQ-103): Owner adjudication of the random label sample. Dependencies:
   T103, T104. Evidence: owner record.
-- [ ] T106 (REQ-104): Git-history replay labels: pair real branches or commits of the
+- [x] T106 (REQ-104): Git-history replay labels: pair real branches or commits of the
   owner's plugin-registered workspaces, obtain the observed conflict with
   `git merge-tree`, reuse the SPEC-012 replay planner, and emit structural episodes
   only (same privacy rules as REQ-003). A repository outside the registered
@@ -363,6 +366,16 @@ specifications unless a SPEC-066 requirement amends them.
   recorded as evidence. This repository
   squash-merges, so merge-commit pairs will be near zero and branch-tip pairs compare a
   branch with today's HEAD; report by origin. No scientific claim.
+  Obtained 2026-11-12 (#1299, 050afb8b): first real dry run under the addendum. It was
+  refused `git-unavailable` because enumeration spent one git command per local branch
+  and exhausted its 64-command budget; fixed with one `for-each-ref --no-merged` call
+  plus a regression test. Real dry run on merged code recorded in
+  `evidence/s15b-replay-dry-run-20261112.json` (derived counts only, nothing written to
+  the store): 103 enumerated, 102 branch-tip pairs, 0 merge-commit pairs (squash
+  merges), 1 not-diverged; labelled merge-clean 3, merge-conflict 1; 98 unlabelled
+  `too-many-paths`; planner agreement unavailable for all. No `--write`. No scientific
+  claim. Q7 stop: fewer than 30 labelled DP-1 pairs per class, so T104 and T105 do not
+  start from this source (plan Q7).
 
 ## S1.5c — Reference-grade contracts (outline, blocked until T032)
 

@@ -1,0 +1,48 @@
+{
+  "allPairsExcludedByAuthor": false,
+  "date": "2026-11-12",
+  "executionAuthorization": false,
+  "gitSupportsMergeTree": true,
+  "limits": [
+    "merge-tree labels textual cleanliness of the pair, not semantic independence or test success.",
+    "Pairs from existing merge commits are work the owner already merged and resolved, so merge-conflict is over-represented relative to live runs; report by source and never pool silently.",
+    "plannerAgrees compares two procedures (patch application versus three-way merge); a disagreement is data about the proxy, not a reason to drop a pair.",
+    "Only commits authored by the owner are replayed; one person's history is not a population.",
+    "Records are anchored to the run date and kept 30 days; resource pseudonyms share the record's life."
+  ],
+  "pairs": {
+    "byOrigin": {
+      "branch-tip": 102,
+      "merge-commit": 0
+    },
+    "enumerated": 103,
+    "enumerationCapped": false,
+    "labelled": {
+      "merge-clean": 3,
+      "merge-conflict": 1
+    },
+    "recorded": 102,
+    "sampledToCap": false,
+    "skipped": {
+      "author-excluded": 0,
+      "author-unverifiable": 0,
+      "not-diverged": 1,
+      "octopus": 0
+    },
+    "unlabelled": {
+      "analysis-error": 0,
+      "git-too-old": 0,
+      "no-merge-base": 0,
+      "objects-missing": 0,
+      "oracle-error": 0,
+      "too-many-paths": 98
+    }
+  },
+  "plannerAgrees": {
+    "false": 0,
+    "true": 0,
+    "unavailable": 102
+  },
+  "retentionDays": 30,
+  "schema": "agent-braid-spec066-s15b-replay-evidence/v0.1"
+}
