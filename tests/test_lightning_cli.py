@@ -159,7 +159,8 @@ class BoundaryTests(unittest.TestCase):
 
 BL2_ALLOWED = {'plugin_registry', 'harness_host_claude',  # SPEC-070/071 runner and host setup
                'harness_evaluation', 'system_one',  # SPEC-072 T013: record formats only, never decide()
-               'spec069_scoring', 'spec069_native_runs', 'spec069_fixture_workspace', 'build_native_plugin'}
+               'spec069_scoring', 'spec069_native_runs', 'spec069_fixture_workspace', 'build_native_plugin',
+               'spec072_development_arms'}  # T010 reuses the BL.2 lab-script profile, token and gate helpers
 BL2_FORBIDDEN_NAMES = {'decide', 'begin', 'execute', 'recover', 'harness_promotion',
                        'import_module', '__import__'}  # no dynamic import around the static checks
 BL2_FORBIDDEN_MODULES = ('agent_braid.harness_promotion', 'agent_braid.harness_auto_promotion',

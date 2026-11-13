@@ -173,7 +173,7 @@
               "limits": "Temporary homes; no content is read or stored. The adapter reads no source yet (T007/T008); the gate is its entry check. Content storage with consent is enabled with retention (T006).",
               "outcome": "passed: T003: with no profile, consent none, or an invalid profile (unparseable, redacted without its consent record, an unknown level) the store refuses a content-bearing record with store-consent and writes nothing, and the adapter gate and `lightning status` traceContent report content-consent-required; status itself refuses an invalid profile with its config-* code. An explicit content_consent none overrides a redacted profile, and an unknown explicit level is refused. With consent redacted the gate opens only for listed sources (others: source-not-consented), and the store still refuses content with redaction-incomplete because the store does not wire redaction and content retention before T006 (C2: redact on ingest). Negative control: invalid configuration never reads as redacted. Content-free kinds are unchanged (SPEC-070 store suite).",
               "path": "specs/074-lightning-trace-consent/evidence/procedure_002.json",
-              "sha256": "037b00f0a7c5b292d1644b47882dd3606c0d4e21cd6ce6ae4c4753cdf9035a00"
+              "sha256": "727a650eae2b05ecb571db70fb922e64a5d2e82958e9ce34066b5de864aea477"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",

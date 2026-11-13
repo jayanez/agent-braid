@@ -254,8 +254,10 @@ class InstallerTests(unittest.TestCase):
         script = render(INSTALLER, self.tmp / "t008-install.sh").read_text()
         self.assertNotRegex(script, PLACEHOLDER)
         start = script.index('sed -e "s/[@]COMMIT[@]/')
-        end = script.index('"$STAGE/repo-$SHORT/scripts/har_t008_launch.sh"', start)
-        command = script[start:end] + '"$1"'
+        end = script.index('\\\n  | sudo tee "$STAGE/t008-launch.sh"', start)
+        command = script[start:end].replace("\\\n", " ") + '< "$1"'
+        # the stage is root-only: the staged launcher is read through sudo, never directly by the owner
+        self.assertIn('sudo cat "$STAGE/repo-$SHORT/scripts/har_t008_launch.sh" \\\n  | sed -e', script)
         pins = {"COMMIT": "1" * 40, "CLAUDE_SHA256": "2" * 64, "PYTHON_SHA256": "3" * 64,
                 "SANDBOX_EXEC_SHA256": "4" * 64, "OPERATOR_ACCOUNT": "owner"}
         # the installer's pins are the shell variables of the rendered copy; feed the same values

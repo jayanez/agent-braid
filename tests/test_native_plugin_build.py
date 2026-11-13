@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """SPEC-068 T004: the native build emits the OpenCode package without touching host-read files (D12)."""
+import gzip
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -195,10 +197,6 @@ class OpenCodeBuildTests(unittest.TestCase):
                     build_native_plugin.copy_tracked_opencode_entry(root / 'out/index.js')
 
 
-if __name__ == '__main__':
-    unittest.main()
-
-
 class BuilderPathTests(unittest.TestCase):
     """alpha.8: the package must not carry the builder's local paths (console scripts, direct_url.json)."""
 
@@ -251,3 +249,82 @@ class BuilderPathTests(unittest.TestCase):
         needles = [str(n) for n in guard.call_args.args[1]]
         self.assertIn(str(build_native_plugin.ROOT), needles)
         self.assertIn(str(output.resolve().parent), needles)
+        self.assertIn(str((self.root / 'cache').resolve()), needles)
+        self.assertTrue(guard.call_args.args[0].name.startswith('.plugin-build-'), 'the guard sees the whole marketplace, sources included')
+
+
+class ReproducibleBuildTests(unittest.TestCase):
+    """Two builds of one commit at different paths: same bytes, and no build, cache or checkout path inside."""
+
+    def setUp(self):
+        self.scratch = tempfile.TemporaryDirectory()
+        self.addCleanup(self.scratch.cleanup)
+        self.root = Path(self.scratch.name)
+
+    def _build(self, place):
+        environments = []
+
+        def run(command, **options):
+            if '--wheel' in [str(x) for x in command]:
+                environments.append(options.get('env') or {})
+            return _fake_run(command, **options)
+
+        output = self.root / place / 'nested' / 'market'
+        with mock.patch.object(build_native_plugin.subprocess, 'run', side_effect=run), \
+                mock.patch.object(build_native_plugin, 'extract_runtime', side_effect=_fake_extract), \
+                mock.patch.object(build_native_plugin, '_download'), \
+                mock.patch.object(build_native_plugin, 'prepare_bytecode', return_value={'mode': 'fixture'}):
+            assemble(output, self.root / place / 'runtime-cache', platforms=['macos-arm64'], allow_dirty=True)
+        return output, environments
+
+    @staticmethod
+    def _files(tree):
+        return {path.relative_to(tree).as_posix(): path.read_bytes()
+                for path in sorted(tree.rglob('*')) if path.is_file()}
+
+    def test_two_builds_at_different_paths_are_byte_identical_and_name_no_local_path(self):
+        first, first_env = self._build('first-builder')
+        second, second_env = self._build('second')
+        epoch = subprocess.check_output(['git', 'log', '-1', '--format=%ct', 'HEAD'],
+                                        cwd=build_native_plugin.ROOT, text=True).strip()
+        self.assertEqual([env.get('SOURCE_DATE_EPOCH') for env in first_env + second_env], [epoch, epoch])
+        left, right = self._files(first), self._files(second)
+        self.assertEqual(sorted(left), sorted(right))
+        self.assertEqual([name for name in left if left[name] != right[name]], [])
+        needles = [os.fsencode(str(x)) for x in (self.root, self.root.resolve(), build_native_plugin.ROOT)]
+        for name, data in left.items():
+            self.assertFalse(any(needle in data for needle in needles), name)
+        # The archive is compressed, so check its members too.
+        source = first / f'sources/agent-braid-{VERSION}-source.tar.gz'
+        members = subprocess.check_output(['tar', '-tzvf', str(source)], text=True)
+        self.assertFalse(any(os.fsdecode(n) in members for n in needles))
+
+    def test_source_archive_ignores_checkout_path_owner_and_file_times(self):
+        archives = []
+        for index, place in enumerate(('a', 'b/deeper')):
+            checkout = self.root / place / 'checkout'
+            (checkout / 'pkg').mkdir(parents=True)
+            (checkout / 'pkg/tool.sh').write_text('#!/bin/sh\n')
+            (checkout / 'pkg/tool.sh').chmod(0o775)
+            (checkout / 'README').write_text('text\n')
+            (checkout / 'README').chmod(0o664)
+            for path in (checkout / 'pkg/tool.sh', checkout / 'README'):
+                os.utime(path, (1_000_000 + index * 777, 1_000_000 + index * 777))
+            target = self.root / place / 'source.tar.gz'
+            build_native_plugin.write_source_archive(target, checkout, ['pkg/tool.sh', 'README', 'README'], 1_700_000_000)
+            archives.append(target)
+        self.assertEqual(archives[0].read_bytes(), archives[1].read_bytes())
+        with gzip.open(archives[0]) as stream:
+            stream.read()
+        self.assertEqual(archives[0].read_bytes()[4:8], b'\0\0\0\0', 'gzip header time is zero')
+        import tarfile
+        with tarfile.open(archives[0]) as archive:
+            members = archive.getmembers()
+        self.assertEqual([m.name for m in members], ['README', 'pkg/tool.sh'])
+        self.assertEqual({(m.uid, m.gid, m.uname, m.gname, m.mtime) for m in members}, {(0, 0, '', '', 1_700_000_000)})
+        self.assertEqual([m.mode for m in members], [0o644, 0o755])
+        self.assertEqual([m.pax_headers for m in members], [{}, {}])
+
+
+if __name__ == '__main__':
+    unittest.main()

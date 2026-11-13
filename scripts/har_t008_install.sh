@@ -101,10 +101,12 @@ sudo chmod -R go-w,a+rX "$STAGE/repo-$SHORT"
   || stop "the staged copy holds a symlink or special file"
 [ "$(sudo find "$STAGE/repo-$SHORT" -type f | wc -l | tr -d ' ')" = "$TRACKED" ] \
   || stop "the staged copy does not hold exactly the $TRACKED tracked files of $COMMIT"
+# the stage is root-only (0700): the staged launcher is read with sudo, rendered as the owner, written with sudo.
 # [@] keeps these patterns from being placeholders themselves when this template is rendered
-sed -e "s/[@]COMMIT[@]/$COMMIT/" -e "s/[@]CLAUDE_SHA256[@]/$CLAUDE_SHA256/" -e "s/[@]PYTHON_SHA256[@]/$PYTHON_SHA256/" \
-    -e "s/[@]SANDBOX_EXEC_SHA256[@]/$SANDBOX_EXEC_SHA256/" -e "s/[@]OPERATOR_ACCOUNT[@]/$OPERATOR_ACCOUNT/" \
-    "$STAGE/repo-$SHORT/scripts/har_t008_launch.sh" | sudo tee "$STAGE/t008-launch.sh" > /dev/null
+sudo cat "$STAGE/repo-$SHORT/scripts/har_t008_launch.sh" \
+  | sed -e "s/[@]COMMIT[@]/$COMMIT/" -e "s/[@]CLAUDE_SHA256[@]/$CLAUDE_SHA256/" -e "s/[@]PYTHON_SHA256[@]/$PYTHON_SHA256/" \
+      -e "s/[@]SANDBOX_EXEC_SHA256[@]/$SANDBOX_EXEC_SHA256/" -e "s/[@]OPERATOR_ACCOUNT[@]/$OPERATOR_ACCOUNT/" \
+  | sudo tee "$STAGE/t008-launch.sh" > /dev/null
 if sudo grep -q '[@][A-Z0-9_]*[@]' "$STAGE/t008-launch.sh"; then stop "a pin is not filled in"; fi
 sudo chown root:wheel "$STAGE/t008-launch.sh"
 sudo chmod 755 "$STAGE/t008-launch.sh"
