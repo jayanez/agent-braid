@@ -4,6 +4,39 @@ Status: draft. This file is frozen by sha256 (REQ-001) after owner review and
 before any held-out rollout. Any later change is a deviation, recorded with a
 reason, and the original hash stays in the record.
 
+## Amendment 1 (draft, pending owner review, 2026-11-13)
+
+Made before the freeze, so it is an amendment, not a deviation. It is not in
+force until the owner approves it; T009 then freezes the amended file.
+
+1. **A0 is the current guidance.** A0 is the `agent-braid-analyze` guidance on
+   `develop` after the SPEC-069 T008 rewrite (#1314) packaged in the current
+   plugin build (`spec069_native_runs` arm `final`), not the T010 guidance at
+   `8f63c606` (arm `baseline`). The arms optimize this same text.
+2. **New A0 development run.** A0's development scores (the seed vectors of
+   both arms) come from a new SPEC-071 baseline run of the current guidance:
+   development set, `claude-code`, 3 repetitions, model pinned to
+   `claude-sonnet-5-5`, subscription route. The SPEC-071 T012 run
+   `run-20261111T085405Z-a14514` (T010 guidance, 16/30) is context only and is
+   not the seed.
+3. **One required host.** The required host is `claude-code`. `opencode` is a
+   declared limit: it reports no subscription credential source, so the
+   SPEC-071 runner refuses it as `route-unverified` (SPEC-071 OD-2). Codex
+   stays a declared SPEC-069 limit.
+4. **Model pin.** Every rollout and optimizer call of A0, A1 and A2 pins
+   `claude-sonnet-5-5` (`lightning run --model`, default for arms).
+5. **Feasibility recomputed for one host** (table below), checked with
+   `agent_braid.lightning_arm.estimate`.
+6. **Exploratory arms E1 and E2 (descriptive only).** APO (E1) and GEPA (E2)
+   are also run from the T010 guidance at `8f63c606` (arm `baseline` plugin
+   build), seeded by the SPEC-071 T012 run `run-20261111T085405Z-a14514`, with
+   the same settings, model pin, budgets per arm (120 rollouts, 40 optimizer
+   calls) and stopping rules as A1 and A2. They run on the development set only,
+   sequentially after A1 and A2. They do not count for H1, are not candidates
+   for the held-out runs or the SPEC-049 pair, do not change A0, A1 or A2, and
+   are reported in a separate descriptive table. This is fixed before any
+   development rollout of any arm.
+
 ## Hypothesis
 
 **H1.** The preregistered primary arm, the best GEPA candidate (A2), selected
@@ -21,9 +54,10 @@ first attempt and 10 of 10 within one retry, pooled over repetitions as
 
 | Arm | Candidate | Selection |
 |---|---|---|
-| A0 baseline | T010 baseline guidance (SPEC-071 seed) | none |
+| A0 baseline | current `develop` guidance (SPEC-069 T008 rewrite), current plugin build; new development run (Amendment 1) | none |
 | A1 APO (secondary, descriptive) | best APO candidate | development score, P2 rule |
 | A2 GEPA (primary, preregistered) | best GEPA candidate | development score, P2 rule |
+| E1 APO, E2 GEPA (exploratory, development only; Amendment 1 item 6) | best candidate from the T010 guidance | development score, P2 rule; descriptive |
 
 ## Data
 
@@ -31,8 +65,10 @@ first attempt and 10 of 10 within one retry, pooled over repetitions as
   (optimizer-visible).
 - Held-out: `specs/069-aim-request-authoring/prompts/held-out.json`, hash checked
   against `FREEZE.json` (never optimizer-visible).
-- Required hosts, fixed in advance: `claude-code` and `opencode` (Codex is a
-  declared SPEC-069 limit).
+- Required host, fixed in advance: `claude-code` (Amendment 1). `opencode` is a
+  declared limit (`route-unverified`, SPEC-071 OD-2); Codex is a declared
+  SPEC-069 limit.
+- Model: `claude-sonnet-5-5`, pinned for rollouts and optimizer calls.
 - Repetitions: 3 per prompt per host per arm (OD-1 decided 2026-11-11: keep 10 × 3).
 
 ## Budgets
@@ -52,37 +88,43 @@ run` with its own `budget.maxRollouts` of 120 and `budget.maxOptimizerCalls` of
 
 ### Feasibility table
 
-Units, per arm run with both required hosts:
+Units, per arm run with the one required host (`claude-code`):
 
 - full development evaluation of one candidate = 10 prompts × 3 repetitions ×
-  2 hosts = 60 rollouts;
-- minibatch evaluation of one candidate = 5 prompts × 1 repetition × 2 hosts =
-  10 rollouts;
-- the seed (A0) development scores come from the SPEC-071 baseline run and are
-  not charged to the arm.
+  1 host = 30 rollouts;
+- minibatch evaluation of one candidate = 5 prompts × 1 repetition × 1 host =
+  5 rollouts;
+- the seed (A0) development scores come from the new A0 baseline run
+  (30 rollouts, Amendment 1) and are not charged to the arm.
 
-Preregistered parameters, which override the configuration defaults:
+Preregistered parameters, which override the configuration defaults (applied
+with `lightning init --beam-width --branch-factor --rounds --minibatch`):
 
 | Parameter | Preregistered | Configuration default |
 |---|---|---|
 | `beamWidth` (APO) | 2 | 4 |
 | `branchFactor` (APO) | 2 | 4 |
-| `minibatch` | 5 prompts | — |
+| `minibatch` | 5 prompts | 5 |
 | `rounds` (APO) | 2 | 3 |
 | `rounds` (GEPA) | 3 | 3 |
 
-Resulting rollout counts:
+Resulting counts (`lightning_arm.estimate` upper bounds):
 
-| Arm | Search | Final full evaluation | Total | Optimizer calls |
+| Arm | Search | Final full evaluation | Total rollouts | Optimizer calls |
 |---|---|---|---|---|
-| A1 APO | round 1: 1 parent × 2 children × 10 = 20; round 2: 2 parents × 2 children × 10 = 40 | best candidate 60 | 120 | 2 rounds × (≤ 2 critiques + ≤ 4 edits) ≤ 12 |
-| A2 GEPA | 3 rounds × 1 child minibatch × 10 = 30 | the first accepted child 60 | ≤ 90 | 3 reflections |
+| A1 APO | round 1: 1 parent × 2 children × 5 = 10; round 2: 2 parents × 2 children × 5 = 20 | best candidate 30 | 60 | round 1: 1 × (1 critique + 2 edits) = 3; round 2: 2 × 3 = 6; ≤ 9 |
+| A2 GEPA | 3 rounds × 1 child minibatch × 5 = 15 | 30 per accepted child: 30 if one child is accepted, ≤ 90 if all three | 45 to ≤ 105 | 3 reflections |
 
-In GEPA a second accepted child whose full evaluation would exceed 120 is not
+With A0 (30), one complete T009 development phase uses at most
+30 + 60 + 105 = 195 rollouts and 12 optimizer calls, all within the
+per-arm caps of 120 rollouts and 40 calls.
+
+In GEPA an accepted child whose full evaluation would exceed 120 is not
 evaluated: the run ends with a recorded `unit-cap` stop and the best fully
-evaluated candidate. The configuration defaults (beam 4, branch 4) need
-16 children × 10 = 160 rollouts in one APO round, which exceeds one
-120-rollout arm budget, so this protocol overrides them. Reaching a cap is a
+evaluated candidate (with one host this cannot happen within 3 rounds). The
+configuration defaults (beam 4, branch 4, 3 rounds) bound APO at
+(4 + 16 + 16) × 5 + 30 = 210 rollouts, which exceeds one 120-rollout arm
+budget, so this protocol overrides them. Reaching a cap is a
 recorded stop, not a deviation.
 
 ## Stopping rules
@@ -116,7 +158,7 @@ with the same seeds, resumes only by an explicit
    number of prompts improved, unchanged and worsened, and an exact two-sided
    sign test over improved versus worsened prompts.
 3. Decision rule: H1 is supported if and only if, in every required host
-   (`claude-code`, `opencode`), A0 misses D4 on held-out and A2 (GEPA) meets
+   (`claude-code`; Amendment 1), A0 misses D4 on held-out and A2 (GEPA) meets
    D4. If A0 meets D4 in a required host, H1 is `not assessable` for that host
    and the overall outcome is `not assessable`, never supported. Otherwise H1
    is not supported. A1 (APO) results are descriptive and never change the
@@ -127,6 +169,9 @@ with the same seeds, resumes only by an explicit
 5. Canary hits and schema validity are reported per arm; any canary hit in a
    held-out run invalidates that arm's result.
 6. No other outcome measure, subset or host is used to claim support.
+7. Exploratory arms E1 and E2 (Amendment 1 item 6) are reported only as a
+   descriptive development-set table (best candidate's development score
+   against the T012 seed's), never in the decision rule.
 
 ## Outcome statement
 

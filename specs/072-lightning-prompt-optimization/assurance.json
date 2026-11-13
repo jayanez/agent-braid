@@ -318,7 +318,7 @@
           "when": "the held-out evaluation runs"
         }
       ],
-      "text": "After the freeze each arm runs once on the held-out set in claude-code and opencode; the report gives D4 verdicts, Wilson 95 % intervals and paired per-prompt comparisons; H1 is supported iff in every required host A0 misses D4 and the primary arm A2 (GEPA) meets D4, not assessable where A0 meets D4; A1 (APO) is descriptive; a null or negative result is reported as the outcome."
+      "text": "After the freeze each arm runs once on the held-out set in every required host (claude-code; opencode a declared limit per protocol Amendment 1, pending owner review); the report gives D4 verdicts, Wilson 95 % intervals and paired per-prompt comparisons; H1 is supported iff in every required host A0 misses D4 and the primary arm A2 (GEPA) meets D4, not assessable where A0 meets D4; A1 (APO) is descriptive; a null or negative result is reported as the outcome."
     },
     {
       "id": "REQ-009",
