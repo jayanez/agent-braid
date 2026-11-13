@@ -1,8 +1,8 @@
 {
   "procedure": "procedure_012",
   "task": "SPEC-069 T012",
-  "status": "candidate-pending-owner-yes",
-  "label": "CANDIDATE EVIDENCE: nothing is tagged, pushed to plugin-dist or published; publication requires the owner's recorded explicit yes (procedure_012).",
+  "status": "published",
+  "label": "Candidate evidence for the published 0.1.0-alpha.8; publication record: evidence/release-alpha8.json.",
   "generatedAt": "2026-11-13",
   "candidate": {
     "version": "0.1.0-alpha.8",
@@ -140,9 +140,9 @@
     "previousCandidateUsd": 0.0779588
   },
   "ownerDecision": {
-    "yes": null,
-    "date": null,
-    "note": "Fill from the owner's own words before any tag or plugin-dist push."
+    "yes": "Yes, publish (Recommended)",
+    "date": "2026-11-13",
+    "note": "Then \"Fix first\" for the builder home path; published as recorded in evidence/release-alpha8.json."
   },
   "buildPathFix": {
     "change": "scripts/build_native_plugin.py removes site-packages/bin console scripts and dist-info direct_url.json written by pip --target (and their RECORD lines, other RECORD bytes kept), and stops the build if any packaged file contains the checkout, build folder or build virtualenv path",

@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DOC = ROOT / "docs/tooling/NATIVE_PLUGINS.md"
 SPEC = ROOT / "specs/069-aim-request-authoring"
 EVIDENCE = SPEC / "evidence"
-START = "## `analyze-work` request kinds (SPEC-069, unreleased)"
+START = "## `analyze-work` request kinds (SPEC-069)"
 LINK = re.compile(r"\]\(([^)\s]+)\)")
 CITED = re.compile(r"`((?:tests|evidence|examples|scripts|schemas|agent_braid)/[^`\s]+)`")
 HOSTS = {"Claude Code": "claude-code", "OpenCode": "opencode", "Codex": "codex"}
@@ -151,9 +151,10 @@ class Spec069DocsTests(unittest.TestCase):
         self.assertIn("`analyze-work refused: Unsupported analysis kind`", self.flat)
         self.assertIn("agent-braid--v0.1.0-alpha.7", self.text)
 
-    def test_candidate_notes_state_that_nothing_is_published(self):
-        self.assertIn("nothing has been published or tagged", self.flat)
-        self.assertIn("`0.1.0-alpha.7` is the published version", self.flat)
+    def test_release_notes_name_the_published_tag_and_its_record(self):
+        self.assertIn("published on 2026-11-13 as tag `agent-braid--v0.1.0-alpha.8`", self.flat)
+        self.assertIn("release-acceptance-alpha8.md", self.text)
+        self.assertNotIn("nothing has been published or tagged", self.flat)
 
     def test_negative_control_a_broken_link_is_detected(self):
         broken = self.text + "\n[x](../../specs/069-aim-request-authoring/missing.md) [y](SKILLS.md#no-such-heading)\n"
