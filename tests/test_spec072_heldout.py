@@ -409,3 +409,18 @@ class FakeHostPipelineTests(HomeCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class BuildCleanlinessTests(unittest.TestCase):
+    """The plugin build tolerates only this command's own evidence files as working-tree changes."""
+
+    def test_only_heldout_outputs_are_tolerated(self):
+        from unittest import mock
+        with mock.patch.object(heldout, 'dirty_paths', return_value=set()):
+            self.assertFalse(heldout.build_allow_dirty(heldout.ROOT))
+        with mock.patch.object(heldout, 'dirty_paths', return_value={heldout.OUT}):
+            self.assertTrue(heldout.build_allow_dirty(heldout.ROOT))
+        with mock.patch.object(heldout, 'dirty_paths', return_value={heldout.OUT, 'agent_braid/lightning_arm.py'}):
+            with self.assertRaises(heldout.HeldoutError) as caught:
+                heldout.build_allow_dirty(heldout.ROOT)
+            self.assertEqual(caught.exception.code, 'dirty-checkout')

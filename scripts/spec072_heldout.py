@@ -350,10 +350,30 @@ def new_run_id(label: str) -> str:
     return f'heldout-{label.lower()}-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
 
 
+HELDOUT_OUTPUTS = frozenset({OUT, REGISTRATION_OUT, REPORT_OUT})
+
+
+def dirty_paths(root: Path) -> set[str]:
+    """Working-tree changes (tracked or untracked), repository-relative."""
+    text = subprocess.run(['git', '-C', str(root), 'status', '--porcelain', '--untracked-files=all'],
+                          capture_output=True, text=True, check=True).stdout
+    return {line[3:].strip() for line in text.splitlines() if line.strip()}
+
+
+def build_allow_dirty(root: Path) -> bool:
+    """The build needs a clean tree. This command's own evidence files (written before the first rollout so a stop
+    can resume) are the only change it tolerates; anything else is refused."""
+    dirty = dirty_paths(root)
+    if dirty - HELDOUT_OUTPUTS:
+        raise HeldoutError('Commit or remove these changes before the held-out run: '
+                           + ', '.join(sorted(dirty - HELDOUT_OUTPUTS)), 'dirty-checkout')
+    return bool(dirty)
+
+
 def build_plugin(label: str, skill_text: str, work: Path) -> Path:
     from scripts import spec069_native_runs as driver
     cache = Path(os.environ.get('TMPDIR', '/tmp')) / 'agent-braid-lightning-build-cache'  # as lightning_runner.run
-    base = driver.build_candidate('final', work, cache, False)[0]
+    base = driver.build_candidate('final', work, cache, build_allow_dirty(ROOT))[0]
     return base if label == 'A0' else arm_mod.candidate_plugin(base, skill_text, work / 'candidate')
 
 
