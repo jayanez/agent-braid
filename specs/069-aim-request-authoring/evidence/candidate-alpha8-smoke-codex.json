@@ -1,0 +1,607 @@
+{
+  "arm": "final",
+  "authMode": "subscription",
+  "candidate": {
+    "arm": "final",
+    "prebuilt": true
+  },
+  "driverSha256": "92a737a5d4e7af15d9a859f49b9be2111dc5f82c68c694b59a8019091e6de236",
+  "evidenceVersion": 1,
+  "generatedAt": "2026-11-13T12:50:15Z",
+  "hosts": {
+    "codex": {
+      "allowlist": [
+        "agent-braid MCP server; read-only sandbox; approval never"
+      ],
+      "auth": "interactive-once",
+      "hostReportedKeySource": [],
+      "keySource": "profile",
+      "model": null,
+      "modelPinned": false,
+      "modelsObserved": [],
+      "notes": [
+        "Subscription mode (auth: interactive-once): runs bill to the owner's subscription limits, not an API account; usage may be rate limited and automated use is subject to the provider's terms"
+      ],
+      "osSandbox": "sandbox-exec",
+      "probe": {
+        "authProfile": {
+          "bytes": 4210,
+          "exists": true,
+          "file": "auth.json",
+          "usableUnderSandbox": true
+        },
+        "canaryReadThroughRedirectedHome": true,
+        "deniedPaths": [
+          {
+            "denied": true,
+            "path": "~/.claude"
+          },
+          {
+            "denied": true,
+            "path": "~/.claude.json"
+          },
+          {
+            "denied": true,
+            "path": "~/.codex"
+          },
+          {
+            "denied": true,
+            "path": "~/.config/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/.local/share/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/.local/state/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/.cache/opencode"
+          },
+          {
+            "denied": true,
+            "path": "~/Library/Keychains"
+          },
+          {
+            "denied": true,
+            "path": "~/Library/Application Support/Claude"
+          },
+          {
+            "denied": true,
+            "path": "~/Library/Application Support/Codex"
+          }
+        ],
+        "enforced": true,
+        "sandbox": "sandbox-exec"
+      },
+      "route": "direct",
+      "runs": [
+        {
+          "attempts": [
+            {
+              "accepted": true,
+              "kind": "aim",
+              "refusalSummary": null,
+              "report": {
+                "analysisId": "sha256:44aac5d61663008663bb66b07190cce628c9897fb854f9bbf63cc0f5934d90b2",
+                "analyzer": {
+                  "name": "agent-braid",
+                  "ruleSet": "exact-resource-footprints-v1",
+                  "version": "0.1.0-alpha"
+                },
+                "executionAuthorization": false,
+                "inputDigest": "sha256:e9fa8e4484b86ef4852e8b1db4f98b4caffa186a32e85df720f0d84476f04b06",
+                "interactions": [
+                  {
+                    "classification": "independent-candidate",
+                    "completenessBasis": "declared-not-observed",
+                    "constraints": [
+                      "requires-execution-contract-before-parallelism"
+                    ],
+                    "evidence": {
+                      "assuranceClass": 1,
+                      "coverage": [
+                        "complete"
+                      ],
+                      "method": "exact-resource-footprint",
+                      "ruleSet": "exact-resource-footprints-v1"
+                    },
+                    "left": "edit-readme",
+                    "reasons": [
+                      "Complete exact-resource footprints are disjoint."
+                    ],
+                    "right": "edit-roadmap",
+                    "sharedResources": []
+                  }
+                ],
+                "limits": [
+                  "Resource identity is exact-string equality; aliases and semantic dependencies are not inferred.",
+                  "A candidate establishes no concurrent-execution refinement, authorization, or task correctness.",
+                  "The analyzer does not execute agents, tools, Git operations, or external effects."
+                ],
+                "operations": [
+                  {
+                    "attemptId": "edit-readme-1",
+                    "coverage": {
+                      "domain": "synthetic exact repository paths",
+                      "method": "fixture declaration",
+                      "status": "complete"
+                    },
+                    "dependencies": [],
+                    "instanceId": "edit-readme",
+                    "resources": [
+                      "repo://agent-braid/README.md"
+                    ]
+                  },
+                  {
+                    "attemptId": "edit-roadmap-1",
+                    "coverage": {
+                      "domain": "synthetic exact repository paths",
+                      "method": "fixture declaration",
+                      "status": "complete"
+                    },
+                    "dependencies": [],
+                    "instanceId": "edit-roadmap",
+                    "resources": [
+                      "repo://agent-braid/ROADMAP.md"
+                    ]
+                  }
+                ],
+                "reportVersion": "0.1.0-alpha",
+                "sourceKind": "aim",
+                "summary": {
+                  "classifications": {
+                    "conflicting": 0,
+                    "independent-candidate": 1,
+                    "ordered": 0,
+                    "unknown": 0
+                  },
+                  "operationCount": 2,
+                  "pairCount": 1
+                },
+                "uncertainty": []
+              },
+              "request": {
+                "analysisInputVersion": "0.1.0-alpha",
+                "operations": [
+                  {
+                    "aimVersion": "0.2.0-draft",
+                    "attemptId": "edit-readme-1",
+                    "definition": {
+                      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+                      "id": "repository.update-file-v1"
+                    },
+                    "dependencies": [],
+                    "effects": {
+                      "coverage": {
+                        "domain": "synthetic exact repository paths",
+                        "method": "fixture declaration",
+                        "status": "complete"
+                      },
+                      "declared": [
+                        {
+                          "kind": "write",
+                          "resource": "repo://agent-braid/README.md"
+                        }
+                      ],
+                      "inferred": [],
+                      "observed": []
+                    },
+                    "evidence": [
+                      {
+                        "assumptions": [
+                          "no aliases or generated dependencies"
+                        ],
+                        "assuranceClass": 1,
+                        "domain": "synthetic exact repository paths",
+                        "executionContract": "no execution; analysis only",
+                        "method": "declared",
+                        "observationContract": "normalized repository tree",
+                        "property": "independence"
+                      }
+                    ],
+                    "inputDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "instanceId": "edit-readme",
+                    "readVersions": {}
+                  },
+                  {
+                    "aimVersion": "0.2.0-draft",
+                    "attemptId": "edit-roadmap-1",
+                    "definition": {
+                      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+                      "id": "repository.update-file-v1"
+                    },
+                    "dependencies": [],
+                    "effects": {
+                      "coverage": {
+                        "domain": "synthetic exact repository paths",
+                        "method": "fixture declaration",
+                        "status": "complete"
+                      },
+                      "declared": [
+                        {
+                          "kind": "write",
+                          "resource": "repo://agent-braid/ROADMAP.md"
+                        }
+                      ],
+                      "inferred": [],
+                      "observed": []
+                    },
+                    "evidence": [
+                      {
+                        "assumptions": [
+                          "no aliases or generated dependencies"
+                        ],
+                        "assuranceClass": 1,
+                        "domain": "synthetic exact repository paths",
+                        "executionContract": "no execution; analysis only",
+                        "method": "declared",
+                        "observationContract": "normalized repository tree",
+                        "property": "independence"
+                      }
+                    ],
+                    "inputDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "instanceId": "edit-roadmap",
+                    "readVersions": {}
+                  }
+                ],
+                "source": {
+                  "description": "Two synthetic repository edits with complete exact-resource footprints",
+                  "kind": "aim"
+                }
+              }
+            },
+            {
+              "accepted": true,
+              "kind": "units",
+              "refusalSummary": null,
+              "report": {
+                "analysisId": "sha256:ca95ebe4e0a8d607780c668440c5e93e961ad61375921b04697c3f371f71bebb",
+                "analyzer": {
+                  "name": "agent-braid",
+                  "ruleSet": "exact-resource-footprints-v1",
+                  "version": "0.1.0-alpha"
+                },
+                "executionAuthorization": false,
+                "inputDigest": "sha256:9f6eeb2496daffb122475c8d70476a6452a70c6da8d8c5f19dab179cd48c651a",
+                "interactions": [
+                  {
+                    "classification": "conflicting",
+                    "constraints": [
+                      "serialize-or-isolate"
+                    ],
+                    "evidence": {
+                      "assuranceClass": 0,
+                      "coverage": [
+                        "partial"
+                      ],
+                      "method": "exact-resource-footprint",
+                      "ruleSet": "exact-resource-footprints-v1"
+                    },
+                    "left": "edit-readme",
+                    "reasons": [
+                      "At least one exact shared resource has a write-like effect."
+                    ],
+                    "right": "edit-readme-intro",
+                    "sharedResources": [
+                      "repo://7d4f507e378e00286b32c7f4be8f2f23/README.md"
+                    ]
+                  }
+                ],
+                "limits": [
+                  "Resource identity is exact-string equality; aliases and semantic dependencies are not inferred.",
+                  "A candidate establishes no concurrent-execution refinement, authorization, or task correctness.",
+                  "The analyzer does not execute agents, tools, Git operations, or external effects."
+                ],
+                "operations": [
+                  {
+                    "attemptId": "edit-readme",
+                    "coverage": {
+                      "domain": "workspace-relative paths declared by the host model",
+                      "method": "units declaration (agent-braid.units-declaration/0.1.0-alpha)",
+                      "status": "partial"
+                    },
+                    "dependencies": [],
+                    "instanceId": "edit-readme",
+                    "resources": [
+                      "repo://7d4f507e378e00286b32c7f4be8f2f23/README.md"
+                    ]
+                  },
+                  {
+                    "attemptId": "edit-readme-intro",
+                    "coverage": {
+                      "domain": "workspace-relative paths declared by the host model",
+                      "method": "units declaration (agent-braid.units-declaration/0.1.0-alpha)",
+                      "status": "partial"
+                    },
+                    "dependencies": [],
+                    "instanceId": "edit-readme-intro",
+                    "resources": [
+                      "repo://7d4f507e378e00286b32c7f4be8f2f23/README.md"
+                    ]
+                  }
+                ],
+                "reportVersion": "0.1.0-alpha",
+                "sourceKind": "units",
+                "summary": {
+                  "classifications": {
+                    "conflicting": 1,
+                    "independent-candidate": 0,
+                    "ordered": 0,
+                    "unknown": 0
+                  },
+                  "operationCount": 2,
+                  "pairCount": 1
+                },
+                "uncertainty": [
+                  "At least one operation lacks complete effect coverage."
+                ]
+              },
+              "request": {
+                "units": [
+                  {
+                    "effects": [
+                      {
+                        "kind": "write",
+                        "resource": "README.md"
+                      }
+                    ],
+                    "id": "edit-readme"
+                  },
+                  {
+                    "effects": [
+                      {
+                        "kind": "write",
+                        "resource": "README.md"
+                      }
+                    ],
+                    "id": "edit-readme-intro"
+                  }
+                ],
+                "unitsRequestVersion": "0.1.0-alpha"
+              }
+            }
+          ],
+          "caseId": "probe-schema",
+          "deniedToolRequests": [],
+          "durationSeconds": 35.0,
+          "exitCode": 0,
+          "keySourceReported": null,
+          "models": [],
+          "probe": {
+            "loading": "eager",
+            "verdict": "pass"
+          },
+          "repetition": 1,
+          "timedOut": false,
+          "toolCalls": [
+            {
+              "class": "agent-braid",
+              "isError": false,
+              "tool": "agent-braid__workspaces"
+            },
+            {
+              "class": "agent-braid",
+              "isError": false,
+              "tool": "agent-braid__plugin-status"
+            },
+            {
+              "class": "agent-braid",
+              "isError": false,
+              "tool": "agent-braid__analyze-work"
+            },
+            {
+              "class": "agent-braid",
+              "isError": false,
+              "tool": "agent-braid__analyze-work"
+            }
+          ],
+          "transcript": {
+            "bytes": 32361,
+            "file": "candidate-alpha8-smoke-codex.transcripts/codex/probe-schema-r1.jsonl",
+            "sha256": "422a3c9dd9728b9a56ab6de07d90c2bba8c89ff51a68083dd4176ff2ffe3e106"
+          },
+          "usage": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 90240,
+            "input_tokens": 110200,
+            "output_tokens": 882,
+            "reasoning_output_tokens": 17
+          }
+        }
+      ],
+      "schemaProbe": {
+        "connections": [
+          {
+            "calls": [
+              {
+                "kind": "aim",
+                "requestType": "object"
+              },
+              {
+                "kind": "units",
+                "requestType": "object"
+              }
+            ],
+            "complete": false,
+            "discover": null,
+            "errors": [
+              "relay_failure"
+            ],
+            "listings": [
+              {
+                "analyzeWorkCanonicalSha256": "7f56141599d56cd24695e47257de2d118673ab4154ba9eeecc22dfdceec02cb6",
+                "lineBytes": 8466,
+                "lineSha256": "293ee660bdd76d87b4791ddd814f438ef0e801d7850d97ceb2fb741da6178b13",
+                "matchesFingerprint": true,
+                "modelFacingBytes": 5539,
+                "modelFacingCanonicalSha256": "226d314d188e0ca3404e3638a5c511f06fa34fff551eae11d495625730474d16",
+                "modelFacingSha256": "6ae1f309278c5a1169d858ad7b4e9a4f71176cbe20c7501f34ade67348719a80",
+                "rawLineFile": "candidate-alpha8-smoke-codex.transcripts/codex/tools-list-c0-0.json",
+                "resultCanonicalSha256": "19d4bf212897c7559d4830d74370bf400ee50dac571c7a2dc89a7b6f88e76939",
+                "servedKeyOrderEqualsFingerprint": false,
+                "toolCount": 5,
+                "toolNames": [
+                  "analyze",
+                  "analyze-work",
+                  "plugin-status",
+                  "prepare",
+                  "workspaces"
+                ]
+              }
+            ],
+            "protocolVersion": "2025-06-18",
+            "receipt": "connection-1794574219-76974.json",
+            "trace": [
+              "in:initialize",
+              "out:response",
+              "in:notifications/initialized",
+              "in:tools/list",
+              "out:response",
+              "in:tools/call",
+              "in:tools/call",
+              "out:response",
+              "out:response",
+              "in:tools/call",
+              "out:response",
+              "in:tools/call",
+              "out:response"
+            ]
+          }
+        ],
+        "verdict": {
+          "callsAtServer": [
+            {
+              "kind": "aim",
+              "requestType": "object"
+            },
+            {
+              "kind": "units",
+              "requestType": "object"
+            }
+          ],
+          "claudeInitListsAnalyzeWork": null,
+          "codexConvertError": false,
+          "exposedToModel": true,
+          "kindsAtServer": [
+            "aim",
+            "units"
+          ],
+          "loading": "eager",
+          "protocolVersions": [
+            "2025-06-18"
+          ],
+          "receiptsComplete": "0/1",
+          "requestAlwaysObject": true,
+          "servedBytesMatchFingerprint": true,
+          "verdict": "pass"
+        }
+      },
+      "status": "ran",
+      "version": "codex-cli 0.167.0-alpha.4.1",
+      "workspaceRegistered": true
+    }
+  },
+  "keysFromKeychain": false,
+  "label": "host-run",
+  "manualSteps": [
+    {
+      "reason": "keys are read from the driver environment or the keychain only and are never prompted for, written or logged (D13)",
+      "step": "Store the API keys once (macOS keychain generic passwords, or export them in your own terminal before the run)"
+    },
+    {
+      "reason": "the driver never reads a terminal or a credential file (D13: interactive-once)",
+      "step": "Subscription mode only: sign in once per host in your own Terminal.app (--login HOST prints the command)"
+    },
+    {
+      "reason": "the driver never reads a terminal and never prompts for or logs a token (D13)",
+      "step": "Token mode only: run `claude setup-token` in your own Terminal.app and store the token silently (security add-generic-password -a \"$USER\" -s agent-braid-claude-oauth -w)"
+    },
+    {
+      "reason": "the driver does not install host applications (D11)",
+      "step": "Install Codex when the ChatGPT desktop bundle is absent (--codex-bin)"
+    },
+    {
+      "reason": "owner decisions are not automated (D5)",
+      "step": "Decide on the release (REQ-012) and on the result of a run"
+    }
+  ],
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "promptSet": {
+    "cases": 1,
+    "fixtures": {
+      "examples/analysis/file-edits.json": "23a833a13adb2b029a696028bb1ae64ced30a65a19375d8e515c1c4d809fcd93",
+      "tests/fixtures/analysis-requests/units/golden/t010-readme-conflict.request.json": "4acf9d001cefbb8e396ca52397f96816bd718f54dd0ce82518897e1d66fd0d31"
+    },
+    "prompt": "Use the agent-braid analyze-work tool twice, with workspaceId \"{workspaceId}\", then stop. First call: kind \"aim\" and request equal to this JSON value: {\"analysisInputVersion\":\"0.1.0-alpha\",\"source\":{\"kind\":\"aim\",\"description\":\"Two synthetic repository edits with complete exact-resource footprints\"},\"operations\":[{\"aimVersion\":\"0.2.0-draft\",\"instanceId\":\"edit-readme\",\"attemptId\":\"edit-readme-1\",\"definition\":{\"id\":\"repository.update-file-v1\",\"digest\":\"sha256:1111111111111111111111111111111111111111111111111111111111111111\"},\"inputDigest\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"dependencies\":[],\"readVersions\":{},\"effects\":{\"declared\":[{\"kind\":\"write\",\"resource\":\"repo://agent-braid/README.md\"}],\"inferred\":[],\"observed\":[],\"coverage\":{\"status\":\"complete\",\"domain\":\"synthetic exact repository paths\",\"method\":\"fixture declaration\"}},\"evidence\":[{\"property\":\"independence\",\"method\":\"declared\",\"domain\":\"synthetic exact repository paths\",\"assumptions\":[\"no aliases or generated dependencies\"],\"observationContract\":\"normalized repository tree\",\"executionContract\":\"no execution; analysis only\",\"assuranceClass\":1}]},{\"aimVersion\":\"0.2.0-draft\",\"instanceId\":\"edit-roadmap\",\"attemptId\":\"edit-roadmap-1\",\"definition\":{\"id\":\"repository.update-file-v1\",\"digest\":\"sha256:2222222222222222222222222222222222222222222222222222222222222222\"},\"inputDigest\":\"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"dependencies\":[],\"readVersions\":{},\"effects\":{\"declared\":[{\"kind\":\"write\",\"resource\":\"repo://agent-braid/ROADMAP.md\"}],\"inferred\":[],\"observed\":[],\"coverage\":{\"status\":\"complete\",\"domain\":\"synthetic exact repository paths\",\"method\":\"fixture declaration\"}},\"evidence\":[{\"property\":\"independence\",\"method\":\"declared\",\"domain\":\"synthetic exact repository paths\",\"assumptions\":[\"no aliases or generated dependencies\"],\"observationContract\":\"normalized repository tree\",\"executionContract\":\"no execution; analysis only\",\"assuranceClass\":1}]}]} Second call: kind \"units\" and request equal to this JSON value: {\"units\":[{\"effects\":[{\"kind\":\"write\",\"resource\":\"README.md\"}],\"id\":\"edit-readme\"},{\"effects\":[{\"kind\":\"write\",\"resource\":\"README.md\"}],\"id\":\"edit-readme-intro\"}],\"unitsRequestVersion\":\"0.1.0-alpha\"}",
+    "promptSha256": "3781c75db61e67ad4abeefbf68307ce62f1b9fe7ee51a72c77b97116253c7c7e",
+    "setId": "t005-probe-schema"
+  },
+  "repetitions": 1,
+  "schemaProbe": {
+    "crossHost": {
+      "byProtocolVersion": {
+        "2025-06-18": {
+          "analyzeWorkCanonicalSha256": [
+            "7f56141599d56cd24695e47257de2d118673ab4154ba9eeecc22dfdceec02cb6"
+          ],
+          "hosts": [
+            "codex"
+          ],
+          "identical": true,
+          "modelFacingCanonicalSha256": [
+            "226d314d188e0ca3404e3638a5c511f06fa34fff551eae11d495625730474d16"
+          ]
+        }
+      },
+      "modelFacingIdenticalAcrossVersions": true,
+      "note": "analyzeWorkCanonicalSha256 compares the full served definition within one protocol version; modelFacingCanonicalSha256 (name, description, inputSchema, sorted keys) compares across versions and with the build fingerprint"
+    },
+    "delivery": "per-kind",
+    "expectedFingerprint": {
+      "bytes": 5539,
+      "canonicalSha256": "226d314d188e0ca3404e3638a5c511f06fa34fff551eae11d495625730474d16",
+      "sha256": "69c8c66a874199c1ba09076cff0c478badff652e95b64ba02e51ee592100cdfc",
+      "source": "scripts.spec069_capture_t005_evidence.listed_sizes() on this checkout"
+    },
+    "relaySha256": "f6553cb1d416da921639a1805fcdd26d1f6109a7cc791586d2897a8e1fb20e66"
+  },
+  "scoringSha256": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
+  "summary": {
+    "codex": {
+      "callsAtServer": [
+        {
+          "kind": "aim",
+          "requestType": "object"
+        },
+        {
+          "kind": "units",
+          "requestType": "object"
+        }
+      ],
+      "claudeInitListsAnalyzeWork": null,
+      "codexConvertError": false,
+      "exposedToModel": true,
+      "kindsAtServer": [
+        "aim",
+        "units"
+      ],
+      "loading": "eager",
+      "protocolVersions": [
+        "2025-06-18"
+      ],
+      "receiptsComplete": "0/1",
+      "requestAlwaysObject": true,
+      "servedBytesMatchFingerprint": true,
+      "verdict": "pass"
+    }
+  },
+  "task": "SPEC-069 T005 host probe of the analyze-work schema (procedure_005)",
+  "teardown": {
+    "clean": true,
+    "leftoverProcesses": 0,
+    "profileRemoved": true
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "procedure": "procedure_012",
+  "task": "SPEC-069 T012",
+  "status": "candidate-pending-owner-yes",
+  "label": "CANDIDATE EVIDENCE: nothing is tagged, pushed to plugin-dist or published; publication requires the owner's recorded explicit yes (procedure_012).",
+  "generatedAt": "2026-11-13",
+  "candidate": {
+    "version": "0.1.0-alpha.8",
+    "branch": "release/069-alpha8",
+    "sourceCommit": "a741c5a1756eea5976d9717943b393c5a5a4a86f",
+    "sourceDirty": false,
+    "build": "scripts/build_native_plugin.py from a fresh local clone at sourceCommit, Python 3.12.13, platforms macos-arm64 and linux-x86_64",
+    "packageFiles": 8121,
+    "outputFiles": 8126,
+    "sha256": {
+      "plugins/agent-braid/package-inventory.json": "ee91d5095783e24181e780ea6ff9b370cbfddd5689cab4be19c55836884256cb",
+      "plugins/agent-braid/provenance.json": "cd6da35fe7dcd4be990e13c0599df92c1d4780e78f56d09ef72aba91ed35e1fc",
+      "sources/agent-braid-0.1.0-alpha.8-source.tar.gz": "7888ebfd05695de34e096f23c64f2aefdaaf89f16ba8bb201203a1f680e32cc4",
+      "treeManifest": "203018e83fade94c4e2e0a1fc4311cb4b8d7a5357883cda4a4a09c1111bb06b6"
+    },
+    "treeManifestDefinition": "SHA-256 of `find . -type f -print0 | LC_ALL=C sort -z | xargs -0 shasum -a 256` run in the build output root",
+    "doctor": {
+      "pluginVersion": "0.1.0-alpha.8",
+      "version": "0.1.0a2",
+      "package": "verified",
+      "files": 8121,
+      "home": "empty resolved temporary home"
+    }
+  },
+  "packageEqualsCandidate": {
+    "provenanceSourceCommit": "a741c5a1756eea5976d9717943b393c5a5a4a86f",
+    "treeManifestAfterSmoke": "203018e83fade94c4e2e0a1fc4311cb4b8d7a5357883cda4a4a09c1111bb06b6",
+    "smokeUsedPluginDir": "the build output itself (--plugin-dir); the driver probes disposable copies, and the tree manifest was unchanged after all three hosts",
+    "rebuildReproducibility": "A second build of the same commit from another clone differed in 31 of 8126 files only: provenance.json, package-inventory.json, the source archive, dist-info RECORD and direct_url.json, and site-packages/bin console scripts, all of which embed the build directory path or archive mtimes. All other files were byte-identical. A rebuild is therefore not byte-equal; publish these exact candidate bytes.",
+    "sourceAfterMerge": "The PR adds only this evidence after sourceCommit; the merged develop tree must differ from sourceCommit only under specs/069-aim-request-authoring/evidence/ (checked at publication with git diff --name-only)."
+  },
+  "ci": {
+    "quickProfile": "pending",
+    "prValidate": "pending"
+  },
+  "smoke": {
+    "command": "python -m scripts.spec069_native_runs --probe-schema --arm final --plugin-dir <build>/plugins/agent-braid",
+    "pass": "analyze-work exposed to the model; aim and units requests reach the server as JSON objects; served definition equals the build fingerprint",
+    "hosts": {
+      "claude-code": {
+        "hostVersion": "2.1.311 (Claude Code)",
+        "model": "claude-sonnet-5-5",
+        "verdict": "pass",
+        "exposedToModel": true,
+        "callsAtServer": [
+          {
+            "kind": "aim",
+            "requestType": "object"
+          },
+          {
+            "kind": "units",
+            "requestType": "object"
+          }
+        ],
+        "requestAlwaysObject": true,
+        "servedBytesMatchFingerprint": true,
+        "loading": "deferred",
+        "protocolVersions": [
+          "2026-07-28"
+        ],
+        "access": "--auth token --keys-from-keychain; --check-login claude-code ok first"
+      },
+      "opencode": {
+        "hostVersion": "opencode v2.1.4",
+        "model": "openrouter/anthropic/claude-sonnet-5-5",
+        "verdict": "pass",
+        "exposedToModel": true,
+        "callsAtServer": [
+          {
+            "kind": "aim",
+            "requestType": "object"
+          },
+          {
+            "kind": "units",
+            "requestType": "object"
+          }
+        ],
+        "requestAlwaysObject": true,
+        "servedBytesMatchFingerprint": true,
+        "loading": "helper-before-call",
+        "protocolVersions": [
+          "2025-11-25"
+        ],
+        "access": "--keys-from-keychain (OpenRouter)"
+      },
+      "codex": {
+        "hostVersion": "codex-cli 0.167.0-alpha.4.1",
+        "model": "host default",
+        "verdict": "pass",
+        "exposedToModel": true,
+        "callsAtServer": [
+          {
+            "kind": "aim",
+            "requestType": "object"
+          },
+          {
+            "kind": "units",
+            "requestType": "object"
+          }
+        ],
+        "requestAlwaysObject": true,
+        "servedBytesMatchFingerprint": true,
+        "loading": "eager",
+        "protocolVersions": [
+          "2025-06-18"
+        ],
+        "access": "--auth subscription --auth-profile-dir ~/agent-braid-auth"
+      }
+    },
+    "evidence": {
+      "candidate-alpha8-smoke.json": "cd27d3b7c0406722eb420c218053d2ae680509264028d98c2c3cd79a0721d6ef",
+      "candidate-alpha8-smoke-codex.json": "1afefca9257b5a7b54938fd86018af57449f9d2af681af3be654155cad4222ac"
+    },
+    "limits": "One session per host on macOS arm64, arm final only; an observation, not a sample. Linux not exercised."
+  },
+  "spend": {
+    "claudeCodeUsd": 0.0779588,
+    "claudeCodeNote": "notional total_cost_usd reported by Claude Code under the OAuth token (subscription)",
+    "openRouterReportedCost": 0,
+    "codex": "subscription; no cost reported",
+    "totalCashUsdAtMost": 0.08
+  },
+  "ownerDecision": {
+    "yes": null,
+    "date": null,
+    "note": "Fill from the owner's own words before any tag or plugin-dist push."
+  }
+}
