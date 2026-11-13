@@ -75,7 +75,7 @@ and T010's final run measures the release candidate without them.
   lexical normalization; adapter bounds for units; determinism, replay and
   workspace-boundary tests. Dependencies: T004.
   Verification: procedure_006.
-- [ ] T005 (REQ-005 / SC-005): [P3, conditional] Host probe of nested per-kind schemas first
+- [x] T005 (REQ-005 / SC-005): [P3, conditional] Host probe of nested per-kind schemas first
   (gate); build-time schemas under `request`, plugin `list_tools` test,
   recording-proxy byte check, named-tokenizer size and cap check.
   Dependencies: T004, T006. Verification: procedure_005.
@@ -87,6 +87,14 @@ and T010's final run measures the release candidate without them.
   Code, Codex and OpenCode, the recording-proxy byte identity across host connections and
   the eager/deferred loading record, all on the native driver
   (`reviews/t005-handoff-20261107.md`).
+  Native part (2026-11-13): `scripts/spec069_native_runs.py --probe-schema` puts the recording relay
+  (`scripts/spec069_stdio_proxy.py --keep-listing`) in front of `launch` in each disposable installed copy and ran one
+  session per host and D9 arm (Claude Code 2.1.311, Codex 0.167.0-alpha.4.1, OpenCode 2.1.4). In both arms all three
+  hosts exposed `analyze-work`, the `aim` call with `examples/analysis/file-edits.json` and a `units` call reached the
+  server with `request` as a JSON object, and every connection served the same `analyze-work` content, equal to the
+  build fingerprint. Loading: Claude Code deferred (ToolSearch first), Codex eager, OpenCode eager after its `execute`
+  helper. No host hid or stringified the nested form, so no description-only fallback is declared. procedure_005
+  passes (`evidence/procedure_005.json` `native`); evidence `evidence/native-probe-schema-*.json`.
 - [x] T014 (REQ-014 / SC-014): [P3, conditional] Telemetry and shadow handling for `units`;
   normalization tests on macOS and Linux CI; Windows tested or declared a
   limit; release-note text for the #1099 transition. Dependencies: T006.

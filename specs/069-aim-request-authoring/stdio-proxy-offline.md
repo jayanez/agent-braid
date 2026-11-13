@@ -4,8 +4,8 @@
 the exact server command following `--` and passes its stdin/stdout bytes through. For each connection,
 provide a **new** receipt path in a private directory; the file is created exclusively with mode 0600.
 For example, an offline MCP client may launch `python scripts/spec069_stdio_proxy.py --receipt
-/private/path/connection.json -- <plugin-launcher> plugin serve ...`. This is an interface for a future
-driver integration, not a command to start a host or make a model call. No existing driver enables it.
+/private/path/connection.json -- <plugin-launcher> plugin serve ...`. The native driver's `--probe-schema` mode (T005) runs it with `--keep-listing` in the
+disposable installed copy; nothing else enables it.
 
 The receipt records the negotiated protocol version, byte length and SHA-256 of each complete raw
 `tools/list` response line (including its newline), canonical sorted compact JSON hashes of the result
@@ -51,3 +51,11 @@ Post-call usage, estimated prices, timeouts and turn limits cannot reliably boun
 unknown provider charges, exchange rates or concurrent usage. Do not start a paid probe unless a separately
 verified, preventive per-pass control exists that covers all participating routes and worst-case in-flight
 costs; otherwise this remains blocked. This offline slice changes no billing, permissions or quotas.
+
+**Driver detail (`--keep-listing`, opt-in).** The receipt then also keeps each raw `tools/list` response line (server output,
+not requests), a bounded trace of directions and method names (never params, results or arguments) and, for every
+`analyze-work` call, its `kind` when it is `aim`, `git` or `units`. Claude Code 2.1.311 opens with `server/discover` instead
+of `initialize`: the relay records the result's key names and date-shaped supported versions, and takes a single supported
+version as the negotiated one. A host that ends the server with a signal leaves a receipt marked incomplete
+(`relay_failure`) whose listing and calls are still recorded.
+

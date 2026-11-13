@@ -50,10 +50,17 @@ TOKENIZER_PROBE = (
     " for name in ('o200k_base', 'cl100k_base')} for key, text in texts.items()}}))\n"
 )
 PENDING = [
-    "Model calls through Claude Code and OpenCode (conformance of the call, request received as an object): the Anthropic API rejected every call with a credit-balance error in the 2026-11-07 probe, see evidence/host-probe-nested-schema.json.",
-    "Codex host probe: no OpenAI key in the probe environment (declared limit).",
-    "D9 ablation (--arm final-no-schema versus --arm final) in the native final run; the per-kind schema is kept only if it improves first-attempt validity in at least one host.",
+    "Independent (non-same-family) review of the T005 evidence; this capture is automated same-family track output, not an approval.",
 ]
+NATIVE_LIMITS = (
+    "Native probe: one session per host and arm, one model per host (claude-sonnet-5-5 for Claude Code by subscription token and "
+    "for OpenCode through OpenRouter; Codex on its default model by subscription sign-in), so acceptance is observed, not "
+    "sampled. Claude Code and Codex end the server with a signal, so their relay receipts are marked incomplete "
+    "(relay_failure) after the listing and calls were recorded. Hosts negotiate different MCP protocol versions (Claude "
+    "Code 2026-07-28 through server/discover, OpenCode 2025-11-25, Codex 2025-06-18): the full definition is compared "
+    "within each version and the model-facing part (name, description, inputSchema, sorted keys) across versions; the "
+    "server's key order differs by version (content does not). Eager or deferred loading is read from the order of calls in "
+    "the transcript, not from the model request.")
 
 
 # Native host probe (driver --probe-schema), one evidence file per D9 arm and access path; Codex runs separately (subscription sign-in).
@@ -212,6 +219,14 @@ def main(argv: list[str] | None = None) -> int:
     if native is not None:
         record["native"] = native
         record["specification"] = "SPEC-069 P3 / T005"
+        record["outcome"] += (" Native probe (driver --probe-schema, recording relay in each disposable installed copy): " + (
+            "passed: in the per-kind arm" + (" and the description-only arm" if not native["notPass"] and not native["missing"] else "")
+            + " Claude Code, Codex and OpenCode exposed analyze-work to the model, an aim call with "
+            "examples/analysis/file-edits.json and a units call reached the server with request as a JSON object, and every host "
+            "connection served the same analyze-work content, equal to the build fingerprint."
+            if native["passed"] else "NOT passed: " + json.dumps(native["notPass"] or native["missing"], sort_keys=True)))
+        record["limits"] = record["limits"].replace("Offline only: no host connected, so host acceptance of the nested form, recording-proxy byte "
+                                                    "identity and eager/deferred loading are not observed. ", "Offline part: ") + " " + NATIVE_LIMITS
         record["inputs"].update({f"specs/069-aim-request-authoring/evidence/{name}": sha(f"specs/069-aim-request-authoring/evidence/{name}")
                                  for files in NATIVE_FILES.values() for name in files if (EVIDENCE / name).exists()})
         record["inputs"]["scripts/spec069_native_runs.py"] = sha("scripts/spec069_native_runs.py")

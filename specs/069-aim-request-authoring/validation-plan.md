@@ -141,3 +141,37 @@ so no case was re-run.
   the numbers above and the HELD-04 pattern as the stated limit. D4 is not met and is not claimed as met. T010 and T008 are closed with this
   deviation. The held-out set is consumed; any new guidance round needs a new, unseen held-out set and a new FREEZE record. The
   `final-no-schema` ablation was not run on the held-out set.
+
+## T005 native host probe of the analyze-work schema (2026-11-13)
+
+`python -m scripts.spec069_native_runs --probe-schema --arm final|final-no-schema`: same sandbox, access paths, redaction,
+secret scan and teardown as the T010 runs. In each disposable installed copy, `launch` becomes `launch.real` behind a wrapper
+that runs `scripts/spec069_stdio_proxy.py --keep-listing` for `plugin serve` only; one receipt per connection records the
+negotiated protocol version, the raw `tools/list` line (saved next to the transcript) with its SHA-256, canonical hashes and,
+for every `analyze-work` call, the `kind` and whether `request` was an object. One prompt per host asked for an `aim` call with
+`examples/analysis/file-edits.json` and a `units` call (two units writing `README.md`). Models as in T010: `claude-sonnet-5-5`
+(Claude Code by subscription token; OpenCode through OpenRouter), Codex default model by subscription sign-in. Per-kind arm =
+committed build `62f83ff5`; description-only arm = the same commit with only the request schema regenerated (`sourceDirty:
+true`, schema module SHA-256 `aa3afa4a...`).
+
+| Host (protocol version) | Arm | Exposed | `aim` / `units` request at server | Served content = fingerprint | Loading |
+| --- | --- | --- | --- | --- | --- |
+| Claude Code 2.1.311 (2026-07-28, `server/discover`) | per-kind | yes (init list) | object / object | yes | deferred (ToolSearch first) |
+| Claude Code 2.1.311 (2026-07-28) | description-only | yes | object / object | yes | deferred |
+| Codex 0.167.0-alpha.4.1 (2025-06-18) | per-kind | yes (no `Failed to convert`) | object / object | yes | eager |
+| Codex 0.167.0-alpha.4.1 (2025-06-18) | description-only | yes | object / object | yes | eager |
+| OpenCode 2.1.4 (2025-11-25) | per-kind | yes | object / object | yes | eager, after the `execute` helper |
+| OpenCode 2.1.4 (2025-11-25) | description-only | yes | object / object | yes | eager, after the `execute` helper |
+
+- **Verdict:** procedure_005 passes (`evidence/procedure_005.json`, `native.passed: true`). No host hid or stringified the
+  nested per-kind form, so no description-only fallback is declared for any host.
+- **Byte identity:** the full `analyze-work` definition has one canonical hash per arm in every protocol version
+  (per-kind `7f561415...`, description-only `607609df...`); the model-facing part (name, description, inputSchema, sorted keys)
+  equals the fingerprint from `listed_sizes()` in every connection. The server's key order differs by protocol version (2025-06-18
+  and 2025-11-25 against 2026-07-28), so raw lines and unsorted hashes differ across versions while content does not.
+- **Limits:** one session per host and arm (observation, not a sample). Claude Code and Codex end the server with a signal, so
+  their receipts are marked incomplete (`relay_failure`) after the listing and calls were recorded. Loading is read from the order
+  of calls in the transcript. The Codex transcripts contain the local sign-in directory path in the `plugin-status` output, as in
+  the T010 evidence. Claude Code 2.1.311 opens with `server/discover` instead of `initialize`; the relay now records its version.
+- **Spend:** Claude Code 0.38 USD notional (subscription token: two development probes plus the two shipped runs); OpenCode via
+  OpenRouter and Codex on the subscription report no cost. Cumulative SPEC-069 spend stays well below the 60 USD cap.

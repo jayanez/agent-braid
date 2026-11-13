@@ -39,12 +39,18 @@
   "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
   "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
   "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
-  "scripts/spec069_capture_t005_evidence.py": "b8d9c38ed0ee7ac4eae50557ce661a5c21f64abb0253dc3236e8bf7681000caf",
+  "scripts/spec069_capture_t005_evidence.py": "b8626e2b497b50fe97eec1a5100da391f544a849709f0d851fddad298e869dff",
   "scripts/spec069_generate_corpus.py": "2e1201773f89c9d48b84a2e1421aa17b18c62792634279782ecf1fa760e5a6c1",
   "scripts/spec069_host_probe.py": "c4540057982a4c7ab4d5a2b06fc9bea004cc99423f639eebdcc1d6c796286389",
+  "scripts/spec069_native_runs.py": "1a744614e280b05253e3e6206d05fd01d39864a54cec2e4ca6fe8c0c662c5fd6",
+  "scripts/spec069_stdio_proxy.py": "f6553cb1d416da921639a1805fcdd26d1f6109a7cc791586d2897a8e1fb20e66",
   "scripts/spec069_tool_schemas.py": "7712157d0541774b0ff90087d3880aaa96d9491dbec6654752143564cdad9609",
   "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "ae433d93d7e0af3e056246588719ea5d7ac1e95c8eb13b68b620977900cba118",
   "specs/069-aim-request-authoring/evidence/host-probe-nested-schema.json": "385724b418df83e0be570dedcee1d586fc020f4fcaa8ff2b846444fa7076d59f",
+  "specs/069-aim-request-authoring/evidence/native-probe-schema-description-only-codex.json": "a7660b97c41853988fea27305ac97d857432623e7567bcff643434dcc919f220",
+  "specs/069-aim-request-authoring/evidence/native-probe-schema-description-only.json": "ff7cd627a2d2fc8ad711f15ff1aa6655d619374c49176387ecf34809d9b9f9e0",
+  "specs/069-aim-request-authoring/evidence/native-probe-schema-per-kind-codex.json": "271da5c12a03abca865d237b5fbc5485a78aa3c9323045c3bd3f5f09b70abeb3",
+  "specs/069-aim-request-authoring/evidence/native-probe-schema-per-kind.json": "327b5aa137b89f8ee57c57d3e771e02d81ea44542797175fa535d71ef92c0754",
   "specs/069-aim-request-authoring/reviews/t005-handoff-20261107.md": "c8bfc718878a5df8804e120633bb0f8d6a7132c39ee8706da4b9dcf14ca6f85d",
   "tests/fixtures/analysis-requests/aim.json": "347c45ab4469994254e6213329a2f337c5a48d7e73338ea8dadbef9d6864fe36",
   "tests/fixtures/analysis-requests/git.json": "89de14125fc46cee08b05c6b3ffb26bb6d34401b700c2d5d0111a77bb6f2e215",
@@ -53,12 +59,432 @@
   "tests/test_spec069_schema_delivery.py": "2c68717812715f3f1502069b7ad0f55b12428979815b8a8a144923c811aff993",
   "tests/test_tooling_mcp.py": "f4d25c90f5cd86e68ed81596db94738d2116b99812cb3aae3233e4f7915745f9"
  },
- "limits": "Offline only: no host connected, so host acceptance of the nested form, recording-proxy byte identity and eager/deferred loading are not observed. Corpus agreement is not proof over all inputs. The size is an approximation (ceil(utf8-bytes / 3.7) of the compact model-facing JSON (conservative for o200k_base and cl100k_base; not a tokenizer)), cap 1500; the calibration covers o200k_base and cl100k_base only. The units resource pattern is declared as non-blank only; its lexical rules are runtime checks.",
- "outcome": "passed: the generated per-kind schemas equal a fresh regeneration byte for byte and carry the source hashes; the inputSchema top level stays a plain object in both D9 arms; the plugin listing (fake types and the real mcp SDK, auto and legacy modes) lists every tool with workspaceId injected and the schemas nested under request; for kinds aim, git and units each kind's branches and the whole call schema give the published schemas' verdicts on all 553 corpus cases (310 aim, 119 git, 124 units), the only difference being the documented units resource-pattern relaxation (19 units cases, each refused by the runtime with the resource pattern as the only schema error); no declared pattern uses a lookaround; every listed tool is under the D12 cap; the description-only arm is byte identical to the interim definition except that kind lists units. Negative controls: a top-level oneOf is flagged and breaks the plugin listing, an oversized definition fails and names the fallback, drift in a published schema changes the generated file, dropping the relaxation brings the lookahead back, and a relaxed (aim, git, units) or tightened declared keyword changes corpus verdicts.",
+ "limits": "Offline part: Corpus agreement is not proof over all inputs. The size is an approximation (ceil(utf8-bytes / 3.7) of the compact model-facing JSON (conservative for o200k_base and cl100k_base; not a tokenizer)), cap 1500; the calibration covers o200k_base and cl100k_base only. The units resource pattern is declared as non-blank only; its lexical rules are runtime checks. Native probe: one session per host and arm, one model per host (claude-sonnet-5-5 for Claude Code by subscription token and for OpenCode through OpenRouter; Codex on its default model by subscription sign-in), so acceptance is observed, not sampled. Claude Code and Codex end the server with a signal, so their relay receipts are marked incomplete (relay_failure) after the listing and calls were recorded. Hosts negotiate different MCP protocol versions (Claude Code 2026-07-28 through server/discover, OpenCode 2025-11-25, Codex 2025-06-18): the full definition is compared within each version and the model-facing part (name, description, inputSchema, sorted keys) across versions; the server's key order differs by version (content does not). Eager or deferred loading is read from the order of calls in the transcript, not from the model request.",
+ "native": {
+  "arms": {
+   "description-only": {
+    "byteIdentity": {
+     "byProtocolVersion": {
+      "2025-06-18": {
+       "canonicalSha256": [
+        "607609df1e8a2d5ff29c5b449a7ee77bfbfa3227516751b228f760d8c9b087b7"
+       ],
+       "hosts": [
+        "codex"
+       ],
+       "identical": true
+      },
+      "2025-11-25": {
+       "canonicalSha256": [
+        "607609df1e8a2d5ff29c5b449a7ee77bfbfa3227516751b228f760d8c9b087b7"
+       ],
+       "hosts": [
+        "opencode"
+       ],
+       "identical": true
+      },
+      "2026-07-28": {
+       "canonicalSha256": [
+        "607609df1e8a2d5ff29c5b449a7ee77bfbfa3227516751b228f760d8c9b087b7"
+       ],
+       "hosts": [
+        "claude-code"
+       ],
+       "identical": true
+      }
+     },
+     "matchesFingerprint": true,
+     "modelFacingCanonicalSha256": [
+      "defd829e43b8f5cb858dcb4023d1b7291d7d07b19394cda2df724bb69da3e3cf"
+     ]
+    },
+    "candidate": {
+     "native-probe-schema-description-only-codex.json": {
+      "allowDirty": true,
+      "analyzeWorkSchemaSha256": "aa3afa4a569157040418b024002006b9423089b8c3aa254fa224a1a3307eb2c0",
+      "arm": "final-no-schema",
+      "delivery": "description-only",
+      "sourceCommit": "62f83ff54295380fbfde78e946e73313a29e5708",
+      "sourceDirty": true
+     },
+     "native-probe-schema-description-only.json": {
+      "allowDirty": true,
+      "analyzeWorkSchemaSha256": "aa3afa4a569157040418b024002006b9423089b8c3aa254fa224a1a3307eb2c0",
+      "arm": "final-no-schema",
+      "delivery": "description-only",
+      "sourceCommit": "62f83ff54295380fbfde78e946e73313a29e5708",
+      "sourceDirty": true
+     }
+    },
+    "expectedFingerprints": [
+     "defd829e43b8f5cb858dcb4023d1b7291d7d07b19394cda2df724bb69da3e3cf"
+    ],
+    "hosts": {
+     "claude-code": {
+      "auth": "oauth-token-env",
+      "callsAtServer": [
+       {
+        "kind": "aim",
+        "requestType": "object"
+       },
+       {
+        "kind": "units",
+        "requestType": "object"
+       }
+      ],
+      "exposedToModel": true,
+      "file": "native-probe-schema-description-only.json",
+      "loading": "deferred",
+      "model": "claude-sonnet-5-5",
+      "modelsObserved": [
+       "claude-sonnet-5-5"
+      ],
+      "protocolVersions": [
+       "2026-07-28"
+      ],
+      "receiptsComplete": "0/1",
+      "requestAlwaysObject": true,
+      "route": "direct",
+      "servedBytesMatchFingerprint": true,
+      "usage": [
+       {
+        "duration_ms": 11710,
+        "num_turns": 4,
+        "total_cost_usd": 0.0699106,
+        "usage": {
+         "cache_creation": {
+          "ephemeral_1h_input_tokens": 12595,
+          "ephemeral_5m_input_tokens": 0
+         },
+         "cache_creation_input_tokens": 12595,
+         "cache_read_input_tokens": 19986,
+         "fallback_credit": null,
+         "inference_geo": "global",
+         "input_tokens": 6,
+         "iterations": [
+          {
+           "cache_creation": {
+            "ephemeral_1h_input_tokens": 5394,
+            "ephemeral_5m_input_tokens": 0
+           },
+           "cache_creation_input_tokens": 5394,
+           "cache_read_input_tokens": 9317,
+           "input_tokens": 2,
+           "output_tokens": 460,
+           "type": "message"
+          }
+         ],
+         "output_tokens": 1752,
+         "output_tokens_details": {
+          "thinking_tokens": 0
+         },
+         "server_tool_use": {
+          "web_fetch_requests": 0,
+          "web_search_requests": 0
+         },
+         "service_tier": "standard",
+         "speed": "standard"
+        }
+       }
+      ],
+      "verdict": "pass",
+      "version": "2.1.311 (Claude Code)"
+     },
+     "codex": {
+      "auth": "interactive-once",
+      "callsAtServer": [
+       {
+        "kind": "aim",
+        "requestType": "object"
+       },
+       {
+        "kind": "units",
+        "requestType": "object"
+       }
+      ],
+      "exposedToModel": true,
+      "file": "native-probe-schema-description-only-codex.json",
+      "loading": "eager",
+      "model": null,
+      "modelsObserved": [],
+      "protocolVersions": [
+       "2025-06-18"
+      ],
+      "receiptsComplete": "0/1",
+      "requestAlwaysObject": true,
+      "route": "direct",
+      "servedBytesMatchFingerprint": true,
+      "usage": [
+       {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 84992,
+        "input_tokens": 104754,
+        "output_tokens": 807,
+        "reasoning_output_tokens": 22
+       }
+      ],
+      "verdict": "pass",
+      "version": "codex-cli 0.167.0-alpha.4.1"
+     },
+     "opencode": {
+      "auth": "env-key",
+      "callsAtServer": [
+       {
+        "kind": "aim",
+        "requestType": "object"
+       },
+       {
+        "kind": "units",
+        "requestType": "object"
+       }
+      ],
+      "exposedToModel": true,
+      "file": "native-probe-schema-description-only.json",
+      "loading": "helper-before-call",
+      "model": "openrouter/anthropic/claude-sonnet-5-5",
+      "modelsObserved": [],
+      "protocolVersions": [
+       "2025-11-25"
+      ],
+      "receiptsComplete": "1/1",
+      "requestAlwaysObject": true,
+      "route": "openrouter",
+      "servedBytesMatchFingerprint": true,
+      "usage": [
+       {
+        "cost": 0,
+        "tokens": {
+         "cache": {
+          "read": 9058,
+          "write": 13794
+         },
+         "input": 10,
+         "output": 1366,
+         "reasoning": 251
+        }
+       }
+      ],
+      "verdict": "pass",
+      "version": "opencode v2.1.4"
+     }
+    }
+   },
+   "per-kind": {
+    "byteIdentity": {
+     "byProtocolVersion": {
+      "2025-06-18": {
+       "canonicalSha256": [
+        "7f56141599d56cd24695e47257de2d118673ab4154ba9eeecc22dfdceec02cb6"
+       ],
+       "hosts": [
+        "codex"
+       ],
+       "identical": true
+      },
+      "2025-11-25": {
+       "canonicalSha256": [
+        "7f56141599d56cd24695e47257de2d118673ab4154ba9eeecc22dfdceec02cb6"
+       ],
+       "hosts": [
+        "opencode"
+       ],
+       "identical": true
+      },
+      "2026-07-28": {
+       "canonicalSha256": [
+        "7f56141599d56cd24695e47257de2d118673ab4154ba9eeecc22dfdceec02cb6"
+       ],
+       "hosts": [
+        "claude-code"
+       ],
+       "identical": true
+      }
+     },
+     "matchesFingerprint": true,
+     "modelFacingCanonicalSha256": [
+      "226d314d188e0ca3404e3638a5c511f06fa34fff551eae11d495625730474d16"
+     ]
+    },
+    "candidate": {
+     "native-probe-schema-per-kind-codex.json": {
+      "allowDirty": false,
+      "analyzeWorkSchemaSha256": "a7a5ccb6dde3ff1ad3650dfbd3a9e3c457e9c2c1782f88bb44ff5d852c156d41",
+      "arm": "final",
+      "delivery": "per-kind",
+      "sourceCommit": "62f83ff54295380fbfde78e946e73313a29e5708",
+      "sourceDirty": false
+     },
+     "native-probe-schema-per-kind.json": {
+      "allowDirty": false,
+      "analyzeWorkSchemaSha256": "a7a5ccb6dde3ff1ad3650dfbd3a9e3c457e9c2c1782f88bb44ff5d852c156d41",
+      "arm": "final",
+      "delivery": "per-kind",
+      "sourceCommit": "62f83ff54295380fbfde78e946e73313a29e5708",
+      "sourceDirty": false
+     }
+    },
+    "expectedFingerprints": [
+     "226d314d188e0ca3404e3638a5c511f06fa34fff551eae11d495625730474d16"
+    ],
+    "hosts": {
+     "claude-code": {
+      "auth": "oauth-token-env",
+      "callsAtServer": [
+       {
+        "kind": "aim",
+        "requestType": "object"
+       },
+       {
+        "kind": "units",
+        "requestType": "object"
+       }
+      ],
+      "exposedToModel": true,
+      "file": "native-probe-schema-per-kind.json",
+      "loading": "deferred",
+      "model": "claude-sonnet-5-5",
+      "modelsObserved": [
+       "claude-sonnet-5-5"
+      ],
+      "protocolVersions": [
+       "2026-07-28"
+      ],
+      "receiptsComplete": "0/1",
+      "requestAlwaysObject": true,
+      "route": "direct",
+      "servedBytesMatchFingerprint": true,
+      "usage": [
+       {
+        "duration_ms": 10999,
+        "num_turns": 4,
+        "total_cost_usd": 0.07719319999999999,
+        "usage": {
+         "cache_creation": {
+          "ephemeral_1h_input_tokens": 14536,
+          "ephemeral_5m_input_tokens": 0
+         },
+         "cache_creation_input_tokens": 14536,
+         "cache_read_input_tokens": 21972,
+         "fallback_credit": null,
+         "inference_geo": "global",
+         "input_tokens": 6,
+         "iterations": [
+          {
+           "cache_creation": {
+            "ephemeral_1h_input_tokens": 5343,
+            "ephemeral_5m_input_tokens": 0
+           },
+           "cache_creation_input_tokens": 5343,
+           "cache_read_input_tokens": 11309,
+           "input_tokens": 2,
+           "output_tokens": 398,
+           "type": "message"
+          }
+         ],
+         "output_tokens": 1684,
+         "output_tokens_details": {
+          "thinking_tokens": 0
+         },
+         "server_tool_use": {
+          "web_fetch_requests": 0,
+          "web_search_requests": 0
+         },
+         "service_tier": "standard",
+         "speed": "standard"
+        }
+       }
+      ],
+      "verdict": "pass",
+      "version": "2.1.311 (Claude Code)"
+     },
+     "codex": {
+      "auth": "interactive-once",
+      "callsAtServer": [
+       {
+        "kind": "aim",
+        "requestType": "object"
+       },
+       {
+        "kind": "units",
+        "requestType": "object"
+       }
+      ],
+      "exposedToModel": true,
+      "file": "native-probe-schema-per-kind-codex.json",
+      "loading": "eager",
+      "model": null,
+      "modelsObserved": [],
+      "protocolVersions": [
+       "2025-06-18"
+      ],
+      "receiptsComplete": "0/1",
+      "requestAlwaysObject": true,
+      "route": "direct",
+      "servedBytesMatchFingerprint": true,
+      "usage": [
+       {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 114560,
+        "input_tokens": 134922,
+        "output_tokens": 834,
+        "reasoning_output_tokens": 0
+       }
+      ],
+      "verdict": "pass",
+      "version": "codex-cli 0.167.0-alpha.4.1"
+     },
+     "opencode": {
+      "auth": "env-key",
+      "callsAtServer": [
+       {
+        "kind": "aim",
+        "requestType": "object"
+       },
+       {
+        "kind": "units",
+        "requestType": "object"
+       }
+      ],
+      "exposedToModel": true,
+      "file": "native-probe-schema-per-kind.json",
+      "loading": "helper-before-call",
+      "model": "openrouter/anthropic/claude-sonnet-5-5",
+      "modelsObserved": [],
+      "protocolVersions": [
+       "2025-11-25"
+      ],
+      "receiptsComplete": "1/1",
+      "requestAlwaysObject": true,
+      "route": "openrouter",
+      "servedBytesMatchFingerprint": true,
+      "usage": [
+       {
+        "cost": 0,
+        "tokens": {
+         "cache": {
+          "read": 9390,
+          "write": 16393
+         },
+         "input": 10,
+         "output": 1290,
+         "reasoning": 269
+        }
+       }
+      ],
+      "verdict": "pass",
+      "version": "opencode v2.1.4"
+     }
+    }
+   }
+  },
+  "missing": [],
+  "notPass": {},
+  "passed": true,
+  "rule": "procedure_005 native part passes only when the per-kind arm passes on Claude Code, Codex and OpenCode (analyze-work exposed to the model; aim and units calls reach the server with request as a JSON object; the served definition matches the build fingerprint) and every per-kind host connection serves the same model-facing bytes. A host that hides or stringifies the nested form is a declared limit with the description-only fallback, never a pass."
+ },
+ "outcome": "passed: the generated per-kind schemas equal a fresh regeneration byte for byte and carry the source hashes; the inputSchema top level stays a plain object in both D9 arms; the plugin listing (fake types and the real mcp SDK, auto and legacy modes) lists every tool with workspaceId injected and the schemas nested under request; for kinds aim, git and units each kind's branches and the whole call schema give the published schemas' verdicts on all 553 corpus cases (310 aim, 119 git, 124 units), the only difference being the documented units resource-pattern relaxation (19 units cases, each refused by the runtime with the resource pattern as the only schema error); no declared pattern uses a lookaround; every listed tool is under the D12 cap; the description-only arm is byte identical to the interim definition except that kind lists units. Negative controls: a top-level oneOf is flagged and breaks the plugin listing, an oversized definition fails and names the fallback, drift in a published schema changes the generated file, dropping the relaxation brings the lookahead back, and a relaxed (aim, git, units) or tightened declared keyword changes corpus verdicts. Native probe (driver --probe-schema, recording relay in each disposable installed copy): passed: in the per-kind arm and the description-only arm Claude Code, Codex and OpenCode exposed analyze-work to the model, an aim call with examples/analysis/file-edits.json and a units call reached the server with request as a JSON object, and every host connection served the same analyze-work content, equal to the build fingerprint.",
  "pending": [
-  "Model calls through Claude Code and OpenCode (conformance of the call, request received as an object): the Anthropic API rejected every call with a credit-balance error in the 2026-11-07 probe, see evidence/host-probe-nested-schema.json.",
-  "Codex host probe: no OpenAI key in the probe environment (declared limit).",
-  "D9 ablation (--arm final-no-schema versus --arm final) in the native final run; the per-kind schema is kept only if it improves first-attempt validity in at least one host."
+  "Independent (non-same-family) review of the T005 evidence; this capture is automated same-family track output, not an approval."
  ],
  "procedure": "procedure_005",
  "result": "OK",
@@ -183,6 +609,6 @@
   "measured": "bytes and approximateTokens: name, description and inputSchema as hosts forward them to the model; fullDefinitionBytes adds outputSchema and annotations (not sent to the model)"
  },
  "skipped": [],
- "specification": "SPEC-069 P3 / T005 (offline part)",
+ "specification": "SPEC-069 P3 / T005",
  "testsRun": 26
 }
