@@ -76,9 +76,32 @@ class Observer:
             raise ValueError("MCP line limit exceeded")
         self.buffers[direction] = buf
 
+    def trace(self, direction, msg):
+        """Opt-in (--keep-listing): direction and method names only, bounded; never params, results or arguments."""
+        if not self.keep_listing or len(self.receipt.setdefault("trace", [])) >= 64:
+            return
+        name = msg.get("method") if isinstance(msg, dict) else None
+        kind = name if isinstance(name, str) and len(name) <= 64 else ("response" if isinstance(msg, dict) else "invalid")
+        self.receipt["trace"].append(direction + ":" + kind)
+
+    def discover(self, result):
+        """Stateless handshake (``server/discover``, seen from Claude Code 2.1.311): key names and date-shaped versions only."""
+        date = re.compile(r"\d{4}-\d{2}-\d{2}")
+        versions = []
+        for key in ("protocolVersion", "protocolVersions", "supportedVersions", "supportedProtocolVersions"):
+            value = result.get(key)
+            for item in value if isinstance(value, list) else [value]:
+                if isinstance(item, str) and date.fullmatch(item) and item not in versions:
+                    versions.append(item)
+        self.receipt["discover"] = {"resultKeys": sorted(k for k in result if isinstance(k, str) and len(k) <= 64)[:32],
+                                    "versions": versions[:16]}
+        if len(versions) == 1 and self.receipt["protocolVersion"] is None:
+            self.receipt["protocolVersion"] = versions[0]
+
     def line(self, direction, raw):
         try:
             msg = json.loads(raw, object_pairs_hook=unique_object, parse_constant=reject_constant, parse_float=finite_float)
+            self.trace(direction, msg)
             if not isinstance(msg, dict) or msg.get("jsonrpc") != "2.0":
                 raise ValueError
             ident = msg.get("id")
@@ -127,6 +150,9 @@ class Observer:
                     raise ValueError
                 method = pending.pop(key)
                 if direction != "out":
+                    return
+                if method == "server/discover" and isinstance(msg.get("result"), dict):
+                    self.discover(msg["result"])
                     return
                 if method not in ("initialize", "tools/list", "tools/call"):
                     return

@@ -702,6 +702,7 @@ class SchemaProbeTests(unittest.TestCase):
             raw = (self.tmp / listing["rawLineFile"]).read_bytes()
             self.assertEqual(driver.sha256_bytes(raw), listing["lineSha256"])
             self.assertEqual(listing["modelFacingSha256"], expected)
+            self.assertTrue(listing["matchesFingerprint"] and listing["servedKeyOrderEqualsFingerprint"])
         cross = self.evidence["schemaProbe"]["crossHost"]
         self.assertTrue(all(group["identical"] for group in cross["byProtocolVersion"].values()))
         self.assertTrue(cross["modelFacingIdenticalAcrossVersions"])

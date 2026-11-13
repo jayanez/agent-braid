@@ -524,8 +524,14 @@ def expected_fingerprints() -> dict[str, dict[str, Any]]:
     from scripts.spec069_capture_t005_evidence import listed_sizes
 
     sizes, texts = listed_sizes()
-    return {delivery: {"sha256": arm["analyze-work"]["sha256"], "bytes": arm["analyze-work"]["bytes"], "text": texts[delivery]}
+    return {delivery: {"sha256": arm["analyze-work"]["sha256"], "bytes": arm["analyze-work"]["bytes"], "text": texts[delivery],
+                       "canonicalSha256": sha256_bytes(canonical_json(json.loads(texts[delivery])))}
             for delivery, arm in sizes.items()}
+
+
+def canonical_json(value: Any) -> bytes:
+    """Sorted keys, compact, UTF-8: the comparison form (key order differs between protocol versions, content does not)."""
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 
 
 def wrap_launcher(plugin_root: Path, receipts: Path) -> Callable[[], None]:
@@ -599,16 +605,20 @@ def probe_connections(receipts: list[dict], expected: dict[str, Any], out_dir: P
                 tools = json.loads(raw)["result"]["tools"]
                 definition = next(t for t in tools if t.get("name") == "analyze-work")
                 facing = model_facing_bytes(definition)
+                facing_canonical = sha256_bytes(canonical_json(json.loads(facing)))
                 file = out_dir / host / f"tools-list-c{index}-{number}.json"
                 file.parent.mkdir(parents=True, exist_ok=True)
                 secrets.assert_clean(file.name, raw)
                 file.write_text(raw)
                 entry.update({"rawLineFile": str(file.relative_to(out_dir.parent)), "modelFacingSha256": sha256_bytes(facing),
-                              "modelFacingBytes": len(facing), "matchesFingerprint": sha256_bytes(facing) == expected["sha256"],
+                              "modelFacingCanonicalSha256": facing_canonical, "modelFacingBytes": len(facing),
+                              "matchesFingerprint": facing_canonical == expected["canonicalSha256"],
+                              "servedKeyOrderEqualsFingerprint": sha256_bytes(facing) == expected["sha256"],
                               "toolNames": sorted(t.get("name") for t in tools if isinstance(t, dict))})
             listings.append(entry)
         connections.append({"receipt": receipt.get("file"), "complete": receipt.get("complete"), "errors": receipt.get("errors"),
-                            "protocolVersion": receipt.get("protocolVersion"), "listings": listings, "calls": receipt.get("calls") or []})
+                            "protocolVersion": receipt.get("protocolVersion"), "listings": listings, "calls": receipt.get("calls") or [],
+                            "trace": receipt.get("trace"), "discover": receipt.get("discover")})
     return connections
 
 
@@ -653,14 +663,15 @@ def cross_host_identity(hosts: dict[str, Any]) -> dict[str, Any]:
             for listing in conn["listings"]:
                 group = groups.setdefault(conn["protocolVersion"] or "unknown", {"canonical": set(), "facing": set(), "hosts": set()})
                 group["canonical"].add(listing["analyzeWorkCanonicalSha256"])
-                group["facing"].add(listing.get("modelFacingSha256") or "")
+                group["facing"].add(listing.get("modelFacingCanonicalSha256") or "")
                 group["hosts"].add(name)
     by_version = {v: {"hosts": sorted(g["hosts"]), "analyzeWorkCanonicalSha256": sorted(g["canonical"]),
-                      "modelFacingSha256": sorted(g["facing"]), "identical": len(g["canonical"]) == 1}
+                      "modelFacingCanonicalSha256": sorted(g["facing"]), "identical": len(g["canonical"]) == 1}
                   for v, g in sorted(groups.items())}
     facing = {f for g in groups.values() for f in g["facing"]}
     return {"byProtocolVersion": by_version, "modelFacingIdenticalAcrossVersions": len(facing) == 1,
-            "note": "canonical hashes compare the full definition within one protocol version; the model-facing hash (name, description, inputSchema) compares across versions"}
+            "note": ("analyzeWorkCanonicalSha256 compares the full served definition within one protocol version; "
+                     "modelFacingCanonicalSha256 (name, description, inputSchema, sorted keys) compares across versions and with the build fingerprint")}
 
 
 
@@ -999,6 +1010,7 @@ def main(argv: list[str] | None = None) -> int:
                                  "cases": 1, "prompt": prompt_set["cases"][0]["prompt"]}
         evidence["schemaProbe"] = {"delivery": delivery, "relaySha256": sha256_file(PROBE_RELAY),
                                    "expectedFingerprint": {"sha256": expected["sha256"], "bytes": expected["bytes"],
+                                                           "canonicalSha256": expected["canonicalSha256"],
                                                            "source": "scripts.spec069_capture_t005_evidence.listed_sizes() on this checkout"}}
     if args.fake_hosts:
         evidence["note"] = "PIPELINE ONLY: fake host executables prove the driver pipeline, not any host or model."
