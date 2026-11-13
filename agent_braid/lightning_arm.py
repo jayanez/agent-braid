@@ -12,6 +12,7 @@ import hashlib
 import json
 from pathlib import Path
 import shutil
+import subprocess
 import tempfile
 
 from . import lightning_runner as runner_mod
@@ -23,8 +24,24 @@ from .lightning_resources import sha256_text, split_skill
 
 ALGORITHMS = {'apo': APO, 'gepa': GEPA}
 PACKAGED_SKILL = Path('skills/analyze/SKILL.md')
+SOURCES = ('final', 'baseline')  # SPEC-069 plugin arms: A0 is ``final`` (Amendment 1); ``baseline`` = E1/E2
 DEFAULT_MODEL = 'claude-sonnet-5-5'  # the SPEC-069 T010 / SPEC-071 T012 model (scripts/spec071_real_baseline.py)
 
+
+def source_skill(source: str, target: str, root: Path) -> tuple[str, dict]:
+    """The seed skill text and its provenance for a plugin arm: ``final`` is this checkout's working tree (A0,
+    Amendment 1); ``baseline`` is the T010 guidance at the SPEC-069 BASELINE_COMMIT (exploratory arms E1/E2)."""
+    if source not in SOURCES:
+        raise runner_mod.RunnerError('Unknown source arm', 'config-enum')
+    if source == 'final':
+        commit = subprocess.run(['git', '-C', str(root), 'rev-parse', 'HEAD'], capture_output=True, text=True,
+                                check=True).stdout.strip()
+        return (root / target).read_text(encoding='utf-8'), {'arm': 'final', 'commit': commit, 'workingTree': True}
+    from scripts.spec069_native_runs import BASELINE_COMMIT
+    done = subprocess.run(['git', '-C', str(root), 'show', f'{BASELINE_COMMIT}:{target}'], capture_output=True)
+    if done.returncode:
+        raise runner_mod.RunnerError('The baseline commit has no such skill file', 'config-shape')
+    return done.stdout.decode('utf-8'), {'arm': 'baseline', 'commit': BASELINE_COMMIT, 'workingTree': False}
 
 def _cases(root: Path) -> list[str]:
     return [c['id'] for c in json.loads((root / runner_mod.PROMPT_FILES['development']).read_text())['cases']]
@@ -92,10 +109,11 @@ class CandidateEvaluator:
     """``evaluator(body, case_ids, repetitions) -> [attempt-result record]`` through a SPEC-071 sub-run per call."""
 
     def __init__(self, home, config: dict, run_id: str, *, base_plugin: Path, front: str, workdir: Path,
-                 fake_hosts: bool = False, environ: dict | None = None, models: dict[str, str] | None = None):
+                 fake_hosts: bool = False, environ: dict | None = None, models: dict[str, str] | None = None,
+                 arm: str = 'final'):
         self.home, self.config, self.run_id = home, config, run_id
         self.base, self.front, self.workdir = base_plugin, front, workdir
-        self.fake_hosts, self.environ, self.models = fake_hosts, environ, dict(models or {})
+        self.fake_hosts, self.environ, self.models, self.arm = fake_hosts, environ, dict(models or {}), arm
 
     def __call__(self, body: str, case_ids: list[str], repetitions: int) -> list[dict]:
         text = self.front + body
@@ -108,7 +126,7 @@ class CandidateEvaluator:
             status = runner_mod.run(self.home, self.config, run_id=sub, resume=store.root.exists(),
                                     prompt_set='development', fake_hosts=self.fake_hosts, plugin_dir=plugin,
                                     environ=self.environ, case_ids=case_ids, repetitions=repetitions,
-                                    skill_text=text, models=self.models)
+                                    skill_text=text, models=self.models, arm=self.arm)
         finally:
             shutil.rmtree(copy, ignore_errors=True)
         if status['stop']:
@@ -124,8 +142,12 @@ class CandidateEvaluator:
 
 def run_arm(home, config: dict, *, seed_run: str, run_id: str | None = None, resume: bool = False,
             fake_hosts: bool = False, plugin_dir: Path | None = None, environ: dict | None = None,
-            rng_seed: int = 0, models: dict[str, str] | None = None) -> dict:
+            rng_seed: int = 0, models: dict[str, str] | None = None, source: str = 'final') -> dict:
     """Run (or resume) one optimization arm; return its content-free summary.
+
+    ``source`` pins where the arm starts: ``final`` (A0, Amendment 1) or ``baseline`` (the T010 guidance, the
+    exploratory arms E1/E2 of Amendment 1 item 6). The seed skill and the base plugin of candidate sub-runs both
+    come from that SPEC-069 plugin arm, so a candidate differs from its seed only in the skill text.
 
     ``models`` pins the host model per host for every candidate sub-run and for the optimizer host; by default
     Claude Code is pinned to :data:`DEFAULT_MODEL`.
@@ -137,6 +159,8 @@ def run_arm(home, config: dict, *, seed_run: str, run_id: str | None = None, res
         raise runner_mod.RunnerError('--resume needs the run id', 'resume-needs-run-id')
     models = {'claude-code': DEFAULT_MODEL} if models is None else dict(models)
     root = runner_mod.checkout_root()
+    raw, provenance = source_skill(source, config['target']['path'], root)
+    provenance = {**provenance, 'seedSkillSha256': sha256_text(raw)}
     run_id = run_id or f'{name}-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     seeds = seed_vectors(home, seed_run, root)
     journaled = sum(e['kind'] == 'call' for e in store_mod.RunStore(home, run_id).read_journal()) if resume else 0
@@ -144,7 +168,7 @@ def run_arm(home, config: dict, *, seed_run: str, run_id: str | None = None, res
     channel = runner_mod.OptimizerChannel(config['optimizer']['host'], fake_hosts=fake_hosts,
                                           first_call=journaled + 1,
                                           model=models.get(config['optimizer']['host']), **host_options)
-    front = split_skill((root / config['target']['path']).read_text(encoding='utf-8'))[0]
+    front = split_skill(raw)[0]
     try:
         with tempfile.TemporaryDirectory(prefix='lightning-arm-') as tmp:
             work = Path(tmp)
@@ -153,14 +177,15 @@ def run_arm(home, config: dict, *, seed_run: str, run_id: str | None = None, res
             else:
                 from scripts import spec069_native_runs as driver
                 base = driver.fake_plugin(work) if fake_hosts else driver.build_candidate(
-                    'final', work, work / 'build-cache', False)[0]
+                    source, work, work / 'build-cache', False)[0]
             evaluator = CandidateEvaluator(home, config, run_id, base_plugin=base, front=front, workdir=work,
-                                           fake_hosts=fake_hosts, environ=environ, models=models)
+                                           fake_hosts=fake_hosts, environ=environ, models=models, arm=source)
             options = {'evaluator': evaluator, 'optimizer': channel, 'seed_vectors': seeds}
             algorithm = APO(**options) if name == 'apo' else GEPA(**options, rng_seed=rng_seed)
+            algorithm.seed_text, algorithm.source = raw, provenance
             summary = algorithm.run(home, config, run_id=run_id, resume=resume)
     finally:
         channel.close()
-    summary.update(seedRun=seed_run, models=models, label='pipeline-only' if fake_hosts else 'host-run',
+    summary.update(seedRun=seed_run, models=models, source=provenance, label='pipeline-only' if fake_hosts else 'host-run',
                    quotaStopped=summary['stop'] in QUOTA_STOPS)
     return summary

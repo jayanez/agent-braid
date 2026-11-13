@@ -19,6 +19,10 @@ any paid-route variable is set (``lightning_runner.parent_gate``)::
     .venv-speckit/bin/python -m scripts.spec072_development_arms            # cost summary only
     .venv-speckit/bin/python -m scripts.spec072_development_arms --execute  # runs (owner yes required)
 
+With ``--exploratory`` it runs instead the exploratory arms E1 (APO) and E2 (GEPA) of Amendment 1 item 6: the
+T010 guidance at the SPEC-069 BASELINE_COMMIT (``--source baseline``), seeded by the SPEC-071 T012 run, development
+only, descriptive, after A1 and A2. It writes a separate evidence file.
+
 After a quota stop, rerun with ``--baseline-run <id>`` to reuse a finished A0 run and ``--resume-apo``/
 ``--resume-gepa <run id>`` to continue a stopped arm.
 """
@@ -43,6 +47,8 @@ from agent_braid.lightning_hosts import Secrets, utc_now  # noqa: E402
 
 DEFAULT_HOME = Path.home() / ".local/state/agent-braid/lightning-lab"
 OUT = ROOT / "specs/072-lightning-prompt-optimization/evidence/development-arms.json"
+EXPLORATORY_OUT = ROOT / "specs/072-lightning-prompt-optimization/evidence/development-arms-exploratory.json"
+T012_SEED_RUN = "run-20261111T085405Z-a14514"  # SPEC-071 T012: T010 guidance, claude-code, 16/30
 KEYCHAIN_SERVICE = "agent-braid-claude-oauth"
 TOKEN = "CLAUDE_CODE_OAUTH_TOKEN"
 SECONDS_PER_ROLLOUT = 23  # SPEC-071 T012: 30 rollouts in about 11.5 minutes
@@ -65,9 +71,9 @@ def answers(name: str) -> dict:
     return value
 
 
-def cost_summary() -> dict:
+def cost_summary(exploratory: bool = False) -> dict:
     """Upper bounds per run and in total; nothing is launched."""
-    rows = {"baseline": {"rollouts": 10 * REPETITIONS, "optimizerCalls": 0}}
+    rows = {} if exploratory else {"baseline": {"rollouts": 10 * REPETITIONS, "optimizerCalls": 0}}
     for name in ("apo", "gepa"):
         rows[name] = arm.estimate(config.build(answers(name)), ROOT)["atMost"]
     total = {key: sum(row[key] for row in rows.values()) for key in ("rollouts", "optimizerCalls")}
@@ -101,11 +107,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--baseline-run", help="reuse a finished A0 development run instead of starting one")
     parser.add_argument("--resume-apo", metavar="RUN_ID")
     parser.add_argument("--resume-gepa", metavar="RUN_ID")
-    parser.add_argument("--output", type=Path, default=OUT)
+    parser.add_argument("--exploratory", action="store_true",
+                        help="run E1/E2 from the T010 guidance seeded by the T012 run (Amendment 1 item 6)")
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
+    if args.exploratory and args.baseline_run:
+        parser.error("--exploratory is seeded by the SPEC-071 T012 run; --baseline-run does not apply")
+    args.output = args.output or (EXPLORATORY_OUT if args.exploratory else OUT)
+    source = "baseline" if args.exploratory else "final"
 
-    summary = cost_summary()
-    print(json.dumps({"costSummary": summary, "model": args.model, "execute": args.execute}, indent=2))
+    summary = cost_summary(args.exploratory)
+    print(json.dumps({"costSummary": summary, "model": args.model, "execute": args.execute,
+                      "arms": "E1/E2 exploratory (T010 guidance)" if args.exploratory else "A0, A1, A2"}, indent=2))
     if not args.execute:
         print("dry run: nothing launched. Add --execute to run.", file=sys.stderr)
         return 0
@@ -128,11 +141,13 @@ def main(argv: list[str] | None = None) -> int:
     preview = registry.plan_setup(home, [], lightning="lab")
     registry.apply(home, preview, preview["previewDigest"])
 
-    record: dict = {"evidenceVersion": 1, "task": "SPEC-072 T009 development phase (protocol Amendment 1)",
+    task = ("SPEC-072 exploratory arms E1/E2 (Amendment 1 item 6, descriptive)" if args.exploratory
+            else "SPEC-072 T009 development phase (protocol Amendment 1)")
+    record: dict = {"evidenceVersion": 1, "task": task, "exploratory": args.exploratory, "source": source,
                     "generatedAt": utc_now(), "label": "host-run", "pinnedModel": args.model, "host": HOST,
                     "costSummary": summary, "runs": {}, "executionAuthorization": False}
     exit_code = 0
-    seed = args.baseline_run
+    seed = T012_SEED_RUN if args.exploratory else args.baseline_run
     if seed is None:
         status = runner.run(home, apply_profile(home, "baseline"), arm="final", models=models, environ=environ)
         record["runs"]["baseline"] = status
@@ -145,7 +160,7 @@ def main(argv: list[str] | None = None) -> int:
         for name, resume in (("apo", args.resume_apo), ("gepa", args.resume_gepa)):
             try:
                 result = arm.run_arm(home, apply_profile(home, name), seed_run=seed, run_id=resume,
-                                     resume=bool(resume), environ=environ, models=models)
+                                     resume=bool(resume), environ=environ, models=models, source=source)
             except runner.RunnerError as exc:
                 result = {"refusal": exc.code, "message": str(exc)}
             record["runs"][name] = result
