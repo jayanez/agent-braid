@@ -2,16 +2,16 @@
  "command": "python -m unittest tests.test_lightning_replay",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.13.11"
+  "python": "3.12.13"
  },
  "inputs": {
-  "agent_braid/lightning_algorithm.py": "3dd5dbc88bbfa7390899d0b46697d3765e89a2f5fae02cc9401cd562e23c1f17",
-  "agent_braid/lightning_apo.py": "3c499b52d4f2c5a90a0044cdf2f05c8a5b958d18300d41b7781379b63c21ae6a",
-  "agent_braid/lightning_gepa.py": "e610b1c2eff80b9638cda36f673ca81251c886310b7d3e5cfba74467c5ffb556",
+  "agent_braid/lightning_algorithm.py": "7bcc6173805aacca2811feba34b1ec46bb66f847f10665bd80162e908cffae18",
+  "agent_braid/lightning_apo.py": "3abe6c6a0f72219c5abc6bcf7bfc7d7af371a38045650875603f98c3344c38c2",
+  "agent_braid/lightning_gepa.py": "ad5ab4201acc4a53d19b438203a510515fe2fb8966bdda0d53dc6a3cf0bcf68f",
   "agent_braid/lightning_reward.py": "2443da49073dfdd28be6972b6a1f9ef1bd1dcf4583d34920fba6b0a4a5aff4e0",
   "agent_braid/lightning_store.py": "8d37b1574a469fb79ba02a7ca956b9d134c1704f50f042195639c7bbe477a348",
   "tests/lightning_fakes.py": "127558709fc6e36f46b77a93ed5107b7d5bb51284d191648ed16645ed44b1383",
-  "tests/test_lightning_replay.py": "e222aefe9c00298d39942343eaae7452fbfec3c9f1fd8b4aba01458ac4014ea2"
+  "tests/test_lightning_replay.py": "7511a132c1814caa4c0e9b79a00e77ccc50b3b3bf41d9a1a9351ef86f8cd37f9"
  },
  "limits": "Fake optimizer; synthetic vectors carried in fake attempt-result records and read back by a test scorer; the default scorer is exercised on one development case only. Real runs that produce these records through `agent-braid lightning run` are T009 work.",
  "outcome": "passed: Each APO and GEPA run journals a start entry with its algorithm and seed, every optimizer call with its input hash and output, and every evaluation as the ids and sha256 of the SPEC-071 attempt-result records it stored; the run manifest holds the configuration digest and candidate records keep parent links and optimizer call ids. Vectors are always re-scored from the stored content-free parsed attempts. Replaying a finished APO or GEPA run from its journal and stored records makes no optimizer or evaluator call, writes nothing and reproduces every candidate record (lineage, minibatch and full scores, Pareto membership) and the best candidate. Negative controls: altering one stored attempt-result record is detected by hash and changes a selection; a journal that ends early is refused (replay-incomplete); the default scorer refuses held-out records (holdout-contamination) and scores a refusal as a failed D4 attempt.",
@@ -19,5 +19,5 @@
  "result": "OK",
  "scenario": "SC-010",
  "specification": "SPEC-072 BL.2",
- "testsRun": 6
+ "testsRun": 7
 }

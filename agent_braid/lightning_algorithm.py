@@ -63,6 +63,12 @@ NO_IMPROVEMENT_ROUNDS = 2  # SPEC-072 REQ-007
 VECTOR_KEYS = frozenset({'caseId', 'host', 'd4FirstAttempt', 'schemaValid', 'reasons', 'refusal'})
 
 
+def development_cases(root: Path | None = None) -> list[dict]:
+    """The SPEC-069 development cases (the only prompt set optimization reads)."""
+    root = root or runner_mod.checkout_root()
+    return json.loads((root / runner_mod.PROMPT_FILES['development']).read_text())['cases']
+
+
 def result_sha256(result: dict) -> str:
     return hashlib.sha256(canonical_bytes(result)).hexdigest()
 
@@ -78,8 +84,9 @@ def rescore(result: dict) -> dict:
         return vector
     root = runner_mod.checkout_root()
     from scripts import spec069_scoring as scoring
-    cases = json.loads((root / runner_mod.PROMPT_FILES['development']).read_text())['cases']
-    case = next(c for c in cases if c['id'] == case_id)
+    case = next((c for c in development_cases(root) if c['id'] == case_id), None)
+    if case is None:
+        raise runner_mod.RunnerError('The attempt result names an unknown development case', 'reward-shape')
     reward = reward_mod.replay(result['rolloutId'], case, result['parsedAttempts'], canary_hits=0,
                                components=['schema', 'd4', 'canary'], scoring=scoring,
                                scoring_sha256=reward_mod.check_scoring(root))
@@ -245,19 +252,24 @@ def _same_start(journaled: dict | None, start: dict) -> bool:
     return all(stored[k] == given[k] for k in ('arm', 'seedSkillSha256', 'workingTree')) and \
         (stored['workingTree'] or stored['commit'] == given['commit'])
 
+
+def _decision(value: dict) -> dict:
+    """A candidate record without its timestamp: the part a resume or replay must reproduce."""
+    return {k: v for k, v in value.items() if k != 'createdAt'}
+
+
 class Algorithm:
     """Run over a prompt set with the run store and the SPEC-071 runner; return a content-free summary."""
     name = ''
+    rng_seed: int | None = None
+    seed_text: str | None = None  # a pinned seed skill (T009 exploratory arms: the T010 guidance)
+    source: dict | None = None  # where the pinned seed came from; journaled with the start entry
+    replaying = False
 
     def skill_text(self, config: dict) -> str:
         if self.seed_text is not None:
             return self.seed_text
         return (runner_mod.checkout_root() / config['target']['path']).read_text(encoding='utf-8')
-
-    rng_seed: int | None = None
-    seed_text: str | None = None  # a pinned seed skill (T009 exploratory arms: the T010 guidance)
-    source: dict | None = None  # where the pinned seed came from; journaled with the start entry
-    replaying = False
 
     def start(self, home, config: dict, run_id: str, seed_vectors: list[dict], *, resume: bool = False):
         """Create (or reopen, on resume or replay) the run store with the seed and the algorithm's seed recorded;
@@ -296,8 +308,7 @@ class Algorithm:
             self._derived[record.sha256] = value
             return
         known = self._known.get(record.sha256)
-        if known is not None and {k: v for k, v in known.items() if k != 'createdAt'} == \
-                {k: v for k, v in value.items() if k != 'createdAt'}:
+        if known is not None and _decision(known) == _decision(value):
             return
         store.append('candidate', record)
         self._known[record.sha256] = value
@@ -329,10 +340,6 @@ ALGORITHMS: dict[str, type[Algorithm]] = {'baseline': Baseline}
 def candidates(home, run_id: str) -> dict[str, Candidate]:
     """Latest candidate record per sha256 in a run, with lineage checked."""
     return latest(store_mod.RunStore(home, run_id).read('candidate'))
-
-
-def _decision(value: dict) -> dict:
-    return {k: v for k, v in value.items() if k != 'createdAt'}
 
 
 def replay(home, run_id: str, algorithm: Algorithm, config: dict) -> dict:

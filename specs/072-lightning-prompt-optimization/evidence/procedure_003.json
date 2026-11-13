@@ -2,10 +2,10 @@
  "command": "python -m unittest tests.test_lightning_algorithm",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.13.11"
+  "python": "3.12.13"
  },
  "inputs": {
-  "agent_braid/lightning_algorithm.py": "3dd5dbc88bbfa7390899d0b46697d3765e89a2f5fae02cc9401cd562e23c1f17",
+  "agent_braid/lightning_algorithm.py": "7bcc6173805aacca2811feba34b1ec46bb66f847f10665bd80162e908cffae18",
   "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",
   "agent_braid/lightning_runner.py": "97cfaecefbc01d60968ace984efc5d503a21323b7a1cfce538a944e7b86a1cb1",
   "agent_braid/lightning_store.py": "8d37b1574a469fb79ba02a7ca956b9d134c1704f50f042195639c7bbe477a348",

@@ -2,11 +2,11 @@
  "command": "python -m unittest tests.test_lightning_apo",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.13.11"
+  "python": "3.12.13"
  },
  "inputs": {
-  "agent_braid/lightning_algorithm.py": "3dd5dbc88bbfa7390899d0b46697d3765e89a2f5fae02cc9401cd562e23c1f17",
-  "agent_braid/lightning_apo.py": "3c499b52d4f2c5a90a0044cdf2f05c8a5b958d18300d41b7781379b63c21ae6a",
+  "agent_braid/lightning_algorithm.py": "7bcc6173805aacca2811feba34b1ec46bb66f847f10665bd80162e908cffae18",
+  "agent_braid/lightning_apo.py": "3abe6c6a0f72219c5abc6bcf7bfc7d7af371a38045650875603f98c3344c38c2",
   "agent_braid/lightning_prompts/apo_apply_edit.md": "d993094869cbb040c26b78b8969012fdbb16c52959b7c39be8725729d031ce58",
   "agent_braid/lightning_prompts/apo_text_gradient.md": "5cde3e3ba09249dfd4109120ced5304ab83b9e80f3c9dbf280dda880120e78af",
   "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",
