@@ -401,6 +401,9 @@ shared object store fails the portable-root check).
   `contracts/native-profile.md`. Verification: the unit tests above; procedure_005 to procedure_010 on the new
   bundle. Evidence: the new bundle and its SHA-256, and the issuance or not-qualified record.
   `executionAuthorization` stays false.
+  Obtained (unit level only, 2026-11-13): `evidence/t013.json` (targeted tests, 767 OK; input hashes of the touched
+  modules). `evidence/t012.json` stays frozen: its inputs (the qualified commit's module hashes) moved, so the
+  scenarios are bound to `t013.json` instead, as T012 did for the older task records. Nothing native ran.
 
 ## Unblocking map
 

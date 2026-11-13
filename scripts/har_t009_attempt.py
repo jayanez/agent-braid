@@ -7,8 +7,8 @@ account's own session, after the sudo setup of ``quickstart.md`` and after the o
 verified that setup with ``--dry-run``. Own session (SPEC-065 amendment 2026-11-13) means the audit session
 was created for the dedicated account: its graphical login (launchd manager ``Aqua``) or a non-GUI session that
 root starts with ``launchctl asuser`` (``Background``; ``scripts/har_t009_launch.sh``). su or sudo from another
-account's session is refused (``session-own``), because they keep that session's Mach bootstrap namespace. ``--dry-run`` performs only the pre-flight checks: it starts no
-sandbox, no ``claude`` and no network connection, and prints a JSON verdict. Without ``--dry-run`` it
+account's session is refused (``session-own``), because they keep that session's Mach bootstrap namespace.
+``--dry-run`` performs only the pre-flight checks: it starts no sandbox, no ``claude`` and no network connection, and prints a JSON verdict. Without ``--dry-run`` it
 builds the T005 backend, the T006 transport factory and the T007 runner (``make_qualification_runner``),
 runs the whole catalog (at most three small Haiku sessions, NC-10) and writes the evidence bundle.
 
@@ -398,8 +398,7 @@ def preflight(args: argparse.Namespace, system: System) -> dict:
     # SPEC-065 amendment 2026-11-13: the account's own audit session, of a supported kind (the backend's rule)
     session = system.session()
     session_reason = _mac.session_refusal(session, uid)
-    observed["session"] = {"kind": session.kind if isinstance(session.kind, str) and
-                           _mac._MANAGER_NAME.fullmatch(session.kind) else None}
+    observed["session"] = {"kind": session.kind}  # a closed word or None (``_mac._manager_name``); no ids
     add(_check("session-own", session_reason is None, _SESSION_WHY.get(session_reason, "") if session_reason
                else f"the account's own {session.kind} session"))
     try:

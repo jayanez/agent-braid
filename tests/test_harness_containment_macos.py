@@ -673,7 +673,9 @@ class RefusalTests(unittest.TestCase):
                 self.assertNotIn("environmentSha256", backend.run_evidence[-1])
         for kind in ("LoginWindow", "StandardIO", "System", "", None):
             with self.subTest(kind=kind):
-                self.refuse("session-kind-unsupported", session=mac.SessionFacts(auid=uid, asid=100_104, kind=kind))
+                backend = self.refuse("session-kind-unsupported",
+                                      session=mac.SessionFacts(auid=uid, asid=100_104, kind=kind))
+                self.assertEqual(backend.run_evidence[-1]["session"], {"kind": kind})  # the kind, never the ids
 
     def test_the_session_guard_applies_to_every_entry(self):
         session = mac.SessionFacts(auid=os.getuid() + 1, asid=100_014, kind="Aqua")

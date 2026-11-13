@@ -21,7 +21,8 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
   NC-5) inside that account's own audit session (``session_refusal``: the audit user id equals the
   account's uid and the launchd manager is ``Aqua`` or ``Background``; su or sudo from another session
   keeps that session's Mach bootstrap namespace, its pasteboard and AppleEvents), an environment built
-  from scratch, and a refusal when an ``ENV_DENY`` variable is present in the parent. Keychain services are not reachable (no ``mach-lookup``). The ``launch``
+  from scratch, and a refusal when an ``ENV_DENY`` variable is present in the parent. Keychain
+  services are not reachable (no ``mach-lookup``). The ``launch``
   entry authenticates with the long-lived token of ``claude setup-token``, read by the supervisor from
   ``TOKEN_FILE`` in the dedicated user's ``config_dir`` (``read_token``: strict checks) and set as
   ``TOKEN_VARIABLE`` in the child environment only (NC-5 as amended 2026-11-04); the fixture entries never
@@ -1358,9 +1359,10 @@ class MacOSContainment(ContainmentBackend):
         uid = account.pw_uid
         _require(uid != 0 and os.getuid() == uid and os.geteuid() == uid, "dedicated-user-required")
         session = session_facts()
+        evidence["session"] = {"kind": session.kind}  # a closed word or None; ids are not recorded
         refusal = session_refusal(session, uid)
-        _require(refusal is None, refusal or "session-not-own")
-        evidence["session"] = {"kind": session.kind}
+        if refusal is not None:
+            raise LabError(refusal)
         try:
             operator_uid = pwd.getpwnam(self.operator_account).pw_uid
         except KeyError:

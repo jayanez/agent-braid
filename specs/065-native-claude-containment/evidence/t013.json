@@ -1,0 +1,28 @@
+{
+  "task": "SPEC-065/T013",
+  "recordedAt": "2026-11-13",
+  "baseCommit": "46673a1b",
+  "scope": "Unit-level evidence of the founder amendment of NC-2 (evidence/founder-decisions-20261113.json): session-ownership guard in the backend and the T009 driver, session kind in the environment hash, not-applicable rule for CRED-07 pasteboard-mach/pasteboard-exec, FS-07 mach-mdwrite and PROC-06 mach-tccd, root-owned headless launcher. Nothing native ran (no claude, no sandbox-exec, no launchctl asuser, no sudo); the only host reading was one `launchctl managername` and getaudit_addr in the developer's own session to confirm the ctypes layout (auid 502, asid 100014, Aqua).",
+  "checks": {
+    "targeted-tests": "python3.12 -m unittest tests.test_harness_manifest tests.test_harness_quota tests.test_harness_transport_claude tests.test_harness_containment_macos tests.test_harness_qualification_probes tests.test_har_t009_attempt tests.test_har_t009_launch tests.test_har_t009_setup tests.test_harness_hosts_native tests.test_har_t008_unit tests.test_harness_host_claude tests.test_harness_lab -> Ran 767 tests, OK (skipped=3)",
+    "hosts-native-drift": "tests.test_harness_hosts_native: the committed environment of the qualified bundle t009-20261106a (catalog 5ecbd7eb...) no longer matches the moved catalog; qualified_policy refuses it with environment-drift (fail closed) until T013's new bundle is issued",
+    "frozen-record-not-bound": "evidence/t012.json records the module hashes of the qualified commit 320b00c4; this change moves two of them, so t012.json stays frozen and unedited and SC-001 to SC-010 are bound to this record instead (the T012 precedent)"
+  },
+  "hashesMoved": {
+    "probeCatalog": "the catalog binds harness_qualification_probes.py, so its hash moves",
+    "environment": "the environment hash binds the backend source and now the session kind (Aqua or Background)",
+    "issuedQualification": "the records issued on 2026-11-06 (T010) no longer verify against the new environment hash; T013 needs a new attempt and issuance"
+  },
+  "inputs": {
+    "agent_braid/harness_manifest.py": "6624d79de56e702062ba02cefb5cab3d6ec7a58b310c3520d7bdbe024df7fe61",
+    "agent_braid/harness_quota.py": "c2565c057b9beeadc855d5bac850febc96e7f949a48707e5714c53440f2774e8",
+    "agent_braid/harness_containment_macos.py": "4484c2443fd111cb71536f606a966f4387506adb7c798df36d2f83c5881f757c",
+    "agent_braid/harness_transport_claude.py": "3ef09f0e3cc55f28ae677e88ffa5f36bc1080184d0d55b22a113add24da0258a",
+    "agent_braid/harness_qualification_probes.py": "d00320298aa25b0c122b46dbe5396b842392a2fcfa513754d698266aff91825d",
+    "agent_braid/harness_host_claude.py": "e409512d7b4d20bc5c38a28a2ee1cc31344832718f76ee2f067d25d610d1b9e1",
+    "scripts/har_t009_attempt.py": "ed96373acac53606bdae39d7c5fa03248abcf1b84777814e29d325b09afb004b",
+    "scripts/har_t009_launch.sh": "17cf64dac06e7b46e3bb6dc271b723bd3e018a5be9dca183eb01973bf3f37f5d"
+  },
+  "executionAuthorization": false,
+  "limits": "Unit tests with doubles and a static review only. They show the refusals and the judge rules as coded, not that the Background session passes the catalog: that is the next attempt's bundle. No qualification is issued or implied."
+}

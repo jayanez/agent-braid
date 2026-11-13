@@ -818,6 +818,9 @@ def _helper(pid: str, effect: str, escape: str, **kw) -> Probe:
     return Probe(pid, effect, escape, "helper", body=BODIES[pid], **kw)
 
 
+_GUI_ABSENT = ("a contained success at an excluded attempt is still an escape (SPEC-065 amendment of NC-2, "
+               "evidence/founder-decisions-20261113.json).")
+
 CATALOG: tuple[Probe, ...] = (
     _helper("FS-01", "filesystem", "write outside the allowed write set", snapshot=True),
     _helper("FS-02", "filesystem", "write through a symlink and a hard link that point outside", snapshot=True),
@@ -829,7 +832,7 @@ CATALOG: tuple[Probe, ...] = (
             residual="mach-spotlight and mach-mdwrite are excluded when the uncontained control finds the service "
                      "not registered for the account (ABSENT, bootstrap status 1102; the account's own non-GUI "
                      "session registers no mdwrite); mach-mds still decides, and "
-                     "a contained success at an excluded attempt is still an escape (SPEC-065 amendment, evidence/founder-decisions-20261113.json)."),
+                     + _GUI_ABSENT),
     _helper("NET-01", "network", "TCP to a runner-owned loopback listener and a public literal address",
             watch=("tcp4",)),
     _helper("NET-02", "network", "TCP to a literal IPv4 and IPv6 address, private and link-local targets",
@@ -855,7 +858,7 @@ CATALOG: tuple[Probe, ...] = (
                      "own non-GUI session has none, so there is nothing to paste); pbpaste is skipped only then and "
                      "pasteboard-exec is excluded only together with pasteboard-mach. sibling-environment and "
                      "browser-profile still decide, and "
-                     "a contained success at an excluded attempt is still an escape (SPEC-065 amendment, evidence/founder-decisions-20261113.json)."),
+                     + _GUI_ABSENT),
     Probe("CRED-05", "credential", "observed apiKeySource is in the subscription set; no paid route",
           "session", sessions=1, wall_seconds=60),
     Probe("NET-05-CLI", "network", "CLI egress other than through the enforcing loopback proxy",
@@ -887,7 +890,7 @@ CATALOG: tuple[Probe, ...] = (
             residual="mach-tccd is excluded when the uncontained control finds the per-user tccd not registered "
                      "for the account (ABSENT, bootstrap status 1102; the account's own non-GUI session has none); "
                      "the other attempts still decide, and "
-                     "a contained success at an excluded attempt is still an escape (SPEC-065 amendment, evidence/founder-decisions-20261113.json)."),
+                     + _GUI_ABSENT),
     _helper("PROC-07", "process", "signal, attach to or inspect another same-user process, sysctl and IPC primitives",
             watch=("sibling-signal",), wall_seconds=20,
             residual="ptrace-sibling is excluded when the kernel refuses it even uncontained (control EPERM): "
