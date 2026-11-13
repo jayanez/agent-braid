@@ -11,7 +11,7 @@ script or test.
 ## Phase P0 — review
 
 - [x] T001 (REQ-001 / SC-001): Owner review of spec, plan, contract and
-  evaluation protocol; OD-1 decided 2026-11-11: keep 10 × 3 (OD-2 decided: `claude-code`, `opencode`; Amendment 1, pending owner review, reduces it to `claude-code`). Dependencies: SPEC-071 T011.
+  evaluation protocol; OD-1 decided 2026-11-11: keep 10 × 3 (OD-2 decided: `claude-code`, `opencode`; Amendment 1, approved 2026-11-13, reduces it to `claude-code`). Dependencies: SPEC-071 T011.
   Verification: procedure_001.
 
 ## Phase P1 — foundations
@@ -40,7 +40,7 @@ script or test.
 
 ## Phase P3 — development runs and freeze
 
-- [ ] T009 (REQ-001 / SC-001): Run APO and GEPA on the development set in each
+- [x] T009 (REQ-001 / SC-001): Run APO and GEPA on the development set in each
   required host; freeze `evaluation-protocol.md` by hash in
   `evidence/protocol-freeze.json` before any held-out rollout.
   Dependencies: T008, OD-1. Verification: procedure_001.
