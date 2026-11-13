@@ -32,7 +32,7 @@
   "pyproject.toml": "d381baf52f4d354717080943bb65b7416bcc7a0e418d465a86de09b65b6466b3",
   "scripts/spec072_capture_evidence.py": "ec8c50510ff61bbf8bedd0f0a91236fbf830223091fde6cc408573d073b3ac99",
   "scripts/spec072_development_arms.py": "e1e1a1505829a309c1e6dc0ae3f0f0b4a6db19ec08dc33891d6388cd2974677c",
-  "scripts/spec072_heldout.py": "0076a0013c1ba48d3ecd75323e93ff47784839926d7f89978dbf3ca6ee8d7512",
+  "scripts/spec072_heldout.py": "1ba84e5efaf246112fd526b05ab57981ca1d6c9f1c5e4f41a294168d6a5f82ad",
   "scripts/spec072_holdout_fingerprints.py": "bde1e92812bba0f01448047313e90100a87b20f2e9899e5778a1c8cde6be6222",
   "tests/test_lightning_cli.py": "0702b49f21ffec41cb7fc5405e3cee04d8155bac7e90f70c04d2266148f3deac"
  },
