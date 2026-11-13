@@ -5,8 +5,10 @@ A record states the command, the outcome, the hashes of the files the run depend
 (``inputs``; the Spec Kit validator rejects the record when any of them changes) and the
 limits. The script also binds each record into ``assurance.json`` as obtained evidence of
 its scenario. It is local evidence; the CI ``validate`` aggregate on the pull request head
-is separate. Procedure 001 (owner review and protocol freeze) and 008 (held-out runs) are not test procedures;
-later procedures are added as their tasks land.
+is separate. Procedure 001 (owner review and protocol freeze) is not a test procedure. Procedure 008 (held-out
+runs) is captured as a PLANNED pipeline check: its record is written but not bound into ``assurance.json``, so SC-008
+stays unobtained until the owner-approved held-out run fills in the real outcome. Later procedures are added as their
+tasks land.
 
     python -m scripts.spec072_capture_evidence [procedure_NNN ...]
 
@@ -90,6 +92,20 @@ PROCEDURES = {
         "outcome_note": "With budgets set low in fake runs each algorithm stops at the first applicable rule and records it in the run journal: unit-cap (APO at configuration defaults), optimizer-cap, no-improvement after 2 consecutive flat rounds, and a weekly-stop quota stop that carries the explicit `agent-braid lightning run --resume <run-id>` command; a refused optimizer input (holdout-contamination) stops the run with the refusal recorded and no call made; APO never runs more than 3 rounds; no run exceeds its rollout or optimizer-call cap (negative control). Resuming a quota-stopped APO or GEPA run with the same seed replays the journaled optimizer outputs and evaluations in order and reaches the same rounds, best candidate, rollouts and calls as an uninterrupted run without repeating any optimizer call; resuming with another seed or configuration is refused (resume-diverged). The journal is private and refuses unknown entry shapes.",
         "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; wiring the algorithms into `agent-braid lightning run` with real candidate evaluation is T009 work.",
     },
+    'procedure_008': {
+        "scenario": 'SC-008',
+        "planned": True,  # pipeline check only: never bound as obtained evidence of SC-008
+        "modules": ["tests.test_spec072_heldout"],
+        "inputs": ["scripts/spec072_heldout.py", "scripts/spec072_development_arms.py",
+                   "agent_braid/lightning_runner.py", "agent_braid/lightning_evaluation.py",
+                   "agent_braid/lightning_store.py", "scripts/spec069_scoring.py",
+                   "specs/072-lightning-prompt-optimization/evaluation-protocol.md",
+                   "specs/072-lightning-prompt-optimization/evidence/protocol-freeze.json",
+                   "specs/072-lightning-prompt-optimization/evidence/development-arms.json",
+                   "tests/test_spec072_heldout.py"],
+        "outcome_note": "PLANNED, not obtained: the T010 command is ready and no held-out rollout has run. Pipeline check on fake hosts: the command checks the protocol freeze first (an edited protocol is refused before arms are resolved or anything launches) and that the development evidence is the one the freeze binds; it resolves A0 (the final guidance, required to be the seed both arms optimized), A1 and A2 (best APO and GEPA bodies read by sha256 from the laboratory run stores and verified; missing or tampered text refused; E1/E2 excluded); the dry run prints 10 cases x 3 repetitions = 30 rollouts per arm, 90 in total, about 35 minutes, with each arm's candidate hash and the freeze result. Each arm runs once with its run id recorded before it starts; a stopped arm resumes and a complete arm is never run again; a run that evaluated another candidate is refused. The analysis gives per arm the summarize D4 verdict, Wilson intervals, schema validity and canary hits, paired per-prompt counts of A1 and A2 against A0 with an exact two-sided sign test, and H1 by the protocol rule (truth table incl. not-assessable and canary invalidation); the SPEC-049 pair (A = A0, C = A2) agrees with it; the evidence is checked free of credentials, attempt payloads and skill text.",
+        "limits": "Fake hosts and synthetic vectors only; no model, host or quota used and no held-out result read. The real outcome (SC-008) is recorded only after the owner-approved held-out run; T010 stays open.",
+    },
     'procedure_009': {
         "scenario": 'SC-009',
         "modules": ["tests.test_lightning_cli.BL2BoundaryTests"],
@@ -99,7 +115,7 @@ PROCEDURES = {
                                                                      "scripts/spec072_*.py", "agent_braid/*mcp*.py",
                                                                      "integrations/**/*.json")
                            for p in ROOT.glob(pattern))],
-        "outcome_note": "A complete fake optimization run (baseline seed run, then a GEPA arm on fake hosts) leaves the repository analyze skill file byte- and mtime-identical and reports the best candidate as a 64-hex bestSha256 with no skill text in the summary. Every agent_braid/lightning_*.py module and scripts/spec072_*.py script imports only the standard library, other lightning modules and an explicit allowlist (plugin_registry, harness_host_claude, the T013 format-only harness_evaluation and system_one, and the SPEC-069 scoring, native-run, fixture and plugin-build scripts); no lightning module names decide, begin, execute, recover, harness_promotion, import_module, __import__ or any grant identifier; importing all of them in a fresh interpreter loads no promotion, lifecycle, runtime-policy, git-execution, scheduler or MCP module; no MCP server module or integration JSON manifest mentions lightning; pyproject has no runtime dependency and no lightning extra. Negative control: adding `from .harness_promotion import decide` to a lightning module fails the allowlist, name and import-closure checks.",
+        "outcome_note": "A complete fake optimization run (baseline seed run, then a GEPA arm on fake hosts) leaves the repository analyze skill file byte- and mtime-identical and reports the best candidate as a 64-hex bestSha256 with no skill text in the summary. Every agent_braid/lightning_*.py module and scripts/spec072_*.py script imports only the standard library, other lightning modules and an explicit allowlist (plugin_registry, harness_host_claude, the T013 format-only harness_evaluation and system_one, the SPEC-069 scoring, native-run, fixture and plugin-build scripts, and the BL.2 development-arms script the T010 held-out script reuses); no lightning module names decide, begin, execute, recover, harness_promotion, import_module, __import__ or any grant identifier; importing all of them in a fresh interpreter loads no promotion, lifecycle, runtime-policy, git-execution, scheduler or MCP module; no MCP server module or integration JSON manifest mentions lightning; pyproject has no runtime dependency and no lightning extra. Negative control: adding `from .harness_promotion import decide` to a lightning module fails the allowlist, name and import-closure checks.",
         "limits": "Static and import-closure checks cover the modules present at this commit; a fake-host run cannot show what a real host process writes outside the sandbox (SPEC-071 OS sandbox evidence covers that). Unchanged skill bytes are asserted for the repository copy only.",
     },
     'procedure_010': {
@@ -158,14 +174,19 @@ def main(argv: list[str] | None = None) -> int:
             "environment": {"python": platform.python_version(), "platform": platform.platform(terse=True)},
             "inputs": {path: sha(path) for path in sorted(set(spec["inputs"]))},
         }
+        if spec.get("planned"):
+            record["status"] = "planned"
+            record["outcome"] = ("planned pipeline check passed: " if passed else "FAILED: ") + spec["outcome_note"]
         path = EVIDENCE / f"{name}.json"
         path.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n")
+        print(f"{name}: {result['result']} ({result['testsRun']} tests){' [planned]' if spec.get('planned') else ''}")
+        status |= 0 if passed else 1
+        if spec.get("planned"):
+            continue  # not obtained evidence: the scenario stays unbound until the real run
         relative = path.relative_to(ROOT).as_posix()
         scenarios[spec["scenario"]]["obtained_evidence"] = [{
             "command": result["command"], "limits": spec["limits"], "outcome": record["outcome"],
             "path": relative, "sha256": sha(relative)}]
-        print(f"{name}: {result['result']} ({result['testsRun']} tests)")
-        status |= 0 if passed else 1
     assurance_path.write_text(json.dumps(assurance, indent=2, sort_keys=True) + "\n")
     return status
 
