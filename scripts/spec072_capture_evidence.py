@@ -88,6 +88,18 @@ PROCEDURES = {
         "outcome_note": "With budgets set low in fake runs each algorithm stops at the first applicable rule and records it in the run journal: unit-cap (APO at configuration defaults), optimizer-cap, no-improvement after 2 consecutive flat rounds, and a weekly-stop quota stop that carries the explicit `agent-braid lightning run --resume <run-id>` command; a refused optimizer input (holdout-contamination) stops the run with the refusal recorded and no call made; APO never runs more than 3 rounds; no run exceeds its rollout or optimizer-call cap (negative control). Resuming a quota-stopped APO or GEPA run with the same seed replays the journaled optimizer outputs and evaluations in order and reaches the same rounds, best candidate, rollouts and calls as an uninterrupted run without repeating any optimizer call; resuming with another seed or configuration is refused (resume-diverged). The journal is private and refuses unknown entry shapes.",
         "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; wiring the algorithms into `agent-braid lightning run` with real candidate evaluation is T009 work.",
     },
+    'procedure_009': {
+        "scenario": 'SC-009',
+        "modules": ["tests.test_lightning_cli.BL2BoundaryTests"],
+        "inputs": ["tests/test_lightning_cli.py", "pyproject.toml",
+                   "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md",
+                   "agent_braid/lightning_algorithm.py", "agent_braid/lightning_apo.py", "agent_braid/lightning_arm.py",
+                   "agent_braid/lightning_cli.py", "agent_braid/lightning_gepa.py", "agent_braid/lightning_resources.py",
+                   "agent_braid/lightning_reward.py", "agent_braid/lightning_runner.py", "agent_braid/plugin_mcp.py",
+                   "agent_braid/tooling_mcp.py"],
+        "outcome_note": "A complete fake optimization run (baseline seed run, then a GEPA arm on fake hosts) leaves the repository analyze skill file byte- and mtime-identical and reports the best candidate as a 64-hex bestSha256 with no skill text in the summary. Every agent_braid/lightning_*.py module and scripts/spec072_*.py script imports only the standard library, other lightning modules and an explicit allowlist (plugin_registry, harness_host_claude, the T013 format-only harness_evaluation and system_one, and the SPEC-069 scoring, native-run, fixture and plugin-build scripts); no lightning module names decide, begin, execute, recover, harness_promotion or any grant identifier; importing all of them in a fresh interpreter loads no promotion, lifecycle, runtime-policy or MCP module; no MCP server module or integration JSON manifest mentions lightning; pyproject has no runtime dependency and no lightning extra. Negative control: adding `from .harness_promotion import decide` to a lightning module fails the allowlist, name and import-closure checks.",
+        "limits": "Static and import-closure checks cover the modules present at this commit; a fake-host run cannot show what a real host process writes outside the sandbox (SPEC-071 OS sandbox evidence covers that). Unchanged skill bytes are asserted for the repository copy only.",
+    },
     'procedure_010': {
         "scenario": 'SC-010',
         "modules": ["tests.test_lightning_replay"],
