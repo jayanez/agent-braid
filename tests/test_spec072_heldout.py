@@ -424,3 +424,22 @@ class BuildCleanlinessTests(unittest.TestCase):
             with self.assertRaises(heldout.HeldoutError) as caught:
                 heldout.build_allow_dirty(heldout.ROOT)
             self.assertEqual(caught.exception.code, 'dirty-checkout')
+
+
+class CandidatePathTests(unittest.TestCase):
+    def test_a_candidate_arm_does_not_copy_onto_the_base_build_directory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp)
+            base = work / 'candidate' / 'plugins' / 'agent-braid'  # where build_candidate writes
+            (base / 'skills' / 'analyze').mkdir(parents=True)
+            (base / 'skills' / 'analyze' / 'SKILL.md').write_text('old')
+            fake = mock.MagicMock()
+            fake.build_candidate.return_value = (base, {})
+            with mock.patch.dict('sys.modules', {'scripts.spec069_native_runs': fake}), \
+                    mock.patch('scripts.spec069_native_runs', fake, create=True), \
+                    mock.patch.object(heldout, 'build_allow_dirty', return_value=False):
+                text = '---\nname: agent-braid-analyze\ndescription: x\n---\nbody\n'
+                plugin = heldout.build_plugin('A1', text, work)
+            self.assertNotEqual(plugin, base)
+            self.assertIn('name: analyze', (plugin / 'skills' / 'analyze' / 'SKILL.md').read_text())
+            self.assertEqual((base / 'skills' / 'analyze' / 'SKILL.md').read_text(), 'old')
