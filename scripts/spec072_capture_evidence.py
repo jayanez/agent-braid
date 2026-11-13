@@ -5,10 +5,8 @@ A record states the command, the outcome, the hashes of the files the run depend
 (``inputs``; the Spec Kit validator rejects the record when any of them changes) and the
 limits. The script also binds each record into ``assurance.json`` as obtained evidence of
 its scenario. It is local evidence; the CI ``validate`` aggregate on the pull request head
-is separate. Procedure 001 (owner review and protocol freeze) is not a test procedure. Procedure 008 (held-out
-runs) is captured as a PLANNED pipeline check: its record is written but not bound into ``assurance.json``, so SC-008
-stays unobtained until the owner-approved held-out run fills in the real outcome. Later procedures are added as their
-tasks land.
+is separate. Procedure 001 binds the owner review and protocol freeze; procedure 008 binds the owner-approved T010
+held-out run (evidence/heldout-arms.json) together with its pipeline tests. Converged at T012 (2026-11-13).
 
     python -m scripts.spec072_capture_evidence [procedure_NNN ...]
 
@@ -45,7 +43,7 @@ PROCEDURES = {
         "inputs": ["agent_braid/lightning_resources.py", "agent_braid/lightning_store.py", "agent_braid/lightning_schema.py",
                    "tests/test_lightning_resources.py", "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md"],
         "outcome_note": "The seed is the analyze skill body below its fixed front matter; seed and child records round-trip canonically byte for byte; the child names the seed as parent; text whose hash differs, unknown keys, foreign origins, refused contamination checks and broken lineage are refused with codes; the store keeps text beside the record privately and refuses a record without matching text; later records may change only scores and Pareto membership.",
-        "limits": "Record and store only; the seed check against the run's recorded commit is applied when runs record a commit (T003).",
+        "limits": "Record and store only. Runs journal their source commit and seed skill; a resume at another commit is refused and replay rebuilds the seed from the journaled source (review fixes, #1348); this procedure does not test that.",
     },
     'procedure_003': {
         "scenario": 'SC-003',
@@ -63,7 +61,7 @@ PROCEDURES = {
                    "agent_braid/lightning_resources.py", "agent_braid/lightning_prompts/apo_text_gradient.md",
                    "agent_braid/lightning_prompts/apo_apply_edit.md", "tests/test_lightning_apo.py", "tests/lightning_fakes.py"],
         "outcome_note": "With the preregistered parameters (beam 2, branch 2, 2 rounds, minibatch 5, 2 hosts, 3 repetitions) APO runs 1 then 2 parents with 2 then 4 children, 9 optimizer calls and 120 rollouts (20 + 40 search, 60 full evaluation of the best), as in the feasibility table; every APO candidate records its parent, round, two call ids, both passed contamination checks and the hash of the critique and edit templates; configuration defaults stop at the 120-rollout cap (unit-cap), configured rounds above 3 are capped at 3, the optimizer-call cap stops the run, and unusable edits are failed calls without candidates. Negative controls: an optimizer outside the runner channel is refused (optimizer-bypass), a non-fake channel is refused until the sandboxed host path exists (isolation-failed), and inputs with a held-out case id or the rollout canary are refused before any call (holdout-contamination).",
-        "limits": "Fake optimizer and synthetic body-dependent rewards; no model contacted. The full pre-call scan and the sandboxed optimizer host are evidenced by procedure_006. Evaluating a real candidate body through host rollouts is T009 work.",
+        "limits": "Fake optimizer and synthetic body-dependent rewards; no model contacted. The full pre-call scan and the sandboxed optimizer host are evidenced by procedure_006. Real candidate bodies were evaluated through Claude Code rollouts in T009 (evidence/development-arms.json, bound by procedure_001), not by this procedure.",
     },
     'procedure_005': {
         "scenario": 'SC-005',
@@ -90,7 +88,7 @@ PROCEDURES = {
         "inputs": ["agent_braid/lightning_algorithm.py", "agent_braid/lightning_apo.py", "agent_braid/lightning_gepa.py",
                    "agent_braid/lightning_store.py", "agent_braid/lightning_runner.py", "tests/test_lightning_stopping.py", "tests/lightning_fakes.py"],
         "outcome_note": "With budgets set low in fake runs each algorithm stops at the first applicable rule and records it in the run journal: unit-cap (APO at configuration defaults), optimizer-cap, no-improvement after 2 consecutive flat rounds, and a weekly-stop quota stop that carries the explicit `agent-braid lightning run --resume <run-id>` command; a refused optimizer input (holdout-contamination) stops the run with the refusal recorded and no call made; APO never runs more than 3 rounds; no run exceeds its rollout or optimizer-call cap (negative control). Resuming a quota-stopped APO or GEPA run with the same seed replays the journaled optimizer outputs and evaluations in order and reaches the same rounds, best candidate, rollouts and calls as an uninterrupted run without repeating any optimizer call; resuming with another seed or configuration is refused (resume-diverged). The journal is private and refuses unknown entry shapes.",
-        "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; wiring the algorithms into `agent-braid lightning run` with real candidate evaluation is T009 work.",
+        "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; the real T009 development runs and the T010 held-out run ended without a stop, so no stop rule other than the round cap was observed on a real host.",
     },
     'procedure_008': {
         "scenario": 'SC-008',
@@ -130,15 +128,18 @@ PROCEDURES = {
                    "agent_braid/lightning_store.py", "agent_braid/lightning_reward.py", "tests/test_lightning_replay.py",
                    "tests/lightning_fakes.py"],
         "outcome_note": "Each APO and GEPA run journals a start entry with its algorithm and seed, every optimizer call with its input hash and output, and every evaluation as the ids and sha256 of the SPEC-071 attempt-result records it stored; the run manifest holds the configuration digest and candidate records keep parent links and optimizer call ids. Vectors are always re-scored from the stored content-free parsed attempts. Replaying a finished APO or GEPA run from its journal and stored records makes no optimizer or evaluator call, writes nothing and reproduces every candidate record (lineage, minibatch and full scores, Pareto membership) and the best candidate. Negative controls: altering one stored attempt-result record is detected by hash and changes a selection; a journal that ends early is refused (replay-incomplete); the default scorer refuses held-out records (holdout-contamination) and scores a refusal as a failed D4 attempt.",
-        "limits": "Fake optimizer; synthetic vectors carried in fake attempt-result records and read back by a test scorer; the default scorer is exercised on one development case only. Real runs that produce these records through `agent-braid lightning run` are T009 work.",
+        "limits": "Fake optimizer; synthetic vectors carried in fake attempt-result records and read back by a test scorer; the default scorer is exercised on one development case only. The real T009 runs recorded no altered results and replayed nothing (evidence/development-arms.json); a full replay of those private run stores is not part of the committed evidence.",
     },
     'procedure_011': {
         "scenario": 'SC-011',
         "modules": ["tests.test_lightning_evaluation"],
         "inputs": ["agent_braid/lightning_evaluation.py", "agent_braid/harness_evaluation.py",
-                   "agent_braid/harness_promotion.py", "tests/test_lightning_evaluation.py"],
-        "outcome_note": "From synthetic held-out results, spec049_pair writes a SPEC-049 Registration and EvaluationRecord in REGISTRATION_FORMAT and REPORT_FORMAT with arm A = A0 and arm C = A2 (GEPA) by candidate hash, the H1 outcome per required host (claude-code) under the protocol rule (supported, not-supported, not-assessable; a canary hit invalidates the arm) and executionAuthorization false; both records load through the harness_promotion verifiers and a pending decide() call in the test accepts the pair with the C-vs-A regression descriptive-only. The writer never names decide, begin or harness_promotion. Negative controls: arm C set to A1 is refused (arm-c-not-a2), arm A not A0 is refused (arm-a-not-a0), a report edited after recording fails the byte check, and a report bound to another registration is refused (registration-mismatch).",
-        "limits": "Synthetic held-out summaries; the T010 held-out runs have not run, so no real H1 outcome is recorded. The SPEC-049 noninferiority test is not part of the frozen protocol and is reported descriptive-only, so an approved SPEC-073 promotion over this pair is refused (regression-not-covered) unless SPEC-073 decides otherwise.",
+                   "agent_braid/harness_promotion.py", "tests/test_lightning_evaluation.py",
+                   "specs/072-lightning-prompt-optimization/evidence/heldout-arms.json",
+                   "specs/072-lightning-prompt-optimization/evidence/heldout-registration.json",
+                   "specs/072-lightning-prompt-optimization/evidence/heldout-evaluation-record.json"],
+        "outcome_note": "From synthetic held-out results, spec049_pair writes a SPEC-049 Registration and EvaluationRecord in REGISTRATION_FORMAT and REPORT_FORMAT with arm A = A0 and arm C = A2 (GEPA) by candidate hash, the H1 outcome per required host (claude-code) under the protocol rule (supported, not-supported, not-assessable; a canary hit invalidates the arm) and executionAuthorization false; both records load through the harness_promotion verifiers and a pending decide() call in the test accepts the pair with the C-vs-A regression descriptive-only. The writer never names decide, begin or harness_promotion. Negative controls: arm C set to A1 is refused (arm-c-not-a2), arm A not A0 is refused (arm-a-not-a0), a report edited after recording fails the byte check, and a report bound to another registration is refused (registration-mismatch). The committed T010 pair (evidence/heldout-registration.json, evidence/heldout-evaluation-record.json) matches the sha256 recorded in evidence/heldout-arms.json, loads through the harness_promotion verifiers, binds A = A0 and C = A2 by candidate hash, and records H1 not-supported for claude-code, equal to the held-out analysis.",
+        "limits": "The writer is tested over synthetic held-out summaries; the committed T010 pair is checked by bytes, formats, arms and H1 against evidence/heldout-arms.json, and records H1 not supported. BL.2 never calls decide(). The SPEC-049 noninferiority test is not part of the frozen protocol and is reported descriptive-only, so an approved SPEC-073 promotion over this pair is refused (regression-not-covered) unless SPEC-073 decides otherwise.",
     },
 }
 

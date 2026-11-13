@@ -13,7 +13,7 @@
   "tests/lightning_fakes.py": "127558709fc6e36f46b77a93ed5107b7d5bb51284d191648ed16645ed44b1383",
   "tests/test_lightning_stopping.py": "218204b3d2429f1a2fea61b6b69fce31a46911e598f3dad2b2a4d65bdb4043fe"
  },
- "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; wiring the algorithms into `agent-braid lightning run` with real candidate evaluation is T009 work.",
+ "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; the real T009 development runs and the T010 held-out run ended without a stop, so no stop rule other than the round cap was observed on a real host.",
  "outcome": "passed: With budgets set low in fake runs each algorithm stops at the first applicable rule and records it in the run journal: unit-cap (APO at configuration defaults), optimizer-cap, no-improvement after 2 consecutive flat rounds, and a weekly-stop quota stop that carries the explicit `agent-braid lightning run --resume <run-id>` command; a refused optimizer input (holdout-contamination) stops the run with the refusal recorded and no call made; APO never runs more than 3 rounds; no run exceeds its rollout or optimizer-call cap (negative control). Resuming a quota-stopped APO or GEPA run with the same seed replays the journaled optimizer outputs and evaluations in order and reaches the same rounds, best candidate, rollouts and calls as an uninterrupted run without repeating any optimizer call; resuming with another seed or configuration is refused (resume-diverged). The journal is private and refuses unknown entry shapes.",
  "procedure": "procedure_007",
  "result": "OK",

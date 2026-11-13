@@ -72,9 +72,9 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 | [SPEC-069: aim-request-authoring](../../specs/069-aim-request-authoring/spec.md) | [M4.8 — AIM request authoring](https://github.com/jayanez/agent-braid/milestone/28) (open; draft, human review pending) |
 | [SPEC-070: braid-lightning-foundations](../../specs/070-braid-lightning-foundations/spec.md) | [BL.0 — Braid Lightning foundations](https://github.com/jayanez/agent-braid/milestone/29) (draft, human review pending) |
 | [SPEC-071: lightning-rollouts-reward](../../specs/071-lightning-rollouts-reward/spec.md) | [BL.1 — Lightning rollouts and verifiable reward](https://github.com/jayanez/agent-braid/milestone/30) (draft, human review pending) |
-| [SPEC-072: lightning-prompt-optimization](../../specs/072-lightning-prompt-optimization/spec.md) | [BL.2 — Lightning prompt optimization](https://github.com/jayanez/agent-braid/milestone/31) (draft, human review pending) |
-| [SPEC-073: lightning-promotion](../../specs/073-lightning-promotion/spec.md) | [BL.3 — Lightning promotion](https://github.com/jayanez/agent-braid/milestone/32) (draft, human review pending) |
-| [SPEC-074: lightning-trace-consent](../../specs/074-lightning-trace-consent/spec.md) | [BL.4 — Lightning trace consent](https://github.com/jayanez/agent-braid/milestone/33) (draft, human review pending) |
+| [SPEC-072: lightning-prompt-optimization](../../specs/072-lightning-prompt-optimization/spec.md) | [BL.2 — Lightning prompt optimization](https://github.com/jayanez/agent-braid/milestone/31) (open; tasks complete and converged 2026-11-13, negative result: H1 not supported; draft, human review pending) |
+| [SPEC-073: lightning-promotion](../../specs/073-lightning-promotion/spec.md) | [BL.3 — Lightning promotion](https://github.com/jayanez/agent-braid/milestone/32) (draft, human review pending; no BL.2 candidate to promote) |
+| [SPEC-074: lightning-trace-consent](../../specs/074-lightning-trace-consent/spec.md) | [BL.4 — Lightning trace consent](https://github.com/jayanez/agent-braid/milestone/33) (in progress; draft, human review pending) |
 | [SPEC-075: lightning-dataset-export](../../specs/075-lightning-dataset-export/spec.md) | [BL.5 — Lightning dataset export](https://github.com/jayanez/agent-braid/milestone/34) (draft, human review pending) |
 | [SPEC-076: lightning-local-grpo](../../specs/076-lightning-local-grpo/spec.md) | Deferred (Deferred milestone #24; draft, human review pending) |
 

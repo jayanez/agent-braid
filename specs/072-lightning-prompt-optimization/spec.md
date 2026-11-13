@@ -6,7 +6,10 @@ the reviewed tracking reconciliation after merge).
 **Status:** draft. Owner decisions L1–L5 of 2026-11-08 apply (see the
 [program](../070-braid-lightning-foundations/program.md)). OD-1 and OD-2 are
 decided. `human_review` is pending (T001 owner review recorded 2026-11-11); this specification grants no execution
-authority and promotes nothing.
+authority and promotes nothing. Implementation converged on 2026-11-13 (T012):
+T001–T013 are done and the preregistered held-out evaluation gave a **negative
+result** (H1 not supported); see [Outcome and convergence](#outcome-and-convergence-t012-2026-11-13).
+Convergence is not a human review and does not freeze this specification.
 
 ## Purpose and scope
 
@@ -179,7 +182,57 @@ Owner decisions:
 
 Each requirement has one acceptance scenario (SC-001 to SC-011) in
 `assurance.json`, with its procedure in [validation-plan.md](validation-plan.md).
-Milestone exit: SC-001 and SC-008 obtained; the result may be null.
+Milestone exit: SC-001 and SC-008 obtained; the result may be null. Both are
+obtained (2026-11-13); the result is negative.
+
+## Outcome and convergence (T012, 2026-11-13)
+
+Assessed against [assurance.json](assurance.json) and the committed evidence.
+Protocol adherence and the result are reported separately.
+
+**Protocol adherence.** Amendment 1 was approved before any development
+rollout; the protocol was frozen by hash
+([protocol-freeze.json](evidence/protocol-freeze.json)) before the held-out set
+was opened; each arm ran once on the held-out set (90 rollouts, `claude-code`
+2.1.311, model `claude-sonnet-5-5`, subscription route, no stop, no refusal,
+0 canary hits, clean teardown). Two build defects stopped A0 and then A1 with
+`arm-error` before their first held-out rollout (#1356, #1357); they were fixed
+without touching the protocol, A0's 30 completed rollouts were kept, and the
+command resumed. No rollout was repeated or discarded.
+
+**Development phase (T009, descriptive;
+[development-arms.json](evidence/development-arms.json)).** A0 (current
+guidance) 27/30 first attempt on the development set; best APO candidate
+`39ae1856…` 0.233 on the full development set (9 optimizer calls, 60
+rollouts); best GEPA candidate `623c55c3…` 0.967 (3 optimizer calls, 45
+rollouts).
+
+**Held-out result (T010; [heldout-arms.json](evidence/heldout-arms.json)) —
+negative.** A0 25/30 first attempt (8/10 prompts, Wilson 0.66–0.93), A1 APO
+23/30 (7/10), A2 GEPA 24/30 (7/10, Wilson 0.63–0.90); every arm misses D4 in
+`claude-code`. Paired per prompt against A0: A2 1 improved, 8 unchanged,
+1 worsened; A1 1, 7, 2 (exact sign test p = 1.0 for both). By the
+preregistered rule A0 misses and A2 misses, so **H1 is not supported**. The
+SPEC-049 pair ([registration](evidence/heldout-registration.json),
+[evaluation record](evidence/heldout-evaluation-record.json); A = A0, C = A2)
+records the same outcome. The A2 drop from 0.967 on development to 24/30 on
+held-out is observed, not explained; no claim about overfitting is made.
+
+**Hand-off to SPEC-073.** Best GEPA candidate (A2, primary)
+`623c55c39d31799f7d89e5dac9401062ce2eaed2b6bca01589d7c531f3e8b966`; best APO
+candidate (A1, descriptive)
+`39ae18565806b6dd3b2e8181dc223dd70b735c1e18ed371c17233382602057fd`. Neither
+met D4 on held-out, so BL.2 offers **no candidate for promotion**; the hashes
+are recorded for traceability only.
+
+| Status | Items |
+|---|---|
+| Satisfied (obtained evidence) | SC-001 to SC-011, each by its procedure record in `evidence/` |
+| Negative (research outcome) | H1 not supported (SC-008, SC-011) |
+| Failed | none |
+| Inconclusive | none; A1 is descriptive by design |
+| Pending | exploratory arms E1/E2 (Amendment 1 item 6, development only, descriptive) have not been run, so the descriptive table of analysis step 7 does not exist; they cannot change H1. Human review of this specification and its freeze remain the owner's |
+| Declared limits | one required host (`opencode` route-unverified, Codex a SPEC-069 limit); one model; one held-out pass of 10 prompts × 3 repetitions (low power); fake hosts for the pipeline procedures |
 
 ## Compatibility
 

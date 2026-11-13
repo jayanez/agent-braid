@@ -11,7 +11,7 @@
   "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
   "tests/test_lightning_resources.py": "2f4b656b17550989475ff29acb25b4cb35380702bf141ec4e0c5a3d81a5014a1"
  },
- "limits": "Record and store only; the seed check against the run's recorded commit is applied when runs record a commit (T003).",
+ "limits": "Record and store only. Runs journal their source commit and seed skill; a resume at another commit is refused and replay rebuilds the seed from the journaled source (review fixes, #1348); this procedure does not test that.",
  "outcome": "passed: The seed is the analyze skill body below its fixed front matter; seed and child records round-trip canonically byte for byte; the child names the seed as parent; text whose hash differs, unknown keys, foreign origins, refused contamination checks and broken lineage are refused with codes; the store keeps text beside the record privately and refuses a record without matching text; later records may change only scores and Pareto membership.",
  "procedure": "procedure_002",
  "result": "OK",

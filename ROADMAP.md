@@ -699,7 +699,12 @@ CLI subscription route only (extra cash spend EUR 0), first target the
 | BL.5 — Lightning dataset export | [SPEC-075](specs/075-lightning-dataset-export/spec.md) | supervised and trajectory datasets |
 | Deferred | [SPEC-076](specs/076-lightning-local-grpo/spec.md) | local GPU GRPO ([ADR 0042](docs/adr/0042-braid-lightning-local-weight-training.md)) |
 
-**Status:** BL.0 closed on 2026-11-08 (SPEC-070 approved by the owner, review record bound to `c0b6956e`); BL.1 closed on 2026-11-11 (SPEC-071 approved by the owner, review record bound to `39a427ae`; real Claude Code baseline 16/30 inside the T010 interval, zero paid-route observations); BL.2–BL.5 draft. BL.0 delivered the
+**Status:** BL.0 closed on 2026-11-08 (SPEC-070 approved by the owner, review record bound to `c0b6956e`); BL.1 closed on 2026-11-11 (SPEC-071 approved by the owner, review record bound to `39a427ae`; real Claude Code baseline 16/30 inside the T010 interval, zero paid-route observations); BL.2 complete on 2026-11-13 with a **negative
+result** (SPEC-072 T001–T013 done and converged; on the frozen held-out set A0
+25/30, A1 APO 23/30, A2 GEPA 24/30 in Claude Code, all missing D4, so H1 is not
+supported; specification draft, human review pending); BL.3 (SPEC-073) has no
+candidate to promote from BL.2; BL.4 (SPEC-074) in progress (T001–T002 done);
+BL.5 draft. BL.0 delivered the
 experimental `agent-braid lightning init|validate|status|purge` commands and
-`plugin setup --lightning`. No run, host launch or model call exists yet; nothing is
-promoted or released.
+`plugin setup --lightning`. BL.1 and BL.2 added subscription-route host runs and
+optimizer calls in the laboratory; nothing is promoted or released.
