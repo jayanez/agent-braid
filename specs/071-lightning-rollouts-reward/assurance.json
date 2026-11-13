@@ -179,7 +179,7 @@
               "limits": "Behaviour equivalence is shown by the driver test suite and the unchanged evidence format; the driver file hash recorded in its evidence changes by construction.",
               "outcome": "passed: Host plumbing extracted to agent_braid/lightning_hosts.py; the SPEC-069 driver re-exports it and its 29 tests, including the --fake-hosts self-test with all negative controls, pass unchanged.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_002.json",
-              "sha256": "7e648708989901b84025936fdd4ed728a303cce202cf82aaf291f94d68673b8d"
+              "sha256": "85bbc82c158e52d3b24941ee3a40935ff3db9d1cc242b7dc9d79887a7dad9414"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -203,7 +203,7 @@
               "limits": "Fake hosts only; parallel greater than 1 is not implemented (the profile default and REQ-003 bound are 1).",
               "outcome": "passed: Rollouts run sequentially in a disposable sandboxed profile, follow the SPEC-070 state machine, write rollout, event and attempt-result records through the store; a timeout fails the rollout; a straggler process is detected and killed at teardown.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_003.json",
-              "sha256": "dad8f10190ff81615de52201037202a76587b0cc4b0ac09dba18774c5741d34d"
+              "sha256": "f535e51a20a9b5f7c8164c41b44706ade1d0a5337e6c26b2ab8e92898812af34"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -227,7 +227,7 @@
               "limits": "What a real subscription sign-in reports is not yet observed; the value none stays a fixture assumption until the real baseline (T012).",
               "outcome": "passed: Any *_API_KEY or ANTHROPIC_AUTH_TOKEN/BASE_URL/Bedrock/Vertex variable is refused by name before launch; the host-reported apiKeySource is recorded; oauth (and none as the fixture assumption) is accepted; a missing or other source ends the run as route-unverified; OpenCode reports none and is a declared limit (OD-2).",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_004.json",
-              "sha256": "43dab032c1fde1650c3d461fd09f17587cffc80bb288a649a5a44ca84814ab47"
+              "sha256": "8c1779d576f0a64ebb6106ef85f65a2bc978b8622de6c2ec0bd815b3166730e4"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -251,7 +251,7 @@
               "limits": "Synthetic token only.",
               "outcome": "passed: A synthetic CLAUDE_CODE_OAUTH_TOKEN reaches the child environment only; credentialPresent is true and the value appears in no store file or status; a planted secret in host output stops the run as credential-leak and is absent from the store.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_005.json",
-              "sha256": "1170533c770f9e68cedc9b0d60f49eefe6cd56928244295dbaed7d8985a210ed"
+              "sha256": "fd56863b8cf694f54a26eea194f47e5b55b6b5da350836906cfc85eb81695fc0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -275,7 +275,7 @@
               "limits": "Quota message patterns are assumptions until observed on a real host.",
               "outcome": "passed: Quota messages map to _BUDGET_STOPS names; budget.maxRollouts ends the run with unit-cap; the same run id continues only with an explicit resume and skips completed rollouts; resume without a run id is refused.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_006.json",
-              "sha256": "99b711998e4f39422c87889c27d29c99ca144888a2ebed89aa9a6f6139c35a98"
+              "sha256": "4deee04cc7a1f792668a756b094b754b28b0818eb2e6e60b029a1d9467231f42"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -299,7 +299,7 @@
               "limits": "Synchronous hooks only.",
               "outcome": "passed: Hooks run in upstream order on deep read-only copies; a raising hook fails only its rollout (hook-failed); unknown hook names are refused.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_007.json",
-              "sha256": "603023c89c3f6d521e8446ca397b1b2ab6a1bbdc9148fb843789abea0675deb9"
+              "sha256": "d446380ecc9d33c87b8ed47aa2b8723a4ac0058584ce9de8989f10d35f8fc809"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -323,7 +323,7 @@
               "limits": "schemaValid is the runtime verdict, kept equivalent to the declared schema by the SPEC-069 differential test.",
               "outcome": "passed: The reward vector matches score_case, is byte-identical for equal inputs, never credits an uncalled tool, zeroes D4 on a canary hit, and refuses changed scoring rules or prompt sets.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_008.json",
-              "sha256": "51908f2fa381532b3e45afa4e614d0e06daec71bf5f5794b3d6037db95ec25f2"
+              "sha256": "c7ca4a2f8373cbb294e2d1b9705a43823047e3b44c7e7146a7bfa24ab4f63f50"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -347,7 +347,7 @@
               "limits": "The model cannot read files or reach the network because every built-in file, shell and web tool is denied (SPEC-069 allowlist); the OS sandbox denies real configuration paths but is not a network firewall. Fake hosts do not exercise sandbox-exec.",
               "outcome": "passed: A canary token planted in a non-target workspace file is detected when it reaches the transcript and zeroes D4 for that rollout; the prompt-set and scoring hashes are checked against FREEZE before any run.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_009.json",
-              "sha256": "920cc4c3788bf260edbd3d939e271cc0ec05710a7cdd3f326302989328dd9dc9"
+              "sha256": "90bb3945c363e02b82ba155a30a27c148f745ff159d182f430e5278a4ec72e28"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -371,7 +371,7 @@
               "limits": "CLI tests use a temporary home.",
               "outcome": "passed: run --dry-run launches nothing and plans within budget; run without setup consent is refused (consent-required); --fake-hosts runs labelled pipeline-only; status and report work by run id; outputs carry executionAuthorization false.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_010.json",
-              "sha256": "471d8f5da54e767282cc452e89b31cd1dfad74b0b44fa10f2d7c32a1d1cd6d29"
+              "sha256": "8d15effe006ab82805419d70b70da4236bea6f75a137f57ce395f90e2d6b59ba"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -395,7 +395,7 @@
               "limits": "Transcript replay needs SPEC-074 consent and is not offered.",
               "outcome": "passed: Rewards recomputed from stored content-free parsed attempts hash to the recorded rewardSha256; an edited parsed attempt changes the hash; result records contain no prompt text.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_011.json",
-              "sha256": "addf75d0caa1195f1d33d125659d8b0b0a15b277e295c9743320a8a0ad17b1d5"
+              "sha256": "530e8fccd79367c2c36c54e3528b141597cce4b548d674bce7d91ae67849994e"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -419,7 +419,7 @@
               "limits": "Static inspection.",
               "outcome": "passed: BL.1 modules import only the standard library (and the repository scripts lazily), open no listener, call no execute, recover or grant function, and no MCP module mentions Braid Lightning.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_012.json",
-              "sha256": "0cebe3b20b71a4d45db9a6f2770f86c72f86a05b07c57dd7abec442ab77463fb"
+              "sha256": "8a8dadf9adc532b6621846344ce401f48aeb0315ebf780663491bc625316c2e1"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -443,7 +443,7 @@
               "limits": "Pipeline-only: proves the runner, not any host or model.",
               "outcome": "passed: The full fake-host pipeline passes; each negative variant (planted API key, missing key source, leaked secret, canary hit, straggler, timeout, hook failure, unit cap) yields its code or recorded outcome.",
               "path": "specs/071-lightning-rollouts-reward/evidence/procedure_013.json",
-              "sha256": "e24f0ef77526655374066b8f0effe083d3df010ce9dde04cc61185036326aae2"
+              "sha256": "7bcf19923fc34944ad8188a8a93680541488facbdfe4f8727d6d7e4704fdbe55"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",

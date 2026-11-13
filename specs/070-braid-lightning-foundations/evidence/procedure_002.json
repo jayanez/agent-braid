@@ -1,18 +1,18 @@
 {
  "command": "python -m unittest tests.test_lightning_cli.BoundaryTests.test_module_carries_upstream_notice",
  "environment": {
-  "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "platform": "macOS-27.2",
+  "python": "3.13.11"
  },
  "inputs": {
   "LICENSES/Agent-Lightning-MIT.txt": "8f71659370c5268d9a1dc962a46232540e8fca63462586d8efaa95aab492a208",
-  "agent_braid/lightning_cli.py": "beea8185dbb0995051d097b256b2fab8e4dc314e2aeceb583d83c16d64f1067c",
+  "agent_braid/lightning_cli.py": "8ee9a115edb003d756180ada6f4f91adc1b0421025c69338751bb6f5eb9e2610",
   "agent_braid/lightning_config.py": "50dfec9b5144eab63799920a3a7ed2a62fc499138de3c1619d1c3b27a555128b",
-  "agent_braid/lightning_schema.py": "3a5b70ded3d8696ec59eb1873d89fddb6b5400aca4443ae3a228ac804d81dc19",
-  "agent_braid/lightning_store.py": "e3d93b950342f4aeacd90e88c82c50a76dfd83c3503aeabe6f77600747d92c21",
-  "docs/development/THIRD_PARTY.md": "46ceb7bfe60c7cbec012ac076d9ffa22438c496a4b5aace9776f29a5293d0a6f",
-  "specs/070-braid-lightning-foundations/third-party-inventory.md": "469958405598ceba4594c6b2dadca3bc426c4c3312e8afeea0214347868eebad",
-  "tests/test_lightning_cli.py": "8084c9f61c82f53ed5231543ce46409aa9480ee356b7032f5afa2f029d75ebec"
+  "agent_braid/lightning_schema.py": "6072cfe55bee4ae8cfed8d86755697e64aba79da1c3a034b4e18f793163e8be8",
+  "agent_braid/lightning_store.py": "4e801c5a78f82a6ae856252807e37933eec1f415b638cd2b6e892cc3eba9d039",
+  "docs/development/THIRD_PARTY.md": "8760b0aff93bc99970440a9bd8bc10dbd71d0f4d3979d7cefc279b3b253dc014",
+  "specs/070-braid-lightning-foundations/third-party-inventory.md": "000593a08ee7284634fb582aff6ec509555b6e1489022866f7b9feeb587c4aac",
+  "tests/test_lightning_cli.py": "a6d2804a600dc768e3e4bff33f6d9ffe582f39f7ec6ab51476c9f7ca745c1c1a"
  },
  "limits": "The inventory hashes were computed from the pinned upstream commits at authoring time; this run checks notices, not a fresh upstream download.",
  "outcome": "passed: Every adapted module starts with the AGPL SPDX line and names microsoft/agent-lightning and the MIT License; the upstream license is retained verbatim and the inventory binds both pinned commits and original file hashes.",

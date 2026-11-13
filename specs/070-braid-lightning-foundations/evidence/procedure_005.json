@@ -1,13 +1,13 @@
 {
  "command": "python -m unittest tests.test_lightning_cli.WizardTests",
  "environment": {
-  "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "platform": "macOS-27.2",
+  "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_cli.py": "beea8185dbb0995051d097b256b2fab8e4dc314e2aeceb583d83c16d64f1067c",
+  "agent_braid/lightning_cli.py": "8ee9a115edb003d756180ada6f4f91adc1b0421025c69338751bb6f5eb9e2610",
   "agent_braid/lightning_config.py": "50dfec9b5144eab63799920a3a7ed2a62fc499138de3c1619d1c3b27a555128b",
-  "tests/test_lightning_cli.py": "8084c9f61c82f53ed5231543ce46409aa9480ee356b7032f5afa2f029d75ebec"
+  "tests/test_lightning_cli.py": "a6d2804a600dc768e3e4bff33f6d9ffe582f39f7ec6ab51476c9f7ca745c1c1a"
  },
  "limits": "Prompts are simulated with patched input(); terminal behaviour on Windows is not exercised.",
  "outcome": "passed: Interactive and non-interactive previews write nothing; only the exact preview digest applies; a stale or wrong digest and --apply without --non-interactive are refused; validate and status report the profile.",

@@ -1,11 +1,11 @@
 {
  "command": "python -m unittest tests.test_lightning_store",
  "environment": {
-  "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "platform": "macOS-27.2",
+  "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_store.py": "e3d93b950342f4aeacd90e88c82c50a76dfd83c3503aeabe6f77600747d92c21",
+  "agent_braid/lightning_store.py": "4e801c5a78f82a6ae856252807e37933eec1f415b638cd2b6e892cc3eba9d039",
   "tests/test_lightning_store.py": "b46972a8d743d2809d34672be31b894074556c9e15ece445ea9b393f7d6f9337"
  },
  "limits": "Single-process tests; the lock refuses a second writer but concurrent writers are not stress-tested.",
