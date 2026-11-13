@@ -175,3 +175,21 @@ true`, schema module SHA-256 `aa3afa4a...`).
   the T010 evidence. Claude Code 2.1.311 opens with `server/discover` instead of `initialize`; the relay now records its version.
 - **Spend:** Claude Code 0.38 USD notional (subscription token: two development probes plus the two shipped runs); OpenCode via
   OpenRouter and Codex on the subscription report no cost. Cumulative SPEC-069 spend stays well below the 60 USD cap.
+
+## T011 documentation check (2026-11-13)
+
+`python -m unittest tests.test_spec069_docs tests.test_spec069_guidance` (21 tests, OK; `evidence/procedure_011.json`).
+`tests/test_spec069_docs.py` reads the section "`analyze-work` request kinds (SPEC-069, unreleased)" of
+`docs/tooling/NATIVE_PLUGINS.md` and checks:
+
+- every relative link and anchor in the whole file resolves;
+- every cited test, script or evidence path exists;
+- the documented kinds equal the served enum;
+- the held-out table equals the T010 evidence, and the claims about retries and D4 follow it;
+- probe host versions and loading modes follow `procedure_005.json` `native`;
+- the replay counts (103 and 214) follow `procedure_009.json`;
+- the rollback refusal equals `compatibility.md`.
+
+Negative controls detect a broken link or anchor, a changed number and a missing cited file. The other behavioural
+statements were reviewed against the contract and the tests they cite; that part is a review, not a mechanical check.
+The release-note draft is text only: no version bump, tag, publication or `plugin-dist` push (T012, owner's explicit yes).
