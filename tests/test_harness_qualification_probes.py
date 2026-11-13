@@ -1966,13 +1966,20 @@ class QualRound3Tests(unittest.TestCase):
 
     def test_each_listed_rule_excludes_exactly_its_attempt(self):
         expected = {("CRED-02", "mach-secd", "ABSENT"), ("FS-07", "mach-spotlight", "ABSENT"),
-                    ("PROC-07", "ptrace-sibling", "EPERM"), ("NET-02", "tcp-ipv6-literal", "EHOSTUNREACH")}
+                    ("PROC-07", "ptrace-sibling", "EPERM"), ("NET-02", "tcp-ipv6-literal", "EHOSTUNREACH"),
+                    # SPEC-065 amendment 2026-11-13 (own non-GUI session): GUI services that launchd does not
+                    # register in a Background session
+                    ("CRED-07", "pasteboard-mach", "ABSENT"), ("CRED-07", "pasteboard-exec", "ABSENT"),
+                    ("FS-07", "mach-mdwrite", "ABSENT"), ("PROC-06", "mach-tccd", "ABSENT")}
         self.assertEqual({(pid, name, codes[0]) for (pid, name), codes in q.NOT_APPLICABLE.items()}, expected)
         for pid, name, code in sorted(expected):
             with self.subTest(pid=pid, attempt=name):
-                control = self.all_with(pid, "allowed", **{name: "denied" if code == "EPERM" else "inconclusive"})
-                verdict = self.judge(pid, control, self.all_with(pid, "denied"), {name: code})
-                self.assertEqual((verdict["pass"], verdict["notApplicable"]), (True, [name]))
+                # an attempt with a prerequisite is excluded together with it (pasteboard-exec needs pasteboard-mach)
+                names = {name, *q.NOT_APPLICABLE_REQUIRES.get((pid, name), ())}
+                control = self.all_with(pid, "allowed", **{n: "denied" if code == "EPERM" else "inconclusive"
+                                                           for n in names})
+                verdict = self.judge(pid, control, self.all_with(pid, "denied"), {n: code for n in names})
+                self.assertEqual((verdict["pass"], verdict["notApplicable"]), (True, sorted(names)))
 
     def test_at_least_one_counted_attempt_always_stays_required(self):
         probe = q.BY_ID["NET-01"]
@@ -2181,6 +2188,121 @@ class QualRound3Tests(unittest.TestCase):
             self.assertEqual(result.auth_token, expect)
         bare = q.native_session_driver(FakeNativeTransport)("HOST-01")
         self.assertIsNone(bare.auth_token)  # a transport without a backend record says nothing
+
+
+class HeadlessSessionProbeTests(unittest.TestCase):
+    """SPEC-065 amendment 2026-11-13: in the dedicated account's own non-GUI session (``launchctl asuser``,
+    manager ``Background``) launchd does not register the pasteboard, ``metadata.mdwrite`` and ``tccd``. The
+    uncontained lookup then answers 1102 (unknown service), which reads as ``ABSENT``; inside the sandbox the
+    lookup is refused (1100) and still reads as a denial. No judge is weakened: an escape at an excluded
+    attempt is still an escape and every probe keeps at least one counted attempt."""
+
+    rows = QualRound3Tests.rows
+    judge = QualRound3Tests.judge
+    all_with = QualRound3Tests.all_with
+
+    def helper_namespace(self, pid, function):
+        body = q.BY_ID[pid].body
+        start = body.index(f"def {function}(")
+        end = body.index("\nattempt(", start)
+        ns = {"A": {}}
+        exec(q.PRELUDE + body[start:end] + "\n", ns)
+        return ns
+
+    def test_the_three_gui_services_are_looked_up_with_absent_detection(self):
+        for pid, name, service in (("CRED-07", "pasteboard-mach", "com.apple.pasteboard.1"),
+                                   ("FS-07", "mach-mdwrite", "com.apple.metadata.mdwrite"),
+                                   ("PROC-06", "mach-tccd", "com.apple.tccd")):
+            with self.subTest(pid=pid, attempt=name):
+                self.assertIn(f'attempt("{name}", lambda: mach("{service}", True))', q.BY_ID[pid].body)
+        self.assertIn('attempt("pasteboard-exec", pasteboard_exec)', q.BY_ID["CRED-07"].body)
+
+    def test_pasteboard_exec_is_absent_only_when_the_pasteboard_service_is_unknown(self):
+        ns = self.helper_namespace("CRED-07", "pasteboard_exec")
+        ran = []
+        ns["execs"] = lambda argv: ran.append(argv) or True
+        statuses = iter(())
+
+        def mach(service, absent=False):  # the prelude's mach with the lookup status replaced
+            status = next(statuses)
+            if absent and status == 1102:
+                raise ns["Absent"]()
+            return True if status == 0 else False if status == 1100 else None
+
+        ns["mach"] = mach
+        statuses = iter([1102])  # uncontained, Background session: nothing registered, nothing to paste
+        self.assertEqual(ns["_classify"](ns["pasteboard_exec"], ns["DENY"], False), ("inconclusive", "ABSENT"))
+        self.assertEqual(ran, [])
+        for status in (0, 1100):  # registered (Aqua), or refused by the sandbox: pbpaste still runs
+            with self.subTest(status=status):
+                statuses = iter([status])
+                ran.clear()
+                self.assertEqual(ns["_classify"](ns["pasteboard_exec"], ns["DENY"], False), ("allowed", "NONE"))
+                self.assertEqual(ran, [["/usr/bin/pbpaste"]])
+
+    def test_a_contained_pbpaste_denial_is_still_observed(self):
+        ns = self.helper_namespace("CRED-07", "pasteboard_exec")
+        ns["mach"] = lambda service, absent=False: False  # the sandbox refuses the lookup (1100)
+
+        def denied(argv):
+            raise PermissionError(1, "Operation not permitted")
+
+        ns["execs"] = denied
+        self.assertEqual(ns["_classify"](ns["pasteboard_exec"], ns["DENY"], False), ("denied", "EPERM"))
+
+    def test_a_background_session_control_excludes_the_gui_attempts_and_the_rest_still_decides(self):
+        cases = {"CRED-07": ("pasteboard-mach", "pasteboard-exec"), "FS-07": ("mach-mdwrite", "mach-spotlight"),
+                 "PROC-06": ("mach-tccd",)}
+        for pid, absent in cases.items():
+            with self.subTest(pid=pid):
+                control = self.all_with(pid, "allowed", **{n: "inconclusive" for n in absent})
+                verdict = self.judge(pid, control, self.all_with(pid, "denied"), {n: "ABSENT" for n in absent})
+                self.assertEqual((verdict["status"], verdict["pass"], verdict["notApplicable"]),
+                                 ("denied", True, sorted(absent)))
+                self.assertTrue(set(q.BY_ID[pid].counted) - set(absent))  # one counted attempt still decides
+
+    def test_pasteboard_exec_is_excluded_only_with_an_absent_pasteboard_service(self):
+        # the exec attempt alone reporting ABSENT (the service answered) is not a reason to skip it
+        control = self.all_with("CRED-07", "allowed", **{"pasteboard-exec": "inconclusive"})
+        verdict = self.judge("CRED-07", control, self.all_with("CRED-07", "denied"), {"pasteboard-exec": "ABSENT"})
+        self.assertEqual((verdict["pass"], verdict["reason"], verdict["notApplicable"]),
+                         (False, "positive-control-failed", []))
+        # the service absent but the exec failing for another reason: the exec still needs its control
+        control = self.all_with("CRED-07", "allowed", **{"pasteboard-mach": "inconclusive",
+                                                         "pasteboard-exec": "inconclusive"})
+        verdict = self.judge("CRED-07", control, self.all_with("CRED-07", "denied"),
+                             {"pasteboard-mach": "ABSENT", "pasteboard-exec": "NONE"})
+        self.assertEqual((verdict["pass"], verdict["notApplicable"]), (False, ["pasteboard-mach"]))
+
+    def test_a_contained_escape_at_an_excluded_gui_attempt_is_still_an_escape(self):
+        for pid, name in (("CRED-07", "pasteboard-mach"), ("FS-07", "mach-mdwrite"), ("PROC-06", "mach-tccd")):
+            with self.subTest(pid=pid, attempt=name):
+                control = self.all_with(pid, "allowed", **{name: "inconclusive"})
+                verdict = self.judge(pid, control, self.all_with(pid, "denied", **{name: "allowed"}),
+                                     {name: "ABSENT"})
+                self.assertEqual((verdict["status"], verdict["pass"], verdict["reason"]),
+                                 ("allowed", False, "escape-allowed"))
+
+    def test_the_catalog_states_each_gui_exclusion_as_a_residual(self):
+        entries = {e["id"]: e for e in q.catalog_document()["probes"]}
+        for pid, names in (("CRED-07", ("pasteboard-mach", "pasteboard-exec")),
+                           ("FS-07", ("mach-mdwrite", "mach-spotlight")), ("PROC-06", ("mach-tccd",))):
+            with self.subTest(pid=pid):
+                residual = entries[pid]["residual"]
+                for name in names:
+                    self.assertIn(name, residual)
+                self.assertIn("ABSENT", residual)
+                self.assertIn("founder-decisions-20261113.json", residual)
+
+    def test_the_gui_rows_of_attempt_t009_20261113a_stay_inconclusive(self):
+        # su/sudo from the operator's session: the control errors were NONE, which is not a listed code
+        for pid, names in (("CRED-07", ("pasteboard-mach", "pasteboard-exec")), ("FS-07", ("mach-mdwrite",)),
+                           ("PROC-06", ("mach-tccd",))):
+            with self.subTest(pid=pid):
+                control = self.all_with(pid, "allowed", **{n: "inconclusive" for n in names})
+                verdict = self.judge(pid, control, self.all_with(pid, "denied"), {n: "NONE" for n in names})
+                self.assertEqual((verdict["pass"], verdict["reason"], verdict["notApplicable"]),
+                                 (False, "positive-control-failed", []))
 
 
 class BundleHardeningTests(unittest.TestCase):

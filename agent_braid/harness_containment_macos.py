@@ -18,8 +18,11 @@ interpreter, ``launch`` executes the pinned Claude executable for the native tra
   read-only list (``SYSCTL_READ_NAMES``, ``SYSCTL_READ_PREFIXES``, three ``LC_CTYPE`` literals, ``DATA_READ``,
   metadata of ``/etc`` and ``/var``) that the ``launch`` and ``launch-probe`` profiles carry.
 * credential: UID separation (the supervisor must run as the dedicated account, NC-2,
-  NC-5), an environment built from scratch, and a refusal when an ``ENV_DENY`` variable
-  is present in the parent. Keychain services are not reachable (no ``mach-lookup``). The ``launch``
+  NC-5) inside that account's own audit session (``session_refusal``: the audit user id equals the
+  account's uid and the launchd manager is ``Aqua`` or ``Background``; su or sudo from another session
+  keeps that session's Mach bootstrap namespace, its pasteboard and AppleEvents), an environment built
+  from scratch, and a refusal when an ``ENV_DENY`` variable is present in the parent. Keychain
+  services are not reachable (no ``mach-lookup``). The ``launch``
   entry authenticates with the long-lived token of ``claude setup-token``, read by the supervisor from
   ``TOKEN_FILE`` in the dedicated user's ``config_dir`` (``read_token``: strict checks) and set as
   ``TOKEN_VARIABLE`` in the child environment only (NC-5 as amended 2026-11-04); the fixture entries never
@@ -150,6 +153,13 @@ _OWNED = ("run-", "compile-")  # run_root directories the backend creates and re
 _RESERVED = (*_OWNED, ".")  # run_root entries the backend owns
 _PRIVILEGED_GIDS = frozenset({0, 80})  # wheel, admin
 _MIN_HUMAN_UID = 500  # below it: system accounts (RV-16, amended 2026-11-03)
+# SPEC-065 amendment 2026-11-13: the launchd session kinds the lab may run in, as ``launchctl managername``
+# prints them. ``Aqua``: the dedicated account's own graphical login. ``Background``: its own non-GUI session,
+# started by root with ``launchctl asuser`` (no window server, no pasteboard). The kind is in the environment
+# hash, so a qualification holds only for the kind it was taken in.
+SESSION_KINDS = ("Aqua", "Background")
+_LAUNCHCTL = "/bin/launchctl"
+_MANAGER_NAME = re.compile(r"[A-Za-z]{1,32}\Z")
 _POLL_SECONDS = 0.05
 _POLL_FAST_SECONDS = 0.01  # once the tree holds a quarter of the memory limit: a burst must not slip between samples
 STDERR_TAIL_BYTES = 8192
@@ -462,11 +472,12 @@ def _component_hashes() -> dict[str, str]:
 
 
 def environment_sha256(policy: ContainmentPolicy, facts: HostFacts, uid: int,
-                       account: AccountFacts | None = None) -> str:
+                       account: AccountFacts | None = None, session_kind: str | None = None) -> str:
     """Canonical digest of every environment-hash input of contracts/native-profile.md.
 
-    ``account`` is what the backend observed for the dedicated user; a caller that omits it
-    computes a digest the backend will not match.
+    ``account`` is what the backend observed for the dedicated user and ``session_kind`` the launchd
+    manager of its own session (``SESSION_KINDS``); a caller that omits either computes a digest the
+    backend will not match. The audit session id is not hashed: it changes with every login.
     """
     supervisor = os.path.realpath(sys.executable)
     value = {
@@ -476,7 +487,8 @@ def environment_sha256(policy: ContainmentPolicy, facts: HostFacts, uid: int,
                       "sandboxExecSha256": policy.sandbox_exec_sha256,
                       "account": policy.account, "uid": uid,
                       "accountFacts": None if account is None else
-                      {"gids": sorted(account.gids), "homeMode": account.home_mode}},
+                      {"gids": sorted(account.gids), "homeMode": account.home_mode},
+                      "sessionKind": session_kind},
         "profiles": {entry: sha256(policy.render(entry)).hexdigest() for entry in ENTRIES},
         "claude": {"path": policy.claude, "sha256": policy.claude_sha256,
                    "version": policy.claude_version},
@@ -519,7 +531,8 @@ def _libsystem():
         lib.proc_pidinfo.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_uint64, ctypes.c_void_p,
                                      ctypes.c_int]
         lib.proc_pid_rusage.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_void_p]
-        for name in ("sysctlbyname", "sysctl", "proc_listpids", "proc_pidinfo", "proc_pid_rusage"):
+        lib.getaudit_addr.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        for name in ("sysctlbyname", "sysctl", "proc_listpids", "proc_pidinfo", "proc_pid_rusage", "getaudit_addr"):
             getattr(lib, name).restype = ctypes.c_int
         _LIBSYSTEM = lib
     return _LIBSYSTEM
@@ -572,6 +585,77 @@ def _sysctl_string(name: str) -> str:
 def host_facts() -> HostFacts:
     return HostFacts(_sysctl_string("kern.osproductversion"), _sysctl_string("kern.osversion"),
                      platform.machine())
+
+
+@dataclass(frozen=True)
+class SessionFacts:
+    """The audit session the process runs in (SPEC-065 amendment 2026-11-13); ``None`` where unreadable.
+
+    ``auid`` is the audit user id, set once when the session is created (loginwindow, or root through
+    ``launchctl asuser``) and inherited unchanged across su, sudo and setuid; ``asid`` is the session id;
+    ``kind`` is the launchd manager of the session's bootstrap namespace (``launchctl managername``).
+    """
+
+    auid: int | None
+    asid: int | None
+    kind: str | None
+
+
+class _AuditInfo(ctypes.Structure):
+    """``struct auditinfo_addr`` of ``<bsm/audit.h>`` (48 bytes on arm64 and x86_64)."""
+
+    _fields_ = [("ai_auid", ctypes.c_uint32), ("ai_mask", ctypes.c_uint32 * 2),
+                ("ai_termid", ctypes.c_uint32 * 6), ("ai_asid", ctypes.c_int32), ("ai_flags", ctypes.c_uint64)]
+
+
+def _audit_ids() -> tuple[int | None, int | None]:
+    """``(auid, asid)`` of this process from ``getaudit_addr``; ``(None, None)`` when it cannot be read."""
+    if not _darwin():
+        return None, None
+    record = _AuditInfo()
+    try:
+        status = _libsystem().getaudit_addr(ctypes.pointer(record), ctypes.sizeof(record))
+    except (AttributeError, OSError):
+        return None, None
+    return (int(record.ai_auid), int(record.ai_asid)) if status == 0 else (None, None)
+
+
+def _manager_name() -> str | None:
+    """The launchd manager of this session (``Aqua``, ``Background``, ``LoginWindow``, ...), or ``None``.
+
+    ``/bin/launchctl`` (sealed system volume) by absolute path, with an empty environment and no input."""
+    if not _darwin():
+        return None
+    try:
+        done = subprocess.run([_LAUNCHCTL, "managername"], env={}, stdin=subprocess.DEVNULL,
+                              stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=5, check=False)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    try:
+        name = done.stdout.decode("ascii").strip()
+    except (AttributeError, UnicodeDecodeError):
+        return None
+    return name if done.returncode == 0 and _MANAGER_NAME.fullmatch(name) else None
+
+
+def session_facts() -> SessionFacts:
+    auid, asid = _audit_ids()
+    return SessionFacts(auid, asid, _manager_name())
+
+
+def session_refusal(session: SessionFacts, uid: int) -> str | None:
+    """The refusal for a session the dedicated account does not own, or of an unsupported kind; ``None``.
+
+    Own means ``auid == uid`` with a real session id (``asid > 0``). Only a session created for the account
+    carries its uid as audit user id: su and sudo keep the caller's audit session, and with it the caller's
+    Mach bootstrap namespace (pasteboard, AppleEvents, LaunchServices), so a lab started that way could reach
+    the operator's GUI services when uncontained. Shared by the backend and the T009 driver.
+    """
+    if session.auid is None or session.asid is None or session.auid != uid or session.asid <= 0:
+        return "session-not-own"
+    if session.kind not in SESSION_KINDS:
+        return "session-kind-unsupported"
+    return None
 
 
 _PROC_RUID_ONLY, _PROC_PIDTASKINFO = 5, 4
@@ -1274,6 +1358,11 @@ class MacOSContainment(ContainmentBackend):
             raise LabError("dedicated-user-required") from None
         uid = account.pw_uid
         _require(uid != 0 and os.getuid() == uid and os.geteuid() == uid, "dedicated-user-required")
+        session = session_facts()
+        evidence["session"] = {"kind": session.kind}  # a closed word or None; ids are not recorded
+        refusal = session_refusal(session, uid)
+        if refusal is not None:
+            raise LabError(refusal)
         try:
             operator_uid = pwd.getpwnam(self.operator_account).pw_uid
         except KeyError:
@@ -1295,7 +1384,7 @@ class MacOSContainment(ContainmentBackend):
             _require(stat.S_ISDIR(info.st_mode) and info.st_uid == uid
                      and os.path.realpath(directory) == directory and not info.st_mode & 0o077,
                      "workspace-unsafe")
-        environment = environment_sha256(policy, facts, uid, account_facts)
+        environment = environment_sha256(policy, facts, uid, account_facts, session.kind)
         evidence["environmentSha256"] = environment
         _require(environment == self.qualification.environment_sha256, "environment-drift")
         _require(self._clock() < min(self.qualification.expires_at, self.host_qualification.expires_at),

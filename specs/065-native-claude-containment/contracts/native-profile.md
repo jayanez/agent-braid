@@ -68,5 +68,6 @@ The environment SHA-256 is the canonical digest of: OS product version and
 build, architecture, isolation mechanism identity and binary hash (NC-2: dedicated user plus `sandbox-exec`),
 profile/policy bytes, Claude executable hash and version, credential method
 identifier (never a secret), network allow-list and enforcing component hash,
-limit values and probe catalog version. Any change produces a new hash, which
-fails both `_check_backend` and `_check_transport` until re-qualified.
+limit values and probe catalog version, and (founder amendment of NC-2, 2026-11-13) the launchd session kind
+of the dedicated account's own session (`Aqua` or `Background`; the audit session id is not an input). Any
+change produces a new hash, which fails both `_check_backend` and `_check_transport` until re-qualified.
