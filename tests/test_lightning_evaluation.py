@@ -87,15 +87,22 @@ class PairTests(unittest.TestCase):
     def test_refuses_missing_host_and_bad_bindings(self):
         for overrides in ({'heldout_sha256': 'x'}, {'protocol_sha256': ''},
                           {'costs': {'A': {}}}, {'required_hosts': ('claude-code', 'opencode')},
+                          {'required_hosts': (1,)}, {'required_hosts': ('claude-code', 'claude-code')},
+                          {'costs': {'A': [('rollouts', 1)], 'C': {}}},
+                          {'costs': {'A': {'usd': float('nan')}, 'C': {}}},
+                          {'costs': {'A': {'note': 'candidate text'}, 'C': {}}},
+                          {'baseline': arm('A0', A0, 'misses', canary=-1)},
                           {'primary': {**arm('A2', A2, 'meets'), 'extra': 1}}):
             with self.assertRaises(LightningEvaluationError):
                 pair(**overrides)
 
     def test_candidates_by_hash_only(self):
         registration, report = pair()
-        for record in (registration, report):
-            self.assertNotIn(b'description', record.canonical_bytes)
-            self.assertNotIn(b'text', record.canonical_bytes)
+        for entry in registration.to_dict()['arms'].values():
+            self.assertEqual(set(entry), {'arm', 'role', 'candidateSha256'})
+        # Missed prompt ids in the arm summaries are not copied into the report.
+        self.assertNotIn(b'h-01', report.canonical_bytes)
+        self.assertEqual(report.to_dict()['costs'], {'A': {'rollouts': 30}, 'C': {'rollouts': 30}})
 
 
 class H1RuleTests(unittest.TestCase):

@@ -23,13 +23,13 @@ clock, and ``executionAuthorization`` is always false.
 from __future__ import annotations
 
 from collections.abc import Mapping
-from hashlib import sha256
+import math
 import re
 from typing import Any
 
 from .harness_evaluation import (REGISTRATION_FORMAT, REPORT_FORMAT, EvaluationRecord, Registration,
                                  _record)
-from .system_one import canonical
+from .system_one import digest
 
 REQUIRED_HOSTS = ("claude-code",)  # Amendment 1 (2026-11-13)
 SOURCE = "spec072-lightning-heldout"
@@ -62,6 +62,13 @@ def _hash(value: Any) -> bool:
 
 def _count(value: Any) -> bool:
     return type(value) is int and value >= 0
+
+
+def _cost(value: Any) -> bool:
+    """A cost table: string keys and non-negative finite numbers only (no text)."""
+    return isinstance(value, Mapping) and all(
+        type(k) is str and (_count(v) or (type(v) is float and math.isfinite(v) and v >= 0))
+        for k, v in value.items())
 
 
 def _arm(result: Any, slot: str, hosts: tuple[str, ...]) -> dict:
@@ -106,9 +113,11 @@ def spec049_pair(*, baseline: Mapping, primary: Mapping, heldout_sha256: str, pr
                  required_hosts: tuple[str, ...] = REQUIRED_HOSTS) -> tuple[Registration, EvaluationRecord]:
     """Registration (A = A0, C = A2) and the H1 report bound to it by ``registrationSha256``."""
     _require(type(required_hosts) is tuple and required_hosts
+             and all(type(h) is str and h for h in required_hosts)
              and len(set(required_hosts)) == len(required_hosts), "invalid-hosts")
     _require(_hash(heldout_sha256) and _hash(protocol_sha256), "invalid-binding")
-    _require(isinstance(costs, Mapping) and set(costs) == {"A", "C"}, "invalid-costs")
+    _require(isinstance(costs, Mapping) and set(costs) == {"A", "C"}
+             and all(_cost(v) for v in costs.values()), "invalid-costs")
     a0 = _arm(baseline, "A", required_hosts)
     a2 = _arm(primary, "C", required_hosts)
     arm_c_is_base = a2["candidateSha256"] == a0["candidateSha256"]
@@ -133,6 +142,6 @@ def spec049_pair(*, baseline: Mapping, primary: Mapping, heldout_sha256: str, pr
     report = _record(EvaluationRecord, {
         "format": REPORT_FORMAT, "source": SOURCE, "registrationSha256": registration.sha256,
         "cohort": "native", "refinement": refinement, "h1": h1, "strata": strata,
-        "costs": costs, "costReportSha256": sha256(canonical(costs)).hexdigest(),
+        "costs": costs, "costReportSha256": digest(costs),
         "pendingEndpoints": list(PENDING_ENDPOINTS), "executionAuthorization": False})
     return registration, report
