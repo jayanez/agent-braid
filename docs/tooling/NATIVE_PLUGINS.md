@@ -454,6 +454,9 @@ not `--host all`, which would try OpenCode), and for OpenCode remove the plugin 
 from the configuration (`opencode plugin remove`), since alpha.6 has no OpenCode
 package. The registry and results are accepted unchanged by alpha.6.
 
+Version 0.1.0-alpha.8 (SPEC-069) is a prepared candidate, not yet published: see its
+[release notes](#release-notes-for-010-alpha8-candidate).
+
 ## `analyze-work` request kinds (SPEC-069, unreleased)
 
 This section describes `develop` after SPEC-069. None of it is in a published plugin:
@@ -564,31 +567,33 @@ writes `docs/api.md` also declares a `read` of `src/db.py`, which the scorer doe
 expect. Whether the cause is the guidance, the prompt or the scoring rule is not
 established. The `final-no-schema` ablation was not run on the held-out set.
 
-### Release-note draft for the next alpha
+### Release notes for 0.1.0-alpha.8 (candidate)
 
-Draft for the plugin release that ships SPEC-069 (planned `0.1.0-alpha.8`). The owner
-reviews it in T012; nothing has been published, tagged or versioned.
+Final notes for the plugin release that ships SPEC-069, version `0.1.0-alpha.8`
+(SPEC-069 T012). The version is bumped on `develop`, but nothing has been published or
+tagged: publication waits for the owner's explicit yes on the built candidate
+([`evidence/procedure_012-candidate.json`](../../specs/069-aim-request-authoring/evidence/procedure_012-candidate.json)).
+Until then `0.1.0-alpha.7` is the published version.
 
-> **`analyze-work` request authoring (SPEC-069).**
+> **Version 0.1.0-alpha.8: `analyze-work` request authoring (SPEC-069), closes #1080.**
+> Adds no registry migration.
 >
 > - **New `units` kind.** `analyze-work` now accepts `kind` `units`. List units with
 >   an `id`, optional `dependencies` and `effects` of `{kind, resource}`, where
 >   `resource` is a workspace-relative path. Agent Braid builds the AIM records,
 >   always records coverage as `partial`, and returns the report with the
 >   constructed AIM request, which can be sent again with `kind` `aim`.
-> - **Supersedes the interim guidance of PR #1099.** That guidance described the
->   AIM envelope in the tool description and gave a complete AIM example in the
->   analyze skill, because hosts had to guess the request shape. It stays valid for
+> - **Schema in the tool definition (#1080).** The `analyze-work` input schema now
+>   declares each request form instead of only `object | array`. It was observed
+>   exposed to the model, with `request` received as a JSON object, in Claude Code
+>   2.1.311, Codex 0.167.0-alpha.4.1 and OpenCode 2.1.4 (macOS).
+> - **Analyze skill guidance.** The packaged analyze skill gives one checked example
+>   per kind. It supersedes the interim guidance of PR #1099, which described the AIM
+>   envelope in the tool description and gave a complete AIM example in the skill
+>   because hosts had to guess the request shape. That guidance stays valid for
 >   `kind` `aim`; `units` is the simpler path for simple requests.
 > - **Nothing else changes for existing kinds.** The `aim` and `git` kinds, their
 >   reports and `analysisId` are unchanged, except for the label below.
-> - **Shadow episodes.** System One shadow episodes use `analysisKind` `units` for
->   these calls.
-> - **Platforms.** Windows path semantics are tested for normalization only.
-> - **Schema in the tool definition.** The `analyze-work` input schema now declares
->   each request form. It was observed exposed to the model, with `request` received
->   as a JSON object, in Claude Code 2.1.311, Codex 0.167.0-alpha.4.1 and OpenCode
->   2.1.4 (one session each, macOS).
 > - **Refusals** name a JSON Pointer and the expected form, or a fixed code for
 >   semantic errors. They never echo request values.
 > - **Declared-not-observed label.** `independent-candidate` pairs backed only by
@@ -602,15 +607,51 @@ reviews it in T012; nothing has been published, tagged or versioned.
 >   `analysis-input` schema describes the envelope, a single record and a nonempty
 >   array. No contract version changes; `units` adds its own request version
 >   `0.1.0-alpha`.
-> - **Measured host validity.** In held-out runs, Claude Code made 27/30 valid
->   requests at first attempt, OpenCode 27/30 and Codex 24/30. This is below the
->   project's own 10/10-within-one-retry target, an accepted deviation.
-> - **Rollback.** Reinstall `0.1.0-alpha.7` from tag `agent-braid--v0.1.0-alpha.7`.
->   It refuses a saved `units` request with `analyze-work refused: Unsupported
->   analysis kind`. A saved `constructedRequest` still replays through `kind` `aim`
->   there, and saved `aim` and `git` requests are unaffected.
+> - **Shadow episodes.** System One shadow episodes use `analysisKind` `units` for
+>   these calls.
+> - **Activity viewer (bundled CLI, SPEC-061 VIS.1d).** `view serve` adds a dashboard,
+>   a live Loom, a plan map, Explore 3D, an audit view and four-state evidence;
+>   `view open` opens the viewer in another browser. `view serve --telemetry local`
+>   is a new opt-in (default off) that counts viewer use by calls only
+>   ([viewer guide](VIEWER.md#usage-telemetry)). Telemetry exports are now batch v3;
+>   all earlier batch versions still merge.
+> - **Braid Lightning consent (experimental, default off).** `plugin setup --lightning
+>   lab|off` records consent for the Braid Lightning optimization laboratory, and the
+>   bundled CLI gains `lightning init|validate|status|purge|run|report`. The MCP server
+>   never starts a run and nothing is promoted without a human decision. The setup
+>   skill describes it only when the user asks.
+> - **No build paths in the package.** The bundled runtime no longer ships the unused
+>   console scripts in `site-packages/bin` or the `direct_url.json` of the Agent Braid
+>   wheel. In earlier versions both carried the builder's local paths. The plugin
+>   starts only through `launch`, so nothing that worked before changes. The build now
+>   stops if a packaged file contains the checkout, build folder or build environment
+>   path (`tests/test_native_plugin_build.py`).
+>
+> **Limits.**
+>
+> - **Measured host validity, D4 not met.** In held-out runs, Claude Code made 27/30
+>   valid requests at first attempt, OpenCode 27/30 and Codex 24/30 (Codex valid on
+>   7 of 10 prompts). This is below the project's own target (at least 8/10 prompts at
+>   first attempt and 10/10 within one retry, per host), which no host meets. The owner
+>   accepted it as a documented deviation on 2026-11-12; it is not a pass.
+> - **HELD-04.** One held-out prompt failed every trial on every host: the unit that
+>   writes `docs/api.md` also declares a `read` of `src/db.py`, which the scorer does
+>   not expect. Whether the guidance, the prompt or the scoring rule causes it is not
+>   established.
+> - **Schema delivery is one observation.** The T005 probe is one session per host and
+>   arm on macOS, an observation and not a sample. Linux and other host versions were
+>   not probed.
+> - **Platforms.** Windows path semantics are tested for normalization only.
+>
+> **Rollback.** Reinstall `0.1.0-alpha.7` from tag `agent-braid--v0.1.0-alpha.7`.
+> It refuses a saved `units` request with `analyze-work refused: Unsupported
+> analysis kind`. A saved `constructedRequest` still replays through `kind` `aim`
+> there, and saved `aim` and `git` requests are unaffected. If you recorded Braid
+> Lightning consent, apply `plugin setup --lightning off` first: alpha.7 refuses a
+> registry that records it. Alpha.7 cannot merge a v3 telemetry batch exported by
+> alpha.8.
 
-Sources for the draft:
+Sources for the notes:
 
 - `units`, the #1099 transition, shadow and Windows: the T014 text in
   [compatibility.md](../../specs/069-aim-request-authoring/compatibility.md#release-note-text-replacing-the-interim-guidance-of-pr-1099)
@@ -620,7 +661,9 @@ Sources for the draft:
   [`evidence/alpha7-replay.json`](../../specs/069-aim-request-authoring/evidence/alpha7-replay.json)).
 - Refusals: T007
   ([`evidence/procedure_007.json`](../../specs/069-aim-request-authoring/evidence/procedure_007.json)).
-- Label: T015. Schema delivery: T005. Measured validity: T010.
+- Label: T015. Schema delivery: T005. Measured validity, D4 and HELD-04: T010.
+- Viewer: SPEC-061 VIS.1d (#1086, #1094, #1095, #1098). Braid Lightning consent: SPEC-070
+  BL.0 (#1164); its registry check is in `agent_braid/plugin_registry.py`.
 
 ## Storage, updates and removal
 

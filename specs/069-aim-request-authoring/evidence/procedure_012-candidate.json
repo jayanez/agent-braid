@@ -1,0 +1,157 @@
+{
+  "procedure": "procedure_012",
+  "task": "SPEC-069 T012",
+  "status": "candidate-pending-owner-yes",
+  "label": "CANDIDATE EVIDENCE: nothing is tagged, pushed to plugin-dist or published; publication requires the owner's recorded explicit yes (procedure_012).",
+  "generatedAt": "2026-11-13",
+  "candidate": {
+    "version": "0.1.0-alpha.8",
+    "branch": "release/069-alpha8",
+    "sourceCommit": "c0271812fc0c81032e2621881e543cabc500881e",
+    "sourceDirty": false,
+    "build": "scripts/build_native_plugin.py from a fresh local clone at sourceCommit, Python 3.12.13, platforms macos-arm64 and linux-x86_64",
+    "packageFiles": 8107,
+    "outputFiles": 8112,
+    "sha256": {
+      "plugins/agent-braid/package-inventory.json": "18f62e54e515f850fa741601dc5bb6dc7aafb1396c9e2be302ec4ffeeb5d8fe7",
+      "plugins/agent-braid/provenance.json": "b6b162fb066963496872ae2ea9ff964af77504347dd5106ef0c743c3ddcc2677",
+      "sources/agent-braid-0.1.0-alpha.8-source.tar.gz": "10c55f76fd7e410c6fecaabbd11452b83b9a86e9496af206a54e86e2ce1f642d",
+      "treeManifest": "f54fdfc8ce84a3d85019990ba7d490ad093ccdf6bed34a49d47aff51b02740bc"
+    },
+    "treeManifestDefinition": "SHA-256 of `find . -type f -print0 | LC_ALL=C sort -z | xargs -0 shasum -a 256` run in the build output root",
+    "doctor": {
+      "pluginVersion": "0.1.0-alpha.8",
+      "version": "0.1.0a2",
+      "package": "verified",
+      "files": 8107,
+      "home": "empty resolved temporary home"
+    },
+    "supersedes": {
+      "sourceCommit": "a741c5a1756eea5976d9717943b393c5a5a4a86f",
+      "treeManifest": "203018e83fade94c4e2e0a1fc4311cb4b8d7a5357883cda4a4a09c1111bb06b6",
+      "reason": "Owner decision 2026-11-13 (\"Fix first\"): the first candidate shipped the builder's home path in 12 unused console scripts and 2 direct_url.json files, as alpha.4 to alpha.7 did."
+    }
+  },
+  "packageEqualsCandidate": {
+    "provenanceSourceCommit": "c0271812fc0c81032e2621881e543cabc500881e",
+    "treeManifestAfterSmoke": "f54fdfc8ce84a3d85019990ba7d490ad093ccdf6bed34a49d47aff51b02740bc",
+    "smokeUsedPluginDir": "the build output itself (--plugin-dir); the driver probes disposable copies, and the tree manifest was unchanged after all three hosts",
+    "rebuildReproducibility": "A second build of the same commit from another clone differed in 31 of 8126 files only: provenance.json, package-inventory.json, the source archive, dist-info RECORD and direct_url.json, and site-packages/bin console scripts, all of which embed the build directory path or archive mtimes. All other files were byte-identical. A rebuild is therefore not byte-equal; publish these exact candidate bytes. Measured on the first candidate (a741c5a1). This candidate no longer ships the console scripts or direct_url.json; reproducibility was not re-measured, so these exact bytes are published.",
+    "sourceAfterMerge": "After sourceCommit c0271812 the PR changes only specs/069-aim-request-authoring/ (evidence and assurance pins) and docs/tooling/NATIVE_PLUGINS.md (the release-note line on the build-path fix). Neither is in the plugin tree; the source archive in the package is the corresponding source at sourceCommit. At publication, `git diff --name-only c0271812 <merge>` must list only paths under specs/069-aim-request-authoring/ and docs/tooling/NATIVE_PLUGINS.md."
+  },
+  "ci": {
+    "pullRequest": "https://github.com/jayanez/agent-braid/pull/1342",
+    "prValidate": {
+      "head": "b7e2d05d28888d97845691f7e2b7ea3736a3c9af",
+      "run": "https://github.com/jayanez/agent-braid/actions/runs/43433216546",
+      "result": "validate aggregate pass (complete Python test suite, Spec Kit structure and render, governance, fast invariants)"
+    },
+    "quickProfileLocal": "Escalated to the full suite because scripts/ and tests/ changed; interrupted by a 25-minute local timeout with no failure observed. Per AGENTS.md the CI validate aggregate is the pr-profile evidence.",
+    "validateSpecKit": "passed from a fresh GitHub clone after scripts/restore_public_spec_history.py at a93c7d0e+assurance fix (b7e2d05d)",
+    "note": "Commits after b7e2d05d change only this file; CI re-runs on the final head."
+  },
+  "smoke": {
+    "command": "python -m scripts.spec069_native_runs --probe-schema --arm final --plugin-dir <build>/plugins/agent-braid",
+    "pass": "analyze-work exposed to the model; aim and units requests reach the server as JSON objects; served definition equals the build fingerprint",
+    "hosts": {
+      "claude-code": {
+        "hostVersion": "2.1.311 (Claude Code)",
+        "model": "claude-sonnet-5-5",
+        "verdict": "pass",
+        "exposedToModel": true,
+        "callsAtServer": [
+          {
+            "kind": "aim",
+            "requestType": "object"
+          },
+          {
+            "kind": "units",
+            "requestType": "object"
+          }
+        ],
+        "requestAlwaysObject": true,
+        "servedBytesMatchFingerprint": true,
+        "loading": "deferred",
+        "protocolVersions": [
+          "2026-07-28"
+        ],
+        "access": "--auth token --keys-from-keychain; --check-login claude-code ok first"
+      },
+      "opencode": {
+        "hostVersion": "opencode v2.1.4",
+        "model": "openrouter/anthropic/claude-sonnet-5-5",
+        "verdict": "pass",
+        "exposedToModel": true,
+        "callsAtServer": [
+          {
+            "kind": "aim",
+            "requestType": "object"
+          },
+          {
+            "kind": "units",
+            "requestType": "object"
+          }
+        ],
+        "requestAlwaysObject": true,
+        "servedBytesMatchFingerprint": true,
+        "loading": "helper-before-call",
+        "protocolVersions": [
+          "2025-11-25"
+        ],
+        "access": "--keys-from-keychain (OpenRouter)"
+      },
+      "codex": {
+        "hostVersion": "codex-cli 0.167.0-alpha.4.1",
+        "model": "host default",
+        "verdict": "pass",
+        "exposedToModel": true,
+        "callsAtServer": [
+          {
+            "kind": "aim",
+            "requestType": "object"
+          },
+          {
+            "kind": "units",
+            "requestType": "object"
+          }
+        ],
+        "requestAlwaysObject": true,
+        "servedBytesMatchFingerprint": true,
+        "loading": "eager",
+        "protocolVersions": [
+          "2025-06-18"
+        ],
+        "access": "--auth subscription --auth-profile-dir ~/agent-braid-auth"
+      }
+    },
+    "evidence": {
+      "candidate-alpha8-smoke.json": "dfa2be166e2004cfa3047be132bf570193521b11d213e242efe5b240049f38d7",
+      "candidate-alpha8-smoke-codex.json": "00ecc883fe2c210542b8bc59e43ba17a1e3ef6c7cfa3b633d6d74904a3a9de45"
+    },
+    "limits": "One session per host on macOS arm64, arm final only; an observation, not a sample. Linux not exercised.",
+    "note": "Re-run on the c0271812 build. The first Codex attempt stopped before running because the dedicated Codex profile still registered the previous candidate's marketplace; it was removed and Codex re-run."
+  },
+  "spend": {
+    "claudeCodeUsd": 0.0768578,
+    "claudeCodeNote": "notional total_cost_usd reported by Claude Code under the OAuth token (subscription)",
+    "openRouterReportedCost": 0,
+    "codex": "subscription; no cost reported",
+    "totalCashUsdAtMost": 0.08,
+    "previousCandidateUsd": 0.0779588
+  },
+  "ownerDecision": {
+    "yes": null,
+    "date": null,
+    "note": "Fill from the owner's own words before any tag or plugin-dist push."
+  },
+  "buildPathFix": {
+    "change": "scripts/build_native_plugin.py removes site-packages/bin console scripts and dist-info direct_url.json written by pip --target (and their RECORD lines, other RECORD bytes kept), and stops the build if any packaged file contains the checkout, build folder or build virtualenv path",
+    "tests": "tests/test_native_plugin_build.py BuilderPathTests",
+    "removedFiles": 14,
+    "check": "no file in the c0271812 build output contains the builder's home path or account name (grep over all files, text and binary); third-party /Users/runner strings inside upstream wheels are left unchanged by owner decision",
+    "ownerDecisions": {
+      "scripts": "Remove them (Recommended)",
+      "thirdParty": "Leave them (Recommended)"
+    }
+  }
+}

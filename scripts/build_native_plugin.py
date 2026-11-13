@@ -23,7 +23,7 @@ sys.path.insert(0, str(ROOT))
 from agent_braid.plugin_package import file_hash, inventory, verify_package
 from agent_braid.tooling_assets import load_skill_bundle
 
-VERSION = '0.1.0-alpha.7'
+VERSION = '0.1.0-alpha.8'
 DISTRIBUTION_ATTRIBUTES = '* -text -filter -ident\n'
 WORKFLOWS_SOURCE = ROOT / 'integrations/agent-braid/plugin/workflows'
 OPENCODE_SOURCE = ROOT / 'integrations/agent-braid/plugin/opencode/index.js'
@@ -216,6 +216,49 @@ def _download(path, entry):
         raise ValueError('Cached runtime SHA-256 mismatch')
 
 
+def drop_target_install_artifacts(site):
+    """Remove what ``pip install --target`` writes outside the importable packages.
+
+    Console scripts land in ``site-packages/bin`` with the build interpreter's absolute path as their
+    first line, and a local wheel gets a ``direct_url.json`` holding the build folder. The product starts
+    only through ``launch``, so neither ships; their RECORD lines go too (other RECORD bytes, including
+    CRLF line ends, are kept exactly).
+    """
+    site = Path(site)
+    removed = []
+    scripts = site / 'bin'
+    if scripts.is_dir():
+        removed += sorted('bin/' + path.name for path in scripts.iterdir())
+        shutil.rmtree(scripts)
+    for dist_info in sorted(site.glob('*.dist-info')):
+        direct_url = dist_info / 'direct_url.json'
+        if direct_url.is_file():
+            direct_url.unlink()
+            removed.append(f'{dist_info.name}/direct_url.json')
+        record = dist_info / 'RECORD'
+        if record.is_file():
+            lines = record.read_bytes().splitlines(keepends=True)
+            kept = [line for line in lines if not line.startswith(b'../../bin/')
+                    and line.split(b',', 1)[0] != f'{dist_info.name}/direct_url.json'.encode()]
+            if kept != lines:
+                record.write_bytes(b''.join(kept))
+    return removed
+
+
+def check_no_builder_paths(tree, needles):
+    """Stop the build if any packaged file contains a local build path (interpreter, checkout, build folder)."""
+    tree = Path(tree)
+    patterns = sorted({os.fsencode(str(n)) for n in needles if n and len(str(n)) > 1}, key=len, reverse=True)
+    hits = []
+    for path in sorted(tree.rglob('*')):
+        if path.is_file() and not path.is_symlink():
+            data = path.read_bytes()
+            if any(pattern in data for pattern in patterns):
+                hits.append(path.relative_to(tree).as_posix())
+    if hits:
+        raise ValueError('Packaged files contain a local build path: ' + ', '.join(hits[:10]))
+
+
 def verify_engineering_marker(plugin):
     """The workflow directory and the engineering-only marker exist together or not at all."""
     plugin = Path(plugin)
@@ -278,6 +321,7 @@ def assemble(output, cache, *, platforms=None, allow_dirty=False, include_workfl
             subprocess.run(command, check=True)
             subprocess.run([sys.executable, '-m', 'pip', '--isolated', 'install', '--no-deps', '--no-compile',
                             '--target', str(site), str(wheel)], check=True)
+            drop_target_install_artifacts(site)
             aliases = materialize_runtime_links(target)
             bytecode = prepare_bytecode(target, platform)
             runtime_provenance[platform] = {**entry, 'pythonVersion': lock['pythonVersion'], 'build': lock['build'], 'bytecode': bytecode, 'materializedAliases': aliases}
@@ -385,6 +429,9 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
                                                 'files': inventory(plugin)})
         verify_package(plugin)
         verify_engineering_marker(plugin)
+        # Specific local paths only: a generic interpreter prefix such as /usr would match ordinary shebangs.
+        check_no_builder_paths(plugin, (ROOT, staging.resolve(), output.parent,
+                                        *([Path(sys.prefix).resolve()] if sys.prefix != sys.base_prefix else [])))
         shutil.rmtree(wheels)
         for path in staging.glob('extract-*'):
             shutil.rmtree(path)
