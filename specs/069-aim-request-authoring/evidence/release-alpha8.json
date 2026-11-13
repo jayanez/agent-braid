@@ -1,0 +1,64 @@
+{
+  "release": "0.1.0-alpha.8",
+  "specification": "SPEC-069",
+  "task": "T012",
+  "date": "2026-11-13",
+  "tag": "agent-braid--v0.1.0-alpha.8",
+  "tagObject": "c4c7e37ec0d913f40fa5c85e974eea3416586e48",
+  "distCommit": "7f914ae5ce04ac3294237da71a48276e014e68a8",
+  "distParent": "8f19b1b7a806ee88d8adb38145491abbfac376b5",
+  "distCommitMessage": "dist: Agent Braid 0.1.0-alpha.8 (source c027181)",
+  "sourceCommit": "c0271812fc0c81032e2621881e543cabc500881e",
+  "releasePr": "https://github.com/jayanez/agent-braid/pull/1342",
+  "releasePrMerge": "f923f73fe7c9e1791139b3fddc02a3736bdf4e94",
+  "releasePrHead": "4848d9c489ca24c1d71ca4e50d58fb488cc6d8bb",
+  "githubRelease": {
+    "url": "https://github.com/jayanez/agent-braid/releases/tag/agent-braid--v0.1.0-alpha.8",
+    "prerelease": true,
+    "latest": false
+  },
+  "sha256": {
+    "plugins/agent-braid/package-inventory.json": "18f62e54e515f850fa741601dc5bb6dc7aafb1396c9e2be302ec4ffeeb5d8fe7",
+    "plugins/agent-braid/provenance.json": "b6b162fb066963496872ae2ea9ff964af77504347dd5106ef0c743c3ddcc2677",
+    "sources/agent-braid-0.1.0-alpha.8-source.tar.gz": "10c55f76fd7e410c6fecaabbd11452b83b9a86e9496af206a54e86e2ce1f642d",
+    "buildOutputTreeManifest": "f54fdfc8ce84a3d85019990ba7d490ad093ccdf6bed34a49d47aff51b02740bc"
+  },
+  "files": {
+    "tagTreeExcludingGit": 8113,
+    "packageInventory": 8107
+  },
+  "checks": [
+    "git diff --name-only c0271812 4848d9c4 lists only specs/069-aim-request-authoring/ and docs/tooling/NATIVE_PLUGINS.md",
+    "the squash merge f923f73f carries the PR head tree for every path the PR changed",
+    "build output tree manifest unchanged after the 3-host smoke and immediately before publication (f54fdfc8...)",
+    "plugin doctor on the plugin-dist commit with an empty canonical home: pluginVersion 0.1.0-alpha.8, package 0.1.0a2, verified 8107 files",
+    "no tracked file on the plugin-dist commit contains the builder's home path",
+    "the tag did not exist on origin before the push; plugin-dist and the tag were pushed without force",
+    "a fresh public clone of the tag equals the build output under diff -r except the root README.md, which exists only on plugin-dist"
+  ],
+  "notInRelease": "develop at f923f73f also contains agent_braid/harness_containment_macos.py, harness_qualification_probes.py and lightning_evaluation.py changes merged by other PRs after the candidate branch point; they are not in alpha.8 (source identity c0271812).",
+  "deviations": [
+    "#1080 was closed automatically when PR #1342 merged (2026-11-13T15:58Z), a few minutes before the tag push, not after it as procedure_012 requires; the evidence comment was posted after publication (https://github.com/jayanez/agent-braid/issues/1080#issuecomment-6858157175)."
+  ],
+  "followUps": {
+    "d4": "https://github.com/jayanez/agent-braid/issues/1343"
+  },
+  "ownerDecision": {
+    "date": "2026-11-13",
+    "words": {
+      "publish": "Yes, publish (Recommended)",
+      "homePath": "Fix first",
+      "githubRelease": "Tag + Release page",
+      "scripts": "Remove them (Recommended)",
+      "thirdPartyPaths": "Leave them (Recommended)",
+      "issue1080": "Close + new D4 issue (Recommended)",
+      "checks": "CI + 3-host smoke (Recommended)",
+      "where": "Lo hacemos aquí"
+    },
+    "note": "Answers to the parent session's questions, quoted as selected by the owner."
+  },
+  "notObserved": [
+    "Linux x86_64 execution (built only)",
+    "a native install or update from the published tag on any host (the smoke ran on the build output)"
+  ]
+}

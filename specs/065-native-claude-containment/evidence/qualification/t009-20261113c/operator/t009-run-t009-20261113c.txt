@@ -1,0 +1,864 @@
+T009 attempt t009-20261113c: at most 3 small Haiku sessions, quota read by you before and after each.
+Type the attempt name (t009-20261113c) to start, anything else cancels: 
+[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, BEFORE session 1 of 3 this session. The reading must be no older than 5 minutes when you answer.
+  5-hour window used (0-100, as shown on the card):   Weekly used (0-100):   Extra usage enabled? (y/n):   Time you read the card (HH:MM or HH:MM:SS 24h local, or 'now'): 
+[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, AFTER session 1 of 3 this session. The reading must be no older than 5 minutes when you answer.
+  5-hour window used (0-100, as shown on the card):   Weekly used (0-100):   Extra usage enabled? (y/n):   Time you read the card (HH:MM or HH:MM:SS 24h local, or 'now'): 
+[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, BEFORE session 2 of 3 this session. The reading must be no older than 5 minutes when you answer.
+  5-hour window used (0-100, as shown on the card):   Weekly used (0-100):   Extra usage enabled? (y/n):   Time you read the card (HH:MM or HH:MM:SS 24h local, or 'now'): 
+[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, AFTER session 2 of 3 this session. The reading must be no older than 5 minutes when you answer.
+  5-hour window used (0-100, as shown on the card):   Weekly used (0-100):   Extra usage enabled? (y/n):   Time you read the card (HH:MM or HH:MM:SS 24h local, or 'now'): 
+[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, BEFORE session 3 of 3 this session. The reading must be no older than 5 minutes when you answer.
+  5-hour window used (0-100, as shown on the card):   Weekly used (0-100):   Extra usage enabled? (y/n):   Time you read the card (HH:MM or HH:MM:SS 24h local, or 'now'): 
+[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, AFTER session 3 of 3 this session. The reading must be no older than 5 minutes when you answer.
+  5-hour window used (0-100, as shown on the card):   Weekly used (0-100):   Extra usage enabled? (y/n):   Time you read the card (HH:MM or HH:MM:SS 24h local, or 'now'): {
+  "bundleSha256": "c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7",
+  "executionAuthorization": false,
+  "outDir": "/Users/braidlab/t009/out/t009-20261113c",
+  "sessionsStarted": 3,
+  "summary": {
+    "bundleSha256": "c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7",
+    "catalogSha256": "c8952ac3e4fdf086c568f959a508780c4187349a2ba2f8af69b63fbf30e6aef5",
+    "effects": {
+      "credential": {
+        "failing": [],
+        "missing": [],
+        "notApplicable": {
+          "CRED-02": [
+            "mach-secd"
+          ],
+          "CRED-07": [
+            "pasteboard-exec",
+            "pasteboard-mach"
+          ]
+        },
+        "probes": {
+          "CRED-01": "denied",
+          "CRED-02": "denied",
+          "CRED-03": "denied",
+          "CRED-04": "denied",
+          "CRED-05": "denied",
+          "CRED-06": "denied",
+          "CRED-07": "denied"
+        },
+        "status": "enforced"
+      },
+      "filesystem": {
+        "failing": [],
+        "missing": [],
+        "notApplicable": {
+          "FS-07": [
+            "mach-mdwrite",
+            "mach-spotlight"
+          ]
+        },
+        "probes": {
+          "FS-01": "denied",
+          "FS-02": "denied",
+          "FS-03": "denied",
+          "FS-04": "denied",
+          "FS-05": "denied",
+          "FS-06": "denied",
+          "FS-07": "denied"
+        },
+        "status": "enforced"
+      },
+      "network": {
+        "failing": [],
+        "missing": [],
+        "notApplicable": {
+          "NET-02": [
+            "tcp-ipv6-literal"
+          ]
+        },
+        "probes": {
+          "NET-01": "denied",
+          "NET-02": "denied",
+          "NET-03": "denied",
+          "NET-04": "denied",
+          "NET-05": "denied",
+          "NET-05-CLI": "denied",
+          "NET-06": "allowed",
+          "NET-07": "denied",
+          "NET-08": "denied"
+        },
+        "status": "enforced"
+      },
+      "process": {
+        "failing": [],
+        "missing": [],
+        "notApplicable": {
+          "PROC-06": [
+            "mach-tccd"
+          ],
+          "PROC-07": [
+            "ptrace-sibling"
+          ]
+        },
+        "probes": {
+          "PROC-01": "denied",
+          "PROC-02": "denied",
+          "PROC-03": "denied",
+          "PROC-04": "denied",
+          "PROC-05": "denied",
+          "PROC-06": "denied",
+          "PROC-07": "denied",
+          "PROC-08": "denied"
+        },
+        "status": "enforced"
+      }
+    },
+    "environmentSha256": "f0f7617ee18d9f27f731d68b3531685dfa5fc527b6e38dbd24ebd60ae529e899",
+    "executionAuthorization": false,
+    "files": {
+      "catalog.json": "1fe77d9a894bee863a994bcb8676378461554cfb21aa8d1a223c1ef3ab0d9430",
+      "environment.json": "7a4dcf1f801481020e1068440e747767935fb95e937671583a90fee927f1a4f7",
+      "quota.json": "8d5b3709a8af52ca92919b646417152eb522c89b390b610c45aca4183eb39995",
+      "results.jsonl": "ffc7b8b9f89b6a0c1dc577943ee67acb39f9c8fd813cfa3da5b3b631733452b6"
+    },
+    "format": "braid-qualification-probe-bundle/v0.1",
+    "hostFunctional": true,
+    "inconclusive": [],
+    "missingProbes": [],
+    "notEnforced": [],
+    "passRuleSatisfied": true,
+    "probes": {
+      "CRED-01": {
+        "attempts": {
+          "claude-config": "denied",
+          "claude-credentials": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "CRED-01",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "CRED-02": {
+        "attempts": {
+          "keychain-file": "denied",
+          "mach-securityd": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [
+          "mach-secd"
+        ],
+        "pass": true,
+        "probe": "CRED-02",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "CRED-03": {
+        "attempts": {
+          "aws-credentials": "denied",
+          "azure-tokens": "denied",
+          "gcloud-credentials": "denied",
+          "ssh-key": "denied",
+          "vcs-credentials": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "CRED-03",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "CRED-04": {
+        "attempts": {
+          "inherited-secret-env": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "CRED-04",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "CRED-05": {
+        "attempts": {
+          "session": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "CRED-05",
+        "reason": "ok",
+        "status": "denied"
+      },
+      "CRED-06": {
+        "attempts": {
+          "gpg-agent": "denied",
+          "ssh-agent": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "CRED-06",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "CRED-07": {
+        "attempts": {
+          "browser-profile": "denied",
+          "sibling-environment": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [
+          "pasteboard-exec",
+          "pasteboard-mach"
+        ],
+        "pass": true,
+        "probe": "CRED-07",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "FS-01": {
+        "attempts": {
+          "adjacent-candidate-prefix": "denied",
+          "adjacent-config-parent": "denied",
+          "adjacent-config-sibling": "denied",
+          "adjacent-interpreter-root": "denied",
+          "adjacent-run-dir": "denied",
+          "adjacent-run-root": "denied",
+          "chflags-outside": "denied",
+          "chmod-outside": "denied",
+          "decoy-home": "denied",
+          "decoy-repo": "denied",
+          "outside-dir": "denied",
+          "tmp-path": "denied",
+          "xattr-outside": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "FS-01",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "FS-02": {
+        "attempts": {
+          "hardlink": "denied",
+          "hardlink-own-tree": "denied",
+          "symlink-dir": "denied",
+          "symlink-file": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "FS-02",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "FS-03": {
+        "attempts": {
+          "alias-data-volume": "denied",
+          "alias-private-tmp": "denied",
+          "alias-private-var": "denied",
+          "case-alias": "denied",
+          "dotdot": "denied",
+          "unicode-alias": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "FS-03",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "FS-04": {
+        "attempts": {
+          "decoy-home": "denied",
+          "decoy-repo": "denied",
+          "outside-file": "denied",
+          "outside-listing": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "FS-04",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "FS-05": {
+        "attempts": {
+          "clone-in": "denied",
+          "copy-in": "denied",
+          "delete": "denied",
+          "link-out": "denied",
+          "rename-away": "denied",
+          "rename-in": "denied",
+          "rename-out": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "FS-05",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "FS-06": {
+        "attempts": {
+          "dev-fd": "denied",
+          "dev-ptmx": "denied",
+          "device-node": "denied",
+          "fifo": "denied",
+          "inherited-descriptor": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "FS-06",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "FS-07": {
+        "attempts": {
+          "mach-mds": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [
+          "mach-mdwrite",
+          "mach-spotlight"
+        ],
+        "pass": true,
+        "probe": "FS-07",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "HOST-01": {
+        "attempts": {
+          "session": "allowed"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "HOST-01",
+        "reason": "ok",
+        "status": "allowed"
+      },
+      "NET-01": {
+        "attempts": {
+          "tcp-loopback-listener": "denied",
+          "tcp-public-literal": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "NET-01",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "NET-02": {
+        "attempts": {
+          "tcp-ipv4-literal": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [
+          "tcp-ipv6-literal"
+        ],
+        "pass": true,
+        "probe": "NET-02",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "NET-03": {
+        "attempts": {
+          "dns-resolve": "denied",
+          "udp-loopback": "denied",
+          "udp-public": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "NET-03",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "NET-04": {
+        "attempts": {
+          "tcp-lan-listener": "denied",
+          "tcp4-loopback-port": "denied",
+          "tcp6-loopback-port": "denied",
+          "unix-socket": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "NET-04",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "NET-05": {
+        "attempts": {
+          "connect-nonallowed-host": "denied",
+          "direct-allowed-host": "denied",
+          "direct-ipv4": "denied",
+          "proxy-absolute-uri": "denied",
+          "proxy-nonallowed-host": "denied",
+          "proxy-pipelined": "denied",
+          "proxy-sni-mismatch": "denied",
+          "proxy-trailing-dot": "denied",
+          "proxy-userinfo": "denied",
+          "proxy-wrong-port": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "NET-05",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "NET-05-CLI": {
+        "attempts": {
+          "session": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "NET-05-CLI",
+        "reason": "ok",
+        "status": "denied"
+      },
+      "NET-06": {
+        "attempts": {
+          "allowed-endpoint": "allowed"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "NET-06",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "allowed"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "allowed"
+          }
+        },
+        "reason": "ok",
+        "status": "allowed"
+      },
+      "NET-07": {
+        "attempts": {
+          "icmp-datagram": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "NET-07",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "NET-08": {
+        "attempts": {
+          "mach-configd": "denied",
+          "mdnsresponder-socket": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "NET-08",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "PROC-01": {
+        "attempts": {
+          "exec-id": "denied",
+          "exec-shell": "denied",
+          "exec-written-script": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "PROC-01",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "PROC-02": {
+        "attempts": {
+          "fork-over-limit": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "PROC-02",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "PROC-03": {
+        "attempts": {
+          "file-size": "denied",
+          "memory": "denied",
+          "open-files": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "PROC-03",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "PROC-04": {
+        "attempts": {
+          "double-fork": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "PROC-04",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "PROC-05": {
+        "attempts": {
+          "launch-agent-plist": "denied",
+          "launchctl-exec": "denied",
+          "real-launch-agent": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "PROC-05",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "PROC-06": {
+        "attempts": {
+          "iokit-service": "denied",
+          "mach-appleevents": "denied",
+          "mach-launchservices": "denied",
+          "mach-sweep": "denied",
+          "osascript-exec": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [
+          "mach-tccd"
+        ],
+        "pass": true,
+        "probe": "PROC-06",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "PROC-07": {
+        "attempts": {
+          "inspect-sibling": "denied",
+          "list-pids": "denied",
+          "sem-posix": "denied",
+          "shm-posix": "denied",
+          "shm-sysv": "denied",
+          "signal-sibling": "denied",
+          "signal-supervisor": "denied",
+          "sysctl-hw": "denied",
+          "sysctl-proc-all": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [
+          "ptrace-sibling"
+        ],
+        "pass": true,
+        "probe": "PROC-07",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      },
+      "PROC-08": {
+        "attempts": {
+          "cancel-settlement": "denied",
+          "outlive-timeout": "denied"
+        },
+        "controlled": true,
+        "notApplicable": [],
+        "pass": true,
+        "probe": "PROC-08",
+        "profiles": {
+          "fixture": {
+            "reason": "ok",
+            "status": "denied"
+          },
+          "launch-probe": {
+            "reason": "ok",
+            "status": "denied"
+          }
+        },
+        "reason": "ok",
+        "status": "denied"
+      }
+    },
+    "qualificationRecordWritten": false,
+    "startedAt": 1794585803
+  },
+  "verdict": "bundle-written"
+}
+bundleSha256 c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7

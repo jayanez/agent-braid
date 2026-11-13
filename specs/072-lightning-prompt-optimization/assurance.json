@@ -204,7 +204,7 @@
               "limits": "Fake hosts only (pipeline-only label); no model contacted. Fake-host outcomes do not depend on the skill text, so equality shows pipeline identity, not prompt quality.",
               "outcome": "passed: Baseline on fake hosts yields per-host trials, first-attempt and within-retry counts and Wilson intervals identical to a direct SPEC-071 fake-host run, with stored rewards replaying; it records the round-0 seed candidate with its text and a full-set devScore equal to the report's first-attempt rate; a modified seed changes the candidate sha256 in the summary (negative control); the base Algorithm.run is abstract.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_003.json",
-              "sha256": "1896573eb34d7fa03d558f3147976348a3a3e364f4e39cad31ada342338791c0"
+              "sha256": "b2eac0d48276b52b583de8ca33422601c44aa7ac1bd52e103ec13b84bf201fe7"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -228,7 +228,7 @@
               "limits": "Fake optimizer and synthetic body-dependent rewards; no model contacted. The full pre-call scan and the sandboxed optimizer host are evidenced by procedure_006. Evaluating a real candidate body through host rollouts is T009 work.",
               "outcome": "passed: With the preregistered parameters (beam 2, branch 2, 2 rounds, minibatch 5, 2 hosts, 3 repetitions) APO runs 1 then 2 parents with 2 then 4 children, 9 optimizer calls and 120 rollouts (20 + 40 search, 60 full evaluation of the best), as in the feasibility table; every APO candidate records its parent, round, two call ids, both passed contamination checks and the hash of the critique and edit templates; configuration defaults stop at the 120-rollout cap (unit-cap), configured rounds above 3 are capped at 3, the optimizer-call cap stops the run, and unusable edits are failed calls without candidates. Negative controls: an optimizer outside the runner channel is refused (optimizer-bypass), a non-fake channel is refused until the sandboxed host path exists (isolation-failed), and inputs with a held-out case id or the rollout canary are refused before any call (holdout-contamination).",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_004.json",
-              "sha256": "8d99c80e2d0a11b446b9896fe14ed40b8e1bac92261d199d24ab3ae09e5b264a"
+              "sha256": "19d8021fd3d4a9e72e301fe3133311aaf753585a34ad80d9f1074fef9d5e40b5"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -252,7 +252,7 @@
               "limits": "Fake optimizer and synthetic rewards; no model contacted. Implemented from the paper's description; no GEPA or DSPy code. The pre-call scan and sandboxed host are evidenced by procedure_006.",
               "outcome": "passed: The Pareto front over per-prompt D4 scores keeps exactly the non-dominated candidates (a dominated candidate and an equal score vector are excluded) and parent sampling follows the number of prompts each front member scores best on (0.75 observed for 3 of 4 prompts); a child whose minibatch score beats its parent's is accepted, fully evaluated (60 rollouts) and replaces the dominated seed on the front, while children that do not improve are recorded with a minibatch score only and never fully evaluated; with the preregistered settings a run costs 3 minibatches of 10 plus one full evaluation, and a second accepted child whose full evaluation would exceed 120 rollouts is not evaluated (unit-cap); the reflection input holds only the parent text and the parent's minibatch vectors; the same seed repeats parent and minibatch choices; an unusable reflection is a failed call. Negative control: an optimizer outside the runner channel is refused (optimizer-bypass).",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_005.json",
-              "sha256": "c8a2481115960d3601e2bb6d1b5e20d1a44e40b63d3172f34522aed5db1f2f3b"
+              "sha256": "f670c2c2fabd616cedaf98d5c33d083a7c3385ec228cb44d167fe606c6844070"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -300,7 +300,7 @@
               "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; wiring the algorithms into `agent-braid lightning run` with real candidate evaluation is T009 work.",
               "outcome": "passed: With budgets set low in fake runs each algorithm stops at the first applicable rule and records it in the run journal: unit-cap (APO at configuration defaults), optimizer-cap, no-improvement after 2 consecutive flat rounds, and a weekly-stop quota stop that carries the explicit `agent-braid lightning run --resume <run-id>` command; a refused optimizer input (holdout-contamination) stops the run with the refusal recorded and no call made; APO never runs more than 3 rounds; no run exceeds its rollout or optimizer-call cap (negative control). Resuming a quota-stopped APO or GEPA run with the same seed replays the journaled optimizer outputs and evaluations in order and reaches the same rounds, best candidate, rollouts and calls as an uninterrupted run without repeating any optimizer call; resuming with another seed or configuration is refused (resume-diverged). The journal is private and refuses unknown entry shapes.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_007.json",
-              "sha256": "f7e2777bdcceb943b8b70f019625366785487912f8913e94a7a3fd6b0b784e27"
+              "sha256": "2274a4564d8fd735efacc3afe1863e093d729a767dfe9a62796422d3015c9897"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -340,7 +340,7 @@
               "limits": "Static and import-closure checks cover the modules present at this commit; a fake-host run cannot show what a real host process writes outside the sandbox (SPEC-071 OS sandbox evidence covers that). Unchanged skill bytes are asserted for the repository copy only.",
               "outcome": "passed: A complete fake optimization run (baseline seed run, then a GEPA arm on fake hosts) leaves the repository analyze skill file byte- and mtime-identical and reports the best candidate as a 64-hex bestSha256 with no skill text in the summary. Every agent_braid/lightning_*.py module and scripts/spec072_*.py script imports only the standard library, other lightning modules and an explicit allowlist (plugin_registry, harness_host_claude, the T013 format-only harness_evaluation and system_one, and the SPEC-069 scoring, native-run, fixture and plugin-build scripts); no lightning module names decide, begin, execute, recover, harness_promotion, import_module, __import__ or any grant identifier; importing all of them in a fresh interpreter loads no promotion, lifecycle, runtime-policy, git-execution, scheduler or MCP module; no MCP server module or integration JSON manifest mentions lightning; pyproject has no runtime dependency and no lightning extra. Negative control: adding `from .harness_promotion import decide` to a lightning module fails the allowlist, name and import-closure checks.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_009.json",
-              "sha256": "cb8d49f00e2dce398264cec820479cd47fa82d9f7ed7c2c717fa1c6cd10ff477"
+              "sha256": "d1a89c7f9f520581cb5038db475d252bf54824731b08c1c3f0e8ca12ba873f51"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -364,7 +364,7 @@
               "limits": "Fake optimizer; synthetic vectors carried in fake attempt-result records and read back by a test scorer; the default scorer is exercised on one development case only. Real runs that produce these records through `agent-braid lightning run` are T009 work.",
               "outcome": "passed: Each APO and GEPA run journals a start entry with its algorithm and seed, every optimizer call with its input hash and output, and every evaluation as the ids and sha256 of the SPEC-071 attempt-result records it stored; the run manifest holds the configuration digest and candidate records keep parent links and optimizer call ids. Vectors are always re-scored from the stored content-free parsed attempts. Replaying a finished APO or GEPA run from its journal and stored records makes no optimizer or evaluator call, writes nothing and reproduces every candidate record (lineage, minibatch and full scores, Pareto membership) and the best candidate. Negative controls: altering one stored attempt-result record is detected by hash and changes a selection; a journal that ends early is refused (replay-incomplete); the default scorer refuses held-out records (holdout-contamination) and scores a refusal as a failed D4 attempt.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_010.json",
-              "sha256": "d39d804b7a07a0a15b6c3742529a3c83836d216d153df4e58692f0b95895e603"
+              "sha256": "52ed249211f2a2453b20b0d8da032c332228bfd7947d897a3da6415f2256da2d"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
