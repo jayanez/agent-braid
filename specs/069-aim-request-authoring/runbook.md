@@ -221,3 +221,27 @@ not an offline validation command. A host without credentials or whose call cann
 limit, never a pass. After the spend gate is resolved, query all local real-use sources listed in
 `docs/development/REAL_USE_EVIDENCE.md` before treating the run as real-use verification or preparing an
 approval packet.
+
+### Native schema probe through the product (`--probe-schema`, T005)
+
+```bash
+python -m scripts.spec069_native_runs --probe-schema --arm final --hosts claude-code,opencode --auth token --keys-from-keychain \
+    --model claude-code=claude-sonnet-5-5 --model opencode=openrouter/anthropic/claude-sonnet-5-5 \
+    --output specs/069-aim-request-authoring/evidence/native-probe-schema-per-kind.json
+python -m scripts.spec069_native_runs --probe-schema --arm final --hosts codex --auth subscription --auth-profile-dir ~/agent-braid-auth \
+    --output specs/069-aim-request-authoring/evidence/native-probe-schema-per-kind-codex.json
+# description-only arm: the same two commands with --arm final-no-schema and -description-only in the output names
+```
+
+The real plugin, not the test double above: the driver moves `launch` to `launch.real` in the disposable installed copy (Claude
+Code gets a copy of the build; Codex's install in the reusable sign-in directory is restored after the run) and installs a wrapper
+that runs `scripts/spec069_stdio_proxy.py --keep-listing` for `plugin serve` only. One prompt asks for an `aim` call with
+`examples/analysis/file-edits.json` and a `units` call. The evidence `schemaProbe` per host records each connection's protocol
+version, the raw `tools/list` line (saved under `<output>.transcripts/<host>/`) and its hashes, the model-facing fingerprint check
+against `listed_sizes()`, the `kind` and object/string type of every request at the server, and the verdict; `crossHost`
+compares the definition within each protocol version. A stringified or hidden request is a `declared-limit` verdict
+(description-only fallback), never a pass. `--fake-hosts --probe-schema` is the self-test (variant `stringify`).
+
+Spend: `--probe-schema` has no preventive cap either; it bounds exposure by design (one prompt, one session per host and
+arm, `--repetitions 1` enforced). The 2026-11-13 T005 run was authorized under the SPEC-069 60 USD budget and cost 0.38 USD
+notional on Claude Code (token); OpenRouter and Codex reported no cost. It is a host probe, not real-use verification.

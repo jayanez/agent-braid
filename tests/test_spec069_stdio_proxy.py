@@ -438,3 +438,44 @@ print(json.dumps({"jsonrpc":"2.0", "id":request["id"], "result":{"tools":[{"name
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class DriverDetailTests(unittest.TestCase):
+    """--keep-listing (used by the native driver's --probe-schema): raw listing line, kind, method trace, server/discover."""
+
+    def send(self, observer, direction, **message):
+        observer.feed(direction, json.dumps({"jsonrpc": "2.0", **message}).encode() + b"\n")
+
+    def test_default_receipt_keeps_no_listing_line_and_no_trace(self):
+        observer = proxy.Observer()
+        self.send(observer, "in", id=1, method="tools/list")
+        self.send(observer, "out", id=1, result={"tools": [{"name": "analyze-work", "description": "PRIVATE"}]})
+        self.assertNotIn("rawLine", observer.receipt["listings"][0])
+        self.assertNotIn("trace", observer.receipt)
+        self.assertNotIn("PRIVATE", json.dumps(observer.receipt))
+
+    def test_keep_listing_stores_the_server_line_kind_and_method_names_only(self):
+        observer = proxy.Observer(keep_listing=True)
+        self.send(observer, "in", id=1, method="tools/list")
+        self.send(observer, "out", id=1, result={"tools": [{"name": "analyze-work", "description": "listed"}]})
+        self.send(observer, "in", id=2, method="tools/call", params={"name": "analyze-work", "arguments": {
+            "kind": "units", "request": {"units": "PRIVATE-ARGUMENT"}}})
+        self.send(observer, "in", id=3, method="tools/call", params={"name": "analyze-work", "arguments": {
+            "kind": "PRIVATE-KIND", "request": "{\"units\": []}"}})
+        listing = observer.receipt["listings"][0]
+        self.assertEqual(hashlib.sha256(listing["rawLine"].encode()).hexdigest(), listing["lineSha256"])
+        self.assertEqual(observer.receipt["calls"], [{"requestType": "object", "kind": "units"}, {"requestType": "other", "kind": None}])
+        self.assertEqual(observer.receipt["trace"], ["in:tools/list", "out:response", "in:tools/call", "in:tools/call"])
+        self.assertNotIn("PRIVATE", json.dumps(observer.receipt))
+
+    def test_server_discover_records_the_single_supported_version(self):
+        observer = proxy.Observer()
+        self.send(observer, "in", id=0, method="server/discover", params={})
+        self.send(observer, "out", id=0, result={"supportedVersions": ["2026-07-28"], "instructions": "PRIVATE"})
+        self.assertEqual(observer.receipt["protocolVersion"], "2026-07-28")
+        self.assertEqual(observer.receipt["discover"], {"resultKeys": ["instructions", "supportedVersions"], "versions": ["2026-07-28"]})
+        self.assertNotIn("PRIVATE", json.dumps(observer.receipt))
+        several = proxy.Observer()
+        self.send(several, "in", id=0, method="server/discover")
+        self.send(several, "out", id=0, result={"supportedVersions": ["2025-11-25", "2026-07-28"]})
+        self.assertIsNone(several.receipt["protocolVersion"])

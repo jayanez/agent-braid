@@ -13,6 +13,10 @@ aggregated by protocol version and request shape. With no connection, it records
 claiming success. Fake-host runs refuse this option so pipeline-only evidence cannot be mistaken for a
 product-boundary observation. The wrapper and receipts are removed by normal profile teardown.
 
+The T005 host probe uses the driver's separate `--probe-schema` mode instead (the two options are mutually
+exclusive): it runs the relay with `--keep-listing` for `plugin serve` only in the disposable installed copy
+(see "Driver detail" below and the runbook).
+
 The receipt records the negotiated protocol version, byte length and SHA-256 of each complete raw
 `tools/list` response line (including its newline), canonical sorted compact JSON hashes of the result
 and the unique `analyze-work` definition, tool count, and only the object/array/other type of each
@@ -61,3 +65,10 @@ Post-call usage, estimated prices, timeouts and turn limits cannot reliably boun
 unknown provider charges, exchange rates or concurrent usage. Do not start a paid probe unless a separately
 verified, preventive per-pass control exists that covers all participating routes and worst-case in-flight
 costs; otherwise this remains blocked. This offline slice changes no billing, permissions or quotas.
+
+**Driver detail (`--keep-listing`, opt-in).** The receipt then also keeps each raw `tools/list` response line (server output,
+not requests), a bounded trace of directions and method names (never params, results or arguments) and, for every
+`analyze-work` call, its `kind` when it is `aim`, `git` or `units`. Claude Code 2.1.311 opens with `server/discover` instead
+of `initialize`: the relay records the result's key names and date-shaped supported versions, and takes a single supported
+version as the negotiated one. A host that ends the server with a signal leaves a receipt marked incomplete
+(`relay_failure`) whose listing and calls are still recorded.

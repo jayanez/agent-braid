@@ -50,10 +50,74 @@ TOKENIZER_PROBE = (
     " for name in ('o200k_base', 'cl100k_base')} for key, text in texts.items()}}))\n"
 )
 PENDING = [
-    "Model calls through Claude Code and OpenCode (conformance of the call, request received as an object): the Anthropic API rejected every call with a credit-balance error in the 2026-11-07 probe, see evidence/host-probe-nested-schema.json.",
-    "Codex host probe: no OpenAI key in the probe environment (declared limit).",
-    "D9 ablation (--arm final-no-schema versus --arm final) in the native final run; the per-kind schema is kept only if it improves first-attempt validity in at least one host.",
+    "Independent (non-same-family) review of the T005 evidence; this capture is automated same-family track output, not an approval.",
 ]
+NATIVE_LIMITS = (
+    "Native probe: one session per host and arm, one model per host (claude-sonnet-5-5 for Claude Code by subscription token and "
+    "for OpenCode through OpenRouter; Codex on its default model by subscription sign-in), so acceptance is observed, not "
+    "sampled. Claude Code and Codex end the server with a signal, so their relay receipts are marked incomplete "
+    "(relay_failure) after the listing and calls were recorded. Hosts negotiate different MCP protocol versions (Claude "
+    "Code 2026-07-28 through server/discover, OpenCode 2025-11-25, Codex 2025-06-18): the full definition is compared "
+    "within each version and the model-facing part (name, description, inputSchema, sorted keys) across versions; the "
+    "server's key order differs by version (content does not). Eager or deferred loading is read from the order of calls in "
+    "the transcript, not from the model request.")
+
+
+# Native host probe (driver --probe-schema), one evidence file per D9 arm and access path; Codex runs separately (subscription sign-in).
+NATIVE_FILES = {"per-kind": ("native-probe-schema-per-kind.json", "native-probe-schema-per-kind-codex.json"),
+                "description-only": ("native-probe-schema-description-only.json", "native-probe-schema-description-only-codex.json")}
+NATIVE_HOSTS = ("claude-code", "codex", "opencode")
+
+
+def native_section() -> dict | None:
+    """Per host and arm: host acceptance, object or string requests at the server, byte identity and loading; ``None`` before any run."""
+    arms, missing = {}, []
+    for delivery, files in NATIVE_FILES.items():
+        hosts, fingerprints, identity = {}, set(), {}
+        for name in files:
+            path = EVIDENCE / name
+            if not path.exists():
+                missing.append(name)
+                continue
+            evidence = json.loads(path.read_text())
+            if evidence.get("label") != "host-run" or evidence.get("schemaProbe", {}).get("delivery") != delivery:
+                raise SystemExit(f"{name}: not a host-run --probe-schema evidence file for {delivery}")
+            fingerprints.add(evidence["schemaProbe"]["expectedFingerprint"]["canonicalSha256"])
+            for version, group in evidence["schemaProbe"]["crossHost"]["byProtocolVersion"].items():
+                slot = identity.setdefault(version, {"hosts": set(), "canonical": set(), "facing": set()})
+                slot["hosts"].update(group["hosts"])
+                slot["canonical"].update(group["analyzeWorkCanonicalSha256"])
+                slot["facing"].update(group["modelFacingCanonicalSha256"])
+            for host, record in evidence["hosts"].items():
+                if record.get("status") != "ran":
+                    hosts[host] = {"verdict": "declared-limit: " + record.get("limit", "host did not run"), "file": name}
+                    continue
+                verdict = record["schemaProbe"]["verdict"]
+                hosts[host] = {"file": name, "version": record["version"], "model": record.get("model"),
+                               "modelsObserved": record.get("modelsObserved"), "auth": record.get("auth"), "route": record.get("route"),
+                               "usage": [run.get("usage") for run in record["runs"]], **{key: verdict[key] for key in (
+                                   "verdict", "exposedToModel", "callsAtServer", "requestAlwaysObject", "servedBytesMatchFingerprint",
+                                   "protocolVersions", "receiptsComplete", "loading")}}
+        facing = {f for slot in identity.values() for f in slot["facing"]}
+        arms[delivery] = {"hosts": hosts, "candidate": {name: json.loads((EVIDENCE / name).read_text()).get("candidate")
+                                                        for name in files if (EVIDENCE / name).exists()},
+                          "expectedFingerprints": sorted(fingerprints),
+                          "byteIdentity": {"byProtocolVersion": {v: {"hosts": sorted(g["hosts"]), "canonicalSha256": sorted(g["canonical"]),
+                                                                     "identical": len(g["canonical"]) == 1} for v, g in sorted(identity.items())},
+                                           "modelFacingCanonicalSha256": sorted(facing),
+                                           "matchesFingerprint": len(facing) == 1 and facing == fingerprints}}
+    if len(missing) == sum(len(files) for files in NATIVE_FILES.values()):
+        return None
+    per_kind = arms["per-kind"]["hosts"]
+    passed = (not missing and all(per_kind.get(host, {}).get("verdict") == "pass" for host in NATIVE_HOSTS)
+              and arms["per-kind"]["byteIdentity"]["matchesFingerprint"])
+    limits = {f"{host}/{delivery}": arm["hosts"][host]["verdict"] for delivery, arm in arms.items() for host in NATIVE_HOSTS
+              if host in arm["hosts"] and arm["hosts"][host]["verdict"] != "pass"}
+    return {"arms": arms, "missing": missing, "passed": passed, "notPass": limits,
+            "rule": ("procedure_005 native part passes only when the per-kind arm passes on Claude Code, Codex and OpenCode (analyze-work "
+                     "exposed to the model; aim and units calls reach the server with request as a JSON object; the served definition "
+                     "matches the build fingerprint) and every per-kind host connection serves the same model-facing bytes. A host that "
+                     "hides or stringifies the nested form is a declared limit with the description-only fallback, never a pass.")}
 
 
 def listed_sizes() -> tuple[dict, dict]:
@@ -120,6 +184,7 @@ def main(argv: list[str] | None = None) -> int:
     environment = subprocess.run([args.python, "-c", "import platform, importlib.metadata as m; print(platform.python_version(), m.version('mcp'), m.version('jsonschema'))"],
                                  capture_output=True, text=True, check=True).stdout.split()
     sizes, texts = listed_sizes()
+    native = native_section()
     record = {
         "procedure": "procedure_005", "scenario": "SC-005", "specification": "SPEC-069 P3 / T005 (offline part)",
         "command": "python -m unittest -v " + " ".join(MODULES),
@@ -151,6 +216,21 @@ def main(argv: list[str] | None = None) -> int:
                         "platform": platform.platform(terse=True), "capturePython": platform.python_version()},
         "inputs": {path: sha(path) for path in sorted(set(INPUTS) | set(generator.build()["sources"]))},
     }
+    if native is not None:
+        record["native"] = native
+        record["specification"] = "SPEC-069 P3 / T005"
+        record["outcome"] += (" Native probe (driver --probe-schema, recording relay in each disposable installed copy): " + (
+            "passed: in the per-kind arm" + (" and the description-only arm" if not native["notPass"] and not native["missing"] else "")
+            + " Claude Code, Codex and OpenCode exposed analyze-work to the model, an aim call with "
+            "examples/analysis/file-edits.json and a units call reached the server with request as a JSON object, and every host "
+            "connection served the same analyze-work content, equal to the build fingerprint."
+            if native["passed"] else "NOT passed: " + json.dumps(native["notPass"] or native["missing"], sort_keys=True)))
+        record["limits"] = record["limits"].replace("Offline only: no host connected, so host acceptance of the nested form, recording-proxy byte "
+                                                    "identity and eager/deferred loading are not observed. ", "Offline part: ") + " " + NATIVE_LIMITS
+        record["inputs"].update({f"specs/069-aim-request-authoring/evidence/{name}": sha(f"specs/069-aim-request-authoring/evidence/{name}")
+                                 for files in NATIVE_FILES.values() for name in files if (EVIDENCE / name).exists()})
+        record["inputs"]["scripts/spec069_native_runs.py"] = sha("scripts/spec069_native_runs.py")
+        record["inputs"]["scripts/spec069_stdio_proxy.py"] = sha("scripts/spec069_stdio_proxy.py")
     (EVIDENCE / "procedure_005.json").write_text(json.dumps(record, indent=1, sort_keys=True) + "\n")
     print(f"procedure_005: {record['result']} ({record['testsRun']} tests); skipped: {len(skipped)}")
     return 0 if passed else 1

@@ -394,7 +394,8 @@ def summarize_proxy_receipt(path: Path) -> dict[str, Any]:
                 raise ValueError
         receipt = json.loads(raw)
         if (not isinstance(receipt, dict)
-                or set(receipt) != {"version", "complete", "protocolVersion", "listings", "calls", "errors"}
+                or not {"version", "complete", "protocolVersion", "listings", "calls", "errors"} <= set(receipt)
+                or not set(receipt) <= {"version", "complete", "protocolVersion", "listings", "calls", "errors", "discover"}
                 or receipt.get("version") != 1
                 or type(receipt.get("complete")) is not bool
                 or not isinstance(receipt.get("errors"), list)
@@ -424,8 +425,9 @@ def summarize_proxy_receipt(path: Path) -> dict[str, Any]:
                                   "analyzeWorkCanonicalSha256": hashes[2], "toolCount": item["toolCount"]})
         request_types = []
         for item in calls:
-            if (not isinstance(item, dict) or set(item) != {"requestType"}
-                    or item.get("requestType") not in {"object", "array", "other"}):
+            if (not isinstance(item, dict) or not {"requestType"} <= set(item) <= {"requestType", "kind"}
+                    or item.get("requestType") not in {"object", "array", "other"}
+                    or item.get("kind") not in {None, "aim", "git", "units"}):
                 raise ValueError
             request_types.append(item["requestType"])
         if receipt["complete"] and (protocol is None or not safe_listings or receipt["errors"]):
@@ -574,8 +576,11 @@ def build_candidate(arm: str, work: Path, build_cache: Path, allow_dirty: bool) 
         cleanup()
 
 
-def fake_plugin(work: Path) -> Path:
-    """A stand-in plugin tree for ``--fake-hosts``: its launcher answers ``plugin setup`` like the real one."""
+def fake_plugin(work: Path, definition: str | None = None) -> Path:
+    """A stand-in plugin tree for ``--fake-hosts``: its launcher answers ``plugin setup`` like the real one.
+
+    With ``definition`` (``--probe-schema``) ``plugin serve`` is a minimal MCP server that lists that ``analyze-work`` definition.
+    """
     plugin = work / "fake-candidate/plugins/agent-braid"
     plugin.mkdir(parents=True)
     (plugin / "launch").write_text('#!/bin/sh\nexec "${FAKE_PYTHON:-python3}" "$(dirname "$0")/launch.py" "$@"\n')
@@ -589,6 +594,9 @@ def fake_plugin(work: Path) -> Path:
         "else:\n"
         "    print('{}')\n")
     (plugin / "plugin.json").write_text(json.dumps({"name": PLUGIN_NAME, "version": "0.0.0-fake"}))
+    if definition is not None:
+        (plugin / "definition.json").write_text(definition)
+        (plugin / "launch.py").write_text((FAKE_HOSTS_DIR / "_fake_server.py").read_text())
     market = plugin.parent.parent / ".agents/plugins"
     market.mkdir(parents=True)
     (market / "marketplace.json").write_text(json.dumps({"name": PLUGIN_NAME}))
@@ -598,7 +606,7 @@ def fake_plugin(work: Path) -> Path:
 # ----------------------------------------------------------------------------
 # Fake-host scenarios (--fake-hosts)
 # ----------------------------------------------------------------------------
-FAKE_VARIANTS = ("default", "retry", "denied-tool", "executed-tool", "leak-secret", "straggler", "echo-credentials")
+FAKE_VARIANTS = ("default", "retry", "denied-tool", "executed-tool", "leak-secret", "straggler", "echo-credentials", "stringify")
 
 
 def envelope_ok(case: dict, request: dict) -> dict:
@@ -626,6 +634,200 @@ def build_fake_scenario(cases: list[dict], variant: str, reference: Callable[[di
         steps.append(call)
         scenario[case["prompt"]] = {"steps": steps, "text": "done" + (" ${LEAK}" if variant == "leak-secret" else "")}
     return scenario
+
+
+# ----------------------------------------------------------------------------
+# Schema probe (--probe-schema, SPEC-069 T005 / procedure_005)
+# ----------------------------------------------------------------------------
+PROBE_RELAY = ROOT / "scripts/spec069_stdio_proxy.py"
+PROBE_AIM_FIXTURE = ROOT / "examples/analysis/file-edits.json"
+PROBE_UNITS_FIXTURE = ROOT / "tests/fixtures/analysis-requests/units/golden/t010-readme-conflict.request.json"
+PROBE_DELIVERY = {"final": "per-kind", "final-no-schema": "description-only"}  # the D9 arm baked into each build
+PROBE_CASE_ID = "probe-schema"
+WORKSPACE_PLACEHOLDER = "{workspaceId}"
+PROBE_WRAPPER = """#!/bin/sh
+# SPEC-069 T005 probe: recording stdio relay in front of the real launcher (disposable installed copy only).
+here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+if [ "${{1:-}}" = plugin ] && [ "${{2:-}}" = serve ]; then
+  exec {python} -I -B "$here/probe-relay.py" --keep-listing --receipt "{receipts}/connection-$(date +%s)-$$.json" -- "$here/launch.real" "$@"
+fi
+exec "$here/launch.real" "$@"
+"""
+
+
+def probe_prompt_set() -> dict:
+    """One prompt asking for two ``analyze-work`` calls: the ``aim`` example file and one ``units`` request."""
+    aim = json.dumps(json.loads(PROBE_AIM_FIXTURE.read_text()), separators=(",", ":"))
+    units = json.dumps(json.loads(PROBE_UNITS_FIXTURE.read_text()), separators=(",", ":"))
+    prompt = (f"Use the agent-braid analyze-work tool twice, with workspaceId \"{WORKSPACE_PLACEHOLDER}\", then stop. "
+              f"First call: kind \"aim\" and request equal to this JSON value: {aim} "
+              f"Second call: kind \"units\" and request equal to this JSON value: {units}")
+    return {"setId": "t005-probe-schema", "cases": [{"id": PROBE_CASE_ID, "prompt": prompt}]}
+
+
+def expected_fingerprints() -> dict[str, dict[str, Any]]:
+    """Model-facing fingerprint of ``analyze-work`` per D9 arm, computed from this checkout (never hard-coded)."""
+    from scripts.spec069_capture_t005_evidence import listed_sizes
+
+    sizes, texts = listed_sizes()
+    return {delivery: {"sha256": arm["analyze-work"]["sha256"], "bytes": arm["analyze-work"]["bytes"], "text": texts[delivery],
+                       "canonicalSha256": sha256_bytes(canonical_json(json.loads(texts[delivery])))}
+            for delivery, arm in sizes.items()}
+
+
+def canonical_json(value: Any) -> bytes:
+    """Sorted keys, compact, UTF-8: the comparison form (key order differs between protocol versions, content does not)."""
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+
+
+def wrap_launcher(plugin_root: Path, receipts: Path) -> Callable[[], None]:
+    """Put the recording relay in front of ``launch`` in the installed copy; return the function that restores it."""
+    launch, real = plugin_root / "launch", plugin_root / "launch.real"
+    if real.exists():
+        raise SafetyStop("probe: launch.real already exists in the installed copy (a previous probe was not restored)")
+    os.replace(launch, real)
+    shutil.copyfile(PROBE_RELAY, plugin_root / "probe-relay.py")
+    launch.write_text(PROBE_WRAPPER.format(python=shlex.quote(sys.executable), receipts=receipts))
+    launch.chmod(0o755)
+
+    def restore() -> None:
+        if real.exists():
+            os.replace(real, launch)
+        (plugin_root / "probe-relay.py").unlink(missing_ok=True)
+    return restore
+
+
+def read_receipts(receipts: Path, seen: set[str], wait_seconds: float = 15.0) -> list[dict[str, Any]]:
+    """New receipts of this prompt; an empty or unreadable one (relay killed) is kept as incomplete, never dropped."""
+    deadline = time.time() + wait_seconds
+    while True:
+        files = sorted(f for f in receipts.glob("connection-*.json") if f.name not in seen)
+        if all(f.stat().st_size for f in files) or time.time() > deadline:
+            break
+        time.sleep(0.5)
+    out = []
+    for file in files:
+        seen.add(file.name)
+        try:
+            receipt = json.loads(file.read_text())
+        except (OSError, json.JSONDecodeError):
+            receipt = {"complete": False, "errors": ["empty_or_unreadable_receipt"], "listings": [], "calls": [], "protocolVersion": None}
+        out.append(dict(receipt, file=file.name))
+    return out
+
+
+def init_tool_names(stdout: str) -> list[str]:
+    """Tool names in Claude Code's ``system/init`` row (names only: the schemas are not in the stream)."""
+    for row in _jsonl(stdout):
+        if row.get("type") == "system" and row.get("subtype") == "init":
+            return [t for t in row.get("tools") or [] if isinstance(t, str)]
+    return []
+
+
+def loading_mode(host: str, transcript: Transcript) -> str:
+    """From the transcript: ``deferred`` when a tool-search step precedes the first analyze-work call (Claude Code's ToolSearch);
+    ``eager`` when the call came with no discovery step; ``helper-before-call`` for another helper first; ``not-observed`` without a call."""
+    for call in transcript.tool_calls:
+        if short_name(call) == "analyze-work":
+            return "eager"
+        if call.tool == "ToolSearch":
+            return "deferred"
+        if tool_class(host, call) == "meta" and call.tool != "Skill":
+            return "helper-before-call"
+    return "not-observed"
+
+
+def probe_connections(receipts: list[dict], expected: dict[str, Any], out_dir: Path, host: str, secrets: Secrets) -> list[dict]:
+    """Per connection: protocol version, raw listing line (saved) with its hashes, model-facing fingerprint check, calls."""
+    from scripts.spec069_tool_schemas import model_facing_bytes
+
+    connections = []
+    for index, receipt in enumerate(receipts):
+        listings = []
+        for number, listing in enumerate(receipt.get("listings") or []):
+            raw = listing.pop("rawLine", None)
+            entry = dict(listing)
+            if raw is not None:
+                tools = json.loads(raw)["result"]["tools"]
+                definition = next(t for t in tools if t.get("name") == "analyze-work")
+                facing = model_facing_bytes(definition)
+                facing_canonical = sha256_bytes(canonical_json(json.loads(facing)))
+                file = out_dir / host / f"tools-list-c{index}-{number}.json"
+                file.parent.mkdir(parents=True, exist_ok=True)
+                secrets.assert_clean(file.name, raw)
+                file.write_text(raw)
+                entry.update({"rawLineFile": str(file.relative_to(out_dir.parent)), "modelFacingSha256": sha256_bytes(facing),
+                              "modelFacingCanonicalSha256": facing_canonical, "modelFacingBytes": len(facing),
+                              "matchesFingerprint": facing_canonical == expected["canonicalSha256"],
+                              "servedKeyOrderEqualsFingerprint": sha256_bytes(facing) == expected["sha256"],
+                              "toolNames": sorted(t.get("name") for t in tools if isinstance(t, dict))})
+            listings.append(entry)
+        connections.append({"receipt": receipt.get("file"), "complete": receipt.get("complete"), "errors": receipt.get("errors"),
+                            "protocolVersion": receipt.get("protocolVersion"), "listings": listings, "calls": receipt.get("calls") or [],
+                            "trace": receipt.get("trace"), "discover": receipt.get("discover")})
+    return connections
+
+
+def probe_verdict(host: str, connections: list[dict], stdout: str, stderr: str, transcript: Transcript) -> dict[str, Any]:
+    """Host acceptance, object-versus-string requests at the server, byte identity and loading for one host and arm."""
+    calls = [call for conn in connections for call in conn["calls"]]
+    listings = [listing for conn in connections for listing in conn["listings"]]
+    claude_names = init_tool_names(stdout) if host == "claude-code" else []
+    convert_error = "Failed to convert" in stdout or "Failed to convert" in stderr
+    listed = bool(listings) and (any(n.endswith("__analyze-work") for n in claude_names) if host == "claude-code" else not convert_error)
+    kinds = sorted({c["kind"] for c in calls if c.get("kind")})
+    types = sorted({c["requestType"] for c in calls})
+    always_object = bool(calls) and types == ["object"]
+    identical = bool(listings) and all(listing.get("matchesFingerprint") for listing in listings)
+    loading = loading_mode(host, transcript)
+    if not listings:
+        verdict = "not-observed: no tools/list reached the recording relay"
+    elif not listed:
+        verdict = "declared-limit: the host did not expose analyze-work to the model (description-only fallback)"
+    elif not calls:
+        verdict = "not-observed: the model made no analyze-work call"
+    elif not always_object:
+        verdict = "declared-limit: the request reached the server as " + "/".join(types) + ", not always an object (description-only fallback)"
+    elif not {"aim", "units"} <= set(kinds):
+        verdict = "partial: request objects observed, but not for both the aim and units branches"
+    elif not identical:
+        verdict = "fail: the served analyze-work definition differs from the build fingerprint"
+    else:
+        verdict = "pass"
+    return {"exposedToModel": listed, "claudeInitListsAnalyzeWork": any(n.endswith("__analyze-work") for n in claude_names) if host == "claude-code" else None,
+            "codexConvertError": convert_error if host == "codex" else None, "callsAtServer": calls, "kindsAtServer": kinds,
+            "requestAlwaysObject": always_object if calls else None, "servedBytesMatchFingerprint": identical,
+            "protocolVersions": sorted({c["protocolVersion"] for c in connections if c["protocolVersion"]}),
+            "receiptsComplete": f"{sum(1 for c in connections if c['complete'])}/{len(connections)}", "loading": loading, "verdict": verdict}
+
+
+def cross_host_identity(hosts: dict[str, Any]) -> dict[str, Any]:
+    """Byte identity of analyze-work across every host connection of this build, compared within each protocol version."""
+    groups: dict[str, dict[str, set[str]]] = {}
+    for name, host in hosts.items():
+        for conn in (host.get("schemaProbe") or {}).get("connections", []):
+            for listing in conn["listings"]:
+                group = groups.setdefault(conn["protocolVersion"] or "unknown", {"canonical": set(), "facing": set(), "hosts": set()})
+                group["canonical"].add(listing["analyzeWorkCanonicalSha256"])
+                group["facing"].add(listing.get("modelFacingCanonicalSha256") or "")
+                group["hosts"].add(name)
+    by_version = {v: {"hosts": sorted(g["hosts"]), "analyzeWorkCanonicalSha256": sorted(g["canonical"]),
+                      "modelFacingCanonicalSha256": sorted(g["facing"]), "identical": len(g["canonical"]) == 1}
+                  for v, g in sorted(groups.items())}
+    facing = {f for g in groups.values() for f in g["facing"]}
+    return {"byProtocolVersion": by_version, "modelFacingIdenticalAcrossVersions": len(facing) == 1,
+            "note": ("analyzeWorkCanonicalSha256 compares the full served definition within one protocol version; "
+                     "modelFacingCanonicalSha256 (name, description, inputSchema, sorted keys) compares across versions and with the build fingerprint")}
+
+
+
+def build_probe_scenario(prompt: str) -> dict:
+    """Fake-host scenario for ``--probe-schema``: the two calls the probe prompt asks for, sent through the plugin server."""
+    calls = []
+    for kind, fixture in (("aim", PROBE_AIM_FIXTURE), ("units", PROBE_UNITS_FIXTURE)):
+        args = {"workspaceId": "fake-workspace-0001", "kind": kind, "request": json.loads(fixture.read_text())}
+        calls.append({"tool": "analyze-work", "args": args, "result": {"operation": "analyze-work", "status": "ok", "summary": "ok"}})
+    return {prompt: {"steps": calls, "text": "done"}}
 
 
 # ----------------------------------------------------------------------------
@@ -685,14 +887,49 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
     if args.record_mcp:
         receipt_dir = profile.make("mcp-observations", host.name)
         install_stdio_proxy(plugin_root, receipt_dir, profile.root)
-    args.plugin_root_for[host.name] = plugin_root
-    write_host_policy(host, env)
-    workspace_id = register_workspace(plugin_root, workspace, env, profile, protected, sandbox, ab_home)
+    restore: Callable[[], None] = lambda: None  # noqa: E731
+    receipts, seen, probe_runs = None, set(), []
+    if args.probe_schema:
+        if host.name == "claude-code":  # --plugin-dir points at the build output: probe a disposable copy, never the build
+            copy = profile.make("hosts", host.name, "plugin-copy") / PLUGIN_NAME
+            shutil.copytree(plugin_root, copy, symlinks=True)
+            plugin_root = copy
+        receipts = profile.make("hosts", host.name, "probe-receipts")
+        restore = wrap_launcher(plugin_root, receipts)
+    try:
+        args.plugin_root_for[host.name] = plugin_root
+        write_host_policy(host, env)
+        workspace_id = register_workspace(plugin_root, workspace, env, profile, protected, sandbox, ab_home)
+        runs, violations = _run_prompts(host, args, prompt_set, env, workspace, workspace_id, profile, protected, sandbox, secrets,
+                                        out_dir, scoring, receipts, seen, probe_runs, ctx, receipt_dir)
+    finally:
+        restore()  # Codex keeps its install in the reusable sign-in directory: never leave the relay there
+    if violations:
+        raise SafetyStop(f"{host.name}: " + "; ".join(violations))
+    reported = sorted({r["keySourceReported"] for r in runs if r.get("keySourceReported")})
+    notes = ([OPENROUTER_NOTE, OPENCODE_MODEL_NOTE] if route == "openrouter" else []) + ([SUBSCRIPTION_NOTE] if auth == "interactive-once" else []) + ([TOKEN_NOTE] if auth == OAUTH_AUTH else [])
+    result = {"status": "ran", "version": version, "auth": auth, "keySource": key_source, "route": route, "notes": notes,
+              "hostReportedKeySource": reported, "modelPinned": bool(host.model), "model": host.model,
+              "modelsObserved": sorted({m for run in runs for m in run["models"]}), "osSandbox": probe["sandbox"],
+              "probe": probe, "workspaceRegistered": bool(workspace_id), "runs": runs,
+              "allowlist": {"claude-code": CLAUDE_ALLOWED, "codex": ["agent-braid MCP server; read-only sandbox; approval never"],
+                            "opencode": [f"deny {', '.join(OPENCODE_DENIED)}; execute screened for network and import use"]}[host.name]}
+    if receipt_dir:
+        result["stdioProxy"] = {"enabled": True, "receiptCount": sum(len(run.get("stdioProxy", [])) for run in runs)}
+    if args.probe_schema:
+        result["schemaProbe"] = probe_runs[-1] if probe_runs else {"connections": [], "verdict": {"verdict": "not-observed: no prompt ran"}}
+    return result
+
+
+def _run_prompts(host: HostConfig, args: argparse.Namespace, prompt_set: dict, env: dict[str, str], workspace: Path, workspace_id: str,
+                 profile: Profile, protected: list[Path], sandbox: OsSandbox, secrets: Secrets, out_dir: Path, scoring: Any,
+                 receipts: Path | None, seen: set[str], probe_runs: list[dict], ctx: dict,
+                 receipt_dir: Path | None = None) -> tuple[list[dict], list[str]]:
     runs, violations = [], []
     for repetition in range(1, args.repetitions + 1):
         for case in prompt_set["cases"]:
             prior_receipts = {path.name for path in proxy_receipt_paths(receipt_dir)} if receipt_dir else set()
-            argv = prompt_argv(host, case["prompt"], args)
+            argv = prompt_argv(host, case["prompt"].replace(WORKSPACE_PLACEHOLDER, workspace_id), args)
             started = time.time()
             done = run_process(argv, env, workspace, profile, protected, sandbox, args.timeout, f"{host.name} {case['id']}")
             stdout = secrets.redact(done.stdout)
@@ -716,7 +953,14 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
                       "toolCalls": [{"tool": call.tool, "class": cls, "isError": call.is_error} for call, cls in classes],
                       "deniedToolRequests": denied, "models": transcript.models, "usage": secrets.redact_json(transcript.usage),
                       "keySourceReported": secrets.redact(transcript.key_source) if transcript.key_source else None,
-                      "attempts": secrets.redact_json(attempts), "score": scoring.score_case(case, attempts)}
+                      "attempts": secrets.redact_json(attempts)}
+            if receipts is not None:
+                connections = probe_connections(read_receipts(receipts, seen), ctx["expected"], out_dir, host.name, secrets)
+                verdict = probe_verdict(host.name, connections, done.stdout, done.stderr, transcript)
+                probe_runs.append({"connections": connections, "verdict": verdict})
+                record["probe"] = {"verdict": verdict["verdict"], "loading": verdict["loading"]}
+            else:
+                record["score"] = scoring.score_case(case, attempts)
             if receipt_dir:
                 record["stdioProxy"] = new_proxy_receipts(receipt_dir, prior_receipts)
             runs.append(record)
@@ -725,19 +969,7 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
                 break
         if violations:
             break
-    if violations:
-        raise SafetyStop(f"{host.name}: " + "; ".join(violations))
-    reported = sorted({r["keySourceReported"] for r in runs if r.get("keySourceReported")})
-    notes = ([OPENROUTER_NOTE, OPENCODE_MODEL_NOTE] if route == "openrouter" else []) + ([SUBSCRIPTION_NOTE] if auth == "interactive-once" else []) + ([TOKEN_NOTE] if auth == OAUTH_AUTH else [])
-    result = {"status": "ran", "version": version, "auth": auth, "keySource": key_source, "route": route, "notes": notes,
-            "hostReportedKeySource": reported, "modelPinned": bool(host.model), "model": host.model,
-            "modelsObserved": sorted({m for run in runs for m in run["models"]}), "osSandbox": probe["sandbox"],
-            "probe": probe, "workspaceRegistered": bool(workspace_id), "runs": runs,
-            "allowlist": {"claude-code": CLAUDE_ALLOWED, "codex": ["agent-braid MCP server; read-only sandbox; approval never"],
-                          "opencode": [f"deny {', '.join(OPENCODE_DENIED)}; execute screened for network and import use"]}[host.name]}
-    if receipt_dir:
-        result["stdioProxy"] = {"enabled": True, "receiptCount": sum(len(run.get("stdioProxy", [])) for run in runs)}
-    return result
+    return runs, violations
 
 
 def write_evidence(path: Path, evidence: dict, secrets: Secrets) -> None:
@@ -788,14 +1020,26 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--record-mcp", action="store_true",
                    help="opt-in: wrap the disposable installed candidate and persist private hash-only MCP connection receipts (does not cap provider spend)")
     p.add_argument("--fake-variant", choices=FAKE_VARIANTS, default="default")
+    p.add_argument("--probe-schema", action="store_true",
+                   help="T005 host probe: one prompt with an aim and a units analyze-work call per host through a recording stdio relay in "
+                        "the disposable installed copy; records protocol version, raw tools/list line and hashes, byte identity against the "
+                        "build fingerprint, object or string requests at the server and eager or deferred loading (--arm final = per-kind, "
+                        "final-no-schema = description-only)")
     p.add_argument("--extra-env", action="append", default=[], metavar="KEY=VALUE",
                    help="add a variable to the host environment; a value naming a real configuration path stops the run")
     p.add_argument("--real-home", type=Path, default=None, help="protected home (default: the account home)")
     p.add_argument("--no-os-sandbox", action="store_true", help="engineering probe only; never for measured evidence")
     args = p.parse_args(argv)
     args.plugin_root_for = {}
+    if args.probe_schema:
+        if args.arm not in PROBE_DELIVERY:
+            p.error("--probe-schema needs --arm final (per-kind) or final-no-schema (description-only)")
+        if args.repetitions != 1 or args.limit_cases:
+            p.error("--probe-schema runs one prompt once per host")
     if args.fake_hosts and args.security_bin == "/usr/bin/security":
         args.security_bin = str(FAKE_HOSTS_DIR / "security")
+    if args.probe_schema and args.record_mcp:
+        p.error("--probe-schema installs its own recording relay; do not combine it with --record-mcp")
     if args.fake_hosts and args.record_mcp:
         p.error("--record-mcp requires the real installed candidate; fake-host runs cannot produce product-boundary evidence")
     token_mode = args.auth == "token"
@@ -897,7 +1141,10 @@ def main(argv: list[str] | None = None) -> int:
     from scripts import spec069_fixture_workspace as fixture
     from scripts import spec069_scoring as scoring
 
-    prompt_set, prompt_path = load_prompt_set(args.prompt_set)
+    if args.probe_schema:
+        prompt_set, prompt_path = probe_prompt_set(), PROBE_AIM_FIXTURE
+    else:
+        prompt_set, prompt_path = load_prompt_set(args.prompt_set)
     if args.limit_cases:
         prompt_set = {**prompt_set, "cases": prompt_set["cases"][: args.limit_cases]}
     models = dict(item.split("=", 1) for item in args.model)
@@ -911,7 +1158,8 @@ def main(argv: list[str] | None = None) -> int:
     home = args.real_home or real_home()
     protected = real_config_paths(home)
     sandbox = OsSandbox(protected, enabled=not args.no_os_sandbox)
-    out_file = args.output or SPEC_DIR / "evidence" / f"native-runs-{args.arm}{'-fake' if args.fake_hosts else ''}.json"
+    stem = "native-probe-schema" if args.probe_schema else "native-runs"
+    out_file = args.output or SPEC_DIR / "evidence" / f"{stem}-{args.arm}{'-fake' if args.fake_hosts else ''}.json"
     out_dir = out_file.with_suffix(".transcripts")
     profile = Profile()
     evidence: dict[str, Any] = {"evidenceVersion": 1, "task": "SPEC-069 T013", "label": evidence_label(args.fake_hosts),
@@ -921,6 +1169,18 @@ def main(argv: list[str] | None = None) -> int:
                                 "repetitions": args.repetitions, "hosts": {}, "manualSteps": MANUAL_STEPS, "authMode": args.auth,
                                 "keysFromKeychain": args.keys_from_keychain,
                                 "driverSha256": sha256_file(Path(__file__)), "scoringSha256": sha256_file(Path(scoring.__file__))}
+    expected: dict[str, Any] | None = None
+    if args.probe_schema:
+        delivery = PROBE_DELIVERY[args.arm]
+        expected = expected_fingerprints()[delivery]
+        evidence["task"] = "SPEC-069 T005 host probe of the analyze-work schema (procedure_005)"
+        evidence["promptSet"] = {"setId": prompt_set["setId"], "promptSha256": sha256_bytes(prompt_set["cases"][0]["prompt"].encode()),
+                                 "fixtures": {str(f.relative_to(ROOT)): sha256_file(f) for f in (PROBE_AIM_FIXTURE, PROBE_UNITS_FIXTURE)},
+                                 "cases": 1, "prompt": prompt_set["cases"][0]["prompt"]}
+        evidence["schemaProbe"] = {"delivery": delivery, "relaySha256": sha256_file(PROBE_RELAY),
+                                   "expectedFingerprint": {"sha256": expected["sha256"], "bytes": expected["bytes"],
+                                                           "canonicalSha256": expected["canonicalSha256"],
+                                                           "source": "scripts.spec069_capture_t005_evidence.listed_sizes() on this checkout"}}
     if args.fake_hosts:
         evidence["note"] = "PIPELINE ONLY: fake host executables prove the driver pipeline, not any host or model."
     exit_code = 0
@@ -929,13 +1189,16 @@ def main(argv: list[str] | None = None) -> int:
         if args.plugin_dir:
             plugin_dir, evidence["candidate"] = args.plugin_dir, {"arm": args.arm, "prebuilt": True}
         elif args.fake_hosts:
-            plugin_dir, evidence["candidate"] = fake_plugin(work), {"arm": args.arm, "fake": True}
+            plugin_dir = fake_plugin(work, expected["text"] if args.probe_schema else None)
+            evidence["candidate"] = {"arm": args.arm, "fake": True}
         else:
             plugin_dir, evidence["candidate"] = build_candidate(args.arm, work, args.build_cache, args.allow_dirty)
         auth_home = prepare_auth_profile(args.auth_profile_dir, protected) if args.auth == "subscription" else None
-        ctx = {"plugin_dir": plugin_dir, "protected": protected, "sandbox": sandbox, "passthrough": passthrough, "auth_home": auth_home}
+        ctx = {"plugin_dir": plugin_dir, "protected": protected, "sandbox": sandbox, "passthrough": passthrough, "auth_home": auth_home,
+               "expected": expected if args.probe_schema else None}
         if args.fake_hosts:
-            scenario = build_fake_scenario(prompt_set["cases"], args.fake_variant, scoring.reference_request)
+            scenario = (build_probe_scenario(prompt_set["cases"][0]["prompt"].replace(WORKSPACE_PLACEHOLDER, "fake-workspace-0001"))
+                        if args.probe_schema else build_fake_scenario(prompt_set["cases"], args.fake_variant, scoring.reference_request))
             scenario_file = profile.make("fake") / "scenario.json"
             scenario_file.write_text(json.dumps(scenario))
             planted = "sk-ant-PLANTED-" + sha256_bytes(b"planted")[:24]
@@ -944,6 +1207,8 @@ def main(argv: list[str] | None = None) -> int:
                                 "FAKE_PYTHON": sys.executable})
             if args.auth == "subscription":
                 passthrough["FAKE_REQUIRE_LOGIN"] = "1"
+            if args.probe_schema:
+                passthrough["FAKE_PROBE"] = "1"
             os.environ.setdefault("ANTHROPIC_API_KEY", "fake-anthropic-key-0001")
         for name in [h for h in args.hosts.split(",") if h]:
             binary = host_binary(name, args)
@@ -955,9 +1220,14 @@ def main(argv: list[str] | None = None) -> int:
                 evidence["hosts"][name] = run_host(host, args, prompt_set, ctx, profile, secrets, out_dir, scoring, fixture)
             except DeclaredLimit as limit:
                 evidence["hosts"][name] = {"status": "declared-limit", "limit": secrets.redact(str(limit))}
-        results = {n: [dict(r["score"], caseId=r["caseId"],repetition=r["repetition"]) for r in h["runs"]]
-                   for n, h in evidence["hosts"].items() if h.get("status") == "ran"}
-        evidence["summary"] = scoring.summarize(results, repetitions=args.repetitions) if results else {"overall": "inconclusive"}
+        if args.probe_schema:
+            evidence["schemaProbe"]["crossHost"] = cross_host_identity(evidence["hosts"])
+            evidence["summary"] = {n: (h["schemaProbe"]["verdict"] if h.get("status") == "ran" else {"verdict": "declared-limit: " + h.get("limit", "")})
+                                   for n, h in evidence["hosts"].items()}
+        else:
+            results = {n: [dict(r["score"], caseId=r["caseId"],repetition=r["repetition"]) for r in h["runs"]]
+                       for n, h in evidence["hosts"].items() if h.get("status") == "ran"}
+            evidence["summary"] = scoring.summarize(results, repetitions=args.repetitions) if results else {"overall": "inconclusive"}
         if args.record_mcp:
             evidence["stdioProxy"] = summarize_stdio_proxy(evidence["hosts"])
     except SafetyStop as stop:
