@@ -15,7 +15,7 @@ imply owner acceptance. `quick` means
   corpus agreement, `lightning init` preview with digest, `lightning status`
   showing level, `consentedAt` and sources. Dependencies: T001, SPEC-070 REQ-004. Verification:
   procedure_001.
-- [ ] T003 (REQ-002 / SC-002): consent gate in store (`store-consent`) and
+- [x] T003 (REQ-002 / SC-002): consent gate in store (`store-consent`) and
   adapter/CLI (`content-consent-required`); fail closed on invalid
   configuration. Dependencies: T002. Verification: procedure_002.
 
