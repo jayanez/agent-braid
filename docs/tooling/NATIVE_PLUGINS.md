@@ -713,7 +713,13 @@ source commit and an output outside the checkout:
 
 The build downloads only pinned runtime archives and hash-locked wheels. It emits
 both host catalogs, one plugin with both runtime targets, a complete file
-inventory, dependency/license metadata and corresponding source archive. Build
+inventory, dependency/license metadata and corresponding source archive. Two
+builds of the same commit, from clones at different paths with different runtime
+caches, with the same build interpreter and build tools, write byte-identical
+output: the wheel and the source archive take their
+timestamps from the commit (`SOURCE_DATE_EPOCH`), and the archive records no owner.
+The build stops if any output file names the checkout, build folder, runtime cache,
+build environment or a per-user home folder. Build
 outputs and executables belong in a dedicated reviewed distribution branch with
 versioned tags, never in development branches. `--allow-dirty` explicitly labels
 an engineering artifact and cannot establish clean release provenance.
