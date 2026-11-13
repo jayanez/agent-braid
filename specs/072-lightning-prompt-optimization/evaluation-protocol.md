@@ -27,6 +27,15 @@ force until the owner approves it; T009 then freezes the amended file.
    `claude-sonnet-5-5` (`lightning run --model`, default for arms).
 5. **Feasibility recomputed for one host** (table below), checked with
    `agent_braid.lightning_arm.estimate`.
+6. **Exploratory arms E1 and E2 (descriptive only).** APO (E1) and GEPA (E2)
+   are also run from the T010 guidance at `8f63c606` (arm `baseline` plugin
+   build), seeded by the SPEC-071 T012 run `run-20261111T085405Z-a14514`, with
+   the same settings, model pin, budgets per arm (120 rollouts, 40 optimizer
+   calls) and stopping rules as A1 and A2. They run on the development set only,
+   sequentially after A1 and A2. They do not count for H1, are not candidates
+   for the held-out runs or the SPEC-049 pair, do not change A0, A1 or A2, and
+   are reported in a separate descriptive table. This is fixed before any
+   development rollout of any arm.
 
 ## Hypothesis
 
@@ -48,6 +57,7 @@ first attempt and 10 of 10 within one retry, pooled over repetitions as
 | A0 baseline | current `develop` guidance (SPEC-069 T008 rewrite), current plugin build; new development run (Amendment 1) | none |
 | A1 APO (secondary, descriptive) | best APO candidate | development score, P2 rule |
 | A2 GEPA (primary, preregistered) | best GEPA candidate | development score, P2 rule |
+| E1 APO, E2 GEPA (exploratory, development only; Amendment 1 item 6) | best candidate from the T010 guidance | development score, P2 rule; descriptive |
 
 ## Data
 
@@ -159,6 +169,9 @@ with the same seeds, resumes only by an explicit
 5. Canary hits and schema validity are reported per arm; any canary hit in a
    held-out run invalidates that arm's result.
 6. No other outcome measure, subset or host is used to claim support.
+7. Exploratory arms E1 and E2 (Amendment 1 item 6) are reported only as a
+   descriptive development-set table (best candidate's development score
+   against the T012 seed's), never in the decision rule.
 
 ## Outcome statement
 
