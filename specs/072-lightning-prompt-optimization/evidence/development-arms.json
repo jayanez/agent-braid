@@ -1,0 +1,234 @@
+{
+  "costSummary": {
+    "atMost": {
+      "optimizerCalls": 12,
+      "rollouts": 195
+    },
+    "host": "claude-code",
+    "note": "upper bounds; GEPA uses 45 rollouts if one child is accepted, up to 105 if all three are",
+    "repetitions": 3,
+    "roughMinutesAtMost": 87,
+    "route": "subscription (no extra cash)",
+    "runs": {
+      "apo": {
+        "optimizerCalls": 9,
+        "rollouts": 60
+      },
+      "baseline": {
+        "optimizerCalls": 0,
+        "rollouts": 30
+      },
+      "gepa": {
+        "optimizerCalls": 3,
+        "rollouts": 105
+      }
+    }
+  },
+  "evidenceVersion": 1,
+  "executionAuthorization": false,
+  "exploratory": false,
+  "generatedAt": "2026-11-13T09:27:14Z",
+  "host": "claude-code",
+  "label": "host-run",
+  "pinnedModel": "claude-sonnet-5-5",
+  "runs": {
+    "apo": {
+      "algorithm": "apo",
+      "alteredResults": [],
+      "bestFull": {
+        "d4FirstAttempt": 0.233333,
+        "rollouts": 30,
+        "schemaValid": 0.266667
+      },
+      "bestSha256": "39ae18565806b6dd3b2e8181dc223dd70b735c1e18ed371c17233382602057fd",
+      "executionAuthorization": false,
+      "failedCalls": 0,
+      "label": "host-run",
+      "models": {
+        "claude-code": "claude-sonnet-5-5"
+      },
+      "optimizerCalls": 9,
+      "quotaStopped": false,
+      "refusal": null,
+      "replayed": 0,
+      "resume": null,
+      "rollouts": 60,
+      "rounds": [
+        {
+          "beam": [
+            "39ae18565806b6dd3b2e8181dc223dd70b735c1e18ed371c17233382602057fd",
+            "38825d2e2f07b601b318a6db7e798c35ae4a0052efd490cfc24c904f4407be04"
+          ],
+          "children": [
+            "39ae18565806b6dd3b2e8181dc223dd70b735c1e18ed371c17233382602057fd",
+            "9b667b5c97bfab8c5b0bcab674ecbd5a351d774a76f14c4b26968b6fac366f77"
+          ],
+          "minibatch": [
+            "DEV-01",
+            "DEV-02",
+            "DEV-03",
+            "DEV-04",
+            "DEV-05"
+          ],
+          "parents": 1,
+          "round": 1
+        },
+        {
+          "beam": [
+            "39ae18565806b6dd3b2e8181dc223dd70b735c1e18ed371c17233382602057fd",
+            "38825d2e2f07b601b318a6db7e798c35ae4a0052efd490cfc24c904f4407be04"
+          ],
+          "children": [
+            "9c4b4c81ce4c4309dda572de30a5f8003eda3a6d0c70908ddb166fcb0cbdd3d9",
+            "4369deab67a159697cd232ba0fd9b0305c65618ed8b2a71a4325f0bec5051ea8",
+            "a248ffe0a4a21d64ea8e104724bdebd6a4cb3e8b7fcfa8d00c31eb209a990288",
+            "f06b1c866087fe0188b22159a4d4cc1cbba5fadef5ecbef208b67721f2764a8d"
+          ],
+          "minibatch": [
+            "DEV-06",
+            "DEV-07",
+            "DEV-08",
+            "DEV-09",
+            "DEV-10"
+          ],
+          "parents": 2,
+          "round": 2
+        }
+      ],
+      "runId": "apo-20261113T093911Z",
+      "seedFull": {
+        "d4FirstAttempt": 0.9,
+        "rollouts": 30,
+        "schemaValid": 0.966667
+      },
+      "seedRun": "run-20261113T092714Z-4cab53",
+      "seedSha256": "38825d2e2f07b601b318a6db7e798c35ae4a0052efd490cfc24c904f4407be04",
+      "source": {
+        "arm": "final",
+        "commit": "05f3b6cfb041ccc40b6360b560fac61184bd2c30",
+        "seedSkillSha256": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
+        "workingTree": true
+      },
+      "stop": null,
+      "templateSetSha256": "35e2d6dc10eeadbd0119ba1ee0888f5e6390c79a51e981ee00417d8cc1be979d",
+      "templates": {
+        "edit": "d993094869cbb040c26b78b8969012fdbb16c52959b7c39be8725729d031ce58",
+        "gradient": "5cde3e3ba09249dfd4109120ced5304ab83b9e80f3c9dbf280dda880120e78af"
+      }
+    },
+    "baseline": {
+      "arm": "final",
+      "completed": 30,
+      "completedBefore": 0,
+      "executionAuthorization": false,
+      "hosts": {
+        "claude-code": {
+          "probe": "sandbox-exec",
+          "rollouts": 30,
+          "status": "ran",
+          "version": "2.1.311 (Claude Code)"
+        }
+      },
+      "label": "host-run",
+      "models": {
+        "claude-code": "claude-sonnet-5-5"
+      },
+      "planned": 30,
+      "promptSet": "development",
+      "refusal": null,
+      "runId": "run-20261113T092714Z-4cab53",
+      "stop": null,
+      "teardown": {
+        "clean": true,
+        "leftoverProcesses": 0,
+        "profileRemoved": true
+      }
+    },
+    "gepa": {
+      "algorithm": "gepa",
+      "alteredResults": [],
+      "bestFull": {
+        "d4FirstAttempt": 0.966667,
+        "rollouts": 30,
+        "schemaValid": 1.0
+      },
+      "bestSha256": "623c55c39d31799f7d89e5dac9401062ce2eaed2b6bca01589d7c531f3e8b966",
+      "executionAuthorization": false,
+      "failedCalls": 0,
+      "front": [
+        "623c55c39d31799f7d89e5dac9401062ce2eaed2b6bca01589d7c531f3e8b966"
+      ],
+      "label": "host-run",
+      "models": {
+        "claude-code": "claude-sonnet-5-5"
+      },
+      "optimizerCalls": 3,
+      "quotaStopped": false,
+      "refusal": null,
+      "replayed": 0,
+      "resume": null,
+      "rngSeed": 0,
+      "rollouts": 45,
+      "rounds": [
+        {
+          "accepted": false,
+          "child": "23faf3e6234608cdad33e9e6ae402e49b2f0ae1f7fd61e3e47d24c77c40493d0",
+          "minibatch": [
+            "DEV-01",
+            "DEV-04",
+            "DEV-05",
+            "DEV-07",
+            "DEV-08"
+          ],
+          "parent": "38825d2e2f07b601b318a6db7e798c35ae4a0052efd490cfc24c904f4407be04",
+          "round": 1
+        },
+        {
+          "accepted": true,
+          "child": "623c55c39d31799f7d89e5dac9401062ce2eaed2b6bca01589d7c531f3e8b966",
+          "minibatch": [
+            "DEV-02",
+            "DEV-05",
+            "DEV-06",
+            "DEV-08",
+            "DEV-10"
+          ],
+          "parent": "38825d2e2f07b601b318a6db7e798c35ae4a0052efd490cfc24c904f4407be04",
+          "round": 2
+        },
+        {
+          "accepted": false,
+          "child": "07ae1603cc3e75c28b37d045cf8cd64b02efb4245fa6334e4208999a147159aa",
+          "minibatch": [
+            "DEV-02",
+            "DEV-03",
+            "DEV-05",
+            "DEV-09",
+            "DEV-10"
+          ],
+          "parent": "623c55c39d31799f7d89e5dac9401062ce2eaed2b6bca01589d7c531f3e8b966",
+          "round": 3
+        }
+      ],
+      "runId": "gepa-20261113T095423Z",
+      "seedFull": {
+        "d4FirstAttempt": 0.9,
+        "rollouts": 30,
+        "schemaValid": 0.966667
+      },
+      "seedRun": "run-20261113T092714Z-4cab53",
+      "seedSha256": "38825d2e2f07b601b318a6db7e798c35ae4a0052efd490cfc24c904f4407be04",
+      "source": {
+        "arm": "final",
+        "commit": "05f3b6cfb041ccc40b6360b560fac61184bd2c30",
+        "seedSkillSha256": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
+        "workingTree": true
+      },
+      "stop": null,
+      "templateSha256": "4d4a33c87e9f4214a0e925f7115055a5b27c659c7451a40a8e4a573a69208ced"
+    }
+  },
+  "seedRun": "run-20261113T092714Z-4cab53",
+  "source": "final",
+  "task": "SPEC-072 T009 development phase (protocol Amendment 1)"
+}
