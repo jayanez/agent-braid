@@ -439,9 +439,8 @@ Under default permissions OpenCode showed no approval prompt for `plugin-status`
 `analyze-work` (the owner's report from the desktop app, not stored in the session
 export). The `analyze-work` input schema does not describe the AIM request shape, so a
 model needs an example (for instance `examples/analysis/file-edits.json`) to build a
-valid request; a schema description is tracked in issue #1080 for a later release
-(delivered on `develop` by SPEC-069, unreleased: see
-[`analyze-work` request kinds](#analyze-work-request-kinds-spec-069-unreleased)).
+valid request; the schema description (issue #1080) shipped in `0.1.0-alpha.8`: see
+[`analyze-work` request kinds](#analyze-work-request-kinds-spec-069).
 
 Fixes from the T010 observation: `analyze-work` with kind `aim` now returns the
 analyzer's fixed validation message (for example "expected AIM record or nonempty AIM
@@ -454,14 +453,13 @@ not `--host all`, which would try OpenCode), and for OpenCode remove the plugin 
 from the configuration (`opencode plugin remove`), since alpha.6 has no OpenCode
 package. The registry and results are accepted unchanged by alpha.6.
 
-Version 0.1.0-alpha.8 (SPEC-069) is a prepared candidate, not yet published: see its
-[release notes](#release-notes-for-010-alpha8-candidate).
+Version 0.1.0-alpha.8 (SPEC-069) is published: see its
+[release notes](#release-notes-for-010-alpha8).
 
-## `analyze-work` request kinds (SPEC-069, unreleased)
+## `analyze-work` request kinds (SPEC-069)
 
-This section describes `develop` after SPEC-069. None of it is in a published plugin:
-alpha.7 and earlier have only the `aim` and `git` kinds and the alpha.7 schema. The
-release is SPEC-069 T012 and waits for the owner's explicit yes. Normative source:
+This section describes `0.1.0-alpha.8` and later (SPEC-069, published 2026-11-13).
+Alpha.7 and earlier have only the `aim` and `git` kinds and the alpha.7 schema. Normative source:
 the [request contract](../../specs/069-aim-request-authoring/contracts/analyze-work-request.md)
 and the [compatibility notes](../../specs/069-aim-request-authoring/compatibility.md).
 
@@ -567,13 +565,12 @@ writes `docs/api.md` also declares a `read` of `src/db.py`, which the scorer doe
 expect. Whether the cause is the guidance, the prompt or the scoring rule is not
 established. The `final-no-schema` ablation was not run on the held-out set.
 
-### Release notes for 0.1.0-alpha.8 (candidate)
+### Release notes for 0.1.0-alpha.8
 
-Final notes for the plugin release that ships SPEC-069, version `0.1.0-alpha.8`
-(SPEC-069 T012). The version is bumped on `develop`, but nothing has been published or
-tagged: publication waits for the owner's explicit yes on the built candidate
-([`evidence/procedure_012-candidate.json`](../../specs/069-aim-request-authoring/evidence/procedure_012-candidate.json)).
-Until then `0.1.0-alpha.7` is the published version.
+Release notes for the plugin release that ships SPEC-069, version `0.1.0-alpha.8`
+(SPEC-069 T012), published on 2026-11-13 as tag `agent-braid--v0.1.0-alpha.8` after the
+owner's explicit yes ([release record](../../specs/069-aim-request-authoring/release-acceptance-alpha8.md),
+[`evidence/release-alpha8.json`](../../specs/069-aim-request-authoring/evidence/release-alpha8.json)).
 
 > **Version 0.1.0-alpha.8: `analyze-work` request authoring (SPEC-069), closes #1080.**
 > Adds no registry migration.

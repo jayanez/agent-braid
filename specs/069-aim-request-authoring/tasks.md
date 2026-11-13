@@ -118,9 +118,13 @@ and T010's final run measures the release candidate without them.
   accepted D4 deviation) and the release-note draft for the next alpha (T014 #1099 transition text, T009 schema and
   rollback notes). Nothing published, tagged or versioned (T012). `tests/test_spec069_docs.py` checks links, cited
   files and every measured number against the evidence; procedure_011 passes (`evidence/procedure_011.json`).
-- [ ] T012 (REQ-012 / SC-012): [Closing] Release `0.1.0-alpha.8` (or later) after the
+- [x] T012 (REQ-012 / SC-012): [Closing] Release `0.1.0-alpha.8` (or later) after the
   owner's explicit yes; close #1080 with a link to evidence.
   Dependencies: T010, T011. Verification: procedure_012.
+  Published 2026-11-13 after the owner's explicit yes: tag `agent-braid--v0.1.0-alpha.8` on `plugin-dist` `7f914ae5`, built
+  from `c0271812` (PR #1342, merged as `f923f73f`), GitHub pre-release; record `release-acceptance-alpha8.md` and
+  `evidence/release-alpha8.json`. #1080 closed with evidence; D4 follow-up #1343. Deviation: GitHub closed #1080 at the
+  PR merge, minutes before the tag push.
 
 ## Limits
 
