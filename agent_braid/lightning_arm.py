@@ -23,6 +23,7 @@ from .lightning_resources import sha256_text, split_skill
 
 ALGORITHMS = {'apo': APO, 'gepa': GEPA}
 PACKAGED_SKILL = Path('skills/analyze/SKILL.md')
+DEFAULT_MODEL = 'claude-sonnet-5-5'  # the SPEC-069 T010 / SPEC-071 T012 model (scripts/spec071_real_baseline.py)
 
 
 def _cases(root: Path) -> list[str]:
@@ -91,10 +92,10 @@ class CandidateEvaluator:
     """``evaluator(body, case_ids, repetitions) -> [attempt-result record]`` through a SPEC-071 sub-run per call."""
 
     def __init__(self, home, config: dict, run_id: str, *, base_plugin: Path, front: str, workdir: Path,
-                 fake_hosts: bool = False, environ: dict | None = None):
+                 fake_hosts: bool = False, environ: dict | None = None, models: dict[str, str] | None = None):
         self.home, self.config, self.run_id = home, config, run_id
         self.base, self.front, self.workdir = base_plugin, front, workdir
-        self.fake_hosts, self.environ = fake_hosts, environ
+        self.fake_hosts, self.environ, self.models = fake_hosts, environ, dict(models or {})
 
     def __call__(self, body: str, case_ids: list[str], repetitions: int) -> list[dict]:
         text = self.front + body
@@ -107,7 +108,7 @@ class CandidateEvaluator:
             status = runner_mod.run(self.home, self.config, run_id=sub, resume=store.root.exists(),
                                     prompt_set='development', fake_hosts=self.fake_hosts, plugin_dir=plugin,
                                     environ=self.environ, case_ids=case_ids, repetitions=repetitions,
-                                    skill_text=text)
+                                    skill_text=text, models=self.models)
         finally:
             shutil.rmtree(copy, ignore_errors=True)
         if status['stop']:
@@ -123,20 +124,26 @@ class CandidateEvaluator:
 
 def run_arm(home, config: dict, *, seed_run: str, run_id: str | None = None, resume: bool = False,
             fake_hosts: bool = False, plugin_dir: Path | None = None, environ: dict | None = None,
-            rng_seed: int = 0) -> dict:
-    """Run (or resume) one optimization arm; return its content-free summary."""
+            rng_seed: int = 0, models: dict[str, str] | None = None) -> dict:
+    """Run (or resume) one optimization arm; return its content-free summary.
+
+    ``models`` pins the host model per host for every candidate sub-run and for the optimizer host; by default
+    Claude Code is pinned to :data:`DEFAULT_MODEL`.
+    """
     name = config['algorithm']['name']
     if name not in ALGORITHMS:
         raise runner_mod.RunnerError('Only apo and gepa run as optimization arms', 'config-enum')
     if resume and not run_id:
         raise runner_mod.RunnerError('--resume needs the run id', 'resume-needs-run-id')
+    models = {'claude-code': DEFAULT_MODEL} if models is None else dict(models)
     root = runner_mod.checkout_root()
     run_id = run_id or f'{name}-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     seeds = seed_vectors(home, seed_run, root)
     journaled = sum(e['kind'] == 'call' for e in store_mod.RunStore(home, run_id).read_journal()) if resume else 0
     host_options = {'environ': environ} if environ is not None else {}
     channel = runner_mod.OptimizerChannel(config['optimizer']['host'], fake_hosts=fake_hosts,
-                                          first_call=journaled + 1, **host_options)
+                                          first_call=journaled + 1,
+                                          model=models.get(config['optimizer']['host']), **host_options)
     front = split_skill((root / config['target']['path']).read_text(encoding='utf-8'))[0]
     try:
         with tempfile.TemporaryDirectory(prefix='lightning-arm-') as tmp:
@@ -148,12 +155,12 @@ def run_arm(home, config: dict, *, seed_run: str, run_id: str | None = None, res
                 base = driver.fake_plugin(work) if fake_hosts else driver.build_candidate(
                     'final', work, work / 'build-cache', False)[0]
             evaluator = CandidateEvaluator(home, config, run_id, base_plugin=base, front=front, workdir=work,
-                                           fake_hosts=fake_hosts, environ=environ)
+                                           fake_hosts=fake_hosts, environ=environ, models=models)
             options = {'evaluator': evaluator, 'optimizer': channel, 'seed_vectors': seeds}
             algorithm = APO(**options) if name == 'apo' else GEPA(**options, rng_seed=rng_seed)
             summary = algorithm.run(home, config, run_id=run_id, resume=resume)
     finally:
         channel.close()
-    summary.update(seedRun=seed_run, label='pipeline-only' if fake_hosts else 'host-run',
+    summary.update(seedRun=seed_run, models=models, label='pipeline-only' if fake_hosts else 'host-run',
                    quotaStopped=summary['stop'] in QUOTA_STOPS)
     return summary

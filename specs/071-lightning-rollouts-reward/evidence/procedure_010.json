@@ -2,19 +2,19 @@
  "command": "python -m unittest tests.test_lightning_runner.PlanTests tests.test_lightning_runner.CliTests",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.13.11"
+  "python": "3.12.13"
  },
  "inputs": {
-  "agent_braid/lightning_cli.py": "0920260e5570d7c99715920ce9d3ca4d8b893af6ae2f832d121c2f09b57b99ec",
+  "agent_braid/lightning_cli.py": "beea8185dbb0995051d097b256b2fab8e4dc314e2aeceb583d83c16d64f1067c",
   "agent_braid/lightning_hooks.py": "4760f91d5bd9505bffe994751b6ed790acab036087a417f99755944f891c9c11",
   "agent_braid/lightning_hosts.py": "a147d8fb36c7d4e8b06aa328699a7662a52fdf71e05b292fe8a13756ddf15b23",
   "agent_braid/lightning_reward.py": "2443da49073dfdd28be6972b6a1f9ef1bd1dcf4583d34920fba6b0a4a5aff4e0",
-  "agent_braid/lightning_runner.py": "b4b0e683f5bbb0213c7c093614a8eda771729f786aeac0b60395d737d027dfcb",
+  "agent_braid/lightning_runner.py": "108d2e55aab511c546a5f0c0af5c33949eadc66f1526ed6a9e08c5d2c61f07dd",
   "agent_braid/lightning_schema.py": "3a5b70ded3d8696ec59eb1873d89fddb6b5400aca4443ae3a228ac804d81dc19",
-  "agent_braid/lightning_store.py": "8b1df5d0cf17c726f48bb16b637660f26cfd7fc6d8ad592052cf043947f9b241",
+  "agent_braid/lightning_store.py": "e3d93b950342f4aeacd90e88c82c50a76dfd83c3503aeabe6f77600747d92c21",
   "tests/fixtures/lightning-fake-hosts/claude": "2c75ac72fc22350f131b77886735209ec7d06856098dec1c15418258952153e1",
   "tests/fixtures/lightning-fake-hosts/opencode": "c819a0d54b984b833e9809340fed3e4550b723871c3f8892bcea6bcfee78a1d7",
-  "tests/test_lightning_runner.py": "f12424cbd1407c347ad4701568560a39489316e60f41c794cf6598681764b1a2"
+  "tests/test_lightning_runner.py": "ebc636dc7c76cd74522f39ea0068fec5254460ad1fce4b65fb0767109178cc8e"
  },
  "limits": "CLI tests use a temporary home.",
  "outcome": "passed: run --dry-run launches nothing and plans within budget; run without setup consent is refused (consent-required); --fake-hosts runs labelled pipeline-only; status and report work by run id; outputs carry executionAuthorization false.",

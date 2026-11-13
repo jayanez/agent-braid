@@ -2,7 +2,7 @@
  "command": "python -m unittest tests.test_lightning_resources",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.13.11"
+  "python": "3.12.13"
  },
  "inputs": {
   "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",

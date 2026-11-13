@@ -17,6 +17,7 @@ from agent_braid import lightning_gepa as gepa
 from agent_braid import lightning_runner as runner
 from agent_braid import lightning_store as store
 from agent_braid.harness_host_claude import ENV_DENY
+from unittest import mock
 
 CLEAN_ENV = {k: v for k, v in os.environ.items() if not k.endswith('_API_KEY') and k not in ENV_DENY}
 ROOT = runner.checkout_root()
@@ -86,6 +87,35 @@ class ArmTests(Base):
                                     cfg)
         self.assertTrue(replayed['selectionsMatch'] and replayed['resultsMatch'])
 
+    def test_model_pin_reaches_every_candidate_sub_run_and_the_optimizer_host(self):
+        seed = self.seed_run()
+        cfg = profile('gepa', rounds=1, minibatch=2)
+        sub_models, host_models = [], []
+        real_run, real_host = runner.run, runner.SandboxedHost
+
+        def spy_run(*args, **kwargs):
+            sub_models.append(kwargs.get('models'))
+            return real_run(*args, **kwargs)
+
+        def spy_host(*args, **kwargs):
+            host_models.append(kwargs.get('model'))
+            return real_host(*args, **kwargs)
+
+        with mock.patch.object(runner, 'run', spy_run), mock.patch.object(runner, 'SandboxedHost', spy_host):
+            summary = arm.run_arm(self.home, cfg, seed_run=seed, run_id='pinned', fake_hosts=True, environ=CLEAN_ENV)
+        self.assertEqual(summary['models'], {'claude-code': arm.DEFAULT_MODEL})
+        self.assertTrue(sub_models)
+        self.assertTrue(all(m == {'claude-code': 'claude-sonnet-5-5'} for m in sub_models))
+        self.assertEqual(host_models, ['claude-sonnet-5-5'])
+
+    def test_explicit_model_overrides_the_default(self):
+        seed = self.seed_run()
+        with mock.patch.object(runner, 'SandboxedHost', wraps=runner.SandboxedHost) as host:
+            summary = arm.run_arm(self.home, profile('gepa', rounds=1, minibatch=2), seed_run=seed, run_id='other',
+                                  fake_hosts=True, environ=CLEAN_ENV, models={'claude-code': 'claude-opus-5-5'})
+        self.assertEqual(summary['models'], {'claude-code': 'claude-opus-5-5'})
+        self.assertEqual(host.call_args.kwargs['model'], 'claude-opus-5-5')
+
     def test_seed_run_must_cover_every_development_case(self):
         cfg = profile('baseline')
         runner.run(self.home, cfg, run_id='short', fake_hosts=True, environ=CLEAN_ENV, case_ids=['DEV-01'])
@@ -127,6 +157,33 @@ class CliTests(Base):
         self.assertEqual(code, 0)
         self.assertEqual(json.loads(out)['algorithm'], 'gepa')
 
+    def test_init_flags_apply_the_preregistered_profile(self):
+        flags = ('init', '--non-interactive', '--algorithm', 'apo', '--hosts', 'claude-code', '--beam-width', '2',
+                 '--branch-factor', '2', '--rounds', '2', '--minibatch', '5')
+        code, out, _ = self.cli(*flags)
+        self.assertEqual(code, 0)
+        preview = json.loads(out)
+        self.assertIn('--beam-width', preview['applyWith'])
+        self.assertEqual(self.cli(*flags, '--apply', '--preview-digest', preview['previewDigest'])[0], 0)
+        algo = config.load(self.home)['algorithm']
+        self.assertEqual((algo['beamWidth'], algo['branchFactor'], algo['rounds'], algo['minibatch']), (2, 2, 2, 5))
+        plan = json.loads(self.cli('run', '--dry-run')[1])
+        self.assertEqual(plan['upperBound'], {'rollouts': 60, 'optimizerCalls': 9})
+
+    def test_init_flags_are_range_checked(self):
+        code, _, err = self.cli('init', '--non-interactive', '--beam-width', '9')
+        self.assertEqual(code, 2)
+        self.assertIn('config-range', err)
+
+    def test_run_passes_the_model_flag_to_the_arm(self):
+        self.init('gepa')
+        with mock.patch('agent_braid.lightning_arm.run_arm', return_value={}) as run_arm:
+            self.cli('run', '--fake-hosts', '--seed-run', 'seed', '--model', 'claude-opus-5-5')
+        self.assertEqual(run_arm.call_args.kwargs['models'], {'claude-code': 'claude-opus-5-5'})
+        with mock.patch('agent_braid.lightning_arm.run_arm', return_value={}) as run_arm:
+            self.cli('run', '--fake-hosts', '--seed-run', 'seed')
+        self.assertIsNone(run_arm.call_args.kwargs['models'])  # run_arm pins DEFAULT_MODEL
+
     def test_arm_needs_a_seed_run_and_the_development_set(self):
         self.init('apo')
         code, _, err = self.cli('run', '--fake-hosts')
@@ -135,6 +192,40 @@ class CliTests(Base):
         code, _, err = self.cli('run', '--dry-run', '--prompt-set', 'held-out')
         self.assertEqual(code, 2)
         self.assertIn('holdout-contamination', err)
+
+
+class LabScriptTests(unittest.TestCase):
+    def main(self, *argv, env=None):
+        from scripts import spec072_development_arms as lab
+        out, err = io.StringIO(), io.StringIO()
+        with mock.patch.dict(os.environ, env or {}, clear=env is not None), \
+                mock.patch.object(lab.runner, 'run', side_effect=AssertionError('must not run')), \
+                mock.patch.object(lab.arm, 'run_arm', side_effect=AssertionError('must not run')), \
+                mock.patch.object(lab, 'keychain_token', return_value=None), \
+                contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = lab.main(list(argv))
+        return code, out.getvalue(), err.getvalue()
+
+    def test_default_prints_the_cost_summary_and_launches_nothing(self):
+        code, out, _ = self.main()
+        self.assertEqual(code, 0)
+        summary = json.loads(out)['costSummary']
+        self.assertEqual(summary['runs'], {'baseline': {'rollouts': 30, 'optimizerCalls': 0},
+                                           'apo': {'rollouts': 60, 'optimizerCalls': 9},
+                                           'gepa': {'rollouts': 105, 'optimizerCalls': 3}})
+        self.assertEqual(summary['atMost'], {'rollouts': 195, 'optimizerCalls': 12})
+
+    def test_execute_refuses_without_the_subscription_token(self):
+        code, out, err = self.main('--execute', env={'PATH': os.environ.get('PATH', '')})
+        self.assertEqual(code, 2)
+        self.assertIn('CLAUDE_CODE_OAUTH_TOKEN is not set', err)
+        self.assertIn('costSummary', out)  # the summary is printed first
+
+    def test_execute_refuses_a_paid_route(self):
+        code, _, err = self.main('--execute', env={'PATH': os.environ.get('PATH', ''), 'ANTHROPIC_API_KEY': 'x',
+                                                   'CLAUDE_CODE_OAUTH_TOKEN': 'y'})
+        self.assertEqual(code, 2)
+        self.assertIn('refused', err)
 
 
 if __name__ == '__main__':

@@ -1,11 +1,11 @@
 {
  "command": "python -m unittest tests.test_lightning_schema",
  "environment": {
-  "platform": "macOS-27.2",
-  "python": "3.13.11"
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
  },
  "inputs": {
-  "agent_braid/lightning_schema.py": "6072cfe55bee4ae8cfed8d86755697e64aba79da1c3a034b4e18f793163e8be8",
+  "agent_braid/lightning_schema.py": "3a5b70ded3d8696ec59eb1873d89fddb6b5400aca4443ae3a228ac804d81dc19",
   "tests/test_lightning_schema.py": "135ceb3b9bb82c0104bfa598fbd417d4a00ebab7c3b7c169b1e487141df38f87"
  },
  "limits": "Deterministic unit inputs only; no host, model or store concurrency is exercised.",

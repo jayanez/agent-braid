@@ -171,7 +171,7 @@
               "limits": "The inventory hashes were computed from the pinned upstream commits at authoring time; this run checks notices, not a fresh upstream download.",
               "outcome": "passed: Every adapted module starts with the AGPL SPDX line and names microsoft/agent-lightning and the MIT License; the upstream license is retained verbatim and the inventory binds both pinned commits and original file hashes.",
               "path": "specs/070-braid-lightning-foundations/evidence/procedure_002.json",
-              "sha256": "8e64be6caf6178d719a6108b69b682340e9c81a3ef291a0c8a5983b0ee474735"
+              "sha256": "3fe46fb10c9baff1fc25c23f214c0b6fec9b8f7c964e248a808fff19af1011ec"
             }
           ],
           "planned_evidence": "Candidate-bound test or procedure record: command, hashes, outcome, negative controls and limits.",
@@ -195,7 +195,7 @@
               "limits": "Deterministic unit inputs only; no host, model or store concurrency is exercised.",
               "outcome": "passed: Rollout and event records round-trip byte-identically; unknown, missing, duplicate and non-finite inputs are refused with closed codes; transitions follow upstream VALID_TRANSITIONS; records carry no free-text content fields.",
               "path": "specs/070-braid-lightning-foundations/evidence/procedure_003.json",
-              "sha256": "37c3597ba610fd352f37488c389b5298ae35518df82cf5da42ffb1de90849885"
+              "sha256": "39dcfae04d0082cf7c38ae45bb65468bcbc0e80b7841e44841a3b57f0ee910e3"
             }
           ],
           "planned_evidence": "Candidate-bound test or procedure record: command, hashes, outcome, negative controls and limits.",
@@ -219,7 +219,7 @@
               "limits": "Agreement is shown on the tested corpus, not proven for all documents; the schema check needs the jsonschema development dependency.",
               "outcome": "passed: Defaults validate with EUR 0, subscription route, human promotion and executionAuthorization false fixed; every invalid profile in the corpus is refused by both the validator and the published JSON Schema.",
               "path": "specs/070-braid-lightning-foundations/evidence/procedure_004.json",
-              "sha256": "19511b19f6614d75dc0b7a0d4ff4aa8a3f38a88d038a66deaf00926814e09195"
+              "sha256": "90fb0aa97203ef411dbe486da1193109a1905b1073c538bf4016c27792892b50"
             }
           ],
           "planned_evidence": "Candidate-bound test or procedure record: command, hashes, outcome, negative controls and limits.",
@@ -243,7 +243,7 @@
               "limits": "Prompts are simulated with patched input(); terminal behaviour on Windows is not exercised.",
               "outcome": "passed: Interactive and non-interactive previews write nothing; only the exact preview digest applies; a stale or wrong digest and --apply without --non-interactive are refused; validate and status report the profile.",
               "path": "specs/070-braid-lightning-foundations/evidence/procedure_005.json",
-              "sha256": "04aad1a3782ce88051be91f6bf55c7cb1ce40d39449196fa039cbeb1e9c132b3"
+              "sha256": "267e512d3cff0c0f8562721acb9b144d58e225b33c7e72ed1b7b714faebd35eb"
             }
           ],
           "planned_evidence": "Candidate-bound test or procedure record: command, hashes, outcome, negative controls and limits.",
@@ -267,7 +267,7 @@
               "limits": "Single-process tests; the lock refuses a second writer but concurrent writers are not stress-tested.",
               "outcome": "passed: Run directories and files stay owner-only; content-bearing, unknown and mismatched kinds write nothing; symlinks and tampered lines are refused; sweep removes only expired runs and purge only the selected run.",
               "path": "specs/070-braid-lightning-foundations/evidence/procedure_006.json",
-              "sha256": "f7d5a37aaf7b180aa10f94cd77d7d26313fc8f2276be71514b4ee25cca0d9e3e"
+              "sha256": "61697cb42c2cf99ac0cc7eb1a91223fbc2a366a292d960939659ee30b12ad218"
             }
           ],
           "planned_evidence": "Candidate-bound test or procedure record: command, hashes, outcome, negative controls and limits.",
@@ -291,7 +291,7 @@
               "limits": "Registry behaviour only; reconnect behaviour of a running MCP server is unchanged and not exercised here.",
               "outcome": "passed: plugin setup --lightning lab stores the key with effects lines; off removes it and restores the earlier registry bytes and digest; unknown modes are refused; the setup skill describes the step without choosing for the user.",
               "path": "specs/070-braid-lightning-foundations/evidence/procedure_007.json",
-              "sha256": "71e8ed4533104eac98afcff8531d3be779746e5405628d1b2634c8d2d9566c8a"
+              "sha256": "e3de43c08fec54fd1dcf4cd56985e558e1b9b3fa2e1ca7417f99b9e0ca13edbd"
             }
           ],
           "planned_evidence": "Candidate-bound test or procedure record: command, hashes, outcome, negative controls and limits.",
@@ -315,7 +315,7 @@
               "limits": "Static import inspection; it does not prove the absence of every possible side effect.",
               "outcome": "passed: BL.0 modules import only the standard library and local Braid Lightning or registry modules, import no socket, subprocess, http, urllib or asyncio, and no MCP module mentions Braid Lightning.",
               "path": "specs/070-braid-lightning-foundations/evidence/procedure_008.json",
-              "sha256": "260d805c15748d5cd826f6a2fabbff5bb6fd6fb3682271f496526a7410724c30"
+              "sha256": "baff07c7c94ce05b30b3fb8dfb7f7c20ddb4f8abd5d65618ffc1f8b7a5b40153"
             }
           ],
           "planned_evidence": "Candidate-bound test or procedure record: command, hashes, outcome, negative controls and limits.",

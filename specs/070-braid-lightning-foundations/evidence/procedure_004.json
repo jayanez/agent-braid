@@ -1,8 +1,8 @@
 {
  "command": "python -m unittest tests.test_lightning_config",
  "environment": {
-  "platform": "macOS-27.2",
-  "python": "3.13.11"
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
  },
  "inputs": {
   "agent_braid/lightning_config.py": "50dfec9b5144eab63799920a3a7ed2a62fc499138de3c1619d1c3b27a555128b",
