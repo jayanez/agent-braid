@@ -17,7 +17,7 @@ from agent_braid import lightning_config
 from agent_braid.plugin_registry import configuration_digest, load, plan_setup, apply
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ('lightning_schema', 'lightning_config', 'lightning_store', 'lightning_cli', 'lightning_resources', 'lightning_adapter')
+MODULES = ('lightning_schema', 'lightning_config', 'lightning_store', 'lightning_cli', 'lightning_resources', 'lightning_adapter', 'lightning_redact')
 
 
 def run(*args, inputs=None):

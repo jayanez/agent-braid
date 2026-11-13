@@ -9,7 +9,7 @@
   "agent_braid/lightning_apo.py": "3abe6c6a0f72219c5abc6bcf7bfc7d7af371a38045650875603f98c3344c38c2",
   "agent_braid/lightning_gepa.py": "ad5ab4201acc4a53d19b438203a510515fe2fb8966bdda0d53dc6a3cf0bcf68f",
   "agent_braid/lightning_reward.py": "2443da49073dfdd28be6972b6a1f9ef1bd1dcf4583d34920fba6b0a4a5aff4e0",
-  "agent_braid/lightning_store.py": "72ffcc6e4cda547e78094d4bce85ddb462c2c0aaf1571a80b7976b3a76680929",
+  "agent_braid/lightning_store.py": "45a179eb8b9f43334fca38cc3bb56abc422044e7dd11451c30b7833bdb0e6b2e",
   "tests/lightning_fakes.py": "127558709fc6e36f46b77a93ed5107b7d5bb51284d191648ed16645ed44b1383",
   "tests/test_lightning_replay.py": "7deaaab85104b45e63868fa703285aa8c7610455a51e1581aaef3bebc9d57c85"
  },

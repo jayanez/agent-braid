@@ -43,7 +43,8 @@ record arrives; a missing, unreadable or invalid profile reads as `none`. A
 caller may pass `none` explicitly, which overrides the profile; any other
 explicit value is refused. Without `redacted` the record is refused with
 `store-consent` and nothing is written. With `redacted` the record must first
-pass redaction (C2); until the redactor exists (T004) it is refused with
+pass redaction (C2); until the store wires `lightning_redact` with the run's
+email salt and content retention (T006) it is refused with
 `redaction-incomplete`. The adapter gate (`agent_braid/lightning_adapter.py`)
 reports `content-consent-required` without consent and `source-not-consented`
 for a source not in `traces.sources`; `agent-braid lightning status` reports it

@@ -5,7 +5,7 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_hosts.py": "a147d8fb36c7d4e8b06aa328699a7662a52fdf71e05b292fe8a13756ddf15b23",
+  "agent_braid/lightning_hosts.py": "c35d4e5cd5ffa21d9b9c4b6d2bd1e2a01099a0d2e9125b0c9507105319e70d52",
   "agent_braid/lightning_runner.py": "f274c2b213368ac6f826d32e8c84bc5f607be557e8e808ce8267f2f370ef4da1",
   "scripts/spec072_holdout_fingerprints.py": "bde1e92812bba0f01448047313e90100a87b20f2e9899e5778a1c8cde6be6222",
   "specs/069-aim-request-authoring/prompts/FREEZE.json": "df656f2f6c0bd70763b847db743afb44f90bf500d50786398cf71b03760baa14",
