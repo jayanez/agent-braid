@@ -71,6 +71,9 @@ def add_parser(subparsers):
     mode.add_argument('--resume', metavar='RUN_ID', help='continue a stopped run explicitly (never automatic)')
     runner.add_argument('--prompt-set', choices=('development', 'held-out'), default='development')
     runner.add_argument('--plugin-dir', type=Path, help='a prebuilt plugins/agent-braid directory; skips the build')
+    runner.add_argument('--seed-run', metavar='RUN_ID',
+                        help='apo/gepa: a finished development baseline run whose results score the seed')
+    runner.add_argument('--rng-seed', type=int, default=0, help='gepa: parent and minibatch sampling seed')
     purge = commands.choices['purge']
     target = purge.add_mutually_exclusive_group(required=True)
     target.add_argument('--run-id')
@@ -151,12 +154,27 @@ def run(args, *, ask=None) -> int:
             if value is None:
                 raise config.ConfigError('No Braid Lightning profile; run lightning init first', 'config-missing-key')
             root = runner.checkout_root()
+            arm = value['algorithm']['name'] in ('apo', 'gepa')
+            if arm and args.prompt_set != 'development':
+                raise config.ConfigError('Optimization arms run on the development set only', 'holdout-contamination')
             if args.dry_run:
-                output = runner.plan(value, args.prompt_set, root)
-                output.pop('order')
+                if arm:
+                    from . import lightning_arm
+                    output = lightning_arm.estimate(value, root)
+                else:
+                    output = runner.plan(value, args.prompt_set, root)
+                    output.pop('order')
             else:
                 if not args.fake_hosts and registry.inspect_registry(home)['value'].get('lightning') != 'lab':
                     raise config.ConfigError('Host runs need setup consent: plugin setup --lightning lab', 'consent-required')
+            if arm and not args.dry_run:
+                from . import lightning_arm
+                if not args.seed_run:
+                    raise config.ConfigError('apo and gepa need --seed-run <baseline development run id>', 'config-shape')
+                output = lightning_arm.run_arm(home, value, seed_run=args.seed_run, run_id=args.resume,
+                                               resume=bool(args.resume), fake_hosts=args.fake_hosts,
+                                               plugin_dir=args.plugin_dir, rng_seed=args.rng_seed)
+            elif not args.dry_run:
                 output = runner.run(home, value, run_id=args.resume, resume=bool(args.resume), prompt_set=args.prompt_set,
                                     fake_hosts=args.fake_hosts, plugin_dir=args.plugin_dir)
         elif args.lightning_command == 'report':

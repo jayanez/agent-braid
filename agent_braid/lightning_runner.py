@@ -184,7 +184,7 @@ class OptimizerChannel:
     host with an in-process fake for algorithm tests; a transport without ``fake`` is refused.
     """
 
-    def __init__(self, host: str, *, transport=None, fake: bool = False, **host_options):
+    def __init__(self, host: str, *, transport=None, fake: bool = False, first_call: int = 1, **host_options):
         if host not in CREDENTIALS:
             raise RunnerError('Unknown optimizer host', 'config-enum')
         if transport is not None and not fake:
@@ -193,6 +193,7 @@ class OptimizerChannel:
         self.host = host
         self._transport = transport if transport is not None else SandboxedHost(host, **host_options)
         self.calls: list[dict] = []
+        self.first_call = first_call  # a resumed run continues the numbering of its journaled calls
 
     def call(self, text: str) -> tuple[str, str, dict]:
         """Return (call id, output, contamination check); a contaminated input is refused before any call."""
@@ -200,7 +201,7 @@ class OptimizerChannel:
                  'passed': contamination_passed(text, self.fingerprints)}
         if not check['passed']:
             raise RunnerError('Optimizer input contains held-out material', 'holdout-contamination')
-        call_id = f'opt-{len(self.calls) + 1:04d}'
+        call_id = f'opt-{len(self.calls) + self.first_call:04d}'
         output = self._transport(text)
         output = output if isinstance(output, str) else ''  # an empty reply is a failed call, judged by the caller
         self.calls.append({'callId': call_id, **check})
@@ -263,16 +264,24 @@ def checkout_root() -> Path:
     return root
 
 
-def plan(config: dict, prompt_set: str, root: Path) -> dict:
-    """The rollouts a run would execute, in order, within ``budget.maxRollouts``."""
+def plan(config: dict, prompt_set: str, root: Path, *, case_ids: list[str] | None = None,
+         repetitions: int | None = None) -> dict:
+    """The rollouts a run would execute, in order, within ``budget.maxRollouts``; ``case_ids`` and ``repetitions``
+    narrow it to one candidate evaluation (SPEC-072)."""
     if prompt_set not in PROMPT_FILES:
         raise RunnerError('Unknown prompt set', 'config-enum')
     cases = json.loads((root / PROMPT_FILES[prompt_set]).read_text())['cases']
+    if case_ids is not None:
+        known = {c['id'] for c in cases}
+        if not set(case_ids) <= known:
+            raise RunnerError('Unknown case id for this prompt set', 'config-enum')
+        cases = [c for c in cases if c['id'] in set(case_ids)]
     rollout = config['rollout']
-    order = [(host, case['id'], rep) for host in rollout['hosts'] for rep in range(1, rollout['repetitions'] + 1)
+    repetitions = repetitions or rollout['repetitions']
+    order = [(host, case['id'], rep) for host in rollout['hosts'] for rep in range(1, repetitions + 1)
              for case in cases]
     cap = config['budget']['maxRollouts']
-    return {'promptSet': prompt_set, 'hosts': list(rollout['hosts']), 'repetitions': rollout['repetitions'],
+    return {'promptSet': prompt_set, 'hosts': list(rollout['hosts']), 'repetitions': repetitions,
             'cases': len(cases), 'planned': len(order), 'withinBudget': min(len(order), cap),
             'maxRollouts': cap, 'parallel': rollout['parallel'], 'timeoutSeconds': rollout['timeoutSeconds'],
             'order': order[:cap], 'executionAuthorization': False}
@@ -299,8 +308,10 @@ def _canary_hits(stdout: str, transcript) -> int:
 def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, prompt_set: str = 'development',
         fake_hosts: bool = False, fake_variant: str = 'default', fake_key_source: str | None = 'none',
         plugin_dir: Path | None = None, hooks: hooks_mod.RolloutHooks | None = None,
-        environ: dict[str, str] | None = None, arm: str = 'final', models: dict[str, str] | None = None) -> dict:
-    """Run (or resume) the rollouts of ``plan``; return the run status."""
+        environ: dict[str, str] | None = None, arm: str = 'final', models: dict[str, str] | None = None,
+        case_ids: list[str] | None = None, repetitions: int | None = None, skill_text: str | None = None) -> dict:
+    """Run (or resume) the rollouts of ``plan``; return the run status. ``skill_text`` names the candidate skill the
+    ``plugin_dir`` carries (SPEC-072 candidate evaluation); by default it is the configured target file."""
     environ = dict(os.environ if environ is None else environ)
     root = checkout_root()
     from scripts import spec069_fixture_workspace as fixture
@@ -310,7 +321,7 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
     scoring_sha = reward_mod.check_scoring(root)
     prompt_sha = reward_mod.check_prompt_set(root, PROMPT_FILES[prompt_set])
     cases = {c['id']: c for c in json.loads((root / PROMPT_FILES[prompt_set]).read_text())['cases']}
-    work = plan(config, prompt_set, root)
+    work = plan(config, prompt_set, root, case_ids=case_ids, repetitions=repetitions)
     label = 'pipeline-only' if fake_hosts else 'host-run'
 
     if resume:
@@ -358,8 +369,8 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
                            'FAKE_PLANTED_SECRET': planted, 'FAKE_PYTHON': sys.executable}
             if fake_key_source is not None:
                 passthrough['FAKE_KEY_SOURCE'] = fake_key_source
-        candidate = root / config['target']['path']
-        candidate_sha = hashlib.sha256(candidate.read_bytes()).hexdigest()
+        candidate = (root / config['target']['path']).read_bytes() if skill_text is None else skill_text.encode()
+        candidate_sha = hashlib.sha256(candidate).hexdigest()
         count = completed
         for host_name in work['hosts']:
             binary = _fake_binary(root, host_name) if fake_hosts else _host_binary(host_name)

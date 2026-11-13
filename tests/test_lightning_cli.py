@@ -120,7 +120,7 @@ class SetupTests(unittest.TestCase):
 class BoundaryTests(unittest.TestCase):
     def test_modules_import_only_stdlib_and_open_no_sockets_or_processes(self):
         allowed_local = {'lightning_config', 'lightning_schema', 'lightning_store', 'plugin_registry',
-                         'lightning_runner', 'lightning_resources'}  # SPEC-071: the CLI delegates runs lazily; BL.0 modules launch nothing
+                         'lightning_runner', 'lightning_resources', 'lightning_arm'}  # SPEC-071/072: the CLI delegates runs lazily; BL.0 modules launch nothing
         for name in MODULES:
             tree = ast.parse((ROOT / 'agent_braid' / f'{name}.py').read_text())
             for node in ast.walk(tree):
