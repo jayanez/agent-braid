@@ -30,7 +30,7 @@ def development(apo_sha=None, gepa_sha=None):
         return {'runId': run_id, 'bestSha256': sha, 'seedSha256': sha256_text(BODY), 'stop': None,
                 'refusal': None, 'rollouts': 45, 'optimizerCalls': 3,
                 'source': {'arm': 'final', 'seedSkillSha256': sha256_text(RAW)}}
-    return {'seedRun': 'run-seed', 'runs': {
+    return {'seedRun': 'run-seed', 'pinnedModel': 'claude-sonnet-5-5', 'runs': {
         'apo': arm('apo', apo_sha or sha256_text(APO_BODY), 'apo-run'),
         'gepa': arm('gepa', gepa_sha or sha256_text(GEPA_BODY), 'gepa-run')}}
 
@@ -129,6 +129,13 @@ class FreezeTests(unittest.TestCase):
             self.assertEqual(printed, {'protocolFreeze': {'status': 'refused', 'code': 'protocol-hash-mismatch'}})
             self.assertIn('protocol-hash-mismatch', err)
         self.assertFalse((self.root / 'home').exists())
+        self.assertFalse((self.root / heldout.OUT).exists())
+
+    def test_a_model_other_than_the_pinned_one_is_refused(self):
+        with mock.patch.object(heldout, 'check_development', return_value={'pinnedModel': 'claude-sonnet-5-5'}):
+            for argv in (('--model', 'claude-other'), ('--model', 'claude-other', '--execute')):
+                code, printed, err = self.run_main(*argv)
+                self.assertEqual((code, printed['refusal']), (2, 'model-not-pinned'))
         self.assertFalse((self.root / heldout.OUT).exists())
 
     def test_changed_development_evidence_is_refused(self):
@@ -302,6 +309,64 @@ class DryRunAndEvidenceTests(HomeCase):
         with tempfile.TemporaryDirectory() as tmp, self.assertRaises(Exception):
             heldout.write_evidence(Path(tmp), {**record, 'token': 'sk-ant-test-secret-value-1234567890'}, arms,
                                    Secrets(['sk-ant-test-secret-value-1234567890']))
+
+
+class ReviewRegressionTests(HomeCase):
+    """Resume, replay, safety-refusal and content checks added in the PR #1352 review."""
+
+    def test_a_canary_count_above_one_replays_to_the_stored_reward(self):
+        from scripts import spec069_scoring as scoring
+        from agent_braid import lightning_reward as reward_mod
+        case = json.loads((ROOT / runner.PROMPT_FILES['held-out']).read_text())['cases'][0]
+        scoring_sha = reward_mod.check_scoring(ROOT)
+        stored = reward_mod.compute('claude-code.x.r1', case, [], canary_hits=3, components=['schema', 'd4', 'canary'],
+                                    scoring=scoring, scoring_sha256=scoring_sha)
+        result = {'rolloutId': 'claude-code.x.r1', 'parsedAttempts': [],
+                  'rewardSha256': reward_mod.reward_sha256(stored)}
+        reward = heldout.replay_reward(result, case, True, scoring, scoring_sha)
+        self.assertEqual((reward['canaryHits'], reward['d4FirstAttempt']), (3, False))
+        with self.assertRaises(heldout.HeldoutError) as caught:  # no canary event: the hash cannot be reproduced
+            heldout.replay_reward(result, case, False, scoring, scoring_sha)
+        self.assertEqual(caught.exception.code, 'replay-mismatch')
+
+    def test_the_first_unstopped_result_is_scored_and_a_retry_never_replaces_it(self):
+        def rec(rollout, stop=None, refusal=None):
+            return mock.Mock(value={'rolloutId': rollout, 'stop': stop, 'refusal': refusal})
+        store = mock.Mock()
+        store.read.return_value = [rec('r1', refusal='rollout-timeout'), rec('r2', stop='weekly-stop'),
+                                   rec('r1'), rec('r2'), rec('r2')]
+        first = heldout.scored_results(store)
+        self.assertEqual(first['r1']['refusal'], 'rollout-timeout')  # the resumed retry of r1 does not count
+        self.assertIs(first['r2'], store.read.return_value[3].value)
+
+    def execute(self, record, run):
+        arms = heldout.resolve_arms(self.home, ROOT, development(), TARGET)
+        with tempfile.TemporaryDirectory() as tmp:
+            return heldout.execute_arms(self.home, Path(tmp), arms, record, cfg={}, models={}, environ={},
+                                        secrets=Secrets(), planned=30, run=run,
+                                        build=lambda label, text, work: work)
+
+    def test_a_safety_refusal_is_never_resumed_or_analysed(self):
+        store_mod.RunStore(self.home, 'heldout-a0-leak').create(config_digest='c' * 64)
+        record = {'arms': {'A0': {'runId': 'heldout-a0-leak', 'status': {'refusal': 'credential-leak'}},
+                           'A1': {}, 'A2': {}}, 'invocations': [{'runs': {}}]}
+        self.assertEqual(self.execute(record, run=mock.Mock(side_effect=AssertionError('launched'))), 1)
+        self.assertEqual(record['arms']['A0']['state']['status'], 'refused')
+
+    def test_a_recorded_run_with_rollouts_but_no_store_is_refused(self):
+        record = {'arms': {'A0': {'runId': 'heldout-a0-gone', 'state': {'status': 'resume', 'completed': 7}},
+                           'A1': {}, 'A2': {}}, 'invocations': [{'runs': {}}]}
+        with self.assertRaises(heldout.HeldoutError) as caught:
+            self.execute(record, run=mock.Mock(side_effect=AssertionError('launched')))
+        self.assertEqual(caught.exception.code, 'run-store-missing')
+
+    def test_a_json_escaped_skill_line_is_still_found(self):
+        line = 'Return "conditions" only when\ta unit waits on another unit.'
+        arms = {'A0': {'arm': 'A0', 'skillText': f'---\nname: x\n---\n{line}\n'}}
+        heldout.assert_content_free(json.dumps({'ok': 1}), arms, Secrets())
+        with self.assertRaises(heldout.HeldoutError) as caught:
+            heldout.assert_content_free(json.dumps({'detail': line}), arms, Secrets())
+        self.assertEqual(caught.exception.code, 'evidence-not-content-free')
 
 
 class FakeHostPipelineTests(HomeCase):

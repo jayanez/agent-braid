@@ -67,6 +67,9 @@ ARMS = ('A0', 'A1', 'A2')
 DEVELOPMENT_RUNS = {'A1': 'apo', 'A2': 'gepa'}  # E1/E2 are development-only and never resolved here
 ROLES = {'A0': 'baseline', 'A1': 'apo-secondary-descriptive', 'A2': 'gepa-primary'}
 FORBIDDEN_KEYS = ('"parsedAttempts"', '"request"', '"prompt"', '"report"', '"skillText"', '"body"')
+# Refusals that stop an arm for good (protocol stopping rules: paid route, leaked credential); a resume would hide them.
+SAFETY_REFUSALS = ('route-unverified', 'credential-leak')
+MAX_CANARY_HITS = 100_000
 
 
 class HeldoutError(ValueError):
@@ -153,18 +156,40 @@ def plan(root: Path, arms: dict, recorded: dict, home: Path, model: str, freeze:
             'excluded': 'E1/E2 are development-only (Amendment 1 item 6)', 'executionAuthorization': False}
 
 
+def scored_results(store: store_mod.RunStore) -> dict[str, dict]:
+    """The FIRST attempt result per rollout id that is not a quota stop. A refused rollout scores as a failed
+    attempt; the runner retries refused rollouts on resume, and a retry never replaces the first result, so a
+    quota stop cannot give one arm a second chance the others did not get."""
+    first: dict[str, dict] = {}
+    for record in store.read('result'):
+        if record.value['stop'] is None:
+            first.setdefault(record.value['rolloutId'], record.value)
+    return first
+
+
 def arm_state(home: Path, run_id: str | None, planned: int) -> dict:
-    """``pending`` (no run), ``resume`` (a run that stopped short) or ``complete`` (never run again). A rollout
-    counts once it has an attempt result that is not a quota stop; a refused rollout counts and scores as a failed
-    attempt, so completing a run never retries it."""
+    """``pending`` (no run), ``resume`` (a run that stopped short), ``complete`` (never run again) or ``refused``
+    (a safety refusal, which no resume or analysis may pass). A rollout counts once it has an attempt result that is
+    not a quota stop (``scored_results``)."""
     if not run_id:
         return {'status': 'pending', 'completed': 0}
     store = store_mod.RunStore(home, run_id)
     if not store.root.exists():
         return {'status': 'pending', 'completed': 0}
     store.manifest()
-    done = len({r.value['rolloutId'] for r in store.read('result') if r.value['stop'] is None})
-    return {'status': 'complete' if done >= planned else 'resume', 'completed': min(done, planned)}
+    results = scored_results(store)
+    done = min(len(results), planned)
+    safety = sorted({r['refusal'] for r in results.values() if r['refusal'] in SAFETY_REFUSALS})
+    if safety:
+        return {'status': 'refused', 'completed': done, 'refusal': safety[0]}
+    return {'status': 'complete' if done >= planned else 'resume', 'completed': done}
+
+
+def check_run_candidate(home: Path, run_id: str, skill_sha256: str) -> None:
+    """A recorded run may only ever have evaluated its arm's candidate (checked before resuming and before scoring)."""
+    seen = {r.candidate_sha256 for r in store_mod.RunStore(home, run_id).read('rollout')}
+    if seen - {skill_sha256}:
+        raise HeldoutError(f'Run {run_id} did not evaluate its arm candidate', 'arm-candidate-mismatch')
 
 
 # --- analysis (pure, stdlib only) ------------------------------------------------------------------------------
@@ -238,21 +263,30 @@ def analysis(vectors: dict[str, list[dict]], cases: int, repetitions: int) -> di
 # --- reading a held-out run (after it ran) ---------------------------------------------------------------------
 
 
+def replay_reward(result: dict, case: dict, canary_hit: bool, scoring, scoring_sha: str) -> dict:
+    """The stored reward of ``result``, replayed and verified against its ``rewardSha256``. The reward event only
+    says whether the canary was hit; the hashed reward carries the runner's exact count (stdout plus tool-call
+    occurrences), so for a hit the count is recovered as the one that reproduces the stored hash."""
+    reward = reward_mod.replay(result['rolloutId'], case, result['parsedAttempts'], canary_hits=int(canary_hit),
+                               components=['schema', 'd4', 'canary'], scoring=scoring, scoring_sha256=scoring_sha)
+    for count in range(1, MAX_CANARY_HITS + 1) if canary_hit else (0,):
+        reward['canaryHits'] = count  # the count changes no other field once it is above zero
+        if reward_mod.reward_sha256(reward) == result['rewardSha256']:
+            return reward
+    raise HeldoutError(f'Rollout {result["rolloutId"]} does not replay to its stored reward', 'replay-mismatch')
+
+
 def run_vectors(home: Path, root: Path, run_id: str, skill_sha256: str) -> list[dict]:
     """Per-rollout D4 vectors of a finished held-out run, re-scored from its content-free parsed attempts."""
     from scripts import spec069_scoring as scoring
     store = store_mod.RunStore(home, run_id)
-    if {r.candidate_sha256 for r in store.read('rollout')} != {skill_sha256}:
-        raise HeldoutError(f'Run {run_id} did not evaluate its arm candidate', 'arm-candidate-mismatch')
+    check_run_candidate(home, run_id, skill_sha256)
     cases = {c['id']: c for c in json.loads((root / runner.PROMPT_FILES['held-out']).read_text())['cases']}
-    hits: dict[str, int] = {}
-    for event in store.read('event'):
-        if event.event_type == 'reward' and event.data['reward']['reason'] == 'canary-hit':
-            hits[event.rollout_id] = 1
-    latest = {r['rolloutId']: r for r in (x.value for x in store.read('result')) if r['stop'] is None}
+    hit = {event.rollout_id for event in store.read('event')
+           if event.event_type == 'reward' and event.data['reward']['reason'] == 'canary-hit'}
     scoring_sha = reward_mod.check_scoring(root)
     out = []
-    for rollout_id, result in sorted(latest.items()):
+    for rollout_id, result in sorted(scored_results(store).items()):
         if result['promptSet'] != 'held-out':
             raise HeldoutError(f'Run {run_id} is not a held-out run', 'prompt-set-mismatch')
         host, case_id = rollout_id.split('.')[:2]
@@ -261,14 +295,10 @@ def run_vectors(home: Path, root: Path, run_id: str, skill_sha256: str) -> list[
                         'validFirstAttempt': False, 'validWithinRetry': False, 'schemaValid': False,
                         'canaryHits': 0})
             continue
-        reward = reward_mod.replay(rollout_id, cases[case_id], result['parsedAttempts'],
-                                   canary_hits=hits.get(rollout_id, 0), components=['schema', 'd4', 'canary'],
-                                   scoring=scoring, scoring_sha256=scoring_sha)
-        if reward_mod.reward_sha256(reward) != result['rewardSha256']:
-            raise HeldoutError(f'Run {run_id} does not replay to its stored rewards', 'replay-mismatch')
+        reward = replay_reward(result, cases[case_id], rollout_id in hit, scoring, scoring_sha)
         out.append({'host': host, 'caseId': case_id, 'repetition': result['repetition'],
                     'validFirstAttempt': reward['d4FirstAttempt'], 'validWithinRetry': reward['d4WithinRetry'],
-                    'schemaValid': reward['schemaValid'], 'canaryHits': hits.get(rollout_id, 0)})
+                    'schemaValid': reward['schemaValid'], 'canaryHits': reward['canaryHits']})
     return [v for v in out if v['host'] == HOST]
 
 
@@ -296,7 +326,9 @@ def assert_content_free(text: str, arms: dict, secrets: Secrets) -> None:
             raise HeldoutError(f'Evidence carries a content field {key}', 'evidence-not-content-free')
     for arm in arms.values():
         for line in arm['skillText'].splitlines():
-            if len(line.strip()) >= 40 and line.strip() in text:
+            line = line.strip()
+            # the evidence is JSON: a line with quotes, backslashes or tabs appears there escaped
+            if len(line) >= 40 and (line in text or json.dumps(line, ensure_ascii=False)[1:-1] in text):
                 raise HeldoutError(f'Evidence carries {arm["arm"]} skill text', 'evidence-not-content-free')
 
 
@@ -320,7 +352,8 @@ def new_run_id(label: str) -> str:
 
 def build_plugin(label: str, skill_text: str, work: Path) -> Path:
     from scripts import spec069_native_runs as driver
-    base = driver.build_candidate('final', work, work / 'build-cache', False)[0]
+    cache = Path(os.environ.get('TMPDIR', '/tmp')) / 'agent-braid-lightning-build-cache'  # as lightning_runner.run
+    base = driver.build_candidate('final', work, cache, False)[0]
     return base if label == 'A0' else arm_mod.candidate_plugin(base, skill_text, work / 'candidate')
 
 
@@ -329,8 +362,19 @@ def execute_arms(home: Path, root: Path, arms: dict, record: dict, *, cfg: dict,
     """Run each arm once, in order; record the run id before it starts; resume a stopped arm; skip a complete one."""
     for label in ARMS:
         entry = record['arms'][label]
+        recorded = entry.get('state') or {}
         state = arm_state(home, entry.get('runId'), planned)
+        if state['status'] == 'pending' and entry.get('runId') and recorded.get('completed', 0) > 0:
+            raise HeldoutError(f'The recorded {label} run {entry["runId"]} has rollouts but no store under this '
+                               'home; refusing to run the arm again', 'run-store-missing')
+        if state['status'] != 'pending':
+            check_run_candidate(home, entry['runId'], arms[label]['skillSha256'])
         entry['state'] = state
+        if (entry.get('status') or {}).get('refusal') in SAFETY_REFUSALS:
+            state = entry['state'] = {**state, 'status': 'refused', 'refusal': entry['status']['refusal']}
+        if state['status'] == 'refused':
+            write_evidence(root, record, arms, secrets)
+            return 1  # a safety refusal stops the arm; neither a resume nor the analysis may pass it
         if state['status'] == 'complete':
             continue  # never re-run a completed arm
         run_id = entry.get('runId') or new_run_id(label)
@@ -356,6 +400,25 @@ def execute_arms(home: Path, root: Path, arms: dict, record: dict, *, cfg: dict,
     return 0
 
 
+def finish_analysis(home: Path, root: Path, arms: dict, record: dict, dev_runs: dict, summary: dict,
+                    protocol_sha: str, secrets: Secrets) -> None:
+    """Score the three complete arms, apply the analysis plan and write the SPEC-049 pair (A = A0, C = A2)."""
+    vectors = {label: run_vectors(home, root, record['arms'][label]['runId'], arms[label]['skillSha256'])
+               for label in ARMS}
+    result = analysis(vectors, summary['cases'], summary['repetitions'])
+    costs = {'A': {'heldOutRollouts': len(vectors['A0']),
+                   'developmentRollouts': dev_runs['baseline']['completed'], 'optimizerCalls': 0},
+             'C': {'heldOutRollouts': len(vectors['A2']), 'developmentRollouts': dev_runs['gepa']['rollouts'],
+                   'optimizerCalls': dev_runs['gepa']['optimizerCalls']}}
+    registration, report = pair(result, arms, root, protocol_sha, costs)
+    for relative, rec in ((REGISTRATION_OUT, registration), (REPORT_OUT, report)):
+        assert_content_free(rec.canonical_bytes.decode('utf-8'), arms, secrets)
+        (root / relative).write_bytes(rec.canonical_bytes)
+    record['analysis'] = result
+    record['pair'] = {'registration': {'path': REGISTRATION_OUT, 'sha256': registration.sha256},
+                      'evaluationRecord': {'path': REPORT_OUT, 'sha256': report.sha256}}
+
+
 def main(argv: list[str] | None = None, root: Path = ROOT) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     parser.add_argument('--home', type=Path, default=dev.DEFAULT_HOME, help='dedicated private laboratory home')
@@ -373,6 +436,8 @@ def main(argv: list[str] | None = None, root: Path = ROOT) -> int:
     freeze = {'status': 'frozen', 'protocolSha256': protocol_sha}
     try:
         development = check_development(root)
+        if args.model != development.get('pinnedModel'):  # Amendment 1 item 4: the arms' model, for every rollout
+            raise HeldoutError('The model differs from the one the development arms pinned', 'model-not-pinned')
         target = heldout_config()['target']['path']
         arms = resolve_arms(home, root, development, target)
     except HeldoutError as exc:
@@ -412,24 +477,15 @@ def main(argv: list[str] | None = None, root: Path = ROOT) -> int:
               'arms': {label: {**previous.get('arms', {}).get(label, {}), **public(arms[label])} for label in ARMS},
               'invocations': [*previous.get('invocations', []), {'generatedAt': utc_now(), 'runs': {}}],
               'analysis': None, 'pair': None}
-    code = execute_arms(home, root, arms, record, cfg=cfg, models={HOST: args.model}, environ=environ,
-                        secrets=secrets, planned=summary['rolloutsPerArm'])
-    if code == 0:
-        vectors = {label: run_vectors(home, root, record['arms'][label]['runId'], arms[label]['skillSha256'])
-                   for label in ARMS}
-        result = analysis(vectors, summary['cases'], summary['repetitions'])
-        dev_runs = development['runs']
-        costs = {'A': {'heldOutRollouts': len(vectors['A0']), 'developmentRollouts': 30, 'optimizerCalls': 0},
-                 'C': {'heldOutRollouts': len(vectors['A2']), 'developmentRollouts': dev_runs['gepa']['rollouts'],
-                       'optimizerCalls': dev_runs['gepa']['optimizerCalls']}}
-        registration, report = pair(result, arms, root, protocol_sha, costs)
-        for relative, rec in ((REGISTRATION_OUT, registration), (REPORT_OUT, report)):
-            text = rec.canonical_bytes.decode('utf-8')
-            assert_content_free(text, arms, secrets)
-            (root / relative).write_bytes(rec.canonical_bytes)
-        record['analysis'] = result
-        record['pair'] = {'registration': {'path': REGISTRATION_OUT, 'sha256': registration.sha256},
-                          'evaluationRecord': {'path': REPORT_OUT, 'sha256': report.sha256}}
+    try:
+        code = execute_arms(home, root, arms, record, cfg=cfg, models={HOST: args.model}, environ=environ,
+                            secrets=secrets, planned=summary['rolloutsPerArm'])
+        if code == 0:
+            finish_analysis(home, root, arms, record, development['runs'], summary, protocol_sha, secrets)
+    except HeldoutError as exc:
+        record['refusal'] = exc.code
+        print(f'refused ({exc.code}): {exc}', file=sys.stderr)
+        code = 2
     path = write_evidence(root, record, arms, secrets)
     print(json.dumps({'evidence': str(path), 'h1': (record['analysis'] or {}).get('h1'),
                       'arms': {k: {'runId': v.get('runId'), 'state': v.get('state')}
