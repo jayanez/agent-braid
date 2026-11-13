@@ -55,7 +55,7 @@ class WizardTests(unittest.TestCase):
         self.assertEqual(run(*flags, '--apply', '--preview-digest', preview['previewDigest'])[0], 2)
 
     def test_interactive_wizard_keeps_defaults_and_reprompts_bad_answers(self):
-        answers = ['', 'codex', 'claude-code', 'gepa', '9', '2', '', '', 'no']
+        answers = ['', 'codex', 'claude-code', 'gepa', '9', '2', '', '', '', 'no']
         code, out, err = run('lightning', 'init', '--home', str(self.home), inputs=answers)
         self.assertEqual(code, 0, err)
         preview = json.loads(out)

@@ -10,7 +10,7 @@ imply owner acceptance. `quick` means
   privacy review; OD-1 to OD-3 decided 2026-11-13 (host transcripts opt-in;
   salted per-run email hash; no consent expiry). Dependencies: none. Verification:
   review record bound to a frozen commit.
-- [ ] T002 (REQ-001 / SC-001): consent fields in the configuration validator,
+- [x] T002 (REQ-001 / SC-001): consent fields in the configuration validator,
   extension of the `traces` section of `lightning-config.schema.json` with
   corpus agreement, `lightning init` preview with digest, `lightning status`
   showing level, `consentedAt` and sources. Dependencies: T001, SPEC-070 REQ-004. Verification:

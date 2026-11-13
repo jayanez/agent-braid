@@ -12,18 +12,29 @@ separate consent schema.
 | `contentConsent` | enum `none`, `redacted` | `none` | no other value; invalid configuration reads as `none` |
 | `sources` | unique subset of `rollout`, `host-transcript`, `loom`, `system-one` | `["rollout"]` | content read only from listed sources |
 | `retentionDays` | integer 1–90 | 30 | sweep bound |
-| `consentedAt` | date or null | null | set by apply when consent becomes `redacted` |
-| `consentPreviewDigest` | hex or null | null | digest of the preview the owner applied |
+| `consentedAt` | `YYYY-MM-DD` or null | null | set by apply when consent becomes `redacted`; never answered |
+| `consentPreviewDigest` | hex or null | null | `previewDigest` of the preview the owner applied; never answered |
+
+`consentedAt` and `consentPreviewDigest` are optional in a stored profile (BL.0
+profiles lack them) and read as null. With `none` both are null; with `redacted`
+both are set. A re-apply that keeps `redacted` and the same sources keeps the
+record; new sources renew it; lowering to `none` clears it. Consent does not
+expire (OD-3). A record that breaks these rules, or an answer that tries to set
+it, is refused with `config-consent` (added to the SPEC-070 configuration
+refusal vocabulary).
 
 ## Setup preview
 
-`agent-braid lightning init --trace-consent redacted` prints sources, retention,
-redaction classes, storage location, purge command and a `previewDigest`; it
+`agent-braid lightning init --trace-consent redacted [--trace-sources
+rollout,host-transcript]` (`--trace-content` is the BL.0 spelling) prints a
+`consent` summary (level, `consentedAt`, sources, retention, `expires: null`),
+effects naming sources, retention, redaction classes, storage location, the
+residual risk and the purge command, and a `previewDigest`; it
 writes only with `--apply --preview-digest <d>`. Lowering consent to `none` also
 previews and offers purge of existing content. Consent has no expiry (OD-3);
-`agent-braid lightning status` shows `contentConsent`, `consentedAt` and
-`sources`. `plugin setup` only sets
-`lightning` `off` | `lab`; it never changes consent.
+`agent-braid lightning status` reports `traceConsent` with the same summary
+(`none` when no profile exists). `plugin setup` only sets `lightning` `off` |
+`lab`; it never changes consent.
 
 ## Redaction placeholders
 
