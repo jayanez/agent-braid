@@ -32,6 +32,8 @@ FLAG_FIELDS = {
     'max_optimizer_calls': ('budget', 'maxOptimizerCalls'), 'optimizer_host': ('optimizer', 'host'),
     'trace_content': ('traces', 'contentConsent'), 'retention_days': ('traces', 'retentionDays'),
     'parallel': ('rollout', 'parallel'), 'export': ('export', 'enabled'),
+    'beam_width': ('algorithm', 'beamWidth'), 'branch_factor': ('algorithm', 'branchFactor'),
+    'rounds': ('algorithm', 'rounds'), 'minibatch': ('algorithm', 'minibatch'),
 }
 
 
@@ -57,6 +59,10 @@ def add_parser(subparsers):
     init.add_argument('--trace-content', choices=('none', 'redacted'))
     init.add_argument('--retention-days', type=int)
     init.add_argument('--parallel', type=int)
+    init.add_argument('--beam-width', type=int, help='apo: candidates kept per round')
+    init.add_argument('--branch-factor', type=int, help='apo: children per parent')
+    init.add_argument('--rounds', type=int, help='apo/gepa: optimization rounds')
+    init.add_argument('--minibatch', type=int, help='apo/gepa: development cases per minibatch')
     export = init.add_mutually_exclusive_group()
     export.add_argument('--export', dest='export', action='store_const', const=True, default=None)
     export.add_argument('--no-export', dest='export', action='store_const', const=False)
@@ -74,6 +80,9 @@ def add_parser(subparsers):
     runner.add_argument('--seed-run', metavar='RUN_ID',
                         help='apo/gepa: a finished development baseline run whose results score the seed')
     runner.add_argument('--rng-seed', type=int, default=0, help='gepa: parent and minibatch sampling seed')
+    runner.add_argument('--source', choices=('baseline', 'final'), default='baseline',
+                        help='apo/gepa: plugin arm the seed skill and candidate plugin come from (A0 = baseline)')
+    runner.add_argument('--model', help='pinned Claude Code model (apo/gepa default: claude-sonnet-5-5)')
     purge = commands.choices['purge']
     target = purge.add_mutually_exclusive_group(required=True)
     target.add_argument('--run-id')
@@ -161,6 +170,7 @@ def run(args, *, ask=None) -> int:
                 if arm:
                     from . import lightning_arm
                     output = lightning_arm.estimate(value, root)
+                    output.update(source=args.source, model=args.model or lightning_arm.DEFAULT_MODEL)
                 else:
                     output = runner.plan(value, args.prompt_set, root)
                     output.pop('order')
@@ -173,10 +183,13 @@ def run(args, *, ask=None) -> int:
                     raise config.ConfigError('apo and gepa need --seed-run <baseline development run id>', 'config-shape')
                 output = lightning_arm.run_arm(home, value, seed_run=args.seed_run, run_id=args.resume,
                                                resume=bool(args.resume), fake_hosts=args.fake_hosts,
-                                               plugin_dir=args.plugin_dir, rng_seed=args.rng_seed)
+                                               plugin_dir=args.plugin_dir, rng_seed=args.rng_seed,
+                                               source=args.source,
+                                               models={'claude-code': args.model or lightning_arm.DEFAULT_MODEL})
             elif not args.dry_run:
                 output = runner.run(home, value, run_id=args.resume, resume=bool(args.resume), prompt_set=args.prompt_set,
-                                    fake_hosts=args.fake_hosts, plugin_dir=args.plugin_dir)
+                                    fake_hosts=args.fake_hosts, plugin_dir=args.plugin_dir,
+                                    models={'claude-code': args.model} if args.model else None)
         elif args.lightning_command == 'report':
             from . import lightning_runner as runner
             output = runner.report(home, args.run_id)

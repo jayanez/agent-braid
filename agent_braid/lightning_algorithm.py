@@ -238,9 +238,13 @@ class Algorithm:
     name = ''
 
     def skill_text(self, config: dict) -> str:
+        if self.seed_text is not None:
+            return self.seed_text
         return (runner_mod.checkout_root() / config['target']['path']).read_text(encoding='utf-8')
 
     rng_seed: int | None = None
+    seed_text: str | None = None  # a pinned seed skill (T009: the A0 guidance), instead of the working tree
+    source: dict | None = None  # where the pinned seed came from; journaled with the start entry
     replaying = False
 
     def start(self, home, config: dict, run_id: str, seed_vectors: list[dict], *, resume: bool = False):
@@ -250,6 +254,8 @@ class Algorithm:
         raw = self.skill_text(config)
         record, body = seed(raw, created_at=_now(), dev_score={'minibatch': None, 'full': score(seed_vectors)})
         start = {'kind': 'start', 'algorithm': self.name, 'rngSeed': self.rng_seed}
+        if self.source is not None:
+            start['source'] = self.source
         self._derived = {}
         if resume or self.replaying:
             if store.manifest()['configDigest'] != digest(config):

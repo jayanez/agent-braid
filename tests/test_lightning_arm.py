@@ -69,8 +69,13 @@ class ArmTests(Base):
     def test_gepa_arm_runs_end_to_end_on_fake_hosts_and_replays(self):
         seed = self.seed_run()
         cfg = profile('gepa', rounds=2, minibatch=3)
-        summary = arm.run_arm(self.home, cfg, seed_run=seed, run_id='gepa-arm', fake_hosts=True, environ=CLEAN_ENV)
+        summary = arm.run_arm(self.home, cfg, seed_run=seed, run_id='gepa-arm', fake_hosts=True, environ=CLEAN_ENV,
+                              models={'claude-code': arm.DEFAULT_MODEL})
         self.assertEqual((summary['refusal'], summary['label'], summary['seedRun']), (None, 'pipeline-only', seed))
+        raw, provenance = arm.source_skill('baseline', cfg['target']['path'], ROOT)
+        self.assertEqual(summary['source'], {**provenance, 'seedSkillSha256': arm.sha256_text(raw)})
+        self.assertEqual(summary['source']['commit'], '8f63c606')
+        self.assertEqual(summary['models'], {'claude-code': 'claude-sonnet-5-5'})
         self.assertGreater(summary['optimizerCalls'], 0)
         self.assertGreater(summary['rollouts'], 0)
         run = store.RunStore(self.home, 'gepa-arm')
@@ -78,13 +83,27 @@ class ArmTests(Base):
         self.assertTrue(evals)
         subs = [r['runId'] for r in store.list_runs(self.home) if r['runId'].startswith('gepa-arm-e')]
         self.assertEqual(len(subs), len(evals))
+        start = next(e for e in run.read_journal() if e['kind'] == 'start')
+        self.assertEqual(start['source']['commit'], '8f63c606')
         def refuse(*_):
             raise AssertionError('replay must not evaluate or call')
         channel = runner.OptimizerChannel('claude-code', transport=refuse, fake=True)
-        replayed = algorithm.replay(self.home, 'gepa-arm', gepa.GEPA(evaluator=refuse, optimizer=channel,
-                                                                    seed_vectors=arm.seed_vectors(self.home, seed, ROOT)),
-                                    cfg)
+        replaying = gepa.GEPA(evaluator=refuse, optimizer=channel, seed_vectors=arm.seed_vectors(self.home, seed, ROOT))
+        replaying.seed_text, replaying.source = raw, summary['source']
+        replayed = algorithm.replay(self.home, 'gepa-arm', replaying, cfg)
         self.assertTrue(replayed['selectionsMatch'] and replayed['resultsMatch'])
+
+    def test_baseline_source_is_the_a0_guidance_not_the_working_tree(self):
+        target = config.defaults()['target']['path']
+        raw, provenance = arm.source_skill('baseline', target, ROOT)
+        self.assertEqual(provenance, {'arm': 'baseline', 'commit': '8f63c606', 'workingTree': False})
+        self.assertTrue(raw.startswith('---'))
+        self.assertNotEqual(raw, (ROOT / target).read_text())  # T008 changed the guidance after A0
+        current, final = arm.source_skill('final', target, ROOT)
+        self.assertEqual(current, (ROOT / target).read_text())
+        self.assertTrue(final['workingTree'])
+        with self.assertRaises(runner.RunnerError):
+            arm.source_skill('other', target, ROOT)
 
     def test_seed_run_must_cover_every_development_case(self):
         cfg = profile('baseline')
@@ -126,6 +145,20 @@ class CliTests(Base):
         code, out, _ = self.cli('run', '--dry-run')
         self.assertEqual(code, 0)
         self.assertEqual(json.loads(out)['algorithm'], 'gepa')
+
+    def test_init_flags_set_the_search_shape(self):
+        args = ('init', '--non-interactive', '--algorithm', 'apo', '--beam-width', '2', '--branch-factor', '3',
+                '--rounds', '2', '--minibatch', '4')
+        code, out, _ = self.cli(*args)
+        self.assertEqual(code, 0)
+        preview = json.loads(out)
+        self.assertEqual(self.cli(*args, '--apply', '--preview-digest', preview['previewDigest'])[0], 0)
+        algo = config.load(self.home)['algorithm']
+        self.assertEqual((algo['beamWidth'], algo['branchFactor'], algo['rounds'], algo['minibatch']), (2, 3, 2, 4))
+        self.assertIn('--beam-width', preview['applyWith'])
+        code, out, _ = self.cli('run', '--dry-run')
+        plan = json.loads(out)
+        self.assertEqual((plan['rounds'], plan['source'], plan['model']), (2, 'baseline', 'claude-sonnet-5-5'))
 
     def test_arm_needs_a_seed_run_and_the_development_set(self):
         self.init('apo')

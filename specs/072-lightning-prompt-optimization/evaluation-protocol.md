@@ -134,3 +134,45 @@ A null or negative result completes this protocol. It is reported with the
 same detail as a positive result and does not justify changing the held-out
 set, D4 or this protocol after the fact. Results describe the observed host
 versions, models and prompt sets only.
+
+## Proposed amendment A-1: hosts (draft, pending owner review)
+
+Status: proposed 2026-11-13, not accepted. The sections above stay as written
+until the owner accepts this amendment; it is not part of any freeze until then.
+
+**Reason.** SPEC-071 OD-2: OpenCode reports no subscription credential source,
+so every OpenCode rollout or optimizer call is refused as `route-unverified`
+and the SPEC-071 baseline run `run-20261111T085405Z-a14514` (the A0 seed) has
+`claude-code` only. Keeping `opencode` as a required host would make H1
+`not assessable` by construction.
+
+**Changes if accepted.**
+
+1. Data: required hosts become `claude-code` only. `opencode` becomes a
+   declared limit, like Codex (no verified subscription credential source;
+   refusal code `route-unverified`).
+2. Analysis plan item 3: "in every required host (`claude-code`, `opencode`)"
+   reads "in the required host (`claude-code`)". The outcome describes Claude
+   Code only and claims nothing for OpenCode.
+3. Feasibility table, recomputed for one host (units: full evaluation =
+   10 × 3 × 1 = 30 rollouts; minibatch = 5 × 1 × 1 = 5 rollouts). Upper bounds
+   from `agent_braid.lightning_arm.estimate` with the preregistered
+   parameters and caps of 120 rollouts and 40 optimizer calls:
+
+   | Arm | Search | Full evaluations | Upper bound | Optimizer calls |
+   |---|---|---|---|---|
+   | A1 APO | round 1: 1 parent × 2 children × 5 = 10; round 2: 2 parents × 2 children × 5 = 20 | best candidate 30 | 60 | 1 × 3 + 2 × 3 = 9 |
+   | A2 GEPA | 3 rounds × 1 child × 5 = 15 | every accepted child 30 (worst case 3 × 30 = 90) | 105 | 3 |
+
+   Both arms stay inside the 120-rollout cap, so the GEPA `unit-cap` stop is no
+   longer expected; it remains the rule if reached. Budgets, parameters,
+   repetitions and stopping rules are unchanged.
+
+**Unchanged.** A0 is the T010 baseline guidance at commit `8f63c606`
+(SPEC-069 `BASELINE_COMMIT`, plugin arm `baseline`). Arms start from it
+(`lightning run --source baseline`): the seed skill text is read from that
+commit and candidate sub-runs use the `baseline` plugin, so a candidate
+differs from A0 only in its skill text. The host model is pinned to
+`claude-sonnet-5-5` (the T010 and A0 seed model). Re-scoring the A0 seed run
+with the current `scripts/spec069_scoring.py` gives 16 of 30 first-attempt
+successes and 21 of 30 schema-valid, identical to the recorded run.
