@@ -11,7 +11,7 @@
   "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",
   "agent_braid/lightning_reward.py": "2443da49073dfdd28be6972b6a1f9ef1bd1dcf4583d34920fba6b0a4a5aff4e0",
   "agent_braid/lightning_runner.py": "f274c2b213368ac6f826d32e8c84bc5f607be557e8e808ce8267f2f370ef4da1",
-  "agent_braid/lightning_store.py": "e62864afc63c9c8a54dace7ff77726e35d323cdffffb2db0c0e4bd610539e236",
+  "agent_braid/lightning_store.py": "72ffcc6e4cda547e78094d4bce85ddb462c2c0aaf1571a80b7976b3a76680929",
   "scripts/spec069_native_runs.py": "92a737a5d4e7af15d9a859f49b9be2111dc5f82c68c694b59a8019091e6de236",
   "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
   "scripts/spec072_development_arms.py": "e1e1a1505829a309c1e6dc0ae3f0f0b4a6db19ec08dc33891d6388cd2974677c",

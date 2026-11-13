@@ -25,7 +25,7 @@ from .lightning_schema import AttemptResult, Event, _digest, LightningSchemaErro
 RUN_SCHEMA = 'braid-lightning-run/v0.1'
 KINDS = {'rollout': 'rollouts.jsonl', 'event': 'events.jsonl', 'result': 'results.jsonl',  # result: SPEC-071
          'candidate': 'candidates.jsonl'}  # candidate: SPEC-072
-CONTENT_KINDS = ('trace',)  # content-bearing records; refused until the SPEC-074 consent contract exists
+CONTENT_KINDS = ('trace',)  # content-bearing records: SPEC-074 consent gate (REQ-002), redaction on ingest (C2)
 MAX_LINE = 64 * 1024
 JOURNAL = 'journal.jsonl'  # SPEC-072 REQ-007/REQ-010: seeds, optimizer outputs and attempt-result references
 MAX_JOURNAL_LINE = 256 * 1024
@@ -50,6 +50,15 @@ def _private_dir(path: Path) -> None:
         raise StoreError('Braid Lightning state must be private to its user', 'store-unsafe-path')
 
 
+def content_consent(home: Path | None = None) -> str:
+    """The stored `traces.contentConsent`; a missing, unreadable or invalid profile reads as `none` (SPEC-074 REQ-002)."""
+    try:
+        value = lightning_config.load(home)
+    except (ValueError, OSError):
+        return 'none'
+    return 'none' if value is None else value['traces']['contentConsent']
+
+
 def _run_id(run_id: str) -> str:
     if not isinstance(run_id, str) or not _RUN_ID.fullmatch(run_id):
         raise StoreError('Run identifiers use 1-64 safe characters', 'store-identifier')
@@ -59,8 +68,9 @@ def _run_id(run_id: str) -> str:
 class RunStore:
     """Append-only store for one run: `run.json`, `rollouts.jsonl`, `events.jsonl`."""
 
-    def __init__(self, home: Path | None, run_id: str, *, content_consent: str = 'none'):
-        if content_consent not in ('none', 'redacted'):
+    def __init__(self, home: Path | None, run_id: str, *, content_consent: str | None = None):
+        """`content_consent` None reads the profile when a content record arrives (fail closed)."""
+        if content_consent not in (None, 'none', 'redacted'):
             raise StoreError('Unknown trace content consent', 'store-consent')
         self.home = registry.home_path(home)
         self.run_id = _run_id(run_id)
@@ -118,7 +128,11 @@ class RunStore:
     def append(self, kind: str, record) -> None:
         """Append a validated record; content-bearing kinds are refused without consent."""
         if kind in CONTENT_KINDS:
-            raise StoreError('Content-bearing traces require the SPEC-074 consent contract', 'store-consent')
+            consent = self.content_consent or content_consent(self.home)
+            if consent != 'redacted':
+                raise StoreError('Content-bearing traces require trace consent redacted', 'store-consent')
+            # C2: content reaches the store only after redaction with a clean post-scan; the redactor is SPEC-074 T004.
+            raise StoreError('No redactor is available, so the record cannot be stored', 'redaction-incomplete')
         if kind not in KINDS:
             raise StoreError('Unknown record kind', 'store-kind')
         value = record.to_dict() if isinstance(record, (Rollout, Event, AttemptResult, Candidate)) else record

@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 import sys
 
+from . import lightning_adapter as adapter
 from . import lightning_config as config
 from . import lightning_store as store
 from . import plugin_registry as registry
@@ -212,6 +213,7 @@ def run(args, *, ask=None) -> int:
             consent = registry.inspect_registry(home)['value'].get('lightning', 'off')
             output = {'configured': value is not None, 'configDigest': config.digest(value) if value else None,
                       'traceConsent': config.consent_summary(value if value else config.defaults()),
+                      'traceContent': adapter.gate(home),
                       'setupConsent': consent, 'runs': len(store.list_runs(home)),
                       'path': str(config.config_path(home)), 'executionAuthorization': False}
         else:
