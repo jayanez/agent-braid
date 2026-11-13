@@ -47,3 +47,7 @@ Pre-check on 2026-11-13 found no change that needs new code or a security re-che
 Requalification attempt `t009-20261113a` therefore reuses commit `320b00c4`, and only the
 environment changes. Nothing native has run yet. Each real attempt still needs the
 orchestrator's check verification and the owner's own run.
+
+Status, 2026-11-13: the SPEC-065 requalification is issued (T013, attempt `t009-20261113c`, headless
+mode at `7d3e1986`; record `specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json`,
+valid until 2026-12-13T16:14:45Z); SPEC-048/T008 is next.

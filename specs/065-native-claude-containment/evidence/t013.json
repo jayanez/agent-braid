@@ -25,5 +25,61 @@
     "scripts/har_t009_launch.sh": "b14933019be52e029a6754ce99277f502b626141462129ea9e6a876f4d29f4a4"
   },
   "executionAuthorization": false,
-  "limits": "Unit tests with doubles and a static review only. They show the refusals and the judge rules as coded, not that the Background session passes the catalog: that is the next attempt's bundle. No qualification is issued or implied."
+  "limits": "Unit part (checks, hashesMoved, inputs): unit tests with doubles and a static review only; they show the refusals and the judge rules as coded. Issuance part: record-level checks on the orchestrator account against the committed bundle; the live environment recomputation runs in the lab account before every native session (NC-11). Nothing native ran for this record.",
+  "issuance": {
+    "recordedAt": "2026-11-13",
+    "baseCommit": "f923f73f",
+    "attempt": "t009-20261113c",
+    "attemptCommit": "7d3e19863c5be195595f00385edb35eb5d6ed5df",
+    "bundle": "specs/065-native-claude-containment/evidence/qualification/t009-20261113c/",
+    "bundleSha256": "c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7",
+    "issuanceRecord": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json",
+    "issuanceRecordSha256": "8aa07dd42e77560b548ac35edce05d8f975f8704eeaab4452f2a17238740d510",
+    "issuedAt": 1794586485,
+    "expiresAt": 1797178485,
+    "trustedHashes": {
+      "containmentSha256": "fa59fbae9286f0794331aedcebe782b99767819dc4a30f37a08713509be9fa6a",
+      "hostSha256": "9022b771382a239be3a4d399dfb9c949ef29f4276aeebb0b5db735e9a67a847f"
+    },
+    "supersedes": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-06.json (void on macOS build 26B131; its environment hash e91007d8... does not cover the moved catalog and the session kind)",
+    "commands": [
+      "python3.13 -B <verify script> <repo> specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json  (reads the records and the bundle; verify_qualification, verify_host_qualification, issued_records, verify_bundle, _check_transport and refusal controls; script text in the PR body)",
+      "python3.13 -B -m unittest tests.test_harness_qualification_probes tests.test_harness_host_claude tests.test_harness_hosts tests.test_harness_hosts_native tests.test_har_t009_attempt tests.test_har_t009_launch tests.test_har_t009_setup tests.test_harness_containment_macos tests.test_harness_lab -> Ran 711 tests, OK (skipped=3)"
+    ],
+    "verification": {
+      "checks": {
+        "verify_qualification": true,
+        "verify_host_qualification": true,
+        "issued_records": true,
+        "evidenceSha256-is-bundle": true,
+        "environmentSha256-is-bundle": true,
+        "bundle-files-match-summary": true,
+        "verify_bundle-recomputes-bundleSha256": true,
+        "bundle-pass-rule": true,
+        "runner-wrote-no-record": true,
+        "expiresAt-30-days": true,
+        "probe-catalog-is-current-code": true,
+        "mdrv04-unhashed-modules-unchanged": true,
+        "check_transport-before-expiry": true
+      },
+      "negativeControls": {
+        "edited-containment-record": "refused:qualification-drift",
+        "edited-host-record": "refused:qualification-drift",
+        "wrong-environment-hash": "refused:qualification-drift",
+        "superseded-2026-11-06-environment": "refused:native-host-unqualified",
+        "runner-produced-record-untrusted-hash": "refused:qualification-drift",
+        "other-host": "refused:host-mismatch",
+        "partial-effects": "refused:invalid-qualification",
+        "expired-record-at-expiresAt": "refused:native-host-unqualified",
+        "issuance-with-untrusted-hash": "refused:qualification-drift"
+      },
+      "allPass": true
+    },
+    "runtimeControls": {
+      "wrong-environment-at-run": "MacOSContainment refuses 'environment-drift' when the recomputed environment hash (session kind included) differs (harness_containment_macos.py, test_qualification_for_another_environment_or_expired)",
+      "expired-record": "MacOSContainment refuses 'qualification-expired' at or after expiresAt (same test); _check_transport refuses 'native-host-unqualified' at expiresAt (control above)"
+    },
+    "mdrv04": "git diff 320b00c4..f923f73f of harness_manifest.py, harness_context.py, harness_observation.py and system_one.py is empty (guard_unhashed passes); git diff 7d3e1986..f923f73f of harness_containment_macos.py, harness_qualification_probes.py, harness_host_claude.py, harness_transport_claude.py, harness_lab.py, harness_quota.py, scripts/har_t009_attempt.py and scripts/har_t009_launch.sh is empty",
+    "executionAuthorization": false
+  }
 }

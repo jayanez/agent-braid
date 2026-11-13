@@ -11,6 +11,28 @@ Claude profile *verifiable* by the runtime; they authorize nothing.
 Every hash below was recomputed from the files at the base commit (`shasum -a 256`, or the canonical-JSON rule the
 code uses, as stated per line).
 
+## Update, 2026-11-13: superseding records (SPEC-065 T013)
+
+Sections 1, 2, 4 and 5 below describe the 2026-11-06 issuance. That record is **superseded**: it was void on macOS
+build 26B131 (an NC-9 trigger) and does not cover the probe catalog and environment hash moved by the NC-2 amendment
+of 2026-11-13. SPEC-048/T008 uses only these values:
+
+| Item | Value |
+| --- | --- |
+| Issuance record | `specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json`, file sha256 `8aa07dd42e77560b548ac35edce05d8f975f8704eeaab4452f2a17238740d510` |
+| Bundle | `evidence/qualification/t009-20261113c/` (attempt commit `7d3e1986`), `bundleSha256` `c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7`; result `evidence/t009-20261113-result.md` |
+| Containment trusted hash | `fa59fbae9286f0794331aedcebe782b99767819dc4a30f37a08713509be9fa6a` |
+| Host trusted hash | `9022b771382a239be3a4d399dfb9c949ef29f4276aeebb0b5db735e9a67a847f` |
+| `environmentSha256` | `f0f7617ee18d9f27f731d68b3531685dfa5fc527b6e38dbd24ebd60ae529e899` (macOS 27.2.1 `26B131`, arm64, Claude Code 2.1.292, catalog `c8952ac3…aef5`, session kind `Background`) |
+| `issuedAt` / `expiresAt` | `1794586485` = 2026-11-13T16:14:45Z / `1797178485` = 2026-12-13T16:14:45Z (30 days); the last T008 unit must end before it |
+| Session mode | headless own-session (`launchctl asuser` by the root launcher); a unit in another session kind moves the environment hash and refuses `environment-drift` |
+| Residuals | the 2026-11-06 set (section 4) plus the not-applicable CRED-07 `pasteboard-mach` / `pasteboard-exec`, FS-07 `mach-mdwrite`, PROC-06 `mach-tccd` (absent in the Background session), accepted for the validity |
+| Verification | `evidence/t013.json` (`issuance`): both verifiers and `issued_records` accept; edited records, wrong environment hash, the superseded environment, untrusted hash, other host, partial effects and an expired record refuse |
+
+Re-qualification triggers are those of section 5, plus the session kind. MDRV-04 stays accepted with PR review; the
+four omitted modules are unchanged between `320b00c4` and `f923f73f`. `scripts/har_t008_unit.py` and
+`tests/test_harness_hosts_native.py` still name the 2026-11-06 record and bundle; moving them is SPEC-048/T008's change.
+
 ## 1. Issued records
 
 | Item | Value |

@@ -1,0 +1,124 @@
+{
+  "recordVersion": "spec065-issuance-v1",
+  "task": "SPEC-065/T013 human re-qualification issuance of the native Claude containment and host qualification (headless own-session mode)",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-13",
+  "issuer": "founder (NC-9: issuer is the founder only)",
+  "decisionChannel": "Founder answers to interactive guided questions in the HAR orchestrator session, 2026-11-13, recorded verbatim (questions as asked, in English; answers as chosen). The issuer reviewed the T013 attempt bundle t009-20261113c and the drafts below; the records were written on the issuer's instruction.",
+  "supersedes": {
+    "record": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-06.json",
+    "reason": "Void on macOS build 26B131 (an NC-9 trigger: OS build) and no longer covering the probe catalog and environment hash moved by the NC-2 amendment of 2026-11-13 (session kind in the environment hash). The 2026-11-06 record stays as written; only these trusted hashes are current."
+  },
+  "bundle": {
+    "attempt": "t009-20261113c",
+    "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261113c/",
+    "bundleSha256": "c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7",
+    "environmentSha256": "f0f7617ee18d9f27f731d68b3531685dfa5fc527b6e38dbd24ebd60ae529e899",
+    "catalogSha256": "c8952ac3e4fdf086c568f959a508780c4187349a2ba2f8af69b63fbf30e6aef5",
+    "commit": "7d3e19863c5be195595f00385edb35eb5d6ed5df",
+    "environment": "macOS 27.2.1 build 26B131, arm64, Claude Code 2.1.292, profileSha256 08e3ff93c76b17ac89aa9806bf31a705e9807e8af7b01bdd5c0fb88aeaf65294",
+    "session": "Background session of the dedicated account, started headless by the root launcher /usr/local/libexec/braid/t009-launch.sh (rendered sha256 dee6aaf5489f754538192181d6a632a313e3895413cfbee978a1e7a639961462) through launchctl asuser; driver check session-own passed",
+    "result": "specs/065-native-claude-containment/evidence/t009-20261113-result.md"
+  },
+  "priorAttempts": [
+    {
+      "attempt": "t009-20261113a",
+      "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261113a/",
+      "bundleSha256": "51574ae22461cf8b3e0d311f7c70f444505136c8d7193d62eed6b926bc7c4201",
+      "disposition": "not issued: launched with su - braidlab inside the operator's Aqua session; CRED-07, FS-07 and PROC-06 inconclusive (positive controls failed); passRuleSatisfied false"
+    },
+    {
+      "attempt": "t009-20261113b",
+      "disposition": "not issued: self-check passed, never run; superseded by the headless own-session mode"
+    }
+  ],
+  "review": [
+    {
+      "id": "T013-RESIDUALS",
+      "question": "Issuing means accepting, for the 30 days of the record, the residuals of the 2026-11-06 set (PROC-ESC-1, PROC-03 compressed memory, and the catalog residuals NET-02, PROC-04, PROC-07) plus the three new headless not-applicable exclusions (CRED-07 pasteboard-mach and pasteboard-exec, FS-07 mach-mdwrite, PROC-06 mach-tccd: services absent in the dedicated account's own Background session). Do you accept them for the issuance?",
+      "ownerStatement": "Acepto para emisión (Recommended)",
+      "cites": [
+        "specs/065-native-claude-containment/evidence/founder-decisions-20261104c.json",
+        "specs/065-native-claude-containment/evidence/founder-decisions-20261106.json",
+        "specs/065-native-claude-containment/evidence/founder-decisions-20261113.json",
+        "specs/065-native-claude-containment/evidence/session-context-survey-20261113.json"
+      ]
+    },
+    {
+      "id": "T013-MDRV-04",
+      "question": "The environment hash omits harness_manifest.py, harness_context.py, harness_observation.py and system_one.py. Do you accept it?",
+      "ownerStatement": "Acepto con revisión PR (Recommended)",
+      "reading": "Accepted for this issuance; any change to those four files during validity is reviewed by the founder before native use. Checked unchanged between 320b00c4 and the issuance base f923f73f (git diff empty); the containment, probe, host and driver code is unchanged between the attempt commit 7d3e1986 and f923f73f."
+    },
+    {
+      "id": "T013-NC-9",
+      "question": "Expiry 30 days after issuance, with early re-qualification on a change of macOS build, Claude Code version or hash, profile bytes, probe catalog, proxy or credential method (the session kind is now in the environment hash). Do you confirm?",
+      "ownerStatement": "Confirmo 30 días + disparadores (Recommended)"
+    },
+    {
+      "id": "T013-CRED-05",
+      "finding": "apiKeySource observed 'none' in CRED-05, NET-05-CLI and HOST-01, inside SUBSCRIPTION_KEY_SOURCES {none, oauth}; no constant edit."
+    },
+    {
+      "id": "T013-ISSUE",
+      "question": "Do you issue the qualification on bundle c241079d…4bb7?",
+      "ownerStatement": "Emito (Recommended)"
+    }
+  ],
+  "decision": {
+    "disposition": "issued",
+    "effects": {
+      "credential": "enforced",
+      "filesystem": "enforced",
+      "network": "enforced",
+      "process": "enforced"
+    },
+    "host01": "completed",
+    "issuedAt": 1794586485,
+    "expiresAt": 1797178485,
+    "reQualificationTriggers": [
+      "OS build",
+      "Claude Code version or hash",
+      "profile bytes",
+      "probe catalog",
+      "proxy",
+      "credential method",
+      "session kind (in the environment hash)"
+    ]
+  },
+  "records": {
+    "containment": {
+      "format": "braid-harness-containment-qualification/v0.1",
+      "backend": "macos-dedicated-user-sandbox-exec",
+      "kind": "native",
+      "environmentSha256": "f0f7617ee18d9f27f731d68b3531685dfa5fc527b6e38dbd24ebd60ae529e899",
+      "enforced": [
+        "credential",
+        "filesystem",
+        "network",
+        "process"
+      ],
+      "expiresAt": 1797178485,
+      "evidenceSha256": "c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7"
+    },
+    "host": {
+      "format": "braid-harness-host-qualification/v0.1",
+      "host": "claude",
+      "environmentSha256": "f0f7617ee18d9f27f731d68b3531685dfa5fc527b6e38dbd24ebd60ae529e899",
+      "enforced": [
+        "credential",
+        "filesystem",
+        "network",
+        "process"
+      ],
+      "expiresAt": 1797178485,
+      "evidenceSha256": "c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7"
+    }
+  },
+  "trustedHashes": {
+    "containmentSha256": "fa59fbae9286f0794331aedcebe782b99767819dc4a30f37a08713509be9fa6a",
+    "hostSha256": "9022b771382a239be3a4d399dfb9c949ef29f4276aeebb0b5db735e9a67a847f"
+  },
+  "executionAuthorization": false,
+  "notes": "Issuance makes the native Claude profile verifiable by the runtime in the headless own-session (Background) mode only; a run in another session kind moves the environment hash and refuses. Normal use still needs the SPEC-048/T008 profile decision (T011 hand-off) and the NC-11 pre-session check before every session. Revocation: a reviewed change that withdraws these trusted hashes."
+}
