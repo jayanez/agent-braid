@@ -49,7 +49,9 @@ script or test.
 
 - [ ] T010 (REQ-008 / SC-008): Held-out runs of A0, A1, A2; analysis per the
   protocol; report H1 outcome, including a null or negative result.
-  Dependencies: T009. Verification: procedure_008.
+  Dependencies: T009. Verification: procedure_008. Prepared 2026-11-13 as
+  `scripts/spec072_heldout.py` (dry run by default; `--execute` after the
+  owner's yes); procedure_008 is a planned pipeline check until the real run.
 
 - [x] T013 (REQ-011 / SC-011): Emit the SPEC-049 `Registration` and
   `EvaluationRecord` pair (A = A0, C = A2 GEPA) from the held-out report;

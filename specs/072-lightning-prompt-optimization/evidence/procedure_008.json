@@ -1,0 +1,33 @@
+{
+ "command": "python -m unittest tests.test_spec072_heldout",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_arm.py": "89bd97f96964eac0efe8ffda63134c3d77090d2f86b101df9820c011f8539701",
+  "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
+  "agent_braid/lightning_evaluation.py": "de6d6d5b2478da9480b929ab46cecdfd5ff712c2edfbf906e5809328485ee27b",
+  "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",
+  "agent_braid/lightning_reward.py": "2443da49073dfdd28be6972b6a1f9ef1bd1dcf4583d34920fba6b0a4a5aff4e0",
+  "agent_braid/lightning_runner.py": "f274c2b213368ac6f826d32e8c84bc5f607be557e8e808ce8267f2f370ef4da1",
+  "agent_braid/lightning_store.py": "72ffcc6e4cda547e78094d4bce85ddb462c2c0aaf1571a80b7976b3a76680929",
+  "scripts/spec069_native_runs.py": "92a737a5d4e7af15d9a859f49b9be2111dc5f82c68c694b59a8019091e6de236",
+  "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
+  "scripts/spec072_development_arms.py": "e1e1a1505829a309c1e6dc0ae3f0f0b4a6db19ec08dc33891d6388cd2974677c",
+  "scripts/spec072_heldout.py": "0076a0013c1ba48d3ecd75323e93ff47784839926d7f89978dbf3ca6ee8d7512",
+  "specs/069-aim-request-authoring/prompts/held-out.json": "254ffee400c490d745d6b66f46e0bc8d19a13fae666f22c8554003a4e9a22278",
+  "specs/072-lightning-prompt-optimization/evaluation-protocol.md": "b5d1db2711981c5f6e63884213a07d5c2b2c5c224815410455193c45b1c92c38",
+  "specs/072-lightning-prompt-optimization/evidence/development-arms.json": "fc5b107f30526c5a6d52fd7eab6c6820ab8c7c247a1198e74b3144250d431445",
+  "specs/072-lightning-prompt-optimization/evidence/protocol-freeze.json": "7dcefc91bd990c4a029e4fc28ce1e09eedf569760080b071c6124a145d18c324",
+  "tests/test_spec072_heldout.py": "9c6200be11a540c45a701d3645f0c8d5390f69b99900c2a5a4a66f717e62e3e5"
+ },
+ "limits": "Fake hosts and synthetic vectors only; no model, host or quota used and no held-out result read. The real outcome (SC-008) is recorded only after the owner-approved held-out run; T010 stays open.",
+ "outcome": "planned pipeline check passed: PLANNED, not obtained: the T010 command is ready and no held-out rollout has run. Pipeline check on fake hosts: the command checks the protocol freeze first (an edited protocol is refused before arms are resolved or anything launches) and that the development evidence is the one the freeze binds; it resolves A0 (the final guidance, required to be the seed both arms optimized), A1 and A2 (best APO and GEPA bodies read by sha256 from the laboratory run stores and verified; missing or tampered text refused; E1/E2 excluded); a model other than the development arms' pinned model is refused; the dry run prints 10 cases x 3 repetitions = 30 rollouts per arm, 90 in total, about 35 minutes, with each arm's candidate hash and the freeze result. Each arm runs once with its run id recorded before it starts; a stopped arm resumes and a complete arm is never run again; a run that evaluated another candidate is refused before it resumes; each rollout is scored from its first attempt result that is not a quota stop, so a refused rollout scores as a failed attempt even if a resume retried it; a safety refusal (route-unverified, credential-leak) stops the arm and is never resumed or analysed; a recorded run with rollouts but no store is refused instead of run again; a canary count above one replays to its stored reward hash. The analysis gives per arm the summarize D4 verdict, Wilson intervals, schema validity and canary hits, paired per-prompt counts of A1 and A2 against A0 with an exact two-sided sign test, and H1 by the protocol rule (truth table incl. not-assessable and canary invalidation); the SPEC-049 pair (A = A0, C = A2) agrees with it; the evidence is checked free of credentials, attempt payloads and skill text.",
+ "procedure": "procedure_008",
+ "result": "OK",
+ "scenario": "SC-008",
+ "specification": "SPEC-072 BL.2",
+ "status": "planned",
+ "testsRun": 22
+}
