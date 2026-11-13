@@ -32,7 +32,7 @@ Draft for owner review; not an approval.
 |---|---|---|
 | TH-1, TH-8 | redaction on ingest; post-scan must be clean; canary corpus with encoded forms | REQ-003, REQ-004 |
 | TH-2 | email and home-path classes | REQ-003 |
-| TH-3 | default `none`; consent only by preview digest; `status` shows consent | REQ-001, REQ-002 |
+| TH-3 | default `none`; consent only by preview digest; no expiry (OD-3), `status` shows level, `consentedAt` and sources | REQ-001, REQ-002 |
 | TH-4 | sweep at store open and on command; purge; tests with clock injection | REQ-005 |
 | TH-5 | read-only System One access; no output path into System One | REQ-007 |
 | TH-6 | traces are data; SPEC-072 optimizer treats them as untrusted; promotion is human (SPEC-073) | REQ-006 |

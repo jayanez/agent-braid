@@ -6,8 +6,9 @@ imply owner acceptance. `quick` means
 
 ## Phase P1 — consent
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan, contracts and
-  privacy review; OD-1 to OD-3 decided. Dependencies: none. Verification:
+- [x] T001 (REQ-001 / SC-001): Owner review of spec, plan, contracts and
+  privacy review; OD-1 to OD-3 decided 2026-11-13 (host transcripts opt-in;
+  salted per-run email hash; no consent expiry). Dependencies: none. Verification:
   review record bound to a frozen commit.
 - [ ] T002 (REQ-001 / SC-001): consent fields in the configuration validator,
   extension of the `traces` section of `lightning-config.schema.json` with

@@ -7,7 +7,7 @@
     20,
     23
   ],
-  "assumptions": "SPEC-070 configuration and store exist with traces.contentConsent, traces.sources and traces.retentionDays; host transcript readers and Loom and System One validators keep their current interfaces; the traces section of lightning-config.schema.json is extended (no separate consent schema); runtime stays standard-library only.",
+  "assumptions": "SPEC-070 configuration and store exist with traces.contentConsent, traces.sources and traces.retentionDays; host transcript readers and Loom and System One validators keep their current interfaces; the traces section of lightning-config.schema.json is extended (no separate consent schema); runtime stays standard-library only. Owner decisions (T001, 2026-11-13): host transcripts are an opt-in source (OD-1); emails use a per-run salted hash placeholder (OD-2); consent does not expire and status shows consentedAt (OD-3).",
   "authority_snapshot": {
     "commit": null,
     "hashes": {

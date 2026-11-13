@@ -31,7 +31,7 @@ previews and offers purge of existing content. `plugin setup` only sets
 | API key or token pattern | `[REDACTED:token]` |
 | bearer/OAuth header | `[REDACTED:bearer]` |
 | private key block | `[REDACTED:private-key]` |
-| email | `[REDACTED:email:<8-hex>]` (per-run salted hash, OD-2) |
+| email | `[REDACTED:email:<8-hex>]` (per-run salted hash, OD-2 decided) |
 | home path | `~` prefix replacement |
 
 A record is stored only if the post-redaction scan is clean; otherwise it is
