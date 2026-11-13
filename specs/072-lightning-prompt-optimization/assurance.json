@@ -10,7 +10,7 @@
     21,
     23
   ],
-  "assumptions": "SPEC-071 runner and reward are delivered; the optimizer runs through the host CLI on the subscription route; the SPEC-069 held-out set and FREEZE are unchanged (OD-1 decided 2026-11-11: keep 10 cases × 3 repetitions); required hosts per OD-2.",
+  "assumptions": "SPEC-071 runner and reward are delivered; the optimizer runs through the host CLI on the subscription route; the SPEC-069 held-out set and FREEZE are unchanged (OD-1 decided 2026-11-11: keep 10 cases \u00d7 3 repetitions); required hosts per OD-2.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
