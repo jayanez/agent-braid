@@ -51,6 +51,7 @@ FAKE_CLAUDE = (f"#!{INTERPRETER} -IS\nimport os, sys\n"
                "print(' '.join(sorted(os.environ)))\nsys.stdout.write(sys.stdin.read())\n")
 BASELINE = {(1, 1)}
 ACCOUNT_FACTS = mac.AccountFacts(gids=(20,), home_mode=0o700)
+SESSION_KIND = "Aqua"  # the stubbed session: the dedicated account's own graphical login
 HAS_SANDBOX_EXEC = sys.platform == "darwin" and Path(mac.SANDBOX_EXEC).is_file()
 
 
@@ -95,7 +96,7 @@ class Machine:
 
     def environment(self, facts: mac.HostFacts = FACTS) -> str:
         with mock.patch.object(mac, "SANDBOX_EXEC", self.sandbox):
-            return mac.environment_sha256(self.policy, facts, os.getuid(), ACCOUNT_FACTS)
+            return mac.environment_sha256(self.policy, facts, os.getuid(), ACCOUNT_FACTS, SESSION_KIND)
 
     def candidate(self) -> str:
         return tempfile.mkdtemp(prefix="cand-", dir=self.policy.run_root)
@@ -132,7 +133,8 @@ def make_backend(machine: Machine, *, runner=expected_probes, operator: str = OP
 def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = None, darwin: bool = True,
          stub_compile_check: bool = True, processes=None, env: dict | None = None,
          mechanism_uid: int | None = None, gids: tuple[int, ...] = (20,), pw_gid: int = 20,
-         operator_uid: int | None = None, home: str | None = None, links=None, resident=None):
+         operator_uid: int | None = None, home: str | None = None, links=None, resident=None,
+         session: "mac.SessionFacts | None" = None):
     """Stub every Darwin fact; ``processes`` stubs the per-user process listing.
 
     Runs as the test runner's uid, which must be at least 500 (``_MIN_HUMAN_UID``, RV-16).
@@ -142,6 +144,7 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
     below ``/opt/homebrew/Cellar`` or ``/opt/hostedtoolcache``) keeps only its hash pin.
     """
     uid = os.getuid() if uid is None else uid
+    session = session or mac.SessionFacts(auid=uid, asid=100_014, kind=SESSION_KIND)  # the account's own session
     trusted_file = mac._trusted_file
 
     def trusted(path, expected, missing, drift):
@@ -164,7 +167,7 @@ def host(machine: Machine, *, facts: mac.HostFacts = FACTS, uid: int | None = No
             os.environ.pop(name, None)
         os.environ.update(env or {})
         patches = {
-            "_darwin": lambda: darwin, "host_facts": lambda: facts,
+            "_darwin": lambda: darwin, "host_facts": lambda: facts, "session_facts": lambda: session,
             "pwd": SimpleNamespace(getpwnam=getpwnam), "SANDBOX_EXEC": machine.sandbox,
             "_MECHANISM_UID": os.getuid() if mechanism_uid is None else mechanism_uid,
             "_user_processes": processes or (lambda uid: BASELINE),
@@ -363,8 +366,8 @@ class PolicyTests(unittest.TestCase):
         base = machine.environment()
         self.assertEqual(base, machine.environment())
 
-        def digest_of(policy=policy, facts=FACTS, uid=uid, account=ACCOUNT_FACTS):
-            return mac.environment_sha256(policy, facts, uid, account)
+        def digest_of(policy=policy, facts=FACTS, uid=uid, account=ACCOUNT_FACTS, session=SESSION_KIND):
+            return mac.environment_sha256(policy, facts, uid, account, session)
         facts = [mac.HostFacts("27.0.2", "26A434", "arm64"), mac.HostFacts("27.0.1", "26A435", "arm64"),
                  mac.HostFacts("27.0.1", "26A434", "x86_64")]
         changes = [dict(sandbox_exec_sha256="1" * 64), dict(claude_sha256="2" * 64),
@@ -379,6 +382,8 @@ class PolicyTests(unittest.TestCase):
         changed.add(digest_of(uid=uid + 1))
         changed |= {digest_of(policy=replace(policy, **c)) for c in changes}
         changed |= {digest_of(account=a) for a in accounts}
+        sessions = ["Background", None]  # the two supported kinds hash apart (SPEC-065 amendment 2026-11-13)
+        changed |= {digest_of(session=k) for k in sessions}
         with mock.patch.object(mac, "_component_hashes", lambda: {"harness_lab.py": "0" * 64}):
             changed.add(digest_of())
         with mock.patch.object(mac, "_probe_catalog_sha256", lambda: "4" * 64):
@@ -387,7 +392,7 @@ class PolicyTests(unittest.TestCase):
             changed.add(digest_of())
         with mock.patch.object(mac, "LIMITS", mac.LIMITS | {"diskFiles": 99_999}):
             changed.add(digest_of())
-        self.assertEqual(len(changed), len(facts) + 1 + len(changes) + len(accounts) + 4)
+        self.assertEqual(len(changed), len(facts) + 1 + len(changes) + len(accounts) + len(sessions) + 4)
         self.assertNotIn(base, changed)
 
     def test_executable_ancestors_and_file_must_be_owned_by_root_or_the_dedicated_user(self):
@@ -443,6 +448,89 @@ class ConstructionTests(unittest.TestCase):
             self.assertEqual(caught.exception.reason, "invalid-policy")
         with self.assertRaises(TypeError):  # the operator account is required, never defaulted
             mac.MacOSContainment(machine.policy, probe_runner=expected_probes, **good)
+
+
+class SessionGuardTests(unittest.TestCase):
+    """SPEC-065 amendment 2026-11-13: the process must run in the dedicated account's own audit session, of a
+    supported kind (``Aqua``: its graphical login; ``Background``: ``launchctl asuser``, no GUI)."""
+
+    def test_the_rule_accepts_only_the_accounts_own_session_of_a_supported_kind(self):
+        rule = mac.session_refusal
+        self.assertEqual(mac.SESSION_KINDS, ("Aqua", "Background"))
+        self.assertIsNone(rule(mac.SessionFacts(503, 100_104, "Background"), 503))
+        self.assertIsNone(rule(mac.SessionFacts(503, 100_200, "Aqua"), 503))
+        # the survey of 2026-11-13: sudo -u braidlab from the operator's session
+        self.assertEqual(rule(mac.SessionFacts(502, 100_014, "Aqua"), 503), "session-not-own")
+        for auid, asid in ((None, 100_104), (503, None), (503, 0), (503, -1), (0xFFFFFFFF, 100_104), (0, 100_104)):
+            with self.subTest(auid=auid, asid=asid):
+                self.assertEqual(rule(mac.SessionFacts(auid, asid, "Background"), 503), "session-not-own")
+        for kind in ("LoginWindow", "StandardIO", "System", "Aqua ", "aqua", "", None):
+            with self.subTest(kind=kind):
+                self.assertEqual(rule(mac.SessionFacts(503, 100_104, kind), 503), "session-kind-unsupported")
+        # not-own wins: the kind of a foreign session is never examined
+        self.assertEqual(rule(mac.SessionFacts(502, 100_014, "System"), 503), "session-not-own")
+
+    def test_the_audit_record_layout_matches_auditinfo_addr(self):
+        self.assertEqual(ctypes.sizeof(mac._AuditInfo), 48)
+        self.assertEqual(mac._AuditInfo.ai_asid.offset, 36)
+        self.assertEqual(mac._AuditInfo.ai_flags.offset, 40)
+
+    def test_the_audit_ids_come_from_getaudit_addr_and_fail_closed(self):
+        class Lib:
+            def __init__(self, status, auid=503, asid=100_104):
+                self.status, self.auid, self.asid, self.sizes = status, auid, asid, []
+
+            def getaudit_addr(self, pointer, size):
+                self.sizes.append(size)
+                record = ctypes.cast(pointer, ctypes.POINTER(mac._AuditInfo)).contents
+                record.ai_auid, record.ai_asid = self.auid, self.asid
+                return self.status
+
+        good = Lib(0)
+        with mock.patch.object(mac, "_libsystem", lambda: good), mock.patch.object(mac, "_darwin", lambda: True):
+            self.assertEqual(mac._audit_ids(), (503, 100_104))
+        self.assertEqual(good.sizes, [48])
+        with mock.patch.object(mac, "_libsystem", lambda: Lib(-1)), mock.patch.object(mac, "_darwin", lambda: True):
+            self.assertEqual(mac._audit_ids(), (None, None))
+        with mock.patch.object(mac, "_darwin", lambda: False):
+            self.assertEqual(mac._audit_ids(), (None, None))
+
+    def test_the_manager_name_is_read_from_launchctl_with_an_empty_environment(self):
+        calls = []
+
+        def run(argv, **kwargs):
+            calls.append((argv, kwargs))
+            return SimpleNamespace(returncode=0, stdout=b"Background\n")
+
+        with mock.patch.object(mac.subprocess, "run", run), mock.patch.object(mac, "_darwin", lambda: True):
+            self.assertEqual(mac._manager_name(), "Background")
+        argv, kwargs = calls[0]
+        self.assertEqual(argv, ["/bin/launchctl", "managername"])
+        self.assertEqual(kwargs["env"], {})
+        self.assertEqual(kwargs["stdin"], subprocess.DEVNULL)
+        self.assertLessEqual(kwargs["timeout"], 10)
+        outputs = [SimpleNamespace(returncode=1, stdout=b"Aqua\n"), SimpleNamespace(returncode=0, stdout=b""),
+                   SimpleNamespace(returncode=0, stdout=b"Aqua extra\n"),
+                   SimpleNamespace(returncode=0, stdout=b"\xff\xfe"),
+                   SimpleNamespace(returncode=0, stdout=b"A" * 40)]
+        for output in outputs:
+            with self.subTest(output=output.stdout), \
+                    mock.patch.object(mac.subprocess, "run", lambda *a, **k: output), \
+                    mock.patch.object(mac, "_darwin", lambda: True):
+                self.assertIsNone(mac._manager_name())
+        for error in (OSError("missing"), subprocess.TimeoutExpired("launchctl", 5)):
+            with self.subTest(error=type(error).__name__), \
+                    mock.patch.object(mac.subprocess, "run", side_effect=error), \
+                    mock.patch.object(mac, "_darwin", lambda: True):
+                self.assertIsNone(mac._manager_name())
+        with mock.patch.object(mac.subprocess, "run", side_effect=AssertionError("ran")), \
+                mock.patch.object(mac, "_darwin", lambda: False):
+            self.assertIsNone(mac._manager_name())
+
+    def test_session_facts_join_the_two_readings(self):
+        with mock.patch.object(mac, "_audit_ids", lambda: (503, 100_104)), \
+                mock.patch.object(mac, "_manager_name", lambda: "Background"):
+            self.assertEqual(mac.session_facts(), mac.SessionFacts(503, 100_104, "Background"))
 
 
 class RefusalTests(unittest.TestCase):
@@ -570,6 +658,34 @@ class RefusalTests(unittest.TestCase):
         for name in mac.ENV_DENY:
             with self.subTest(name):
                 self.refuse("env-deny-present", env={name: "x"})
+
+    def test_a_session_that_is_not_the_dedicated_accounts_own_refuses(self):
+        """SPEC-065 amendment 2026-11-13: su or sudo from the operator's session keeps the operator's audit
+        session (auid of the operator) and with it the operator's Mach bootstrap namespace."""
+        uid = os.getuid()
+        cases = {"su or sudo from the operator": mac.SessionFacts(auid=uid + 1, asid=100_014, kind="Aqua"),
+                 "audit info unreadable": mac.SessionFacts(auid=None, asid=None, kind="Aqua"),
+                 "no audit session": mac.SessionFacts(auid=uid, asid=0, kind="Background"),
+                 "audit id never set": mac.SessionFacts(auid=0xFFFFFFFF, asid=100_104, kind="Background")}
+        for name, session in cases.items():
+            with self.subTest(name):
+                backend = self.refuse("session-not-own", session=session)
+                self.assertNotIn("environmentSha256", backend.run_evidence[-1])
+        for kind in ("LoginWindow", "StandardIO", "System", "", None):
+            with self.subTest(kind=kind):
+                self.refuse("session-kind-unsupported", session=mac.SessionFacts(auid=uid, asid=100_104, kind=kind))
+
+    def test_the_session_guard_applies_to_every_entry(self):
+        session = mac.SessionFacts(auid=os.getuid() + 1, asid=100_014, kind="Aqua")
+        for entry in ("fixture", "probe", "launch"):
+            with self.subTest(entry=entry):
+                self.refuse("session-not-own", entry=entry, session=session)
+
+    def test_a_background_session_drifts_from_a_record_bound_to_the_aqua_kind(self):
+        # each qualification is valid only for the session kind it was taken in
+        own = mac.SessionFacts(auid=os.getuid(), asid=100_104, kind="Background")
+        backend = self.refuse("environment-drift", session=own)
+        self.assertEqual(backend.run_evidence[-1]["session"], {"kind": "Background"})
 
     def test_not_the_dedicated_user(self):
         self.refuse("dedicated-user-required", uid=os.getuid() + 1)

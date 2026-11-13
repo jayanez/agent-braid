@@ -107,10 +107,17 @@ class QualifiedPolicyTests(unittest.TestCase):
         with self.assertRaises((hn.NativeWiringError, mac.LabError)):
             self.build(run_root="/Users/braidlab/other/run")  # profile bytes move, so profileSha256 drifts
 
-    def test_the_committed_environment_document_is_the_one_the_policy_checks(self):
+    def test_the_committed_environment_document_no_longer_matches_the_moved_catalog(self):
+        # SPEC-065 T013 (founder amendment of NC-2, 2026-11-13) moved the probe catalog: the qualification of
+        # t009-20261106a no longer covers the code, and the policy built from its environment fails closed
+        # until a new bundle is qualified and issued
         env = json.loads(ENVIRONMENT.read_bytes())
         self.assertEqual(env["claudeVersion"], mac.CLAUDE_VERSION)
-        self.assertEqual(env["probeCatalogSha256"], mac.CLAUDE_VERSION and hn.probe_catalog_sha256())
+        self.assertEqual(env["probeCatalogSha256"], "5ecbd7eba61f4bc87322cce79153f5b5812d186aebb9eff43d3098e30134e929")
+        self.assertNotEqual(env["probeCatalogSha256"], hn.probe_catalog_sha256())
+        with self.assertRaises(hn.NativeWiringError) as caught:
+            self.build(env)
+        self.assertEqual(caught.exception.reason, "environment-drift")
 
 
 class UnhashedGuardTests(unittest.TestCase):

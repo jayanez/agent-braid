@@ -1,0 +1,62 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "task": "SPEC-065/T009 after attempt t009-20261113a (launched with su - braidlab): how the laboratory is launched, and who launches the real attempt",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-13",
+  "baseCommit": "46673a1b",
+  "decisionChannel": "Founder answers to two interactive guided questions in the HAR orchestrator session, 2026-11-13, recorded verbatim (question and chosen option). The accepted option texts are the option descriptions the founder chose, as relayed by the orchestrator. Additive to the earlier records, which stay as written.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261103b.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261104d.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261106.json"
+  ],
+  "evidence": [
+    "specs/065-native-claude-containment/evidence/session-context-survey-20261113.json"
+  ],
+  "facts": {
+    "attempt": "t009-20261113a, launched with `su - braidlab` from the operator's Terminal; bundleSha256 51574ae22461cf8b3e0d311f7c70f444505136c8d7193d62eed6b926bc7c4201; passRuleSatisfied false; CRED-07 (pasteboard-mach, pasteboard-exec), FS-07 (mach-mdwrite) and PROC-06 (mach-tccd) inconclusive with positive-control-failed: the uncontained controls ended with errno NONE, every contained row was denied (EPERM).",
+    "survey": "No-model survey of 2026-11-13 (session-context-survey-20261113.json). Operator's own session: uid 502, auid 502, asid 100014, manager Aqua. braidlab through sudo -u from the operator's session: uid 503, auid 502, asid 100014 (the operator's audit session), manager Aqua, the same lookups as the operator (pasteboard, mdwrite, tccd, mds, launchservicesd, appleevents, tccd.system, windowserver.active found). braidlab through `launchctl asuser 503 sudo -u braidlab` as root: uid 503, auid 503, asid 100104 (its own), manager Background; pasteboard.1, metadata.mdwrite and tccd 1102 (BOOTSTRAP_UNKNOWN_SERVICE); mds, launchservicesd, appleevents, tccd.system and windowserver.active found; Spotlight and secd 1102 in every context.",
+    "hazard": "su or sudo puts the dedicated account inside the operator's audit session and Mach bootstrap namespace: when unsandboxed it can reach the operator's pasteboard, AppleEvents and LaunchServices. The driver did not detect this before this record."
+  },
+  "decisionOrder": [
+    "LAUNCH-MODE",
+    "RUN-LAUNCHER"
+  ],
+  "decisions": [
+    {
+      "id": "LAUNCH-MODE",
+      "item": "Which launch mode the laboratory uses for T009 and its re-qualification, after the survey showed that su or sudo from the operator's session shares the operator's session and that `launchctl asuser` gives the dedicated account its own non-GUI session",
+      "question": "SPEC-065: ¿qué modo de lanzamiento del laboratorio aprobamos?",
+      "ownerStatement": "A. Terminal propia (Recommended)",
+      "acceptedOption": "A root-owned launcher starts braidlab with `launchctl asuser` (own session, no GUI). The driver refuses when the session is not braidlab's own, closing the su/sudo hole also for graphical mode. A GUI service absent (1102 uncontained) becomes \"not applicable\" with evidence, as `mach-spotlight` already does; if reachable inside the sandbox it is still an escape. The environment hash stores the session kind, so each qualification is valid only for its mode. Cost: code change with security re-check, new commit, reinstall, new attempt (max 3 Haiku). Undo: return to graphical mode, which stays supported.",
+      "decision": {
+        "disposition": "headless-own-session-mode-and-session-ownership-guard",
+        "reading": "NC-2 is amended, not replaced: the mechanism stays the dedicated account plus sandbox-exec. (a) Session-ownership guard, both modes: the driver (`session-own`) and the backend (`session-not-own`, before anything is spawned) refuse unless the process's audit user id equals the dedicated account's uid and its audit session id is a real one (asid > 0); an unreadable audit record refuses. (b) Supported session kinds, read as `launchctl managername`: `Aqua` (the account's own graphical login) and `Background` (its own non-GUI session through `launchctl asuser`); any other kind refuses (`session-kind-unsupported`). The kind is an environment-hash input. (c) The not-applicable rule is extended, keyed on the uncontained `ABSENT` code exactly like `NOT_APPLICABLE` today: CRED-07 pasteboard-mach, CRED-07 pasteboard-exec (only together with pasteboard-mach ABSENT in the same control), FS-07 mach-mdwrite and PROC-06 mach-tccd. Every probe keeps at least one counted attempt; a contained `allowed` at an excluded attempt is still an escape.",
+        "bounds": "Authorizes one new attempt under a new name with at most 3 Haiku low-effort sessions, each at most 2 % of the 5-hour window (NC-10 terms as before), after the self-check passes on the new commit and the orchestrator confirms in writing. NC-1, NC-3, NC-4, NC-5 as amended, NC-6 as amended, NC-7, NC-8 as amended, NC-9, NC-11 and the accepted residuals are unchanged. The catalog hash and the environment hash move with this change; the issued qualification of 2026-11-06 does not cover it.",
+        "undo": "Return to graphical mode, which stays supported: run the lab script in braidlab's own graphical login (manager Aqua); the session-ownership guard stays, so su or sudo is refused in both modes."
+      }
+    },
+    {
+      "id": "RUN-LAUNCHER",
+      "item": "In mode A, who launches the real attempt (`run`, which spends quota), and what the orchestrator may launch without a password",
+      "question": "En el modo A, ¿quién lanza el intento real ('run', que gasta cuota)?",
+      "ownerStatement": "Tú, con sudo (Recommended)",
+      "decision": {
+        "disposition": "owner-runs-run-with-sudo-password",
+        "reading": "The owner runs `sudo /usr/local/libexec/braid/t009-launch.sh run ATTEMPT` from any Terminal, types the sudo password each time, then types the quota readings the driver asks for. `check` and `diag` stay automatic for the orchestrator through a narrow sudoers rule, reinstalled so that it launches through `launchctl asuser`: `<operator> ALL=(root) NOPASSWD: /usr/local/libexec/braid/t009-launch.sh check *, /usr/local/libexec/braid/t009-launch.sh diag *`, validated with `visudo -cf`. `run` is not in that rule.",
+        "bounds": "The rule replaces the earlier one for `t009-auto.sh` (`sudo -u braidlab`), which put the lab account in the operator's session. The launcher is installed root:wheel 0755 from the root-owned code copy at the attempt's commit, with its pins written in at install time; it reads no operator-writable file. Teardown removes the rule and the launcher.",
+        "undo": "Remove /etc/sudoers.d/braid-t009 and /usr/local/libexec/braid/t009-launch.sh; the graphical lab script remains."
+      }
+    }
+  ],
+  "closes": [],
+  "stillOpen": [
+    "whether the self-check and the attempt pass in the Background session on the new commit (the next attempt answers it)",
+    "a security re-check of the touched lines (driver, backend, probes, launcher) before the owner reinstalls"
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records two founder answers and the survey facts they rest on. executionAuthorization stays false and issuance stays T010 (NC-9, founder only). It authorizes no native run by itself: the next attempt needs the self-check on the new commit, the orchestrator's written confirmation and the owner's own sudo password for `run`, within the budget above. No native session, probe, sudo command or account change was run when this record was written."
+}
