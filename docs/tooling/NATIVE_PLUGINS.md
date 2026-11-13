@@ -439,7 +439,9 @@ Under default permissions OpenCode showed no approval prompt for `plugin-status`
 `analyze-work` (the owner's report from the desktop app, not stored in the session
 export). The `analyze-work` input schema does not describe the AIM request shape, so a
 model needs an example (for instance `examples/analysis/file-edits.json`) to build a
-valid request; a schema description is tracked in issue #1080 for a later release.
+valid request; a schema description is tracked in issue #1080 for a later release
+(delivered on `develop` by SPEC-069, unreleased: see
+[`analyze-work` request kinds](#analyze-work-request-kinds-spec-069-unreleased)).
 
 Fixes from the T010 observation: `analyze-work` with kind `aim` now returns the
 analyzer's fixed validation message (for example "expected AIM record or nonempty AIM
@@ -451,6 +453,174 @@ for Claude Code and Codex (`install.sh --host codex` or `--host claude` with `--
 not `--host all`, which would try OpenCode), and for OpenCode remove the plugin with the exact source string
 from the configuration (`opencode plugin remove`), since alpha.6 has no OpenCode
 package. The registry and results are accepted unchanged by alpha.6.
+
+## `analyze-work` request kinds (SPEC-069, unreleased)
+
+This section describes `develop` after SPEC-069. None of it is in a published plugin:
+alpha.7 and earlier have only the `aim` and `git` kinds and the alpha.7 schema. The
+release is SPEC-069 T012 and waits for the owner's explicit yes. Normative source:
+the [request contract](../../specs/069-aim-request-authoring/contracts/analyze-work-request.md)
+and the [compatibility notes](../../specs/069-aim-request-authoring/compatibility.md).
+
+### Three kinds
+
+`analyze-work` takes `kind` and `request`; `kind` is `aim`, `git` or `units`
+(`tests/test_spec069_schema_delivery.py`). The packaged
+[analyze skill](../../integrations/agent-braid/skills/agent-braid-analyze/SKILL.md)
+gives one checked example per kind (`tests/test_spec069_guidance.py`).
+
+| `kind` | Use it for | `request` |
+| --- | --- | --- |
+| `aim` | a full AIM description, with digests, evidence and coverage | an envelope, one AIM `0.2.0-draft` record or a nonempty array of records |
+| `git` | two or more commits or worktrees compared against a base revision | `{gitAnalysisRequestVersion, repository, baseRevision, operations}` |
+| `units` | a quick conflict or order check by workspace-relative path, without digests | `{unitsRequestVersion: "0.1.0-alpha", units: [{id, dependencies?, effects: [{kind, resource}]}]}`, 1 to 32 units |
+
+With `units`, Agent Braid builds one AIM record per unit and returns
+`{report, constructedRequest, provenance}`; sending `constructedRequest` with `kind`
+`aim` gives the same report (`tests/test_spec069_units.py`). Honesty rules
+(same tests):
+
+- Coverage is always recorded as `partial`, even when the model claims `complete`.
+- Units on disjoint files are `unknown`, never `independent-candidate`: a `units`
+  request can report `conflicting`, `ordered` or `unknown` only.
+- Resources are normalized lexically (`./a` and `a` are the same resource). The
+  filesystem is never read, so symbolic links, case-insensitive file systems and
+  generated files are not resolved.
+
+### Refusal format
+
+A refusal is `analyze-work refused: <reason>[ at <pointer>; expected <form>][ [<code>]]`
+([contract](../../specs/069-aim-request-authoring/contracts/analyze-work-request.md#refusals);
+`tests/test_spec069_refusals.py`, `tests/test_spec069_units.py`):
+
+- **Structural errors** name a JSON Pointer into the request and the accepted form.
+  Unknown keys appear as `<key:xxxxxxxx>` (first eight hex digits of their SHA-256).
+- **Semantic errors** carry a fixed code, for example `[unknown-dependency]` or
+  `[duplicate-unit-id]`.
+- **Paths:** a missing repository path and a path outside the configured roots give
+  the same refusal.
+- **Git errors** stay masked.
+- **Bounds:** messages never echo a request value and are at most 1,024 characters.
+
+The alpha.7 reason text still leads. Messages are not a versioned contract.
+
+### Declared-not-observed label
+
+An `independent-candidate` interaction carries
+`completenessBasis: "declared-not-observed"` when every evidence item of both records
+is `method: declared`; it is absent otherwise. Classification, reasons, constraints
+and evidence are unchanged. `analysisId` changes, because it digests the whole report
+(`tests/test_spec069_declared_label.py`,
+[`evidence/procedure_015.json`](../../specs/069-aim-request-authoring/evidence/procedure_015.json)).
+
+### Schema delivery
+
+The `analyze-work` `inputSchema` declares one labelled `request` branch per request
+form, generated from the published schemas. On the committed corpus it gives their
+verdicts, except that the `units` resource is declared only as non-blank; the
+runtime still refuses the other lexical cases with a pointer
+(`tests/test_spec069_schema_delivery.py`, `tests/test_spec069_differential.py`).
+
+The T005 native probe ran one session per host and D9 arm (per-kind and
+description-only) in disposable profiles. The hosts were Claude Code 2.1.311,
+Codex 0.167.0-alpha.4.1 and OpenCode 2.1.4 on macOS
+([`evidence/procedure_005.json`](../../specs/069-aim-request-authoring/evidence/procedure_005.json)
+`native`; `evidence/native-probe-schema-*.json`). In both arms all three hosts:
+
+- exposed `analyze-work` to the model;
+- delivered the `aim` and `units` calls to the server with `request` as a JSON object;
+- served the same model-facing definition, equal to the build fingerprint.
+
+Loading differed by host: Claude Code deferred the tool (ToolSearch first), Codex
+loaded it eagerly, and OpenCode loaded it eagerly after its `execute` helper. No host
+hid or stringified the nested form, so no description-only fallback is declared.
+
+Limits: this is one session per host and arm, an observation and not a sample. Linux
+and other host versions were not probed.
+
+### Measured host validity (negative result)
+
+The T010 held-out run used set `spec069-held-out-v1`: 10 prompts × 3 repetitions,
+arm `final`, source `f3648396`. Models: Claude Code `claude-sonnet-5-5`, OpenCode
+`openrouter/anthropic/claude-sonnet-5-5`, Codex on its host default model
+([`validation-plan.md`](../../specs/069-aim-request-authoring/validation-plan.md#t010-held-out-final-run-2026-11-12);
+[`evidence/native-runs-t010-heldout-final.json`](../../specs/069-aim-request-authoring/evidence/native-runs-t010-heldout-final.json),
+[`evidence/native-runs-t010-heldout-final-codex.json`](../../specs/069-aim-request-authoring/evidence/native-runs-t010-heldout-final-codex.json)).
+
+| Host | Valid at first attempt (Wilson 95%) | Prompts valid (of 10) | Missed prompts |
+| --- | --- | --- | --- |
+| Claude Code | 27/30 (0.74–0.97) | 9 | HELD-04 |
+| OpenCode | 27/30 (0.74–0.97) | 9 | HELD-04 |
+| Codex | 24/30 (0.63–0.90) | 7 | HELD-02, HELD-04, HELD-05 |
+
+A refusal-guided retry added no valid trials. The D4 target (at least 8/10 prompts
+at first attempt and 10/10 within one retry, per host) is **not met** on any host.
+The owner accepted this as a documented deviation on 2026-11-12 (SPEC-069
+[`tasks.md`](../../specs/069-aim-request-authoring/tasks.md) T008 and T010); it is
+not a pass.
+
+HELD-04 failed every trial on every host with the same signature: the unit that
+writes `docs/api.md` also declares a `read` of `src/db.py`, which the scorer does not
+expect. Whether the cause is the guidance, the prompt or the scoring rule is not
+established. The `final-no-schema` ablation was not run on the held-out set.
+
+### Release-note draft for the next alpha
+
+Draft for the plugin release that ships SPEC-069 (planned `0.1.0-alpha.8`). The owner
+reviews it in T012; nothing has been published, tagged or versioned.
+
+> **`analyze-work` request authoring (SPEC-069).**
+>
+> - **New `units` kind.** `analyze-work` now accepts `kind` `units`. List units with
+>   an `id`, optional `dependencies` and `effects` of `{kind, resource}`, where
+>   `resource` is a workspace-relative path. Agent Braid builds the AIM records,
+>   always records coverage as `partial`, and returns the report with the
+>   constructed AIM request, which can be sent again with `kind` `aim`.
+> - **Supersedes the interim guidance of PR #1099.** That guidance described the
+>   AIM envelope in the tool description and gave a complete AIM example in the
+>   analyze skill, because hosts had to guess the request shape. It stays valid for
+>   `kind` `aim`; `units` is the simpler path for simple requests.
+> - **Nothing else changes for existing kinds.** The `aim` and `git` kinds, their
+>   reports and `analysisId` are unchanged, except for the label below.
+> - **Shadow episodes.** System One shadow episodes use `analysisKind` `units` for
+>   these calls.
+> - **Platforms.** Windows path semantics are tested for normalization only.
+> - **Schema in the tool definition.** The `analyze-work` input schema now declares
+>   each request form. It was observed exposed to the model, with `request` received
+>   as a JSON object, in Claude Code 2.1.311, Codex 0.167.0-alpha.4.1 and OpenCode
+>   2.1.4 (one session each, macOS).
+> - **Refusals** name a JSON Pointer and the expected form, or a fixed code for
+>   semantic errors. They never echo request values.
+> - **Declared-not-observed label.** `independent-candidate` pairs backed only by
+>   declared evidence carry `completenessBasis: "declared-not-observed"`. Because
+>   `analysisId` digests the whole report, it changes for those reports.
+> - **Accepted requests.** All 103 recorded `aim` requests that alpha.7 accepted are
+>   still accepted, with an identical report apart from that label. The 214 it
+>   refused are still refused.
+> - **Schema notes.** The published AIM and git request schemas now state with
+>   `pattern: "\S"` the blank strings the runtime already refused. The new
+>   `analysis-input` schema describes the envelope, a single record and a nonempty
+>   array. No contract version changes; `units` adds its own request version
+>   `0.1.0-alpha`.
+> - **Measured host validity.** In held-out runs, Claude Code made 27/30 valid
+>   requests at first attempt, OpenCode 27/30 and Codex 24/30. This is below the
+>   project's own 10/10-within-one-retry target, an accepted deviation.
+> - **Rollback.** Reinstall `0.1.0-alpha.7` from tag `agent-braid--v0.1.0-alpha.7`.
+>   It refuses a saved `units` request with `analyze-work refused: Unsupported
+>   analysis kind`. A saved `constructedRequest` still replays through `kind` `aim`
+>   there, and saved `aim` and `git` requests are unaffected.
+
+Sources for the draft:
+
+- `units`, the #1099 transition, shadow and Windows: the T014 text in
+  [compatibility.md](../../specs/069-aim-request-authoring/compatibility.md#release-note-text-replacing-the-interim-guidance-of-pr-1099)
+  ([`evidence/procedure_014.json`](../../specs/069-aim-request-authoring/evidence/procedure_014.json)).
+- Schema notes and rollback: T009
+  ([`evidence/procedure_009.json`](../../specs/069-aim-request-authoring/evidence/procedure_009.json),
+  [`evidence/alpha7-replay.json`](../../specs/069-aim-request-authoring/evidence/alpha7-replay.json)).
+- Refusals: T007
+  ([`evidence/procedure_007.json`](../../specs/069-aim-request-authoring/evidence/procedure_007.json)).
+- Label: T015. Schema delivery: T005. Measured validity: T010.
 
 ## Storage, updates and removal
 
