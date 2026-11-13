@@ -1,0 +1,20 @@
+{
+ "command": "python -m unittest tests.test_lightning_evaluation",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
+  "agent_braid/harness_promotion.py": "659207a11e93e23cf9d677cbbb11c1eeaa9a125d15246e65efdb3b9a40206325",
+  "agent_braid/lightning_evaluation.py": "b8988a9ef1bf5952df51064b104622d75b28697b802d89469f2cc23bf00450c2",
+  "tests/test_lightning_evaluation.py": "bfdc2a57a6980d6972af08befc3788398289be5f7c7da12897de6c64a1faee0d"
+ },
+ "limits": "Synthetic held-out summaries; the T010 held-out runs have not run, so no real H1 outcome is recorded. The SPEC-049 noninferiority test is not part of the frozen protocol and is reported descriptive-only, so an approved SPEC-073 promotion over this pair is refused (regression-not-covered) unless SPEC-073 decides otherwise.",
+ "outcome": "passed: From synthetic held-out results, spec049_pair writes a SPEC-049 Registration and EvaluationRecord in REGISTRATION_FORMAT and REPORT_FORMAT with arm A = A0 and arm C = A2 (GEPA) by candidate hash, the H1 outcome per required host (claude-code) under the protocol rule (supported, not-supported, not-assessable; a canary hit invalidates the arm) and executionAuthorization false; both records load through the harness_promotion verifiers and a pending decide() call in the test accepts the pair with the C-vs-A regression descriptive-only. The writer never names decide, begin or harness_promotion. Negative controls: arm C set to A1 is refused (arm-c-not-a2), arm A not A0 is refused (arm-a-not-a0), a report edited after recording fails the byte check, and a report bound to another registration is refused (registration-mismatch).",
+ "procedure": "procedure_011",
+ "result": "OK",
+ "scenario": "SC-011",
+ "specification": "SPEC-072 BL.2",
+ "testsRun": 10
+}
