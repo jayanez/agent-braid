@@ -19,10 +19,14 @@ from tests.test_harness_transport_claude import (
 from tests.test_harness_host_claude import SESSION, make_inventory
 
 ROOT = Path(__file__).resolve().parents[1]
-ISSUANCE = ROOT / "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-06.json"
-ENVIRONMENT = ROOT / "specs/065-native-claude-containment/evidence/qualification/t009-20261106a/environment.json"
-TRUSTED_CONTAINMENT = "b7641c8a48b9c4a2ef6213fa42fa429ae56b279df86c5da33db07e67ff83f834"
-TRUSTED_HOST = "8c1a38fe054a09a44a29b53f9aad757500991e1d74aaa655ec4584bcd886178d"
+QUALIFICATION = ROOT / "specs/065-native-claude-containment/evidence/qualification"
+# SPEC-065 T013: the 2026-11-13 issuance supersedes the 2026-11-06 one (void on macOS build 26B131)
+ISSUANCE = QUALIFICATION / "issuance-2026-11-13.json"
+ENVIRONMENT = QUALIFICATION / "t009-20261113c/environment.json"
+TRUSTED_CONTAINMENT = "fa59fbae9286f0794331aedcebe782b99767819dc4a30f37a08713509be9fa6a"
+TRUSTED_HOST = "9022b771382a239be3a4d399dfb9c949ef29f4276aeebb0b5db735e9a67a847f"
+SUPERSEDED_ISSUANCE = QUALIFICATION / "issuance-2026-11-06.json"
+SUPERSEDED_ENVIRONMENT = QUALIFICATION / "t009-20261106a/environment.json"
 BASE = datetime(2026, 11, 10, 12, 0, tzinfo=timezone.utc)
 NOW = int(BASE.timestamp())
 HEX = "a" * 64
@@ -45,10 +49,15 @@ class IssuedRecordTests(unittest.TestCase):
         issued = self.load()
         self.assertEqual(sha256(issued.containment).hexdigest(), TRUSTED_CONTAINMENT)
         self.assertEqual(sha256(issued.host).hexdigest(), TRUSTED_HOST)
-        self.assertEqual(issued.expires_at, 1796580464)
+        self.assertEqual(issued.expires_at, 1797178485)  # 2026-12-13T16:14:45Z
         self.assertEqual(issued.environment_sha256,
-                         "e91007d8626998d49ccb574bc241752bccc5134616598dd76b8f63630f9d818a")
+                         "f0f7617ee18d9f27f731d68b3531685dfa5fc527b6e38dbd24ebd60ae529e899")
         self.assertFalse(issued.executionAuthorization)
+
+    def test_the_superseded_issuance_never_verifies_against_the_current_trusted_hashes(self):
+        with self.assertRaises(hn.NativeWiringError) as cm:
+            self.load(SUPERSEDED_ISSUANCE.read_bytes())
+        self.assertEqual(cm.exception.reason, "qualification-drift")
 
     def test_wrong_trusted_hash_or_edited_record_refuses(self):
         for over in ({"containment_sha256": "0" * 64}, {"host_sha256": "0" * 64}):
@@ -107,11 +116,19 @@ class QualifiedPolicyTests(unittest.TestCase):
         with self.assertRaises((hn.NativeWiringError, mac.LabError)):
             self.build(run_root="/Users/braidlab/other/run")  # profile bytes move, so profileSha256 drifts
 
-    def test_the_committed_environment_document_no_longer_matches_the_moved_catalog(self):
+    def test_the_issued_environment_builds_the_policy_from_the_lab_paths(self):
+        env = json.loads(ENVIRONMENT.read_bytes())
+        self.assertEqual(env["environmentSha256"],
+                         "f0f7617ee18d9f27f731d68b3531685dfa5fc527b6e38dbd24ebd60ae529e899")
+        self.assertEqual(env["probeCatalogSha256"], hn.probe_catalog_sha256())
+        policy = self.build(env)
+        self.assertEqual((policy.claude_sha256, policy.sandbox_exec_sha256),
+                         (env["claudeSha256"], env["sandboxExecSha256"]))
+
+    def test_the_superseded_environment_document_no_longer_matches_the_moved_catalog(self):
         # SPEC-065 T013 (founder amendment of NC-2, 2026-11-13) moved the probe catalog: the qualification of
         # t009-20261106a no longer covers the code, and the policy built from its environment fails closed
-        # until a new bundle is qualified and issued
-        env = json.loads(ENVIRONMENT.read_bytes())
+        env = json.loads(SUPERSEDED_ENVIRONMENT.read_bytes())
         self.assertEqual(env["claudeVersion"], mac.CLAUDE_VERSION)
         self.assertEqual(env["probeCatalogSha256"], "5ecbd7eba61f4bc87322cce79153f5b5812d186aebb9eff43d3098e30134e929")
         self.assertNotEqual(env["probeCatalogSha256"], hn.probe_catalog_sha256())
