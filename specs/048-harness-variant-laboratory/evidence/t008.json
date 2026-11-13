@@ -2,10 +2,12 @@
   "candidateBinding": "Current source/input hashes on base 99919eddae66034298931eceda13dd9cf2b4efb7; no frozen implementation commit claimed",
   "claudeProfileDecision": {
     "codex": "not-qualified: not installed (unchanged)",
-    "decision": "qualification-authorized (A: authorized-for-native-units)",
-    "record": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261106.json",
-    "scope": "Claude only, issued SPEC-065 records, D2 caps, EUR 0, subscription route, window 2026-11-09T20:30Z to 2026-11-30, at most 4 serial units",
-    "sha256": "6f5394dae371c2c8082153db3ce3ab99fd02d86d4c5372b931c0926f5ce7b4a0",
+    "decision": "qualification-authorized (T008-6: Mismos términos, nuevos registros)",
+    "launch": "T008-7: Lanzador root sin GUI (headless root launcher; check passwordless, run with the owner's password)",
+    "record": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261113.json",
+    "scope": "Claude only, the 2026-11-13 issued SPEC-065 records, D2 caps, EUR 0, subscription route, window 2026-11-09T20:30Z to 2026-11-30, at most 4 serial units for the whole cohort",
+    "sha256": "0132118f9d04c6c39b5b59a879343719168ccb31d2315f4b557ad85feaa6ad5c",
+    "supersedes": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261106.json (sha256 6f5394dae371c2c8082153db3ce3ab99fd02d86d4c5372b931c0926f5ce7b4a0) for the Claude profile",
     "verdict": "not decided: qualified only after native units complete within the caps"
   },
   "decisionRecords": {
@@ -58,9 +60,21 @@
       "command": ".venv python3.13 -m unittest tests.test_harness_hosts_native tests.test_har_t008_unit",
       "exitCode": 0,
       "scope": "Wiring controls with FakeLauncher doubles: issued-record trust, qualified policy refusals, MDRV-04 guard, admission/settlement with quota gate, failed run still settles; no native session"
+    },
+    {
+      "command": "python3.13 -B -m unittest <every tests/test_har*_*.py module> (PYTHONPATH=tests for test_harness_admission, test_harness_context, test_harness_foundations)",
+      "exitCode": 0,
+      "scope": "2026-11-13 headless change: 2016 + 47 tests, skipped 3 (macOS-only cases run on this host). Driver repointed to the 2026-11-13 records (superseded issuance and founder record refused), dry run runs every no-quota check (environment hash, window, records, unit ledger), four-unit cap across labels, launcher and installer argument/pin refusals before root or sudo, shared lab lock, helper bytes equal to the SPEC-065 launcher. Doubles only; nothing native ran (no claude, sandbox-exec, sudo or launchctl).",
+      "testsRun": 2063
     }
   ],
   "executionAuthorization": false,
+  "headlessLaunch20261113": {
+    "design": "scripts/har_t008_launch.sh is a sibling of scripts/har_t009_launch.sh (whose bytes SPEC-065 T013 evidence binds): same own-session start (launchctl asuser, sudo -u braidlab, env -i), same lock file, byte-identical helpers; modes check (dry run + no-model auth status) and run (tty, owner password). scripts/har_t008_install.sh (rendered by the orchestrator after merge) fetches the commit from the public repository, stages the root-owned code copy and the rendered launcher, swaps them in under the lab lock and adds a check-only NOPASSWD rule in /etc/sudoers.d/braid-t008. scripts/har_t008_lab.py (graphical-session wrapper) is retired: the session kind is in the environment hash.",
+    "nativeRun": false,
+    "packet": "specs/048-harness-variant-laboratory/evidence/engineering/t008-owner-packet.md",
+    "reviews": "adversarial, counterfactual, functional, quality and simplification reviews before the PR; findings fixed: cohort cap per invocation (now a per-attempt unit ledger summed across labels), transcript overwrite on a reused label, installer lock only probed (now held around the swap), installer trust in a local checkout (now a fresh fetch by commit), unchecked parent directories for the NOPASSWD target, dry run without the window, window end without a unit margin, Ctrl-C before the units without a JSON report, binding tests that never reached the binding check (replaced by an issuance pin and a static record test)"
+  },
   "hostObservation": {
     "claude": "/opt/homebrew/bin/claude 2.1.292 (Claude Code)",
     "codex": "absent (command -v codex: not found)",
@@ -98,22 +112,41 @@
     "agent_braid/harness_hosts_native.py": "4094003a800238db3a45360ba38e06ec8393133d047437dcd3a9e78ad569c816",
     "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
     "agent_braid/harness_manifest.py": "6624d79de56e702062ba02cefb5cab3d6ec7a58b310c3520d7bdbe024df7fe61",
-    "scripts/har_t008_unit.py": "1b552868141ff17b83f00b2b49113bb896f800dd4d27be4e2673e9b68c7dd768",
+    "scripts/har_t008_install.sh": "5bf6ec9601c381b67e2387c1146727cd7abc03553a72285747b834f73b6ac2b9",
+    "scripts/har_t008_launch.sh": "0fdf95c02b215e3ec1f3ba0f8362e290d7bd2e7e8b6ce2337bb51194aff7b156",
+    "scripts/har_t008_unit.py": "ca19c6db44a1d03c66ffd13aaceec66643880860ecf2a327c88113e9bde4d497",
+    "scripts/har_t009_launch.sh": "b14933019be52e029a6754ce99277f502b626141462129ea9e6a876f4d29f4a4",
     "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
+    "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261113.json": "0132118f9d04c6c39b5b59a879343719168ccb31d2315f4b557ad85feaa6ad5c",
     "specs/048-harness-variant-laboratory/evidence/founder-review-20261031.json": "38bedbba82de5c219f3c0a3f6c8f2e3a0309824abeea536862bdc20e3ab4eddc",
     "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
-    "tests/test_har_t008_unit.py": "be2b109775689c9b26d35badf3e0f4502a75e241fad509e76049d682da660852",
+    "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json": "8aa07dd42e77560b548ac35edce05d8f975f8704eeaab4452f2a17238740d510",
+    "tests/test_har_t008_launch.py": "b5c8d2025bb5b3c47b4e52940cba01a310908eea6636e0b8572847e1af1d9e19",
+    "tests/test_har_t008_unit.py": "fafd11cade3271b2f78ecc5141eeab0f3e832845f2d574a3358db03f15bd342f",
     "tests/test_harness_hosts.py": "a98ed9b5b1824c497abac262c9a99bc4de0443af9e7d06158f3415f25bc33be5",
-    "tests/test_harness_hosts_native.py": "cee79d927994d7519f18a96cfb5060548568e8bf143a6039dde52caa93ae3a41"
+    "tests/test_harness_hosts_native.py": "b6912fd70cb941b131a47afc8faaaea12eeff0e487fdac5e4cd04510a358f8e8"
   },
   "issuedRecords": {
-    "containmentTrustedSha256": "b7641c8a48b9c4a2ef6213fa42fa429ae56b279df86c5da33db07e67ff83f834",
-    "environmentSha256": "e91007d8626998d49ccb574bc241752bccc5134616598dd76b8f63630f9d818a",
-    "expiresAt": 1796580464,
-    "hostTrustedSha256": "8c1a38fe054a09a44a29b53f9aad757500991e1d74aaa655ec4584bcd886178d",
-    "issuance": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-06.json",
-    "issuanceSha256": "26030d57a021d28ce3b836582ba6196c6636f7401d386a71f7d5a2b9791723ac",
-    "mdrv04Guard": "agent_braid/harness_hosts_native.py guard_unhashed pins the four modules the environment hash omits at their 320b00c4 bytes"
+    "bundle": "specs/065-native-claude-containment/evidence/qualification/t009-20261113c/",
+    "bundleSha256": "c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7",
+    "containmentTrustedSha256": "fa59fbae9286f0794331aedcebe782b99767819dc4a30f37a08713509be9fa6a",
+    "environmentSha256": "f0f7617ee18d9f27f731d68b3531685dfa5fc527b6e38dbd24ebd60ae529e899",
+    "expiresAt": 1797178485,
+    "hostTrustedSha256": "9022b771382a239be3a4d399dfb9c949ef29f4276aeebb0b5db735e9a67a847f",
+    "issuance": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json",
+    "issuanceSha256": "8aa07dd42e77560b548ac35edce05d8f975f8704eeaab4452f2a17238740d510",
+    "mdrv04Guard": "agent_braid/harness_hosts_native.py guard_unhashed pins the four modules the environment hash omits at their 320b00c4 bytes; git diff 320b00c4..1f96ac41 of the four files is empty (checked 2026-11-13)",
+    "sessionKind": "Background (headless own session through launchctl asuser); the environment hash includes it",
+    "superseded": {
+      "containmentTrustedSha256": "b7641c8a48b9c4a2ef6213fa42fa429ae56b279df86c5da33db07e67ff83f834",
+      "environmentSha256": "e91007d8626998d49ccb574bc241752bccc5134616598dd76b8f63630f9d818a",
+      "expiresAt": 1796580464,
+      "hostTrustedSha256": "8c1a38fe054a09a44a29b53f9aad757500991e1d74aaa655ec4584bcd886178d",
+      "issuance": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-06.json",
+      "issuanceSha256": "26030d57a021d28ce3b836582ba6196c6636f7401d386a71f7d5a2b9791723ac",
+      "mdrv04Guard": "agent_braid/harness_hosts_native.py guard_unhashed pins the four modules the environment hash omits at their 320b00c4 bytes",
+      "status": "superseded by SPEC-065 T013 (void on macOS build 26B131); refused by scripts/har_t008_unit.py (issuance-drift, qualification-drift)"
+    }
   },
   "limits": [
     "Quota readings are integer percentages of plan windows; sub-point consumption is invisible and caps are enforced at one-point granularity. Per-unit token counts are not observed.",
@@ -128,12 +161,10 @@
   "nativeFeasibilityBefore": "Infeasible now with the existing adapters. harness_host_claude.run_claude refuses any non-double transport unless the manifest names host kind 'claude', but harness_manifest parses only the offline profile; no native ClaudeTransport subclass exists; harness_lab offers only simulated containment; and no Claude HostQualification with enforced credential/filesystem/network/process effects has been issued from evidence. The founder authorization requires containment verified before every native session and the brief allows only the containment the adapters already verify, so a native session would have to bypass the adapters or rely on a self-authored qualification record (synthetic evidence). Neither was done.",
   "outcome": "agent_braid/harness_hosts.py: hash-bound parsing of the founder T008 record into independent per-host decisions (Codex not-qualified: not installed; a host without its own decision stays refused) and of the D2 record into exact caps; strict quota observations bound by SHA-256; a serial one-host cohort that, before every unit, requires a fresh, non-regressing reading, refuses on extra usage, non-subscription route, window reset or imminent reset, weekly stop, cohort cap and five-hour headroom, and verifies the Claude containment qualification (reusing harness_host_claude.verify_host_qualification) for environment and expiry through the unit deadline; settlement records deltas, wall time and the first breach and latches a stop. Partial qualification never implies both-host acceptance.",
   "pending": [
-    "A native Claude transport, a non-offline manifest profile and an enforced-effect Claude containment backend whose qualification is obtained from evidence, before any native T008 unit",
-    "Native Claude qualification units with before/after get_usage readings under HostQualificationRun",
-    "Codex profile review before closing HAR.1 (founder decision: not qualified, not installed)",
-    "Native units (up to 4, from 2026-11-09T20:30Z) with before/after readings, then the founder's qualified/not-qualified verdict",
-    "Snapshot refresh of 048 assurance (founder decision 3/5, A)",
-    "Codex profile review before HAR.1 closes"
+    "Owner install (scripts/har_t008_install.sh rendered by the orchestrator) and the passwordless check after merge",
+    "Native units (at most 4 for the whole cohort, window to 2026-11-30) with before/after readings, then the founder's qualified/not-qualified verdict",
+    "Codex profile review before HAR.1 closes",
+    "evidence_snapshot of 048 assurance stays historical at 530a5f39 (authority refreshed to 14187e05 in #1145, see snapshotRefresh; the narrower refresh was reported to the founder)"
   ],
   "snapshotRefresh": {
     "changed": "LICENSE and ADR 0033 hashes; ADRs 0034, 0035, 0036, 0037 added",

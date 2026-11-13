@@ -9,7 +9,7 @@
   ],
   "assumptions": "SPEC-070 configuration and store exist with traces.contentConsent, traces.sources and traces.retentionDays; host transcript readers and Loom and System One validators keep their current interfaces; the traces section of lightning-config.schema.json is extended (no separate consent schema); runtime stays standard-library only. Owner decisions (T001, 2026-11-13): host transcripts are an opt-in source (OD-1); emails use a per-run salted hash placeholder (OD-2); consent does not expire and status shows consentedAt (OD-3).",
   "authority_snapshot": {
-    "commit": "f923f73fe7c9e1791139b3fddc02a3736bdf4e94",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -92,7 +92,7 @@
       "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
       "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
       "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
-      "schemas/0.3.0-experimental/lightning-config.schema.json": "bf880e7125b4246c54e05ce2ce095242f3ed51fc8864c4559edc1db8b49e0445",
+      "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
       "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
       "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
       "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
@@ -100,13 +100,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Additive: default consent none keeps current behaviour; content-free telemetry unchanged; braid-lightning-config/v0.1 keys unchanged; spec069 secret patterns move to a shared module imported by the script.",
   "domain": "Braid Lightning content-bearing traces: consent, redaction, retention and purge, and adapters from rollouts, host transcripts, Loom and System One shadow episodes to triplets and messages.",
   "evidence_snapshot": {
-    "commit": "f923f73fe7c9e1791139b3fddc02a3736bdf4e94",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "executionAuthorization stays false; no content stored or emitted without consent redacted; redaction precedes storage; System One files are read-only and never receive adapter output; no network, subprocess or MCP tool.",
   "human_review": "pending",
@@ -143,7 +143,15 @@
         {
           "given": "a default configuration",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec074_consent_config tests.test_lightning_config",
+              "limits": "Temporary homes; no content is collected (the store gate is T003, redaction T004). Calendar validity of consentedAt (for example 2026-02-30) is checked by the validator only; the schema checks the YYYY-MM-DD shape. The per-run email salt itself is implemented with the redactor (T004).",
+              "outcome": "passed: T002 part: traces.contentConsent accepts only none and redacted and defaults to none with a null consent record; a BL.0 profile without consentedAt and consentPreviewDigest reads as none. `lightning init --trace-consent redacted [--trace-sources ...]` previews level, consentedAt, sources (host-transcript only when listed, OD-1), retention, redaction classes (email as a per-run salted hash, OD-2), storage, residual risk and no expiry (OD-3); apply with the matching --preview-digest writes consentedAt and that digest. Unrelated changes keep the record, new sources renew it, lowering to none clears it, and `lightning status` shows level, consentedAt, sources and expires null. The schema and the validator agree on a valid and invalid corpus. Negative controls: raw, a record without consent, consent without a record, an answered record field, a stale or forged digest (nothing written), and plugin setup lab/off leave the profile byte-identical; the store still refuses content (store-consent).",
+              "path": "specs/074-lightning-trace-consent/evidence/procedure_001.json",
+              "sha256": "38c11f988d0a5ef139353a83c5c3851e49ab03f0293199b96600beb1022101cb"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/074-lightning-trace-consent/validation-plan.md",
           "test_name": "procedure_001",

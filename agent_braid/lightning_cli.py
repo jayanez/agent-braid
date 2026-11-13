@@ -23,6 +23,8 @@ QUESTIONS = (
     ('rollout', 'repetitions', 'Repetitions per prompt (1-5)', int),
     ('budget', 'maxRollouts', 'Maximum rollouts (1-2000)', int),
     ('traces', 'contentConsent', 'Trace content consent (none, redacted)', str),
+    ('traces', 'sources', 'Trace content sources (comma-separated: rollout, host-transcript, loom, system-one)',
+     lambda text: _sources(text)),
     ('export', 'enabled', 'Prepare dataset export later (yes/no)',
      lambda text: {'yes': True, 'y': True, 'no': False, 'n': False}[text.strip().lower()]),
 )
@@ -30,11 +32,16 @@ FLAG_FIELDS = {
     'target_path': ('target', 'path'), 'hosts': ('rollout', 'hosts'), 'algorithm': ('algorithm', 'name'),
     'repetitions': ('rollout', 'repetitions'), 'max_rollouts': ('budget', 'maxRollouts'),
     'max_optimizer_calls': ('budget', 'maxOptimizerCalls'), 'optimizer_host': ('optimizer', 'host'),
-    'trace_content': ('traces', 'contentConsent'), 'retention_days': ('traces', 'retentionDays'),
+    'trace_content': ('traces', 'contentConsent'), 'trace_sources': ('traces', 'sources'),
+    'retention_days': ('traces', 'retentionDays'),
     'parallel': ('rollout', 'parallel'), 'beam_width': ('algorithm', 'beamWidth'),
     'branch_factor': ('algorithm', 'branchFactor'), 'rounds': ('algorithm', 'rounds'),
     'minibatch': ('algorithm', 'minibatch'), 'export': ('export', 'enabled'),
 }
+
+
+def _sources(text: str) -> list[str]:
+    return [item.strip() for item in text.split(',') if item.strip()]
 
 
 def _hosts(text: str) -> list[str]:
@@ -56,7 +63,10 @@ def add_parser(subparsers):
     init.add_argument('--max-rollouts', type=int)
     init.add_argument('--max-optimizer-calls', type=int)
     init.add_argument('--optimizer-host', choices=config.HOSTS)
-    init.add_argument('--trace-content', choices=('none', 'redacted'))
+    init.add_argument('--trace-content', '--trace-consent', dest='trace_content', choices=('none', 'redacted'),
+                      help='content consent (SPEC-074); redacted records the apply date and preview digest')
+    init.add_argument('--trace-sources', type=_sources,
+                      help='content sources (comma-separated: rollout, host-transcript, loom, system-one)')
     init.add_argument('--retention-days', type=int)
     init.add_argument('--parallel', type=int)
     init.add_argument('--beam-width', type=int, help='apo: candidates kept per round')
@@ -201,6 +211,7 @@ def run(args, *, ask=None) -> int:
             value = config.load(home)
             consent = registry.inspect_registry(home)['value'].get('lightning', 'off')
             output = {'configured': value is not None, 'configDigest': config.digest(value) if value else None,
+                      'traceConsent': config.consent_summary(value if value else config.defaults()),
                       'setupConsent': consent, 'runs': len(store.list_runs(home)),
                       'path': str(config.config_path(home)), 'executionAuthorization': False}
         else:
