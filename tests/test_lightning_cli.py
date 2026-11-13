@@ -78,6 +78,17 @@ class WizardTests(unittest.TestCase):
         self.assertEqual(json.loads(out)['setupConsent'], 'off')
         self.assertFalse(json.loads(out)['executionAuthorization'])
 
+    def test_a_git_failure_in_an_arm_run_prints_a_refusal_not_a_traceback(self):
+        flags = ['lightning', 'init', '--home', str(self.home), '--non-interactive', '--algorithm', 'gepa']
+        preview = json.loads(run(*flags)[1])
+        self.assertEqual(run(*flags, '--apply', '--preview-digest', preview['previewDigest'])[0], 0)
+        from agent_braid import lightning_arm
+        with patch.object(lightning_arm.subprocess, 'run', side_effect=subprocess.CalledProcessError(128, 'git')):
+            code, _, err = run('lightning', 'run', '--home', str(self.home), '--fake-hosts', '--seed-run', 'seed')
+        self.assertEqual(code, 2)
+        self.assertIn('lightning refused (source-unavailable)', err)
+        self.assertNotIn('Traceback', err)
+
 
 class SetupTests(unittest.TestCase):
     def setUp(self):

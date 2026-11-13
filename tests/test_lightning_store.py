@@ -69,5 +69,14 @@ class StoreTests(unittest.TestCase):
             st.sweep(self.home, 0)
 
 
+    def test_journal_start_records_host_models_and_refuses_malformed_ones(self):
+        start = {'kind': 'start', 'algorithm': 'gepa', 'rngSeed': 0,
+                 'source': {'arm': 'final', 'commit': 'a' * 40, 'workingTree': True, 'seedSkillSha256': 'b' * 64}}
+        self.store.append_journal({**start, 'models': {'claude-code': 'claude-sonnet-5-5'}})
+        self.assertEqual(self.store.read_journal()[0]['models'], {'claude-code': 'claude-sonnet-5-5'})
+        for bad in ('claude-sonnet-5-5', {'claude-code': 5}, {'': 'm'}, {'claude-code': ''}):
+            with self.subTest(bad=bad), self.assertRaises(st.StoreError):
+                self.store.append_journal({**start, 'models': bad})
+
 if __name__ == '__main__':
     unittest.main()

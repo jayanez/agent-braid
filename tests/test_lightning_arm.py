@@ -36,8 +36,8 @@ class Base(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
-    def seed_run(self, run_id='seed'):
-        status = runner.run(self.home, profile('baseline'), run_id=run_id, fake_hosts=True, environ=CLEAN_ENV)
+    def seed_run(self, run_id='seed', arm='final'):
+        status = runner.run(self.home, profile('baseline'), run_id=run_id, fake_hosts=True, environ=CLEAN_ENV, arm=arm)
         self.assertEqual(status['completed'], 10)
         return run_id
 
@@ -149,7 +149,7 @@ class SourceTests(Base):
             arm.source_skill('other', target, ROOT)
 
     def test_exploratory_arm_starts_from_the_baseline_source_and_journals_it(self):
-        seed = self.seed_run()
+        seed = self.seed_run(arm='baseline')
         summary = arm.run_arm(self.home, profile('gepa', rounds=1, minibatch=3), seed_run=seed, run_id='e2',
                               fake_hosts=True, environ=CLEAN_ENV, source='baseline')
         self.assertEqual(summary['source']['arm'], 'baseline')
@@ -157,6 +157,50 @@ class SourceTests(Base):
         self.assertEqual(start['source'], summary['source'])
         baseline, _ = arm.source_skill('baseline', profile('gepa')['target']['path'], ROOT)
         self.assertEqual(summary['seedSha256'], algorithm.sha256_text(baseline.split('\n---\n', 1)[1]))
+
+    def test_baseline_runner_labels_rollouts_with_the_baseline_commit_skill(self):
+        target = profile('baseline')['target']['path']
+        baseline, _ = arm.source_skill('baseline', target, ROOT)
+        seed = self.seed_run(arm='baseline')
+        shas = {r.candidate_sha256 for r in store.RunStore(self.home, seed).read('rollout')}
+        self.assertEqual(shas, {algorithm.sha256_text(baseline)})
+
+    def test_seed_run_of_another_source_is_refused(self):
+        seed = self.seed_run()  # a final (working-tree) seed run
+        with self.assertRaises(runner.RunnerError) as caught:
+            arm.run_arm(self.home, profile('gepa', rounds=1, minibatch=3), seed_run=seed, run_id='e2',
+                        fake_hosts=True, environ=CLEAN_ENV, source='baseline')
+        self.assertEqual(caught.exception.code, 'seed-source-mismatch')
+        self.assertFalse(store.RunStore(self.home, 'e2').root.exists())
+
+    def test_resume_at_another_commit_or_model_is_refused_before_anything_is_built(self):
+        seed = self.seed_run()
+        cfg = profile('gepa', rounds=1, minibatch=3)
+        arm.run_arm(self.home, cfg, seed_run=seed, run_id='a0', fake_hosts=True, environ=CLEAN_ENV)
+        real = arm.source_skill
+
+        def moved(source, target, root):
+            text, provenance = real(source, target, root)
+            return text, {**provenance, 'commit': 'f' * 40}
+
+        build = mock.patch('scripts.spec069_native_runs.fake_plugin', side_effect=AssertionError('built'))
+        with mock.patch.object(arm, 'source_skill', moved), build, self.assertRaises(runner.RunnerError) as caught:
+            arm.run_arm(self.home, cfg, seed_run=seed, run_id='a0', resume=True, fake_hosts=True, environ=CLEAN_ENV)
+        self.assertEqual(caught.exception.code, 'resume-diverged')
+        self.assertIn('HEAD is now', str(caught.exception))
+        with build, self.assertRaises(runner.RunnerError) as caught:
+            arm.run_arm(self.home, cfg, seed_run=seed, run_id='a0', resume=True, fake_hosts=True, environ=CLEAN_ENV,
+                        models={'claude-code': 'claude-opus-5-5'})
+        self.assertEqual(caught.exception.code, 'resume-diverged')
+        start = store.RunStore(self.home, 'a0').read_journal()[0]
+        self.assertEqual(start['models'], {'claude-code': arm.DEFAULT_MODEL})
+
+    def test_a_git_failure_reading_the_source_is_a_refusal(self):
+        import subprocess
+        with mock.patch.object(arm.subprocess, 'run', side_effect=subprocess.CalledProcessError(128, 'git')), \
+                self.assertRaises(runner.RunnerError) as caught:
+            arm.source_skill('final', profile('gepa')['target']['path'], ROOT)
+        self.assertEqual(caught.exception.code, 'source-unavailable')
 
     def test_journal_refuses_a_malformed_source(self):
         run = store.RunStore(self.home, 'bad')
@@ -256,6 +300,24 @@ class LabScriptTests(unittest.TestCase):
                                                    'CLAUDE_CODE_OAUTH_TOKEN': 'y'})
         self.assertEqual(code, 2)
         self.assertIn('refused', err)
+
+    def test_evidence_merges_runs_by_name_and_lists_every_invocation(self):
+        from scripts import spec072_development_arms as lab
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'evidence.json'
+            first = {'generatedAt': 't1', 'seedRun': 'a0', 'runs': {
+                'baseline': {'runId': 'a0', 'stop': None, 'refusal': None},
+                'apo': {'runId': 'apo-1', 'stop': 'weekly-stop', 'refusal': None}}}
+            path.write_text(json.dumps(lab.merge_evidence(path, first, {})))
+            second = {'generatedAt': 't2', 'seedRun': 'a0', 'runs': {
+                'apo': {'runId': 'apo-1', 'stop': None, 'refusal': None},
+                'gepa': {'runId': 'gepa-1', 'stop': None, 'refusal': None}}}
+            merged = lab.merge_evidence(path, second, {'apo': 'apo-1'})
+        self.assertEqual(set(merged['runs']), {'baseline', 'apo', 'gepa'})
+        self.assertIsNone(merged['runs']['apo']['stop'])
+        self.assertEqual([i['generatedAt'] for i in merged['invocations']], ['t1', 't2'])
+        self.assertEqual(merged['invocations'][1]['runs']['apo']['resumed'], 'apo-1')
+        self.assertEqual(merged['invocations'][0]['runs']['apo']['stop'], 'weekly-stop')
 
 
 if __name__ == '__main__':

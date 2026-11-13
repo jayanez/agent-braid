@@ -5,7 +5,7 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_runner.py": "97cfaecefbc01d60968ace984efc5d503a21323b7a1cfce538a944e7b86a1cb1",
+  "agent_braid/lightning_runner.py": "f274c2b213368ac6f826d32e8c84bc5f607be557e8e808ce8267f2f370ef4da1",
   "specs/072-lightning-prompt-optimization/evaluation-protocol.md": "b5d1db2711981c5f6e63884213a07d5c2b2c5c224815410455193c45b1c92c38",
   "specs/072-lightning-prompt-optimization/evidence/development-arms.json": "fc5b107f30526c5a6d52fd7eab6c6820ab8c7c247a1198e74b3144250d431445",
   "specs/072-lightning-prompt-optimization/evidence/protocol-freeze.json": "7dcefc91bd990c4a029e4fc28ce1e09eedf569760080b071c6124a145d18c324",
