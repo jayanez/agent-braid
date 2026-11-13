@@ -108,6 +108,15 @@ publish() {
   rm -f "$tmp"; stop "cannot publish $2"
 }
 
+# Refuse to publish file $1 (world-readable in $PUB) if it holds the token of file $2 or an Anthropic key prefix.
+no_token() {
+  local tok=""
+  IFS= read -r tok < "$2" || [ -n "$tok" ] || stop "cannot read the token to screen $1"
+  if { [ "${#tok}" -ge 16 ] && grep -qF -- "$tok" "$1"; } || grep -q 'sk-ant-' "$1"; then
+    stop "$1 holds a credential; not published (kept only in the lab account's home)"
+  fi
+}
+
 # --- the lab half: runs as the dedicated account inside its own session -----------------------------------
 lab() {
   local mode=$1 attempt=$2
@@ -122,7 +131,7 @@ lab() {
   [ -f "$driver" ] || stop "missing $driver (install the code copy with har_t008_install.sh)"
   root_owned "$driver" || stop "$driver or a directory above it is not root-owned or is writable by others"
   [ -f "$cfg/oauth-token" ] || stop "no token in the lab config directory (SPEC-065 quickstart step 9b)"
-  mkdir -p -m 700 "$work/out" || stop "cannot create $work/out"
+  mkdir -p "$work/out" && chmod 700 "$work" "$work/out" || stop "cannot create $work/out"
   local args=(--attempt "$attempt" --operator-account "$OPERATOR_ACCOUNT"
     --claude "$claude" --claude-sha256 "$CLAUDE_SHA256"
     --interpreter "$py" --interpreter-sha256 "$PYTHON_SHA256"
@@ -135,6 +144,7 @@ lab() {
     check)
       echo "== dry-run ($attempt, $short, headless own session)"
       "${run[@]}" --dry-run > "$work/dry-run.json"; local dry=$?
+      no_token "$work/dry-run.json" "$cfg/oauth-token"
       publish "$work/dry-run.json" dry-run.json
       grep -o '"verdict": "[a-z-]*"' "$work/dry-run.json" | tail -1
       [ "$dry" -eq 0 ] || { echo "== dry-run refused (exit $dry)"; exit "$dry"; }
@@ -160,6 +170,7 @@ lab() {
       # publishes the transcript whatever happened.
       trap ':' INT
       "${run[@]}" --founder-go 2>&1 | (trap '' INT; exec tee "$work/run-$attempt.txt"); local rc=${PIPESTATUS[0]}
+      no_token "$work/run-$attempt.txt" "$cfg/oauth-token"
       publish "$work/run-$attempt.txt" "run-$attempt.txt"
       echo "== done (driver exit $rc; the transcript ends with the driver's JSON report)"; exit "$rc"
       ;;

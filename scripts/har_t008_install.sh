@@ -13,7 +13,8 @@
 #   bash ~/t008-install.sh
 #
 # The code is fetched by commit from the public repository into a fresh temporary repository (no local checkout,
-# no user git configuration, no replace refs or attributes), so the copy is exactly the commit's tracked files.
+# no user git configuration, no git variables of the caller's shell, no replace refs), and the staged copy is checked to hold exactly the
+# commit's tracked regular files.
 # Steps, each a hard stop (a `STOP:` line, exit 1); every pin and precondition is checked before the first sudo,
 # and nothing in /usr/local/libexec/braid or /etc/sudoers.d changes before the code copy is complete:
 #   1. a root-owned code copy of COMMIT, staged under a temporary name;
@@ -61,6 +62,9 @@ sha() { if [ -f "$1" ] && [ ! -L "$1" ]; then shasum -a 256 "$1" | cut -c1-64; f
 [ "$(sha "$B/python312/bin/python3.12")" = "$PYTHON_SHA256" ] \
   || stop "$B/python312/bin/python3.12 does not match its pin"
 [ "$(sha /usr/bin/sandbox-exec)" = "$SANDBOX_EXEC_SHA256" ] || stop "/usr/bin/sandbox-exec does not match its pin"
+# the pinned binaries and the interpreter tree: root-owned and closed to others (the driver re-hashes them as the lab)
+[ -z "$(find "$B/claude-2.1.292" "$B/python312" ! -type l \( ! -user root -o -perm -g+w -o -perm -o+w \) -print)" ] \
+  || stop "$B/claude-2.1.292 or $B/python312 holds a file not owned by root or writable by others"
 # a passwordless root rule may only name a file nobody but root can replace: $B and every directory above it
 for d in "$B" /usr/local/libexec /usr/local /usr /; do
   [ -d "$d" ] && [ ! -L "$d" ] && [ "$(stat -f '%u' "$d")" = 0 ] && (( (8#$(stat -f '%Lp' "$d") & 8#022) == 0 )) \
@@ -72,12 +76,19 @@ echo "== fetching $COMMIT from $REPOSITORY (a fresh temporary repository; your g
 FETCHED=$(mktemp -d "${TMPDIR:-/tmp}/t008-install-XXXXXX")
 cleanup() { rm -rf "$FETCHED"; }
 trap cleanup EXIT
-fresh_git() { GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null GIT_NO_REPLACE_OBJECTS=1 git -C "$FETCHED/repo" "$@"; }
-GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null git init -q --bare "$FETCHED/repo"
+# env -i: no GIT_* variable, proxy or SSH/SSL override of the caller's shell reaches git
+GIT_ENV=(/usr/bin/env -i PATH=/usr/bin:/bin HOME=/var/empty GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null
+  GIT_NO_REPLACE_OBJECTS=1)
+fresh_git() { "${GIT_ENV[@]}" git -c core.attributesFile=/dev/null -C "$FETCHED/repo" "$@"; }
+"${GIT_ENV[@]}" git init -q --bare "$FETCHED/repo"
 fresh_git fetch -q --depth 1 "$REPOSITORY" "$COMMIT" || stop "cannot fetch $COMMIT (network, or not merged yet)"
 [ "$(fresh_git rev-parse "$COMMIT^{commit}")" = "$COMMIT" ] || stop "the fetched object is not $COMMIT"
 fresh_git cat-file -e "$COMMIT:scripts/har_t008_launch.sh" 2>/dev/null || stop "$COMMIT has no har_t008_launch.sh"
 fresh_git archive --prefix="repo-$SHORT/" -o "$FETCHED/code.tar" "$COMMIT"
+# the copy holds regular files only, one per tracked blob (no symlink, submodule or export-ignore drift)
+TRACKED=$(fresh_git ls-tree -r "$COMMIT" | awk '$1 == "100644" || $1 == "100755" { n++ } END { print n + 0 }')
+[ "$(fresh_git ls-tree -r "$COMMIT" | wc -l | tr -d ' ')" = "$TRACKED" ] \
+  || stop "$COMMIT tracks a symlink or submodule; refusing to stage it"
 
 echo "== 1. the code copy, staged as $STAGE (your sudo password)"
 sudo grep -qE '^[#@]includedir /(private/)?etc/sudoers.d' /etc/sudoers || stop "no sudoers.d in /etc/sudoers"
@@ -86,6 +97,10 @@ sudo mkdir -m 700 "$STAGE"
 sudo tar -x -C "$STAGE" --no-same-owner -f "$FETCHED/code.tar"
 sudo chown -R root:wheel "$STAGE/repo-$SHORT"
 sudo chmod -R go-w,a+rX "$STAGE/repo-$SHORT"
+[ -z "$(sudo find "$STAGE/repo-$SHORT" \( -type l -o \( ! -type f ! -type d \) \) -print)" ] \
+  || stop "the staged copy holds a symlink or special file"
+[ "$(sudo find "$STAGE/repo-$SHORT" -type f | wc -l | tr -d ' ')" = "$TRACKED" ] \
+  || stop "the staged copy does not hold exactly the $TRACKED tracked files of $COMMIT"
 # [@] keeps these patterns from being placeholders themselves when this template is rendered
 sed -e "s/[@]COMMIT[@]/$COMMIT/" -e "s/[@]CLAUDE_SHA256[@]/$CLAUDE_SHA256/" -e "s/[@]PYTHON_SHA256[@]/$PYTHON_SHA256/" \
     -e "s/[@]SANDBOX_EXEC_SHA256[@]/$SANDBOX_EXEC_SHA256/" -e "s/[@]OPERATOR_ACCOUNT[@]/$OPERATOR_ACCOUNT/" \
@@ -101,7 +116,7 @@ sudo /usr/bin/lockf -k -t 0 "$LOCK" /bin/sh -c "$SWAP" sh "$STAGE" "$COPY" "$LAU
   || stop "a T008 or T009 lab step is running (nothing was replaced), or a move failed; run this again"
 
 echo "== 3. the sudoers rule $RULE: only 'check' without a password"
-printf '%s ALL=(root) NOPASSWD: %s\n' "$OPERATOR_ACCOUNT" "$LAUNCHER check *" | sudo tee "$RULE.new" > /dev/null
+printf '%s ALL=(root) NOPASSWD: %s\n' "$OPERATOR_ACCOUNT" "$LAUNCHER check t008-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][a-z]" | sudo tee "$RULE.new" > /dev/null
 sudo chmod 440 "$RULE.new"
 sudo visudo -cf "$RULE.new" > /dev/null || { sudo rm -f "$RULE.new"; stop "rule invalid"; }
 sudo mv -f "$RULE.new" "$RULE"

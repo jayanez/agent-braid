@@ -268,7 +268,8 @@ class InstallerTests(unittest.TestCase):
 
     def test_the_rule_is_check_only_and_the_t009_rule_is_left_alone(self):
         text = INSTALLER.read_text()
-        self.assertIn('printf \'%s ALL=(root) NOPASSWD: %s\\n\' "$OPERATOR_ACCOUNT" "$LAUNCHER check *"', text)
+        self.assertIn('printf \'%s ALL=(root) NOPASSWD: %s\\n\' "$OPERATOR_ACCOUNT" "$LAUNCHER check t008-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][a-z]"', text)
+        self.assertNotIn("check *", text)  # sudoers `*` matches spaces and further arguments
         self.assertIn("RULE=/etc/sudoers.d/braid-t008", text)
         self.assertIn('sudo visudo -cf "$RULE.new"', text)
         self.assertNotIn("run *", text)
@@ -284,7 +285,10 @@ class InstallerTests(unittest.TestCase):
     def test_the_code_is_fetched_by_commit_into_a_fresh_repository(self):
         text = INSTALLER.read_text()
         self.assertIn("REPOSITORY=https://github.com/jayanez/agent-braid.git", text)
-        self.assertIn("GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null GIT_NO_REPLACE_OBJECTS=1", text)
+        self.assertIn("GIT_ENV=(/usr/bin/env -i PATH=/usr/bin:/bin HOME=/var/empty GIT_CONFIG_NOSYSTEM=1", text)
+        self.assertIn("GIT_NO_REPLACE_OBJECTS=1)", text)
+        self.assertIn('fresh_git() { "${GIT_ENV[@]}" git -c core.attributesFile=/dev/null', text)
+        self.assertIn('"${GIT_ENV[@]}" git init -q --bare', text)
         self.assertIn('fresh_git fetch -q --depth 1 "$REPOSITORY" "$COMMIT"', text)
         self.assertIn('[ "$(fresh_git rev-parse "$COMMIT^{commit}")" = "$COMMIT" ]', text)
         self.assertNotIn("CHECKOUT", text)
@@ -301,6 +305,55 @@ class InstallerTests(unittest.TestCase):
         swap = text.index("SWAP=")
         self.assertNotIn('"$COPY"', text[:swap].split("COPY=$B/repo-$SHORT", 1)[1])
         self.assertEqual(text.count('rm -rf "$2"'), 1)
+
+    def test_the_staged_copy_holds_exactly_the_tracked_regular_files(self):
+        text = INSTALLER.read_text()
+        order = [text.index(marker) for marker in (
+            "tracks a symlink or submodule", 'sudo tar -x -C "$STAGE"', "holds a symlink or special file",
+            "does not hold exactly the $TRACKED tracked files", 'sudo /usr/bin/lockf -k -t 0 "$LOCK"')]
+        self.assertEqual(order, sorted(order))
+
+    def test_the_pinned_binaries_must_be_root_owned_and_closed_before_any_sudo(self):
+        text = INSTALLER.read_text()
+        before_fetch = text[:text.index("fresh_git fetch")]
+        self.assertIn('find "$B/claude-2.1.292" "$B/python312" ! -type l', before_fetch)
+        self.assertIn("not owned by root or writable by others", before_fetch)
+
+
+class NoTokenTests(unittest.TestCase):
+    """The lab half screens every world-readable publication for the lab token."""
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.tmp)
+        text = LAUNCHER.read_text()
+        start = text.index("no_token() {")
+        self.function = text[start:text.index("\n}\n", start) + 3]
+        self.token = self.tmp / "oauth-token"
+        self.token.write_text("abcdefghijklmnopqrstuvwxyz0123456789\n")
+
+    def screen(self, content):
+        target = self.tmp / "out.txt"
+        target.write_text(content)
+        script = 'stop() { printf "STOP: %s\\n" "$1" >&2; exit 1; }\n' + self.function + '\nno_token "$1" "$2"'
+        return subprocess.run([BASH, "-c", script, "sh", str(target), str(self.token)], capture_output=True,
+                              text=True, timeout=30, env={"PATH": "/usr/bin:/bin"})
+
+    def test_a_clean_file_passes(self):
+        self.assertEqual(self.screen('{"verdict": "ready"}\n').returncode, 0)
+
+    def test_the_token_refuses(self):
+        result = self.screen("leaked abcdefghijklmnopqrstuvwxyz0123456789 here\n")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("holds a credential", result.stderr)
+
+    def test_an_anthropic_key_prefix_refuses(self):
+        self.assertEqual(self.screen("key sk-ant-oat01-xyz\n").returncode, 1)
+
+    def test_both_publications_of_lab_output_are_screened(self):
+        text = LAUNCHER.read_text()
+        for name in ('"$work/run-$attempt.txt"', '"$work/dry-run.json"'):
+            self.assertIn(f'no_token {name} "$cfg/oauth-token"\n      publish {name}', text)
 
 
 class PacketTests(unittest.TestCase):
