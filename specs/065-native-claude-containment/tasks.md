@@ -351,6 +351,9 @@ shared object store fails the portable-root check).
   both verifiers accept, edited records, a wrong environment hash, an untrusted (runner) hash, another host and partial
   effects refuse; run-time `environment-drift` and `qualification-expired` covered by the backend tests (213 OK).
   `executionAuthorization` false; normal use still needs T011 and the SPEC-048/T008 profile decision.
+  Superseded 2026-11-13 by the T013 issuance (`evidence/qualification/issuance-2026-11-13.json`): this record was void
+  on macOS build 26B131 and does not cover the catalog and environment hash moved by the NC-2 amendment. It stays as
+  written; only the T013 trusted hashes are current.
 
 ## Hand-off and closure
 
@@ -370,6 +373,9 @@ shared object store fails the portable-root check).
   native units with route/quota observations under the D2 caps before `expiresAt` 2026-12-06T18:07:44Z, wiring
   `HostQualificationRun` to the native transport and backend, and the refresh of its `historical` snapshots at
   `530a5f39`. SPEC-049/T004 stays blocked until then; `executionAuthorization` false.
+  Updated 2026-11-13 (T013): the packet opens with the superseding records (issuance `issuance-2026-11-13.json`,
+  trusted hashes `fa59fbae…fa6a` and `9022b771…847f`, `expiresAt` 2026-12-13T16:14:45Z, Background session mode); its
+  sha256 is now `7326ed347a9d999aae388b9185942c17e6f999dfca95c83fb64cf477123fba9e` (`t011.json` keeps the original).
 
 - [ ] T012 (all REQ / SC): Stable-candidate validation and review: `pr` profile,
   code review of T003–T007, assurance obtained-evidence update, authority
@@ -378,7 +384,7 @@ shared object store fails the portable-root check).
   `validate_spec_kit`. Evidence: validation output bound to the candidate commit.
   Obtained (part 1, 2026-11-08, #1162): `evidence/t012.json`; two independent code reviews of T003-T007 found no must-fix; 17 residuals deferred to the next re-qualification; obtained_evidence bound for SC-001..SC-011. Freeze and human review pending.
 
-- [ ] T013 (REQ-004 / SC-004; REQ-007 / SC-007; REQ-010 / SC-010; REQ-009 / SC-009): Headless own-session lab
+- [x] T013 (REQ-004 / SC-004; REQ-007 / SC-007; REQ-010 / SC-010; REQ-009 / SC-009): Headless own-session lab
   mode, session-ownership guard and re-qualification (founder amendment of NC-2, 2026-11-13,
   `evidence/founder-decisions-20261113.json`; survey `evidence/session-context-survey-20261113.json`). Attempt
   `t009-20261113a` was launched with `su - braidlab` and stayed not qualified (CRED-07, FS-07, PROC-06 positive
@@ -407,6 +413,19 @@ shared object store fails the portable-root check).
   one `lockf` lock serializes `check`, `diag` and `run`, and the install blocks H1/H2 stop before any `sudo` on a bad
   pin and report the launcher's SHA-256 for comparison with a locally rendered copy. `evidence/t012.json` stays frozen: its inputs (the qualified commit's module hashes) moved, so the
   scenarios are bound to `t013.json` instead, as T012 did for the older task records. Nothing native ran.
+  Obtained: issued 2026-11-13 by the founder (NC-9) on the bundle of attempt `t009-20261113c` (commit `7d3e1986`,
+  headless launch through `launchctl asuser`, own `Background` session, `session-own` passed; `bundleSha256`
+  `c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7`, `environmentSha256` `f0f7617e…e899`; 32 of 32
+  probes, all four effects `enforced`, HOST-01 completed, `apiKeySource` `none` in all three sessions; quota 5-hour 2 %
+  and weekly 50 %, delta 0). Result `evidence/t009-20261113-result.md` (attempts `a`, `b`, `c`; `a` not qualified,
+  `b` never run). Record `evidence/qualification/issuance-2026-11-13.json`: both canonical records, trusted hashes
+  (containment `fa59fbae…fa6a`, host `9022b771…847f`), `expiresAt` 2026-12-13T16:14:45Z (30 days), NC-9 triggers plus
+  the session kind, and the founder's verbatim answers (the 2026-11-06 residuals plus the new not-applicable CRED-07
+  pasteboard, FS-07 `mach-mdwrite` and PROC-06 `mach-tccd` accepted; MDRV-04 accepted with PR review, unchanged
+  `320b00c4`..`f923f73f`; issue). Verification `evidence/t013.json` (`issuance`): both verifiers, `issued_records` and
+  `verify_bundle` accept; edited records, a wrong environment hash, the superseded environment, an untrusted (runner)
+  hash, another host, partial effects and an expired record refuse; 711 targeted tests OK. The 2026-11-06 record is
+  superseded. `executionAuthorization` false; normal use still needs SPEC-048/T008 and the NC-11 check.
 
 ## Unblocking map
 
