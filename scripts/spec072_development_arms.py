@@ -113,6 +113,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.exploratory and args.baseline_run:
         parser.error("--exploratory is seeded by the SPEC-071 T012 run; --baseline-run does not apply")
+    if (args.resume_apo or args.resume_gepa) and not (args.exploratory or args.baseline_run):
+        parser.error("--resume-apo/--resume-gepa need --baseline-run: a resumed arm keeps its seed run")
     args.output = args.output or (EXPLORATORY_OUT if args.exploratory else OUT)
     source = "baseline" if args.exploratory else "final"
 
@@ -157,12 +159,17 @@ def main(argv: list[str] | None = None) -> int:
             seed = status["runId"]
     if seed is not None:
         record["seedRun"] = seed
+        print(json.dumps({"seedRun": seed}))
         for name, resume in (("apo", args.resume_apo), ("gepa", args.resume_gepa)):
+            if name == "apo" and args.resume_gepa and not args.resume_apo:
+                continue  # resuming GEPA only: APO already finished, do not spend it again
             try:
                 result = arm.run_arm(home, apply_profile(home, name), seed_run=seed, run_id=resume,
                                      resume=bool(resume), environ=environ, models=models, source=source)
             except runner.RunnerError as exc:
                 result = {"refusal": exc.code, "message": str(exc)}
+            except (subprocess.CalledProcessError, ValueError, OSError) as exc:
+                result = {"refusal": "arm-error", "message": f"{type(exc).__name__}: {exc}"}
             record["runs"][name] = result
             if result.get("stop") or result.get("refusal"):
                 exit_code = 1

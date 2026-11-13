@@ -118,6 +118,13 @@ class RescoreTests(unittest.TestCase):
             algorithm.rescore(self.record(promptSet='held-out'))
         self.assertEqual(caught.exception.code, 'holdout-contamination')
 
+    def test_an_unknown_case_is_refused_by_code(self):
+        record = self.record()
+        record['rolloutId'] = record['rolloutId'].replace('DEV-01', 'DEV-99')
+        with self.assertRaises(runner.RunnerError) as caught:
+            algorithm.rescore(record)
+        self.assertEqual(caught.exception.code, 'reward-shape')
+
 
 if __name__ == '__main__':
     unittest.main()

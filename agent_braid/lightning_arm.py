@@ -17,7 +17,7 @@ import tempfile
 
 from . import lightning_runner as runner_mod
 from . import lightning_store as store_mod
-from .lightning_algorithm import QUOTA_STOPS, rescore
+from .lightning_algorithm import QUOTA_STOPS, development_cases, rescore
 from .lightning_apo import APO, MAX_ROUNDS
 from .lightning_gepa import GEPA
 from .lightning_resources import sha256_text, split_skill
@@ -43,8 +43,18 @@ def source_skill(source: str, target: str, root: Path) -> tuple[str, dict]:
         raise runner_mod.RunnerError('The baseline commit has no such skill file', 'config-shape')
     return done.stdout.decode('utf-8'), {'arm': 'baseline', 'commit': BASELINE_COMMIT, 'workingTree': False}
 
+
 def _cases(root: Path) -> list[str]:
-    return [c['id'] for c in json.loads((root / runner_mod.PROMPT_FILES['development']).read_text())['cases']]
+    return [c['id'] for c in development_cases(root)]
+
+
+def completed_results(store: store_mod.RunStore) -> list[dict]:
+    """The latest unstopped attempt result per rollout id in a run."""
+    latest: dict[str, dict] = {}
+    for record in store.read('result'):
+        if record.value['stop'] is None:
+            latest[record.value['rolloutId']] = record.value
+    return list(latest.values())
 
 
 def estimate(config: dict, root: Path) -> dict:
@@ -78,14 +88,10 @@ def estimate(config: dict, root: Path) -> dict:
 
 def seed_vectors(home, run_id: str, root: Path) -> list[dict]:
     """The seed's full development vectors, re-scored from a finished baseline run's attempt results."""
-    latest: dict[str, dict] = {}
-    for record in store_mod.RunStore(home, run_id).read('result'):
-        value = record.value
-        if value['promptSet'] != 'development':
-            raise runner_mod.RunnerError('The seed run must be a development run', 'holdout-contamination')
-        if value['stop'] is None:
-            latest[value['rolloutId']] = value
-    vectors = [rescore(v) for v in latest.values()]
+    store = store_mod.RunStore(home, run_id)
+    if any(r.value['promptSet'] != 'development' for r in store.read('result')):
+        raise runner_mod.RunnerError('The seed run must be a development run', 'holdout-contamination')
+    vectors = [rescore(v) for v in completed_results(store)]
     missing = set(_cases(root)) - {v['caseId'] for v in vectors}
     if missing:
         raise runner_mod.RunnerError('The seed run does not cover every development case', 'seed-incomplete')
@@ -133,11 +139,7 @@ class CandidateEvaluator:
             raise runner_mod.RunnerError('The candidate evaluation stopped', status['stop'])
         if status['refusal']:
             raise runner_mod.RunnerError('The candidate evaluation was refused', status['refusal'])
-        latest: dict[str, dict] = {}
-        for record in store.read('result'):
-            if record.value['stop'] is None:
-                latest[record.value['rolloutId']] = record.value
-        return list(latest.values())
+        return completed_results(store)
 
 
 def run_arm(home, config: dict, *, seed_run: str, run_id: str | None = None, resume: bool = False,
@@ -168,8 +170,8 @@ def run_arm(home, config: dict, *, seed_run: str, run_id: str | None = None, res
     channel = runner_mod.OptimizerChannel(config['optimizer']['host'], fake_hosts=fake_hosts,
                                           first_call=journaled + 1,
                                           model=models.get(config['optimizer']['host']), **host_options)
-    front = split_skill(raw)[0]
     try:
+        front = split_skill(raw)[0]
         with tempfile.TemporaryDirectory(prefix='lightning-arm-') as tmp:
             work = Path(tmp)
             if plugin_dir is not None:
