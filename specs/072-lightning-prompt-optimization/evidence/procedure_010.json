@@ -2,7 +2,7 @@
  "command": "python -m unittest tests.test_lightning_replay",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "python": "3.13.11"
  },
  "inputs": {
   "agent_braid/lightning_algorithm.py": "7bcc6173805aacca2811feba34b1ec46bb66f847f10665bd80162e908cffae18",

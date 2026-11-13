@@ -170,8 +170,8 @@ def run_arm(home, config: dict, *, seed_run: str, run_id: str | None = None, res
     channel = runner_mod.OptimizerChannel(config['optimizer']['host'], fake_hosts=fake_hosts,
                                           first_call=journaled + 1,
                                           model=models.get(config['optimizer']['host']), **host_options)
-    front = split_skill(raw)[0]
     try:
+        front = split_skill(raw)[0]
         with tempfile.TemporaryDirectory(prefix='lightning-arm-') as tmp:
             work = Path(tmp)
             if plugin_dir is not None:

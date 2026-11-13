@@ -2,7 +2,7 @@
  "command": "python -m unittest tests.test_lightning_freeze",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "python": "3.13.11"
  },
  "inputs": {
   "agent_braid/lightning_runner.py": "97cfaecefbc01d60968ace984efc5d503a21323b7a1cfce538a944e7b86a1cb1",
