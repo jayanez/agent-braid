@@ -4,6 +4,7 @@
 from __future__ import annotations
 import argparse
 import compileall
+import gzip
 import hashlib
 from importlib import metadata
 import json
@@ -259,6 +260,27 @@ def check_no_builder_paths(tree, needles):
         raise ValueError('Packaged files contain a local build path: ' + ', '.join(hits[:10]))
 
 
+def write_source_archive(path, root, relatives, epoch):
+    """Write the corresponding-source ``.tar.gz`` with bytes that depend only on the tracked files.
+
+    Names are sorted; every member has the commit time, uid/gid 0, no user or group name and mode 0644
+    or 0755; the gzip header has no file name and a zero time. Two builds of one commit at different
+    paths, by different users or at different times therefore write the same archive.
+    """
+    def normalize(info):
+        info.mtime = epoch
+        info.uid = info.gid = 0
+        info.uname = info.gname = ''
+        info.mode = 0o755 if info.mode & 0o111 else 0o644
+        return info
+    with Path(path).open('wb') as raw, gzip.GzipFile(filename='', mode='wb', fileobj=raw, mtime=0) as stream, \
+            tarfile.open(fileobj=stream, mode='w', format=tarfile.PAX_FORMAT) as archive:
+        for relative in sorted(set(relatives)):
+            file = Path(root) / relative
+            if file.is_file() and not file.is_symlink():
+                archive.add(file, arcname=relative, recursive=False, filter=normalize)
+
+
 def verify_engineering_marker(plugin):
     """The workflow directory and the engineering-only marker exist together or not at all."""
     plugin = Path(plugin)
@@ -278,6 +300,8 @@ def assemble(output, cache, *, platforms=None, allow_dirty=False, include_workfl
     if include_workflows and not WORKFLOWS_SOURCE.is_dir():
         raise ValueError('The workflow source directory is missing')
     candidate = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
+    # Timestamps written by the build (wheel entries, source archive) come from the commit, not the clock.
+    epoch = int(subprocess.check_output(['git', 'log', '-1', '--format=%ct', 'HEAD'], cwd=ROOT, text=True))
     lock = json.loads((ROOT / 'integrations/agent-braid/plugin/runtime-lock.json').read_text())
     selected = platforms or list(lock['platforms'])
     if set(selected) - set(lock['platforms']):
@@ -292,7 +316,8 @@ def assemble(output, cache, *, platforms=None, allow_dirty=False, include_workfl
         plugin = staging / 'plugins/agent-braid'
         plugin.mkdir(parents=True)
         wheels = staging / 'wheels'
-        subprocess.run([sys.executable, '-m', 'build', '--wheel', '--outdir', str(wheels), str(ROOT)], check=True)
+        subprocess.run([sys.executable, '-m', 'build', '--wheel', '--outdir', str(wheels), str(ROOT)], check=True,
+                       env={**os.environ, 'SOURCE_DATE_EPOCH': str(epoch)})
         wheel = next(wheels.glob('*.whl'))
         runtime_provenance = {}
         package_licenses = {}
@@ -411,13 +436,8 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
         sources = staging / 'sources'
         sources.mkdir()
         paths = subprocess.check_output(['git', 'ls-files', '--cached', '-z'], cwd=ROOT).split(b'\0')
-        with tarfile.open(sources / f'agent-braid-{VERSION}-source.tar.gz', 'w:gz') as archive:
-            for raw in sorted(set(paths)):
-                if raw:
-                    relative = os.fsdecode(raw)
-                    path = ROOT / relative
-                    if path.is_file() and not path.is_symlink():
-                        archive.add(path, arcname=relative, recursive=False)
+        write_source_archive(sources / f'agent-braid-{VERSION}-source.tar.gz', ROOT,
+                             [os.fsdecode(raw) for raw in paths if raw], epoch)
         check_package_names(staging, opencode=include_opencode)
         provenance_path = plugin / 'provenance.json'
         provenance = json.loads(provenance_path.read_text())
@@ -429,12 +449,16 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
                                                 'files': inventory(plugin)})
         verify_package(plugin)
         verify_engineering_marker(plugin)
-        # Specific local paths only: a generic interpreter prefix such as /usr would match ordinary shebangs.
-        check_no_builder_paths(plugin, (ROOT, staging.resolve(), output.parent,
-                                        *([Path(sys.prefix).resolve()] if sys.prefix != sys.base_prefix else [])))
         shutil.rmtree(wheels)
         for path in staging.glob('extract-*'):
             shutil.rmtree(path)
+        # Specific local paths only: a generic interpreter prefix such as /usr would match ordinary shebangs.
+        # A per-user home (/Users/<name>, /home/<name>) is included: no packaged byte may name the builder's
+        # account. A shallow home such as /root is skipped, because upstream runtime files name it.
+        home = Path.home().resolve()
+        check_no_builder_paths(staging, (ROOT, staging.resolve(), output.parent, cache,
+                                         *([home] if len(home.parts) >= 3 else []),
+                                         *([Path(sys.prefix).resolve()] if sys.prefix != sys.base_prefix else [])))
         staging.rename(output)
     return {'status': 'built', 'marketplace': str(output), 'plugin': str(output / 'plugins/agent-braid'),
             'version': VERSION, 'platforms': selected, 'sourceDirty': dirty}
