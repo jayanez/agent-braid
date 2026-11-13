@@ -161,9 +161,9 @@
             {
               "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment (T013)",
               "limits": "Unit level with doubles; qualifies nothing; the next attempt's bundle and issuance are pending",
-              "outcome": "767 tests OK (skipped=3); t012.json frozen, its inputs moved",
+              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved",
               "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "2b610b6e0bf693a9ca5df2c335bec49f6b8515a5052f4c0fdd4d85b6f44ad038"
+              "sha256": "bfb70a977e1154d5970ed8cda104549ee029557981dfe78ecd9d0e178689e77c"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_001 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -185,9 +185,9 @@
             {
               "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment (T013)",
               "limits": "Unit level with doubles; qualifies nothing; the next attempt's bundle and issuance are pending",
-              "outcome": "767 tests OK (skipped=3); t012.json frozen, its inputs moved",
+              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved",
               "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "2b610b6e0bf693a9ca5df2c335bec49f6b8515a5052f4c0fdd4d85b6f44ad038"
+              "sha256": "bfb70a977e1154d5970ed8cda104549ee029557981dfe78ecd9d0e178689e77c"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_002 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -209,9 +209,9 @@
             {
               "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment (T013)",
               "limits": "Unit level with doubles; qualifies nothing; the next attempt's bundle and issuance are pending",
-              "outcome": "767 tests OK (skipped=3); t012.json frozen, its inputs moved",
+              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved",
               "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "2b610b6e0bf693a9ca5df2c335bec49f6b8515a5052f4c0fdd4d85b6f44ad038"
+              "sha256": "bfb70a977e1154d5970ed8cda104549ee029557981dfe78ecd9d0e178689e77c"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_003 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -233,9 +233,9 @@
             {
               "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment (T013)",
               "limits": "Unit level with doubles; qualifies nothing; the next attempt's bundle and issuance are pending",
-              "outcome": "767 tests OK (skipped=3); t012.json frozen, its inputs moved",
+              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved",
               "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "2b610b6e0bf693a9ca5df2c335bec49f6b8515a5052f4c0fdd4d85b6f44ad038"
+              "sha256": "bfb70a977e1154d5970ed8cda104549ee029557981dfe78ecd9d0e178689e77c"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_004 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -264,9 +264,9 @@
             {
               "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment (T013)",
               "limits": "Unit level with doubles; qualifies nothing; the next attempt's bundle and issuance are pending",
-              "outcome": "767 tests OK (skipped=3); t012.json frozen, its inputs moved",
+              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved",
               "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "2b610b6e0bf693a9ca5df2c335bec49f6b8515a5052f4c0fdd4d85b6f44ad038"
+              "sha256": "bfb70a977e1154d5970ed8cda104549ee029557981dfe78ecd9d0e178689e77c"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_005 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -295,9 +295,9 @@
             {
               "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment (T013)",
               "limits": "Unit level with doubles; qualifies nothing; the next attempt's bundle and issuance are pending",
-              "outcome": "767 tests OK (skipped=3); t012.json frozen, its inputs moved",
+              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved",
               "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "2b610b6e0bf693a9ca5df2c335bec49f6b8515a5052f4c0fdd4d85b6f44ad038"
+              "sha256": "bfb70a977e1154d5970ed8cda104549ee029557981dfe78ecd9d0e178689e77c"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_006 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -326,9 +326,9 @@
             {
               "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment (T013)",
               "limits": "Unit level with doubles; qualifies nothing; the next attempt's bundle and issuance are pending",
-              "outcome": "767 tests OK (skipped=3); t012.json frozen, its inputs moved",
+              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved",
               "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "2b610b6e0bf693a9ca5df2c335bec49f6b8515a5052f4c0fdd4d85b6f44ad038"
+              "sha256": "bfb70a977e1154d5970ed8cda104549ee029557981dfe78ecd9d0e178689e77c"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_007 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -357,9 +357,9 @@
             {
               "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment (T013)",
               "limits": "Unit level with doubles; qualifies nothing; the next attempt's bundle and issuance are pending",
-              "outcome": "767 tests OK (skipped=3); t012.json frozen, its inputs moved",
+              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved",
               "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "2b610b6e0bf693a9ca5df2c335bec49f6b8515a5052f4c0fdd4d85b6f44ad038"
+              "sha256": "bfb70a977e1154d5970ed8cda104549ee029557981dfe78ecd9d0e178689e77c"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_008 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -388,9 +388,9 @@
             {
               "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment (T013)",
               "limits": "Unit level with doubles; qualifies nothing; the next attempt's bundle and issuance are pending",
-              "outcome": "767 tests OK (skipped=3); t012.json frozen, its inputs moved",
+              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved",
               "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "2b610b6e0bf693a9ca5df2c335bec49f6b8515a5052f4c0fdd4d85b6f44ad038"
+              "sha256": "bfb70a977e1154d5970ed8cda104549ee029557981dfe78ecd9d0e178689e77c"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_009 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -426,9 +426,9 @@
             {
               "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment (T013)",
               "limits": "Unit level with doubles; qualifies nothing; the next attempt's bundle and issuance are pending",
-              "outcome": "767 tests OK (skipped=3); t012.json frozen, its inputs moved",
+              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved",
               "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "2b610b6e0bf693a9ca5df2c335bec49f6b8515a5052f4c0fdd4d85b6f44ad038"
+              "sha256": "bfb70a977e1154d5970ed8cda104549ee029557981dfe78ecd9d0e178689e77c"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_010 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -457,9 +457,9 @@
             {
               "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment (T013)",
               "limits": "Unit level with doubles; qualifies nothing; the next attempt's bundle and issuance are pending",
-              "outcome": "767 tests OK (skipped=3); t012.json frozen, its inputs moved",
+              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved",
               "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "2b610b6e0bf693a9ca5df2c335bec49f6b8515a5052f4c0fdd4d85b6f44ad038"
+              "sha256": "bfb70a977e1154d5970ed8cda104549ee029557981dfe78ecd9d0e178689e77c"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_011 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",

@@ -401,8 +401,11 @@ shared object store fails the portable-root check).
   `contracts/native-profile.md`. Verification: the unit tests above; procedure_005 to procedure_010 on the new
   bundle. Evidence: the new bundle and its SHA-256, and the issuance or not-qualified record.
   `executionAuthorization` stays false.
-  Obtained (unit level only, 2026-11-13): `evidence/t013.json` (targeted tests, 767 OK; input hashes of the touched
-  modules). `evidence/t012.json` stays frozen: its inputs (the qualified commit's module hashes) moved, so the
+  Obtained (unit level only, 2026-11-13): `evidence/t013.json` (targeted tests, 778 OK; input hashes of the touched
+  modules). The independent re-check of #1338 (GO) found three minor issues, fixed before the real run: results are
+  published only through the lab account's own `/Users/Shared/braid-t009-lab` (mktemp and rename, links refused),
+  one `lockf` lock serializes `check`, `diag` and `run`, and the install blocks H1/H2 stop before any `sudo` on a bad
+  pin and report the launcher's SHA-256 for comparison with a locally rendered copy. `evidence/t012.json` stays frozen: its inputs (the qualified commit's module hashes) moved, so the
   scenarios are bound to `t013.json` instead, as T012 did for the older task records. Nothing native ran.
 
 ## Unblocking map

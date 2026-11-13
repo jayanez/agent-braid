@@ -19,8 +19,11 @@
 #   sudo /usr/local/libexec/braid/t009-launch.sh run ATTEMPT     the real attempt: at most 3 Haiku sessions; asks
 #                                                                 for the attempt name and the usage readings
 # check and diag may be allowed without a password by a narrow sudoers rule; run is never in that rule.
-# Results are published to /Users/Shared (t009-dry-run.json, t009-self-check.json, t009-diag.txt,
-# t009-run-ATTEMPT.txt, t009-bundle-ATTEMPT/) by the lab account, as the graphical lab script does.
+# One lab step at a time: every mode holds an exclusive lock (lockf(1) on a root-owned file in the root-owned
+# install directory) for its whole life, so a passwordless check or diag cannot start beside a live run.
+# Results are published by the lab account into its own directory /Users/Shared/braid-t009-lab (dry-run.json,
+# self-check.json, diag.txt, run-ATTEMPT.txt, bundle-ATTEMPT/): owned by braidlab, mode 755, every file written
+# to a fresh temporary name there and renamed into place, so no path another user can plant is ever followed.
 # Exit codes: 2 for a refusal of this launcher (STOP line); otherwise the driver's own exit code.
 set -u -o pipefail
 PATH=/usr/bin:/bin:/usr/sbin:/sbin
@@ -38,7 +41,8 @@ ACCOUNT=braidlab
 BRAID=/usr/local/libexec/braid
 INSTALLED=$BRAID/t009-launch.sh
 LAB_HOME=/Users/$ACCOUNT
-SHARED=/Users/Shared
+PUB=/Users/Shared/braid-t009-lab
+LOCK=$BRAID/.t009-launch.lock
 
 stop() { printf 'STOP: %s\n' "$1" >&2; exit 2; }
 
@@ -79,6 +83,38 @@ auth_status() {
   ) >/dev/null 2>&1
 }
 
+# The publish directory: a real directory (no symlink) owned by the running account, not writable by group or
+# other. Created when missing. /Users/Shared is sticky, so nobody else can rename or replace it once it is ours.
+prepare_pub() {
+  if [ ! -e "$PUB" ] && [ ! -L "$PUB" ]; then
+    mkdir -m 755 "$PUB" || stop "cannot create $PUB"
+  fi
+  [ -d "$PUB" ] && [ ! -L "$PUB" ] || stop "$PUB is not a real directory (remove it and run again)"
+  local owner mode
+  owner=$(stat -f '%u' "$PUB") && mode=$(stat -f '%Lp' "$PUB") || stop "cannot inspect $PUB"
+  [ "$owner" = "$(id -u)" ] && (( (8#$mode & 8#022) == 0 )) \
+    || stop "$PUB is not owned by $(id -un) or is writable by others (remove it and run again)"
+}
+
+# Copy file $1 to $PUB/$2 (mode 644): written to a fresh mktemp name in $PUB, then renamed into place. A target
+# that exists as anything but a regular file (a symlink, a directory) refuses.
+publish() {
+  local name=$PUB/$2 tmp
+  if [ -L "$name" ] || { [ -e "$name" ] && [ ! -f "$name" ]; }; then stop "$name is not a regular file"; fi
+  tmp=$(mktemp "$PUB/.publish-XXXXXX") || stop "cannot publish $2"
+  if cat "$1" > "$tmp" && chmod 644 "$tmp" && mv -f "$tmp" "$name"; then return 0; fi
+  rm -f "$tmp"; stop "cannot publish $2"
+}
+
+# Copy directory $1 to $PUB/$2 (world-readable) the same way: a fresh mktemp directory, then a rename.
+publish_tree() {
+  local name=$PUB/$2 tmp
+  if [ -L "$name" ] || { [ -e "$name" ] && [ ! -d "$name" ]; }; then stop "$name is not a directory"; fi
+  tmp=$(mktemp -d "$PUB/.publish-XXXXXX") || stop "cannot publish $2"
+  if cp -R "$1/" "$tmp/" && chmod -R a+rX "$tmp" && rm -rf "$name" && mv "$tmp" "$name"; then return 0; fi
+  rm -rf "$tmp"; stop "cannot publish $2"
+}
+
 # --- the lab half: runs as the dedicated account inside its own session -----------------------------------
 lab() {
   local mode=$1 attempt=$2
@@ -98,40 +134,39 @@ lab() {
     --config-dir "$cfg" --run-root "$LAB_HOME/t009/run"
     --arena-parent "$LAB_HOME/t009/arena" --out-dir "$LAB_HOME/t009/out/$attempt")
   local run=("$py" -B -I "$driver" "${args[@]}")
-  publish() { cp "$1" "$2" && chmod a+r "$2"; }
+  prepare_pub
   case "$mode" in
     check)
       echo "== dry-run ($attempt, $short, headless own session)"
       "${run[@]}" --dry-run > "$LAB_HOME/t009/dry-run.json"; local dry=$?
-      publish "$LAB_HOME/t009/dry-run.json" "$SHARED/t009-dry-run.json"
+      publish "$LAB_HOME/t009/dry-run.json" dry-run.json
       grep -o '"verdict": "[a-z-]*"' "$LAB_HOME/t009/dry-run.json" | tail -1
       [ "$dry" -eq 0 ] || { echo "== dry-run refused (exit $dry)"; exit "$dry"; }
       echo "== self-check (no session, no quota)"
       "${run[@]}" --self-check --founder-go > "$LAB_HOME/t009/self-check.json"; local sc=$?
-      publish "$LAB_HOME/t009/self-check.json" "$SHARED/t009-self-check.json"
+      publish "$LAB_HOME/t009/self-check.json" self-check.json
       grep -o '"verdict": "[a-z-]*"' "$LAB_HOME/t009/self-check.json" | tail -1
       echo "== done (self-check exit $sc)"; exit "$sc"
       ;;
     diag)
       # outside the sandbox, no model: does `claude auth status` accept the token of the file? exit codes only
-      local out=$SHARED/t009-diag.txt tmp
-      : > "$out" || stop "cannot write $out"
+      local out tmp
+      out=$(mktemp "$LAB_HOME/t009/diag-XXXXXX") || stop "no temporary file"
       tmp=$(mktemp -d "$LAB_HOME/t009/run/diag-XXXXXX") || stop "no temporary directory"
       auth_status "$tmp" "$cfg" "$claude"
       echo "token-env-empty-config exit=$?" | tee -a "$out"
       auth_status "$cfg" "$cfg" "$claude"
       echo "token-env-real-config exit=$?" | tee -a "$out"
-      rm -rf "$tmp"; chmod a+r "$out"
+      rm -rf "$tmp"
+      publish "$out" diag.txt; rm -f "$out"
       ;;
     run)
       [ -t 0 ] || stop "run needs your terminal: it asks for the attempt name and the usage readings"
       echo "== REAL ATTEMPT $attempt (at most 3 Haiku sessions). Keep claude.ai Usage at hand."
       "${run[@]}" --founder-go 2>&1 | tee "$LAB_HOME/t009/run-$attempt.txt"; local rc=${PIPESTATUS[0]}
-      publish "$LAB_HOME/t009/run-$attempt.txt" "$SHARED/t009-run-$attempt.txt"
+      publish "$LAB_HOME/t009/run-$attempt.txt" "run-$attempt.txt"
       if [ -d "$LAB_HOME/t009/out/$attempt" ]; then
-        rm -rf "$SHARED/t009-bundle-$attempt"
-        cp -R "$LAB_HOME/t009/out/$attempt" "$SHARED/t009-bundle-$attempt"
-        chmod -R a+rX "$SHARED/t009-bundle-$attempt"
+        publish_tree "$LAB_HOME/t009/out/$attempt" "bundle-$attempt"
       fi
       echo "== done (driver exit $rc)"; exit "$rc"
       ;;
@@ -160,10 +195,18 @@ OPERATOR_UID=$(id -u "$OPERATOR_ACCOUNT" 2>/dev/null) || stop "no account $OPERA
 [[ "$LAB_UID" =~ ^[0-9]+$ ]] && [ "$LAB_UID" -ge 500 ] && [ "$LAB_UID" -ne "$OPERATOR_UID" ] \
   || stop "$ACCOUNT must be a human account (uid >= 500) other than $OPERATOR_ACCOUNT"
 cd / || stop "cannot leave the caller's directory"
+# One lab step at a time. lockf(1) holds a kernel flock(2) on a root-owned file in the root-owned install
+# directory for as long as its command runs, and the kernel drops it when lockf exits, so a crash leaves no stale
+# lock. The first call only tests (-t 0: never wait) so the refusal has a clear line; the second holds the lock
+# for the whole step (a step that slips in between makes it fail too, with lockf's own message). -k keeps the
+# file, so a holder never loses its lock to an unlink.
+if [ -L "$LOCK" ] || { [ -e "$LOCK" ] && [ ! -f "$LOCK" ]; }; then stop "$LOCK is not a regular file"; fi
+/usr/bin/lockf -k -s -t 0 "$LOCK" /usr/bin/true || stop "another lab step is running (check, diag or run)"
 echo "== $MODE $ATTEMPT as $ACCOUNT (uid $LAB_UID) in its own session (launchctl asuser)"
 # launchctl asuser: a new audit session for the account (auid = its uid) and its own launchd domain;
-# sudo -u drops root inside it; env -i: nothing of the caller's environment reaches the lab half.
-exec /bin/launchctl asuser "$LAB_UID" /usr/bin/sudo -u "$ACCOUNT" /usr/bin/env -i \
+# sudo -u drops root inside it (and closes every descriptor above 2); env -i: nothing of the caller's
+# environment reaches the lab half.
+exec /usr/bin/lockf -k -t 0 "$LOCK" /bin/launchctl asuser "$LAB_UID" /usr/bin/sudo -u "$ACCOUNT" /usr/bin/env -i \
   HOME="$LAB_HOME" USER="$ACCOUNT" LOGNAME="$ACCOUNT" PATH=/usr/bin:/bin LANG=en_US.UTF-8 \
   CLAUDE_CONFIG_DIR="$LAB_HOME/t009/config" DISABLE_AUTOUPDATER=1 \
   /bin/bash "$INSTALLED" __lab "$MODE" "$ATTEMPT"
