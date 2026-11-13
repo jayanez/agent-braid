@@ -1,0 +1,40 @@
+{
+  "candidateBinding": "Current source hashes on origin/develop 8cf6c75f; implementation merged in #1292 (a69d8887)",
+  "counterfactualChecks": [],
+  "disposition": "implemented-offline-not-activated; scope amended by owner decision 2026-11-13 (no top-level alias; plugin/MCP exposure belongs to M4.8)",
+  "executedChecks": [
+    {
+      "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_harness_advisory",
+      "exitCode": 0,
+      "scope": "Read-only advisory CLI views over synthetic profiles and registries, Python 3.13.",
+      "testsRun": 20
+    },
+    {
+      "command": "python3.13 -m unittest tests.test_harness_integration_portfolio",
+      "exitCode": 0,
+      "scope": "T012 end-to-end chain including advisory views over stored blobs and registry (#1324).",
+      "testsRun": 10
+    }
+  ],
+  "executionAuthorization": false,
+  "inputs": {
+    "agent_braid/harness_components.py": "971765102de1ea3e550b3e4760af495ac663631cadcc0fb03dbbd2893e9c894b",
+    "agent_braid/harness_curation.py": "e61e16fd682d17d3479b9f956ade7b7df7e5084a51e449fd2a3b9833daa2c67c",
+    "agent_braid/harness_promotion.py": "659207a11e93e23cf9d677cbbb11c1eeaa9a125d15246e65efdb3b9a40206325"
+  },
+  "limits": "Offline and synthetic only; no host, model, network or native run; not qualified or activated. Per owner decision 2026-11-13 (owner-decisions-20261113.md D3) no top-level `agent-braid harness-advisory` alias is delivered, and any plugin/MCP exposure needs its own versioned contract under milestone M4.8. Pre-PR reviews were Claude subagents, not independent Luna review.",
+  "method": "Actual offline unittest execution",
+  "outcome": "Opt-in read-only CLI `python -m agent_braid.harness_advisory` (wire identity braid-harness-advisory/v0.1) exposing capability/profile inventory, diffs, status and evidence with explicit --workspace binding, bounded errors and executionAuthorization false. Laboratory `harness` command, top-level `agent-braid` help, plugin, MCP tool surface, skills and manifests are unchanged.",
+  "outputs": {
+    "agent_braid/harness_advisory.py": "e37df2539af308157d89d5ce39b37cd87b34cbc402f143bffd5a157dda22ccef",
+    "specs/050-braid-harness-adaptation/contracts/advisory.md": "9a01f12b0e7a4a1bfeeff0c8a708d8850170a99a395c3f2c9a4190822541cb78",
+    "tests/test_harness_advisory.py": "7d92f95952a365660c6e44a45407e4b9715b9043c373dca74d7a1f766d9ef046"
+  },
+  "pending": [
+    "Independent Luna review of the offline portfolio (packet review/luna-packet-20261113.md)",
+    "Plugin/MCP exposure, if ever wanted, under M4.8 with its own contract",
+    "Native qualification (SPEC-048/T008) before any profile it lists is used natively"
+  ],
+  "spec": "SPEC-050",
+  "task": "T010"
+}
