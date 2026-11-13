@@ -10,7 +10,7 @@
     21,
     23
   ],
-  "assumptions": "SPEC-071 runner and reward are delivered; the optimizer runs through the host CLI on the subscription route; the SPEC-069 held-out set and FREEZE are unchanged (OD-1 decided 2026-11-11: keep 10 cases \u00d7 3 repetitions); required hosts per OD-2.",
+  "assumptions": "SPEC-071 runner and reward are delivered; the optimizer runs through the host CLI on the subscription route; the SPEC-069 held-out set and FREEZE are unchanged (OD-1 decided 2026-11-11: keep 10 cases × 3 repetitions); required hosts per OD-2.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -338,9 +338,9 @@
             {
               "command": "python -m unittest tests.test_lightning_cli.BL2BoundaryTests",
               "limits": "Static and import-closure checks cover the modules present at this commit; a fake-host run cannot show what a real host process writes outside the sandbox (SPEC-071 OS sandbox evidence covers that). Unchanged skill bytes are asserted for the repository copy only.",
-              "outcome": "passed: A complete fake optimization run (baseline seed run, then a GEPA arm on fake hosts) leaves the repository analyze skill file byte- and mtime-identical and reports the best candidate as a 64-hex bestSha256 with no skill text in the summary. Every agent_braid/lightning_*.py module and scripts/spec072_*.py script imports only the standard library, other lightning modules and an explicit allowlist (plugin_registry, harness_host_claude, the T013 format-only harness_evaluation and system_one, and the SPEC-069 scoring, native-run, fixture and plugin-build scripts); no lightning module names decide, begin, execute, recover, harness_promotion or any grant identifier; importing all of them in a fresh interpreter loads no promotion, lifecycle, runtime-policy or MCP module; no MCP server module or integration JSON manifest mentions lightning; pyproject has no runtime dependency and no lightning extra. Negative control: adding `from .harness_promotion import decide` to a lightning module fails the allowlist, name and import-closure checks.",
+              "outcome": "passed: A complete fake optimization run (baseline seed run, then a GEPA arm on fake hosts) leaves the repository analyze skill file byte- and mtime-identical and reports the best candidate as a 64-hex bestSha256 with no skill text in the summary. Every agent_braid/lightning_*.py module and scripts/spec072_*.py script imports only the standard library, other lightning modules and an explicit allowlist (plugin_registry, harness_host_claude, the T013 format-only harness_evaluation and system_one, and the SPEC-069 scoring, native-run, fixture and plugin-build scripts); no lightning module names decide, begin, execute, recover, harness_promotion, import_module, __import__ or any grant identifier; importing all of them in a fresh interpreter loads no promotion, lifecycle, runtime-policy, git-execution, scheduler or MCP module; no MCP server module or integration JSON manifest mentions lightning; pyproject has no runtime dependency and no lightning extra. Negative control: adding `from .harness_promotion import decide` to a lightning module fails the allowlist, name and import-closure checks.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_009.json",
-              "sha256": "fafa26ef70ea4443b79d6f92b87cfb0e72bea63bba4b2381a0769530706bc6e0"
+              "sha256": "75c9a403985eb03bda5fb4f5300f58acbd6b2f70ce0e9f1b00037a0d625aa746"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",

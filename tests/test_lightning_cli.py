@@ -146,15 +146,17 @@ class BoundaryTests(unittest.TestCase):
             self.assertIn('MIT License', text)
 
 
-
 BL2_ALLOWED = {'plugin_registry', 'harness_host_claude',  # SPEC-070/071 runner and host setup
                'harness_evaluation', 'system_one',  # SPEC-072 T013: record formats only, never decide()
                'spec069_scoring', 'spec069_native_runs', 'spec069_fixture_workspace', 'build_native_plugin'}
-BL2_FORBIDDEN_NAMES = {'decide', 'begin', 'execute', 'recover', 'harness_promotion'}
+BL2_FORBIDDEN_NAMES = {'decide', 'begin', 'execute', 'recover', 'harness_promotion',
+                       'import_module', '__import__'}  # no dynamic import around the static checks
 BL2_FORBIDDEN_MODULES = ('agent_braid.harness_promotion', 'agent_braid.harness_auto_promotion',
                          'agent_braid.harness_lifecycle', 'agent_braid.runtime_policy', 'agent_braid.mcp_runtime',
                          'agent_braid.tooling_mcp', 'agent_braid.plugin_mcp', 'agent_braid.forecast_mcp',
-                         'agent_braid.system_one_verified_mcp', 'mcp')
+                         'agent_braid.system_one_verified_mcp', 'agent_braid.mcp_advice',
+                         'agent_braid.git_exec', 'agent_braid.git_runtime', 'agent_braid.git_runtime_process',
+                         'agent_braid.runtime_scheduler', 'agent_braid.tooling_source_runtime', 'mcp')
 SKILL = ROOT / 'integrations/agent-braid/skills/agent-braid-analyze/SKILL.md'
 
 
@@ -169,14 +171,13 @@ class BL2BoundaryTests(unittest.TestCase):
         for path in bl2_files():
             for node in ast.walk(ast.parse(path.read_text())):
                 if isinstance(node, ast.ImportFrom):
-                    module = node.module or ''
-                    names = [module.split('.')[-1]] if module else []
-                    if module in ('scripts', 'agent_braid') or not module:
-                        names = [a.name for a in node.names]
-                    elif node.level == 0 and module.split('.')[0] not in ('scripts', 'agent_braid'):
-                        self.assertIn(module.split('.')[0], sys.stdlib_module_names, (path.name, module))
+                    parts = node.module.split('.') if node.module else []
+                    if node.level == 0 and parts[0] not in ('scripts', 'agent_braid'):
+                        self.assertIn(parts[0], sys.stdlib_module_names, (path.name, node.module))
                         continue
-                    for name in names:
+                    if node.level == 0:
+                        parts = parts[1:]  # drop the package; the first remaining part is the module
+                    for name in parts[:1] or [a.name for a in node.names]:
                         self.assertTrue(name.startswith('lightning_') or name in BL2_ALLOWED, (path.name, name))
                 elif isinstance(node, ast.Import):
                     for alias in node.names:
@@ -197,7 +198,8 @@ class BL2BoundaryTests(unittest.TestCase):
                  f'for m in {modules!r}: importlib.import_module(m)\n'
                  f'print(json.dumps(sorted(m for m in sys.modules if m in {BL2_FORBIDDEN_MODULES!r} '
                  f'or m.startswith("mcp."))))')
-        out = subprocess.run([sys.executable, '-c', probe], cwd=ROOT, capture_output=True, text=True, check=True)
+        out = subprocess.run([sys.executable, '-c', probe], cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, out.stderr)
         self.assertEqual(json.loads(out.stdout), [])
 
     def test_no_mcp_tool_or_plugin_manifest_exposes_lightning(self):
@@ -218,8 +220,11 @@ class BL2BoundaryTests(unittest.TestCase):
         from agent_braid.lightning_resources import split_skill
         env = {k: v for k, v in os.environ.items() if not k.endswith('_API_KEY') and k not in ENV_DENY}
         before = (SKILL.read_bytes(), SKILL.stat().st_mtime_ns)
-        profile = lambda name, **algo: lightning_config.build(
-            {'rollout': {'repetitions': 1, 'hosts': ['claude-code']}, 'algorithm': {'name': name, **algo}})
+
+        def profile(name, **algo):
+            return lightning_config.build(
+                {'rollout': {'repetitions': 1, 'hosts': ['claude-code']}, 'algorithm': {'name': name, **algo}})
+
         with tempfile.TemporaryDirectory() as tmp:
             home = Path(tmp).resolve() / 'home'
             lightning_runner.run(home, profile('baseline'), run_id='seed', fake_hosts=True, environ=env)
