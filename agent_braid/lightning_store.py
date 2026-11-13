@@ -249,9 +249,16 @@ def _journal_entry(entry):
                 raise KeyError('eval result reference')
             _digest(ref[1], 'journal.results')
     elif kind == 'start':
-        if set(entry) != {'kind', 'algorithm', 'rngSeed'} or entry['algorithm'] not in ('apo', 'gepa') or \
+        if set(entry) - {'source'} != {'kind', 'algorithm', 'rngSeed'} or entry['algorithm'] not in ('apo', 'gepa') or \
                 not (entry['rngSeed'] is None or type(entry['rngSeed']) is int):
             raise KeyError('start keys')
+        if 'source' in entry:
+            source = entry['source']
+            if not isinstance(source, dict) or set(source) != {'arm', 'commit', 'workingTree', 'seedSkillSha256'} or \
+                    source['arm'] not in ('baseline', 'final') or not isinstance(source['commit'], str) or \
+                    not re.fullmatch(r'[0-9a-f]{7,40}', source['commit']) or type(source['workingTree']) is not bool:
+                raise KeyError('start source')
+            _digest(source['seedSkillSha256'], 'journal.source')
     elif kind == 'stop':
         if set(entry) != {'kind', 'reason', 'refusal'}:
             raise KeyError('stop keys')

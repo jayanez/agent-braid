@@ -201,14 +201,26 @@ All three run headless. Observations that shaped the driver:
 ## Host probe of the nested per-kind schema (T005 gate)
 
 ```sh
-python -m scripts.spec069_host_probe --model claude-code=<id> --model opencode=anthropic/<id> --model codex=<id>
+python -m scripts.spec069_native_runs --arm final --record-mcp \
+  --model claude-code=<id> --model opencode=anthropic/<id> --model codex=<id>
 ```
 
-Needs `jsonschema` (the dev requirements), the same environment keys as the driver and no plugin build: a
-recording stdio test double serves the candidate's model-facing `analyze-work` definition. It writes
-`evidence/host-probe-nested-schema.json` (listing, byte identity by canonical SHA-256, call conformance,
-eager or deferred loading from a tool-name-and-hash-only forwarder to the Anthropic API). A host without a
-key, or whose model calls the API cannot pay for, is a declared limit or `modelAnswered: false`, never a pass.
+`--record-mcp` instruments the candidate actually installed in the driver's disposable host profile and
+uses the development prompt set by default. Its
+hash-only receipts cover each observed stdio connection, negotiated protocol version, `tools/list` identity,
+and the `request` JSON type reaching `analyze-work`; fake hosts are rejected for this mode. This does not
+itself prove that a listed tool was exposed to or loaded by the model. The current relay does not observe
+model API requests, so eager/deferred schema loading remains unobserved until a separate approved method
+captures that boundary. Compare canonical definition hashes within the same protocol version and verify
+the host transcript and receipt agree on calls; a missing connection or incomplete receipt is not a pass.
+
+**Do not run this command yet unless a preventive, independently verified EUR 25 per-pass spending limit
+covers every route and the maximum in-flight call.** The driver has no such hard cap; prompt counts,
+turn limits, timeouts and post-call cost checks are insufficient. This command is a paid native-host run,
+not an offline validation command. A host without credentials or whose call cannot complete is a declared
+limit, never a pass. After the spend gate is resolved, query all local real-use sources listed in
+`docs/development/REAL_USE_EVIDENCE.md` before treating the run as real-use verification or preparing an
+approval packet.
 
 ### Native schema probe through the product (`--probe-schema`, T005)
 
@@ -229,3 +241,7 @@ version, the raw `tools/list` line (saved under `<output>.transcripts/<host>/`) 
 against `listed_sizes()`, the `kind` and object/string type of every request at the server, and the verdict; `crossHost`
 compares the definition within each protocol version. A stringified or hidden request is a `declared-limit` verdict
 (description-only fallback), never a pass. `--fake-hosts --probe-schema` is the self-test (variant `stringify`).
+
+Spend: `--probe-schema` has no preventive cap either; it bounds exposure by design (one prompt, one session per host and
+arm, `--repetitions 1` enforced). The 2026-11-13 T005 run was authorized under the SPEC-069 60 USD budget and cost 0.38 USD
+notional on Claude Code (token); OpenRouter and Codex reported no cost. It is a host probe, not real-use verification.

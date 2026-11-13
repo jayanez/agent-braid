@@ -39,6 +39,7 @@ import platform
 import re
 import shlex
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -342,6 +343,151 @@ def install_plugin(host: HostConfig, plugin_dir: Path, env: dict[str, str], prof
     found = sorted(Path(env["XDG_CACHE_HOME"]).glob("opencode/npm/*/*/node_modules/agent-braid")) or \
         sorted(Path(env["XDG_CACHE_HOME"]).glob("opencode/npm/*/node_modules/agent-braid"))
     return found[-1] if found else source / "plugins/agent-braid"
+
+
+def install_stdio_proxy(plugin_root: Path, receipt_dir: Path, profile_root: Path) -> None:
+    """Wrap only a disposable candidate launcher; receipts contain allowlisted hashes, never traffic."""
+    profile_root = Path(os.path.realpath(profile_root))
+    plugin_root = Path(os.path.realpath(plugin_root))
+    receipt_dir = Path(os.path.realpath(receipt_dir))
+    for path in (plugin_root, receipt_dir):
+        if path == profile_root or profile_root not in path.parents:
+            raise SafetyStop("stdio proxy paths must remain below the disposable profile")
+    launch = plugin_root / "launch"
+    real_launch = plugin_root / "launch.t005-real"
+    proxy = plugin_root / ".spec069_stdio_proxy.py"
+    runtimes = sorted((plugin_root / "runtime").glob("*/bin/python3.12"))
+    if (not launch.is_file() or launch.is_symlink() or real_launch.exists() or proxy.exists()
+            or len(runtimes) != 1 or not os.access(runtimes[0], os.X_OK)):
+        raise SafetyStop("candidate launcher is not eligible for isolated stdio recording")
+    source_proxy = Path(__file__).with_name("spec069_stdio_proxy.py")
+    if not source_proxy.is_file():
+        raise SafetyStop("stdio proxy source is unavailable")
+    receipt_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+    receipt_dir.chmod(0o700)
+    shutil.copyfile(source_proxy, proxy)
+    proxy.chmod(0o600)
+    launch.replace(real_launch)
+    python = shlex.quote(str(runtimes[0]))
+    proxy_arg = shlex.quote(str(proxy))
+    real_arg = shlex.quote(str(real_launch))
+    receipt_arg = shlex.quote(str(receipt_dir / "connection.")) + '"$$".json'
+    launcher = ("#!/bin/sh\nset -eu\n"
+                f"exec {python} -I {proxy_arg} --receipt {receipt_arg} -- {real_arg} \"$@\"\n")
+    launch.write_text(launcher)
+    launch.chmod(0o700)
+
+
+def summarize_proxy_receipt(path: Path) -> dict[str, Any]:
+    """Validate and reduce one private relay receipt to path-free, non-content metadata."""
+    try:
+        if not hasattr(os, "O_NOFOLLOW"):
+            raise ValueError
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+        with os.fdopen(fd, "rb") as stream:
+            metadata = os.fstat(stream.fileno())
+            if (not stat.S_ISREG(metadata.st_mode) or metadata.st_uid != os.getuid()
+                    or metadata.st_mode & 0o077 or metadata.st_size > 1024 * 1024):
+                raise ValueError
+            raw = stream.read(1024 * 1024 + 1)
+            if len(raw) > 1024 * 1024:
+                raise ValueError
+        receipt = json.loads(raw)
+        if (not isinstance(receipt, dict)
+                or not {"version", "complete", "protocolVersion", "listings", "calls", "errors"} <= set(receipt)
+                or not set(receipt) <= {"version", "complete", "protocolVersion", "listings", "calls", "errors", "discover"}
+                or receipt.get("version") != 1
+                or type(receipt.get("complete")) is not bool
+                or not isinstance(receipt.get("errors"), list)
+                or len(receipt["errors"]) > 4096
+                or any(not isinstance(item, str) or not re.fullmatch(r"[a-z_]{1,64}", item) for item in receipt["errors"])):
+            raise ValueError
+        protocol = receipt.get("protocolVersion")
+        if protocol is not None and (not isinstance(protocol, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", protocol)):
+            raise ValueError
+        listings = receipt.get("listings")
+        calls = receipt.get("calls")
+        if not isinstance(listings, list) or len(listings) > 4096 or not isinstance(calls, list) or len(calls) > 4096:
+            raise ValueError
+        safe_listings = []
+        for item in listings:
+            if (not isinstance(item, dict)
+                    or set(item) != {"lineSha256", "lineBytes", "resultCanonicalSha256", "analyzeWorkCanonicalSha256", "toolCount"}):
+                raise ValueError
+            hashes = [item.get(name) for name in ("lineSha256", "resultCanonicalSha256", "analyzeWorkCanonicalSha256")]
+            if any(not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value) for value in hashes):
+                raise ValueError
+            if (type(item.get("lineBytes")) is not int or not 1 <= item["lineBytes"] <= 1024 * 1024 + 1
+                    or type(item.get("toolCount")) is not int or not 1 <= item["toolCount"] <= 4096):
+                raise ValueError
+            safe_listings.append({"lineSha256": hashes[0], "lineBytes": item["lineBytes"],
+                                  "resultCanonicalSha256": hashes[1],
+                                  "analyzeWorkCanonicalSha256": hashes[2], "toolCount": item["toolCount"]})
+        request_types = []
+        for item in calls:
+            if (not isinstance(item, dict) or not {"requestType"} <= set(item) <= {"requestType", "kind"}
+                    or item.get("requestType") not in {"object", "array", "other"}
+                    or item.get("kind") not in {None, "aim", "git", "units"}):
+                raise ValueError
+            request_types.append(item["requestType"])
+        if receipt["complete"] and (protocol is None or not safe_listings or receipt["errors"]):
+            raise ValueError
+        return {"receiptSha256": sha256_bytes(raw), "complete": receipt["complete"],
+                "protocolVersion": protocol, "listings": safe_listings,
+                "requestTypes": request_types, "errors": receipt["errors"]}
+    except (OSError, ValueError, TypeError, UnicodeError, RecursionError, json.JSONDecodeError):
+        raise SafetyStop("stdio proxy receipt failed validation") from None
+
+
+def proxy_receipt_paths(receipt_dir: Path) -> list[Path]:
+    current = []
+    for path in receipt_dir.glob("connection.*.json"):
+        current.append(path)
+        if len(current) > 4096:
+            raise SafetyStop("stdio proxy connection count exceeded the evidence bound")
+    return sorted(current)
+
+
+def new_proxy_receipts(receipt_dir: Path, previous: set[str]) -> list[dict[str, Any]]:
+    current = proxy_receipt_paths(receipt_dir)
+    return [summarize_proxy_receipt(path) for path in current if path.name not in previous]
+
+
+def summarize_stdio_proxy(hosts: dict[str, Any]) -> dict[str, Any]:
+    """Cross-host listing identity and request-shape summary; loading mode remains unobserved."""
+    connections = []
+    call_counts = {}
+    for host_name, host in sorted(hosts.items()):
+        transcript_calls = 0
+        proxy_calls = 0
+        for run in host.get("runs", []):
+            transcript_calls += len(run.get("attempts", []))
+            for receipt in run.get("stdioProxy", []):
+                proxy_calls += len(receipt["requestTypes"])
+                connections.append({"host": host_name, "protocolVersion": receipt["protocolVersion"],
+                                    "complete": receipt["complete"], "listings": receipt["listings"],
+                                    "requestTypes": receipt["requestTypes"], "errors": receipt["errors"]})
+        if host.get("runs"):
+            call_counts[host_name] = {"hostTranscriptAnalyzeWorkCalls": transcript_calls,
+                                      "proxyObservedAnalyzeWorkCalls": proxy_calls,
+                                      "countsMatch": transcript_calls == proxy_calls}
+    by_protocol: dict[str, set[str]] = {}
+    request_types = {name: 0 for name in ("object", "array", "other")}
+    for connection in connections:
+        protocol = connection["protocolVersion"] or "unnegotiated"
+        for listing in connection["listings"]:
+            by_protocol.setdefault(protocol, set()).add(listing["analyzeWorkCanonicalSha256"])
+        for request_type in connection["requestTypes"]:
+            request_types[request_type] += 1
+    definitions = {protocol: sorted(values) for protocol, values in sorted(by_protocol.items())}
+    return {"connectionCount": len(connections), "completeConnections": sum(c["complete"] for c in connections),
+            "protocolVersions": sorted({c["protocolVersion"] for c in connections if c["protocolVersion"]}),
+            "analyzeWorkDefinitionHashesByProtocol": definitions,
+            "definitionIdenticalWithinProtocol": bool(definitions) and all(len(values) == 1 for values in definitions.values()),
+            "analyzeWorkRequestTypes": request_types,
+            "callCountsByHost": call_counts,
+            "hostCallCountsMatch": bool(call_counts) and all(row["countsMatch"] for row in call_counts.values()),
+            "modelLoadingMode": "unobserved: stdio recording does not capture model API requests"}
 
 
 def write_host_policy(host: HostConfig, env: dict[str, str]) -> None:
@@ -729,7 +875,18 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
         if sandbox.name != "none" and not probe["authProfile"]["usableUnderSandbox"]:
             raise SafetyStop("isolation probe: the dedicated sign-in directory is not usable under the sandbox")
     version = version_of(host, env, workspace, profile, protected, sandbox)
-    plugin_root = install_plugin(host, ctx["plugin_dir"], env, profile, workspace, protected, sandbox, args)
+    candidate_dir = ctx["plugin_dir"]
+    if args.record_mcp:
+        marketplace = candidate_dir.parent.parent
+        source_marketplace = profile.root / "recording-source" / host.name / "marketplace"
+        source_marketplace.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        shutil.copytree(marketplace, source_marketplace, symlinks=True)
+        candidate_dir = source_marketplace / "plugins" / PLUGIN_NAME
+    plugin_root = install_plugin(host, candidate_dir, env, profile, workspace, protected, sandbox, args)
+    receipt_dir = None
+    if args.record_mcp:
+        receipt_dir = profile.make("mcp-observations", host.name)
+        install_stdio_proxy(plugin_root, receipt_dir, profile.root)
     restore: Callable[[], None] = lambda: None  # noqa: E731
     receipts, seen, probe_runs = None, set(), []
     if args.probe_schema:
@@ -744,7 +901,7 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
         write_host_policy(host, env)
         workspace_id = register_workspace(plugin_root, workspace, env, profile, protected, sandbox, ab_home)
         runs, violations = _run_prompts(host, args, prompt_set, env, workspace, workspace_id, profile, protected, sandbox, secrets,
-                                        out_dir, scoring, receipts, seen, probe_runs, ctx)
+                                        out_dir, scoring, receipts, seen, probe_runs, ctx, receipt_dir)
     finally:
         restore()  # Codex keeps its install in the reusable sign-in directory: never leave the relay there
     if violations:
@@ -757,6 +914,8 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
               "probe": probe, "workspaceRegistered": bool(workspace_id), "runs": runs,
               "allowlist": {"claude-code": CLAUDE_ALLOWED, "codex": ["agent-braid MCP server; read-only sandbox; approval never"],
                             "opencode": [f"deny {', '.join(OPENCODE_DENIED)}; execute screened for network and import use"]}[host.name]}
+    if receipt_dir:
+        result["stdioProxy"] = {"enabled": True, "receiptCount": sum(len(run.get("stdioProxy", [])) for run in runs)}
     if args.probe_schema:
         result["schemaProbe"] = probe_runs[-1] if probe_runs else {"connections": [], "verdict": {"verdict": "not-observed: no prompt ran"}}
     return result
@@ -764,10 +923,12 @@ def run_host(host: HostConfig, args: argparse.Namespace, prompt_set: dict, ctx: 
 
 def _run_prompts(host: HostConfig, args: argparse.Namespace, prompt_set: dict, env: dict[str, str], workspace: Path, workspace_id: str,
                  profile: Profile, protected: list[Path], sandbox: OsSandbox, secrets: Secrets, out_dir: Path, scoring: Any,
-                 receipts: Path | None, seen: set[str], probe_runs: list[dict], ctx: dict) -> tuple[list[dict], list[str]]:
+                 receipts: Path | None, seen: set[str], probe_runs: list[dict], ctx: dict,
+                 receipt_dir: Path | None = None) -> tuple[list[dict], list[str]]:
     runs, violations = [], []
     for repetition in range(1, args.repetitions + 1):
         for case in prompt_set["cases"]:
+            prior_receipts = {path.name for path in proxy_receipt_paths(receipt_dir)} if receipt_dir else set()
             argv = prompt_argv(host, case["prompt"].replace(WORKSPACE_PLACEHOLDER, workspace_id), args)
             started = time.time()
             done = run_process(argv, env, workspace, profile, protected, sandbox, args.timeout, f"{host.name} {case['id']}")
@@ -800,6 +961,8 @@ def _run_prompts(host: HostConfig, args: argparse.Namespace, prompt_set: dict, e
                 record["probe"] = {"verdict": verdict["verdict"], "loading": verdict["loading"]}
             else:
                 record["score"] = scoring.score_case(case, attempts)
+            if receipt_dir:
+                record["stdioProxy"] = new_proxy_receipts(receipt_dir, prior_receipts)
             runs.append(record)
             if any(item["outcome"] == "executed" for item in denied):
                 violations.append(f"{case['id']} r{repetition}: a denied tool ran: {denied}")
@@ -854,6 +1017,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--check-login", choices=("claude-code", "codex"), metavar="HOST",
                    help="confirm the sign-in (credential file existence and size, never its contents, plus one trivial headless prompt), then exit")
     p.add_argument("--fake-hosts", action="store_true", help="run the same pipeline against the fake hosts (pipeline-only evidence)")
+    p.add_argument("--record-mcp", action="store_true",
+                   help="opt-in: wrap the disposable installed candidate and persist private hash-only MCP connection receipts (does not cap provider spend)")
     p.add_argument("--fake-variant", choices=FAKE_VARIANTS, default="default")
     p.add_argument("--probe-schema", action="store_true",
                    help="T005 host probe: one prompt with an aim and a units analyze-work call per host through a recording stdio relay in "
@@ -873,6 +1038,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             p.error("--probe-schema runs one prompt once per host")
     if args.fake_hosts and args.security_bin == "/usr/bin/security":
         args.security_bin = str(FAKE_HOSTS_DIR / "security")
+    if args.probe_schema and args.record_mcp:
+        p.error("--probe-schema installs its own recording relay; do not combine it with --record-mcp")
+    if args.fake_hosts and args.record_mcp:
+        p.error("--record-mcp requires the real installed candidate; fake-host runs cannot produce product-boundary evidence")
     token_mode = args.auth == "token"
     if token_mode and ((args.login or args.check_login) not in (None, "claude-code")):
         p.error("--auth token applies to claude-code only")
@@ -1059,6 +1228,8 @@ def main(argv: list[str] | None = None) -> int:
             results = {n: [dict(r["score"], caseId=r["caseId"],repetition=r["repetition"]) for r in h["runs"]]
                        for n, h in evidence["hosts"].items() if h.get("status") == "ran"}
             evidence["summary"] = scoring.summarize(results, repetitions=args.repetitions) if results else {"overall": "inconclusive"}
+        if args.record_mcp:
+            evidence["stdioProxy"] = summarize_stdio_proxy(evidence["hosts"])
     except SafetyStop as stop:
         evidence["stopped"] = secrets.redact(str(stop))
         exit_code = EXIT_SAFETY

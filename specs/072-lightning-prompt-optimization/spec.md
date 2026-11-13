@@ -90,10 +90,15 @@ Owner decisions:
 - **OD-1 — Held-out size (decided 2026-11-11).** Keep the frozen SPEC-069
   held-out set: 10 cases × 3 repetitions. D4 is a binary rule; the low power
   of the descriptive sign test is a declared limit. No new FREEZE version.
-- **OD-2 — Required hosts (decided).** Required hosts are fixed in advance as
-  `claude-code` and `opencode`; Codex is a declared limit in SPEC-069. The
-  preregistered primary arm is GEPA (A2); APO (A1) is secondary and
-  descriptive only.
+- **OD-2 — Required hosts (decided; amendment pending owner review).** Required
+  hosts were fixed as `claude-code` and `opencode`; Codex is a declared limit
+  in SPEC-069. Protocol Amendment 1 (draft, 2026-11-13) reduces them to
+  `claude-code`: `opencode` reports no subscription credential source, so the
+  SPEC-071 runner refuses it as `route-unverified` (SPEC-071 OD-2), and it
+  becomes a declared limit. The same amendment makes A0 the current `develop`
+  guidance (SPEC-069 T008 rewrite) with a new development baseline run, model
+  pinned to `claude-sonnet-5-5`. The preregistered primary arm is GEPA (A2);
+  APO (A1) is secondary and descriptive only.
 
 ## Requirements
 
@@ -145,7 +150,8 @@ Owner decisions:
   configuration defaults where these exceed one arm budget.
 - **REQ-008 — Held-out evaluation and analysis.** After the freeze, each arm
   (A0 baseline guidance, A1 best APO, A2 best GEPA) runs once on the held-out
-  set in every required host (`claude-code`, `opencode`) with the protocol's
+  set in every required host (`claude-code`; `opencode` is a declared limit
+  per protocol Amendment 1) with the protocol's
   repetitions; the report gives, per host and arm, the D4 verdict, Wilson 95 %
   intervals, and paired per-prompt comparisons against baseline as specified
   in the protocol. H1 is supported if and only if, in every required host, A0

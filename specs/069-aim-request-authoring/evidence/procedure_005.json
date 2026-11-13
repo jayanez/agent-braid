@@ -42,7 +42,7 @@
   "scripts/spec069_capture_t005_evidence.py": "b8626e2b497b50fe97eec1a5100da391f544a849709f0d851fddad298e869dff",
   "scripts/spec069_generate_corpus.py": "2e1201773f89c9d48b84a2e1421aa17b18c62792634279782ecf1fa760e5a6c1",
   "scripts/spec069_host_probe.py": "c4540057982a4c7ab4d5a2b06fc9bea004cc99423f639eebdcc1d6c796286389",
-  "scripts/spec069_native_runs.py": "1a744614e280b05253e3e6206d05fd01d39864a54cec2e4ca6fe8c0c662c5fd6",
+  "scripts/spec069_native_runs.py": "92a737a5d4e7af15d9a859f49b9be2111dc5f82c68c694b59a8019091e6de236",
   "scripts/spec069_stdio_proxy.py": "f6553cb1d416da921639a1805fcdd26d1f6109a7cc791586d2897a8e1fb20e66",
   "scripts/spec069_tool_schemas.py": "7712157d0541774b0ff90087d3880aaa96d9491dbec6654752143564cdad9609",
   "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "ae433d93d7e0af3e056246588719ea5d7ac1e95c8eb13b68b620977900cba118",

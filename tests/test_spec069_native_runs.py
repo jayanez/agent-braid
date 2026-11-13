@@ -14,6 +14,7 @@ import io
 import json
 import os
 import shutil
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -110,6 +111,70 @@ class PipelineTests(unittest.TestCase):
 
     def test_no_key_value_in_evidence(self) -> None:
         self.assertNotIn(PLANTED_KEY, (self.tmp / "native-runs.json").read_text())
+
+
+class StdioProxyIntegrationTests(unittest.TestCase):
+    def test_private_candidate_launcher_records_a_real_local_mcp_handshake(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="t005-proxy-") as temp:
+            profile = Path(temp) / "private profile"
+            profile.mkdir()
+            plugin = profile / "plugins" / "agent-braid"
+            runtime = plugin / "runtime" / "macos-arm64" / "bin"
+            runtime.mkdir(parents=True)
+            (runtime / "python3.12").symlink_to(sys.executable)
+            plugin.mkdir(exist_ok=True)
+            server = profile / "server.py"
+            server.write_text(
+                "import json, sys\n"
+                "for line in sys.stdin:\n"
+                " m=json.loads(line)\n"
+                " if m.get('method') == 'initialize':\n"
+                "  print(json.dumps({'jsonrpc':'2.0','id':m['id'],'result':{'protocolVersion':'2025-06-18'}}), flush=True)\n"
+                " elif m.get('method') == 'tools/list':\n"
+                "  print(json.dumps({'jsonrpc':'2.0','id':m['id'],'result':{'tools':[{'name':'analyze-work','inputSchema':{'type':'object'}}]}}), flush=True)\n"
+                " elif m.get('method') == 'tools/call':\n"
+                "  print(json.dumps({'jsonrpc':'2.0','id':m['id'],'result':{'content':[]}}), flush=True)\n"
+            )
+            launch = plugin / "launch"
+            launch.write_text(f"#!/bin/sh\nexec {shlex.quote(sys.executable)} {shlex.quote(str(server))}\n")
+            launch.chmod(0o755)
+            receipt_dir = profile / "receipts"
+
+            driver.install_stdio_proxy(plugin, receipt_dir, profile)
+            messages = (
+                b'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18"}}\n'
+                b'{"jsonrpc":"2.0","id":2,"method":"tools/list"}\n'
+                b'{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"analyze-work","arguments":{"request":{"kind":"units"}}}}\n'
+            )
+            result = subprocess.run([str(launch), "plugin", "serve"], input=messages, capture_output=True, timeout=10)
+
+            self.assertEqual(result.returncode, 0, result.stderr.decode())
+            self.assertEqual(len(list(receipt_dir.glob("*.json"))), 1)
+            observed = driver.summarize_proxy_receipt(next(receipt_dir.glob("*.json")))
+            self.assertTrue(observed["complete"])
+            self.assertEqual(observed["protocolVersion"], "2025-06-18")
+            self.assertEqual(len(observed["listings"]), 1)
+            self.assertEqual(observed["requestTypes"], ["object"])
+            self.assertTrue((plugin / "launch.t005-real").exists())
+            summary = driver.summarize_stdio_proxy({"claude-code": {"runs": [{"attempts": [{}], "stdioProxy": [observed]}]}})
+            self.assertEqual(summary["connectionCount"], 1)
+            self.assertEqual(summary["analyzeWorkRequestTypes"]["object"], 1)
+            self.assertTrue(summary["hostCallCountsMatch"])
+            self.assertIn("unobserved", summary["modelLoadingMode"])
+
+    def test_proxy_refuses_to_modify_a_launcher_outside_the_private_profile(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="t005-outside-") as temp:
+            root = Path(temp)
+            plugin = root / "plugin"
+            runtime = plugin / "runtime" / "macos-arm64" / "bin"
+            runtime.mkdir(parents=True)
+            (runtime / "python3.12").symlink_to(sys.executable)
+            launch = plugin / "launch"
+            launch.write_text("#!/bin/sh\nexit 0\n")
+            launch.chmod(0o755)
+            with self.assertRaises(driver.SafetyStop):
+                driver.install_stdio_proxy(plugin, root / "profile" / "receipts", root / "profile")
+            self.assertTrue(launch.exists())
 
 
 class NegativeControlTests(unittest.TestCase):

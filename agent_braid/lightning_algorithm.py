@@ -233,14 +233,30 @@ def dev_score(store: store_mod.RunStore) -> dict | None:
             'schemaValid': round(sum(r['schema'] for r in rewards) / n, 6), 'rollouts': n}
 
 
+def _same_start(journaled: dict | None, start: dict) -> bool:
+    """A resume or replay matches the run's start: same algorithm and seed, and the same source arm and seed skill
+    (the commit may differ when the source is the working tree, whose skill the seed record already pins)."""
+    if journaled is None or {k: journaled[k] for k in ('algorithm', 'rngSeed')} != \
+            {k: start[k] for k in ('algorithm', 'rngSeed')}:
+        return False
+    stored, given = journaled.get('source'), start.get('source')
+    if stored is None or given is None:
+        return given is None and (stored is None or stored['workingTree'])
+    return all(stored[k] == given[k] for k in ('arm', 'seedSkillSha256', 'workingTree')) and \
+        (stored['workingTree'] or stored['commit'] == given['commit'])
+
 class Algorithm:
     """Run over a prompt set with the run store and the SPEC-071 runner; return a content-free summary."""
     name = ''
 
     def skill_text(self, config: dict) -> str:
+        if self.seed_text is not None:
+            return self.seed_text
         return (runner_mod.checkout_root() / config['target']['path']).read_text(encoding='utf-8')
 
     rng_seed: int | None = None
+    seed_text: str | None = None  # a pinned seed skill (T009 exploratory arms: the T010 guidance)
+    source: dict | None = None  # where the pinned seed came from; journaled with the start entry
     replaying = False
 
     def start(self, home, config: dict, run_id: str, seed_vectors: list[dict], *, resume: bool = False):
@@ -250,6 +266,8 @@ class Algorithm:
         raw = self.skill_text(config)
         record, body = seed(raw, created_at=_now(), dev_score={'minibatch': None, 'full': score(seed_vectors)})
         start = {'kind': 'start', 'algorithm': self.name, 'rngSeed': self.rng_seed}
+        if self.source is not None:
+            start['source'] = self.source
         self._derived = {}
         if resume or self.replaying:
             if store.manifest()['configDigest'] != digest(config):
@@ -257,8 +275,9 @@ class Algorithm:
             stored = candidates(home, run_id)
             if record.sha256 not in stored:
                 raise runner_mod.RunnerError('The resumed run has a different seed', 'resume-diverged')
-            if next((e for e in store.read_journal() if e['kind'] == 'start'), None) != start:
-                raise runner_mod.RunnerError('The resumed run has another algorithm or seed', 'resume-diverged')
+            journaled = next((e for e in store.read_journal() if e['kind'] == 'start'), None)
+            if not _same_start(journaled, start):
+                raise runner_mod.RunnerError('The resumed run has another algorithm, seed or source', 'resume-diverged')
             self._known = {sha: c.value for sha, c in stored.items()}
             self._derived = {record.sha256: self._known[record.sha256]}
             return store, record, body, sha256_text(split_skill(raw)[0])
