@@ -30,7 +30,7 @@
   "integrations/agent-braid/plugin/runtime-lock.json": "fdfca18b9661fc7a8c071ccdc7256d151615b5d47a52d2f0c19d038ca460d438",
   "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
   "pyproject.toml": "d381baf52f4d354717080943bb65b7416bcc7a0e418d465a86de09b65b6466b3",
-  "scripts/spec072_capture_evidence.py": "ec8c50510ff61bbf8bedd0f0a91236fbf830223091fde6cc408573d073b3ac99",
+  "scripts/spec072_capture_evidence.py": "44236025d8d35e751940af01850b926aa2c2ba9af6c099ac5571089f4f1cdf49",
   "scripts/spec072_development_arms.py": "e1e1a1505829a309c1e6dc0ae3f0f0b4a6db19ec08dc33891d6388cd2974677c",
   "scripts/spec072_heldout.py": "30fa38c12dc69d4cee21cc02b93c5b3bc72612fac7fbe4f6a59189fec6a97b7f",
   "scripts/spec072_holdout_fingerprints.py": "bde1e92812bba0f01448047313e90100a87b20f2e9899e5778a1c8cde6be6222",
