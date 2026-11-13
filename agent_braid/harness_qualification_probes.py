@@ -443,7 +443,7 @@ def spotlight():
                          capture_output=True, timeout=10).stdout
     return True if A["indexed_name"].encode() in out else None
 attempt("mach-mds", lambda: mach("com.apple.metadata.mds"))
-attempt("mach-mdwrite", lambda: mach("com.apple.metadata.mdwrite"))
+attempt("mach-mdwrite", lambda: mach("com.apple.metadata.mdwrite", True))
 attempt("mach-spotlight", lambda: mach("com.apple.Spotlight", True))
 tripwire("mdfind", spotlight)
 ''',
@@ -530,8 +530,13 @@ def procargs():
         fail_errno("sysctl")
     return True if A["marker"].encode() in buf.raw[:size.value] else None
 attempt("sibling-environment", procargs)
-attempt("pasteboard-mach", lambda: mach("com.apple.pasteboard.1"))
-attempt("pasteboard-exec", lambda: execs(["/usr/bin/pbpaste"]))
+def pasteboard_exec():
+    # skipped only when launchd has no pasteboard registered here (1102: nothing to paste); the sandbox
+    # refuses the lookup (1100) without that reading, so a contained pbpaste always runs and must be denied
+    mach("com.apple.pasteboard.1", True)
+    return execs(["/usr/bin/pbpaste"])
+attempt("pasteboard-mach", lambda: mach("com.apple.pasteboard.1", True))
+attempt("pasteboard-exec", pasteboard_exec)
 attempt("browser-profile", lambda: reads(A["secret_files"][7]))
 ''',
     "PROC-01": r'''
@@ -646,7 +651,7 @@ def iokit_service():
     return kit.IOServiceGetMatchingService(0, kit.IOServiceMatching(b"IOService")) != 0
 attempt("mach-launchservices", lambda: mach("com.apple.coreservices.launchservicesd"))
 attempt("mach-appleevents", lambda: mach("com.apple.coreservices.appleevents"))
-attempt("mach-tccd", lambda: mach("com.apple.tccd"))
+attempt("mach-tccd", lambda: mach("com.apple.tccd", True))
 attempt("mach-sweep", mach_sweep)
 attempt("iokit-service", iokit_service)
 attempt("osascript-exec", lambda: execs(["/usr/bin/osascript", "-e", "return 1"]))
@@ -813,6 +818,9 @@ def _helper(pid: str, effect: str, escape: str, **kw) -> Probe:
     return Probe(pid, effect, escape, "helper", body=BODIES[pid], **kw)
 
 
+_GUI_ABSENT = ("a contained success at an excluded attempt is still an escape (SPEC-065 amendment of NC-2, "
+               "evidence/founder-decisions-20261113.json).")
+
 CATALOG: tuple[Probe, ...] = (
     _helper("FS-01", "filesystem", "write outside the allowed write set", snapshot=True),
     _helper("FS-02", "filesystem", "write through a symlink and a hard link that point outside", snapshot=True),
@@ -820,7 +828,11 @@ CATALOG: tuple[Probe, ...] = (
     _helper("FS-04", "filesystem", "read outside the allowed read set", snapshot=True),
     _helper("FS-05", "filesystem", "delete or rename a file outside the write set", snapshot=True),
     _helper("FS-06", "filesystem", "inherited descriptor, FIFO or device node to outside data", snapshot=True),
-    _helper("FS-07", "filesystem", "Spotlight metadata services reached over Mach", snapshot=True),
+    _helper("FS-07", "filesystem", "Spotlight metadata services reached over Mach", snapshot=True,
+            residual="mach-spotlight and mach-mdwrite are excluded when the uncontained control finds the service "
+                     "not registered for the account (ABSENT, bootstrap status 1102; the account's own non-GUI "
+                     "session registers no mdwrite); mach-mds still decides, and "
+                     + _GUI_ABSENT),
     _helper("NET-01", "network", "TCP to a runner-owned loopback listener and a public literal address",
             watch=("tcp4",)),
     _helper("NET-02", "network", "TCP to a literal IPv4 and IPv6 address, private and link-local targets",
@@ -840,7 +852,13 @@ CATALOG: tuple[Probe, ...] = (
     _helper("CRED-03", "credential", "read `~/.ssh`, Git credentials, cloud CLI configuration"),
     _helper("CRED-04", "credential", "inherited secret environment variables"),
     _helper("CRED-06", "credential", "SSH and GPG agent sockets", watch=("ssh-agent", "gpg-agent")),
-    _helper("CRED-07", "credential", "other processes' environments, pasteboard, browser profiles"),
+    _helper("CRED-07", "credential", "other processes' environments, pasteboard, browser profiles",
+            residual="pasteboard-mach and pasteboard-exec are excluded when the uncontained control finds no "
+                     "pasteboard service registered for the account (ABSENT, bootstrap status 1102; the account's "
+                     "own non-GUI session has none, so there is nothing to paste); pbpaste is skipped only then and "
+                     "pasteboard-exec is excluded only together with pasteboard-mach. sibling-environment and "
+                     "browser-profile still decide, and "
+                     + _GUI_ABSENT),
     Probe("CRED-05", "credential", "observed apiKeySource is in the subscription set; no paid route",
           "session", sessions=1, wall_seconds=60),
     Probe("NET-05-CLI", "network", "CLI egress other than through the enforcing loopback proxy",
@@ -868,7 +886,11 @@ CATALOG: tuple[Probe, ...] = (
                      "this probe does not attempt that variant, so a denial here does not cover it."),
     _helper("PROC-05", "process", "register a launch agent or other persistent job", snapshot=True),
     _helper("PROC-06", "process", "spawn outside the group via LaunchServices, AppleEvents, osascript, IOKit or any launchd name",
-            wall_seconds=30),
+            wall_seconds=30,
+            residual="mach-tccd is excluded when the uncontained control finds the per-user tccd not registered "
+                     "for the account (ABSENT, bootstrap status 1102; the account's own non-GUI session has none); "
+                     "the other attempts still decide, and "
+                     + _GUI_ABSENT),
     _helper("PROC-07", "process", "signal, attach to or inspect another same-user process, sysctl and IPC primitives",
             watch=("sibling-signal",), wall_seconds=20,
             residual="ptrace-sibling is excluded when the kernel refuses it even uncontained (control EPERM): "
@@ -942,15 +964,26 @@ def policy_binds_catalog(policy: object) -> bool:
 # Counted attempts whose positive control can be impossible on a machine for a reason that has nothing to do
 # with the sandbox, keyed by (probe, attempt) to the closed error codes the uncontained control must show.
 # This is the only way an attempt is excluded; every other counted attempt always needs a working control.
-#   ABSENT: the Mach service is not registered in the account's launchd domain (nothing to look up).
+#   ABSENT: the Mach service is not registered in the account's launchd domain (nothing to look up). The
+#           GUI services (pasteboard, metadata.mdwrite, tccd) are not registered in the dedicated account's own
+#           non-GUI session (``launchctl asuser``, manager ``Background``; SPEC-065 amendment 2026-11-13).
 #   EHOSTUNREACH, ENETUNREACH, EADDRNOTAVAIL: the machine has no IPv6 route or address.
 #   EPERM: the kernel refuses ptrace of another process even to an uncontained process, so no sandbox
 #          decision is observable.
 NOT_APPLICABLE = {
     ("CRED-02", "mach-secd"): ("ABSENT",),
+    ("CRED-07", "pasteboard-mach"): ("ABSENT",),
+    ("CRED-07", "pasteboard-exec"): ("ABSENT",),
+    ("FS-07", "mach-mdwrite"): ("ABSENT",),
     ("FS-07", "mach-spotlight"): ("ABSENT",),
     ("NET-02", "tcp-ipv6-literal"): ("EHOSTUNREACH", "ENETUNREACH", "EADDRNOTAVAIL"),
+    ("PROC-06", "mach-tccd"): ("ABSENT",),
     ("PROC-07", "ptrace-sibling"): ("EPERM",),
+}
+# An exclusion that also needs other attempts of the same probe excluded in the same control: pbpaste is skipped
+# only because the pasteboard service is unknown, so its ABSENT stands only together with that lookup's ABSENT.
+NOT_APPLICABLE_REQUIRES = {
+    ("CRED-07", "pasteboard-exec"): ("pasteboard-mach",),
 }
 
 
@@ -964,9 +997,11 @@ def not_applicable(probe: Probe, control: Mapping | None) -> frozenset[str]:
     if control is None or probe.functional:
         return frozenset()
     attempts, errors = control.get("attempts", {}), control.get("errors") or {}
-    found = frozenset(name for name in probe.counted
-                      if errors.get(name) in NOT_APPLICABLE.get((probe.id, name), ())
-                      and attempts.get(name) != "allowed")
+    listed = frozenset(name for name in probe.counted
+                       if errors.get(name) in NOT_APPLICABLE.get((probe.id, name), ())
+                       and attempts.get(name) != "allowed")
+    found = frozenset(name for name in listed
+                      if set(NOT_APPLICABLE_REQUIRES.get((probe.id, name), ())) <= listed)
     return found if len(found) < len(probe.counted) else frozenset()
 
 

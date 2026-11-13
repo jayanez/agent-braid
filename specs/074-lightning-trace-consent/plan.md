@@ -72,4 +72,4 @@ risks are listed in the privacy review and shown in the consent preview.
 
 ## Human review and unresolved decisions
 
-OD-1 to OD-3 in [spec.md](spec.md); owner review is T001.
+OD-1 to OD-3 decided 2026-11-13 (T001, [review](reviews/owner-t001-20261113.md)); `human_review` stays pending until the owner approves.

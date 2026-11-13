@@ -8,7 +8,9 @@ its scenario. It is local evidence; the CI ``validate`` aggregate on the pull re
 is separate. Procedure 001 (owner review and protocol freeze) and 008 (held-out runs) are not test procedures;
 later procedures are added as their tasks land.
 
-    python -m scripts.spec072_capture_evidence
+    python -m scripts.spec072_capture_evidence [procedure_NNN ...]
+
+Naming procedures re-runs only those; the default re-runs every procedure.
 """
 
 from __future__ import annotations
@@ -88,6 +90,18 @@ PROCEDURES = {
         "outcome_note": "With budgets set low in fake runs each algorithm stops at the first applicable rule and records it in the run journal: unit-cap (APO at configuration defaults), optimizer-cap, no-improvement after 2 consecutive flat rounds, and a weekly-stop quota stop that carries the explicit `agent-braid lightning run --resume <run-id>` command; a refused optimizer input (holdout-contamination) stops the run with the refusal recorded and no call made; APO never runs more than 3 rounds; no run exceeds its rollout or optimizer-call cap (negative control). Resuming a quota-stopped APO or GEPA run with the same seed replays the journaled optimizer outputs and evaluations in order and reaches the same rounds, best candidate, rollouts and calls as an uninterrupted run without repeating any optimizer call; resuming with another seed or configuration is refused (resume-diverged). The journal is private and refuses unknown entry shapes.",
         "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; wiring the algorithms into `agent-braid lightning run` with real candidate evaluation is T009 work.",
     },
+    'procedure_009': {
+        "scenario": 'SC-009',
+        "modules": ["tests.test_lightning_cli.BL2BoundaryTests"],
+        "inputs": ["tests/test_lightning_cli.py", "pyproject.toml",
+                   "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md",
+                   *sorted(str(p.relative_to(ROOT)) for pattern in ("agent_braid/lightning_*.py",
+                                                                     "scripts/spec072_*.py", "agent_braid/*mcp*.py",
+                                                                     "integrations/**/*.json")
+                           for p in ROOT.glob(pattern))],
+        "outcome_note": "A complete fake optimization run (baseline seed run, then a GEPA arm on fake hosts) leaves the repository analyze skill file byte- and mtime-identical and reports the best candidate as a 64-hex bestSha256 with no skill text in the summary. Every agent_braid/lightning_*.py module and scripts/spec072_*.py script imports only the standard library, other lightning modules and an explicit allowlist (plugin_registry, harness_host_claude, the T013 format-only harness_evaluation and system_one, and the SPEC-069 scoring, native-run, fixture and plugin-build scripts); no lightning module names decide, begin, execute, recover, harness_promotion, import_module, __import__ or any grant identifier; importing all of them in a fresh interpreter loads no promotion, lifecycle, runtime-policy, git-execution, scheduler or MCP module; no MCP server module or integration JSON manifest mentions lightning; pyproject has no runtime dependency and no lightning extra. Negative control: adding `from .harness_promotion import decide` to a lightning module fails the allowlist, name and import-closure checks.",
+        "limits": "Static and import-closure checks cover the modules present at this commit; a fake-host run cannot show what a real host process writes outside the sandbox (SPEC-071 OS sandbox evidence covers that). Unchanged skill bytes are asserted for the repository copy only.",
+    },
     'procedure_010': {
         "scenario": 'SC-010',
         "modules": ["tests.test_lightning_replay"],
@@ -96,6 +110,14 @@ PROCEDURES = {
                    "tests/lightning_fakes.py"],
         "outcome_note": "Each APO and GEPA run journals a start entry with its algorithm and seed, every optimizer call with its input hash and output, and every evaluation as the ids and sha256 of the SPEC-071 attempt-result records it stored; the run manifest holds the configuration digest and candidate records keep parent links and optimizer call ids. Vectors are always re-scored from the stored content-free parsed attempts. Replaying a finished APO or GEPA run from its journal and stored records makes no optimizer or evaluator call, writes nothing and reproduces every candidate record (lineage, minibatch and full scores, Pareto membership) and the best candidate. Negative controls: altering one stored attempt-result record is detected by hash and changes a selection; a journal that ends early is refused (replay-incomplete); the default scorer refuses held-out records (holdout-contamination) and scores a refusal as a failed D4 attempt.",
         "limits": "Fake optimizer; synthetic vectors carried in fake attempt-result records and read back by a test scorer; the default scorer is exercised on one development case only. Real runs that produce these records through `agent-braid lightning run` are T009 work.",
+    },
+    'procedure_011': {
+        "scenario": 'SC-011',
+        "modules": ["tests.test_lightning_evaluation"],
+        "inputs": ["agent_braid/lightning_evaluation.py", "agent_braid/harness_evaluation.py",
+                   "agent_braid/harness_promotion.py", "tests/test_lightning_evaluation.py"],
+        "outcome_note": "From synthetic held-out results, spec049_pair writes a SPEC-049 Registration and EvaluationRecord in REGISTRATION_FORMAT and REPORT_FORMAT with arm A = A0 and arm C = A2 (GEPA) by candidate hash, the H1 outcome per required host (claude-code) under the protocol rule (supported, not-supported, not-assessable; a canary hit invalidates the arm) and executionAuthorization false; both records load through the harness_promotion verifiers and a pending decide() call in the test accepts the pair with the C-vs-A regression descriptive-only. The writer never names decide, begin or harness_promotion. Negative controls: arm C set to A1 is refused (arm-c-not-a2), arm A not A0 is refused (arm-a-not-a0), a report edited after recording fails the byte check, and a report bound to another registration is refused (registration-mismatch).",
+        "limits": "Synthetic held-out summaries; the T010 held-out runs have not run, so no real H1 outcome is recorded. The SPEC-049 noninferiority test is not part of the frozen protocol and is reported descriptive-only, so an approved SPEC-073 promotion over this pair is refused (regression-not-covered) unless SPEC-073 decides otherwise.",
     },
 }
 
@@ -113,13 +135,19 @@ def run(modules: list[str]) -> dict:
             "testsRun": int(ran.group(1)) if ran else None, "result": tail[-1] if tail else ""}
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    selected = (sys.argv[1:] if argv is None else argv) or list(PROCEDURES)
+    unknown = set(selected) - set(PROCEDURES)
+    if unknown:
+        print("unknown procedure: " + ", ".join(sorted(unknown)), file=sys.stderr)
+        return 2
     EVIDENCE.mkdir(exist_ok=True)
     assurance_path = SPEC / "assurance.json"
     assurance = json.loads(assurance_path.read_text())
     scenarios = {s["id"]: s for r in assurance["requirements"] for s in r["scenarios"]}
     status = 0
-    for name, spec in PROCEDURES.items():
+    for name in selected:
+        spec = PROCEDURES[name]
         result = run(spec["modules"])
         passed = result["returncode"] == 0 and result["result"].startswith("OK")
         record = {

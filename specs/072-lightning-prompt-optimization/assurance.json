@@ -334,7 +334,15 @@
         {
           "given": "a complete fake optimization run",
           "id": "SC-009",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_cli.BL2BoundaryTests",
+              "limits": "Static and import-closure checks cover the modules present at this commit; a fake-host run cannot show what a real host process writes outside the sandbox (SPEC-071 OS sandbox evidence covers that). Unchanged skill bytes are asserted for the repository copy only.",
+              "outcome": "passed: A complete fake optimization run (baseline seed run, then a GEPA arm on fake hosts) leaves the repository analyze skill file byte- and mtime-identical and reports the best candidate as a 64-hex bestSha256 with no skill text in the summary. Every agent_braid/lightning_*.py module and scripts/spec072_*.py script imports only the standard library, other lightning modules and an explicit allowlist (plugin_registry, harness_host_claude, the T013 format-only harness_evaluation and system_one, and the SPEC-069 scoring, native-run, fixture and plugin-build scripts); no lightning module names decide, begin, execute, recover, harness_promotion, import_module, __import__ or any grant identifier; importing all of them in a fresh interpreter loads no promotion, lifecycle, runtime-policy, git-execution, scheduler or MCP module; no MCP server module or integration JSON manifest mentions lightning; pyproject has no runtime dependency and no lightning extra. Negative control: adding `from .harness_promotion import decide` to a lightning module fails the allowlist, name and import-closure checks.",
+              "path": "specs/072-lightning-prompt-optimization/evidence/procedure_009.json",
+              "sha256": "cb8d49f00e2dce398264cec820479cd47fa82d9f7ed7c2c717fa1c6cd10ff477"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/072-lightning-prompt-optimization/validation-plan.md",
           "test_name": "procedure_009",
@@ -374,7 +382,15 @@
         {
           "given": "a completed held-out report",
           "id": "SC-011",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_evaluation",
+              "limits": "Synthetic held-out summaries; the T010 held-out runs have not run, so no real H1 outcome is recorded. The SPEC-049 noninferiority test is not part of the frozen protocol and is reported descriptive-only, so an approved SPEC-073 promotion over this pair is refused (regression-not-covered) unless SPEC-073 decides otherwise.",
+              "outcome": "passed: From synthetic held-out results, spec049_pair writes a SPEC-049 Registration and EvaluationRecord in REGISTRATION_FORMAT and REPORT_FORMAT with arm A = A0 and arm C = A2 (GEPA) by candidate hash, the H1 outcome per required host (claude-code) under the protocol rule (supported, not-supported, not-assessable; a canary hit invalidates the arm) and executionAuthorization false; both records load through the harness_promotion verifiers and a pending decide() call in the test accepts the pair with the C-vs-A regression descriptive-only. The writer never names decide, begin or harness_promotion. Negative controls: arm C set to A1 is refused (arm-c-not-a2), arm A not A0 is refused (arm-a-not-a0), a report edited after recording fails the byte check, and a report bound to another registration is refused (registration-mismatch).",
+              "path": "specs/072-lightning-prompt-optimization/evidence/procedure_011.json",
+              "sha256": "504cc7709497a800dc4e7a9210a1f5ad89d098db3173babe710038d913b57c59"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/072-lightning-prompt-optimization/validation-plan.md",
           "test_name": "procedure_011",

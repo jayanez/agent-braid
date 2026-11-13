@@ -378,6 +378,36 @@ shared object store fails the portable-root check).
   `validate_spec_kit`. Evidence: validation output bound to the candidate commit.
   Obtained (part 1, 2026-11-08, #1162): `evidence/t012.json`; two independent code reviews of T003-T007 found no must-fix; 17 residuals deferred to the next re-qualification; obtained_evidence bound for SC-001..SC-011. Freeze and human review pending.
 
+- [ ] T013 (REQ-004 / SC-004; REQ-007 / SC-007; REQ-010 / SC-010; REQ-009 / SC-009): Headless own-session lab
+  mode, session-ownership guard and re-qualification (founder amendment of NC-2, 2026-11-13,
+  `evidence/founder-decisions-20261113.json`; survey `evidence/session-context-survey-20261113.json`). Attempt
+  `t009-20261113a` was launched with `su - braidlab` and stayed not qualified (CRED-07, FS-07, PROC-06 positive
+  controls; `bundleSha256` `51574ae2…4201`); the survey showed su and sudo keep the operator's audit session and
+  Mach bootstrap namespace. Implementation (unit level): the session-ownership guard (`session_facts`,
+  `session_refusal`: `auid == uid`, `asid > 0`, manager `Aqua` or `Background`) in the backend's checks before
+  every entry and in the driver's dry run (`session-own`); the session kind in the environment hash; the
+  not-applicable rule extended to CRED-07 `pasteboard-mach` and `pasteboard-exec` (only with the former), FS-07
+  `mach-mdwrite` and PROC-06 `mach-tccd` on the uncontained `ABSENT` code, with absent detection in those lookups;
+  the root-owned launcher `scripts/har_t009_launch.sh` (`check|diag|run ATTEMPT`, `launchctl asuser`, pins written
+  at install) and the quickstart section "Headless own-session mode" with the narrow sudoers rule for `check` and
+  `diag`. Dependencies: T009, T010 (the issued record of 2026-11-06 no longer covers the moved hashes). Remaining:
+  a security re-check of the touched lines; the owner reinstalls the code copy, the launcher and the rule at the
+  new commit; `check` passes in the `Background` session; one new attempt (at most 3 Haiku low-effort sessions,
+  each at most 2 % of the 5-hour window) launched by the owner with `sudo ... run`; T010-style issuance by the
+  founder on that bundle. Files: `agent_braid/harness_containment_macos.py`,
+  `agent_braid/harness_qualification_probes.py`, `scripts/har_t009_attempt.py`, `scripts/har_t009_launch.sh`,
+  their tests (`tests/test_harness_containment_macos.py`, `tests/test_harness_qualification_probes.py`,
+  `tests/test_har_t009_attempt.py`, `tests/test_har_t009_launch.py`), `quickstart.md`, `spec.md` NC-2,
+  `contracts/native-profile.md`. Verification: the unit tests above; procedure_005 to procedure_010 on the new
+  bundle. Evidence: the new bundle and its SHA-256, and the issuance or not-qualified record.
+  `executionAuthorization` stays false.
+  Obtained (unit level only, 2026-11-13): `evidence/t013.json` (targeted tests, 778 OK; input hashes of the touched
+  modules). The independent re-check of #1338 (GO) found three minor issues, fixed before the real run: results are
+  published only through the lab account's own `/Users/Shared/braid-t009-lab` (mktemp and rename, links refused),
+  one `lockf` lock serializes `check`, `diag` and `run`, and the install blocks H1/H2 stop before any `sudo` on a bad
+  pin and report the launcher's SHA-256 for comparison with a locally rendered copy. `evidence/t012.json` stays frozen: its inputs (the qualified commit's module hashes) moved, so the
+  scenarios are bound to `t013.json` instead, as T012 did for the older task records. Nothing native ran.
+
 ## Unblocking map
 
 | Task | Needs |
@@ -391,6 +421,7 @@ shared object store fails the portable-root check).
 | T010 | T009 |
 | T011 | T010 |
 | T012 | T003–T011 |
+| T013 | T009, T010, founder decisions of 2026-11-13, security re-check, owner's `run` |
 | SPEC-048/T008 (Claude profile) | T011 plus its own acceptance items |
 | SPEC-049/T004 | SPEC-048/T008 decision plus its own source/route/quota approval |
 

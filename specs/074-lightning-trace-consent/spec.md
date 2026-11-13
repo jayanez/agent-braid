@@ -3,8 +3,10 @@
 **Milestone:** BL.4 — Lightning trace consent (GitHub milestone created by the
 reviewed tracking reconciliation after merge).
 
-**Status:** draft. `human_review` is pending; ADR 0041 (content-bearing traces)
-is Proposed in SPEC-070 and not accepted by this specification. No content is
+**Status:** draft. OD-1 to OD-3 are decided (T001 owner review recorded
+2026-11-13, [review](reviews/owner-t001-20261113.md)); `human_review` is
+pending. ADR 0041 (content-bearing traces) was accepted by the owner on
+2026-11-08 and applies when this specification is delivered. No content is
 collected until the owner records consent.
 
 ## Purpose and scope
@@ -53,7 +55,7 @@ Constitution clause zero and Articles 13, 14, 16, 19, 20 and 23;
 [claim discipline](../../docs/theory/CLAIM_DISCIPLINE.md);
 [ADR 0025](../../docs/adr/0025-local-technical-telemetry.md) (local technical
 telemetry), [ADR 0034](../../docs/adr/0034-system-one-shadow-advisory-boundary.md)
-(System One advisory boundary), ADR 0041 (content-bearing traces, Proposed);
+(System One advisory boundary), [ADR 0041](../../docs/adr/0041-braid-lightning-content-traces.md) (content-bearing traces, accepted 2026-11-08);
 [real-use evidence](../../docs/development/REAL_USE_EVIDENCE.md). Precedents:
 [SPEC-066](../066-system-one-shadow/spec.md) (validated episodes, 30-day
 retention, purge) and [SPEC-069](../069-aim-request-authoring/spec.md)
@@ -78,11 +80,20 @@ Design decisions recorded for owner review:
   messages are role/content lists, matching upstream shapes so SPEC-075 can
   export them.
 
-Open decisions (owner): OD-1 whether host transcripts are an allowed source at
-all in the first release (recommended: yes, behind `traces.sources`); OD-2
-whether emails are masked or hashed (recommended: masked token with a stable
-per-run hash); OD-3 whether consent expires (recommended: no, but `status`
-shows the consent date).
+Owner decisions (decided 2026-11-13, T001):
+
+- **OD-1 — Host transcripts as a source: yes, opt-in.** `host-transcript` is an
+  allowed value of `traces.sources` in the first release; the default stays
+  `["rollout"]`, so transcripts are read only after the owner lists the source
+  through the previewed `lightning init`.
+- **OD-2 — Emails: masked with a per-run salted hash.** Placeholder
+  `[REDACTED:email:<8-hex>]`; the same address gets the same tag within one run
+  and unlinkable tags across runs. The salt lives in the owner-only run
+  directory and is deleted by purge. No unsalted (global) hash.
+- **OD-3 — Consent does not expire.** `redacted` persists until the owner lowers
+  it; `agent-braid lightning status` shows the consent level, `consentedAt` and
+  the consented sources. Retention (30 days default, 90 maximum) bounds what
+  accumulates.
 
 ## Requirements
 
@@ -90,7 +101,8 @@ shows the consent date).
   and `redacted`, defaults to `none`, and is changed only by `agent-braid
   lightning init` with a preview showing the sources, retention and effects,
   applied with `--apply --preview-digest`; `plugin setup` only sets `lightning`
-  `off` | `lab` and never the consent. The consent fields extend the `traces`
+  `off` | `lab` and never the consent. Consent does not expire, and `agent-braid
+  lightning status` shows the level, `consentedAt` and sources (OD-3). The consent fields extend the `traces`
   section of `schemas/0.3.0-experimental/lightning-config.schema.json`, and
   that schema and the validator agree on a corpus.
 - **REQ-002 — Refusal without consent.** With consent `none` (or an invalid
