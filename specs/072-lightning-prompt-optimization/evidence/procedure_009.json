@@ -9,8 +9,8 @@
   "agent_braid/lightning_algorithm.py": "7bcc6173805aacca2811feba34b1ec46bb66f847f10665bd80162e908cffae18",
   "agent_braid/lightning_apo.py": "3abe6c6a0f72219c5abc6bcf7bfc7d7af371a38045650875603f98c3344c38c2",
   "agent_braid/lightning_arm.py": "86ffb90f99a67b19d8f85e8749441e4138723c7dddbefa8d83a191c33d49784b",
-  "agent_braid/lightning_cli.py": "e4fd5b31f6499c5422defbd4acff4bc4505e5e273aa2d024a72ac4d8c92114eb",
-  "agent_braid/lightning_config.py": "50dfec9b5144eab63799920a3a7ed2a62fc499138de3c1619d1c3b27a555128b",
+  "agent_braid/lightning_cli.py": "f7264ee5490755a92e9df7bb5b5d30f5323e08f45ec715679461ac50697dfd4c",
+  "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
   "agent_braid/lightning_evaluation.py": "de6d6d5b2478da9480b929ab46cecdfd5ff712c2edfbf906e5809328485ee27b",
   "agent_braid/lightning_gepa.py": "ad5ab4201acc4a53d19b438203a510515fe2fb8966bdda0d53dc6a3cf0bcf68f",
   "agent_braid/lightning_hooks.py": "4760f91d5bd9505bffe994751b6ed790acab036087a417f99755944f891c9c11",
@@ -33,7 +33,7 @@
   "scripts/spec072_capture_evidence.py": "05d7badc108a64ca9a6387d701f8c2b8b5214a3ebff2a3ed86b672a2a4c9463d",
   "scripts/spec072_development_arms.py": "c1d74fe81f1a657d8ec7420dde47e5bc044eb7824cc62d9eea6ea2261ba40c22",
   "scripts/spec072_holdout_fingerprints.py": "bde1e92812bba0f01448047313e90100a87b20f2e9899e5778a1c8cde6be6222",
-  "tests/test_lightning_cli.py": "6b220bb56be7074cd197b1022b0ad63afd8315bf4d7eafc398c9debe46abf171"
+  "tests/test_lightning_cli.py": "d112198117c17325acf0fde1a68b9f08120a7eb66c319df6fc7934bddf0a5130"
  },
  "limits": "Static and import-closure checks cover the modules present at this commit; a fake-host run cannot show what a real host process writes outside the sandbox (SPEC-071 OS sandbox evidence covers that). Unchanged skill bytes are asserted for the repository copy only.",
  "outcome": "passed: A complete fake optimization run (baseline seed run, then a GEPA arm on fake hosts) leaves the repository analyze skill file byte- and mtime-identical and reports the best candidate as a 64-hex bestSha256 with no skill text in the summary. Every agent_braid/lightning_*.py module and scripts/spec072_*.py script imports only the standard library, other lightning modules and an explicit allowlist (plugin_registry, harness_host_claude, the T013 format-only harness_evaluation and system_one, and the SPEC-069 scoring, native-run, fixture and plugin-build scripts); no lightning module names decide, begin, execute, recover, harness_promotion, import_module, __import__ or any grant identifier; importing all of them in a fresh interpreter loads no promotion, lifecycle, runtime-policy, git-execution, scheduler or MCP module; no MCP server module or integration JSON manifest mentions lightning; pyproject has no runtime dependency and no lightning extra. Negative control: adding `from .harness_promotion import decide` to a lightning module fails the allowlist, name and import-closure checks.",
