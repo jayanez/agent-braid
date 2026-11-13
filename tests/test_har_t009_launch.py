@@ -10,6 +10,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import stat
 import tempfile
 import time
@@ -140,6 +141,7 @@ def functions(*names: str) -> str:
 
 
 @unittest.skipIf(os.geteuid() == 0, "run as an ordinary account")
+@unittest.skipUnless(sys.platform == "darwin", "the launcher uses BSD stat(1); it only runs on macOS")
 class PublishTests(unittest.TestCase):
     """Finding 1 of the re-check of #1338: results reach /Users/Shared only through the lab account's own directory,
     by fresh temporary names and renames, never through a path another user could plant."""
