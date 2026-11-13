@@ -18,6 +18,8 @@ SCHEMA = 'agent-braid-plugin-registry/v0.2'
 LEGACY_SCHEMA = 'agent-braid-plugin-registry/v0.1'
 TELEMETRY_MODES = ('off', 'local')
 SYSTEM_ONE_MODES = ('off', 'shadow')
+LIGHTNING_MODES = ('off', 'lab')
+OPTIONAL_KEYS = {'systemOne', 'lightning'}
 MAX_BYTES = 256 * 1024
 MAX_WORKSPACES = 64
 
@@ -191,14 +193,16 @@ def _inspect(raw: bytes | None, home: Path, *, migrate: bool = False) -> dict:
             if not migrate:
                 raise MigrationRequired('Registry v0.1 must be migrated with a plugin setup preview')
             value = {'schema': SCHEMA, 'telemetry': 'off', 'workspaces': value['workspaces']}
-        # `systemOne` is optional: absent means off, and setup never stores an explicit off.
-        if (not isinstance(value, dict) or not {'schema', 'telemetry', 'workspaces'} <= set(value) <= {'schema', 'telemetry', 'workspaces', 'systemOne'}
+        # `systemOne` and `lightning` are optional: absent means off, and setup never stores an explicit off.
+        if (not isinstance(value, dict) or not {'schema', 'telemetry', 'workspaces'} <= set(value) <= {'schema', 'telemetry', 'workspaces', *OPTIONAL_KEYS}
                 or value['schema'] != SCHEMA):
             raise RegistryError('Unknown registry schema', code='registry-shape')
         if not isinstance(value['telemetry'], str) or value['telemetry'] not in TELEMETRY_MODES:
             raise RegistryError('Unknown telemetry consent', code='registry-shape')
         if 'systemOne' in value and (not isinstance(value['systemOne'], str) or value['systemOne'] not in SYSTEM_ONE_MODES):
             raise RegistryError('Unknown System One consent', code='registry-shape')
+        if 'lightning' in value and (not isinstance(value['lightning'], str) or value['lightning'] not in LIGHTNING_MODES):
+            raise RegistryError('Unknown Braid Lightning consent', code='registry-shape')
         rows = value['workspaces']
         if not isinstance(rows, list) or len(rows) > MAX_WORKSPACES:
             raise RegistryError('Too many registered workspaces', code='registry-shape')
@@ -254,6 +258,8 @@ def configuration_digest(value: dict | None) -> str | None:
     digested = {'telemetry': value['telemetry'], 'workspaces': rows}
     if value.get('systemOne', 'off') != 'off':
         digested['systemOne'] = value['systemOne']  # off and absent keep the pre-S1.5 digest
+    if value.get('lightning', 'off') != 'off':
+        digested['lightning'] = value['lightning']  # off and absent keep the pre-BL.0 digest
     return _hash(_bytes(digested))
 
 
@@ -319,7 +325,7 @@ def _existing_root(path, index: int) -> str:
 
 def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bool | None = None,
                grant_store: Path | None = None, worktree_roots=(), telemetry: str | None = None,
-               system_one: str | None = None, prune_stale: bool = False) -> dict:
+               system_one: str | None = None, prune_stale: bool = False, lightning: str | None = None) -> dict:
     selected = home_path(home)
     before = _raw(selected)
     found = _inspect(before, selected, migrate=True)  # tolerant, so a registry with stale roots can be repaired
@@ -342,6 +348,13 @@ def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bo
             value.pop('systemOne', None)
         else:
             value['systemOne'] = system_one
+    if lightning is not None:
+        if lightning not in LIGHTNING_MODES:
+            raise RegistryError('Braid Lightning consent must be off or lab')
+        if lightning == 'off':
+            value.pop('lightning', None)
+        else:
+            value['lightning'] = lightning
     rows = {row['workspaceId']: row for row in value['workspaces']}
     for identifier in remove:
         if identifier not in rows:
@@ -385,6 +398,12 @@ def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bo
                        'shadow records closed-vocabulary episodes locally and changes no output; no upload')
     if value.get('systemOne') == 'shadow':
         effects.append('Earlier plugin versions refuse a registry that records System One shadow consent')
+    if lightning is not None or 'lightning' in value:
+        effects.append(f"Braid Lightning laboratory consent: {value.get('lightning', 'off')}; only the "
+                       "`agent-braid lightning` CLI may start runs, on the host subscription route; the MCP server "
+                       'never starts one; nothing is promoted without a human decision')
+    if value.get('lightning') == 'lab':
+        effects.append('Earlier plugin versions refuse a registry that records Braid Lightning consent')
     preview = {'schema': 'agent-braid-plugin-setup/v0.2', 'home': str(selected),
                'beforeSha256': _hash(before), 'migratedFrom': migrated, 'registry': value,
                'effects': effects, 'reconnectRequired': before != _bytes(value)}

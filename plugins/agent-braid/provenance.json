@@ -1,14 +1,14 @@
 {
   "canonicalSkills": {
-    "bundleSha256": "284d84d226fd58438d995d324e0a01fbe1606f709faeed2759c6f4c3ec192542",
+    "bundleSha256": "413b13e44af8677e0ded5c45cdbcf76e46a26485a12a9c11990ad9d39e1417ea",
     "bundleVersion": "0.1.0",
     "skills": [
       {
         "description": "Use when inspecting proposed work for interactions, dependencies, conflicts, conditions, or unknowns.",
         "license": "CC-BY-SA-4.0",
         "name": "agent-braid-analyze",
-        "sha256": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31",
-        "sizeBytes": 2564
+        "sha256": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
+        "sizeBytes": 8981
       },
       {
         "description": "Use when preparing an advisory order for bounded work and explaining constraints or missing operator authority.",
@@ -41,8 +41,8 @@
     ]
   },
   "correspondingSource": {
-    "path": "sources/agent-braid-0.1.0-alpha.7-source.tar.gz",
-    "sha256": "f2a07b59ada8f10d82eea4e37ea7eff056c086cdd66712cbada544ccdc029f7c"
+    "path": "sources/agent-braid-0.1.0-alpha.8-source.tar.gz",
+    "sha256": "10c55f76fd7e410c6fecaabbd11452b83b9a86e9496af206a54e86e2ce1f642d"
   },
   "dependencies": {
     "linux-x86_64": [
@@ -667,9 +667,9 @@
     "skills": [
       {
         "canonicalName": "agent-braid-analyze",
-        "canonicalSha256": "bf3292e5c3d867f277cf34bf298227035f6a0ff3caabffaf865da16fda44fd31",
+        "canonicalSha256": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
         "packagedName": "analyze",
-        "packagedSha256": "dba04d007dc4f2b8ae4aa7b226566c2ad8a7f3b5a0c876fb79f381d7be38b490"
+        "packagedSha256": "310b237010e43bda6549d8022d25c9dbf8a93a846e55688ab21183e5b971eddb"
       },
       {
         "canonicalName": "agent-braid-plan",
@@ -704,8 +704,8 @@
       "agent-braid-recover": "recover"
     }
   },
-  "sourceCommit": "0eb75d84b6ad5cbe156b5d0c4ff967833f416205",
+  "sourceCommit": "c0271812fc0c81032e2621881e543cabc500881e",
   "sourceDirty": false,
-  "version": "0.1.0-alpha.7",
-  "wheelSha256": "a411fc278003863e7e9519fe936bcf4e8288f12749ea9fe7816b5caa6617d8fc"
+  "version": "0.1.0-alpha.8",
+  "wheelSha256": "013ec17bf77aa1fe035df4d56744e4a875dcec199d0e05b3c774c3be5c9ee015"
 }

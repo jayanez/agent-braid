@@ -94,6 +94,8 @@ def main(argv: list[str] | None = None) -> int:
     add_ownership_parser(subparsers)
     from .view_cli import add_parser as add_view_parser
     add_view_parser(subparsers)
+    from .lightning_cli import add_parser as add_lightning_parser
+    add_lightning_parser(subparsers)
     decision_parser = subparsers.add_parser("system-one", help="opt-in offline synthetic decision diagnostics")
     decision_commands = decision_parser.add_subparsers(dest="decision_command", required=True)
     decision_commands.add_parser("capabilities", help="list local immutable reference capabilities")
@@ -203,6 +205,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "view":
         from .view_cli import run as run_view
         return run_view(args)
+    if args.command == "lightning":
+        from .lightning_cli import run as run_lightning
+        return run_lightning(args)
     if args.command == "harness":
         from .harness_cli import run as run_harness
         return run_harness(args)

@@ -16,7 +16,8 @@ import time
 import uuid
 
 SCHEMA_V1 = 'agent-braid-local-telemetry-batch/v1'
-SCHEMA = 'agent-braid-local-telemetry-batch/v2'  # exports; both versions merge. The store format stays user_version 1.
+SCHEMA_V2 = 'agent-braid-local-telemetry-batch/v2'
+SCHEMA = 'agent-braid-local-telemetry-batch/v3'  # exports; all versions merge. The store format stays user_version 1.
 APPLICATION_ID = 0x41425431  # ABT1, local aggregate database format v1
 MAX_BYTES = 10 * 1024 * 1024
 MAX_DATABASE_BYTES = 4 * 1024 * 1024
@@ -32,8 +33,12 @@ OPERATIONS = {
     'cli': ('analyze', 'analyze-git', 'system-one'),
     'mcp': ('analyze-work', 'analyze', 'prepare', 'status', 'execute', 'recover', 'verify',
             'plugin-status', 'workspaces', 'other'),
-    'lifecycle': ('serve-start',),
+    'lifecycle': ('serve-start', 'view-start'),
+    # Activity viewer (`view serve --telemetry local`): server-side counts and closed UI interaction names.
+    'view': ('page-load', 'ingest-hook', 'ingest-otlp',
+             'ui-view-2d', 'ui-view-3d', 'ui-filter', 'ui-select', 'ui-details', 'ui-side-tab', 'ui-camera'),
 }
+VIEW_UI_EVENTS = tuple(name for name in OPERATIONS['view'] if name.startswith('ui-'))
 # Plugin bootstrap tools are counted by `calls` only (no duration, no refusal reason).
 CALLS_ONLY = ('plugin-status', 'workspaces')
 # `refusal-reason` is allowed only for refused outcomes of these surfaces.
@@ -53,6 +58,7 @@ LIMITS = [
     'Daily aggregates only; no content, identity, event order or exact durations.',
     'Coverage: portable and plugin MCP tool invocations (including plugin-level refusals), the plugin serve-start event and CLI analyze/analyze-git/system-one only; discovery, resources, prompts, legacy MCP and internal calls excluded.',
     'Refusal reasons are closed buckets assigned where the refusal is raised, never from message text; serve-start is recorded only after the registry passed schema, privacy and shape validation with consent local, so earlier startup failures leave no trace.',
+    'Viewer coverage (batch schema v3): `view serve --telemetry local` counts its start, page loads, accepted or refused ingest requests and closed UI interaction names, by calls only; no duration, selection target, filter value, session, agent, path or repository.',
     'Batch schema v2 adds the lifecycle surface, the refusal-reason metric and plugin-status/workspaces; the store format and user_version stay 1. v1 batches still merge; builds before v2 refuse v2 batches and cannot export a store that holds v2 cells.',
     'Process death before finalization and collector losses in other/terminated processes are unknown.',
     'Known collector failures are in-memory in this process only; reports from a later CLI cannot recover them.',
@@ -116,6 +122,10 @@ def _v2_only(row):
     return row['surface'] == 'lifecycle' or row['metric'] == 'refusal-reason' or row['operation'] in CALLS_ONLY
 
 
+def _v3_only(row):
+    return row['surface'] == 'view' or row['operation'] == 'view-start'
+
+
 def mcp_operation(name):
     return name if name in OPERATIONS['mcp'] else 'other'
 
@@ -137,6 +147,7 @@ def _cell(row):
     _require(metric != 'refusal-reason' or (outcome == 'refused' and surface in REASON_SURFACES and operation not in CALLS_ONLY))
     _require(operation not in CALLS_ONLY or metric == 'calls')
     _require(surface != 'lifecycle' or metric in {'calls', 'refusal-reason'})
+    _require(surface != 'view' or metric == 'calls')
     return tuple(row[k] for k in ('day', 'surface', 'operation', 'outcome', 'metric', 'bucket', 'count'))
 
 
@@ -172,13 +183,14 @@ def _batch(raw):
         value = json.loads(raw, object_pairs_hook=pairs,
                            parse_constant=lambda _: (_ for _ in ()).throw(ValueError('nonfinite telemetry value')))
         _require(type(value) is dict and set(value) == {'schema', 'batchId', 'rows'})
-        _require(value['schema'] in (SCHEMA_V1, SCHEMA) and type(value['batchId']) is str)
+        _require(value['schema'] in (SCHEMA_V1, SCHEMA_V2, SCHEMA) and type(value['batchId']) is str)
         identity = uuid.UUID(value['batchId'])
         _require(identity.version == 4 and str(identity) == value['batchId'])
         rows = value['rows']
         _require(type(rows) is list and 0 < len(rows) <= MAX_ROWS)
         cells = [_cell(row) for row in rows]
-        _require(value['schema'] == SCHEMA or not any(_v2_only(row) for row in rows), 'v2 vocabulary in a v1 batch')
+        _require(value['schema'] != SCHEMA_V1 or not any(_v2_only(row) or _v3_only(row) for row in rows), 'v2 vocabulary in a v1 batch')
+        _require(value['schema'] == SCHEMA or not any(_v3_only(row) for row in rows), 'v3 vocabulary in an older batch')
         _require(len({row[:-1] for row in cells}) == len(cells), 'duplicate telemetry cell')
         _require(sum(row[-1] for row in cells) <= MAX_COUNT * MAX_ROWS, 'telemetry batch count exceeds bound')
     except (TypeError, KeyError, AttributeError, OverflowError, RecursionError, UnicodeError, json.JSONDecodeError):
@@ -297,7 +309,7 @@ class Store:
         bucket = next((name for limit, name in zip((1,10,100,1000,10000), BUCKETS['duration']) if duration_ms <= limit), 'gt-10000ms')
         prefix = (today().isoformat(), surface, operation, outcome)
         rows = [(*prefix, 'calls', 'all', 1)]
-        if surface != 'lifecycle' and operation not in CALLS_ONLY:
+        if surface not in ('lifecycle', 'view') and operation not in CALLS_ONLY:
             rows.append((*prefix, 'duration', bucket, 1))
         if outcome == 'refused' and surface in REASON_SURFACES and operation not in CALLS_ONLY:
             # Reasons come from codes chosen at raise sites; anything outside the closed set is `other`.
@@ -479,5 +491,13 @@ def record_lifecycle(operation, outcome, reason=None, *, directory=None):
     """Fail-open count of one lifecycle event (calls, plus a refusal reason when refused)."""
     try:
         Store(directory).record('lifecycle', operation, outcome, 0, reason=reason)
+    except Exception:
+        _note_failure()
+
+
+def record_view(operation, outcome='ok', *, directory=None):
+    """Fail-open count of one activity-viewer event (calls only)."""
+    try:
+        Store(directory).record('lifecycle' if operation == 'view-start' else 'view', operation, outcome, 0)
     except Exception:
         _note_failure()

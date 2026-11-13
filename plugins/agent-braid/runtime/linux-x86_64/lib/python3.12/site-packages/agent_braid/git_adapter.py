@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import subprocess
 
-from .analysis import InvalidAnalysis, analyze, _canonical, _digest
+from .analysis import InvalidAnalysis, analyze, exact_keys, _canonical, _digest
 from .git_process import GitCommandBudget, GitCommandFailure, run_git
 
 
@@ -21,9 +21,11 @@ class InvalidGitAnalysis(InvalidAnalysis):
     """The Git request or observed repository state is unsupported."""
 
 
-def _require(condition: bool, message: str) -> None:
+def _require(condition: bool, message: str, *, pointer: str | None = None,
+             expected: str | None = None) -> None:
+    """Structural checks pass ``pointer`` and ``expected`` (fixed text); others stay masked upstream."""
     if not condition:
-        raise InvalidGitAnalysis(message)
+        raise InvalidGitAnalysis(message, pointer=pointer, expected=expected)
 
 
 def _git_result(cwd: Path, *args: str, env: dict[str, str] | None = None,
@@ -94,8 +96,9 @@ def _common_identity(root: Path, base: str, env: dict[str, str] | None = None,
 
 
 def _resolve(root: Path, revision: str, env: dict[str, str] | None = None,
-             budget: GitCommandBudget | None = None) -> str:
-    _require(isinstance(revision, str) and revision.strip(), "invalid Git revision")
+             budget: GitCommandBudget | None = None, pointer: str | None = None) -> str:
+    _require(isinstance(revision, str) and revision.strip(), "invalid Git revision",
+             pointer=pointer, expected="a non-blank string" if pointer is not None else None)
     value = _text(_git(root, "rev-parse", "--verify", f"{revision}^{{commit}}",
                        env=env, budget=budget), "revision")
     _require(len(value) == 40 and all(char in "0123456789abcdef" for char in value),
@@ -129,12 +132,22 @@ def _parse_name_status(output: bytes) -> list[tuple[str, str]]:
 
 def _snapshot(root: Path, base: str, source: dict,
               env: dict[str, str] | None = None,
-              budget: GitCommandBudget | None = None) -> tuple[list[tuple[str, str]], str, str]:
+              budget: GitCommandBudget | None = None,
+              pointer: str | None = None) -> tuple[list[tuple[str, str]], str, str]:
     kind = source.get("kind")
-    _require(set(source) == ({"kind", "revision"} if kind == "commit" else
-                             {"kind", "path"}), "invalid Git source")
+    here = pointer or ""
+    _require(kind in {"commit", "worktree"}, "unsupported Git source kind",
+             pointer=f"{here}/kind" if pointer is not None else None,
+             expected="one of commit, worktree")
+    if pointer is None:
+        _require(set(source) == ({"kind", "revision"} if kind == "commit" else {"kind", "path"}),
+                 "invalid Git source")
+    else:
+        exact_keys(source, {"kind", "revision"} if kind == "commit" else {"kind", "path"},
+                   "invalid Git source", here)
     if kind == "commit":
-        resolved = _resolve(root, source["revision"], env, budget)
+        resolved = _resolve(root, source["revision"], env, budget,
+                            f"{here}/revision" if pointer is not None else None)
         _require(_is_ancestor(root, base, resolved, env, budget),
                  "base revision is not an ancestor of the commit source")
         raw = _git(root, "diff", "--no-ext-diff", "--no-textconv", "--name-status", "-z",
@@ -221,19 +234,30 @@ def _snapshot(root: Path, base: str, source: dict,
 
 def _record(operation: dict, repo_id: str, base: str, root: Path,
             env: dict[str, str] | None = None,
-            budget: GitCommandBudget | None = None) -> tuple[dict, dict]:
+            budget: GitCommandBudget | None = None, pointer: str | None = None) -> tuple[dict, dict]:
     required = {"instanceId", "attemptId", "source", "dependencies", "uncertainPaths"}
-    _require(set(operation) == required, "invalid Git operation fields")
+    here = pointer or ""
+    at = (lambda name: f"{here}/{name}") if pointer is not None else (lambda name: None)
+    if pointer is None:
+        _require(set(operation) == required, "invalid Git operation fields")
+    else:
+        exact_keys(operation, required, "invalid Git operation fields", here)
     for name in ("instanceId", "attemptId"):
-        _require(isinstance(operation[name], str) and operation[name].strip(), f"invalid {name}")
+        _require(isinstance(operation[name], str) and operation[name].strip(), f"invalid {name}",
+                 pointer=at(name), expected="a non-blank string" if pointer is not None else None)
     dependencies = operation["dependencies"]
     uncertain = operation["uncertainPaths"]
-    _require(isinstance(dependencies, list) and all(isinstance(x, str) and x for x in dependencies),
-             "invalid dependencies")
-    _require(isinstance(uncertain, list) and all(isinstance(x, str) and x for x in uncertain),
-             "invalid uncertainPaths")
-    before = _snapshot(root, base, operation["source"], env, budget)
-    after = _snapshot(root, base, operation["source"], env, budget)
+    for name, items in (("dependencies", dependencies), ("uncertainPaths", uncertain)):
+        _require(isinstance(items, list), f"invalid {name}", pointer=at(name),
+                 expected="an array of nonempty strings" if pointer is not None else None)
+        for index, item in enumerate(items):
+            _require(isinstance(item, str) and bool(item), f"invalid {name}",
+                     pointer=at(f"{name}/{index}"),
+                     expected="a nonempty string" if pointer is not None else None)
+    _require(isinstance(operation["source"], dict), "invalid Git source", pointer=at("source"),
+             expected="an object describing a commit or worktree source" if pointer is not None else None)
+    before = _snapshot(root, base, operation["source"], env, budget, at("source"))
+    after = _snapshot(root, base, operation["source"], env, budget, at("source"))
     _require(before == after, "Git source changed during observation")
     changes, resolved, snapshot = before
     effects = []
@@ -286,23 +310,30 @@ def _record(operation: dict, repo_id: str, base: str, root: Path,
 def analyze_git_with_provenance(value: object, *, env: dict[str, str] | None = None,
                                 budget: GitCommandBudget | None = None) -> tuple[dict, dict]:
     """Return a report plus its separate, structured Git observation artifact."""
-    _require(isinstance(value, dict), "Git analysis request must be an object")
-    _require(set(value) == {"gitAnalysisRequestVersion", "repository", "baseRevision", "operations"},
-             "invalid Git analysis request fields")
+    _require(isinstance(value, dict), "Git analysis request must be an object",
+             pointer="", expected="an object")
+    exact_keys(value, {"gitAnalysisRequestVersion", "repository", "baseRevision", "operations"},
+               "invalid Git analysis request fields", "")
     _require(value["gitAnalysisRequestVersion"] == REQUEST_VERSION,
-             "unsupported Git analysis request version")
+             "unsupported Git analysis request version", pointer="/gitAnalysisRequestVersion",
+             expected="the constant " + REQUEST_VERSION)
     _require(isinstance(value["repository"], str) and value["repository"].strip(),
-             "invalid repository")
-    root = _repo_root(Path(value["repository"]).expanduser().resolve(), env, budget)
-    base = _resolve(root, value["baseRevision"], env, budget)
+             "invalid repository", pointer="/repository", expected="a non-blank string")
+    _require(isinstance(value["baseRevision"], str) and value["baseRevision"].strip(),
+             "invalid Git revision", pointer="/baseRevision", expected="a non-blank string")
     operations = value["operations"]
     _require(isinstance(operations, list) and len(operations) >= 2,
-             "at least two Git operations are required")
+             "at least two Git operations are required", pointer="/operations",
+             expected="an array of at least two operations")
+    for index, operation in enumerate(operations):
+        _require(isinstance(operation, dict), "Git operations must be objects",
+                 pointer=f"/operations/{index}", expected="an operation object")
+    root = _repo_root(Path(value["repository"]).expanduser().resolve(), env, budget)
+    base = _resolve(root, value["baseRevision"], env, budget, "/baseRevision")
     repo_id = _common_identity(root, base, env, budget)
     records, observations = [], []
-    for operation in operations:
-        _require(isinstance(operation, dict), "Git operations must be objects")
-        record, observation = _record(operation, repo_id, base, root, env, budget)
+    for index, operation in enumerate(operations):
+        record, observation = _record(operation, repo_id, base, root, env, budget, f"/operations/{index}")
         records.append(record)
         observations.append((operation["instanceId"], observation))
     report = analyze({
