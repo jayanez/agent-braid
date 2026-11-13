@@ -4,6 +4,7 @@ import ast
 from contextlib import redirect_stdout
 from io import StringIO
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -143,6 +144,98 @@ class BoundaryTests(unittest.TestCase):
             self.assertTrue(text.startswith('# SPDX-License-Identifier: AGPL-3.0-only'))
             self.assertIn('microsoft/agent-lightning', text)
             self.assertIn('MIT License', text)
+
+
+BL2_ALLOWED = {'plugin_registry', 'harness_host_claude',  # SPEC-070/071 runner and host setup
+               'harness_evaluation', 'system_one',  # SPEC-072 T013: record formats only, never decide()
+               'spec069_scoring', 'spec069_native_runs', 'spec069_fixture_workspace', 'build_native_plugin'}
+BL2_FORBIDDEN_NAMES = {'decide', 'begin', 'execute', 'recover', 'harness_promotion',
+                       'import_module', '__import__'}  # no dynamic import around the static checks
+BL2_FORBIDDEN_MODULES = ('agent_braid.harness_promotion', 'agent_braid.harness_auto_promotion',
+                         'agent_braid.harness_lifecycle', 'agent_braid.runtime_policy', 'agent_braid.mcp_runtime',
+                         'agent_braid.tooling_mcp', 'agent_braid.plugin_mcp', 'agent_braid.forecast_mcp',
+                         'agent_braid.system_one_verified_mcp', 'agent_braid.mcp_advice',
+                         'agent_braid.git_exec', 'agent_braid.git_runtime', 'agent_braid.git_runtime_process',
+                         'agent_braid.runtime_scheduler', 'agent_braid.tooling_source_runtime', 'mcp')
+SKILL = ROOT / 'integrations/agent-braid/skills/agent-braid-analyze/SKILL.md'
+
+
+def bl2_files():
+    return sorted([*(ROOT / 'agent_braid').glob('lightning_*.py'), *(ROOT / 'scripts').glob('spec072_*.py')])
+
+
+class BL2BoundaryTests(unittest.TestCase):
+    """SPEC-072 REQ-009 / SC-009 (procedure_009): BL.2 has no promotion, execution, MCP or dependency path."""
+
+    def test_imports_stay_within_stdlib_lightning_and_the_allowlist(self):
+        for path in bl2_files():
+            for node in ast.walk(ast.parse(path.read_text())):
+                if isinstance(node, ast.ImportFrom):
+                    parts = node.module.split('.') if node.module else []
+                    if node.level == 0 and parts[0] not in ('scripts', 'agent_braid'):
+                        self.assertIn(parts[0], sys.stdlib_module_names, (path.name, node.module))
+                        continue
+                    if node.level == 0:
+                        parts = parts[1:]  # drop the package; the first remaining part is the module
+                    for name in parts[:1] or [a.name for a in node.names]:
+                        self.assertTrue(name.startswith('lightning_') or name in BL2_ALLOWED, (path.name, name))
+                elif isinstance(node, ast.Import):
+                    for alias in node.names:
+                        self.assertIn(alias.name.split('.')[0], sys.stdlib_module_names, (path.name, alias.name))
+
+    def test_no_promotion_execution_recovery_or_grant_call(self):
+        for path in (ROOT / 'agent_braid').glob('lightning_*.py'):
+            for node in ast.walk(ast.parse(path.read_text())):
+                name = (node.attr if isinstance(node, ast.Attribute) else node.id if isinstance(node, ast.Name)
+                        else node.name.split('.')[-1] if isinstance(node, ast.alias) else None)
+                if name is not None:
+                    self.assertNotIn(name, BL2_FORBIDDEN_NAMES, path.name)
+                    self.assertFalse('grant' in name.lower(), (path.name, name))
+
+    def test_import_closure_loads_no_promotion_execution_or_mcp_module(self):
+        modules = [f'agent_braid.{p.stem}' if p.parent.name == 'agent_braid' else f'scripts.{p.stem}' for p in bl2_files()]
+        probe = ('import importlib, json, sys\n'
+                 f'for m in {modules!r}: importlib.import_module(m)\n'
+                 f'print(json.dumps(sorted(m for m in sys.modules if m in {BL2_FORBIDDEN_MODULES!r} '
+                 f'or m.startswith("mcp."))))')
+        out = subprocess.run([sys.executable, '-c', probe], cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertEqual(json.loads(out.stdout), [])
+
+    def test_no_mcp_tool_or_plugin_manifest_exposes_lightning(self):
+        for path in (ROOT / 'agent_braid').glob('*mcp*.py'):
+            self.assertNotIn('lightning', path.read_text().lower(), path.name)
+        for path in (ROOT / 'integrations').rglob('*.json'):
+            self.assertNotIn('lightning', path.read_text().lower(), path)
+
+    def test_no_runtime_dependency(self):
+        import tomllib
+        project = tomllib.loads((ROOT / 'pyproject.toml').read_text())['project']
+        self.assertEqual(project['dependencies'], [])
+        self.assertFalse(any('lightning' in k for k in project.get('optional-dependencies', {})))
+
+    def test_fake_optimization_run_leaves_the_skill_file_and_reports_the_best_by_hash(self):
+        from agent_braid import lightning_arm, lightning_runner
+        from agent_braid.harness_host_claude import ENV_DENY
+        from agent_braid.lightning_resources import split_skill
+        env = {k: v for k, v in os.environ.items() if not k.endswith('_API_KEY') and k not in ENV_DENY}
+        before = (SKILL.read_bytes(), SKILL.stat().st_mtime_ns)
+
+        def profile(name, **algo):
+            return lightning_config.build(
+                {'rollout': {'repetitions': 1, 'hosts': ['claude-code']}, 'algorithm': {'name': name, **algo}})
+
+        with tempfile.TemporaryDirectory() as tmp:
+            home = Path(tmp).resolve() / 'home'
+            lightning_runner.run(home, profile('baseline'), run_id='seed', fake_hosts=True, environ=env)
+            summary = lightning_arm.run_arm(home, profile('gepa', rounds=1, minibatch=2), seed_run='seed',
+                                            run_id='gepa', fake_hosts=True, environ=env)
+        self.assertEqual((SKILL.read_bytes(), SKILL.stat().st_mtime_ns), before)
+        self.assertRegex(summary['bestSha256'], r'\A[0-9a-f]{64}\Z')
+        dumped = json.dumps(summary)
+        body = split_skill(SKILL.read_text())[1]
+        for line in (l for l in body.splitlines() if len(l) > 40):
+            self.assertNotIn(json.dumps(line)[1:-1], dumped)
 
 
 if __name__ == '__main__':

@@ -60,9 +60,11 @@ script or test.
 
 ## Closing
 
-- [ ] T011 (REQ-009 / SC-009): Boundary tests: skill file untouched, no
+- [x] T011 (REQ-009 / SC-009): Boundary tests: skill file untouched, no
   promotion, execution or MCP path. Dependencies: T010.
-  Verification: procedure_009.
+  Verification: procedure_009. Done 2026-11-13 as
+  `tests/test_lightning_cli.py` `BL2BoundaryTests` over a fake GEPA run and
+  every BL.2 module; re-run after T010 lands.
 - [ ] T012 (REQ-001–REQ-011 / SC-001–SC-011): `/speckit-converge`: reconcile
   spec, tasks, assurance and evidence; sync tracking; hand the best candidate
   hash to SPEC-073. Dependencies: T011, T013. Verification: all procedures.
