@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """SPEC-069 T011 (REQ-011 / SC-011 / procedure_011): the SPEC-069 documentation is backed by evidence.
 
-The ``analyze-work`` request-kinds section of ``docs/tooling/NATIVE_PLUGINS.md`` (including the release-note draft)
+The ``analyze-work`` request-kinds section of ``docs/tooling/NATIVE_PLUGINS.md`` (including the alpha.8 release notes)
 must cite only files that exist, its links and anchors must resolve, and its measured numbers must equal the
 committed evidence (T005 native probe, T010 held-out run, T009 replay). Negative controls show that a broken link,
 a wrong number and a missing cited file are detected.
@@ -151,8 +151,9 @@ class Spec069DocsTests(unittest.TestCase):
         self.assertIn("`analyze-work refused: Unsupported analysis kind`", self.flat)
         self.assertIn("agent-braid--v0.1.0-alpha.7", self.text)
 
-    def test_draft_states_that_nothing_is_published(self):
-        self.assertIn("nothing has been published, tagged or versioned", self.flat)
+    def test_candidate_notes_state_that_nothing_is_published(self):
+        self.assertIn("nothing has been published or tagged", self.flat)
+        self.assertIn("`0.1.0-alpha.7` is the published version", self.flat)
 
     def test_negative_control_a_broken_link_is_detected(self):
         broken = self.text + "\n[x](../../specs/069-aim-request-authoring/missing.md) [y](SKILLS.md#no-such-heading)\n"
