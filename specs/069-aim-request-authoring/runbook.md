@@ -229,4 +229,3 @@ version, the raw `tools/list` line (saved under `<output>.transcripts/<host>/`) 
 against `listed_sizes()`, the `kind` and object/string type of every request at the server, and the verdict; `crossHost`
 compares the definition within each protocol version. A stringified or hidden request is a `declared-limit` verdict
 (description-only fallback), never a pass. `--fake-hosts --probe-schema` is the self-test (variant `stringify`).
-

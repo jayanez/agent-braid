@@ -58,4 +58,3 @@ not requests), a bounded trace of directions and method names (never params, res
 of `initialize`: the relay records the result's key names and date-shaped supported versions, and takes a single supported
 version as the negotiated one. A host that ends the server with a signal leaves a receipt marked incomplete
 (`relay_failure`) whose listing and calls are still recorded.
-

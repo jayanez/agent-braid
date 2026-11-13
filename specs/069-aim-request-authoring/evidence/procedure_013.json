@@ -8,7 +8,7 @@
   "agent_braid/lightning_hosts.py": "a147d8fb36c7d4e8b06aa328699a7662a52fdf71e05b292fe8a13756ddf15b23",
   "scripts/spec069_native_runs.py": "1a744614e280b05253e3e6206d05fd01d39864a54cec2e4ca6fe8c0c662c5fd6",
   "specs/069-aim-request-authoring/evidence/native-runs-baseline-anthropic.json": "1663332c6c04577fa51ffbbd9ed5d9d0fbc5311a883f7239eb746ee2db9896fe",
-  "specs/069-aim-request-authoring/runbook.md": "69f0dd0f5266c760f5d1f75b236c69f05f3b242f84cdd369ef25038bbfc86743",
+  "specs/069-aim-request-authoring/runbook.md": "4e708fb91ef62b5d309071d51480120823280a248fcf530df4bb45281e7578cb",
   "tests/fixtures/spec069-fake-hosts/_fake.py": "6870dbc7d64f6441735dce4da8d9cccb6d29211945d937069801bbe2a7870824",
   "tests/fixtures/spec069-fake-hosts/_fake_server.py": "97218a834cb2fc7a9f7fc8e42e00f85d789d6c763f8a28475d374139270b1adc",
   "tests/fixtures/spec069-fake-hosts/claude": "de42483c09be9c10cb2e1c92b7e21242a257588b26ffcc91d5997bd11146e630",
