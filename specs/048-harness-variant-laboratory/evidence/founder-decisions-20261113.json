@@ -1,0 +1,60 @@
+{
+  "recordVersion": "spec048-founder-review-v1",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-13",
+  "baseCommit": "1f96ac41",
+  "decisionChannel": "Founder answers to two interactive guided questions (explanation, examples, risks, undo, recommendation) in the SPEC-048/T008 session, 2026-11-13, after SPEC-065 T013 issued the 2026-11-13 records (#1346)",
+  "supersedes": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261106.json (sha256 6f5394dae371c2c8082153db3ce3ab99fd02d86d4c5372b931c0926f5ce7b4a0) for the Claude profile authorization; that record names the 2026-11-06 qualification (b7641c8a.../8c1a38fe...), void on macOS build 26B131. Its answers T008-3, T008-4 and T008-5 stay in force",
+  "qualificationRecords": {
+    "issuance": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json",
+    "issuanceSha256": "8aa07dd42e77560b548ac35edce05d8f975f8704eeaab4452f2a17238740d510",
+    "bundle": "specs/065-native-claude-containment/evidence/qualification/t009-20261113c/",
+    "bundleSha256": "c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7",
+    "containmentSha256": "fa59fbae9286f0794331aedcebe782b99767819dc4a30f37a08713509be9fa6a",
+    "hostSha256": "9022b771382a239be3a4d399dfb9c949ef29f4276aeebb0b5db735e9a67a847f",
+    "environmentSha256": "f0f7617ee18d9f27f731d68b3531685dfa5fc527b6e38dbd24ebd60ae529e899",
+    "expiresAt": 1797178485
+  },
+  "decisions": [
+    {
+      "task": "SPEC-048/T008",
+      "item": "Claude profile qualification",
+      "decision": "qualification-authorized",
+      "ownerStatement": "Mismos términos, nuevos registros (Recommended)",
+      "detail": "Re-authorizes executing the T008 native units for the Claude profile only, on identical terms to founder-decisions-20261106.json (at most 4 serial units, window 2026-11-09T20:30Z to 2026-11-30, D2 caps unchanged, EUR 0, subscription route, usage readings at most 5 minutes old), bound to the SPEC-065 records issued 2026-11-13 (containment fa59fbae9286f0794331aedcebe782b99767819dc4a30f37a08713509be9fa6a, host 9022b771382a239be3a4d399dfb9c949ef29f4276aeebb0b5db735e9a67a847f, issuance record evidence/qualification/issuance-2026-11-13.json, bundle t009-20261113c, environment f0f7617ee18d9f27f731d68b3531685dfa5fc527b6e38dbd24ebd60ae529e899, expires 2026-12-13T16:14:45Z). The 'qualified' verdict is decided later from the unit evidence. Does not admit SPEC-049/T004 and does not qualify Codex."
+    },
+    {
+      "task": "SPEC-048/T008",
+      "item": "Codex profile qualification",
+      "decision": "not-qualified",
+      "ownerStatement": "Unchanged from founder-review-20261031.json: Registralo como no calificado y anota que lo tenemos que revisar antes de considerar cerrado este milestone",
+      "detail": "Codex CLI is not installed; stays refused and must be reviewed again before HAR.1 closes. Not asked again on 2026-11-13."
+    }
+  ],
+  "founderAnswers": [
+    {
+      "id": "T008-6",
+      "topic": "Re-authorization of the T008 native units on the 2026-11-13 records",
+      "question": "On 06-11 you authorized the SPEC-048 T008 native units (Claude only, at most 4 serial Haiku units, window 2026-11-09 to 2026-11-30, D2 caps …). That record names the 06-11 qualification hashes (b7641c8a…/8c1a38fe…), which are void on 26B131. … Do you re-authorize on the new records?",
+      "answer": "Mismos términos, nuevos registros (Recommended)",
+      "terms": "Identical terms: at most 4 serial units, window to 2026-11-30, D2 caps unchanged (30 min per unit, session at most 10 % of 5-hour, cohort at most 15 % of weekly, weekly stop above 80 %), EUR 0, subscription route, readings at most 5 minutes old; bound to the 2026-11-13 records and hashes in qualificationRecords. executionAuthorization stays false; the qualified verdict is decided later from the unit evidence."
+    },
+    {
+      "id": "T008-7",
+      "topic": "How the T008 units are launched",
+      "question": "How are the T008 units launched?",
+      "answer": "Lanzador root sin GUI (Recommended)",
+      "terms": "A root launcher with a T008 mode starts the driver as braidlab in its own Background session (launchctl asuser), as the SPEC-065 headless mode does for T009. The orchestrator runs its check automatically (passwordless sudo rule for check only); the owner runs `sudo ... run` in Terminal.app with the password and types the quota readings."
+    }
+  ],
+  "hostObservation": {
+    "observedAt": "2026-11-13",
+    "host": {
+      "claude": "claude 2.1.292 pinned at /usr/local/libexec/braid/claude-2.1.292 (listed, not executed; the hash is verified by the driver in the lab)",
+      "codex": "absent (command -v codex: not found)"
+    }
+  },
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false
+}
