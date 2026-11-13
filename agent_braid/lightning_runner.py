@@ -305,6 +305,25 @@ def _canary_hits(stdout: str, transcript) -> int:
     return hits
 
 
+PROTOCOL = 'specs/072-lightning-prompt-optimization/evaluation-protocol.md'
+PROTOCOL_FREEZE = 'specs/072-lightning-prompt-optimization/evidence/protocol-freeze.json'
+FREEZE_SCHEMA = 'braid-lightning-protocol-freeze/v0.1'
+
+
+def check_protocol_freeze(root: Path) -> str:
+    """SPEC-072 REQ-001: held-out rollouts start only after the protocol hash is frozen and only while it holds."""
+    path = root / PROTOCOL_FREEZE
+    if not path.is_file():
+        raise RunnerError('The evaluation protocol is not frozen; held-out runs are refused', 'protocol-not-frozen')
+    freeze = json.loads(path.read_text())
+    if freeze.get('schema') != FREEZE_SCHEMA or freeze.get('protocolPath') != PROTOCOL:
+        raise RunnerError('Unknown protocol freeze record', 'protocol-not-frozen')
+    actual = hashlib.sha256((root / PROTOCOL).read_bytes()).hexdigest()
+    if actual != freeze.get('protocolSha256'):
+        raise RunnerError('The evaluation protocol differs from its frozen hash', 'protocol-hash-mismatch')
+    return actual
+
+
 def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, prompt_set: str = 'development',
         fake_hosts: bool = False, fake_variant: str = 'default', fake_key_source: str | None = 'none',
         plugin_dir: Path | None = None, hooks: hooks_mod.RolloutHooks | None = None,
@@ -314,6 +333,8 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
     ``plugin_dir`` carries (SPEC-072 candidate evaluation); by default it is the configured target file."""
     environ = dict(os.environ if environ is None else environ)
     root = checkout_root()
+    if prompt_set == 'held-out':
+        check_protocol_freeze(root)  # SPEC-072 REQ-001: before anything else
     from scripts import spec069_fixture_workspace as fixture
     from scripts import spec069_native_runs as driver
     from scripts import spec069_scoring as scoring

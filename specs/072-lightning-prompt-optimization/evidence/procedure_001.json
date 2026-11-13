@@ -1,0 +1,21 @@
+{
+ "command": "python -m unittest tests.test_lightning_freeze",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_runner.py": "97cfaecefbc01d60968ace984efc5d503a21323b7a1cfce538a944e7b86a1cb1",
+  "specs/072-lightning-prompt-optimization/evaluation-protocol.md": "b5d1db2711981c5f6e63884213a07d5c2b2c5c224815410455193c45b1c92c38",
+  "specs/072-lightning-prompt-optimization/evidence/development-arms.json": "fc5b107f30526c5a6d52fd7eab6c6820ab8c7c247a1198e74b3144250d431445",
+  "specs/072-lightning-prompt-optimization/evidence/protocol-freeze.json": "7dcefc91bd990c4a029e4fc28ce1e09eedf569760080b071c6124a145d18c324",
+  "tests/test_lightning_freeze.py": "78e5e735d72e9b9440743017ca8de82ff224cc99011bc327581c18d6577c946c"
+ },
+ "limits": "The freeze binds the protocol bytes, not reviewer intent; approval is the owner's merge of the freeze pull request. One required host (claude-code); opencode is a declared limit per Amendment 1. Development scores are descriptive; H1 is decided on held-out (T010).",
+ "outcome": "passed: The owner reviewed and approved protocol Amendment 1 (items 1-6) on 2026-11-13 before any development rollout; the development phase ran (A0 27/30 first attempt; best GEPA 0.967, best APO 0.233 on the full development set; claude-code, model claude-sonnet-5-5, subscription route; evidence/development-arms.json). evidence/protocol-freeze.json records the sha256 of evaluation-protocol.md and of the development evidence, with the held-out set unopened. The committed freeze matches the protocol. Negative controls: a held-out run with an edited protocol is refused before anything is read or launched (protocol-hash-mismatch), and a missing freeze record is refused (protocol-not-frozen).",
+ "procedure": "procedure_001",
+ "result": "OK",
+ "scenario": "SC-001",
+ "specification": "SPEC-072 BL.2",
+ "testsRun": 4
+}

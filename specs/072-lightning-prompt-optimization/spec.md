@@ -90,7 +90,7 @@ Owner decisions:
 - **OD-1 — Held-out size (decided 2026-11-11).** Keep the frozen SPEC-069
   held-out set: 10 cases × 3 repetitions. D4 is a binary rule; the low power
   of the descriptive sign test is a declared limit. No new FREEZE version.
-- **OD-2 — Required hosts (decided; amendment pending owner review).** Required
+- **OD-2 — Required hosts (decided; Amendment 1 approved 2026-11-13).** Required
   hosts were fixed as `claude-code` and `opencode`; Codex is a declared limit
   in SPEC-069. Protocol Amendment 1 (draft, 2026-11-13) reduces them to
   `claude-code`: `opencode` reports no subscription credential source, so the

@@ -4,10 +4,11 @@ Status: draft. This file is frozen by sha256 (REQ-001) after owner review and
 before any held-out rollout. Any later change is a deviation, recorded with a
 reason, and the original hash stays in the record.
 
-## Amendment 1 (draft, pending owner review, 2026-11-13)
+## Amendment 1 (approved by the owner 2026-11-13)
 
-Made before the freeze, so it is an amendment, not a deviation. It is not in
-force until the owner approves it; T009 then freezes the amended file.
+Made before the freeze, so it is an amendment, not a deviation. The owner
+approved it on 2026-11-13 (item 6 included) before any development rollout;
+T009 freezes the amended file.
 
 1. **A0 is the current guidance.** A0 is the `agent-braid-analyze` guidance on
    `develop` after the SPEC-069 T008 rewrite (#1314) packaged in the current

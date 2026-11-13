@@ -1,0 +1,19 @@
+{
+  "approval": {
+    "by": "owner",
+    "date": "2026-11-13",
+    "merge": "owner merges the freeze pull request",
+    "scope": "evaluation-protocol.md with Amendment 1 (items 1-6)"
+  },
+  "developmentEvidence": {
+    "path": "specs/072-lightning-prompt-optimization/evidence/development-arms.json",
+    "sha256": "fc5b107f30526c5a6d52fd7eab6c6820ab8c7c247a1198e74b3144250d431445"
+  },
+  "executionAuthorization": false,
+  "frozenAt": "2026-11-13",
+  "heldOutOpened": false,
+  "note": "Held-out rollouts (T010) are refused unless evaluation-protocol.md hashes to protocolSha256 (lightning_runner.check_protocol_freeze).",
+  "protocolPath": "specs/072-lightning-prompt-optimization/evaluation-protocol.md",
+  "protocolSha256": "b5d1db2711981c5f6e63884213a07d5c2b2c5c224815410455193c45b1c92c38",
+  "schema": "braid-lightning-protocol-freeze/v0.1"
+}

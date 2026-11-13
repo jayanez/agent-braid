@@ -25,6 +25,16 @@ ROOT = Path(__file__).resolve().parents[1]
 SPEC = ROOT / "specs/072-lightning-prompt-optimization"
 EVIDENCE = SPEC / "evidence"
 PROCEDURES = {
+    'procedure_001': {
+        "scenario": 'SC-001',
+        "modules": ["tests.test_lightning_freeze"],
+        "inputs": ["specs/072-lightning-prompt-optimization/evaluation-protocol.md",
+                   "specs/072-lightning-prompt-optimization/evidence/protocol-freeze.json",
+                   "specs/072-lightning-prompt-optimization/evidence/development-arms.json",
+                   "agent_braid/lightning_runner.py", "tests/test_lightning_freeze.py"],
+        "outcome_note": "The owner reviewed and approved protocol Amendment 1 (items 1-6) on 2026-11-13 before any development rollout; the development phase ran (A0 27/30 first attempt; best GEPA 0.967, best APO 0.233 on the full development set; claude-code, model claude-sonnet-5-5, subscription route; evidence/development-arms.json). evidence/protocol-freeze.json records the sha256 of evaluation-protocol.md and of the development evidence, with the held-out set unopened. The committed freeze matches the protocol. Negative controls: a held-out run with an edited protocol is refused before anything is read or launched (protocol-hash-mismatch), and a missing freeze record is refused (protocol-not-frozen).",
+        "limits": "The freeze binds the protocol bytes, not reviewer intent; approval is the owner's merge of the freeze pull request. One required host (claude-code); opencode is a declared limit per Amendment 1. Development scores are descriptive; H1 is decided on held-out (T010).",
+    },
     'procedure_002': {
         "scenario": 'SC-002',
         "modules": ["tests.test_lightning_resources"],
