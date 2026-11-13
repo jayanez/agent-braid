@@ -56,7 +56,12 @@ binds complete original file hashes. Selected seams are `core/spec.py` typed
 views and `core/runmark.py` fingerprint/completion identity for
 `agent_braid/harness_manifest.py`; `core/tree.py` bounded surface/import structure
 for `harness_surface.py`; and `core/ledger.py` stage/accounting concepts for
-`harness_admission.py`. Adaptations replace upstream assumptions with full
+`harness_admission.py`. SPEC-050 adds one Apache-2.0 adapted file,
+`agent_braid/harness_search.py`, which adapts the `core/recursion.py`
+run_sequential/run_parallel stage structure, the `core/selection.py`
+base-inclusive pool and the `core/ledger.py` reservation identity; its header
+and `_PROVENANCE` record the upstream notice and the changes. The other SPEC-050
+harness modules are original AGPL-3.0-only code with no upstream bytes. Adaptations replace upstream assumptions with full
 SHA-256 manifests, positive inventories, protected layers, zero-launch offline
 limits and operator-owned reservation semantics. Each module identifies its
 actual adaptation; task evidence records the implemented portions and deltas.
