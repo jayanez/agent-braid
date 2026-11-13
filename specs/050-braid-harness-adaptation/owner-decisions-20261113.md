@@ -28,3 +28,22 @@ Remaining SPEC-050 status after these decisions:
   effect contract (D2).
 - T012 stays partial. It waits on the D5 review record, the D2 native evidence and the D6
   observation.
+
+## Amendment, 2026-11-13 (later the same day)
+
+The owner changed **D2** to start the native HAR wave now: "Sí, empezar ya". The
+reason for waiting no longer held. The SPEC-065 qualification was already void on build
+26B131, and a new one lasts 30 days from issuance. The order is unchanged: SPEC-065
+requalification, then SPEC-048/T008, SPEC-049/T004 and SPEC-049/T014. Everything uses
+the subscription, with no paid route and EUR 0.
+
+Pre-check on 2026-11-13 found no change that needs new code or a security re-check:
+
+- The hashes of `/usr/bin/sandbox-exec`, the pinned `claude-2.1.292` and the lab
+  `python3.12` are unchanged.
+- The containment, probe, transport and attempt-script sources are identical between the
+  qualified commit `320b00c4` and `develop`.
+
+Requalification attempt `t009-20261113a` therefore reuses commit `320b00c4`, and only the
+environment changes. Nothing native has run yet. Each real attempt still needs the
+orchestrator's check verification and the owner's own run.
