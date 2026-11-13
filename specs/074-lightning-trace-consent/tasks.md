@@ -12,7 +12,8 @@ imply owner acceptance. `quick` means
   review record bound to a frozen commit.
 - [ ] T002 (REQ-001 / SC-001): consent fields in the configuration validator,
   extension of the `traces` section of `lightning-config.schema.json` with
-  corpus agreement, `lightning init` preview with digest. Dependencies: T001, SPEC-070 REQ-004. Verification:
+  corpus agreement, `lightning init` preview with digest, `lightning status`
+  showing level, `consentedAt` and sources. Dependencies: T001, SPEC-070 REQ-004. Verification:
   procedure_001.
 - [ ] T003 (REQ-002 / SC-002): consent gate in store (`store-consent`) and
   adapter/CLI (`content-consent-required`); fail closed on invalid

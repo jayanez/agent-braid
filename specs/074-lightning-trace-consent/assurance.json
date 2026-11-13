@@ -117,6 +117,7 @@
     "GOVERNANCE.md",
     "docs/adr/0025-local-technical-telemetry.md",
     "docs/adr/0034-system-one-shadow-advisory-boundary.md",
+    "docs/adr/0041-braid-lightning-content-traces.md",
     "docs/tooling/TELEMETRY.md",
     "docs/development/REAL_USE_EVIDENCE.md",
     "agent_braid/trace_adapter.py",
@@ -150,7 +151,7 @@
           "when": "consent is set to redacted through init, and the corpus is checked"
         }
       ],
-      "text": "Consent contract. traces.contentConsent accepts only none and redacted, defaults to none, and changes only through a lightning init preview applied with --apply --preview-digest (plugin setup only sets lightning off|lab); the consent fields extend the traces section of lightning-config.schema.json and that schema and the validator agree on a corpus."
+      "text": "Consent contract. traces.contentConsent accepts only none and redacted, defaults to none, and changes only through a lightning init preview applied with --apply --preview-digest (plugin setup only sets lightning off|lab); the consent fields extend the traces section of lightning-config.schema.json and that schema and the validator agree on a corpus. Consent does not expire; lightning status shows the level, consentedAt and sources."
     },
     {
       "id": "REQ-002",

@@ -101,7 +101,8 @@ Owner decisions (decided 2026-11-13, T001):
   and `redacted`, defaults to `none`, and is changed only by `agent-braid
   lightning init` with a preview showing the sources, retention and effects,
   applied with `--apply --preview-digest`; `plugin setup` only sets `lightning`
-  `off` | `lab` and never the consent. The consent fields extend the `traces`
+  `off` | `lab` and never the consent. Consent does not expire, and `agent-braid
+  lightning status` shows the level, `consentedAt` and sources (OD-3). The consent fields extend the `traces`
   section of `schemas/0.3.0-experimental/lightning-config.schema.json`, and
   that schema and the validator agree on a corpus.
 - **REQ-002 — Refusal without consent.** With consent `none` (or an invalid

@@ -20,7 +20,9 @@ separate consent schema.
 `agent-braid lightning init --trace-consent redacted` prints sources, retention,
 redaction classes, storage location, purge command and a `previewDigest`; it
 writes only with `--apply --preview-digest <d>`. Lowering consent to `none` also
-previews and offers purge of existing content. `plugin setup` only sets
+previews and offers purge of existing content. Consent has no expiry (OD-3);
+`agent-braid lightning status` shows `contentConsent`, `consentedAt` and
+`sources`. `plugin setup` only sets
 `lightning` `off` | `lab`; it never changes consent.
 
 ## Redaction placeholders
@@ -42,7 +44,8 @@ refused with `redaction-incomplete` and only a content-free stub is kept.
 Sweep at every store open and on `agent-braid lightning sweep`; purge by the
 BL.0 `agent-braid lightning purge [--run <id>] --apply --preview-digest <d>`,
 extended here to content records. Purge
-deletes content files and rewrites indexes without content; it never touches
+deletes content files and the run's email salt (OD-2) and rewrites indexes
+without content; it never touches
 host transcripts, Loom or System One files.
 
 Refusal reasons: `store-consent` (SPEC-070 store refusal of a content field
