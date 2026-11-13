@@ -80,6 +80,9 @@ def add_parser(subparsers):
     runner.add_argument('--seed-run', metavar='RUN_ID',
                         help='apo/gepa: a finished development baseline run whose results score the seed')
     runner.add_argument('--rng-seed', type=int, default=0, help='gepa: parent and minibatch sampling seed')
+    runner.add_argument('--source', choices=('final', 'baseline'), default='final',
+                        help='apo/gepa: plugin arm the seed skill and candidate plugin come from '
+                             '(final = A0; baseline = T010 guidance, exploratory E1/E2)')
     runner.add_argument('--model', help='pin the Claude Code model of rollouts and optimizer calls '
                                          '(apo/gepa default: claude-sonnet-5-5, the SPEC-071 T012 model)')
     purge = commands.choices['purge']
@@ -182,7 +185,8 @@ def run(args, *, ask=None) -> int:
                 output = lightning_arm.run_arm(home, value, seed_run=args.seed_run, run_id=args.resume,
                                                resume=bool(args.resume), fake_hosts=args.fake_hosts,
                                                plugin_dir=args.plugin_dir, rng_seed=args.rng_seed,
-                                               models={'claude-code': args.model} if args.model else None)
+                                               models={'claude-code': args.model} if args.model else None,
+                                               source=args.source)
             elif not args.dry_run:
                 output = runner.run(home, value, run_id=args.resume, resume=bool(args.resume), prompt_set=args.prompt_set,
                                     fake_hosts=args.fake_hosts, plugin_dir=args.plugin_dir,

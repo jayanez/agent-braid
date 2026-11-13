@@ -5,7 +5,7 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_algorithm.py": "f3367d6e6a5881874f28d0dfe760c60141ddefb5be58d836bebb0d90226143a6",
+  "agent_braid/lightning_algorithm.py": "3dd5dbc88bbfa7390899d0b46697d3765e89a2f5fae02cc9401cd562e23c1f17",
   "agent_braid/lightning_gepa.py": "e610b1c2eff80b9638cda36f673ca81251c886310b7d3e5cfba74467c5ffb556",
   "agent_braid/lightning_prompts/gepa_reflection.md": "4d4a33c87e9f4214a0e925f7115055a5b27c659c7451a40a8e4a573a69208ced",
   "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",

@@ -136,6 +136,36 @@ class ArmTests(Base):
         self.assertEqual(skill.read_text(), 'old')
 
 
+class SourceTests(Base):
+    def test_source_skill_pins_the_t010_guidance_or_the_working_tree(self):
+        target = 'integrations/agent-braid/skills/agent-braid-analyze/SKILL.md'
+        final, final_source = arm.source_skill('final', target, ROOT)
+        baseline, baseline_source = arm.source_skill('baseline', target, ROOT)
+        self.assertEqual(final, (ROOT / target).read_text(encoding='utf-8'))
+        self.assertNotEqual(baseline, final)
+        self.assertEqual((baseline_source['arm'], baseline_source['workingTree']), ('baseline', False))
+        self.assertTrue(final_source['workingTree'])
+        with self.assertRaises(runner.RunnerError):
+            arm.source_skill('other', target, ROOT)
+
+    def test_exploratory_arm_starts_from_the_baseline_source_and_journals_it(self):
+        seed = self.seed_run()
+        summary = arm.run_arm(self.home, profile('gepa', rounds=1, minibatch=3), seed_run=seed, run_id='e2',
+                              fake_hosts=True, environ=CLEAN_ENV, source='baseline')
+        self.assertEqual(summary['source']['arm'], 'baseline')
+        start = store.RunStore(self.home, 'e2').read_journal()[0]
+        self.assertEqual(start['source'], summary['source'])
+        baseline, _ = arm.source_skill('baseline', profile('gepa')['target']['path'], ROOT)
+        self.assertEqual(summary['seedSha256'], algorithm.sha256_text(baseline.split('\n---\n', 1)[1]))
+
+    def test_journal_refuses_a_malformed_source(self):
+        run = store.RunStore(self.home, 'bad')
+        run.create(config_digest='0' * 64)
+        with self.assertRaises(store.StoreError):
+            run.append_journal({'kind': 'start', 'algorithm': 'apo', 'rngSeed': None,
+                                'source': {'arm': 'other', 'commit': 'zz', 'workingTree': 1}})
+
+
 class CliTests(Base):
     def cli(self, *argv):
         parser = argparse.ArgumentParser()
