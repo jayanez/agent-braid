@@ -9,7 +9,7 @@
   ],
   "assumptions": "SPEC-070 configuration and store exist with traces.contentConsent, traces.sources and traces.retentionDays; host transcript readers and Loom and System One validators keep their current interfaces; the traces section of lightning-config.schema.json is extended (no separate consent schema); runtime stays standard-library only. Owner decisions (T001, 2026-11-13): host transcripts are an opt-in source (OD-1); emails use a per-run salted hash placeholder (OD-2); consent does not expire and status shows consentedAt (OD-3).",
   "authority_snapshot": {
-    "commit": "547fdb33acc29ac0b80bc39245247c0f9e2ebea3",
+    "commit": "f923f73fe7c9e1791139b3fddc02a3736bdf4e94",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -105,7 +105,7 @@
   "compatibility": "Additive: default consent none keeps current behaviour; content-free telemetry unchanged; braid-lightning-config/v0.1 keys unchanged; spec069 secret patterns move to a shared module imported by the script.",
   "domain": "Braid Lightning content-bearing traces: consent, redaction, retention and purge, and adapters from rollouts, host transcripts, Loom and System One shadow episodes to triplets and messages.",
   "evidence_snapshot": {
-    "commit": "547fdb33acc29ac0b80bc39245247c0f9e2ebea3",
+    "commit": "f923f73fe7c9e1791139b3fddc02a3736bdf4e94",
     "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; no content stored or emitted without consent redacted; redaction precedes storage; System One files are read-only and never receive adapter output; no network, subprocess or MCP tool.",

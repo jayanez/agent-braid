@@ -130,7 +130,7 @@ class PackageVersionTests(unittest.TestCase):
     def test_plugin_release_identity_is_not_bumped(self):
         builder = (ROOT / "scripts/build_native_plugin.py").read_text()
         # SPEC-060 released no plugin; the next identity is the SPEC-066 shadow-mode release.
-        self.assertRegex(builder, r"(?m)^VERSION = '0\.1\.0-alpha\.7'$")
+        self.assertRegex(builder, r"(?m)^VERSION = '0\.1\.0-alpha\.8'$")
 
     def test_host_asset_metadata_is_not_tied_to_the_package_version(self):
         value = json.loads((ROOT / "integrations/agent-braid/hosts.json").read_text())
