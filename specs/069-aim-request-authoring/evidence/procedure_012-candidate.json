@@ -7,32 +7,37 @@
   "candidate": {
     "version": "0.1.0-alpha.8",
     "branch": "release/069-alpha8",
-    "sourceCommit": "a741c5a1756eea5976d9717943b393c5a5a4a86f",
+    "sourceCommit": "c0271812fc0c81032e2621881e543cabc500881e",
     "sourceDirty": false,
     "build": "scripts/build_native_plugin.py from a fresh local clone at sourceCommit, Python 3.12.13, platforms macos-arm64 and linux-x86_64",
-    "packageFiles": 8121,
-    "outputFiles": 8126,
+    "packageFiles": 8107,
+    "outputFiles": 8112,
     "sha256": {
-      "plugins/agent-braid/package-inventory.json": "ee91d5095783e24181e780ea6ff9b370cbfddd5689cab4be19c55836884256cb",
-      "plugins/agent-braid/provenance.json": "cd6da35fe7dcd4be990e13c0599df92c1d4780e78f56d09ef72aba91ed35e1fc",
-      "sources/agent-braid-0.1.0-alpha.8-source.tar.gz": "7888ebfd05695de34e096f23c64f2aefdaaf89f16ba8bb201203a1f680e32cc4",
-      "treeManifest": "203018e83fade94c4e2e0a1fc4311cb4b8d7a5357883cda4a4a09c1111bb06b6"
+      "plugins/agent-braid/package-inventory.json": "18f62e54e515f850fa741601dc5bb6dc7aafb1396c9e2be302ec4ffeeb5d8fe7",
+      "plugins/agent-braid/provenance.json": "b6b162fb066963496872ae2ea9ff964af77504347dd5106ef0c743c3ddcc2677",
+      "sources/agent-braid-0.1.0-alpha.8-source.tar.gz": "10c55f76fd7e410c6fecaabbd11452b83b9a86e9496af206a54e86e2ce1f642d",
+      "treeManifest": "f54fdfc8ce84a3d85019990ba7d490ad093ccdf6bed34a49d47aff51b02740bc"
     },
     "treeManifestDefinition": "SHA-256 of `find . -type f -print0 | LC_ALL=C sort -z | xargs -0 shasum -a 256` run in the build output root",
     "doctor": {
       "pluginVersion": "0.1.0-alpha.8",
       "version": "0.1.0a2",
       "package": "verified",
-      "files": 8121,
+      "files": 8107,
       "home": "empty resolved temporary home"
+    },
+    "supersedes": {
+      "sourceCommit": "a741c5a1756eea5976d9717943b393c5a5a4a86f",
+      "treeManifest": "203018e83fade94c4e2e0a1fc4311cb4b8d7a5357883cda4a4a09c1111bb06b6",
+      "reason": "Owner decision 2026-11-13 (\"Fix first\"): the first candidate shipped the builder's home path in 12 unused console scripts and 2 direct_url.json files, as alpha.4 to alpha.7 did."
     }
   },
   "packageEqualsCandidate": {
-    "provenanceSourceCommit": "a741c5a1756eea5976d9717943b393c5a5a4a86f",
-    "treeManifestAfterSmoke": "203018e83fade94c4e2e0a1fc4311cb4b8d7a5357883cda4a4a09c1111bb06b6",
+    "provenanceSourceCommit": "c0271812fc0c81032e2621881e543cabc500881e",
+    "treeManifestAfterSmoke": "f54fdfc8ce84a3d85019990ba7d490ad093ccdf6bed34a49d47aff51b02740bc",
     "smokeUsedPluginDir": "the build output itself (--plugin-dir); the driver probes disposable copies, and the tree manifest was unchanged after all three hosts",
-    "rebuildReproducibility": "A second build of the same commit from another clone differed in 31 of 8126 files only: provenance.json, package-inventory.json, the source archive, dist-info RECORD and direct_url.json, and site-packages/bin console scripts, all of which embed the build directory path or archive mtimes. All other files were byte-identical. A rebuild is therefore not byte-equal; publish these exact candidate bytes.",
-    "sourceAfterMerge": "After sourceCommit the PR changes only specs/069-aim-request-authoring/ (evidence files and the procedure_011 digest in assurance.json), none of which is in the plugin tree (the wheel packages agent_braid and research). At publication, `git diff --name-only a741c5a1 <merge>` must list only paths under specs/069-aim-request-authoring/."
+    "rebuildReproducibility": "A second build of the same commit from another clone differed in 31 of 8126 files only: provenance.json, package-inventory.json, the source archive, dist-info RECORD and direct_url.json, and site-packages/bin console scripts, all of which embed the build directory path or archive mtimes. All other files were byte-identical. A rebuild is therefore not byte-equal; publish these exact candidate bytes. Measured on the first candidate (a741c5a1). This candidate no longer ships the console scripts or direct_url.json; reproducibility was not re-measured, so these exact bytes are published.",
+    "sourceAfterMerge": "After sourceCommit the PR changes only specs/069-aim-request-authoring/ (evidence files and the procedure_011 digest in assurance.json), none of which is in the plugin tree (the wheel packages agent_braid and research). At publication, `git diff --name-only c0271812 <merge>` must list only paths under specs/069-aim-request-authoring/."
   },
   "ci": {
     "pullRequest": "https://github.com/jayanez/agent-braid/pull/1342",
@@ -120,21 +125,33 @@
       }
     },
     "evidence": {
-      "candidate-alpha8-smoke.json": "cd27d3b7c0406722eb420c218053d2ae680509264028d98c2c3cd79a0721d6ef",
-      "candidate-alpha8-smoke-codex.json": "1afefca9257b5a7b54938fd86018af57449f9d2af681af3be654155cad4222ac"
+      "candidate-alpha8-smoke.json": "dfa2be166e2004cfa3047be132bf570193521b11d213e242efe5b240049f38d7",
+      "candidate-alpha8-smoke-codex.json": "00ecc883fe2c210542b8bc59e43ba17a1e3ef6c7cfa3b633d6d74904a3a9de45"
     },
-    "limits": "One session per host on macOS arm64, arm final only; an observation, not a sample. Linux not exercised."
+    "limits": "One session per host on macOS arm64, arm final only; an observation, not a sample. Linux not exercised.",
+    "note": "Re-run on the c0271812 build. The first Codex attempt stopped before running because the dedicated Codex profile still registered the previous candidate's marketplace; it was removed and Codex re-run."
   },
   "spend": {
-    "claudeCodeUsd": 0.0779588,
+    "claudeCodeUsd": 0.0768578,
     "claudeCodeNote": "notional total_cost_usd reported by Claude Code under the OAuth token (subscription)",
     "openRouterReportedCost": 0,
     "codex": "subscription; no cost reported",
-    "totalCashUsdAtMost": 0.08
+    "totalCashUsdAtMost": 0.08,
+    "previousCandidateUsd": 0.0779588
   },
   "ownerDecision": {
     "yes": null,
     "date": null,
     "note": "Fill from the owner's own words before any tag or plugin-dist push."
+  },
+  "buildPathFix": {
+    "change": "scripts/build_native_plugin.py removes site-packages/bin console scripts and dist-info direct_url.json written by pip --target (and their RECORD lines, other RECORD bytes kept), and stops the build if any packaged file contains the checkout, build folder or build virtualenv path",
+    "tests": "tests/test_native_plugin_build.py BuilderPathTests",
+    "removedFiles": 14,
+    "check": "no file in the c0271812 build output contains the builder's home path or account name (grep over all files, text and binary); third-party /Users/runner strings inside upstream wheels are left unchanged by owner decision",
+    "ownerDecisions": {
+      "scripts": "Remove them (Recommended)",
+      "thirdParty": "Leave them (Recommended)"
+    }
   }
 }

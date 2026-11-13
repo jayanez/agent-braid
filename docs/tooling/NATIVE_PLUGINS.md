@@ -620,6 +620,12 @@ Until then `0.1.0-alpha.7` is the published version.
 >   bundled CLI gains `lightning init|validate|status|purge|run|report`. The MCP server
 >   never starts a run and nothing is promoted without a human decision. The setup
 >   skill describes it only when the user asks.
+> - **No build paths in the package.** The bundled runtime no longer ships the unused
+>   console scripts in `site-packages/bin` or the `direct_url.json` of the Agent Braid
+>   wheel. In earlier versions both carried the builder's local paths. The plugin
+>   starts only through `launch`, so nothing that worked before changes. The build now
+>   stops if a packaged file contains the checkout, build folder or build environment
+>   path (`tests/test_native_plugin_build.py`).
 >
 > **Limits.**
 >

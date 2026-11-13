@@ -7,7 +7,7 @@
   },
   "driverSha256": "92a737a5d4e7af15d9a859f49b9be2111dc5f82c68c694b59a8019091e6de236",
   "evidenceVersion": 1,
-  "generatedAt": "2026-11-13T12:50:15Z",
+  "generatedAt": "2026-11-13T15:26:52Z",
   "hosts": {
     "codex": {
       "allowlist": [
@@ -258,14 +258,14 @@
               "kind": "units",
               "refusalSummary": null,
               "report": {
-                "analysisId": "sha256:ca95ebe4e0a8d607780c668440c5e93e961ad61375921b04697c3f371f71bebb",
+                "analysisId": "sha256:4cfdd17fd23274b61e5167db2c8c98b19874e4670e79afdf0cfacc0bfa4ce286",
                 "analyzer": {
                   "name": "agent-braid",
                   "ruleSet": "exact-resource-footprints-v1",
                   "version": "0.1.0-alpha"
                 },
                 "executionAuthorization": false,
-                "inputDigest": "sha256:9f6eeb2496daffb122475c8d70476a6452a70c6da8d8c5f19dab179cd48c651a",
+                "inputDigest": "sha256:ba5327b183e9a5a49da775b98807739f837eed89303a78cc2fd1079d2f9fc47d",
                 "interactions": [
                   {
                     "classification": "conflicting",
@@ -286,7 +286,7 @@
                     ],
                     "right": "edit-readme-intro",
                     "sharedResources": [
-                      "repo://7d4f507e378e00286b32c7f4be8f2f23/README.md"
+                      "repo://65d3c39cf39db00a07fd35977950a362/README.md"
                     ]
                   }
                 ],
@@ -306,7 +306,7 @@
                     "dependencies": [],
                     "instanceId": "edit-readme",
                     "resources": [
-                      "repo://7d4f507e378e00286b32c7f4be8f2f23/README.md"
+                      "repo://65d3c39cf39db00a07fd35977950a362/README.md"
                     ]
                   },
                   {
@@ -319,7 +319,7 @@
                     "dependencies": [],
                     "instanceId": "edit-readme-intro",
                     "resources": [
-                      "repo://7d4f507e378e00286b32c7f4be8f2f23/README.md"
+                      "repo://65d3c39cf39db00a07fd35977950a362/README.md"
                     ]
                   }
                 ],
@@ -366,7 +366,7 @@
           ],
           "caseId": "probe-schema",
           "deniedToolRequests": [],
-          "durationSeconds": 35.0,
+          "durationSeconds": 30.2,
           "exitCode": 0,
           "keySourceReported": null,
           "models": [],
@@ -377,11 +377,6 @@
           "repetition": 1,
           "timedOut": false,
           "toolCalls": [
-            {
-              "class": "agent-braid",
-              "isError": false,
-              "tool": "agent-braid__workspaces"
-            },
             {
               "class": "agent-braid",
               "isError": false,
@@ -399,16 +394,16 @@
             }
           ],
           "transcript": {
-            "bytes": 32361,
+            "bytes": 28474,
             "file": "candidate-alpha8-smoke-codex.transcripts/codex/probe-schema-r1.jsonl",
-            "sha256": "422a3c9dd9728b9a56ab6de07d90c2bba8c89ff51a68083dd4176ff2ffe3e106"
+            "sha256": "66c08c4a98472a92b6a3551feaa62b8cf23e11d18a6b77640cda482b5ae273a2"
           },
           "usage": {
             "cache_write_input_tokens": 0,
-            "cached_input_tokens": 90240,
-            "input_tokens": 110200,
-            "output_tokens": 882,
-            "reasoning_output_tokens": 17
+            "cached_input_tokens": 59648,
+            "input_tokens": 99224,
+            "output_tokens": 809,
+            "reasoning_output_tokens": 0
           }
         }
       ],
@@ -453,7 +448,7 @@
               }
             ],
             "protocolVersion": "2025-06-18",
-            "receipt": "connection-1794574219-76974.json",
+            "receipt": "connection-1794583617-42959.json",
             "trace": [
               "in:initialize",
               "out:response",
@@ -461,8 +456,6 @@
               "in:tools/list",
               "out:response",
               "in:tools/call",
-              "in:tools/call",
-              "out:response",
               "out:response",
               "in:tools/call",
               "out:response",

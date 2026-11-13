@@ -6,7 +6,7 @@
  },
  "inputs": {
   "agent_braid/analyze_work_schema.py": "a7a5ccb6dde3ff1ad3650dfbd3a9e3c457e9c2c1782f88bb44ff5d852c156d41",
-  "docs/tooling/NATIVE_PLUGINS.md": "c999f068ac0c6fdb30a9e97c118013c8b6f9e6525d78b62c88df37f9b3a25812",
+  "docs/tooling/NATIVE_PLUGINS.md": "851e72f1c6614f2dc6b6dd03b7cab2e2f3ffdb07e68285dd674da39a65c66dd8",
   "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
   "specs/069-aim-request-authoring/compatibility.md": "48a18f8c22c4b25216d5c511f30514eceb92fd6b671a5c123d4dfab637086d05",
   "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "ae433d93d7e0af3e056246588719ea5d7ac1e95c8eb13b68b620977900cba118",

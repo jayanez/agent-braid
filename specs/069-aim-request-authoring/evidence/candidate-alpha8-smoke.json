@@ -7,7 +7,7 @@
   },
   "driverSha256": "92a737a5d4e7af15d9a859f49b9be2111dc5f82c68c694b59a8019091e6de236",
   "evidenceVersion": 1,
-  "generatedAt": "2026-11-13T12:48:38Z",
+  "generatedAt": "2026-11-13T15:24:55Z",
   "hosts": {
     "claude-code": {
       "allowlist": [
@@ -258,14 +258,14 @@
               "kind": "units",
               "refusalSummary": null,
               "report": {
-                "analysisId": "sha256:d618700090b919eab44b69ab06b2abc149072bb8499998e7553675ef690cbfca",
+                "analysisId": "sha256:b86b922bb3a7e022c51a3c03d67c30084cbaa327a3f616a1f9068b5425e6ba94",
                 "analyzer": {
                   "name": "agent-braid",
                   "ruleSet": "exact-resource-footprints-v1",
                   "version": "0.1.0-alpha"
                 },
                 "executionAuthorization": false,
-                "inputDigest": "sha256:3df89f09fc8495d6e4e982856f5e52ecce422c4e21fe1dc66a5f0d5f9d44643e",
+                "inputDigest": "sha256:2bf1fab3c38181feb34414a09f0a7a19e39d896d4879d982026203b52654cb54",
                 "interactions": [
                   {
                     "classification": "conflicting",
@@ -286,7 +286,7 @@
                     ],
                     "right": "edit-readme-intro",
                     "sharedResources": [
-                      "repo://96d21332539d68f5a9bd863e86aac734/README.md"
+                      "repo://cbfeb04587ddd70be199a20578dc42aa/README.md"
                     ]
                   }
                 ],
@@ -306,7 +306,7 @@
                     "dependencies": [],
                     "instanceId": "edit-readme",
                     "resources": [
-                      "repo://96d21332539d68f5a9bd863e86aac734/README.md"
+                      "repo://cbfeb04587ddd70be199a20578dc42aa/README.md"
                     ]
                   },
                   {
@@ -319,7 +319,7 @@
                     "dependencies": [],
                     "instanceId": "edit-readme-intro",
                     "resources": [
-                      "repo://96d21332539d68f5a9bd863e86aac734/README.md"
+                      "repo://cbfeb04587ddd70be199a20578dc42aa/README.md"
                     ]
                   }
                 ],
@@ -366,7 +366,7 @@
           ],
           "caseId": "probe-schema",
           "deniedToolRequests": [],
-          "durationSeconds": 15.0,
+          "durationSeconds": 12.5,
           "exitCode": 0,
           "keySourceReported": "none",
           "models": [
@@ -396,38 +396,38 @@
             }
           ],
           "transcript": {
-            "bytes": 47707,
+            "bytes": 46949,
             "file": "candidate-alpha8-smoke.transcripts/claude-code/probe-schema-r1.jsonl",
-            "sha256": "fb7b90c73ee0d15d3ac0fa535a3346d1a38e611f28664af9665d8dd4cc68c51c"
+            "sha256": "0ea4100136a7ccab9d18cce6212c79ef4b46ae3671a290e347e2555d489d6996"
           },
           "usage": {
-            "duration_ms": 12764,
+            "duration_ms": 10565,
             "num_turns": 4,
-            "total_cost_usd": 0.0779588,
+            "total_cost_usd": 0.0768578,
             "usage": {
               "cache_creation": {
-                "ephemeral_1h_input_tokens": 14495,
+                "ephemeral_1h_input_tokens": 14537,
                 "ephemeral_5m_input_tokens": 0
               },
-              "cache_creation_input_tokens": 14495,
-              "cache_read_input_tokens": 21968,
+              "cache_creation_input_tokens": 14537,
+              "cache_read_input_tokens": 21978,
               "fallback_credit": null,
               "inference_geo": "global",
               "input_tokens": 6,
               "iterations": [
                 {
                   "cache_creation": {
-                    "ephemeral_1h_input_tokens": 5304,
+                    "ephemeral_1h_input_tokens": 5341,
                     "ephemeral_5m_input_tokens": 0
                   },
-                  "cache_creation_input_tokens": 5304,
-                  "cache_read_input_tokens": 11307,
+                  "cache_creation_input_tokens": 5341,
+                  "cache_read_input_tokens": 11312,
                   "input_tokens": 2,
-                  "output_tokens": 495,
+                  "output_tokens": 364,
                   "type": "message"
                 }
               ],
-              "output_tokens": 1777,
+              "output_tokens": 1650,
               "output_tokens_details": {
                 "thinking_tokens": 0
               },
@@ -495,7 +495,7 @@
               }
             ],
             "protocolVersion": "2026-07-28",
-            "receipt": "connection-1794574124-65812.json",
+            "receipt": "connection-1794583501-34980.json",
             "trace": [
               "in:server/discover",
               "out:response",
@@ -610,116 +610,9 @@
           "attempts": [
             {
               "accepted": false,
-              "kind": "units",
+              "kind": "aim",
               "refusalSummary": "Plugin request refused: check workspace, arguments, registry and reconnect state",
               "report": null,
-              "request": {
-                "units": [
-                  {
-                    "effects": [
-                      {
-                        "kind": "write",
-                        "resource": "README.md"
-                      }
-                    ],
-                    "id": "edit-readme"
-                  },
-                  {
-                    "effects": [
-                      {
-                        "kind": "write",
-                        "resource": "README.md"
-                      }
-                    ],
-                    "id": "edit-readme-intro"
-                  }
-                ],
-                "unitsRequestVersion": "0.1.0-alpha"
-              }
-            },
-            {
-              "accepted": true,
-              "kind": "aim",
-              "refusalSummary": null,
-              "report": {
-                "analysisId": "sha256:44aac5d61663008663bb66b07190cce628c9897fb854f9bbf63cc0f5934d90b2",
-                "analyzer": {
-                  "name": "agent-braid",
-                  "ruleSet": "exact-resource-footprints-v1",
-                  "version": "0.1.0-alpha"
-                },
-                "executionAuthorization": false,
-                "inputDigest": "sha256:e9fa8e4484b86ef4852e8b1db4f98b4caffa186a32e85df720f0d84476f04b06",
-                "interactions": [
-                  {
-                    "classification": "independent-candidate",
-                    "completenessBasis": "declared-not-observed",
-                    "constraints": [
-                      "requires-execution-contract-before-parallelism"
-                    ],
-                    "evidence": {
-                      "assuranceClass": 1,
-                      "coverage": [
-                        "complete"
-                      ],
-                      "method": "exact-resource-footprint",
-                      "ruleSet": "exact-resource-footprints-v1"
-                    },
-                    "left": "edit-readme",
-                    "reasons": [
-                      "Complete exact-resource footprints are disjoint."
-                    ],
-                    "right": "edit-roadmap",
-                    "sharedResources": []
-                  }
-                ],
-                "limits": [
-                  "Resource identity is exact-string equality; aliases and semantic dependencies are not inferred.",
-                  "A candidate establishes no concurrent-execution refinement, authorization, or task correctness.",
-                  "The analyzer does not execute agents, tools, Git operations, or external effects."
-                ],
-                "operations": [
-                  {
-                    "attemptId": "edit-readme-1",
-                    "coverage": {
-                      "domain": "synthetic exact repository paths",
-                      "method": "fixture declaration",
-                      "status": "complete"
-                    },
-                    "dependencies": [],
-                    "instanceId": "edit-readme",
-                    "resources": [
-                      "repo://agent-braid/README.md"
-                    ]
-                  },
-                  {
-                    "attemptId": "edit-roadmap-1",
-                    "coverage": {
-                      "domain": "synthetic exact repository paths",
-                      "method": "fixture declaration",
-                      "status": "complete"
-                    },
-                    "dependencies": [],
-                    "instanceId": "edit-roadmap",
-                    "resources": [
-                      "repo://agent-braid/ROADMAP.md"
-                    ]
-                  }
-                ],
-                "reportVersion": "0.1.0-alpha",
-                "sourceKind": "aim",
-                "summary": {
-                  "classifications": {
-                    "conflicting": 0,
-                    "independent-candidate": 1,
-                    "ordered": 0,
-                    "unknown": 0
-                  },
-                  "operationCount": 2,
-                  "pairCount": 1
-                },
-                "uncertainty": []
-              },
               "request": {
                 "analysisInputVersion": "0.1.0-alpha",
                 "operations": [
@@ -809,11 +702,121 @@
                   "kind": "aim"
                 }
               }
+            },
+            {
+              "accepted": true,
+              "kind": "units",
+              "refusalSummary": null,
+              "report": {
+                "analysisId": "sha256:283ed66acc88191a581128c83391a79b5fc3ca9e2db683cc0f1dc09f697717f8",
+                "analyzer": {
+                  "name": "agent-braid",
+                  "ruleSet": "exact-resource-footprints-v1",
+                  "version": "0.1.0-alpha"
+                },
+                "executionAuthorization": false,
+                "inputDigest": "sha256:544d0027cd379093d604b23842e06ffc117c07bfc1124fb2f9ca3f2e2b52cd71",
+                "interactions": [
+                  {
+                    "classification": "conflicting",
+                    "constraints": [
+                      "serialize-or-isolate"
+                    ],
+                    "evidence": {
+                      "assuranceClass": 0,
+                      "coverage": [
+                        "partial"
+                      ],
+                      "method": "exact-resource-footprint",
+                      "ruleSet": "exact-resource-footprints-v1"
+                    },
+                    "left": "edit-readme",
+                    "reasons": [
+                      "At least one exact shared resource has a write-like effect."
+                    ],
+                    "right": "edit-readme-intro",
+                    "sharedResources": [
+                      "repo://f7b062291df8cbc0bb4e0b119ae4f1c4/README.md"
+                    ]
+                  }
+                ],
+                "limits": [
+                  "Resource identity is exact-string equality; aliases and semantic dependencies are not inferred.",
+                  "A candidate establishes no concurrent-execution refinement, authorization, or task correctness.",
+                  "The analyzer does not execute agents, tools, Git operations, or external effects."
+                ],
+                "operations": [
+                  {
+                    "attemptId": "edit-readme",
+                    "coverage": {
+                      "domain": "workspace-relative paths declared by the host model",
+                      "method": "units declaration (agent-braid.units-declaration/0.1.0-alpha)",
+                      "status": "partial"
+                    },
+                    "dependencies": [],
+                    "instanceId": "edit-readme",
+                    "resources": [
+                      "repo://f7b062291df8cbc0bb4e0b119ae4f1c4/README.md"
+                    ]
+                  },
+                  {
+                    "attemptId": "edit-readme-intro",
+                    "coverage": {
+                      "domain": "workspace-relative paths declared by the host model",
+                      "method": "units declaration (agent-braid.units-declaration/0.1.0-alpha)",
+                      "status": "partial"
+                    },
+                    "dependencies": [],
+                    "instanceId": "edit-readme-intro",
+                    "resources": [
+                      "repo://f7b062291df8cbc0bb4e0b119ae4f1c4/README.md"
+                    ]
+                  }
+                ],
+                "reportVersion": "0.1.0-alpha",
+                "sourceKind": "units",
+                "summary": {
+                  "classifications": {
+                    "conflicting": 1,
+                    "independent-candidate": 0,
+                    "ordered": 0,
+                    "unknown": 0
+                  },
+                  "operationCount": 2,
+                  "pairCount": 1
+                },
+                "uncertainty": [
+                  "At least one operation lacks complete effect coverage."
+                ]
+              },
+              "request": {
+                "units": [
+                  {
+                    "effects": [
+                      {
+                        "kind": "write",
+                        "resource": "README.md"
+                      }
+                    ],
+                    "id": "edit-readme"
+                  },
+                  {
+                    "effects": [
+                      {
+                        "kind": "write",
+                        "resource": "README.md"
+                      }
+                    ],
+                    "id": "edit-readme-intro"
+                  }
+                ],
+                "unitsRequestVersion": "0.1.0-alpha"
+              }
             }
           ],
           "caseId": "probe-schema",
           "deniedToolRequests": [],
-          "durationSeconds": 18.3,
+          "durationSeconds": 18.6,
           "exitCode": 0,
           "keySourceReported": null,
           "models": [],
@@ -832,12 +835,12 @@
             {
               "class": "agent-braid",
               "isError": false,
-              "tool": "agent-braid_plugin-status"
+              "tool": "agent-braid_workspaces"
             },
             {
               "class": "agent-braid",
               "isError": false,
-              "tool": "agent-braid_workspaces"
+              "tool": "agent-braid_plugin-status"
             },
             {
               "class": "agent-braid",
@@ -851,20 +854,20 @@
             }
           ],
           "transcript": {
-            "bytes": 46611,
+            "bytes": 53883,
             "file": "candidate-alpha8-smoke.transcripts/opencode/probe-schema-r1.jsonl",
-            "sha256": "66d37efffa3d1f3d6c680452058a3574632797fe6613c61148884b314cee69d1"
+            "sha256": "706a502a6187dcce542b75db2c411b589d7b76e94d41346ac38cd76e615de2e9"
           },
           "usage": {
             "cost": 0,
             "tokens": {
               "cache": {
-                "read": 12885,
-                "write": 20802
+                "read": 12837,
+                "write": 20814
               },
               "input": 10,
-              "output": 1294,
-              "reasoning": 285
+              "output": 1302,
+              "reasoning": 255
             }
           }
         }
@@ -908,7 +911,7 @@
               }
             ],
             "protocolVersion": "2025-11-25",
-            "receipt": "connection-1794574186-74561.json",
+            "receipt": "connection-1794583558-40532.json",
             "trace": [
               "in:initialize",
               "out:response",
