@@ -19,6 +19,7 @@ import time
 
 MAX_LINE = 1024 * 1024
 MAX_EVENTS = 4096
+KINDS = ("aim", "git", "units")
 
 
 def digest(data):
@@ -50,7 +51,8 @@ def finite_float(value):
 
 
 class Observer:
-    def __init__(self):
+    def __init__(self, keep_listing=False):
+        self.keep_listing = keep_listing
         self.pending = {}
         self.server_pending = {}
         self.buffers = {"in": b"", "out": b""}
@@ -108,9 +110,10 @@ class Observer:
                     args = params.get("arguments") if isinstance(params, dict) else None
                     request = args.get("request") if isinstance(args, dict) else None
                     request_type = "object" if isinstance(request, dict) else "array" if isinstance(request, list) else "other"
+                    kind = args.get("kind") if isinstance(args, dict) else None
                     if len(self.receipt["calls"]) >= MAX_EVENTS:
                         raise ValueError
-                    self.receipt["calls"].append({"requestType": request_type})
+                    self.receipt["calls"].append({"requestType": request_type, "kind": kind if kind in KINDS else None})
             else:
                 if "id" not in msg or "params" in msg or ("result" in msg) == ("error" in msg):
                     raise ValueError
@@ -146,12 +149,15 @@ class Observer:
                         "resultCanonicalSha256": digest(canonical(result)),
                         "analyzeWorkCanonicalSha256": digest(canonical(target[0])),
                         "toolCount": len(tools)})
+                    if self.keep_listing:
+                        # Opt-in (--keep-listing): the server's raw listing line, so a driver can check the model-facing bytes.
+                        self.receipt["listings"][-1]["rawLine"] = raw.decode("utf-8")
         except (ValueError, TypeError, UnicodeError, RecursionError):
             self.fail("invalid_or_excess_message")
 
 
-def relay(command, receipt):
-    observer = Observer()
+def relay(command, receipt, keep_listing=False):
+    observer = Observer(keep_listing)
     child = None
     status = 1
     def interrupted(signum, frame):
@@ -224,6 +230,8 @@ def relay(command, receipt):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--receipt", required=True)
+    parser.add_argument("--keep-listing", action="store_true",
+                        help="also store each raw tools/list response line (server output only; never requests or arguments)")
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
@@ -231,7 +239,7 @@ def main():
         parser.error("a server command is required after --")
     fd = os.open(args.receipt, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     with os.fdopen(fd, "w", encoding="utf-8") as receipt:
-        return relay(command, receipt)
+        return relay(command, receipt, args.keep_listing)
 
 
 if __name__ == "__main__":

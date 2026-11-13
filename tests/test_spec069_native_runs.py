@@ -670,3 +670,81 @@ class OpenCodeUsageTests(unittest.TestCase):
         transcript = driver.parse_opencode_run("\n".join(json.dumps(r) for r in rows))
         self.assertEqual(transcript.usage, {"cost": 0.75, "tokens": {"input": 5, "output": 14, "cache": {"read": 6}}})
         self.assertEqual(transcript.models, ["m/x"])
+
+
+class SchemaProbeTests(unittest.TestCase):
+    """--probe-schema (T005 / procedure_005): recording relay in the installed copy, verdict per host, byte identity."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.code, cls.evidence, cls.tmp = run_driver("--probe-schema", "--arm", "final")
+
+    def test_every_host_passes_with_object_requests_for_both_branches(self) -> None:
+        self.assertEqual(self.code, 0)
+        self.assertEqual(self.evidence["label"], "pipeline-only")
+        for name in driver.HOSTS:
+            verdict = self.evidence["summary"][name]
+            self.assertEqual(verdict["verdict"], "pass", name)
+            self.assertTrue(verdict["requestAlwaysObject"])
+            self.assertEqual(verdict["kindsAtServer"], ["aim", "units"])
+            self.assertTrue(verdict["exposedToModel"])
+            self.assertEqual(verdict["loading"], "eager")
+            self.assertNotIn("score", self.evidence["hosts"][name]["runs"][0])
+
+    def test_raw_listing_line_is_saved_with_its_hash_and_matches_the_build_fingerprint(self) -> None:
+        expected = self.evidence["schemaProbe"]["expectedFingerprint"]["sha256"]
+        self.assertEqual(expected, driver.expected_fingerprints()["per-kind"]["sha256"])
+        for name in driver.HOSTS:
+            (connection,) = self.evidence["hosts"][name]["schemaProbe"]["connections"]
+            self.assertTrue(connection["complete"])
+            self.assertRegex(connection["protocolVersion"], r"^\d{4}-\d{2}-\d{2}$")
+            (listing,) = connection["listings"]
+            raw = (self.tmp / listing["rawLineFile"]).read_bytes()
+            self.assertEqual(driver.sha256_bytes(raw), listing["lineSha256"])
+            self.assertEqual(listing["modelFacingSha256"], expected)
+        cross = self.evidence["schemaProbe"]["crossHost"]
+        self.assertTrue(all(group["identical"] for group in cross["byProtocolVersion"].values()))
+        self.assertTrue(cross["modelFacingIdenticalAcrossVersions"])
+
+    def test_stringified_request_is_a_declared_limit_not_a_pass(self) -> None:
+        code, evidence, _ = run_driver("--probe-schema", "--arm", "final", "--fake-variant", "stringify", "--hosts", "codex")
+        self.assertEqual(code, 0)
+        verdict = evidence["summary"]["codex"]
+        self.assertFalse(verdict["requestAlwaysObject"])
+        self.assertTrue(verdict["verdict"].startswith("declared-limit"), verdict["verdict"])
+
+    def test_description_only_arm_compares_against_its_own_fingerprint(self) -> None:
+        code, evidence, _ = run_driver("--probe-schema", "--arm", "final-no-schema", "--hosts", "opencode")
+        self.assertEqual(code, 0)
+        self.assertEqual(evidence["schemaProbe"]["delivery"], "description-only")
+        self.assertEqual(evidence["schemaProbe"]["expectedFingerprint"]["sha256"],
+                         driver.expected_fingerprints()["description-only"]["sha256"])
+        self.assertEqual(evidence["summary"]["opencode"]["verdict"], "pass")
+
+    def test_probe_needs_a_d9_arm_and_a_single_prompt(self) -> None:
+        for extra in (["--arm", "baseline"], ["--arm", "final", "--repetitions", "3"]):
+            with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
+                driver.parse_args(["--probe-schema", *extra])
+
+    def test_wrapper_relays_only_plugin_serve_and_is_restored(self) -> None:
+        root = Path(scratch("t005-wrap-"))
+        (root / "launch").write_text("#!/bin/sh\necho real \"$@\"\n")
+        (root / "launch").chmod(0o755)
+        receipts = root / "receipts"
+        receipts.mkdir()
+        restore = driver.wrap_launcher(root, receipts)
+        self.assertEqual(subprocess.run([str(root / "launch"), "plugin", "setup"], capture_output=True, text=True).stdout, "real plugin setup\n")
+        self.assertEqual(list(receipts.iterdir()), [])
+        with self.assertRaises(driver.SafetyStop):
+            driver.wrap_launcher(root, receipts)
+        restore()
+        self.assertEqual((root / "launch").read_text(), "#!/bin/sh\necho real \"$@\"\n")
+        self.assertFalse((root / "launch.real").exists() or (root / "probe-relay.py").exists())
+
+    def test_loading_mode_is_read_from_the_order_of_calls(self) -> None:
+        call = lambda tool: driver.ToolCall(tool, {}, None, False)  # noqa: E731
+        work = call("mcp__plugin_agent-braid_agent-braid__analyze-work")
+        self.assertEqual(driver.loading_mode("claude-code", driver.Transcript([call("ToolSearch"), work])), "deferred")
+        self.assertEqual(driver.loading_mode("claude-code", driver.Transcript([call("Skill"), work])), "eager")
+        self.assertEqual(driver.loading_mode("opencode", driver.Transcript([call("execute"), call("agent-braid_analyze-work")])), "helper-before-call")
+        self.assertEqual(driver.loading_mode("codex", driver.Transcript([])), "not-observed")

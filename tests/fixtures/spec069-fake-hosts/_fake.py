@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 
 CLAUDE_PREFIX = "mcp__plugin_agent-braid_agent-braid__"
+CODEX_ROOT = "{home}/plugins/cache/agent-braid/agent-braid/0.0.0-fake"
+OPENCODE_ROOT = "{cache}/opencode/npm/git-cand-fake/1/node_modules/agent-braid"
 OPENCODE_PREFIX = "agent-braid_"
 
 
@@ -67,6 +69,32 @@ def side_effects(text):
     return text + " " + credential_text(("CLAUDE_CONFIG_DIR", ".credentials.json"), ("CODEX_HOME", "auth.json"))
 
 
+def probe_server(root, steps):
+    """FAKE_PROBE: talk MCP to ``<root>/launch plugin serve`` like a host (initialize, tools/list, one tools/call per analyze-work step).
+
+    Variant ``stringify`` sends the request as a JSON string, the known MCP client failure the probe must catch.
+    """
+    if not os.environ.get("FAKE_PROBE"):
+        return
+    server = subprocess.Popen([str(Path(root) / "launch"), "plugin", "serve"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+
+    def send(message):
+        server.stdin.write(json.dumps(dict(message, jsonrpc="2.0")) + "\n")
+        server.stdin.flush()
+        return json.loads(server.stdout.readline()) if "id" in message else None
+
+    send({"id": 1, "method": "initialize", "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "fake", "version": "0"}}})
+    send({"method": "notifications/initialized"})
+    send({"id": 2, "method": "tools/list", "params": {}})
+    for number, step in enumerate(s for s in steps if s["tool"] == "analyze-work"):
+        args = dict(step["args"])
+        if os.environ.get("FAKE_VARIANT") == "stringify":
+            args["request"] = json.dumps(args["request"])
+        send({"id": 3 + number, "method": "tools/call", "params": {"name": "analyze-work", "arguments": args}})
+    server.stdin.close()
+    server.wait(timeout=30)
+
+
 def emit(row):
     print(json.dumps(row), flush=True)
 
@@ -84,7 +112,9 @@ def claude(argv):
     prompt = argv[argv.index("-p") + 1]
     denied = set(argv[argv.index("--disallowedTools") + 1:]) if "--disallowedTools" in argv else set()
     scen = scenario_for(prompt)
-    emit({"type": "system", "subtype": "init", "model": "fake-claude-model", "tools": [], "mcp_servers": []})
+    probe_server(argv[argv.index("--plugin-dir") + 1], scen["steps"]) if "--plugin-dir" in argv else None
+    tools = [CLAUDE_PREFIX + "analyze-work", CLAUDE_PREFIX + "workspaces", "ToolSearch"] if os.environ.get("FAKE_PROBE") else []
+    emit({"type": "system", "subtype": "init", "model": "fake-claude-model", "tools": tools, "mcp_servers": []})
     for number, step in enumerate(scen["steps"]):
         name = step["tool"]
         full = CLAUDE_PREFIX + name if name in ("analyze-work", "workspaces", "plugin-status") else name
@@ -114,6 +144,7 @@ def opencode(argv):
             print("Error: openrouter is not configured", file=sys.stderr)
             sys.exit(8)
     scen = scenario_for(prompt)
+    probe_server(OPENCODE_ROOT.format(cache=os.environ["XDG_CACHE_HOME"]), scen["steps"])
     for number, step in enumerate(scen["steps"]):
         name = step["tool"]
         full = OPENCODE_PREFIX + name if name in ("analyze-work", "workspaces", "plugin-status") else name
@@ -132,6 +163,7 @@ def codex(argv):
     require_login("CODEX_HOME", "auth.json", "CODEX_API_KEY")
     prompt = argv[-1]
     scen = scenario_for(prompt)
+    probe_server(CODEX_ROOT.format(home=os.environ["CODEX_HOME"]), scen["steps"])
     emit({"type": "thread.started", "thread_id": "fake"})
     for number, step in enumerate(scen["steps"]):
         name = step["tool"]
@@ -160,13 +192,13 @@ def main(host):
         return
     if host == "codex" and argv[:2] == ["plugin", "add"]:
         market = Path((Path(os.environ["CODEX_HOME"]) / "market.txt").read_text())
-        root = Path(os.environ["CODEX_HOME"]) / "plugins/cache/agent-braid/agent-braid/0.0.0-fake"
+        root = Path(CODEX_ROOT.format(home=os.environ["CODEX_HOME"]))
         copy_plugin(market / "plugins/agent-braid", root)
         print("Installed plugin root: %s" % root)
         return
     if host == "opencode" and argv[:2] == ["plugin", "add"]:
         source = argv[2].split("git+file://")[1].split("#")[0]
-        copy_plugin(Path(source) / "plugins/agent-braid", Path(os.environ["XDG_CACHE_HOME"]) / "opencode/npm/git-cand-fake/1/node_modules/agent-braid")
+        copy_plugin(Path(source) / "plugins/agent-braid", Path(OPENCODE_ROOT.format(cache=os.environ["XDG_CACHE_HOME"])))
         print("Plugin installed")
         return
     {"claude": claude, "codex": codex, "opencode": opencode}[host](argv)
