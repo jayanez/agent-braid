@@ -32,11 +32,18 @@
     "treeManifestAfterSmoke": "203018e83fade94c4e2e0a1fc4311cb4b8d7a5357883cda4a4a09c1111bb06b6",
     "smokeUsedPluginDir": "the build output itself (--plugin-dir); the driver probes disposable copies, and the tree manifest was unchanged after all three hosts",
     "rebuildReproducibility": "A second build of the same commit from another clone differed in 31 of 8126 files only: provenance.json, package-inventory.json, the source archive, dist-info RECORD and direct_url.json, and site-packages/bin console scripts, all of which embed the build directory path or archive mtimes. All other files were byte-identical. A rebuild is therefore not byte-equal; publish these exact candidate bytes.",
-    "sourceAfterMerge": "The PR adds only this evidence after sourceCommit; the merged develop tree must differ from sourceCommit only under specs/069-aim-request-authoring/evidence/ (checked at publication with git diff --name-only)."
+    "sourceAfterMerge": "After sourceCommit the PR changes only specs/069-aim-request-authoring/ (evidence files and the procedure_011 digest in assurance.json), none of which is in the plugin tree (the wheel packages agent_braid and research). At publication, `git diff --name-only a741c5a1 <merge>` must list only paths under specs/069-aim-request-authoring/."
   },
   "ci": {
-    "quickProfile": "pending",
-    "prValidate": "pending"
+    "pullRequest": "https://github.com/jayanez/agent-braid/pull/1342",
+    "prValidate": {
+      "head": "b7e2d05d28888d97845691f7e2b7ea3736a3c9af",
+      "run": "https://github.com/jayanez/agent-braid/actions/runs/43433216546",
+      "result": "validate aggregate pass (complete Python test suite, Spec Kit structure and render, governance, fast invariants)"
+    },
+    "quickProfileLocal": "Escalated to the full suite because scripts/ and tests/ changed; interrupted by a 25-minute local timeout with no failure observed. Per AGENTS.md the CI validate aggregate is the pr-profile evidence.",
+    "validateSpecKit": "passed from a fresh GitHub clone after scripts/restore_public_spec_history.py at a93c7d0e+assurance fix (b7e2d05d)",
+    "note": "Commits after b7e2d05d change only this file; CI re-runs on the final head."
   },
   "smoke": {
     "command": "python -m scripts.spec069_native_runs --probe-schema --arm final --plugin-dir <build>/plugins/agent-braid",
