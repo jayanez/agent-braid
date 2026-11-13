@@ -374,7 +374,7 @@ def build_plugin(label: str, skill_text: str, work: Path) -> Path:
     from scripts import spec069_native_runs as driver
     cache = Path(os.environ.get('TMPDIR', '/tmp')) / 'agent-braid-lightning-build-cache'  # as lightning_runner.run
     base = driver.build_candidate('final', work, cache, build_allow_dirty(ROOT))[0]
-    return base if label == 'A0' else arm_mod.candidate_plugin(base, skill_text, work / 'candidate')
+    return base if label == 'A0' else arm_mod.candidate_plugin(base, skill_text, work / 'arm-candidate')  # build_candidate already writes work/candidate
 
 
 def execute_arms(home: Path, root: Path, arms: dict, record: dict, *, cfg: dict, models: dict, environ: dict,
