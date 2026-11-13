@@ -240,17 +240,40 @@ def dev_score(store: store_mod.RunStore) -> dict | None:
             'schemaValid': round(sum(r['schema'] for r in rewards) / n, 6), 'rollouts': n}
 
 
-def _same_start(journaled: dict | None, start: dict) -> bool:
-    """A resume or replay matches the run's start: same algorithm and seed, and the same source arm and seed skill
-    (the commit may differ when the source is the working tree, whose skill the seed record already pins)."""
+def _start_mismatch(journaled: dict | None, start: dict) -> str | None:
+    """Why a resume or replay does not match the run's start, or None: the same algorithm and seed, the same source
+    arm, seed skill and commit, and the same host models. A start journaled before ``source`` or ``models`` existed is
+    accepted only for a ``final`` working-tree run, whose seed skill the seed record still pins."""
     if journaled is None or {k: journaled[k] for k in ('algorithm', 'rngSeed')} != \
             {k: start[k] for k in ('algorithm', 'rngSeed')}:
-        return False
+        return 'The resumed run has another algorithm or seed'
     stored, given = journaled.get('source'), start.get('source')
-    if stored is None or given is None:
-        return given is None and (stored is None or stored['workingTree'])
-    return all(stored[k] == given[k] for k in ('arm', 'seedSkillSha256', 'workingTree')) and \
-        (stored['workingTree'] or stored['commit'] == given['commit'])
+    legacy = given is None or (given['arm'] == 'final' and given['workingTree'])
+    if stored is None:
+        if not legacy:
+            return 'The run journals no source; only a final working-tree run can resume it'
+    elif given is None or any(stored[k] != given[k] for k in ('arm', 'seedSkillSha256', 'workingTree')):
+        return 'The resumed run has another source arm or seed skill'
+    elif stored['commit'] != given['commit']:
+        return (f"The run started at commit {stored['commit']} and HEAD is now {given['commit']}; candidates "
+                'would be built from another plugin. Check out that commit to resume')
+    models, pinned = journaled.get('models'), start.get('models')
+    if models is None:
+        if pinned is not None and not legacy:
+            return 'The run journals no host models; only a final working-tree run can resume it'
+    elif pinned is not None and models != pinned:
+        return f'The run pinned the host models {models}; this resume asks for {pinned}'
+    return None
+
+
+def _same_start(journaled: dict | None, start: dict) -> bool:
+    return _start_mismatch(journaled, start) is None
+
+
+def check_start(journaled: dict | None, start: dict) -> None:
+    reason = _start_mismatch(journaled, start)
+    if reason is not None:
+        raise runner_mod.RunnerError(reason, 'resume-diverged')
 
 
 def _decision(value: dict) -> dict:
@@ -264,6 +287,7 @@ class Algorithm:
     rng_seed: int | None = None
     seed_text: str | None = None  # a pinned seed skill (T009 exploratory arms: the T010 guidance)
     source: dict | None = None  # where the pinned seed came from; journaled with the start entry
+    models: dict | None = None  # the host model per host; journaled with the start entry
     replaying = False
 
     def skill_text(self, config: dict) -> str:
@@ -280,6 +304,8 @@ class Algorithm:
         start = {'kind': 'start', 'algorithm': self.name, 'rngSeed': self.rng_seed}
         if self.source is not None:
             start['source'] = self.source
+        if self.models is not None:
+            start['models'] = dict(self.models)
         self._derived = {}
         if resume or self.replaying:
             if store.manifest()['configDigest'] != digest(config):
@@ -288,8 +314,7 @@ class Algorithm:
             if record.sha256 not in stored:
                 raise runner_mod.RunnerError('The resumed run has a different seed', 'resume-diverged')
             journaled = next((e for e in store.read_journal() if e['kind'] == 'start'), None)
-            if not _same_start(journaled, start):
-                raise runner_mod.RunnerError('The resumed run has another algorithm, seed or source', 'resume-diverged')
+            check_start(journaled, start)
             self._known = {sha: c.value for sha, c in stored.items()}
             self._derived = {record.sha256: self._known[record.sha256]}
             return store, record, body, sha256_text(split_skill(raw)[0])
@@ -349,6 +374,18 @@ def replay(home, run_id: str, algorithm: Algorithm, config: dict) -> dict:
     reproduce every candidate record (lineage, scores, Pareto membership) and the summary's choices.
     """
     stored = {sha: _decision(c.value) for sha, c in candidates(home, run_id).items()}
+    start = next((e for e in store_mod.RunStore(home, run_id).read_journal() if e['kind'] == 'start'), None)
+    if start is not None and 'source' in start:
+        # replay only re-scores, it builds nothing: the seed comes from the journaled source (its commit, checked by
+        # sha256), not from the current working tree, so a later HEAD can replay when the seed bytes match
+        given = algorithm.source
+        if given is not None and any(given[k] != start['source'][k] for k in ('arm', 'seedSkillSha256', 'workingTree')):
+            raise runner_mod.RunnerError('The replay names another source arm or seed skill', 'resume-diverged')
+        from .lightning_arm import journaled_seed
+        algorithm.seed_text = journaled_seed(runner_mod.checkout_root(), config['target']['path'], start['source'])
+        algorithm.source = start['source']
+    if start is not None and 'models' in start and algorithm.models is None:
+        algorithm.models = dict(start['models'])
     algorithm.replaying = True
     try:
         summary = algorithm.run(home, config, run_id=run_id, resume=True, replay=True)

@@ -5,13 +5,13 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_algorithm.py": "7bcc6173805aacca2811feba34b1ec46bb66f847f10665bd80162e908cffae18",
+  "agent_braid/lightning_algorithm.py": "1eabfb899845e3bc76470b65c632336dba13e7050b08578bd4c4be51b8df22c4",
   "agent_braid/lightning_apo.py": "3abe6c6a0f72219c5abc6bcf7bfc7d7af371a38045650875603f98c3344c38c2",
   "agent_braid/lightning_gepa.py": "ad5ab4201acc4a53d19b438203a510515fe2fb8966bdda0d53dc6a3cf0bcf68f",
-  "agent_braid/lightning_runner.py": "97cfaecefbc01d60968ace984efc5d503a21323b7a1cfce538a944e7b86a1cb1",
-  "agent_braid/lightning_store.py": "8d37b1574a469fb79ba02a7ca956b9d134c1704f50f042195639c7bbe477a348",
+  "agent_braid/lightning_runner.py": "f274c2b213368ac6f826d32e8c84bc5f607be557e8e808ce8267f2f370ef4da1",
+  "agent_braid/lightning_store.py": "e62864afc63c9c8a54dace7ff77726e35d323cdffffb2db0c0e4bd610539e236",
   "tests/lightning_fakes.py": "127558709fc6e36f46b77a93ed5107b7d5bb51284d191648ed16645ed44b1383",
-  "tests/test_lightning_stopping.py": "89201cfab42a9a3223099cef8e9e2f1dc9736107de99703bc0c4bfc393cd81ab"
+  "tests/test_lightning_stopping.py": "218204b3d2429f1a2fea61b6b69fce31a46911e598f3dad2b2a4d65bdb4043fe"
  },
  "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; wiring the algorithms into `agent-braid lightning run` with real candidate evaluation is T009 work.",
  "outcome": "passed: With budgets set low in fake runs each algorithm stops at the first applicable rule and records it in the run journal: unit-cap (APO at configuration defaults), optimizer-cap, no-improvement after 2 consecutive flat rounds, and a weekly-stop quota stop that carries the explicit `agent-braid lightning run --resume <run-id>` command; a refused optimizer input (holdout-contamination) stops the run with the refusal recorded and no call made; APO never runs more than 3 rounds; no run exceeds its rollout or optimizer-call cap (negative control). Resuming a quota-stopped APO or GEPA run with the same seed replays the journaled optimizer outputs and evaluations in order and reaches the same rounds, best candidate, rollouts and calls as an uninterrupted run without repeating any optimizer call; resuming with another seed or configuration is refused (resume-diverged). The journal is private and refuses unknown entry shapes.",
@@ -19,5 +19,5 @@
  "result": "OK",
  "scenario": "SC-007",
  "specification": "SPEC-072 BL.2",
- "testsRun": 6
+ "testsRun": 9
 }

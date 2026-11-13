@@ -98,6 +98,48 @@ class ReplayTests(unittest.TestCase):
             algorithm.replay(self.home, 'short', self.algo('apo', refuse, evaluator=refuse), cfg)
         self.assertEqual(caught.exception.code, 'replay-incomplete')
 
+    def test_replay_of_a_baseline_source_run_rebuilds_the_seed_from_the_journaled_commit(self):
+        from agent_braid import lightning_arm as arm
+        cfg = profile('gepa', rounds=3)
+        text, provenance = arm.source_skill('baseline', cfg['target']['path'], runner.checkout_root())
+        provenance = {**provenance, 'seedSkillSha256': algorithm.sha256_text(text)}
+        first = self.algo('gepa', Optimizer())
+        first.seed_text, first.source = text, provenance
+        summary = first.run(self.home, cfg, run_id='e2')
+        # a fresh algorithm knows nothing of the source: replay takes it from the journal, not the working tree
+        result = algorithm.replay(self.home, 'e2', self.algo('gepa', refuse, evaluator=refuse), cfg)
+        self.assertEqual((result['selectionsMatch'], result['bestSha256']), (True, summary['bestSha256']))
+
+    def test_replay_accepts_a_later_head_when_the_seed_bytes_match_and_refuses_a_changed_seed(self):
+        from agent_braid import lightning_arm as arm
+        cfg = profile('gepa', rounds=3)
+        text, provenance = arm.source_skill('final', cfg['target']['path'], runner.checkout_root())
+        journaled = {**provenance, 'commit': 'a' * 40, 'seedSkillSha256': algorithm.sha256_text(text)}
+        first = self.algo('gepa', Optimizer())
+        first.seed_text, first.source = text, journaled
+        first.run(self.home, cfg, run_id='head')
+        later = self.algo('gepa', refuse, evaluator=refuse)
+        later.source = {**journaled, 'commit': 'b' * 40}  # the current HEAD: replay re-scores, it builds nothing
+        self.assertTrue(algorithm.replay(self.home, 'head', later, cfg)['selectionsMatch'])
+        changed = self.algo('gepa', refuse, evaluator=refuse)
+        changed.source = {**journaled, 'seedSkillSha256': '0' * 64}
+        with self.assertRaises(runner.RunnerError) as caught:
+            algorithm.replay(self.home, 'head', changed, cfg)
+        self.assertEqual(caught.exception.code, 'resume-diverged')
+
+    def test_replay_with_other_host_models_is_refused(self):
+        cfg = profile('gepa', rounds=3)
+        first = self.algo('gepa', Optimizer())
+        first.models = {'claude-code': 'claude-sonnet-5-5'}
+        first.run(self.home, cfg, run_id='models')
+        other = self.algo('gepa', refuse, evaluator=refuse)
+        other.models = {'claude-code': 'claude-opus-5-5'}
+        with self.assertRaises(runner.RunnerError) as caught:
+            algorithm.replay(self.home, 'models', other, cfg)
+        self.assertEqual(caught.exception.code, 'resume-diverged')
+        self.assertTrue(algorithm.replay(self.home, 'models', self.algo('gepa', refuse, evaluator=refuse),
+                                         cfg)['selectionsMatch'])
+
 
 class RescoreTests(unittest.TestCase):
     def record(self, **changes):

@@ -34,14 +34,35 @@ def source_skill(source: str, target: str, root: Path) -> tuple[str, dict]:
     if source not in SOURCES:
         raise runner_mod.RunnerError('Unknown source arm', 'config-enum')
     if source == 'final':
-        commit = subprocess.run(['git', '-C', str(root), 'rev-parse', 'HEAD'], capture_output=True, text=True,
-                                check=True).stdout.strip()
+        try:
+            commit = subprocess.run(['git', '-C', str(root), 'rev-parse', 'HEAD'], capture_output=True, text=True,
+                                    check=True).stdout.strip()
+        except (subprocess.CalledProcessError, OSError) as exc:
+            raise runner_mod.RunnerError('The checkout commit cannot be read', 'source-unavailable') from exc
         return (root / target).read_text(encoding='utf-8'), {'arm': 'final', 'commit': commit, 'workingTree': True}
     from scripts.spec069_native_runs import BASELINE_COMMIT
-    done = subprocess.run(['git', '-C', str(root), 'show', f'{BASELINE_COMMIT}:{target}'], capture_output=True)
+    try:
+        done = subprocess.run(['git', '-C', str(root), 'show', f'{BASELINE_COMMIT}:{target}'], capture_output=True)
+    except OSError as exc:
+        raise runner_mod.RunnerError('The baseline skill cannot be read', 'source-unavailable') from exc
     if done.returncode:
         raise runner_mod.RunnerError('The baseline commit has no such skill file', 'config-shape')
     return done.stdout.decode('utf-8'), {'arm': 'baseline', 'commit': BASELINE_COMMIT, 'workingTree': False}
+
+
+def journaled_seed(root: Path, target: str, source: dict) -> str:
+    """The seed skill text of a journaled source, rebuilt from the repository and checked against its sha256: the
+    file at the journaled commit, or the working tree for a ``final`` working-tree source."""
+    texts = []
+    done = subprocess.run(['git', '-C', str(root), 'show', f"{source['commit']}:{target}"], capture_output=True)
+    if done.returncode == 0:
+        texts.append(done.stdout.decode('utf-8'))
+    if source['workingTree'] and (root / target).is_file():
+        texts.append((root / target).read_text(encoding='utf-8'))
+    for text in texts:
+        if sha256_text(text) == source['seedSkillSha256']:
+            return text
+    raise runner_mod.RunnerError('The journaled seed skill cannot be rebuilt with its sha256', 'resume-diverged')
 
 
 def _cases(root: Path) -> list[str]:
@@ -86,11 +107,16 @@ def estimate(config: dict, root: Path) -> dict:
             'executionAuthorization': False}
 
 
-def seed_vectors(home, run_id: str, root: Path) -> list[dict]:
-    """The seed's full development vectors, re-scored from a finished baseline run's attempt results."""
+def seed_vectors(home, run_id: str, root: Path, *, skill_sha256: str | None = None) -> list[dict]:
+    """The seed's full development vectors, re-scored from a finished baseline run's attempt results. With
+    ``skill_sha256`` every rollout of the seed run must have evaluated that skill (the arm's ``--source``)."""
     store = store_mod.RunStore(home, run_id)
     if any(r.value['promptSet'] != 'development' for r in store.read('result')):
         raise runner_mod.RunnerError('The seed run must be a development run', 'holdout-contamination')
+    if skill_sha256 is not None:
+        shas = {r.candidate_sha256 for r in store.read('rollout')}
+        if shas != {skill_sha256}:
+            raise runner_mod.RunnerError('The seed run did not evaluate the --source skill', 'seed-source-mismatch')
     vectors = [rescore(v) for v in completed_results(store)]
     missing = set(_cases(root)) - {v['caseId'] for v in vectors}
     if missing:
@@ -164,8 +190,14 @@ def run_arm(home, config: dict, *, seed_run: str, run_id: str | None = None, res
     raw, provenance = source_skill(source, config['target']['path'], root)
     provenance = {**provenance, 'seedSkillSha256': sha256_text(raw)}
     run_id = run_id or f'{name}-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
-    seeds = seed_vectors(home, seed_run, root)
-    journaled = sum(e['kind'] == 'call' for e in store_mod.RunStore(home, run_id).read_journal()) if resume else 0
+    seeds = seed_vectors(home, seed_run, root, skill_sha256=provenance['seedSkillSha256'])
+    journal = store_mod.RunStore(home, run_id).read_journal() if resume else []
+    if resume:  # before any plugin is built: a resume keeps the journaled commit, source and host models
+        from .lightning_algorithm import check_start
+        journaled_start = next((e for e in journal if e['kind'] == 'start'), None)
+        if journaled_start is not None:
+            check_start(journaled_start, {**journaled_start, 'source': provenance, 'models': models})
+    journaled = sum(e['kind'] == 'call' for e in journal)
     host_options = {'environ': environ} if environ is not None else {}
     channel = runner_mod.OptimizerChannel(config['optimizer']['host'], fake_hosts=fake_hosts,
                                           first_call=journaled + 1,
@@ -184,7 +216,7 @@ def run_arm(home, config: dict, *, seed_run: str, run_id: str | None = None, res
                                            fake_hosts=fake_hosts, environ=environ, models=models, arm=source)
             options = {'evaluator': evaluator, 'optimizer': channel, 'seed_vectors': seeds}
             algorithm = APO(**options) if name == 'apo' else GEPA(**options, rng_seed=rng_seed)
-            algorithm.seed_text, algorithm.source = raw, provenance
+            algorithm.seed_text, algorithm.source, algorithm.models = raw, provenance, models
             summary = algorithm.run(home, config, run_id=run_id, resume=resume)
     finally:
         channel.close()
