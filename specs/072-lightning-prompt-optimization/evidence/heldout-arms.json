@@ -1,0 +1,437 @@
+{
+  "analysis": {
+    "arms": {
+      "A0": {
+        "canaryHits": 0,
+        "intervals": {
+          "claude-code": {
+            "firstAttempt": [
+              0.6643529481431982,
+              0.9266356575964831
+            ],
+            "withinRetry": [
+              0.6643529481431982,
+              0.9266356575964831
+            ]
+          }
+        },
+        "schemaValidity": {
+          "rate": 1.0,
+          "trials": 30,
+          "valid": 30
+        },
+        "summary": {
+          "hosts": {
+            "claude-code": {
+              "firstAttemptInterval": [
+                0.6643529481431982,
+                0.9266356575964831
+              ],
+              "firstAttemptPrompts": 8,
+              "firstAttemptPromptsMissed": [
+                "HELD-04",
+                "HELD-06"
+              ],
+              "firstAttemptTrials": 25,
+              "pooledMeetsThreshold": false,
+              "prompts": 10,
+              "trials": 30,
+              "verdict": "misses",
+              "withinRetryInterval": [
+                0.6643529481431982,
+                0.9266356575964831
+              ],
+              "withinRetryPrompts": 8,
+              "withinRetryPromptsMissed": [
+                "HELD-04",
+                "HELD-06"
+              ],
+              "withinRetryTrials": 25
+            }
+          },
+          "overall": "negative-result",
+          "requiredHosts": [
+            "claude-code"
+          ],
+          "shortfall": {
+            "hosts": {
+              "claude-code": {
+                "firstAttemptPromptsMissed": [
+                  "HELD-04",
+                  "HELD-06"
+                ],
+                "verdict": "misses",
+                "withinRetryPromptsMissed": [
+                  "HELD-04",
+                  "HELD-06"
+                ]
+              }
+            },
+            "label": "NEGATIVE RESULT: reported as observed, not reinterpreted"
+          }
+        }
+      },
+      "A1": {
+        "canaryHits": 0,
+        "intervals": {
+          "claude-code": {
+            "firstAttempt": [
+              0.5907132766967574,
+              0.8820776078949878
+            ],
+            "withinRetry": [
+              0.5907132766967574,
+              0.8820776078949878
+            ]
+          }
+        },
+        "schemaValidity": {
+          "rate": 1.0,
+          "trials": 30,
+          "valid": 30
+        },
+        "summary": {
+          "hosts": {
+            "claude-code": {
+              "firstAttemptInterval": [
+                0.5907132766967574,
+                0.8820776078949878
+              ],
+              "firstAttemptPrompts": 7,
+              "firstAttemptPromptsMissed": [
+                "HELD-02",
+                "HELD-04",
+                "HELD-05"
+              ],
+              "firstAttemptTrials": 23,
+              "pooledMeetsThreshold": false,
+              "prompts": 10,
+              "trials": 30,
+              "verdict": "misses",
+              "withinRetryInterval": [
+                0.5907132766967574,
+                0.8820776078949878
+              ],
+              "withinRetryPrompts": 7,
+              "withinRetryPromptsMissed": [
+                "HELD-02",
+                "HELD-04",
+                "HELD-05"
+              ],
+              "withinRetryTrials": 23
+            }
+          },
+          "overall": "negative-result",
+          "requiredHosts": [
+            "claude-code"
+          ],
+          "shortfall": {
+            "hosts": {
+              "claude-code": {
+                "firstAttemptPromptsMissed": [
+                  "HELD-02",
+                  "HELD-04",
+                  "HELD-05"
+                ],
+                "verdict": "misses",
+                "withinRetryPromptsMissed": [
+                  "HELD-02",
+                  "HELD-04",
+                  "HELD-05"
+                ]
+              }
+            },
+            "label": "NEGATIVE RESULT: reported as observed, not reinterpreted"
+          }
+        }
+      },
+      "A2": {
+        "canaryHits": 0,
+        "intervals": {
+          "claude-code": {
+            "firstAttempt": [
+              0.6269395261897256,
+              0.9049502189759876
+            ],
+            "withinRetry": [
+              0.6269395261897256,
+              0.9049502189759876
+            ]
+          }
+        },
+        "schemaValidity": {
+          "rate": 0.933333,
+          "trials": 30,
+          "valid": 28
+        },
+        "summary": {
+          "hosts": {
+            "claude-code": {
+              "firstAttemptInterval": [
+                0.6269395261897256,
+                0.9049502189759876
+              ],
+              "firstAttemptPrompts": 7,
+              "firstAttemptPromptsMissed": [
+                "HELD-02",
+                "HELD-04",
+                "HELD-06"
+              ],
+              "firstAttemptTrials": 24,
+              "pooledMeetsThreshold": false,
+              "prompts": 10,
+              "trials": 30,
+              "verdict": "misses",
+              "withinRetryInterval": [
+                0.6269395261897256,
+                0.9049502189759876
+              ],
+              "withinRetryPrompts": 7,
+              "withinRetryPromptsMissed": [
+                "HELD-02",
+                "HELD-04",
+                "HELD-06"
+              ],
+              "withinRetryTrials": 24
+            }
+          },
+          "overall": "negative-result",
+          "requiredHosts": [
+            "claude-code"
+          ],
+          "shortfall": {
+            "hosts": {
+              "claude-code": {
+                "firstAttemptPromptsMissed": [
+                  "HELD-02",
+                  "HELD-04",
+                  "HELD-06"
+                ],
+                "verdict": "misses",
+                "withinRetryPromptsMissed": [
+                  "HELD-02",
+                  "HELD-04",
+                  "HELD-06"
+                ]
+              }
+            },
+            "label": "NEGATIVE RESULT: reported as observed, not reinterpreted"
+          }
+        }
+      }
+    },
+    "h1": {
+      "hosts": {
+        "claude-code": "not-supported"
+      },
+      "outcome": "not-supported"
+    },
+    "notes": [
+      "A1 (APO) is descriptive and never changes H1",
+      "interval overlap and the sign test are reported but do not change the rule",
+      "a canary hit in a held-out run invalidates that arm"
+    ],
+    "paired": {
+      "A1-vs-A0": {
+        "claude-code": {
+          "improved": 1,
+          "prompts": 10,
+          "signTestPTwoSided": 1.0,
+          "unchanged": 7,
+          "worsened": 2
+        }
+      },
+      "A2-vs-A0": {
+        "claude-code": {
+          "improved": 1,
+          "prompts": 10,
+          "signTestPTwoSided": 1.0,
+          "unchanged": 8,
+          "worsened": 1
+        }
+      }
+    }
+  },
+  "arms": {
+    "A0": {
+      "arm": "A0",
+      "candidateSha256": "38825d2e2f07b601b318a6db7e798c35ae4a0052efd490cfc24c904f4407be04",
+      "developmentRun": "run-20261113T092714Z-4cab53",
+      "role": "baseline",
+      "runId": "heldout-a0-20261113T204317Z",
+      "skillSha256": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
+      "state": {
+        "completed": 30,
+        "status": "complete"
+      },
+      "status": {
+        "arm": "final",
+        "completed": 30,
+        "completedBefore": 0,
+        "executionAuthorization": false,
+        "hosts": {
+          "claude-code": {
+            "probe": "sandbox-exec",
+            "rollouts": 30,
+            "status": "ran",
+            "version": "2.1.311 (Claude Code)"
+          }
+        },
+        "label": "host-run",
+        "models": {
+          "claude-code": "claude-sonnet-5-5"
+        },
+        "planned": 30,
+        "promptSet": "held-out",
+        "refusal": null,
+        "runId": "heldout-a0-20261113T204317Z",
+        "stop": null,
+        "teardown": {
+          "clean": true,
+          "leftoverProcesses": 0,
+          "profileRemoved": true
+        }
+      }
+    },
+    "A1": {
+      "arm": "A1",
+      "candidateSha256": "39ae18565806b6dd3b2e8181dc223dd70b735c1e18ed371c17233382602057fd",
+      "developmentRun": "apo-20261113T093911Z",
+      "role": "apo-secondary-descriptive",
+      "runId": "heldout-a1-20261113T205458Z",
+      "skillSha256": "27497c77d6291f0f0f20ac44afffc3cb2b09b5bf12a831eef6f64386f9b746f4",
+      "state": {
+        "completed": 30,
+        "status": "complete"
+      },
+      "status": {
+        "arm": "final",
+        "completed": 30,
+        "completedBefore": 0,
+        "executionAuthorization": false,
+        "hosts": {
+          "claude-code": {
+            "probe": "sandbox-exec",
+            "rollouts": 30,
+            "status": "ran",
+            "version": "2.1.311 (Claude Code)"
+          }
+        },
+        "label": "host-run",
+        "models": {
+          "claude-code": "claude-sonnet-5-5"
+        },
+        "planned": 30,
+        "promptSet": "held-out",
+        "refusal": null,
+        "runId": "heldout-a1-20261113T205458Z",
+        "stop": null,
+        "teardown": {
+          "clean": true,
+          "leftoverProcesses": 0,
+          "profileRemoved": true
+        }
+      }
+    },
+    "A2": {
+      "arm": "A2",
+      "candidateSha256": "623c55c39d31799f7d89e5dac9401062ce2eaed2b6bca01589d7c531f3e8b966",
+      "developmentRun": "gepa-20261113T095423Z",
+      "role": "gepa-primary",
+      "runId": "heldout-a2-20261113T214347Z",
+      "skillSha256": "a9c40bb7408b27010cf5667c51cd95dc21bfc1af6d31a9a594bed772e520fa8b",
+      "state": {
+        "completed": 30,
+        "status": "complete"
+      },
+      "status": {
+        "arm": "final",
+        "completed": 30,
+        "completedBefore": 0,
+        "executionAuthorization": false,
+        "hosts": {
+          "claude-code": {
+            "probe": "sandbox-exec",
+            "rollouts": 30,
+            "status": "ran",
+            "version": "2.1.311 (Claude Code)"
+          }
+        },
+        "label": "host-run",
+        "models": {
+          "claude-code": "claude-sonnet-5-5"
+        },
+        "planned": 30,
+        "promptSet": "held-out",
+        "refusal": null,
+        "runId": "heldout-a2-20261113T214347Z",
+        "stop": null,
+        "teardown": {
+          "clean": true,
+          "leftoverProcesses": 0,
+          "profileRemoved": true
+        }
+      }
+    }
+  },
+  "developmentEvidenceSha256": "fc5b107f30526c5a6d52fd7eab6c6820ab8c7c247a1198e74b3144250d431445",
+  "evidenceVersion": 1,
+  "executionAuthorization": false,
+  "generatedAt": "2026-11-13T21:32:31Z",
+  "heldOutSha256": "254ffee400c490d745d6b66f46e0bc8d19a13fae666f22c8554003a4e9a22278",
+  "host": "claude-code",
+  "invocations": [
+    {
+      "generatedAt": "2026-11-13T20:43:17Z",
+      "runs": {
+        "A0": {
+          "refusal": null,
+          "resumed": false,
+          "runId": "heldout-a0-20261113T204317Z",
+          "stop": null
+        },
+        "A1": {
+          "refusal": "arm-error",
+          "resumed": false,
+          "runId": "heldout-a1-20261113T205458Z",
+          "stop": null
+        }
+      }
+    },
+    {
+      "generatedAt": "2026-11-13T21:32:31Z",
+      "runs": {
+        "A1": {
+          "refusal": null,
+          "resumed": false,
+          "runId": "heldout-a1-20261113T205458Z",
+          "stop": null
+        },
+        "A2": {
+          "refusal": null,
+          "resumed": false,
+          "runId": "heldout-a2-20261113T214347Z",
+          "stop": null
+        }
+      }
+    }
+  ],
+  "label": "host-run",
+  "pair": {
+    "evaluationRecord": {
+      "path": "specs/072-lightning-prompt-optimization/evidence/heldout-evaluation-record.json",
+      "sha256": "0b385e8d86e07d45d04dc7f043c52be5044e0b0b828fa01d5e95d3795ee2682d"
+    },
+    "registration": {
+      "path": "specs/072-lightning-prompt-optimization/evidence/heldout-registration.json",
+      "sha256": "dc6ee7a772af0a9ac6e4a8044ea5db11b90951996599032f524a7cf8a210ad8c"
+    }
+  },
+  "pinnedModel": "claude-sonnet-5-5",
+  "promptSet": "held-out",
+  "protocolSha256": "b5d1db2711981c5f6e63884213a07d5c2b2c5c224815410455193c45b1c92c38",
+  "requiredHosts": [
+    "claude-code"
+  ],
+  "task": "SPEC-072 T010 held-out evaluation (REQ-008)"
+}
