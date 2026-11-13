@@ -51,10 +51,12 @@ script or test.
   protocol; report H1 outcome, including a null or negative result.
   Dependencies: T009. Verification: procedure_008.
 
-- [ ] T013 (REQ-011 / SC-011): Emit the SPEC-049 `Registration` and
+- [x] T013 (REQ-011 / SC-011): Emit the SPEC-049 `Registration` and
   `EvaluationRecord` pair (A = A0, C = A2 GEPA) from the held-out report;
   verify the formats load through `harness_promotion`. Dependencies: T010.
-  Verification: procedure_011.
+  Verification: procedure_011. Done 2026-11-13 as the writer
+  `agent_braid.lightning_evaluation.spec049_pair`, tested over synthetic
+  held-out results; the T010 report calls it with the real summaries.
 
 ## Closing
 

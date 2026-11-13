@@ -19,7 +19,7 @@ Unit level (deterministic; nothing native runs):
 ```sh
 .venv-speckit/bin/python -m unittest tests.test_harness_manifest tests.test_harness_quota \
   tests.test_harness_transport_claude tests.test_harness_containment_macos \
-  tests.test_harness_qualification_probes tests.test_har_t009_attempt -v
+  tests.test_harness_qualification_probes tests.test_har_t009_attempt tests.test_har_t009_launch -v
 ```
 
 Expected: all deterministic refusal tests pass; the opt-in live controls
@@ -46,9 +46,15 @@ Operator preparation for T009 (a checklist, not an authorization; it needs the f
   `disk-limit-exceeded`, including the pre-session subset. Investigate that refusal as an
   environment problem before the next attempt; it is not a probe finding. The before/after
   listing hashes up to 500 files with no per-file size cap, so a very large file slows it (MDRV-03).
-- **Session.** Run the supervisor inside the dedicated user's own login session, not
-  through `sudo -u` from the operator's session, and expect failed probe controls to be
-  recorded as findings.
+- **Session.** Run the supervisor inside a session of the dedicated account's own, never through `su` or
+  `sudo -u` from the operator's session: those keep the operator's audit session and Mach bootstrap namespace
+  (pasteboard, AppleEvents, LaunchServices; `evidence/session-context-survey-20261113.json`). Since the founder
+  amendment of NC-2 (2026-11-13, `evidence/founder-decisions-20261113.json`) the driver and the backend refuse
+  such a session (`session-own`, `session-not-own`): the audit user id must equal the account's uid. Two kinds are
+  supported and hashed into the environment, so a qualification holds only for its kind: `Aqua`, the account's
+  own graphical login (steps 9 to 11 below), and `Background`, its own non-GUI session started by the root-owned
+  launcher with `launchctl asuser` ("Headless own-session mode" below, the mode the founder chose). Expect failed
+  probe controls to be recorded as findings.
 - **Entry point.** `scripts/har_t009_attempt.py` is the only supported entry point: it builds the T005
   backend, the T006 transport factory and `make_qualification_runner` itself (account home as `real_home`,
   credential scan of `config_dir`, before/after listing of `config_dir`, launch profile on). Do not call the
@@ -523,9 +529,140 @@ Then, back in your own session, take ownership of the copy (`sudo chown -R "$USE
 "/Users/Shared/t009-bundle-$ATTEMPT"`), review the bundle for local identifiers and copy it to
 `specs/065-native-claude-containment/evidence/qualification/<attempt>/`.
 
+### Headless own-session mode (founder decisions of 2026-11-13)
+
+The founder chose this mode ("A. Terminal propia", `evidence/founder-decisions-20261113.json`): the lab account
+runs in its own non-GUI session, started by root with `launchctl asuser`, so nobody switches user and nothing
+runs through `su` or `sudo -u` from your session. It replaces steps 10, 10b and 11 (the dry run, the self-check
+and the real attempt); steps 0 to 9b stay as they are. The graphical mode above stays supported, but a
+qualification taken in one mode does not hold in the other (the session kind is in the environment hash).
+
+Preconditions: steps 0 to 8 done at the attempt's `COMMIT` (step 5 installs `repo-<short>`, which holds the
+launcher template), and the token file of step 9b in place (`claude setup-token` needs a browser, so it is made
+once in braidlab's graphical login; the launcher stops with `no token` otherwise). **Log braidlab out of any
+graphical session** (Apple menu, Log Out, in its session) before using this mode: with a graphical login of
+braidlab open, `launchctl asuser` can join that `Aqua` session, the session kind changes and the environment hash
+of the check no longer matches the run's.
+
+**Step H1. Install the launcher with its pins** (in your own Terminal, your account; nothing native runs). The
+pins are written into the installed copy, so it reads no file you can write. Replace the four quoted `PASTE_...`
+values with the same values as for step 10, then paste the whole block at once. It is one subshell with
+`set -euo pipefail`: every pin is checked before the first `sudo`, and any failed line ends the block with a
+`STOP:` line, so nothing after it runs.
+
+```sh
+( set -euo pipefail
+stop() { echo "STOP: $1"; exit 1; }
+B=/usr/local/libexec/braid
+COMMIT='PASTE_THE_40_CHARACTER_COMMIT_FROM_THE_ORCHESTRATOR'
+CLAUDE_SHA256='PASTE_64_HEX_FROM_STEP_8_CLAUDE'
+PYTHON_SHA256='PASTE_64_HEX_FROM_STEP_8_PYTHON'
+SANDBOX_EXEC_SHA256='PASTE_64_HEX_FROM_STEP_8_SANDBOX_EXEC'
+OPERATOR_ACCOUNT=$(id -un)                      # your daily account
+printf %s "$COMMIT" | grep -Eq '^[0-9a-f]{40}$' || stop "COMMIT is not a 40-character hash"
+for h in "$CLAUDE_SHA256" "$PYTHON_SHA256" "$SANDBOX_EXEC_SHA256"; do
+  printf %s "$h" | grep -Eq '^[0-9a-f]{64}$' || stop "a hash is not pasted correctly"
+done
+printf %s "$OPERATOR_ACCOUNT" | grep -Eq '^[a-z_][a-z0-9_-]{0,31}$' || stop "account name"
+SHORT=${COMMIT:0:7}
+[ -f "$B/repo-$SHORT/scripts/har_t009_launch.sh" ] || stop "no code copy at this COMMIT (step 5)"
+sed -e "s/@COMMIT@/$COMMIT/" -e "s/@CLAUDE_SHA256@/$CLAUDE_SHA256/" -e "s/@PYTHON_SHA256@/$PYTHON_SHA256/" \
+    -e "s/@SANDBOX_EXEC_SHA256@/$SANDBOX_EXEC_SHA256/" -e "s/@OPERATOR_ACCOUNT@/$OPERATOR_ACCOUNT/" \
+    "$B/repo-$SHORT/scripts/har_t009_launch.sh" | sudo tee "$B/t009-launch.sh.new" > /dev/null
+sudo chown root:wheel "$B/t009-launch.sh.new"
+sudo chmod 755 "$B/t009-launch.sh.new"
+sudo mv -f "$B/t009-launch.sh.new" "$B/t009-launch.sh"
+if grep -q '@[A-Z0-9_]*@' "$B/t009-launch.sh"; then stop "a pin is not filled in"; fi
+ls -l "$B/t009-launch.sh"                       # -rwxr-xr-x  root  wheel
+shasum -a 256 "$B/t009-launch.sh"               # send this line to the orchestrator
+)
+```
+
+The source is the root-owned code copy of step 5 at `COMMIT`, never your checkout. Reinstall the launcher after
+every new `COMMIT` (its pins change). Undo: `sudo rm /usr/local/libexec/braid/t009-launch.sh`.
+
+Render the expected launcher (the orchestrator, in its own checkout, read-only; nothing is installed or run). It
+renders the same template at the same `COMMIT` with the same pins through the same `sed`, and its SHA-256 must
+equal the one step H1 printed; any difference: STOP, do not run `check` or `run`.
+
+```sh
+COMMIT=<40 hex>; CLAUDE_SHA256=<64 hex>; PYTHON_SHA256=<64 hex>; SANDBOX_EXEC_SHA256=<64 hex>
+OPERATOR_ACCOUNT=<the owner's account short name>
+git -C <checkout> show "$COMMIT:scripts/har_t009_launch.sh" \
+  | sed -e "s/@COMMIT@/$COMMIT/" -e "s/@CLAUDE_SHA256@/$CLAUDE_SHA256/" -e "s/@PYTHON_SHA256@/$PYTHON_SHA256/" \
+        -e "s/@SANDBOX_EXEC_SHA256@/$SANDBOX_EXEC_SHA256/" -e "s/@OPERATOR_ACCOUNT@/$OPERATOR_ACCOUNT/" \
+  | shasum -a 256
+```
+
+**Step H2. The narrow sudo rule for `check` and `diag`** (decision RUN-LAUNCHER). It lets your account (and so the
+orchestrator in your session) run only those two modes of the installed launcher as root without a password.
+`run` is not in it: the real attempt always asks for your password. It replaces the earlier `braid-t009` rule
+for `t009-auto.sh` (`sudo -u braidlab`, which put the lab account in your session), which is why the old script
+is removed too. A file name with a dot is ignored by `sudoers.d`, so the rule is active only after the `mv`. The
+block is one subshell with `set -euo pipefail` like step H1; paste it whole:
+
+```sh
+( set -euo pipefail
+stop() { echo "STOP: $1"; exit 1; }
+OPERATOR_ACCOUNT=$(id -un)
+printf %s "$OPERATOR_ACCOUNT" | grep -Eq '^[a-z_][a-z0-9_-]{0,31}$' || stop "account name"
+[ -f /usr/local/libexec/braid/t009-launch.sh ] || stop "install the launcher first (step H1)"
+sudo grep -qE '^[#@]includedir /(private/)?etc/sudoers.d' /etc/sudoers || stop "no sudoers.d"
+printf '%s ALL=(root) NOPASSWD: %s\n' "$OPERATOR_ACCOUNT" \
+  "/usr/local/libexec/braid/t009-launch.sh check *, /usr/local/libexec/braid/t009-launch.sh diag *" \
+  | sudo tee /etc/sudoers.d/braid-t009.new > /dev/null
+sudo chmod 440 /etc/sudoers.d/braid-t009.new
+sudo visudo -cf /etc/sudoers.d/braid-t009.new || { sudo rm -f /etc/sudoers.d/braid-t009.new; stop "rule invalid"; }
+sudo mv -f /etc/sudoers.d/braid-t009.new /etc/sudoers.d/braid-t009
+sudo rm -f /usr/local/libexec/braid/t009-auto.sh
+sudo -l | grep t009-launch                      # shows the two commands, nothing else of braid
+)
+```
+
+Undo: `sudo rm /etc/sudoers.d/braid-t009` (also in the teardown).
+
+**Step H3. Check (the orchestrator, or you; no session, no quota).** Replaces steps 10 and 10b: the driver's dry
+run, then, if `ready`, its self-check (`auth` and `startup` stages included), both in braidlab's own `Background`
+session. Results: `/Users/Shared/braid-t009-lab/dry-run.json` and `/Users/Shared/braid-t009-lab/self-check.json`.
+
+```sh
+sudo -n /usr/local/libexec/braid/t009-launch.sh check t009-YYYYMMDDx   # the label the orchestrator names
+sudo -n /usr/local/libexec/braid/t009-launch.sh diag t009-YYYYMMDDx    # only if the auth stage fails
+```
+
+The launcher refuses (exit 2, a `STOP:` line) a label that is not `t009-` plus eight digits plus one lowercase
+letter, a mode other than `check`, `diag` or `run`, extra arguments, an uninstalled or edited copy, a copy below a
+directory that is not root-owned, a lab account that is not a human account other than yours, and any mode while
+another one is still running (`STOP: another lab step is running`: one lock, held for the whole step, for `check`,
+`diag` and `run` alike). The dry run must show `session-own` passed with `observed.session.kind` `Background`;
+anything else is a refusal of the driver. `diag` runs `claude auth status` with the token outside the sandbox (no
+model call), keeps exit codes only (`/Users/Shared/braid-t009-lab/diag.txt`) and never passes the token through a
+command line. The orchestrator verifies both files and confirms in writing.
+
+The lab account publishes only into `/Users/Shared/braid-t009-lab/`, a directory it creates and owns (mode 755):
+each result is written under a fresh temporary name there and renamed into place. The launcher stops if that
+directory is a link, is owned by someone else or is writable by others, or if a result name in it is a link or
+not a regular file; remove the odd entry (`sudo rm -r /Users/Shared/braid-t009-lab`) and run again.
+
+**Step H4. The real attempt (you, only after the orchestrator confirms).** Replaces step 11, from any Terminal of
+yours. `sudo` asks for your password every time (the rule of step H2 does not cover `run`):
+
+```sh
+sudo /usr/local/libexec/braid/t009-launch.sh run t009-YYYYMMDDx
+```
+
+It needs your terminal: the driver asks you to type the attempt name, then the usage card before and after each
+of at most three sessions, exactly as in step 11 (claude.ai Usage or the phone; `now` right after reading). The
+console output is published as `/Users/Shared/braid-t009-lab/run-<attempt>.txt` and the output directory as
+`/Users/Shared/braid-t009-lab/bundle-<attempt>/`; the printed `bundleSha256` stays the authoritative hash. While it
+runs, `check` and `diag` are refused. "If step 11 fails" above applies unchanged (the session counter, a new label
+only from the orchestrator).
+
 ### Teardown (after the bundle is copied)
 
 ```sh
+sudo rm -f /etc/sudoers.d/braid-t009 /usr/local/libexec/braid/t009-launch.sh   # headless mode: rule and launcher first
+sudo rm -rf /Users/Shared/braid-t009-lab        # headless mode: the lab account's publish directory
 rm -r "/Users/Shared/t009-bundle-$ATTEMPT" /Users/Shared/t009-dry-run.json /Users/Shared/t009-self-check.json /Users/Shared/t009-setup-summary.json
 sudo rm -r /Users/Shared/braid-t009              # the handoff directory of the scripts (from-lab/ is the lab account's)
 # revoke the long-lived token of step 9b in the Claude account settings (claude.ai, Settings; the token that

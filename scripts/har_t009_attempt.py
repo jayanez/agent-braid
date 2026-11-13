@@ -3,9 +3,12 @@
 """Operator-run driver for the SPEC-065 T009 live qualification attempt.
 
 This script is NOT an authorization. It is the one command the founder runs, inside the dedicated
-account's own login session, after the sudo setup of ``quickstart.md`` and after the orchestrator has
-verified that setup with ``--dry-run``. ``--dry-run`` performs only the pre-flight checks: it starts no
-sandbox, no ``claude`` and no network connection, and prints a JSON verdict. Without ``--dry-run`` it
+account's own session, after the sudo setup of ``quickstart.md`` and after the orchestrator has
+verified that setup with ``--dry-run``. Own session (SPEC-065 amendment 2026-11-13) means the audit session
+was created for the dedicated account: its graphical login (launchd manager ``Aqua``) or a non-GUI session that
+root starts with ``launchctl asuser`` (``Background``; ``scripts/har_t009_launch.sh``). su or sudo from another
+account's session is refused (``session-own``), because they keep that session's Mach bootstrap namespace.
+``--dry-run`` performs only the pre-flight checks: it starts no sandbox, no ``claude`` and no network connection, and prints a JSON verdict. Without ``--dry-run`` it
 builds the T005 backend, the T006 transport factory and the T007 runner (``make_qualification_runner``),
 runs the whole catalog (at most three small Haiku sessions, NC-10) and writes the evidence bundle.
 
@@ -230,6 +233,9 @@ class System:
     def account_facts(self, account: str, entry, uid: int, operator_uid: int):
         return _mac._account_facts(account, entry, uid, operator_uid)  # the backend's own account check
 
+    def session(self):
+        return _mac.session_facts()  # the backend's own reading of the audit session and its launchd manager
+
     def supervisor(self) -> str:
         return os.path.realpath(sys.executable)
 
@@ -352,6 +358,12 @@ _OPERATOR_WHY = {
     "dedicated-user-unsafe": "the account is a system account (uid < 500) or has the operator's uid; the backend "
                              "refuses this (RV-16)",
 }
+_SESSION_WHY = {
+    "session-not-own": "not the dedicated account's own audit session (su or sudo from another session keeps that "
+                       "session and its pasteboard and AppleEvents); start it with launchctl asuser through the "
+                       "root-owned launcher, or in the account's own graphical login",
+    "session-kind-unsupported": "the session's launchd manager is not Aqua or Background",
+}
 
 
 def preflight(args: argparse.Namespace, system: System) -> dict:
@@ -383,6 +395,12 @@ def preflight(args: argparse.Namespace, system: System) -> dict:
     add(_check("user-is-not-operator-account", reason is None,
                why or f"the account is not the operator account {name!r}"))
     operator_ok = reason is None
+    # SPEC-065 amendment 2026-11-13: the account's own audit session, of a supported kind (the backend's rule)
+    session = system.session()
+    session_reason = _mac.session_refusal(session, uid)
+    observed["session"] = {"kind": session.kind}  # a closed word or None (``_mac._manager_name``); no ids
+    add(_check("session-own", session_reason is None, _SESSION_WHY.get(session_reason, "") if session_reason
+               else f"the account's own {session.kind} session"))
     try:
         gids = system.groups(args.account, entry.pw_gid) if entry is not None else ()
     except OSError:
@@ -480,10 +498,11 @@ def preflight(args: argparse.Namespace, system: System) -> dict:
         add(_check("policy-valid", True, "ContainmentPolicy accepted"))
     except (LabError, TypeError, ValueError) as exc:
         add(_check("policy-valid", False, f"refused: {getattr(exc, 'reason', exc)}"))
-    if policy is not None and facts is not None and entry is not None and operator_ok:
+    if policy is not None and facts is not None and entry is not None and operator_ok and session_reason is None:
         try:
             account_facts = system.account_facts(args.account, entry, uid, operator_uid)
-            observed["environmentSha256"] = _mac.environment_sha256(policy, facts, uid, account_facts)
+            observed["environmentSha256"] = _mac.environment_sha256(policy, facts, uid, account_facts,
+                                                                    session.kind)
             add(_check("environment-hash", True, "computed"))
         except LabError as exc:
             add(_check("environment-hash", False, f"backend account check refused: {exc.reason}"))

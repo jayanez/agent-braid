@@ -1,0 +1,58 @@
+{
+  "recordVersion": "spec065-session-context-survey-v1",
+  "task": "SPEC-065/T009 after attempt t009-20261113a: in which audit session and Mach bootstrap namespace does the dedicated account run, per launch context",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-13",
+  "observer": "operator, one command in the operator's own Terminal with sudo, at the orchestrator's request; read back by the orchestrator",
+  "nativeRun": false,
+  "method": {
+    "summary": "No model, no network, no quota, no sandbox, nothing changed. A small Python probe, run with the pinned root-owned interpreter (-I), read for its own process: the uid; the audit user id (auid) and audit session id (asid) from getaudit_addr(2) through ctypes (struct auditinfo_addr); the launchd manager of its session from `/bin/launchctl managername`; and the raw bootstrap_look_up(3) status of ten fixed Mach service names (0 found, 1102 BOOTSTRAP_UNKNOWN_SERVICE). The same probe ran from three launch contexts, each started as root by the survey script.",
+    "contexts": {
+      "operator-own": "the operator's account in its own graphical session (sudo -u <operator>)",
+      "braidlab-sudo-inherited": "the dedicated account through `sudo -u braidlab` from the operator's session (what su or sudo from the operator's Terminal gives)",
+      "braidlab-asuser": "the dedicated account through `launchctl asuser <uid of braidlab> sudo -u braidlab` (its own session, no graphical login)"
+    },
+    "redaction": "The operator's account name is omitted; only numeric uids and audit session ids are kept. `braidlab` is the dedicated lab account."
+  },
+  "observations": {
+    "operator-own": {
+      "uid": 502, "auid": 502, "asid": 100014, "manager": "Aqua",
+      "lookup": {"com.apple.pasteboard.1": 0, "com.apple.metadata.mdwrite": 0, "com.apple.tccd": 0,
+                 "com.apple.metadata.mds": 0, "com.apple.coreservices.launchservicesd": 0,
+                 "com.apple.coreservices.appleevents": 0, "com.apple.Spotlight": 1102, "com.apple.secd": 1102,
+                 "com.apple.tccd.system": 0, "com.apple.windowserver.active": 0}
+    },
+    "braidlab-sudo-inherited": {
+      "uid": 503, "auid": 502, "asid": 100014, "manager": "Aqua",
+      "lookup": {"com.apple.pasteboard.1": 0, "com.apple.metadata.mdwrite": 0, "com.apple.tccd": 0,
+                 "com.apple.metadata.mds": 0, "com.apple.coreservices.launchservicesd": 0,
+                 "com.apple.coreservices.appleevents": 0, "com.apple.Spotlight": 1102, "com.apple.secd": 1102,
+                 "com.apple.tccd.system": 0, "com.apple.windowserver.active": 0}
+    },
+    "braidlab-asuser": {
+      "uid": 503, "auid": 503, "asid": 100104, "manager": "Background",
+      "lookup": {"com.apple.pasteboard.1": 1102, "com.apple.metadata.mdwrite": 1102, "com.apple.tccd": 1102,
+                 "com.apple.metadata.mds": 0, "com.apple.coreservices.launchservicesd": 0,
+                 "com.apple.coreservices.appleevents": 0, "com.apple.Spotlight": 1102, "com.apple.secd": 1102,
+                 "com.apple.tccd.system": 0, "com.apple.windowserver.active": 0}
+    }
+  },
+  "findings": [
+    "su or sudo from the operator's session leaves the dedicated account (uid 503) in the operator's audit session (auid 502, asid 100014) and its Aqua bootstrap namespace: unsandboxed, it can look up the operator's pasteboard, AppleEvents and LaunchServices. The T009 driver did not detect this before the 2026-11-13 amendment (containment hazard; attempt t009-20261113a was launched with `su - braidlab`).",
+    "`launchctl asuser` gives the dedicated account its own audit session (auid 503 equals its uid, asid 100104) with launchd manager Background: the pasteboard, metadata.mdwrite and the per-user tccd are not registered (1102), mds, launchservicesd, appleevents, tccd.system and windowserver.active are (0).",
+    "Spotlight and secd answer 1102 in every context; the catalog already treats that as not applicable (FS-07 mach-spotlight, CRED-02 mach-secd)."
+  ],
+  "relatedAttempt": {
+    "attempt": "t009-20261113a",
+    "launch": "`su - braidlab` from the operator's Terminal",
+    "bundleSha256": "51574ae22461cf8b3e0d311f7c70f444505136c8d7193d62eed6b926bc7c4201",
+    "passRuleSatisfied": false,
+    "inconclusive": {
+      "CRED-07": "positive-control-failed: pasteboard-mach and pasteboard-exec uncontained errno NONE; contained denied (EPERM)",
+      "FS-07": "positive-control-failed: mach-mdwrite uncontained errno NONE; contained denied (EPERM)",
+      "PROC-06": "positive-control-failed: mach-tccd uncontained errno NONE; contained denied (EPERM)"
+    },
+    "note": "The bundle stays outside the repository in this record; it is cited by its SHA-256 only."
+  },
+  "limits": "Observations of one machine, one OS build and one moment, for ten fixed service names. They are not a proof of isolation and grant nothing. executionAuthorization stays false."
+}

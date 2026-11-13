@@ -110,9 +110,14 @@ and T010's final run measures the release candidate without them.
 
 ## Closing — final run, documentation and release
 
-- [ ] T011 (REQ-011 / SC-011): [Closing] Update `docs/tooling/NATIVE_PLUGINS.md` and
+- [x] T011 (REQ-011 / SC-011): [Closing] Update `docs/tooling/NATIVE_PLUGINS.md` and
   release notes from tests and T010 evidence. Dependencies: T010.
   Verification: procedure_011.
+  Done 2026-11-13: section "`analyze-work` request kinds (SPEC-069, unreleased)" in `docs/tooling/NATIVE_PLUGINS.md`
+  (three kinds, refusal format, declared-not-observed label, T005 schema delivery, T010 held-out results with the
+  accepted D4 deviation) and the release-note draft for the next alpha (T014 #1099 transition text, T009 schema and
+  rollback notes). Nothing published, tagged or versioned (T012). `tests/test_spec069_docs.py` checks links, cited
+  files and every measured number against the evidence; procedure_011 passes (`evidence/procedure_011.json`).
 - [ ] T012 (REQ-012 / SC-012): [Closing] Release `0.1.0-alpha.8` (or later) after the
   owner's explicit yes; close #1080 with a link to evidence.
   Dependencies: T010, T011. Verification: procedure_012.

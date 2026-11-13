@@ -8,7 +8,9 @@ its scenario. It is local evidence; the CI ``validate`` aggregate on the pull re
 is separate. Procedure 001 (owner review and protocol freeze) and 008 (held-out runs) are not test procedures;
 later procedures are added as their tasks land.
 
-    python -m scripts.spec072_capture_evidence
+    python -m scripts.spec072_capture_evidence [procedure_NNN ...]
+
+Naming procedures re-runs only those; the default re-runs every procedure.
 """
 
 from __future__ import annotations
@@ -109,6 +111,14 @@ PROCEDURES = {
         "outcome_note": "Each APO and GEPA run journals a start entry with its algorithm and seed, every optimizer call with its input hash and output, and every evaluation as the ids and sha256 of the SPEC-071 attempt-result records it stored; the run manifest holds the configuration digest and candidate records keep parent links and optimizer call ids. Vectors are always re-scored from the stored content-free parsed attempts. Replaying a finished APO or GEPA run from its journal and stored records makes no optimizer or evaluator call, writes nothing and reproduces every candidate record (lineage, minibatch and full scores, Pareto membership) and the best candidate. Negative controls: altering one stored attempt-result record is detected by hash and changes a selection; a journal that ends early is refused (replay-incomplete); the default scorer refuses held-out records (holdout-contamination) and scores a refusal as a failed D4 attempt.",
         "limits": "Fake optimizer; synthetic vectors carried in fake attempt-result records and read back by a test scorer; the default scorer is exercised on one development case only. Real runs that produce these records through `agent-braid lightning run` are T009 work.",
     },
+    'procedure_011': {
+        "scenario": 'SC-011',
+        "modules": ["tests.test_lightning_evaluation"],
+        "inputs": ["agent_braid/lightning_evaluation.py", "agent_braid/harness_evaluation.py",
+                   "agent_braid/harness_promotion.py", "tests/test_lightning_evaluation.py"],
+        "outcome_note": "From synthetic held-out results, spec049_pair writes a SPEC-049 Registration and EvaluationRecord in REGISTRATION_FORMAT and REPORT_FORMAT with arm A = A0 and arm C = A2 (GEPA) by candidate hash, the H1 outcome per required host (claude-code) under the protocol rule (supported, not-supported, not-assessable; a canary hit invalidates the arm) and executionAuthorization false; both records load through the harness_promotion verifiers and a pending decide() call in the test accepts the pair with the C-vs-A regression descriptive-only. The writer never names decide, begin or harness_promotion. Negative controls: arm C set to A1 is refused (arm-c-not-a2), arm A not A0 is refused (arm-a-not-a0), a report edited after recording fails the byte check, and a report bound to another registration is refused (registration-mismatch).",
+        "limits": "Synthetic held-out summaries; the T010 held-out runs have not run, so no real H1 outcome is recorded. The SPEC-049 noninferiority test is not part of the frozen protocol and is reported descriptive-only, so an approved SPEC-073 promotion over this pair is refused (regression-not-covered) unless SPEC-073 decides otherwise.",
+    },
 }
 
 
@@ -125,13 +135,19 @@ def run(modules: list[str]) -> dict:
             "testsRun": int(ran.group(1)) if ran else None, "result": tail[-1] if tail else ""}
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    selected = (sys.argv[1:] if argv is None else argv) or list(PROCEDURES)
+    unknown = set(selected) - set(PROCEDURES)
+    if unknown:
+        print("unknown procedure: " + ", ".join(sorted(unknown)), file=sys.stderr)
+        return 2
     EVIDENCE.mkdir(exist_ok=True)
     assurance_path = SPEC / "assurance.json"
     assurance = json.loads(assurance_path.read_text())
     scenarios = {s["id"]: s for r in assurance["requirements"] for s in r["scenarios"]}
     status = 0
-    for name, spec in PROCEDURES.items():
+    for name in selected:
+        spec = PROCEDURES[name]
         result = run(spec["modules"])
         passed = result["returncode"] == 0 and result["result"].startswith("OK")
         record = {

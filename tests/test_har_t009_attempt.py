@@ -57,6 +57,8 @@ class FakeSystem(har.System):
         self.facts = mac.HostFacts("27.0.1", "26A123", "arm64")
         self.links: dict[str, str] = {}
         self.writable_dirs = {"/Users/braidlab/out"}
+        # the account's own non-GUI session (launchctl asuser), as the survey of 2026-11-13 saw it
+        self.session_facts = mac.SessionFacts(auid=UID, asid=100_104, kind="Background")
 
     # builders
     def dir(self, path, mode=0o755, uid=0):
@@ -107,6 +109,7 @@ class FakeSystem(har.System):
     def environ(self): return self.env
     def host_facts(self): return self.facts
     def account_facts(self, account, entry, uid, operator_uid): return mac.AccountFacts((20,), 0o700)
+    def session(self): return self.session_facts
 
 
 def good_machine() -> FakeSystem:
@@ -164,6 +167,38 @@ class PreflightTests(unittest.TestCase):
         for name in names:
             self.assertFalse(check(report, name)["ok"], name)
         return report
+
+    def test_the_session_must_be_the_accounts_own_of_a_supported_kind(self):
+        """SPEC-065 amendment 2026-11-13: su or sudo from the operator's session keeps the operator's audit
+        session (and Mach bootstrap namespace); the driver refuses it in both modes."""
+        for kind in mac.SESSION_KINDS:
+            with self.subTest(kind=kind):
+                s = good_machine(); s.session_facts = mac.SessionFacts(UID, 100_200, kind)
+                report = self.run_preflight(s)
+                self.assertEqual(report["verdict"], "ready")
+                self.assertEqual(report["observed"]["session"], {"kind": kind})
+                self.assertTrue(check(report, "session-own")["ok"])
+        s = good_machine(); s.session_facts = mac.SessionFacts(FOUNDER_UID, 100_014, "Aqua")  # sudo -u braidlab
+        report = self.refused("session-own", system=s)
+        self.assertIn("launchctl asuser", check(report, "session-own")["detail"])
+        self.assertNotIn("environment-hash", [c["check"] for c in report["checks"]])
+        for kind in ("LoginWindow", "StandardIO", None):
+            with self.subTest(kind=kind):
+                s = good_machine(); s.session_facts = mac.SessionFacts(UID, 100_104, kind)
+                report = self.refused("session-own", system=s)
+                self.assertIn("Aqua or Background", check(report, "session-own")["detail"])
+        s = good_machine(); s.session_facts = mac.SessionFacts(None, None, None)  # unreadable: fail closed
+        self.refused("session-own", system=s)
+
+    def test_the_environment_hash_binds_the_session_kind(self):
+        hashes = set()
+        for kind in mac.SESSION_KINDS:
+            s = good_machine(); s.session_facts = mac.SessionFacts(UID, 100_104, kind)
+            hashes.add(self.run_preflight(s)["observed"]["environmentSha256"])
+        self.assertEqual(len(hashes), 2)
+        with mock.patch.object(mac, "environment_sha256", return_value="f" * 64) as digest:
+            self.run_preflight()
+        self.assertEqual(digest.call_args.args[4], "Background")  # exactly what the backend hashes
 
     def test_wrong_user_refuses(self):
         s = good_machine(); s.user = "someone"
@@ -760,6 +795,11 @@ class SystemTests(unittest.TestCase):
         self.assertEqual(sorted(p for p, _ in system.walk(str(self.root), 10)),
                          [str(self.root / "d"), str(self.root / "d" / "f")])
         self.assertIsNone(system.walk(str(self.root), 1))
+
+    def test_the_session_facts_are_the_backends_own_reading(self):
+        facts = mac.SessionFacts(503, 100_104, "Background")
+        with mock.patch.object(mac, "session_facts", return_value=facts):
+            self.assertIs(har.System().session(), facts)
 
     def test_the_supervisor_facts_come_from_the_running_interpreter(self):
         system = har.System()

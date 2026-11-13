@@ -179,6 +179,9 @@ weaker run `native`.
   replaced, a profile compile failure, a failed self-check or an unsupported OS
   build, when a run is requested, then it refuses with a fixed reason and no
   child is started.
+  Amendment (founder, 2026-11-13, NC-2 (a) and (b)): the checks before every run include the session-ownership
+  guard; a process outside the dedicated account's own audit session, or in a session kind other than `Aqua` or
+  `Background`, is refused (`session-not-own`, `session-kind-unsupported`) before any child starts.
 
 **REQ-005 Filesystem effect (STRICT).** The contained child can create, modify
 or delete files only inside the candidate directory and the additional locations
@@ -265,6 +268,11 @@ its hash are bound in the evidence bundle.
   controls in a disposable directory holding only dummy secrets created for the probe) and once contained, then
   every escape is observed uncontained and denied contained; a probe whose
   positive control fails is reported inconclusive and blocks qualification.
+  Amendment (founder, 2026-11-13, NC-2 (c)): a counted attempt whose uncontained control shows a listed closed
+  code (for the Mach lookups `ABSENT`: the service is not registered for the account) is excluded as not
+  applicable and named in the row's `notApplicable`; the list now also holds CRED-07 `pasteboard-mach` and
+  `pasteboard-exec`, FS-07 `mach-mdwrite` and PROC-06 `mach-tccd`. An exclusion never removes the last counted
+  attempt of a probe, and a contained escape at an excluded attempt still fails the probe.
 
 **REQ-011 Unblocking map.** Completion of this specification's tasks provides
 inputs to SPEC-048/T008 for the Claude profile, and only then to SPEC-049/T004.
@@ -299,7 +307,11 @@ because the mechanism fixes what the policy can express.
   `DISABLE_NONESSENTIAL_TRAFFIC`-style settings and auto-update are forced off
   (recommended with (a)/(b), unverified until probed).
 
-- **NC-2 Isolation mechanism.** Decided (founder, 2026-10-31): option (b): a dedicated macOS user account plus `sandbox-exec`. ([record](evidence/founder-decisions-20261031.json)) History: `sandbox-exec` and SBPL
+- **NC-2 Isolation mechanism.** Amended (founder, 2026-11-13, "A. Terminal propia"; [record](evidence/founder-decisions-20261113.json), [survey](evidence/session-context-survey-20261113.json)): the mechanism is unchanged; what changes is the session the dedicated account runs in. Attempt `t009-20261113a` was launched with `su - braidlab`, and the survey showed that su or sudo from the operator's session leaves the account in the operator's audit session (auid 502, asid 100014) and Mach bootstrap namespace, so uncontained it can reach the operator's pasteboard, AppleEvents and LaunchServices. Three rules follow, applied to both modes:
+  (a) *Session-ownership guard.* The driver (check `session-own`) and the backend (before every entry spawns anything, reason `session-not-own`) refuse unless the process's audit record (`getaudit_addr`) has `auid` equal to the dedicated account's uid and a real session id (`asid > 0`); an unreadable record refuses. The predicate is `auid == uid` because the audit user id is set once when a session is created (loginwindow for a graphical login, or root through `launchctl asuser`) and is inherited unchanged across su, sudo and setuid, and the Mach bootstrap namespace belongs to that audit session; so `auid == uid` holds only in a session created for the account itself, and the operator's session (auid of the operator) never passes. A different `asid` alone would not suffice (a second session of the operator also has a new one), and the operator's `asid` is not readable from the account; root is trusted.
+  (b) *Supported session kinds.* `launchctl managername` must print `Aqua` (the account's own graphical login, the mode used so far) or `Background` (its own non-GUI session, started by root with `launchctl asuser` through the root-owned launcher `scripts/har_t009_launch.sh`); any other kind refuses (`session-kind-unsupported`). The kind (not the session id, which changes with every login) is an environment-hash input, so a qualification is valid only for the kind it was taken in.
+  (c) *Not-applicable rule extension.* In a `Background` session launchd registers no pasteboard, `metadata.mdwrite` or per-user `tccd` (lookup status 1102). The probes look these up with absent detection, and the uncontained `ABSENT` code excludes, exactly like the existing `NOT_APPLICABLE` entries: CRED-07 `pasteboard-mach`; CRED-07 `pasteboard-exec`, which skips `pbpaste` only when the pasteboard lookup itself is unknown and is excluded only together with `pasteboard-mach` in the same control; FS-07 `mach-mdwrite`; PROC-06 `mach-tccd`. Inside the sandbox the lookup is refused (1100), not unknown, so the contained attempts still run and must be denied. Every probe keeps at least one counted attempt (CRED-07 `sibling-environment` and `browser-profile`, FS-07 `mach-mds`, the rest of PROC-06), and a contained `allowed` at an excluded attempt is still an escape.
+  The owner runs the real attempt with `sudo .../t009-launch.sh run` and the password each time; `check` and `diag` may run without a password through a narrow sudoers rule ([record](evidence/founder-decisions-20261113.json), decision RUN-LAUNCHER). Undo: graphical mode stays supported; the guard stays. Decided (founder, 2026-10-31): option (b): a dedicated macOS user account plus `sandbox-exec`. ([record](evidence/founder-decisions-20261031.json)) History: `sandbox-exec` and SBPL
   are deprecated by Apple yet present on this machine and already used by
   `system_one_verified_stdio.py` for a network deny. Options:
   (a) accept `sandbox-exec` with a pinned binary hash, OS-build window and
