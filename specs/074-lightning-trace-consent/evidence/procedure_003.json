@@ -1,0 +1,19 @@
+{
+ "command": "python -m unittest tests.test_lightning_redact",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_hosts.py": "c35d4e5cd5ffa21d9b9c4b6d2bd1e2a01099a0d2e9125b0c9507105319e70d52",
+  "agent_braid/lightning_redact.py": "9913bdc39bea39e4d710fc5bb30da197f81056a549d5e1f076c6b439abc2e72a",
+  "tests/test_lightning_redact.py": "4c353d14d04339431535fddfb329ac1de118449fa22801209ae28a1c49d5bf99"
+ },
+ "limits": "Synthetic samples only; the encoded-form canary corpus (JSON-escaped, URL-encoded, split, base64) is T005. Redaction is pattern-based: secrets of unknown shape that are not known literals are not caught (privacy review residual risk). The store does not call the redactor yet (T006); no content is stored.",
+ "outcome": "passed: T004: lightning_redact detects, then replaces, each class with its typed placeholder: literal known secret [REDACTED:secret], API key and token shapes [REDACTED:token], bearer header [REDACTED:bearer], private key block [REDACTED:private-key], email [REDACTED:email:<8-hex>] (HMAC-SHA256 with a 16-byte per-run salt: stable within a run, case-insensitive, different across salts, OD-2) and the home path as a ~ prefix; the post-redaction scan is clean. JSON values are redacted in keys and strings and scanned in serialized form. An unclean result is refused with redaction-incomplete without echoing the match. Negative control: each sample must be detected by the scan before redaction, so a disabled pattern fails. The SPEC-069 driver's SECRET_PATTERNS is the same object (single source), unchanged pattern for pattern.",
+ "procedure": "procedure_003",
+ "result": "OK",
+ "scenario": "SC-003",
+ "specification": "SPEC-074 BL.4",
+ "testsRun": 6
+}

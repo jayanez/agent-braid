@@ -131,8 +131,9 @@ class RunStore:
             consent = self.content_consent or content_consent(self.home)
             if consent != 'redacted':
                 raise StoreError('Content-bearing traces require trace consent redacted', 'store-consent')
-            # C2: content reaches the store only after redaction with a clean post-scan; the redactor is SPEC-074 T004.
-            raise StoreError('No redactor is available, so the record cannot be stored', 'redaction-incomplete')
+            # C2: content reaches the store only after redaction with a clean post-scan; the redactor
+            # (lightning_redact, T004) is wired in with the run's email salt and content retention (T006).
+            raise StoreError('Content storage is not wired yet, so the record cannot be stored', 'redaction-incomplete')
         if kind not in KINDS:
             raise StoreError('Unknown record kind', 'store-kind')
         value = record.to_dict() if isinstance(record, (Rollout, Event, AttemptResult, Candidate)) else record

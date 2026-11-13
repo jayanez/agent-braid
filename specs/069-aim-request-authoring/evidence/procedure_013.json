@@ -2,10 +2,10 @@
  "command": "python -m unittest tests.test_spec069_native_runs",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_hosts.py": "a147d8fb36c7d4e8b06aa328699a7662a52fdf71e05b292fe8a13756ddf15b23",
+  "agent_braid/lightning_hosts.py": "c35d4e5cd5ffa21d9b9c4b6d2bd1e2a01099a0d2e9125b0c9507105319e70d52",
   "scripts/spec069_capture_p1_evidence.py": "6c55689a3b498c64718c48abc6d351aa06dbf0132106da543ad601dfd637c94e",
   "scripts/spec069_native_runs.py": "92a737a5d4e7af15d9a859f49b9be2111dc5f82c68c694b59a8019091e6de236",
   "specs/069-aim-request-authoring/evidence/native-runs-baseline-anthropic.json": "1663332c6c04577fa51ffbbd9ed5d9d0fbc5311a883f7239eb746ee2db9896fe",
