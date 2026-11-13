@@ -2,7 +2,7 @@
  "command": "python -m unittest tests.test_lightning_cli.BL2BoundaryTests",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "python": "3.13.11"
  },
  "inputs": {
   "agent_braid/forecast_mcp.py": "6fba537f5506791f6e160dad7bfd8f92e0183019ac8b7c026ecb8aacd83b2f24",
@@ -11,6 +11,7 @@
   "agent_braid/lightning_arm.py": "4d4575522edf4de5f21cc4e550ae1b7fda124fba2b95117f07b7b80d4c608137",
   "agent_braid/lightning_cli.py": "e4fd5b31f6499c5422defbd4acff4bc4505e5e273aa2d024a72ac4d8c92114eb",
   "agent_braid/lightning_config.py": "50dfec9b5144eab63799920a3a7ed2a62fc499138de3c1619d1c3b27a555128b",
+  "agent_braid/lightning_evaluation.py": "de6d6d5b2478da9480b929ab46cecdfd5ff712c2edfbf906e5809328485ee27b",
   "agent_braid/lightning_gepa.py": "e610b1c2eff80b9638cda36f673ca81251c886310b7d3e5cfba74467c5ffb556",
   "agent_braid/lightning_hooks.py": "4760f91d5bd9505bffe994751b6ed790acab036087a417f99755944f891c9c11",
   "agent_braid/lightning_hosts.py": "a147d8fb36c7d4e8b06aa328699a7662a52fdf71e05b292fe8a13756ddf15b23",
@@ -29,7 +30,7 @@
   "integrations/agent-braid/plugin/runtime-lock.json": "fdfca18b9661fc7a8c071ccdc7256d151615b5d47a52d2f0c19d038ca460d438",
   "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
   "pyproject.toml": "d381baf52f4d354717080943bb65b7416bcc7a0e418d465a86de09b65b6466b3",
-  "scripts/spec072_capture_evidence.py": "7c25da97371775709fc9eb59ab80709c950d7413e42c3d040202c969485e7272",
+  "scripts/spec072_capture_evidence.py": "05d7badc108a64ca9a6387d701f8c2b8b5214a3ebff2a3ed86b672a2a4c9463d",
   "scripts/spec072_development_arms.py": "c17775c3ab9ae0ed7fc1c1077a6d1f8a1f4e046ea0fde82231556951cf7f8ab4",
   "scripts/spec072_holdout_fingerprints.py": "bde1e92812bba0f01448047313e90100a87b20f2e9899e5778a1c8cde6be6222",
   "tests/test_lightning_cli.py": "6b220bb56be7074cd197b1022b0ad63afd8315bf4d7eafc398c9debe46abf171"
