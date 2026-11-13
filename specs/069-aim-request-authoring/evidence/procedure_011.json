@@ -6,7 +6,7 @@
  },
  "inputs": {
   "agent_braid/analyze_work_schema.py": "a7a5ccb6dde3ff1ad3650dfbd3a9e3c457e9c2c1782f88bb44ff5d852c156d41",
-  "docs/tooling/NATIVE_PLUGINS.md": "7d2386f9d8a8deafb936521ce54b5305d03576d3918b288e4d6f4152cdd74a6f",
+  "docs/tooling/NATIVE_PLUGINS.md": "c999f068ac0c6fdb30a9e97c118013c8b6f9e6525d78b62c88df37f9b3a25812",
   "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
   "specs/069-aim-request-authoring/compatibility.md": "48a18f8c22c4b25216d5c511f30514eceb92fd6b671a5c123d4dfab637086d05",
   "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "ae433d93d7e0af3e056246588719ea5d7ac1e95c8eb13b68b620977900cba118",
@@ -16,10 +16,10 @@
   "specs/069-aim-request-authoring/evidence/native-runs-t010-heldout-final.json": "f6f57e0327ebc1c0ab689f4280ab6eec3fc85ce4ad4ecf63522687e04dcb089d",
   "specs/069-aim-request-authoring/evidence/procedure_005.json": "984f1904f0a66ccdaa9aecf900d30125469f8ee7061e5f764afae67f27f6f7f6",
   "specs/069-aim-request-authoring/evidence/procedure_009.json": "69c63ee6757e52685c5663f8df8cbde8148d13ab2aa4c9e62b7c98931f640005",
-  "tests/test_spec069_docs.py": "6425f7b53e801881e4b8b08e4bffe96839169aba68f738ab1723c44a532f026d",
+  "tests/test_spec069_docs.py": "8cdbe32a0dbaba9b9853a9e3bcfeb62d5bb1db22448e5863f6935dec3bd90ddc",
   "tests/test_spec069_guidance.py": "1559d3025aba847c055e2dbbf7752bc771df8da873d41d18d923da37be38c4fa"
  },
- "limits": "Checks the SPEC-069 section of docs/tooling/NATIVE_PLUGINS.md (request kinds, refusal format, label, schema delivery, measured host validity, release-note draft) and the links of the whole file. Measured numbers, host versions, loading modes and replay counts are compared mechanically with the committed evidence; the remaining behavioural statements were reviewed against the contract and the tests they cite, which is a review, not a proof. The release-note text is a draft: nothing is published, tagged or versioned (T012 needs the owner's explicit yes). Native results cover one probe session per host and arm and the T010 held-out run only.",
+ "limits": "Checks the SPEC-069 section of docs/tooling/NATIVE_PLUGINS.md (request kinds, refusal format, label, schema delivery, measured host validity, alpha.8 release notes) and the links of the whole file. Measured numbers, host versions, loading modes and replay counts are compared mechanically with the committed evidence; the remaining behavioural statements were reviewed against the contract and the tests they cite, which is a review, not a proof. The alpha.8 notes are final candidate text: the version is bumped but nothing is published or tagged (T012 needs the owner's explicit yes). Native results cover one probe session per host and arm and the T010 held-out run only.",
  "outcome": "passed: every link and anchor in NATIVE_PLUGINS.md resolves; every cited test and evidence file exists; the documented kinds equal the served enum; the held-out table equals the T010 evidence (Claude Code 27/30, OpenCode 27/30, Codex 24/30, D4 not met, accepted deviation); probe versions and loading follow procedure_005 native; replay counts (103 accepted, 214 refused) follow procedure_009; the rollback refusal equals the compatibility note. Negative controls: a broken link or anchor, a wrong number and a missing cited file are detected.",
  "procedure": "procedure_011",
  "result": "OK",
