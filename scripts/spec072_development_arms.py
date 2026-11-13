@@ -99,6 +99,27 @@ def apply_profile(home: Path, name: str) -> dict:
     return config.load(home)
 
 
+def merge_evidence(path: Path, record: dict, resumed: dict) -> dict:
+    """Merge this invocation into an existing evidence file: earlier runs are kept, this invocation's runs are added
+    or replace the record of the same name, and every invocation is listed, so a resume drops nothing."""
+    invocation = {"generatedAt": record["generatedAt"], "seedRun": record.get("seedRun"),
+                  "runs": {name: {"runId": value.get("runId"), "stop": value.get("stop"),
+                                  "refusal": value.get("refusal"), "resumed": resumed.get(name)}
+                           for name, value in record["runs"].items()}}
+    previous = json.loads(path.read_text()) if path.is_file() else {}
+    runs = {**previous.get("runs", {}), **record["runs"]}
+    invocations = list(previous.get("invocations", []))
+    if previous and not invocations:  # a file written before invocations were listed: keep it as the first one
+        invocations.append({"generatedAt": previous.get("generatedAt"), "seedRun": previous.get("seedRun"),
+                            "runs": {name: {"runId": value.get("runId"), "stop": value.get("stop"),
+                                            "refusal": value.get("refusal"), "resumed": None}
+                                     for name, value in previous.get("runs", {}).items()}})
+    merged = {**record, "runs": runs, "invocations": invocations + [invocation]}
+    if "seedRun" not in record and "seedRun" in previous:
+        merged["seedRun"] = previous["seedRun"]
+    return merged
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--home", type=Path, default=DEFAULT_HOME, help="dedicated private laboratory home")
@@ -175,6 +196,7 @@ def main(argv: list[str] | None = None) -> int:
                 exit_code = 1
                 break  # a quota stop ends the phase; resume explicitly
 
+    record = merge_evidence(args.output, record, {"apo": args.resume_apo, "gepa": args.resume_gepa})
     text = json.dumps(record, indent=2, sort_keys=True, ensure_ascii=False, default=str) + "\n"
     Secrets([token]).assert_clean(args.output.name, text)
     args.output.parent.mkdir(parents=True, exist_ok=True)

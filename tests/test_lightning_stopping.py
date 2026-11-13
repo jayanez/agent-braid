@@ -63,11 +63,13 @@ class Base(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
-    def run_algo(self, kind, cfg, *, optimizer=None, evaluator=None, run_id='run', resume=False, rng_seed=0):
+    def run_algo(self, kind, cfg, *, optimizer=None, evaluator=None, run_id='run', resume=False, rng_seed=0,
+                 source=None, models=None):
         optimizer = optimizer or Optimizer()
         channel = runner.OptimizerChannel('claude-code', transport=optimizer, fake=True)
         options = {'evaluator': fakes.results(evaluator or Evaluator()), 'scorer': fakes.scorer, 'optimizer': channel, 'seed_vectors': self.seed}
         algo = apo.APO(**options) if kind == 'apo' else gepa.GEPA(**options, rng_seed=rng_seed)
+        algo.source, algo.models = source, models
         return algo.run(self.home, cfg, run_id=run_id, resume=resume), optimizer
 
     def assert_within(self, summary, cfg):
@@ -142,6 +144,44 @@ class ResumeTests(Base):
         with self.assertRaises(runner.RunnerError) as caught:
             self.run_algo('gepa', changed, resume=True)
         self.assertEqual(caught.exception.code, 'resume-diverged')
+
+
+    def source(self, **changes):
+        target = profile('gepa')['target']['path']
+        sha = hashlib.sha256((runner.checkout_root() / target).read_bytes()).hexdigest()
+        return {'arm': 'final', 'commit': 'a' * 40, 'workingTree': True, 'seedSkillSha256': sha, **changes}
+
+    def test_resume_with_other_host_models_is_refused(self):
+        cfg = profile('gepa', rounds=2)
+        pinned = {'claude-code': 'claude-sonnet-5-5'}
+        self.run_algo('gepa', cfg, evaluator=Evaluator(quota_after=2), source=self.source(), models=pinned)
+        self.assertEqual(store.RunStore(self.home, 'run').read_journal()[0]['models'], pinned)
+        with self.assertRaises(runner.RunnerError) as caught:
+            self.run_algo('gepa', cfg, resume=True, source=self.source(), models={'claude-code': 'claude-opus-5-5'})
+        self.assertEqual(caught.exception.code, 'resume-diverged')
+        self.assertIn('host models', str(caught.exception))
+        resumed, _ = self.run_algo('gepa', cfg, resume=True, source=self.source(), models=pinned)
+        self.assertIsNone(resumed['refusal'])
+
+    def test_resume_at_another_commit_is_refused_even_for_a_working_tree_source(self):
+        cfg = profile('gepa', rounds=2)
+        self.run_algo('gepa', cfg, evaluator=Evaluator(quota_after=2), source=self.source())
+        with self.assertRaises(runner.RunnerError) as caught:
+            self.run_algo('gepa', cfg, resume=True, source=self.source(commit='b' * 40))
+        self.assertEqual(caught.exception.code, 'resume-diverged')
+        self.assertIn('HEAD is now ' + 'b' * 40, str(caught.exception))
+
+    def test_a_start_journaled_without_source_or_models_resumes_only_as_a_final_working_tree_run(self):
+        cfg = profile('gepa', rounds=2)
+        self.run_algo('gepa', cfg, evaluator=Evaluator(quota_after=2))  # legacy start: no source, no models
+        self.assertEqual(set(store.RunStore(self.home, 'run').read_journal()[0]), {'kind', 'algorithm', 'rngSeed'})
+        with self.assertRaises(runner.RunnerError) as caught:
+            self.run_algo('gepa', cfg, resume=True, source=self.source(arm='baseline', workingTree=False),
+                          models={'claude-code': 'claude-sonnet-5-5'})
+        self.assertEqual(caught.exception.code, 'resume-diverged')
+        resumed, _ = self.run_algo('gepa', cfg, resume=True, source=self.source(),
+                                   models={'claude-code': 'claude-sonnet-5-5'})
+        self.assertIsNone(resumed['refusal'])
 
 
 class JournalTests(Base):
