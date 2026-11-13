@@ -197,3 +197,57 @@ class OpenCodeBuildTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class BuilderPathTests(unittest.TestCase):
+    """alpha.8: the package must not carry the builder's local paths (console scripts, direct_url.json)."""
+
+    def setUp(self):
+        self.scratch = tempfile.TemporaryDirectory()
+        self.addCleanup(self.scratch.cleanup)
+        self.root = Path(self.scratch.name)
+        self.fake_home = '/Users/fixture-builder'
+
+    def _site(self):
+        site = self.root / 'runtime/lib/python3.12/site-packages'
+        (site / 'bin').mkdir(parents=True)
+        (site / 'bin/mcp').write_text(f'#!{self.fake_home}/src/.venv/bin/python\nimport mcp\n')
+        info = site / 'agent_braid-0.dist-info'
+        info.mkdir()
+        (info / 'direct_url.json').write_text(json.dumps({'url': f'file://{self.fake_home}/build/agent_braid-0.whl'}))
+        (info / 'METADATA').write_text('Name: agent-braid\n')
+        (info / 'RECORD').write_bytes(b'agent_braid/__init__.py,sha256=x,1\r\n../../bin/mcp,sha256=y,2\r\n'
+                                      b'agent_braid-0.dist-info/direct_url.json,sha256=z,3\r\n'
+                                      b'agent_braid-0.dist-info/METADATA,,\r\n')
+        return site, info
+
+    def test_drop_removes_scripts_and_direct_url_and_their_record_lines_only(self):
+        site, info = self._site()
+        removed = build_native_plugin.drop_target_install_artifacts(site)
+        self.assertEqual(removed, ['bin/mcp', 'agent_braid-0.dist-info/direct_url.json'])
+        self.assertFalse((site / 'bin').exists())
+        self.assertFalse((info / 'direct_url.json').exists())
+        self.assertEqual((info / 'RECORD').read_bytes(),
+                         b'agent_braid/__init__.py,sha256=x,1\r\nagent_braid-0.dist-info/METADATA,,\r\n')
+        build_native_plugin.check_no_builder_paths(site.parent.parent.parent, [self.fake_home])
+
+    def test_guard_stops_a_package_that_contains_a_local_path(self):
+        site, _ = self._site()
+        with self.assertRaisesRegex(ValueError, 'bin/mcp'):
+            build_native_plugin.check_no_builder_paths(self.root, [self.fake_home])
+
+    def test_guard_ignores_unrelated_absolute_paths(self):
+        (self.root / 'third_party.so').write_bytes(b'\0/Users/runner/work/cryptography/src\0#!/usr/bin/env python3\n')
+        build_native_plugin.check_no_builder_paths(self.root, [self.fake_home, '/Users/fixture-builder/checkout'])
+
+    def test_assemble_runs_the_guard_on_the_built_plugin(self):
+        output = self.root / 'out'
+        with mock.patch.object(build_native_plugin.subprocess, 'run', side_effect=_fake_run), \
+                mock.patch.object(build_native_plugin, 'extract_runtime', side_effect=_fake_extract), \
+                mock.patch.object(build_native_plugin, '_download'), \
+                mock.patch.object(build_native_plugin, 'prepare_bytecode', return_value={'mode': 'fixture'}), \
+                mock.patch.object(build_native_plugin, 'check_no_builder_paths') as guard:
+            assemble(output, self.root / 'cache', platforms=['macos-arm64'], allow_dirty=True)
+        needles = [str(n) for n in guard.call_args.args[1]]
+        self.assertIn(str(build_native_plugin.ROOT), needles)
+        self.assertIn(str(output.resolve().parent), needles)
