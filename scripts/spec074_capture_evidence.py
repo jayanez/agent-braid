@@ -5,7 +5,7 @@ A record states the command, the outcome, the hashes of the files the run depend
 (``inputs``; the Spec Kit validator rejects the record when any of them changes) and the
 limits. The script also binds each record into ``assurance.json`` as obtained evidence of
 its scenario. It is local evidence; the CI ``validate`` aggregate on the pull request head
-is separate. Procedures are added as their tasks land (T002: procedure_001).
+is separate. Procedures are added as their tasks land (T002: procedure_001; T003: procedure_002).
 
     python -m scripts.spec074_capture_evidence [procedure_NNN ...]
 
@@ -32,8 +32,17 @@ PROCEDURES = {
         "inputs": ["agent_braid/lightning_config.py", "agent_braid/lightning_cli.py", "agent_braid/lightning_store.py",
                    "agent_braid/plugin_registry.py", "schemas/0.3.0-experimental/lightning-config.schema.json",
                    "tests/test_spec074_consent_config.py", "tests/test_lightning_config.py"],
-        "outcome_note": "T002 part: traces.contentConsent accepts only none and redacted and defaults to none with a null consent record; a BL.0 profile without consentedAt and consentPreviewDigest reads as none. `lightning init --trace-consent redacted [--trace-sources ...]` previews level, consentedAt, sources (host-transcript only when listed, OD-1), retention, redaction classes (email as a per-run salted hash, OD-2), storage, residual risk and no expiry (OD-3); apply with the matching --preview-digest writes consentedAt and that digest. Unrelated changes keep the record, new sources renew it, lowering to none clears it, and `lightning status` shows level, consentedAt, sources and expires null. The schema and the validator agree on a valid and invalid corpus. Negative controls: raw, a record without consent, consent without a record, an answered record field, a stale or forged digest (nothing written), and plugin setup lab/off leave the profile byte-identical; the store still refuses content (store-consent).",
+        "outcome_note": "T002 part: traces.contentConsent accepts only none and redacted and defaults to none with a null consent record; a BL.0 profile without consentedAt and consentPreviewDigest reads as none. `lightning init --trace-consent redacted [--trace-sources ...]` previews level, consentedAt, sources (host-transcript only when listed, OD-1), retention, redaction classes (email as a per-run salted hash, OD-2), storage, residual risk and no expiry (OD-3); apply with the matching --preview-digest writes consentedAt and that digest. Unrelated changes keep the record, new sources renew it, lowering to none clears it, and `lightning status` shows level, consentedAt, sources and expires null. The schema and the validator agree on a valid and invalid corpus. Negative controls: raw, a record without consent, consent without a record, an answered record field, a stale or forged digest (nothing written), and plugin setup lab/off leave the profile byte-identical; the store still stores no content (store-consent without consent; redaction-incomplete with it, until T004).",
         "limits": "Temporary homes; no content is collected (the store gate is T003, redaction T004). Calendar validity of consentedAt (for example 2026-02-30) is checked by the validator only; the schema checks the YYYY-MM-DD shape. The per-run email salt itself is implemented with the redactor (T004).",
+    },
+    'procedure_002': {
+        "scenario": 'SC-002',
+        "modules": ["tests.test_spec074_consent_gate", "tests.test_lightning_store", "tests.test_lightning_cli"],
+        "inputs": ["agent_braid/lightning_adapter.py", "agent_braid/lightning_store.py", "agent_braid/lightning_cli.py",
+                   "agent_braid/lightning_config.py", "tests/test_spec074_consent_gate.py",
+                   "tests/test_lightning_store.py", "tests/test_lightning_cli.py"],
+        "outcome_note": "T003: with no profile, consent none, or an invalid profile (unparseable, redacted without its consent record, an unknown level) the store refuses a content-bearing record with store-consent and writes nothing, and the adapter gate and `lightning status` traceContent report content-consent-required; status itself refuses an invalid profile with its config-* code. An explicit content_consent none overrides a redacted profile, and an unknown explicit level is refused. With consent redacted the gate opens only for listed sources (others: source-not-consented), and the store still refuses content with redaction-incomplete because no redactor exists before T004 (C2: redact on ingest). Negative control: invalid configuration never reads as redacted. Content-free kinds are unchanged (SPEC-070 store suite).",
+        "limits": "Temporary homes; no content is read or stored. The adapter reads no source yet (T007/T008); the gate is its entry check. Content storage with consent is enabled with the redactor (T004).",
     },
 }
 

@@ -17,7 +17,7 @@ from agent_braid import lightning_config
 from agent_braid.plugin_registry import configuration_digest, load, plan_setup, apply
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULES = ('lightning_schema', 'lightning_config', 'lightning_store', 'lightning_cli', 'lightning_resources')
+MODULES = ('lightning_schema', 'lightning_config', 'lightning_store', 'lightning_cli', 'lightning_resources', 'lightning_adapter')
 
 
 def run(*args, inputs=None):
@@ -132,7 +132,7 @@ class SetupTests(unittest.TestCase):
 class BoundaryTests(unittest.TestCase):
     def test_modules_import_only_stdlib_and_open_no_sockets_or_processes(self):
         allowed_local = {'lightning_config', 'lightning_schema', 'lightning_store', 'plugin_registry',
-                         'lightning_runner', 'lightning_resources', 'lightning_arm'}  # SPEC-071/072: the CLI delegates runs lazily; BL.0 modules launch nothing
+                         'lightning_runner', 'lightning_resources', 'lightning_arm', 'lightning_adapter'}  # SPEC-074: consent gate; SPEC-071/072: the CLI delegates runs lazily; BL.0 modules launch nothing
         for name in MODULES:
             tree = ast.parse((ROOT / 'agent_braid' / f'{name}.py').read_text())
             for node in ast.walk(tree):

@@ -6,10 +6,11 @@
  },
  "inputs": {
   "agent_braid/forecast_mcp.py": "6fba537f5506791f6e160dad7bfd8f92e0183019ac8b7c026ecb8aacd83b2f24",
+  "agent_braid/lightning_adapter.py": "c8a25bcf46aeac39727bf03d235647075358cd21cf2462a505905fd319defefe",
   "agent_braid/lightning_algorithm.py": "1eabfb899845e3bc76470b65c632336dba13e7050b08578bd4c4be51b8df22c4",
   "agent_braid/lightning_apo.py": "3abe6c6a0f72219c5abc6bcf7bfc7d7af371a38045650875603f98c3344c38c2",
   "agent_braid/lightning_arm.py": "89bd97f96964eac0efe8ffda63134c3d77090d2f86b101df9820c011f8539701",
-  "agent_braid/lightning_cli.py": "f7264ee5490755a92e9df7bb5b5d30f5323e08f45ec715679461ac50697dfd4c",
+  "agent_braid/lightning_cli.py": "0d325a38d113a1b75c300dcc8878b903106292a15f86c52a8a6da9425b7a4ff9",
   "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
   "agent_braid/lightning_evaluation.py": "de6d6d5b2478da9480b929ab46cecdfd5ff712c2edfbf906e5809328485ee27b",
   "agent_braid/lightning_gepa.py": "ad5ab4201acc4a53d19b438203a510515fe2fb8966bdda0d53dc6a3cf0bcf68f",
@@ -19,7 +20,7 @@
   "agent_braid/lightning_reward.py": "2443da49073dfdd28be6972b6a1f9ef1bd1dcf4583d34920fba6b0a4a5aff4e0",
   "agent_braid/lightning_runner.py": "f274c2b213368ac6f826d32e8c84bc5f607be557e8e808ce8267f2f370ef4da1",
   "agent_braid/lightning_schema.py": "3a5b70ded3d8696ec59eb1873d89fddb6b5400aca4443ae3a228ac804d81dc19",
-  "agent_braid/lightning_store.py": "e62864afc63c9c8a54dace7ff77726e35d323cdffffb2db0c0e4bd610539e236",
+  "agent_braid/lightning_store.py": "72ffcc6e4cda547e78094d4bce85ddb462c2c0aaf1571a80b7976b3a76680929",
   "agent_braid/mcp_advice.py": "74b2a62a6e4665e9d3beca9cf9abf7e9e017d6353a670f5b047dbf27c928c1a9",
   "agent_braid/mcp_runtime.py": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83",
   "agent_braid/plugin_mcp.py": "56115f8f3c6dbfef31fd2888f2a6b29a70f3f3471e31a6f0c19b8af6693b2d3b",
@@ -34,7 +35,7 @@
   "scripts/spec072_development_arms.py": "e1e1a1505829a309c1e6dc0ae3f0f0b4a6db19ec08dc33891d6388cd2974677c",
   "scripts/spec072_heldout.py": "30fa38c12dc69d4cee21cc02b93c5b3bc72612fac7fbe4f6a59189fec6a97b7f",
   "scripts/spec072_holdout_fingerprints.py": "bde1e92812bba0f01448047313e90100a87b20f2e9899e5778a1c8cde6be6222",
-  "tests/test_lightning_cli.py": "0702b49f21ffec41cb7fc5405e3cee04d8155bac7e90f70c04d2266148f3deac"
+  "tests/test_lightning_cli.py": "8f8298b8b5e3f6b6ae11c618fce064e9db24f83d0a992650a0ff58bb8ae8a03d"
  },
  "limits": "Static and import-closure checks cover the modules present at this commit; a fake-host run cannot show what a real host process writes outside the sandbox (SPEC-071 OS sandbox evidence covers that). Unchanged skill bytes are asserted for the repository copy only.",
  "outcome": "passed: A complete fake optimization run (baseline seed run, then a GEPA arm on fake hosts) leaves the repository analyze skill file byte- and mtime-identical and reports the best candidate as a 64-hex bestSha256 with no skill text in the summary. Every agent_braid/lightning_*.py module and scripts/spec072_*.py script imports only the standard library, other lightning modules and an explicit allowlist (plugin_registry, harness_host_claude, the T013 format-only harness_evaluation and system_one, the SPEC-069 scoring, native-run, fixture and plugin-build scripts, and the BL.2 development-arms script the T010 held-out script reuses); no lightning module names decide, begin, execute, recover, harness_promotion, import_module, __import__ or any grant identifier; importing all of them in a fresh interpreter loads no promotion, lifecycle, runtime-policy, git-execution, scheduler or MCP module; no MCP server module or integration JSON manifest mentions lightning; pyproject has no runtime dependency and no lightning extra. Negative control: adding `from .harness_promotion import decide` to a lightning module fails the allowlist, name and import-closure checks.",

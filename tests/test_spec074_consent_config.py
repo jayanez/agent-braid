@@ -188,13 +188,13 @@ class InitPreviewTests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(json.loads(out)['traceConsent']['contentConsent'], 'none')
 
-    def test_content_stays_refused_by_the_store_until_t003(self):
+    def test_content_is_not_stored_with_consent_until_redaction_exists(self):
         self.apply('--trace-consent', 'redacted')
-        run_store = store.RunStore(self.home, 'r1', content_consent='redacted')
+        run_store = store.RunStore(self.home, 'r1')
         run_store.create(config_digest=DIGEST)
         with self.assertRaises(store.StoreError) as caught:
             run_store.append('trace', {'text': 'x'})
-        self.assertEqual(caught.exception.code, 'store-consent')
+        self.assertEqual(caught.exception.code, 'redaction-incomplete')
 
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@
  "inputs": {
   "agent_braid/lightning_resources.py": "f677819c7f28493f9fe6ba148e4ab7a92ede1d0bc12ae4e738bfac8e6bf1e38e",
   "agent_braid/lightning_schema.py": "3a5b70ded3d8696ec59eb1873d89fddb6b5400aca4443ae3a228ac804d81dc19",
-  "agent_braid/lightning_store.py": "e62864afc63c9c8a54dace7ff77726e35d323cdffffb2db0c0e4bd610539e236",
+  "agent_braid/lightning_store.py": "72ffcc6e4cda547e78094d4bce85ddb462c2c0aaf1571a80b7976b3a76680929",
   "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "70e5ea781ac055bb5cdc653fad943c6c3d7c4d951085f57cdf1e949bf3d5f83f",
   "tests/test_lightning_resources.py": "2f4b656b17550989475ff29acb25b4cb35380702bf141ec4e0c5a3d81a5014a1"
  },
