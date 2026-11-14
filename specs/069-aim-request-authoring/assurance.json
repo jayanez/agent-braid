@@ -158,7 +158,7 @@
           "test_file": "specs/069-aim-request-authoring/validation-plan.md",
           "test_name": "procedure_001",
           "then": "requirements, tasks and procedures agree, unchanged contracts are listed, and the native-evidence and owner gates are explicit.",
-          "when": "they are analyzed against ADR 0024, ADR 0030, ADR 0037 and Articles 13\u201316"
+          "when": "they are analyzed against ADR 0024, ADR 0030, ADR 0037 and Articles 13–16"
         }
       ],
       "text": "Specification and architecture. Record the `analyze-work` request contract (kinds, schemas, delivery, `units` construction, refusal format, versioning) in ADR 0038 and a contract file under `contracts/`."
@@ -375,7 +375,7 @@
               "limits": "Checks the SPEC-069 section of docs/tooling/NATIVE_PLUGINS.md (request kinds, refusal format, label, schema delivery, measured host validity, release-note draft) and the links of the whole file. Measured numbers, host versions, loading modes and replay counts are compared mechanically with the committed evidence; the remaining behavioural statements were reviewed against the contract and the tests they cite, which is a review, not a proof. The release-note text is a draft: nothing is published, tagged or versioned (T012 needs the owner's explicit yes). Native results cover one probe session per host and arm and the T010 held-out run only.",
               "outcome": "passed: every link and anchor in NATIVE_PLUGINS.md resolves; every cited test and evidence file exists; the documented kinds equal the served enum; the held-out table equals the T010 evidence (Claude Code 27/30, OpenCode 27/30, Codex 24/30, D4 not met, accepted deviation); probe versions and loading follow procedure_005 native; replay counts (103 accepted, 214 refused) follow procedure_009; the rollback refusal equals the compatibility note. Negative controls: a broken link or anchor, a wrong number and a missing cited file are detected.",
               "path": "specs/069-aim-request-authoring/evidence/procedure_011.json",
-              "sha256": "6286687c46b2deadae4bb64d88d8be555d9c6fb9941e516d18b7480911fb3d7d"
+              "sha256": "49253e2ad3e7f91f3b73496ec506d8ff61e75b051e0d85976f28fd93db8a6a3f"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
