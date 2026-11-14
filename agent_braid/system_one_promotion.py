@@ -11,8 +11,9 @@ example a rollback) still verifies; the file is private to its user like the plu
 
 The registry only decides whether `advise` is effective; it never grants authority
 (`executionAuthorization` stays false, ADR 0034 item 4) and nothing here promotes automatically. The
-shipped state is the empty registry, which changes no behaviour. Recording a go is gated on SPEC-066
-T303, T402 and T403.
+shipped state is the empty registry, which changes no behaviour. Recording a go for a learned backend is
+gated on SPEC-066 T303, T402 and T403 (`owner_go`); the structural DP-1 rule backend (kind `rule`, a pure
+stdlib rule with no model) is the only kind exempt, checked by its explicit backend kind.
 """
 from __future__ import annotations
 
@@ -173,6 +174,18 @@ def record_go(home: Path | None, decision_point: str, *, evidence_digest: str, m
               'manifestDigest': manifest_digest, 'decidedOn': decided_on}
     _check_fields(record)
     return _append(home, record)
+
+
+RULE_BACKEND_KIND = 'rule'
+
+
+def owner_go(home: Path | None, decision_point: str, *, backend_kind: str, evidence_digest: str,
+             manifest_digest: str, decided_on: str) -> MappingProxyType:
+    """The owner-go entry point: refuses any backend kind but the rule backend (T303/T402/T403 pending)."""
+    if backend_kind != RULE_BACKEND_KIND:
+        raise PromotionError('A learned backend go needs SPEC-066 T303, T402 and T403', code='promotion-gated')
+    return record_go(home, decision_point, evidence_digest=evidence_digest, manifest_digest=manifest_digest,
+                     decided_on=decided_on)
 
 
 def rollback(home: Path | None, decision_point: str, *, decided_on: str) -> MappingProxyType:

@@ -299,8 +299,8 @@ class PluginWiringTests(Base):
         block = router.status()['systemOne']
         self.assertEqual((block['activeMode'], block['reason']), ('advise', 'owner-go'))
         self.assertIs(block['executionAuthorization'], False)
-        # Advise keeps recording shadow episodes; no decision point output is wired to advice yet.
-        self.assertEqual({s.config.system_one for s in router.services.values()}, {'shadow'})
+        # Effective advise serves the DP-1 rule advice and keeps recording shadow episodes.
+        self.assertEqual({s.config.system_one for s in router.services.values()}, {'advise'})
 
     def test_rollback_after_connect_requires_a_reconnect(self):
         from agent_braid import system_one_shadow as shadow
