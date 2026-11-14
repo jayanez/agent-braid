@@ -3,8 +3,9 @@
 **Milestone:** BL.5 — Lightning dataset export.
 
 **Status:** draft. Depends on SPEC-074 (BL.4, trace consent and
-`agent_braid/lightning_adapter.py`). Open decision OD-1 (host usage-terms
-review) blocks any export of host-model output.
+`agent_braid/lightning_adapter.py`). Owner review (T001, 2026-11-14): E1–E5
+accepted, OD-2 decided; OD-1 (host usage-terms review) is deferred, so the terms
+gate ships closed and no host-model output exports.
 
 ## Purpose and scope
 
@@ -54,7 +55,12 @@ Exclusions:
 
 ## Clarifications
 
-Design decisions (proposed, for owner review in T001):
+Owner review, T001, 2026-11-14 ([record](reviews/owner-t001-20261114.md)):
+E1, E2, E3 and E5 accepted as written; E4 accepted with OD-2 decided (equal cap
+1:1 per task, no ratio parameter); OD-1 deferred. `human_review` stays
+`pending`.
+
+Design decisions:
 
 - **E1 — Input boundary.** Export reads only records returned by
   `lightning_adapter` with consent `redacted` (the only content level SPEC-074
@@ -72,8 +78,9 @@ Design decisions (proposed, for owner review in T001):
   digest.
 - **E4 — Balance.** Balancing applies to `rollout` (trajectory) exports only:
   per task, successes and failures are capped to equal counts (default) with a
-  deterministic seeded choice; tasks with only one outcome are reported, not
-  padded. Rationale: the SWE-Gym finding that unbalanced success-only data
+  deterministic seeded choice: each task keeps `min(successes, failures)` records
+  of each outcome (1:1; OD-2, no ratio parameter); tasks with only one outcome
+  are reported, not padded. Rationale: the SWE-Gym finding that unbalanced success-only data
   skews behaviour (research §2). `supervised` exports are not balanced: they
   include only records with `d4FirstAttempt` true, or every line carries an
   explicit `outcome` field. No claim is made that either choice benefits a
@@ -83,13 +90,18 @@ Design decisions (proposed, for owner review in T001):
   it the CLI refuses with `terms-gate-missing`. This is a legal question, not a
   scientific one.
 
-Open decisions:
+Decisions:
 
-- **OD-1 — Host usage-terms review.** For each host provider (Anthropic for
-  Claude Code; each OpenCode backend), may outputs be used to train or
-  fine-tune models, including local open models? Owner decision; legal, not
-  scientific. Until recorded, only fixtures and non-host content export.
-- **OD-2 — Balance default.** Equal cap (proposed) versus ratio parameter.
+- **OD-1 — Host usage-terms review (open, deferred 2026-11-14).** For each host
+  provider (Anthropic for Claude Code; each OpenCode backend), may outputs be
+  used to train or fine-tune models, including local open models? Owner
+  decision; legal, not scientific. No decision is recorded: BL.5 ships with the
+  terms gate closed, so only fixtures and non-host content export. No terms
+  decision record is committed and no provider is said to permit training; the
+  gate's permitting branch is tested only with synthetic records in temporary
+  directories that name no real provider.
+- **OD-2 — Balance default (decided 2026-11-14).** Equal cap 1:1 per task (E4);
+  no ratio parameter.
 
 ## Requirements and acceptance scenarios
 
@@ -237,4 +249,5 @@ schema, contract or report changes. `executionAuthorization` stays false.
 
 ## Evidence and unresolved questions
 
-Evidence is recorded per procedure under `evidence/`. Unresolved: OD-1, OD-2.
+Evidence is recorded per procedure under `evidence/`; procedure_001 is the T001
+review record. Unresolved: OD-1 (deferred; the terms gate stays closed).

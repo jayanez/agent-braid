@@ -1,7 +1,8 @@
 # Contract: `braid-lightning-dataset-manifest/v0.1` (proposed)
 
 Schema: `schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json`
-(created by the lead; this file is the normative prose). Status: proposed.
+(created by the lead; this file is the normative prose). Status: reviewed at
+T001 (2026-11-14; E1–E5 accepted, OD-2 decided).
 
 ## Files
 
@@ -17,7 +18,7 @@ Lines are `trace_adapter.canonical_bytes(record)` followed by `\n`.
 | `level` | `transition` \| `trajectory` | required |
 | `generatedAt` | RFC 3339 UTC | excluded from `digest` |
 | `seed` | integer ≥ 0 | balance choice seed |
-| `balance` | `equal` \| `none` | E4; `rollout` kind only, `none` for `supervised` |
+| `balance` | `equal` \| `none` | E4; `equal` keeps `min(successes, failures)` of each outcome per task (1:1, OD-2); `rollout` kind only, `none` for `supervised` |
 | `orderingKey` | const `["taskId","groupId","rolloutId","attemptId","turnIndex"]` | E3 |
 | `redactionVersion` | string | from SPEC-074; one per dataset |
 | `termsDecision` | `{path, sha256}` \| null | required non-null when any record has `source: host-model` |
