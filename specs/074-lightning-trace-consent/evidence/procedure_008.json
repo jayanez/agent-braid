@@ -1,0 +1,27 @@
+{
+ "command": "python -m unittest tests.test_spec074_boundaries tests.test_lightning_cli",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_adapter.py": "dcb87d278d50081eb95671169df8793fb82d2255edd7590e58e365c628ff89d8",
+  "agent_braid/lightning_cli.py": "ba217234f8b0fb06f1099d0daf9a6242f1d223ac58b35d5dfc0c1d8bece0e93d",
+  "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
+  "agent_braid/lightning_redact.py": "774e27ae55a1e71ab49205a0daa6d47d374160b46fd90b2c77891b566fbeecf2",
+  "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
+  "agent_braid/tooling_telemetry.py": "2643db58f41356a35c44b829c76f425a3fe82f2202912e14f85b24e458783c23",
+  "agent_braid/trace_adapter.py": "4da8a0cb5b4885df80681c9005ec82b0ff685d7dd9ed1d577eac3655af637332",
+  "agent_braid/view_loom.py": "12c530fabc056ef789a07fd0351875e79befc7242cb96bead99119d2e0a1c9be",
+  "tests/test_lightning_adapter.py": "60c9f2a0ad28600b9bb197ac793b6ca5f51f4312f0227c465018a5bd9a446102",
+  "tests/test_lightning_cli.py": "663e2d7357e385e4c626857ac0d772eaed0095d38edb4febf0cd41920ee27782",
+  "tests/test_spec074_boundaries.py": "293115e50c2d6d78a5de2866d86ac7159ef00f014af861e10197ca90847972f8"
+ },
+ "limits": "Dynamic guard covers this process and the listed entry points only; C extensions or a module bound to socket or subprocess names before the patch are outside it (the static checks cover Lightning module imports, not trace_adapter, view_loom or system_one_shadow, which are reused read paths). SPEC-071/072 commands lightning run and report are not BL.4 paths and are covered by their own boundary tests; refusals print text to stderr, not JSON, so executionAuthorization is checked on successful outputs. Telemetry is checked as absent for BL.4 paths, not across other features. Sources are synthetic and temporary.",
+ "outcome": "passed: T010: with HOME moved to a temporary directory and socket.socket, create_connection, socketpair, getaddrinfo, fromfd, subprocess.Popen, os.system, os.popen, fork, forkpty, posix_spawn(p), exec* and spawnv(e) replaced by failing stubs, every BL.4 CLI command runs and succeeds: lightning init preview and apply with consent redacted and all four sources, validate, status, sweep, purge --expired, purge --run-id and --all (preview and apply), and init lowering consent to none (13 outputs). Each output is JSON with executionAuthorization false and carries neither synthetic canary (a token and an email placed in a stored rollout and as a host-transcript attempt id). Every adapter reader (rollout, Loom, host transcript, System One triplets and messages) runs under the same guard with content consent, and its output holds no canary. No BL.4 path calls tooling_telemetry observe, record_lifecycle or record_view, and the temporary telemetry directory holds no canary byte. Static half (tests.test_lightning_cli BoundaryTests and BL2BoundaryTests): Lightning modules import only the standard library and listed local modules, import no socket, subprocess, http, urllib or asyncio, a fresh interpreter importing them loads no socket, asyncio, ssl, http or urllib.request module and no promotion, execution or MCP module, no MCP tool or plugin manifest mentions lightning, and the project has no runtime dependency. Negative controls: socket.create_connection, socket.socket, subprocess.run and os.system raise when called directly; a socket call injected into the adapter gate fails the path test; a telemetry call is seen by the recorder.",
+ "procedure": "procedure_008",
+ "result": "OK",
+ "scenario": "SC-008",
+ "specification": "SPEC-074 BL.4",
+ "testsRun": 23
+}

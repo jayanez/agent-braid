@@ -34,7 +34,7 @@ Draft for owner review; not an approval.
 | TH-1, TH-8 | redaction on ingest; post-scan must be clean; canary corpus with encoded forms | REQ-003, REQ-004 |
 | TH-2 | email and home-path classes; email tags salted per run, unlinkable across runs (OD-2) | REQ-003 |
 | TH-3 | default `none`; consent only by preview digest; no expiry (OD-3), `status` shows level, `consentedAt` and sources | REQ-001, REQ-002 |
-| TH-4 | sweep at store open and on command; purge; tests with clock injection | REQ-005 |
+| TH-4 | sweep on `lightning sweep`, `purge --expired` and every content append for its run; purge; tests with clock injection | REQ-005 |
 | TH-5 | read-only System One access; no output path into System One | REQ-007 |
 | TH-6 | traces are data; SPEC-072 optimizer treats them as untrusted; promotion is human (SPEC-073) | REQ-006 |
 | TH-7 | owner-only modes, no symlinks (SPEC-070 F1) | REQ-005 |
@@ -48,3 +48,18 @@ Draft for owner review; not an approval.
 - Base64 detection is heuristic (length and alphabet thresholds); false
   negatives remain possible below the threshold.
 - Purge cannot reach copies the owner made outside the store.
+- Retention is enforced when a command or a content append runs (A1); content
+  past retention stays on disk until the next one.
+
+## Convergence findings (T011)
+
+Read-only analysis of spec, plan, tasks, contracts and obtained evidence at
+convergence (2026-11-14). None blocks a requirement; each is stated so the
+owner's review sees it.
+
+| ID | Finding | Effect |
+|---|---|---|
+| A1 | The draft mitigation for TH-4 said the sweep runs at store open; the implementation sweeps on `lightning sweep`, `purge --expired` and each content append for its own run (procedure_005); reading a run does not sweep. | Mitigation text corrected; residual risk added above. REQ-005 does not fix when the sweep runs. |
+| A2 | REQ-006 names the host observers; T008 reads host transcripts through `trace_adapter`, which admits synthetic traces only, so a real host transcript cannot be read yet even with `host-transcript` listed (OD-1). | Pending outside the requirements: a real-source admission is future work; no real transcript content is collected today. |
+| A3 | T010 found that no BL.4 path records ADR 0025 telemetry at all (procedure_008), which is stronger than content-free and matches the "unchanged" telemetry row. | A future telemetry event for Lightning would fail the T010 test and needs its own review. |
+| A4 | The REQ-008 `executionAuthorization: false` check covers successful BL.4 CLI outputs; refusals print text to stderr, and `lightning run` / `report` belong to SPEC-071/072 and their boundary tests. | Scope of the claim stated in procedure_008 limits. |

@@ -8,5 +8,5 @@ Requirement-quality checklist; not a proof or approval.
 - [x] Retention bounds (default 30, maximum 90) and purge specified.
 - [x] System One read-only boundary stated with a negative test.
 - [x] Privacy review lists inventory, threats, mitigations and residual risks.
-- [ ] Open decisions OD-1 to OD-3 resolved (T001).
-- [ ] Schema file created by the lead and corpus-aligned (T002).
+- [x] Open decisions OD-1 to OD-3 resolved (T001, 2026-11-13).
+- [x] Schema file created by the lead and corpus-aligned (T002, procedure_001).
