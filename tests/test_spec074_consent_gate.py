@@ -90,9 +90,14 @@ class GateTests(unittest.TestCase):
             store.RunStore(self.home, 'r2', content_consent='raw')
         self.assertEqual(caught.exception.code, 'store-consent')
 
-    def test_with_consent_content_still_waits_for_redaction(self):
+    def test_with_consent_a_record_that_stays_unclean_is_refused(self):
         self.consent('redacted', 'rollout,loom')
-        self.assertEqual(self.store_refusal(), 'redaction-incomplete')
+        run_store = store.RunStore(self.home, 'r1')
+        run_store.create(config_digest=DIGEST)
+        with self.assertRaises(store.StoreError) as caught:
+            run_store.append('trace', {'a': 'sk-ant-api0', 'b': '3' + 'Q' * 20})  # hidden split
+        self.assertEqual(caught.exception.code, 'redaction-incomplete')
+        self.assertEqual([set(r) for r in run_store.read_content()], [{'createdAt', 'refused'}])
         self.assertEqual(adapter.gate(self.home, 'loom')['content'], True)
         adapter.require_content(self.home, 'rollout')
 

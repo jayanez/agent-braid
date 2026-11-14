@@ -50,7 +50,9 @@ contract is [lightning-config.md](../../specs/070-braid-lightning-foundations/co
 ```sh
 agent-braid lightning validate --home "<registryHome>"
 agent-braid lightning status --home "<registryHome>"
-agent-braid lightning purge --home "<registryHome>" --run-id <id> | --expired
+agent-braid lightning sweep --home "<registryHome>"                # retention (SPEC-074)
+agent-braid lightning purge --home "<registryHome>" --run-id <id> | --all   # preview, then add
+#   --apply --preview-digest <d> from the preview to delete
 ```
 
 ## Rollouts and verifiable reward (BL.1, SPEC-071)
