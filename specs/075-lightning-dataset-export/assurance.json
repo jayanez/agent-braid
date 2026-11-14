@@ -96,6 +96,7 @@
       "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
       "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
       "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
+      "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
       "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
       "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
       "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
@@ -128,7 +129,9 @@
     "agent_braid/trace_adapter.py",
     "pyproject.toml",
     "specs/034-workload-forecast-data/spec.md",
-    "agent_braid/view_serve.py"
+    "agent_braid/view_serve.py",
+    "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json",
+    "scripts/spec075_capture_evidence.py"
   ],
   "requirements": [
     {
@@ -209,7 +212,15 @@
         {
           "given": "an exported dataset",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec075_manifest_schema",
+              "limits": "Schema structure only: hand-written manifests; no export ran (the builder is T006, which extends this procedure). The checks the schema description lists as builder checks (hashes against bytes, turnRange order, sorted limits, a retention key per runId, unique balance-report tasks, singleOutcome with keptPerOutcome 0, supervised balance exclusions 0, host-model never labelled fixture) are not tested here. jsonschema is a development dependency; the runtime stays standard-library only.",
+              "outcome": "passed: T002 part: the schema passes Draft 2020-12 check_schema. Accepted: a rollout manifest at both levels, a supervised manifest (balance none, empty balance report), a host-model manifest with a terms decision, local-model records without one, attempt ids of the four SPEC-074 pseudonym kinds, retentionDays 1 and 90 and relative terms paths. Refused: a missing record sha256 or redactionVersion or an empty redactionVersion; any missing top-level, record, exclusion, balance-report, retention-entry or terms-decision field and an unknown key in each of those objects; a negative exclusion, balance-report or turn-range counter; retentionDays 0, 91 or 1.5; an expiry that is not a valid YYYY-MM-DD date and a generatedAt that is not a valid UTC second; an absolute, dotted, whitespace, home, drive, empty or 257-character terms path and an uppercase terms sha256; an attempt id of wrong length, case or kind or a raw id; malformed run, task, group and rollout ids; unknown version, kind, level, balance (ratio included: OD-2), ordering key, canary result, exclusion reason, source, outcome or limit; a duplicate limit; a consent level other than redacted; a malformed digest, record hash, record id or turn range; no records; balance none or a supervised export with a non-empty balance report; a balanced supervised export; host-model records without a terms decision.",
+              "path": "specs/075-lightning-dataset-export/evidence/procedure_005.json",
+              "sha256": "d813f5258bd09cc102e01563d916d07afa37c9e3c8a4191d21b57f0356d4132a"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/075-lightning-dataset-export/validation-plan.md",
           "test_name": "procedure_005",

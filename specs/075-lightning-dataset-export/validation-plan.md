@@ -1,7 +1,9 @@
 # SPEC-075: Validation plan
 
 Status: draft; procedure_001 has obtained evidence (T001 owner review record,
-2026-11-14); no other procedure has. Deterministic procedures run
+2026-11-14) and procedure_005 its schema part (T002,
+`tests/test_spec075_manifest_schema.py`); no other procedure has. Evidence is
+captured with `python -m scripts.spec075_capture_evidence`. Deterministic procedures run
 locally and in CI as targeted test modules (`tests/test_lightning_export.py`,
 planned).
 
@@ -11,7 +13,7 @@ planned).
 | procedure_002 | SC-002 | filter fixture tests | only consent `redacted` traces; exclusions counted (`consent-none`) | unconsented trace exported; drop not counted |
 | procedure_003 | SC-003 | supervised writer tests | lines match contract; hashes match manifest; only `d4FirstAttempt` true or explicit `outcome` | unknown role accepted; failed record without `outcome` exported |
 | procedure_004 | SC-004 | aggregation tests | 3 transition records, 1 trajectory record, limit declared | token-ID merge attempted without token IDs |
-| procedure_005 | SC-005 | manifest schema test | valid manifest passes | missing `sha256` or `redactionVersion` passes |
+| procedure_005 | SC-005 | manifest schema test (`tests.test_spec075_manifest_schema`, T002); builder output validated in T006 | valid manifest passes | missing `sha256` or `redactionVersion` passes |
 | procedure_006 | SC-006 | double export, shuffled input, other working directory | byte-identical except `generatedAt` | timestamp or host path in dataset bytes |
 | procedure_007 | SC-007 | balance tests | `rollout` kind: 2+2 kept, stable, dropped counts reported; `supervised` not balanced | unseeded choice differs across runs |
 | procedure_008 | SC-008 | terms gate tests | refuse without record; proceed with permitting record, hash referenced | host export without record succeeds |
