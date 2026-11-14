@@ -49,12 +49,25 @@ imply owner acceptance. `quick` means
 
 ## Closing
 
-- [ ] T010 (REQ-008 / SC-008): boundary tests (no socket, no subprocess,
+- [x] T010 (REQ-008 / SC-008): boundary tests (no socket, no subprocess,
   stdlib, no MCP tool, content-free telemetry). Dependencies: T007.
-  Verification: procedure_008.
-- [ ] T011 (REQ-001–REQ-008 / SC-001–SC-008): converge: `speckit-analyze`,
+  Verification: procedure_008. Done 2026-11-14 as
+  `tests/test_spec074_boundaries.py` (every BL.4 CLI command and adapter reader
+  under a socket/process guard; no BL.4 path records telemetry) with the static
+  half in `tests/test_lightning_cli.py` `BoundaryTests` and `BL2BoundaryTests`.
+- [x] T011 (REQ-001–REQ-008 / SC-001–SC-008): converge: `speckit-analyze`,
   privacy review updated with findings, tracking and docs synced, `quick`
   green, assurance obtained evidence filled. Dependencies: T001–T010.
+  Done 2026-11-14: every SC has obtained evidence (procedure_001 to
+  procedure_008); analysis findings A1–A4 recorded in the
+  [privacy review](privacy-review.md#convergence-findings-t011); spec-local docs
+  synced (program ROADMAP/STATUS sync is the wave-close change). Local checks
+  are the targeted procedures and `validate_spec_kit`; no local `quick` run.
+  The `quick` gate is met by the PR CI `validate` aggregate (`pr` profile, a
+  superset), which must pass on the head before merge.
+  Pending outside the requirements: real host transcripts are not readable
+  until a real-source admission exists (A2); human review and freeze are the
+  owner's.
 
 ## Verification procedure
 
