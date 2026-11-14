@@ -9,7 +9,9 @@ only and scores it with the unit's frozen oracle. Holdout cases never reach the 
 the prober.
 
 This shows that the propose-probe-select-register path produces an arm C that is neither A
-nor B and that the three-arm report carries it. It shows nothing about whether refinement
+nor B and that the three-arm report carries it. C scores above B on coordination only because
+the rubric grades a drift stop as not completed: the prober drops the stop-on-drift edit for
+that reason, so C removes a safety directive. That is an artifact, not an improvement. It shows nothing about whether refinement
 helps: the proposer is scripted, and the double encodes the effect the oracle measures.
 Every result is ``synthetic-control`` and not a verdict input. Nothing reads a clock, host,
 model, network or paid route, and no additional cash is spent. It changes no T005 frozen
@@ -31,20 +33,22 @@ from agent_braid.system_one import canonical
 from tests import harness_guidance_double as double
 from tests import harness_t005_cohort as t005
 
-HEADER = "# Checkpoint and context guidance\n"  # first line of the frozen arm-B text
+HEADER = double.arm_files("B")[double.GUIDANCE_PATH].decode().split("\n")[0] + "\n"
+_LINE = {switch: line for line, switch in double.GRAMMAR.items()}
 # Failure signal -> (scope, exact arm-B directive line). Closed: nothing else is proposed.
 CATALOG = {
-    "repeated-completed-steps": ("general", next(k for k, v in double.GRAMMAR.items()
-                                                 if v == "resume-from-checkpoint")),
-    "continued-past-drift": ("task", next(k for k, v in double.GRAMMAR.items()
-                                          if v == "stop-on-drift")),
+    "repeated-completed-steps": ("general", _LINE["resume-from-checkpoint"]),
+    "continued-past-drift": ("task", _LINE["stop-on-drift"]),
 }
 RATIONALE = "contrastive: discovery base failure signal mapped to one catalog directive"
 ADDITIONAL_CASH_EUR = 0
 
 
 def discovery_signals() -> tuple[str, ...]:
-    """Failure signals of the discovery base attempt against the case's visible inputs."""
+    """Failure signals of the discovery base attempt against the discovery case fixture.
+
+    ``continued-past-drift`` reads the fixture's drift flag, which the base record does not
+    show; only the discovery case is read."""
     case = double.CASES[t005.DISCOVERY]
     record = double.run(t005.DISCOVERY, {}, candidate_sha256=double.ARM_SHA256["A"]).to_dict()
     signals = set()
@@ -60,14 +64,19 @@ def make_proposer(manifest: manifests.HarnessManifest, signals: tuple[str, ...])
     if not set(signals) <= set(CATALOG):
         raise ValueError("unknown-signal")
 
+    proposed: dict[str, bytes] = {}
+
     def propose(scope: str) -> dict | None:
         lines = [CATALOG[s][1] for s in sorted(signals) if CATALOG[s][0] == scope]
         if not lines:
             return None
         text = HEADER + "\n" + "".join(f"{line}\n" for line in lines)
+        changes = {double.GUIDANCE_PATH: text.encode()}
+        proposed[double.inventory_sha256(changes)] = changes[double.GUIDANCE_PATH]
         return {"parentManifestSha256": manifest.sha256, "scope": scope,
-                "changes": {double.GUIDANCE_PATH: text.encode()}, "rationale": RATIONALE}
+                "changes": changes, "rationale": RATIONALE}
 
+    propose.proposed = proposed  # candidate hash -> guidance bytes, as actually proposed
     return propose
 
 
@@ -100,14 +109,11 @@ def contrastive_round(units: dict[str, ver.Unit]):
     decision = ref.run_round(manifest, policy, propose=propose,
                              probe=probe_case(t005.DISCOVERY, units, manifest))
     chosen = decision.to_dict()["chosenCandidateSha256"]
-    files: dict[str, bytes] = {}
-    for scope in ref.SCOPES:
-        proposal = propose(scope)
-        if proposal and double.inventory_sha256(proposal["changes"]) == chosen:
-            files = dict(proposal["changes"])
-    if chosen is not None and double.inventory_sha256(files) != chosen:
+    if chosen is None:
+        return manifest, policy, decision, {}
+    if chosen not in propose.proposed:
         raise ValueError("chosen-files-unknown")  # composed candidates are not mapped here
-    return manifest, policy, decision, files
+    return manifest, policy, decision, {double.GUIDANCE_PATH: propose.proposed[chosen]}
 
 
 def run_cohort() -> dict[str, Any]:

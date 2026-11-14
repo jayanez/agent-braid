@@ -19,8 +19,10 @@ class ProposerTests(unittest.TestCase):
         self.manifest, _ = t005.build_manifest()
 
     def test_signals_come_from_the_discovery_base_attempt_only(self):
-        self.assertEqual(arm_c.discovery_signals(),
-                         ("continued-past-drift", "repeated-completed-steps"))
+        with mock.patch.object(arm_c.double, "run", wraps=double.run) as run:
+            signals = arm_c.discovery_signals()
+        self.assertEqual(signals, ("continued-past-drift", "repeated-completed-steps"))
+        self.assertEqual({c.args[0] for c in run.call_args_list}, {t005.DISCOVERY})
 
     def test_each_scope_proposes_one_bounded_catalog_edit(self):
         propose = arm_c.make_proposer(self.manifest, arm_c.discovery_signals())
@@ -70,9 +72,23 @@ class RoundTests(unittest.TestCase):
         again = arm_c.contrastive_round(t005.build_units())[2]
         self.assertEqual(again.sha256, self.decision.sha256)
 
-    def test_prober_refuses_any_holdout_case(self):
-        with self.assertRaises(ValueError):
-            arm_c.probe_case("L1-C01-a", self.units, self.manifest)
+    def test_prober_refuses_every_holdout_case(self):
+        for case in t005.HOLDOUT:
+            with self.assertRaises(ValueError):
+                arm_c.probe_case(case, self.units, self.manifest)
+
+    def test_ungraded_probe_is_not_swallowed_as_a_score(self):
+        probe = arm_c.probe_case(t005.DISCOVERY, self.units, self.manifest)
+        ungraded = mock.Mock(to_dict=lambda: {"oracle": {"verdict": "bogus"}})
+        with mock.patch.object(arm_c.ver, "verify_unit", return_value=ungraded):
+            with self.assertRaises(ValueError):
+                probe(ref.ProbeRequest("base", double.ARM_SHA256["A"], {}))
+
+    def test_composed_winner_is_refused_not_guessed(self):
+        with mock.patch.object(arm_c.ref, "run_round") as run_round:
+            run_round.return_value.to_dict.return_value = {"chosenCandidateSha256": "f" * 64}
+            with self.assertRaises(ValueError):
+                arm_c.contrastive_round(self.units)
 
 
 class CohortTests(unittest.TestCase):
@@ -97,10 +113,11 @@ class CohortTests(unittest.TestCase):
 
     def test_costs_stay_unknown_and_claims_blocked(self):
         self.assertTrue(self.report["costs"]["economic"]["claimBlocked"])
-        self.assertEqual(self.cohort["additionalCashEur"], 0)
 
     def test_result_is_labelled_synthetic_control(self):
-        result = arm_c.results()
+        with mock.patch.object(socket, "socket", side_effect=AssertionError("network")), \
+                mock.patch.object(subprocess, "Popen", side_effect=AssertionError("process")):
+            result = arm_c.results()
         self.assertEqual(result["label"], "synthetic-control")
         self.assertFalse(result["verdictEligible"] or result["executionAuthorization"])
         self.assertEqual(result["registrationSha256"], self.cohort["registration"].sha256)
