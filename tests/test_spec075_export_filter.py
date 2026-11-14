@@ -3,6 +3,7 @@
 from contextlib import redirect_stdout
 from io import StringIO
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -13,6 +14,8 @@ from agent_braid import lightning_store as store
 from agent_braid.cli import main
 from agent_braid.lightning_schema import EVENT_SCHEMA, Event, new_rollout
 
+ROOT = Path(__file__).resolve().parents[1]
+SCHEMA = ROOT / 'schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json'
 DIGEST = 'c' * 64
 T0 = 1_800_000_000.0
 RAW_ATTEMPT = 'raw-attempt.name-7'  # never reaches an output
@@ -130,6 +133,87 @@ class StoreFilterTests(Base):
         self.assertNotIn(RAW_ATTEMPT, str(caught.exception))
 
 
+    def test_an_attempt_spanning_two_rollouts_is_refused(self):
+        run = self.store_run()
+        run.append('rollout', new_rollout('ro-2', 'task-b', 'group-g', DIGEST, DIGEST, 'claude-code', at=T0))
+        run.append('event', request(9, rollout='ro-2'))  # same raw attempt id as ro-1
+        with self.assertRaises(export.ExportError) as caught:
+            export.read_runs(self.home, ['run-1'])
+        self.assertEqual((caught.exception.code, str(caught.exception)),
+                         ('source-invalid', 'An attempt spans more than one rollout'))
+        self.assertNotIn(RAW_ATTEMPT, str(caught.exception))
+
+    def test_a_run_named_twice_is_refused(self):
+        self.store_run()
+        with self.assertRaises(export.ExportError) as caught:
+            export.read_runs(self.home, ['run-1', 'run-1'])
+        self.assertEqual(caught.exception.code, 'invalid-argument')
+
+    def assert_refused(self, code=None):
+        with self.assertRaises(export.ExportError) as caught:
+            export.read_runs(self.home, ['run-1'])
+        error = caught.exception
+        self.assertIs(type(error), export.ExportError)
+        self.assertEqual(str(error), 'Run refused')
+        self.assertEqual(error.args, ('Run refused',))
+        self.assertIsNone(error.__cause__)
+        self.assertTrue(error.__suppress_context__)
+        if code:
+            self.assertEqual(error.code, code)
+        self.assertRegex(error.code, r'^[a-z][a-z0-9-]{0,63}$')
+        return error
+
+    def test_unreadable_and_malformed_store_files_become_fixed_refusals(self):
+        def unreadable(root):
+            (root / 'events.jsonl').chmod(0)
+
+        def bad_json(root):
+            with open(root / 'events.jsonl', 'ab') as stream:
+                stream.write(b'{not json\n')
+
+        def non_object_content(root):
+            with open(root / 'traces.jsonl', 'ab') as stream:
+                stream.write(b'[1]\n')
+
+        def symlink(root):
+            target = root.parent.parent / 'outside.jsonl'
+            target.write_bytes((root / 'events.jsonl').read_bytes())
+            (root / 'events.jsonl').unlink()
+            os.symlink(target, root / 'events.jsonl')
+
+        def bad_salt(root):
+            (root / 'email.salt').write_bytes(b'short')
+
+        for name, damage in (('unreadable', unreadable), ('bad-json', bad_json), ('non-object', non_object_content),
+                             ('symlink', symlink), ('bad-salt', bad_salt)):
+            with self.subTest(name=name):
+                self.tmp.cleanup()
+                self.tmp = tempfile.TemporaryDirectory()
+                self.home = Path(self.tmp.name).resolve() / 'home'
+                run = self.store_run()
+                damage(run.root)
+                if name == 'unreadable' and os.access(run.root / 'events.jsonl', os.R_OK):
+                    continue  # running as root: mode 000 does not stop reads
+                error = self.assert_refused()
+                self.assertNotIn(str(self.home), str(error))
+                self.assertNotIn('run-1', str(error))
+
+    def test_adapter_refusals_are_fixed(self):
+        self.store_run()
+        failure = export.adapter.AdapterError(f'Attempt {RAW_ATTEMPT} refused at /Users/x', 'reward-match')
+        with patch.object(export.adapter, 'rollout_triplets', side_effect=failure), \
+                self.assertRaises(export.ExportError) as caught:
+            export.read_runs(self.home, ['run-1'])
+        self.assertEqual((str(caught.exception), caught.exception.code), ('Adapter refused a source', 'reward-match'))
+        self.assertIsNone(caught.exception.__cause__)
+        self.assertTrue(caught.exception.__suppress_context__)
+        failure = export.adapter.AdapterError('x', 'Not A Code /tmp')
+        with patch.object(export.adapter, 'rollout_triplets', side_effect=failure), \
+                self.assertRaises(export.ExportError) as caught:
+            export.read_runs(self.home, ['run-1'])
+        self.assertEqual(caught.exception.code, 'source-invalid')
+
+
 class ClassifyTests(unittest.TestCase):
     def test_reasons(self):
         cases = {
@@ -166,8 +250,24 @@ class ClassifyTests(unittest.TestCase):
         items.insert(1, {'triplet': triplet(prompt=None, response=None, losses=['content-consent-required'])})
         kept, exclusions = export.select(items)
         self.assertEqual([i['triplet']['prompt']['text'] for i in kept], ['0', '1', '2'])
-        self.assertEqual(set(exclusions), set(export.EXCLUSION_REASONS))
         self.assertEqual(exclusions['consent-none'], 1)
+
+    def test_every_reason_is_counted_and_matches_the_schema(self):
+        schema = json.loads(SCHEMA.read_text())
+        required = schema['properties']['exclusions']['required']
+        self.assertEqual(sorted(export.empty_exclusions()), sorted(required))
+        self.assertEqual(set(export.select([])[1]), set(required))
+        items = [{'triplet': triplet()},
+                 {'triplet': triplet(redaction={'classes': {}, 'scanClean': False})},
+                 {'triplet': triplet(prompt=None, losses=['content-missing'])},
+                 {'triplet': triplet(losses=['source-not-consented'])},
+                 {'triplet': triplet(prompt=None, response=None, losses=['content-consent-required'])},
+                 {'triplet': triplet(), 'gateRefusal': 'source-not-consented'}]
+        kept, exclusions = export.select(items)
+        self.assertEqual(len(kept), 1)
+        self.assertEqual(exclusions, {**export.empty_exclusions(), 'unredacted': 1, 'content-missing': 1,
+                                      'no-consent': 2, 'consent-none': 1})
+        self.assertEqual(len(kept) + sum(exclusions.values()), len(items))
 
 
 if __name__ == '__main__':
