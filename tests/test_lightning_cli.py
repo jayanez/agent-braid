@@ -132,7 +132,7 @@ class SetupTests(unittest.TestCase):
 class BoundaryTests(unittest.TestCase):
     def test_modules_import_only_stdlib_and_open_no_sockets_or_processes(self):
         allowed_local = {'lightning_config', 'lightning_schema', 'lightning_store', 'plugin_registry',
-                         'lightning_runner', 'lightning_resources', 'lightning_arm', 'lightning_adapter', 'lightning_redact'}  # SPEC-074: consent gate; SPEC-071/072: the CLI delegates runs lazily; BL.0 modules launch nothing
+                         'lightning_runner', 'lightning_resources', 'lightning_arm', 'lightning_adapter', 'lightning_redact', 'view_loom'}  # SPEC-074: consent gate; SPEC-071/072: the CLI delegates runs lazily; BL.0 modules launch nothing
         for name in MODULES:
             tree = ast.parse((ROOT / 'agent_braid' / f'{name}.py').read_text())
             for node in ast.walk(tree):
@@ -160,7 +160,8 @@ class BoundaryTests(unittest.TestCase):
 BL2_ALLOWED = {'plugin_registry', 'harness_host_claude',  # SPEC-070/071 runner and host setup
                'harness_evaluation', 'system_one',  # SPEC-072 T013: record formats only, never decide()
                'spec069_scoring', 'spec069_native_runs', 'spec069_fixture_workspace', 'build_native_plugin',
-               'spec072_development_arms'}  # T010 reuses the BL.2 lab-script profile, token and gate helpers
+               'spec072_development_arms',  # T010 reuses the BL.2 lab-script profile, token and gate helpers
+               'view_loom'}  # SPEC-074 REQ-006: the Loom stream parser (stdlib, no I/O)
 BL2_FORBIDDEN_NAMES = {'decide', 'begin', 'execute', 'recover', 'harness_promotion',
                        'import_module', '__import__'}  # no dynamic import around the static checks
 BL2_FORBIDDEN_MODULES = ('agent_braid.harness_promotion', 'agent_braid.harness_auto_promotion',
