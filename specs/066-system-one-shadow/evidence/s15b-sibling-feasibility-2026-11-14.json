@@ -15,7 +15,7 @@
     "pairs": "every unordered pair of kept tips whose own change set is at most 64 paths; base = git merge-base of the pair; pairs whose base equals one side are not diverged",
     "pathBound": "each side at most 64 changed paths against the pair base (git_replay.MAX_PATHS); a cheap superset bound (more than 256 develop paths between the two fork points) skips cross-fork pairs that cannot meet it",
     "oracle": "git merge-tree --write-tree --no-messages: exit 0 merge-clean, exit 1 merge-conflict",
-    "system2": "the agent_braid analysis rule applied to git name-status --no-renames against the pair base: a shared path is conflicting; otherwise any status other than A or M (a deletion or type change, which git_adapter records as an unknown effect with partial coverage) is unknown; otherwise independent-candidate. No dependencies and no uncertain paths, as in the T106 request."
+    "system2": "the agent_braid analysis rule applied to git name-status --no-renames against the pair base: a path that both sides add or modify (A or M) is a shared write resource, so conflicting; otherwise any status other than A or M (a deletion or type change, which git_adapter records as a per-operation git-unsupported resource with kind unknown and partial coverage, never shared) is unknown; otherwise independent-candidate. No dependencies and no uncertain paths, as in the T106 request. A review-time rerun with this exact sharing rule (deleted paths never shared) gave identical counts."
   },
   "counts": {
     "tips": {"refsNotMerged": 602, "unique": 492, "authorExcluded": 101, "admitted": 391, "ownChangeSetAtMost64Paths": 368},
