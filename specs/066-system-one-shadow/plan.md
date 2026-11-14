@@ -312,6 +312,20 @@ evidence moves `shadow` to `advise`, with an immutable promotion registry and an
 atomic rollback to `off` (REQ-401). It absorbs SPEC-033 T002, T003, T006 and T008.
 `advise` may only reorder or annotate. A score never removes an item.
 
+## Amendment 2026-11-14: reviewable fast route (REQ-402)
+
+- B0 (`evidence/s15b-sibling-feasibility-2026-11-14.json`) is INFEASIBLE for H-S1:
+  git-history replay yields almost no System-2-`unknown` pairs. S1.5d (T301–T303) is
+  Deferred under the D3 GO rule.
+- D6: T404 adds a structural DP-1 rule (`agent_braid/system_one_dp1_rule.py`), records
+  its answer in shadow episodes, surfaces advice in effective `advise` only, and adds
+  the owner `system-one promote` command. The T303/T402/T403 gate stays for learned
+  backends.
+- T405 joins merge outcomes of the owner's parallel tracks to episodes inside the
+  admitted workspace and performs the D7 automatic rollback.
+- T406 (owner): decision packet 2026-11-28, `advise` live 2026-11-30 on a go, review
+  2026-12-31 (D8).
+
 ## Human review and unresolved decisions
 
 All decided by the owner on 2026-11-01

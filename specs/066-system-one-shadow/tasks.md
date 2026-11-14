@@ -407,6 +407,9 @@ specifications unless a SPEC-066 requirement amends them.
 
 ## S1.5d — Native learned model (outline, blocked until T032)
 
+Deferred 2026-11-14 under the owner's D3 GO rule: the B0 check showed that git-history
+replay cannot supply System-2-`unknown` pairs (see REQ-402 and the ADR 0034 addendum).
+
 - [ ] T301 (REQ-301): Native model module inside `agent_braid`, standard library only
   (`dependencies = []`; no numpy, no extra, no download): calibrated logistic
   regression or boosted trees over the episode v0.2 structural features, behind the
@@ -437,3 +440,16 @@ specifications unless a SPEC-066 requirement amends them.
 - [ ] T403 (REQ-401): Owner go/no-go per decision point and tracking
   reconciliation; `advise` only on a recorded go. Carries forward SPEC-033 T008
   (#329). Dependencies: T402.
+
+## S1.5e — Reviewable rule-based advise (amendment 2026-11-14, REQ-402)
+
+- [ ] T404 (REQ-402): DP-1 structural rule with canonical resources, rule answers in
+  shadow episodes, per-pair `systemOneAdvice` in effective `advise` only, and the
+  owner `system-one promote --go|--rollback` command (preview digest, confirm).
+  Learned backends keep the T303/T402/T403 gate. T401 plumbing was delivered by
+  PR #1374.
+- [ ] T405 (REQ-402): Merge-outcome join for the owner's parallel tracks inside the
+  admitted workspace, report of advised pairs, joined outcomes, false independents and
+  the Wilson bound, and the D7 automatic rollback to `shadow`. Dependencies: T404.
+- [ ] T406 (REQ-402, owner): Decision packet 2026-11-28; `advise` live 2026-11-30 only
+  on a recorded go; mandatory review 2026-12-31. Dependencies: T404, T405.
