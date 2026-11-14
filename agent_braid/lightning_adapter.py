@@ -203,6 +203,11 @@ def _text(value) -> str:
     return canonical_bytes(value).decode().rstrip('\n')
 
 
+def _pseudonym(salt: bytes, value: str) -> str:
+    """Salted, deterministic name of a source id that may hold free text (an e-mail or key is a valid id)."""
+    return 'turn-' + hmac.new(salt, value.encode(), hashlib.sha256).hexdigest()[:16]
+
+
 def _message_losses(triplets: list[dict], extra=()) -> list[str]:
     """Losses of a message record: its triplets' losses that are not about rewards (messages carry none)."""
     return [*extra, *(loss for t in triplets for loss in t['losses'] if not loss.startswith('reward-'))]
@@ -218,25 +223,50 @@ def _loom(home: Path | None, data: bytes, salt: bytes):
     return (events, *_source(home, 'loom', data, salt))
 
 
+_STRAND_FIELDS = ('strandId', 'parentStrandId', 'waitingOn')
+
+
+def _strand_names(events: list[dict], salt: bytes) -> dict[str, str]:
+    """Pseudonym of every strand id in the stream; a strand id may hold free text (a key is a valid id)."""
+    return {value: _pseudonym(salt, value) for event in events for key, value in event['data'].items()
+            if key in _STRAND_FIELDS and isinstance(value, str)}
+
+
+def _rename(value, names: dict[str, str]):
+    """`value` with every string that is a strand id, at any depth, replaced by its pseudonym."""
+    if isinstance(value, str):
+        return names.get(value, value)
+    if isinstance(value, list):
+        return [_rename(item, names) for item in value]
+    if isinstance(value, dict):
+        return {key: _rename(item, names) for key, item in value.items()}
+    return value
+
+
 def loom_messages(home: Path | None, data: bytes, salt: bytes) -> dict:
-    """One `system` message per Loom event (its kind and data); empty without consent."""
+    """One `system` message per Loom event (its kind and data, strand ids as pseudonyms); empty without consent."""
     events, digest, rollout_id, redactor, refusal = _loom(home, data, salt)
     if redactor is None:
         return _messages(rollout_id, 'loom', digest, [], [refusal], None)
-    messages = [{'role': 'system', 'content': _clean(redactor, _text({'kind': e['kind'], 'data': e['data']}))}
+    names = _strand_names(events, salt)
+    messages = [{'role': 'system',
+                 'content': _clean(redactor, _text({'kind': e['kind'], 'data': _rename(e['data'], names)}))}
                 for e in events]
     return _messages(rollout_id, 'loom', digest, messages, [], None)
 
 
 def loom_triplets(home: Path | None, data: bytes, salt: bytes) -> list[dict]:
-    """One triplet per strand: its label as the prompt, its tools and outcome as the response; Loom has no reward."""
+    """One triplet per strand: its label as the prompt, its tools and outcome as the response; Loom has no reward.
+
+    A strand id may hold free text, so each triplet is named by the strand's salted pseudonym.
+    """
     events, digest, rollout_id, redactor, refusal = _loom(home, data, salt)
     strands: dict[str, dict] = {}
     for event in events:
         body = event['data']
         if not event['kind'].startswith('strand.'):
             continue
-        strand = strands.setdefault(body['strandId'], {'label': None, 'tools': [], 'outcome': None})
+        strand = strands.setdefault(_pseudonym(salt, body['strandId']), {'label': None, 'tools': [], 'outcome': None})
         if event['kind'] == 'strand.open':
             strand['label'] = body['label']
         elif event['kind'] == 'strand.update' and body.get('toolName'):
@@ -279,7 +309,7 @@ def _transcript(home: Path | None, path, salt: bytes):
     triplets, messages = [], []
     for source_op in json.loads(data)['operations']:  # admitted above, so well formed
         op = by_instance[source_op['instanceId']]
-        turn_id = 'turn-' + hmac.new(salt, op['attemptId'].encode(), hashlib.sha256).hexdigest()[:16]
+        turn_id = _pseudonym(salt, op['attemptId'])
         losses = ['model-text-unavailable', 'prompt-missing', 'reward-unavailable']
         response = None
         if redactor is None:
