@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""SPEC-072 REQ-011 / SC-011 (procedure_011): the SPEC-049 pair over synthetic held-out results."""
+"""SPEC-072 REQ-011 / SC-011 (procedure_011): the SPEC-049 pair over synthetic held-out results
+and the committed pair written by the T010 held-out run."""
 import ast
+import json
 from pathlib import Path
 import unittest
 
@@ -135,6 +137,32 @@ class H1RuleTests(unittest.TestCase):
         names = {n.attr if isinstance(n, ast.Attribute) else n.id
                  for n in ast.walk(tree) if isinstance(n, (ast.Name, ast.Attribute))}
         self.assertFalse(names & {'decide', 'begin', 'harness_promotion'})
+
+
+class CommittedPairTests(unittest.TestCase):
+    """The pair the T010 held-out run wrote loads through harness_promotion and agrees with the analysis."""
+
+    EVIDENCE = ROOT / 'specs/072-lightning-prompt-optimization/evidence'
+
+    def load(self, cls, name):
+        raw = (self.EVIDENCE / name).read_bytes()
+        return cls(freeze(json.loads(raw)), raw)
+
+    def test_committed_pair_loads_and_records_the_held_out_outcome(self):
+        heldout = json.loads((self.EVIDENCE / 'heldout-arms.json').read_text())
+        registration = self.load(Registration, 'heldout-registration.json')
+        report = self.load(EvaluationRecord, 'heldout-evaluation-record.json')
+        self.assertEqual(registration.sha256, heldout['pair']['registration']['sha256'])
+        self.assertEqual(report.sha256, heldout['pair']['evaluationRecord']['sha256'])
+        reg = harness_promotion._verified(registration, Registration, REGISTRATION_FORMAT)
+        rep = harness_promotion._verified(report, EvaluationRecord, REPORT_FORMAT)
+        self.assertEqual(rep['registrationSha256'], registration.sha256)
+        self.assertEqual({k: (v['arm'], v['candidateSha256']) for k, v in reg['arms'].items()},
+                         {'A': ('A0', heldout['arms']['A0']['candidateSha256']),
+                          'C': ('A2', heldout['arms']['A2']['candidateSha256'])})
+        self.assertEqual(rep['h1'], heldout['analysis']['h1'])
+        self.assertEqual(rep['h1'], {'outcome': 'not-supported', 'hosts': {'claude-code': 'not-supported'}})
+        self.assertFalse(reg['executionAuthorization'] or rep['executionAuthorization'])
 
 
 if __name__ == '__main__':

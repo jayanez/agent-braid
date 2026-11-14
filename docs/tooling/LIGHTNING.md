@@ -7,7 +7,9 @@ verifiable rewards. It adapts [microsoft/agent-lightning](https://github.com/mic
 
 **Today (BL.0 and BL.1 closed)** you can configure it, plan runs, run the rollout pipeline against fake hosts
 and run Claude Code rollouts on the subscription route. A real host run needs the setup consent and the host
-subscription route. Prompt optimization (BL.2) is not available yet.
+subscription route. Prompt optimization (BL.2, SPEC-072) runs APO and GEPA arms through `agent-braid lightning run`
+in the laboratory; its preregistered held-out evaluation (2026-11-13) was negative (no arm met D4, H1 not
+supported), so no optimized guidance is promoted or shipped.
 
 ## Opt in during setup
 

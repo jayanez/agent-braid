@@ -408,8 +408,8 @@ or experimental, and none of it can authorize execution.
 1. **Opt in.** `plugin setup --lightning lab` records consent; the MCP server never starts a run.
 2. **Configure.** `agent-braid lightning init` is a wizard modelled on Agent Lightning's trainer configuration, simplified (no Kubernetes, no GPU trainer): target guidance, hosts, algorithm, budgets and trace consent, with EUR 0 spend, the subscription route and human promotion fixed.
 3. **Roll out and reward (BL.1, delivered with fake hosts).** Headless host runs are scored by verifiable rewards only; any `*_API_KEY` is refused.
-4. **Optimize (BL.2, planned).** GEPA (primary) and APO propose guidance candidates; a preregistered frozen held-out evaluation decides, and a null result is valid.
-5. **Promote (BL.3, planned).** Only a human decision through the HAR profile registry ships a candidate, with rollback. Weight-level GRPO on a local GPU is deferred (ADR 0042). See [Braid Lightning](docs/tooling/LIGHTNING.md) and the [program](specs/070-braid-lightning-foundations/program.md).
+4. **Optimize (BL.2, negative result).** GEPA (primary) and APO propose guidance candidates; a preregistered frozen held-out evaluation decides, and a null result is valid. The first run (2026-11-13, Claude Code) found no improvement: no arm met D4 on held-out, so H1 is not supported and no candidate goes to promotion.
+5. **Promote (BL.3, planned; no candidate yet).** Only a human decision through the HAR profile registry ships a candidate, with rollback. Weight-level GRPO on a local GPU is deferred (ADR 0042). See [Braid Lightning](docs/tooling/LIGHTNING.md) and the [program](specs/070-braid-lightning-foundations/program.md).
 
 </details>
 

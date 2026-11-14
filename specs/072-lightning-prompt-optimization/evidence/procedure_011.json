@@ -8,13 +8,16 @@
   "agent_braid/harness_evaluation.py": "01e0bb293e4f31c8290a6731e90ab2ca84e677c0567d73568e4122477d1cf0d1",
   "agent_braid/harness_promotion.py": "659207a11e93e23cf9d677cbbb11c1eeaa9a125d15246e65efdb3b9a40206325",
   "agent_braid/lightning_evaluation.py": "de6d6d5b2478da9480b929ab46cecdfd5ff712c2edfbf906e5809328485ee27b",
-  "tests/test_lightning_evaluation.py": "3cb5d2b5ffcdd00523ba4b07d03c2aca73a7ed2b3b86adaba8ed364bd12960a4"
+  "specs/072-lightning-prompt-optimization/evidence/heldout-arms.json": "3e34b7fcb7916a3c07543043af148a812819eb810ab348dc12868a2774c1027f",
+  "specs/072-lightning-prompt-optimization/evidence/heldout-evaluation-record.json": "0b385e8d86e07d45d04dc7f043c52be5044e0b0b828fa01d5e95d3795ee2682d",
+  "specs/072-lightning-prompt-optimization/evidence/heldout-registration.json": "dc6ee7a772af0a9ac6e4a8044ea5db11b90951996599032f524a7cf8a210ad8c",
+  "tests/test_lightning_evaluation.py": "5299da4288051562a20b90fdbe66e4f6b88cb0453d8c2d315ee125bb4a1abe1b"
  },
- "limits": "Synthetic held-out summaries; the T010 held-out runs have not run, so no real H1 outcome is recorded. The SPEC-049 noninferiority test is not part of the frozen protocol and is reported descriptive-only, so an approved SPEC-073 promotion over this pair is refused (regression-not-covered) unless SPEC-073 decides otherwise.",
- "outcome": "passed: From synthetic held-out results, spec049_pair writes a SPEC-049 Registration and EvaluationRecord in REGISTRATION_FORMAT and REPORT_FORMAT with arm A = A0 and arm C = A2 (GEPA) by candidate hash, the H1 outcome per required host (claude-code) under the protocol rule (supported, not-supported, not-assessable; a canary hit invalidates the arm) and executionAuthorization false; both records load through the harness_promotion verifiers and a pending decide() call in the test accepts the pair with the C-vs-A regression descriptive-only. The writer never names decide, begin or harness_promotion. Negative controls: arm C set to A1 is refused (arm-c-not-a2), arm A not A0 is refused (arm-a-not-a0), a report edited after recording fails the byte check, and a report bound to another registration is refused (registration-mismatch).",
+ "limits": "The writer is tested over synthetic held-out summaries; the committed T010 pair is checked by bytes, formats, arms and H1 against evidence/heldout-arms.json, and records H1 not supported. BL.2 never calls decide(). The SPEC-049 noninferiority test is not part of the frozen protocol and is reported descriptive-only, so an approved SPEC-073 promotion over this pair is refused (regression-not-covered) unless SPEC-073 decides otherwise.",
+ "outcome": "passed: From synthetic held-out results, spec049_pair writes a SPEC-049 Registration and EvaluationRecord in REGISTRATION_FORMAT and REPORT_FORMAT with arm A = A0 and arm C = A2 (GEPA) by candidate hash, the H1 outcome per required host (claude-code) under the protocol rule (supported, not-supported, not-assessable; a canary hit invalidates the arm) and executionAuthorization false; both records load through the harness_promotion verifiers and a pending decide() call in the test accepts the pair with the C-vs-A regression descriptive-only. The writer never names decide, begin or harness_promotion. Negative controls: arm C set to A1 is refused (arm-c-not-a2), arm A not A0 is refused (arm-a-not-a0), a report edited after recording fails the byte check, and a report bound to another registration is refused (registration-mismatch). The committed T010 pair (evidence/heldout-registration.json, evidence/heldout-evaluation-record.json) matches the sha256 recorded in evidence/heldout-arms.json, loads through the harness_promotion verifiers, binds A = A0 and C = A2 by candidate hash, and records H1 not-supported for claude-code, equal to the held-out analysis.",
  "procedure": "procedure_011",
  "result": "OK",
  "scenario": "SC-011",
  "specification": "SPEC-072 BL.2",
- "testsRun": 10
+ "testsRun": 11
 }

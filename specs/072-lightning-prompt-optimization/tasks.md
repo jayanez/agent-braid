@@ -66,10 +66,16 @@ script or test.
   promotion, execution or MCP path. Dependencies: T010.
   Verification: procedure_009. Done 2026-11-13 as
   `tests/test_lightning_cli.py` `BL2BoundaryTests` over a fake GEPA run and
-  every BL.2 module; re-run after T010 lands.
-- [ ] T012 (REQ-001–REQ-011 / SC-001–SC-011): `/speckit-converge`: reconcile
+  every BL.2 module; re-run after T010 landed (T012 recapture).
+- [x] T012 (REQ-001–REQ-011 / SC-001–SC-011): `/speckit-converge`: reconcile
   spec, tasks, assurance and evidence; sync tracking; hand the best candidate
   hash to SPEC-073. Dependencies: T011, T013. Verification: all procedures.
+  Done 2026-11-13: every SC has obtained evidence (procedures re-captured);
+  H1 not supported (negative result); best GEPA candidate `623c55c3…` and best
+  APO candidate `39ae1856…` handed to SPEC-073 by hash with no candidate for
+  promotion. Pending outside the requirements: exploratory arms E1/E2
+  (descriptive, development only) not run; human review and freeze are the
+  owner's.
 
 ## Limits
 
