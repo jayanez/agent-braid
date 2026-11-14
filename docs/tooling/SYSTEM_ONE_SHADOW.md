@@ -113,8 +113,33 @@ also reports the store location, whether it exists (`store.present`) and
 `episodeRetentionDays`, never episode contents. With the value `off` or absent,
 the registry bytes and configuration digest stay as before.
 
+## Advise plumbing (SPEC-066 T401, not yet promoted)
+
+`--system-one advise` is accepted, but it is effective for a decision point only
+when the private promotion registry `system-one-promotion.json` (next to
+`registry.json`) holds a valid owner go for it. The registry ships empty and no
+command writes a go: recording one is gated on SPEC-066 T303, T402 and T403. So
+today `advise` behaves exactly like `shadow`.
+
+Each record is append-only and digest-pinned: a go pins the recorded shadow
+evidence digest and the backend manifest digest, and every record carries its
+own SHA-256 and the previous record's. An edited, forged, removed or reordered
+record, an unknown field, schema or decision point, a symlink or a file shared
+with other users makes the whole registry invalid, and then it promotes nothing.
+A rollback record demotes its decision point to `off`; it is written to a
+temporary file, synced and renamed, so an interruption leaves the previous
+registry intact. A go pinned to a different backend manifest does not promote.
+
+`plugin-status` reports `systemOne.reason` (closed vocabulary: `configured`,
+`owner-go`, `no-owner-go`, `rolled-back`, `identity-mismatch`,
+`promotion-registry-invalid`) for this connection, and `systemOne.promotion`
+with the registry as it is now (`present`, `valid`, `records`, per decision point
+`activeMode` and `reason`). Changes apply after reconnect. No decision point
+output consumes advice yet, and `executionAuthorization` stays `false`
+everywhere.
+
 The standalone portable server takes `python -m agent_braid.tooling_mcp
---system-one shadow` instead. See [native plugins](NATIVE_PLUGINS.md) and
+--system-one shadow` instead (it has no `advise`). See [native plugins](NATIVE_PLUGINS.md) and
 [install](INSTALL.md) for the surrounding setup.
 
 ## Report

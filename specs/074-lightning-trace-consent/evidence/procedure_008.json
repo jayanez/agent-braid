@@ -2,10 +2,10 @@
  "command": "python -m unittest tests.test_spec074_boundaries tests.test_lightning_cli",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.13.11"
+  "python": "3.12.13"
  },
  "inputs": {
-  "agent_braid/lightning_adapter.py": "dcb87d278d50081eb95671169df8793fb82d2255edd7590e58e365c628ff89d8",
+  "agent_braid/lightning_adapter.py": "2a849e0dde8ecba82d4ae518d27ed6d1d7cc332b7ba57db205237e4bc0432177",
   "agent_braid/lightning_cli.py": "ba217234f8b0fb06f1099d0daf9a6242f1d223ac58b35d5dfc0c1d8bece0e93d",
   "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
   "agent_braid/lightning_redact.py": "774e27ae55a1e71ab49205a0daa6d47d374160b46fd90b2c77891b566fbeecf2",
@@ -13,7 +13,7 @@
   "agent_braid/tooling_telemetry.py": "2643db58f41356a35c44b829c76f425a3fe82f2202912e14f85b24e458783c23",
   "agent_braid/trace_adapter.py": "4da8a0cb5b4885df80681c9005ec82b0ff685d7dd9ed1d577eac3655af637332",
   "agent_braid/view_loom.py": "12c530fabc056ef789a07fd0351875e79befc7242cb96bead99119d2e0a1c9be",
-  "tests/test_lightning_adapter.py": "60c9f2a0ad28600b9bb197ac793b6ca5f51f4312f0227c465018a5bd9a446102",
+  "tests/test_lightning_adapter.py": "3a98cd700882035a34eb2fa3476a0a3e3dd0632a53a71b76aff111d7fb9cf56e",
   "tests/test_lightning_cli.py": "663e2d7357e385e4c626857ac0d772eaed0095d38edb4febf0cd41920ee27782",
   "tests/test_spec074_boundaries.py": "293115e50c2d6d78a5de2866d86ac7159ef00f014af861e10197ca90847972f8"
  },

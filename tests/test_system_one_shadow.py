@@ -933,11 +933,11 @@ class RegistryTests(Base):
     def test_unknown_consent_is_refused(self):
         from agent_braid.plugin_registry import RegistryError
         with self.assertRaises(RegistryError):
-            plan_setup(self.home, [], system_one='advise')
+            plan_setup(self.home, [], system_one='assist')
         self.set_mode('shadow')
         path = self.home / 'registry.json'
         value = json.loads(path.read_text())
-        value['systemOne'] = 'advise'
+        value['systemOne'] = 'assist'
         path.write_text(json.dumps(value))
         with self.assertRaises(RegistryError):
             load(self.home)
@@ -962,7 +962,8 @@ class RegistryTests(Base):
         router = PluginRouter(self.home)
         status = router.status()['systemOne']
         self.assertEqual((status['configuredMode'], status['activeMode'], status['episodeRetentionDays']), ('off', 'off', 30))
-        self.assertEqual(set(status), {'configuredMode', 'activeMode', 'store', 'episodeRetentionDays'})
+        self.assertEqual(set(status), {'configuredMode', 'activeMode', 'reason', 'store', 'episodeRetentionDays',
+                                       'promotion', 'executionAuthorization'})
         self.assertEqual(status['store']['present'], False)
         self.set_mode('shadow')
         status = router.status()

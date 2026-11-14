@@ -14,7 +14,7 @@
   "specs/069-aim-request-authoring/evidence/native-probe-schema-per-kind.json": "327b5aa137b89f8ee57c57d3e771e02d81ea44542797175fa535d71ef92c0754",
   "specs/069-aim-request-authoring/evidence/native-runs-t010-heldout-final-codex.json": "cfae47ba5374c2d5259d6ebd0ea1e5ef2b3de965d6f3536a51fd5a4efa529f8c",
   "specs/069-aim-request-authoring/evidence/native-runs-t010-heldout-final.json": "f6f57e0327ebc1c0ab689f4280ab6eec3fc85ce4ad4ecf63522687e04dcb089d",
-  "specs/069-aim-request-authoring/evidence/procedure_005.json": "984f1904f0a66ccdaa9aecf900d30125469f8ee7061e5f764afae67f27f6f7f6",
+  "specs/069-aim-request-authoring/evidence/procedure_005.json": "35fa1903c124d41e8781438e698eb6714b22709e45451afda8c4e933006d7f9b",
   "specs/069-aim-request-authoring/evidence/procedure_009.json": "69c63ee6757e52685c5663f8df8cbde8148d13ab2aa4c9e62b7c98931f640005",
   "tests/test_spec069_docs.py": "68a8039a34c5c84ad5b6d7d46baa08f8ed4c44756063b9b955baad467ca120d4",
   "tests/test_spec069_guidance.py": "1559d3025aba847c055e2dbbf7752bc771df8da873d41d18d923da37be38c4fa"

@@ -428,6 +428,10 @@ specifications unless a SPEC-066 requirement amends them.
 - [ ] T401 (REQ-401): Immutable promotion registry, shadow trace capture and
   retention reuse, and atomic rollback to `off`. Carries forward SPEC-033 T002
   (#323) and T003 (#324). Dependencies: T303.
+  Note: plumbing obtained early per owner D2 2026-11-14; promotion still requires
+  T303, T402, T403. `agent_braid/system_one_promotion.py` ships an empty,
+  digest-pinned registry with atomic rollback; shadow trace capture and
+  retention reuse stay open under this task.
 - [ ] T402 (REQ-401): Paired shadow pilot with complete chain costs on the owner's
   work. Carries forward SPEC-033 T006 (#327). Dependencies: T401.
 - [ ] T403 (REQ-401): Owner go/no-go per decision point and tracking

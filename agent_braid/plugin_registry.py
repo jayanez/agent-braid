@@ -17,7 +17,7 @@ import threading
 SCHEMA = 'agent-braid-plugin-registry/v0.2'
 LEGACY_SCHEMA = 'agent-braid-plugin-registry/v0.1'
 TELEMETRY_MODES = ('off', 'local')
-SYSTEM_ONE_MODES = ('off', 'shadow')
+SYSTEM_ONE_MODES = ('off', 'shadow', 'advise')
 LIGHTNING_MODES = ('off', 'lab')
 OPTIONAL_KEYS = {'systemOne', 'lightning'}
 MAX_BYTES = 256 * 1024
@@ -343,7 +343,7 @@ def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bo
         value['telemetry'] = telemetry
     if system_one is not None:
         if system_one not in SYSTEM_ONE_MODES:
-            raise RegistryError('System One consent must be off or shadow')
+            raise RegistryError('System One consent must be off, shadow or advise')
         if system_one == 'off':
             value.pop('systemOne', None)
         else:
@@ -396,8 +396,11 @@ def plan_setup(home: Path | None, sources: list[Path], *, remove=(), runtime: bo
     if system_one is not None or 'systemOne' in value:
         effects.append(f"Plugin MCP System One mode: {value.get('systemOne', 'off')}; applies after reconnect, "
                        'shadow records closed-vocabulary episodes locally and changes no output; no upload')
-    if value.get('systemOne') == 'shadow':
-        effects.append('Earlier plugin versions refuse a registry that records System One shadow consent')
+    if value.get('systemOne') == 'advise':
+        effects.append('System One advise takes effect per decision point only with a valid owner go in the '
+                       'promotion registry; otherwise that decision point runs in shadow; never execution authority')
+    if value.get('systemOne') in ('shadow', 'advise'):
+        effects.append(f"Earlier plugin versions refuse a registry that records System One {value['systemOne']} consent")
     if lightning is not None or 'lightning' in value:
         effects.append(f"Braid Lightning laboratory consent: {value.get('lightning', 'off')}; only the "
                        "`agent-braid lightning` CLI may start runs, on the host subscription route; the MCP server "

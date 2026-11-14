@@ -2,13 +2,13 @@
  "command": "python -m unittest tests.test_spec074_consent_config tests.test_lightning_config",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.13.11"
+  "python": "3.12.13"
  },
  "inputs": {
   "agent_braid/lightning_cli.py": "ba217234f8b0fb06f1099d0daf9a6242f1d223ac58b35d5dfc0c1d8bece0e93d",
   "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
   "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
-  "agent_braid/plugin_registry.py": "5e5c79a7ef8eb601063167bcc0aaa4a79e0a4073e0d9bc9ea8a516eab5d85619",
+  "agent_braid/plugin_registry.py": "c04bcf08d0050faea086e832bd021f61cf081ef732e45580fe4b243510ee25a6",
   "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
   "tests/test_lightning_config.py": "dfbc32c5952b98a7bbfcfe082da7ffa16c32c670e4d341fd4ff6057e2021be1d",
   "tests/test_spec074_consent_config.py": "5cd5e1df5218f7654738c896033582376fe1e67489e337af43edca5c9f59a0a2"

@@ -2,7 +2,7 @@
  "command": "python -m unittest tests.test_lightning_cli.BL2BoundaryTests",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.13.11"
+  "python": "3.12.13"
  },
  "inputs": {
   "agent_braid/forecast_mcp.py": "6fba537f5506791f6e160dad7bfd8f92e0183019ac8b7c026ecb8aacd83b2f24",
@@ -24,7 +24,7 @@
   "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
   "agent_braid/mcp_advice.py": "74b2a62a6e4665e9d3beca9cf9abf7e9e017d6353a670f5b047dbf27c928c1a9",
   "agent_braid/mcp_runtime.py": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83",
-  "agent_braid/plugin_mcp.py": "56115f8f3c6dbfef31fd2888f2a6b29a70f3f3471e31a6f0c19b8af6693b2d3b",
+  "agent_braid/plugin_mcp.py": "81cc2ff7950fcf15343f9d01d56c8af9883d07e30c927c562ab4a42c2878edc1",
   "agent_braid/system_one_verified_mcp.py": "e34983f7e92ab1812ca6a8265d4a365ee7e5217ae8f1689da71b8998354025d4",
   "agent_braid/tooling_mcp.py": "35b82114a575965aaa28e444d9d19902e15cc5d836065e6e049c57377ab3de58",
   "integrations/agent-braid-view/web/vendor/manifest.json": "b869aa2a6d008ddabe49e3f1515ecdfa8c21a35e8c452d8f981bf8c6e64dfcce",

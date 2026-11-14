@@ -275,7 +275,7 @@ class PluginRouter:
         self._start_reason = None  # refusal bucket of the first workspace not served at start (telemetry only)
         self.baseline_digest = configuration_digest(self.baseline)
         self.snapshot = self.baseline or {'telemetry': 'off', 'workspaces': []}
-        self.system_one = self.snapshot.get('systemOne', 'off')
+        self.system_one, self.system_one_reason = self._system_one_mode(self.snapshot.get('systemOne', 'off'))
         self.services = {}
         self.unavailable = []
         self._unavailable_codes = {}
@@ -289,7 +289,9 @@ class PluginRouter:
                     grant_store=Path(row['grantStore']) if row['grantStore'] else None,
                     runtime_enabled=row['runtimeEnabled'],
                     worktree_roots=tuple(Path(p) for p in row['worktreeRoots']),
-                    telemetry=self.snapshot['telemetry'], system_one=self.system_one)
+                    telemetry=self.snapshot['telemetry'],
+                    # advise keeps recording shadow episodes; no decision point output consumes advice yet (T403).
+                    system_one='off' if self.system_one == 'off' else 'shadow')
                 self.services[row['workspaceId']] = WorkspaceService(row['workspaceId'], config, Path(row['resultRoot']))
             except (core.ToolingError, OSError) as exc:  # e.g. the source repository was deleted: isolate this workspace
                 self.unavailable.append({'workspaceId': row['workspaceId'], 'reason': 'configuration rejected'})
@@ -300,6 +302,22 @@ class PluginRouter:
         # One global admission lock bounds reservations across all workspace services.
         self.admission = threading.Lock()
 
+    def _system_one_mode(self, configured):
+        """SPEC-066 REQ-401: `advise` is effective only on a valid owner go; otherwise it falls back."""
+        if configured == 'off':
+            return 'off', 'configured'  # off reads no promotion registry and loads no System One module
+        from . import system_one_promotion
+        resolved, _ = system_one_promotion.inspect(self.home, configured, self._manifest_digest(configured))
+        return resolved['activeMode'], resolved['reason']
+
+    @staticmethod
+    def _manifest_digest(configured):
+        """Only advise compares a go with the pinned backend identity; shadow loads no extra module here."""
+        if configured != 'advise':
+            return None
+        from . import system_one_shadow
+        return system_one_shadow.EXPECTED_MANIFEST_DIGEST
+
     def _inspect(self):
         try:
             return inspect_registry(self.home)
@@ -307,24 +325,31 @@ class PluginRouter:
             return None
 
     def status(self):
-        from . import system_one_shadow  # lazy: serving with System One off never loads it
+        from . import system_one_promotion, system_one_shadow  # lazy: serving with System One off never loads them
         found = self._inspect()
         current = found['value'] if found else None
+        configured_one = current.get('systemOne', 'off') if current else 'off'
+        promotion = system_one_promotion.status(self.home, configured_one, self._manifest_digest(configured_one))
         current_digest = configuration_digest(current)
         # version is the Python package; pluginVersion is the native plugin build (None outside a package).
         return {'schema': SCHEMA, 'version': __version__, 'pluginVersion': self.plugin_version,
                 'status': ('migration-required' if current is None else
                            'configured' if self.services else 'setup-required'),
-                'reconnectRequired': current_digest != self.baseline_digest,
+                # A promotion or rollback recorded since this connection started also needs a reconnect.
+                'reconnectRequired': (current_digest != self.baseline_digest
+                                      or promotion['decisionPoints']['DP-1']['activeMode'] != self.system_one),
                 'baselineDigest': self.baseline_digest, 'currentDigest': current_digest,
                 'telemetry': {'configuredMode': current['telemetry'] if current else 'off',
                               'activeMode': self.snapshot['telemetry'],
                               'retentionDays': 30, 'automaticUpload': False},
-                'systemOne': {'configuredMode': current.get('systemOne', 'off') if current else 'off',
-                              'activeMode': self.system_one,
+                'systemOne': {'configuredMode': configured_one,
+                              'activeMode': self.system_one, 'reason': self.system_one_reason,
                               'store': {'location': system_one_shadow.display_location(),
                                         'present': system_one_shadow.store_present()},
-                              'episodeRetentionDays': system_one_shadow.RETENTION_DAYS},
+                              'episodeRetentionDays': system_one_shadow.RETENTION_DAYS,
+                              # The registry as it is now; activeMode and reason are this connection's snapshot.
+                              'promotion': promotion,
+                              'executionAuthorization': False},
                 'gitAvailable': shutil.which('git') is not None,
                 'registryHome': str(self.home),
                 'bundledCli': str(self.plugin_root / 'launch') if self.plugin_root else None,
