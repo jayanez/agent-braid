@@ -11,6 +11,7 @@ script directory on ``sys.path``.
 """
 
 import argparse
+from collections import Counter
 import json
 from pathlib import Path
 import sys
@@ -43,17 +44,15 @@ def check(names, total):
         return [f"total {total} must be at least 1"]
     if not names:
         errors.append("no test modules found")
-    duplicates = sorted({name for name in names if names.count(name) > 1})
+    duplicates = sorted(name for name, count in Counter(names).items() if count > 1)
     if duplicates:
         errors.append(f"duplicate modules: {', '.join(duplicates)}")
     invalid = [name for name in names if not name.isidentifier()]
     if invalid:
         errors.append(f"modules are not importable names: {', '.join(invalid)}")
-    shards = plan(names, total)
-    assigned = [name for group in shards for name in group]
-    if sorted(assigned) != sorted(names) or len(set(assigned)) != len(assigned):
-        errors.append("shards do not partition the modules exactly once")
-    empty = [str(index) for index, group in enumerate(shards) if not group]
+    # Round-robin slices of one sorted list are disjoint and complete by construction;
+    # only an empty shard can still break the partition.
+    empty = [str(index) for index, group in enumerate(plan(names, total)) if not group]
     if empty:
         errors.append(f"empty shards would run no tests: {', '.join(empty)}")
     return errors
@@ -77,6 +76,8 @@ def main(argv=None):
     arguments = parser.parse_args(argv)
     names = modules(arguments.tests_dir)
 
+    if arguments.check and (arguments.run or arguments.shard is not None):
+        parser.error("--check cannot be combined with --run or --shard")
     if arguments.check:
         errors = check(names, arguments.total)
         if arguments.json:

@@ -87,6 +87,7 @@ class ShardPlanTests(unittest.TestCase):
             self.assertTrue(json.loads(failed_json.stdout)["errors"])
         self.assertEqual(cli("--shard", "6", "--total", "6").returncode, 2)
         self.assertNotEqual(cli("--run").returncode, 0)
+        self.assertEqual(cli("--check", "--run", "--shard", "0").returncode, 2)
 
     def test_run_executes_only_its_shard_with_discover_import_semantics(self):
         with tempfile.TemporaryDirectory() as temporary:
