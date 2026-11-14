@@ -41,7 +41,13 @@ Rollout content records (`trace` kind in the run store, T006) carry
 `{attemptId, sequence, prompt, response, toolCalls?}`; `sequence` names the
 `model_request` event they belong to. One triplet is produced per
 `model_request`; Loom yields one triplet per strand (label as prompt, tools and
-outcome as response) and one `system` message per event. A host transcript
+outcome as response) and one `system` message per event. In those messages
+each strand or operation reference at its `view_loom` schema position
+(`strandId`, `parentStrandId`, `waitingOn`, `left`, `right`, `strands[*]`,
+`waves[*][*]`, `units[*]`) is replaced by the same `strand-` pseudonym the
+triplet uses; no other field (`reportId`, `planId`, `scheduleId`,
+`manifestDigest`, labels, tool names) is renamed, and two ids whose
+pseudonyms collide refuse the stream with `source-invalid`. A host transcript
 yields one triplet per host turn (its tool as the tool call; recorded traces
 hold no prompt or model text; `trace_adapter` admits synthetic traces only, so
 real host transcripts are not read yet), named by a salted turn pseudonym in
@@ -60,6 +66,13 @@ Loss notes: `content-consent-required`, `content-missing`, `content-duplicate`
 (the run holds a refused stub; stubs carry no attempt, so the note is run-level), `prompt-missing`, `response-missing`,
 `reward-unmatched`, `reward-unavailable` and `model-text-unavailable` (Loom),
 `outcome-missing` (an open strand). A source that does not parse is refused
-with `source-invalid`; an unclean result with `redaction-incomplete`.
+with `source-invalid`; an unclean result with `redaction-incomplete`; a
+missing or unreadable run with its store code (for example `store-missing`);
+a salt shorter than 16 bytes with `salt-invalid`. Refusal texts are fixed and
+name no source value (an id, path or parser message), only a closed reason
+code or source name. Source refusals (rollout, host transcript, Loom, System
+One, run store, salt) are raised without a chained cause; `redaction-incomplete`
+keeps the redactor's error as its cause, whose text names redaction classes
+only.
 
 Outputs are deterministic for the same inputs and salt; canonical JSON bytes.
