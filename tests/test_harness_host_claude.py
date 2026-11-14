@@ -2,6 +2,7 @@
 """Claude host adapter controls with deterministic doubles; no native dispatch or qualification."""
 from dataclasses import FrozenInstanceError, replace
 from hashlib import sha256
+import json
 import threading
 import unittest
 
@@ -15,7 +16,8 @@ from tests.test_harness_manifest import make_manifest
 NOW = 1_800_000_000
 SECRET = "sk-test-SECRET-0123456789"
 SESSION = "123e4567-e89b-42d3-a456-426614174000"
-VERSION = "2.1.0 (Claude Code)"
+VERSION = "2.1.0 (Claude Code)"  # what `--version` prints
+BARE_VERSION = "2.1.0"  # what the init event reports
 WINDOW = hc.CompatibilityWindow((2, 0, 0), (3, 0, 0))
 NOTE = b"owned note\n"
 
@@ -40,7 +42,7 @@ def make_inventory():
 
 def init(**over):
     return {"type": "system", "subtype": "init", "session_id": SESSION, "model": "claude-test",
-            "claude_code_version": VERSION, "apiKeySource": "none", **over}
+            "claude_code_version": BARE_VERSION, "apiKeySource": "none", **over}
 
 
 def assistant(*blocks):
@@ -110,7 +112,7 @@ class ClaudeHostTests(unittest.TestCase):
         self.assertEqual(outcome.transport, "double")
         self.assertEqual(data["source"], "fixture")
         self.assertEqual([e["kind"] for e in data["events"]], ["start", "message", "tool", "terminal"])
-        self.assertEqual((outcome.host_version, outcome.host_model), (VERSION, "claude-test"))
+        self.assertEqual((outcome.host_version, outcome.host_model), (BARE_VERSION, "claude-test"))
         self.assertFalse(outcome.executionAuthorization)
         self.assertFalse(outcome.to_dict()["executionAuthorization"])
         self.assertNotIn("secret body", repr(data))  # tool results never exported
@@ -335,7 +337,7 @@ class ClaudeHostTests(unittest.TestCase):
             self.assertEqual(double.launches, [])
 
     def test_version_reported_in_init_must_match_discovery(self):
-        outcome = run((init(claude_code_version="2.9.9 (Claude Code)"), result()))
+        outcome = run((init(claude_code_version="2.9.9"), result()))
         self.assertEqual(self.state(outcome), "failed")
         outcome = run((result(),))
         self.assertEqual(self.state(outcome), "refused")
@@ -384,6 +386,76 @@ class ClaudeHostTests(unittest.TestCase):
         drift = run((init(model="other-model"), result()), request=pinned)
         self.assertEqual(self.state(drift), "failed")
         self.assertEqual(drift.observation.to_dict()["events"][-2]["text"], "model-drift")
+
+    def test_real_captured_stream_completes(self):
+        """Shape captured from the pinned 2.1.292 binary (tools off, haiku, 2026-11-14)."""
+        lines = (init(claude_code_version="2.1.292", model="claude-haiku-4-5-20251001"),
+                 assistant({"type": "text", "text": "ok"}),
+                 {"type": "rate_limit_event", "rate_limit_info": {"status": "allowed", "note": SECRET}},
+                 result())
+        outcome = run(lines, double=hc.ClaudeHostDouble(lines, version="2.1.292 (Claude Code)"),
+                      request=hc.ClaudeRequest(SESSION, model="haiku"),
+                      compatibility=hc.CompatibilityWindow((2, 1, 292), (2, 1, 293)))
+        data = outcome.observation.to_dict()
+        self.assertEqual(self.state(outcome), "completed")
+        self.assertEqual(data["loss"]["transportErrors"], [])
+        self.assertEqual([e["kind"] for e in data["events"]], ["start", "message", "terminal"])
+        self.assertNotIn(SECRET, json.dumps(data))
+
+    def test_a_different_init_version_is_drift_and_other_unknown_types_stay_unobserved(self):
+        lines = (init(claude_code_version="2.1.293"), result())
+        outcome = run(lines, double=hc.ClaudeHostDouble(lines, version="2.1.292 (Claude Code)"),
+                      compatibility=hc.CompatibilityWindow((2, 1, 292), (2, 1, 294)))
+        self.assertEqual(self.state(outcome), "failed")
+        self.assertIn("version-drift", [e.get("text") for e in outcome.observation.to_dict()["events"]])
+        for odd in ({"type": "rate_limit_events"}, {"type": "system", "subtype": "rate_limit_event"},
+                    {"type": "stream_event"}):
+            outcome = run((init(), odd, result()))
+            self.assertEqual(self.state(outcome), "unobserved", odd)
+            self.assertIn("unknown-event-type", outcome.observation.to_dict()["loss"]["transportErrors"])
+
+    def test_family_alias_accepts_only_its_resolved_id(self):
+        def state(alias, model):
+            return self.state(run((init(model=model), result()), request=hc.ClaudeRequest(SESSION, model=alias)))
+        for model in ("claude-haiku-4-5-20251001", "claude-haiku-4-5", "claude-haiku-4", "claude-haiku-4-5-1-20251001"):
+            self.assertEqual(state("haiku", model), "completed", model)
+        self.assertEqual(state("sonnet", "claude-sonnet-4-5-20250929"), "completed")
+        self.assertEqual(state("opus", "claude-opus-4-1"), "completed")
+        self.assertEqual(state("haiku", "haiku"), "completed")  # exact still passes
+        for alias, model in (("haiku", "claude-sonnet-4-5-20250929"), ("haiku", "claude-haiku-evil"),
+                             ("haiku", "claude-haiku-"), ("haiku", "claude-haiku"), ("haiku", "claude-haiku-4-"),
+                             ("haiku", "claude-haiku-4-5-20251001-x"),
+                             ("haiku", "xclaude-haiku-4"), ("haiku", "other-model")):
+            drifted = run((init(model=model), result()), request=hc.ClaudeRequest(SESSION, model=alias))
+            self.assertEqual(self.state(drifted), "failed", model)
+            self.assertEqual(drifted.observation.to_dict()["events"][-2]["text"], "model-drift", model)
+
+    def test_non_string_reported_model_never_matches(self):
+        for value in (7, ["haiku"], {"a": 1}):
+            self.assertFalse(hc.model_matches("haiku", value))
+        self.assertFalse(hc.model_matches("claude-test", 7))
+        self.assertTrue(hc.model_matches("haiku", "claude-haiku-4-5"))
+
+    def test_versions_with_leading_zeros_are_refused(self):
+        for text in ("02.1.292", "2.1.00", "2.01.3", "2.1.292 (Claude Code)x", "00.0.0"):
+            with self.assertRaises(hc.ClaudeHostError, msg=text):
+                hc.parse_version(text)
+            with self.assertRaises(hc.ClaudeHostError, msg=text):
+                run(double=hc.ClaudeHostDouble(GOOD, version=text))
+        self.assertEqual(hc.parse_version("0.10.0 (Claude Code)"), (0, 10, 0))
+        outcome = run((init(claude_code_version="02.1.0"), result()))
+        self.assertEqual(self.state(outcome), "failed")
+        self.assertIn("version-drift", [e.get("text") for e in outcome.observation.to_dict()["events"]])
+
+    def test_a_malformed_reported_model_never_completes(self):
+        outcome = run((init(model="claude-haiku-4\n"), result()), request=hc.ClaudeRequest(SESSION, model="haiku"))
+        self.assertEqual(self.state(outcome), "unobserved")
+
+    def test_a_non_alias_model_keeps_exact_equality(self):
+        pinned = hc.ClaudeRequest(SESSION, model="claude-haiku-4-5-20251001")
+        self.assertEqual(self.state(run((init(model="claude-haiku-4-5-20251001"), result()), request=pinned)),
+                         "completed")
+        self.assertEqual(self.state(run((init(model="claude-haiku-4-5"), result()), request=pinned)), "failed")
 
     def test_session_mismatch_blocks_completion(self):
         other = "223e4567-e89b-42d3-a456-426614174000"

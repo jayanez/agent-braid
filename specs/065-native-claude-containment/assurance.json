@@ -15,7 +15,7 @@
   ],
   "assumptions": "Single-operator founder macOS machine (observed macOS 27.0.1 build 26A434); Claude Code 2.1.292 at /opt/homebrew/bin/claude; subscription (Max) route with extra usage disabled; F5 STRICT isolation bound and NC-1 to NC-11 decided in specs/065-native-claude-containment/evidence/founder-decisions-20261031.json (T001); same-UID processes outside the sandbox are not hostile during a run; values to be observed by probe are fixed only in a reviewed T009 evidence bundle.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "a526b5eb460fad5009cbc928aed5df21addc2279",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -106,13 +106,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Offline profile byte-compatible (bytes, digests, views, refusal reasons); qualification record formats unchanged; plugin, AIM, grants, telemetry, observation format and every SPEC-048/049 artifact unchanged; native profile is a new closed schema under the same manifest format.",
   "domain": "Agent Braid harness laboratory native execution of one host (Claude Code CLI, read-only tools) on one macOS machine, under the SPEC-048 manifest, lab, host-adapter and qualification contracts.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "a526b5eb460fad5009cbc928aed5df21addc2279",
+    "mode": "historical"
   },
   "execution_contract": "Native runs only with a verified containment record and a verified Claude host record whose environment hash equals the native manifest's and that have not expired; pre-session self-checks and the quota gate pass before every session; refuse rather than degrade; no retry, no alternative or paid route; executionAuthorization stays false; issuance is a human act outside code.",
   "human_review": "pending",

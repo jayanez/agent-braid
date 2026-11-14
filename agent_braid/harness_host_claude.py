@@ -55,7 +55,21 @@ _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _SESSION = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\Z")
 RESERVED_EVENTS = 8  # terminal plus every error kind _terminal can add
 _MODEL = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}\Z")
-_VERSION = re.compile(r"(\d{1,4})\.(\d{1,4})\.(\d{1,4})(?: \(Claude Code\))?\Z")
+_VERSION = re.compile(r"(0|[1-9][0-9]{0,3})\.(0|[1-9][0-9]{0,3})\.(0|[1-9][0-9]{0,3})(?: \(Claude Code\))?\Z")
+# A family alias resolves in the init event to ``claude-<alias>-<version>``; only that exact shape is accepted.
+MODEL_ALIASES = ("haiku", "sonnet", "opus")
+_RESOLVED = {alias: re.compile(rf"claude-{alias}-[0-9]+(-[0-9]+)*\Z") for alias in MODEL_ALIASES}
+# The fixed codes ``_terminal`` can append as error events; the only error texts a report may carry.
+TERMINAL_ERROR_CODES = frozenset({"permission-denied", "route-unverified", "session-mismatch", "version-drift",
+                                  "model-drift", "exit-mismatch"})
+
+
+def model_matches(requested: str, reported: str | None) -> bool:
+    """Exact equality, or a family alias against its resolved id (``claude-haiku-4-5-20251001``)."""
+    if reported == requested:
+        return True
+    pattern = _RESOLVED.get(requested)
+    return pattern is not None and type(reported) is str and pattern.fullmatch(reported) is not None
 
 
 class ClaudeHostError(ValueError):
@@ -339,6 +353,14 @@ def _blocks(stream: _Stream, message: Any) -> None:
             stream.errors.append("malformed-line")
 
 
+def _same_version(reported: str | None, discovered: str) -> bool:
+    """Init reports the bare version, ``--version`` adds `` (Claude Code)``; compare the parsed triples."""
+    try:
+        return parse_version(reported) == parse_version(discovered)
+    except ClaudeHostError:
+        return False
+
+
 def _clean(stream: _Stream, value: Any, pattern: re.Pattern, code: str | None = None) -> str | None:
     """Keep an untrusted init string only when it is well-formed and secret-free."""
     if type(value) is str and pattern.fullmatch(value) is not None \
@@ -378,6 +400,8 @@ def _read_stream(stdout: bytes, secrets: tuple = ()) -> _Stream:
             _blocks(stream, event.get("message"))
         elif kind == "user":
             pass  # tool results echo workspace content; never exported
+        elif kind == "rate_limit_event":
+            pass  # host rate-limit telemetry: not read, not exported
         elif kind == "result":
             if stream.result is not None:
                 stream.errors.append("duplicate-result")
@@ -412,10 +436,10 @@ def _terminal(stream: _Stream, run: HostRun, request: ClaudeRequest, discovered:
     if stream.session != request.session_id or result.get("session_id") != request.session_id:
         stream.append("error", text="session-mismatch")
         state = "failed" if state == "completed" else state
-    if stream.version != discovered:
+    if not _same_version(stream.version, discovered):
         stream.append("error", text="version-drift")
         state = "failed" if state == "completed" else state
-    if request.model is not None and stream.model != request.model:
+    if request.model is not None and not model_matches(request.model, stream.model):
         stream.append("error", text="model-drift")
         state = "failed" if state == "completed" else state
     if stream.key_source not in SUBSCRIPTION_KEY_SOURCES:

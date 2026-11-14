@@ -427,6 +427,19 @@ shared object store fails the portable-root check).
   hash, another host, partial effects and an expired record refuse; 711 targeted tests OK. The 2026-11-06 record is
   superseded. `executionAuthorization` false; normal use still needs SPEC-048/T008 and the NC-11 check.
 
+- [ ] T014 (REQ-004 / SC-004; REQ-009 / SC-009): Re-qualify after the host-adapter terminal fixes of PR #1363 (bare init
+  version, resolved alias id, `rate_limit_event`). Pending. `agent_braid/harness_host_claude.py` is an input of the
+  environment hash (`harness_containment_macos._component_hashes`), so once #1363 merges the 2026-11-13 issuance
+  (`evidence/qualification/issuance-2026-11-13.json`) no longer matches and native use is refused until a new T009
+  attempt and a new founder issuance exist. Why the adapter changed: the 2026-11-13 T008 unit ran contained for 49 s
+  (quota delta 0) but settled `completed=False`; a real capture of the pinned `claude-2.1.292` (exact `build_plan`
+  argv, tools off, model `haiku`, operator account, outside the lab, 2026-11-14) shows `--version` printing
+  `2.1.292 (Claude Code)` while init reports the bare `2.1.292`, init `model` `claude-haiku-4-5-20251001` for the
+  `haiku` alias, `apiKeySource` `none`, session ids equal to the request, `permission_denials` empty, exit 0, empty
+  stderr, and the event sequence `system/init`, `assistant`, `rate_limit_event`, `result/success`. Each of the three
+  differences alone forced a non-completed terminal. Acceptance: a new bundle on the fixed adapter, its issuance, and
+  the T008 driver pointed at it; `executionAuthorization` stays false. Nothing native ran for this task.
+
 ## Unblocking map
 
 | Task | Needs |
@@ -441,7 +454,8 @@ shared object store fails the portable-root check).
 | T011 | T010 |
 | T012 | T003–T011 |
 | T013 | T009, T010, founder decisions of 2026-11-13, security re-check, owner's `run` |
-| SPEC-048/T008 (Claude profile) | T011 plus its own acceptance items |
+| T014 | #1363 merged, new T009 attempt, founder issuance |
+| SPEC-048/T008 (Claude profile) | T011, T014 plus its own acceptance items |
 | SPEC-049/T004 | SPEC-048/T008 decision plus its own source/route/quota approval |
 
 Scientific limit: T009/T010 describe one machine, OS build, CLI version and

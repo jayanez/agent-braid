@@ -20,6 +20,8 @@ import har_t009_attempt as t9  # noqa: E402
 from agent_braid import harness_hosts as hh  # noqa: E402
 from agent_braid import harness_hosts_native as hn  # noqa: E402
 
+from tests import test_harness_host_claude as host_fixtures  # noqa: E402
+
 ISSUED = hn.issued_records((ROOT / driver.ISSUANCE).read_bytes(), **driver.TRUSTED)
 QUALIFICATION = "specs/065-native-claude-containment/evidence/qualification/"
 SUPERSEDED_ISSUANCE = QUALIFICATION + "issuance-2026-11-06.json"
@@ -61,6 +63,47 @@ class DriverTests(unittest.TestCase):
         end = driver.WINDOW[1]
         self.assertEqual(self.refused(end - timedelta(minutes=29)), ["outside-founder-window"])
         driver.check_window(end - timedelta(minutes=30), ISSUED)
+
+
+class HostSummaryTests(unittest.TestCase):
+    FIELDS = {"terminal", "streamErrors", "transportErrors", "exitCode", "timedOut", "cancelled", "settled",
+              "outputTruncated", "hostVersion", "hostModel"}
+
+    def test_a_completed_alias_run_reports_fixed_fields_only(self):
+        f = host_fixtures
+        result = f.run((f.init(model="claude-haiku-4-5-20251001"),
+                        f.assistant({"type": "text", "text": "ASSISTANT-WORDS " + f.SECRET}), f.result()),
+                       request=driver.hc.ClaudeRequest(f.SESSION, model="haiku"))
+        summary = driver.host_summary(result, "haiku")
+        self.assertEqual(set(summary), self.FIELDS)
+        self.assertEqual((summary["terminal"], summary["streamErrors"], summary["hostModel"]),
+                         ("completed", [], "claude-haiku-4-5-20251001"))
+        self.assertTrue(summary["settled"])
+        text = json.dumps(summary)
+        for leaked in ("ASSISTANT-WORDS", f.SECRET, f.SESSION, "reading"):
+            self.assertNotIn(leaked, text)
+
+    def test_host_model_is_published_only_if_requested_or_a_resolved_family_id(self):
+        f = host_fixtures
+        for model, request, shown in (("claude-haiku-4-5-20251001", "haiku", True), ("claude-test", "claude-test", True),
+                                      ("claude-sonnet-4-5", "haiku", False), ("claude-haiku-evil", "haiku", False)):
+            result = f.run((f.init(model=model), f.result()), request=driver.hc.ClaudeRequest(f.SESSION, model=request))
+            self.assertEqual(driver.host_summary(result, request)["hostModel"], model if shown else None)
+
+    def test_a_model_drift_names_its_fixed_code(self):
+        f = host_fixtures
+        result = f.run((f.init(model="claude-sonnet-4-5"), f.result()),
+                       request=driver.hc.ClaudeRequest(f.SESSION, model="haiku"))
+        summary = driver.host_summary(result)
+        self.assertEqual((summary["terminal"], summary["streamErrors"]), ("failed", ["model-drift"]))
+
+    def test_transport_errors_are_listed_and_the_report_carries_the_runs(self):
+        f = host_fixtures
+        result = f.run((f.init(model="bad model"), f.result()))
+        self.assertIn("model-invalid", driver.host_summary(result)["transportErrors"])
+        report = driver._report(mock.Mock(attempt="a"), mock.Mock(**{"verdict.return_value.to_dict.return_value":
+                                {"units": 1}}), mock.Mock(), None, "cohort-finished", [{"unit": 1}])
+        self.assertEqual(report["hostRuns"], [{"unit": 1}])
 
 
 class RecordTests(unittest.TestCase):
