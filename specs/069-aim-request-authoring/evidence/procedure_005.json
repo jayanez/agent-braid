@@ -33,7 +33,7 @@
  },
  "inputs": {
   "agent_braid/analyze_work_schema.py": "a7a5ccb6dde3ff1ad3650dfbd3a9e3c457e9c2c1782f88bb44ff5d852c156d41",
-  "agent_braid/plugin_mcp.py": "56115f8f3c6dbfef31fd2888f2a6b29a70f3f3471e31a6f0c19b8af6693b2d3b",
+  "agent_braid/plugin_mcp.py": "81cc2ff7950fcf15343f9d01d56c8af9883d07e30c927c562ab4a42c2878edc1",
   "agent_braid/tooling_mcp.py": "35b82114a575965aaa28e444d9d19902e15cc5d836065e6e049c57377ab3de58",
   "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
   "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
