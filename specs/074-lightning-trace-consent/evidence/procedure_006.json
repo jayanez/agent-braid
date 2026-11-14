@@ -9,7 +9,7 @@
   "agent_braid/lightning_redact.py": "774e27ae55a1e71ab49205a0daa6d47d374160b46fd90b2c77891b566fbeecf2",
   "agent_braid/lightning_schema.py": "3a5b70ded3d8696ec59eb1873d89fddb6b5400aca4443ae3a228ac804d81dc19",
   "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
-  "agent_braid/system_one_shadow.py": "34e68e1875fa76c580c85aa6317a338d01b037b9faa5119764e33bcf0282173f",
+  "agent_braid/system_one_shadow.py": "7c21ec6ac2d89b3d51ce937931dc560d859bd3f1838f548576a6e23380ed753a",
   "agent_braid/trace_adapter.py": "4da8a0cb5b4885df80681c9005ec82b0ff685d7dd9ed1d577eac3655af637332",
   "agent_braid/view_loom.py": "12c530fabc056ef789a07fd0351875e79befc7242cb96bead99119d2e0a1c9be",
   "specs/023-recorded-trace-adapters/fixtures/generic.json": "c08156f0f57bc2ba1e331a2d4050af3c78de3d3b01de6ed253a1008c893af387",
