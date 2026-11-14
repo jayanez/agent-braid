@@ -61,7 +61,8 @@
     "PUB.1 — Public research preview",
     "M4.7 — AI tooling integration for OpenCode",
     "BL.0 — Braid Lightning foundations",
-    "BL.1 — Lightning rollouts and verifiable reward"
+    "BL.1 — Lightning rollouts and verifiable reward",
+    "BL.2 — Lightning prompt optimization"
   ],
   "unpublished_milestones": [
     "M4.6 — Claude Code dynamic workflows"
@@ -333,7 +334,7 @@
     },
     "072-lightning-prompt-optimization": {
       "milestone": "BL.2 — Lightning prompt optimization",
-      "state": "open"
+      "state": "closed"
     },
     "073-lightning-promotion": {
       "milestone": "BL.3 — Lightning promotion",
