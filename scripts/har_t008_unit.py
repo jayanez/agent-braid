@@ -47,6 +47,7 @@ from agent_braid.harness_observation import verify_inventory  # noqa: E402
 from agent_braid.system_one import canonical  # noqa: E402
 from hashlib import sha256  # noqa: E402
 
+MODEL = "haiku"  # the one model the cohort requests and the report checks against
 MAX_UNITS = 4  # founder, 2026-11-06 (decision 2/5), unchanged on 2026-11-13 (T008-6)
 WINDOW = (datetime(2026, 11, 9, 20, 30, tzinfo=timezone.utc), datetime(2026, 11, 30, 23, 59, tzinfo=timezone.utc))
 # SPEC-065 T013 issuance of 2026-11-13; it supersedes the 2026-11-06 one (void on macOS build 26B131)
@@ -198,6 +199,22 @@ def admit(args, report: dict, now: datetime):
     return issued, policy, decisions, caps, remaining
 
 
+def host_summary(result: hc.ClaudeHostResult, requested_model: str | None = None) -> dict:
+    """Fixed-field, redacted view of one host run for the published report: the terminal state, the fixed
+    error codes, and the run flags. Never assistant text, prompt, tokens, paths or any host-supplied string
+    beyond the version id and a model id that is the requested one or its own resolved family id."""
+    data, observed = result.to_dict(), result.observation.to_dict()
+    reported = data["hostModel"]
+    shown_model = reported if hc.model_matches(requested_model, reported) else None
+    codes = [e.get("text") for e in observed.get("events", ()) if e.get("kind") == "error"]
+    return {"terminal": observed["terminal"],
+            "streamErrors": sorted({c for c in codes if c in hc.TERMINAL_ERROR_CODES}),
+            "transportErrors": observed["loss"]["transportErrors"],
+            "exitCode": data["exitCode"], "timedOut": data["timedOut"], "cancelled": data["cancelled"],
+            "settled": data["settled"], "outputTruncated": data["outputTruncated"],
+            "hostVersion": data["hostVersion"], "hostModel": shown_model}
+
+
 def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now(timezone.utc),
                backend_factory=_mac.MacOSContainment) -> dict:
     report = t9.preflight(args, system)
@@ -236,7 +253,7 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
         backend.close()
         cleanup()
         raise
-    records, stop = [], None
+    records, stop, summaries = [], None, []
     if units < 1:
         backend.close()
         cleanup()
@@ -254,7 +271,7 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
                     run=run, backend=backend, workdir=workdir(), containment=issued.host,
                     containment_sha256=issued.host_sha256, manifest=manifest, context=context,
                     request=hc.ClaudeRequest(session_id=SESSION % (index + int(time.time()) % 10**6),
-                                             model="haiku"),
+                                             model=MODEL),
                     compatibility=hc.CompatibilityWindow((2, 1, 292), (2, 1, 293)),
                     inventory=verify_inventory(export, expected_sha256=sha256(export).hexdigest()),
                     attempt_id=f"{args.attempt}-u{index}", before=before,
@@ -263,26 +280,28 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
             except (hh.HostGateError, hc.ClaudeHostError, _mac.LabError, hn.NativeWiringError) as exc:
                 stop = exc.reason
                 break
+            if outcome.result is not None:
+                summaries.append({"unit": index + 1, **host_summary(outcome.result, MODEL)})
             say(f"[T008] unit {index + 1}: completed={outcome.record.completed} breach={outcome.record.breach}")
             if run.stopped:
                 stop = run.stopped
                 break
     except BaseException as exc:  # Ctrl-C, SIGTERM-as-exception or a bug: keep the evidence, then re-raise
         stop = f"aborted:{type(exc).__name__}"
-        print(json.dumps(_report(args, run, backend, stop, "cohort-aborted"), indent=2, sort_keys=True))
+        print(json.dumps(_report(args, run, backend, stop, "cohort-aborted", summaries), indent=2, sort_keys=True))
         exc.t008_reported = True
         raise
     finally:
         backend.close()
         cleanup()
     return _report(args, run, backend, stop or run.stopped,
-                   "cohort-finished" if not (stop or run.stopped) else "cohort-stopped")
+                   "cohort-finished" if not (stop or run.stopped) else "cohort-stopped", summaries)
 
 
-def _report(args, run, backend, stopped, verdict) -> dict:
+def _report(args, run, backend, stopped, verdict, hosts=()) -> dict:
     host = run.verdict().to_dict()
     return {"verdict": verdict, "attempt": args.attempt, "units": host["units"], "stopped": stopped,
-            "hostVerdict": host, "backendRefusals": t9.refusal_evidence(backend),
+            "hostVerdict": host, "hostRuns": list(hosts), "backendRefusals": t9.refusal_evidence(backend),
             "executionAuthorization": False}
 
 

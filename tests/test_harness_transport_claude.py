@@ -33,7 +33,8 @@ from tests.test_harness_manifest import make_native_manifest
 
 NOW = 1_800_000_000
 CLOCK = datetime(2026, 11, 1, 12, 0, tzinfo=timezone.utc)
-BUILD_TEXT = "2.1.292 (Claude Code)"
+BUILD_TEXT = "2.1.292 (Claude Code)"  # `--version` output
+INIT_VERSION = "2.1.292"  # the init event reports the bare version
 BACKEND = "macos-dedicated-user-sandbox-exec"
 FAKE_CLAUDE = b"#!/bin/sh\necho fake claude, never executed\n"
 NOTE = b"owned note\n"
@@ -45,7 +46,7 @@ def line(event):
 
 
 def good_chunks(**init_over):
-    return [line(init(claude_code_version=BUILD_TEXT, **init_over)),
+    return [line(init(claude_code_version=INIT_VERSION, **init_over)),
             line(assistant({"type": "text", "text": "reading"})), line(result())]
 
 
@@ -350,8 +351,8 @@ class NativeTransportTests(unittest.TestCase):
         for label, chunks in (
                 ("one chunk", [b"".join(good_chunks(apiKeySource="ANTHROPIC_API_KEY"))]),
                 ("line by line", good_chunks(apiKeySource="ANTHROPIC_API_KEY")),
-                ("split mid-line", [line(init(claude_code_version=BUILD_TEXT, apiKeySource="apiKey"))[:20],
-                                    line(init(claude_code_version=BUILD_TEXT, apiKeySource="apiKey"))[20:]
+                ("split mid-line", [line(init(claude_code_version=INIT_VERSION, apiKeySource="apiKey"))[:20],
+                                    line(init(claude_code_version=INIT_VERSION, apiKeySource="apiKey"))[20:]
                                     + line(result())])):
             for honour in (True, False):
                 with self.subTest(label, honour_kill=honour):
@@ -467,7 +468,7 @@ class NativeTransportTests(unittest.TestCase):
                 with self.assertRaises(hc.ClaudeHostError):
                     self.go(fx=fx, transport=fx.transport())
                 self.assertEqual(fx.launcher.run_calls, [])
-        drifted = [line(init(claude_code_version="2.1.291 (Claude Code)")), line(result())]
+        drifted = [line(init(claude_code_version="2.1.291")), line(result())]
         fx = Fixture(self, chunks=drifted)
         outcome = self.go(fx=fx, transport=fx.transport())
         self.assertEqual(self.state(outcome), "failed")
