@@ -121,7 +121,7 @@ def _rollout_source(home: Path | None, run_id: str, attempt_id: str):
     run = store.RunStore(home, run_id)
     events = sorted((e for e in run.read('event') if e.attempt_id == attempt_id), key=lambda e: e.sequence)
     if not events:
-        raise AdapterError(f'No events for attempt {attempt_id}', SOURCE_INVALID)
+        raise AdapterError('No events for the attempt', SOURCE_INVALID)
     return run, events
 
 
@@ -154,6 +154,7 @@ def _rollout(home, run_id, attempt_id, reward_match):
     redactor = redact.Redactor(run._salt()) if content else None
     digest = _sha(b''.join(canonical_bytes(e.to_dict()) for e in events)
                   + b''.join(sorted(canonical_bytes(c) for c in content.values())))
+    name = _pseudonym(run._salt(), attempt_id, 'attempt')  # an attempt id may hold free text
     triplets = []
     for event in requests:
         created_at, record = content.get(event.sequence, (event.timestamp, None))
@@ -169,7 +170,7 @@ def _rollout(home, run_id, attempt_id, reward_match):
             lost += [f'{name}-missing' for name in ('prompt', 'response') if body[name] is None]
         if event.sequence not in rewards:
             lost.append('reward-unmatched')
-        triplets.append(_triplet(event.rollout_id, attempt_id, 'rollout', digest, prompt, response,
+        triplets.append(_triplet(event.rollout_id, name, 'rollout', digest, prompt, response,
                                  rewards.get(event.sequence), reward_match, lost, created_at))
     return triplets, events[0].rollout_id, digest, losses
 
@@ -203,7 +204,8 @@ def _text(value) -> str:
     return canonical_bytes(value).decode().rstrip('\n')
 
 
-_DOMAINS = {'turn': b'', 'strand': b'loom\0'}  # HMAC domain per name kind; turns keep their T008 names
+_DOMAINS = {'turn': b'', 'strand': b'loom\0', 'attempt': b'rollout\0',  # HMAC domain per name kind; turns keep
+            'episode': b'system-one\0'}  # their T008 names
 
 
 def _pseudonym(salt: bytes, value: str, kind: str = 'turn') -> str:
@@ -313,7 +315,7 @@ def _transcript(home: Path | None, path, salt: bytes):
         data = trace_adapter.read_trace(path)
         artifacts = trace_adapter.import_trace(data, mapper=trace_adapter.MAPPER)
     except trace_adapter.InvalidTrace as exc:
-        raise AdapterError(f'Host transcript refused: {exc}', SOURCE_INVALID) from exc
+        raise AdapterError('Host transcript refused', SOURCE_INVALID) from exc
     digest, rollout_id, redactor, refusal = _source(home, 'host-transcript', data, salt)
     statuses: dict[str, list] = {}
     for event in artifacts.provenance['events']:
@@ -375,8 +377,8 @@ def _system_one(home: Path | None, path, salt: bytes):
             question, answer = (_clean(redactor, text) for text in _episode_turn(episode))
             prompt, response = {'text': question}, {'text': answer, 'toolCalls': []}
             messages += [{'role': 'user', 'content': question}, {'role': 'assistant', 'content': answer}]
-        triplets.append(_triplet(rollout_id, episode['episodeId'], 'system-one', digest, prompt, response, None,
-                                 None, ['reward-unavailable', *extra], None))
+        triplets.append(_triplet(rollout_id, _pseudonym(salt, episode['episodeId'], 'episode'), 'system-one', digest,
+                                 prompt, response, None, None, ['reward-unavailable', *extra], None))
     return triplets, _messages(rollout_id, 'system-one', digest, messages, _message_losses(triplets, extra), None)
 
 

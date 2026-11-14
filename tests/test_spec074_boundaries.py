@@ -21,10 +21,15 @@ import unittest
 from unittest.mock import patch
 
 from agent_braid import lightning_adapter as adapter
+from agent_braid import mcp_runtime
 from agent_braid import lightning_store as store
 from agent_braid import tooling_telemetry as telemetry
+from agent_braid.lightning_schema import EVENT_SCHEMA, Event, LightningSchemaError
 from tests.test_lightning_adapter import (DIGEST, EMAIL, LOOM, SALT, T0, TOKEN, cli, episode_line, request, reward,
                                           trace_bytes)
+
+ROOT = Path(__file__).resolve().parents[1]
+NAME = 'owner.example.org'  # a name-shaped identifier: valid as an attempt id, not caught by redaction
 
 BLOCKED = {socket: ('socket', 'create_connection', 'socketpair', 'getaddrinfo', 'fromfd'),
            subprocess: ('Popen',),
@@ -160,6 +165,102 @@ class BoundaryTests(unittest.TestCase):
         except (ValueError, OSError):
             pass  # an unknown operation is refused after the call was recorded
         self.assertEqual([name for name, _, _ in self.telemetry_calls], ['record_view'])
+
+    def test_a_process_inside_a_bl4_path_fails_it(self):
+        """Negative control (from #1369): an adapter gate that launched a process would fail every status call."""
+        with patch.object(adapter, 'gate', lambda *args, **kwargs: subprocess.run(['true'])), \
+                self.assertRaisesRegex(AssertionError, 'boundary: subprocess.Popen'):
+            self.command('status')
+
+    def test_run_telemetry_records_carry_no_content(self):
+        """From #1369: event, rollout and result files hold no content; content lives only in the trace file."""
+        self.init('--trace-consent', 'redacted', '--trace-sources', 'rollout')
+        self.read_every_source()
+        run = store.RunStore(self.home, 'run-1')
+        files = [path for path in run.root.iterdir() if path.name in store.KINDS.values()]
+        self.assertTrue(files)
+        for path in files:
+            text = path.read_text()
+            for marker in (*CANARIES, 'mail ', '"prompt"', '"response"', 'REDACTED'):
+                self.assertNotIn(marker, text, path.name)
+        self.assertIn('REDACTED', (run.root / store.CONTENT_FILE).read_text())  # negative control: content exists
+        with self.assertRaises(LightningSchemaError):  # the event schema admits no content field
+            Event.parse({'schema': EVENT_SCHEMA, 'rolloutId': 'ro-1', 'attemptId': 'at-1', 'sequence': 9,
+                         'eventType': 'model_request', 'timestamp': T0,
+                         'data': {**request(1).to_dict()['data'], 'prompt': 'text'}})
+
+    def test_no_mcp_module_or_runtime_tool_reaches_lightning(self):
+        """From #1369: every MCP module, not only tooling_mcp and plugin_mcp, and the runtime tool list."""
+        self.assertEqual([tool for tool in mcp_runtime.TOOLS if 'lightning' in tool], [])
+        modules = sorted((ROOT / 'agent_braid').glob('*mcp*.py'))
+        self.assertGreater(len(modules), 2)
+        self.assertEqual([p.name for p in modules if 'lightning' in p.read_text().lower()], [])
+
+
+class IdentifierLeakTests(unittest.TestCase):
+    """Source ids may hold free text, so no adapter output or error names one (owner review of #1368)."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.base = Path(self.tmp.name).resolve()
+        self.home = self.base / 'state'
+        flags = ['lightning', 'init', '--home', str(self.home), '--non-interactive', '--trace-consent', 'redacted',
+                 '--trace-sources', 'rollout,host-transcript,loom,system-one']
+        preview = json.loads(cli(*flags)[1])['previewDigest']
+        self.assertEqual(cli(*flags, '--apply', '--preview-digest', preview)[0], 0)
+
+    def outputs(self):
+        run = store.RunStore(self.home, 'run-1')
+        run.create(config_digest=DIGEST, now=T0)
+        for item in (request(1), reward(2, 0.5)):
+            run.append('event', Event.parse({**item.to_dict(), 'attemptId': NAME}))
+        run.append('trace', {'attemptId': NAME, 'sequence': 1, 'prompt': 'plain', 'response': 'x'}, now=T0 + 1)
+        transcript, day = self.base / 'trace.json', self.base / 'episodes.jsonl'
+        transcript.write_bytes(trace_bytes(attempt=NAME))
+        line = episode_line()
+        day.write_bytes(line)
+        episode = json.loads(line)['episodeId']
+        records = [adapter.rollout_triplets(self.home, 'run-1', NAME),
+                   adapter.rollout_messages(self.home, 'run-1', NAME),
+                   adapter.transcript_triplets(self.home, transcript, SALT),
+                   adapter.transcript_messages(self.home, transcript, SALT),
+                   adapter.system_one_triplets(self.home, day, SALT),
+                   adapter.system_one_messages(self.home, day, SALT)]
+        errors = []
+        for call in (lambda: adapter.rollout_triplets(self.home, 'run-1', NAME + '.x'),
+                     lambda: adapter.transcript_triplets(self.home, self.write(trace_bytes(attempt=NAME)[:-9]), SALT),
+                     lambda: adapter.loom_triplets(self.home, b'{"seq":1,"id":"' + NAME.encode() + b'"}\n', SALT),
+                     lambda: adapter.system_one_triplets(self.home, self.base / NAME, SALT)):
+            with self.assertRaises(adapter.AdapterError) as caught:
+                call()
+            errors.append(str(caught.exception))
+        return records, errors, episode
+
+    def write(self, data):
+        path = self.base / 'broken.json'
+        path.write_bytes(data)
+        return path
+
+    def test_no_output_or_error_names_a_source_id(self):
+        records, errors, episode = self.outputs()
+        self.assertTrue(records[0][0]['prompt'] and records[4][0]['prompt'])  # content was read
+        text = json.dumps(records) + '\n'.join(errors)
+        for raw in (NAME, episode):
+            self.assertNotIn(raw, text)
+        self.assertRegex(records[0][0]['attemptId'], r'^attempt-[0-9a-f]{16}$')
+        self.assertRegex(records[4][0]['attemptId'], r'^episode-[0-9a-f]{16}$')
+        self.assertEqual(records[0], adapter.rollout_triplets(self.home, 'run-1', NAME))  # stable per run salt
+        self.assertEqual(errors, ['No events for the attempt', 'Host transcript refused',
+                                  'Loom stream refused: execution-authorization', 'System One episodes refused'])
+
+    def test_a_raw_id_in_an_output_is_detected(self):
+        """Negative control: an adapter that kept the raw attempt id would fail the leak check."""
+        real = adapter._pseudonym
+        with patch.object(adapter, '_pseudonym', lambda salt, value, kind='turn': value if kind == 'attempt'
+                          else real(salt, value, kind)):
+            records, errors, _ = self.outputs()
+        self.assertIn(NAME, json.dumps(records) + '\n'.join(errors))
 
 
 if __name__ == '__main__':

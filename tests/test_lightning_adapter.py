@@ -109,7 +109,9 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual([t['reward'] for t in triplets], [0.25, None, 1.0])
         first, second, third = triplets
         self.assertEqual(first['schema'], adapter.TRIPLET_SCHEMA)
-        self.assertEqual((first['source'], first['rolloutId'], first['attemptId']), ('rollout', 'ro-1', 'at-1'))
+        self.assertEqual((first['source'], first['rolloutId'], first['attemptId']),
+                         ('rollout', 'ro-1', adapter._pseudonym(store.RunStore(self.home, 'run-1')._salt(), 'at-1',
+                                                                 'attempt')))
         self.assertRegex(first['prompt']['text'], r'^mail \[REDACTED:email:[0-9a-f]{8}\]$')
         self.assertEqual(first['response'], {'text': 'key [REDACTED:token]', 'toolCalls': [{'name': 'Edit'}]})
         self.assertEqual(first['redaction'], {'classes': {'email': 1, 'token': 1}, 'scanClean': True})
