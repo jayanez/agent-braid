@@ -376,6 +376,9 @@ shared object store fails the portable-root check).
   Updated 2026-11-13 (T013): the packet opens with the superseding records (issuance `issuance-2026-11-13.json`,
   trusted hashes `fa59fbae…fa6a` and `9022b771…847f`, `expiresAt` 2026-12-13T16:14:45Z, Background session mode); its
   sha256 is now `7326ed347a9d999aae388b9185942c17e6f999dfca95c83fb64cf477123fba9e` (`t011.json` keeps the original).
+  Updated 2026-11-14 (T014): the packet opens with the 2026-11-14 records (issuance `issuance-2026-11-14.json`, trusted
+  hashes `87c7b520…6f68` and `625bb211…36ec`, `expiresAt` 2026-12-14T18:42:10Z); its sha256 is now
+  `237b89c6f7b25fb564b719660039a6439233a6393036b7837cb6a71576d05556`.
 
 - [ ] T012 (all REQ / SC): Stable-candidate validation and review: `pr` profile,
   code review of T003–T007, assurance obtained-evidence update, authority
@@ -426,8 +429,11 @@ shared object store fails the portable-root check).
   `verify_bundle` accept; edited records, a wrong environment hash, the superseded environment, an untrusted (runner)
   hash, another host, partial effects and an expired record refuse; 711 targeted tests OK. The 2026-11-06 record is
   superseded. `executionAuthorization` false; normal use still needs SPEC-048/T008 and the NC-11 check.
+  Superseded 2026-11-14 by the T014 issuance (`evidence/qualification/issuance-2026-11-14.json`): #1363 moved
+  `harness_host_claude.py`, an environment-hash input. This record stays as written; only the T014 trusted hashes are
+  current.
 
-- [ ] T014 (REQ-004 / SC-004; REQ-009 / SC-009): Re-qualify after the host-adapter terminal fixes of PR #1363 (bare init
+- [x] T014 (REQ-004 / SC-004; REQ-009 / SC-009): Re-qualify after the host-adapter terminal fixes of PR #1363 (bare init
   version, resolved alias id, `rate_limit_event`). Pending. `agent_braid/harness_host_claude.py` is an input of the
   environment hash (`harness_containment_macos._component_hashes`), so once #1363 merges the 2026-11-13 issuance
   (`evidence/qualification/issuance-2026-11-13.json`) no longer matches and native use is refused until a new T009
@@ -439,6 +445,22 @@ shared object store fails the portable-root check).
   stderr, and the event sequence `system/init`, `assistant`, `rate_limit_event`, `result/success`. Each of the three
   differences alone forced a non-completed terminal. Acceptance: a new bundle on the fixed adapter, its issuance, and
   the T008 driver pointed at it; `executionAuthorization` stays false. Nothing native ran for this task.
+  Obtained: issued 2026-11-14 by the founder (NC-9, "Issue, same terms") on the bundle of attempt `t009-20261114a`
+  (commit `a016d066`, launcher sha256 `34ee6f5d…21ff`, own `Background` session, `session-own` passed;
+  `bundleSha256` `02ed5685f2944217c49281af4cca7872f8b99163a45b193ccbcf9f9c9bb32795`, `environmentSha256`
+  `2164a4a2…14dc`; 32 of 32 probes and the not-applicable set identical to `t009-20261113c`, all four effects
+  `enforced`, HOST-01 completed, `apiKeySource` `none`; quota 5-hour 24-25 % and weekly 74 %, delta 0 in all three
+  sessions). Result `evidence/t009-20261114-result.md`; bundle `evidence/qualification/t009-20261114a/`. Record
+  `evidence/qualification/issuance-2026-11-14.json` (sha256 `d70874f4…1414`): trusted hashes containment
+  `87c7b520…6f68`, host `625bb211…36ec`, `expiresAt` 2026-12-14T18:42:10Z (30 days), the 2026-11-13 terms unchanged
+  (residuals, MDRV-04 with PR review, NC-9 triggers plus the session kind); it supersedes the 2026-11-13 record, which
+  stays historical. Verification `evidence/t014.json`: both verifiers, `issued_records` and `verify_bundle` accept;
+  edited records, a wrong environment hash, the 2026-11-13 environment and issuance, an untrusted hash, another host,
+  partial effects and an expired record refuse; 773 targeted tests OK. The SPEC-048/T008 driver
+  (`scripts/har_t008_unit.py`) now trusts only this record, through
+  `specs/048-harness-variant-laboratory/evidence/founder-decisions-20261114.json`. Standing rule for later
+  code-only re-qualifications: `evidence/founder-decisions-20261114.json` (`FD-20261114-STANDING`, until HAR.1 closes
+  or 2027-01-31). `executionAuthorization` false.
 
 ## Unblocking map
 

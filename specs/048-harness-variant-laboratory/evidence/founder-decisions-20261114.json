@@ -1,0 +1,78 @@
+{
+  "recordVersion": "spec048-founder-review-v1",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-14",
+  "baseCommit": "a016d066",
+  "decisionChannel": "Founder answer to an interactive guided question in the HAR orchestrator session, 2026-11-14, recorded verbatim (question as asked, in English; answer as chosen), after SPEC-065 T014 issued the 2026-11-14 records (founder answer T014-ISSUE \"Issue, same terms (Recommended)\"). T008-8 confirms that the T008 units use the 2026-11-14 qualification on the unchanged T008-6 terms. Additive; earlier records stay as written.",
+  "supersedes": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261113.json (sha256 0132118f9d04c6c39b5b59a879343719168ccb31d2315f4b557ad85feaa6ad5c) for the records the Claude profile authorization is bound to; that record names the 2026-11-13 qualification (fa59fbae.../9022b771...), which no longer matches the code after #1363. Its answers T008-6 and T008-7 and the answers T008-3, T008-4 and T008-5 of founder-decisions-20261106.json stay in force",
+  "qualificationRecords": {
+    "issuance": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-14.json",
+    "issuanceSha256": "d70874f4fd36ddf1c43e7de497fcc40ef9537969cfc30deed990a3baa0501414",
+    "bundle": "specs/065-native-claude-containment/evidence/qualification/t009-20261114a/",
+    "bundleSha256": "02ed5685f2944217c49281af4cca7872f8b99163a45b193ccbcf9f9c9bb32795",
+    "containmentSha256": "87c7b52098131d42e7bcc6bfc932827ed8000ff1728b8d47ca47e5f5153b6f68",
+    "hostSha256": "625bb211e4e16ef559bb14b1c3184142bce1776aa19666b153bf636f9df536ec",
+    "environmentSha256": "2164a4a2351ee333ce1af886f5abc0793c6f5cb7ab22bd05865c1dd9c28314dc",
+    "expiresAt": 1797273730
+  },
+  "decisions": [
+    {
+      "task": "SPEC-048/T008",
+      "item": "Claude profile qualification",
+      "decision": "qualification-authorized",
+      "ownerStatement": "Mismos términos, nuevos registros (Recommended)",
+      "detail": "The T008-6 authorization of 2026-11-13, unchanged, confirmed by the founder on 2026-11-14 (T008-8) as bound to the SPEC-065 records issued 2026-11-14 (containment 87c7b52098131d42e7bcc6bfc932827ed8000ff1728b8d47ca47e5f5153b6f68, host 625bb211e4e16ef559bb14b1c3184142bce1776aa19666b153bf636f9df536ec, issuance record evidence/qualification/issuance-2026-11-14.json, bundle t009-20261114a, environment 2164a4a2351ee333ce1af886f5abc0793c6f5cb7ab22bd05865c1dd9c28314dc, expires 2026-12-14T18:42:10Z): at most 4 serial units for the whole cohort (units already started under the 2026-11-13 binding count), window 2026-11-09T20:30Z to 2026-11-30, D2 caps unchanged, EUR 0, subscription route, usage readings at most 5 minutes old. The 'qualified' verdict is decided later from the unit evidence. Does not admit SPEC-049/T004 and does not qualify Codex."
+    },
+    {
+      "task": "SPEC-048/T008",
+      "item": "Codex profile qualification",
+      "decision": "not-qualified",
+      "ownerStatement": "Unchanged from founder-review-20261031.json: Registralo como no calificado y anota que lo tenemos que revisar antes de considerar cerrado este milestone",
+      "detail": "Codex CLI is not installed; stays refused and must be reviewed again before HAR.1 closes. Not asked again on 2026-11-14."
+    }
+  ],
+  "founderAnswers": [
+    {
+      "id": "T008-6",
+      "answeredAt": "2026-11-13",
+      "carriedFrom": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261113.json",
+      "topic": "Re-authorization of the T008 native units on the current issued records",
+      "answer": "Mismos términos, nuevos registros (Recommended)",
+      "terms": "Identical terms: at most 4 serial units, window to 2026-11-30, D2 caps unchanged (30 min per unit, session at most 10 % of 5-hour, cohort at most 15 % of weekly, weekly stop above 80 %), EUR 0, subscription route, readings at most 5 minutes old. Rebound here to the 2026-11-14 records in qualificationRecords. executionAuthorization stays false; the qualified verdict is decided later from the unit evidence."
+    },
+    {
+      "id": "T008-7",
+      "answeredAt": "2026-11-13",
+      "carriedFrom": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261113.json",
+      "topic": "How the T008 units are launched",
+      "answer": "Lanzador root sin GUI (Recommended)",
+      "terms": "Unchanged: a root launcher with a T008 mode starts the driver as braidlab in its own Background session (launchctl asuser). The orchestrator runs its check automatically (passwordless sudo rule for check only); the owner runs `sudo ... run` in Terminal.app with the password and types the quota readings."
+    },
+    {
+      "id": "T014-ISSUE",
+      "answeredAt": "2026-11-14",
+      "carriedFrom": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-14.json",
+      "topic": "SPEC-065 re-qualification issuance after #1363",
+      "answer": "Issue, same terms (Recommended)",
+      "terms": "The founder issued the 2026-11-14 records on the terms of 2026-11-13. This is the basis for moving the T008-6 binding; it is a SPEC-065 answer, not a new SPEC-048/T008 answer."
+    },
+    {
+      "id": "T008-8",
+      "answeredAt": "2026-11-14",
+      "topic": "Binding the remaining T008 unit to the 2026-11-14 qualification",
+      "question": "Do you confirm that the last T008 unit uses the 11-14 qualification under the same T008 terms? Terms (unchanged from 11-13): at most 4 units in total (1 left), window until 2026-11-30, D2 caps (30 min per unit, ≤10 % of the 5-hour window per session, ≤15 % of weekly for the whole cohort, stop above 80 % weekly), EUR 0, subscription only. The only change is that the unit is tied to issuance 2026-11-14 (32/32, expires 12-14) instead of 11-13, which no longer applies. Risk: none new. Undo: you revoke it with a record.",
+      "answer": "Confirm, same terms (Recommended)",
+      "terms": "The T008-6 terms unchanged, bound to the 2026-11-14 records in qualificationRecords. executionAuthorization stays false."
+    }
+  ],
+  "hostObservation": {
+    "observedAt": "2026-11-14",
+    "host": {
+      "claude": "claude 2.1.292 pinned at /usr/local/libexec/braid/claude-2.1.292 (environment.json of t009-20261114a: claudeVersion 2.1.292, claudeSha256 97a01e5bc74a199e67189435d0331ea3a24eac2e07db4b76d9148c5b0386138f)",
+      "codex": "absent (unchanged from 2026-11-13; not re-checked)"
+    }
+  },
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false
+}

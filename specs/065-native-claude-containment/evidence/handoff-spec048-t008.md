@@ -11,6 +11,29 @@ Claude profile *verifiable* by the runtime; they authorize nothing.
 Every hash below was recomputed from the files at the base commit (`shasum -a 256`, or the canonical-JSON rule the
 code uses, as stated per line).
 
+## Update, 2026-11-14: superseding records (SPEC-065 T014)
+
+The 2026-11-13 update below is **superseded**: #1363 changed `agent_braid/harness_host_claude.py`, an input of the
+environment hash, so its records (environment `f0f7617e…e899`) no longer match the code. No NC-9 trigger fired; the
+founder issued again on the same terms. SPEC-048/T008 uses only these values:
+
+| Item | Value |
+| --- | --- |
+| Issuance record | `specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-14.json`, file sha256 `d70874f4fd36ddf1c43e7de497fcc40ef9537969cfc30deed990a3baa0501414` |
+| Bundle | `evidence/qualification/t009-20261114a/` (attempt commit `a016d066`), `bundleSha256` `02ed5685f2944217c49281af4cca7872f8b99163a45b193ccbcf9f9c9bb32795`; result `evidence/t009-20261114-result.md` |
+| Containment trusted hash | `87c7b52098131d42e7bcc6bfc932827ed8000ff1728b8d47ca47e5f5153b6f68` |
+| Host trusted hash | `625bb211e4e16ef559bb14b1c3184142bce1776aa19666b153bf636f9df536ec` |
+| `environmentSha256` | `2164a4a2351ee333ce1af886f5abc0793c6f5cb7ab22bd05865c1dd9c28314dc` (macOS 27.2.1 `26B131`, arm64, Claude Code 2.1.292, catalog `c8952ac3…aef5`, session kind `Background`) |
+| `issuedAt` / `expiresAt` | `1794681730` = 2026-11-14T18:42:10Z / `1797273730` = 2026-12-14T18:42:10Z (30 days); the last T008 unit must end before it |
+| Session mode | unchanged: headless own-session (`launchctl asuser` by the root launcher) |
+| Residuals | unchanged from the 2026-11-13 update; the not-applicable set and the 32 probe outcomes equal those of `t009-20261113c` |
+| Verification | `evidence/t014.json` (`issuance`): both verifiers and `issued_records` accept; edited records, wrong environment hash, the 2026-11-13 environment and issuance, untrusted hash, other host, partial effects and an expired record refuse |
+
+`scripts/har_t008_unit.py` and its tests now name this record, bound through
+`specs/048-harness-variant-laboratory/evidence/founder-decisions-20261114.json` (the T008-6 terms, unchanged). Later
+re-qualifications triggered only by reviewed code may be recorded under the founder's standing rule
+`evidence/founder-decisions-20261114.json`.
+
 ## Update, 2026-11-13: superseding records (SPEC-065 T013)
 
 Sections 1, 2, 4 and 5 below describe the 2026-11-06 issuance. That record is **superseded**: it was void on macOS
