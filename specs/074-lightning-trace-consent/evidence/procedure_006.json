@@ -1,0 +1,25 @@
+{
+ "command": "python -m unittest tests.test_lightning_adapter tests.test_spec074_consent_gate tests.test_lightning_cli",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_adapter.py": "052b3af6a1c7048e6bea98f14d15e27d85c1c9c94cde907974b76eb313b70a91",
+  "agent_braid/lightning_redact.py": "774e27ae55a1e71ab49205a0daa6d47d374160b46fd90b2c77891b566fbeecf2",
+  "agent_braid/lightning_schema.py": "3a5b70ded3d8696ec59eb1873d89fddb6b5400aca4443ae3a228ac804d81dc19",
+  "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
+  "agent_braid/view_loom.py": "12c530fabc056ef789a07fd0351875e79befc7242cb96bead99119d2e0a1c9be",
+  "tests/fixtures/view/loom/valid-corpus.jsonl": "107a393f57d462e0eff9b8f4961357c009e19ef9b7747528513d39ae2e9f9299",
+  "tests/test_lightning_adapter.py": "81f559601f7e531f95d59affb3aeced60f7aaebbe3fdd925a7ad413d16d986dd",
+  "tests/test_lightning_cli.py": "6535ea7159ffd4162355f395327108a32e713408d33fa7981b5ed3c9c13257b8",
+  "tests/test_spec074_consent_gate.py": "c29b59929ab6371e9e9f8748468b0139a045aca21c4a2d1c31446da9e9bef598"
+ },
+ "limits": "Rollout and Loom sources only, synthetic content in temporary homes; host transcripts and System One episodes are T008 (procedure_006 is recaptured then). Loom carries no model text or reward, which the loss notes state. Refused content stubs carry no attempt, so content-refused is a run-level note. Redaction limits are those of procedure_003 and procedure_004.",
+ "outcome": "passed: T007: lightning_adapter turns one attempt's SPEC-070 events plus its redacted content records into braid-lightning-triplet/v0.1 records, one per model_request, and braid-lightning-messages/v0.1 user and assistant turns; the committed Loom corpus becomes one triplet per strand and one system message per event. Every text is redacted with the run salt and post-scanned (redaction classes counted), and each record carries source, sourceSha256 and sorted loss notes. Rewards match by first-occurrence (nearest earlier unrewarded request) or first-sibling (others refused with reward-match); a second content record for one request is ignored with content-duplicate. Outputs are deterministic for the same inputs and salt. Without consent, or for an unlisted source, prompt, response and messages are null or empty with content-consent-required while rewards stay. An unparseable Loom stream or an unknown attempt is refused with source-invalid. Negative control: with redaction switched off a canary in a Loom label reaches the output and the clean check fails.",
+ "procedure": "procedure_006",
+ "result": "OK",
+ "scenario": "SC-006",
+ "specification": "SPEC-074 BL.4",
+ "testsRun": 36
+}

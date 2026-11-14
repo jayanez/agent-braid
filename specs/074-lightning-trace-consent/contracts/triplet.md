@@ -15,10 +15,10 @@ v0.x (`adapter/triplet.py` `Triplet`/`Transition`, `adapter/messages.py`
 | `prompt` | object `{text}` or null | redacted; null when consent is `none` |
 | `response` | object `{text, toolCalls}` or null | redacted; null when consent is `none` |
 | `reward` | finite number or null | matched by policy |
-| `rewardMatch` | enum `first-occurrence`, `first-sibling` | upstream `RewardMatchPolicy` subset |
+| `rewardMatch` | enum `first-occurrence`, `first-sibling`, or null | upstream `RewardMatchPolicy` subset; null for Loom (no reward) |
 | `redaction` | object `{classes: {class: count}, scanClean: true}` | always present |
 | `losses` | sorted list of strings | fields dropped or unmappable |
-| `createdAt` | date | retention clock |
+| `createdAt` | epoch seconds or null | retention clock: the content record's `createdAt`; null for Loom, which has no store clock |
 
 ## Messages (`braid-lightning-messages/v0.1`)
 
@@ -35,5 +35,22 @@ contains `content-consent-required`.
 | host-transcript | `trace_adapter.read_trace`, `import_trace`; `tooling_claude_observer`, `tooling_codex_observer` | one host turn |
 | loom | `view_loom.parse_stream`, `validate_event` | one event chain |
 | system-one | `system_one_shadow.validate_episode` (read-only) | one episode |
+
+Rollout content records (`trace` kind in the run store, T006) carry
+`{attemptId, sequence, prompt, response, toolCalls?}`; `sequence` names the
+`model_request` event they belong to. One triplet is produced per
+`model_request`; Loom yields one triplet per strand (label as prompt, tools and
+outcome as response) and one `system` message per event.
+
+Reward matching: `first-occurrence` gives each reward event to the nearest
+earlier `model_request` without a reward; `first-sibling` gives the attempt's
+first reward to its first `model_request`.
+
+Loss notes: `content-consent-required`, `content-missing`, `content-duplicate`
+(a second record for one request; the first is kept), `content-refused`
+(the run holds a refused stub; stubs carry no attempt, so the note is run-level), `prompt-missing`, `response-missing`,
+`reward-unmatched`, `reward-unavailable` and `model-text-unavailable` (Loom),
+`outcome-missing` (an open strand). A source that does not parse is refused
+with `source-invalid`; an unclean result with `redaction-incomplete`.
 
 Outputs are deterministic for the same inputs and salt; canonical JSON bytes.

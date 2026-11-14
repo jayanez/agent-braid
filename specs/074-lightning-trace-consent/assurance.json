@@ -170,10 +170,10 @@
           "obtained_evidence": [
             {
               "command": "python -m unittest tests.test_spec074_consent_gate tests.test_lightning_store tests.test_lightning_cli",
-              "limits": "Temporary homes; no content is read or stored. The adapter reads no source yet (T007/T008); the gate is its entry check. Content storage with consent, redaction and retention is procedure_005 (T006).",
+              "limits": "Temporary homes; no content is read or stored. The gate is the adapter's entry check; it reads rollout and Loom sources since T007 (procedure_006). Content storage with consent, redaction and retention is procedure_005 (T006).",
               "outcome": "passed: T003: with no profile, consent none, or an invalid profile (unparseable, redacted without its consent record, an unknown level) the store refuses a content-bearing record with store-consent and writes nothing, and the adapter gate and `lightning status` traceContent report content-consent-required; status itself refuses an invalid profile with its config-* code. An explicit content_consent none overrides a redacted profile, and an unknown explicit level is refused. With consent redacted the gate opens only for listed sources (others: source-not-consented), and a record that stays unclean after redaction is refused with redaction-incomplete, leaving only a content-free stub (C2: redact on ingest). Negative control: invalid configuration never reads as redacted. Content-free kinds are unchanged (SPEC-070 store suite).",
               "path": "specs/074-lightning-trace-consent/evidence/procedure_002.json",
-              "sha256": "332ab1d64b3f7a73d36e5b53948e7deb5cecfe9643729ff5da6e677f6cadbf71"
+              "sha256": "aa221b3fcbd4f736f2c11d59eed511710f689c79a5b484b83f087f8b76b27a6f"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -263,7 +263,15 @@
         {
           "given": "fixtures from each consented source",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_lightning_adapter tests.test_spec074_consent_gate tests.test_lightning_cli",
+              "limits": "Rollout and Loom sources only, synthetic content in temporary homes; host transcripts and System One episodes are T008 (procedure_006 is recaptured then). Loom carries no model text or reward, which the loss notes state. Refused content stubs carry no attempt, so content-refused is a run-level note. Redaction limits are those of procedure_003 and procedure_004.",
+              "outcome": "passed: T007: lightning_adapter turns one attempt's SPEC-070 events plus its redacted content records into braid-lightning-triplet/v0.1 records, one per model_request, and braid-lightning-messages/v0.1 user and assistant turns; the committed Loom corpus becomes one triplet per strand and one system message per event. Every text is redacted with the run salt and post-scanned (redaction classes counted), and each record carries source, sourceSha256 and sorted loss notes. Rewards match by first-occurrence (nearest earlier unrewarded request) or first-sibling (others refused with reward-match); a second content record for one request is ignored with content-duplicate. Outputs are deterministic for the same inputs and salt. Without consent, or for an unlisted source, prompt, response and messages are null or empty with content-consent-required while rewards stay. An unparseable Loom stream or an unknown attempt is refused with source-invalid. Negative control: with redaction switched off a canary in a Loom label reaches the output and the clean check fails.",
+              "path": "specs/074-lightning-trace-consent/evidence/procedure_006.json",
+              "sha256": "8ac2feadc4464c8828131af5057153b694f1df33fbe3e41cb35544d096ac2482"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/074-lightning-trace-consent/validation-plan.md",
           "test_name": "procedure_006",

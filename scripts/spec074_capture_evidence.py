@@ -5,7 +5,7 @@ A record states the command, the outcome, the hashes of the files the run depend
 (``inputs``; the Spec Kit validator rejects the record when any of them changes) and the
 limits. The script also binds each record into ``assurance.json`` as obtained evidence of
 its scenario. It is local evidence; the CI ``validate`` aggregate on the pull request head
-is separate. Procedures are added as their tasks land (T002: procedure_001; T003: procedure_002; T004: procedure_003; T005: procedure_004; T006: procedure_005).
+is separate. Procedures are added as their tasks land (T002: procedure_001; T003: procedure_002; T004: procedure_003; T005: procedure_004; T006: procedure_005; T007: procedure_006).
 
     python -m scripts.spec074_capture_evidence [procedure_NNN ...]
 
@@ -42,7 +42,7 @@ PROCEDURES = {
                    "agent_braid/lightning_config.py", "tests/test_spec074_consent_gate.py",
                    "tests/test_lightning_store.py", "tests/test_lightning_cli.py"],
         "outcome_note": "T003: with no profile, consent none, or an invalid profile (unparseable, redacted without its consent record, an unknown level) the store refuses a content-bearing record with store-consent and writes nothing, and the adapter gate and `lightning status` traceContent report content-consent-required; status itself refuses an invalid profile with its config-* code. An explicit content_consent none overrides a redacted profile, and an unknown explicit level is refused. With consent redacted the gate opens only for listed sources (others: source-not-consented), and a record that stays unclean after redaction is refused with redaction-incomplete, leaving only a content-free stub (C2: redact on ingest). Negative control: invalid configuration never reads as redacted. Content-free kinds are unchanged (SPEC-070 store suite).",
-        "limits": "Temporary homes; no content is read or stored. The adapter reads no source yet (T007/T008); the gate is its entry check. Content storage with consent, redaction and retention is procedure_005 (T006).",
+        "limits": "Temporary homes; no content is read or stored. The gate is the adapter's entry check; it reads rollout and Loom sources since T007 (procedure_006). Content storage with consent, redaction and retention is procedure_005 (T006).",
     },
     'procedure_003': {
         "scenario": 'SC-003',
@@ -68,6 +68,16 @@ PROCEDURES = {
                    "tests/test_lightning_store.py"],
         "outcome_note": "T006: with consent redacted the store redacts each content record on ingest with a per-run 16-byte email salt (email.salt, 0600) and appends {createdAt, record} to traces.jsonl; an unclean record is refused with redaction-incomplete and leaves only a {createdAt, refused} stub. With an injected clock, sweep (store.sweep, `lightning sweep`, and every content append for its own run) removes runs created before the retention cutoff and content lines older than it in the remaining runs; retention outside 1-90 is refused with retention-out-of-range. `lightning purge --run-id <id> | --all` previews the runs and content bytes with a previewDigest and deletes nothing; `--apply --preview-digest` with a stale or forged digest is refused with preview-stale; a matching apply deletes each run directory (records, content, salt, lock) and leaves no content bytes in the store, while files outside the run store are untouched. Negative control: with the content sweep disabled the expired record survives.",
         "limits": "Temporary homes and synthetic content; the clock is injected (createdAt values), not waited. The sweep runs on `lightning sweep`, `purge --expired` and content appends; reading a run does not sweep it. Purge deletes Braid Lightning run directories only; host transcripts, Loom and System One are never written by the store.",
+    },
+    'procedure_006': {
+        "scenario": 'SC-006',
+        "modules": ["tests.test_lightning_adapter", "tests.test_spec074_consent_gate", "tests.test_lightning_cli"],
+        "inputs": ["agent_braid/lightning_adapter.py", "agent_braid/lightning_redact.py", "agent_braid/lightning_store.py",
+                   "agent_braid/lightning_schema.py", "agent_braid/view_loom.py",
+                   "tests/fixtures/view/loom/valid-corpus.jsonl", "tests/test_lightning_adapter.py",
+                   "tests/test_spec074_consent_gate.py", "tests/test_lightning_cli.py"],
+        "outcome_note": "T007: lightning_adapter turns one attempt's SPEC-070 events plus its redacted content records into braid-lightning-triplet/v0.1 records, one per model_request, and braid-lightning-messages/v0.1 user and assistant turns; the committed Loom corpus becomes one triplet per strand and one system message per event. Every text is redacted with the run salt and post-scanned (redaction classes counted), and each record carries source, sourceSha256 and sorted loss notes. Rewards match by first-occurrence (nearest earlier unrewarded request) or first-sibling (others refused with reward-match); a second content record for one request is ignored with content-duplicate. Outputs are deterministic for the same inputs and salt. Without consent, or for an unlisted source, prompt, response and messages are null or empty with content-consent-required while rewards stay. An unparseable Loom stream or an unknown attempt is refused with source-invalid. Negative control: with redaction switched off a canary in a Loom label reaches the output and the clean check fails.",
+        "limits": "Rollout and Loom sources only, synthetic content in temporary homes; host transcripts and System One episodes are T008 (procedure_006 is recaptured then). Loom carries no model text or reward, which the loss notes state. Refused content stubs carry no attempt, so content-refused is a run-level note. Redaction limits are those of procedure_003 and procedure_004.",
     },
 }
 
