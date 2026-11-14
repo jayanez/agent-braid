@@ -5,9 +5,9 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_adapter.py": "dcb87d278d50081eb95671169df8793fb82d2255edd7590e58e365c628ff89d8",
+  "agent_braid/lightning_adapter.py": "e7ff78e1061168912b010ad9dc4c5d3ce5e0d32b3da09871abc215bf379a6dc4",
   "agent_braid/system_one_shadow.py": "7c21ec6ac2d89b3d51ce937931dc560d859bd3f1838f548576a6e23380ed753a",
-  "tests/test_lightning_adapter.py": "60c9f2a0ad28600b9bb197ac793b6ca5f51f4312f0227c465018a5bd9a446102",
+  "tests/test_lightning_adapter.py": "2a9e2bedecbc39694da6234d9ad5df69d8c343e643f325850c752fe60940c4e9",
   "tests/test_spec074_system_one_isolation.py": "266abce81f18ded11c4984ba105a37b6bca99a40bc4ef9e9f2f9a0f72d384942"
  },
  "limits": "Temporary directories with synthetic episodes; the real user store under ~/.local/share is never touched (default_directory is patched). Opens are observed through os.open and builtins.open in this process only; the static check covers attribute access on the name system_one_shadow, not aliases or dynamic access. Isolation from other writers (the live System One worker) is not tested.",
