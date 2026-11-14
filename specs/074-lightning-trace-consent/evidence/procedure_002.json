@@ -9,7 +9,7 @@
   "agent_braid/lightning_cli.py": "ba217234f8b0fb06f1099d0daf9a6242f1d223ac58b35d5dfc0c1d8bece0e93d",
   "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
   "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
-  "tests/test_lightning_cli.py": "c9231ea5ed663041c1737105b6a7d7b159d4db4f5171894d9532d2f2f1e327be",
+  "tests/test_lightning_cli.py": "663e2d7357e385e4c626857ac0d772eaed0095d38edb4febf0cd41920ee27782",
   "tests/test_lightning_store.py": "feafcca242ec769b7dcedede903f6f452bc4886e2859728ce53d561f83fe97c1",
   "tests/test_spec074_consent_gate.py": "c29b59929ab6371e9e9f8748468b0139a045aca21c4a2d1c31446da9e9bef598"
  },
