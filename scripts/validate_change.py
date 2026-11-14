@@ -67,7 +67,7 @@ RULES = (
         "docs/development/SPEC_KIT.md", "docs/development/VALIDATION.md",
         "docs/development/VALIDATION_PROFILES.md", "scripts/validate_*.py",
         "scripts/constitution_replica.py", "tests/test_validation_profiles.py",
-        "tests/test_ci_validation.py",
+        "tests/test_ci_validation.py", "scripts/test_shards.py", "tests/test_test_shards.py",
     ), ("validation-profile-tests",), True),
     Rule("normative", (
         "CONSTITUTION.md", ".specify/memory/constitution.md", "GOVERNANCE.md",
