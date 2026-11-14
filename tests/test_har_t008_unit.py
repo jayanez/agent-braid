@@ -24,8 +24,9 @@ from tests import test_harness_host_claude as host_fixtures  # noqa: E402
 
 ISSUED = hn.issued_records((ROOT / driver.ISSUANCE).read_bytes(), **driver.TRUSTED)
 QUALIFICATION = "specs/065-native-claude-containment/evidence/qualification/"
-SUPERSEDED_ISSUANCE = QUALIFICATION + "issuance-2026-11-06.json"
-SUPERSEDED_DECISIONS = "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261106.json"
+SUPERSEDED_ISSUANCE = QUALIFICATION + "issuance-2026-11-13.json"
+SUPERSEDED_DECISIONS = "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261113.json"
+VOID_ISSUANCE = QUALIFICATION + "issuance-2026-11-06.json"
 
 
 class DriverTests(unittest.TestCase):
@@ -107,32 +108,35 @@ class HostSummaryTests(unittest.TestCase):
 
 
 class RecordTests(unittest.TestCase):
-    """SPEC-065 T013 superseded the 2026-11-06 issuance (void on macOS 26B131); the founder re-authorized the same
-    terms on the 2026-11-13 records (founder-decisions-20261113.json). The driver names only those."""
+    """SPEC-065 T014 superseded the 2026-11-13 issuance (harness_host_claude.py moved in #1363), which had superseded
+    the 2026-11-06 one (void on macOS 26B131); the T008-6 terms are bound to the 2026-11-14 records
+    (founder-decisions-20261114.json). The driver names only those."""
 
-    def test_the_driver_names_the_2026_11_13_records(self):
-        self.assertEqual(driver.ISSUANCE, QUALIFICATION + "issuance-2026-11-13.json")
+    def test_the_driver_names_the_2026_11_14_records(self):
+        self.assertEqual(driver.ISSUANCE, QUALIFICATION + "issuance-2026-11-14.json")
         self.assertEqual(driver.ISSUANCE_SHA256, sha256((ROOT / driver.ISSUANCE).read_bytes()).hexdigest())
-        self.assertEqual(driver.ENVIRONMENT, QUALIFICATION + "t009-20261113c/environment.json")
+        self.assertEqual(driver.ENVIRONMENT, QUALIFICATION + "t009-20261114a/environment.json")
         self.assertEqual(driver.TRUSTED, {
-            "containment_sha256": "fa59fbae9286f0794331aedcebe782b99767819dc4a30f37a08713509be9fa6a",
-            "host_sha256": "9022b771382a239be3a4d399dfb9c949ef29f4276aeebb0b5db735e9a67a847f"})
+            "containment_sha256": "87c7b52098131d42e7bcc6bfc932827ed8000ff1728b8d47ca47e5f5153b6f68",
+            "host_sha256": "625bb211e4e16ef559bb14b1c3184142bce1776aa19666b153bf636f9df536ec"})
         self.assertEqual(driver.FOUNDER_DECISIONS,
-                         "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261113.json")
+                         "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261114.json")
         self.assertEqual(sha256((ROOT / driver.FOUNDER_DECISIONS).read_bytes()).hexdigest(),
                          driver.FOUNDER_DECISIONS_SHA256)
         self.assertEqual(ISSUED.environment_sha256, json.loads((ROOT / driver.ENVIRONMENT).read_bytes())
                          ["environmentSha256"])
-        self.assertEqual(ISSUED.expires_at, 1797178485)
+        self.assertEqual(ISSUED.expires_at, 1797273730)  # 2026-12-14T18:42:10Z
 
-    def test_the_superseded_issuance_is_refused(self):
-        with self.assertRaises(hn.NativeWiringError) as cm:
-            hn.issued_records((ROOT / SUPERSEDED_ISSUANCE).read_bytes(), **driver.TRUSTED)
-        self.assertEqual(cm.exception.reason, "qualification-drift")
-        with mock.patch.object(driver, "ISSUANCE", SUPERSEDED_ISSUANCE), \
-                self.assertRaises(hn.NativeWiringError) as cm:
-            driver.trusted_inputs(None)
-        self.assertEqual(cm.exception.reason, "issuance-drift")
+    def test_the_superseded_issuances_are_refused(self):
+        for record in (SUPERSEDED_ISSUANCE, VOID_ISSUANCE):
+            with self.subTest(record=record):
+                with self.assertRaises(hn.NativeWiringError) as cm:
+                    hn.issued_records((ROOT / record).read_bytes(), **driver.TRUSTED)
+                self.assertEqual(cm.exception.reason, "qualification-drift")
+                with mock.patch.object(driver, "ISSUANCE", record), \
+                        self.assertRaises(hn.NativeWiringError) as cm:
+                    driver.trusted_inputs(None)
+                self.assertEqual(cm.exception.reason, "issuance-drift")
 
     def test_the_superseded_founder_record_is_refused(self):
         with mock.patch.object(driver, "FOUNDER_DECISIONS", SUPERSEDED_DECISIONS), \
@@ -144,8 +148,8 @@ class RecordTests(unittest.TestCase):
         bound = json.loads((ROOT / driver.FOUNDER_DECISIONS).read_bytes())["qualificationRecords"]
         self.assertEqual(bound, {
             "issuance": driver.ISSUANCE, "issuanceSha256": driver.ISSUANCE_SHA256,
-            "bundle": QUALIFICATION + "t009-20261113c/",
-            "bundleSha256": "c241079d7760c1b7144e9f39ea2282973d2de3a9078359153564553e684f4bb7",
+            "bundle": QUALIFICATION + "t009-20261114a/",
+            "bundleSha256": "02ed5685f2944217c49281af4cca7872f8b99163a45b193ccbcf9f9c9bb32795",
             "containmentSha256": driver.TRUSTED["containment_sha256"], "hostSha256": driver.TRUSTED["host_sha256"],
             "environmentSha256": ISSUED.environment_sha256, "expiresAt": ISSUED.expires_at})
 
@@ -157,6 +161,7 @@ class RecordTests(unittest.TestCase):
         answers = {a["id"]: a for a in value["founderAnswers"]}
         self.assertEqual(answers["T008-6"]["answer"], "Mismos términos, nuevos registros (Recommended)")
         self.assertEqual(answers["T008-7"]["answer"], "Lanzador root sin GUI (Recommended)")
+        self.assertEqual(answers["T014-ISSUE"]["answer"], "Issue, same terms (Recommended)")
 
 
 class LedgerTests(unittest.TestCase):

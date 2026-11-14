@@ -1,0 +1,102 @@
+{
+  "recordVersion": "spec065-issuance-v1",
+  "task": "SPEC-065/T014 human re-qualification issuance of the native Claude containment and host qualification after the host-adapter fixes of #1363 (headless own-session mode)",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-14",
+  "issuer": "founder (NC-9: issuer is the founder only)",
+  "decisionChannel": "Founder answer to an interactive guided question in the HAR orchestrator session, 2026-11-14, recorded verbatim (question as asked, in English; answer as chosen). The issuer reviewed the summary of the T014 attempt bundle t009-20261114a and accepted the terms of the 2026-11-13 issuance unchanged; the records were written on the issuer's instruction.",
+  "supersedes": {
+    "record": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json",
+    "reason": "agent_braid/harness_host_claude.py is an input of the environment hash and changed in #1363 (merge a016d066), so the 2026-11-13 records (environment f0f7617e...e899) no longer match the code. No NC-9 trigger fired (same OS build, Claude Code version and hash, profile bytes, probe catalog, proxy, credential method and session kind). The 2026-11-13 record stays as written and historical; only these trusted hashes are current."
+  },
+  "bundle": {
+    "attempt": "t009-20261114a",
+    "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261114a/",
+    "bundleSha256": "02ed5685f2944217c49281af4cca7872f8b99163a45b193ccbcf9f9c9bb32795",
+    "environmentSha256": "2164a4a2351ee333ce1af886f5abc0793c6f5cb7ab22bd05865c1dd9c28314dc",
+    "catalogSha256": "c8952ac3e4fdf086c568f959a508780c4187349a2ba2f8af69b63fbf30e6aef5",
+    "commit": "a016d0664bf2f1b5f25b4ec3100a881e8400c179",
+    "environment": "macOS 27.2.1 build 26B131, arm64, Claude Code 2.1.292, profileSha256 08e3ff93c76b17ac89aa9806bf31a705e9807e8af7b01bdd5c0fb88aeaf65294",
+    "session": "Background session of the dedicated account, started headless by the root launcher /usr/local/libexec/braid/t009-launch.sh (installed from the root-owned code copy repo-a016d06, sha256 34ee6f5dbd72b554dedfd9eca5e9536bd62e50e6e7b20b7268abb8a1996021ff) through launchctl asuser; driver check session-own passed",
+    "result": "specs/065-native-claude-containment/evidence/t009-20261114-result.md"
+  },
+  "changeSinceLastIssuance": {
+    "code": "agent_braid/harness_host_claude.py only (#1363: bare init version compared as parsed version triples with strict components, resolved alias id accepted for haiku/sonnet/opus, top-level rate_limit_event ignored); security re-check GO",
+    "unchanged": "the four MDRV-04 modules (harness_manifest.py, harness_context.py, harness_observation.py, system_one.py) between 320b00c4 and a016d066; harness_containment_macos.py, harness_qualification_probes.py, harness_transport_claude.py, harness_lab.py, harness_quota.py, scripts/har_t009_attempt.py and scripts/har_t009_launch.sh between 7d3e1986 and a016d066 (git diff empty)",
+    "bundleAgainstLast": "same 32 probe outcomes and the same not-applicable set as t009-20261113c; of the environment document only environmentSha256 differs (f0f7617e...e899 -> 2164a4a2...14dc)"
+  },
+  "review": [
+    {
+      "id": "T014-ISSUE",
+      "question": "Do you issue the SPEC-065 qualification on attempt t009-20261114a? Result: 32/32 probes pass. All 4 effects (credential, filesystem, network, process) are enforced. Host works. 3 sessions with Δ0 on 5-hour and weekly (weekly usage at 74%). Bundle 02ed5685…2795, environment 2164a4a2…14dc. The only change from 11-13 is harness_host_claude.py (the #1363 fixes, security re-check GO). Issuing means accepting the same terms as 11-13: Same residuals: PROC-ESC-1, PROC-03, NET-02/PROC-04/PROC-07, and the three headless not-applicables. MDRV-04: the four files excluded from the hash. 30 days (until ~2026-12-14) with the same re-qualification triggers. Undo: you revoke it with a record; the 11-13 one stays historical.",
+      "ownerStatement": "Issue, same terms (Recommended)",
+      "reading": "Accepts, for the 30 days of this record, the residuals accepted on 2026-11-13 (T013-RESIDUALS), MDRV-04 with PR review (T013-MDRV-04) and the 30-day validity with the NC-9 triggers plus the session kind (T013-NC-9), and issues on bundle 02ed5685...2795.",
+      "cites": [
+        "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json",
+        "specs/065-native-claude-containment/evidence/founder-decisions-20261104c.json",
+        "specs/065-native-claude-containment/evidence/founder-decisions-20261106.json",
+        "specs/065-native-claude-containment/evidence/founder-decisions-20261113.json"
+      ]
+    },
+    {
+      "id": "T014-CRED-05",
+      "finding": "apiKeySource observed 'none' in CRED-05, NET-05-CLI and HOST-01, inside SUBSCRIPTION_KEY_SOURCES {none, oauth}; no constant edit."
+    }
+  ],
+  "decision": {
+    "disposition": "issued",
+    "effects": {
+      "credential": "enforced",
+      "filesystem": "enforced",
+      "network": "enforced",
+      "process": "enforced"
+    },
+    "host01": "completed",
+    "issuedAt": 1794681730,
+    "expiresAt": 1797273730,
+    "reQualificationTriggers": [
+      "OS build",
+      "Claude Code version or hash",
+      "profile bytes",
+      "probe catalog",
+      "proxy",
+      "credential method",
+      "session kind (in the environment hash)"
+    ]
+  },
+  "records": {
+    "containment": {
+      "format": "braid-harness-containment-qualification/v0.1",
+      "backend": "macos-dedicated-user-sandbox-exec",
+      "kind": "native",
+      "environmentSha256": "2164a4a2351ee333ce1af886f5abc0793c6f5cb7ab22bd05865c1dd9c28314dc",
+      "enforced": [
+        "credential",
+        "filesystem",
+        "network",
+        "process"
+      ],
+      "expiresAt": 1797273730,
+      "evidenceSha256": "02ed5685f2944217c49281af4cca7872f8b99163a45b193ccbcf9f9c9bb32795"
+    },
+    "host": {
+      "format": "braid-harness-host-qualification/v0.1",
+      "host": "claude",
+      "environmentSha256": "2164a4a2351ee333ce1af886f5abc0793c6f5cb7ab22bd05865c1dd9c28314dc",
+      "enforced": [
+        "credential",
+        "filesystem",
+        "network",
+        "process"
+      ],
+      "expiresAt": 1797273730,
+      "evidenceSha256": "02ed5685f2944217c49281af4cca7872f8b99163a45b193ccbcf9f9c9bb32795"
+    }
+  },
+  "trustedHashes": {
+    "containmentSha256": "87c7b52098131d42e7bcc6bfc932827ed8000ff1728b8d47ca47e5f5153b6f68",
+    "hostSha256": "625bb211e4e16ef559bb14b1c3184142bce1776aa19666b153bf636f9df536ec"
+  },
+  "executionAuthorization": false,
+  "notes": "Issuance makes the native Claude profile verifiable by the runtime in the headless own-session (Background) mode only; a run in another session kind moves the environment hash and refuses. Normal use still needs the SPEC-048/T008 profile decision and the NC-11 pre-session check before every session. Revocation: a reviewed change that withdraws these trusted hashes. This record is the founder's own issuance; later re-qualifications may fall under the founder's standing rule (evidence/founder-decisions-20261114.json, FD-20261114-STANDING)."
+}

@@ -12,8 +12,8 @@ T009 pre-flight (account, session ownership, pins, config dir, operator account)
   guard, the window, the hash-pinned founder record and D2 caps, and the units left; nothing native runs;
 * ``--founder-go``: builds the T005 backend from the founder-issued records (not attempt records),
   and runs up to ``--units`` serial units (at most ``MAX_UNITS`` for the whole cohort, the founder's
-  2026-11-06 choice kept on 2026-11-13, below the D2 maximum of 16; each attempt counts its started units in
-  ``<out-dir>/t008-units.json`` before each launch, and every later attempt subtracts them). Each unit asks the
+  2026-11-06 choice kept on 2026-11-13 and 2026-11-14, below the D2 maximum of 16; each attempt counts its
+  started units in ``<out-dir>/t008-units.json`` before each launch, and every later attempt subtracts them). Each unit asks the
   operator for the usage card before and after (NC-6), admits through ``HostQualificationRun`` (D2 caps, stop conditions, containment verification),
   runs one read-only Haiku session through the native transport (the backend repeats the NC-11
   pre-session check) and settles against the caps. Any stop ends the cohort.
@@ -48,16 +48,16 @@ from agent_braid.system_one import canonical  # noqa: E402
 from hashlib import sha256  # noqa: E402
 
 MODEL = "haiku"  # the one model the cohort requests and the report checks against
-MAX_UNITS = 4  # founder, 2026-11-06 (decision 2/5), unchanged on 2026-11-13 (T008-6)
+MAX_UNITS = 4  # founder, 2026-11-06 (decision 2/5), unchanged on 2026-11-13 (T008-6) and on 2026-11-14
 WINDOW = (datetime(2026, 11, 9, 20, 30, tzinfo=timezone.utc), datetime(2026, 11, 30, 23, 59, tzinfo=timezone.utc))
-# SPEC-065 T013 issuance of 2026-11-13; it supersedes the 2026-11-06 one (void on macOS build 26B131)
-TRUSTED = {"containment_sha256": "fa59fbae9286f0794331aedcebe782b99767819dc4a30f37a08713509be9fa6a",
-           "host_sha256": "9022b771382a239be3a4d399dfb9c949ef29f4276aeebb0b5db735e9a67a847f"}
-ISSUANCE = "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json"
-ISSUANCE_SHA256 = "8aa07dd42e77560b548ac35edce05d8f975f8704eeaab4452f2a17238740d510"
-ENVIRONMENT = "specs/065-native-claude-containment/evidence/qualification/t009-20261113c/environment.json"
-FOUNDER_DECISIONS = "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261113.json"
-FOUNDER_DECISIONS_SHA256 = "0132118f9d04c6c39b5b59a879343719168ccb31d2315f4b557ad85feaa6ad5c"
+# SPEC-065 T014 issuance of 2026-11-14; it supersedes the 2026-11-13 one (harness_host_claude.py moved in #1363)
+TRUSTED = {"containment_sha256": "87c7b52098131d42e7bcc6bfc932827ed8000ff1728b8d47ca47e5f5153b6f68",
+           "host_sha256": "625bb211e4e16ef559bb14b1c3184142bce1776aa19666b153bf636f9df536ec"}
+ISSUANCE = "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-14.json"
+ISSUANCE_SHA256 = "d70874f4fd36ddf1c43e7de497fcc40ef9537969cfc30deed990a3baa0501414"
+ENVIRONMENT = "specs/065-native-claude-containment/evidence/qualification/t009-20261114a/environment.json"
+FOUNDER_DECISIONS = "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261114.json"
+FOUNDER_DECISIONS_SHA256 = "52df52737ab5f7fad6d46db12bcd390680d1f577a265d852a3c8a9160ffaa947"
 D2_CAPS = "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json"
 D2_CAPS_SHA256 = "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88"
 SESSION = "00000000-0000-4000-8000-%012d"

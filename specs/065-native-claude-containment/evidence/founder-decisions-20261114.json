@@ -1,0 +1,53 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "id": "FD-20261114-STANDING",
+  "task": "SPEC-065 re-qualification after T014: standing rule for re-qualifications triggered only by reviewed code",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-14",
+  "baseCommit": "a016d066",
+  "decisionChannel": "Founder answer to an interactive guided question in the HAR orchestrator session, 2026-11-14, right after the T014 issuance (T014-ISSUE), recorded verbatim (question as asked, in English; the chosen option and its description as offered). The precise conditions below are the orchestrator's written reading of that option; any difference between the reading and the founder's intent is settled in the founder's favour by a guided question. Additive to the earlier records, which stay as written.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261031.json",
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261113.json",
+    "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-14.json"
+  ],
+  "decisions": [
+    {
+      "id": "T014-STANDING",
+      "item": "How later re-qualifications are handled when only reviewed code changed",
+      "question": "How do you want to lighten the process after this? ...",
+      "ownerStatement": "Standing rule (Recommended)",
+      "acceptedOption": "A founder record you sign once. If a re-qualification is triggered only by code that passed review and a security re-check GO, and it comes out 32/32, all 4 effects enforced, Δ0, with no new residuals, I record the issuance myself and notify you. You can revoke it in 24 h. Any deviation comes back to you as a question. It also removes the question when nothing changes.",
+      "decision": {
+        "disposition": "standing-issuance-authorization-for-code-only-requalification",
+        "nc9Reading": "NC-9 (\"issuer is the founder only\") is kept. Under this rule the founder stays the issuer: the founder decides here, in advance, to issue every attempt that meets all the conditions below, and the orchestrator only writes down that decision for the founder. The orchestrator never issues in its own name, never judges a deviation acceptable, and never widens a term. Code still never issues (REQ-009): the attempt driver writes no record (qualificationRecordWritten false) and the runtime only verifies records against trusted hashes committed in a reviewed pull request.",
+        "conditions": {
+          "trigger": "The only reason for the re-qualification is a change to code that is an input of the environment hash (harness_containment_macos.py, harness_lab.py, harness_host_claude.py, harness_transport_claude.py, harness_quota.py), merged to develop after the five reviews and with a recorded security re-check GO on the changed lines. None of these changed since the last founder issuance: macOS build, Claude Code version or executable hash, profile or policy bytes, probe catalog hash, proxy, credential method, session kind, dedicated account, backend. The four MDRV-04 modules (harness_manifest.py, harness_context.py, harness_observation.py, system_one.py) are unchanged since the last founder issuance, or their change was reviewed by the founder.",
+          "attempt": "One attempt under a new name within the NC-10 budget (at most 3 Haiku low-effort sessions, each at most 2 % of the 5-hour window), launched by the owner as before (the owner's own sudo password for run). Self-check verdict self-check-ok; driver check session-own passed.",
+          "result": "verdict bundle-written; 32 of 32 probes pass; credential, filesystem, network and process all enforced; inconclusive, missingProbes and notEnforced empty; hostFunctional true; passRuleSatisfied true; qualificationRecordWritten false; probeCatalogSha256 equal to the current code's; verify_bundle recomputes bundleSha256; apiKeySource inside SUBSCRIPTION_KEY_SOURCES in every session; every session with fiveHourDelta 0 and weeklyDelta 0, extra usage off.",
+          "residuals": "The not-applicable set per probe and the probe outcomes are identical to the bundle of the last founder issuance, and the accepted residuals (PROC-ESC-1, PROC-03, NET-02, PROC-04, PROC-07, the headless not-applicables) are unchanged. No new residual, finding or exclusion.",
+          "terms": "Same terms as the last founder issuance: 30 days from issuedAt, the same reQualificationTriggers list, MDRV-04 accepted with PR review, executionAuthorization false."
+        },
+        "procedure": [
+          "The orchestrator checks every condition with the committed bundle and records each check (the verification script of issuance-2026-11-13/-14 and its negative controls) beside the issuance.",
+          "It writes the issuance record in the spec065-issuance-v1 format with issuer \"founder (NC-9) by standing authorization FD-20261114-STANDING\", the reading \"issued under standing rule FD-20261114-STANDING\" and the conditions checked, in a pull request that the founder can see before or after it merges.",
+          "It notifies the founder the same day, with the bundle hash, environment hash, trusted hashes, expiry and the pull request.",
+          "The founder may revoke that issuance within 24 hours of the notification, with no reason needed; revocation is a reviewed change that withdraws the trusted hashes (the record stays as historical)."
+        ],
+        "deviation": "Anything else returns to the founder as a guided question before any issuance: a condition not met or not checkable, an NC-9 trigger, a new or changed residual or not-applicable, a quota delta above 0, a probe outcome that differs, a doubt about the review or the security re-check, or a change to this rule's scope.",
+        "noChangeCase": "When nothing that the environment hash or NC-9 covers changed, no re-qualification is due and no question is asked; the current issuance stays in force until it expires. Open reading: whether \"removes the question when nothing changes\" also covers a renewal at the 30-day expiry with nothing changed is not settled by the option text; until the founder settles it, such a renewal returns to the founder as a guided question.",
+        "expiry": "Default: this standing rule ends when HAR.1 closes or on 2027-01-31T23:59:59Z, whichever comes first. The founder can change the expiry, narrow the rule or revoke it at any time with a record; issuances already written under it keep their own expiresAt unless revoked.",
+        "undo": "Revoke this record with a founder record; every later re-qualification then goes back to a guided question as on 2026-11-13 and 2026-11-14."
+      }
+    }
+  ],
+  "closes": [],
+  "stillOpen": [
+    "whether a renewal at the 30-day expiry with nothing changed falls under this rule (noChangeCase)",
+    "REQ-009 says a founder or a named human reviews the bundle and issues; under this rule the founder's review is the advance decision plus the 24-hour revocation window. A spec clarification of REQ-009/NC-9 that names this path may be wanted; until then the rule is read as founder issuance by pre-authorization."
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records one founder answer and the orchestrator's written reading of it. It authorizes no native run, no attempt and no T008 unit by itself, changes no residual and widens no term; it only removes the per-attempt question when every condition holds. No native session, probe, sudo command or account change was run when this record was written."
+}
