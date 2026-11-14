@@ -68,6 +68,16 @@ def require_content(home: Path | None, source: str) -> None:
         raise AdapterError(f'Source {source} is not in traces.sources', SOURCE_REFUSAL)
 
 
+# trace_adapter refusal codes: fixed strings, so they may name a refusal; anything else is reported as `other`.
+_TRACE_CODES = frozenset((
+    'admission', 'coverage', 'duplicate-event-id', 'duplicate-instance-or-attempt', 'duplicate-json-member', 'effects',
+    'event-limit', 'expected-object', 'input-byte-limit', 'invalid-aim-projection', 'invalid-coverage',
+    'invalid-dependencies', 'invalid-effect-channel', 'invalid-effects', 'invalid-fields', 'invalid-json',
+    'invalid-local-path', 'invalid-read-versions', 'invalid-source-digest', 'kind', 'mapper', 'mapper-mismatch',
+    'metadata-string-limit', 'nesting-limit', 'nonfinite-json-number', 'source-not-admitted', 'source-not-regular-file',
+    'source-read-failed', 'symlink-path-refused', 'synthetic', 'unsupported-import-version', 'unsupported-mapper'))
+
+
 def _sha(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -118,10 +128,13 @@ def _match_rewards(requests: list, rewards: list, policy: str) -> dict:
 
 
 def _rollout_source(home: Path | None, run_id: str, attempt_id: str):
-    run = store.RunStore(home, run_id)
-    events = sorted((e for e in run.read('event') if e.attempt_id == attempt_id), key=lambda e: e.sequence)
+    try:
+        run = store.RunStore(home, run_id)
+        events = sorted((e for e in run.read('event') if e.attempt_id == attempt_id), key=lambda e: e.sequence)
+    except store.StoreError as exc:
+        raise AdapterError('Run refused', exc.code) from None
     if not events:
-        raise AdapterError(f'No events for attempt {attempt_id}', SOURCE_INVALID)
+        raise AdapterError('No events for the attempt', SOURCE_INVALID)
     return run, events
 
 
@@ -154,6 +167,7 @@ def _rollout(home, run_id, attempt_id, reward_match):
     redactor = redact.Redactor(run._salt()) if content else None
     digest = _sha(b''.join(canonical_bytes(e.to_dict()) for e in events)
                   + b''.join(sorted(canonical_bytes(c) for c in content.values())))
+    attempt_name = _pseudonym(run._salt(), attempt_id, 'attempt')  # an attempt id may hold free text
     triplets = []
     for event in requests:
         created_at, record = content.get(event.sequence, (event.timestamp, None))
@@ -169,7 +183,7 @@ def _rollout(home, run_id, attempt_id, reward_match):
             lost += [f'{name}-missing' for name in ('prompt', 'response') if body[name] is None]
         if event.sequence not in rewards:
             lost.append('reward-unmatched')
-        triplets.append(_triplet(event.rollout_id, attempt_id, 'rollout', digest, prompt, response,
+        triplets.append(_triplet(event.rollout_id, attempt_name, 'rollout', digest, prompt, response,
                                  rewards.get(event.sequence), reward_match, lost, created_at))
     return triplets, events[0].rollout_id, digest, losses
 
@@ -195,7 +209,11 @@ def _source(home: Path | None, source: str, data: bytes, salt: bytes):
     """Digest, rollout id, redactor (None without consent) and the gate's refusal for a file-like source."""
     digest = _sha(data)
     refusal = gate(home, source)['refusal']
-    return digest, f'{source}-{digest[:16]}', None if refusal else redact.Redactor(salt), refusal
+    try:
+        redactor = None if refusal else redact.Redactor(salt)
+    except redact.RedactionError:
+        raise AdapterError('The salt must be at least 16 random bytes', 'salt-invalid') from None
+    return digest, f'{source}-{digest[:16]}', redactor, refusal
 
 
 def _text(value) -> str:
@@ -203,7 +221,12 @@ def _text(value) -> str:
     return canonical_bytes(value).decode().rstrip('\n')
 
 
-_DOMAINS = {'turn': b'', 'strand': b'loom\0'}  # HMAC domain per name kind; turns keep their T008 names
+_DOMAINS = {  # one HMAC domain per name kind, so names of one value differ across kinds and from email tags
+    'turn': b'turn\0',
+    'strand': b'loom\0',
+    'attempt': b'rollout\0',
+    'episode': b'system-one\0',
+}
 
 
 def _pseudonym(salt: bytes, value: str, kind: str = 'turn') -> str:
@@ -222,7 +245,7 @@ def _loom(home: Path | None, data: bytes, salt: bytes):
     try:
         events = view_loom.parse_stream(data)
     except view_loom.LoomError as exc:
-        raise AdapterError(f'Loom stream refused: {exc.reason}', SOURCE_INVALID) from exc
+        raise AdapterError(f'Loom stream refused: {exc.reason}', SOURCE_INVALID) from None
     return (events, _strand_names(events, salt), *_source(home, 'loom', data, salt))
 
 
@@ -313,7 +336,8 @@ def _transcript(home: Path | None, path, salt: bytes):
         data = trace_adapter.read_trace(path)
         artifacts = trace_adapter.import_trace(data, mapper=trace_adapter.MAPPER)
     except trace_adapter.InvalidTrace as exc:
-        raise AdapterError(f'Host transcript refused: {exc}', SOURCE_INVALID) from exc
+        code = str(exc) if str(exc) in _TRACE_CODES else 'other'
+        raise AdapterError(f'Host transcript refused: {code}', SOURCE_INVALID) from None
     digest, rollout_id, redactor, refusal = _source(home, 'host-transcript', data, salt)
     statuses: dict[str, list] = {}
     for event in artifacts.provenance['events']:
@@ -365,7 +389,7 @@ def _system_one(home: Path | None, path, salt: bytes):
     try:
         data, episodes, invalid = system_one_shadow.read_day(path)
     except (OSError, ValueError, TypeError) as exc:
-        raise AdapterError('System One episodes refused', SOURCE_INVALID) from exc
+        raise AdapterError('System One episodes refused', SOURCE_INVALID) from None
     digest, rollout_id, redactor, refusal = _source(home, 'system-one', data, salt)
     extra = [loss for loss in (refusal, 'episode-invalid' if invalid else None) if loss]
     triplets, messages = [], []
@@ -375,8 +399,8 @@ def _system_one(home: Path | None, path, salt: bytes):
             question, answer = (_clean(redactor, text) for text in _episode_turn(episode))
             prompt, response = {'text': question}, {'text': answer, 'toolCalls': []}
             messages += [{'role': 'user', 'content': question}, {'role': 'assistant', 'content': answer}]
-        triplets.append(_triplet(rollout_id, episode['episodeId'], 'system-one', digest, prompt, response, None,
-                                 None, ['reward-unavailable', *extra], None))
+        triplets.append(_triplet(rollout_id, _pseudonym(salt, episode['episodeId'], 'episode'), 'system-one', digest,
+                                 prompt, response, None, None, ['reward-unavailable', *extra], None))
     return triplets, _messages(rollout_id, 'system-one', digest, messages, _message_losses(triplets, extra), None)
 
 
