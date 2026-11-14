@@ -229,12 +229,16 @@ class IdentifierLeakTests(unittest.TestCase):
                    adapter.system_one_messages(self.home, day, SALT)]
         errors = []
         for call in (lambda: adapter.rollout_triplets(self.home, 'run-1', NAME + '.x'),
+                     lambda: adapter.rollout_triplets(self.home, NAME, NAME),
                      lambda: adapter.transcript_triplets(self.home, self.write(trace_bytes(attempt=NAME)[:-9]), SALT),
                      lambda: adapter.loom_triplets(self.home, b'{"seq":1,"id":"' + NAME.encode() + b'"}\n', SALT),
                      lambda: adapter.system_one_triplets(self.home, self.base / NAME, SALT)):
             with self.assertRaises(adapter.AdapterError) as caught:
                 call()
-            errors.append(str(caught.exception))
+            exc = caught.exception
+            self.assertIsNone(exc.__cause__)  # raised `from None`: the chain carries no source value
+            self.assertTrue(exc.__context__ is None or exc.__suppress_context__)  # no implicit chain either
+            errors.append(' '.join(map(str, (exc, *exc.args))))
         return records, errors, episode
 
     def write(self, data):
@@ -251,16 +255,21 @@ class IdentifierLeakTests(unittest.TestCase):
         self.assertRegex(records[0][0]['attemptId'], r'^attempt-[0-9a-f]{16}$')
         self.assertRegex(records[4][0]['attemptId'], r'^episode-[0-9a-f]{16}$')
         self.assertEqual(records[0], adapter.rollout_triplets(self.home, 'run-1', NAME))  # stable per run salt
-        self.assertEqual(errors, ['No events for the attempt', 'Host transcript refused',
-                                  'Loom stream refused: execution-authorization', 'System One episodes refused'])
+        self.assertEqual(errors, [
+            'No events for the attempt No events for the attempt', 'Run refused Run refused',
+            'Host transcript refused: invalid-json Host transcript refused: invalid-json',
+            'Loom stream refused: execution-authorization Loom stream refused: execution-authorization',
+            'System One episodes refused System One episodes refused'])  # str(exc), then exc.args
 
     def test_a_raw_id_in_an_output_is_detected(self):
-        """Negative control: an adapter that kept the raw attempt id would fail the leak check."""
+        """Negative control: an adapter that kept the raw attempt or episode id would fail the leak check."""
         real = adapter._pseudonym
-        with patch.object(adapter, '_pseudonym', lambda salt, value, kind='turn': value if kind == 'attempt'
-                          else real(salt, value, kind)):
-            records, errors, _ = self.outputs()
-        self.assertIn(NAME, json.dumps(records) + '\n'.join(errors))
+        with patch.object(adapter, '_pseudonym', lambda salt, value, kind='turn': value
+                          if kind in ('attempt', 'episode') else real(salt, value, kind)):
+            records, errors, episode = self.outputs()
+        text = json.dumps(records) + '\n'.join(errors)
+        self.assertIn(NAME, text)
+        self.assertIn(episode, text)
 
 
 if __name__ == '__main__':

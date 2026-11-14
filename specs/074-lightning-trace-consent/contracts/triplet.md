@@ -9,7 +9,8 @@ v0.x (`adapter/triplet.py` `Triplet`/`Transition`, `adapter/messages.py`
 | Field | Type | Rule |
 |---|---|---|
 | `schema` | const | `braid-lightning-triplet/v0.1` |
-| `rolloutId`, `attemptId` | id | from the SPEC-070 data model |
+| `rolloutId` | id | rollout: the SPEC-070 event's rollout id; other sources: `<source>-<first 16 hex of sourceSha256>` |
+| `attemptId` | pseudonym | `<kind>-<16 hex>`: HMAC-SHA256 of the raw id in a domain per kind, never the raw id. `attempt-` (rollout attempt id, keyed by the run salt), `turn-` (host-transcript attempt id), `strand-` (Loom strand or operation id), `episode-` (System One episode id), keyed by the salt the caller passes; stable for one salt and value |
 | `source` | enum `rollout`, `host-transcript`, `loom`, `system-one` | consented source |
 | `sourceSha256` | hex | digest of the source bytes read |
 | `prompt` | object `{text}` or null | redacted; null when consent is `none` |

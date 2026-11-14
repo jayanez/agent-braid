@@ -254,6 +254,19 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual((caught.exception.code, str(caught.exception)),
                          ('source-invalid', 'Loom strand pseudonyms collide'))
 
+    def test_each_name_kind_has_its_own_hmac_domain(self):
+        """Pinned names per kind for one value and salt: a changed or shared domain changes one of them."""
+        self.assertEqual({kind: adapter._pseudonym(SALT, 'owner.example.org', kind)
+                          for kind in ('turn', 'strand', 'attempt', 'episode')},
+                         {'turn': 'turn-73b0fdd9133ea441', 'strand': 'strand-5ac81f24760fc4ff',
+                          'attempt': 'attempt-5d939b3f983ed637', 'episode': 'episode-888cda5fdc908872'})
+        hexes = {adapter._pseudonym(SALT, EMAIL, kind).split('-', 1)[1]
+                 for kind in ('turn', 'strand', 'attempt', 'episode')}
+        self.assertEqual(len(hexes), 4)
+        tag = redact.Redactor(SALT).redact(EMAIL)  # [REDACTED:email:<8 hex>] for the same value and salt
+        self.assertRegex(tag, r'^\[REDACTED:email:[0-9a-f]{8}\]$')
+        self.assertFalse(any(h.startswith(tag[-9:-1]) for h in hexes))  # no name is linkable to the email tag
+
     def test_unredacted_output_is_detected(self):
         """Negative control: with redaction switched off the canary reaches the output, and the check fails."""
         self.consent()
