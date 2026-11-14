@@ -30,7 +30,7 @@ imply owner acceptance. `quick` means
 
 ## Phase P3 — retention
 
-- [ ] T006 (REQ-005 / SC-005): sweep with injected clock, `lightning sweep`, and
+- [x] T006 (REQ-005 / SC-005): sweep with injected clock, `lightning sweep`, and
   the BL.0 `lightning purge` extended to content with preview digest. Dependencies: T003.
   Verification: procedure_005.
 

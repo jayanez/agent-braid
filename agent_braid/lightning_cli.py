@@ -52,7 +52,7 @@ def _hosts(text: str) -> list[str]:
 def add_parser(subparsers):
     parser = subparsers.add_parser('lightning', help='experimental Braid Lightning optimization laboratory (configure only)')
     commands = parser.add_subparsers(dest='lightning_command', required=True)
-    for name in ('init', 'validate', 'status', 'purge', 'run', 'report'):
+    for name in ('init', 'validate', 'status', 'purge', 'sweep', 'run', 'report'):
         command = commands.add_parser(name)
         command.add_argument('--home', type=Path, help='explicit private Agent Braid state root')
     init = commands.choices['init']
@@ -99,7 +99,10 @@ def add_parser(subparsers):
     purge = commands.choices['purge']
     target = purge.add_mutually_exclusive_group(required=True)
     target.add_argument('--run-id')
-    target.add_argument('--expired', action='store_true', help='remove runs older than the profile retention')
+    target.add_argument('--all', action='store_true', help='every run (SPEC-074: content, salts and indexes)')
+    target.add_argument('--expired', action='store_true', help='same as lightning sweep')
+    purge.add_argument('--apply', action='store_true', help='delete; requires the preview digest')
+    purge.add_argument('--preview-digest')
 
 
 def _answers(args) -> dict:
@@ -216,14 +219,22 @@ def run(args, *, ask=None) -> int:
                       'traceContent': adapter.gate(home),
                       'setupConsent': consent, 'runs': len(store.list_runs(home)),
                       'path': str(config.config_path(home)), 'executionAuthorization': False}
+        elif args.lightning_command == 'sweep' or args.expired:
+            value = config.load(home)
+            if value is None:
+                raise config.ConfigError('No Braid Lightning profile; retention is unknown', 'config-missing-key')
+            output = store.sweep(home, value['traces']['retentionDays'])
+            output['executionAuthorization'] = False
         else:
-            if args.expired:
-                value = config.load(home)
-                if value is None:
-                    raise config.ConfigError('No Braid Lightning profile; retention is unknown', 'config-missing-key')
-                output = store.sweep(home, value['traces']['retentionDays'])
+            run_id = None if args.all else args.run_id
+            if args.apply:
+                output = store.apply_purge(home, run_id, args.preview_digest)
             else:
-                output = store.purge(home, args.run_id)
+                if args.preview_digest:
+                    raise store.StoreError('--preview-digest is only used with --apply', 'store-shape')
+                output = store.plan_purge(home, run_id)
+                output['applyWith'] = (['--all'] if args.all else ['--run-id', run_id]) + [
+                    '--apply', '--preview-digest', output['previewDigest']]
             output['executionAuthorization'] = False
         print(json.dumps(output, ensure_ascii=False, sort_keys=True, indent=2))
         return 0

@@ -1,0 +1,22 @@
+{
+ "command": "python -m unittest tests.test_spec074_retention_purge tests.test_spec074_consent_gate tests.test_lightning_store",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_cli.py": "ba217234f8b0fb06f1099d0daf9a6242f1d223ac58b35d5dfc0c1d8bece0e93d",
+  "agent_braid/lightning_redact.py": "774e27ae55a1e71ab49205a0daa6d47d374160b46fd90b2c77891b566fbeecf2",
+  "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
+  "tests/test_lightning_store.py": "feafcca242ec769b7dcedede903f6f452bc4886e2859728ce53d561f83fe97c1",
+  "tests/test_spec074_consent_gate.py": "c29b59929ab6371e9e9f8748468b0139a045aca21c4a2d1c31446da9e9bef598",
+  "tests/test_spec074_retention_purge.py": "95609195d8bc5e0f889dc4ae484bd085ec8e29b4f70711185ee161b34db40650"
+ },
+ "limits": "Temporary homes and synthetic content; the clock is injected (createdAt values), not waited. The sweep runs on `lightning sweep`, `purge --expired` and content appends; reading a run does not sweep it. Purge deletes Braid Lightning run directories only; host transcripts, Loom and System One are never written by the store.",
+ "outcome": "passed: T006: with consent redacted the store redacts each content record on ingest with a per-run 16-byte email salt (email.salt, 0600) and appends {createdAt, record} to traces.jsonl; an unclean record is refused with redaction-incomplete and leaves only a {createdAt, refused} stub. With an injected clock, sweep (store.sweep, `lightning sweep`, and every content append for its own run) removes runs created before the retention cutoff and content lines older than it in the remaining runs; retention outside 1-90 is refused with retention-out-of-range. `lightning purge --run-id <id> | --all` previews the runs and content bytes with a previewDigest and deletes nothing; `--apply --preview-digest` with a stale or forged digest is refused with preview-stale; a matching apply deletes each run directory (records, content, salt, lock) and leaves no content bytes in the store, while files outside the run store are untouched. Negative control: with the content sweep disabled the expired record survives.",
+ "procedure": "procedure_005",
+ "result": "OK",
+ "scenario": "SC-005",
+ "specification": "SPEC-074 BL.4",
+ "testsRun": 24
+}
