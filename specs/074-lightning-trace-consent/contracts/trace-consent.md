@@ -60,6 +60,13 @@ as `traceContent` (`contentConsent`, `source`, `content`, `refusal`).
 | private key block | `[REDACTED:private-key]` |
 | email | `[REDACTED:email:<8-hex>]` (per-run salted hash, OD-2 decided) |
 | home path | `~` prefix replacement |
+| URL-encoded, `\u`-escaped or base64 run hiding a hit | `[REDACTED:encoded]` |
+
+The scan also reads the URL-decoded, `\u`-unescaped and base64-decoded views,
+and the record's string values joined in order. A value split across fields
+with no recognizable prefix in the first field is refused with
+`redaction-incomplete`. The committed canary corpus
+(`tests/fixtures/spec074-canaries/corpus.json`) bounds these claims.
 
 A record is stored only if the post-redaction scan is clean; otherwise it is
 refused with `redaction-incomplete` and only a content-free stub is kept.

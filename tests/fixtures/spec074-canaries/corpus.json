@@ -1,0 +1,614 @@
+{
+ "canaries": [
+  {
+   "class": "secret",
+   "form": "plain",
+   "id": "secret-00-plain",
+   "record": {
+    "text": "context before canary-literal-0f1e2d3c4b5a context after"
+   },
+   "value": "canary-literal-0f1e2d3c4b5a"
+  },
+  {
+   "class": "secret",
+   "form": "json-escaped",
+   "id": "secret-00-json-escaped",
+   "record": {
+    "text": "escaped payload: canary\\u002dliteral\\u002d0f1e2d3c4b5a"
+   },
+   "value": "canary-literal-0f1e2d3c4b5a"
+  },
+  {
+   "class": "secret",
+   "form": "url-encoded",
+   "id": "secret-00-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=canary-literal-0f1e2d3c4b5a"
+   },
+   "value": "canary-literal-0f1e2d3c4b5a"
+  },
+  {
+   "class": "secret",
+   "form": "split",
+   "id": "secret-00-split",
+   "record": {
+    "first": "canary-litera",
+    "second": "l-0f1e2d3c4b5a"
+   },
+   "value": "canary-literal-0f1e2d3c4b5a"
+  },
+  {
+   "class": "secret",
+   "form": "base64",
+   "id": "secret-00-base64",
+   "record": {
+    "text": "blob Y2FuYXJ5LWxpdGVyYWwtMGYxZTJkM2M0YjVh"
+   },
+   "value": "canary-literal-0f1e2d3c4b5a"
+  },
+  {
+   "class": "token",
+   "form": "plain",
+   "id": "token-01-plain",
+   "record": {
+    "text": "context before sk-ant-api03-CANARYa1B2c3D4e5F6g7H8 context after"
+   },
+   "value": "sk-ant-api03-CANARYa1B2c3D4e5F6g7H8"
+  },
+  {
+   "class": "token",
+   "form": "json-escaped",
+   "id": "token-01-json-escaped",
+   "record": {
+    "text": "escaped payload: sk\\u002dant\\u002dapi03\\u002dCANARYa1B2c3D4e5F6g7H8"
+   },
+   "value": "sk-ant-api03-CANARYa1B2c3D4e5F6g7H8"
+  },
+  {
+   "class": "token",
+   "form": "url-encoded",
+   "id": "token-01-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=sk-ant-api03-CANARYa1B2c3D4e5F6g7H8"
+   },
+   "value": "sk-ant-api03-CANARYa1B2c3D4e5F6g7H8"
+  },
+  {
+   "class": "token",
+   "form": "split",
+   "id": "token-01-split",
+   "record": {
+    "first": "sk-ant-api03-CANA",
+    "second": "RYa1B2c3D4e5F6g7H8"
+   },
+   "value": "sk-ant-api03-CANARYa1B2c3D4e5F6g7H8"
+  },
+  {
+   "class": "token",
+   "form": "base64",
+   "id": "token-01-base64",
+   "record": {
+    "text": "blob c2stYW50LWFwaTAzLUNBTkFSWWExQjJjM0Q0ZTVGNmc3SDg="
+   },
+   "value": "sk-ant-api03-CANARYa1B2c3D4e5F6g7H8"
+  },
+  {
+   "class": "token",
+   "form": "plain",
+   "id": "token-02-plain",
+   "record": {
+    "text": "context before sk-proj-CANARYq9W8e7R6t5Y4u3I2 context after"
+   },
+   "value": "sk-proj-CANARYq9W8e7R6t5Y4u3I2"
+  },
+  {
+   "class": "token",
+   "form": "json-escaped",
+   "id": "token-02-json-escaped",
+   "record": {
+    "text": "escaped payload: sk\\u002dproj\\u002dCANARYq9W8e7R6t5Y4u3I2"
+   },
+   "value": "sk-proj-CANARYq9W8e7R6t5Y4u3I2"
+  },
+  {
+   "class": "token",
+   "form": "url-encoded",
+   "id": "token-02-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=sk-proj-CANARYq9W8e7R6t5Y4u3I2"
+   },
+   "value": "sk-proj-CANARYq9W8e7R6t5Y4u3I2"
+  },
+  {
+   "class": "token",
+   "form": "split",
+   "id": "token-02-split",
+   "record": {
+    "first": "sk-proj-CANARYq",
+    "second": "9W8e7R6t5Y4u3I2"
+   },
+   "value": "sk-proj-CANARYq9W8e7R6t5Y4u3I2"
+  },
+  {
+   "class": "token",
+   "form": "base64",
+   "id": "token-02-base64",
+   "record": {
+    "text": "blob c2stcHJvai1DQU5BUllxOVc4ZTdSNnQ1WTR1M0ky"
+   },
+   "value": "sk-proj-CANARYq9W8e7R6t5Y4u3I2"
+  },
+  {
+   "class": "token",
+   "form": "plain",
+   "id": "token-03-plain",
+   "record": {
+    "text": "context before ghp_CANARYZx9Yw8Vu7Ts6Rq5Po4Nm context after"
+   },
+   "value": "ghp_CANARYZx9Yw8Vu7Ts6Rq5Po4Nm"
+  },
+  {
+   "class": "token",
+   "form": "json-escaped",
+   "id": "token-03-json-escaped",
+   "record": {
+    "text": "escaped payload: ghp\\u005fCANARYZx9Yw8Vu7Ts6Rq5Po4Nm"
+   },
+   "value": "ghp_CANARYZx9Yw8Vu7Ts6Rq5Po4Nm"
+  },
+  {
+   "class": "token",
+   "form": "url-encoded",
+   "id": "token-03-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=ghp_CANARYZx9Yw8Vu7Ts6Rq5Po4Nm"
+   },
+   "value": "ghp_CANARYZx9Yw8Vu7Ts6Rq5Po4Nm"
+  },
+  {
+   "class": "token",
+   "form": "split",
+   "id": "token-03-split",
+   "record": {
+    "first": "ghp_CANARYZx9Yw",
+    "second": "8Vu7Ts6Rq5Po4Nm"
+   },
+   "value": "ghp_CANARYZx9Yw8Vu7Ts6Rq5Po4Nm"
+  },
+  {
+   "class": "token",
+   "form": "base64",
+   "id": "token-03-base64",
+   "record": {
+    "text": "blob Z2hwX0NBTkFSWVp4OVl3OFZ1N1RzNlJxNVBvNE5t"
+   },
+   "value": "ghp_CANARYZx9Yw8Vu7Ts6Rq5Po4Nm"
+  },
+  {
+   "class": "token",
+   "form": "plain",
+   "id": "token-04-plain",
+   "record": {
+    "text": "context before github_pat_CANARY11AbCdEfGhIjKlMnOpQr context after"
+   },
+   "value": "github_pat_CANARY11AbCdEfGhIjKlMnOpQr"
+  },
+  {
+   "class": "token",
+   "form": "json-escaped",
+   "id": "token-04-json-escaped",
+   "record": {
+    "text": "escaped payload: github\\u005fpat\\u005fCANARY11AbCdEfGhIjKlMnOpQr"
+   },
+   "value": "github_pat_CANARY11AbCdEfGhIjKlMnOpQr"
+  },
+  {
+   "class": "token",
+   "form": "url-encoded",
+   "id": "token-04-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=github_pat_CANARY11AbCdEfGhIjKlMnOpQr"
+   },
+   "value": "github_pat_CANARY11AbCdEfGhIjKlMnOpQr"
+  },
+  {
+   "class": "token",
+   "form": "split",
+   "id": "token-04-split",
+   "record": {
+    "first": "github_pat_CANARY1",
+    "second": "1AbCdEfGhIjKlMnOpQr"
+   },
+   "value": "github_pat_CANARY11AbCdEfGhIjKlMnOpQr"
+  },
+  {
+   "class": "token",
+   "form": "base64",
+   "id": "token-04-base64",
+   "record": {
+    "text": "blob Z2l0aHViX3BhdF9DQU5BUlkxMUFiQ2RFZkdoSWpLbE1uT3BRcg=="
+   },
+   "value": "github_pat_CANARY11AbCdEfGhIjKlMnOpQr"
+  },
+  {
+   "class": "token",
+   "form": "plain",
+   "id": "token-05-plain",
+   "record": {
+    "text": "context before AIzaCANARYSyA1b2C3d4E5f6G7h8I9j0 context after"
+   },
+   "value": "AIzaCANARYSyA1b2C3d4E5f6G7h8I9j0"
+  },
+  {
+   "class": "token",
+   "form": "json-escaped",
+   "id": "token-05-json-escaped",
+   "record": {
+    "text": "escaped payload: AIzaCANARYSyA1b2C3d4E5f6G7h8I9j0"
+   },
+   "value": "AIzaCANARYSyA1b2C3d4E5f6G7h8I9j0"
+  },
+  {
+   "class": "token",
+   "form": "url-encoded",
+   "id": "token-05-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=AIzaCANARYSyA1b2C3d4E5f6G7h8I9j0"
+   },
+   "value": "AIzaCANARYSyA1b2C3d4E5f6G7h8I9j0"
+  },
+  {
+   "class": "token",
+   "form": "split",
+   "id": "token-05-split",
+   "record": {
+    "first": "AIzaCANARYSyA1b2",
+    "second": "C3d4E5f6G7h8I9j0"
+   },
+   "value": "AIzaCANARYSyA1b2C3d4E5f6G7h8I9j0"
+  },
+  {
+   "class": "token",
+   "form": "base64",
+   "id": "token-05-base64",
+   "record": {
+    "text": "blob QUl6YUNBTkFSWVN5QTFiMkMzZDRFNWY2RzdoOEk5ajA="
+   },
+   "value": "AIzaCANARYSyA1b2C3d4E5f6G7h8I9j0"
+  },
+  {
+   "class": "token",
+   "form": "plain",
+   "id": "token-06-plain",
+   "record": {
+    "text": "context before xoxb-CANARY-1234567890-abcdef context after"
+   },
+   "value": "xoxb-CANARY-1234567890-abcdef"
+  },
+  {
+   "class": "token",
+   "form": "json-escaped",
+   "id": "token-06-json-escaped",
+   "record": {
+    "text": "escaped payload: xoxb\\u002dCANARY\\u002d1234567890\\u002dabcdef"
+   },
+   "value": "xoxb-CANARY-1234567890-abcdef"
+  },
+  {
+   "class": "token",
+   "form": "url-encoded",
+   "id": "token-06-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=xoxb-CANARY-1234567890-abcdef"
+   },
+   "value": "xoxb-CANARY-1234567890-abcdef"
+  },
+  {
+   "class": "token",
+   "form": "split",
+   "id": "token-06-split",
+   "record": {
+    "first": "xoxb-CANARY-12",
+    "second": "34567890-abcdef"
+   },
+   "value": "xoxb-CANARY-1234567890-abcdef"
+  },
+  {
+   "class": "token",
+   "form": "base64",
+   "id": "token-06-base64",
+   "record": {
+    "text": "blob eG94Yi1DQU5BUlktMTIzNDU2Nzg5MC1hYmNkZWY="
+   },
+   "value": "xoxb-CANARY-1234567890-abcdef"
+  },
+  {
+   "class": "token",
+   "form": "plain",
+   "id": "token-07-plain",
+   "record": {
+    "text": "context before AKIACANARYABCDEF1234 context after"
+   },
+   "value": "AKIACANARYABCDEF1234"
+  },
+  {
+   "class": "token",
+   "form": "json-escaped",
+   "id": "token-07-json-escaped",
+   "record": {
+    "text": "escaped payload: AKIACANARYABCDEF1234"
+   },
+   "value": "AKIACANARYABCDEF1234"
+  },
+  {
+   "class": "token",
+   "form": "url-encoded",
+   "id": "token-07-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=AKIACANARYABCDEF1234"
+   },
+   "value": "AKIACANARYABCDEF1234"
+  },
+  {
+   "class": "token",
+   "form": "split",
+   "id": "token-07-split",
+   "record": {
+    "first": "AKIACANARY",
+    "second": "ABCDEF1234"
+   },
+   "value": "AKIACANARYABCDEF1234"
+  },
+  {
+   "class": "token",
+   "form": "base64",
+   "id": "token-07-base64",
+   "record": {
+    "text": "blob QUtJQUNBTkFSWUFCQ0RFRjEyMzQ="
+   },
+   "value": "AKIACANARYABCDEF1234"
+  },
+  {
+   "class": "token",
+   "form": "plain",
+   "id": "token-08-plain",
+   "record": {
+    "text": "context before ya29.CANARYa0AfH6SMBxyz0123456789 context after"
+   },
+   "value": "ya29.CANARYa0AfH6SMBxyz0123456789"
+  },
+  {
+   "class": "token",
+   "form": "json-escaped",
+   "id": "token-08-json-escaped",
+   "record": {
+    "text": "escaped payload: ya29\\u002eCANARYa0AfH6SMBxyz0123456789"
+   },
+   "value": "ya29.CANARYa0AfH6SMBxyz0123456789"
+  },
+  {
+   "class": "token",
+   "form": "url-encoded",
+   "id": "token-08-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=ya29.CANARYa0AfH6SMBxyz0123456789"
+   },
+   "value": "ya29.CANARYa0AfH6SMBxyz0123456789"
+  },
+  {
+   "class": "token",
+   "form": "split",
+   "id": "token-08-split",
+   "record": {
+    "first": "ya29.CANARYa0AfH",
+    "second": "6SMBxyz0123456789"
+   },
+   "value": "ya29.CANARYa0AfH6SMBxyz0123456789"
+  },
+  {
+   "class": "token",
+   "form": "base64",
+   "id": "token-08-base64",
+   "record": {
+    "text": "blob eWEyOS5DQU5BUllhMEFmSDZTTUJ4eXowMTIzNDU2Nzg5"
+   },
+   "value": "ya29.CANARYa0AfH6SMBxyz0123456789"
+  },
+  {
+   "class": "bearer",
+   "form": "plain",
+   "id": "bearer-09-plain",
+   "record": {
+    "text": "context before Bearer CANARYeyJhbGciOiJIUzI1NiJ9xyz context after"
+   },
+   "value": "Bearer CANARYeyJhbGciOiJIUzI1NiJ9xyz"
+  },
+  {
+   "class": "bearer",
+   "form": "json-escaped",
+   "id": "bearer-09-json-escaped",
+   "record": {
+    "text": "escaped payload: Bearer\\u0020CANARYeyJhbGciOiJIUzI1NiJ9xyz"
+   },
+   "value": "Bearer CANARYeyJhbGciOiJIUzI1NiJ9xyz"
+  },
+  {
+   "class": "bearer",
+   "form": "url-encoded",
+   "id": "bearer-09-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=Bearer%20CANARYeyJhbGciOiJIUzI1NiJ9xyz"
+   },
+   "value": "Bearer CANARYeyJhbGciOiJIUzI1NiJ9xyz"
+  },
+  {
+   "class": "bearer",
+   "form": "split",
+   "id": "bearer-09-split",
+   "record": {
+    "first": "Bearer CANARYeyJhb",
+    "second": "GciOiJIUzI1NiJ9xyz"
+   },
+   "value": "Bearer CANARYeyJhbGciOiJIUzI1NiJ9xyz"
+  },
+  {
+   "class": "bearer",
+   "form": "base64",
+   "id": "bearer-09-base64",
+   "record": {
+    "text": "blob QmVhcmVyIENBTkFSWWV5SmhiR2NpT2lKSVV6STFOaUo5eHl6"
+   },
+   "value": "Bearer CANARYeyJhbGciOiJIUzI1NiJ9xyz"
+  },
+  {
+   "class": "private-key",
+   "form": "plain",
+   "id": "private-key-10-plain",
+   "record": {
+    "text": "context before -----BEGIN OPENSSH PRIVATE KEY-----\nCANARYb3BlbnNzaC1rZXktdjEAAAAA\n-----END OPENSSH PRIVATE KEY----- context after"
+   },
+   "value": "-----BEGIN OPENSSH PRIVATE KEY-----\nCANARYb3BlbnNzaC1rZXktdjEAAAAA\n-----END OPENSSH PRIVATE KEY-----"
+  },
+  {
+   "class": "private-key",
+   "form": "json-escaped",
+   "id": "private-key-10-json-escaped",
+   "record": {
+    "text": "escaped payload: \\u002d\\u002d\\u002d\\u002d\\u002dBEGIN\\u0020OPENSSH\\u0020PRIVATE\\u0020KEY\\u002d\\u002d\\u002d\\u002d\\u002d\\u000aCANARYb3BlbnNzaC1rZXktdjEAAAAA\\u000a\\u002d\\u002d\\u002d\\u002d\\u002dEND\\u0020OPENSSH\\u0020PRIVATE\\u0020KEY\\u002d\\u002d\\u002d\\u002d\\u002d"
+   },
+   "value": "-----BEGIN OPENSSH PRIVATE KEY-----\nCANARYb3BlbnNzaC1rZXktdjEAAAAA\n-----END OPENSSH PRIVATE KEY-----"
+  },
+  {
+   "class": "private-key",
+   "form": "url-encoded",
+   "id": "private-key-10-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=-----BEGIN%20OPENSSH%20PRIVATE%20KEY-----%0ACANARYb3BlbnNzaC1rZXktdjEAAAAA%0A-----END%20OPENSSH%20PRIVATE%20KEY-----"
+   },
+   "value": "-----BEGIN OPENSSH PRIVATE KEY-----\nCANARYb3BlbnNzaC1rZXktdjEAAAAA\n-----END OPENSSH PRIVATE KEY-----"
+  },
+  {
+   "class": "private-key",
+   "form": "split",
+   "id": "private-key-10-split",
+   "record": {
+    "first": "-----BEGIN OPENSSH PRIVATE KEY-----\nCANARYb3BlbnNz",
+    "second": "aC1rZXktdjEAAAAA\n-----END OPENSSH PRIVATE KEY-----"
+   },
+   "value": "-----BEGIN OPENSSH PRIVATE KEY-----\nCANARYb3BlbnNzaC1rZXktdjEAAAAA\n-----END OPENSSH PRIVATE KEY-----"
+  },
+  {
+   "class": "private-key",
+   "form": "base64",
+   "id": "private-key-10-base64",
+   "record": {
+    "text": "blob LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KQ0FOQVJZYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBCi0tLS0tRU5EIE9QRU5TU0ggUFJJVkFURSBLRVktLS0tLQ=="
+   },
+   "value": "-----BEGIN OPENSSH PRIVATE KEY-----\nCANARYb3BlbnNzaC1rZXktdjEAAAAA\n-----END OPENSSH PRIVATE KEY-----"
+  },
+  {
+   "class": "email",
+   "form": "plain",
+   "id": "email-11-plain",
+   "record": {
+    "text": "context before canary.owner@example.org context after"
+   },
+   "value": "canary.owner@example.org"
+  },
+  {
+   "class": "email",
+   "form": "json-escaped",
+   "id": "email-11-json-escaped",
+   "record": {
+    "text": "escaped payload: canary\\u002eowner\\u0040example\\u002eorg"
+   },
+   "value": "canary.owner@example.org"
+  },
+  {
+   "class": "email",
+   "form": "url-encoded",
+   "id": "email-11-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=canary.owner%40example.org"
+   },
+   "value": "canary.owner@example.org"
+  },
+  {
+   "class": "email",
+   "form": "split",
+   "id": "email-11-split",
+   "record": {
+    "first": "canary.owner",
+    "second": "@example.org"
+   },
+   "value": "canary.owner@example.org"
+  },
+  {
+   "class": "email",
+   "form": "base64",
+   "id": "email-11-base64",
+   "record": {
+    "text": "blob Y2FuYXJ5Lm93bmVyQGV4YW1wbGUub3Jn"
+   },
+   "value": "canary.owner@example.org"
+  },
+  {
+   "class": "home",
+   "form": "plain",
+   "id": "home-12-plain",
+   "record": {
+    "text": "context before /Users/canary-owner/projects/secret-plan context after"
+   },
+   "value": "/Users/canary-owner/projects/secret-plan"
+  },
+  {
+   "class": "home",
+   "form": "json-escaped",
+   "id": "home-12-json-escaped",
+   "record": {
+    "text": "escaped payload: \\u002fUsers\\u002fcanary\\u002downer\\u002fprojects\\u002fsecret\\u002dplan"
+   },
+   "value": "/Users/canary-owner/projects/secret-plan"
+  },
+  {
+   "class": "home",
+   "form": "url-encoded",
+   "id": "home-12-url-encoded",
+   "record": {
+    "text": "url https://example.invalid/cb?state=%2FUsers%2Fcanary-owner%2Fprojects%2Fsecret-plan"
+   },
+   "value": "/Users/canary-owner/projects/secret-plan"
+  },
+  {
+   "class": "home",
+   "form": "split",
+   "id": "home-12-split",
+   "record": {
+    "first": "/Users/canary-owner/",
+    "second": "projects/secret-plan"
+   },
+   "value": "/Users/canary-owner/projects/secret-plan"
+  },
+  {
+   "class": "home",
+   "form": "base64",
+   "id": "home-12-base64",
+   "record": {
+    "text": "blob L1VzZXJzL2NhbmFyeS1vd25lci9wcm9qZWN0cy9zZWNyZXQtcGxhbg=="
+   },
+   "value": "/Users/canary-owner/projects/secret-plan"
+  }
+ ],
+ "forms": [
+  "plain",
+  "json-escaped",
+  "url-encoded",
+  "split",
+  "base64"
+ ],
+ "home": "/Users/canary-owner",
+ "literalSecrets": [
+  "canary-literal-0f1e2d3c4b5a"
+ ],
+ "schema": "braid-spec074-canary-corpus/v0.1"
+}

@@ -24,7 +24,7 @@ imply owner acceptance. `quick` means
 - [x] T004 (REQ-003 / SC-003): `lightning_redact` with typed placeholders and
   post-scan; spec069 script imports the shared patterns. Dependencies: T001.
   Verification: procedure_003.
-- [ ] T005 (REQ-004 / SC-004): committed canary corpus generator (plain,
+- [x] T005 (REQ-004 / SC-004): committed canary corpus generator (plain,
   JSON-escaped, URL-encoded, split, base64) and test. Dependencies: T004.
   Verification: procedure_004.
 
