@@ -65,6 +65,11 @@ imply owner acceptance. `quick` means
   are the targeted procedures and `validate_spec_kit`; no local `quick` run.
   The `quick` gate is met by the PR CI `validate` aggregate (`pr` profile, a
   superset), which must pass on the head before merge.
+  Re-converged 2026-11-14 after #1368 (Loom strand pseudonyms) and #1376
+  (attempt and episode pseudonyms, one HMAC domain per kind, so `turn-` names
+  changed; fixed refusal texts without chained causes): findings A5–A8 in the
+  privacy review; procedure_002, 006, 007 and 008 were recaptured in those PRs
+  and the triplet contract and validation plan match the code.
   Pending outside the requirements: real host transcripts are not readable
   until a real-source admission exists (A2); human review and freeze are the
   owner's.
