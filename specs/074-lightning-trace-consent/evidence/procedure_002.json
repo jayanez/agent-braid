@@ -5,11 +5,11 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_adapter.py": "05e31d4c34024b5fbc9e2a42bb53db41a7e4048fb52486b97d023ad4b4454ef4",
+  "agent_braid/lightning_adapter.py": "b77146914733f40c9dfb3d43d9600f3e2b06c8bba1c8879dcc9bd0701f76277c",
   "agent_braid/lightning_cli.py": "ba217234f8b0fb06f1099d0daf9a6242f1d223ac58b35d5dfc0c1d8bece0e93d",
   "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
   "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
-  "tests/test_lightning_cli.py": "3b2cc3feca61c55b09c69e1796caaadbd435c79a66fc5501f93928ed0d040892",
+  "tests/test_lightning_cli.py": "945176dd2d17870e2706c9753a3ea0f129c165f7761abd61063247f622dea8f2",
   "tests/test_lightning_store.py": "feafcca242ec769b7dcedede903f6f452bc4886e2859728ce53d561f83fe97c1",
   "tests/test_spec074_consent_gate.py": "c29b59929ab6371e9e9f8748468b0139a045aca21c4a2d1c31446da9e9bef598"
  },
@@ -19,5 +19,5 @@
  "result": "OK",
  "scenario": "SC-002",
  "specification": "SPEC-074 BL.4",
- "testsRun": 32
+ "testsRun": 33
 }
