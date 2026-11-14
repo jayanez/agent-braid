@@ -287,7 +287,15 @@
         {
           "given": "a shadow directory with episodes",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec074_system_one_isolation",
+              "limits": "Temporary directories with synthetic episodes; the real user store under ~/.local/share is never touched (default_directory is patched). Opens are observed through os.open and builtins.open in this process only; the static check covers attribute access on the name system_one_shadow, not aliases or dynamic access. Isolation from other writers (the live System One worker) is not tested.",
+              "outcome": "passed: T009: a real shadow store (two episodes written by system_one_shadow.append into a temporary directory) is read through system_one_triplets and system_one_messages with consent none, with system-one unlisted and with it listed; after each pass the directory's mode and mtime and every entry's name, mode, size, mtime and bytes (day file and store lock) are unchanged. Every os.open under the store is read-only with O_NOFOLLOW (one per reader call) and builtins.open is never used. A triplet and a messages record are refused by validate_episode, append (StoreRefused) and build_episode, and the store is unchanged after those attempts. Statically, Lightning modules reach system_one_shadow only through read_day (no from-import), and no system_one module mentions lightning. Negative controls: a reader that writes a file next to the day file fails the snapshot comparison; opening the day file O_RDWR fails the read-only check; a reference to system_one_shadow.append in the adapter fails the static check.",
+              "path": "specs/074-lightning-trace-consent/evidence/procedure_007.json",
+              "sha256": "c9a33d0b2c14fb03afcae38e03466b4020b2c41b1597795023b235ce06c3a232"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/074-lightning-trace-consent/validation-plan.md",
           "test_name": "procedure_007",
