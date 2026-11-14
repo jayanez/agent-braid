@@ -774,6 +774,23 @@ def _read_file(path: Path) -> bytes:
         os.close(descriptor)
 
 
+def read_day(path: str | Path) -> tuple[bytes, list[dict], int]:
+    """Bytes, valid episodes and invalid-line count of one day file, opened read-only and without following links.
+
+    An invalid line (a torn last line from a live writer included) is skipped and counted, never fatal.
+    """
+    data = _read_file(Path(path))
+    episodes, invalid = [], 0
+    for line in data.split(b'\n'):
+        if not line:
+            continue
+        try:
+            episodes.append(validate_episode(json.loads(line)))
+        except (ValueError, RecursionError, UnicodeError):
+            invalid += 1
+    return data, episodes, invalid
+
+
 def report() -> dict:
     """Aggregate retained episodes; reads the store only and creates nothing."""
     current = today()
@@ -784,14 +801,9 @@ def report() -> dict:
         if not _retained(entry.name, current):
             continue
         day = _FILE.fullmatch(entry.name).group(1)
-        for line in _read_file(entry).split(b'\n'):
-            if not line:
-                continue
-            try:
-                episode = validate_episode(json.loads(line))
-            except (ValueError, RecursionError, UnicodeError):
-                invalid += 1
-                continue
+        _, episodes, skipped = read_day(entry)
+        invalid += skipped
+        for episode in episodes:
             bucket = days.setdefault(day, {'day': day, 'episodes': 0, 'operations': Counter(),
                                            'system2': Counter(), 'systemOne': Counter(),
                                            'allPairs': Counter(), 'schemas': Counter()})

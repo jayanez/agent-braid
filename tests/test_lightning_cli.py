@@ -132,7 +132,7 @@ class SetupTests(unittest.TestCase):
 class BoundaryTests(unittest.TestCase):
     def test_modules_import_only_stdlib_and_open_no_sockets_or_processes(self):
         allowed_local = {'lightning_config', 'lightning_schema', 'lightning_store', 'plugin_registry',
-                         'lightning_runner', 'lightning_resources', 'lightning_arm', 'lightning_adapter', 'lightning_redact', 'view_loom'}  # SPEC-074: consent gate; SPEC-071/072: the CLI delegates runs lazily; BL.0 modules launch nothing
+                         'lightning_runner', 'lightning_resources', 'lightning_arm', 'lightning_adapter', 'lightning_redact', 'view_loom', 'system_one_shadow', 'trace_adapter'}  # SPEC-074: consent gate; SPEC-071/072: the CLI delegates runs lazily; BL.0 modules launch nothing
         for name in MODULES:
             tree = ast.parse((ROOT / 'agent_braid' / f'{name}.py').read_text())
             for node in ast.walk(tree):
@@ -144,6 +144,17 @@ class BoundaryTests(unittest.TestCase):
                     for root in roots:
                         self.assertIn(root, sys.stdlib_module_names, (name, root))
                         self.assertNotIn(root, {'socket', 'subprocess', 'http', 'urllib', 'asyncio'}, (name, root))
+
+    def test_import_closure_opens_no_network_or_event_loop(self):
+        """The System One reader loads system_one_shadow on use, so importing Lightning loads no socket."""
+        probe = ('import importlib, json, sys\n'
+                 f'for m in {MODULES!r}: importlib.import_module("agent_braid." + m)\n'
+                 # pathlib imports urllib.parse on some Python versions; only the network-capable modules count
+                 'print(json.dumps(sorted(m for m in sys.modules if m in ("socket", "asyncio", "ssl", "urllib.request")'
+                 ' or m.split(".")[0] == "http")))')
+        out = subprocess.run([sys.executable, '-c', probe], cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertEqual(json.loads(out.stdout), [])
 
     def test_no_mcp_tool_mentions_lightning(self):
         for name in ('tooling_mcp.py', 'plugin_mcp.py'):
@@ -161,7 +172,8 @@ BL2_ALLOWED = {'plugin_registry', 'harness_host_claude',  # SPEC-070/071 runner 
                'harness_evaluation', 'system_one',  # SPEC-072 T013: record formats only, never decide()
                'spec069_scoring', 'spec069_native_runs', 'spec069_fixture_workspace', 'build_native_plugin',
                'spec072_development_arms',  # T010 reuses the BL.2 lab-script profile, token and gate helpers
-               'view_loom'}  # SPEC-074 REQ-006: the Loom stream parser (stdlib, no I/O)
+               'view_loom', 'trace_adapter',  # SPEC-074 REQ-006: Loom parser and host transcript reader
+               'system_one_shadow'}  # SPEC-074 REQ-006/007: episode validation and read-only day-file read
 BL2_FORBIDDEN_NAMES = {'decide', 'begin', 'execute', 'recover', 'harness_promotion',
                        'import_module', '__import__'}  # no dynamic import around the static checks
 BL2_FORBIDDEN_MODULES = ('agent_braid.harness_promotion', 'agent_braid.harness_auto_promotion',

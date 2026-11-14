@@ -4,19 +4,24 @@
 Without consent `redacted` (a missing or invalid profile reads as `none`), or for a source the owner did not
 list, the adapter emits only content-free records and reports why. Rollout records and the Loom stream become
 `braid-lightning-triplet/v0.1` and `braid-lightning-messages/v0.1` records (contracts/triplet.md); every text
-is redacted with the run salt and post-scanned. Host transcripts and System One are T008. The record
+is redacted with the run salt and post-scanned. Host transcripts (T008) are read through `trace_adapter`
+and System One episodes through `system_one_shadow` (read-only); both are content-free by contract, so their
+records carry the recorded metadata and note what is unavailable. The record
 shapes follow agent-lightning v0.x `TracerTraceToTriplet`, `RewardMatchPolicy` and `TraceToMessages` so
 SPEC-075 can export them; no upstream code is copied.
 """
 from __future__ import annotations
 
 import hashlib
+import hmac
+import json
 import re
 from pathlib import Path
 
 from . import lightning_config as config
 from . import lightning_redact as redact
 from . import lightning_store as store
+from . import trace_adapter
 from . import view_loom
 from .lightning_schema import canonical_bytes
 
@@ -186,6 +191,23 @@ def rollout_messages(home: Path | None, run_id: str, attempt_id: str) -> dict:
     return _messages(rollout_id, 'rollout', digest, messages, losses, created)
 
 
+def _source(home: Path | None, source: str, data: bytes, salt: bytes):
+    """Digest, rollout id, redactor (None without consent) and the gate's refusal for a file-like source."""
+    digest = _sha(data)
+    refusal = gate(home, source)['refusal']
+    return digest, f'{source}-{digest[:16]}', None if refusal else redact.Redactor(salt), refusal
+
+
+def _text(value) -> str:
+    """Canonical JSON text of a value, without the record's trailing newline."""
+    return canonical_bytes(value).decode().rstrip('\n')
+
+
+def _message_losses(triplets: list[dict], extra=()) -> list[str]:
+    """Losses of a message record: its triplets' losses that are not about rewards (messages carry none)."""
+    return [*extra, *(loss for t in triplets for loss in t['losses'] if not loss.startswith('reward-'))]
+
+
 def _loom(home: Path | None, data: bytes, salt: bytes):
     if not isinstance(data, bytes):
         raise AdapterError('The Loom stream is bytes', SOURCE_INVALID)
@@ -193,24 +215,22 @@ def _loom(home: Path | None, data: bytes, salt: bytes):
         events = view_loom.parse_stream(data)
     except view_loom.LoomError as exc:
         raise AdapterError(f'Loom stream refused: {exc.reason}', SOURCE_INVALID) from exc
-    digest = _sha(data)
-    allowed = gate(home, 'loom')['content']
-    return events, digest, f'loom-{digest[:16]}', (redact.Redactor(salt) if allowed else None)
+    return (events, *_source(home, 'loom', data, salt))
 
 
 def loom_messages(home: Path | None, data: bytes, salt: bytes) -> dict:
     """One `system` message per Loom event (its kind and data); empty without consent."""
-    events, digest, rollout_id, redactor = _loom(home, data, salt)
+    events, digest, rollout_id, redactor, refusal = _loom(home, data, salt)
     if redactor is None:
-        return _messages(rollout_id, 'loom', digest, [], ['content-consent-required'], None)
-    messages = [{'role': 'system', 'content': _clean(redactor, canonical_bytes(
-        {'kind': e['kind'], 'data': e['data']}).decode())} for e in events]
+        return _messages(rollout_id, 'loom', digest, [], [refusal], None)
+    messages = [{'role': 'system', 'content': _clean(redactor, _text({'kind': e['kind'], 'data': e['data']}))}
+                for e in events]
     return _messages(rollout_id, 'loom', digest, messages, [], None)
 
 
 def loom_triplets(home: Path | None, data: bytes, salt: bytes) -> list[dict]:
     """One triplet per strand: its label as the prompt, its tools and outcome as the response; Loom has no reward."""
-    events, digest, rollout_id, redactor = _loom(home, data, salt)
+    events, digest, rollout_id, redactor, refusal = _loom(home, data, salt)
     strands: dict[str, dict] = {}
     for event in events:
         body = event['data']
@@ -228,7 +248,7 @@ def loom_triplets(home: Path | None, data: bytes, salt: bytes) -> list[dict]:
         losses = ['reward-unavailable', 'model-text-unavailable']
         prompt = response = None
         if redactor is None:
-            losses.append('content-consent-required')
+            losses.append(refusal)
         else:
             body = _clean(redactor, strand)
             prompt = None if body['label'] is None else {'text': body['label']}
@@ -238,3 +258,90 @@ def loom_triplets(home: Path | None, data: bytes, salt: bytes) -> list[dict]:
         triplets.append(_triplet(rollout_id, strand_id, 'loom', digest, prompt, response, None,
                                  None, losses, None))
     return triplets
+
+
+def _transcript(home: Path | None, path, salt: bytes):
+    """Triplets and messages of a recorded trace, parsed once; turns keep the source's operation order.
+
+    `trace_adapter` admits synthetic traces only, so real host transcripts are not read yet. A trace attempt id
+    may hold free text (an e-mail is a valid token), so each turn is named by a salted pseudonym instead.
+    """
+    try:
+        data = trace_adapter.read_trace(path)
+        artifacts = trace_adapter.import_trace(data, mapper=trace_adapter.MAPPER)
+    except trace_adapter.InvalidTrace as exc:
+        raise AdapterError(f'Host transcript refused: {exc}', SOURCE_INVALID) from exc
+    digest, rollout_id, redactor, refusal = _source(home, 'host-transcript', data, salt)
+    statuses: dict[str, list] = {}
+    for event in artifacts.provenance['events']:
+        statuses.setdefault(event['instanceId'], []).append(event['status'])
+    by_instance = {op['instanceId']: op for op in artifacts.projection}
+    triplets, messages = [], []
+    for source_op in json.loads(data)['operations']:  # admitted above, so well formed
+        op = by_instance[source_op['instanceId']]
+        turn_id = 'turn-' + hmac.new(salt, op['attemptId'].encode(), hashlib.sha256).hexdigest()[:16]
+        losses = ['model-text-unavailable', 'prompt-missing', 'reward-unavailable']
+        response = None
+        if redactor is None:
+            losses.append(refusal)
+        else:
+            tool = _clean(redactor, op['definition']['id'])
+            response = {'text': '', 'toolCalls': [tool]}
+            turn = {'turn': turn_id, 'tool': tool, 'statuses': statuses.get(op['instanceId'], [])}
+            messages.append({'role': 'system', 'content': _text(turn)})
+        triplets.append(_triplet(rollout_id, turn_id, 'host-transcript', digest, None, response, None,
+                                 None, losses, None))
+    return triplets, _messages(rollout_id, 'host-transcript', digest, messages,
+                               _message_losses(triplets, [refusal] if refusal else []), None)
+
+
+def transcript_triplets(home: Path | None, path, salt: bytes) -> list[dict]:
+    """One triplet per host turn of a recorded trace; prompt and model text are not recorded, so only the tool is."""
+    return _transcript(home, path, salt)[0]
+
+
+def transcript_messages(home: Path | None, path, salt: bytes) -> dict:
+    """One `system` message per host turn: its tool and lifecycle statuses; empty without consent."""
+    return _transcript(home, path, salt)[1]
+
+
+def _episode_turn(episode: dict) -> tuple[str, str]:
+    """The System 2 pairs (question) and the System One answer of an episode, as canonical text."""
+    question = {key: episode[key] for key in ('operation', 'analysisKind', 'pairCount', 'classificationCounts', 'pairs')}
+    answer = {key: episode['systemOne'][key] for key in ('status', 'reason', 'answers')}
+    return _text(question), _text(answer)
+
+
+def _system_one(home: Path | None, path, salt: bytes):
+    """Triplets and messages of one System One day file, opened read-only (REQ-007) and parsed once.
+
+    Invalid lines (a torn last line from the live writer included) are skipped and recorded as `episode-invalid`,
+    as `system_one_shadow.report` counts them. No outcome is joined to an episode, so there is no reward.
+    """
+    from . import system_one_shadow  # loaded on use: it imports asyncio through tooling_telemetry
+    try:
+        data, episodes, invalid = system_one_shadow.read_day(path)
+    except (OSError, ValueError, TypeError) as exc:
+        raise AdapterError('System One episodes refused', SOURCE_INVALID) from exc
+    digest, rollout_id, redactor, refusal = _source(home, 'system-one', data, salt)
+    extra = [loss for loss in (refusal, 'episode-invalid' if invalid else None) if loss]
+    triplets, messages = [], []
+    for episode in episodes:
+        prompt = response = None
+        if redactor is not None:
+            question, answer = (_clean(redactor, text) for text in _episode_turn(episode))
+            prompt, response = {'text': question}, {'text': answer, 'toolCalls': []}
+            messages += [{'role': 'user', 'content': question}, {'role': 'assistant', 'content': answer}]
+        triplets.append(_triplet(rollout_id, episode['episodeId'], 'system-one', digest, prompt, response, None,
+                                 None, ['reward-unavailable', *extra], None))
+    return triplets, _messages(rollout_id, 'system-one', digest, messages, _message_losses(triplets, extra), None)
+
+
+def system_one_triplets(home: Path | None, path, salt: bytes) -> list[dict]:
+    """One triplet per episode: the System 2 pairs as the prompt, the System One answer as the response."""
+    return _system_one(home, path, salt)[0]
+
+
+def system_one_messages(home: Path | None, path, salt: bytes) -> dict:
+    """A user (pairs) and assistant (answer) message per episode; empty without consent."""
+    return _system_one(home, path, salt)[1]

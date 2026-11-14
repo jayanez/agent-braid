@@ -40,7 +40,15 @@ Rollout content records (`trace` kind in the run store, T006) carry
 `{attemptId, sequence, prompt, response, toolCalls?}`; `sequence` names the
 `model_request` event they belong to. One triplet is produced per
 `model_request`; Loom yields one triplet per strand (label as prompt, tools and
-outcome as response) and one `system` message per event.
+outcome as response) and one `system` message per event. A host transcript
+yields one triplet per host turn (its tool as the tool call; recorded traces
+hold no prompt or model text; `trace_adapter` admits synthetic traces only, so
+real host transcripts are not read yet), named by a salted turn pseudonym in
+source order, and one `system` message per turn. A System One
+day file, opened read-only, yields one triplet per episode (System 2 pairs as
+prompt, System One answer as response; no outcome is joined, so no reward) and
+a `user` and `assistant` message per episode; an invalid or torn line is
+skipped and noted as `episode-invalid`, as the System One report counts it.
 
 Reward matching: `first-occurrence` gives each reward event to the nearest
 earlier `model_request` without a reward; `first-sibling` gives the attempt's
