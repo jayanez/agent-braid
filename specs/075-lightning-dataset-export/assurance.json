@@ -131,7 +131,9 @@
     "specs/034-workload-forecast-data/spec.md",
     "agent_braid/view_serve.py",
     "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json",
-    "scripts/spec075_capture_evidence.py"
+    "scripts/spec075_capture_evidence.py",
+    "agent_braid/lightning_export.py",
+    "agent_braid/lightning_adapter.py"
   ],
   "requirements": [
     {
@@ -164,7 +166,15 @@
         {
           "given": "a fixture store mixing consent redacted, consent none, unconsented and unredacted traces",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec075_export_filter",
+              "limits": "Temporary homes and synthetic content; rollout source only (the export input is the run store; Loom, host transcript and System One adapters are not export inputs). Consent is profile-wide, so the mix of consent states is exercised across successive profiles on one store and by unit cases, not within one read. Retention, balance, overlong and the terms gate are later tasks (T007, T008, T013); no dataset or manifest is written yet (T004-T006).",
+              "outcome": "passed: T003: lightning_export.read_runs reads each attempt of the named runs through the SPEC-074 adapter (rollout_triplets), joins task and group ids from the content-free rollout records, and yields one item per model call with its turn index and the adapter's attempt-<hmac16> pseudonym; select keeps the exportable items in order and counts every other one under exactly one reason. In a temporary store with one rollout of three model calls (full content, prompt only, no content) and consent redacted for rollout, one record is kept and two are counted content-missing; after lowering consent to none all three are consent-none; with consent redacted but only loom listed all three are no-consent. Kept plus excluded equals the model calls. Unit cases: a record that is not a triplet, has no redaction object, or has scanClean false or not true is unredacted; a missing prompt or response is content-missing; consent reasons win over content reasons; a gate refusal maps to its reason and an unknown one fails closed to no-consent. The raw attempt id never appears in items or selections; a missing run refuses with store-missing and a rollout without a rollout record with source-invalid, with fixed texts naming neither id and no chained cause. Negative control: classifying from the triplet's losses alone (without the gate refusal) reports an unlisted source as consent-none, which the no-consent test catches.",
+              "path": "specs/075-lightning-dataset-export/evidence/procedure_002.json",
+              "sha256": "5716716ceafb3e9c58fd87a2a08231261b0d467a89e862e7ec1c3f65d3bebab7"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/075-lightning-dataset-export/validation-plan.md",
           "test_name": "procedure_002",

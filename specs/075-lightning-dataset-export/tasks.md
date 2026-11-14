@@ -16,8 +16,8 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
 - [x] T002 (REQ-005 / SC-005): Lead creates the manifest schema; schema test
   with valid and broken manifests. Dependencies: T001. Verification: procedure_005
   (schema part; the builder half lands with T006).
-- [ ] T003 (REQ-002 / SC-002): Consent and redaction filter with exclusion
-  counts. Dependencies: T001, SPEC-074 adapter. Verification: procedure_002.
+- [x] T003 (REQ-002 / SC-002): Consent and redaction filter with exclusion
+  counts (`agent_braid/lightning_export.py` `read_runs`, `select`). Dependencies: T001, SPEC-074 adapter. Verification: procedure_002.
 - [ ] T004 (REQ-003 / SC-003): `supervised` writer (`d4FirstAttempt` true only, or
   explicit `outcome` field). Dependencies: T003.
   Verification: procedure_003.

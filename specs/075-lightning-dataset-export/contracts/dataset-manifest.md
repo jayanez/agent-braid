@@ -40,6 +40,12 @@ the raw id), `turnRange` `[first,last]` with first ≤ last, `consentLevel` (`re
 (`success` \| `failure` \| `unknown`), `limits` (subset of
 `text-level-merge`, `truncated`).
 
+Exclusions are counted per model call (one adapter triplet). Reasons, first
+match wins: `consent-none` (the SPEC-074 gate refuses with
+`content-consent-required`), `no-consent` (gate refusal `source-not-consented`),
+`unredacted` (not a `braid-lightning-triplet/v0.1` record with
+`redaction.scanClean` true), `content-missing` (below).
+
 Exclusion `content-missing` counts model calls with consent but no stored
 content (for example a content line already swept), or without a prompt or
 response to export; it was added when the schema was created (T002).
