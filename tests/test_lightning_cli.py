@@ -149,7 +149,9 @@ class BoundaryTests(unittest.TestCase):
         """The System One reader loads system_one_shadow on use, so importing Lightning loads no socket."""
         probe = ('import importlib, json, sys\n'
                  f'for m in {MODULES!r}: importlib.import_module("agent_braid." + m)\n'
-                 'print(json.dumps(sorted(m for m in ("socket", "asyncio", "http", "urllib", "ssl") if m in sys.modules)))')
+                 # pathlib imports urllib.parse on some Python versions; only the network-capable modules count
+                 'print(json.dumps(sorted(m for m in sys.modules if m in ("socket", "asyncio", "ssl", "urllib.request")'
+                 ' or m.split(".")[0] == "http")))')
         out = subprocess.run([sys.executable, '-c', probe], cwd=ROOT, capture_output=True, text=True)
         self.assertEqual(out.returncode, 0, out.stderr)
         self.assertEqual(json.loads(out.stdout), [])
