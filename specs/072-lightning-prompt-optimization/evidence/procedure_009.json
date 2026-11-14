@@ -2,11 +2,11 @@
  "command": "python -m unittest tests.test_lightning_cli.BL2BoundaryTests",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "python": "3.13.11"
  },
  "inputs": {
   "agent_braid/forecast_mcp.py": "6fba537f5506791f6e160dad7bfd8f92e0183019ac8b7c026ecb8aacd83b2f24",
-  "agent_braid/lightning_adapter.py": "2a849e0dde8ecba82d4ae518d27ed6d1d7cc332b7ba57db205237e4bc0432177",
+  "agent_braid/lightning_adapter.py": "a0897913451b351272dd30f055c6360deea7c311b7c08d2e2d29cf9abe850e27",
   "agent_braid/lightning_algorithm.py": "1eabfb899845e3bc76470b65c632336dba13e7050b08578bd4c4be51b8df22c4",
   "agent_braid/lightning_apo.py": "3abe6c6a0f72219c5abc6bcf7bfc7d7af371a38045650875603f98c3344c38c2",
   "agent_braid/lightning_arm.py": "89bd97f96964eac0efe8ffda63134c3d77090d2f86b101df9820c011f8539701",
