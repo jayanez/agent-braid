@@ -55,6 +55,16 @@ _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _SESSION = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\Z")
 RESERVED_EVENTS = 8  # terminal plus every error kind _terminal can add
 _MODEL = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}\Z")
+# A family alias resolves in the init event to ``claude-<alias>-<version>``; only that exact shape is accepted.
+MODEL_ALIASES = ("haiku", "sonnet", "opus")
+_RESOLVED = {alias: re.compile(rf"claude-{alias}-[0-9]+(-[0-9]+)*(-[0-9]{{8}})?\Z") for alias in MODEL_ALIASES}
+
+
+def _model_matches(requested: str, reported: str | None) -> bool:
+    if reported == requested:
+        return True
+    pattern = _RESOLVED.get(requested)
+    return pattern is not None and type(reported) is str and pattern.fullmatch(reported) is not None
 _VERSION = re.compile(r"(\d{1,4})\.(\d{1,4})\.(\d{1,4})(?: \(Claude Code\))?\Z")
 
 
@@ -415,7 +425,7 @@ def _terminal(stream: _Stream, run: HostRun, request: ClaudeRequest, discovered:
     if stream.version != discovered:
         stream.append("error", text="version-drift")
         state = "failed" if state == "completed" else state
-    if request.model is not None and stream.model != request.model:
+    if request.model is not None and not _model_matches(request.model, stream.model):
         stream.append("error", text="model-drift")
         state = "failed" if state == "completed" else state
     if stream.key_source not in SUBSCRIPTION_KEY_SOURCES:

@@ -198,6 +198,24 @@ def admit(args, report: dict, now: datetime):
     return issued, policy, decisions, caps, remaining
 
 
+_FIXED_ERRORS = frozenset({"permission-denied", "route-unverified", "session-mismatch", "version-drift",
+                           "model-drift", "exit-mismatch"})
+
+
+def host_summary(result: hc.ClaudeHostResult) -> dict:
+    """Fixed-field, redacted view of one host run for the published report: the terminal state, the fixed
+    error codes, and the run flags. Never assistant text, prompt, tokens, paths or any host-supplied string
+    beyond the version and model ids the host reported (already validated and redacted)."""
+    data, observed = result.to_dict(), result.observation.to_dict()
+    codes = [e.get("text") for e in observed.get("events", ()) if e.get("kind") == "error"]
+    return {"terminal": observed["terminal"],
+            "streamErrors": sorted({c for c in codes if c in _FIXED_ERRORS}),
+            "transportErrors": list(observed["loss"]["transportErrors"]),
+            "exitCode": data["exitCode"], "timedOut": data["timedOut"], "cancelled": data["cancelled"],
+            "settled": data["settled"], "outputTruncated": data["outputTruncated"],
+            "hostVersion": data["hostVersion"], "hostModel": data["hostModel"]}
+
+
 def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now(timezone.utc),
                backend_factory=_mac.MacOSContainment) -> dict:
     report = t9.preflight(args, system)
@@ -236,7 +254,7 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
         backend.close()
         cleanup()
         raise
-    records, stop = [], None
+    records, stop, summaries = [], None, []
     if units < 1:
         backend.close()
         cleanup()
@@ -263,26 +281,28 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
             except (hh.HostGateError, hc.ClaudeHostError, _mac.LabError, hn.NativeWiringError) as exc:
                 stop = exc.reason
                 break
+            if outcome.result is not None:
+                summaries.append({"unit": index + 1, **host_summary(outcome.result)})
             say(f"[T008] unit {index + 1}: completed={outcome.record.completed} breach={outcome.record.breach}")
             if run.stopped:
                 stop = run.stopped
                 break
     except BaseException as exc:  # Ctrl-C, SIGTERM-as-exception or a bug: keep the evidence, then re-raise
         stop = f"aborted:{type(exc).__name__}"
-        print(json.dumps(_report(args, run, backend, stop, "cohort-aborted"), indent=2, sort_keys=True))
+        print(json.dumps(_report(args, run, backend, stop, "cohort-aborted", summaries), indent=2, sort_keys=True))
         exc.t008_reported = True
         raise
     finally:
         backend.close()
         cleanup()
     return _report(args, run, backend, stop or run.stopped,
-                   "cohort-finished" if not (stop or run.stopped) else "cohort-stopped")
+                   "cohort-finished" if not (stop or run.stopped) else "cohort-stopped", summaries)
 
 
-def _report(args, run, backend, stopped, verdict) -> dict:
+def _report(args, run, backend, stopped, verdict, hosts=()) -> dict:
     host = run.verdict().to_dict()
     return {"verdict": verdict, "attempt": args.attempt, "units": host["units"], "stopped": stopped,
-            "hostVerdict": host, "backendRefusals": t9.refusal_evidence(backend),
+            "hostVerdict": host, "hostRuns": list(hosts), "backendRefusals": t9.refusal_evidence(backend),
             "executionAuthorization": False}
 
 

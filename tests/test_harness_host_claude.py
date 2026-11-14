@@ -385,6 +385,32 @@ class ClaudeHostTests(unittest.TestCase):
         self.assertEqual(self.state(drift), "failed")
         self.assertEqual(drift.observation.to_dict()["events"][-2]["text"], "model-drift")
 
+    def test_family_alias_accepts_only_its_resolved_id(self):
+        def state(alias, model):
+            return self.state(run((init(model=model), result()), request=hc.ClaudeRequest(SESSION, model=alias)))
+        for model in ("claude-haiku-4-5-20251001", "claude-haiku-4-5", "claude-haiku-4", "claude-haiku-4-5-1-20251001"):
+            self.assertEqual(state("haiku", model), "completed", model)
+        self.assertEqual(state("sonnet", "claude-sonnet-4-5-20250929"), "completed")
+        self.assertEqual(state("opus", "claude-opus-4-1"), "completed")
+        self.assertEqual(state("haiku", "haiku"), "completed")  # exact still passes
+        for alias, model in (("haiku", "claude-sonnet-4-5-20250929"), ("haiku", "claude-haiku-evil"),
+                             ("haiku", "claude-haiku-"), ("haiku", "claude-haiku"), ("haiku", "claude-haiku-4-"),
+                             ("haiku", "claude-haiku-4-5-20251001-x"),
+                             ("haiku", "xclaude-haiku-4"), ("haiku", "other-model")):
+            drifted = run((init(model=model), result()), request=hc.ClaudeRequest(SESSION, model=alias))
+            self.assertEqual(self.state(drifted), "failed", model)
+            self.assertEqual(drifted.observation.to_dict()["events"][-2]["text"], "model-drift", model)
+
+    def test_a_malformed_reported_model_never_completes(self):
+        outcome = run((init(model="claude-haiku-4\n"), result()), request=hc.ClaudeRequest(SESSION, model="haiku"))
+        self.assertEqual(self.state(outcome), "unobserved")
+
+    def test_a_non_alias_model_keeps_exact_equality(self):
+        pinned = hc.ClaudeRequest(SESSION, model="claude-haiku-4-5-20251001")
+        self.assertEqual(self.state(run((init(model="claude-haiku-4-5-20251001"), result()), request=pinned)),
+                         "completed")
+        self.assertEqual(self.state(run((init(model="claude-haiku-4-5"), result()), request=pinned)), "failed")
+
     def test_session_mismatch_blocks_completion(self):
         other = "223e4567-e89b-42d3-a456-426614174000"
         self.assertEqual(self.state(run((init(session_id=other), result()))), "failed")
