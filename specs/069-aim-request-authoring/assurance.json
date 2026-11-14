@@ -159,7 +159,7 @@
           "test_file": "specs/069-aim-request-authoring/validation-plan.md",
           "test_name": "procedure_001",
           "then": "requirements, tasks and procedures agree, unchanged contracts are listed, and the native-evidence and owner gates are explicit.",
-          "when": "they are analyzed against ADR 0024, ADR 0030, ADR 0037 and Articles 13\u201316"
+          "when": "they are analyzed against ADR 0024, ADR 0030, ADR 0037 and Articles 13–16"
         }
       ],
       "text": "Specification and architecture. Record the `analyze-work` request contract (kinds, schemas, delivery, `units` construction, refusal format, versioning) in ADR 0038 and a contract file under `contracts/`."
