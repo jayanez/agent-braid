@@ -1,12 +1,12 @@
 {
  "command": "python -m unittest tests.test_lightning_config",
  "environment": {
-  "platform": "macOS-27.2.1",
+  "platform": "macOS-27.2",
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
-  "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
+  "agent_braid/lightning_config.py": "50dfec9b5144eab63799920a3a7ed2a62fc499138de3c1619d1c3b27a555128b",
+  "schemas/0.3.0-experimental/lightning-config.schema.json": "bf880e7125b4246c54e05ce2ce095242f3ed51fc8864c4559edc1db8b49e0445",
   "specs/070-braid-lightning-foundations/contracts/lightning-config.md": "47575c995ab773218e350828df2276aae630a1e272bc46412cfb6d155742e713",
   "tests/test_lightning_config.py": "dfbc32c5952b98a7bbfcfe082da7ffa16c32c670e4d341fd4ff6057e2021be1d"
  },

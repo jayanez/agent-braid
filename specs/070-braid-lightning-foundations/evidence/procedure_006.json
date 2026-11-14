@@ -1,12 +1,12 @@
 {
  "command": "python -m unittest tests.test_lightning_store",
  "environment": {
-  "platform": "macOS-27.2.1",
+  "platform": "macOS-27.2",
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
-  "tests/test_lightning_store.py": "feafcca242ec769b7dcedede903f6f452bc4886e2859728ce53d561f83fe97c1"
+  "agent_braid/lightning_store.py": "4e801c5a78f82a6ae856252807e37933eec1f415b638cd2b6e892cc3eba9d039",
+  "tests/test_lightning_store.py": "b46972a8d743d2809d34672be31b894074556c9e15ece445ea9b393f7d6f9337"
  },
  "limits": "Single-process tests; the lock refuses a second writer but concurrent writers are not stress-tested.",
  "outcome": "passed: Run directories and files stay owner-only; content-bearing, unknown and mismatched kinds write nothing; symlinks and tampered lines are refused; sweep removes only expired runs and purge only the selected run.",
@@ -14,5 +14,5 @@
  "result": "OK",
  "scenario": "SC-006",
  "specification": "SPEC-070 BL.0",
- "testsRun": 7
+ "testsRun": 6
 }

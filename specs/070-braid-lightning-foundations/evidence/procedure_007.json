@@ -1,14 +1,14 @@
 {
  "command": "python -m unittest tests.test_lightning_cli.SetupTests",
  "environment": {
-  "platform": "macOS-27.2.1",
+  "platform": "macOS-27.2",
   "python": "3.13.11"
  },
  "inputs": {
   "agent_braid/plugin_cli.py": "daeffc514403da147dd1c7679328f7e39f5242a1b3d26ff6387d8146a063ccfd",
   "agent_braid/plugin_registry.py": "5e5c79a7ef8eb601063167bcc0aaa4a79e0a4073e0d9bc9ea8a516eab5d85619",
   "integrations/agent-braid/plugin/setup/SKILL.md": "d0a5afc93081d2aac65203bb752bd60f279c5332759d5f1ef93f0557b377584a",
-  "tests/test_lightning_cli.py": "6535ea7159ffd4162355f395327108a32e713408d33fa7981b5ed3c9c13257b8"
+  "tests/test_lightning_cli.py": "a6d2804a600dc768e3e4bff33f6d9ffe582f39f7ec6ab51476c9f7ca745c1c1a"
  },
  "limits": "Registry behaviour only; reconnect behaviour of a running MCP server is unchanged and not exercised here.",
  "outcome": "passed: plugin setup --lightning lab stores the key with effects lines; off removes it and restores the earlier registry bytes and digest; unknown modes are refused; the setup skill describes the step without choosing for the user.",
