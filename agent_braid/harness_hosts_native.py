@@ -187,13 +187,17 @@ def run_native_unit(*, run: hh.HostQualificationRun, backend: lab.ContainmentBac
                     before: hh.QuotaObservation,
                     read_after: Callable[[], hh.QuotaObservation | None],
                     now: Callable[[], datetime], retention_seconds: int,
-                    settle_now: Callable[[], int], environ: Mapping[str, str] | None = None) -> UnitOutcome:
+                    settle_now: Callable[[], int], environ: Mapping[str, str] | None = None,
+                    on_launch: Callable[[], None] | None = None) -> UnitOutcome:
     """Admit, run and settle one serial unit; settlement happens even when the run raises.
 
     The cohort state handed to the T004 quota gate is derived from the run (units settled and
     weekly consumption since the baseline), never from the caller. Admission refusals raise
     before anything launches; a host error is re-raised after the unit is settled
-    not-completed.
+    not-completed. ``on_launch`` is called once, after every admission check and the transport's
+    construction and right before ``hc.run_claude`` (which may still refuse before the session,
+    so this over-counts, never under-counts); if it raises, nothing launches and the unit is
+    settled not-completed.
     """
     cohort = {"unitsUsed": len(run.verdict().units),
               "cohortWeeklyPercent": int(before.weekly_percent - run.baseline.weekly_percent)}
@@ -207,6 +211,8 @@ def run_native_unit(*, run: hh.HostQualificationRun, backend: lab.ContainmentBac
     try:
         transport = NativeClaudeTransport(backend, workdir=workdir, pre_reading=reading_of(before),
                                           quota=("cohort", cohort), clock=now, environ=environ)
+        if on_launch is not None:
+            on_launch()
         result = hc.run_claude(manifest, context, transport=transport, request=request,
                                compatibility=compatibility, attempt_id=attempt_id,
                                inventory=inventory, now=ticket.admitted_at,

@@ -201,9 +201,8 @@ class LedgerTests(unittest.TestCase):
             driver.units_started(self.parent)
 
 
-class DryRunTests(unittest.TestCase):
-    """The dry run (the launcher's passwordless check) runs every no-quota check the cohort runs: the environment
-    hash recomputed in the lab's own session against the issued one, the window, the records and the unit ledger."""
+class _LabDirCase(unittest.TestCase):
+    """A temporary attempt parent and the patched pre-flight report shared by the dry-run and cohort tests."""
 
     NOW = datetime(2026, 11, 14, 12, tzinfo=timezone.utc)
 
@@ -220,7 +219,12 @@ class DryRunTests(unittest.TestCase):
                   "executionAuthorization": False}
         return contextlib.ExitStack(), report
 
-    def dry_run(self, observed=None, now=NOW):
+
+class DryRunTests(_LabDirCase):
+    """The dry run (the launcher's passwordless check) runs every no-quota check the cohort runs: the environment
+    hash recomputed in the lab's own session against the issued one, the window, the records and the unit ledger."""
+
+    def dry_run(self, observed=None, now=_LabDirCase.NOW):
         stack, report = self.patched(observed)
         out = io.StringIO()
         with stack:
@@ -292,6 +296,80 @@ class DryRunTests(unittest.TestCase):
                 self.assertEqual(bool(out.getvalue()), printed)
                 if printed:
                     self.assertEqual(json.loads(out.getvalue())["verdict"], "cohort-aborted")
+
+
+class CohortLedgerTests(_LabDirCase):
+    """A unit is counted only once the host may launch: a pre-launch refusal spends nothing, while an error or a
+    crash after the launch point, or a completed unit, counts exactly once. ``run_native_unit`` is a double that
+    calls ``on_launch`` where the real one calls it, right before the host session."""
+
+    def cohort(self, unit, *, units=4, raises=None):
+        stack, report = self.patched()
+        out_dir = Path(self.argv[self.argv.index("--out-dir") + 1])
+        run = mock.MagicMock(stopped=None)
+        run.verdict.return_value.to_dict.return_value = {"units": []}
+        answers = iter([out_dir.name])
+        with stack:
+            stack.enter_context(mock.patch.object(driver.t9, "preflight", return_value=report))
+            stack.enter_context(mock.patch.object(driver, "trusted_inputs", return_value=(ISSUED, {}, mock.Mock())))
+            stack.enter_context(mock.patch.object(driver, "read_observation", return_value=mock.Mock()))
+            stack.enter_context(mock.patch.object(driver.hh, "HostQualificationRun", return_value=run))
+            stack.enter_context(mock.patch.object(driver.t9, "_workdirs", return_value=(lambda: "/w", lambda: None)))
+            stack.enter_context(mock.patch.object(driver.t9, "refusal_evidence", return_value=[]))
+            stack.enter_context(mock.patch.object(driver._probes, "credential_inventory", return_value=[]))
+            stack.enter_context(mock.patch.object(driver._probes, "make_f4_probe_runner", return_value=None))
+            stack.enter_context(mock.patch.object(driver.hn, "unit_inputs", return_value=(None, None)))
+            stack.enter_context(mock.patch.object(driver, "verify_inventory", return_value=None))
+            stack.enter_context(mock.patch.object(driver.hn, "run_native_unit", side_effect=unit))
+            args = driver.parser().parse_args(self.argv + ["--founder-go", "--units", str(units)])
+            call = lambda: driver.run_cohort(args, object(), ask=lambda _: next(answers), say=lambda _: None,  # noqa: E731
+                                             clock=lambda: self.NOW, backend_factory=mock.Mock())
+            if raises is None:
+                result = call()
+            else:
+                with self.assertRaises(raises), contextlib.redirect_stdout(io.StringIO()):
+                    call()
+                result = None
+        return driver.units_started(self.parent), result
+
+    def test_a_pre_launch_refusal_leaves_the_ledger_unchanged(self):
+        for reason in ("five-hour-start", "weekly-stop", "window-reset-imminent", "cohort-cap"):
+            with self.subTest(reason=reason):
+                self.setUp()
+
+                def refuse(**_):
+                    raise hh.HostGateError(reason)
+                started, result = self.cohort(refuse)
+                self.assertEqual((started, result["stopped"]), (0, reason))
+
+    def test_an_error_after_the_launch_point_counts_the_unit(self):
+        for error in (hn.hc.ClaudeHostError("transport-failed"), RuntimeError("bug"), KeyboardInterrupt()):
+            with self.subTest(error=type(error).__name__):
+                self.setUp()
+
+                def fail(*, on_launch, **_):
+                    on_launch()
+                    raise error
+                raises = None if isinstance(error, hn.hc.ClaudeHostError) else type(error)
+                self.assertEqual(self.cohort(fail, raises=raises)[0], 1)
+
+    def test_a_completed_unit_counts_once(self):
+        def complete(*, on_launch, **_):
+            on_launch()
+            return mock.Mock(result=None)
+        started, result = self.cohort(complete, units=2)
+        self.assertEqual((started, result["verdict"]), (2, "cohort-finished"))
+
+    def test_the_cap_holds_across_labels(self):
+        driver.write_ledger(self.parent / "t008-20261113d", 3, create=True)
+        seen = []
+
+        def complete(*, on_launch, **_):
+            on_launch()
+            seen.append(1)
+            return mock.Mock(result=None)
+        self.assertEqual(self.cohort(complete)[0], 4)
+        self.assertEqual(seen, [1])  # only the one unit left was attempted
 
 
 if __name__ == "__main__":
