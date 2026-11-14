@@ -198,22 +198,20 @@ def admit(args, report: dict, now: datetime):
     return issued, policy, decisions, caps, remaining
 
 
-_FIXED_ERRORS = frozenset({"permission-denied", "route-unverified", "session-mismatch", "version-drift",
-                           "model-drift", "exit-mismatch"})
-
-
-def host_summary(result: hc.ClaudeHostResult) -> dict:
+def host_summary(result: hc.ClaudeHostResult, requested_model: str | None = None) -> dict:
     """Fixed-field, redacted view of one host run for the published report: the terminal state, the fixed
     error codes, and the run flags. Never assistant text, prompt, tokens, paths or any host-supplied string
-    beyond the version and model ids the host reported (already validated and redacted)."""
+    beyond the version id and a model id that is the requested one or its own resolved family id."""
     data, observed = result.to_dict(), result.observation.to_dict()
+    reported = data["hostModel"]
     codes = [e.get("text") for e in observed.get("events", ()) if e.get("kind") == "error"]
     return {"terminal": observed["terminal"],
-            "streamErrors": sorted({c for c in codes if c in _FIXED_ERRORS}),
-            "transportErrors": list(observed["loss"]["transportErrors"]),
+            "streamErrors": sorted({c for c in codes if c in hc.TERMINAL_ERROR_CODES}),
+            "transportErrors": observed["loss"]["transportErrors"],
             "exitCode": data["exitCode"], "timedOut": data["timedOut"], "cancelled": data["cancelled"],
             "settled": data["settled"], "outputTruncated": data["outputTruncated"],
-            "hostVersion": data["hostVersion"], "hostModel": data["hostModel"]}
+            "hostVersion": data["hostVersion"], "hostModel": reported if reported is not None and hc.model_matches(requested_model, reported)
+            else None}
 
 
 def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now(timezone.utc),
@@ -282,7 +280,7 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
                 stop = exc.reason
                 break
             if outcome.result is not None:
-                summaries.append({"unit": index + 1, **host_summary(outcome.result)})
+                summaries.append({"unit": index + 1, **host_summary(outcome.result, "haiku")})
             say(f"[T008] unit {index + 1}: completed={outcome.record.completed} breach={outcome.record.breach}")
             if run.stopped:
                 stop = run.stopped

@@ -74,7 +74,7 @@ class HostSummaryTests(unittest.TestCase):
         result = f.run((f.init(model="claude-haiku-4-5-20251001"),
                         f.assistant({"type": "text", "text": "ASSISTANT-WORDS " + f.SECRET}), f.result()),
                        request=driver.hc.ClaudeRequest(f.SESSION, model="haiku"))
-        summary = driver.host_summary(result)
+        summary = driver.host_summary(result, "haiku")
         self.assertEqual(set(summary), self.FIELDS)
         self.assertEqual((summary["terminal"], summary["streamErrors"], summary["hostModel"]),
                          ("completed", [], "claude-haiku-4-5-20251001"))
@@ -82,6 +82,13 @@ class HostSummaryTests(unittest.TestCase):
         text = json.dumps(summary)
         for leaked in ("ASSISTANT-WORDS", f.SECRET, f.SESSION, "reading"):
             self.assertNotIn(leaked, text)
+
+    def test_host_model_is_published_only_if_requested_or_a_resolved_family_id(self):
+        f = host_fixtures
+        for model, request, shown in (("claude-haiku-4-5-20251001", "haiku", True), ("claude-test", "claude-test", True),
+                                      ("claude-sonnet-4-5", "haiku", False), ("claude-haiku-evil", "haiku", False)):
+            result = f.run((f.init(model=model), f.result()), request=driver.hc.ClaudeRequest(f.SESSION, model=request))
+            self.assertEqual(driver.host_summary(result, request)["hostModel"], model if shown else None)
 
     def test_a_model_drift_names_its_fixed_code(self):
         f = host_fixtures
