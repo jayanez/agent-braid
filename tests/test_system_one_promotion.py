@@ -113,6 +113,38 @@ class GoAndRollbackTests(Base):
                 call()
         self.assertFalse(self.path.exists())
 
+    def test_impossible_calendar_date_is_refused(self):
+        with self.assertRaises(promotion.PromotionError):
+            promotion.record_go(self.home, 'DP-1', evidence_digest=EVIDENCE, manifest_digest=PIN,
+                                decided_on='2026-02-30')
+        self.assertFalse(self.path.exists())
+
+    def test_full_registry_refuses_a_go_but_never_a_rollback(self):
+        self.go()
+        with mock.patch.object(promotion, 'MAX_RECORDS', 1):
+            with self.assertRaises(promotion.PromotionError):
+                self.go()
+            promotion.rollback(self.home, 'DP-1', decided_on='2026-11-15')
+            # The oversized registry now fails verification and promotes nothing.
+            status = promotion.status(self.home, 'advise', PIN)
+            self.assertEqual((status['valid'], status['decisionPoints']['DP-1']['activeMode']), (False, 'shadow'))
+        self.assertEqual([r['decision'] for r in promotion.load(self.home)], ['go', 'rollback'])
+
+    def test_busy_registry_lock_has_its_own_code(self):
+        import fcntl
+        fd = os.open(self.home / 'registry.lock', os.O_CREAT | os.O_RDWR, 0o600)
+        self.addCleanup(os.close, fd)
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        with self.assertRaises(promotion.PromotionError) as caught:
+            self.go()
+        self.assertEqual(caught.exception.code, 'promotion-busy')
+
+    def test_unreadable_registry_is_reported_invalid(self):
+        self.go()
+        with mock.patch.object(promotion, '_raw', side_effect=OSError('EIO')):
+            status = promotion.status(self.home, 'advise', PIN)
+        self.assertFalse(status['valid'])
+
     def test_registry_file_is_private_and_regular(self):
         self.go()
         info = self.path.stat()
@@ -269,6 +301,22 @@ class PluginWiringTests(Base):
         self.assertIs(block['executionAuthorization'], False)
         # Advise keeps recording shadow episodes; no decision point output is wired to advice yet.
         self.assertEqual({s.config.system_one for s in router.services.values()}, {'shadow'})
+
+    def test_rollback_after_connect_requires_a_reconnect(self):
+        from agent_braid import system_one_shadow as shadow
+        self.configure('advise')
+        promotion.record_go(self.home, 'DP-1', evidence_digest=EVIDENCE,
+                            manifest_digest=shadow.EXPECTED_MANIFEST_DIGEST, decided_on='2026-11-14')
+        router = PluginRouter(self.home)
+        self.assertFalse(router.status()['reconnectRequired'])
+        promotion.rollback(self.home, 'DP-1', decided_on='2026-11-15')
+        status = router.status()
+        self.assertTrue(status['reconnectRequired'])
+        self.assertEqual(status['systemOne']['activeMode'], 'advise')
+        reconnected = PluginRouter(self.home)
+        self.assertEqual((reconnected.status()['systemOne']['activeMode'], reconnected.status()['reconnectRequired']),
+                         ('off', False))
+        self.assertEqual({s.config.system_one for s in reconnected.services.values()}, {'off'})
 
     def test_off_and_shadow_status_report_configured_reason(self):
         router = PluginRouter(self.home)

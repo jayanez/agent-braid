@@ -306,9 +306,17 @@ class PluginRouter:
         """SPEC-066 REQ-401: `advise` is effective only on a valid owner go; otherwise it falls back."""
         if configured == 'off':
             return 'off', 'configured'  # off reads no promotion registry and loads no System One module
-        from . import system_one_promotion, system_one_shadow
-        resolved, _ = system_one_promotion.inspect(self.home, configured, system_one_shadow.EXPECTED_MANIFEST_DIGEST)
+        from . import system_one_promotion
+        resolved, _ = system_one_promotion.inspect(self.home, configured, self._manifest_digest(configured))
         return resolved['activeMode'], resolved['reason']
+
+    @staticmethod
+    def _manifest_digest(configured):
+        """Only advise compares a go with the pinned backend identity; shadow loads no extra module here."""
+        if configured != 'advise':
+            return None
+        from . import system_one_shadow
+        return system_one_shadow.EXPECTED_MANIFEST_DIGEST
 
     def _inspect(self):
         try:
@@ -321,12 +329,15 @@ class PluginRouter:
         found = self._inspect()
         current = found['value'] if found else None
         configured_one = current.get('systemOne', 'off') if current else 'off'
+        promotion = system_one_promotion.status(self.home, configured_one, self._manifest_digest(configured_one))
         current_digest = configuration_digest(current)
         # version is the Python package; pluginVersion is the native plugin build (None outside a package).
         return {'schema': SCHEMA, 'version': __version__, 'pluginVersion': self.plugin_version,
                 'status': ('migration-required' if current is None else
                            'configured' if self.services else 'setup-required'),
-                'reconnectRequired': current_digest != self.baseline_digest,
+                # A promotion or rollback recorded since this connection started also needs a reconnect.
+                'reconnectRequired': (current_digest != self.baseline_digest
+                                      or promotion['decisionPoints']['DP-1']['activeMode'] != self.system_one),
                 'baselineDigest': self.baseline_digest, 'currentDigest': current_digest,
                 'telemetry': {'configuredMode': current['telemetry'] if current else 'off',
                               'activeMode': self.snapshot['telemetry'],
@@ -337,8 +348,7 @@ class PluginRouter:
                                         'present': system_one_shadow.store_present()},
                               'episodeRetentionDays': system_one_shadow.RETENTION_DAYS,
                               # The registry as it is now; activeMode and reason are this connection's snapshot.
-                              'promotion': system_one_promotion.status(
-                                  self.home, configured_one, system_one_shadow.EXPECTED_MANIFEST_DIGEST),
+                              'promotion': promotion,
                               'executionAuthorization': False},
                 'gitAvailable': shutil.which('git') is not None,
                 'registryHome': str(self.home),

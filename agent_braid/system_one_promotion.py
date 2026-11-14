@@ -6,6 +6,8 @@ evidence digest and the backend manifest digest it was taken on; a `rollback` de
 to `off`. Every record carries its own SHA-256 over its canonical form and the digest of the record before
 it, so an edited, forged, removed or reordered record is refused and the whole registry then promotes
 nothing. Writes are write-temp, fsync, rename: an interrupted write leaves the previous registry intact.
+Residual risk: the chain has no external anchor, so a same-user write that drops trailing records (for
+example a rollback) still verifies; the file is private to its user like the plugin registry.
 
 The registry only decides whether `advise` is effective; it never grants authority
 (`executionAuthorization` stays false, ADR 0034 item 4) and nothing here promotes automatically. The
@@ -14,6 +16,7 @@ T303, T402 and T403.
 """
 from __future__ import annotations
 
+from datetime import date
 import json
 import os
 from pathlib import Path
@@ -65,6 +68,10 @@ def _check_fields(record: dict) -> None:
         raise PromotionError('Unknown decision point or decision')
     if not (isinstance(record['decidedOn'], str) and _DATE.fullmatch(record['decidedOn'])):
         raise PromotionError('Decision date must be YYYY-MM-DD')
+    try:
+        date.fromisoformat(record['decidedOn'])
+    except ValueError as exc:
+        raise PromotionError('Decision date must be a calendar date') from exc
     pinned = (record['evidenceDigest'], record['manifestDigest'])
     if decision == 'go' and not all(_digest(d) for d in pinned):
         raise PromotionError('A go pins lowercase SHA-256 evidence and manifest digests')
@@ -72,10 +79,10 @@ def _check_fields(record: dict) -> None:
         raise PromotionError('A rollback pins no evidence or manifest digest')
 
 
-def _verify(value) -> tuple:
+def _verify(value, *, bounded: bool = True) -> tuple:
     """Shape, then the digest chain; returns read-only records in file order."""
     if not (isinstance(value, dict) and set(value) == {'schema', 'records'} and value['schema'] == SCHEMA
-            and isinstance(value['records'], list) and len(value['records']) <= MAX_RECORDS):
+            and isinstance(value['records'], list) and (not bounded or len(value['records']) <= MAX_RECORDS)):
         raise PromotionError('Unknown promotion registry schema')
     previous, records = None, []
     for index, record in enumerate(value['records']):
@@ -130,8 +137,11 @@ def _append(home: Path | None, record: dict) -> MappingProxyType:
                           previousDigest=records[-1]['recordDigest'] if records else None)
             record['recordDigest'] = _record_digest(record)
             raw = registry._bytes({'schema': SCHEMA, 'records': [dict(r) for r in records] + [record]})
-            _verify(json.loads(raw))
-            if len(raw) > MAX_BYTES:
+            # A rollback is never blocked by the size bounds: an oversized registry fails verification on the
+            # next load and then promotes nothing, which is the state a rollback asks for.
+            go = record['decision'] == 'go'
+            _verify(json.loads(raw), bounded=go)
+            if go and len(raw) > MAX_BYTES:
                 raise PromotionError('Promotion registry would exceed its 64 KiB limit')
             fd, name = tempfile.mkstemp(prefix='.system-one-promotion-', dir=selected)
             temporary = Path(name)
@@ -150,7 +160,9 @@ def _append(home: Path | None, record: dict) -> MappingProxyType:
             finally:
                 os.close(directory)
     except registry.RegistryError as exc:
-        raise PromotionError('Promotion registry home is unsafe or busy', code='promotion-unsafe-path') from exc
+        if exc.code == 'registry-unsafe-path':
+            raise PromotionError('Promotion registry home is unsafe', code='promotion-unsafe-path') from exc
+        raise PromotionError('Another registry transaction is active; retry', code='promotion-busy') from exc
     return MappingProxyType(record)
 
 
@@ -184,7 +196,7 @@ def _point(configured: str, latest, manifest_digest: str) -> dict:
     return {'activeMode': 'advise', 'reason': 'owner-go'}
 
 
-def resolve(configured: str, records, manifest_digest: str, *, invalid: bool = False) -> dict:
+def resolve(configured: str, records, manifest_digest: str | None, *, invalid: bool = False) -> dict:
     """Active mode per decision point; the top-level mode is DP-1's, the only decision point so far."""
     if configured not in MODES:
         raise PromotionError('System One mode must be off, shadow or advise')
@@ -200,11 +212,11 @@ def resolve(configured: str, records, manifest_digest: str, *, invalid: bool = F
     return {'activeMode': first['activeMode'], 'reason': first['reason'], 'decisionPoints': points}
 
 
-def inspect(home: Path | None, configured: str, manifest_digest: str) -> tuple[dict, dict]:
-    """Never raises for a bad registry: it promotes nothing and is reported invalid."""
+def inspect(home: Path | None, configured: str, manifest_digest: str | None) -> tuple[dict, dict]:
+    """Never raises for a bad or unreadable registry: it promotes nothing and is reported invalid."""
     try:
         records, valid = load(home), True
-    except PromotionError:
+    except (PromotionError, OSError):
         records, valid = (), False
     resolved = resolve(configured, records, manifest_digest, invalid=not valid)
     status = {'present': path(home).exists() or path(home).is_symlink(), 'valid': valid, 'records': len(records),
@@ -212,6 +224,6 @@ def inspect(home: Path | None, configured: str, manifest_digest: str) -> tuple[d
     return resolved, status
 
 
-def status(home: Path | None, configured: str, manifest_digest: str) -> dict:
+def status(home: Path | None, configured: str, manifest_digest: str | None) -> dict:
     """Path-free status of the registry as it is now: presence, validity, count and resolution."""
     return inspect(home, configured, manifest_digest)[1]
