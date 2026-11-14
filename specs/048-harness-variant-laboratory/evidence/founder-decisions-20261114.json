@@ -3,7 +3,7 @@
   "repository": "jayanez/agent-braid",
   "recordedAt": "2026-11-14",
   "baseCommit": "a016d066",
-  "decisionChannel": "Binding record written by the HAR orchestrator on 2026-11-14 after SPEC-065 T014 issued the 2026-11-14 records. It moves the founder's T008-6 authorization (\"Mismos términos, nuevos registros\", 2026-11-13: same terms, rebound to the current issued records) to the records the founder issued on 2026-11-14 with the answer \"Issue, same terms (Recommended)\" (SPEC-065 T014-ISSUE). No separate SPEC-048/T008 question was asked on 2026-11-14; the terms are copied unchanged and nothing is widened. The founder can withdraw the binding with a reviewed change that repins the driver or removes this record.",
+  "decisionChannel": "Founder answer to an interactive guided question in the HAR orchestrator session, 2026-11-14, recorded verbatim (question as asked, in English; answer as chosen), after SPEC-065 T014 issued the 2026-11-14 records (founder answer T014-ISSUE \"Issue, same terms (Recommended)\"). T008-8 confirms that the T008 units use the 2026-11-14 qualification on the unchanged T008-6 terms. Additive; earlier records stay as written.",
   "supersedes": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261113.json (sha256 0132118f9d04c6c39b5b59a879343719168ccb31d2315f4b557ad85feaa6ad5c) for the records the Claude profile authorization is bound to; that record names the 2026-11-13 qualification (fa59fbae.../9022b771...), which no longer matches the code after #1363. Its answers T008-6 and T008-7 and the answers T008-3, T008-4 and T008-5 of founder-decisions-20261106.json stay in force",
   "qualificationRecords": {
     "issuance": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-14.json",
@@ -21,7 +21,7 @@
       "item": "Claude profile qualification",
       "decision": "qualification-authorized",
       "ownerStatement": "Mismos términos, nuevos registros (Recommended)",
-      "detail": "The T008-6 authorization of 2026-11-13, unchanged, bound to the SPEC-065 records issued 2026-11-14 (containment 87c7b52098131d42e7bcc6bfc932827ed8000ff1728b8d47ca47e5f5153b6f68, host 625bb211e4e16ef559bb14b1c3184142bce1776aa19666b153bf636f9df536ec, issuance record evidence/qualification/issuance-2026-11-14.json, bundle t009-20261114a, environment 2164a4a2351ee333ce1af886f5abc0793c6f5cb7ab22bd05865c1dd9c28314dc, expires 2026-12-14T18:42:10Z): at most 4 serial units for the whole cohort (units already started under the 2026-11-13 binding count), window 2026-11-09T20:30Z to 2026-11-30, D2 caps unchanged, EUR 0, subscription route, usage readings at most 5 minutes old. The 'qualified' verdict is decided later from the unit evidence. Does not admit SPEC-049/T004 and does not qualify Codex."
+      "detail": "The T008-6 authorization of 2026-11-13, unchanged, confirmed by the founder on 2026-11-14 (T008-8) as bound to the SPEC-065 records issued 2026-11-14 (containment 87c7b52098131d42e7bcc6bfc932827ed8000ff1728b8d47ca47e5f5153b6f68, host 625bb211e4e16ef559bb14b1c3184142bce1776aa19666b153bf636f9df536ec, issuance record evidence/qualification/issuance-2026-11-14.json, bundle t009-20261114a, environment 2164a4a2351ee333ce1af886f5abc0793c6f5cb7ab22bd05865c1dd9c28314dc, expires 2026-12-14T18:42:10Z): at most 4 serial units for the whole cohort (units already started under the 2026-11-13 binding count), window 2026-11-09T20:30Z to 2026-11-30, D2 caps unchanged, EUR 0, subscription route, usage readings at most 5 minutes old. The 'qualified' verdict is decided later from the unit evidence. Does not admit SPEC-049/T004 and does not qualify Codex."
     },
     {
       "task": "SPEC-048/T008",
@@ -55,6 +55,14 @@
       "topic": "SPEC-065 re-qualification issuance after #1363",
       "answer": "Issue, same terms (Recommended)",
       "terms": "The founder issued the 2026-11-14 records on the terms of 2026-11-13. This is the basis for moving the T008-6 binding; it is a SPEC-065 answer, not a new SPEC-048/T008 answer."
+    },
+    {
+      "id": "T008-8",
+      "answeredAt": "2026-11-14",
+      "topic": "Binding the remaining T008 unit to the 2026-11-14 qualification",
+      "question": "Do you confirm that the last T008 unit uses the 11-14 qualification under the same T008 terms? Terms (unchanged from 11-13): at most 4 units in total (1 left), window until 2026-11-30, D2 caps (30 min per unit, ≤10 % of the 5-hour window per session, ≤15 % of weekly for the whole cohort, stop above 80 % weekly), EUR 0, subscription only. The only change is that the unit is tied to issuance 2026-11-14 (32/32, expires 12-14) instead of 11-13, which no longer applies. Risk: none new. Undo: you revoke it with a record.",
+      "answer": "Confirm, same terms (Recommended)",
+      "terms": "The T008-6 terms unchanged, bound to the 2026-11-14 records in qualificationRecords. executionAuthorization stays false."
     }
   ],
   "hostObservation": {
