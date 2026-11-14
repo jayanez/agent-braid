@@ -96,7 +96,8 @@ changed.
 CI keeps the complete candidate gate but runs independent jobs in parallel:
 
 - fast repository invariants;
-- the complete Python suite;
+- the complete Python suite, split by `scripts/test_shards.py` into six matrix
+  shards that `--check` proves cover every `tests/test_*.py` module exactly once;
 - governance, contracts and scientific controls;
 - Spec Kit structure and rendering.
 
