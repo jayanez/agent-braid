@@ -307,7 +307,7 @@ class ValidationProfileTests(unittest.TestCase):
         for job in ("classify:", "invariants:", "tests:", "governance_science:",
                     "spec_kit:", "spec_kit_integration:", "validate:"):
             self.assertIn(job, workflow)
-        self.assertIn("python3 -m unittest discover -s tests -v", workflow)
+        self.assertIn("python3 -m scripts.test_shards --run --shard ${{ matrix.shard }}", workflow)
         self.assertIn("needs.classify.outputs.spec_kit_integration != 'false'", workflow)
         self.assertIn("scripts/test_spec_kit_integration.py", workflow)
         self.assertEqual(3, workflow.count("run: python3 scripts/restore_public_spec_history.py"))
