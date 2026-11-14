@@ -196,8 +196,9 @@ class AdapterTests(unittest.TestCase):
         self.consent()
         events = [json.loads(line) for line in LOOM.read_bytes().splitlines()]
         child = events[3]['data']['strandId']
-        ids = {'op-a': TOKEN, 'op-b': 'owner.example.org', child: 'kai.example.net',  # op-b is only in waves
-               'unit-1': 'nia.example.com'}  # unit-1 is only in hazard units
+        ids = {'op-a': TOKEN, 'op-b': 'owner.example.org',  # op-b is only in waves
+               'unit-1': 'nia.example.com'}  # unit-1 is only in hazard units; the child keeps its sha256 id, which
+        # is also the reportId, planId, scheduleId and manifestDigest: those must keep it while the strand is renamed
 
         def swap(value):
             return ids.get(value, value)
@@ -213,12 +214,12 @@ class AdapterTests(unittest.TestCase):
                 data['waves'] = [[swap(item) for item in wave] for wave in data['waves']]
         waiting = json.loads(json.dumps(events[4]))  # a v0.2 update of the child, waiting on a name-shaped target
         waiting.update(seq=events[-1]['seq'] + 1, schemaVersion='agent-braid-loom/v0.2')
-        waiting['data'].update(strandId='kai.example.net', state='waiting', toolName=None,
+        waiting['data'].update(strandId=child, state='waiting', toolName=None,
                                waitingOn='mira.lopez', waitingBasis='declared')
         events.append(waiting)
         data = b''.join(json.dumps(e, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode() + b'\n'
                         for e in events)
-        secrets = ('owner.example.org', 'kai.example.net', 'mira.lopez', 'nia.example.com')  # not redactable: only renaming hides them
+        secrets = ('owner.example.org', 'mira.lopez', 'nia.example.com')  # not redactable: only renaming hides them
         for secret in (TOKEN, *secrets):
             self.assertIn(secret.encode(), data)  # negative control: every id is in the source
         triplets = adapter.loom_triplets(self.home, data, SALT)
@@ -229,7 +230,7 @@ class AdapterTests(unittest.TestCase):
         out = [json.loads(m['content']) for m in messages['messages']]
         name = adapter._pseudonym(SALT, TOKEN, 'strand')
         self.assertRegex(name, r'^strand-[0-9a-f]{16}$')
-        self.assertNotEqual(name, adapter._pseudonym(SALT, TOKEN))  # domain separated from transcript turns
+        self.assertNotEqual(name.split('-', 1)[1], adapter._pseudonym(SALT, TOKEN).split('-', 1)[1])  # own domain
         opened = next(m['data'] for m in out if m['kind'] == 'strand.open' and m['data']['label'] == 'Review é ✓')
         self.assertEqual(opened['strandId'], name)
         self.assertIn(name, {t['attemptId'] for t in triplets})  # the triplet uses the message's name
@@ -240,6 +241,9 @@ class AdapterTests(unittest.TestCase):
                           ('runtime.phase', 'manifestDigest'), ('crossing.classified', 'reportId')):
             source = next(e['data'][key] for e in events if e['kind'] == kind)
             self.assertEqual(next(m['data'][key] for m in out if m['kind'] == kind), source, key)  # not renamed
+        self.assertEqual({e['data'][key] for e in events for key in ('reportId', 'planId', 'manifestDigest')
+                          if key in e['data']}, {child})  # negative control: the child's id is in those fields
+        self.assertEqual(out[-1]['data']['strandId'], adapter._pseudonym(SALT, child, 'strand'))  # same value renamed
         self.assertEqual(triplets, adapter.loom_triplets(self.home, data, SALT))  # deterministic for one salt
         self.assertNotIn(name, json.dumps(adapter.loom_triplets(self.home, data, b't' * 16)))
         with patch.object(adapter, '_pseudonym', lambda salt, value, kind='turn': 'strand-0'):

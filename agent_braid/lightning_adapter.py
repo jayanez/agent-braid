@@ -229,39 +229,31 @@ def _loom(home: Path | None, data: bytes, salt: bytes):
 # Positions of strand and operation references in the view_loom data schema; nothing else is renamed.
 _STRAND_SCALARS = ('strandId', 'parentStrandId', 'waitingOn', 'left', 'right')
 _STRAND_LISTS = ('strands', 'units')
-_STRAND_WAVES = 'waves'
 
 
-def _strand_ids(data: dict):
+def _map_refs(data: dict, rename) -> dict:
+    """Event data with `rename` applied to each strand or operation reference, at its schema position only."""
+    data = dict(data)
     for key in _STRAND_SCALARS:
         if isinstance(data.get(key), str):
-            yield data[key]
+            data[key] = rename(data[key])
     for key in _STRAND_LISTS:
-        yield from data.get(key) or ()
-    for wave in data.get(_STRAND_WAVES) or ():
-        yield from wave
+        if isinstance(data.get(key), list):
+            data[key] = [rename(item) for item in data[key]]
+    if isinstance(data.get('waves'), list):
+        data['waves'] = [[rename(item) for item in wave] for wave in data['waves']]
+    return data
 
 
 def _strand_names(events: list[dict], salt: bytes) -> dict[str, str]:
     """One pseudonym per strand or operation id in the stream, computed once; refused if two ids collide."""
-    names = {value: _pseudonym(salt, value, 'strand') for event in events for value in _strand_ids(event['data'])}
+    ids: set[str] = set()
+    for event in events:
+        _map_refs(event['data'], lambda value: ids.add(value) or value)
+    names = {value: _pseudonym(salt, value, 'strand') for value in ids}
     if len(set(names.values())) != len(names):
         raise AdapterError('Loom strand pseudonyms collide', SOURCE_INVALID)
     return names
-
-
-def _rename(data: dict, names: dict[str, str]) -> dict:
-    """Event data with each strand or operation reference, at its schema position only, named by its pseudonym."""
-    data = dict(data)
-    for key in _STRAND_SCALARS:
-        if isinstance(data.get(key), str):
-            data[key] = names[data[key]]
-    for key in _STRAND_LISTS:
-        if isinstance(data.get(key), list):
-            data[key] = [names[item] for item in data[key]]
-    if isinstance(data.get(_STRAND_WAVES), list):
-        data[_STRAND_WAVES] = [[names[item] for item in wave] for wave in data[_STRAND_WAVES]]
-    return data
 
 
 def loom_messages(home: Path | None, data: bytes, salt: bytes) -> dict:
@@ -270,7 +262,8 @@ def loom_messages(home: Path | None, data: bytes, salt: bytes) -> dict:
     if redactor is None:
         return _messages(rollout_id, 'loom', digest, [], [refusal], None)
     messages = [{'role': 'system',
-                 'content': _clean(redactor, _text({'kind': e['kind'], 'data': _rename(e['data'], names)}))}
+                 'content': _clean(redactor, _text({'kind': e['kind'],
+                                                    'data': _map_refs(e['data'], names.__getitem__)}))}
                 for e in events]
     return _messages(rollout_id, 'loom', digest, messages, [], None)
 
