@@ -2,7 +2,7 @@
  "command": "python -m unittest tests.test_spec074_boundaries tests.test_lightning_cli",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "python": "3.13.11"
  },
  "inputs": {
   "agent_braid/lightning_adapter.py": "2a849e0dde8ecba82d4ae518d27ed6d1d7cc332b7ba57db205237e4bc0432177",

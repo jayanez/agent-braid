@@ -1,40 +1,17 @@
 {
- "calibration": {
-  "bytesPerToken": {
-   "description-only": {
-    "cl100k_base": 4.19,
-    "o200k_base": 4.14
-   },
-   "per-kind": {
-    "cl100k_base": 4.26,
-    "o200k_base": 4.15
-   }
-  },
-  "counts": {
-   "description-only": {
-    "cl100k_base": 340,
-    "o200k_base": 344
-   },
-   "per-kind": {
-    "cl100k_base": 1301,
-    "o200k_base": 1336
-   }
-  },
-  "note": "One-time calibration of the D12 approximation in a disposable interpreter; tiktoken is not a repository dependency. Anthropic's tokenizer is not public and is not measured.",
-  "tiktoken": "0.14.0"
- },
+ "calibration": null,
  "command": "python -m unittest -v tests.test_spec069_schema_delivery tests.test_spec069_differential.DeclaredSchemaDifferentialTests tests.test_tooling_mcp.SurfaceVersionTests.test_analyze_work_definition_describes_the_aim_request_shape tests.test_tooling_mcp.SdkClientIntegrationTests.test_plugin_list_tools_serves_the_nested_per_kind_schema_through_the_sdk",
  "environment": {
-  "capturePython": "3.12.13",
+  "capturePython": "3.13.11",
   "jsonschema": "4.25.1",
   "mcp": "2.3.0",
   "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "python": "3.13.11"
  },
  "inputs": {
   "agent_braid/analyze_work_schema.py": "a7a5ccb6dde3ff1ad3650dfbd3a9e3c457e9c2c1782f88bb44ff5d852c156d41",
-  "agent_braid/plugin_mcp.py": "81cc2ff7950fcf15343f9d01d56c8af9883d07e30c927c562ab4a42c2878edc1",
-  "agent_braid/tooling_mcp.py": "35b82114a575965aaa28e444d9d19902e15cc5d836065e6e049c57377ab3de58",
+  "agent_braid/plugin_mcp.py": "212eff2ab134d1b18af565960b12076316b7baa8c9aae6c31be78ed3dce2a608",
+  "agent_braid/tooling_mcp.py": "0e3276644b3e85c91a02e175700ba992bac30201da28a1364691894d8a6db3f1",
   "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
   "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
   "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",

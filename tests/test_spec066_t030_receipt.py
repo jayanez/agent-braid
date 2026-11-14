@@ -112,7 +112,7 @@ class CountTests(Base):
         self.assertEqual(value['outcome'], 'observations')
         self.assertEqual((episodes['episodes'], episodes['datesWithEpisodes']), (2, 2))
         self.assertEqual(episodes['operations'], {'analyze-work': 2})
-        self.assertEqual(episodes['systemOneStatus'], {'abstained': 2})
+        self.assertEqual(episodes['systemOneStatus'], {'answered': 2})
         self.assertEqual(episodes['pairsAnalysed'], 2)
         self.assertEqual(episodes['unknownPairs'], 1)
         self.assertEqual(episodes['dp1OpportunityShare'], 0.5)

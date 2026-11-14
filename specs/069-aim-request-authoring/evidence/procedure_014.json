@@ -2,13 +2,13 @@
  "command": "python -m unittest tests.test_spec069_units_telemetry tests.test_system_one_shadow",
  "environment": {
   "platform": "macOS-27.2.1",
-  "python": "3.12.13"
+  "python": "3.13.11"
  },
  "inputs": {
   "agent_braid/analysis.py": "96732f6c034122ad22f52ba50b9fa5c88a680ac1c88a464640792dcb307dc542",
   "agent_braid/git_adapter.py": "77c17bb694057e712a31886d8879f8ca922bd912f80a45fb703285f828ec94ed",
-  "agent_braid/system_one_shadow.py": "7c21ec6ac2d89b3d51ce937931dc560d859bd3f1838f548576a6e23380ed753a",
-  "agent_braid/tooling_mcp.py": "35b82114a575965aaa28e444d9d19902e15cc5d836065e6e049c57377ab3de58",
+  "agent_braid/system_one_shadow.py": "34e68e1875fa76c580c85aa6317a338d01b037b9faa5119764e33bcf0282173f",
+  "agent_braid/tooling_mcp.py": "0e3276644b3e85c91a02e175700ba992bac30201da28a1364691894d8a6db3f1",
   "agent_braid/units.py": "715f32da8869c11d2572103bfcfc37710f1b5bfebbd0c6097577a8bbf894a49e",
   "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
   "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
@@ -19,7 +19,7 @@
   "specs/069-aim-request-authoring/compatibility.md": "48a18f8c22c4b25216d5c511f30514eceb92fd6b671a5c123d4dfab637086d05",
   "specs/069-aim-request-authoring/contracts/analyze-work-request.md": "ae433d93d7e0af3e056246588719ea5d7ac1e95c8eb13b68b620977900cba118",
   "tests/test_spec069_units_telemetry.py": "b669d15c48bcd3dc99ff258b32ce8756a776621e32df2368aad5901f5c29b724",
-  "tests/test_system_one_shadow.py": "aa62643e6328289fd343897d9bc74812f3c30e58c8845ad91c95dbd20f68e125"
+  "tests/test_system_one_shadow.py": "2fd393634dd77e9eefc7729aa1e8f11368fa05618d7f3a9c673b4df72c41bcf6"
  },
  "limits": "CI runs on Linux only; macOS is covered by running the same tests locally. Windows is tested for lexical normalization only (os.path patched to ntpath), not for the plugin, the driver or the shadow store: a declared limit. Local telemetry does not split by request kind, so the per-kind field metric of REQ-012 is not provided here. The SPEC-066 episode v0.2 vocabulary gains units (additive, private local store) and awaits owner review.",
  "outcome": "passed: Before the change an accepted units call in shadow mode left no episode: the store validator refused analysisKind units (counter unavailable) and ToolingService._shadow discarded any failure in a bare except. Now each accepted units call records one valid episode with analysisKind units, derived from the constructed AIM records (effect kinds present, no declaration text, no request string stored), also when the result is artifact-backed; refused calls record no episode; the envelope is identical with shadow off and on; a shadow guard failure is counted as internal-error and does not change the envelope. Local telemetry records an accepted units call as outcome ok with its classification counts and a refused one as refused with a reason bucket, never error. Normalization gives identical bytes under ntpath and posixpath semantics, composes macOS NFD input to NFC, refuses Windows-style paths and cannot hide a case-only collision. Negative control: reverting the fix fails 5 of the new tests.",
