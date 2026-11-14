@@ -10,7 +10,7 @@
     23,
     24
   ],
-  "assumptions": "SPEC-074 lightning_adapter exposes consent level and redaction version per trace; SPEC-071 reward vector stable; runtime stays standard-library only; manifest schema created by the lead under schemas/0.3.0-experimental/.",
+  "assumptions": "SPEC-074 lightning_adapter exposes consent level and redaction version per trace; SPEC-071 reward vector stable; runtime stays standard-library only; manifest schema created by the lead under schemas/0.3.0-experimental/. Owner decisions (T001, 2026-11-14): E1-E5 accepted; balance is an equal 1:1 cap per task with no ratio parameter (OD-2); OD-1 (host usage terms) is deferred, so the terms gate ships closed and only fixtures and non-host content export.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -137,7 +137,15 @@
         {
           "given": "this specification, plan and contract",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "Owner review of spec, plan, the dataset-manifest contract and the manifest schema name (2026-11-14)",
+              "limits": "T001 scope only; records owner decisions, makes no scientific claim, writes no terms decision record and says no provider permits training; human_review of the frozen candidate is separate.",
+              "outcome": "E1, E2, E3, E5 accepted as written; E4 accepted with OD-2 decided: equal cap 1:1 per task (min(successes, failures) of each, seeded deterministic choice; single-outcome tasks reported, not padded; supervised never balanced), no ratio parameter; OD-1 deferred: the terms gate ships closed.",
+              "path": "specs/075-lightning-dataset-export/reviews/owner-t001-20261114.md",
+              "sha256": "3fa50364faae85d37c525d6c665fc92cf57e3cb7f364981af8922e7b7f02cab5"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/075-lightning-dataset-export/validation-plan.md",
           "test_name": "procedure_001",
@@ -241,7 +249,7 @@
           "when": "exported with the default"
         }
       ],
-      "text": "Success/failure balance. For `rollout` exports only, records are balanced per task per E4 and imbalance is reported; `supervised` exports are never balanced and no benefit is claimed."
+      "text": "Success/failure balance. For `rollout` exports only, records are balanced per task per E4 (equal cap 1:1: min(successes, failures) of each outcome, seeded choice, no ratio parameter) and imbalance is reported; `supervised` exports are never balanced and no benefit is claimed."
     },
     {
       "id": "REQ-008",

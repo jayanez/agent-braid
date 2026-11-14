@@ -54,7 +54,8 @@ Unchanged: all gates pass; the terms gate is an owner record, never inferred.
 - P0: T001 owner review.
 - P1: T002 schema, T003 filter, T004–T005 formats, T006 manifest and
   determinism, T007 balance.
-- P2: T008 terms gate, T009 CLI, T010 canary scan, T011 boundaries.
+- P2: T008 terms gate, T009 CLI, T010 canary scan, T011 boundaries, T013
+  source retention.
 - Closing: T012 documentation and converge.
 
 ## Risks
@@ -68,4 +69,8 @@ Unchanged: all gates pass; the terms gate is an owner record, never inferred.
 
 ## Human review and unresolved decisions
 
-T001 owner review; OD-1 and OD-2 open.
+T001 owner review done 2026-11-14 ([record](reviews/owner-t001-20261114.md)):
+E1–E5 accepted, OD-2 decided (equal cap 1:1 per task, no ratio parameter). OD-1
+is deferred: the terms gate (T008) ships closed and refuses every host-model
+export with `terms-gate-missing`; only fixtures and non-host content export.
+`human_review` stays `pending`.

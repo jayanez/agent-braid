@@ -5,9 +5,11 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
 
 ## Phase P0 — review
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan, contract and
-  schema name; decide E1–E5 and OD-2. Dependencies: SPEC-074 contract frozen.
-  Verification: procedure_001.
+- [x] T001 (REQ-001 / SC-001): Owner review of spec, plan, contract and
+  schema name; decide E1–E5 and OD-2. Done 2026-11-14: E1–E5 accepted, OD-2
+  equal cap 1:1 per task (no ratio parameter), OD-1 deferred (terms gate ships
+  closed). Dependencies: SPEC-074 contract frozen. Verification: procedure_001
+  ([record](reviews/owner-t001-20261114.md)).
 
 ## Phase P1 — export core
 
@@ -29,8 +31,9 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
 ## Phase P2 — gates and CLI
 
 - [ ] T008 (REQ-008 / SC-008): Terms gate reading the OD-1 decision record.
-  Dependencies: T006; OD-1 recorded before any host export. Verification:
-  procedure_008.
+  Dependencies: T006; OD-1 recorded before any host export (deferred at T001:
+  the gate ships closed; the permitting branch is tested with synthetic
+  temporary records only). Verification: procedure_008.
 - [ ] T009 (REQ-009 / SC-009): CLI subcommand and refusals, including
   `export-disabled`. Dependencies: T006.
   Verification: procedure_009.

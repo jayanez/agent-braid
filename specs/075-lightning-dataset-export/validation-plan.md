@@ -1,12 +1,13 @@
 # SPEC-075: Validation plan
 
-Status: draft; no procedure has obtained evidence. Deterministic procedures run
+Status: draft; procedure_001 has obtained evidence (T001 owner review record,
+2026-11-14); no other procedure has. Deterministic procedures run
 locally and in CI as targeted test modules (`tests/test_lightning_export.py`,
 planned).
 
 | Procedure | Scenario | Test target | Expected | Negative controls |
 |---|---|---|---|---|
-| procedure_001 | SC-001 | owner review record | E1–E5 accepted or amended; OD-2 decided | review not bound to a frozen commit |
+| procedure_001 | SC-001 | owner review record ([reviews/owner-t001-20261114.md](reviews/owner-t001-20261114.md)) | E1–E5 accepted or amended; OD-2 decided. Obtained: E1–E5 accepted, OD-2 equal cap 1:1, OD-1 deferred | review not bound to a frozen commit (binding happens at the closing freeze on `develop`) |
 | procedure_002 | SC-002 | filter fixture tests | only consent `redacted` traces; exclusions counted (`consent-none`) | unconsented trace exported; drop not counted |
 | procedure_003 | SC-003 | supervised writer tests | lines match contract; hashes match manifest; only `d4FirstAttempt` true or explicit `outcome` | unknown role accepted; failed record without `outcome` exported |
 | procedure_004 | SC-004 | aggregation tests | 3 transition records, 1 trajectory record, limit declared | token-ID merge attempted without token IDs |
