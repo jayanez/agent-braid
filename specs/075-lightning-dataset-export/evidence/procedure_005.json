@@ -5,14 +5,14 @@
   "python": "3.12.13"
  },
  "inputs": {
-  "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "7328bb5af036d2df0dfb27da108c16d40877ed2ed6ab0f14c1ee7c15ba14aa25",
-  "tests/test_spec075_manifest_schema.py": "811b51479c078d304f5c8702760b3d6fc861b2cfea223bba837d5ee761c18160"
+  "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
+  "tests/test_spec075_manifest_schema.py": "34f8170148487ffdca9d18c25784bb0607d516047f119c47c6cf8cb11dce1134"
  },
- "limits": "Schema structure only: hand-written manifests, no export ran (the builder and its byte checks are T006, which extends this procedure). The schema cannot check that hashes match the bytes they cover or that limits are sorted; the builder does. jsonschema is a development dependency; the runtime stays standard-library only.",
- "outcome": "passed: T002 part: schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json is a valid JSON Schema 2020-12 document (check_schema) and accepts a valid rollout manifest at both levels, a supervised manifest and a host-model manifest with a terms decision. It refuses a manifest missing a record sha256 or redactionVersion (or with an empty one), missing any top-level or record field, with an unknown key, version, kind, level, ordering key, canary result, exclusion reason or negative count, source, outcome, limit, consent level other than redacted, a raw (non-pseudonym) attempt id, a malformed digest, record id, turn range or timestamp, no records, retention outside 1-90 days or an unsafe run id, a supervised export that is balanced or carries a balance report, and host-model records without a terms decision.",
+ "limits": "Schema structure only: hand-written manifests; no export ran (the builder is T006, which extends this procedure). The checks the schema description lists as builder checks (hashes against bytes, turnRange order, sorted limits, a retention key per runId, unique balance-report tasks, singleOutcome with keptPerOutcome 0, supervised balance exclusions 0, host-model never labelled fixture) are not tested here. jsonschema is a development dependency; the runtime stays standard-library only.",
+ "outcome": "passed: T002 part: the schema passes Draft 2020-12 check_schema. Accepted: a rollout manifest at both levels, a supervised manifest (balance none, empty balance report), a host-model manifest with a terms decision, local-model records without one, attempt ids of the four SPEC-074 pseudonym kinds, retentionDays 1 and 90 and relative terms paths. Refused: a missing record sha256 or redactionVersion or an empty redactionVersion; any missing top-level, record, exclusion, balance-report, retention-entry or terms-decision field and an unknown key in each of those objects; a negative exclusion, balance-report or turn-range counter; retentionDays 0, 91 or 1.5; an expiry that is not a valid YYYY-MM-DD date and a generatedAt that is not a valid UTC second; an absolute, dotted, whitespace, home, drive, empty or 257-character terms path and an uppercase terms sha256; an attempt id of wrong length, case or kind or a raw id; malformed run, task, group and rollout ids; unknown version, kind, level, balance (ratio included: OD-2), ordering key, canary result, exclusion reason, source, outcome or limit; a duplicate limit; a consent level other than redacted; a malformed digest, record hash, record id or turn range; no records; balance none or a supervised export with a non-empty balance report; a balanced supervised export; host-model records without a terms decision.",
  "procedure": "procedure_005",
  "result": "OK",
  "scenario": "SC-005",
  "specification": "SPEC-075 BL.5",
- "testsRun": 8
+ "testsRun": 15
 }

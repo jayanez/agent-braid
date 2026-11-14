@@ -31,7 +31,7 @@ def manifest(**overrides) -> dict:
                        'overlong': 0, 'retention-expired': 0},
         'balanceReport': [{'taskId': 'case-1', 'successes': 5, 'failures': 2, 'unknown': 0, 'keptPerOutcome': 2,
                            'dropped': 3, 'singleOutcome': False}],
-        'retention': {'run-1': {'retentionDays': 30, 'expiresAt': '2026-12-15T10:00:00Z'}},
+        'retention': {'run-1': {'retentionDays': 30, 'expiresAt': '2026-12-15'}},
         'records': [record()], 'recordsSha256': HEX, 'digest': HEX,
     }
     value.update(overrides)
@@ -67,7 +67,7 @@ class ManifestSchemaTests(unittest.TestCase):
         self.assertValid(manifest(kind='supervised', balance='none', balanceReport=[],
                                   records=[record(limits=[], outcome='unknown', turnRange=[1, 1])]))
         self.assertValid(manifest(level='transition'))
-        host = manifest(records=[record(source='host-model')], termsDecision={'path': 'terms/anthropic.json',
+        host = manifest(records=[record(source='host-model')], termsDecision={'path': 'terms/decision.json',
                                                                              'sha256': HEX})
         self.assertValid(host)
 
@@ -94,12 +94,83 @@ class ManifestSchemaTests(unittest.TestCase):
             with self.subTest(key=key):
                 self.assertInvalid(broken)
 
+    def test_nested_objects_require_every_field_and_refuse_unknown_keys(self):
+        nested = {
+            'exclusions': lambda m: m['exclusions'],
+            'balanceReport item': lambda m: m['balanceReport'][0],
+            'retention entry': lambda m: m['retention']['run-1'],
+            'termsDecision': lambda m: m['termsDecision'],
+        }
+        for name, part in nested.items():
+            base = manifest(termsDecision={'path': 'terms/decision.json', 'sha256': HEX})
+            for key in list(part(base)):
+                broken = copy.deepcopy(base)
+                del part(broken)[key]
+                with self.subTest(part=name, missing=key):
+                    self.assertInvalid(broken)
+            broken = copy.deepcopy(base)
+            part(broken)['extra'] = 0
+            with self.subTest(part=name, unknown='extra'):
+                self.assertInvalid(broken)
+
+    def test_counters_are_not_negative(self):
+        for reason in manifest()['exclusions']:
+            with self.subTest(exclusion=reason):
+                self.assertInvalid(manifest(exclusions={**manifest()['exclusions'], reason: -1}))
+        for key in ('successes', 'failures', 'unknown', 'keptPerOutcome', 'dropped'):
+            broken = manifest()
+            broken['balanceReport'][0][key] = -1
+            with self.subTest(balanceReport=key):
+                self.assertInvalid(broken)
+        self.assertInvalid(manifest(records=[record(turnRange=[-1, 2])]))
+
+    def test_retention_days_and_expiry_date(self):
+        for days in (0, 91, 1.5):
+            with self.subTest(days=days):
+                self.assertInvalid(manifest(retention={'run-1': {'retentionDays': days, 'expiresAt': '2026-12-15'}}))
+        for days in (1, 90):
+            self.assertValid(manifest(retention={'run-1': {'retentionDays': days, 'expiresAt': '2026-12-15'}}))
+        for expiry in ('2026-99-99', '2026-13-01', '2026-12-32', '2026-12-15T10:00:00Z', '26-12-15', '2026-1-5'):
+            with self.subTest(expiry=expiry):
+                self.assertInvalid(manifest(retention={'run-1': {'retentionDays': 30, 'expiresAt': expiry}}))
+        for stamp in ('2026-99-99T99:99:99Z', '2026-11-15T24:00:00Z', '2026-11-15T10:00:00+01:00'):
+            with self.subTest(generatedAt=stamp):
+                self.assertInvalid(manifest(generatedAt=stamp))
+
+    def test_terms_decision_path_is_relative_and_safe(self):
+        for path in ('terms/decision.json', 'decision.json', 'terms/2026-11-14_provider.v1.json'):
+            with self.subTest(path=path):
+                self.assertValid(manifest(termsDecision={'path': path, 'sha256': HEX}))
+        for path in ('/Users/someone/terms.json', '../terms.json', 'terms/../x.json', 'terms/./x.json',
+                     'Provider permits training\nyes', 'terms decision.json', 'terms\tx.json', '', 'terms/',
+                     '~/terms.json', 'C:\\terms.json', 'x' * 257):
+            with self.subTest(path=path):
+                self.assertInvalid(manifest(termsDecision={'path': path, 'sha256': HEX}))
+        self.assertInvalid(manifest(termsDecision={'path': 'terms/decision.json', 'sha256': 'A' * 64}))
+
+    def test_attempt_id_is_a_spec074_pseudonym(self):
+        for kind in ('attempt', 'turn', 'strand', 'episode'):
+            with self.subTest(kind=kind):
+                self.assertValid(manifest(records=[record(attemptId=f'{kind}-0123456789abcdef')]))
+        for value in ('attempt-0123456789abcde', 'attempt-0123456789abcdef0', 'attempt-0123456789ABCDEF',
+                      'session-0123456789abcdef', 'loom-0123456789abcdef', '0', 'attempt-'):
+            with self.subTest(value=value):
+                self.assertInvalid(manifest(records=[record(attemptId=value)]))
+
+    def test_identifier_patterns(self):
+        for key in ('runId', 'taskId', 'groupId', 'rolloutId'):
+            for value in ('', '-x', 'a b', 'a/b', 'x' * 65):
+                with self.subTest(key=key, value=value):
+                    self.assertInvalid(manifest(records=[record(**{key: value})]))
+        self.assertInvalid(manifest(balanceReport=[{**manifest()['balanceReport'][0], 'taskId': 'a b'}]))
+
     def test_closed_vocabularies_and_shapes(self):
         cases = {
             'unknown key': manifest(extra=1),
             'unknown record key': manifest(records=[record(prompt='text')]),
             'version': manifest(manifestVersion='braid-lightning-dataset-manifest/v0.2'),
             'kind': manifest(kind='preference'),
+            'balance ratio (OD-2: no ratio parameter)': manifest(balance='ratio'),
             'level': manifest(level='step'),
             'ordering key': manifest(orderingKey=['taskId']),
             'canary scan': manifest(canaryScan='hit'),
@@ -110,8 +181,8 @@ class ManifestSchemaTests(unittest.TestCase):
             'no records': manifest(records=[]),
             'exclusion reason': manifest(exclusions={**manifest()['exclusions'], 'other': 1}),
             'exclusion count': manifest(exclusions={**manifest()['exclusions'], 'balance': -1}),
-            'retention days': manifest(retention={'run-1': {'retentionDays': 91, 'expiresAt': '2026-12-15T10:00:00Z'}}),
-            'retention run id': manifest(retention={'../x': {'retentionDays': 30, 'expiresAt': '2026-12-15T10:00:00Z'}}),
+            'retention days': manifest(retention={'run-1': {'retentionDays': 91, 'expiresAt': '2026-12-15'}}),
+            'retention run id': manifest(retention={'../x': {'retentionDays': 30, 'expiresAt': '2026-12-15'}}),
             'consent': manifest(records=[record(consentLevel='none')]),
             'source': manifest(records=[record(source='rollout')]),
             'outcome': manifest(records=[record(outcome='partial')]),
@@ -126,6 +197,10 @@ class ManifestSchemaTests(unittest.TestCase):
         for name, value in cases.items():
             with self.subTest(name=name):
                 self.assertInvalid(value)
+
+    def test_balance_none_has_an_empty_report(self):
+        self.assertInvalid(manifest(balance='none'))
+        self.assertValid(manifest(balance='none', balanceReport=[]))
 
     def test_supervised_is_never_balanced(self):
         self.assertInvalid(manifest(kind='supervised', balance='equal'))

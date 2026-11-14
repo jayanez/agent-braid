@@ -21,12 +21,12 @@ Lines are `trace_adapter.canonical_bytes(record)` followed by `\n`.
 | `seed` | integer ≥ 0 | balance choice seed |
 | `balance` | `equal` \| `none` | E4; `equal` keeps `min(successes, failures)` of each outcome per task (1:1, OD-2); `rollout` kind only, `none` for `supervised` |
 | `orderingKey` | const `["taskId","groupId","rolloutId","attemptId","turnIndex"]` | E3 |
-| `redactionVersion` | string `[a-z0-9][a-z0-9./-]{0,127}` | identifies the SPEC-074 redactor that produced the content; one per dataset |
-| `termsDecision` | `{path, sha256}` \| null | required non-null when any record has `source: host-model` |
+| `redactionVersion` | string `[a-z0-9][a-z0-9./-]{0,127}` | identifies the SPEC-074 redactor that produced the content; one per dataset. SPEC-074 records carry no version field, so the builder (T006) defines this value; SPEC-074 is not changed |
+| `termsDecision` | `{path, sha256}` \| null | required non-null when any record has `source: host-model`; `path` is relative (no leading `/`, no `.` or `..` segment, no whitespace, at most 256 characters) |
 | `canaryScan` | const `clean` | written only after the scan |
 | `exclusions` | object reason → count, every reason present | `no-consent`, `consent-none`, `unredacted`, `content-missing`, `balance`, `overlong`, `retention-expired` |
-| `balanceReport` | array of `{taskId, successes, failures, unknown, keptPerOutcome, dropped, singleOutcome}` | E4 per-task counts; empty for `supervised` and `balance: none` |
-| `retention` | object source run id → `{retentionDays, expiresAt}` | from SPEC-074; records past `expiresAt` are refused |
+| `balanceReport` | array of `{taskId, successes, failures, unknown, keptPerOutcome, dropped, singleOutcome}` | E4 per-task counts, one entry per task; `singleOutcome` implies `keptPerOutcome` 0; empty for `supervised` and `balance: none` |
+| `retention` | object source run id → `{retentionDays, expiresAt}` | from SPEC-074; `expiresAt` is the UTC expiry date `YYYY-MM-DD` of the run; records past it are refused; one key per record `runId` |
 | `records` | array, at least one | one entry per JSONL line, in file order (an empty export refuses with `no-records`) |
 | `recordsSha256` | hex | SHA-256 of `records.jsonl` |
 | `digest` | hex | SHA-256 of canonical manifest without `generatedAt` and `digest` |
@@ -34,8 +34,8 @@ Lines are `trace_adapter.canonical_bytes(record)` followed by `\n`.
 Record entry: `recordId` (`r-` plus the first 16 hex of the SHA-256 of the
 canonical record without `recordId`), `sha256` (of its line), `runId` (the source
 run, keying `retention`), `taskId`, `groupId`, `rolloutId`, `attemptId` (the
-SPEC-074 `attempt-<hmac16>` pseudonym, never the raw id), `turnRange`
-`[first,last]`, `consentLevel` (`redacted`),
+SPEC-074 pseudonym `attempt-`, `turn-`, `strand-` or `episode-<hmac16>`, never
+the raw id), `turnRange` `[first,last]` with first ≤ last, `consentLevel` (`redacted`),
 `source` (`host-model` \| `fixture` \| `local-model`), `outcome`
 (`success` \| `failure` \| `unknown`), `limits` (subset of
 `text-level-merge`, `truncated`).
@@ -43,6 +43,13 @@ SPEC-074 `attempt-<hmac16>` pseudonym, never the raw id), `turnRange`
 Exclusion `content-missing` counts model calls with consent but no stored
 content (for example a content line already swept), or without a prompt or
 response to export; it was added when the schema was created (T002).
+
+Checks the schema cannot express and the builder enforces: `recordsSha256`, each
+record `sha256` and `digest` match the bytes they cover; `turnRange` first ≤
+last; `limits` sorted; a `retention` key per record `runId`; unique
+`balanceReport.taskId`; `singleOutcome` implies `keptPerOutcome` 0; a
+`supervised` export has `exclusions.balance` 0; a host-model record is never
+labelled `fixture`.
 
 ## Record shapes
 

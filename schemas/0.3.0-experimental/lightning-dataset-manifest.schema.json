@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/jayanez/agent-braid/schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json",
   "title": "Braid Lightning dataset manifest",
-  "description": "Experimental. Contract: specs/075-lightning-dataset-export/contracts/dataset-manifest.md. Builder: agent_braid/lightning_export.py (SPEC-075). The builder additionally checks that recordsSha256, each record sha256 and digest match the bytes they cover.",
+  "description": "Experimental. Contract: specs/075-lightning-dataset-export/contracts/dataset-manifest.md. Builder: agent_braid/lightning_export.py (SPEC-075). Checks the schema cannot express are the builder's: recordsSha256, each record sha256 and digest match the bytes they cover; turnRange start <= end; limits are sorted; retention has a key for each record's runId; balanceReport taskIds are unique; singleOutcome implies keptPerOutcome 0; a supervised export has exclusions.balance 0; a host-model record is never labelled fixture.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -41,7 +41,7 @@
     },
     "generatedAt": {
       "type": "string",
-      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$",
       "description": "UTC; excluded from digest."
     },
     "seed": {
@@ -82,8 +82,9 @@
           "properties": {
             "path": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 256
+              "maxLength": 256,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*(/[A-Za-z0-9][A-Za-z0-9._-]*)*$",
+              "description": "Relative path of the owner terms decision record: no leading slash, no '..' segment, no whitespace."
             },
             "sha256": {
               "type": "string",
@@ -205,7 +206,8 @@
           },
           "expiresAt": {
             "type": "string",
-            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$",
+            "description": "Expiry date (UTC day) of the source run."
           }
         }
       }
@@ -259,8 +261,8 @@
           },
           "attemptId": {
             "type": "string",
-            "pattern": "^attempt-[0-9a-f]{16}$",
-            "description": "SPEC-074 salted attempt pseudonym; never the raw attempt id."
+            "pattern": "^(attempt|turn|strand|episode)-[0-9a-f]{16}$",
+            "description": "SPEC-074 salted pseudonym (attempt-, turn-, strand- or episode-<hmac16>); never the raw id."
           },
           "turnRange": {
             "type": "array",
@@ -335,6 +337,25 @@
           "balance": {
             "const": "none"
           },
+          "balanceReport": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "balance": {
+            "const": "none"
+          }
+        },
+        "required": [
+          "balance"
+        ]
+      },
+      "then": {
+        "properties": {
           "balanceReport": {
             "maxItems": 0
           }
