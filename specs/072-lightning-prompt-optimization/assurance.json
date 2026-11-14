@@ -10,7 +10,7 @@
     21,
     23
   ],
-  "assumptions": "SPEC-071 runner and reward are delivered; the optimizer runs through the host CLI on the subscription route; the SPEC-069 held-out set and FREEZE are unchanged (OD-1 decided 2026-11-11: keep 10 cases \u00d7 3 repetitions); required hosts per OD-2.",
+  "assumptions": "SPEC-071 runner and reward are delivered; the optimizer runs through the host CLI on the subscription route; the SPEC-069 held-out set and FREEZE are unchanged (OD-1 decided 2026-11-11: keep 10 cases \u00d7 3 repetitions); required host claude-code per OD-2 as amended by protocol Amendment 1 (approved 2026-11-13; opencode route-unverified is a declared limit); A0 is the current develop guidance with model pinned to claude-sonnet-5-5.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -177,10 +177,10 @@
           "obtained_evidence": [
             {
               "command": "python -m unittest tests.test_lightning_resources",
-              "limits": "Record and store only; the seed check against the run's recorded commit is applied when runs record a commit (T003).",
+              "limits": "Record and store only. Runs journal their source commit and seed skill; a resume at another commit is refused and replay rebuilds the seed from the journaled source (review fixes, #1348); this procedure does not test that.",
               "outcome": "passed: The seed is the analyze skill body below its fixed front matter; seed and child records round-trip canonically byte for byte; the child names the seed as parent; text whose hash differs, unknown keys, foreign origins, refused contamination checks and broken lineage are refused with codes; the store keeps text beside the record privately and refuses a record without matching text; later records may change only scores and Pareto membership.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_002.json",
-              "sha256": "a43e0e5cf0d8e76fc05eee8bfc9eefd7382c04df9fe7e821b039da1d96f03af6"
+              "sha256": "c0e1cada91386910d797f474a83c9332e723fd76286a7814475b3c97fec4bc4b"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -225,10 +225,10 @@
           "obtained_evidence": [
             {
               "command": "python -m unittest tests.test_lightning_apo",
-              "limits": "Fake optimizer and synthetic body-dependent rewards; no model contacted. The full pre-call scan and the sandboxed optimizer host are evidenced by procedure_006. Evaluating a real candidate body through host rollouts is T009 work.",
+              "limits": "Fake optimizer and synthetic body-dependent rewards; no model contacted. The full pre-call scan and the sandboxed optimizer host are evidenced by procedure_006. Real candidate bodies were evaluated through Claude Code rollouts in T009 (evidence/development-arms.json, bound by procedure_001), not by this procedure.",
               "outcome": "passed: With the preregistered parameters (beam 2, branch 2, 2 rounds, minibatch 5, 2 hosts, 3 repetitions) APO runs 1 then 2 parents with 2 then 4 children, 9 optimizer calls and 120 rollouts (20 + 40 search, 60 full evaluation of the best), as in the feasibility table; every APO candidate records its parent, round, two call ids, both passed contamination checks and the hash of the critique and edit templates; configuration defaults stop at the 120-rollout cap (unit-cap), configured rounds above 3 are capped at 3, the optimizer-call cap stops the run, and unusable edits are failed calls without candidates. Negative controls: an optimizer outside the runner channel is refused (optimizer-bypass), a non-fake channel is refused until the sandboxed host path exists (isolation-failed), and inputs with a held-out case id or the rollout canary are refused before any call (holdout-contamination).",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_004.json",
-              "sha256": "70c908d9663f03b4a4ea0a7c722906a82ea2d123395b9a67fc1517a133a0ee28"
+              "sha256": "681f6297de408cc11a026245821c7bb41f5630d8ba99484b7987f1ca88cc74e3"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -297,10 +297,10 @@
           "obtained_evidence": [
             {
               "command": "python -m unittest tests.test_lightning_stopping",
-              "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; wiring the algorithms into `agent-braid lightning run` with real candidate evaluation is T009 work.",
+              "limits": "Fake optimizer and synthetic rewards; no model contacted. Resume is exercised through the algorithm API; the real T009 development runs and the T010 held-out run ended without a stop, so no stop rule other than the round cap was observed on a real host.",
               "outcome": "passed: With budgets set low in fake runs each algorithm stops at the first applicable rule and records it in the run journal: unit-cap (APO at configuration defaults), optimizer-cap, no-improvement after 2 consecutive flat rounds, and a weekly-stop quota stop that carries the explicit `agent-braid lightning run --resume <run-id>` command; a refused optimizer input (holdout-contamination) stops the run with the refusal recorded and no call made; APO never runs more than 3 rounds; no run exceeds its rollout or optimizer-call cap (negative control). Resuming a quota-stopped APO or GEPA run with the same seed replays the journaled optimizer outputs and evaluations in order and reaches the same rounds, best candidate, rollouts and calls as an uninterrupted run without repeating any optimizer call; resuming with another seed or configuration is refused (resume-diverged). The journal is private and refuses unknown entry shapes.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_007.json",
-              "sha256": "8a070c988720abc9e6e43bed9a01398718c771e98bcdce2b5a8e82cc61c44162"
+              "sha256": "d1d598c8f31db38cbb0d813a82fcce5c7774930412e7bcdc9941835f17eb37c3"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -348,7 +348,7 @@
               "limits": "Static and import-closure checks cover the modules present at this commit; a fake-host run cannot show what a real host process writes outside the sandbox (SPEC-071 OS sandbox evidence covers that). Unchanged skill bytes are asserted for the repository copy only.",
               "outcome": "passed: A complete fake optimization run (baseline seed run, then a GEPA arm on fake hosts) leaves the repository analyze skill file byte- and mtime-identical and reports the best candidate as a 64-hex bestSha256 with no skill text in the summary. Every agent_braid/lightning_*.py module and scripts/spec072_*.py script imports only the standard library, other lightning modules and an explicit allowlist (plugin_registry, harness_host_claude, the T013 format-only harness_evaluation and system_one, the SPEC-069 scoring, native-run, fixture and plugin-build scripts, and the BL.2 development-arms script the T010 held-out script reuses); no lightning module names decide, begin, execute, recover, harness_promotion, import_module, __import__ or any grant identifier; importing all of them in a fresh interpreter loads no promotion, lifecycle, runtime-policy, git-execution, scheduler or MCP module; no MCP server module or integration JSON manifest mentions lightning; pyproject has no runtime dependency and no lightning extra. Negative control: adding `from .harness_promotion import decide` to a lightning module fails the allowlist, name and import-closure checks.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_009.json",
-              "sha256": "80458460499eed713d545fd818f8fdec0f680f5264bece402e173a1644a61237"
+              "sha256": "097d904b42924fbae95b1799cf4b9cf0997d16c70432c3303fddf41bb6bde9b3"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -369,10 +369,10 @@
           "obtained_evidence": [
             {
               "command": "python -m unittest tests.test_lightning_replay",
-              "limits": "Fake optimizer; synthetic vectors carried in fake attempt-result records and read back by a test scorer; the default scorer is exercised on one development case only. Real runs that produce these records through `agent-braid lightning run` are T009 work.",
+              "limits": "Fake optimizer; synthetic vectors carried in fake attempt-result records and read back by a test scorer; the default scorer is exercised on one development case only. The real T009 runs recorded no altered results and replayed nothing (evidence/development-arms.json); a full replay of those private run stores is not part of the committed evidence.",
               "outcome": "passed: Each APO and GEPA run journals a start entry with its algorithm and seed, every optimizer call with its input hash and output, and every evaluation as the ids and sha256 of the SPEC-071 attempt-result records it stored; the run manifest holds the configuration digest and candidate records keep parent links and optimizer call ids. Vectors are always re-scored from the stored content-free parsed attempts. Replaying a finished APO or GEPA run from its journal and stored records makes no optimizer or evaluator call, writes nothing and reproduces every candidate record (lineage, minibatch and full scores, Pareto membership) and the best candidate. Negative controls: altering one stored attempt-result record is detected by hash and changes a selection; a journal that ends early is refused (replay-incomplete); the default scorer refuses held-out records (holdout-contamination) and scores a refusal as a failed D4 attempt.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_010.json",
-              "sha256": "ffbd9a956970f6a509119d975131c7cdb15b861114d0df9c7d5dacf67408c93f"
+              "sha256": "eed4100f0f93a95849b7bc51c21cd6c767621b72a0f40b107dddf45b2f45900d"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -393,10 +393,10 @@
           "obtained_evidence": [
             {
               "command": "python -m unittest tests.test_lightning_evaluation",
-              "limits": "Synthetic held-out summaries; the T010 held-out runs have not run, so no real H1 outcome is recorded. The SPEC-049 noninferiority test is not part of the frozen protocol and is reported descriptive-only, so an approved SPEC-073 promotion over this pair is refused (regression-not-covered) unless SPEC-073 decides otherwise.",
-              "outcome": "passed: From synthetic held-out results, spec049_pair writes a SPEC-049 Registration and EvaluationRecord in REGISTRATION_FORMAT and REPORT_FORMAT with arm A = A0 and arm C = A2 (GEPA) by candidate hash, the H1 outcome per required host (claude-code) under the protocol rule (supported, not-supported, not-assessable; a canary hit invalidates the arm) and executionAuthorization false; both records load through the harness_promotion verifiers and a pending decide() call in the test accepts the pair with the C-vs-A regression descriptive-only. The writer never names decide, begin or harness_promotion. Negative controls: arm C set to A1 is refused (arm-c-not-a2), arm A not A0 is refused (arm-a-not-a0), a report edited after recording fails the byte check, and a report bound to another registration is refused (registration-mismatch).",
+              "limits": "The writer is tested over synthetic held-out summaries; the committed T010 pair is checked by bytes, formats, arms and H1 against evidence/heldout-arms.json, and records H1 not supported. BL.2 never calls decide(). The SPEC-049 noninferiority test is not part of the frozen protocol and is reported descriptive-only, so an approved SPEC-073 promotion over this pair is refused (regression-not-covered) unless SPEC-073 decides otherwise.",
+              "outcome": "passed: From synthetic held-out results, spec049_pair writes a SPEC-049 Registration and EvaluationRecord in REGISTRATION_FORMAT and REPORT_FORMAT with arm A = A0 and arm C = A2 (GEPA) by candidate hash, the H1 outcome per required host (claude-code) under the protocol rule (supported, not-supported, not-assessable; a canary hit invalidates the arm) and executionAuthorization false; both records load through the harness_promotion verifiers and a pending decide() call in the test accepts the pair with the C-vs-A regression descriptive-only. The writer never names decide, begin or harness_promotion. Negative controls: arm C set to A1 is refused (arm-c-not-a2), arm A not A0 is refused (arm-a-not-a0), a report edited after recording fails the byte check, and a report bound to another registration is refused (registration-mismatch). The committed T010 pair (evidence/heldout-registration.json, evidence/heldout-evaluation-record.json) matches the sha256 recorded in evidence/heldout-arms.json, loads through the harness_promotion verifiers, binds A = A0 and C = A2 by candidate hash, and records H1 not-supported for claude-code, equal to the held-out analysis.",
               "path": "specs/072-lightning-prompt-optimization/evidence/procedure_011.json",
-              "sha256": "504cc7709497a800dc4e7a9210a1f5ad89d098db3173babe710038d913b57c59"
+              "sha256": "d921b0829e36a29f33dd6bf22c4155848c5b4661ee1e543b3ef7dc4aec36804e"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -409,7 +409,7 @@
       "text": "The held-out report emits a SPEC-049 Registration and EvaluationRecord pair in the formats of agent_braid/harness_promotion.py and harness_evaluation.py, with A = A0 baseline and C = the preregistered primary arm (A2 GEPA), so SPEC-073 can call decide(); BL.2 never calls decide()."
     }
   ],
-  "scientific_limits": "Ten held-out prompts and three repetitions give wide intervals; the decision follows the preregistered D4 rule only. Results describe observed host versions, models and prompt sets and do not generalize to other skills, hosts or tasks.",
+  "scientific_limits": "Ten held-out prompts and three repetitions give wide intervals; the decision follows the preregistered D4 rule only. Results describe the observed host (claude-code 2.1.311), model (claude-sonnet-5-5) and prompt sets and do not generalize to other skills, hosts or tasks. Observed outcome (T010, 2026-11-13): a negative result; A0 25/30, A1 APO 23/30, A2 GEPA 24/30 first attempt on held-out, all missing D4, so H1 is not supported; this does not show that APO or GEPA cannot help in other hosts, models or tasks. The exploratory arms E1/E2 (Amendment 1 item 6, descriptive) have not been run.",
   "scope": "Research protocol: candidate resources, Algorithm base and Baseline, APO port, GEPA from the paper, contamination controls, budgets and stopping rules, and a preregistered held-out evaluation with analysis.",
   "stage": "draft"
 }

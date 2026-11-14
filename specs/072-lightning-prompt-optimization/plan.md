@@ -68,6 +68,18 @@ Unchanged. Promotion stays outside the design.
 5. P4 — held-out evaluation and analysis (T010).
 6. Closing — boundaries check and converge (T011–T012).
 
+All phases are done (converged 2026-11-13). As built, the design above holds,
+with these changes recorded in the spec and protocol rather than here:
+Amendment 1 (one required host `claude-code`, A0 = current guidance with a new
+development baseline, model pin `claude-sonnet-5-5`, exploratory arms E1/E2);
+the arms are driven by `scripts/spec072_development_arms.py` (T009) and
+`scripts/spec072_heldout.py` (T010) over `agent-braid lightning run`, and the
+SPEC-049 pair is written by `agent_braid.lightning_evaluation.spec049_pair`.
+Review fixes before the held-out run hardened resume, replay and evidence
+integrity (#1341, #1348); two held-out build defects were fixed during T010
+without a protocol change (#1356, #1357). The outcome is a negative result
+(H1 not supported); see the spec's outcome section.
+
 ## Risks
 
 - Overfitting to 10 development prompts: rounds capped, held-out untouched.
@@ -76,4 +88,7 @@ Unchanged. Promotion stays outside the design.
   `lightning run --resume <run-id>`; budgets are per arm run.
 - Low power: decision rule fixed in advance; intervals reported.
 - Host model updates between arms: arms run in the same window; versions
-  recorded; mismatch reported as a limit.
+  recorded; mismatch reported as a limit. Observed: every held-out arm ran on
+  `claude-code` 2.1.311 with `claude-sonnet-5-5`; no mismatch.
+- Observed: a development-to-held-out gap for A2 (0.967 on development, 24/30
+  on held-out); the held-out rule decided, as planned.

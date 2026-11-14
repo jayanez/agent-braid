@@ -27,3 +27,13 @@ records decisions specific to BL.2.
 - **Alternatives rejected.** TextGrad (more calls per step, no Pareto
   diversity); MIPROv2 (needs few-shot demonstration slots the skill lacks);
   optimizing on the held-out set (contamination).
+- **Outcome (T010, 2026-11-13).** On `claude-code` with `claude-sonnet-5-5`,
+  GEPA raised the development score from 0.900 to 0.967 and APO did not
+  (best 0.233), but on the frozen held-out set neither A2 GEPA (24/30) nor
+  A1 APO (23/30) met D4, and neither beat A0 (25/30; paired sign test
+  p = 1.0). H1 is not supported. This is a single-host, single-model,
+  low-power observation of these prompt sets; it does not show that APO or
+  GEPA cannot help elsewhere. On the development set the current guidance
+  (A0, 27/30) already scored far above the SPEC-069 T010 guidance (16/30)
+  that motivated this specification, so less headroom remained than the
+  purpose assumed; this is context, not an explanation of the result.
