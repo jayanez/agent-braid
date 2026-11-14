@@ -1,6 +1,6 @@
 # SPEC-074: Validation plan
 
-Status (draft): procedure_001 (T002), procedure_002 (T003), procedure_003 (T004) procedure_004 (T005), procedure_005 (T006) procedure_006 for T007 and T008 (rollout, Loom, host transcript and System One sources) and procedure_007 (T009) have obtained
+Status (draft): procedure_001 (T002), procedure_002 (T003), procedure_003 (T004) procedure_004 (T005), procedure_005 (T006) procedure_006 for T007 and T008 (rollout, Loom, host transcript and System One sources), procedure_007 (T009) and procedure_008 (T010) have obtained
 evidence (`scripts/spec074_capture_evidence.py`); the others have none. Procedures run with
 `.venv-speckit/bin/python -m unittest` on targeted modules with temporary homes
 and committed fixtures; canaries are synthetic.
@@ -14,4 +14,4 @@ and committed fixtures; canaries are synthetic.
 | procedure_005 | SC-005 | `tests/test_spec074_retention_purge.py` (injected clock) | records past retention removed; purge leaves no content bytes | retention 91 refused; sweep skipped → test fails |
 | procedure_006 | SC-006 | `tests/test_lightning_adapter.py` | deterministic redacted triplets/messages per source with losses | unredacted text in output (must fail) |
 | procedure_007 | SC-007 | `tests/test_spec074_system_one_isolation.py` | shadow directory bytes and mtimes unchanged | adapter write into shadow dir detected |
-| procedure_008 | SC-008 | boundary tests | no socket, subprocess, non-stdlib import or MCP tool; telemetry content-free | patched socket call fails test |
+| procedure_008 | SC-008 | `tests/test_spec074_boundaries.py`, `tests/test_lightning_cli.py` | no socket, subprocess, non-stdlib import or MCP tool; telemetry content-free | patched socket call and process launch fail the test |

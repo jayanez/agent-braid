@@ -5,7 +5,7 @@ A record states the command, the outcome, the hashes of the files the run depend
 (``inputs``; the Spec Kit validator rejects the record when any of them changes) and the
 limits. The script also binds each record into ``assurance.json`` as obtained evidence of
 its scenario. It is local evidence; the CI ``validate`` aggregate on the pull request head
-is separate. Procedures are added as their tasks land (T002: procedure_001; T003: procedure_002; T004: procedure_003; T005: procedure_004; T006: procedure_005; T007-T008: procedure_006; T009: procedure_007).
+is separate. Procedures are added as their tasks land (T002: procedure_001; T003: procedure_002; T004: procedure_003; T005: procedure_004; T006: procedure_005; T007-T008: procedure_006; T009: procedure_007; T010: procedure_008).
 
     python -m scripts.spec074_capture_evidence [procedure_NNN ...]
 
@@ -87,6 +87,16 @@ PROCEDURES = {
                    "tests/test_spec074_system_one_isolation.py", "tests/test_lightning_adapter.py"],
         "outcome_note": "T009: a real shadow store (two episodes written by system_one_shadow.append into a temporary directory) is read through system_one_triplets and system_one_messages with consent none, with system-one unlisted and with it listed; after each pass the directory's mode and mtime and every entry's name, mode, size, mtime and bytes (day file and store lock) are unchanged. Every os.open under the store is read-only with O_NOFOLLOW (one per reader call) and builtins.open is never used. A triplet and a messages record are refused by validate_episode, append (StoreRefused) and build_episode, and the store is unchanged after those attempts. Statically, Lightning modules reach system_one_shadow only through read_day (no from-import), and no system_one module mentions lightning. Negative controls: a reader that writes a file next to the day file fails the snapshot comparison; opening the day file O_RDWR fails the read-only check; a reference to system_one_shadow.append in the adapter fails the static check.",
         "limits": "Temporary directories with synthetic episodes; the real user store under ~/.local/share is never touched (default_directory is patched). Opens are observed through os.open and builtins.open in this process only; the static check covers attribute access on the name system_one_shadow, not aliases or dynamic access. Isolation from other writers (the live System One worker) is not tested.",
+    },
+    'procedure_008': {
+        "scenario": 'SC-008',
+        "modules": ["tests.test_spec074_boundaries", "tests.test_lightning_cli"],
+        "inputs": ["agent_braid/lightning_adapter.py", "agent_braid/lightning_cli.py", "agent_braid/lightning_config.py",
+                   "agent_braid/lightning_redact.py", "agent_braid/lightning_schema.py", "agent_braid/lightning_store.py",
+                   "agent_braid/mcp_runtime.py", "tests/test_spec074_boundaries.py", "tests/test_lightning_cli.py",
+                   "tests/test_lightning_adapter.py"],
+        "outcome_note": "T010: with socket.socket, create_connection, getaddrinfo, subprocess.Popen, os.system, posix_spawn, posix_spawnp, fork, execv and execve replaced by recorders that refuse, lightning init (preview and apply with redacted consent and all four sources), validate, status, sweep, purge --expired and purge --run-id (preview and apply) exit 0 with executionAuthorization false, and every adapter reader (rollout, Loom, host transcript, System One triplets and messages) returns records with content; no recorder is called, and no output carries the canaries. Event, rollout and result files of a run with redacted content hold no canary, prompt or response field and no redaction placeholder (content lives only in traces.jsonl), and the event schema refuses a model_request with a prompt field. No MCP server or tool module mentions lightning and mcp_runtime.TOOLS has no lightning tool. tests.test_lightning_cli checks that the Lightning modules import only the standard library and listed local modules, that their import closure loads no socket, asyncio, ssl, http or urllib.request module, and that it loads no MCP, promotion or execution module. Negative controls: a reader that calls socket.create_connection and a status path that calls subprocess.run are both caught by the recorders.",
+        "limits": "Recorders patch the named Python entry points in this process only; a C extension or ctypes call, os.spawn* or a process started by another program is not observed. The run, report and status --run-id paths (SPEC-071/072) are not exercised here. The MCP check is textual (no MCP module names lightning), not a listing of a running server. Telemetry here means the run's event, rollout and result records; plugin MCP telemetry is SPEC-054 and does not see Lightning records.",
     },
 }
 

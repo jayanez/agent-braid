@@ -49,7 +49,7 @@ imply owner acceptance. `quick` means
 
 ## Closing
 
-- [ ] T010 (REQ-008 / SC-008): boundary tests (no socket, no subprocess,
+- [x] T010 (REQ-008 / SC-008): boundary tests (no socket, no subprocess,
   stdlib, no MCP tool, content-free telemetry). Dependencies: T007.
   Verification: procedure_008.
 - [ ] T011 (REQ-001–REQ-008 / SC-001–SC-008): converge: `speckit-analyze`,
