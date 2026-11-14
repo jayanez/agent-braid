@@ -21,6 +21,7 @@ from pathlib import Path
 from . import lightning_config as config
 from . import lightning_redact as redact
 from . import lightning_store as store
+from . import trace_adapter
 from . import view_loom
 from .lightning_schema import canonical_bytes
 
@@ -265,7 +266,6 @@ def _transcript(home: Path | None, path, salt: bytes):
     `trace_adapter` admits synthetic traces only, so real host transcripts are not read yet. A trace attempt id
     may hold free text (an e-mail is a valid token), so each turn is named by a salted pseudonym instead.
     """
-    from . import trace_adapter  # loaded on use: the Lightning import closure stays socket-free
     try:
         data = trace_adapter.read_trace(path)
         artifacts = trace_adapter.import_trace(data, mapper=trace_adapter.MAPPER)

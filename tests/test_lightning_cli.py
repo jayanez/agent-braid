@@ -146,7 +146,7 @@ class BoundaryTests(unittest.TestCase):
                         self.assertNotIn(root, {'socket', 'subprocess', 'http', 'urllib', 'asyncio'}, (name, root))
 
     def test_import_closure_opens_no_network_or_event_loop(self):
-        """Readers load trace_adapter and system_one_shadow on use, so importing Lightning loads no socket."""
+        """The System One reader loads system_one_shadow on use, so importing Lightning loads no socket."""
         probe = ('import importlib, json, sys\n'
                  f'for m in {MODULES!r}: importlib.import_module("agent_braid." + m)\n'
                  'print(json.dumps(sorted(m for m in ("socket", "asyncio", "http", "urllib", "ssl") if m in sys.modules)))')
