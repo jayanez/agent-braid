@@ -147,9 +147,9 @@
             {
               "command": "python -m unittest tests.test_spec074_consent_config tests.test_lightning_config",
               "limits": "Temporary homes; no content is collected (the store gate is T003, redaction T004). Calendar validity of consentedAt (for example 2026-02-30) is checked by the validator only; the schema checks the YYYY-MM-DD shape. The per-run email salt itself is implemented with the redactor (T004).",
-              "outcome": "passed: T002 part: traces.contentConsent accepts only none and redacted and defaults to none with a null consent record; a BL.0 profile without consentedAt and consentPreviewDigest reads as none. `lightning init --trace-consent redacted [--trace-sources ...]` previews level, consentedAt, sources (host-transcript only when listed, OD-1), retention, redaction classes (email as a per-run salted hash, OD-2), storage, residual risk and no expiry (OD-3); apply with the matching --preview-digest writes consentedAt and that digest. Unrelated changes keep the record, new sources renew it, lowering to none clears it, and `lightning status` shows level, consentedAt, sources and expires null. The schema and the validator agree on a valid and invalid corpus. Negative controls: raw, a record without consent, consent without a record, an answered record field, a stale or forged digest (nothing written), and plugin setup lab/off leave the profile byte-identical; the store still stores no content (store-consent without consent; redaction-incomplete with it, until content storage is wired in T006).",
+              "outcome": "passed: T002 part: traces.contentConsent accepts only none and redacted and defaults to none with a null consent record; a BL.0 profile without consentedAt and consentPreviewDigest reads as none. `lightning init --trace-consent redacted [--trace-sources ...]` previews level, consentedAt, sources (host-transcript only when listed, OD-1), retention, redaction classes (email as a per-run salted hash, OD-2), storage, residual risk and no expiry (OD-3); apply with the matching --preview-digest writes consentedAt and that digest. Unrelated changes keep the record, new sources renew it, lowering to none clears it, and `lightning status` shows level, consentedAt, sources and expires null. The schema and the validator agree on a valid and invalid corpus. Negative controls: raw, a record without consent, consent without a record, an answered record field, a stale or forged digest (nothing written), and plugin setup lab/off leave the profile byte-identical; the store refuses content without consent (store-consent).",
               "path": "specs/074-lightning-trace-consent/evidence/procedure_001.json",
-              "sha256": "ae90663de20c767bb2ef5e01f8ed50777d5f8d9f028964867225a4cd8363d82d"
+              "sha256": "c42544707443109458287d0d28327ed7e338bb72ae11830b2518dc7a41849e70"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -170,10 +170,10 @@
           "obtained_evidence": [
             {
               "command": "python -m unittest tests.test_spec074_consent_gate tests.test_lightning_store tests.test_lightning_cli",
-              "limits": "Temporary homes; no content is read or stored. The adapter reads no source yet (T007/T008); the gate is its entry check. Content storage with consent is enabled with retention (T006).",
-              "outcome": "passed: T003: with no profile, consent none, or an invalid profile (unparseable, redacted without its consent record, an unknown level) the store refuses a content-bearing record with store-consent and writes nothing, and the adapter gate and `lightning status` traceContent report content-consent-required; status itself refuses an invalid profile with its config-* code. An explicit content_consent none overrides a redacted profile, and an unknown explicit level is refused. With consent redacted the gate opens only for listed sources (others: source-not-consented), and the store still refuses content with redaction-incomplete because the store does not wire redaction and content retention before T006 (C2: redact on ingest). Negative control: invalid configuration never reads as redacted. Content-free kinds are unchanged (SPEC-070 store suite).",
+              "limits": "Temporary homes; no content is read or stored. The adapter reads no source yet (T007/T008); the gate is its entry check. Content storage with consent, redaction and retention is procedure_005 (T006).",
+              "outcome": "passed: T003: with no profile, consent none, or an invalid profile (unparseable, redacted without its consent record, an unknown level) the store refuses a content-bearing record with store-consent and writes nothing, and the adapter gate and `lightning status` traceContent report content-consent-required; status itself refuses an invalid profile with its config-* code. An explicit content_consent none overrides a redacted profile, and an unknown explicit level is refused. With consent redacted the gate opens only for listed sources (others: source-not-consented), and a record that stays unclean after redaction is refused with redaction-incomplete, leaving only a content-free stub (C2: redact on ingest). Negative control: invalid configuration never reads as redacted. Content-free kinds are unchanged (SPEC-070 store suite).",
               "path": "specs/074-lightning-trace-consent/evidence/procedure_002.json",
-              "sha256": "727a650eae2b05ecb571db70fb922e64a5d2e82958e9ce34066b5de864aea477"
+              "sha256": "332ab1d64b3f7a73d36e5b53948e7deb5cecfe9643729ff5da6e677f6cadbf71"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -194,10 +194,10 @@
           "obtained_evidence": [
             {
               "command": "python -m unittest tests.test_lightning_redact",
-              "limits": "Synthetic samples only; encoded forms are covered by the T005 canary corpus (procedure_004). Redaction is pattern-based: secrets of unknown shape that are not known literals are not caught (privacy review residual risk). The store does not call the redactor yet (T006); no content is stored.",
+              "limits": "Synthetic samples only; encoded forms are covered by the T005 canary corpus (procedure_004). Redaction is pattern-based: secrets of unknown shape that are not known literals are not caught (privacy review residual risk). The store calls the redactor on ingest since T006 (procedure_005).",
               "outcome": "passed: T004: lightning_redact detects, then replaces, each class with its typed placeholder: literal known secret [REDACTED:secret], API key and token shapes [REDACTED:token], bearer header [REDACTED:bearer], private key block [REDACTED:private-key], email [REDACTED:email:<8-hex>] (HMAC-SHA256 with a 16-byte per-run salt: stable within a run, case-insensitive, different across salts, OD-2) and the home path as a ~ prefix; the post-redaction scan is clean. JSON values are redacted in keys and strings and scanned in serialized form. An unclean result is refused with redaction-incomplete without echoing the match. Negative control: each sample must be detected by the scan before redaction, so a disabled pattern fails. The SPEC-069 driver's SECRET_PATTERNS is the same object (single source), unchanged pattern for pattern.",
               "path": "specs/074-lightning-trace-consent/evidence/procedure_003.json",
-              "sha256": "088a511107e66b4dfc5154fd19a5f39db7e370a35c87f4b7584e53c3bfacd513"
+              "sha256": "26a1f07bffa0cc5680081d5c8adf01bdd7bcb3eef4c1f275d1e8bc4cc3d709ec"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -218,10 +218,10 @@
           "obtained_evidence": [
             {
               "command": "python -m unittest tests.test_spec074_canary_corpus tests.test_lightning_redact",
-              "limits": "The corpus bounds the claim: only these synthetic shapes and five encodings are tested; nested or double encodings, other alphabets, and secrets of unknown shape are residual risks (privacy review). A split whose first field already shows a recognizable prefix is redacted per field; its tail fragment in the next field is not recognizable and is kept. The store does not call the redactor yet (T006).",
+              "limits": "The corpus bounds the claim: only these synthetic shapes and five encodings are tested; nested or double encodings, other alphabets, and secrets of unknown shape are residual risks (privacy review). A split whose first field already shows a recognizable prefix is redacted per field; its tail fragment in the next field is not recognizable and is kept. The store calls the redactor on ingest since T006 (procedure_005).",
               "outcome": "passed: T005: the committed corpus (tests/fixtures/spec074-canaries/corpus.json, regenerated byte-for-byte by scripts/spec074_canary_corpus.py) holds 13 synthetic canaries covering every class (literal secret, seven token shapes, bearer, private key, email, home path) in five forms (plain, JSON-escaped, URL-encoded, split across two fields, base64): 65 records. Every record is detected by the scan, and every one is either redacted with a clean post-scan and no canary value in the output or any decoded view of it (URL-decoded, \\u-unescaped, base64-decoded, fields joined), or refused with redaction-incomplete. URL-encoded, \\u-escaped and base64 runs that hide a hit become [REDACTED:encoded]; a hidden split (no recognizable prefix in the first field) is refused. Negative control: with base64 decoding disabled a base64 canary reaches the output, so the corpus test reports it.",
               "path": "specs/074-lightning-trace-consent/evidence/procedure_004.json",
-              "sha256": "c48a108d9593d67dfdbe95d33d40e68e9a279f2865ea822f0b46e46c420a4bf8"
+              "sha256": "c80383d70c5f77a8ccf5fa4349a75f6c5ee03eb3a82c7e6ade3922beffc7a7f6"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -239,7 +239,15 @@
         {
           "given": "records dated 10, 31 and 95 days ago with retention 30",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec074_retention_purge tests.test_spec074_consent_gate tests.test_lightning_store",
+              "limits": "Temporary homes and synthetic content; the clock is injected (createdAt values), not waited. The sweep runs on `lightning sweep`, `purge --expired` and content appends; reading a run does not sweep it. Purge deletes Braid Lightning run directories only; host transcripts, Loom and System One are never written by the store.",
+              "outcome": "passed: T006: with consent redacted the store redacts each content record on ingest with a per-run 16-byte email salt (email.salt, 0600) and appends {createdAt, record} to traces.jsonl; an unclean record is refused with redaction-incomplete and leaves only a {createdAt, refused} stub. With an injected clock, sweep (store.sweep, `lightning sweep`, and every content append for its own run) removes runs created before the retention cutoff and content lines older than it in the remaining runs; retention outside 1-90 is refused with retention-out-of-range. `lightning purge --run-id <id> | --all` previews the runs and content bytes with a previewDigest and deletes nothing; `--apply --preview-digest` with a stale or forged digest is refused with preview-stale; a matching apply deletes each run directory (records, content, salt, lock) and leaves no content bytes in the store, while files outside the run store are untouched. Negative control: with the content sweep disabled the expired record survives.",
+              "path": "specs/074-lightning-trace-consent/evidence/procedure_005.json",
+              "sha256": "8892ebac061eacdf81b951e6c41e1f220a2929a7ed39c1c8d2061b39e9817742"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/074-lightning-trace-consent/validation-plan.md",
           "test_name": "procedure_005",

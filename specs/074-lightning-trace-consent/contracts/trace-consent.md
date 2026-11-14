@@ -43,9 +43,9 @@ record arrives; a missing, unreadable or invalid profile reads as `none`. A
 caller may pass `none` explicitly, which overrides the profile; any other
 explicit value is refused. Without `redacted` the record is refused with
 `store-consent` and nothing is written. With `redacted` the record must first
-pass redaction (C2); until the store wires `lightning_redact` with the run's
-email salt and content retention (T006) it is refused with
-`redaction-incomplete`. The adapter gate (`agent_braid/lightning_adapter.py`)
+pass redaction (C2) with the run's email salt; it is then stored as
+`{createdAt, record}` in the run's `traces.jsonl`, or refused with
+`redaction-incomplete` leaving a `{createdAt, refused}` stub. The adapter gate (`agent_braid/lightning_adapter.py`)
 reports `content-consent-required` without consent and `source-not-consented`
 for a source not in `traces.sources`; `agent-braid lightning status` reports it
 as `traceContent` (`contentConsent`, `source`, `content`, `refusal`).
@@ -73,9 +73,13 @@ refused with `redaction-incomplete` and only a content-free stub is kept.
 
 ## Retention and purge
 
-Sweep at every store open and on `agent-braid lightning sweep`; purge by the
-BL.0 `agent-braid lightning purge [--run <id>] --apply --preview-digest <d>`,
-extended here to content records. Purge
+Sweep on `agent-braid lightning sweep` (and `purge --expired`), and on every
+content append for that run: runs created before the cutoff are deleted, and
+content lines older than it are dropped from the others. Purge by the BL.0
+`agent-braid lightning purge --run-id <id> | --all`, extended here: without
+`--apply` it previews the runs and content bytes with a `previewDigest`;
+`--apply --preview-digest <d>` deletes, and a changed store or wrong digest is
+refused with `preview-stale`. Purge
 deletes content files and the run's email salt (OD-2) and rewrites indexes
 without content; it never touches
 host transcripts, Loom or System One files.

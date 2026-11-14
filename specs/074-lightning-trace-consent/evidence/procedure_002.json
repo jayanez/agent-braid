@@ -6,15 +6,15 @@
  },
  "inputs": {
   "agent_braid/lightning_adapter.py": "c8a25bcf46aeac39727bf03d235647075358cd21cf2462a505905fd319defefe",
-  "agent_braid/lightning_cli.py": "0d325a38d113a1b75c300dcc8878b903106292a15f86c52a8a6da9425b7a4ff9",
+  "agent_braid/lightning_cli.py": "ba217234f8b0fb06f1099d0daf9a6242f1d223ac58b35d5dfc0c1d8bece0e93d",
   "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
-  "agent_braid/lightning_store.py": "45a179eb8b9f43334fca38cc3bb56abc422044e7dd11451c30b7833bdb0e6b2e",
-  "tests/test_lightning_cli.py": "38bb4f1c7857ed5c8dd6f3ac4ed70db5c31b6f7a5a365c1075bdc6d1b5b7d0f8",
+  "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
+  "tests/test_lightning_cli.py": "f57cbd14947e5e71b1af46b2795c66228f3dd66484685ec0c4d6b8678c00f647",
   "tests/test_lightning_store.py": "feafcca242ec769b7dcedede903f6f452bc4886e2859728ce53d561f83fe97c1",
-  "tests/test_spec074_consent_gate.py": "ea7ff0c58dde1049703eca4ddbdebeb7277ec15e81115a711570ab0298234772"
+  "tests/test_spec074_consent_gate.py": "c29b59929ab6371e9e9f8748468b0139a045aca21c4a2d1c31446da9e9bef598"
  },
- "limits": "Temporary homes; no content is read or stored. The adapter reads no source yet (T007/T008); the gate is its entry check. Content storage with consent is enabled with retention (T006).",
- "outcome": "passed: T003: with no profile, consent none, or an invalid profile (unparseable, redacted without its consent record, an unknown level) the store refuses a content-bearing record with store-consent and writes nothing, and the adapter gate and `lightning status` traceContent report content-consent-required; status itself refuses an invalid profile with its config-* code. An explicit content_consent none overrides a redacted profile, and an unknown explicit level is refused. With consent redacted the gate opens only for listed sources (others: source-not-consented), and the store still refuses content with redaction-incomplete because the store does not wire redaction and content retention before T006 (C2: redact on ingest). Negative control: invalid configuration never reads as redacted. Content-free kinds are unchanged (SPEC-070 store suite).",
+ "limits": "Temporary homes; no content is read or stored. The adapter reads no source yet (T007/T008); the gate is its entry check. Content storage with consent, redaction and retention is procedure_005 (T006).",
+ "outcome": "passed: T003: with no profile, consent none, or an invalid profile (unparseable, redacted without its consent record, an unknown level) the store refuses a content-bearing record with store-consent and writes nothing, and the adapter gate and `lightning status` traceContent report content-consent-required; status itself refuses an invalid profile with its config-* code. An explicit content_consent none overrides a redacted profile, and an unknown explicit level is refused. With consent redacted the gate opens only for listed sources (others: source-not-consented), and a record that stays unclean after redaction is refused with redaction-incomplete, leaving only a content-free stub (C2: redact on ingest). Negative control: invalid configuration never reads as redacted. Content-free kinds are unchanged (SPEC-070 store suite).",
  "procedure": "procedure_002",
  "result": "OK",
  "scenario": "SC-002",

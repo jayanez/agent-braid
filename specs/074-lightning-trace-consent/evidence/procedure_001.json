@@ -5,16 +5,16 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_cli.py": "0d325a38d113a1b75c300dcc8878b903106292a15f86c52a8a6da9425b7a4ff9",
+  "agent_braid/lightning_cli.py": "ba217234f8b0fb06f1099d0daf9a6242f1d223ac58b35d5dfc0c1d8bece0e93d",
   "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
-  "agent_braid/lightning_store.py": "45a179eb8b9f43334fca38cc3bb56abc422044e7dd11451c30b7833bdb0e6b2e",
+  "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
   "agent_braid/plugin_registry.py": "5e5c79a7ef8eb601063167bcc0aaa4a79e0a4073e0d9bc9ea8a516eab5d85619",
   "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
   "tests/test_lightning_config.py": "dfbc32c5952b98a7bbfcfe082da7ffa16c32c670e4d341fd4ff6057e2021be1d",
-  "tests/test_spec074_consent_config.py": "cff96a05d3fb5b5a6ca1746e2cac8c4197d730dbd908f97d1b205d703f4eda43"
+  "tests/test_spec074_consent_config.py": "5cd5e1df5218f7654738c896033582376fe1e67489e337af43edca5c9f59a0a2"
  },
  "limits": "Temporary homes; no content is collected (the store gate is T003, redaction T004). Calendar validity of consentedAt (for example 2026-02-30) is checked by the validator only; the schema checks the YYYY-MM-DD shape. The per-run email salt itself is implemented with the redactor (T004).",
- "outcome": "passed: T002 part: traces.contentConsent accepts only none and redacted and defaults to none with a null consent record; a BL.0 profile without consentedAt and consentPreviewDigest reads as none. `lightning init --trace-consent redacted [--trace-sources ...]` previews level, consentedAt, sources (host-transcript only when listed, OD-1), retention, redaction classes (email as a per-run salted hash, OD-2), storage, residual risk and no expiry (OD-3); apply with the matching --preview-digest writes consentedAt and that digest. Unrelated changes keep the record, new sources renew it, lowering to none clears it, and `lightning status` shows level, consentedAt, sources and expires null. The schema and the validator agree on a valid and invalid corpus. Negative controls: raw, a record without consent, consent without a record, an answered record field, a stale or forged digest (nothing written), and plugin setup lab/off leave the profile byte-identical; the store still stores no content (store-consent without consent; redaction-incomplete with it, until content storage is wired in T006).",
+ "outcome": "passed: T002 part: traces.contentConsent accepts only none and redacted and defaults to none with a null consent record; a BL.0 profile without consentedAt and consentPreviewDigest reads as none. `lightning init --trace-consent redacted [--trace-sources ...]` previews level, consentedAt, sources (host-transcript only when listed, OD-1), retention, redaction classes (email as a per-run salted hash, OD-2), storage, residual risk and no expiry (OD-3); apply with the matching --preview-digest writes consentedAt and that digest. Unrelated changes keep the record, new sources renew it, lowering to none clears it, and `lightning status` shows level, consentedAt, sources and expires null. The schema and the validator agree on a valid and invalid corpus. Negative controls: raw, a record without consent, consent without a record, an answered record field, a stale or forged digest (nothing written), and plugin setup lab/off leave the profile byte-identical; the store refuses content without consent (store-consent).",
  "procedure": "procedure_001",
  "result": "OK",
  "scenario": "SC-001",

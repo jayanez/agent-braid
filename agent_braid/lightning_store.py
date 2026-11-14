@@ -10,6 +10,8 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 import fcntl
+import hashlib
+import json
 import os
 from pathlib import Path
 import re
@@ -18,6 +20,7 @@ import stat
 import time
 
 from . import lightning_config
+from . import lightning_redact as redact
 from . import plugin_registry as registry
 from .lightning_resources import Candidate, check_text
 from .lightning_schema import AttemptResult, Event, _digest, LightningSchemaError, Rollout, canonical_bytes, loads, parse_record
@@ -26,6 +29,8 @@ RUN_SCHEMA = 'braid-lightning-run/v0.1'
 KINDS = {'rollout': 'rollouts.jsonl', 'event': 'events.jsonl', 'result': 'results.jsonl',  # result: SPEC-071
          'candidate': 'candidates.jsonl'}  # candidate: SPEC-072
 CONTENT_KINDS = ('trace',)  # content-bearing records: SPEC-074 consent gate (REQ-002), redaction on ingest (C2)
+CONTENT_FILE = 'traces.jsonl'  # SPEC-074 REQ-005: {createdAt, record} or a content-free {createdAt, refused} stub
+SALT_FILE = 'email.salt'  # SPEC-074 OD-2: per-run email salt, deleted with the run
 MAX_LINE = 64 * 1024
 JOURNAL = 'journal.jsonl'  # SPEC-072 REQ-007/REQ-010: seeds, optimizer outputs and attempt-result references
 MAX_JOURNAL_LINE = 256 * 1024
@@ -125,15 +130,10 @@ class RunStore:
         finally:
             os.close(fd)
 
-    def append(self, kind: str, record) -> None:
+    def append(self, kind: str, record, *, now: float | None = None, secrets: tuple[str, ...] = ()) -> None:
         """Append a validated record; content-bearing kinds are refused without consent."""
         if kind in CONTENT_KINDS:
-            consent = self.content_consent or content_consent(self.home)
-            if consent != 'redacted':
-                raise StoreError('Content-bearing traces require trace consent redacted', 'store-consent')
-            # C2: content reaches the store only after redaction with a clean post-scan; the redactor
-            # (lightning_redact, T004) is wired in with the run's email salt and content retention (T006).
-            raise StoreError('Content storage is not wired yet, so the record cannot be stored', 'redaction-incomplete')
+            return self._append_content(record, now=time.time() if now is None else now, secrets=secrets)
         if kind not in KINDS:
             raise StoreError('Unknown record kind', 'store-kind')
         value = record.to_dict() if isinstance(record, (Rollout, Event, AttemptResult, Candidate)) else record
@@ -157,6 +157,76 @@ class RunStore:
                 stream.write(raw)
                 stream.flush()
                 os.fsync(stream.fileno())
+
+    def _append_content(self, record, *, now: float, secrets: tuple[str, ...]) -> None:
+        """C2: redact on ingest; an unclean record leaves only a content-free stub (SPEC-074 REQ-003, REQ-005)."""
+        consent = self.content_consent or content_consent(self.home)
+        if consent != 'redacted':
+            raise StoreError('Content-bearing traces require trace consent redacted', 'store-consent')
+        if not isinstance(record, dict):
+            raise StoreError('A content record is a JSON object', 'store-shape')
+        retention = _retention(self.home)
+        with self._locked():
+            self._sweep_content(now - retention * 86400)
+            refusal = None
+            try:
+                line = canonical_bytes({'createdAt': now, 'record': redact.Redactor(self._salt(), secrets=secrets)
+                                        .clean(record)})
+            except redact.RedactionError as exc:
+                refusal = exc
+                line = canonical_bytes({'createdAt': now, 'refused': exc.code})
+            if len(line) > MAX_LINE:
+                raise StoreError('Record is too large', 'store-shape')
+            path = self.root / CONTENT_FILE
+            registry._safe(path, directory=False)
+            fd = os.open(path, os.O_CREAT | os.O_APPEND | os.O_WRONLY | os.O_NOFOLLOW, 0o600)
+            with os.fdopen(fd, 'ab') as stream:
+                stream.write(line)
+                stream.flush()
+                os.fsync(stream.fileno())
+        if refusal is not None:
+            raise StoreError(str(refusal), refusal.code)
+
+    def _salt(self) -> bytes:
+        path = self.root / SALT_FILE
+        registry._safe(path, directory=False)
+        if not path.exists():
+            self._write_new(path, redact.new_salt())
+        registry._private(path, directory=False)
+        salt = path.read_bytes()
+        if len(salt) != redact.SALT_BYTES:
+            raise StoreError('The run email salt is malformed', 'store-shape')
+        return salt
+
+    def read_content(self) -> list[dict]:
+        self.manifest()
+        path = self.root / CONTENT_FILE
+        registry._safe(path, directory=False)
+        if not path.exists():
+            return []
+        registry._private(path, directory=False)
+        return [loads(line) for line in path.read_bytes().splitlines()]
+
+    def _sweep_content(self, cutoff: float) -> int:
+        """Drop content lines created before `cutoff` (caller holds the lock); returns how many were removed."""
+        path = self.root / CONTENT_FILE
+        registry._safe(path, directory=False)
+        if not path.exists():
+            return 0
+        lines = path.read_bytes().splitlines(keepends=True)
+        kept = [line for line in lines if loads(line)['createdAt'] >= cutoff]
+        if len(kept) == len(lines):
+            return 0
+        temporary = self.root / (CONTENT_FILE + '.sweep')
+        registry._safe(temporary, directory=False)
+        temporary.unlink(missing_ok=True)
+        self._write_new(temporary, b''.join(kept))
+        os.replace(temporary, path)
+        return len(lines) - len(kept)
+
+    def content_bytes(self) -> int:
+        path = self.root / CONTENT_FILE
+        return path.stat().st_size if path.exists() and not path.is_symlink() else 0
 
     def read(self, kind: str) -> list:
         if kind not in KINDS:
@@ -305,6 +375,7 @@ def list_runs(home: Path | None = None) -> list[dict]:
 
 
 def purge(home: Path | None, run_id: str) -> dict:
+    """Delete one run directory: records, content, the email salt and the lock (SPEC-070; SPEC-074 REQ-005)."""
     store = RunStore(home, run_id)
     store.manifest()
     with store._locked():
@@ -312,11 +383,47 @@ def purge(home: Path | None, run_id: str) -> dict:
     return {'status': 'purged', 'runId': run_id}
 
 
+def plan_purge(home: Path | None, run_id: str | None = None) -> dict:
+    """Preview of `lightning purge`: which runs and how many content bytes; apply needs its digest."""
+    runs = [RunStore(home, run_id).manifest()] if run_id else list_runs(home)
+    targets = [{'runId': run['runId'], 'createdAt': run['createdAt'],
+                'contentBytes': RunStore(home, run['runId']).content_bytes()} for run in runs]
+    body = {'action': 'purge', 'scope': run_id or 'all', 'runs': targets}
+    digest = hashlib.sha256(json.dumps(body, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+    return {**body, 'previewDigest': digest,
+            'effects': ['Deletes each listed run directory: records, content, the run email salt and its lock',
+                        'Never touches host transcripts, Loom streams or System One files']}
+
+
+def apply_purge(home: Path | None, run_id: str | None, preview_digest: str | None) -> dict:
+    preview = plan_purge(home, run_id)
+    if preview_digest != preview['previewDigest']:
+        raise StoreError('The purge preview changed or the digest does not match; preview again', 'preview-stale')
+    removed = [purge(home, run['runId'])['runId'] for run in preview['runs']]
+    return {'status': 'purged', 'removed': removed}
+
+
 def sweep(home: Path | None, retention_days: int, *, now: float | None = None) -> dict:
+    """Remove runs created before the retention cutoff and expired content lines of the others."""
     if type(retention_days) is not int or not 1 <= retention_days <= 90:
-        raise StoreError('Retention must be 1-90 days', 'store-range')
+        raise StoreError('Retention must be 1-90 days', 'retention-out-of-range')
     cutoff = (time.time() if now is None else now) - retention_days * 86400
-    removed = [run['runId'] for run in list_runs(home) if run['createdAt'] < cutoff]
+    runs = list_runs(home)
+    removed = [run['runId'] for run in runs if run['createdAt'] < cutoff]
     for run_id in removed:
         purge(home, run_id)
-    return {'status': 'swept', 'removed': removed, 'retentionDays': retention_days}
+    records = 0
+    for run in runs:
+        if run['runId'] not in removed:
+            store = RunStore(home, run['runId'])
+            with store._locked():
+                records += store._sweep_content(cutoff)
+    return {'status': 'swept', 'removed': removed, 'contentRecordsRemoved': records, 'retentionDays': retention_days}
+
+
+def _retention(home: Path | None) -> int:
+    try:
+        value = lightning_config.load(home)
+    except (ValueError, OSError):
+        value = None
+    return 30 if value is None else value['traces']['retentionDays']
