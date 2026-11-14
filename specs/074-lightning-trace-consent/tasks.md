@@ -43,7 +43,7 @@ imply owner acceptance. `quick` means
   existing modules. Dependencies: T007. Verification: procedure_006. Host
   transcripts are synthetic traces only (`trace_adapter` admission); real host
   transcripts are not read yet.
-- [ ] T009 (REQ-007 / SC-007): System One isolation test (read-only open, no
+- [x] T009 (REQ-007 / SC-007): System One isolation test (read-only open, no
   writes under the shadow directory, no output path into System One).
   Dependencies: T008. Verification: procedure_007.
 
