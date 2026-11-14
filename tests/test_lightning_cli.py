@@ -145,6 +145,15 @@ class BoundaryTests(unittest.TestCase):
                         self.assertIn(root, sys.stdlib_module_names, (name, root))
                         self.assertNotIn(root, {'socket', 'subprocess', 'http', 'urllib', 'asyncio'}, (name, root))
 
+    def test_import_closure_opens_no_network_or_event_loop(self):
+        """Readers load trace_adapter and system_one_shadow on use, so importing Lightning loads no socket."""
+        probe = ('import importlib, json, sys\n'
+                 f'for m in {MODULES!r}: importlib.import_module("agent_braid." + m)\n'
+                 'print(json.dumps(sorted(m for m in ("socket", "asyncio", "http", "urllib", "ssl") if m in sys.modules)))')
+        out = subprocess.run([sys.executable, '-c', probe], cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertEqual(json.loads(out.stdout), [])
+
     def test_no_mcp_tool_mentions_lightning(self):
         for name in ('tooling_mcp.py', 'plugin_mcp.py'):
             self.assertNotIn('lightning', (ROOT / 'agent_braid' / name).read_text())

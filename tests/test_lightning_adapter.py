@@ -29,10 +29,14 @@ TRACE = ROOT / 'specs/023-recorded-trace-adapters/fixtures/generic.json'
 SAMPLE = json.loads((ROOT / 'examples/analysis/file-edits.json').read_text())
 
 
-def trace_bytes(tool=None):
+def trace_bytes(tool=None, attempt=None, reverse=False):
     value = json.loads(TRACE.read_text())
     if tool:
         value['operations'][0]['definition']['id'] = tool
+    if attempt:
+        value['operations'][0]['attemptId'] = attempt
+    if reverse:  # source order differs from the projection's instanceId order
+        value['operations'].reverse()
     value['source']['contentDigest'] = trace_adapter.digest_bytes(trace_adapter.canonical_bytes(
         {'operations': value['operations'], 'events': value['events']}))
     return trace_adapter.canonical_bytes(value)
@@ -154,8 +158,11 @@ class AdapterTests(unittest.TestCase):
     def test_unlisted_source_reads_as_no_content(self):
         self.consent('rollout')
         record = adapter.loom_messages(self.home, LOOM.read_bytes(), SALT)
-        self.assertEqual(record['messages'], [])
-        self.assertIn('content-consent-required', record['losses'])
+        self.assertEqual((record['messages'], record['losses']), ([], ['source-not-consented']))
+        path = self.write('ok.jsonl', episode_line())
+        self.assertEqual(adapter.system_one_messages(self.home, path, SALT)['losses'], ['source-not-consented'])
+        self.assertIn('source-not-consented', adapter.transcript_triplets(self.home, self.write(
+            'trace.json', trace_bytes()), SALT)[0]['losses'])
 
     def test_loom_messages_and_triplets(self):
         self.consent()
@@ -219,7 +226,8 @@ class AdapterTests(unittest.TestCase):
         self.consent('rollout,host-transcript')
         path = self.write('trace.json', trace_bytes())
         triplets = adapter.transcript_triplets(self.home, path, SALT)
-        self.assertEqual([t['attemptId'] for t in triplets], ['left-1', 'right-1'])
+        self.assertEqual([t['response']['toolCalls'] for t in triplets], [['edit-left'], ['edit-right']])
+        self.assertTrue(all(t['attemptId'].startswith('turn-') for t in triplets))
         first = triplets[0]
         self.assertEqual((first['source'], first['prompt'], first['reward']), ('host-transcript', None, None))
         self.assertEqual(first['response'], {'text': '', 'toolCalls': ['edit-left']})
@@ -228,6 +236,26 @@ class AdapterTests(unittest.TestCase):
         record = adapter.transcript_messages(self.home, path, SALT)
         self.assertEqual(len(record['messages']), 2)
         self.assertIn('edit-left', record['messages'][0]['content'])
+        self.assertIn(first['attemptId'], record['messages'][0]['content'])
+        self.assertFalse(record['messages'][0]['content'].endswith('\n'))
+        self.assertEqual(record['losses'], ['model-text-unavailable', 'prompt-missing'])
+
+    def test_host_transcript_keeps_source_order(self):
+        self.consent('rollout,host-transcript')
+        path = self.write('trace.json', trace_bytes(reverse=True))
+        triplets = adapter.transcript_triplets(self.home, path, SALT)
+        self.assertEqual([t['response']['toolCalls'] for t in triplets], [['edit-right'], ['edit-left']])
+
+    def test_host_transcript_attempt_id_is_pseudonymised(self):
+        path = self.write('trace.json', trace_bytes(attempt=EMAIL))
+        self.assertIn(EMAIL.encode(), path.read_bytes())  # negative control
+        for consent in ('rollout', 'rollout,host-transcript'):
+            self.consent(consent)
+            triplets = adapter.transcript_triplets(self.home, path, SALT)
+            record = adapter.transcript_messages(self.home, path, SALT)
+            self.assert_clean(triplets)
+            self.assert_clean(record)
+            self.assertNotIn(EMAIL, json.dumps([triplets, record]))
 
     def test_host_transcript_is_redacted_gated_and_validated(self):
         self.consent('rollout,host-transcript')
@@ -240,7 +268,7 @@ class AdapterTests(unittest.TestCase):
             adapter.transcript_triplets(self.home, bad, SALT)
         self.assertEqual(caught.exception.code, 'source-invalid')
         self.consent('rollout')
-        self.assertTrue(all(t['response'] is None and 'content-consent-required' in t['losses']
+        self.assertTrue(all(t['response'] is None and 'source-not-consented' in t['losses']
                             for t in adapter.transcript_triplets(self.home, path, SALT)))
 
     def test_system_one_episodes_are_read_only(self):
@@ -260,13 +288,21 @@ class AdapterTests(unittest.TestCase):
 
     def test_system_one_refusals(self):
         self.consent('rollout,system-one')
-        bad = self.write('episodes-2026-11-14.jsonl', episode_line() + b'{"schemaVersion":"x"}\n')
-        with self.assertRaises(adapter.AdapterError) as caught:
-            adapter.system_one_triplets(self.home, bad, SALT)
-        self.assertEqual(caught.exception.code, 'source-invalid')
-        self.consent('rollout')
-        path = self.write('ok.jsonl', episode_line())
-        self.assertEqual(adapter.system_one_messages(self.home, path, SALT)['losses'], ['content-consent-required'])
+        for bad in (None, self.write('dir', b'').parent, Path(self.tmp.name) / 'missing.jsonl'):
+            with self.assertRaises(adapter.AdapterError) as caught:
+                adapter.system_one_triplets(self.home, bad, SALT)
+            self.assertEqual(caught.exception.code, 'source-invalid')
+
+
+    def test_system_one_invalid_and_torn_lines_are_skipped_like_the_report(self):
+        self.consent('rollout,system-one')
+        torn = episode_line() + b'{"schemaVersion":"x"}\n' + episode_line()[:-9]
+        path = self.write('episodes-2026-11-14.jsonl', torn)
+        triplets = adapter.system_one_triplets(self.home, path, SALT)
+        self.assertEqual([t['losses'] for t in triplets], [['episode-invalid', 'reward-unavailable']])
+        self.assertEqual(adapter.system_one_messages(self.home, path, SALT)['losses'], ['episode-invalid'])
+        _, episodes, invalid = shadow.read_day(path)  # the report's reader agrees
+        self.assertEqual((len(episodes), invalid), (1, 2))
 
 
 if __name__ == '__main__':
