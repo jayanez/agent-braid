@@ -96,6 +96,7 @@
       "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
       "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
       "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
+      "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "7328bb5af036d2df0dfb27da108c16d40877ed2ed6ab0f14c1ee7c15ba14aa25",
       "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
       "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
       "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
@@ -128,7 +129,9 @@
     "agent_braid/trace_adapter.py",
     "pyproject.toml",
     "specs/034-workload-forecast-data/spec.md",
-    "agent_braid/view_serve.py"
+    "agent_braid/view_serve.py",
+    "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json",
+    "scripts/spec075_capture_evidence.py"
   ],
   "requirements": [
     {
@@ -209,7 +212,15 @@
         {
           "given": "an exported dataset",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec075_manifest_schema",
+              "limits": "Schema structure only: hand-written manifests, no export ran (the builder and its byte checks are T006, which extends this procedure). The schema cannot check that hashes match the bytes they cover or that limits are sorted; the builder does. jsonschema is a development dependency; the runtime stays standard-library only.",
+              "outcome": "passed: T002 part: schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json is a valid JSON Schema 2020-12 document (check_schema) and accepts a valid rollout manifest at both levels, a supervised manifest and a host-model manifest with a terms decision. It refuses a manifest missing a record sha256 or redactionVersion (or with an empty one), missing any top-level or record field, with an unknown key, version, kind, level, ordering key, canary result, exclusion reason or negative count, source, outcome, limit, consent level other than redacted, a raw (non-pseudonym) attempt id, a malformed digest, record id, turn range or timestamp, no records, retention outside 1-90 days or an unsafe run id, a supervised export that is balanced or carries a balance report, and host-model records without a terms decision.",
+              "path": "specs/075-lightning-dataset-export/evidence/procedure_005.json",
+              "sha256": "a83197d17aa70376f9d7d543034200946ff62d283b9687eafd98f53a7c0351c0"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/075-lightning-dataset-export/validation-plan.md",
           "test_name": "procedure_005",
