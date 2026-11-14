@@ -1,6 +1,6 @@
 # SPEC-074: Validation plan
 
-Status (draft): procedure_001 (T002), procedure_002 (T003), procedure_003 (T004) procedure_004 (T005), procedure_005 (T006) and procedure_006 for T007 (rollout and Loom sources; host transcripts and System One follow in T008) have obtained
+Status (draft): procedure_001 (T002), procedure_002 (T003), procedure_003 (T004) procedure_004 (T005), procedure_005 (T006) and procedure_006 for T007 and T008 (rollout, Loom, host transcript and System One sources) have obtained
 evidence (`scripts/spec074_capture_evidence.py`); the others have none. Procedures run with
 `.venv-speckit/bin/python -m unittest` on targeted modules with temporary homes
 and committed fixtures; canaries are synthetic.

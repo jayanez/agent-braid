@@ -5,21 +5,24 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_adapter.py": "052b3af6a1c7048e6bea98f14d15e27d85c1c9c94cde907974b76eb313b70a91",
+  "agent_braid/lightning_adapter.py": "05e31d4c34024b5fbc9e2a42bb53db41a7e4048fb52486b97d023ad4b4454ef4",
   "agent_braid/lightning_redact.py": "774e27ae55a1e71ab49205a0daa6d47d374160b46fd90b2c77891b566fbeecf2",
   "agent_braid/lightning_schema.py": "3a5b70ded3d8696ec59eb1873d89fddb6b5400aca4443ae3a228ac804d81dc19",
   "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
+  "agent_braid/system_one_shadow.py": "f8efe79ad2c491e4be7ed05a7290f54017d4f7d225e0242e813d023ef4ce6b53",
+  "agent_braid/trace_adapter.py": "4da8a0cb5b4885df80681c9005ec82b0ff685d7dd9ed1d577eac3655af637332",
   "agent_braid/view_loom.py": "12c530fabc056ef789a07fd0351875e79befc7242cb96bead99119d2e0a1c9be",
+  "specs/023-recorded-trace-adapters/fixtures/generic.json": "c08156f0f57bc2ba1e331a2d4050af3c78de3d3b01de6ed253a1008c893af387",
   "tests/fixtures/view/loom/valid-corpus.jsonl": "107a393f57d462e0eff9b8f4961357c009e19ef9b7747528513d39ae2e9f9299",
-  "tests/test_lightning_adapter.py": "81f559601f7e531f95d59affb3aeced60f7aaebbe3fdd925a7ad413d16d986dd",
-  "tests/test_lightning_cli.py": "6535ea7159ffd4162355f395327108a32e713408d33fa7981b5ed3c9c13257b8",
+  "tests/test_lightning_adapter.py": "ad39bf1273ecac02daa0e1c3aa0351175a6f199c06071a6ef8a0f5142dc50504",
+  "tests/test_lightning_cli.py": "3b2cc3feca61c55b09c69e1796caaadbd435c79a66fc5501f93928ed0d040892",
   "tests/test_spec074_consent_gate.py": "c29b59929ab6371e9e9f8748468b0139a045aca21c4a2d1c31446da9e9bef598"
  },
- "limits": "Rollout and Loom sources only, synthetic content in temporary homes; host transcripts and System One episodes are T008 (procedure_006 is recaptured then). Loom carries no model text or reward, which the loss notes state. Refused content stubs carry no attempt, so content-refused is a run-level note. Redaction limits are those of procedure_003 and procedure_004.",
- "outcome": "passed: T007: lightning_adapter turns one attempt's SPEC-070 events plus its redacted content records into braid-lightning-triplet/v0.1 records, one per model_request, and braid-lightning-messages/v0.1 user and assistant turns; the committed Loom corpus becomes one triplet per strand and one system message per event. Every text is redacted with the run salt and post-scanned (redaction classes counted), and each record carries source, sourceSha256 and sorted loss notes. Rewards match by first-occurrence (nearest earlier unrewarded request) or first-sibling (others refused with reward-match); a second content record for one request is ignored with content-duplicate. Outputs are deterministic for the same inputs and salt. Without consent, or for an unlisted source, prompt, response and messages are null or empty with content-consent-required while rewards stay. An unparseable Loom stream or an unknown attempt is refused with source-invalid. Negative control: with redaction switched off a canary in a Loom label reaches the output and the clean check fails.",
+ "limits": "Synthetic sources in temporary directories: the SPEC-023 generic trace fixture and episodes built by system_one_shadow.build_episode; no real host transcript or System One store is read. Recorded traces and episodes are content-free by contract, so host-transcript records carry tools and statuses, not prompts. The full System One isolation test is procedure_007 (T009). Loom carries no model text or reward, which the loss notes state. Refused content stubs carry no attempt, so content-refused is a run-level note. Redaction limits are those of procedure_003 and procedure_004.",
+ "outcome": "passed: T007: lightning_adapter turns one attempt's SPEC-070 events plus its redacted content records into braid-lightning-triplet/v0.1 records, one per model_request, and braid-lightning-messages/v0.1 user and assistant turns; the committed Loom corpus becomes one triplet per strand and one system message per event. Every text is redacted with the run salt and post-scanned (redaction classes counted), and each record carries source, sourceSha256 and sorted loss notes. Rewards match by first-occurrence (nearest earlier unrewarded request) or first-sibling (others refused with reward-match); a second content record for one request is ignored with content-duplicate. Outputs are deterministic for the same inputs and salt. Without consent, or for an unlisted source, prompt, response and messages are null or empty with content-consent-required while rewards stay. An unparseable Loom stream or an unknown attempt is refused with source-invalid. Negative control: with redaction switched off a canary in a Loom label reaches the output and the clean check fails. T008: a recorded host transcript (trace_adapter.read_trace and import_trace) becomes one triplet per host turn with its tool as the tool call and prompt-missing, model-text-unavailable and reward-unavailable notes, and one system message per turn; a System One day file (opened read-only, each line through system_one_shadow.validate_episode) becomes one triplet per episode (System 2 pairs as prompt, System One answer as response, reward-unavailable) and user and assistant messages. Both are redacted (an email canary in a tool name is removed), consent-gated per source and refused with source-invalid when they do not validate; the episode file's bytes, mtime and directory listing are unchanged after reading.",
  "procedure": "procedure_006",
  "result": "OK",
  "scenario": "SC-006",
  "specification": "SPEC-074 BL.4",
- "testsRun": 36
+ "testsRun": 40
 }

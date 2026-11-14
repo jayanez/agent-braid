@@ -39,7 +39,7 @@ imply owner acceptance. `quick` means
 - [x] T007 (REQ-006 / SC-006): `lightning_adapter` triplets and messages from
   rollout records and Loom fixtures. Dependencies: T004. Verification:
   procedure_006.
-- [ ] T008 (REQ-006 / SC-006): host transcript and System One readers through
+- [x] T008 (REQ-006 / SC-006): host transcript and System One readers through
   existing modules. Dependencies: T007. Verification: procedure_006.
 - [ ] T009 (REQ-007 / SC-007): System One isolation test (read-only open, no
   writes under the shadow directory, no output path into System One).

@@ -9,7 +9,10 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from agent_braid import analysis
 from agent_braid import lightning_adapter as adapter
+from agent_braid import system_one_shadow as shadow
+from agent_braid import trace_adapter
 from agent_braid import lightning_redact as redact
 from agent_braid import lightning_store as store
 from agent_braid.cli import main
@@ -22,6 +25,22 @@ T0 = 1_800_000_000.0
 TOKEN = 'sk-' + 'A1b2C3d4' * 3  # synthetic canary
 EMAIL = 'owner@example.org'
 SALT = b's' * 16
+TRACE = ROOT / 'specs/023-recorded-trace-adapters/fixtures/generic.json'
+SAMPLE = json.loads((ROOT / 'examples/analysis/file-edits.json').read_text())
+
+
+def trace_bytes(tool=None):
+    value = json.loads(TRACE.read_text())
+    if tool:
+        value['operations'][0]['definition']['id'] = tool
+    value['source']['contentDigest'] = trace_adapter.digest_bytes(trace_adapter.canonical_bytes(
+        {'operations': value['operations'], 'events': value['events']}))
+    return trace_adapter.canonical_bytes(value)
+
+
+def episode_line():
+    episode = shadow.build_episode(analysis.analyze(SAMPLE), 'analyze-work', 'aim', request=SAMPLE)
+    return json.dumps(episode, sort_keys=True).encode() + b'\n'
 
 
 def cli(*args):
@@ -189,6 +208,65 @@ class AdapterTests(unittest.TestCase):
         with self.assertRaises(adapter.AdapterError) as caught:
             adapter.rollout_triplets(self.home, 'run-1', 'at-missing')
         self.assertEqual(caught.exception.code, 'source-invalid')
+
+    def write(self, name, data):
+        path = Path(self.tmp.name).resolve() / 'sources' / name
+        path.parent.mkdir(exist_ok=True)
+        path.write_bytes(data)
+        return path
+
+    def test_host_transcript_turns(self):
+        self.consent('rollout,host-transcript')
+        path = self.write('trace.json', trace_bytes())
+        triplets = adapter.transcript_triplets(self.home, path, SALT)
+        self.assertEqual([t['attemptId'] for t in triplets], ['left-1', 'right-1'])
+        first = triplets[0]
+        self.assertEqual((first['source'], first['prompt'], first['reward']), ('host-transcript', None, None))
+        self.assertEqual(first['response'], {'text': '', 'toolCalls': ['edit-left']})
+        self.assertEqual(first['losses'], ['model-text-unavailable', 'prompt-missing', 'reward-unavailable'])
+        self.assertEqual(first['sourceSha256'], hashlib.sha256(path.read_bytes()).hexdigest())
+        record = adapter.transcript_messages(self.home, path, SALT)
+        self.assertEqual(len(record['messages']), 2)
+        self.assertIn('edit-left', record['messages'][0]['content'])
+
+    def test_host_transcript_is_redacted_gated_and_validated(self):
+        self.consent('rollout,host-transcript')
+        path = self.write('trace.json', trace_bytes(tool=f'tool:{EMAIL}'))
+        self.assertIn(EMAIL.encode(), path.read_bytes())  # negative control
+        self.assert_clean(adapter.transcript_triplets(self.home, path, SALT))
+        self.assert_clean(adapter.transcript_messages(self.home, path, SALT))
+        bad = self.write('bad.json', b'{}')
+        with self.assertRaises(adapter.AdapterError) as caught:
+            adapter.transcript_triplets(self.home, bad, SALT)
+        self.assertEqual(caught.exception.code, 'source-invalid')
+        self.consent('rollout')
+        self.assertTrue(all(t['response'] is None and 'content-consent-required' in t['losses']
+                            for t in adapter.transcript_triplets(self.home, path, SALT)))
+
+    def test_system_one_episodes_are_read_only(self):
+        self.consent('rollout,system-one')
+        path = self.write('episodes-2026-11-14.jsonl', episode_line() * 2)
+        path.chmod(0o400)
+        before = (path.read_bytes(), path.stat().st_mtime_ns, sorted(path.parent.iterdir()))
+        triplets = adapter.system_one_triplets(self.home, path, SALT)
+        record = adapter.system_one_messages(self.home, path, SALT)
+        self.assertEqual((path.read_bytes(), path.stat().st_mtime_ns, sorted(path.parent.iterdir())), before)
+        self.assertEqual(len(triplets), 2)
+        self.assertEqual(triplets[0]['losses'], ['reward-unavailable'])
+        self.assertIn('independent-candidate', triplets[0]['prompt']['text'])
+        self.assertIn('status', triplets[0]['response']['text'])
+        self.assertEqual([m['role'] for m in record['messages']], ['user', 'assistant'] * 2)
+        self.assert_clean(record)
+
+    def test_system_one_refusals(self):
+        self.consent('rollout,system-one')
+        bad = self.write('episodes-2026-11-14.jsonl', episode_line() + b'{"schemaVersion":"x"}\n')
+        with self.assertRaises(adapter.AdapterError) as caught:
+            adapter.system_one_triplets(self.home, bad, SALT)
+        self.assertEqual(caught.exception.code, 'source-invalid')
+        self.consent('rollout')
+        path = self.write('ok.jsonl', episode_line())
+        self.assertEqual(adapter.system_one_messages(self.home, path, SALT)['losses'], ['content-consent-required'])
 
 
 if __name__ == '__main__':
