@@ -55,7 +55,7 @@ _HASH = re.compile(r"[0-9a-f]{64}\Z")
 _SESSION = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\Z")
 RESERVED_EVENTS = 8  # terminal plus every error kind _terminal can add
 _MODEL = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}\Z")
-_VERSION = re.compile(r"(\d{1,4})\.(\d{1,4})\.(\d{1,4})(?: \(Claude Code\))?\Z")
+_VERSION = re.compile(r"(0|[1-9][0-9]{0,3})\.(0|[1-9][0-9]{0,3})\.(0|[1-9][0-9]{0,3})(?: \(Claude Code\))?\Z")
 # A family alias resolves in the init event to ``claude-<alias>-<version>``; only that exact shape is accepted.
 MODEL_ALIASES = ("haiku", "sonnet", "opus")
 _RESOLVED = {alias: re.compile(rf"claude-{alias}-[0-9]+(-[0-9]+)*\Z") for alias in MODEL_ALIASES}
@@ -69,7 +69,7 @@ def model_matches(requested: str, reported: str | None) -> bool:
     if reported == requested:
         return True
     pattern = _RESOLVED.get(requested)
-    return pattern is not None and reported is not None and pattern.fullmatch(reported) is not None
+    return pattern is not None and type(reported) is str and pattern.fullmatch(reported) is not None
 
 
 class ClaudeHostError(ValueError):

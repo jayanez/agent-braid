@@ -430,6 +430,23 @@ class ClaudeHostTests(unittest.TestCase):
             self.assertEqual(self.state(drifted), "failed", model)
             self.assertEqual(drifted.observation.to_dict()["events"][-2]["text"], "model-drift", model)
 
+    def test_non_string_reported_model_never_matches(self):
+        for value in (7, ["haiku"], {"a": 1}):
+            self.assertFalse(hc.model_matches("haiku", value))
+        self.assertFalse(hc.model_matches("claude-test", 7))
+        self.assertTrue(hc.model_matches("haiku", "claude-haiku-4-5"))
+
+    def test_versions_with_leading_zeros_are_refused(self):
+        for text in ("02.1.292", "2.1.00", "2.01.3", "2.1.292 (Claude Code)x", "00.0.0"):
+            with self.assertRaises(hc.ClaudeHostError, msg=text):
+                hc.parse_version(text)
+            with self.assertRaises(hc.ClaudeHostError, msg=text):
+                run(double=hc.ClaudeHostDouble(GOOD, version=text))
+        self.assertEqual(hc.parse_version("0.10.0 (Claude Code)"), (0, 10, 0))
+        outcome = run((init(claude_code_version="02.1.0"), result()))
+        self.assertEqual(self.state(outcome), "failed")
+        self.assertIn("version-drift", [e.get("text") for e in outcome.observation.to_dict()["events"]])
+
     def test_a_malformed_reported_model_never_completes(self):
         outcome = run((init(model="claude-haiku-4\n"), result()), request=hc.ClaudeRequest(SESSION, model="haiku"))
         self.assertEqual(self.state(outcome), "unobserved")

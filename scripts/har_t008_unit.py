@@ -47,6 +47,7 @@ from agent_braid.harness_observation import verify_inventory  # noqa: E402
 from agent_braid.system_one import canonical  # noqa: E402
 from hashlib import sha256  # noqa: E402
 
+MODEL = "haiku"  # the one model the cohort requests and the report checks against
 MAX_UNITS = 4  # founder, 2026-11-06 (decision 2/5), unchanged on 2026-11-13 (T008-6)
 WINDOW = (datetime(2026, 11, 9, 20, 30, tzinfo=timezone.utc), datetime(2026, 11, 30, 23, 59, tzinfo=timezone.utc))
 # SPEC-065 T013 issuance of 2026-11-13; it supersedes the 2026-11-06 one (void on macOS build 26B131)
@@ -204,14 +205,14 @@ def host_summary(result: hc.ClaudeHostResult, requested_model: str | None = None
     beyond the version id and a model id that is the requested one or its own resolved family id."""
     data, observed = result.to_dict(), result.observation.to_dict()
     reported = data["hostModel"]
+    shown_model = reported if hc.model_matches(requested_model, reported) else None
     codes = [e.get("text") for e in observed.get("events", ()) if e.get("kind") == "error"]
     return {"terminal": observed["terminal"],
             "streamErrors": sorted({c for c in codes if c in hc.TERMINAL_ERROR_CODES}),
             "transportErrors": observed["loss"]["transportErrors"],
             "exitCode": data["exitCode"], "timedOut": data["timedOut"], "cancelled": data["cancelled"],
             "settled": data["settled"], "outputTruncated": data["outputTruncated"],
-            "hostVersion": data["hostVersion"], "hostModel": reported if reported is not None and hc.model_matches(requested_model, reported)
-            else None}
+            "hostVersion": data["hostVersion"], "hostModel": shown_model}
 
 
 def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now(timezone.utc),
@@ -270,7 +271,7 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
                     run=run, backend=backend, workdir=workdir(), containment=issued.host,
                     containment_sha256=issued.host_sha256, manifest=manifest, context=context,
                     request=hc.ClaudeRequest(session_id=SESSION % (index + int(time.time()) % 10**6),
-                                             model="haiku"),
+                                             model=MODEL),
                     compatibility=hc.CompatibilityWindow((2, 1, 292), (2, 1, 293)),
                     inventory=verify_inventory(export, expected_sha256=sha256(export).hexdigest()),
                     attempt_id=f"{args.attempt}-u{index}", before=before,
@@ -280,7 +281,7 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
                 stop = exc.reason
                 break
             if outcome.result is not None:
-                summaries.append({"unit": index + 1, **host_summary(outcome.result, "haiku")})
+                summaries.append({"unit": index + 1, **host_summary(outcome.result, MODEL)})
             say(f"[T008] unit {index + 1}: completed={outcome.record.completed} breach={outcome.record.breach}")
             if run.stopped:
                 stop = run.stopped
