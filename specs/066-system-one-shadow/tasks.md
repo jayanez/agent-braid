@@ -343,6 +343,15 @@ specifications unless a SPEC-066 requirement amends them.
   Stopped 2026-11-12 by plan Q7: the T106 real dry run labelled 3 merge-clean and 1
   merge-conflict pairs, below the minimum of 30 per class; no fit and no corpus build.
   Reopens only with a new admitted source or a new owner decision.
+  Feasibility 2026-11-14 (owner decisions D1 and D3): sibling-branch pairs in this
+  repository, owner-authored only, each side at most 64 paths against the pair's
+  merge-base, labelled by `git merge-tree --write-tree` in a throwaway mirror (nothing
+  stored): 3015 labelled pairs (2321 merge-clean, 694 merge-conflict) from 361 tips, but
+  System 2 classifies only 4 of them `unknown` (share 0.13 percent), against a D3 need of
+  about 630 unknown evaluation pairs plus train and calibration splits. Verdict
+  INFEASIBLE; no credible accumulation path. Evidence:
+  `evidence/s15b-sibling-feasibility-2026-11-14.json` (derived counts only). The
+  `sibling` origin is not added to T106 and no real dry run is made. No scientific claim.
 - [ ] T105 (REQ-103): Owner adjudication of the random label sample. Dependencies:
   T103, T104. Evidence: owner record.
 - [x] T106 (REQ-104): Git-history replay labels: pair real branches or commits of the

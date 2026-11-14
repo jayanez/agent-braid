@@ -203,6 +203,14 @@ def _text(value) -> str:
     return canonical_bytes(value).decode().rstrip('\n')
 
 
+_DOMAINS = {'turn': b'', 'strand': b'loom\0'}  # HMAC domain per name kind; turns keep their T008 names
+
+
+def _pseudonym(salt: bytes, value: str, kind: str = 'turn') -> str:
+    """Salted, deterministic `<kind>-<hmac16>` name of a source id that may hold free text (a key is a valid id)."""
+    return f'{kind}-' + hmac.new(salt, _DOMAINS[kind] + value.encode(), hashlib.sha256).hexdigest()[:16]
+
+
 def _message_losses(triplets: list[dict], extra=()) -> list[str]:
     """Losses of a message record: its triplets' losses that are not about rewards (messages carry none)."""
     return [*extra, *(loss for t in triplets for loss in t['losses'] if not loss.startswith('reward-'))]
@@ -215,28 +223,63 @@ def _loom(home: Path | None, data: bytes, salt: bytes):
         events = view_loom.parse_stream(data)
     except view_loom.LoomError as exc:
         raise AdapterError(f'Loom stream refused: {exc.reason}', SOURCE_INVALID) from exc
-    return (events, *_source(home, 'loom', data, salt))
+    return (events, _strand_names(events, salt), *_source(home, 'loom', data, salt))
+
+
+# Positions of strand and operation references in the view_loom data schema; nothing else is renamed.
+_STRAND_SCALARS = ('strandId', 'parentStrandId', 'waitingOn', 'left', 'right')
+_STRAND_LISTS = ('strands', 'units')
+
+
+def _map_refs(data: dict, rename) -> dict:
+    """Event data with `rename` applied to each strand or operation reference, at its schema position only."""
+    data = dict(data)
+    for key in _STRAND_SCALARS:
+        if isinstance(data.get(key), str):
+            data[key] = rename(data[key])
+    for key in _STRAND_LISTS:
+        if isinstance(data.get(key), list):
+            data[key] = [rename(item) for item in data[key]]
+    if isinstance(data.get('waves'), list):
+        data['waves'] = [[rename(item) for item in wave] for wave in data['waves']]
+    return data
+
+
+def _strand_names(events: list[dict], salt: bytes) -> dict[str, str]:
+    """One pseudonym per strand or operation id in the stream, computed once; refused if two ids collide."""
+    ids: set[str] = set()
+    for event in events:
+        _map_refs(event['data'], lambda value: ids.add(value) or value)
+    names = {value: _pseudonym(salt, value, 'strand') for value in ids}
+    if len(set(names.values())) != len(names):
+        raise AdapterError('Loom strand pseudonyms collide', SOURCE_INVALID)
+    return names
 
 
 def loom_messages(home: Path | None, data: bytes, salt: bytes) -> dict:
-    """One `system` message per Loom event (its kind and data); empty without consent."""
-    events, digest, rollout_id, redactor, refusal = _loom(home, data, salt)
+    """One `system` message per Loom event (its kind and data, strand ids as pseudonyms); empty without consent."""
+    events, names, digest, rollout_id, redactor, refusal = _loom(home, data, salt)
     if redactor is None:
         return _messages(rollout_id, 'loom', digest, [], [refusal], None)
-    messages = [{'role': 'system', 'content': _clean(redactor, _text({'kind': e['kind'], 'data': e['data']}))}
+    messages = [{'role': 'system',
+                 'content': _clean(redactor, _text({'kind': e['kind'],
+                                                    'data': _map_refs(e['data'], names.__getitem__)}))}
                 for e in events]
     return _messages(rollout_id, 'loom', digest, messages, [], None)
 
 
 def loom_triplets(home: Path | None, data: bytes, salt: bytes) -> list[dict]:
-    """One triplet per strand: its label as the prompt, its tools and outcome as the response; Loom has no reward."""
-    events, digest, rollout_id, redactor, refusal = _loom(home, data, salt)
+    """One triplet per strand: its label as the prompt, its tools and outcome as the response; Loom has no reward.
+
+    A strand id may hold free text, so each triplet is named by the strand's salted pseudonym.
+    """
+    events, names, digest, rollout_id, redactor, refusal = _loom(home, data, salt)
     strands: dict[str, dict] = {}
     for event in events:
         body = event['data']
         if not event['kind'].startswith('strand.'):
             continue
-        strand = strands.setdefault(body['strandId'], {'label': None, 'tools': [], 'outcome': None})
+        strand = strands.setdefault(names[body['strandId']], {'label': None, 'tools': [], 'outcome': None})
         if event['kind'] == 'strand.open':
             strand['label'] = body['label']
         elif event['kind'] == 'strand.update' and body.get('toolName'):
@@ -279,7 +322,7 @@ def _transcript(home: Path | None, path, salt: bytes):
     triplets, messages = [], []
     for source_op in json.loads(data)['operations']:  # admitted above, so well formed
         op = by_instance[source_op['instanceId']]
-        turn_id = 'turn-' + hmac.new(salt, op['attemptId'].encode(), hashlib.sha256).hexdigest()[:16]
+        turn_id = _pseudonym(salt, op['attemptId'])
         losses = ['model-text-unavailable', 'prompt-missing', 'reward-unavailable']
         response = None
         if redactor is None:
