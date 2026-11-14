@@ -1,0 +1,63 @@
+{
+  "schema": "agent-braid-spec066-s15b-sibling-feasibility/v0.1",
+  "specification": "SPEC-066",
+  "task": "T104",
+  "date": "2026-11-14",
+  "decisionBasis": ["owner decision D1 2026-11-14: sibling-branch pairs in this repository", "owner decision D3 2026-11-14: GO rule on System-2-unknown DP-1 pairs"],
+  "consentScope": "evidence/owner-consent-s15b-git-history-addendum-20261110.json (workspace eedc05f71069fdb4af00c6b99932195b, owner-authored commits only)",
+  "verdict": "INFEASIBLE",
+  "executionAuthorization": false,
+  "trainingAdmission": false,
+  "method": {
+    "where": "throwaway mirror clone outside the repository; nothing written to the repository, the S1.5b store or the shadow store; no record kept",
+    "tips": "unique commits of refs/heads, refs/remotes and refs/archive not merged into origin/develop",
+    "authorship": "a tip is kept only if every commit between its develop fork point and the tip is owner-authored (matched in memory, never stored)",
+    "pairs": "every unordered pair of kept tips whose own change set is at most 64 paths; base = git merge-base of the pair; pairs whose base equals one side are not diverged",
+    "pathBound": "each side at most 64 changed paths against the pair base (git_replay.MAX_PATHS); a cheap superset bound (more than 256 develop paths between the two fork points) skips cross-fork pairs that cannot meet it",
+    "oracle": "git merge-tree --write-tree --no-messages: exit 0 merge-clean, exit 1 merge-conflict",
+    "system2": "the agent_braid analysis rule applied to git name-status --no-renames against the pair base: a path that both sides add or modify (A or M) is a shared write resource, so conflicting; otherwise any status other than A or M (a deletion or type change, which git_adapter records as a per-operation git-unsupported resource with kind unknown and partial coverage, never shared) is unknown; otherwise independent-candidate. No dependencies and no uncertain paths, as in the T106 request. A review-time rerun with this exact sharing rule (deleted paths never shared) gave identical counts."
+  },
+  "counts": {
+    "tips": {"refsNotMerged": 602, "unique": 492, "authorExcluded": 101, "admitted": 391, "ownChangeSetAtMost64Paths": 368},
+    "pairs": {
+      "notDiverged": 17,
+      "tooManyPaths": 10959,
+      "crossForkBeyondSupersetBound": 53537,
+      "labelled": {"sameForkPoint": 259, "crossForkPoint": 2756, "total": 3015},
+      "labels": {"merge-clean": 2321, "merge-conflict": 694, "oracle-error": 0},
+      "system2": {"conflicting": 2421, "independent-candidate": 590, "unknown": 4},
+      "system2ByLabel": {
+        "conflicting|merge-clean": 1727,
+        "conflicting|merge-conflict": 694,
+        "independent-candidate|merge-clean": 590,
+        "independent-candidate|merge-conflict": 0,
+        "unknown|merge-clean": 4,
+        "unknown|merge-conflict": 0
+      },
+      "distinctTipsInLabelledPairs": 361,
+      "distinctMergeBases": 205,
+      "largestMergeBaseGroupPairs": 90
+    },
+    "unknownShare": 0.0013
+  },
+  "d3Need": {
+    "rule": "Wilson 95% upper bound of false independence at most 2% and coverage at least 30% on System-2-unknown DP-1 pairs, early stop allowed",
+    "minimumAdvisedWithZeroErrors": 188,
+    "unknownEvalPairsAtThirtyPercentCoverage": 630,
+    "plusSplits": "train and calibration splits on top of the evaluation pairs"
+  },
+  "projection": {
+    "unknownPairsAvailableNow": 4,
+    "upperBoundIfEveryCrossForkPairBeyondTheBoundWereLabelled": "about 70 at the observed share (53537 x 0.0013); most of those exceed 64 paths, so the true figure is lower",
+    "shortfallFactorAgainstEvalNeedAlone": "about 157x now; at least 9x even under the upper bound",
+    "accumulationPath": "none credible: System 2 says unknown on a git pair only when the two change sets are disjoint and one side deletes or changes the type of a file, which owner branches rarely do; the live shadow pool (plan R-D) is about 142 pairs per 30-day window, of which about 27 percent are DP-1 across all kinds, and the population is not widened after labels are seen"
+  },
+  "limits": [
+    "Counts only: no commit id, path, author, message or ref name is recorded.",
+    "The System 2 class is the analysis rule applied to name-status output, not a run of analyze_git_with_provenance on every pair; it matches that rule for commit sources without dependencies or uncertain paths.",
+    "Sibling pairs reuse tips: 3015 labelled pairs come from 361 tips and 205 merge bases, so the effective sample is far smaller than the pair count; this strengthens the INFEASIBLE verdict.",
+    "merge-tree labels textual cleanliness, not semantic independence.",
+    "No scientific claim; nothing here measures System One accuracy or utility."
+  ],
+  "consequence": "T104 stays stopped for the System-2-unknown population: the sibling source cannot reach the D3 need. The sibling origin is not added to the T106 tool and no real dry run is made."
+}
