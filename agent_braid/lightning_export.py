@@ -30,6 +30,12 @@ working directory. The SPEC-074 redactor replaces the current `$HOME` with `~` w
 bytes are reproducible for the same `$HOME` at ingest and export, not across different ones. A crash between the
 temporary directory and the rename can leave a `.export-*` directory beside the output; it holds only that export's
 files and is the owner's to delete.
+
+T007 (REQ-007): `balance equal`, the default for `rollout` exports (E4, OD-2): per task, keep `min(successes,
+failures)` attempts of each outcome, chosen by a seeded hash rank of [seed, taskId, runId, rolloutId], so the same
+data and seed keep the same attempts, also after a re-ingest with a new salt. Attempts are kept or dropped whole;
+dropped model calls count as `balance` exclusions. Tasks with one outcome keep nothing and are reported, never
+padded; attempts without a reward (`unknown`) cannot be paired and are dropped and reported. `supervised` exports are never balanced.
 """
 from __future__ import annotations
 
@@ -428,14 +434,36 @@ def check_manifest(manifest: dict, records: bytes, sources: dict) -> None:
             fail('terms decision')
     if set(manifest['retention']) != {entry['runId'] for entry in entries}:
         fail('retention')
-    tasks = [row['taskId'] for row in manifest['balanceReport']]
-    if len(tasks) != len(set(tasks)) or any(row['singleOutcome'] and row['keptPerOutcome'] != 0
-                                            for row in manifest['balanceReport']):
-        fail('balance report')
+    _check_balance(manifest, fail)
     if manifest['kind'] == 'supervised' and (manifest['balance'] != 'none' or manifest['exclusions']['balance']):
         fail('supervised balance')
     if manifest['canaryScan'] != 'clean' or manifest['digest'] != manifest_digest(manifest):
         fail('digest')
+
+
+def _check_balance(manifest: dict, fail) -> None:
+    """The E4 arithmetic: each report row is consistent and the dataset holds exactly the attempts it says it kept."""
+    report = manifest['balanceReport']
+    tasks = [row['taskId'] for row in report]
+    if len(tasks) != len(set(tasks)):
+        fail('balance report')
+    if manifest['kind'] == 'rollout' and (manifest['balance'] == 'equal') != bool(report):
+        fail('balance report')  # equal reports every task; none reports nothing
+    kept: dict[str, dict[str, set]] = {}
+    for entry in manifest['records']:
+        kept.setdefault(entry['taskId'], {}).setdefault(entry['outcome'], set()).add(
+            (entry['runId'], entry['rolloutId'], entry['attemptId']))
+    for row in report:
+        least = min(row['successes'], row['failures'])
+        single = (row['successes'] == 0) != (row['failures'] == 0)
+        attempts = kept.get(row['taskId'], {})
+        if row['keptPerOutcome'] != least or row['singleOutcome'] != single \
+                or row['dropped'] != row['successes'] + row['failures'] + row['unknown'] - 2 * least \
+                or len(attempts.get('success', ())) != least or len(attempts.get('failure', ())) != least \
+                or attempts.get('unknown'):
+            fail('balance report')
+    if report and set(kept) - set(tasks):
+        fail('balance report')
 
 
 def build_manifest(entries: list[dict], records: bytes, *, kind: str, level: str, seed: int, balance: str,
@@ -515,15 +543,61 @@ def write_export(out: Path, records: bytes, manifest: dict) -> None:
         pass
 
 
+def _check_seed(seed) -> None:
+    if type(seed) is not int or seed < 0:
+        raise ExportError('The seed is an integer of at least 0', 'invalid-argument')
+
+
+def _rank(seed: int, task_id: str, item: dict) -> str:
+    """The draw key: no attempt pseudonym (it changes with each ingest's salt). A rollout has one attempt, so
+    [runId, rolloutId] names the attempt; the same data and seed give the same selection across re-ingests."""
+    key = [seed, task_id, item['runId'], item['rolloutId']]
+    return hashlib.sha256(_canonical(key)).hexdigest()
+
+
+def balance_equal(items: list[dict], *, seed: int) -> tuple[list[dict], list[dict], int]:
+    """Equal 1:1 balance per task (E4, OD-2): the kept items, the balance report and the dropped model calls."""
+    _check_seed(seed)
+    attempts: dict[str, dict[tuple, list[dict]]] = {}
+    for item in items:
+        attempts.setdefault(item['taskId'], {}).setdefault(
+            (item['runId'], item['rolloutId'], item['attemptId']), []).append(item)
+    kept, report = [], []
+    for task_id in sorted(attempts):
+        by_outcome: dict[str, list[list[dict]]] = {'success': [], 'failure': [], 'unknown': []}
+        for calls in attempts[task_id].values():
+            by_outcome[calls[0]['outcome']].append(calls)
+        keep = min(len(by_outcome['success']), len(by_outcome['failure']))
+        for outcome in ('success', 'failure'):
+            chosen = sorted(by_outcome[outcome], key=lambda calls: _rank(seed, task_id, calls[0]))[:keep]
+            kept += [item for calls in chosen for item in calls]
+        total = sum(len(v) for v in by_outcome.values())
+        report.append({'taskId': task_id, 'successes': len(by_outcome['success']),
+                       'failures': len(by_outcome['failure']), 'unknown': len(by_outcome['unknown']),
+                       'keptPerOutcome': keep, 'dropped': total - 2 * keep,
+                       'singleOutcome': (len(by_outcome['success']) == 0) != (len(by_outcome['failure']) == 0)})
+    return kept, report, len(items) - len(kept)
+
+
 def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: str, out: Path, seed: int = 0,
-                   balance: str = 'none', outcome_field: bool = False, now: float | None = None) -> dict:
-    """Export the runs as one dataset and return its manifest (nothing is written on any refusal)."""
-    if kind not in KINDS or balance not in BALANCES or type(seed) is not int or seed < 0 \
-            or (kind == 'supervised' and (balance != 'none')) or (kind == 'rollout' and outcome_field):
+                   balance: str | None = None, outcome_field: bool = False, now: float | None = None) -> dict:
+    """Export the runs as one dataset and return its manifest (nothing is written on any refusal).
+
+    `balance` defaults to `equal` for `rollout` and is always `none` for `supervised` (E4).
+    """
+    balancing = balance
+    if balancing is None and kind in KINDS:
+        balancing = 'equal' if kind == 'rollout' else 'none'
+    if kind not in KINDS or balancing not in BALANCES or (kind == 'supervised' and balancing != 'none') \
+            or (kind == 'rollout' and outcome_field):
         raise ExportError('Invalid export arguments', 'invalid-argument')
-    if balance == 'equal':
-        raise ExportError('Balance equal is not available yet', 'invalid-argument')  # T007
+    _check_seed(seed)
     kept, exclusions = select(read_runs(home, run_ids))
+    _check_items(kept)  # the terms gate sees every candidate, before balance can drop any
+    report = []
+    if balancing == 'equal':
+        kept, report, dropped = balance_equal(kept, seed=seed)
+        exclusions['balance'] += dropped
     if kind == 'supervised':
         lines, entries, _ = supervised(kept, level=level, outcome_field=outcome_field)
     else:
@@ -533,8 +607,8 @@ def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: s
     _scan(lines)
     records = b''.join(lines)
     sources = {(i['runId'], i['rolloutId'], i['attemptId']): i['source'] for i in kept}
-    manifest = build_manifest(entries, records, kind=kind, level=level, seed=seed, balance=balance,
-                              exclusions=exclusions, balance_report=[],
+    manifest = build_manifest(entries, records, kind=kind, level=level, seed=seed, balance=balancing,
+                              exclusions=exclusions, balance_report=report,
                               retention=_retention(home, {e['runId'] for e in entries}),
                               generated_at=_utc(datetime.now(timezone.utc).timestamp() if now is None else now),
                               sources=sources)

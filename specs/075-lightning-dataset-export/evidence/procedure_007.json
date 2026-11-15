@@ -1,0 +1,20 @@
+{
+ "command": "python -m unittest tests.test_spec075_balance",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/lightning_export.py": "bb9b137fa86b236b8b06496ddd195e06c520e39d5afe95fa6286295e6f7d84d7",
+  "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
+  "tests/spec075_fixtures.py": "4b8f08efa4cc8ed14f3f0ddd542dd7cc5a64bb92627158064e2ed1d28ad610fd",
+  "tests/test_spec075_balance.py": "60ae584a741aa5a76810f6129a6bf2ae7320cab2935f0091e9512c745d118a18"
+ },
+ "limits": "Temporary homes and synthetic fixture content; one seed per assertion plus a range of seeds to show the seed matters, not a statistical test of the choice. Same data and seed give the same selection (the key holds no salt-dependent pseudonym; a rollout has one attempt, which read_runs enforces). The balance unit is the attempt, so a long attempt and a short one weigh the same. No claim is made that balance benefits a model (E4). The terms gate is the fixed OD-1 refusal until T008.",
+ "outcome": "passed: T007: lightning_export.balance_equal keeps, per task, min(successes, failures) attempts of each outcome by the lowest SHA-256 of [seed, taskId, runId, rolloutId] (no attempt pseudonym, so a re-ingest with a new salt selects the same attempts). Fixture store: task-a with 5 successes (one of two calls), 2 failures and 1 attempt without a reward; task-b with 3 successes only; task-c with one of each; task-d with 2 successes and 5 failures. With seed 0 task-a keeps 2 + 2, reported as successes 5, failures 2, unknown 1, keptPerOutcome 2, dropped 4; task-d keeps 2 + 2, reported successes 2, failures 5, keptPerOutcome 2, dropped 3; task-b keeps nothing and is reported singleOutcome true, keptPerOutcome 0, dropped 3, not padded; task-c keeps one of each. The kept rollouts for seed 0 are pinned (task-a ro-a0, ro-a4, ro-f0, ro-f1; task-d ro-d0, ro-d1, ro-e2, ro-e4) and the rank of one key is pinned to its hex; a second store with the same data and another salt (disjoint attempt pseudonyms) selects the same rollouts. Attempts are kept whole and kept plus dropped model calls equal the input. The choice is the same for reversed input and reruns with the same seed (identical records bytes and digest), changes with the seed, and the manifest records the seed. Rollout exports balance by default at both levels and validate against the schema; dropped attempts leave neither their pseudonym nor their rollout id in records.jsonl or manifest.json; balance none exports every attempt with an empty report. check_manifest, through export_dataset with a tampered balancer, refuses (invalid-manifest, nothing written) a 1-vs-1 task claiming keptPerOutcome 5 and dropped 0, a cap below the minimum, a wrong singleOutcome, a wrong dropped count, an extra or a missing kept attempt, an empty report under balance equal, a report under balance none, a duplicate task and a kept task missing from the report. Supervised exports are never balanced: balance equal is refused (invalid-argument) with or without the outcome field, and the default supervised export has balance none, an empty report and no balance exclusions. A ratio, unknown or boolean balance and a negative, boolean, fractional or text seed are refused (OD-2: no ratio parameter); an export that balance empties refuses with no-records. The terms gate stays closed: host-model runs refuse with terms-gate-missing, also when balance would drop them. Negative controls (mutants, each fails a test): max or the failure count instead of min, a reversed rank, a rank without the task or with the attempt pseudonym, an unseeded rank, the terms check after balance, unknown attempts kept, dropped calls not counted, a none default, the supervised guard removed, singleOutcome never set, and each report check removed.",
+ "procedure": "procedure_007",
+ "result": "OK",
+ "scenario": "SC-007",
+ "specification": "SPEC-075 BL.5",
+ "testsRun": 19
+}

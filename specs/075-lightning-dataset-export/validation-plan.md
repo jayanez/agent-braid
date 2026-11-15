@@ -6,8 +6,9 @@ and T006 builder, `tests/test_spec075_manifest.py`), procedure_002 (T003,
 `tests/test_spec075_export_filter.py`; the dataset's redaction version is set by
 T006), procedure_003 (T004, `tests/test_spec075_supervised.py`; its manifest-hash
 half in `tests/test_spec075_manifest.py`), procedure_004 (T005,
-`tests/test_spec075_rollout.py`) and procedure_006 (T006,
-`tests/test_spec075_manifest.py`); no other procedure has. Evidence is
+`tests/test_spec075_rollout.py`), procedure_006 (T006,
+`tests/test_spec075_manifest.py`) and procedure_007 (T007,
+`tests/test_spec075_balance.py`); no other procedure has. Evidence is
 captured with `python -m scripts.spec075_capture_evidence`. Deterministic procedures run
 locally and in CI as targeted test modules (`tests/test_spec075_*.py`, one
 module per task).
@@ -20,7 +21,7 @@ module per task).
 | procedure_004 | SC-004 | aggregation tests (`tests.test_spec075_rollout`, T005) | 3 transition records, 1 trajectory record, limit declared | token-ID merge attempted without token IDs |
 | procedure_005 | SC-005 | manifest schema test (`tests.test_spec075_manifest_schema`, T002) and builder output against the schema and `check_manifest` (`tests.test_spec075_manifest`, T006) | valid manifest passes | missing `sha256` or `redactionVersion` passes |
 | procedure_006 | SC-006 | double export, shuffled input, other working directory (`tests.test_spec075_manifest`, T006) | byte-identical except `generatedAt` | timestamp or host path in dataset bytes |
-| procedure_007 | SC-007 | balance tests | `rollout` kind: 2+2 kept, stable, dropped counts reported; `supervised` not balanced | unseeded choice differs across runs |
+| procedure_007 | SC-007 | balance tests (`tests.test_spec075_balance`, T007) | `rollout` kind: 2+2 kept, stable, dropped counts reported; `supervised` not balanced | unseeded choice differs across runs |
 | procedure_008 | SC-008 | terms gate tests | refuse without record; proceed with permitting record, hash referenced | host export without record succeeds |
 | procedure_009 | SC-009 | CLI tests | fixed refusal codes; no value echo; `export-disabled` unless `export.enabled` | symlinked or non-empty output accepted |
 | procedure_010 | SC-010 | canary scan tests | abort, no output on hit; `clean` otherwise | partial file left after abort |
