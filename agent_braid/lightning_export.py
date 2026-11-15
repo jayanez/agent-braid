@@ -12,6 +12,12 @@ T004 (REQ-003): the `supervised` writer. Each attempt's outcome comes from its c
 every result is labelled `pipeline-only`; otherwise, or with no result, `host-model`). OD-1 is deferred, so the
 writer refuses any host-model unit with `terms-gate-missing` before writing anything; T008 replaces that refusal
 with the owner terms-decision check. Lines are `trace_adapter.canonical_bytes(record)` plus a newline (E3).
+
+T005 (REQ-004): the `rollout` writer. A record carries the attempt's turns (redacted prompt, response and tool
+calls), its SPEC-071 reward vector unchanged and the rollout's latest status. `transition` writes one record per
+model call; `trajectory` one per attempt, merged by token-ID prefix only when every turn carries token IDs that
+chain (never for hosted Claude Code or OpenCode, whose triplets carry none), else at text level with the limit
+`text-level-merge` (E2). Token IDs never enter a record. The T004 input and terms checks apply unchanged.
 """
 from __future__ import annotations
 
@@ -84,8 +90,13 @@ def select(items: list[dict]) -> tuple[list[dict], dict[str, int]]:
     return kept, exclusions
 
 
-def _tasks(run: store.RunStore) -> dict[str, tuple[str, str]]:
-    return {r.rollout_id: (r.task_id, r.group_id) for r in run.read('rollout')}
+def _tasks(run: store.RunStore) -> dict[str, tuple[str, str, str]]:
+    """Task, group and latest state per rollout id (the record with the highest status version)."""
+    latest: dict[str, object] = {}
+    for record in run.read('rollout'):
+        if record.rollout_id not in latest or record.status.version >= latest[record.rollout_id].status.version:
+            latest[record.rollout_id] = record
+    return {rid: (r.task_id, r.group_id, r.status.state) for rid, r in latest.items()}
 
 
 def _code(exc: Exception, fallback: str) -> str:
@@ -144,14 +155,15 @@ def _read_run(home: Path | None, run_id: str, refusal: str | None) -> list[dict]
         rollout_id = next(iter(rollouts))
         if rollout_id not in tasks:
             raise ExportError('A rollout has events but no rollout record', 'source-invalid')
-        task_id, group_id = tasks[rollout_id]
+        task_id, group_id, status = tasks[rollout_id]
         reward = rewards.get(attempt_id, (None, None))[1]
         # fail closed: one host-run result (or none at all) makes the attempt host-model output
         source = 'fixture' if labels.get((rollout_id, attempt_id)) == {'pipeline-only'} else 'host-model'
         for index, triplet in enumerate(adapter.rollout_triplets(home, run_id, attempt_id)):
             items.append({'runId': run_id, 'taskId': task_id, 'groupId': group_id, 'rolloutId': rollout_id,
                           'attemptId': triplet['attemptId'], 'turnIndex': index, 'gateRefusal': refusal,
-                          'outcome': _outcome(reward), 'reward': reward, 'source': source, 'triplet': triplet})
+                          'outcome': _outcome(reward), 'reward': reward, 'status': status, 'source': source,
+                          'triplet': triplet})
     return items
 
 
@@ -219,8 +231,8 @@ def check_supervised(record, *, outcome_field: bool = False) -> None:
         raise ExportError('A supervised record does not have the contract shape', 'invalid-record')
 
 
-_ITEM_KEYS = frozenset({'runId', 'taskId', 'groupId', 'rolloutId', 'attemptId', 'turnIndex', 'outcome', 'source',
-                        'triplet'})
+_ITEM_KEYS = frozenset({'runId', 'taskId', 'groupId', 'rolloutId', 'attemptId', 'turnIndex', 'outcome', 'reward',
+                        'status', 'source', 'triplet'})
 
 
 def _check_items(items) -> None:
@@ -258,3 +270,60 @@ def supervised(items: list[dict], *, level: str, outcome_field: bool = False) ->
         entries.append(_entry(unit, record['recordId'], line, turn_range,
                               ['text-level-merge'] if len(unit) > 1 else []))
     return lines, entries, left_out
+
+
+_ATTEMPT_ID = re.compile(r'(attempt|turn|strand|episode)-[0-9a-f]{16}')
+_STATES = ('queuing', 'running', 'succeeded', 'failed')
+_REWARD_KEYS = {'value', 'components', 'source', 'reason'}
+
+
+def check_rollout(record) -> None:
+    """Refuse a rollout record that does not have the contract shape (`invalid-record`)."""
+    keys = {'recordId', 'rolloutId', 'attemptId', 'turns', 'reward', 'status'}
+    ok = isinstance(record, dict) and set(record) == keys and isinstance(record['recordId'], str) \
+        and _RECORD_ID.fullmatch(record['recordId']) is not None and isinstance(record['rolloutId'], str) \
+        and isinstance(record['attemptId'], str) and _ATTEMPT_ID.fullmatch(record['attemptId']) is not None \
+        and record['status'] in _STATES and isinstance(record['turns'], list) and len(record['turns']) > 0 \
+        and (record['reward'] is None or (isinstance(record['reward'], dict) and set(record['reward']) == _REWARD_KEYS))
+    for turn in record['turns'] if ok else []:
+        ok = ok and isinstance(turn, dict) and set(turn) == {'prompt', 'response', 'toolCalls'} \
+            and isinstance(turn['prompt'], str) and isinstance(turn['response'], str) \
+            and isinstance(turn['toolCalls'], list)
+    if not ok:
+        raise ExportError('A rollout record does not have the contract shape', 'invalid-record')
+
+
+def _tokens(part) -> list | None:
+    value = part.get('tokenIds') if isinstance(part, dict) else None
+    return value if isinstance(value, list) and value and all(type(t) is int for t in value) else None
+
+
+def _token_prefix_merge(unit: list[dict]) -> bool:
+    """True when every turn carries token IDs and each prompt extends the previous prompt and response (E2)."""
+    previous = None
+    for item in unit:
+        prompt, response = _tokens(item['triplet']['prompt']), _tokens(item['triplet']['response'])
+        if prompt is None or response is None or (previous is not None and prompt[:len(previous)] != previous):
+            return False
+        previous = prompt + response
+    return True
+
+
+def rollout_records(items: list[dict], *, level: str) -> tuple[list[bytes], list[dict]]:
+    """`rollout` lines and manifest record entries, in E3 order. Balance is applied separately (T007)."""
+    _check_items(items)
+    lines, entries = [], []
+    for unit in _units(items, level):
+        first = unit[0]
+        turn_range = [first['turnIndex'], unit[-1]['turnIndex']]
+        turns = [{'prompt': i['triplet']['prompt']['text'], 'response': i['triplet']['response']['text'],
+                  'toolCalls': i['triplet']['response'].get('toolCalls', [])} for i in unit]
+        record = {'rolloutId': first['rolloutId'], 'attemptId': first['attemptId'], 'turns': turns,
+                  'reward': first['reward'], 'status': first['status']}
+        record = {'recordId': _record_id(record, first, turn_range), **record}
+        check_rollout(record)
+        line = line_bytes(record)
+        limits = ['text-level-merge'] if len(unit) > 1 and not _token_prefix_merge(unit) else []
+        lines.append(line)
+        entries.append(_entry(unit, record['recordId'], line, turn_range, limits))
+    return lines, entries

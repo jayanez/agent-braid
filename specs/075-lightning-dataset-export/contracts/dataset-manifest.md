@@ -85,6 +85,17 @@ Writers accept only items that pass the consent and redaction filter
 not counted in the manifest.
 - `rollout`: `{"recordId", "rolloutId", "attemptId", "turns": [...],
   "reward": {...}, "status"}`; reward is the SPEC-071 vector, unchanged.
+  Each turn is `{prompt, response, toolCalls}` (redacted text and tool calls of
+  one model call); `reward` is the attempt's last reward event `{value,
+  components, source, reason}` or null; `status` is the rollout's latest state
+  (`queuing`, `running`, `succeeded`, `failed`). `transition` writes one record
+  per model call, `trajectory` one per attempt with its exported calls in order.
+  A trajectory merges by token-ID prefix only when every turn's prompt and
+  response carry integer token IDs and each prompt starts with the previous
+  prompt and response; otherwise, and always for hosted Claude Code or OpenCode
+  (their triplets carry no token IDs), the merge is text-level and the entry
+  declares `text-level-merge`. A one-call unit merges nothing. Token IDs never
+  enter a record (T005).
 
 ## Refusal codes
 

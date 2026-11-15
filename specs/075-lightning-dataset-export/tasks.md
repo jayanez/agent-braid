@@ -24,7 +24,8 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
   units refused with `terms-gate-missing` while OD-1 is deferred; SC-003's
   manifest-hash half lands with T006). Dependencies: T003.
   Verification: procedure_003.
-- [ ] T005 (REQ-004 / SC-004): `rollout` writer and both levels.
+- [x] T005 (REQ-004 / SC-004): `rollout` writer and both levels
+  (`lightning_export.rollout_records`; T004 input and terms checks unchanged).
   Dependencies: T003. Verification: procedure_004.
 - [ ] T006 (REQ-005, REQ-006 / SC-005, SC-006): Manifest builder, atomic write,
   determinism test; defines `redactionVersion` (SPEC-074 records carry none)

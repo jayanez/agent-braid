@@ -46,10 +46,16 @@ def result(run_id, rollout, attempt, label):
 
 
 def rollout(run: store.RunStore, rollout_id: str, attempt: str, turns, *, task='task-a', group='group-g', d4=True,
-            label='pipeline-only', start=0, created=None) -> None:
+            label='pipeline-only', start=0, created=None, status=None) -> None:
     """One attempt: a model_request per turn (prompt, response[, toolCalls]) with stored content, then a reward with
-    component d4 (None: no reward event) and an attempt result with `label` (None: no result record)."""
-    run.append('rollout', new_rollout(rollout_id, task, group, DIGEST, DIGEST, 'claude-code', at=T0))
+    component d4 (None: no reward event), an attempt result with `label` (None: no result record) and, with
+    `status`, the rollout moved through running to that terminal state."""
+    record = new_rollout(rollout_id, task, group, DIGEST, DIGEST, 'claude-code', at=T0)
+    run.append('rollout', record)
+    if status is not None:
+        record = record.transition('running', T0 + 1, attempt_id=attempt)
+        run.append('rollout', record)
+        run.append('rollout', record.transition(status, T0 + 2))
     sequence = start
     for turn in turns:
         sequence += 1
