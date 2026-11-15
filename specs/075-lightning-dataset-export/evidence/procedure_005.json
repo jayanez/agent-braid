@@ -5,7 +5,7 @@
   "python": "3.12.13"
  },
  "inputs": {
-  "agent_braid/lightning_export.py": "4494483cbb63ad9f9a28c8ac835e38b36dd2aa130361350f06bfd1ab260fa5f0",
+  "agent_braid/lightning_export.py": "376665944d6dfcec173261a106966f9d6aae4a17dec30eed0ba5dc196118a52a",
   "agent_braid/lightning_redact.py": "774e27ae55a1e71ab49205a0daa6d47d374160b46fd90b2c77891b566fbeecf2",
   "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
   "tests/spec075_fixtures.py": "780661adc1dbd086f7bf8cffee7229c98413596bf5bd485e0b36042376b519a6",

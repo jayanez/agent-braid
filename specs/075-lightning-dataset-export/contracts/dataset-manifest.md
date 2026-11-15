@@ -156,8 +156,11 @@ non-empty report and with `balance: none` an empty one.
 
 A non-fixture unit exports only under an owner terms decision record (E5,
 OD-1). OD-1 is deferred: Agent Braid ships no record, and none says any
-provider permits training. The record is a private (`0600`, no symbolic link)
-JSON file of at most 16 KiB under `<plugin home>/lightning/`, named for the
+provider permits training. The record is a private regular file (owner only, no
+group or other bits) of at most 16 KiB under `<plugin home>/lightning/terms/`,
+both of whose directories (`lightning/`, `terms/`) must be private too; it is
+opened without following a symbolic link and read bounded to 16 KiB plus one
+byte, then checked on the open file descriptor. It is named for the
 export by its relative path `terms/<name>.json` (`[A-Za-z0-9][A-Za-z0-9._-]*`).
 Exact keys, no duplicates:
 
@@ -180,7 +183,12 @@ model is not covered. Any failure refuses the whole export with
 `terms-gate-missing` before anything is written, with a text that names no path
 or field value. When at least one exported record is `host-model`, the manifest
 `termsDecision` is `{path, sha256}` of the record bytes; a fixture-only export
-cites none. One record per export: units of two hosts need two exports.
+cites none, and `check_manifest` refuses a cited `{path, sha256}` that is not
+the record the gate read and verified. One record covers one host: units of two
+hosts need two exports. `provider` is informational: binding is by `host` plus
+exact model id only. The host and model come from the ingested trace data (the
+rollout record and the attempt's `attempt_start` event) and are not
+independently attested.
 
 ## Retention and purge
 

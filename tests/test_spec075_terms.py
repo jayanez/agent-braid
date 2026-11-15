@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from agent_braid import lightning_export as export
 from tests.spec075_fixtures import T0, consent, new_run, rollout
@@ -153,8 +154,14 @@ class GateTests(Base):
             with self.subTest(name=name):
                 self.record(value)
                 self.refused()
-        for name, raw in (('not json', b'{'), ('duplicate key', b'{"outcome": "x", "outcome": "y"}'),
-                          ('too large', b' ' * (16 * 1024 + 1))):
+        valid = json.dumps(SYNTHETIC)
+        duplicated = valid[:-1] + ', "outcome": "permits-training"}'  # a full valid record, one key twice
+        compact = json.dumps(SYNTHETIC)
+        padded = compact + ' ' * (16 * 1024 + 1 - len(compact))  # valid JSON, exact keys, one byte over the limit
+        self.assertEqual(len(padded), 16 * 1024 + 1)
+        self.assertEqual(json.loads(padded), SYNTHETIC)
+        self.assertGreater(len(padded), 16 * 1024)
+        for name, raw in (('not json', b'{'), ('duplicate key', duplicated.encode()), ('too large', padded.encode())):
             with self.subTest(name=name):
                 self.record(raw=raw)
                 self.refused()
@@ -189,6 +196,54 @@ class GateTests(Base):
         target.symlink_to(self.home / 'lightning' / 'terms' / 'real.json')
         self.refused(terms_decision='terms/link.json')
 
+    def test_directories_must_be_private(self):
+        self.record()
+        self.export('private-ok')
+        for folder in (self.home / 'lightning' / 'terms', self.home / 'lightning'):
+            for mode in (0o777, 0o750, 0o705):
+                with self.subTest(folder=folder.name, mode=oct(mode)):
+                    folder.chmod(mode)
+                    self.refused()
+                    folder.chmod(0o700)
+        self.export('private-again')
+
+    def test_a_symlink_swapped_in_after_the_path_checks_is_not_followed(self):
+        self.record(name='terms/real.json')
+        path = self.home / 'lightning' / RECORD
+        self.record()
+        real_safe = export.registry._safe
+
+        def swap(target, **kwargs):
+            checked = real_safe(target, **kwargs)
+            if target == path:  # after the path check, before the open
+                path.unlink()
+                path.symlink_to(self.home / 'lightning' / 'terms' / 'real.json')
+            return checked
+
+        with patch.object(export.registry, '_safe', swap):
+            self.refused()
+
+    def test_an_oversize_record_is_read_bounded(self):
+        padded = json.dumps(SYNTHETIC, indent=1).replace('\n', '\n' + ' ' * 4000).encode()
+        self.record(raw=padded)
+        reads = []
+        real_fdopen = export.os.fdopen
+
+        def watched(fd, *args, **kwargs):
+            stream = real_fdopen(fd, *args, **kwargs)
+            real_read = stream.read
+            stream.read = lambda size=-1: reads.append(size) or real_read(size)
+            return stream
+
+        with patch.object(export.os, 'fdopen', watched):
+            self.refused()
+        self.assertEqual(reads, [16 * 1024 + 1])
+
+    def test_refusals_carry_no_context(self):
+        self.record(raw=b'{')
+        error = self.refused()
+        self.assertIsNone(error.__context__)
+
     def test_the_writers_apply_the_same_gate(self):
         self.record()
         items, _ = export.select(export.read_runs(self.home, ['run-1', 'run-host']))
@@ -210,13 +265,32 @@ class ManifestTests(Base):
         manifest = self.export()
         records = (self.base / 'out' / 'records.jsonl').read_bytes()
         sources = {(e['runId'], e['rolloutId'], e['attemptId']): e['source'] for e in manifest['records']}
-        export.check_manifest(manifest, records, sources)
-        broken = copy.deepcopy(manifest)
-        broken['termsDecision'] = None
-        broken['digest'] = export.manifest_digest(broken)
-        with self.assertRaises(export.ExportError) as caught:
-            export.check_manifest(broken, records, sources)
-        self.assertEqual(caught.exception.code, 'invalid-manifest')
+        terms = export.load_terms_decision(self.home, RECORD, today='2027-01-15')
+        export.check_manifest(manifest, records, sources, terms)
+        for change in ({'termsDecision': None},
+                       {'termsDecision': {'path': 'terms/other.json', 'sha256': '0' * 64}},
+                       {'termsDecision': {'path': RECORD, 'sha256': '0' * 64}}):
+            broken = copy.deepcopy(manifest)
+            broken.update(change)
+            broken['digest'] = export.manifest_digest(broken)
+            with self.subTest(change=change), self.assertRaises(export.ExportError) as caught:
+                export.check_manifest(broken, records, sources, terms)
+            self.assertEqual(caught.exception.code, 'invalid-manifest')
+        with self.assertRaises(export.ExportError):  # a cited record that the gate never read
+            export.check_manifest(manifest, records, sources)
+
+    def test_the_export_verifies_the_cited_hash(self):
+        self.record()
+        real = export.build_manifest
+        for cited in ({'path': 'terms/other.json', 'sha256': '0' * 64}, {'path': RECORD, 'sha256': '0' * 64}):
+            def forged(entries, records, **kwargs):
+                return real(entries, records, **{**kwargs, 'terms_decision': cited})
+
+            with self.subTest(cited=cited), patch.object(export, 'build_manifest', forged), \
+                    self.assertRaises(export.ExportError) as caught:
+                self.export('forged')
+            self.assertEqual(caught.exception.code, 'invalid-manifest')
+            self.assertFalse((self.base / 'forged').exists())
 
     def test_no_real_record_is_shipped(self):
         found = [p for p in ROOT.rglob('*.json')

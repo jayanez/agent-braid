@@ -53,6 +53,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import tempfile
 
 from . import lightning_adapter as adapter
@@ -426,7 +427,7 @@ def _day(when: float) -> str:
     return datetime.fromtimestamp(when, timezone.utc).strftime('%Y-%m-%d')
 
 
-def check_manifest(manifest: dict, records: bytes, sources: dict) -> None:
+def check_manifest(manifest: dict, records: bytes, sources: dict, terms: dict | None = None) -> None:
     """The builder checks the schema cannot express; `sources` maps (runId, rolloutId, attemptId) to the source
     read from the store. Refuses with `invalid-manifest`."""
     def fail(why: str):
@@ -455,6 +456,9 @@ def check_manifest(manifest: dict, records: bytes, sources: dict) -> None:
     if set(manifest['retention']) != {entry['runId'] for entry in entries}:
         fail('retention')
     _check_balance(manifest, fail)
+    cited = manifest['termsDecision']
+    if cited is not None and (terms is None or cited != {'path': terms['path'], 'sha256': terms['sha256']}):
+        fail('terms decision')  # the cited record must be the one the gate read and verified
     if manifest['kind'] == 'supervised' and (manifest['balance'] != 'none' or manifest['exclusions']['balance']):
         fail('supervised balance')
     if manifest['canaryScan'] != 'clean' or manifest['digest'] != manifest_digest(manifest):
@@ -488,7 +492,7 @@ def _check_balance(manifest: dict, fail) -> None:
 
 def build_manifest(entries: list[dict], records: bytes, *, kind: str, level: str, seed: int, balance: str,
                    exclusions: dict, balance_report: list, retention: dict, generated_at: str,
-                   sources: dict, terms_decision: dict | None = None) -> dict:
+                   sources: dict, terms_decision: dict | None = None, terms: dict | None = None) -> dict:
     manifest = {
         'manifestVersion': MANIFEST_VERSION, 'kind': kind, 'level': level, 'generatedAt': generated_at,
         'seed': seed, 'balance': balance, 'orderingKey': list(ORDERING_KEY), 'redactionVersion': redaction_version(),
@@ -497,7 +501,7 @@ def build_manifest(entries: list[dict], records: bytes, *, kind: str, level: str
         'recordsSha256': _sha(records),
     }
     manifest['digest'] = manifest_digest(manifest)
-    check_manifest(manifest, records, sources)
+    check_manifest(manifest, records, sources, terms)
     return manifest
 
 
@@ -635,7 +639,7 @@ def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: s
                               retention=_retention(home, {e['runId'] for e in entries}),
                               generated_at=_utc(now), sources=sources,
                               terms_decision=None if terms is None or all(e['source'] == 'fixture' for e in entries)
-                              else {'path': terms['path'], 'sha256': terms['sha256']})
+                              else {'path': terms['path'], 'sha256': terms['sha256']}, terms=terms)
     write_export(out, records, manifest)
     return manifest
 
@@ -672,19 +676,15 @@ def load_terms_decision(home: Path | None, relative: str, *, today: str) -> dict
 
     if not isinstance(relative, str) or not _TERMS_PATH.fullmatch(relative):
         refuse()
-    try:
-        path = registry._safe(config.directory(home) / relative, directory=False)
-        if not path.exists():
-            refuse()
-        registry._private(path, directory=False)
-        raw = path.read_bytes()
-        if len(raw) > _MAX_TERMS_BYTES:
-            refuse()
-        value = json.loads(raw, object_pairs_hook=_no_duplicates)
-    except ExportError:
-        raise
-    except (OSError, ValueError, TypeError):
+    raw = _read_private_record(config.directory(home), relative)
+    if raw is None or len(raw) > _MAX_TERMS_BYTES:
         refuse()
+    try:
+        value = json.loads(raw, object_pairs_hook=_no_duplicates)
+    except (ValueError, TypeError, RecursionError):
+        value = None
+    if value is None:
+        refuse()  # outside the except, so the refusal carries no parser context
     keys = {'schema', 'provider', 'host', 'models', 'terms', 'reviewedOn', 'validUntil', 'outcome'}
     if not isinstance(value, dict) or set(value) != keys or value['schema'] != TERMS_SCHEMA:
         refuse()
@@ -705,6 +705,23 @@ def load_terms_decision(home: Path | None, relative: str, *, today: str) -> dict
         refuse()
     return {'path': relative, 'sha256': _sha(raw), 'host': value['host'], 'models': frozenset(models),
             'outcome': value['outcome']}
+
+
+def _read_private_record(lightning: Path, relative: str) -> bytes | None:
+    """The record's bytes, read without following a symbolic link and bounded to the limit plus one byte; None when
+    a directory on the way (`lightning/`, `terms/`) or the file is missing, not private or not a regular file."""
+    try:
+        directory = registry._safe(lightning / TERMS_DIRECTORY, directory=True)
+        for folder in (lightning, directory):
+            registry._private(folder, directory=True)  # owner only: no other user can swap or plant the record
+        fd = os.open(registry._safe(lightning / relative, directory=False), os.O_RDONLY | os.O_NOFOLLOW)
+    except (OSError, ValueError):
+        return None
+    with os.fdopen(fd, 'rb') as stream:
+        info = os.fstat(stream.fileno())
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) & 0o077:
+            return None
+        return stream.read(_MAX_TERMS_BYTES + 1)
 
 
 def _no_duplicates(pairs):
