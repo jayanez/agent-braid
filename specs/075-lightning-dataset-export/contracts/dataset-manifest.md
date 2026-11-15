@@ -124,8 +124,23 @@ to `~` when it reads content, so the bytes reproduce for the same `$HOME` at
 ingest and export, not across different ones.
 `retention` gives each cited run the profile's `traces.retentionDays` and the UTC
 date its run expires (`createdAt` + days); the refusal of expired records is
-T013. Until T007, `balance` is `none` for both kinds (`equal` is refused with
-`invalid-argument`).
+T013. `balance` defaults to `equal` for `rollout` and is always `none` for
+`supervised` (`equal` there is `invalid-argument`; no ratio parameter, OD-2).
+
+## Balance (T007)
+
+`equal`: per task, attempts are grouped by outcome; each task keeps
+`min(successes, failures)` attempts of each of `success` and `failure`, chosen
+by the lowest SHA-256 of the canonical `[seed, taskId, runId, rolloutId,
+attemptId]` (a seeded, order-independent choice). Attempts are kept or dropped
+whole, so at `transition` level every call of a kept attempt is kept. Dropped
+model calls count as `exclusions.balance`. Attempts with outcome `unknown`
+cannot be paired and are dropped. A task with only one of `success` and
+`failure` keeps nothing, is reported with `singleOutcome` true and is never
+padded. `balanceReport` lists every task in `taskId` order with its attempt
+counts (`successes`, `failures`, `unknown`), `keptPerOutcome` and `dropped`
+(attempts). The terms gate runs on every candidate before balance, so host-model
+output that balance would drop is still refused.
 
 ## Retention and purge
 

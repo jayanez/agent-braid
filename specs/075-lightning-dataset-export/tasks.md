@@ -33,7 +33,8 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
   `build_manifest`, `check_manifest`, `write_export`; `balance: equal` waits for
   T007). Dependencies: T002, T004, T005. Verification: procedure_005,
   procedure_006.
-- [ ] T007 (REQ-007 / SC-007): Seeded per-task balance for `rollout` exports only. Dependencies: T006.
+- [x] T007 (REQ-007 / SC-007): Seeded per-task balance for `rollout` exports only
+  (`lightning_export.balance_equal`; equal 1:1 per task, the `rollout` default). Dependencies: T006.
   Verification: procedure_007.
 
 ## Phase P2 — gates and CLI

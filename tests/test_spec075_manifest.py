@@ -40,6 +40,8 @@ class Base(unittest.TestCase):
 
     def export(self, name='out', runs=('run-1', 'run-2'), **kwargs):
         options = {'kind': 'rollout', 'level': 'trajectory', 'now': NOW, **kwargs}
+        if options['kind'] == 'rollout':
+            options.setdefault('balance', 'none')  # T006 checks the unbalanced manifest; T007 tests balance
         out = self.base / name
         manifest = export.export_dataset(self.home, list(runs), out=out, **options)
         return out, manifest
@@ -294,7 +296,7 @@ class WriteTests(Base):
         cases = {
             'canary-detected': lambda: self.planted('n3'),
             'terms-gate-missing': lambda: self.host('n5'),
-            'invalid-argument': lambda: self.export('n2', kind='rollout', balance='equal'),
+            'invalid-argument': lambda: self.export('n2', kind='rollout', balance='ratio'),
             'no-records': lambda: (consent(self.home, 'none'), self.export('n1')),  # last: consent stays none
         }
         for code, run in cases.items():

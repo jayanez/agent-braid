@@ -6,10 +6,10 @@
  },
  "inputs": {
   "agent_braid/lightning_adapter.py": "7d755aa59fa18deaba2574cbb1d9784d55e6f9ca2541bc2a0cc5b9e3aad7fb13",
-  "agent_braid/lightning_export.py": "c4805090c354d9dab0e6a06234cd0fbd729260d6f34dc3453158b510ee0f07bb",
+  "agent_braid/lightning_export.py": "e032b2bbac642541d3c745e29cb2e4ebc7fcae3bee3213a6a888d326bad5dd5e",
   "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
   "tests/spec075_fixtures.py": "4b8f08efa4cc8ed14f3f0ddd542dd7cc5a64bb92627158064e2ed1d28ad610fd",
-  "tests/test_spec075_manifest.py": "04c904d5c327bbac8161b3a33337a36c1d86495081d854e9371de9e7e4c21504",
+  "tests/test_spec075_manifest.py": "25710c0694d15e0e46fc9639ba0cae796193e6e66c039e4d2593cbb50f31b6e9",
   "tests/test_spec075_supervised.py": "afb114d6ff7b7cfb11ce43478d5d6e83f8619d18bc0573c352511152eccda5a4"
  },
  "limits": "Temporary homes and synthetic rollout content. SC-003's manifest-hash half runs in tests.test_spec075_manifest (T006): each written line's SHA-256 and record id match its manifest entry; units left out by the d4FirstAttempt filter are returned as a count but not recorded in the manifest. Rollout content holds no tool results, so the tool role is checked only by check_supervised unit cases. Trajectory records keep only the attempt's exported calls, so an excluded middle call leaves a gap inside turnRange. No canary scan applies yet (T010): content that the SPEC-074 redactor lets through, such as another user's /Users/<name>/ path or a planted canary of unknown shape, is written as is. The terms gate is the fixed OD-1 refusal; the owner-record check is T008.",

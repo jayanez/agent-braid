@@ -1,0 +1,20 @@
+{
+ "command": "python -m unittest tests.test_spec075_balance",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/lightning_export.py": "e032b2bbac642541d3c745e29cb2e4ebc7fcae3bee3213a6a888d326bad5dd5e",
+  "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
+  "tests/spec075_fixtures.py": "4b8f08efa4cc8ed14f3f0ddd542dd7cc5a64bb92627158064e2ed1d28ad610fd",
+  "tests/test_spec075_balance.py": "932f711a40c09eb7142f86992f9261480909633cd785155e26f71bda5ec34fb8"
+ },
+ "limits": "Temporary homes and synthetic fixture content; one seed per assertion plus a range of seeds to show the seed matters, not a statistical test of the choice. The balance unit is the attempt (a rollout has one attempt), so a long attempt and a short one weigh the same. No claim is made that balance benefits a model (E4). The terms gate is the fixed OD-1 refusal until T008.",
+ "outcome": "passed: T007: lightning_export.balance_equal keeps, per task, min(successes, failures) attempts of each outcome by the lowest SHA-256 of [seed, taskId, runId, rolloutId, attemptId]. Fixture store: task-a with 5 successes (one of two calls), 2 failures and 1 attempt without a reward; task-b with 3 successes only; task-c with one of each. With the default seed task-a keeps 2 successes and 2 failures, reported as successes 5, failures 2, unknown 1, keptPerOutcome 2, dropped 4; task-b keeps nothing and is reported singleOutcome true, keptPerOutcome 0, dropped 3, not padded; task-c keeps one of each. Attempts are kept whole and kept plus dropped model calls equal the input. The choice is the same for reversed input and for reruns with the same seed (identical records bytes and digest), changes with the seed, and the manifest records the seed. Rollout exports balance by default at both levels and validate against the schema, with exclusions.balance counting the dropped calls; balance none exports every attempt with an empty report. Supervised exports are never balanced: balance equal is refused (invalid-argument) with or without the outcome field, and the default supervised export has balance none, an empty report and no balance exclusions. A ratio or unknown balance and a negative seed are refused (OD-2: no ratio parameter); an export that balance empties refuses with no-records and writes nothing. The terms gate stays closed: host-model runs refuse with terms-gate-missing, also when balance would drop them (a single-outcome host task). Negative controls (mutants, each fails a test): max instead of min, an unseeded rank, the terms check after balance, unknown attempts kept, dropped calls not counted, a none default, the supervised guard removed, singleOutcome never set.",
+ "procedure": "procedure_007",
+ "result": "OK",
+ "scenario": "SC-007",
+ "specification": "SPEC-075 BL.5",
+ "testsRun": 12
+}
