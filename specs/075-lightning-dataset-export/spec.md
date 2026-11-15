@@ -140,10 +140,12 @@ matches the manifest. Verification: procedure_003; T004.
 
 Kind `rollout` writes per-rollout records with reward vector, attempt and status.
 `--level transition` yields one record per model call; `--level trajectory`
-merges a rollout into one record (E2).
+merges an attempt into one record (E2). A rollout has one attempt
+(VALID_TRANSITIONS allows no retry), so this is one record per rollout; export
+refuses with `source-invalid` a rollout with more than one attempt.
 
 **SC-004:** Given a three-turn rollout with and without token IDs, when exported
-at both levels with kind `rollout`, then transition yields three records, trajectory yields one, and
+at both levels with kind `rollout`, then transition yields three records, trajectory yields one (one per attempt), and
 the text-level record carries `limits: ["text-level-merge"]`. Verification:
 procedure_004; T005.
 

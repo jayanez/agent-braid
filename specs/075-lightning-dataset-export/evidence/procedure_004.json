@@ -1,0 +1,21 @@
+{
+ "command": "python -m unittest tests.test_spec075_rollout",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/lightning_adapter.py": "7d755aa59fa18deaba2574cbb1d9784d55e6f9ca2541bc2a0cc5b9e3aad7fb13",
+  "agent_braid/lightning_export.py": "f90ac9c2e5d9bd5af3f88a40113f185d664bcffd901b9e424ee8ef3fa866b130",
+  "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
+  "tests/spec075_fixtures.py": "4b8f08efa4cc8ed14f3f0ddd542dd7cc5a64bb92627158064e2ed1d28ad610fd",
+  "tests/test_spec075_rollout.py": "c28eb8cc94206e2c77fc5dd0153cff316a9898f60f72b496406a3504a75cb831"
+ },
+ "limits": "Temporary homes and synthetic rollout content. The token-ID path is exercised only with token IDs added to items in the test: no SPEC-074 triplet carries them. The comparison of lines with a written manifest is T006, balance is T007, and no canary scan applies yet (T010). Transition records carry the attempt's reward vector, not a per-call reward. Trajectory records keep only the attempt's exported calls, so an excluded middle call leaves a gap inside turnRange (declared text-level-merge, never a token-ID merge). The writers share one loop (_write) with the supervised writer, whose limits follow the same rule. The terms gate is the fixed OD-1 refusal until T008.",
+ "outcome": "passed: T005: lightning_export.rollout_records writes {recordId, rolloutId, attemptId (pseudonym), turns [{prompt, response, toolCalls}], reward, status} as trace_adapter.canonical_bytes plus a newline, with a manifest record entry whose sha256 is the line's SHA-256 and which validates against the schema's record item. A three-call succeeded rollout (one non-ASCII call, one with a tool call) yields three transition records with turnRange [0,0], [1,1], [2,2] and no limits, each carrying the attempt's SPEC-071 reward vector unchanged and status succeeded, and one trajectory record with three turns, turnRange [0, 2], outcome success and limit text-level-merge (adapter triplets carry no token IDs). With token IDs on every turn of consecutive calls forming a prefix chain the trajectory declares no limit; a broken chain, a turn without token IDs, a non-integer token ID, or a chain whose middle call was excluded (turnRange [0, 2] with two turns) gives text-level-merge; token IDs never enter a record. A one-call failed rollout merges nothing and carries status failed. A rollout with two attempts is refused by read_runs with source-invalid and a fixed text. Order is E3 (task before rollout: a rollout id that sorts first but belongs to a later task comes last) and independent of input order. The T004 checks apply: host-model items refuse with terms-gate-missing at both levels, unselected items with invalid-argument, an unknown level with invalid-argument, and a written record outside the shape (tool calls not a list) with invalid-record. check_rollout refuses an unknown key, a raw attempt id, no turns, an unknown turn key, non-text turn text, tool calls that are not a list, a non-object reward or one with other keys, an unknown status and a malformed record id. No raw attempt id reaches a line or entry. Negative controls (mutants, each fails a test): token-ID merge ignored, the limit never declared, the prefix check dropped, the consecutive-call check dropped, the one-attempt check dropped, check_rollout removed, the input and terms check removed, the reward dropped.",
+ "procedure": "procedure_004",
+ "result": "OK",
+ "scenario": "SC-004",
+ "specification": "SPEC-075 BL.5",
+ "testsRun": 10
+}
