@@ -5,7 +5,8 @@
     python -m scripts.spec066_s15b_observe --write         # append joined records; write the evidence JSON
     python -m scripts.spec066_s15b_observe --purge         # revocation path for the S1.5b store
 
-`--purge` removes only the S1.5b outcome store (`system-one-s15b/`). The shadow store has
+`--purge` removes only the S1.5b outcome store (`system-one-s15b/`) and the merge-outcome file
+under the admitted source root (`.claude/agent-braid-s1/`). The shadow store has
 its own revocation command, `agent-braid system-one purge`; both are needed to revoke
 everything. Evidence holds counts by closed key only: no path, workspace id, resource
 name or identifier. Observational, one owner; it measures no accuracy and grants nothing.
@@ -23,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:  # `python scripts/spec066_s15b_observe.py` as well as `-m`
     sys.path.insert(0, str(ROOT))
 
-from research import s15b_outcome_observer as observer  # noqa: E402
+from research import s15b_merge_outcomes as merge_outcomes, s15b_outcome_observer as observer  # noqa: E402
 
 EVIDENCE = ROOT / "specs/066-system-one-shadow/evidence"
 EVIDENCE_SCHEMA = "agent-braid-spec066-s15b-observe-evidence/v0.1"
@@ -35,23 +36,36 @@ LIMITS = [
     "A pair analysed twice within the window is ambiguous and unlabelled; identical outcomes on one pair, kind and day collapse to one record.",
     "Pairs with 32 or more resources on a side cannot be matched (pseudonym lists are truncated) and stay unlabelled.",
     "Episodes of workspaces other than the admitted one are never joined, persisted or purged.",
+    "Merge outcomes come from the owner's own branch-head pairs through git merge-tree: textual cleanliness, not "
+    "semantic independence; a pair with a deleted or unsupported path cannot be matched to an episode.",
+    "falseIndependent counts joined merge-conflict outcomes on pairs the DP-1 rule answered likely-independent; "
+    "the Wilson bound is over advised pairs with a textual verdict and is not a calibrated accuracy.",
 ]
 
 
-def default_sources() -> list:
-    """No real source retains pair-level resource sets today (plan A1, expected zero)."""
-    return []
+def default_sources(home=None) -> list:
+    """The owner's merge outcomes (REQ-402 T405), recorded by `spec066_record_merge_outcomes`.
+
+    The source is the gitignored file under the admitted workspace's source root; the corpus gate admits
+    that root before any read. When the registry cannot name the root there is no source (yield zero).
+    """
+    try:
+        return [merge_outcomes.MergeOutcomeSource(merge_outcomes.store_directory(home=home))]
+    except merge_outcomes.MergeOutcomeError:
+        return []
 
 
 def build_evidence(mode: str, today, *, sources=None, home=None, consent_path=None, locations=None) -> tuple:
-    result = observer.observe(default_sources() if sources is None else sources, today,
+    result = observer.observe(default_sources(home) if sources is None else sources, today,
                               home=home, consent_path=consent_path)
+    retained = observer.merged_records(observer.load_records(today), result.records)
     counts = {name: result.counts[name] for name in observer.COUNTERS}
     counts.update({key: value for key, value in sorted(result.counts.items()) if key.startswith("refused:")})
     evidence = {"schema": EVIDENCE_SCHEMA, "date": today.isoformat(), "mode": mode,
                 "counts": counts, "joinedByOutcomeKind": {
                     kind: sum(1 for record in result.records if record["outcomeKind"] == kind)
                     for kind in observer.OUTCOME_KINDS},
+                "falseIndependence": observer.false_independence(retained, result.counts["advised-pairs"]),
                 "inventory": observer.inventory(home=home, consent_path=consent_path, locations=locations),
                 "positiveControl": observer.positive_control(),
                 "limits": list(LIMITS), "executionAuthorization": False}
@@ -78,14 +92,18 @@ def main(argv=None, *, today=None, evidence_directory: Path = EVIDENCE, **option
     today = today or observer.utc_today()
     try:
         if args.purge:
-            print(json.dumps(observer.purge(), sort_keys=True))
+            print(json.dumps({**observer.purge(), "mergeOutcomes": merge_outcomes.purge(home=options.get("home"))},
+                             sort_keys=True))
             return 0
         evidence, result = build_evidence("write" if args.write else "yield-report", today, **options)
         if args.write:
             for key, value in observer.write_records(result.records, today).items():
                 evidence["counts"][key] = evidence["counts"].get(key, 0) + value
+            # D7: only a write run changes the promotion registry; the yield report stays read-only.
+            retained = observer.merged_records(observer.load_records(today), result.records)
+            evidence["autoRollbackRecorded"] = observer.apply_auto_rollback(retained, today, home=options.get("home"))
             write_evidence(evidence, evidence_directory)
-    except (observer.ObserverRefused, OSError):
+    except (observer.ObserverRefused, OSError, ValueError):
         print("refused: the S1.5b store is unavailable or unsafe", file=sys.stderr)
         return 2
     print(json.dumps(evidence, indent=2, sort_keys=True))
