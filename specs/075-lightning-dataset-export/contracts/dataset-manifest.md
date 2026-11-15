@@ -190,6 +190,42 @@ exact model id only. The host and model come from the ingested trace data (the
 rollout record and the attempt's `attempt_start` event) and are not
 independently attested.
 
+## CLI (T009)
+
+```
+agent-braid lightning export (--run RUN_ID ... | --all) --kind supervised|rollout
+  --level transition|trajectory --out DIR [--seed N] [--balance equal|none]
+  [--outcome-field] [--terms-decision terms/NAME.json] [--dry-run] [--home DIR]
+```
+
+The command refuses with `export-disabled` unless the profile's `export.enabled`
+is `true`, which only a previewed `lightning init --export` sets; no profile,
+an unreadable or invalid one, and any environment variable leave it disabled.
+This is decided before the other arguments are parsed. The command parses its
+own arguments: any argument error (unknown or abbreviated flag, bad choice or
+integer, missing required flag, both `--run` and `--all`) is `invalid-argument`
+with a fixed text that echoes no value, never the parser's message. `--help`
+states that export is off by default and that no provider's terms have been
+reviewed (OD-1). `--run`
+repeats; `--all` takes every run in the store. `--level` is required (the
+profile's `export.level` is not used as a default). `--terms-decision` names the
+T008 record; the command reads it, never creates or modifies the `terms/`
+directory or a record, and never prints a record's contents. `--dry-run` runs every check and
+builds the manifest but writes nothing. `--out` must be a canonical path (no
+symbolic link in any component, no `..`; on macOS `/tmp` and `/var` are
+symbolic links, so use `/private/tmp` or a directory under the home) inside an
+existing directory, and must
+not exist or be an empty directory (`path-refused`, `output-not-empty`); the
+check runs before the store is read. Success prints one JSON object of counts,
+hashes and fixed fields (`status`, `kind`, `level`, `balance`, `seed`, `records`,
+`exclusions`, `balanceReport`, `termsDecision`, `redactionVersion`,
+`recordsSha256`, `digest`, `files`, `executionAuthorization: false`), never the
+record entries, content, attempt pseudonyms, rollout ids or the output path;
+task ids appear in `balanceReport` by design. A refusal prints `lightning refused (<code>):
+<fixed text>` on stderr and exits 2; an unexpected error prints code `other` and
+the text `Export refused`; an interrupt prints code `interrupted` and exits 130
+(the temporary directory is removed, T006). There are no other flags.
+
 ## Retention and purge
 
 Exported files are outside SPEC-074 purge; the owner deletes them.

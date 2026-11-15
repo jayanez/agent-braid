@@ -44,8 +44,9 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
   Dependencies: T006; OD-1 recorded before any host export (deferred at T001:
   the gate ships closed, no record is shipped; the permitting branch is tested
   with synthetic temporary records only). Verification: procedure_008.
-- [ ] T009 (REQ-009 / SC-009): CLI subcommand and refusals, including
-  `export-disabled`. Dependencies: T006.
+- [x] T009 (REQ-009 / SC-009): CLI subcommand and refusals, including
+  `export-disabled` (`agent-braid lightning export`; adds `--dry-run` and
+  `--terms-decision`). Dependencies: T006.
   Verification: procedure_009.
 - [ ] T010 (REQ-010 / SC-010): Canary scan before the manifest is finalised.
   Dependencies: T006, SPEC-074 canary corpus. Verification: procedure_010.
