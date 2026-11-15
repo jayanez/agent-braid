@@ -1,7 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Experimental `agent-braid lightning` commands (SPEC-070 REQ-005 to REQ-008, SPEC-071 REQ-010).
 
-`init`, `validate`, `status` and `purge` configure and inspect. `run` delegates to `lightning_runner` (SPEC-071):
+`init`, `validate`, `status` and `purge` configure and inspect. `export` (SPEC-075) writes a local dataset from
+consented, redacted runs; it refuses with `export-disabled` unless the profile has `export.enabled` true, prints only
+counts, hashes and fixed codes (never record content, ids beyond the manifest's, or the output path) and never
+writes outside the output directory. `run` delegates to `lightning_runner` (SPEC-071):
 `--dry-run` launches nothing, `--fake-hosts` runs the pipeline against fake hosts, and a host run needs the
 `plugin setup --lightning lab` consent and the host subscription route. The MCP server never starts a run.
 """
@@ -52,7 +55,7 @@ def _hosts(text: str) -> list[str]:
 def add_parser(subparsers):
     parser = subparsers.add_parser('lightning', help='experimental Braid Lightning optimization laboratory (configure only)')
     commands = parser.add_subparsers(dest='lightning_command', required=True)
-    for name in ('init', 'validate', 'status', 'purge', 'sweep', 'run', 'report'):
+    for name in ('init', 'validate', 'status', 'purge', 'sweep', 'run', 'report', 'export'):
         command = commands.add_parser(name)
         command.add_argument('--home', type=Path, help='explicit private Agent Braid state root')
     init = commands.choices['init']
@@ -96,6 +99,19 @@ def add_parser(subparsers):
                              '(final = A0; baseline = T010 guidance, exploratory E1/E2)')
     runner.add_argument('--model', help='pin the Claude Code model of rollouts and optimizer calls '
                                          '(apo/gepa default: claude-sonnet-5-5, the SPEC-071 T012 model)')
+    exporter = commands.choices['export']
+    source = exporter.add_mutually_exclusive_group(required=True)
+    source.add_argument('--run', dest='runs', action='append', metavar='RUN_ID', help='a run to export (repeatable)')
+    source.add_argument('--all', dest='all_runs', action='store_true', help='every run in the store')
+    exporter.add_argument('--kind', choices=('supervised', 'rollout'), required=True)
+    exporter.add_argument('--level', choices=('transition', 'trajectory'), required=True)
+    exporter.add_argument('--out', type=Path, required=True, help='a new or empty output directory')
+    exporter.add_argument('--seed', type=int, default=0)
+    exporter.add_argument('--balance', choices=('equal', 'none'), help='rollout: default equal; supervised: none')
+    exporter.add_argument('--outcome-field', action='store_true', help='supervised: keep every outcome, labelled')
+    exporter.add_argument('--terms-decision', metavar='terms/NAME.json',
+                          help='owner terms decision record under the plugin home lightning directory (OD-1)')
+    exporter.add_argument('--dry-run', action='store_true', help='check and build everything, write nothing')
     purge = commands.choices['purge']
     target = purge.add_mutually_exclusive_group(required=True)
     target.add_argument('--run-id')
@@ -149,6 +165,31 @@ def _flags(answers: dict) -> list[str]:
             else:
                 flags += [name, ','.join(value) if isinstance(value, list) else str(value)]
     return flags
+
+
+def _export(home: Path, args) -> dict:
+    from . import lightning_export as export
+    try:
+        value = config.load(home)
+    except (ValueError, OSError):
+        value = None  # an unreadable or invalid profile never enables export
+    if value is None or value['export']['enabled'] is not True:
+        raise export.ExportError('Dataset export is disabled: lightning init --export', 'export-disabled')
+    try:
+        runs = sorted(run['runId'] for run in store.list_runs(home)) if args.all_runs else args.runs
+    except (ValueError, OSError):
+        raise export.ExportError('Run store refused', 'store-shape') from None
+    if not runs:
+        raise export.ExportError('Nothing to export', 'no-records')
+    manifest = export.export_dataset(home, runs, kind=args.kind, level=args.level, out=args.out, seed=args.seed,
+                                     balance=args.balance, outcome_field=args.outcome_field,
+                                     terms_decision=args.terms_decision, dry_run=args.dry_run)
+    return {'status': 'planned' if args.dry_run else 'exported', 'kind': manifest['kind'], 'level': manifest['level'],
+            'balance': manifest['balance'], 'seed': manifest['seed'], 'records': len(manifest['records']),
+            'exclusions': manifest['exclusions'], 'balanceReport': manifest['balanceReport'],
+            'termsDecision': manifest['termsDecision'], 'redactionVersion': manifest['redactionVersion'],
+            'recordsSha256': manifest['recordsSha256'], 'digest': manifest['digest'],
+            'files': [] if args.dry_run else ['manifest.json', 'records.jsonl'], 'executionAuthorization': False}
 
 
 def run(args, *, ask=None) -> int:
@@ -205,6 +246,8 @@ def run(args, *, ask=None) -> int:
                 output = runner.run(home, value, run_id=args.resume, resume=bool(args.resume), prompt_set=args.prompt_set,
                                     fake_hosts=args.fake_hosts, plugin_dir=args.plugin_dir,
                                     models={'claude-code': args.model} if args.model else None)
+        elif args.lightning_command == 'export':
+            output = _export(home, args)
         elif args.lightning_command == 'report':
             from . import lightning_runner as runner
             output = runner.report(home, args.run_id)
@@ -240,5 +283,11 @@ def run(args, *, ask=None) -> int:
         return 0
     except (ValueError, OSError) as exc:
         code = getattr(exc, 'code', 'other')
+        if args.lightning_command == 'export':  # fixed texts only: no path, id or exception detail
+            from . import lightning_export as export
+            text = str(exc) if isinstance(exc, export.ExportError) else 'Export refused'
+            code = code if isinstance(code, str) and export._CODE.fullmatch(code) else 'other'
+            print(f'lightning refused ({code}): {text}', file=sys.stderr)
+            return 2
         print(f'lightning refused ({code}): {exc}', file=sys.stderr)
         return 2

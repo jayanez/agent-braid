@@ -190,6 +190,31 @@ exact model id only. The host and model come from the ingested trace data (the
 rollout record and the attempt's `attempt_start` event) and are not
 independently attested.
 
+## CLI (T009)
+
+```
+agent-braid lightning export (--run RUN_ID ... | --all) --kind supervised|rollout
+  --level transition|trajectory --out DIR [--seed N] [--balance equal|none]
+  [--outcome-field] [--terms-decision terms/NAME.json] [--dry-run] [--home DIR]
+```
+
+The command refuses with `export-disabled` unless the profile's `export.enabled`
+is `true` (no profile, or an unreadable or invalid one, is disabled). `--run`
+repeats; `--all` takes every run in the store. `--level` is required (the
+profile's `export.level` is not used as a default). `--terms-decision` names the
+T008 record; the command reads it and never creates, changes or prints the
+`terms/` directory or a record's contents. `--dry-run` runs every check and
+builds the manifest but writes nothing. `--out` must be a canonical path (no
+symbolic link in any component, no `..`) inside an existing directory, and must
+not exist or be an empty directory (`path-refused`, `output-not-empty`); the
+check runs before the store is read. Success prints one JSON object of counts,
+hashes and fixed fields (`status`, `kind`, `level`, `balance`, `seed`, `records`,
+`exclusions`, `balanceReport`, `termsDecision`, `redactionVersion`,
+`recordsSha256`, `digest`, `files`, `executionAuthorization: false`), never the
+record entries or the output path. A refusal prints `lightning refused (<code>):
+<fixed text>` on stderr and exits 2; an unexpected error prints code `other` and
+the text `Export refused`. Argument errors exit through the argument parser.
+
 ## Retention and purge
 
 Exported files are outside SPEC-074 purge; the owner deletes them.

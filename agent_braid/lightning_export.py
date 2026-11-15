@@ -536,13 +536,27 @@ def _fsync_dir(path: Path) -> None:
         os.close(fd)
 
 
-def write_export(out: Path, records: bytes, manifest: dict) -> None:
-    """Write `records.jsonl`, then `manifest.json`, into a private temporary directory renamed onto `out`."""
+def check_output(out: Path) -> Path:
+    """The output must be a canonical path (no symbolic link in any component, no traversal) whose parent is an
+    existing directory, and must not exist or be an empty directory."""
     out = Path(out)
-    if out.is_symlink() or out.parent.is_symlink():
-        raise ExportError('The output path must not be a symbolic link', 'path-refused')
+    try:
+        out = registry._safe(out)
+        parent_ok = out.parent.is_dir()
+    except (OSError, ValueError):
+        parent_ok = None
+    if parent_ok is None:
+        raise ExportError('The output path must be canonical, without symbolic links', 'path-refused')
+    if not parent_ok:
+        raise ExportError('The output directory must be inside an existing directory', 'path-refused')
     if out.exists() and (not out.is_dir() or any(out.iterdir())):
         raise ExportError('The output directory must not exist or must be empty', 'output-not-empty')
+    return out
+
+
+def write_export(out: Path, records: bytes, manifest: dict) -> None:
+    """Write `records.jsonl`, then `manifest.json`, into a private temporary directory renamed onto `out`."""
+    out = check_output(out)
     try:
         temporary = Path(tempfile.mkdtemp(prefix='.export-', dir=out.parent))
     except OSError:
@@ -605,7 +619,7 @@ def balance_equal(items: list[dict], *, seed: int) -> tuple[list[dict], list[dic
 
 def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: str, out: Path, seed: int = 0,
                    balance: str | None = None, outcome_field: bool = False, now: float | None = None,
-                   terms_decision: str | None = None) -> dict:
+                   terms_decision: str | None = None, dry_run: bool = False) -> dict:
     """Export the runs as one dataset and return its manifest (nothing is written on any refusal).
 
     `balance` defaults to `equal` for `rollout` and is always `none` for `supervised` (E4).
@@ -617,6 +631,7 @@ def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: s
             or (kind == 'rollout' and outcome_field):
         raise ExportError('Invalid export arguments', 'invalid-argument')
     _check_seed(seed)
+    check_output(out)  # before any read, so a bad output path refuses at once (and in a dry run)
     now = datetime.now(timezone.utc).timestamp() if now is None else now
     terms = None if terms_decision is None else load_terms_decision(home, terms_decision, today=_day(now))
     kept, exclusions = select(read_runs(home, run_ids))
@@ -640,7 +655,8 @@ def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: s
                               generated_at=_utc(now), sources=sources,
                               terms_decision=None if terms is None or all(e['source'] == 'fixture' for e in entries)
                               else {'path': terms['path'], 'sha256': terms['sha256']}, terms=terms)
-    write_export(out, records, manifest)
+    if not dry_run:
+        write_export(out, records, manifest)
     return manifest
 
 
