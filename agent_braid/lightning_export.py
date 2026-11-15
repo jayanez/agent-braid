@@ -36,6 +36,13 @@ failures)` attempts of each outcome, chosen by a seeded hash rank of [seed, task
 data and seed keep the same attempts, also after a re-ingest with a new salt. Attempts are kept or dropped whole;
 dropped model calls count as `balance` exclusions. Tasks with one outcome keep nothing and are reported, never
 padded; attempts without a reward (`unknown`) cannot be paired and are dropped and reported. `supervised` exports are never balanced.
+
+T008 (REQ-008): the terms gate (E5, OD-1). Every non-fixture unit needs an owner terms decision record under
+`<plugin home>/lightning/terms/`, named by its relative path; the record binds a host and the exact model ids it
+covers, names the provider, the terms version or URL, the review date, a `validUntil` date and the outcome. Only
+`permits-training`, on the export day inside the record's dates, for a unit whose host and model the record lists,
+lets the unit through; anything else refuses with `terms-gate-missing` before anything is written, and the manifest
+cites the record's relative path and SHA-256. No record ships with Agent Braid: OD-1 is deferred.
 """
 from __future__ import annotations
 
@@ -46,9 +53,12 @@ import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import tempfile
 
 from . import lightning_adapter as adapter
+from . import lightning_config as config
+from . import plugin_registry as registry
 from . import lightning_redact as redact
 from . import lightning_store as store
 from .trace_adapter import canonical_bytes as _canonical
@@ -114,13 +124,13 @@ def select(items: list[dict]) -> tuple[list[dict], dict[str, int]]:
     return kept, exclusions
 
 
-def _tasks(run: store.RunStore) -> dict[str, tuple[str, str, str]]:
-    """Task, group and latest state per rollout id (the record with the highest status version)."""
+def _tasks(run: store.RunStore) -> dict[str, tuple[str, str, str, str]]:
+    """Task, group, latest state and host per rollout id (the record with the highest status version)."""
     latest: dict[str, object] = {}
     for record in run.read('rollout'):
         if record.rollout_id not in latest or record.status.version >= latest[record.rollout_id].status.version:
             latest[record.rollout_id] = record
-    return {rid: (r.task_id, r.group_id, r.status.state) for rid, r in latest.items()}
+    return {rid: (r.task_id, r.group_id, r.status.state, r.host) for rid, r in latest.items()}
 
 
 def _code(exc: Exception, fallback: str) -> str:
@@ -164,7 +174,10 @@ def _read_run(home: Path | None, run_id: str, refusal: str | None) -> list[dict]
     tasks = _tasks(run)
     attempts: dict[str, set[str]] = {}
     rewards: dict[str, tuple] = {}
+    models: dict[str, set] = {}
     for event in run.read('event'):
+        if event.event_type == 'attempt_start':
+            models.setdefault(event.attempt_id, set()).add(event.data['model']['modelId'])
         attempts.setdefault(event.attempt_id, set()).add(event.rollout_id)
         if event.event_type == 'reward' and event.sequence >= rewards.get(event.attempt_id, (-1,))[0]:
             rewards[event.attempt_id] = (event.sequence, event.data['reward'])  # the attempt's last reward
@@ -185,7 +198,8 @@ def _read_run(home: Path | None, run_id: str, refusal: str | None) -> list[dict]
         rollout_id = next(iter(rollouts))
         if rollout_id not in tasks:
             raise ExportError('A rollout has events but no rollout record', 'source-invalid')
-        task_id, group_id, status = tasks[rollout_id]
+        task_id, group_id, status, host = tasks[rollout_id]
+        model = next(iter(models[attempt_id])) if len(models.get(attempt_id, ())) == 1 else None
         reward = rewards.get(attempt_id, (None, None))[1]
         # fail closed: one host-run result (or none at all) makes the attempt host-model output
         source = 'fixture' if labels.get((rollout_id, attempt_id)) == {'pipeline-only'} else 'host-model'
@@ -193,7 +207,7 @@ def _read_run(home: Path | None, run_id: str, refusal: str | None) -> list[dict]
             items.append({'runId': run_id, 'taskId': task_id, 'groupId': group_id, 'rolloutId': rollout_id,
                           'attemptId': triplet['attemptId'], 'turnIndex': index, 'gateRefusal': refusal,
                           'outcome': _outcome(reward), 'reward': reward, 'status': status, 'source': source,
-                          'triplet': triplet})
+                          'host': host, 'model': model, 'triplet': triplet})
     return items
 
 
@@ -262,20 +276,27 @@ def check_supervised(record, *, outcome_field: bool = False) -> None:
 
 
 _ITEM_KEYS = frozenset({'runId', 'taskId', 'groupId', 'rolloutId', 'attemptId', 'turnIndex', 'outcome', 'reward',
-                        'status', 'source', 'triplet'})
+                        'status', 'source', 'host', 'model', 'triplet'})
 
 
-def _check_items(items) -> None:
-    """Writers accept only selected items (E1) and, while OD-1 is deferred, only fixture content (E5)."""
+def _check_items(items, terms: dict | None = None) -> None:
+    """Writers accept only selected items (E1) and non-fixture content only under a covering terms decision (E5)."""
     if not isinstance(items, list) or not all(isinstance(i, dict) and _ITEM_KEYS <= set(i) for i in items):
         raise ExportError('Export items come from read_runs', 'invalid-argument')
     if any(exclusion_reason(i['triplet'], i.get('gateRefusal')) is not None for i in items):
         raise ExportError('Export items must pass the consent and redaction filter first', 'invalid-argument')
-    if any(i['source'] != 'fixture' for i in items):
+    if any(i['source'] != 'fixture' and not _covered(terms, i) for i in items):
         raise ExportError('Host-model output needs an owner terms decision', 'terms-gate-missing')
 
 
-def supervised(items: list[dict], *, level: str, outcome_field: bool = False) -> tuple[list[bytes], list[dict], int]:
+def _covered(terms: dict | None, item: dict) -> bool:
+    """A non-fixture unit passes only when the validated record permits training for its host and exact model."""
+    return terms is not None and terms['outcome'] == 'permits-training' and item['host'] == terms['host'] \
+        and item['model'] is not None and item['model'] in terms['models']
+
+
+def supervised(items: list[dict], *, level: str, outcome_field: bool = False,
+               terms: dict | None = None) -> tuple[list[bytes], list[dict], int]:
     """`supervised` lines and manifest record entries, in E3 order, plus how many units the d4 filter left out.
 
     Without `outcome_field` only units whose attempt passed D4 on the first attempt (`success`) are written;
@@ -283,7 +304,7 @@ def supervised(items: list[dict], *, level: str, outcome_field: bool = False) ->
     """
     if type(outcome_field) is not bool:
         raise ExportError('outcome_field is true or false', 'invalid-argument')
-    _check_items(items)
+    _check_items(items, terms)
     units, left_out = [], 0
     for unit in _units(items, level):
         if outcome_field or unit[0]['outcome'] == 'success':
@@ -360,9 +381,9 @@ def _token_prefix_merge(unit: list[dict]) -> bool:
     return True
 
 
-def rollout_records(items: list[dict], *, level: str) -> tuple[list[bytes], list[dict]]:
+def rollout_records(items: list[dict], *, level: str, terms: dict | None = None) -> tuple[list[bytes], list[dict]]:
     """`rollout` lines and manifest record entries, in E3 order. Balance is applied separately (T007)."""
-    _check_items(items)
+    _check_items(items, terms)
 
     def build(unit):
         first = unit[0]
@@ -406,7 +427,7 @@ def _day(when: float) -> str:
     return datetime.fromtimestamp(when, timezone.utc).strftime('%Y-%m-%d')
 
 
-def check_manifest(manifest: dict, records: bytes, sources: dict) -> None:
+def check_manifest(manifest: dict, records: bytes, sources: dict, terms: dict | None = None) -> None:
     """The builder checks the schema cannot express; `sources` maps (runId, rolloutId, attemptId) to the source
     read from the store. Refuses with `invalid-manifest`."""
     def fail(why: str):
@@ -435,6 +456,9 @@ def check_manifest(manifest: dict, records: bytes, sources: dict) -> None:
     if set(manifest['retention']) != {entry['runId'] for entry in entries}:
         fail('retention')
     _check_balance(manifest, fail)
+    cited = manifest['termsDecision']
+    if cited is not None and (terms is None or cited != {'path': terms['path'], 'sha256': terms['sha256']}):
+        fail('terms decision')  # the cited record must be the one the gate read and verified
     if manifest['kind'] == 'supervised' and (manifest['balance'] != 'none' or manifest['exclusions']['balance']):
         fail('supervised balance')
     if manifest['canaryScan'] != 'clean' or manifest['digest'] != manifest_digest(manifest):
@@ -468,16 +492,16 @@ def _check_balance(manifest: dict, fail) -> None:
 
 def build_manifest(entries: list[dict], records: bytes, *, kind: str, level: str, seed: int, balance: str,
                    exclusions: dict, balance_report: list, retention: dict, generated_at: str,
-                   sources: dict) -> dict:
+                   sources: dict, terms_decision: dict | None = None, terms: dict | None = None) -> dict:
     manifest = {
         'manifestVersion': MANIFEST_VERSION, 'kind': kind, 'level': level, 'generatedAt': generated_at,
         'seed': seed, 'balance': balance, 'orderingKey': list(ORDERING_KEY), 'redactionVersion': redaction_version(),
-        'termsDecision': None, 'canaryScan': 'clean', 'exclusions': dict(exclusions),
+        'termsDecision': terms_decision, 'canaryScan': 'clean', 'exclusions': dict(exclusions),
         'balanceReport': balance_report, 'retention': retention, 'records': entries,
         'recordsSha256': _sha(records),
     }
     manifest['digest'] = manifest_digest(manifest)
-    check_manifest(manifest, records, sources)
+    check_manifest(manifest, records, sources, terms)
     return manifest
 
 
@@ -580,7 +604,8 @@ def balance_equal(items: list[dict], *, seed: int) -> tuple[list[dict], list[dic
 
 
 def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: str, out: Path, seed: int = 0,
-                   balance: str | None = None, outcome_field: bool = False, now: float | None = None) -> dict:
+                   balance: str | None = None, outcome_field: bool = False, now: float | None = None,
+                   terms_decision: str | None = None) -> dict:
     """Export the runs as one dataset and return its manifest (nothing is written on any refusal).
 
     `balance` defaults to `equal` for `rollout` and is always `none` for `supervised` (E4).
@@ -592,16 +617,18 @@ def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: s
             or (kind == 'rollout' and outcome_field):
         raise ExportError('Invalid export arguments', 'invalid-argument')
     _check_seed(seed)
+    now = datetime.now(timezone.utc).timestamp() if now is None else now
+    terms = None if terms_decision is None else load_terms_decision(home, terms_decision, today=_day(now))
     kept, exclusions = select(read_runs(home, run_ids))
-    _check_items(kept)  # the terms gate sees every candidate, before balance can drop any
+    _check_items(kept, terms)  # the terms gate sees every candidate, before balance can drop any
     report = []
     if balancing == 'equal':
         kept, report, dropped = balance_equal(kept, seed=seed)
         exclusions['balance'] += dropped
     if kind == 'supervised':
-        lines, entries, _ = supervised(kept, level=level, outcome_field=outcome_field)
+        lines, entries, _ = supervised(kept, level=level, outcome_field=outcome_field, terms=terms)
     else:
-        lines, entries = rollout_records(kept, level=level)
+        lines, entries = rollout_records(kept, level=level, terms=terms)
     if not lines:
         raise ExportError('Nothing to export', 'no-records')
     _scan(lines)
@@ -610,7 +637,95 @@ def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: s
     manifest = build_manifest(entries, records, kind=kind, level=level, seed=seed, balance=balancing,
                               exclusions=exclusions, balance_report=report,
                               retention=_retention(home, {e['runId'] for e in entries}),
-                              generated_at=_utc(datetime.now(timezone.utc).timestamp() if now is None else now),
-                              sources=sources)
+                              generated_at=_utc(now), sources=sources,
+                              terms_decision=None if terms is None or all(e['source'] == 'fixture' for e in entries)
+                              else {'path': terms['path'], 'sha256': terms['sha256']}, terms=terms)
     write_export(out, records, manifest)
     return manifest
+
+
+TERMS_SCHEMA = 'braid-lightning-terms-decision/v0.1'
+TERMS_DIRECTORY = 'terms'
+TERMS_OUTCOMES = ('permits-training', 'forbids-training', 'undecided')  # only the first lets units through
+_TERMS_PATH = re.compile(r'terms/[A-Za-z0-9][A-Za-z0-9._-]{0,127}\.json')
+_DATE = re.compile(r'[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])')
+_TEXT = re.compile(r'[^\x00-\x1f\x7f]{1,256}')
+_MAX_TERMS_BYTES = 16 * 1024
+
+
+def _valid_date(value) -> bool:
+    if not isinstance(value, str) or not _DATE.fullmatch(value):
+        return False
+    try:
+        datetime.strptime(value, '%Y-%m-%d')
+    except ValueError:
+        return False
+    return True
+
+
+def load_terms_decision(home: Path | None, relative: str, *, today: str) -> dict:
+    """Read and validate an owner terms decision record; any defect refuses with `terms-gate-missing`.
+
+    `relative` is `terms/<name>.json` under `<plugin home>/lightning/`. The record is
+    `{schema, provider, host, models, terms: {version | url}, reviewedOn, validUntil, outcome}`; `today` (UTC,
+    YYYY-MM-DD) must lie in `[reviewedOn, validUntil]`. The return value carries the path and SHA-256 the manifest
+    cites. Refusal texts name no path or field value.
+    """
+    def refuse():
+        raise ExportError('No valid owner terms decision record', 'terms-gate-missing')
+
+    if not isinstance(relative, str) or not _TERMS_PATH.fullmatch(relative):
+        refuse()
+    raw = _read_private_record(config.directory(home), relative)
+    if raw is None or len(raw) > _MAX_TERMS_BYTES:
+        refuse()
+    try:
+        value = json.loads(raw, object_pairs_hook=_no_duplicates)
+    except (ValueError, TypeError, RecursionError):
+        value = None
+    if value is None:
+        refuse()  # outside the except, so the refusal carries no parser context
+    keys = {'schema', 'provider', 'host', 'models', 'terms', 'reviewedOn', 'validUntil', 'outcome'}
+    if not isinstance(value, dict) or set(value) != keys or value['schema'] != TERMS_SCHEMA:
+        refuse()
+    terms = value['terms']
+    models = value['models']
+    if not isinstance(value['provider'], str) or not _TEXT.fullmatch(value['provider']) \
+            or value['host'] not in ('claude-code', 'opencode') \
+            or not isinstance(models, list) or not models or len(models) > 64 or len(set(models)) != len(models) \
+            or not all(isinstance(m, str) and _TEXT.fullmatch(m) and len(m) <= 128 for m in models) \
+            or not isinstance(terms, dict) or len(terms) != 1 or not set(terms) <= {'version', 'url'} \
+            or not isinstance(next(iter(terms.values())), str) or not _TEXT.fullmatch(next(iter(terms.values()))) \
+            or ('url' in terms and not terms['url'].startswith('https://')) \
+            or not _valid_date(value['reviewedOn']) or not _valid_date(value['validUntil']):
+        refuse()
+    if not value['reviewedOn'] <= today <= value['validUntil']:
+        refuse()  # not reviewed yet, or stale
+    if value['outcome'] != 'permits-training':  # forbids-training, undecided or anything else
+        refuse()
+    return {'path': relative, 'sha256': _sha(raw), 'host': value['host'], 'models': frozenset(models),
+            'outcome': value['outcome']}
+
+
+def _read_private_record(lightning: Path, relative: str) -> bytes | None:
+    """The record's bytes, read without following a symbolic link and bounded to the limit plus one byte; None when
+    a directory on the way (`lightning/`, `terms/`) or the file is missing, not private or not a regular file."""
+    try:
+        directory = registry._safe(lightning / TERMS_DIRECTORY, directory=True)
+        for folder in (lightning, directory):
+            registry._private(folder, directory=True)  # owner only: no other user can swap or plant the record
+        fd = os.open(registry._safe(lightning / relative, directory=False), os.O_RDONLY | os.O_NOFOLLOW)
+    except (OSError, ValueError):
+        return None
+    with os.fdopen(fd, 'rb') as stream:
+        info = os.fstat(stream.fileno())
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) & 0o077:
+            return None
+        return stream.read(_MAX_TERMS_BYTES + 1)
+
+
+def _no_duplicates(pairs):
+    keys = [key for key, _ in pairs]
+    if len(keys) != len(set(keys)):
+        raise ValueError('duplicate key')
+    return dict(pairs)

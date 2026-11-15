@@ -77,9 +77,9 @@ Per-attempt fields, from content-free records: `outcome` is `success` when the
 attempt's last reward event has component `d4` 1.0 (`d4FirstAttempt` true),
 `failure` when 0.0, else `unknown`; `source` is `fixture` only when every
 attempt result is labelled `pipeline-only`, else `host-model` (also without a
-result, or with conflicting results: fail closed). While OD-1 is deferred, a
-writer refuses any `host-model` unit with `terms-gate-missing` before writing
-anything (T004); T008 replaces that refusal with the owner terms-decision check.
+result, or with conflicting results: fail closed). A writer refuses any
+`host-model` unit that no valid owner terms decision covers with
+`terms-gate-missing` before writing anything (T004, T008).
 Writers accept only items that pass the consent and redaction filter
 (`invalid-argument` otherwise). Units left out by the `d4FirstAttempt` filter are not exclusions and are
 not counted in the manifest.
@@ -151,6 +151,44 @@ when one of the two counts is zero, `dropped` is `successes + failures + unknown
 attempts of each of `success` and `failure` for the task and none `unknown`;
 every kept task is reported; a `rollout` export with `balance: equal` has a
 non-empty report and with `balance: none` an empty one.
+
+## Terms decision record (T008)
+
+A non-fixture unit exports only under an owner terms decision record (E5,
+OD-1). OD-1 is deferred: Agent Braid ships no record, and none says any
+provider permits training. The record is a private regular file (owner only, no
+group or other bits) of at most 16 KiB under `<plugin home>/lightning/terms/`,
+both of whose directories (`lightning/`, `terms/`) must be private too; it is
+opened without following a symbolic link and read bounded to 16 KiB plus one
+byte, then checked on the open file descriptor. It is named for the
+export by its relative path `terms/<name>.json` (`[A-Za-z0-9][A-Za-z0-9._-]*`).
+Exact keys, no duplicates:
+
+| Field | Rule |
+|---|---|
+| `schema` | const `braid-lightning-terms-decision/v0.1` |
+| `provider` | the provider whose terms were reviewed; 1-256 characters without control characters |
+| `host` | `claude-code` \| `opencode`: the host whose units it covers |
+| `models` | non-empty list of distinct model ids (at most 64); a unit is covered only when its attempt's `attempt_start` model id is listed |
+| `terms` | exactly one of `{version}` or `{url}` (`https://`) |
+| `reviewedOn` | owner review date, `YYYY-MM-DD` |
+| `validUntil` | last date the owner relies on the review, `YYYY-MM-DD` |
+| `outcome` | `permits-training` \| `forbids-training` \| `undecided` |
+
+The gate checks the record on the export's UTC day: it must parse, have
+exactly these fields, satisfy `reviewedOn` ≤ day ≤ `validUntil` and have outcome
+`permits-training`. Each non-fixture unit must then match the record's `host`
+and one of its `models`; a unit with no recorded model, another host or another
+model is not covered. Any failure refuses the whole export with
+`terms-gate-missing` before anything is written, with a text that names no path
+or field value. When at least one exported record is `host-model`, the manifest
+`termsDecision` is `{path, sha256}` of the record bytes; a fixture-only export
+cites none, and `check_manifest` refuses a cited `{path, sha256}` that is not
+the record the gate read and verified. One record covers one host: units of two
+hosts need two exports. `provider` is informational: binding is by `host` plus
+exact model id only. The host and model come from the ingested trace data (the
+rollout record and the attempt's `attempt_start` event) and are not
+independently attested.
 
 ## Retention and purge
 

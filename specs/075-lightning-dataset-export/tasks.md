@@ -39,10 +39,11 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
 
 ## Phase P2 — gates and CLI
 
-- [ ] T008 (REQ-008 / SC-008): Terms gate reading the OD-1 decision record.
+- [x] T008 (REQ-008 / SC-008): Terms gate reading the OD-1 decision record
+  (`lightning_export.load_terms_decision`; bound per unit to host and model).
   Dependencies: T006; OD-1 recorded before any host export (deferred at T001:
-  the gate ships closed; the permitting branch is tested with synthetic
-  temporary records only). Verification: procedure_008.
+  the gate ships closed, no record is shipped; the permitting branch is tested
+  with synthetic temporary records only). Verification: procedure_008.
 - [ ] T009 (REQ-009 / SC-009): CLI subcommand and refusals, including
   `export-disabled`. Dependencies: T006.
   Verification: procedure_009.
