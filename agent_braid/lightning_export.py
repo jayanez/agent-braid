@@ -15,7 +15,8 @@ with the owner terms-decision check. Lines are `trace_adapter.canonical_bytes(re
 
 T005 (REQ-004): the `rollout` writer. A record carries the attempt's turns (redacted prompt, response and tool
 calls), its SPEC-071 reward vector unchanged and the rollout's latest status. `transition` writes one record per
-model call; `trajectory` one per attempt, merged by token-ID prefix only when every turn carries token IDs that
+model call; `trajectory` one per attempt (a rollout has one attempt: VALID_TRANSITIONS allows no retry, and
+`read_runs` refuses a rollout with two), merged by token-ID prefix only when every turn carries token IDs that
 chain (never for hosted Claude Code or OpenCode, whose triplets carry none), else at text level with the limit
 `text-level-merge` (E2). Token IDs never enter a record. The T004 input and terms checks apply unchanged.
 """
@@ -147,6 +148,12 @@ def _read_run(home: Path | None, run_id: str, refusal: str | None) -> list[dict]
     labels: dict[tuple, set] = {}
     for result in run.read('result'):
         labels.setdefault((result.value['rolloutId'], result.value['attemptId']), set()).add(result.value['label'])
+    per_rollout: dict[str, int] = {}
+    for rollouts in attempts.values():
+        for rollout_id in rollouts:
+            per_rollout[rollout_id] = per_rollout.get(rollout_id, 0) + 1
+    if any(count > 1 for count in per_rollout.values()):  # VALID_TRANSITIONS allows no retry: one attempt each
+        raise ExportError('A rollout has more than one attempt', 'source-invalid')
     items = []
     for attempt_id in sorted(attempts):
         rollouts = attempts[attempt_id]
@@ -254,22 +261,41 @@ def supervised(items: list[dict], *, level: str, outcome_field: bool = False) ->
     if type(outcome_field) is not bool:
         raise ExportError('outcome_field is true or false', 'invalid-argument')
     _check_items(items)
-    lines, entries, left_out = [], [], 0
+    units, left_out = [], 0
     for unit in _units(items, level):
-        if not outcome_field and unit[0]['outcome'] != 'success':
+        if outcome_field or unit[0]['outcome'] == 'success':
+            units.append(unit)
+        else:
             left_out += 1
-            continue
-        turn_range = [unit[0]['turnIndex'], unit[-1]['turnIndex']]
+
+    def build(unit):
         record = {'messages': _messages(unit)}
         if outcome_field:
             record['outcome'] = unit[0]['outcome']
-        record = {'recordId': _record_id(record, unit[0], turn_range), **record}
-        check_supervised(record, outcome_field=outcome_field)
+        return record
+
+    lines, entries = _write(units, build, lambda record: check_supervised(record, outcome_field=outcome_field))
+    return lines, entries, left_out
+
+
+def _limits(unit: list[dict]) -> list[str]:
+    """`text-level-merge` when a unit merges more than one call without a token-ID prefix chain (E2)."""
+    return [] if len(unit) == 1 or _token_prefix_merge(unit) else ['text-level-merge']
+
+
+def _write(units: list[list[dict]], build, check) -> tuple[list[bytes], list[dict]]:
+    """Lines and manifest entries for units: `build` makes the record body, `check` refuses a wrong shape."""
+    lines, entries = [], []
+    for unit in units:
+        first = unit[0]
+        turn_range = [first['turnIndex'], unit[-1]['turnIndex']]
+        record = build(unit)
+        record = {'recordId': _record_id(record, first, turn_range), **record}
+        check(record)
         line = line_bytes(record)
         lines.append(line)
-        entries.append(_entry(unit, record['recordId'], line, turn_range,
-                              ['text-level-merge'] if len(unit) > 1 else []))
-    return lines, entries, left_out
+        entries.append(_entry(unit, record['recordId'], line, turn_range, _limits(unit)))
+    return lines, entries
 
 
 _ATTEMPT_ID = re.compile(r'(attempt|turn|strand|episode)-[0-9a-f]{16}')
@@ -299,31 +325,27 @@ def _tokens(part) -> list | None:
 
 
 def _token_prefix_merge(unit: list[dict]) -> bool:
-    """True when every turn carries token IDs and each prompt extends the previous prompt and response (E2)."""
-    previous = None
+    """True when the unit's calls are consecutive, every one carries token IDs and each prompt extends the previous
+    prompt and response (E2). A call excluded from the middle breaks the chain even if the tokens still line up."""
+    previous, index = None, None
     for item in unit:
         prompt, response = _tokens(item['triplet']['prompt']), _tokens(item['triplet']['response'])
-        if prompt is None or response is None or (previous is not None and prompt[:len(previous)] != previous):
+        if prompt is None or response is None or (previous is not None and (
+                item['turnIndex'] != index + 1 or prompt[:len(previous)] != previous)):
             return False
-        previous = prompt + response
+        previous, index = prompt + response, item['turnIndex']
     return True
 
 
 def rollout_records(items: list[dict], *, level: str) -> tuple[list[bytes], list[dict]]:
     """`rollout` lines and manifest record entries, in E3 order. Balance is applied separately (T007)."""
     _check_items(items)
-    lines, entries = [], []
-    for unit in _units(items, level):
+
+    def build(unit):
         first = unit[0]
-        turn_range = [first['turnIndex'], unit[-1]['turnIndex']]
         turns = [{'prompt': i['triplet']['prompt']['text'], 'response': i['triplet']['response']['text'],
                   'toolCalls': i['triplet']['response'].get('toolCalls', [])} for i in unit]
-        record = {'rolloutId': first['rolloutId'], 'attemptId': first['attemptId'], 'turns': turns,
-                  'reward': first['reward'], 'status': first['status']}
-        record = {'recordId': _record_id(record, first, turn_range), **record}
-        check_rollout(record)
-        line = line_bytes(record)
-        limits = ['text-level-merge'] if len(unit) > 1 and not _token_prefix_merge(unit) else []
-        lines.append(line)
-        entries.append(_entry(unit, record['recordId'], line, turn_range, limits))
-    return lines, entries
+        return {'rolloutId': first['rolloutId'], 'attemptId': first['attemptId'], 'turns': turns,
+                'reward': first['reward'], 'status': first['status']}
+
+    return _write(_units(items, level), build, check_rollout)

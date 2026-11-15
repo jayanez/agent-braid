@@ -43,7 +43,9 @@ network, non-determinism).
 
 Pipeline: terms gate (if any candidate source is `host-model`) → select →
 consent/redaction filter (counted) → aggregate (level) → balance (seeded, `rollout` kind only) →
-canonical lines → canary scan → write `records.jsonl` then `manifest.json`
+canonical lines (`trajectory`: one record per attempt; a rollout has one
+attempt, as VALID_TRANSITIONS allows no retry, and a rollout with two is refused
+`source-invalid`) → canary scan → write `records.jsonl` then `manifest.json`
 atomically (temporary directory, then rename). Compatibility: additive only.
 
 ## Validation strategy

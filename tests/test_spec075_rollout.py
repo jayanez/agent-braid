@@ -14,7 +14,7 @@ from tests.spec075_fixtures import consent, new_run, rollout
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = json.loads((ROOT / 'schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json').read_text())
 REWARD = {'value': 1.0, 'components': {'schema': 1.0, 'd4': 1.0, 'canary': 1.0}, 'source': 'verifier', 'reason': None}
-RAW = ('raw-three', 'raw-other')
+RAW = ('raw-three', 'raw-other', 'raw-first')
 
 
 def with_tokens(item, prompt, response):
@@ -33,6 +33,7 @@ class Base(unittest.TestCase):
                                            ('ask two', 'answer two'), ('ask three', 'answer three')],
                 status='succeeded')
         rollout(run, 'ro-2', 'raw-other', [('try', 'wrong')], task='task-b', d4=False, status='failed')
+        rollout(run, 'ro-0', 'raw-first', [('z', 'z')], task='task-z', status='succeeded')  # sorts first by rollout
         self.items, _ = export.select(export.read_runs(self.home, ['run-1']))
         self.three = [i for i in self.items if i['rolloutId'] == 'ro-1']
 
@@ -42,9 +43,9 @@ class Base(unittest.TestCase):
     def assert_contract(self, lines, entries):
         try:
             import jsonschema
-        except ImportError:  # pragma: no cover - development dependency
-            self.skipTest('jsonschema is a development dependency')
-        entry_schema = jsonschema.Draft202012Validator(SCHEMA['properties']['records']['items'])
+            entry_schema = jsonschema.Draft202012Validator(SCHEMA['properties']['records']['items'])
+        except ImportError:  # pragma: no cover - development dependency: only the schema half is skipped
+            entry_schema = None
         self.assertEqual(len(lines), len(entries))
         for line, entry in zip(lines, entries):
             record = json.loads(line)
@@ -54,7 +55,8 @@ class Base(unittest.TestCase):
             self.assertEqual((record['recordId'], record['rolloutId'], record['attemptId']),
                              (entry['recordId'], entry['rolloutId'], entry['attemptId']))
             self.assertEqual(entry['sha256'], hashlib.sha256(line).hexdigest())
-            self.assertEqual(list(entry_schema.iter_errors(entry)), [])
+            if entry_schema is not None:
+                self.assertEqual(list(entry_schema.iter_errors(entry)), [])
             for raw in RAW:
                 self.assertNotIn(raw.encode(), line)
                 self.assertNotIn(raw, json.dumps(entry))
@@ -98,6 +100,25 @@ class LevelTests(Base):
                                  ['text-level-merge'])
         self.assertNotIn(b'tokenIds', b''.join(export.rollout_records(chained, level='trajectory')[0]))
 
+    def test_a_gap_in_the_chain_is_text_level(self):
+        first, second, third = self.three
+        chained = [with_tokens(first, [1, 2], [3]), with_tokens(second, [1, 2, 3, 4], [5]),
+                   with_tokens(third, [1, 2, 3, 4, 5, 6], [7])]
+        gapped = [chained[0], chained[2]]  # the middle call was excluded; the tokens still line up
+        lines, entries = export.rollout_records(gapped, level='trajectory')
+        self.assertEqual((entries[0]['turnRange'], entries[0]['limits']), ([0, 2], ['text-level-merge']))
+        self.assertEqual(len(json.loads(lines[0])['turns']), 2)
+
+    def test_a_rollout_with_two_attempts_is_refused(self):
+        run = new_run(self.home, 'run-retry')
+        rollout(run, 'ro-r', 'raw-first-try', [('a', 'b')])
+        rollout(run, 'ro-r', 'raw-second-try', [('c', 'd')], start=10)
+        with self.assertRaises(export.ExportError) as caught:
+            export.read_runs(self.home, ['run-retry'])
+        self.assertEqual((caught.exception.code, str(caught.exception)),
+                         ('source-invalid', 'A rollout has more than one attempt'))
+        self.assertNotIn('raw-', str(caught.exception))
+
     def test_one_call_trajectory_merges_nothing(self):
         other = [i for i in self.items if i['rolloutId'] == 'ro-2']
         lines, entries = export.rollout_records(other, level='trajectory')
@@ -109,7 +130,7 @@ class LevelTests(Base):
         shuffled = list(self.items)
         random.Random(3).shuffle(shuffled)
         self.assertEqual(export.rollout_records(shuffled, level='transition'), result)
-        self.assertEqual([e['rolloutId'] for e in result[1]], ['ro-1'] * 3 + ['ro-2'])
+        self.assertEqual([e['rolloutId'] for e in result[1]], ['ro-1'] * 3 + ['ro-2', 'ro-0'])  # task, then rollout
 
 
 class GateTests(Base):

@@ -4,7 +4,7 @@ Status: draft; procedure_001 has obtained evidence (T001 owner review record,
 2026-11-14), procedure_005 its schema part (T002,
 `tests/test_spec075_manifest_schema.py`) and procedure_002 its filter part
 (T003, `tests/test_spec075_export_filter.py`; the redaction version lands with
-T006) procedure_003 (T004, `tests/test_spec075_supervised.py`) and procedure_004
+T006), procedure_003 (T004, `tests/test_spec075_supervised.py`) and procedure_004
 (T005, `tests/test_spec075_rollout.py`); no other procedure has. Evidence is
 captured with `python -m scripts.spec075_capture_evidence`. Deterministic procedures run
 locally and in CI as targeted test modules (`tests/test_spec075_*.py`, one
