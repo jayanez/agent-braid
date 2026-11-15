@@ -6,7 +6,7 @@
  },
  "inputs": {
   "agent_braid/lightning_adapter.py": "7d755aa59fa18deaba2574cbb1d9784d55e6f9ca2541bc2a0cc5b9e3aad7fb13",
-  "agent_braid/lightning_export.py": "e032b2bbac642541d3c745e29cb2e4ebc7fcae3bee3213a6a888d326bad5dd5e",
+  "agent_braid/lightning_export.py": "bb9b137fa86b236b8b06496ddd195e06c520e39d5afe95fa6286295e6f7d84d7",
   "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
   "tests/spec075_fixtures.py": "4b8f08efa4cc8ed14f3f0ddd542dd7cc5a64bb92627158064e2ed1d28ad610fd",
   "tests/test_spec075_manifest.py": "25710c0694d15e0e46fc9639ba0cae796193e6e66c039e4d2593cbb50f31b6e9",

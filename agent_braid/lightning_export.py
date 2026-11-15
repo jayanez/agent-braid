@@ -32,10 +32,10 @@ temporary directory and the rename can leave a `.export-*` directory beside the 
 files and is the owner's to delete.
 
 T007 (REQ-007): `balance equal`, the default for `rollout` exports (E4, OD-2): per task, keep `min(successes,
-failures)` attempts of each outcome, chosen by a seeded hash rank, so a rerun with the same store and seed keeps the
-same attempts. Attempts are kept or dropped whole; dropped model calls count as `balance` exclusions. Tasks with one
-outcome keep nothing and are reported, never padded; attempts without a reward (`unknown`) cannot be paired and
-are dropped and reported. `supervised` exports are never balanced.
+failures)` attempts of each outcome, chosen by a seeded hash rank of [seed, taskId, runId, rolloutId], so the same
+data and seed keep the same attempts, also after a re-ingest with a new salt. Attempts are kept or dropped whole;
+dropped model calls count as `balance` exclusions. Tasks with one outcome keep nothing and are reported, never
+padded; attempts without a reward (`unknown`) cannot be paired and are dropped and reported. `supervised` exports are never balanced.
 """
 from __future__ import annotations
 
@@ -434,14 +434,36 @@ def check_manifest(manifest: dict, records: bytes, sources: dict) -> None:
             fail('terms decision')
     if set(manifest['retention']) != {entry['runId'] for entry in entries}:
         fail('retention')
-    tasks = [row['taskId'] for row in manifest['balanceReport']]
-    if len(tasks) != len(set(tasks)) or any(row['singleOutcome'] and row['keptPerOutcome'] != 0
-                                            for row in manifest['balanceReport']):
-        fail('balance report')
+    _check_balance(manifest, fail)
     if manifest['kind'] == 'supervised' and (manifest['balance'] != 'none' or manifest['exclusions']['balance']):
         fail('supervised balance')
     if manifest['canaryScan'] != 'clean' or manifest['digest'] != manifest_digest(manifest):
         fail('digest')
+
+
+def _check_balance(manifest: dict, fail) -> None:
+    """The E4 arithmetic: each report row is consistent and the dataset holds exactly the attempts it says it kept."""
+    report = manifest['balanceReport']
+    tasks = [row['taskId'] for row in report]
+    if len(tasks) != len(set(tasks)):
+        fail('balance report')
+    if manifest['kind'] == 'rollout' and (manifest['balance'] == 'equal') != bool(report):
+        fail('balance report')  # equal reports every task; none reports nothing
+    kept: dict[str, dict[str, set]] = {}
+    for entry in manifest['records']:
+        kept.setdefault(entry['taskId'], {}).setdefault(entry['outcome'], set()).add(
+            (entry['runId'], entry['rolloutId'], entry['attemptId']))
+    for row in report:
+        least = min(row['successes'], row['failures'])
+        single = (row['successes'] == 0) != (row['failures'] == 0)
+        attempts = kept.get(row['taskId'], {})
+        if row['keptPerOutcome'] != least or row['singleOutcome'] != single \
+                or row['dropped'] != row['successes'] + row['failures'] + row['unknown'] - 2 * least \
+                or len(attempts.get('success', ())) != least or len(attempts.get('failure', ())) != least \
+                or attempts.get('unknown'):
+            fail('balance report')
+    if report and set(kept) - set(tasks):
+        fail('balance report')
 
 
 def build_manifest(entries: list[dict], records: bytes, *, kind: str, level: str, seed: int, balance: str,
@@ -527,7 +549,9 @@ def _check_seed(seed) -> None:
 
 
 def _rank(seed: int, task_id: str, item: dict) -> str:
-    key = [seed, task_id, item['runId'], item['rolloutId'], item['attemptId']]
+    """The draw key: no attempt pseudonym (it changes with each ingest's salt). A rollout has one attempt, so
+    [runId, rolloutId] names the attempt; the same data and seed give the same selection across re-ingests."""
+    key = [seed, task_id, item['runId'], item['rolloutId']]
     return hashlib.sha256(_canonical(key)).hexdigest()
 
 

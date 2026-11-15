@@ -30,7 +30,7 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
 - [x] T006 (REQ-005, REQ-006 / SC-005, SC-006): Manifest builder, atomic write,
   determinism test; defines `redactionVersion` (SPEC-074 records carry none)
   and completes REQ-002's recorded redaction version (`export_dataset`,
-  `build_manifest`, `check_manifest`, `write_export`; `balance: equal` waits for
+  `build_manifest`, `check_manifest`, `write_export`; `balance: equal` added by
   T007). Dependencies: T002, T004, T005. Verification: procedure_005,
   procedure_006.
 - [x] T007 (REQ-007 / SC-007): Seeded per-task balance for `rollout` exports only
