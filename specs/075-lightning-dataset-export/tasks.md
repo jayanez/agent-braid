@@ -19,8 +19,8 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
 - [x] T003 (REQ-002 / SC-002): Consent and redaction filter with exclusion
   counts (`agent_braid/lightning_export.py` `read_runs`, `select`; filter part:
   the recorded redaction version lands with T006). Dependencies: T001, SPEC-074 adapter. Verification: procedure_002.
-- [ ] T004 (REQ-003 / SC-003): `supervised` writer (`d4FirstAttempt` true only, or
-  explicit `outcome` field). Dependencies: T003.
+- [x] T004 (REQ-003 / SC-003): `supervised` writer (`d4FirstAttempt` true only, or
+  explicit `outcome` field) (`lightning_export.supervised`, both levels). Dependencies: T003.
   Verification: procedure_003.
 - [ ] T005 (REQ-004 / SC-004): `rollout` writer and both levels.
   Dependencies: T003. Verification: procedure_004.
