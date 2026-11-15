@@ -251,6 +251,21 @@ episodeRetentionDays: 30}`. It never reports episode contents.
   NO-GO is a valid result.
 - **REQ-401 Promotion (S1.5e).** `advise` per decision point only after an owner
   go decision on recorded shadow evidence, with atomic rollback to `off`.
+- **REQ-402 Reviewable rule-based advise on DP-1 (amendment 2026-11-14, owner
+  decisions D6–D8; ADR 0034 addendum 2026-11-14).** A structural rule backend may
+  advise `likely-independent` on DP-1 pairs that System 2 marks `unknown`, after an
+  owner risk-accepted go recorded against that rule's own shadow episodes. Acceptance:
+  (a) the rule answers `likely-independent` only when every clause of its published
+  truth table holds and `undetermined` otherwise, each clause with a negative-control
+  test; (b) shared resources are compared in canonical form, so a modification and a
+  deletion of one path overlap; (c) shadow episodes record the rule's answer and the
+  `off`/`shadow` envelopes stay byte-identical; (d) in effective `advise` the advice is
+  a separate per-pair field labelled "not verified", the System 2 classification is
+  unchanged and `executionAuthorization` stays false; (e) the go is recorded through a
+  previewed, confirmed owner command and pins the rule's manifest digest; (f) the
+  first joined real conflict on an advised-independent pair rolls DP-1 back to
+  `shadow` atomically with a closed-vocabulary reason; (g) the go is reviewed on
+  2026-12-31. This go is not a test of H-S1.
 
 ## Hypothesis
 
@@ -260,6 +275,12 @@ independence rate of at most 2% at a coverage of at least 30% of those pairs.
 Falsification: the S1.5d paired comparison does not reach both bounds at the
 common risk budget. Null and negative results are valid outcomes. Nothing in
 S1.5a tests H-S1.
+
+**GO rule for learned models (owner decision D3, 2026-11-14).** A learned backend is
+promoted only if the Wilson 95 percent upper bound of the false independence rate is
+at most 2 percent at a coverage of at least 30 percent of DP-1 `unknown` pairs with
+observed outcomes. The B0 check of 2026-11-14 (3015 sibling pairs, 4 `unknown`) shows
+that git-history replay cannot supply that population, so S1.5d is Deferred.
 
 ## Success criteria (S1.5a)
 

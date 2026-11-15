@@ -91,6 +91,39 @@ evidence. Article 20 separates analysis from execution.
     only; this carries no claim that upstream-reported accuracy transfers to
     Agent Braid.
 
+## Addendum 2026-11-14: reviewable rule-based advise on DP-1
+
+Owner decisions of 2026-11-14 (D3, D6, D7, D8). Decisions 1–10 above stay in force;
+this addendum only states how decision 8 applies to a rule backend.
+
+Context. The SPEC-066 B0 feasibility check
+([evidence](../../specs/066-system-one-shadow/evidence/s15b-sibling-feasibility-2026-11-14.json))
+found 3015 labelled sibling-branch pairs, of which System 2 marks only 4 `unknown`.
+Git-history replay therefore cannot supply the System-2-`unknown` pairs that H-S1 is
+defined on, and a learned model cannot be fitted or evaluated before 2027.
+
+1. **Learned models keep the statistical bar (D3).** A go for any learned backend
+   requires the Wilson 95 percent upper bound of the false independence rate to be at
+   most 2 percent at a coverage of at least 30 percent of DP-1 `unknown` pairs with
+   observed outcomes (about 630 such pairs with no error). The learned layer
+   (SPEC-066 S1.5d, REQ-301) moves to Deferred under this rule.
+2. **A rule backend may advise under a risk-accepted go (D6).** A structural rule
+   backend (standard library, no learned, pretrained or third-party model; decision 9
+   is unchanged) may advise on DP-1 after an owner go recorded against the shadow
+   evidence of that same rule and an explicitly accepted risk. Such a go is not a test
+   of H-S1 and must not be reported as one. The dependency of a go on the S1.5d
+   verdict applies to learned backends only.
+3. **Advice is an annotation.** In `advise`, the advice appears as a separate per-pair
+   field labelled "not verified". It never changes, reorders or hides the System 2
+   classification, never deletes or skips work (decision 5) and grants no execution
+   authority (decision 4). `off` and `shadow` output stays byte-identical (decision 2).
+4. **Automatic rollback (D7).** The first observed real conflict on a pair advised
+   `likely-independent` rolls DP-1 back to `shadow` atomically and raises a telemetry
+   alert. Re-enabling `advise` requires a new owner go.
+5. **Review dates (D8).** Decision packet 2026-11-28; `advise` may go live on
+   2026-11-30; a mandatory owner review on 2026-12-31 confirms, narrows or retires
+   the rule. A go expires at that review unless renewed.
+
 ## Alternatives considered
 
 - **Retire System One.** Rejected by the owner: the contract and fail-closed
