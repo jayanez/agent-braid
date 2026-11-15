@@ -199,21 +199,32 @@ agent-braid lightning export (--run RUN_ID ... | --all) --kind supervised|rollou
 ```
 
 The command refuses with `export-disabled` unless the profile's `export.enabled`
-is `true` (no profile, or an unreadable or invalid one, is disabled). `--run`
+is `true`, which only a previewed `lightning init --export` sets; no profile,
+an unreadable or invalid one, and any environment variable leave it disabled.
+This is decided before the other arguments are parsed. The command parses its
+own arguments: any argument error (unknown or abbreviated flag, bad choice or
+integer, missing required flag, both `--run` and `--all`) is `invalid-argument`
+with a fixed text that echoes no value, never the parser's message. `--help`
+states that export is off by default and that no provider's terms have been
+reviewed (OD-1). `--run`
 repeats; `--all` takes every run in the store. `--level` is required (the
 profile's `export.level` is not used as a default). `--terms-decision` names the
-T008 record; the command reads it and never creates, changes or prints the
-`terms/` directory or a record's contents. `--dry-run` runs every check and
+T008 record; the command reads it, never creates or modifies the `terms/`
+directory or a record, and never prints a record's contents. `--dry-run` runs every check and
 builds the manifest but writes nothing. `--out` must be a canonical path (no
-symbolic link in any component, no `..`) inside an existing directory, and must
+symbolic link in any component, no `..`; on macOS `/tmp` and `/var` are
+symbolic links, so use `/private/tmp` or a directory under the home) inside an
+existing directory, and must
 not exist or be an empty directory (`path-refused`, `output-not-empty`); the
 check runs before the store is read. Success prints one JSON object of counts,
 hashes and fixed fields (`status`, `kind`, `level`, `balance`, `seed`, `records`,
 `exclusions`, `balanceReport`, `termsDecision`, `redactionVersion`,
 `recordsSha256`, `digest`, `files`, `executionAuthorization: false`), never the
-record entries or the output path. A refusal prints `lightning refused (<code>):
+record entries, content, attempt pseudonyms, rollout ids or the output path;
+task ids appear in `balanceReport` by design. A refusal prints `lightning refused (<code>):
 <fixed text>` on stderr and exits 2; an unexpected error prints code `other` and
-the text `Export refused`. Argument errors exit through the argument parser.
+the text `Export refused`; an interrupt prints code `interrupted` and exits 130
+(the temporary directory is removed, T006). There are no other flags.
 
 ## Retention and purge
 

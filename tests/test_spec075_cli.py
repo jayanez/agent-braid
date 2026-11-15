@@ -19,6 +19,7 @@ from tests.spec075_fixtures import consent, new_run, rollout
 SYNTHETIC = {'schema': 'braid-lightning-terms-decision/v0.1', 'provider': 'SYNTHETIC test provider (not real)',
              'host': 'claude-code', 'models': ['synthetic-model-1'], 'terms': {'version': 'synthetic-terms-0'},
              'reviewedOn': '2020-01-01', 'validUntil': '2999-12-31', 'outcome': 'permits-training'}
+# Raw attempt ids and content must never be printed. Task ids are printed on purpose, in balanceReport.
 RAW = ('raw-a0', 'raw-a1', 'raw-h0', 'raw-h1', 'host yes', 'fixture ok')
 
 
@@ -64,6 +65,26 @@ class Base(unittest.TestCase):
 
 
 class DisabledTests(Base):
+    def test_disabled_is_decided_before_arguments_are_parsed(self):
+        secret = '/Users/someone/secret-xyz'
+        for argv in (['--kind', 'secret-xyz'], ['--bogus=' + secret], []):
+            with self.subTest(argv=argv):
+                result = cli('lightning', 'export', '--home', str(self.home), *argv)
+                self.assert_refused(result, 'export-disabled')
+                self.assertNotIn('secret-xyz', result[2])
+
+    def test_help_says_export_is_off_and_terms_are_unreviewed(self):
+        for flag in ('--help', '-h'):
+            code, out, err = cli('lightning', 'export', '--home', str(self.home), flag)
+            self.assertEqual((code, err), (0, ''))
+            text = ' '.join(out.split())
+            for phrase in ('OFF by default', 'export-disabled', 'export.enabled', 'lightning init --export',
+                           "No provider's terms have been reviewed", 'OD-1 is deferred', 'only fixture runs export',
+                           '/private/tmp', 'none ships with Agent Braid'):
+                self.assertIn(phrase, text)
+            self.assertNotIn('(OD-1)', text)
+        self.assertFalse((self.base / 'out').exists())
+
     def test_export_is_disabled_by_default(self):
         self.assert_refused(self.export(), 'export-disabled')  # consent given, export never enabled
         self.enable(False)
@@ -94,6 +115,7 @@ class ExportTests(Base):
         self.assertEqual((summary['digest'], summary['recordsSha256']), (manifest['digest'], manifest['recordsSha256']))
         for value in (str(self.base), *RAW, 'ro-a0', 'attempt-'):
             self.assertNotIn(value, out)
+        self.assertEqual([row['taskId'] for row in summary['balanceReport']], ['task-a'])  # printed by design
         self.assertEqual(set(summary), {'status', 'kind', 'level', 'balance', 'seed', 'records', 'exclusions',
                                         'balanceReport', 'termsDecision', 'redactionVersion', 'recordsSha256',
                                         'digest', 'files', 'executionAuthorization'})
@@ -155,13 +177,25 @@ class ExportTests(Base):
             with self.subTest(name=name):
                 self.assert_refused(self.export(*extra, kind=kind), 'invalid-argument')
         self.assert_refused(self.export(runs=('--run', 'run-1', '--run', 'run-1')), 'invalid-argument')
-        for argv in (['--kind', 'other'], ['--level', 'step'], ['--balance', 'ratio']):
-            with self.subTest(argv=argv), patch('sys.stderr', StringIO()), self.assertRaises(SystemExit):
-                main(['lightning', 'export', '--home', str(self.home), '--run', 'run-1', '--kind', 'rollout',
-                      '--level', 'trajectory', '--out', str(self.base / 'o'), *argv])
-        with patch('sys.stderr', StringIO()), self.assertRaises(SystemExit):  # neither --run nor --all
-            main(['lightning', 'export', '--home', str(self.home), '--kind', 'rollout', '--level', 'trajectory',
-                  '--out', str(self.base / 'o')])
+        secret = '/Users/someone/secret-xyz'
+        for argv in (['--kind', 'secret-xyz'], ['--level', secret], ['--balance', secret], ['--seed', 'abc'],
+                     ['--bogus-flag=' + secret], ['--bogus-flag', secret], [secret], ['--kin', 'rollout'],
+                     ['--run', 'run-1', '--all']):
+            with self.subTest(argv=argv):
+                result = cli('lightning', 'export', '--home', str(self.home), '--run', 'run-1', '--kind', 'rollout',
+                             '--level', 'trajectory', '--out', str(self.base / 'o'), *argv)
+                self.assert_refused(result, 'invalid-argument', out='o')
+                self.assertNotIn('secret-xyz', result[2])
+                self.assertNotIn('abc', result[2])
+        missing = cli('lightning', 'export', '--home', str(self.home), '--kind', 'rollout', '--level', 'trajectory',
+                      '--out', str(self.base / 'o'))  # neither --run nor --all
+        self.assert_refused(missing, 'invalid-argument', out='o')
+
+    def test_the_flag_set_is_the_documented_one(self):
+        from agent_braid import lightning_cli
+        flags = {o for action in lightning_cli.export_parser()._actions for o in action.option_strings if o.startswith('--')}
+        self.assertEqual(flags, set(lightning_cli.EXPORT_FLAGS))
+        self.assert_refused(self.export('--unknown'), 'invalid-argument')
 
     def test_store_refusals_name_no_value(self):
         self.assert_refused(self.export(runs=('--run', 'missing-run-name')), 'store-missing')
@@ -198,7 +232,41 @@ class ExportTests(Base):
                          before)
 
 
+class StoreShapeTests(Base):
+    def test_a_corrupt_store_with_all_is_a_fixed_refusal(self):
+        self.enable()
+        (self.home / 'lightning' / 'runs' / 'not a run').mkdir()  # list_runs refuses an unexpected entry
+        from agent_braid import lightning_cli, lightning_export as export
+        args = ['--home', str(self.home), '--all', '--kind', 'rollout', '--level', 'trajectory', '--out',
+                str(self.base / 'out')]
+        with self.assertRaises(export.ExportError) as caught:
+            lightning_cli._export(args)
+        self.assertEqual(caught.exception.code, 'store-shape')
+        self.assertIsNone(caught.exception.__cause__)
+        self.assertTrue(caught.exception.__suppress_context__)
+        self.assert_refused(self.export(runs=('--all',)), 'store-shape')
+
+    def test_an_interrupt_is_a_fixed_refusal(self):
+        self.enable()
+        from agent_braid import lightning_export as export
+        with patch.object(export, 'export_dataset', side_effect=KeyboardInterrupt):
+            code, out, err = self.export()
+        self.assertEqual((code, out), (130, ''))
+        self.assertEqual(err, 'lightning refused (interrupted): Export interrupted; nothing was written\n')
+
+
 class BoundaryTests(Base):
+    def test_no_environment_switch(self):
+        root = Path(__file__).resolve().parents[1]
+        for name in ('lightning_cli.py', 'lightning_export.py'):
+            text = (root / 'agent_braid' / name).read_text()
+            for word in ('environ', 'getenv', 'putenv'):
+                self.assertNotIn(word, text, (name, word))
+        self.enable()
+        with patch.dict(os.environ, {'AGENT_BRAID_EXPORT': '1', 'EXPORT_ENABLED': 'true'}):
+            self.enable(False)
+            self.assert_refused(self.export(), 'export-disabled')
+
     def test_export_runs_offline_and_launches_nothing(self):
         self.enable()
 
