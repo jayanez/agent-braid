@@ -100,7 +100,7 @@ class Base(unittest.TestCase):
 
 class ConfigTests(Base):
     def test_system_one_mode_is_closed(self):
-        for bad in ('on', 'advise', '', None):
+        for bad in ('on', 'always', '', None):
             with self.assertRaises(ToolingError):
                 ToolingConfig(self.source, self.results, system_one=bad)
         self.assertEqual(ToolingConfig(self.source, self.results).system_one, 'off')
@@ -265,11 +265,12 @@ class EpisodeTests(Base):
         for episode in (first, second):
             shadow.validate_episode(episode)
             self.assertIs(episode['executionAuthorization'], False)
-            self.assertEqual(episode['systemOne']['status'], 'abstained')
-            self.assertEqual(episode['systemOne']['reason'], 'calibration-absent')
-            self.assertEqual(episode['systemOne']['backendId'], 'stdlib-rule-fixture-v1')
+            self.assertEqual(episode['systemOne']['status'], 'answered')
+            self.assertIsNone(episode['systemOne']['reason'])
+            self.assertEqual(episode['systemOne']['backendId'], 'dp1-structural-rule-v1')
             self.assertEqual(episode['systemOne']['manifestDigest'], shadow.EXPECTED_MANIFEST_DIGEST)
-            self.assertIsNone(episode['systemOne']['answers'])
+            self.assertEqual([a['choice'] for a in episode['systemOne']['answers']],
+                             ['undetermined'] * len(episode['pairs']))
             self.assertEqual(episode['analyzer'], {'version': '0.1.0-alpha', 'ruleSet': 'exact-resource-footprints-v1'})
         self.assertNotEqual(first['episodeId'], second['episodeId'])
         pair = first['pairs'][0]
@@ -362,7 +363,7 @@ class EpisodeTests(Base):
         episode, = self.episodes()
         shadow.validate_episode(episode)
         self.assertEqual((episode['systemOne']['status'], episode['systemOne']['reason']), ('refused', 'identity-mismatch'))
-        self.assertEqual(episode['systemOne']['manifestDigest'], '49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca')
+        self.assertEqual(episode['systemOne']['manifestDigest'], 'b8e902eda2670cc0d61e8a751dede6b94d84fa9ea5197975a10e0ed4ab7c4e63')
         with patch.object(shadow, 'EXPECTED_BACKEND_ID', 'other-backend'):
             self.assertEqual(shadow.build_episode(self.report_with(['Complete exact-resource footprints are disjoint.']),
                                                   'analyze-work', 'aim')['systemOne']['reason'], 'identity-mismatch')
@@ -377,7 +378,7 @@ class EpisodeTests(Base):
         ticks = itertools.count(0, 1_000)
         fast = shadow.build_episode(self.report_with(['Complete exact-resource footprints are disjoint.']),
                                     'analyze-work', 'aim', clock=lambda: next(ticks))
-        self.assertEqual(fast['systemOne']['status'], 'abstained')
+        self.assertEqual(fast['systemOne']['status'], 'answered')
 
     def test_validator_rejects_strings_outside_the_closed_vocabularies(self):
         good = shadow.build_episode(self.report_with(['Complete exact-resource footprints are disjoint.']), 'analyze-work', 'aim')
@@ -811,7 +812,7 @@ class ReportTests(Base):
         self.assertEqual(value['totals']['episodes'], 4)
         self.assertEqual(value['totals']['operations'], {'analyze-work': 4})
         self.assertEqual(value['totals']['system2'], {'independent-candidate': 2, 'unknown': 2})
-        self.assertEqual(value['totals']['systemOne'], {'abstained': 4})
+        self.assertEqual(value['totals']['systemOne'], {'answered': 4})
         self.assertEqual((value['pairsRecorded'], value['pairsAnalysed'], value['unknownPairs'],
                           value['unknownShare']), (4, 4, 2, 0.5))
         day, = value['days']

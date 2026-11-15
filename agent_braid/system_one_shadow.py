@@ -35,8 +35,8 @@ REPORT_SCHEMA = 'agent-braid-s1-report/v0.1'
 DECISION_POINT = 'DP-1'
 # Identity compiled into the shadow module (REQ-007). A different installed backend
 # or manifest is refused, so recorded episodes always name the reviewed reference.
-EXPECTED_BACKEND_ID = 'stdlib-rule-fixture-v1'
-EXPECTED_MANIFEST_DIGEST = '49f9022082fd12eda9ae1e0cd86ff827ca0c41dded4a52c618357cc9e525a3ca'
+EXPECTED_BACKEND_ID = 'dp1-structural-rule-v1'
+EXPECTED_MANIFEST_DIGEST = 'b8e902eda2670cc0d61e8a751dede6b94d84fa9ea5197975a10e0ed4ab7c4e63'
 BUDGET_NANOSECONDS = 50_000_000
 MAX_FILE_BYTES = 4 * 1024 * 1024
 MAX_REPORT_BYTES = 1024 * 1024  # artifact-backed reports above this are not observed
@@ -137,22 +137,27 @@ def _safe(path: Path, *, directory=False) -> Path:
 # --- System One identity and answer ------------------------------------------
 
 def _system_one_answer() -> dict:
-    """Identity and strict-policy outcome of the installed reference backend.
+    """Identity of the installed DP-1 rule backend and whether it may answer.
 
-    The strict policy ignores the question set, so a request-shaped stand-in carrying
-    only its policy identifier obtains the real outcome without building a request.
+    The rule is pure and local (system_one_dp1_rule); its manifest digest is compared with the
+    one compiled into this module, so a different installed rule is refused, not recorded.
     """
-    from types import SimpleNamespace
-    from . import system_one, system_one_policy
-    answer = {'backendId': system_one.BACKEND_ID,
-              'manifestDigest': system_one.digest(system_one.MODEL_MANIFEST)}
+    from . import system_one_dp1_rule as rule
+    answer = {'backendId': rule.BACKEND_ID, 'manifestDigest': rule.manifest_digest()}
     if (answer['backendId'], answer['manifestDigest']) != (EXPECTED_BACKEND_ID, EXPECTED_MANIFEST_DIGEST):
         return dict(answer, status='refused', reason='identity-mismatch')
-    outcome, reasons = system_one_policy.outcome(
-        SimpleNamespace(envelope={'policyId': system_one.STRICT_POLICY}))
-    if outcome == 'abstain' and reasons == ['calibration-absent']:
-        return dict(answer, status='abstained', reason='calibration-absent')
-    return dict(answer, status='skipped', reason='internal-error')
+    return dict(answer, status='answered', reason=None)
+
+
+def _rule_answers(pairs: list, interactions: list, sides: dict) -> list:
+    """One rule answer per recorded pair; one-hot masses (a rule, not calibrated)."""
+    from . import system_one_dp1_rule as rule
+    answers = []
+    for pair, item in zip(pairs, interactions):
+        choice = rule.advise_pair(pair, sides[item['left']], sides[item['right']])
+        answers.append({'choice': choice,
+                        'probabilities': {name: 1.0 if name == choice else 0.0 for name in CHOICES}})
+    return answers
 
 
 # --- Structural resource features ---------------------------------------------
@@ -322,6 +327,40 @@ def _pair(item: dict) -> dict | None:
             'observedOutcome': None}
 
 
+def _side_kinds(kind: str, request, sides: dict) -> dict | None:
+    """Per-operation effect kinds (AIM records or the Git adapter's schemes), unknown ones dropped."""
+    kinds = (_aim_kinds(request) if kind in ('aim', 'units')
+             else {name: _git_kinds(resources) for name, resources in sides.items()})
+    if kinds is not None:
+        kinds = {name: value for name, value in kinds.items() if value is not None}
+    return kinds
+
+
+def advise_report(report: dict, kind: str, request=None) -> dict:
+    """Per-pair DP-1 rule advice from the live report, for the active `advise` mode.
+
+    Never changes `classification`; advice is labelled not verified and grants no authority.
+    Pairs beyond MAX_PAIRS are counted in `pairsTotal`, not advised. A pair whose features
+    cannot be derived is `undetermined`.
+    """
+    from . import system_one_dp1_rule as rule
+    sides = {entry['instanceId']: entry['resources'] for entry in report['operations']}
+    kinds = _side_kinds(kind, request, sides)
+    interactions = report['interactions']
+    entries = []
+    for item in interactions[:MAX_PAIRS]:
+        choice = rule.UNDETERMINED
+        pair = _pair(item)
+        if pair is not None:
+            pair.update(_resource_features(item, sides, kinds, None))
+            choice = rule.advise_pair(pair, sides[item['left']], sides[item['right']])
+        entries.append({'left': item['left'], 'right': item['right'], 'choice': choice,
+                        'ruleId': rule.RULE_ID, 'label': rule.LABEL})
+    return {'pairs': entries, 'pairsAdvised': len(entries), 'pairsTotal': len(interactions),
+            'ruleId': rule.RULE_ID, 'ruleVersion': rule.RULE_VERSION, 'label': rule.LABEL,
+            'executionAuthorization': False}
+
+
 def build_episode(report: dict, operation: str, kind: str, *, request=None, salt: bytes | None = None,
                   clock=None, started=None) -> dict:
     """Derive one contract-conformant v0.2 episode (never stores input).
@@ -352,17 +391,17 @@ def build_episode(report: dict, operation: str, kind: str, *, request=None, salt
         pairs.append(pair)
     else:
         mapped = True
+    sides = {entry['instanceId']: entry['resources'] for entry in report['operations']}
     if pairs:
         pairs = pairs[:MAX_PAIRS]
-        sides = {entry['instanceId']: entry['resources'] for entry in report['operations']}
-        kinds = (_aim_kinds(request) if kind in ('aim', 'units')
-                 else {name: _git_kinds(resources) for name, resources in sides.items()})
-        if kinds is not None:
-            kinds = {name: value for name, value in kinds.items() if value is not None}
+        kinds = _side_kinds(kind, request, sides)
         for pair, item in zip(pairs, interactions):
             pair.update(_resource_features(item, sides, kinds, salt))
     system_one_started = clock()
     answer = _system_one_answer()
+    answers = None
+    if answer['status'] == 'answered' and mapped:
+        answers = _rule_answers(pairs, interactions, sides)
     elapsed_micros = max(0, (clock() - system_one_started) // 1000)
     status, reason = answer['status'], answer['reason']
     if not mapped:
@@ -383,7 +422,8 @@ def build_episode(report: dict, operation: str, kind: str, *, request=None, salt
             'pairs': pairs,
             'systemOne': {'status': status, 'reason': reason,
                           'backendId': answer['backendId'], 'manifestDigest': answer['manifestDigest'],
-                          'decisionPoint': DECISION_POINT, 'answers': None,
+                          'decisionPoint': DECISION_POINT,
+                          'answers': answers if status == 'answered' else None,
                           'elapsedMicros': min(elapsed_micros, 50_000)},
             'executionAuthorization': False}
 

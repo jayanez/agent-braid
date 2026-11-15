@@ -290,8 +290,9 @@ class PluginRouter:
                     runtime_enabled=row['runtimeEnabled'],
                     worktree_roots=tuple(Path(p) for p in row['worktreeRoots']),
                     telemetry=self.snapshot['telemetry'],
-                    # advise keeps recording shadow episodes; no decision point output consumes advice yet (T403).
-                    system_one='off' if self.system_one == 'off' else 'shadow')
+                    # Effective advise (valid owner go pinned to this manifest) also records shadow episodes
+                    # and adds the DP-1 rule advice; every other state serves off or shadow.
+                    system_one=self.system_one)
                 self.services[row['workspaceId']] = WorkspaceService(row['workspaceId'], config, Path(row['resultRoot']))
             except (core.ToolingError, OSError) as exc:  # e.g. the source repository was deleted: isolate this workspace
                 self.unavailable.append({'workspaceId': row['workspaceId'], 'reason': 'configuration rejected'})

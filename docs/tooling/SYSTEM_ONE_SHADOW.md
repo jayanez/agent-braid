@@ -118,8 +118,9 @@ the registry bytes and configuration digest stay as before.
 `--system-one advise` is accepted, but it is effective for a decision point only
 when the private promotion registry `system-one-promotion.json` (next to
 `registry.json`) holds a valid owner go for it. The registry ships empty and no
-command writes a go: recording one is gated on SPEC-066 T303, T402 and T403. So
-today `advise` behaves exactly like `shadow`.
+command writes a go except the owner promote command below (the DP-1 rule backend
+only; a learned backend stays gated on SPEC-066 T303, T402 and T403). Without a
+go, `advise` behaves exactly like `shadow`.
 
 Each record is append-only and digest-pinned: a go pins the recorded shadow
 evidence digest and the backend manifest digest, and every record carries its
@@ -135,8 +136,36 @@ registry intact. A go pinned to a different backend manifest does not promote.
 `promotion-registry-invalid`) for this connection, and `systemOne.promotion`
 with the registry as it is now (`present`, `valid`, `records`, per decision point
 `activeMode` and `reason`). Changes apply after reconnect. No decision point
-output consumes advice yet, and `executionAuthorization` stays `false`
-everywhere.
+output consumes advice except the DP-1 rule advice below, and
+`executionAuthorization` stays `false` everywhere.
+
+## DP-1 structural rule advice
+
+The installed backend is the pure rule `dp1-structural-independence` (version 1,
+backend kind `rule`; no model, no calibration). For a pair System 2 left
+`unknown` it answers `likely-independent` only when all of these hold:
+reason codes are within `partial-coverage` and `read-version`; both sides' effect
+kinds are `read` or `write`; the two sides share no canonical resource (query
+`?operation=...` stripped, so a Git modify and delete of one path overlap);
+`sameParentDirCount` is 0; `topDirOverlap` is false; and neither side has a
+`lockfile`, `config` or `generated` resource. Anything else is `undetermined`.
+The rule never says `likely-conflicting` and never changes a classification.
+
+- Shadow episodes record the rule's answer per recorded pair (`answered`, one-hot
+  masses that are not probabilities of correctness). The shadow manifest digest is
+  the rule's.
+- Only in effective `advise` does `analyze-work` add `result.systemOneAdvice`:
+  per pair `left`, `right`, `choice`, `ruleId` and the label `not verified`. It
+  covers at most 64 pairs (`pairsTotal` counts all). Off and shadow envelopes are
+  byte-identical to each other, and `executionAuthorization` is `false`.
+- Owner promotion: `agent-braid system-one promote --decision-point DP-1 --go`
+  prints a preview (`previewDigest`, pinned evidence and manifest digests) and
+  records nothing; re-run with `--confirm <previewDigest>` to record the go.
+  `--rollback` works the same way and demotes DP-1 to `off`. A go needs retained
+  shadow episodes, and any change to the evidence or the registry invalidates an
+  earlier preview. Changes apply after reconnect.
+- The rule is `not verified`: no accuracy or false-independence rate has been
+  measured for it, and `executionAuthorization` does not change.
 
 The standalone portable server takes `python -m agent_braid.tooling_mcp
 --system-one shadow` instead (it has no `advise`). See [native plugins](NATIVE_PLUGINS.md) and
@@ -185,9 +214,9 @@ Both `system-one` store commands accept `--telemetry local`; see
 
 - Shadow mode makes no accuracy, calibration or promotion claim, and measures no
   utility. No outcome is joined to an episode in S1.5a.
-- The reference backend (`stdlib-rule-fixture-v1`) always abstains with the reason
-  `calibration-absent`. A different installed backend or manifest digest is
-  recorded as `refused` with reason `identity-mismatch`.
+- The installed backend is the DP-1 structural rule (`dp1-structural-rule-v1`), not a
+  learned model, and its advice is `not verified`. A different installed backend or
+  manifest digest is recorded as `refused` with reason `identity-mismatch`.
 - `executionAuthorization` is `false` in every episode and report. Shadow mode
   creates no grant and widens no filesystem trust.
 - The registered hypothesis H-S1 (a calibrated local backend advising
