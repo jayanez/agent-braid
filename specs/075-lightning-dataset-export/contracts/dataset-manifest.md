@@ -32,7 +32,9 @@ Lines are `trace_adapter.canonical_bytes(record)` followed by `\n`.
 | `digest` | hex | SHA-256 of canonical manifest without `generatedAt` and `digest` |
 
 Record entry: `recordId` (`r-` plus the first 16 hex of the SHA-256 of the
-canonical record without `recordId`), `sha256` (of its line), `runId` (the source
+canonical `{record, source}`, where `record` is the record without `recordId`
+and `source` is `[runId, rolloutId, attemptId, turnRange]`, so identical texts
+from two attempts get distinct ids; T004), `sha256` (of its line), `runId` (the source
 run, keying `retention`), `taskId`, `groupId`, `rolloutId`, `attemptId` (the
 SPEC-074 pseudonym `attempt-`, `turn-`, `strand-` or `episode-<hmac16>`, never
 the raw id), `turnRange` `[first,last]` with first ≤ last, `consentLevel` (`redacted`),
@@ -64,8 +66,23 @@ labelled `fixture`.
 
 - `supervised`: `{"recordId", "messages": [{"role", "content"}...]}`, plus
   `"outcome"` when `--outcome-field` is given (otherwise only records with
-  `d4FirstAttempt` true); `tool` messages carry `toolCallId`; content is
-  redacted text only.
+  `d4FirstAttempt` true); `tool` messages carry `toolCallId`; `assistant`
+  messages carry the redacted `toolCalls` when the model called tools; content is
+  redacted text only. A `transition` record is one model call (`user` prompt,
+  `assistant` response); a `trajectory` record is the attempt's exported calls in
+  order, with limit `text-level-merge` when it merges more than one. Rollout
+  content holds no tool results, so rollouts yield no `tool` message.
+
+Per-attempt fields, from content-free records: `outcome` is `success` when the
+attempt's last reward event has component `d4` 1.0 (`d4FirstAttempt` true),
+`failure` when 0.0, else `unknown`; `source` is `fixture` only when every
+attempt result is labelled `pipeline-only`, else `host-model` (also without a
+result, or with conflicting results: fail closed). While OD-1 is deferred, a
+writer refuses any `host-model` unit with `terms-gate-missing` before writing
+anything (T004); T008 replaces that refusal with the owner terms-decision check.
+Writers accept only items that pass the consent and redaction filter
+(`invalid-argument` otherwise). Units left out by the `d4FirstAttempt` filter are not exclusions and are
+not counted in the manifest.
 - `rollout`: `{"recordId", "rolloutId", "attemptId", "turns": [...],
   "reward": {...}, "status"}`; reward is the SPEC-071 vector, unchanged.
 

@@ -6,15 +6,27 @@ T003 (REQ-002): the input boundary. Content is read only through the SPEC-074 ad
 model call either survives the consent and redaction filter or is counted under one exclusion reason, never
 dropped silently (E1). Raw attempt ids stay in memory: records carry the adapter's `attempt-<hmac16>` pseudonym,
 and refusals carry fixed texts and codes with no chained cause. Standard library only; no network or process.
+
+T004 (REQ-003): the `supervised` writer. Each attempt's outcome comes from its content-free reward event (component
+`d4`: 1.0 success, 0.0 failure, otherwise `unknown`) and its source from its attempt results (`fixture` only when
+every result is labelled `pipeline-only`; otherwise, or with no result, `host-model`). OD-1 is deferred, so the
+writer refuses any host-model unit with `terms-gate-missing` before writing anything; T008 replaces that refusal
+with the owner terms-decision check. Lines are `trace_adapter.canonical_bytes(record)` plus a newline (E3).
 """
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 import re
 
 from . import lightning_adapter as adapter
 from . import lightning_store as store
+from .trace_adapter import canonical_bytes as _canonical
 
+LEVELS = ('transition', 'trajectory')
+ROLES = ('system', 'user', 'assistant', 'tool')
+ORDERING_KEY = ('taskId', 'groupId', 'rolloutId', 'attemptId', 'turnIndex')
+_RECORD_ID = re.compile(r'r-[0-9a-f]{16}')
 EXCLUSION_REASONS = ('no-consent', 'consent-none', 'unredacted', 'content-missing', 'balance', 'overlong',
                      'retention-expired')
 
@@ -107,12 +119,23 @@ def read_runs(home: Path | None, run_ids: list[str]) -> list[dict]:
     return items
 
 
+def _outcome(reward) -> str:
+    d4 = reward['components'].get('d4') if reward else None
+    return 'success' if d4 == 1.0 else 'failure' if d4 == 0.0 else 'unknown'
+
+
 def _read_run(home: Path | None, run_id: str, refusal: str | None) -> list[dict]:
     run = store.RunStore(home, run_id)
     tasks = _tasks(run)
     attempts: dict[str, set[str]] = {}
+    rewards: dict[str, tuple] = {}
     for event in run.read('event'):
         attempts.setdefault(event.attempt_id, set()).add(event.rollout_id)
+        if event.event_type == 'reward' and event.sequence >= rewards.get(event.attempt_id, (-1,))[0]:
+            rewards[event.attempt_id] = (event.sequence, event.data['reward'])  # the attempt's last reward
+    labels: dict[tuple, set] = {}
+    for result in run.read('result'):
+        labels.setdefault((result.value['rolloutId'], result.value['attemptId']), set()).add(result.value['label'])
     items = []
     for attempt_id in sorted(attempts):
         rollouts = attempts[attempt_id]
@@ -122,8 +145,116 @@ def _read_run(home: Path | None, run_id: str, refusal: str | None) -> list[dict]
         if rollout_id not in tasks:
             raise ExportError('A rollout has events but no rollout record', 'source-invalid')
         task_id, group_id = tasks[rollout_id]
+        reward = rewards.get(attempt_id, (None, None))[1]
+        # fail closed: one host-run result (or none at all) makes the attempt host-model output
+        source = 'fixture' if labels.get((rollout_id, attempt_id)) == {'pipeline-only'} else 'host-model'
         for index, triplet in enumerate(adapter.rollout_triplets(home, run_id, attempt_id)):
             items.append({'runId': run_id, 'taskId': task_id, 'groupId': group_id, 'rolloutId': rollout_id,
                           'attemptId': triplet['attemptId'], 'turnIndex': index, 'gateRefusal': refusal,
-                          'triplet': triplet})
+                          'outcome': _outcome(reward), 'reward': reward, 'source': source, 'triplet': triplet})
     return items
+
+
+def line_bytes(record) -> bytes:
+    """One dataset line: the contract's `trace_adapter.canonical_bytes(record)` followed by a newline."""
+    return _canonical(record) + b'\n'
+
+
+def _sort_key(item: dict) -> tuple:
+    return (*(item[key] for key in ORDERING_KEY), item['runId'])  # runId breaks ties across runs
+
+
+def _units(items: list[dict], level: str) -> list[list[dict]]:
+    """Export units in E3 order: one model call each (`transition`) or the kept calls of an attempt (`trajectory`)."""
+    if level not in LEVELS:
+        raise ExportError(f"Level is one of {', '.join(LEVELS)}", 'invalid-argument')
+    ordered = sorted(items, key=_sort_key)
+    if level == 'transition':
+        return [[item] for item in ordered]
+    units: dict[tuple, list[dict]] = {}
+    for item in ordered:
+        units.setdefault((item['runId'], *_sort_key(item)[:4]), []).append(item)
+    return sorted(units.values(), key=lambda unit: _sort_key(unit[0]))
+
+
+def _messages(unit: list[dict]) -> list[dict]:
+    messages = []
+    for item in unit:
+        triplet = item['triplet']
+        messages.append({'role': 'user', 'content': triplet['prompt']['text']})
+        turn = {'role': 'assistant', 'content': triplet['response']['text']}
+        if triplet['response'].get('toolCalls'):
+            turn['toolCalls'] = triplet['response']['toolCalls']
+        messages.append(turn)
+    return messages
+
+
+def _record_id(record: dict, first: dict, turn_range: list[int]) -> str:
+    """`r-` plus 16 hex of the record without its id and its source position, so equal texts get distinct ids."""
+    body = {'record': record, 'source': [first['runId'], first['rolloutId'], first['attemptId'], turn_range]}
+    return 'r-' + hashlib.sha256(_canonical(body)).hexdigest()[:16]
+
+
+def _entry(unit: list[dict], record_id: str, line: bytes, turn_range: list[int], limits: list[str]) -> dict:
+    first = unit[0]
+    return {'recordId': record_id, 'sha256': hashlib.sha256(line).hexdigest(), 'runId': first['runId'],
+            'taskId': first['taskId'], 'groupId': first['groupId'], 'rolloutId': first['rolloutId'],
+            'attemptId': first['attemptId'], 'turnRange': turn_range, 'consentLevel': 'redacted',
+            'source': first['source'], 'outcome': first['outcome'], 'limits': limits}
+
+
+def check_supervised(record, *, outcome_field: bool = False) -> None:
+    """Refuse a supervised record that does not have the contract shape (`invalid-record`)."""
+    keys = {'recordId', 'messages', 'outcome'} if outcome_field else {'recordId', 'messages'}
+    ok = isinstance(record, dict) and set(record) == keys and isinstance(record.get('recordId'), str) \
+        and _RECORD_ID.fullmatch(record['recordId']) is not None and isinstance(record.get('messages'), list) \
+        and len(record['messages']) > 0 and (not outcome_field or record['outcome'] in ('success', 'failure', 'unknown'))
+    for message in record.get('messages', []) if ok else []:
+        allowed = {'role', 'content', 'toolCalls', 'toolCallId'}
+        ok = ok and isinstance(message, dict) and message.get('role') in ROLES \
+            and isinstance(message.get('content'), str) and set(message) <= allowed \
+            and (message['role'] == 'tool') == ('toolCallId' in message) \
+            and ('toolCalls' not in message or (message['role'] == 'assistant' and isinstance(message['toolCalls'], list)))
+    if not ok:
+        raise ExportError('A supervised record does not have the contract shape', 'invalid-record')
+
+
+_ITEM_KEYS = frozenset({'runId', 'taskId', 'groupId', 'rolloutId', 'attemptId', 'turnIndex', 'outcome', 'source',
+                        'triplet'})
+
+
+def _check_items(items) -> None:
+    """Writers accept only selected items (E1) and, while OD-1 is deferred, only fixture content (E5)."""
+    if not isinstance(items, list) or not all(isinstance(i, dict) and _ITEM_KEYS <= set(i) for i in items):
+        raise ExportError('Export items come from read_runs', 'invalid-argument')
+    if any(exclusion_reason(i['triplet'], i.get('gateRefusal')) is not None for i in items):
+        raise ExportError('Export items must pass the consent and redaction filter first', 'invalid-argument')
+    if any(i['source'] != 'fixture' for i in items):
+        raise ExportError('Host-model output needs an owner terms decision', 'terms-gate-missing')
+
+
+def supervised(items: list[dict], *, level: str, outcome_field: bool = False) -> tuple[list[bytes], list[dict], int]:
+    """`supervised` lines and manifest record entries, in E3 order, plus how many units the d4 filter left out.
+
+    Without `outcome_field` only units whose attempt passed D4 on the first attempt (`success`) are written;
+    with it every unit is written and carries its `outcome`. Supervised exports are never balanced (E4).
+    """
+    if type(outcome_field) is not bool:
+        raise ExportError('outcome_field is true or false', 'invalid-argument')
+    _check_items(items)
+    lines, entries, left_out = [], [], 0
+    for unit in _units(items, level):
+        if not outcome_field and unit[0]['outcome'] != 'success':
+            left_out += 1
+            continue
+        turn_range = [unit[0]['turnIndex'], unit[-1]['turnIndex']]
+        record = {'messages': _messages(unit)}
+        if outcome_field:
+            record['outcome'] = unit[0]['outcome']
+        record = {'recordId': _record_id(record, unit[0], turn_range), **record}
+        check_supervised(record, outcome_field=outcome_field)
+        line = line_bytes(record)
+        lines.append(line)
+        entries.append(_entry(unit, record['recordId'], line, turn_range,
+                              ['text-level-merge'] if len(unit) > 1 else []))
+    return lines, entries, left_out
