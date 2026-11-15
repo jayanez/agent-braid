@@ -13,7 +13,7 @@ T009 pre-flight (account, session ownership, pins, config dir, operator account)
 * ``--founder-go``: builds the T005 backend from the founder-issued records (not attempt records),
   and runs up to ``--units`` serial units (at most ``MAX_UNITS`` for the whole cohort, the founder's
   2026-11-06 choice kept on 2026-11-13 and 2026-11-14, below the D2 maximum of 16; each attempt counts its
-  started units in ``<out-dir>/t008-units.json`` before each launch, and every later attempt subtracts them). Each unit asks the
+  started units in ``<out-dir>/t008-units.json`` after admission and right before each launch, and every later attempt subtracts them). Each unit asks the
   operator for the usage card before and after (NC-6), admits through ``HostQualificationRun`` (D2 caps, stop conditions, containment verification),
   runs one read-only Haiku session through the native transport (the backend repeats the NC-11
   pre-session check) and settles against the caps. Any stop ends the cohort.
@@ -61,7 +61,7 @@ FOUNDER_DECISIONS_SHA256 = "29dc699494674858390e102f800c9e7d1a60fae034baafa7f080
 D2_CAPS = "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json"
 D2_CAPS_SHA256 = "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88"
 SESSION = "00000000-0000-4000-8000-%012d"
-LEDGER = "t008-units.json"  # in each attempt's --out-dir: units started, counted before each launch
+LEDGER = "t008-units.json"  # in each attempt's --out-dir: units started, counted after admission, before each launch
 _CLOCK = re.compile(r"([01]?[0-9]|2[0-3]):([0-5][0-9])\Z")
 _DATE_CLOCK = re.compile(r"(\d{4}-\d{2}-\d{2}) ([01]?[0-9]|2[0-3]):([0-5][0-9])\Z")
 
@@ -265,7 +265,6 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
             if before is None:
                 stop = "before-reading-refused"
                 break
-            write_ledger(out_dir, index + 1)  # counted before the launch, so a crash never under-counts
             try:
                 outcome = hn.run_native_unit(
                     run=run, backend=backend, workdir=workdir(), containment=issued.host,
@@ -276,7 +275,10 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
                     inventory=verify_inventory(export, expected_sha256=sha256(export).hexdigest()),
                     attempt_id=f"{args.attempt}-u{index}", before=before,
                     read_after=lambda: read_observation(reader, ask, say, f"AFTER unit {index + 1}", clock),
-                    now=clock, retention_seconds=3600, settle_now=lambda: int(clock().timestamp()))
+                    now=clock, retention_seconds=3600, settle_now=lambda: int(clock().timestamp()),
+                    # counted after every admission check and right before the host may launch: a refusal
+                    # spends nothing, and any error after this point (a crash included) stays counted
+                    on_launch=lambda: write_ledger(out_dir, index + 1))
             except (hh.HostGateError, hc.ClaudeHostError, _mac.LabError, hn.NativeWiringError) as exc:
                 stop = exc.reason
                 break

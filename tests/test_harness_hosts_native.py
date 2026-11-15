@@ -248,6 +248,41 @@ class NativeUnitTests(unittest.TestCase):
         self.assertEqual(self.run.verdict().units, ())
         self.assertFalse(self.run.verdict().open_unit)
 
+    def test_on_launch_runs_once_after_admission_and_before_the_session(self):
+        calls = []
+        outcome = self.unit(on_launch=lambda: calls.append(len(self.fx.launcher.run_calls)))
+        self.assertTrue(outcome.record.completed)
+        self.assertEqual(calls, [0])  # called once, before the host session started
+        self.assertNotEqual(self.fx.launcher.run_calls, [])
+
+    def test_pre_launch_refusals_never_call_on_launch(self):
+        cases = {"weekly-stop": dict(before=observation(weekly_percent=81)),
+                 "five-hour-start": dict(before=observation(five_hour_percent=90)),
+                 "window-reset-imminent": dict(before=observation(five_hour_resets_at=NOW + 60))}
+        for reason, over in cases.items():
+            with self.subTest(reason=reason):
+                self.setUp()
+                calls = []
+                with self.assertRaises(hh.HostGateError) as cm:
+                    self.unit(on_launch=lambda: calls.append(1), **over)
+                self.assertEqual((cm.exception.reason, calls, self.fx.launcher.run_calls), (reason, [], []))
+
+    def test_a_failing_on_launch_never_launches_and_settles_the_unit(self):
+        def broken():
+            raise OSError("ledger")
+        with self.assertRaises(OSError):
+            self.unit(on_launch=broken)
+        self.assertEqual(self.fx.launcher.run_calls, [])
+        verdict = self.run.verdict()
+        self.assertEqual((len(verdict.units), verdict.units[0].completed, verdict.open_unit), (1, False, False))
+
+    def test_a_host_error_after_on_launch_was_called_is_raised(self):
+        calls = []
+        self.fx.launcher.fail = hc.ClaudeHostError("transport-failed")
+        with self.assertRaises(hc.ClaudeHostError):
+            self.unit(on_launch=lambda: calls.append(1))
+        self.assertEqual(calls, [1])
+
     def test_containment_not_the_issued_host_record_never_launches(self):
         with self.assertRaises(hh.HostGateError):
             self.unit(containment_sha256="0" * 64)
