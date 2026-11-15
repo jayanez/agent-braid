@@ -24,13 +24,18 @@ T006 (REQ-005, REQ-006): the manifest and the export. `export_dataset` reads, fi
 the dataset bytes with the SPEC-074 post-redaction scan, builds `braid-lightning-dataset-manifest/v0.1`, checks
 it (`check_manifest`: the rules the schema cannot express) and writes `records.jsonl` then `manifest.json` into a
 private temporary directory that is renamed into place, so a refusal leaves no output. `redactionVersion` names the
-SPEC-074 redactor by a digest of its pattern sources (SPEC-074 records carry no version). `generatedAt` is outside
-the digest; nothing else in the dataset or manifest depends on the clock, the working directory or a host path.
+SPEC-074 redactor by a digest of its pattern sources and salt size (SPEC-074 records carry no version; the digest
+does not cover the redactor's code). `generatedAt` is outside the digest; nothing else depends on the clock or the
+working directory. The SPEC-074 redactor replaces the current `$HOME` with `~` when the adapter reads content, so the
+bytes are reproducible for the same `$HOME` at ingest and export, not across different ones. A crash between the
+temporary directory and the rename can leave a `.export-*` directory beside the output; it holds only that export's
+files and is the owner's to delete.
 """
 from __future__ import annotations
 
 from datetime import datetime, timezone
 import hashlib
+import json
 import os
 from pathlib import Path
 import re
@@ -406,7 +411,11 @@ def check_manifest(manifest: dict, records: bytes, sources: dict) -> None:
     if manifest['recordsSha256'] != _sha(records) or len(lines) != len(entries):
         fail('records hash')
     for line, entry in zip(lines, entries):
-        if entry['sha256'] != _sha(line) or f'"recordId":"{entry["recordId"]}"'.encode() not in line:
+        try:
+            line_id = json.loads(line)['recordId']
+        except (ValueError, TypeError, KeyError):
+            line_id = None
+        if entry['sha256'] != _sha(line) or line_id != entry['recordId']:
             fail('record hash')
         if entry['turnRange'][0] > entry['turnRange'][1]:
             fail('turn range')
@@ -445,8 +454,12 @@ def build_manifest(entries: list[dict], records: bytes, *, kind: str, level: str
 
 
 def _scan(lines: list[bytes]) -> None:
-    """The SPEC-074 post-redaction scan over the dataset bytes; T010 adds the canary corpus coverage."""
-    scanner = redact.Redactor(b'\0' * redact.SALT_BYTES)
+    """The SPEC-074 post-redaction scan over the dataset bytes; T010 adds the canary corpus coverage.
+
+    The scan looks for the current `$HOME` too (as SPEC-074's post-scan does): content is redacted with it on read,
+    so a hit means it escaped redaction. The salt only names e-mail tags, which the scan does not compute.
+    """
+    scanner = redact.Redactor(b'\0' * redact.SALT_BYTES, home=Path.home())
     if any(scanner.scan(line.decode('ascii')) for line in lines):
         raise ExportError('The dataset holds a value the redaction scan flags', 'canary-detected')
 
@@ -463,10 +476,20 @@ def _retention(home: Path | None, run_ids) -> dict:
     return out
 
 
+def _fsync_dir(path: Path) -> None:
+    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
 def write_export(out: Path, records: bytes, manifest: dict) -> None:
     """Write `records.jsonl`, then `manifest.json`, into a private temporary directory renamed onto `out`."""
     out = Path(out)
-    if out.is_symlink() or (out.exists() and (not out.is_dir() or any(out.iterdir()))):
+    if out.is_symlink() or out.parent.is_symlink():
+        raise ExportError('The output path must not be a symbolic link', 'path-refused')
+    if out.exists() and (not out.is_dir() or any(out.iterdir())):
         raise ExportError('The output directory must not exist or must be empty', 'output-not-empty')
     try:
         temporary = Path(tempfile.mkdtemp(prefix='.export-', dir=out.parent))
@@ -486,6 +509,10 @@ def write_export(out: Path, records: bytes, manifest: dict) -> None:
     except BaseException:
         shutil.rmtree(temporary, ignore_errors=True)
         raise
+    try:
+        _fsync_dir(out.parent)  # make the rename durable; the export is complete either way
+    except OSError:
+        pass
 
 
 def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: str, out: Path, seed: int = 0,

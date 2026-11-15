@@ -172,13 +172,10 @@ class CheckTests(Base):
             'host without terms decision': lambda m: m['records'][0].update(source='host-model'),
             'not scanned': lambda m: m.update(canaryScan='skipped'),
         }
+        first = self.manifest['records'][0]
         for name, mutate in cases.items():
             sources = dict(self.sources)
-            if name == 'host labelled fixture':
-                first = self.manifest['records'][0]
-                sources[(first['runId'], first['rolloutId'], first['attemptId'])] = 'host-model'
-            if name == 'host without terms decision':
-                first = self.manifest['records'][0]
+            if name in ('host labelled fixture', 'host without terms decision'):
                 sources[(first['runId'], first['rolloutId'], first['attemptId'])] = 'host-model'
             with self.subTest(name=name):
                 self.refused(mutate, sources=sources)
@@ -187,6 +184,30 @@ class CheckTests(Base):
         manifest['seed'] = 9  # digest not recomputed
         with self.assertRaises(export.ExportError):
             export.check_manifest(manifest, self.records, self.sources)
+
+
+    def test_the_export_runs_the_checks(self):
+        real = export._retention
+
+        def drops_a_run(home, run_ids):
+            value = real(home, run_ids)
+            value.pop(sorted(value)[-1])
+            return value
+
+        with patch.object(export, '_retention', drops_a_run), self.assertRaises(export.ExportError) as caught:
+            self.export('unchecked')
+        self.assertEqual(caught.exception.code, 'invalid-manifest')
+        self.assertFalse((self.base / 'unchecked').exists())
+        real_writer = export.rollout_records
+
+        def wrong_hash(items, *, level):
+            lines, entries = real_writer(items, level=level)
+            return lines, [dict(entries[0], sha256='0' * 64)] + entries[1:]
+
+        with patch.object(export, 'rollout_records', wrong_hash), self.assertRaises(export.ExportError) as caught:
+            self.export('unchecked')
+        self.assertEqual(caught.exception.code, 'invalid-manifest')
+        self.assertFalse((self.base / 'unchecked').exists())
 
 
 class WriteTests(Base):
@@ -207,8 +228,10 @@ class WriteTests(Base):
         real = os.fdopen
         calls = []
 
+        out = self.base / 'broken'
+
         def failing(fd, *args, **kwargs):
-            calls.append(fd)
+            calls.append(out.exists())  # nothing is written into the output itself
             if len(calls) == 2:  # the manifest, after records.jsonl was written
                 os.close(fd)
                 raise OSError('disk full')
@@ -218,11 +241,59 @@ class WriteTests(Base):
             self.export('broken')
         self.assertEqual(caught.exception.code, 'path-refused')
         self.assertIsNone(caught.exception.__cause__)
+        self.assertEqual(calls, [False, False])
         self.assertEqual(sorted(p.name for p in self.base.iterdir()), ['home'])
+
+    def test_an_interrupt_while_writing_leaves_nothing(self):
+        real = os.fdopen
+        calls = []
+
+        def interrupted(fd, *args, **kwargs):
+            calls.append(fd)
+            if len(calls) == 2:
+                os.close(fd)
+                raise KeyboardInterrupt
+            return real(fd, *args, **kwargs)
+
+        with patch.object(export.os, 'fdopen', interrupted), self.assertRaises(KeyboardInterrupt):
+            self.export('interrupted')
+        self.assertEqual(sorted(p.name for p in self.base.iterdir()), ['home'])
+
+    def test_the_output_appears_only_by_rename(self):
+        out = self.base / 'renamed'
+        real = os.rename
+        seen = []
+
+        def watched(source, target):
+            seen.append((Path(source).parent == out.parent, Path(source).name.startswith('.export-'),
+                         Path(target) == out, out.exists(), sorted(p.name for p in Path(source).iterdir())))
+            return real(source, target)
+
+        with patch.object(export.os, 'rename', watched):
+            self.export('renamed')
+        self.assertEqual(seen, [(True, True, True, False, ['manifest.json', 'records.jsonl'])])
+
+    def test_files_are_private(self):
+        out, _ = self.export('private')
+        self.assertEqual(out.stat().st_mode & 0o777, 0o700)
+        for name in ('records.jsonl', 'manifest.json'):
+            self.assertEqual((out / name).stat().st_mode & 0o777, 0o600)
+
+    def test_symlinked_output_is_refused(self):
+        target = self.base / 'target'
+        target.mkdir()
+        (self.base / 'link').symlink_to(target)
+        (self.base / 'dirlink').symlink_to(self.base, target_is_directory=True)
+        for name in ('link', 'dirlink/inner'):
+            with self.subTest(name=name), self.assertRaises(export.ExportError) as caught:
+                self.export(name)
+            self.assertEqual(caught.exception.code, 'path-refused')
+        self.assertEqual(list(target.iterdir()), [])
 
     def test_refusals_write_nothing(self):
         cases = {
             'canary-detected': lambda: self.planted('n3'),
+            'terms-gate-missing': lambda: self.host('n5'),
             'invalid-argument': lambda: self.export('n2', kind='rollout', balance='equal'),
             'no-records': lambda: (consent(self.home, 'none'), self.export('n1')),  # last: consent stays none
         }
@@ -236,6 +307,11 @@ class WriteTests(Base):
             with self.subTest(kwargs=kwargs), self.assertRaises(export.ExportError) as caught:
                 self.export('n4', **kwargs)
             self.assertEqual(caught.exception.code, 'invalid-argument')
+
+    def host(self, name):
+        run = new_run(self.home, 'run-host')
+        rollout(run, 'ro-h', 'raw-host', [('host prompt', 'host answer')], label=None, status='succeeded')
+        return self.export(name, runs=('run-1', 'run-host'))
 
     def planted(self, name):
         real = export.rollout_records
