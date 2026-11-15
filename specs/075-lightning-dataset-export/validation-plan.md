@@ -14,7 +14,7 @@ module per task).
 |---|---|---|---|---|
 | procedure_001 | SC-001 | owner review record ([reviews/owner-t001-20261114.md](reviews/owner-t001-20261114.md)) | E1–E5 accepted or amended; OD-2 decided. Obtained: E1–E5 accepted, OD-2 equal cap 1:1, OD-1 deferred | review not bound to a frozen commit (binding happens at the closing freeze on `develop`) |
 | procedure_002 | SC-002 | filter fixture tests (`tests.test_spec075_export_filter`, T003) | only consent `redacted` traces; exclusions counted (`consent-none`) | unconsented trace exported; drop not counted |
-| procedure_003 | SC-003 | supervised writer tests (`tests.test_spec075_supervised`, T004) | lines match contract; hashes match manifest; only `d4FirstAttempt` true or explicit `outcome` | unknown role accepted; failed record without `outcome` exported |
+| procedure_003 | SC-003 | supervised writer tests (`tests.test_spec075_supervised`, T004; the comparison with a written manifest lands with T006) | lines match contract; hashes match manifest; only `d4FirstAttempt` true or explicit `outcome` | unknown role accepted; failed record without `outcome` exported |
 | procedure_004 | SC-004 | aggregation tests | 3 transition records, 1 trajectory record, limit declared | token-ID merge attempted without token IDs |
 | procedure_005 | SC-005 | manifest schema test (`tests.test_spec075_manifest_schema`, T002); builder output validated in T006 | valid manifest passes | missing `sha256` or `redactionVersion` passes |
 | procedure_006 | SC-006 | double export, shuffled input, other working directory | byte-identical except `generatedAt` | timestamp or host path in dataset bytes |

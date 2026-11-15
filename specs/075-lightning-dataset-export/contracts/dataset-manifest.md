@@ -75,9 +75,13 @@ labelled `fixture`.
 
 Per-attempt fields, from content-free records: `outcome` is `success` when the
 attempt's last reward event has component `d4` 1.0 (`d4FirstAttempt` true),
-`failure` when 0.0, else `unknown`; `source` is `fixture` when the attempt result
-is labelled `pipeline-only`, else `host-model` (also without a result: fail
-closed). Units left out by the `d4FirstAttempt` filter are not exclusions and are
+`failure` when 0.0, else `unknown`; `source` is `fixture` only when every
+attempt result is labelled `pipeline-only`, else `host-model` (also without a
+result, or with conflicting results: fail closed). While OD-1 is deferred, a
+writer refuses any `host-model` unit with `terms-gate-missing` before writing
+anything (T004); T008 replaces that refusal with the owner terms-decision check.
+Writers accept only items that pass the consent and redaction filter
+(`invalid-argument` otherwise). Units left out by the `d4FirstAttempt` filter are not exclusions and are
 not counted in the manifest.
 - `rollout`: `{"recordId", "rolloutId", "attemptId", "turns": [...],
   "reward": {...}, "status"}`; reward is the SPEC-071 vector, unchanged.
