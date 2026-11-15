@@ -6,7 +6,7 @@ A record states the command, the outcome, the hashes of the files the run depend
 limits. The script also binds each record into ``assurance.json`` as obtained evidence of
 its scenario. It is local evidence; the CI ``validate`` aggregate on the pull request head
 is separate. procedure_001 is the T001 owner review record, not a test run, so it is not captured here.
-Procedures are added as their tasks land (T002: procedure_005, schema part).
+Procedures are added as their tasks land (T002: procedure_005, schema part; T003: procedure_002).
 
     python -m scripts.spec075_capture_evidence [procedure_NNN ...]
 
@@ -27,6 +27,14 @@ ROOT = Path(__file__).resolve().parents[1]
 SPEC = ROOT / "specs/075-lightning-dataset-export"
 EVIDENCE = SPEC / "evidence"
 PROCEDURES = {
+    'procedure_002': {
+        "scenario": 'SC-002',
+        "modules": ["tests.test_spec075_export_filter"],
+        "inputs": ["agent_braid/lightning_export.py", "agent_braid/lightning_adapter.py", "agent_braid/lightning_store.py",
+                   "tests/test_spec075_export_filter.py"],
+        "outcome_note": "T003 (filter part; the recorded redaction version lands with T006): lightning_export.read_runs reads each attempt of the named runs through the SPEC-074 adapter (rollout_triplets), joins task and group ids from the content-free rollout records, and yields one item per model call with its turn index and the adapter's attempt-<hmac16> pseudonym; select keeps the exportable items in order and counts every other one under exactly one reason. In a temporary store with one rollout of three model calls (full content, prompt only, no content) and consent redacted for rollout, one record is kept and two are counted content-missing; after lowering consent to none all three are consent-none; with consent redacted but only loom listed all three are no-consent. Kept plus excluded equals the model calls, also for a unit mix of every reason (unredacted included). The exclusion reasons equal the manifest schema's exclusions.required. Unit cases: a record that is not a triplet, has no redaction object, or has scanClean false or not true is unredacted; a missing prompt or response is content-missing; consent reasons win over content reasons; a gate refusal maps to its reason and an unknown one fails closed to no-consent. The raw attempt id never appears in items or selections. Refusals: a missing run (store-missing), a rollout without a rollout record and an attempt id shared by two rollouts (source-invalid), a run named twice (invalid-argument), and an unreadable events file, a malformed JSON line, a non-object content line, a symlinked events file and a malformed salt (each Run refused with a lowercase code) are all ExportError with a fixed text naming no id or path, no chained cause and suppressed context; an adapter refusal is Adapter refused a source with its code, or source-invalid when its code is not a lowercase code. Negative controls: classifying from the triplet's losses alone fails the no-consent test; the T003 module before the review fixes fails the shared-attempt, run-twice, adapter-refusal and four of the five damaged-store cases.",
+        "limits": "Temporary homes and synthetic content; rollout source only (the export input is the run store; Loom, host transcript and System One adapters are not export inputs). Consent is profile-wide, so the mix of consent states is exercised across successive profiles on one store and by unit cases, not within one read. The store fixture never yields unredacted (the adapter always redacts); only unit cases do. No redaction version is checked yet: SPEC-074 records carry none and T006 defines it. The unreadable-file case is skipped when running as root. Retention, balance, overlong and the terms gate are later tasks (T007, T008, T013); no dataset or manifest is written yet (T004-T006).",
+    },
     'procedure_005': {
         "scenario": 'SC-005',
         "modules": ["tests.test_spec075_manifest_schema"],

@@ -22,7 +22,13 @@ No network, process, GPU or model.
 ## Research, assumptions and alternatives
 
 See [research.md](research.md). Assumptions: SPEC-074 exposes consent level and
-redaction version per trace; the SPEC-071 reward vector is stable.
+redaction version per trace; the SPEC-071 reward vector is stable. Checked at
+T003 against the frozen adapter: triplets carry `redaction.scanClean`, consent
+loss notes and the `attempt-<hmac16>` pseudonym but no redaction version (the
+builder defines it, T006); the rollout reader notes `content-consent-required`
+both without consent and for an unlisted source, so the export reads the
+SPEC-074 gate's refusal for `rollout` itself to tell `consent-none` from
+`no-consent`. Task and group ids come from the content-free rollout records.
 Alternatives: Parquet, HF `datasets`, random order — rejected (dependencies,
 network, non-determinism).
 
