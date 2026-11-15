@@ -19,14 +19,26 @@ model call; `trajectory` one per attempt (a rollout has one attempt: VALID_TRANS
 `read_runs` refuses a rollout with two), merged by token-ID prefix only when every turn carries token IDs that
 chain (never for hosted Claude Code or OpenCode, whose triplets carry none), else at text level with the limit
 `text-level-merge` (E2). Token IDs never enter a record. The T004 input and terms checks apply unchanged.
+
+T006 (REQ-005, REQ-006): the manifest and the export. `export_dataset` reads, filters and writes the records, scans
+the dataset bytes with the SPEC-074 post-redaction scan, builds `braid-lightning-dataset-manifest/v0.1`, checks
+it (`check_manifest`: the rules the schema cannot express) and writes `records.jsonl` then `manifest.json` into a
+private temporary directory that is renamed into place, so a refusal leaves no output. `redactionVersion` names the
+SPEC-074 redactor by a digest of its pattern sources (SPEC-074 records carry no version). `generatedAt` is outside
+the digest; nothing else in the dataset or manifest depends on the clock, the working directory or a host path.
 """
 from __future__ import annotations
 
+from datetime import datetime, timezone
 import hashlib
+import os
 from pathlib import Path
 import re
+import shutil
+import tempfile
 
 from . import lightning_adapter as adapter
+from . import lightning_redact as redact
 from . import lightning_store as store
 from .trace_adapter import canonical_bytes as _canonical
 
@@ -349,3 +361,155 @@ def rollout_records(items: list[dict], *, level: str) -> tuple[list[bytes], list
                 'reward': first['reward'], 'status': first['status']}
 
     return _write(_units(items, level), build, check_rollout)
+
+
+MANIFEST_VERSION = 'braid-lightning-dataset-manifest/v0.1'
+KINDS = ('supervised', 'rollout')
+BALANCES = ('equal', 'none')
+RECORDS_FILE, MANIFEST_FILE = 'records.jsonl', 'manifest.json'
+LIMITS = ('text-level-merge', 'truncated')
+
+
+def redaction_version() -> str:
+    """`spec074-redact/` plus 16 hex of the SPEC-074 redactor's pattern sources and salt size (no secret in it)."""
+    patterns = [redact.PRIVATE_KEY, redact.BEARER, *redact.TOKENS, redact.B64_RUN, redact.ESCAPED, redact.WORD,
+                redact.EMAIL, *redact.SECRET_PATTERNS]
+    source = '\n'.join([f'{p.flags}:{p.pattern}' for p in patterns] + [f'salt:{redact.SALT_BYTES}'])
+    return 'spec074-redact/' + hashlib.sha256(source.encode()).hexdigest()[:16]
+
+
+def _sha(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def manifest_digest(manifest: dict) -> str:
+    """SHA-256 of the canonical manifest without `generatedAt` and `digest`."""
+    return _sha(_canonical({k: v for k, v in manifest.items() if k not in ('generatedAt', 'digest')}))
+
+
+def _utc(now: float) -> str:
+    return datetime.fromtimestamp(now, timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+def _day(when: float) -> str:
+    return datetime.fromtimestamp(when, timezone.utc).strftime('%Y-%m-%d')
+
+
+def check_manifest(manifest: dict, records: bytes, sources: dict) -> None:
+    """The builder checks the schema cannot express; `sources` maps (runId, rolloutId, attemptId) to the source
+    read from the store. Refuses with `invalid-manifest`."""
+    def fail(why: str):
+        raise ExportError(f'Manifest refused: {why}', 'invalid-manifest')
+
+    lines = records.splitlines(keepends=True)
+    entries = manifest['records']
+    if manifest['recordsSha256'] != _sha(records) or len(lines) != len(entries):
+        fail('records hash')
+    for line, entry in zip(lines, entries):
+        if entry['sha256'] != _sha(line) or f'"recordId":"{entry["recordId"]}"'.encode() not in line:
+            fail('record hash')
+        if entry['turnRange'][0] > entry['turnRange'][1]:
+            fail('turn range')
+        if entry['limits'] != sorted(set(entry['limits'])):
+            fail('limits')
+        key = (entry['runId'], entry['rolloutId'], entry['attemptId'])
+        if sources.get(key) != entry['source']:
+            fail('source')  # never a host-model record labelled fixture (or the other way)
+        if entry['source'] == 'host-model' and manifest['termsDecision'] is None:
+            fail('terms decision')
+    if set(manifest['retention']) != {entry['runId'] for entry in entries}:
+        fail('retention')
+    tasks = [row['taskId'] for row in manifest['balanceReport']]
+    if len(tasks) != len(set(tasks)) or any(row['singleOutcome'] and row['keptPerOutcome'] != 0
+                                            for row in manifest['balanceReport']):
+        fail('balance report')
+    if manifest['kind'] == 'supervised' and (manifest['balance'] != 'none' or manifest['exclusions']['balance']):
+        fail('supervised balance')
+    if manifest['canaryScan'] != 'clean' or manifest['digest'] != manifest_digest(manifest):
+        fail('digest')
+
+
+def build_manifest(entries: list[dict], records: bytes, *, kind: str, level: str, seed: int, balance: str,
+                   exclusions: dict, balance_report: list, retention: dict, generated_at: str,
+                   sources: dict) -> dict:
+    manifest = {
+        'manifestVersion': MANIFEST_VERSION, 'kind': kind, 'level': level, 'generatedAt': generated_at,
+        'seed': seed, 'balance': balance, 'orderingKey': list(ORDERING_KEY), 'redactionVersion': redaction_version(),
+        'termsDecision': None, 'canaryScan': 'clean', 'exclusions': dict(exclusions),
+        'balanceReport': balance_report, 'retention': retention, 'records': entries,
+        'recordsSha256': _sha(records),
+    }
+    manifest['digest'] = manifest_digest(manifest)
+    check_manifest(manifest, records, sources)
+    return manifest
+
+
+def _scan(lines: list[bytes]) -> None:
+    """The SPEC-074 post-redaction scan over the dataset bytes; T010 adds the canary corpus coverage."""
+    scanner = redact.Redactor(b'\0' * redact.SALT_BYTES)
+    if any(scanner.scan(line.decode('ascii')) for line in lines):
+        raise ExportError('The dataset holds a value the redaction scan flags', 'canary-detected')
+
+
+def _retention(home: Path | None, run_ids) -> dict:
+    days = store._retention(home)
+    out = {}
+    for run_id in sorted(run_ids):
+        try:
+            created = store.RunStore(home, run_id).manifest()['createdAt']
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            raise ExportError('Run refused', _code(exc, 'store-shape')) from None
+        out[run_id] = {'retentionDays': days, 'expiresAt': _day(created + days * 86400)}
+    return out
+
+
+def write_export(out: Path, records: bytes, manifest: dict) -> None:
+    """Write `records.jsonl`, then `manifest.json`, into a private temporary directory renamed onto `out`."""
+    out = Path(out)
+    if out.is_symlink() or (out.exists() and (not out.is_dir() or any(out.iterdir()))):
+        raise ExportError('The output directory must not exist or must be empty', 'output-not-empty')
+    try:
+        temporary = Path(tempfile.mkdtemp(prefix='.export-', dir=out.parent))
+    except OSError:
+        raise ExportError('The output directory cannot be created', 'path-refused') from None
+    try:
+        for name, data in ((RECORDS_FILE, records), (MANIFEST_FILE, line_bytes(manifest))):
+            fd = os.open(temporary / name, os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o600)
+            with os.fdopen(fd, 'wb') as stream:
+                stream.write(data)
+                stream.flush()
+                os.fsync(stream.fileno())
+        os.rename(temporary, out)  # POSIX: replaces an empty directory, never a non-empty one
+    except OSError:
+        shutil.rmtree(temporary, ignore_errors=True)
+        raise ExportError('The export could not be written', 'path-refused') from None
+    except BaseException:
+        shutil.rmtree(temporary, ignore_errors=True)
+        raise
+
+
+def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: str, out: Path, seed: int = 0,
+                   balance: str = 'none', outcome_field: bool = False, now: float | None = None) -> dict:
+    """Export the runs as one dataset and return its manifest (nothing is written on any refusal)."""
+    if kind not in KINDS or balance not in BALANCES or type(seed) is not int or seed < 0 \
+            or (kind == 'supervised' and (balance != 'none')) or (kind == 'rollout' and outcome_field):
+        raise ExportError('Invalid export arguments', 'invalid-argument')
+    if balance == 'equal':
+        raise ExportError('Balance equal is not available yet', 'invalid-argument')  # T007
+    kept, exclusions = select(read_runs(home, run_ids))
+    if kind == 'supervised':
+        lines, entries, _ = supervised(kept, level=level, outcome_field=outcome_field)
+    else:
+        lines, entries = rollout_records(kept, level=level)
+    if not lines:
+        raise ExportError('Nothing to export', 'no-records')
+    _scan(lines)
+    records = b''.join(lines)
+    sources = {(i['runId'], i['rolloutId'], i['attemptId']): i['source'] for i in kept}
+    manifest = build_manifest(entries, records, kind=kind, level=level, seed=seed, balance=balance,
+                              exclusions=exclusions, balance_report=[],
+                              retention=_retention(home, {e['runId'] for e in entries}),
+                              generated_at=_utc(datetime.now(timezone.utc).timestamp() if now is None else now),
+                              sources=sources)
+    write_export(out, records, manifest)
+    return manifest

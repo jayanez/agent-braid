@@ -1,0 +1,19 @@
+{
+ "command": "python -m unittest tests.test_spec075_manifest",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/lightning_export.py": "65af8b882c67dd69ac509e588e507b6bee0ce57b1a27ca05deadc4546f12588d",
+  "tests/spec075_fixtures.py": "4b8f08efa4cc8ed14f3f0ddd542dd7cc5a64bb92627158064e2ed1d28ad610fd",
+  "tests/test_spec075_manifest.py": "b40cf0c1268e4a9181a3bff06151536426f5fc820adfcd2e9e6d4f39028642fd"
+ },
+ "limits": "Temporary homes and synthetic content; determinism is shown for one store, two orders, two working directories and two clocks in one process and one Python version, not across platforms or locales. The planted canary is injected after the writer (the store content is already redacted); T010 adds the corpus. Balance (T007), the terms decision (T008), the CLI (T009) and retention refusals (T013) are not exercised.",
+ "outcome": "passed: T006: two exports of one fixture store (two runs, a non-ASCII turn, a content-free call), the second with the runs named in the other order, the items shuffled before the filter, another working directory and a different clock, write byte-identical records.jsonl and a manifest equal except generatedAt, with the same digest. The dataset and manifest bytes hold no temporary or home path, no raw attempt id and no store timestamp (records carry no createdAt). An existing non-empty output directory is refused with output-not-empty and left as it was; an empty one is filled. A write failure after records.jsonl (patched os.fdopen) is refused with path-refused, no chained cause, and leaves neither the output nor a temporary directory; canary-detected (a planted token shape), invalid-argument (balance equal before T007, an unknown kind or level, a negative or boolean seed, a balanced supervised export, an outcome field on a rollout export) and no-records (consent none) write nothing. Negative control: removing the temporary-directory cleanup fails the write-failure test.",
+ "procedure": "procedure_006",
+ "result": "OK",
+ "scenario": "SC-006",
+ "specification": "SPEC-075 BL.5",
+ "testsRun": 11
+}

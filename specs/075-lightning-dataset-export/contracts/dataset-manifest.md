@@ -21,7 +21,7 @@ Lines are `trace_adapter.canonical_bytes(record)` followed by `\n`.
 | `seed` | integer ≥ 0 | balance choice seed |
 | `balance` | `equal` \| `none` | E4; `equal` keeps `min(successes, failures)` of each outcome per task (1:1, OD-2); `rollout` kind only, `none` for `supervised` |
 | `orderingKey` | const `["taskId","groupId","rolloutId","attemptId","turnIndex"]` | E3 |
-| `redactionVersion` | string `[a-z0-9][a-z0-9./-]{0,127}` | identifies the SPEC-074 redactor that produced the content; one per dataset. SPEC-074 records carry no version field, so the builder (T006) defines this value; SPEC-074 is not changed |
+| `redactionVersion` | string `[a-z0-9][a-z0-9./-]{0,127}` | identifies the SPEC-074 redactor that produced the content; one per dataset. SPEC-074 records carry no version field, so the builder defines it (T006): `spec074-redact/` plus the first 16 hex of the SHA-256 of the SPEC-074 redactor's pattern sources (each `flags:pattern`, one per line) and its salt size; it changes when a pattern changes and holds no secret; SPEC-074 is not changed |
 | `termsDecision` | `{path, sha256}` \| null | required non-null when any record has `source: host-model`; `path` is relative (no leading `/`, no `.` or `..` segment, no whitespace, at most 256 characters) |
 | `canaryScan` | const `clean` | written only after the scan |
 | `exclusions` | object reason → count, every reason present | `no-consent`, `consent-none`, `unredacted`, `content-missing`, `balance`, `overlong`, `retention-expired` |
@@ -102,7 +102,23 @@ not counted in the manifest.
 
 `export-disabled` (configuration `export.enabled` is not `true`),
 `terms-gate-missing`, `canary-detected`, `retention-expired`,
-`output-not-empty`, `path-refused`, `no-records`, `invalid-argument`. Refusals echo no record content.
+`output-not-empty`, `path-refused`, `no-records`, `invalid-argument`,
+`invalid-record` (a written record outside its shape), `invalid-manifest` (a
+builder check failed). Refusals echo no record content.
+
+## Writing (T006)
+
+`export_dataset` reads, filters and writes the records, runs the SPEC-074
+post-redaction scan over the dataset bytes (`canary-detected` on a hit; the
+canary corpus coverage is T010), builds the manifest, runs `check_manifest` and
+writes `records.jsonl` then `manifest.json` into a private temporary directory
+next to the output, renamed onto it (the output must not exist or be an empty
+directory, else `output-not-empty`). A refusal at any step leaves no output and
+no temporary directory. Both files are canonical bytes plus a newline.
+`retention` gives each cited run the profile's `traces.retentionDays` and the UTC
+date its run expires (`createdAt` + days); the refusal of expired records is
+T013. Until T007, `balance` is `none` for both kinds (`equal` is refused with
+`invalid-argument`).
 
 ## Retention and purge
 
