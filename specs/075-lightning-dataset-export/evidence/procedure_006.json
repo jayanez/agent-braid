@@ -1,0 +1,19 @@
+{
+ "command": "python -m unittest tests.test_spec075_manifest",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/lightning_export.py": "c4805090c354d9dab0e6a06234cd0fbd729260d6f34dc3453158b510ee0f07bb",
+  "tests/spec075_fixtures.py": "4b8f08efa4cc8ed14f3f0ddd542dd7cc5a64bb92627158064e2ed1d28ad610fd",
+  "tests/test_spec075_manifest.py": "04c904d5c327bbac8161b3a33337a36c1d86495081d854e9371de9e7e4c21504"
+ },
+ "limits": "Temporary homes and synthetic content; determinism is shown for one store, two orders, two working directories and two clocks in one process and one Python version, not across platforms or locales. SC-006 assumes the same $HOME at ingest and at export: the SPEC-074 adapter redacts the current $HOME to ~ when it reads content, so a different $HOME changes the bytes (and a $HOME that is a prefix of a path in the content can make the read refuse with redaction-incomplete); SPEC-074 is not changed here. A crash between the temporary directory and the rename can leave a .export-* directory (documented, not swept). The planted canary is injected after the writer (the store content is already redacted); T010 adds the corpus. Balance (T007), the terms decision (T008), the CLI (T009) and retention refusals (T013) are not exercised.",
+ "outcome": "passed: T006: two exports of one fixture store (two runs, a non-ASCII turn, a content-free call), the second with the runs named in the other order, the items shuffled before the filter, another working directory and a different clock, write byte-identical records.jsonl and a manifest equal except generatedAt, with the same digest. The dataset and manifest bytes hold no temporary or home path, no raw attempt id and no store timestamp (records carry no createdAt). An existing non-empty output directory is refused with output-not-empty and left as it was; an empty one is filled. Nothing is written into the output itself: it does not exist while the files are written, and it appears only by renaming a private .export-* directory beside it holding exactly the two files; the directory is 0700 and the files 0600. A write failure after records.jsonl (patched os.fdopen) is refused with path-refused, no chained cause, and a KeyboardInterrupt there propagates, both leaving neither the output nor a temporary directory; a symlinked output or output parent is refused with path-refused; canary-detected (a planted token shape), invalid-argument (balance equal before T007, an unknown kind or level, a negative or boolean seed, a balanced supervised export, an outcome field on a rollout export) no-records (consent none) and terms-gate-missing (a run whose attempt has no result, so host-model) write nothing. Negative controls (mutants, each fails a test): the temporary-directory cleanup removed, the interrupt cleanup removed, writing straight into the output, the symlink check removed.",
+ "procedure": "procedure_006",
+ "result": "OK",
+ "scenario": "SC-006",
+ "specification": "SPEC-075 BL.5",
+ "testsRun": 16
+}

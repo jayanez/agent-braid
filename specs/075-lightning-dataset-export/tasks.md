@@ -22,14 +22,16 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
 - [x] T004 (REQ-003 / SC-003): `supervised` writer (`d4FirstAttempt` true only, or
   explicit `outcome` field) (`lightning_export.supervised`, both levels; host-model
   units refused with `terms-gate-missing` while OD-1 is deferred; SC-003's
-  manifest-hash half lands with T006). Dependencies: T003.
+  manifest-hash half landed with T006). Dependencies: T003.
   Verification: procedure_003.
 - [x] T005 (REQ-004 / SC-004): `rollout` writer and both levels
   (`lightning_export.rollout_records`; T004 input and terms checks unchanged).
   Dependencies: T003. Verification: procedure_004.
-- [ ] T006 (REQ-005, REQ-006 / SC-005, SC-006): Manifest builder, atomic write,
+- [x] T006 (REQ-005, REQ-006 / SC-005, SC-006): Manifest builder, atomic write,
   determinism test; defines `redactionVersion` (SPEC-074 records carry none)
-  and completes REQ-002's recorded redaction version. Dependencies: T002, T004, T005. Verification: procedure_005,
+  and completes REQ-002's recorded redaction version (`export_dataset`,
+  `build_manifest`, `check_manifest`, `write_export`; `balance: equal` waits for
+  T007). Dependencies: T002, T004, T005. Verification: procedure_005,
   procedure_006.
 - [ ] T007 (REQ-007 / SC-007): Seeded per-task balance for `rollout` exports only. Dependencies: T006.
   Verification: procedure_007.
