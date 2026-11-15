@@ -5,11 +5,11 @@
   "python": "3.12.13"
  },
  "inputs": {
-  "agent_braid/lightning_export.py": "bb9b137fa86b236b8b06496ddd195e06c520e39d5afe95fa6286295e6f7d84d7",
+  "agent_braid/lightning_export.py": "4494483cbb63ad9f9a28c8ac835e38b36dd2aa130361350f06bfd1ab260fa5f0",
   "agent_braid/lightning_redact.py": "774e27ae55a1e71ab49205a0daa6d47d374160b46fd90b2c77891b566fbeecf2",
   "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
-  "tests/spec075_fixtures.py": "4b8f08efa4cc8ed14f3f0ddd542dd7cc5a64bb92627158064e2ed1d28ad610fd",
-  "tests/test_spec075_manifest.py": "25710c0694d15e0e46fc9639ba0cae796193e6e66c039e4d2593cbb50f31b6e9",
+  "tests/spec075_fixtures.py": "780661adc1dbd086f7bf8cffee7229c98413596bf5bd485e0b36042376b519a6",
+  "tests/test_spec075_manifest.py": "7f22b11132ed8d45067670b9b9871cd6bb3994f53ba66ec18e8349e5499e0ece",
   "tests/test_spec075_manifest_schema.py": "34f8170148487ffdca9d18c25784bb0607d516047f119c47c6cf8cb11dce1134"
  },
  "limits": "Temporary homes and synthetic fixture content; the schema half uses hand-written manifests. Here the balance-report checks run on hand-made rows; the balancer and its report checks through export_dataset are procedure_007. The terms-decision branch is exercised only as a refusal (OD-1 deferred). The scan is the SPEC-074 post-redaction scan; canary corpus coverage is T010. redactionVersion covers only the redactor's pattern sources and salt size, not its code. jsonschema is a development dependency; the runtime stays standard-library only.",

@@ -202,8 +202,8 @@ class CheckTests(Base):
         self.assertFalse((self.base / 'unchecked').exists())
         real_writer = export.rollout_records
 
-        def wrong_hash(items, *, level):
-            lines, entries = real_writer(items, level=level)
+        def wrong_hash(items, *, level, terms=None):
+            lines, entries = real_writer(items, level=level, terms=terms)
             return lines, [dict(entries[0], sha256='0' * 64)] + entries[1:]
 
         with patch.object(export, 'rollout_records', wrong_hash), self.assertRaises(export.ExportError) as caught:
@@ -318,8 +318,8 @@ class WriteTests(Base):
     def planted(self, name):
         real = export.rollout_records
 
-        def leaky(items, *, level):
-            lines, entries = real(items, level=level)
+        def leaky(items, *, level, terms=None):
+            lines, entries = real(items, level=level, terms=terms)
             planted = [line.replace(b'answer', b'sk-' + b'A1b2C3d4' * 3) for line in lines]
             assert planted != lines
             return planted, entries

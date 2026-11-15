@@ -1,0 +1,20 @@
+{
+ "command": "python -m unittest tests.test_spec075_terms",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/lightning_export.py": "4494483cbb63ad9f9a28c8ac835e38b36dd2aa130361350f06bfd1ab260fa5f0",
+  "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
+  "tests/spec075_fixtures.py": "780661adc1dbd086f7bf8cffee7229c98413596bf5bd485e0b36042376b519a6",
+  "tests/test_spec075_terms.py": "dc2bae43429074d3996b97e2fdede037bb3f6031eeda6cca89e30504fa5f4504"
+ },
+ "limits": "Synthetic records only: no real provider's terms were reviewed (OD-1 deferred) and nothing here says any provider permits training; host-run units come from synthetic fixtures. Coverage is by exact model id from the attempt_start event; units without one cannot be covered. The record's provider name is recorded, not checked against the host. One record per export. Expiry is the owner's validUntil date compared with the export's UTC day; no review period is set by Agent Braid.",
+ "outcome": "passed: T008: load_terms_decision reads terms/<name>.json under the plugin home's lightning directory and the export refuses every non-fixture unit not covered by it with terms-gate-missing before writing anything, with a text naming no path or field value and no chained cause. All records are SYNTHETIC, written to temporary homes, naming a fictional provider and model; none is committed, and a repository scan finds no file with the record schema. Without a record (or naming a missing file) a fixture plus host-run export refuses, while a fixture-only export succeeds and cites no record. With a permitting synthetic record covering the host and model, the host units export and the manifest cites the record's relative path and SHA-256 and validates against the schema; a fixture-only export with the same record cites none. Per-unit binding: a record for another host or another model, a unit outside the record next to covered ones, a unit with no attempt_start model, and a unit of another host with the same model id all refuse. Outcomes forbids-training, undecided and unknown values refuse, through the export and through the loader alone. Dates: a review after the export day, a validUntil before it, inverted dates, an impossible date, a timestamp and a missing review date refuse; both bounds are inclusive. Malformed records refuse: missing, empty or doubled terms, an http URL, no or control-character provider, empty, non-list or duplicate models, an unknown host, an unknown key, another schema, a non-object, invalid JSON, a duplicate key and more than 16 KiB; an https URL record is accepted. Unsafe paths refuse: absolute, dotted, other directories, subdirectories, other extensions or names with spaces (also when such files exist), a record readable by others and a symlinked record. The supervised and rollout writers apply the same gate. check_manifest refuses host-model records without termsDecision. Negative controls (mutants, each fails a test): the gate skipped, the per-unit check ignoring the outcome, the loader accepting any outcome, any host, any model, the review date ignored, validUntil ignored, the terms version or URL ignored, http URLs accepted, any path accepted, the privacy check removed, the export clock ignored, and a record cited for a fixture-only export.",
+ "procedure": "procedure_008",
+ "result": "OK",
+ "scenario": "SC-008",
+ "specification": "SPEC-075 BL.5",
+ "testsRun": 12
+}
