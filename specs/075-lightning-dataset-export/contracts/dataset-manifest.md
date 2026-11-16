@@ -240,7 +240,8 @@ export time) or on another user's home path refuses the whole export with
 redaction in the export). A home path is `/Users/` or `/home/` followed by a
 name segment (letters, digits, `.`, `_`, `-`; a trailing `/` is not needed),
 not inside a longer path segment: `/home/runner/work`, `/Users/Shared/x` and
-`/home/x` block, so CI and shared directories block too; `/Users`, `/Users/`,
+`/home/x` block, so CI and shared directories block too (unless the path is the
+current `$HOME`, which SPEC-074 turns into `~` when content is read); `/Users`, `/Users/`,
 `/home/` alone, `/homework/x`, `/srv/home/x` and `~/home/x` do not. The current home is
 redacted to `~` when the adapter reads content, so a hit there means it escaped
 redaction. The scan catches known shapes only. As the SPEC-074 privacy review

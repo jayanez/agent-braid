@@ -41,12 +41,17 @@ class Base(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.base = Path(self.tmp.name).resolve()
+        # The SPEC-074 redactor turns the current $HOME into ~ (on CI that is /home/runner), so pin $HOME to a
+        # directory that no test path names; the current-home tests read Path.home() themselves.
+        self.environment = patch.dict(os.environ, {'HOME': str(self.base / 'owner-home')})
+        self.environment.start()
         self.home = self.base / 'home'
         consent(self.home)
         self.run = new_run(self.home)
         rollout(self.run, 'ro-c0', 'raw-c0', [('clean ask', 'clean answer')], task='task-c', d4=True)
 
     def tearDown(self):
+        self.environment.stop()
         self.tmp.cleanup()
 
     def export(self, name='out', **kwargs):
@@ -58,7 +63,7 @@ class Base(unittest.TestCase):
             self.export(name, **kwargs)
         self.assertEqual(caught.exception.code, 'canary-detected')
         self.assertIsNone(caught.exception.__cause__)
-        self.assertEqual(sorted(p.name for p in self.base.iterdir()), ['home'])  # nothing written, no temporary
+        self.assertEqual(sorted(p.name for p in self.base.iterdir() if p.name != 'owner-home'), ['home'])  # nothing written
         return caught.exception
 
 
@@ -192,6 +197,12 @@ class FinalBytesTests(Base):
         text = 'read ~/notes, /usr/local/bin, /Users, /Users/, /home, /home/, /homework/x, /srv/home/x, ~/home/x'
         rollout(self.run, 'ro-p', 'raw-p', [(text, 'ok')], task='task-p', d4=True)
         self.export()
+
+    def test_your_own_home_is_redacted_not_refused(self):
+        with patch.dict(os.environ, {'HOME': '/home/runner'}):  # as on CI
+            rollout(self.run, 'ro-o', 'raw-o', [('see /home/runner/work', 'ok')], task='task-o', d4=True)
+            self.export()
+        self.assertIn(b'~/work', (self.base / 'out' / 'records.jsonl').read_bytes())
 
     def test_home_path_boundaries(self):  # a name after /Users/ or /home/ is enough; it need not be a real home
         for path in ('/home/runner/work', '/Users/Shared/x', '/home/x', '/Users/a', 'at=/home/ci', '"/Users/b/c"',
