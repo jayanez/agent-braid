@@ -48,7 +48,9 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
   `export-disabled` (`agent-braid lightning export`; adds `--dry-run` and
   `--terms-decision`). Dependencies: T006.
   Verification: procedure_009.
-- [ ] T010 (REQ-010 / SC-010): Canary scan before the manifest is finalised.
+- [x] T010 (REQ-010 / SC-010): Canary scan before the manifest is finalised
+  (`lightning_export.scan` over the final dataset and manifest bytes; owner
+  decisions OD-3 Q1 A and Q2 A, 2026-11-16).
   Dependencies: T006, SPEC-074 canary corpus. Verification: procedure_010.
 - [ ] T011 (REQ-011 / SC-011): Offline and no-MCP boundary tests.
   Dependencies: T009. Verification: procedure_011.

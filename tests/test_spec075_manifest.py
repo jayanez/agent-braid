@@ -322,7 +322,7 @@ class WriteTests(Base):
             lines, entries = real(items, level=level, terms=terms)
             planted = [line.replace(b'answer', b'sk-' + b'A1b2C3d4' * 3) for line in lines]
             assert planted != lines
-            return planted, entries
+            return planted, [dict(e, sha256=hashlib.sha256(line).hexdigest()) for e, line in zip(entries, planted)]
 
         with patch.object(export, 'rollout_records', leaky):
             return self.export(name)

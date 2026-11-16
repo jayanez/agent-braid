@@ -1,0 +1,24 @@
+{
+ "command": "python -m unittest tests.test_spec075_canary tests.test_spec075_manifest",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/lightning_export.py": "104e501ee51422ef91bb4f1bcc91b7bcba723bceae0e010e7670c98d2a786c19",
+  "agent_braid/lightning_redact.py": "774e27ae55a1e71ab49205a0daa6d47d374160b46fd90b2c77891b566fbeecf2",
+  "scripts/spec074_canary_corpus.py": "60424aaecfd6dd2de368a4dbaeb9f38ab58544961d87bf45b64a604a80a55c84",
+  "specs/075-lightning-dataset-export/reviews/owner-t010-20261116.md": "9986669e719619aa43c2f3fb03cb45061c30a203be56e0cd97178e0c0f47bc00",
+  "tests/fixtures/spec074-canaries/corpus.json": "ab65d59c7b47cd989b6ea201e1dad927102338bda168aa750bd9b71b5deb5c6a",
+  "tests/spec075_fixtures.py": "780661adc1dbd086f7bf8cffee7229c98413596bf5bd485e0b36042376b519a6",
+  "tests/test_spec075_canary.py": "01c9f978f9760e6b2be9d9a4b20092bb10c9ba963daea8ad9921b5efdab3f473",
+  "tests/test_spec075_manifest.py": "c390c99a69b9ce7287e48b72e249dde611233c15db89591a2fc64651de602cba"
+ },
+ "limits": "Temporary homes and synthetic canaries. Not detected, by owner decision OD-3 Q2 A: literal secrets the store was not given at ingest, secrets of unknown shape, and encodings nested twice or more; canaryScan clean means no hit for the listed classes, not free of secrets. The home-path check refuses any /Users/<name> or /home/<name> path not inside a longer segment, so a trace that mentions another user's path (for example a CI home) blocks the export until the run is cleaned or purged. The current-home check depends on $HOME at export time (Path.home()); the SPEC-074 adapter redacts the $HOME current at read time. SPEC-074 is not changed.",
+ "outcome": "passed: T010: lightning_export.scan reads the final records.jsonl bytes plus the manifest bytes after balance, the writers and check_manifest and before the temporary directory is created, in every view: the whole text, each field, each two neighbouring fields joined, each with URL, \\u and base64 decoding; a SPEC-074 class (token shapes, bearer, private key, e-mail, the current $HOME from Path.home() at export time) or another user's home path (OD-3 Q1 A, owner decision 2026-11-16) refuses with canary-detected, no chained cause, and nothing is written (no output, no temporary directory). A clean fixture exports with canaryScan clean. End to end through store ingest, the SPEC-074 adapter and the export, every corpus canary of the token, bearer, private-key and e-mail classes in all five forms, planted in a prompt, a response and a tool call, is either redacted (no canary value in any decoded view of the written bytes) or refused. Another user's home path (/Users/canaryuser, /home/canaryuser and the corpus home, in all three fields, and the corpus home in plain, \\u-escaped, URL-encoded and base64 form) aborts the export. Planted after the writers (bypassing redaction): every corpus value of every non-literal class in plain, escaped, URL-encoded and base64 form, a token split across two fields, an e-mail in a tool call, the current home and a current home outside /Users and /home (HOME patched) are refused; a canary placed only in the manifest is refused. ~/notes, /usr/local/bin, /Users alone, /homework/x and /srv/home/x pass. Documented residuals (OD-3 Q2 A) are pinned by tests: the corpus literal secret is redacted when passed at ingest and written as is when not; an unknown-shape free-text canary is written as is. Negative controls (mutants, each fails a test): the scan skipped, only the dataset scanned, the scan moved before balance (on the selected items instead of the final bytes), the home pattern weakened to /Users, no neighbouring-field pairs, no decoded views, the SPEC-074 classes dropped, the current home ignored, and an in-memory SPEC-074 token pattern removed (49 failures). A scan added before balance in addition to the final scan passes, as it only adds refusals.",
+ "procedure": "procedure_010",
+ "result": "OK",
+ "scenario": "SC-010",
+ "specification": "SPEC-075 BL.5",
+ "testsRun": 29
+}

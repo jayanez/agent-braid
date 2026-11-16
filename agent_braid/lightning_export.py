@@ -505,15 +505,41 @@ def build_manifest(entries: list[dict], records: bytes, *, kind: str, level: str
     return manifest
 
 
-def _scan(lines: list[bytes]) -> None:
-    """The SPEC-074 post-redaction scan over the dataset bytes; T010 adds the canary corpus coverage.
+# OD-3 Q1 A: another user's home directory (the SPEC-074 redactor knows only the current one, which it turns into ~).
+# Not inside a longer path segment (`/srv/data/home/x`, `~/home`), anywhere else refused.
+OTHER_HOME = re.compile(r'(?<![A-Za-z0-9._~])/(?:Users|home)/[A-Za-z0-9][A-Za-z0-9._-]*')
 
-    The scan looks for the current `$HOME` too (as SPEC-074's post-scan does): content is redacted with it on read,
-    so a hit means it escaped redaction. The salt only names e-mail tags, which the scan does not compute.
+
+def _decoded(text: str) -> list[str]:
+    """A text and the decoded views SPEC-074 scans: URL, \\u escapes and base64 runs."""
+    return [text, redact.unquote(text), redact._unescape(text),
+            *(redact._b64(match.group(0)) for match in redact.B64_RUN.finditer(text))]
+
+
+def _views(text: str) -> list[str]:
+    """The bytes as text, each field alone and each two neighbouring fields joined (a value split across two
+    fields is seen whole), every one with its decoded views."""
+    pieces = [text]
+    for line in text.splitlines():
+        leaves = redact._leaves(json.loads(line))
+        pieces += leaves + [left + right for left, right in zip(leaves, leaves[1:])]
+    return [view for piece in pieces for view in _decoded(piece)]
+
+
+def scan(data: bytes) -> None:
+    """REQ-010: refuse with `canary-detected` when the final bytes (dataset and manifest) hold a SPEC-074 class
+    (token, bearer, private key, e-mail, the current `$HOME`) or another user's home path, in any decoded view.
+
+    Literal secrets the ingest was not given and secrets of unknown shape are not detected (OD-3 Q2 A). The scan
+    uses `Path.home()`: a hit on the current home means it escaped the redaction SPEC-074 applied on read.
     """
     scanner = redact.Redactor(b'\0' * redact.SALT_BYTES, home=Path.home())
-    if any(scanner.scan(line.decode('ascii')) for line in lines):
-        raise ExportError('The dataset holds a value the redaction scan flags', 'canary-detected')
+    try:
+        views = _views(data.decode('ascii'))
+    except (UnicodeDecodeError, ValueError):
+        raise ExportError('The dataset bytes are not canonical', 'canary-detected') from None
+    if any(scanner.scan(view) or OTHER_HOME.search(view) for view in views):
+        raise ExportError('The dataset holds a value the canary scan flags', 'canary-detected')
 
 
 def _retention(home: Path | None, run_ids) -> dict:
@@ -646,7 +672,6 @@ def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: s
         lines, entries = rollout_records(kept, level=level, terms=terms)
     if not lines:
         raise ExportError('Nothing to export', 'no-records')
-    _scan(lines)
     records = b''.join(lines)
     sources = {(i['runId'], i['rolloutId'], i['attemptId']): i['source'] for i in kept}
     manifest = build_manifest(entries, records, kind=kind, level=level, seed=seed, balance=balancing,
@@ -655,6 +680,7 @@ def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: s
                               generated_at=_utc(now), sources=sources,
                               terms_decision=None if terms is None or all(e['source'] == 'fixture' for e in entries)
                               else {'path': terms['path'], 'sha256': terms['sha256']}, terms=terms)
+    scan(records + line_bytes(manifest))  # the final bytes, after balance and the manifest, before the rename
     if not dry_run:
         write_export(out, records, manifest)
     return manifest
