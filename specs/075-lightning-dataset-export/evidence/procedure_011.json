@@ -1,0 +1,28 @@
+{
+ "command": "python -m unittest tests.test_spec075_boundaries tests.test_lightning_cli",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/forecast_mcp.py": "6fba537f5506791f6e160dad7bfd8f92e0183019ac8b7c026ecb8aacd83b2f24",
+  "agent_braid/lightning_cli.py": "7881aa43603841ff3e8aacbfd1397d135f9777a9e8f6fca87c7c8056301af7c1",
+  "agent_braid/lightning_export.py": "b94ba4e9e3c332f821209e5e80c7721a4562a7b0af550d59979225165032b92d",
+  "agent_braid/mcp_advice.py": "74b2a62a6e4665e9d3beca9cf9abf7e9e017d6353a670f5b047dbf27c928c1a9",
+  "agent_braid/mcp_runtime.py": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83",
+  "agent_braid/plugin_mcp.py": "212eff2ab134d1b18af565960b12076316b7baa8c9aae6c31be78ed3dce2a608",
+  "agent_braid/system_one_verified_mcp.py": "e34983f7e92ab1812ca6a8265d4a365ee7e5217ae8f1689da71b8998354025d4",
+  "agent_braid/tooling_mcp.py": "0e3276644b3e85c91a02e175700ba992bac30201da28a1364691894d8a6db3f1",
+  "pyproject.toml": "d381baf52f4d354717080943bb65b7416bcc7a0e418d465a86de09b65b6466b3",
+  "tests/spec075_fixtures.py": "780661adc1dbd086f7bf8cffee7229c98413596bf5bd485e0b36042376b519a6",
+  "tests/test_lightning_cli.py": "77afe28c22ed1d9360d370f39ae04266d6615cc9537615a9b50334719747eb08",
+  "tests/test_spec075_boundaries.py": "e717239be444b81bbe913111d774d7228a8723760ac72aea781cbea3ae31c77b"
+ },
+ "limits": "The dynamic guard covers this process and the listed entry points only; C extensions or names bound before the patch are outside it, and lightning init runs before the guard (it is covered by the SPEC-074 boundary tests). plugin_registry imports subprocess (for its own checks), so subprocess is in the import closure; the dynamic guard shows the export never calls it. The static name check covers the export and CLI modules, not their imports. Temporary homes and synthetic content.",
+ "outcome": "passed: T011: static half: lightning_export imports only the standard library and lightning_adapter, lightning_config, lightning_redact, lightning_store, plugin_registry and trace_adapter, and no socket, subprocess, http, urllib, asyncio, ssl, select, selectors, multiprocessing, concurrent or ctypes module; lightning_export and lightning_cli hold no decide, begin, execute, recover, harness_promotion, grant, import_module, __import__, exec or eval name (references, imports, function or class definitions); a fresh interpreter importing both loads no socket, asyncio, ssl, http, http.client, urllib.request, multiprocessing, MCP, model (torch, transformers), promotion, lifecycle, runtime-policy, git-execution, runner, host or System One module; no *mcp*.py module mentions lightning, no integrations JSON manifest names lightning export, mcp_runtime.TOOLS has no export or lightning tool, and pyproject.toml declares no runtime dependency. Dynamic half: with socket.socket, create_connection, socketpair, getaddrinfo, fromfd, subprocess.Popen, run, call, check_call, check_output, os.system, popen, fork, forkpty, posix_spawn(p), exec* and spawnv(e) replaced by failing stubs, export_dataset succeeds for both kinds at both levels, and lightning export succeeds for --run, --all with the outcome field, --dry-run and --help and refuses (exit 2) a missing run, an invalid argument and a non-empty output, with no boundary hit and executionAuthorization false in every JSON output. Negative controls: a socket, a process or os.system placed inside the export path raises the boundary error and writes nothing; mutants adding a socket import, an os.system call, a runner import, an execute definition or a lightning mention in plugin_mcp each fail a test. Every patch is registered with addCleanup, and a test runs the guarded suite and compares os.environ, every patched entry point and the working directory before and after; dropping the addCleanup of the HOME patch or of the guards fails it.",
+ "procedure": "procedure_011",
+ "result": "OK",
+ "scenario": "SC-011",
+ "specification": "SPEC-075 BL.5",
+ "testsRun": 27
+}

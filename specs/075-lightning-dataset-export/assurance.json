@@ -385,7 +385,15 @@
         {
           "given": "the module",
           "id": "SC-011",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": "python -m unittest tests.test_spec075_boundaries tests.test_lightning_cli",
+              "limits": "The dynamic guard covers this process and the listed entry points only; C extensions or names bound before the patch are outside it, and lightning init runs before the guard (it is covered by the SPEC-074 boundary tests). plugin_registry imports subprocess (for its own checks), so subprocess is in the import closure; the dynamic guard shows the export never calls it. The static name check covers the export and CLI modules, not their imports. Temporary homes and synthetic content.",
+              "outcome": "passed: T011: static half: lightning_export imports only the standard library and lightning_adapter, lightning_config, lightning_redact, lightning_store, plugin_registry and trace_adapter, and no socket, subprocess, http, urllib, asyncio, ssl, select, selectors, multiprocessing, concurrent or ctypes module; lightning_export and lightning_cli hold no decide, begin, execute, recover, harness_promotion, grant, import_module, __import__, exec or eval name (references, imports, function or class definitions); a fresh interpreter importing both loads no socket, asyncio, ssl, http, http.client, urllib.request, multiprocessing, MCP, model (torch, transformers), promotion, lifecycle, runtime-policy, git-execution, runner, host or System One module; no *mcp*.py module mentions lightning, no integrations JSON manifest names lightning export, mcp_runtime.TOOLS has no export or lightning tool, and pyproject.toml declares no runtime dependency. Dynamic half: with socket.socket, create_connection, socketpair, getaddrinfo, fromfd, subprocess.Popen, run, call, check_call, check_output, os.system, popen, fork, forkpty, posix_spawn(p), exec* and spawnv(e) replaced by failing stubs, export_dataset succeeds for both kinds at both levels, and lightning export succeeds for --run, --all with the outcome field, --dry-run and --help and refuses (exit 2) a missing run, an invalid argument and a non-empty output, with no boundary hit and executionAuthorization false in every JSON output. Negative controls: a socket, a process or os.system placed inside the export path raises the boundary error and writes nothing; mutants adding a socket import, an os.system call, a runner import, an execute definition or a lightning mention in plugin_mcp each fail a test. Every patch is registered with addCleanup, and a test runs the guarded suite and compares os.environ, every patched entry point and the working directory before and after; dropping the addCleanup of the HOME patch or of the guards fails it.",
+              "path": "specs/075-lightning-dataset-export/evidence/procedure_011.json",
+              "sha256": "db2cf0c8ae0ee6f76acbfcb13d3491150ffe4d952cb79de18fb41e9baa4f29bc"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
           "test_file": "specs/075-lightning-dataset-export/validation-plan.md",
           "test_name": "procedure_011",
