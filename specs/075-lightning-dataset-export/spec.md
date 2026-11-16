@@ -102,6 +102,12 @@ Decisions:
   directories that name no real provider.
 - **OD-2 — Balance default (decided 2026-11-14).** Equal cap 1:1 per task (E4);
   no ratio parameter.
+- **OD-3 — Canaries the SPEC-074 redactor lets through (decided 2026-11-16,
+  [record](reviews/owner-t010-20261116.md)).** Q1 A: another user's home path
+  (`/Users/<name>/`, `/home/<name>/`) anywhere in the final exported bytes aborts
+  the export with `canary-detected` (export-side check; SPEC-074 unchanged). Q2 A:
+  literal secrets not passed at ingest and secrets of unknown shape are a
+  documented residual risk, not detected.
 
 ## Requirements and acceptance scenarios
 

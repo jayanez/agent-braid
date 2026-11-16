@@ -108,9 +108,9 @@ builder check failed). Refusals echo no record content.
 
 ## Writing (T006)
 
-`export_dataset` reads, filters and writes the records, runs the SPEC-074
-post-redaction scan over the dataset bytes (`canary-detected` on a hit; the
-canary corpus coverage is T010), builds the manifest, runs `check_manifest` and
+`export_dataset` reads, filters and writes the records, builds the manifest,
+runs `check_manifest`, scans the final dataset and manifest bytes (T010, below)
+and
 writes `records.jsonl` then `manifest.json` into a private temporary directory
 next to the output, renamed onto it (the output must not exist or be an empty
 directory, else `output-not-empty`; a symbolic link as the output or its parent
@@ -225,6 +225,39 @@ task ids appear in `balanceReport` by design. A refusal prints `lightning refuse
 <fixed text>` on stderr and exits 2; an unexpected error prints code `other` and
 the text `Export refused`; an interrupt prints code `interrupted` and exits 130
 (the temporary directory is removed, T006). There are no other flags.
+
+## Canary scan (T010, OD-3)
+
+After balance, the writers and `check_manifest`, and before the temporary
+directory is created, `scan` reads the final `records.jsonl` bytes plus the
+`manifest.json` bytes. It looks at the whole text, each field of each line, and
+each two neighbouring fields joined (a value split across two fields), each with
+its decoded views (URL decoding, `\uXXXX` escapes, base64 runs), as SPEC-074's
+post-scan does. A hit on a SPEC-074 class (token shapes, bearer header, private
+key block, e-mail address, the current `$HOME` read through `Path.home()` at
+export time) or on another user's home path refuses the whole export with
+`canary-detected`, and nothing is written (owner decision OD-3 Q1 A; no
+redaction in the export). A home path is `/Users/` or `/home/`, in any letter
+case, followed by a name segment of one or more characters other than
+whitespace, `/`, `\`, quotes, `<`, `>`, `,`, `;`, `:` and `|` (a trailing `/` is
+not needed), anywhere in the bytes, inside longer paths too. So
+`/home/runner/work`, `/Users/Shared/x`, `/home/x`, `/mnt/c/Users/alice/f`,
+`/System/Volumes/Data/Users/alice`, `/Volumes/D/home/bob`, `/Users/_svc/x`,
+`/Users/.hidden`, `/Users/Ünal/x` and `/USERS/x` block, as do, fail closed,
+`/srv/home/x`, `~/home/x` and URL paths such as `/api/users/42`; CI and shared
+directories block too, unless the path is the current `$HOME`, which SPEC-074
+turns into `~` when content is read. `/Users`, `/home/` alone and `/homework/x`
+do not. Documented limits: a Windows path (`C:\Users\x\`) and a doubly escaped
+`\/Users\/x` are not matched. The current home is redacted to `~` when the
+adapter reads content, so a hit there means it escaped
+redaction. The scan catches known shapes only. As the SPEC-074 privacy review
+says, pattern-based redaction cannot catch every secret shape or every piece of
+personal data (for example names in free text). Not detected (OD-3 Q2 A,
+documented residual risk): a literal secret not given to the store at ingest,
+free text of unknown shape, a raw attempt id typed inside content (content, not
+the id field, which is always a pseudonym), and encodings nested twice or
+more. `canaryScan: "clean"` therefore means "no hit for these classes",
+not "free of secrets".
 
 ## Retention and purge
 

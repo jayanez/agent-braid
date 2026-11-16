@@ -80,7 +80,9 @@ class DisabledTests(Base):
             text = ' '.join(out.split())
             for phrase in ('OFF by default', 'export-disabled', 'export.enabled', 'lightning init --export',
                            "No provider's terms have been reviewed", 'OD-1 is deferred', 'only fixture runs export',
-                           '/private/tmp', 'none ships with Agent Braid'):
+                           '/private/tmp', 'none ships with Agent Braid',
+                           'catches known shapes only', '/home/runner/', 'canary-detected', 'raw attempt id',
+                           'nested twice', 'Windows'):
                 self.assertIn(phrase, text)
             self.assertNotIn('(OD-1)', text)
         self.assertFalse((self.base / 'out').exists())
@@ -230,6 +232,18 @@ class ExportTests(Base):
             self.assertNotIn(value, out)  # the record's contents are never printed
         self.assertEqual((record.read_bytes(), record.stat().st_mtime_ns, sorted(p.name for p in terms.iterdir())),
                          before)
+
+
+class CanaryTests(Base):
+    def test_a_planted_canary_refuses_through_the_cli(self):
+        self.enable()
+        rollout(new_run(self.home, 'run-c'), 'ro-c0', 'raw-c0', [('read /Users/canary-cli-user/plan.txt', 'ok')],
+                task='task-c', d4=True)
+        code, out, err = self.export('--balance', 'none', runs=('--run', 'run-c'))
+        self.assertEqual((code, out), (2, ''))
+        self.assertEqual(err, 'lightning refused (canary-detected): The dataset holds a value the canary scan flags\n')
+        self.assertFalse((self.base / 'out').exists())
+        self.assertEqual([p for p in self.base.iterdir() if p.name.startswith('.export-')], [])
 
 
 class StoreShapeTests(Base):
