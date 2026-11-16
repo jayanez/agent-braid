@@ -45,18 +45,20 @@ from agent_braid import plugin_registry, system_one_shadow as shadow
 from research import s15b_corpus_gate as gate
 
 SCHEMA = "agent-braid-s1-outcome/v0.1"
-OUTCOME_KINDS = ("runtime-conflict", "merge-conflict", "verify-pass", "verify-fail")
+OUTCOME_KINDS = ("runtime-conflict", "merge-conflict", "merge-clean", "verify-pass", "verify-fail")
 SOURCE = "real-run"
 MATCH_WINDOW_DAYS = 7
 STORE_NAME = "system-one-s15b"
 MAX_FILE_BYTES = 4 * 1024 * 1024
 MAX_INVENTORY_ENTRIES = 10_000
+RULE_ANSWER_FIELD = "ruleAnswer"
 RECORD_FIELDS = frozenset({"schemaVersion", "joinKey", "day", "source", "outcomeKind", "joinStatus", "pair",
-                           "executionAuthorization"})
+                           "executionAuthorization", RULE_ANSWER_FIELD})
+INDEPENDENT = "likely-independent"
 COUNTERS = ("outcomes-seen", "outcomes-invalid", "joined", "no-episode", "salt-unmatched", "ambiguous",
             "duplicate", "written", "episodes-read", "episodes-invalid", "episodes-unattributable",
             "episode-files-refused", "secret-absent", "secret-unsafe", "roots-unavailable", "no-salt",
-            "truncated", "source-error")
+            "truncated", "source-error", "advised-pairs", "rule-answered-pairs")
 _UUID4 = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 _EPISODE_FILE = re.compile(r"^episodes-(\d{4}-\d{2}-\d{2})\.jsonl$")
 _OUTCOME_FILE = re.compile(r"^outcomes-(\d{4}-\d{2}-\d{2})\.jsonl$")
@@ -87,6 +89,17 @@ class Outcome:
     admission: dict
     left: frozenset
     right: frozenset
+    variants: tuple | None = None  # pre-hashed sides: ((sorted sides, shared) hash lists per candidate salt)
+
+
+@dataclass(frozen=True)
+class HashedRow:
+    """A source row that already holds salted pseudonyms (never resources): `variants` is a tuple of
+    `{"left": [...], "right": [...], "shared": [...]}`, one per candidate repository salt."""
+
+    kind: str
+    day: date
+    variants: tuple
 
 
 class OutcomeSource(Protocol):
@@ -107,6 +120,15 @@ def _valid_outcome(kind, day, left, right) -> bool:
                     and all(isinstance(item, str) and item for item in side) for side in (left, right)))
 
 
+def _valid_hashed(row) -> bool:
+    good = lambda side: (isinstance(side, list) and len(side) <= shadow.MAX_HASHES
+                         and all(isinstance(item, str) and re.fullmatch(r"[0-9a-f]{16}", item) for item in side))
+    return (isinstance(row.kind, str) and row.kind in OUTCOME_KINDS and type(row.day) is date
+            and isinstance(row.variants, tuple) and 0 < len(row.variants) <= 64
+            and all(isinstance(v, dict) and set(v) == {"left", "right", "shared"} and all(good(x) for x in v.values())
+                    and v["left"] and v["right"] for v in row.variants))
+
+
 def collect_outcomes(sources, today: date, counts: Counter, *, home: Path | None = None,
                      consent_path: Path | None = None) -> list:
     """Admit each source through the gate, then read it; a refused source is never read."""
@@ -121,6 +143,13 @@ def collect_outcomes(sources, today: date, counts: Counter, *, home: Path | None
         try:
             for row in source.outcomes(window):
                 counts["outcomes-seen"] += 1
+                if isinstance(row, HashedRow):
+                    if not _valid_hashed(row) or row.day > today:
+                        counts["outcomes-invalid"] += 1
+                        continue
+                    found.append(Outcome(row.kind, row.day, admission, frozenset(), frozenset(), tuple(
+                        (sorted((sorted(v["left"]), sorted(v["right"]))), sorted(v["shared"])) for v in row.variants)))
+                    continue
                 kind, day, left, right = row
                 if not _valid_outcome(kind, day, left, right) or day > today:
                     counts["outcomes-invalid"] += 1
@@ -165,11 +194,13 @@ def read_secret(counts: Counter | None = None) -> bytes | None:
     return None
 
 
-def read_episodes(today: date, counts: Counter) -> list:
+def read_episodes(today: date, counts: Counter, answers: dict | None = None) -> list:
     """Retained v0.2 episode pairs with resource pseudonyms, as `(day, pair)`; reads only.
 
     Pairs without pseudonyms cannot be attributed to the admitted workspace and are never
-    returned (fail closed). No episode id is kept.
+    returned (fail closed). No episode id is kept. When `answers` is a dict it receives
+    `id(pair) -> the DP-1 rule's choice` for each returned pair (None when the episode has no answer);
+    the pair objects stay alive in the returned list, so the ids stay valid for the caller.
     """
     cutoff = gate.retention_cutoff(today)
     try:
@@ -209,11 +240,18 @@ def read_episodes(today: date, counts: Counter) -> list:
             if episode["schemaVersion"] != shadow.SCHEMA:
                 counts["episodes-unattributable"] += 1
                 continue
-            for pair in episode["pairs"]:
+            given = episode["systemOne"]["answers"]
+            for index, pair in enumerate(episode["pairs"]):
+                choice = given[index]["choice"] if given is not None and index < len(given) else None
+                if choice is not None:
+                    counts["rule-answered-pairs"] += 1
+                    counts["advised-pairs"] += choice == INDEPENDENT
                 if pair["resourceHashes"] is None:
                     counts["episodes-unattributable"] += 1
                 else:
                     pairs.append((day, pair))
+                    if answers is not None:
+                        answers[id(pair)] = choice
     return pairs
 
 
@@ -263,8 +301,8 @@ def match(outcome: Outcome, pairs, salts) -> tuple:
               if outcome.day - timedelta(days=MATCH_WINDOW_DAYS) <= day <= outcome.day]
     if not window:
         return "no-match", None, None, "no-episode"
-    expected = [_expected(salt, outcome) for salt in salts]
-    if any(len(hashes) >= shadow.MAX_HASHES for sides, shared in expected[:1] for hashes in (*sides, shared)):
+    expected = list(outcome.variants) if outcome.variants is not None else [_expected(salt, outcome) for salt in salts]
+    if any(len(hashes) >= shadow.MAX_HASHES for sides, shared in expected for hashes in (*sides, shared)):
         return "no-match", None, None, "truncated"  # the 32-lowest lists cannot prove equality
     hits = []
     for day, pair in window:
@@ -301,8 +339,15 @@ def _validate_pair(pair) -> None:
 
 
 def validate_record(record) -> dict:
-    """Enforce the closed `agent-braid-s1-outcome/v0.1` field set."""
-    _need(type(record) is dict and set(record) == RECORD_FIELDS and record["schemaVersion"] == SCHEMA)
+    """Enforce the closed `agent-braid-s1-outcome/v0.1` field set.
+
+    `ruleAnswer` (the DP-1 rule's choice on the pair, or null) is part of the set; a record stored
+    before it existed, without the field, is still valid and counts as having no rule answer.
+    """
+    _need(type(record) is dict and set(record) in (RECORD_FIELDS, RECORD_FIELDS - {RULE_ANSWER_FIELD})
+          and record["schemaVersion"] == SCHEMA)
+    answer = record.get(RULE_ANSWER_FIELD)
+    _need(answer is None or (type(answer) is str and answer in shadow.CHOICES))
     _need(type(record["joinKey"]) is str and _UUID4.fullmatch(record["joinKey"]))
     _need(type(record["day"]) is str and date.fromisoformat(record["day"]).isoformat() == record["day"])
     _need(record["source"] == SOURCE and record["joinStatus"] == "joined"
@@ -312,12 +357,12 @@ def validate_record(record) -> dict:
     return record
 
 
-def make_record(kind: str, day: date, pair: dict) -> dict:
+def make_record(kind: str, day: date, pair: dict, rule_answer: str | None = None) -> dict:
     """A joined record with a random join key, never derived from any input."""
     return validate_record({
         "schemaVersion": SCHEMA, "joinKey": str(uuid.UUID(bytes=secrets.token_bytes(16), version=4)),
         "day": day.isoformat(), "source": SOURCE, "outcomeKind": kind, "joinStatus": "joined",
-        "pair": json.loads(json.dumps(pair)), "executionAuthorization": False})
+        "pair": json.loads(json.dumps(pair)), RULE_ANSWER_FIELD: rule_answer, "executionAuthorization": False})
 
 
 def _body(record: dict) -> bytes:
@@ -340,7 +385,8 @@ def observe(sources, today: date, *, home: Path | None = None, consent_path: Pat
     counts = Counter()
     outcomes = collect_outcomes(sources, today, counts, home=home, consent_path=consent_path)
     secret = read_secret(counts)
-    pairs = read_episodes(today, counts)
+    rule_answers = {}
+    pairs = read_episodes(today, counts, rule_answers)
     roots = candidate_roots(home=home)
     if not roots:
         counts["roots-unavailable"] += 1
@@ -353,8 +399,71 @@ def observe(sources, today: date, *, home: Path | None = None, consent_path: Pat
         status, day, pair, reason = match(outcome, pairs, salts)
         counts[reason] += 1
         if status == "joined":
-            records.append(make_record(outcome.kind, day, pair))
+            records.append(make_record(outcome.kind, day, pair, rule_answers.get(id(pair))))
     return Result(records, counts)
+
+
+# --- False independence of the DP-1 rule (REQ-402 (f)) and the D7 rollback -------------------
+
+WILSON_Z = 1.959963984540054  # two-sided 95%
+DECISION_POINT = "DP-1"
+
+
+def wilson_upper(failures: int, trials: int, z: float = WILSON_Z) -> float | None:
+    """Upper limit of the Wilson score interval for `failures` of `trials`; None without trials."""
+    if trials <= 0:
+        return None
+    p = failures / trials
+    denominator = 1 + z * z / trials
+    centre = p + z * z / (2 * trials)
+    margin = z * ((p * (1 - p) / trials + z * z / (4 * trials * trials)) ** 0.5)
+    return min(1.0, (centre + margin) / denominator)
+
+
+def merged_records(*groups) -> list:
+    """Records from several groups with identical bodies collapsed (stored plus newly joined)."""
+    seen, merged = set(), []
+    for group in groups:
+        for record in group:
+            body = _body(record)
+            if body not in seen:
+                seen.add(body)
+                merged.append(record)
+    return merged
+
+
+def false_independence(records, advised_pairs: int) -> dict:
+    """Counts by closed key. A false independent is a joined `merge-conflict` on a pair whose rule
+    answer was `likely-independent`; `undetermined` and unanswered pairs never count."""
+    independent = [r for r in records if r.get(RULE_ANSWER_FIELD) == INDEPENDENT]
+    conflicts = sum(r["outcomeKind"] == "merge-conflict" for r in independent)
+    clean = sum(r["outcomeKind"] == "merge-clean" for r in independent)
+    trials = conflicts + clean  # only a textual verdict on an advised pair is a trial
+    upper = wilson_upper(conflicts, trials)
+    return {"advisedPairsInEpisodes": advised_pairs, "joinedOutcomes": len(records),
+            "joinedOnAdvisedPairs": len(independent), "advisedMergeClean": clean,
+            "falseIndependent": conflicts,
+            "falseIndependenceRate": None if not trials else round(conflicts / trials, 6),
+            "wilson95Upper": None if upper is None else round(upper, 6)}
+
+
+def false_independent_days(records) -> list:
+    return sorted(r["day"] for r in records
+                  if r["outcomeKind"] == "merge-conflict" and r.get(RULE_ANSWER_FIELD) == INDEPENDENT)
+
+
+def apply_auto_rollback(records, today: date, *, home: Path | None = None) -> bool:
+    """D7: roll DP-1 back (reason `auto-rollback-false-independence`) on a joined false independent.
+
+    One atomic, idempotent promotion-registry append; it acts only while the latest DP-1 record is an
+    owner go and the conflict is not older than that go. Returns whether this call recorded the rollback.
+    """
+    days = false_independent_days(records)
+    if not days:
+        return False
+    from agent_braid import system_one_promotion as promotion
+    return promotion.auto_rollback_false_independence(
+        home, DECISION_POINT, false_independent_days=days, decided_on=today.isoformat()) is not None
 
 
 # --- Own private store --------------------------------------------------------------

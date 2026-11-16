@@ -10,12 +10,11 @@ the reflection sees content-free reward vectors, `score_case` reasons, refusal c
 from __future__ import annotations
 
 import hashlib
-import json
 import random
 
 from . import lightning_runner as runner_mod
-from .lightning_algorithm import (PROMPTS, Algorithm, Session, Stagnation, _now, experiments, rank, render, rescore,
-                                  score)
+from .lightning_algorithm import (PROMPTS, Algorithm, Session, Stagnation, _now, development_cases, experiments, rank,
+                                  render, rescore, score)
 from .lightning_resources import CANDIDATE_SCHEMA, MAX_TEXT, ORIGIN_PATH, Candidate, sha256_text
 
 TEMPLATE = PROMPTS / 'gepa_reflection.md'
@@ -88,8 +87,7 @@ class GEPA(Algorithm):
     def run(self, home, config: dict, *, run_id: str, resume: bool = False, replay: bool = False,
             **_ignored) -> dict:
         algo, rollout = config['algorithm'], config['rollout']
-        cases = [c['id'] for c in json.loads(
-            (runner_mod.checkout_root() / runner_mod.PROMPT_FILES['development']).read_text())['cases']]
+        cases = [c['id'] for c in development_cases()]
         store, seed_record, seed_body, front_sha = self.start(home, config, run_id, self.seed_vectors, resume=resume)
         session = Session(store, config, self.optimizer, self.evaluator, resume=resume, scorer=self.scorer,
                           replay=replay)
@@ -138,14 +136,15 @@ class GEPA(Algorithm):
                 seen.add(sha)
                 minibatch = score(child_vectors)
                 entry.update(child=sha, accepted=rank(minibatch) > rank(score(parent_vectors)))
-                record = Candidate.parse({
+                record = {
                     'schema': CANDIDATE_SCHEMA, 'sha256': sha, 'parentSha256': parent, 'originPath': ORIGIN_PATH,
                     'frontMatterSha256': front_sha, 'algorithm': 'gepa', 'round': rnd, 'optimizerCalls': [call_id],
                     'optimizerTemplateSha256': template, 'contaminationCheck': [check],
                     'devScore': {'minibatch': minibatch, 'full': None}, 'paretoMember': False, 'createdAt': _now(),
-                    'promotion': 'none', 'executionAuthorization': False}).to_dict()
+                    'promotion': 'none', 'executionAuthorization': False}
+                candidate = Candidate.parse(record)
                 store.write_candidate_text(sha, body)
-                self.record(store, Candidate.parse(record))
+                self.record(store, candidate)
                 if entry['accepted']:
                     full = session.evaluate(body, cases, rollout['repetitions'])
                     if full is None:

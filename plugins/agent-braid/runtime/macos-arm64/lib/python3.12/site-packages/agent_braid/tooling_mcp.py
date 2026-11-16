@@ -75,8 +75,8 @@ class ToolingConfig:
     def __post_init__(self) -> None:
         if self.telemetry not in {"off", "local"}:
             raise ToolingError("Telemetry mode must be off or local")
-        if self.system_one not in {"off", "shadow"}:
-            raise ToolingError("System One mode must be off or shadow")
+        if self.system_one not in {"off", "shadow", "advise"}:
+            raise ToolingError("System One mode must be off, shadow or advise")
         source = Path(self.source_root).expanduser().resolve(strict=True)
         results = Path(self.result_parent).expanduser().resolve(strict=True)
         if not source.is_dir() or not results.is_dir():
@@ -334,7 +334,7 @@ class ToolingService:
             envelope = self._invoke_measured(name, args, cancelled)
         else:
             envelope = self._invoke(name, args, cancelled, observation)
-        if self.config.system_one == "shadow":
+        if self.config.system_one in {"shadow", "advise"}:  # advise also records shadow episodes
             self._shadow(name, args, envelope)
         return envelope
 
@@ -477,11 +477,14 @@ class ToolingService:
             built = units.construct(request, units.workspace_scope(self.config.source_root))
             _validate_operation_bounds(request)
             _validate_operation_bounds(built["constructedRequest"])
-            return {"report": analysis.analyze(built["constructedRequest"]), **built}
+            report = analysis.analyze(built["constructedRequest"])
+            return self._advised({"report": report, **built}, kind, built["constructedRequest"])
         _validate_operation_bounds(request)
         if kind == "aim":
-            return {"report": analysis.analyze(request),
-                    "provenance": {"source": "AIM input", "executionAuthorization": False}}
+            report = analysis.analyze(request)
+            return self._advised({"report": report,
+                                  "provenance": {"source": "AIM input", "executionAuthorization": False}},
+                                 kind, request)
         if kind != "git":
             raise ToolingError("Unsupported analysis kind", code="arguments-invalid")
         if not isinstance(request, dict):
@@ -499,7 +502,23 @@ class ToolingService:
             if source.get("kind") == "worktree" and not _permitted_path(source["path"], roots):
                 raise ToolingError(_PATH_REFUSAL, code="arguments-invalid")
         report, provenance = git_adapter.analyze_git_with_provenance(request)
-        return {"report": report, "provenance": provenance}
+        return self._advised({"report": report, "provenance": provenance}, kind, request)
+
+    def _advised(self, value: dict[str, Any], kind: str, request: Any) -> dict[str, Any]:
+        """SPEC-066 active `advise`: add per-pair DP-1 rule advice beside the report.
+
+        Only in effective advise (valid owner go). Never alters the report or any classification;
+        a failure omits the advice and is counted, never failing the analysis.
+        """
+        if self.config.system_one != "advise":
+            return value
+        try:
+            from . import system_one_shadow
+            return {**value, "systemOneAdvice": system_one_shadow.advise_report(value["report"], kind, request)}
+        except Exception:
+            from . import system_one_shadow
+            system_one_shadow.note_refusal("internal-error")
+            return value
 
     def _envelope(self, operation: str, status: str, value: Any,
                   error: str | None = None, *, input_value: Any = None,

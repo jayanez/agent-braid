@@ -26,6 +26,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
+from . import lightning_redact as _redact
+
 SYSTEM_PATH = "/usr/bin:/bin:/usr/sbin:/sbin"
 # ToolSearch and Skill are host-side helpers: tool discovery, and the plugin's packaged guidance (the thing under measurement).
 CLAUDE_ALLOWED = ["mcp__plugin_agent-braid_agent-braid__*", "ToolSearch", "Skill"]
@@ -70,10 +72,7 @@ def real_home() -> Path:
 # ----------------------------------------------------------------------------
 # Secrets: redaction and scan
 # ----------------------------------------------------------------------------
-SECRET_PATTERNS = [re.compile(p) for p in (
-    r"\bsk-ant-[A-Za-z0-9_\-]{8,}", r"\bsk-[A-Za-z0-9_\-]{16,}", r"\b(?:ghp|gho|ghs|ghu|github_pat)_[A-Za-z0-9_]{20,}",
-    r"\bAIza[0-9A-Za-z_\-]{20,}", r"\bxox[abprs]-[A-Za-z0-9\-]{10,}", r"(?i)\bbearer\s+[A-Za-z0-9._\-]{16,}",
-    r"-----BEGIN [A-Z ]*PRIVATE KEY-----", r"\bAKIA[0-9A-Z]{16}\b")]
+SECRET_PATTERNS = _redact.SECRET_PATTERNS  # single source: SPEC-074 lightning_redact (T004)
 
 
 class Secrets:

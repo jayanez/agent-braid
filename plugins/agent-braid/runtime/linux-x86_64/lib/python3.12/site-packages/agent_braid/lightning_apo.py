@@ -13,8 +13,8 @@ import hashlib
 import json
 
 from . import lightning_runner as runner_mod
-from .lightning_algorithm import (PROMPTS, QUOTA_STOPS, Algorithm, Session, Stagnation, _now, experiments, rank,
-                                  render, rescore, score)
+from .lightning_algorithm import (PROMPTS, QUOTA_STOPS, Algorithm, Session, Stagnation, _now, development_cases,
+                                  experiments, rank, render, rescore, score)
 from .lightning_resources import CANDIDATE_SCHEMA, ORIGIN_PATH, MAX_TEXT, Candidate, sha256_text
 
 MAX_ROUNDS = 3  # ProTeGi-style optimization overfits after about 3 steps (SPEC-072 REQ-007)
@@ -56,8 +56,7 @@ class APO(Algorithm):
     def run(self, home, config: dict, *, run_id: str, resume: bool = False, replay: bool = False,
             **_ignored) -> dict:
         algo, rollout = config['algorithm'], config['rollout']
-        cases = [c['id'] for c in json.loads(
-            (runner_mod.checkout_root() / runner_mod.PROMPT_FILES['development']).read_text())['cases']]
+        cases = [c['id'] for c in development_cases()]
         store, seed_record, seed_body, front_sha = self.start(home, config, run_id, self.seed_vectors, resume=resume)
         session = Session(store, config, self.optimizer, self.evaluator, resume=resume, scorer=self.scorer,
                           replay=replay)

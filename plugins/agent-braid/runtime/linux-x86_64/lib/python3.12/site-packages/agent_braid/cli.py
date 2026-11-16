@@ -105,6 +105,12 @@ def main(argv: list[str] | None = None) -> int:
     report_parser.add_argument("--format", choices=("text", "json"), default="text")
     purge_parser = decision_commands.add_parser("purge", help="delete the local System One shadow store")
     purge_parser.add_argument("--yes", action="store_true", help="skip the confirmation prompt")
+    promote_parser = decision_commands.add_parser("promote", help="owner decision: promote DP-1 advice or roll it back")
+    promote_parser.add_argument("--decision-point", choices=("DP-1",), required=True)
+    direction = promote_parser.add_mutually_exclusive_group(required=True)
+    direction.add_argument("--go", action="store_true", help="pin the current shadow evidence and rule manifest")
+    direction.add_argument("--rollback", action="store_true", help="demote the decision point to off")
+    promote_parser.add_argument("--confirm", metavar="PREVIEW_DIGEST", help="record the decision previewed with this digest")
     decision_parser.add_argument("--telemetry", choices=("off", "local"), default="off", help="explicit local numeric telemetry; default off")
     for decision_command in decision_commands.choices.values():
         decision_command.add_argument("--telemetry", choices=("off", "local"), default=argparse.SUPPRESS, help="same as the group option")

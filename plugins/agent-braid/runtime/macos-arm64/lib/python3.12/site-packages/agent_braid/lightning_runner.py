@@ -390,6 +390,9 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
                            'FAKE_PLANTED_SECRET': planted, 'FAKE_PYTHON': sys.executable}
             if fake_key_source is not None:
                 passthrough['FAKE_KEY_SOURCE'] = fake_key_source
+        if skill_text is None and arm == 'baseline':  # the baseline plugin carries the BASELINE_COMMIT skill
+            from .lightning_arm import source_skill
+            skill_text = source_skill('baseline', config['target']['path'], root)[0]
         candidate = (root / config['target']['path']).read_bytes() if skill_text is None else skill_text.encode()
         candidate_sha = hashlib.sha256(candidate).hexdigest()
         count = completed

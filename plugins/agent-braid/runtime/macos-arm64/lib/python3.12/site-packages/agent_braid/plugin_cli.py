@@ -29,7 +29,7 @@ def add_parser(subparsers):
             command.add_argument('--worktree-root', type=Path, action='append', default=[])
         if name == 'setup':
             command.add_argument('--telemetry', choices=('off', 'local'), help='persist plugin MCP local telemetry consent; default off')
-            command.add_argument('--system-one', choices=('off', 'shadow'), help='persist plugin MCP System One shadow consent; default off')
+            command.add_argument('--system-one', choices=('off', 'shadow', 'advise'), help='persist plugin MCP System One consent; advise needs an owner go per decision point; default off')
             command.add_argument('--lightning', choices=('off', 'lab'), help='persist Braid Lightning laboratory consent; default off')
             command.add_argument('--prune-stale', action='store_true', help='preview removing missing worktree roots and dropping unsafe workspace registrations')
         if name == 'legacy':
