@@ -374,6 +374,12 @@ def _clean(stream: _Stream, value: Any, pattern: re.Pattern, code: str | None = 
 _KEY_SOURCE = re.compile(r"[A-Za-z0-9_.:-]{1,64}\Z")
 
 
+# Informational system subtypes seen with tools on (2.1.292 and 2.1.311). Any other system
+# subtype stays unknown-event-type so a new, possibly route- or error-bearing one fails closed.
+_INFO_SYSTEM_SUBTYPES = frozenset({"hook_started", "hook_progress", "hook_response",
+                                   "task_summary", "thinking_tokens", "post_turn_summary"})
+
+
 def _read_stream(stdout: bytes, secrets: tuple = ()) -> _Stream:
     stream = _Stream(secrets=secrets)
     for line in stdout.split(b"\n"):
@@ -396,8 +402,8 @@ def _read_stream(stdout: bytes, secrets: tuple = ()) -> _Stream:
             stream.model = _clean(stream, event.get("model"), _MODEL, "model-invalid")
             stream.key_source = _clean(stream, event.get("apiKeySource"), _KEY_SOURCE)
             stream.add("start")
-        elif kind == "system":
-            pass  # non-init system events (hooks, summaries): untrusted, never read or exported
+        elif kind == "system" and event.get("subtype") in _INFO_SYSTEM_SUBTYPES:
+            pass  # hook output and summaries: untrusted, never read or exported
         elif kind == "assistant":
             _blocks(stream, event.get("message"))
         elif kind == "user":

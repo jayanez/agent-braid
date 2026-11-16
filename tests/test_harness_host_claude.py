@@ -403,7 +403,7 @@ class ClaudeHostTests(unittest.TestCase):
         self.assertNotIn(SECRET, json.dumps(data))
 
     def test_non_init_system_events_are_ignored_and_never_exported(self):
-        """Shapes seen with tools on (2.1.311): informational system events around init."""
+        """Shapes from a 2.1.311 capture with tools on (the failed 2.1.292 unit had the same kind)."""
         def system(subtype, **body):
             return {"type": "system", "subtype": subtype, "session_id": SESSION, **body}
         before = (system("hook_started", hook_name=SECRET, hook_event="SessionStart"),
@@ -411,10 +411,7 @@ class ClaudeHostTests(unittest.TestCase):
                   system("hook_response", stdout="HOOK-STDOUT-MARK", stderr=SECRET, exit_code=0))
         after = (system("thinking_tokens", tokens=12),
                  system("task_summary", summary="SUMMARY-MARK " + SECRET),
-                 system("post_turn_summary", summary="SUMMARY-MARK"),
-                 system("future_informational_subtype", text="FUTURE-MARK"),
-                 {"type": "system", "subtype": None, "text": "NULL-MARK"},
-                 {"type": "system", "text": "BARE-MARK"})
+                 system("post_turn_summary", summary="SUMMARY-MARK"))
         lines = (*before, init(), assistant({"type": "text", "text": "ok"}), *after, result())
         outcome = run(lines)
         data = outcome.observation.to_dict()
@@ -422,8 +419,7 @@ class ClaudeHostTests(unittest.TestCase):
         self.assertEqual(data["loss"]["transportErrors"], [])
         self.assertEqual([e["kind"] for e in data["events"]], ["start", "message", "terminal"])
         dumped = json.dumps(outcome.to_dict()) + json.dumps(data)
-        for mark in (SECRET, "HOOK-STDOUT-MARK", "SUMMARY-MARK", "FUTURE-MARK", "NULL-MARK",
-                     "BARE-MARK", "hook_started", "task_summary"):
+        for mark in (SECRET, "HOOK-STDOUT-MARK", "SUMMARY-MARK", "hook_started", "task_summary"):
             self.assertNotIn(mark, dumped)
 
     def test_non_init_system_events_do_not_mask_init_or_result_checks(self):
@@ -433,7 +429,10 @@ class ClaudeHostTests(unittest.TestCase):
                             ((init(), hook, {"type": "bogus"}, result()), "unknown-event-type")):
             outcome = run(lines)
             self.assertEqual(self.state(outcome), "unobserved", code)
-            self.assertIn(code, outcome.observation.to_dict()["loss"]["transportErrors"])
+            errors = outcome.observation.to_dict()["loss"]["transportErrors"]
+            self.assertIn(code, errors)
+            if code != "unknown-event-type":
+                self.assertNotIn("unknown-event-type", errors)
         no_init = run((hook, assistant({"type": "text", "text": "ok"}), result()))
         self.assertNotEqual(self.state(no_init), "completed")
 
@@ -443,8 +442,10 @@ class ClaudeHostTests(unittest.TestCase):
                       compatibility=hc.CompatibilityWindow((2, 1, 292), (2, 1, 294)))
         self.assertEqual(self.state(outcome), "failed")
         self.assertIn("version-drift", [e.get("text") for e in outcome.observation.to_dict()["events"]])
-        for odd in ({"type": "rate_limit_events"}, {"type": "stream_event"}, {"type": "System"},
-                    {"subtype": "hook_started"}):
+        for odd in ({"type": "rate_limit_events"}, {"type": "system", "subtype": "rate_limit_event"},
+                    {"type": "stream_event"}, {"type": "System"}, {"subtype": "hook_started"},
+                    {"type": "system", "subtype": "api_retry"}, {"type": "system", "subtype": None},
+                    {"type": "system"}, {"type": "system", "subtype": "Hook_Started"}):
             outcome = run((init(), odd, result()))
             self.assertEqual(self.state(outcome), "unobserved", odd)
             self.assertIn("unknown-event-type", outcome.observation.to_dict()["loss"]["transportErrors"])
