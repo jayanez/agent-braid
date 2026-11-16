@@ -237,13 +237,19 @@ post-scan does. A hit on a SPEC-074 class (token shapes, bearer header, private
 key block, e-mail address, the current `$HOME` read through `Path.home()` at
 export time) or on another user's home path refuses the whole export with
 `canary-detected`, and nothing is written (owner decision OD-3 Q1 A; no
-redaction in the export). A home path is `/Users/` or `/home/` followed by a
-name segment (letters, digits, `.`, `_`, `-`; a trailing `/` is not needed),
-not inside a longer path segment: `/home/runner/work`, `/Users/Shared/x` and
-`/home/x` block, so CI and shared directories block too (unless the path is the
-current `$HOME`, which SPEC-074 turns into `~` when content is read); `/Users`, `/Users/`,
-`/home/` alone, `/homework/x`, `/srv/home/x` and `~/home/x` do not. The current home is
-redacted to `~` when the adapter reads content, so a hit there means it escaped
+redaction in the export). A home path is `/Users/` or `/home/`, in any letter
+case, followed by a name segment of one or more characters other than
+whitespace, `/`, `\`, quotes, `<`, `>`, `,`, `;`, `:` and `|` (a trailing `/` is
+not needed), anywhere in the bytes, inside longer paths too. So
+`/home/runner/work`, `/Users/Shared/x`, `/home/x`, `/mnt/c/Users/alice/f`,
+`/System/Volumes/Data/Users/alice`, `/Volumes/D/home/bob`, `/Users/_svc/x`,
+`/Users/.hidden`, `/Users/Ünal/x` and `/USERS/x` block, as do, fail closed,
+`/srv/home/x`, `~/home/x` and URL paths such as `/api/users/42`; CI and shared
+directories block too, unless the path is the current `$HOME`, which SPEC-074
+turns into `~` when content is read. `/Users`, `/home/` alone and `/homework/x`
+do not. Documented limits: a Windows path (`C:\Users\x\`) and a doubly escaped
+`\/Users\/x` are not matched. The current home is redacted to `~` when the
+adapter reads content, so a hit there means it escaped
 redaction. The scan catches known shapes only. As the SPEC-074 privacy review
 says, pattern-based redaction cannot catch every secret shape or every piece of
 personal data (for example names in free text). Not detected (OD-3 Q2 A,

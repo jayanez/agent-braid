@@ -496,6 +496,7 @@ def build_manifest(entries: list[dict], records: bytes, *, kind: str, level: str
     manifest = {
         'manifestVersion': MANIFEST_VERSION, 'kind': kind, 'level': level, 'generatedAt': generated_at,
         'seed': seed, 'balance': balance, 'orderingKey': list(ORDERING_KEY), 'redactionVersion': redaction_version(),
+        # canaryScan is 'clean' by construction: scan() runs on these bytes before any write and refuses on a hit
         'termsDecision': terms_decision, 'canaryScan': 'clean', 'exclusions': dict(exclusions),
         'balanceReport': balance_report, 'retention': retention, 'records': entries,
         'recordsSha256': _sha(records),
@@ -506,8 +507,9 @@ def build_manifest(entries: list[dict], records: bytes, *, kind: str, level: str
 
 
 # OD-3 Q1 A: another user's home directory (the SPEC-074 redactor knows only the current one, which it turns into ~).
-# Not inside a longer path segment (`/srv/data/home/x`, `~/home`), anywhere else refused.
-OTHER_HOME = re.compile(r'(?<![A-Za-z0-9._~])/(?:Users|home)/[A-Za-z0-9][A-Za-z0-9._-]*')
+# Anywhere in the bytes, inside longer paths too, any case (macOS paths are case-insensitive), any name segment;
+# fail closed: `/srv/home/x` and URL paths such as `/api/users/42` block as well (OD-3 Q1 A).
+OTHER_HOME = re.compile(r'/(?:users|home)/[^\s/\\"\'<>,;:|]+', re.IGNORECASE)
 
 
 def _decoded(text: str) -> list[str]:

@@ -58,10 +58,15 @@ class Base(unittest.TestCase):
         options = {'kind': 'rollout', 'level': 'transition', 'balance': 'none', 'now': T0 + 60, **kwargs}
         return export.export_dataset(self.home, ['run-1'], out=self.base / name, **options)
 
-    def refused(self, name='out', **kwargs):
+    def refused(self, name='out', *, probe=None, message='The dataset holds a value the canary scan flags', **kwargs):
         with self.assertRaises(export.ExportError) as caught:
             self.export(name, **kwargs)
         self.assertEqual(caught.exception.code, 'canary-detected')
+        self.assertEqual((str(caught.exception), caught.exception.args), (message, (message,)))
+        if probe:
+            self.assertNotIn(probe, str(caught.exception))
+        for word in ('/Users', '/home', 'sk-', '@', 'canaryuser', 'example'):
+            self.assertNotIn(word, str(caught.exception))
         self.assertIsNone(caught.exception.__cause__)
         self.assertEqual(sorted(p.name for p in self.base.iterdir() if p.name != 'owner-home'), ['home'])  # nothing written
         return caught.exception
@@ -186,6 +191,15 @@ class FinalBytesTests(Base):
             with self.subTest(value=value), patch.object(export, 'build_manifest', leaky):
                 self.refused()
 
+    def test_bytes_that_are_not_canonical_are_refused(self):
+        for data in (b'\xff\xfe\n', b'not json\n', '{"x":"\u00e9"}\n'.encode()):
+            with self.subTest(data=data), self.assertRaises(export.ExportError) as caught:
+                export.scan(data)
+            self.assertEqual((caught.exception.code, str(caught.exception)),
+                             ('canary-detected', 'The dataset bytes are not canonical'))
+            self.assertIsNone(caught.exception.__cause__)
+            self.assertTrue(caught.exception.__suppress_context__)
+
     def test_the_current_home_is_caught(self):
         self.planted_after_writer(str(Path.home()) + '/notes.txt')
 
@@ -194,9 +208,9 @@ class FinalBytesTests(Base):
             self.planted_after_writer('/opt/canary-home/notes.txt')
 
     def test_the_own_home_placeholder_and_plain_paths_pass(self):
-        text = 'read ~/notes, /usr/local/bin, /Users, /Users/, /home, /home/, /homework/x, /srv/home/x, ~/home/x'
+        text = r'read ~/notes, /usr/local/bin, /Users, /Users/ x, /home, /home/, /homework/x, C:\Users\x\ and \/Users\/x'
         rollout(self.run, 'ro-p', 'raw-p', [(text, 'ok')], task='task-p', d4=True)
-        self.export()
+        self.export()  # the Windows and double-escaped forms are documented limits
 
     def test_your_own_home_is_redacted_not_refused(self):
         with patch.dict(os.environ, {'HOME': '/home/runner'}):  # as on CI
@@ -206,12 +220,14 @@ class FinalBytesTests(Base):
 
     def test_home_path_boundaries(self):  # a name after /Users/ or /home/ is enough; it need not be a real home
         for path in ('/home/runner/work', '/Users/Shared/x', '/home/x', '/Users/a', 'at=/home/ci', '"/Users/b/c"',
-                     'x-/home/y'):
+                     'x-/home/y', '/mnt/c/Users/alice/f', '/System/Volumes/Data/Users/alice', '/Volumes/D/home/bob',
+                     '/private/var/home/al', '/srv/home/x', '~/home/x', '/Users/_svc/x', '/home/-x', '/Users/.hidden',
+                     '/Users/\u00dcnal/x', '/USERS/x', '/Home/y', 'https://api.example.invalid/api/users/42'):
             with self.subTest(path=path):
                 self.tmp.cleanup()
                 self.setUp()
                 rollout(self.run, 'ro-b', 'raw-b', [(f'see {path}', 'ok')], task='task-b', d4=True)
-                self.refused()
+                self.refused(probe=path)
 
     def test_a_raw_attempt_id_typed_in_content_passes(self):  # OD-3 Q2 A: content, not the id field
         rollout(self.run, 'ro-r', 'raw-attempt.name-7', [('mentions raw-attempt.name-7', 'ok')], task='task-r', d4=True)
