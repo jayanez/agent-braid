@@ -9,6 +9,13 @@ here admits, authorizes or freezes anything (`executionAuthorization` false). Is
 installer and sudoers rule, plus three owner decisions.** None of that exists yet. The offline arm-C path is
 ready and reproducible. Arm D has no path, offline or native, and does not fit the D2 unit cap.
 
+Upstream state on 2026-11-16 (HAR orchestrator): SPEC-048 T008 has **0 units left** (`t008-20261114c` used the
+last one: `completed=False`, breach `paid-route`), so T008 needs a new founder decision before any T004
+admission. The 2026-11-14 issuance becomes void when `fix/065-claude-system-events` merges; after the
+re-qualification the T014 deadline is **30 days after the new issuance**, not 2026-12-14. Every date and pin
+below that names the 2026-11-14 issuance moves to the new one. The native build and runs belong to the
+native-chain session; this document is its hand-over.
+
 | Piece | State |
 | --- | --- |
 | Offline arm C (contrastive proposer, R13 double) | Ready: 14 tests pass; `python3 -m tests.harness_t014_arm_c` reproduces signals `continued-past-drift`, `repeated-completed-steps` and arm-C candidate `6674a8da7aab284f456a9cefd551ebddbb6546873a809ad6a3db48fedca1f7d9` (resume-only guidance) |
@@ -42,16 +49,18 @@ What *can* be reused unchanged: the qualified lab (braidlab `Background` session
 
 ## Hard constraint: do not touch the qualification inputs
 
-The 2026-11-14 issuance (expires **2026-12-14T18:42:10Z**) holds only while these bytes stay unchanged:
+An issuance (the 2026-11-14 one expires 2026-12-14T18:42:10Z; its successor 30 days after issue) holds only
+while these bytes stay unchanged:
 environment-hash components `harness_containment_macos.py`, `harness_lab.py`, `harness_host_claude.py`,
 `harness_transport_claude.py`, `harness_quota.py`, and the MDRV-04 guarded modules `harness_manifest.py`,
 `harness_context.py`, `harness_observation.py`, `system_one.py`. New files under `scripts/` and a new module
 under `agent_braid/` do not enter the hash. Any edit to the nine files above voids the issuance and forces a
-SPEC-065 re-qualification, which would not fit before 2026-12-14.
+SPEC-065 re-qualification. The re-qualification already pending for `fix/065-claude-system-events` is the
+only window to change them (for example the unit cap); after that issuance they are frozen again.
 
 Consequence: the D2 unit cap of 16 is enforced in `harness_quota.MAX_UNITS` and `harness_hosts.D2Caps`
-(construction refuses any other value). **Raising the cap is not possible in this window** without voiding the
-qualification.
+(construction refuses any other value). **Raising the cap needs a founder decision plus a code change inside the
+pending re-qualification**; once the new issuance exists it voids it again.
 
 ## Unit budget under D2 (at most 16 native units, 30 min each, EUR 0)
 
@@ -104,8 +113,8 @@ ledger counts across labels, as in T008). Model: Haiku, the only model the lab h
 4. Tests with doubles: workload ↔ `verify_containment` values, grading bridge, cap/ledger, launcher helper
    identity; then a security delta review of the launcher and installer before install.
 
-Estimated 2–3 PRs plus the review. It can be built now, in parallel with the last T008 unit, without touching
-any frozen file.
+Estimated 2–3 PRs plus the review. It can be built now, in parallel with the T008 decision and the
+re-qualification, without touching any frozen file; the pins go in once the new issuance exists.
 
 ## Owner steps once built (one command each)
 
@@ -124,8 +133,11 @@ three decisions:
 - **T004 admission**: exact source (T005 roster freeze), candidates A/B/C, containment (2026-11-14 issuance),
   host/model route (Claude, Haiku, subscription), cash EUR 0.
 - **T014 terms**: plan P2 or P1, arm D infeasible, whether T008 units count toward the 16, window end
-  (must finish before 2026-12-14T18:42Z).
-- **Arm-C freeze**: register candidate `6674a8da…f7d9` (resume-from-checkpoint only) as T014 arm C.
+  (must finish before the new issuance expires, 30 days after it is issued).
+- **Arm-C freeze**: register candidate `6674a8da…f7d9` (resume-from-checkpoint only) as T014 arm C. Prepared
+  here only; it is registered for T014 only after the orchestrator and the native-chain session are told.
+
+Before all three: a new SPEC-048 T008 founder decision (0 units left) and a qualified Claude verdict.
 
 ## What T014 will and will not measure
 
