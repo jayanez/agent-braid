@@ -1,0 +1,28 @@
+{
+ "command": "python -m unittest tests.test_spec075_boundaries tests.test_lightning_cli",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/forecast_mcp.py": "6fba537f5506791f6e160dad7bfd8f92e0183019ac8b7c026ecb8aacd83b2f24",
+  "agent_braid/lightning_cli.py": "7881aa43603841ff3e8aacbfd1397d135f9777a9e8f6fca87c7c8056301af7c1",
+  "agent_braid/lightning_export.py": "b94ba4e9e3c332f821209e5e80c7721a4562a7b0af550d59979225165032b92d",
+  "agent_braid/mcp_advice.py": "74b2a62a6e4665e9d3beca9cf9abf7e9e017d6353a670f5b047dbf27c928c1a9",
+  "agent_braid/mcp_runtime.py": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83",
+  "agent_braid/plugin_mcp.py": "212eff2ab134d1b18af565960b12076316b7baa8c9aae6c31be78ed3dce2a608",
+  "agent_braid/system_one_verified_mcp.py": "e34983f7e92ab1812ca6a8265d4a365ee7e5217ae8f1689da71b8998354025d4",
+  "agent_braid/tooling_mcp.py": "0e3276644b3e85c91a02e175700ba992bac30201da28a1364691894d8a6db3f1",
+  "pyproject.toml": "d381baf52f4d354717080943bb65b7416bcc7a0e418d465a86de09b65b6466b3",
+  "tests/spec075_fixtures.py": "780661adc1dbd086f7bf8cffee7229c98413596bf5bd485e0b36042376b519a6",
+  "tests/test_lightning_cli.py": "77afe28c22ed1d9360d370f39ae04266d6615cc9537615a9b50334719747eb08",
+  "tests/test_spec075_boundaries.py": "b657e42b055d5c1cc348e2ed3413ac1d73011b7d0ff2071d87335ab0691234be"
+ },
+ "limits": "The dynamic guard shows that the export never calls a socket or process entry point only for the paths these tests run (listed above); it covers this process and the listed entry points, not C extensions or names bound before the patch, and lightning init with consent and export runs before the guard (it is covered by the SPEC-074 boundary tests). plugin_registry imports subprocess for its own checks, so subprocess is in the import closure. The static name checks cover the export and CLI modules, not their imports, and match names, not behaviour. Temporary homes and synthetic content.",
+ "outcome": "passed: T011: static half: every import of lightning_export.py, top-level or lazy, is on an allow-list (__future__, datetime, hashlib, json, os, pathlib, re, shutil, stat, tempfile and the Lightning modules lightning_adapter, lightning_config, lightning_redact, lightning_store, plugin_registry, trace_adapter), so a new import needs a test edit (lightning_cli.py imports are covered by tests.test_lightning_cli.BoundaryTests). lightning_export and lightning_cli hold no decide, begin, execute, recover, harness_promotion, grant, import_module, __import__, exec, eval, compile (builtin), importlib or exec*/spawn*/posix_spawn* name; no popen, system, fork, forkpty, Popen, check_output, check_call, create_connection, socketpair or getaddrinfo attribute; and no getattr, setattr, vars or globals call on os, subprocess, socket, importlib, builtins, sys or shutil or with a forbidden attribute string. A fresh interpreter importing both loads no socket, asyncio, ssl, http, http.client, urllib.request, multiprocessing, MCP, model, promotion, lifecycle, runtime-policy, git-execution, runner, host or System One module. No *mcp*.py module mentions lightning, no integrations manifest names lightning export, and no tool name of mcp_runtime.TOOLS, of ToolingService.tools (with and without the runtime) or name or description of plugin_mcp.tool_listing mentions export, dataset or lightning (a neutral dataset tool added to mcp_runtime.TOOLS is caught); pyproject.toml declares no runtime dependency. Dynamic half: with every socket, subprocess and os process or exec entry point replaced by a failing stub, export_dataset succeeds for both kinds at both levels and refuses offline with canary-detected, terms-gate-missing (no record and a named missing record), store-missing, invalid-argument, output-not-empty and, after lowering consent to none under the guard, no-records; lightning export succeeds for --run, the outcome field, --dry-run and --help and refuses (exit 2) a missing run, an invalid argument, a non-empty output, --all with a host run (terms-gate-missing), a planted canary (canary-detected), a named missing terms record and export-disabled, with no boundary hit and executionAuthorization false in every JSON output. Negative controls: each of the 22 stubs (every BLOCKED entry point present on this platform) fires when called inside the export, an os.popen inside the canary scan or the terms loader fails, and mutants adding lazy smtplib, threading, importlib, webbrowser or pty imports, dead-code os.popen, os.execl, os.spawnl, getattr(os, popen), compile() or subprocess.check_output, a socket import, an os.system call, a runner import, an execute definition, or a lightning mention in plugin_mcp each fail a test. Every patch is registered with addCleanup; a test runs the guarded suite a second time inside a snapshot (the only way to compare from within the suite) and compares os.environ, every patched entry point and the working directory before and after; dropping the addCleanup of the HOME patch or of the guards fails it.",
+ "procedure": "procedure_011",
+ "result": "OK",
+ "scenario": "SC-011",
+ "specification": "SPEC-075 BL.5",
+ "testsRun": 31
+}
