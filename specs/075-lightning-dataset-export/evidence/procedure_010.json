@@ -11,7 +11,7 @@
   "specs/075-lightning-dataset-export/reviews/owner-t010-20261116.md": "9986669e719619aa43c2f3fb03cb45061c30a203be56e0cd97178e0c0f47bc00",
   "tests/fixtures/spec074-canaries/corpus.json": "ab65d59c7b47cd989b6ea201e1dad927102338bda168aa750bd9b71b5deb5c6a",
   "tests/spec075_fixtures.py": "780661adc1dbd086f7bf8cffee7229c98413596bf5bd485e0b36042376b519a6",
-  "tests/test_spec075_canary.py": "613aa6237e5b7149e0dacb7d69e24f7a7501e1e017f0cc1a484b1c9722010adc",
+  "tests/test_spec075_canary.py": "bab26e8b3c34aa64931458bc9046b0ff6f1ebeba8436cd4687b828fa31d9dcb2",
   "tests/test_spec075_manifest.py": "c390c99a69b9ce7287e48b72e249dde611233c15db89591a2fc64651de602cba"
  },
  "limits": "Temporary homes and synthetic canaries. The scan catches known shapes only: as the SPEC-074 privacy review says, pattern-based redaction cannot catch every secret shape or every piece of personal data (for example names in free text). Not detected, by owner decision OD-3 Q2 A: a literal secret the store was not given at ingest, free text of unknown shape, a raw attempt id typed inside content, and encodings nested twice or more; canaryScan clean means no hit for the listed classes, not free of secrets. The home-path check refuses any /Users/<name> or /home/<name> path not inside a longer segment, so a trace that mentions any such path (for example /home/runner/ on CI when it is not the current $HOME, /srv/home/x or a URL path /api/users/42) blocks the export until the run is cleaned or purged. The current-home check depends on $HOME at export time (Path.home()); the SPEC-074 adapter redacts the $HOME current at read time. SPEC-074 is not changed.",

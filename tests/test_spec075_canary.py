@@ -91,7 +91,7 @@ class IngestTests(Base):
                 continue  # Q2 A residual (literal not passed at ingest) and Q1 A (other user's home): below
             for field in FIELDS:
                 with self.subTest(id=item['id'], field=field):
-                    self.tmp.cleanup()
+                    self.tearDown()
                     self.setUp()
                     try:
                         self.ingest(json.dumps(item['record']), field, 1)
@@ -113,7 +113,7 @@ class IngestTests(Base):
         for n, path in enumerate(OTHER_HOMES):
             for field in FIELDS:
                 with self.subTest(path=path, field=field):
-                    self.tmp.cleanup()
+                    self.tearDown()
                     self.setUp()
                     self.ingest(f'see {path} now', field, n)
                     self.refused()
@@ -122,7 +122,7 @@ class IngestTests(Base):
         for form in ('plain', 'json-escaped', 'url-encoded', 'base64'):
             item = next(c for c in CORPUS['canaries'] if c['class'] == 'home' and c['form'] == form)
             with self.subTest(form=form):
-                self.tmp.cleanup()
+                self.tearDown()
                 self.setUp()
                 self.ingest(item['record']['text'], 'prompt', 1)  # one level of encoding, as in the corpus
                 self.refused()
@@ -224,7 +224,7 @@ class FinalBytesTests(Base):
                      '/private/var/home/al', '/srv/home/x', '~/home/x', '/Users/_svc/x', '/home/-x', '/Users/.hidden',
                      '/Users/\u00dcnal/x', '/USERS/x', '/Home/y', 'https://api.example.invalid/api/users/42'):
             with self.subTest(path=path):
-                self.tmp.cleanup()
+                self.tearDown()
                 self.setUp()
                 rollout(self.run, 'ro-b', 'raw-b', [(f'see {path}', 'ok')], task='task-b', d4=True)
                 self.refused(probe=path)
