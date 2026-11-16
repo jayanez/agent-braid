@@ -80,7 +80,8 @@ class DisabledTests(Base):
             text = ' '.join(out.split())
             for phrase in ('OFF by default', 'export-disabled', 'export.enabled', 'lightning init --export',
                            "No provider's terms have been reviewed", 'OD-1 is deferred', 'only fixture runs export',
-                           '/private/tmp', 'none ships with Agent Braid'):
+                           '/private/tmp', 'none ships with Agent Braid',
+                           'catches known shapes only', '/home/runner/', 'canary-detected'):
                 self.assertIn(phrase, text)
             self.assertNotIn('(OD-1)', text)
         self.assertFalse((self.base / 'out').exists())

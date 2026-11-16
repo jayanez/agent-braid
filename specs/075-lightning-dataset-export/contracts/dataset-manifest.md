@@ -235,13 +235,21 @@ each two neighbouring fields joined (a value split across two fields), each with
 its decoded views (URL decoding, `\uXXXX` escapes, base64 runs), as SPEC-074's
 post-scan does. A hit on a SPEC-074 class (token shapes, bearer header, private
 key block, e-mail address, the current `$HOME` read through `Path.home()` at
-export time) or on another user's home path (`/Users/<name>` or `/home/<name>`
-not inside a longer path segment; owner decision OD-3 Q1 A) refuses the whole
-export with `canary-detected`, and nothing is written. The current home is
+export time) or on another user's home path refuses the whole export with
+`canary-detected`, and nothing is written (owner decision OD-3 Q1 A; no
+redaction in the export). A home path is `/Users/` or `/home/` followed by a
+name segment (letters, digits, `.`, `_`, `-`; a trailing `/` is not needed),
+not inside a longer path segment: `/home/runner/work`, `/Users/Shared/x` and
+`/home/x` block, so CI and shared directories block too; `/Users`, `/Users/`,
+`/home/` alone, `/homework/x`, `/srv/home/x` and `~/home/x` do not. The current home is
 redacted to `~` when the adapter reads content, so a hit there means it escaped
-redaction. Not detected (OD-3 Q2 A, documented residual risk): literal secrets
-not given to the store at ingest, secrets of unknown shape, and encodings nested
-twice or more. `canaryScan: "clean"` therefore means "no hit for these classes",
+redaction. The scan catches known shapes only. As the SPEC-074 privacy review
+says, pattern-based redaction cannot catch every secret shape or every piece of
+personal data (for example names in free text). Not detected (OD-3 Q2 A,
+documented residual risk): a literal secret not given to the store at ingest,
+free text of unknown shape, a raw attempt id typed inside content (content, not
+the id field, which is always a pseudonym), and encodings nested twice or
+more. `canaryScan: "clean"` therefore means "no hit for these classes",
 not "free of secrets".
 
 ## Retention and purge

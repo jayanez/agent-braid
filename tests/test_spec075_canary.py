@@ -172,14 +172,14 @@ class FinalBytesTests(Base):
 
     def test_the_manifest_is_scanned_too(self):
         real = export.build_manifest
+        for value in ('task-/Users/canaryuser/x', 'task-/home/canaryuser/x', 'sk-proj-CANARYq9W8e7R6t5Y4u3I2'):
+            def leaky(entries, records, **kwargs):
+                manifest = real(entries, records, **kwargs)
+                manifest['records'][0]['taskId'] = value
+                return manifest
 
-        def leaky(entries, records, **kwargs):
-            manifest = real(entries, records, **kwargs)
-            manifest['records'][0]['taskId'] = 'task-/Users/canaryuser/x'
-            return manifest
-
-        with patch.object(export, 'build_manifest', leaky):
-            self.refused()
+            with self.subTest(value=value), patch.object(export, 'build_manifest', leaky):
+                self.refused()
 
     def test_the_current_home_is_caught(self):
         self.planted_after_writer(str(Path.home()) + '/notes.txt')
@@ -189,9 +189,24 @@ class FinalBytesTests(Base):
             self.planted_after_writer('/opt/canary-home/notes.txt')
 
     def test_the_own_home_placeholder_and_plain_paths_pass(self):
-        rollout(self.run, 'ro-p', 'raw-p', [('read ~/notes, /usr/local/bin, /Users, /homework/x, /srv/home/x', 'ok')],
-                task='task-p', d4=True)
+        text = 'read ~/notes, /usr/local/bin, /Users, /Users/, /home, /home/, /homework/x, /srv/home/x, ~/home/x'
+        rollout(self.run, 'ro-p', 'raw-p', [(text, 'ok')], task='task-p', d4=True)
         self.export()
+
+    def test_home_path_boundaries(self):  # a name after /Users/ or /home/ is enough; it need not be a real home
+        for path in ('/home/runner/work', '/Users/Shared/x', '/home/x', '/Users/a', 'at=/home/ci', '"/Users/b/c"',
+                     'x-/home/y'):
+            with self.subTest(path=path):
+                self.tmp.cleanup()
+                self.setUp()
+                rollout(self.run, 'ro-b', 'raw-b', [(f'see {path}', 'ok')], task='task-b', d4=True)
+                self.refused()
+
+    def test_a_raw_attempt_id_typed_in_content_passes(self):  # OD-3 Q2 A: content, not the id field
+        rollout(self.run, 'ro-r', 'raw-attempt.name-7', [('mentions raw-attempt.name-7', 'ok')], task='task-r', d4=True)
+        manifest = self.export()
+        self.assertNotIn('raw-attempt.name-7', json.dumps(manifest))
+        self.assertIn(b'mentions raw-attempt.name-7', (self.base / 'out' / 'records.jsonl').read_bytes())
 
     def test_planted_canary_in_a_tool_call(self):
         real = export.rollout_records

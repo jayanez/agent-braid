@@ -27,7 +27,7 @@ module per task).
 | procedure_007 | SC-007 | balance tests (`tests.test_spec075_balance`, T007) | `rollout` kind: 2+2 kept, stable, dropped counts reported; `supervised` not balanced | unseeded choice differs across runs |
 | procedure_008 | SC-008 | terms gate tests (`tests.test_spec075_terms`, T008; synthetic temporary records only) | refuse without record; proceed with permitting record, hash referenced | host export without record succeeds |
 | procedure_009 | SC-009 | CLI tests (`tests.test_spec075_cli`, T009) | fixed refusal codes; no value echo; `export-disabled` unless `export.enabled` | symlinked or non-empty output accepted |
-| procedure_010 | SC-010 | canary scan tests (`tests.test_spec075_canary`, T010; OD-3) | abort, no output on hit; `clean` otherwise | partial file left after abort |
+| procedure_010 | SC-010 | canary scan tests (`tests.test_spec075_canary`, T010; OD-3: the scan catches known shapes only; literal secrets not given at ingest, unknown shapes and raw ids typed in content are not detected) | abort, no output on hit; `clean` otherwise | partial file left after abort |
 | procedure_011 | SC-011 | socket/subprocess patched tests; MCP tool list | offline success; no MCP tool exposes export | socket opened |
 | procedure_013 | SC-013 | retention tests with injected clock; purge listing | record past retention refused `retention-expired`; manifest records retention; purge lists citing manifests | expired record exported; purge silent about citing manifest |
 | procedure_012 | SC-012 | `speckit-converge`, link check | artifacts agree | unbacked claim in documentation |

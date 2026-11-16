@@ -166,7 +166,12 @@ Export is OFF by default: it refuses with export-disabled unless the profile has
 deferred), so host-model output exports only with an owner terms decision record you write yourself; without one,
 only fixture runs export. --out must be a canonical path without symbolic links (on macOS /tmp and /var are
 symbolic links: use /private/tmp or a directory under your home) inside an existing directory, and must not exist
-or be empty. Errors print one line with a fixed code and no value."""
+or be empty. Before anything is written, the bytes are scanned for known secret shapes (tokens, bearer headers,
+private keys, e-mail addresses, your home path) and for any /Users/<name> or /home/<name> path, such as
+/home/runner/; a hit refuses the export with canary-detected. The scan catches known shapes only: pattern-based
+redaction cannot catch every secret shape or every piece of personal data (for example names in free text), and
+a literal secret not given when the trace was stored is not caught. Errors print one line with a fixed code and
+no value."""
 EXPORT_FLAGS = ('--home', '--run', '--all', '--kind', '--level', '--out', '--seed', '--balance', '--outcome-field',
                 '--terms-decision', '--dry-run', '--help')
 
