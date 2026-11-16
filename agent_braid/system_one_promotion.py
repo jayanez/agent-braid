@@ -212,7 +212,9 @@ def rollback(home: Path | None, decision_point: str, *, decided_on: str,
 def _point(configured: str, latest, manifest_digest: str) -> dict:
     fallback = 'off' if configured == 'off' else 'shadow'
     if latest is not None and latest['decision'] == 'rollback' and configured != 'off':
-        return {'activeMode': 'off', 'reason': latest.get('reason', 'rolled-back')}
+        if latest.get('reason') in ROLLBACK_REASONS:  # D7: demote to shadow so episodes keep being recorded
+            return {'activeMode': 'shadow', 'reason': latest['reason']}
+        return {'activeMode': 'off', 'reason': 'rolled-back'}
     if configured != 'advise':
         return {'activeMode': configured, 'reason': 'configured'}
     if latest is None:
@@ -257,7 +259,7 @@ def status(home: Path | None, configured: str, manifest_digest: str | None) -> d
 
 def auto_rollback_false_independence(home: Path | None, decision_point: str, *, false_independent_days,
                                      decided_on: str) -> MappingProxyType | None:
-    """D7: demote to `off` on the first joined real conflict on an advised `likely-independent` pair.
+    """D7: demote to `shadow` (owner decision 2026-11-16) on the first joined real conflict on an advised `likely-independent` pair.
 
     `false_independent_days` are the ISO episode days of joined `merge-conflict` outcomes whose rule
     answer was `likely-independent`. It acts only while the latest record is an owner go and a conflict

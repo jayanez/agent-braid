@@ -324,11 +324,27 @@ class RollbackTests(Base):
         self.assertEqual([r["decision"] for r in records], ["go", "rollback"])
         self.assertEqual(records[-1]["reason"], "auto-rollback-false-independence")
         self.assertEqual((self.state()["activeMode"], self.state()["reason"]),
-                         ("off", "auto-rollback-false-independence"))
+                         ("shadow", "auto-rollback-false-independence"))
         self.assertIn(self.state()["reason"], promotion.REASONS)
         status = promotion.status(self.home, "advise", MANIFEST)
         self.assertEqual(status["decisionPoints"]["DP-1"]["reason"], "auto-rollback-false-independence")
         self.assertTrue(status["valid"])
+
+    def test_auto_rollback_keeps_shadow_recording_and_a_later_go_re_enables_advise(self):
+        self.go()
+        observer.apply_auto_rollback([self.conflict_record("likely-independent")], TODAY, home=self.home)
+        for configured, mode in (("advise", "shadow"), ("shadow", "shadow"), ("off", "off")):
+            resolved, _ = promotion.inspect(self.home, configured, MANIFEST)
+            self.assertEqual(resolved["activeMode"], mode, configured)
+        self.go(day="2026-11-15")
+        self.assertEqual((self.state()["activeMode"], self.state()["reason"]), ("advise", "owner-go"))
+
+    def test_owner_rollback_still_demotes_to_off(self):
+        self.go()
+        promotion.rollback(self.home, "DP-1", decided_on="2026-11-14")
+        for configured in ("advise", "shadow"):
+            resolved, _ = promotion.inspect(self.home, configured, MANIFEST)
+            self.assertEqual((resolved["activeMode"], resolved["reason"]), ("off", "rolled-back"))
 
     def test_no_rollback_on_clean_undetermined_unanswered_or_without_a_go(self):
         self.go()
