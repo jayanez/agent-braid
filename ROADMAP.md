@@ -583,11 +583,20 @@ or observed use. The new track **S1.5** ([SPEC-066](specs/066-system-one-shadow/
 human review pending) resumes the deferred work in stages. S1.5a is merged and ships
 in plugin `0.1.0-alpha.5` and later, so Agent Braid now supports an opt-in System One
 decision layer in shadow mode. The owner's one-week shadow session (T030) runs
-2026-11-02 to 2026-11-09. The S1.5a closure is open: the specification freeze (T005),
-the overhead receipt (T021), the redacted T030 receipt, the converge pass (T031; the
-[2026-11-07 founder decisions](docs/development/FOUNDER_DECISIONS_20261107.md) align
-REQ-003 with the code) and the owner's closure review (T032), which also decides
-whether S1.5b starts:
+2026-11-02 to 2026-11-09 and produced its redacted receipt (25 episodes, 142 pairs, all
+`abstained`; counts only, no utility claim). S1.5a was closed on 2026-11-10 by the owner
+(T005 freeze, T021 overhead receipt, T031 converge, T032 closure review) and S1.5b started.
+On 2026-11-14 the S1.5b sibling-pair feasibility check (B0) came out INFEASIBLE (3015
+labelled pairs, only 4 that System 2 classifies `unknown`), so S1.5d (T301–T303) is
+Deferred under the owner's Wilson GO rule (D3) and the track continues on a reviewable
+fast route (REQ-402, [ADR 0034 addendum](docs/adr/0034-system-one-shadow-advisory-boundary.md)):
+a rule-based DP-1 advise (T404, #1375; promotion registry plumbing #1374) and a merge-outcome
+join with automatic rollback to `shadow` at the first real conflict on an advised-independent
+pair (T405, #1389). The owner's go/no-go packet (T406) is due 2026-11-28, `advise` goes
+live 2026-11-30 only on a recorded go, and a mandatory review on 2026-12-31 ends the go.
+On 2026-11-16 the data were 29 shadow episodes and 0 joined outcomes (the `runtime-state`
+source is refused with `path-outside-admitted`); a read-only weekly count task counts them.
+The stages are:
 
 - **S1.5a** opt-in shadow recording of one episode per successful `analyze-work`
   call, with outputs unchanged (the only stage specified to implementation level);
@@ -703,7 +712,7 @@ CLI subscription route only (extra cash spend EUR 0), first target the
 result** (SPEC-072 T001–T013 done and converged; on the frozen held-out set A0
 25/30, A1 APO 23/30, A2 GEPA 24/30 in Claude Code, all missing D4, so H1 is not
 supported; specification draft, human review pending); BL.3 (SPEC-073) has no
-candidate to promote from BL.2; BL.4 (SPEC-074) in progress (T001–T002 done);
+candidate to promote from BL.2; BL.4 closed on 2026-11-14 (SPEC-074 T001–T011 done, frozen on `develop` by #1378);
 BL.5 draft. BL.0 delivered the
 experimental `agent-braid lightning init|validate|status|purge` commands and
 `plugin setup --lightning`. BL.1 and BL.2 added subscription-route host runs and
