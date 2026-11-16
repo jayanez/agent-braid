@@ -2,10 +2,11 @@
 
 **Milestone:** BL.5 — Lightning dataset export.
 
-**Status:** draft. Depends on SPEC-074 (BL.4, trace consent and
-`agent_braid/lightning_adapter.py`). Owner review (T001, 2026-11-14): E1–E5
-accepted, OD-2 decided; OD-1 (host usage-terms review) is deferred, so the terms
-gate ships closed and no host-model output exports.
+**Status:** draft, converged 2026-11-16 (T012). Depends on SPEC-074 (BL.4,
+trace consent and `agent_braid/lightning_adapter.py`). Owner decisions: T001
+(2026-11-14) E1–E5 accepted, OD-2 equal 1:1; OD-3 (2026-11-16) Q1 A, Q2 A; OD-4
+(2026-11-16) additive purge output. OD-1 (host usage-terms review) is deferred,
+so the terms gate ships closed and no host-model output exports.
 
 ## Purpose and scope
 
@@ -48,8 +49,9 @@ Exclusions:
 - [SPEC-070](../070-braid-lightning-foundations/spec.md) store and
   [configuration contract](../070-braid-lightning-foundations/contracts/lightning-config.md).
 - [Research](../070-braid-lightning-foundations/research.md) §3 decisions 1 and 5.
-- ADR 0021 (EUR 0), ADR 0034 (System One advisory boundary), proposed
-  ADRs 0039–0042 (SPEC-070 REQ-001).
+- ADR 0021 (EUR 0), ADR 0034 (System One advisory boundary), ADRs 0039–0041
+  (accepted 2026-11-08) and ADR 0042 (local weight training, still proposed and
+  deferred; SPEC-075 trains nothing) (SPEC-070 REQ-001).
 - SPEC-034 to SPEC-037 "no fine-tuning" statements, scoped to forecasting.
 - [contracts/dataset-manifest.md](contracts/dataset-manifest.md).
 
@@ -96,7 +98,7 @@ Decisions:
   provider (Anthropic for Claude Code; each OpenCode backend), may outputs be
   used to train or fine-tune models, including local open models? Owner
   decision; legal, not scientific. No decision is recorded: BL.5 ships with the
-  terms gate closed, so only fixtures and non-host content export. No terms
+  terms gate closed, so only fixture runs (`pipeline-only`) export. No terms
   decision record is committed and no provider is said to permit training; the
   gate's permitting branch is tested only with synthetic records in temporary
   directories that name no real provider.
@@ -264,11 +266,41 @@ the manifest that cites it. Verification: procedure_013; T013.
 
 ## Scientific boundaries and compatibility
 
-No hypothesis; datasets are artifacts, not evidence of model improvement.
-Additive: new module, CLI subcommand and experimental schema; no existing
-schema, contract or report changes. `executionAuthorization` stays false.
+No hypothesis; datasets are artifacts, not evidence of model improvement. No
+claim is made that a dataset, its balance or its record shape helps any model.
+Additive: new module, CLI subcommand, experimental schema and a private export
+index; the only change to an existing interface is the additive `lightning
+purge` output (`citingDatasets`, `datasetsNote`, OD-4). `executionAuthorization`
+stays false.
 
 ## Evidence and unresolved questions
 
 Evidence is recorded per procedure under `evidence/`; procedure_001 is the T001
-review record. Unresolved: OD-1 (deferred; the terms gate stays closed).
+review record and procedure_012 the convergence. Unresolved: OD-1 (deferred; the
+terms gate stays closed, no provider's terms are reviewed, no terms decision
+record ships).
+
+## Convergence findings (T012)
+
+Read-only analysis of spec, plan, tasks, contract, schema and obtained evidence
+at convergence (2026-11-16), over T001–T011 and T013 and their review rounds.
+None blocks a requirement; each is stated so the owner's review sees it.
+
+| ID | Finding | Effect |
+|---|---|---|
+| A1 | SPEC-074 records carry no redaction version, although E1 and the plan assumed one. | The builder defines `redactionVersion` as a digest of the SPEC-074 redactor's pattern sources and salt size (T006); it does not cover the redactor's code. SPEC-074 unchanged. |
+| A2 | The frozen rollout reader notes `content-consent-required` both without consent and for an unlisted source. | The export reads the SPEC-074 gate's refusal itself to count `consent-none` and `no-consent` apart (T003). |
+| A3 | OD-1 is deferred. | The terms gate (T004, T008) ships closed: every non-fixture unit refuses with `terms-gate-missing`; only `pipeline-only` fixture runs export; no record ships, no provider is described as permitted, and the permitting branch is tested only with synthetic temporary records. |
+| A4 | A probe before T010 showed the SPEC-074 redactor lets through another user's home path, a literal secret not given at ingest, unknown-shape text and raw ids typed in content. | OD-3: Q1 A, any `/Users/<name>` or `/home/<name>` path (any case, inside longer paths too) refuses with `canary-detected`, fail closed, with false positives such as `/srv/home/x`; Q2 A, the rest is documented residual risk. The scan catches known shapes only. |
+| A5 | The export's retention boundary is one instant stricter than the SPEC-074 sweep's, and a missing profile refuses although the sweep defaults to 30 days. | Kept on purpose (fail closed) and documented (T013). |
+| A6 | REQ-013 needs `lightning purge` to list citing datasets. | One additive output change in `lightning_cli.py`, approved by the owner on 2026-11-16 (OD-4); the private export index (path, digest, runs) remains while a dataset exists and is pruned by a purge apply once it is gone. |
+| A7 | REQ-004 said a trajectory merges a rollout; the state machine allows no retry. | Clarified to one record per attempt; a rollout with two attempts refuses with `source-invalid` (T005). |
+| A8 | SC-009's "paths outside the plugin home or the given directory" was read as a canonical, symlink-free output inside an existing directory; exports are not confined to the plugin home, and `--level` is required as REQ-009 writes it. | Reported in #1391, not changed; a one-line change if the owner wants exports confined. |
+| A9 | Several review rounds found test gaps that mutants exposed (for example a leaked `HOME` patch that broke another test module on CI, and the read-side permission check on the export index). | Fixed in the PRs and in T012; every patch is undone with `addCleanup`, and an isolation test compares global state (T011). |
+| A10 | SPEC-074 behaviour (consent, redaction, pseudonyms, retention, purge) is assumed, not re-proven, by SPEC-075. | SPEC-075 evidence tests the export against the frozen SPEC-074 code only. |
+
+Residual risks, plainly: the canary scan catches known shapes only; pattern-based
+redaction cannot catch every secret or every piece of personal data; exported
+files are outside purge and the owner must delete them; no dataset has been
+built from real host output, and nothing here shows that any dataset or its
+balance improves a model.

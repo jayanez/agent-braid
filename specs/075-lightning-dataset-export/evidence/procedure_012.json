@@ -1,0 +1,27 @@
+{
+ "command": "python -m unittest tests.test_spec075_converge",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/lightning_cli.py": "363fea8c903f0b82e32fd80964b3a71413715bf592be9b366d3692a0b80059aa",
+  "docs/tooling/LIGHTNING.md": "3eb23a516f5e9adebc6876abff334480172491d02bc256041698222492a735d0",
+  "scripts/spec075_capture_evidence.py": "52d2cacae744e508985def4503f40fc8f0414e4af1dcfb705bd78e4642485c20",
+  "specs/075-lightning-dataset-export/checklists/requirements.md": "688a36240128fa1384a1fef2e91fbab9f6c8857391c57789656b225ce0c97a6e",
+  "specs/075-lightning-dataset-export/contracts/dataset-manifest.md": "71ea7c25988d7eac5eab725e4b3191be11cf6f9f8a4c157ac32e0fda449d8751",
+  "specs/075-lightning-dataset-export/plan.md": "e76102be067385748c23ff6922bab25a3407badea5852c7787e8f8552cf43217",
+  "specs/075-lightning-dataset-export/research.md": "de3406ea6e526eb9f4bdb61bcf25e695b3189f7e8e8fb7eb094f7c68cc21bedb",
+  "specs/075-lightning-dataset-export/spec.md": "3c912aa0eff8b4689e7b9cc3067509f5451c2d86ac76e32896030474dac7a4d9",
+  "specs/075-lightning-dataset-export/tasks.md": "f5963dcd6f04331bbffe023246a5c71fe1ec460adb783578a9e5e9cca8ef6b9b",
+  "specs/075-lightning-dataset-export/validation-plan.md": "a8ae46c5c7ec86f821db45242a25af6e533725597d6aa2072768e128db0c6261",
+  "tests/test_spec075_converge.py": "f185b22f481ea7572cd2f1b0669a3f506c985c31398b02613517c3fdc7bc4fb5"
+ },
+ "limits": "Structural agreement of documents and records, not semantic review: the tests match fixed phrases, links and record presence; the convergence findings are an author's read-only analysis, not owner approval (human_review stays pending). The freeze on a develop commit is a separate step.",
+ "outcome": "passed: T012 convergence over T001-T011 and T013 and their review rounds: every requirement REQ-001 to REQ-013 has exactly one scenario, a section in spec.md, a procedure in the validation plan and a ticked task, and every scenario except SC-012 (this run) has obtained evidence whose file exists, test procedures having passed; no task is unticked and procedure_002 to procedure_011 and procedure_013 have records. No spec, plan, tasks, validation-plan, contract, checklist or capture text holds a stale forward reference (lands with, waits for, until a later task) or the two corrected false claims (that SPEC-074 files were untouched, and that export and sweep share one retention boundary). spec.md states OD-1 deferred, OD-2, OD-3 and OD-4, the convergence findings A1 to A10 (redaction version defined by the builder; consent reasons from the gate; terms gate closed with synthetic records only; the canaries the redactor lets through and the owner's Q1 A and Q2 A; the stricter retention boundary; the approved additive purge output; one record per attempt; the SC-009 output-path reading; review-round test gaps; SPEC-074 behaviour assumed) and the residual risks (the canary scan catches known shapes only; nothing shows that a dataset or its balance improves a model); assurance states that SPEC-074 behaviour is assumed. docs/tooling/LIGHTNING.md documents lightning export: off by default (export-disabled), no provider's terms reviewed and only fixture runs exported (terms-gate-missing, no terms record shipped), what the scan catches and that it catches known shapes only, retention-expired, outside purge with the citing-dataset listing, and no claim that a dataset or its balance helps a model; its relative links resolve. lightning export --help states the same points. No terms decision record ships, and the coordinator-owned ROADMAP.md, SPEC_MILESTONE_INDEX.md and github-tracking.json are not touched. Negative controls (mutants, each fails a test): an unticked task, a removed documentation phrase, a stale forward reference added to the plan, and a convergence row removed.",
+ "procedure": "procedure_012",
+ "result": "OK",
+ "scenario": "SC-012",
+ "specification": "SPEC-075 BL.5",
+ "testsRun": 8
+}

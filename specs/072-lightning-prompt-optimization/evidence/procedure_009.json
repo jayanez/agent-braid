@@ -10,7 +10,7 @@
   "agent_braid/lightning_algorithm.py": "1eabfb899845e3bc76470b65c632336dba13e7050b08578bd4c4be51b8df22c4",
   "agent_braid/lightning_apo.py": "3abe6c6a0f72219c5abc6bcf7bfc7d7af371a38045650875603f98c3344c38c2",
   "agent_braid/lightning_arm.py": "89bd97f96964eac0efe8ffda63134c3d77090d2f86b101df9820c011f8539701",
-  "agent_braid/lightning_cli.py": "76563d1a2037348c5743986efc78db2df1c01074881f9c4bccfb373383e650be",
+  "agent_braid/lightning_cli.py": "363fea8c903f0b82e32fd80964b3a71413715bf592be9b366d3692a0b80059aa",
   "agent_braid/lightning_config.py": "cb7e9d6c5ed7622e470c378ac4211393f8e21913db10b10fa05eff07af8d9d55",
   "agent_braid/lightning_evaluation.py": "de6d6d5b2478da9480b929ab46cecdfd5ff712c2edfbf906e5809328485ee27b",
   "agent_braid/lightning_export.py": "de3bce4a21858e70776788078c39572becdff0a3db320d5bb7ce1cc36b0975da",

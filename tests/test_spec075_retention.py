@@ -246,6 +246,18 @@ class PurgeListingTests(Base):
         self.assertEqual([d['manifest'] for d in self.purge('--run-id', 'run-1')['citingDatasets']],
                          [str(self.base / 'out' / 'manifest.json')])
 
+    def test_an_index_directory_others_can_write_lists_nothing(self):
+        self.export()
+        directory = self.home / 'lightning' / 'exports'
+        for mode in (0o777, 0o770, 0o707):
+            with self.subTest(mode=oct(mode)):
+                directory.chmod(mode)
+                self.addCleanup(directory.chmod, 0o700)
+                self.assertEqual(export.citing_manifests(self.home, ['run-1']), [])
+                self.assertEqual(self.purge('--run-id', 'run-1')['citingDatasets'], [])
+                directory.chmod(0o700)
+        self.assertEqual(len(export.citing_manifests(self.home, ['run-1'])), 1)
+
     def test_an_interrupted_index_write_leaves_no_entry(self):
         real = export.os.replace
 

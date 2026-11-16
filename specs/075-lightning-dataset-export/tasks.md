@@ -15,10 +15,10 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
 
 - [x] T002 (REQ-005 / SC-005): Lead creates the manifest schema; schema test
   with valid and broken manifests. Dependencies: T001. Verification: procedure_005
-  (schema part; the builder half lands with T006).
+  (schema part; the builder half landed with T006).
 - [x] T003 (REQ-002 / SC-002): Consent and redaction filter with exclusion
   counts (`agent_braid/lightning_export.py` `read_runs`, `select`; filter part:
-  the recorded redaction version lands with T006). Dependencies: T001, SPEC-074 adapter. Verification: procedure_002.
+  the recorded redaction version landed with T006). Dependencies: T001, SPEC-074 adapter. Verification: procedure_002.
 - [x] T004 (REQ-003 / SC-003): `supervised` writer (`d4FirstAttempt` true only, or
   explicit `outcome` field) (`lightning_export.supervised`, both levels; host-model
   units refused with `terms-gate-missing` while OD-1 is deferred; SC-003's
@@ -64,5 +64,7 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
 
 ## Closing
 
-- [ ] T012 (REQ-012 / SC-012): Documentation; `speckit-converge`; evidence
-  recorded. Dependencies: T002–T011, T013. Verification: procedure_012.
+- [x] T012 (REQ-012 / SC-012): Documentation; `speckit-converge`; evidence
+  recorded (`docs/tooling/LIGHTNING.md` dataset export section; spec.md
+  convergence findings A1–A10). Dependencies: T002–T011, T013. Verification:
+  procedure_012. The freeze on `develop` follows in its own PR.
