@@ -191,8 +191,8 @@ class CheckTests(Base):
     def test_the_export_runs_the_checks(self):
         real = export._retention
 
-        def drops_a_run(home, run_ids):
-            value = real(home, run_ids)
+        def drops_a_run(expiry, days, run_ids):
+            value = real(expiry, days, run_ids)
             value.pop(sorted(value)[-1])
             return value
 

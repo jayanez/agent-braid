@@ -26,7 +26,7 @@ Lines are `trace_adapter.canonical_bytes(record)` followed by `\n`.
 | `canaryScan` | const `clean` | written only after the scan |
 | `exclusions` | object reason → count, every reason present | `no-consent`, `consent-none`, `unredacted`, `content-missing`, `balance`, `overlong`, `retention-expired` |
 | `balanceReport` | array of `{taskId, successes, failures, unknown, keptPerOutcome, dropped, singleOutcome}` | E4 per-task counts, one entry per task; `singleOutcome` implies `keptPerOutcome` 0; empty for `supervised` and `balance: none` |
-| `retention` | object source run id → `{retentionDays, expiresAt}` | from SPEC-074; `expiresAt` is the UTC expiry date `YYYY-MM-DD` of the run; records past it are refused (T013; until then only fixture content can export, as the terms gate refuses all host-model output); one key per record `runId` |
+| `retention` | object source run id → `{retentionDays, expiresAt}` | from SPEC-074; `expiresAt` is the UTC date `YYYY-MM-DD` of the instant the run expires (`createdAt` + `retentionDays` days); records past it are excluded and counted as `retention-expired`; one key per cited `runId` |
 | `records` | array, at least one | one entry per JSONL line, in file order (an empty export refuses with `no-records`) |
 | `recordsSha256` | hex | SHA-256 of `records.jsonl` |
 | `digest` | hex | SHA-256 of canonical manifest without `generatedAt` and `digest` |
@@ -123,8 +123,8 @@ canonical bytes plus a newline. The SPEC-074 adapter redacts the current `$HOME`
 to `~` when it reads content, so the bytes reproduce for the same `$HOME` at
 ingest and export, not across different ones.
 `retention` gives each cited run the profile's `traces.retentionDays` and the UTC
-date its run expires (`createdAt` + days); the refusal of expired records is
-T013. `balance` defaults to `equal` for `rollout` and is always `none` for
+date its run expires (`createdAt` + days); expired records are excluded (T013,
+below). `balance` defaults to `equal` for `rollout` and is always `none` for
 `supervised` (`equal` there is `invalid-argument`; no ratio parameter, OD-2).
 
 ## Balance (T007)
@@ -259,10 +259,31 @@ the id field, which is always a pseudonym), and encodings nested twice or
 more. `canaryScan: "clean"` therefore means "no hit for these classes",
 not "free of secrets".
 
-## Retention and purge
+## Retention and purge (T013)
 
-Exported files are outside SPEC-074 purge; the owner deletes them.
-`agent-braid lightning purge` lists the manifests that cite a purged run.
+The retention bound is the profile's `traces.retentionDays` (1-90); a profile
+without a valid bound refuses the export with `retention-expired` (fail closed).
+A run expires at the instant `createdAt + retentionDays` days, the same cutoff
+SPEC-074's sweep uses. The export compares that instant with `now` in epoch
+seconds (injectable in tests; the wall clock otherwise), so the host time zone
+plays no part; `expiresAt` in the manifest is the UTC date of that instant, for
+reading. A record whose run has expired (`now` at or after the instant) is
+excluded and counted under `exclusions.retention-expired`; when every record is
+expired the export refuses with `retention-expired` and writes nothing. The
+terms gate still sees expired records first.
+
+Exported files are outside SPEC-074 purge: purge never deletes a dataset, and
+the owner deletes it. Each real export (not a dry run) first writes a private
+index entry `<plugin home>/lightning/exports/<digest>-<hash>.json` (`0600`, in a
+`0700` directory) holding `{schema, out, digest, runIds}`: the output path, the
+manifest digest and the cited runs, no content; it is removed if the write
+fails. `agent-braid lightning purge` (preview and apply, `--run-id` or `--all`)
+then adds `citingDatasets`: each indexed dataset whose `manifest.json` still
+exists, still matches its digest and cites a purged run, as `{manifest, digest,
+citesRuns}`, plus a note that purge does not delete them. The listing is outside
+the purge preview digest, so an export between preview and apply does not make
+the preview stale. Deleted, moved or changed datasets are not listed. This is a
+SPEC-075 addition to the purge output; no SPEC-074 file changes.
 
 ## Upstream mapping
 

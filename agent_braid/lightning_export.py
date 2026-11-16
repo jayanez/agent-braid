@@ -544,16 +544,39 @@ def scan(data: bytes) -> None:
         raise ExportError('The dataset holds a value the canary scan flags', 'canary-detected')
 
 
-def _retention(home: Path | None, run_ids) -> dict:
-    days = store._retention(home)
+def _retention_days(home: Path | None) -> int:
+    """The profile's `traces.retentionDays` (1-90); no readable bound refuses fail-closed (`retention-expired`)."""
+    try:
+        value = config.load(home)
+        days = value['traces']['retentionDays'] if value is not None else None
+    except (OSError, ValueError, TypeError, KeyError):
+        days = None
+    if type(days) is not int or not 1 <= days <= 90:
+        raise ExportError('No retention bound for the source runs', 'retention-expired')
+    return days
+
+
+def _run_expiry(home: Path | None, run_ids, days: int) -> dict[str, float]:
+    """Epoch second each run expires: its `createdAt` plus the retention, the same cutoff SPEC-074's sweep uses."""
     out = {}
     for run_id in sorted(run_ids):
         try:
             created = store.RunStore(home, run_id).manifest()['createdAt']
         except (OSError, ValueError, TypeError, KeyError) as exc:
             raise ExportError('Run refused', _code(exc, 'store-shape')) from None
-        out[run_id] = {'retentionDays': days, 'expiresAt': _day(created + days * 86400)}
+        out[run_id] = created + days * 86400
     return out
+
+
+def drop_expired(items: list[dict], expiry: dict[str, float], now: float) -> tuple[list[dict], int]:
+    """REQ-013: keep the items whose source run has not expired at `now` (epoch seconds, so no time zone enters);
+    a run expires at the instant `createdAt + retentionDays` days, inclusive, as SPEC-074's sweep removes it."""
+    kept = [item for item in items if now < expiry[item['runId']]]
+    return kept, len(items) - len(kept)
+
+
+def _retention(expiry: dict[str, float], days: int, run_ids) -> dict:
+    return {run_id: {'retentionDays': days, 'expiresAt': _day(expiry[run_id])} for run_id in sorted(run_ids)}
 
 
 def _fsync_dir(path: Path) -> None:
@@ -662,8 +685,14 @@ def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: s
     check_output(out)  # before any read, so a bad output path refuses at once (and in a dry run)
     now = datetime.now(timezone.utc).timestamp() if now is None else now
     terms = None if terms_decision is None else load_terms_decision(home, terms_decision, today=_day(now))
+    days = _retention_days(home)
     kept, exclusions = select(read_runs(home, run_ids))
-    _check_items(kept, terms)  # the terms gate sees every candidate, before balance can drop any
+    _check_items(kept, terms)  # the terms gate sees every candidate, before retention or balance can drop any
+    expiry = _run_expiry(home, {item['runId'] for item in kept}, days)
+    kept, expired = drop_expired(kept, expiry, now)
+    exclusions['retention-expired'] += expired
+    if expired and not kept:
+        raise ExportError('Every record is past its source retention', 'retention-expired')
     report = []
     if balancing == 'equal':
         kept, report, dropped = balance_equal(kept, seed=seed)
@@ -678,14 +707,81 @@ def export_dataset(home: Path | None, run_ids: list[str], *, kind: str, level: s
     sources = {(i['runId'], i['rolloutId'], i['attemptId']): i['source'] for i in kept}
     manifest = build_manifest(entries, records, kind=kind, level=level, seed=seed, balance=balancing,
                               exclusions=exclusions, balance_report=report,
-                              retention=_retention(home, {e['runId'] for e in entries}),
+                              retention=_retention(expiry, days, {e['runId'] for e in entries}),
                               generated_at=_utc(now), sources=sources,
                               terms_decision=None if terms is None or all(e['source'] == 'fixture' for e in entries)
                               else {'path': terms['path'], 'sha256': terms['sha256']}, terms=terms)
     scan(records + line_bytes(manifest))  # the final bytes, after balance and the manifest, before the rename
     if not dry_run:
-        write_export(out, records, manifest)
+        entry = _register(home, out, manifest)  # before the rename: an unregistered dataset is never written
+        try:
+            write_export(out, records, manifest)
+        except BaseException:
+            entry.unlink(missing_ok=True)
+            raise
     return manifest
+
+
+EXPORTS_DIRECTORY = 'exports'
+EXPORT_ENTRY_SCHEMA = 'braid-lightning-export-entry/v0.1'
+
+
+def _exports(home: Path | None) -> Path:
+    return config.directory(home) / EXPORTS_DIRECTORY
+
+
+def _register(home: Path | None, out: Path, manifest: dict) -> Path:
+    """Record where a dataset was written, in the private `lightning/exports/` index, so `lightning purge` can list
+    the datasets that cite a purged run (REQ-013). The entry holds the output path, the manifest digest and the cited
+    run ids; no content."""
+    directory = _exports(home)
+    entry = {'schema': EXPORT_ENTRY_SCHEMA, 'out': str(check_output(out)), 'digest': manifest['digest'],
+             'runIds': sorted(manifest['retention'])}
+    try:
+        registry._safe(directory, directory=True)
+        directory.mkdir(mode=0o700, exist_ok=True)
+        registry._private(directory, directory=True)
+        path = directory / f"{manifest['digest']}-{hashlib.sha256(entry['out'].encode()).hexdigest()[:16]}.json"
+        fd = os.open(registry._safe(path, directory=False), os.O_CREAT | os.O_TRUNC | os.O_WRONLY | os.O_NOFOLLOW,
+                     0o600)
+        with os.fdopen(fd, 'wb') as stream:
+            stream.write(line_bytes(entry))
+            stream.flush()
+            os.fsync(stream.fileno())
+    except (OSError, ValueError):
+        raise ExportError('The export index cannot be written', 'path-refused') from None
+    return path
+
+
+def citing_manifests(home: Path | None, run_ids) -> list[dict]:
+    """The exported datasets whose manifest still exists, still matches its digest and cites one of `run_ids`.
+
+    Datasets are outside purge: the owner deletes them. Unreadable, moved or changed exports are left out.
+    """
+    wanted, found = set(run_ids), []
+    directory = _exports(home)
+    try:
+        registry._safe(directory, directory=True)
+        if not directory.is_dir():
+            return []
+        registry._private(directory, directory=True)
+        names = sorted(p.name for p in directory.iterdir() if p.suffix == '.json')
+    except (OSError, ValueError):
+        return []
+    for name in names:
+        try:
+            entry = json.loads((directory / name).read_bytes())
+            out = Path(entry['out'])
+            manifest = json.loads((out / MANIFEST_FILE).read_bytes())
+            if entry.get('schema') != EXPORT_ENTRY_SCHEMA or manifest.get('digest') != entry['digest'] \
+                    or manifest_digest(manifest) != entry['digest']:
+                continue
+            cited = sorted(wanted & set(manifest['retention']))
+        except (OSError, ValueError, TypeError, KeyError, AttributeError):
+            continue
+        if cited:
+            found.append({'manifest': str(out / MANIFEST_FILE), 'digest': entry['digest'], 'citesRuns': cited})
+    return sorted(found, key=lambda item: item['manifest'])
 
 
 TERMS_SCHEMA = 'braid-lightning-terms-decision/v0.1'

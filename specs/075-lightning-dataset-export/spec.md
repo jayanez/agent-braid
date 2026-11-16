@@ -244,6 +244,10 @@ Documentation states that exported files are outside SPEC-074 purge and must
 be deleted by the owner; `agent-braid lightning purge` lists the dataset
 manifests that cite the purged run.
 
+Exported files are outside SPEC-074 purge and must be deleted by the owner;
+`lightning purge` lists them through the SPEC-075 export index (contract,
+"Retention and purge"); no SPEC-074 file changes.
+
 **SC-013:** Given a fixture store with one record past retention, when export
 runs, then that record is refused with `retention-expired`, the manifest
 records retention per source, and a later `lightning purge` of the run lists

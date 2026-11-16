@@ -1,0 +1,22 @@
+{
+ "command": "python -m unittest tests.test_spec075_retention tests.test_spec074_retention_purge",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.12.13"
+ },
+ "inputs": {
+  "agent_braid/lightning_cli.py": "f62bb5938baf42f0444d74210961f526f7de0a0052fbf3115fa053dca9e9920f",
+  "agent_braid/lightning_export.py": "686ab2a4fff764ed955302f2230792c3c03e52f33934727f156e102258bb0c40",
+  "agent_braid/lightning_store.py": "cfd524bf042f2dd7af9e9ef395420a9ed215606962ff0026c1f23dbf546fb2a0",
+  "tests/spec075_fixtures.py": "780661adc1dbd086f7bf8cffee7229c98413596bf5bd485e0b36042376b519a6",
+  "tests/test_spec074_retention_purge.py": "95609195d8bc5e0f889dc4ae484bd085ec8e29b4f70711185ee161b34db40650",
+  "tests/test_spec075_retention.py": "aa7f6301886ded68f6455896356e40a151b432fde43c841183e2b3b7c5f1e8ee"
+ },
+ "limits": "Temporary homes, synthetic runs and an injected clock. Retention is per run (the SPEC-074 sweep removes a run at the same instant; content lines are never older than their run). The index is a SPEC-075 addition read by lightning purge's output; a dataset written before T013, copied elsewhere or whose directory was moved is not listed, and the listing names local paths of the owner's own datasets. lightning sweep and purge --expired do not list datasets. No SPEC-074 file changes.",
+ "outcome": "passed: T013: the manifest records, per cited run, the profile's traces.retentionDays and the UTC date the run expires (createdAt plus that many days). A run expires at the instant createdAt + retentionDays days (the SPEC-074 sweep cutoff), compared with now in epoch seconds. With one fresh run and one created 40 days earlier, the old run's record is excluded and counted as retention-expired, the manifest cites only the fresh run, and its content is not written; exporting only the old run refuses with retention-expired and writes nothing. Boundaries on the 30-day default: expiry tomorrow and one second before the instant export, at the instant and a day later refuse; a profile with retentionDays 1 refuses a day after creation and exports a second before. A profile without a valid bound (retentionDays 0, or no profile) refuses with retention-expired. The same four boundary results hold with TZ set to UTC, Pacific/Kiritimati, Pacific/Pago_Pago and Asia/Kolkata (TZ restored by addCleanup). Each real export first writes a private index entry (directory 0700, file 0600, keys schema, out, digest, runIds, no content); a dry run writes none and a failed write removes it. lightning purge --run-id and --all, preview and apply, list in citingDatasets each indexed dataset whose manifest still exists, matches its digest and cites a purged run (manifest path, digest, cited runs) with a note that purge does not delete datasets; a run no dataset cites lists none; after apply the dataset files still exist; an export between preview and apply does not stale the preview; a deleted dataset and one whose manifest changed are not listed. The SPEC-074 purge and retention tests still pass unchanged. lightning export --help states that expired records are retention-expired and that datasets are outside purge. Negative controls (mutants, each fails a test): the injected clock ignored, an inclusive or a one-day-late boundary, the check skipped, the expiry of another run used, the expiry day computed in local time, a fixed 30-day bound, the no-bound check removed, no refusal when every record expired, no index entry, uncited datasets listed, a changed manifest accepted, the entry kept after a failed write, and purge listing nothing.",
+ "procedure": "procedure_013",
+ "result": "OK",
+ "scenario": "SC-013",
+ "specification": "SPEC-075 BL.5",
+ "testsRun": 22
+}
