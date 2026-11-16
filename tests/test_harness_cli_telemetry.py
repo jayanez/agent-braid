@@ -89,7 +89,8 @@ class HarnessCliTelemetryTests(unittest.TestCase):
         self.assertEqual(code, 0)
         limits = ' '.join(json.loads(text)['limits'])
         self.assertIn('analyze/analyze-git/system-one/harness', limits)
-        self.assertIn('batch schema v4', limits)
+        self.assertIn('Batch schema v4', limits)
+        self.assertIn('cannot export a store that holds harness cells', limits)
 
 
 def main_json(argv):

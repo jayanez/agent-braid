@@ -90,4 +90,4 @@ Compatibility. Export always writes v2. Merge accepts v1 and v2; a v1 batch that
 - Recorded only by `agent-braid harness <subcommand> --telemetry local` (default off; the flag is accepted on the group and on each subcommand). Each call adds one `calls` cell and one `duration` cell; there is no classification, missing-summary or refusal-reason cell.
 - Outcome: exit 0 is `ok`, the sanitized refusal envelope (exit 2) is `refused`, an uncaught failure is `error`, an interrupt is `cancelled`. Argument-parsing errors before dispatch are not counted.
 - No record, path, hash, attempt id, argument, cohort or verdict is stored; the subcommand name is the only dimension.
-- Compatibility: merge accepts v1 to v4. A v1, v2 or v3 batch that contains v4 vocabulary is invalid. Builds before v4 refuse v4 batches and cannot export a store holding unexported v4 cells; export with a current build.
+- Compatibility: merge accepts v1 to v4. A v1, v2 or v3 batch that contains v4 vocabulary is invalid. Builds before v4 (alpha.8 included) refuse v4 batches and cannot export a store holding unexported v4 cells; export with a current build.
