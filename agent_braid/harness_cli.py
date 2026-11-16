@@ -17,6 +17,7 @@ decisions; a plugin/MCP extension needs its own versioned contract and review.
 from __future__ import annotations
 
 from hashlib import sha256
+import argparse
 import json
 import os
 from pathlib import Path
@@ -126,6 +127,11 @@ def add_parser(subparsers):
     summary_parser.add_argument("--sha256", help="trusted full report SHA-256 from outside the record")
     evidence_parser = commands.add_parser("evidence", help=_COMMAND_HELP["evidence"])
     evidence_parser.add_argument("spec_dir", type=Path)
+    parser.add_argument("--telemetry", choices=("off", "local"), default="off",
+                        help="explicit local numeric telemetry; default off")
+    for child in commands.choices.values():
+        child.add_argument("--telemetry", choices=("off", "local"), default=argparse.SUPPRESS,
+                           help="same as the group option")
 
 
 def _hash(value: str) -> str:

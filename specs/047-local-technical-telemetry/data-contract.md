@@ -1,4 +1,6 @@
-# Local telemetry data contract v1 / batch v3
+# Local telemetry data contract v1 / batch v4
+
+> **Amended by HAR wave 1 (2026-11-16): batch schema v4.** Export writes `agent-braid-local-telemetry-batch/v4`; the store format is unchanged. v4 adds the harness CLI vocabulary in [Batch v4 additions](#batch-v4-additions-har-wave-1). Everything else is unchanged.
 
 > **Amended by SPEC-061 (2026-11-05): batch schema v3.** Export writes `agent-braid-local-telemetry-batch/v3`; the store format is unchanged. v3 adds the activity-viewer vocabulary in [Batch v3 additions](#batch-v3-additions-spec-061). Everything else, including the v2 rules below, is unchanged.
 
@@ -78,3 +80,14 @@ Compatibility. Export always writes v2. Merge accepts v1 and v2; a v1 batch that
 - `page-load` counts each authorized `GET /`; `ingest-hook` and `ingest-otlp` count each authorized ingest request with outcome `ok`, `refused` or `error`; `view-start` counts each viewer start.
 - `ui-*` names are sent by the page to `POST /v1/usage` as one closed name per request, at most once per name per second. The page never sends what was selected, filtered or shown; the server drops any other name or member.
 - Compatibility: merge accepts v1, v2 and v3. A v1 or v2 batch that contains v3 vocabulary is invalid. Builds before v3 refuse v3 batches and cannot export a store holding unexported v3 cells; export with a current build.
+
+## Batch v4 additions (HAR wave 1)
+
+| Field | Added values |
+|---|---|
+| surface / operation | cli: `harness-inspect`, `harness-validate`, `harness-prepare`, `harness-status`, `harness-recover-inspect`, `harness-compare`, `harness-capabilities`, `harness-registry-status`, `harness-evaluation-summary`, `harness-evidence` |
+
+- Recorded only by `agent-braid harness <subcommand> --telemetry local` (default off; the flag is accepted on the group and on each subcommand). Each call adds one `calls` cell and one `duration` cell; there is no classification, missing-summary or refusal-reason cell.
+- Outcome: exit 0 is `ok`, the sanitized refusal envelope (exit 2) is `refused`, an uncaught failure is `error`, an interrupt is `cancelled`. Argument-parsing errors before dispatch are not counted.
+- No record, path, hash, attempt id, argument, cohort or verdict is stored; the subcommand name is the only dimension.
+- Compatibility: merge accepts v1 to v4. A v1, v2 or v3 batch that contains v4 vocabulary is invalid. Builds before v4 refuse v4 batches and cannot export a store holding unexported v4 cells; export with a current build.

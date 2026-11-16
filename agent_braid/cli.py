@@ -216,7 +216,12 @@ def main(argv: list[str] | None = None) -> int:
         return run_lightning(args)
     if args.command == "harness":
         from .harness_cli import run as run_harness
-        return run_harness(args)
+        from .tooling_telemetry import observe
+        with observe(args.telemetry, "cli", f"harness-{args.harness_command}") as observation:
+            result = run_harness(args)
+            # Exit 2 is the sanitized refusal envelope; anything else nonzero is an error.
+            observation.outcome = "ok" if result == 0 else "refused" if result == 2 else "error"
+            return result
     if args.command in {"expand-ownership", "check-ownership", "audit-isolation", "report-recovery"}:
         from .ownership_cli import run as run_ownership
         return run_ownership(args)

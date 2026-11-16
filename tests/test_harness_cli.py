@@ -575,7 +575,9 @@ class ExistingCliTests(unittest.TestCase):
         out = io.StringIO()
         with redirect_stdout(out), self.assertRaises(SystemExit):
             main(["harness", "--help"])
-        commands = re.search(r"\{([a-z,-]+)\}", out.getvalue()).group(1).split(",")
+        groups = re.findall(r"\{([a-z,-]+)\}", out.getvalue())
+        self.assertIn("off,local", groups)  # the --telemetry choices precede the subcommands
+        commands = next(g for g in groups if g != "off,local").split(",")
         self.assertEqual(commands, ["inspect", "validate", "prepare", "status", "recover-inspect",
                                     "compare", "capabilities", "registry-status",
                                     "evaluation-summary", "evidence"])

@@ -119,14 +119,14 @@ class TelemetryTests(unittest.TestCase):
                     metric='calls', bucket='all', count=1)
         return dict(base, **kwargs)
 
-    def test_v1_batch_merges_into_the_new_store_and_exports_are_v3(self):
+    def test_v1_batch_merges_into_the_new_store_and_exports_are_v4(self):
         v1 = self.batch_file([self.row(surface='cli', operation='analyze')], telemetry.SCHEMA_V1)
         self.assertEqual(self.store.merge(v1)['status'], 'merged')
         self.assertEqual(self.store.merge(v1)['status'], 'duplicate')
         self.record()
         out = self.root / 'out.json'
         self.store.export(out)
-        self.assertEqual(json.loads(out.read_text())['schema'], 'agent-braid-local-telemetry-batch/v3')
+        self.assertEqual(json.loads(out.read_text())['schema'], 'agent-braid-local-telemetry-batch/v4')
         self.assertEqual(telemetry.Store(self.root / 'other').merge(out)['status'], 'merged')
         with closing(sqlite3.connect(self.directory / 'metrics.sqlite3')) as db:
             self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0], 1)  # store format unchanged
@@ -142,7 +142,7 @@ class TelemetryTests(unittest.TestCase):
                     telemetry.Store(self.root / 'b').merge(self.batch_file([row], telemetry.SCHEMA_V1, 'v1.json'))
         self.assertFalse((self.root / 'b').exists())
         with self.assertRaises(ValueError):
-            self.store.merge(self.batch_file([self.row()], 'agent-braid-local-telemetry-batch/v4'))
+            self.store.merge(self.batch_file([self.row()], 'agent-braid-local-telemetry-batch/v5'))
 
     def test_viewer_cells_are_calls_only_and_need_a_v3_batch(self):
         view_rows = [self.row(surface='view', operation='page-load', outcome='ok', metric='calls', bucket='all'),
