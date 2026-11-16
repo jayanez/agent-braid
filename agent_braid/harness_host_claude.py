@@ -396,6 +396,8 @@ def _read_stream(stdout: bytes, secrets: tuple = ()) -> _Stream:
             stream.model = _clean(stream, event.get("model"), _MODEL, "model-invalid")
             stream.key_source = _clean(stream, event.get("apiKeySource"), _KEY_SOURCE)
             stream.add("start")
+        elif kind == "system":
+            pass  # non-init system events (hooks, summaries): untrusted, never read or exported
         elif kind == "assistant":
             _blocks(stream, event.get("message"))
         elif kind == "user":
