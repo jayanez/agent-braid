@@ -207,7 +207,7 @@ specifications unless a SPEC-066 requirement amends them.
 
 ## S1.5a — Owner-run check
 
-- [ ] T030 (REQ-002, REQ-003 / SC-006): Enable `shadow` on the owner machine with
+- [x] T030 (REQ-002, REQ-003 / SC-006): Enable `shadow` on the owner machine with
   `plugin setup --system-one shadow --apply`, reconnect, work normally with Agent
   Braid, then run `system-one report`. Commit a redacted receipt under the
   `docs/development/REAL_USE_EVIDENCE.md` rules: sources consulted, window, episode
@@ -223,8 +223,8 @@ specifications unless a SPEC-066 requirement amends them.
   not yet present); report due 2026-11-09.
   Preparation (2026-11-07): `python -m scripts.spec066_t030_receipt` writes the receipt
   on or after 2026-11-09 (UTC) and refuses earlier; `--dry-run` prints it without
-  writing. Tests: `tests/test_spec066_t030_receipt.py`. Not ticked: the receipt itself
-  is the evidence.
+  writing. Tests: `tests/test_spec066_t030_receipt.py`. Receipt committed 2026-11-09:
+  `evidence/real-use-shadow-2026-11-09.json` (25 episodes, 142 pairs, all abstained).
 
 ## S1.5a — Closure
 
@@ -443,13 +443,20 @@ replay cannot supply System-2-`unknown` pairs (see REQ-402 and the ADR 0034 adde
 
 ## S1.5e — Reviewable rule-based advise (amendment 2026-11-14, REQ-402)
 
-- [ ] T404 (REQ-402): DP-1 structural rule with canonical resources, rule answers in
+- [x] T404 (REQ-402): DP-1 structural rule with canonical resources, rule answers in
   shadow episodes, per-pair `systemOneAdvice` in effective `advise` only, and the
   owner `system-one promote --go|--rollback` command (preview digest, confirm).
   Learned backends keep the T303/T402/T403 gate. T401 plumbing was delivered by
   PR #1374.
-- [ ] T405 (REQ-402): Merge-outcome join for the owner's parallel tracks inside the
+  Evidence (2026-11-15): merged in #1375 (`agent_braid/system_one_dp1_rule.py`, active
+  advise envelope, `agent-braid system-one promote`); no promotion go is recorded.
+- [x] T405 (REQ-402): Merge-outcome join for the owner's parallel tracks inside the
   admitted workspace, report of advised pairs, joined outcomes, false independents and
   the Wilson bound, and the D7 automatic rollback to `shadow`. Dependencies: T404.
+  Evidence (2026-11-16): merged in #1389 (`research/s15b_merge_outcomes.py`,
+  `scripts/spec066_record_merge_outcomes.py`, `tests/test_spec066_merge_outcomes.py`;
+  rollback reason `auto-rollback-false-independence` resolves to `shadow`). Data on
+  2026-11-16: 29 shadow episodes, 0 joined outcomes; the `runtime-state` source is
+  refused `path-outside-admitted`.
 - [ ] T406 (REQ-402, owner): Decision packet 2026-11-28; `advise` live 2026-11-30 only
   on a recorded go; mandatory review 2026-12-31. Dependencies: T404, T405.
