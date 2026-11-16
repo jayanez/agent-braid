@@ -168,7 +168,8 @@ only fixture runs export. --out must be a canonical path without symbolic links 
 symbolic links: use /private/tmp or a directory under your home) inside an existing directory, and must not exist
 or be empty. Records whose source run is past its retention (traces.retentionDays) are excluded and
 counted as retention-expired. Exported files are outside lightning purge: purge lists the datasets that cite a
-purged run, and you delete them yourself. Before anything is written, the bytes are scanned for known secret shapes (tokens, bearer headers,
+purged run, and you delete them yourself; a small private index (output path, digest, runs) under the
+plugin home records each export until you delete the dataset and purge again. Before anything is written, the bytes are scanned for known secret shapes (tokens, bearer headers,
 private keys, e-mail addresses, your home path) and for any /Users/<name> or /home/<name> path in any case and
 anywhere, such as /home/runner/ or /srv/home/x or a URL path /api/users/42; a hit refuses the export with
 canary-detected. The scan catches known shapes only: pattern-based redaction cannot catch every secret shape or
@@ -336,7 +337,7 @@ def run(args, *, ask=None) -> int:
             # SPEC-075 REQ-013: exported datasets are outside purge; list the ones that cite these runs (outside the
             # preview digest, so an export between preview and apply does not stale the preview)
             from . import lightning_export as export
-            output['citingDatasets'] = export.citing_manifests(home, purged)
+            output['citingDatasets'] = export.citing_manifests(home, purged, prune=bool(args.apply))
             output['datasetsNote'] = ('Exported datasets are not deleted by purge; delete the listed directories '
                                       'yourself')
             output['executionAuthorization'] = False

@@ -108,6 +108,11 @@ Decisions:
   the export with `canary-detected` (export-side check; SPEC-074 unchanged). Q2 A:
   literal secrets not passed at ingest and secrets of unknown shape are a
   documented residual risk, not detected.
+- **OD-4 — Additive `lightning purge` output (decided 2026-11-16).** The owner
+  approved adding `citingDatasets` and `datasetsNote` to the output of the
+  SPEC-074 `lightning purge` command, in `lightning_cli.py`, as REQ-013
+  requires; SPEC-074's spec, store, adapter, redactor and config are
+  unchanged.
 
 ## Requirements and acceptance scenarios
 
@@ -246,7 +251,11 @@ manifests that cite the purged run.
 
 Exported files are outside SPEC-074 purge and must be deleted by the owner;
 `lightning purge` lists them through the SPEC-075 export index (contract,
-"Retention and purge"); no SPEC-074 file changes.
+"Retention and purge"). The owner approved on 2026-11-16 the additive purge
+output (`citingDatasets`, `datasetsNote`) in `lightning_cli.py`; SPEC-074's
+spec, store, adapter, redactor and config are unchanged. The export refuses a
+run from the exact expiry instant, one instant before the SPEC-074 sweep removes
+it (fail closed).
 
 **SC-013:** Given a fixture store with one record past retention, when export
 runs, then that record is refused with `retention-expired`, the manifest

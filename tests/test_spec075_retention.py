@@ -76,8 +76,10 @@ class RetentionTests(Base):
         self.refused('retention-expired', runs=('run-old',))
 
     def test_the_expiry_boundary(self):
+        # Stricter than the SPEC-074 sweep, which keeps the run at the exact instant and removes it one later.
         cases = {'tomorrow': (EXPIRY - DAY, True), 'today, before the instant': (EXPIRY - 1, True),
-                 'today, at the instant': (EXPIRY, False), 'yesterday': (EXPIRY + DAY, False)}
+                 'today, at the instant (the sweep still keeps it)': (EXPIRY, False),
+                 'one second after': (EXPIRY + 1, False), 'yesterday': (EXPIRY + DAY, False)}
         for name, (now, kept) in cases.items():
             with self.subTest(name=name):
                 if kept:
@@ -85,6 +87,20 @@ class RetentionTests(Base):
                     self.assertEqual(manifest['retention']['run-1']['expiresAt'], '2027-02-14')
                 else:
                     self.refused('retention-expired', now=now)
+
+    def test_creation_near_utc_midnight(self):
+        # 2027-01-15T23:59:59Z and 2027-01-16T00:00:00Z with a 1-day bound: the date shown is the UTC day of the
+        # instant, and the refusal follows the instant, not the date.
+        self.reprofile(retention_days=1)
+        late, early = 1800057599.0, 1800057600.0
+        for run_id, created, expires in (('run-late', late, '2027-01-16'), ('run-early', early, '2027-01-17')):
+            with self.subTest(run=run_id):
+                run = new_run(self.home, run_id, created=created)
+                rollout(run, f'ro-{run_id}', f'raw-{run_id}', [('near midnight', 'ok')], task='task-m', d4=True,
+                        created=created)
+                manifest = self.export(runs=(run_id,), name=f'{run_id}-before', now=created + DAY - 1)
+                self.assertEqual(manifest['retention'][run_id]['expiresAt'], expires)
+                self.refused('retention-expired', runs=(run_id,), name=f'{run_id}-at', now=created + DAY)
 
     def test_the_retention_bound_comes_from_the_profile(self):
         self.reprofile(retention_days=1)
@@ -186,6 +202,74 @@ class PurgeListingTests(Base):
         value = json.loads(entry.read_bytes())
         self.assertEqual(set(value), {'schema', 'out', 'digest', 'runIds'})
         self.assertNotIn('fresh', entry.read_text())
+
+    def snapshot(self, root):
+        return {str(p.relative_to(root)): (p.read_bytes() if p.is_file() else None) for p in sorted(root.rglob('*'))}
+
+    def test_purge_never_writes_into_a_dataset(self):
+        self.export()
+        before = self.snapshot(self.base / 'out')
+        preview = self.purge('--run-id', 'run-1')
+        self.purge(*preview['applyWith'])
+        self.assertEqual(self.snapshot(self.base / 'out'), before)
+
+    def test_apply_prunes_entries_of_gone_or_changed_datasets_only(self):
+        self.export(name='keep')
+        self.export(name='gone')
+        self.export(name='changed')
+        shutil.rmtree(self.base / 'gone')
+        manifest = self.base / 'changed' / 'manifest.json'
+        value = json.loads(manifest.read_bytes())
+        value['seed'] = 9
+        manifest.write_text(json.dumps(value))
+        self.assertEqual(len(self.index()), 3)
+        preview = self.purge('--run-id', 'run-old')
+        self.assertEqual(len(self.index()), 3)  # a preview deletes nothing, index entries included
+        self.purge(*preview['applyWith'])
+        self.assertEqual(len(self.index()), 1)
+        self.assertTrue(manifest.exists())  # the changed dataset's files stay: only its index entry went
+        self.assertEqual([d['manifest'] for d in self.purge('--all')['citingDatasets']],
+                         [str(self.base / 'keep' / 'manifest.json')])
+
+    def test_forged_or_relative_entries_are_ignored(self):
+        self.export()
+        directory = self.home / 'lightning' / 'exports'
+        (entry,) = directory.iterdir()
+        value = json.loads(entry.read_bytes())
+        link = self.base / 'link'
+        link.symlink_to(self.base / 'out', target_is_directory=True)
+        for n, out in enumerate(('out', str(link), str(self.base / 'x' / '..' / 'out'), str(self.base / 'out') + '/',
+                                 str(self.base), 7)):
+            forged = directory / f'forged-{n}.json'
+            forged.write_text(json.dumps({**value, 'out': out}))
+            forged.chmod(0o600)
+        self.assertEqual([d['manifest'] for d in self.purge('--run-id', 'run-1')['citingDatasets']],
+                         [str(self.base / 'out' / 'manifest.json')])
+
+    def test_an_interrupted_index_write_leaves_no_entry(self):
+        real = export.os.replace
+
+        def crash(source, target):
+            if str(target).endswith('.json') and 'exports' in str(target):
+                raise KeyboardInterrupt
+            return real(source, target)
+
+        patcher = patch.object(export.os, 'replace', crash)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        with self.assertRaises(KeyboardInterrupt):
+            self.export()
+        patcher.stop()
+        self.assertEqual(self.index(), [])  # neither the entry nor its temporary file
+        self.assertFalse((self.base / 'out').exists())
+
+    def test_a_leftover_temporary_entry_is_not_listed(self):
+        self.export()
+        directory = self.home / 'lightning' / 'exports'
+        (entry,) = directory.iterdir()
+        leftover = directory / '.entry-crash.tmp'
+        leftover.write_bytes(entry.read_bytes()[:20])
+        self.assertEqual(len(self.purge('--run-id', 'run-1')['citingDatasets']), 1)
 
     def test_a_failed_write_leaves_no_index_entry(self):
         with patch.object(export, 'write_export', side_effect=export.ExportError('x', 'path-refused')):

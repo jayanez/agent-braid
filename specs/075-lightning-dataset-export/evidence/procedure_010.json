@@ -5,7 +5,7 @@
   "python": "3.12.13"
  },
  "inputs": {
-  "agent_braid/lightning_export.py": "686ab2a4fff764ed955302f2230792c3c03e52f33934727f156e102258bb0c40",
+  "agent_braid/lightning_export.py": "de3bce4a21858e70776788078c39572becdff0a3db320d5bb7ce1cc36b0975da",
   "agent_braid/lightning_redact.py": "774e27ae55a1e71ab49205a0daa6d47d374160b46fd90b2c77891b566fbeecf2",
   "scripts/spec074_canary_corpus.py": "60424aaecfd6dd2de368a4dbaeb9f38ab58544961d87bf45b64a604a80a55c84",
   "specs/075-lightning-dataset-export/reviews/owner-t010-20261116.md": "9986669e719619aa43c2f3fb03cb45061c30a203be56e0cd97178e0c0f47bc00",

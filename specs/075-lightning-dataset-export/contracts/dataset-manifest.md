@@ -262,9 +262,12 @@ not "free of secrets".
 ## Retention and purge (T013)
 
 The retention bound is the profile's `traces.retentionDays` (1-90); a profile
-without a valid bound refuses the export with `retention-expired` (fail closed).
-A run expires at the instant `createdAt + retentionDays` days, the same cutoff
-SPEC-074's sweep uses. The export compares that instant with `now` in epoch
+without a valid bound, and a missing profile, refuse the export with
+`retention-expired` (the SPEC-074 sweep would default to 30 days; refusing is
+the intended fail-closed choice). A run expires at the instant `createdAt +
+retentionDays` days. This is stricter than the SPEC-074 sweep, on purpose: the
+export refuses the run from that exact instant, while the sweep removes it one
+instant later (`createdAt < now - retentionDays` days). The export compares that instant with `now` in epoch
 seconds (injectable in tests; the wall clock otherwise), so the host time zone
 plays no part; `expiresAt` in the manifest is the UTC date of that instant, for
 reading. A record whose run has expired (`now` at or after the instant) is
@@ -276,14 +279,24 @@ Exported files are outside SPEC-074 purge: purge never deletes a dataset, and
 the owner deletes it. Each real export (not a dry run) first writes a private
 index entry `<plugin home>/lightning/exports/<digest>-<hash>.json` (`0600`, in a
 `0700` directory) holding `{schema, out, digest, runIds}`: the output path, the
-manifest digest and the cited runs, no content; it is removed if the write
-fails. `agent-braid lightning purge` (preview and apply, `--run-id` or `--all`)
+manifest digest and the cited runs, no content. It is written atomically (a
+temporary file in the same directory, then a rename) and removed if the dataset
+write fails. `agent-braid lightning purge` (preview and apply, `--run-id` or `--all`)
 then adds `citingDatasets`: each indexed dataset whose `manifest.json` still
 exists, still matches its digest and cites a purged run, as `{manifest, digest,
 citesRuns}`, plus a note that purge does not delete them. The listing is outside
 the purge preview digest, so an export between preview and apply does not make
-the preview stale. Deleted, moved or changed datasets are not listed. This is a
-SPEC-075 addition to the purge output; no SPEC-074 file changes.
+the preview stale. Deleted, moved, changed or forged entries are not listed (an
+entry's `out` must be an absolute canonical path, without symbolic links, whose
+`manifest.json` is a regular file and matches the digest). Purge apply removes
+the index entries of datasets that are gone or changed; it never removes or
+writes a dataset file, and a preview removes nothing. Residue: an entry, with
+its absolute output path and run ids, stays in the index while its dataset
+exists, also after the runs it cites are purged; it goes when the owner deletes
+the dataset and a later purge apply runs. The `citingDatasets` and
+`datasetsNote` purge output is one additive change in `lightning_cli.py`,
+approved by the owner on 2026-11-16; SPEC-074's spec, store, adapter, redactor
+and config are unchanged.
 
 ## Upstream mapping
 

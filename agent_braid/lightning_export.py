@@ -546,7 +546,7 @@ def scan(data: bytes) -> None:
 
 def _retention_days(home: Path | None) -> int:
     """The profile's `traces.retentionDays` (1-90); no readable bound refuses fail-closed (`retention-expired`)."""
-    try:
+    try:  # no profile refuses (the SPEC-074 sweep would default to 30 days): the intended fail-closed choice
         value = config.load(home)
         days = value['traces']['retentionDays'] if value is not None else None
     except (OSError, ValueError, TypeError, KeyError):
@@ -557,7 +557,7 @@ def _retention_days(home: Path | None) -> int:
 
 
 def _run_expiry(home: Path | None, run_ids, days: int) -> dict[str, float]:
-    """Epoch second each run expires: its `createdAt` plus the retention, the same cutoff SPEC-074's sweep uses."""
+    """Epoch second each run expires: its `createdAt` plus the retention."""
     out = {}
     for run_id in sorted(run_ids):
         try:
@@ -569,8 +569,10 @@ def _run_expiry(home: Path | None, run_ids, days: int) -> dict[str, float]:
 
 
 def drop_expired(items: list[dict], expiry: dict[str, float], now: float) -> tuple[list[dict], int]:
-    """REQ-013: keep the items whose source run has not expired at `now` (epoch seconds, so no time zone enters);
-    a run expires at the instant `createdAt + retentionDays` days, inclusive, as SPEC-074's sweep removes it."""
+    """REQ-013: keep the items whose source run has not expired at `now` (epoch seconds, so no time zone enters).
+
+    Stricter than SPEC-074's sweep, on purpose (fail closed): the export refuses a run from the exact instant
+    `createdAt + retentionDays` days, while the sweep removes it one instant later (`createdAt < now - days`)."""
     kept = [item for item in items if now < expiry[item['runId']]]
     return kept, len(items) - len(kept)
 
@@ -742,21 +744,44 @@ def _register(home: Path | None, out: Path, manifest: dict) -> Path:
         directory.mkdir(mode=0o700, exist_ok=True)
         registry._private(directory, directory=True)
         path = directory / f"{manifest['digest']}-{hashlib.sha256(entry['out'].encode()).hexdigest()[:16]}.json"
-        fd = os.open(registry._safe(path, directory=False), os.O_CREAT | os.O_TRUNC | os.O_WRONLY | os.O_NOFOLLOW,
-                     0o600)
+        registry._safe(path, directory=False)
+        fd, temporary = tempfile.mkstemp(prefix='.entry-', suffix='.tmp', dir=directory)  # 0600, same directory
+    except (OSError, ValueError):
+        raise ExportError('The export index cannot be written', 'path-refused') from None
+    try:
         with os.fdopen(fd, 'wb') as stream:
             stream.write(line_bytes(entry))
             stream.flush()
             os.fsync(stream.fileno())
-    except (OSError, ValueError):
-        raise ExportError('The export index cannot be written', 'path-refused') from None
+        os.replace(temporary, path)  # atomic: a reader sees no entry or the whole entry
+    except BaseException as exc:
+        Path(temporary).unlink(missing_ok=True)
+        if isinstance(exc, OSError):
+            raise ExportError('The export index cannot be written', 'path-refused') from None
+        raise
     return path
 
 
-def citing_manifests(home: Path | None, run_ids) -> list[dict]:
+def _indexed_output(entry) -> Path | None:
+    """The entry's output directory if it is an absolute canonical path (no symbolic link, no traversal) holding a
+    regular manifest.json; None for a relative, forged or moved entry."""
+    out = entry.get('out') if isinstance(entry, dict) else None
+    if not isinstance(out, str) or not out.startswith('/'):
+        return None
+    try:
+        path = registry._safe(Path(out), directory=True)
+        manifest = registry._safe(path / MANIFEST_FILE, directory=False)
+    except (OSError, ValueError):
+        return None
+    return path if str(path) == out and manifest.is_file() and not manifest.is_symlink() else None
+
+
+def citing_manifests(home: Path | None, run_ids, *, prune: bool = False) -> list[dict]:
     """The exported datasets whose manifest still exists, still matches its digest and cites one of `run_ids`.
 
-    Datasets are outside purge: the owner deletes them. Unreadable, moved or changed exports are left out.
+    Datasets are outside purge: the owner deletes them. Unreadable, moved, changed or forged entries are left out;
+    with `prune` (purge apply) the index entries of datasets that are gone or changed are removed. Only index entries
+    are ever removed, never a dataset file.
     """
     wanted, found = set(run_ids), []
     directory = _exports(home)
@@ -765,20 +790,24 @@ def citing_manifests(home: Path | None, run_ids) -> list[dict]:
         if not directory.is_dir():
             return []
         registry._private(directory, directory=True)
-        names = sorted(p.name for p in directory.iterdir() if p.suffix == '.json')
+        names = sorted(p.name for p in directory.iterdir() if p.suffix == '.json' and not p.name.startswith('.'))
     except (OSError, ValueError):
         return []
     for name in names:
+        path = directory / name
         try:
-            entry = json.loads((directory / name).read_bytes())
-            out = Path(entry['out'])
-            manifest = json.loads((out / MANIFEST_FILE).read_bytes())
-            if entry.get('schema') != EXPORT_ENTRY_SCHEMA or manifest.get('digest') != entry['digest'] \
-                    or manifest_digest(manifest) != entry['digest']:
-                continue
-            cited = sorted(wanted & set(manifest['retention']))
+            entry = json.loads(path.read_bytes())
+            out = _indexed_output(entry)
+            manifest = None if out is None else json.loads((out / MANIFEST_FILE).read_bytes())
+            valid = manifest is not None and entry.get('schema') == EXPORT_ENTRY_SCHEMA \
+                and manifest.get('digest') == entry.get('digest') and manifest_digest(manifest) == entry['digest']
         except (OSError, ValueError, TypeError, KeyError, AttributeError):
+            valid = False
+        if not valid:
+            if prune:
+                path.unlink(missing_ok=True)
             continue
+        cited = sorted(wanted & set(manifest['retention']))
         if cited:
             found.append({'manifest': str(out / MANIFEST_FILE), 'digest': entry['digest'], 'citesRuns': cited})
     return sorted(found, key=lambda item: item['manifest'])
