@@ -3,7 +3,7 @@
 Schema: [`schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json`](../../../schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json)
 (created by the lead in T002; this file is the normative prose; the schema and
 this table agree, `tests/test_spec075_manifest_schema.py`). Status: reviewed at
-T001 (2026-11-14; E1–E5 accepted, OD-2 decided).
+T001 (2026-11-14; E1–E5 accepted, OD-2 decided), converged at T012 (2026-11-16).
 
 ## Files
 

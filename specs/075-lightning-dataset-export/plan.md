@@ -70,8 +70,10 @@ Unchanged: all gates pass; the terms gate is an owner record, never inferred.
 
 | Risk | Mitigation |
 |---|---|
-| Redaction misses a secret | canary scan aborts (REQ-010) |
-| Provider terms forbid training use | OD-1 gate; fixtures-only export |
+| Redaction misses a secret | canary scan aborts for known shapes (REQ-010); unknown shapes are residual risk (OD-3 Q2 A) |
+| Another user's path in content | refused with `canary-detected` (OD-3 Q1 A) |
+| Provider terms forbid training use | OD-1 gate ships closed; fixtures-only export |
+| Datasets outlive purge | outside purge by design; purge lists citing datasets (OD-4) |
 | Text-level merge misaligns turns | declared limit; transition level available |
 | Hidden non-determinism (dict order, locale, paths) | canonical bytes; rerun in another directory |
 
@@ -81,4 +83,6 @@ T001 owner review done 2026-11-14 ([record](reviews/owner-t001-20261114.md)):
 E1–E5 accepted, OD-2 decided (equal cap 1:1 per task, no ratio parameter). OD-1
 is deferred: the terms gate (T008) ships closed and refuses every host-model
 export with `terms-gate-missing`; only fixtures and non-host content export.
-`human_review` stays `pending`.
+OD-3 (2026-11-16): Q1 A, Q2 A ([record](reviews/owner-t010-20261116.md)). OD-4
+(2026-11-16): additive purge output approved. Converged at T012 (spec.md,
+"Convergence findings"). `human_review` stays `pending`.

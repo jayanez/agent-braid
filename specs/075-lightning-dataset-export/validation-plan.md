@@ -1,19 +1,8 @@
 # SPEC-075: Validation plan
 
-Status: draft; procedure_001 has obtained evidence (T001 owner review record,
-2026-11-14), procedure_005 (T002 schema, `tests/test_spec075_manifest_schema.py`,
-and T006 builder, `tests/test_spec075_manifest.py`), procedure_002 (T003,
-`tests/test_spec075_export_filter.py`; the dataset's redaction version is set by
-T006), procedure_003 (T004, `tests/test_spec075_supervised.py`; its manifest-hash
-half in `tests/test_spec075_manifest.py`), procedure_004 (T005,
-`tests/test_spec075_rollout.py`), procedure_006 (T006,
-`tests/test_spec075_manifest.py`) and procedure_007 (T007,
-`tests/test_spec075_balance.py`) and procedure_008 (T008,
-`tests/test_spec075_terms.py`, synthetic temporary records only) and
-procedure_009 (T009, `tests/test_spec075_cli.py`) and procedure_010 (T010,
-`tests/test_spec075_canary.py`) and procedure_011 (T011,
-`tests/test_spec075_boundaries.py`) and procedure_013 (T013,
-`tests/test_spec075_retention.py`); procedure_012 (T012) has not. Evidence is
+Status: draft; every procedure has obtained evidence: procedure_001 (T001 owner
+review record) and procedure_002 to procedure_013 (`tests/test_spec075_*.py`, one
+module per task; procedure_012 is the T012 convergence check). Evidence is
 captured with `python -m scripts.spec075_capture_evidence`. Deterministic procedures run
 locally and in CI as targeted test modules (`tests/test_spec075_*.py`, one
 module per task).
@@ -22,7 +11,7 @@ module per task).
 |---|---|---|---|---|
 | procedure_001 | SC-001 | owner review record ([reviews/owner-t001-20261114.md](reviews/owner-t001-20261114.md)) | E1–E5 accepted or amended; OD-2 decided. Obtained: E1–E5 accepted, OD-2 equal cap 1:1, OD-1 deferred | review not bound to a frozen commit (binding happens at the closing freeze on `develop`) |
 | procedure_002 | SC-002 | filter fixture tests (`tests.test_spec075_export_filter`, T003) | only consent `redacted` traces; exclusions counted (`consent-none`) | unconsented trace exported; drop not counted |
-| procedure_003 | SC-003 | supervised writer tests (`tests.test_spec075_supervised`, T004; the comparison with a written manifest lands with T006) | lines match contract; hashes match manifest; only `d4FirstAttempt` true or explicit `outcome` | unknown role accepted; failed record without `outcome` exported |
+| procedure_003 | SC-003 | supervised writer tests (`tests.test_spec075_supervised`, T004; the comparison with a written manifest is in `tests.test_spec075_manifest`, T006) | lines match contract; hashes match manifest; only `d4FirstAttempt` true or explicit `outcome` | unknown role accepted; failed record without `outcome` exported |
 | procedure_004 | SC-004 | aggregation tests (`tests.test_spec075_rollout`, T005) | 3 transition records, 1 trajectory record, limit declared | token-ID merge attempted without token IDs |
 | procedure_005 | SC-005 | manifest schema test (`tests.test_spec075_manifest_schema`, T002) and builder output against the schema and `check_manifest` (`tests.test_spec075_manifest`, T006) | valid manifest passes | missing `sha256` or `redactionVersion` passes |
 | procedure_006 | SC-006 | double export, shuffled input, other working directory (`tests.test_spec075_manifest`, T006) | byte-identical except `generatedAt` | timestamp or host path in dataset bytes |

@@ -9,7 +9,8 @@ verifiable rewards. It adapts [microsoft/agent-lightning](https://github.com/mic
 and run Claude Code rollouts on the subscription route. A real host run needs the setup consent and the host
 subscription route. Prompt optimization (BL.2, SPEC-072) runs APO and GEPA arms through `agent-braid lightning run`
 in the laboratory; its preregistered held-out evaluation (2026-11-13) was negative (no arm met D4, H1 not
-supported), so no optimized guidance is promoted or shipped.
+supported), so no optimized guidance is promoted or shipped. Dataset export (BL.5, SPEC-075) is
+off by default and exports fixture runs only (see below).
 
 ## Opt in during setup
 
@@ -76,3 +77,41 @@ agent-braid lightning run --home "<registryHome>" --resume <id>   # only after a
 - **Stops.** `budget.maxRollouts` ends a run with `unit-cap`; a host quota message ends it with
   `five-hour-headroom` or `weekly-stop`. Nothing resumes automatically.
 - The laboratory runs from an Agent Braid checkout (it uses the SPEC-069 prompt sets, fixture and driver).
+
+## Dataset export (BL.5, SPEC-075)
+
+`agent-braid lightning export` writes a local dataset from consented, redacted runs, for a later, separately
+approved training step. It never trains, uploads or publishes anything, and it makes no claim that a dataset
+or its balance helps any model.
+
+```sh
+agent-braid lightning init --home "<registryHome>" --non-interactive --export   # preview; then --apply with its digest
+agent-braid lightning export --home "<registryHome>" --run <id> --kind rollout --level trajectory \
+  --out <new empty directory> [--dry-run]
+agent-braid lightning export --help
+```
+
+- **Off by default.** It refuses with `export-disabled` unless the profile has `export.enabled` set by a
+  previewed `lightning init --export`. Content consent `redacted` is needed too: without it nothing exports.
+- **Host-model output stays closed.** No provider's terms of use have been reviewed (OD-1 is deferred), so any
+  run with host-model output refuses with `terms-gate-missing`; only fixture runs (`pipeline-only`) export.
+  Agent Braid ships no terms decision record and says no provider permits training. An owner who reviews a
+  provider's terms may write their own record under `lightning/terms/` and pass it with `--terms-decision`.
+- **Kinds.** `supervised` writes chat `messages` (first-attempt D4 successes only, or every outcome with
+  `--outcome-field`) and is never balanced; `rollout` writes turns, the SPEC-071 reward vector and status, and is
+  balanced 1:1 per task by default (seeded; `--balance none` to keep everything). `--level transition` is one
+  record per model call, `trajectory` one per attempt (text-level merge, declared per record).
+- **What the scan catches.** Before anything is written the final bytes are scanned for known secret shapes
+  (tokens, bearer headers, private keys, e-mail addresses, your home path) and for any `/Users/<name>` or
+  `/home/<name>` path in any case, such as `/home/runner/` or `/srv/home/x`; a hit refuses with
+  `canary-detected`. The scan catches known shapes only: a literal secret not given when the trace was stored,
+  free text of unknown shape (for example names), a raw id typed in content, encodings nested twice, and
+  Windows or doubly escaped paths are not caught.
+- **Retention.** Records whose run is past `traces.retentionDays` are excluded and counted as
+  `retention-expired`, from the exact expiry instant.
+- **Outside purge.** Exported files are not deleted by `lightning purge`; delete them yourself.
+  `lightning purge` lists the datasets that cite a purged run (`citingDatasets`), from a small private index
+  under the plugin home that holds only each export's path, digest and runs.
+- Output: `--out` must be a canonical path without symbolic links (on macOS `/tmp` is one: use `/private/tmp`
+  or a directory under your home) that does not exist or is empty; it gets exactly `records.jsonl` and
+  `manifest.json` (private files). See the [manifest contract](../../specs/075-lightning-dataset-export/contracts/dataset-manifest.md).
