@@ -5,11 +5,11 @@
   "python": "3.12.13"
  },
  "inputs": {
-  "agent_braid/lightning_export.py": "b94ba4e9e3c332f821209e5e80c7721a4562a7b0af550d59979225165032b92d",
+  "agent_braid/lightning_export.py": "de3bce4a21858e70776788078c39572becdff0a3db320d5bb7ce1cc36b0975da",
   "agent_braid/lightning_redact.py": "774e27ae55a1e71ab49205a0daa6d47d374160b46fd90b2c77891b566fbeecf2",
   "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
   "tests/spec075_fixtures.py": "780661adc1dbd086f7bf8cffee7229c98413596bf5bd485e0b36042376b519a6",
-  "tests/test_spec075_manifest.py": "c390c99a69b9ce7287e48b72e249dde611233c15db89591a2fc64651de602cba",
+  "tests/test_spec075_manifest.py": "2e4ddcf22eec9e976e39418d5d435d3f1887468b593404ef86ec56bcea7da1d6",
   "tests/test_spec075_manifest_schema.py": "34f8170148487ffdca9d18c25784bb0607d516047f119c47c6cf8cb11dce1134"
  },
  "limits": "Temporary homes and synthetic fixture content; the schema half uses hand-written manifests. Here the balance-report checks run on hand-made rows; the balancer and its report checks through export_dataset are procedure_007. The terms-decision branch is exercised only as a refusal (OD-1 deferred). The canary scan and its corpus coverage are procedure_010. redactionVersion covers only the redactor's pattern sources and salt size, not its code. jsonschema is a development dependency; the runtime stays standard-library only.",

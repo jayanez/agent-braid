@@ -56,9 +56,10 @@ Stable task IDs. Completion requires obtained evidence. `quick` means
   (`tests/test_spec075_boundaries.py`).
   Dependencies: T009. Verification: procedure_011.
 
-- [ ] T013 (REQ-013 / SC-013): Source retention in the manifest,
+- [x] T013 (REQ-013 / SC-013): Source retention in the manifest,
   `retention-expired` refusal, purge listing of citing manifests, and the
-  documentation note that exports are outside purge. Dependencies: T006,
+  documentation note that exports are outside purge (`drop_expired`,
+  `lightning/exports/` index, `citingDatasets` in purge). Dependencies: T006,
   SPEC-074 retention and purge. Verification: procedure_013.
 
 ## Closing

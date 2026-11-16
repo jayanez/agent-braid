@@ -12,7 +12,8 @@ half in `tests/test_spec075_manifest.py`), procedure_004 (T005,
 `tests/test_spec075_terms.py`, synthetic temporary records only) and
 procedure_009 (T009, `tests/test_spec075_cli.py`) and procedure_010 (T010,
 `tests/test_spec075_canary.py`) and procedure_011 (T011,
-`tests/test_spec075_boundaries.py`); no other procedure has. Evidence is
+`tests/test_spec075_boundaries.py`) and procedure_013 (T013,
+`tests/test_spec075_retention.py`); procedure_012 (T012) has not. Evidence is
 captured with `python -m scripts.spec075_capture_evidence`. Deterministic procedures run
 locally and in CI as targeted test modules (`tests/test_spec075_*.py`, one
 module per task).
@@ -30,5 +31,5 @@ module per task).
 | procedure_009 | SC-009 | CLI tests (`tests.test_spec075_cli`, T009) | fixed refusal codes; no value echo; `export-disabled` unless `export.enabled` | symlinked or non-empty output accepted |
 | procedure_010 | SC-010 | canary scan tests (`tests.test_spec075_canary`, T010; OD-3: the scan catches known shapes only; literal secrets not given at ingest, unknown shapes and raw ids typed in content are not detected) | abort, no output on hit; `clean` otherwise | partial file left after abort |
 | procedure_011 | SC-011 | socket/subprocess patched tests; MCP tool list (`tests.test_spec075_boundaries`, T011) | offline success; no MCP tool exposes export | socket opened |
-| procedure_013 | SC-013 | retention tests with injected clock; purge listing | record past retention refused `retention-expired`; manifest records retention; purge lists citing manifests | expired record exported; purge silent about citing manifest |
+| procedure_013 | SC-013 | retention tests with injected clock; purge listing (`tests.test_spec075_retention`, T013; the owner approved on 2026-11-16 the additive purge output in `lightning_cli.py`; SPEC-074's spec, store, adapter, redactor and config are unchanged) | record past retention refused `retention-expired`; manifest records retention; purge lists citing manifests | expired record exported; purge silent about citing manifest |
 | procedure_012 | SC-012 | `speckit-converge`, link check | artifacts agree | unbacked claim in documentation |
