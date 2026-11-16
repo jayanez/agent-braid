@@ -33,16 +33,25 @@ BLOCKED = {socket: ('socket', 'create_connection', 'socketpair', 'getaddrinfo', 
                 'execvpe', 'spawnv', 'spawnve')}
 LOCAL = {'lightning_adapter', 'lightning_config', 'lightning_redact', 'lightning_store', 'plugin_registry',
          'trace_adapter'}  # the modules lightning_export may import
-NETWORK_ROOTS = {'socket', 'subprocess', 'http', 'urllib', 'asyncio', 'ssl', 'select', 'selectors', 'multiprocessing',
-                 'concurrent', 'ctypes'}
+# Allow-list: every module lightning_export.py imports, top-level or lazy. Adding one needs a conscious edit here.
+STDLIB = {'__future__', 'datetime', 'hashlib', 'json', 'os', 'pathlib', 're', 'shutil', 'stat', 'tempfile'}
 CLOSURE_FORBIDDEN = ('socket', 'asyncio', 'ssl', 'http', 'http.client', 'urllib.request', 'multiprocessing')
 FORBIDDEN_MODULES = ('agent_braid.harness_promotion', 'agent_braid.harness_auto_promotion',
                      'agent_braid.harness_lifecycle', 'agent_braid.runtime_policy', 'agent_braid.mcp_runtime',
                      'agent_braid.tooling_mcp', 'agent_braid.plugin_mcp', 'agent_braid.forecast_mcp',
                      'agent_braid.mcp_advice', 'agent_braid.git_exec', 'agent_braid.git_runtime',
                      'agent_braid.lightning_runner', 'agent_braid.lightning_hosts', 'agent_braid.system_one_shadow')
+# Bare names (identifiers, imports, definitions) and attribute names that must not appear in the export or CLI
+# modules, so dead code or a rare path cannot hold a process, exec or dynamic-import call the runtime guard misses.
 FORBIDDEN_NAMES = {'decide', 'begin', 'execute', 'recover', 'harness_promotion', 'import_module', '__import__',
-                   'exec', 'eval'}
+                   'exec', 'eval', 'compile', 'importlib', 'popen', 'system', 'fork', 'forkpty', 'Popen',
+                   'check_output', 'check_call', 'create_connection', 'socketpair', 'getaddrinfo'}
+# Process and socket entry points: forbidden as attributes (`os.popen`, `subprocess.check_output`); the export's
+# own `check_output` (output-path check) is a definition and a plain call, not an attribute of a module.
+ATTRIBUTE_ONLY = {'check_output', 'check_call', 'Popen', 'popen', 'system', 'fork', 'forkpty', 'create_connection',
+                  'socketpair', 'getaddrinfo'}
+FORBIDDEN_PREFIXES = ('exec', 'spawn', 'posix_spawn')  # execl*, execv*, spawnl*, spawnv*, posix_spawn(p)
+DYNAMIC_TARGETS = {'os', 'subprocess', 'socket', 'importlib', 'builtins', 'sys', 'shutil'}  # getattr(<module>, ...)
 
 
 def blocked(name):
@@ -57,30 +66,57 @@ def snapshot():
             os.getcwd())
 
 
+def names_in(tree):
+    """(kind, name, node) for every identifier, attribute, import alias and definition in a module."""
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name):
+            yield 'name', node.id, node
+        elif isinstance(node, ast.Attribute):
+            yield 'attribute', node.attr, node
+        elif isinstance(node, ast.alias):
+            yield 'alias', node.name.split('.')[-1], node
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            yield 'definition', node.name, node
+
+
+def forbidden(kind, name):
+    if kind == 'attribute' and name == 'compile':
+        return False  # re.compile; the builtin compile() is a Name
+    if name in ATTRIBUTE_ONLY:
+        return kind == 'attribute'
+    return name in FORBIDDEN_NAMES or (name.startswith(FORBIDDEN_PREFIXES) and name not in ('executionAuthorization',))
+
+
 class StaticTests(unittest.TestCase):
-    def test_export_imports_only_the_standard_library_and_listed_modules(self):
+    # lightning_cli.py imports are covered by tests.test_lightning_cli.BoundaryTests (MODULES includes it).
+    def test_export_imports_only_the_allow_listed_modules(self):
         tree = ast.parse((ROOT / 'agent_braid/lightning_export.py').read_text())
-        for node in ast.walk(tree):
+        for node in ast.walk(tree):  # top-level and lazy imports alike
             if isinstance(node, ast.ImportFrom) and node.level:
                 names = {node.module} if node.module else {a.name for a in node.names}
                 self.assertLessEqual(names, LOCAL, node.module)
-            elif isinstance(node, (ast.Import, ast.ImportFrom)):
-                roots = [a.name.split('.')[0] for a in node.names] if isinstance(node, ast.Import) \
-                    else [node.module.split('.')[0]]
-                for root in roots:
-                    self.assertIn(root, sys.stdlib_module_names, root)
-                    self.assertNotIn(root, NETWORK_ROOTS, root)
+            elif isinstance(node, ast.ImportFrom):
+                self.assertIn(node.module, STDLIB, node.module)
+            elif isinstance(node, ast.Import):
+                for alias in node.names:
+                    self.assertIn(alias.name, STDLIB, alias.name)
 
-    def test_no_promotion_execution_or_dynamic_code_name(self):
+    def test_no_promotion_execution_process_or_dynamic_code_name(self):
         for name in ('lightning_export.py', 'lightning_cli.py'):
+            for kind, found, node in names_in(ast.parse((ROOT / 'agent_braid' / name).read_text())):
+                self.assertFalse(forbidden(kind, found), (name, kind, found))
+                self.assertNotIn('grant', found.lower(), (name, found))
+                if kind == 'name' and found == 'getattr':
+                    pass  # checked on the call below
             for node in ast.walk(ast.parse((ROOT / 'agent_braid' / name).read_text())):
-                found = (node.attr if isinstance(node, ast.Attribute) else node.id if isinstance(node, ast.Name)
-                         else node.name.split('.')[-1] if isinstance(node, ast.alias)
-                         else node.name if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
-                         else None)
-                if found is not None:
-                    self.assertNotIn(found, FORBIDDEN_NAMES, (name, found))
-                    self.assertNotIn('grant', found.lower(), (name, found))
+                if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in (
+                        'getattr', 'setattr', 'vars', 'globals', '__import__'):
+                    target = node.args[0] if node.args else None
+                    self.assertFalse(isinstance(target, ast.Name) and target.id in DYNAMIC_TARGETS,
+                                     (name, node.func.id, getattr(target, 'id', None)))
+                    for arg in node.args[1:]:
+                        if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
+                            self.assertFalse(forbidden('attribute', arg.value), (name, arg.value))
 
     def test_import_closure_loads_no_network_promotion_or_mcp_module(self):
         probe = ('import importlib, json, sys\n'
@@ -99,12 +135,38 @@ class StaticTests(unittest.TestCase):
             self.assertNotIn('lightning', text, path.name)
         for path in (ROOT / 'integrations').rglob('*.json'):
             self.assertNotIn('lightning export', path.read_text(errors='replace').lower(), path)
+        self.assertEqual(no_export_tools(), [])
+
+    def test_a_neutral_tool_name_is_caught(self):
         from agent_braid import mcp_runtime
-        self.assertFalse(any('export' in tool or 'lightning' in tool for tool in mcp_runtime.TOOLS))
+        with patch.object(mcp_runtime, 'TOOLS', (*mcp_runtime.TOOLS, 'dataset')):
+            self.assertEqual(no_export_tools(), ['dataset'])
 
     def test_no_runtime_dependency(self):
         project = tomllib.loads((ROOT / 'pyproject.toml').read_text())['project']
         self.assertEqual(project.get('dependencies', []), [])
+
+
+def no_export_tools():
+    """Tool names and descriptions of every MCP surface that mention export, dataset or lightning."""
+    from agent_braid import mcp_runtime, plugin_mcp, tooling_mcp
+    from tests.test_spec069_schema_delivery import FAKE_TYPES, _Router
+    words = ('export', 'dataset', 'lightning')
+    found = [tool for tool in mcp_runtime.TOOLS if any(w in tool.lower() for w in words)]
+    with tempfile.TemporaryDirectory() as tmp:
+        base = Path(tmp)
+        for name in ('s', 'r'):
+            (base / name).mkdir()
+        services = [tooling_mcp.ToolingService(tooling_mcp.ToolingConfig(base / 's', base / 'r')),
+                    tooling_mcp.ToolingService(tooling_mcp.ToolingConfig(base / 's', base / 'r',
+                                                                          grant_store=base / 'g', runtime_enabled=True))]
+        for service in services:
+            found += [tool for tool in service.tools if any(w in tool.lower() for w in words)]
+        workspace = plugin_mcp.WorkspaceService('ws', tooling_mcp.ToolingConfig(base / 's', base / 'r'))
+        for tool in plugin_mcp.tool_listing(_Router({'ws': workspace}), FAKE_TYPES):
+            text = f'{tool.name} {tool.description}'.lower()
+            found += [tool.name] if any(w in text for w in words) else []
+    return found
 
 
 class GuardedTests(unittest.TestCase):
@@ -126,6 +188,10 @@ class GuardedTests(unittest.TestCase):
         run = new_run(self.home)
         rollout(run, 'ro-0', 'raw-0', [('ok ask', 'ok')], task='task-a', d4=True)
         rollout(run, 'ro-1', 'raw-1', [('bad ask', 'no')], task='task-a', d4=False)
+        canary = new_run(self.home, 'run-canary')
+        rollout(canary, 'ro-c', 'raw-c', [('read /Users/canaryuser/plan', 'ok')], task='task-c', d4=True)
+        host = new_run(self.home, 'run-host')
+        rollout(host, 'ro-h', 'raw-h', [('host', 'host')], task='task-h', d4=True, label='host-run', model='m')
         for module, names in BLOCKED.items():
             for name in names:
                 if hasattr(module, name):
@@ -151,13 +217,20 @@ class GuardedTests(unittest.TestCase):
         base = ['lightning', 'export', '--home', str(self.home)]
         cases = [
             (0, ['--run', 'run-1', '--kind', 'rollout', '--level', 'trajectory', '--out', str(self.base / 'a')]),
-            (0, ['--all', '--kind', 'supervised', '--level', 'transition', '--out', str(self.base / 'b'),
+            (0, ['--run', 'run-1', '--kind', 'supervised', '--level', 'transition', '--out', str(self.base / 'b'),
                  '--outcome-field']),
-            (0, ['--all', '--kind', 'rollout', '--level', 'transition', '--out', str(self.base / 'c'), '--dry-run']),
+            (0, ['--run', 'run-1', '--kind', 'rollout', '--level', 'transition', '--out', str(self.base / 'c'),
+                 '--dry-run']),
+            (2, ['--all', '--kind', 'rollout', '--level', 'trajectory', '--out', str(self.base / 'h')]),  # host: terms
             (0, ['--help']),
             (2, ['--run', 'missing', '--kind', 'rollout', '--level', 'trajectory', '--out', str(self.base / 'd')]),
             (2, ['--kind', 'other']),
             (2, ['--all', '--kind', 'rollout', '--level', 'trajectory', '--out', str(self.base / 'a')]),
+            (2, ['--run', 'run-canary', '--kind', 'rollout', '--level', 'trajectory', '--balance', 'none',
+                 '--out', str(self.base / 'e')]),  # canary-detected
+            (2, ['--run', 'run-host', '--kind', 'rollout', '--level', 'trajectory', '--out', str(self.base / 'f')]),
+            (2, ['--run', 'run-host', '--kind', 'rollout', '--level', 'trajectory', '--out', str(self.base / 'f'),
+                 '--terms-decision', 'terms/none.json']),  # terms-gate-missing with a named record
         ]
         for expected, args in cases:
             with self.subTest(args=args[:2]):
@@ -167,18 +240,57 @@ class GuardedTests(unittest.TestCase):
                 if expected == 0 and out.lstrip().startswith('{'):
                     self.assertIs(json.loads(out)['executionAuthorization'], False)
 
-    def test_the_guard_fails_a_socket_or_process_inside_the_export(self):
-        for name, call in (('socket', lambda *a, **k: socket.create_connection(('127.0.0.1', 9))),
-                           ('process', lambda *a, **k: subprocess.run(['true'])),
-                           ('system', lambda *a, **k: os.system('true'))):
-            with self.subTest(name=name), patch.object(export, 'scan', call), \
-                    self.assertRaisesRegex(AssertionError, 'boundary:'):
-                export.export_dataset(self.home, ['run-1'], kind='rollout', level='trajectory',
-                                      out=self.base / f'x-{name}', now=T0 + 60)
-            self.assertFalse((self.base / f'x-{name}').exists())
+    def refusal(self, runs, code, **kwargs):
+        options = {'kind': 'rollout', 'level': 'trajectory', 'now': T0 + 60, **kwargs}
+        with self.assertRaises(export.ExportError) as caught:
+            export.export_dataset(self.home, runs, out=self.base / 'refused', **options)
+        self.assertEqual(caught.exception.code, code)
+        self.assertFalse((self.base / 'refused').exists())
+
+    def test_every_export_refusal_runs_offline(self):
+        self.refusal(['run-canary'], 'canary-detected', balance='none')
+        self.refusal(['run-host'], 'terms-gate-missing')
+        self.refusal(['run-host'], 'terms-gate-missing', terms_decision='terms/none.json')
+        self.refusal(['missing'], 'store-missing')
+        self.refusal(['run-1'], 'invalid-argument', kind='other')
+        (self.base / 'busy').mkdir()
+        (self.base / 'busy' / 'x').write_text('x')
+        with self.assertRaises(export.ExportError) as caught:
+            export.export_dataset(self.home, ['run-1'], kind='rollout', level='trajectory', out=self.base / 'busy')
+        self.assertEqual(caught.exception.code, 'output-not-empty')
+
+    def test_consent_and_disabled_refusals_run_offline(self):
+        consent(self.home, 'none')  # writes the profile under the guard: no process or socket either
+        self.refusal(['run-1'], 'no-records')
+        code, _, err = self.cli('lightning', 'export', '--home', str(self.home), '--run', 'run-1', '--kind', 'rollout',
+                                '--level', 'trajectory', '--out', str(self.base / 'g'))
+        self.assertEqual((code, 'boundary:' in err), (2, False))
+        self.assertIn('(export-disabled)', err)
+
+    def test_every_stub_fires_inside_the_export(self):
+        for module, names in BLOCKED.items():
+            for name in names:
+                if not hasattr(module, name):
+                    continue
+                with self.subTest(stub=f'{module.__name__}.{name}'), \
+                        patch.object(export, 'scan', lambda *a, _m=module, _n=name, **k: getattr(_m, _n)()), \
+                        self.assertRaisesRegex(AssertionError, f'boundary: {module.__name__}.{name} called'):
+                    export.export_dataset(self.home, ['run-1'], kind='rollout', level='trajectory',
+                                          out=self.base / 'x', now=T0 + 60)
+                self.assertFalse((self.base / 'x').exists())
+
+    def test_a_process_inside_a_refusal_path_fails(self):
+        for target, runs, record in (('scan', ['run-canary'], None), ('load_terms_decision', ['run-host'], 'terms/n.json')):
+            with self.subTest(target=target), \
+                    patch.object(export, target, lambda *a, **k: os.popen('true')), \
+                    self.assertRaisesRegex(AssertionError, 'boundary: os.popen called'):
+                export.export_dataset(self.home, runs, kind='rollout', level='trajectory', out=self.base / 'y',
+                                      balance='none', now=T0 + 60, terms_decision=record)
 
 
 class IsolationTests(unittest.TestCase):
+    # Runs GuardedTests a second time, inside a snapshot, on purpose: it is the only way to compare the global
+    # state before and after the guarded tests from within the suite.
     def test_guarded_tests_leave_no_process_global_state(self):
         before = snapshot()
         suite = unittest.defaultTestLoader.loadTestsFromTestCase(GuardedTests)
