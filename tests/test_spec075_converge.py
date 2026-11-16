@@ -9,7 +9,10 @@ ROOT = Path(__file__).resolve().parents[1]
 SPEC = ROOT / 'specs/075-lightning-dataset-export'
 DOC = ROOT / 'docs/tooling/LIGHTNING.md'
 STALE = (r'lands with T0\d\d', r'waits for T0\d\d', r'until T0\d\d', r'\(T0\d\d\) are not exercised',
-         r'is T0\d\d\b(?!:)', r'no SPEC-074 file change', r'same cutoff')
+         r'is T0\d\d\b(?!:)', r'no SPEC-074 file change', r'same cutoff', r'only fixtures and non-host content',
+         r'proposed\s+ADRs 0039')
+# 'proposed' is stale only in a title or status line (an ADR or a decision may still be proposed elsewhere)
+STALE_STATUS = re.compile(r'^(#.*\(proposed\)|.*Status: proposed|\*\*Status:\*\* (draft, )?proposed)', re.M)
 
 
 def text(name):
@@ -48,7 +51,11 @@ class ConvergeTests(unittest.TestCase):
 
     def test_no_stale_forward_reference_or_false_claim(self):
         script = (ROOT / 'scripts/spec075_capture_evidence.py').read_text()
-        for name, body in [(p.name, p.read_text()) for p in SPEC.rglob('*.md')] + [('capture script', script)]:
+        # reviews/ holds owner decision records, kept verbatim as decided (and hashed as evidence)
+        documents = [p for p in SPEC.rglob('*.md') if 'reviews' not in p.relative_to(SPEC).parts]
+        for name, body in [(p.name, p.read_text()) for p in documents] + [('capture script', script)]:
+            if name.endswith('.md'):
+                self.assertIsNone(STALE_STATUS.search(body), name)
             for pattern in STALE:
                 with self.subTest(file=name, pattern=pattern):
                     self.assertIsNone(re.search(pattern, body), name)
@@ -66,6 +73,7 @@ class ConvergeTests(unittest.TestCase):
     def test_user_documentation_says_what_the_export_does_not_do(self):
         doc = ' '.join(DOC.read_text().split())
         for phrase in ('Off by default', 'export-disabled', "No provider's terms of use have been reviewed",
+                       'a record covers one host and the exact model ids', 'informational only', '/api/users/42',
                        'terms-gate-missing', 'only fixture runs', 'ships no terms decision record',
                        'catches known shapes only', 'canary-detected', 'Outside purge', 'delete them yourself',
                        'retention-expired', 'no claim that a dataset or its balance helps any model'):
@@ -77,11 +85,15 @@ class ConvergeTests(unittest.TestCase):
         from agent_braid import lightning_cli
         helptext = ' '.join(lightning_cli.EXPORT_HELP.split())
         for phrase in ('OFF by default', 'export-disabled', "No provider's terms have been reviewed",
+                       'covers one host and the exact model ids', 'informational only',
                        'catches known shapes only', 'outside lightning purge', 'retention-expired'):
             self.assertIn(phrase, helptext)
 
     def test_no_terms_decision_record_ships(self):
-        found = [p for p in ROOT.rglob('*.json') if not any(part.startswith('.') for part in p.relative_to(ROOT).parts)
+        # Where a shipped record could live: a terms/ directory anywhere, SPEC-075 and the documentation.
+        candidates = {*ROOT.glob('**/terms/*.json'), *SPEC.rglob('*.json'), *(ROOT / 'docs').rglob('*.json'),
+                      *(ROOT / 'integrations').rglob('*.json')}
+        found = [p for p in candidates if not any(part.startswith('.') for part in p.relative_to(ROOT).parts)
                  and b'braid-lightning-terms-decision/v0.1' in p.read_bytes()]
         self.assertEqual(found, [])
 

@@ -1,4 +1,4 @@
-# Contract: `braid-lightning-dataset-manifest/v0.1` (proposed)
+# Contract: `braid-lightning-dataset-manifest/v0.1`
 
 Schema: [`schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json`](../../../schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json)
 (created by the lead in T002; this file is the normative prose; the schema and

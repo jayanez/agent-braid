@@ -82,7 +82,7 @@ Unchanged: all gates pass; the terms gate is an owner record, never inferred.
 T001 owner review done 2026-11-14 ([record](reviews/owner-t001-20261114.md)):
 E1–E5 accepted, OD-2 decided (equal cap 1:1 per task, no ratio parameter). OD-1
 is deferred: the terms gate (T008) ships closed and refuses every host-model
-export with `terms-gate-missing`; only fixtures and non-host content export.
+export with `terms-gate-missing`; only fixture runs (`pipeline-only`) export.
 OD-3 (2026-11-16): Q1 A, Q2 A ([record](reviews/owner-t010-20261116.md)). OD-4
 (2026-11-16): additive purge output approved. Converged at T012 (spec.md,
 "Convergence findings"). `human_review` stays `pending`.

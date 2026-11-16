@@ -97,13 +97,16 @@ agent-braid lightning export --help
   run with host-model output refuses with `terms-gate-missing`; only fixture runs (`pipeline-only`) export.
   Agent Braid ships no terms decision record and says no provider permits training. An owner who reviews a
   provider's terms may write their own record under `lightning/terms/` and pass it with `--terms-decision`.
+  The gate binds host and model: a record covers one host and the exact model ids it lists, and a run of
+  another host or model stays refused; the record's `provider` field is informational only.
 - **Kinds.** `supervised` writes chat `messages` (first-attempt D4 successes only, or every outcome with
   `--outcome-field`) and is never balanced; `rollout` writes turns, the SPEC-071 reward vector and status, and is
   balanced 1:1 per task by default (seeded; `--balance none` to keep everything). `--level transition` is one
   record per model call, `trajectory` one per attempt (text-level merge, declared per record).
 - **What the scan catches.** Before anything is written the final bytes are scanned for known secret shapes
   (tokens, bearer headers, private keys, e-mail addresses, your home path) and for any `/Users/<name>` or
-  `/home/<name>` path in any case, such as `/home/runner/` or `/srv/home/x`; a hit refuses with
+  `/home/<name>` path in any case and anywhere, such as `/home/runner/`, `/srv/home/x` or a URL path like
+  `/api/users/42` (false positives are accepted, fail closed); a hit refuses with
   `canary-detected`. The scan catches known shapes only: a literal secret not given when the trace was stored,
   free text of unknown shape (for example names), a raw id typed in content, encodings nested twice, and
   Windows or doubly escaped paths are not caught.

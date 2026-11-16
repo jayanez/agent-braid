@@ -49,8 +49,9 @@ Exclusions:
 - [SPEC-070](../070-braid-lightning-foundations/spec.md) store and
   [configuration contract](../070-braid-lightning-foundations/contracts/lightning-config.md).
 - [Research](../070-braid-lightning-foundations/research.md) §3 decisions 1 and 5.
-- ADR 0021 (EUR 0), ADR 0034 (System One advisory boundary), proposed
-  ADRs 0039–0042 (SPEC-070 REQ-001).
+- ADR 0021 (EUR 0), ADR 0034 (System One advisory boundary), ADRs 0039–0041
+  (accepted 2026-11-08) and ADR 0042 (local weight training, still proposed and
+  deferred; SPEC-075 trains nothing) (SPEC-070 REQ-001).
 - SPEC-034 to SPEC-037 "no fine-tuning" statements, scoped to forecasting.
 - [contracts/dataset-manifest.md](contracts/dataset-manifest.md).
 
@@ -97,7 +98,7 @@ Decisions:
   provider (Anthropic for Claude Code; each OpenCode backend), may outputs be
   used to train or fine-tune models, including local open models? Owner
   decision; legal, not scientific. No decision is recorded: BL.5 ships with the
-  terms gate closed, so only fixtures and non-host content export. No terms
+  terms gate closed, so only fixture runs (`pipeline-only`) export. No terms
   decision record is committed and no provider is said to permit training; the
   gate's permitting branch is tested only with synthetic records in temporary
   directories that name no real provider.

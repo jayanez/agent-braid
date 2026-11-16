@@ -164,7 +164,8 @@ EXPORT_HELP = """Write a local dataset from consented, redacted Braid Lightning 
 Export is OFF by default: it refuses with export-disabled unless the profile has export.enabled true, which only
 `agent-braid lightning init --export` (previewed and applied) sets. No provider's terms have been reviewed (OD-1 is
 deferred), so host-model output exports only with an owner terms decision record you write yourself; without one,
-only fixture runs export. --out must be a canonical path without symbolic links (on macOS /tmp and /var are
+only fixture runs export. A record covers one host and the exact model ids it lists (its provider field is
+informational only); a run of another host or model stays refused. --out must be a canonical path without symbolic links (on macOS /tmp and /var are
 symbolic links: use /private/tmp or a directory under your home) inside an existing directory, and must not exist
 or be empty. Records whose source run is past its retention (traces.retentionDays) are excluded and
 counted as retention-expired. Exported files are outside lightning purge: purge lists the datasets that cite a

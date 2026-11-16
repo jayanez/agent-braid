@@ -6,7 +6,7 @@
  },
  "inputs": {
   "agent_braid/forecast_mcp.py": "6fba537f5506791f6e160dad7bfd8f92e0183019ac8b7c026ecb8aacd83b2f24",
-  "agent_braid/lightning_cli.py": "76563d1a2037348c5743986efc78db2df1c01074881f9c4bccfb373383e650be",
+  "agent_braid/lightning_cli.py": "363fea8c903f0b82e32fd80964b3a71413715bf592be9b366d3692a0b80059aa",
   "agent_braid/lightning_export.py": "de3bce4a21858e70776788078c39572becdff0a3db320d5bb7ce1cc36b0975da",
   "agent_braid/mcp_advice.py": "74b2a62a6e4665e9d3beca9cf9abf7e9e017d6353a670f5b047dbf27c928c1a9",
   "agent_braid/mcp_runtime.py": "32d30a6a167235e1ab8ca89acdc32b23eb74412e2ac0555fe7c9118d1d816d83",
