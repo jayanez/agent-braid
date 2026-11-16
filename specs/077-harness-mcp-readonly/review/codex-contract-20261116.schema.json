@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SPEC-077 Codex contract review output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["commit", "reviewer", "findings", "verdict"],
+  "properties": {
+    "commit": {"type": "string", "description": "Full commit SHA reviewed"},
+    "reviewer": {"type": "string", "description": "Model or client identity as reported"},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "severity", "area", "file", "line", "scenario", "fix"],
+        "properties": {
+          "id": {"type": "string"},
+          "severity": {"type": "string", "enum": ["critical", "high", "medium", "low", "info"]},
+          "area": {"type": "string", "enum": ["authority", "path-safety", "arguments", "bounds-refusals", "versioning", "gate-claims"]},
+          "file": {"type": "string"},
+          "line": {"type": "integer"},
+          "scenario": {"type": "string"},
+          "fix": {"type": "string"}
+        }
+      }
+    },
+    "verdict": {"type": "string", "enum": ["no actionable findings", "findings"]}
+  }
+}
