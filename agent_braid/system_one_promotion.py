@@ -33,12 +33,15 @@ DECISION_POINTS = ('DP-1',)
 DECISIONS = ('go', 'rollback')
 MODES = ('off', 'shadow', 'advise')
 # Closed vocabulary for why a decision point runs in its active mode.
+AUTO_ROLLBACK_REASON = 'auto-rollback-false-independence'
+ROLLBACK_REASONS = (AUTO_ROLLBACK_REASON,)  # the only reasons a rollback record may carry (owner rollbacks carry none)
 REASONS = ('configured', 'owner-go', 'no-owner-go', 'rolled-back', 'identity-mismatch',
-           'promotion-registry-invalid')
+           'promotion-registry-invalid', AUTO_ROLLBACK_REASON)
 MAX_BYTES = 64 * 1024
 MAX_RECORDS = 256
 FIELDS = frozenset({'sequence', 'decisionPoint', 'decision', 'evidenceDigest', 'manifestDigest',
                     'decidedOn', 'previousDigest', 'recordDigest'})
+OPTIONAL_FIELDS = frozenset({'reason'})  # only on a rollback; records without it keep their digests
 _DIGEST = re.compile(r'[0-9a-f]{64}')
 _DATE = re.compile(r'\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])')
 
@@ -73,6 +76,8 @@ def _check_fields(record: dict) -> None:
         date.fromisoformat(record['decidedOn'])
     except ValueError as exc:
         raise PromotionError('Decision date must be a calendar date') from exc
+    if 'reason' in record and (decision != 'rollback' or record['reason'] not in ROLLBACK_REASONS):
+        raise PromotionError('Only a rollback may carry a closed-vocabulary reason')
     pinned = (record['evidenceDigest'], record['manifestDigest'])
     if decision == 'go' and not all(_digest(d) for d in pinned):
         raise PromotionError('A go pins lowercase SHA-256 evidence and manifest digests')
@@ -87,7 +92,7 @@ def _verify(value, *, bounded: bool = True) -> tuple:
         raise PromotionError('Unknown promotion registry schema')
     previous, records = None, []
     for index, record in enumerate(value['records']):
-        if not isinstance(record, dict) or set(record) != FIELDS:
+        if not isinstance(record, dict) or set(record) not in (FIELDS, FIELDS | OPTIONAL_FIELDS):
             raise PromotionError('Unknown promotion record shape')
         _check_fields(record)
         if type(record['sequence']) is not int or record['sequence'] != index:
@@ -129,11 +134,13 @@ def load(home: Path | None = None) -> tuple:
     return _verify(value)
 
 
-def _append(home: Path | None, record: dict) -> MappingProxyType:
+def _append(home: Path | None, record: dict, *, guard=None) -> MappingProxyType | None:
     selected = registry.home_path(home)
     try:
         with registry._locked(selected):
             records = load(selected)
+            if guard is not None and not guard(records):  # decided under the lock, so concurrent callers add one
+                return None
             record = dict(record, sequence=len(records),
                           previousDigest=records[-1]['recordDigest'] if records else None)
             record['recordDigest'] = _record_digest(record)
@@ -188,10 +195,16 @@ def owner_go(home: Path | None, decision_point: str, *, backend_kind: str, evide
                      decided_on=decided_on)
 
 
-def rollback(home: Path | None, decision_point: str, *, decided_on: str) -> MappingProxyType:
-    """Atomically demote one decision point to `off`; the earlier records stay as they were."""
+def rollback(home: Path | None, decision_point: str, *, decided_on: str,
+             reason: str | None = None) -> MappingProxyType:
+    """Atomically demote one decision point to `off`; the earlier records stay as they were.
+
+    `reason` is absent for an owner rollback and, for an automatic one, a member of ROLLBACK_REASONS.
+    """
     record = {'decisionPoint': decision_point, 'decision': 'rollback', 'evidenceDigest': None,
               'manifestDigest': None, 'decidedOn': decided_on}
+    if reason is not None:
+        record['reason'] = reason
     _check_fields(record)
     return _append(home, record)
 
@@ -199,6 +212,8 @@ def rollback(home: Path | None, decision_point: str, *, decided_on: str) -> Mapp
 def _point(configured: str, latest, manifest_digest: str) -> dict:
     fallback = 'off' if configured == 'off' else 'shadow'
     if latest is not None and latest['decision'] == 'rollback' and configured != 'off':
+        if latest.get('reason') in ROLLBACK_REASONS:  # D7: demote to shadow so episodes keep being recorded
+            return {'activeMode': 'shadow', 'reason': latest['reason']}
         return {'activeMode': 'off', 'reason': 'rolled-back'}
     if configured != 'advise':
         return {'activeMode': configured, 'reason': 'configured'}
@@ -240,3 +255,25 @@ def inspect(home: Path | None, configured: str, manifest_digest: str | None) -> 
 def status(home: Path | None, configured: str, manifest_digest: str | None) -> dict:
     """Path-free status of the registry as it is now: presence, validity, count and resolution."""
     return inspect(home, configured, manifest_digest)[1]
+
+
+def auto_rollback_false_independence(home: Path | None, decision_point: str, *, false_independent_days,
+                                     decided_on: str) -> MappingProxyType | None:
+    """D7: demote to `shadow` (owner decision 2026-11-16) on the first joined real conflict on an advised `likely-independent` pair.
+
+    `false_independent_days` are the ISO episode days of joined `merge-conflict` outcomes whose rule
+    answer was `likely-independent`. It acts only while the latest record is an owner go and a conflict
+    is not older than that go, so it is idempotent (the latest record is then the rollback) and a conflict
+    the owner already reviewed before a later go does not trigger it. Returns the record, or None.
+    """
+    days = tuple(false_independent_days)
+
+    def guard(records) -> bool:
+        latest = next((r for r in reversed(records) if r['decisionPoint'] == decision_point), None)
+        return (latest is not None and latest['decision'] == 'go'
+                and any(day >= latest['decidedOn'] for day in days))
+
+    record = {'decisionPoint': decision_point, 'decision': 'rollback', 'evidenceDigest': None,
+              'manifestDigest': None, 'decidedOn': decided_on, 'reason': AUTO_ROLLBACK_REASON}
+    _check_fields(record)
+    return _append(home, record, guard=guard)
