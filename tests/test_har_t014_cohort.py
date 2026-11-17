@@ -2,8 +2,9 @@
 """SPEC-049/T014 cohort driver controls: pins, terms, cap, ledger, order and the cohort loop with doubles.
 
 Nothing native runs: the pre-flight, the admission, the backend and the unit runner are replaced by doubles, and
-the host results come from ``harness_host_claude.ClaudeHostDouble``. The pinned records do not exist yet, so the
-real constants must refuse; the terms and admission records here are test records built from the offline arm-C
+the host results come from ``harness_host_claude.ClaudeHostDouble``. The SPEC-065 issuance of 2026-11-17 and the
+owner's D2 per-cohort cap record are pinned; the admission, terms and host-profile records do not exist yet, so
+those constants must refuse. The terms and admission records here are test records built from the offline arm-C
 round (``tests.harness_t014_arm_c``).
 """
 from datetime import datetime, timezone
@@ -66,24 +67,42 @@ def terms(**over) -> driver.Terms:
 
 
 class PinTests(unittest.TestCase):
-    """No record T014 needs exists yet: every placeholder refuses, by name, before anything reads a quota."""
+    """The issuance and the cap record are pinned; every record T014 still needs refuses, by name, before any quota read."""
 
     def test_every_placeholder_refuses(self):
-        for path, digest, name in ((driver.ISSUANCE, driver.ISSUANCE_SHA256, "issuance"),
-                                   (driver.ADMISSION, driver.ADMISSION_SHA256, "admission"),
+        for path, digest, name in ((driver.ADMISSION, driver.ADMISSION_SHA256, "admission"),
                                    (driver.TERMS, driver.TERMS_SHA256, "terms"),
-                                   (driver.PROFILE_DECISIONS, driver.PROFILE_DECISIONS_SHA256, "profile-decisions"),
-                                   (driver.CAP_DECISION, driver.CAP_DECISION_SHA256, "cap-decision")):
+                                   (driver.PROFILE_DECISIONS, driver.PROFILE_DECISIONS_SHA256, "profile-decisions")):
             with self.subTest(name=name), self.assertRaises(t9.AttemptRefused) as cm:
                 driver.pinned(path, digest, name)
             self.assertEqual(cm.exception.reasons, [f"{name}-not-pinned"])
-        self.assertEqual(set(driver.TRUSTED.values()), {driver.PENDING})
-        self.assertEqual(driver.ENVIRONMENT, driver.PENDING)
 
-    def test_the_admission_refuses_on_the_unpinned_issuance_first(self):
-        with self.assertRaises(t9.AttemptRefused) as cm:
-            driver.admit(types.SimpleNamespace(), {"observed": {}}, NOW)
-        self.assertEqual(cm.exception.reasons, ["issuance-not-pinned"])
+    def test_the_issuance_is_the_one_spec048_t008_pins(self):
+        qualification = "specs/065-native-claude-containment/evidence/qualification/"
+        self.assertEqual(driver.ISSUANCE, qualification + "issuance-2026-11-17.json")
+        self.assertEqual((driver.ISSUANCE, driver.ISSUANCE_SHA256), (driver.t8.ISSUANCE, driver.t8.ISSUANCE_SHA256))
+        self.assertEqual(driver.ENVIRONMENT, qualification + "t009-20261117c/environment.json")
+        self.assertEqual(driver.TRUSTED, driver.t8.TRUSTED)
+        raw = driver.pinned(driver.ISSUANCE, driver.ISSUANCE_SHA256, "issuance")
+        issued = hn.issued_records(raw, **driver.TRUSTED)
+        self.assertEqual(issued.expires_at, 1797545969)  # 2026-12-17T22:19:29Z
+        self.assertEqual(issued.environment_sha256,
+                         json.loads((ROOT / driver.ENVIRONMENT).read_bytes())["environmentSha256"])
+
+    def test_the_cap_decision_is_pinned_and_says_per_cohort_16(self):
+        record = json.loads(driver.pinned(driver.CAP_DECISION, driver.CAP_DECISION_SHA256, "cap-decision"))
+        self.assertEqual(record["decision"]["disposition"], "d2-max-units-per-cohort")
+        self.assertFalse(record.get("executionAuthorization", False))
+        self.assertEqual(driver.UNIT_CAP, 16)
+
+    def test_the_admission_refuses_on_the_unpinned_terms_first(self):
+        issued = hn.issued_records(driver.pinned(driver.ISSUANCE, driver.ISSUANCE_SHA256, "issuance"),
+                                   **driver.TRUSTED)
+        report = {"observed": {"environmentSha256": issued.environment_sha256}}
+        with mock.patch.object(driver, "trusted_inputs", return_value=(issued, object())), \
+                self.assertRaises(t9.AttemptRefused) as cm:
+            driver.admit(types.SimpleNamespace(), report, NOW)
+        self.assertEqual(cm.exception.reasons, ["terms-not-pinned"])
 
     def test_a_pinned_record_must_match_its_hash(self):
         record = "specs/049-harness-evaluation-learning/evidence/registration/t005-units-freeze-20261112.json"
