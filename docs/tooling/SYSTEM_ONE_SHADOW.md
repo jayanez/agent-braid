@@ -188,6 +188,10 @@ operation, System 2 class and System One status, and the share of System 2
 nothing and never prints episode bodies. Episodes skipped before storage are
 known only to the process that skipped them.
 
+Daily counts for the S1.5b shadow week (merge outcomes, advised pairs, false
+independence and its Wilson bound) have their own one-command routine:
+[System One daily runbook](../development/SYSTEM_ONE_DAILY_RUNBOOK.md).
+
 ## Purge and turn off
 
 ```sh
