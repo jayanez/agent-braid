@@ -10,11 +10,7 @@
     23,
     24
   ],
-  "assumptions": [
-    "The plugin facade keeps requiring an explicit registered workspaceId.",
-    "The SPEC-049 T009 CLI views stay as merged.",
-    "No CLI-vs-MCP baseline exists (SPEC-044 T005 never ran); the surface choice rests on counterfactual analysis."
-  ],
+  "assumptions": "The plugin facade keeps requiring an explicit registered workspaceId. The SPEC-049 T009 CLI views stay as merged. No CLI-vs-MCP baseline exists (SPEC-044 T005 never ran); the surface choice rests on counterfactual analysis.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -119,9 +115,7 @@
   },
   "execution_contract": "None. executionAuthorization is false on every result; no launch, grant, promotion, activation or write.",
   "human_review": "pending",
-  "hypotheses": [
-    "H1: flat arguments with the schema in the tool description reach at least 8/10 first-attempt validity per host on a held-out set."
-  ],
+  "hypotheses": "H1: flat arguments with the schema in the tool description reach at least 8/10 first-attempt validity per host on a held-out set.",
   "observation_contract": "What the T003 report, T013 registry and a spec evidence directory say, with the CLI's stated limits; hashes bind bytes, not authenticity.",
   "references": [
     "CONSTITUTION.md",
@@ -302,11 +296,7 @@
       "text": "Conditional publication: only with SPEC-049 T014 results, a D7 outcome that does not close the harness as experimental, REQ-009 passed, the Codex review resolved and owner acceptance; otherwise a recorded no-publish outcome."
     }
   ],
-  "scientific_limits": [
-    "H1 (trivial arguments reach the D4 validity target on all three hosts) is a hypothesis REQ-009 may refute.",
-    "Three hosts with one model each; validity results are descriptive.",
-    "A Codex review is independent model review, not human review or approval."
-  ],
+  "scientific_limits": "H1 (trivial arguments reach the D4 validity target on all three hosts) is a hypothesis REQ-009 may refute. Three hosts with one model each; validity results are descriptive. A Codex review is independent model review, not human review or approval.",
   "scope": "Draft versioned read-only MCP contract agent-braid-harness-mcp/v0.1 exposing the four SPEC-049 T009 harness CLI views through the native plugin facade, its versioning decision, held-out host validity test and conditional publication gate. Contract only: no implementation, no publication, no native execution.",
   "stage": "draft"
 }

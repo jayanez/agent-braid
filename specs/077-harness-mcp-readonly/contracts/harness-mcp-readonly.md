@@ -48,14 +48,14 @@ segment rules are runtime checks and refuse structurally with pointer `/path`.
 
 - Input schema:
   `{"type":"object","properties":{"workspaceId":{"type":"string"},"path":{"type":"string","maxLength":256}},"required":["workspaceId","path"],"additionalProperties":false}`
-- Description: `Read-only. Reports a SPEC-049 T013 profile registry's active, pending and audit state. Input schema: {"workspaceId": string (from the workspaces tool), "path": workspace-relative path to the registry JSON}. Example: {"workspaceId":"ws-1","path":"specs/049-harness-evaluation-learning/evidence/registry.json"}. Never promotes or activates; executionAuthorization is always false.`
+- Description: `Read-only. Reports a SPEC-049 T013 profile registry's active, pending and audit state. Input schema: {"workspaceId": string (from the workspaces tool), "path": workspace-relative path to the registry JSON}. Example: {"workspaceId":"ws-1","path":"lab/profile-registry.json"}. Never promotes or activates; executionAuthorization is always false.`
 - Result `view`: the CLI `harness registry-status <path>` object.
 
 ### 3.3 `harness-evaluation-summary`
 
 - Input schema:
   `{"type":"object","properties":{"workspaceId":{"type":"string"},"path":{"type":"string","maxLength":256},"sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"}},"required":["workspaceId","path"],"additionalProperties":false}`
-- Description: `Read-only. Summarizes a SPEC-049 T003 evaluation report per stratum. Input schema: {"workspaceId": string, "path": workspace-relative path to the report JSON, "sha256": optional 64 lowercase hex digest you were given from outside the report}. Example: {"workspaceId":"ws-1","path":"specs/049-harness-evaluation-learning/evidence/evaluation/report.json"}. A matched sha256 binds bytes, not authenticity. executionAuthorization is always false.`
+- Description: `Read-only. Summarizes a SPEC-049 T003 evaluation report per stratum. Input schema: {"workspaceId": string, "path": workspace-relative path to the report JSON, "sha256": optional 64 lowercase hex digest you were given from outside the report}. Example: {"workspaceId":"ws-1","path":"lab/evaluation-report.json"}. A matched sha256 binds bytes, not authenticity. executionAuthorization is always false.`
 - Result `view`: the CLI `harness evaluation-summary <path> [--sha256 H]` object.
 
 ### 3.4 `harness-evidence`
