@@ -20,8 +20,9 @@ account's own ``Background`` session, started by the root launcher ``scripts/har
 Pins: the SPEC-065 issuance (with its environment document and trusted record hashes), the SPEC-049/T004
 admission record, the T014 terms record and the host-profile decision record are each bound by a SHA-256 below.
 None of them exists yet; their placeholders refuse (``<name>-not-pinned``) until the orchestrator fills them in
-from the merged records. The unit cap is a pinned input of the terms record (``unitCap``, at most the D2 16, minus
-``unitsChargedElsewhere``, the owner's answer on whether T008 units count), never an assumption here. Every
+from the merged records. The unit cap is the pinned input ``UNIT_CAP`` = 16 (owner decision 2026-11-17, D2
+per-cohort cap: T014 has its own 16 and SPEC-048/T008 units do not count toward it); the terms record must repeat
+it and the founder-decisions record that carries it is pinned by SHA-256 once it merges. Every
 attempt counts its started units and slots in ``<out-dir>/t014-units.json`` right before each launch, and every
 later attempt subtracts them.
 
@@ -73,6 +74,10 @@ D2_CAPS = t8.D2_CAPS
 D2_CAPS_SHA256 = t8.D2_CAPS_SHA256
 ADMISSION_FORMAT = "spec049-t004-admission-v1"
 TERMS_FORMAT = "spec049-t014-terms-v1"
+# owner decision 2026-11-17, D2 per-cohort cap: 16 units for this cohort; T008 units are not charged to it.
+# The founder-decisions record carrying it lands in the native-chain session's wave PR; pin it once merged.
+UNIT_CAP = 16
+CAP_DECISION, CAP_DECISION_SHA256 = PENDING, PENDING
 PLANS = {"P2": 15}  # arm C frozen from the offline round + 5 holdout cases x A/B/C
 LEDGER = "t014-units.json"  # in each attempt's --out-dir: units and slots started, written before each launch
 ROWS = "t014-rows.json"  # in each attempt's --out-dir: graded rows (records and hashes only)
@@ -119,8 +124,6 @@ class Terms:
     """The owner's T014 terms as this driver applies them."""
 
     plan: str
-    unit_cap: int
-    charged_elsewhere: int
     window: tuple[datetime, datetime]
     arms: dict
     arm_c_files: dict
@@ -130,21 +133,21 @@ class Terms:
     @property
     def cohort_units(self) -> int:
         """Units this cohort may start across every attempt."""
-        return min(self.unit_cap - self.charged_elsewhere, PLANS[self.plan])
+        return min(UNIT_CAP, PLANS[self.plan])
 
 
 def parse_terms(raw: bytes) -> Terms:
     """``spec049-t014-terms-v1``: the plan, the pinned cap, the window, the arms, arm C's bytes and its round."""
     value = _record(raw, TERMS_FORMAT, "terms")
     try:
-        cap, charged = value["unitCap"], value["unitsChargedElsewhere"]
+        cap = value["unitCap"]
         window = (_instant(value["window"]["start"]), _instant(value["window"]["end"]))
         arms = value["arms"]
         files = {row["path"]: row["text"].encode("utf-8") for row in value["armC"]["files"]}
         decision = value["armC"]["refinementDecision"]
         refinement = RefinementDecision(freeze(decision), canonical(decision))
-        ok = (value["plan"] in PLANS and type(cap) is int and 1 <= cap <= hh.D2Caps("0" * 64).max_units
-              and type(charged) is int and 0 <= charged < cap and window[0] < window[1]
+        ok = (value["plan"] in PLANS and type(cap) is int and cap == UNIT_CAP <= hh.D2Caps("0" * 64).max_units
+              and window[0] < window[1]
               and type(arms) is dict and set(arms) == set(ev.ARMS) and all(_hex(h) for h in arms.values())
               and arms["A"] == tn.ARM_SHA256["A"] and arms["B"] == tn.ARM_SHA256["B"]
               and len(files) == len(value["armC"]["files"])
@@ -156,7 +159,7 @@ def parse_terms(raw: bytes) -> Terms:
         ok = False
     if not ok:
         raise t9.AttemptRefused(["terms-invalid"])
-    return Terms(value["plan"], cap, charged, window, dict(arms), files, refinement, value["profileSha256"])
+    return Terms(value["plan"], window, dict(arms), files, refinement, value["profileSha256"])
 
 
 def check_admission(raw: bytes, terms: Terms) -> None:
@@ -311,6 +314,17 @@ def check_window(now: datetime, issued: hn.IssuedRecords, terms: Terms) -> None:
         raise t9.AttemptRefused(["qualification-expiring"])
 
 
+def cohort_left(terms: Terms, registration: ev.Registration, parent: Path) -> tuple[list, int]:
+    """Slots no attempt started, in the registered order, and the units this cohort may still start. The ledger
+    counts every label under ``parent``; at ``UNIT_CAP`` started units nothing more starts (no 17th unit)."""
+    count, names = started(parent)
+    pending = [s for s in slots(registration) if f"{s[0]}:{s[1]}" not in names]
+    remaining = min(terms.cohort_units - count, UNIT_CAP - count, len(pending))
+    if remaining < 1:
+        raise t9.AttemptRefused(["cohort-units-exhausted"], {"cohortUnits": str(UNIT_CAP)})
+    return pending, remaining
+
+
 @dataclass(frozen=True)
 class Admitted:
     issued: hn.IssuedRecords
@@ -343,11 +357,8 @@ def admit(args, report: dict, now: datetime) -> Admitted:
     except tn.T014Error as exc:
         raise t9.AttemptRefused([exc.reason]) from None
     registration = register(units, terms)
-    count, names = started(Path(args.out_dir).parent)
-    pending = [s for s in slots(registration) if f"{s[0]}:{s[1]}" not in names]
-    remaining = min(terms.cohort_units - count, len(pending))
-    if remaining < 1:
-        raise t9.AttemptRefused(["cohort-units-exhausted"], {"cohortUnits": str(terms.cohort_units)})
+    pinned(CAP_DECISION, CAP_DECISION_SHA256, "cap-decision")  # the owner's D2 per-cohort cap record
+    pending, remaining = cohort_left(terms, registration, Path(args.out_dir).parent)
     return Admitted(issued, policy, decisions, caps, terms, units, registration, pending, remaining)
 
 

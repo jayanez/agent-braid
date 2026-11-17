@@ -39,7 +39,7 @@ ARMS = {"A": tn.ARM_SHA256["A"], "B": tn.ARM_SHA256["B"], "C": DECISION.to_dict(
 
 
 def terms_record(**over) -> dict:
-    value = {"recordVersion": driver.TERMS_FORMAT, "plan": "P2", "unitCap": 16, "unitsChargedElsewhere": 0,
+    value = {"recordVersion": driver.TERMS_FORMAT, "plan": "P2", "unitCap": 16,
              "window": {"start": "2026-12-15T00:00:00Z", "end": "2027-01-10T00:00:00Z"},
              "issuanceSha256": ISSUANCE_SHA, "admissionSha256": ADMISSION_SHA, "arms": dict(ARMS),
              "armC": {"files": [{"path": p, "text": c.decode()} for p, c in C_FILES.items()],
@@ -72,7 +72,8 @@ class PinTests(unittest.TestCase):
         for path, digest, name in ((driver.ISSUANCE, driver.ISSUANCE_SHA256, "issuance"),
                                    (driver.ADMISSION, driver.ADMISSION_SHA256, "admission"),
                                    (driver.TERMS, driver.TERMS_SHA256, "terms"),
-                                   (driver.PROFILE_DECISIONS, driver.PROFILE_DECISIONS_SHA256, "profile-decisions")):
+                                   (driver.PROFILE_DECISIONS, driver.PROFILE_DECISIONS_SHA256, "profile-decisions"),
+                                   (driver.CAP_DECISION, driver.CAP_DECISION_SHA256, "cap-decision")):
             with self.subTest(name=name), self.assertRaises(t9.AttemptRefused) as cm:
                 driver.pinned(path, digest, name)
             self.assertEqual(cm.exception.reasons, [f"{name}-not-pinned"])
@@ -108,11 +109,10 @@ class TermsTests(unittest.TestCase):
         self.assertEqual(registration.data["refinement"]["sha256"], DECISION.sha256)
 
     def test_the_cap_is_a_pinned_input(self):
-        self.assertEqual(terms(unitCap=16, unitsChargedElsewhere=4).cohort_units, 12)  # if T008 units count
-        self.assertEqual(terms(unitCap=10).cohort_units, 10)  # a lower owner number
-        self.assertEqual(terms(unitCap=16).cohort_units, 15)  # P2 has 15 cells
-        for over in (dict(unitCap=17), dict(unitCap=0), dict(unitCap="16"), dict(unitsChargedElsewhere=16),
-                     dict(unitsChargedElsewhere=-1), dict(unitCap=True)):
+        # owner decision 2026-11-17, D2 per-cohort cap: 16 for T014, T008 units not charged; P2 has 15 cells
+        self.assertEqual(driver.UNIT_CAP, 16)
+        self.assertEqual(terms().cohort_units, 15)
+        for over in (dict(unitCap=17), dict(unitCap=12), dict(unitCap="16"), dict(unitCap=True)):
             with self.subTest(over=over), self.assertRaises(t9.AttemptRefused) as cm:
                 terms(**over)
             self.assertEqual(cm.exception.reasons, ["terms-invalid"])
@@ -248,11 +248,7 @@ class CohortTests(unittest.TestCase):
         def admitted(parent):
             t, units = self.terms, tn.units()
             registration = driver.register(units, t)
-            count, names = driver.started(parent)
-            pending = [s for s in driver.slots(registration) if f"{s[0]}:{s[1]}" not in names]
-            remaining = min(t.cohort_units - count, len(pending))
-            if remaining < 1:
-                raise t9.AttemptRefused(["cohort-units-exhausted"])
+            pending, remaining = driver.cohort_left(t, registration, parent)
             return driver.Admitted(issued, types.SimpleNamespace(claude_sha256="a" * 64), decisions(), caps(), t,
                                    units, registration, pending, remaining)
         self.admitted = admitted
@@ -324,12 +320,23 @@ class CohortTests(unittest.TestCase):
         self.assertEqual(cm.exception.reasons, ["cohort-units-exhausted"])
 
     def test_the_cap_from_the_terms_ends_the_cohort(self):
-        self.terms = terms(unitCap=16, unitsChargedElsewhere=12)  # the owner counts T008 units
-        self.cohort("t014-20261220a", self.unit())
-        self.assertEqual(len(self.launches), 4)
+        with mock.patch.object(driver, "UNIT_CAP", 4), mock.patch.object(driver, "PLANS", {"P2": 4}):
+            self.terms = terms(unitCap=4)
+            self.cohort("t014-20261220a", self.unit())
+            self.assertEqual(len(self.launches), 4)
+            with self.assertRaises(t9.AttemptRefused) as cm:
+                self.cohort("t014-20261221a", self.unit())
+            self.assertEqual(cm.exception.reasons, ["cohort-units-exhausted"])
+
+    def test_the_ledger_refuses_a_seventeenth_unit(self):
+        registration = driver.register(tn.units(), self.terms)
+        driver.write_ledger(self.parent / "t014-20261220a", [f"x{i}" for i in range(16)], create=True)
         with self.assertRaises(t9.AttemptRefused) as cm:
-            self.cohort("t014-20261221a", self.unit())
+            driver.cohort_left(self.terms, registration, self.parent)
         self.assertEqual(cm.exception.reasons, ["cohort-units-exhausted"])
+        shutil.rmtree(self.parent / "t014-20261220a")
+        driver.write_ledger(self.parent / "t014-20261220a", [f"x{i}" for i in range(14)], create=True)  # P2: 15 cells
+        self.assertEqual(driver.cohort_left(self.terms, registration, self.parent)[1], 1)
 
     def test_a_refusal_before_launch_spends_nothing_and_stops(self):
         report = self.cohort("t014-20261220a", self.unit(refuse_at=2))
