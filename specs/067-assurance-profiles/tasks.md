@@ -136,6 +136,7 @@ shared object store fails the portable-root check).
   `validate_spec_kit`. Evidence: validation output bound to the candidate
   commit.
   Obtained (2026-11-08, #1168): `evidence/t011.json`; five reviews produced fixes in the receipt verifier and renderer, 9 added tests (194 passing). F6 and the id-only standing-authorization binding are recorded for their own tasks. Freeze, authority snapshot and human review pending (founder).
+  Progress 2026-11-17 (#1403, 906d2efd; task stays open): authority and evidence snapshots frozen historical at develop `dad3e7f5` (authority hashes unchanged, `human_review` pending); Codex review packet `review/codex-t011-20261116.md` with output schema. Remaining: the owner runs the Codex review, then records a human review bound to `dad3e7f5` (approved or changes-requested).
 
 ## Unblocking map
 
