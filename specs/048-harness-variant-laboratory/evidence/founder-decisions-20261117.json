@@ -1,0 +1,86 @@
+{
+  "recordVersion": "spec048-founder-review-v1",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-17",
+  "baseCommit": "3747d7d6",
+  "decisionChannel": "Binding record written after SPEC-065 T015 issued the 2026-11-17 records (founder answer T015-ISSUE \"Issue, same terms (Recommended)\", 2026-11-17). No separate SPEC-048/T008 question was asked on 2026-11-17: this record only moves the T008-6 binding, on its unchanged terms, from the 2026-11-14 records (void after #1397) to the 2026-11-17 records, as T008-8 did on 2026-11-14. Additive; earlier records stay as written.",
+  "supersedes": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261114.json (sha256 29dc699494674858390e102f800c9e7d1a60fae034baafa7f08002a714738d8c) for the records the Claude profile authorization is bound to; that record names the 2026-11-14 qualification (87c7b520.../625bb211...), which no longer matches the code after #1397. Its answers T008-6, T008-7 and T008-8 and the answers T008-3, T008-4 and T008-5 of founder-decisions-20261106.json stay in force",
+  "qualificationRecords": {
+    "issuance": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+    "issuanceSha256": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8",
+    "bundle": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/",
+    "bundleSha256": "b75020ef348086df7db6a70f1b7ee88598bc0962614dc2c844945fdb00fadbbe",
+    "containmentSha256": "5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df",
+    "hostSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+    "environmentSha256": "600ba86d00b7ff9a77170f720f78803aa959fc94e42357aab274f246316dc556",
+    "expiresAt": 1797545969
+  },
+  "decisions": [
+    {
+      "task": "SPEC-048/T008",
+      "item": "Claude profile qualification",
+      "decision": "qualification-authorized",
+      "ownerStatement": "Mismos términos, nuevos registros (Recommended)",
+      "detail": "The T008-6 authorization of 2026-11-13, unchanged (confirmed on 2026-11-14, T008-8), bound here to the SPEC-065 records issued 2026-11-17 (containment 5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df, host f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d, issuance record evidence/qualification/issuance-2026-11-17.json, bundle t009-20261117c, environment 600ba86d00b7ff9a77170f720f78803aa959fc94e42357aab274f246316dc556, expires 2026-12-17T22:19:29Z): serial units for the whole cohort (units already started under the earlier bindings count; all 4 of the T008-6 cap are used), the cap raised by the founder to 5 on 2026-11-17 (T008-9, +1 unit; the driver change of scripts/har_t008_unit.py MAX_UNITS is not in this record's pull request and still needs its own reviewed change, so until then the driver keeps refusing at 4), window 2026-11-09T20:30Z to 2026-11-30, D2 caps unchanged, EUR 0, subscription route, usage readings at most 5 minutes old. The 'qualified' verdict is decided later from the unit evidence. Does not admit SPEC-049/T004 and does not qualify Codex."
+    },
+    {
+      "task": "SPEC-048/T008",
+      "item": "Codex profile qualification",
+      "decision": "not-qualified",
+      "ownerStatement": "Unchanged from founder-review-20261031.json: Registralo como no calificado y anota que lo tenemos que revisar antes de considerar cerrado este milestone",
+      "detail": "Codex CLI is not installed; stays refused and must be reviewed again before HAR.1 closes. Not asked again on 2026-11-17."
+    }
+  ],
+  "founderAnswers": [
+    {
+      "id": "T008-6",
+      "answeredAt": "2026-11-13",
+      "carriedFrom": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261114.json",
+      "topic": "Re-authorization of the T008 native units on the current issued records",
+      "answer": "Mismos términos, nuevos registros (Recommended)",
+      "terms": "Identical terms: at most 4 serial units, window to 2026-11-30, D2 caps unchanged (30 min per unit, session at most 10 % of 5-hour, cohort at most 15 % of weekly, weekly stop above 80 %), EUR 0, subscription route, readings at most 5 minutes old. Rebound here to the 2026-11-17 records in qualificationRecords. executionAuthorization stays false; the qualified verdict is decided later from the unit evidence."
+    },
+    {
+      "id": "T008-7",
+      "answeredAt": "2026-11-13",
+      "carriedFrom": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261114.json",
+      "topic": "How the T008 units are launched",
+      "answer": "Lanzador root sin GUI (Recommended)",
+      "terms": "Unchanged: a root launcher with a T008 mode starts the driver as braidlab in its own Background session (launchctl asuser). The orchestrator runs its check automatically (passwordless sudo rule for check only); the owner runs `sudo ... run` in Terminal.app with the password and types the quota readings."
+    },
+    {
+      "id": "T008-8",
+      "answeredAt": "2026-11-14",
+      "carriedFrom": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261114.json",
+      "topic": "Binding the remaining T008 unit to the current qualification",
+      "answer": "Confirm, same terms (Recommended)",
+      "terms": "The T008-6 terms unchanged. On 2026-11-14 bound to the 2026-11-14 records; moved here, without a new question, to the 2026-11-17 records in qualificationRecords. executionAuthorization stays false."
+    },
+    {
+      "id": "T015-ISSUE",
+      "answeredAt": "2026-11-17",
+      "carriedFrom": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+      "topic": "SPEC-065 re-qualification issuance after #1397",
+      "answer": "Issue, same terms (Recommended)",
+      "terms": "The founder issued the 2026-11-17 records on the terms of 2026-11-14. This is the basis for moving the T008-6 binding; it is a SPEC-065 answer, not a new SPEC-048/T008 answer."
+    },
+    {
+      "id": "T008-9",
+      "answeredAt": "2026-11-17",
+      "topic": "Raising the T008 cohort unit cap after all 4 units were used",
+      "question": "T008 has used all 4 units of its cap (MAX_UNITS = 4 in scripts/har_t008_unit.py). None of the 4 completed: one hit window-reset, one ended with no breach but completed=false, and the last (20261114c) was rejected as paid-route by the event bug fixed in #1397. Running another unit needs a higher cap. How many more units do you authorize? Weekly is at 31 % (stop above 80 %), Haiku, subscription only, EUR 0, at most 30 min per unit. The change goes into the issuance PR, which already edits that file. Undo: you lower the cap again with a record.",
+      "answer": "+1 unit, cap 5 (Recommended)",
+      "terms": "The T008-6 terms otherwise unchanged; cap 5 serial units for the whole cohort (one unit left). Implementation pending: scripts/har_t008_unit.py still has MAX_UNITS = 4 in the pull request that adds this record, so the driver refuses a fifth unit until a reviewed change sets the cap. executionAuthorization stays false."
+    }
+  ],
+  "hostObservation": {
+    "observedAt": "2026-11-17",
+    "host": {
+      "claude": "claude 2.1.292 pinned at /usr/local/libexec/braid/claude-2.1.292 (environment.json of t009-20261117c: claudeVersion 2.1.292, claudeSha256 97a01e5bc74a199e67189435d0331ea3a24eac2e07db4b76d9148c5b0386138f)",
+      "codex": "absent (unchanged from 2026-11-13; not re-checked)"
+    }
+  },
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false
+}

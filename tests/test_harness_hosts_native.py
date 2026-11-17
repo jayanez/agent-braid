@@ -20,13 +20,14 @@ from tests.test_harness_host_claude import SESSION, make_inventory
 
 ROOT = Path(__file__).resolve().parents[1]
 QUALIFICATION = ROOT / "specs/065-native-claude-containment/evidence/qualification"
-# SPEC-065 T014: the 2026-11-14 issuance supersedes the 2026-11-13 one (harness_host_claude.py moved in #1363),
-# which superseded the 2026-11-06 one (void on macOS build 26B131)
-ISSUANCE = QUALIFICATION / "issuance-2026-11-14.json"
-ENVIRONMENT = QUALIFICATION / "t009-20261114a/environment.json"
-TRUSTED_CONTAINMENT = "87c7b52098131d42e7bcc6bfc932827ed8000ff1728b8d47ca47e5f5153b6f68"
-TRUSTED_HOST = "625bb211e4e16ef559bb14b1c3184142bce1776aa19666b153bf636f9df536ec"
-SUPERSEDED_ISSUANCES = (QUALIFICATION / "issuance-2026-11-13.json", QUALIFICATION / "issuance-2026-11-06.json")
+# SPEC-065 T015: the 2026-11-17 issuance supersedes the 2026-11-14 one (harness_host_claude.py moved in #1397),
+# which superseded the 2026-11-13 one (#1363) and the 2026-11-06 one (void on macOS build 26B131)
+ISSUANCE = QUALIFICATION / "issuance-2026-11-17.json"
+ENVIRONMENT = QUALIFICATION / "t009-20261117c/environment.json"
+TRUSTED_CONTAINMENT = "5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df"
+TRUSTED_HOST = "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d"
+SUPERSEDED_ISSUANCES = (QUALIFICATION / "issuance-2026-11-14.json", QUALIFICATION / "issuance-2026-11-13.json",
+                        QUALIFICATION / "issuance-2026-11-06.json")
 SUPERSEDED_ENVIRONMENT = QUALIFICATION / "t009-20261106a/environment.json"
 BASE = datetime(2026, 11, 10, 12, 0, tzinfo=timezone.utc)
 NOW = int(BASE.timestamp())
@@ -50,9 +51,9 @@ class IssuedRecordTests(unittest.TestCase):
         issued = self.load()
         self.assertEqual(sha256(issued.containment).hexdigest(), TRUSTED_CONTAINMENT)
         self.assertEqual(sha256(issued.host).hexdigest(), TRUSTED_HOST)
-        self.assertEqual(issued.expires_at, 1797273730)  # 2026-12-14T18:42:10Z
+        self.assertEqual(issued.expires_at, 1797545969)  # 2026-12-17T22:19:29Z
         self.assertEqual(issued.environment_sha256,
-                         "2164a4a2351ee333ce1af886f5abc0793c6f5cb7ab22bd05865c1dd9c28314dc")
+                         "600ba86d00b7ff9a77170f720f78803aa959fc94e42357aab274f246316dc556")
         self.assertFalse(issued.executionAuthorization)
 
     def test_the_superseded_issuances_never_verify_against_the_current_trusted_hashes(self):
@@ -121,7 +122,7 @@ class QualifiedPolicyTests(unittest.TestCase):
     def test_the_issued_environment_builds_the_policy_from_the_lab_paths(self):
         env = json.loads(ENVIRONMENT.read_bytes())
         self.assertEqual(env["environmentSha256"],
-                         "2164a4a2351ee333ce1af886f5abc0793c6f5cb7ab22bd05865c1dd9c28314dc")
+                         "600ba86d00b7ff9a77170f720f78803aa959fc94e42357aab274f246316dc556")
         self.assertEqual(env["probeCatalogSha256"], hn.probe_catalog_sha256())
         policy = self.build(env)
         self.assertEqual((policy.claude_sha256, policy.sandbox_exec_sha256),

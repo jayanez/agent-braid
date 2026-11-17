@@ -1,0 +1,83 @@
+{
+  "task": "SPEC-065/T015",
+  "recordedAt": "2026-11-17",
+  "baseCommit": "3747d7d6",
+  "scope": "Record-level evidence of the T015 re-qualification after #1397: the attempt bundle t009-20261117c and the founder issuance of 2026-11-17. The code change itself (harness_host_claude.py) is #1397 with its own tests and security re-check GO; nothing native ran for this record on the orchestrator account.",
+  "inputs": {
+    "agent_braid/harness_host_claude.py": "5e117c11ee7940161ab89fac4a23ea9752a1930b8a15f0bbe773b11c4753c95c",
+    "agent_braid/harness_containment_macos.py": "4484c2443fd111cb71536f606a966f4387506adb7c798df36d2f83c5881f757c",
+    "agent_braid/harness_qualification_probes.py": "d00320298aa25b0c122b46dbe5396b842392a2fcfa513754d698266aff91825d",
+    "agent_braid/harness_transport_claude.py": "3ef09f0e3cc55f28ae677e88ffa5f36bc1080184d0d55b22a113add24da0258a",
+    "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
+    "agent_braid/harness_quota.py": "c2565c057b9beeadc855d5bac850febc96e7f949a48707e5714c53440f2774e8",
+    "scripts/har_t009_attempt.py": "ed96373acac53606bdae39d7c5fa03248abcf1b84777814e29d325b09afb004b",
+    "scripts/har_t009_launch.sh": "b14933019be52e029a6754ce99277f502b626141462129ea9e6a876f4d29f4a4"
+  },
+  "hashesMoved": {
+    "environment": "harness_host_claude.py is an input of the environment hash (_component_hashes): 2164a4a2...14dc (2026-11-14) -> 600ba86d...c556 (this bundle)",
+    "probeCatalog": "unchanged: c8952ac3...aef5",
+    "issuedQualification": "the 2026-11-14 records no longer verify against the new environment hash; superseded by issuance-2026-11-17.json"
+  },
+  "executionAuthorization": false,
+  "limits": "Record-level checks on the orchestrator account against the committed bundle, plus targeted unit tests with doubles. The live environment recomputation runs in the lab account before every native session (NC-11). One machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-17T22:19:29Z. Nothing native ran for this record.",
+  "earlierAttempts": {
+    "t009-20261117a": "bundleSha256 9064ac48cf3dd318401c14c1d5c535c2bd5dd964f1ba20b8cc869d141a6e6925; 31 of 32, PROC-03 memory positive-control-failed under swap pressure; not issued, not published",
+    "t009-20261117b": "bundleSha256 9077814f96c06eec032b57e1c486451a89fd7be74517415382efa90896abd244; process inconclusive (not-observed) after the 4 h attempt record (ATTEMPT_RECORD_SECONDS) expired while the run sat at the usage-card prompts about 12 h, backend refusal qualification-expired; not a containment finding; not issued, not published"
+  },
+  "issuance": {
+    "recordedAt": "2026-11-17",
+    "baseCommit": "3747d7d6",
+    "attempt": "t009-20261117c",
+    "attemptCommit": "3de73065fc60c8edcb0c11b4265aad1b0c4a16a5",
+    "launcherSha256": "4605e1fa90dd2b0a299e05c4769c5f9a38f2921ccf54d4184625d971becc9c4a",
+    "bundle": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/",
+    "bundleSha256": "b75020ef348086df7db6a70f1b7ee88598bc0962614dc2c844945fdb00fadbbe",
+    "environmentSha256": "600ba86d00b7ff9a77170f720f78803aa959fc94e42357aab274f246316dc556",
+    "issuanceRecord": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+    "issuanceRecordSha256": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8",
+    "issuedAt": 1794953969,
+    "expiresAt": 1797545969,
+    "trustedHashes": {
+      "containmentSha256": "5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df",
+      "hostSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d"
+    },
+    "hashMethod": "trustedHashes are sha256 of harness_lab.canonical(records.containment) and harness_host_claude.canonical(records.host), the bytes verify_qualification and verify_host_qualification check. The same method applied to issuance-2026-11-14.json reproduces its committed 87c7b520...6f68 and 625bb211...36ec; that was checked before it was used here.",
+    "supersedes": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-14.json (harness_host_claude.py moved in #1397; its environment hash 2164a4a2... no longer matches the code; stays historical)",
+    "quotaDeviation": "NET-05-CLI fiveHourDelta 1 (29 % -> 30 %), weeklyDelta 0, within the 10 % session cap; CRED-05 and HOST-01 delta 0; weekly 31 %, extra usage off. Outside the Δ0 condition of FD-20261114-STANDING, so the founder was asked (T015-ISSUE).",
+    "commands": [
+      "python3.13 -B <verify script> <repo>  (record checks and negative controls listed below; the 2026-11-14 pattern with the superseded issuances 2026-11-14, 2026-11-13 and 2026-11-06 against the current trusted hashes)",
+      "python3.13 -B -m unittest tests.test_harness_qualification_probes tests.test_harness_host_claude tests.test_harness_hosts tests.test_harness_hosts_native tests.test_har_t009_attempt tests.test_har_t009_launch tests.test_har_t009_setup tests.test_harness_containment_macos tests.test_harness_lab tests.test_har_t008_unit tests.test_har_t008_launch"
+    ],
+    "verification": {
+      "checks": {
+        "verify_qualification": true,
+        "verify_host_qualification": true,
+        "issued_records": true,
+        "evidenceSha256-is-bundle": true,
+        "environmentSha256-is-bundle": true,
+        "bundle-files-match-summary": true,
+        "verify_bundle-recomputes-bundleSha256": true,
+        "bundle-pass-rule": true,
+        "runner-wrote-no-record": true,
+        "expiresAt-30-days": true,
+        "probe-catalog-is-current-code": true,
+        "probes-and-not-applicable-equal-t009-20261114a": true
+      },
+      "negativeControls": {
+        "edited-containment-record": "refused:qualification-drift",
+        "edited-host-record": "refused:qualification-drift",
+        "wrong-environment-hash": "refused:qualification-drift",
+        "issuance-with-untrusted-hash": "refused:qualification-drift",
+        "superseded-2026-11-14-issuance-against-current-trusted-hashes": "refused:qualification-drift",
+        "superseded-2026-11-13-issuance-against-current-trusted-hashes": "refused:qualification-drift",
+        "superseded-2026-11-06-issuance-against-current-trusted-hashes": "refused:qualification-drift",
+        "other-host": "refused:host-mismatch",
+        "partial-effects": "refused:invalid-qualification"
+      },
+      "allPass": true
+    },
+    "copyChecks": "each bundle file and the two operator files compared byte for byte with the lab originals in /Users/Shared/braid-t009-lab/ (cmp); shasum -a 256 -c SHA256SUMS OK; secret scan (token shapes, sk-ant-, oauth/bearer values, operator account name, e-mail) found none; operator/t009-self-check.json is byte-identical to the 2026-11-14 self-check (no new self-check was written for this attempt)",
+    "mdrv04": "diff 320b00c4..3de73065 of harness_manifest.py, harness_context.py, harness_observation.py and system_one.py is empty (guard_unhashed passes); diff a016d066..3de73065 of harness_containment_macos.py, harness_qualification_probes.py, harness_transport_claude.py, harness_lab.py, harness_quota.py, scripts/har_t009_attempt.py and scripts/har_t009_launch.sh is empty; harness_host_claude.py changed only by #1397 (8 added lines)",
+    "executionAuthorization": false
+  }
+}

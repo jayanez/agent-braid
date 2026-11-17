@@ -1,0 +1,23 @@
+{
+  "recordVersion": "spec049-d2-caps-founder-decision-v1",
+  "task": "SPEC-049/T014 (D2 cap scope): whether the D2 maxNativeUnits cap of 16 is counted per cohort",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-17",
+  "baseCommit": "3747d7d6",
+  "decisionChannel": "Founder answer to an interactive guided question in the HAR orchestrator session, 2026-11-17, recorded verbatim (answer as chosen). Additive; the 2026-10-31 D2 caps record stays as written and its values are unchanged.",
+  "supplements": [
+    "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json (sha256 b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88)",
+    "specs/049-harness-evaluation-learning/evidence/engineering/t014-readiness.md"
+  ],
+  "question": "Whether SPEC-048/T008 units count toward the D2 cap of 16 native units, or the cap applies per cohort (open item of t014-readiness.md, plan P2: 5 holdout cases x arms A/B/C = 15 native units)",
+  "ownerStatement": "Per cohort, keep 16 (Recommended)",
+  "decision": {
+    "disposition": "d2-max-units-per-cohort",
+    "reading": "maxNativeUnits 16 of the 2026-10-31 D2 caps applies to each native cohort on its own. Units of the SPEC-048/T008 cohort do not count toward the SPEC-049/T014 cohort, so plan P2 (15 native units) fits within 16. The value 16 is kept. The other D2 caps (30 min per unit, at most 10 % of the 5-hour window per session, at most 15 % of the weekly window per cohort, weekly stop above 80 %, EUR 0) are unchanged; this answer does not change how they are counted.",
+    "codeChange": "none: D2Caps and MAX_UNITS are unchanged; scripts/har_t008_unit.py keeps its own founder cap of 4 for the SPEC-048/T008 cohort."
+  },
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Settles only how the unit cap is counted. Admits no native cohort (SPEC-049/T004 still required), freezes no arm, sets no T014 window and records no outcome."
+}

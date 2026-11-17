@@ -1,0 +1,39 @@
+{
+  "recordVersion": "spec065-founder-decisions-v1",
+  "id": "FD-20261117-ISSUE",
+  "task": "SPEC-065/T015 re-qualification after #1397: founder issuance on attempt t009-20261117c with a noted quota deviation",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-17",
+  "baseCommit": "3747d7d6",
+  "decisionChannel": "Founder answer to an interactive guided question in the HAR orchestrator session, 2026-11-17, recorded verbatim (question as relayed by the orchestrator, in English; answer as chosen). Additive to the earlier records, which stay as written.",
+  "supplements": [
+    "specs/065-native-claude-containment/evidence/founder-decisions-20261114.json",
+    "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-14.json",
+    "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json"
+  ],
+  "facts": {
+    "trigger": "#1397 (merge 3de73065) changed agent_braid/harness_host_claude.py, an input of the environment hash; security re-check GO. No other environment-hash input changed between a016d066 and 3de73065, and the four MDRV-04 modules are unchanged between 320b00c4 and 3de73065.",
+    "earlierAttempts": "t009-20261117a: 31 of 32, PROC-03 memory positive-control-failed under swap pressure (bundleSha256 9064ac48cf3dd318401c14c1d5c535c2bd5dd964f1ba20b8cc869d141a6e6925). t009-20261117b: process inconclusive (not-observed): the attempt sat at the usage-card prompts for about 12 h, the 4 h attempt record (ATTEMPT_RECORD_SECONDS) expired and the backend refused with qualification-expired; not a containment finding (bundleSha256 9077814f96c06eec032b57e1c486451a89fd7be74517415382efa90896abd244). Neither bundle is published; neither is issued.",
+    "whyAQuestion": "FD-20261114-STANDING requires fiveHourDelta 0 in every session; NET-05-CLI had fiveHourDelta 1 (29 % -> 30 %), a deviation, so the issuance went back to the founder as a guided question."
+  },
+  "decisions": [
+    {
+      "id": "T015-ISSUE",
+      "item": "Issue the SPEC-065 qualification on attempt t009-20261117c",
+      "question": "Do you issue the SPEC-065 qualification on attempt t009-20261117c under the 11-14 terms? Noted deviation: NET-05-CLI 5-hour Δ1 within caps (session cap 10%), weekly Δ0.",
+      "ownerStatement": "Issue, same terms (Recommended)",
+      "decision": {
+        "disposition": "issued",
+        "record": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+        "terms": "The 2026-11-14 terms unchanged: the same residuals, MDRV-04 with PR review, 30 days from issuedAt, the same reQualificationTriggers (NC-9 plus the session kind), executionAuthorization false. The NET-05-CLI 5-hour delta of 1 is accepted for this issuance only; it does not widen the quota condition of FD-20261114-STANDING.",
+        "undo": "Revoke with a founder record that withdraws the trusted hashes of issuance-2026-11-17.json; the 2026-11-14 record stays historical and does not come back into force."
+      }
+    }
+  ],
+  "closes": [],
+  "stillOpen": [],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records one founder answer. It authorizes no native run and no T008 unit by itself, changes no residual and widens no term. No native session, probe, sudo command or account change was run when this record was written."
+}
