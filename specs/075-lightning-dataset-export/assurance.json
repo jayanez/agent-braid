@@ -12,7 +12,7 @@
   ],
   "assumptions": "SPEC-074 lightning_adapter exposes consent level and redaction version per trace; SPEC-071 reward vector stable; runtime stays standard-library only; manifest schema created by the lead under schemas/0.3.0-experimental/. Owner decisions (T001, 2026-11-14): E1-E5 accepted; balance is an equal 1:1 cap per task with no ratio parameter (OD-2); OD-1 (host usage terms) is deferred, so the terms gate ships closed and only fixture runs (`pipeline-only`) export. Owner decisions (T010, 2026-11-16, OD-3): another user's home path in exported bytes aborts the export (Q1 A); literal secrets not given at ingest and unknown-shape secrets are documented residual risk (Q2 A).",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "21926de67ac1837e9e2a3b2cc64d4c9e0539bb7d",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -105,13 +105,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive: new module agent_braid/lightning_export.py, CLI subcommand lightning export, an experimental manifest schema and a private export index under the plugin home; the only change to an existing interface is the additive lightning purge output (citingDatasets, datasetsNote), approved by the owner on 2026-11-16 (OD-4). SPEC-074's spec, store, adapter, redactor and config are unchanged.",
   "domain": "Braid Lightning dataset export: supervised (SFT messages JSONL) and trajectory datasets with manifests built from consented, redacted Lightning traces.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "21926de67ac1837e9e2a3b2cc64d4c9e0539bb7d",
+    "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; export is offline, opens no socket, starts no process, loads no model, is not exposed through MCP, and writes only local files.",
   "human_review": "pending",
