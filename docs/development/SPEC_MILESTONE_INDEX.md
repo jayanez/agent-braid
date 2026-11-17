@@ -69,7 +69,7 @@ assurance record and the [roadmap](../../ROADMAP.md) for those boundaries.
 | [SPEC-060: portable-prompt-names](../../specs/060-portable-prompt-names/spec.md) | [M4.5 — AI tooling integrations for Codex and Claude Code](https://github.com/jayanez/agent-braid/milestone/19) |
 
 | [SPEC-068: opencode-native-integration](../../specs/068-opencode-native-integration/spec.md) | [M4.7 — AI tooling integration for OpenCode](https://github.com/jayanez/agent-braid/milestone/27) (closed; plugin `0.1.0-alpha.7` published 2026-11-04) |
-| [SPEC-069: aim-request-authoring](../../specs/069-aim-request-authoring/spec.md) | [M4.8 — AIM request authoring](https://github.com/jayanez/agent-braid/milestone/28) (open; draft, human review pending) |
+| [SPEC-069: aim-request-authoring](../../specs/069-aim-request-authoring/spec.md) | [M4.8 — AIM request authoring](https://github.com/jayanez/agent-braid/milestone/28) (closed 2026-11-13; draft, freeze and human review pending) |
 | [SPEC-070: braid-lightning-foundations](../../specs/070-braid-lightning-foundations/spec.md) | [BL.0 — Braid Lightning foundations](https://github.com/jayanez/agent-braid/milestone/29) (closed 2026-11-08; approved, review bound to `c0b6956e`) |
 | [SPEC-071: lightning-rollouts-reward](../../specs/071-lightning-rollouts-reward/spec.md) | [BL.1 — Lightning rollouts and verifiable reward](https://github.com/jayanez/agent-braid/milestone/30) (closed 2026-11-11; approved, review bound to `39a427ae`) |
 | [SPEC-072: lightning-prompt-optimization](../../specs/072-lightning-prompt-optimization/spec.md) | [BL.2 — Lightning prompt optimization](https://github.com/jayanez/agent-braid/milestone/31) (open; tasks complete and converged 2026-11-13, negative result: H1 not supported; draft, human review pending) |
