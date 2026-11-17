@@ -13,7 +13,7 @@
   ],
   "assumptions": "Single-operator repository; without a profile the baseline is the documented quick/pr/sensitive validation profiles, and other practices stay prose until Q1; SPEC-058 REQ-006 and ownership.resolve_settings are followed as precedent; founder choices Q1 to Q6 are open.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "dad3e7f5f20956e8039be531bdc84bcc6c7f43c0",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -105,13 +105,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive and advisory; quick/pr profiles, SPEC-057/058 settings, SPEC-049 registry, SPEC-050 policies and the PR template unchanged; schema changes become new versions.",
   "domain": "Agent Braid harness process assurance: lifecycle checkpoints, review ladder, HITL modes, floors, receipts, advisory compilation.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "dad3e7f5f20956e8039be531bdc84bcc6c7f43c0",
+    "mode": "historical"
   },
   "execution_contract": "Advisory only: executionAuthorization stays false; the compiled profile grants no tool, merge, release or approval; profiles, authorizations and classifier rules are operator-owned; agents cannot change their own level or mode; escalation is raise-only; floors are human-only.",
   "human_review": "pending",
