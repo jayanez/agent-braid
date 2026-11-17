@@ -71,6 +71,16 @@
       "question": "T008 has used all 4 units of its cap (MAX_UNITS = 4 in scripts/har_t008_unit.py). None of the 4 completed: one hit window-reset, one ended with no breach but completed=false, and the last (20261114c) was rejected as paid-route by the event bug fixed in #1397. Running another unit needs a higher cap. How many more units do you authorize? Weekly is at 31 % (stop above 80 %), Haiku, subscription only, EUR 0, at most 30 min per unit. The change goes into the issuance PR, which already edits that file. Undo: you lower the cap again with a record.",
       "answer": "+1 unit, cap 5 (Recommended)",
       "terms": "The T008-6 terms otherwise unchanged; cap 5 serial units for the whole cohort (one unit left). Implementation pending: scripts/har_t008_unit.py still has MAX_UNITS = 4 in the pull request that adds this record, so the driver refuses a fifth unit until a reviewed change sets the cap. executionAuthorization stays false."
+    },
+    {
+      "id": "T008-10",
+      "answeredAt": "2026-11-18",
+      "supersedes": "T008-9",
+      "topic": "Reconciling two founder answers on the T008 cap",
+      "channels": "T008-9 '+1 unit, cap 5 (Recommended)' was answered in this orchestrator session; the HAR plan session relayed a founder answer '2 unidades (Recomendado)' to a question there (each unit at most 30 min, EUR 0, subscription only, within the D2 caps, not counted toward the 16 T014 units, one unit for the verdict and one spare for a host failure, the second not used if the first completes). The two disagreed, so the founder was asked again here.",
+      "question": "There are two different T008 answers from you. You told me \"+1 unit, cap 5 (Recommended)\" (recorded in #1426; PR #1428 sets the cap to 5). The HAR plan session says you answered \"2 unidades (Recomendado)\" there: one unit for the verdict and one spare for a host failure, the second not used if the first completes, outside the 16 T014 units. Which one holds? Cap 6 means changing PR #1428 (6 instead of 5) and a new founder record that supersedes T008-9. Undo: lower the cap again with a record.",
+      "answer": "2 units, cap 6 (Recommended)",
+      "terms": "The T008-6 terms otherwise unchanged; cap 6 serial units for the whole cohort (two units left; the second only if the first does not complete because of a host failure). Not counted toward the 16 T014 units. Implemented by scripts/har_t008_unit.py MAX_UNITS = 6 in the pull request that adds this answer. executionAuthorization stays false."
     }
   ],
   "hostObservation": {
