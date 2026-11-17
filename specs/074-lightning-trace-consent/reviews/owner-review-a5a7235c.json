@@ -1,0 +1,60 @@
+{
+ "recordVersion": "0.1.0",
+ "feature": "SPEC-074",
+ "reviewedCommit": "a5a7235cac425ae650e0535107f06cca83656a69",
+ "reviewer": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "conflictsOfInterest": "The reviewer is the project founder and owner. The review records that role explicitly; it is an internal owner decision, not independent external validation.",
+ "method": "Guided review on 2026-11-17 from a one-page packet: the eight requirements and their obtained evidence, the privacy review (threats, residual risks, convergence findings A1-A8), the owner decisions OD-1 to OD-3 of 2026-11-13, and the code and spec changes since the freeze (only the SPEC-075 export and the approved additive purge output in lightning_cli.py).",
+ "humanReview": {
+  "decision": "approved",
+  "date": "2026-11-17",
+  "rationale": "Approve SPEC-074 as an engineering specification within its documented scope: consent none or redacted with default none and preview-digest confirmation, store refusal without consent, pattern redaction with the canary corpus in five encodings, retention and purge with an injected clock, the standard-library adapter with keyed HMAC pseudonyms per kind, read-only System One access, and the socket, subprocess and MCP boundaries. Accepted limits as documented: real host transcripts cannot be read yet (A2), pseudonyms are not anonymization and rolloutId is not pseudonymized (A7), redaction catches known shapes only, retention applies when a command or append runs (A1), and no telemetry is recorded (A3)."
+ },
+ "milestoneClosure": {
+  "decision": "approved",
+  "date": "2026-11-17",
+  "milestone": "BL.4 — Lightning trace consent (#33)",
+  "rationale": "Confirms the BL.4 closure of 2026-11-14. This does not approve collecting real host transcripts, any export, or execution authority."
+ },
+ "evidence": [
+  {
+   "path": "specs/074-lightning-trace-consent/evidence/procedure_001.json",
+   "sha256": "333ae10c956b95f57c90753ae084372b6d104b5ddd63ce80fcf83838bfcba8a7"
+  },
+  {
+   "path": "specs/074-lightning-trace-consent/evidence/procedure_002.json",
+   "sha256": "535c3aae4dce3272c864c470c27f67b58bc7f89450b3fe8bd19f2479ba0dbe89"
+  },
+  {
+   "path": "specs/074-lightning-trace-consent/evidence/procedure_003.json",
+   "sha256": "26a1f07bffa0cc5680081d5c8adf01bdd7bcb3eef4c1f275d1e8bc4cc3d709ec"
+  },
+  {
+   "path": "specs/074-lightning-trace-consent/evidence/procedure_004.json",
+   "sha256": "c80383d70c5f77a8ccf5fa4349a75f6c5ee03eb3a82c7e6ade3922beffc7a7f6"
+  },
+  {
+   "path": "specs/074-lightning-trace-consent/evidence/procedure_005.json",
+   "sha256": "8892ebac061eacdf81b951e6c41e1f220a2929a7ed39c1c8d2061b39e9817742"
+  },
+  {
+   "path": "specs/074-lightning-trace-consent/evidence/procedure_006.json",
+   "sha256": "c9651e5c535280f24bb3b90ceb609fe632c1d975430ab05a472c2500efcdcd73"
+  },
+  {
+   "path": "specs/074-lightning-trace-consent/evidence/procedure_007.json",
+   "sha256": "8c2a7de38ff24750c8ff38ed28437315f0691c0264e12b2d08a7192eac9be7cf"
+  },
+  {
+   "path": "specs/074-lightning-trace-consent/evidence/procedure_008.json",
+   "sha256": "f9c72ec2ba7ce4e701bf31454b4d40aa7293a3ad94dd676b42a1bfe4328b80c0"
+  },
+  {
+   "path": "specs/074-lightning-trace-consent/reviews/owner-t001-20261113.md",
+   "sha256": "76fd1fb93813af6a80a73625cf7d414b17cb64a3a417c58013e8c84f854cb0d5"
+  }
+ ]
+}
