@@ -3,6 +3,7 @@
 from contextlib import redirect_stderr, redirect_stdout
 import io
 import json
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -68,6 +69,29 @@ class HarnessCliTelemetryTests(unittest.TestCase):
     def test_every_subcommand_has_a_closed_operation_name(self):
         self.assertEqual(telemetry.HARNESS_OPERATIONS, tuple(f'harness-{name}' for name in harness_cli.COMMANDS))
         self.assertTrue(set(telemetry.HARNESS_OPERATIONS) <= set(telemetry.OPERATIONS['cli']))
+
+    def test_help_shows_mode_metavar_and_choices_stay_enforced(self):
+        for argv in (('--help',), ('capabilities', '--help')):
+            with self.subTest(argv=argv):
+                out = io.StringIO()
+                with redirect_stdout(out), self.assertRaises(SystemExit):
+                    main(['harness', *argv])
+                text = out.getvalue()
+                self.assertIn('--telemetry MODE', text)
+                self.assertNotIn('{off,local}', text)
+        top = io.StringIO()
+        with redirect_stdout(top), self.assertRaises(SystemExit):
+            main(['harness', '--help'])
+        # The subcommand list is still the first and only {...} group.
+        self.assertEqual(re.findall(r'\{([^}]*)\}', top.getvalue())[0], ','.join(harness_cli.COMMANDS))
+        for argv in (('--telemetry', 'remote', 'capabilities'), ('capabilities', '--telemetry', 'on')):
+            with self.subTest(argv=argv):
+                err = io.StringIO()
+                with redirect_stderr(err), redirect_stdout(io.StringIO()), self.assertRaises(SystemExit) as caught:
+                    main(['harness', *argv])
+                self.assertEqual(caught.exception.code, 2)
+                self.assertRegex(err.getvalue(), r"argument --telemetry: invalid choice: .*choose from '?off'?, '?local'?")
+        self.assertFalse(self.directory.exists())
 
     def test_harness_cells_export_as_v4_and_older_batches_cannot_carry_them(self):
         self.harness('capabilities', '--telemetry', 'local')
