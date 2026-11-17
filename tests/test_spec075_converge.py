@@ -53,7 +53,9 @@ class ConvergeTests(unittest.TestCase):
         script = (ROOT / 'scripts/spec075_capture_evidence.py').read_text()
         # reviews/ holds owner decision records, kept verbatim as decided (and hashed as evidence)
         documents = [p for p in SPEC.rglob('*.md') if 'reviews' not in p.relative_to(SPEC).parts]
-        for name, body in [(p.name, p.read_text()) for p in documents] + [('capture script', script)]:
+        assurance = (SPEC / 'assurance.json').read_text()  # its free-text fields are frozen with the spec
+        for name, body in [(p.name, p.read_text()) for p in documents] + [('capture script', script),
+                                                                             ('assurance.json', assurance)]:
             if name.endswith('.md'):
                 self.assertIsNone(STALE_STATUS.search(body), name)
             for pattern in STALE:
