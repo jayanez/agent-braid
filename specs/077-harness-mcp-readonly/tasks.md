@@ -9,10 +9,15 @@ No task here launches a native host, issues a grant or publishes before T008.
 - [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan, contract and ADR 0043;
   decide or defer OD-1 to OD-6. Dependencies: none. Verification: procedure_001.
   Planned evidence: `evidence/t001-owner-review.md`; obtained: none.
-- [ ] T002 (REQ-001 / SC-001 REQ-003 / SC-003 REQ-005 / SC-005 REQ-008 / SC-008): Run the Codex contract review ([packet](review/codex-contract-20261116.md)) on the
+- [x] T002 (REQ-001 / SC-001 REQ-003 / SC-003 REQ-005 / SC-005 REQ-008 / SC-008): Run the Codex contract review ([packet](review/codex-contract-20261116.md)) on the
   merged candidate; record the raw output and triage each finding (confirmed, fixed,
   rejected with reason). Dependencies: this PR merged. Verification: procedure_002.
-  Planned evidence: `evidence/review/codex-contract-20261116.json`; obtained: none.
+  Planned evidence: `evidence/review/codex-contract-20261116.json`; obtained: that record
+  (2026-11-17, candidate `af8d5683`, codex-cli 0.169.0-alpha.11.1; raw output
+  `codex-contract-20261116.raw.json`). 19 findings: 14 confirmed, 5 partial, 0 rejected, each
+  with a reason. Fixes are deferred by owner decision (2026-11-18): they are applied only
+  after SPEC-049 T014 and only if D7 keeps the harness open, and they remain T003's
+  prerequisite. Not human review.
 
 ## Phase P1 — implementation (unpublished)
 
