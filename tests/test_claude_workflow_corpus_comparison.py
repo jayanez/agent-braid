@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+import unittest.mock
 
 from scripts import compare_gate_corpus as comparison
 from tests import claude_workflow_gate_helpers as fixtures
@@ -38,6 +39,16 @@ class CorpusComparisonTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as work:
             text = f"{work}/x {comparison.ROOT}/y {sys.executable}"
             self.assertEqual(comparison.scrub(text, Path(work)), "<work>/x <repo>/y python")
+
+    def test_scrub_keeps_an_interpreter_inside_the_repository_as_python(self):
+        # fresh-validate.sh runs a venv symlinked under the clone, so sys.executable
+        # starts with ROOT; the longer interpreter path must win over the repo root.
+        inside = str(comparison.ROOT / ".venv-speckit/bin/python")
+        with tempfile.TemporaryDirectory() as work, \
+                unittest.mock.patch.object(comparison.sys, "executable", inside):
+            text = f"{work}/x {comparison.ROOT}/y {inside} -m unittest"
+            self.assertEqual(comparison.scrub(text, Path(work)),
+                             "<work>/x <repo>/y python -m unittest")
 
     @unittest.skipUnless(fixtures.supports_merge_tree_write_tree(), "needs Git 2.38+")
     def test_baseline_failure_maps_to_unavailable(self):
