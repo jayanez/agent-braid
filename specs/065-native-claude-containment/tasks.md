@@ -379,6 +379,9 @@ shared object store fails the portable-root check).
   Updated 2026-11-14 (T014): the packet opens with the 2026-11-14 records (issuance `issuance-2026-11-14.json`, trusted
   hashes `87c7b520…6f68` and `625bb211…36ec`, `expiresAt` 2026-12-14T18:42:10Z); its sha256 is now
   `237b89c6f7b25fb564b719660039a6439233a6393036b7837cb6a71576d05556`.
+  Updated 2026-11-17 (T015): the packet opens with the 2026-11-17 records (issuance `issuance-2026-11-17.json`, trusted
+  hashes `5a9f05c6…00df` and `f2f65ae0…7f9d`, `expiresAt` 2026-12-17T22:19:29Z); its sha256 is now
+  `68af26183dd715cca1b32274052c50a7ab0ff6d35863d103191c3b73c9dcedf4`.
 
 - [ ] T012 (all REQ / SC): Stable-candidate validation and review: `pr` profile,
   code review of T003–T007, assurance obtained-evidence update, authority
@@ -461,6 +464,33 @@ shared object store fails the portable-root check).
   `specs/048-harness-variant-laboratory/evidence/founder-decisions-20261114.json`. Standing rule for later
   code-only re-qualifications: `evidence/founder-decisions-20261114.json` (`FD-20261114-STANDING`, until HAR.1 closes
   or 2027-01-31). `executionAuthorization` false.
+  Superseded 2026-11-17 by the T015 issuance (`evidence/qualification/issuance-2026-11-17.json`): #1397 moved
+  `harness_host_claude.py`, an environment-hash input. This record stays as written; only the T015 trusted hashes are
+  current.
+
+- [x] T015 (REQ-004 / SC-004; REQ-009 / SC-009): Re-qualify after the host-stream fix of PR #1397 (`_read_stream`
+  ignores the informational `system` subtypes `hook_started`, `hook_response`, `hook_progress`, `task_summary`,
+  `thinking_tokens`, `post_turn_summary`; security re-check GO). `harness_host_claude.py` is an environment-hash input,
+  so the 2026-11-14 issuance no longer matches. Acceptance: a new bundle on the fixed adapter, its issuance, and the
+  T008 driver pointed at it; `executionAuthorization` stays false.
+  Obtained: attempts `t009-20261117a` (31/32, PROC-03 `memory` `positive-control-failed` under swap pressure) and
+  `t009-20261117b` (process `inconclusive`: the 4 h attempt record `ATTEMPT_RECORD_SECONDS` expired while the run sat at
+  the usage-card prompts about 12 h, backend refusal `qualification-expired`; not a containment finding) were not
+  issued. Issued 2026-11-17 by the founder (NC-9, "Issue, same terms") on attempt `t009-20261117c` (commit
+  `3de73065`, launcher sha256 `4605e1fa…9c4a`, own `Background` session; `bundleSha256`
+  `b75020ef348086df7db6a70f1b7ee88598bc0962614dc2c844945fdb00fadbbe`, `environmentSha256` `600ba86d…c556`; 32 of 32
+  probes and the not-applicable set identical to `t009-20261114a`, all four effects `enforced`, HOST-01 completed,
+  `apiKeySource` `none`; quota NET-05-CLI 5-hour Δ1 (29 → 30 %, within caps), every other delta 0, weekly 31 %, extra
+  usage off). The Δ1 is outside `FD-20261114-STANDING`, so the founder was asked
+  (`evidence/founder-decisions-20261117.json`). Result `evidence/t009-20261117-result.md`; bundle
+  `evidence/qualification/t009-20261117c/`. Record `evidence/qualification/issuance-2026-11-17.json` (sha256
+  `33f89889…50c8`): trusted hashes containment `5a9f05c6…00df`, host `f2f65ae0…7f9d`, `expiresAt`
+  2026-12-17T22:19:29Z (30 days), the 2026-11-14 terms unchanged; it supersedes the 2026-11-14 record, which stays
+  historical. Verification `evidence/t015.json`: both verifiers, `issued_records` and `verify_bundle` accept; edited
+  records, a wrong environment hash, an untrusted hash, the 2026-11-14, 2026-11-13 and 2026-11-06 issuances, another
+  host and partial effects refuse. The SPEC-048/T008 driver (`scripts/har_t008_unit.py`) now trusts only this record,
+  through `specs/048-harness-variant-laboratory/evidence/founder-decisions-20261117.json`. `executionAuthorization`
+  false.
 
 ## Unblocking map
 
@@ -477,7 +507,8 @@ shared object store fails the portable-root check).
 | T012 | T003–T011 |
 | T013 | T009, T010, founder decisions of 2026-11-13, security re-check, owner's `run` |
 | T014 | #1363 merged, new T009 attempt, founder issuance |
-| SPEC-048/T008 (Claude profile) | T011, T014 plus its own acceptance items |
+| T015 | #1397 merged, new T009 attempt, founder issuance |
+| SPEC-048/T008 (Claude profile) | T011, T015 plus its own acceptance items |
 | SPEC-049/T004 | SPEC-048/T008 decision plus its own source/route/quota approval |
 
 Scientific limit: T009/T010 describe one machine, OS build, CLI version and

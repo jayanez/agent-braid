@@ -11,6 +11,28 @@ Claude profile *verifiable* by the runtime; they authorize nothing.
 Every hash below was recomputed from the files at the base commit (`shasum -a 256`, or the canonical-JSON rule the
 code uses, as stated per line).
 
+## Update, 2026-11-17: superseding records (SPEC-065 T015)
+
+The 2026-11-14 update below is **superseded**: #1397 changed `agent_braid/harness_host_claude.py`, an input of the
+environment hash, so its records (environment `2164a4a2…14dc`) no longer match the code. No NC-9 trigger fired; the
+founder issued again on the same terms. SPEC-048/T008 uses only these values:
+
+| Item | Value |
+| --- | --- |
+| Issuance record | `specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json`, file sha256 `33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8` |
+| Bundle | `evidence/qualification/t009-20261117c/` (attempt commit `3de73065`), `bundleSha256` `b75020ef348086df7db6a70f1b7ee88598bc0962614dc2c844945fdb00fadbbe`; result `evidence/t009-20261117-result.md` |
+| Containment trusted hash | `5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df` |
+| Host trusted hash | `f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d` |
+| `environmentSha256` | `600ba86d00b7ff9a77170f720f78803aa959fc94e42357aab274f246316dc556` (macOS 27.2.1 `26B131`, arm64, Claude Code 2.1.292, catalog `c8952ac3…aef5`, session kind `Background`) |
+| `issuedAt` / `expiresAt` | `1794953969` = 2026-11-17T22:19:29Z / `1797545969` = 2026-12-17T22:19:29Z (30 days); a T008 unit must end before it |
+| Session mode | unchanged: headless own-session (`launchctl asuser` by the root launcher) |
+| Residuals | unchanged from the 2026-11-14 update; the not-applicable set and the 32 probe outcomes equal those of `t009-20261114a` |
+| Quota | NET-05-CLI 5-hour Δ1 (29 % → 30 %, within the 10 % session cap), every other delta 0; accepted by the founder as noted (T015-ISSUE) |
+| Verification | `evidence/t015.json` (`issuance`): both verifiers and `issued_records` accept; edited records, wrong environment hash, untrusted hash, the 2026-11-14, 2026-11-13 and 2026-11-06 issuances, other host and partial effects refuse |
+
+`scripts/har_t008_unit.py` and its tests now name this record, bound through
+`specs/048-harness-variant-laboratory/evidence/founder-decisions-20261117.json` (the T008-6 terms, unchanged).
+
 ## Update, 2026-11-14: superseding records (SPEC-065 T014)
 
 The 2026-11-13 update below is **superseded**: #1363 changed `agent_braid/harness_host_claude.py`, an input of the
