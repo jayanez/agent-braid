@@ -1,8 +1,10 @@
 # SPEC-077: Read-only harness MCP surface
 
-**Milestone:** M4.8 (owner decision D3 of
-[SPEC-050](../050-braid-harness-adaptation/owner-decisions-20261113.md) places any
-plugin/MCP exposure of the harness there, under its own versioned contract).
+**Milestone:** HAR.3 — Braid Harness adaptation and integration (orchestrator
+decision 2026-11-16: HAR.3 covers opt-in product integration of the harness. Owner
+decision D3 of [SPEC-050](../050-braid-harness-adaptation/owner-decisions-20261113.md)
+named M4.8, which is the AIM request-authoring milestone, a loose fit; D3's
+requirement of its own versioned contract stands).
 
 **Status:** draft. Contract only; nothing is implemented or published by this
 specification's first PR. Publication is conditional (REQ-010).

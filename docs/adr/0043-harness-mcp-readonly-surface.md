@@ -7,7 +7,7 @@
 - **Deciders:** Juan Antonio Yáñez García (founder)
 - **Constitutional articles:** 0, 5, 13, 14, 15, 19, 20, 23, 24
 - **Specification:** [SPEC-077](../../specs/077-harness-mcp-readonly/spec.md)
-  (milestone M4.8)
+  (milestone HAR.3)
 
 ## Context
 
@@ -15,7 +15,7 @@ SPEC-049 T009 merged four read-only advisory views in the experimental
 `agent-braid harness` CLI: `capabilities`, `registry-status`, `evaluation-summary`
 and `evidence`. SPEC-049 SC-008 and T009 require any plugin/MCP extension to have a
 versioned contract and its own review. SPEC-050 owner decision D3 kept access on the
-CLI and placed MCP exposure under milestone M4.8. Decision D7 defers any activation
+CLI and required MCP exposure to have its own versioned contract. Decision D7 defers any activation
 policy and ADR to SPEC-049 T014 results.
 
 On 2026-11-16 the owner decided to draft the read-only MCP contract now and publish

@@ -351,6 +351,10 @@
     "076-lightning-local-grpo": {
       "milestone": "Deferred",
       "state": "open"
+    },
+    "077-harness-mcp-readonly": {
+      "milestone": "HAR.3 — Braid Harness adaptation and integration",
+      "state": "open"
     }
   },
   "task_state_overrides": {
