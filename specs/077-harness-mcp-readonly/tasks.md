@@ -9,21 +9,19 @@ No task here launches a native host, issues a grant or publishes before T008.
 - [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan, contract and ADR 0043;
   decide or defer OD-1 to OD-6. Dependencies: none. Verification: procedure_001.
   Planned evidence: `evidence/t001-owner-review.md`; obtained: none.
-- [ ] T002 (REQ-001 / SC-001 REQ-003 / SC-003 REQ-005 / SC-005 REQ-008 / SC-008):
-  Run the Codex contract review ([packet](review/codex-contract-20261116.md)) on the
+- [ ] T002 (REQ-001 / SC-001 REQ-003 / SC-003 REQ-005 / SC-005 REQ-008 / SC-008): Run the Codex contract review ([packet](review/codex-contract-20261116.md)) on the
   merged candidate; record the raw output and triage each finding (confirmed, fixed,
   rejected with reason). Dependencies: this PR merged. Verification: procedure_002.
   Planned evidence: `evidence/review/codex-contract-20261116.json`; obtained: none.
 
 ## Phase P1 — implementation (unpublished)
 
-- [ ] T003 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-004 / SC-004 REQ-005 / SC-005):
-  Implement the adapter and the four plugin-owned tools. Dependencies: T001 (OD-1,
+- [ ] T003 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-004 / SC-004 REQ-005 / SC-005): Implement the adapter and the four plugin-owned tools. Dependencies: T001 (OD-1,
   OD-3), T002 confirmed findings applied to the contract. Target files:
   `agent_braid/harness_mcp.py`, `agent_braid/plugin_mcp.py`. Frozen harness files
   untouched. `harness capabilities` keeps `pluginOrMcpSurface: "none"`.
   Verification: procedure_003. Planned evidence: `evidence/t003.json`.
-- [ ] T004 (REQ-002 / SC-002 to REQ-008 / SC-008): Tests: exact tool set, no effects,
+- [ ] T004 (REQ-002 / SC-002 REQ-003 / SC-003 REQ-004 / SC-004 REQ-005 / SC-005 REQ-006 / SC-006 REQ-007 / SC-007 REQ-008 / SC-008): Tests: exact tool set, no effects,
   flat schema in description, path containment, CLI parity (differential), output
   bound, refusal pointer and redaction; one mutation control per guard. Target file:
   `tests/test_harness_mcp.py`. Dependencies: T003. Verification: procedure_004, then
