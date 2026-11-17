@@ -17,6 +17,7 @@ decisions; a plugin/MCP extension needs its own versioned contract and review.
 from __future__ import annotations
 
 from hashlib import sha256
+import argparse
 import json
 import os
 from pathlib import Path
@@ -35,6 +36,7 @@ from .system_one import InvalidDecision, canonical, parse_json, thaw
 HELP = "experimental offline harness laboratory inspection (no execution authority)"
 COMMANDS = ("inspect", "validate", "prepare", "status", "recover-inspect", "compare",
             "capabilities", "registry-status", "evaluation-summary", "evidence")
+TELEMETRY_MODES = ("off", "local")
 MAX_EVIDENCE_FILES = 256
 MAX_EVIDENCE_ENTRIES = 1024  # files and directories listed in one walk
 MAX_EVIDENCE_DEPTH = 4
@@ -126,6 +128,12 @@ def add_parser(subparsers):
     summary_parser.add_argument("--sha256", help="trusted full report SHA-256 from outside the record")
     evidence_parser = commands.add_parser("evidence", help=_COMMAND_HELP["evidence"])
     evidence_parser.add_argument("spec_dir", type=Path)
+    # MODE keeps the choices out of the help so the subcommand list stays the only {...} group.
+    parser.add_argument("--telemetry", choices=TELEMETRY_MODES, default="off", metavar="MODE",
+                        help="explicit local numeric telemetry: off (default) or local")
+    for child in commands.choices.values():
+        child.add_argument("--telemetry", choices=TELEMETRY_MODES, default=argparse.SUPPRESS, metavar="MODE",
+                           help="same as the group option: off or local")
 
 
 def _hash(value: str) -> str:

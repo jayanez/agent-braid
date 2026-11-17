@@ -118,6 +118,10 @@ candidate into a new private directory, and that is its only effect. Admission,
 reservation, dispatch and reconciliation remain with the separately reviewed
 operator contract.
 
+Every `harness` command accepts `--telemetry local` (default off) to count the
+call in the local telemetry store by subcommand name, outcome and coarse
+duration only; see [local telemetry](TELEMETRY.md).
+
 ## Limits and what is not provided
 
 - Nothing native: no host, model, provider, route or paid call.

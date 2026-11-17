@@ -17,7 +17,8 @@ import uuid
 
 SCHEMA_V1 = 'agent-braid-local-telemetry-batch/v1'
 SCHEMA_V2 = 'agent-braid-local-telemetry-batch/v2'
-SCHEMA = 'agent-braid-local-telemetry-batch/v3'  # exports; all versions merge. The store format stays user_version 1.
+SCHEMA_V3 = 'agent-braid-local-telemetry-batch/v3'
+SCHEMA = 'agent-braid-local-telemetry-batch/v4'  # exports; all versions merge. The store format stays user_version 1.
 APPLICATION_ID = 0x41425431  # ABT1, local aggregate database format v1
 MAX_BYTES = 10 * 1024 * 1024
 MAX_DATABASE_BYTES = 4 * 1024 * 1024
@@ -29,8 +30,12 @@ MAX_COUNT = 10**12
 LOCK_WAIT_SECONDS = 0.25
 SQLITE_TIMEOUT_SECONDS = 0.25
 CATEGORIES = ('independent-candidate', 'ordered', 'conflicting', 'unknown')
+# `agent-braid harness <subcommand> --telemetry local` (batch v4): one cli operation per subcommand.
+HARNESS_OPERATIONS = ('harness-inspect', 'harness-validate', 'harness-prepare', 'harness-status',
+                      'harness-recover-inspect', 'harness-compare', 'harness-capabilities',
+                      'harness-registry-status', 'harness-evaluation-summary', 'harness-evidence')
 OPERATIONS = {
-    'cli': ('analyze', 'analyze-git', 'system-one'),
+    'cli': ('analyze', 'analyze-git', 'system-one', *HARNESS_OPERATIONS),
     'mcp': ('analyze-work', 'analyze', 'prepare', 'status', 'execute', 'recover', 'verify',
             'plugin-status', 'workspaces', 'other'),
     'lifecycle': ('serve-start', 'view-start'),
@@ -56,9 +61,11 @@ BUCKETS = {
 }
 LIMITS = [
     'Daily aggregates only; no content, identity, event order or exact durations.',
-    'Coverage: portable and plugin MCP tool invocations (including plugin-level refusals), the plugin serve-start event and CLI analyze/analyze-git/system-one only; discovery, resources, prompts, legacy MCP and internal calls excluded.',
+    'Coverage: portable and plugin MCP tool invocations (including plugin-level refusals), the plugin serve-start event and CLI analyze/analyze-git/system-one/harness only; discovery, resources, prompts, legacy MCP and internal calls excluded.',
     'Refusal reasons are closed buckets assigned where the refusal is raised, never from message text; serve-start is recorded only after the registry passed schema, privacy and shape validation with consent local, so earlier startup failures leave no trace.',
     'Viewer coverage (batch schema v3): `view serve --telemetry local` counts its start, page loads, accepted or refused ingest requests and closed UI interaction names, by calls only; no duration, selection target, filter value, session, agent, path or repository.',
+    'Harness coverage: `harness <subcommand> --telemetry local` counts calls and coarse duration per subcommand with outcome ok, refused (exit 2) or error; no record, path, hash, argument or verdict.',
+    'Batch schema v4 adds the harness cli operations; the store format and user_version stay 1. v1-v3 batches still merge; builds before v4 (alpha.8 included) refuse v4 batches and cannot export a store that holds harness cells.',
     'Batch schema v2 adds the lifecycle surface, the refusal-reason metric and plugin-status/workspaces; the store format and user_version stay 1. v1 batches still merge; builds before v2 refuse v2 batches and cannot export a store that holds v2 cells.',
     'Process death before finalization and collector losses in other/terminated processes are unknown.',
     'Known collector failures are in-memory in this process only; reports from a later CLI cannot recover them.',
@@ -126,6 +133,10 @@ def _v3_only(row):
     return row['surface'] == 'view' or row['operation'] == 'view-start'
 
 
+def _v4_only(row):
+    return row['operation'] in HARNESS_OPERATIONS
+
+
 def mcp_operation(name):
     return name if name in OPERATIONS['mcp'] else 'other'
 
@@ -183,14 +194,15 @@ def _batch(raw):
         value = json.loads(raw, object_pairs_hook=pairs,
                            parse_constant=lambda _: (_ for _ in ()).throw(ValueError('nonfinite telemetry value')))
         _require(type(value) is dict and set(value) == {'schema', 'batchId', 'rows'})
-        _require(value['schema'] in (SCHEMA_V1, SCHEMA_V2, SCHEMA) and type(value['batchId']) is str)
+        _require(value['schema'] in (SCHEMA_V1, SCHEMA_V2, SCHEMA_V3, SCHEMA) and type(value['batchId']) is str)
         identity = uuid.UUID(value['batchId'])
         _require(identity.version == 4 and str(identity) == value['batchId'])
         rows = value['rows']
         _require(type(rows) is list and 0 < len(rows) <= MAX_ROWS)
         cells = [_cell(row) for row in rows]
         _require(value['schema'] != SCHEMA_V1 or not any(_v2_only(row) or _v3_only(row) for row in rows), 'v2 vocabulary in a v1 batch')
-        _require(value['schema'] == SCHEMA or not any(_v3_only(row) for row in rows), 'v3 vocabulary in an older batch')
+        _require(value['schema'] in (SCHEMA_V3, SCHEMA) or not any(_v3_only(row) for row in rows), 'v3 vocabulary in an older batch')
+        _require(value['schema'] == SCHEMA or not any(_v4_only(row) for row in rows), 'v4 vocabulary in an older batch')
         _require(len({row[:-1] for row in cells}) == len(cells), 'duplicate telemetry cell')
         _require(sum(row[-1] for row in cells) <= MAX_COUNT * MAX_ROWS, 'telemetry batch count exceeds bound')
     except (TypeError, KeyError, AttributeError, OverflowError, RecursionError, UnicodeError, json.JSONDecodeError):
