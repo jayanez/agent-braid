@@ -45,8 +45,8 @@ class DriverTests(unittest.TestCase):
                                          datetime(2026, 11, 30, 23, 59, tzinfo=timezone.utc)))
 
     def test_the_cohort_is_capped_below_the_d2_maximum(self):
-        self.assertEqual(driver.MAX_UNITS, 5)
-        self.assertEqual(driver.parser().get_default("units"), 5)
+        self.assertEqual(driver.MAX_UNITS, 6)
+        self.assertEqual(driver.parser().get_default("units"), 6)
 
     def test_reset_instants_parse_or_are_refused(self):
         day = datetime(2026, 11, 10, 12, tzinfo=timezone.utc)
@@ -239,7 +239,7 @@ class DryRunTests(_LabDirCase):
     def test_the_issued_environment_is_ready(self):
         code, report = self.dry_run()
         self.assertEqual((code, report["verdict"], report["wiring"]), (0, "ready", "ok"))
-        self.assertEqual((report["issuedExpiresAt"], report["unitsRemaining"]), (ISSUED.expires_at, 5))
+        self.assertEqual((report["issuedExpiresAt"], report["unitsRemaining"]), (ISSUED.expires_at, 6))
         self.assertIs(report["executionAuthorization"], False)
 
     def test_another_environment_or_none_refuses(self):
@@ -259,9 +259,9 @@ class DryRunTests(_LabDirCase):
         self.assertEqual((code, report["wiring"]), (2, "decision-record:record-drift"))
 
     def test_spent_units_are_carried_over_and_exhaust_the_cohort(self):
-        driver.write_ledger(self.parent / "t008-20261113a", 4, create=True)
+        driver.write_ledger(self.parent / "t008-20261113a", 5, create=True)
         self.assertEqual(self.dry_run()[1]["unitsRemaining"], 1)
-        driver.write_ledger(self.parent / "t008-20261113a", 5)
+        driver.write_ledger(self.parent / "t008-20261113a", 6)
         code, report = self.dry_run()
         self.assertEqual((code, report["wiring"]), (2, "cohort-units-exhausted"))
 
@@ -283,7 +283,7 @@ class DryRunTests(_LabDirCase):
         self.assertEqual(self.run_cohort(FOUNDER_DECISIONS=SUPERSEDED_DECISIONS), ["decision-record:record-drift"])
 
     def test_an_exhausted_cohort_refuses_before_any_prompt(self):
-        driver.write_ledger(self.parent / "t008-20261113a", 5, create=True)
+        driver.write_ledger(self.parent / "t008-20261113a", 6, create=True)
         self.assertEqual(self.run_cohort(), ["cohort-units-exhausted"])
 
     def test_ctrl_c_before_the_units_still_prints_one_report(self):
@@ -305,7 +305,7 @@ class CohortLedgerTests(_LabDirCase):
     crash after the launch point, or a completed unit, counts exactly once. ``run_native_unit`` is a double that
     calls ``on_launch`` where the real one calls it, right before the host session."""
 
-    def cohort(self, unit, *, units=5, raises=None):
+    def cohort(self, unit, *, units=6, raises=None):
         stack, report = self.patched()
         out_dir = Path(self.argv[self.argv.index("--out-dir") + 1])
         run = mock.MagicMock(stopped=None)
@@ -363,14 +363,14 @@ class CohortLedgerTests(_LabDirCase):
         self.assertEqual((started, result["verdict"]), (2, "cohort-finished"))
 
     def test_the_cap_holds_across_labels(self):
-        driver.write_ledger(self.parent / "t008-20261113d", 4, create=True)
+        driver.write_ledger(self.parent / "t008-20261113d", 5, create=True)
         seen = []
 
         def complete(*, on_launch, **_):
             on_launch()
             seen.append(1)
             return mock.Mock(result=None)
-        self.assertEqual(self.cohort(complete)[0], 5)
+        self.assertEqual(self.cohort(complete)[0], 6)
         self.assertEqual(seen, [1])  # only the one unit left was attempted
 
 

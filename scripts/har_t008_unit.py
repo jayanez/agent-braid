@@ -48,7 +48,7 @@ from agent_braid.system_one import canonical  # noqa: E402
 from hashlib import sha256  # noqa: E402
 
 MODEL = "haiku"  # the one model the cohort requests and the report checks against
-MAX_UNITS = 5  # founder, 2026-11-06 (decision 2/5); raised by one on 2026-11-17 (T008-9)
+MAX_UNITS = 6  # founder, 2026-11-06 (decision 2/5); raised to 6 on 2026-11-18 (T008-10, supersedes T008-9)
 WINDOW = (datetime(2026, 11, 9, 20, 30, tzinfo=timezone.utc), datetime(2026, 11, 30, 23, 59, tzinfo=timezone.utc))
 # SPEC-065 T015 issuance of 2026-11-17; it supersedes the 2026-11-14 one (harness_host_claude.py moved in #1397)
 TRUSTED = {"containment_sha256": "5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df",
@@ -57,7 +57,7 @@ ISSUANCE = "specs/065-native-claude-containment/evidence/qualification/issuance-
 ISSUANCE_SHA256 = "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8"
 ENVIRONMENT = "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/environment.json"
 FOUNDER_DECISIONS = "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261117.json"
-FOUNDER_DECISIONS_SHA256 = "29b5b74b930c9a7a177d0ede6adaa99c51d9e2fa4eeb52ef28d4ebafc56d6b72"
+FOUNDER_DECISIONS_SHA256 = "171c7a807f1c3f5957262469d3ce660be7718514979dbe17969c8e917d8551c7"
 D2_CAPS = "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json"
 D2_CAPS_SHA256 = "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88"
 SESSION = "00000000-0000-4000-8000-%012d"
