@@ -64,7 +64,8 @@
     "BL.1 — Lightning rollouts and verifiable reward",
     "BL.2 — Lightning prompt optimization",
     "BL.4 — Lightning trace consent",
-    "BL.5 — Lightning dataset export"
+    "BL.5 — Lightning dataset export",
+    "M4.8 — AIM request authoring"
   ],
   "unpublished_milestones": [
     "M4.6 — Claude Code dynamic workflows"
@@ -324,7 +325,7 @@
     },
     "069-aim-request-authoring": {
       "milestone": "M4.8 — AIM request authoring",
-      "state": "open"
+      "state": "closed"
     },
     "070-braid-lightning-foundations": {
       "milestone": "BL.0 — Braid Lightning foundations",

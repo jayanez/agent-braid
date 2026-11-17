@@ -493,16 +493,14 @@ Passing tests prove neither native behaviour nor owner approval.
 
 ## M4.8 — AIM request authoring
 
-**Status:** Open
+**Status:** Closed on 2026-11-13
 ([GitHub milestone 28](https://github.com/jayanez/agent-braid/milestone/28); origin
-issue #1080). [SPEC-069](specs/069-aim-request-authoring/spec.md) is a draft whose P1
-candidate was frozen after the owner's acceptance (#1147);
+issue #1080). [SPEC-069](specs/069-aim-request-authoring/spec.md) T001–T015 are done;
 [ADR 0038](docs/adr/0038-analyze-work-request-contract.md) was accepted on 2026-11-07.
-P1, contract alignment, is done (T001–T004, T007, T009, T015). P2, automation and
-baseline, is in progress: the prompt sets, scoring rules and native-run driver are
-merged (#1148, #1149) and T010 and T013 stay open. P3 runs by founder decision 2 of
-[2026-11-07](docs/development/FOUNDER_DECISIONS_20261107.md); T006, the `units` kind
-for `analyze-work`, is merged (#1154). Nothing is released.
+The work shipped in `0.1.0-alpha.8` (2026-11-13, #1345) and is carried in
+`0.1.0-alpha.9`. T008 and T010 closed with an accepted D4 deviation (#1322); the D4
+gap is follow-up #1343 (Deferred). SPEC-069 is still a draft: its freeze and owner
+review are pending.
 
 **Objective:** host models in Claude Code, Codex and OpenCode author a valid
 `analyze-work` request without prior knowledge of AIM, and every accepted or refused
