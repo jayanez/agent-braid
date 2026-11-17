@@ -1,9 +1,11 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-# Release notes for 0.1.0-alpha.9 (candidate, not published)
+# Release notes for 0.1.0-alpha.9
 
-Draft release notes (kept outside [Native AI plugins](NATIVE_PLUGINS.md) so frozen SPEC-069 evidence hashes stay valid) for plugin version `0.1.0-alpha.9`. Nothing is tagged or published
-until the owner's explicit yes; the published version stays `0.1.0-alpha.8` and its
-rollback target `0.1.0-alpha.7` until the publication record replaces this heading.
+Release notes for plugin version `0.1.0-alpha.9`, published on 2026-11-16 as pre-release tag
+`agent-braid--v0.1.0-alpha.9` (kept outside [Native AI plugins](NATIVE_PLUGINS.md) so frozen SPEC-069
+evidence hashes stay valid; see the
+[release record](../../specs/066-system-one-shadow/release-acceptance-alpha9.md) and
+[`evidence/release-alpha9.json`](../../specs/066-system-one-shadow/evidence/release-alpha9.json)).
 Adds no registry migration.
 
 > **Version 0.1.0-alpha.9: System One rule advice, merge-outcome join and automatic
@@ -48,9 +50,10 @@ Adds no registry migration.
 > - **Unverified rule.** The DP-1 rule is not calibrated and its advice is labelled
 >   `not verified`. Merge outcomes need enough joined pairs before false independence
 >   can be bounded; a Wilson bound on few pairs is wide.
-> - **Not host-observed.** The candidate has not been built from a clean commit,
->   smoke-tested on Claude Code, Codex or OpenCode, or installed from a tag; those
->   steps belong to the publication procedure.
+> - **Host observation is partial.** The package was built twice byte-identically, verified by
+>   `plugin doctor`, compared with a fresh public clone of the tag and installed over alpha.8 in
+>   Claude Code. Codex, the OpenCode runtime load, a model-driven smoke on the three hosts and
+>   an update on Codex or OpenCode were not observed.
 >
 > **Rollback.** Reinstall `0.1.0-alpha.8` from tag `agent-braid--v0.1.0-alpha.8`.
 > Alpha.8 refuses a registry that records System One `advise` consent: apply
