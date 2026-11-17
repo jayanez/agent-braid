@@ -48,7 +48,7 @@ from agent_braid.system_one import canonical  # noqa: E402
 from hashlib import sha256  # noqa: E402
 
 MODEL = "haiku"  # the one model the cohort requests and the report checks against
-MAX_UNITS = 4  # founder, 2026-11-06 (decision 2/5), unchanged on 2026-11-13 (T008-6) and on 2026-11-14
+MAX_UNITS = 5  # founder, 2026-11-06 (decision 2/5); raised by one on 2026-11-17 (T008-9)
 WINDOW = (datetime(2026, 11, 9, 20, 30, tzinfo=timezone.utc), datetime(2026, 11, 30, 23, 59, tzinfo=timezone.utc))
 # SPEC-065 T015 issuance of 2026-11-17; it supersedes the 2026-11-14 one (harness_host_claude.py moved in #1397)
 TRUSTED = {"containment_sha256": "5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df",
