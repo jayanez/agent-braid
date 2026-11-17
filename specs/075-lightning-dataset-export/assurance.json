@@ -12,7 +12,7 @@
   ],
   "assumptions": "SPEC-074 lightning_adapter exposes consent level and redaction version per trace; SPEC-071 reward vector stable; runtime stays standard-library only; manifest schema created by the lead under schemas/0.3.0-experimental/. Owner decisions (T001, 2026-11-14): E1-E5 accepted; balance is an equal 1:1 cap per task with no ratio parameter (OD-2); OD-1 (host usage terms) is deferred, so the terms gate ships closed and only fixture runs (`pipeline-only`) export. Owner decisions (T010, 2026-11-16, OD-3): another user's home path in exported bytes aborts the export (Q1 A); literal secrets not given at ingest and unknown-shape secrets are documented residual risk (Q2 A).",
   "authority_snapshot": {
-    "commit": "e68f071e546a8e79c5ac7c25ffcbaa8a517ac8b6",
+    "commit": null,
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -104,13 +104,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "historical"
+    "mode": "current"
   },
   "compatibility": "Additive: new module agent_braid/lightning_export.py, CLI subcommand lightning export, an experimental manifest schema and a private export index under the plugin home; the only change to an existing interface is the additive lightning purge output (citingDatasets, datasetsNote), approved by the owner on 2026-11-16 (OD-4). SPEC-074's spec, store, adapter, redactor and config are unchanged.",
   "domain": "Braid Lightning dataset export: supervised (SFT messages JSONL) and trajectory datasets with manifests built from consented, redacted Lightning traces.",
   "evidence_snapshot": {
-    "commit": "e68f071e546a8e79c5ac7c25ffcbaa8a517ac8b6",
-    "mode": "historical"
+    "commit": null,
+    "mode": "current"
   },
   "execution_contract": "executionAuthorization stays false; export is offline, opens no socket, starts no process, loads no model, is not exposed through MCP, and writes only local files.",
   "human_review": "pending",
@@ -344,7 +344,7 @@
               "limits": "Temporary homes and synthetic content; the terms record is synthetic (OD-1 deferred). SC-009's paths outside the plugin home or the given directory is read as: the output must be a canonical path without symbolic links or traversal inside an existing directory; the output is not restricted to the plugin home (the owner chooses where datasets go). --level is required as REQ-009 writes it; the profile's export.level is not used as a default. The socket and process guard covers this process only; the static import check covers Lightning module imports.",
               "outcome": "passed: T009: agent-braid lightning export (--run ... | --all) --kind --level --out [--seed] [--balance] [--outcome-field] [--terms-decision] [--dry-run] refuses with export-disabled unless the profile has export.enabled true: with consent but export never enabled, with export disabled, with no profile and with an unparseable one. With export enabled it exports and prints one JSON object of exactly the fixed fields (counts, exclusions, balance report, terms decision citation, redaction version, records and manifest hashes, files, executionAuthorization false) whose hashes match the written manifest, never the record entries, a rollout id, an attempt pseudonym, a raw attempt id, the content or a path (task ids are printed in balanceReport by design); --all, supervised with the outcome field, balance none and a seed work. --dry-run builds the same manifest (same digest as a real export) and writes nothing, and applies the output checks. Output refusals: an existing non-empty directory and a file (output-not-empty), a symlink, a symlinked parent, a missing parent and paths with .. (path-refused); nothing is written and the symlink target stays empty. export-disabled is decided before the arguments are parsed, so a disabled profile refuses even a malformed command without echoing it. The command parses its own arguments: every argument error is invalid-argument with a fixed text that echoes no value (an unknown kind, a path as level or balance, a non-integer seed, an unknown flag with or without =, a stray positional, an abbreviated flag, both --run and --all, neither, a balanced supervised export, an outcome field on rollout, a negative seed, a run named twice); the flag set is exactly the documented one. --help and -h show even while export is disabled and state that export is off by default, how to enable it, that no provider's terms have been reviewed (OD-1 deferred) and the macOS /tmp note. No environment variable enables export, and lightning_cli and lightning_export contain no environ or getenv. A corrupt run store with --all refuses with store-shape, no cause and suppressed context; an interrupt prints code interrupted and exits 130. A missing run refuses with store-missing and consent none (with export enabled) with no-records. Host-run units refuse with terms-gate-missing without and with a missing record, and the terms directory is never created; with a SYNTHETIC permitting record in a temporary home they export, the output cites the record path, prints none of its contents, and the record and directory are unchanged. Every refusal is one stderr line with a fixed code and text naming no path, raw id, content or provider, and an unexpected OSError or ValueError prints code other and a fixed text. Under patched socket, create_connection, subprocess.Popen and os.system the export succeeds; the Lightning import boundary (tests.test_lightning_cli) now covers lightning_export. Negative controls (mutants, each fails a test): the parser's own error message, parsing before the disabled check, a store-shape refusal with context, no interrupt handling, an extra flag, abbreviations allowed, the help text changed, export.enabled ignored, an invalid profile not treated as disabled, raw exception text printed, the code not checked, executionAuthorization changed, record entries printed, a dry run that writes, the early output check removed, the canonical-path check removed and the terms flag dropped.",
               "path": "specs/075-lightning-dataset-export/evidence/procedure_009.json",
-              "sha256": "9472aa18ee4391bb64822d13dc33b3738588245817bc594bf5e60597973d01ec"
+              "sha256": "6258f5ee41348a2179eaab61ea5b701b8cec267003549dbb7a9ae4ebc8f6589d"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
