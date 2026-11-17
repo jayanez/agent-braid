@@ -1,0 +1,178 @@
+{
+  "commit": "af8d56837ef04731fbeaadcff0ead746c58b063c",
+  "reviewer": "Codex (GPT-6), read-only contract review",
+  "findings": [
+    {
+      "id": "077-01",
+      "severity": "high",
+      "area": "authority",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 89,
+      "scenario": "An evidence file declares executionAuthorization true. The CLI copies that claim to files[].executionAuthorization and records an anomaly. Removing only the top-level key leaves the nested true in MCP. Evaluation reports can also carry that key inside values the CLI copies.",
+      "fix": "Define parity against an explicit MCP projection that removes prohibited authority fields at every depth while preserving the evidence anomaly. Add a recursive assertion to SC-003 and exercise both views in SC-006."
+    },
+    {
+      "id": "077-02",
+      "severity": "high",
+      "area": "authority",
+      "file": "specs/077-harness-mcp-readonly/spec.md",
+      "line": 106,
+      "scenario": "A harness call on a plugin connection with local telemetry reads the clock and records a database observation through PluginRouter.invoke. The normal delegated dispatch also acquires the admission lock. OD-4 currently expects these calls to be counted, while REQ-003 forbids the effects.",
+      "fix": "Route the four exact names before call telemetry and admission locking. Keep read-only registry freshness checks for workspace-bound calls. Align OD-4 and test the full router path with local telemetry enabled and clock, lock and write sentinels."
+    },
+    {
+      "id": "077-03",
+      "severity": "high",
+      "area": "path-safety",
+      "file": "specs/077-harness-mcp-readonly/plan.md",
+      "line": 9,
+      "scenario": "The adapter validates a directory by descriptor and then passes its pathname to the existing CLI helper. The helper opens the path again, protecting only its final component. The directory used for validation can differ from the one used for inventory, and the CLI also resolves the path again to derive specDirectory.",
+      "fix": "Share view construction over verified bytes or open descriptors. Keep tasks.md, the evidence directory and all descendant reads relative to the validated descriptors. Derive display metadata without reopening or resolving the supplied pathname."
+    },
+    {
+      "id": "077-04",
+      "severity": "high",
+      "area": "path-safety",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 75,
+      "scenario": "A connection starts with a valid source root. The operator then removes that workspace, or a source-root component becomes a symlink. An adapter that trusts the connection snapshot and walks only the argument segments can keep reading a revoked workspace or start its walk from a different directory.",
+      "fix": "Require the current registry authorization and a verified root descriptor before resolving an argument. Specify no-follow acquisition and identity verification for the root and its ancestors. Test revoked registrations and symlinked roots or ancestors."
+    },
+    {
+      "id": "077-05",
+      "severity": "high",
+      "area": "path-safety",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 72,
+      "scenario": "A regular fixture inside the workspace shares an inode with a fixture outside it. O_NOFOLLOW permits that entry, so a direct view can return its metadata or the evidence walk can publish its digest. ADR 0043 calls the boundary closed.",
+      "fix": "Define the hard-link policy explicitly. For a no-links policy, reject multiply linked regular files on the opened descriptor before reading, including tasks.md and evidence descendants. Use the uniform refusal and limit the ADR claim to the boundary that the checks establish."
+    },
+    {
+      "id": "077-06",
+      "severity": "medium",
+      "area": "bounds-refusals",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 25,
+      "scenario": "Every workspace-bound success repeats the submitted workspaceId, and a hash-matched evaluation returns the submitted sha256 as the record digest. A CLI evaluation view can also copy an absolute path from a nested report value. The blanket no-echo rule conflicts with both the example and exact CLI parity.",
+      "fix": "Name the approved success identifiers and their provenance. Define a safe projection or fixed refusal for CLI fields that would expose disallowed values or host paths, then apply the parity test to that projection."
+    },
+    {
+      "id": "077-07",
+      "severity": "medium",
+      "area": "authority",
+      "file": "specs/077-harness-mcp-readonly/spec.md",
+      "line": 101,
+      "scenario": "SC-002 expects a call named prepare to be unknown, but the existing plugin delegates prepare in analysis-only mode and status in runtime-enabled mode. A test of those literal names either fails on preserved behavior or drives removal of existing tools.",
+      "fix": "Scope the unknown-tool checks to harness command names and assert that the four new handlers dispatch only to the four advisory views. Verify that the existing delegated tools keep their current behavior in both modes."
+    },
+    {
+      "id": "077-08",
+      "severity": "medium",
+      "area": "arguments",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 51,
+      "scenario": "All four descriptions fit the 2,048-byte cap at 288, 343, 399 and 341 UTF-8 bytes respectively. Only harness-capabilities embeds its actual schema. The other descriptions label prose as Input schema, omit closed-schema constraints, and two give no instruction to discover workspaceId through workspaces.",
+      "fix": "Embed the exact compact schema in all four descriptions. Keep one example, explain where every required workspaceId comes from, and say to omit sha256 unless a trusted digest was supplied. Assert literal schema inclusion and UTF-8 length."
+    },
+    {
+      "id": "077-09",
+      "severity": "low",
+      "area": "arguments",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 36,
+      "scenario": "The schema accepts an empty path and counts characters, so a multibyte path can pass schema validation while exceeding the runtime byte limit. The sha256 pattern can also accept 64 hex characters followed by a newline in validators where the dollar anchor matches before that newline.",
+      "fix": "Add minLength 1 to path and define its runtime limit in UTF-8 bytes with invalid encodings refused structurally. Require exactly 64 characters for sha256 as well as the hex pattern. Add schema and runtime boundary cases."
+    },
+    {
+      "id": "077-10",
+      "severity": "low",
+      "area": "path-safety",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 70,
+      "scenario": "A case variant or a canonically equivalent Unicode spelling can open the same workspace entry on one filesystem and return input-unreadable on another. On a case-insensitive volume even a descendant named TASKS.MD can satisfy the literal tasks.md lookup. SC-005 gives these cases no expected result.",
+      "fix": "State whether filesystem aliases are accepted and whether the fixed evidence names require exact spelling. Define the policy for both argument segments and fixed descendants, then test case and normalization variants on filesystems that support them."
+    },
+    {
+      "id": "077-11",
+      "severity": "medium",
+      "area": "bounds-refusals",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 110,
+      "scenario": "A digest placeholder for an unknown key is valid pointer syntax but does not resolve to the supplied member. A missing required key has no member to resolve either. The current plugin's generic refusals for stale registry or malformed arguments also omit the harness pointer and envelope.",
+      "fix": "Use the containing-object pointer for missing and unknown members and put the missing name or redacted key token in a separate field. Pin validation order and a per-tool reason and pointer table, including router-level refusals. Test decoded calls through the plugin entry point."
+    },
+    {
+      "id": "077-12",
+      "severity": "medium",
+      "area": "bounds-refusals",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 120,
+      "scenario": "A missing input yields input-unreadable, whereas an existing admitted file with malformed JSON yields invalid-json. The unconditional promise about path existence therefore conflicts with required content diagnostics. A workspace rejected by registry checks can also receive a distinct router refusal if the adapter inherits those checks without defining a public mapping.",
+      "fix": "Specify indistinguishable public refusals for denied lookups, including unavailable roots and unsafe descendants. Allow content and bound diagnostics only after containment and authorization succeed. Test complete response equality for inaccessible, missing, linked, special and outside-root cases."
+    },
+    {
+      "id": "077-13",
+      "severity": "medium",
+      "area": "bounds-refusals",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 93,
+      "scenario": "The current MCP handler returns the object in structuredContent and a serialized copy in TextContent. A result below 65,536 bytes by compact object serialization can exceed that size in the encoded MCP result after duplication and escaping. SC-007 also expects output-too-large for over-bound inputs that have distinct CLI refusal codes.",
+      "fix": "Define the exact representation, encoder and fields covered by the cap, plus which counts each tool returns. Test the chosen representation at 65,535, 65,536 and 65,537 bytes separately from input-limit refusals. Limit the no-truncation claim to server behavior unless the host behavior is measured."
+    },
+    {
+      "id": "077-14",
+      "severity": "medium",
+      "area": "bounds-refusals",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 95,
+      "scenario": "The existing CLI sorts all names in a directory before it checks the 1,024-entry limit. An oversized local fixture can therefore force a complete enumeration and allocation while still passing a test that checks only for the final too-many-entries code. The CLI also caps task entries at 256, which the contract omits.",
+      "fix": "Define when traversal stops, enforce the cumulative entry budget during enumeration before sorting, and document the CLI depth convention and task-entry cap. Check early termination as well as the resulting refusal."
+    },
+    {
+      "id": "077-15",
+      "severity": "medium",
+      "area": "versioning",
+      "file": "specs/077-harness-mcp-readonly/contracts/harness-mcp-readonly.md",
+      "line": 10,
+      "scenario": "A consumer selects the existing plugin v0.2 envelope parser by schemaVersion. The proposed success carries that stamp but substitutes tool and view for operation and result and omits provenance. An envelope validator can reject the response before it can use harnessContract.",
+      "fix": "Either retain the existing plugin envelope and put the versioned harness payload inside it, or explicitly declare and advertise a distinct harness output envelope. Pin existing plugin outputs and the portable v0.2 listing and capabilities in compatibility tests. A plugin-local change requires no portable v0.3 bump or alias removal."
+    },
+    {
+      "id": "077-16",
+      "severity": "high",
+      "area": "gate-claims",
+      "file": "specs/077-harness-mcp-readonly/tasks.md",
+      "line": 19,
+      "scenario": "T003 adds the four tools to the plugin listing before the gate and leaves the CLI capability marker at none. A routine plugin package built from that commit can ship the tools before T014 or D7. Changing the marker in T009 after T008 publishes also permits the released artifact and the approved candidate to diverge.",
+      "fix": "Keep the tools out of ordinary release artifacts while the gate is closed. Bind explicit founder publication approval to the exact enabled artifact and include the capability marker in that candidate before release. Add a package-level negative control with a missing gate input."
+    },
+    {
+      "id": "077-17",
+      "severity": "high",
+      "area": "gate-claims",
+      "file": "specs/077-harness-mcp-readonly/spec.md",
+      "line": 178,
+      "scenario": "A draft D7 ADR after T014 can be read as satisfying the negative wording because it does not yet close the harness. Conversely, D7 directs negative or inconclusive T014 results to experimental closure, where there may be no ADR to satisfy T008's prerequisite for recording no-publish.",
+      "fix": "Require the completed T014 record and an explicit, dated D7 disposition that permits the advisory publication to proceed. Treat missing evidence and unresolved drafts as blocked. Allow a negative or inconclusive D7 disposition to record no-publish without a favorable ADR, and test each state."
+    },
+    {
+      "id": "077-18",
+      "severity": "medium",
+      "area": "gate-claims",
+      "file": "specs/077-harness-mcp-readonly/spec.md",
+      "line": 173,
+      "scenario": "A host gets 24 of 30 first attempts right but misses one repetition on six prompts, leaving only four prompts with three valid first attempts. The same run can pass by trial rate and fail by the referenced SPEC-069 prompt rule. SC-009 calls for recording results but leaves the gate's aggregation implicit.",
+      "fix": "State the per-prompt aggregation used for both thresholds and define a qualifying refusal-guided retry. Freeze the scorer with the prompt set, report prompt and trial denominators separately, and test the mixed-repetition case before applying the publication gate."
+    },
+    {
+      "id": "077-19",
+      "severity": "low",
+      "area": "gate-claims",
+      "file": "specs/077-harness-mcp-readonly/plan.md",
+      "line": 67,
+      "scenario": "The plan assigns SC-009 to procedure_009, which checks the publication capability marker, and assigns SC-010 to procedure_010, which is absent. Following those references leaves the held-out scoring and publication checks without the procedures the plan promises.",
+      "fix": "Map SC-009 to procedures 006 and 007 and SC-010 to procedures 008 and 009. Align the acceptance scenarios, task references and assurance trace with those mappings."
+    }
+  ],
+  "verdict": "findings"
+}

@@ -1,0 +1,203 @@
+{
+  "recordVersion": "spec077-codex-review-v1",
+  "task": "SPEC-077/T002",
+  "candidateCommit": "af8d56837ef04731fbeaadcff0ead746c58b063c",
+  "reviewer": {
+    "tool": "codex exec -s read-only --output-schema",
+    "binary": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+    "version": "codex-cli 0.169.0-alpha.11.1",
+    "account": "operator subscription",
+    "date": "2026-11-17"
+  },
+  "command": "\"/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex\" exec -s read-only -C <detached worktree at candidate> --output-schema specs/077-harness-mcp-readonly/review/codex-contract-20261116.schema.json -o <out> \"$(cat specs/077-harness-mcp-readonly/review/codex-contract-20261116.md)\"",
+  "rawOutput": "specs/077-harness-mcp-readonly/evidence/review/codex-contract-20261116.raw.json",
+  "rawOutputSha256": "4a5e8abc1d0c0fad01c24e111d02c7cf74c20a68c74371e418a14bb04678a8e4",
+  "codexVerdict": "findings",
+  "findingCount": 19,
+  "triageMethod": "Independent read-only re-check of each finding against the candidate commit by a separate agent (adversarial: try to refute), then orchestrator review.",
+  "triage": [
+    {
+      "id": "077-01",
+      "codexSeverity": "high",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "high",
+      "evidence": "harness_cli.py:313-317 copies file-level executionAuthorization (true included) into files[]; :236-299 copy nested values; contract :89-90 strips only the top-level key, against invariant 1 (:17-18).",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-02",
+      "codexSeverity": "high",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "high",
+      "evidence": "plugin_mcp.py:392-401 wraps every call in observe (perf_counter + sqlite Store.record under a lock, tooling_telemetry.py:470-486); delegated path takes self.admission (plugin_mcp.py:422); OD-4 (spec.md:216) conflicts with REQ-003 (spec.md:106-108).",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-03",
+      "codexSeverity": "high",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "high",
+      "evidence": "_registry_status/_evaluation_summary call _read(path) without dir_fd (harness_cli.py:232,274); _evidence opens by pathname, O_NOFOLLOW only on the last component (:303,358); specDirectory from spec.resolve() (:380); plan.md:9-12 reuses these functions.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-04",
+      "codexSeverity": "high",
+      "verdict": "PARTIAL",
+      "adjustedSeverity": "medium",
+      "evidence": "Contract :70-76 does not state root acquisition or a current-registry check; existing _require_current/not_grown (plugin_mcp.py:366-373, plugin_registry.py:266-273) cover revocation only when routed through _dispatch.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-05",
+      "codexSeverity": "high",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "medium",
+      "evidence": "No hard-link policy in contract section 4, research.md:48 or CLI _read (S_ISREG only, :137-145); ADR 0043 :70-71 calls the boundary closed. Lowered: same-user server, leak limited to metadata, digest and parsed fields.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-06",
+      "codexSeverity": "medium",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "medium",
+      "evidence": "Invariant 5 (:25) bans echoing argument values, yet the success example echoes workspaceId (:85); a hash-matched sha256 equals the submitted value (harness_cli.py:275-292); nested report strings can carry absolute paths.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-07",
+      "codexSeverity": "medium",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "medium",
+      "evidence": "tooling_mcp.py:326-327 exposes prepare (analysis-only) and status (runtime-enabled); invariant 4 (:23-24) and SC-002 (spec.md:103-104) claim both are unknown.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-08",
+      "codexSeverity": "medium",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "medium",
+      "evidence": "Descriptions are 288/343/399/341 bytes; only section 3.1 embeds the real schema; 3.2-3.4 use prose pseudo-schemas against SC-004 (spec.md:122-124); only registry-status says where workspaceId comes from.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-09",
+      "codexSeverity": "low",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "evidence": "Schemas (:50,:57) lack minLength and use character maxLength while the rule says bytes (:36); ^...$ accepts a trailing newline under re.search. Runtime refuses both (_HASH uses \\Z, :41): schema/runtime drift only.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-10",
+      "codexSeverity": "low",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "evidence": "Contract :68-76 and SC-005 are silent on case and Unicode aliasing; on case-insensitive APFS _read('tasks.md') opens TASKS.MD.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-11",
+      "codexSeverity": "medium",
+      "verdict": "PARTIAL",
+      "adjustedSeverity": "medium",
+      "evidence": "Router-level refusals use plugin _refusal without harnessContract/pointer/class (plugin_mcp.py:375-379,441-442); unknown-workspace (:119) unmapped. The pointer-to-absent-member point is rejected: it is still a valid RFC 6901 pointer.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-12",
+      "codexSeverity": "medium",
+      "verdict": "PARTIAL",
+      "adjustedSeverity": "low",
+      "evidence": "Wording at :120 is broader than achievable (invalid-json/non-canonical imply existence); the uniform missing/link/special/outside requirement is already at :73-75. Wording fix.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-13",
+      "codexSeverity": "medium",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "medium",
+      "evidence": "plugin_mcp.py:493-494 returns escaped TextContent plus structuredContent; 'serialized result' (:93) names no representation; SC-007 (spec.md:150-152) conflicts with :95-96 input codes.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-14",
+      "codexSeverity": "medium",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "evidence": "harness_cli.py:328-331 sorts the full scandir listing before the 1,024 check; :369-370 caps tasks at 256, omitted by the contract; depth convention ambiguous (:338). Lowered: local resource use only.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-15",
+      "codexSeverity": "medium",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "medium",
+      "evidence": "Success shape (:83-86) stamps agent-braid-plugin/v0.2 but replaces operation/summary/result/evidenceRefs/limits/provenance (tooling_mcp.py:816-820); refusal (:101-105) has no schemaVersion.",
+      "fixLocation": "contract",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-16",
+      "codexSeverity": "high",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "high",
+      "evidence": "T003 (tasks.md:19-23) wires the tools into plugin_mcp.py before the T008 gate; nothing keeps them out of a routine plugin release; marker changes only in T009 (tasks.md:53-56, plan.md:48-50).",
+      "fixLocation": "tasks-plan",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-17",
+      "codexSeverity": "high",
+      "verdict": "PARTIAL",
+      "adjustedSeverity": "medium",
+      "evidence": "REQ-010(b) (spec.md:179) is negative wording, so a missing or draft D7 ADR satisfies it; the claim that no ADR would exist on the negative path is speculative; owner acceptance (e) still guards publication.",
+      "fixLocation": "spec",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-18",
+      "codexSeverity": "medium",
+      "verdict": "PARTIAL",
+      "adjustedSeverity": "low",
+      "evidence": "REQ-009 counts prompts, SC-009 runs 10x3 trials without an aggregation rule (spec.md:167-176); T006 (tasks.md:35-37) already freezes the scoring rule before any run.",
+      "fixLocation": "spec",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    },
+    {
+      "id": "077-19",
+      "codexSeverity": "low",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "evidence": "plan.md:67-68 maps SC-009 to procedure_009 and SC-010 to procedure_010; validation-plan.md:14-17 maps SC-009 to 006/007 and SC-010 to 008/009; no procedure_010 exists.",
+      "fixLocation": "plan",
+      "fixStatus": "deferred-to-T003-prerequisite"
+    }
+  ],
+  "summary": {
+    "confirmed": 14,
+    "partial": 5,
+    "rejected": 0
+  },
+  "ownerDecision": {
+    "date": "2026-11-18",
+    "answer": "Tras T014, si D7 sigue (Recomendado)",
+    "effect": "Fixes are applied to the contract only after SPEC-049 T014 and only if the D7 disposition keeps the harness open; T003 stays blocked on them. If D7 closes the harness, the contract is archived unpublished with this triage."
+  },
+  "notHumanReview": true,
+  "executionAuthorization": false
+}
