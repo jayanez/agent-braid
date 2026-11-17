@@ -63,7 +63,8 @@
     "BL.0 — Braid Lightning foundations",
     "BL.1 — Lightning rollouts and verifiable reward",
     "BL.2 — Lightning prompt optimization",
-    "BL.4 — Lightning trace consent"
+    "BL.4 — Lightning trace consent",
+    "BL.5 — Lightning dataset export"
   ],
   "unpublished_milestones": [
     "M4.6 — Claude Code dynamic workflows"
@@ -347,7 +348,7 @@
     },
     "075-lightning-dataset-export": {
       "milestone": "BL.5 — Lightning dataset export",
-      "state": "open"
+      "state": "closed"
     },
     "076-lightning-local-grpo": {
       "milestone": "Deferred",
