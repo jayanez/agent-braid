@@ -15,7 +15,7 @@
   ],
   "assumptions": "Single-operator founder macOS machine (observed macOS 27.0.1 build 26A434); Claude Code 2.1.292 at /opt/homebrew/bin/claude; subscription (Max) route with extra usage disabled; F5 STRICT isolation bound and NC-1 to NC-11 decided in specs/065-native-claude-containment/evidence/founder-decisions-20261031.json (T001); same-UID processes outside the sandbox are not hostile during a run; values to be observed by probe are fixed only in a reviewed T009 evidence bundle.",
   "authority_snapshot": {
-    "commit": "a526b5eb460fad5009cbc928aed5df21addc2279",
+    "commit": "a768e6d31429b9a8b665fd841a0f4a22f3362b42",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -60,7 +60,7 @@
       "docs/adr/0031-portable-prompt-names.md": "2e2ccf4e3d3b82cfb3e375d790104b9bb79f7f503041f11e60738e546d670d8e",
       "docs/adr/0032-activity-viewer-companion.md": "75c41ed41b9ffa886df423dffb47ff2fd110f4a7fe639d54ee6b82b3148a5b06",
       "docs/adr/0033-vendored-threejs-mit-boundary.md": "4f0c2956498e1329296652e436d8c84552ba18ab893a51314803cf8f9d39868e",
-      "docs/adr/0034-system-one-shadow-advisory-boundary.md": "83de00082099fbefad0f2603aae8020270b157e731aae613f412586d33c086eb",
+      "docs/adr/0034-system-one-shadow-advisory-boundary.md": "b202b5098e0b3560f2fca6ffdc38ac9699d18935c544f32f72b152c610b0b471",
       "docs/adr/0035-native-claude-laboratory-containment.md": "9db60ef1544e5218eb7fa7ba34315f48b33e464b761e07359fc5bfcd9bfaf0c5",
       "docs/adr/0036-assurance-profiles.md": "9a7abf22920a9ba91cb61c5c48b905a1415182bc9434bcf884680ec41666b464",
       "docs/adr/0037-opencode-native-plugin.md": "36c777d124b5905e8b8c25951cf59c2061fedddf1950fc24bfa2bae7197d3809",
@@ -69,6 +69,7 @@
       "docs/adr/0040-braid-lightning-mit-vendoring.md": "ef0053259f7f9dc5929ed8709f037a6632a874c4bc035a898be8649afa5f0c84",
       "docs/adr/0041-braid-lightning-content-traces.md": "1361654c3cb9a4b745eaf3aa3a3613fc0b76278a93f9fad3421bfd8a37a0a73c",
       "docs/adr/0042-braid-lightning-local-weight-training.md": "d4b1c5b7664a88be27ce64c4a3eb013161103e47694cab445b3e70b5269eacaf",
+      "docs/adr/0043-harness-mcp-readonly-surface.md": "c6b7a775eca80a759a450e4261cd61d7d34208642cecb6dc985d56532016d921",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -99,6 +100,7 @@
       "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
       "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
       "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
+      "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
       "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
       "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
       "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
@@ -111,7 +113,7 @@
   "compatibility": "Offline profile byte-compatible (bytes, digests, views, refusal reasons); qualification record formats unchanged; plugin, AIM, grants, telemetry, observation format and every SPEC-048/049 artifact unchanged; native profile is a new closed schema under the same manifest format.",
   "domain": "Agent Braid harness laboratory native execution of one host (Claude Code CLI, read-only tools) on one macOS machine, under the SPEC-048 manifest, lab, host-adapter and qualification contracts.",
   "evidence_snapshot": {
-    "commit": "a526b5eb460fad5009cbc928aed5df21addc2279",
+    "commit": "a768e6d31429b9a8b665fd841a0f4a22f3362b42",
     "mode": "historical"
   },
   "execution_contract": "Native runs only with a verified containment record and a verified Claude host record whose environment hash equals the native manifest's and that have not expired; pre-session self-checks and the quota gate pass before every session; refuse rather than degrade; no retry, no alternative or paid route; executionAuthorization stays false; issuance is a human act outside code.",
@@ -159,11 +161,18 @@
           "id": "SC-001",
           "obtained_evidence": [
             {
-              "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment, then verification of the T013 issuance on bundle t009-20261113c (T013)",
-              "limits": "Unit level with doubles plus record-level checks of the issued records; one machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-13T16:14:45Z",
-              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved; issuance-2026-11-13 verifies against the trusted hashes and every negative control refuses",
-              "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "4381709889b1c410fbc209780eb4d608e28aa448d767b4ce574cf7f018467330"
+              "command": "record-level verification of issuance-2026-11-17.json against bundle t009-20261117c (verify_qualification, verify_host_qualification, issued_records, verify_bundle and nine negative controls) plus the targeted unit tests listed in t015.json (T015, base 3747d7d6; inputs fresh at freeze commit a768e6d3)",
+              "limits": "Record-level checks with doubles on the orchestrator account; the live environment recomputation runs in the lab account before every native session (NC-11). One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "verify_qualification and verify_host_qualification accept the native records; harness_manifest.py unchanged 320b00c4..3de73065 (MDRV-04 guard_unhashed); wrong environment hash and other host refuse",
+              "path": "specs/065-native-claude-containment/evidence/t015.json",
+              "sha256": "3468892190452a9e27c53ad99dd013b6dad7e0175aca44ca66f31e522bbf41a0"
+            },
+            {
+              "command": "founder issuance (NC-9) of 2026-11-17 on attempt t009-20261117c, sha256 33f89889...50c8 (T015)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "issued on a native Claude profile bundle; trusted hashes containment 5a9f05c6...00df and host f2f65ae0...7f9d",
+              "path": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+              "sha256": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_001 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -183,11 +192,18 @@
           "id": "SC-002",
           "obtained_evidence": [
             {
-              "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment, then verification of the T013 issuance on bundle t009-20261113c (T013)",
-              "limits": "Unit level with doubles plus record-level checks of the issued records; one machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-13T16:14:45Z",
-              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved; issuance-2026-11-13 verifies against the trusted hashes and every negative control refuses",
-              "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "4381709889b1c410fbc209780eb4d608e28aa448d767b4ce574cf7f018467330"
+              "command": "record-level verification of issuance-2026-11-17.json against bundle t009-20261117c (verify_qualification, verify_host_qualification, issued_records, verify_bundle and nine negative controls) plus the targeted unit tests listed in t015.json (T015, base 3747d7d6; inputs fresh at freeze commit a768e6d3)",
+              "limits": "Record-level checks with doubles on the orchestrator account; the live environment recomputation runs in the lab account before every native session (NC-11). One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "transport module hash 3ef09f0e... unchanged since part 1 and fresh at the freeze commit; host adapter 5e117c11... (after #1363 and #1397) is the qualified one",
+              "path": "specs/065-native-claude-containment/evidence/t015.json",
+              "sha256": "3468892190452a9e27c53ad99dd013b6dad7e0175aca44ca66f31e522bbf41a0"
+            },
+            {
+              "command": "T009 attempts t009-20261117a/b/c launched by the owner through the root-owned launcher (sha256 4605e1fa...9c4a) at commit 3de73065 (result record)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "HOST-01 contained session completed through the native transport; three Haiku sessions with apiKeySource none; NET-05-CLI denied",
+              "path": "specs/065-native-claude-containment/evidence/t009-20261117-result.md",
+              "sha256": "accf33ba001369b0812e7fc2f381548f4c07ab1d0a3273b0a80b0f8b57253c37"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_002 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -207,11 +223,18 @@
           "id": "SC-003",
           "obtained_evidence": [
             {
-              "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment, then verification of the T013 issuance on bundle t009-20261113c (T013)",
-              "limits": "Unit level with doubles plus record-level checks of the issued records; one machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-13T16:14:45Z",
-              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved; issuance-2026-11-13 verifies against the trusted hashes and every negative control refuses",
-              "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "4381709889b1c410fbc209780eb4d608e28aa448d767b4ce574cf7f018467330"
+              "command": "record-level verification of issuance-2026-11-17.json against bundle t009-20261117c (verify_qualification, verify_host_qualification, issued_records, verify_bundle and nine negative controls) plus the targeted unit tests listed in t015.json (T015, base 3747d7d6; inputs fresh at freeze commit a768e6d3)",
+              "limits": "Record-level checks with doubles on the orchestrator account; the live environment recomputation runs in the lab account before every native session (NC-11). One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "quota module hash c2565c05... unchanged since part 1 and fresh at the freeze commit",
+              "path": "specs/065-native-claude-containment/evidence/t015.json",
+              "sha256": "3468892190452a9e27c53ad99dd013b6dad7e0175aca44ca66f31e522bbf41a0"
+            },
+            {
+              "command": "pre/post plan-usage readings around the three Haiku sessions of attempt t009-20261117c (operator-typed readings, T015)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "CRED-05 and HOST-01 delta 0; NET-05-CLI 5-hour delta 1 (29 -> 30 %), within the 10 % session cap; weekly delta 0; extra usage off; EUR 0",
+              "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/quota.json",
+              "sha256": "4292f715934c03bb7ad18abb006c3ebfc7aee57f8939c49f088e7eca716e2227"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_003 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -231,11 +254,32 @@
           "id": "SC-004",
           "obtained_evidence": [
             {
-              "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment, then verification of the T013 issuance on bundle t009-20261113c (T013)",
-              "limits": "Unit level with doubles plus record-level checks of the issued records; one machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-13T16:14:45Z",
-              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved; issuance-2026-11-13 verifies against the trusted hashes and every negative control refuses",
-              "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "4381709889b1c410fbc209780eb4d608e28aa448d767b4ce574cf7f018467330"
+              "command": "record-level verification of issuance-2026-11-17.json against bundle t009-20261117c (verify_qualification, verify_host_qualification, issued_records, verify_bundle and nine negative controls) plus the targeted unit tests listed in t015.json (T015, base 3747d7d6; inputs fresh at freeze commit a768e6d3)",
+              "limits": "Record-level checks with doubles on the orchestrator account; the live environment recomputation runs in the lab account before every native session (NC-11). One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "both verifiers, issued_records and verify_bundle accept; edited records, wrong environment hash, untrusted hash, superseded issuances, other host and partial effects refuse",
+              "path": "specs/065-native-claude-containment/evidence/t015.json",
+              "sha256": "3468892190452a9e27c53ad99dd013b6dad7e0175aca44ca66f31e522bbf41a0"
+            },
+            {
+              "command": "founder issuance (NC-9) of 2026-11-17 on attempt t009-20261117c, sha256 33f89889...50c8 (T015)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "issued 2026-11-17, expiresAt 2026-12-17T22:19:29Z, environmentSha256 600ba86d...c556, Background session only",
+              "path": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+              "sha256": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8"
+            },
+            {
+              "command": "probe bundle summary of attempt t009-20261117c written by the T009 driver in the lab account; bundleSha256 b75020ef...dbbe recomputed by verify_bundle (T015)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "32 of 32 probes pass, all four effects enforced, HOST-01 completed, apiKeySource none in all three sessions",
+              "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/summary.json",
+              "sha256": "b3ca0913a7cf75648c240f2f9d60bed0302fe87ea520f9fbd7e1105810cd3172"
+            },
+            {
+              "command": "T009 attempt t009-20261114a at commit a016d066 (T014 result record)",
+              "limits": "Superseded on 2026-11-17 (environment hash moved by #1397); historical lineage only. One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "32 of 32 probes after the #1363 host-adapter fix; issued and later superseded",
+              "path": "specs/065-native-claude-containment/evidence/t009-20261114-result.md",
+              "sha256": "dee4b6aa78945335cbc1005dd29e66a0af86652f6b1211e1d41d4e8b8bdfde7f"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_004 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -255,18 +299,25 @@
           "id": "SC-005",
           "obtained_evidence": [
             {
-              "command": "T009 attempt t009-20261106a, bundleSha256 45eee4d8...d1ce, commit 320b00c4 (result record)",
-              "limits": "One machine, OS build, CLI version and finite catalog until expiresAt; not a general isolation proof; says nothing about Codex",
-              "outcome": "32 of 32 probes passed in both modes, hostFunctional true, all four effects enforced; runner wrote no record",
-              "path": "specs/065-native-claude-containment/evidence/t009-attempt5-result.md",
-              "sha256": "bd1607dc709208347304e98de6115e126b15dbbd451afb2404c67301eea480a1"
+              "command": "T009 attempts t009-20261117a/b/c launched by the owner through the root-owned launcher (sha256 4605e1fa...9c4a) at commit 3de73065 (result record)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "filesystem enforced: FS-01 to FS-07 denied in contained mode with positive uncontained controls; FS-07 mach-mdwrite and mach-spotlight not applicable",
+              "path": "specs/065-native-claude-containment/evidence/t009-20261117-result.md",
+              "sha256": "accf33ba001369b0812e7fc2f381548f4c07ab1d0a3273b0a80b0f8b57253c37"
             },
             {
-              "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment, then verification of the T013 issuance on bundle t009-20261113c (T013)",
-              "limits": "Unit level with doubles plus record-level checks of the issued records; one machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-13T16:14:45Z",
-              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved; issuance-2026-11-13 verifies against the trusted hashes and every negative control refuses",
-              "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "4381709889b1c410fbc209780eb4d608e28aa448d767b4ce574cf7f018467330"
+              "command": "probe bundle summary of attempt t009-20261117c written by the T009 driver in the lab account; bundleSha256 b75020ef...dbbe recomputed by verify_bundle (T015)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "filesystem status enforced, no failing or missing probe",
+              "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/summary.json",
+              "sha256": "b3ca0913a7cf75648c240f2f9d60bed0302fe87ea520f9fbd7e1105810cd3172"
+            },
+            {
+              "command": "record-level verification of issuance-2026-11-17.json against bundle t009-20261117c (verify_qualification, verify_host_qualification, issued_records, verify_bundle and nine negative controls) plus the targeted unit tests listed in t015.json (T015, base 3747d7d6; inputs fresh at freeze commit a768e6d3)",
+              "limits": "Record-level checks with doubles on the orchestrator account; the live environment recomputation runs in the lab account before every native session (NC-11). One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "bundle-pass-rule and verify_bundle accept",
+              "path": "specs/065-native-claude-containment/evidence/t015.json",
+              "sha256": "3468892190452a9e27c53ad99dd013b6dad7e0175aca44ca66f31e522bbf41a0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_005 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -286,18 +337,25 @@
           "id": "SC-006",
           "obtained_evidence": [
             {
-              "command": "T009 attempt t009-20261106a, bundleSha256 45eee4d8...d1ce, commit 320b00c4 (result record)",
-              "limits": "One machine, OS build, CLI version and finite catalog until expiresAt; not a general isolation proof; says nothing about Codex",
-              "outcome": "32 of 32 probes passed in both modes, hostFunctional true, all four effects enforced; runner wrote no record",
-              "path": "specs/065-native-claude-containment/evidence/t009-attempt5-result.md",
-              "sha256": "bd1607dc709208347304e98de6115e126b15dbbd451afb2404c67301eea480a1"
+              "command": "T009 attempts t009-20261117a/b/c launched by the owner through the root-owned launcher (sha256 4605e1fa...9c4a) at commit 3de73065 (result record)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "network enforced: NET-01 to NET-05, NET-05-CLI, NET-07 and NET-08 denied, NET-06 allowed endpoint allowed; NET-02 tcp-ipv6-literal not applicable",
+              "path": "specs/065-native-claude-containment/evidence/t009-20261117-result.md",
+              "sha256": "accf33ba001369b0812e7fc2f381548f4c07ab1d0a3273b0a80b0f8b57253c37"
             },
             {
-              "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment, then verification of the T013 issuance on bundle t009-20261113c (T013)",
-              "limits": "Unit level with doubles plus record-level checks of the issued records; one machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-13T16:14:45Z",
-              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved; issuance-2026-11-13 verifies against the trusted hashes and every negative control refuses",
-              "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "4381709889b1c410fbc209780eb4d608e28aa448d767b4ce574cf7f018467330"
+              "command": "probe bundle summary of attempt t009-20261117c written by the T009 driver in the lab account; bundleSha256 b75020ef...dbbe recomputed by verify_bundle (T015)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "network status enforced, no failing or missing probe",
+              "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/summary.json",
+              "sha256": "b3ca0913a7cf75648c240f2f9d60bed0302fe87ea520f9fbd7e1105810cd3172"
+            },
+            {
+              "command": "record-level verification of issuance-2026-11-17.json against bundle t009-20261117c (verify_qualification, verify_host_qualification, issued_records, verify_bundle and nine negative controls) plus the targeted unit tests listed in t015.json (T015, base 3747d7d6; inputs fresh at freeze commit a768e6d3)",
+              "limits": "Record-level checks with doubles on the orchestrator account; the live environment recomputation runs in the lab account before every native session (NC-11). One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "bundle-pass-rule and verify_bundle accept",
+              "path": "specs/065-native-claude-containment/evidence/t015.json",
+              "sha256": "3468892190452a9e27c53ad99dd013b6dad7e0175aca44ca66f31e522bbf41a0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_006 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -317,18 +375,32 @@
           "id": "SC-007",
           "obtained_evidence": [
             {
-              "command": "T009 attempt t009-20261106a, bundleSha256 45eee4d8...d1ce, commit 320b00c4 (result record)",
-              "limits": "One machine, OS build, CLI version and finite catalog until expiresAt; not a general isolation proof; says nothing about Codex",
-              "outcome": "32 of 32 probes passed in both modes, hostFunctional true, all four effects enforced; runner wrote no record",
-              "path": "specs/065-native-claude-containment/evidence/t009-attempt5-result.md",
-              "sha256": "bd1607dc709208347304e98de6115e126b15dbbd451afb2404c67301eea480a1"
+              "command": "T009 attempts t009-20261117a/b/c launched by the owner through the root-owned launcher (sha256 4605e1fa...9c4a) at commit 3de73065 (result record)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "credential enforced: CRED-01 to CRED-07 denied; CRED-02 mach-secd and CRED-07 pasteboard-exec/pasteboard-mach not applicable; apiKeySource none in all three sessions",
+              "path": "specs/065-native-claude-containment/evidence/t009-20261117-result.md",
+              "sha256": "accf33ba001369b0812e7fc2f381548f4c07ab1d0a3273b0a80b0f8b57253c37"
             },
             {
-              "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment, then verification of the T013 issuance on bundle t009-20261113c (T013)",
-              "limits": "Unit level with doubles plus record-level checks of the issued records; one machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-13T16:14:45Z",
-              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved; issuance-2026-11-13 verifies against the trusted hashes and every negative control refuses",
-              "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "4381709889b1c410fbc209780eb4d608e28aa448d767b4ce574cf7f018467330"
+              "command": "probe bundle summary of attempt t009-20261117c written by the T009 driver in the lab account; bundleSha256 b75020ef...dbbe recomputed by verify_bundle (T015)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "credential status enforced, no failing or missing probe",
+              "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/summary.json",
+              "sha256": "b3ca0913a7cf75648c240f2f9d60bed0302fe87ea520f9fbd7e1105810cd3172"
+            },
+            {
+              "command": "T009 attempts t009-20261113a/b/c, headless launch through launchctl asuser at commit 7d3e1986 (T013 result record)",
+              "limits": "Superseded on 2026-11-14 (environment hash moved by #1363); historical lineage only. One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "headless own-session attempt t009-20261113c passed session-own and all four effects after su-launched t009-20261113a failed CRED-07, FS-07 and PROC-06 positive controls",
+              "path": "specs/065-native-claude-containment/evidence/t009-20261113-result.md",
+              "sha256": "361196787beadf16cd451502ececa0581f9cc102a6880ea1b752039956156558"
+            },
+            {
+              "command": "record-level verification of issuance-2026-11-17.json against bundle t009-20261117c (verify_qualification, verify_host_qualification, issued_records, verify_bundle and nine negative controls) plus the targeted unit tests listed in t015.json (T015, base 3747d7d6; inputs fresh at freeze commit a768e6d3)",
+              "limits": "Record-level checks with doubles on the orchestrator account; the live environment recomputation runs in the lab account before every native session (NC-11). One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "bundle-pass-rule and verify_bundle accept",
+              "path": "specs/065-native-claude-containment/evidence/t015.json",
+              "sha256": "3468892190452a9e27c53ad99dd013b6dad7e0175aca44ca66f31e522bbf41a0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_007 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -348,18 +420,25 @@
           "id": "SC-008",
           "obtained_evidence": [
             {
-              "command": "T009 attempt t009-20261106a, bundleSha256 45eee4d8...d1ce, commit 320b00c4 (result record)",
-              "limits": "One machine, OS build, CLI version and finite catalog until expiresAt; not a general isolation proof; says nothing about Codex",
-              "outcome": "32 of 32 probes passed in both modes, hostFunctional true, all four effects enforced; runner wrote no record",
-              "path": "specs/065-native-claude-containment/evidence/t009-attempt5-result.md",
-              "sha256": "bd1607dc709208347304e98de6115e126b15dbbd451afb2404c67301eea480a1"
+              "command": "T009 attempts t009-20261117a/b/c launched by the owner through the root-owned launcher (sha256 4605e1fa...9c4a) at commit 3de73065 (result record)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "process enforced: PROC-01 to PROC-08 denied; PROC-06 mach-tccd and PROC-07 ptrace-sibling not applicable; earlier same-day attempts a (PROC-03 memory positive control failed under swap pressure) and b (inconclusive, attempt record expired) were not issued",
+              "path": "specs/065-native-claude-containment/evidence/t009-20261117-result.md",
+              "sha256": "accf33ba001369b0812e7fc2f381548f4c07ab1d0a3273b0a80b0f8b57253c37"
             },
             {
-              "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment, then verification of the T013 issuance on bundle t009-20261113c (T013)",
-              "limits": "Unit level with doubles plus record-level checks of the issued records; one machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-13T16:14:45Z",
-              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved; issuance-2026-11-13 verifies against the trusted hashes and every negative control refuses",
-              "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "4381709889b1c410fbc209780eb4d608e28aa448d767b4ce574cf7f018467330"
+              "command": "probe bundle summary of attempt t009-20261117c written by the T009 driver in the lab account; bundleSha256 b75020ef...dbbe recomputed by verify_bundle (T015)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "process status enforced, no failing or missing probe",
+              "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/summary.json",
+              "sha256": "b3ca0913a7cf75648c240f2f9d60bed0302fe87ea520f9fbd7e1105810cd3172"
+            },
+            {
+              "command": "record-level verification of issuance-2026-11-17.json against bundle t009-20261117c (verify_qualification, verify_host_qualification, issued_records, verify_bundle and nine negative controls) plus the targeted unit tests listed in t015.json (T015, base 3747d7d6; inputs fresh at freeze commit a768e6d3)",
+              "limits": "Record-level checks with doubles on the orchestrator account; the live environment recomputation runs in the lab account before every native session (NC-11). One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "bundle-pass-rule and verify_bundle accept",
+              "path": "specs/065-native-claude-containment/evidence/t015.json",
+              "sha256": "3468892190452a9e27c53ad99dd013b6dad7e0175aca44ca66f31e522bbf41a0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_008 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -379,18 +458,46 @@
           "id": "SC-009",
           "obtained_evidence": [
             {
-              "command": "verify_qualification and verify_host_qualification against the founder-issued records (qualification/issuance-2026-11-06.json)",
-              "limits": "Human issuance by the NC-9 issuer; expires 2026-12-06T18:07:44Z; executionAuthorization false",
-              "outcome": "both verifiers accept; edited, wrong-environment, runner-produced, other-host and partial-effect records refuse",
+              "command": "T010 verification of the first founder issuance (2026-11-06) and its runtime controls (T010)",
+              "limits": "Historical: the 2026-11-06 issuance is superseded; procedure evidence only",
+              "outcome": "issuance procedure verified; runner wrote no record; record later superseded",
               "path": "specs/065-native-claude-containment/evidence/t010.json",
               "sha256": "e18edf60e1043c0f6f3f976f23bd4990f4954f4ef7ca3a5d3319c836ae15e224"
             },
             {
-              "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment, then verification of the T013 issuance on bundle t009-20261113c (T013)",
-              "limits": "Unit level with doubles plus record-level checks of the issued records; one machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-13T16:14:45Z",
-              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved; issuance-2026-11-13 verifies against the trusted hashes and every negative control refuses",
-              "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "4381709889b1c410fbc209780eb4d608e28aa448d767b4ce574cf7f018467330"
+              "command": "founder issuance (NC-9) of 2026-11-13 on attempt t009-20261113c (T013)",
+              "limits": "Historical record, superseded on 2026-11-14; not a current qualification",
+              "outcome": "issued; trusted hashes fa59fbae...fa6a and 9022b771...847f; now superseded and refused against the current trusted hashes (t015.json negative control)",
+              "path": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json",
+              "sha256": "8aa07dd42e77560b548ac35edce05d8f975f8704eeaab4452f2a17238740d510"
+            },
+            {
+              "command": "founder issuance (NC-9, 'Issue, same terms') of 2026-11-14 on attempt t009-20261114a (T014)",
+              "limits": "Historical record, superseded on 2026-11-17; not a current qualification",
+              "outcome": "issued; trusted hashes 87c7b520...6f68 and 625bb211...36ec; now superseded and refused against the current trusted hashes (t015.json negative control)",
+              "path": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-14.json",
+              "sha256": "d70874f4fd36ddf1c43e7de497fcc40ef9537969cfc30deed990a3baa0501414"
+            },
+            {
+              "command": "founder issuance (NC-9) of 2026-11-17 on attempt t009-20261117c, sha256 33f89889...50c8 (T015)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "current issuance by the founder only (NC-9); supersedes issuance-2026-11-14.json; executionAuthorization false",
+              "path": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+              "sha256": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8"
+            },
+            {
+              "command": "founder guided question T015-ISSUE of 2026-11-17 (NET-05-CLI 5-hour delta 1 outside FD-20261114-STANDING)",
+              "limits": "Owner decision record; it does not authorize execution (executionAuthorization false)",
+              "outcome": "founder chose 'Issue, same terms'; the 2026-11-14 terms unchanged",
+              "path": "specs/065-native-claude-containment/evidence/founder-decisions-20261117.json",
+              "sha256": "ac14b67b15db9e10749add23a011b3e19979ed21e121017b09011db240913ef6"
+            },
+            {
+              "command": "record-level verification of issuance-2026-11-17.json against bundle t009-20261117c (verify_qualification, verify_host_qualification, issued_records, verify_bundle and nine negative controls) plus the targeted unit tests listed in t015.json (T015, base 3747d7d6; inputs fresh at freeze commit a768e6d3)",
+              "limits": "Record-level checks with doubles on the orchestrator account; the live environment recomputation runs in the lab account before every native session (NC-11). One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "runner-wrote-no-record true; superseded 2026-11-14, 2026-11-13 and 2026-11-06 issuances refuse against the current trusted hashes",
+              "path": "specs/065-native-claude-containment/evidence/t015.json",
+              "sha256": "3468892190452a9e27c53ad99dd013b6dad7e0175aca44ca66f31e522bbf41a0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_009 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -410,25 +517,32 @@
           "id": "SC-010",
           "obtained_evidence": [
             {
-              "command": "independent static security review of the probe catalog and backend policy (T008)",
-              "limits": "Static review, not a qualification",
-              "outcome": "34 findings, 0 critical, 4 high, dispositioned and re-checked",
+              "command": "T008 independent static security review of the probe catalog and backend policy (2026-11-01, reviewed commit 49ebe45c)",
+              "limits": "Static review by a separate Claude session, not human review; of a finite catalog at an earlier commit; not a completeness proof",
+              "outcome": "findings dispositioned as fixes in T005/T007 or recorded residuals; it qualified nothing",
               "path": "specs/065-native-claude-containment/evidence/probe-catalog-review.md",
               "sha256": "9abc938f3e3ac96038f65b1e221579fab7f6f1a86d856bab89e19477212c7d8e"
             },
             {
-              "command": "T009 attempt t009-20261106a, bundleSha256 45eee4d8...d1ce, commit 320b00c4 (result record)",
-              "limits": "One machine, OS build, CLI version and finite catalog until expiresAt; not a general isolation proof; says nothing about Codex",
-              "outcome": "32 of 32 probes passed in both modes, hostFunctional true, all four effects enforced; runner wrote no record",
-              "path": "specs/065-native-claude-containment/evidence/t009-attempt5-result.md",
-              "sha256": "bd1607dc709208347304e98de6115e126b15dbbd451afb2404c67301eea480a1"
+              "command": "T009 attempts t009-20261117a/b/c launched by the owner through the root-owned launcher (sha256 4605e1fa...9c4a) at commit 3de73065 (result record)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "every probe has a positive uncontained control and a contained outcome; 32 of 32 identical to t009-20261114a",
+              "path": "specs/065-native-claude-containment/evidence/t009-20261117-result.md",
+              "sha256": "accf33ba001369b0812e7fc2f381548f4c07ab1d0a3273b0a80b0f8b57253c37"
             },
             {
-              "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment, then verification of the T013 issuance on bundle t009-20261113c (T013)",
-              "limits": "Unit level with doubles plus record-level checks of the issued records; one machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-13T16:14:45Z",
-              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved; issuance-2026-11-13 verifies against the trusted hashes and every negative control refuses",
-              "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "4381709889b1c410fbc209780eb4d608e28aa448d767b4ce574cf7f018467330"
+              "command": "probe bundle summary of attempt t009-20261117c written by the T009 driver in the lab account; bundleSha256 b75020ef...dbbe recomputed by verify_bundle (T015)",
+              "limits": "One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "controlled true for every probe; passRuleSatisfied true",
+              "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/summary.json",
+              "sha256": "b3ca0913a7cf75648c240f2f9d60bed0302fe87ea520f9fbd7e1105810cd3172"
+            },
+            {
+              "command": "T009 attempts t009-20261113a/b/c, headless launch through launchctl asuser at commit 7d3e1986 (T013 result record)",
+              "limits": "Superseded on 2026-11-14 (environment hash moved by #1363); historical lineage only. One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "not-applicable rule extended to CRED-07 pasteboard, FS-07 mach-mdwrite and PROC-06 mach-tccd on the uncontained ABSENT code, accepted by the founder",
+              "path": "specs/065-native-claude-containment/evidence/t009-20261113-result.md",
+              "sha256": "361196787beadf16cd451502ececa0581f9cc102a6880ea1b752039956156558"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_010 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
@@ -448,18 +562,18 @@
           "id": "SC-011",
           "obtained_evidence": [
             {
-              "command": "hand-off packet for SPEC-048/T008 (T011); procedure_011 git diff --stat origin/develop -- specs/048-* specs/049-* was empty when recorded",
-              "limits": "Docs only; does not claim T008 or T004 completion; the SPEC-048 inputs of t011.json have since changed (SPEC-048 evolves), so t011.json is not bound",
-              "outcome": "packet lists the issued records, hashes, limits, expiry and open T008 items; 2026-11-13 update names the superseding T013 records",
+              "command": "hand-off packet for SPEC-048/T008, updated 2026-11-17 (T015) to open with the 2026-11-17 records",
+              "limits": "Hand-off only; SPEC-048/T008 owns its own decision; SPEC-049/T004 stays blocked",
+              "outcome": "packet names issuance-2026-11-17.json, trusted hashes 5a9f05c6...00df and f2f65ae0...7f9d and expiresAt 2026-12-17T22:19:29Z",
               "path": "specs/065-native-claude-containment/evidence/handoff-spec048-t008.md",
-              "sha256": "7326ed347a9d999aae388b9185942c17e6f999dfca95c83fb64cf477123fba9e"
+              "sha256": "68af26183dd715cca1b32274052c50a7ab0ff6d35863d103191c3b73c9dcedf4"
             },
             {
-              "command": "targeted unit tests of the touched modules after the 2026-11-13 NC-2 amendment, then verification of the T013 issuance on bundle t009-20261113c (T013)",
-              "limits": "Unit level with doubles plus record-level checks of the issued records; one machine, macOS build 26B131, Claude Code 2.1.292, Background session, valid until 2026-12-13T16:14:45Z",
-              "outcome": "778 tests OK (skipped=3); t012.json frozen, its inputs moved; issuance-2026-11-13 verifies against the trusted hashes and every negative control refuses",
-              "path": "specs/065-native-claude-containment/evidence/t013.json",
-              "sha256": "4381709889b1c410fbc209780eb4d608e28aa448d767b4ce574cf7f018467330"
+              "command": "record-level verification of issuance-2026-11-17.json against bundle t009-20261117c (verify_qualification, verify_host_qualification, issued_records, verify_bundle and nine negative controls) plus the targeted unit tests listed in t015.json (T015, base 3747d7d6; inputs fresh at freeze commit a768e6d3)",
+              "limits": "Record-level checks with doubles on the orchestrator account; the live environment recomputation runs in the lab account before every native session (NC-11). One machine (macOS 27.2.1 build 26B131), Claude Code 2.1.292, own Background session, probe catalog c8952ac3...aef5, valid until 2026-12-17T22:19:29Z; not a general isolation proof; says nothing about Codex; executionAuthorization false",
+              "outcome": "the SPEC-048/T008 driver trusts only the 2026-11-17 record (through SPEC-048 founder-decisions-20261117.json)",
+              "path": "specs/065-native-claude-containment/evidence/t015.json",
+              "sha256": "3468892190452a9e27c53ad99dd013b6dad7e0175aca44ca66f31e522bbf41a0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure_011 record: command, hashes, environment, expected and actual outcome, negative controls and limits; containment scenarios additionally bind the T009 probe bundle and the T010 human issuance record.",
