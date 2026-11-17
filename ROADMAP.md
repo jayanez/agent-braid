@@ -713,7 +713,9 @@ result** (SPEC-072 T001–T013 done and converged; on the frozen held-out set A0
 25/30, A1 APO 23/30, A2 GEPA 24/30 in Claude Code, all missing D4, so H1 is not
 supported; specification draft, human review pending); BL.3 (SPEC-073) has no
 candidate to promote from BL.2; BL.4 closed on 2026-11-14 (SPEC-074 T001–T011 done, frozen on `develop` by #1378);
-BL.5 draft. BL.0 delivered the
+BL.5 closed on 2026-11-17 (SPEC-075 T001–T013 done, frozen by #1408; export off by default,
+terms gate closed); SPEC-074 and SPEC-075 approved by the owner on 2026-11-17 (review records
+bound to `a5a7235c` and `21926de6`). BL.0 delivered the
 experimental `agent-braid lightning init|validate|status|purge` commands and
 `plugin setup --lightning`. BL.1 and BL.2 added subscription-route host runs and
 optimizer calls in the laboratory; nothing is promoted or released.

@@ -1,0 +1,80 @@
+{
+ "recordVersion": "0.1.0",
+ "feature": "SPEC-075",
+ "reviewedCommit": "21926de67ac1837e9e2a3b2cc64d4c9e0539bb7d",
+ "reviewer": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "conflictsOfInterest": "The reviewer is the project founder and owner. The review records that role explicitly; it is an internal owner decision, not independent external validation.",
+ "method": "Guided review on 2026-11-17 from a one-page packet: the thirteen requirements and their obtained evidence, the convergence findings A1-A10, the owner decisions of 2026-11-14 (E1-E5, OD-2, OD-1 deferred) and 2026-11-16 (OD-3 Q1 A and Q2 A, OD-4), and the changes since the freeze (none outside the snapshot markers).",
+ "humanReview": {
+  "decision": "approved",
+  "date": "2026-11-17",
+  "rationale": "Approve SPEC-075 as an engineering specification within its documented scope: export off by default, consented and redacted rollout input only, supervised and rollout datasets with deterministic manifests, the equal 1:1 balance per task for rollout exports, the terms gate shipped closed (OD-1 deferred, only pipeline-only fixtures export), the canary scan over the final bytes with the home-path refusal, source retention and the citing-dataset purge listing. Accepted limits as documented: the scan catches known shapes only, the home-path rule has deliberate false positives, exports are not confined to the plugin home (A8, accepted as is), redactionVersion digests the redactor's patterns only (A1), SPEC-074 behaviour is assumed (A10), and no dataset is evidence that training improves a model."
+ },
+ "milestoneClosure": {
+  "decision": "approved",
+  "date": "2026-11-17",
+  "milestone": "BL.5 — Lightning dataset export (#34)",
+  "rationale": "Confirms the BL.5 closure of 2026-11-17. This does not record any provider terms decision, permit exporting host-model output, or grant execution authority."
+ },
+ "evidence": [
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_002.json",
+   "sha256": "0f2a8659205bc0b7eba8b795054661fed714874dc266366dc88711b567be479a"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_003.json",
+   "sha256": "dd0603581d8ff2d503093547fe2597d5c34f392241a423b496953b929ae6f95e"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_004.json",
+   "sha256": "f28721fb37cfc89a85d2aed425ffdb8f6fba11fe7bc704ce4e3321d344d2d5b4"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_005.json",
+   "sha256": "0fdeb5558cb7b318b7f71849d18783dfc1df1210fb9a6394209a2306ade825b9"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_006.json",
+   "sha256": "88dc998781a9f4fb8217743223578a9ad80a1086e8f5cd998ef9eb1e12cd8ff3"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_007.json",
+   "sha256": "bee6410067d3e879634d89e8c5e68cee8ebeece414f2580df2ba485982e64c50"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_008.json",
+   "sha256": "fb08f45541572ca5b4ee4bdfb5f145f2ff266a41c0a1f5dae58336f7e1bac935"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_009.json",
+   "sha256": "6258f5ee41348a2179eaab61ea5b701b8cec267003549dbb7a9ae4ebc8f6589d"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_010.json",
+   "sha256": "97c3dbab4d516f6fd97ca6cc7020575194ad69deded5d9788dc89b3367f02f67"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_011.json",
+   "sha256": "62f3c6411438197f2959b6b578509735e3f488f3a072d100e38bb8235abff61e"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_012.json",
+   "sha256": "82b916e6ae428af08b794b6b464f2dc71e6d1e32ec188c31a2f0b860aeea6b1c"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/evidence/procedure_013.json",
+   "sha256": "719a1ede8e1d4415179ba767259e9d79afda327544f6121af3b56ca5f6f89d4a"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/reviews/owner-t001-20261114.md",
+   "sha256": "3fa50364faae85d37c525d6c665fc92cf57e3cb7f364981af8922e7b7f02cab5"
+  },
+  {
+   "path": "specs/075-lightning-dataset-export/reviews/owner-t010-20261116.md",
+   "sha256": "9986669e719619aa43c2f3fb03cb45061c30a203be56e0cd97178e0c0f47bc00"
+  }
+ ]
+}

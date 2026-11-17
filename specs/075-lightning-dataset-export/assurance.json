@@ -114,7 +114,8 @@
     "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; export is offline, opens no socket, starts no process, loads no model, is not exposed through MCP, and writes only local files.",
-  "human_review": "pending",
+  "human_review": "approved",
+  "review_record": "specs/075-lightning-dataset-export/reviews/owner-review-21926de6.json",
   "hypotheses": "None; engineering specification with no scientific claim.",
   "observation_contract": "Each export records a manifest with per-record SHA-256, source task/group/rollout/attempt IDs, consent level, redaction version, ordering key, exclusion counts, canary scan result and terms decision hash.",
   "references": [
@@ -456,5 +457,5 @@
   ],
   "scientific_limits": "Datasets are artifacts, not evidence that training improves a model; no claim is made that a dataset or its balance helps any model. Text-level merging is declared per record. Host-model output exports only after the owner's terms decision (legal, not scientific; OD-1 deferred, so none exports). The canary scan catches known shapes only. SPEC-074 behaviour is assumed, not re-proven.",
   "scope": "Export of consented, redacted Lightning traces into supervised and rollout datasets with deterministic manifests, rollout-only balance, source retention, an export.enabled gate, canary scan and a terms gate; no training.",
-  "stage": "draft"
+  "stage": "validated"
 }

@@ -109,7 +109,8 @@
     "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; no content stored or emitted without consent redacted; redaction precedes storage; System One files are read-only and never receive adapter output; no network, subprocess or MCP tool.",
-  "human_review": "pending",
+  "human_review": "approved",
+  "review_record": "specs/074-lightning-trace-consent/reviews/owner-review-a5a7235c.json",
   "hypotheses": "None; engineering specification with no scientific claim.",
   "observation_contract": "Canary corpus results per pattern class and encoding; redaction counts and scan results per record; retention sweep and purge results with injected clock; byte and mtime snapshots of read-only sources before and after.",
   "references": [
@@ -332,5 +333,5 @@
   ],
   "scientific_limits": "Engineering only. Catching the canary corpus does not prove every secret or personal datum is caught; pattern redaction has residual false negatives listed in the privacy review. Source-id pseudonyms are keyed HMAC names (one domain per kind), not anonymization: a holder of the salt can test a guessed id. The T011 convergence was repeated after #1368 and #1376 (privacy review A5-A8).",
   "scope": "Specification only: consent levels none and redacted recorded in lightning.json and confirmed by a lightning init preview; a redaction pipeline reusing the spec069 secret scan; retention (default 30, max 90 days) and purge; a standard-library port of TracerTraceToTriplet and TraceToMessages over rollouts, host transcripts, Loom and read-only System One episodes; an extension of the traces section of lightning-config.schema.json; privacy review.",
-  "stage": "draft"
+  "stage": "validated"
 }
