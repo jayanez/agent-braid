@@ -102,7 +102,7 @@ class ComponentProfileTests(unittest.TestCase):
         self.assertEqual(data["version"], 2)
 
     def test_no_class_or_effect_reaches_qualified_or_enabled(self):
-        expected = {"C1": "implemented", "C2": "implemented"}
+        expected = {"C1": "implemented", "C2": "implemented", "C5": "implemented"}
         for cls in hc.CLASSES:
             for effect in ("E0", "E1", "E2", "E3", "E4"):
                 state, blocker = hc.derive_admission(cls, effect)
@@ -118,7 +118,7 @@ class ComponentProfileTests(unittest.TestCase):
 
     def test_blocked_classes_compile_visibly_as_blocked(self):
         for cls, root in hc.ROOTS.items():
-            if cls in ("C1", "C2"):
+            if cls in ("C1", "C2", "C5"):
                 continue
             entries = [file_row(f"{root}/x.md", b"inert")]
             profile = _compile(make_inventory(entries, componentClass=cls))

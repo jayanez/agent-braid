@@ -1,12 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Offline controls for the SPEC-050/T004 allowlisted tool contracts and helpers."""
 import ast
+import inspect
+import sys
+import types
 from dataclasses import FrozenInstanceError
 from hashlib import sha256
 import json
 from pathlib import Path
 import unittest
 
+from agent_braid import harness_components as hc
 from agent_braid import harness_tools as ht
 from agent_braid.system_one import canonical, digest, freeze, thaw
 
@@ -584,6 +588,543 @@ class ToolContractTests(unittest.TestCase):
         for name in vars(ht):
             self.assertFalse(name.upper() in {"REGISTRY", "HELPERS", "TOOLS"} or
                              name.lower().startswith("register"), name)
+
+
+# --- E3 subprocess adapter (contract section 13, drafted), deterministic doubles only ------
+
+HELPER_BYTES = b"#!pinned helper bytes, never executed\n"
+HELPER_PATH = ht.HELPER_ROOT + "count-words-e3"
+REPORT = "out/report.txt"
+
+
+def make_e3_spec(**over):
+    return make_spec(**{"toolId": "count-words-e3", "effectClass": "E3", **over})
+
+
+def make_exec_spec(contract, **over):
+    value = {
+        "format": ht.EXEC_SPEC_FORMAT, "toolId": contract.tool_id,
+        "contractSha256": contract.sha256,
+        "helper": {"path": HELPER_PATH, "sha256": sha256(HELPER_BYTES).hexdigest(),
+                   "sizeBytes": len(HELPER_BYTES)},
+        "argv": [HELPER_PATH, "--label", "{label}", NOTES_PATH],
+        "env": [{"name": "LANG", "value": "C"}, {"name": "LC_ALL", "value": "C"}],
+        "limits": {"timeoutMs": 1000, "maxStdoutBytes": 256, "maxStderrBytes": 64},
+        "network": "none", "contractState": "drafted", "executionAuthorization": False}
+    value.update(over)
+    return value
+
+
+class DoubleExecutor:
+    """Deterministic stand-in for a contained child: computes, never spawns."""
+
+    def __init__(self, m, **behaviour):
+        self.m, self.b = m, behaviour
+        self.requests, self.teardowns = [], 0
+
+    def run(self, request):
+        self.requests.append(request)
+        if "raise" in self.b:
+            raise self.b["raise"]
+        label = request.argv[2]
+        words = len(request.inputs[NOTES_PATH].split())
+        artifacts = {REPORT: f"{label}:{words}".encode()}
+        artifacts.update(self.b.get("extra", {}))
+        for path in self.b.get("drop", ()):
+            artifacts.pop(path)
+        stdout = self.b.get("stdout", json.dumps({"count": words, "ok": True}).encode())
+        return self.m.ExecOutcome(
+            exit_code=self.b.get("exit_code", 0), stdout=stdout,
+            stderr=self.b.get("stderr", b""), artifacts=artifacts,
+            timed_out=self.b.get("timed_out", False),
+            network_attempts=self.b.get("network", 0))
+
+    def teardown(self, request):
+        self.teardowns += 1
+        if "teardown_raise" in self.b:
+            raise RuntimeError("teardown failed")
+        return {"processesRemaining": self.b.get("left", 0), "artifactsRemoved": 1}
+
+
+def e3_checker(data, output, artifacts):
+    return (output == {"count": 3, "ok": True} and
+            artifacts[REPORT] == f"{data['label']}:3".encode())
+
+
+def mutant(old, new):
+    """Load a separate copy of harness_tools with one guard textually disabled."""
+    source = MODULE.read_text(encoding="utf-8")
+    assert source.count(old) == 1, old
+    name = "agent_braid._harness_tools_mutant"
+    module = types.ModuleType(name)
+    module.__package__ = "agent_braid"
+    sys.modules[name] = module
+    try:
+        exec(compile(source.replace(old, new), str(MODULE), "exec"), module.__dict__)
+    finally:
+        del sys.modules[name]
+    return module
+
+
+class Scenario:
+    """One E3 run built entirely from the records of module ``m``."""
+
+    def __init__(self, m=ht, spec=None, exec_over=None, clock=None, **behaviour):
+        spec = spec or make_e3_spec()
+        self.m = m
+        self.contract = m.compile_contract(
+            json.dumps(spec).encode(),
+            expected_input_sha256=sha256(canonical(spec)).hexdigest())
+        self.allow = m.compile_allowlist([self.contract])
+        value = make_exec_spec(self.contract, **(exec_over or {}))
+        self.record = m.compile_exec(json.dumps(value).encode(), contract=self.contract,
+                                     expected_input_sha256=sha256(canonical(value)).hexdigest())
+        self.executor = DoubleExecutor(m, **behaviour)
+        self.clock = clock or FakeClock(step=1)
+
+    def run(self, label="notes", **over):
+        kwargs = {"exec_record": self.record, "executor": self.executor,
+                  "checker": e3_checker, "files": {NOTES_PATH: NOTES}, "clock": self.clock}
+        kwargs.update(over)
+        return self.m.run_helper(self.allow, self.contract.tool_id, {"label": label}, **kwargs)
+
+
+class SubprocessAdapterTests(unittest.TestCase):
+    def refuses(self, reason, fn, *args, **kwargs):
+        with self.assertRaises(ht.ProfileError) as caught:
+            fn(*args, **kwargs)
+        self.assertEqual(caught.exception.reason, reason)
+
+    def mutation_accepts(self, old, new, build, reason):
+        """Mutation control: with the guard removed, the same attack is no longer refused for it.
+
+        ``build(module)`` returns the attack as a zero-argument callable. The control shows
+        that the matching negative test can fail, so it does not pass by construction.
+        """
+        attack = build(mutant(old, new))
+        try:
+            attack()
+        except ht.ProfileError as exc:
+            self.assertNotEqual(exc.reason, reason)
+
+    # --- positive ----------------------------------------------------------
+    def test_pinned_helper_runs_against_a_double_with_check_and_teardown(self):
+        s = Scenario()
+        result = s.run()
+        self.assertEqual(thaw(result.output), {"count": 3, "ok": True})
+        self.assertEqual(result.exec_sha256, s.record.sha256)
+        self.assertEqual(result.artifacts[REPORT], sha256(b"notes:3").hexdigest())
+        self.assertEqual(thaw(result.teardown),
+                         {"closed": True, "artifactsRemoved": 1, "processesRemaining": 0})
+        self.assertIs(result.to_dict()["executionAuthorization"], False)
+        self.assertEqual(result.to_dict()["execSha256"], s.record.sha256)
+        (request,) = s.executor.requests
+        self.assertEqual(request.argv, (HELPER_PATH, "--label", "notes", NOTES_PATH))
+        self.assertEqual(request.env, (("LANG", "C"), ("LC_ALL", "C")))
+        self.assertEqual(dict(request.inputs), {NOTES_PATH: NOTES})
+        self.assertEqual(request.writes, (REPORT,))
+        self.assertEqual((request.network, request.timeout_ms), (False, 1000))
+        self.assertEqual(request.helper_sha256, sha256(HELPER_BYTES).hexdigest())
+        self.assertEqual(s.executor.teardowns, 1)
+
+    def test_integer_fields_substitute_as_whole_arguments(self):
+        spec = make_e3_spec(input=[{"name": "label", "type": "string", "max": 32},
+                                   {"name": "n", "type": "integer", "max": 100}])
+        s = Scenario(spec=spec, exec_over={"argv": [HELPER_PATH, "{label}", "{n}"]})
+
+        class Two(DoubleExecutor):
+            def run(self, request):
+                self.requests.append(request)
+                return self.m.ExecOutcome(0, b'{"count": 3, "ok": true}',
+                                          artifacts={REPORT: b"notes:3"})
+        s.executor = Two(ht)
+        result = ht.run_helper(s.allow, s.contract.tool_id, {"label": "notes", "n": 7},
+                               exec_record=s.record, executor=s.executor, checker=e3_checker,
+                               files={NOTES_PATH: NOTES}, clock=FakeClock(1))
+        self.assertEqual(s.executor.requests[0].argv, (HELPER_PATH, "notes", "7"))
+        self.assertEqual(thaw(result.output)["count"], 3)
+        self.refuses("argument-injection", ht.run_helper, s.allow, s.contract.tool_id,
+                     {"label": "notes", "n": -7}, exec_record=s.record, executor=s.executor,
+                     checker=e3_checker, files={NOTES_PATH: NOTES})
+
+    def test_exec_record_is_drafted_bound_and_grants_nothing(self):
+        s = Scenario()
+        data = thaw(s.record.data)
+        self.assertEqual((data["format"], data["contractState"], data["network"]),
+                         (ht.EXEC_FORMAT, "drafted", "none"))
+        self.assertIs(data["executionAuthorization"], False)
+        raw = canonical(data)
+        self.assertEqual(ht.verify_exec(raw, expected_sha256=s.record.sha256,
+                                        contract=s.contract).sha256, s.record.sha256)
+        self.refuses("exec-drift", ht.verify_exec, raw, expected_sha256="0" * 64,
+                     contract=s.contract)
+        self.refuses("input-drift", ht.compile_exec, raw, expected_input_sha256="0" * 64,
+                     contract=s.contract)
+        with self.assertRaises(FrozenInstanceError):
+            s.record.data = {}  # type: ignore[misc]
+
+    def test_c5_admission_agrees_with_the_component_registry(self):
+        for effect in ("E0", "E1", "E2", "E3", "E4"):
+            state, blocker = hc.derive_admission("C5", effect)
+            self.assertEqual(ht._admission(effect), {"state": state, "blocker": blocker})
+        self.assertEqual(hc.derive_admission("C5", "E2"), ("implemented", None))
+        self.assertEqual(hc.derive_admission("C5", "E3"), ("blocked", "effects-not-adopted"))
+        self.assertEqual(Scenario().contract.data["admission"]["state"], "blocked")
+
+    # --- the real executor refuses before anything starts ------------------
+    def test_contained_executor_refuses_every_unqualified_helper(self):
+        self.assertEqual(ht.QUALIFIED_HELPERS, frozenset())
+        self.assertIsInstance(ht.QUALIFIED_HELPERS, frozenset)
+        for fn in (ht.run_helper, ht.ContainedExecutor.run, ht.ContainedExecutor):
+            params = set(inspect.signature(fn).parameters)
+            self.assertFalse(params & {"qualified", "pins", "qualified_helpers", "allow"}, fn)
+        s = Scenario()
+        self.refuses("helper-not-qualified", s.run, executor=ht.ContainedExecutor())
+
+    def test_mutation_control_pinned_helper_reaches_only_the_containment_refusal(self):
+        pin = repr({(HELPER_PATH, sha256(HELPER_BYTES).hexdigest())})
+        m = mutant("QUALIFIED_HELPERS: frozenset[tuple[str, str]] = frozenset()",
+                   f"QUALIFIED_HELPERS: frozenset[tuple[str, str]] = frozenset({pin})")
+        self.refuses("containment-not-wired", Scenario(m).run, executor=m.ContainedExecutor())
+
+    def test_double_cannot_spoof_a_containment_refusal(self):
+        self.refuses("helper-failed",
+                     Scenario(**{"raise": ht.ProfileError("helper-not-qualified")}).run)
+        s = Scenario(**{"raise": OSError("boom")})
+        self.refuses("helper-failed", s.run)
+        self.assertEqual(s.executor.teardowns, 1)
+
+    # --- injection and launch inputs ----------------------------------------
+    def test_argument_injection_is_refused_before_the_executor(self):
+        for label in ("-rf", "--output=/etc/x", "", "a/../b", "a\x00b", "a\nb", "a‮b"):
+            with self.subTest(label=label):
+                s = Scenario()
+                self.refuses("argument-injection", s.run, label=label)
+                self.assertEqual((s.executor.requests, s.executor.teardowns), ([], 0))
+
+    def test_mutation_control_argument_injection(self):
+        self.mutation_accepts(
+            '_require(type(text) is str and text != "" and not text.startswith("-") and\n'
+            '             ".." not in text and _printable(text), "argument-injection")', "pass",
+            lambda m: lambda: Scenario(m).run(label="-rf"), "argument-injection")
+
+    def test_environment_is_literal_and_denies_loader_and_secret_names(self):
+        for name in ("DYLD_INSERT_LIBRARIES", "LD_PRELOAD", "PYTHONPATH", "NODE_OPTIONS",
+                     "HTTPS_PROXY", "API_KEY", "GH_TOKEN", "AWS_SECRET", "OAUTH_X"):
+            with self.subTest(name=name):
+                self.refuses("env-denied", Scenario,
+                             exec_over={"env": [{"name": name, "value": "x"}]})
+        for env in ([{"name": "lang", "value": "C"}], [{"name": "A", "value": "\x1b"}],
+                    [{"name": "A", "value": "é"}],
+                    [{"name": "B", "value": "1"}, {"name": "A", "value": "1"}],
+                    [{"name": f"V{i}", "value": "1"} for i in range(9)],
+                    [{"name": "A", "value": "x" * 1100}], [{"name": "A"}]):
+            with self.subTest(env=env[:1]):
+                self.refuses("invalid-env", Scenario, exec_over={"env": env})
+
+    def test_mutation_control_env_deny(self):
+        self.mutation_accepts(
+            "not name.startswith(_ENV_DENY_PREFIX) and\n"
+            "                 not any(part in name for part in _ENV_DENY_PART)", "True",
+            lambda m: lambda: Scenario(m, exec_over={"env": [
+                {"name": "DYLD_INSERT_LIBRARIES", "value": "x"}]}), "env-denied")
+
+    def test_argv_template_and_helper_pin_are_strict(self):
+        for argv in ([HELPER_PATH, "{missing}"], ["/bin/sh", "-c", "x"], [HELPER_PATH, "a{b"],
+                     [HELPER_PATH, "{label}x"], [], [HELPER_PATH] + ["a"] * 32,
+                     [HELPER_PATH, ""], [HELPER_PATH, "a\x00"]):
+            with self.subTest(argv=argv[:3]):
+                self.refuses("invalid-argv", Scenario, exec_over={"argv": argv})
+        for path in ("/usr/bin/false", ht.HELPER_ROOT + "../x", ht.HELPER_ROOT + "A",
+                     ht.HELPER_ROOT + "sub/x", "helpers/x"):
+            with self.subTest(path=path):
+                helper = {"path": path, "sha256": sha256(HELPER_BYTES).hexdigest(),
+                          "sizeBytes": 1}
+                self.refuses("invalid-helper", Scenario,
+                             exec_over={"helper": helper, "argv": [path]})
+        self.refuses("invalid-helper", Scenario, exec_over={"helper": {
+            "path": HELPER_PATH, "sha256": "x" * 64, "sizeBytes": 1}})
+        self.refuses("invalid-helper", Scenario, exec_over={"helper": {
+            "path": HELPER_PATH, "sha256": sha256(HELPER_BYTES).hexdigest(), "sizeBytes": 0}})
+
+    def test_argv_byte_budget_is_enforced_after_substitution(self):
+        spec = make_e3_spec(input=[{"name": "label", "type": "string", "max": 4096}],
+                            limits={"maxInputBytes": 8192, "maxOutputBytes": 256, "maxOps": 4,
+                                    "maxWriteBytes": 64, "timeoutMs": 1000})
+        s = Scenario(spec=spec, exec_over={"argv": [HELPER_PATH] + ["{label}"] * 2})
+        self.refuses("argv-budget-exceeded", s.run, label="a" * 2100)
+        self.assertEqual(s.executor.requests, [])
+
+    def test_exec_limits_and_flags_are_bounded(self):
+        for limits in ({"timeoutMs": 2000, "maxStdoutBytes": 256, "maxStderrBytes": 64},
+                       {"timeoutMs": 1000, "maxStdoutBytes": 512, "maxStderrBytes": 64},
+                       {"timeoutMs": 1000, "maxStdoutBytes": 256, "maxStderrBytes": 20000},
+                       {"timeoutMs": 0, "maxStdoutBytes": 256, "maxStderrBytes": 64}):
+            with self.subTest(limits=limits):
+                self.refuses("limits-exceed-ceiling", Scenario, exec_over={"limits": limits})
+        self.refuses("invalid-limits", Scenario, exec_over={"limits": {"timeoutMs": 1}})
+        self.refuses("unsupported-profile", Scenario, exec_over={"contractState": "adopted"})
+        self.refuses("unsupported-profile", Scenario, exec_over={"executionAuthorization": True})
+        self.refuses("network-not-allowed", Scenario, exec_over={"network": "loopback"})
+        self.refuses("unsupported-version", Scenario,
+                     exec_over={"format": "braid-harness-exec-spec/v0.2"})
+
+    def test_mutation_control_network_declaration(self):
+        self.mutation_accepts('_require(value["network"] == "none", "network-not-allowed")',
+                              "pass", lambda m: lambda: Scenario(m, exec_over={
+                                  "network": "loopback"}), "network-not-allowed")
+
+    def test_exec_record_must_bind_its_own_e3_contract(self):
+        s = Scenario()
+        self.refuses("undeclared-effect", ht.parse_exec, s.record.canonical_bytes,
+                     contract=compile_spec(make_spec()))
+        data = thaw(s.record.data)
+        data["contractSha256"] = "0" * 64
+        self.refuses("contract-set-mismatch", ht.parse_exec, canonical(data),
+                     contract=s.contract)
+        for spec, tool in ((make_spec(), "count-words"),
+                           (make_e3_spec(effectClass="E4"), "count-words-e3")):
+            with self.subTest(effect=spec["effectClass"]):
+                self.refuses("effect-blocked", ht.run_helper, allowlist_for(spec), tool,
+                             {"label": "x"}, exec_record=s.record, executor=s.executor,
+                             checker=e3_checker, files={NOTES_PATH: NOTES})
+        self.refuses("tool-not-allowlisted", ht.run_helper, s.allow, "other", {"label": "x"},
+                     exec_record=s.record, executor=s.executor, checker=e3_checker,
+                     files={NOTES_PATH: NOTES})
+        self.assertEqual(s.executor.requests, [])
+
+    def test_e3_contract_still_never_runs_in_process(self):
+        s = Scenario()
+        self.refuses("effect-blocked", ht.run_tool, s.allow, s.contract.tool_id,
+                     {"label": "x"}, helpers={s.contract.tool_id: helper},
+                     checkers={s.contract.tool_id: checker}, files={NOTES_PATH: NOTES})
+
+    def test_forged_exec_view_is_refused(self):
+        s = Scenario()
+        forged = ht.HelperExec(freeze({**thaw(s.record.data), "env": []}),
+                               s.record.canonical_bytes)
+        self.refuses("exec-drift", s.run, exec_record=forged)
+        self.refuses("invalid-exec", s.run, exec_record=thaw(s.record.data))
+        self.assertEqual(s.executor.requests, [])
+
+    def test_mutation_control_exec_view_drift(self):
+        def build(m):
+            s = Scenario(m)
+            forged = m.HelperExec(freeze({**thaw(s.record.data), "env": []}),
+                                  s.record.canonical_bytes)
+            return lambda: s.run(exec_record=forged)
+        self.mutation_accepts(
+            '_require(canonical(exec_record.data) == record.canonical_bytes, "exec-drift")',
+            "pass", build, "exec-drift")
+
+    def test_input_resources_must_match_the_inventory(self):
+        s = Scenario()
+        self.refuses("resource-drift", s.run, files={NOTES_PATH: b"x" * len(NOTES)})
+        self.refuses("resource-missing", s.run, files={})
+        self.assertEqual(s.executor.requests, [])
+
+    def test_mutation_control_resource_drift(self):
+        def build(m):
+            s = Scenario(m)
+            return lambda: s.run(files={NOTES_PATH: b"x" * len(NOTES)},
+                                 checker=lambda *_: True)
+        self.mutation_accepts(
+            '_require(len(item) == row["sizeBytes"] and sha256(item).hexdigest() == '
+            'row["sha256"],\n                 "resource-drift")', "pass", build,
+            "resource-drift")
+
+    # --- outcome guards ----------------------------------------------------
+    def test_network_attempt_is_refused_and_torn_down(self):
+        s = Scenario(network=1)
+        self.refuses("network-attempted", s.run)
+        self.assertEqual(s.executor.teardowns, 1)
+
+    def test_mutation_control_network_attempt(self):
+        self.mutation_accepts('_require(outcome.network_attempts == 0, "network-attempted")',
+                              "pass", lambda m: Scenario(m, network=1).run,
+                              "network-attempted")
+
+    def test_timeout_reported_or_measured_is_refused(self):
+        s = Scenario(timed_out=True)
+        self.refuses("timeout", s.run)
+        self.assertEqual(s.executor.teardowns, 1)
+        slow = Scenario(clock=FakeClock(step=2_000_000_000))
+        self.refuses("timeout", slow.run)
+        self.assertEqual(slow.executor.teardowns, 1)
+
+    def test_mutation_control_timeout(self):
+        self.mutation_accepts(
+            '_require(not outcome.timed_out and elapsed_ns <= request.timeout_ms * 1_000_000, '
+            '"timeout")', "pass",
+            lambda m: Scenario(m, clock=FakeClock(step=2_000_000_000)).run, "timeout")
+
+    def test_killed_or_failing_child_is_refused(self):
+        self.refuses("helper-killed", Scenario(exit_code=None).run)
+        s = Scenario(exit_code=3)
+        self.refuses("helper-failed", s.run)
+        self.assertEqual(s.executor.teardowns, 1)
+
+    def test_mutation_control_exit_code(self):
+        self.mutation_accepts('_require(outcome.exit_code == 0, "helper-failed")', "pass",
+                              lambda m: Scenario(m, exit_code=3).run, "helper-failed")
+
+    def test_unexpected_artifact_is_refused(self):
+        for extra in ({"out/other.txt": b"x"}, {"../escape.txt": b"x"},
+                      {"/tmp/x": b"x"}, {NOTES_PATH: b"x"}, {"OUT/report.txt": b"x"}):
+            with self.subTest(extra=extra):
+                s = Scenario(extra=extra)
+                self.refuses("unexpected-artifact", s.run)
+                self.assertEqual(s.executor.teardowns, 1)
+        self.refuses("invalid-artifact", Scenario(extra={REPORT: "text"}).run)
+
+    def test_mutation_control_unexpected_artifact(self):
+        self.mutation_accepts(
+            '_require(type(path) is str and path in request.writes, "unexpected-artifact")',
+            "pass", lambda m: Scenario(m, extra={"out/other.txt": b"x"}).run,
+            "unexpected-artifact")
+
+    def test_missing_artifact_is_refused(self):
+        self.refuses("artifact-missing", Scenario(drop=(REPORT,)).run)
+
+    def test_mutation_control_missing_artifact(self):
+        def build(m):
+            s = Scenario(m, drop=(REPORT,))
+            return lambda: s.run(checker=lambda *_: True)
+        self.mutation_accepts(
+            '_require(set(artifacts) == set(request.writes), "artifact-missing")', "pass",
+            build, "artifact-missing")
+
+    def test_write_budget_applies_to_reported_artifacts(self):
+        self.refuses("write-budget-exceeded", Scenario(extra={REPORT: b"x" * 65}).run)
+
+    def test_output_and_stderr_are_bounded_and_typed(self):
+        self.refuses("output-budget-exceeded", Scenario(stdout=b" " * 257).run)
+        self.refuses("stderr-budget-exceeded", Scenario(stderr=b"e" * 65).run)
+        for stdout in (b"not json", b'{"count": 3}', b'{"count": "3", "ok": true}',
+                       b'{"count": 3, "ok": true, "extra": 1}', b"[]"):
+            with self.subTest(stdout=stdout):
+                self.refuses("invalid-output", Scenario(stdout=stdout).run)
+        self.refuses("output-budget-exceeded",
+                     Scenario(stdout=b'{"count": 1001, "ok": true}').run)
+
+    def test_mutation_control_stdout_budget(self):
+        big = json.dumps({"count": 3, "ok": True}).encode() + b" " * 300
+        self.mutation_accepts(
+            '_require(len(outcome.stdout) <= request.max_stdout_bytes, '
+            '"output-budget-exceeded")', "pass", lambda m: Scenario(m, stdout=big).run,
+            "output-budget-exceeded")
+
+    def test_mutation_control_stderr_budget(self):
+        self.mutation_accepts(
+            '_require(len(outcome.stderr) <= request.max_stderr_bytes, '
+            '"stderr-budget-exceeded")', "pass", lambda m: Scenario(m, stderr=b"e" * 65).run,
+            "stderr-budget-exceeded")
+
+    def test_malformed_outcome_is_refused(self):
+        class Raw(DoubleExecutor):
+            def run(self, request):
+                return {"exit_code": 0}
+        s = Scenario()
+        s.executor = Raw(ht)
+        self.refuses("invalid-outcome", s.run)
+        self.assertEqual(s.executor.teardowns, 1)
+        self.refuses("invalid-outcome", Scenario(network=True).run)
+
+    # --- checker and teardown ----------------------------------------------
+    def test_checker_is_mandatory_distinct_and_exactly_true(self):
+        s = Scenario()
+        self.refuses("checker-not-independent", s.run, checker=s.executor.run)
+        self.refuses("checker-missing", s.run, checker=None)
+        self.refuses("check-failed", s.run, checker=lambda *_: 1)
+        self.refuses("check-failed", s.run, checker=lambda *_: False)
+        self.refuses("checker-raised", s.run, checker=lambda *_: 1 / 0)
+        self.refuses("executor-missing", s.run, executor=object())
+        self.assertEqual(s.executor.teardowns, 3)
+
+    def test_mutation_control_checker_independence(self):
+        def build(m):
+            s = Scenario(m)
+            return lambda: s.run(checker=s.executor.run)
+        self.mutation_accepts(
+            '_require(checker is not executor and checker != executor.run, '
+            '"checker-not-independent")', "pass", build, "checker-not-independent")
+
+    def test_teardown_leftovers_or_failures_are_refused(self):
+        self.refuses("teardown-incomplete", Scenario(left=1).run)
+        self.refuses("teardown-incomplete", Scenario(teardown_raise=True).run)
+        self.refuses("teardown-incomplete", Scenario(left=True).run)
+        # A failed run still tears down, and a leftover process outranks the run failure.
+        s = Scenario(exit_code=3, left=2)
+        self.refuses("teardown-incomplete", s.run)
+        self.assertEqual(s.executor.teardowns, 1)
+
+    def test_mutation_control_teardown(self):
+        self.mutation_accepts('receipt["processesRemaining"] == 0 and ', "",
+                              lambda m: Scenario(m, left=1).run, "teardown-incomplete")
+
+    def test_mutation_control_helper_root(self):
+        path = "/usr/bin/false"
+        helper = {"path": path, "sha256": sha256(HELPER_BYTES).hexdigest(), "sizeBytes": 1}
+        self.mutation_accepts(
+            "path.startswith(HELPER_ROOT) and\n"
+            "             _HELPER_NAME.fullmatch(path[len(HELPER_ROOT):]) is not None", "True",
+            lambda m: lambda: Scenario(m, exec_over={"helper": helper, "argv": [path]}),
+            "invalid-helper")
+
+    def test_mutation_control_argv_budget(self):
+        spec = make_e3_spec(input=[{"name": "label", "type": "string", "max": 4096}],
+                            limits={"maxInputBytes": 8192, "maxOutputBytes": 256, "maxOps": 4,
+                                    "maxWriteBytes": 64, "timeoutMs": 1000})
+
+        def build(m):
+            s = Scenario(m, spec=spec, exec_over={"argv": [HELPER_PATH] + ["{label}"] * 2})
+            return lambda: s.run(label="a" * 2100, checker=lambda *_: True)
+        self.mutation_accepts(
+            '<= EXEC_CEILINGS["maxArgBytes"],\n             "argv-budget-exceeded")',
+            '<= 10 ** 9, "argv-budget-exceeded")', build, "argv-budget-exceeded")
+
+    def test_mutation_control_write_budget(self):
+        def build(m):
+            s = Scenario(m, extra={REPORT: b"x" * 65})
+            return lambda: s.run(checker=lambda *_: True)
+        self.mutation_accepts(
+            '_require(len(item) <= MAX_WRITE_FILE and total <= '
+            'contract.data["limits"]["maxWriteBytes"],\n                 '
+            '"write-budget-exceeded")', "pass", build, "write-budget-exceeded")
+
+    def test_mutation_control_e3_only(self):
+        def build(m):
+            s = Scenario(m)
+            allow = m.compile_allowlist([m.compile_contract(
+                json.dumps(make_spec()).encode(),
+                expected_input_sha256=sha256(canonical(make_spec())).hexdigest())])
+            return lambda: m.run_helper(allow, "count-words", {"label": "x"},
+                                        exec_record=s.record, executor=s.executor,
+                                        checker=e3_checker, files={NOTES_PATH: NOTES})
+        self.mutation_accepts(
+            '_require(contract.data["effectClass"] == "E3", "effect-blocked")', "pass", build,
+            "effect-blocked")
+
+    def test_mutation_control_checker_verdict(self):
+        self.mutation_accepts('_require(verdict is True, "check-failed")\n        input_sha, '
+                              'output_sha = digest(input_value), digest(output)\n        '
+                              'artifact_hashes = {p: sha256(b).hexdigest() for p, b in '
+                              'artifacts.items()}\n    finally:\n        removed = _teardown',
+                              'input_sha, output_sha = digest(input_value), digest(output)\n'
+                              '        artifact_hashes = {p: sha256(b).hexdigest() for p, b in '
+                              'artifacts.items()}\n    finally:\n        removed = _teardown',
+                              lambda m: lambda: Scenario(m).run(checker=lambda *_: 1),
+                              "check-failed")
+
+    def test_mutation_control_killed_child(self):
+        self.mutation_accepts('_require(outcome.exit_code is not None, "helper-killed")',
+                              "pass", lambda m: Scenario(m, exit_code=None).run,
+                              "helper-killed")
+
+    def test_mutants_are_isolated_from_the_real_module(self):
+        mutant('_require(outcome.network_attempts == 0, "network-attempted")', "pass")
+        self.refuses("network-attempted", Scenario(network=1).run)
+        self.assertNotIn("agent_braid._harness_tools_mutant", sys.modules)
 
 
 if __name__ == "__main__":

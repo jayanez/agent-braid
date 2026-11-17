@@ -191,7 +191,7 @@ untrusted data; instruction-like content cannot alter policy.
 | E0 | Inert text or ordering inside the owned laboratory | Offline, ADR 0027 |
 | E1 | Bounded reads from positive inventories | Offline, ADR 0027 |
 | E2 | Writes to a new private owned laboratory destination | Offline, ADR 0027 |
-| E3 | Child process or deterministic helper execution | Blocked: needs adopted effect contract plus qualified containment |
+| E3 | Child process or deterministic helper execution | Blocked: needs adopted effect contract plus qualified containment. The E3 contract is **drafted, not adopted** (section 13, amendment v0.2-draft) |
 | E4 | Network or provider/model session | Blocked: needs admission, zero-spend route, quota gate (section 6) |
 | E5 | Host or global configuration, authorities, permission issuers, acceptance verifiers, unrelated workspaces | Excluded for every profile |
 
@@ -218,7 +218,7 @@ waived by this freeze.
 | C2 experience | implemented (quarantine) | blocked, as C1 | no | Curation (050/T008) after T003; no unreviewed semantic rewrite becomes active. |
 | C3 skills, lazy loading | planned (T003) | blocked | no | Inert-text offline loading admissible once T003 passes; executable references stay blocked. |
 | C4 tool guidance | planned (T004) | blocked | no | Text only until C5 is admitted. |
-| C5 helpers/tools | planned (T004) | blocked | no | **Blocked**: native effects need SPEC-048/T008 verdict plus an adopted E3 effect contract. |
+| C5 helpers/tools | implemented for E0 to E2 (T004, `harness_tools`); E3 adapter exercised only against deterministic doubles (amendment v0.2-draft) | blocked | no | **Blocked** for E3 and E4: native effects need the SPEC-048/T008 verdict, adoption of the section 13 E3 contract and a SPEC-065 re-qualification that pins each helper. E0 to E2 are admitted offline only, as for C1 and C2. |
 | C6 hooks | planned (T005) | **blocked from the start** | no | No containment qualification; Codex not installed. Unsupported events stay unavailable. |
 | C7 plugins / tool loops | planned (T005) | **blocked from the start** | no | Same blocker as C6; syntax acceptance is not qualification. |
 | C8 delegated roles, provider-native delegation | planned (T006) | **blocked from the start** | no | Same blocker; provider-native delegation needs its own qualified profile. |
@@ -264,6 +264,7 @@ evidence remains `evidence/t001.json` with obtained evidence stated there.
 | Version | Date | Change |
 |---|---|---|
 | v0.1 | 2026-11-08 | First frozen design replacing the 13-line draft; SPEC-049/T005 open. |
+| v0.2-draft | 2026-11-17 | Owner decision E1 (2026-11-16, option B): section 13 drafts the E3 subprocess effect contract; section 7 E3 row and section 8 C5 row point to it, and the C5 row records the offline E0 to E2 implementation. **Drafted, not adopted**: v0.1 stays the adopted frozen design, no section 6 limit changes, E4 stays blocked. |
 
 ## 12. Open questions (non-blocking)
 
@@ -273,3 +274,51 @@ evidence remains `evidence/t001.json` with obtained evidence stated there.
 4. Pinned hash for `core/prompts.py` (absent from source-identity.json) before C3 reuse, and a fit review of `core/proposer.py` before C8 reuse.
 5. ADR numbering at adoption: `docs/adr/` already holds a Braid Lightning ADR
    numbered 0039, and the proposal's "next available" note is out of date.
+
+## 13. Amendment v0.2-draft: E3 subprocess effect contract (drafted, not adopted)
+
+Status: **drafted 2026-11-17, not adopted**, under owner decision E1 of 2026-11-16
+([record](../owner-decisions-20261116.md), option B of the
+[decision packet](../effect-contract-decision.md)). It grants nothing, changes no
+containment and no section 6 limit, and every record keeps
+`executionAuthorization=false`. Adoption is a separate record. Until then a helper
+never runs natively, and the offline adapter in `agent_braid/harness_tools.py` is
+exercised only against deterministic doubles.
+
+**Scope.** E3 covers one child process that runs one pinned, deterministic helper
+for one allowlisted C5 tool contract. E4 (network, provider or model session) stays
+blocked and is out of scope: a helper never opens a network connection or a model
+session.
+
+**Records.** An E3 helper needs two records, both strict bounded JSON as in section 5:
+
+1. a C5 tool contract (`braid-harness-tool/v0.1`) with `effectClass` `E3`, its typed
+   input and output schemas, its positive read inventory and its declared private
+   `out/` writes, listed in a tool allowlist (`braid-harness-toolset/v0.1`); and
+2. an exec record (`braid-harness-exec/v0.1`) bound to that contract by full SHA-256.
+   It pins the helper by absolute path under `/usr/local/libexec/braid/helpers/`,
+   SHA-256 and size, and states an argv template, a literal environment, the limits
+   below, `network: none` and `contractState: drafted`.
+
+**Rules.**
+
+| Rule | Drafted value |
+|---|---|
+| Helper allow-list | Exec only for a helper whose `(path, sha256)` pair is in the module constant `QUALIFIED_HELPERS`, which is empty. Only a SPEC-065 re-qualification that adds the pair to the containment exec allow-list (NC-8) may fill it. It is a constant, never a parameter, and never a global registration (section 9). |
+| Argv | At most 32 elements and 4096 bytes in total. `argv[0]` is the pinned path. Each other element is a literal or exactly one whole-element `{field}` placeholder for a string or integer input field. No shell. A substituted value may not be empty, start with `-`, contain `..` or any control or format character. |
+| Environment | Literal only, never inherited and never taken from input. At most 8 entries and 1024 bytes. Names are upper-case identifiers; loader, interpreter, proxy and credential-like names (`DYLD_`, `LD_`, `PYTHON`, `NODE_`, `*KEY*`, `*TOKEN*`, `*SECRET*`, `*PASSWORD*`, `*CREDENTIAL*`, `*AUTH*`, `*PROXY*`) refuse. |
+| Timeout | At most 10 000 ms and at most the tool contract's `timeoutMs`. The adapter measures wall time on its own clock as well as the executor's report; either exceeding the limit refuses with `timeout`. A killed or non-zero child refuses. |
+| Output | stdout at most 64 KiB, parsed as strict JSON and typed against the contract's output schema; stderr at most 16 KiB and never parsed. |
+| Network | None. Any network attempt the executor reports refuses with `network-attempted`; enforcement belongs to the qualified containment, not the adapter. |
+| Writes | Only the contract's declared `out/` paths in a private destination. Any other file refuses with `unexpected-artifact`, a missing one with `artifact-missing`; the section 6 write ceilings apply. |
+| Reads | The helper receives only inventoried inputs whose bytes match the declared SHA-256 and size. |
+| Checker | Mandatory and distinct from the helper and the executor; it must return exactly `True` for the validated input, output and artifacts. |
+| Teardown | Always runs, also after a refusal. The executor must report zero remaining processes; anything else refuses with `teardown-incomplete`. |
+| Containment | A real helper runs only inside the SPEC-065 qualified containment (dedicated `braidlab` user, deny-default `sandbox-exec`, exec allow-list, rlimits), never in the operator account and never from an MCP tool. Per-class CPU, RSS and disk caps (open question 2) come from that profile's rlimits. |
+
+**Path to adoption.** After SPEC-049/T014, a separate SPEC-065 re-qualification adds
+the pinned helpers to the exec allow-list. It is light only under
+FD-20261114-STANDING, which holds until HAR.1 closes or 2027-01-31. One contained
+helper run then becomes the T004 evidence, and a separate adoption record moves this
+section from drafted to adopted. Withdrawing the draft before that re-qualification
+needs only a versioned amendment, because nothing native depends on it.
