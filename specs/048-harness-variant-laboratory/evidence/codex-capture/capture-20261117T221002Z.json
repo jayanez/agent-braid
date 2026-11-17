@@ -1,0 +1,246 @@
+{
+  "argv": [
+    "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+    "exec",
+    "--json",
+    "--ephemeral",
+    "-s",
+    "read-only",
+    "--skip-git-repo-check",
+    "--ignore-user-config",
+    "--ignore-rules",
+    "--color",
+    "never",
+    "-c",
+    "approval_policy=\"never\"",
+    "<workdir>",
+    "Run the shell command `ls` in the current directory, then reply with only the number of entries it listed. Do not modify anything."
+  ],
+  "auth": "existing-login (ChatGPT, isolated CODEX_HOME)",
+  "binary": {
+    "login": "Logged in using ChatGPT",
+    "path": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex",
+    "sha256": "3ea20787e106af94573d3d6c19480aed93a1334b0dd32b6b04e2f780ce82cf4b",
+    "version": "codex-cli 0.169.0-alpha.11.1"
+  },
+  "capturedAt": "20261117T221002Z",
+  "executionAuthorization": false,
+  "fixture": {
+    "README.txt": "9106449b6fba27dceb80b0f4668a414a6864e412199e6af72c80c1af69d8c5ca",
+    "notes.txt": "0407f9c37ce55cb50ebabc848d31c56bf5d4a0f3a25943cce6d51fd2950bd114"
+  },
+  "format": "braid-har-codex-capture/v0.1",
+  "nativeDispatchQualified": false,
+  "promptSha256": "1fa72e7e4f58b2d39320c2e85eef73b175a58d0cdf90492175faad4d37fb859f",
+  "rawLocation": "~/agent-braid-private/codex-capture/20261117T221002Z",
+  "redaction": "event and item types, key names, value types and enumerated type/status values only; no assistant text, command, output, path or identifier",
+  "runs": [
+    {
+      "adapterFit": {
+        "errors": [],
+        "hostTerminal": "completed",
+        "ignored": 2,
+        "kinds": {
+          "effect": 1,
+          "message": 2,
+          "start": 1,
+          "terminal": 1,
+          "tool": 1
+        },
+        "usageKeys": [
+          "cache_write_input_tokens",
+          "cached_input_tokens",
+          "input_tokens",
+          "output_tokens",
+          "reasoning_output_tokens"
+        ]
+      },
+      "events": {
+        "item.completed/agent_message": 2,
+        "item.completed/command_execution": 1,
+        "item.started/command_execution": 1,
+        "thread.started": 1,
+        "turn.completed": 1,
+        "turn.started": 1
+      },
+      "exit": 0,
+      "index": 0,
+      "shapes": [
+        {
+          "count": 1,
+          "shape": {
+            "item": {
+              "aggregated_output": "string",
+              "command": "string",
+              "exit_code": "integer",
+              "id": "string",
+              "status": "=completed",
+              "type": "=command_execution"
+            },
+            "type": "=item.completed"
+          }
+        },
+        {
+          "count": 1,
+          "shape": {
+            "item": {
+              "aggregated_output": "string",
+              "command": "string",
+              "exit_code": "null",
+              "id": "string",
+              "status": "=in_progress",
+              "type": "=command_execution"
+            },
+            "type": "=item.started"
+          }
+        },
+        {
+          "count": 2,
+          "shape": {
+            "item": {
+              "id": "string",
+              "text": "string",
+              "type": "=agent_message"
+            },
+            "type": "=item.completed"
+          }
+        },
+        {
+          "count": 1,
+          "shape": {
+            "thread_id": "string",
+            "type": "=thread.started"
+          }
+        },
+        {
+          "count": 1,
+          "shape": {
+            "type": "=turn.completed",
+            "usage": {
+              "cache_write_input_tokens": "integer",
+              "cached_input_tokens": "integer",
+              "input_tokens": "integer",
+              "output_tokens": "integer",
+              "reasoning_output_tokens": "integer"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "shape": {
+            "type": "=turn.started"
+          }
+        }
+      ],
+      "stderrBytes": 39,
+      "stderrSha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "stdoutBytes": 818,
+      "stdoutSha256": "3499055bd3ff5b0bf9dbaf6022512fca51b61ab826d471e62d23f51dd2efde6a",
+      "unparsedLines": 0
+    },
+    {
+      "adapterFit": {
+        "errors": [],
+        "hostTerminal": "completed",
+        "ignored": 2,
+        "kinds": {
+          "effect": 1,
+          "message": 2,
+          "start": 1,
+          "terminal": 1,
+          "tool": 1
+        },
+        "usageKeys": [
+          "cache_write_input_tokens",
+          "cached_input_tokens",
+          "input_tokens",
+          "output_tokens",
+          "reasoning_output_tokens"
+        ]
+      },
+      "events": {
+        "item.completed/agent_message": 2,
+        "item.completed/command_execution": 1,
+        "item.started/command_execution": 1,
+        "thread.started": 1,
+        "turn.completed": 1,
+        "turn.started": 1
+      },
+      "exit": 0,
+      "index": 1,
+      "shapes": [
+        {
+          "count": 1,
+          "shape": {
+            "item": {
+              "aggregated_output": "string",
+              "command": "string",
+              "exit_code": "integer",
+              "id": "string",
+              "status": "=completed",
+              "type": "=command_execution"
+            },
+            "type": "=item.completed"
+          }
+        },
+        {
+          "count": 1,
+          "shape": {
+            "item": {
+              "aggregated_output": "string",
+              "command": "string",
+              "exit_code": "null",
+              "id": "string",
+              "status": "=in_progress",
+              "type": "=command_execution"
+            },
+            "type": "=item.started"
+          }
+        },
+        {
+          "count": 2,
+          "shape": {
+            "item": {
+              "id": "string",
+              "text": "string",
+              "type": "=agent_message"
+            },
+            "type": "=item.completed"
+          }
+        },
+        {
+          "count": 1,
+          "shape": {
+            "thread_id": "string",
+            "type": "=thread.started"
+          }
+        },
+        {
+          "count": 1,
+          "shape": {
+            "type": "=turn.completed",
+            "usage": {
+              "cache_write_input_tokens": "integer",
+              "cached_input_tokens": "integer",
+              "input_tokens": "integer",
+              "output_tokens": "integer",
+              "reasoning_output_tokens": "integer"
+            }
+          }
+        },
+        {
+          "count": 1,
+          "shape": {
+            "type": "=turn.started"
+          }
+        }
+      ],
+      "stderrBytes": 39,
+      "stderrSha256": "1aa26269eb1cc57f86b235a03cda53c004edb5b1e9fc99d4da4f00843293d721",
+      "stdoutBytes": 849,
+      "stdoutSha256": "f624914685afdf52f90a80d787c51a9ce8e8225128adca55742a611d44837cac",
+      "unparsedLines": 0
+    }
+  ],
+  "task": "SPEC-048/T013 (owner decision E3)"
+}
