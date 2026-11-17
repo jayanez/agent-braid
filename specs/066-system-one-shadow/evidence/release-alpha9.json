@@ -1,0 +1,56 @@
+{
+  "release": "0.1.0-alpha.9",
+  "specification": "SPEC-066",
+  "task": "T404-T405 release",
+  "date": "2026-11-16",
+  "tag": "agent-braid--v0.1.0-alpha.9",
+  "tagObject": "2e11071e51b146ae5ef8061ddd8b538f92a71d72",
+  "distCommit": "fb6db542f547db28df41ea34e7bbe997ed09c81a",
+  "distParent": "7f914ae5ce04ac3294237da71a48276e014e68a8",
+  "distCommitMessage": "dist: Agent Braid 0.1.0-alpha.9 (source 1b9e15c)",
+  "sourceCommit": "1b9e15c9157efe97f269378991a84a42f20d28de",
+  "releasePr": "https://github.com/jayanez/agent-braid/pull/1394",
+  "releasePrMerge": "1b9e15c9157efe97f269378991a84a42f20d28de",
+  "releasePrHead": "13e4c319f2ec00f3b8171b8f32cfbd0a493b5cfe",
+  "githubRelease": {
+    "url": "https://github.com/jayanez/agent-braid/releases/tag/agent-braid--v0.1.0-alpha.9",
+    "prerelease": true,
+    "latest": false
+  },
+  "sha256": {
+    "plugins/agent-braid/package-inventory.json": "1ff8db7421110eca97398491d39a5ea966a20e3afdbd5a8b77411636326befe6",
+    "plugins/agent-braid/provenance.json": "f3da41b955db8fc4d94e598a20747b3a3cad9db12b341adf9b2c585102683530",
+    "sources/agent-braid-0.1.0-alpha.9-source.tar.gz": "294e487f552d11e8343b1097f6c543dd021075f6edd214b2c70f7660e13cd6d0"
+  },
+  "files": {
+    "tagTreeExcludingGit": 8141,
+    "packageInventory": 8135
+  },
+  "checks": [
+    "two builds of source commit 1b9e15c at different paths are byte-identical (reproducibility, #1349)",
+    "plugin doctor on the plugin-dist commit with a 0700 canonical home: pluginVersion 0.1.0-alpha.9, package 0.1.0a2, verified 8135 files",
+    "no tracked file on the plugin-dist commit contains the builder's home path",
+    "plugin-dist was fast-forwarded without force; the tag did not exist on origin before the push",
+    "a fresh public clone of the tag equals the build output under diff -r except the root README.md, which exists only on plugin-dist",
+    "owner-side install on 2026-11-17: claude plugin marketplace update and claude plugin update moved the user scope from 0.1.0-alpha.8 to 0.1.0-alpha.9; plugin doctor verified the installed package (8135 files) and System One stayed shadow with an empty promotion registry (DP-1 reason configured)"
+  ],
+  "operationalNote": "The first push of plugin-dist hung up (about 257 MB pack); the remote was unchanged and the push succeeded with git -c http.postBuffer=1048576000 push.",
+  "deviations": [],
+  "ownerDecision": {
+    "date": "2026-11-16",
+    "words": {
+      "alpha9": "Sí, prepara alpha.9",
+      "mergeAndBuild": "Sí, fusiona y construye",
+      "publish": "Publicar como pre-release (Recomendada)"
+    },
+    "note": "Answers to the orchestrator's questions, quoted as selected by the owner. On 2026-11-17 the owner asked the orchestrator to install the release for the owner's user and to launch this record."
+  },
+  "notObserved": [
+    "Codex smoke (Codex is not installed on the owner's machine)",
+    "OpenCode runtime load (the service was busy)",
+    "a model-driven smoke on Claude Code, Codex or OpenCode with the published tag",
+    "an update from alpha.8 on Codex or OpenCode",
+    "Linux x86_64 execution (built only)",
+    "a joined merge outcome from the owner's own work: none existed at publication"
+  ]
+}

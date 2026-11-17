@@ -11,7 +11,19 @@ consumer prerequisites. The Python installation remains available below.
 ## Published experimental marketplace
 
 The own GitHub marketplace is published on `plugin-dist`, with version
-`0.1.0-alpha.7` pinned by tag `agent-braid--v0.1.0-alpha.7`; it adds the OpenCode
+`0.1.0-alpha.9` pinned by tag `agent-braid--v0.1.0-alpha.9` (published 2026-11-16 as a
+pre-release); it adds System One DP-1 rule advice behind an owner go, the merge-outcome
+join with automatic rollback to `shadow`, and a reproducible build (see the
+[release notes](RELEASE_NOTES_ALPHA9.md) and the
+[alpha.9 record](../../specs/066-system-one-shadow/release-acceptance-alpha9.md)).
+Installing it does not turn on advice: `advise` stays `shadow` (reason `no-owner-go`)
+until the owner records a go. Its rollback target is `0.1.0-alpha.8`, pinned by tag
+`agent-braid--v0.1.0-alpha.8` ([record](../../specs/069-aim-request-authoring/release-acceptance-alpha8.md)),
+which refuses a registry that records `advise` consent: apply
+`plugin setup --system-one shadow` first. To update an installed alpha.8 in Claude Code, run
+`claude plugin marketplace update agent-braid`, then
+`claude plugin update agent-braid@agent-braid --scope user`, and restart the host.
+Earlier, `0.1.0-alpha.7` is pinned by tag `agent-braid--v0.1.0-alpha.7`; it adds the OpenCode
 native plugin (see the [OpenCode](#opencode-from-010-alpha7) section, the
 [alpha.7 release record](../../specs/068-opencode-native-integration/release-acceptance-alpha7.md)
 and the [readiness record](../../specs/068-opencode-native-integration/release-readiness-alpha7.md));
