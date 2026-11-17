@@ -19,10 +19,11 @@ account's own ``Background`` session, started by the root launcher ``scripts/har
 
 Pins: the SPEC-065 issuance (with its environment document and trusted record hashes), the SPEC-049/T004
 admission record, the T014 terms record and the host-profile decision record are each bound by a SHA-256 below.
-None of them exists yet; their placeholders refuse (``<name>-not-pinned``) until the orchestrator fills them in
+The issuance is the 2026-11-17 one (the same pins as SPEC-048/T008). The admission, terms and host-profile
+records do not exist yet; their placeholders refuse (``<name>-not-pinned``) until the orchestrator fills them in
 from the merged records. The unit cap is the pinned input ``UNIT_CAP`` = 16 (owner decision 2026-11-17, D2
 per-cohort cap: T014 has its own 16 and SPEC-048/T008 units do not count toward it); the terms record must repeat
-it and the founder-decisions record that carries it is pinned by SHA-256 once it merges. Every
+it, and the D2 cap-scope record that carries it is pinned by SHA-256 (``CAP_DECISION``). Every
 attempt counts its started units and slots in ``<out-dir>/t014-units.json`` right before each launch, and every
 later attempt subtracts them.
 
@@ -61,10 +62,10 @@ from agent_braid.harness_refinement import RefinementDecision  # noqa: E402
 from agent_braid.system_one import InvalidDecision, canonical, freeze, parse_json  # noqa: E402
 
 PENDING = "pending"  # a placeholder: not 64 hex, so the record it stands for refuses
-# SPEC-065 issuance that follows the re-qualification of fix/065-claude-system-events (not issued yet)
-ISSUANCE, ISSUANCE_SHA256 = PENDING, PENDING
-ENVIRONMENT = PENDING
-TRUSTED = {"containment_sha256": PENDING, "host_sha256": PENDING}
+# SPEC-065 T015 issuance of 2026-11-17 (attempt t009-20261117c); the same pins SPEC-048/T008 uses
+ISSUANCE, ISSUANCE_SHA256 = t8.ISSUANCE, t8.ISSUANCE_SHA256
+ENVIRONMENT = t8.ENVIRONMENT
+TRUSTED = dict(t8.TRUSTED)
 # the founder's host-profile decisions after the new SPEC-048/T008 decision (claude authorized)
 PROFILE_DECISIONS, PROFILE_DECISIONS_SHA256 = PENDING, PENDING
 # SPEC-049/T004 admission (owner) and the T014 cohort terms (owner)
@@ -75,9 +76,9 @@ D2_CAPS_SHA256 = t8.D2_CAPS_SHA256
 ADMISSION_FORMAT = "spec049-t004-admission-v1"
 TERMS_FORMAT = "spec049-t014-terms-v1"
 # owner decision 2026-11-17, D2 per-cohort cap: 16 units for this cohort; T008 units are not charged to it.
-# The founder-decisions record carrying it lands in the native-chain session's wave PR; pin it once merged.
 UNIT_CAP = 16
-CAP_DECISION, CAP_DECISION_SHA256 = PENDING, PENDING
+CAP_DECISION = "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-scope-founder-decision-20261117.json"
+CAP_DECISION_SHA256 = "9e83093d6bf5e66a0c771d50ed9d10c94995c8859f93460212df8ab443e324cd"
 PLANS = {"P2": 15}  # arm C frozen from the offline round + 5 holdout cases x A/B/C
 LEDGER = "t014-units.json"  # in each attempt's --out-dir: units and slots started, written before each launch
 ROWS = "t014-rows.json"  # in each attempt's --out-dir: graded rows (records and hashes only)
