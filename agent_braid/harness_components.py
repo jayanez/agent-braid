@@ -10,8 +10,9 @@ opens no network connection and issues no grant. Every record keeps
 The compiler, not the input, decides the admission state (contract section 2):
 hooks, plugins/tool loops and delegated roles (C6 to C8) start ``blocked``, so does
 every class that declares child-process or network effects, and the classes whose
-owner task is not implemented. Only C1 and C2 with inert effects (E0 to E2) are
-``implemented``, which says nothing about any host. No host qualification record
+owner task is not implemented. Only C1, C2 and C5 (T004 ``harness_tools``, contract
+section 8 C5 row) with E0 to E2 effects are ``implemented``, which says nothing about
+any host. C5 E3 stays blocked: its effect contract is drafted, not adopted (section 13). No host qualification record
 exists yet, so every host row is ``unqualified``; ``qualified``, ``enabled`` and
 ``excluded`` are part of the closed vocabulary but cannot be produced or accepted
 here. Effect class E5 (host or global configuration, authorities, verifiers) is
@@ -136,7 +137,7 @@ def derive_admission(component_class: str, effect_class: str) -> tuple[str, str 
         return "blocked", "no-containment-qualification"
     if effect_class in ("E3", "E4"):
         return "blocked", "effects-not-adopted"
-    if component_class in ("C3", "C4", "C5"):
+    if component_class in ("C3", "C4"):
         return "blocked", "owner-task-unimplemented"
     return "implemented", None
 
