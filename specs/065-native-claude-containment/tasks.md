@@ -389,6 +389,7 @@ shared object store fails the portable-root check).
   Files: `assurance.json`, `evidence/t012.json`. Verification: `quick`, `pr`,
   `validate_spec_kit`. Evidence: validation output bound to the candidate commit.
   Obtained (part 1, 2026-11-08, #1162): `evidence/t012.json`; two independent code reviews of T003-T007 found no must-fix; 17 residuals deferred to the next re-qualification; obtained_evidence bound for SC-001..SC-011. Freeze and human review pending.
+  Obtained (part 2, 2026-11-18): authority snapshot refreshed and the record frozen (`historical`) on `develop` commit `a768e6d3` (#1426), not on a PR branch; SC-001..SC-011 rebound to evidence read from that commit (`t015.json`, `qualification/issuance-2026-11-17.json`, `t009-20261117-result.md`, the `t009-20261117c` summary and quota, `founder-decisions-20261117.json`, the hand-off packet, and the 2026-11-13 and 2026-11-14 records as lineage); `t013.json` and `t014.json` cannot be bound (input `harness_host_claude.py` moved). `evidence/t012.json` `part2`: R1-R17 all still open after T013-T015, validation results. Codex review packet `review/codex-t012-20261118.md` prepared, not run. Human review by the owner still pending.
 
 - [x] T013 (REQ-004 / SC-004; REQ-007 / SC-007; REQ-010 / SC-010; REQ-009 / SC-009): Headless own-session lab
   mode, session-ownership guard and re-qualification (founder amendment of NC-2, 2026-11-13,

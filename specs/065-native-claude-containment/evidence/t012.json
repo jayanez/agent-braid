@@ -55,5 +55,103 @@
     "pr": "the CI validate aggregate on the PR head is the pr-profile evidence (docs/development/VALIDATION_PROFILES.md); a local pr run is not repeated by default",
     "freeze": "not performed: the assurance record stays draft and human_review pending; freeze needs a clean merged candidate commit and human review of the feature"
   },
-  "limits": "Review and validation record only. It qualifies nothing, authorizes no native session, and says nothing about Codex. Qualification (issued 2026-11-06) expires 2026-12-06T18:07:44Z; executionAuthorization false. Structural checks are not scientific proof."
+  "limits": "Review and validation record only. It qualifies nothing, authorizes no native session, and says nothing about Codex. Qualification (issued 2026-11-06) expires 2026-12-06T18:07:44Z; executionAuthorization false. Structural checks are not scientific proof.",
+  "part2": {
+    "recordedAt": "2026-11-18",
+    "candidateCommit": "a768e6d31429b9a8b665fd841a0f4a22f3362b42",
+    "candidateNote": "develop merge commit of #1426 (2026-11-17 issuance and T008 repin). The freeze binds authority_snapshot and evidence_snapshot (historical) to this develop commit, never to the PR branch, because squash merges rewrite branch commits. Every obtained_evidence item is read and hashed from this commit by validate_spec_kit.",
+    "scope": "Part 2 of T012: obtained-evidence update after T013-T015, authority snapshot refresh, freeze and a Codex review packet. Part 1 above (2026-11-08, #1162) stays as written; its inputs moved with #1338, #1363 and #1397, so this record is not itself bound as obtained evidence.",
+    "codeSinceCandidateOfPart1": {
+      "range": "425e3064..a768e6d3",
+      "changedRuntimeModules": {
+        "agent_braid/harness_containment_macos.py": "#1338 session-ownership guard (session_facts, session_refusal, session kind in the environment hash)",
+        "agent_braid/harness_qualification_probes.py": "#1338 not-applicable rule for CRED-07 pasteboard, FS-07 mach-mdwrite and PROC-06 mach-tccd on the uncontained ABSENT code",
+        "agent_braid/harness_host_claude.py": "#1363 bare init version, resolved alias id, rate_limit_event; #1397 informational system subtypes ignored"
+      },
+      "unchangedRuntimeModules": [
+        "agent_braid/harness_transport_claude.py",
+        "agent_braid/harness_quota.py",
+        "agent_braid/harness_manifest.py",
+        "agent_braid/harness_lab.py"
+      ],
+      "reviews": "#1338 independent re-check GO (three minor issues fixed before the real run, tasks.md T013); #1363 and #1397 security re-checks GO (t009-20261114-result.md, t009-20261117-result.md). No new code review was run for part 2; the Codex packet review/codex-t012-20261118.md is prepared, not run."
+    },
+    "residualsAfterT013toT015": {
+      "summary": "None of R1-R17 was addressed by T013-T015; all stay open and deferred. The re-qualifications changed only the session guard, the not-applicable rule and the host stream terminal checks.",
+      "R1": "open; harness_host_claude.py still has no limit_exceeded in ClaudeHostResult (#1363/#1397 changed only version, model and event handling)",
+      "R2": "open; harness_transport_claude.py unchanged since part 1",
+      "R3": "open; harness_transport_claude.py unchanged since part 1",
+      "R4": "open; redaction still against caller-supplied secrets",
+      "R5": "open; _POLL_SECONDS 0.05 unchanged",
+      "R6": "open; _credential_leaves unchanged by the #1338 hunks",
+      "R7": "open; the lines it names were not changed by #1338, #1363 or #1397",
+      "R8": "open; _InitWatch and MAX_INIT_BYTES in harness_transport_claude.py unchanged",
+      "R9": "open; the lines it names were not changed by #1338, #1363 or #1397",
+      "R10": "open; ENV_DENY unchanged (child environment still built from scratch)",
+      "R11": "open; MDRV-04 accepted with PR review in the 2026-11-13, 2026-11-14 and 2026-11-17 issuances; guard_unhashed shows harness_manifest.py, harness_context.py, harness_observation.py and system_one.py unchanged 320b00c4..3de73065",
+      "R12": "open; EgressProxy MAX_CONNECTIONS 16 unchanged",
+      "R13": "open; NATIVE_ENV_ALLOW unchanged",
+      "R14": "open; the lines it names were not changed by #1338, #1363 or #1397",
+      "R15": "open; the lines it names were not changed by #1338, #1363 or #1397",
+      "R16": "open; the lines it names were not changed by #1338, #1363 or #1397",
+      "R17": "open; CATALOG_SHA256 still computed at import",
+      "deferredTestOnly": "both still open",
+      "note": "Any fix to R1-R4 or R13 edits an environment-hash input and needs a security re-check plus a new T009 attempt and founder issuance before 2026-12-17T22:19:29Z (FD-20261114-STANDING covers code-only re-qualifications under its own conditions)."
+    },
+    "obtainedEvidenceRebound": {
+      "scenarios": [
+        "SC-001",
+        "SC-002",
+        "SC-003",
+        "SC-004",
+        "SC-005",
+        "SC-006",
+        "SC-007",
+        "SC-008",
+        "SC-009",
+        "SC-010",
+        "SC-011"
+      ],
+      "currentEvidence": [
+        "evidence/t015.json",
+        "evidence/qualification/issuance-2026-11-17.json",
+        "evidence/t009-20261117-result.md",
+        "evidence/qualification/t009-20261117c/summary.json",
+        "evidence/qualification/t009-20261117c/quota.json",
+        "evidence/founder-decisions-20261117.json",
+        "evidence/handoff-spec048-t008.md"
+      ],
+      "lineageEvidence": [
+        "evidence/t009-20261113-result.md",
+        "evidence/t009-20261114-result.md",
+        "evidence/qualification/issuance-2026-11-13.json",
+        "evidence/qualification/issuance-2026-11-14.json",
+        "evidence/t010.json",
+        "evidence/probe-catalog-review.md"
+      ],
+      "notBindable": {
+        "evidence/t013.json": "input agent_braid/harness_host_claude.py moved (#1363, #1397); the stale-input check rejects it at a768e6d3",
+        "evidence/t014.json": "input agent_braid/harness_host_claude.py moved (#1397); rejected at a768e6d3",
+        "evidence/t003.json..t007.json, t011.json, t012.json": "inputs moved (spec.md, tasks.md and module hashes); kept frozen and unedited except this part2 section",
+        "evidence/t009-attempt5-result.md": "superseded 2026-11-06 attempt; dropped in favour of the 2026-11-17 bundle"
+      },
+      "outsideTheFrozenClaim": "This part2 section and review/codex-t012-20261118.md are added after the freeze commit, so the historical evidence snapshot does not cover them."
+    },
+    "validation": {
+      "runOn": "PR #1436 head 1d2164ab (this section excluded), base develop 62da916b; freeze candidate a768e6d3",
+      "freeze": "python3 scripts/validate_spec_kit.py freeze specs/065-native-claude-containment on a clean checkout of a768e6d3 -> 'Authority snapshot frozen at HEAD; human review remains pending, not approved.'",
+      "record-065": "validate_spec_kit.validate_record on specs/065-native-claude-containment/assurance.json (historical authority and evidence at a768e6d3) -> OK, before and after the rebase onto 62da916b",
+      "targeted-tests": "python3.13 -B -m unittest tests.test_harness_manifest tests.test_harness_transport_claude tests.test_harness_quota tests.test_harness_qualification_probes tests.test_harness_host_claude tests.test_harness_containment_macos tests.test_harness_lab tests.test_har_t009_attempt tests.test_har_t009_launch -> Ran 688 tests, OK (skipped=3)",
+      "validate_spec_kit-worktree": "FAIL, environmental: 'public repository contains unreachable objects' (about 1900 unreachable objects in the shared worktree object store; docs/development/SPEC_KIT.md, Shared Git object-store recovery). Not pruned.",
+      "validate_spec_kit-clean-clone": "fresh clone of jayanez/agent-braid at 1d2164ab, restore_public_spec_history.py, git fsck --unreachable --no-reflogs -> 0 objects; python -m scripts.validate_spec_kit -> 'Spec Kit structural gates passed; semantic/human review remains separate.'",
+      "quick-worktree": "FAIL at publication (same unreachable-objects gate); repository, contracts and release-records passed",
+      "quick-clean-clone": "python -m scripts.validate_change --base origin/develop --profile quick: repository, contracts, release-records, publication (portable), research-radar, adoption-tracks, market-model and cli-smoke passed; full-tests Ran 7060 tests in 3082 s, FAILED (failures=4, skipped=38): three tests.test_git_counterexamples supervisor tests (worker-group kill/orphan) and one test_system_one_verified_stdio reaping subtest. The three git_counterexamples failures reproduce identically on develop 62da916b without this change (targeted run), and this change touches no code; not caused by it. The machine was running other sessions' full suites at the same time.",
+      "pr-local": "not run: the quick profile already escalated to the full suite and failed only on the pre-existing process-supervision tests above; one pr run per machine was being used by other sessions during this work. The CI validate aggregate is the pr-profile evidence (docs/development/VALIDATION_PROFILES.md).",
+      "ci": "PR #1436 at 1d2164ab: validate pass; Complete Python test suite shards 0-5 pass; Spec Kit structure and render pass; Governance, contracts and scientific controls pass; Fast repository invariants pass; tracking pass; Spec Kit solo and dual integration matrix skipped (no template change)",
+      "frozenFiles": "git diff against the merge base for the frozen harness modules and launch scripts, scripts/har_t008_unit.py and harness_hosts_native.py: empty"
+    },
+    "humanReview": "pending: the owner's review of the feature is not done and is not claimed. T012 stays unticked.",
+    "executionAuthorization": false,
+    "limits": "Review-preparation and validation record only. Nothing native ran; no sudo; no network beyond git and gh. Qualifies nothing, authorizes no native session, says nothing about Codex as a host. Structural checks are not scientific proof."
+  }
 }

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SPEC-065 T012 Codex containment and qualification review output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["commit", "reviewer", "findings", "verdict"],
+  "properties": {
+    "commit": {"type": "string", "description": "Full commit SHA reviewed"},
+    "reviewer": {"type": "string", "description": "Model or client identity as reported"},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "severity", "area", "file", "line", "residual", "scenario", "fix"],
+        "properties": {
+          "id": {"type": "string"},
+          "severity": {"type": "string", "enum": ["critical", "high", "medium", "low", "info"]},
+          "area": {"type": "string", "enum": ["containment", "environment-records", "transport-host", "quota", "qualification-evidence", "claims"]},
+          "file": {"type": "string"},
+          "line": {"type": "integer"},
+          "residual": {"type": "string", "description": "R1 to R17 when the finding restates a recorded residual, otherwise new"},
+          "scenario": {"type": "string"},
+          "fix": {"type": "string"}
+        }
+      }
+    },
+    "verdict": {"type": "string", "enum": ["no actionable findings", "findings"]}
+  }
+}
