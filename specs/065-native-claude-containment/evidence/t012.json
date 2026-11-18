@@ -137,7 +137,19 @@
       },
       "outsideTheFrozenClaim": "This part2 section and review/codex-t012-20261118.md are added after the freeze commit, so the historical evidence snapshot does not cover them."
     },
-    "validation": "filled below",
+    "validation": {
+      "runOn": "PR #1436 head 1d2164ab (this section excluded), base develop 62da916b; freeze candidate a768e6d3",
+      "freeze": "python3 scripts/validate_spec_kit.py freeze specs/065-native-claude-containment on a clean checkout of a768e6d3 -> 'Authority snapshot frozen at HEAD; human review remains pending, not approved.'",
+      "record-065": "validate_spec_kit.validate_record on specs/065-native-claude-containment/assurance.json (historical authority and evidence at a768e6d3) -> OK, before and after the rebase onto 62da916b",
+      "targeted-tests": "python3.13 -B -m unittest tests.test_harness_manifest tests.test_harness_transport_claude tests.test_harness_quota tests.test_harness_qualification_probes tests.test_harness_host_claude tests.test_harness_containment_macos tests.test_harness_lab tests.test_har_t009_attempt tests.test_har_t009_launch -> Ran 688 tests, OK (skipped=3)",
+      "validate_spec_kit-worktree": "FAIL, environmental: 'public repository contains unreachable objects' (about 1900 unreachable objects in the shared worktree object store; docs/development/SPEC_KIT.md, Shared Git object-store recovery). Not pruned.",
+      "validate_spec_kit-clean-clone": "fresh clone of jayanez/agent-braid at 1d2164ab, restore_public_spec_history.py, git fsck --unreachable --no-reflogs -> 0 objects; python -m scripts.validate_spec_kit -> 'Spec Kit structural gates passed; semantic/human review remains separate.'",
+      "quick-worktree": "FAIL at publication (same unreachable-objects gate); repository, contracts and release-records passed",
+      "quick-clean-clone": "python -m scripts.validate_change --base origin/develop --profile quick: repository, contracts, release-records, publication (portable), research-radar, adoption-tracks, market-model and cli-smoke passed; full-tests Ran 7060 tests in 3082 s, FAILED (failures=4, skipped=38): three tests.test_git_counterexamples supervisor tests (worker-group kill/orphan) and one test_system_one_verified_stdio reaping subtest. The three git_counterexamples failures reproduce identically on develop 62da916b without this change (targeted run), and this change touches no code; not caused by it. The machine was running other sessions' full suites at the same time.",
+      "pr-local": "not run: the quick profile already escalated to the full suite and failed only on the pre-existing process-supervision tests above; one pr run per machine was being used by other sessions during this work. The CI validate aggregate is the pr-profile evidence (docs/development/VALIDATION_PROFILES.md).",
+      "ci": "PR #1436 at 1d2164ab: validate pass; Complete Python test suite shards 0-5 pass; Spec Kit structure and render pass; Governance, contracts and scientific controls pass; Fast repository invariants pass; tracking pass; Spec Kit solo and dual integration matrix skipped (no template change)",
+      "frozenFiles": "git diff against the merge base for the frozen harness modules and launch scripts, scripts/har_t008_unit.py and harness_hosts_native.py: empty"
+    },
     "humanReview": "pending: the owner's review of the feature is not done and is not claimed. T012 stays unticked.",
     "executionAuthorization": false,
     "limits": "Review-preparation and validation record only. Nothing native ran; no sudo; no network beyond git and gh. Qualifies nothing, authorizes no native session, says nothing about Codex as a host. Structural checks are not scientific proof."
