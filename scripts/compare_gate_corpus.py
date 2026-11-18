@@ -38,10 +38,13 @@ def file_sha256(path: Path) -> str:
 
 def scrub(text: str, work: Path) -> str:
     """Replace machine-specific paths so the committed evidence is reproducible."""
-    work_dirs = {str(work), str(work.resolve())}
-    for path in sorted(work_dirs, key=len, reverse=True):
-        text = text.replace(path, "<work>")
-    return text.replace(str(ROOT), "<repo>").replace(sys.executable, "python")
+    # Longest path first, so a path nested in another (an interpreter in a venv under the
+    # repository, a work directory under it) keeps its own placeholder.
+    replacements = {str(ROOT): "<repo>", sys.executable: "python"}
+    replacements.update({str(work): "<work>", str(work.resolve()): "<work>"})
+    for path in sorted(replacements, key=len, reverse=True):
+        text = text.replace(path, replacements[path])
+    return text
 
 
 def request_for(corpus: fixtures.Corpus, case: fixtures.Case) -> dict:
