@@ -1,0 +1,197 @@
+{
+  "commit": "a768e6d31429b9a8b665fd841a0f4a22f3362b42",
+  "reviewer": "Codex (GPT-6)",
+  "findings": [
+    {
+      "id": "T012-01",
+      "severity": "high",
+      "area": "quota",
+      "file": "agent_braid/harness_qualification_probes.py",
+      "line": 2599,
+      "residual": "new",
+      "scenario": "If the final HOST-01 session completes and its post-reading is missing or shows a three-point increase, settlement records a quota stop while the row still records a successful session. With no later session to skip, the summary and verify_bundle still accept the bundle as passing.",
+      "fix": "Make a successful NC-10 quota decision mandatory for each live probe and rederive that requirement from the hashed quota and result rows during bundle verification."
+    },
+    {
+      "id": "T012-02",
+      "severity": "high",
+      "area": "qualification-evidence",
+      "file": "agent_braid/harness_qualification_probes.py",
+      "line": 1273,
+      "residual": "new",
+      "scenario": "HOST-01 can pass a stream with a successful first result followed by a duplicate result or unknown event. The probe keeps the first init and result and bypasses run_claude, which would mark the observation unobserved. The T015 native bundle therefore does not exercise the #1397 parser change, although that change triggered the requalification.",
+      "fix": "Apply the runtime adapter's stream and terminal checks to HOST-01, including session ID, version, model, output loss, and settlement. Describe the existing bundle as evidence of the narrower probe verdict."
+    },
+    {
+      "id": "T012-03",
+      "severity": "medium",
+      "area": "containment",
+      "file": "agent_braid/harness_containment_macos.py",
+      "line": 1705,
+      "residual": "new",
+      "scenario": "Cleanup removes the temporary run directory and leaves the writable dedicated configuration directory in place. The committed CRED-05, NET-05-CLI, and HOST-01 rows show its entry count growing from 47 to 56 with zero removals. A subsequent session can read prior session state, contrary to NC-7's purge requirement.",
+      "fix": "Remove session-created configuration state under the existing run lock, preserve the credential and approved baseline, and refuse if cleanup fails."
+    },
+    {
+      "id": "T012-04",
+      "severity": "medium",
+      "area": "containment",
+      "file": "agent_braid/harness_containment_macos.py",
+      "line": 1217,
+      "residual": "new",
+      "scenario": "The disk watchdog counts allocated blocks through directory entries. Storage held by open files after unlinking is invisible to the scan, so the child can exceed the aggregate disk limit while the watchdog reports usage within bounds.",
+      "fix": "Enforce the existing disk limit with accounting that includes open unlinked files. Until then, describe it as a sampled bound on named files."
+    },
+    {
+      "id": "T012-05",
+      "severity": "medium",
+      "area": "environment-records",
+      "file": "agent_braid/harness_containment_macos.py",
+      "line": 1562,
+      "residual": "new",
+      "scenario": "A qualification can be valid when the final F4 probe starts and expire while that probe runs. The backend launches the requested session after the probe returns without checking expiry again.",
+      "fix": "Recheck both record expiries immediately before spawning the requested child, after F4 completes."
+    },
+    {
+      "id": "T012-06",
+      "severity": "medium",
+      "area": "quota",
+      "file": "agent_braid/harness_transport_claude.py",
+      "line": 236,
+      "residual": "new",
+      "scenario": "A pre-reading just under five minutes old passes admission and can become stale during F4 before the model session starts. Settlement also accepts a fresh post-reading timestamp that follows the pre-reading but predates the session's exit. The resulting delta can omit session usage.",
+      "fix": "Check pre-reading freshness at spawn and require the post-reading timestamp to follow the recorded exit of the same session. Label the measured delta as account-wide usage over that interval."
+    },
+    {
+      "id": "T012-07",
+      "severity": "medium",
+      "area": "transport-host",
+      "file": "agent_braid/harness_host_claude.py",
+      "line": 506,
+      "residual": "new",
+      "scenario": "A native manifest can declare Haiku while the request selects a different model. The launch plan and terminal check both use the request, so the run can complete under the mismatched manifest. The NC-10 probe driver also selects Haiku without setting or recording the required low effort.",
+      "fix": "Bind the native request and launch arguments to the manifest's model and effort. Set low effort explicitly for NC-10 and distinguish requested settings from observed values."
+    },
+    {
+      "id": "T012-08",
+      "severity": "medium",
+      "area": "transport-host",
+      "file": "agent_braid/harness_transport_claude.py",
+      "line": 96,
+      "residual": "R8",
+      "scenario": "An oversized init line can be accepted when its terminating newline arrives in the chunk that puts it over MAX_INIT_BYTES. The complete-line path skips the size check, and the final parser accepts valid JSON above that bound. This is worse than the recorded low severity because the final parser can accept the same oversized line.",
+      "fix": "Check the line length before parsing in both the live watcher and the final stream reader."
+    },
+    {
+      "id": "T012-09",
+      "severity": "medium",
+      "area": "containment",
+      "file": "agent_braid/harness_containment_macos.py",
+      "line": 1612,
+      "residual": "R9",
+      "scenario": "A separate local client can open an allowed tunnel during the sampled counter interval. If the probe reaches init but opens no tunnel of its own, that unrelated connection can satisfy NET-05-CLI. This is worse than the recorded low severity because the attribution error can change a qualification verdict.",
+      "fix": "Use counters attributable to the supervised run for NET-05-CLI. Return inconclusive when connection ownership is unknown."
+    },
+    {
+      "id": "T012-10",
+      "severity": "medium",
+      "area": "quota",
+      "file": "agent_braid/harness_transport_claude.py",
+      "line": 229,
+      "residual": "R2",
+      "scenario": "At the transport boundary, a fresh transport can reuse the same one-session manifest and caller-provided quota state. The backend serializes the launches and the per-instance attempt flag permits both. The separate SPEC-048 unit driver supplies additional accounting for its own path.",
+      "fix": "Use the existing authoritative session ledger at native admission to reserve the manifest's session allowance atomically."
+    },
+    {
+      "id": "T012-11",
+      "severity": "medium",
+      "area": "qualification-evidence",
+      "file": "agent_braid/harness_qualification_probes.py",
+      "line": 1084,
+      "residual": "new",
+      "scenario": "When a submitted bundle contains two rows for the same probe and mode, the later row overwrites the earlier one. An in-memory check against the committed rows showed that an FS-01 escape fails when it is the sole contained row and disappears from the verdict when followed by the passing row. The committed bundle itself has no duplicates.",
+      "fix": "Require exactly one row for every catalog-required probe and mode, and refuse unknown probes, unexpected modes, and duplicate rows before summarizing."
+    },
+    {
+      "id": "T012-12",
+      "severity": "medium",
+      "area": "transport-host",
+      "file": "agent_braid/harness_host_claude.py",
+      "line": 332,
+      "residual": "R4",
+      "scenario": "If a credential value appears in assistant text and the caller's export inventory omits it, the retained observation can contain the secret. The qualification bundle's separate secret scan does not protect the runtime observation.",
+      "fix": "Use the dedicated credential inventory when retaining native host observations and apply the existing secret-shape scan before export."
+    },
+    {
+      "id": "T012-13",
+      "severity": "low",
+      "area": "environment-records",
+      "file": "agent_braid/harness_containment_macos.py",
+      "line": 465,
+      "residual": "R11",
+      "scenario": "Changes to harness_manifest.py, harness_context.py, harness_observation.py, or system_one.py can change parsing or evidence handling without changing the environment hash. The SPEC-048 guard pins these four files separately, so the result depends on the caller applying that guard.",
+      "fix": "Bind the four existing dependency pins at the common qualification boundary so their enforcement is consistent across callers."
+    },
+    {
+      "id": "T012-14",
+      "severity": "low",
+      "area": "qualification-evidence",
+      "file": "scripts/har_t009_attempt.py",
+      "line": 788,
+      "residual": "new",
+      "scenario": "The contract calls for environment.json to contain every environment-hash input. The committed document omits session kind, account facts, supervisor and interpreter pins, component hashes, and limits. A reviewer can check that the recorded digests agree without being able to rederive the environment digest from the bundle.",
+      "fix": "Bind a redacted manifest of the environment inputs and distinguish digest agreement from independent environment recomputation."
+    },
+    {
+      "id": "T012-15",
+      "severity": "low",
+      "area": "qualification-evidence",
+      "file": "specs/065-native-claude-containment/evidence/t015.json",
+      "line": 69,
+      "residual": "new",
+      "scenario": "The wrong-environment negative control reports qualification-drift, which is also the result of changing any hashed field. It does not distinguish a record-integrity refusal from rejection of an intact trusted record under mismatched live facts. The other-host result tests the client kind, and the recorded negative controls contain no expiry-boundary case.",
+      "fix": "Label the control by the check it exercises. Bind separate offline cases using intact trusted bytes with mismatched environment facts and an injected clock at expiry."
+    },
+    {
+      "id": "T012-16",
+      "severity": "low",
+      "area": "transport-host",
+      "file": "agent_braid/harness_host_claude.py",
+      "line": 405,
+      "residual": "new",
+      "scenario": "A system event whose subtype is a JSON array or object raises TypeError during set membership. The call exits without the fixed unknown-event-type observation used for other unknown subtypes.",
+      "fix": "Require a string subtype before checking the informational allowlist and send malformed values through the normal stream-error path."
+    },
+    {
+      "id": "T012-17",
+      "severity": "low",
+      "area": "claims",
+      "file": "specs/065-native-claude-containment/evidence/t009-20261117-result.md",
+      "line": 39,
+      "residual": "new",
+      "scenario": "The quota row cites the 10% cohort-unit cap for an NC-10 probe, whose cap is 2%. The recorded one-point delta satisfies NC-10 and falls outside the standing rule's zero-delta condition. The usage readings and API-key-source label also do not independently establish the stated EUR 0 billing outcome.",
+      "fix": "Cite the 2% probe cap in the result and assurance outcomes. Preserve the founder question as asked and annotate the cap correction. Limit the spending claim to what the recorded observations support."
+    },
+    {
+      "id": "T012-18",
+      "severity": "low",
+      "area": "claims",
+      "file": "specs/065-native-claude-containment/assurance.json",
+      "line": 422,
+      "residual": "new",
+      "scenario": "SC-010 describes all 32 probes as passing in both modes. In the current bundle, 29 probes have live uncontained helper controls and three session probes have synthetic detector self-tests labelled uncontained-control. The recorded pass rule allows those self-tests, but they do not demonstrate uncontained Claude behavior.",
+      "fix": "Name the two control types in the assurance outcome, alongside the catalog exclusions and the finite one-machine observation boundary."
+    },
+    {
+      "id": "T012-19",
+      "severity": "info",
+      "area": "qualification-evidence",
+      "file": "specs/065-native-claude-containment/evidence/t015.json",
+      "line": 51,
+      "residual": "new",
+      "scenario": "The read-only review reproduced the current bundle's 93 unique rows, 32 passing probe verdicts, eight exclusions, all seven SHA256SUMS entries, and both canonical trusted record hashes. The older issuances refused under the current pins. The probe runner writes evidence files and uses attempt records in memory. Of R1 through R17, this review raises the recorded severity of R8 and R9 only.",
+      "fix": "No correction to the matching checksums or trusted hashes. Record this as static review and in-memory verification. Human review remains pending and executionAuthorization remains false."
+    }
+  ],
+  "verdict": "findings"
+}

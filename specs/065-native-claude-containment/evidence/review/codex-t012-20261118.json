@@ -1,0 +1,353 @@
+{
+  "recordVersion": "spec065-codex-review-v1",
+  "task": "SPEC-065/T012 part 2",
+  "candidateCommit": "a768e6d31429b9a8b665fd841a0f4a22f3362b42",
+  "reviewedCheckout": "develop 134a9731 (#1436); git diff a768e6d3..134a9731 of the packet's pinned files and evidence/qualification was empty",
+  "reviewer": {
+    "tool": "codex exec -s read-only --output-schema",
+    "reportedReviewer": "Codex (GPT-6)",
+    "binary": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+    "version": "codex-cli 0.169.0-alpha.11.1",
+    "account": "operator subscription",
+    "runBy": "owner",
+    "date": "2026-11-18"
+  },
+  "command": "\"/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex\" exec -s read-only -C <checkout of develop 134a9731> --output-schema specs/065-native-claude-containment/review/codex-t012-20261118.schema.json -o <out> \"$(cat specs/065-native-claude-containment/review/codex-t012-20261118.md)\"",
+  "packet": "specs/065-native-claude-containment/review/codex-t012-20261118.md",
+  "rawOutput": "specs/065-native-claude-containment/evidence/review/codex-t012-20261118.raw.json",
+  "rawOutputSha256": "02ac175e12c40684fbb62c35a5a1ae85fbc743484b425e330e6afd8e32da8fb3",
+  "codexVerdict": "findings",
+  "findingCount": 19,
+  "codexSeverityCounts": {
+    "high": 2,
+    "medium": 10,
+    "low": 6,
+    "info": 1
+  },
+  "triageMethod": "Orchestrator re-read of every cited line in the pinned files (byte-identical at 134a9731), the committed bundle t009-20261117c and the cited records, treating each Codex claim as a hypothesis to refute; in-memory checks with python3.13 against the committed rows (T012-01, T012-11, T012-16, T012-19). No native run, no sudo, nothing written but this record.",
+  "residualSource": "specs/065-native-claude-containment/evidence/t012.json (codeReview.deferredToNextRequalification R1-R17; part2.residualsAfterT013toT015)",
+  "triage": [
+    {
+      "id": "T012-01",
+      "codexSeverity": "high",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "high",
+      "residual": "new",
+      "evidence": "agent_braid/harness_qualification_probes.py:2595-2601 keeps a failed settle_probe decision only as self._quota_stop and the row's quotaStop (:2610). _judge_row (:1025-1053) and summarize (:1080-1111) never read quotaStop or quota.json, and verify_bundle (:2898-2910) re-derives only summarize(results.jsonl). The stop only refuses later sessions (:2589), so after the last session nothing is refused; HOST-01 is the third and last session (evidence/qualification/t009-20261117c/quota.json order CRED-05, NET-05-CLI, HOST-01). In-memory check (python3.13, pinned files byte-identical at 134a9731): setting the committed HOST-01 contained row's quotaStop to probe-above-five-hour-cap leaves passRuleSatisfied true.",
+      "issuedEvidenceAffected": "No, in fact. Verifier defect only. evidence/qualification/t009-20261117c/quota.json HOST-01 decision proceed true, reason within-caps, fiveHourDelta 0, weeklyDelta 0; results.jsonl HOST-01 contained quotaStop null. CRED-05 (delta 0) and NET-05-CLI (delta 1, below PROBE_MAX_FIVE_HOUR 2 at agent_braid/harness_quota.py:65) are within-caps too.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_qualification_probes.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no: live T008/T014 units settle quota through their own drivers and harness_quota.settle, not through the probe pass rule"
+    },
+    {
+      "id": "T012-02",
+      "codexSeverity": "high",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "high",
+      "residual": "new",
+      "evidence": "native_session_driver (agent_braid/harness_qualification_probes.py:1436-1457) calls transport.run directly (:1444), never run_claude (agent_braid/harness_host_claude.py:490). classify_session HOST-01 (agent_braid/harness_qualification_probes.py:1273-1280) uses _stream (:1138-1153), which keeps the first init and the first result and silently skips malformed lines and every other event. It applies none of _read_stream's duplicate-init, duplicate-result and unknown-event-type errors (agent_braid/harness_host_claude.py:383-420) nor _terminal's session-id, version, model and exit checks (agent_braid/harness_host_claude.py:423-460). The #1397 change (_INFO_SYSTEM_SUBTYPES, agent_braid/harness_host_claude.py:379-380, used at :405) is therefore not exercised by HOST-01. The detector self-test (agent_braid/harness_qualification_probes.py:1295-1319) compares only a complete and an incomplete synthetic stream.",
+      "issuedEvidenceAffected": "Not determinable from the bundle, and not shown wrong. The bundle keeps no stdout. evidence/qualification/t009-20261117c/results.jsonl HOST-01 contained: exitCode 0, exitReason ok, settled true, timedOut false, refused null, apiKeySource none, outcome allowed. These satisfy the narrower classifier; whether the same stream passes run_claude's stream and terminal checks was not observed. The issued evidence is correct for what the classifier decides; hostFunctional true must not be read as 'run_claude completes on this host'. t015.json scope already states that #1397 is covered by its own tests and security re-check, not by the bundle.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_qualification_probes.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no: live T008/T014 units go through run_claude, which applies the stricter checks and fails closed"
+    },
+    {
+      "id": "T012-03",
+      "codexSeverity": "medium",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "medium",
+      "residual": "new",
+      "evidence": "agent_braid/harness_containment_macos.py:1705 removes only run_dir; nothing purges session state under policy.config_dir (no purge in scripts/har_t008_unit.py, scripts/har_t014_cohort.py or agent_braid/harness_hosts_native.py either). NC-7 (spec.md:378) was decided as 'session state purged after each run and the credential kept'. evidence/qualification/t009-20261117c/results.jsonl configDir: CRED-05 47->50, NET-05-CLI 50->53, HOST-01 53->56 entries, each adding projects/-Users-braidlab-t009-run-work-*/ with a session file and memory/, removed [] in all three. The contained read set includes config_dir (NC-7 reads option i). config_dir also counts toward the disk guard (agent_braid/harness_containment_macos.py:1613).",
+      "issuedEvidenceAffected": "The bundle is accurate (it records the growth). The deviation is between the code and the NC-7 founder decision, not an evidence error, and not a containment escape: the state stays inside the dedicated account's config_dir.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_containment_macos.py"
+      ],
+      "bearsOnCurrentNativeRuns": "yes, owner attention (not a containment stop): every native T008/T014 session leaves its transcript in config_dir, readable by later contained sessions; for T014 this is a cross-unit and cross-arm independence risk (spec.md:387, option c 'lets state leak between runs and between arms'). Each run's cwd slug is unique, so the CLI does not load earlier projects by itself, but a session with Read can read them"
+    },
+    {
+      "id": "T012-04",
+      "codexSeverity": "medium",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "residual": "new",
+      "evidence": "_DiskGuard.exceeded (agent_braid/harness_containment_macos.py:1205-1243) walks directory entries and sums st_blocks, so an open unlinked file is not counted. Per process, RLIMIT_FSIZE 64 MiB and RLIMIT_NOFILE 256 (LIMITS agent_braid/harness_containment_macos.py:112-114, preamble :1054-1058) and the 1800 s wall bound it, but that bound (and up to 16 descendants) exceeds diskBytes 2 GiB. Lowered: resource exhaustion on the lab host, not a write outside the allowed set.",
+      "issuedEvidenceAffected": "No: no probe verdict or bundle field depends on it.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_containment_macos.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no"
+    },
+    {
+      "id": "T012-05",
+      "codexSeverity": "medium",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "residual": "new",
+      "evidence": "Expiry is checked once in _check_mechanism (agent_braid/harness_containment_macos.py:1390-1391), which _pre_session calls first (:1470), before the F4 probes (:1480-1481, _run_probes :1449-1461); launch (:1560-1568) spawns after _pre_session with no second check. The window is the F4 duration (seconds); expiry is not enforced during the session either. Lowered: a few seconds at the expiry edge.",
+      "issuedEvidenceAffected": "No: the issuance is valid until 2026-12-17T22:19:29Z; the check did fire on attempt t009-20261117b (t015.json earlierAttempts, qualification-expired).",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_containment_macos.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no, unless a run starts within minutes of 2026-12-17T22:19:29Z"
+    },
+    {
+      "id": "T012-06",
+      "codexSeverity": "medium",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "residual": "new",
+      "evidence": "NativeClaudeTransport._admit (agent_braid/harness_transport_claude.py:212-226) runs before the backend's launch, so the F4 check follows admission; admit_probe and admit check freshness against 'now' at admission (agent_braid/harness_quota.py:133-138). settle_probe (agent_braid/harness_quota.py:244-256) and settle (:199-224) require post after pre within MAX_READING_SPAN (_deltas :160-168) and a fresh post at settlement, never post after the session's exit; no exit time is passed in. Lowered: operator-typed integer percents already limit attribution to 1 % of the account-wide window.",
+      "issuedEvidenceAffected": "Not determinable, and not shown wrong: evidence/qualification/t009-20261117c/quota.json readings are operator-typed with observedAt (CRED-05 22:12:06->22:12:26, NET-05-CLI 22:12:32->22:13:53, HOST-01 post 22:15:31); the bundle has no session exit time to compare.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_quota.py",
+        "agent_braid/harness_transport_claude.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no for safety; T008/T014 deltas should be described as account-wide usage over the reading interval"
+    },
+    {
+      "id": "T012-07",
+      "codexSeverity": "medium",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "residual": "new",
+      "evidence": "run_claude compares the stream model only with request.model (_terminal agent_braid/harness_host_claude.py:450-452) and never with the manifest's host.requested.model; _check_transport (agent_braid/harness_host_claude.py:291-300) checks only the environment hash and expiry. build_plan (agent_braid/harness_host_claude.py:166-179) has no effort argument, so host.requested.effort 'low' (agent_braid/harness_hosts_native.py:252,278; agent_braid/harness_t014_native.py:67,240) never reaches the CLI. native_session_driver passes model 'haiku' and no effort (agent_braid/harness_qualification_probes.py:1443) while contracts/containment-qualification.md:81 says 'Haiku, low effort'. Lowered: the model matches in every current caller; effort is a claim gap, bounded by the quota caps.",
+      "issuedEvidenceAffected": "Partly: the model is consistent in fact (haiku in the probe driver, scripts/har_t008_unit.py:50 and harness_t014_native.py:67); 'low effort' in the NC-10 sessions and in the T008/T014 manifests is requested in records only, never set or observed.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_host_claude.py",
+        "agent_braid/harness_qualification_probes.py"
+      ],
+      "bearsOnCurrentNativeRuns": "yes, claims only (not a stop): T008/T014 evidence must not state that sessions ran at low effort"
+    },
+    {
+      "id": "T012-08",
+      "codexSeverity": "medium",
+      "codexResidual": "R8",
+      "verdict": "PARTIAL",
+      "adjustedSeverity": "low",
+      "residual": "R8",
+      "evidence": "_InitWatch.feed (agent_braid/harness_transport_claude.py:90-104) checks MAX_INIT_BYTES (:54) only while no newline is buffered (:97-99); a complete line of any size goes to _line (:106), and _read_stream (agent_braid/harness_host_claude.py:383) has no line bound either, so R8's 'fail-closed afterwards' wording is inaccurate. The severity raise is rejected: an oversized init is still route-checked live (agent_braid/harness_transport_claude.py:114) and in _terminal (agent_braid/harness_host_claude.py:453-455), and total output stays bounded by max_output_bytes. Restates R8.",
+      "issuedEvidenceAffected": "No.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_transport_claude.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no"
+    },
+    {
+      "id": "T012-09",
+      "codexSeverity": "medium",
+      "codexResidual": "R9",
+      "verdict": "PARTIAL",
+      "adjustedSeverity": "low",
+      "residual": "R9",
+      "evidence": "The session egress is the delta of the loopback proxy's global counters (agent_braid/harness_containment_macos.py:1612, 1713), as R9 records. _egress_verdict (agent_braid/harness_qualification_probes.py:1239-1259) can turn a session without tunnels into denied only if another local client CONNECTs to an allowed endpoint in the window. A direct connection by the child is kernel-denied and never counted either way, so the error cannot hide an escape, only upgrade inconclusive to denied. Restates R9; severity raise rejected.",
+      "issuedEvidenceAffected": "No, as far as observable: evidence/qualification/t009-20261117c NET-05-CLI egress allowed 3, allowed:api.anthropic.com:443 3, connections 3, with exitCode 0 and fiveHourDelta 1, consistent with the session's own model traffic; the counters do not prove ownership.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_containment_macos.py",
+        "agent_braid/harness_qualification_probes.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no"
+    },
+    {
+      "id": "T012-10",
+      "codexSeverity": "medium",
+      "codexResidual": "R2",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "medium",
+      "residual": "R2",
+      "evidence": "NativeClaudeTransport.run guards only the per-instance self._attempted (agent_braid/harness_transport_claude.py:229-230); a new instance with the same manifest and caller quota state is admitted. Exactly R2 (recorded medium in part 1).",
+      "issuedEvidenceAffected": "No.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_transport_claude.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no: the SPEC-048 unit driver keeps its own session ledger"
+    },
+    {
+      "id": "T012-11",
+      "codexSeverity": "medium",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "residual": "new",
+      "evidence": "summarize (agent_braid/harness_qualification_probes.py:1084) overwrites rows by (probe, mode), and rows of probes outside the catalog are ignored (loop over the catalog, :1086). In-memory check on the committed rows: FS-01 contained replaced by an escape gives passRuleSatisfied false; the escape row followed by the original passing row (94 rows) gives true. verify_bundle uses the same summarize. Lowered: the runner cannot emit duplicates (run() refuses repeated ids, :2642; modes fixed per probe) and the issued results.jsonl is bound by bundleSha256 in the founder issuance.",
+      "issuedEvidenceAffected": "No: evidence/qualification/t009-20261117c/results.jsonl has 93 rows, 93 unique (probe, mode) pairs, 32 probes.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_qualification_probes.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no"
+    },
+    {
+      "id": "T012-12",
+      "codexSeverity": "medium",
+      "codexResidual": "R4",
+      "verdict": "PARTIAL",
+      "adjustedSeverity": "medium",
+      "residual": "R4",
+      "evidence": "_Stream.text redacts only inventory.secrets (agent_braid/harness_host_claude.py:330-339) and host observations get no secret-shape scan (R4). The live drivers do pass the dedicated credential inventory: scripts/har_t008_unit.py:239,245 and scripts/har_t014_cohort.py:394 use credential_inventory(config_dir) (agent_braid/harness_qualification_probes.py:2842-2853) as export secrets, so the 'caller omits it' scenario does not apply to them. The shape-scan gap remains. Restates R4, not worse.",
+      "issuedEvidenceAffected": "No (the bundle has its own scan; t015.json copyChecks found nothing).",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_host_claude.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no"
+    },
+    {
+      "id": "T012-13",
+      "codexSeverity": "low",
+      "codexResidual": "R11",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "residual": "R11",
+      "evidence": "environment_sha256 (agent_braid/harness_containment_macos.py:474) does not hash harness_manifest.py, harness_context.py, harness_observation.py or system_one.py; the SPEC-048 guard_unhashed pins them separately (MDRV-04, accepted with PR review in the 2026-11-17 issuance). Restates R11.",
+      "issuedEvidenceAffected": "No: t015.json mdrv04 records the four files unchanged 320b00c4..3de73065.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_containment_macos.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no"
+    },
+    {
+      "id": "T012-14",
+      "codexSeverity": "low",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "residual": "new",
+      "evidence": "contracts/containment-qualification.md:19 says environment.json holds every environment-hash input; scripts/har_t009_attempt.py:788-793 writes ten fields and _environment_document (agent_braid/harness_qualification_probes.py:2668-2680) admits only those keys and no '/' in values. evidence/qualification/t009-20261117c/environment.json lacks the account facts, session kind, supervisor, interpreter and helper pins, component hashes, limits, network and paths that environment_sha256 (agent_braid/harness_containment_macos.py:474) hashes, so the digest can be compared with the records but not recomputed from the bundle.",
+      "issuedEvidenceAffected": "No: environmentSha256 600ba86d... equals the issuance's; this is a contract and implementation gap.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "scripts/har_t009_attempt.py",
+        "agent_braid/harness_qualification_probes.py",
+        "specs/065-native-claude-containment/contracts/containment-qualification.md"
+      ],
+      "bearsOnCurrentNativeRuns": "no"
+    },
+    {
+      "id": "T012-15",
+      "codexSeverity": "low",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "residual": "new",
+      "evidence": "evidence/t015.json:69 'wrong-environment-hash' -> refused:qualification-drift is the record-integrity refusal (edited bytes), the same reason as the edited-record controls (:67-68). The refusal of an intact trusted record against mismatched live facts is environment-drift (agent_braid/harness_containment_macos.py:1389) and has no offline control; 'other-host' (:74) tests host-mismatch; no expiry-boundary control is recorded.",
+      "issuedEvidenceAffected": "No: the controls show what their reasons say; one label overstates what it exercises.",
+      "disposition": "no code change; claim wording corrected in the next re-qualification record, existing records stay as written; add the intact-record environment-drift and injected-clock expiry controls then",
+      "fixLocation": [
+        "specs/065-native-claude-containment/evidence/t015.json (next re-qualification record)"
+      ],
+      "bearsOnCurrentNativeRuns": "no"
+    },
+    {
+      "id": "T012-16",
+      "codexSeverity": "low",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "residual": "new",
+      "evidence": "agent_braid/harness_host_claude.py:405 evaluates event.get('subtype') in _INFO_SYSTEM_SUBTYPES, which raises TypeError for a list or dict subtype (reproduced: _read_stream on a system event with subtype [1] raises TypeError unhashable type 'list'). _read_stream runs after the try around transport.run (agent_braid/harness_host_claude.py:518-524), so run_claude raises instead of recording unknown-event-type.",
+      "issuedEvidenceAffected": "No: it fails closed (no observation, no completion), only without the fixed reason.",
+      "disposition": "deferred-to-next-SPEC-065-requalification-window",
+      "fixLocation": [
+        "agent_braid/harness_host_claude.py"
+      ],
+      "bearsOnCurrentNativeRuns": "no: a crash is a refusal, never a completion"
+    },
+    {
+      "id": "T012-17",
+      "codexSeverity": "low",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "residual": "new",
+      "evidence": "evidence/t009-20261117-result.md:39, evidence/t015.json:46, assurance.json:235, evidence/founder-decisions-20261117.json:23 and evidence/qualification/issuance-2026-11-17.json:31,33 cite 'the 10 % session cap' for NET-05-CLI. The NC-10 probe cap is 2 % (spec.md:417, contracts/containment-qualification.md:81, PROBE_MAX_FIVE_HOUR = 2 at agent_braid/harness_quota.py:65) and settle_probe applied 2 %. Delta 1 meets 2 %, so the issuance's premise ('within caps') holds. The zero-delta deviation from FD-20261114-STANDING is already recorded and was put to the founder (t015.json:46). 'EUR 0' rests on apiKeySource none and extraUsageEnabled false readings, not on a billing statement.",
+      "issuedEvidenceAffected": "No change to the verdict or the issuance: the applied cap (2 %) was met. The founder question misstates the cap; it stays as asked.",
+      "disposition": "no code change; claim wording corrected in the next re-qualification record, existing records stay as written; annotate the cap and limit the spending claim to the recorded observations",
+      "fixLocation": [
+        "specs/065-native-claude-containment/evidence/t009-20261117-result.md",
+        "specs/065-native-claude-containment/evidence/t015.json",
+        "specs/065-native-claude-containment/assurance.json"
+      ],
+      "bearsOnCurrentNativeRuns": "no"
+    },
+    {
+      "id": "T012-18",
+      "codexSeverity": "low",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "residual": "new",
+      "evidence": "assurance.json:529 (SC-010) says 'every probe has a positive uncontained control'. evidence/qualification/t009-20261117c/results.jsonl has 29 live uncontained-control rows and 3 (CRED-05, NET-05-CLI, HOST-01) with control detector-self-test over synthetic streams (agent_braid/harness_qualification_probes.py:1286-1319); the pass rule accepts them but they show no uncontained Claude behaviour. Codex's line 422 is off; the claims are at :529 and :536.",
+      "issuedEvidenceAffected": "No: the pass rule as written is met.",
+      "disposition": "no code change; claim wording corrected in the next re-qualification record, existing records stay as written",
+      "fixLocation": [
+        "specs/065-native-claude-containment/assurance.json"
+      ],
+      "bearsOnCurrentNativeRuns": "no"
+    },
+    {
+      "id": "T012-19",
+      "codexSeverity": "info",
+      "codexResidual": "new",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "info",
+      "residual": "n/a",
+      "evidence": "Reproduced here: shasum -a 256 -c evidence/qualification/t009-20261117c/SHA256SUMS OK for all 7 entries; verify_bundle returns b75020ef348086df7db6a70f1b7ee88598bc0962614dc2c844945fdb00fadbbe; summary passRuleSatisfied true, 32 probes pass, 8 not-applicable exclusions; 93 unique rows. The canonical trusted-record hashes and the refusals of the older issuances were not re-run in this triage (see t015.json negativeControls). Of R1-R17 Codex raised only R8 and R9; both raises are rejected (T012-08, T012-09).",
+      "issuedEvidenceAffected": "No.",
+      "disposition": "no change",
+      "fixLocation": [],
+      "bearsOnCurrentNativeRuns": "no"
+    }
+  ],
+  "summary": {
+    "confirmed": 16,
+    "partial": 3,
+    "rejected": 0,
+    "new": 13,
+    "restatesResidual": {
+      "T012-08": "R8",
+      "T012-09": "R9",
+      "T012-10": "R2",
+      "T012-12": "R4",
+      "T012-13": "R11"
+    },
+    "residualSeverityRaised": []
+  },
+  "issuedEvidenceAssessment": "No finding shows the 2026-11-17 issuance on t009-20261117c to be wrong. T012-01: every session, HOST-01 included, settled within-caps (HOST-01 delta 0). T012-02: the bundle supports the narrower HOST-01 classifier verdict; whether run_claude's stricter checks would pass on that stream was not observed (no stdout kept). The other findings are verifier, wording or design gaps; T012-03 is a deviation from NC-7 that the bundle itself records.",
+  "currentNativeRuns": {
+    "stopRequired": false,
+    "reason": "No finding opens a containment, credential, network or billing path on the live T008/T014 route: those units go through run_claude (stricter stream and terminal checks), the transport's live init kill, the backend's pre-session checks and the quota gates. The two highs are defects of the qualification verifier, not of the runtime path, and in fact the issued bundle is not affected.",
+    "ownerAttention": [
+      "T012-03: session state accumulates in the dedicated config_dir (no NC-7 purge), so later contained sessions can read earlier transcripts. This bears on T014 cross-unit and cross-arm independence. Accepting it as a residual for this window, or purging session-created entries between units as an operator step, is the owner's decision.",
+      "T012-07: effort 'low' is recorded in the manifests but never passed to the CLI; T008/T014 evidence must not claim low effort."
+    ]
+  },
+  "disposition": "No code change in this record. Every code fix touches an environment-hash input or the qualification driver (harness_containment_macos.py, harness_qualification_probes.py, harness_host_claude.py, harness_transport_claude.py, harness_quota.py, scripts/har_t009_attempt.py), which would void the 2026-11-17 issuance, so the fixes are deferred to the next SPEC-065 re-qualification window and should be bundled with R1-R4 and R13 (t012.json codeReview.note). The claim corrections (T012-15, T012-17, T012-18) go into the next re-qualification record.",
+  "ownerDecision": {
+    "status": "pending",
+    "question": "Accept the deferral of T012-01..T012-19 to the next re-qualification window, and decide T012-03 (config_dir session state) for the remaining T008/T014 runs on the 2026-11-17 issuance."
+  },
+  "notHumanReview": true,
+  "humanReview": "pending: the owner's review of the feature (T012) is not done and is not claimed.",
+  "executionAuthorization": false,
+  "limits": "Static, read-only triage of a static model review at one commit, with in-memory checks only. Qualifies nothing, authorizes no native session, says nothing about Codex as a host. Structural checks are not scientific proof."
+}
