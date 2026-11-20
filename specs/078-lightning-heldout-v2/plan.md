@@ -80,9 +80,12 @@ Unchanged. The scorer and promotion stay outside the design.
 
 ## Human review and unresolved decisions
 
-OD-1 to OD-3 decided 2026-11-20. Open, for T003 and the freeze review:
+OD-1 to OD-3 decided 2026-11-20 (OD-1 per-class clause added the same day).
+Open, for T003 and the freeze review: the Gate 2 round, repetition and rollout
+caps.
 
-- the Gate 2 round, repetition and rollout caps;
+Decided:
+
 - the skill's coverage sentence ("it turns every pair into `unknown`") was
   imprecise: the analyzer reports `ordered` and `conflicting` before falling
   back to `unknown` for partial coverage. Owner decision 2026-11-20: correct it

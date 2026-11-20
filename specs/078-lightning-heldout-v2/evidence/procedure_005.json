@@ -7,7 +7,7 @@
   },
   "expected": "each null, scored on the cases it applies to, fails the cases NULLS names and does not meet OD-1 (share and per-class clause) on any split (empty-declaration 0/22, 0/90, 0/36; no-call 0/24, 0/100, 0/40; over-declaration 2/4, 10/20, 4/8; partial-coverage 2/22, 10/90, 4/36; units-kind 2/22, 10/90, 4/36; wrong-base 0/2, 0/10, 0/4); a host following the old HELD-04 read rule, otherwise perfect, scores 22/24, 90/100, 36/40 and does not meet OD-1 because chain-plain falls below half",
   "inputs": {
-    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "211debcb8774c7ae1bb3d61eec3a1f4ec4ce4f94c2938d5afbd0862028b6aac1",
+    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "9ba3424c0aac5697c5c67d5f7e382f6c751e6cda791d36f3faa6145e00703641",
     "scripts/spec069_fixture_workspace.py": "2f300ac845cf477403f7d2946f3c5360f1b58990bcee39aa9430318538bb87e5",
     "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
     "scripts/spec078_gate0.py": "a5d6c03cba5f2791607c22dec2308a8a6dcf5e0cda8d0ded4405ed3d3e8b792d",

@@ -174,12 +174,14 @@ class CoverageSentenceTests(GuidanceCase):
         self.text = SKILL.read_text("utf-8")
         self.aim = next(e for e in documented_examples(self.text) if e["kind"] == "aim")
 
-    def classify(self, *, shared: bool = False, dependency: bool = False) -> str:
+    def classify(self, *, shared: bool = False, read: bool = False, dependency: bool = False) -> str:
         request = copy.deepcopy(self.aim["request"])
         first, second = request["operations"]
         first["effects"]["coverage"]["status"] = "partial"
-        if shared:
+        if shared or read:
             second["effects"]["declared"] = copy.deepcopy(first["effects"]["declared"])
+        if read:
+            second["effects"]["declared"][0]["kind"] = "read"
         if dependency:
             second["dependencies"] = [first["instanceId"]]
         envelope = self.send("aim", request)
@@ -189,12 +191,13 @@ class CoverageSentenceTests(GuidanceCase):
 
     def test_the_sentence_states_the_precedence(self):
         self.assertNotIn("it turns\n  every pair into `unknown`", self.text)
-        self.assertIn("pair that is not ordered by a dependency or conflicting on a shared write then\n  becomes `unknown`",
-                      self.text)
+        self.assertIn("pair that is not ordered by a dependency or conflicting on a file one of them\n  writes then "
+                      "becomes `unknown`", self.text)
 
     def test_the_analyzer_does_what_the_sentence_says(self):
         self.assertEqual(self.classify(), "unknown")
         self.assertEqual(self.classify(shared=True), "conflicting")
+        self.assertEqual(self.classify(read=True), "conflicting")  # one unit reads the file the other writes
         self.assertEqual(self.classify(dependency=True), "ordered")
 
 
