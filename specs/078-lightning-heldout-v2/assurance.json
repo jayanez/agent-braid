@@ -141,9 +141,9 @@
           "given": "the narrowed skill and the SPEC-069 HELD-04 case",
           "id": "SC-001",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_001.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_spec069_guidance.py",
-          "test_name": "DependencyReadRuleTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_001.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec069_guidance.py DependencyReadRuleTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_001",
           "then": "the rule-following answer is valid, a dependency without reads is ordered, and the old-rule answer is invalid",
           "when": "the rule-following and the old-rule answers are sent through analyze-work and scored"
         }
@@ -157,9 +157,9 @@
           "given": "the class plan and templates",
           "id": "SC-002",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_002.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_spec078_set.py",
-          "test_name": "SetTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_002.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_set.py SetTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_002",
           "then": "splits are disjoint, every class is in every split, rebuilding is byte-identical, and v1 overlap is refused",
           "when": "the build script writes the splits"
         }
@@ -173,9 +173,9 @@
           "given": "every v2 case",
           "id": "SC-003",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_003.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_spec078_gate0.py",
-          "test_name": "ReferenceTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_003.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py ReferenceTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_003",
           "then": "every reference is accepted and valid; a wrong reference blocks Gate 0",
           "when": "Gate 0 sends its reference request"
         }
@@ -189,9 +189,9 @@
           "given": "each case's structured facts",
           "id": "SC-004",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_004.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_spec078_gate0.py",
-          "test_name": "LiteralFollowerTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_004.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py LiteralFollowerTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_004",
           "then": "every follower request is valid; removing a pinned rule from the skill fails the pin test",
           "when": "the literal follower builds and sends the request"
         }
@@ -205,9 +205,9 @@
           "given": "the fixed null answers",
           "id": "SC-005",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_005.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_spec078_gate0.py",
-          "test_name": "NullBaselineTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_005.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py NullBaselineTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_005",
           "then": "each fails where it differs and none meets OD-1",
           "when": "they are scored on every split"
         }
@@ -221,9 +221,9 @@
           "given": "an arm result with a 0/3 prompt",
           "id": "SC-006",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_006.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_spec078_analysis.py",
-          "test_name": "ZeroPromptReviewTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_006.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py ZeroPromptReviewTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_006",
           "then": "the verdict is held until the prompt is classified; an instrument finding invalidates the arm",
           "when": "the analysis runs"
         }
@@ -237,9 +237,9 @@
           "given": "the frozen protocol and set",
           "id": "SC-007",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_007.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_spec078_freeze.py",
-          "test_name": "FreezeTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_007.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_freeze.py FreezeTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_007",
           "then": "it runs only when the hashes match the freeze; an edited file or missing freeze is refused",
           "when": "a held-out run starts"
         }
@@ -253,9 +253,9 @@
           "given": "the freeze and the owner's yes for 300 rollouts",
           "id": "SC-008",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_008.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_spec078_analysis.py",
-          "test_name": "AnalysisTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_008.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py AnalysisTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_008",
           "then": "the record holds per-prompt results, Wilson interval, clustered SE, OD-1 verdict and secondary figures",
           "when": "A0 runs on v2-test"
         }
@@ -269,9 +269,9 @@
           "given": "an A0 result that meets OD-1",
           "id": "SC-009",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_009.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_spec078_analysis.py",
-          "test_name": "RegressionSuiteTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_009.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py RegressionSuiteTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_009",
           "then": "it reproduces the recorded verdict",
           "when": "the suite command runs on fake hosts"
         }
@@ -285,9 +285,9 @@
           "given": "an A0 miss",
           "id": "SC-010",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_010.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_lightning_edits.py",
-          "test_name": "BoundedEditTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_010.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_lightning_edits.py BoundedEditTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_010",
           "then": "edits respect the budget, cap and fixed front matter, and only strictly improving edits are kept",
           "when": "the bounded-edit arm runs"
         }
@@ -301,9 +301,9 @@
           "given": "the final Gate 2 candidate and the owner's yes",
           "id": "SC-011",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_011.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_spec078_analysis.py",
-          "test_name": "Gate2EvaluationTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_011.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py Gate2EvaluationTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_011",
           "then": "the paired exact test and v1 comparison are reported; a canary hit invalidates the arm",
           "when": "it runs on v2-test and v1 held-out"
         }
@@ -317,9 +317,9 @@
           "given": "the BL.2b modules",
           "id": "SC-012",
           "obtained_evidence": [],
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_012.json: command, hashes, environment, expected and actual outcome, negative controls.",
-          "test_file": "tests/test_spec078_boundaries.py",
-          "test_name": "BoundaryTests",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_012.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_boundaries.py BoundaryTests.",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_012",
           "then": "no scorer, set or skill writes, no promotion or execution paths, no API key, standard library only",
           "when": "the boundary tests inspect imports and writes"
         }
