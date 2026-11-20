@@ -1,0 +1,81 @@
+{
+  "recordVersion": "spec048-founder-review-v1",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-20",
+  "baseCommit": "01d626bd",
+  "decisionChannel": "Founder answers T012-03-T008 (2026-11-18) and T008-11 (2026-11-20), given to the orchestrator session; T008-11 after native cohort t008-20261120a. Additive; earlier records stay as written. founder-decisions-20261117.json is not edited (scripts/har_t008_unit.py pins its sha256) and stays the record the units ran under.",
+  "supersedes": "Nothing for the authorization: founder-decisions-20261117.json (sha256 171c7a807f1c3f5957262469d3ce660be7718514979dbe17969c8e917d8551c7) stays in force as the record the T008 units were admitted under. This record adds the Claude profile verdict that record left to be decided later from the unit evidence.",
+  "qualificationRecords": {
+    "issuance": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+    "issuanceSha256": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8",
+    "bundle": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/",
+    "bundleSha256": "b75020ef348086df7db6a70f1b7ee88598bc0962614dc2c844945fdb00fadbbe",
+    "containmentSha256": "5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df",
+    "hostSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+    "environmentSha256": "600ba86d00b7ff9a77170f720f78803aa959fc94e42357aab274f246316dc556",
+    "expiresAt": 1797545969
+  },
+  "unitEvidence": {
+    "attempt": "t008-20261120a",
+    "ranAt": "2026-11-20",
+    "report": "/Users/Shared/braid-t008-lab/run-t008-20261120a.txt",
+    "reportSha256": "a5087dc21ad6c16c00cbc7ad43a1a5f81de629e270ecba36608da6568ba4d85f",
+    "reportLocation": "kept outside the repository, referenced by path and hash",
+    "launcherCommit": "62da916b5620d88f9aa9e50d988e8ee59e0e2ce1",
+    "launcherSha256": "c3d62da52c8fba3ec0ef8a510557c1c2672d2d06debb77fc8d267857250f98f2",
+    "summary": "2 of 2 units, completed=true, breach=null, verdict cohort-finished; Claude 2.1.292, model claude-haiku-4-5-20251001; all 6 units of the cap (MAX_UNITS 6) now used"
+  },
+  "decisions": [
+    {
+      "task": "SPEC-048/T008",
+      "item": "Claude profile verdict",
+      "decision": "qualified-with-limits",
+      "ownerStatement": "Qualified with limits (Recommended)",
+      "limits": [
+        "Haiku and subscription route only, EUR 0.",
+        "Bound to the SPEC-065 issuance-2026-11-17 records, which expire 2026-12-17T22:19:29Z.",
+        "Units are not isolated from each other: the config dir is never purged (SPEC-065 T012-03), so there is no cross-unit independence claim.",
+        "No effort-level claim: low effort is never passed to the CLI (T012-07).",
+        "The Codex profile stays refused.",
+        "Partial host qualification does not imply both hosts."
+      ],
+      "detail": "Verdict from the unit evidence of cohort t008-20261120a, run under founder-decisions-20261117.json. Does not by itself admit SPEC-049/T004 and does not qualify Codex."
+    },
+    {
+      "task": "SPEC-048/T008",
+      "item": "Codex profile qualification",
+      "decision": "not-qualified",
+      "ownerStatement": "Unchanged from founder-review-20261031.json: Registralo como no calificado y anota que lo tenemos que revisar antes de considerar cerrado este milestone",
+      "detail": "Codex CLI is not installed; stays refused (T008-11 limit) and must be reviewed again before HAR.1 closes. Not asked again on 2026-11-20."
+    }
+  ],
+  "founderAnswers": [
+    {
+      "id": "T012-03-T008",
+      "answeredAt": "2026-11-18",
+      "topic": "T008 in this window and the never-purged Claude config dir (SPEC-065 T012-03)",
+      "question": "What to do for T008 in this window about the unpurged config dir.",
+      "answer": "Accept, record limit (Recommended)",
+      "terms": "T008 units run in this window with the config dir not purged between units; the limit is recorded: no cross-unit independence claim."
+    },
+    {
+      "id": "T008-11",
+      "answeredAt": "2026-11-20",
+      "topic": "Claude profile verdict after native cohort t008-20261120a",
+      "question": "What verdict do you give the Claude profile?",
+      "answer": "Qualified with limits (Recommended)",
+      "limits": [
+        "Haiku and subscription route only, EUR 0.",
+        "Bound to the SPEC-065 issuance-2026-11-17 records, which expire 2026-12-17T22:19:29Z.",
+        "Units are not isolated from each other: the config dir is never purged (SPEC-065 T012-03), so there is no cross-unit independence claim.",
+        "No effort-level claim: low effort is never passed to the CLI (T012-07).",
+        "The Codex profile stays refused.",
+        "Partial host qualification does not imply both hosts."
+      ],
+      "terms": "executionAuthorization, nativeAdmission and promotionAuthorization stay false."
+    }
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false
+}

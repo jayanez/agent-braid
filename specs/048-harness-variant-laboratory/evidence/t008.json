@@ -1,14 +1,25 @@
 {
-  "candidateBinding": "Current source/input hashes on base 99919eddae66034298931eceda13dd9cf2b4efb7; no frozen implementation commit claimed",
+  "candidateBinding": "Native units ran from the launcher installed at commit 62da916b5620d88f9aa9e50d988e8ee59e0e2ce1 (launcher sha256 c3d62da52c8fba3ec0ef8a510557c1c2672d2d06debb77fc8d267857250f98f2); input hashes recomputed on base 01d626bd, where every listed input is byte-identical to 62da916b",
   "claudeProfileDecision": {
     "codex": "not-qualified: not installed (unchanged)",
-    "decision": "qualification-authorized (T008-6: Mismos términos, nuevos registros)",
+    "configDirDecision": "T012-03-T008 (2026-11-18): Accept, record limit (Recommended)",
+    "decision": "qualified-with-limits (T008-11: Qualified with limits (Recommended), 2026-11-20); units ran under qualification-authorized (T008-6 terms, founder-decisions-20261117.json)",
     "launch": "T008-7: Lanzador root sin GUI (headless root launcher; check passwordless, run with the owner's password)",
+    "limits": [
+      "Haiku and subscription route only, EUR 0.",
+      "Bound to the SPEC-065 issuance-2026-11-17 records, which expire 2026-12-17T22:19:29Z.",
+      "Units are not isolated from each other: the config dir is never purged (SPEC-065 T012-03), so there is no cross-unit independence claim.",
+      "No effort-level claim: low effort is never passed to the CLI (T012-07).",
+      "The Codex profile stays refused.",
+      "Partial host qualification does not imply both hosts."
+    ],
     "record": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261117.json",
-    "scope": "Claude only, the 2026-11-17 issued SPEC-065 records (T008-6 terms moved unchanged from the 2026-11-14 records without a new question, after the founder issued T015 on 2026-11-17: Issue, same terms), D2 caps, EUR 0, subscription route, window 2026-11-09T20:30Z to 2026-11-30, at most 6 serial units for the whole cohort as enforced by scripts/har_t008_unit.py (4 used, 2 left: one for the verdict, one spare for a host failure); the founder raised the cap to 5 on 2026-11-17 (T008-9) and to 6 on 2026-11-18 (T008-10, supersedes T008-9)",
+    "scope": "Claude only, the 2026-11-17 issued SPEC-065 records (T008-6 terms moved unchanged from the 2026-11-14 records without a new question, after the founder issued T015 on 2026-11-17: Issue, same terms), D2 caps, EUR 0, subscription route, window 2026-11-09T20:30Z to 2026-11-30, at most 6 serial units for the whole cohort as enforced by scripts/har_t008_unit.py (all 6 used after cohort t008-20261120a); the founder raised the cap to 5 on 2026-11-17 (T008-9) and to 6 on 2026-11-18 (T008-10, supersedes T008-9)",
     "sha256": "171c7a807f1c3f5957262469d3ce660be7718514979dbe17969c8e917d8551c7",
     "supersedes": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261114.json (sha256 29dc699494674858390e102f800c9e7d1a60fae034baafa7f08002a714738d8c) for the bound records; it superseded founder-decisions-20261113.json (sha256 0132118f9d04c6c39b5b59a879343719168ccb31d2315f4b557ad85feaa6ad5c), which superseded founder-decisions-20261106.json (sha256 6f5394dae371c2c8082153db3ce3ab99fd02d86d4c5372b931c0926f5ce7b4a0) for the Claude profile",
-    "verdict": "not decided: qualified only after native units complete within the caps"
+    "verdict": "qualified with limits: cohort t008-20261120a, 2 of 2 units completed, no breach, within the D2 caps",
+    "verdictRecord": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261120.json",
+    "verdictRecordSha256": "854272506d8371fd711f7f791e82d4efbb6f0e57f0404262177116f2fa4464eb"
   },
   "decisionRecords": {
     "d2Caps": {
@@ -27,7 +38,7 @@
       "source": "origin/develop 99919edd (PR #793); SHA-256 verified equal to the hash bound here"
     }
   },
-  "disposition": "Open: Claude profile decision recorded (qualification-authorized, units authorized) and native wiring built and tested with doubles; no native unit has run, so no qualified verdict and SPEC-049/T004 stays blocked. Codex stays refused.",
+  "disposition": "Closed: Claude profile qualified with limits (founder T008-11, 2026-11-20, founder-decisions-20261120.json) on the evidence of native cohort t008-20261120a (2 of 2 units completed, no breach). Codex stays refused (not installed), as the acceptance allows; partial host qualification does not imply both hosts.",
   "executedChecks": [
     {
       "command": ".venv-speckit/bin/python -m unittest tests.test_harness_hosts -v",
@@ -109,19 +120,20 @@
     "agent_braid/harness_admission.py": "49197a2518d8df9b66658ec6c279d079bc1cf915a9c3570673f524dca60b5901",
     "agent_braid/harness_host_claude.py": "5e117c11ee7940161ab89fac4a23ea9752a1930b8a15f0bbe773b11c4753c95c",
     "agent_braid/harness_hosts.py": "6295ee85c92bab40279ce0497067d4d6bd212c9037b02d30f4b1b00cf18cd3dc",
-    "agent_braid/harness_hosts_native.py": "4094003a800238db3a45360ba38e06ec8393133d047437dcd3a9e78ad569c816",
+    "agent_braid/harness_hosts_native.py": "7158fb9b1b5dfc3582efbd62d7e915c71f1d57e7f6629c0f3835145637314d8d",
     "agent_braid/harness_lab.py": "c6a4f43b6981ceec8ca4690ed9b4e71ae1133c8d323c5bfcce0abe11cd0e3744",
     "agent_braid/harness_manifest.py": "6624d79de56e702062ba02cefb5cab3d6ec7a58b310c3520d7bdbe024df7fe61",
-    "scripts/har_t008_install.sh": "5bf6ec9601c381b67e2387c1146727cd7abc03553a72285747b834f73b6ac2b9",
-    "scripts/har_t008_launch.sh": "0fdf95c02b215e3ec1f3ba0f8362e290d7bd2e7e8b6ce2337bb51194aff7b156",
+    "scripts/har_t008_install.sh": "4579856782d2a20bb668041c3c60d020c81b81af118b29de55d9013b860705e0",
+    "scripts/har_t008_launch.sh": "4ed4a08e0d356f223c1759c56a9e079d05513588a4c69ec1edf36d071695ca5e",
     "scripts/har_t008_unit.py": "de3300736fe705100aab0ed7b0cef095c24c54980a8390b8ee6be09262533645",
     "scripts/har_t009_launch.sh": "b14933019be52e029a6754ce99277f502b626141462129ea9e6a876f4d29f4a4",
     "specs/048-harness-variant-laboratory/contracts/interface.md": "c39fc6a3037c056e826934d4fd2898f171f97e9d6a43fe4fa9d4b04ea8fc7b45",
     "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261117.json": "171c7a807f1c3f5957262469d3ce660be7718514979dbe17969c8e917d8551c7",
+    "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261120.json": "854272506d8371fd711f7f791e82d4efbb6f0e57f0404262177116f2fa4464eb",
     "specs/048-harness-variant-laboratory/evidence/founder-review-20261031.json": "38bedbba82de5c219f3c0a3f6c8f2e3a0309824abeea536862bdc20e3ab4eddc",
     "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
     "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8",
-    "tests/test_har_t008_launch.py": "b5c8d2025bb5b3c47b4e52940cba01a310908eea6636e0b8572847e1af1d9e19",
+    "tests/test_har_t008_launch.py": "03ed31507f02fec0178febbadeccc82fd3c144b98bec667fd7a600a673580824",
     "tests/test_har_t008_unit.py": "4923461cb0f75f7deb5a549e4a830f993dcd0d5d4127ecf4f942262bf31d0d4d",
     "tests/test_harness_hosts.py": "a98ed9b5b1824c497abac262c9a99bc4de0443af9e7d06158f3415f25bc33be5",
     "tests/test_harness_hosts_native.py": "c581693748e321daa18af1ab83999a913ee175da6abbb3cab9acc95279775ac6"
@@ -177,15 +189,64 @@
     "One HostQualificationRun is one cohort. Unit and cohort caps are not persisted across runs; the trusted caller must not restart a cohort to reset them.",
     "ProfileDecision, D2Caps and QuotaObservation are trusted in-process inputs; the run checks their types and host, not that they came from parse_profile_decisions / parse_d2_caps or a real get_usage reading.",
     "A qualified verdict needs one completed unit within caps and no integrity stop; it says nothing about utility, and never about the other host.",
-    "Route is supplied by the caller as 'subscription' when get_usage reports plan status ok; get_usage exposes no route field."
+    "Route is supplied by the caller as 'subscription' when get_usage reports plan status ok; get_usage exposes no route field.",
+    "T008-11 limit: Haiku and subscription route only, EUR 0.",
+    "T008-11 limit: Bound to the SPEC-065 issuance-2026-11-17 records, which expire 2026-12-17T22:19:29Z.",
+    "T008-11 limit: Units are not isolated from each other: the config dir is never purged (SPEC-065 T012-03), so there is no cross-unit independence claim.",
+    "T008-11 limit: No effort-level claim: low effort is never passed to the CLI (T012-07).",
+    "T008-11 limit: The Codex profile stays refused.",
+    "T008-11 limit: Partial host qualification does not imply both hosts."
   ],
   "nativeFeasibility": "Feasible for the Claude profile from 2026-11-06. SPEC-065 supplies the native manifest profile (T003), macOS backend (T005), native ClaudeTransport (T006) and founder-issued containment and host records (T010, #1136, expire 2026-12-06T18:07:44Z). agent_braid/harness_hosts_native.py now wires HostQualificationRun to the transport and backend and builds ContainmentPolicy from exactly the qualified pins; scripts/har_t008_unit.py is the lab driver. Nothing native has run for T008 yet: the weekly all-models window read 81 % on 2026-11-06, above the D2 stop of 80 %, so the first unit waits for the reset at 2026-11-09T20:00Z.",
   "nativeFeasibilityBefore": "Infeasible now with the existing adapters. harness_host_claude.run_claude refuses any non-double transport unless the manifest names host kind 'claude', but harness_manifest parses only the offline profile; no native ClaudeTransport subclass exists; harness_lab offers only simulated containment; and no Claude HostQualification with enforced credential/filesystem/network/process effects has been issued from evidence. The founder authorization requires containment verified before every native session and the brief allows only the containment the adapters already verify, so a native session would have to bypass the adapters or rely on a self-authored qualification record (synthetic evidence). Neither was done.",
+  "obtainedEvidence": {
+    "attempt": "t008-20261120a",
+    "breach": null,
+    "capUsage": "all 6 units of MAX_UNITS 6 used for the whole cohort",
+    "completed": true,
+    "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+    "host": "Claude 2.1.292",
+    "launcherCommit": "62da916b5620d88f9aa9e50d988e8ee59e0e2ce1",
+    "launcherSha256": "c3d62da52c8fba3ec0ef8a510557c1c2672d2d06debb77fc8d267857250f98f2",
+    "model": "claude-haiku-4-5-20251001",
+    "preSessionProbes": {
+      "CRED-01": "denied",
+      "FS-01": "denied",
+      "NET-01": "denied",
+      "NET-06": "allowed",
+      "PROC-01": "denied",
+      "compile": "exec-denied (71 denied, 0 allowed)"
+    },
+    "ranAt": "2026-11-20",
+    "report": "/Users/Shared/braid-t008-lab/run-t008-20261120a.txt",
+    "reportLocation": "kept outside the repository, referenced by path and hash",
+    "reportSha256": "a5087dc21ad6c16c00cbc7ad43a1a5f81de629e270ecba36608da6568ba4d85f",
+    "units": [
+      {
+        "breach": null,
+        "completed": true,
+        "fiveHourDelta": 0,
+        "unit": 1,
+        "wallSeconds": 54,
+        "weeklyDelta": 0
+      },
+      {
+        "breach": null,
+        "completed": true,
+        "fiveHourDelta": 1,
+        "unit": 2,
+        "wallSeconds": 208,
+        "weeklyDelta": 0
+      }
+    ],
+    "unitsPlanned": 2,
+    "unitsRun": 2,
+    "verdict": "cohort-finished"
+  },
   "outcome": "agent_braid/harness_hosts.py: hash-bound parsing of the founder T008 record into independent per-host decisions (Codex not-qualified: not installed; a host without its own decision stays refused) and of the D2 record into exact caps; strict quota observations bound by SHA-256; a serial one-host cohort that, before every unit, requires a fresh, non-regressing reading, refuses on extra usage, non-subscription route, window reset or imminent reset, weekly stop, cohort cap and five-hour headroom, and verifies the Claude containment qualification (reusing harness_host_claude.verify_host_qualification) for environment and expiry through the unit deadline; settlement records deltas, wall time and the first breach and latches a stop. Partial qualification never implies both-host acceptance.",
   "pending": [
-    "Owner install (scripts/har_t008_install.sh rendered by the orchestrator) and the passwordless check after merge",
-    "Native units (at most 4 for the whole cohort, window to 2026-11-30) with before/after readings, then the founder's qualified/not-qualified verdict",
     "Codex profile review before HAR.1 closes",
+    "The Claude verdict is bound to the SPEC-065 issuance-2026-11-17 records; it lapses when they expire at 2026-12-17T22:19:29Z",
     "evidence_snapshot of 048 assurance stays historical at 530a5f39 (authority refreshed to 14187e05 in #1145, see snapshotRefresh; the narrower refresh was reported to the founder)"
   ],
   "snapshotRefresh": {
