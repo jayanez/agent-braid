@@ -5,19 +5,19 @@
    "splits": {
     "feedback": {
      "meetsThreshold": false,
-     "of": 24,
+     "of": 22,
      "passing": 0,
      "wilsonLower": 0.0
     },
     "test": {
      "meetsThreshold": false,
-     "of": 100,
+     "of": 90,
      "passing": 0,
      "wilsonLower": 0.0
     },
     "validation": {
      "meetsThreshold": false,
-     "of": 40,
+     "of": 36,
      "passing": 0,
      "wilsonLower": 0.0
     }
@@ -51,21 +51,21 @@
    "splits": {
     "feedback": {
      "meetsThreshold": false,
-     "of": 24,
-     "passing": 20,
-     "wilsonLower": 0.6415
+     "of": 4,
+     "passing": 2,
+     "wilsonLower": 0.15
     },
     "test": {
      "meetsThreshold": false,
-     "of": 100,
-     "passing": 80,
-     "wilsonLower": 0.7112
+     "of": 20,
+     "passing": 10,
+     "wilsonLower": 0.2993
     },
     "validation": {
      "meetsThreshold": false,
-     "of": 40,
-     "passing": 32,
-     "wilsonLower": 0.6524
+     "of": 8,
+     "passing": 4,
+     "wilsonLower": 0.2152
     }
    },
    "unexpectedPasses": []
@@ -74,21 +74,44 @@
    "splits": {
     "feedback": {
      "meetsThreshold": false,
-     "of": 24,
+     "of": 22,
      "passing": 2,
-     "wilsonLower": 0.0232
+     "wilsonLower": 0.0253
     },
     "test": {
      "meetsThreshold": false,
-     "of": 100,
+     "of": 90,
      "passing": 10,
-     "wilsonLower": 0.0552
+     "wilsonLower": 0.0615
     },
     "validation": {
      "meetsThreshold": false,
-     "of": 40,
+     "of": 36,
      "passing": 4,
-     "wilsonLower": 0.0396
+     "wilsonLower": 0.0441
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "units-kind": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 22,
+     "passing": 2,
+     "wilsonLower": 0.0253
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 90,
+     "passing": 10,
+     "wilsonLower": 0.0615
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 36,
+     "passing": 4,
+     "wilsonLower": 0.0441
     }
    },
    "unexpectedPasses": []
@@ -97,24 +120,44 @@
    "splits": {
     "feedback": {
      "meetsThreshold": false,
-     "of": 24,
+     "of": 2,
      "passing": 0,
      "wilsonLower": 0.0
     },
     "test": {
      "meetsThreshold": false,
-     "of": 100,
+     "of": 10,
      "passing": 0,
      "wilsonLower": 0.0
     },
     "validation": {
      "meetsThreshold": false,
-     "of": 40,
+     "of": 4,
      "passing": 0,
      "wilsonLower": 0.0
     }
    },
    "unexpectedPasses": []
+  }
+ },
+ "oldReadRuleStrategy": {
+  "feedback": {
+   "meetsThreshold": false,
+   "of": 24,
+   "passing": 22,
+   "wilsonLower": 0.7415
+  },
+  "test": {
+   "meetsThreshold": false,
+   "of": 100,
+   "passing": 90,
+   "wilsonLower": 0.8256
+  },
+  "validation": {
+   "meetsThreshold": false,
+   "of": 40,
+   "passing": 36,
+   "wilsonLower": 0.7695
   }
  },
  "partialControls": [],

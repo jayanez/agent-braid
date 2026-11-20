@@ -10,7 +10,7 @@
     21,
     23
   ],
-  "assumptions": "The SPEC-069 scorer and fixture workspace are reused unchanged; the SPEC-071 runner on the claude-code subscription route is available; model pinned to claude-sonnet-5-5; owner decisions D1-D4 and OD-1 to OD-3 (2026-11-18/20) apply.",
+  "assumptions": "The SPEC-069 scorer and fixture workspace are reused unchanged; the SPEC-071 runner on the claude-code subscription route is available; model pinned to claude-sonnet-5-5; owner decisions D1-D4 and OD-1 to OD-3 (2026-11-18/20, OD-1 per-class clause added 2026-11-20) apply.",
   "authority_snapshot": {
     "commit": null,
     "hashes": {
@@ -116,7 +116,7 @@
   "execution_contract": "executionAuthorization stays false; rollouts use SPEC-071 disposable profiles, an OS sandbox and the host subscription route only; any *_API_KEY in a child environment is refused; extra cash spend EUR 0; every real run needs the owner's yes on the stated rollout count. No candidate is promoted.",
   "human_review": "pending",
   "hypotheses": "H-A0: the shipped guidance meets the OD-1 threshold on the v2 test split. H-G2 (only if H-A0 is not supported): the Gate 2 candidate beats A0 on the test split by the paired exact test at alpha 0.05 without regressing on SPEC-069 v1. A null or negative result completes the protocol.",
-  "observation_contract": "Per-trial validFirstAttempt from scripts/spec069_scoring.score_case on stored content-free parsed attempts; per-prompt pass = at least 2 of 3 repetitions valid.",
+  "observation_contract": "Per-trial validFirstAttempt from scripts/spec069_scoring.score_case on stored content-free parsed attempts; per-prompt pass = at least 2 of 3 repetitions valid; A0 meets OD-1 when the Wilson 95% lower bound of the passing share is at least 0.80, every class has at least half its prompts passing, and no prompt is 0/3 after review.",
   "references": [
     "CONSTITUTION.md",
     "GOVERNANCE.md",
@@ -194,7 +194,7 @@
               "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_003.json",
-              "sha256": "6d081c07ae87609d59c4818b15354b05fd295c4414a697523ec0dfffe508de73"
+              "sha256": "be8d035746a8b5034a82b5b4fae8a357f4dff7ca96fa1c2726c95f5ce48932f0"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_003.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py ReferenceTests.",
@@ -215,10 +215,10 @@
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m scripts.spec078_gate0 --json specs/078-lightning-heldout-v2/evidence/gate0-report.json && .venv-speckit/bin/python -m unittest tests.test_spec078_gate0",
-              "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
+              "limits": "Deterministic check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture. The follower copies the skill's examples, but each rule's meaning is hand-coded: the pins catch removal or rewording of the twelve pinned sentences, not an added sentence that contradicts a rule. It shows the guidance can be satisfied, not that hosts follow it.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_004.json",
-              "sha256": "eab75f2d2d4b98081a9b5dd3de346896128a41ff877173268caa6cc79b2e7c71"
+              "sha256": "edaf5e83984f630af9181a862a418f0a2600bf906cff884063c7eb72de3636bf"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_004.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py LiteralFollowerTests.",
@@ -242,7 +242,7 @@
               "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_005.json",
-              "sha256": "2a7ae3f67584444dd46cb401fadc393ed1ec0b00e4c5d2054c062aa6aa9df753"
+              "sha256": "b118a7b9be2d9a695657ff40f9224e5b386564168e617d86526e8f6692e64f50"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_005.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py NullBaselineTests.",

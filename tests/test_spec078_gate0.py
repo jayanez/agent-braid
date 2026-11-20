@@ -57,7 +57,7 @@ class Gate0Tests(unittest.TestCase):
             problems = gate0.pin_problems(self.skill.replace(sentence, "(removed)"))
             self.assertTrue(any(repr(name) in p for p in problems), name)
 
-    def test_the_old_read_rule_breaks_the_pins_and_chain_plain_cases(self):
+    def test_the_old_read_rule_breaks_the_pins_and_its_answer_fails_chain_plain(self):
         new = ("`dependencies`; the dependency alone orders the two units. Declare a `read`\n"
                "  of a file the other unit writes only when the user says this unit uses that\n"
                "  file's content, for example code that reads a setting the other unit adds.\n"
@@ -72,13 +72,22 @@ class Gate0Tests(unittest.TestCase):
 
     def test_the_follower_copies_the_skill_example(self):
         case = self.first("chain-read")
-        kind, request = gate0.follower_request(case, self.skill, "<repo>")
+        kind, request = gate0.follower_request(case, gate0.examples(self.skill), "<repo>")
         example = gate0.examples(self.skill)["aim"]
         self.assertEqual(kind, "aim")
         self.assertEqual(request["analysisInputVersion"], example["analysisInputVersion"])
         self.assertEqual(request["operations"][0]["evidence"], example["operations"][0]["evidence"])
         reads = [e for op in request["operations"] for e in op["effects"]["declared"] if e["kind"] == "read"]
         self.assertEqual(len(reads), 1)
+
+    def test_the_kind_comes_from_the_prompt_wording(self):
+        self.assertEqual(gate0.kind_from_prompt(self.first("git")["prompt"]), "git")
+        self.assertEqual(gate0.kind_from_prompt(self.first("disjoint")["prompt"]), "aim")
+        self.assertEqual(gate0.kind_from_prompt("Give me a quick conflict check by path."), "units")
+        case = copy.deepcopy(self.first("disjoint"))
+        case["prompt"] += " Each change lives on its own branch."
+        with self.assertRaisesRegex(gate0.Gate0Error, "reads as kind 'git'"):
+            gate0.follower_request(case, gate0.examples(self.skill), "<repo>")
 
     # REQ-005
     def test_null_baselines_fail_their_classes_and_never_meet_the_threshold(self):
@@ -89,15 +98,41 @@ class Gate0Tests(unittest.TestCase):
                 self.assertFalse(row["meetsThreshold"], f"{name} {split}")
         self.assertTrue(self.report["passed"])
 
-    def test_a_null_that_passes_a_case_it_must_fail_is_reported(self):
-        case = self.first("disjoint")
-        sets = self.small(case["id"])
-        for pair in sets["test"][0]["expect"]["pairs"]:  # make "always partial" the right answer
-            pair.update(classification="unknown", constraints=["serialize-unless-stronger-evidence"])
-        report = gate0.run(sets, self.skill)
-        self.assertIn(case["id"], report["nulls"]["partial-coverage"]["unexpectedPasses"])
+    def test_the_units_null_agrees_with_partial_coverage(self):
+        for split, rows in self.report["nulls"]["units-kind"]["splits"].items():
+            self.assertEqual(rows, self.report["nulls"]["partial-coverage"]["splits"][split], split)
+
+    def test_a_null_that_meets_the_threshold_fails_gate0(self):
+        # over-declaration is right on chain-read cases; alone they push its Wilson bound over 0.80
+        reads = [copy.deepcopy(c) for cases in self.sets.values() for c in cases if c["class"] == "chain-read"]
+        self.assertGreaterEqual(len(reads), 16)  # 16/16 gives a Wilson lower bound of 0.806
+        report = gate0.run({"feedback": [], "validation": [], "test": reads}, self.skill)
+        row = report["nulls"]["over-declaration"]["splits"]["test"]
+        self.assertEqual(report["nulls"]["over-declaration"]["unexpectedPasses"], [])
+        self.assertTrue(row["meetsThreshold"], row)
         self.assertFalse(report["passed"])
 
+    def test_the_old_read_rule_strategy_never_meets_od1(self):
+        rows = self.report["oldReadRuleStrategy"]
+        self.assertEqual(set(rows), {"feedback", "validation", "test"})
+        self.assertGreaterEqual(rows["test"]["wilsonLower"], 0.80)  # the share alone would pass ...
+        self.assertFalse(rows["test"]["meetsThreshold"])           # ... the per-class clause does not
+
+    def test_od1_needs_the_share_and_every_class(self):
+        self.assertTrue(gate0.meets_od1([("a", True)] * 18 + [("b", True)] * 2)[0])
+        self.assertFalse(gate0.meets_od1([("a", True)] * 18 + [("b", False)] * 2)[0])  # class b below half
+        self.assertFalse(gate0.meets_od1([("a", True)] * 7 + [("a", False)] * 3)[0])   # share too low
+        self.assertFalse(gate0.meets_od1([])[0])
+
+    def test_a_null_that_passes_a_case_it_must_fail_is_reported(self):
+        case = self.first("chain-plain")
+        sets = self.small(case["id"])
+        unit = sets["test"][0]["expect"]["units"][1]  # make the old rule's read part of the expectation
+        first = sets["test"][0]["expect"]["units"][0]["effects"][0]["resource"]
+        unit["effects"].append({"kind": "read", "resource": first})
+        report = gate0.run(sets, self.skill)
+        self.assertIn(case["id"], report["nulls"]["over-declaration"]["unexpectedPasses"])
+        self.assertFalse(report["passed"])
 
 if __name__ == "__main__":
     unittest.main()

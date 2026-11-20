@@ -9,8 +9,10 @@ workspace and scores the result with the unchanged ``scripts/spec069_scoring.py`
 * **literal follower** (REQ-004): the request the analyze skill prescribes when followed literally. It copies
   the skill's own documented example of the kind and changes only what the case's facts define, applying the
   rules in ``RULES``; each rule is pinned to its sentence in the skill (``pin_problems``).
-* **null baselines** (REQ-005): deterministic wrong answers, each scored once on the cases of its kind; each
-  must fail the classes listed in ``NULLS`` and none may meet the OD-1 threshold on any split.
+* **null baselines** (REQ-005): deterministic wrong answers, each scored once on the cases it applies to
+  (``NULLS``); each must fail the cases ``NULLS`` names, and none may meet the OD-1 threshold, taken over the
+  cases it was scored on, in any split. A host that follows the old HELD-04 read rule and is otherwise
+  perfect (``oldReadRuleStrategy``) must not meet OD-1 either, which the per-class clause guarantees.
 
     python -m scripts.spec078_gate0 [--json <report path>]   # exit 0 only if every check passes
 """
@@ -30,8 +32,7 @@ from agent_braid.tooling_mcp import ToolingConfig, ToolingService
 from scripts import spec069_fixture_workspace, spec069_scoring
 from scripts.spec078_build_set import OUT, SKILL, SPLITS
 
-PASS_MIN = 2           # OD-1: a prompt passes when at least 2 of its 3 repetitions are valid
-WILSON_LB_MIN = 0.80   # OD-1: A0 meets the threshold when the Wilson 95 % lower bound is at least this
+WILSON_LB_MIN = 0.80   # OD-1: Wilson 95 % lower bound of the passing share; see meets_od1
 EXAMPLE = re.compile(r"```json kind=(\w+) result=\S+ constraints=\S+\n(.*?)```", re.S)
 REPOSITORY_PLACEHOLDER = "<workspace root directory>"
 
@@ -51,6 +52,18 @@ RULES = {
     "git-repository": "`repository` is the registered workspace's root directory.",
     "git-attempts": "each `attemptId` must differ from the others",
 }
+
+
+def meets_od1(passes: list[tuple[str, bool]]) -> tuple[bool, float]:
+    """OD-1 over ``(class, passed)`` per prompt: Wilson 95 % lower bound of the passing share at least 0.80 and
+    every class with at least half its prompts passing (owner decision 2026-11-20)."""
+    if not passes:
+        return False, 0.0
+    low = spec069_scoring.wilson_interval(sum(ok for _, ok in passes), len(passes))[0]
+    by_class: dict[str, list[bool]] = {}
+    for cls, ok in passes:
+        by_class.setdefault(cls, []).append(ok)
+    return low >= WILSON_LB_MIN and all(2 * sum(v) >= len(v) for v in by_class.values()), low
 
 
 class Gate0Error(ValueError):
@@ -76,11 +89,27 @@ def _digest(char: str) -> str:
     return "sha256:" + char * 64
 
 
-def follower_request(case: dict, skill_text: str, repository: str) -> tuple[str, dict]:
-    """The request the skill prescribes for the case's facts when followed literally."""
+GIT_WORDS = re.compile(r"\b(branch|branches|worktree|worktrees)\b", re.I)
+UNITS_WORDS = re.compile(r"\bquick\b.*\bby path\b|\bwithout digests\b", re.I | re.S)
+
+
+def kind_from_prompt(text: str) -> str:
+    """The kind table read literally: branches or worktrees mean `git`, a quick check by path means `units`,
+    work on named files means `aim`."""
+    if GIT_WORDS.search(text):
+        return "git"
+    if UNITS_WORDS.search(text):
+        return "units"
+    return "aim"
+
+
+def follower_request(case: dict, shown: dict, repository: str) -> tuple[str, dict]:
+    """The request the skill prescribes when followed literally; ``shown`` is ``examples(skill_text)``."""
     facts = case["facts"]
-    shown = examples(skill_text)
-    if facts["kind"] == "git":  # rule kind-git
+    kind = kind_from_prompt(case["prompt"])  # rules kind-aim, kind-git
+    if kind != facts["kind"]:
+        raise Gate0Error(f"{case['id']}: the prompt reads as kind {kind!r}, the facts say {facts['kind']!r}")
+    if kind == "git":
         request = copy.deepcopy(shown["git"])  # rule copy-example
         template = request["operations"][0]
         request["repository"] = repository  # rule git-repository
@@ -101,8 +130,8 @@ def follower_request(case: dict, skill_text: str, repository: str) -> tuple[str,
         op = copy.deepcopy(template)
         op.update(instanceId=unit["key"], attemptId=unit["key"] + "-1",  # rule distinct-ids
                   dependencies=list(unit["after"]))  # rule dependency
-        op["definition"]["digest"] = _digest("0123456789"[index])
-        op["inputDigest"] = _digest("abcdef"[index])
+        op["definition"]["digest"] = _digest("0123456789"[index % 10])
+        op["inputDigest"] = _digest("abcdef"[index % 6])
         declared = [{"kind": e["kind"], "resource": "repo://workspace/" + e["path"]}  # declare-effects, resource-form
                     for e in unit["effects"]]
         declared += [{"kind": "read", "resource": "repo://workspace/" + p} for p in unit["uses"]]  # read-only-for-content
@@ -146,7 +175,8 @@ def _null_partial(case, repository):
 
 def _null_overdeclare(case, repository):
     kind, request = reference_request(case, repository)
-    writes = {u["key"]: [e["resource"] for e in u["effects"] if e["kind"] != "read"] for u in case["expect"]["units"]}
+    writes = {u["key"]: [e["resource"] for e in u["effects"] if e["kind"] in spec069_scoring.WRITE_LIKE]
+              for u in case["expect"]["units"]}
     for op, unit in zip(request["operations"], case["expect"]["units"]):
         have = {e["resource"] for e in op["effects"]["declared"]}
         for dep in unit["dependsOn"]:
@@ -162,15 +192,37 @@ def _null_wrong_base(case, repository):
     return kind, request
 
 
+def _null_units(case, repository):
+    """The `units` kind with the expected effects: the scorer accepts it for an `aim` case, and the analyzer
+    always records partial coverage for it, so it must agree with `partial-coverage`."""
+    units = [{"id": u["key"], "dependencies": list(u["dependsOn"]),
+              "effects": [{"kind": e["kind"], "resource": e["resource"]} for e in u["effects"] if not e.get("optional")]}
+             for u in case["expect"]["units"]]
+    return "units", {"unitsRequestVersion": "0.1.0-alpha", "units": units}
+
+
+def _has_independent_pair(case: dict) -> bool:
+    return any(p["classification"] == "independent-candidate" for p in case["expect"]["pairs"])
+
+
+def _any(case: dict) -> bool:
+    return True
+
+
+# name -> (classes it is scored on, builder, which scored cases it must fail). A null is scored only where it
+# means something, and its OD-1 share is taken over those cases.
 NULLS = {
-    "no-call": (None, None, None),  # every case; scored without a request
-    "empty-declaration": ("aim", _null_empty, None),  # None: every case of its kind
-    "partial-coverage": ("aim", _null_partial,
-                         {"disjoint", "shared-write", "read-write", "delete", "chain-read", "chain-plain",
-                          "mixed-overlap", "deploy"}),
-    "over-declaration": ("aim", _null_overdeclare, {"chain-plain"}),
-    "wrong-base": ("git", _null_wrong_base, None),
+    "no-call": (None, None, _any),  # every case; scored without a request
+    "empty-declaration": ({"aim"}, _null_empty, _any),
+    "partial-coverage": ({"aim"}, _null_partial, _has_independent_pair),
+    "units-kind": ({"aim"}, _null_units, _has_independent_pair),
+    "over-declaration": ({"chain-read", "chain-plain"}, _null_overdeclare, lambda c: c["class"] == "chain-plain"),
+    "wrong-base": ({"git"}, _null_wrong_base, _any),
 }
+
+
+def _scored_on(case: dict, scope: set[str] | None) -> bool:
+    return scope is None or case["expect"]["kind"] in scope or case["class"] in scope
 
 
 # ----------------------------------------------------------------------------
@@ -207,7 +259,8 @@ def run(sets: dict[str, list[dict]] | None = None, skill_text: str | None = None
     sets = load_sets() if sets is None else sets
     skill_text = SKILL.read_text("utf-8") if skill_text is None else skill_text
     report = {"pins": pin_problems(skill_text), "references": [], "partialControls": [], "follower": [],
-              "nulls": {}, "passed": False}
+              "nulls": {}, "oldReadRuleStrategy": {}, "passed": False}
+    shown = examples(skill_text) if not report["pins"] else {}
     analyzer = Analyzer()
     repo = str(analyzer.repository)
     try:
@@ -221,30 +274,40 @@ def run(sets: dict[str, list[dict]] | None = None, skill_text: str | None = None
                     if ok:
                         report["partialControls"].append({"id": case["id"], "reasons": ["complete variant valid"]})
                 if not report["pins"]:
-                    ok, why = analyzer.valid(case, *follower_request(case, skill_text, repo))
+                    try:
+                        ok, why = analyzer.valid(case, *follower_request(case, shown, repo))
+                    except Gate0Error as error:
+                        ok, why = False, [str(error)]
                     if not ok:
                         report["follower"].append({"id": case["id"], "reasons": why})
-        for name, (kind, build, must_fail) in NULLS.items():
+        for name, (scope, build, must_fail) in NULLS.items():
             per_split, unexpected = {}, []
             for split, cases in sets.items():
-                passing = 0
-                for case in cases:
-                    if kind is not None and case["expect"]["kind"] != kind:
-                        continue
+                scored = [c for c in cases if _scored_on(c, scope)]
+                passes = []
+                for case in scored:
                     ok = False if build is None else analyzer.valid(case, *build(case, repo))[0]
-                    passing += ok
-                    if ok and (must_fail is None or case["class"] in must_fail):
+                    passes.append((case["class"], ok))
+                    if ok and must_fail(case):
                         unexpected.append(case["id"])
-                low = spec069_scoring.wilson_interval(passing, len(cases))[0] if cases else 0.0
-                per_split[split] = {"passing": passing, "of": len(cases), "wilsonLower": round(low, 4),
-                                    "meetsThreshold": low >= WILSON_LB_MIN}
+                meets, low = meets_od1(passes)
+                per_split[split] = {"passing": sum(ok for _, ok in passes), "of": len(scored),
+                                    "wilsonLower": round(low, 4), "meetsThreshold": meets}
             report["nulls"][name] = {"splits": per_split, "unexpectedPasses": unexpected}
+        # A host that follows the old HELD-04 read rule and is otherwise perfect must not meet OD-1.
+        for split, cases in sets.items():
+            passes = [(c["class"], analyzer.valid(c, *(_null_overdeclare(c, repo) if c["expect"]["kind"] == "aim"
+                                                        else reference_request(c, repo)))[0]) for c in cases]
+            meets, low = meets_od1(passes)
+            report["oldReadRuleStrategy"][split] = {"passing": sum(ok for _, ok in passes), "of": len(cases),
+                                                    "wilsonLower": round(low, 4), "meetsThreshold": meets}
     finally:
         analyzer.close()
     report["passed"] = (not report["pins"] and not report["references"] and not report["partialControls"]
                         and not report["follower"]
                         and all(not n["unexpectedPasses"] and not any(s["meetsThreshold"] for s in n["splits"].values())
-                                for n in report["nulls"].values()))
+                                for n in report["nulls"].values())
+                        and not any(s["meetsThreshold"] for s in report["oldReadRuleStrategy"].values()))
     return report
 
 
