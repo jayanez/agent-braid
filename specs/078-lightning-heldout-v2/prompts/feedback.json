@@ -1,0 +1,2382 @@
+{
+ "setId": "spec078-held-out-v2-feedback",
+ "split": "feedback",
+ "cases": [
+  {
+   "id": "V2F-001",
+   "class": "disjoint",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one edits config/production.yaml. Task two edits scripts/build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-002",
+   "class": "disjoint",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "LICENSE"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one edits src/db.py. Task two edits LICENSE. Task three edits scripts/old_build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "LICENSE"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-003",
+   "class": "disjoint",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/cli.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/faq.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one edits src/cli.py. Task two edits docs/faq.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/cli.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/faq.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-004",
+   "class": "shared-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/cli.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one edits src/utils.py. Task two edits src/utils.py. Task three edits src/cli.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/cli.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-005",
+   "class": "shared-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "CHANGELOG.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "CHANGELOG.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/guide.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one edits CHANGELOG.md. Task two edits CHANGELOG.md. Task three edits docs/guide.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "CHANGELOG.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "CHANGELOG.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/guide.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-006",
+   "class": "shared-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one edits docs/api.md. Task two edits docs/api.md. Task three edits src/api.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/api.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-007",
+   "class": "read-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one edits src/db.py. Task two only looks at src/db.py and leaves it unchanged. Task three edits scripts/old_build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-008",
+   "class": "read-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one edits src/db.py. Task two only looks at src/db.py and leaves it unchanged. Task three edits docs/api.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-009",
+   "class": "read-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one edits docs/api.md. Task two only looks at docs/api.md and leaves it unchanged. Task three edits src/api.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/api.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-010",
+   "class": "delete",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "src/api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "LICENSE"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one removes the file src/api.py from the repository. Task two edits LICENSE. Task three edits config/production.yaml.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "src/api.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "LICENSE"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-011",
+   "class": "delete",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/faq.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "README.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one removes the file config/production.yaml from the repository. Task two edits docs/faq.md. Task three edits README.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/faq.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "README.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-012",
+   "class": "delete",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "src/legacy.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "README.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one removes the file src/legacy.py from the repository. Task two edits scripts/build.sh. Task three edits README.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "src/legacy.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/build.sh"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "README.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-013",
+   "class": "chain-read",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/legacy.py"
+       }
+      ],
+      "uses": [
+       "src/utils.py"
+      ],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, work out how the following tasks relate to each other. Task one edits src/utils.py. Task two edits src/legacy.py so that it uses what Task one puts into src/utils.py. Task two cannot begin until Task one is done. Task three edits scripts/old_build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/legacy.py"
+       },
+       {
+        "kind": "read",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-014",
+   "class": "chain-read",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [
+       "docs/api.md"
+      ],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/legacy.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, work out how the following tasks relate to each other. Task one edits docs/api.md. Task two edits scripts/old_build.sh so that it uses what Task one puts into docs/api.md. Task two cannot begin until Task one is done. Task three edits src/legacy.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       },
+       {
+        "kind": "read",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/legacy.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-015",
+   "class": "chain-plain",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/cli.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, work out how the following tasks relate to each other. Task one edits config/production.yaml. Task two edits scripts/old_build.sh. Task two cannot begin until Task one is done. Task three edits src/cli.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/cli.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-016",
+   "class": "chain-plain",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/cli.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, work out how the following tasks relate to each other. Task one edits src/utils.py. Task two edits scripts/old_build.sh. Task two cannot begin until Task one is done. Task three edits src/cli.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/cli.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-017",
+   "class": "mixed-overlap",
+   "facts": {
+    "kind": "aim",
+    "question": "overlap",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "README.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "README.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Could these tasks overlap? Check with Agent Braid. Task one removes the file README.md from the repository. Task two edits src/db.py. Task three edits README.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "README.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "README.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-018",
+   "class": "mixed-overlap",
+   "facts": {
+    "kind": "aim",
+    "question": "overlap",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/faq.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Could these tasks overlap? Check with Agent Braid. Task one removes the file src/db.py from the repository. Task two edits docs/faq.md. Task three edits src/db.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/faq.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-019",
+   "class": "git",
+   "facts": {
+    "kind": "git",
+    "base": "main",
+    "units": [
+     {
+      "key": "a",
+      "branch": "docs-api",
+      "after": []
+     },
+     {
+      "key": "b",
+      "branch": "src-db",
+      "after": []
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the fixture repository may have its branches docs-api and src-db developed at the same time. Every branch starts from main.",
+   "expect": {
+    "kind": "git",
+    "baseRevision": "main",
+    "units": [
+     {
+      "key": "a",
+      "revision": "docs-api",
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "revision": "src-db",
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-020",
+   "class": "git",
+   "facts": {
+    "kind": "git",
+    "base": "main",
+    "units": [
+     {
+      "key": "a",
+      "branch": "readme-intro",
+      "after": []
+     },
+     {
+      "key": "b",
+      "branch": "src-cli",
+      "after": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "branch": "src-db",
+      "after": []
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the fixture repository may have its branches readme-intro, src-cli and src-db developed at the same time. Every branch starts from main. Branch src-cli cannot begin until branch readme-intro is done.",
+   "expect": {
+    "kind": "git",
+    "baseRevision": "main",
+    "units": [
+     {
+      "key": "a",
+      "revision": "readme-intro",
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "revision": "src-cli",
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "revision": "src-db",
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-021",
+   "class": "partial",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "tests/test_api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": true
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "LICENSE"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one edits tests/test_api.py and may change other files as well. Task two edits LICENSE.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "tests/test_api.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "LICENSE"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-022",
+   "class": "partial",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/faq.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": true
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/cli.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one edits docs/faq.md and may change other files as well. Task two edits src/cli.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/faq.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/cli.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-023",
+   "class": "deploy",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "CHANGELOG.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "tests/test_api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one deploys config/production.yaml. Task two edits CHANGELOG.md. Task three edits tests/test_api.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "CHANGELOG.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "tests/test_api.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2F-024",
+   "class": "deploy",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "With Agent Braid, find out if the following tasks may run at the same time. Task one deploys config/production.yaml. Task two edits scripts/build.sh. Task three edits src/db.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/build.sh"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

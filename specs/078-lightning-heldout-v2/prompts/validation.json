@@ -1,0 +1,3992 @@
+{
+ "setId": "spec078-held-out-v2-validation",
+ "split": "validation",
+ "cases": [
+  {
+   "id": "V2V-001",
+   "class": "disjoint",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "README.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "tests/test_api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of config/staging.yaml. Change B rewrites part of README.md. Change C rewrites part of tests/test_api.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "README.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "tests/test_api.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-002",
+   "class": "disjoint",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/legacy.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "tests/test_api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of src/legacy.py. Change B rewrites part of tests/test_api.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/legacy.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "tests/test_api.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-003",
+   "class": "disjoint",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "LICENSE"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of src/db.py. Change B rewrites part of config/staging.yaml. Change C rewrites part of LICENSE.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "LICENSE"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-004",
+   "class": "disjoint",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/faq.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of docs/faq.md. Change B rewrites part of src/db.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/faq.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-005",
+   "class": "shared-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/guide.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of src/utils.py. Change B rewrites part of src/utils.py. Change C rewrites part of docs/guide.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/guide.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-006",
+   "class": "shared-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of src/utils.py. Change B rewrites part of src/utils.py. Change C rewrites part of config/production.yaml.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-007",
+   "class": "shared-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "README.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "README.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/faq.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of README.md. Change B rewrites part of README.md. Change C rewrites part of docs/faq.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "README.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "README.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/faq.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-008",
+   "class": "shared-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "CHANGELOG.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "CHANGELOG.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of CHANGELOG.md. Change B rewrites part of CHANGELOG.md. Change C rewrites part of scripts/build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "CHANGELOG.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "CHANGELOG.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-009",
+   "class": "read-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/guide.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of scripts/old_build.sh. Change B reads scripts/old_build.sh for reference without modifying it. Change C rewrites part of docs/guide.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/guide.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-010",
+   "class": "read-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of config/staging.yaml. Change B reads config/staging.yaml for reference without modifying it. Change C rewrites part of scripts/old_build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-011",
+   "class": "read-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "path": "scripts/build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/guide.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of scripts/build.sh. Change B reads scripts/build.sh for reference without modifying it. Change C rewrites part of docs/guide.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/build.sh"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "resource": "scripts/build.sh"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/guide.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-012",
+   "class": "read-write",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of config/production.yaml. Change B reads config/production.yaml for reference without modifying it. Change C rewrites part of src/utils.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "read",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-013",
+   "class": "delete",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "README.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A deletes config/staging.yaml. Change B rewrites part of README.md. Change C rewrites part of scripts/build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "README.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-014",
+   "class": "delete",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "CHANGELOG.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/cli.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "tests/test_api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A deletes CHANGELOG.md. Change B rewrites part of src/cli.py. Change C rewrites part of tests/test_api.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "CHANGELOG.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/cli.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "tests/test_api.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-015",
+   "class": "delete",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "LICENSE"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A deletes src/utils.py. Change B rewrites part of LICENSE. Change C rewrites part of docs/api.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "LICENSE"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-016",
+   "class": "delete",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "src/cli.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/guide.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/faq.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A deletes src/cli.py. Change B rewrites part of docs/guide.md. Change C rewrites part of docs/faq.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "src/cli.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/guide.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/faq.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-017",
+   "class": "chain-read",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [
+       "config/production.yaml"
+      ],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid to describe the ordering and conflicts among these changes. Change A rewrites part of config/production.yaml. Change B rewrites part of src/utils.py and relies on the contents Change A writes to config/production.yaml. Change B has to wait for Change A to finish first. Change C rewrites part of scripts/build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       },
+       {
+        "kind": "read",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-018",
+   "class": "chain-read",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/api.py"
+       }
+      ],
+      "uses": [
+       "docs/api.md"
+      ],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid to describe the ordering and conflicts among these changes. Change A rewrites part of docs/api.md. Change B rewrites part of src/api.py and relies on the contents Change A writes to docs/api.md. Change B has to wait for Change A to finish first. Change C rewrites part of src/db.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/api.py"
+       },
+       {
+        "kind": "read",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-019",
+   "class": "chain-read",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/cli.py"
+       }
+      ],
+      "uses": [
+       "src/utils.py"
+      ],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid to describe the ordering and conflicts among these changes. Change A rewrites part of src/utils.py. Change B rewrites part of src/cli.py and relies on the contents Change A writes to src/utils.py. Change B has to wait for Change A to finish first. Change C rewrites part of scripts/build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/cli.py"
+       },
+       {
+        "kind": "read",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-020",
+   "class": "chain-read",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/legacy.py"
+       }
+      ],
+      "uses": [
+       "docs/api.md"
+      ],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid to describe the ordering and conflicts among these changes. Change A rewrites part of docs/api.md. Change B rewrites part of src/legacy.py and relies on the contents Change A writes to docs/api.md. Change B has to wait for Change A to finish first. Change C rewrites part of src/api.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/legacy.py"
+       },
+       {
+        "kind": "read",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/api.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-021",
+   "class": "chain-plain",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/cli.py"
+       }
+      ],
+      "uses": [],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid to describe the ordering and conflicts among these changes. Change A rewrites part of src/utils.py. Change B rewrites part of src/cli.py. Change B has to wait for Change A to finish first. Change C rewrites part of scripts/old_build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/cli.py"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-022",
+   "class": "chain-plain",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid to describe the ordering and conflicts among these changes. Change A rewrites part of config/staging.yaml. Change B rewrites part of src/utils.py. Change B has to wait for Change A to finish first. Change C rewrites part of src/api.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/api.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-023",
+   "class": "chain-plain",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid to describe the ordering and conflicts among these changes. Change A rewrites part of docs/api.md. Change B rewrites part of src/utils.py. Change B has to wait for Change A to finish first. Change C rewrites part of scripts/build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-024",
+   "class": "chain-plain",
+   "facts": {
+    "kind": "aim",
+    "question": "relation",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [
+       "a"
+      ],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/cli.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid to describe the ordering and conflicts among these changes. Change A rewrites part of config/staging.yaml. Change B rewrites part of scripts/old_build.sh. Change B has to wait for Change A to finish first. Change C rewrites part of src/cli.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/cli.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-025",
+   "class": "mixed-overlap",
+   "facts": {
+    "kind": "aim",
+    "question": "overlap",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/legacy.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid if the changes below can be worked on side by side. Change A deletes scripts/old_build.sh. Change B rewrites part of src/legacy.py. Change C rewrites part of scripts/old_build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/legacy.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-026",
+   "class": "mixed-overlap",
+   "facts": {
+    "kind": "aim",
+    "question": "overlap",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/faq.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid if the changes below can be worked on side by side. Change A deletes scripts/old_build.sh. Change B rewrites part of docs/faq.md. Change C rewrites part of scripts/old_build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/faq.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-027",
+   "class": "mixed-overlap",
+   "facts": {
+    "kind": "aim",
+    "question": "overlap",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "tests/test_api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid if the changes below can be worked on side by side. Change A deletes config/staging.yaml. Change B rewrites part of tests/test_api.py. Change C rewrites part of config/staging.yaml.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "tests/test_api.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-028",
+   "class": "mixed-overlap",
+   "facts": {
+    "kind": "aim",
+    "question": "overlap",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "path": "src/api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid if the changes below can be worked on side by side. Change A deletes src/api.py. Change B rewrites part of config/staging.yaml. Change C rewrites part of src/api.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "delete",
+        "resource": "src/api.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/api.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-029",
+   "class": "git",
+   "facts": {
+    "kind": "git",
+    "base": "main",
+    "units": [
+     {
+      "key": "a",
+      "branch": "readme-badge",
+      "after": []
+     },
+     {
+      "key": "b",
+      "branch": "readme-intro",
+      "after": []
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether work on the branches readme-badge and readme-intro can be carried out in parallel. They were all created from main.",
+   "expect": {
+    "kind": "git",
+    "baseRevision": "main",
+    "units": [
+     {
+      "key": "a",
+      "revision": "readme-badge",
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "revision": "readme-intro",
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "conflicting",
+      "constraints": [
+       "serialize-or-isolate"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-030",
+   "class": "git",
+   "facts": {
+    "kind": "git",
+    "base": "main",
+    "units": [
+     {
+      "key": "a",
+      "branch": "docs-api",
+      "after": []
+     },
+     {
+      "key": "b",
+      "branch": "tests-api",
+      "after": []
+     },
+     {
+      "key": "c",
+      "branch": "src-api",
+      "after": []
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether work on the branches docs-api, tests-api and src-api can be carried out in parallel. They were all created from main.",
+   "expect": {
+    "kind": "git",
+    "baseRevision": "main",
+    "units": [
+     {
+      "key": "a",
+      "revision": "docs-api",
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "revision": "tests-api",
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "revision": "src-api",
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-031",
+   "class": "git",
+   "facts": {
+    "kind": "git",
+    "base": "main",
+    "units": [
+     {
+      "key": "a",
+      "branch": "src-cli",
+      "after": []
+     },
+     {
+      "key": "b",
+      "branch": "tests-api",
+      "after": []
+     },
+     {
+      "key": "c",
+      "branch": "remove-legacy",
+      "after": []
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether work on the branches src-cli, tests-api and remove-legacy can be carried out in parallel. They were all created from main.",
+   "expect": {
+    "kind": "git",
+    "baseRevision": "main",
+    "units": [
+     {
+      "key": "a",
+      "revision": "src-cli",
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "revision": "tests-api",
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "revision": "remove-legacy",
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-032",
+   "class": "git",
+   "facts": {
+    "kind": "git",
+    "base": "main",
+    "units": [
+     {
+      "key": "a",
+      "branch": "src-cli",
+      "after": []
+     },
+     {
+      "key": "b",
+      "branch": "guide-and-api",
+      "after": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "branch": "readme-badge",
+      "after": []
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether work on the branches src-cli, guide-and-api and readme-badge can be carried out in parallel. They were all created from main. Work on guide-and-api has to wait for src-cli to finish first.",
+   "expect": {
+    "kind": "git",
+    "baseRevision": "main",
+    "units": [
+     {
+      "key": "a",
+      "revision": "src-cli",
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "revision": "guide-and-api",
+      "dependsOn": [
+       "a"
+      ]
+     },
+     {
+      "key": "c",
+      "revision": "readme-badge",
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "ordered",
+      "constraints": [
+       "preserve-dependency-order"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-033",
+   "class": "partial",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/legacy.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": true
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of src/legacy.py, possibly together with files nobody has named yet. Change B rewrites part of scripts/old_build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/legacy.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-034",
+   "class": "partial",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": true
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of config/staging.yaml, possibly together with files nobody has named yet. Change B rewrites part of docs/api.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-035",
+   "class": "partial",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/old_build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": true
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of scripts/old_build.sh, possibly together with files nobody has named yet. Change B rewrites part of src/db.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/old_build.sh"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-036",
+   "class": "partial",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": true
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "scripts/build.sh"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A rewrites part of src/db.py, possibly together with files nobody has named yet. Change B rewrites part of scripts/build.sh.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "scripts/build.sh"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-037",
+   "class": "deploy",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/api.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/api.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A ships config/staging.yaml as a deployment. Change B rewrites part of src/api.py. Change C rewrites part of docs/api.md.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/api.py"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/api.md"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-038",
+   "class": "deploy",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "path": "config/staging.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/guide.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/db.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A ships config/staging.yaml as a deployment. Change B rewrites part of docs/guide.md. Change C rewrites part of src/db.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "resource": "config/staging.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/guide.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/db.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-039",
+   "class": "deploy",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "README.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A ships config/production.yaml as a deployment. Change B rewrites part of README.md. Change C rewrites part of src/utils.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "README.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "V2V-040",
+   "class": "deploy",
+   "facts": {
+    "kind": "aim",
+    "question": "parallel",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "path": "config/production.yaml"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "docs/faq.md"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "path": "src/utils.py"
+       }
+      ],
+      "uses": [],
+      "after": [],
+      "partial": false
+     }
+    ]
+   },
+   "prompt": "Ask Agent Braid whether the changes listed here can be carried out in parallel. Change A ships config/production.yaml as a deployment. Change B rewrites part of docs/faq.md. Change C rewrites part of src/utils.py.",
+   "expect": {
+    "kind": "aim",
+    "units": [
+     {
+      "key": "a",
+      "effects": [
+       {
+        "kind": "deploy",
+        "resource": "config/production.yaml"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "b",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "docs/faq.md"
+       }
+      ],
+      "dependsOn": []
+     },
+     {
+      "key": "c",
+      "effects": [
+       {
+        "kind": "write",
+        "resource": "src/utils.py"
+       }
+      ],
+      "dependsOn": []
+     }
+    ],
+    "pairs": [
+     {
+      "left": "a",
+      "right": "b",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "a",
+      "right": "c",
+      "classification": "unknown",
+      "constraints": [
+       "serialize-unless-stronger-evidence"
+      ]
+     },
+     {
+      "left": "b",
+      "right": "c",
+      "classification": "independent-candidate",
+      "constraints": [
+       "requires-execution-contract-before-parallelism"
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}
