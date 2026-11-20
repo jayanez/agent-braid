@@ -75,7 +75,7 @@ re-measure request validity.
 
 ## Not observed
 
-- An update from alpha.8 on Codex or OpenCode (the smoke below installed the published tag
+- An update from alpha.8 on Codex or OpenCode (the smoke above installed the published tag
   into a disposable profile on each host).
 - More than one prompt per host: the smoke is a schema probe (one prompt), not the held-out
   measurement.
