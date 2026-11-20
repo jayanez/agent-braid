@@ -35,8 +35,8 @@ per task; the owner approves each merge.
 - [ ] T003 (REQ-007 / SC-007): Write `evaluation-protocol.md` (OD-1 to OD-3,
   analysis, Gate 2 caps, stopping rules); owner review recorded in
   `reviews/`. Dependencies: T002. Verification: part of procedure_007.
-- [ ] T004 (REQ-003, REQ-004, REQ-005 / SC-003 to SC-005):
-  `scripts/spec078_gate0.py`: references, guidance-literal follower with rule
+- [ ] T004 (REQ-003, REQ-004, REQ-005 / SC-003, SC-004, SC-005): `scripts/spec078_gate0.py`:
+  references, guidance-literal follower with rule
   pins, null baselines. Gate 0 must pass on all 164 cases. Files:
   `scripts/spec078_gate0.py`, `tests/test_spec078_gate0.py`. Dependencies: T002.
   Verification: procedures 003–005 (`python -m scripts.spec078_gate0`, exit 0).
@@ -56,7 +56,7 @@ per task; the owner approves each merge.
   `v2-test` (`claude-code`, `claude-sonnet-5-5`); review any 0/3 prompt;
   record `evidence/gate1-a0.json` and the OD-1 verdict. Dependencies: T005.
   Verification: procedure_008.
-- [ ] T007 (REQ-009 / SC-009) [only if A0 meets]: publish the regression suite
+- [ ] T007 (REQ-009 / SC-009): Only if A0 meets: publish the regression suite
   and its command; Gate 2 stays closed. Dependencies: T006.
   Verification: procedure_009.
 
