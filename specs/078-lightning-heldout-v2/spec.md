@@ -123,7 +123,11 @@ records them):
 - **OD-1 — A0 threshold.** A test prompt *passes* when at least 2 of its 3
   repetitions are valid at first attempt; A0 *meets* the threshold when the
   Wilson 95 % lower bound of the share of passing prompts is at least 0.80
-  (at least 88/100; 87/100 gives 0.790) and no prompt is 0/3 after the transcript review of REQ-006.
+  (at least 88/100; 87/100 gives 0.790), every class has at least half of its
+  test prompts passing (added 2026-11-20: Gate 0 showed that a host following
+  the old HELD-04 read rule, otherwise perfect, scores 90/100, lower bound
+  0.826, and would pass on the share alone), and no prompt is 0/3 after the
+  transcript review of REQ-006.
 - **OD-2 — Split sizes.** Feedback 24, validation 40, test 100 prompts,
   3 repetitions on validation and test. Gate 1 costs 300 rollouts. The Gate 2
   cost is an estimate (about 600–900) until T003 fixes its caps; `plan.md`

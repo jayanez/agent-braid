@@ -1,0 +1,167 @@
+{
+ "follower": [],
+ "nulls": {
+  "empty-declaration": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 22,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 90,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 36,
+     "passing": 0,
+     "wilsonLower": 0.0
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "no-call": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 24,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 100,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 40,
+     "passing": 0,
+     "wilsonLower": 0.0
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "over-declaration": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 4,
+     "passing": 2,
+     "wilsonLower": 0.15
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 20,
+     "passing": 10,
+     "wilsonLower": 0.2993
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 8,
+     "passing": 4,
+     "wilsonLower": 0.2152
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "partial-coverage": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 22,
+     "passing": 2,
+     "wilsonLower": 0.0253
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 90,
+     "passing": 10,
+     "wilsonLower": 0.0615
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 36,
+     "passing": 4,
+     "wilsonLower": 0.0441
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "units-kind": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 22,
+     "passing": 2,
+     "wilsonLower": 0.0253
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 90,
+     "passing": 10,
+     "wilsonLower": 0.0615
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 36,
+     "passing": 4,
+     "wilsonLower": 0.0441
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "wrong-base": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 2,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 10,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 4,
+     "passing": 0,
+     "wilsonLower": 0.0
+    }
+   },
+   "unexpectedPasses": []
+  }
+ },
+ "oldReadRuleStrategy": {
+  "feedback": {
+   "meetsThreshold": false,
+   "of": 24,
+   "passing": 22,
+   "wilsonLower": 0.7415
+  },
+  "test": {
+   "meetsThreshold": false,
+   "of": 100,
+   "passing": 90,
+   "wilsonLower": 0.8256
+  },
+  "validation": {
+   "meetsThreshold": false,
+   "of": 40,
+   "passing": 36,
+   "wilsonLower": 0.7695
+  }
+ },
+ "partialControls": [],
+ "passed": true,
+ "pins": [],
+ "references": []
+}
