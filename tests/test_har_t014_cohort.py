@@ -3,9 +3,9 @@
 
 Nothing native runs: the pre-flight, the admission, the backend and the unit runner are replaced by doubles, and
 the host results come from ``harness_host_claude.ClaudeHostDouble``. The SPEC-065 issuance of 2026-11-17 and the
-owner's D2 per-cohort cap record are pinned; the admission, terms and host-profile records do not exist yet, so
-those constants must refuse. The terms and admission records here are test records built from the offline arm-C
-round (``tests.harness_t014_arm_c``).
+owner's D2 per-cohort cap record are pinned, and so are the owner's 2026-11-20 admission, terms and host-profile
+records (``PinnedRecordTests``). The other terms and admission records here are test records built from the
+offline arm-C round (``tests.harness_t014_arm_c``).
 """
 from datetime import datetime, timezone
 import json
@@ -26,7 +26,7 @@ from agent_braid import harness_host_claude as hc  # noqa: E402
 from agent_braid import harness_hosts as hh  # noqa: E402
 from agent_braid import harness_hosts_native as hn  # noqa: E402
 from agent_braid import harness_t014_native as tn  # noqa: E402
-from agent_braid.system_one import canonical  # noqa: E402
+from agent_braid.system_one import canonical, digest  # noqa: E402
 from tests import harness_t005_cohort as t005  # noqa: E402
 from tests import harness_t014_arm_c as arm_c  # noqa: E402
 from tests import test_harness_host_claude as host  # noqa: E402
@@ -67,15 +67,14 @@ def terms(**over) -> driver.Terms:
 
 
 class PinTests(unittest.TestCase):
-    """The issuance and the cap record are pinned; every record T014 still needs refuses, by name, before any quota read."""
+    """The issuance, the cap record and the owner records are pinned; a placeholder still refuses, by name."""
 
-    def test_every_placeholder_refuses(self):
-        for path, digest, name in ((driver.ADMISSION, driver.ADMISSION_SHA256, "admission"),
-                                   (driver.TERMS, driver.TERMS_SHA256, "terms"),
-                                   (driver.PROFILE_DECISIONS, driver.PROFILE_DECISIONS_SHA256, "profile-decisions")):
-            with self.subTest(name=name), self.assertRaises(t9.AttemptRefused) as cm:
-                driver.pinned(path, digest, name)
-            self.assertEqual(cm.exception.reasons, [f"{name}-not-pinned"])
+    def test_a_placeholder_refuses(self):
+        for path, digest in ((driver.PENDING, driver.PENDING), (driver.TERMS, driver.PENDING),
+                             (driver.PENDING, driver.TERMS_SHA256)):
+            with self.subTest(path=path, digest=digest), self.assertRaises(t9.AttemptRefused) as cm:
+                driver.pinned(path, digest, "terms")
+            self.assertEqual(cm.exception.reasons, ["terms-not-pinned"])
 
     def test_the_issuance_is_the_one_spec048_t008_pins(self):
         qualification = "specs/065-native-claude-containment/evidence/qualification/"
@@ -95,15 +94,6 @@ class PinTests(unittest.TestCase):
         self.assertFalse(record.get("executionAuthorization", False))
         self.assertEqual(driver.UNIT_CAP, 16)
 
-    def test_the_admission_refuses_on_the_unpinned_terms_first(self):
-        issued = hn.issued_records(driver.pinned(driver.ISSUANCE, driver.ISSUANCE_SHA256, "issuance"),
-                                   **driver.TRUSTED)
-        report = {"observed": {"environmentSha256": issued.environment_sha256}}
-        with mock.patch.object(driver, "trusted_inputs", return_value=(issued, object())), \
-                self.assertRaises(t9.AttemptRefused) as cm:
-            driver.admit(types.SimpleNamespace(), report, NOW)
-        self.assertEqual(cm.exception.reasons, ["terms-not-pinned"])
-
     def test_a_pinned_record_must_match_its_hash(self):
         record = "specs/049-harness-evaluation-learning/evidence/registration/t005-units-freeze-20261112.json"
         self.assertEqual(driver.pinned(record, tn.UNITS_FREEZE_SHA256, "x"), (ROOT / record).read_bytes())
@@ -117,6 +107,91 @@ class PinTests(unittest.TestCase):
     def test_the_d2_caps_record_is_the_t008_one(self):
         self.assertEqual((driver.D2_CAPS, driver.D2_CAPS_SHA256), (driver.t8.D2_CAPS, driver.t8.D2_CAPS_SHA256))
         hh.parse_d2_caps((ROOT / driver.D2_CAPS).read_bytes(), expected_sha256=driver.D2_CAPS_SHA256)
+
+
+class PinnedRecordTests(unittest.TestCase):
+    """The owner's 2026-11-20 records: each pinned by path and SHA-256, cross-referenced and accepted by the driver."""
+
+    ARM_C = "6674a8da7aab284f456a9cefd551ebddbb6546873a809ad6a3db48fedca1f7d9"
+
+    def record(self, path, digest, name):
+        return json.loads(driver.pinned(path, digest, name))
+
+    def issued(self):
+        return hn.issued_records(driver.pinned(driver.ISSUANCE, driver.ISSUANCE_SHA256, "issuance"), **driver.TRUSTED)
+
+    def test_the_three_records_are_pinned_under_the_spec049_evidence(self):
+        evidence = "specs/049-harness-evaluation-learning/evidence/"
+        self.assertEqual(driver.ADMISSION, evidence + "native-admission/t004-admission-20261120.json")
+        self.assertEqual(driver.TERMS, evidence + "registration/t014-terms-20261120.json")
+        self.assertEqual(driver.PROFILE_DECISIONS, evidence + "registration/t014-profile-decisions-20261120.json")
+        for path, digest, name in ((driver.ADMISSION, driver.ADMISSION_SHA256, "admission"),
+                                   (driver.TERMS, driver.TERMS_SHA256, "terms"),
+                                   (driver.PROFILE_DECISIONS, driver.PROFILE_DECISIONS_SHA256, "profile-decisions")):
+            with self.subTest(name=name):
+                value = self.record(path, digest, name)
+                self.assertIs(value["executionAuthorization"], False)
+                self.assertIs(value.get("promotionAuthorization"), False)
+
+    def test_the_terms_parse_as_plan_p2_with_the_frozen_arm_c_and_the_owner_window(self):
+        t = driver.parse_terms(driver.pinned(driver.TERMS, driver.TERMS_SHA256, "terms"))
+        self.assertEqual((t.plan, t.cohort_units), ("P2", 15))
+        self.assertEqual(t.arms, {"A": tn.ARM_SHA256["A"], "B": tn.ARM_SHA256["B"], "C": self.ARM_C})
+        self.assertEqual(t.arm_c_files, C_FILES)
+        self.assertEqual(t.refinement.sha256, DECISION.sha256)
+        self.assertEqual(t.window, (datetime(2026, 11, 20, tzinfo=timezone.utc),
+                                    datetime(2026, 12, 17, 22, 19, 29, tzinfo=timezone.utc)))
+        self.assertEqual(int(t.window[1].timestamp()), self.issued().expires_at)  # ends at the issuance expiry
+        value = self.record(driver.TERMS, driver.TERMS_SHA256, "terms")
+        self.assertEqual(value["armC"]["statement"],
+                         "arm C selected offline on synthetic-control probes, evaluated natively")
+        self.assertEqual((value["unitCap"], value["capScope"]["sha256"]), (16, driver.CAP_DECISION_SHA256))
+        self.assertIs(value["order"]["purgeBetweenUnits"], False)
+        self.assertEqual((value["profileDecisions"], value["profileDecisionsSha256"]),
+                         (driver.PROFILE_DECISIONS, driver.PROFILE_DECISIONS_SHA256))
+        self.assertEqual(t.profile_sha256, digest(value["matchedProfile"]["record"]))  # R7 method, native cohort
+        self.assertEqual(value["matchedProfile"]["record"]["containment"]["qualificationSha256"],
+                         driver.TRUSTED["containment_sha256"])
+
+    def test_the_admission_names_this_issuance_route_candidates_and_profile(self):
+        t = driver.parse_terms(driver.pinned(driver.TERMS, driver.TERMS_SHA256, "terms"))
+        driver.check_admission(driver.pinned(driver.ADMISSION, driver.ADMISSION_SHA256, "admission"), t)
+        value = self.record(driver.ADMISSION, driver.ADMISSION_SHA256, "admission")
+        self.assertEqual(value["ownerStatement"], "Admit (Recommended)")
+        self.assertEqual(value["containment"]["validUntil"], "2026-12-17T22:19:29Z")
+        self.assertEqual(value["hostProfile"]["profileDecisionsSha256"], driver.PROFILE_DECISIONS_SHA256)
+        self.assertEqual(value["cashEnvelope"]["d2CapsSha256"], driver.D2_CAPS_SHA256)
+        self.assertEqual(value["source"]["unitsFreeze"], tn.UNITS_FREEZE)
+
+    def test_the_profile_decisions_authorize_claude_only_with_the_t008_11_limits(self):
+        raw = driver.pinned(driver.PROFILE_DECISIONS, driver.PROFILE_DECISIONS_SHA256, "profile-decisions")
+        found = hh.parse_profile_decisions(raw, expected_sha256=driver.PROFILE_DECISIONS_SHA256)
+        self.assertTrue(found["claude"].authorized)
+        self.assertFalse(found["codex"].authorized)
+        claude = next(r for r in json.loads(raw)["decisions"] if r["item"] == "Claude profile qualification")
+        self.assertEqual(claude["verdict"], "qualified-with-limits")
+        t008 = json.loads((ROOT / "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261120.json")
+                          .read_bytes())
+        verdict = next(r for r in t008["decisions"] if r["item"] == "Claude profile verdict")
+        self.assertEqual(claude["limits"], verdict["limits"])
+        self.assertEqual(json.loads(raw)["qualificationRecords"]["issuanceSha256"], driver.ISSUANCE_SHA256)
+
+    def test_the_admission_passes_inside_the_window_with_the_pinned_records(self):
+        issued = self.issued()
+        report = {"observed": {"environmentSha256": issued.environment_sha256}}
+        parent = Path(tempfile.mkdtemp(prefix="braid-t014-admit-"))
+        self.addCleanup(shutil.rmtree, parent, True)
+        args = types.SimpleNamespace(out_dir=str(parent / "t014-20261120a"))
+        with mock.patch.object(driver, "trusted_inputs", return_value=(issued, object())):
+            a = driver.admit(args, report, datetime(2026, 11, 20, 18, 0, tzinfo=timezone.utc))
+            self.assertEqual((a.remaining, len(a.pending)), (15, 15))
+            self.assertEqual(a.pending, driver.slots(a.registration))  # the registered order, unchanged
+            self.assertEqual(a.registration.data["cohort"], "native")
+            for when, reason in ((datetime(2026, 11, 19, 23, 0, tzinfo=timezone.utc), "outside-owner-window"),
+                                 (datetime(2026, 12, 17, 22, 0, tzinfo=timezone.utc), "outside-owner-window")):
+                with self.subTest(when=when), self.assertRaises(t9.AttemptRefused) as cm:
+                    driver.admit(args, report, when)
+                self.assertEqual(cm.exception.reasons, [reason])
 
 
 class TermsTests(unittest.TestCase):

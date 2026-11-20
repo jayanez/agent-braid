@@ -1,0 +1,182 @@
+{
+  "recordVersion": "spec049-t014-terms-v1",
+  "task": "SPEC-049/T014 native cohort terms, arm-C freeze and order",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-20",
+  "baseCommit": "3299ade8",
+  "decisionChannel": "Owner answers given in the HAR sessions on 2026-11-20 to interactive guided questions, recorded verbatim (answer labels as chosen). Additive; earlier records stay as written.",
+  "ownerAnswers": [
+    {
+      "topic": "T014 plan",
+      "answer": "P2, arm D infeasible (Recommended)",
+      "terms": "arm C frozen from the offline round + 5 holdout x A/B/C = 15 units; cap 16 per cohort; SPEC-048/T008 units do not count toward it (d2-caps-scope-founder-decision-20261117.json)"
+    },
+    {
+      "topic": "Arm-C freeze",
+      "answer": "Register it (Recommended)",
+      "terms": "candidate 6674a8da7aab284f456a9cefd551ebddbb6546873a809ad6a3db48fedca1f7d9, resume-from-checkpoint only; arm C selected offline on synthetic-control probes, evaluated natively"
+    },
+    {
+      "topic": "T012-03 for T014 (unpurged config dir)",
+      "answer": "Accept",
+      "order": "Cuadrado latino R9 (Recomendado)",
+      "terms": "no purge between units; the driver's registered Latin-square order (slots()) is used unchanged, which interleaves and counterbalances A/B/C; units are not independent and no cross-unit independence is claimed"
+    },
+    {
+      "topic": "Window",
+      "answer": "Hasta la caducidad (Recomendado)",
+      "terms": "start 2026-11-20, end 2026-12-17T22:19:29Z (issuance expiry)"
+    }
+  ],
+  "plan": "P2",
+  "unitCap": 16,
+  "capScope": {
+    "record": "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-scope-founder-decision-20261117.json",
+    "sha256": "9e83093d6bf5e66a0c771d50ed9d10c94995c8859f93460212df8ab443e324cd"
+  },
+  "window": {
+    "start": "2026-11-20T00:00:00Z",
+    "end": "2026-12-17T22:19:29Z"
+  },
+  "issuanceSha256": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8",
+  "admissionSha256": "7a1b1a5a18949f54bad47e1805760f1bf917d7b339ae2550eebc1fa17c1d83f3",
+  "admission": "specs/049-harness-evaluation-learning/evidence/native-admission/t004-admission-20261120.json",
+  "profileDecisionsSha256": "36149af6808b1f71bc869e2d4bddc53002c12cca44e45d40680bf13ae2675806",
+  "profileDecisions": "specs/049-harness-evaluation-learning/evidence/registration/t014-profile-decisions-20261120.json",
+  "workloadSha256": "d6040663f19a4fdae3a37f5d1b90f1957eed7cf57f9b6de90dec45fbc2717489",
+  "model": "haiku",
+  "arms": {
+    "A": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "B": "4bc36ca01e403f9312a74c7658fb77cea88465fc993875a540eff8974fa36516",
+    "C": "6674a8da7aab284f456a9cefd551ebddbb6546873a809ad6a3db48fedca1f7d9"
+  },
+  "armD": "infeasible in this window: no implementation path, every lesson needs a human activation record, and it does not fit the cap (t014-readiness.md)",
+  "armC": {
+    "candidateSha256": "6674a8da7aab284f456a9cefd551ebddbb6546873a809ad6a3db48fedca1f7d9",
+    "statement": "arm C selected offline on synthetic-control probes, evaluated natively",
+    "provenance": {
+      "round": "tests/harness_t014_arm_c.py contrastive_round",
+      "roundSha256": "d50bfe8ac6c2ddcf0416d10e5f04a3cd7950b34d1874f833dea96d84080070fa",
+      "readiness": "specs/049-harness-evaluation-learning/evidence/engineering/t014-readiness.md",
+      "readinessSha256": "de8e9be834d0552c0ace10578137c666ae024c53338a3fee0a7be3c455ca3e6c"
+    },
+    "files": [
+      {
+        "path": "guidance/checkpoint.md",
+        "text": "# Checkpoint and context guidance\n\n- After an interruption, read the latest checkpoint and resume at the first step it does not mark complete. Do not repeat completed steps.\n"
+      }
+    ],
+    "refinementDecision": {
+      "format": "braid-harness-refinement-decision/v0.1",
+      "manifestSha256": "ca8c61f0ece45da47cdfa929dc1d0b92a954d6aedcfdbd1a7d481cc5e3aa24d4",
+      "policySha256": "42f60f1dc8801106b6e0c9f452e955df67ff5d7e0dc7b509af2939a3521dec7d",
+      "baseSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "marginMicros": 100,
+      "decision": "candidate",
+      "reasons": [
+        "improved-over-base"
+      ],
+      "chosenCandidateSha256": "6674a8da7aab284f456a9cefd551ebddbb6546873a809ad6a3db48fedca1f7d9",
+      "attempts": [
+        {
+          "scope": "base",
+          "candidateSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "status": "scored",
+          "reason": null,
+          "score": 0,
+          "deltaMicros": null,
+          "regressed": null,
+          "observationSha256": "fe2fd7b6a3d8d80d9eda96d675133367c54de2337c4ba9ef39d0e5e49aa2fd92",
+          "id": "c1"
+        },
+        {
+          "scope": "task",
+          "candidateSha256": "29fbe6075fa9e153ab3c21ac7bee791522e0f224ab33fe54dcff30d80659b47d",
+          "status": "interrupted",
+          "reason": null,
+          "score": null,
+          "deltaMicros": null,
+          "regressed": null,
+          "observationSha256": "f0f6449b2ffa6bfba08171cf8066d60ff0594835938f3461e64b47c6faafe3ab",
+          "id": "c2"
+        },
+        {
+          "scope": "general",
+          "candidateSha256": "6674a8da7aab284f456a9cefd551ebddbb6546873a809ad6a3db48fedca1f7d9",
+          "status": "scored",
+          "reason": null,
+          "score": 1000000,
+          "deltaMicros": 1000000,
+          "regressed": false,
+          "observationSha256": "1807b11bf92f9a34ae85c2fdf038be825a94670891f3f47d794cb1e7aa5902fe",
+          "id": "c3"
+        }
+      ],
+      "counts": {
+        "probes": 3,
+        "maxProbes": 4,
+        "abstentions": 0,
+        "rejections": 0
+      },
+      "losses": [],
+      "provenance": {
+        "upstreamRevision": "1cfe254e8d25b15f37048c3730134686abe60335",
+        "adapted": [
+          "core/recursion.py: Stage/_run_stage propose-probe-compose with fallback",
+          "core/selection.py: assign_ids/selection_pool candidate comparison including base (labels are not blinding)"
+        ],
+        "changes": "one fixed round; injected callbacks; frozen hash-bound policy; keep-base/inconclusive/refused; strict output validation; no reflection"
+      },
+      "executionAuthorization": false
+    }
+  },
+  "order": {
+    "rule": "harness_evaluation.register Latin-square order as scripts/har_t014_cohort.py slots() reads it: units by id, arms rotated within each task family; unchanged",
+    "purgeBetweenUnits": false,
+    "independence": "units are not independent; no cross-unit independence is claimed (SPEC-065 T012-03)"
+  },
+  "profileSha256": "5184a8e2a0d79ebd36c568bf09454f4ecbd90d87374dbd3e22f1fd5fa302ce39",
+  "matchedProfile": {
+    "record": {
+      "cohort": "native",
+      "host": {
+        "kind": "claude",
+        "build": "2.1.292",
+        "requested": {
+          "model": "haiku",
+          "effort": "low",
+          "route": "subscription"
+        }
+      },
+      "containment": {
+        "backend": "macos-dedicated-user-sandbox-exec",
+        "qualificationSha256": "5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df",
+        "hostQualificationSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d"
+      },
+      "tools": [
+        "Glob",
+        "Grep",
+        "Read"
+      ],
+      "sourceInputs": {
+        "specs/028-system-one-core/decision-delivery/handoffs/DDP-T08.md": "fe7268efae5a539bff6435ba7575e2ee421437ff7e66943b337fc25437b46a6f",
+        "specs/028-system-one-core/decision-delivery/handoffs/coordinator.md": "827b0ddafbb98f970426205307c39131161013ce85fcf6553501bd4974479bbd",
+        "tests/test_git_adapter.py": "f27408f851d23c78460bfc52b3ebc024ef58acde1c0d0f649dc9512d78b4c067",
+        "tests/test_git_runtime.py": "70e0655241bb64b4fb620309b0897c350b077a46db57be142f000a2e0d46fe47",
+        "tests/test_m4_alpha_scheduler.py": "03966aac4af6dc9f4d99400aa0daf26bdb76711b8a50ce30d93ee60982f3ba52",
+        "tests/test_tooling_sessions.py": "17c80f57da18f7f0fc0d945a024496bbdd767d3e9555023248a769d38894fe33"
+      },
+      "limitsSha256": "1ed59cce5b4ab87e2fba2c066c118670dca3508f02b61d9c2cc365593e12f3e5"
+    },
+    "status": "computed by the R7 method of case-roster.md (system_one.digest of this record) from the admitted route and containment; the native counterpart of the synthetic profile 2f42b12d..."
+  },
+  "limits": [
+    "One lineage (L1), 5 holdout cases: descriptive only under D3; no utility claim.",
+    "Arm C was selected offline on synthetic-control probes and is evaluated natively.",
+    "Read-only sessions answer a described checkpoint task; continuity measures guidance-following, not real long-task recovery.",
+    "No effort-level claim (T012-07); Codex refused; units not independent (T012-03)."
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false
+}
