@@ -49,12 +49,36 @@ macOS arm64, agent-operated:
   record, so DP-1 advice stays off the output until an owner go exists. The running session
   needs a restart to serve the new version.
 
+## Model-driven smoke on the published tag (2026-11-20)
+
+`scripts/spec069_native_runs.py --probe-schema` ran one prompt per host against a clone of tag
+`agent-braid--v0.1.0-alpha.9` (`plugins/agent-braid`), in disposable profiles under the OS
+sandbox, with the owner's saved credentials injected into the child environment only
+(Claude Code OAuth token and OpenCode via OpenRouter from the keychain; Codex from the
+dedicated sign-in profile). Evidence:
+[claude-code and opencode](evidence/smoke-alpha9-claude-opencode.json) and
+[codex](evidence/smoke-alpha9-codex.json). Teardown was clean on both runs (no leftover
+processes, profiles removed).
+
+| Host | Version | Model | Tool loading | `aim` / `units` accepted | Served bytes = build fingerprint |
+| --- | --- | --- | --- | --- | --- |
+| Claude Code | 2.1.311 | `claude-sonnet-5-5` | deferred | yes / yes | yes |
+| OpenCode | 2.1.4 | `openrouter/anthropic/claude-sonnet-5-5` | helper before call | **no** / yes | yes |
+| Codex | 0.171.0-alpha.13 | host default | eager | yes / yes | yes |
+
+Every host exposed `analyze-work`, sent `aim` and `units` requests as JSON objects, and was
+served the definition that equals the build fingerprint. On OpenCode the model's first `aim`
+request was refused by the validator and its `units` request was accepted; that is
+model-authored request validity (the D4 follow-up #1343 already tracks it), not a package
+defect. Claude Code's cost was about 0.08 USD. This is a one-prompt probe, so it does not
+re-measure request validity.
+
 ## Not observed
 
-- Codex smoke (Codex is not installed on the owner's machine) and OpenCode runtime load (the
-  service was busy).
-- A model-driven smoke on any host with the published tag, and an update from alpha.8 on Codex
-  or OpenCode.
+- An update from alpha.8 on Codex or OpenCode (the smoke below installed the published tag
+  into a disposable profile on each host).
+- More than one prompt per host: the smoke is a schema probe (one prompt), not the held-out
+  measurement.
 - Linux x86_64 execution (built only).
 - A joined merge outcome from the owner's own work: none existed at publication, so the
   false-independence bound is not yet informative.

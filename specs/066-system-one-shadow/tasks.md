@@ -463,5 +463,7 @@ replay cannot supply System-2-`unknown` pairs (see REQ-402 and the ADR 0034 adde
   The rule, the promotion CLI and the join ship in plugin `0.1.0-alpha.9` (published 2026-11-16, installed
   by the owner 2026-11-17; `release-acceptance-alpha9.md`, `evidence/release-alpha9.json`). The promotion
   registry is empty, so DP-1 stays `shadow` (reason `no-owner-go`) until the owner's go.
+  Model-driven smoke on the published tag, 2026-11-20 (Claude Code, OpenCode, Codex): all three exposed
+  `analyze-work` and were served the built definition; see `release-acceptance-alpha9.md`.
   The packet generator exists: `python -m scripts.spec066_go_packet` (read-only; counts, risk, owner commands,
   undo, dates; never records a go; `tests/test_spec066_go_packet.py`). The go itself is still pending.
