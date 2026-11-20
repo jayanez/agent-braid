@@ -534,7 +534,8 @@
     "BL.2 — Lightning prompt optimization": 31,
     "BL.3 — Lightning promotion": 32,
     "BL.4 — Lightning trace consent": 33,
-    "BL.5 — Lightning dataset export": 34
+    "BL.5 — Lightning dataset export": 34,
+    "BL.2b — Lightning held-out re-evaluation": 35
   },
   "task_cancellations": {
     "SPEC-045/T007": {
