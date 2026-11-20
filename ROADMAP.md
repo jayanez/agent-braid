@@ -704,6 +704,7 @@ CLI subscription route only (extra cash spend EUR 0), first target the
 | BL.3 — Lightning promotion | [SPEC-073](specs/073-lightning-promotion/spec.md) | human promotion through the HAR profile registry |
 | BL.4 — Lightning trace consent | [SPEC-074](specs/074-lightning-trace-consent/spec.md) | consent, redaction, retention, adapters ([ADR 0041](docs/adr/0041-braid-lightning-content-traces.md)) |
 | BL.5 — Lightning dataset export | [SPEC-075](specs/075-lightning-dataset-export/spec.md) | supervised and trajectory datasets |
+| BL.2b — Lightning held-out re-evaluation | [SPEC-078](specs/078-lightning-heldout-v2/spec.md) | HELD-04 guidance fix, preregistered held-out v2, Gate 0, A0 first, bounded optimization only if A0 misses |
 | Deferred | [SPEC-076](specs/076-lightning-local-grpo/spec.md) | local GPU GRPO ([ADR 0042](docs/adr/0042-braid-lightning-local-weight-training.md)) |
 
 **Status:** BL.0 closed on 2026-11-08 (SPEC-070 approved by the owner, review record bound to `c0b6956e`); BL.1 closed on 2026-11-11 (SPEC-071 approved by the owner, review record bound to `39a427ae`; real Claude Code baseline 16/30 inside the T010 interval, zero paid-route observations); BL.2 complete on 2026-11-13 with a **negative
