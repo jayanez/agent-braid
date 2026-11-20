@@ -20,8 +20,8 @@ account's own ``Background`` session, started by the root launcher ``scripts/har
 Pins: the SPEC-065 issuance (with its environment document and trusted record hashes), the SPEC-049/T004
 admission record, the T014 terms record and the host-profile decision record are each bound by a SHA-256 below.
 The issuance is the 2026-11-17 one (the same pins as SPEC-048/T008). The admission, terms and host-profile
-records do not exist yet; their placeholders refuse (``<name>-not-pinned``) until the orchestrator fills them in
-from the merged records. The unit cap is the pinned input ``UNIT_CAP`` = 16 (owner decision 2026-11-17, D2
+records are the owner's 2026-11-20 records (``evidence/native-admission/`` and ``evidence/registration/``); a
+placeholder (``pending``) still refuses as ``<name>-not-pinned``. The unit cap is the pinned input ``UNIT_CAP`` = 16 (owner decision 2026-11-17, D2
 per-cohort cap: T014 has its own 16 and SPEC-048/T008 units do not count toward it); the terms record must repeat
 it, and the D2 cap-scope record that carries it is pinned by SHA-256 (``CAP_DECISION``). Every
 attempt counts its started units and slots in ``<out-dir>/t014-units.json`` right before each launch, and every
@@ -66,11 +66,15 @@ PENDING = "pending"  # a placeholder: not 64 hex, so the record it stands for re
 ISSUANCE, ISSUANCE_SHA256 = t8.ISSUANCE, t8.ISSUANCE_SHA256
 ENVIRONMENT = t8.ENVIRONMENT
 TRUSTED = dict(t8.TRUSTED)
-# the founder's host-profile decisions after the new SPEC-048/T008 decision (claude authorized)
-PROFILE_DECISIONS, PROFILE_DECISIONS_SHA256 = PENDING, PENDING
-# SPEC-049/T004 admission (owner) and the T014 cohort terms (owner)
-ADMISSION, ADMISSION_SHA256 = PENDING, PENDING
-TERMS, TERMS_SHA256 = PENDING, PENDING
+_EVIDENCE = "specs/049-harness-evaluation-learning/evidence/"
+# the host-profile decisions for T014: the SPEC-048/T008 Claude verdict T008-11 (qualified with limits), 2026-11-20
+PROFILE_DECISIONS = _EVIDENCE + "registration/t014-profile-decisions-20261120.json"
+PROFILE_DECISIONS_SHA256 = "36149af6808b1f71bc869e2d4bddc53002c12cca44e45d40680bf13ae2675806"
+# SPEC-049/T004 admission (owner, "Admit", 2026-11-20) and the T014 cohort terms (owner, plan P2, 2026-11-20)
+ADMISSION = _EVIDENCE + "native-admission/t004-admission-20261120.json"
+ADMISSION_SHA256 = "7a1b1a5a18949f54bad47e1805760f1bf917d7b339ae2550eebc1fa17c1d83f3"
+TERMS = _EVIDENCE + "registration/t014-terms-20261120.json"
+TERMS_SHA256 = "ef68417637be2c5b881ce95227eb0943ad4fedd98bb5498d1506b910612c68f1"
 D2_CAPS = t8.D2_CAPS
 D2_CAPS_SHA256 = t8.D2_CAPS_SHA256
 ADMISSION_FORMAT = "spec049-t004-admission-v1"

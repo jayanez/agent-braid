@@ -1,0 +1,73 @@
+{
+  "recordVersion": "spec049-t004-admission-v1",
+  "task": "SPEC-049/T004: admit a separate native pilot (the SPEC-049/T014 native cohort)",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-20",
+  "baseCommit": "3299ade8",
+  "decisionChannel": "Owner answers given in the HAR sessions on 2026-11-20 to interactive guided questions, recorded verbatim (answer labels as chosen). Additive; earlier records stay as written.",
+  "ownerStatement": "Admit (Recommended)",
+  "disposition": "admitted",
+  "source": {
+    "description": "The T005 frozen roster replayed natively (admission packet Q2 option (a)): the six T005 units, holdout L1-C01-a, L1-C02-a, L1-C03-a, L1-C03-b, L1-C03-c; synthetic/constructed tasks, so the result is descriptive only under D3",
+    "unitsFreeze": "specs/049-harness-evaluation-learning/evidence/registration/t005-units-freeze-20261112.json",
+    "unitsFreezeSha256Recorded": "469135c420a01a5b56dbf49529f6a822c8b6469ef0d8ed9cbc8a95c5920bd934",
+    "rosterFreeze": "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-founder-freeze-20261030.json",
+    "rosterFreezeSha256": "499fe88d8bda05a500dcef2cb07e55429aad3ff59c5a0f2aefe2e9f9887741ff",
+    "rosterDraft": "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-draft.json",
+    "rosterDraftSha256": "5056b3bbfafa4a667350ac823861a14d28ea232d5b901ea7bc93574dc721ff43",
+    "caseRosterSha256": "6a1e55f896fb77a1bbc42dc402eef1abc5d3f56e7a4b1dbcfd152c8c93e6a4e0",
+    "rights": "repository-owned synthetic and constructed cases (T005 roster freeze); no third-party source"
+  },
+  "unitsFreezeSha256": "469135c420a01a5b56dbf49529f6a822c8b6469ef0d8ed9cbc8a95c5920bd934",
+  "candidates": {
+    "A": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "B": "4bc36ca01e403f9312a74c7658fb77cea88465fc993875a540eff8974fa36516",
+    "C": "6674a8da7aab284f456a9cefd551ebddbb6546873a809ad6a3db48fedca1f7d9"
+  },
+  "candidateDetail": {
+    "A": "static base, empty inventory (T005 roster freeze R5)",
+    "B": "guidance/checkpoint.md as frozen (T005 roster freeze R6)",
+    "C": "offline contrastive round candidate, resume-from-checkpoint only; registered for T014 by the owner's arm-C freeze answer, bytes and refinement decision in the T014 terms record",
+    "D": "infeasible in this window (T014 terms)"
+  },
+  "containment": {
+    "issuance": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+    "issuanceSha256": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8",
+    "containmentSha256": "5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df",
+    "hostSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+    "environmentSha256": "600ba86d00b7ff9a77170f720f78803aa959fc94e42357aab274f246316dc556",
+    "validUntil": "2026-12-17T22:19:29Z",
+    "expiresAt": 1797545969
+  },
+  "issuanceSha256": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8",
+  "route": {
+    "host": "claude",
+    "model": "haiku",
+    "route": "subscription",
+    "additionalCashEur": 0
+  },
+  "hostProfile": {
+    "verdict": "qualified-with-limits",
+    "verdictRecord": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261120.json",
+    "verdictRecordSha256": "854272506d8371fd711f7f791e82d4efbb6f0e57f0404262177116f2fa4464eb",
+    "profileDecisions": "specs/049-harness-evaluation-learning/evidence/registration/t014-profile-decisions-20261120.json",
+    "profileDecisionsSha256": "36149af6808b1f71bc869e2d4bddc53002c12cca44e45d40680bf13ae2675806"
+  },
+  "cashEnvelope": {
+    "additionalCashEur": 0,
+    "d2Caps": "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json",
+    "d2CapsSha256": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
+    "capScope": "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-scope-founder-decision-20261117.json",
+    "capScopeSha256": "9e83093d6bf5e66a0c771d50ed9d10c94995c8859f93460212df8ab443e324cd",
+    "summary": "EUR 0 within the D2 caps: at most 30 min per unit, at most 10 % of the 5-hour window per session, at most 15 % of the weekly window per cohort, at most 16 units per cohort (SPEC-048/T008 units not counted), stop when weekly usage passes 80 %, when extra usage is on, or when the reading is stale"
+  },
+  "limits": [
+    "Carried from SPEC-048/T008 (founder T008-11): no cross-unit isolation, the config dir is never purged (SPEC-065 T012-03), so no cross-unit independence is claimed.",
+    "No effort-level claim: low effort is never passed to the CLI (T012-07).",
+    "The Codex profile stays refused.",
+    "Haiku and subscription route only, EUR 0; bound to the issuance-2026-11-17 records, valid to 2026-12-17T22:19:29Z.",
+    "Synthetic/constructed source with one lineage (L1): descriptive only under D3, no utility claim."
+  ],
+  "executionAuthorization": false,
+  "promotionAuthorization": false
+}

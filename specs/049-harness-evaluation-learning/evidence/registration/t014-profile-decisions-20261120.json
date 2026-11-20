@@ -1,0 +1,51 @@
+{
+  "recordVersion": "spec048-founder-review-v1",
+  "task": "SPEC-049/T014 host-profile decisions (Claude profile verdict of SPEC-048/T008 for the T014 cohort)",
+  "repository": "jayanez/agent-braid",
+  "recordedAt": "2026-11-20",
+  "baseCommit": "3299ade8",
+  "decisionChannel": "Owner answers given in the HAR sessions on 2026-11-20 to interactive guided questions, recorded verbatim (answer labels as chosen). Additive; earlier records stay as written. This record restates, in the per-host format that harness_hosts.parse_profile_decisions reads, the SPEC-048/T008 Claude profile verdict the founder gave on 2026-11-20 (T008-11, specs/048-harness-variant-laboratory/evidence/founder-decisions-20261120.json) together with the SPEC-049/T004 admission answer \"Admit (Recommended)\" of the same day. It asks nothing new.",
+  "supplements": [
+    "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261120.json (sha256 854272506d8371fd711f7f791e82d4efbb6f0e57f0404262177116f2fa4464eb): T008-11, Claude profile verdict qualified-with-limits",
+    "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261117.json (sha256 171c7a807f1c3f5957262469d3ce660be7718514979dbe17969c8e917d8551c7): the authorization the SPEC-048/T008 units ran under"
+  ],
+  "qualificationRecords": {
+    "issuance": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+    "issuanceSha256": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8",
+    "bundle": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/",
+    "bundleSha256": "b75020ef348086df7db6a70f1b7ee88598bc0962614dc2c844945fdb00fadbbe",
+    "containmentSha256": "5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df",
+    "hostSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+    "environmentSha256": "600ba86d00b7ff9a77170f720f78803aa959fc94e42357aab274f246316dc556",
+    "expiresAt": 1797545969
+  },
+  "decisions": [
+    {
+      "task": "SPEC-048/T008",
+      "item": "Claude profile qualification",
+      "decision": "qualification-authorized",
+      "verdict": "qualified-with-limits",
+      "ownerStatement": "Qualified with limits (Recommended)",
+      "limits": [
+        "Haiku and subscription route only, EUR 0.",
+        "Bound to the SPEC-065 issuance-2026-11-17 records, which expire 2026-12-17T22:19:29Z.",
+        "Units are not isolated from each other: the config dir is never purged (SPEC-065 T012-03), so there is no cross-unit independence claim.",
+        "No effort-level claim: low effort is never passed to the CLI (T012-07).",
+        "The Codex profile stays refused.",
+        "Partial host qualification does not imply both hosts."
+      ],
+      "detail": "The T008-11 verdict qualified-with-limits, written as qualification-authorized because that is the only value under which the Claude profile may run a serial D2-capped cohort (harness_hosts.HostQualificationRun); every limit above applies to the SPEC-049/T014 cohort. Bound to the records in qualificationRecords. Valid for SPEC-049/T014 only, together with the T004 admission record; it adds no SPEC-048/T008 units (that cohort's cap of 6 is used) and does not qualify Codex."
+    },
+    {
+      "task": "SPEC-048/T008",
+      "item": "Codex profile qualification",
+      "decision": "not-qualified",
+      "ownerStatement": "Unchanged from founder-review-20261031.json: Registralo como no calificado y anota que lo tenemos que revisar antes de considerar cerrado este milestone",
+      "detail": "Codex CLI is not installed; stays refused (T008-11 limit). Not asked again on 2026-11-20."
+    }
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false,
+  "limits": "Records host-profile decisions only. Admits nothing by itself (the SPEC-049/T004 admission record does), freezes no arm, sets no window and records no outcome. Partial host qualification does not imply both hosts."
+}
