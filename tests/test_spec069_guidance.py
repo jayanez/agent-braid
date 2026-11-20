@@ -18,6 +18,7 @@ from pathlib import Path
 
 from agent_braid import tooling_mcp
 from agent_braid.tooling_mcp import ToolingConfig, ToolingService
+from scripts import spec069_scoring
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md"
@@ -115,6 +116,51 @@ class SkillExampleTests(GuidanceCase):
 
     def test_the_parser_ignores_unannotated_blocks(self):
         self.assertEqual(documented_examples("```json\n{}\n```"), [])
+
+
+class DependencyReadRuleTests(GuidanceCase):
+    """BL.2b: a dependency orders units; a `read` is declared only for content the unit uses.
+
+    HELD-04 of the SPEC-069 held-out set failed every trial on every host because the older rule
+    ("declares a `read` of the file the other unit writes") made the last unit of a chain read a file
+    it never uses. The answer that follows the narrowed rule must score valid; the old one must not.
+    """
+
+    HELD = ROOT / "specs/069-aim-request-authoring/prompts/held-out.json"
+
+    def setUp(self):
+        self.text = SKILL.read_text("utf-8")
+        self.case = next(c for c in json.loads(self.HELD.read_text("utf-8"))["cases"] if c["id"] == "HELD-04")
+
+    def attempt(self, extra_reads: dict[str, list[str]]) -> dict:
+        request = spec069_scoring.reference_request(self.case)
+        for operation in request["operations"]:
+            for path in extra_reads.get(operation["instanceId"], []):
+                operation["effects"]["declared"].append({"kind": "read", "resource": "repo://workspace/" + path})
+        envelope = self.send("aim", request)
+        self.assertEqual(envelope["status"], "ok", envelope.get("summary"))
+        return {"kind": "aim", "request": request, "accepted": True, "refusalSummary": None,
+                "report": envelope["result"]["report"]}
+
+    def test_the_rule_ties_a_read_to_used_content(self):
+        self.assertNotIn("declares a `read` of the file the other unit writes", self.text)
+        self.assertIn("the dependency alone orders the two units", self.text)
+        self.assertIn("Waiting for the other unit is not a read.", self.text)
+
+    def test_the_answer_that_follows_the_rule_scores_valid(self):
+        # task two reads the setting task one adds; task three only waits for task two
+        literal = self.attempt({"two": ["config/production.yaml"]})
+        self.assertTrue(spec069_scoring.score_case(self.case, [literal])["validFirstAttempt"])
+
+    def test_a_dependency_without_reads_is_still_ordered(self):
+        report = self.attempt({})["report"]
+        self.assertEqual({p["classification"] for p in report["interactions"]}, {"ordered"})
+
+    def test_the_old_rule_answer_fails(self):  # negative control
+        old = self.attempt({"two": ["config/production.yaml"], "three": ["src/db.py"]})
+        score = spec069_scoring.score_case(self.case, [old])
+        self.assertFalse(score["validFirstAttempt"])
+        self.assertIn("operations do not match the expected units", score["reasons"][0])
 
 
 class ToolDescriptionTests(unittest.TestCase):

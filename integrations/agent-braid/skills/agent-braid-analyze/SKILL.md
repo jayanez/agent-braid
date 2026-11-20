@@ -87,7 +87,10 @@ file the report says `conflicting` with `serialize-or-isolate` instead.
   with a `kind` (`read`, `write`, `call`, `transform`, `emit`, `delete`,
   `deploy` or `unknown`) and the resource `repo://workspace/<path>`.
 - A unit that must wait for another lists that unit's `instanceId` under
-  `dependencies` and declares a `read` of the file the other unit writes.
+  `dependencies`; the dependency alone orders the two units. Declare a `read`
+  of a file the other unit writes only when the user says this unit uses that
+  file's content, for example code that reads a setting the other unit adds.
+  Waiting for the other unit is not a read.
 - `coverage.status` is `complete` when the user named the exact files each unit
   touches: the request declares exactly those paths, so say `complete` and add
   nothing you were not told. Use `partial` or `unknown` only when the user says
