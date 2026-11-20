@@ -36,7 +36,8 @@
     "BL.2 — Lightning prompt optimization": "Preregistered APO and GEPA optimization of the analyze guidance against the frozen held-out set (SPEC-072); a null result completes the protocol.",
     "BL.3 — Lightning promotion": "Human-only promotion of optimized guidance through the HAR profile registry, with build check and rollback (SPEC-073).",
     "BL.4 — Lightning trace consent": "Consent, redaction, retention and trace adapters for content-bearing Braid Lightning traces (SPEC-074, ADR 0041).",
-    "BL.5 — Lightning dataset export": "Deterministic supervised and trajectory dataset export with manifests and a usage-terms gate (SPEC-075)."
+    "BL.5 — Lightning dataset export": "Deterministic supervised and trajectory dataset export with manifests and a usage-terms gate (SPEC-075).",
+    "BL.2b — Lightning held-out re-evaluation": "Repaired measurement for Lightning guidance: HELD-04 guidance fix, preregistered held-out v2 with Gate 0, baseline A0 first and bounded optimization only if A0 misses (SPEC-078)."
   },
   "closed_milestones": [
     "M0 — Operational foundations",
@@ -350,6 +351,10 @@
     "075-lightning-dataset-export": {
       "milestone": "BL.5 — Lightning dataset export",
       "state": "closed"
+    },
+    "078-lightning-heldout-v2": {
+      "milestone": "BL.2b — Lightning held-out re-evaluation",
+      "state": "open"
     },
     "076-lightning-local-grpo": {
       "milestone": "Deferred",
