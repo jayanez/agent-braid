@@ -7,7 +7,7 @@
   },
   "expected": "every reference built from the facts accepted and valid (164/164); complete variant of every partial case invalid",
   "inputs": {
-    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "72863d537f1e5db603abee27756ade1aa315260868cfd22b84b2cf50dbf0210c",
+    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "9ba3424c0aac5697c5c67d5f7e382f6c751e6cda791d36f3faa6145e00703641",
     "scripts/spec069_fixture_workspace.py": "2f300ac845cf477403f7d2946f3c5360f1b58990bcee39aa9430318538bb87e5",
     "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
     "scripts/spec078_gate0.py": "a5d6c03cba5f2791607c22dec2308a8a6dcf5e0cda8d0ded4405ed3d3e8b792d",
