@@ -95,8 +95,9 @@ file the report says `conflicting` with `serialize-or-isolate` instead.
   touches: the request declares exactly those paths, so say `complete` and add
   nothing you were not told. Use `partial` or `unknown` only when the user says
   other files may be touched or you cannot name them. Never claim `complete`
-  for files you guessed, and never write `partial` just to be careful: it turns
-  every pair into `unknown`.
+  for files you guessed, and never write `partial` just to be careful: every
+  pair that is not ordered by a dependency or conflicting on a shared write then
+  becomes `unknown`.
 - Placeholder digests like the ones above make the input synthetic: say so in
   `source.description` and in your report.
 

@@ -83,7 +83,7 @@ Unchanged. The scorer and promotion stay outside the design.
 OD-1 to OD-3 decided 2026-11-20. Open, for T003 and the freeze review:
 
 - the Gate 2 round, repetition and rollout caps;
-- the skill's coverage sentence ("it turns every pair into `unknown`") is
+- the skill's coverage sentence ("it turns every pair into `unknown`") was
   imprecise: the analyzer reports `ordered` and `conflicting` before falling
-  back to `unknown` for partial coverage. Correcting it changes A0's bytes, so
-  it is an owner decision to make before the freeze or to leave as part of A0.
+  back to `unknown` for partial coverage. Owner decision 2026-11-20: correct it
+  before the freeze (T003); A0 is the corrected guidance.

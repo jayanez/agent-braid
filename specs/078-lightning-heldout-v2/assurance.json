@@ -146,7 +146,7 @@
               "limits": "Deterministic check through analyze-work and the scorer; no host run has measured the narrowed rule.",
               "outcome": "passed: OK",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_001.json",
-              "sha256": "2b6d1c50bdb106c12a1535ab49d4ce4069f9a12408facb24af9c8e5f870a543f"
+              "sha256": "3cf3403db6c2889441f3bba3ef6fb4a355913ee336accebeafb2354b1a61d6b3"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_001.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec069_guidance.py DependencyReadRuleTests.",
@@ -194,7 +194,7 @@
               "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_003.json",
-              "sha256": "be8d035746a8b5034a82b5b4fae8a357f4dff7ca96fa1c2726c95f5ce48932f0"
+              "sha256": "11cc793b9347585391e8f650a0cded0c2e2fa24f7110a7b004eae66017e6042f"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_003.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py ReferenceTests.",
@@ -218,7 +218,7 @@
               "limits": "Deterministic check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture. The follower copies the skill's examples, but each rule's meaning is hand-coded: the pins catch removal or rewording of the twelve pinned sentences, not an added sentence that contradicts a rule. It shows the guidance can be satisfied, not that hosts follow it.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_004.json",
-              "sha256": "edaf5e83984f630af9181a862a418f0a2600bf906cff884063c7eb72de3636bf"
+              "sha256": "d25094d72b7b2bae3acd484820575abf3b8517638e35aef8e2833104858d4b8a"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_004.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py LiteralFollowerTests.",
@@ -242,7 +242,7 @@
               "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_005.json",
-              "sha256": "b118a7b9be2d9a695657ff40f9224e5b386564168e617d86526e8f6692e64f50"
+              "sha256": "07e76008549921ee135646f99fa2d0e8a16b1f67cfffcde5838ab0bf390c7c34"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_005.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py NullBaselineTests.",

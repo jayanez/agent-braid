@@ -163,6 +163,41 @@ class DependencyReadRuleTests(GuidanceCase):
         self.assertIn("operations do not match the expected units", score["reasons"][0])
 
 
+class CoverageSentenceTests(GuidanceCase):
+    """BL.2b (SPEC-078 T003): the coverage sentence says what the analyzer does with partial coverage.
+
+    Partial coverage makes a pair `unknown` only when no dependency orders it and no shared write makes it
+    conflicting; the older sentence said it turned every pair into `unknown`.
+    """
+
+    def setUp(self):
+        self.text = SKILL.read_text("utf-8")
+        self.aim = next(e for e in documented_examples(self.text) if e["kind"] == "aim")
+
+    def classify(self, *, shared: bool = False, dependency: bool = False) -> str:
+        request = copy.deepcopy(self.aim["request"])
+        first, second = request["operations"]
+        first["effects"]["coverage"]["status"] = "partial"
+        if shared:
+            second["effects"]["declared"] = copy.deepcopy(first["effects"]["declared"])
+        if dependency:
+            second["dependencies"] = [first["instanceId"]]
+        envelope = self.send("aim", request)
+        self.assertEqual(envelope["status"], "ok", envelope.get("summary"))
+        [pair] = envelope["result"]["report"]["interactions"]
+        return pair["classification"]
+
+    def test_the_sentence_states_the_precedence(self):
+        self.assertNotIn("it turns\n  every pair into `unknown`", self.text)
+        self.assertIn("pair that is not ordered by a dependency or conflicting on a shared write then\n  becomes `unknown`",
+                      self.text)
+
+    def test_the_analyzer_does_what_the_sentence_says(self):
+        self.assertEqual(self.classify(), "unknown")
+        self.assertEqual(self.classify(shared=True), "conflicting")
+        self.assertEqual(self.classify(dependency=True), "ordered")
+
+
 class ToolDescriptionTests(unittest.TestCase):
     def test_description_chooses_the_kind_and_and_states_the_coverage_rule(self):
         text = tooling_mcp._ANALYZE_WORK_SCHEMA_HELP

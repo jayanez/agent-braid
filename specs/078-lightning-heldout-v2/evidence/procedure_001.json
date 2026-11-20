@@ -8,10 +8,10 @@
   },
   "expected": "rule-following HELD-04 answer valid; dependency without reads ordered; old-rule answer invalid (negative control)",
   "inputs": {
-    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "72863d537f1e5db603abee27756ade1aa315260868cfd22b84b2cf50dbf0210c",
+    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "211debcb8774c7ae1bb3d61eec3a1f4ec4ce4f94c2938d5afbd0862028b6aac1",
     "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
     "specs/069-aim-request-authoring/prompts/held-out.json": "254ffee400c490d745d6b66f46e0bc8d19a13fae666f22c8554003a4e9a22278",
-    "tests/test_spec069_guidance.py": "3ce482dc0bf1b9e77a301f3a410bb9ec35d58ea093771cce5394c0d04da6db96"
+    "tests/test_spec069_guidance.py": "0335d210f27cab790770a3bbfb57cee2bc3109fd3d9afa16013c8b63d54f8537"
   },
   "limits": "Deterministic check through analyze-work and the scorer; no host run has measured the narrowed rule.",
   "procedure": "procedure_001",
