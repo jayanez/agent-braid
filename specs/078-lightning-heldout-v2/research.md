@@ -25,8 +25,9 @@
   improvement (SkillOpt, arXiv 2605.23904); incremental edits avoid the
   brevity bias and context collapse of whole rewrites (ACE, arXiv 2510.04618).
   APO is dropped.
-- **Reward-hacking guards.** Negative `unknown` cases, a length cap, fixed front
-  matter, a skill-loaded check (skills are not always invoked; Vercel agent
+- **Reward-hacking guards.** The `independent-candidate` share of each split
+  (it is what an "always partial coverage" edit fails), negative `unknown` cases
+  against over-declaration, a length cap, fixed front matter, a skill-loaded check (skills are not always invoked; Vercel agent
   evals), no LLM judge.
 
 ## Alternatives considered

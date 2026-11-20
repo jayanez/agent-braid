@@ -142,8 +142,8 @@
           "id": "SC-001",
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_001.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec069_guidance.py DependencyReadRuleTests.",
-          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
-          "test_name": "procedure_001",
+          "test_file": "tests/test_spec069_guidance.py",
+          "test_name": "DependencyReadRuleTests.test_the_answer_that_follows_the_rule_scores_valid",
           "then": "the rule-following answer is valid, a dependency without reads is ordered, and the old-rule answer is invalid",
           "when": "the rule-following and the old-rule answers are sent through analyze-work and scored"
         }
@@ -160,7 +160,7 @@
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_002.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_set.py SetTests.",
           "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
           "test_name": "procedure_002",
-          "then": "splits are disjoint, every class is in every split, rebuilding is byte-identical, and v1 overlap is refused",
+          "then": "splits are disjoint with per-split templates, every class is in every split, rebuilding is byte-identical, and v1 overlap, shared 8-word windows, paths absent from the prompt and units without a fixture-file effect are refused",
           "when": "the build script writes the splits"
         }
       ],
@@ -176,7 +176,7 @@
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_003.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py ReferenceTests.",
           "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
           "test_name": "procedure_003",
-          "then": "every reference is accepted and valid; a wrong reference blocks Gate 0",
+          "then": "every reference built from the case facts is accepted and valid; a wrong reference blocks Gate 0; the complete-coverage variant of a partial case is invalid",
           "when": "Gate 0 sends its reference request"
         }
       ],
@@ -208,11 +208,11 @@
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_005.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py NullBaselineTests.",
           "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
           "test_name": "procedure_005",
-          "then": "each fails where it differs and none meets OD-1",
+          "then": "each null fails on its listed classes (partial coverage on every independent-candidate case, over-declaration on every chain without a content read) and none meets OD-1",
           "when": "they are scored on every split"
         }
       ],
-      "text": "Null baselines fail wherever they differ from the expectation and never meet the threshold."
+      "text": "Deterministic null baselines, defined per kind, fail on the classes they must fail and never meet the threshold on any split."
     },
     {
       "id": "REQ-006",
@@ -240,11 +240,11 @@
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_007.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_freeze.py FreezeTests.",
           "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
           "test_name": "procedure_007",
-          "then": "it runs only when the hashes match the freeze; an edited file or missing freeze is refused",
+          "then": "a v2 run starts only when every frozen hash matches, including the skill used by the final source; an edited file or missing freeze is refused",
           "when": "a held-out run starts"
         }
       ],
-      "text": "The set, protocol and Gate 0 script are frozen by hash on a develop commit before any rollout."
+      "text": "The protocol, splits, Gate 0 script and A0 skill bytes are frozen by hash on a develop commit before any rollout."
     },
     {
       "id": "REQ-008",
@@ -308,7 +308,7 @@
           "when": "it runs on v2-test and v1 held-out"
         }
       ],
-      "text": "Gate 2 (conditional) compares the final candidate with A0 on test by a paired exact test, without v1 regression."
+      "text": "Gate 2 (conditional) compares the final candidate with the Gate 1 A0 result on test by a one-sided paired exact test, and with A0 on SPEC-069 v1 in the same pass."
     },
     {
       "id": "REQ-012",
@@ -327,7 +327,7 @@
       "text": "BL.2b code stays inside its boundaries."
     }
   ],
-  "scientific_limits": "One host and model; synthetic project-written prompts; class balance is a design choice; repetitions of one prompt are correlated; results say nothing about real requests, other hosts or analyzer semantics beyond the scorer.",
+  "scientific_limits": "One host and model; synthetic project-written prompts; class balance is a design choice; repetitions of one prompt are correlated; results say nothing about real requests, other hosts or analyzer semantics beyond the scorer. Prompts of one template are clustered and splits use disjoint templates; the Gate 2 test comparison pairs against A0 measured at Gate 1, so model drift between runs is not controlled.",
   "scope": "Braid Lightning BL.2b: repair and audit the measurement behind SPEC-072, measure the shipped analyze guidance (A0) on a fresh preregistered held-out set v2, and optimize with bounded edits only if A0 misses the threshold.",
   "stage": "draft"
 }

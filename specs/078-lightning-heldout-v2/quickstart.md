@@ -12,12 +12,5 @@ Deterministic checks (no rollouts, no credentials):
 Expected: every test passes; Gate 0 prints zero failing cases, zero null baselines
 meeting OD-1, and the per-split class coverage table.
 
-Real runs (owner yes on the rollout count first; subscription route; see
-[LIGHTNING.md](../../docs/tooling/LIGHTNING.md)):
-
-```sh
-agent-braid lightning run --prompt-set v2-test --arm final   # Gate 1, 300 rollouts (T006)
-```
-
-The exact held-out command and its flags are fixed at T005 and recorded here
-before Gate 1.
+Real runs: see T006 and T009 in [tasks.md](tasks.md). Each needs the owner's
+yes on the stated rollout count; the exact command is recorded there at T005.
