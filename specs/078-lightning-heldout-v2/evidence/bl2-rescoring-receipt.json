@@ -1,0 +1,115 @@
+{
+ "arms": {
+  "A0": {
+   "failedFirstAttempts": [
+    {
+     "kind": "aim",
+     "reason": "first attempt: operations do not match the expected units: got write config/production.yaml; read config/production.yaml, write src/db.py; read src/db.py, write docs/api.md | expected write config/production.yaml; read config/production.yaml, write src/db.py; write docs/api.md",
+     "rolloutId": "claude-code.HELD-04.r1"
+    },
+    {
+     "kind": "aim",
+     "reason": "first attempt: operations do not match the expected units: got write config/production.yaml; read config/production.yaml, write src/db.py; read src/db.py, write docs/api.md | expected write config/production.yaml; read config/production.yaml, write src/db.py; write docs/api.md",
+     "rolloutId": "claude-code.HELD-04.r2"
+    },
+    {
+     "kind": "units",
+     "reason": "first attempt: three/two is unknown instead of independent-candidate",
+     "rolloutId": "claude-code.HELD-06.r2"
+    },
+    {
+     "kind": "aim",
+     "reason": "first attempt: operations do not match the expected units: got write config/production.yaml; read config/production.yaml, write src/db.py; read src/db.py, write docs/api.md | expected write config/production.yaml; read config/production.yaml, write src/db.py; write docs/api.md",
+     "rolloutId": "claude-code.HELD-04.r3"
+    },
+    {
+     "kind": "units",
+     "reason": "first attempt: three/two is unknown instead of independent-candidate",
+     "rolloutId": "claude-code.HELD-06.r3"
+    }
+   ],
+   "resultsSha256": "64cacded4d1182fa0428692d2ca05e89b8ae7544e55cc19db5fdf8a84d7823f2",
+   "runId": "heldout-a0-20261113T204317Z"
+  },
+  "A1": {
+   "failedFirstAttempts": [
+    {
+     "kind": "units",
+     "reason": "first attempt: a/b is unknown instead of independent-candidate",
+     "rolloutId": "claude-code.HELD-02.r1"
+    },
+    {
+     "kind": "aim",
+     "reason": "first attempt: operations do not match the expected units: got write config/production.yaml; read config/production.yaml, write src/db.py; read src/db.py, write docs/api.md | expected write config/production.yaml; read config/production.yaml, write src/db.py; write docs/api.md",
+     "rolloutId": "claude-code.HELD-04.r1"
+    },
+    {
+     "kind": "units",
+     "reason": "first attempt: one/two is unknown instead of independent-candidate",
+     "rolloutId": "claude-code.HELD-05.r1"
+    },
+    {
+     "kind": "units",
+     "reason": "first attempt: a/b is unknown instead of independent-candidate",
+     "rolloutId": "claude-code.HELD-02.r2"
+    },
+    {
+     "kind": "aim",
+     "reason": "first attempt: operations do not match the expected units: got write config/production.yaml; read config/production.yaml, write src/db.py; read src/db.py, write docs/api.md | expected write config/production.yaml; read config/production.yaml, write src/db.py; write docs/api.md",
+     "rolloutId": "claude-code.HELD-04.r2"
+    },
+    {
+     "kind": "units",
+     "reason": "first attempt: a/b is unknown instead of independent-candidate",
+     "rolloutId": "claude-code.HELD-02.r3"
+    },
+    {
+     "kind": "aim",
+     "reason": "first attempt: operations do not match the expected units: got write config/production.yaml; read config/production.yaml, write src/db.py; read src/db.py, write docs/api.md | expected write config/production.yaml; read config/production.yaml, write src/db.py; write docs/api.md",
+     "rolloutId": "claude-code.HELD-04.r3"
+    }
+   ],
+   "resultsSha256": "2eba6df9ed1d8eb91783bb6aeec2ff90c07bef77f3f4588136a1d0a99adf8570",
+   "runId": "heldout-a1-20261113T205458Z"
+  },
+  "A2": {
+   "failedFirstAttempts": [
+    {
+     "kind": null,
+     "reason": "analyze-work was not called",
+     "rolloutId": "claude-code.HELD-02.r1"
+    },
+    {
+     "kind": "aim",
+     "reason": "first attempt: operations do not match the expected units: got write config/production.yaml; read config/production.yaml, write src/db.py; read src/db.py, write docs/api.md | expected write config/production.yaml; read config/production.yaml, write src/db.py; write docs/api.md",
+     "rolloutId": "claude-code.HELD-04.r1"
+    },
+    {
+     "kind": "units",
+     "reason": "first attempt: three/two is unknown instead of independent-candidate",
+     "rolloutId": "claude-code.HELD-06.r1"
+    },
+    {
+     "kind": null,
+     "reason": "analyze-work was not called",
+     "rolloutId": "claude-code.HELD-02.r2"
+    },
+    {
+     "kind": "aim",
+     "reason": "first attempt: operations do not match the expected units: got write config/production.yaml; read config/production.yaml, write src/db.py; read src/db.py, write docs/api.md | expected write config/production.yaml; read config/production.yaml, write src/db.py; write docs/api.md",
+     "rolloutId": "claude-code.HELD-04.r2"
+    },
+    {
+     "kind": "aim",
+     "reason": "first attempt: operations do not match the expected units: got write config/production.yaml; read config/production.yaml, write src/db.py; read src/db.py, write docs/api.md | expected write config/production.yaml; read config/production.yaml, write src/db.py; write docs/api.md",
+     "rolloutId": "claude-code.HELD-04.r3"
+    }
+   ],
+   "resultsSha256": "1b637fa8c245a5f9ebe1c6aa0840bbf37589f8f5bc1d9f6f4098d78c05849396",
+   "runId": "heldout-a2-20261113T214347Z"
+  }
+ },
+ "heldOutSha256": "254ffee400c490d745d6b66f46e0bc8d19a13fae666f22c8554003a4e9a22278",
+ "schema": "spec078-bl2-rescoring-receipt/v0.1",
+ "scoringSha256": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87"
+}

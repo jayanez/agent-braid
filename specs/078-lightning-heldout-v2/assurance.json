@@ -140,7 +140,15 @@
         {
           "given": "the narrowed skill and the SPEC-069 HELD-04 case",
           "id": "SC-001",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_spec069_guidance.DependencyReadRuleTests",
+              "limits": "Deterministic check through analyze-work and the scorer; no host run has measured the narrowed rule.",
+              "outcome": "passed: OK",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_001.json",
+              "sha256": "2b6d1c50bdb106c12a1535ab49d4ce4069f9a12408facb24af9c8e5f870a543f"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_001.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec069_guidance.py DependencyReadRuleTests.",
           "test_file": "tests/test_spec069_guidance.py",
           "test_name": "DependencyReadRuleTests.test_the_answer_that_follows_the_rule_scores_valid",
@@ -156,10 +164,18 @@
         {
           "given": "the class plan and templates",
           "id": "SC-002",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_set && .venv-speckit/bin/python -m scripts.spec078_build_set --check",
+              "limits": "Structural build checks only; Gate 0 (T004) checks references, the literal follower and null baselines against the analyzer and scorer. Prompts are synthetic and template-written.",
+              "outcome": "passed: OK; build --check ok",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_002.json",
+              "sha256": "ee7fd3ea5b1cf0b8b3805bae9e08c7e3f5ef9350fd5385f061262132cb650529"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_002.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_set.py SetTests.",
-          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
-          "test_name": "procedure_002",
+          "test_file": "tests/test_spec078_set.py",
+          "test_name": "SetTests.test_split_sizes_and_class_coverage",
           "then": "splits are disjoint with per-split templates, every class is in every split, rebuilding is byte-identical, and v1 overlap, shared 8-word windows, paths absent from the prompt and units without a fixture-file effect are refused",
           "when": "the build script writes the splits"
         }

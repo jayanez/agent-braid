@@ -12,15 +12,15 @@ per task; the owner approves each merge.
 
 ## Phase P0 — measurement repair
 
-- [ ] T001 (REQ-001 / SC-001): Narrow the analyze skill's dependency read rule and
+- [x] T001 (REQ-001 / SC-001): Narrow the analyze skill's dependency read rule and
   pin it (`DependencyReadRuleTests`); freeze SPEC-069 and SPEC-072 assurance
   historical at develop `3299ade8` because their evidence binds the old skill
   bytes. Ships in the next alpha. Merged in PR jayanez/agent-braid#1445 (develop
-  `08bbffa2`); procedure_001 evidence capture pending. Files: the skill,
+  `08bbffa2`); evidence procedure_001. Files: the skill,
   `tests/test_spec069_guidance.py`, `docs/tooling/NATIVE_PLUGINS.md`, SPEC-069/072
   `assurance.json`. Dependencies: none. Verification: procedure_001
   (`.venv-speckit/bin/python -m unittest tests.test_spec069_guidance`).
-- [ ] T002 (REQ-002 / SC-002): Class plan, templates and
+- [x] T002 (REQ-002 / SC-002): Class plan, templates and
   `scripts/spec078_build_set.py`; write the three splits (24 / 40 / 100) with
   `class` and `facts`; per-split templates; the REQ-002 build checks (fixture
   paths, prompt-facts agreement, 8-word window disjointness, v1 overlap); a
