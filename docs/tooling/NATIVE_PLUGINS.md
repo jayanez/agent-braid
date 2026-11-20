@@ -577,6 +577,13 @@ writes `docs/api.md` also declares a `read` of `src/db.py`, which the scorer doe
 expect. Whether the cause is the guidance, the prompt or the scoring rule is not
 established. The `final-no-schema` ablation was not run on the held-out set.
 
+Update (BL.2b, 2026-11-20): the owner attributed HELD-04 to the analyze skill's
+dependency rule, which told every waiting unit to declare a `read` of the file the
+other unit writes. The skill now says the dependency alone orders the units and a
+`read` is declared only when the unit uses that file's content
+(`tests/test_spec069_guidance.py` `DependencyReadRuleTests`). The scoring rule is
+unchanged. The change ships in the next alpha; no host run has measured it yet.
+
 ### Release notes for 0.1.0-alpha.8
 
 Release notes for the plugin release that ships SPEC-069, version `0.1.0-alpha.8`
