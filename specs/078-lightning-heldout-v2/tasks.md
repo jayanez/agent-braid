@@ -35,7 +35,7 @@ per task; the owner approves each merge.
 - [ ] T003 (REQ-007 / SC-007): Write `evaluation-protocol.md` (OD-1 to OD-3,
   analysis, Gate 2 caps, stopping rules); owner review recorded in
   `reviews/`. Dependencies: T002. Verification: part of procedure_007.
-- [ ] T004 (REQ-003, REQ-004, REQ-005 / SC-003, SC-004, SC-005): `scripts/spec078_gate0.py`:
+- [x] T004 (REQ-003, REQ-004, REQ-005 / SC-003, SC-004, SC-005): `scripts/spec078_gate0.py`:
   references, guidance-literal follower with rule
   pins, null baselines. Gate 0 must pass on all 164 cases. Files:
   `scripts/spec078_gate0.py`, `tests/test_spec078_gate0.py`. Dependencies: T002.

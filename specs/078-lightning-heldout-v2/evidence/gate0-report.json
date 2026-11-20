@@ -1,0 +1,124 @@
+{
+ "follower": [],
+ "nulls": {
+  "empty-declaration": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 24,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 100,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 40,
+     "passing": 0,
+     "wilsonLower": 0.0
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "no-call": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 24,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 100,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 40,
+     "passing": 0,
+     "wilsonLower": 0.0
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "over-declaration": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 24,
+     "passing": 20,
+     "wilsonLower": 0.6415
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 100,
+     "passing": 80,
+     "wilsonLower": 0.7112
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 40,
+     "passing": 32,
+     "wilsonLower": 0.6524
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "partial-coverage": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 24,
+     "passing": 2,
+     "wilsonLower": 0.0232
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 100,
+     "passing": 10,
+     "wilsonLower": 0.0552
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 40,
+     "passing": 4,
+     "wilsonLower": 0.0396
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "wrong-base": {
+   "splits": {
+    "feedback": {
+     "meetsThreshold": false,
+     "of": 24,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "test": {
+     "meetsThreshold": false,
+     "of": 100,
+     "passing": 0,
+     "wilsonLower": 0.0
+    },
+    "validation": {
+     "meetsThreshold": false,
+     "of": 40,
+     "passing": 0,
+     "wilsonLower": 0.0
+    }
+   },
+   "unexpectedPasses": []
+  }
+ },
+ "partialControls": [],
+ "passed": true,
+ "pins": [],
+ "references": []
+}

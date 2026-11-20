@@ -1,0 +1,24 @@
+{
+  "actual": "OK; gate0 passed",
+  "command": ".venv-speckit/bin/python -m scripts.spec078_gate0 --json specs/078-lightning-heldout-v2/evidence/gate0-report.json && .venv-speckit/bin/python -m unittest tests.test_spec078_gate0",
+  "environment": {
+    "platform": "macOS-27.2.1",
+    "python": "3.12.13"
+  },
+  "expected": "every reference built from the facts accepted and valid (164/164); complete variant of every partial case invalid",
+  "inputs": {
+    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "72863d537f1e5db603abee27756ade1aa315260868cfd22b84b2cf50dbf0210c",
+    "scripts/spec069_fixture_workspace.py": "2f300ac845cf477403f7d2946f3c5360f1b58990bcee39aa9430318538bb87e5",
+    "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
+    "scripts/spec078_gate0.py": "489082d090f0873d316f8a5efe89926ad1ed3059bb8078251106f8a4d91fa7e2",
+    "specs/078-lightning-heldout-v2/evidence/gate0-report.json": "c9bf5f265b56d60427427eeac1c34119c3df9936dc1b08f1f6dce472cdfaa5e7",
+    "specs/078-lightning-heldout-v2/prompts/feedback.json": "7da4d963090378e5622bbf736e7c982f8a98ee2e6c2f6bcd70ef30885b86c703",
+    "specs/078-lightning-heldout-v2/prompts/test.json": "e65e16a4ae908394c00e0ddb973fe364bd78ba38970167fef57293693524c9cf",
+    "specs/078-lightning-heldout-v2/prompts/validation.json": "60d092aa0eaeaf17a4c28259807cd3bcde83bb7318866fb45182f8efe696029f",
+    "tests/test_spec078_gate0.py": "03cd2a5e16066eeb94db3d4e228731c8a3d682b966ab3bdeff1798f4752ac822"
+  },
+  "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
+  "negativeControls": "a wrong reference blocks Gate 0",
+  "procedure": "procedure_003",
+  "scenario": "SC-003"
+}

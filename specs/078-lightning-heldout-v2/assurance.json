@@ -188,10 +188,18 @@
         {
           "given": "every v2 case",
           "id": "SC-003",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.spec078_gate0 --json specs/078-lightning-heldout-v2/evidence/gate0-report.json && .venv-speckit/bin/python -m unittest tests.test_spec078_gate0",
+              "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
+              "outcome": "passed: OK; gate0 passed",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_003.json",
+              "sha256": "6d081c07ae87609d59c4818b15354b05fd295c4414a697523ec0dfffe508de73"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_003.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py ReferenceTests.",
-          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
-          "test_name": "procedure_003",
+          "test_file": "tests/test_spec078_gate0.py",
+          "test_name": "Gate0Tests.test_every_reference_is_accepted_and_valid",
           "then": "every reference built from the case facts is accepted and valid; a wrong reference blocks Gate 0; the complete-coverage variant of a partial case is invalid",
           "when": "Gate 0 sends its reference request"
         }
@@ -204,10 +212,18 @@
         {
           "given": "each case's structured facts",
           "id": "SC-004",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.spec078_gate0 --json specs/078-lightning-heldout-v2/evidence/gate0-report.json && .venv-speckit/bin/python -m unittest tests.test_spec078_gate0",
+              "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
+              "outcome": "passed: OK; gate0 passed",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_004.json",
+              "sha256": "eab75f2d2d4b98081a9b5dd3de346896128a41ff877173268caa6cc79b2e7c71"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_004.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py LiteralFollowerTests.",
-          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
-          "test_name": "procedure_004",
+          "test_file": "tests/test_spec078_gate0.py",
+          "test_name": "Gate0Tests.test_following_the_skill_literally_is_valid_on_every_case",
           "then": "every follower request is valid; removing a pinned rule from the skill fails the pin test",
           "when": "the literal follower builds and sends the request"
         }
@@ -220,10 +236,18 @@
         {
           "given": "the fixed null answers",
           "id": "SC-005",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.spec078_gate0 --json specs/078-lightning-heldout-v2/evidence/gate0-report.json && .venv-speckit/bin/python -m unittest tests.test_spec078_gate0",
+              "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
+              "outcome": "passed: OK; gate0 passed",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_005.json",
+              "sha256": "2a7ae3f67584444dd46cb401fadc393ed1ec0b00e4c5d2054c062aa6aa9df753"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_005.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py NullBaselineTests.",
-          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
-          "test_name": "procedure_005",
+          "test_file": "tests/test_spec078_gate0.py",
+          "test_name": "Gate0Tests.test_null_baselines_fail_their_classes_and_never_meet_the_threshold",
           "then": "each null fails on its listed classes (partial coverage on every independent-candidate case, over-declaration on every chain without a content read) and none meets OD-1",
           "when": "they are scored on every split"
         }
