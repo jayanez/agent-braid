@@ -12,7 +12,7 @@
   ],
   "assumptions": "SPEC-071 runner and reward are delivered; the optimizer runs through the host CLI on the subscription route; the SPEC-069 held-out set and FREEZE are unchanged (OD-1 decided 2026-11-11: keep 10 cases \u00d7 3 repetitions); required host claude-code per OD-2 as amended by protocol Amendment 1 (approved 2026-11-13; opencode route-unverified is a declared limit); A0 is the current develop guidance with model pinned to claude-sonnet-5-5.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "3299ade8f9c1b6d2c3c395f7ca197eadbeb8dc26",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -105,13 +105,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive: the shipped analyze skill is untouched; candidates are reported by hash for SPEC-073; new record braid-lightning-candidate/v0.1.",
   "domain": "Braid Lightning BL.2: reward-driven optimization (Baseline, APO, GEPA) of the agent-braid-analyze guidance text, evaluated on the frozen SPEC-069 held-out set.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "3299ade8f9c1b6d2c3c395f7ca197eadbeb8dc26",
+    "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; no execute, recover, grant or MCP-started runs; rollouts use disposable profiles, an OS sandbox and the host subscription route only; any *_API_KEY in a child environment is refused; extra cash spend EUR 0. No candidate is promoted or written to the repository.",
   "human_review": "pending",
