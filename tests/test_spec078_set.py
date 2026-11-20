@@ -6,6 +6,7 @@ from __future__ import annotations
 import copy
 import json
 import unittest
+from unittest import mock
 
 from scripts import spec078_build_set as builder
 
@@ -26,9 +27,6 @@ class SetTests(unittest.TestCase):
 
     def test_the_committed_files_equal_a_fresh_build(self):
         self.assertEqual(builder.main(["--check"]), 0)
-        for split, data in self.sets.items():
-            committed = (builder.OUT / f"{split}.json").read_text("utf-8")
-            self.assertEqual(committed, builder.render(data), split)
 
     def test_split_sizes_and_class_coverage(self):
         self.assertEqual({s: len(d["cases"]) for s, d in self.sets.items()}, builder.SPLITS)
@@ -64,7 +62,10 @@ class SetTests(unittest.TestCase):
     # negative controls: each build rule refuses a set that breaks it
     def test_a_copied_spec069_prompt_is_refused(self):
         v1 = json.loads(builder.V1_SETS[1].read_text("utf-8"))["cases"][0]["prompt"]
-        self.assertRefused(self.mutated("test", 0, lambda c: c.update(prompt=c["prompt"] + " " + v1)), "SPEC-069")
+        style = {**builder.STYLES["test"], "parallel": v1}
+        with mock.patch.dict(builder.STYLES, {"test": style}), \
+                self.assertRaisesRegex(builder.SetError, "8-word window with a SPEC-069 prompt"):
+            builder.build()
 
     def test_a_split_missing_a_class_is_refused(self):
         def drop(case):
@@ -76,9 +77,11 @@ class SetTests(unittest.TestCase):
         self.assertRefused(sets, "misses classes")
 
     def test_a_window_shared_across_splits_is_refused(self):
-        leaked = self.sets["test"]["cases"][0]["prompt"]
-        self.assertRefused(self.mutated("feedback", 0, lambda c: c.update(prompt=c["prompt"] + " " + leaked)),
-                           "share an 8-word window")
+        # a template reused in two splits is the leak the window check exists for
+        style = {**builder.STYLES["feedback"], "parallel": builder.STYLES["test"]["parallel"]}
+        with mock.patch.dict(builder.STYLES, {"feedback": style}), \
+                self.assertRaisesRegex(builder.SetError, "share an 8-word window"):
+            builder.build()
 
     def test_a_window_shared_with_the_skill_is_refused(self):
         prompt = self.sets["validation"]["cases"][0]["prompt"]
@@ -89,7 +92,7 @@ class SetTests(unittest.TestCase):
         case = self.sets["test"]["cases"][0]
         path = case["facts"]["units"][0]["effects"][0]["path"]
         self.assertRefused(self.mutated("test", 0, lambda c: c.update(prompt=c["prompt"].replace(path, "a file"))),
-                           "not a fixture file named")
+                           "prompt does not follow")
 
     def test_a_unit_without_a_fixture_effect_is_refused(self):
         def outside(case):
@@ -100,12 +103,48 @@ class SetTests(unittest.TestCase):
     def test_content_use_wording_must_match_the_facts(self):
         index = next(i for i, c in enumerate(self.sets["test"]["cases"]) if c["class"] == "chain-plain")
         self.assertRefused(self.mutated("test", index, lambda c: c.update(prompt=c["prompt"] + " It uses what it needs.")),
-                           "content-use wording")
+                           "prompt does not follow")
 
     def test_an_expectation_that_does_not_follow_from_the_facts_is_refused(self):
         def wrong(case):
             case["expect"]["pairs"][0]["classification"] = "unknown"
         self.assertRefused(self.mutated("validation", 0, wrong), "does not follow")
+
+    def test_an_effect_kind_that_disagrees_with_the_verb_is_refused(self):
+        def deploy(case):
+            case["facts"]["units"][0]["effects"][0]["kind"] = "deploy"
+            case["expect"] = builder.expectation(case["facts"])
+        self.assertRefused(self.mutated("test", 0, deploy), "prompt does not follow")
+
+    def test_an_effect_outside_the_vocabulary_is_refused(self):
+        def call(case):
+            case["facts"]["units"][0]["effects"][0]["kind"] = "call"
+        self.assertRefused(self.mutated("test", 0, call), "vocabulary")
+
+    def test_an_unknown_branch_is_refused(self):
+        index = next(i for i, c in enumerate(self.sets["test"]["cases"]) if c["class"] == "git")
+        def unknown(case):
+            case["facts"]["units"][0]["branch"] = "no-such-branch"
+        self.assertRefused(self.mutated("test", index, unknown), "unknown branch")
+
+    def test_a_wrong_split_size_is_refused(self):
+        sets = copy.deepcopy(self.sets)
+        sets["feedback"]["cases"].pop()
+        self.assertRefused(sets, "cases instead of")
+
+    def test_the_same_pattern_with_units_reordered_is_refused(self):
+        sets = copy.deepcopy(self.sets)
+        source = next(c for c in sets["feedback"]["cases"] if c["class"] == "disjoint")
+        clone = copy.deepcopy(source)
+        units = clone["facts"]["units"]
+        for unit, key in zip(reversed(units), builder.KEYS):
+            unit["key"] = key
+        clone["facts"]["units"] = sorted(units, key=lambda u: u["key"])
+        clone["prompt"] = builder.prompt(clone["facts"], builder.STYLES["test"])
+        clone["expect"] = builder.expectation(clone["facts"])
+        clone["id"] = sets["test"]["cases"][0]["id"]
+        sets["test"]["cases"][0] = clone
+        self.assertRefused(sets, "duplicate fact pattern|share an 8-word")
 
     def test_a_duplicated_prompt_is_refused(self):
         other = self.sets["test"]["cases"][1]

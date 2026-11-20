@@ -170,7 +170,7 @@
               "limits": "Structural build checks only; Gate 0 (T004) checks references, the literal follower and null baselines against the analyzer and scorer. Prompts are synthetic and template-written.",
               "outcome": "passed: OK; build --check ok",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_002.json",
-              "sha256": "ee7fd3ea5b1cf0b8b3805bae9e08c7e3f5ef9350fd5385f061262132cb650529"
+              "sha256": "a7a58c84687a75f0172d0f30662349530a1948237972ca73c2537b3a908d99d5"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_002.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_set.py SetTests.",

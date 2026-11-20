@@ -10,10 +10,11 @@ independent); Gate 0 (T004) checks them against the real analyzer.
     python -m scripts.spec078_build_set           # write the three split files
     python -m scripts.spec078_build_set --check   # exit 1 unless the committed files equal a fresh build
 
-The build checks refuse a set whose splits miss a class, reuse a prompt or a fact pattern, name a path or
-branch the prompt does not contain, have a unit without a required effect on a fixture file, use an effect
-outside the fixed vocabulary, mention content use without a ``uses`` fact (or the reverse), share an 8-word
-normalized window across splits, with the analyze skill or with either SPEC-069 set.
+The build checks refuse a set whose splits miss a class or have the wrong size, reuse a prompt or a fact
+pattern (up to unit keys and order), use an effect outside the fixed vocabulary or an unknown branch, have a
+unit without a required effect on a fixture file, carry a prompt or expectation that is not the one the
+split's templates and the footprint rules give for the facts, or share an 8-word normalized window across
+splits, with the analyze skill or with either SPEC-069 set.
 """
 
 from __future__ import annotations
@@ -101,13 +102,12 @@ STYLES = {
         "deploy": "{L} rolls out a deploy of {p}.",
         "partial": "{L} makes an update to {p}, and other unnamed files might get touched too.",
         "after": "{L} must not start before {M} has completed.",
-        "uses": "{L} makes an update to {p} which takes in the values {M} adds to {q}.",
+        "uses": "{L} makes an update to {p} and takes in the values that {M} stores in {q}.",
         "git": "Run an Agent Braid check: can the repository branches {names} be worked on "
                "simultaneously? All of them branch off {base}.",
         "git_after": "{b} must not start before {a} has completed.",
     },
 }
-USE_MARKERS = ("uses what", "relies on the contents", "takes in the values")
 
 
 # ----------------------------------------------------------------------------
@@ -137,8 +137,16 @@ def footprint(unit: dict) -> dict[str, set[str]]:
 
 
 def git_footprint(branch: str) -> dict[str, set[str]]:
+    """The git adapter reports a deleted path as an `unknown` effect with partial coverage; modelling it as a
+    `delete` on the path gives the same classification only while no other branch touches that path, which
+    `_DELETED_PATHS_ARE_UNSHARED` asserts for the fixture."""
     kind = "delete" if branch == "remove-legacy" else "write"
     return {path: {kind} for path in BRANCHES[branch]}
+
+
+_DELETED_PATHS_ARE_UNSHARED = all(
+    not set(BRANCHES["remove-legacy"]) & set(paths) for name, paths in BRANCHES.items() if name != "remove-legacy")
+assert _DELETED_PATHS_ARE_UNSHARED, "a fixture branch shares a path with remove-legacy; model the adapter exactly"
 
 
 def classify(left: dict, right: dict, prints: dict, ancestors: dict, partial: set[str]) -> str:
@@ -280,7 +288,14 @@ def _plan(size: int) -> list[str]:
 
 
 def _signature(facts: dict) -> str:
-    return json.dumps(facts, sort_keys=True)
+    """The fact pattern up to unit keys and order: two cases that say the same thing sign the same."""
+    if facts["kind"] == "git":
+        by_key = {u["key"]: u["branch"] for u in facts["units"]}
+        content = sorted((u["branch"], sorted(by_key[a] for a in u["after"])) for u in facts["units"])
+        return json.dumps(["git", facts["base"], content])
+    by_key = {u["key"]: json.dumps([u["effects"], u["uses"], u["partial"]], sort_keys=True) for u in facts["units"]}
+    content = sorted((by_key[u["key"]], sorted(by_key[a] for a in u["after"])) for u in facts["units"])
+    return json.dumps(["aim", facts["question"], content])
 
 
 def build() -> dict[str, dict]:
@@ -332,7 +347,7 @@ def check(sets: dict[str, dict], *, skill_text: str | None = None, v1: list[str]
             raise SetError(f"{split} misses classes {sorted(missing)}")
         split_windows[split] = set()
         for case in cases:
-            _check_case(case)
+            _check_case(case, split)
             for value, pool, what in ((case["id"], ids, "id"), (case["prompt"], prompts, "prompt"),
                                       (_signature(case["facts"]), signatures, "fact pattern")):
                 if value in pool:
@@ -345,42 +360,39 @@ def check(sets: dict[str, dict], *, skill_text: str | None = None, v1: list[str]
     protected = split_windows["validation"] | split_windows["test"]
     if protected & windows(skill_text):
         raise SetError("a validation or test prompt shares an 8-word window with the analyze skill")
+    # Every SPEC-069 prompt has more than 8 words, so this also refuses exact and normalized copies.
     old = set().union(*(windows(p) for p in v1))
-    normalized_old = {" ".join(normalize_words(p)) for p in v1}
     for split, found in split_windows.items():
         if found & old:
             raise SetError(f"{split} shares an 8-word window with a SPEC-069 prompt")
-    for data in sets.values():
-        for case in data["cases"]:
-            if " ".join(normalize_words(case["prompt"])) in normalized_old:
-                raise SetError(f"{case['id']}: copies a SPEC-069 prompt")
 
 
-def _check_case(case: dict) -> None:
-    facts, text = case["facts"], case["prompt"]
+def _check_case(case: dict, split: str) -> None:
+    """Facts first (so a malformed case is refused, not crashed on), then prompt and expectation equality."""
+    facts = case["facts"]
     if case["class"] not in CLASSES:
         raise SetError(f"{case['id']}: unknown class")
-    if case["expect"] != expectation(facts):
-        raise SetError(f"{case['id']}: expectation does not follow from the facts")
     if facts["kind"] == "git":
         for unit in facts["units"]:
-            if unit["branch"] not in BRANCHES or unit["branch"] not in text:
-                raise SetError(f"{case['id']}: branch {unit['branch']!r} is unknown or not in the prompt")
-        if facts["base"] not in text:
-            raise SetError(f"{case['id']}: base revision not in the prompt")
-        return
-    uses_any = any(u["uses"] for u in facts["units"])
-    if uses_any != any(m in text for m in USE_MARKERS):
-        raise SetError(f"{case['id']}: content-use wording does not match the facts")
-    for unit in facts["units"]:
-        kinds = {e["kind"] for e in unit["effects"]}
-        if kinds - EFFECT_KINDS:
-            raise SetError(f"{case['id']}: effect outside the vocabulary")
-        if not any(e["path"] in BASE_FILES for e in unit["effects"]):
-            raise SetError(f"{case['id']}: unit {unit['key']} has no effect on a fixture file")
-        for path in [e["path"] for e in unit["effects"]] + unit["uses"]:
-            if path not in BASE_FILES or path not in text:
-                raise SetError(f"{case['id']}: path {path!r} is not a fixture file named in the prompt")
+            if unit["branch"] not in BRANCHES:
+                raise SetError(f"{case['id']}: unknown branch {unit['branch']!r}")
+    else:
+        writers = {e["path"] for u in facts["units"] for e in u["effects"] if e["kind"] in WRITE_LIKE}
+        for unit in facts["units"]:
+            if {e["kind"] for e in unit["effects"]} - EFFECT_KINDS:
+                raise SetError(f"{case['id']}: effect outside the vocabulary")
+            if len(unit["effects"]) != 1:
+                raise SetError(f"{case['id']}: unit {unit['key']} must have exactly one effect")
+            if not any(e["path"] in BASE_FILES for e in unit["effects"]):
+                raise SetError(f"{case['id']}: unit {unit['key']} has no effect on a fixture file")
+            if any(p not in writers or p not in BASE_FILES for p in unit["uses"]):
+                raise SetError(f"{case['id']}: unit {unit['key']} uses a file no unit writes")
+    # The prompt is the split's template applied to the facts: every path, branch, verb and content-use
+    # phrase in it therefore agrees with the facts.
+    if case["prompt"] != prompt(facts, STYLES[split]):
+        raise SetError(f"{case['id']}: prompt does not follow from the facts")
+    if case["expect"] != expectation(facts):
+        raise SetError(f"{case['id']}: expectation does not follow from the facts")
 
 
 # ----------------------------------------------------------------------------

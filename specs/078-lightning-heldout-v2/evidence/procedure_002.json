@@ -6,15 +6,15 @@
     "platform": "macOS-27.2.1",
     "python": "3.12.13"
   },
-  "expected": "24/40/100 disjoint splits, every class in every split, byte-identical rebuild; v1 overlap, shared 8-word windows, skill windows, absent paths, non-fixture units, content-use mismatch, wrong expectations and duplicates refused",
+  "expected": "24/40/100 disjoint splits, every class in every split, byte-identical rebuild; v1 overlap, shared 8-word windows, skill windows, absent paths, non-fixture units, prompt or effect kind that disagrees with the facts, unknown branch, effect outside the vocabulary, wrong split size, unit-order duplicates, wrong expectations and duplicates refused",
   "inputs": {
-    "scripts/spec078_bl2_rescore.py": "a7f6fe57a80fb685e17cfa21344c46d77536fe81b7595868f462ef974aacf50d",
-    "scripts/spec078_build_set.py": "e7d232c3eba2bb931306750386f7c960e97dfcf97736676f275b43c05989c9e1",
+    "scripts/spec078_bl2_rescore.py": "e5290eab9ec799fde94568e551bd417b071b6339a10010f1e5734e79612c55f7",
+    "scripts/spec078_build_set.py": "ba60df80c8f5be87fe5f75a24b0ad0c7206d7454aaa5d71337d6f8c6c46e534b",
     "specs/078-lightning-heldout-v2/evidence/bl2-rescoring-receipt.json": "a0e90c9edabea6bdb7eee2777bd7098813c8d09518915c42c662ae916bb7b46a",
     "specs/078-lightning-heldout-v2/prompts/feedback.json": "7da4d963090378e5622bbf736e7c982f8a98ee2e6c2f6bcd70ef30885b86c703",
-    "specs/078-lightning-heldout-v2/prompts/test.json": "e5f432a8e92de4833fd34a9fe17a72e5c55e0ce221b30126e6723b56823126e6",
+    "specs/078-lightning-heldout-v2/prompts/test.json": "e65e16a4ae908394c00e0ddb973fe364bd78ba38970167fef57293693524c9cf",
     "specs/078-lightning-heldout-v2/prompts/validation.json": "60d092aa0eaeaf17a4c28259807cd3bcde83bb7318866fb45182f8efe696029f",
-    "tests/test_spec078_set.py": "57d09b2fb663674a1805d86e830997436cd67f19c21548f3f37360fd49526b7e"
+    "tests/test_spec078_set.py": "04ff664ae09e3705426a7357c1faa5c42c4836543db2b19f7f28a093ce1c3a51"
   },
   "limits": "Structural build checks only; Gate 0 (T004) checks references, the literal follower and null baselines against the analyzer and scorer. Prompts are synthetic and template-written.",
   "procedure": "procedure_002",

@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""SPEC-078 T002: derived, content-free receipt of the BL.2 held-out re-scoring behind the HELD-02/04/06 diagnosis.
+"""SPEC-078 T002: derived receipt of the BL.2 held-out re-scoring behind the HELD-02/04/06 diagnosis.
 
 Re-scores the stored SPEC-072 held-out results (``results.jsonl`` of each arm's run in the local Lightning
 lab state) with the unchanged SPEC-069 scorer and records, per failed first attempt, the rollout id, the
-request kind and the scorer's first reason. Only the run ids, file hashes and scorer reasons are written.
+request kind and the scorer's first reason. No transcript or model text is written, but the scorer reasons
+name SPEC-069 held-out ids, fixture paths and expected effects, so this file must stay out of optimizer input.
 
     python -m scripts.spec078_bl2_rescore [--runs <lab runs directory>] > specs/078-lightning-heldout-v2/evidence/bl2-rescoring-receipt.json
 """
