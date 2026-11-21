@@ -1,0 +1,29 @@
+{
+  "actual": "freeze holds at 8ee703db152316646d5c668c765ad60875effd47; OK",
+  "command": ".venv-speckit/bin/python -m scripts.spec078_freeze (on the origin/develop tip 8ee703db) && .venv-speckit/bin/python -m scripts.spec078_freeze --check && .venv-speckit/bin/python -m unittest tests.test_spec078_heldout_v2.FreezeTests",
+  "environment": {
+    "platform": "macOS-27.2.1",
+    "python": "3.12.13"
+  },
+  "expected": "the protocol, the three v2 splits, the Gate 0 script, the v2 analysis module and the A0 skill are bound by sha256 at a develop commit before any rollout; Gate 0 passes on those bytes; every v2 run refuses when any bound file differs or no freeze exists",
+  "freezeCommit": "8ee703db152316646d5c668c765ad60875effd47",
+  "frozenFiles": {
+    "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
+    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "9ba3424c0aac5697c5c67d5f7e382f6c751e6cda791d36f3faa6145e00703641",
+    "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
+    "specs/078-lightning-heldout-v2/evaluation-protocol.md": "3cc9a4ab79c340fd2926ad23295b7d8210cb67c68a99b3da64071428b0d8fce8",
+    "specs/078-lightning-heldout-v2/prompts/feedback.json": "7da4d963090378e5622bbf736e7c982f8a98ee2e6c2f6bcd70ef30885b86c703",
+    "specs/078-lightning-heldout-v2/prompts/test.json": "e65e16a4ae908394c00e0ddb973fe364bd78ba38970167fef57293693524c9cf",
+    "specs/078-lightning-heldout-v2/prompts/validation.json": "60d092aa0eaeaf17a4c28259807cd3bcde83bb7318866fb45182f8efe696029f"
+  },
+  "inputs": {
+    "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
+    "scripts/spec078_freeze.py": "068388de81d6ad8d3d45f23020a888b79009372e2cf5f7d18aa0720d9453395a",
+    "specs/078-lightning-heldout-v2/prompts/FREEZE.json": "9c0f6df179496b9ffcd7d30ddb6888b5d5a445c6a843dbc0c3a0b5aff8d93dd8",
+    "specs/078-lightning-heldout-v2/prompts/fingerprints.json": "502fd364aa123cb1d83aa86276b47689f3b5c0cfdc4ef40fc6c159129a66ed8b"
+  },
+  "limits": "The freeze binds bytes, not reviewer intent; no rollout has run. Gate 1 needs the owner's yes on 300 rollouts and SPEC-074 redacted consent.",
+  "negativeControls": "an edited bound file (each one), a record missing a bound file, a short commit name and stale fingerprints are refused (FreezeTests); a v2 run without a freeze is refused before a run directory exists (RunnerTests)",
+  "procedure": "procedure_007",
+  "scenario": "SC-007"
+}

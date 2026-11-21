@@ -42,7 +42,7 @@ per task; the owner approves each merge.
   pins, null baselines. Gate 0 must pass on all 164 cases. Files:
   `scripts/spec078_gate0.py`, `tests/test_spec078_gate0.py`. Dependencies: T002.
   Verification: procedures 003–005 (`python -m scripts.spec078_gate0`, exit 0).
-- [ ] T005 (REQ-006, REQ-007, REQ-008, REQ-012 / SC-006, SC-007, SC-012): Runner
+- [x] T005 (REQ-006, REQ-007, REQ-008, REQ-012 / SC-006, SC-007, SC-012): Runner
   prompt sets `v2-*` checked against the SPEC-078 FREEZE, generalized protocol
   freeze check, `v2-test` canary, `is_train` for `v2-feedback`,
   `OPTIMIZER_DENIED` and contamination fingerprints for v2 validation and test;
