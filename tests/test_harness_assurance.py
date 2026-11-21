@@ -929,6 +929,13 @@ class VerifyArtifactTests(unittest.TestCase):
         docs = {"user": {"schema": ha.SETTINGS_FORMAT, "scope": "user"}}
         verify_refused(self, "input-hash-mismatch", artifact, documents=docs)
 
+    def test_deeply_nested_artifact_is_a_fixed_refusal(self):  # C67-017
+        artifact = compiled()
+        nested = []
+        for _ in range(5000):
+            nested = [nested]
+        verify_refused(self, "invalid-artifact", {**artifact, "profile": nested})
+
     def test_non_json_values_are_refused_with_a_fixed_reason(self):
         artifact = compiled()
         artifact["risk"] = {1, 2}

@@ -68,9 +68,10 @@ def _normalize(paths: Any) -> list[str]:
 
 
 def _matches(path: str, pattern: str) -> bool:
-    if pattern.endswith("/**"):
-        prefix = pattern[:-3]
-        return path == prefix or path.startswith(prefix + "/")
+    if pattern.endswith("/**"):  # the directory itself or anything below it; the prefix is a glob too
+        depth = pattern.count("/")
+        parts = path.split("/")
+        return len(parts) >= depth and fnmatch.fnmatchcase("/".join(parts[:depth]), pattern[:-3])
     return fnmatch.fnmatchcase(path, pattern)
 
 
@@ -152,6 +153,7 @@ def check_profile_binding(profile: Any, classification: Any) -> None:
     profile, or with an operator rule dropped, added or altered, is refused.
     """
     profile = validate_profile(profile)
+    _check_raise_only(profile)  # the classifier refuses such a profile, so no classification binds to it
     _check_classification(classification)
     actual = sorted(classification["reasons"], key=_reason_key)
     expected = _derived_reasons(profile, classification["paths"], classification["changedLines"])
@@ -182,19 +184,19 @@ def _check_consistency(value: Mapping[str, Any]) -> None:
     Mirrors ``classify_risk``: reasons in canonical order, the raise values are the maxima over the reasons, the
     risk class follows from them, and the fixed Q5 rules the paths and line count trigger are present with their
     canonical ``R3`` raise (an ``R2`` reason under a default name does not satisfy one). A
-    documentation-only claim needs paths and no ``sensitive-path`` reason. A forgery that stays consistent with its
-    own paths can only be caught by recomputing the classification from the diff.
+    documentation-only claim needs paths and not the canonical ``sensitive-path`` reason (an operator rule may
+    share the name). A forgery that stays consistent with its own paths can only be caught by recomputing the
+    classification from the diff.
     """
     reasons = value["reasons"]
     keys = [(r["rule"], r["raiseTo"], r["modeAtLeast"] or "") for r in reasons]
-    names = {r["rule"] for r in reasons}
     depth = max((r["raiseTo"] for r in reasons), key=DEPTHS.index, default=None)
     mode = max((r["modeAtLeast"] for r in reasons if r["modeAtLeast"]), key=MODES.index, default=None)
     docs_only = value["docsOnly"]
     expected = "elevated" if depth is not None else "docs-only" if docs_only else "ordinary"
     _require(keys == sorted(keys) and value["raiseDepthTo"] == depth and value["raiseModeTo"] == mode
              and value["riskClass"] == expected, "invalid-diff-summary")
-    _require(not docs_only or (bool(value["paths"]) and "sensitive-path" not in names), "invalid-diff-summary")
+    _require(not docs_only or (bool(value["paths"]) and SENSITIVE_REASON not in reasons), "invalid-diff-summary")
     _require(value["changedLines"] <= SIZE_THRESHOLD or SIZE_REASON in reasons, "invalid-diff-summary")
     _require(not any(path in SHARED_FILES for path in value["paths"]) or SHARED_REASON in reasons,
              "invalid-diff-summary")

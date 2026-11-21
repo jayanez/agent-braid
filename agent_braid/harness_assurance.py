@@ -426,7 +426,7 @@ def verify_artifact(artifact: Any, profile: Any, documents: Mapping[str, Any] | 
     _require(artifact["executionAuthorization"] is False, "execution-authorization")
     try:
         stored = digest({k: v for k, v in artifact.items() if k != "digest"})
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, RecursionError):
         raise AssuranceError("invalid-artifact") from None
     _require(artifact["digest"] == stored, "digest-mismatch")
     _require(canonical(artifact) == canonical(compile_artifact(profile, documents, classification)), "input-hash-mismatch")
