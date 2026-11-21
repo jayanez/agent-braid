@@ -1,0 +1,14 @@
+{
+ "commit": "797de0b33d2dc86ba3ca160c9a0db5cd1d1fcdfe",
+ "files": {
+  "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
+  "agent_braid/lightning_heldout_v3.py": "8ce2f3ea67a01e04f715bbfea2f0452207ec8fa3b497038935f594721908aa75",
+  "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "8fb7c5cd75004b85a7064c69abc718c15ee50db580c648d3c06e80721409002f",
+  "scripts/spec078_build_set.py": "ba60df80c8f5be87fe5f75a24b0ad0c7206d7454aaa5d71337d6f8c6c46e534b",
+  "scripts/spec078_build_v3.py": "b3d05a21b85fba6ca4905c17a570596e8e6ae55eafbf3b39bf48cca9ef1d5788",
+  "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
+  "specs/078-lightning-heldout-v2/evaluation-protocol-v3.md": "3e6b44a8f25d81c777a2a90689d2f6c8145db3ce405efadea9d50187eb207fa2",
+  "specs/078-lightning-heldout-v2/prompts/v3-test.json": "7b71a59a67a359f188caec67658a692d02b28709ad6e17e35e206035c7d5bebc"
+ },
+ "schema": "braid-lightning-v3-freeze/v0.1"
+}
