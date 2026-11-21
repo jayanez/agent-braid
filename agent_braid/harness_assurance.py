@@ -391,10 +391,13 @@ def compile_artifact(profile: Any, documents: Mapping[str, Any] | None, classifi
 
     The artifact is the resolved and risk-raised view plus the SHA-256 of each input, the required-review table
     for the effective ``pre-pr-review`` depth and a digest over all of it. It grants nothing:
-    ``executionAuthorization`` is false. Equal inputs yield byte-identical canonical output.
+    ``executionAuthorization`` is false. Equal inputs yield byte-identical canonical output. A classification
+    whose reasons ``profile`` would not derive from its paths and line count (one computed under another profile)
+    is refused with ``invalid-diff-summary`` (``check_profile_binding``), so ``verify_artifact`` refuses it too.
     """
-    from .harness_assurance_risk import apply_risk  # deferred: the risk module imports this one
+    from .harness_assurance_risk import apply_risk, check_profile_binding  # deferred: the risk module imports this one
     profile = validate_profile(profile)
+    check_profile_binding(profile, classification)
     documents = {} if documents is None else documents
     view = apply_risk(resolve(profile, documents), classification)
     row = next(r for r in view["checkpoints"] if r["checkpoint"] == DEPTH_CHECKPOINT)

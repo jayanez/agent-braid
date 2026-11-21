@@ -4,9 +4,13 @@
 A gate receipt (``braid-harness-gate-receipt/v0.1``, SPEC-067 contract) records what a gate reported: the depth and
 mode actually applied with their sources, base and head commit, the profile digest, the risk class, the reviews
 run (with findings applied and rejected), the commands run with exit codes, the approvals and a content digest.
-``verify_receipt`` checks it against a compiled artifact (T005) and the head commit the caller expects: structure,
-digest, commit binding, profile binding, depth not below the effective depth, mode consistent with the effective
-mode, approvals matching the mode and, at ``pre-pr-review``, every review the depth requires. The digest detects
+``verify_receipt`` checks it against a compiled artifact (T005), the compilation inputs (profile, scope documents,
+risk classification) and the head commit the caller expects: structure, digest, that the artifact is exactly what
+those inputs compile to (``verify_artifact``; a re-sealed, self-consistent artifact is not trusted), commit binding,
+profile digest and risk class equal to the verified artifact's, the REQ-003 human-only checkpoints held at
+``human-only`` with a human approval independently of the artifact, depth not below the effective depth, mode
+consistent with the effective mode, approvals matching the mode and, at ``pre-pr-review``, every review the depth
+requires. The digest detects
 inconsistent edits only (a recomputed digest is not detected); a receipt is a record of what was reported, not
 proof that a review was sound or happened, and it belongs in an operator-owned store written by the orchestrator.
 Each independent reviewer (R4) is one review entry of the gate receipt, distinct from the author and each other.
@@ -32,8 +36,8 @@ from typing import Any
 
 from .harness_assurance import (
     ALLOWED_MODES, CHECKPOINTS, CODE_LADDER, COMPILED_FORMAT, COMPILED_KEYS, DEPTH_CHECKPOINT, DEPTHS, DOCS_LADDER,
-    INDEPENDENT_REVIEW, MIN_INDEPENDENT_REVIEWERS, MODES, AssuranceError, _hash, _id, _int, digest,
-    required_reviews,
+    HUMAN_ONLY, INDEPENDENT_REVIEW, MIN_INDEPENDENT_REVIEWERS, MODES, AssuranceError, _hash, _id, _int, digest,
+    required_reviews, verify_artifact,
 )
 
 RECEIPT_FORMAT = "braid-harness-gate-receipt/v0.1"
@@ -92,6 +96,14 @@ def _seconds(value: Any) -> int:
         raise ReceiptError("invalid-time") from None
 
 
+def _utf8(value: str) -> bool:
+    try:
+        value.encode("utf-8")
+    except UnicodeEncodeError:  # a lone surrogate has no canonical UTF-8 form
+        return False
+    return True
+
+
 def _sealed(body: Mapping[str, Any]) -> dict[str, Any]:
     return {**body, "digest": digest(body)}
 
@@ -119,6 +131,7 @@ def _check_authorization(record: Any) -> None:
           and _id(record["id"]) and record["checkpoint"] in CHECKPOINTS
           and all(_text(record[key]) for key in ("repository", "branchPattern", "issuer"))
           and type(record["ownerStatement"]) is str and len(record["ownerStatement"]) <= 8 * MAX_TEXT
+          and _utf8(record["ownerStatement"])
           and record["conditions"] == list(CONDITIONS)
           and (record["revokedAt"] is None or type(record["revokedAt"]) is str))
     _require(ok, "invalid-authorization")
@@ -285,12 +298,15 @@ def _check_reviews(receipt: Mapping[str, Any], artifact: Mapping[str, Any]) -> N
 
 
 def verify_receipt(receipt: Any, artifact: Mapping[str, Any], *, checkpoint: str, base_commit: str,
-                   head_commit: str) -> dict[str, Any]:
+                   head_commit: str, profile: Any, documents: Mapping[str, Any] | None,
+                   classification: Any) -> dict[str, Any]:
     """Return the receipt when it passes the ``checkpoint`` gate for ``head_commit``; else raise ``ReceiptError``.
 
     ``ReceiptError.reason`` is a fixed string from ``RECEIPT_REASONS``; ``ReceiptError.review`` names the first
-    unsatisfied required review. Checks run in the order: structure, digest, artifact, checkpoint, commits,
-    profile, depth, mode and approvals, reviews. A standing-authorization approval is checked only for form: its
+    unsatisfied required review. Checks run in the order: structure, digest, artifact (``verify_artifact`` against
+    ``profile``, ``documents`` and ``classification``: any difference from a fresh compilation is
+    ``invalid-artifact``), checkpoint, commits, profile, the human-only floors, depth, mode and approvals, reviews.
+    A standing-authorization approval is checked only for form: its
     reference is not resolved here, so the caller confirms the cited record with ``evaluate_standing``. Command
     exit codes are recorded process evidence, not a pass criterion, and ``pre-pr-review`` reviews are required at
     the depth the receipt claims (derived from the artifact's risk, not from its re-sealable review section).
@@ -298,9 +314,12 @@ def verify_receipt(receipt: Any, artifact: Mapping[str, Any], *, checkpoint: str
     _check_shape(receipt)
     _require(receipt["digest"] == digest(_unsealed(receipt)), "digest-mismatch")
     try:
+        verify_artifact(artifact, profile, documents, classification)
         _verify_against(receipt, artifact, checkpoint, base_commit, head_commit)
     except ReceiptError:
         raise
+    except AssuranceError:  # not what the caller's inputs compile to, or the inputs themselves are invalid
+        raise ReceiptError("invalid-artifact") from None
     except (KeyError, TypeError, ValueError, IndexError, AttributeError, RecursionError, OverflowError):
         raise ReceiptError("invalid-artifact") from None  # a self-consistent but malformed artifact
     return receipt
@@ -313,6 +332,9 @@ def _verify_against(receipt: Mapping[str, Any], artifact: Mapping[str, Any], che
     _require(receipt["headCommit"] == head_commit and receipt["baseCommit"] == base_commit, "commit-mismatch")
     _require(receipt["profileDigest"] == artifact["inputs"]["profile"]
              and receipt["riskClass"] == artifact["risk"]["riskClass"], "profile-mismatch")
+    if receipt["checkpoint"] in HUMAN_ONLY:  # REQ-003: held whatever the artifact row says
+        _require(receipt["mode"] == "human-only", "mode-below-effective")
+        _require(any(approval["kind"] == "human" for approval in receipt["approvals"]), "approval-mismatch")
     effective_depth = row.get("depth")
     _require((receipt["depth"] is None) == (effective_depth is None) and (
         effective_depth is None or DEPTHS.index(receipt["depth"]) >= DEPTHS.index(effective_depth)),
