@@ -13,7 +13,7 @@
   ],
   "assumptions": "Single-operator repository; without a profile the baseline is the documented quick/pr/sensitive validation profiles; founder choices Q1 to Q6 were decided on 2026-11-02 (evidence/founder-decisions-20261102.json, supplemented by founder-decisions-20261102b.json and founder-decisions-20261102c.json; Q1: R2 for code and R1 for docs-only pre-PR review, standard as the default profile); SPEC-058 REQ-006 and ownership.resolve_settings are followed as precedent.",
   "authority_snapshot": {
-    "commit": "5bd9b5c7c3d3691912754d5f999f82699122b55a",
+    "commit": "2b48a5d63efebaeea6b07b91cd25f7dcbe3b3d11",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -111,7 +111,7 @@
   "compatibility": "Additive and advisory; quick/pr profiles, SPEC-057/058 settings, SPEC-049 registry, SPEC-050 policies and the PR template unchanged; schema changes become new versions.",
   "domain": "Agent Braid harness process assurance: lifecycle checkpoints, review ladder, HITL modes, floors, receipts, advisory compilation.",
   "evidence_snapshot": {
-    "commit": "5bd9b5c7c3d3691912754d5f999f82699122b55a",
+    "commit": "2b48a5d63efebaeea6b07b91cd25f7dcbe3b3d11",
     "mode": "historical"
   },
   "execution_contract": "Advisory only: executionAuthorization stays false; the compiled profile grants no tool, merge, release or approval; profiles, authorizations and classifier rules are operator-owned; agents cannot change their own level or mode; escalation is raise-only; floors are human-only.",
@@ -147,9 +147,9 @@
             {
               "command": "see the command in the evidence file",
               "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
-              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-009 fix (#1477).",
+              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-019 fix (#1488).",
               "path": "specs/067-assurance-profiles/evidence/t011.json",
-              "sha256": "86533edd5cd1561ef443ca4c29d1ad63c4a3b1ed929336ad64841adb0a92260a"
+              "sha256": "18067d96d330d3fe5fc110ea52b72f4193b29419cb5a9b78603f6f9c13916385"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -171,9 +171,9 @@
             {
               "command": "see the command in the evidence file",
               "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
-              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-009 fix (#1477).",
+              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-019 fix (#1488).",
               "path": "specs/067-assurance-profiles/evidence/t011.json",
-              "sha256": "86533edd5cd1561ef443ca4c29d1ad63c4a3b1ed929336ad64841adb0a92260a"
+              "sha256": "18067d96d330d3fe5fc110ea52b72f4193b29419cb5a9b78603f6f9c13916385"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -195,9 +195,9 @@
             {
               "command": "see the command in the evidence file",
               "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
-              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-009 fix (#1477).",
+              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-019 fix (#1488).",
               "path": "specs/067-assurance-profiles/evidence/t011.json",
-              "sha256": "86533edd5cd1561ef443ca4c29d1ad63c4a3b1ed929336ad64841adb0a92260a"
+              "sha256": "18067d96d330d3fe5fc110ea52b72f4193b29419cb5a9b78603f6f9c13916385"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -219,9 +219,9 @@
             {
               "command": "see the command in the evidence file",
               "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
-              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-009 fix (#1477).",
+              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-019 fix (#1488).",
               "path": "specs/067-assurance-profiles/evidence/t011.json",
-              "sha256": "86533edd5cd1561ef443ca4c29d1ad63c4a3b1ed929336ad64841adb0a92260a"
+              "sha256": "18067d96d330d3fe5fc110ea52b72f4193b29419cb5a9b78603f6f9c13916385"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -243,9 +243,9 @@
             {
               "command": "see the command in the evidence file",
               "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
-              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-009 fix (#1477).",
+              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-019 fix (#1488).",
               "path": "specs/067-assurance-profiles/evidence/t011.json",
-              "sha256": "86533edd5cd1561ef443ca4c29d1ad63c4a3b1ed929336ad64841adb0a92260a"
+              "sha256": "18067d96d330d3fe5fc110ea52b72f4193b29419cb5a9b78603f6f9c13916385"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -267,9 +267,9 @@
             {
               "command": "see the command in the evidence file",
               "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
-              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-009 fix (#1477).",
+              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-019 fix (#1488).",
               "path": "specs/067-assurance-profiles/evidence/t011.json",
-              "sha256": "86533edd5cd1561ef443ca4c29d1ad63c4a3b1ed929336ad64841adb0a92260a"
+              "sha256": "18067d96d330d3fe5fc110ea52b72f4193b29419cb5a9b78603f6f9c13916385"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -291,9 +291,9 @@
             {
               "command": "see the command in the evidence file",
               "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
-              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-009 fix (#1477).",
+              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-019 fix (#1488).",
               "path": "specs/067-assurance-profiles/evidence/t011.json",
-              "sha256": "86533edd5cd1561ef443ca4c29d1ad63c4a3b1ed929336ad64841adb0a92260a"
+              "sha256": "18067d96d330d3fe5fc110ea52b72f4193b29419cb5a9b78603f6f9c13916385"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -315,9 +315,9 @@
             {
               "command": "see the command in the evidence file",
               "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
-              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-009 fix (#1477).",
+              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-019 fix (#1488).",
               "path": "specs/067-assurance-profiles/evidence/t011.json",
-              "sha256": "86533edd5cd1561ef443ca4c29d1ad63c4a3b1ed929336ad64841adb0a92260a"
+              "sha256": "18067d96d330d3fe5fc110ea52b72f4193b29419cb5a9b78603f6f9c13916385"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -339,9 +339,9 @@
             {
               "command": "see the command in the evidence file",
               "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
-              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-009 fix (#1477).",
+              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-019 fix (#1488).",
               "path": "specs/067-assurance-profiles/evidence/t011.json",
-              "sha256": "86533edd5cd1561ef443ca4c29d1ad63c4a3b1ed929336ad64841adb0a92260a"
+              "sha256": "18067d96d330d3fe5fc110ea52b72f4193b29419cb5a9b78603f6f9c13916385"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
@@ -363,9 +363,9 @@
             {
               "command": "see the command in the evidence file",
               "limits": "Structural and unit evidence only; no soundness, utility or approval claim; human review pending.",
-              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-009 fix (#1477).",
+              "outcome": "Stable-candidate review and local pr run recorded (three unrelated failures disclosed); at this commit its SC-009 pointer carries the t009.json hash rewritten by the C67-019 fix (#1488).",
               "path": "specs/067-assurance-profiles/evidence/t011.json",
-              "sha256": "86533edd5cd1561ef443ca4c29d1ad63c4a3b1ed929336ad64841adb0a92260a"
+              "sha256": "18067d96d330d3fe5fc110ea52b72f4193b29419cb5a9b78603f6f9c13916385"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits.",
