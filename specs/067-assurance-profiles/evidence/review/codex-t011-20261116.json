@@ -1,0 +1,219 @@
+{
+  "recordVersion": "spec067-codex-review-v1",
+  "task": "SPEC-067/T011",
+  "candidateCommit": "dad3e7f5f20956e8039be531bdc84bcc6c7f43c0",
+  "reviewedCheckout": "detached worktree at dad3e7f5 (owner run); triage re-checked at dad3e7f5 and at develop 2a13cd40, where git diff dad3e7f5..2a13cd40 of the eight harness_assurance code and test files, docs/architecture/ASSURANCE_LEVELS.md and agent_braid/harness_containment_macos.py is empty (only assurance.json freeze fields, the review packet, its schema and tasks.md differ under specs/067-assurance-profiles)",
+  "reviewer": {
+    "tool": "codex exec -s read-only --output-schema",
+    "reportedReviewer": "Codex (GPT-6 family, exact runtime model unreported)",
+    "binary": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+    "version": "codex-cli 0.169.0-alpha.11.1",
+    "account": "operator subscription",
+    "runBy": "owner",
+    "date": "2026-11-21"
+  },
+  "command": "\"/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex\" exec -s read-only -C <detached worktree at dad3e7f5f20956e8039be531bdc84bcc6c7f43c0> --output-schema specs/067-assurance-profiles/review/codex-t011-20261116.schema.json -o ~/Downloads/codex-067-t011.json \"$(cat specs/067-assurance-profiles/review/codex-t011-20261116.md)\"",
+  "packet": "specs/067-assurance-profiles/review/codex-t011-20261116.md",
+  "rawOutput": "specs/067-assurance-profiles/evidence/review/codex-t011-20261116.raw.json",
+  "rawOutputSha256": "76e51b70c64cfc7af57ca24033a6362ac646233b7f001a088d8df9216a98acc9",
+  "rawOutputNote": "Byte-identical copy of the owner's ~/Downloads/codex-067-t011.json (7929 bytes, no trailing newline), unedited.",
+  "codexVerdict": "findings",
+  "findingCount": 11,
+  "codexSeverityCounts": {
+    "high": 2,
+    "medium": 4,
+    "low": 3,
+    "info": 2
+  },
+  "triageMethod": "Orchestrator re-read of every cited line at dad3e7f5 and develop 2a13cd40 (identical 067 code), treating each Codex claim as a hypothesis to refute; in-memory reproductions with python3.13 importing the repository modules (no file written, no repository edit) for C67-002 to C67-008; the four T011 test modules re-run offline at develop (194 tests, OK). Freeze model checked against docs/development/SPEC_KIT.md and scripts/validate_spec_kit.py freeze(). No native run, no sudo.",
+  "triage": [
+    {
+      "id": "C67-001",
+      "codexSeverity": "high",
+      "verdict": "REJECTED",
+      "adjustedSeverity": "info",
+      "evidence": "Codex is right about the bytes: at dad3e7f5 specs/067-assurance-profiles/assurance.json has authority_snapshot and evidence_snapshot mode current, commit null (lines 15-108 and 112-115). That is the designed freeze model, not a defect. scripts/validate_spec_kit.py freeze() (:97-114) requires a clean candidate, takes commit = HEAD and writes mode historical with that commit into the working tree, so the record that names the candidate is necessarily committed after it; docs/development/SPEC_KIT.md (Assurance record: 'A reviewed candidate uses historical mode bound to a full Git commit whose authority bytes are verified from repository history'; evidence_snapshot 'permits a review to bind an earlier authority candidate while a later commit packages the review record') states the same. The freeze record is 906d2efd (#1403), whose only assurance.json change is the four freeze fields (both snapshots historical at dad3e7f5, authority hashes unchanged). 065 follows the same pattern (frozen at a768e6d3, recorded in 134a9731). Checked here: all 10 obtained_evidence sha256 in the develop assurance.json match the files at dad3e7f5, and all 89 authority_snapshot hashes match the bytes at dad3e7f5. The real, minor defect is the packet wording: review/codex-t011-20261116.md:11-14 says the snapshots are 'both historical at this commit', which is false for the candidate's own bytes and led Codex (prompt item 7) to this finding.",
+      "reproduction": "git show dad3e7f5:specs/067-assurance-profiles/assurance.json (current/null); git diff dad3e7f5 906d2efd -- specs/067-assurance-profiles/assurance.json (only commit and mode fields); sha256 of each obtained_evidence path and each authority path at dad3e7f5 against the develop record: 10/10 and 89/89 match.",
+      "disposition": "no change to the freeze; correct the packet sentence (candidate bytes are current, the historical binding lives in the later freeze commit) in the next packet revision",
+      "blocksApproval": false,
+      "fixLocation": [
+        "specs/067-assurance-profiles/review/codex-t011-20261116.md"
+      ]
+    },
+    {
+      "id": "C67-002",
+      "codexSeverity": "high",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "high",
+      "evidence": "verify_receipt (agent_braid/harness_assurance_receipts.py:287-306) takes the artifact from the caller; _row (:179-187) checks only the key set, schema, executionAuthorization false and the artifact's own digest (:184), and _verify_against (:309-322) then takes the effective depth and mode from that artifact's row; _check_mode (:253-266) compares with row mode only and has no independent floor check, although harness_assurance.HUMAN_ONLY (:68) and _check_checkpoint (:134) fix the floors. Anyone who can supply the artifact can re-seal it. The authoritative check exists (harness_assurance.verify_artifact :414-432, which recompiles and refuses with input-hash-mismatch) but verify_receipt neither calls it nor takes the inputs it needs, while its docstring (:7-9) and the contract (contracts/assurance-profile.md:79, 'profile binding') read as if the receipt were bound to the profile. Mitigation: there is no production caller of harness_assurance_receipts.verify_receipt in agent_braid/ or scripts/ (only tests), and the module docstring says a receipt is a record, not proof. The t011.json adversarial fixes (re-sealed artifact with emptied reviews refused) closed only the review-section variant.",
+      "reproduction": "In memory: compile the genuine artifact for agent_braid/cli.py, 500 lines (release human-only, pre-pr-review R3); re-seal a copy with release mode autonomous and pre-pr-review depth R0 with an empty required list. verify_artifact refuses it (input-hash-mismatch). verify_receipt accepts a release receipt with mode autonomous, author agent-x and no approval, and a pre-pr-review receipt at R0 with zero reviews. The same release receipt against the genuine artifact is refused (mode-below-effective). So a self-consistent, non-authoritative artifact makes a human-only floor pass with no human approval.",
+      "disposition": "fix before approval: verify_receipt must take the compilation inputs (profile, scope documents, classification) and call verify_artifact, or take an artifact the caller has verified and bind the receipt to its digest; independently refuse any HUMAN_ONLY checkpoint whose applied mode is not human-only with a human approval; add the negative control (valid digest, policy differs from the fresh compilation) and correct the contract's 'profile binding' wording",
+      "blocksApproval": true,
+      "fixLocation": [
+        "agent_braid/harness_assurance_receipts.py",
+        "tests/test_harness_assurance_receipts.py",
+        "specs/067-assurance-profiles/contracts/assurance-profile.md"
+      ]
+    },
+    {
+      "id": "C67-003",
+      "codexSeverity": "medium",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "medium",
+      "evidence": "compile_artifact (agent_braid/harness_assurance.py:389-411) applies the classification with apply_risk (:399) without re-evaluating the profile's riskRules against the classification's paths and changedLines; _check_consistency (agent_braid/harness_assurance_risk.py:143-162) checks only the fixed Q5 rules, and the classification carries no binding to the profile it was computed under. verify_artifact (:414-432) recompiles from the same stale classification and therefore agrees. This is distinct from the recorded caller-supplied impact residual (evidence/t011.json:31): no repository impact is needed to re-evaluate operator rules, since paths and changedLines are in the classification.",
+      "reproduction": "In memory: classify README.md, 10 lines under preset standard (no reasons); profile p3 = standard v2 plus rule readme-r3 (README.md, minChangedLines 0, raiseTo R3). Fresh classification under p3 raises to R3 and compiles at R3; compile_artifact(p3, None, stale) yields R2, and verify_artifact(that artifact, p3, None, stale) passes.",
+      "disposition": "fix before approval: in compile_artifact (and so verify_artifact) re-evaluate the profile's riskRules on the classification's paths and changedLines and refuse a classification whose operator reasons differ (invalid-diff-summary), or bind the classifying profile's digest into the classification; add the stale-classification negative control",
+      "blocksApproval": true,
+      "fixLocation": [
+        "agent_braid/harness_assurance.py",
+        "agent_braid/harness_assurance_risk.py",
+        "tests/test_harness_assurance_risk.py"
+      ]
+    },
+    {
+      "id": "C67-004",
+      "codexSeverity": "medium",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "evidence": "agent_braid/harness_assurance_risk.py:161-162 require only that a reason named size-over-400 or shared-file exists, not that it carries raiseTo R3 (DEFAULT_RAISE, :38). The test tests/test_harness_assurance_risk.py:222-231 uses agent_braid/harness_lab.py and agent_braid/cli.py, both sensitive paths, so the forged inputs keep a sensitive-path R3 reason while raiseDepthTo is reset to None and the generic max check at :158 refuses them; deleting either dedicated guard leaves the test passing. Lowered: it needs a forged classification, and a forger can already understate changedLines or paths (the recorded caller-supplied seam), so the guard is defense in depth; but t011.json credits these guards with tests ('tests added for hidden size and shared-file reasons').",
+      "reproduction": "In memory: docs/x.md, 401 lines under standard yields size-over-400 R3 (compile R3); the same classification with that reason at raiseTo R2 and raiseDepthTo R2 compiles at R2. ROADMAP.md (shared-file only) forged the same way compiles at R2. The test fixtures' reasons are [sensitive-path, size-over-400] and [sensitive-path, shared-file]; after the test's edit the remaining maximum is R3 against raiseDepthTo None, so the generic check alone refuses.",
+      "disposition": "fix in a follow-up task, recommended in the same fix PR as C67-002/C67-003 (one re-freeze): require the canonical R3 reason for each triggered Q5 default; rebuild the omission tests on non-sensitive paths (docs/x.md over 400 lines, ROADMAP.md) with consistent aggregates, and add the R2-raise variants",
+      "blocksApproval": false,
+      "fixLocation": [
+        "agent_braid/harness_assurance_risk.py",
+        "tests/test_harness_assurance_risk.py"
+      ]
+    },
+    {
+      "id": "C67-005",
+      "codexSeverity": "medium",
+      "verdict": "PARTIAL",
+      "adjustedSeverity": "low",
+      "evidence": "Confirmed: _single_line (agent_braid/harness_assurance_render.py:80-85) admits any printable text up to 200 characters without Markdown syntax, and track_brief_section interpolates ownership, isolation, model and effort at :108-110, so '@' mentions and secret-like strings reach the brief. Not confirmed as a medium leak: the four fields are caller-supplied orchestrator metadata, not transcripts, and the renderer cannot recognise a secret in arbitrary text; '_' is refused (:28), which happens to stop some token formats (ghp_...) but not others (sk-ant-...). The @mention part is already recorded in evidence/t011.json:24 as low and deferred to a later task. The claim gap is real: assurance.json observation_contract ('No secret or raw transcript is exported.') is not enforced for these fields.",
+      "reproduction": "In memory: track_brief_section with ownership '@jayanez owns this', isolation 'token sk-ant-api03-ABCDEF0123456789' and effort 'user: paste of transcript line' renders all three verbatim; 'ghp_abc' and 'a|b' are refused (invalid-artifact).",
+      "disposition": "fix in a follow-up task: restrict the four fields to an identifier-like charset and refuse '@'; add synthetic-sensitive-text tests; narrow the observation_contract wording at the next re-freeze",
+      "blocksApproval": false,
+      "fixLocation": [
+        "agent_braid/harness_assurance_render.py",
+        "tests/test_harness_assurance_render.py",
+        "specs/067-assurance-profiles/assurance.json"
+      ]
+    },
+    {
+      "id": "C67-006",
+      "codexSeverity": "medium",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "evidence": "save_journal (agent_braid/harness_assurance.py:714-743) writes journal.to_bytes() without a size check, while read_operator_file (:464-489) refuses above MAX_BYTES 1048576 (agent_braid/system_one.py:17) with unobservable-source and ProfileJournal.from_bytes refuses it as invalid-json. MAX_PROFILES 64, MAX_RULES 16, MAX_PATTERNS 16 and MAX_PATTERN 128 allow valid journals above that cap. Lowered: it fails closed (the journal becomes unreadable, nothing is granted), needs about 30 human-committed maximal profile versions, and is an operator-only availability problem; the previous journal is overwritten, so recovery is manual.",
+      "reproduction": "In memory: ProfileJournal begin+commit by a human actor of standard-preset versions each with 16 rules of 16 patterns of 128 characters; after 30 versions (60 events) to_bytes() is 1084485 bytes (> 1048576) and ProfileJournal.from_bytes refuses it (invalid-json). No file was written.",
+      "disposition": "fix in a follow-up task: refuse in _append or save_journal (fixed reason, e.g. journal-full) when the canonical bytes would exceed MAX_BYTES, keeping the previous file; add a boundary test",
+      "blocksApproval": false,
+      "fixLocation": [
+        "agent_braid/harness_assurance.py",
+        "tests/test_harness_assurance.py"
+      ]
+    },
+    {
+      "id": "C67-007",
+      "codexSeverity": "low",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "evidence": "_check_authorization (agent_braid/harness_assurance_receipts.py:117-131) checks ownerStatement only for type and length (:121), then computes digest(_unsealed(record)) at :131; canonical() encodes UTF-8 (agent_braid/system_one.py:55-57), so a lone surrogate raises UnicodeEncodeError, which evaluate_standing's 'except ReceiptError' (:150-153) does not catch. Fail-closed in effect (an exception, never autonomous or standing-authorization), but it breaks the fixed-reason contract (approve-each with invalid-record).",
+      "reproduction": "In memory: build_authorization(...) then replace ownerStatement with 'ok\\ud800' keeping the digest; evaluate_standing raises UnicodeEncodeError (not a ReceiptError) instead of returning approve-each/invalid-record.",
+      "disposition": "fix in a follow-up task, recommended in the same fix PR as C67-002/C67-003: refuse non-UTF-8-encodable ownerStatement (or catch UnicodeError) as invalid-authorization; add the test",
+      "blocksApproval": false,
+      "fixLocation": [
+        "agent_braid/harness_assurance_receipts.py",
+        "tests/test_harness_assurance_receipts.py"
+      ]
+    },
+    {
+      "id": "C67-008",
+      "codexSeverity": "low",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "evidence": "tests/test_harness_assurance_receipts.py:439-445 puts the 5000-deep list under a new top-level key 'extra', so _row (agent_braid/harness_assurance_receipts.py:181-182) refuses it on the key set before the digest at :184 ever recurses; RecursionError in verify_receipt's handler (:304) is not exercised. t011.json credits 'RecursionError and OverflowError map to the fixed reason invalid-artifact' and 'nested artifact' tests.",
+      "reproduction": "In memory: _row({**artifact, 'extra': nested}) raises ReceiptError invalid-artifact before the digest; _row({**artifact, 'profile': nested}) raises RecursionError, the path the handler exists for.",
+      "disposition": "fix in a follow-up task, recommended in the same fix PR: place the nested value under an existing key (e.g. profile) in the recursion case and keep the extra-key case separate",
+      "blocksApproval": false,
+      "fixLocation": [
+        "tests/test_harness_assurance_receipts.py"
+      ]
+    },
+    {
+      "id": "C67-009",
+      "codexSeverity": "low",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "low",
+      "evidence": "specs/067-assurance-profiles/evidence/t009.json:48 says 'A receipt shows that a review ran', contradicting the receipts module docstring (agent_braid/harness_assurance_receipts.py:10-11, 'not proof that a review was sound or happened'); :32 registers a stratum on 'host and model identity of the author and of the reviewers, as recorded on the receipts', but the closed receipt key set (:61-64) and review entries (:236) carry only author and reviewer identifiers and a reported status, no host or model fields. No outcome has been observed yet (t009.json:21), so a corrected registration needs no new version.",
+      "reproduction": "Static: compare t009.json:32 and :48 with _RECEIPT_KEYS and the review entry key set.",
+      "disposition": "fix in a follow-up task before the first observation, recommended in the same fix PR (t009.json is bound evidence, so the change re-freezes anyway): state that a receipt records a reported review, not its occurrence; make the host/model stratum conditional on separately bound metadata or leave it ungraded",
+      "blocksApproval": false,
+      "fixLocation": [
+        "specs/067-assurance-profiles/evidence/t009.json"
+      ]
+    },
+    {
+      "id": "C67-010",
+      "codexSeverity": "info",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "info",
+      "evidence": "agent_braid/harness_containment_macos.py:361-366 (executables: claude, helpers, interpreter), :393-397 '(deny default)' and '(allow process-exec ...)' with literal paths only; the subpath rules at :401-402 cover file-read* and file-map-executable for SYSTEM_READ (:117-118, no /Applications path) and the exec literals, not process-exec. Nothing under /Applications/ChatGPT.app/ is exec-allowed unless an operator configures a literal there. Static result, configured paths only.",
+      "reproduction": "Static read of render() at dad3e7f5 (byte-identical at develop).",
+      "disposition": "no change",
+      "blocksApproval": false,
+      "fixLocation": []
+    },
+    {
+      "id": "C67-011",
+      "codexSeverity": "info",
+      "verdict": "CONFIRMED",
+      "adjustedSeverity": "info",
+      "evidence": "Environmental: Codex's read-only sandbox had no writable TemporaryDirectory, so 22 of 194 tests errored in setup. Re-run here offline at develop 2a13cd40 (same code): PYTHONDONTWRITEBYTECODE=1 python3.13 -m unittest tests.test_harness_assurance tests.test_harness_assurance_receipts tests.test_harness_assurance_render tests.test_harness_assurance_risk ran 194 tests, OK.",
+      "reproduction": "The command above.",
+      "disposition": "no change",
+      "blocksApproval": false,
+      "fixLocation": []
+    }
+  ],
+  "summary": {
+    "confirmed": 9,
+    "partial": 1,
+    "rejected": 1,
+    "adjustedSeverityCounts": {
+      "high": 1,
+      "medium": 1,
+      "low": 6,
+      "info": 3
+    },
+    "blockingApproval": [
+      "C67-002",
+      "C67-003"
+    ],
+    "recommendedInSameFixPr": [
+      "C67-004",
+      "C67-007",
+      "C67-008",
+      "C67-009"
+    ],
+    "followUp": [
+      "C67-005",
+      "C67-006"
+    ],
+    "noChange": [
+      "C67-001",
+      "C67-010",
+      "C67-011"
+    ]
+  },
+  "candidateAssessment": "The freeze binding of dad3e7f5 is sound (C67-001 rejected: historical binding by a later freeze commit is the designed model; obtained evidence and authority hashes match). Two confirmed findings bear on what T011 approval would attest: C67-002 lets a re-sealed artifact satisfy a human-only floor or an R0 depth in verify_receipt, and C67-003 lets a classification computed under another profile skip an operator risk rule through both compile_artifact and verify_artifact. Neither has a production caller today (the module is advisory and only tests call verify_receipt), so nothing granted in practice is shown wrong, but the verifier does not provide the bindings that the contract and the T011 evidence describe.",
+  "disposition": "No code change in this record. Recommendation: do not approve T011 at dad3e7f5; fix C67-002 and C67-003 (with C67-004, C67-007, C67-008 and the C67-009 wording) in one separate PR, re-run the targeted tests and the pr profile, re-freeze at the new develop tip, and repeat the Codex packet against the new candidate before the owner's human review. C67-005 and C67-006 can follow as their own tasks.",
+  "ownerDecision": {
+    "status": "pending",
+    "question": "Accept that C67-002 and C67-003 block T011 approval at dad3e7f5 (fix, re-freeze and re-review), or approve at dad3e7f5 with them recorded as accepted limits."
+  },
+  "notHumanReview": true,
+  "humanReview": "pending: the owner's human review of T011 is not done and is not claimed.",
+  "executionAuthorization": false,
+  "limits": "Static, read-only triage of a static model review at one commit, with in-memory reproductions only. Approves nothing, freezes nothing, changes no stage, profile or authorization. Structural checks are not scientific proof."
+}
