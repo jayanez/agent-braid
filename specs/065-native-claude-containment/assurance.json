@@ -117,7 +117,8 @@
     "mode": "historical"
   },
   "execution_contract": "Native runs only with a verified containment record and a verified Claude host record whose environment hash equals the native manifest's and that have not expired; pre-session self-checks and the quota gate pass before every session; refuse rather than degrade; no retry, no alternative or paid route; executionAuthorization stays false; issuance is a human act outside code.",
-  "human_review": "pending",
+  "human_review": "approved",
+  "review_record": "specs/065-native-claude-containment/reviews/owner-review-a768e6d3.json",
   "hypotheses": "H1 (engineering, may fail): on the founder's macOS machine the NC-2 mechanism can enforce all four effects at STRICT level while Claude Code completes a read-only headless session.",
   "observation_contract": "Probe bundle per qualification attempt: environment inputs and hash, versioned catalog and hash, per-probe results in uncontained-control and contained modes with independent before/after observations, pre/post quota readings, per-effect status; run evidence carries backend label, qualification hashes and pre-session self-check results. No secret value or raw provider transcript is exported.",
   "references": [
@@ -588,5 +589,5 @@
   ],
   "scientific_limits": "Engineering specification. Probe outcomes are empirical observations on one machine, OS build, CLI version and finite catalog, not a proof of isolation or a general sandbox guarantee. H1 may fail; a not-qualified or inconclusive result is a valid outcome. Unit tests with fakes prove refusal logic, not containment. Structural validation is not founder approval.",
   "scope": "Specification only: native manifest profile for host claude, native ClaudeTransport over headless claude -p stream-json, macOS containment backend enforcing credential, filesystem, network and process effects at the founder's STRICT level, and an evidence-based qualification procedure with human issuance. Unblocks SPEC-048/T008 (Claude profile) then SPEC-049/T004; Codex excluded.",
-  "stage": "draft"
+  "stage": "validated"
 }
