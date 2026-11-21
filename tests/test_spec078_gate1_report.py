@@ -7,7 +7,10 @@ import json
 from pathlib import Path
 import unittest
 
+from unittest.mock import patch
+
 from agent_braid import lightning_config as config
+from agent_braid import lightning_heldout_v2 as v2
 from agent_braid import lightning_runner as runner
 from scripts import spec078_gate1_report as gate1
 from tests import test_spec078_heldout_v2 as base
@@ -24,9 +27,14 @@ class Gate1ReportTests(unittest.TestCase):
         with base.tempfile.TemporaryDirectory() as tmp:
             home = Path(tmp).resolve() / 'home'
             cfg = config.build({'rollout': {'repetitions': 3, 'hosts': ['claude-code']}, 'budget': {'maxRollouts': 3}})
-            status = runner.run(home, cfg, fake_hosts=True, prompt_set='v2-test', environ=base.CLEAN_ENV)
-            with self.assertRaises(SystemExit) as caught:
-                gate1.report(home, status['runId'])
+            frozen = base.TempRoot('run')  # the bound files frozen in a temporary root, as the runner tests do
+            frozen.setUp()
+            self.addCleanup(frozen.tearDown)
+            frozen.freeze()
+            with patch.object(v2, 'FREEZE', str(frozen.root / v2.FREEZE)):
+                status = runner.run(home, cfg, fake_hosts=True, prompt_set='v2-test', environ=base.CLEAN_ENV)
+                with self.assertRaises(SystemExit) as caught:
+                    gate1.report(home, status['runId'])
             self.assertIn('every prompt three times', str(caught.exception))
 
     def test_the_committed_report_matches_the_review_and_the_verdict_rule(self):

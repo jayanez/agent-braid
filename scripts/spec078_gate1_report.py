@@ -14,7 +14,6 @@ transcript or model text is written here, only ids, classes, counts and the scor
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
 import sys
@@ -31,7 +30,11 @@ SCHEMA = 'braid-lightning-v2-gate1/v0.1'
 
 
 def report(home: Path, run_id: str, review: dict | None = None) -> dict:
-    sha = v2.check_freeze(ROOT, 'v2-test')
+    frozen = v2.load_freeze(ROOT)['files']  # the split and the analysis must match; the skill may have moved on
+    for path in (v2.PROMPT_FILES['v2-test'], v2.ANALYSIS):
+        if v2.sha256(ROOT / path) != frozen[path]:
+            raise SystemExit(f'refused: {path} differs from the SPEC-078 freeze')
+    sha = frozen[v2.PROMPT_FILES['v2-test']]
     run = store.RunStore(home, run_id)
     cases = json.loads((ROOT / v2.PROMPT_FILES['v2-test']).read_text())['cases']
     by_id = {c['id']: c for c in cases}
@@ -63,7 +66,7 @@ def report(home: Path, run_id: str, review: dict | None = None) -> dict:
     return {
         'schema': SCHEMA, 'runId': run_id, 'arm': 'A0', 'promptSet': 'v2-test', 'promptSetSha256': sha,
         'freezeCommit': v2.load_freeze(ROOT)['commit'], 'frozenFiles': v2.load_freeze(ROOT)['files'], 'candidateSha256': sorted(candidates),
-        'skillSha256': hashlib.sha256((ROOT / v2.SKILL).read_bytes()).hexdigest(),
+        'skillSha256': frozen[v2.SKILL],
         'rollouts': len(results), 'startedAt': min(r['startedAt'] for r in results),
         'endedAt': max(r['endedAt'] for r in results),
         'hostVersions': dict(Counter(r['hostVersion'] for r in results)),
