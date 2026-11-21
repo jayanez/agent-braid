@@ -162,9 +162,9 @@ class Forwarder:
                 reply = conn.getresponse()
                 self.send_response(reply.status)
                 for key, value in reply.getheaders():
-                    if key.lower() not in ("transfer-encoding", "content-length", "connection", "content-encoding") \
-                            and not any(c in key + value for c in "\r\n"):
-                        self.send_header(key, value)
+                    if key.lower() not in ("transfer-encoding", "content-length", "connection", "content-encoding"):
+                        self.send_header(key.replace("\r", "").replace("\n", ""),
+                                         value.replace("\r", "").replace("\n", ""))
                 self.send_header("Connection", "close")
                 self.end_headers()
                 while chunk := reply.read(4096):
