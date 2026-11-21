@@ -9,6 +9,7 @@ offline arm-C round (``tests.harness_t014_arm_c``).
 """
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
 import shutil
 import sys
@@ -460,6 +461,73 @@ class CohortTests(unittest.TestCase):
             self.assertEqual(cm.exception.reasons, ["founder-go-flag-missing"])
         self.assertEqual(self.launches, [])
         self.assertFalse((self.parent / "t014-20261220a").exists())
+
+
+class DropReaderTests(unittest.TestCase):
+    """Owner decision 2026-11-21: readings answered by the orchestrator from the desktop usage API."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp(prefix="braid-t014-drop-"))
+        self.addCleanup(shutil.rmtree, self.root, True)
+        self.drop, self.requests = self.root / "drop", self.root / "lab"
+        self.drop.mkdir(mode=0o755)
+        self.requests.mkdir()
+        self.now = [NOW]
+        self.said = []
+
+    def reader(self, uid=None):
+        def sleep(seconds):
+            self.now[0] += driver.timedelta(seconds=seconds)
+        return driver.DropReader(self.drop, self.requests, os.getuid() if uid is None else uid, "subscription",
+                                 self.said.append, lambda: self.now[0], sleep)
+
+    def answer(self, seq=1, **over):
+        value = {"seq": seq, "source": driver.AGENT_SOURCE, "observedAt": "2026-12-20T11:58:00Z", "plan": "max",
+                 "fiveHourPercent": 21, "fiveHourResetsAt": "2026-12-20T14:10:00Z", "weeklyPercent": 65,
+                 "weeklyResetsAt": "2026-12-22T20:00:00Z", "extraUsageEnabled": False} | over
+        path = self.drop / "answer.json"
+        path.write_text(json.dumps(value))
+        path.chmod(0o644)
+
+    def test_an_answer_with_the_request_number_becomes_the_reading_and_is_marked_agent_read(self):
+        self.answer()
+        reader = self.reader()
+        reading = reader("BEFORE unit 1")
+        self.assertEqual((reading.five_hour_percent, reading.weekly_percent, reading.route, reading.plan),
+                         (21, 65, "subscription", "max"))
+        self.assertEqual(json.loads((self.requests / "request.json").read_text())["seq"], 1)
+        self.assertEqual(reader.provenance[0]["source"], driver.AGENT_SOURCE)
+
+    def test_a_stale_number_waits_then_refuses(self):
+        self.answer(seq=1)
+        reader = self.reader()
+        reader("BASELINE")
+        self.assertIsNone(reader("BEFORE unit 1"))  # still seq 1: never answered within DROP_WAIT
+        self.assertIn("[NC-6] no usage reading in time: refused", self.said)
+
+    def test_old_future_malformed_or_foreign_answers_refuse(self):
+        cases = ({"observedAt": "2026-12-20T11:50:00Z"}, {"observedAt": "2026-12-20T12:01:00Z"},
+                 {"fiveHourPercent": 101}, {"source": "operator-typed-usage"}, {"plan": "Max Plan"})
+        for over in cases:
+            with self.subTest(over=over):
+                self.answer(**over)
+                self.assertIsNone(self.reader()("BEFORE unit 1"))
+        self.answer()
+        self.assertIsNone(self.reader(uid=os.getuid() + 1)("BEFORE unit 1"))  # not the operator's file
+        (self.drop / "answer.json").chmod(0o666)
+        self.assertIsNone(self.reader()("BEFORE unit 1"))  # writable by others
+
+    def test_the_report_states_the_provenance(self):
+        reader = self.reader()
+        self.answer()
+        reader("BASELINE")
+        run = types.SimpleNamespace(verdict=lambda: types.SimpleNamespace(to_dict=lambda: {"units": 0}))
+        args = types.SimpleNamespace(attempt="t014-20261220a")
+        with mock.patch.object(t9, "refusal_evidence", return_value=[]):
+            report = driver._report(args, run, None, None, "cohort-finished", drop=reader)
+            typed = driver._report(args, run, None, None, "cohort-finished")
+        self.assertEqual(report["readingProvenance"]["readings"][0]["seq"], 1)
+        self.assertEqual(typed["readingProvenance"], {"source": "operator-typed"})
 
 
 if __name__ == "__main__":
