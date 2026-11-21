@@ -1,0 +1,94 @@
+{
+ "attemptsByRequestKind": [
+  {
+   "attempts": 242,
+   "bashAttempted": false,
+   "expectedKind": "aim",
+   "firstRequestKind": "aim",
+   "valid": true
+  },
+  {
+   "attempts": 6,
+   "bashAttempted": false,
+   "expectedKind": "aim",
+   "firstRequestKind": "none",
+   "valid": false
+  },
+  {
+   "attempts": 19,
+   "bashAttempted": false,
+   "expectedKind": "aim",
+   "firstRequestKind": "units",
+   "valid": false
+  },
+  {
+   "attempts": 3,
+   "bashAttempted": false,
+   "expectedKind": "aim",
+   "firstRequestKind": "unparsed",
+   "valid": false
+  },
+  {
+   "attempts": 30,
+   "bashAttempted": false,
+   "expectedKind": "git",
+   "firstRequestKind": "git",
+   "valid": true
+  }
+ ],
+ "executionAuthorization": false,
+ "runId": "run-20261121T192620Z-61ca8b",
+ "schema": "braid-lightning-v2-gate1-diagnosis/v0.1",
+ "zeroPrompts": {
+  "V3T-002": {
+   "cause": "guidance-gap",
+   "class": "disjoint",
+   "evidence": "All three repetitions chose kind units for a parallel question after the T012 fix, so the guidance sentence was not followed; no repetition tried to compute digests. The expectation is the analyzer's aim result and 9 of 10 disjoint prompts pass.",
+   "repetitions": [
+    {
+     "bashAttempted": false,
+     "repetition": 1,
+     "requestKind": "units",
+     "scorerReason": "first attempt: a/b is unknown instead of independent-candidate; a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate"
+    },
+    {
+     "bashAttempted": false,
+     "repetition": 2,
+     "requestKind": "units",
+     "scorerReason": "first attempt: a/b is unknown instead of independent-candidate; a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate"
+    },
+    {
+     "bashAttempted": false,
+     "repetition": 3,
+     "requestKind": "units",
+     "scorerReason": "first attempt: a/b is unknown instead of independent-candidate; a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate"
+    }
+   ]
+  },
+  "V3T-027": {
+   "cause": "guidance-gap",
+   "class": "read-write",
+   "evidence": "All three repetitions chose kind units; the write/read conflict itself was found, so the prompt was read correctly. units never reports independent-candidate by design, so the scorer reason matches the analyzer.",
+   "repetitions": [
+    {
+     "bashAttempted": false,
+     "repetition": 1,
+     "requestKind": "units",
+     "scorerReason": "first attempt: a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate"
+    },
+    {
+     "bashAttempted": false,
+     "repetition": 2,
+     "requestKind": "units",
+     "scorerReason": "first attempt: a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate"
+    },
+    {
+     "bashAttempted": false,
+     "repetition": 3,
+     "requestKind": "units",
+     "scorerReason": "first attempt: a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate"
+    }
+   ]
+  }
+ }
+}

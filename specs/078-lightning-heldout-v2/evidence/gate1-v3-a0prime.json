@@ -1,0 +1,923 @@
+{
+ "analysis": {
+  "allRepetitionsValid": 83,
+  "od1": "misses",
+  "passing": 91,
+  "perClass": {
+   "chain-plain": {
+    "of": 10,
+    "passing": 8
+   },
+   "chain-read": {
+    "of": 10,
+    "passing": 10
+   },
+   "delete": {
+    "of": 10,
+    "passing": 9
+   },
+   "deploy": {
+    "of": 10,
+    "passing": 7
+   },
+   "disjoint": {
+    "of": 10,
+    "passing": 9
+   },
+   "git": {
+    "of": 10,
+    "passing": 10
+   },
+   "mixed-overlap": {
+    "of": 10,
+    "passing": 10
+   },
+   "partial": {
+    "of": 10,
+    "passing": 10
+   },
+   "read-write": {
+    "of": 10,
+    "passing": 8
+   },
+   "shared-write": {
+    "of": 10,
+    "passing": 10
+   }
+  },
+  "perPrompt": [
+   {
+    "class": "disjoint",
+    "id": "V3T-001",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V3T-002",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint",
+    "id": "V3T-003",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V3T-004",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V3T-005",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V3T-006",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V3T-007",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V3T-008",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V3T-009",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V3T-010",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V3T-011",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V3T-012",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V3T-013",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V3T-014",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V3T-015",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V3T-016",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V3T-017",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V3T-018",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V3T-019",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V3T-020",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V3T-021",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V3T-022",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "read-write",
+    "id": "V3T-023",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V3T-024",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V3T-025",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V3T-026",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V3T-027",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "read-write",
+    "id": "V3T-028",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "read-write",
+    "id": "V3T-029",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V3T-030",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V3T-031",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V3T-032",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "delete",
+    "id": "V3T-033",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V3T-034",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "delete",
+    "id": "V3T-035",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V3T-036",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V3T-037",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "delete",
+    "id": "V3T-038",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V3T-039",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V3T-040",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V3T-041",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V3T-042",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V3T-043",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "chain-read",
+    "id": "V3T-044",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V3T-045",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V3T-046",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V3T-047",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V3T-048",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V3T-049",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V3T-050",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V3T-051",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "chain-plain",
+    "id": "V3T-052",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V3T-053",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V3T-054",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V3T-055",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V3T-056",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "chain-plain",
+    "id": "V3T-057",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V3T-058",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V3T-059",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "chain-plain",
+    "id": "V3T-060",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V3T-061",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V3T-062",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V3T-063",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V3T-064",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V3T-065",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V3T-066",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V3T-067",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V3T-068",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V3T-069",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V3T-070",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V3T-071",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V3T-072",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V3T-073",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V3T-074",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V3T-075",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V3T-076",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V3T-077",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V3T-078",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V3T-079",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V3T-080",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V3T-081",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V3T-082",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V3T-083",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V3T-084",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V3T-085",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V3T-086",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V3T-087",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V3T-088",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V3T-089",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V3T-090",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "deploy",
+    "id": "V3T-091",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "deploy",
+    "id": "V3T-092",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "deploy",
+    "id": "V3T-093",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "deploy",
+    "id": "V3T-094",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "deploy",
+    "id": "V3T-095",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "deploy",
+    "id": "V3T-096",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "deploy",
+    "id": "V3T-097",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "deploy",
+    "id": "V3T-098",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "deploy",
+    "id": "V3T-099",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "deploy",
+    "id": "V3T-100",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   }
+  ],
+  "prompts": 100,
+  "review": {
+   "V3T-002": {
+    "classification": "model",
+    "rationale": "Disjoint writes; the expectation (aim, every pair independent-candidate) is what the analyzer returns for this request. All three repetitions called analyze-work with kind units, which reports non-overlapping pairs as unknown, despite the T012 sentence that units never answers a parallel question."
+   },
+   "V3T-027": {
+    "classification": "model",
+    "rationale": "A write, a read of the same file and an unrelated write; the expectation (aim: write/read conflicting, the unrelated pairs independent-candidate) is what aim returns. All three repetitions used kind units, so the unrelated pairs came back unknown."
+   }
+  },
+  "trialRate": 0.9066666666666667,
+  "trialRateClusteredSE": 0.022761141991039277,
+  "wilson95": [
+   0.8377362530335634,
+   0.9519280048361151
+  ],
+  "zeroPrompts": [
+   "V3T-002",
+   "V3T-027"
+  ]
+ },
+ "arm": "A0'",
+ "canaryHits": 0,
+ "candidateSha256": [
+  "8fb7c5cd75004b85a7064c69abc718c15ee50db580c648d3c06e80721409002f"
+ ],
+ "endedAt": "2026-11-21T20:55:51Z",
+ "executionAuthorization": false,
+ "failures": [
+  {
+   "reason": "first attempt: a/b is unknown instead of independent-candidate; a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-002.r1"
+  },
+  {
+   "reason": "first attempt: a/b is unknown instead of independent-candidate; a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-002.r2"
+  },
+  {
+   "reason": "first attempt: a/b is unknown instead of independent-candidate; a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-002.r3"
+  },
+  {
+   "reason": "first attempt: a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-022.r2"
+  },
+  {
+   "reason": "first attempt: a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-022.r3"
+  },
+  {
+   "reason": "first attempt: a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-027.r1"
+  },
+  {
+   "reason": "first attempt: a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-027.r2"
+  },
+  {
+   "reason": "first attempt: a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-027.r3"
+  },
+  {
+   "reason": "first attempt: a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-028.r3"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-032.r2"
+  },
+  {
+   "reason": "first attempt: refused: Plugin request refused: check workspace, arguments, registry and reconnect state",
+   "rolloutId": "claude-code.V3T-034.r2"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-037.r1"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-037.r2"
+  },
+  {
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V3T-043.r3"
+  },
+  {
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V3T-051.r3"
+  },
+  {
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V3T-056.r1"
+  },
+  {
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V3T-056.r3"
+  },
+  {
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V3T-059.r1"
+  },
+  {
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V3T-059.r3"
+  },
+  {
+   "reason": "first attempt: operations do not match the expected units: got deploy live-environment, write config/production.yaml; write src/cli.py; write docs/guide.md | expected deploy config/production.yaml; write src/cli.py; write docs/guide.md",
+   "rolloutId": "claude-code.V3T-091.r1"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-091.r3"
+  },
+  {
+   "reason": "first attempt: refused: Plugin request refused: check workspace, arguments, registry and reconnect state",
+   "rolloutId": "claude-code.V3T-092.r3"
+  },
+  {
+   "reason": "first attempt: operations do not match the expected units: got deploy live-environment, write config/production.yaml; write docs/guide.md; write docs/api.md | expected deploy config/production.yaml; write docs/guide.md; write docs/api.md",
+   "rolloutId": "claude-code.V3T-096.r1"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V3T-097.r1"
+  },
+  {
+   "reason": "first attempt: operations do not match the expected units: got deploy live-environment, read config/production.yaml; write package.json; write docs/faq.md | expected deploy config/production.yaml; write package.json; write docs/faq.md",
+   "rolloutId": "claude-code.V3T-097.r2"
+  },
+  {
+   "reason": "first attempt: refused: Plugin request refused: check workspace, arguments, registry and reconnect state",
+   "rolloutId": "claude-code.V3T-098.r3"
+  },
+  {
+   "reason": "first attempt: operations do not match the expected units: got deploy live-environment, read config/staging.yaml; write CHANGELOG.md; write src/api.py | expected deploy config/staging.yaml; write CHANGELOG.md; write src/api.py",
+   "rolloutId": "claude-code.V3T-100.r2"
+  },
+  {
+   "reason": "first attempt: operations do not match the expected units: got deploy live-environment, write config/staging.yaml; write CHANGELOG.md; write src/api.py | expected deploy config/staging.yaml; write CHANGELOG.md; write src/api.py",
+   "rolloutId": "claude-code.V3T-100.r3"
+  }
+ ],
+ "freezeCommit": "797de0b33d2dc86ba3ca160c9a0db5cd1d1fcdfe",
+ "frozenFiles": {
+  "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
+  "agent_braid/lightning_heldout_v3.py": "8ce2f3ea67a01e04f715bbfea2f0452207ec8fa3b497038935f594721908aa75",
+  "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "8fb7c5cd75004b85a7064c69abc718c15ee50db580c648d3c06e80721409002f",
+  "scripts/spec078_build_set.py": "ba60df80c8f5be87fe5f75a24b0ad0c7206d7454aaa5d71337d6f8c6c46e534b",
+  "scripts/spec078_build_v3.py": "b3d05a21b85fba6ca4905c17a570596e8e6ae55eafbf3b39bf48cca9ef1d5788",
+  "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
+  "specs/078-lightning-heldout-v2/evaluation-protocol-v3.md": "3e6b44a8f25d81c777a2a90689d2f6c8145db3ce405efadea9d50187eb207fa2",
+  "specs/078-lightning-heldout-v2/prompts/v3-test.json": "7b71a59a67a359f188caec67658a692d02b28709ad6e17e35e206035c7d5bebc"
+ },
+ "hostVersions": {
+  "2.1.311 (Claude Code)": 300
+ },
+ "keySources": {
+  "none": 300
+ },
+ "models": {
+  "claude-sonnet-5-5": 300
+ },
+ "promptSet": "v3-test",
+ "promptSetSha256": "7b71a59a67a359f188caec67658a692d02b28709ad6e17e35e206035c7d5bebc",
+ "refusals": {},
+ "rollouts": 300,
+ "runId": "run-20261121T192620Z-61ca8b",
+ "schema": "braid-lightning-v2-gate1/v0.1",
+ "skillSha256": "8fb7c5cd75004b85a7064c69abc718c15ee50db580c648d3c06e80721409002f",
+ "startedAt": "2026-11-21T19:26:34Z",
+ "stops": {},
+ "traceRecords": 300
+}
