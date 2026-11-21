@@ -256,7 +256,7 @@ H-G2 is not tested. A narrowed optimizer scope would have been test-informed.
 Each requirement has one acceptance scenario (SC-001 to SC-012) in
 `assurance.json`, with its procedure in `validation-plan.md`. Milestone exit:
 SC-001 to SC-008 and SC-012 obtained, plus SC-009 if A0 meets the threshold or
-SC-010 and SC-011 if it misses (after Amendment 1: SC-013 and SC-014). Any outcome, including a miss followed by a null
+SC-010 and SC-011 if it misses (after Amendment 1: SC-013, SC-014 and SC-015). Any outcome, including a miss followed by a null
 Gate 2, completes the protocol.
 
 ## Scientific boundaries

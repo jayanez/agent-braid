@@ -330,7 +330,7 @@ class Event:
                 'data': json.loads(json.dumps(self.data))}
 
 
-PROMPT_SETS = ('development', 'held-out', 'v2-feedback', 'v2-validation', 'v2-test')
+PROMPT_SETS = ('development', 'held-out', 'v2-feedback', 'v2-validation', 'v2-test', 'v3-test')
 LABELS = ('pipeline-only', 'host-run')
 BUDGET_STOPS = ('unit-cap', 'five-hour-headroom', 'weekly-stop', 'window-reset', 'window-reset-imminent')
 REFUSALS = ('route-unverified', 'credential-leak', 'canary-hit', 'rollout-timeout', 'hook-failed', 'host-failed',

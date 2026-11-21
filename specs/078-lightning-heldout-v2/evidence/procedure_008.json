@@ -9,7 +9,7 @@
   "expected": "300 rollouts of A0 on the frozen v2-test split; a record with per-prompt results, the Wilson 95 % interval, the prompt-clustered SE, per-class counts, the zero-prompt review, the OD-1 verdict and the all-three secondary count",
   "inputs": {
     "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
-    "agent_braid/lightning_runner.py": "3ad85884ea9603b5a6e49a5f480a928cf2fc31cbda9346b22ab5366e8c9fd741",
+    "agent_braid/lightning_runner.py": "0cfff8824d218f01eab1511afe3c9e5e10cc8987cf3b1b70811051e83cca051e",
     "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
     "scripts/spec078_gate1_report.py": "1675323c7bf5751ed12765fa5f8d41725866992702d7d1d08cf89369b97b8bfc",
     "specs/078-lightning-heldout-v2/evidence/gate1-a0.json": "4ca3533935479811b56f9200ea748962506477fcea5d105d0c557a3e68dff853",

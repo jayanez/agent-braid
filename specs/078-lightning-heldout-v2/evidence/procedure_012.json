@@ -2,16 +2,16 @@
   "actual": "OK",
   "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_heldout_v2",
   "environment": {
-    "baseCommit": "faf227e81705fc25adcad3ef0bd169dd302666de",
+    "baseCommit": "19c25c0023635b1e335fe25bbc62b9677b85a4cb",
     "platform": "macOS-27.2.1",
     "python": "3.12.13"
   },
   "expected": "the v2 module imports only the standard library; the only writes in BL.2b files are the freeze files; BL.2b scripts import no execution, promotion or MCP runtime module except Gate 0's read-only ToolingService; v2 runs refuse another arm, a partial split, wrong repetitions, a prebuilt A0 plugin and a second test pass; validation and test are denied to the optimizer, carry the held-out canary and are scanned on the real OptimizerChannel path",
   "inputs": {
-    "agent_braid/lightning_cli.py": "301413155ff77e45d96cfa3a99ec3c698c373a2c7cbf0757020ffc2cf1520cd6",
+    "agent_braid/lightning_cli.py": "e1685b2258ec08b089e32e97ae8cde694965ae811d22ae184d212fb9d3bcf03d",
     "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
-    "agent_braid/lightning_runner.py": "3ad85884ea9603b5a6e49a5f480a928cf2fc31cbda9346b22ab5366e8c9fd741",
-    "agent_braid/lightning_schema.py": "ad1430165a3dfa125578b39393b0c2f50efcd29f547db76777e527b815c8980d",
+    "agent_braid/lightning_runner.py": "0cfff8824d218f01eab1511afe3c9e5e10cc8987cf3b1b70811051e83cca051e",
+    "agent_braid/lightning_schema.py": "76d8c7a328ebb2bb8ba871565a62571e70b31711b38b48b541c3f55abb357d05",
     "scripts/spec078_freeze.py": "068388de81d6ad8d3d45f23020a888b79009372e2cf5f7d18aa0720d9453395a",
     "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
     "tests/test_spec078_heldout_v2.py": "bf986b045b6b19e69c628681a8e5ffebd9ecc783a6a3f1d22f2c8eb42298e7d6"
