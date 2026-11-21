@@ -266,7 +266,7 @@
               "limits": "Synthetic results through the analysis functions; the review itself is a human step at Gate 1.",
               "outcome": "passed: OK",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_006.json",
-              "sha256": "3217337aae9ccb1182c5ed09541e273b53ee4b29507624f7d886920129c558bf"
+              "sha256": "5dbe189382fc6b79dfc678b82bcdc04b0c73936596f30943e727cbad50310610"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_006.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py ZeroPromptReviewTests.",
@@ -370,7 +370,7 @@
               "limits": "Static and fake-host checks; procedure_012 is re-run over lightning_edits if Gate 2 opens (T008).",
               "outcome": "passed: OK",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_012.json",
-              "sha256": "44612edea012cdad2353d35deb47ee321b1607d58200da2d86828fb33c7e4198"
+              "sha256": "50ead11cca5296b01cb3fb862f7026169aa0cce499886f13eabb8474864b65e3"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_012.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_boundaries.py BoundaryTests.",

@@ -193,8 +193,8 @@ records them):
   version; it is reported, never silently dropped.
 - **REQ-007 — Protocol and freeze.** `evaluation-protocol.md` preregisters the
   splits' sha256, the class plan, OD-1 to OD-3, the analysis and stopping rules.
-  The protocol, the three splits, the Gate 0 script and the A0 skill bytes are
-  frozen by hash on a `develop` commit before any rollout; every `v2-*` run
+  The protocol, the three splits, the Gate 0 script, the v2 analysis module
+  and the A0 skill bytes are frozen by hash on a `develop` commit before any rollout; every `v2-*` run
   refuses when any frozen hash differs (including the skill used by the `final`
   source) or no freeze exists.
 - **REQ-008 — Gate 1: A0 on the test split.** After the freeze and the owner's

@@ -2,19 +2,19 @@
   "actual": "OK",
   "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_heldout_v2",
   "environment": {
-    "baseCommit": "d2556eeb00b3577ef4f5dcf2d4da1526de7a597f",
+    "baseCommit": "7ce3b168f739d42bb21d2d5e8a4e4b281afe71ef",
     "platform": "macOS-27.2.1",
     "python": "3.12.13"
   },
   "expected": "a 0/3 prompt holds the OD-1 verdict until classified; model counts as a miss, instrument invalidates the arm; the share threshold is 88/100 and a class below half misses",
   "inputs": {
     "agent_braid/lightning_cli.py": "301413155ff77e45d96cfa3a99ec3c698c373a2c7cbf0757020ffc2cf1520cd6",
-    "agent_braid/lightning_heldout_v2.py": "e2e27d58ed575bf6d47b4f5b6c2cea8579efe5e231683a8ae2f3326a6532bc40",
-    "agent_braid/lightning_runner.py": "63fe2d8168314ef398daada2f98e8c2168221da8534f8382cac8d9b5f87b69db",
+    "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
+    "agent_braid/lightning_runner.py": "6bc21ed0de6399eadb5ae453dddc6a66dddf0e42ddfaf84ef291329000c2ece5",
     "agent_braid/lightning_schema.py": "ad1430165a3dfa125578b39393b0c2f50efcd29f547db76777e527b815c8980d",
-    "scripts/spec078_freeze.py": "4fa28bd7c1d0366eb347d425d87aaf6beee9453848adcabb91f8c238c73d8f49",
+    "scripts/spec078_freeze.py": "068388de81d6ad8d3d45f23020a888b79009372e2cf5f7d18aa0720d9453395a",
     "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
-    "tests/test_spec078_heldout_v2.py": "92659ff41ae36676f70a7a3f0e7511acacb16ce77871eb6a522dcf459a2af8ff"
+    "tests/test_spec078_heldout_v2.py": "bf986b045b6b19e69c628681a8e5ffebd9ecc783a6a3f1d22f2c8eb42298e7d6"
   },
   "limits": "Synthetic results through the analysis functions; the review itself is a human step at Gate 1.",
   "negativeControls": "a review naming a prompt that is not 0/3 is refused",

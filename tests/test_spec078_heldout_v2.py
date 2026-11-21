@@ -65,7 +65,8 @@ class FreezeTests(TempRoot):
 
     def test_any_edited_bound_file_is_refused(self):
         self.freeze()
-        expected = {v2.PROTOCOL: 'protocol-hash-mismatch', v2.GATE0: 'protocol-hash-mismatch'}
+        expected = {v2.PROTOCOL: 'protocol-hash-mismatch', v2.GATE0: 'protocol-hash-mismatch',
+                    v2.ANALYSIS: 'protocol-hash-mismatch', v2.SKILL: 'skill-hash-mismatch'}
         for path in v2.BOUND:
             original = (self.root / path).read_bytes()
             (self.root / path).write_bytes(original + b'\n')
@@ -106,38 +107,66 @@ class FreezeTests(TempRoot):
             v2.load_fingerprints(self.root)
         self.assertEqual(caught.exception.code, 'holdout-fingerprint-stale')
 
-    def test_contamination_scan_refuses_a_v2_test_prompt(self):
+    def test_the_optimizer_channel_refuses_a_v2_test_or_validation_prompt(self):
         self.freeze()
-        prompt = cases('v2-test')[5]['prompt']
-        feedback = cases('v2-feedback')[5]['prompt']
         base = {'idSha256': [], 'windowSha256': []}
         with patch.object(runner, 'checkout_root', return_value=self.root), \
                 patch.object(runner, 'load_fingerprints', return_value=base):
-            self.assertFalse(runner.contamination_passed('Rewrite this: ' + prompt))
-            self.assertTrue(runner.contamination_passed('Rewrite this: ' + feedback))
+            channel = runner.OptimizerChannel('claude-code', transport=lambda text: 'ok', fake=True)
+            for name in v2.PROTECTED:
+                with self.assertRaises(runner.RunnerError) as caught:
+                    channel.call('Rewrite this: ' + cases(name)[5]['prompt'])
+                self.assertEqual(caught.exception.code, 'holdout-contamination')
+            self.assertEqual(channel.call('Rewrite this: ' + cases('v2-feedback')[5]['prompt'])[1], 'ok')
 
 
 class RunnerTests(TempRoot):
-    def run_fake(self, prompt_set, **kwargs):
-        cfg = config.build({'rollout': {'repetitions': 1, 'hosts': ['claude-code']}})
-        home = Path(self.tmp.name).resolve() / 'home'
+    def setUp(self):
+        super().setUp()
+        self.home = Path(self.tmp.name).resolve() / 'home'
+
+    def run_fake(self, prompt_set, repetitions=1, max_rollouts=None, **kwargs):
+        cfg = config.build({'rollout': {'repetitions': repetitions, 'hosts': ['claude-code']},
+                            **({'budget': {'maxRollouts': max_rollouts}} if max_rollouts else {})})
         with patch.object(v2, 'FREEZE', str(self.root / v2.FREEZE)):
-            return home, runner.run(home, cfg, fake_hosts=True, prompt_set=prompt_set, environ=CLEAN_ENV, **kwargs)
+            return runner.run(self.home, cfg, fake_hosts=True, prompt_set=prompt_set, environ=CLEAN_ENV, **kwargs)
+
+    def assertRefusedBeforeAnything(self, code, prompt_set, **kwargs):
+        with self.assertRaises(runner.RunnerError) as caught:
+            self.run_fake(prompt_set, **kwargs)
+        self.assertEqual(caught.exception.code, code)
+        self.assertFalse(self.home.exists())  # no run directory was created
 
     def test_a_v2_run_without_a_freeze_is_refused_before_anything(self):
-        with self.assertRaises(runner.RunnerError) as caught:
-            self.run_fake('v2-test')
-        self.assertEqual(caught.exception.code, 'protocol-not-frozen')
+        self.assertRefusedBeforeAnything('protocol-not-frozen', 'v2-test', repetitions=3)
+        with patch.object(v2, 'FREEZE', str(self.root / v2.FREEZE)), self.assertRaises(runner.RunnerError):
+            runner.plan(config.build({}), 'v2-test', ROOT)  # a dry run does not open the split either
 
-    def test_a_v2_run_with_another_arm_is_refused(self):
+    def test_a_v2_run_with_another_arm_part_of_a_split_or_wrong_repetitions_is_refused(self):
         self.freeze()
+        self.assertRefusedBeforeAnything('config-enum', 'v2-feedback', arm='baseline')
+        self.assertRefusedBeforeAnything('config-enum', 'v2-feedback', case_ids=['V2F-001'])
+        self.assertRefusedBeforeAnything('config-enum', 'v2-validation', repetitions=1)
+        self.assertRefusedBeforeAnything('config-enum', 'v2-feedback', repetitions=3)
+
+    def test_an_a0_run_with_a_prebuilt_plugin_is_refused(self):
+        self.freeze()
+        self.assertRefusedBeforeAnything('skill-hash-mismatch', 'v2-feedback', plugin_dir=self.root)
+
+    def test_the_test_split_is_scored_once_per_candidate(self):
+        self.freeze()
+        status = self.run_fake('v2-test', repetitions=3, max_rollouts=2)
+        self.assertEqual(status['hosts']['claude-code']['rollouts'], 2)  # a partial pass, capped by the budget
         with self.assertRaises(runner.RunnerError) as caught:
-            self.run_fake('v2-feedback', arm='baseline')
-        self.assertEqual(caught.exception.code, 'config-enum')
+            self.run_fake('v2-test', repetitions=3, max_rollouts=2)
+        self.assertEqual(caught.exception.code, 'test-already-scored')
+        resumed = self.run_fake('v2-test', repetitions=3, max_rollouts=4, run_id=status['runId'], resume=True)
+        self.assertEqual(resumed['runId'], status['runId'])  # the same pass may resume
 
     def test_fake_pipeline_on_v2_feedback_scores_every_reference(self):
         self.freeze()
-        home, status = self.run_fake('v2-feedback')
+        status = self.run_fake('v2-feedback')
+        home = self.home
         self.assertEqual(status['promptSet'], 'v2-feedback')
         self.assertEqual(status['hosts']['claude-code']['rollouts'], len(cases('v2-feedback')))
         run = store.RunStore(home, status['runId'])
@@ -209,6 +238,12 @@ class AnalysisTests(unittest.TestCase):
         self.assertTrue(result['supported'])
         self.assertFalse(v2.compare(better, base)['supported'])
 
+    def test_the_analysis_needs_three_repetitions(self):
+        trials = self.trials()
+        trials[self.cases[0]['id']] = [True, True]
+        with self.assertRaises(ValueError):
+            v2.analyse(self.cases, trials)
+
     def test_clustered_se(self):
         self.assertEqual(v2.clustered_se([1.0, 1.0, 1.0]), 0.0)
         self.assertAlmostEqual(v2.clustered_se([0.0, 1.0]), 0.5)
@@ -224,11 +259,25 @@ class BoundaryTests(unittest.TestCase):
             elif isinstance(node, ast.ImportFrom):
                 self.assertIn(node.module.split('.')[0], sys.stdlib_module_names | {'__future__'})
 
-    def test_nothing_writes_the_scorer_the_sets_or_the_skill(self):
+    def test_the_only_writes_are_the_freeze_files(self):
         for path in ('agent_braid/lightning_heldout_v2.py', 'scripts/spec078_freeze.py'):
-            text = (ROOT / path).read_text()
-            for protected in ('spec069_scoring.py', 'SKILL.md', 'held-out.json'):
-                self.assertFalse(any(protected in line and 'write' in line for line in text.splitlines()), path)
+            for node in ast.walk(ast.parse((ROOT / path).read_text())):
+                if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and \
+                        node.func.attr in ('write_text', 'write_bytes', 'open', 'unlink', 'rename', 'replace'):
+                    target = ast.unparse(node.func.value)
+                    self.assertTrue('FREEZE' in target or 'FINGERPRINTS' in target, (path, target))
+
+    def test_bl2b_scripts_import_no_execution_promotion_or_mcp_runtime(self):
+        from tests.test_lightning_cli import BL2_FORBIDDEN_MODULES
+        allowed = {'agent_braid.tooling_mcp'}  # Gate 0 sends read-only analyze-work requests to ToolingService
+        for path in ('scripts/spec078_gate0.py', 'scripts/spec078_freeze.py', 'scripts/spec078_build_set.py',
+                     'scripts/spec078_bl2_rescore.py'):
+            for node in ast.walk(ast.parse((ROOT / path).read_text())):
+                if isinstance(node, ast.ImportFrom) and node.module:
+                    if node.module in BL2_FORBIDDEN_MODULES:
+                        self.assertIn(node.module, allowed, path)
+                    self.assertFalse({a.name for a in node.names} & {'decide', 'execute', 'recover'}, path)
+        self.assertNotIn('ToolingService(ToolingConfig', (ROOT / 'scripts/spec078_freeze.py').read_text())
 
 
 if __name__ == '__main__':

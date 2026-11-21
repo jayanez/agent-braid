@@ -27,7 +27,8 @@ FINGERPRINT_SCHEMA = 'braid-lightning-v2-fingerprints/v0.1'
 PROTOCOL = f'{SPEC}/evaluation-protocol.md'
 GATE0 = 'scripts/spec078_gate0.py'
 SKILL = 'integrations/agent-braid/skills/agent-braid-analyze/SKILL.md'
-BOUND = (PROTOCOL, *PROMPT_FILES.values(), GATE0, SKILL)
+ANALYSIS = 'agent_braid/lightning_heldout_v2.py'  # Gate 0's OD-1 and references live here too
+BOUND = (PROTOCOL, *PROMPT_FILES.values(), GATE0, ANALYSIS, SKILL)
 PASS_MIN = 2           # OD-1: a prompt passes with at least 2 of its 3 repetitions valid
 WILSON_LB_MIN = 0.80   # OD-1: Wilson 95 % lower bound of the passing share
 WINDOW = 8
@@ -35,7 +36,7 @@ _WORD = re.compile(r'[a-z0-9]+')
 
 
 class FreezeError(ValueError):
-    """A v2 run is refused; ``code`` is from SPEC-071 contracts/refusals.md."""
+    """A v2 run is refused; ``code`` is listed in SPEC-078 contracts/refusals.md."""
 
     def __init__(self, message: str, code: str):
         super().__init__(message)
@@ -72,7 +73,8 @@ def check_freeze(root: Path, prompt_set: str) -> str:
     files = load_freeze(root)['files']
     for path in BOUND:
         if sha256(root / path) != files[path]:
-            code = 'protocol-hash-mismatch' if path in (PROTOCOL, GATE0) else 'holdout-hash-mismatch'
+            code = ('protocol-hash-mismatch' if path in (PROTOCOL, GATE0, ANALYSIS)
+                    else 'skill-hash-mismatch' if path == SKILL else 'holdout-hash-mismatch')
             raise FreezeError(f'{path} differs from the SPEC-078 freeze', code)
     return files[PROMPT_FILES[prompt_set]]
 
@@ -80,7 +82,7 @@ def check_freeze(root: Path, prompt_set: str) -> str:
 def check_skill(root: Path, skill_bytes: bytes) -> None:
     """An A0 run measures exactly the frozen skill bytes."""
     if hashlib.sha256(skill_bytes).hexdigest() != load_freeze(root)['files'][SKILL]:
-        raise FreezeError('The packaged skill differs from the frozen A0 skill', 'holdout-hash-mismatch')
+        raise FreezeError('The packaged skill differs from the frozen A0 skill', 'skill-hash-mismatch')
 
 
 # ----------------------------------------------------------------------------
@@ -173,7 +175,8 @@ def clustered_se(rates: list[float]) -> float:
     return math.sqrt(sum((r - mean) ** 2 for r in rates) / (n - 1)) / math.sqrt(n)
 
 
-def analyse(cases: list[dict], trials: dict[str, list[bool]], review: dict[str, str] | None = None) -> dict:
+def analyse(cases: list[dict], trials: dict[str, list[bool]], review: dict[str, str] | None = None,
+            repetitions: int = 3) -> dict:
     """The Gate 1 report body for one arm on one split.
 
     ``trials`` maps a case id to its first-attempt validity per repetition; ``review`` maps a 0-of-n case id to
@@ -183,6 +186,8 @@ def analyse(cases: list[dict], trials: dict[str, list[bool]], review: dict[str, 
     review = review or {}
     if set(trials) != {c['id'] for c in cases}:
         raise ValueError('trials must cover exactly the split')
+    if any(len(v) != repetitions for v in trials.values()):
+        raise ValueError(f'every prompt needs {repetitions} repetitions')
     per_prompt, passes, zero = [], [], []
     for case in cases:
         valid = trials[case['id']]
@@ -204,9 +209,9 @@ def analyse(cases: list[dict], trials: dict[str, list[bool]], review: dict[str, 
         verdict = 'meets' if meets and not zero else 'misses'
     passing = sum(ok for _, ok in passes)
     classes: dict[str, list[int]] = {}
-    for row in per_prompt:
-        tally = classes.setdefault(row['class'], [0, 0])
-        tally[0] += row['passes']
+    for cls, ok in passes:
+        tally = classes.setdefault(cls, [0, 0])
+        tally[0] += ok
         tally[1] += 1
     rates = [row['valid'] / row['of'] for row in per_prompt]
     return {'prompts': len(cases), 'passing': passing, 'wilson95': list(wilson_interval(passing, len(cases))),

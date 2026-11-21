@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""SPEC-078 T005 (REQ-007): freeze the protocol, the three v2 splits, the Gate 0 script and the A0 skill.
+"""SPEC-078 T005 (REQ-007): freeze the protocol, the v2 splits, Gate 0, the v2 analysis and the A0 skill.
 
 Writes ``prompts/FREEZE.json`` (sha256 of every bound file at the current commit) and ``prompts/fingerprints.json``
 (hashed ids and 8-word windows of the validation and test splits, for the optimizer contamination scan). It
-refuses unless the tree is clean, the current commit is on ``origin/develop`` and Gate 0 passes on these bytes.
+refuses unless the tree is clean, the current commit is the ``origin/develop`` tip and Gate 0 passes on these bytes.
 
     python -m scripts.spec078_freeze           # write the freeze on a develop commit
     python -m scripts.spec078_freeze --check   # exit 1 unless the committed freeze matches the files
@@ -34,10 +34,10 @@ def write() -> int:
     if _git("status", "--porcelain"):
         print("refused: the freeze needs a clean tree", file=sys.stderr)
         return 1
+    _git("fetch", "-q", "origin", "develop")
     commit = _git("rev-parse", "HEAD")
-    develop = _git("rev-parse", "origin/develop")
-    if subprocess.run(["git", "-C", str(ROOT), "merge-base", "--is-ancestor", commit, develop]).returncode:
-        print("refused: the freeze is made on a commit that is on origin/develop", file=sys.stderr)
+    if commit != _git("rev-parse", "origin/develop"):
+        print("refused: the freeze is made on the origin/develop tip", file=sys.stderr)
         return 1
     from scripts import spec078_gate0
     if not spec078_gate0.run()["passed"]:
@@ -52,8 +52,7 @@ def write() -> int:
 def check() -> int:
     try:
         record = v2.load_freeze(ROOT)
-        for name in v2.PROMPT_FILES:
-            v2.check_freeze(ROOT, name)
+        v2.check_freeze(ROOT, "v2-test")  # checks every bound file
         if v2.load_fingerprints(ROOT) is None or (ROOT / v2.FINGERPRINTS).read_text() != _render(v2.fingerprints(ROOT)):
             raise v2.FreezeError("v2 fingerprints are missing or stale", "holdout-fingerprint-stale")
     except v2.FreezeError as error:

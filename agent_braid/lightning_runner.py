@@ -62,19 +62,14 @@ HELDOUT_ID = re.compile(r'HELD-\d+')
 HOLDOUT_CANARY = 'braid-lightning-holdout-canary-' + hashlib.sha256(b'braid-lightning-holdout-canary').hexdigest()[:16]
 FINGERPRINTS = 'specs/072-lightning-prompt-optimization/holdout-fingerprints.json'
 FINGERPRINT_SCHEMA = 'braid-lightning-holdout-fingerprints/v0.1'
-WINDOW = 8  # words; every held-out prompt has at least 29
-_WORD = re.compile(r'[a-z0-9]+')
+WINDOW = v2_mod.WINDOW  # words; every v1 held-out prompt has at least 29, every v2 prompt at least 24
 # Never readable by an optimizer call (SPEC-072 REQ-006), besides the host configuration stores.
 OPTIMIZER_DENIED = (PROMPT_FILES['held-out'], *(PROMPT_FILES[n] for n in v2_mod.PROTECTED),
                     'scripts/spec069_scoring.py', 'scripts/spec069_fixture_workspace.py', '.git')
 
 
-def normalize_words(text: str) -> list[str]:
-    return _WORD.findall(text.lower())
-
-
-def window_sha256(words: list[str]) -> str:
-    return hashlib.sha256(' '.join(words).encode()).hexdigest()
+normalize_words = v2_mod.normalize_words
+window_sha256 = v2_mod.window_sha256
 
 
 def canary_note(prompt_set: str) -> str:
@@ -93,20 +88,22 @@ def load_fingerprints(root: Path) -> dict:
     return value
 
 
+def scan_fingerprints(root: Path) -> dict:
+    """Every protected fingerprint: the SPEC-069 held-out set and, once frozen, the SPEC-078 validation and test."""
+    prints = load_fingerprints(root)
+    try:
+        extra = v2_mod.load_fingerprints(root)
+    except v2_mod.FreezeError as exc:
+        raise RunnerError(str(exc), exc.code) from exc
+    if extra is None:
+        return prints
+    return {**prints, 'idSha256': [*prints['idSha256'], *extra['idSha256']],
+            'windowSha256': [*prints['windowSha256'], *extra['windowSha256']]}
+
+
 def contamination_passed(text: str, fingerprints: dict | None = None) -> bool:
-    """Pre-call scan (SPEC-072 REQ-006): no held-out case id, held-out prompt window or canary in the input."""
-    if fingerprints is None:
-        root = checkout_root()
-        prints = load_fingerprints(root)
-        try:
-            extra = v2_mod.load_fingerprints(root)  # SPEC-078: v2 validation and test, once frozen
-        except v2_mod.FreezeError as exc:
-            raise RunnerError(str(exc), exc.code) from exc
-        if extra is not None:
-            prints = {**prints, 'idSha256': [*prints['idSha256'], *extra['idSha256']],
-                      'windowSha256': [*prints['windowSha256'], *extra['windowSha256']]}
-    else:
-        prints = fingerprints
+    """Pre-call scan (SPEC-072 REQ-006, extended by SPEC-078): no protected case id, prompt window or canary."""
+    prints = fingerprints if fingerprints is not None else scan_fingerprints(checkout_root())
     if HELDOUT_ID.search(text) or LIGHTNING_CANARY in text or HOLDOUT_CANARY in text:
         return False
     ids = set(prints['idSha256'])
@@ -203,7 +200,7 @@ class OptimizerChannel:
             raise RunnerError('Unknown optimizer host', 'config-enum')
         if transport is not None and not fake:
             raise RunnerError('Only fake in-process transports bypass the sandboxed host', 'isolation-failed')
-        self.fingerprints = load_fingerprints(checkout_root())
+        self.fingerprints = scan_fingerprints(checkout_root())
         self.host = host
         self._transport = transport if transport is not None else SandboxedHost(host, **host_options)
         self.calls: list[dict] = []
@@ -284,6 +281,8 @@ def plan(config: dict, prompt_set: str, root: Path, *, case_ids: list[str] | Non
     narrow it to one candidate evaluation (SPEC-072)."""
     if prompt_set not in PROMPT_FILES:
         raise RunnerError('Unknown prompt set', 'config-enum')
+    if prompt_set in v2_mod.PROMPT_FILES:
+        _v2(v2_mod.check_freeze, root, prompt_set)  # P3: a v2 split is read only once frozen
     cases = json.loads((root / PROMPT_FILES[prompt_set]).read_text())['cases']
     if case_ids is not None:
         known = {c['id'] for c in cases}
@@ -319,6 +318,26 @@ def _canary_hits(stdout: str, transcript) -> int:
     return hits
 
 
+def _v2(check, *args):
+    try:
+        return check(*args)
+    except v2_mod.FreezeError as exc:
+        raise RunnerError(str(exc), exc.code) from exc
+
+
+def v2_test_runs(home, candidate_sha: str) -> list[str]:
+    """Runs of this store that already put ``candidate_sha`` on v2-test (SPEC-078 P3: once per arm)."""
+    root = store_mod.runs_root(home)
+    found = []
+    for path in sorted(root.glob('*/rollouts.jsonl')) if root.is_dir() else []:
+        for line in path.read_text().splitlines():
+            record = json.loads(line)
+            if record.get('candidateSha256') == candidate_sha and '.V2T-' in record.get('rolloutId', ''):
+                found.append(path.parent.name)
+                break
+    return found
+
+
 PROTOCOL = 'specs/072-lightning-prompt-optimization/evaluation-protocol.md'
 PROTOCOL_FREEZE = 'specs/072-lightning-prompt-optimization/evidence/protocol-freeze.json'
 FREEZE_SCHEMA = 'braid-lightning-protocol-freeze/v0.1'
@@ -349,18 +368,29 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
     root = checkout_root()
     if prompt_set == 'held-out':
         check_protocol_freeze(root)  # SPEC-072 REQ-001: before anything else
-    elif prompt_set in v2_mod.PROMPT_FILES:
-        try:
-            v2_mod.check_freeze(root, prompt_set)  # SPEC-078 REQ-007: before anything else
-        except v2_mod.FreezeError as exc:
-            raise RunnerError(str(exc), exc.code) from exc
+    elif prompt_set in v2_mod.PROMPT_FILES:  # SPEC-078 REQ-007: before anything else
+        v2_sha = _v2(v2_mod.check_freeze, root, prompt_set)
+        if arm != 'final':
+            raise RunnerError('SPEC-078 v2 runs use the final source (A0 or an explicit candidate)', 'config-enum')
+        if case_ids is not None:
+            raise RunnerError('A SPEC-078 v2 run covers its whole split', 'config-enum')
+        wanted = 1 if prompt_set == 'v2-feedback' else 3
+        if (repetitions or config['rollout']['repetitions']) != wanted:
+            raise RunnerError(f'{prompt_set} runs with {wanted} repetition(s)', 'config-enum')
+        if skill_text is None and (plugin_dir is not None or config['target']['path'] != v2_mod.SKILL):
+            raise RunnerError('An A0 v2 run builds the frozen skill itself', 'skill-hash-mismatch')
+        if prompt_set == 'v2-test' and not resume:
+            sha = hashlib.sha256((root / v2_mod.SKILL).read_bytes() if skill_text is None
+                                 else skill_text.encode()).hexdigest()
+            if v2_test_runs(home, sha):
+                raise RunnerError('This candidate already ran on v2-test; the test split is scored once per arm',
+                                  'test-already-scored')
     from scripts import spec069_fixture_workspace as fixture
     from scripts import spec069_native_runs as driver
     from scripts import spec069_scoring as scoring
 
     scoring_sha = reward_mod.check_scoring(root)
-    prompt_sha = (v2_mod.check_freeze(root, prompt_set) if prompt_set in v2_mod.PROMPT_FILES
-                  else reward_mod.check_prompt_set(root, PROMPT_FILES[prompt_set]))
+    prompt_sha = v2_sha if prompt_set in v2_mod.PROMPT_FILES else reward_mod.check_prompt_set(root, PROMPT_FILES[prompt_set])
     cases = {c['id']: c for c in json.loads((root / PROMPT_FILES[prompt_set]).read_text())['cases']}
     work = plan(config, prompt_set, root, case_ids=case_ids, repetitions=repetitions)
     label = 'pipeline-only' if fake_hosts else 'host-run'
@@ -387,8 +417,6 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
     profile = Profile(prefix='lightning-')
     if arm not in driver.ARMS:
         raise RunnerError('Unknown candidate arm', 'config-enum')
-    if prompt_set in v2_mod.PROMPT_FILES and arm != 'final':
-        raise RunnerError('SPEC-078 v2 runs use the final source (A0 or an explicit candidate)', 'config-enum')
     status: dict = {'runId': run_id, 'label': label, 'promptSet': prompt_set, 'arm': arm, 'models': dict(models or {}), 'planned': work['withinBudget'],
                     'completedBefore': completed, 'stop': None, 'refusal': None, 'hosts': {},
                     'executionAuthorization': False}
@@ -420,10 +448,7 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
         candidate = (root / config['target']['path']).read_bytes() if skill_text is None else skill_text.encode()
         candidate_sha = hashlib.sha256(candidate).hexdigest()
         if prompt_set in v2_mod.PROMPT_FILES and skill_text is None:
-            try:
-                v2_mod.check_skill(root, candidate)  # an A0 run measures the frozen skill bytes
-            except v2_mod.FreezeError as exc:
-                raise RunnerError(str(exc), exc.code) from exc
+            _v2(v2_mod.check_skill, root, candidate)  # an A0 run measures the frozen skill bytes
         count = completed
         for host_name in work['hosts']:
             binary = _fake_binary(root, host_name) if fake_hosts else _host_binary(host_name)
