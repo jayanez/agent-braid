@@ -220,15 +220,21 @@ class ClassificationConsistencyTests(unittest.TestCase):
             self.assertEqual(ctx.exception.reason, "invalid-diff-summary")
 
     def test_hidden_size_and_shared_file_reasons_are_refused(self):
+        # C67-004: non-sensitive paths, so the dedicated guard is the only check that can refuse each forgery
         resolved = view()
-        big = classify(["agent_braid/harness_lab.py"], lines=5000)
-        shared = classify(["agent_braid/cli.py"])
-        for forged in (dict(big, reasons=[r for r in big["reasons"] if r["rule"] != "size-over-400"]),
-                       dict(shared, reasons=[r for r in shared["reasons"] if r["rule"] != "shared-file"])):
-            forged = dict(forged, raiseDepthTo=None, raiseModeTo=None, riskClass="ordinary")
-            with self.assertRaises(ha.AssuranceError) as ctx:
-                risk.apply_risk(resolved, forged)
-            self.assertEqual(ctx.exception.reason, "invalid-diff-summary")
+        big = classify(["docs/x.md"], lines=401)
+        shared = classify(["ROADMAP.md"])
+        self.assertEqual([r["rule"] for r in big["reasons"]], ["size-over-400"])
+        self.assertEqual([r["rule"] for r in shared["reasons"]], ["shared-file"])
+        for genuine, name in ((big, "size-over-400"), (shared, "shared-file")):
+            risk.apply_risk(resolved, genuine)
+            hidden = dict(genuine, reasons=[], raiseDepthTo=None, raiseModeTo=None,
+                          riskClass="docs-only" if genuine["docsOnly"] else "ordinary")
+            lowered = dict(genuine, reasons=[{"rule": name, "raiseTo": "R2", "modeAtLeast": None}], raiseDepthTo="R2")
+            for forged in (hidden, lowered):
+                with self.assertRaises(ha.AssuranceError) as ctx:
+                    risk.apply_risk(resolved, forged)
+                self.assertEqual(ctx.exception.reason, "invalid-diff-summary", (name, forged["reasons"]))
 
     def test_dir_glob_matches_the_bare_directory_and_path_count_is_bounded(self):
         profile = with_rule(ha.preset("standard"), match={"paths": ["scripts/**"], "minChangedLines": 0})
@@ -248,6 +254,41 @@ class ClassificationConsistencyTests(unittest.TestCase):
         for paths in (["README.md"], ["agent_braid/cli.py"], ["agent_braid/harness_lab.py", "README.md"], ["docs/x.md"]):
             for lines in (0, 10, 500):
                 risk.apply_risk(view(), classify(paths, lines))
+
+
+class ProfileBindingTests(unittest.TestCase):
+    """C67-003: compilation re-evaluates the profile's risk rules on the classification's paths and line count."""
+
+    def readme_r3(self):
+        profile = ha.preset("standard")
+        profile["version"] = 2
+        profile["riskRules"] = [{"id": "readme-r3", "match": {"paths": ["README.md"], "minChangedLines": 0},
+                                 "raiseTo": "R3", "modeAtLeast": "notify"}]
+        return profile
+
+    def test_stale_classification_from_another_profile_is_refused(self):
+        p3 = self.readme_r3()
+        stale = classify(["README.md"])  # computed under standard: no operator reason
+        for compile_under, classification in ((p3, stale), (ha.preset("standard"), classify(["README.md"], profile=p3))):
+            with self.assertRaises(ha.AssuranceError) as ctx:
+                ha.compile_artifact(compile_under, None, classification)
+            self.assertEqual(ctx.exception.reason, "invalid-diff-summary")
+        good = ha.compile_artifact(p3, None, classify(["README.md"], profile=p3))
+        self.assertEqual(good["reviews"]["depth"], "R3")
+        with self.assertRaises(ha.AssuranceError) as ctx:
+            ha.verify_artifact(good, p3, None, stale)
+        self.assertEqual(ctx.exception.reason, "invalid-diff-summary")
+
+    def test_line_threshold_and_sensitive_reason_are_bound(self):
+        profile = self.readme_r3()
+        profile["riskRules"][0]["match"]["minChangedLines"] = 50
+        low, high = classify(["README.md"], 10, profile), classify(["README.md"], 60, profile)
+        ha.compile_artifact(profile, None, low)
+        ha.compile_artifact(profile, None, high)
+        with self.assertRaises(ha.AssuranceError):
+            ha.compile_artifact(profile, None, dict(high, changedLines=10))
+        code = classify(["agent_braid/harness_lab.py"])  # the sensitive-path reason needs the impact: admitted
+        self.assertEqual(ha.compile_artifact(ha.preset("standard"), None, code)["reviews"]["depth"], "R3")
 
 
 class InputTests(unittest.TestCase):

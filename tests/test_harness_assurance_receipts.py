@@ -2,6 +2,7 @@
 """SPEC-067 T006: gate receipts, standing authorizations and the required-review check; pure, offline, advisory."""
 import copy
 import unittest
+from unittest import mock
 
 from agent_braid import harness_assurance as ha
 from agent_braid import harness_assurance_receipts as rc
@@ -18,10 +19,24 @@ ALL_MET = {name: True for name in rc.CONDITIONS}
 STATEMENT = "Autorizo el merge de los tracks de SPEC-067 hasta el 2026-11-30."
 
 
+_INPUTS = {}  # artifact digest -> the (profile, documents, classification) it was compiled from
+
+
+def compiled(profile, documents, cls):
+    art = ha.compile_artifact(profile, documents, cls)
+    _INPUTS[art["digest"]] = {"profile": profile, "documents": documents, "classification": cls}
+    return art
+
+
+def inputs_of(art):
+    """The compilation inputs of a helper-built artifact (looked up by its digest, so in-place edits keep them)."""
+    return _INPUTS[art["digest"]]
+
+
 def artifact(profile_name="standard", paths=("README.md",), lines=10, documents=None):
     profile = ha.preset(profile_name)
     cls = risk.classify_risk(profile, list(paths), lines, validation.classify(paths))
-    return ha.compile_artifact(profile, documents, cls)
+    return compiled(profile, documents, cls)
 
 
 def at_depth(depth, docs_only=False):
@@ -32,8 +47,7 @@ def at_depth(depth, docs_only=False):
         cls = {**cls, "docsOnly": False, "riskClass": "ordinary"}
     document = {"repository": {"schema": ha.SETTINGS_FORMAT, "scope": "repository",
                                "checkpoints": {"pre-pr-review": {"depth": depth}}}}
-    return ha.compile_artifact(profile, document, cls)
-
+    return compiled(profile, document, cls)
 
 
 def review(kind, reviewer=None, **kw):
@@ -61,14 +75,17 @@ def receipt(art=None, checkpoint="pre-pr-review", **kw):
     return rc.build_receipt(art, **args)
 
 
-def verify(r, art=None, base=BASE, head=HEAD, checkpoint=None):
+def verify(r, art=None, base=BASE, head=HEAD, checkpoint=None, inputs=None):
+    """``inputs`` defaults to what ``art`` was compiled from; a re-sealed forgery passes its original's inputs."""
     checkpoint = checkpoint or (r["checkpoint"] if isinstance(r, dict) else "pre-pr-review")
-    return rc.verify_receipt(r, art or artifact(), checkpoint=checkpoint, base_commit=base, head_commit=head)
+    art = art or artifact()
+    return rc.verify_receipt(r, art, checkpoint=checkpoint, base_commit=base, head_commit=head,
+                             **(inputs or inputs_of(art)))
 
 
-def refused(case, reason, r, art=None, base=BASE, head=HEAD, review_kind=None, checkpoint=None):
+def refused(case, reason, r, art=None, base=BASE, head=HEAD, review_kind=None, checkpoint=None, inputs=None):
     with case.assertRaises(rc.ReceiptError) as ctx:
-        verify(r, art, base, head, checkpoint)
+        verify(r, art, base, head, checkpoint, inputs)
     case.assertEqual(ctx.exception.reason, reason)
     case.assertIn(reason, rc.RECEIPT_REASONS)
     case.assertEqual(ctx.exception.review, review_kind)
@@ -294,8 +311,9 @@ class VerifyReceiptTests(unittest.TestCase):
         refused(self, "invalid-artifact", receipt(), art=art)
         broken = artifact()
         del broken["reviews"]["required"]  # self-consistent: digest recomputed
+        genuine = inputs_of(broken)
         broken["digest"] = ha.digest({k: v for k, v in broken.items() if k != "digest"})
-        refused(self, "invalid-artifact", receipt(), art=broken)
+        refused(self, "invalid-artifact", receipt(), art=broken, inputs=genuine)
 
     def test_self_consistent_artifact_with_authorization_or_wrong_schema_is_refused(self):
         good = receipt()
@@ -305,7 +323,7 @@ class VerifyReceiptTests(unittest.TestCase):
             with self.assertRaises(rc.ReceiptError) as ctx:
                 receipt(forged)
             self.assertEqual(ctx.exception.reason, "invalid-artifact")
-            refused(self, "invalid-artifact", good, art=forged)
+            refused(self, "invalid-artifact", good, art=forged, inputs=inputs_of(artifact()))
 
     def test_receipt_for_another_checkpoint_is_refused(self):
         refused(self, "checkpoint-mismatch", receipt(checkpoint="pre-commit", approvals=[]), checkpoint="pre-pr-review")
@@ -428,19 +446,24 @@ class T011ReviewFindingTests(unittest.TestCase):
         forged = rc._sealed({**{k: v for k, v in art.items() if k != "digest"},
                              "reviews": {**art["reviews"], "required": [], "minIndependentReviewers": 0}})
         # the requirement comes from the receipt depth and the risk, so the emptied section changes nothing
-        refused(self, "invalid-artifact", resealed(r, reviews=[]), art=forged)
+        refused(self, "invalid-artifact", resealed(r, reviews=[]), art=forged, inputs=inputs_of(art))
 
     def test_artifact_docs_only_that_disagrees_with_its_risk_is_refused(self):
         art = artifact(paths=("agent_braid/cli.py",), lines=10)
         forged = rc._sealed({**{k: v for k, v in art.items() if k != "digest"},
                              "reviews": {**art["reviews"], "docsOnly": True}})
-        refused(self, "invalid-artifact", receipt(art), art=forged)
+        refused(self, "invalid-artifact", receipt(art), art=forged, inputs=inputs_of(art))
 
     def test_deeply_nested_or_extra_artifact_content_is_a_fixed_refusal(self):
         art = artifact()
         nested = []
         for _ in range(5000):
             nested = [nested]
+        # C67-008: under an existing key the key-set check passes and hashing recurses, so the RecursionError
+        # handler is what yields the fixed reason; the extra-key case is refused on the key set before that
+        with self.assertRaises(RecursionError):
+            ha.digest({**art, "profile": nested})
+        refused(self, "invalid-artifact", receipt(art), art={**art, "profile": nested}, inputs=inputs_of(art))
         refused(self, "invalid-artifact", receipt(art), art={**art, "extra": nested})
         refused(self, "invalid-artifact", receipt(art), art={**art, "extra": 1})
 
@@ -456,6 +479,60 @@ class T011ReviewFindingTests(unittest.TestCase):
         art = artifact()
         failing = [{**COMMAND, "exitCode": 1}]
         verify(receipt(art, commands=failing), art)
+
+
+class C67ReviewFindingTests(unittest.TestCase):
+    """SPEC-067 T011 Codex findings C67-002 and C67-007 (evidence/review/codex-t011-20261116.json)."""
+
+    def forged(self):
+        """The genuine artifact for a 500-line cli.py change, and a self-consistent copy re-sealed weaker."""
+        art = artifact(paths=("agent_braid/cli.py",), lines=500)
+        rows = copy.deepcopy(art["checkpoints"])
+        for row in rows:
+            if row["checkpoint"] == "release":
+                row["mode"] = "autonomous"
+            if row["checkpoint"] == "pre-pr-review":
+                row["depth"] = "R0"
+        forged = rc._sealed({**{k: v for k, v in art.items() if k != "digest"}, "checkpoints": rows,
+                             "reviews": {**art["reviews"], "depth": "R0", "required": [], "minIndependentReviewers": 0}})
+        return art, forged
+
+    def test_resealed_artifact_with_a_weaker_release_mode_is_refused(self):
+        art, forged = self.forged()
+        r = receipt(forged, checkpoint="release", author="agent-x", approvals=[])
+        self.assertEqual(r["mode"], "autonomous")
+        refused(self, "invalid-artifact", r, art=forged, inputs=inputs_of(art))
+        refused(self, "mode-below-effective", r, art=art)
+
+    def test_resealed_artifact_at_r0_pre_pr_review_is_refused(self):
+        art, forged = self.forged()
+        r = receipt(forged, author="agent-x", reviews=[])
+        self.assertEqual(r["depth"], "R0")
+        refused(self, "invalid-artifact", r, art=forged, inputs=inputs_of(art))
+        refused(self, "depth-below-effective", r, art=art)
+
+    def test_artifact_from_other_inputs_is_refused_even_when_genuine(self):
+        other = artifact("strict")
+        refused(self, "invalid-artifact", receipt(other), art=other, inputs=inputs_of(artifact()))
+
+    def test_human_only_floors_hold_without_the_artifact_check(self):
+        # defense in depth: with the authoritative artifact check bypassed, the floor is still checked on its own
+        art, forged = self.forged()
+        with mock.patch.object(rc, "verify_artifact", lambda *a, **k: None):
+            refused(self, "mode-below-effective",
+                    receipt(forged, checkpoint="release", author="agent-x", approvals=[]), art=forged,
+                    inputs=inputs_of(art))
+            for checkpoint in ha.HUMAN_ONLY:
+                r = receipt(art, checkpoint=checkpoint, approvals=[])
+                refused(self, "approval-mismatch", r, art=art)
+                verify(receipt(art, checkpoint=checkpoint), art)
+
+    def test_lone_surrogate_in_the_owner_statement_is_an_invalid_record(self):
+        record = {**authorization(), "ownerStatement": "ok\ud800"}
+        self.assertEqual(evaluate(record),
+                         {"mode": "approve-each", "authorization": None, "fallbackReason": "invalid-record"})
+        record = {**record, "digest": "0" * 64}
+        self.assertEqual(evaluate(record)["fallbackReason"], "invalid-record")
 
 
 if __name__ == "__main__":

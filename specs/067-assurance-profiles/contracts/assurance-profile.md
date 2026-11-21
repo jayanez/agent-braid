@@ -66,7 +66,10 @@ scope document and of the risk classification), `risk` classification,
 refused with `execution-authorization`), `digest` over all other fields.
 Verification refuses an edit without digest recompute (`digest-mismatch`) and
 any content that differs from a fresh compilation of the inputs
-(`input-hash-mismatch`).
+(`input-hash-mismatch`). Compilation refuses a classification whose reasons the
+profile would not derive from its paths and changed-line count, apart from the
+impact-dependent `sensitive-path` reason (`invalid-diff-summary`), so a
+classification computed under another profile does not compile.
 
 ## Receipt (`braid-harness-gate-receipt/v0.1`)
 
@@ -76,9 +79,15 @@ Fields: `checkpoint`, `depth`, `depthSource`, `mode`, `modeSource`, `baseCommit`
 each with reason; one entry per independent reviewer at R4), `commands` (`argv`,
 `exitCode`, `outputSha256`), `approvals` (human approval reference or standing
 authorization id), `fallbackReason` (nullable), `createdAt`, `digest`.
-Verification takes the expected checkpoint and commits and checks canonical form and digest, commit binding, profile binding,
-depth not below the effective depth, every required review present, every
-command with an exit code, and that approvals match the mode. The digest detects
+Verification takes the expected checkpoint and commits and the compilation
+inputs (profile, scope documents, risk classification). It checks canonical form
+and digest, refuses an artifact that is not exactly what those inputs compile to
+(`invalid-artifact`; a re-sealed, self-consistent artifact is not trusted), then
+checks commit binding, that `profileDigest` and `riskClass` equal the verified
+artifact's, the REQ-003 human-only checkpoints at `human-only` with a human
+approval whatever the artifact says, depth not below the effective depth, every
+required review present, every command with an exit code, and that approvals
+match the mode. The digest detects
 inconsistent edits only; receipts live in an operator-owned store written by the
 orchestrator (REQ-007).
 

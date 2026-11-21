@@ -6,7 +6,10 @@
 and the operator's ``riskRules``: a diff touching a ``sensitive`` path, a diff over 400 changed lines and a
 diff touching a shared file each raise ``pre-pr-review`` to ``R3``; an operator rule raises depth to its
 ``raiseTo`` and mode to at least its ``modeAtLeast`` when one of its paths matches and the diff has at least
-``minChangedLines`` changed lines. A documentation-only change (only contributor-documentation paths, none
+``minChangedLines`` changed lines. ``check_profile_binding`` re-derives every reason that needs no repository
+impact (the size and shared-file defaults and the operator rules) from a classification's own paths and line
+count under a given profile, so a classification computed under another profile is refused (``compile_artifact``
+calls it). A documentation-only change (only contributor-documentation paths, none
 sensitive) is reported as ``docsOnly``. ``apply_risk`` applies a classification to a resolved view and takes the
 maximum of the configured and the raised value, so a rule below the configured depth or mode leaves the
 configured value standing and nothing is ever lowered; ``check_raise_only`` refuses, with ``invalid-risk-rule``,
@@ -21,6 +24,7 @@ from __future__ import annotations
 import copy
 import fnmatch
 from collections.abc import Iterable, Mapping
+from types import MappingProxyType
 from typing import Any
 
 from .harness_assurance import (
@@ -70,6 +74,34 @@ def _matches(path: str, pattern: str) -> bool:
     return fnmatch.fnmatchcase(path, pattern)
 
 
+def _reason(rule: str, raise_to: str, mode_at_least: str | None) -> dict[str, Any]:
+    return {"rule": rule, "raiseTo": raise_to, "modeAtLeast": mode_at_least}
+
+
+SENSITIVE_REASON = MappingProxyType(_reason("sensitive-path", DEFAULT_RAISE, None))
+SIZE_REASON = MappingProxyType(_reason("size-over-400", DEFAULT_RAISE, None))
+SHARED_REASON = MappingProxyType(_reason("shared-file", DEFAULT_RAISE, None))
+
+
+def _reason_key(reason: Mapping[str, Any]) -> tuple[str, str, str]:
+    return (reason["rule"], reason["raiseTo"], reason["modeAtLeast"] or "")
+
+
+def _derived_reasons(profile: Mapping[str, Any], paths: list[str], changed_lines: int) -> list[dict[str, Any]]:
+    """Every reason that follows from the paths and line count alone: all but ``sensitive-path`` (impact)."""
+    reasons = []
+    if changed_lines > SIZE_THRESHOLD:
+        reasons.append(dict(SIZE_REASON))
+    if any(path in SHARED_FILES for path in paths):
+        reasons.append(dict(SHARED_REASON))
+    for rule in profile["riskRules"]:
+        match = rule["match"]
+        if changed_lines >= match["minChangedLines"] and any(
+                _matches(path, pattern) for path in paths for pattern in match["paths"]):
+            reasons.append(_reason(rule["id"], rule["raiseTo"], rule["modeAtLeast"]))
+    return reasons
+
+
 def check_raise_only(profile: Any) -> None:
     """Refuse a profile whose risk rule would lower its own ``pre-pr-review`` depth or mode."""
     _check_raise_only(validate_profile(profile))
@@ -92,23 +124,9 @@ def classify_risk(profile: Any, paths: Any, changed_lines: Any, impact: Any) -> 
     if (getattr(impact, "paths", None) != tuple(normalized) or type(getattr(impact, "sensitive", None)) is not bool
             or not isinstance(getattr(impact, "domains", None), tuple)):
         raise _refuse()
-    reasons: list[dict[str, Any]] = []  # a list: an operator rule id equal to a default name cannot replace it
-
-    def add(rule: str, raise_to: str, mode_at_least: str | None) -> None:
-        reasons.append({"rule": rule, "raiseTo": raise_to, "modeAtLeast": mode_at_least})
-
-    if impact.sensitive:
-        add("sensitive-path", DEFAULT_RAISE, None)
-    if changed_lines > SIZE_THRESHOLD:
-        add("size-over-400", DEFAULT_RAISE, None)
-    if any(path in SHARED_FILES for path in normalized):
-        add("shared-file", DEFAULT_RAISE, None)
-    for rule in profile["riskRules"]:
-        match = rule["match"]
-        if changed_lines >= match["minChangedLines"] and any(
-                _matches(path, pattern) for path in normalized for pattern in match["paths"]):
-            add(rule["id"], rule["raiseTo"], rule["modeAtLeast"])
-    ordered = sorted(reasons, key=lambda r: (r["rule"], r["raiseTo"], r["modeAtLeast"] or ""))
+    # a list: an operator rule id equal to a default name cannot replace it
+    reasons = ([dict(SENSITIVE_REASON)] if impact.sensitive else []) + _derived_reasons(profile, normalized, changed_lines)
+    ordered = sorted(reasons, key=_reason_key)
     depth = max((r["raiseTo"] for r in ordered), key=DEPTHS.index, default=None)
     mode = max((r["modeAtLeast"] for r in ordered if r["modeAtLeast"]), key=MODES.index, default=None)
     docs_only = bool(normalized) and not impact.sensitive and set(impact.domains) == {DOCS_DOMAIN}
@@ -123,6 +141,24 @@ def classify_risk(profile: Any, paths: Any, changed_lines: Any, impact: Any) -> 
         "raiseModeTo": mode,
         "executionAuthorization": EXECUTION_AUTHORIZATION,
     }
+
+
+def check_profile_binding(profile: Any, classification: Any) -> None:
+    """Refuse (``invalid-diff-summary``) a classification that ``profile`` would not produce from its own paths.
+
+    The reasons must be exactly those ``classify_risk`` derives under ``profile`` from the classification's paths
+    and changed-line count, plus at most the impact-dependent ``sensitive-path`` reason, which only the repository
+    impact can confirm (the recorded caller-supplied impact residual). A classification computed under another
+    profile, or with an operator rule dropped, added or altered, is refused.
+    """
+    profile = validate_profile(profile)
+    _check_classification(classification)
+    actual = sorted(classification["reasons"], key=_reason_key)
+    expected = _derived_reasons(profile, classification["paths"], classification["changedLines"])
+    for candidate in (expected, [*expected, dict(SENSITIVE_REASON)]):
+        if actual == sorted(candidate, key=_reason_key):
+            return
+    raise _refuse()
 
 
 def _check_classification(value: Any) -> None:
@@ -144,7 +180,8 @@ def _check_consistency(value: Mapping[str, Any]) -> None:
     """The classification must agree with itself: ``docsOnly`` is the one field that lowers the required reviews.
 
     Mirrors ``classify_risk``: reasons in canonical order, the raise values are the maxima over the reasons, the
-    risk class follows from them, and the fixed Q5 rules the paths and line count trigger are present. A
+    risk class follows from them, and the fixed Q5 rules the paths and line count trigger are present with their
+    canonical ``R3`` raise (an ``R2`` reason under a default name does not satisfy one). A
     documentation-only claim needs paths and no ``sensitive-path`` reason. A forgery that stays consistent with its
     own paths can only be caught by recomputing the classification from the diff.
     """
@@ -158,8 +195,9 @@ def _check_consistency(value: Mapping[str, Any]) -> None:
     _require(keys == sorted(keys) and value["raiseDepthTo"] == depth and value["raiseModeTo"] == mode
              and value["riskClass"] == expected, "invalid-diff-summary")
     _require(not docs_only or (bool(value["paths"]) and "sensitive-path" not in names), "invalid-diff-summary")
-    _require(value["changedLines"] <= SIZE_THRESHOLD or "size-over-400" in names, "invalid-diff-summary")
-    _require(not any(path in SHARED_FILES for path in value["paths"]) or "shared-file" in names, "invalid-diff-summary")
+    _require(value["changedLines"] <= SIZE_THRESHOLD or SIZE_REASON in reasons, "invalid-diff-summary")
+    _require(not any(path in SHARED_FILES for path in value["paths"]) or SHARED_REASON in reasons,
+             "invalid-diff-summary")
 
 
 def apply_risk(resolved: Mapping[str, Any], classification: Any) -> dict[str, Any]:

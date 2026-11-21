@@ -138,6 +138,25 @@ shared object store fails the portable-root check).
   Obtained (2026-11-08, #1168): `evidence/t011.json`; five reviews produced fixes in the receipt verifier and renderer, 9 added tests (194 passing). F6 and the id-only standing-authorization binding are recorded for their own tasks. Freeze, authority snapshot and human review pending (founder).
   Progress 2026-11-17 (#1403, 906d2efd; task stays open): authority and evidence snapshots frozen historical at develop `dad3e7f5` (authority hashes unchanged, `human_review` pending); Codex review packet `review/codex-t011-20261116.md` with output schema. Remaining: the owner runs the Codex review, then records a human review bound to `dad3e7f5` (approved or changes-requested).
   Obtained (Codex review, 2026-11-21): the owner ran the packet (codex-cli 0.169.0-alpha.11.1, read-only, pinned `dad3e7f5`); raw output `evidence/review/codex-t011-20261116.raw.json` and triage `evidence/review/codex-t011-20261116.json`: 11 findings (2 high, 4 medium, 3 low, 2 info), 9 confirmed, 1 partial, 1 rejected (C67-001: the historical binding in the later freeze commit 906d2efd is the designed model; obtained evidence and authority hashes match `dad3e7f5`). C67-002 (a re-sealed artifact satisfies a human-only floor or R0 in `verify_receipt`) and C67-003 (a classification from another profile skips an operator risk rule) are recommended to block approval at `dad3e7f5`: fix in a separate PR, re-freeze and repeat the review. No production caller is affected; owner decision pending; not human review; `executionAuthorization` false.
+  Obtained (C67 fixes, 2026-11-21, #PRNUM): owner decision "Arreglar y re-revisar (Recomendado)". C67-002: `verify_receipt` now takes the compilation inputs (profile, scope documents, classification), refuses any artifact that is not exactly their fresh compilation (`verify_artifact`, `invalid-artifact`) and holds the `HUMAN_ONLY` checkpoints at `human-only` with a human approval independently of the artifact; negative controls: re-sealed artifact with an autonomous `release` and with an R0 `pre-pr-review`. C67-003: `compile_artifact` (so `verify_artifact`) re-derives the size, shared-file and operator-rule reasons from the classification's paths and line count under the profile (`check_profile_binding`) and refuses a stale classification (`invalid-diff-summary`). C67-004: the size and shared-file defaults need their canonical R3 reason; omission tests rebuilt on non-sensitive paths with R2 variants. C67-007: a lone surrogate in `ownerStatement` is `invalid-record`. C67-008: the nested-recursion case sits under the existing `profile` key. C67-009: `evidence/t009.json` wording (before any observation; its pointer hash in `evidence/t011.json` updated). C67-001: the packet `review/codex-t011-20261116.md` stays as run (historical); the next packet must say that the candidate's own `assurance.json` is `current`/`null` and the historical binding lives in the later freeze commit. C67-005 and C67-006 are T012 and T013. Remaining: re-freeze (obtained-evidence hashes and `evidence/t011.json` refresh), repeat the Codex review, human review.
+
+- [ ] T012 (REQ-006 / SC-006): Codex finding C67-005: restrict the track-brief
+  free-text fields (ownership, isolation, model, effort) in
+  `harness_assurance_render.py` to an identifier-like charset and refuse `@`,
+  with synthetic sensitive-text tests, and narrow the `observation_contract`
+  wording in `assurance.json` at the next re-freeze. Dependencies: T007.
+  Files: `agent_braid/harness_assurance_render.py`,
+  `tests/test_harness_assurance_render.py`, `assurance.json`. Verification:
+  procedure_006. Negative controls: `@` mention, secret-like token, transcript
+  fragment in each field. Evidence: triage `evidence/review/codex-t011-20261116.json`.
+
+- [ ] T013 (REQ-008 / SC-008): Codex finding C67-006: refuse in `_append` or
+  `save_journal` (fixed reason `journal-full`) a profile journal whose canonical
+  bytes would exceed `MAX_BYTES`, keeping the previous file, so a valid journal
+  never becomes unreadable. Dependencies: T003. Files:
+  `agent_braid/harness_assurance.py`, `tests/test_harness_assurance.py`.
+  Verification: procedure_008. Negative controls: the journal one event below
+  and at the byte cap. Evidence: triage `evidence/review/codex-t011-20261116.json`.
 
 ## Unblocking map
 
@@ -151,6 +170,8 @@ shared object store fails the portable-root check).
 | T007 | T005, T006 |
 | T008 | T002–T007 |
 | T011 | T002–T010 |
+| T012 | T007 |
+| T013 | T003 |
 
 Scientific limit: nothing here shows that higher depths improve outcomes; that
 claim exists only if T009's registered evaluation is later run and supports it.

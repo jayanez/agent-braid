@@ -11,6 +11,9 @@
     "specs/067-assurance-profiles/evidence/founder-decisions-20261102.json": "b894a50e358a8af4188b3572a4c1ff91b94b01ab10d6f23c7523e8bf64151c99"
   },
   "status": "registered-not-run",
+  "corrections": [
+    "2026-11-21, SPEC-067 T011 Codex finding C67-009: wording of the host/model stratum and of the receipt measurement limit aligned with the receipt contract; made before any observation, so no new registration version"
+  ],
   "hypothesis": {
     "id": "H1",
     "text": "Higher pre-PR review depths reduce post-merge rework and regressions relative to lower depths at a total chain cost the operator accepts.",
@@ -29,7 +32,7 @@
     "change kind: documentation-only versus code (the classifier's documentation-only report)",
     "escalation: depth at profile default versus raised by the classifier (sensitive path, over 400 changed lines, shared file)",
     "size band: at most 400 versus over 400 changed lines",
-    "host and model identity of the author and of the reviewers, as recorded on the receipts"
+    "host and model identity of the author and of the reviewers, only where recorded in separately bound metadata: gate receipts carry author and reviewer identifiers and a reported status, no host or model field, so without such metadata this stratum is reported as ungraded"
   ],
   "strataRule": "Strata with fewer than the founder-set minimum of independent clusters (open item O1) in either compared arm are reported descriptively with counts and are not compared. Sparse and empty strata are reported, not merged away after seeing outcomes.",
   "unit": "One merged PR to develop that carries gate receipts. Several PRs from one track or one lineage of the same change are grouped as one cluster for uncertainty; clusters, not PR counts, are the sample size.",
@@ -45,7 +48,7 @@
       "cycleTime": "Time from PR open to merge, and from first commit to merge, with waits for human or CI reported apart from active time.",
       "acceptedCost": "Whether a cost increase is acceptable is the operator's judgement and is fixed by a founder record before first observation (open item O2). Without it, no verdict of acceptable cost is possible."
     },
-    "measurementLimits": "Quota percent is a plan-level proxy, not per-PR tokens or invoices. A receipt shows that a review ran, not that it was sound. Outcome labels are repository-history inferences, not ground-truth defect counts; undetected defects are missing, not absent."
+    "measurementLimits": "Quota percent is a plan-level proxy, not per-PR tokens or invoices. A receipt records that a review was reported, not that it happened or was sound. Outcome labels are repository-history inferences, not ground-truth defect counts; undetected defects are missing, not absent."
   },
   "labeling": {
     "rule": "Rework and regression labels are assigned from the written definitions above by a rater who is not shown the PR's review depth where the history allows it. Where human labels are used, at least two blind raters per unit as in SPEC-049 D5; disagreement is resolved by an adjudication record and missing labels are counted and bounded by sensitivity analysis. Deterministic evidence (revert commit, failing run) is labeled oracle, human judgement human, model judgement proxy.",
