@@ -40,7 +40,9 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+import pwd
 import re
+import stat
 import sys
 import time
 
@@ -91,6 +93,16 @@ COST_KEYS = ("cash", "quota", "wall", "cpu", "rss", "disk", "journal", "processe
 UNKNOWN_COST = {"status": "unknown", "reason": "native-cost-unobserved"}
 _HEX = re.compile(r"[0-9a-f]{64}\Z")
 _STAMP = "%Y-%m-%dT%H:%M:%SZ"
+# Owner decision 2026-11-21 (T014 only): the usage readings come from the desktop app's usage API, read by the
+# orchestrator and dropped in READING_DROP, instead of being typed. The cohort writes each request into the lab's
+# published directory; the orchestrator answers with ``answer.json`` (its own uid, not writable by others). The
+# values are the ones the usage card shows; the report marks every reading as agent-read (``readingProvenance``).
+READING_DROP = "/Users/Shared/braid-t014-reading"
+READING_REQUESTS = "/Users/Shared/braid-t014-lab"
+AGENT_SOURCE = "desktop-usage-api-agent-read"
+DROP_WAIT = timedelta(minutes=15)
+_ANSWER_KEYS = frozenset(("seq", "source", "observedAt", "plan", "fiveHourPercent", "fiveHourResetsAt",
+                          "weeklyPercent", "weeklyResetsAt", "extraUsageEnabled"))
 
 
 def pinned(path: str, expected: str, name: str) -> bytes:
@@ -367,6 +379,98 @@ def admit(args, report: dict, now: datetime) -> Admitted:
     return Admitted(issued, policy, decisions, caps, terms, units, registration, pending, remaining)
 
 
+# --- usage readings from the orchestrator (owner decision 2026-11-21) ------------------------
+
+
+class DropReader:
+    """One usage reading per call, answered by the orchestrator from the desktop usage API.
+
+    Writes ``request.json`` (sequence number and role) into ``requests``, then waits up to ``DROP_WAIT`` for
+    ``answer.json`` in ``drop`` with the same sequence number. The answer is refused unless the directory and the
+    file are owned by ``operator_uid``, are not symlinks and are closed to group/other writes, the keys are exactly
+    the expected ones and the reading is not in the future nor older than ``FRESHNESS``. Every accepted reading is
+    kept in ``provenance``. ``route`` is the owner's one typed answer for the whole attempt.
+    """
+
+    def __init__(self, drop: Path, requests: Path, operator_uid: int, route: str, say, clock, sleep=time.sleep):
+        self.drop, self.requests, self.uid, self.route = Path(drop), Path(requests), operator_uid, route
+        self.say, self.clock, self.sleep = say, clock, sleep
+        self.seq, self.provenance = 0, []
+
+    def __call__(self, role: str) -> hh.QuotaObservation | None:
+        self.seq += 1
+        request = {"seq": self.seq, "role": role, "requestedAt": self.clock().strftime(_STAMP)}
+        tmp = self.requests / ".request.json.tmp"
+        try:
+            tmp.write_text(json.dumps(request, sort_keys=True))
+            os.replace(tmp, self.requests / "request.json")
+        except OSError:
+            self.say("[NC-6] reading request not writable: refused")
+            return None
+        self.say(f"[NC-6] {role}: waiting for the orchestrator's usage reading (request {self.seq})")
+        deadline = self.clock() + DROP_WAIT
+        while self.clock() < deadline:
+            value = self._answer()
+            if type(value) is dict and value.get("seq") == self.seq:
+                return self._observation(value, role)
+            self.sleep(2)
+        self.say("[NC-6] no usage reading in time: refused")
+        return None
+
+    def _closed(self, path: Path, kind) -> bool:
+        info = os.lstat(path)
+        return kind(info.st_mode) and info.st_uid == self.uid and not info.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
+
+    def _answer(self) -> object:
+        path = self.drop / "answer.json"
+        try:
+            if not (self._closed(self.drop, stat.S_ISDIR) and self._closed(path, stat.S_ISREG)):
+                return None
+            raw = path.read_bytes()
+            return json.loads(raw) if len(raw) <= 4096 else None
+        except (OSError, ValueError):
+            return None
+
+    def _observation(self, value: dict, role: str) -> hh.QuotaObservation | None:
+        try:
+            if set(value) != _ANSWER_KEYS or value["source"] != AGENT_SOURCE:
+                raise ValueError
+            observed, five, weekly = (_instant(value[k]) for k in ("observedAt", "fiveHourResetsAt",
+                                                                    "weeklyResetsAt"))
+            now = self.clock()
+            if observed > now or now - observed > t9.FRESHNESS:
+                self.say("[NC-6] usage reading in the future or older than 5 minutes: refused")
+                return None
+            reading = hh.QuotaObservation("claude", int(observed.timestamp()), value["plan"], self.route,
+                                          value["fiveHourPercent"], int(five.timestamp()), value["weeklyPercent"],
+                                          int(weekly.timestamp()), value["extraUsageEnabled"])
+        except (ValueError, TypeError, hh.HostGateError):
+            self.say("[NC-6] usage reading malformed: refused")
+            return None
+        self.provenance.append({"seq": self.seq, "role": role, "source": AGENT_SOURCE,
+                                "observedAt": value["observedAt"]})
+        self.say(f"[NC-6] {role}: 5-hour {value['fiveHourPercent']} %, weekly {value['weeklyPercent']} %, "
+                 f"extra {'y' if value['extraUsageEnabled'] else 'n'} (agent-read, {value['observedAt']})")
+        return reading
+
+
+def _observer(args, ask, say, clock):
+    """The reading source of this attempt: the orchestrator's drop when ``--reading-drop`` names one, else typed."""
+    drop = getattr(args, "reading_drop", None)
+    if not drop:
+        reader = t9.UsageCardReader(ask, say, clock, datetime.now().astimezone().tzinfo)
+        return (lambda role: t8.read_observation(reader, ask, say, role, clock)), None
+    try:
+        uid = pwd.getpwnam(args.operator_account).pw_uid
+    except (KeyError, TypeError):
+        raise t9.AttemptRefused(["reading-drop-operator-unknown"]) from None
+    route = ask("  Route for the whole attempt (type 'subscription' only if no API key or pay-per-use "
+                "applies): ").strip().lower()
+    reader = DropReader(Path(drop), Path(getattr(args, "reading_requests", READING_REQUESTS)), uid, route, say,
+                        clock)
+    return reader, reader
+
+
 # --- the cohort ------------------------------------------------------------------------------
 
 
@@ -383,14 +487,15 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
         raise t9.AttemptRefused(["no-units-requested"])
     plan = a.pending[:count]
     say(f"T014 cohort {args.attempt}: up to {count} serial units ({', '.join(f'{c}/{m}' for c, m in plan)}), one "
-        "small Haiku session each; you type the usage card before and after each.")
+        "small Haiku session each; a usage reading before and after each "
+        f"({'from the orchestrator' if getattr(args, 'reading_drop', None) else 'typed by you'}).")
     if ask(f"Type the attempt name ({args.attempt}) to start, anything else cancels: ").strip() != args.attempt:
         raise t9.AttemptRefused(["operator-cancelled"])
     out_dir = Path(args.out_dir)
     parent_rows = earlier_rows(out_dir.parent)
     write_ledger(out_dir, [], create=True)
-    reader = t9.UsageCardReader(ask, say, clock, datetime.now().astimezone().tzinfo)
-    baseline = t8.read_observation(reader, ask, say, "BASELINE (before the cohort)", clock)
+    observe, drop = _observer(args, ask, say, clock)
+    baseline = observe("BASELINE (before the cohort)")
     if baseline is None:
         raise t9.AttemptRefused(["baseline-reading-refused"])
     run = hh.HostQualificationRun(a.decisions, a.caps, "claude", a.issued.environment_sha256, baseline)
@@ -414,7 +519,7 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
                 environment_sha256=a.issued.environment_sha256, claude_sha256=a.policy.claude_sha256,
                 containment_sha256=backend.qualification.sha256,
                 host_qualification_sha256=backend.host_qualification.sha256)
-            before = t8.read_observation(reader, ask, say, f"BEFORE unit {index + 1} of {count} ({slot})", clock)
+            before = observe(f"BEFORE unit {index + 1} of {count} ({slot})")
             if before is None:
                 stop = "before-reading-refused"
                 break
@@ -435,7 +540,7 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
                     request=hc.ClaudeRequest(session_id=SESSION % (index + int(time.time()) % 10**6), model=tn.MODEL),
                     compatibility=hc.CompatibilityWindow((2, 1, 292), (2, 1, 293)), inventory=inv,
                     attempt_id=attempt_id, before=before,
-                    read_after=lambda: t8.read_observation(reader, ask, say, f"AFTER unit {index + 1}", clock),
+                    read_after=lambda: observe(f"AFTER unit {index + 1}"),
                     now=clock, retention_seconds=3600, settle_now=lambda: int(clock().timestamp()),
                     on_launch=on_launch)
             except (hh.HostGateError, hc.ClaudeHostError, _mac.LabError, hn.NativeWiringError) as exc:
@@ -461,7 +566,8 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
     except BaseException as exc:  # Ctrl-C, SIGTERM-as-exception or a bug: keep the evidence, then re-raise
         stop = f"aborted:{type(exc).__name__}"
         print(json.dumps(_report(args, run, backend, stop, "cohort-aborted", summaries,
-                                 _safe_evaluation(a.registration, parent_rows + rows)), indent=2, sort_keys=True))
+                                 _safe_evaluation(a.registration, parent_rows + rows), drop), indent=2,
+                         sort_keys=True))
         exc.t014_reported = True
         raise
     finally:
@@ -469,7 +575,7 @@ def run_cohort(args, system, *, ask=input, say=print, clock=lambda: datetime.now
         cleanup()
     final = stop or run.stopped
     return _report(args, run, backend, final, "cohort-stopped" if final else "cohort-finished", summaries,
-                   _safe_evaluation(a.registration, parent_rows + rows))
+                   _safe_evaluation(a.registration, parent_rows + rows), drop)
 
 
 def _outcome_of(unit, cell: tn.GradedCell) -> str:
@@ -486,9 +592,12 @@ def _safe_evaluation(registration, rows) -> dict:
                 "executionAuthorization": False}
 
 
-def _report(args, run, backend, stopped, verdict, hosts=(), evaluated=None) -> dict:
+def _report(args, run, backend, stopped, verdict, hosts=(), evaluated=None, drop=None) -> dict:
     host = run.verdict().to_dict()
-    return {"verdict": verdict, "attempt": args.attempt, "units": host["units"], "stopped": stopped,
+    provenance = {"source": "operator-typed"} if drop is None else {"source": AGENT_SOURCE,
+                                                                    "decision": "owner 2026-11-21",
+                                                                    "readings": list(drop.provenance)}
+    return {"readingProvenance": provenance, "verdict": verdict, "attempt": args.attempt, "units": host["units"], "stopped": stopped,
             "hostVerdict": host, "hostRuns": list(hosts), "backendRefusals": t9.refusal_evidence(backend),
             "evaluation": evaluated, "verdictEligible": False, "executionAuthorization": False}
 
@@ -497,6 +606,8 @@ def parser():
     p = t9.parser()
     p.description = "SPEC-049/T014 native cohort driver (Claude profile only)"
     p.add_argument("--units", type=int, default=PLANS["P2"], help="serial units this attempt (capped by the terms)")
+    p.add_argument("--reading-drop", default=READING_DROP,
+                   help="directory of the orchestrator's usage answers; '' asks the operator to type each reading")
     return p
 
 
