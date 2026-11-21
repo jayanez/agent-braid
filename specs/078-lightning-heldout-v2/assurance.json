@@ -146,7 +146,7 @@
               "limits": "Deterministic check through analyze-work and the scorer; no host run has measured the narrowed rule.",
               "outcome": "passed: OK",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_001.json",
-              "sha256": "8cdc58e5893de201db0946294233da79e3cef8a604a2a9e930cc598b79ffe23a"
+              "sha256": "1c59e994143f687a30fe50ead8ab6fb222b9949cc0f794163111905fb638d74a"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_001.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec069_guidance.py DependencyReadRuleTests.",
@@ -194,7 +194,7 @@
               "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_003.json",
-              "sha256": "29e03b6d549adfbebfcd8d0f411d6285dab678f511a852c905f9ab24760feb11"
+              "sha256": "bc64a539ed9dda40ac3a785cb082ee6f29ddfe17eafbcf60b21ccc9bc5af86a1"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_003.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py ReferenceTests.",
@@ -218,7 +218,7 @@
               "limits": "Deterministic check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture. The follower copies the skill's examples, but each rule's meaning is hand-coded: the pins catch removal or rewording of the twelve pinned sentences, not an added sentence that contradicts a rule. It shows the guidance can be satisfied, not that hosts follow it.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_004.json",
-              "sha256": "26c07848d6d21e7790c053caae32a84ba133faad09fa766ef5d9d18e5a25b7d9"
+              "sha256": "ba8da378e5948df6c7b11a4f0295bf5eca7326392ab62d766b72d1d423d3ef0a"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_004.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py LiteralFollowerTests.",
@@ -242,7 +242,7 @@
               "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_005.json",
-              "sha256": "754589789d61d5ac8eac45b2218ab7f013f18f8f8aad13a8df70a2b920414014"
+              "sha256": "08eeaa3e836cf8e50a5049c3e911ae4d3ff65c0ae30587d0f02e5a4aa372e934"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_005.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py NullBaselineTests.",
@@ -397,6 +397,46 @@
         }
       ],
       "text": "BL.2b code stays inside its boundaries."
+    },
+    {
+      "id": "REQ-013",
+      "text": "The analyze skill tells the model never to use units for a parallel question and that aim takes placeholder digests.",
+      "scenarios": [
+        {
+          "id": "SC-013",
+          "given": "the fixed analyze skill",
+          "when": "the kind-selection tests run",
+          "then": "both sentences are present and the analyzer returns what they describe",
+          "test_file": "tests/test_spec078_kind_guidance.py",
+          "test_name": "KindSelectionTests.test_the_sentences_are_in_the_kind_section",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_013.json: command, hashes, environment, expected and actual outcome, negative controls.",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_kind_guidance tests.test_spec069_guidance",
+              "limits": "Text and analyzer behaviour only; whether models follow the sentences is measured by T015 on v3-test.",
+              "outcome": "passed: OK",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_013.json",
+              "sha256": "630cb28fd19c3ddc009f29dcda8ace81797365a06ba6f446b4bea66b36927682"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REQ-014",
+      "text": "The fixed skill A0' is measured once on a fresh frozen v3 test split.",
+      "scenarios": [
+        {
+          "id": "SC-014",
+          "given": "the v3 freeze and the owner's yes for 300 rollouts",
+          "when": "A0' runs on v3-test",
+          "then": "the record holds the same Gate 1 report and the OD-1 verdict",
+          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
+          "test_name": "procedure_014",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_014.json: command, hashes, environment, expected and actual outcome, negative controls.",
+          "obtained_evidence": []
+        }
+      ]
     }
   ],
   "scientific_limits": "One host and model; synthetic project-written prompts; class balance is a design choice; repetitions of one prompt are correlated; results say nothing about real requests, other hosts or analyzer semantics beyond the scorer. Prompts of one template are clustered and splits use disjoint templates; the Gate 2 test comparison pairs against A0 measured at Gate 1, so model drift between runs is not controlled.",
