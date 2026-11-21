@@ -1,6 +1,6 @@
 # SPEC-078: Validation plan
 
-Status (2026-11-20): draft; procedures 001 to 006 and 012 have obtained evidence (T001, T002, T004, T005 runner; Gate 0 passed); procedure_007 follows with the freeze. Deterministic procedures run in CI and locally
+Status (2026-11-20): draft; procedures 001 to 007 and 012 have obtained evidence (T001 to T005; Gate 0 passed; frozen at develop 8ee703db). Deterministic procedures run in CI and locally
 with targeted unit test modules. Real runs (procedure_008, procedure_011) use
 the SPEC-071 runner on the subscription route only and need the owner's yes on
 the stated rollout count. Passing deterministic procedures does not establish

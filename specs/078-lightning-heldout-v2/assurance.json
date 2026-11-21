@@ -284,7 +284,15 @@
         {
           "given": "the frozen protocol and set",
           "id": "SC-007",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.spec078_freeze (on the origin/develop tip 8ee703db) && .venv-speckit/bin/python -m scripts.spec078_freeze --check && .venv-speckit/bin/python -m unittest tests.test_spec078_heldout_v2.FreezeTests",
+              "limits": "The freeze binds bytes, not reviewer intent; no rollout has run. Gate 1 needs the owner's yes on 300 rollouts and SPEC-074 redacted consent.",
+              "outcome": "passed: freeze holds at 8ee703db152316646d5c668c765ad60875effd47; OK",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_007.json",
+              "sha256": "41c0e6f29c18545b2fe88e8500874d74e2c5f1f6e19ef1e7a0067d798d55dc8a"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_007.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_freeze.py FreezeTests.",
           "test_file": "tests/test_spec078_heldout_v2.py",
           "test_name": "FreezeTests.test_any_edited_bound_file_is_refused",
