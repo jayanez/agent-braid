@@ -1,0 +1,112 @@
+{
+ "recordVersion": "0.1.0",
+ "feature": "SPEC-065",
+ "reviewedCommit": "a768e6d31429b9a8b665fd841a0f4a22f3362b42",
+ "reviewer": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "conflictsOfInterest": "The reviewer is the project founder and owner and the NC-9 issuer of the qualification records reviewed here. The review records that role explicitly; it is an internal owner decision, not independent external validation.",
+ "method": "Guided review on 2026-11-21 from a one-page packet: the eleven requirements with the strength of their obtained evidence, the 2026-11-17 issuance on attempt t009-20261117c (32/32 probes), the Codex review triage of 2026-11-18 (T012-01 to T012-19), the residuals R1-R17, and the owner answers on T012-03 for SPEC-048 T008 (2026-11-18), T008-11 and the SPEC-049 T014 T012-03 answer (2026-11-20). A git check showed that spec.md, the frozen harness modules, the T008 and T009 launch scripts, and every bound evidence file are byte-identical between the freeze commit a768e6d3 and develop 26eff08d. Evidence entries 1-15 are hashed at a768e6d3; entries 16-21 were added after the freeze and are hashed at develop 26eff08d.",
+ "humanReview": {
+  "decision": "approved",
+  "date": "2026-11-21",
+  "ownerAnswers": {
+   "decision": "Aprobar con límites (Recomendado)",
+   "limits": "Todos; 01/02/03 obligatorios (Recomendado)",
+   "closure": "Cerrar SPEC-065 (Recomendado)"
+  },
+  "rationale": "Approve SPEC-065 as an engineering specification within its documented scope: one macOS machine (27.2.1 build 26B131), Claude Code 2.1.292, the operator's own Background session, the pinned probe catalog, the subscription route, EUR 0, and the issuance valid until 2026-12-17T22:19:29Z. Accepted limits: (A) config_dir session state is not purged, a deviation from NC-7, so no independence across units or arms is claimed (T012-03); (B) verifier gaps T012-01, T012-02, T012-11, T012-14 and T012-15; (C) quota and expiry timing T012-05, T012-06 and T012-17; (D) effort is never passed, so no effort claim is made (T012-07); (E) residuals R1-R17 and the remaining low findings T012-04, T012-08 to T012-10, T012-12, T012-13, T012-16 and T012-18 stay open; T012-19 (info) needs no change. All fixes are deferred to the next SPEC-065 re-qualification, and T012-01, T012-02 and T012-03 are required in that re-qualification. Three probes (CRED-05, NET-05-CLI, HOST-01) have detector self-test controls only. This approval does not authorize execution, extend the issuance, qualify Codex, or prove general isolation; executionAuthorization stays false."
+ },
+ "milestoneClosure": {
+  "decision": "not-requested",
+  "milestone": "HAR.1 — Braid Harness laboratory (#21)",
+  "rationale": "HAR.1 stays open: other HAR.1 issues remain open and Codex is not qualified. Per owner decision E3 it later closes as native Claude, with Codex pending and tracked by tasks."
+ },
+ "evidence": [
+  {
+   "path": "specs/065-native-claude-containment/spec.md",
+   "sha256": "bced74ca8315f712921e76068f52e1e89297abdd12704597ec96388af0e5007e"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/t015.json",
+   "sha256": "3468892190452a9e27c53ad99dd013b6dad7e0175aca44ca66f31e522bbf41a0"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json",
+   "sha256": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/t009-20261117-result.md",
+   "sha256": "accf33ba001369b0812e7fc2f381548f4c07ab1d0a3273b0a80b0f8b57253c37"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/summary.json",
+   "sha256": "b3ca0913a7cf75648c240f2f9d60bed0302fe87ea520f9fbd7e1105810cd3172"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/quota.json",
+   "sha256": "4292f715934c03bb7ad18abb006c3ebfc7aee57f8939c49f088e7eca716e2227"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/qualification/t009-20261117c/results.jsonl",
+   "sha256": "1a4bb6784a4956595b191034c485c277aeb803b8ec911efb30e2790194e2f5b2"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/founder-decisions-20261117.json",
+   "sha256": "ac14b67b15db9e10749add23a011b3e19979ed21e121017b09011db240913ef6"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/handoff-spec048-t008.md",
+   "sha256": "68af26183dd715cca1b32274052c50a7ab0ff6d35863d103191c3b73c9dcedf4"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/t009-20261113-result.md",
+   "sha256": "361196787beadf16cd451502ececa0581f9cc102a6880ea1b752039956156558"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/t009-20261114-result.md",
+   "sha256": "dee4b6aa78945335cbc1005dd29e66a0af86652f6b1211e1d41d4e8b8bdfde7f"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-13.json",
+   "sha256": "8aa07dd42e77560b548ac35edce05d8f975f8704eeaab4452f2a17238740d510"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-14.json",
+   "sha256": "d70874f4fd36ddf1c43e7de497fcc40ef9537969cfc30deed990a3baa0501414"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/t010.json",
+   "sha256": "e18edf60e1043c0f6f3f976f23bd4990f4954f4ef7ca3a5d3319c836ae15e224"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/probe-catalog-review.md",
+   "sha256": "9abc938f3e3ac96038f65b1e221579fab7f6f1a86d856bab89e19477212c7d8e"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/t012.json",
+   "sha256": "74cb45cbda0f8674a3d9fe2a260a6a22e71d4f9152c6201bc071df86d07bbd90"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/review/codex-t012-20261118.json",
+   "sha256": "cf391707e0ea85b35d6e738a16b5aaa83194ad721d7925b9fdff8cecdeef6261"
+  },
+  {
+   "path": "specs/065-native-claude-containment/evidence/review/codex-t012-20261118.raw.json",
+   "sha256": "02ac175e12c40684fbb62c35a5a1ae85fbc743484b425e330e6afd8e32da8fb3"
+  },
+  {
+   "path": "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261120.json",
+   "sha256": "854272506d8371fd711f7f791e82d4efbb6f0e57f0404262177116f2fa4464eb"
+  },
+  {
+   "path": "specs/049-harness-evaluation-learning/evidence/registration/t014-terms-20261120.json",
+   "sha256": "ef68417637be2c5b881ce95227eb0943ad4fedd98bb5498d1506b910612c68f1"
+  },
+  {
+   "path": "specs/049-harness-evaluation-learning/evidence/registration/t014-profile-decisions-20261120.json",
+   "sha256": "36149af6808b1f71bc869e2d4bddc53002c12cca44e45d40680bf13ae2675806"
+  }
+ ]
+}
