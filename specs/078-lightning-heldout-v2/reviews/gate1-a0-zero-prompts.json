@@ -1,0 +1,14 @@
+{
+ "V2T-005": {
+  "classification": "model",
+  "rationale": "Disjoint writes; the expectation (aim, every pair independent-candidate) is what the analyzer returns for this request. Reps 1 and 3 called analyze-work with kind units, which reports non-overlapping pairs as unknown; rep 2 tried Bash to compute sha256 digests for an aim request, found it disabled and made no analyze-work call. The skill asks for aim on parallel questions."
+ },
+ "V2T-012": {
+  "classification": "model",
+  "rationale": "A shared write plus an unrelated write; the expectation (a/b conflicting, a/c and b/c independent-candidate) is what aim returns. Reps 1 and 2 used kind units, so the two non-overlapping pairs came back unknown; rep 3 tried Bash for digests, found it disabled and answered without a tool result."
+ },
+ "V2T-091": {
+  "classification": "model",
+  "rationale": "A deploy plus two disjoint writes; the expectation (deploy pairs unknown, b/c independent-candidate) is what aim returns. All three reps used kind units, so b/c came back unknown instead of independent-candidate."
+ }
+}

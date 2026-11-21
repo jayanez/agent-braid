@@ -1,0 +1,895 @@
+{
+ "analysis": {
+  "allRepetitionsValid": 88,
+  "od1": "misses",
+  "passing": 95,
+  "perClass": {
+   "chain-plain": {
+    "of": 10,
+    "passing": 10
+   },
+   "chain-read": {
+    "of": 10,
+    "passing": 10
+   },
+   "delete": {
+    "of": 10,
+    "passing": 9
+   },
+   "deploy": {
+    "of": 10,
+    "passing": 8
+   },
+   "disjoint": {
+    "of": 10,
+    "passing": 9
+   },
+   "git": {
+    "of": 10,
+    "passing": 10
+   },
+   "mixed-overlap": {
+    "of": 10,
+    "passing": 10
+   },
+   "partial": {
+    "of": 10,
+    "passing": 10
+   },
+   "read-write": {
+    "of": 10,
+    "passing": 10
+   },
+   "shared-write": {
+    "of": 10,
+    "passing": 9
+   }
+  },
+  "perPrompt": [
+   {
+    "class": "disjoint",
+    "id": "V2T-001",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "disjoint",
+    "id": "V2T-002",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V2T-003",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "disjoint",
+    "id": "V2T-004",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V2T-005",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "disjoint",
+    "id": "V2T-006",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V2T-007",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V2T-008",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V2T-009",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "disjoint",
+    "id": "V2T-010",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V2T-011",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V2T-012",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "shared-write",
+    "id": "V2T-013",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V2T-014",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V2T-015",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V2T-016",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V2T-017",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V2T-018",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V2T-019",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "shared-write",
+    "id": "V2T-020",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V2T-021",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V2T-022",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V2T-023",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V2T-024",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V2T-025",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V2T-026",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V2T-027",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V2T-028",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V2T-029",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "read-write",
+    "id": "V2T-030",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V2T-031",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V2T-032",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "delete",
+    "id": "V2T-033",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V2T-034",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V2T-035",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V2T-036",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V2T-037",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V2T-038",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "delete",
+    "id": "V2T-039",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "delete",
+    "id": "V2T-040",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V2T-041",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V2T-042",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V2T-043",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V2T-044",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V2T-045",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V2T-046",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V2T-047",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V2T-048",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V2T-049",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-read",
+    "id": "V2T-050",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V2T-051",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V2T-052",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V2T-053",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V2T-054",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V2T-055",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V2T-056",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V2T-057",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V2T-058",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V2T-059",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "chain-plain",
+    "id": "V2T-060",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V2T-061",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V2T-062",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V2T-063",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V2T-064",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V2T-065",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V2T-066",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V2T-067",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V2T-068",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V2T-069",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "mixed-overlap",
+    "id": "V2T-070",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V2T-071",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V2T-072",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V2T-073",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V2T-074",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V2T-075",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V2T-076",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V2T-077",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V2T-078",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V2T-079",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "git",
+    "id": "V2T-080",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V2T-081",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V2T-082",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V2T-083",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V2T-084",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V2T-085",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V2T-086",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V2T-087",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V2T-088",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V2T-089",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "partial",
+    "id": "V2T-090",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "deploy",
+    "id": "V2T-091",
+    "of": 3,
+    "passes": false,
+    "valid": 0
+   },
+   {
+    "class": "deploy",
+    "id": "V2T-092",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "deploy",
+    "id": "V2T-093",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "deploy",
+    "id": "V2T-094",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "deploy",
+    "id": "V2T-095",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "deploy",
+    "id": "V2T-096",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "deploy",
+    "id": "V2T-097",
+    "of": 3,
+    "passes": false,
+    "valid": 1
+   },
+   {
+    "class": "deploy",
+    "id": "V2T-098",
+    "of": 3,
+    "passes": true,
+    "valid": 3
+   },
+   {
+    "class": "deploy",
+    "id": "V2T-099",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   },
+   {
+    "class": "deploy",
+    "id": "V2T-100",
+    "of": 3,
+    "passes": true,
+    "valid": 2
+   }
+  ],
+  "prompts": 100,
+  "review": {
+   "V2T-005": {
+    "classification": "model",
+    "rationale": "Disjoint writes; the expectation (aim, every pair independent-candidate) is what the analyzer returns for this request. Reps 1 and 3 called analyze-work with kind units, which reports non-overlapping pairs as unknown; rep 2 tried Bash to compute sha256 digests for an aim request, found it disabled and made no analyze-work call. The skill asks for aim on parallel questions."
+   },
+   "V2T-012": {
+    "classification": "model",
+    "rationale": "A shared write plus an unrelated write; the expectation (a/b conflicting, a/c and b/c independent-candidate) is what aim returns. Reps 1 and 2 used kind units, so the two non-overlapping pairs came back unknown; rep 3 tried Bash for digests, found it disabled and answered without a tool result."
+   },
+   "V2T-091": {
+    "classification": "model",
+    "rationale": "A deploy plus two disjoint writes; the expectation (deploy pairs unknown, b/c independent-candidate) is what aim returns. All three reps used kind units, so b/c came back unknown instead of independent-candidate."
+   }
+  },
+  "trialRate": 0.9333333333333332,
+  "trialRateClusteredSE": 0.020651563939657447,
+  "wilson95": [
+   0.8882480347279118,
+   0.9784566385436864
+  ],
+  "zeroPrompts": [
+   "V2T-005",
+   "V2T-012",
+   "V2T-091"
+  ]
+ },
+ "arm": "A0",
+ "canaryHits": 0,
+ "candidateSha256": [
+  "9ba3424c0aac5697c5c67d5f7e382f6c751e6cda791d36f3faa6145e00703641"
+ ],
+ "endedAt": "2026-11-21T17:33:31Z",
+ "executionAuthorization": false,
+ "failures": [
+  {
+   "reason": "first attempt: a/b is unknown instead of independent-candidate; a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-001.r2"
+  },
+  {
+   "reason": "first attempt: a/b is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-003.r2"
+  },
+  {
+   "reason": "first attempt: a/b is unknown instead of independent-candidate; a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-005.r1"
+  },
+  {
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V2T-005.r2"
+  },
+  {
+   "reason": "first attempt: a/b is unknown instead of independent-candidate; a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-005.r3"
+  },
+  {
+   "reason": "first attempt: a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-012.r1"
+  },
+  {
+   "reason": "first attempt: a/c is unknown instead of independent-candidate; b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-012.r2"
+  },
+  {
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V2T-012.r3"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-032.r1"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-032.r3"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-038.r3"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-091.r1"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-091.r2"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-091.r3"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-092.r1"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-095.r3"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-097.r2"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-097.r3"
+  },
+  {
+   "reason": "first attempt: b/c is unknown instead of independent-candidate",
+   "rolloutId": "claude-code.V2T-099.r3"
+  },
+  {
+   "reason": "analyze-work was not called",
+   "rolloutId": "claude-code.V2T-100.r1"
+  }
+ ],
+ "freezeCommit": "8ee703db152316646d5c668c765ad60875effd47",
+ "frozenFiles": {
+  "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
+  "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "9ba3424c0aac5697c5c67d5f7e382f6c751e6cda791d36f3faa6145e00703641",
+  "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
+  "specs/078-lightning-heldout-v2/evaluation-protocol.md": "3cc9a4ab79c340fd2926ad23295b7d8210cb67c68a99b3da64071428b0d8fce8",
+  "specs/078-lightning-heldout-v2/prompts/feedback.json": "7da4d963090378e5622bbf736e7c982f8a98ee2e6c2f6bcd70ef30885b86c703",
+  "specs/078-lightning-heldout-v2/prompts/test.json": "e65e16a4ae908394c00e0ddb973fe364bd78ba38970167fef57293693524c9cf",
+  "specs/078-lightning-heldout-v2/prompts/validation.json": "60d092aa0eaeaf17a4c28259807cd3bcde83bb7318866fb45182f8efe696029f"
+ },
+ "hostVersions": {
+  "2.1.311 (Claude Code)": 300
+ },
+ "keySources": {
+  "none": 300
+ },
+ "models": {
+  "claude-sonnet-5-5": 300
+ },
+ "promptSet": "v2-test",
+ "promptSetSha256": "e65e16a4ae908394c00e0ddb973fe364bd78ba38970167fef57293693524c9cf",
+ "refusals": {},
+ "rollouts": 300,
+ "runId": "run-20261121T161117Z-e5e22c",
+ "schema": "braid-lightning-v2-gate1/v0.1",
+ "skillSha256": "9ba3424c0aac5697c5c67d5f7e382f6c751e6cda791d36f3faa6145e00703641",
+ "startedAt": "2026-11-21T16:11:33Z",
+ "stops": {},
+ "traceRecords": 300
+}
