@@ -1,0 +1,562 @@
+T014 cohort t014-20261121c: up to 11 serial units (L1-C02-a/B, L1-C02-a/C, L1-C03-a/A, L1-C03-a/B, L1-C03-a/C, L1-C03-b/B, L1-C03-b/C, L1-C03-b/A, L1-C03-c/C, L1-C03-c/A, L1-C03-c/B), one small Haiku session each; a usage reading before and after each (from the orchestrator).
+Type the attempt name (t014-20261121c) to start, anything else cancels:   Route for the whole attempt (type 'subscription' only if no API key or pay-per-use applies): [NC-6] BASELINE (before the cohort): waiting for the orchestrator's usage reading (request 1)
+[NC-6] BASELINE (before the cohort): 5-hour 44 %, weekly 67 %, extra n (agent-read, 2026-11-21T16:54:33Z)
+[NC-6] BEFORE unit 1 of 11 (L1-C02-a:B): waiting for the orchestrator's usage reading (request 2)
+[NC-6] BEFORE unit 1 of 11 (L1-C02-a:B): 5-hour 44 %, weekly 67 %, extra n (agent-read, 2026-11-21T16:54:52Z)
+[NC-6] AFTER unit 1: waiting for the orchestrator's usage reading (request 3)
+[NC-6] AFTER unit 1: 5-hour 44 %, weekly 67 %, extra n (agent-read, 2026-11-21T16:55:13Z)
+[T014] unit 1 L1-C02-a:B: terminal=completed outcome=incorrect
+[NC-6] BEFORE unit 2 of 11 (L1-C02-a:C): waiting for the orchestrator's usage reading (request 4)
+[NC-6] BEFORE unit 2 of 11 (L1-C02-a:C): 5-hour 44 %, weekly 67 %, extra n (agent-read, 2026-11-21T16:55:25Z)
+[NC-6] AFTER unit 2: waiting for the orchestrator's usage reading (request 5)
+[NC-6] AFTER unit 2: 5-hour 44 %, weekly 68 %, extra n (agent-read, 2026-11-21T16:55:43Z)
+[T014] unit 2 L1-C02-a:C: terminal=completed outcome=correct
+{
+  "attempt": "t014-20261121c",
+  "backendRefusals": [
+    {
+      "compileCheck": "exec-denied",
+      "compileExit": {
+        "allowed": 0,
+        "denied": 71
+      },
+      "entry": "launch",
+      "preSessionCheck": [
+        {
+          "expected": "denied",
+          "observed": "denied",
+          "probe": "FS-01"
+        },
+        {
+          "expected": "denied",
+          "observed": "denied",
+          "probe": "NET-01"
+        },
+        {
+          "expected": "denied",
+          "observed": "denied",
+          "probe": "CRED-01"
+        },
+        {
+          "expected": "denied",
+          "observed": "denied",
+          "probe": "PROC-01"
+        },
+        {
+          "expected": "allowed",
+          "observed": "allowed",
+          "probe": "NET-06"
+        }
+      ]
+    }
+  ],
+  "evaluation": {
+    "costs": {
+      "claimBlocked": true
+    },
+    "executionAuthorization": false,
+    "pendingEndpoints": [
+      "interventions",
+      "rework",
+      "interrupted-recovery",
+      "conflict-precision-recall",
+      "false-safe-admissions",
+      "useful-parallelism"
+    ],
+    "registrationSha256": "db55ebfdb432b4e741a600463980a9e51f20f3ebc46485e1456c6ba48a1a21e6",
+    "reportSha256": "e68edad7f0137596e06836915df60c2eaf63d319e912eab585b52cdf72819ea4",
+    "rows": [
+      {
+        "arm": "A",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "incorrect",
+        "terminal": "completed",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "B",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "C",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "A",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-c"
+      },
+      {
+        "arm": "B",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-c"
+      },
+      {
+        "arm": "C",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-c"
+      }
+    ],
+    "strata": {
+      "continuity": {
+        "arms": {
+          "A": {
+            "correctPerRegistered": 1,
+            "correctPerStarted": 1,
+            "interval": {
+              "lowerMicros": 25000,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 1000000
+            },
+            "missingSensitivity": {
+              "lower": 1,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 1,
+              "incorrect": 0,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 1,
+            "terminals": {
+              "completed": 1,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "B": {
+            "correctPerRegistered": 1,
+            "correctPerStarted": 1,
+            "interval": {
+              "lowerMicros": 25000,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 1000000
+            },
+            "missingSensitivity": {
+              "lower": 1,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 1,
+              "incorrect": 0,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 1,
+            "terminals": {
+              "completed": 1,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "C": {
+            "correctPerRegistered": 1,
+            "correctPerStarted": 1,
+            "interval": {
+              "lowerMicros": 25000,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 1000000
+            },
+            "missingSensitivity": {
+              "lower": 1,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 1,
+              "incorrect": 0,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 1,
+            "terminals": {
+              "completed": 1,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          }
+        },
+        "comparisons": {
+          "B-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 1,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 0,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 1,
+            "worseUpperBound": 0
+          },
+          "C-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 1,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 0,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 1,
+            "worseUpperBound": 0
+          }
+        },
+        "lineages": 1,
+        "units": 1
+      },
+      "coordination": {
+        "arms": {
+          "A": {
+            "correctPerRegistered": 0,
+            "correctPerStarted": "undefined",
+            "interval": {
+              "lowerMicros": 0,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 602365
+            },
+            "missingSensitivity": {
+              "lower": 0,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 0,
+              "incorrect": 0,
+              "not-attempted": 4,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 0,
+            "terminals": {
+              "completed": 0,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 4,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "B": {
+            "correctPerRegistered": 0,
+            "correctPerStarted": 0,
+            "interval": {
+              "lowerMicros": 0,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 602365
+            },
+            "missingSensitivity": {
+              "lower": 0,
+              "upper": "3/4"
+            },
+            "outcomes": {
+              "correct": 0,
+              "incorrect": 1,
+              "not-attempted": 3,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 1,
+            "terminals": {
+              "completed": 1,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 3,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "C": {
+            "correctPerRegistered": "1/4",
+            "correctPerStarted": 1,
+            "interval": {
+              "lowerMicros": 6309,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 805880
+            },
+            "missingSensitivity": {
+              "lower": "1/4",
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 1,
+              "incorrect": 0,
+              "not-attempted": 3,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 1,
+            "terminals": {
+              "completed": 1,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 3,
+              "refused": 0,
+              "unobserved": 0
+            }
+          }
+        },
+        "comparisons": {
+          "B-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 0,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 4,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "repeated-within-lineage",
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 4,
+            "worseUpperBound": 4
+          },
+          "C-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 0,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 4,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "repeated-within-lineage",
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 4,
+            "worseUpperBound": 4
+          }
+        },
+        "lineages": 1,
+        "units": 4
+      }
+    },
+    "verdictEligible": false
+  },
+  "executionAuthorization": false,
+  "hostRuns": [
+    {
+      "cancelled": false,
+      "exitCode": 0,
+      "hostModel": "claude-haiku-4-5-20251001",
+      "hostVersion": "2.1.292",
+      "outcome": "incorrect",
+      "outputTruncated": false,
+      "settled": true,
+      "slot": "L1-C02-a:B",
+      "streamErrors": [],
+      "terminal": "completed",
+      "timedOut": false,
+      "transportErrors": [],
+      "unit": 1
+    },
+    {
+      "cancelled": false,
+      "exitCode": 0,
+      "hostModel": "claude-haiku-4-5-20251001",
+      "hostVersion": "2.1.292",
+      "outcome": "correct",
+      "outputTruncated": false,
+      "settled": true,
+      "slot": "L1-C02-a:C",
+      "streamErrors": [],
+      "terminal": "completed",
+      "timedOut": false,
+      "transportErrors": [],
+      "unit": 2
+    }
+  ],
+  "hostVerdict": {
+    "baselineSha256": "12d48c39190d45fd9d0803613d56d7399b5c9477d8d4efc8749f88bbfdbae9b0",
+    "capsRecordSha256": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
+    "decision": "qualification-authorized",
+    "decisionRecordSha256": "36149af6808b1f71bc869e2d4bddc53002c12cca44e45d40680bf13ae2675806",
+    "executionAuthorization": false,
+    "host": "claude",
+    "openUnit": false,
+    "qualified": false,
+    "reason": "qualification-authorized",
+    "stopped": "window-reset",
+    "units": [
+      {
+        "afterSha256": "b6f35f3bd5a98c0b529d2d0e21da50f82ed8bac7d9ee354c5587223ea0656113",
+        "beforeSha256": "ab553a16c13166cb361657f7796261db55b558534aa03da942dee8bac21e57b7",
+        "breach": null,
+        "completed": true,
+        "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+        "fiveHourDelta": 0,
+        "index": 0,
+        "wallSeconds": 19,
+        "weeklyDelta": 0
+      },
+      {
+        "afterSha256": "664fde36942ccba4726ecee825d23efdd3bec2b8c44abc0f1b226475e0320c3b",
+        "beforeSha256": "dd315559092711575cb48ade8dc7d1f6b800555e1c44aca4dd119b1055828a37",
+        "breach": "window-reset",
+        "completed": true,
+        "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+        "fiveHourDelta": null,
+        "index": 1,
+        "wallSeconds": 20,
+        "weeklyDelta": null
+      }
+    ]
+  },
+  "readingProvenance": {
+    "decision": "owner 2026-11-21",
+    "readings": [
+      {
+        "observedAt": "2026-11-21T16:54:33Z",
+        "role": "BASELINE (before the cohort)",
+        "seq": 1,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T16:54:52Z",
+        "role": "BEFORE unit 1 of 11 (L1-C02-a:B)",
+        "seq": 2,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T16:55:13Z",
+        "role": "AFTER unit 1",
+        "seq": 3,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T16:55:25Z",
+        "role": "BEFORE unit 2 of 11 (L1-C02-a:C)",
+        "seq": 4,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T16:55:43Z",
+        "role": "AFTER unit 2",
+        "seq": 5,
+        "source": "desktop-usage-api-agent-read"
+      }
+    ],
+    "source": "desktop-usage-api-agent-read"
+  },
+  "stopped": "window-reset",
+  "units": [
+    {
+      "afterSha256": "b6f35f3bd5a98c0b529d2d0e21da50f82ed8bac7d9ee354c5587223ea0656113",
+      "beforeSha256": "ab553a16c13166cb361657f7796261db55b558534aa03da942dee8bac21e57b7",
+      "breach": null,
+      "completed": true,
+      "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+      "fiveHourDelta": 0,
+      "index": 0,
+      "wallSeconds": 19,
+      "weeklyDelta": 0
+    },
+    {
+      "afterSha256": "664fde36942ccba4726ecee825d23efdd3bec2b8c44abc0f1b226475e0320c3b",
+      "beforeSha256": "dd315559092711575cb48ade8dc7d1f6b800555e1c44aca4dd119b1055828a37",
+      "breach": "window-reset",
+      "completed": true,
+      "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+      "fiveHourDelta": null,
+      "index": 1,
+      "wallSeconds": 20,
+      "weeklyDelta": null
+    }
+  ],
+  "verdict": "cohort-stopped",
+  "verdictEligible": false
+}

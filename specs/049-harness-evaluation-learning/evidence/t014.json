@@ -1,0 +1,203 @@
+{
+  "spec": "SPEC-049",
+  "task": "T014 native cohort (plan P2): arm C frozen from the offline round plus 5 holdout cases x A/B/C on the admitted Claude/Haiku subscription route",
+  "recordedAt": "2026-11-21",
+  "disposition": "Native cohort run to the end of its registered order (15 of 15 slots consumed; 14 units completed and graded, 1 slot lost and counted not-attempted). Descriptive only: one lineage, 5 holdout cases, below the D3 minimum, units not independent. Six endpoints stay pending, costs are claim-blocked, arm D was not run (infeasible). T014 acceptance is not fully met; the task stays open.",
+  "candidateBinding": "Driver, launcher and code copy of develop commit 7b48d6f5cbe5a379194731d7d58c81ee53deca23 (#1467), installed root:wheel under /usr/local/libexec/braid (code copy repo-7b48d6f; scripts/har_t014_cohort.py there is byte-identical to the repository copy). Arms bound by the T014 terms record; the same native registration hash in every attempt report.",
+  "install": {
+    "commit": "7b48d6f5cbe5a379194731d7d58c81ee53deca23",
+    "pullRequest": 1467,
+    "launcher": "/usr/local/libexec/braid/t014-launch.sh",
+    "launcherSha256": "f62abbe2d8bbf6b22b53064533a33d63555880c5bdfb55ae9f979c89dc5c0fb8",
+    "launcherCommitPinned": "7b48d6f5cbe5a379194731d7d58c81ee53deca23",
+    "driver": "scripts/har_t014_cohort.py",
+    "driverSha256": "41fc2cc74b7516bc3bb4cf132e9212db0839a2d81bac12529aa7301ace28960b",
+    "verified": "launcher hash, pinned commit string and driver hash recomputed from the installed files on 2026-11-21"
+  },
+  "inputs": {
+    "specs/049-harness-evaluation-learning/evidence/registration/t014-terms-20261120.json": "ef68417637be2c5b881ce95227eb0943ad4fedd98bb5498d1506b910612c68f1",
+    "specs/049-harness-evaluation-learning/evidence/registration/t014-profile-decisions-20261120.json": "36149af6808b1f71bc869e2d4bddc53002c12cca44e45d40680bf13ae2675806",
+    "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
+    "specs/049-harness-evaluation-learning/evidence/native-admission/t004-admission-20261120.json": "7a1b1a5a18949f54bad47e1805760f1bf917d7b339ae2550eebc1fa17c1d83f3",
+    "specs/049-harness-evaluation-learning/evidence/engineering/t014-readiness.md": "de8e9be834d0552c0ace10578137c666ae024c53338a3fee0a7be3c455ca3e6c"
+  },
+  "bindingsInReports": {
+    "registrationSha256": "db55ebfdb432b4e741a600463980a9e51f20f3ebc46485e1456c6ba48a1a21e6",
+    "capsRecordSha256": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
+    "decisionRecordSha256": "36149af6808b1f71bc869e2d4bddc53002c12cca44e45d40680bf13ae2675806",
+    "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+    "note": "registrationSha256 is identical in the 21a, 21c and 21d reports; capsRecordSha256 and decisionRecordSha256 match the committed records; containmentSha256 matches hostQualificationSha256 of the matched native profile in the terms record."
+  },
+  "ownerTerms": {
+    "source": "evidence/registration/t014-terms-20261120.json (pinned by the driver; recorded in #1444)",
+    "plan": "P2",
+    "unitCap": 16,
+    "window": {"start": "2026-11-20T00:00:00Z", "end": "2026-12-17T22:19:29Z"},
+    "issuance": "SPEC-065 issuance-2026-11-17",
+    "order": "registered Latin-square order (R9), unchanged",
+    "purgeBetweenUnits": false,
+    "arms": {
+      "A": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "B": "4bc36ca01e403f9312a74c7658fb77cea88465fc993875a540eff8974fa36516",
+      "C": "6674a8da7aab284f456a9cefd551ebddbb6546873a809ad6a3db48fedca1f7d9"
+    },
+    "armC": "selected offline on synthetic-control probes, evaluated natively",
+    "armD": "infeasible in this window; not run",
+    "noClaims": [
+      "no cross-unit or cross-arm independence claim (SPEC-065 T012-03)",
+      "no effort-level claim (SPEC-065 T012-07)"
+    ]
+  },
+  "route": {
+    "host": "claude",
+    "hostVersion": "2.1.292",
+    "hostModel": "claude-haiku-4-5-20251001",
+    "requested": {"model": "haiku", "effort": "low", "route": "subscription"},
+    "tools": ["Glob", "Grep", "Read"],
+    "containment": "macos-dedicated-user-sandbox-exec; the two attempts that launched units (21c, 21d) recorded the pre-session probes FS-01, NET-01, CRED-01, PROC-01 denied and NET-06 allowed as expected, and the compile check exec-denied (71 denied, 0 allowed)"
+  },
+  "attempts": [
+    {
+      "label": "t014-20261120a",
+      "report": "evidence/native-t014/run-t014-20261120a.txt",
+      "reportSha256": "84811267ab0c4e980d6424bf7a35943729de85cbff1abb00441d1a518b5af9ad",
+      "verdict": "refused",
+      "reasons": ["baseline-reading-refused"],
+      "unitsStarted": 0,
+      "note": "owner-typed NC-6 baseline card malformed (typed-format refusal); nativeRun false"
+    },
+    {
+      "label": "t014-20261121a",
+      "report": "evidence/native-t014/run-t014-20261121a.txt",
+      "reportSha256": "6d5b47f2ec4d0ae59032948a678ee9390a048c21e4b9d2c0dab0e8b040ad1ceb",
+      "verdict": "cohort-stopped",
+      "stopped": "before-reading-refused",
+      "unitsStarted": 0,
+      "note": "owner-typed NC-6 card before unit 1: reset instants not understood (typed-format refusal); all 15 rows not-attempted"
+    },
+    {
+      "label": "t014-20261121b",
+      "report": null,
+      "reportSha256": null,
+      "verdict": null,
+      "unitsStarted": 4,
+      "slots": {"L1-C01-a:A": "correct", "L1-C01-a:B": "correct", "L1-C01-a:C": "correct", "L1-C02-a:A": "lost (not-attempted)"},
+      "note": "No report: the session was lost when the owner closed the terminal. Not directly observed here (the lab ledger under the dedicated account's home is not readable by the operator account). Derived from the cumulative rows the driver carried into 21c (L1-C01-a A/B/C completed correct before 21c ran) and from the remaining-slot lists (21c offered 11 slots starting at L1-C02-a:B). The lost L1-C02-a:A slot stays consumed and counts toward the cap; it is graded not-attempted and is not re-run (fixed order)."
+    },
+    {
+      "label": "t014-20261121c",
+      "report": "evidence/native-t014/run-t014-20261121c.txt",
+      "reportSha256": "84b0e4e6348d3e34b5056c1d1f733745b28b4cae64556cce7bf112d037d0b000",
+      "verdict": "cohort-stopped",
+      "stopped": "window-reset",
+      "unitsStarted": 2,
+      "units": [
+        {"slot": "L1-C02-a:B", "terminal": "completed", "outcome": "incorrect", "breach": null, "wallSeconds": 19},
+        {"slot": "L1-C02-a:C", "terminal": "completed", "outcome": "correct", "breach": "window-reset", "wallSeconds": 20}
+      ],
+      "hostQualified": false,
+      "cause": "As reported by the native-chain session: sub-second jitter in the agent-read 5-hour reset instant (18:10:00.181 then 18:09:59.929) read as a window reset after unit 2. Fixed on the orchestrator's reading side by rounding reset instants to the minute; the pinned driver is unchanged (byte-identical at 7b48d6f5). Unit 2 completed and was graded; only its usage deltas are unknown."
+    },
+    {
+      "label": "t014-20261121d",
+      "report": "evidence/native-t014/run-t014-20261121d.txt",
+      "reportSha256": "1667306e925e15db7864acdf4c647ef9eb001106a87b1089945ccb53c9a7bcb3",
+      "verdict": "cohort-finished",
+      "stopped": null,
+      "unitsStarted": 9,
+      "units": [
+        {"slot": "L1-C03-a:A", "terminal": "completed", "outcome": "correct"},
+        {"slot": "L1-C03-a:B", "terminal": "completed", "outcome": "correct"},
+        {"slot": "L1-C03-a:C", "terminal": "completed", "outcome": "correct"},
+        {"slot": "L1-C03-b:B", "terminal": "completed", "outcome": "correct"},
+        {"slot": "L1-C03-b:C", "terminal": "completed", "outcome": "correct"},
+        {"slot": "L1-C03-b:A", "terminal": "completed", "outcome": "correct"},
+        {"slot": "L1-C03-c:C", "terminal": "completed", "outcome": "correct"},
+        {"slot": "L1-C03-c:A", "terminal": "completed", "outcome": "correct"},
+        {"slot": "L1-C03-c:B", "terminal": "completed", "outcome": "correct"}
+      ],
+      "breaches": 0,
+      "wallSecondsRange": [17, 20],
+      "hostQualified": true,
+      "note": "9/9 completed, all correct, no breach, no timeout, cancellation, stream or transport error; exit code 0 for every host run"
+    }
+  ],
+  "capAccounting": {
+    "registeredSlots": 15,
+    "unitsStarted": 15,
+    "unitCap": 16,
+    "byAttempt": {"t014-20261120a": 0, "t014-20261121a": 0, "t014-20261121b": 4, "t014-20261121c": 2, "t014-20261121d": 9},
+    "withinCap": true,
+    "slotsRemaining": 0,
+    "basis": "report slot lists (15, 15, 11, 9 offered) and the 21d pre-run dry-run (unitsRemaining 9); the ledger itself was not readable"
+  },
+  "cumulativeEvaluation": {
+    "source": "evaluation block of the 21d report (rows carried across attempts by the driver)",
+    "evaluationReportSha256": "d2646048fc1cdf90cbd758e4aab141edd56a64d0f7cdfc4f5a042e84b295d006",
+    "rows": 15,
+    "outcomes": {"correct": 13, "incorrect": 1, "not-attempted": 1},
+    "incorrect": ["L1-C02-a:B"],
+    "notAttempted": ["L1-C02-a:A (lost 21b slot)"],
+    "strata": {
+      "continuity": {
+        "units": 1,
+        "arms": {"A": "1/1 correct", "B": "1/1 correct", "C": "1/1 correct"},
+        "intervals": "Clopper-Pearson 95% [0.025, 1] for each arm",
+        "pairs": {"B-vs-A": "1 both correct", "C-vs-A": "1 both correct"},
+        "noninferiority": "descriptive-only (below-D3-minimum)"
+      },
+      "coordination": {
+        "units": 4,
+        "arms": {
+          "A": "3 correct, 1 not-attempted (correct per registered 3/4; missing-outcome sensitivity 3/4 to 1; CP 95% [0.194, 0.994])",
+          "B": "3 correct, 1 incorrect (3/4; sensitivity 3/4 to 3/4; CP 95% [0.194, 0.994])",
+          "C": "4 correct (4/4; CP 95% [0.398, 1])"
+        },
+        "pairs": {
+          "B-vs-A": "3 both correct, 1 missing, worse upper bound 1",
+          "C-vs-A": "3 both correct, 1 missing, worse upper bound 1"
+        },
+        "noninferiority": "descriptive-only (repeated-within-lineage, below-D3-minimum)"
+      }
+    },
+    "pendingEndpoints": ["interventions", "rework", "interrupted-recovery", "conflict-precision-recall", "false-safe-admissions", "useful-parallelism"],
+    "costs": {
+      "claimBlocked": true,
+      "cash": "EUR 0 expected on the subscription route (no API key or pay-per-use); no invoice observed",
+      "quota": "usage readings only (not a cost reconciliation): 21c 5-hour 44 to 44 %, weekly 67 to 68 %; 21d 5-hour 48 to 52 %, weekly 68 to 68 %; per-unit 5-hour deltas 0 or 1 point; tokens unknown",
+      "status": "unknown; no cost claim"
+    },
+    "verdictEligible": false,
+    "executionAuthorization": false
+  },
+  "readingProvenance": {
+    "change": "Usage readings for 21c and 21d were read by the orchestrator from the desktop usage API and dropped to the driver (source desktop-usage-api-agent-read), replacing owner-typed NC-6 cards, which caused the 20a and 21a refusals.",
+    "decision": "owner 2026-11-21, \"Yes, automatic\"",
+    "perReport": "each 21c/21d report carries readingProvenance with one entry per reading (21c: 5, 21d: 19); each before-unit reading precedes the same unit's after-unit reading by 17 to 21 seconds, well within the 5-minute freshness bound",
+    "labConfig": "To pass the dry-run check config-dir-small, the lab config directory's projects/ subdirectory was moved (not deleted) to /Users/braidlab/archive-projects-20261121 (as reported by the native-chain session; not readable from the operator account). The 21d dry-run reports config-dir-small ok (17 entries, 66641 bytes)."
+  },
+  "notMeasured": [
+    "One lineage (L1) with 5 holdout cases: descriptive only under D3; no utility, superiority or noninferiority claim.",
+    "Read-only sessions answer a described checkpoint task: continuity measures guidance-following on a described checkpoint, not real long-task recovery.",
+    "The frozen fixture oracles grade only steps done / none repeated; interventions, rework, interrupted recovery, conflict precision and recall, false safe admissions and useful parallelism stay pending on this roster.",
+    "No correction or review effort measured; no effort-level claim (T012-07).",
+    "No cost reconciliation: costs are claim-blocked; usage percentages are quota readings, not costs.",
+    "Units are not independent (no purge, one config dir, T012-03); arm C was selected offline on synthetic-control probes, so any arm-C difference is not an arm-C effect claim.",
+    "Arm D (library ablation) was not run: infeasible in this window."
+  ],
+  "publication": "The four attempt reports are copied byte-exact from /Users/Shared/braid-t014-lab/. They hold driver prompts, NC-6 readings and verdict JSON only: no assistant text, no host output, no credentials and no local paths (checked by key inventory and pattern search). auth.txt, request.json and dry-run.json in the lab directory are not published.",
+  "limits": [
+    "Descriptive only: one lineage, 5 holdout cases, below the D3 minimum.",
+    "This record does not authorize execution, promotion, native adoption or any further native unit; executionAuthorization false.",
+    "The 21b attempt has no report; its four slots are derived from carried rows, not directly observed.",
+    "The 21c cause and its fix, and the projects/ archive move, are as reported by the native-chain session and were not independently observed here."
+  ],
+  "pending": [
+    "Six endpoints pending (listed above); costs claim-blocked; arm D infeasible.",
+    "evaluation-report.md not updated by this record.",
+    "Independent review and owner disposition under D7 (an inconclusive T014 is a valid result)."
+  ],
+  "executionAuthorization": false,
+  "nativeAdmission": false,
+  "promotionAuthorization": false
+}

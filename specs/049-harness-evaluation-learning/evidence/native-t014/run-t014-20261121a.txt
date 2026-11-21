@@ -1,0 +1,406 @@
+T014 cohort t014-20261121a: up to 15 serial units (L1-C01-a/A, L1-C01-a/B, L1-C01-a/C, L1-C02-a/A, L1-C02-a/B, L1-C02-a/C, L1-C03-a/A, L1-C03-a/B, L1-C03-a/C, L1-C03-b/B, L1-C03-b/C, L1-C03-b/A, L1-C03-c/C, L1-C03-c/A, L1-C03-c/B), one small Haiku session each; you type the usage card before and after each.
+Type the attempt name (t014-20261121a) to start, anything else cancels: 
+[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, BASELINE (before the cohort) this session. The reading must be no older than 5 minutes when you answer.
+  5-hour window used (0-100, as shown on the card):   Weekly used (0-100):   Extra usage enabled? (y/n):   Time you read the card (HH:MM or HH:MM:SS 24h local, or 'now'):   5-hour window resets at (local HH:MM as on the card):   Weekly window resets at (local YYYY-MM-DD HH:MM):   Plan on the card (max/pro/team, lower case):   Route (type 'subscription' only if no API key or pay-per-use applies): 
+[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, BEFORE unit 1 of 15 (L1-C01-a:A) this session. The reading must be no older than 5 minutes when you answer.
+  5-hour window used (0-100, as shown on the card):   Weekly used (0-100):   Extra usage enabled? (y/n):   Time you read the card (HH:MM or HH:MM:SS 24h local, or 'now'):   5-hour window resets at (local HH:MM as on the card):   Weekly window resets at (local YYYY-MM-DD HH:MM):   Plan on the card (max/pro/team, lower case):   Route (type 'subscription' only if no API key or pay-per-use applies): [T008] reset instants not understood: reading refused
+{
+  "attempt": "t014-20261121a",
+  "backendRefusals": [],
+  "evaluation": {
+    "costs": {
+      "claimBlocked": true
+    },
+    "executionAuthorization": false,
+    "pendingEndpoints": [
+      "interventions",
+      "rework",
+      "interrupted-recovery",
+      "conflict-precision-recall",
+      "false-safe-admissions",
+      "useful-parallelism"
+    ],
+    "registrationSha256": "db55ebfdb432b4e741a600463980a9e51f20f3ebc46485e1456c6ba48a1a21e6",
+    "reportSha256": "501fe817a8ac69ed828477b38b42ec81987779b967f16a62fb77969c307b100b",
+    "rows": [
+      {
+        "arm": "A",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "B",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "C",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "A",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-c"
+      },
+      {
+        "arm": "B",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-c"
+      },
+      {
+        "arm": "C",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C03-c"
+      }
+    ],
+    "strata": {
+      "continuity": {
+        "arms": {
+          "A": {
+            "correctPerRegistered": 0,
+            "correctPerStarted": "undefined",
+            "interval": {
+              "lowerMicros": 0,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 975000
+            },
+            "missingSensitivity": {
+              "lower": 0,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 0,
+              "incorrect": 0,
+              "not-attempted": 1,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 0,
+            "terminals": {
+              "completed": 0,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 1,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "B": {
+            "correctPerRegistered": 0,
+            "correctPerStarted": "undefined",
+            "interval": {
+              "lowerMicros": 0,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 975000
+            },
+            "missingSensitivity": {
+              "lower": 0,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 0,
+              "incorrect": 0,
+              "not-attempted": 1,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 0,
+            "terminals": {
+              "completed": 0,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 1,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "C": {
+            "correctPerRegistered": 0,
+            "correctPerStarted": "undefined",
+            "interval": {
+              "lowerMicros": 0,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 975000
+            },
+            "missingSensitivity": {
+              "lower": 0,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 0,
+              "incorrect": 0,
+              "not-attempted": 1,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 0,
+            "terminals": {
+              "completed": 0,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 1,
+              "refused": 0,
+              "unobserved": 0
+            }
+          }
+        },
+        "comparisons": {
+          "B-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 0,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 1,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 1,
+            "worseUpperBound": 1
+          },
+          "C-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 0,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 1,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 1,
+            "worseUpperBound": 1
+          }
+        },
+        "lineages": 1,
+        "units": 1
+      },
+      "coordination": {
+        "arms": {
+          "A": {
+            "correctPerRegistered": 0,
+            "correctPerStarted": "undefined",
+            "interval": {
+              "lowerMicros": 0,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 602365
+            },
+            "missingSensitivity": {
+              "lower": 0,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 0,
+              "incorrect": 0,
+              "not-attempted": 4,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 0,
+            "terminals": {
+              "completed": 0,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 4,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "B": {
+            "correctPerRegistered": 0,
+            "correctPerStarted": "undefined",
+            "interval": {
+              "lowerMicros": 0,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 602365
+            },
+            "missingSensitivity": {
+              "lower": 0,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 0,
+              "incorrect": 0,
+              "not-attempted": 4,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 0,
+            "terminals": {
+              "completed": 0,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 4,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "C": {
+            "correctPerRegistered": 0,
+            "correctPerStarted": "undefined",
+            "interval": {
+              "lowerMicros": 0,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 602365
+            },
+            "missingSensitivity": {
+              "lower": 0,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 0,
+              "incorrect": 0,
+              "not-attempted": 4,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 0,
+            "terminals": {
+              "completed": 0,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 4,
+              "refused": 0,
+              "unobserved": 0
+            }
+          }
+        },
+        "comparisons": {
+          "B-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 0,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 4,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "repeated-within-lineage",
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 4,
+            "worseUpperBound": 4
+          },
+          "C-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 0,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 4,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "repeated-within-lineage",
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 4,
+            "worseUpperBound": 4
+          }
+        },
+        "lineages": 1,
+        "units": 4
+      }
+    },
+    "verdictEligible": false
+  },
+  "executionAuthorization": false,
+  "hostRuns": [],
+  "hostVerdict": {
+    "baselineSha256": "2bff6c3111b9edd53701af62308d957add7293e57547f48dcf6667f532298b18",
+    "capsRecordSha256": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
+    "decision": "qualification-authorized",
+    "decisionRecordSha256": "36149af6808b1f71bc869e2d4bddc53002c12cca44e45d40680bf13ae2675806",
+    "executionAuthorization": false,
+    "host": "claude",
+    "openUnit": false,
+    "qualified": false,
+    "reason": "qualification-authorized",
+    "stopped": null,
+    "units": []
+  },
+  "stopped": "before-reading-refused",
+  "units": [],
+  "verdict": "cohort-stopped",
+  "verdictEligible": false
+}

@@ -1,0 +1,13 @@
+T014 cohort t014-20261120a: up to 15 serial units (L1-C01-a/A, L1-C01-a/B, L1-C01-a/C, L1-C02-a/A, L1-C02-a/B, L1-C02-a/C, L1-C03-a/A, L1-C03-a/B, L1-C03-a/C, L1-C03-b/B, L1-C03-b/C, L1-C03-b/A, L1-C03-c/C, L1-C03-c/A, L1-C03-c/B), one small Haiku session each; you type the usage card before and after each.
+Type the attempt name (t014-20261120a) to start, anything else cancels: 
+[NC-6] Read the usage card (5-hour and weekly usage; claude.ai Usage or the phone) now, BASELINE (before the cohort) this session. The reading must be no older than 5 minutes when you answer.
+  5-hour window used (0-100, as shown on the card):   Weekly used (0-100):   Extra usage enabled? (y/n):   Time you read the card (HH:MM or HH:MM:SS 24h local, or 'now'):   5-hour window resets at (local HH:MM as on the card):   Weekly window resets at (local YYYY-MM-DD HH:MM):   Plan on the card (max/pro/team, lower case):   Route (type 'subscription' only if no API key or pay-per-use applies): [T008] reading malformed: refused
+{
+  "details": {},
+  "executionAuthorization": false,
+  "nativeRun": false,
+  "reasons": [
+    "baseline-reading-refused"
+  ],
+  "verdict": "refused"
+}
