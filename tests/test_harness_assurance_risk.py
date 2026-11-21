@@ -348,5 +348,45 @@ class DeterminismTests(unittest.TestCase):
         self.assertEqual(loaded, impact("agent_braid/cli.py", "README.md"))
 
 
+
+class C67ReReviewFindingTests(unittest.TestCase):
+    """SPEC-067 T011 Codex re-review findings (evidence/review/codex-t011-20261121.json)."""
+
+    def test_below_floor_profile_is_refused_by_compilation_and_verification(self):  # C67-012
+        strict = ha.preset("strict")
+        genuine_cls = classify(["README.md"], 10, strict)
+        genuine = ha.compile_artifact(strict, None, genuine_cls)
+        for kw in ({"raiseTo": "R2"}, {"modeAtLeast": "notify"}):
+            bad = with_rule(copy.deepcopy(strict), match={"paths": ["docs/**"], "minChangedLines": 0}, **kw)
+            for call in (lambda: ha.compile_artifact(bad, None, genuine_cls),
+                         lambda: ha.verify_artifact(genuine, bad, None, genuine_cls),
+                         lambda: risk.check_profile_binding(bad, genuine_cls)):
+                with self.assertRaises(ha.AssuranceError) as ctx:
+                    call()
+                self.assertEqual(ctx.exception.reason, "invalid-risk-rule")
+
+    def test_wildcard_prefix_before_double_star_matches(self):  # C67-013
+        profile = with_rule(ha.preset("standard"), match={"paths": ["docs/*/**"], "minChangedLines": 0})
+        for path in ("docs/guides/example.md", "docs/guides/deep/x.md", "docs/guides"):
+            self.assertEqual(classify([path], 10, profile)["raiseDepthTo"], "R3", path)
+        for path in ("docs", "README.md", "notes/guides/a.md"):
+            self.assertIsNone(classify([path], 10, profile)["raiseDepthTo"], path)
+        plain = with_rule(ha.preset("standard"), match={"paths": ["docs/**"], "minChangedLines": 0})
+        for path in ("docs", "docs/x.md", "docs/a/b.md"):
+            self.assertEqual(classify([path], 10, plain)["raiseDepthTo"], "R3", path)
+        self.assertIsNone(classify(["docsx/a.md"], 10, plain)["raiseDepthTo"])
+
+    def test_operator_rule_named_sensitive_path_keeps_a_docs_only_diff_valid(self):  # C67-015
+        profile = with_rule(ha.preset("standard"), id="sensitive-path",
+                            match={"paths": ["docs/x.md"], "minChangedLines": 0})
+        cls = classify(["docs/x.md"], 10, profile)
+        self.assertTrue(cls["docsOnly"])
+        self.assertEqual(ha.compile_artifact(profile, None, cls)["reviews"]["depth"], "R3")
+        forged = dict(cls, reasons=sorted([*cls["reasons"], dict(risk.SENSITIVE_REASON)], key=risk._reason_key))
+        with self.assertRaises(ha.AssuranceError) as ctx:  # the canonical reason still forbids docs-only
+            ha.compile_artifact(profile, None, forged)
+        self.assertEqual(ctx.exception.reason, "invalid-diff-summary")
+
+
 if __name__ == "__main__":
     unittest.main()

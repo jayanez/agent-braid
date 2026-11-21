@@ -57,6 +57,7 @@ RECEIPT_REASONS = (
     "profile-mismatch", "depth-below-effective", "mode-below-effective", "mode-mismatch", "mode-source-mismatch",
     "fallback-reason-invalid", "command-without-exit-code", "approval-mismatch", "review-missing",
     "independent-reviews-insufficient", "checkpoint-mismatch", "invalid-authorization", "invalid-time", "unknown-checkpoint",
+    "depth-source-mismatch",
 )
 MAX_ITEMS = 64
 MAX_TEXT = 1024
@@ -119,6 +120,7 @@ def build_authorization(*, id: str, checkpoint: str, repository: str, branch_pat
                         expires_at: str, issuer: str, owner_statement: str,
                         revoked_at: str | None = None) -> dict[str, Any]:
     """The hashed standing-authorization record; validity is decided by ``evaluate_standing``, not here."""
+    _require(type(owner_statement) is not str or _utf8(owner_statement), "invalid-authorization")
     return _sealed({
         "schema": AUTHORIZATION_FORMAT, "id": id, "checkpoint": checkpoint, "repository": repository,
         "branchPattern": branch_pattern, "conditions": list(CONDITIONS), "issuedAt": issued_at,
@@ -339,6 +341,8 @@ def _verify_against(receipt: Mapping[str, Any], artifact: Mapping[str, Any], che
     _require((receipt["depth"] is None) == (effective_depth is None) and (
         effective_depth is None or DEPTHS.index(receipt["depth"]) >= DEPTHS.index(effective_depth)),
         "depth-below-effective")
+    if receipt["depth"] == effective_depth:  # at the effective depth the source is the compiled one
+        _require(receipt["depthSource"] == row.get("depthSource"), "depth-source-mismatch")
     _check_mode(receipt, row)
     if receipt["checkpoint"] == DEPTH_CHECKPOINT:
         _check_reviews(receipt, artifact)

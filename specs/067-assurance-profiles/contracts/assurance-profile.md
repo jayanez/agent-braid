@@ -69,7 +69,11 @@ any content that differs from a fresh compilation of the inputs
 (`input-hash-mismatch`). Compilation refuses a classification whose reasons the
 profile would not derive from its paths and changed-line count, apart from the
 impact-dependent `sensitive-path` reason (`invalid-diff-summary`), so a
-classification computed under another profile does not compile.
+classification computed under another profile does not compile; a profile whose
+rule is below its own `pre-pr-review` depth or mode is refused there as by the
+classifier (`invalid-risk-rule`). A path glob ending in `/**` matches the
+directory its prefix glob names and everything below it (`docs/*/**` matches
+`docs/guides/example.md`).
 
 ## Receipt (`braid-harness-gate-receipt/v0.1`)
 
@@ -85,7 +89,9 @@ and digest, refuses an artifact that is not exactly what those inputs compile to
 (`invalid-artifact`; a re-sealed, self-consistent artifact is not trusted), then
 checks commit binding, that `profileDigest` and `riskClass` equal the verified
 artifact's, the REQ-003 human-only checkpoints at `human-only` with a human
-approval whatever the artifact says, depth not below the effective depth, every
+approval whatever the artifact says, depth not below the effective depth and, at
+the effective depth, `depthSource` equal to the compiled one
+(`depth-source-mismatch`), every
 required review present, every command with an exit code, and that approvals
 match the mode. The digest detects
 inconsistent edits only; receipts live in an operator-owned store written by the

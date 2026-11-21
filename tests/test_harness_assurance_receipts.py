@@ -522,10 +522,11 @@ class C67ReviewFindingTests(unittest.TestCase):
             refused(self, "mode-below-effective",
                     receipt(forged, checkpoint="release", author="agent-x", approvals=[]), art=forged,
                     inputs=inputs_of(art))
-            for checkpoint in ha.HUMAN_ONLY:
-                r = receipt(art, checkpoint=checkpoint, approvals=[])
-                refused(self, "approval-mismatch", r, art=art)
-                verify(receipt(art, checkpoint=checkpoint), art)
+            # C67-018: with the mode check also bypassed, only the floor guard can refuse the missing approval
+            with mock.patch.object(rc, "_check_mode", lambda *a, **k: None):
+                for checkpoint in ha.HUMAN_ONLY:
+                    refused(self, "approval-mismatch", receipt(art, checkpoint=checkpoint, approvals=[]), art=art)
+                    verify(receipt(art, checkpoint=checkpoint), art)
 
     def test_lone_surrogate_in_the_owner_statement_is_an_invalid_record(self):
         record = {**authorization(), "ownerStatement": "ok\ud800"}
@@ -533,6 +534,26 @@ class C67ReviewFindingTests(unittest.TestCase):
                          {"mode": "approve-each", "authorization": None, "fallbackReason": "invalid-record"})
         record = {**record, "digest": "0" * 64}
         self.assertEqual(evaluate(record)["fallbackReason"], "invalid-record")
+
+
+class C67ReReviewFindingTests(unittest.TestCase):
+    """SPEC-067 T011 Codex re-review findings (evidence/review/codex-t011-20261121.json)."""
+
+    def test_depth_source_at_the_effective_depth_is_bound(self):  # C67-014
+        art = artifact(paths=("docs/x.md",), lines=401)
+        r = receipt(art)
+        self.assertEqual((r["depth"], r["depthSource"]), ("R3", "risk"))
+        verify(r, art)
+        refused(self, "depth-source-mismatch", resealed(r, depthSource="repository"), art=art)
+        above = resealed(r, depth="R4", depthSource="repository", reviews=reviews_for(at_depth("R4")))
+        with self.assertRaises(rc.ReceiptError) as ctx:  # above the effective depth the source is not compared
+            verify(above, art)
+        self.assertNotEqual(ctx.exception.reason, "depth-source-mismatch")
+
+    def test_builder_refuses_a_lone_surrogate_owner_statement(self):  # C67-016
+        with self.assertRaises(rc.ReceiptError) as ctx:
+            authorization(owner_statement="ok\ud800")
+        self.assertEqual(ctx.exception.reason, "invalid-authorization")
 
 
 if __name__ == "__main__":
