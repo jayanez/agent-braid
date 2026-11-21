@@ -494,6 +494,11 @@ shared object store fails the portable-root check).
   host and partial effects refuse. The SPEC-048/T008 driver (`scripts/har_t008_unit.py`) now trusts only this record,
   through `specs/048-harness-variant-laboratory/evidence/founder-decisions-20261117.json`. `executionAuthorization`
   false.
+  Progress 2026-11-21 (issuance in use, no re-qualification): the 2026-11-17 record served SPEC-048/T008 (cohort
+  `t008-20261120a`, 2 of 2 units, task closed) and SPEC-049/T014 (attempts `t014-20261121b`, `t014-20261121c`,
+  `t014-20261121d`: 15 of 15 cohort slots started, no breach; evidence `specs/049-harness-evaluation-learning/evidence/t014.json`,
+  #1472). The T014 driver changed only in `scripts/har_t014_cohort.py` (#1467, usage readings agent-read); no
+  environment-hash input changed, so this issuance still applies until `expiresAt`. `executionAuthorization` false.
 
 ## Unblocking map
 

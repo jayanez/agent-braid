@@ -2,7 +2,7 @@
 
 **Milestone:** HAR.1 — Braid Harness laboratory
 
-**Status:** draft; owner confirmed planning direction on 2026-10-20. Implementation, architectural adoption, native qualification and human acceptance remain pending.
+**Status:** draft; owner confirmed planning direction on 2026-10-20. All 15 tasks are done (2026-11-21): the offline laboratory is implemented and reviewed, and T008 closed on 2026-11-20 with the Claude profile qualified with limits (founder T008-11) through SPEC-065; Codex native qualification is not done. Human acceptance of the feature remains pending.
 
 ## Purpose and scope
 

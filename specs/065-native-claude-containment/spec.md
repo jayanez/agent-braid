@@ -2,15 +2,12 @@
 
 **Track:** HAR (unblocks SPEC-048/T008 for the Claude profile, then SPEC-049/T004)
 
-**Status:** draft; implementation in progress. T003 (native manifest profile),
-T004 (quota gate), T005 (macOS containment backend), T006 (native
-transport) and T007 (probe catalog and runner) are implemented at unit level; T008
-(independent review) is done, its fixes landed (#979) and the mini delta re-check
-gave GO for engineering readiness only (#985); ADR 0035 (T002) is accepted by the
-founder (2026-11-02). T009 awaits the founder go; nothing is qualified or authorized. The founder decided every security choice (NC-1 to NC-11) and F5 is
-bound, in the [founder decision record](evidence/founder-decisions-20261031.json)
-(T001, 2026-10-31). The decisions authorize no execution, qualification or
-native session.
+**Status:** draft; all 15 tasks are done (2026-11-21). The current qualification is the
+2026-11-17 issuance (T015, attempt `t009-20261117c`, `expiresAt` 2026-12-17T22:19:29Z) for one machine, OS
+build and Claude CLI version; it served SPEC-048/T008 and SPEC-049/T014. ADR 0035 (T002) is accepted by the
+founder (2026-11-02), and the founder decided every security choice (NC-1 to NC-11) in the
+[founder decision record](evidence/founder-decisions-20261031.json) (T001, 2026-10-31). Nothing here authorizes
+execution (`executionAuthorization` false); human acceptance of the feature remains pending.
 
 ## Purpose and scope
 
