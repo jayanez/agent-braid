@@ -1,0 +1,940 @@
+T014 cohort t014-20261121d: up to 9 serial units (L1-C03-a/A, L1-C03-a/B, L1-C03-a/C, L1-C03-b/B, L1-C03-b/C, L1-C03-b/A, L1-C03-c/C, L1-C03-c/A, L1-C03-c/B), one small Haiku session each; a usage reading before and after each (from the orchestrator).
+Type the attempt name (t014-20261121d) to start, anything else cancels:   Route for the whole attempt (type 'subscription' only if no API key or pay-per-use applies): [NC-6] BASELINE (before the cohort): waiting for the orchestrator's usage reading (request 1)
+[NC-6] BASELINE (before the cohort): 5-hour 48 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:01:51Z)
+[NC-6] BEFORE unit 1 of 9 (L1-C03-a:A): waiting for the orchestrator's usage reading (request 2)
+[NC-6] BEFORE unit 1 of 9 (L1-C03-a:A): 5-hour 48 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:02:04Z)
+[NC-6] AFTER unit 1: waiting for the orchestrator's usage reading (request 3)
+[NC-6] AFTER unit 1: 5-hour 48 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:02:23Z)
+[T014] unit 1 L1-C03-a:A: terminal=completed outcome=correct
+[NC-6] BEFORE unit 2 of 9 (L1-C03-a:B): waiting for the orchestrator's usage reading (request 4)
+[NC-6] BEFORE unit 2 of 9 (L1-C03-a:B): 5-hour 48 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:02:34Z)
+[NC-6] AFTER unit 2: waiting for the orchestrator's usage reading (request 5)
+[NC-6] AFTER unit 2: 5-hour 49 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:02:54Z)
+[T014] unit 2 L1-C03-a:B: terminal=completed outcome=correct
+[NC-6] BEFORE unit 3 of 9 (L1-C03-a:C): waiting for the orchestrator's usage reading (request 6)
+[NC-6] BEFORE unit 3 of 9 (L1-C03-a:C): 5-hour 49 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:03:06Z)
+[NC-6] AFTER unit 3: waiting for the orchestrator's usage reading (request 7)
+[NC-6] AFTER unit 3: 5-hour 49 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:03:23Z)
+[T014] unit 3 L1-C03-a:C: terminal=completed outcome=correct
+[NC-6] BEFORE unit 4 of 9 (L1-C03-b:B): waiting for the orchestrator's usage reading (request 8)
+[NC-6] BEFORE unit 4 of 9 (L1-C03-b:B): 5-hour 49 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:03:34Z)
+[NC-6] AFTER unit 4: waiting for the orchestrator's usage reading (request 9)
+[NC-6] AFTER unit 4: 5-hour 50 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:03:54Z)
+[T014] unit 4 L1-C03-b:B: terminal=completed outcome=correct
+[NC-6] BEFORE unit 5 of 9 (L1-C03-b:C): waiting for the orchestrator's usage reading (request 10)
+[NC-6] BEFORE unit 5 of 9 (L1-C03-b:C): 5-hour 50 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:04:06Z)
+[NC-6] AFTER unit 5: waiting for the orchestrator's usage reading (request 11)
+[NC-6] AFTER unit 5: 5-hour 50 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:04:25Z)
+[T014] unit 5 L1-C03-b:C: terminal=completed outcome=correct
+[NC-6] BEFORE unit 6 of 9 (L1-C03-b:A): waiting for the orchestrator's usage reading (request 12)
+[NC-6] BEFORE unit 6 of 9 (L1-C03-b:A): 5-hour 50 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:04:37Z)
+[NC-6] AFTER unit 6: waiting for the orchestrator's usage reading (request 13)
+[NC-6] AFTER unit 6: 5-hour 51 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:04:58Z)
+[T014] unit 6 L1-C03-b:A: terminal=completed outcome=correct
+[NC-6] BEFORE unit 7 of 9 (L1-C03-c:C): waiting for the orchestrator's usage reading (request 14)
+[NC-6] BEFORE unit 7 of 9 (L1-C03-c:C): 5-hour 51 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:05:10Z)
+[NC-6] AFTER unit 7: waiting for the orchestrator's usage reading (request 15)
+[NC-6] AFTER unit 7: 5-hour 51 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:05:28Z)
+[T014] unit 7 L1-C03-c:C: terminal=completed outcome=correct
+[NC-6] BEFORE unit 8 of 9 (L1-C03-c:A): waiting for the orchestrator's usage reading (request 16)
+[NC-6] BEFORE unit 8 of 9 (L1-C03-c:A): 5-hour 51 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:05:41Z)
+[NC-6] AFTER unit 8: waiting for the orchestrator's usage reading (request 17)
+[NC-6] AFTER unit 8: 5-hour 52 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:06:01Z)
+[T014] unit 8 L1-C03-c:A: terminal=completed outcome=correct
+[NC-6] BEFORE unit 9 of 9 (L1-C03-c:B): waiting for the orchestrator's usage reading (request 18)
+[NC-6] BEFORE unit 9 of 9 (L1-C03-c:B): 5-hour 52 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:06:13Z)
+[NC-6] AFTER unit 9: waiting for the orchestrator's usage reading (request 19)
+[NC-6] AFTER unit 9: 5-hour 52 %, weekly 68 %, extra n (agent-read, 2026-11-21T17:06:32Z)
+[T014] unit 9 L1-C03-c:B: terminal=completed outcome=correct
+{
+  "attempt": "t014-20261121d",
+  "backendRefusals": [
+    {
+      "compileCheck": "exec-denied",
+      "compileExit": {
+        "allowed": 0,
+        "denied": 71
+      },
+      "entry": "launch",
+      "preSessionCheck": [
+        {
+          "expected": "denied",
+          "observed": "denied",
+          "probe": "FS-01"
+        },
+        {
+          "expected": "denied",
+          "observed": "denied",
+          "probe": "NET-01"
+        },
+        {
+          "expected": "denied",
+          "observed": "denied",
+          "probe": "CRED-01"
+        },
+        {
+          "expected": "denied",
+          "observed": "denied",
+          "probe": "PROC-01"
+        },
+        {
+          "expected": "allowed",
+          "observed": "allowed",
+          "probe": "NET-06"
+        }
+      ]
+    }
+  ],
+  "evaluation": {
+    "costs": {
+      "claimBlocked": true
+    },
+    "executionAuthorization": false,
+    "pendingEndpoints": [
+      "interventions",
+      "rework",
+      "interrupted-recovery",
+      "conflict-precision-recall",
+      "false-safe-admissions",
+      "useful-parallelism"
+    ],
+    "registrationSha256": "db55ebfdb432b4e741a600463980a9e51f20f3ebc46485e1456c6ba48a1a21e6",
+    "reportSha256": "d2646048fc1cdf90cbd758e4aab141edd56a64d0f7cdfc4f5a042e84b295d006",
+    "rows": [
+      {
+        "arm": "A",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C01-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "not-attempted",
+        "terminal": "not-attempted",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "incorrect",
+        "terminal": "completed",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C02-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "B",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "C",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-a"
+      },
+      {
+        "arm": "A",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "B",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "C",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-b"
+      },
+      {
+        "arm": "A",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-c"
+      },
+      {
+        "arm": "B",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-c"
+      },
+      {
+        "arm": "C",
+        "outcome": "correct",
+        "terminal": "completed",
+        "unitId": "L1-C03-c"
+      }
+    ],
+    "strata": {
+      "continuity": {
+        "arms": {
+          "A": {
+            "correctPerRegistered": 1,
+            "correctPerStarted": 1,
+            "interval": {
+              "lowerMicros": 25000,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 1000000
+            },
+            "missingSensitivity": {
+              "lower": 1,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 1,
+              "incorrect": 0,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 1,
+            "terminals": {
+              "completed": 1,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "B": {
+            "correctPerRegistered": 1,
+            "correctPerStarted": 1,
+            "interval": {
+              "lowerMicros": 25000,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 1000000
+            },
+            "missingSensitivity": {
+              "lower": 1,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 1,
+              "incorrect": 0,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 1,
+            "terminals": {
+              "completed": 1,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "C": {
+            "correctPerRegistered": 1,
+            "correctPerStarted": 1,
+            "interval": {
+              "lowerMicros": 25000,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 1000000
+            },
+            "missingSensitivity": {
+              "lower": 1,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 1,
+              "incorrect": 0,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 1,
+            "started": 1,
+            "terminals": {
+              "completed": 1,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          }
+        },
+        "comparisons": {
+          "B-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 1,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 0,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 1,
+            "worseUpperBound": 0
+          },
+          "C-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 1,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 0,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 1,
+            "worseUpperBound": 0
+          }
+        },
+        "lineages": 1,
+        "units": 1
+      },
+      "coordination": {
+        "arms": {
+          "A": {
+            "correctPerRegistered": "3/4",
+            "correctPerStarted": 1,
+            "interval": {
+              "lowerMicros": 194120,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 993691
+            },
+            "missingSensitivity": {
+              "lower": "3/4",
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 3,
+              "incorrect": 0,
+              "not-attempted": 1,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 3,
+            "terminals": {
+              "completed": 3,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 1,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "B": {
+            "correctPerRegistered": "3/4",
+            "correctPerStarted": "3/4",
+            "interval": {
+              "lowerMicros": 194120,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 993691
+            },
+            "missingSensitivity": {
+              "lower": "3/4",
+              "upper": "3/4"
+            },
+            "outcomes": {
+              "correct": 3,
+              "incorrect": 1,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 4,
+            "terminals": {
+              "completed": 4,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          },
+          "C": {
+            "correctPerRegistered": 1,
+            "correctPerStarted": 1,
+            "interval": {
+              "lowerMicros": 397635,
+              "method": "clopper-pearson-two-sided-0.95",
+              "upperMicros": 1000000
+            },
+            "missingSensitivity": {
+              "lower": 1,
+              "upper": 1
+            },
+            "outcomes": {
+              "correct": 4,
+              "incorrect": 0,
+              "not-attempted": 0,
+              "not-completed": 0,
+              "ungraded": 0
+            },
+            "registered": 4,
+            "started": 4,
+            "terminals": {
+              "completed": 4,
+              "failed": 0,
+              "interrupted": 0,
+              "not-attempted": 0,
+              "refused": 0,
+              "unobserved": 0
+            }
+          }
+        },
+        "comparisons": {
+          "B-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 3,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 1,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "repeated-within-lineage",
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 4,
+            "worseUpperBound": 1
+          },
+          "C-vs-A": {
+            "baseOnly": 0,
+            "bothCorrect": 3,
+            "comparatorOnly": 0,
+            "lineages": 1,
+            "missing": 1,
+            "neither": 0,
+            "noninferiority": {
+              "reasons": [
+                "repeated-within-lineage",
+                "below-D3-minimum"
+              ],
+              "status": "descriptive-only",
+              "verdict": null
+            },
+            "pairs": 4,
+            "worseUpperBound": 1
+          }
+        },
+        "lineages": 1,
+        "units": 4
+      }
+    },
+    "verdictEligible": false
+  },
+  "executionAuthorization": false,
+  "hostRuns": [
+    {
+      "cancelled": false,
+      "exitCode": 0,
+      "hostModel": "claude-haiku-4-5-20251001",
+      "hostVersion": "2.1.292",
+      "outcome": "correct",
+      "outputTruncated": false,
+      "settled": true,
+      "slot": "L1-C03-a:A",
+      "streamErrors": [],
+      "terminal": "completed",
+      "timedOut": false,
+      "transportErrors": [],
+      "unit": 1
+    },
+    {
+      "cancelled": false,
+      "exitCode": 0,
+      "hostModel": "claude-haiku-4-5-20251001",
+      "hostVersion": "2.1.292",
+      "outcome": "correct",
+      "outputTruncated": false,
+      "settled": true,
+      "slot": "L1-C03-a:B",
+      "streamErrors": [],
+      "terminal": "completed",
+      "timedOut": false,
+      "transportErrors": [],
+      "unit": 2
+    },
+    {
+      "cancelled": false,
+      "exitCode": 0,
+      "hostModel": "claude-haiku-4-5-20251001",
+      "hostVersion": "2.1.292",
+      "outcome": "correct",
+      "outputTruncated": false,
+      "settled": true,
+      "slot": "L1-C03-a:C",
+      "streamErrors": [],
+      "terminal": "completed",
+      "timedOut": false,
+      "transportErrors": [],
+      "unit": 3
+    },
+    {
+      "cancelled": false,
+      "exitCode": 0,
+      "hostModel": "claude-haiku-4-5-20251001",
+      "hostVersion": "2.1.292",
+      "outcome": "correct",
+      "outputTruncated": false,
+      "settled": true,
+      "slot": "L1-C03-b:B",
+      "streamErrors": [],
+      "terminal": "completed",
+      "timedOut": false,
+      "transportErrors": [],
+      "unit": 4
+    },
+    {
+      "cancelled": false,
+      "exitCode": 0,
+      "hostModel": "claude-haiku-4-5-20251001",
+      "hostVersion": "2.1.292",
+      "outcome": "correct",
+      "outputTruncated": false,
+      "settled": true,
+      "slot": "L1-C03-b:C",
+      "streamErrors": [],
+      "terminal": "completed",
+      "timedOut": false,
+      "transportErrors": [],
+      "unit": 5
+    },
+    {
+      "cancelled": false,
+      "exitCode": 0,
+      "hostModel": "claude-haiku-4-5-20251001",
+      "hostVersion": "2.1.292",
+      "outcome": "correct",
+      "outputTruncated": false,
+      "settled": true,
+      "slot": "L1-C03-b:A",
+      "streamErrors": [],
+      "terminal": "completed",
+      "timedOut": false,
+      "transportErrors": [],
+      "unit": 6
+    },
+    {
+      "cancelled": false,
+      "exitCode": 0,
+      "hostModel": "claude-haiku-4-5-20251001",
+      "hostVersion": "2.1.292",
+      "outcome": "correct",
+      "outputTruncated": false,
+      "settled": true,
+      "slot": "L1-C03-c:C",
+      "streamErrors": [],
+      "terminal": "completed",
+      "timedOut": false,
+      "transportErrors": [],
+      "unit": 7
+    },
+    {
+      "cancelled": false,
+      "exitCode": 0,
+      "hostModel": "claude-haiku-4-5-20251001",
+      "hostVersion": "2.1.292",
+      "outcome": "correct",
+      "outputTruncated": false,
+      "settled": true,
+      "slot": "L1-C03-c:A",
+      "streamErrors": [],
+      "terminal": "completed",
+      "timedOut": false,
+      "transportErrors": [],
+      "unit": 8
+    },
+    {
+      "cancelled": false,
+      "exitCode": 0,
+      "hostModel": "claude-haiku-4-5-20251001",
+      "hostVersion": "2.1.292",
+      "outcome": "correct",
+      "outputTruncated": false,
+      "settled": true,
+      "slot": "L1-C03-c:B",
+      "streamErrors": [],
+      "terminal": "completed",
+      "timedOut": false,
+      "transportErrors": [],
+      "unit": 9
+    }
+  ],
+  "hostVerdict": {
+    "baselineSha256": "8d1b2cfdcb1d112d307e861439236e9b33290228c84c9863844900206b6d4f21",
+    "capsRecordSha256": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
+    "decision": "qualification-authorized",
+    "decisionRecordSha256": "36149af6808b1f71bc869e2d4bddc53002c12cca44e45d40680bf13ae2675806",
+    "executionAuthorization": false,
+    "host": "claude",
+    "openUnit": false,
+    "qualified": true,
+    "reason": "qualification-authorized",
+    "stopped": null,
+    "units": [
+      {
+        "afterSha256": "a696fb01e70ded210fe0119a13313ce3ee4fbc8d98283d1ab3493be5ec3aacc3",
+        "beforeSha256": "90e20d2319dde79a6532f81bce4e583e2c8c3b7f7eb5cfd6a0e1048388d4b771",
+        "breach": null,
+        "completed": true,
+        "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+        "fiveHourDelta": 0,
+        "index": 0,
+        "wallSeconds": 19,
+        "weeklyDelta": 0
+      },
+      {
+        "afterSha256": "e2633154c70cf6f25679b1f2d90a3cd990065073742e4e994ece1bad9eacb588",
+        "beforeSha256": "a82bdd1690413375f7541d336c2a36ee652dfceacbc5a6dffb6f8604bbaf12b9",
+        "breach": null,
+        "completed": true,
+        "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+        "fiveHourDelta": 1,
+        "index": 1,
+        "wallSeconds": 20,
+        "weeklyDelta": 0
+      },
+      {
+        "afterSha256": "7e99140c9483c61d5b7417929ab2ce30cd59a6abfd2b27ec46273d971cb6e3d9",
+        "beforeSha256": "b9ca45cf3862a4ca6fbe69d0e178edf206f5458ff9185f272c1ee4c8959a407c",
+        "breach": null,
+        "completed": true,
+        "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+        "fiveHourDelta": 0,
+        "index": 2,
+        "wallSeconds": 17,
+        "weeklyDelta": 0
+      },
+      {
+        "afterSha256": "278674193a74f7d1780aad215b7cd73fb68ee31b27b525f7de86ce026bf3fc06",
+        "beforeSha256": "e54071ad7020c45c8f08ec718343c9e90ccacfa6fc76a02352683c533c0169a1",
+        "breach": null,
+        "completed": true,
+        "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+        "fiveHourDelta": 1,
+        "index": 3,
+        "wallSeconds": 19,
+        "weeklyDelta": 0
+      },
+      {
+        "afterSha256": "806c8bf9e61114c198fc7f14ebcae8ce0c858f0e0b844f9b541d6642006dcb51",
+        "beforeSha256": "02d2ac85ca5bea42c1dcadf798bf1877639cb4b7e0a1f43f6944cdb135a84b2f",
+        "breach": null,
+        "completed": true,
+        "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+        "fiveHourDelta": 0,
+        "index": 4,
+        "wallSeconds": 19,
+        "weeklyDelta": 0
+      },
+      {
+        "afterSha256": "1c0d111c8c305394b4e21c8b33c50d11666af49166866b1f839225205c92cda5",
+        "beforeSha256": "89954508efd459e8feb155b1fe2f8547a5ac335bbc29c9edebb9238071e91346",
+        "breach": null,
+        "completed": true,
+        "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+        "fiveHourDelta": 1,
+        "index": 5,
+        "wallSeconds": 20,
+        "weeklyDelta": 0
+      },
+      {
+        "afterSha256": "56adbf79c5934574cad23efcbcb2204e9b9404f1d04ee1e743ff0f1af2d74594",
+        "beforeSha256": "9cb830c67ba52715a85eb10d71002d0a7799dbb0cfcb35f06684c324d0b53c55",
+        "breach": null,
+        "completed": true,
+        "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+        "fiveHourDelta": 0,
+        "index": 6,
+        "wallSeconds": 17,
+        "weeklyDelta": 0
+      },
+      {
+        "afterSha256": "c5942f7817057dce752336c1a34ac0b4e0b3929f637ff3bbed80136aa524dcc7",
+        "beforeSha256": "97bba9b4d213112bf85894fad45bf8d2e178d7f8c09ea99eee8d3fb1545a3d08",
+        "breach": null,
+        "completed": true,
+        "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+        "fiveHourDelta": 1,
+        "index": 7,
+        "wallSeconds": 19,
+        "weeklyDelta": 0
+      },
+      {
+        "afterSha256": "3ead4cb6bfcf5ebdd37a13e4efbec53bd6b2b308f8b15bb316f5c86bc01f5c41",
+        "beforeSha256": "d738b2a911e56570ff88f11aa2488335b78fe38d3c47f59f42a5f8ad42bda9b0",
+        "breach": null,
+        "completed": true,
+        "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+        "fiveHourDelta": 0,
+        "index": 8,
+        "wallSeconds": 19,
+        "weeklyDelta": 0
+      }
+    ]
+  },
+  "readingProvenance": {
+    "decision": "owner 2026-11-21",
+    "readings": [
+      {
+        "observedAt": "2026-11-21T17:01:51Z",
+        "role": "BASELINE (before the cohort)",
+        "seq": 1,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:02:04Z",
+        "role": "BEFORE unit 1 of 9 (L1-C03-a:A)",
+        "seq": 2,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:02:23Z",
+        "role": "AFTER unit 1",
+        "seq": 3,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:02:34Z",
+        "role": "BEFORE unit 2 of 9 (L1-C03-a:B)",
+        "seq": 4,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:02:54Z",
+        "role": "AFTER unit 2",
+        "seq": 5,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:03:06Z",
+        "role": "BEFORE unit 3 of 9 (L1-C03-a:C)",
+        "seq": 6,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:03:23Z",
+        "role": "AFTER unit 3",
+        "seq": 7,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:03:34Z",
+        "role": "BEFORE unit 4 of 9 (L1-C03-b:B)",
+        "seq": 8,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:03:54Z",
+        "role": "AFTER unit 4",
+        "seq": 9,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:04:06Z",
+        "role": "BEFORE unit 5 of 9 (L1-C03-b:C)",
+        "seq": 10,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:04:25Z",
+        "role": "AFTER unit 5",
+        "seq": 11,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:04:37Z",
+        "role": "BEFORE unit 6 of 9 (L1-C03-b:A)",
+        "seq": 12,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:04:58Z",
+        "role": "AFTER unit 6",
+        "seq": 13,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:05:10Z",
+        "role": "BEFORE unit 7 of 9 (L1-C03-c:C)",
+        "seq": 14,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:05:28Z",
+        "role": "AFTER unit 7",
+        "seq": 15,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:05:41Z",
+        "role": "BEFORE unit 8 of 9 (L1-C03-c:A)",
+        "seq": 16,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:06:01Z",
+        "role": "AFTER unit 8",
+        "seq": 17,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:06:13Z",
+        "role": "BEFORE unit 9 of 9 (L1-C03-c:B)",
+        "seq": 18,
+        "source": "desktop-usage-api-agent-read"
+      },
+      {
+        "observedAt": "2026-11-21T17:06:32Z",
+        "role": "AFTER unit 9",
+        "seq": 19,
+        "source": "desktop-usage-api-agent-read"
+      }
+    ],
+    "source": "desktop-usage-api-agent-read"
+  },
+  "stopped": null,
+  "units": [
+    {
+      "afterSha256": "a696fb01e70ded210fe0119a13313ce3ee4fbc8d98283d1ab3493be5ec3aacc3",
+      "beforeSha256": "90e20d2319dde79a6532f81bce4e583e2c8c3b7f7eb5cfd6a0e1048388d4b771",
+      "breach": null,
+      "completed": true,
+      "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+      "fiveHourDelta": 0,
+      "index": 0,
+      "wallSeconds": 19,
+      "weeklyDelta": 0
+    },
+    {
+      "afterSha256": "e2633154c70cf6f25679b1f2d90a3cd990065073742e4e994ece1bad9eacb588",
+      "beforeSha256": "a82bdd1690413375f7541d336c2a36ee652dfceacbc5a6dffb6f8604bbaf12b9",
+      "breach": null,
+      "completed": true,
+      "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+      "fiveHourDelta": 1,
+      "index": 1,
+      "wallSeconds": 20,
+      "weeklyDelta": 0
+    },
+    {
+      "afterSha256": "7e99140c9483c61d5b7417929ab2ce30cd59a6abfd2b27ec46273d971cb6e3d9",
+      "beforeSha256": "b9ca45cf3862a4ca6fbe69d0e178edf206f5458ff9185f272c1ee4c8959a407c",
+      "breach": null,
+      "completed": true,
+      "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+      "fiveHourDelta": 0,
+      "index": 2,
+      "wallSeconds": 17,
+      "weeklyDelta": 0
+    },
+    {
+      "afterSha256": "278674193a74f7d1780aad215b7cd73fb68ee31b27b525f7de86ce026bf3fc06",
+      "beforeSha256": "e54071ad7020c45c8f08ec718343c9e90ccacfa6fc76a02352683c533c0169a1",
+      "breach": null,
+      "completed": true,
+      "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+      "fiveHourDelta": 1,
+      "index": 3,
+      "wallSeconds": 19,
+      "weeklyDelta": 0
+    },
+    {
+      "afterSha256": "806c8bf9e61114c198fc7f14ebcae8ce0c858f0e0b844f9b541d6642006dcb51",
+      "beforeSha256": "02d2ac85ca5bea42c1dcadf798bf1877639cb4b7e0a1f43f6944cdb135a84b2f",
+      "breach": null,
+      "completed": true,
+      "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+      "fiveHourDelta": 0,
+      "index": 4,
+      "wallSeconds": 19,
+      "weeklyDelta": 0
+    },
+    {
+      "afterSha256": "1c0d111c8c305394b4e21c8b33c50d11666af49166866b1f839225205c92cda5",
+      "beforeSha256": "89954508efd459e8feb155b1fe2f8547a5ac335bbc29c9edebb9238071e91346",
+      "breach": null,
+      "completed": true,
+      "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+      "fiveHourDelta": 1,
+      "index": 5,
+      "wallSeconds": 20,
+      "weeklyDelta": 0
+    },
+    {
+      "afterSha256": "56adbf79c5934574cad23efcbcb2204e9b9404f1d04ee1e743ff0f1af2d74594",
+      "beforeSha256": "9cb830c67ba52715a85eb10d71002d0a7799dbb0cfcb35f06684c324d0b53c55",
+      "breach": null,
+      "completed": true,
+      "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+      "fiveHourDelta": 0,
+      "index": 6,
+      "wallSeconds": 17,
+      "weeklyDelta": 0
+    },
+    {
+      "afterSha256": "c5942f7817057dce752336c1a34ac0b4e0b3929f637ff3bbed80136aa524dcc7",
+      "beforeSha256": "97bba9b4d213112bf85894fad45bf8d2e178d7f8c09ea99eee8d3fb1545a3d08",
+      "breach": null,
+      "completed": true,
+      "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+      "fiveHourDelta": 1,
+      "index": 7,
+      "wallSeconds": 19,
+      "weeklyDelta": 0
+    },
+    {
+      "afterSha256": "3ead4cb6bfcf5ebdd37a13e4efbec53bd6b2b308f8b15bb316f5c86bc01f5c41",
+      "beforeSha256": "d738b2a911e56570ff88f11aa2488335b78fe38d3c47f59f42a5f8ad42bda9b0",
+      "breach": null,
+      "completed": true,
+      "containmentSha256": "f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d",
+      "fiveHourDelta": 0,
+      "index": 8,
+      "wallSeconds": 19,
+      "weeklyDelta": 0
+    }
+  ],
+  "verdict": "cohort-finished",
+  "verdictEligible": false
+}

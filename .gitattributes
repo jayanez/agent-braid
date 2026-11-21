@@ -5,3 +5,5 @@ integrations/agent-braid-view/web/vendor/three/** -whitespace
 # T009 operator transcript is kept byte-verbatim; the driver prompts end with a space.
 specs/065-native-claude-containment/evidence/qualification/t009-202611*/operator/*.txt -whitespace
 specs/069-aim-request-authoring/evidence/**/*.jsonl -whitespace
+# SPEC-049 T014 native attempt reports are kept byte-verbatim (hash-bound); the driver prompts end with a space.
+specs/049-harness-evaluation-learning/evidence/native-t014/*.txt -whitespace
