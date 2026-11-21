@@ -262,11 +262,11 @@
           "id": "SC-006",
           "obtained_evidence": [
             {
-              "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_heldout_v2",
-              "limits": "Synthetic results through the analysis functions; the review itself is a human step at Gate 1.",
+              "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_heldout_v2 tests.test_spec078_traces",
+              "limits": "Synthetic results through the analysis functions; the review itself is a human step at Gate 1. Trace storage is shown on fake hosts; real transcripts appear only in the Gate 1 run.",
               "outcome": "passed: OK",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_006.json",
-              "sha256": "5dbe189382fc6b79dfc678b82bcdc04b0c73936596f30943e727cbad50310610"
+              "sha256": "da853e9180a20f383419019c36ae689fefc3e2d067077f0da9d25af3448dc8fd"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_006.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py ZeroPromptReviewTests.",
@@ -378,7 +378,7 @@
               "limits": "Static and fake-host checks; procedure_012 is re-run over lightning_edits if Gate 2 opens (T008).",
               "outcome": "passed: OK",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_012.json",
-              "sha256": "50ead11cca5296b01cb3fb862f7026169aa0cce499886f13eabb8474864b65e3"
+              "sha256": "13a84e351f8a0e7d08b81594908e091a75d784134ef843d60b7a1e0749843fa6"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_012.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_boundaries.py BoundaryTests.",

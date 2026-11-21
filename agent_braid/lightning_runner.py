@@ -338,6 +338,53 @@ def v2_test_runs(home, candidate_sha: str) -> list[str]:
     return found
 
 
+# SPEC-078 REQ-006: one redacted transcript record per scored attempt (joined to results.jsonl by attemptId), stored only under SPEC-074 consent `redacted` for the
+# `rollout` source, so a prompt that scores 0/3 can be reviewed. The store redacts on ingest (C2) and leaves a
+# content-free stub when a record is not clean; nothing here feeds an optimizer or the export path.
+TRACE_SCHEMA = 'braid-lightning-rollout-trace/v0.1'
+TRACE_LIMITS = ((12000, 8, 2000), (2000, 2, 500))  # (response chars, tool calls, chars per field); retried smaller
+
+
+def _clip(text: str, limit: int) -> tuple[str, bool]:
+    """Cut at ``limit`` and drop the word the cut split, so no partial token survives a later pattern scan."""
+    return (text, False) if len(text) <= limit else (re.sub(r'\S+$', '', text[:limit]), True)
+
+
+def trace_record(rollout_id: str, attempt_id: str, prompt_set: str, prompt: str, transcript, transcript_sha: str,
+                 limits: tuple[int, int, int] = TRACE_LIMITS[0], redact=lambda text: text) -> dict:
+    """The review record of one attempt: the prompt, the final text and the tool calls, each redacted by ``redact``
+    before it is bounded (a cut never leaves part of a credential the patterns would have matched)."""
+    text_cap, calls_cap, field_cap = limits
+    response, cut = _clip(redact(str(transcript.text or '')), text_cap)
+    calls = []
+    for call in transcript.tool_calls[:calls_cap]:
+        args, cut_args = _clip(redact(json.dumps(call.args, sort_keys=True, default=str, ensure_ascii=False)),
+                               field_cap)
+        output, cut_output = _clip(redact(str(call.output or '')), field_cap)
+        cut = cut or cut_args or cut_output
+        calls.append({'tool': str(call.tool or '')[:128], 'args': args, 'output': output,
+                      'isError': bool(call.is_error)})
+    return {'schema': TRACE_SCHEMA, 'rolloutId': rollout_id, 'attemptId': attempt_id, 'promptSet': prompt_set,
+            'prompt': prompt, 'response': response, 'toolCalls': calls,
+            'truncated': cut or len(transcript.tool_calls) > calls_cap, 'transcriptSha256': transcript_sha}
+
+
+def store_trace(store, secrets, build) -> str:
+    """Append ``build(limits)``; ``stored``, ``too-large``, the store's refusal code (a stub was left) or
+    ``trace-error``. It never raises: a review record can not change a rollout's outcome or stop a run."""
+    try:
+        for limits in TRACE_LIMITS:
+            try:
+                store.append('trace', secrets.redact_json(build(limits)), secrets=tuple(secrets.values))
+                return 'stored'
+            except store_mod.StoreError as exc:
+                if exc.code != 'store-shape':
+                    return exc.code
+        return 'too-large'
+    except Exception:  # noqa: BLE001 - a corrupt content file, a full disk, an unsafe path: report, never crash
+        return 'trace-error'
+
+
 PROTOCOL = 'specs/072-lightning-prompt-optimization/evaluation-protocol.md'
 PROTOCOL_FREEZE = 'specs/072-lightning-prompt-optimization/evidence/protocol-freeze.json'
 FREEZE_SCHEMA = 'braid-lightning-protocol-freeze/v0.1'
@@ -420,6 +467,9 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
     status: dict = {'runId': run_id, 'label': label, 'promptSet': prompt_set, 'arm': arm, 'models': dict(models or {}), 'planned': work['withinBudget'],
                     'completedBefore': completed, 'stop': None, 'refusal': None, 'hosts': {},
                     'executionAuthorization': False}
+    from .lightning_adapter import gate as content_gate
+    keep_traces = content_gate(home, 'rollout')['content']  # SPEC-074 consent `redacted` with the rollout source
+    status['traces'] = {'content': keep_traces, 'stored': 0, 'notStored': {}}
     try:
         workdir = profile.make('work')
         if plugin_dir is None:
@@ -542,6 +592,15 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
                                                                   'canary': float(hits == 0)},
                                                    'source': 'verifier',
                                                    'reason': 'canary-hit' if hits else None}}})
+                    if keep_traces and refusal != 'credential-leak' and stop is None:  # a stopped attempt is re-run
+                        outcome = store_trace(store, secrets, lambda limits: trace_record(
+                            rollout_id, attempt_id, prompt_set, case['prompt'], transcript, transcript_sha, limits,
+                            secrets.redact))
+                        traces = status['traces']
+                        if outcome == 'stored':
+                            traces['stored'] += 1
+                        else:
+                            traces['notStored'][outcome] = traces['notStored'].get(outcome, 0) + 1
                     hooks_mod.call(hooks, 'on_trace_end', running.to_dict(), {'transcriptSha256': transcript_sha})
                 except hooks_mod.HookFailed:
                     refusal = 'hook-failed'

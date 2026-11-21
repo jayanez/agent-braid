@@ -1,23 +1,24 @@
 {
   "actual": "OK",
-  "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_heldout_v2",
+  "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_heldout_v2 tests.test_spec078_traces",
   "environment": {
-    "baseCommit": "7ce3b168f739d42bb21d2d5e8a4e4b281afe71ef",
+    "baseCommit": "faf227e81705fc25adcad3ef0bd169dd302666de",
     "platform": "macOS-27.2.1",
     "python": "3.12.13"
   },
-  "expected": "a 0/3 prompt holds the OD-1 verdict until classified; model counts as a miss, instrument invalidates the arm; the share threshold is 88/100 and a class below half misses",
+  "expected": "a 0/3 prompt holds the OD-1 verdict until classified; model counts as a miss, instrument invalidates the arm; the share threshold is 88/100 and a class below half misses; under SPEC-074 consent redacted for the rollout source the runner stores one redacted record per scored attempt (prompt, final text, bounded tool calls, attemptId and transcript sha256 matching the result), none for a leaking attempt; fields are redacted before they are bounded and a cut drops the split word; a record too large is retried smaller and never half-written; a torn content file is counted as trace-error and the run completes with every result",
   "inputs": {
     "agent_braid/lightning_cli.py": "301413155ff77e45d96cfa3a99ec3c698c373a2c7cbf0757020ffc2cf1520cd6",
     "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
-    "agent_braid/lightning_runner.py": "6bc21ed0de6399eadb5ae453dddc6a66dddf0e42ddfaf84ef291329000c2ece5",
+    "agent_braid/lightning_runner.py": "3ad85884ea9603b5a6e49a5f480a928cf2fc31cbda9346b22ab5366e8c9fd741",
     "agent_braid/lightning_schema.py": "ad1430165a3dfa125578b39393b0c2f50efcd29f547db76777e527b815c8980d",
     "scripts/spec078_freeze.py": "068388de81d6ad8d3d45f23020a888b79009372e2cf5f7d18aa0720d9453395a",
     "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
-    "tests/test_spec078_heldout_v2.py": "bf986b045b6b19e69c628681a8e5ffebd9ecc783a6a3f1d22f2c8eb42298e7d6"
+    "tests/test_spec078_heldout_v2.py": "bf986b045b6b19e69c628681a8e5ffebd9ecc783a6a3f1d22f2c8eb42298e7d6",
+    "tests/test_spec078_traces.py": "a13776f819fe8c6ba99047f75dfb97d16aecca33180c2e582758744761c78019"
   },
-  "limits": "Synthetic results through the analysis functions; the review itself is a human step at Gate 1.",
-  "negativeControls": "a review naming a prompt that is not 0/3 is refused",
+  "limits": "Synthetic results through the analysis functions; the review itself is a human step at Gate 1. Trace storage is shown on fake hosts; real transcripts appear only in the Gate 1 run.",
+  "negativeControls": "a review naming a prompt that is not 0/3 is refused; without consent, or with consent but without the rollout source, nothing is stored; the T005 runner (develop faf227e8) fails all six first T011 tests; mutations fail a test each: storing a leaking attempt, catching only StoreError, cutting without dropping the split word",
   "procedure": "procedure_006",
   "scenario": "SC-006"
 }

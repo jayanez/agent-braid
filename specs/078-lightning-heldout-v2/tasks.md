@@ -56,10 +56,20 @@ per task; the owner approves each merge.
 
 ## Phase P2 — Gate 1
 
+- [x] T011 (REQ-006 / SC-006): Runner keeps one redacted transcript record per
+  rollout, only under SPEC-074 consent `redacted` for the `rollout` source, so
+  a 0/3 prompt can be reviewed (owner decision 2026-11-21, option 1). Fields
+  redacted before they are bounded, a smaller retry when too large, the
+  store's content-free stub when a record is not clean, none for a stopped or
+  leaking attempt, and a storage failure never changes a rollout; the review
+  joins records to results by `attemptId`; no optimizer or export path reads
+  it, and no frozen file changes. Files: `agent_braid/lightning_runner.py`,
+  `tests/test_spec078_traces.py`. Dependencies: T005. Verification:
+  procedure_006.
 - [ ] T006 (REQ-008 / SC-008): Precondition: SPEC-074 content consent `redacted`
   with retention covering the 0/3 review. With the owner's yes for 300 rollouts, run A0 on
   `v2-test` (`claude-code`, `claude-sonnet-5-5`); review any 0/3 prompt;
-  record `evidence/gate1-a0.json` and the OD-1 verdict. Dependencies: T005.
+  record `evidence/gate1-a0.json` and the OD-1 verdict. Dependencies: T005, T011.
   Verification: procedure_008.
 - [ ] T007 (REQ-009 / SC-009): Only if A0 meets: publish the regression suite
   and its command; Gate 2 stays closed. Dependencies: T006.
