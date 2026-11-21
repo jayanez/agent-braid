@@ -117,7 +117,7 @@ Design decisions recorded here:
   a new version, is re-frozen, and that arm runs once on the new version; the
   invalidated run stays in the record.
 
-Owner decisions for the protocol (decided 2026-11-20; the protocol freeze, T003,
+Owner decisions for the protocol (decided 2026-11-20 and 2026-11-21; the protocol freeze, T003,
 records them):
 
 - **OD-1 — A0 threshold.** A test prompt *passes* when at least 2 of its 3
@@ -130,10 +130,13 @@ records them):
   transcript review of REQ-006.
 - **OD-2 — Split sizes.** Feedback 24, validation 40, test 100 prompts,
   3 repetitions on validation and test. Gate 1 costs 300 rollouts. The Gate 2
-  cost is an estimate (about 600–900) until T003 fixes its caps; `plan.md`
-  itemizes it.
+  ceiling is 1056 rollouts (OD-4).
 - **OD-3 — Host and model.** `claude-code` with model pinned to
   `claude-sonnet-5-5`, subscription route, as in SPEC-072.
+- **OD-4 — Gate 2 caps (decided 2026-11-21).** At most 4 rounds and at most
+  400 characters changed per edit; the Gate 2 ceiling is 1056 rollouts plus 4
+  reflection calls (`evaluation-protocol.md`). Every real run still needs the
+  owner's yes on its rollout count.
 
 ## Requirements
 

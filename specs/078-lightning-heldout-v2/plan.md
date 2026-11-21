@@ -67,11 +67,10 @@ are fixed in `evaluation-protocol.md` and frozen with the set before any rollout
 Class coverage per split is printed by the build script and recorded before the
 freeze.
 
-Budget: Gate 1 = 100 × 3 = 300 rollouts. Gate 2 (conditional, estimate until
-T003 sets the caps): A0 on validation 40 × 3 = 120; feedback runs of 24 × the
-repetitions T003 fixes per round; 120 per candidate evaluated on validation;
-final candidate on test 300; v1 for candidate and A0 in the same pass
-2 × 10 × 3 = 60. Every real run is preceded by the owner's yes on the stated
+Budget: Gate 1 = 100 × 3 = 300 rollouts. Gate 2 (conditional, OD-4 caps): A0
+on validation 40 × 3 = 120; per round feedback 24 × 1 plus validation 120, at
+most 4 rounds = 576; final candidate on test 300; v1 for candidate and A0 in the
+same pass 2 × 10 × 3 = 60; ceiling 1056 plus 4 reflection calls. Every real run is preceded by the owner's yes on the stated
 count.
 
 ## Constitution check after design
@@ -81,8 +80,8 @@ Unchanged. The scorer and promotion stay outside the design.
 ## Human review and unresolved decisions
 
 OD-1 to OD-3 decided 2026-11-20 (OD-1 per-class clause added the same day).
-Open, for T003 and the freeze review: the Gate 2 round, repetition and rollout
-caps.
+Gate 2 caps decided 2026-11-21 (OD-4): 4 rounds, 400 characters per edit,
+ceiling 1056 rollouts. Nothing remains open before the freeze.
 
 Decided:
 

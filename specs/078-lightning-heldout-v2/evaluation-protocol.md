@@ -63,7 +63,7 @@ conditions); the held-out command applies the review hold of item 3.
 
 ## Gate 2: bounded edits (only if A0 misses)
 
-Caps marked **[owner]** are fixed by the owner at this review.
+Caps: owner decision 2026-11-21, at most 4 rounds and at most 400 characters changed per edit, for a ceiling of 1056 rollouts. Every real run still needs the owner's yes on its rollout count.
 
 - **Seed.** A0. A0 is also run once on `v2-validation` (40 × 3 = 120 rollouts);
   that score is the first incumbent.
@@ -78,11 +78,11 @@ Caps marked **[owner]** are fixed by the owner at this review.
   4. The edit is **kept** only if the candidate has strictly more passing
      validation prompts than the incumbent. Otherwise it goes to the rejected
      buffer.
-- **Edit limits.** At most **[owner] 400 characters** changed per round. The
+- **Edit limits.** At most 400 characters changed per round. The
   front matter is fixed. The body may not exceed A0's length by more than
   **15 %**. Every kept candidate has a readable diff against A0.
 - **Stopping.** The arm stops at the first of:
-  - **[owner] 4 rounds**;
+  - 4 rounds;
   - 3 consecutive rejected edits;
   - a SPEC-071 quota stop, which ends the run; it resumes only by an explicit
     `--resume`;
@@ -101,7 +101,7 @@ Caps marked **[owner]** are fixed by the owner at this review.
 - **Promotion** is out of scope. The candidate is reported by hash and diff
   only (SPEC-073).
 
-### Gate 2 budget at the proposed caps
+### Gate 2 budget at the decided caps
 
 | Item | Rollouts |
 | --- | --- |
