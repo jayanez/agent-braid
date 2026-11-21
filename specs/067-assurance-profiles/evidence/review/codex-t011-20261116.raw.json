@@ -1,0 +1,106 @@
+{
+  "commit": "dad3e7f5f20956e8039be531bdc84bcc6c7f43c0",
+  "reviewer": "Codex (GPT-6 family, exact runtime model unreported)",
+  "verdict": "findings",
+  "findings": [
+    {
+      "id": "C67-001",
+      "severity": "high",
+      "file": "specs/067-assurance-profiles/assurance.json",
+      "line": 15,
+      "claim": "The pinned candidate does not contain the historical freeze required for T011 sign-off.",
+      "evidence": "The committed authority and evidence snapshots both have mode `current` and a null commit at lines 15–108 and 112–115. All ten `obtained_evidence` entries match the committed `t011.json` SHA-256. Complete the freeze in an authorized follow-up, then pin the packet and repeat the review against the commit containing both historical snapshots.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-002",
+      "severity": "high",
+      "file": "agent_braid/harness_assurance_receipts.py",
+      "line": 184,
+      "claim": "Receipt verification trusts a self-hashed artifact without checking that it represents the expected compiled policy.",
+      "evidence": "The receipt verifier checks the artifact's self-digest and then takes the effective checkpoint mode and depth from that artifact. It has no independently expected artifact binding, so a self-consistent artifact that disagrees with the authoritative compilation can make a receipt pass under weaker requirements, including at a human-only floor. Require an independently verified expected artifact and bind the receipt to its compiled digest. Add a negative control for an artifact whose digest is valid but whose policy differs from the expected compilation.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-003",
+      "severity": "medium",
+      "file": "agent_braid/harness_assurance.py",
+      "line": 399,
+      "claim": "Compilation accepts a classification computed under a different profile's risk rules.",
+      "evidence": "A genuine classification of a small README change under the standard preset can be reused after the operator adds a matching R3 rule. The new profile compiles at R2, and verification succeeds when given the same stale classification. Re-evaluate the current profile's rules against the classification's recorded paths and line count, or verify a binding to the profile used to classify. This check does not require recomputing the caller-supplied repository impact.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-004",
+      "severity": "medium",
+      "file": "agent_braid/harness_assurance_risk.py",
+      "line": 161,
+      "claim": "The size and shared-file consistency guards check for a reason name without enforcing its mandatory R3 floor.",
+      "evidence": "For a 401-line summary, a `size-over-400` reason with an R2 raise satisfies the current name and maximum checks. The same applies to `shared-file`. Require the canonical R3 reason for each triggered default. The existing omission test at tests/test_harness_assurance_risk.py:222 also leaves a sensitive-path reason while resetting the aggregate values, so the generic consistency check rejects both cases even if either dedicated guard is removed. Keep the aggregate values consistent in the omission controls.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-005",
+      "severity": "medium",
+      "file": "agent_braid/harness_assurance_render.py",
+      "line": 80,
+      "claim": "Track briefs echo free text that can contain credentials, transcript excerpts or live mentions.",
+      "evidence": "A short, printable sensitive value or account mention in any of the four caller fields is copied into the Markdown at lines 108–110. The existing 200-character limit and punctuation filter leave those inputs admissible. Restrict these fields to publication-safe metadata and refuse mentions. Add tests with synthetic sensitive text and update the observation contract at assurance.json:119 to state the verified publication boundary.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-006",
+      "severity": "medium",
+      "file": "agent_braid/harness_assurance.py",
+      "line": 732,
+      "claim": "The journal writer can replace a readable journal with one that its loader refuses as oversized.",
+      "evidence": "The profile and journal count limits allow valid journals larger than the reader's 1 MiB cap. Repeated human updates using valid profiles with many long rule patterns can cross that cap before the count limits. Saving succeeds, after which loading refuses the journal with `unobservable-source`. Check the serialized byte length before replacement and preserve the previous file on refusal.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-007",
+      "severity": "low",
+      "file": "agent_braid/harness_assurance_receipts.py",
+      "line": 131,
+      "claim": "An authorization containing malformed Unicode can raise an encoding exception instead of falling back to `approve-each`.",
+      "evidence": "An otherwise well-shaped decoded authorization whose owner statement contains an unpaired Unicode surrogate passes the string and length checks. Digest computation then raises `UnicodeEncodeError`, which the `ReceiptError` handler does not catch. Reject non-UTF-8-encodable statement text with `invalid-authorization` so evaluation returns `invalid-record`.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-008",
+      "severity": "low",
+      "file": "tests/test_harness_assurance_receipts.py",
+      "line": 444,
+      "claim": "The deeply nested artifact test never exercises the recursion safeguard credited in T011 evidence.",
+      "evidence": "Both test inputs add an unknown top-level key, so `_row` rejects them before digest computation. Removing `RecursionError` from the verifier's exception handler would leave both assertions passing. Put the nested value under an existing key in the recursion case and retain the separate extra-key test.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-009",
+      "severity": "low",
+      "file": "specs/067-assurance-profiles/evidence/t009.json",
+      "line": 48,
+      "claim": "The H1 registration overstates what a gate receipt establishes about review occurrence and who performed it.",
+      "evidence": "Line 48 says a receipt shows that a review ran, and line 32 assumes receipts record author and reviewer host and model identity. The closed receipt schema carries a reported status and actor identifiers, with no host or model fields and no observation of the review itself. Record the provenance limit and identify separately bound metadata as a prerequisite for those strata, or leave them ungraded.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-010",
+      "severity": "info",
+      "file": "agent_braid/harness_containment_macos.py",
+      "line": 397,
+      "claim": "The deny-default policy denies `process-exec` under `/Applications/ChatGPT.app/` for the documented contained configuration.",
+      "evidence": "Lines 361–366 select the configured Claude, helper and interpreter literals. Lines 384–397 deny by default and allow `process-exec` only for those literals. The documented lab entries are outside the ChatGPT bundle, and the subpath rules at lines 401–402 cover reads and executable mapping. This is a static result for those configured paths. No fix is required.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-011",
+      "severity": "info",
+      "file": "tests/test_harness_assurance.py",
+      "line": 515,
+      "claim": "The prescribed offline test run was partially blocked by the read-only sandbox.",
+      "evidence": "The command ran 194 tests. Of those, 172 passed and 22 raised setup errors because `TemporaryDirectory()` had no writable location. The filesystem-dependent paths were reviewed by inspection. No repository fix is indicated for these setup errors.",
+      "confidence": "high"
+    }
+  ]
+}
