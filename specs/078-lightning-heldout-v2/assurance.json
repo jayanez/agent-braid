@@ -314,7 +314,7 @@
               "limits": "One host, model and set; an empirical summary, not a guarantee. Key source none is the accepted SPEC-069 fixture value. The review is one reviewer reading only the three prompts' redacted transcripts; the reproduction test runs only where the lab run exists.",
               "outcome": "passed: OK (OD-1 misses)",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_008.json",
-              "sha256": "74d3fc07ce60bc7b60c248b6fcae579b7bb43fb8d66a33bc7e3d330e9e3ba7b4"
+              "sha256": "07bba93c568a22f2f514b730c5984b2154e3bb1ce1201110c790e7716f6af745"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_008.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py AnalysisTests.",

@@ -11,14 +11,14 @@
     "agent_braid/lightning_heldout_v2.py": "83d5facf419a258e999443e7f101752a6798f8b5732a16d7cb1c0ad0ed49f311",
     "agent_braid/lightning_runner.py": "3ad85884ea9603b5a6e49a5f480a928cf2fc31cbda9346b22ab5366e8c9fd741",
     "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
-    "scripts/spec078_gate1_report.py": "da910c0e68d4af50f727bc5443b6148952bdff5b2a02eb9e1dc86b45da50feab",
+    "scripts/spec078_gate1_report.py": "1675323c7bf5751ed12765fa5f8d41725866992702d7d1d08cf89369b97b8bfc",
     "specs/078-lightning-heldout-v2/evidence/gate1-a0.json": "4ca3533935479811b56f9200ea748962506477fcea5d105d0c557a3e68dff853",
     "specs/078-lightning-heldout-v2/evidence/gate1-diagnosis.json": "287b85233c296ab32864e07bd99f9ffd527f4bd0f9f311a68a59e65a535cb1af",
     "specs/078-lightning-heldout-v2/prompts/FREEZE.json": "9c0f6df179496b9ffcd7d30ddb6888b5d5a445c6a843dbc0c3a0b5aff8d93dd8",
     "specs/078-lightning-heldout-v2/prompts/test.json": "e65e16a4ae908394c00e0ddb973fe364bd78ba38970167fef57293693524c9cf",
     "specs/078-lightning-heldout-v2/reviews/gate1-a0-causes.json": "0908891c1b21150da6183831717034ed884bc2965cfff37386621192cf50ca38",
     "specs/078-lightning-heldout-v2/reviews/gate1-a0-zero-prompts.json": "4c039bd2ea16e02c151203a99914c983f92716e1c4a56f321e2bfe9a91a743f1",
-    "tests/test_spec078_gate1_report.py": "4526684d8302658df73b98db9f3edf0731c4e26ef2492655d469b59b455df806"
+    "tests/test_spec078_gate1_report.py": "42ae6c77282f7484b2b2df500ba2cf6ef70f2b652f8d8ccd76dd140146af6c3f"
   },
   "limits": "One host, model and set; an empirical summary, not a guarantee. Key source none is the accepted SPEC-069 fixture value. The review is one reviewer reading only the three prompts' redacted transcripts; the reproduction test runs only where the lab run exists.",
   "negativeControls": "a run that does not cover every prompt three times is refused; the committed review names exactly the 0/3 prompts; the verdict is misses whenever a reviewed 0/3 prompt remains; a review that does not name exactly the 0/3 prompts is refused by the report; a diagnosis with a cause outside guidance-gap, prompt-defect and scorer-defect, or not naming exactly the 0/3 prompts, is refused",
