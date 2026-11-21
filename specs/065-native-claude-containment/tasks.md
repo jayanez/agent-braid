@@ -383,7 +383,7 @@ shared object store fails the portable-root check).
   hashes `5a9f05c6…00df` and `f2f65ae0…7f9d`, `expiresAt` 2026-12-17T22:19:29Z); its sha256 is now
   `68af26183dd715cca1b32274052c50a7ab0ff6d35863d103191c3b73c9dcedf4`.
 
-- [ ] T012 (all REQ / SC): Stable-candidate validation and review: `pr` profile,
+- [x] T012 (all REQ / SC): Stable-candidate validation and review: `pr` profile,
   code review of T003–T007, assurance obtained-evidence update, authority
   snapshot, freeze, and human review of the feature. Dependencies: T003–T011.
   Files: `assurance.json`, `evidence/t012.json`. Verification: `quick`, `pr`,
@@ -391,6 +391,7 @@ shared object store fails the portable-root check).
   Obtained (part 1, 2026-11-08, #1162): `evidence/t012.json`; two independent code reviews of T003-T007 found no must-fix; 17 residuals deferred to the next re-qualification; obtained_evidence bound for SC-001..SC-011. Freeze and human review pending.
   Obtained (part 2, 2026-11-18): authority snapshot refreshed and the record frozen (`historical`) on `develop` commit `a768e6d3` (#1426), not on a PR branch; SC-001..SC-011 rebound to evidence read from that commit (`t015.json`, `qualification/issuance-2026-11-17.json`, `t009-20261117-result.md`, the `t009-20261117c` summary and quota, `founder-decisions-20261117.json`, the hand-off packet, and the 2026-11-13 and 2026-11-14 records as lineage); `t013.json` and `t014.json` cannot be bound (input `harness_host_claude.py` moved). `evidence/t012.json` `part2`: R1-R17 all still open after T013-T015, validation results. Codex review packet `review/codex-t012-20261118.md` prepared, not run. Human review by the owner still pending.
   Obtained (Codex review, 2026-11-18): the owner ran the packet (codex-cli 0.169.0-alpha.11.1, read-only, pinned `a768e6d3`); raw output `evidence/review/codex-t012-20261118.raw.json` and triage `evidence/review/codex-t012-20261118.json`: 19 findings (2 high, 10 medium, 6 low, 1 info), 16 confirmed, 3 partial, none rejected; R8 and R9 severity raises rejected. The 2026-11-17 issuance is not shown wrong (every probe session settled within caps; HOST-01's narrower classifier verdict holds) and no stop of native T008/T014 runs is required; T012-03 (config_dir session state not purged, NC-7) and T012-07 (effort not passed) need owner attention. All fixes deferred to the next re-qualification window; owner decision pending; not human review; `executionAuthorization` false.
+  Obtained (owner review, 2026-11-21): `reviews/owner-review-a768e6d3.json` (founder; answers "Aprobar con límites (Recomendado)", "Todos; 01/02/03 obligatorios (Recomendado)", "Cerrar SPEC-065 (Recomendado)"): SPEC-065 approved within its documented scope, bound to `a768e6d3`; `human_review` approved and stage validated. T012-01..T012-19 and R1-R17 accepted as documented limits and deferred to the next SPEC-065 re-qualification, where T012-01, T012-02 and T012-03 are required. Does not authorize execution, extend the issuance (valid until 2026-12-17T22:19:29Z) or qualify Codex; `executionAuthorization` false; HAR.1 stays open.
 
 - [x] T013 (REQ-004 / SC-004; REQ-007 / SC-007; REQ-010 / SC-010; REQ-009 / SC-009): Headless own-session lab
   mode, session-ownership guard and re-qualification (founder amendment of NC-2, 2026-11-13,

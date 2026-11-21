@@ -6,12 +6,14 @@ here is native, activates a profile, promotes a candidate or grants anything.
 
 ![Braid Harness laboratory: admission, prepare, simulated fixture runner, hash-chained journal, observations, verifiers and an evaluation report; the native backend gate refuses until qualified and human promotion is not delivered](../assets/agent-braid-harness.svg)
 
-Track state (2026-11-02): HAR.1 (offline foundations, SPEC-048) has 14 of 15
-tasks done; native Codex and Claude adapters (T008) remain open. HAR.2
+Track state (2026-11-02, HAR.1 and SPEC-065 updated 2026-11-21): HAR.1 (SPEC-048)
+has 15 of 15 tasks done; T008 closed on 2026-11-20 with the native Claude profile
+qualified with limits in the laboratory and Codex refused. HAR.2
 (SPEC-049) has 8 of 13 tasks done; the native pilot, cohorts, human promotion
 decisions and per-axis publication remain open. Native Claude containment
-(SPEC-065, ADR 0035) is built through its probe catalog but not qualified or
-authorized. Assurance profiles (SPEC-067) have their catalog and schema merged.
+(SPEC-065, ADR 0035) is qualified on one machine from 2026-11-17 until
+2026-12-17T22:19:29Z and approved by the owner on 2026-11-21 with documented
+limits; it authorizes no execution. Assurance profiles (SPEC-067) have their catalog and schema merged.
 HAR.3 adaptation (SPEC-050) is planning only. Extra cash spend stays at EUR 0.
 
 The `agent-braid harness` command group (`python -m agent_braid harness ...`)
