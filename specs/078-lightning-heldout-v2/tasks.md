@@ -48,8 +48,11 @@ per task; the owner approves each merge.
   `OPTIMIZER_DENIED` and contamination fingerprints for v2 validation and test;
   `agent_braid/lightning_heldout_v2.py` analysis with the 0/3 review hold;
   boundary tests. Then freeze the protocol, splits, Gate 0 script and A0 skill
-  by hash on a `develop` commit. Dependencies: T003, T004. Verification:
-  procedures 006, 007, 012.
+  by hash on a `develop` commit. Two PRs: the runner, analysis and
+  `scripts/spec078_freeze.py` first; then, after that merges, the freeze
+  (`python -m scripts.spec078_freeze` on the `develop` tip, writing
+  `prompts/FREEZE.json` and `prompts/fingerprints.json`). Dependencies: T003,
+  T004. Verification: procedures 006, 012 (runner PR), 007 (freeze PR).
 
 ## Phase P2 — Gate 1
 

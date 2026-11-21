@@ -28,11 +28,11 @@ import tempfile
 import threading
 from pathlib import Path
 
+from agent_braid import lightning_heldout_v2
 from agent_braid.tooling_mcp import ToolingConfig, ToolingService
 from scripts import spec069_fixture_workspace, spec069_scoring
 from scripts.spec078_build_set import OUT, SKILL, SPLITS
 
-WILSON_LB_MIN = 0.80   # OD-1: Wilson 95 % lower bound of the passing share; see meets_od1
 EXAMPLE = re.compile(r"```json kind=(\w+) result=\S+ constraints=\S+\n(.*?)```", re.S)
 REPOSITORY_PLACEHOLDER = "<workspace root directory>"
 
@@ -55,15 +55,8 @@ RULES = {
 
 
 def meets_od1(passes: list[tuple[str, bool]]) -> tuple[bool, float]:
-    """OD-1 over ``(class, passed)`` per prompt: Wilson 95 % lower bound of the passing share at least 0.80 and
-    every class with at least half its prompts passing (owner decision 2026-11-20)."""
-    if not passes:
-        return False, 0.0
-    low = spec069_scoring.wilson_interval(sum(ok for _, ok in passes), len(passes))[0]
-    by_class: dict[str, list[bool]] = {}
-    for cls, ok in passes:
-        by_class.setdefault(cls, []).append(ok)
-    return low >= WILSON_LB_MIN and all(2 * sum(v) >= len(v) for v in by_class.values()), low
+    """OD-1 items 1-2 (share and per-class clause); the runner's analysis owns the definition."""
+    return lightning_heldout_v2.meets_share_and_classes(passes)
 
 
 class Gate0Error(ValueError):
@@ -147,13 +140,8 @@ def _branch(facts: dict, key: str) -> str:
 
 def reference_request(case: dict, repository: str, *, honour_partial: bool = True) -> tuple[str, dict]:
     """The SPEC-069 reference request for the expectation, with the coverage the facts give."""
-    request = spec069_scoring.reference_request(case, repository)
-    kind = case["expect"]["kind"]
-    if kind == "aim" and honour_partial:
-        for op, unit in zip(request["operations"], case["facts"]["units"]):
-            if unit["partial"]:
-                op["effects"]["coverage"]["status"] = "partial"
-    return kind, request
+    return case["expect"]["kind"], lightning_heldout_v2.reference_request(
+        case, spec069_scoring, repository, honour_partial=honour_partial)
 
 
 # ----------------------------------------------------------------------------

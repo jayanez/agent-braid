@@ -27,6 +27,7 @@ from pathlib import Path
 
 from . import lightning_hooks as hooks_mod
 from . import lightning_reward as reward_mod
+from . import lightning_heldout_v2 as v2_mod
 from . import lightning_store as store_mod
 from .harness_host_claude import ENV_DENY, SUBSCRIPTION_KEY_SOURCES
 from .lightning_hosts import (DeclaredLimit, HostConfig, OsSandbox, PARSERS, Profile, SafetyStop,
@@ -35,7 +36,8 @@ from .lightning_hosts import (DeclaredLimit, HostConfig, OsSandbox, PARSERS, Pro
 from .lightning_schema import FAILED, RESULT_SCHEMA, RUNNING, SUCCEEDED, AttemptResult, new_rollout
 
 PROMPT_FILES = {'development': 'specs/069-aim-request-authoring/prompts/development.json',
-                'held-out': 'specs/069-aim-request-authoring/prompts/held-out.json'}
+                'held-out': 'specs/069-aim-request-authoring/prompts/held-out.json',
+                **v2_mod.PROMPT_FILES}  # SPEC-078 v2 splits, bound by the SPEC-078 freeze
 # Subscription credentials read from this process's environment only (OD-1, decided 2026-11-08). OpenCode has none
 # verified (OD-2): without a host-reported subscription key source it ends as route-unverified.
 CREDENTIALS = {'claude-code': 'CLAUDE_CODE_OAUTH_TOKEN', 'opencode': None}
@@ -63,7 +65,8 @@ FINGERPRINT_SCHEMA = 'braid-lightning-holdout-fingerprints/v0.1'
 WINDOW = 8  # words; every held-out prompt has at least 29
 _WORD = re.compile(r'[a-z0-9]+')
 # Never readable by an optimizer call (SPEC-072 REQ-006), besides the host configuration stores.
-OPTIMIZER_DENIED = (PROMPT_FILES['held-out'], 'scripts/spec069_scoring.py', 'scripts/spec069_fixture_workspace.py', '.git')
+OPTIMIZER_DENIED = (PROMPT_FILES['held-out'], *(PROMPT_FILES[n] for n in v2_mod.PROTECTED),
+                    'scripts/spec069_scoring.py', 'scripts/spec069_fixture_workspace.py', '.git')
 
 
 def normalize_words(text: str) -> list[str]:
@@ -76,7 +79,7 @@ def window_sha256(words: list[str]) -> str:
 
 def canary_note(prompt_set: str) -> str:
     """The non-target note planted in rollout workspaces; held-out workspaces also carry the held-out canary."""
-    extra = f' {HOLDOUT_CANARY}' if prompt_set == 'held-out' else ''
+    extra = f' {HOLDOUT_CANARY}' if prompt_set in ('held-out', *v2_mod.PROTECTED) else ''
     return f'Internal note {LIGHTNING_CANARY}{extra}\n'
 
 
@@ -92,7 +95,18 @@ def load_fingerprints(root: Path) -> dict:
 
 def contamination_passed(text: str, fingerprints: dict | None = None) -> bool:
     """Pre-call scan (SPEC-072 REQ-006): no held-out case id, held-out prompt window or canary in the input."""
-    prints = fingerprints if fingerprints is not None else load_fingerprints(checkout_root())
+    if fingerprints is None:
+        root = checkout_root()
+        prints = load_fingerprints(root)
+        try:
+            extra = v2_mod.load_fingerprints(root)  # SPEC-078: v2 validation and test, once frozen
+        except v2_mod.FreezeError as exc:
+            raise RunnerError(str(exc), exc.code) from exc
+        if extra is not None:
+            prints = {**prints, 'idSha256': [*prints['idSha256'], *extra['idSha256']],
+                      'windowSha256': [*prints['windowSha256'], *extra['windowSha256']]}
+    else:
+        prints = fingerprints
     if HELDOUT_ID.search(text) or LIGHTNING_CANARY in text or HOLDOUT_CANARY in text:
         return False
     ids = set(prints['idSha256'])
@@ -335,12 +349,18 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
     root = checkout_root()
     if prompt_set == 'held-out':
         check_protocol_freeze(root)  # SPEC-072 REQ-001: before anything else
+    elif prompt_set in v2_mod.PROMPT_FILES:
+        try:
+            v2_mod.check_freeze(root, prompt_set)  # SPEC-078 REQ-007: before anything else
+        except v2_mod.FreezeError as exc:
+            raise RunnerError(str(exc), exc.code) from exc
     from scripts import spec069_fixture_workspace as fixture
     from scripts import spec069_native_runs as driver
     from scripts import spec069_scoring as scoring
 
     scoring_sha = reward_mod.check_scoring(root)
-    prompt_sha = reward_mod.check_prompt_set(root, PROMPT_FILES[prompt_set])
+    prompt_sha = (v2_mod.check_freeze(root, prompt_set) if prompt_set in v2_mod.PROMPT_FILES
+                  else reward_mod.check_prompt_set(root, PROMPT_FILES[prompt_set]))
     cases = {c['id']: c for c in json.loads((root / PROMPT_FILES[prompt_set]).read_text())['cases']}
     work = plan(config, prompt_set, root, case_ids=case_ids, repetitions=repetitions)
     label = 'pipeline-only' if fake_hosts else 'host-run'
@@ -367,6 +387,8 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
     profile = Profile(prefix='lightning-')
     if arm not in driver.ARMS:
         raise RunnerError('Unknown candidate arm', 'config-enum')
+    if prompt_set in v2_mod.PROMPT_FILES and arm != 'final':
+        raise RunnerError('SPEC-078 v2 runs use the final source (A0 or an explicit candidate)', 'config-enum')
     status: dict = {'runId': run_id, 'label': label, 'promptSet': prompt_set, 'arm': arm, 'models': dict(models or {}), 'planned': work['withinBudget'],
                     'completedBefore': completed, 'stop': None, 'refusal': None, 'hosts': {},
                     'executionAuthorization': False}
@@ -378,7 +400,9 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
         passthrough: dict[str, str] = {}
         if fake_hosts:
             variant = fake_variant if fake_variant in driver.FAKE_VARIANTS else 'default'
-            scenario = driver.build_fake_scenario(list(cases.values()), variant, scoring.reference_request)
+            reference = (lambda case: v2_mod.reference_request(case, scoring)) \
+                if prompt_set in v2_mod.PROMPT_FILES else scoring.reference_request
+            scenario = driver.build_fake_scenario(list(cases.values()), variant, reference)
             if fake_variant == 'canary':
                 first = next(iter(cases.values()))['prompt']
                 scenario[first]['text'] += ' ' + LIGHTNING_CANARY
@@ -395,6 +419,11 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
             skill_text = source_skill('baseline', config['target']['path'], root)[0]
         candidate = (root / config['target']['path']).read_bytes() if skill_text is None else skill_text.encode()
         candidate_sha = hashlib.sha256(candidate).hexdigest()
+        if prompt_set in v2_mod.PROMPT_FILES and skill_text is None:
+            try:
+                v2_mod.check_skill(root, candidate)  # an A0 run measures the frozen skill bytes
+            except v2_mod.FreezeError as exc:
+                raise RunnerError(str(exc), exc.code) from exc
         count = completed
         for host_name in work['hosts']:
             binary = _fake_binary(root, host_name) if fake_hosts else _host_binary(host_name)
@@ -442,7 +471,7 @@ def run(home, config: dict, *, run_id: str | None = None, resume: bool = False, 
                 started = time.time()
                 rollout = new_rollout(rollout_id, case_id, f'{host_name}.{case_id}', candidate_sha,
                                       hashlib.sha256(case['prompt'].encode()).hexdigest(), host_name, at=started,
-                                      is_train=prompt_set == 'development',
+                                      is_train=prompt_set in ('development', 'v2-feedback'),
                                       timeout_seconds=config['rollout']['timeoutSeconds'])
                 attempt_id = f'a{int(started * 1000)}'
                 running = rollout.transition(RUNNING, started, attempt_id=attempt_id)

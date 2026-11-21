@@ -1,0 +1,23 @@
+{
+  "actual": "OK",
+  "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_heldout_v2",
+  "environment": {
+    "baseCommit": "d2556eeb00b3577ef4f5dcf2d4da1526de7a597f",
+    "platform": "macOS-27.2.1",
+    "python": "3.12.13"
+  },
+  "expected": "the v2 module imports only the standard library; no BL.2b file writes the scorer, the sets or the skill; v2 runs refuse another arm; validation and test are denied to the optimizer and carry the held-out canary",
+  "inputs": {
+    "agent_braid/lightning_cli.py": "301413155ff77e45d96cfa3a99ec3c698c373a2c7cbf0757020ffc2cf1520cd6",
+    "agent_braid/lightning_heldout_v2.py": "e2e27d58ed575bf6d47b4f5b6c2cea8579efe5e231683a8ae2f3326a6532bc40",
+    "agent_braid/lightning_runner.py": "63fe2d8168314ef398daada2f98e8c2168221da8534f8382cac8d9b5f87b69db",
+    "agent_braid/lightning_schema.py": "ad1430165a3dfa125578b39393b0c2f50efcd29f547db76777e527b815c8980d",
+    "scripts/spec078_freeze.py": "4fa28bd7c1d0366eb347d425d87aaf6beee9453848adcabb91f8c238c73d8f49",
+    "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
+    "tests/test_spec078_heldout_v2.py": "92659ff41ae36676f70a7a3f0e7511acacb16ce77871eb6a522dcf459a2af8ff"
+  },
+  "limits": "Static and fake-host checks; procedure_012 is re-run over lightning_edits if Gate 2 opens (T008).",
+  "negativeControls": "existing SPEC-072 boundary tests (tests/test_lightning_cli BL2 boundaries) still pass with the new module",
+  "procedure": "procedure_012",
+  "scenario": "SC-012"
+}
