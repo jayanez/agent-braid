@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""SPEC-078 T006 (REQ-008 / SC-008): the Gate 1 report of one arm's run on ``v2-test``.
+"""SPEC-078 T006 and T015 (REQ-008, REQ-014): the Gate 1 report of one arm's run on ``v2-test`` or ``v3-test``.
 
 Re-scores the stored results of the run with the unchanged SPEC-069 scorer, applies the preregistered analysis
 (``lightning_heldout_v2.analyse``, OD-1 with the zero-prompt review) and adds the run's host, model, key-source,
@@ -21,27 +21,31 @@ from collections import Counter
 from pathlib import Path
 
 from agent_braid import lightning_heldout_v2 as v2
+from agent_braid import lightning_heldout_v3 as v3
 from agent_braid import lightning_store as store
 from scripts import spec069_scoring as scoring
 
 ROOT = Path(__file__).resolve().parents[1]
 LAB = Path.home() / '.local/state/agent-braid/lightning-lab'
 SCHEMA = 'braid-lightning-v2-gate1/v0.1'
+# A test split, the module that owns its freeze, and the arm it measures (Gate 1 and Amendment 1).
+SPLITS = {'v2-test': (v2, 'A0'), 'v3-test': (v3, "A0'")}
 
 
-def report(home: Path, run_id: str, review: dict | None = None) -> dict:
-    frozen = v2.load_freeze(ROOT)['files']  # the split and the analysis must match; the skill may have moved on
-    for path in (v2.PROMPT_FILES['v2-test'], v2.ANALYSIS):
+def report(home: Path, run_id: str, review: dict | None = None, prompt_set: str = 'v2-test') -> dict:
+    held, arm = SPLITS[prompt_set]
+    frozen = held.load_freeze(ROOT)['files']  # the split and the analysis must match; the skill may have moved on
+    for path in (held.PROMPT_FILES[prompt_set], held.ANALYSIS):
         if v2.sha256(ROOT / path) != frozen[path]:
             raise SystemExit(f'refused: {path} differs from the SPEC-078 freeze')
-    sha = frozen[v2.PROMPT_FILES['v2-test']]
+    sha = frozen[held.PROMPT_FILES[prompt_set]]
     run = store.RunStore(home, run_id)
-    cases = json.loads((ROOT / v2.PROMPT_FILES['v2-test']).read_text())['cases']
+    cases = json.loads((ROOT / held.PROMPT_FILES[prompt_set]).read_text())['cases']
     by_id = {c['id']: c for c in cases}
     results = [r.value for r in run.read('result')]
     rollouts = {r.rollout_id: r for r in run.read('rollout')}
     if {r['promptSetSha256'] for r in results} != {sha}:
-        raise SystemExit('refused: the run is not on the frozen v2-test split')
+        raise SystemExit(f'refused: the run is not on the frozen {prompt_set} split')
     trials: dict[str, list] = {c['id']: [None] * 3 for c in cases}
     failures = []
     for result in sorted(results, key=lambda r: r['rolloutId']):
@@ -64,9 +68,9 @@ def report(home: Path, run_id: str, review: dict | None = None) -> dict:
     body['review'] = dict(review or {})
     candidates = {r.candidate_sha256 for r in rollouts.values()}
     return {
-        'schema': SCHEMA, 'runId': run_id, 'arm': 'A0', 'promptSet': 'v2-test', 'promptSetSha256': sha,
-        'freezeCommit': v2.load_freeze(ROOT)['commit'], 'frozenFiles': v2.load_freeze(ROOT)['files'], 'candidateSha256': sorted(candidates),
-        'skillSha256': frozen[v2.SKILL],
+        'schema': SCHEMA, 'runId': run_id, 'arm': arm, 'promptSet': prompt_set, 'promptSetSha256': sha,
+        'freezeCommit': held.load_freeze(ROOT)['commit'], 'frozenFiles': held.load_freeze(ROOT)['files'], 'candidateSha256': sorted(candidates),
+        'skillSha256': frozen[held.SKILL],
         'rollouts': len(results), 'startedAt': min(r['startedAt'] for r in results),
         'endedAt': max(r['endedAt'] for r in results),
         'hostVersions': dict(Counter(r['hostVersion'] for r in results)),
@@ -91,12 +95,12 @@ def _first_kind(record: dict) -> str | None:
     return None
 
 
-def diagnose(home: Path, run_id: str, causes: dict) -> dict:
+def diagnose(home: Path, run_id: str, causes: dict, prompt_set: str = 'v2-test') -> dict:
     """Per-attempt request kind, Bash attempt and validity over the whole run, and the cause of each 0/3 prompt.
 
     Reads the redacted trace records (joined by attemptId); writes no prompt, transcript or model text."""
     run = store.RunStore(home, run_id)
-    cases = {c['id']: c for c in json.loads((ROOT / v2.PROMPT_FILES['v2-test']).read_text())['cases']}
+    cases = {c['id']: c for c in json.loads((ROOT / SPLITS[prompt_set][0].PROMPT_FILES[prompt_set]).read_text())['cases']}
     traces = {line['record']['attemptId']: line['record'] for line in run.read_content() if 'record' in line}
     table, zero = Counter(), {}
     for result in sorted((r.value for r in run.read('result')), key=lambda r: r['rolloutId']):
@@ -124,13 +128,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument('--home', type=Path, default=LAB)
     parser.add_argument('--review', type=Path, help='JSON: {caseId: {classification, rationale}}')
     parser.add_argument('--diagnose', type=Path, help='JSON: {caseId: {cause, evidence}}; prints the diagnosis')
+    parser.add_argument('--prompt-set', choices=sorted(SPLITS), default='v2-test')
     args = parser.parse_args(argv)
     if args.diagnose:
-        print(json.dumps(diagnose(args.home, args.run_id, json.loads(args.diagnose.read_text())), indent=1,
+        print(json.dumps(diagnose(args.home, args.run_id, json.loads(args.diagnose.read_text()), args.prompt_set), indent=1,
                          sort_keys=True))
         return 0
     review = json.loads(args.review.read_text()) if args.review else None
-    print(json.dumps(report(args.home, args.run_id, review), indent=1, sort_keys=True))
+    print(json.dumps(report(args.home, args.run_id, review, args.prompt_set), indent=1, sort_keys=True))
     return 0
 
 

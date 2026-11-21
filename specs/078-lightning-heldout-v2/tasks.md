@@ -109,7 +109,7 @@ configuration after this merges.
   the fixed skill by hash on a `develop` commit after T012 and T013 merge.
   Dependencies: T012, T013. Verification: procedure_016 (freeze part;
   `evidence/v3-freeze.json`, `spec078_freeze_v3 --check`).
-- [ ] T015 (REQ-014 / SC-014): With the owner's yes for 300 rollouts (given
+- [x] T015 (REQ-014 / SC-014): With the owner's yes for 300 rollouts (given
   2026-11-21 with option 4), run the fixed skill as A0' once on `v3-test`
   (`claude-code`, `claude-sonnet-5-5`), review any 0/3 prompt, and record the
   OD-1 verdict. Dependencies: T014. Verification: procedure_016 (run part).

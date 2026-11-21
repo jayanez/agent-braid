@@ -1,0 +1,10 @@
+{
+ "V3T-002": {
+  "classification": "model",
+  "rationale": "Disjoint writes; the expectation (aim, every pair independent-candidate) is what the analyzer returns for this request. All three repetitions called analyze-work with kind units, which reports non-overlapping pairs as unknown, despite the T012 sentence that units never answers a parallel question."
+ },
+ "V3T-027": {
+  "classification": "model",
+  "rationale": "A write, a read of the same file and an unrelated write; the expectation (aim: write/read conflicting, the unrelated pairs independent-candidate) is what aim returns. All three repetitions used kind units, so the unrelated pairs came back unknown."
+ }
+}

@@ -314,7 +314,7 @@
               "limits": "One host, model and set; an empirical summary, not a guarantee. Key source none is the accepted SPEC-069 fixture value. The review is one reviewer reading only the three prompts' redacted transcripts; the reproduction test runs only where the lab run exists.",
               "outcome": "passed: OK (OD-1 misses)",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_008.json",
-              "sha256": "d607543f77d01634c00a305466948185140f28008f66e7f53b270471af6c8b00"
+              "sha256": "f14187c3df79ba4ebebefe47ce152e666f1bb25c1429a2dd4ac4913e4d15feb6"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_008.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py AnalysisTests.",
@@ -431,10 +431,18 @@
           "given": "the v3 freeze and the owner's yes for 300 rollouts",
           "when": "A0' runs on v3-test",
           "then": "the record holds the same Gate 1 report and the OD-1 verdict",
-          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
-          "test_name": "procedure_016",
+          "test_file": "tests/test_spec078_gate1_report.py",
+          "test_name": "Gate1ReportTests.test_the_v3_report_and_diagnosis_reproduce_from_the_lab_run",
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_016.json (freeze and A0' run): command, hashes, environment, expected and actual outcome, negative controls.",
-          "obtained_evidence": []
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.spec078_freeze_v3 --check; .venv-speckit/bin/python -m scripts.spec078_gate1_report --prompt-set v3-test --run-id run-20261121T192620Z-61ca8b --review specs/078-lightning-heldout-v2/reviews/gate1-v3-a0prime-zero-prompts.json; .venv-speckit/bin/python -m scripts.spec078_gate1_report --prompt-set v3-test --run-id run-20261121T192620Z-61ca8b --diagnose specs/078-lightning-heldout-v2/reviews/gate1-v3-a0prime-causes.json; .venv-speckit/bin/python -m unittest tests.test_spec078_gate1_report",
+              "limits": "One host, model and split; not compared statistically with the Gate 1 A0 result, since the splits differ. Five attempts declared a resource named after the template phrase 'live environment' (V3T-091, -096, -097, -100); all five were units-kind attempts that fail regardless, so the phrase changes no outcome, but it appears in the reasons of V3T-100, which passes 1 of 3. The review is one reviewer reading only the two prompts' redacted transcripts.",
+              "outcome": "passed: OK (OD-1 misses; H-A0' not supported)",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_016.json",
+              "sha256": "8820373f0da1ffedf1ec77f31a558650be76d505856ea4fd599cb62e4d127cc5"
+            }
+          ]
         },
         {
           "id": "SC-015",

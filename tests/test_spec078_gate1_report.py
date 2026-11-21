@@ -68,5 +68,19 @@ class Gate1ReportTests(unittest.TestCase):
         self.assertEqual(sum(r['attempts'] for r in diagnosis['attemptsByRequestKind']), 300)
 
 
+    def test_the_v3_report_and_diagnosis_reproduce_from_the_lab_run(self):
+        record = json.loads((ROOT / 'specs/078-lightning-heldout-v2/evidence/gate1-v3-a0prime.json').read_text())
+        if not (gate1.LAB / 'lightning/runs' / record['runId']).is_dir():
+            self.skipTest('the lab run is local to the owner machine')
+        reviews = ROOT / 'specs/078-lightning-heldout-v2/reviews'
+        review = json.loads((reviews / 'gate1-v3-a0prime-zero-prompts.json').read_text())
+        self.assertEqual(gate1.report(gate1.LAB, record['runId'], review, 'v3-test'), record)
+        causes = json.loads((reviews / 'gate1-v3-a0prime-causes.json').read_text())
+        diagnosis = json.loads((ROOT / 'specs/078-lightning-heldout-v2/evidence/gate1-v3-diagnosis.json').read_text())
+        self.assertEqual(gate1.diagnose(gate1.LAB, record['runId'], causes, 'v3-test'), diagnosis)
+        self.assertEqual(record['arm'], "A0'")
+        self.assertEqual(record['analysis']['od1'], 'misses' if record['analysis']['zeroPrompts'] else 'meets')
+
+
 if __name__ == '__main__':
     unittest.main()

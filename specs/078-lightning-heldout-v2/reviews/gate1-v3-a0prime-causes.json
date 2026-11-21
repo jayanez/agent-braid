@@ -1,0 +1,4 @@
+{
+ "V3T-002": {"cause": "guidance-gap", "evidence": "All three repetitions chose kind units for a parallel question after the T012 fix, so the guidance sentence was not followed; no repetition tried to compute digests. The expectation is the analyzer's aim result and 9 of 10 disjoint prompts pass."},
+ "V3T-027": {"cause": "guidance-gap", "evidence": "All three repetitions chose kind units; the write/read conflict itself was found, so the prompt was read correctly. units never reports independent-candidate by design, so the scorer reason matches the analyzer."}
+}
