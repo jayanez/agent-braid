@@ -308,10 +308,18 @@
         {
           "given": "the freeze and the owner's yes for 300 rollouts",
           "id": "SC-008",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.spec078_gate1_report --run-id run-20261121T161117Z-e5e22c --review specs/078-lightning-heldout-v2/reviews/gate1-a0-zero-prompts.json; .venv-speckit/bin/python -m unittest tests.test_spec078_gate1_report ; .venv-speckit/bin/python -m scripts.spec078_gate1_report --run-id run-20261121T161117Z-e5e22c --diagnose specs/078-lightning-heldout-v2/reviews/gate1-a0-causes.json",
+              "limits": "One host, model and set; an empirical summary, not a guarantee. Key source none is the accepted SPEC-069 fixture value. The review is one reviewer reading only the three prompts' redacted transcripts; the reproduction test runs only where the lab run exists.",
+              "outcome": "passed: OK (OD-1 misses)",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_008.json",
+              "sha256": "07bba93c568a22f2f514b730c5984b2154e3bb1ce1201110c790e7716f6af745"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_008.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py AnalysisTests.",
-          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
-          "test_name": "procedure_008",
+          "test_file": "tests/test_spec078_gate1_report.py",
+          "test_name": "Gate1ReportTests.test_the_committed_report_matches_the_review_and_the_verdict_rule",
           "then": "the record holds per-prompt results, Wilson interval, clustered SE, OD-1 verdict and secondary figures",
           "when": "A0 runs on v2-test"
         }

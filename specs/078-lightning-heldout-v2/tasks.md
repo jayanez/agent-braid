@@ -66,10 +66,11 @@ per task; the owner approves each merge.
   it, and no frozen file changes. Files: `agent_braid/lightning_runner.py`,
   `tests/test_spec078_traces.py`. Dependencies: T005. Verification:
   procedure_006.
-- [ ] T006 (REQ-008 / SC-008): Precondition: SPEC-074 content consent `redacted`
+- [x] T006 (REQ-008 / SC-008): Precondition: SPEC-074 content consent `redacted`
   with retention covering the 0/3 review. With the owner's yes for 300 rollouts, run A0 on
   `v2-test` (`claude-code`, `claude-sonnet-5-5`); review any 0/3 prompt;
-  record `evidence/gate1-a0.json` and the OD-1 verdict. Dependencies: T005, T011.
+  record `evidence/gate1-a0.json` and the OD-1 verdict, and the cause of each
+  0/3 prompt (`evidence/gate1-diagnosis.json`). Dependencies: T005, T011.
   Verification: procedure_008.
 - [ ] T007 (REQ-009 / SC-009): Only if A0 meets: publish the regression suite
   and its command; Gate 2 stays closed. Dependencies: T006.

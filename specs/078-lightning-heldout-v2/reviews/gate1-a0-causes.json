@@ -1,0 +1,5 @@
+{
+ "V2T-005": {"cause": "guidance-gap", "evidence": "Two repetitions chose kind units for a parallel question, so disjoint writes came back unknown; one stopped without a call because it believed aim needs real sha256 digests it could not compute (Bash is denied in the rollout host). The skill allows placeholder digests only in a late bullet, and the analyze-work tool description says aim needs sha256 digests. The expectation is the analyzer's aim result, and the same template family passes in 9 of 10 disjoint prompts."},
+ "V2T-012": {"cause": "guidance-gap", "evidence": "Two repetitions chose kind units, so the two pairs without a shared file came back unknown instead of independent-candidate; one stopped without a tool result for the same digest belief. The conflicting pair was right in every units call, so the prompt was read correctly."},
+ "V2T-091": {"cause": "guidance-gap", "evidence": "All three repetitions chose kind units; the deploy pairs were unknown as expected, but the plain write pair came back unknown instead of independent-candidate. units never reports independent-candidate by design, so the scorer reason matches the analyzer."}
+}
