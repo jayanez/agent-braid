@@ -1,0 +1,160 @@
+{
+  "commit": "5bd9b5c7c3d3691912754d5f999f82699122b55a",
+  "reviewer": "Codex (configured model gpt-6.2-sol)",
+  "verdict": "findings",
+  "findings": [
+    {
+      "id": "C67-002",
+      "severity": "info",
+      "file": "agent_braid/harness_assurance_receipts.py",
+      "line": 317,
+      "claim": "The original artifact substitution defect is closed, and every HUMAN_ONLY checkpoint requires human-only mode and a reported human approval.",
+      "evidence": "Verification recompiles the supplied inputs and compares canonical bytes at harness_assurance.py:417–433. A re-sealed autonomous release, a re-sealed R0 review gate, and a genuine artifact from different inputs all return invalid-artifact in tests/test_harness_assurance_receipts.py:500–516. Lines 518–528 bypass the artifact check and exercise the floor at receipts.py:335–337. Approval provenance remains a caller and store responsibility.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-003",
+      "severity": "info",
+      "file": "agent_braid/harness_assurance_risk.py",
+      "line": 146,
+      "claim": "The original defect that let a stale classification omit an applicable operator rule is closed.",
+      "evidence": "An ordinary README.md classification passed under a profile requiring R3 for that path now returns invalid-diff-summary in both compilation and artifact verification. tests/test_harness_assurance_risk.py:269–291 also exercises an extra rule from another profile and an edit that changes whether a rule matches. The check binds the derived reasons. Profiles that derive the same reasons can still share a classification.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-004",
+      "severity": "info",
+      "file": "agent_braid/harness_assurance_risk.py",
+      "line": 198,
+      "claim": "The size and shared-file checks require the full canonical R3 reason.",
+      "evidence": "tests/test_harness_assurance_risk.py:222–237 uses a 401-line docs/x.md diff and a ROADMAP.md diff with no sensitive-path reason. Omitting the triggered reason or replacing its R3 with R2 returns invalid-diff-summary even when the aggregate fields agree with the edit.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-007",
+      "severity": "info",
+      "file": "agent_braid/harness_assurance_receipts.py",
+      "line": 134,
+      "claim": "The original standing-authorization evaluation defect is closed for non-UTF-8-encodable owner statements.",
+      "evidence": "The evaluator checks UTF-8 encodability before hashing and maps the refusal to approve-each with invalid-record. tests/test_harness_assurance_receipts.py:530–535 pins this result for a lone surrogate with both the original digest and a replacement digest.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-008",
+      "severity": "info",
+      "file": "tests/test_harness_assurance_receipts.py",
+      "line": 457,
+      "claim": "The revised recursion test reaches the receipt verifier's recursion safeguard.",
+      "evidence": "The 5,000 nested lists replace the existing profile field, so the artifact key-set check succeeds. The test first confirms that hashing raises RecursionError, then checks that receipt verification returns invalid-artifact through harness_assurance_receipts.py:323–324. Separate cases exercise extra-key refusal.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-009",
+      "severity": "info",
+      "file": "specs/067-assurance-profiles/evidence/t009.json",
+      "line": 51,
+      "claim": "The specific occurrence and host/model claims identified in the first review were corrected.",
+      "evidence": "The measurement limits now say that a receipt records a reported review. Line 35 makes host and model identity conditional on separately bound metadata and leaves the stratum ungraded when that metadata is absent. The closed receipt and review-entry field sets at harness_assurance_receipts.py:65–68 and 247–251 support the wording.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-012",
+      "severity": "medium",
+      "file": "agent_braid/harness_assurance_risk.py",
+      "line": 154,
+      "claim": "The new profile-binding path lets compilation and verification accept a profile that the classifier refuses for a below-floor risk rule.",
+      "evidence": "Classify README.md under strict with no operator rules, then compile using strict plus a nonmatching docs/** rule with raiseTo R2 and modeAtLeast notify. The derived reasons still match and the artifact compiles and verifies, although classify_risk refuses that profile as invalid-risk-rule before looking for matches. Apply the same raise-only validation in check_profile_binding and extend the below-profile tests at tests/test_harness_assurance_risk.py:103–113 to cover compilation and verification.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-013",
+      "severity": "medium",
+      "file": "agent_braid/harness_assurance_risk.py",
+      "line": 71,
+      "claim": "An accepted operator glob with a wildcard in the prefix before /** silently misses matching paths.",
+      "evidence": "A rule with paths [\"docs/*/**\"] and raiseTo R3 should match docs/guides/example.md. The suffix branch compares the prefix docs/* literally, so the operator reason is absent and a standard profile can stay at R2. Preserve glob matching for wildcard prefixes while retaining the bare-directory behavior for /**, and test both cases.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-014",
+      "severity": "low",
+      "file": "agent_braid/harness_assurance_receipts.py",
+      "line": 338,
+      "claim": "A same-depth receipt can verify after its recorded depth source is changed.",
+      "evidence": "A genuine R3 receipt for a 401-line docs change records depthSource as risk. Changing only depthSource to repository and recomputing the digest still passes against the genuine artifact, because the verifier checks the depth floor and only checks that the source is printable. For a receipt at the effective depth, compare its source with the compiled row and add a negative control.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-015",
+      "severity": "low",
+      "file": "agent_braid/harness_assurance_risk.py",
+      "line": 197,
+      "claim": "An allowed operator rule named sensitive-path makes a genuine docs-only classification fail compilation.",
+      "evidence": "A standard profile can use an operator rule named sensitive-path to raise docs/x.md to R3. On a non-sensitive docs-only diff, classify_risk returns docsOnly true with that operator reason, then compile_artifact rejects it based on the reason name. Check for the canonical SENSITIVE_REASON instead of its name alone and test this classifier-to-compiler case.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-016",
+      "severity": "low",
+      "file": "agent_braid/harness_assurance_receipts.py",
+      "line": 122,
+      "claim": "The standing-authorization builder still raises UnicodeEncodeError for a non-UTF-8-encodable owner statement.",
+      "evidence": "Passing the lone-surrogate statement from the evaluator regression test directly as build_authorization's owner_statement causes _sealed to fail while UTF-8 encoding the digest input. Reuse the UTF-8 check before sealing, raise ReceiptError with invalid-authorization, and test the builder entry point.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-017",
+      "severity": "low",
+      "file": "agent_braid/harness_assurance.py",
+      "line": 429,
+      "claim": "Direct artifact verification leaks RecursionError despite promising a fixed refusal.",
+      "evidence": "Passing the exact-key artifact with 5,000 nested lists from tests/test_harness_assurance_receipts.py:457–466 directly to verify_artifact raises RecursionError during hashing. The receipt wrapper catches it, while the direct verifier catches only TypeError and ValueError. Map RecursionError to invalid-artifact in the direct verifier and add the same fixture to its tests.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-018",
+      "severity": "low",
+      "file": "tests/test_harness_assurance_receipts.py",
+      "line": 518,
+      "claim": "The defense-in-depth test does not independently pin the new human-approval guard.",
+      "evidence": "With only verify_artifact stubbed, removing the explicit approval check at harness_assurance_receipts.py:337 leaves the empty-approval cases returning approval-mismatch from _check_mode at line 277. Stub _check_mode as well in the isolated floor test, and keep the existing end-to-end mode and approval tests.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-019",
+      "severity": "low",
+      "file": "specs/067-assurance-profiles/evidence/t009.json",
+      "line": 26,
+      "claim": "The operational arm definition still labels receipt-reported depth as realized depth.",
+      "evidence": "A structurally valid R3 receipt can carry reported completions without establishing that the reviews occurred. Line 51 now states that limit, but the arm definition still assigns realized depth from the receipt alone. Define the measured arm as receipt-reported depth and reserve realized depth for separately corroborated observations.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-020",
+      "severity": "info",
+      "file": "specs/067-assurance-profiles/evidence/t011.json",
+      "line": 81,
+      "claim": "The pinned T011 evidence digest and all ten task-evidence pointers match.",
+      "evidence": "The pinned T011 Git blob hashes to 86533edd5cd1561ef443ca4c29d1ad63c4a3b1ed929336ad64841adb0a92260a. All ten taskEvidence entries match their target files at the pinned checkout, including the corrected T009 file. Line 143 identifies the nested input hashes within those records as historical.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-021",
+      "severity": "info",
+      "file": "agent_braid/harness_containment_macos.py",
+      "line": 397,
+      "claim": "The configured contained profiles deny process-exec under /Applications/ChatGPT.app/.",
+      "evidence": "Lines 361–366 select the pinned interpreter, Claude, and configured helpers per entry. Lines 395–402 deny by default and allow process-exec only for those literal paths. The configured lab launcher supplies Claude and the interpreter under /usr/local/libexec/braid, with no helpers for that policy. No exec literal or subpath covers the ChatGPT bundle. This is a static rule check. PROC-01 covers other non-allow-listed executables.",
+      "confidence": "high"
+    },
+    {
+      "id": "C67-022",
+      "severity": "info",
+      "file": "tests/test_harness_assurance.py",
+      "line": 515,
+      "claim": "Read-only sandbox restrictions prevented 22 tests from completing.",
+      "evidence": "The requested four-module unittest command ran 201 tests. Of those, 179 passed and 22 errored during temporary-directory setup with FileNotFoundError because no usable temporary directory was available. The blocked cases were assessed by source inspection.",
+      "confidence": "high"
+    }
+  ]
+}

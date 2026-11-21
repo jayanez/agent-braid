@@ -1,0 +1,215 @@
+{
+ "recordVersion": "spec067-codex-review-v1",
+ "task": "SPEC-067/T011",
+ "candidateCommit": "5bd9b5c7c3d3691912754d5f999f82699122b55a",
+ "reviewedCheckout": "detached worktree at 5bd9b5c7 (owner run); triage at develop f8060a8b, where git diff 5bd9b5c7..f8060a8b of the harness_assurance code and tests and docs/architecture/ASSURANCE_LEVELS.md is empty (only 067 spec, packet and freeze files differ)",
+ "reviewer": {
+  "tool": "codex exec -s read-only --output-schema",
+  "reportedReviewer": "Codex (configured model gpt-6.2-sol)",
+  "binary": "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+  "version": "codex-cli 0.169.0-alpha.11.1",
+  "account": "operator subscription",
+  "runBy": "owner",
+  "date": "2026-11-21"
+ },
+ "command": "\"/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex\" exec -s read-only -C <detached worktree at 5bd9b5c7c3d3691912754d5f999f82699122b55a> --output-schema specs/067-assurance-profiles/review/codex-t011-20261121.schema.json -o ~/Downloads/codex-067-t011b.json \"$(cat specs/067-assurance-profiles/review/codex-t011-20261121.md)\"",
+ "packet": "specs/067-assurance-profiles/review/codex-t011-20261121.md",
+ "rawOutput": "specs/067-assurance-profiles/evidence/review/codex-t011-20261121.raw.json",
+ "rawOutputSha256": "95d1f533b4f2303ccea21a155df3537f9a8d4690cfa0f7096541f9616a67e8f4",
+ "rawOutputNote": "Byte-identical copy of the owner's ~/Downloads/codex-067-t011b.json (11166 bytes), unedited.",
+ "codexVerdict": "findings",
+ "findingCount": 17,
+ "codexSeverityCounts": {
+  "high": 0,
+  "medium": 2,
+  "low": 6,
+  "info": 9
+ },
+ "triageMethod": "Orchestrator re-read of every cited line at 5bd9b5c7 (identical 067 code at develop f8060a8b), each claim treated as a hypothesis to refute; in-memory reproductions with python3.13 for C67-012, C67-013, C67-015 and C67-017 (no repository edit); C67-014, C67-016, C67-018 and C67-019 by source reading; the four T011 test modules re-run offline at develop (201 tests, OK).",
+ "triage": [
+  {
+   "id": "C67-002",
+   "codexSeverity": "info",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "info",
+   "evidence": "Fix from #1477 holds: verify_receipt calls verify_artifact and enforces HUMAN_ONLY floors; 201 tests pass at develop.",
+   "action": "none: closes the first-review blocker"
+  },
+  {
+   "id": "C67-003",
+   "codexSeverity": "info",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "info",
+   "evidence": "check_profile_binding (harness_assurance_risk.py:146-161) recomputes the derived reasons; stale classifications are refused in tests 269-291.",
+   "action": "none: closes the first-review blocker"
+  },
+  {
+   "id": "C67-004",
+   "codexSeverity": "info",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "info",
+   "evidence": "_check_consistency requires the canonical SIZE_REASON and SHARED_REASON (risk.py:199-202).",
+   "action": "none"
+  },
+  {
+   "id": "C67-007",
+   "codexSeverity": "info",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "info",
+   "evidence": "Evaluator UTF-8 check before hashing, pinned by receipts test 530-535.",
+   "action": "none"
+  },
+  {
+   "id": "C67-008",
+   "codexSeverity": "info",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "info",
+   "evidence": "Recursion test reaches the receipt verifier safeguard.",
+   "action": "none"
+  },
+  {
+   "id": "C67-009",
+   "codexSeverity": "info",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "info",
+   "evidence": "t009.json wording corrected at lines 35 and 51.",
+   "action": "none"
+  },
+  {
+   "id": "C67-012",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "Reproduced in memory: classify_risk(strict + docs/** rule raiseTo R2) refuses invalid-risk-rule, while compile_artifact with that profile and a strict README.md classification returns R3. check_profile_binding (risk.py:146) calls validate_profile but not _check_raise_only (:110). No depth is lowered (apply_risk never lowers), but compile/verify accept a profile the classifier refuses.",
+   "action": "fix: call _check_raise_only in check_profile_binding; tests for compile and verify"
+  },
+  {
+   "id": "C67-013",
+   "codexSeverity": "medium",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "medium",
+   "evidence": "Reproduced: standard + rule paths [docs/*/**] raiseTo R3 classifies docs/guides/example.md with raiseDepthTo None. _matches (risk.py:70-74) compares the prefix before /** literally, so an accepted operator rule silently under-raises the review depth.",
+   "action": "fix: glob-match the prefix (fnmatchcase on the directory parts) and keep bare-directory /**; tests for both"
+  },
+  {
+   "id": "C67-014",
+   "codexSeverity": "low",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "low",
+   "evidence": "Source reading: _verify_against checks the depth floor and that depthSource is printable, not that it equals the compiled row's source (receipts.py:338).",
+   "action": "fix: compare depthSource with the row when the receipt is at the effective depth; negative control"
+  },
+  {
+   "id": "C67-015",
+   "codexSeverity": "low",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "low",
+   "evidence": "Reproduced: standard + operator rule named sensitive-path on docs/x.md: classify_risk/compile path ends in invalid-diff-summary on a genuine docs-only diff, because _check_consistency tests the name, not SENSITIVE_REASON (risk.py:197).",
+   "action": "fix: check SENSITIVE_REASON in reasons, or reserve the default rule names in validate_profile; test"
+  },
+  {
+   "id": "C67-016",
+   "codexSeverity": "low",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "low",
+   "evidence": "Source reading: build_authorization seals before any UTF-8 check (receipts.py:122), so a lone surrogate raises UnicodeEncodeError instead of ReceiptError.",
+   "action": "fix: reuse the encodability check, raise invalid-authorization; test"
+  },
+  {
+   "id": "C67-017",
+   "codexSeverity": "low",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "low",
+   "evidence": "Reproduced: verify_artifact on the exact-key artifact with 5,000 nested lists raises RecursionError (harness_assurance.py:429 catches TypeError and ValueError only).",
+   "action": "fix: map RecursionError to invalid-artifact; test"
+  },
+  {
+   "id": "C67-018",
+   "codexSeverity": "low",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "low",
+   "evidence": "Source reading: with only verify_artifact stubbed, _check_mode (receipts.py:277) already returns approval-mismatch, so the floor test does not isolate the guard at :337.",
+   "action": "fix: stub _check_mode in the isolated floor test"
+  },
+  {
+   "id": "C67-019",
+   "codexSeverity": "low",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "low",
+   "evidence": "t009.json:26 still names the arm realized depth while :51 states a receipt only records a reported review.",
+   "action": "fix: rename to receipt-reported depth; reserve realized for corroborated observations"
+  },
+  {
+   "id": "C67-020",
+   "codexSeverity": "info",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "info",
+   "evidence": "T011 evidence digest 86533edd and ten taskEvidence pointers match.",
+   "action": "none"
+  },
+  {
+   "id": "C67-021",
+   "codexSeverity": "info",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "info",
+   "evidence": "Static rule check only; consistent with the 065 contained profile. Frozen file, not edited.",
+   "action": "none"
+  },
+  {
+   "id": "C67-022",
+   "codexSeverity": "info",
+   "verdict": "CONFIRMED",
+   "adjustedSeverity": "info",
+   "evidence": "Codex sandbox lacked a temp dir (22 errors); orchestrator re-run at develop f8060a8b: 201 tests, OK.",
+   "action": "none"
+  }
+ ],
+ "summary": {
+  "confirmed": 17,
+  "partial": 0,
+  "rejected": 0,
+  "adjustedSeverityCounts": {
+   "high": 0,
+   "medium": 2,
+   "low": 6,
+   "info": 9
+  },
+  "firstReviewBlockersClosed": [
+   "C67-002",
+   "C67-003"
+  ],
+  "blockingApproval": [
+   "C67-013"
+  ],
+  "recommendedInSameFixPr": [
+   "C67-012",
+   "C67-014",
+   "C67-015",
+   "C67-016",
+   "C67-017",
+   "C67-018",
+   "C67-019"
+  ],
+  "noChange": [
+   "C67-002",
+   "C67-003",
+   "C67-004",
+   "C67-007",
+   "C67-008",
+   "C67-009",
+   "C67-020",
+   "C67-021",
+   "C67-022"
+  ]
+ },
+ "candidateAssessment": "Both first-review blockers are closed. No high finding. C67-013 is a real under-review: an accepted operator glob with a wildcard before /** never matches, so a rule meant to raise review depth stays silent. C67-012 is a validity mismatch that lowers nothing. The six lows are hardening and wording.",
+ "disposition": "No code change in this record. Recommendation: fix C67-012 to C67-019 in one PR with tests, re-freeze at the new develop tip; owner decides whether a third Codex pass is needed or an orchestrator re-check of the touched lines suffices before the human review.",
+ "ownerDecision": {
+  "status": "pending",
+  "question": "Fix C67-012 to C67-019 before approving T011, or approve at 5bd9b5c7 with them as accepted limits."
+ },
+ "notHumanReview": true,
+ "humanReview": "pending: the owner's human review of T011 is not done and is not claimed.",
+ "executionAuthorization": false,
+ "limits": "Static, read-only triage of a static model review at one commit, with in-memory reproductions only. Approves nothing, freezes nothing, changes no stage, profile or authorization. Structural checks are not scientific proof."
+}
