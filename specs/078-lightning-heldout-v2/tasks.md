@@ -105,9 +105,10 @@ configuration after this merges.
   against v1, v2 and the skill; run Gate 0 references and null baselines on it
   before any rollout; add `v3-test` to the runner. Dependencies: T012.
   Verification: procedure_014.
-- [ ] T014 (REQ-014 / SC-014): Freeze the v3 split, the protocol amendment and
+- [x] T014 (REQ-014 / SC-014): Freeze the v3 split, the protocol amendment and
   the fixed skill by hash on a `develop` commit after T012 and T013 merge.
-  Dependencies: T012, T013. Verification: procedure_016 (freeze part).
+  Dependencies: T012, T013. Verification: procedure_016 (freeze part;
+  `evidence/v3-freeze.json`, `spec078_freeze_v3 --check`).
 - [ ] T015 (REQ-014 / SC-014): With the owner's yes for 300 rollouts (given
   2026-11-21 with option 4), run the fixed skill as A0' once on `v3-test`
   (`claude-code`, `claude-sonnet-5-5`), review any 0/3 prompt, and record the
