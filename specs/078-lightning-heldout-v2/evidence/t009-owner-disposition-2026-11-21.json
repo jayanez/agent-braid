@@ -1,0 +1,14 @@
+{
+  "version": "agent-braid-task-cancellation-v1",
+  "taskId": "SPEC-078/T009",
+  "decision": "adopted",
+  "disposition": "cancelled-partial-infeasible",
+  "stateReason": "not_planned",
+  "criterionCompleted": false,
+  "taskLineSha256": "79ac96ae90d1e616b9aefeb57802706d7c9064ade4d5506b35507c506f7c1873",
+  "sourceReference": "Direct human owner instruction in this Claude Code session on 2026-11-21, choosing option 4 of the Gate 2 question (\"4: Arreglo a mano (Recommended)\"): fix the analyze skill by hand from the Gate 1 diagnosis and measure it as a new A0 on a fresh test split instead of running the bounded-edit arm. Integrator-recorded provenance, not independently authenticated.",
+  "reason": "Depends on T008, which is cancelled; H-G2 is not tested. The fixed skill is measured on the fresh v3 test split as A0' instead (T015).",
+  "dependenciesSatisfied": false,
+  "executionAuthorization": false,
+  "newExecutionOrPackageAuthorized": false
+}

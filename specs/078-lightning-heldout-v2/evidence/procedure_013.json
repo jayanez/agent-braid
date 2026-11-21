@@ -1,0 +1,19 @@
+{
+  "actual": "OK (19 tests)",
+  "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_kind_guidance tests.test_spec069_guidance",
+  "environment": {
+    "baseCommit": "e79b33b0b434514e1f0412b0240a474cf77a1310",
+    "platform": "macOS-27.2.1",
+    "python": "3.12.13"
+  },
+  "expected": "both Amendment 1 sentences are in the kind-selection section; units on two disjoint writes reports unknown; the documented aim example with placeholder digests reports independent-candidate; the SPEC-069 guidance tests still pass",
+  "inputs": {
+    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "8fb7c5cd75004b85a7064c69abc718c15ee50db580c648d3c06e80721409002f",
+    "tests/test_spec069_guidance.py": "7d6d9b66bd4b07be4f49ee16553198c4e0998ce80835359822ef5fcadd8b8cc0",
+    "tests/test_spec078_kind_guidance.py": "b3de4f3a27f1844a49849da71b383b8bed43b2c9b6d432e103eeec5e35504a92"
+  },
+  "limits": "Text and analyzer behaviour only; whether models follow the sentences is measured by T015 on v3-test.",
+  "negativeControls": "on the develop skill before the fix (3f10c0fc) test_the_sentences_are_in_the_kind_section fails; each sentence appears exactly once in the kind-selection section",
+  "procedure": "procedure_013",
+  "scenario": "SC-013"
+}

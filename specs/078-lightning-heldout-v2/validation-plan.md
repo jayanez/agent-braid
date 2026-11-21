@@ -20,3 +20,5 @@ H-A0 or H-G2.
 | procedure_010 | SC-010 | `tests/test_lightning_edits.py` (if Gate 2) | edits bounded by budget; kept only on strict validation gain; front matter fixed; length cap; diff produced | over-budget edit, front-matter edit and non-improving edit refused |
 | procedure_011 | SC-011 | Gate 2 test and v1 runs (if Gate 2) | paired exact test vs A0; v1 no-regression; canary invalidates | canary hit on fake host invalidates the arm |
 | procedure_012 | SC-012 | `tests/test_spec078_boundaries.py` | no scorer, set or skill writes; no promotion, execute, recover or grant import; no API key; stdlib only | forbidden import or write detected |
+| procedure_013 | SC-013 | `tests/test_spec078_kind_guidance.py` | both sentences in the kind-selection section; units on disjoint writes reports unknown; aim with placeholder digests reports independent-candidate | the sentences removed fail the pin |
+| procedure_014 | SC-014 | v3 build and Gate 0 report, v3 freeze, `evidence/gate1-v3-a0prime.json` | fresh split disjoint from v1/v2; Gate 0 passes before any rollout; 300 rollouts and the OD-1 verdict | a split overlapping v2 windows is refused |

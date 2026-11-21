@@ -2,18 +2,18 @@
   "actual": "OK",
   "command": ".venv-speckit/bin/python -m unittest tests.test_spec069_guidance.DependencyReadRuleTests tests.test_spec069_guidance.CoverageSentenceTests",
   "environment": {
-    "baseCommit": "fe61794964d974be021258f1bb498b5879848231",
+    "baseCommit": "e79b33b0b434514e1f0412b0240a474cf77a1310",
     "platform": "macOS-27.2.1",
     "python": "3.12.13"
   },
   "expected": "rule-following HELD-04 answer valid; dependency without reads ordered; old-rule answer invalid (negative control); the coverage sentence states the analyzer's precedence (unknown, conflicting for write+write and read+write, ordered)",
   "inputs": {
-    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "9ba3424c0aac5697c5c67d5f7e382f6c751e6cda791d36f3faa6145e00703641",
+    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "8fb7c5cd75004b85a7064c69abc718c15ee50db580c648d3c06e80721409002f",
     "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
     "specs/069-aim-request-authoring/prompts/held-out.json": "254ffee400c490d745d6b66f46e0bc8d19a13fae666f22c8554003a4e9a22278",
     "tests/test_spec069_guidance.py": "7d6d9b66bd4b07be4f49ee16553198c4e0998ce80835359822ef5fcadd8b8cc0"
   },
-  "limits": "Deterministic check through analyze-work and the scorer; no host run has measured the narrowed rule.",
+  "limits": "Deterministic check through analyze-work and the scorer; no host run has measured the narrowed rule. Re-run 2026-11-21 on the Amendment 1 skill (T012); still passing.",
   "procedure": "procedure_001",
   "scenario": "SC-001"
 }

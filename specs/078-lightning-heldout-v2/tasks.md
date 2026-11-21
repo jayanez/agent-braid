@@ -85,10 +85,38 @@ per task; the owner approves each merge.
   final candidate once on `v2-test` and on SPEC-069 v1 held-out; paired exact
   test vs A0. Dependencies: T008. Verification: procedure_011.
 
+Adopted disposition (2026-11-21): T008 and T009 are cancelled, not completed
+(owner records `evidence/t008-owner-disposition-2026-11-21.json` and
+`evidence/t009-owner-disposition-2026-11-21.json`). The original lines and
+checkboxes above stay unchanged; Amendment 1 replaces them with T012–T015.
+The coordinator binds both records in `task_cancellations` of the tracking
+configuration after this merges.
+
+## Phase P3a — Amendment 1: hand fix on a fresh split
+
+- [x] T012 (REQ-013 / SC-013): Add the two kind-selection sentences of the
+  Gate 1 diagnosis to the analyze skill (never `units` for a parallel or
+  overlap question; placeholder digests are expected for `aim`) and pin them
+  (`KindSelectionTests`). Files: the skill, `tests/test_spec078_kind_guidance.py`.
+  Dependencies: T006. Verification: procedure_013.
+- [ ] T013 (REQ-014 / SC-014): Build a fresh `v3-test` split (100 prompts, the
+  ten classes) from new templates and a new seed, without reading v2 traces or
+  prompts; record the generator and seed; check 8-word window disjointness
+  against v1, v2 and the skill; run Gate 0 references and null baselines on it
+  before any rollout; add `v3-test` to the runner. Dependencies: T012.
+  Verification: procedure_014 (build and Gate 0 part).
+- [ ] T014 (REQ-014 / SC-014): Freeze the v3 split, the protocol amendment and
+  the fixed skill by hash on a `develop` commit after T012 and T013 merge.
+  Dependencies: T012, T013. Verification: procedure_014 (freeze part).
+- [ ] T015 (REQ-014 / SC-014): With the owner's yes for 300 rollouts (given
+  2026-11-21 with option 4), run the fixed skill as A0' once on `v3-test`
+  (`claude-code`, `claude-sonnet-5-5`), review any 0/3 prompt, and record the
+  OD-1 verdict. Dependencies: T014. Verification: procedure_014 (run part).
+
 ## Phase P4 — convergence
 
 - [ ] T010: Converge (`speckit-converge`), record the outcome in `spec.md`, freeze
   this specification on a `develop` commit, report to the coordinator.
-  Dependencies: T007 or T009. Verification: `python -m scripts.validate_spec_kit`
+  Dependencies: T007 or T015. Verification: `python -m scripts.validate_spec_kit`
   in a clean clone; every exit scenario has obtained evidence or a recorded
   reason. Completion means the protocol ran, not that H-A0 or H-G2 holds.

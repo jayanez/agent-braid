@@ -228,12 +228,35 @@ records them):
   or grant paths, uses an API key, an LLM judge or a paid route, or adds a
   runtime dependency; `executionAuthorization` stays false; spend is EUR 0.
 
+### Amendment 1 (owner decision 2026-11-21)
+
+Gate 1 missed OD-1 on one guidance gap (`evidence/gate1-diagnosis.json`). The
+owner chose to fix the skill by hand and measure it on a fresh split instead
+of running Gate 2. REQ-010 and REQ-011 (T008, T009) are cancelled, not met, and
+H-G2 is not tested. A narrowed optimizer scope would have been test-informed.
+
+- **REQ-013 — Kind-selection fix.** The analyze skill states, in its
+  kind-selection section, that a parallel or overlap question is never answered
+  with `units` and that placeholder digests are expected for `aim`. Tests pin
+  both sentences and the analyzer behaviour they describe.
+- **REQ-014 — A0' on a fresh split.** A new `v3-test` split (100 prompts, the
+  ten classes, new templates and seed, disjoint 8-word windows from v1, v2 and
+  the skill, never built from v2 traces or prompts) passes Gate 0 before any
+  rollout and is frozen with the fixed skill on a `develop` commit. The fixed
+  skill runs once on it as A0' (300 rollouts, owner yes 2026-11-21), with the
+  same OD-1 and zero-prompt review as Gate 1. H-A0': A0' meets OD-1 on v3-test.
+  The result is one host, model and set; it is not compared statistically
+  with A0 on v2-test, since the sets differ.
+- The v2 freeze (`prompts/FREEZE.json`) and the Gate 1 evidence stay bound to
+  the skill that was measured (`9ba3424c…`); the v3 freeze (T014) binds the
+  fixed skill. v2 runs refuse the fixed skill by design.
+
 ## Success criteria
 
 Each requirement has one acceptance scenario (SC-001 to SC-012) in
 `assurance.json`, with its procedure in `validation-plan.md`. Milestone exit:
 SC-001 to SC-008 and SC-012 obtained, plus SC-009 if A0 meets the threshold or
-SC-010 and SC-011 if it misses. Any outcome, including a miss followed by a null
+SC-010 and SC-011 if it misses (after Amendment 1: SC-013 and SC-014). Any outcome, including a miss followed by a null
 Gate 2, completes the protocol.
 
 ## Scientific boundaries

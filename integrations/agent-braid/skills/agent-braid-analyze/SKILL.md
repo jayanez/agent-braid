@@ -36,7 +36,11 @@ Pick the `kind` first; each kind has a different request shape.
 
 Work that touches disjoint files is `unknown` under `units` because that kind
 always records partial coverage, so use `aim` when the user wants to know whether
-the work can go in parallel. Copy the matching example and change only what the
+the work can go in parallel. Never use `units` to answer whether work can run in
+parallel, even when only paths are known. `aim` does not need real digests:
+placeholder `sha256:` values like the ones in the example below are expected, so
+never skip the call because you cannot compute digests, and say the input is
+synthetic. Copy the matching example and change only what the
 user's work defines. Never call `analyze-work` with an invented shape to see what
 happens.
 

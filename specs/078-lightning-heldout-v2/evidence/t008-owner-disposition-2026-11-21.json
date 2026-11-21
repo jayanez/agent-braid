@@ -1,0 +1,14 @@
+{
+  "version": "agent-braid-task-cancellation-v1",
+  "taskId": "SPEC-078/T008",
+  "decision": "adopted",
+  "disposition": "cancelled-partial-infeasible",
+  "stateReason": "not_planned",
+  "criterionCompleted": false,
+  "taskLineSha256": "bd4177ce60ce7dd3581dfcbc8137c493f99e38ace656504d613cf038ed86622c",
+  "sourceReference": "Direct human owner instruction in this Claude Code session on 2026-11-21, choosing option 4 of the Gate 2 question (\"4: Arreglo a mano (Recommended)\"): fix the analyze skill by hand from the Gate 1 diagnosis and measure it as a new A0 on a fresh test split instead of running the bounded-edit arm. Integrator-recorded provenance, not independently authenticated.",
+  "reason": "The bounded-edit arm is not built: the owner chose a hand fix measured on a fresh split (T012-T015), because a scope narrowed from the Gate 1 diagnosis would be test-informed and the optimizer sees the failure mode in about 7 % of feedback trials only.",
+  "dependenciesSatisfied": false,
+  "executionAuthorization": false,
+  "newExecutionOrPackageAuthorized": false
+}

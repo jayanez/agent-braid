@@ -2,12 +2,13 @@
   "actual": "OK; gate0 passed",
   "command": ".venv-speckit/bin/python -m scripts.spec078_gate0 --json specs/078-lightning-heldout-v2/evidence/gate0-report.json && .venv-speckit/bin/python -m unittest tests.test_spec078_gate0",
   "environment": {
+    "baseCommit": "e79b33b0b434514e1f0412b0240a474cf77a1310",
     "platform": "macOS-27.2.1",
     "python": "3.12.13"
   },
   "expected": "the literal follower (skill example copied, pinned rules applied) is valid on 164/164; all 12 rule sentences present",
   "inputs": {
-    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "9ba3424c0aac5697c5c67d5f7e382f6c751e6cda791d36f3faa6145e00703641",
+    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "8fb7c5cd75004b85a7064c69abc718c15ee50db580c648d3c06e80721409002f",
     "scripts/spec069_fixture_workspace.py": "2f300ac845cf477403f7d2946f3c5360f1b58990bcee39aa9430318538bb87e5",
     "scripts/spec069_scoring.py": "3efa384e277ae8cdb97f048855f2189c80090a23160d2cadd163fc542eb54b87",
     "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
@@ -17,7 +18,7 @@
     "specs/078-lightning-heldout-v2/prompts/validation.json": "60d092aa0eaeaf17a4c28259807cd3bcde83bb7318866fb45182f8efe696029f",
     "tests/test_spec078_gate0.py": "61adbbeba95365c40c58cae49840d3006415f3805e4ca0a0c5ca899d7390d118"
   },
-  "limits": "Deterministic check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture. The follower copies the skill's examples, but each rule's meaning is hand-coded: the pins catch removal or rewording of the twelve pinned sentences, not an added sentence that contradicts a rule. It shows the guidance can be satisfied, not that hosts follow it.",
+  "limits": "Deterministic check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture. The follower copies the skill's examples, but each rule's meaning is hand-coded: the pins catch removal or rewording of the twelve pinned sentences, not an added sentence that contradicts a rule. It shows the guidance can be satisfied, not that hosts follow it. Re-run 2026-11-21 on the Amendment 1 skill (T012); still passing.",
   "negativeControls": "dropping any pinned sentence fails the pin check; a prompt whose wording reads as another kind fails the follower; the old read rule's answer fails chain-plain cases",
   "procedure": "procedure_004",
   "scenario": "SC-004"
