@@ -194,7 +194,7 @@
               "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_003.json",
-              "sha256": "c19f7382754e9684d6338c97b947c9bac28ed12ea329226da8911fe261c412d3"
+              "sha256": "29e03b6d549adfbebfcd8d0f411d6285dab678f511a852c905f9ab24760feb11"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_003.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py ReferenceTests.",
@@ -218,7 +218,7 @@
               "limits": "Deterministic check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture. The follower copies the skill's examples, but each rule's meaning is hand-coded: the pins catch removal or rewording of the twelve pinned sentences, not an added sentence that contradicts a rule. It shows the guidance can be satisfied, not that hosts follow it.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_004.json",
-              "sha256": "7e6d25ca224ac7becb45e65b306f759798fd8fce6a2ff543c363f2cd511ac189"
+              "sha256": "26c07848d6d21e7790c053caae32a84ba133faad09fa766ef5d9d18e5a25b7d9"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_004.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py LiteralFollowerTests.",
@@ -242,7 +242,7 @@
               "limits": "Deterministic structural check through analyze-work and the SPEC-069 scorer on the SPEC-069 fixture; it shows the instrument can be satisfied and is not trivially satisfied, not that hosts will follow the guidance.",
               "outcome": "passed: OK; gate0 passed",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_005.json",
-              "sha256": "1b0c298287e52c67b7ac8c9975d588300b397b7bf99eb2460b7025f7afae4e61"
+              "sha256": "754589789d61d5ac8eac45b2218ab7f013f18f8f8aad13a8df70a2b920414014"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_005.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_gate0.py NullBaselineTests.",
@@ -260,10 +260,18 @@
         {
           "given": "an arm result with a 0/3 prompt",
           "id": "SC-006",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_heldout_v2",
+              "limits": "Synthetic results through the analysis functions; the review itself is a human step at Gate 1.",
+              "outcome": "passed: OK",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_006.json",
+              "sha256": "5dbe189382fc6b79dfc678b82bcdc04b0c73936596f30943e727cbad50310610"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_006.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py ZeroPromptReviewTests.",
-          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
-          "test_name": "procedure_006",
+          "test_file": "tests/test_spec078_heldout_v2.py",
+          "test_name": "AnalysisTests.test_a_zero_prompt_is_held_then_counted_or_invalidating",
           "then": "the verdict is held until the prompt is classified; an instrument finding invalidates the arm",
           "when": "the analysis runs"
         }
@@ -278,8 +286,8 @@
           "id": "SC-007",
           "obtained_evidence": [],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_007.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_freeze.py FreezeTests.",
-          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
-          "test_name": "procedure_007",
+          "test_file": "tests/test_spec078_heldout_v2.py",
+          "test_name": "FreezeTests.test_any_edited_bound_file_is_refused",
           "then": "a v2 run starts only when every frozen hash matches, including the skill used by the final source; an edited file or missing freeze is refused",
           "when": "a held-out run starts"
         }
@@ -356,10 +364,18 @@
         {
           "given": "the BL.2b modules",
           "id": "SC-012",
-          "obtained_evidence": [],
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_heldout_v2",
+              "limits": "Static and fake-host checks; procedure_012 is re-run over lightning_edits if Gate 2 opens (T008).",
+              "outcome": "passed: OK",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_012.json",
+              "sha256": "50ead11cca5296b01cb3fb862f7026169aa0cce499886f13eabb8474864b65e3"
+            }
+          ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_012.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_boundaries.py BoundaryTests.",
-          "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
-          "test_name": "procedure_012",
+          "test_file": "tests/test_spec078_heldout_v2.py",
+          "test_name": "BoundaryTests.test_the_v2_module_imports_only_the_standard_library",
           "then": "no scorer, set or skill writes, no promotion or execution paths, no API key, standard library only",
           "when": "the boundary tests inspect imports and writes"
         }

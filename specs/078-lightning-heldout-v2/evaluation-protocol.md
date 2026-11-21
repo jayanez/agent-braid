@@ -44,8 +44,9 @@ result completes the protocol.
    is re-frozen, and the arm runs once on the new version. The invalidated run
    stays in the record.
 
-`scripts/spec078_gate0.meets_od1` implements items 1 and 2 (the first two
-conditions); the held-out command applies the review hold of item 3.
+`agent_braid/lightning_heldout_v2.analyse` implements items 1 to 3 (Gate 0 uses
+the same `meets_share_and_classes` for items 1 and 2); the module is bound by the
+freeze. Refusals are listed in [contracts/refusals.md](contracts/refusals.md).
 
 ## Gate 1: A0 on the test split
 
@@ -118,7 +119,9 @@ Caps: owner decision 2026-11-21, at most 4 rounds and at most 400 characters cha
   denied paths. The SPEC-072 contamination scan is extended to v2 validation
   and test fingerprints (T005).
 - Every `v2-*` run refuses when any frozen hash differs: the protocol, a split,
-  the Gate 0 script, or the skill used by the `final` source.
+  the Gate 0 script, the v2 analysis module, or the skill used by the `final`
+  source. An A0 run refuses a prebuilt plugin. A candidate is scored on
+  `v2-test` once: a second, non-resumed run of the same candidate is refused.
 - Every rollout checks that the skill was loaded. A rollout without it counts
   as invalid and is reported.
 - No LLM judge. No API key. No paid route. `executionAuthorization` stays
