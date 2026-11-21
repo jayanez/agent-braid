@@ -1,0 +1,30 @@
+{
+  "actual": "build reproducible; 10 prompts per class; Gate 0 passed: 0 failing references, 0 follower failures, 0 partial-control failures, no null baseline meeting the threshold (passing of 100 or of its scope: {'empty-declaration': 0, 'no-call': 0, 'over-declaration': 10, 'partial-coverage': 10, 'units-kind': 10, 'wrong-base': 0}); old read-rule strategy 90/100 below the threshold; 14 tests OK",
+  "command": ".venv-speckit/bin/python -m scripts.spec078_build_v3 --check && .venv-speckit/bin/python -m scripts.spec078_build_v3 --gate0 specs/078-lightning-heldout-v2/evidence/gate0-v3-report.json && .venv-speckit/bin/python -m unittest tests.test_spec078_v3",
+  "environment": {
+    "baseCommit": "deea93a039355da5ec22187746c57547ccb7b3b7",
+    "platform": "macOS-27.2.1",
+    "python": "3.12.13"
+  },
+  "expected": "a 100-prompt v3-test split with the ten classes, built from seed 3078 and its own templates; no fact pattern of a v2 split and no 8-word window shared with v2, SPEC-069 or the skill; Gate 0 passes on it before any rollout; the runner accepts v3-test only once frozen",
+  "inputs": {
+    "agent_braid/lightning_heldout_v3.py": "8ce2f3ea67a01e04f715bbfea2f0452207ec8fa3b497038935f594721908aa75",
+    "agent_braid/lightning_runner.py": "0cfff8824d218f01eab1511afe3c9e5e10cc8987cf3b1b70811051e83cca051e",
+    "integrations/agent-braid/skills/agent-braid-analyze/SKILL.md": "8fb7c5cd75004b85a7064c69abc718c15ee50db580c648d3c06e80721409002f",
+    "scripts/spec078_build_set.py": "ba60df80c8f5be87fe5f75a24b0ad0c7206d7454aaa5d71337d6f8c6c46e534b",
+    "scripts/spec078_build_v3.py": "b3d05a21b85fba6ca4905c17a570596e8e6ae55eafbf3b39bf48cca9ef1d5788",
+    "scripts/spec078_freeze_v3.py": "02d35eafabedbe598ac449a56bf5f76e991096613f4ec3d37b4925e9d58a8f6b",
+    "scripts/spec078_gate0.py": "dbb15489bd6653d7f3bca822a6fc140b1c9043a9846617e0ee5b5c01c9635f00",
+    "specs/078-lightning-heldout-v2/evaluation-protocol-v3.md": "3e6b44a8f25d81c777a2a90689d2f6c8145db3ce405efadea9d50187eb207fa2",
+    "specs/078-lightning-heldout-v2/evidence/gate0-v3-report.json": "da1e592ca472360de24026247e41e0e44e2c6ff993771aada604702960a9ae0a",
+    "specs/078-lightning-heldout-v2/prompts/feedback.json": "7da4d963090378e5622bbf736e7c982f8a98ee2e6c2f6bcd70ef30885b86c703",
+    "specs/078-lightning-heldout-v2/prompts/test.json": "e65e16a4ae908394c00e0ddb973fe364bd78ba38970167fef57293693524c9cf",
+    "specs/078-lightning-heldout-v2/prompts/v3-test.json": "7b71a59a67a359f188caec67658a692d02b28709ad6e17e35e206035c7d5bebc",
+    "specs/078-lightning-heldout-v2/prompts/validation.json": "60d092aa0eaeaf17a4c28259807cd3bcde83bb7318866fb45182f8efe696029f",
+    "tests/test_spec078_v3.py": "bca31ce84a33ab183c80944add70caf011b471e586f9131c8d86b6131a48ca81"
+  },
+  "limits": "The v3 templates are new wording, not derived from v2 prompts or traces, but the author had read three v2-test prompts and their traces during the Gate 1 review; independence rests on the mechanical checks (no shared fact pattern, no shared 8-word window). The builder reuses the v2 fact generator, so the fact space is the same fixture. No rollout ran.",
+  "negativeControls": "a case copied from v2 is refused (fact pattern), a prompt sharing a v2 window is refused, a prompt that does not follow from its facts is refused; an unfrozen, edited or wrongly repeated v3 run and a prebuilt A0 plugin are refused; a second v3-test pass of the same candidate is refused; a prompt sharing a window with a SPEC-069 prompt or the skill is refused; another arm or a case subset is refused; the contamination scan fails its test when the v3 fingerprints are left out",
+  "procedure": "procedure_014",
+  "scenario": "SC-014"
+}

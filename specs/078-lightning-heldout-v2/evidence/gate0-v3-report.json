@@ -1,0 +1,83 @@
+{
+ "follower": [],
+ "nulls": {
+  "empty-declaration": {
+   "splits": {
+    "test": {
+     "meetsThreshold": false,
+     "of": 90,
+     "passing": 0,
+     "wilsonLower": 0.0
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "no-call": {
+   "splits": {
+    "test": {
+     "meetsThreshold": false,
+     "of": 100,
+     "passing": 0,
+     "wilsonLower": 0.0
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "over-declaration": {
+   "splits": {
+    "test": {
+     "meetsThreshold": false,
+     "of": 20,
+     "passing": 10,
+     "wilsonLower": 0.2993
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "partial-coverage": {
+   "splits": {
+    "test": {
+     "meetsThreshold": false,
+     "of": 90,
+     "passing": 10,
+     "wilsonLower": 0.0615
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "units-kind": {
+   "splits": {
+    "test": {
+     "meetsThreshold": false,
+     "of": 90,
+     "passing": 10,
+     "wilsonLower": 0.0615
+    }
+   },
+   "unexpectedPasses": []
+  },
+  "wrong-base": {
+   "splits": {
+    "test": {
+     "meetsThreshold": false,
+     "of": 10,
+     "passing": 0,
+     "wilsonLower": 0.0
+    }
+   },
+   "unexpectedPasses": []
+  }
+ },
+ "oldReadRuleStrategy": {
+  "test": {
+   "meetsThreshold": false,
+   "of": 100,
+   "passing": 90,
+   "wilsonLower": 0.8256
+  }
+ },
+ "partialControls": [],
+ "passed": true,
+ "pins": [],
+ "references": []
+}

@@ -99,19 +99,19 @@ configuration after this merges.
   overlap question; placeholder digests are expected for `aim`) and pin them
   (`KindSelectionTests`). Files: the skill, `tests/test_spec078_kind_guidance.py`.
   Dependencies: T006. Verification: procedure_013.
-- [ ] T013 (REQ-014 / SC-014): Build a fresh `v3-test` split (100 prompts, the
-  ten classes) from new templates and a new seed, without reading v2 traces or
+- [x] T013 (REQ-014 / SC-015): Build a fresh `v3-test` split (100 prompts, the
+  ten classes) from new templates and a new seed, not derived from v2 traces or
   prompts; record the generator and seed; check 8-word window disjointness
   against v1, v2 and the skill; run Gate 0 references and null baselines on it
   before any rollout; add `v3-test` to the runner. Dependencies: T012.
-  Verification: procedure_014 (build and Gate 0 part).
+  Verification: procedure_014.
 - [ ] T014 (REQ-014 / SC-014): Freeze the v3 split, the protocol amendment and
   the fixed skill by hash on a `develop` commit after T012 and T013 merge.
-  Dependencies: T012, T013. Verification: procedure_014 (freeze part).
+  Dependencies: T012, T013. Verification: procedure_016 (freeze part).
 - [ ] T015 (REQ-014 / SC-014): With the owner's yes for 300 rollouts (given
   2026-11-21 with option 4), run the fixed skill as A0' once on `v3-test`
   (`claude-code`, `claude-sonnet-5-5`), review any 0/3 prompt, and record the
-  OD-1 verdict. Dependencies: T014. Verification: procedure_014 (run part).
+  OD-1 verdict. Dependencies: T014. Verification: procedure_016 (run part).
 
 ## Phase P4 — convergence
 

@@ -266,7 +266,7 @@
               "limits": "Synthetic results through the analysis functions; the review itself is a human step at Gate 1. Trace storage is shown on fake hosts; real transcripts appear only in the Gate 1 run.",
               "outcome": "passed: OK",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_006.json",
-              "sha256": "da853e9180a20f383419019c36ae689fefc3e2d067077f0da9d25af3448dc8fd"
+              "sha256": "a917a3ff343135cafc61057eab4983c3db7addf3e9a2f2d7ae9541d309493e7e"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_006.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py ZeroPromptReviewTests.",
@@ -314,7 +314,7 @@
               "limits": "One host, model and set; an empirical summary, not a guarantee. Key source none is the accepted SPEC-069 fixture value. The review is one reviewer reading only the three prompts' redacted transcripts; the reproduction test runs only where the lab run exists.",
               "outcome": "passed: OK (OD-1 misses)",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_008.json",
-              "sha256": "07bba93c568a22f2f514b730c5984b2154e3bb1ce1201110c790e7716f6af745"
+              "sha256": "d607543f77d01634c00a305466948185140f28008f66e7f53b270471af6c8b00"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_008.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_analysis.py AnalysisTests.",
@@ -386,7 +386,7 @@
               "limits": "Static and fake-host checks; procedure_012 is re-run over lightning_edits if Gate 2 opens (T008).",
               "outcome": "passed: OK",
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_012.json",
-              "sha256": "13a84e351f8a0e7d08b81594908e091a75d784134ef843d60b7a1e0749843fa6"
+              "sha256": "33e0ad811d204879fcb3db09bd5b3d107a82511cad7aee49e24f135ef5e19191"
             }
           ],
           "planned_evidence": "Candidate-bound procedure record evidence/procedure_012.json: command, hashes, environment, expected and actual outcome, negative controls. Planned test: tests/test_spec078_boundaries.py BoundaryTests.",
@@ -432,9 +432,27 @@
           "when": "A0' runs on v3-test",
           "then": "the record holds the same Gate 1 report and the OD-1 verdict",
           "test_file": "specs/078-lightning-heldout-v2/validation-plan.md",
-          "test_name": "procedure_014",
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_014.json: command, hashes, environment, expected and actual outcome, negative controls.",
+          "test_name": "procedure_016",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_016.json (freeze and A0' run): command, hashes, environment, expected and actual outcome, negative controls.",
           "obtained_evidence": []
+        },
+        {
+          "id": "SC-015",
+          "given": "the fixed skill and the v2 splits",
+          "when": "the v3 split is built and Gate 0 runs on it",
+          "then": "the split is reproducible, shares no fact pattern or 8-word window with v2, SPEC-069 or the skill, and Gate 0 passes before any rollout",
+          "test_file": "tests/test_spec078_v3.py",
+          "test_name": "BuildTests.test_gate0_passes_on_the_committed_split",
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_014.json (build and Gate 0).",
+          "obtained_evidence": [
+            {
+              "command": ".venv-speckit/bin/python -m scripts.spec078_build_v3 --check && .venv-speckit/bin/python -m scripts.spec078_build_v3 --gate0 specs/078-lightning-heldout-v2/evidence/gate0-v3-report.json && .venv-speckit/bin/python -m unittest tests.test_spec078_v3",
+              "limits": "The v3 templates are new wording, not derived from v2 prompts or traces, but the author had read three v2-test prompts and their traces during the Gate 1 review; independence rests on the mechanical checks (no shared fact pattern, no shared 8-word window). The builder reuses the v2 fact generator, so the fact space is the same fixture. No rollout ran.",
+              "outcome": "passed: OK",
+              "path": "specs/078-lightning-heldout-v2/evidence/procedure_014.json",
+              "sha256": "3eb9bdb887ed1103cdd2c259ee9af1a3fddfc569fd781bf7fb642b79ae025243"
+            }
+          ]
         }
       ]
     }

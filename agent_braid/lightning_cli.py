@@ -90,7 +90,7 @@ def add_parser(subparsers):
     mode.add_argument('--dry-run', action='store_true', help='print the planned rollouts; launch nothing')
     mode.add_argument('--fake-hosts', action='store_true', help='run the full pipeline against fake hosts (pipeline-only)')
     mode.add_argument('--resume', metavar='RUN_ID', help='continue a stopped run explicitly (never automatic)')
-    runner.add_argument('--prompt-set', choices=('development', 'held-out', 'v2-feedback', 'v2-validation', 'v2-test'),
+    runner.add_argument('--prompt-set', choices=('development', 'held-out', 'v2-feedback', 'v2-validation', 'v2-test', 'v3-test'),
                         default='development')
     runner.add_argument('--plugin-dir', type=Path, help='a prebuilt plugins/agent-braid directory; skips the build')
     runner.add_argument('--seed-run', metavar='RUN_ID',

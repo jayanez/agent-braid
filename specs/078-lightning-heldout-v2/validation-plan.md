@@ -21,4 +21,5 @@ H-A0 or H-G2.
 | procedure_011 | SC-011 | Gate 2 test and v1 runs (if Gate 2) | paired exact test vs A0; v1 no-regression; canary invalidates | canary hit on fake host invalidates the arm |
 | procedure_012 | SC-012 | `tests/test_spec078_boundaries.py` | no scorer, set or skill writes; no promotion, execute, recover or grant import; no API key; stdlib only | forbidden import or write detected |
 | procedure_013 | SC-013 | `tests/test_spec078_kind_guidance.py` | both sentences in the kind-selection section; units on disjoint writes reports unknown; aim with placeholder digests reports independent-candidate | the sentences removed fail the pin |
-| procedure_014 | SC-014 | v3 build and Gate 0 report, v3 freeze, `evidence/gate1-v3-a0prime.json` | fresh split disjoint from v1/v2; Gate 0 passes before any rollout; 300 rollouts and the OD-1 verdict | a split overlapping v2 windows is refused |
+| procedure_014 | SC-015 | v3 build and `evidence/gate0-v3-report.json` | fresh split disjoint from v1/v2 and the skill; Gate 0 passes before any rollout | a v2 fact pattern, a shared window or a prompt not following its facts is refused |
+| procedure_016 | SC-014 | v3 freeze and `evidence/gate1-v3-a0prime.json` | freeze on a develop commit; 300 rollouts and the OD-1 verdict | an unfrozen or edited v3 run is refused |
