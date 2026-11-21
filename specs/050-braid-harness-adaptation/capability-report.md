@@ -69,7 +69,7 @@ CI on the PR head is the `pr`-profile evidence.
 | Requirement / scenario | Delivering tasks and evidence | Implemented (offline) | Qualified | Activated | Pending and owner |
 |---|---|---|---|---|---|
 | REQ-001 / SC-001 bounded component profiles | T001 contract (#1210); T002 `harness_components` (#1271); T003-T006, T010, T011 consumers; [integration](evidence/integration/) | Yes. Immutable profiles, linked versions, protected precedence, claude-only host schema, derived admission. | No | No | Native host qualification (SPEC-048/T008); C3-C8 admission stays blocked per contract section 8 |
-| REQ-002 / SC-002 skills and qualified helpers | T003 `harness_skills` (#1273); T004 `harness_tools`, partial (#1272); T008 | Partial. Lazy inert skills and offline E0-E2 helpers only. No subprocess or network adapter. | No | No | T004 subprocess/network adapters wait for SPEC-048/T008 and an adopted E3 contract; contract section 8 C5 row amendment |
+| REQ-002 / SC-002 skills and qualified helpers | T003 `harness_skills` (#1273); T004 `harness_tools`, partial (#1272, #1437); T008 | Partial. Lazy inert skills and offline E0-E2 helpers. An E3 subprocess adapter exists against deterministic doubles only (#1437); no network adapter. | No | No | T004 E3 helpers: adoption of the section 13 draft, a SPEC-065 re-qualification after SPEC-049/T014 that pins them, and SPEC-048/T008; E4 stays blocked |
 | REQ-003 / SC-003 hooks and plugin components | T005 `harness_hooks` (#1277); T011 | Yes, on doubles only. Event matrices are modeled, not observed. | No | No | Host hook inventory (contract section 12 Q3); containment qualification; C6/C7 blocked from the start (owner decision 4) |
 | REQ-004 / SC-004 interaction-aware delegation | T006 `harness_orchestration` (#1278); T007 | Yes, as a serial policy layer with width 1. Advisory parallelism only. | No | No | Provider-native delegation needs its own qualified profile; C8 blocked |
 | REQ-005 / SC-005 depth/width refinement | T007 `harness_search` (#1293) | Yes. Equal-budget arms on synthetic doubles. Depth or width above 1/1 needs a contract amendment. | No | No | Native concurrency (exact effect profile); any utility comparison needs native cohorts (SPEC-049/T014) |
@@ -132,9 +132,12 @@ needs separate authorization and its own record (SPEC-049/T010).
   - top-level alias;
   - `evidence/t010.json`;
   - the plugin/MCP surface, which is M4.8 and excluded from this task.
-- **T004 (partial):** subprocess and network helper adapters (SPEC-048/T008 plus an
-  adopted E3 effect contract), and `evidence/t004.json`.
-- **Contract amendments:** the section 8 C5 row (T004); the host hook inventory (section 12
+- **T004 (partial):** the E3 subprocess adapter exists against deterministic doubles only
+  (#1437); still open are adoption of the section 13 E3 draft, a SPEC-065
+  re-qualification after SPEC-049/T014 that pins the helpers (with SPEC-048/T008), one
+  contained helper run as `evidence/t004.json`; E4 network helpers stay blocked.
+- **Contract amendments:** adoption of the section 13 E3 draft (T004; the section 8 C5 row
+  was amended in v0.2-draft, #1437); the host hook inventory (section 12
   Q3); the `core/prompts.py` pinned hash and `core/proposer.py` fit review (section 12 Q4).
 - **SPEC-049:**
   - T008 is `deferred` and SPEC-050/T009 abstains with `pending-endpoints`, so automatic
