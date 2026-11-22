@@ -37,7 +37,8 @@
     "BL.3 — Lightning promotion": "Human-only promotion of optimized guidance through the HAR profile registry, with build check and rollback (SPEC-073).",
     "BL.4 — Lightning trace consent": "Consent, redaction, retention and trace adapters for content-bearing Braid Lightning traces (SPEC-074, ADR 0041).",
     "BL.5 — Lightning dataset export": "Deterministic supervised and trajectory dataset export with manifests and a usage-terms gate (SPEC-075).",
-    "BL.2b — Lightning held-out re-evaluation": "Repaired measurement for Lightning guidance: HELD-04 guidance fix, preregistered held-out v2 with Gate 0, baseline A0 first and bounded optimization only if A0 misses (SPEC-078)."
+    "BL.2b — Lightning held-out re-evaluation": "Repaired measurement for Lightning guidance: HELD-04 guidance fix, preregistered held-out v2 with Gate 0, baseline A0 first and bounded optimization only if A0 misses (SPEC-078).",
+    "BL.2c — Lightning tool-level kind-choice fix": "Tool-level fix for the units/aim kind choice: disjoint units refusal with redirect, clarified analyze-work and analyze descriptions, preregistered fresh held-out v4 with the OD-1 gate (SPEC-079)."
   },
   "closed_milestones": [
     "M0 — Operational foundations",
@@ -363,6 +364,10 @@
     },
     "077-harness-mcp-readonly": {
       "milestone": "HAR.3 — Braid Harness adaptation and integration",
+      "state": "open"
+    },
+    "079-kind-choice-tool-fix": {
+      "milestone": "BL.2c — Lightning tool-level kind-choice fix",
       "state": "open"
     }
   },
