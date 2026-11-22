@@ -538,6 +538,10 @@
     "BL.2b — Lightning held-out re-evaluation": 35
   },
   "task_cancellations": {
+    "SPEC-078/T007": {
+      "decision": "specs/078-lightning-heldout-v2/evidence/t007-owner-disposition-2026-11-22.json",
+      "sha256": "0dbe59802b8cd5b3e2d91bfabbd9ec8389f991e89219ac1048aa0b48b99218a7"
+    },
     "SPEC-078/T008": {
       "decision": "specs/078-lightning-heldout-v2/evidence/t008-owner-disposition-2026-11-21.json",
       "sha256": "ce75e8b0580e55d8c6871637e05ed4385509d504e377e417deacd80c284ac314"
