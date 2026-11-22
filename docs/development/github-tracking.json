@@ -66,7 +66,8 @@
     "BL.2 — Lightning prompt optimization",
     "BL.4 — Lightning trace consent",
     "BL.5 — Lightning dataset export",
-    "M4.8 — AIM request authoring"
+    "M4.8 — AIM request authoring",
+    "BL.2b — Lightning held-out re-evaluation"
   ],
   "unpublished_milestones": [
     "M4.6 — Claude Code dynamic workflows"
@@ -354,7 +355,7 @@
     },
     "078-lightning-heldout-v2": {
       "milestone": "BL.2b — Lightning held-out re-evaluation",
-      "state": "open"
+      "state": "closed"
     },
     "076-lightning-local-grpo": {
       "milestone": "Deferred",
