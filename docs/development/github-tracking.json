@@ -579,7 +579,9 @@
     "BL.4 — Lightning trace consent": 33,
     "BL.5 — Lightning dataset export": 34,
     "BL.2b — Lightning held-out re-evaluation": 35,
-    "BL.2c — Lightning tool-level kind-choice fix": 36
+    "BL.2c — Lightning tool-level kind-choice fix": 36,
+    "HAR.4 — Harness evaluation platform": 37,
+    "M4.9 — AI tooling integration for Pi and ThinkRail": 38
   },
   "task_cancellations": {
     "SPEC-078/T007": {
