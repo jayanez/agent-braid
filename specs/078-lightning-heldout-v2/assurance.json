@@ -12,7 +12,7 @@
   ],
   "assumptions": "The SPEC-069 scorer and fixture workspace are reused unchanged; the SPEC-071 runner on the claude-code subscription route is available; model pinned to claude-sonnet-5-5; owner decisions D1-D4 and OD-1 to OD-3 (2026-11-18/20, OD-1 per-class clause added 2026-11-20) apply.",
   "authority_snapshot": {
-    "commit": "a02027f57afb71016e96a72afdb6f2d883c6a328",
+    "commit": "4d290ca13d7da406e056439fe4621170d1a06cfa",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -66,7 +66,7 @@
       "docs/adr/0040-braid-lightning-mit-vendoring.md": "ef0053259f7f9dc5929ed8709f037a6632a874c4bc035a898be8649afa5f0c84",
       "docs/adr/0041-braid-lightning-content-traces.md": "1361654c3cb9a4b745eaf3aa3a3613fc0b76278a93f9fad3421bfd8a37a0a73c",
       "docs/adr/0042-braid-lightning-local-weight-training.md": "d4b1c5b7664a88be27ce64c4a3eb013161103e47694cab445b3e70b5269eacaf",
-      "docs/adr/0043-harness-mcp-readonly-surface.md": "c6b7a775eca80a759a450e4261cd61d7d34208642cecb6dc985d56532016d921",
+      "docs/adr/0043-harness-mcp-readonly-surface.md": "a13056d225ae28528d937f06df095d7822e857e4033b3a430e184058049e8953",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
       "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
@@ -110,7 +110,7 @@
   "compatibility": "Additive. SPEC-069 sets, FREEZE, scorer and fixture unchanged; the T001 guidance change ships in the next alpha; new set version spec078-held-out-v2.",
   "domain": "First-attempt validity, under the SPEC-069 scorer, of analyze-work requests written by one host and model from synthetic prompts over the SPEC-069 fixture workspace.",
   "evidence_snapshot": {
-    "commit": "a02027f57afb71016e96a72afdb6f2d883c6a328",
+    "commit": "4d290ca13d7da406e056439fe4621170d1a06cfa",
     "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; rollouts use SPEC-071 disposable profiles, an OS sandbox and the host subscription route only; any *_API_KEY in a child environment is refused; extra cash spend EUR 0; every real run needs the owner's yes on the stated rollout count. No candidate is promoted.",
