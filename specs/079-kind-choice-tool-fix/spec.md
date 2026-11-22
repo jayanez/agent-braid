@@ -77,8 +77,8 @@ Owner decisions (2026-11-22, `speckit-clarify`):
   written resource, no write/read overlap, no declared dependency between any two
   units; read/read sharing is not overlap), it does not return an `ok` report whose pairs are all `unknown`.
   It returns status `refused` (OD-A) with code `units-cannot-answer-independence` and a
-  message naming `kind: aim` and the skill. Non-disjoint and mixed declarations (any
-  pair overlapping or dependent) keep their current behaviour byte-for-byte.
+  message naming `kind: aim` and the skill. A single-unit declaration, and non-disjoint
+  or mixed declarations (any pair overlapping or dependent), keep their current behaviour byte-for-byte.
   - SC-001: Given two units writing different files with no dependency, when
     `analyze-work` is called with `kind: units`, then the response is `refused` with
     code `units-cannot-answer-independence` and no pair verdict is reported as the answer.
@@ -102,7 +102,8 @@ Owner decisions (2026-11-22, `speckit-clarify`):
   independence and is refused for disjoint work; digests are any well-formed
   `sha256:` value identifying the definition and input (example given); the skill
   has a copyable example. The `description-only` delivery carries the same `units` sentence. It stays
-  within the D12 size cap.
+  within the SPEC-069 D12 cap (1,500 tokens for the
+  compact `analyze-work` definition).
   - SC-006: Given the tool list, when the description is read, then it matches
     the frozen text and length cap, and the old digest line is absent.
 - **REQ-004 — `analyze` tool description.** The `analyze` tool's description
@@ -180,7 +181,9 @@ v3-test.
 
 ## Evidence and unresolved questions
 
-Planned and obtained evidence are kept in `assurance.json`. OD-A to OD-D are
+Planned and obtained evidence are kept in `assurance.json`. Tracking:
+milestone [BL.2c #36](https://github.com/jayanez/agent-braid/milestone/36),
+epic #1503, tasks T001–T010 as #1504–#1513. OD-A to OD-D are
 decided. No open questions remain at draft stage; the class plan and prompt
 authoring are planning work (plan.md), not owner decisions.
 Feasibility failure, null and inconclusive outcomes are valid reports.
