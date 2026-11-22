@@ -70,8 +70,7 @@
     "M4.8 — AIM request authoring"
   ],
   "unpublished_milestones": [
-    "M4.6 — Claude Code dynamic workflows",
-    "BL.2c — Lightning tool-level kind-choice fix"
+    "M4.6 — Claude Code dynamic workflows"
   ],
   "specs": {
     "001-certificate-verifier-pilot": {
