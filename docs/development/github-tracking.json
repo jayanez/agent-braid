@@ -483,7 +483,14 @@
     "SPEC-043/T006": "M4.5 — AI tooling integrations for Codex and Claude Code",
     "SPEC-043/T005": "M4.5 — AI tooling integrations for Codex and Claude Code",
     "SPEC-043/T004": "M4.5 — AI tooling integrations for Codex and Claude Code",
-    "SPEC-043/T002": "M4.5 — AI tooling integrations for Codex and Claude Code"
+    "SPEC-043/T002": "M4.5 — AI tooling integrations for Codex and Claude Code",
+    "SPEC-077/T001": "Deferred",
+    "SPEC-077/T003": "Deferred",
+    "SPEC-077/T004": "Deferred",
+    "SPEC-077/T005": "Deferred",
+    "SPEC-077/T006": "Deferred",
+    "SPEC-077/T007": "Deferred",
+    "SPEC-077/T009": "Deferred"
   },
   "project_review_pending": [
     "SPEC-028",

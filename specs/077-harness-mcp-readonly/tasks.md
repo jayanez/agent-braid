@@ -50,11 +50,12 @@ No task here launches a native host, issues a grant or publishes before T008.
 
 ## Phase P3 — publication decision
 
-- [ ] T008 (REQ-010 / SC-010): Record the publication decision against the gate:
+- [x] T008 (REQ-010 / SC-010): Record the publication decision against the gate:
   SPEC-049 T014 results, the D7 ADR outcome, T007, T002 and owner acceptance of the
   candidate. Publish in the release named under OD-5, or record "not published".
   Accept or reject ADR 0043 (OD-6). Dependencies: SPEC-049 T014; D7 ADR; T002 T007.
   Verification: procedure_008. Planned evidence: `evidence/t008-publication.json`.
+  Obtained 2026-11-22: [evidence/t008-publication.json](evidence/t008-publication.json) records "not published": SPEC-049 T014 is inconclusive and D7 closes the harness as experimental (owner, SPEC-049 `evidence/t007.json`). ADR 0043 rejected under D7. T001, T003 to T007 and T009 moved to Deferred; the spec, plan, contract and ADR stay as design history.
 - [ ] T009 (REQ-010 / SC-010): Only if T008 publishes: `pluginOrMcpSurface` reports
   `agent-braid-harness-mcp/v0.1`; update `docs/tooling/HARNESSING.md`,
   `docs/tooling/NATIVE_PLUGINS.md` and release notes. Dependencies: T008.

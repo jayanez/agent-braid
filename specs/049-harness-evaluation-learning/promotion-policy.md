@@ -1,6 +1,8 @@
 # Promotion policy proposal
 
-Status: initial human promotion selected; automatic promotion disabled.
+Status: initial human promotion selected; automatic promotion disabled. T007 (2026-11-22):
+no-go for native ordinary use on both axes after an inconclusive T014; under SPEC-050 D7
+no activation ADR is drafted ([evidence/t007.json](evidence/t007.json)).
 This document defines the future decisions and negative controls, not permission
 to promote an existing or generated candidate.
 
