@@ -19,6 +19,28 @@ stays experimental: nothing is promoted or activated, and the read-only harness 
 surface (SPEC-077) is not published. HAR.3 adaptation (SPEC-050) is planning only. Extra
 cash spend stays at EUR 0.
 
+## Availability per host (2026-11-22)
+
+| Surface | Claude Code | Codex | OpenCode | Pi / ThinkRail |
+|---|---|---|---|---|
+| This CLI, through the plugin's `launch` (`launch harness ...`) | yes | yes | yes | not installable yet (SPEC-081) |
+| Harness skill an agent can discover | planned (SPEC-080) | planned (SPEC-080) | planned (SPEC-080) | planned (SPEC-081) |
+| Harness MCP tool | no (ADR 0043 rejected) | no | no | no |
+| Native harness sessions | laboratory only (SPEC-065), run by the owner | refused | none | none |
+| Harness telemetry | after the next release (#1405) | same | same | — |
+
+Today an agent uses the harness only when told to run the plugin `launch` from a
+shell. Planned work, still documentation only:
+
+- SPEC-080: a read-only skill in every host
+  ([ADR 0044](../adr/0044-harness-portability-tiers-skill-surface.md));
+- SPEC-081: Pi and ThinkRail;
+- HAR.4 (SPEC-082 to SPEC-086): cross-host evaluation through Harbor containers with a
+  macOS shadow ([ADR 0045](../adr/0045-hybrid-harness-evaluation-substrate.md)),
+  regression gates, promotion pointers and OTel telemetry.
+
+The [harnessing benchmark](../strategy/HARNESSING_BENCHMARK.md) explains the choices.
+
 The `agent-braid harness` command group (`python -m agent_braid harness ...`)
 exposes the offline Braid Harness laboratory. Every command prints one JSON
 object on stdout with `executionAuthorization: false`:

@@ -652,6 +652,26 @@ outcomes. Automatic isolated trials, initial human promotion, synthetic controls
 advanced component/search capabilities and separately governed future automatic
 promotion are planned. Additional cash spend is capped at EUR 0.
 
+Next step (planned 2026-11-22, documentation only so far; see the
+[harnessing benchmark](docs/strategy/HARNESSING_BENCHMARK.md)):
+
+- SPEC-080 (HAR.3) ships a read-only `harness` Agent Skill in every host and adds
+  OpenCode to the harness host registry ([ADR 0044](docs/adr/0044-harness-portability-tiers-skill-surface.md),
+  Proposed).
+- SPEC-081 (M4.9 — AI tooling integration for Pi and ThinkRail) adds Pi and JetBrains
+  ThinkRail as hosts through a Pi package.
+- HAR.4 — Harness evaluation platform makes evaluation verdicts decidable and
+  portable across hosts:
+  - SPEC-082: task QA and infrastructure controls on a corpus of 20–50 real-failure
+    tasks;
+  - SPEC-083: capability versus regression evaluations;
+  - SPEC-084: Harbor containers with a macOS shadow
+    ([ADR 0045](docs/adr/0045-hybrid-harness-evaluation-substrate.md), Proposed);
+  - SPEC-085: owner-only promotion pointers;
+  - SPEC-086: OTel GenAI telemetry.
+
+Each specification needs owner approval before any code.
+
 The [coverage matrix](specs/048-harness-variant-laboratory/capability-coverage.md)
 assigns implementation, validation and activation boundaries to each selected
 mechanism and lifecycle phase. Native containment/source/host qualification,
