@@ -32,7 +32,7 @@ per task; the owner approves each merge.
 
 ## Phase P1 — Gate 0 and freeze
 
-- [ ] T003 (REQ-007 / SC-007): Write `evaluation-protocol.md` (OD-1 to OD-3,
+- [x] T003 (REQ-007 / SC-007): Write `evaluation-protocol.md` (OD-1 to OD-3,
   analysis, Gate 2 caps, stopping rules); owner review recorded in
   `reviews/`. Before the freeze, correct the analyze skill's coverage sentence
   (owner decision 2026-11-20; `CoverageSentenceTests`), so A0 is the corrected
@@ -76,6 +76,11 @@ per task; the owner approves each merge.
   and its command; Gate 2 stays closed. Dependencies: T006.
   Verification: procedure_009.
 
+Adopted disposition (2026-11-22): T007 is cancelled, not completed, because its
+condition did not hold (A0 missed OD-1); owner record
+`evidence/t007-owner-disposition-2026-11-22.json`. The coordinator binds it in
+`task_cancellations`. T003's owner review is in `reviews/protocol-owner-review.md`.
+
 ## Phase P3 — Gate 2 (only if A0 misses)
 
 - [ ] T008 (REQ-010 / SC-010): `lightning_edits` bounded-edit arm on feedback and
@@ -116,7 +121,7 @@ configuration after this merges.
 
 ## Phase P4 — convergence
 
-- [ ] T010: Converge (`speckit-converge`), record the outcome in `spec.md`, freeze
+- [x] T010: Converge (`speckit-converge`), record the outcome in `spec.md`, freeze
   this specification on a `develop` commit, report to the coordinator.
   Dependencies: T007 or T015. Verification: `python -m scripts.validate_spec_kit`
   in a clean clone; every exit scenario has obtained evidence or a recorded

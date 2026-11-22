@@ -12,7 +12,7 @@
   ],
   "assumptions": "The SPEC-069 scorer and fixture workspace are reused unchanged; the SPEC-071 runner on the claude-code subscription route is available; model pinned to claude-sonnet-5-5; owner decisions D1-D4 and OD-1 to OD-3 (2026-11-18/20, OD-1 per-class clause added 2026-11-20) apply.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "a02027f57afb71016e96a72afdb6f2d883c6a328",
     "hashes": {
       "ARCHITECTURE.md": "f81bb7994f87844011cc38f482e772a510233a63847981695d6c3e8bb4d29243",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -105,13 +105,13 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive. SPEC-069 sets, FREEZE, scorer and fixture unchanged; the T001 guidance change ships in the next alpha; new set version spec078-held-out-v2.",
   "domain": "First-attempt validity, under the SPEC-069 scorer, of analyze-work requests written by one host and model from synthetic prompts over the SPEC-069 fixture workspace.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "a02027f57afb71016e96a72afdb6f2d883c6a328",
+    "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; rollouts use SPEC-071 disposable profiles, an OS sandbox and the host subscription route only; any *_API_KEY in a child environment is refused; extra cash spend EUR 0; every real run needs the owner's yes on the stated rollout count. No candidate is promoted.",
   "human_review": "pending",
@@ -400,16 +400,10 @@
     },
     {
       "id": "REQ-013",
-      "text": "The analyze skill tells the model never to use units for a parallel question and that aim takes placeholder digests.",
       "scenarios": [
         {
-          "id": "SC-013",
           "given": "the fixed analyze skill",
-          "when": "the kind-selection tests run",
-          "then": "both sentences are present and the analyzer returns what they describe",
-          "test_file": "tests/test_spec078_kind_guidance.py",
-          "test_name": "KindSelectionTests.test_the_sentences_are_in_the_kind_section",
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_013.json: command, hashes, environment, expected and actual outcome, negative controls.",
+          "id": "SC-013",
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m unittest tests.test_spec078_kind_guidance tests.test_spec069_guidance",
@@ -418,22 +412,22 @@
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_013.json",
               "sha256": "630cb28fd19c3ddc009f29dcda8ace81797365a06ba6f446b4bea66b36927682"
             }
-          ]
+          ],
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_013.json: command, hashes, environment, expected and actual outcome, negative controls.",
+          "test_file": "tests/test_spec078_kind_guidance.py",
+          "test_name": "KindSelectionTests.test_the_sentences_are_in_the_kind_section",
+          "then": "both sentences are present and the analyzer returns what they describe",
+          "when": "the kind-selection tests run"
         }
-      ]
+      ],
+      "text": "The analyze skill tells the model never to use units for a parallel question and that aim takes placeholder digests."
     },
     {
       "id": "REQ-014",
-      "text": "The fixed skill A0' is measured once on a fresh frozen v3 test split.",
       "scenarios": [
         {
-          "id": "SC-014",
           "given": "the v3 freeze and the owner's yes for 300 rollouts",
-          "when": "A0' runs on v3-test",
-          "then": "the record holds the same Gate 1 report and the OD-1 verdict",
-          "test_file": "tests/test_spec078_gate1_report.py",
-          "test_name": "Gate1ReportTests.test_the_v3_report_and_diagnosis_reproduce_from_the_lab_run",
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_016.json (freeze and A0' run): command, hashes, environment, expected and actual outcome, negative controls.",
+          "id": "SC-014",
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m scripts.spec078_freeze_v3 --check; .venv-speckit/bin/python -m scripts.spec078_gate1_report --prompt-set v3-test --run-id run-20261121T192620Z-61ca8b --review specs/078-lightning-heldout-v2/reviews/gate1-v3-a0prime-zero-prompts.json; .venv-speckit/bin/python -m scripts.spec078_gate1_report --prompt-set v3-test --run-id run-20261121T192620Z-61ca8b --diagnose specs/078-lightning-heldout-v2/reviews/gate1-v3-a0prime-causes.json; .venv-speckit/bin/python -m unittest tests.test_spec078_gate1_report",
@@ -442,16 +436,16 @@
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_016.json",
               "sha256": "8820373f0da1ffedf1ec77f31a558650be76d505856ea4fd599cb62e4d127cc5"
             }
-          ]
+          ],
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_016.json (freeze and A0' run): command, hashes, environment, expected and actual outcome, negative controls.",
+          "test_file": "tests/test_spec078_gate1_report.py",
+          "test_name": "Gate1ReportTests.test_the_v3_report_and_diagnosis_reproduce_from_the_lab_run",
+          "then": "the record holds the same Gate 1 report and the OD-1 verdict",
+          "when": "A0' runs on v3-test"
         },
         {
-          "id": "SC-015",
           "given": "the fixed skill and the v2 splits",
-          "when": "the v3 split is built and Gate 0 runs on it",
-          "then": "the split is reproducible, shares no fact pattern or 8-word window with v2, SPEC-069 or the skill, and Gate 0 passes before any rollout",
-          "test_file": "tests/test_spec078_v3.py",
-          "test_name": "BuildTests.test_gate0_passes_on_the_committed_split",
-          "planned_evidence": "Candidate-bound procedure record evidence/procedure_014.json (build and Gate 0).",
+          "id": "SC-015",
           "obtained_evidence": [
             {
               "command": ".venv-speckit/bin/python -m scripts.spec078_build_v3 --check && .venv-speckit/bin/python -m scripts.spec078_build_v3 --gate0 specs/078-lightning-heldout-v2/evidence/gate0-v3-report.json && .venv-speckit/bin/python -m unittest tests.test_spec078_v3",
@@ -460,9 +454,15 @@
               "path": "specs/078-lightning-heldout-v2/evidence/procedure_014.json",
               "sha256": "3eb9bdb887ed1103cdd2c259ee9af1a3fddfc569fd781bf7fb642b79ae025243"
             }
-          ]
+          ],
+          "planned_evidence": "Candidate-bound procedure record evidence/procedure_014.json (build and Gate 0).",
+          "test_file": "tests/test_spec078_v3.py",
+          "test_name": "BuildTests.test_gate0_passes_on_the_committed_split",
+          "then": "the split is reproducible, shares no fact pattern or 8-word window with v2, SPEC-069 or the skill, and Gate 0 passes before any rollout",
+          "when": "the v3 split is built and Gate 0 runs on it"
         }
-      ]
+      ],
+      "text": "The fixed skill A0' is measured once on a fresh frozen v3 test split."
     }
   ],
   "scientific_limits": "One host and model; synthetic project-written prompts; class balance is a design choice; repetitions of one prompt are correlated; results say nothing about real requests, other hosts or analyzer semantics beyond the scorer. Prompts of one template are clustered and splits use disjoint templates; the Gate 2 test comparison pairs against A0 measured at Gate 1, so model drift between runs is not controlled.",
