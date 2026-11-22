@@ -262,7 +262,7 @@ decision before any Gate 2 rollout.
 | Run | Skill | Split | Passing | Wilson 95 % | 0/3 prompts | OD-1 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `run-20261121T161117Z-e5e22c` | A0 (`9ba3424c…`) | v2-test (freeze `8ee703db`) | 95/100 | [0.888, 0.978] | 3, all `model` | misses |
-| `run-20261121T192620Z-61ca8b` | A0' (`ced13d9b…`, T012) | v3-test (freeze `797de0b3`) | 91/100 | [0.838, 0.952] | 2, both `model` | misses |
+| `run-20261121T192620Z-61ca8b` | A0' (`8fb7c5cd…`, T012) | v3-test (freeze `797de0b3`) | 91/100 | [0.838, 0.952] | 2, both `model` | misses |
 
 - **H-A0: not supported.** **H-G2: not tested** (T008/T009 cancelled).
   **H-A0': not supported.** These are negative results of one host, model and
