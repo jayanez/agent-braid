@@ -13,7 +13,7 @@ qualified with limits in the laboratory and Codex refused. HAR.2
 decisions and per-axis publication remain open. Native Claude containment
 (SPEC-065, ADR 0035) is qualified on one machine from 2026-11-17 until
 2026-12-17T22:19:29Z and approved by the owner on 2026-11-21 with documented
-limits; it authorizes no execution. Assurance profiles (SPEC-067) have their catalog and schema merged.
+limits; it authorizes no execution. Assurance profiles (SPEC-067) were approved by the owner on 2026-11-22 with documented limits; they are advisory and authorize nothing.
 HAR.3 adaptation (SPEC-050) is planning only. Extra cash spend stays at EUR 0.
 
 The `agent-braid harness` command group (`python -m agent_braid harness ...`)
