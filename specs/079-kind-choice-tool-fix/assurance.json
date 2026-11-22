@@ -12,7 +12,7 @@
   ],
   "assumptions": "SPEC-069 scorer and fixture workspace reused unchanged; SPEC-078 fact generator, Gate 0 and analysis reused by import; SPEC-071 runner on the claude-code subscription route; model claude-sonnet-5-5; owner decisions OD-A to OD-D (2026-11-22).",
   "authority_snapshot": {
-    "commit": "d275f42013b00133a8bd29838b878bf545e61da5",
+    "commit": "a9fdacfe19787866dc590b19ee9a89005a719fa1",
     "hashes": {
       "ARCHITECTURE.md": "ba06d301ad9fcbe359f278146b2bc556a4964f0741779bef61ddccea390ac76f",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -112,7 +112,7 @@
   "compatibility": "Behaviour change: disjoint kind units requests change from ok with unknown pairs to refused (units-cannot-answer-independence); all other inputs and schemas unchanged; ships in the alpha after the v4 result. SPEC-078 and SPEC-069 frozen files unchanged.",
   "domain": "First-attempt validity, under the SPEC-069 scorer, of analyze-work requests written by one host and model from synthetic prompts over the SPEC-069 fixture workspace, plus counts of tool and kind choices in transcripts.",
   "evidence_snapshot": {
-    "commit": "d275f42013b00133a8bd29838b878bf545e61da5",
+    "commit": "a9fdacfe19787866dc590b19ee9a89005a719fa1",
     "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; the refusal adds no authority; rollouts use SPEC-071 disposable profiles and the subscription route only, EUR 0; the run needs the owner's yes on 300 rollouts after the freeze; the plugin is installed from a pinned unreleased commit.",
