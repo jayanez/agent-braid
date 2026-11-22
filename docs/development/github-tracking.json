@@ -548,7 +548,8 @@
     "BL.3 — Lightning promotion": 32,
     "BL.4 — Lightning trace consent": 33,
     "BL.5 — Lightning dataset export": 34,
-    "BL.2b — Lightning held-out re-evaluation": 35
+    "BL.2b — Lightning held-out re-evaluation": 35,
+    "BL.2c — Lightning tool-level kind-choice fix": 36
   },
   "task_cancellations": {
     "SPEC-078/T007": {
