@@ -126,3 +126,10 @@ configuration after this merges.
   Dependencies: T007 or T015. Verification: `python -m scripts.validate_spec_kit`
   in a clean clone; every exit scenario has obtained evidence or a recorded
   reason. Completion means the protocol ran, not that H-A0 or H-G2 holds.
+- [x] T016 (REQ-014 / SC-014): Errata after the T010 review (owner decision
+  2026-11-22): correct the A0' skill hash in the spec.md Outcome table to the
+  measured `8fb7c5cd…` (the frozen v3 skill), and record the two deviations
+  (v3 independence rests on the mechanical checks; Gate 2 and H-G2 not run)
+  in `reviews/protocol-owner-review.md`. Then re-freeze this specification on
+  the `develop` tip. Dependencies: T010. Verification: `python -m
+  scripts.validate_spec_kit` in a clean clone.
