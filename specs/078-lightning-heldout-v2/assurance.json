@@ -114,7 +114,7 @@
     "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; rollouts use SPEC-071 disposable profiles, an OS sandbox and the host subscription route only; any *_API_KEY in a child environment is refused; extra cash spend EUR 0; every real run needs the owner's yes on the stated rollout count. No candidate is promoted.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "H-A0: the shipped guidance meets the OD-1 threshold on the v2 test split. H-G2 (only if H-A0 is not supported): the Gate 2 candidate beats A0 on the test split by the paired exact test at alpha 0.05 without regressing on SPEC-069 v1. A null or negative result completes the protocol.",
   "observation_contract": "Per-trial validFirstAttempt from scripts/spec069_scoring.score_case on stored content-free parsed attempts; per-prompt pass = at least 2 of 3 repetitions valid; A0 meets OD-1 when the Wilson 95% lower bound of the passing share is at least 0.80, every class has at least half its prompts passing, and no prompt is 0/3 after review.",
   "references": [
@@ -467,5 +467,6 @@
   ],
   "scientific_limits": "One host and model; synthetic project-written prompts; class balance is a design choice; repetitions of one prompt are correlated; results say nothing about real requests, other hosts or analyzer semantics beyond the scorer. Prompts of one template are clustered and splits use disjoint templates; the Gate 2 test comparison pairs against A0 measured at Gate 1, so model drift between runs is not controlled.",
   "scope": "Braid Lightning BL.2b: repair and audit the measurement behind SPEC-072, measure the shipped analyze guidance (A0) on a fresh preregistered held-out set v2, and optimize with bounded edits only if A0 misses the threshold.",
-  "stage": "draft"
+  "stage": "draft",
+  "review_record": "specs/078-lightning-heldout-v2/reviews/owner-review-4d290ca1.json"
 }
