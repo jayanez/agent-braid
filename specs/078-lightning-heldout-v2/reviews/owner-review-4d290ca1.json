@@ -1,0 +1,136 @@
+{
+ "recordVersion": "0.1.0",
+ "feature": "SPEC-078",
+ "reviewedCommit": "4d290ca13d7da406e056439fe4621170d1a06cfa",
+ "reviewer": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "conflictsOfInterest": "The reviewer is the project founder and owner. The review records that role explicitly; it is an internal owner decision, not independent external validation.",
+ "method": "Guided review on 2026-11-22 from a read-only Spec Kit analyze/converge/checklist pass over the frozen candidate: Outcome table against gate1-a0 and gate1-v3-a0prime evidence, Wilson intervals recomputed (95/100 [0.888, 0.978]; 91/100 [0.838, 0.952]), 0/3 prompt reviews, T007/T008/T009 cancellation hashes against github-tracking.json, a credential and content scan of evidence and reviews, and the T016 errata (A0' skill hash 8fb7c5cd, the two protocol deviations) applied before the re-freeze.",
+ "humanReview": {
+  "decision": "approved",
+  "date": "2026-11-22",
+  "rationale": "Approve SPEC-078 as a completed research protocol with a negative result: A0 (95/100 on v2-test) and A0' (91/100 on v3-test) both miss OD-1 only through the no-0/3-prompt clause; H-A0 and H-A0' are not supported and H-G2 was not tested. Accepted limits as documented: v3 independence rests on the mechanical checks because three v2-test prompts were read before v3 was built; the five 0/3 prompts are accepted as model failures; results cover one host, one model and synthetic held-out prompts only. This approval does not certify real-world reliability of analyze-work: the tool-level kind fix, a fresh held-out split and a real-session shadow check with a preregistered threshold belong to the follow-up spec, and analyze-work stays advisory until then."
+ },
+ "milestoneClosure": {
+  "decision": "approved",
+  "date": "2026-11-22",
+  "milestone": "BL.2b — Lightning held-out re-evaluation (#35)",
+  "rationale": "Close BL.2b after this approval merges. This grants no execution authority and promotes no candidate."
+ },
+ "evidence": [
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/bl2-rescoring-receipt.json",
+   "sha256": "a0e90c9edabea6bdb7eee2777bd7098813c8d09518915c42c662ae916bb7b46a"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/gate0-report.json",
+   "sha256": "89c8bc42d685f04ceaa27f92550f98efe1525ccbba3444e31df443397b77993f"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/gate0-v3-report.json",
+   "sha256": "da1e592ca472360de24026247e41e0e44e2c6ff993771aada604702960a9ae0a"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/gate1-a0.json",
+   "sha256": "4ca3533935479811b56f9200ea748962506477fcea5d105d0c557a3e68dff853"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/gate1-diagnosis.json",
+   "sha256": "287b85233c296ab32864e07bd99f9ffd527f4bd0f9f311a68a59e65a535cb1af"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/gate1-v3-a0prime.json",
+   "sha256": "121d35e9e23c39e2b29a5d92866c337c1fd85a4512ca831ac60a396f3c01a0a0"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/gate1-v3-diagnosis.json",
+   "sha256": "ed6efd5373da4a4b39c689c22e5f3be579a7b7d468033bf2d39da776ee747fe7"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_001.json",
+   "sha256": "1c59e994143f687a30fe50ead8ab6fb222b9949cc0f794163111905fb638d74a"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_002.json",
+   "sha256": "a7a58c84687a75f0172d0f30662349530a1948237972ca73c2537b3a908d99d5"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_003.json",
+   "sha256": "bc64a539ed9dda40ac3a785cb082ee6f29ddfe17eafbcf60b21ccc9bc5af86a1"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_004.json",
+   "sha256": "ba8da378e5948df6c7b11a4f0295bf5eca7326392ab62d766b72d1d423d3ef0a"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_005.json",
+   "sha256": "08eeaa3e836cf8e50a5049c3e911ae4d3ff65c0ae30587d0f02e5a4aa372e934"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_006.json",
+   "sha256": "a917a3ff343135cafc61057eab4983c3db7addf3e9a2f2d7ae9541d309493e7e"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_007.json",
+   "sha256": "41c0e6f29c18545b2fe88e8500874d74e2c5f1f6e19ef1e7a0067d798d55dc8a"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_008.json",
+   "sha256": "f14187c3df79ba4ebebefe47ce152e666f1bb25c1429a2dd4ac4913e4d15feb6"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_012.json",
+   "sha256": "33e0ad811d204879fcb3db09bd5b3d107a82511cad7aee49e24f135ef5e19191"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_013.json",
+   "sha256": "630cb28fd19c3ddc009f29dcda8ace81797365a06ba6f446b4bea66b36927682"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_014.json",
+   "sha256": "3eb9bdb887ed1103cdd2c259ee9af1a3fddfc569fd781bf7fb642b79ae025243"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/procedure_016.json",
+   "sha256": "8820373f0da1ffedf1ec77f31a558650be76d505856ea4fd599cb62e4d127cc5"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/t007-owner-disposition-2026-11-22.json",
+   "sha256": "0dbe59802b8cd5b3e2d91bfabbd9ec8389f991e89219ac1048aa0b48b99218a7"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/t008-owner-disposition-2026-11-21.json",
+   "sha256": "ce75e8b0580e55d8c6871637e05ed4385509d504e377e417deacd80c284ac314"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/t009-owner-disposition-2026-11-21.json",
+   "sha256": "2054808f140383985862cc10c63400413073165acbac064a9c5ec233590eb56b"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/evidence/v3-freeze.json",
+   "sha256": "d573a9f47e53ee9174238652c499e6fad3e584e1843b86cf39d7a004c102ef1e"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/reviews/gate1-a0-causes.json",
+   "sha256": "0908891c1b21150da6183831717034ed884bc2965cfff37386621192cf50ca38"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/reviews/gate1-a0-zero-prompts.json",
+   "sha256": "4c039bd2ea16e02c151203a99914c983f92716e1c4a56f321e2bfe9a91a743f1"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/reviews/gate1-v3-a0prime-causes.json",
+   "sha256": "1b555ea85668fc993433d1978d76403dc81d1820d6bf39c5d6b6539c44ea1a45"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/reviews/gate1-v3-a0prime-zero-prompts.json",
+   "sha256": "337ee74f667ef9919c63f65027bdeebd994880db983666de493da066a3e56c33"
+  },
+  {
+   "path": "specs/078-lightning-heldout-v2/reviews/protocol-owner-review.md",
+   "sha256": "72692cf9edc2cfc9e4f8ac6c9807ed616cfa31013a3a76b00cf97188b716fb9a"
+  }
+ ]
+}
