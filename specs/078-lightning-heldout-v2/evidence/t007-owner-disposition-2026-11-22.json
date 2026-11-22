@@ -1,0 +1,14 @@
+{
+  "version": "agent-braid-task-cancellation-v1",
+  "taskId": "SPEC-078/T007",
+  "decision": "adopted",
+  "disposition": "cancelled-partial-infeasible",
+  "stateReason": "not_planned",
+  "criterionCompleted": false,
+  "taskLineSha256": "d2f99252db9567c01d0adc73ef67288e8791866b4a90b0ecd34554faf529e988",
+  "sourceReference": "Owner decision relayed by the coordinator session on 2026-11-22: \"Close and open a new spec (Recommended)\" (close SPEC-078 with T010; the tool-level fix goes to a new spec). Integrator-recorded provenance, not independently authenticated.",
+  "reason": "T007 runs only if A0 meets OD-1. A0 missed on v2-test (Gate 1) and A0' missed on v3-test (T015), so no regression suite is published; the owner closed the specification.",
+  "dependenciesSatisfied": false,
+  "executionAuthorization": false,
+  "newExecutionOrPackageAuthorized": false
+}

@@ -251,6 +251,35 @@ H-G2 is not tested. A narrowed optimizer scope would have been test-informed.
   the skill that was measured (`9ba3424c…`); the v3 freeze (T014) binds the
   fixed skill. v2 runs refuse the fixed skill by design.
 
+## Outcome (T010, 2026-11-22)
+
+Protocol adherence and results are reported separately. The protocol ran as
+frozen: Gate 0 passed before each test split was used; each test split was
+scored once; no refusal, quota stop or canary hit occurred; the 0/3 prompts
+were reviewed from redacted traces. Amendment 1 replaced Gate 2 by owner
+decision before any Gate 2 rollout.
+
+| Run | Skill | Split | Passing | Wilson 95 % | 0/3 prompts | OD-1 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `run-20261121T161117Z-e5e22c` | A0 (`9ba3424c…`) | v2-test (freeze `8ee703db`) | 95/100 | [0.888, 0.978] | 3, all `model` | misses |
+| `run-20261121T192620Z-61ca8b` | A0' (`ced13d9b…`, T012) | v3-test (freeze `797de0b3`) | 91/100 | [0.838, 0.952] | 2, both `model` | misses |
+
+- **H-A0: not supported.** **H-G2: not tested** (T008/T009 cancelled).
+  **H-A0': not supported.** These are negative results of one host, model and
+  split each; the two runs are not compared statistically.
+- **Finding.** Every attempt whose first call used the expected kind was valid
+  in both runs (280/280 and 272/272). Every failure came from choosing
+  `units` for a parallel question (17 and 19 attempts), from not calling
+  `analyze-work` at all, or (v3) from an empty-argument first call. The fix's
+  placeholder-digest sentence removed the Bash-for-digests failure (4 to 0); its
+  "never `units`" sentence did not change the `units` choice.
+- **Not solved by guidance text.** The remaining failures lie in the tool
+  surface (the `analyze-work` description, the separate `analyze` tool, and
+  `units` accepting parallel questions); the owner opened a new specification
+  for a tool-level fix. T007 is cancelled (its condition did not hold).
+- Evidence: `evidence/gate1-a0.json`, `gate1-diagnosis.json`,
+  `gate1-v3-a0prime.json`, `gate1-v3-diagnosis.json`, procedures 008 and 016.
+
 ## Success criteria
 
 Each requirement has one acceptance scenario (SC-001 to SC-012) in
