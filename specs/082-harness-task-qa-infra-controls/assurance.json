@@ -1,0 +1,352 @@
+{
+  "articles": [
+    0,
+    9,
+    13,
+    14,
+    19,
+    20,
+    23,
+    24
+  ],
+  "assumptions": "Local Git history of this repository contains merged PRs whose tests fail at the parent commit and pass at the merge commit. The SPEC-049 harness_verification partitions and D1-D3 rules stay as merged. SPEC-084 or an owner admission will provide a venue for the exploit agent; if not, tasks stay qa-incomplete. Infra-error classes can be decided from recorded logs by a rule frozen before data.",
+  "authority_snapshot": {
+    "commit": null,
+    "hashes": {
+      "ARCHITECTURE.md": "ba06d301ad9fcbe359f278146b2bc556a4964f0741779bef61ddccea390ac76f",
+      "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
+      "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
+      "LICENSE": "de98edde0132e64db2b0c9cfbf2be1e503437a57fc212936195be4c46c1817be",
+      "MATHEMATICAL_FOUNDATIONS.md": "8c56b59b20ca5f9bc7464b458f980e51e05c0820645cf86181cf08883acd5ca4",
+      "RESEARCH.md": "a3e9668e2c1b80024a6ce9024b7558d31f0d3d2d1e22fa89f460a70beefdd56d",
+      "TERMINOLOGY.md": "4b52b621900a413f58fa920254c2d36df849bda906e9989f0e49b0a43aaf503c",
+      "TRADEMARKS.md": "be084562378235f7c72b4a16e9d0f37b01e7e2b035291eceb4f6478048a517b8",
+      "docs/adr/0000-template.md": "546bd5098b2f8f07804253f0b1fd2c893264d4519644ccd93913956056fac8f4",
+      "docs/adr/0001-formalization-before-implementation.md": "c68d05ee8abb12932acaebee8b95ef4873172a97f93a8dae2187b84b63a29188",
+      "docs/adr/0002-yang-baxter-is-a-hypothesis.md": "8f72ec03ea85a5cef1bed08b04c871bca5930a70e2c313f01124d4a0c194efef",
+      "docs/adr/0003-copyleft-and-trademark-protection.md": "174745a166b4f521fab0f1a043d5c96b8b4b6a626b344245d8b89616d919f8c6",
+      "docs/adr/0004-scientific-constitutional-clarifications.md": "eaf956ab7a8daae2b5ea75d5ae8832a039ef2c6d18bf2e0e27e9b2b964e0fd71",
+      "docs/adr/0005-evidence-contracts-and-bounded-laboratory.md": "a35504083c719993a8c9a460d579c9017871b20bd65760f9f2534de2d7f27f6b",
+      "docs/adr/0006-shared-spec-kit-guardrails.md": "b02e0844e311e0364b40d06e2de3c1c73628247625d20c534a644ff8d9387cb7",
+      "docs/adr/0007-read-only-python-analyzer.md": "c864497da1a8172826d1b96b728b03d16272396c53dc194680d646301c4d07f3",
+      "docs/adr/0008-read-only-git-worktree-adapter.md": "8915605500bb4fa0150ff2fe576482db8a55bd29fb53a17788a51f8671a52e76",
+      "docs/adr/0009-transparent-validation-status.md": "7e329563e069e972ef2febcf64e0fec29255c0c9af29e331a1d5beb7f382e60d",
+      "docs/adr/0010-clean-publication-provenance.md": "6481cf11e2daf5d307928310763ae82889b280cea215126ebae3b32a708f3994",
+      "docs/adr/0011-risk-based-validation-gates.md": "3aa363f808821ead18d830e931e476a0d790106112ef637875428f322d321531",
+      "docs/adr/0012-vendored-python-skills-license-boundary.md": "e98b19c465689190265ed410b9226d60d52f00a8abf95410f5aa0a567aa80fea",
+      "docs/adr/0013-isolated-git-replay-and-advisory-planning.md": "1c291cb527825864520075edc2ae7c84bafb07f66790f9fc29b0149a07024d24",
+      "docs/adr/0014-parallel-integration-contract.md": "2481e93cf1e392887f2ee74e39efec7dfee0a9c52340fccd491903fd4292f679",
+      "docs/adr/0015-real-repository-validation-profile.md": "43e05f6fa96b5b3a8a8a83ddc922d8bced11b89a3f88263760b83b358febde99",
+      "docs/adr/0016-post-root-public-provenance.md": "e3c001cc23b64db5362ed0274af21d1d5a42b27d2bff68654db51498fbfb142a",
+      "docs/adr/0017-bounded-structured-exchange.md": "72cecb595605a16eaa5de7a88e960492205d82a300af2f6fb4451263f7e780c4",
+      "docs/adr/0018-private-source-sidecar-and-disposable-labs.md": "487c48e8ed4296bb4120e32e9d7e75724c76da88ebb6435396cb7fdcf7d317ad",
+      "docs/adr/0019-bounded-local-git-runtime.md": "9023b6176762885ce291721633f686ae2c4d3a4c1404f3ee164e7414a69b5fd3",
+      "docs/adr/0020-bounded-m4-alpha-runtime.md": "b91615158b29902237ce638d659bc30484562766a0f2607a38fcc4bd717fda28",
+      "docs/adr/0021-codex-claude-tooling-integration.md": "c9e85fbab0c71445ca16d9aef7c33d17614abbf36588441ddf90b2b07fc1fd89",
+      "docs/adr/0022-attribution-correction-history-equivalence.md": "0d394b895af69374c7f6bdf441cc780ee67802c34f9b0380f8ed58b1c9a17eb1",
+      "docs/adr/0023-second-history-correction-equivalence.md": "4334fe23543dad038811b7819acbc24fbebab3c1858789816b1512e786b7a8eb",
+      "docs/adr/0024-local-technical-telemetry.md": "e3c2d827bbd839179e56d3f81fe3ad1b7234b4a61ed24c98bb59a8aa2f23b508",
+      "docs/adr/0024-native-ai-plugins.md": "ca2fd4a76294aff60ab2a5861ae110262032bc133b011a2043e91b16884845e5",
+      "docs/adr/0025-local-technical-telemetry.md": "e2f9af4d0d0a118635677146ba0c96cbd82046b7943eca36eeabf041923601f7",
+      "docs/adr/0026-pure-owned-work-validation.md": "dc6a045316c37201767adba79ad59779cff4646c9d05e4a2306dfaec481e4ccd",
+      "docs/adr/0027-braid-harness-offline-foundations.md": "076e524bb4b31a0075ff72c605a438edc9dcb70aa09dec9583ef21db5362b046",
+      "docs/adr/0028-closed-effectful-workload-simulation.md": "be8bb2fefc702a2d85b804f70141f68f25b68e45118d25b4f4fa0e99d62eca85",
+      "docs/adr/0029-claude-dynamic-workflows.md": "16b5fa3f4a4dd029f6041a3dc07ed5dcf16cc8e57d96577ba72dedec295801cd",
+      "docs/adr/0030-native-plugin-surface-naming.md": "2bff8ce3fd5c2e183dca8000044ccd4d08980ec7e4a1b31d9af7a3a4b7f18c8e",
+      "docs/adr/0031-portable-prompt-names.md": "2e2ccf4e3d3b82cfb3e375d790104b9bb79f7f503041f11e60738e546d670d8e",
+      "docs/adr/0032-activity-viewer-companion.md": "75c41ed41b9ffa886df423dffb47ff2fd110f4a7fe639d54ee6b82b3148a5b06",
+      "docs/adr/0033-vendored-threejs-mit-boundary.md": "4f0c2956498e1329296652e436d8c84552ba18ab893a51314803cf8f9d39868e",
+      "docs/adr/0034-system-one-shadow-advisory-boundary.md": "b202b5098e0b3560f2fca6ffdc38ac9699d18935c544f32f72b152c610b0b471",
+      "docs/adr/0035-native-claude-laboratory-containment.md": "9db60ef1544e5218eb7fa7ba34315f48b33e464b761e07359fc5bfcd9bfaf0c5",
+      "docs/adr/0036-assurance-profiles.md": "9a7abf22920a9ba91cb61c5c48b905a1415182bc9434bcf884680ec41666b464",
+      "docs/adr/0037-opencode-native-plugin.md": "36c777d124b5905e8b8c25951cf59c2061fedddf1950fc24bfa2bae7197d3809",
+      "docs/adr/0038-analyze-work-request-contract.md": "095a8f89eed4d40ced3cf3400b620b2a2126370057a3966543dd2cd684392fdd",
+      "docs/adr/0039-braid-lightning-boundary.md": "8d15cbd7f3924c477250b3417275812c7990012a5a48d986dcd7024f9148cfa9",
+      "docs/adr/0040-braid-lightning-mit-vendoring.md": "ef0053259f7f9dc5929ed8709f037a6632a874c4bc035a898be8649afa5f0c84",
+      "docs/adr/0041-braid-lightning-content-traces.md": "1361654c3cb9a4b745eaf3aa3a3613fc0b76278a93f9fad3421bfd8a37a0a73c",
+      "docs/adr/0042-braid-lightning-local-weight-training.md": "d4b1c5b7664a88be27ce64c4a3eb013161103e47694cab445b3e70b5269eacaf",
+      "docs/adr/0043-harness-mcp-readonly-surface.md": "a13056d225ae28528d937f06df095d7822e857e4033b3a430e184058049e8953",
+      "docs/adr/0044-harness-portability-tiers-skill-surface.md": "a9ed9936a7c5f4444f205430527e9d0830246cbb88da5b6cf4122e495619a125",
+      "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "755a7589e6122d84bba248e262eaaa378c65f16faf33f2b348ef435844361503",
+      "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
+      "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
+      "docs/architecture/CONFLUENCE_CERTIFICATE.md": "fd12a8f1a1477835848581b0f4ccd52f76d3f22dd96a3abaccb9074733464a8e",
+      "docs/architecture/DRAFT_0_2.md": "ae2bc09d941537eec6ea05edb69e4402d5c17dae0585b4add0825d6a01fdc29f",
+      "docs/architecture/GIT_REPLAY.md": "991de0aba02d2f89cb5fd01af4d9842c0a15b1ee52fb692671e34a81a6b09ab2",
+      "docs/architecture/PARALLEL_INTEGRATION.md": "14a55efe552cb0b5a90e8112260af681b303b9ce2e0fd0b49c7024ab4b15843b",
+      "docs/theory/CLAIM_DISCIPLINE.md": "0fcd89ae045e017f62cbe0b7a83a9a9c107770856bba12a340e77f06576db053",
+      "docs/theory/OPERATIONAL_SEMANTICS.md": "7e83813d138dde064f85aafee1ba20302d55ede768d35d26340abd522ecce1f7",
+      "docs/theory/SCIENTIFIC_INTEGRATION.md": "3bdb0e13edf1e7666902c426df864cb51219d33e762f6bd87e8d2702bb1642eb",
+      "docs/theory/STRUCTURED_EXCHANGE.md": "522fa1e4f2be6a0873c00ba2f503f475fa04833292a6684620ec01ef725bb710",
+      "schemas/0.1.0-alpha/analysis-input.schema.json": "f5d291aa08fc5ad1cd31154da67cea3c6bfe7ef03a9fcf3c68abc4cb0a7ef3a5",
+      "schemas/0.1.0-alpha/analysis-report.schema.json": "dd02152d8ee1d006ce243e6f190dc6cf19d304c992e88fcc6969409854618db3",
+      "schemas/0.1.0-alpha/git-analysis-provenance.schema.json": "403b2e61ff7a7700c0db05df4ac3b11504e2c69e2bab9161b4a9ceb156b1316c",
+      "schemas/0.1.0-alpha/git-analysis-request.schema.json": "9d371421c61d261739ebe99944ba2dd1a973bf2a35a592fdf4c4a77b0f57498b",
+      "schemas/0.1.0-alpha/git-integration-prototype-report.schema.json": "417e5ae3f27083dfa0592589bf229fa9db8bd66cd20a29d472d9c0a83509b22e",
+      "schemas/0.1.0-alpha/git-integration-prototype-request.schema.json": "3dcde3972f3ab99939bec923416e5be57f9a6c0a2fc73a281830a20f6998222b",
+      "schemas/0.1.0-alpha/git-plan.schema.json": "3519d38b395974c3261fbb9243dd2fcbf1d0f08086c2164d64d7ebfb9a726972",
+      "schemas/0.1.0-alpha/git-replay-evidence.schema.json": "46560e30af74daf22d816130590d7bc596a9ae4fe1060ff4709e76f19487d137",
+      "schemas/0.1.0-alpha/git-runtime-manifest.schema.json": "a302dec5d42d61d72128798a8e08f7a7ad5b1b6024d18f3e89e6ef6abe3f868c",
+      "schemas/0.1.0-alpha/git-runtime-report.schema.json": "b2b1833e43c3b8429f9cc20a2a632a27214f8d2acd59a3e9ce5f0243579af73b",
+      "schemas/0.1.0-alpha/git-runtime-request.schema.json": "a83873e072ea357b29331e74e42b5a075769d939bcfba69f458712876b187f5d",
+      "schemas/0.1.0-alpha/git-runtime-state.schema.json": "6ce9a56e6493e10938eaf60dfc6501d52cd59af240e9f0bb5a0a8c036677d75a",
+      "schemas/0.1.0-alpha/runtime-operator-grant.schema.json": "0a49f4800ed40873022eaa14d37e12eacb5790f71197ac1013766f4742162b8d",
+      "schemas/0.1.0-alpha/runtime-policy.schema.json": "dc88b1e7de631c797002ad29276a4eeccf8f2a1bbbb3a48c41dd4f82ea6f8c17",
+      "schemas/0.1.0-alpha/runtime-preparation-evidence.schema.json": "1989267da48fa7ad3432b67d0767e2f702381773edb02aff7bd8a9ad37a3229f",
+      "schemas/0.1.0-alpha/runtime-schedule.schema.json": "0bd21c877e5f594e7710085d4232b5b095683e1239277a7b322f0890d4b28f64",
+      "schemas/0.1.0-alpha/units-request.schema.json": "5bc0bb0b7d38defb66329f344a61adce55cb80e1201af528142605db5d5b19a0",
+      "schemas/0.2.0-draft/agent-interaction-metadata.schema.json": "3883e39d5a7cb4ddc91082176c9a9b144d9bc8d152d254e4e8314fd7468cf99a",
+      "schemas/0.2.0-draft/confluence-certificate.schema.json": "8e375fdc57fbd3b9f15544f2079c8f92633ec1def660f3eabed77feb784f34f0",
+      "schemas/0.3.0-experimental/lightning-config.schema.json": "a16c4dd0848d2e829eac2af66cccddb61e395a728ab25afdc295efaf78569275",
+      "schemas/0.3.0-experimental/lightning-dataset-manifest.schema.json": "fdebd008af9b4f10828bfeaa8aea4dd23390db19234dc4152ea2d909b47a0b59",
+      "schemas/0.3.0-experimental/structured-exchange-evidence.schema.json": "1cb4e536d89b519b3a5ffc70421a6ec561b06e1826b22c69b9e9cc01cca4c767",
+      "schemas/0.3.0-experimental/structured-exchange-request.schema.json": "5b2065b94fa50570ecfe5392551d87f1f1fd31cff8dc4b840045e1c13e3aaabb",
+      "schemas/agent-interaction-metadata.schema.json": "44b60956817cbcd92e0802dfe99ca537b20768f53472f04afd1dcc502f53cd5c",
+      "schemas/confluence-certificate.schema.json": "ea68bf94f6767d615881167d8f7dd28359e6c399edd66935ba17b88b2b1cf785",
+      "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
+      "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
+    },
+    "mode": "current"
+  },
+  "compatibility": "Additive: new experimental schemas and modules; SPEC-049 discovery and holdout partitions keep their meaning and private-holdout is added only with owner approval; frozen SPEC-049 records, D1-D3 and the T005 roster unchanged. Rollback by reverting the change.",
+  "domain": "Formats and procedures for a 20-50 task corpus derived from this repository's merged-PR history and the SPEC-049 lineages L1-L4, its per-task QA, and the trial-record rules for infrastructure errors, pinned configuration and run ids.",
+  "evidence_snapshot": {
+    "commit": null,
+    "mode": "current"
+  },
+  "execution_contract": "None. executionAuthorization is false on every record; nothing here runs an agent, model or container. The exploit-agent check runs only under SPEC-084 after its gates or under a separate owner admission.",
+  "human_review": "pending",
+  "hypotheses": "H1: this repository's history yields at least 20 tasks that pass the oracle, no-op, exploit and review checks. A lower yield is a valid feasibility result.",
+  "observation_contract": "What task records, QA records, review records and trial records state, with their hashes; hashes bind bytes, not authenticity; review records are labeled human or model; a canary is a detection aid, not a contamination guarantee.",
+  "references": [
+    "CONSTITUTION.md",
+    "GOVERNANCE.md",
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/adr/0045-hybrid-harness-evaluation-substrate.md",
+    "docs/adr/0018-private-source-sidecar-and-disposable-labs.md",
+    "specs/049-harness-evaluation-learning/spec.md",
+    "specs/049-harness-evaluation-learning/evaluation-protocol.md",
+    "specs/049-harness-evaluation-learning/corpus.md",
+    "specs/049-harness-evaluation-learning/case-roster.md",
+    "agent_braid/harness_verification.py",
+    "agent_braid/harness_evaluation.py",
+    "docs/development/VALIDATION_PROFILES.md",
+    "specs/083-capability-regression-evals/spec.md",
+    "specs/084-harbor-evaluation-substrate/spec.md",
+    "specs/085-harness-promotion-pointers/spec.md",
+    "specs/086-harness-otel-telemetry/spec.md"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "scenarios": [
+        {
+          "given": "this spec, plan and tasks",
+          "id": "SC-001",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t001-owner-review.md.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_001",
+          "then": "OD-1 to OD-7 are decided or deferred in a dated record.",
+          "when": "the owner reviews them"
+        }
+      ],
+      "text": "Owner review. The owner reviews this spec and plan before any code."
+    },
+    {
+      "id": "REQ-002",
+      "scenarios": [
+        {
+          "given": "a record missing a field, carrying an unknown key or a wrong hash",
+          "id": "SC-002",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t003.json, specs/082-harness-task-qa-infra-controls/evidence/t004.json, specs/082-harness-task-qa-infra-controls/evidence/t008-tasks.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_002",
+          "then": "it refuses with a reason code and a JSON Pointer.",
+          "when": "it is validated"
+        }
+      ],
+      "text": "Task record format. Each task has a versioned record: id, origin (repository-history or synthetic), lineage, stratum (closed vocabulary, OD-2), family, source provenance (PR number, pre-fix and fix commits, merge date), rights basis, initial-state commit, task statement, oracle (fail-to-pass and pass-to-pass tests), reference-solution hash, resource budget, canary id, partition, QA status and the SHA-256 of each file. Unknown keys refuse."
+    },
+    {
+      "id": "REQ-003",
+      "scenarios": [
+        {
+          "given": "the frozen rule and the merged-PR history",
+          "id": "SC-003",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t005-inventory.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_003",
+          "then": "every inspected PR is listed as candidate or excluded with a reason, and the rule hash predates the first task record.",
+          "when": "the inventory runs"
+        }
+      ],
+      "text": "Selection rule before construction. The rule that admits a candidate from history is frozen by hash before any task is built. Every candidate, exclusion and its reason, and the observed yield are recorded."
+    },
+    {
+      "id": "REQ-004",
+      "scenarios": [
+        {
+          "given": "a manifest",
+          "id": "SC-004",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t004.json, specs/082-harness-task-qa-infra-controls/evidence/t006-partition.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_004",
+          "then": "validation refuses.",
+          "when": "a lineage spans two partitions, L1 is split, L3 is assigned, or a partition changes after any outcome record"
+        }
+      ],
+      "text": "Lineage and partition. Tasks that share a fixing PR, a spec feature, a test fixture base or an unresolved relation share a lineage (OD-2). Partitions (discovery, holdout, private-holdout) are assigned by lineage, stratified, with a recorded seed, before any candidate outcome exists. SPEC-049 D1 holds: L1 is never split, L3 stays unassigned until resolved, L4 is held out only if it qualifies."
+    },
+    {
+      "id": "REQ-005",
+      "scenarios": [
+        {
+          "given": "the public tree and an optimizer context",
+          "id": "SC-005",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t004.json, specs/082-harness-task-qa-infra-controls/evidence/t007-private-split.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_005",
+          "then": "no private task byte or identity hash appears, and the use count matches the recorded evaluations.",
+          "when": "they are scanned"
+        }
+      ],
+      "text": "Private held-out split. Private task bytes live outside the public repository (OD-3); the public manifest holds only their hashes, counts and strata. No optimizer context, prompt or library receives them. Their outcomes reach a promotion decision only in aggregate, and each use is counted."
+    },
+    {
+      "id": "REQ-006",
+      "scenarios": [
+        {
+          "given": "a task",
+          "id": "SC-006",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t009-oracle.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_006",
+          "then": "the oracle passes 3/3, the no-op fails, and any other result sets QA status rejected.",
+          "when": "the oracle and no-op checks run"
+        }
+      ],
+      "text": "Oracle passes and no-op fails. The reference solution applied to the initial state passes the verifier in 3 of 3 fresh runs; the unchanged initial state fails it. A flaky or failing oracle rejects the task."
+    },
+    {
+      "id": "REQ-007",
+      "scenarios": [
+        {
+          "given": "a task",
+          "id": "SC-007",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t010-probes.json, specs/082-harness-task-qa-infra-controls/evidence/t011-exploit-agent.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_007",
+          "then": "every one fails, and a planted weak verifier is caught by at least one probe.",
+          "when": "each probe and the exploit agent run"
+        }
+      ],
+      "text": "Exploits fail. The verifier restores protected test files and grades outcomes, not paths. Deterministic probes (delete or weaken tests, hard-code outputs, edit the verifier, forge a score file) and an exploit agent told to pass without solving must all fail. A passing exploit rejects the task until it is repaired and QA reruns."
+    },
+    {
+      "id": "REQ-008",
+      "scenarios": [
+        {
+          "given": "a task",
+          "id": "SC-008",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t012-reviews.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_008",
+          "then": "two distinct review records exist, each labeled human or model, and any disagreement has an adjudication.",
+          "when": "it is marked qa-passed"
+        }
+      ],
+      "text": "Two reviewers. Each task has two independent review records (statement clarity, solvability, no solution leak, oracle checks outcome, rights). Disagreement needs an adjudication record (OD-4); a majority is not a consensus."
+    },
+    {
+      "id": "REQ-009",
+      "scenarios": [
+        {
+          "given": "a synthetic job with injected infra errors",
+          "id": "SC-009",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t014.json, specs/082-harness-task-qa-infra-controls/evidence/t015-controls.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_009",
+          "then": "infra errors are counted apart, excluded from the agent denominator, shown in the bounds, and over the threshold the job is invalid.",
+          "when": "trial records are summarized"
+        }
+      ],
+      "text": "Infrastructure errors kept separate. A trial outcome is one of pass, fail, infra-error (closed subclasses: setup, provider, quota-stop, runtime-crash, verifier-crash, config-drift) or not-attempted. Classification follows a rule frozen before data. An infra error never counts as 0 or as a pass; it leaves the agent-outcome denominator, is reported with its count, and bounds the rate both ways. An agent that exceeds its registered time budget is a fail. Reruns use fresh run ids and are all kept; the job validity threshold is OD-5."
+    },
+    {
+      "id": "REQ-010",
+      "scenarios": [
+        {
+          "given": "a trial whose observed model or effort differs from the request, or whose resource fields are missing",
+          "id": "SC-010",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t003.json, specs/082-harness-task-qa-infra-controls/evidence/t014.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_010",
+          "then": "it is config-drift or refused, never pass or fail.",
+          "when": "it is validated"
+        }
+      ],
+      "text": "Pinned and recorded configuration. Each trial records requested and observed model id, reasoning effort, host and agent versions, CPU, memory, disk, timeout, network policy and image digest when used. A mismatch is config-drift."
+    },
+    {
+      "id": "REQ-011",
+      "scenarios": [
+        {
+          "given": "a trial whose run id is already registered, or a result whose bytes match an earlier run's",
+          "id": "SC-011",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t014.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_011",
+          "then": "it refuses.",
+          "when": "it is recorded"
+        }
+      ],
+      "text": "Fresh run ids, no cache reuse. Each trial has a new run id from a register, a fresh workspace and no reused result, session or cache (the SWE-bench run_id hazard)."
+    },
+    {
+      "id": "REQ-012",
+      "scenarios": [
+        {
+          "given": "the corpus report",
+          "id": "SC-012",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t013-contamination.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_012",
+          "then": "each task shows canary, source date and cutoff relation, and the limitation text is present.",
+          "when": "it is reviewed"
+        }
+      ],
+      "text": "Contamination record. Each task carries a canary id and records its public source date against each model's stated knowledge cutoff. Reports say the canary is a detection aid and not a guarantee; no task is called contamination-free."
+    },
+    {
+      "id": "REQ-013",
+      "scenarios": [
+        {
+          "given": "the freeze record",
+          "id": "SC-013",
+          "obtained_evidence": [],
+          "planned_evidence": "Candidate-bound procedure record: command, hashes, environment, expected and actual outcome, negative controls and limits. Planned path: specs/082-harness-task-qa-infra-controls/evidence/t016-freeze.json.",
+          "test_file": "specs/082-harness-task-qa-infra-controls/validation-plan.md",
+          "test_name": "procedure_013",
+          "then": "it lists hashes, counts per partition, stratum and lineage, QA status per task, and executionAuthorization: false.",
+          "when": "it is inspected"
+        }
+      ],
+      "text": "No authority and handoff. The frozen corpus manifest is handed to SPEC-083 and SPEC-084 by hash. No record here authorizes execution."
+    }
+  ],
+  "scientific_limits": "Engineering formats and procedures; no harness verdict. Tasks from one repository are coupled; inference must count lineages, not tasks. Public source history may be in model pretraining; the private split limits optimizer leakage only. Repeated held-out use leaks through selection. A model reviewer is independent model review, not human review. A Codex review is not human review or approval.",
+  "scope": "Draft documentation-only specification of the task record, corpus manifest, lineage and partition rules, private held-out split, per-task QA (oracle, no-op, exploit probes, exploit agent, two reviewers), infrastructure-error taxonomy, pinned configuration, fresh run ids and contamination record for harness evaluation. Nothing implemented or run.",
+  "stage": "draft"
+}

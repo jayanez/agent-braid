@@ -1,0 +1,326 @@
+{
+ "radarVersion": "0.1.0",
+ "review": {
+  "date": "2026-11-22",
+  "kind": "milestone",
+  "milestones": [
+   "HAR.3"
+  ],
+  "reviewer": "orchestrator deep research; founder decisions F1-F6 recorded 2026-11-22",
+  "decision": "pending",
+  "decisionRecord": "docs/strategy/HARNESSING_BENCHMARK.md"
+ },
+ "limits": [
+  "Vendor documentation read once on 2026-11-22; some pages via an extraction service or search snippets (provenance secondary)",
+  "No tool installed, run or reproduced",
+  "Adopted means only that the owner chose the option for specification; binding only through the cited ADRs and specs"
+ ],
+ "entries": [
+  {
+   "id": "RAD-2026-034",
+   "title": "Agent Skills open standard (AAIF)",
+   "url": "https://agentskills.io",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "standard",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "official-documentation",
+   "relationship": "Portable SKILL.md folder format supported by Claude Code, Codex, OpenCode, Pi and ThinkRail; name and description portable, allowed-tools experimental.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "adopted",
+   "decision": "F1: harness exposed as a read-only Agent Skill over the CLI (owner 2026-11-22); binding only through ADR 0044 and SPEC-080."
+  },
+  {
+   "id": "RAD-2026-035",
+   "title": "Claude Code plugin evals (claude plugin eval)",
+   "url": "https://code.claude.com/docs/en/plugin-evals",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "official-documentation",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "official-documentation",
+   "relationship": "First-party with/without ablation eval runner, 3 runs per arm, six grader types, JSON schemaVersion 1 for CI; scores advisory when hooks or real MCP servers run outside the sandbox.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "watch",
+   "decision": "Reference for F3/F6 design; candidate CI regression runner for the plugin itself; not adopted."
+  },
+  {
+   "id": "RAD-2026-036",
+   "title": "Claude Code plugins reference and managed settings",
+   "url": "https://code.claude.com/docs/en/plugins-reference",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "official-documentation",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "official-documentation",
+   "relationship": "Plugin manifest components, version pinning, marketplaces; managed settings lock skills, hooks and MCP sources.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "watch",
+   "decision": "Context for F1 and F5 (pointer and governance model); no change adopted."
+  },
+  {
+   "id": "RAD-2026-037",
+   "title": "Codex plugins, skills, sandbox and exec",
+   "url": "https://developers.openai.com/codex/plugins/build.md",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "official-documentation",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "official-documentation",
+   "relationship": "Codex accepts Claude-compatible plugin manifests and marketplaces, skills under .agents/skills, sandbox modes and exec --json events; no first-party harness eval.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "watch",
+   "decision": "Context for F1 portability tiers; no change adopted."
+  },
+  {
+   "id": "RAD-2026-038",
+   "title": "OpenCode config, plugins, MCP and skills",
+   "url": "https://opencode.ai/docs/config",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "official-documentation",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "official-documentation",
+   "relationship": "Plural list-shaped config keys (plugins, permissions, mcp.servers, skills); reads .claude/skills.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "candidate",
+   "decision": "SPEC-080 task: verify the OpenCode install profile against the current schema."
+  },
+  {
+   "id": "RAD-2026-039",
+   "title": "Pi coding agent (earendil-works/pi)",
+   "url": "https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/README.md",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "product",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "product-capability",
+   "relationship": "Minimal harness (four tools, prompt under 1,000 tokens), Pi packages with extensions and skills installed by pi install, session trees, no permission layer by design.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "candidate",
+   "decision": "Host target for SPEC-081 (owner 2026-11-22); integration not designed or tested."
+  },
+  {
+   "id": "RAD-2026-040",
+   "title": "JetBrains ThinkRail",
+   "url": "https://github.com/JetBrains/thinkrail",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "product",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "product-capability",
+   "relationship": "Apache-2.0 incubator agentic IDE running Pi in-process; installs Pi packages, connects Pi mcp.json servers with approval, imports Claude/Codex skills, workspaces as git worktrees.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "candidate",
+   "decision": "Host target for SPEC-081 through the Pi package; ACP relation unverified."
+  },
+  {
+   "id": "RAD-2026-041",
+   "title": "Gentle AI (Gentleman Programming)",
+   "url": "https://github.com/Gentleman-Programming/gentle-ai",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "product",
+   "provenance": "secondary",
+   "peerReviewed": false,
+   "claimLevel": "product-capability",
+   "relationship": "Multi-host configurator writing native config for 17+ hosts (Engram memory MCP, ODD, receipt-driven review); a peer pattern that may rewrite host config next to Agent Braid.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "watch",
+   "decision": "Coexistence check in SPEC-081 and SPEC-080 install tasks; no integration."
+  },
+  {
+   "id": "RAD-2026-042",
+   "title": "Harbor framework and Terminal-Bench 2.0",
+   "url": "https://docs.harborframework.com/",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "product",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "product-capability",
+   "relationship": "Runs claude-code, codex, opencode and pi as black-box adapters in per-trial containers with per-phase network policy and -k attempts; TB 2.0 uses >=5 runs, oracle and exploit QA.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "adopted",
+   "decision": "F2: hybrid substrate (owner 2026-11-22); binding only through ADR 0045 and SPEC-084; nothing installed."
+  },
+  {
+   "id": "RAD-2026-043",
+   "title": "Terminal-Bench 2.0 paper",
+   "url": "https://arxiv.org/html/2601.11868v1",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "paper",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "unreproduced-result",
+   "relationship": "89 tasks, 32,155 trials, task QA with oracle, exploit agent and two auditors; canary self-assessed as largely symbolic.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "adopted",
+   "decision": "F6 task QA method (owner 2026-11-22); results not reproduced."
+  },
+  {
+   "id": "RAD-2026-044",
+   "title": "Inspect AI agent bridge and metrics",
+   "url": "https://inspect.aisi.org.uk/agent-bridge.html",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "official-documentation",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "official-documentation",
+   "relationship": "Per-sample sandboxes, sandbox_agent_bridge proxying model calls, pass_at_k and pass_k_k reducers, clustered and bootstrap standard errors, append-only score edits.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "watch",
+   "decision": "Statistical and audit reference for F3; alternative substrate to Harbor, not chosen."
+  },
+  {
+   "id": "RAD-2026-045",
+   "title": "Anthropic, Demystifying evals for AI agents",
+   "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "official-documentation",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "official-documentation",
+   "relationship": "20-50 real-failure tasks, multiple trials, outcome grading, capability vs regression evals, pass@k vs pass^k, transcript reading.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "adopted",
+   "decision": "F3 evaluation design (owner 2026-11-22)."
+  },
+  {
+   "id": "RAD-2026-046",
+   "title": "Anthropic, infrastructure noise in agentic coding evaluations",
+   "url": "https://www.anthropic.com/research/infrastructure-noise",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "official-documentation",
+   "provenance": "secondary",
+   "peerReviewed": false,
+   "claimLevel": "unreproduced-result",
+   "relationship": "Resource configuration moved Terminal-Bench scores by about 6 points; figures read from a secondary summary.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "adopted",
+   "decision": "F6 infrastructure controls (owner 2026-11-22); primary page not read."
+  },
+  {
+   "id": "RAD-2026-047",
+   "title": "Langfuse, LangSmith, Braintrust, Phoenix and promptfoo",
+   "url": "https://langfuse.com/docs/prompt-management/features/prompt-version-control",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "product",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "product-capability",
+   "relationship": "Immutable versions promoted by movable labels or environments, threshold CI gates, MCP servers and skills for in-host queries; no in-product paired significance tests.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "adopted",
+   "decision": "F5 promotion pointers (owner 2026-11-22); no platform integration adopted."
+  },
+  {
+   "id": "RAD-2026-048",
+   "title": "OpenTelemetry GenAI agent semantic conventions",
+   "url": "https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-agent-spans.md",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "standard",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "official-documentation",
+   "relationship": "invoke_agent and execute_tool spans, gen_ai.agent.version; status Development.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "adopted",
+   "decision": "F4 telemetry alignment (owner 2026-11-22); conventions may still change."
+  },
+  {
+   "id": "RAD-2026-049",
+   "title": "OpenAI, Harness engineering and Unrolling the Codex agent loop",
+   "url": "https://openai.com/index/harness-engineering/",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "official-documentation",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "official-documentation",
+   "relationship": "AGENTS.md as a ~100-line map, repository docs as system of record, mechanical checks, observable app, garbage-collection agents; Codex harness defined as the agent loop.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "watch",
+   "decision": "Practice reference; no change adopted."
+  },
+  {
+   "id": "RAD-2026-050",
+   "title": "Mario Zechner, minimal coding agent",
+   "url": "https://mariozechner.at/posts/2025-11-30-pi-coding-agent/",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "market-signal",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "market-observation",
+   "relationship": "Argues MCP servers cost 7-9 % of context, prefers skills plus CLI, no permission prompts.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "watch",
+   "decision": "Supports skill-first F1; no claim adopted."
+  },
+  {
+   "id": "RAD-2026-051",
+   "title": "DSPy GEPA optimizer",
+   "url": "https://dspy.ai/current/api/optimizers/GEPA/overview/",
+   "sourceDate": "read 2026-11-22",
+   "sourceClass": "official-documentation",
+   "provenance": "primary",
+   "peerReviewed": false,
+   "claimLevel": "official-documentation",
+   "relationship": "Selects candidates on the validation set, so a separate untouched test split is needed before adoption.",
+   "affectedArtifacts": [
+    "docs/strategy/HARNESSING_BENCHMARK.md",
+    "docs/tooling/HARNESSING.md"
+   ],
+   "status": "watch",
+   "decision": "Held-out rule for any future automatic refinement; not adopted."
+  }
+ ]
+}
