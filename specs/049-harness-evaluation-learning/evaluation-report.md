@@ -1,5 +1,13 @@
 # HAR.2 evaluation report
 
+Status (2026-11-22): native cohort T014 **run and inconclusive**. 15 of 15 registered
+slots on the admitted Claude/Haiku subscription route; 13 correct, 1 incorrect, 1
+not-attempted; descriptive only under D3 ([evidence/t014.json](evidence/t014.json)). The
+owner closed T014 as inconclusive, recorded no-go for native ordinary use on both axes
+(T007) and applied SPEC-050 D7: the harness stays experimental and nothing is promoted
+([evidence/t007.json](evidence/t007.json)). Library ablation (arm D) not run
+(infeasible). The sections below are history.
+
 Status (2026-11-12): one offline deterministic **synthetic-control** cohort run
 was executed under a scoped owner authorization; it is **plumbing only**, every
 comparison is descriptive-only under D3, and it supports no utility claim. Native
@@ -180,9 +188,20 @@ attempts to reconcile.
 
 ## Native cohort
 
-Pending. It is blocked on SPEC-049/T004 (native admission) and SPEC-048/T008
-(qualified host). There is no native source, session or outcome, and none is
-substituted with synthetic data.
+Run on 2026-11-20/21 (T014, plan P2) after the T004 admission. Correct completions per
+unit (one lineage L1, 5 holdout cases):
+
+| Stratum | Units | A | B | C |
+|---|---|---|---|---|
+| continuity | 1 | 1/1 | 1/1 | 1/1 |
+| coordination | 4 | 3/4 (1 not-attempted) | 3/4 (1 incorrect) | 4/4 |
+
+Every comparison is descriptive-only (below-D3-minimum); a 1/1 cell has a 95 %
+Clopper-Pearson interval of [0.025, 1]. Units are not independent (no purge, T012-03).
+The endpoints table above stays not computed except correct completion, and costs stay
+claim-blocked. Disposition (owner, 2026-11-22): inconclusive; no-go for native ordinary
+use on both axes; harness experimental under D7 ([evidence/t007.json](evidence/t007.json)).
+Before 2026-11-20 this section read "Pending".
 
 ## What would unblock the deterministic cohort (as of 2026-10-29)
 

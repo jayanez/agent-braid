@@ -646,7 +646,8 @@ qualified on one machine from 2026-11-17 until 2026-12-17 and was approved by th
 on 2026-11-21 with documented limits (review record bound to `a768e6d3`); assurance profiles (SPEC-067) were
 approved by the owner on 2026-11-22 with documented limits (review record bound to `2b48a5d6`; T012/T013 open). Users get the experimental,
 offline `agent-braid harness` CLI described in [Harnessing](docs/tooling/HARNESSING.md);
-nothing is native, promoted or activated. Both long-task continuity and precise, efficient coordination are primary
+the native cohort (SPEC-049 T014) was inconclusive, so under D7 the harness stays
+experimental and nothing is promoted or activated (owner, 2026-11-22). Both long-task continuity and precise, efficient coordination are primary
 outcomes. Automatic isolated trials, initial human promotion, synthetic controls,
 advanced component/search capabilities and separately governed future automatic
 promotion are planned. Additional cash spend is capped at EUR 0.

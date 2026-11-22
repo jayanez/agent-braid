@@ -25,6 +25,8 @@ DEFERRED = "Deferred"
 OWNER_DECISION_R6 = ([f"SPEC-029/T00{n}" for n in range(1, 10)]
                      + ["SPEC-031/T008", "SPEC-033/T002", "SPEC-033/T003",
                         "SPEC-033/T004", "SPEC-033/T006", "SPEC-033/T008"])
+# SPEC-077 not published (T008, owner 2026-11-22, SPEC-049 evidence/t007.json): open tasks moved to Deferred
+OWNER_DECISION_W3_DEFERRED = [f"SPEC-077/T00{n}" for n in (1, 3, 4, 5, 6, 7, 9)]
 
 
 class PaginationTests(unittest.TestCase):
@@ -144,7 +146,12 @@ class TrackingTests(unittest.TestCase):
         for key in moved:
             self.assertEqual(S1_5, by_key[key]["milestone"])
             self.assertEqual("open", by_key[key]["state"])
-        pinned = set(overrides) - moved
+        deferred = {key for key, name in overrides.items() if key.startswith("SPEC-077/") and name == DEFERRED}
+        self.assertEqual(set(OWNER_DECISION_W3_DEFERRED), deferred)
+        for key in deferred:
+            self.assertEqual(DEFERRED, by_key[key]["milestone"])
+            self.assertEqual("open", by_key[key]["state"])
+        pinned = set(overrides) - moved - deferred
         self.assertEqual(98, len(pinned))
         for key in pinned:
             self.assertEqual("closed", by_key[key]["state"])

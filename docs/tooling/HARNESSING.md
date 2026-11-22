@@ -14,7 +14,10 @@ decisions and per-axis publication remain open. Native Claude containment
 (SPEC-065, ADR 0035) is qualified on one machine from 2026-11-17 until
 2026-12-17T22:19:29Z and approved by the owner on 2026-11-21 with documented
 limits; it authorizes no execution. Assurance profiles (SPEC-067) were approved by the owner on 2026-11-22 with documented limits; they are advisory and authorize nothing.
-HAR.3 adaptation (SPEC-050) is planning only. Extra cash spend stays at EUR 0.
+The HAR.2 native cohort (SPEC-049 T014) was inconclusive, so under SPEC-050 D7 the harness
+stays experimental: nothing is promoted or activated, and the read-only harness MCP
+surface (SPEC-077) is not published. HAR.3 adaptation (SPEC-050) is planning only. Extra
+cash spend stays at EUR 0.
 
 The `agent-braid harness` command group (`python -m agent_braid harness ...`)
 exposes the offline Braid Harness laboratory. Every command prints one JSON

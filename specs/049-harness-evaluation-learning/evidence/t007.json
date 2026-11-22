@@ -1,0 +1,75 @@
+{
+ "recordVersion": "0.1.0",
+ "spec": "SPEC-049",
+ "task": "T007 (with T014 disposition, SPEC-050 D7 application and SPEC-077 T008 publication decision)",
+ "recordedAt": "2026-11-22",
+ "sourceCommit": "7ee6ceed0166709aee20f3cebcdad786dbef5003",
+ "decider": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "method": "Guided interactive questions Q1-Q4 from the packet w3-decision-packet-20261122.md; answers are the owner's selected options, quoted verbatim.",
+ "inputs": {
+  "specs/049-harness-evaluation-learning/evidence/t014.json": "ed46a74c440c1dc97a196418025f650767fe6308bfbb43ba785c0383f6562318",
+  "specs/049-harness-evaluation-learning/w3-decision-packet-20261122.md": "de06348ce909b8f18bb66e9e35629d556c8a0c44059fcd96f7a5a35f06d658b9",
+  "specs/049-harness-evaluation-learning/promotion-policy.md": "c0e417131c61f103cb7387dd4232b051ec7c2dd65d9f0e3df479c06d7c3aaf92",
+  "specs/049-harness-evaluation-learning/evidence/registration/t014-terms-20261120.json": "ef68417637be2c5b881ce95227eb0943ad4fedd98bb5498d1506b910612c68f1",
+  "specs/049-harness-evaluation-learning/evidence/native-admission/t004-admission-20261120.json": "7a1b1a5a18949f54bad47e1805760f1bf917d7b339ae2550eebc1fa17c1d83f3",
+  "specs/050-braid-harness-adaptation/owner-decisions-20261113.md": "f0b7e4eb2eac0da416c9df63a5da28c01415972e80851e0b754b68ed5b52e3d0",
+  "docs/adr/0043-harness-mcp-readonly-surface.md": "c6b7a775eca80a759a450e4261cd61d7d34208642cecb6dc985d56532016d921"
+ },
+ "answers": {
+  "Q1-T014": {
+   "selected": "Cerrar como no concluyente (Recomendado)",
+   "decision": "T014 is closed as inconclusive. 15 of 15 slots used; 13 correct, 1 incorrect (L1-C02-a:B), 1 not-attempted; descriptive only under D3. Not measured on this roster and window: six endpoints (interventions, rework, interrupted recovery, conflict precision and recall, false safe admissions, useful parallelism), correction and review effort, costs (claim-blocked) and arm D (infeasible). A new cohort needs a new spec with more independent lineages."
+  },
+  "Q2-T007": {
+   "selected": "No-go en ambos ejes (Recomendado)",
+   "decisions": [
+    {
+     "axis": "continuity",
+     "cohort": "T014 native (L1, 1 unit)",
+     "profile": "claude 2.1.292 / haiku / subscription, contained",
+     "candidates": [
+      "A",
+      "B",
+      "C"
+     ],
+     "decision": "no-go for native ordinary use",
+     "reason": "missing data: 1 unit, all arms 1/1, interval [0.025, 1]; a read-only described checkpoint, not real long-task recovery"
+    },
+    {
+     "axis": "coordination",
+     "cohort": "T014 native (L1, 4 units)",
+     "profile": "claude 2.1.292 / haiku / subscription, contained",
+     "candidates": [
+      "A",
+      "B",
+      "C"
+     ],
+     "decision": "no-go for native ordinary use",
+     "reason": "missing data: A 3/4 (1 not-attempted), B 3/4 (1 incorrect), C 4/4; conflict precision/recall, false safe admissions and useful parallelism not measured"
+    }
+   ],
+   "comparisonMargins": "none applicable: every comparison descriptive-only (below-D3-minimum); no margin was met or tested",
+   "rollback": "nothing was promoted; the rollback target is the current state (offline harness CLI, experimental), so the rehearsal is the identity and changes nothing",
+   "meaning": "no-go means not adopted for lack of data, not harmful"
+  },
+  "Q3-D7": {
+   "selected": "Aplicar D7: experimental (Recomendado)",
+   "decision": "SPEC-050 D7 (2026-11-13) applied to an inconclusive T014: no activation ADR or policy; the harness closes as experimental. Shipped scope: offline agent-braid harness CLI (experimental), native Claude containment qualified on one machine (SPEC-065), no promotion and no automatic promotion (T008 deferred)."
+  },
+  "Q4-SPEC-077": {
+   "selected": "No publicar; mover a Deferred (Recomendado)",
+   "decision": "SPEC-077 T008 records not published: the gate conditions SPEC-049 T014 (inconclusive) and the D7 outcome (experimental) fail. ADR 0043 is Rejected under D7. T001, T003-T007 and T009 move to the Deferred milestone; spec, plan, contract and ADR stay as design history."
+  }
+ },
+ "executionAuthorization": false,
+ "promotionAuthorization": false,
+ "nativeAdmission": false,
+ "limits": [
+  "Owner decisions on descriptive data; not a proof that the guidance has no utility.",
+  "Units were not independent (T012-03 accepted for T014).",
+  "This record authorizes no execution, promotion, native unit or publication."
+ ]
+}

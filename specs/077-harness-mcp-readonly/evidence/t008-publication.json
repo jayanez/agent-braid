@@ -1,0 +1,52 @@
+{
+ "recordVersion": "0.1.0",
+ "spec": "SPEC-077",
+ "task": "T008",
+ "recordedAt": "2026-11-22",
+ "decision": "not published",
+ "gate": [
+  {
+   "condition": "SPEC-049 T014 results",
+   "met": false,
+   "evidence": "specs/049-harness-evaluation-learning/evidence/t014.json",
+   "note": "inconclusive, descriptive only under D3"
+  },
+  {
+   "condition": "D7 ADR outcome",
+   "met": false,
+   "evidence": "specs/049-harness-evaluation-learning/evidence/t007.json",
+   "note": "D7 applied: harness experimental, no activation ADR"
+  },
+  {
+   "condition": "T007 held-out validity in three hosts",
+   "met": false,
+   "note": "not run"
+  },
+  {
+   "condition": "T002 contract review",
+   "met": true,
+   "evidence": "specs/077-harness-mcp-readonly/tasks.md T002"
+  },
+  {
+   "condition": "owner acceptance of the candidate",
+   "met": false,
+   "note": "no candidate implemented (T003 not done)"
+  }
+ ],
+ "adr0043": "Rejected under D7 (OD-6)",
+ "deferred": [
+  "T001",
+  "T003",
+  "T004",
+  "T005",
+  "T006",
+  "T007",
+  "T009"
+ ],
+ "ownerDecision": {
+  "record": "specs/049-harness-evaluation-learning/evidence/t007.json",
+  "sha256": "8c8718bf43813bec0688eeedf6e43535f81f4bd388035b9ff5baf6a3346f7c8b",
+  "answer": "No publicar; mover a Deferred (Recomendado)"
+ },
+ "executionAuthorization": false
+}

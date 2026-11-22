@@ -1,8 +1,9 @@
 # ADR 0043: Read-only harness views over the plugin MCP facade
 
-- **Status:** Proposed (draft, 2026-11-16). Not accepted; implements and publishes
-  nothing. Accepted or rejected with the SPEC-077 T008 publication decision, which
-  follows SPEC-049 T014 and the D7 ADR.
+- **Status:** Rejected (2026-11-22, SPEC-077 T008). SPEC-049 T014 was inconclusive and
+  SPEC-050 D7 closed the harness as experimental, so the surface is not published
+  ([decision](../../specs/077-harness-mcp-readonly/evidence/t008-publication.json)).
+  Proposed 2026-11-16; kept as design history.
 - **Date:** 2026-11-16
 - **Deciders:** Juan Antonio Yáñez García (founder)
 - **Constitutional articles:** 0, 5, 13, 14, 15, 19, 20, 23, 24
