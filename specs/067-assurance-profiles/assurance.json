@@ -115,7 +115,8 @@
     "mode": "historical"
   },
   "execution_contract": "Advisory only: executionAuthorization stays false; the compiled profile grants no tool, merge, release or approval; profiles, authorizations and classifier rules are operator-owned; agents cannot change their own level or mode; escalation is raise-only; floors are human-only.",
-  "human_review": "pending",
+  "human_review": "approved",
+  "review_record": "specs/067-assurance-profiles/reviews/owner-review-2b48a5d6.json",
   "hypotheses": "H1 (evaluation, may fail): higher pre-PR levels reduce post-merge rework and regressions at an acceptable total chain cost, measured on both axes through SPEC-049 with outcomes fixed before observation.",
   "observation_contract": "Receipts record checkpoint, applied level and mode with sources, base/head commits, reviews with applied and rejected findings, commands with exits, approvals, risk class and profile digest; compiled artifacts record input hashes and digest. No secret or raw transcript is exported.",
   "references": [
@@ -380,5 +381,5 @@
   ],
   "scientific_limits": "Engineering specification plus one registered-not-run hypothesis. Receipts show recorded process, not review soundness or code correctness; risk classification is a path/size heuristic that can only raise; no utility claim; unit tests prove logic, not outcomes. Structural validation is not founder approval.",
   "scope": "Specification only: operator-owned assurance profiles assigning each agentic-lifecycle checkpoint an HITL mode (and a review depth for pre-PR review), non-lowerable authority floors, raise-only risk escalation, a compiled advisory profile generating track briefs and a Pre-PR review block, checkable gate receipts, and a registered evaluation hypothesis.",
-  "stage": "draft"
+  "stage": "validated"
 }

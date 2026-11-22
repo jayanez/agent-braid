@@ -643,8 +643,8 @@ refused), HAR.2 — Braid Harness evaluation and learning
 (#22, SPEC-049, 8 of 13 done), and HAR.3 — Braid Harness adaptation and integration
 (#23, SPEC-050, planning). Native Claude containment (SPEC-065, ADR 0035) is
 qualified on one machine from 2026-11-17 until 2026-12-17 and was approved by the owner
-on 2026-11-21 with documented limits (review record bound to `a768e6d3`); assurance profiles (SPEC-067) have
-their catalog and schema merged (state on 2026-11-02). Users get the experimental,
+on 2026-11-21 with documented limits (review record bound to `a768e6d3`); assurance profiles (SPEC-067) were
+approved by the owner on 2026-11-22 with documented limits (review record bound to `2b48a5d6`; T012/T013 open). Users get the experimental,
 offline `agent-braid harness` CLI described in [Harnessing](docs/tooling/HARNESSING.md);
 nothing is native, promoted or activated. Both long-task continuity and precise, efficient coordination are primary
 outcomes. Automatic isolated trials, initial human promotion, synthetic controls,

@@ -1,0 +1,75 @@
+{
+ "recordVersion": "0.1.0",
+ "feature": "SPEC-067",
+ "reviewedCommit": "2b48a5d63efebaeea6b07b91cd25f7dcbe3b3d11",
+ "reviewer": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "conflictsOfInterest": "The reviewer is the project founder and owner and the operator whose profiles, standing authorizations and classifier rules SPEC-067 governs. The review records that role explicitly; it is an internal owner decision, not independent external validation.",
+ "method": "Guided review on 2026-11-22 from interactive questions: scope (10 of 13 tasks done; advisory, executionAuthorization false), two Codex reviews (dad3e7f5 on 2026-11-21: 11 findings, C67-002/003 blocking and fixed in #1477; 5bd9b5c7 on 2026-11-21: 17 findings, all confirmed, C67-012 to C67-019 fixed in #1488 with six new tests that fail on the unfixed code; no third Codex pass by owner decision), the four T011 test modules (207 tests, OK) and the remaining limits. Authority and evidence snapshots frozen historical at 2b48a5d6 (#1489). Evidence hashed at 2b48a5d6.",
+ "humanReview": {
+  "decision": "approved",
+  "date": "2026-11-22",
+  "ownerAnswers": {
+   "fixes": "Arreglar 012–019 (Recomendado)",
+   "decision": "Aprobar con límites (Recomendado)",
+   "limits": "Todos; T012/T013 abiertas (Recomendado)"
+  },
+  "rationale": "Approve SPEC-067 as an engineering specification within its documented scope: an advisory compiler for the checkpoint catalog, HITL modes, REQ-003 human-only floors, raise-only risk escalation, the R0-R4 pre-PR review ladder and gate receipts. Accepted limits: (A) T012/C67-005: track-brief free-text fields are not restricted to an identifier charset; (B) T013/C67-006: a profile journal over MAX_BYTES is not refused at save; (C) a receipt records reported reviews and approvals, it does not prove that they occurred; approval provenance stays a caller and store responsibility; (D) profiles that derive the same reasons can share a classification; (E) checks are structural, not scientific proof, and H1 (utility of review depth, evidence/t009.json) has no data. T012 and T013 stay open as their own tasks. This approval grants no tool, merge, release or approval, and executionAuthorization stays false."
+ },
+ "milestoneClosure": {
+  "decision": "not-requested",
+  "rationale": "T012 and T013 stay open; the milestone holds other open work."
+ },
+ "evidence": [
+  {
+   "path": "specs/067-assurance-profiles/spec.md",
+   "sha256": "7db07c73250334d3265e6919002dba18803ea66f3098d311c8922bc563b688df"
+  },
+  {
+   "path": "specs/067-assurance-profiles/contracts/assurance-profile.md",
+   "sha256": "5dd8ee99e00fa594f027bf18469e80d6bd4f974bd4b8c397ca67d56b05a001a3"
+  },
+  {
+   "path": "specs/067-assurance-profiles/evidence/t011.json",
+   "sha256": "18067d96d330d3fe5fc110ea52b72f4193b29419cb5a9b78603f6f9c13916385"
+  },
+  {
+   "path": "specs/067-assurance-profiles/evidence/t009.json",
+   "sha256": "0ec9a54039ac0a5154dce1661cafc13609e2e37f7d89c0d339c1074914b6bf2c"
+  },
+  {
+   "path": "specs/067-assurance-profiles/evidence/review/codex-t011-20261116.json",
+   "sha256": "6a354f61c86707430e50ed6bd99cde61d4d0c2680c30d3f744e5f2fa345379da"
+  },
+  {
+   "path": "specs/067-assurance-profiles/evidence/review/codex-t011-20261121.json",
+   "sha256": "d95103f7a9423e978096e457fe89810b8567117c193b704a5ae697ef0ff20fe3"
+  },
+  {
+   "path": "agent_braid/harness_assurance.py",
+   "sha256": "ae0a729813856d3ec102c9cccbd75dddc8d24afd23a9e1440a07ff3a3d070faf"
+  },
+  {
+   "path": "agent_braid/harness_assurance_risk.py",
+   "sha256": "805a31cb4b628060dc632a955fd45affeb1fa25d0dff31fc71a81070388fad06"
+  },
+  {
+   "path": "agent_braid/harness_assurance_receipts.py",
+   "sha256": "32fe3f651db52d0a015ba08b619839ba198cd8d945b2a4d1959df4d3e4f6a8ee"
+  },
+  {
+   "path": "agent_braid/harness_assurance_render.py",
+   "sha256": "b96a9cc5c0865a6f0c686f8666c12396e3f703885fa363ec2ff661cb1b860d04"
+  },
+  {
+   "path": "docs/architecture/ASSURANCE_LEVELS.md",
+   "sha256": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9"
+  },
+  {
+   "path": "docs/adr/0036-assurance-profiles.md",
+   "sha256": "9a7abf22920a9ba91cb61c5c48b905a1415182bc9434bcf884680ec41666b464"
+  }
+ ]
+}
