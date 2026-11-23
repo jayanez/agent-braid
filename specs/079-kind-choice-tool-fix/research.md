@@ -36,3 +36,17 @@ still rests on the mechanical checks. Data rights: synthetic, authored in-repo.
 
 OD-1 reused. At 100 prompts, >= 88 passing gives a Wilson 95 % lower bound >= 0.80. v3-test A0' scored
 91/100 but failed on the 0/3 clause; the fix targets exactly that clause.
+
+## R7 — v4 authoring record (T004, 2026-11-23)
+
+The v4 templates in `scripts/spec079_build_v4.py` were written from the class plan. The author read the
+SPEC-078 builder logic (fact generator, footprint rule, checks) and Gate 0, but not the v2 or v3 template
+blocks or any v2-test or v3-test prompt text. Exposure during the build: the window guard refused two
+first-draft phrasings and printed the shared 8-word windows ("... part of" and "... a section of" before a
+fixture path). A follow-up count showed that the second phrase occurs in 13 v3-test prompts. Both
+phrasings were replaced with wording that the guard accepts. No other earlier prompt text was seen.
+
+Gate 0 adaptation: the SPEC-078 over-declaration null is scoped by SPEC-078 class names, so the v4 entry
+scores it on `dependency-order` and requires it to fail the plain chains (no content use). On v4 the
+old-read-rule strategy reaches 92/100 (Wilson lower bound 0.85). It misses OD-1 only through the
+per-class clause (`dependency-order` 7/15), as SPEC-078 Gate 0 states.
