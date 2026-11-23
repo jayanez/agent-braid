@@ -1,0 +1,20 @@
+{
+ "command": "python -m unittest tests.test_lightning_promote",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_promote.py": "65b67d0e3b31a99c7c43417d68eddac1a730c69625aff3dfe4f0a2c27ae8d8c8",
+  "agent_braid/plugin_package.py": "1025d1de225e9855126cbbf7cd7fda8a4964646eedab4f753cbab18bf57268c6",
+  "scripts/build_native_plugin.py": "9a4da61c1cd347b785fe253a27a13616279844dbb627bdbe395ce11504ea48b6",
+  "tests/test_lightning_promote.py": "2d723a869c3b04b39add770f0b9f0f664368011275bdca466d8db6685c3303e7"
+ },
+ "limits": "The check runs against a temporary source tree; no native plugin build was run here (it needs the runtime archives). Digests are of canonical source skills, not packaged bytes, because packaging rewrites skill names.",
+ "outcome": "passed: plugin_package.check_lightning_promotions reads the committed export integrations/lightning-promotion/registry-export.json and compares each mapped canonical source SKILL.md with its registry's active candidate; a promoted file passes a release build. A hand-edited file yields lightning-promotion-mismatch: <scope> expected <sha> actual <sha>, returned as a warning for a local build and raised for a release build (OD-2). With no active candidate the file must equal the baseline the scope's first decision names in its lightning-baseline: limit (expected <baseline sha>); an override reason's digest cited by the same decision is not a baseline. Negative controls: no export is not checked; missing file (actual missing); invalid export; unknown scope in an export; non-canonical export bytes; scripts/build_native_plugin.py calls the check with release unless --allow-dirty.",
+ "procedure": "procedure_004",
+ "result": "OK",
+ "scenario": "SC-004",
+ "specification": "SPEC-073 BL.3",
+ "testsRun": 44
+}

@@ -21,7 +21,7 @@ import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from agent_braid.plugin_package import file_hash, inventory, verify_package
+from agent_braid.plugin_package import check_lightning_promotions, file_hash, inventory, verify_package
 from agent_braid.tooling_assets import load_skill_bundle
 
 VERSION = '0.1.0-alpha.9'
@@ -299,6 +299,8 @@ def assemble(output, cache, *, platforms=None, allow_dirty=False, include_workfl
         raise ValueError('Commit the exact candidate before building, or explicitly mark an --allow-dirty engineering artifact')
     if include_workflows and not WORKFLOWS_SOURCE.is_dir():
         raise ValueError('The workflow source directory is missing')
+    # SPEC-073 REQ-004 (OD-2): a release build refuses a promoted skill that disagrees with the export.
+    promotion_warnings = check_lightning_promotions(ROOT, release=not allow_dirty)
     candidate = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     # Timestamps written by the build (wheel entries, source archive) come from the commit, not the clock.
     epoch = int(subprocess.check_output(['git', 'log', '-1', '--format=%ct', 'HEAD'], cwd=ROOT, text=True))
@@ -461,7 +463,8 @@ exec "$plugin_python" -I -B -m agent_braid "$@"
                                          *([Path(sys.prefix).resolve()] if sys.prefix != sys.base_prefix else [])))
         staging.rename(output)
     return {'status': 'built', 'marketplace': str(output), 'plugin': str(output / 'plugins/agent-braid'),
-            'version': VERSION, 'platforms': selected, 'sourceDirty': dirty}
+            'version': VERSION, 'platforms': selected, 'sourceDirty': dirty,
+            'lightningPromotionWarnings': promotion_warnings}
 
 
 def main():

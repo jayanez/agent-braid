@@ -9,18 +9,26 @@ The scope map is a closed table in `agent_braid/lightning_promote.py`.
 The single entry is the OD-1 decision (T001); any other scope is refused with
 `unknown-scope`. The path exists in the plugin source tree.
 
-Build check (`plugin_package`): for each scope with a registry, the packaged
-file's SHA-256 must equal `ProfileRegistry.active`. Mismatch message:
+Build check (`plugin_package.check_lightning_promotions`, called by
+`scripts/build_native_plugin.py`): for each scope with a registry, the SHA-256 of the
+canonical source `SKILL.md` the packaged skill is built from must equal the active
+candidate (packaging applies the SPEC-054 name substitutions, so the packaged bytes
+differ by design). Mismatch message:
 `lightning-promotion-mismatch: <scope> expected <sha> actual <sha>`. A scope
 whose registry has no active candidate requires the file to equal the
-baseline digest recorded at its first `record`. That first decision names the
+baseline digest recorded at its first `record`: a scope's first decision cites
+the digest of the file it replaces in `evidenceSha256s`, and apply keeps that
+baseline text content-addressed in the Lightning run store. That decision names the
 baseline explicitly with the limit id `lightning-baseline:<first 44 hex of its digest>`;
 only the cited evidence digest that prefix selects is the baseline (an override
 reason's digest, cited by the same decision, never is).
 
-Severity (OD-2): a release build refuses on mismatch; a local developer build
+Severity (OD-2): a release build (any build without `--allow-dirty`) refuses on mismatch; a local developer build
 prints the same message as a warning and continues.
 
 Registry source (OD-3): the working registry is
 `<plugin home>/lightning-promotion/registry.json`; release builds read the
-committed export `integrations/lightning-promotion/registry-export.json`.
+committed export `integrations/lightning-promotion/registry-export.json`
+(format `braid-lightning-promotion-export/v0.1`: canonical JSON mapping each scope
+to its registry document). No export means nothing was promoted and nothing is
+checked.

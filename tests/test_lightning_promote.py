@@ -277,8 +277,8 @@ class CliPreviewTests(Base):
         self.assertEqual((code, err), (2, 'lightning promote refused (candidate-not-stored)\n'))
 
 
-class ApplyTests(Base):
-    """procedure_002 / SC-002 and the apply half of procedure_003."""
+class ApplyBase(Base):
+    """A synthetic noninferior pair (OD-4) and apply helpers."""
 
     def setUp(self):
         super().setUp()
@@ -294,6 +294,10 @@ class ApplyTests(Base):
 
     def registry(self):
         return hp.load(lp.registry_path(self.home, SCOPE))
+
+
+class ApplyTests(ApplyBase):
+    """procedure_002 / SC-002 and the apply half of procedure_003."""
 
     def test_human_decide_begin_commit_writes_registry_and_file(self):
         doc = lp.preview_promote(self.build(), home=self.home, root=self.root)
@@ -512,6 +516,78 @@ class ApplyTests(Base):
         with patch.object(lp, 'preview_promote', side_effect=PermissionError('denied')):
             code, out, err = cli.cli()
         self.assertEqual((code, out, err), (2, '', 'lightning promote refused (io-error)\n'))
+
+
+class BuildCheckTests(ApplyBase):
+    """procedure_004 / SC-004 (OD-2: refuse release builds, warn local builds)."""
+
+    def export(self, *registries):
+        path = self.root / lp.EXPORT_PATH
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(lp.export_bytes(list(registries)))
+
+    def check(self, release=False):
+        from agent_braid.plugin_package import check_lightning_promotions
+        return check_lightning_promotions(self.root, release=release)
+
+    def test_no_export_is_not_checked(self):
+        self.target.write_text('hand edit\n')
+        self.assertEqual(self.check(release=True), [])
+
+    def test_promoted_file_passes_and_edit_is_named(self):
+        self.apply()
+        self.export(self.registry())
+        self.assertEqual(self.check(release=True), [])
+        self.target.write_text(TEXT + 'hand edit\n')
+        line = (f'lightning-promotion-mismatch: {SCOPE} expected {self.sha} '
+                f'actual {sha256_text(TEXT + "hand edit\n")}')
+        self.assertEqual(self.check(), [line])
+        with self.assertRaises(ValueError) as caught:
+            self.check(release=True)
+        self.assertEqual(str(caught.exception), line)
+
+    def test_no_active_candidate_requires_the_baseline(self):
+        with patch.object(hp.ProfileRegistry, 'commit', side_effect=hp.PromotionError('stale-host')):
+            self.refused('apply-failed', self.apply)
+        self.export(self.registry())
+        self.assertIsNone(self.registry().active)
+        self.assertEqual(self.check(release=True), [])
+        self.target.write_text(TEXT)
+        self.assertEqual(self.check(), [f'lightning-promotion-mismatch: {SCOPE} expected '
+                                        f'{sha256_text(BASE_TEXT)} actual {self.sha}'])
+
+    def test_override_reason_text_is_not_a_baseline(self):
+        reason = low_reason()
+        registration, evaluation = pair(self.sha, base_verdict='meets')
+        record = self.build(registration=registration, evaluation=noninferior(evaluation))
+        with patch.object(hp.ProfileRegistry, 'commit', side_effect=hp.PromotionError('stale-host')):
+            self.refused('apply-failed', lambda: self.apply(record, override_reason=reason))
+        self.export(self.registry())
+        self.assertEqual(self.check(release=True), [])
+        self.target.write_text(reason)
+        self.assertEqual(self.check(), [f'lightning-promotion-mismatch: {SCOPE} expected '
+                                        f'{sha256_text(BASE_TEXT)} actual {sha256_text(reason)}'])
+
+    def test_missing_file_and_invalid_export_are_mismatches(self):
+        self.apply()
+        self.export(self.registry())
+        self.target.unlink()
+        self.assertEqual(self.check(), [f'lightning-promotion-mismatch: {SCOPE} expected {self.sha} actual missing'])
+        (self.root / lp.EXPORT_PATH).write_bytes(b'{"format":"other","registries":{}}')
+        self.assertEqual(self.check(), ['lightning-promotion-mismatch: export invalid (invalid-export)'])
+        with self.assertRaises(ValueError):
+            self.check(release=True)
+
+    def test_export_refuses_unknown_scope_and_round_trips(self):
+        self.apply()
+        raw = lp.export_bytes([self.registry()])
+        self.assertEqual(lp.load_export(raw)[SCOPE].sha256, self.registry().sha256)
+        self.refused('unknown-scope', lambda: lp.export_bytes([hp.ProfileRegistry.empty('other.scope')]))
+        self.refused('invalid-export', lambda: lp.load_export(raw + b'\n'))
+
+    def test_build_script_calls_the_check_with_release_unless_dirty(self):
+        text = (ROOT / 'scripts' / 'build_native_plugin.py').read_text()
+        self.assertIn('check_lightning_promotions(ROOT, release=not allow_dirty)', text)
 
 
 MODULE = ROOT / 'agent_braid' / 'lightning_promote.py'
