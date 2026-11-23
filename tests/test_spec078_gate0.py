@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import copy
 import unittest
+from unittest import mock
 
+from agent_braid import tooling_mcp
 from scripts import spec078_gate0 as gate0
 from scripts.spec078_build_set import SKILL
 
@@ -13,6 +15,12 @@ from scripts.spec078_build_set import SKILL
 class Gate0Tests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        # SPEC-078 is closed: its Gate 0 was measured on the pre-SPEC-079 tool, where disjoint `units`
+        # requests returned ok/unknown. Pin that behaviour so this record stays reproducible; the SPEC-079
+        # refusal is covered by tests/test_tooling_mcp_units_redirect.py and the v4 Gate 0.
+        pin = mock.patch.object(tooling_mcp, "_units_disjoint", lambda records: False)
+        pin.start()
+        cls.addClassCleanup(pin.stop)
         cls.sets = gate0.load_sets()
         cls.skill = SKILL.read_text("utf-8")
         cls.report = gate0.run(cls.sets, cls.skill)
