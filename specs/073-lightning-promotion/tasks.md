@@ -6,7 +6,7 @@ imply release or owner acceptance. `quick` means
 
 ## Phase P1 — record and preview
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan and contracts; OD-1 to
+- [x] T001 (REQ-001 / SC-001): Owner review of spec, plan and contracts; OD-1 to
   OD-3 decided and recorded under Clarifications. Dependencies: none.
   Verification: review record bound to a frozen commit.
 - [ ] T002 (REQ-001 / SC-001): `lightning_promote.build_record` with the scope
