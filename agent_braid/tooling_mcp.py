@@ -205,6 +205,40 @@ def _digest_bytes(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
+class _UnitsRedirect(ToolingError):
+    """SPEC-079 REQ-002: a refusal that carries the constructed AIM envelope (coverage partial) as its result."""
+
+    def __init__(self, message: str, result: dict[str, Any]):
+        super().__init__(message, code="units-cannot-answer-independence")
+        self.result = result
+
+
+_UNITS_REDIRECT = (
+    "units cannot report independence: its coverage is always partial, so disjoint units only come back "
+    "unknown. For a parallel or overlap question call analyze-work with kind aim (copyable example in the "
+    "agent-braid-analyze skill). result.constructedRequest is an AIM envelope to edit; set coverage complete "
+    "only if every touched file is named. [units-cannot-answer-independence]"
+)
+
+
+def _units_disjoint(records: list[dict[str, Any]]) -> bool:
+    """True when two or more constructed units are pairwise disjoint (SPEC-079 REQ-001).
+
+    Disjoint: no dependency edge and no shared resource unless every effect on it is a read.
+    Any overlapping or dependent pair, or a single unit, keeps the existing units path.
+    """
+    if len(records) < 2 or any(record["dependencies"] for record in records):
+        return False
+    kinds: dict[str, list[tuple[int, str]]] = {}
+    for index, record in enumerate(records):
+        for effect in record["effects"]["declared"]:
+            kinds.setdefault(effect["resource"], []).append((index, effect["kind"]))
+    for uses in kinds.values():
+        if len({index for index, _ in uses}) > 1 and any(kind != "read" for _, kind in uses):
+            return False
+    return True
+
+
 def _core_failure_types() -> tuple[type[BaseException], ...]:
     return (ToolingError, mcp_runtime.InvalidMcpRuntime,
             analysis.InvalidAnalysis, git_adapter.InvalidGitAnalysis,
@@ -427,7 +461,8 @@ class ToolingService:
         except _core_failure_types() as exc:
             if observation is not None:
                 observation.reason = _failure_code(exc)
-            return self._envelope(name, _status_for_error(exc), None, self._safe_error(exc), input_value=args)
+            return self._envelope(name, _status_for_error(exc), getattr(exc, "result", None),
+                                  self._safe_error(exc), input_value=args)
         except Exception as exc:
             # Do not return host paths, request data, or tracebacks through MCP.
             return self._envelope(name, "error", None,
@@ -477,6 +512,10 @@ class ToolingService:
             built = units.construct(request, units.workspace_scope(self.config.source_root))
             _validate_operation_bounds(request)
             _validate_operation_bounds(built["constructedRequest"])
+            if _units_disjoint(built["constructedRequest"]["operations"]):
+                # SPEC-079 REQ-001/OD-A: units records partial coverage, so disjoint work can only come
+                # back unknown. Refuse and hand back the constructed AIM envelope instead of a misleading ok.
+                raise _UnitsRedirect(_UNITS_REDIRECT, built)
             report = analysis.analyze(built["constructedRequest"])
             return self._advised({"report": report, **built}, kind, built["constructedRequest"])
         _validate_operation_bounds(request)
