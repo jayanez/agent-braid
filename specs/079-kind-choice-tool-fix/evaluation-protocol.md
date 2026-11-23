@@ -1,9 +1,10 @@
 # SPEC-079 evaluation protocol: fixed tool on held-out v4
 
-Status: draft for owner review (T006). T007 freezes this file, the split, its builder, the Gate 0 report
-and the pinned plugin commit by sha256 on a `develop` commit. No v4 rollout may start before that freeze
-and the owner's yes on 300 rollouts (T008). Owner decisions OD-A to OD-D (2026-11-22) apply. The OD-E
-shadow-check thresholds bind only after the owner signs them off.
+Status: approved as written by the owner on 2026-11-23 ([record](https://github.com/jayanez/agent-braid/pull/1629#issuecomment-7116233460)). T007 freezes this file, the
+split, its builder, the Gate 0 report and the pinned plugin commit by sha256 on a `develop` commit. No v4
+rollout may start before that freeze and the owner's yes on 300 rollouts (T008), which is a separate
+decision. Owner decisions OD-A to OD-E apply; the OD-E thresholds were approved as proposed on 2026-11-23
+([record](https://github.com/jayanez/agent-braid/pull/1625#issuecomment-7116233134)).
 
 ## What is measured
 
@@ -74,14 +75,14 @@ commit and every frozen hash. Tool kinds come from transcript counts; no LLM jud
 - A missed gate, a null difference or an invalidated run is a valid outcome. It is recorded in spec.md,
   and the run is not repeated.
 
-## Real-session shadow check (REQ-012, OD-E; proposed thresholds, owner sign-off pending)
+## Real-session shadow check (REQ-012, OD-E; thresholds approved 2026-11-23)
 
 Before release (T010), the pinned build runs in the owner's real `claude-code` sessions. The window lasts
 at least 14 days and covers at least 30 `analyze-work` calls. The check is read-only. It uses only local
 telemetry cells and, from host transcripts, the tool names, the `kind` argument, the envelope status and
 the refusal code. It reads no prompt or file content and spends no quota.
 
-| Statistic | Definition | Proposed pass |
+| Statistic | Definition | Pass |
 | --- | --- | --- |
 | S1 | `ok` share of `analyze-work` calls, Wilson 95 % | lower bound ≥ 0.70 |
 | S2 | `units-cannot-answer-independence` refusals followed by an `aim` call in the same session | ≥ 80 % recovered |
