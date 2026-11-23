@@ -1,0 +1,59 @@
+{
+ "recordVersion": "0.1.0",
+ "spec": "SPEC-050",
+ "task": "T004 (implement qualified deterministic helper and tool adapters)",
+ "recordedAt": "2026-11-23",
+ "sourceCommit": "76e88d44502d6147b7fc5a855975da1c742d3b70",
+ "decider": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "ownerDecision": {
+  "date": "2026-11-23",
+  "method": "Guided interactive review; the answer is the owner's selected option, quoted verbatim.",
+  "selected": "Cerrar offline y trasladar a HAR.4 (Recomendado)",
+  "decision": "Close T004 on its offline scope and move the native remainder to SPEC-084 (HAR.4)."
+ },
+ "method": "Read the inputs below at sourceCommit and recomputed their SHA-256. No helper ran, no native session, no test run, no network beyond git.",
+ "disposition": "offline-only",
+ "offlineScope": {
+  "toolContracts": "Immutable allowlisted tool contracts (braid-harness-tool/v0.1) with typed inputs and outputs, positive read inventory, private out/ writes, bounded runner, mandatory distinct checker, latched refusals and teardown (#1272, 824acf5d).",
+  "e3Adapter": "E3 subprocess adapter: pinned exec record braid-harness-exec/v0.1 and run_helper over an injected executor, validated against deterministic doubles only (#1437, 5f609282).",
+  "contract": "contracts/interface.md section 13 (amendment v0.2-draft, E3 subprocess effect contract) is drafted, not adopted.",
+  "qualifiedHelpers": "QUALIFIED_HELPERS in agent_braid/harness_tools.py is the empty frozenset, so ContainedExecutor refuses every helper.",
+  "e4": "Network, provider or model-session helpers (E4) stay blocked; no network adapter exists."
+ },
+ "nativeRemainder": {
+  "items": [
+   "SPEC-065 re-qualification after SPEC-049/T014 that adds pinned helper (path, sha256) pairs to the containment exec allow-list (NC-8), which alone may fill QUALIFIED_HELPERS",
+   "one contained helper run, on the macOS shadow under SPEC-065 containment or in a Harbor container, recorded as evidence",
+   "an adoption record that moves contracts/interface.md section 13 from drafted to adopted"
+  ],
+  "transferredTo": "SPEC-084/T015 (HAR.4), Phase P7, carried from SPEC-050 T004",
+  "note": "The transfer does not adopt section 13, fill QUALIFIED_HELPERS or admit any helper. Under E1 the re-qualification is light only under FD-20261114-STANDING (until HAR.1 closes or 2027-01-31); after that it follows the ordinary SPEC-065 path."
+ },
+ "inputs": {
+  "specs/050-braid-harness-adaptation/contracts/interface.md": "b27301dcc5df464e7c909f4507decc9172bb6720af2257648e4c67f4b04525bb",
+  "agent_braid/harness_tools.py": "e6168f654e6962c03888891dd122842d1b0d96ba98fd50b05d7b069429545465",
+  "tests/test_harness_tools.py": "cfcaaeea4a36ef89c05783794a721f993634a8f0061e320abaf15dc6a7c5c011",
+  "specs/050-braid-harness-adaptation/owner-decisions-20261116.md": "8c459916bd1e2622ceab6ee29f76ccd6731a0056ca47de82e8a9d3fd06825610",
+  "specs/050-braid-harness-adaptation/effect-contract-decision.md": "e8002e9d032f4111b45bef9a32714734b54f78fbf93acc6f5eceff7aa05d7815",
+  "specs/050-braid-harness-adaptation/owner-decisions-20261113.md": "f0b7e4eb2eac0da416c9df63a5da28c01415972e80851e0b754b68ed5b52e3d0",
+  "specs/049-harness-evaluation-learning/evidence/t007.json": "8c8718bf43813bec0688eeedf6e43535f81f4bd388035b9ff5baf6a3346f7c8b",
+  "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8",
+  "specs/084-harbor-evaluation-substrate/spec.md": "c34ad027bd1ae524bac470dd0bb3a86b55102510068712438ba1e3cd454811db"
+ },
+ "acceptanceNotMet": [
+  "bounded subprocess effects in a qualified containment (only deterministic doubles exercised)",
+  "bounded network effects (E4 blocked, no adapter)",
+  "explicit qualified effect admission for any new executable (no helper admitted)"
+ ],
+ "limits": [
+  "Offline engineering evidence only: deterministic doubles, no host, model, network or native run.",
+  "Closing T004 offline-only is an owner scope decision; it is not qualification or adoption of the E3 contract.",
+  "The provisional limits (maxOps 64, timeoutMs 10000, input 16 KiB, writes 256 KiB) stay module-local.",
+  "Hashes bind bytes, not authenticity.",
+  "This record authorizes no execution, helper run, containment change or contract adoption."
+ ],
+ "executionAuthorization": false
+}

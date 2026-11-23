@@ -1,5 +1,14 @@
 # HAR.2 evaluation report
 
+Status (2026-11-23): per-axis dispositions **published** (T010,
+[evidence/t010.json](evidence/t010.json)). On both axes, utility is inconclusive
+(descriptive only under D3) and rollout is experimental with nothing promoted. The native
+route works on one machine until the SPEC-065 issuance expires on 2026-12-17T22:19:29Z.
+The only Codex reviews are of SPEC-065 and SPEC-067, not of this report. Luna D5 was
+requested on 2026-11-23 and was not obtained before publication. The six endpoints,
+correction/review effort, costs and arm D were not measured and move to HAR.4 (SPEC-082,
+SPEC-083, SPEC-084). HAR.2 can close with this scope after a separate owner yes.
+
 Status (2026-11-22): native cohort T014 **run and inconclusive**. 15 of 15 registered
 slots on the admitted Claude/Haiku subscription route; 13 correct, 1 incorrect, 1
 not-attempted; descriptive only under D3 ([evidence/t014.json](evidence/t014.json)). The
