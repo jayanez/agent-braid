@@ -1,0 +1,18 @@
+{
+ "command": "python -m unittest tests.test_lightning_promote",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_promote.py": "f12f436285896b7c6a55ca9c66a0f17dd382e2f4ff8bb372b525c7d2ebb9464c",
+  "tests/test_lightning_promote.py": "a7cd2680c3ce672c398ec3ce1608e806a92b3255f2208c62bcba8fbf2d5440e3"
+ },
+ "limits": "Synthetic noninferior fixture pairs (OD-4); candidate texts must be in the run store named by --run-id (one run per call).",
+ "outcome": "passed: after two committed promotions, a rollback preview names the active and restored candidate digests and the sealed journal reason, writes nothing and carries requiredDecision human-apply and executionAuthorization false; the apply with its digest re-checks the previewed registry and file digests, writes the restored text read from the run store, then the registry (journal rolled-back); the active candidate equals the file digest. A release build check over the exported registry passes. The CLI lightning promote --rollback previews and applies with the digest. Negative controls: rollback with no previous candidate (no-previous), without a registry (no-active-profile), stale preview after a file edit, a different reason than previewed, and a change between the check and the write (preview-stale), and a failed registry save that restores the file and keeps the active candidate (apply-failed).",
+ "procedure": "procedure_005",
+ "result": "OK",
+ "scenario": "SC-005",
+ "specification": "SPEC-073 BL.3",
+ "testsRun": 56
+}

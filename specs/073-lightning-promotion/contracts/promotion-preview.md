@@ -5,7 +5,7 @@ Schema identifier: `braid-lightning-promotion-preview/v0.1` (JSON on stdout).
 | Field | Type | Meaning |
 |---|---|---|
 | `schema` | const | `braid-lightning-promotion-preview/v0.1` |
-| `action` | enum `promote`, `rollback`, `revoke` | requested change |
+| `action` | enum `promote`, `rollback`, `revoke`, `abort` | requested change |
 | `scope` | id | registry scope from the closed scope map |
 | `targetPath` | repo-relative path | mapped `SKILL.md` |
 | `currentSha256` | hex or null | registry active digest |
@@ -14,11 +14,14 @@ Schema identifier: `braid-lightning-promotion-preview/v0.1` (JSON on stdout).
 | `registrySha256Before` | hex | registry bytes now (SHA-256 of empty bytes when no registry file exists) |
 | `cohort` | const `native` | evaluated cohort |
 | `evidence` | sorted list of hex | SPEC-049 registration and evaluation record digests cited |
-| `heldOutSupport` | enum `supported`, `no-held-out-support` | H1 outcome of the SPEC-072 report for every host of the scope |
+| `heldOutSupport` | enum `supported`, `no-held-out-support`, or null for `rollback` and `revoke` | H1 outcome of the SPEC-072 report for every host of the scope |
 | `overrideReason` | string or null | required on apply when `heldOutSupport` is `no-held-out-support`; recorded in the decision |
 | `diffSummary` | object `{added, removed}` line counts | no text body |
 | `blockers` | sorted list of refusal reasons | refusals an apply would raise now (for example `regression-not-covered`, `no-held-out-support`, `transaction-in-progress`, `already-active`); empty when none |
-| `requiredDecision` | const `approved` | the human decision still needed |
+| `requiredDecision` | `approved` (promote) or `human-apply` (rollback, revoke) | the human step still needed; a rollback or revocation needs no new decision, only a human apply |
+| `reason` | id (rollback, revoke and abort only) | journal reason the apply records; sealed |
+| `revokedSha256` | hex (revoke only) | evidence digest the apply revokes; sealed |
+| `pendingSha256` | hex (abort only) | candidate of the pending entry being dropped |
 | `previewDigest` | hex | SHA-256 over canonical bytes of all fields above |
 | `executionAuthorization` | const `false` | never true |
 
@@ -33,6 +36,12 @@ previews dropping a pending (interrupted) promotion: `action` `abort`, the
 candidate, or the baseline cited by the scope's first decision), the journal `reason`
 and `requiredDecision` `human-apply`. `--apply --preview-digest <d>` restores that text,
 then records `aborted`.
+
+Rollback: `lightning promote --rollback --run-id <run> [--scope <s>] [--reason <id>]`
+previews restoring the newest prior usable candidate (its text read from the run
+store) and `--apply --preview-digest <d>` writes the file, then the registry; if the
+registry save fails the file bytes are restored. With no prior candidate the
+rollback is refused (`no-previous`).
 
 Apply rule: `--apply --preview-digest d` recomputes the preview and writes only
 when the recomputed digest equals `d`. Right before writing, the registry and file bytes must still match
