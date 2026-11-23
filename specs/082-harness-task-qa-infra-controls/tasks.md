@@ -7,10 +7,12 @@ SPEC-084 or a separate owner admission (OD-6). `executionAuthorization` stays fa
 
 ## Phase P0 — review
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan (and ADR if any); decide or defer OD-1..OD-7. There is no ADR of this spec; ADR 0045 is reviewed under SPEC-084.
+- [x] T001 (REQ-001 / SC-001): Owner review of spec, plan (and ADR if any); decide or defer OD-1..OD-7. There is no ADR of this spec; ADR 0045 is reviewed under SPEC-084.
   Dependencies: none. Target files: `evidence/t001-owner-review.md`.
   Verification: procedure_001. Planned evidence: `evidence/t001-owner-review.md`;
-  obtained: none.
+  obtained: that record (2026-11-23). OD-1, OD-2, OD-3 and OD-5 to OD-7 took the
+  recommended option. OD-4 took a new option (d): cross adversarial review by Claude
+  and Codex, with owner adjudication.
 - [ ] T002 (REQ-001 / SC-001): Run the Codex review of this spec on the merged candidate; record raw output and triage
   each finding (confirmed, partial, rejected with reason). Independent model review,
   not human review. Dependencies: this PR merged. Target files: `review/`,
