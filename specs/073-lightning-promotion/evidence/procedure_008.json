@@ -5,14 +5,14 @@
   "python": "3.13.11"
  },
  "inputs": {
-  "agent_braid/lightning_promote.py": "bf49b656fcff2eb8c16e50eeef668d360734414ca4125486d44041fbf1739bde",
-  "tests/test_lightning_promote.py": "d0eba3b3fe3497829af4286d84823aef7d366b18d9fe4ea3d648c0ce8e2fb7e7"
+  "agent_braid/lightning_promote.py": "439ebba238278f80b88749e577c79ad6dbaa6901d3bd97d610febad7bb4afd24",
+  "tests/test_lightning_promote.py": "86fca97a6f86662f75f7a863849e89e6b1f939dcb6962e410390cae5d9a9d28c"
  },
- "limits": "AST and runtime patching over the module and the preview path; the bounded write set of apply, rollback and revocation is checked with those tasks (T005, T007, T008).",
- "outcome": "passed (record and preview): agent_braid/lightning_promote.py imports only the standard library and Agent Braid modules, names no socket, process, dynamic-import, execute, recover or activate path, and no MCP module references it; AUTOMATIC_PROMOTION is False. A preview run under patched socket.socket, subprocess.Popen and os.system opens neither and makes no write-mode os.open call; every file under the plugin home and plugin tree is unchanged. Negative controls: the same checker flags a copy of the module patched with import socket, import requests, from subprocess import run, os.system or store.activate.",
+ "limits": "AST and runtime patching over the module; no host, model or network was used. The AST check is module-local; imported Agent Braid modules (harness_promotion -> harness_lab) import subprocess, and the runtime test shows the promotion paths never call it.",
+ "outcome": "passed: agent_braid/lightning_promote.py imports only the standard library and Agent Braid modules, names no socket, process, dynamic-import, execute, recover or activate path, and no MCP module references it; AUTOMATIC_PROMOTION is False. A preview run under patched socket.socket, subprocess.Popen and os.system opens neither and makes no write-mode os.open call. Apply writes only the scope's registry file, its lock file, the mapped SKILL.md and the run-store baseline text (bounded write set test); rollback and revocation write only the mapped file and the registry. Negative controls: the same checker flags a copy of the module patched with import socket, import requests, from subprocess import run, os.system or store.activate.",
  "procedure": "procedure_008",
  "result": "OK",
  "scenario": "SC-008",
  "specification": "SPEC-073 BL.3",
- "testsRun": 25
+ "testsRun": 66
 }

@@ -16,8 +16,18 @@ and a non-native cohort. The H1 outcome is reported, not enforced here: a pair
 without H1 ``supported`` for every required host yields ``no-held-out-support``,
 and an apply then needs an explicit owner override reason (OD-5).
 
-Nothing here decides, begins or commits a promotion (``AUTOMATIC_PROMOTION`` stays
-``False``); ``executionAuthorization`` is always false.
+``preview_promote`` and the ``agent-braid lightning promote`` command print a preview
+with a digest and write nothing. ``apply_promote`` writes only after a human
+``decide()`` and a matching preview digest: begin, atomic file write, commit, and
+abort with the file restored on any failure. Rollback and revocation use the same
+preview/apply discipline and restore the previous candidate, or the baseline cited
+by the scope's first decision. ``mismatches`` backs the plugin build check against
+the committed export. ``propose_reflections`` only adds short reflections to an
+``ExperienceStore``, where they stay quarantined.
+
+No automatic actor is accepted (``AUTOMATIC_PROMOTION`` stays ``False``); writes are
+limited to the scope's registry file, the Lightning run store and the mapped file;
+``executionAuthorization`` is always false.
 """
 from __future__ import annotations
 
@@ -33,6 +43,7 @@ import sys
 import time
 from typing import Any
 
+from . import harness_experience as experience
 from . import harness_promotion as promotion
 from . import lightning_store as store
 from . import plugin_registry
@@ -559,6 +570,46 @@ def apply_transition(action: str, scope: str, change, *, home: Path | None, root
             "candidateSha256": document["candidateSha256"], "activeSha256": active_candidate(after),
             "registrySha256After": after.sha256,
             "fileSha256After": _hex(read_target(root, scope)), "executionAuthorization": False}
+
+
+# --- reflections (REQ-007) -------------------------------------------------------------
+
+REFLECTION_PRODUCER = "lightning-gepa"
+MAX_REFLECTIONS = 8
+
+
+def propose_reflections(store_value: experience.ExperienceStore, texts: Any, *,
+                        record: CandidateRecord, at: int) -> experience.ExperienceStore:
+    """Propose short GEPA reflections through ``ExperienceStore.add`` only.
+
+    ``add`` screens each text (512 characters, poison patterns) and leaves the entry
+    quarantined; this function never validates or activates an entry.
+    """
+    _require(type(store_value) is experience.ExperienceStore, "invalid-store")
+    _require(type(record) is CandidateRecord, "invalid-record")
+    _require(isinstance(texts, (list, tuple)) and 0 < len(texts) <= MAX_REFLECTIONS, "invalid-reflections")
+    identity = record.profile["identity"]
+    applicability = {"domain": record.scope, "sourceSha256": identity["sourceSha256"],
+                     "host": identity["host"], "toolSetSha256": identity["toolSetSha256"],
+                     "policySha256": identity["policySha256"]}
+    value = store_value
+    for index, text in enumerate(texts):
+        proposal = {
+            "id": f"lightning-{record.candidateSha256[:16]}-{index}", "kind": "inconclusive",
+            "cue": f"Lightning reflection on {record.scope}", "lesson": text,
+            "applicability": applicability,
+            "provenance": {"producer": REFLECTION_PRODUCER, "sourceRecordSha256": record.evaluation.sha256,
+                           "generatedAt": at},
+            # ``kind`` says the lesson itself is unvalidated; ``supporting`` links the evaluation
+            # it was drawn from, the only polarity ``revoke_evidence`` follows (``contrary``
+            # would mark the entry contradicted), so revoking that evaluation withdraws it.
+            "evidence": [{"sha256": record.evaluation.sha256, "observedAt": at, "polarity": "supporting"}],
+            "expiresAt": None, "revalidateAfter": None}
+        try:
+            value = value.add(proposal, at)
+        except experience.ExperienceError as exc:
+            raise PromoteError(exc.reason) from None
+    return value
 
 
 # --- build check (REQ-004) -------------------------------------------------------------
