@@ -1,9 +1,9 @@
 # ADR 0044: Harness portability tiers and a skill-first harness surface
 
-- **Status:** Proposed (2026-11-22). Not accepted. It implements and publishes nothing.
-  The owner chose this direction on 2026-11-22 (F1 in the
-  [harnessing benchmark](../strategy/HARNESSING_BENCHMARK.md)). The founder accepts or
-  rejects it with the SPEC-080 T001 review.
+- **Status:** Accepted on 2026-11-23 by the founder in the SPEC-080 T001 review
+  (answer "Aceptar (Recomendado)";
+  [record](../../specs/080-harness-skill-every-host/evidence/t001-owner-review.md)).
+  Proposed on 2026-11-22. Acceptance authorizes no code, release or execution.
 - **Date:** 2026-11-22
 - **Deciders:** Juan Antonio Yáñez García (founder)
 - **Constitutional articles:** 0, 5, 13, 14, 15, 19, 20, 23, 24
@@ -31,7 +31,7 @@ Evaluation platforms (Langfuse, Phoenix, promptfoo, LangSmith, Braintrust) expos
 themselves to coding agents through skills and/or MCP. Minimalist hosts (Pi) treat
 MCP as a cost to every session's context window and prefer skills plus CLI.
 
-## Decision (proposed)
+## Decision
 
 1. **Portability tiers.** Agent Braid sorts every agent-facing artifact into one of
    two tiers.
