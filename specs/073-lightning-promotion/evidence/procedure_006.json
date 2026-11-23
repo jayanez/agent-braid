@@ -1,0 +1,18 @@
+{
+ "command": "python -m unittest tests.test_lightning_promote",
+ "environment": {
+  "platform": "macOS-27.2.1",
+  "python": "3.13.11"
+ },
+ "inputs": {
+  "agent_braid/lightning_promote.py": "645e0849e905aea983d209d8a70fcdb45f54b85c7aef9360c2245a9f0e21f328",
+  "tests/test_lightning_promote.py": "bce01bcf082d5aa43561ce22e19eec8e6b20797d55d93c05acf94a7349c0154a"
+ },
+ "limits": "Synthetic noninferior fixture pairs (OD-4); texts read from the run store named by --run-id.",
+ "outcome": "passed: revoking the evaluation digest cited by the active decision previews (no writes) the revoked digest and journal reason, both sealed into the preview digest, and applies the restoration of the previous candidate from the run store; the evidence is in the registry's revoked set. Revoking uncited evidence records the revocation and changes no file. Revoking the evidence of every committed decision restores the baseline cited by the scope's first decision, and a release build check over the exported registry passes. The CLI lightning promote --revoke previews; combining --revoke, --rollback or --abort is refused (one-action-only). Negative controls: a preview for one digest applied to a revocation of another, or with another reason (preview-stale, nothing written), repeated revocation (already-revoked) and a malformed digest (invalid-evidence).",
+ "procedure": "procedure_006",
+ "result": "OK",
+ "scenario": "SC-006",
+ "specification": "SPEC-073 BL.3",
+ "testsRun": 62
+}
