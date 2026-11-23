@@ -9,7 +9,7 @@
   ],
   "assumptions": "SPEC-072 emits a winner with candidate text, evaluation and cost report digests compatible with harness_promotion.decide(); skill texts fit the scope map limits; runtime stays standard-library only.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "b312076f6d84a495548dbeba66f1c78a1da575a0",
     "hashes": {
       "ARCHITECTURE.md": "8ac3f6c55d13a7e384a55179e2ddb3970abf7b50b1acbf2ebd8ca78c05529402",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
@@ -104,16 +104,16 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive: profile registry and experience store formats unchanged; the build check applies only to scopes with a registry, so existing builds are unchanged until a promotion is committed.",
   "domain": "Braid Lightning promotion of optimized skill and prompt texts through the HAR profile registry (cohort native) into the packaged Agent Braid plugin.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "b312076f6d84a495548dbeba66f1c78a1da575a0",
+    "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; AUTOMATIC_PROMOTION stays False; writes only to the registry file, the Lightning run store and the mapped SKILL.md after a human decision and a matching preview digest; no release or publication without the owner's explicit yes.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "None; engineering specification with no scientific claim.",
   "observation_contract": "Registry journal entries (record, decision, begin, commit, abort, rollback, revoke) with digests; preview documents with previewDigest; build check results naming scope and digests; owner promotion evidence with command, hashes and outcome.",
   "references": [
@@ -262,6 +262,7 @@
       "text": "Boundaries. The module opens no socket, launches no process, imports only the standard library and Agent Braid modules, exposes no MCP tool, and writes only the registry, run store and mapped file."
     }
   ],
+  "review_record": "specs/073-lightning-promotion/reviews/owner-review-b312076f.json",
   "scientific_limits": "Engineering only. A promoted candidate's BL.2 score describes a fixed task set, cohort and host versions; promotion does not establish general superiority. Build checks verify bytes, not behaviour.",
   "scope": "Specification only: human promotion of a BL.2 winning text as a native ProfileRegistry candidate, a closed scope-to-skill map, a preview/apply CLI, a plugin build check binding shipped SKILL.md to the active candidate, rollback, evidence revocation, and quarantined experience reflections.",
   "stage": "draft"
