@@ -9,9 +9,9 @@
   ],
   "assumptions": "SPEC-072 emits a winner with candidate text, evaluation and cost report digests compatible with harness_promotion.decide(); skill texts fit the scope map limits; runtime stays standard-library only.",
   "authority_snapshot": {
-    "commit": null,
+    "commit": "b312076f6d84a495548dbeba66f1c78a1da575a0",
     "hashes": {
-      "ARCHITECTURE.md": "ba06d301ad9fcbe359f278146b2bc556a4964f0741779bef61ddccea390ac76f",
+      "ARCHITECTURE.md": "8ac3f6c55d13a7e384a55179e2ddb3970abf7b50b1acbf2ebd8ca78c05529402",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "de98edde0132e64db2b0c9cfbf2be1e503437a57fc212936195be4c46c1817be",
@@ -64,7 +64,7 @@
       "docs/adr/0041-braid-lightning-content-traces.md": "1361654c3cb9a4b745eaf3aa3a3613fc0b76278a93f9fad3421bfd8a37a0a73c",
       "docs/adr/0042-braid-lightning-local-weight-training.md": "d4b1c5b7664a88be27ce64c4a3eb013161103e47694cab445b3e70b5269eacaf",
       "docs/adr/0043-harness-mcp-readonly-surface.md": "a13056d225ae28528d937f06df095d7822e857e4033b3a430e184058049e8953",
-      "docs/adr/0044-harness-portability-tiers-skill-surface.md": "a9ed9936a7c5f4444f205430527e9d0830246cbb88da5b6cf4122e495619a125",
+      "docs/adr/0044-harness-portability-tiers-skill-surface.md": "404cc8ada07409cd1569f00f9c28b5615a47614de7e7a0dfb8d447fff8eadeb4",
       "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "755a7589e6122d84bba248e262eaaa378c65f16faf33f2b348ef435844361503",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",
@@ -104,16 +104,16 @@
       "schemas/governance/public-export-manifest.schema.json": "11eb7f2594939ae9fd0c9e6cfe4423a80aba686d6cdfdd8b73b0fb84b0840aa8",
       "schemas/governance/release-validation-record.schema.json": "d9943f0c9f5520ea52e3b12bfba88240d03f8011b433fc5e35cb49549ab6e819"
     },
-    "mode": "current"
+    "mode": "historical"
   },
   "compatibility": "Additive: profile registry and experience store formats unchanged; the build check applies only to scopes with a registry, so existing builds are unchanged until a promotion is committed.",
   "domain": "Braid Lightning promotion of optimized skill and prompt texts through the HAR profile registry (cohort native) into the packaged Agent Braid plugin.",
   "evidence_snapshot": {
-    "commit": null,
-    "mode": "current"
+    "commit": "b312076f6d84a495548dbeba66f1c78a1da575a0",
+    "mode": "historical"
   },
   "execution_contract": "executionAuthorization stays false; AUTOMATIC_PROMOTION stays False; writes only to the registry file, the Lightning run store and the mapped SKILL.md after a human decision and a matching preview digest; no release or publication without the owner's explicit yes.",
-  "human_review": "pending",
+  "human_review": "approved",
   "hypotheses": "None; engineering specification with no scientific claim.",
   "observation_contract": "Registry journal entries (record, decision, begin, commit, abort, rollback, revoke) with digests; preview documents with previewDigest; build check results naming scope and digests; owner promotion evidence with command, hashes and outcome.",
   "references": [
@@ -262,6 +262,7 @@
       "text": "Boundaries. The module opens no socket, launches no process, imports only the standard library and Agent Braid modules, exposes no MCP tool, and writes only the registry, run store and mapped file."
     }
   ],
+  "review_record": "specs/073-lightning-promotion/reviews/owner-review-b312076f.json",
   "scientific_limits": "Engineering only. A promoted candidate's BL.2 score describes a fixed task set, cohort and host versions; promotion does not establish general superiority. Build checks verify bytes, not behaviour.",
   "scope": "Specification only: human promotion of a BL.2 winning text as a native ProfileRegistry candidate, a closed scope-to-skill map, a preview/apply CLI, a plugin build check binding shipped SKILL.md to the active candidate, rollback, evidence revocation, and quarantined experience reflections.",
   "stage": "draft"

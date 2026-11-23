@@ -7,10 +7,14 @@ No task here runs trials, launches a host, issues a grant or moves a promotion l
 
 ## Phase P0 — review
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan (and ADR if any; none for this spec); decide or defer OD-1..OD-6.
+- [x] T001 (REQ-001 / SC-001): Owner review of spec, plan (and ADR if any; none for this spec); decide or defer OD-1..OD-6.
   Dependencies: none. Target files: `specs/083-capability-regression-evals/evidence/`.
   Verification: procedure_001. Planned evidence: `evidence/t001-owner-review.md`;
-  obtained: none.
+  obtained: that record (2026-11-23). Every decision took the recommended option:
+  δ = 0.10 with one-sided α = 0.05; analytic task-clustered error as primary, with
+  bootstrap and lineage clustering as sensitivity checks; infrastructure limits as in
+  SPEC-082; private split refreshed after 5 gate uses; per-task regressions reported
+  only in v0.1.
 - [ ] T002 (REQ-001 / SC-001): Run the Codex review of this spec on the merged candidate; record raw output and triage
   each finding (confirmed, fixed, rejected with reason). Independent model review,
   not human review. Dependencies: this PR merged. Target files:

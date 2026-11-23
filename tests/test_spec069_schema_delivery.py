@@ -25,6 +25,7 @@ from scripts import spec069_tool_schemas as generator
 # (units since T006). A guidance rewrite (T008) that changes the prose makes this test fail on
 # purpose, so the arm's new meaning is updated knowingly.
 INTERIM_HELP = (
+    "Parallel/overlap: aim; units can't show independence, refused if disjoint. "  # SPEC-079 REQ-003
     "kind=aim: request is an AIM envelope {analysisInputVersion: \"0.1.0-alpha\", "
     "source: {kind: \"aim\", description}, operations: [AIM 0.2.0-draft record, ...]}; "
     "each record needs aimVersion, instanceId, attemptId, definition {id, digest}, inputDigest, "

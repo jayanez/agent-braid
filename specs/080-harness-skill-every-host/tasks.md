@@ -7,10 +7,13 @@ configuration or publishes before T012. All tasks are open.
 
 ## Phase P0 — review
 
-- [ ] T001 (REQ-001 / SC-001): Owner review of spec, plan and ADR 0044; decide or defer OD-1..OD-7, and accept or reject ADR 0044.
+- [x] T001 (REQ-001 / SC-001): Owner review of spec, plan and ADR 0044; decide or defer OD-1..OD-7, and accept or reject ADR 0044.
   Dependencies: this PR merged. Target files: `evidence/t001-owner-review.md`.
   Verification: procedure_001. Planned evidence: `evidence/t001-owner-review.md`;
-  obtained: none.
+  obtained: that record (2026-11-23). All seven owner decisions were answered with the
+  recommended option. ADR 0044 is Accepted. OpenCode joins the inventory with
+  profile `v0.2`. Validity uses the SPEC-077 shape and requires all three hosts.
+  Release is alpha.10.
 - [ ] T002 (REQ-001 / SC-001): Run the Codex review of this spec on the merged candidate; record raw output and triage each finding (confirmed, fixed, rejected with reason).
   Dependencies: this PR merged. Target files: `review/`, `evidence/review/`.
   Verification: procedure_001. Planned evidence:
