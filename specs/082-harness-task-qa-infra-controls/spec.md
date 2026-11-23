@@ -157,9 +157,11 @@ SPEC-083 and SPEC-084 by hash. No record here authorizes execution.
 - **OD-3 Private split storage.** (a) local private store outside the repository,
   hashes committed, as in ADR 0018; (b) encrypted file in the repository; (c) no
   private split. Recommended: (a).
-- **OD-4 Second reviewer.** (a) two humans; (b) owner plus an independent model
-  review labeled as model; (c) owner only. Recommended: (b), recorded as a
-  deviation from Terminal-Bench 2.0's two human auditors.
+- **OD-4 Second reviewer.** Options were (a) two humans; (b) owner plus an
+  independent model review labeled as model; (c) owner only. Decided on 2026-11-23
+  (T001): (d) cross adversarial review. Claude and Codex review each task blind, then
+  critique each other's report. The owner adjudicates every disagreement. This is
+  recorded as a deviation from Terminal-Bench 2.0's two human auditors.
 - **OD-5 Infra policy.** Recommended: at most 2 reruns per trial; a job is `invalid`
   when infra errors exceed 10 % of trials or a task loses all trials.
 - **OD-6 Exploit-agent venue.** (a) SPEC-084 after its gates; (b) an owner-admitted

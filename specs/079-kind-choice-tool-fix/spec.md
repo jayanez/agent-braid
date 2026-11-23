@@ -69,6 +69,10 @@ Owner decisions (2026-11-22, `speckit-clarify`):
   `claude-sonnet-5-5`, subscription route, EUR 0.
 - **OD-D — Ship order.** v4 runs against a pinned unreleased commit of the fixed
   plugin; the change ships in an alpha only after the result is recorded.
+- **OD-E — Real-session shadow check (owner reliability gate, 2026-11-22).** Approval of
+  SPEC-079 also needs a read-only check over the owner's real sessions on the pinned build
+  (REQ-012). The thresholds below are proposed; they bind only after the owner signs them off,
+  and they are frozen with the protocol (REQ-008) before the shadow window opens.
 
 ## Requirements and acceptance scenarios
 
@@ -152,6 +156,22 @@ Owner decisions (2026-11-22, `speckit-clarify`):
   - SC-014: Given the diff, when the boundary check runs, then no frozen path
     changed.
 
+- **REQ-012 — Real-session shadow check (OD-E).** Before release (T010), the pinned build
+  (OD-D) runs in the owner's real `claude-code` sessions for a window of at least 14 days and at
+  least 30 `analyze-work` calls. A read-only script reads only local telemetry cells and the
+  host transcripts' tool names, `kind` arguments and envelope status and refusal code (no prompt
+  or file content, no quota). It reports: S1 the `ok` share of `analyze-work` calls (Wilson 95 %);
+  S2 the count of `units-cannot-answer-independence` refusals and how many were followed in the same
+  session by an `aim` call (recovered); S3 sessions that call `analyze` and never `analyze-work`
+  (detours); S4 `analyze-work` `error` outcomes. Proposed pass (owner sign-off pending): S1 Wilson
+  lower bound >= 0.70; at least 80 % of S2 refusals recovered; S3 <= 5 % of sessions with any Agent
+  Braid analysis call; S4 = 0. Fewer than 30 calls is inconclusive and blocks the release; it is
+  not a pass. A failed or inconclusive check is recorded (REQ-010), not retried on the same window.
+  - SC-015: Given a shadow window that meets the minimum, when the script runs, then it reports
+    S1 to S4 with the preregistered verdict and reads no content beyond the listed fields.
+  - SC-016: Given fewer than 30 `analyze-work` calls, when the script runs, then the verdict is
+    `inconclusive` and the release stays blocked (negative control).
+
 ## Scientific boundaries and compatibility
 
 Hypotheses (preregistered in REQ-008; none is a completion condition):
@@ -184,6 +204,6 @@ v3-test.
 Planned and obtained evidence are kept in `assurance.json`. Tracking:
 milestone [BL.2c #36](https://github.com/jayanez/agent-braid/milestone/36),
 epic #1503, tasks T001–T010 as #1504–#1513. OD-A to OD-D are
-decided. No open questions remain at draft stage; the class plan and prompt
+decided; OD-E's thresholds await owner sign-off. No open questions remain at draft stage; the class plan and prompt
 authoring are planning work (plan.md), not owner decisions.
 Feasibility failure, null and inconclusive outcomes are valid reports.
