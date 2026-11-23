@@ -1,9 +1,15 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """SPEC-073: Lightning promotion through the HAR profile registry (procedures 001-008)."""
+from contextlib import redirect_stdout
+from io import StringIO
+import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
+from agent_braid.cli import main
 from agent_braid import lightning_promote as lp
 from agent_braid import lightning_store as st
 from agent_braid.harness_evaluation import EvaluationRecord, Registration
@@ -42,6 +48,10 @@ class Base(unittest.TestCase):
         self.sha = sha256_text(TEXT)
         self.run.write_candidate_text(self.sha, TEXT)
         self.registration, self.evaluation = pair(self.sha)
+        self.root = Path(self.tmp.name).resolve() / 'root'
+        self.target = self.root / lp.SCOPES[SCOPE].target
+        self.target.parent.mkdir(parents=True)
+        self.target.write_text(BASE_TEXT)
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -143,6 +153,102 @@ class BuildRecordTests(Base):
         raw = self.registration.canonical_bytes
         self.refused('invalid-evaluation', lambda: lp.load_record(Registration, raw + b' '))
         self.refused('invalid-evaluation', lambda: lp.load_record(Registration, b'{'))
+
+
+def snapshot(*roots):
+    """Every file under ``roots`` with its bytes (no write may happen during a preview)."""
+    return {str(p): p.read_bytes() for r in roots if r.exists() for p in sorted(r.rglob('*')) if p.is_file()}
+
+
+class PreviewTests(Base):
+    """procedure_003 / SC-003 (preview half; apply is T005)."""
+
+    def preview(self, **kwargs):
+        return lp.preview_promote(self.build(), home=self.home, root=self.root, **kwargs)
+
+    def test_preview_fields_and_no_writes(self):
+        before = snapshot(self.home, self.root)
+        doc = self.preview()
+        self.assertEqual(snapshot(self.home, self.root), before)
+        self.assertFalse(lp.registry_path(self.home, SCOPE).exists())
+        self.assertEqual(doc['schema'], 'braid-lightning-promotion-preview/v0.1')
+        self.assertEqual((doc['action'], doc['scope'], doc['targetPath']), ('promote', SCOPE, lp.SCOPES[SCOPE].target))
+        self.assertIsNone(doc['currentSha256'])
+        self.assertEqual(doc['candidateSha256'], self.sha)
+        self.assertEqual(doc['fileSha256Before'], sha256_text(BASE_TEXT))
+        self.assertEqual(doc['registrySha256Before'], sha256_text(''))
+        self.assertEqual(doc['diffSummary'], {'added': 2, 'removed': 1})
+        self.assertEqual(doc['evidence'], sorted([self.registration.sha256, self.evaluation.sha256]))
+        self.assertEqual((doc['cohort'], doc['requiredDecision'], doc['heldOutSupport']),
+                         ('native', 'approved', 'supported'))
+        self.assertIs(doc['executionAuthorization'], False)
+        self.assertNotIn(TEXT, json.dumps(doc))
+        # A SPEC-072 pair is descriptive-only: the preview shows the apply would refuse (OD-4).
+        self.assertEqual(doc['blockers'], ['regression-not-covered'])
+
+    def test_digest_is_deterministic_and_bound_to_file_and_registry(self):
+        first = self.preview()
+        self.assertEqual(self.preview()['previewDigest'], first['previewDigest'])
+        body = {k: v for k, v in first.items() if k not in ('previewDigest', 'executionAuthorization')}
+        self.assertEqual(lp.seal(body)['previewDigest'], first['previewDigest'])
+        self.target.write_text(BASE_TEXT + 'edit\n')
+        self.assertNotEqual(self.preview()['previewDigest'], first['previewDigest'])
+
+    def test_override_reason_is_cited_by_digest_and_validated(self):
+        registration, evaluation = pair(self.sha, base_verdict='meets')
+        record = self.build(registration=registration, evaluation=evaluation)
+        plain = lp.preview_promote(record, home=self.home, root=self.root)
+        self.assertIn('no-held-out-support', plain['blockers'])
+        doc = lp.preview_promote(record, home=self.home, root=self.root, override_reason='drill only')
+        self.assertNotIn('no-held-out-support', doc['blockers'])
+        self.assertEqual(doc['overrideReason'], 'drill only')
+        self.assertIn(sha256_text('drill only'), doc['evidence'])
+        for bad in ('', '   ', 'a\nb', 'x' * 513, 3):
+            self.refused('invalid-override-reason', lambda bad=bad: lp.preview_promote(
+                record, home=self.home, root=self.root, override_reason=bad))
+
+    def test_unavailable_target_refused(self):
+        self.target.unlink()
+        self.refused('target-unavailable', self.preview)
+        os.symlink(self.root / 'elsewhere', self.target)
+        (self.root / 'elsewhere').write_text(BASE_TEXT)
+        self.refused('target-unavailable', self.preview)
+
+
+class CliPreviewTests(Base):
+    def files(self):
+        paths = {}
+        for name, raw in (('registration', self.registration.canonical_bytes),
+                          ('evaluation', self.evaluation.canonical_bytes),
+                          ('identity', json.dumps(IDENTITY).encode())):
+            paths[name] = Path(self.tmp.name) / f'{name}.json'
+            paths[name].write_bytes(raw)
+        return paths
+
+    def cli(self, *extra, candidate=None):
+        f = self.files()
+        argv = ['lightning', 'promote', '--home', str(self.home), '--root', str(self.root),
+                '--candidate', candidate or self.sha, '--run-id', 'run-1',
+                '--registration', str(f['registration']), '--evaluation', str(f['evaluation']),
+                '--identity', str(f['identity']), *extra]
+        out, err = StringIO(), StringIO()
+        with redirect_stdout(out), patch('sys.stderr', err):
+            code = main(argv)
+        return code, out.getvalue(), err.getvalue()
+
+    def test_cli_prints_the_preview_and_writes_nothing(self):
+        before = snapshot(self.home, self.root)
+        code, out, err = self.cli()
+        self.assertEqual((code, err), (0, ''))
+        doc = json.loads(out)
+        self.assertEqual(doc, lp.preview_promote(self.build(), home=self.home, root=self.root))
+        self.assertEqual(snapshot(self.home, self.root), before)
+
+    def test_cli_refusal_is_one_fixed_line(self):
+        code, out, err = self.cli('--scope', 'lightning.skill.plan')
+        self.assertEqual((code, out, err), (2, '', 'lightning promote refused (unknown-scope)\n'))
+        code, _, err = self.cli(candidate='0' * 64)
+        self.assertEqual((code, err), (2, 'lightning promote refused (candidate-not-stored)\n'))
 
 
 if __name__ == '__main__':

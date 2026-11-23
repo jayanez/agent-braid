@@ -101,6 +101,9 @@ def add_parser(subparsers):
                              '(final = A0; baseline = T010 guidance, exploratory E1/E2)')
     runner.add_argument('--model', help='pin the Claude Code model of rollouts and optimizer calls '
                                          '(apo/gepa default: claude-sonnet-5-5, the SPEC-071 T012 model)')
+    from . import lightning_promote
+    lightning_promote.add_arguments(commands.add_parser(
+        'promote', help='SPEC-073: preview a human promotion of a candidate skill text (writes nothing)'))
     # export parses its own tokens (export_parser): argparse would echo a bad value before export-disabled is known
     exporter = commands.add_parser('export', add_help=False, prefix_chars='\0',
                                    help='write a local dataset from consented, redacted runs (off by default)')
@@ -251,6 +254,9 @@ def _export(argv: list[str]) -> dict | None:
 def run(args, *, ask=None) -> int:
     if args.lightning_command == 'export':
         return _run_export(args.export_argv)
+    if args.lightning_command == 'promote':
+        from . import lightning_promote
+        return lightning_promote.run(args)
     try:
         home = registry.home_path(args.home)
         if args.lightning_command == 'init':
