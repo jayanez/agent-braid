@@ -343,6 +343,32 @@
         }
       ],
       "text": "No change touches frozen protocol files, the scorer or earlier splits; no quota before the freeze and owner yes."
+    },
+    {
+      "id": "REQ-012",
+      "text": "Before release, a read-only real-session shadow check on the pinned build reports S1-S4 against owner-signed preregistered thresholds; fewer than 30 calls is inconclusive and blocks release.",
+      "scenarios": [
+        {
+          "given": "a shadow window meeting the minimum",
+          "id": "SC-015",
+          "obtained_evidence": [],
+          "planned_evidence": "Shadow report, T010.",
+          "test_file": "specs/079-kind-choice-tool-fix/validation-plan.md",
+          "test_name": "ShadowCheckTests.test_reports_s1_to_s4",
+          "then": "S1-S4 and the preregistered verdict are reported from the listed fields only",
+          "when": "the shadow script runs"
+        },
+        {
+          "given": "fewer than 30 analyze-work calls",
+          "id": "SC-016",
+          "obtained_evidence": [],
+          "planned_evidence": "Unit test output, T010.",
+          "test_file": "specs/079-kind-choice-tool-fix/validation-plan.md",
+          "test_name": "ShadowCheckTests.test_too_few_calls_is_inconclusive",
+          "then": "the verdict is inconclusive and release stays blocked",
+          "when": "the shadow script runs"
+        }
+      ]
     }
   ],
   "scientific_limits": "One host, model and synthetic split; repetitions correlated; template clustering; comparisons with v3-test are descriptive only (different prompts); attribution of failures to the digest line is a hypothesis; nothing is claimed about real requests or other hosts. A refused first attempt fails the first-attempt gate by construction; v4's class mix differs from v3-test.",
