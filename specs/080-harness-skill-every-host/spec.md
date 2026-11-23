@@ -4,7 +4,7 @@
 
 **Status:** draft. Documentation only; nothing is implemented, packaged or published
 by this specification's first PR. It implements
-[ADR 0044](../../docs/adr/0044-harness-portability-tiers-skill-surface.md) (Proposed),
+[ADR 0044](../../docs/adr/0044-harness-portability-tiers-skill-surface.md) (Accepted 2026-11-23),
 owner decision F1 of the [harnessing benchmark](../../docs/strategy/HARNESSING_BENCHMARK.md).
 The founder accepts or rejects ADR 0044 in T001.
 

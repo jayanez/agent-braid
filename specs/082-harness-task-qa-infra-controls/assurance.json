@@ -13,7 +13,7 @@
   "authority_snapshot": {
     "commit": null,
     "hashes": {
-      "ARCHITECTURE.md": "ba06d301ad9fcbe359f278146b2bc556a4964f0741779bef61ddccea390ac76f",
+      "ARCHITECTURE.md": "8ac3f6c55d13a7e384a55179e2ddb3970abf7b50b1acbf2ebd8ca78c05529402",
       "CONSTITUTION.md": "ff7196976a1736a639947c2ab26e8da157fef23c89ba9881312f2a36459964eb",
       "GOVERNANCE.md": "c8eda331d97c42e54be4730ef906dfaad9ae2814e36704302f97afceff037d82",
       "LICENSE": "de98edde0132e64db2b0c9cfbf2be1e503437a57fc212936195be4c46c1817be",
@@ -66,7 +66,7 @@
       "docs/adr/0041-braid-lightning-content-traces.md": "1361654c3cb9a4b745eaf3aa3a3613fc0b76278a93f9fad3421bfd8a37a0a73c",
       "docs/adr/0042-braid-lightning-local-weight-training.md": "d4b1c5b7664a88be27ce64c4a3eb013161103e47694cab445b3e70b5269eacaf",
       "docs/adr/0043-harness-mcp-readonly-surface.md": "a13056d225ae28528d937f06df095d7822e857e4033b3a430e184058049e8953",
-      "docs/adr/0044-harness-portability-tiers-skill-surface.md": "a9ed9936a7c5f4444f205430527e9d0830246cbb88da5b6cf4122e495619a125",
+      "docs/adr/0044-harness-portability-tiers-skill-surface.md": "404cc8ada07409cd1569f00f9c28b5615a47614de7e7a0dfb8d447fff8eadeb4",
       "docs/adr/0045-hybrid-harness-evaluation-substrate.md": "755a7589e6122d84bba248e262eaaa378c65f16faf33f2b348ef435844361503",
       "docs/architecture/AGENT_INTERACTION_METADATA.md": "0118d7f16c390fc4c1ff027b503a4eaba8a747edf3f6d7b088559f8870e27780",
       "docs/architecture/ASSURANCE_LEVELS.md": "3e86d0060ef566ba8d1e1690606fc06e8fee172f187a1b9779b13d27f0f915d9",

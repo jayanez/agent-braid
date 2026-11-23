@@ -1,0 +1,131 @@
+{
+ "recordVersion": "0.1.0",
+ "spec": "SPEC-049",
+ "task": "T004 (admit a separate native pilot only after qualified host and source gates)",
+ "recordedAt": "2026-11-23",
+ "sourceCommit": "a9fdacfe19787866dc590b19ee9a89005a719fa1",
+ "disposition": "Closure record of an admission that already happened: the owner admitted the pilot on 2026-11-20 (\"Admit (Recommended)\", HAR sessions) for the SPEC-049/T014 native cohort only. This record verifies the five acceptance items against committed records and adds no decision.",
+ "method": "Read the inputs below; recomputed SHA-256 of each input and of each record the admission cites, at sourceCommit, and compared them with the hashes the admission record and admission packet state. No native run, no network beyond git.",
+ "inputs": {
+  "specs/049-harness-evaluation-learning/evidence/native-admission/t004-admission-20261120.json": "7a1b1a5a18949f54bad47e1805760f1bf917d7b339ae2550eebc1fa17c1d83f3",
+  "specs/049-harness-evaluation-learning/evidence/native-admission/admission-packet.md": "2b8890fff21960f554d775ed1193580bbc4b674318478ad9ffd5b77a54d1bac2",
+  "specs/049-harness-evaluation-learning/evidence/registration/t014-terms-20261120.json": "ef68417637be2c5b881ce95227eb0943ad4fedd98bb5498d1506b910612c68f1",
+  "specs/049-harness-evaluation-learning/evidence/registration/t014-profile-decisions-20261120.json": "36149af6808b1f71bc869e2d4bddc53002c12cca44e45d40680bf13ae2675806",
+  "specs/049-harness-evaluation-learning/evidence/t014.json": "ed46a74c440c1dc97a196418025f650767fe6308bfbb43ba785c0383f6562318",
+  "specs/049-harness-evaluation-learning/evidence/t007.json": "8c8718bf43813bec0688eeedf6e43535f81f4bd388035b9ff5baf6a3346f7c8b"
+ },
+ "referencedRecords": {
+  "note": "Records cited by the admission record, hash recomputed at sourceCommit; each equals the hash the admission record states.",
+  "specs/049-harness-evaluation-learning/evidence/registration/t005-units-freeze-20261112.json": "469135c420a01a5b56dbf49529f6a822c8b6469ef0d8ed9cbc8a95c5920bd934",
+  "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-founder-freeze-20261030.json": "499fe88d8bda05a500dcef2cb07e55429aad3ff59c5a0f2aefe2e9f9887741ff",
+  "specs/049-harness-evaluation-learning/evidence/registration/t005-roster-draft.json": "5056b3bbfafa4a667350ac823861a14d28ea232d5b901ea7bc93574dc721ff43",
+  "specs/049-harness-evaluation-learning/case-roster.md": "6a1e55f896fb77a1bbc42dc402eef1abc5d3f56e7a4b1dbcfd152c8c93e6a4e0",
+  "specs/065-native-claude-containment/evidence/qualification/issuance-2026-11-17.json": "33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8",
+  "specs/048-harness-variant-laboratory/evidence/founder-decisions-20261120.json": "854272506d8371fd711f7f791e82d4efbb6f0e57f0404262177116f2fa4464eb",
+  "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-founder-decision-20261031.json": "b1851e1c1e0d075368cd8193c97ae1e322fcce8a5d94f23762f3dd4aed4d2d88",
+  "specs/049-harness-evaluation-learning/evidence/registration/d2-caps-scope-founder-decision-20261117.json": "9e83093d6bf5e66a0c771d50ed9d10c94995c8859f93460212df8ab443e324cd",
+  "allMatch": true
+ },
+ "admission": {
+  "ownerStatement": "Admit (Recommended)",
+  "recordedAt": "2026-11-20",
+  "disposition": "admitted",
+  "scope": "the SPEC-049/T014 native cohort only",
+  "evidence": "specs/049-harness-evaluation-learning/evidence/native-admission/t004-admission-20261120.json"
+ },
+ "acceptance": [
+  {
+   "item": "exact source",
+   "verified": "The frozen T005 roster replayed natively (packet Q2 option (a)); holdout L1-C01-a, L1-C02-a, L1-C03-a, L1-C03-b, L1-C03-c; repository-owned synthetic and constructed cases, one lineage (L1), no third-party source. Units freeze 469135c4...d934, roster freeze 499fe88d...41ff, roster draft 5056b3bb...ff43, case roster 6a1e55f8...a4e0, all matching the recomputed hashes.",
+   "evidence": [
+    "specs/049-harness-evaluation-learning/evidence/native-admission/t004-admission-20261120.json",
+    "specs/049-harness-evaluation-learning/evidence/native-admission/admission-packet.md"
+   ]
+  },
+  {
+   "item": "candidate",
+   "verified": "Arm hashes are identical in the admission record and the T014 terms record: A 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945 (static base, empty inventory, roster freeze R5), B 4bc36ca01e403f9312a74c7658fb77cea88465fc993875a540eff8974fa36516 (guidance/checkpoint.md as frozen, roster freeze R6), C 6674a8da7aab284f456a9cefd551ebddbb6546873a809ad6a3db48fedca1f7d9 (resume-from-checkpoint only, frozen by the owner answer \"Register it (Recommended)\"). A and B occur in the roster freeze file; C with its bytes and refinement decision is in the terms record. Arm D infeasible in this window.",
+   "candidates": {
+    "A": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "B": "4bc36ca01e403f9312a74c7658fb77cea88465fc993875a540eff8974fa36516",
+    "C": "6674a8da7aab284f456a9cefd551ebddbb6546873a809ad6a3db48fedca1f7d9",
+    "D": "infeasible in this window"
+   },
+   "evidence": [
+    "specs/049-harness-evaluation-learning/evidence/native-admission/t004-admission-20261120.json",
+    "specs/049-harness-evaluation-learning/evidence/registration/t014-terms-20261120.json"
+   ]
+  },
+  {
+   "item": "containment",
+   "verified": "SPEC-065 issuance-2026-11-17 (33f89889bb7936d9715fdcb3f8e98d699849ebf720cfe60be2233673982d50c8, recomputed match); containment 5a9f05c66f32f79a6337d25e48e78115ae0718ad621db7ad2cc3eaf663fc00df, host f2f65ae07a3459b68f8e6deefd830db4792ee4a23e47ca9970c47f1ffb887f9d, environment 600ba86d00b7ff9a77170f720f78803aa959fc94e42357aab274f246316dc556; valid until 2026-12-17T22:19:29Z (expiresAt 1797545969). The same hashes appear in the profile-decisions record.",
+   "validUntil": "2026-12-17T22:19:29Z",
+   "evidence": [
+    "specs/049-harness-evaluation-learning/evidence/native-admission/t004-admission-20261120.json",
+    "specs/049-harness-evaluation-learning/evidence/registration/t014-profile-decisions-20261120.json"
+   ]
+  },
+  {
+   "item": "host and model route",
+   "verified": "Host claude, model haiku, route subscription (admission record). Claude build 2.1.292 is the build in the matched native profile of the T014 terms record. SPEC-048/T008 verdict T008-11 qualified-with-limits (854272506d8371fd711f7f791e82d4efbb6f0e57f0404262177116f2fa4464eb, recomputed match), restated in the profile-decisions record; Codex not qualified and refused.",
+   "route": {
+    "host": "claude",
+    "build": "2.1.292",
+    "model": "haiku",
+    "route": "subscription"
+   },
+   "evidence": [
+    "specs/049-harness-evaluation-learning/evidence/native-admission/t004-admission-20261120.json",
+    "specs/049-harness-evaluation-learning/evidence/registration/t014-terms-20261120.json",
+    "specs/049-harness-evaluation-learning/evidence/registration/t014-profile-decisions-20261120.json"
+   ]
+  },
+  {
+   "item": "cash envelope",
+   "verified": "Additional cash EUR 0 within the D2 caps (d2 caps b1851e1c...2d88 and per-cohort scope 9e83093d...24cd, both recomputed match): at most 30 min per unit, at most 10 % of the 5-hour window per session, at most 15 % of the weekly window per cohort, at most 16 units per cohort (SPEC-048/T008 units not counted), stop when weekly usage passes 80 %, when extra usage is on, or when the reading is stale.",
+   "additionalCashEur": 0,
+   "evidence": [
+    "specs/049-harness-evaluation-learning/evidence/native-admission/t004-admission-20261120.json",
+    "specs/049-harness-evaluation-learning/evidence/native-admission/admission-packet.md"
+   ]
+  }
+ ],
+ "infeasibilityPath": "Not taken: an admissible native route existed and was used; no item was filled from a double, a fixture or an estimate.",
+ "useByT014": {
+  "summary": "The admitted pilot was used by SPEC-049/T014: 15 of 15 registered slots started within the cap of 16 on the admitted route (attempts 21b, 21c, 21d; 20a and 21a started no unit). Cumulative rows: 13 correct, 1 incorrect (L1-C02-a:B), 1 not-attempted (L1-C02-a:A). In 21c and 21d each before-unit usage reading preceded the same unit's after-unit reading by 17 to 21 seconds, which t014.json records as within the 5-minute freshness bound; 21b has no report.",
+  "slotsStarted": 15,
+  "unitCap": 16,
+  "verdict": "inconclusive",
+  "closedAt": "2026-11-22",
+  "closedBy": "owner Q1, \"Cerrar como no concluyente (Recomendado)\"",
+  "evidence": [
+   "specs/049-harness-evaluation-learning/evidence/t014.json",
+   "specs/049-harness-evaluation-learning/evidence/t007.json"
+  ]
+ },
+ "commands": [
+  {
+   "command": "shasum -a 256 <each input and referenced record>",
+   "exit": 0
+  },
+  {
+   "command": "/opt/homebrew/bin/python3.13 -c \"import json;json.load(open('specs/049-harness-evaluation-learning/evidence/t004.json'))\"",
+   "exit": 0
+  },
+  {
+   "command": "/opt/homebrew/bin/python3.13 -m unittest tests.test_github_tracking",
+   "exit": 0
+  }
+ ],
+ "limits": [
+  "Records and verifies an existing owner admission; it is not a new decision and asks nothing new.",
+  "Hashes were compared, not re-derived: arm-candidate digests and the containment, host and environment hashes inside the issuance are taken as recorded; only file hashes were recomputed.",
+  "The admission covered the SPEC-049/T014 cohort only, on Haiku and the subscription route, bound to the issuance-2026-11-17 records valid to 2026-12-17T22:19:29Z.",
+  "Carried limits: units not isolated (SPEC-065 T012-03, no cross-unit independence claim), no effort-level claim (T012-07), Codex refused, synthetic/constructed source with one lineage (L1), descriptive only under D3, no utility claim.",
+  "EUR 0 is the admitted envelope; no invoice was observed and T014 costs stay claim-blocked."
+ ],
+ "executionAuthorization": false,
+ "nativeAdmission": false,
+ "promotionAuthorization": false,
+ "authorizationNote": "This record admits no further native unit and authorizes no execution or promotion."
+}

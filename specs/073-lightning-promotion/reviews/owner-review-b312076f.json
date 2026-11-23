@@ -1,0 +1,34 @@
+{
+ "recordVersion": "0.1.0",
+ "feature": "SPEC-073",
+ "reviewedCommit": "b312076f6d84a495548dbeba66f1c78a1da575a0",
+ "reviewer": {
+  "name": "Juan Antonio Yáñez García",
+  "role": "founder"
+ },
+ "conflictsOfInterest": "The reviewer is the project founder and owner. The review records that role explicitly; it is an internal owner decision, not independent external validation.",
+ "method": "Guided T001 review on 2026-11-23: OD-1 to OD-3 put to the owner as questions with a recommendation, examples, risks and undo for each; answers recorded under Clarifications in PR #1618 and frozen here.",
+ "humanReview": {
+  "decision": "approved",
+  "date": "2026-11-23",
+  "rationale": "Approve the SPEC-073 specification, plan and contracts as plumbing only. OD-1: the scope map holds only lightning.skill.analyze (32 KiB). OD-2: the build check refuses release builds and warns local builds on a mismatch. OD-3: the working registry lives in the plugin home; release builds read a committed export outside the packaged plugin tree. AUTOMATIC_PROMOTION stays False; BL.2b found no candidate that beats A0, so nothing is promoted by this approval. This approval grants no execution authority, release or publication."
+ },
+ "evidence": [
+  {
+   "path": "specs/073-lightning-promotion/spec.md",
+   "sha256": "4ddad42a76c6c5d71977d9d96380afa38b4c275d2daba314389a05a2c632918f"
+  },
+  {
+   "path": "specs/073-lightning-promotion/plan.md",
+   "sha256": "d06f6dcdcd864cf353c0e41f2fa2742b3f9956a52b1332af68780beb82c187b6"
+  },
+  {
+   "path": "specs/073-lightning-promotion/contracts/promotion-preview.md",
+   "sha256": "57d31b31240394687306ffdb0849420ef8c8cd75688c1153ab8e7640b8b0f699"
+  },
+  {
+   "path": "specs/073-lightning-promotion/contracts/scope-map.md",
+   "sha256": "f947466e63ee2424400725aa66c62eafa2610891b18486fd1c5f107f47c145c4"
+  }
+ ]
+}

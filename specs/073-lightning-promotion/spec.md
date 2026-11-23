@@ -62,7 +62,7 @@ reversibility and no hidden effects.
 
 ## Clarifications
 
-Design decisions recorded for owner review:
+Design decisions (approved with T001):
 
 - **P1 — Carrier.** Whole texts use the profile registry; short reflections use
   the experience store. No new store is created.
@@ -79,11 +79,30 @@ Design decisions recorded for owner review:
   verified against the active candidate; a scope without a registry is not
   checked (existing behaviour).
 
-Open decisions (owner): OD-1 initial scope map entries; OD-2 whether the build
-check refuses or warns on mismatch for a local developer build (recommended:
-refuse for release builds, warn for local builds); OD-3 where the registry file
-lives (recommended: under the plugin home next to `lightning/`, with a
-committed export consumed by release builds).
+Owner decisions (T001, guided review on 2026-11-23; recorded here, frozen
+with the approval record):
+
+- **OD-1 — Initial scope map: analyze only.** The closed map has one entry,
+  `lightning.skill.analyze` → `integrations/agent-braid/skills/agent-braid-analyze/SKILL.md`
+  with a 32 KiB text limit. `lightning.skill.plan` is not mapped because no
+  producer exists; any other scope is refused with `unknown-scope`. Undo:
+  adding a scope is one reviewed change to the closed table.
+- **OD-2 — Build check: refuse release builds, warn local builds.** On a
+  mismatch a release build fails and a local developer build reports the same
+  `lightning-promotion-mismatch` message as a warning and continues. Undo:
+  always-refuse is a one-line change.
+- **OD-3 — Registry location: plugin home plus committed export.** The working
+  registry lives in the private plugin home next to `lightning/`
+  (`<plugin home>/lightning-promotion/registry.json`, never in Git). Release
+  builds read a committed export at
+  `integrations/lightning-promotion/registry-export.json`, outside the
+  packaged plugin tree; the owner commits it together with the promoted
+  `SKILL.md`. The build check catches an export that lags the file. Undo:
+  moving the file is a path constant plus one copy.
+
+Context: BL.2b (SPEC-078) found no candidate that beats A0, so this feature is
+plumbing only and promotes nothing; T010 (the owner's rollback drill) is the
+first and only real promotion run it plans.
 
 ## Requirements
 
