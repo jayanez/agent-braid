@@ -1,10 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """SPEC-073: Lightning promotion through the HAR profile registry (procedures 001-008)."""
+import ast
 from contextlib import redirect_stdout
 from io import StringIO
 import json
 import os
 from pathlib import Path
+import socket
+import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -249,6 +253,75 @@ class CliPreviewTests(Base):
         self.assertEqual((code, out, err), (2, '', 'lightning promote refused (unknown-scope)\n'))
         code, _, err = self.cli(candidate='0' * 64)
         self.assertEqual((code, err), (2, 'lightning promote refused (candidate-not-stored)\n'))
+
+
+MODULE = ROOT / 'agent_braid' / 'lightning_promote.py'
+FORBIDDEN_STDLIB = {'socket', 'subprocess', 'multiprocessing', 'asyncio', 'http', 'urllib', 'ssl',
+                    'ftplib', 'smtplib', 'importlib', 'ctypes', 'shutil'}
+FORBIDDEN_NAMES = {'system', 'popen', 'spawn', 'execv', 'execve', 'fork', '__import__', 'activate',
+                   'import_module', 'execute', 'recover'}
+
+
+def violations(source):
+    """Boundary violations of a module's source: non-stdlib or forbidden imports and calls."""
+    found = []
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Import):
+            roots = [a.name.split('.')[0] for a in node.names]
+        elif isinstance(node, ast.ImportFrom) and node.level == 0:
+            roots = [node.module.split('.')[0]]
+        else:
+            roots = []
+        for root in roots:
+            if root not in sys.stdlib_module_names or root in FORBIDDEN_STDLIB:
+                found.append(('import', root))
+        if isinstance(node, ast.ImportFrom) and node.level == 1 and node.module is None:
+            found += [('local', a.name) for a in node.names if 'mcp' in a.name]
+        name = node.attr if isinstance(node, ast.Attribute) else node.id if isinstance(node, ast.Name) else None
+        if name in FORBIDDEN_NAMES:
+            found.append(('name', name))
+    return found
+
+
+class BoundaryTests(Base):
+    """procedure_008 / SC-008: no socket, no process, standard library only, bounded writes."""
+
+    def test_module_source_has_no_forbidden_import_or_call(self):
+        self.assertEqual(violations(MODULE.read_text()), [])
+
+    def test_negative_control_detects_a_patched_module(self):
+        source = MODULE.read_text()
+        for patch_line, kind in (('import socket\n', 'socket'), ('import requests\n', 'requests'),
+                                 ('from subprocess import run\n', 'subprocess')):
+            self.assertIn(('import', kind), violations(patch_line + source))
+        self.assertIn(('name', 'system'), violations(source + '\nos.system("x")\n'))
+        self.assertIn(('name', 'activate'), violations(source + '\nstore.activate(1)\n'))
+
+    def test_no_mcp_tool_exposes_promotion(self):
+        for path in (ROOT / 'agent_braid').glob('*mcp*.py'):
+            self.assertNotIn('lightning_promote', path.read_text(), path.name)
+        self.assertNotIn('promote', (ROOT / 'agent_braid' / 'plugin_mcp.py').read_text())
+
+    def test_automatic_promotion_stays_disabled(self):
+        from agent_braid import harness_promotion
+        self.assertIs(harness_promotion.AUTOMATIC_PROMOTION, False)
+
+    def test_preview_opens_no_socket_or_process_and_writes_nothing(self):
+        def refuse(*args, **kwargs):
+            raise AssertionError('boundary crossed')
+        before = snapshot(self.home, self.root)
+        writes = []
+        real_open = os.open
+
+        def watch(path, flags, *args, **kwargs):
+            if flags & (os.O_WRONLY | os.O_RDWR | os.O_CREAT):
+                writes.append(str(path))
+            return real_open(path, flags, *args, **kwargs)
+        with patch.object(socket, 'socket', refuse), patch.object(subprocess, 'Popen', refuse), \
+                patch.object(os, 'system', refuse), patch.object(os, 'open', watch):
+            lp.preview_promote(self.build(), home=self.home, root=self.root)
+        self.assertEqual(writes, [])
+        self.assertEqual(snapshot(self.home, self.root), before)
 
 
 if __name__ == '__main__':
