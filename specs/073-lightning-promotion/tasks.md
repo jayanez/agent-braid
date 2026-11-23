@@ -23,7 +23,7 @@ imply release or owner acceptance. `quick` means
 
 ## Phase P2 — decision, apply and build
 
-- [ ] T005 (REQ-002 / SC-002): apply path calling `decide()` with a human actor,
+- [x] T005 (REQ-002 / SC-002): apply path calling `decide()` with a human actor,
   `begin`, atomic write, `commit`, and `abort` on failure. Dependencies: T003.
   Verification: procedure_002.
 - [ ] T006 (REQ-004 / SC-004): build check in `plugin_package` with the

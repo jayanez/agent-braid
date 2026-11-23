@@ -16,7 +16,8 @@ from unittest.mock import patch
 from agent_braid.cli import main
 from agent_braid import lightning_promote as lp
 from agent_braid import lightning_store as st
-from agent_braid.harness_evaluation import EvaluationRecord, Registration
+from agent_braid import harness_promotion as hp
+from agent_braid.harness_evaluation import EvaluationRecord, Registration, _record
 from agent_braid.lightning_evaluation import spec049_pair
 from agent_braid.lightning_resources import sha256_text
 
@@ -41,6 +42,19 @@ def pair(candidate, base_verdict='misses', primary_verdict='meets', base=None):
                  'summary': summary(primary_verdict)},
         heldout_sha256='b' * 64, protocol_sha256='c' * 64,
         costs={'A': {'rollouts': 30}, 'C': {'rollouts': 30}})
+
+
+SAFE = {'unsafeAdmissions': 0, 'authorityViolations': 0, 'effectViolations': 0}
+HUMAN = {'kind': 'human', 'id': 'owner'}
+
+
+def noninferior(evaluation):
+    """Synthetic fixture (OD-4): the same report with every C-vs-A stratum assessed noninferior."""
+    data = evaluation.to_dict()
+    for stratum in data['strata'].values():
+        stratum['comparisons']['C-vs-A']['noninferiority'] = {
+            'status': 'assessed', 'verdict': 'noninferior', 'reasons': []}
+    return _record(EvaluationRecord, data)
 
 
 class Base(unittest.TestCase):
@@ -253,6 +267,141 @@ class CliPreviewTests(Base):
         self.assertEqual((code, out, err), (2, '', 'lightning promote refused (unknown-scope)\n'))
         code, _, err = self.cli(candidate='0' * 64)
         self.assertEqual((code, err), (2, 'lightning promote refused (candidate-not-stored)\n'))
+
+
+class ApplyTests(Base):
+    """procedure_002 / SC-002 and the apply half of procedure_003."""
+
+    def setUp(self):
+        super().setUp()
+        self.evaluation = noninferior(self.evaluation)
+
+    def apply(self, record=None, digest=None, **kwargs):
+        record = record or self.build()
+        doc = lp.preview_promote(record, home=self.home, root=self.root,
+                                 override_reason=kwargs.get('override_reason'))
+        args = {'actor': HUMAN, 'safety': SAFE, 'at': 10, **kwargs}
+        return lp.apply_promote(record, home=self.home, root=self.root,
+                                preview_digest=digest or doc['previewDigest'], **args)
+
+    def registry(self):
+        return hp.load(lp.registry_path(self.home, SCOPE))
+
+    def test_human_decide_begin_commit_writes_registry_and_file(self):
+        doc = lp.preview_promote(self.build(), home=self.home, root=self.root)
+        self.assertEqual(doc['blockers'], [])
+        result = self.apply()
+        self.assertEqual(result['status'], 'committed')
+        self.assertIs(result['executionAuthorization'], False)
+        self.assertEqual(self.target.read_text(), TEXT)
+        self.assertEqual(result['fileSha256After'], self.sha)
+        value = self.registry()
+        self.assertEqual(lp.active_candidate(value), self.sha)
+        self.assertEqual([e['event'] for e in value.journal], ['recorded', 'begun', 'committed'])
+        decision = value.decisions[value.active]
+        self.assertEqual((decision['actor'], decision['decision'], decision['cohort']),
+                         (HUMAN, 'approved', 'native'))
+        self.assertEqual(result['registrySha256After'], value.sha256)
+
+    def test_bounded_write_set(self):
+        outside = snapshot(Path(self.tmp.name).resolve() / 'home' / 'lightning')
+        self.apply()
+        changed = {p for p in snapshot(self.home, self.root)}
+        allowed = {str(lp.registry_path(self.home, SCOPE)), str(lp.registry_path(self.home, SCOPE)) + '.lock',
+                   str(self.target)}
+        self.assertEqual(changed - set(snapshot(self.home / 'lightning')), allowed)
+        self.assertEqual(snapshot(self.home / 'lightning'), outside)
+
+    def test_automatic_actor_refused_and_nothing_written(self):
+        before = snapshot(self.home, self.root)
+        self.refused('automatic-promotion-disabled',
+                     lambda: self.apply(actor={'kind': 'automatic-policy', 'id': 'policy'}))
+        self.assertEqual(snapshot(self.home, self.root), before)
+
+    def test_synthetic_cohort_refused(self):
+        data = self.evaluation.to_dict()
+        data['cohort'] = 'synthetic'
+        self.refused('cohort-mismatch', lambda: self.build(evaluation=_record(EvaluationRecord, data)))
+
+    def test_stale_identity_refused(self):
+        before = snapshot(self.home, self.root)
+        self.refused('stale-model', lambda: self.apply(current={**IDENTITY, 'model': 'other-model'}))
+        self.assertEqual(snapshot(self.home, self.root), before)
+
+    def test_unsafe_or_unknown_safety_refused(self):
+        self.refused('unsafe-admission', lambda: self.apply(safety={**SAFE, 'unsafeAdmissions': 1}))
+        self.refused('safety-unknown', lambda: self.apply(safety={**SAFE, 'effectViolations': None}))
+
+    def test_descriptive_only_pair_refused_regression_not_covered(self):
+        registration, evaluation = pair(self.sha)
+        record = self.build(registration=registration, evaluation=evaluation)
+        self.refused('regression-not-covered', lambda: self.apply(record))
+        self.assertEqual(self.target.read_text(), BASE_TEXT)
+
+    def test_stale_preview_refused_after_file_or_registry_change(self):
+        doc = lp.preview_promote(self.build(), home=self.home, root=self.root)
+        self.target.write_text(BASE_TEXT + 'edit\n')
+        self.refused('preview-stale', lambda: self.apply(digest=doc['previewDigest']))
+        self.target.write_text(BASE_TEXT)
+        lp.registry_path(self.home, SCOPE).parent.mkdir(parents=True)
+        hp.save(lp.registry_path(self.home, SCOPE), hp.ProfileRegistry.empty(SCOPE))
+        self.refused('preview-stale', lambda: self.apply(digest=doc['previewDigest']))
+        self.refused('preview-stale', lambda: self.apply(digest='0' * 64))
+
+    def test_no_held_out_support_needs_override_reason_recorded_in_decision(self):
+        registration, evaluation = pair(self.sha, base_verdict='meets')
+        record = self.build(registration=registration, evaluation=noninferior(evaluation))
+        self.refused('no-held-out-support', lambda: self.apply(record))
+        self.apply(record, override_reason='drill only')
+        decision = self.registry().decisions[self.registry().active]
+        self.assertEqual(list(decision['limits']), ['owner-override-no-held-out-support'])
+        self.assertIn(sha256_text('drill only'), decision['evidenceSha256s'])
+        self.assertNotIn(b'drill only', lp.registry_path(self.home, SCOPE).read_bytes())
+
+    def test_failed_file_write_aborts_and_restores(self):
+        real = os.replace
+
+        def failing(src, dst):
+            if str(dst) == str(self.target):
+                raise OSError('disk full')
+            return real(src, dst)
+        with patch.object(os, 'replace', failing):
+            self.refused('apply-failed', self.apply)
+        self.assertEqual(self.target.read_text(), BASE_TEXT)
+        value = self.registry()
+        self.assertIsNone(value.active)
+        self.assertIsNone(value.pending)
+        self.assertEqual([e['event'] for e in value.journal], ['recorded', 'begun', 'aborted'])
+        self.assertEqual(list(self.target.parent.glob('.SKILL.md.tmp-*')), [])
+
+    def test_failed_commit_aborts_and_restores_file(self):
+        with patch.object(hp.ProfileRegistry, 'commit', side_effect=hp.PromotionError('stale-host')):
+            self.refused('apply-failed', self.apply)
+        self.assertEqual(self.target.read_text(), BASE_TEXT)
+        self.assertEqual(self.registry().journal[-1]['event'], 'aborted')
+
+    def test_reapply_of_the_active_candidate_refused(self):
+        self.apply()
+        self.refused('already-active', lambda: self.apply(at=11))
+
+    def test_cli_apply_with_digest_then_stale(self):
+        cli = CliPreviewTests('test_cli_refusal_is_one_fixed_line')
+        cli.tmp, cli.home, cli.root, cli.sha = self.tmp, self.home, self.root, self.sha
+        cli.registration, cli.evaluation = self.registration, self.evaluation
+        safety = Path(self.tmp.name) / 'safety.json'
+        safety.write_text(json.dumps(SAFE))
+        code, out, _ = cli.cli()
+        digest = json.loads(out)['previewDigest']
+        code, out, err = cli.cli('--apply', '--preview-digest', digest, '--actor', 'owner',
+                                 '--safety', str(safety))
+        self.assertEqual((code, err), (0, ''), err)
+        self.assertEqual(json.loads(out)['status'], 'committed')
+        self.assertEqual(self.target.read_text(), TEXT)
+        code, _, err = cli.cli('--apply', '--preview-digest', digest, '--actor', 'owner',
+                               '--safety', str(safety))
+        self.assertEqual((code, err), (2, 'lightning promote refused (preview-stale)\n'))
+        code, _, err = cli.cli('--apply', '--preview-digest', digest)
+        self.assertEqual((code, err), (2, 'lightning promote refused (apply-needs-digest-actor-safety)\n'))
 
 
 MODULE = ROOT / 'agent_braid' / 'lightning_promote.py'

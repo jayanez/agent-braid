@@ -27,8 +27,10 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+import secrets
 import stat
 import sys
+import time
 from typing import Any
 
 from . import harness_promotion as promotion
@@ -263,6 +265,101 @@ def preview_promote(record: CandidateRecord, *, home: Path | None, root: Path,
         "blockers": sorted(blockers), "requiredDecision": "approved"})
 
 
+# --- apply (REQ-002, REQ-003) ----------------------------------------------------------
+
+
+def _private_dirs(home: Path | None) -> None:
+    for directory in (plugin_registry.home_path(home), plugin_registry.home_path(home) / "lightning-promotion"):
+        try:
+            store._private_dir(directory)
+        except (store.StoreError, OSError):
+            raise PromoteError("registry-unavailable") from None
+
+
+def write_target(root: Path, scope: str, raw: bytes) -> None:
+    """Replace the mapped file atomically (same-directory temp file, fsync, rename)."""
+    path = Path(root) / scope_entry(scope).target
+    temp = path.with_name(f".{path.name}.tmp-{secrets.token_hex(8)}")
+    fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o644)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(raw)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temp, path)
+    except BaseException:
+        temp.unlink(missing_ok=True)
+        raise
+
+
+def _save(home: Path | None, value: promotion.ProfileRegistry) -> None:
+    try:
+        promotion.save(registry_path(home, value.scope), value)
+    except promotion.PromotionError as exc:
+        raise PromoteError(exc.reason) from None
+
+
+def _target_sha(value: promotion.ProfileRegistry) -> str | None:
+    return value.decisions[value.active]["profileSha256"] if value.active else None
+
+
+def _checked(document: dict, preview_digest: Any) -> None:
+    """The recomputed preview must equal the one the human read, and carry no blocker."""
+    _require(type(preview_digest) is str and document["previewDigest"] == preview_digest, "preview-stale")
+    if document["blockers"]:
+        raise PromoteError(document["blockers"][0])
+
+
+def apply_promote(record: CandidateRecord, *, home: Path | None, root: Path, preview_digest: str,
+                  actor: Any, safety: Any, at: int, current: Any = None,
+                  override_reason: str | None = None) -> dict:
+    """Human decide, then begin, atomic file write and commit; abort and restore on any failure.
+
+    ``current`` is the identity now in force (default: the profile's own); ``begin`` and
+    ``commit`` refuse a drifted one. Writes only the scope's registry file and the mapped
+    ``SKILL.md``.
+    """
+    current = record.profile["identity"] if current is None else current
+    document = preview_promote(record, home=home, root=root, override_reason=override_reason)
+    _checked(document, preview_digest)
+    reason = document["overrideReason"]
+    extra = [_hex(reason.encode("utf-8"))] if reason is not None else []
+    value, _ = read_registry(home, record.scope)
+    try:
+        decision = promotion.decide(
+            record.registration, record.evaluation, profile=record.profile, actor=actor,
+            decision="approved", safety=safety, evidence=extra, rollback_target=_target_sha(value),
+            limits=[OVERRIDE_LIMIT] if reason is not None else [], at=at)
+        begun = value.record(decision, at).begin(decision, current=current, at=at)
+    except promotion.PromotionError as exc:
+        raise PromoteError(exc.reason) from None
+    before = read_target(root, record.scope)
+    _private_dirs(home)
+    _save(home, begun)
+    try:
+        write_target(root, record.scope, record.text.encode("utf-8"))
+        committed = begun.commit(current=current, at=at)
+        _save(home, committed)
+    except BaseException:
+        _abort(home, root, record.scope, begun, before, at)
+        raise PromoteError("apply-failed") from None
+    return {"status": "committed", "action": "promote", "scope": record.scope,
+            "candidateSha256": record.candidateSha256, "decisionSha256": decision.sha256,
+            "registrySha256After": committed.sha256,
+            "fileSha256After": _hex(read_target(root, record.scope)), "executionAuthorization": False}
+
+
+def _abort(home, root, scope, begun, before: bytes, at: int) -> None:
+    """Restore the file bytes (if they changed) and record ``aborted``; the prior profile is kept."""
+    try:
+        unchanged = read_target(root, scope) == before
+    except PromoteError:
+        unchanged = False
+    if not unchanged:
+        write_target(root, scope, before)
+    _save(home, begun.abort(at=at, reason="apply-failed"))
+
+
 # --- CLI: agent-braid lightning promote -----------------------------------------------
 
 
@@ -277,6 +374,11 @@ def add_arguments(parser) -> None:
     parser.add_argument("--identity", required=True, type=Path,
                         help="JSON identity: sourceSha256, host, model, toolSetSha256, policySha256")
     parser.add_argument("--override-reason", help="owner reason to promote without held-out support")
+    parser.add_argument("--apply", action="store_true", help="write; requires --preview-digest and --actor")
+    parser.add_argument("--preview-digest", help="digest of the preview the human read")
+    parser.add_argument("--actor", help="human decider id (a human decision is the only accepted kind)")
+    parser.add_argument("--safety", type=Path,
+                        help="JSON safety counts: unsafeAdmissions, authorityViolations, effectViolations")
 
 
 def _read_file(path: Path, limit: int = 1 << 20) -> bytes:
@@ -309,8 +411,20 @@ def run(args) -> int:
     """Print the preview JSON and return 0; a refusal is one stderr line and exit 2."""
     try:
         record = record_from_args(args)
-        output = preview_promote(record, home=args.home, root=args.root,
-                                 override_reason=args.override_reason)
+        if args.apply:
+            _require(args.preview_digest and args.actor and args.safety, "apply-needs-digest-actor-safety")
+            try:
+                safety = json.loads(_read_file(args.safety))
+            except ValueError:
+                raise PromoteError("invalid-safety") from None
+            output = apply_promote(record, home=args.home, root=args.root,
+                                   preview_digest=args.preview_digest,
+                                   actor={"kind": "human", "id": args.actor}, safety=safety,
+                                   at=int(time.time()), override_reason=args.override_reason)
+        else:
+            _require(args.preview_digest is None, "preview-digest-needs-apply")
+            output = preview_promote(record, home=args.home, root=args.root,
+                                     override_reason=args.override_reason)
     except PromoteError as exc:
         print(f"lightning promote refused ({exc.reason})", file=sys.stderr)
         return 2
