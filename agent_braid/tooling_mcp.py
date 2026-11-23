@@ -777,7 +777,10 @@ def _prompt_get(name: str) -> tuple[str, str]:
     raise ToolingError("Unknown prompt")
 
 
+# SPEC-079 REQ-003: both deliveries lead with the kind choice and the disjoint units refusal.
+_UNITS_SENTENCE = "Parallel/overlap: aim; units can't show independence, refused if disjoint."
 _ANALYZE_WORK_REQUEST_HELP = (
+    _UNITS_SENTENCE + " "
     "kind=aim: request is an AIM envelope {analysisInputVersion: \"0.1.0-alpha\", "
     "source: {kind: \"aim\", description}, operations: [AIM 0.2.0-draft record, ...]}; "
     "each record needs aimVersion, instanceId, attemptId, definition {id, digest}, inputDigest, "
@@ -785,14 +788,17 @@ _ANALYZE_WORK_REQUEST_HELP = (
     "and evidence. The agent-braid-analyze skill has a complete copyable example. "
     "kind=git: request is {gitAnalysisRequestVersion, repository, baseRevision, operations}."
 )
-# The per-kind arm states the shapes in the schema, so its prose only points at it (D12 size cap).
+# The per-kind arm states the shapes in the schema, so its prose only points at it (D12 size cap: it sits
+# at ~1,499 of 1,500 tokens; the schema enforces one evidence item, so the prose no longer repeats it).
 # It does choose the kind, because the dev-set transcripts show hosts picking `units` and then
 # being told `unknown` for work they were asked to compare for parallelism (SPEC-069 T008).
 _ANALYZE_WORK_SCHEMA_HELP = (
-    "aim for parallel/overlap questions, never units (no "
-    "independent-candidate); aim needs sha256:<64 hex> digests, one evidence item; "
-    "coverage complete if files named. git: branches, distinct attemptIds. Skill agent-braid-analyze."
+    _UNITS_SENTENCE + " Digests: any sha256:<64 hex>, e.g. task-text hash; coverage complete if files named. "
+    "git: branches, distinct attemptIds. Example: skill agent-braid-analyze."
 )
+# SPEC-079 REQ-004: hosts asked about parallel work called `analyze` instead (SPEC-078 v3-test, 46/300).
+_ANALYZE_HELP = ("It takes a plan-level request, not an analysis input, and does not compare proposed work for "
+                 "parallelism or overlap; for parallel or overlap questions use analyze-work.")
 
 
 def _analyze_work_input_schema(delivery: str) -> dict[str, Any]:
@@ -847,6 +853,8 @@ def _tool_definitions(service: ToolingService, types: Any, delivery: str | None 
         if name == "analyze-work":
             help_text = _ANALYZE_WORK_REQUEST_HELP if delivery == "description-only" else _ANALYZE_WORK_SCHEMA_HELP
             description = f"{description} {help_text}"
+        elif name == "analyze":
+            description = f"{description} {_ANALYZE_HELP}"
         definitions.append(types.Tool(
             name=name, description=description,
             inputSchema=schema, outputSchema={"type": "object", "properties": {
